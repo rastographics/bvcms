@@ -21,7 +21,8 @@ namespace CmsData
     public class PythonEvents : IPythonApi
     {
         private CMSDataContext db;
-        public Dictionary<string, string> dictionary { get; set; }
+
+        private Dictionary<string, object> dictionary { get; set; }
         public dynamic instance { get; set; }
         public string pythonPath { get; set; }
         public string pyrazorPath { get; set; }
@@ -58,6 +59,16 @@ namespace CmsData
 
         public PythonEvents(string dbname)
         {
+            dictionary = new Dictionary<string, object>();
+            Data = new DynamicData(dictionary);
+            db = DbUtil.Create(dbname);
+            pythonPath = ConfigurationManager.AppSettings["pythonPath"];
+            pyrazorPath = ConfigurationManager.AppSettings["pyrazorPath"];
+        }
+        public PythonEvents(string dbname, Dictionary<string, object> dict)
+        {
+            dictionary = dict;
+            Data = new DynamicData(dictionary);
             db = DbUtil.Create(dbname);
             pythonPath = ConfigurationManager.AppSettings["pythonPath"];
             pyrazorPath = ConfigurationManager.AppSettings["pyrazorPath"];
@@ -97,16 +108,14 @@ namespace CmsData
         }
         public static string RunScript(string dbname, string script, DateTime time)
         {
-            var pe = new PythonEvents(dbname) {ScheduledTime = time.ToString("HHmm")};
+            var pe = new PythonEvents(dbname) { ScheduledTime = time.ToString("HHmm") };
             return ExecutePython(script, pe);
         }
 
         public string CallScript(string scriptname)
         {
             var script = db.ContentOfTypePythonScript(scriptname);
-
-            //db.Log($"CallScript {scriptname}");
-            return ExecutePython(script, new PythonEvents(db.Host));
+            return ExecutePython(script, new PythonEvents(db.Host, dictionary));
         }
 
         public void CreateTask(int forPeopleId, Person p, string description)
@@ -143,19 +152,22 @@ namespace CmsData
         public int DayOfWeek => DateTime.Today.DayOfWeek.ToInt();
         public string ScheduledTime { get; private set; }
         public DateTime DateTime => DateTime.Now;
-        public bool DictionaryIsNotAvailable => dictionary == null;
+        public bool DictionaryIsNotAvailable => false;
+        public dynamic Data { get; }
 
         public string Dictionary(string s)
         {
             if (dictionary != null && dictionary.ContainsKey(s))
-                return dictionary[s];
+                return dictionary[s].ToString();
             return "";
         }
 
+        public bool DataHas(string key)
+        {
+            return dictionary.ContainsKey(key);
+        }
         public void DictionaryAdd(string key, string value)
         {
-            if (dictionary == null)
-                dictionary = new Dictionary<string, string>();
             dictionary.Add(key, value);
         }
 
@@ -472,9 +484,9 @@ namespace CmsData
         public bool InOrg(object pid, object orgId)
         {
             var om = (from mm in db.OrganizationMembers
-                where mm.PeopleId == pid.ToInt()
-                where mm.OrganizationId == orgId.ToInt()
-                select mm).SingleOrDefault();
+                      where mm.PeopleId == pid.ToInt()
+                      where mm.OrganizationId == orgId.ToInt()
+                      select mm).SingleOrDefault();
             return om != null;
         }
         public void AddMemberToOrg(object pid, object orgId)
@@ -484,9 +496,9 @@ namespace CmsData
         public bool InSubGroup(object pid, object orgId, string group)
         {
             var om = (from mm in db.OrganizationMembers
-                where mm.PeopleId == pid.ToInt()
-                where mm.OrganizationId == orgId.ToInt()
-                select mm).SingleOrDefault();
+                      where mm.PeopleId == pid.ToInt()
+                      where mm.OrganizationId == orgId.ToInt()
+                      select mm).SingleOrDefault();
             if (om == null)
                 return false;
 
@@ -495,9 +507,9 @@ namespace CmsData
         public void AddSubGroup(object pid, object orgId, string group)
         {
             var om = (from mm in db.OrganizationMembers
-                where mm.PeopleId == pid.ToInt()
-                where mm.OrganizationId == orgId.ToInt()
-                select mm).SingleOrDefault();
+                      where mm.PeopleId == pid.ToInt()
+                      where mm.OrganizationId == orgId.ToInt()
+                      select mm).SingleOrDefault();
             if (om == null)
                 throw new Exception($"no orgmember {pid}:");
             om.AddToGroup(db, group);
@@ -505,9 +517,9 @@ namespace CmsData
         public void RemoveSubGroup(object pid, object orgId, string group)
         {
             var om = (from mm in db.OrganizationMembers
-                where mm.PeopleId == pid.ToInt()
-                where mm.OrganizationId == orgId.ToInt()
-                select mm).SingleOrDefault();
+                      where mm.PeopleId == pid.ToInt()
+                      where mm.OrganizationId == orgId.ToInt()
+                      select mm).SingleOrDefault();
             if (om == null)
                 throw new Exception($"no orgmember {pid}:");
             om.RemoveFromGroup(db, group);
@@ -526,7 +538,7 @@ namespace CmsData
                 return "no date";
             dtwanted = dtwanted.Value.Date;
             var c = db.ContentOfTypeHtml(contentName);
-            var a = Regex.Split(c.Body, @"<h1>(?<dt>\d{1,2}(/|-)\d{1,2}(/|-)\d{2,4})=+</h1>", RegexOptions.ExplicitCapture);
+            var a = Regex.Split(c.Body, @"<h1>\s*(?<dt>\d{1,2}(?:/|-)\d{1,2}(?:/|-)\d{2,4})=+\s*</h1>", RegexOptions.ExplicitCapture);
             var i = 0;
             for (; i < a.Length; i++)
             {
@@ -542,6 +554,11 @@ namespace CmsData
         public string HtmlContent(string name)
         {
             var c = db.ContentOfTypeHtml(name);
+            return c.Body;
+        }
+        public string Content(string name)
+        {
+            var c = db.Content(name);
             return c.Body;
         }
         public string Replace(string text, string pattern, string replacement)
@@ -615,12 +632,12 @@ namespace CmsData
             return api.GetOrganization(orgId.ToInt());
         }
 
-         /// <summary>
-         /// EmailReport is designed to be very similar to EmailContent,
-         /// except that the body of the email is generated by a python script
-         /// instead of being pulled from an static file.
-         /// The code for the Python Engine was copied from the VitalStats function in QueryFunctions.cs
-         /// </summary>
+        /// <summary>
+        /// EmailReport is designed to be very similar to EmailContent,
+        /// except that the body of the email is generated by a python script
+        /// instead of being pulled from an static file.
+        /// The code for the Python Engine was copied from the VitalStats function in QueryFunctions.cs
+        /// </summary>
         public void EmailReport(object savedquery, int queuedBy, string fromaddr, string fromname, string subject, string report)
         {
             var from = new MailAddress(fromaddr, fromname);
@@ -654,11 +671,8 @@ namespace CmsData
         /// </summary>
         public void EmailReport(string savedquery, int queuedBy, string fromaddr, string fromname, string subject, string report, string queryname, string querydescription)
         {
-            dictionary = new Dictionary<string, string>
-            {
-                {"QueryName", queryname},
-                {"QueryDescription", querydescription},
-            };
+            Data.QueryName = queryname;
+            Data.QueryDescription = querydescription;
             EmailReport(savedquery, queuedBy, fromaddr, fromname, subject, report);
         }
 
@@ -688,10 +702,9 @@ namespace CmsData
             if (!script.HasValue())
                 throw new Exception("no sql script found");
 
-            var p =new DynamicParameters();
-            if(dictionary != null)
-                foreach (var kv in dictionary)
-                    p.Add("@" + kv.Key, kv.Value);
+            var p = new DynamicParameters();
+            foreach (var kv in dictionary)
+                p.Add("@" + kv.Key, kv.Value);
             if (script.Contains("@qtagid"))
             {
                 int? qtagid = null;
@@ -721,13 +734,6 @@ namespace CmsData
         }
         private static string ExecutePython(string scriptContent, PythonEvents model)
         {
-            // we could consider only passing in an explicit IPythonApi to the script so that only things defined
-            // on the interface are accessible to the script; however, I'm worried that we may have some scripts
-            // that are using functions not defined on the API docs site (which is what the interface is based on)
-
-            if (scriptContent.StartsWith("@# pyhtml #@"))
-                scriptContent = RunPyHtml(scriptContent, model.pythonPath, model.pyrazorPath);
-
             var engine = Python.CreateEngine();
 
             using (var ms = new MemoryStream())
@@ -754,7 +760,8 @@ namespace CmsData
 
                     using (var sr = new StreamReader(ms))
                     {
-                        return sr.ReadToEnd();
+                        var s = sr.ReadToEnd();
+                        return s;
                     }
                 }
                 catch (Exception ex)
@@ -764,73 +771,42 @@ namespace CmsData
                 }
             }
         }
-        static string RunPyHtml(string text, string pythonPath, string pyrazorPath)
+
+        public string RenderTemplate(string source)
         {
-            const string build = @"
-import sys
-sys.path.append('{2}')
-import razorview
-
-text = '''
-{0}
-'''
-
-print '''
-import sys
-sys.path.append('{1}')
-from StringIO import StringIO
-
-class Cgi:
-    def escape(self, t):
-        return (t.replace('&', '&amp;')
-                .replace('<', '&lt;')
-                .replace('>', '&gt;')
-                .replace(""'"", '&#39;')
-                .replace('""', '&quot;')
-        )
-cgi = Cgi()
-
-''' + razorview.RenderCode(text) + '''
-sb = StringIO()
-
-template(None, sb, model)
-print sb.getvalue()
-'''
-";
-            var cmd = string.Format(build, text, Path.Combine(pythonPath, "Lib"), pyrazorPath);
-
-            var start = new ProcessStartInfo();
-            start.FileName = Path.Combine(pythonPath, "python.exe");
-            start.Arguments = "-";
-            start.UseShellExecute = false;
-            start.RedirectStandardInput = true;
-            start.RedirectStandardOutput = true;
-            start.RedirectStandardError = true;
-            using (var process = Process.Start(start))
-            {
-                process.StandardInput.WriteLine(cmd);
-                process.StandardInput.Flush();
-                process.StandardInput.Close();
-                var sb = new StringBuilder();
-                using (StreamReader reader = process.StandardOutput)
-                {
-                    sb.Append(reader.ReadToEnd());
-                }
-                using (StreamReader reader = process.StandardError)
-                {
-                    sb.Append(reader.ReadToEnd());
-                }
-                return sb.ToString();
-            }
+            return RenderTemplate(source, Data);
         }
-
         public string RenderTemplate(string source, object data)
         {
-            //db.Log("RenderTemplate");
-            CssStyle.RegisterHelpers(db);
+            RegisterHelpers(db);
             var template = Handlebars.Compile(source);
             var result = template(data);
             return result;
+        }
+        public static void RegisterHelpers(CMSDataContext db)
+        {
+            Handlebars.RegisterHelper("BottomBorder", (writer, context, args) => { writer.Write(CssStyle.BottomBorder); });
+            Handlebars.RegisterHelper("AlignTop", (writer, context, args) => { writer.Write(CssStyle.AlignTop); });
+            Handlebars.RegisterHelper("AlignRight", (writer, context, args) => { writer.Write(CssStyle.AlignRight); });
+            Handlebars.RegisterHelper("DataLabelStyle", (writer, context, args) => { writer.Write(CssStyle.DataLabelStyle); });
+            Handlebars.RegisterHelper("LabelStyle", (writer, context, args) => { writer.Write(CssStyle.LabelStyle); });
+            Handlebars.RegisterHelper("DataStyle", (writer, context, args) => { writer.Write(CssStyle.DataStyle); });
+            Handlebars.RegisterHelper("ServerLink", (writer, context, args) => { writer.Write(db.ServerLink().TrimEnd('/')); });
+            Handlebars.RegisterHelper("FmtDate", (writer, context, args) => { writer.Write(args[0].ToDate().FormatDate()); });
+            Handlebars.RegisterHelper("IfEqual", (writer, options, context, args) =>
+            {
+                if (args[0] == args[1])
+                    options.Template(writer, (object)context);
+                else
+                    options.Inverse(writer, (object)context);
+            });
+            Handlebars.RegisterHelper("GetToken", (writer, context, args) =>
+            {
+                var s = args[0].ToString();
+                var n = args[1].ToInt();
+                var a = s.SplitStr(" ", 2);
+                writer.Write(a[n]);
+            });
         }
     }
 }

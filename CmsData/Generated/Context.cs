@@ -416,6 +416,10 @@ namespace CmsData
         partial void UpdateMobileAppIconSet(MobileAppIconSet instance);
         partial void DeleteMobileAppIconSet(MobileAppIconSet instance);
         
+        partial void InsertMobileAppPushRegistration(MobileAppPushRegistration instance);
+        partial void UpdateMobileAppPushRegistration(MobileAppPushRegistration instance);
+        partial void DeleteMobileAppPushRegistration(MobileAppPushRegistration instance);
+        
         partial void InsertMobileAppRoom(MobileAppRoom instance);
         partial void UpdateMobileAppRoom(MobileAppRoom instance);
         partial void DeleteMobileAppRoom(MobileAppRoom instance);
@@ -1296,6 +1300,12 @@ namespace CmsData
         public Table< MobileAppIconSet> MobileAppIconSets
         {
             get { return GetTable< MobileAppIconSet>(); }
+
+        }
+
+        public Table< MobileAppPushRegistration> MobileAppPushRegistrations
+        {
+            get { return GetTable< MobileAppPushRegistration>(); }
 
         }
 
@@ -3825,6 +3835,20 @@ namespace CmsData
 #endregion
 #region Scalar Functions
         
+        [Function(Name="dbo.GetCurrentOnlinePledgeBundle", IsComposable = true)]
+        [return: Parameter(DbType = "int")]
+        public int? GetCurrentOnlinePledgeBundle(
+            [Parameter(Name = "next", DbType="datetime")] DateTime? next,
+            [Parameter(Name = "prev", DbType="datetime")] DateTime? prev
+            )
+        {
+            return ((int?)(ExecuteMethodCall(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    next,
+                    prev
+                ).ReturnValue));
+        }
+
         [Function(Name="dbo.DonorTotalUnitsSize", IsComposable = true)]
         [return: Parameter(DbType = "money")]
         public decimal? DonorTotalUnitsSize(

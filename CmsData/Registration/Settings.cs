@@ -19,6 +19,35 @@ namespace CmsData.Registration
         {
             return AskItems.Find(aa => aa.Type == name);
         }
+
+        public void AddTextQuestion(string question)
+        {
+            var tx = AskItem("AskText") as AskText;
+            if (tx == null)
+            {
+                tx = new AskText();
+                AskItems.Add(tx);
+            }
+            var q = tx.list.SingleOrDefault(vv => vv.Question == question);
+            if (q != null)
+                return;
+            q = new AskExtraQuestions.ExtraQuestion() { Question = question };
+            tx.list.Add(q);
+        }
+        public void AddExtraQuestion(string question)
+        {
+            var eq = AskItem("AskExtraQuestions") as AskExtraQuestions;
+            if (eq == null)
+            {
+                eq = new AskExtraQuestions();
+                AskItems.Add(eq);
+            }
+            var q = eq.list.SingleOrDefault(vv => vv.Question == question);
+            if (q != null)
+                return;
+            q = new AskExtraQuestions.ExtraQuestion() { Question = question };
+            eq.list.Add(q);
+        }
         public decimal? Deposit { get; set; }
         public string Shell { get; set; }
         public string ShellBs { get; set; }

@@ -90,7 +90,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult ContactUpdate(int cid, ContactModel c)
         {
-            if (!User.IsInRole("Admin") && !ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return View("ContactEdit", c);
             c.UpdateContact();
             return View("ContactDisplay", c);
@@ -113,7 +113,7 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var m = new ContacteesModel(cid);
             var tid = m.AddTask(pid);
-            return Redirect("/Task/List/" + tid);
+            return Redirect("/Task/Detail/" + tid);
         }
     }
 }

@@ -1,6 +1,12 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.People.Models.ContactModel
 <form id="edit-contact" class="form ajax" method="post">
+    @if (Model.Incomplete.HasValue())
+    {
+        <div class="alert alert-danger scrollToTop">
+            Will not save your edits until you correct the following: @Model.Incomplete, 
+        </div>
+    }
     @Html.Hidden("editing", "true")
     @Html.HiddenFor(m => m.ContactId)
     <div class="box box-responsive">

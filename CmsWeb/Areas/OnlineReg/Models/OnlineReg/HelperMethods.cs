@@ -291,7 +291,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 {
                     try
                     {
-                        if (settings != null && org != null && settings.ContainsKey(masterorgid.Value))
+                        if (settings != null && settings.ContainsKey(masterorgid.Value))
                         {
                             var accountcode = settings[masterorgid.Value].AccountingCode;
                             if (accountcode.HasValue())

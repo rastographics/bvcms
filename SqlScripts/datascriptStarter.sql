@@ -83,6 +83,7 @@ ALTER TABLE [dbo].[BundleHeader] DROP CONSTRAINT [FK_BUNDLE_HEADER_TBL_BundleSta
 ALTER TABLE [dbo].[BundleHeader] DROP CONSTRAINT [FK_BUNDLE_HEADER_TBL_BundleHeaderTypes]
 ALTER TABLE [dbo].[Attend] DROP CONSTRAINT [FK_AttendWithAbsents_TBL_AttendType]
 ALTER TABLE [dbo].[Meetings] DROP CONSTRAINT [FK_Meetings_AttendCredit]
+ALTER TABLE [dbo].[OrganizationMembers] DROP CONSTRAINT [FK_OrganizationMembers_RegistrationData]
 ALTER TABLE [dbo].[Contact] DROP CONSTRAINT [FK_Contacts_Ministries]
 ALTER TABLE [dbo].[Contribution] DROP CONSTRAINT [FK_Contribution_ExtraData]
 ALTER TABLE [dbo].[BundleHeader] DROP CONSTRAINT [BundleHeaders__Fund]
@@ -1623,10 +1624,10 @@ INSERT INTO [dbo].[Ministries] ([MinistryId], [MinistryName], [CreatedBy], [Crea
 INSERT INTO [dbo].[Ministries] ([MinistryId], [MinistryName], [CreatedBy], [CreatedDate], [ModifiedBy], [ModifiedDate], [RecordStatus], [DepartmentId], [MinistryDescription], [MinistryContactId], [ChurchId]) VALUES (335, N'Life Groups', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Ministries] OFF
 SET IDENTITY_INSERT [dbo].[MobileAppActions] ON
-INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles]) VALUES (1, 1, N'Giving', 0, N'', 1, 0, 1, N'')
-INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles]) VALUES (2, 9, N'Registrations', 0, N'', 2, 1, 1, N'')
-INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles]) VALUES (3, 6, N'People Search', 0, N'', 3, 1, 1, N'Access')
-INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles]) VALUES (4, 7, N'Attendance', 0, N'', 4, 1, 1, N'Access, Attendance')
+INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api]) VALUES (1, 1, N'Giving', 0, N'', 1, 0, 1, N'', 0)
+INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api]) VALUES (2, 9, N'Registrations', 0, N'', 2, 1, 1, N'', 0)
+INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api]) VALUES (3, 6, N'People Search', 0, N'', 3, 1, 1, N'Access', 0)
+INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api]) VALUES (4, 7, N'Attendance', 0, N'', 4, 1, 1, N'Access, Attendance', 0)
 SET IDENTITY_INSERT [dbo].[MobileAppActions] OFF
 SET IDENTITY_INSERT [dbo].[MobileAppActionTypes] ON
 INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (1, N'Giving', 2)
@@ -1767,6 +1768,9 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
 <Condition Id="06a58409-b98f-468a-a7d0-ecbcceb8ec77" Order="0" Field="Group" Comparison="AllTrue">
   <Condition Id="c2d01577-d6f1-4442-bc3f-a549c326d8c9" Order="2" Field="InCurrentOrg" Comparison="Equal" CodeIdValue="1,T" />
 </Condition>', 'System', '2014-05-05 00:44:39.297', '2014-05-05 00:44:39.297', 'InCurrentOrg', 0, 0, NULL)
+SET IDENTITY_INSERT [dbo].[RegistrationData] ON
+INSERT INTO [dbo].[RegistrationData] ([Id], [Data], [Stamp], [completed], [OrganizationId], [UserPeopleId], [abandoned]) VALUES (1, CONVERT(xml,N'<OnlineRegModel><!--11/3/2015 9:00:56 AM--><Orgid>33</Orgid><Completed>False</Completed><DatumId>1</DatumId><Datum>CmsData.RegistrationDatum</Datum><URL>http://starterdb.tpsdb.com:80/OnlineReg/33</URL><nologin>True</nologin><List><OnlineRegPersonModel><IsValidForContinue>False</IsValidForContinue><IsValidForNew>False</IsValidForNew><orgid>33</orgid><IsNew>False</IsNew><QuestionsOK>False</QuestionsOK><LoggedIn>False</LoggedIn><IsValidForExisting>False</IsValidForExisting><ShowAddress>False</ShowAddress><ShowCountry>False</ShowCountry><IsFamily>False</IsFamily><Index>0</Index></OnlineRegPersonModel></List><History><item>index 11/3/2015 9:00 AM (c-ip=12.168.188.238)</item></History></OnlineRegModel>',1), '2015-11-03 09:00:56.187', NULL, 33, NULL, NULL)
+SET IDENTITY_INSERT [dbo].[RegistrationData] OFF
 SET IDENTITY_INSERT [dbo].[Roles] ON
 INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (1, N'Admin', 1)
 INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (2, N'Access', 1)
@@ -2892,6 +2896,7 @@ INSERT INTO [lookup].[TaskStatus] ([Id], [Code], [Description], [Hardwired]) VAL
 INSERT INTO [lookup].[TaskStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (40, N'C', N'Completed', 1)
 INSERT INTO [lookup].[TaskStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (50, N'P', N'Pending Acceptance', 1)
 INSERT INTO [lookup].[TaskStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (60, N'R', N'ReDelegated', 1)
+INSERT INTO [lookup].[TaskStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (70, N'D', N'Declined', 1)
 INSERT INTO [lookup].[VolApplicationStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (0, N'UK', N'(not specified)', NULL)
 INSERT INTO [lookup].[VolApplicationStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (10, N'Appr', N'Approved', 1)
 INSERT INTO [lookup].[VolApplicationStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (20, N'WD', N'Withdrawn', NULL)
@@ -3077,7 +3082,7 @@ INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 12)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 15)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 25)
 SET IDENTITY_INSERT [dbo].[Users] ON
-INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (1, 1, N'Admin', NULL, N'2352354235', NULL, NULL, 1, '2015-10-20 12:05:36.867', NULL, '2015-01-14 14:36:59.747', '2009-05-05 22:46:43.890', 0, '2014-10-16 15:43:29.923', 0, '2015-10-20 11:59:54.153', 0, NULL, NULL, NULL, 1, N'starterdb.bvcms.com', N'bvcms', N'The Admin', N'Admin, The', NULL, NULL, '2014-10-17 15:42:49.050')
+INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (1, 1, N'Admin', NULL, N'2352354235', NULL, NULL, 1, '2015-11-09 11:12:44.827', NULL, '2015-01-14 14:36:59.747', '2009-05-05 22:46:43.890', 0, '2014-10-16 15:43:29.923', 1, '2015-11-09 11:11:29.540', 0, NULL, NULL, NULL, 1, N'starterdb.bvcms.com', N'bvcms', N'The Admin', N'Admin, The', NULL, NULL, '2014-10-17 15:42:49.050')
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (2, 2, N'david', N'', N'uNVML/ZamnY7YdE1NXvMHPIznic=', NULL, NULL, 1, '2015-07-26 08:09:36.537', '2015-07-26 08:09:30.480', '2013-12-19 00:03:08.440', '2010-10-30 15:23:25.763', 0, '2013-12-19 00:03:08.360', 0, '2013-12-18 22:54:19.783', 0, '2010-10-30 15:23:25.763', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'David Carroll', N'Carroll, David', NULL, NULL, '2013-12-19 22:55:00.120')
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (3, 3, N'karenw', N'', N'lpSVokbyDdVaXxNGDjZT4St468A=', NULL, NULL, 1, '2015-10-28 16:10:14.887', '2015-10-28 16:02:45.703', '2013-10-14 10:43:23.743', '2010-10-30 15:29:25.757', 0, '2013-10-14 10:43:23.667', 0, '2013-10-14 10:41:24.547', 0, '2010-10-30 15:29:25.757', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'Karen Worrell', N'Worrell, Karen', NULL, NULL, '2013-10-15 10:42:47.710')
 SET IDENTITY_INSERT [dbo].[Users] OFF
@@ -3154,6 +3159,7 @@ ALTER TABLE [dbo].[BundleHeader] WITH NOCHECK ADD CONSTRAINT [FK_BUNDLE_HEADER_T
 ALTER TABLE [dbo].[BundleHeader] WITH NOCHECK ADD CONSTRAINT [FK_BUNDLE_HEADER_TBL_BundleHeaderTypes] FOREIGN KEY ([BundleHeaderTypeId]) REFERENCES [lookup].[BundleHeaderTypes] ([Id])
 ALTER TABLE [dbo].[Attend] WITH NOCHECK ADD CONSTRAINT [FK_AttendWithAbsents_TBL_AttendType] FOREIGN KEY ([AttendanceTypeId]) REFERENCES [lookup].[AttendType] ([Id])
 ALTER TABLE [dbo].[Meetings] WITH NOCHECK ADD CONSTRAINT [FK_Meetings_AttendCredit] FOREIGN KEY ([AttendCreditId]) REFERENCES [lookup].[AttendCredit] ([Id])
+ALTER TABLE [dbo].[OrganizationMembers] WITH NOCHECK ADD CONSTRAINT [FK_OrganizationMembers_RegistrationData] FOREIGN KEY ([RegistrationDataId]) REFERENCES [dbo].[RegistrationData] ([Id])
 ALTER TABLE [dbo].[Contact] WITH NOCHECK ADD CONSTRAINT [FK_Contacts_Ministries] FOREIGN KEY ([MinistryId]) REFERENCES [dbo].[Ministries] ([MinistryId])
 ALTER TABLE [dbo].[Contribution] WITH NOCHECK ADD CONSTRAINT [FK_Contribution_ExtraData] FOREIGN KEY ([ExtraDataId]) REFERENCES [dbo].[ExtraData] ([Id])
 ALTER TABLE [dbo].[BundleHeader] WITH NOCHECK ADD CONSTRAINT [BundleHeaders__Fund] FOREIGN KEY ([FundId]) REFERENCES [dbo].[ContributionFund] ([FundId])

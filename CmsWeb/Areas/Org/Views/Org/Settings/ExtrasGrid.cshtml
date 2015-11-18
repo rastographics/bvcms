@@ -1,46 +1,50 @@
-﻿@using CmsData.Classes.MinistrESpace;
+﻿@*@using CmsData.Classes.MinistrESpace;*@
 @model CmsData.Organization
 @{
     var isedit = User.IsInRole("Edit");
-    var msh = new MinistrESpaceHelper();
+    //var msh = new MinistrESpaceHelper();
 }
-    @foreach (var c in Model.GetOrganizationExtras())
-    {
+@foreach (var c in Model.GetOrganizationExtras())
+{
     <tr>
-    @if (isedit)
-    {
-        if( c.Field.StartsWith("ministrEspace:") ) {
-            string[] id = c.Field.Split(':');
-            if( id.Length == 2 ) {
-                <td><a href="@msh.getEventURL(id[1])" target="_blank">@c.Field</a></td>
-            }
-            else
-            {
-        <td>@c.Field</td>
-            }
-            <td>@c.Data</td>
+      @if (isedit)
+      {
+        @*if (c.Field.StartsWith("ministrEspace:"))
+        {
+          string[] id = c.Field.Split(':');
+          if (id.Length == 2)
+          {
+                  <td><a href="@msh.getEventURL(id[1])" target="_blank">@c.Field</a></td>
+          }
+          else
+          {
+                  <td>@c.Field</td>
+          }
+              <td>@c.Data</td>
         }
         else
+        {*@
+              <td>@c.Field</td>
+              <td><span id="s-@c.Field.@c.OrganizationId" class="@(c.DataType == "text" ? "editarea" : "editline")">@c.Data</span></td>
+        @*}*@
+          <td><a href="#" class="deleteextra" field="@c.Field"><img src="/Content/images/delete.gif" /></a></td>
+      }
+      else
+      {
+        @*if (c.Field.StartsWith("ministrEspace:"))
         {
-            <td>@c.Field</td>
-        <td><span id="s-@c.Field.@c.OrganizationId" class="@(c.DataType == "text" ? "editarea" : "editline")">@c.Data</span></td>
-        }
-        <td><a href="#" class="deleteextra" field="@c.Field"><img src="/Content/images/delete.gif" /></a></td>
-        }
-        else
-        {
-        if( c.Field.StartsWith("ministrEspace:") ) {
-            string[] id = c.Field.Split(':');
-            if( id.Length == 2 ) {
-                <td><a href="@msh.getEventURL(id[1])" target="_blank">@c.Field</a></td>
-            }
-            else
-            {
-                <td>@c.Field</td>
-            }
-        }
-        <td>@c.Data</td>
-        <td></td>
-        }
+          string[] id = c.Field.Split(':');
+          if (id.Length == 2)
+          {
+                  <td><a href="@msh.getEventURL(id[1])" target="_blank">@c.Field</a></td>
+          }
+          else
+          {
+                  <td>@c.Field</td>
+          }
+        }*@
+          <td>@c.Data</td>
+          <td></td>
+      }
     </tr>
-    }
+}
