@@ -17,6 +17,7 @@ using CmsWeb.Areas.Reports.Models;
 using CmsWeb.Areas.Reports.ViewModels;
 using CmsWeb.Areas.Search.Models;
 using CmsWeb.Models;
+using CmsWeb.Controllers;
 using Dapper;
 using MoreLinq;
 using OfficeOpenXml;
@@ -778,6 +779,40 @@ namespace CmsWeb.Areas.Reports.Controllers
             ViewBag.name = report;
             var rd = cn.ExecuteReader(content.Body, p);
             return View(rd);
+        }
+
+
+
+        /// <summary>
+        /// PyScript ActionResult to handle a Python Custom Script being called as a Custom Report 
+        /// from the Blue Toolbar.  
+        /// The Function also verifies that the Python script contains the Query Function call to 
+        /// "BlueToolbarReport" which in turn returns the first 1000 people records in the BlueToolbar context. 
+        /// The Python script is then rendered and the output is sent to the View PyScript.cshtml
+        /// </summary>
+        [HttpGet]
+        [Route("PyScript/{report}/{id?}")]
+        public ActionResult PyScript(Guid id, string report)
+        {
+            var content = DbUtil.Db.ContentOfTypePythonScript(report);
+            if (content == null)
+                return Content("no script named " + report);
+            if (!content.Contains("BlueToolbarReport"))
+                 return Content("Missing Call to Query Function 'BlueToolbarReport'");
+            if(id == Guid.Empty)
+                 return Content("Must be run from the BlueToolbar");
+
+
+            var pe = new PythonEvents(Util.Host);
+
+            pe.DictionaryAdd("BlueToolbarGuid", id.ToCode());
+            foreach (var key in Request.QueryString.AllKeys)
+                pe.DictionaryAdd(key, Request.QueryString[key]);
+
+            pe.RunScript(content);
+
+            return View(pe);
+             
         }
 
         [HttpPost]

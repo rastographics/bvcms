@@ -16,6 +16,7 @@ namespace CmsData
     {
         private readonly CMSDataContext db;
         private DateTime? lastSunday;
+        private Dictionary<string, object> dictionary;
 
         public QueryFunctions(CMSDataContext Db)
         {
@@ -25,6 +26,11 @@ namespace CmsData
         public QueryFunctions(string dbname)
         {
             db = DbUtil.Create(dbname);
+        }
+
+        public QueryFunctions(CMSDataContext db, Dictionary<string, object> dictionary) : this(db)
+        {
+            this.dictionary = dictionary;
         }
 
         public DateTime LastSunday
@@ -544,6 +550,21 @@ namespace CmsData
             return q;
         }
 
+
+        /// <summary>
+        /// The BlueToolbarReport function returns the first 1000 people records populated based on
+        /// the context when a Python Script being called from the Blue Toolbar
+        /// </summary>
+        public IEnumerable<Person> BlueToolbarReport()
+        {
+            if (!dictionary.ContainsKey("BlueToolbarGuid"))
+                return new List<Person>();
+            var guid = (dictionary["BlueToolbarGuid"] as string).ToGuid();
+            if(!guid.HasValue)
+                return new List<Person>();
+            return db.PeopleQuery(guid.Value).Take(1000);
+        }
+
         public int RegistrationCount(int days, int progid, int divid, int orgid)
         {
             var dt = DateTime.Now.AddDays(-days);
@@ -605,5 +626,7 @@ namespace CmsData
                 return $"  ['{Name}', {Value}]";
             }
         }
+
+
     }
 }
