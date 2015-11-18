@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Dynamic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -55,12 +56,12 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/Test")]
         public ActionResult Test(string id)
         {
-            return Content("ok");
-            var m = new OrgSearchModel()
-            {
-            };
-            var leaders = m.NoticesToSend();
-            return Content(leaders.First().Value);
+            var script = System.IO.File.ReadAllText(Server.MapPath("~/test2.py"));
+            var pe = new PythonEvents(Util.Host);
+            pe.Data.value = "test";
+            var s = pe.RunScript(script);
+
+            return Content(s, "text/plain");
         }
 #endif
 
@@ -300,13 +301,17 @@ namespace CmsWeb.Controllers
                     .Replace("@P2", p2 ?? "NULL")
                     .Replace("V1", v1 ?? "None")
                     .Replace("V2", v2 ?? "None");
+                if(script.Contains("@qtagid"))
+                {
+                    var id = DbUtil.Db.FetchLastQuery().Id;
+                    var tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
+                    script = script.Replace("@qtagid", tag.Id.ToString());
+                }
 
                 var pe = new PythonEvents(Util.Host);
 
                 foreach (var key in Request.QueryString.AllKeys)
-                {
                     pe.DictionaryAdd(key, Request.QueryString[key]);
-                }
 
                 pe.RunScript(script);
 
@@ -337,7 +342,7 @@ namespace CmsWeb.Controllers
                 var pe = new PythonEvents(Util.Host);
                 foreach (var key in Request.QueryString.AllKeys)
                     pe.DictionaryAdd(key, Request.QueryString[key]);
-                pe.DictionaryAdd("pyscript", name);
+                pe.Data.pyscript = name;
                 pe.HttpMethod = "get";
                 pe.RunScript(script);
                 return View(pe);
@@ -357,7 +362,7 @@ namespace CmsWeb.Controllers
                     pe.DictionaryAdd(key, Request.Form[key]);
                 pe.HttpMethod = "post";
 
-                var script = FetchPyScriptForm(pe.Dictionary("pyscript"));
+                var script = FetchPyScriptForm(pe.Data.pyscript);
                 return Content(pe.RunScript(script));
             }
             catch (Exception ex)

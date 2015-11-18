@@ -20,6 +20,8 @@ namespace CmsData.View
 		
 		private string _Type;
 		
+		private int? _SetX;
+		
 		private string _Question;
 		
 		private string _Answer;
@@ -65,7 +67,24 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Question", Storage="_Question", DbType="nvarchar(500)")]
+		[Column(Name="set", Storage="_SetX", DbType="int")]
+		public int? SetX
+		{
+			get
+			{
+				return this._SetX;
+			}
+
+			set
+			{
+				if (this._SetX != value)
+					this._SetX = value;
+			}
+
+		}
+
+		
+		[Column(Name="Question", Storage="_Question", DbType="varchar(500)")]
 		public string Question
 		{
 			get

@@ -14,46 +14,51 @@
             <div class="box-title-btn">
                 <h5>@Model.Description</h5>
                 <div class="box-tools">
-                    <a class="btn btn-default" href="/Task/List"><i class="fa fa-arrow-circle-left"></i> Back to List</a> 
+                    <a class="btn btn-default" href="/Task/List"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
                     @if (Model.CanAccept)
                     {
-                        <a href="#" class="accept btn btn-success"><i class="fa fa-thumbs-o-up fa-fw"></i> Accept Task</a> 
+                        <a href="#" class="accept btn btn-success"><i class="fa fa-thumbs-o-up fa-fw"></i> Accept Task</a>
+                        <a href="#" class="decline btn btn-danger"><i class="fa fa-thumbs-o-down fa-fw"></i> Decline Task</a>
                     }
-                    @if (Model.IsAnOwner)
+                    @if (Model.IsOwner)
                     {
-                        <a href="/Task/Edit/@Model.Id" class="btn btn-default"><i class="fa fa-pencil fa-fw"></i> Edit</a> 
+                        <a href="/Task/Edit/@Model.Id" class="btn btn-default"><i class="fa fa-pencil fa-fw"></i> Edit</a>
                     }
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                            Actions <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-right">
-                            @if (Model.CanAccept)
-                            {
-                                <li><a href="#" class="accept"><i class="fa fa-thumbs-o-up fa-fw"></i>&nbsp;&nbsp;Accept Task</a></li>
-                            }
-                            @if (Model.CanComplete)
-                            {
-                                <li><a href="#" class="complete"><i class="fa fa-check fa-fw"></i>&nbsp;&nbsp;Complete Task</a></li>
-                            }
-                            @if (Model.CanCompleteWithContact && Model.Description != "New Person Data Entry")
-                            {
-                                <li><a href="#" class="completewcontact"><i class="fa fa-check-square-o fa-fw"></i>&nbsp;&nbsp;Complete Task w/ Contact</a></li>
-                            }
-                            @if (Model.IsAnOwner)
-                            {
-                                <li class="divider"></li>
-                                <li><a href="/SearchAdd2/Dialog/taskabout/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-user-plus fa-fw"></i>&nbsp;&nbsp;Change Regarding</a></li>
-                                <li><a href="/Task/Edit/@Model.Id"><i class="fa fa-pencil fa-fw"></i>&nbsp;&nbsp;Edit Task</a></li>
-                            }
-                            @if (Model.IsOwner)
-                            {
-                                <li class="divider"></li>
-                                <li><a href="/SearchAdd2/Dialog/taskowner/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-share-square-o fa-fw"></i>&nbsp;&nbsp;Transfer Ownership</a></li>
-                                <li><a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-users fa-fw"></i>&nbsp;&nbsp;Delegate Task</a></li>
-                            }
-                        </ul>
-                    </div>
+                    @if (Model.IsOwner || ((Model.CanComplete || Model.CanCompleteWithContact) && !Model.CanAccept))
+                    {
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                Actions <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right">
+                                @if (Model.CanAccept)
+                                {
+                                    <li><a href="#" class="accept"><i class="fa fa-thumbs-o-up fa-fw"></i>&nbsp;&nbsp;Accept Task</a></li>
+                                    <li><a href="#" class="decline"><i class="fa fa-thumbs-o-down fa-fw"></i>&nbsp;&nbsp;Decline Task</a></li>
+                                }
+                                @if (Model.CanComplete)
+                                {
+                                    <li><a href="#" class="complete"><i class="fa fa-check fa-fw"></i>&nbsp;&nbsp;Complete Task</a></li>
+                                }
+                                @if (Model.CanCompleteWithContact && Model.Description != "New Person Data Entry")
+                                {
+                                    <li><a href="#" class="completewcontact"><i class="fa fa-check-square-o fa-fw"></i>&nbsp;&nbsp;Complete Task w/ Contact</a></li>
+                                }
+                                @if (Model.IsOwner)
+                                {
+                                    <li class="divider"></li>
+                                    <li><a href="/SearchAdd2/Dialog/taskabout/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-user-plus fa-fw"></i>&nbsp;&nbsp;Change Regarding</a></li>
+                                    <li><a href="/Task/Edit/@Model.Id"><i class="fa fa-pencil fa-fw"></i>&nbsp;&nbsp;Edit Task</a></li>
+                                }
+                                @if (Model.IsOwner)
+                                {
+                                    <li class="divider"></li>
+                                    <li><a href="/SearchAdd2/Dialog/taskowner/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-share-square-o fa-fw"></i>&nbsp;&nbsp;Transfer Ownership</a></li>
+                                    <li><a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-users fa-fw"></i>&nbsp;&nbsp;Delegate Task</a></li>
+                                }
+                            </ul>
+                        </div>
+                    }
                 </div>
             </div>
             <div class="box-content">
@@ -110,10 +115,14 @@
                         <dl>
                             <dt>Status</dt>
                             <dd>
-                                @Model.Status 
+                                @Model.Status
                                 @if (Model.ShowCompleted)
                                 {
                                     <span>@Model.CompletedOn.ToString2("f")</span>
+                                }
+                                @if (Model.StatusId == CmsData.Codes.TaskStatusCode.Declined)
+                                {
+                                    @:&nbsp- @Model.DeclineReason
                                 }
                             </dd>
                         </dl>
@@ -136,7 +145,7 @@
                                 </dd>
                             </dl>
                         }
-                        
+
                     </div>
                 </div>
                 <div class="row">
@@ -179,19 +188,38 @@
                             }
                         </ul>
                     </div>
-                    <a class="btn btn-default btn-block" href="/Task/List"><i class="fa fa-arrow-circle-left"></i> Back to List</a> 
+                    <a class="btn btn-default btn-block" href="/Task/List"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<div class="modal fade" id="declineModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="/Task/Decline/@Model.Id" method="post">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Decline Task</h4>
+                </div>
+                <div class="modal-body">
+                    <input id="declineReason" name="reason" style="width:100%" placeholder="Decline reason..." />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Decline</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 @section scripts{
     <script type="text/javascript">
-        $(function() {
+        $(function () {
             $("body").on("click", 'a.completewcontact', function (ev) {
                 ev.preventDefault();
                 var taskid = $('#TaskId').val();
-                $.post('/Task/CompleteWithContact/' + taskid, null, function(ret) {
+                $.post('/Task/CompleteWithContact/' + taskid, null, function (ret) {
                     window.location = "/Contact2/" + ret.ContactId + "?edit=true";
                 });
                 return false;
@@ -200,7 +228,7 @@
             $("body").on("click", 'a.complete', function (ev) {
                 ev.preventDefault();
                 var id = $('#TaskId').val();
-                $.post('/Task/SetComplete/' + id, null, function(ret) {
+                $.post('/Task/SetComplete/' + id, null, function (ret) {
                     window.location = "/Task/Detail/" + id;
                 });
                 return false;
@@ -209,9 +237,18 @@
             $("body").on("click", 'a.accept', function (ev) {
                 ev.preventDefault();
                 var id = $('#TaskId').val();
-                $.post('/Task/Accept/' + id, null, function(ret) {
+                $.post('/Task/Accept/' + id, null, function (ret) {
                     window.location = "/Task/Detail/" + id;
                 });
+                return false;
+            });
+
+            $("body").on("click", 'a.decline', function (ev) {
+                ev.preventDefault();
+                $('#declineModal').modal();
+                $('#declineModal').on('shown.bs.modal', function () {
+                    $('#declineReason').focus();
+                })
                 return false;
             });
 

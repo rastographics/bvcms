@@ -132,6 +132,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Deposit Item,Sequence #,Item Date,Item Status,Customer Name,Routing / Account #,Check #,Amount,Deposit As,Amount Source,Image Quality Pass,Scanned Count"))
                 return new EnonImporter();
 
+            if (text.Substring(0, Math.Min(text.Length, 20)).Contains("10444063,"))
+                return new AbundantLifeImporter();
+
             switch (DbUtil.Db.Setting("BankDepositFormat", "none").ToLower())
             {
                 case "fcchudson":

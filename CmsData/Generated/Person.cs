@@ -291,6 +291,8 @@ namespace CmsData
 		
    		private EntitySet< MemberDocForm> _MemberDocForms;
 		
+   		private EntitySet< MobileAppPushRegistration> _MobileAppPushRegistrations;
+		
    		private EntitySet< PaymentInfo> _PaymentInfos;
 		
    		private EntitySet< PeopleExtra> _PeopleExtras;
@@ -796,6 +798,8 @@ namespace CmsData
 			this._ManagedGivings = new EntitySet< ManagedGiving>(new Action< ManagedGiving>(this.attach_ManagedGivings), new Action< ManagedGiving>(this.detach_ManagedGivings)); 
 			
 			this._MemberDocForms = new EntitySet< MemberDocForm>(new Action< MemberDocForm>(this.attach_MemberDocForms), new Action< MemberDocForm>(this.detach_MemberDocForms)); 
+			
+			this._MobileAppPushRegistrations = new EntitySet< MobileAppPushRegistration>(new Action< MobileAppPushRegistration>(this.attach_MobileAppPushRegistrations), new Action< MobileAppPushRegistration>(this.detach_MobileAppPushRegistrations)); 
 			
 			this._PaymentInfos = new EntitySet< PaymentInfo>(new Action< PaymentInfo>(this.attach_PaymentInfos), new Action< PaymentInfo>(this.detach_PaymentInfos)); 
 			
@@ -3772,6 +3776,16 @@ namespace CmsData
    		}
 
 		
+   		[Association(Name="FK_MobileAppPushRegistrations_People", Storage="_MobileAppPushRegistrations", OtherKey="PeopleId")]
+   		public EntitySet< MobileAppPushRegistration> MobileAppPushRegistrations
+   		{
+   		    get { return this._MobileAppPushRegistrations; }
+
+			set	{ this._MobileAppPushRegistrations.Assign(value); }
+
+   		}
+
+		
    		[Association(Name="FK_PaymentInfo_People", Storage="_PaymentInfos", OtherKey="PeopleId")]
    		public EntitySet< PaymentInfo> PaymentInfos
    		{
@@ -5213,6 +5227,19 @@ namespace CmsData
 		}
 
 		private void detach_MemberDocForms(MemberDocForm entity)
+		{
+			this.SendPropertyChanging();
+			entity.Person = null;
+		}
+
+		
+		private void attach_MobileAppPushRegistrations(MobileAppPushRegistration entity)
+		{
+			this.SendPropertyChanging();
+			entity.Person = this;
+		}
+
+		private void detach_MobileAppPushRegistrations(MobileAppPushRegistration entity)
 		{
 			this.SendPropertyChanging();
 			entity.Person = null;

@@ -43,6 +43,9 @@ namespace CmsWeb.Areas.People.Controllers
             if (!id.HasValue)
                 return Content("no id");
 
+            if (id == 0 && Util.UserPeopleId.HasValue)
+                id = Util.UserPeopleId;
+
             var m = new PersonModel(id.Value);
             var noview = m.CheckView();
             if (noview.HasValue())

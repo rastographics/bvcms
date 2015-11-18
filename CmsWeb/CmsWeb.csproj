@@ -318,6 +318,7 @@
     <Compile Include="Areas\Finance\Models\BatchImport\AchImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\CapitalCityImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\DepositRecord.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\AbundantLifeImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\EnonImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\HollyCreekImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\BankOfNorthGeorgiaImporter.cs">
@@ -449,7 +450,10 @@
     <Compile Include="Areas\People\Models\Downline\DownlineSummaryModel.cs" />
     <Compile Include="Areas\Public\Controllers\CheckInAPIController.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInCampus.cs" />
+    <Compile Include="Areas\Public\Models\CheckInAPI\CheckInFamily.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInInformation.cs" />
+    <Compile Include="Areas\Public\Models\CheckInAPI\CheckInLabelFormat.cs" />
+    <Compile Include="Areas\Public\Models\CheckInAPI\CheckInPerson.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInSettingsEntry.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileCampus.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileFloor.cs" />
@@ -457,6 +461,7 @@
     <Compile Include="Areas\Public\Models\MobileAPI\MobileRegistration.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileRollList.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileRoom.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileTaskList.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostHeadcount.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineDetailModel.cs" />
     <Compile Include="Areas\Reports\Models\Avery\AverySpacerCell173.cs">
@@ -585,6 +590,7 @@
     <Compile Include="Code\JsonNetResult.cs" />
     <Compile Include="Code\CustomHeader.cs" />
     <Compile Include="Code\DateAndTimeValidAttribute.cs" />
+    <Compile Include="Code\DictionaryExtensions.cs" />
     <Compile Include="Code\FamilyExtraValues.cs" />
     <Compile Include="Code\DateEmptyOrValidAttribute.cs" />
     <Compile Include="Code\DecimalModelBinder.cs" />
@@ -789,9 +795,6 @@
     <Compile Include="Areas\Public\Models\MobileAPI\MobileTask.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobilePerson.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\Helpers\SystemHelper.cs" />
-    <Compile Include="Areas\Public\Models\MobileAPI\MobileTaskBox.cs" />
-    <Compile Include="Areas\Public\Models\MobileAPI\MobileTaskFull.cs" />
-    <Compile Include="Areas\Public\Models\MobileAPI\MobileTaskStatus.cs" />
     <Compile Include="Areas\Public\Models\OrgContentInfo.cs" />
     <Compile Include="Areas\Public\Models\SGMapModel.cs" />
     <Compile Include="Areas\Public\Models\SmallGroupFinderModel.cs" />
@@ -1561,7 +1564,6 @@
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />
-    <Content Include="Areas\Org\Views\Org\Other\DialogAddMES.cshtml" />
     <Content Include="Areas\Org\Views\Org\Other\DivisionList.cshtml" />
     <Content Include="Areas\Org\Views\Org\Other\NotifyList2.cshtml" />
     <Content Include="Areas\Org\Views\Org\DisplayTemplates\OrgPickList.cshtml" />

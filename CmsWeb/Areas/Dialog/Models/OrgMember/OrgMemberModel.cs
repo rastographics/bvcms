@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using CmsData;
 using CmsData.Codes;
+using CmsData.OnlineRegSummaryText;
 using CmsData.Registration;
 using CmsData.View;
 using CmsWeb.Code;
@@ -31,6 +32,7 @@ namespace CmsWeb.Areas.Dialog.Models
             PeopleId = pid;
             Group = group;
         }
+        public OrgMemberModel(int oid, int pid) : this("", oid, pid) { }
 
         private OrganizationMember om;
         private void Populate()
@@ -133,7 +135,7 @@ namespace CmsWeb.Areas.Dialog.Models
         public DateTime? InactiveDate { get; set; }
 
         [TrackChanges]
-//        [RegularExpression(@"\d{1,2}/\d{1,2}/(\d\d){1,2}( \d{1,2}:\d\d [AP]M){0,1}")]
+        //        [RegularExpression(@"\d{1,2}/\d{1,2}/(\d\d){1,2}( \d{1,2}:\d\d [AP]M){0,1}")]
         [DisplayName("Enrollment Date")]
         public DateTime? EnrollmentDate { get; set; }
 
@@ -307,6 +309,30 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
         {
             var q = DbUtil.Db.OrgMemberQuestions(OrgId, PeopleId);
             return q;
+        }
+
+        public void AddQuestions()
+        {
+            if (OrgId == null)
+                return;
+            var r = OnlineRegPersonModel0.CreateFromSettings(DbUtil.Db, OrgId.Value);
+            om.OnlineRegData = r.WriteXml();
+            DbUtil.Db.SubmitChanges();
+        }
+
+        public void UpdateQuestion(int n, string answer)
+        {
+            var q = DbUtil.Db.OrgMemberQuestions(OrgId, PeopleId).ToList();
+            var rq = q.SingleOrDefault(vv => vv.Row == n);
+            if (rq == null)
+                throw new Exception("question not found");
+
+            var question = rq.Question;
+
+            var r = new OnlineRegPersonModel0(om.OnlineRegData);
+            r.ExtraQuestion[rq.SetX ?? 0][question] = answer;
+            om.OnlineRegData = r.WriteXml();
+            DbUtil.Db.SubmitChanges();
         }
     }
 }

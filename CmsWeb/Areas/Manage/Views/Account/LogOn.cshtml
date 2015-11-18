@@ -41,6 +41,8 @@
     <script type="text/javascript">
         $(function () {
             $('input:text').first().focus();
+            var $redirect = $('input[name="ReturnUrl"]');
+            $redirect.val($redirect.val() + window.location.hash);
         });
     </script>
 }
