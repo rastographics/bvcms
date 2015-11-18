@@ -750,7 +750,7 @@ namespace CmsData
                     var scope = engine.CreateScope();
                     scope.SetVariable("model", model);
 
-                    var qf = new QueryFunctions(model.db);
+                    var qf = new QueryFunctions(model.db, model.dictionary);
                     scope.SetVariable("q", qf);
                     code.Execute(scope);
 

@@ -16,6 +16,7 @@ namespace CmsData
     {
         private readonly CMSDataContext db;
         private DateTime? lastSunday;
+        private Dictionary<string, object> dictionary;
 
         public QueryFunctions(CMSDataContext Db)
         {
@@ -25,6 +26,11 @@ namespace CmsData
         public QueryFunctions(string dbname)
         {
             db = DbUtil.Create(dbname);
+        }
+
+        public QueryFunctions(CMSDataContext db, Dictionary<string, object> dictionary) : this(db)
+        {
+            this.dictionary = dictionary;
         }
 
         public DateTime LastSunday
@@ -546,20 +552,17 @@ namespace CmsData
 
 
         /// <summary>
-        /// The QueryCustReportTag function returns the first 1000 people records contained 
-        /// in a special tag called "LatestPeopleFromCustRepContext" which get populated based on
+        /// The BlueToolbarReport function returns the first 1000 people records populated based on
         /// the context when a Python Script being called from the Blue Toolbar
         /// </summary>
-        public IEnumerable<Person> QueryCustReportTag()
+        public IEnumerable<Person> BlueToolbarReport()
         {
-            var tag = DbUtil.Db.FetchOrCreateTag("LatestPeopleFromCustRepContext", Util.UserPeopleId, DbUtil.TagTypeId_System);
-            var tagged = db.TaggedPeople(tag.Id);
-            
-            var q = from p in db.People
-                    join t in tagged on p.PeopleId equals t.PeopleId
-                    select p;
-            
-            return q.Take(1000);
+            if (!dictionary.ContainsKey("BlueToolbarGuid"))
+                return new List<Person>();
+            var guid = (dictionary["BlueToolbarGuid"] as string).ToGuid();
+            if(!guid.HasValue)
+                return new List<Person>();
+            return db.PeopleQuery(guid.Value).Take(1000);
         }
 
         public int RegistrationCount(int days, int progid, int divid, int orgid)

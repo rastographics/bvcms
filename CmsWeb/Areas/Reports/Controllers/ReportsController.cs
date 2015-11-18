@@ -784,13 +784,11 @@ namespace CmsWeb.Areas.Reports.Controllers
 
 
         /// <summary>
-        /// PyScript ActionResult to handle a Python Custom Script beign called as a Custom Report 
-        /// from the Blue Toolbar.  The Function populates a special tag called "LatestPeopleFromCustRepContext"
-        /// based on the context when the Report is called from the Blue Toolbar.
+        /// PyScript ActionResult to handle a Python Custom Script being called as a Custom Report 
+        /// from the Blue Toolbar.  
         /// The Function also verifies that the Python script contains the Query Function call to 
-        /// "QueryCustReportTag" which in turn returns the first 1000 people records contained 
-        /// in the special tag. The Python script is then rendered and the output is sent to 
-        /// the View PyScript.cshtml
+        /// "BlueToolbarReport" which in turn returns the first 1000 people records in the BlueToolbar context. 
+        /// The Python script is then rendered and the output is sent to the View PyScript.cshtml
         /// </summary>
         [HttpGet]
         [Route("PyScript/{report}/{id?}")]
@@ -799,23 +797,17 @@ namespace CmsWeb.Areas.Reports.Controllers
             var content = DbUtil.Db.ContentOfTypePythonScript(report);
             if (content == null)
                 return Content("no script named " + report);
-            if (!content.Contains("QueryCustReportTag"))
-                 return Content("Missing Call to Query Function 'QueryCustReportTag'");
+            if (!content.Contains("BlueToolbarReport"))
+                 return Content("Missing Call to Query Function 'BlueToolbarReport'");
+            if(id == Guid.Empty)
+                 return Content("Must be run from the BlueToolbar");
 
-            //if (content.Contains("model.Form"))
-            //    return Redirect("/PyScriptForm/" + content);
-            
-            var tag = DbUtil.Db.FetchOrCreateTag("LatestPeopleFromCustRepContext", Util.UserPeopleId, DbUtil.TagTypeId_System);
-            DbUtil.Db.ClearTag(tag);
-            var q = DbUtil.Db.PeopleQuery(id);
-            DbUtil.Db.TagAll(q,tag);
 
             var pe = new PythonEvents(Util.Host);
 
+            pe.DictionaryAdd("BlueToolbarGuid", id.ToCode());
             foreach (var key in Request.QueryString.AllKeys)
-            {
                 pe.DictionaryAdd(key, Request.QueryString[key]);
-            }
 
             pe.RunScript(content);
 
