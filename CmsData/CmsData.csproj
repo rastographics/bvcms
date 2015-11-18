@@ -546,6 +546,7 @@
     <Compile Include="Generated\Views\MeetingConflict.cs" />
     <Compile Include="Generated\Views\MinistryInfo.cs" />
     <Compile Include="Generated\Views\OnlineRegQA.cs" />
+    <Compile Include="Generated\Views\OrgSchedules2.cs" />
     <Compile Include="Generated\Views\OrgsWithFee.cs" />
     <Compile Include="Generated\Views\OrgsWithoutFee.cs" />
     <Compile Include="Generated\Views\PeopleBasicModifed.cs" />
@@ -556,6 +557,7 @@
     <Compile Include="Generated\Views\RegsettingOption.cs" />
     <Compile Include="Generated\Views\RegsettingUsage.cs" />
     <Compile Include="Generated\Views\UserLeader.cs" />
+    <Compile Include="Generated\Views\VolunteerTime.cs" />
     <Compile Include="Infrastructure\IsForeignKeyAttribute.cs" />
     <Compile Include="Meetings\Attend.cs" />
     <Compile Include="Finance\AuthorizeNetGateway.cs" />
