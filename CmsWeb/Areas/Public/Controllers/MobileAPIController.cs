@@ -880,7 +880,6 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                     where oids.Contains(o.OrganizationId)
                     where o.OrganizationStatusId == OrgStatusCode.Active
-                    where o.SecurityTypeId != 3
                     select o;
             }
             else
@@ -894,15 +893,14 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                                        && (om.MemberType.AttendanceTypeId == AttendTypeCode.Leader)
                                )
                        || oids.Contains(o.OrganizationId)) // or a leader of a parent org
-                    where o.SecurityTypeId != 3
                     where o.OrganizationStatusId == OrgStatusCode.Active
                     select o;
             }
 
             var orgs = from o in q
                        //let sc = o.OrgSchedules.FirstOrDefault() // SCHED
-                           //join sch in DbUtil.Db.OrgSchedules on o.OrganizationId equals sch.OrganizationId
-                       from sch in DbUtil.Db.OrgSchedules.Where(s => o.OrganizationId == s.OrganizationId).DefaultIfEmpty()
+                       //join sch in DbUtil.Db.OrgSchedules on o.OrganizationId equals sch.OrganizationId
+                       from sch in DbUtil.Db.ViewOrgSchedules2s.Where(s => o.OrganizationId == s.OrganizationId).DefaultIfEmpty()
                        from mtg in DbUtil.Db.Meetings.Where(m => o.OrganizationId == m.OrganizationId).OrderByDescending(m => m.MeetingDate).Take(1).DefaultIfEmpty()
                        orderby sch.SchedDay, sch.SchedTime
                        select new OrganizationInfo
