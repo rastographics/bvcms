@@ -318,6 +318,7 @@
     <Compile Include="Areas\Finance\Models\BatchImport\AchImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\CapitalCityImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\DepositRecord.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\AbundantLifeImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\EnonImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\HollyCreekImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\BankOfNorthGeorgiaImporter.cs">
