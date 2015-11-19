@@ -7,9 +7,8 @@ using UtilityExtensions;
 using IronPython.Hosting;
 using System;
 using System.Configuration;
-using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
 using CmsData.API;
 using Dapper;
@@ -18,14 +17,13 @@ using HandlebarsDotNet;
 
 namespace CmsData
 {
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class PythonEvents : IPythonApi
     {
         private CMSDataContext db;
 
         private Dictionary<string, object> dictionary { get; set; }
         public dynamic instance { get; set; }
-        public string pythonPath { get; set; }
-        public string pyrazorPath { get; set; }
 
         private void ResetDb()
         {
@@ -62,16 +60,12 @@ namespace CmsData
             dictionary = new Dictionary<string, object>();
             Data = new DynamicData(dictionary);
             db = DbUtil.Create(dbname);
-            pythonPath = ConfigurationManager.AppSettings["pythonPath"];
-            pyrazorPath = ConfigurationManager.AppSettings["pyrazorPath"];
         }
         public PythonEvents(string dbname, Dictionary<string, object> dict)
         {
             dictionary = dict;
             Data = new DynamicData(dictionary);
             db = DbUtil.Create(dbname);
-            pythonPath = ConfigurationManager.AppSettings["pythonPath"];
-            pyrazorPath = ConfigurationManager.AppSettings["pyrazorPath"];
         }
 
         // set this in the python code for javascript on the output page
@@ -216,6 +210,7 @@ namespace CmsData
             return dt;
         }
 
+        public bool FromMorningBatch { get; set; }
         public bool TestEmail { get; set; }
         public bool Transactional { get; set; }
         public int CurrentOrgId { get; set; }
