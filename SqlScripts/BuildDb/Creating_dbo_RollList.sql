@@ -6,6 +6,7 @@ CREATE FUNCTION [dbo].[RollList]
 	,@meetingdt DATETIME
 	,@oid INT
 	,@current BIT
+	,@FromMobile BIT
 )
 RETURNS @table TABLE 
 (
@@ -27,6 +28,16 @@ RETURNS @table TABLE
 )
 AS
 BEGIN
+	DECLARE @AppRollListCommittedOnly BIT = 0
+
+	IF @FromMobile = 1 AND 
+		EXISTS(	SELECT NULL 
+				FROM dbo.OrganizationExtra
+				WHERE OrganizationId = @oid
+				AND Field = 'AppRollListCommittedOnly'
+				AND BitValue = 1)
+		SET @AppRollListCommittedOnly = 1
+
 	--People who attended the meeting or were committed to come
 	DECLARE @attends TABLE 
 	(
@@ -102,6 +113,7 @@ BEGIN
 	LEFT JOIN dbo.OrganizationMembers om ON om.PeopleId = p.PeopleId AND om.OrganizationId = @oid
 	LEFT JOIN dbo.MeetingConflicts mc ON mc.PeopleId = a.PeopleId AND mc.MeetingDate = @meetingdt AND @oid IN (mc.OrgId1, mc.OrgId2)
 	WHERE (@current = 1 OR @meetingdt > m.joindt OR (a.PeopleId IS NOT NULL AND attendtype NOT IN (40,50,60,110)))
+	AND (@AppRollListCommittedOnly = 0 OR CommitmentId IN (1,4))
 
 	-- recent visitors who have not become members as of the meeting date
 	INSERT @table
@@ -156,6 +168,7 @@ BEGIN
 	RETURN
 
 END
+
 
 
 
