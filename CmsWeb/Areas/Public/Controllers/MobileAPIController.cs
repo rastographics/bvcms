@@ -975,7 +975,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             }
 
             var meetingId = DbUtil.Db.CreateMeeting(mprl.id, mprl.datetime);
-            var people = RollsheetModel.RollList(meetingId, mprl.id, mprl.datetime);
+            var people = RollsheetModel.RollList(meetingId, mprl.id, mprl.datetime, fromMobile: true);
 
             var meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.MeetingId == meetingId);
 

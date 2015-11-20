@@ -3656,7 +3656,8 @@ namespace CmsData
             [Parameter(DbType="int")] int? mid,
             [Parameter(DbType="datetime")] DateTime? meetingdt,
             [Parameter(DbType="int")] int? oid,
-            [Parameter(DbType="bit")] bool? current
+            [Parameter(DbType="bit")] bool? current,
+            [Parameter(DbType="bit")] bool? FromMobile
             )
         {
             return CreateMethodCallQuery< View.RollList>(this,
@@ -3664,7 +3665,8 @@ namespace CmsData
                     mid,
                     meetingdt,
                     oid,
-                    current
+                    current,
+                    FromMobile
                 );
         }
 

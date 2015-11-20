@@ -10,6 +10,7 @@ using System.Linq;
 using UtilityExtensions;
 using CmsData;
 using CmsData.Codes;
+using CmsData.View;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -210,10 +211,9 @@ namespace CmsWeb.Areas.Reports.Models
 		}
 
         public static IEnumerable<AttendInfo> RollList(int? meetingId, int orgId, DateTime meetingDate,
-            bool sortByName = false, bool currentMembers = false)
-	    {
-	        var q = from p in DbUtil.Db.RollList(meetingId, meetingDate, orgId, currentMembers)
-	            select p;
+            bool sortByName = false, bool currentMembers = false, bool fromMobile = false)
+        {
+            var q = DbUtil.Db.RollList(meetingId, meetingDate, orgId, currentMembers, fromMobile);
 
             if (sortByName)
                 q = from p in q
