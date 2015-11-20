@@ -12,16 +12,15 @@ namespace CmsWeb.Models
 {
     public class ExportInvolvements
     {
-        public static IEnumerable<InvolvementInfo> InvolvementList(Guid queryid)
+        public static EpplusResult InvolvementList(Guid queryid)
         {
-            var Db = DbUtil.Db;
-            var q = Db.PeopleQuery(queryid);
+            var db = DbUtil.Db;
+            var nocheckrole = db.Setting("AllowLimitToRoleForInvolvementExport", "false").ToBool();
+            var q = db.PeopleQuery(queryid);
             var q2 = from p in q
                      orderby p.LastName, p.FirstName
-                     let spouse = Db.People.SingleOrDefault(w => p.SpouseId == w.PeopleId)
-                     let om = p.OrganizationMembers.SingleOrDefault(m =>
-                         m.OrganizationId == p.BibleFellowshipClassId
-                         && (m.Organization.LimitToRole ?? "") == "")
+                     let spouse = db.People.SingleOrDefault(w => p.SpouseId == w.PeopleId)
+                     let om = p.OrganizationMembers.SingleOrDefault(m => m.OrganizationId == p.BibleFellowshipClassId)
                      select new InvolvementInfo
                      {
                          PeopleId = p.PeopleId,
@@ -42,23 +41,24 @@ namespace CmsWeb.Models
                          AttendPct = om.AttendPct,
                          Age = p.Age ?? 0,
                          Spouse = spouse != null ? spouse.FirstName : "",
-                         activities = from m in p.OrganizationMembers
-                                      where (m.Organization.LimitToRole ?? "") == ""
-                                      select new ActivityInfo
-                                      {
-                                          Name = m.Organization.OrganizationName,
-                                          Pct = m.AttendPct,
-                                          Leader = m.Organization.LeaderName
-                                      },
+                         activities = (from m in p.OrganizationMembers
+                                       where nocheckrole || (m.Organization.LimitToRole ?? "") == ""
+                                       select new ActivityInfo
+                                       {
+                                           Name = m.Organization.OrganizationName,
+                                           Pct = m.AttendPct,
+                                           Leader = m.Organization.LeaderName
+                                       }).ToList(),
                          JoinInfo = p.JoinType.Description + " , " + p.JoinDate.ToString().Substring(0, 11),
                          Notes = "",
                          OfficeUseOnly = "",
                          LastName = p.LastName,
                          FirstName = p.PreferredName,
                          Campus = p.Campu.Description,
-                         CampusDate = Db.LastChanged(p.PeopleId, "CampusId").FormatDate()
+                         CampusDate = db.LastChanged(p.PeopleId, "CampusId").FormatDate()
                      };
-            return q2;
+            var list = q2.ToList();
+            return ExcelExportModel.ToDataTable(list).ToExcel("Involvements.xlsx");
         }
 
         public static EpplusResult ChildrenList(Guid queryid, int maximumRows)
@@ -70,7 +70,8 @@ namespace CmsWeb.Models
                      {
                          p.PeopleId,
                          Title = p.TitleCode,
-                         FirstName = p.PreferredName, p.LastName,
+                         FirstName = p.PreferredName,
+                         p.LastName,
                          Address = p.PrimaryAddress,
                          Address2 = p.PrimaryAddress2,
                          City = p.PrimaryCity,
@@ -103,7 +104,8 @@ namespace CmsWeb.Models
                      {
                          p.PeopleId,
                          Title = p.TitleCode,
-                         FirstName = p.PreferredName, p.LastName,
+                         FirstName = p.PreferredName,
+                         p.LastName,
                          Address = p.PrimaryAddress,
                          Address2 = p.PrimaryAddress2,
                          City = p.PrimaryCity,
@@ -141,7 +143,8 @@ namespace CmsWeb.Models
                      {
                          p.PeopleId,
                          Title = p.TitleCode,
-                         FirstName = p.PreferredName, p.LastName,
+                         FirstName = p.PreferredName,
+                         p.LastName,
                          Address = p.PrimaryAddress,
                          Address2 = p.PrimaryAddress2,
                          City = p.PrimaryCity,
@@ -159,24 +162,25 @@ namespace CmsWeb.Models
                          School = p.SchoolOther,
                          Grade = p.Grade.ToString(),
                          LastAttend = bfm.LastAttended.ToString(),
-                         AttendPct = bfm.AttendPct.ToString(), bfm.AttendStr
+                         AttendPct = bfm.AttendPct.ToString(),
+                         bfm.AttendStr
                      };
             return q2.Take(maximumRows).ToDataTable().ToExcel("AttendList.xlsx");
         }
 
         //        public static IEnumerable OrgMemberList2(int qid)
-//        {
-//            var q = DbUtil.Db.PeopleQuery(qid);
-//            var q2 = q.Select(p => new
-//            {
-//                om = DbUtil.Db.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == Util2.CurrentOrgId && om.PeopleId == p.PeopleId),
-//                rr = p.RecRegs.FirstOrDefault(),
-//                p = p,
-//                test = p.PeopleExtras.SingleOrDefault(vv => vv.Field == "test")
-//            });
-//            var q3 = q2.Select("new(p.PreferredName,p.LastName,om.AttendStr,om.AmountPaid)");
-//            return q3;
-//        }
+        //        {
+        //            var q = DbUtil.Db.PeopleQuery(qid);
+        //            var q2 = q.Select(p => new
+        //            {
+        //                om = DbUtil.Db.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == Util2.CurrentOrgId && om.PeopleId == p.PeopleId),
+        //                rr = p.RecRegs.FirstOrDefault(),
+        //                p = p,
+        //                test = p.PeopleExtras.SingleOrDefault(vv => vv.Field == "test")
+        //            });
+        //            var q3 = q2.Select("new(p.PreferredName,p.LastName,om.AttendStr,om.AmountPaid)");
+        //            return q3;
+        //        }
         public static EpplusResult OrgMemberListGroups()
         {
             var cmd = new SqlCommand(
@@ -204,14 +208,17 @@ namespace CmsWeb.Models
                      {
                          p.PeopleId,
                          Title = p.TitleCode,
-                         FirstName = p.PreferredName, p.LastName,
+                         FirstName = p.PreferredName,
+                         p.LastName,
                          Address = p.PrimaryAddress,
                          Address2 = p.PrimaryAddress2,
                          City = p.PrimaryCity,
                          State = p.PrimaryState,
                          Zip = p.PrimaryZip.FmtZip(),
                          Email = p.EmailAddress,
-                         MemberType = bfm.MemberType.Description, bfm.Organization.Location, bfm.Organization.PendingLoc,
+                         MemberType = bfm.MemberType.Description,
+                         bfm.Organization.Location,
+                         bfm.Organization.PendingLoc,
                          Leader = bfm.Organization.LeaderName,
                          OrgName = bfm.Organization.OrganizationName,
                          Schedule = tm.Hour + ":" + tm.Minute.ToString().PadLeft(2, '0'),

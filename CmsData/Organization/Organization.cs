@@ -1,4 +1,6 @@
 using System;
+using System.CodeDom;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using CmsData.Codes;
@@ -211,9 +213,9 @@ namespace CmsData
             var time = m.Groups["time"].Value;
             return ParseSchedule(dow, time);
         }
-        public static OrgSchedule ParseSchedule(string dow, string time)
+        public static OrgSchedule ParseSchedule(string dow, string time, int i = 1)
         {
-            var d = new Dictionary<string, int>
+            var d = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
             {
                 { "sun", 0 },
                 { "mon", 1 },
@@ -227,13 +229,24 @@ namespace CmsData
 
             if (!dow.HasValue())
                 dow = "sun";
-            var t = DateTime.Parse(time);
-            var mt = Util.Now.Sunday().AddDays(d[dow.ToLower()]).Add(t.TimeOfDay);
+            dow = dow.Truncate(3);
+            var re = new Regex(@"(?<h>\d+)(?::?)(?<s>\d{2})?\s*(?<a>(?:A|P)M)?", RegexOptions.IgnoreCase);
+            var m = re.Match(time);
+            var h = m.Groups["h"].Value;
+            var s = Util.PickFirst(m.Groups["s"].Value, "00");
+            var a = Util.PickFirst(m.Groups["a"].Value, "AM");
+            var ts = $"{h}:{s} {a}";
+            var t = DateTime.Parse(ts);
+            var mt = Util.Now.Sunday().AddDays(d[dow]).Add(t.TimeOfDay);
+            //SELECT @id = (ISNULL(@day, DATEPART(dw, @time)-1) + 1) * 10000 + DATEPART(hour, @time) * 100 + DATEPART(mi, @time)
+            var schedid = (d[dow] + 1) * 10000 + t.TimeOfDay.Hours * 100 + t.TimeOfDay.Minutes;
             var sc = new OrgSchedule
             {
+                Id = i,
                 SchedDay = d[dow],
                 SchedTime = mt,
-                AttendCreditId = 1
+                AttendCreditId = 1,
+                ScheduleId = schedid
             };
             return sc;
         }
@@ -401,10 +414,10 @@ namespace CmsData
             if (oev == null)
             {
                 oev = new OrganizationExtra
-                      {
-                          OrganizationId = OrganizationId,
-                          Field = field,
-                      };
+                {
+                    OrganizationId = OrganizationId,
+                    Field = field,
+                };
                 db.OrganizationExtras.InsertOnSubmit(oev);
             }
             oev.Data = value;
@@ -507,6 +520,20 @@ namespace CmsData
         {
             RegSettingXml = Util.Serialize(os);
             RegSetting = RegistrationSettingsParser.Parser.Output(os);
+        }
+        public static void AddMemberTag(CMSDataContext db, int orgId, string name)
+        {
+            if (!name.HasValue())
+                return;
+            var name2 = name.Trim().Truncate(200);
+            var mt = db.MemberTags.SingleOrDefault(t => t.Name == name2 && t.OrgId == orgId);
+            if (mt == null)
+            {
+                mt = new MemberTag { Name = name2, OrgId = orgId };
+                db.MemberTags.InsertOnSubmit(mt);
+                db.SubmitChanges();
+            }
+            db.SubmitChanges();
         }
     }
 }

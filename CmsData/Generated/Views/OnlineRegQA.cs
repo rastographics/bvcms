@@ -22,6 +22,8 @@ namespace CmsData.View
 		
 		private string _Type;
 		
+		private int? _SetX;
+		
 		private string _Question;
 		
 		private string _Answer;
@@ -79,6 +81,23 @@ namespace CmsData.View
 			{
 				if (this._Type != value)
 					this._Type = value;
+			}
+
+		}
+
+		
+		[Column(Name="set", Storage="_SetX", DbType="int")]
+		public int? SetX
+		{
+			get
+			{
+				return this._SetX;
+			}
+
+			set
+			{
+				if (this._SetX != value)
+					this._SetX = value;
 			}
 
 		}

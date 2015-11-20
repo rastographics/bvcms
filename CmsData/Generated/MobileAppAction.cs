@@ -36,6 +36,8 @@ namespace CmsData
 		
 		private string _Roles;
 		
+		private int _Api;
+		
    		
     	
 	#endregion
@@ -71,6 +73,9 @@ namespace CmsData
 		
 		partial void OnRolesChanging(string value);
 		partial void OnRolesChanged();
+		
+		partial void OnApiChanging(int value);
+		partial void OnApiChanged();
 		
     #endregion
 		public MobileAppAction()
@@ -274,6 +279,28 @@ namespace CmsData
 					this._Roles = value;
 					this.SendPropertyChanged("Roles");
 					this.OnRolesChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="api", UpdateCheck=UpdateCheck.Never, Storage="_Api", DbType="int NOT NULL")]
+		public int Api
+		{
+			get { return this._Api; }
+
+			set
+			{
+				if (this._Api != value)
+				{
+				
+                    this.OnApiChanging(value);
+					this.SendPropertyChanging();
+					this._Api = value;
+					this.SendPropertyChanged("Api");
+					this.OnApiChanged();
 				}
 
 			}

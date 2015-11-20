@@ -16,6 +16,7 @@ namespace CmsData
     {
         private readonly CMSDataContext db;
         private DateTime? lastSunday;
+        private Dictionary<string, object> dictionary;
 
         public QueryFunctions(CMSDataContext Db)
         {
@@ -25,6 +26,11 @@ namespace CmsData
         public QueryFunctions(string dbname)
         {
             db = DbUtil.Create(dbname);
+        }
+
+        public QueryFunctions(CMSDataContext db, Dictionary<string, object> dictionary) : this(db)
+        {
+            this.dictionary = dictionary;
         }
 
         public DateTime LastSunday
@@ -78,7 +84,7 @@ namespace CmsData
 
         public string RenderTemplate(string source, object data)
         {
-            CssStyle.RegisterHelpers(db);
+            PythonEvents.RegisterHelpers(db);
             var template = Handlebars.Compile(source);
             var result = template(data);
             return result;
@@ -465,9 +471,15 @@ namespace CmsData
         {
             return db.PeopleQuery2(savedQuery).Take(1000);
         }
+        public IEnumerable<Person> LastQuery()
+        {
+            if (!Util.UserName.HasValue())
+                return db.PeopleQuery2("0"); // return nobody
+            var id = db.FetchLastQuery().Id;
+            return db.PeopleQuery(id).Take(1000);
+        }
         public int TagQueryList(object savedQuery)
         {
-            //db.Log($"TagQueryList {savedQuery}");
             var q = db.PeopleQuery2(savedQuery).Select(vv => vv.PeopleId);
             var tag = db.PopulateTemporaryTag(q);
             return tag.Id;
@@ -475,7 +487,6 @@ namespace CmsData
         public int TagCount(int tagid)
         {
             var n = db.TagPeople.Count(v => v.Id == tagid);
-            //db.Log($"TagCount {tagid}={n}");
             return n;
         }
 
@@ -519,6 +530,10 @@ namespace CmsData
             return q.Take(1000);
         }
 
+        public IEnumerable<dynamic> QuerySql(string sqlscript)
+        {
+            return QuerySql(sqlscript, null);
+        }
         public IEnumerable<dynamic> QuerySql(string sqlscript, object p1)
         {
             return QuerySql(sqlscript, p1, null);
@@ -533,6 +548,21 @@ namespace CmsData
 
             var q = db.Connection.Query(sql, p, commandTimeout: 300);
             return q;
+        }
+
+
+        /// <summary>
+        /// The BlueToolbarReport function returns the first 1000 people records populated based on
+        /// the context when a Python Script being called from the Blue Toolbar
+        /// </summary>
+        public IEnumerable<Person> BlueToolbarReport()
+        {
+            if (!dictionary.ContainsKey("BlueToolbarGuid"))
+                return new List<Person>();
+            var guid = (dictionary["BlueToolbarGuid"] as string).ToGuid();
+            if(!guid.HasValue)
+                return new List<Person>();
+            return db.PeopleQuery(guid.Value).Take(1000);
         }
 
         public int RegistrationCount(int days, int progid, int divid, int orgid)
@@ -596,5 +626,7 @@ namespace CmsData
                 return $"  ['{Name}', {Value}]";
             }
         }
+
+
     }
 }

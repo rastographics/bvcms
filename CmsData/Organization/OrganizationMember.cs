@@ -76,6 +76,7 @@ AND a.MeetingDate > {1}
 AND a.PeopleId = {2}
 ", OrganizationId, Util.Now, PeopleId);
                 db.ExecuteCommand("DELETE dbo.Attend WHERE OrganizationId = {0} AND MeetingDate > {1} AND PeopleId = {2} AND ISNULL(Commitment, 1) = 1", OrganizationId, Util.Now, PeopleId);
+                db.ExecuteCommand("DELETE dbo.Attend WHERE OrganizationId = {0} AND DATEADD(DAY, DATEDIFF(DAY, 0, MeetingDate), 0) = DATEADD(DAY, DATEDIFF(DAY, 0, GETDATE()), 0) AND PeopleId = {1} AND AttendanceFlag = 0", OrganizationId, PeopleId);
                 db.ExecuteCommand("UPDATE dbo.GoerSenderAmounts SET InActive = 1 WHERE OrgId = {0} AND (GoerId = {1} OR SupporterId = {1})", OrganizationId, PeopleId);
                 return droptrans;
             }
@@ -425,7 +426,7 @@ AND a.PeopleId = {2}
             var ts = TransactionSummary(db);
             if (ts == null)
                 return 0;
-            return (ts.IndPaid ?? 0) - TotalPaid(db);
+            return (ts.IndAmt ?? 0) - TotalPaid(db);
         }
 
         public decimal? AmountPaidTransactions(CMSDataContext db)

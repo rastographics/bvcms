@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Reflection;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
-using System.Xml.Serialization;
-using CmsData;
+using CmsData.API;
 using CmsData.Registration;
 using UtilityExtensions;
 
@@ -16,6 +16,42 @@ namespace CmsData.OnlineRegSummaryText
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class OnlineRegPersonModel0
     {
+        public OnlineRegPersonModel0(string xml = null)
+        {
+            if(xml != null)
+                ReadXml(xml);
+            if (ExtraQuestion == null)
+                ExtraQuestion = new List<Dictionary<string, string>> {new Dictionary<string, string>()};
+            if (Text == null)
+                Text = new List<Dictionary<string, string>> {new Dictionary<string, string>()};
+        }
+
+        public static OnlineRegPersonModel0 CreateFromSettings(CMSDataContext db, int orgid)
+        {
+            var m = new OnlineRegPersonModel0();
+            var settings = db.CreateRegistrationSettings(orgid);
+            foreach (var ask in settings.AskItems)
+            {
+                switch (ask.Type)
+                {
+                    case "AskExtraQuestions":
+                        var eq = (AskExtraQuestions)ask;
+                        if(eq.UniqueId >= m.ExtraQuestion.Count)
+                            m.ExtraQuestion.Add(new Dictionary<string, string>());
+                        foreach (var q in eq.list)
+                            m.ExtraQuestion[eq.UniqueId][q.Question] = "";
+                        break;
+                    case "AskText":
+                        var tx = (AskText)ask;
+                        if(tx.UniqueId >= m.Text.Count)
+                            m.Text.Add(new Dictionary<string, string>());
+                        foreach (var q in tx.list)
+                            m.Text[tx.UniqueId][q.Question] = "";
+                        break;
+                }
+            }
+            return m;
+        }
         public int? MissionTripGoerId { get; set; }
         public Settings setting { get; set; }
         public int PeopleId { get; set; }
@@ -171,13 +207,130 @@ namespace CmsData.OnlineRegSummaryText
             if (eq != null)
                 ExtraQuestion[eqset].Add(eq.Value, e.Value);
         }
-        public void WriteXml(XmlWriter writer)
+        public string WriteXml()
         {
-            throw new NotImplementedException();
+            var optionsAdded = false;
+            var checkoxesAdded = false;
+            var w = new APIWriter();
+            w.Start("OnlineRegPersonModel");
+
+            foreach (PropertyInfo pi in typeof(OnlineRegPersonModel0).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(vv => vv.CanRead && vv.CanWrite))
+            {
+                switch (pi.Name)
+                {
+                    case "ExtraQuestion":
+                        WriteExtraAnswers(w);
+                        break;
+                    case "Text":
+                        WriteText(w);
+                        break;
+                    case "YesNoQuestion":
+                        WriteYesNoChoices(w);
+                        break;
+                    case "option":
+                        optionsAdded = WriteDropdownOptions(optionsAdded, w);
+                        break;
+                    case "Checkbox":
+                        checkoxesAdded = WriteCheckboxChoices(checkoxesAdded, w);
+                        break;
+                    case "MenuItem":
+                        WriteMenuChoices(w);
+                        break;
+                    default:
+                        w.Add(pi.Name, pi.GetValue(this, null));
+                        break;
+                }
+            }
+            w.End();
+            return w.ToString();
         }
-        public XmlSchema GetSchema()
+
+        private bool WriteDropdownOptions(bool optionsAdded, APIWriter w)
         {
-            throw new NotImplementedException();
+            if (option != null && option.Count > 0 && !optionsAdded)
+                foreach (var o in option)
+                    w.Add("option", o);
+            optionsAdded = true;
+            return optionsAdded;
+        }
+
+        private void WriteMenuChoices(APIWriter w)
+        {
+            if (MenuItem != null)
+                for (var i = 0; i < MenuItem.Count; i++)
+                    if (MenuItem[i] != null && MenuItem[i].Count > 0)
+                        foreach (var q in MenuItem[i])
+                        {
+                            w.Start("MenuItem");
+                            w.Attr("set", i);
+                            w.Attr("name", q.Key);
+                            w.Attr("number", q.Value);
+                            w.End();
+                        }
+        }
+
+        private bool WriteCheckboxChoices(bool checkoxesAdded, APIWriter w)
+        {
+            if (Checkbox != null && Checkbox.Count > 0 && !checkoxesAdded)
+                foreach (var c in Checkbox)
+                    w.Add("Checkbox", c);
+            checkoxesAdded = true;
+            return checkoxesAdded;
+        }
+
+        private void WriteYesNoChoices(APIWriter w)
+        {
+            if (YesNoQuestion != null && YesNoQuestion.Count > 0)
+                foreach (var q in YesNoQuestion)
+                {
+                    w.Start("YesNoQuestion");
+                    w.Attr("question", q.Key);
+                    w.AddText(q.Value.ToString());
+                    w.End();
+                }
+        }
+
+        private void WriteText(APIWriter w)
+        {
+            if (Text != null)
+                for (var i = 0; i < Text.Count; i++)
+                    if (Text[i] != null && Text[i].Count > 0)
+                        foreach (var q in Text[i])
+                        {
+                            w.Start("Text");
+                            w.Attr("set", i);
+                            w.Attr("question", q.Key);
+                            w.AddText(q.Value);
+                            w.End();
+                        }
+        }
+
+        private void WriteExtraAnswers(APIWriter w)
+        {
+            if (ExtraQuestion != null)
+                for (var i = 0; i < ExtraQuestion.Count; i++)
+                    if (ExtraQuestion[i] != null && ExtraQuestion[i].Count > 0)
+                        foreach (var q in ExtraQuestion[i])
+                        {
+                            w.Start("ExtraQuestion");
+                            w.Attr("set", i);
+                            w.Attr("question", q.Key);
+                            w.AddText(q.Value);
+                            w.End();
+                        }
+        }
+
+        private void WriteFundItems(APIWriter w)
+        {
+            if (FundItem != null && FundItem.Count > 0)
+                foreach (var f in FundItem.Where(ff => ff.Value > 0))
+                {
+                    w.Start("FundItem");
+                    w.Attr("fund", f.Key);
+                    w.AddText(f.Value.Value.ToString());
+                    w.End();
+                }
         }
     }
 }

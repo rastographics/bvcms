@@ -5,8 +5,6 @@
 [SQL]: http://msdn.microsoft.com/en-us/evalcenter/hh230763.aspx
 [WEB]: http://visualstudiogallery.msdn.microsoft.com/56633663-6799-41d7-9df7-0f2a504ca361
 [RWM]: http://www.microsoft.com/en-us/download/details.aspx?id=7435
-[libtidy32]: http://wemakeapps.net/downloads/TidyManaged/libtidy.dll.Win32.zip
-[libtidy64]: http://wemakeapps.net/downloads/TidyManaged/libtidy.dll.Win64.zip
 
 BVCMS Developer Quick Start Guide
 ---
@@ -24,8 +22,6 @@ BVCMS is maintained by TouchPointSoftware, LLC.
 1. **[SQL Server Express 2012 SP1][SQL]**
 1. **[GitHub for Windows][GHW]**
 1. **[Microsoft URL Rewrite Module 2.0 for IIS 7][RWM]** (if not already installed)
-1. **libtidy** ([x86][libtidy32] or [x64][libtidy64] depending on your host) (optional, see [additional notes](#additional-notes))
-	* `libtidy.dll` will need to either be in your application bin directory or under your PATH (such as under `c:\windows\system32`)
 
 ### Clone the Source Code Repository
 
@@ -88,6 +84,4 @@ BVCMS is maintained by TouchPointSoftware, LLC.
 
 For additional information on how to use BVCMS, please see the **[TouchPointSoftware Documentation][DOC]**.
 
-### Additional Notes
 
-* We use libtidy to format HTML, such as when viewing the HTML source of emails. If you're running the system on a 64-bit system using IIS Express and libtidy together, you'll want to enable IIS Express to run in 64-bit mode. To do this, you can open Visual Studio and to to Tools > Options > Projects and Solutions > Web Projects and then check the "Use the 64 bit version of IIS Express."

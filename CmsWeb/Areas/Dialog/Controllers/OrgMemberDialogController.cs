@@ -1,7 +1,9 @@
 using System;
+using System.Linq;
 using System.Web.Mvc;
 using CmsWeb.Areas.Dialog.Models;
 using CmsData;
+using CmsData.OnlineRegSummaryText;
 using CmsWeb.Code;
 using UtilityExtensions;
 
@@ -71,13 +73,21 @@ namespace CmsWeb.Areas.Dialog.Controllers
         }
 
         [HttpPost]
+        public ActionResult AddQuestions(OrgMemberModel m)
+        {
+            m.AddQuestions();
+            return Content("ok");
+        }
+        [HttpPost]
         public ActionResult EditQuestion(string id, string value)
         {
             var a = id.Split(',');
             var oid = a[0].ToInt();
             var pid = a[1].ToInt();
             var n = a[2].ToInt();
-            DbUtil.Db.UpdateQuestion(oid, pid, n, value);
+            var m = new OrgMemberModel(oid, pid);
+            m.UpdateQuestion(n, value);
+
             DbUtil.LogActivity("OrgMem EditQuestion " + n, oid, pid);
             var c = Content(value);
             return c;

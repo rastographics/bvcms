@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Web;
 using HandlebarsDotNet;
+using UtilityExtensions;
 
 namespace CmsData
 {
@@ -21,17 +22,5 @@ namespace CmsData
         public static string LabelStyle => SansSerif + Small + Light + AlignRight + AlignTop;
         public static string DataStyle => SansSerif + Medium + Bold;
         public static string DataLabelStyle => SansSerif + Medium + Light;
-
-        public static void RegisterHelpers(CMSDataContext db)
-        {
-            Handlebars.RegisterHelper("BottomBorder", (writer, context, args) => { writer.Write(BottomBorder); });
-            Handlebars.RegisterHelper("AlignTop", (writer, context, args) => { writer.Write(AlignTop); });
-            Handlebars.RegisterHelper("AlignRight", (writer, context, args) => { writer.Write(AlignRight); });
-            Handlebars.RegisterHelper("DataLabelStyle", (writer, context, args) => { writer.Write(DataLabelStyle); });
-            Handlebars.RegisterHelper("LabelStyle", (writer, context, args) => { writer.Write(LabelStyle); });
-            Handlebars.RegisterHelper("DataStyle", (writer, context, args) => { writer.Write(DataStyle); });
-            Handlebars.RegisterHelper("ServerLink", (writer, context, args) => { writer.Write(db.ServerLink().TrimEnd('/')); });
-        }
-
     }
 }

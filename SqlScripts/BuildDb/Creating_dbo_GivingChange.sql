@@ -9,7 +9,7 @@ RETURN
 		JOIN dbo.Contributions2(
 			DATEADD(DAY, -@days * 2, GETDATE()) -- start date
 			,DATEADD(DAY, -@days, GETDATE()) -- enddate
-			,0, 0, 0, 0) c1 ON p1.PeopleId = c1.CreditGiverId
+			,0, 0, 0, 1) c1 ON p1.PeopleId = c1.CreditGiverId
 		GROUP BY p1.PeopleId
 	), 
 	period2 AS (
@@ -18,7 +18,7 @@ RETURN
 		JOIN dbo.Contributions2(
 			DATEADD(DAY, -@days, GETDATE()) -- start date
 			,GETDATE() -- end date
-			,0, 0, 0, 0) c2 ON p2.PeopleId = c2.CreditGiverId
+			,0, 0, 0, 1) c2 ON p2.PeopleId = c2.CreditGiverId
 		GROUP BY p2.PeopleId
 	), 
 	bothperiods AS (
@@ -29,8 +29,8 @@ RETURN
 	grouped AS (
 		SELECT 
 			PeopleId 
-			,TotalPeriod1 = SUM(c1amt)
-			,TotalPeriod2 = SUM(c2amt)
+			,TotalPeriod1 = ISNULL(SUM(c1amt), 0)
+			,TotalPeriod2 = ISNULL(SUM(c2amt), 0)
 		FROM bothperiods GROUP BY PeopleId
 	), 
 	getpercent AS (

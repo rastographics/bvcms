@@ -18,7 +18,7 @@
         $.block();
         $.post(href, q, function (ret) {
             $.unblock();
-            if (ret == "Done") {
+            if (ret === "Done") {
                 swal({
                     title: "Member Dropped!",
                     type: "success"
@@ -76,6 +76,26 @@
             $.post(href, q, function (ret) {
                 $('#empty-dialog').modal('hide');
                 $.RebindMemberGrids();
+            });
+        });
+        return false;
+    });
+    $('body').on('click', '#addQuestions', function (ev) {
+        ev.preventDefault();
+        var f = $(this).closest('form');
+        var q = f.serialize();
+
+        swal({
+            title: "Are you sure?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-warning",
+            confirmButtonText: "Yes, Add Questions",
+            closeOnConfirm: true
+        },
+        function () {
+            $.post("/OrgMemberDialog/AddQuestions", q, function (ret) {
+                $('#empty-dialog').modal('hide');
             });
         });
         return false;

@@ -6,6 +6,7 @@ questions AS (
 	SELECT
 		om.OrganizationId,
 		om.PeopleId,
+		pref.value('(@set)[1]', 'int') AS [set],
 		pref.value('(@question)[1]', 'varchar(500)') AS Question,
 		pref.value('(text())[1]', 'varchar(500)') AS Answer
 	FROM  
@@ -17,6 +18,7 @@ questions AS (
 	SELECT
 		om.OrganizationId,
 		om.PeopleId,
+		pref.value('(@set)[1]', 'int') AS [set],
 		pref.value('(@question)[1]', 'varchar(500)') AS Question,
 		pref.value('(text())[1]', 'varchar(max)') AS Answer
 	FROM  
@@ -28,6 +30,7 @@ questions AS (
 	SELECT
 		om.OrganizationId,
 		om.PeopleId,
+		NULL AS [set],
 		pref.value('(@question)[1]', 'varchar(500)') AS Question,
 		pref.value('(text())[1]', 'varchar(500)') AS Answer
 	FROM  
@@ -55,6 +58,7 @@ questions AS (
 		'question' [type],
 		PeopleId,
 		OrganizationId,
+		[set],
 		Question,
 		Answer
 	FROM questions
@@ -63,6 +67,7 @@ questions AS (
 		'text' [type],
 		PeopleId,
 		OrganizationId,
+		[set],
 		Question,
 		Answer
 	FROM textquestions
@@ -71,6 +76,7 @@ questions AS (
 		'yesno',
 		PeopleId,
 		OrganizationId,
+		[set],
 		Question,
 		Answer
 	FROM yesno
@@ -79,10 +85,12 @@ SELECT
 	OrganizationId,
 	p.PeopleId,
 	[type],
+	[set],
 	Question,
 	Answer
 FROM results
 JOIN dbo.People p ON p.PeopleId = results.PeopleId
+
 
 
 

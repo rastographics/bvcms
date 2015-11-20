@@ -416,6 +416,10 @@ namespace CmsData
         partial void UpdateMobileAppIconSet(MobileAppIconSet instance);
         partial void DeleteMobileAppIconSet(MobileAppIconSet instance);
         
+        partial void InsertMobileAppPushRegistration(MobileAppPushRegistration instance);
+        partial void UpdateMobileAppPushRegistration(MobileAppPushRegistration instance);
+        partial void DeleteMobileAppPushRegistration(MobileAppPushRegistration instance);
+        
         partial void InsertMobileAppRoom(MobileAppRoom instance);
         partial void UpdateMobileAppRoom(MobileAppRoom instance);
         partial void DeleteMobileAppRoom(MobileAppRoom instance);
@@ -1299,6 +1303,12 @@ namespace CmsData
 
         }
 
+        public Table< MobileAppPushRegistration> MobileAppPushRegistrations
+        {
+            get { return GetTable< MobileAppPushRegistration>(); }
+
+        }
+
         public Table< MobileAppRoom> MobileAppRooms
         {
             get { return GetTable< MobileAppRoom>(); }
@@ -1908,6 +1918,12 @@ namespace CmsData
 
         }
 
+        public Table< View.OrgSchedules2> ViewOrgSchedules2s
+        {
+            get { return GetTable< View.OrgSchedules2>(); }
+
+        }
+
         public Table< View.OrgsWithFee> ViewOrgsWithFees
         {
             get { return GetTable< View.OrgsWithFee>(); }
@@ -2055,6 +2071,12 @@ namespace CmsData
         public Table< View.UserRole> ViewUserRoles
         {
             get { return GetTable< View.UserRole>(); }
+
+        }
+
+        public Table< View.VolunteerTime> ViewVolunteerTimes
+        {
+            get { return GetTable< View.VolunteerTime>(); }
 
         }
 
@@ -3634,7 +3656,8 @@ namespace CmsData
             [Parameter(DbType="int")] int? mid,
             [Parameter(DbType="datetime")] DateTime? meetingdt,
             [Parameter(DbType="int")] int? oid,
-            [Parameter(DbType="bit")] bool? current
+            [Parameter(DbType="bit")] bool? current,
+            [Parameter(DbType="bit")] bool? FromMobile
             )
         {
             return CreateMethodCallQuery< View.RollList>(this,
@@ -3642,7 +3665,8 @@ namespace CmsData
                     mid,
                     meetingdt,
                     oid,
-                    current
+                    current,
+                    FromMobile
                 );
         }
 
@@ -3825,6 +3849,20 @@ namespace CmsData
 #endregion
 #region Scalar Functions
         
+        [Function(Name="dbo.GetCurrentOnlinePledgeBundle", IsComposable = true)]
+        [return: Parameter(DbType = "int")]
+        public int? GetCurrentOnlinePledgeBundle(
+            [Parameter(Name = "next", DbType="datetime")] DateTime? next,
+            [Parameter(Name = "prev", DbType="datetime")] DateTime? prev
+            )
+        {
+            return ((int?)(ExecuteMethodCall(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    next,
+                    prev
+                ).ReturnValue));
+        }
+
         [Function(Name="dbo.DonorTotalUnitsSize", IsComposable = true)]
         [return: Parameter(DbType = "money")]
         public decimal? DonorTotalUnitsSize(

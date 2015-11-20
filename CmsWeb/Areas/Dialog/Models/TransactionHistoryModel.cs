@@ -77,6 +77,7 @@ namespace CmsWeb.Areas.Dialog.Models
             public string Pending { get; set; }
             public DateTime? EnrollmentDate { get; set; }
             public DateTime? NextTranChangeDate { get; set; }
+            public int? UserId { get; set; }
         }
         public IEnumerable<TransactionInfo> FetchHistory()
         {
@@ -93,7 +94,8 @@ namespace CmsWeb.Areas.Dialog.Models
                          MemberType = et.MemberType.Description,
                          Pending = et.Pending == true ? "pending" : "",
                          EnrollmentDate = et.EnrollmentDate,
-                         NextTranChangeDate = et.NextTranChangeDate
+                         NextTranChangeDate = et.NextTranChangeDate,
+                         UserId = et.CreatedBy
                      };
             return q2;
         }
