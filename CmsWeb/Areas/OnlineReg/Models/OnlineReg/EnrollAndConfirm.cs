@@ -302,20 +302,14 @@ Total Fee paid for this registration session: {amtpaid:C}<br/>
             return true;
         }
 
+        private string defaultSubject => $"Confirmation for {Header}";
+
         private string GetSubject(OnlineRegPersonModel p)
         {
             if (p.setting.Subject.HasValue())
-                return p.setting.Subject;
+                return Util.PickFirst(p.setting.Subject, defaultSubject);
             var os = GetMasterOrgSettings();
-            return Util.PickFirst(os.Subject, "no subject");
-        }
-
-        private string GetMessage(OnlineRegPersonModel p)
-        {
-            if (p.setting.Body.HasValue())
-                return p.setting.Body;
-            var os = GetMasterOrgSettings();
-            return Util.PickFirst(os.Body, "no body");
+            return Util.PickFirst(os.Subject, defaultSubject);
         }
 
         private string GetSubject()
@@ -323,7 +317,7 @@ Total Fee paid for this registration session: {amtpaid:C}<br/>
             if (_subject.HasValue())
                 return _subject;
             var orgsettings = settings[org.OrganizationId];
-            _subject = Util.PickFirst(orgsettings.Subject, "no subject");
+            _subject = Util.PickFirst(orgsettings.Subject, defaultSubject);
             return _subject = _subject.Replace("{org}", Header);
         }
 
