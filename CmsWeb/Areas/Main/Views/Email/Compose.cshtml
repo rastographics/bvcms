@@ -95,15 +95,18 @@
             </div>
           </div>
           <div class="form-group">
-              <label for="inputEmail3" class="col-sm-2 control-label">Cc:</label>
+              <label for="inputEmail3" class="col-sm-2 control-label">Cc/Reply-To:</label>
               <div class="col-sm-10">
                   <input type="text" id="Cc" name="Cc" class="form-control">
+                  <p class="help-block"><i><small>Use commas to separate addresses. Each address receives a copy of the email and each is added to the Reply-To field.</small></i></p>
+                
               </div>
           </div>
           <div class="form-group">
             <label for="Subject" class="col-sm-2 control-label">Subject:</label>
             <div class="col-sm-10">
               <input name="Subject" id="Subject" size="75" value="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? "" : c.Title)" class="form-control" />
+             
             </div>
           </div>
           @if ((User.IsInRole("ScheduleEmails") || User.IsInRole("Edit")) && ConfigurationManager.AppSettings["UseEmailScheduler"] == "true")

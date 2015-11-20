@@ -41,7 +41,11 @@ namespace CmsWeb.Areas.Main.Models
             }
             set {
                 if (value == null) { CcAddresses = null; }
-                else { CcAddresses = value.Split(',').Select(a => new MailAddress(a)).ToList(); }
+                else
+                {                    
+                    // The statement below makes CcAddresses = null if one of them is ill-formed
+                    CcAddresses = value.Split(',').Select(a => new MailAddress(a)).ToList();
+                }
             }
         }
 
