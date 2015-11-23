@@ -392,9 +392,9 @@ namespace CmsWeb.Areas.Org.Controllers
             cc.AddNewClause(QueryType.MeetingId, CompareType.Equal, Id);
             var c = cc.AddNewClause(QueryType.AttendTypeAsOf, CompareType.OneOf, "40,VM;50,RG;60,NG");
             c.StartDate = m.MeetingDate;
-            c.Program = m.Organization.Division.Program.Id;
-            c.Division = m.Organization.DivisionId ?? 0;
-            c.Organization = m.OrganizationId;
+            c.Program = m.Organization.Division.Program.Id.ToString();
+            c.Division = (m.Organization.DivisionId ?? 0).ToString();
+            c.Organization = m.OrganizationId.ToString();
             cc.Save(DbUtil.Db);
             return Redirect("/Query/" + cc.Id);
         }
@@ -407,9 +407,9 @@ namespace CmsWeb.Areas.Org.Controllers
             cc.AddNewClause(QueryType.MeetingId, CompareType.NotEqual, Id);
             var c = cc.AddNewClause(QueryType.WasMemberAsOf, CompareType.Equal, "1,T");
             c.StartDate = m.MeetingDate;
-            c.Program = m.Organization.Division.Program.Id;
-            c.Division = m.Organization.DivisionId ?? 0;
-            c.Organization = m.OrganizationId;
+            c.Program = m.Organization.Division.Program.Id.ToString();
+            c.Division = (m.Organization.DivisionId ?? 0).ToString();
+            c.Organization = m.OrganizationId.ToString();
             cc.Save(DbUtil.Db);
             return Redirect("/Query/" + cc.Id);
         }

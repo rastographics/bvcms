@@ -305,7 +305,7 @@ namespace CmsWeb.Areas.Search.Models
             var c = DbUtil.Db.ScratchPadCondition();
             c.Reset(DbUtil.Db);
             var clause = c.AddNewClause(QueryType.MadeContactTypeAsOf, CompareType.Equal, "1,T");
-            clause.Program = SearchParameters.Ministry.Value.ToInt();
+            clause.Program = SearchParameters.Ministry.Value;
             clause.StartDate = SearchParameters.StartDate ?? DateTime.Parse("1/1/2000");
             clause.EndDate = SearchParameters.EndDate ?? DateTime.Today;
             var cvc = new CodeValueModel();

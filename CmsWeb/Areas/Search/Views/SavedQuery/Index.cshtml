@@ -4,6 +4,9 @@
     ViewBag.PageHeader = "Saved Search Queries";
     Layout = ViewExtensions2.TouchPointLayout();
 }
+@section head {
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.7/css/bootstrap-dialog.min.css" rel="stylesheet">
+}
 <div class="row">
     <div class="col-lg-9">
         <div class="box box-responsive">
@@ -62,5 +65,7 @@
 </div>
 @section scripts
 {
-    @Fingerprint.Script("/Content/touchpoint/js/search/saved-query-list.js")
+  @Fingerprint.Script("/Content/touchpoint/js/search/saved-query-list.js")
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.7/js/bootstrap-dialog.min.js"></script>
+  @Fingerprint.Script("/Content/touchpoint/js/search/export-query.js")
 }

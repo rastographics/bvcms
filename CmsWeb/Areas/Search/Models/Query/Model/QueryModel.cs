@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
+using CmsWeb.Areas.Public.Controllers;
 using CmsWeb.Code;
 using UtilityExtensions;
 
@@ -41,19 +42,31 @@ namespace CmsWeb.Areas.Search.Models
             DbUtil.LogActivity($"Running Query ({id})");
         }
 
-        public int? Program { get; set; }
-        public int? Division { get; set; }
-        public int? Organization { get; set; }
+        public string Program { get; set; }
+        private int ProgramInt => Program.GetCsvToken().ToInt();
+
+        public string Division { get; set; }
+        private int DivisionInt => Division.GetCsvToken().ToInt();
+
+        public string Organization { get; set; }
+        private int OrganizationInt => Organization.GetCsvToken().ToInt();
+
         public string Schedule { get; set; }
+        private int ScheduleInt => Schedule.GetCsvToken().ToInt();
+
         public string Campus { get; set; }
+        private int CampusInt => Campus.GetCsvToken().ToInt();
+        
         public string OrgType { get; set; }
+        private int OrgTypeInt => OrgType.GetCsvToken().ToInt();
+
         public string OrgType2 { get; set; }
         public string Ministry { get; set; }
         public string SavedQuery { get; set; }
         public string Comparison { get; set; }
         public string OrgName { get; set; }
-        public int? OrgStatus { get; set; }
-        public int? OnlineReg { get; set; }
+        public string OrgStatus { get; set; }
+        public string OnlineReg { get; set; }
 
         public bool IsPublic { get; set; }
         public string Days { get; set; }
@@ -107,16 +120,6 @@ namespace CmsWeb.Areas.Search.Models
         }
 
         public DateTime? DateValue { get; set; }
-
-        public IEnumerable<SelectListItem> TagData()
-        {
-            return TagsVisible ? ConvertToSelect(CodeValueModel.UserTagsAll(), "Code", TagValues) : null;
-        }
-
-        public IEnumerable<SelectListItem> PmmLabelData()
-        {
-            return PmmLabelsVisible ? ConvertToSelect(CodeValueModel.PmmLabels(), "Id", PmmLabels) : null;
-        }
 
         public string ConditionName
         {

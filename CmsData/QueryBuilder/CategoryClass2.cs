@@ -6,12 +6,9 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Web;
 using System.Xml.Linq;
-using UtilityExtensions;
 using System.Web.Caching;
 
 namespace CmsData
@@ -31,7 +28,8 @@ namespace CmsData
                 if (categories == null)
                 {
                     var xdoc = XDocument.Parse(Properties.Resources.FieldMap3);
-                    var q = from c in xdoc.Root.Elements()
+
+                    var q = from c in xdoc.Root?.Elements()
                             select new CategoryClass2
                             {
                                 Name = c.Name.LocalName,
@@ -44,7 +42,6 @@ namespace CmsData
                                               Name = f.Name.LocalName,
                                               Title = Attr(f, "Title"),
                                               QuartersTitle = Attr(f, "QuartersLabel"),
-                                              DisplayAs = Attr(f, "DisplayAs"),
                                               Type = FieldClass2.Convert(Attr(f, "Type")),
                                               Params = Attr(f, "Params"),
                                               DataSource = Attr(f, "DataSource"),
@@ -67,9 +64,7 @@ namespace CmsData
         private static string Attr(XElement e, string name)
         {
             var a = e.Attribute(name);
-            if (a != null)
-                return a.Value;
-            return null;
+            return a?.Value;
         }
     }
 }

@@ -16,49 +16,48 @@ namespace CmsData
 
     public class FieldClass2
     {
-        private string _name;
+        private string name;
         public string Name
         {
             get
             {
-                return _name;
+                return name;
             }
             set
             {
-                _name = value;
-                _queryType = ConvertQueryType(value);
+                name = value;
+                queryType = ConvertQueryType(value);
             }
         }
-        private QueryType _queryType;
+        private QueryType queryType;
         public QueryType QueryType
         {
             get
             {
-                return _queryType;
+                return queryType;
             }
             set
             {
-                _queryType = value;
+                queryType = value;
                 Name = value.ToString();
             }
         }
         public string CategoryTitle { get; set; }
         public string QuartersTitle { get; set; }
-        private string _title;
+        private string title;
         public string Title
         {
-            get { return _title.HasValue() ? _title : Name; }
-            set { _title = value; }
+            get { return title.HasValue() ? title : Name; }
+            set { title = value; }
         }
         public FieldType Type { get; set; }
-        public string DisplayAs { get; set; }
-        private string _Params;
+        private string @params;
         public string Params
         {
-            get { return _Params; }
+            get { return @params; }
             set
             {
-                _Params = value;
+                @params = value;
                 if (value.HasValue())
                     ParamList = value.SplitStr(",").ToList();
             }
@@ -66,45 +65,83 @@ namespace CmsData
         public List<string> ParamList { get; set; }
         public string DataSource { get; set; }
         public string DataValueField { get; set; }
-        private string formatArgs(string fmt, Condition c)
+
+        private string FormatArgs(Condition c)
         {
-            var p = new List<object>();
+            var list = new List<ParamArg>();
             foreach (var s in ParamList)
             {
-                var s2 = s;
-                if (s2 == "Week")
-                    s2 = "Quarters";
-                else if (s2 == "Ministry")
-                    s2 = "Program";
-                else if (s2 == "View")
-                    s2 = "Quarters";
-                else if (s2 == "PmmLabels")
-                    s2 = "Tags";
-                else if (s2 == "SavedQueryIdDesc")
-                    s2 = "SavedQuery";
+                string propname;
+                switch (s)
+                {
+                    case "Week":
+                        propname = "Quarters";
+                        break;
+                    case "View":
+                        propname = "Quarters";
+                        break;
+                    case "PmmLabels":
+                        propname = "Tags";
+                        break;
+                    case "SavedQueryIdDesc":
+                        propname = "SavedQuery";
+                        break;
+                    case "Ministry":
+                        propname = "Program";
+                        break;
+                    default:
+                        propname = s;
+                        break;
+                }
 
-                object prop = Util.GetProperty(c, s2) ?? "";
+                var prop = Util.GetProperty(c, propname) ?? "";
 
-                if (prop is DateTime?)
-                    prop = ((DateTime?) prop).FormatDate();
-                else if (s2 == "SavedQuery" && ((string) prop).Contains(":"))
-                    prop = ((string) prop).Split(":".ToCharArray(), 2)[1];
-                else if (s2 == "Tags")
-                    if (((string) prop).Contains(","))
-                        if (((string) prop).Contains(";"))
-                            prop = string.Join("; ", ((string) prop).Split(';').Select(t => t.Split(',')[1]));
-                        else
-                            prop = string.Join("; ", ((string) prop).Split(','));
-                p.Add(prop);
+                //if (prop is DateTime?)
+                //    prop = ((DateTime?)prop).FormatDate();
+                //else if (propname == "SavedQuery" && ((string)prop).Contains(":"))
+                //    prop = ((string)prop).Split(":".ToCharArray(), 2)[1];
+
+                var attr = s == "Quarters" ? (QuartersTitle ?? propname).Replace(" ", "") : propname;
+                switch (attr)
+                {
+                    case "Program":
+                        list.AddParamArg("Prog", prop);
+                        break;
+                    case "Division":
+                        list.AddParamArg("Div", prop);
+                        break;
+                    case "Organization":
+                        list.AddParamArg("Org", prop);
+                        break;
+                    case "Schedule":
+                        list.AddParamArg("Sched", prop);
+                        break;
+                    case "Tags":
+                        var tags = prop.ToString();
+                        foreach (var t in tags.Split(';'))
+                            list.AddParamArg("Tag", t);
+                        break;
+                    default:
+                        if (prop.ToString().HasValue())
+                            list.AddParamArg(attr, prop);
+                        break;
+                }
             }
-            return string.Format(fmt, p.ToArray());
+
+            if (list.Any(vv => vv.Name == "Div"))
+                list.RemoveAll(vv => vv.Name == "Prog");
+            if (list.Any(vv => vv.Name == "Org"))
+                list.RemoveAll(vv => vv.Name == "Div");
+            var parms = string.Join(", ", list.Select(vv => $"{vv.Name}={vv.Value}"));
+            return $"{Name}({parms})";
         }
-        internal string Display(Condition c)
+        internal string ToString(Condition c)
         {
-            if (DisplayAs.HasValue() && Params.HasValue())
-                return formatArgs(DisplayAs, c);
-            return Util.PickFirst(DisplayAs, Name);
+            if (Params.HasValue())
+                return FormatArgs(c);
+            return Name;
         }
+
         public bool HasParam(string p)
         {
             return ParamList?.Contains(p) ?? false;
@@ -136,4 +173,36 @@ namespace CmsData
         }
         public string Description { get; set; }
     }
+
+    public static class Helper
+    {
+        public static void AddParamArg(this List<ParamArg> d, string key, object o)
+        {
+            var s = o.ToString();
+            var dt = o as DateTime?;
+
+            if(dt.HasValue)
+            {
+                d.Add(new ParamArg(key, $"'{dt.FormatDate()}'"));
+                return;
+            }
+            var n = s.GetCsvToken().ToInt2();
+            if ((!n.HasValue || n == 0) && o is string)
+                return;
+            var v = s.GetCsvToken(2, 2);
+            d.Add(new ParamArg(key, v.HasValue() ? $"{n}[{v}]" : n.ToString()));
+        }
+    }
+    public class ParamArg
+    {
+        public string Name { get; set; }
+        public string Value { get; set; }
+
+        public ParamArg(string name, string value)
+        {
+            Name = name;
+            Value = value;
+        }
+    }
+
 }

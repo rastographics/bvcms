@@ -1,5 +1,4 @@
 ﻿@using CmsWeb
-@using CmsWeb.Areas.Org.Models
 @using CmsWeb.Areas.Search.Models
 @using CmsWeb.Code
 @model QueryModel
@@ -43,13 +42,13 @@
         @if (Model.OrgStatusVisible)
         {
             <div class="col-sm-6">
-                @Html.EditorForIf(m => m.OrgStatus, Model.OrgStatusVisible, "DropDown", new { items = OrgSearchModel.StatusIds() })
+                @Html.EditorForIf(m => m.OrgStatus, Model.OrgStatusVisible, "DropDown", new { items = Model.StatusIds() })
             </div>
         }
         @if (Model.OnlineRegVisible)
         {
             <div class="col-sm-6">
-                @Html.EditorForIf(m => m.OnlineReg, Model.OnlineRegVisible, "DropDown", new { items = OrgSearchModel.RegistrationTypeIds() })
+                @Html.EditorForIf(m => m.OnlineReg, Model.OnlineRegVisible, "DropDown", new { items = Model.RegistrationTypeIds() })
             </div>
         }
         @if (Model.StartDateVisible)
@@ -115,13 +114,13 @@
         @if (Model.DivisionVisible)
         {
             <div class="col-sm-6">
-                @Html.EditorForIf(m => m.Division, Model.DivisionVisible, "DropDown", new { items = QueryModel.Divisions(Model.Program) })
+                @Html.EditorForIf(m => m.Division, Model.DivisionVisible, "DropDown", new { items = Model.Divisions(Model.Program) })
             </div>
         }
         @if (Model.OrganizationVisible)
         {
             <div class="col-sm-6">
-                @Html.EditorForIf(m => m.Organization, Model.OrganizationVisible, "DropDown", new { items = QueryModel.Organizations(Model.Division) })
+                @Html.EditorForIf(m => m.Organization, Model.OrganizationVisible, "DropDown", new { items = Model.Organizations(Model.Division) })
             </div>
         }
         @if (Model.OrgTypeVisible)

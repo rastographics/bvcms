@@ -20,20 +20,20 @@
   <FieldType Name="Code">
     <Comparison Type="Equal" Display="{0} = {1}" />
     <Comparison Type="NotEqual" Display="{0} &lt;&gt; {1}" />
-    <Comparison Type="OneOf" Display="{0} in ({1})" />
-    <Comparison Type="NotOneOf" Display="{0} not in ({1})" />
+    <Comparison Type="OneOf" Display="{0} IN ({1})" />
+    <Comparison Type="NotOneOf" Display="{0} NOT IN ({1})" />
   </FieldType>
   <FieldType Name="NullCode">
     <Comparison Type="Equal" Display="{0} = {1}" />
     <Comparison Type="NotEqual" Display="{0} &lt;&gt; {1}" />
-    <Comparison Type="OneOf" Display="{0} in ({1})" />
-    <Comparison Type="NotOneOf" Display="{0} not in ({1})" />
+    <Comparison Type="OneOf" Display="{0} IN ({1})" />
+    <Comparison Type="NotOneOf" Display="{0} NOT IN ({1})" />
   </FieldType>
   <FieldType Name="CodeStr">
     <Comparison Type="Equal" Display="{0} = {1}" />
     <Comparison Type="NotEqual" Display="{0} &lt;&gt; {1}" />
-    <Comparison Type="OneOf" Display="{0} in ({1})" />
-    <Comparison Type="NotOneOf" Display="{0} not in ({1})" />
+    <Comparison Type="OneOf" Display="{0} IN ({1})" />
+    <Comparison Type="NotOneOf" Display="{0} NOT IN ({1})" />
   </FieldType>
   <FieldType Name="Date">
     <Comparison Type="Equal" Display="{0} = '{1:d}'" />

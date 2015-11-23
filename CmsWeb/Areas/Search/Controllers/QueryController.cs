@@ -177,14 +177,16 @@ namespace CmsWeb.Areas.Search.Controllers
             return View("Conditions", m);
         }
         [HttpPost]
-        public ActionResult Divisions(int id)
+        public ActionResult Divisions(string id)
         {
-            return View(QueryModel.Divisions(id));
+            var m = new QueryModel();
+            return View(m.Divisions(id));
         }
         [HttpPost]
-        public ActionResult Organizations(int id)
+        public ActionResult Organizations(string id)
         {
-            return View(QueryModel.Organizations(id));
+            var m = new QueryModel();
+            return View(m.Organizations(id));
         }
         [HttpPost]
         public JsonResult SavedQueries(QueryModel m)
@@ -317,11 +319,14 @@ namespace CmsWeb.Areas.Search.Controllers
             return Content(Task.AddTasks(DbUtil.Db, m.TopClause.Id).ToString());
         }
 
-        [HttpGet, Route("~/Query/Export")]
-        public ActionResult Export()
+        [HttpGet]
+        [Route("~/Query/Export")]
+        [Route("~/Query/Export/{id?}")]
+        public ActionResult Export(Guid? id)
         {
-            var m = new QueryModel();
-            return Content(m.TopClause.ToXml(), "text/xml");
+            var m = new QueryModel(id);
+            var e = new ExportQuery();
+            return Content(e.Export(m.TopClause), "text/plain");
         }
         [HttpGet, Route("~/Query/Import")]
         public ActionResult Import()

@@ -45,22 +45,28 @@ namespace CmsData
             set { endDate = value; }
         }
 
-        public int Ministry { get; set; }
-        public int Program { get; set; }
+        public string Ministry { get; set; }
+        public int? MinistryInt => Ministry.ToInt2();
 
-        private int division;
-        public int Division
+        public string Program { get; set; }
+        public int? ProgramInt => Program.GetCsvToken().ToInt2();
+
+        private string division;
+        public string Division
         {
             get
             {
                 if(db != null)
-                    return db.QbDivisionOverride ?? division;
+                    return Util.PickFirst(db.QbDivisionOverride.ToString(), division);
                 return division;
             }
             set { division = value; }
         }
+        public int? DivisionInt => Division.GetCsvToken().ToInt();
 
-        public int Organization { get; set; }
+        public string Organization { get; set; }
+        public int OrganizationInt => Organization.GetCsvToken().ToInt();
+
         public int Days { get; set; }
         public string Owner { get; set; }
         public string Description { get; set; }
@@ -70,10 +76,18 @@ namespace CmsData
         public string Quarters { get; set; }
         public string SavedQuery { get; set; }
         public string Tags { get; set; }
-        public int Schedule { get; set; }
+
+        public string Schedule { get; set; }
+        public int ScheduleInt => Schedule.GetCsvToken().ToInt();
+
         public int? Age { get; set; }
-        public int? Campus { get; set; }
-        public int? OrgType { get; set; }
+
+        public string Campus { get; set; }
+        public int? CampusInt => Campus.GetCsvToken().ToInt();
+
+        public string OrgType { get; set; }
+        public int? OrgTypeInt => OrgType.GetCsvToken().ToInt2();
+
         public int? OrgType2 { get; set; }
         public string OrgName { get; set; }
         public int? OrgStatus { get; set; }
@@ -195,7 +209,7 @@ namespace CmsData
         public Expression<Func<Person, bool>> Predicate(CMSDataContext db)
         {
             db.CopySession();
-            var parm = Expression.Parameter(typeof(Person), "p");
+            var parm = System.Linq.Expressions.Expression.Parameter(typeof(Person), "p");
             Expression tree;
 #if DEBUG
 #else
@@ -215,17 +229,17 @@ namespace CmsData
             if (tree == null)
                 tree = CompareConstant(parm, "PeopleId", CompareType.NotEqual, 0);
             if (includeDeceased == false)
-                tree = Expression.And(tree, CompareConstant(parm, "IsDeceased", CompareType.NotEqual, true));
+                tree = System.Linq.Expressions.Expression.And(tree, CompareConstant(parm, "IsDeceased", CompareType.NotEqual, true));
             if (Util2.OrgLeadersOnly)
-                tree = Expression.And(OrgLeadersOnly(db, parm), tree);
-            return Expression.Lambda<Func<Person, bool>>(tree, parm);
+                tree = System.Linq.Expressions.Expression.And(OrgLeadersOnly(db, parm), tree);
+            return System.Linq.Expressions.Expression.Lambda<Func<Person, bool>>(tree, parm);
         }
         private Expression OrgLeadersOnly(CMSDataContext db, ParameterExpression parm)
         {
             var tag = db.OrgLeadersOnlyTag2();
             Expression<Func<Person, bool>> pred = p =>
                 p.Tags.Any(t => t.Id == tag.Id);
-            return Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            return System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
         }
         private bool InAllAnyFalse
         {
@@ -266,8 +280,8 @@ namespace CmsData
                         var right = clause.ExpressionTree(parm, Db);
                         if (right != null)
                             expr = AnyFalseTrue 
-                                ? Expression.Or(expr, right) 
-                                : Expression.And(expr, right);
+                                ? System.Linq.Expressions.Expression.Or(expr, right) 
+                                : System.Linq.Expressions.Expression.And(expr, right);
                     }
                 }
                 return expr;
@@ -276,7 +290,7 @@ namespace CmsData
                 ? AlwaysFalse() 
                 : GetExpression(parm, Db);
             if (InAllAnyFalse)
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
         public bool HasMultipleCodes
@@ -311,6 +325,23 @@ namespace CmsData
             if (value != null && value.Contains(","))
                 return value.SplitStr(",", 2)[(int)part];
             return value;
+        }
+        internal string CodeIdText
+        {
+            get
+            {
+                if (IsCode)
+                    if (HasMultipleCodes)
+                        return string.Join(", ", (from s in CodeIdValue.SplitStr(";")
+                                                  let a = s.Split(',')
+                                                  select $"{a[0]}[{a[1]}]").ToArray());
+                    else
+                    {
+                        var a = CodeIdValue.Split(',');
+                        return $"{a[0]}[{a[1]}]";
+                    }
+                return "";
+            }
         }
         internal string CodeValues
         {

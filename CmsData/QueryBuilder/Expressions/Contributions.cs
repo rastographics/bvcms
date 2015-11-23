@@ -62,7 +62,7 @@ namespace CmsData
                         q = from pid in db.Contributions0(dt, now, fund, 0, false, taxnontax, true)
                             select pid.PeopleId;
                         Expression<Func<Person, bool>> pred0 = p => q.Contains(p.PeopleId);
-                        Expression expr0 = Expression.Invoke(pred0, parm);
+                        Expression expr0 = System.Linq.Expressions.Expression.Invoke(pred0, parm);
                         return expr0;
                     }
                     q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true)
@@ -83,7 +83,7 @@ namespace CmsData
             }
             var tag = db.PopulateTemporaryTag(q);
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
-            Expression expr = Expression.Invoke(pred, parm);
+            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
             return expr;
         }
         public Expression IsRecentGiver()
@@ -99,7 +99,7 @@ namespace CmsData
                 ? p.Tags.Any(t => t.Id == tag.Id)
                 : p.Tags.All(t => t.Id != tag.Id);
 
-            Expression expr = Expression.Invoke(pred, parm);
+            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
             return expr;
         }
         private Expression RecentContributionAmount2(int days, int fund, decimal amt, bool taxnontax)
@@ -148,7 +148,7 @@ namespace CmsData
                         q = from pid in db.Contributions0(dt, now, fund, 0, false, taxnontax, true)
                             select pid.PeopleId;
                         Expression<Func<Person, bool>> pred0 = p => q.Contains(p.PeopleId);
-                        Expression expr0 = Expression.Invoke(pred0, parm);
+                        Expression expr0 = System.Linq.Expressions.Expression.Invoke(pred0, parm);
                         return expr0;
                     }
                     q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true)
@@ -169,7 +169,7 @@ namespace CmsData
             }
             var tag = db.PopulateTemporaryTag(q);
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
-            Expression expr = Expression.Invoke(pred, parm);
+            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
             return expr;
         }
         private Expression ContributionAmount2(DateTime? start, DateTime? end, int fund, decimal amt, bool nontaxded)
@@ -216,7 +216,7 @@ namespace CmsData
                         q = from pid in db.Contributions0(start, end, fund, 0, false, nontaxded, true)
                             select pid.PeopleId;
                         Expression<Func<Person, bool>> pred0 = p => q.Contains(p.PeopleId);
-                        Expression expr0 = Expression.Invoke(pred0, parm);
+                        Expression expr0 = System.Linq.Expressions.Expression.Invoke(pred0, parm);
                         return expr0;
                     }
                     q = from c in db.Contributions2(start, end, 0, false, nontaxded, true)
@@ -236,7 +236,7 @@ namespace CmsData
             }
             var tag = db.PopulateTemporaryTag(q);
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
-            Expression expr = Expression.Invoke(pred, parm);
+            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
             return expr;
         }
         internal Expression RecentContributionCount()
@@ -290,7 +290,7 @@ namespace CmsData
                         q = from pid in db.Contributions0(dt, now, 0, 0, false, false, true)
                             select pid.PeopleId;
                         Expression<Func<Person, bool>> pred0 = p => q.Contains(p.PeopleId);
-                        Expression expr0 = Expression.Invoke(pred0, parm);
+                        Expression expr0 = System.Linq.Expressions.Expression.Invoke(pred0, parm);
                         return expr0;
                     }
                     q = from c in db.GetContributionTotalsBothIfJoint(dt, now)
@@ -307,7 +307,7 @@ namespace CmsData
             }
             var tag = db.PopulateTemporaryTag(q);
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
-            Expression expr = Expression.Invoke(pred, parm);
+            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
             return expr;
         }
         internal Expression RecentNonTaxDedCount()
@@ -373,7 +373,7 @@ namespace CmsData
                         q = from pid in db.Pledges0(dt, now, fund, 0)
                             select pid.PeopleId;
                         Expression<Func<Person, bool>> pred0 = p => q.Contains(p.PeopleId);
-                        Expression expr0 = Expression.Invoke(pred0, parm);
+                        Expression expr0 = System.Linq.Expressions.Expression.Invoke(pred0, parm);
                         return expr0;
                     }
                     q = from c in db.Contributions2(dt, now, 0, true, false, true)
@@ -394,7 +394,7 @@ namespace CmsData
             }
             var tag = db.PopulateTemporaryTag(q);
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
-            Expression expr = Expression.Invoke(pred, parm);
+            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
             return expr;
         }
         internal Expression RecentPledgeAmount()
@@ -458,7 +458,7 @@ namespace CmsData
             }
             var tag = db.PopulateTemporaryTag(q);
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
-            Expression expr = Expression.Invoke(pred, parm);
+            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
             return expr;
         }
         internal Expression ContributionAmount()
@@ -487,7 +487,7 @@ namespace CmsData
                 op == CompareType.Equal ? "=" : "<>", pct);
             var tag = db.PopulateTemporaryTag(q.Select(pp => pp.Pid));
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
-            Expression expr = Expression.Invoke(pred, parm);
+            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
             return expr;
         }
         internal Expression RecentHasIndContributions()
@@ -504,9 +504,9 @@ namespace CmsData
                             && cc.ContributionAmount > 0 
                             && cc.ContributionStatusId == ContributionStatusCode.Recorded
                             && !ContributionTypeCode.ReturnedReversedTypes.Contains(cc.ContributionTypeId));
-            Expression expr = Expression.Invoke(pred, parm);
+            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
             if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
         internal Expression HadIndContributions()
@@ -520,9 +520,9 @@ namespace CmsData
                                && cc.ContributionDate <= EndDate
                                && cc.ContributionAmount > 0 
                                && !ContributionTypeCode.ReturnedReversedTypes.Contains(cc.ContributionTypeId));
-            Expression expr = Expression.Invoke(pred, parm);
+            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
             if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
         internal Expression RecentBundleType()
@@ -541,9 +541,9 @@ namespace CmsData
                 where c.BundleDetails.Any(cc => CodeIntIds.Contains(cc.BundleHeader.BundleHeaderTypeId))
                 select c
             ).Any();
-            Expression expr = Expression.Invoke(pred, parm);
+            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
         internal Expression GivingChange()
@@ -574,7 +574,7 @@ namespace CmsData
             }
             var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
-            Expression expr = Expression.Invoke(pred, parm);
+            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
             return expr;
         }
         internal Expression RecentFirstTimeGiver()
@@ -598,7 +598,7 @@ namespace CmsData
                 pred = p => !q.Contains(p.PeopleId);
             else
                 pred = p => q.Contains(p.PeopleId);
-            Expression expr = Expression.Invoke(pred, parm);
+            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
             return expr;
         }
         internal Expression IsTopGiver()
@@ -614,9 +614,9 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                 topgivers.Contains(p.PeopleId);
 
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
         internal Expression IsTopPledger()
@@ -632,9 +632,9 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                 toppledgers.Contains(p.PeopleId);
 
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
         internal Expression HasManagedGiving()
@@ -649,9 +649,9 @@ namespace CmsData
                                                         where fundid == null || fundid == e.FundId
                                                         select e).Any();
 
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
         internal Expression ManagedGivingCreditCard()
@@ -665,9 +665,9 @@ namespace CmsData
                                                         where e.Amt > 0
                                                         where pi.PreferredGivingType == "C"
                                                         select e).Any();
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
         internal Expression CcExpiration()
@@ -687,16 +687,16 @@ namespace CmsData
                        select i.PeopleId;
             var tag = db.PopulateTempTag(pids);
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
-            Expression expr = Expression.Invoke(pred, parm);
+            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
             return expr;
         }
         internal Expression WantsElectronicStatement()
         {
             var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p => p.ElectronicStatement == true;
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
     }

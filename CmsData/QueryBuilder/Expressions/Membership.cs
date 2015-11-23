@@ -19,10 +19,10 @@ namespace CmsData
             var mindt = Util.Now.AddDays(-Days).Date;
             Expression<Func<Person, bool>> pred = p =>
                 p.JoinDate > mindt;
-            Expression expr = Expression.Invoke(pred, parm);
+            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual
                 || op == CompareType.NotOneOf)
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
 
         }
@@ -32,9 +32,9 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                 p.DecisionDate > mindt
                 && CodeIntIds.Contains(p.DecisionTypeId.Value);
-            Expression expr = Expression.Invoke(pred, parm);
+            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
         internal Expression CampusId()
@@ -49,7 +49,7 @@ namespace CmsData
                 pred = p => !ids.Contains(p.CampusId ?? 0);
             else
                 pred = p => ids.Contains(p.CampusId ?? 0);
-            Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
+            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm); // substitute parm for p
 
             return expr;
         }

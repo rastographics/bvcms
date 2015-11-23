@@ -19,9 +19,9 @@ namespace CmsData
             var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                     p.Volunteers.Any(v => v.VolunteerForms.Any());
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
         internal Expression VolunteerApprovalCode()
@@ -29,18 +29,18 @@ namespace CmsData
             Expression<Func<Person, bool>> pred =
                 p => p.VoluteerApprovalIds.Any(vid => CodeIntIds.Contains(vid.ApprovalId))
                      || (!p.VoluteerApprovalIds.Any() && CodeIntIds.Contains(0));
-            Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
+            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm); // substitute parm for p
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
         internal Expression VolAppStatusCode()
         {
             Expression<Func<Person, bool>> pred = p =>
                 p.Volunteers.Any(v => CodeIntIds.Contains(v.StatusId ?? 0));
-            Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
+            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm); // substitute parm for p
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
         internal Expression VolunteerProcessedDateMonthsAgo()
@@ -49,17 +49,17 @@ namespace CmsData
             var months = TextValue.ToInt();
             Expression<Func<Person, int?>> pred = p =>
                 SqlMethods.DateDiffMonth(p.Volunteers.Max(v => v.ProcessedDate) ?? dt, Util.Now);
-            Expression left = Expression.Invoke(pred, parm);
-            var right = Expression.Constant(months, typeof(int?));
+            Expression left = System.Linq.Expressions.Expression.Invoke(pred, parm);
+            var right = System.Linq.Expressions.Expression.Constant(months, typeof(int?));
             return Compare(parm, left, op, right);
         }
         internal Expression MVRStatusCode()
         {
             Expression<Func<Person, bool>> pred = p =>
                 p.Volunteers.Any(v => CodeIntIds.Contains(v.MVRStatusId ?? 0));
-            Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
+            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm); // substitute parm for p
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
         internal Expression MVRProcessedDateMonthsAgo()
@@ -68,8 +68,8 @@ namespace CmsData
             var months = TextValue.ToInt();
             Expression<Func<Person, int?>> pred = p =>
                 SqlMethods.DateDiffMonth(p.Volunteers.Max(v => v.MVRProcessedDate) ?? dt, Util.Now);
-            Expression left = Expression.Invoke(pred, parm);
-            var right = Expression.Constant(months, typeof(int?));
+            Expression left = System.Linq.Expressions.Expression.Invoke(pred, parm);
+            var right = System.Linq.Expressions.Expression.Constant(months, typeof(int?));
             return Compare(parm, left, op, right);
         }
         internal Expression BackgroundCheckStatus()
@@ -91,9 +91,9 @@ namespace CmsData
                   && (pid == 0 || bc.UserID == pid)
                   && (lab.Contains(bc.ReportLabelID) || lab.Length == 0 || lab[0] == 99)
                   );
-            Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
+            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm); // substitute parm for p
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
     }

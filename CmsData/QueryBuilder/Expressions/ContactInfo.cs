@@ -19,9 +19,9 @@ namespace CmsData
                 (db.IsValidEmail(p.EmailAddress ?? "") == false
                 || db.IsValidEmail(p.EmailAddress2 ?? "") == false);
 
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
         internal Expression SpouseHasEmail()
@@ -29,9 +29,9 @@ namespace CmsData
             var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                 p.Family.People.Any(pp => pp.PeopleId == p.SpouseId && pp.EmailAddress.Contains("@"));
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
 
@@ -40,7 +40,7 @@ namespace CmsData
             var q = db.ViewSpouseOrHeadWithEmails.Select(p => p.PeopleId.Value);
             var tag = db.PopulateTemporaryTag(q);
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
-            Expression expr = Expression.Invoke(pred, parm);
+            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
             return expr;
         }
         internal Expression HeadOrSpouseWithEmail()
@@ -48,7 +48,7 @@ namespace CmsData
             var q = db.ViewHeadOrSpouseWithEmails.Select(p => p.PeopleId.Value);
             var tag = db.PopulateTemporaryTag(q);
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
-            Expression expr = Expression.Invoke(pred, parm);
+            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
             return expr;
         }
         internal Expression HasZipPlus4()
@@ -56,9 +56,9 @@ namespace CmsData
             var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                 p.Family.People.Any(pp => pp.PrimaryZip.Length >= 9);
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
     }

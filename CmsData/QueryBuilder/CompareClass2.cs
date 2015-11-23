@@ -21,7 +21,7 @@ namespace CmsData
         public string Display { get; set; }
         internal string ToString(Condition c)
         {
-            string fld = c.FieldInfo.Display(c);
+            string fld = c.FieldInfo.ToString(c);
             switch (FieldType)
             {
                 case FieldType.EqualBit:
@@ -31,7 +31,7 @@ namespace CmsData
                 case FieldType.Code:
                 case FieldType.NullCode:
                 case FieldType.CodeStr:
-                    return string.Format(Display, fld, c.CodeValues);
+                    return string.Format(Display, fld, c.CodeIdText);
                 case FieldType.String:
                 case FieldType.StringEqual:
                 case FieldType.StringEqualOrStartsWith:

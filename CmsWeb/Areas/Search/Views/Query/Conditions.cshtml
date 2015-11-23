@@ -50,9 +50,10 @@
 }
 @helper ClauseItem(Condition clause)
 {
+  var cstr = clause.ToString();
     <li class="condition" data-qid="@clause.Id">
-        <a href="#editcondition" class="edit edit-condition">
-            <span class="value">@(clause.ToString().Length > 30 ? $"{clause.ToString().Substring(0, 30)}..." : clause.ToString())</span>
+        <a href="#editcondition" class="edit edit-condition" title="@cstr">
+            <span class="value">@(cstr.Length > 30 ? $"{cstr.Substring(0, 30)}..." : cstr)</span>
         </a>
         <div class="pull-right">
             @CogItems(clause)

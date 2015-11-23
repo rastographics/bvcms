@@ -28,9 +28,9 @@ namespace CmsData
                        orderby t.RegId descending
                     select t.IndDue).FirstOrDefault() > 0;
 
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
         internal Expression InCurrentOrgNew()
@@ -44,10 +44,10 @@ namespace CmsData
                     .Select(gg => gg.PeopleId)
                     .Contains(p.PeopleId);
 
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
 
             if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
         internal Expression InCurrentOrg()
@@ -74,7 +74,7 @@ namespace CmsData
                 select m
                 ).Any();
 
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
             if (db.CurrentGroupsPrefix.HasValue())
             {
                 var aa = db.CurrentGroupsPrefix.Split(',');
@@ -98,13 +98,13 @@ namespace CmsData
                                           mm => mm.MemberTag.Name.StartsWith(sg))
                                       select om).Any();
                     }
-                    var expr1 = Expression.Invoke(pred2, parm);
-                    expr = Expression.And(expr1, expr);
+                    var expr1 = System.Linq.Expressions.Expression.Invoke(pred2, parm);
+                    expr = System.Linq.Expressions.Expression.And(expr1, expr);
                 }
             }
 
             if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
         internal Expression LeadersUnderCurrentOrg()
@@ -115,8 +115,8 @@ namespace CmsData
                 p.OrganizationMembers.Any(m =>
                     p.OrganizationMembers.Any(mm => oids.Contains(mm.OrganizationId) && mm.MemberType.AttendanceTypeId == AttendTypeCode.Leader)
                 );
-            Expression left = Expression.Invoke(pred, parm);
-            var right = Expression.Convert(Expression.Constant(tf), left.Type);
+            Expression left = System.Linq.Expressions.Expression.Invoke(pred, parm);
+            var right = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Constant(tf), left.Type);
             return Compare(left, right);
         }
         internal Expression MembersUnderCurrentOrg()
@@ -127,8 +127,8 @@ namespace CmsData
                 p.OrganizationMembers.Any(m =>
                     p.OrganizationMembers.Any(mm => oids.Contains(mm.OrganizationId))
                 );
-            Expression left = Expression.Invoke(pred, parm);
-            var right = Expression.Convert(Expression.Constant(tf), left.Type);
+            Expression left = System.Linq.Expressions.Expression.Invoke(pred, parm);
+            var right = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Constant(tf), left.Type);
             return Compare(left, right);
         }
 		internal Expression InactiveCurrentOrg()
@@ -138,9 +138,9 @@ namespace CmsData
                 p.OrganizationMembers.Any(m =>
                     m.OrganizationId == db.CurrentOrgId0
                     && m.MemberTypeId == MemberTypeCode.InActive);
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
 
@@ -151,9 +151,9 @@ namespace CmsData
                 p.OrganizationMembers.Any(m =>
                     m.OrganizationId == db.CurrentOrgId0
                     && m.MemberTypeId == MemberTypeCode.Prospect);
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
         internal Expression PendingCurrentOrg()
@@ -163,9 +163,9 @@ namespace CmsData
                 p.OrganizationMembers.Any(m =>
                     m.OrganizationId == db.CurrentOrgId0
                     && (m.Pending ?? false) == true);
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
         internal Expression PreviousCurrentOrg()
@@ -181,9 +181,9 @@ namespace CmsData
                 && !p.OrganizationMembers.Any(m =>
                     m.OrganizationId == db.CurrentOrgId0
                     && (m.Pending ?? false) == false);
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
         internal Expression VisitedCurrentOrg()
@@ -213,9 +213,9 @@ namespace CmsData
                     where (m.MemberTypeId != MemberTypeCode.Prospect)
                     select m
                     ).Any();
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
+                expr = System.Linq.Expressions.Expression.Not(expr);
             return expr;
         }
     }

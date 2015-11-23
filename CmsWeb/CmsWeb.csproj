@@ -937,6 +937,7 @@
     <Content Include="Content\touchpoint\js\form-ajax.js" />
     <Content Include="Content\touchpoint\js\main.js" />
     <Content Include="Content\touchpoint\js\people\merge.js" />
+    <Content Include="Content\touchpoint\js\search\export-query.js" />
     <Content Include="Content\touchpoint\js\volunteer\calendar.js" />
     <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\dialogs\specialLink.js" />
     <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\icons\specialLink.png" />

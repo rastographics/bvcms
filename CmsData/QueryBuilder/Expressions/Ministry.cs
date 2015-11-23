@@ -4,12 +4,13 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+
 using System;
+using System.Data.Linq.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
-using UtilityExtensions;
-using System.Data.Linq.SqlClient;
 using CmsData.Codes;
+using UtilityExtensions;
 
 namespace CmsData
 {
@@ -17,9 +18,7 @@ namespace CmsData
     {
         internal Expression HasTaskWithName()
         {
-            var task = TextValue;
-            if (task == null)
-                task = "";
+            var task = TextValue ?? "";
             Expression<Func<Person, bool>> pred = p =>
                 p.TasksAboutPerson.Any(t => t.Description.Contains(task)
                     && t.StatusId != TaskStatusCode.Complete);
@@ -45,7 +44,7 @@ namespace CmsData
         internal Expression DaysSinceContact()
         {
             var days = TextValue.ToInt();
-            Expression<Func<Person, bool>> hadcontact = p => p.contactsHad.Count() > 0;
+            Expression<Func<Person, bool>> hadcontact = p => p.contactsHad.Any();
             var dt = Util.Now.Date;
             Expression<Func<Person, int?>> pred = p =>
                 SqlMethods.DateDiffDay(p.contactsHad.Max(cc => cc.contact.ContactDate), dt);
@@ -140,7 +139,7 @@ namespace CmsData
         internal Expression MadeContactTypeAsOf()
         {
             //StartDate, EndDate, Program, CodeIntIds
-            var ministryid = Program;
+            var ministryid = Program.ToInt();
             var to = (EndDate ?? StartDate ?? DateTime.Now).AddDays(1);
 
             Expression<Func<Person, bool>> pred = p => (
@@ -159,7 +158,7 @@ namespace CmsData
         internal Expression HasContacts()
         {
             var tf = CodeIds == "1";
-            Expression<Func<Person, bool>> pred = p => p.contactsHad.Count() > 0;
+            Expression<Func<Person, bool>> pred = p => p.contactsHad.Any();
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
