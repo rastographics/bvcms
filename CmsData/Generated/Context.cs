@@ -1918,6 +1918,12 @@ namespace CmsData
 
         }
 
+        public Table< View.OrgSchedules2> ViewOrgSchedules2s
+        {
+            get { return GetTable< View.OrgSchedules2>(); }
+
+        }
+
         public Table< View.OrgsWithFee> ViewOrgsWithFees
         {
             get { return GetTable< View.OrgsWithFee>(); }
@@ -2065,6 +2071,12 @@ namespace CmsData
         public Table< View.UserRole> ViewUserRoles
         {
             get { return GetTable< View.UserRole>(); }
+
+        }
+
+        public Table< View.VolunteerTime> ViewVolunteerTimes
+        {
+            get { return GetTable< View.VolunteerTime>(); }
 
         }
 
@@ -3644,7 +3656,8 @@ namespace CmsData
             [Parameter(DbType="int")] int? mid,
             [Parameter(DbType="datetime")] DateTime? meetingdt,
             [Parameter(DbType="int")] int? oid,
-            [Parameter(DbType="bit")] bool? current
+            [Parameter(DbType="bit")] bool? current,
+            [Parameter(DbType="bit")] bool? FromMobile
             )
         {
             return CreateMethodCallQuery< View.RollList>(this,
@@ -3652,7 +3665,8 @@ namespace CmsData
                     mid,
                     meetingdt,
                     oid,
-                    current
+                    current,
+                    FromMobile
                 );
         }
 

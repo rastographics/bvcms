@@ -184,8 +184,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Attend.MarkRegistered(DbUtil.Db, OrgId, PeopleId, currcommit, AttendCommitmentCode.Regrets);
             foreach (var newcommit in commits)
                 Attend.MarkRegistered(DbUtil.Db, OrgId, PeopleId, newcommit, AttendCommitmentCode.Attending);
-            OrganizationMember.InsertOrgMembers(DbUtil.Db,
-                OrgId, PeopleId, MemberTypeCode.Member, DateTime.Now, null, false);
+            var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == PeopleId && mm.OrganizationId == OrgId);
+            if(om == null)
+                OrganizationMember.InsertOrgMembers(DbUtil.Db,
+                    OrgId, PeopleId, MemberTypeCode.Member, DateTime.Now, null, false);
         }
 
         public string Summary(CmsController controller)

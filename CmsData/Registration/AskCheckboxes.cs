@@ -76,10 +76,17 @@ For each checkbox, you can specify the following:
         }
         public IEnumerable<CheckboxItem> CheckboxItemsChosen(IEnumerable<string> items)
         {
-            var q = from i in items
-                    join c in list on i equals c.SmallGroup
-                    select c;
-            return q;
+            try
+            {
+                var q = from i in items
+                        join c in list on i equals c.SmallGroup
+                        select c;
+                return q;
+            }
+            catch (Exception)
+            {
+                return new List<CheckboxItem>();
+            }
         }
         public bool IsSmallGroupFilled(List<string> smallgroups, string sg)
         {
