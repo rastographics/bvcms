@@ -51,10 +51,6 @@ namespace UtilityExtensions
 
                 }
 
-               /// if (!msg.ReplyToList.Contains(msg.From))
-               /// {
-               ///     msg.ReplyToList.Add(msg.From);
-               ///  }
             }
 
             msg.Headers.Add("X-SMTPAPI",
@@ -92,7 +88,7 @@ namespace UtilityExtensions
                 string cclist = (string.Join(", ", cc));
 
                 var ccstring = $"<p align='center'><small><i>This email was CC\'d to the email addresses below and they are included in the Reply-To Field.</br>" + cclist + "</i></small></p>";
-                html = ccstring + html + ccstring;
+                html = html + ccstring;
             }
 
             var result = PreMailer.Net.PreMailer.MoveCssInline(html);

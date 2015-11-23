@@ -33,7 +33,7 @@ namespace CmsWeb.Areas.Main.Models
         public bool PublicViewable { get; set; }
         public IEnumerable<string> Recipients { get; set; }
 
-        public List<MailAddress> CcAddresses;
+        public List<MailAddress> CcAddresses = new List<MailAddress>();
         public string Cc {
             get {
                 if (CcAddresses == null) { return null; }
@@ -42,9 +42,26 @@ namespace CmsWeb.Areas.Main.Models
             set {
                 if (value == null) { CcAddresses = null; }
                 else
-                {                    
-                    // The statement below makes CcAddresses = null if one of them is ill-formed
-                    CcAddresses = value.Split(',').Select(a => new MailAddress(a)).ToList();
+                {
+                    try
+                    {
+                        CcAddresses = value.Split(',').Select(a => new MailAddress(a)).ToList();
+                    }
+                    catch
+                    {
+                        List<String> CcAddressesString = value.Split(',').ToList();
+                        var re1 = new Regex(@"^(.*\b(?=\w))\b[A-Z0-9._%+-]+(?<=[^.])@[A-Z0-9._-]+\.[A-Z]{2,4}\b\b(?!\w)$", RegexOptions.IgnoreCase);
+                        var re2 = new Regex(@"^[A-Z0-9._%+-]+(?<=[^.])@[A-Z0-9.-]+\.[A-Z]{2,4}$", RegexOptions.IgnoreCase);
+
+                        foreach (string s in CcAddressesString)
+                        {
+                            if (re1.IsMatch(s) || re2.IsMatch(s))
+                            {
+                                CcAddresses.Add(new MailAddress(s.trim())); 
+                            }
+                        }
+                    };
+                  
                 }
             }
         }
