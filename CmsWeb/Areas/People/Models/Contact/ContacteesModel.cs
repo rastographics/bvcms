@@ -57,7 +57,7 @@ namespace CmsWeb.Areas.People.Models
         public Guid ConvertToQuery()
         {
             var c = DbUtil.Db.ScratchPadCondition();
-            c.Reset(DbUtil.Db);
+            c.Reset();
             c.AddNewClause(QueryType.ContactRecipient, CompareType.Equal, Contact.ContactId);
             c.Save(DbUtil.Db);
             return c.Id;

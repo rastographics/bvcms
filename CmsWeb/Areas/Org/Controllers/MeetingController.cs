@@ -378,7 +378,7 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult QueryAttendees(int Id)
         {
             var cc = DbUtil.Db.ScratchPadCondition();
-            cc.Reset(DbUtil.Db);
+            cc.Reset();
             cc.AddNewClause(QueryType.MeetingId, CompareType.Equal, Id);
             cc.Save(DbUtil.Db);
             return Redirect("/Query/" + cc.Id);
@@ -388,7 +388,7 @@ namespace CmsWeb.Areas.Org.Controllers
         {
             var m = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == Id);
             var cc = DbUtil.Db.ScratchPadCondition();
-            cc.Reset(DbUtil.Db);
+            cc.Reset();
             cc.AddNewClause(QueryType.MeetingId, CompareType.Equal, Id);
             var c = cc.AddNewClause(QueryType.AttendTypeAsOf, CompareType.OneOf, "40,VM;50,RG;60,NG");
             c.StartDate = m.MeetingDate;
@@ -403,7 +403,7 @@ namespace CmsWeb.Areas.Org.Controllers
         {
             var m = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == Id);
             var cc = DbUtil.Db.ScratchPadCondition();
-            cc.Reset(DbUtil.Db);
+            cc.Reset();
             cc.AddNewClause(QueryType.MeetingId, CompareType.NotEqual, Id);
             var c = cc.AddNewClause(QueryType.WasMemberAsOf, CompareType.Equal, "1,T");
             c.StartDate = m.MeetingDate;
@@ -418,7 +418,7 @@ namespace CmsWeb.Areas.Org.Controllers
         {
             var m = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == Id);
             var cc = DbUtil.Db.ScratchPadCondition();
-            cc.Reset(DbUtil.Db);
+            cc.Reset();
             switch (type)
             {
                 case "Attending":

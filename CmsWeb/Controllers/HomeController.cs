@@ -47,7 +47,7 @@ namespace CmsWeb.Controllers
         public ActionResult NewQuery()
         {
             var qb = DbUtil.Db.ScratchPadCondition();
-            qb.Reset(DbUtil.Db);
+            qb.Reset();
             qb.Save(DbUtil.Db);
             return Redirect("/Query");
         }
@@ -82,7 +82,7 @@ namespace CmsWeb.Controllers
 
             const CompareType comp = CompareType.Equal;
             var cc = DbUtil.Db.ScratchPadCondition();
-            cc.Reset(DbUtil.Db);
+            cc.Reset();
             Condition c;
             switch (id)
             {

@@ -133,7 +133,7 @@ namespace CmsData
             if (list.Any(vv => vv.Name == "Org"))
                 list.RemoveAll(vv => vv.Name == "Div");
             var parms = string.Join(", ", list.Select(vv => $"{vv.Name}={vv.Value}"));
-            return $"{Name}({parms})";
+            return $"{Name}( {parms} )";
         }
         internal string ToString(Condition c)
         {

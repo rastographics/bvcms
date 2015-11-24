@@ -299,7 +299,7 @@ namespace CmsData
         public Guid OrgMembersQuery(int progid, int divid, int orgid, string memberTypes)
         {
             var c = db.ScratchPadCondition();
-            c.Reset(db);
+            c.Reset();
             var mtlist = memberTypes.Split(',');
             var mts = string.Join(";", from mt in db.MemberTypes
                                        where mtlist.Contains(mt.Description)

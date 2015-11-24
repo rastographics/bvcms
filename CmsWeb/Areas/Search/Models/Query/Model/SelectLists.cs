@@ -264,7 +264,7 @@ namespace CmsWeb.Areas.Search.Models
                         Value = $"{ot.Id},{name}",
                         Text = CmsData.Organization.FormatOrgName(ot.Organization.OrganizationName,
                             ot.Organization.LeaderName, ot.Organization.Location),
-                        Selected = OrganizationInt == ot.Id
+                        Selected = OrganizationInt == (ot.Id ?? -99)
                     };
             var listItems = q.ToList();
             listItems.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });

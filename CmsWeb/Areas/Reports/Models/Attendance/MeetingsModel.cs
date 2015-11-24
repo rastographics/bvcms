@@ -119,7 +119,7 @@ namespace CmsWeb.Areas.Reports.Models
         public string ConvertToSearch(string type)
         {
             var cc = DbUtil.Db.ScratchPadCondition();
-            cc.Reset(DbUtil.Db);
+            cc.Reset();
             var c = cc.AddNewClause(type == "Guests" ? QueryType.GuestAsOf : QueryType.AttendedAsOf, CompareType.Equal, "1,T");
             if (ProgramId.HasValue && ProgramId > 0)
                 c.Program = ProgramId.Value.ToString();

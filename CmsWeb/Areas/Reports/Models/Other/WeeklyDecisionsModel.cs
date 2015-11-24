@@ -297,7 +297,7 @@ namespace CmsWeb.Areas.Reports.Models
         public string ConvertToSearch(string command, string key)
         {
             var cc = DbUtil.Db.ScratchPadCondition();
-            cc.Reset(DbUtil.Db);
+            cc.Reset();
 
             bool NotAll = key != "All";
 

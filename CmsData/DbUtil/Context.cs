@@ -1337,7 +1337,7 @@ namespace CmsData
             const string name = "ActiveRecords";
             var qb = Queries.FirstOrDefault(c => c.Name == name && c.Owner == "public");
             Condition cc = qb == null ? ScratchPadCondition() : qb.ToClause();
-            cc.Reset(this);
+            cc.Reset();
             cc.SetComparisonType(CompareType.AnyTrue);
             var clause = cc.AddNewClause(QueryType.RecentAttendCount, CompareType.GreaterEqual, "1");
             clause.Days = 365;
@@ -1357,7 +1357,7 @@ namespace CmsData
             const string name = "ActiveRecords2";
             var qb = Queries.FirstOrDefault(c => c.Name == name && c.Owner == "david");
             Condition cc = qb == null ? ScratchPadCondition() : qb.ToClause();
-            cc.Reset(this);
+            cc.Reset();
             cc.SetComparisonType(CompareType.AnyTrue);
             var clause = cc.AddNewClause(QueryType.RecentAttendCount, CompareType.Greater, "1");
             clause.Days = 365;
@@ -1375,7 +1375,7 @@ namespace CmsData
         public int ActiveRecordsdt(DateTime dt)
         {
             Condition cc = ScratchPadCondition();
-            cc.Reset(this);
+            cc.Reset();
             cc.SetComparisonType(CompareType.AnyTrue);
             var clause = cc.AddNewClause(QueryType.AttendCntHistory, CompareType.GreaterEqual, "1");
             clause.StartDate = dt.AddDays(-365);
@@ -1393,7 +1393,7 @@ namespace CmsData
         public int ActiveRecords2dt(DateTime dt)
         {
             Condition cc = ScratchPadCondition();
-            cc.Reset(this);
+            cc.Reset();
             cc.SetComparisonType(CompareType.AnyTrue);
             var clause = cc.AddNewClause(QueryType.AttendCntHistory, CompareType.Greater, "1");
             clause.StartDate = dt.AddDays(-365);

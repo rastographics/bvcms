@@ -249,7 +249,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult NewQuery()
         {
             var qb = DbUtil.Db.ScratchPadCondition();
-            qb.Reset(DbUtil.Db);
+            qb.Reset();
             var nc = qb.AddNewClause();
             qb.Description = Util.ScratchPad2;
             qb.Save(DbUtil.Db);

@@ -303,7 +303,7 @@ namespace CmsWeb.Areas.Search.Models
         public Guid ConvertToQuery()
         {
             var c = DbUtil.Db.ScratchPadCondition();
-            c.Reset(DbUtil.Db);
+            c.Reset();
             var clause = c.AddNewClause(QueryType.MadeContactTypeAsOf, CompareType.Equal, "1,T");
             clause.Program = SearchParameters.Ministry.Value;
             clause.StartDate = SearchParameters.StartDate ?? DateTime.Parse("1/1/2000");
@@ -320,7 +320,7 @@ namespace CmsWeb.Areas.Search.Models
         public static Guid ContactTypeQuery(int id)
         {
             var c = DbUtil.Db.ScratchPadCondition();
-            c.Reset(DbUtil.Db);
+            c.Reset();
             var comp = CompareType.Equal;
             var clause = c.AddNewClause(QueryType.RecentContactType, comp, "1,T");
             clause.Days = 10000;

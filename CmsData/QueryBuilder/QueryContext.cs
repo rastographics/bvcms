@@ -185,7 +185,7 @@ namespace CmsData
                 return i.QueryId;
 
             var qb = ScratchPadCondition();
-            qb.Reset(this);
+            qb.Reset();
             var nc = qb.AddNewClause();
             qb.Description = Util.ScratchPad2;
             qb.Save(DbUtil.Db);

@@ -721,7 +721,7 @@ namespace CmsWeb.Areas.Search.Models
         public string ConvertToSearch()
         {
             var cc = DbUtil.Db.ScratchPadCondition();
-            cc.Reset(DbUtil.Db);
+            cc.Reset();
             var c = cc.AddNewClause(QueryType.OrgSearchMember, CompareType.Equal, "1,T");
             if (Name.HasValue())
                 c.OrgName = Name;

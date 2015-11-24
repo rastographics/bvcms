@@ -368,7 +368,7 @@ or just Last or *First*`space` for first name match only.
         public string ConvertToSearch()
         {
             var cc = DbUtil.Db.ScratchPadCondition();
-            cc.Reset(DbUtil.Db);
+            cc.Reset();
 
             if (m.memberstatus > 0)
                 cc.AddNewClause(QueryType.MemberStatusId, CompareType.Equal,
