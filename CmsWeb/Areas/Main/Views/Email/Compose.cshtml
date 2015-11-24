@@ -94,14 +94,26 @@
               }
             </div>
           </div>
+            <div id="ccdiv" style="display: none">
+                <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">Cc/Reply-To:</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="Cc" name="Cc" class="form-control">
+                        <p class="help-block"><i><small>Use commas to separate addresses. Each address receives a copy of the email and each is added to the Reply-To field.</small></i></p>
+
+                    </div>
+                </div>
+            </div>
           <div class="form-group">
             <label for="Subject" class="col-sm-2 control-label">Subject:</label>
             <div class="col-sm-10">
               <input name="Subject" id="Subject" size="75" value="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? "" : c.Title)" class="form-control" />
+             
             </div>
           </div>
           @if ((User.IsInRole("ScheduleEmails") || User.IsInRole("Edit")) && ConfigurationManager.AppSettings["UseEmailScheduler"] == "true")
           {
+            <div id="scheddiv" style="display: none">
             <div class="form-group">
               <label for="Schedule" class="col-sm-2 control-label">Schedule:</label>
               <div class="col-sm-10">
@@ -112,12 +124,22 @@
                 <p class="help-block">Note: Time is Central Time (CST)</p>
               </div>
             </div>
+            </div>
           }
           <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
               <label class="checkbox-inline">
                 @Html.CheckBox("PublicViewable") Publicly viewable?
               </label>
+              <label class="checkbox-inline">
+                @Html.CheckBox("AddCC") Add Cc/Reply-To?
+              </label>
+              @if ((User.IsInRole("ScheduleEmails") || User.IsInRole("Edit")) && ConfigurationManager.AppSettings["UseEmailScheduler"] == "true")
+              {
+                <label class="checkbox-inline">
+                @Html.CheckBox("ChangeSched") Schedule Email?
+              </label>
+              }
             </div>
           </div>
           <div class="form-group">
@@ -231,6 +253,31 @@
       } else {
         $("div.scheduleDateTime").datetimepicker({ format: 'MM/DD/YYYY h:mm A', widgetPositioning: { horizontal: 'left' }});
       }
+
+
+
+
+      $("#AddCC").click(function () {
+          if ($(this).is(':checked')) {
+              $("#ccdiv").show(1000);
+          }
+          else {
+              $("#ccdiv").hide(1000);
+              $("#Cc").val('');
+          }
+      });
+
+      $("#ChangeSched").click(function () {
+          if ($(this).is(':checked')) {
+              $("#scheddiv").show(1000);
+          }
+          else {
+              $("#scheddiv").hide(1000);
+              $("#Schedule").val('');
+              $("#ScheduleIso").val('');
+          }
+      });
+
     });
   </script>
 }

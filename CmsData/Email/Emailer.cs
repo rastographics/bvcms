@@ -414,7 +414,7 @@ namespace CmsData
             return aa;
         }
 
-        public void SendPeopleEmail(int queueid)
+        public void SendPeopleEmail(int queueid, List<MailAddress> cc = null)
         {
             var emailqueue = EmailQueues.Single(ee => ee.Id == queueid);
             var sysFromEmail = Util.SysFromEmail;
@@ -475,7 +475,7 @@ namespace CmsData
                 if (Setting("sendemail", "true") != "false")
                 {
                     Util.SendMsg(sysFromEmail, CmsHost, from,
-                        emailqueue.Subject, text, aa, emailqueue.Id, To.PeopleId);
+                        emailqueue.Subject, text, aa, emailqueue.Id, To.PeopleId, cc: cc);
                     To.Sent = DateTime.Now;
                     SubmitChanges();
                 }
@@ -496,12 +496,47 @@ namespace CmsData
 #endif
             }
 
+            // Handle CC MailAddresses.  These do not get DoReplacement support.
+            if (cc != null)
+            {
+                foreach (var ma in cc)
+                {
+#if DEBUG
+#else
+                try
+                {
+#endif
+                if (Setting("sendemail", "true") != "false")
+                {
+                    List<MailAddress> mal = new List<MailAddress> {ma};
+                    Util.SendMsg(sysFromEmail, CmsHost, from,
+                        emailqueue.Subject, body, mal, emailqueue.Id, null, cc: cc);
+                }
+#if DEBUG
+#else
+                }
+                catch (Exception ex)
+                {
+                    Util.SendMsg(sysFromEmail, CmsHost, from,
+                        "sent emails - error: {0}".Fmt(CmsHost), ex.Message,
+                        Util.ToMailAddressList(from),
+                        emailqueue.Id, null);
+                    Util.SendMsg(sysFromEmail, CmsHost, from,
+                        "sent emails - error: {0}".Fmt(CmsHost), ex.Message,
+                        Util.SendErrorsTo(),
+                        emailqueue.Id, null);
+                }
+#endif
+                }
+            }
+
             emailqueue.Sent = DateTime.Now;
             if (emailqueue.Redacted ?? false)
                 emailqueue.Body = "redacted";
             else if (emailqueue.Transactional == false)
             {
                 var nitems = emailqueue.EmailQueueTos.Count();
+                if (cc != null) { nitems += cc.Count(); }
                 if (nitems > 1)
                     NotifySentEmails(from.Address, from.DisplayName,
                         emailqueue.Subject, nitems, emailqueue.Id);
