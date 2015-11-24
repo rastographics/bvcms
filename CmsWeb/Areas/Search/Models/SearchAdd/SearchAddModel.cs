@@ -77,6 +77,11 @@ namespace CmsWeb.Areas.Search.Models
                 case "contributor":
                     EntryPointId = 0;
                     break;
+                case "addtoemail":
+                    EntryPointId = 0;
+                    break;
+
+                    
             }
         }
 
@@ -126,6 +131,8 @@ namespace CmsWeb.Areas.Search.Models
                         return "Transfer Task Ownership";
                     case "taskabout":
                         return "Change who Task is Regarding";
+                    case "addtoemail":
+                        return "Add To Email";
                 }
                 return "";
             }
@@ -243,6 +250,10 @@ namespace CmsWeb.Areas.Search.Models
                 case "mergeto":
                     if (PendingList.Count > 0)
                         return new ReturnResult {close = true, how = "addselected", pid = PrimaryKeyForContextType.ToInt(), pid2 = PendingList[0].PeopleId, from = AddContext};
+                    break;
+                case "addtoemail":
+                    //need to add correct code here 
+                    //return AddPeopleToTag(id, 0);
                     break;
             }
             return new ReturnResult {close = true, from = AddContext};
