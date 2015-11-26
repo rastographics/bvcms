@@ -246,10 +246,7 @@ namespace CmsWeb.Areas.Search.Models
         }
         public IEnumerable<SelectListItem> Organizations(string id)
         {
-            var a = id.SplitStr(",", 2);
-            var divid = a[0].ToInt2();
-            if (!divid.HasValue)
-                return null;
+            var divid = id.GetCsvToken().ToInt();
             var roles = DbUtil.Db.CurrentRoles();
             var q = from ot in DbUtil.Db.DivOrgs
                     where ot.Organization.LimitToRole == null || roles.Contains(ot.Organization.LimitToRole)
@@ -261,10 +258,10 @@ namespace CmsWeb.Areas.Search.Models
                     orderby ot.Organization.OrganizationStatusId, ot.Organization.OrganizationName
                     select new SelectListItem
                     {
-                        Value = $"{ot.Id},{name}",
+                        Value = $"{ot.OrgId},{name}",
                         Text = CmsData.Organization.FormatOrgName(ot.Organization.OrganizationName,
                             ot.Organization.LeaderName, ot.Organization.Location),
-                        Selected = OrganizationInt == (ot.Id ?? -99)
+                        Selected = OrganizationInt == (ot.OrgId)
                     };
             var listItems = q.ToList();
             listItems.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
@@ -330,7 +327,12 @@ namespace CmsWeb.Areas.Search.Models
                         Selected = OrgStatus == statusid
                     };
             var listItems = q.ToList();
-            listItems.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
+            listItems.Insert(0, new SelectListItem
+            {
+                Value = "0,(not specified)",
+                Text = "(not specified)",
+                Selected = OrgStatusInt == 0
+            });
             return listItems;
         }
         public IEnumerable<SelectListItem> RegistrationTypeIds()
@@ -345,9 +347,10 @@ namespace CmsWeb.Areas.Search.Models
                     };
             return q;
         }
-        public IEnumerable<SelectListItem> TagData()
+        public IEnumerable<SelectListItem> TagData(int? userpeopleid = null)
         {
-            return ToIdValueSelectList(CodeValueModel.UserTagsAll());
+            var q = new CodeValueModel().UserTags(userpeopleid ?? Util.UserPeopleId).ToList();
+            return ToIdValueSelectList(q);
         }
 
         public IEnumerable<SelectListItem> PmmLabelData()

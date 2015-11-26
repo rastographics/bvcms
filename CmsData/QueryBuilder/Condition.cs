@@ -76,7 +76,9 @@ namespace CmsData
         public DateTime CreatedOn { get; set; }
         public string Quarters { get; set; }
         public string SavedQuery { get; set; }
+        public string SavedQueryIdDesc => SavedQuery;
         public string Tags { get; set; }
+        public string PmmLabels => Tags;
 
         public string Schedule { get; set; }
         public int ScheduleInt => Schedule.GetCsvToken().ToInt();

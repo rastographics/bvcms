@@ -111,9 +111,8 @@ namespace CmsData
             w.WriteAttr("Tags", Tags);
             w.WriteAttr("Schedule", Schedule);
             w.WriteAttr("Campus", Campus);
-            if (ConditionName != "FamilyHasChildrenAged")
-                Age = null;
-            w.WriteAttr("Age", Age);
+            if (ConditionName == "FamilyHasChildrenAged")
+                w.WriteAttr("Age", Age ?? 0, 12);
             w.WriteAttr("SavedQueryIdDesc", SavedQuery, "scratchpad");
             w.WriteAttr("OnlineReg", OnlineReg);
             w.WriteAttr("OrgStatus", OrgStatus);

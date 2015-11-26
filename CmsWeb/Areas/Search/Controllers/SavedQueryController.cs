@@ -5,6 +5,7 @@ using CmsWeb.Areas.Search.Models;
 using CmsWeb.Models;
 using UtilityExtensions;
 using CmsData;
+using Dapper;
 
 namespace CmsWeb.Areas.Search.Controllers
 {
@@ -51,5 +52,43 @@ namespace CmsWeb.Areas.Search.Controllers
             DbUtil.Db.SubmitChanges();
             return Content("ok");
         }
+
+        const string SqlSavedqueries = @"
+SELECT 
+	QueryId,
+    owner ,
+    name
+FROM dbo.Query
+WHERE name IS NOT NULL
+AND name <> 'scratchpad'
+AND text not like '%AnyFalse%'
+ORDER BY lastRun DESC
+";
+        [HttpGet]
+        public ActionResult UpdateAll()
+        {
+            var db = DbUtil.Db;
+            var list = db.Connection.Query(SqlSavedqueries).ToList();
+            foreach (var sq in list)
+            {
+                var g = sq.QueryId as Guid?;
+                if (!g.HasValue)
+                    continue;
+                DbUtil.DbDispose();
+                var c = DbUtil.Db.LoadExistingQuery(g.Value);
+                var s = ExportQuery.ToString(c);
+                if(s.HasValue())
+                    UpdateQueryConditions.Run(sq.QueryId);
+            }
+            return RedirectToAction("Code");
+        }
+        [HttpGet]
+        public ActionResult Code()
+        {
+            var q = DbUtil.Db.Connection.Query(SqlSavedqueries);
+            ViewBag.Count = q.Count();
+            return View(q);
+        }
+
     }
 }

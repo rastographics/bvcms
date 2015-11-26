@@ -918,23 +918,6 @@ namespace CmsWeb.Areas.Reports.Controllers
             var m = new WeeklyDecisionsModel(sunday) { Campus = campus };
             return View(m);
         }
-        [HttpGet]
-        public ActionResult SavedQueryCode()
-        {
-  var sql = @"
-SELECT 
-	QueryId,
-    owner ,
-    name
-FROM dbo.Query
-WHERE name IS NOT NULL
-AND name <> 'scratchpad'
-ORDER BY lastRun DESC
-";
-            var q = DbUtil.Db.Connection.Query(sql);
-            return View(q);
-        }
-
 
         public class ExtraInfo
         {

@@ -224,7 +224,7 @@
     <EmailRecipient Title="Email Recipients" Type="IntegerEqual">
       Enter Email ID number.
     </EmailRecipient>
-    <MadeContactTypeAsOf Title="Made Contact Type As Of" Type="Code" Params="StartDate,EndDate,Ministry" DataSource="ContactTypeList" DataValueField="IdCode">
+    <MadeContactTypeAsOf Title="Made Contact Type As Of" Type="Code" Params="Ministry,StartDate,EndDate" DataSource="ContactTypeList" DataValueField="IdCode">
       Select Contact Type from the list and pick the date range.
     </MadeContactTypeAsOf>
     <HasContacts Title="Has Contacts" Type="Bit" DataValueField="IdCode">
@@ -347,10 +347,10 @@
     </HasBalance>
   </CurrentEnrollments>
   <EnrollmentHistory Title="Enrollment History">
-    <WasMemberAsOf Title="Was Member As Of" Type="Bit" Params="StartDate,EndDate,Program,Division,Organization,OrgType" DataValueField="IdCode">
+    <WasMemberAsOf Title="Was Member As Of" Type="Bit" Params="Program,Division,Organization,OrgType,StartDate,EndDate" DataValueField="IdCode">
       Pick the date range and select Program/Division/ Organization, Org Type.
     </WasMemberAsOf>
-    <OrgMemberJoinedAsOf Title="Org Member Joined As Of" Type="Bit" Params="StartDate,EndDate,Program,Division,Organization,OrgType" DataValueField="IdCode">
+    <OrgMemberJoinedAsOf Title="Org Member Joined As Of" Type="Bit" Params="Program,Division,Organization,OrgType,StartDate,EndDate" DataValueField="IdCode">
       Pick the date range and select Program/Division/ Organization, Org Type.
     </OrgMemberJoinedAsOf>
     <WasRecentMemberOf Title="Was Recent Member Of" Type="Bit" Params="Days,Program,Division,Organization,OrgType" DataValueField="IdCode">
@@ -359,7 +359,7 @@
     <IsPreviousMemberOf Title="Is Previous Member Of" Type="Bit" Params="Program,Division,Organization" DataValueField="IdCode">
       Select Program/Division/Organization from the list and specify True or False for previous members.
     </IsPreviousMemberOf>
-    <MemberTypeAsOf Title="Member Type As Of" Type="Code" Params="StartDate,EndDate,Program,Division,Organization,OrgType" DataSource="MemberTypeCodes" DataValueField="IdCode">
+    <MemberTypeAsOf Title="Member Type As Of" Type="Code" Params="Program,Division,Organization,OrgType,StartDate,EndDate" DataSource="MemberTypeCodes" DataValueField="IdCode">
       Select Member Type from the list, pick a date range and select other options: Program/Division/Organization, Org Type.
     </MemberTypeAsOf>
     <FirstOrgJoinDate Title="First Org Enrollment Date" Type="Date" Params="Program,Division,Organization">
@@ -466,10 +466,10 @@
     </RecentFirstFamilyVisit>
   </Attendance>
   <AttendanceHistory Title="Attendance Dates">
-    <AttendMemberTypeAsOf Title="Member Type Attended As Of" Type="Code" Params="StartDate,EndDate,Program,Division,Organization" DataSource="MemberTypeCodes" DataValueField="IdCode">
+    <AttendMemberTypeAsOf Title="Member Type Attended As Of" Type="Code" Params="Program,Division,Organization,StartDate,EndDate" DataSource="MemberTypeCodes" DataValueField="IdCode">
       Select Member Type from the list, pick a date range and select Program/Division/Organization.
     </AttendMemberTypeAsOf>
-    <AttendTypeAsOf Title="Attendance Type As Of" Type="Code" Params="StartDate,EndDate,Program,Division,Organization,OrgType" DataSource="AttendanceTypeCodes" DataValueField="IdCode">
+    <AttendTypeAsOf Title="Attendance Type As Of" Type="Code" Params="Program,Division,Organization,OrgType,StartDate,EndDate" DataSource="AttendanceTypeCodes" DataValueField="IdCode">
       Select Attendance Type from the list, pick a date range and select Program/Division/Organization.
     </AttendTypeAsOf>
     <AttendPctHistory Title="Attendance % History" Type="NumberLG" Params="Program,Division,Organization,StartDate,EndDate">
@@ -481,7 +481,7 @@
     <DaysBetween12Attendance Title="Days Between First/Second Attend" Type="Integer" Params="Days,Program,Division,Organization">
       Enter a number and select the Comparison for the number of Days between 1st and 2nd Attendance, enter a number of days to look back, select Program/Division/Organization.
     </DaysBetween12Attendance>
-    <DaysAfterNthVisitAsOf Title="Attend Days After Nth Visit" Type="Bit" Params="StartDate,EndDate,Quarters,Program,Division,Organization,Days" QuartersLabel="Nth Visit Number" DataValueField="IdCode">
+    <DaysAfterNthVisitAsOf Title="Attend Days After Nth Visit" Type="Bit" Params="Quarters,Program,Division,Organization,Days,StartDate,EndDate" QuartersLabel="Nth Visit Number" DataValueField="IdCode">
       After an Nth Visit number during a date range to anything, select a Program/Division/Organization where they made another visit with a specified number of days
     </DaysAfterNthVisitAsOf>
     <GuestAsOf Title="Guest As Of" Type="Bit" Params="StartDate,EndDate,Program,Division" DataValueField="IdCode">

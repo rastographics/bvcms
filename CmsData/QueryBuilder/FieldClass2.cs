@@ -69,65 +69,58 @@ namespace CmsData
         private string FormatArgs(Condition c)
         {
             var list = new List<ParamArg>();
-            foreach (var s in ParamList)
+            foreach (var propname in ParamList)
             {
-                string propname;
-                switch (s)
-                {
-                    case "Week":
-                        propname = "Quarters";
-                        break;
-                    case "View":
-                        propname = "Quarters";
-                        break;
-                    case "PmmLabels":
-                        propname = "Tags";
-                        break;
-                    case "SavedQueryIdDesc":
-                        propname = "SavedQuery";
-                        break;
-                    case "Ministry":
-                        propname = "Program";
-                        break;
-                    default:
-                        propname = s;
-                        break;
-                }
-
                 var prop = Util.GetProperty(c, propname) ?? "";
 
-                //if (prop is DateTime?)
-                //    prop = ((DateTime?)prop).FormatDate();
-                //else if (propname == "SavedQuery" && ((string)prop).Contains(":"))
-                //    prop = ((string)prop).Split(":".ToCharArray(), 2)[1];
-
-                var attr = s == "Quarters" ? (QuartersTitle ?? propname).Replace(" ", "") : propname;
-                switch (attr)
+                var attr = propname == "Quarters" ? (QuartersTitle ?? propname).Replace(" ", "") : propname;
+                var param = (Param)Enum.Parse(typeof (Param), propname);
+                // ReSharper disable once SwitchStatementMissingSomeCases
+                switch (param)
                 {
-                    case "Program":
-                        list.AddParamArg("Prog", prop);
+                    case Param.Program:
+                        list.AddParamCode("Prog", prop);
                         break;
-                    case "Division":
-                        list.AddParamArg("Div", prop);
+                    case Param.Division:
+                        list.AddParamCode("Div", prop);
                         break;
-                    case "Organization":
-                        list.AddParamArg("Org", prop);
+                    case Param.Organization:
+                        list.AddParamCode("Org", prop);
                         break;
-                    case "Schedule":
-                        list.AddParamArg("Sched", prop);
+                    case Param.Schedule:
+                        list.AddParamCode("Sched", prop);
                         break;
-                    case "Tags":
+                    case Param.SavedQueryIdDesc:
+                        list.AddParamCode("SavedQuery", prop);
+                        break;
+                    case Param.Tags:
+                    case Param.PmmLabels:
                         var tags = prop.ToString();
                         foreach (var t in tags.Split(';'))
-                            list.AddParamArg("Tag", t);
+                            list.AddParamCode("Tag", t);
                         break;
-                    default:
-                        if (prop.ToString().HasValue())
-                            list.AddParamArg(attr, prop);
+                    case Param.OrgStatus:
+                    case Param.OnlineReg:
+                    case Param.Campus:
+                    case Param.OrgType:
+                    case Param.OrgType2:
+                    case Param.Ministry:
+                        list.AddParamCode(attr, prop);
+                        break;
+                    case Param.OrgName:
+                    case Param.Quarters:
+                        list.AddParamStr(attr, prop);
+                        break;
+                    case Param.Days:
+                    case Param.Age:
+                        list.AddParamInt(attr, prop);
+                        break;
+                    case Param.StartDate:
+                    case Param.EndDate:
+                        list.AddParamDate(attr, prop);
                         break;
                 }
             }
-
             if (list.Any(vv => vv.Name == "Div"))
                 list.RemoveAll(vv => vv.Name == "Prog");
             if (list.Any(vv => vv.Name == "Org"))
@@ -176,21 +169,37 @@ namespace CmsData
 
     public static class Helper
     {
-        public static void AddParamArg(this List<ParamArg> d, string key, object o)
+        public static void AddParamCode(this List<ParamArg> d, string key, object o, int skip = 0)
         {
             var s = o.ToString();
-            var dt = o as DateTime?;
-
-            if(dt.HasValue)
-            {
-                d.Add(new ParamArg(key, $"'{dt.FormatDate()}'"));
+            if (!s.HasValue())
                 return;
-            }
             var n = s.GetCsvToken().ToInt2();
-            if ((!n.HasValue || n == 0) && o is string)
+            if (n == skip)
                 return;
             var v = s.GetCsvToken(2, 2);
             d.Add(new ParamArg(key, v.HasValue() ? $"{n}[{v}]" : n.ToString()));
+        }
+        public static void AddParamStr(this List<ParamArg> d, string key, object o)
+        {
+            var s = o.ToString();
+            if (s.HasValue())
+            d.Add(new ParamArg(key, $"'{s}'"));
+        }
+        public static void AddParamDate(this List<ParamArg> d, string key, object o)
+        {
+            var dt = o as DateTime?;
+            if (dt.HasValue)
+                d.Add(new ParamArg(key, $"'{dt.FormatDate()}'"));
+        }
+        public static void AddParamInt(this List<ParamArg> d, string key, object o)
+        {
+            var s = o.ToString();
+            if (!s.HasValue())
+                return;
+            var i = o as int?;
+            if(i.HasValue)
+                d.Add(new ParamArg(key, $"{i}"));
         }
     }
     public class ParamArg
@@ -205,4 +214,26 @@ namespace CmsData
         }
     }
 
+    internal enum Param
+    {
+        Program,
+        Division,
+        Organization,
+        StartDate,
+        EndDate,
+        Quarters,
+        Age,
+        Days,
+        Ministry,
+        OrgName,
+        OrgStatus,
+        OnlineReg,
+        OrgType2,
+        Schedule,
+        Campus,
+        OrgType,
+        PmmLabels,
+        Tags,
+        SavedQueryIdDesc
+    }
 }
