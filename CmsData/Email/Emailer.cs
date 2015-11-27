@@ -518,11 +518,11 @@ namespace CmsData
                 catch (Exception ex)
                 {
                     Util.SendMsg(sysFromEmail, CmsHost, from,
-                        "sent emails - error: {0}".Fmt(CmsHost), ex.Message,
+                        "sent emails - error: " + CmsHost, ex.Message,
                         Util.ToMailAddressList(from),
                         emailqueue.Id, null);
                     Util.SendMsg(sysFromEmail, CmsHost, from,
-                        "sent emails - error: {0}".Fmt(CmsHost), ex.Message,
+                        "sent emails - error: " + CmsHost, ex.Message,
                         Util.SendErrorsTo(),
                         emailqueue.Id, null);
                 }
