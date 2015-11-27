@@ -65,37 +65,38 @@
                             The recipient list will be finalized when the email is actually sent.
                             Currently, this organization has <strong>@org.MemberCount members</strong>.
                         </p>
-              }
-              else
-              {
-                        <select multiple="multiple" id="Recipients" name="Recipients" class="form-control">
-                            @if (Model.Count > 500)
-                  {
-                                <option value="" selected="selected">
-                                    @Model.Count people@(Model.wantParents ? " including parents." : ".")
-                                </option>
-                  }
-                  else
-                  {
-                    foreach (var recipient in Model.Recipients)
-                    {
-                                    <option value="@recipient" selected="selected">@recipient</option>
                     }
-                  }
-                        </select>
-                if (Model.Count <= 500)
-                {
+                    else
+                    {
+                        <div class="input-group">
+                            <select multiple="multiple" id="Recipients" name="Recipients" class="form-control">
+                                @if (Model.Count > 500)
+                                {
+                                    <option value="" selected="selected">
+                                        @Model.Count people@(Model.wantParents ? " including parents." : ".")
+                                    </option>
+                                }
+                                else
+                                {
+                                    foreach (var recipient in Model.Recipients)
+                                    {
+                                        <option value="@recipient" selected="selected">@recipient</option>
+                                    }
+                                }
+                            </select>
+                            <span class="input-group-addon"><a href="/SearchAdd2/Dialog/addtoemail/"  class="searchadd"><i class="fa fa-plus-circle"></i></a></span>
+</div>
+                            if (Model.Count <= 500)
+                            {
                             <p class="help-block">
                                 @Model.Count
                                 @( Model.Count != 1 ? "people" : "person")
                                 @(Model.wantParents ? " including parents." : ".")
                             </p>
-                }
-              }
-                </div>
-                <div class="pull-right">
-                    <a href="/SearchAdd2/Dialog/addtoemail/" class="btn btn-success searchadd"><i class="fa fa-plus-circle"></i> Add Recipient</a>
-                </div>    
+                            }
+                            }
+                        </div>
+   
                 </div>
           <div class="form-group">
             <label for="Subject" class="col-sm-2 control-label">Subject:</label>
