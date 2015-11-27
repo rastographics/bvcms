@@ -790,7 +790,10 @@ namespace CmsData
             Handlebars.RegisterHelper("FmtDate", (writer, context, args) => { writer.Write(args[0].ToDate().FormatDate()); });
             Handlebars.RegisterHelper("IfEqual", (writer, options, context, args) =>
             {
-                if (args[0] == args[1])
+                var eq = args[0] == args[1];
+                if (!eq && args[0] is int)
+                    eq = args[0].ToString() == args[1].ToString();
+                if (eq)
                     options.Template(writer, (object)context);
                 else
                     options.Inverse(writer, (object)context);
