@@ -136,9 +136,9 @@
               </label>
               @if ((User.IsInRole("ScheduleEmails") || User.IsInRole("Edit")) && ConfigurationManager.AppSettings["UseEmailScheduler"] == "true")
               {
-                <label class="checkbox-inline">
-                @Html.CheckBox("ChangeSched") Schedule Email?
-              </label>
+                 <label class="checkbox-inline">
+                    @Html.CheckBox("ChangeSched") Schedule Email?
+                 </label>
               }
             </div>
           </div>

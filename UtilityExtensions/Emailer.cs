@@ -51,6 +51,12 @@ namespace UtilityExtensions
 
                 }
 
+
+                if (!msg.ReplyToList.Contains(msg.From) && msg.From.Address.NotEqual("mailer@bvcms.com"))
+                {
+                     msg.ReplyToList.Add(msg.From);
+                }
+
             }
 
             msg.Headers.Add("X-SMTPAPI",
