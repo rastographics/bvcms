@@ -10,25 +10,42 @@ namespace CmsData
     public class QueryParser
     {
         private readonly QueryLexer lexer;
-        private Token token;
+        private QueryParser(string s) { lexer = new QueryLexer(s); }
+        
+        private Token Token => lexer.Token;
 
-        private QueryParser(string s)
+        private void NextToken(params TokenType[] args)
         {
-            lexer = new QueryLexer(s);
+            if (lexer.Next() == false)
+                Token.Type = TokenType.RParen;
+            if(!args.Contains(Token.Type))
+                throw new Exception($@"Expected {string.Join(",", args.Select(aa => aa.ToString()))}
+{lexer.Line.Insert(lexer.Position, "^")}
+");
         }
+        private void NextToken(string text)
+        {
+            lexer.Next();
+            if(Token.Text != text)
+                throw new Exception($"Expected {text}");
+        }
+
+
         public static Condition Parse(string s)
         {
             var m = new QueryParser(s);
-            return m.ParseCondition();
+            var p = Condition.CreateAllGroup();
+            var c = m.AddConditions(p);
+            if (p.Conditions.Count() == 1 && c.IsGroup)
+                return c;
+            return p;
         }
         private Condition ParseCondition(Condition p = null)
         {
             // if no surrounding group, create one
-            if (p == null && token.Type != TokenType.LParen && token.Type != TokenType.Not)
-            {
-                p = Condition.CreateAllGroup();
-                return AddConditions(p);
-            }
+            //if (p == null && Token.Type != TokenType.LParen)
+            //{
+            //}
             var allClauses = p == null ? new Dictionary<Guid, Condition>() : p.AllConditions;
             Guid? parentGuid = null;
             if (p != null)
@@ -40,58 +57,50 @@ namespace CmsData
                 Id = Guid.NewGuid(),
                 AllConditions = allClauses
             };
-            switch (token.Type)
+            p?.AllConditions.Add(c.Id, c);
+            switch (Token.Type)
             {
-                case TokenType.Not:
-                    token = lexer.Next(); // skip to LParen
-                    if (token.Type != TokenType.LParen)
-                        throw new Exception("Missing '(' after NOT");
-                    token = lexer.Next(); // skip to condition list
-                    c.ConditionName = "Group";
-                    c.Comparison = CompareType.AllFalse.ToString();
-                    return AddConditions(c);
                 case TokenType.LParen:
-                    token = lexer.Next(); // skip to first condition in group
+                    NextToken(TokenType.Name, TokenType.Func, TokenType.LParen);
                     c.ConditionName = "Group";
                     return AddConditions(c);
                 case TokenType.Name:
-                    c.ConditionName = token.Text;
+                    c.ConditionName = Token.Text;
+                    if (c.ConditionName == "MatchAnything")
+                    {
+                        NextToken(TokenType.And, TokenType.Or,TokenType.AndNot, TokenType.RParen);
+                        return c;
+                    }
                     break;
                 case TokenType.Func:
-                    c.ConditionName = token.Text;
-                    token = lexer.Next(); // skip to (
-                    token = lexer.Next(); // skip to first param
+                    c.ConditionName = Token.Text;
+                    NextToken(TokenType.LParen);
                     do
                         ParseParam(c);
-                    while (token.Type == TokenType.Comma);
-                    if (token.Type != TokenType.RParen)
+                    while (Token.Type == TokenType.Comma);
+                    if (Token.Type != TokenType.RParen)
                         throw new Exception("missing ) on function parameters");
                     break;
             }
-            var op = lexer.Next(); // get operator
-            if (op.Type != TokenType.Op)
-                throw new Exception("expected comparision operator");
-            token = lexer.Next(); // skip to rightside
+            NextToken(TokenType.Op); // get operator
+            var op = Token;
             if (op.Text.Contains("IN"))
             {
-                if (token.Type != TokenType.LParen)
-                    throw new Exception("expected ( after in");
+                NextToken(TokenType.LParen);
                 var sb = new StringBuilder();
                 var expect = new[] { "PeopleExtra", "FamilyExtra" }.Contains(c.ConditionName)
                     ? TokenType.String
                     : TokenType.Int;
                 do
                 {
-                    token = lexer.Next(); // skip over ( or comma
-                    if (token.Type != expect)
-                        throw new Exception("expected string after IN (");
+                    NextToken(expect);
                     if (sb.Length > 0)
                         sb.Append(";");
-                    sb.Append(token.Text);
-                    token = lexer.Next(); // skip to comma or )
-                } while (token.Type == TokenType.Comma);
-                if (token.Type != TokenType.RParen)
-                    throw new Exception("expected closing ) after IN (");
+                    sb.Append(Token.Text);
+                    NextToken(TokenType.Comma, TokenType.RParen);
+                }
+                while (Token.Type == TokenType.Comma);
+
                 c.Comparison = op.Text.StartsWith("NOT")
                     ? CompareType.NotOneOf.ToString()
                     : CompareType.OneOf.ToString();
@@ -99,29 +108,30 @@ namespace CmsData
             }
             else
             {
+                NextToken(TokenType.String, TokenType.Int, TokenType.Num);
                 switch (op.Text)
                 {
                     case "=":
-                        if (token.Type == TokenType.String)
+                        if (Token.Type == TokenType.String)
                         {
-                            if (token.Text.StartsWith("*") && token.Text.EndsWith("*"))
+                            if (Token.Text.StartsWith("*") && Token.Text.EndsWith("*"))
                                 c.Comparison = CompareType.Contains.ToString();
-                            else if (token.Text.StartsWith("*"))
+                            else if (Token.Text.StartsWith("*"))
                                 c.Comparison = CompareType.StartsWith.ToString();
-                            else if (token.Text.EndsWith("*"))
+                            else if (Token.Text.EndsWith("*"))
                                 c.Comparison = CompareType.EndsWith.ToString();
                         }
                         else
                             c.Comparison = CompareType.Equal.ToString();
                         break;
                     case "<>":
-                        if (token.Type == TokenType.String)
+                        if (Token.Type == TokenType.String)
                         {
-                            if (token.Text.StartsWith("*") && token.Text.EndsWith("*"))
+                            if (Token.Text.StartsWith("*") && Token.Text.EndsWith("*"))
                                 c.Comparison = CompareType.DoesNotContain.ToString();
-                            else if (token.Text.StartsWith("*"))
+                            else if (Token.Text.StartsWith("*"))
                                 c.Comparison = CompareType.DoesNotStartWith.ToString();
-                            else if (token.Text.EndsWith("*"))
+                            else if (Token.Text.EndsWith("*"))
                                 c.Comparison = CompareType.DoesNotEndWith.ToString();
                         }
                         else
@@ -142,38 +152,40 @@ namespace CmsData
                 }
                 SetRightSide(c);
             }
-            p?.AllConditions.Add(c.Id, c);
             return c;
         }
 
         private Condition AddConditions(Condition g)
         {
-            while (token.Type != TokenType.RParen)
+            while (Token.Type != TokenType.RParen)
             {
                 ParseCondition(g);
-                if (token.Type == TokenType.RParen)
+                if (Token.Type == TokenType.RParen)
                 {
                     if (!g.Comparison.HasValue())
                         g.Comparison = CompareType.AllTrue.ToString();
                     return g;
                 }
-                var andor = token.Type;
-                token = lexer.Next(); // skip to next condition
-                if (g.Comparison == CompareType.AllFalse.ToString() && andor != TokenType.And)
-                    throw new Exception("Expected AND in AllFalse group");
-                if (g.Comparison == CompareType.AllTrue.ToString() && andor != TokenType.And)
+                var andOrNot = Token.Type;
+                NextToken(TokenType.Name, TokenType.Func, TokenType.LParen);
+                if (g.Comparison == CompareType.AllFalse.ToString() && andOrNot != TokenType.AndNot)
+                    throw new Exception("Expected AND NOT in AllFalse group");
+                if (g.Comparison == CompareType.AllTrue.ToString() && andOrNot != TokenType.And)
                     throw new Exception("Expected AND in AllTrue group");
-                if (g.Comparison == CompareType.AnyTrue.ToString() && andor != TokenType.Or)
+                if (g.Comparison == CompareType.AnyTrue.ToString() && andOrNot != TokenType.Or)
                     throw new Exception("Expected OR in AnyTrue group");
                 if (g.Comparison.HasValue())
                     continue;
-                switch (andor)
+                switch (andOrNot)
                 {
                     case TokenType.And:
                         g.Comparison = CompareType.AllTrue.ToString();
                         break;
                     case TokenType.Or:
                         g.Comparison = CompareType.AnyTrue.ToString();
+                        break;
+                    case TokenType.AndNot:
+                        g.Comparison = CompareType.AllFalse.ToString();
                         break;
                 }
             }
@@ -182,7 +194,7 @@ namespace CmsData
 
         private void SetRightSide(Condition c, StringBuilder sb = null)
         {
-            var text = sb?.ToString() ?? token.Text;
+            var text = sb?.ToString() ?? Token.Text;
             switch (c.Compare2.ValueType())
             {
                 case "text":
@@ -196,86 +208,80 @@ namespace CmsData
                     c.DateValue = text.ToDate();
                     break;
             }
-            token = lexer.Next(); // skip past condition
+            NextToken(TokenType.And, TokenType.Or, TokenType.RParen);
         }
 
         private void ParseParam(Condition c)
         {
-            if(token.Type == TokenType.RParen)
+            NextToken(TokenType.Name,TokenType.RParen);
+            if (Token.Type == TokenType.RParen)
                 return;
-            var param = ParseParam(token.Text);
-            SkipParamPastEqual();
+            var param = ParseParam(Token.Text);
+            NextToken("=");
+            NextToken(TokenType.String, TokenType.Int);
             switch (param)
             {
                 case Param.Program:
-                    c.Program = token.Text;
+                    c.Program = Token.Text;
                     break;
                 case Param.Division:
-                    c.Division = token.Text;
+                    c.Division = Token.Text;
                     break;
                 case Param.Organization:
-                    c.Division = token.Text;
+                    c.Division = Token.Text;
                     break;
                 case Param.Schedule:
-                    c.Schedule = token.Text;
+                    c.Schedule = Token.Text;
                     break;
                 case Param.OrgName:
-                    c.OrgName = token.Text;
+                    c.OrgName = Token.Text;
                     break;
                 case Param.OrgStatus:
-                    c.OrgStatus = token.Text;
+                    c.OrgStatus = Token.Text;
                     break;
                 case Param.StartDate:
-                    c.StartDate = token.Text.ToDate();
+                    c.StartDate = Token.Text.ToDate();
                     break;
                 case Param.EndDate:
-                    c.EndDate = token.Text.ToDate();
+                    c.EndDate = Token.Text.ToDate();
                     break;
                 case Param.Quarters:
-                    c.Quarters = token.Text;
+                    c.Quarters = Token.Text;
                     break;
                 case Param.Age:
-                    c.Age = token.Text.ToInt2();
+                    c.Age = Token.Text.ToInt2();
                     break;
                 case Param.Days:
-                    c.Days = token.Text.ToInt();
+                    c.Days = Token.Text.ToInt();
                     break;
                 case Param.Ministry:
-                    c.Ministry = token.Text;
+                    c.Ministry = Token.Text;
                     break;
                 case Param.OnlineReg:
-                    c.OnlineReg = token.Text;
+                    c.OnlineReg = Token.Text;
                     break;
                 case Param.OrgType2:
-                    c.OrgType = token.Text;
+                    c.OrgType = Token.Text;
                     break;
                 case Param.Campus:
-                    c.Campus = token.Text;
+                    c.Campus = Token.Text;
                     break;
                 case Param.OrgType:
-                    c.OrgType = token.Text;
+                    c.OrgType = Token.Text;
                     break;
                 case Param.PmmLabels:
-                    c.Tags = token.Text;
+                    c.Tags = Token.Text;
                     break;
                 case Param.Tags:
-                    c.Tags = token.Text;
+                    c.Tags = Token.Text;
                     break;
                 case Param.SavedQueryIdDesc:
-                    c.SavedQuery = token.Text;
+                    c.SavedQuery = Token.Text;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            token = lexer.Next(); // skip to next comma or rparen
-        }
-
-        private void SkipParamPastEqual()
-        {
-            token = lexer.Next();
-            if (token.Text != "=")
-                throw new Exception("expected = in param");
-            token = lexer.Next();
+            NextToken(TokenType.Comma, TokenType.RParen);
         }
 
         private Param ParseParam(string name)
@@ -298,7 +304,7 @@ namespace CmsData
                     name = "SavedQueryIdDesc";
                     break;
             }
-            return (Param)Enum.Parse(typeof(Param), name);
+            return (Param) Enum.Parse(typeof (Param), name);
         }
     }
 }

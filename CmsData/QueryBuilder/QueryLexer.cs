@@ -11,6 +11,7 @@ namespace CmsData.QueryBuilder
         Int,
         And,
         Or,
+        AndNot,
         Op,
         Func,
         Name,
@@ -19,7 +20,7 @@ namespace CmsData.QueryBuilder
         Space,
         Comma,
         In,
-        Not
+        End
     }
     public class Token
     {
@@ -33,9 +34,10 @@ namespace CmsData.QueryBuilder
 
         private readonly TextReader reader;
         private readonly TokenDef[] tokenDefs;
-        private int lineNumber;
-        private int position;
-        private string lineRemaining;
+        public int LineNumber;
+        public int Position;
+        public string Line;
+        public string LineRemaining;
 
         public QueryLexer(string text)
         {
@@ -46,10 +48,10 @@ namespace CmsData.QueryBuilder
                 new TokenDef(TokenType.String,  @"(')(?:\\\1|.)*?\1"),
                 new TokenDef(TokenType.Num,     @"[-+]?\d*\.\d+([eE][-+]?\d+)?"),
                 new TokenDef(TokenType.Int,     @"[-+]?\d+(\[[^]]*?\])?"),
+                new TokenDef(TokenType.Op,      @"(>=|<=|=|<|>|IN(?=\s*\()|NOT\sIN(?=\s*\())"),
+                new TokenDef(TokenType.AndNot,  @"AND\s*NOT"),
                 new TokenDef(TokenType.And,     @"AND"),
                 new TokenDef(TokenType.Or,      @"OR"),
-                new TokenDef(TokenType.Not,     @"NOT"),
-                new TokenDef(TokenType.Op,      @"(>=|<=|=|<|>|IN(?=\s*\()|NOT\sIN(?=\s*\())"),
                 new TokenDef(TokenType.Func,    @"[*<>\?\-+/A-Za-z->!]+(?=\()"),
                 new TokenDef(TokenType.Name,    @"[*<>\?\-+/A-Za-z->!]+"),
                 new TokenDef(TokenType.Space,   @"\s*"),
@@ -57,45 +59,47 @@ namespace CmsData.QueryBuilder
             };
             reader = new StringReader(text);
             NextLine();
+            Next();
         }
 
         private void NextLine()
         {
             do
             {
-                lineRemaining = reader.ReadLine();
-                ++lineNumber;
-                position = 0;
-            } while (lineRemaining != null && lineRemaining.Length == 0);
+                Line = reader.ReadLine();
+                LineRemaining = Line;
+                ++LineNumber;
+                Position = 0;
+            } while (LineRemaining != null && LineRemaining.Length == 0);
         }
 
-        public Token Next()
+        public bool Next()
         {
-            var token = GetNext();
-            return token.Type == TokenType.Space ? Next() : token;
+            var ret = GetNext();
+            return Token.Type == TokenType.Space ? Next() : ret;
         }
 
-        private Token GetNext()
+        private bool GetNext()
         {
-            if (lineRemaining == null)
-                return null;
+            if (LineRemaining == null)
+                return false;
             foreach (var def in tokenDefs)
             {
-                var matched = def.Matcher.Match(lineRemaining);
+                var matched = def.Matcher.Match(LineRemaining);
                 if (matched <= 0)
                     continue;
-                position += matched;
-                var token = new Token
+                Position += matched;
+                Token = new Token
                 {
                     Type = def.TokenType,
-                    Text = lineRemaining.Substring(0, matched)
+                    Text = LineRemaining.Substring(0, matched)
                 };
-                lineRemaining = lineRemaining.Substring(matched);
-                if (lineRemaining.Length == 0)
+                LineRemaining = LineRemaining.Substring(matched);
+                if (LineRemaining.Length == 0)
                     NextLine();
-                return token;
+                return true;
             }
-            throw new Exception($"Unable to match against any tokens at line {lineNumber} position {position} \"{lineRemaining}\"");
+            throw new Exception($"Unable to match against any tokens at line {LineNumber} position {Position} \"{LineRemaining}\"");
         }
 
         private class TokenDef
