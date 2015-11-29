@@ -91,10 +91,14 @@ namespace CmsData
         public string OrgType { get; set; }
         public int? OrgTypeInt => OrgType.GetCsvToken().ToInt2();
 
+        public string OrgStatus { get; set; }
+        public int? OrgStatusInt => OrgStatus.GetCsvToken().ToInt2();
+
+        public string OnlineReg { get; set; }
+        public int? OnlineRegInt => OnlineReg.GetCsvToken().ToInt2();
+
         public int? OrgType2 { get; set; }
         public string OrgName { get; set; }
-        public int? OrgStatus { get; set; }
-        public int? OnlineReg { get; set; }
         public Guid? NewMatchAnyId;
         internal Query JustLoadedQuery;
 
@@ -322,6 +326,13 @@ namespace CmsData
             {
                 if (!IsCode)
                     return "";
+                var extras = new string[] {"PeopleExtra", "FamilyExtra"};
+                if (extras.Contains(ConditionName))
+                {
+                    if (HasMultipleCodes)
+                        return string.Join(", ", CodeIdValue.SplitStr(";").Select(s => $"'{s}'"));
+                    return $"'{CodeIdValue}'";
+                }
                 if (HasMultipleCodes)
                     return string.Join(", ", (from s in CodeIdValue.SplitStr(";")
                                               let aa = s.Split(',')
@@ -380,7 +391,7 @@ namespace CmsData
                 if (!IsCode)
                     return null;
                 if (!HasMultipleCodes)
-                    return new[] {GetCodeIdValuePart(CodeIdValue, Part.Id)};
+                    return new[] { GetCodeIdValuePart(CodeIdValue, Part.Id) };
                 var q = from s in CodeIdValue.SplitStr(";")
                         select GetCodeIdValuePart(s, Part.Id);
                 return q.ToArray();
@@ -458,6 +469,17 @@ namespace CmsData
                 Comparison = CompareType.AllTrue.ToString()
             };
             c.AllConditions.Add(c.Id, c);
+            return c;
+        }
+
+        public static Condition CreateAllGroup(string name = null)
+        {
+            return CreateNewGroupClause(name);
+        }
+        public static Condition CreateAllFalseGroup(string name = null)
+        {
+            var c = CreateNewGroupClause(name);
+            c.Comparison = CompareType.AllFalse.ToString();
             return c;
         }
         public void IncrementLastRun()

@@ -99,8 +99,10 @@ namespace CmsData
                         foreach (var t in tags.Split(';'))
                             list.AddParamCode("Tag", t);
                         break;
-                    case Param.OrgStatus:
                     case Param.OnlineReg:
+                        list.AddParamCode(attr, prop, -1);
+                        break;
+                    case Param.OrgStatus:
                     case Param.Campus:
                     case Param.OrgType:
                     case Param.OrgType2:

@@ -63,12 +63,16 @@ namespace CmsWeb.Areas.Search.Models
         public string OrgStatus { get; set; }
         private int OrgStatusInt => OrgStatus.GetCsvToken().ToInt();
 
-        public string OrgType2 { get; set; }
         public string Ministry { get; set; }
+        private int MinistryInt => Ministry.GetCsvToken().ToInt();
+
+        public string OnlineReg { get; set; }
+        private int OnlineRegInt => OnlineReg.GetCsvToken().ToInt();
+
+        public string OrgType2 { get; set; }
         public string SavedQuery { get; set; }
         public string Comparison { get; set; }
         public string OrgName { get; set; }
-        public string OnlineReg { get; set; }
 
         public bool IsPublic { get; set; }
         public string Days { get; set; }

@@ -28,7 +28,8 @@ namespace CmsData
                 };
                 Db.Queries.InsertOnSubmit(q);
             }
-            q.LastRun = DateTime.Now;
+            if(increment)
+                q.LastRun = DateTime.Now;
 
             if (Description != q.Name)
             {
@@ -159,8 +160,8 @@ namespace CmsData
                 Owner = Attribute(r, "Owner"),
                 SavedQuery = Attribute(r, "SavedQueryIdDesc"),
                 OrgName = Attribute(r, "OrgName"),
-                OrgStatus = Attribute(r, "OrgStatus").ToInt(),
-                OnlineReg = Attribute(r, "OnlineReg").ToInt(),
+                OrgStatus = Attribute(r, "OrgStatus"),
+                OnlineReg = Attribute(r, "OnlineReg"),
                 OrgType2 = Attribute(r, "OrgType2").ToInt(),
                 AllConditions = allClauses
             };

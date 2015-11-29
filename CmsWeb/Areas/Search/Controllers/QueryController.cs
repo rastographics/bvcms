@@ -325,8 +325,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Export(Guid? id)
         {
             var m = new QueryModel(id);
-            var e = new ExportQuery();
-            return Content(e.Export(m.TopClause), "text/plain");
+            return Content(m.TopClause.ToCode(), "text/plain");
         }
         [HttpGet, Route("~/Query/Import")]
         public ActionResult Import()

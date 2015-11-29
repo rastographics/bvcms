@@ -76,7 +76,7 @@ ORDER BY lastRun DESC
                     continue;
                 DbUtil.DbDispose();
                 var c = DbUtil.Db.LoadExistingQuery(g.Value);
-                var s = ExportQuery.ToString(c);
+                var s = c.ToCode();
                 if(s.HasValue())
                     UpdateQueryConditions.Run(sq.QueryId);
             }

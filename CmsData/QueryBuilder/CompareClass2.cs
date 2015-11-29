@@ -52,6 +52,37 @@ namespace CmsData
                     throw new ArgumentException();
             }
         }
+        internal string ValueType()
+        {
+            switch (FieldType)
+            {
+                case FieldType.EqualBit:
+                case FieldType.DateField:
+                    return "idvalue";
+                case FieldType.NullBit:
+                case FieldType.Bit:
+                case FieldType.Code:
+                case FieldType.NullCode:
+                case FieldType.CodeStr:
+                    return "idtext";
+                case FieldType.String:
+                case FieldType.StringEqual:
+                case FieldType.StringEqualOrStartsWith:
+                case FieldType.Number:
+                case FieldType.NumberLG:
+                case FieldType.NullNumber:
+                case FieldType.Integer:
+                case FieldType.IntegerSimple:
+                case FieldType.IntegerEqual:
+                case FieldType.NullInteger:
+                    return "text";
+                case FieldType.Date:
+                case FieldType.DateSimple:
+                    return "date";
+                default:
+                    throw new ArgumentException();
+            }
+        }
         public static CompareType Convert(string type)
         {
             if (!type.HasValue())

@@ -24,7 +24,6 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-right">
                           <li><a href="#" class="saveas"><i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save As</a></li>
-                            <li><a href="/Query/Export" target="export" class="exportquery"><i class="fa fa-file-text"></i>&nbsp;&nbsp;Export</a></li>
                             <li class="divider"></li>
                             <li><a href="/SavedQueryList"><i class="fa fa-search"></i>&nbsp;&nbsp;Saved Searches</a></li>
                             <li><a href="/Query/NewQuery"><i class="fa fa-search-plus"></i>&nbsp;&nbsp;New Search</a></li>
@@ -39,11 +38,12 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="pull-left">
-                            <div class="checkbox">
-                                <label class="control-label">
-                                    @Html.CheckBox("AutoRun") Auto refresh?
-                                </label>
-                            </div>
+                          <div class="checkbox">
+                            <label class="control-label">
+                              @Html.CheckBox("AutoRun") Auto refresh?
+                            </label>
+                          </div>
+                          <a href="/Query/Export" class="exportquery">view code</a>
                         </div>
                         <div class="pull-right">
                             <div class="btn-group visible-xs-inline">
@@ -52,7 +52,6 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-right">
                                     <li><a href="#" class="saveas"><i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save As</a></li>
-                                    <li><a href="/Query/Export" target="export" class="exportquery"><i class="fa fa-file-text"></i>&nbsp;&nbsp;Export</a></li>
                                     <li class="divider"></li>
                                     <li><a href="/SavedQueryList"><i class="fa fa-search"></i>&nbsp;&nbsp;Saved Searches</a></li>
                                     <li><a href="/Query/NewQuery"><i class="fa fa-search-plus"></i>&nbsp;&nbsp;New Search</a></li>

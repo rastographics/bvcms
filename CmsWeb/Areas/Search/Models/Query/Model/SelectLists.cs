@@ -261,7 +261,7 @@ namespace CmsWeb.Areas.Search.Models
                         Value = $"{ot.OrgId},{name}",
                         Text = CmsData.Organization.FormatOrgName(ot.Organization.OrganizationName,
                             ot.Organization.LeaderName, ot.Organization.Location),
-                        Selected = OrganizationInt == (ot.OrgId)
+                        Selected = OrganizationInt == ot.OrgId
                     };
             var listItems = q.ToList();
             listItems.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
@@ -305,26 +305,29 @@ namespace CmsWeb.Areas.Search.Models
                 return null;
             var q = from t in Db.Ministries
                     orderby t.MinistryDescription
-                    let ms = t.MinistryId.ToString()
                     select new SelectListItem
                     {
-                        Value = ms,
+                        Value = $"{t.MinistryId},{t.MinistryName}",
                         Text = t.MinistryName,
-                        Selected = Ministry == ms
+                        Selected = MinistryInt == t.MinistryId
                     };
             var listItems = q.ToList();
-            listItems.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
+            listItems.Insert(0, new SelectListItem
+            {
+                Value = "0,(not specified)",
+                Text = "(not specified)",
+                Selected = MinistryInt == 0
+            });
             return listItems;
         }
         public IEnumerable<SelectListItem> StatusIds()
         {
             var q = from s in Db.OrganizationStatuses
-                    let statusid = s.Id.ToString()
                     select new SelectListItem
                     {
-                        Value = $"{statusid},{s.Description}",
+                        Value = $"{s.Id},{s.Description}",
                         Text = s.Description,
-                        Selected = OrgStatus == statusid
+                        Selected = OrgStatusInt == s.Id
                     };
             var listItems = q.ToList();
             listItems.Insert(0, new SelectListItem
@@ -343,7 +346,7 @@ namespace CmsWeb.Areas.Search.Models
                     {
                         Value = $"{s.Value},{s.Text}",
                         Text = s.Text,
-                        Selected = s.Value == OnlineReg
+                        Selected = s.Value == OnlineRegInt.ToString()
                     };
             return q;
         }

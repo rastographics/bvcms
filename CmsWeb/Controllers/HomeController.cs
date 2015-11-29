@@ -56,12 +56,13 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/Test")]
         public ActionResult Test(string id)
         {
-            var script = System.IO.File.ReadAllText(Server.MapPath("~/test2.py"));
-            var pe = new PythonEvents(Util.Host);
-            pe.Data.value = "test";
-            var s = pe.RunScript(script);
-
-            return Content(s, "text/plain");
+            var input = @"
+IsMemberOf( Div=261[Financial] ) = 1[True]
+AND MaritalStatusId IN ( 10[Single], 40[Divorced], 50[Widowed] )
+AND Age >= 23
+";
+            var c = QueryParser.Parse(input);
+            return Content(c.ToXml(), "text/xml");
         }
 #endif
 
