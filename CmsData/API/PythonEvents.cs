@@ -676,6 +676,14 @@ namespace CmsData
             return s.FmtFone(prefix);
         }
 
+        /// <summary>
+        /// FmtZip to properly format zip codes with 9 digits
+        /// </summary>
+        public string FmtZip(string s)
+        {
+            return s.FmtZip();
+        }
+
         public string UploadExcelFromSqlToFtp(string sqlscript, string username, string password, string targetpath, string filename)
         {
             var script = db.Content(sqlscript, "");
