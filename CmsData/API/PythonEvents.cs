@@ -796,6 +796,7 @@ namespace CmsData
             Handlebars.RegisterHelper("DataStyle", (writer, context, args) => { writer.Write(CssStyle.DataStyle); });
             Handlebars.RegisterHelper("ServerLink", (writer, context, args) => { writer.Write(db.ServerLink().TrimEnd('/')); });
             Handlebars.RegisterHelper("FmtDate", (writer, context, args) => { writer.Write(args[0].ToDate().FormatDate()); });
+            Handlebars.RegisterHelper("FmtZip", (writer, context, args) => { writer.Write(args[0].ToString().FmtZip()); });
             Handlebars.RegisterHelper("IfEqual", (writer, options, context, args) =>
             {
                 var eq = args[0] == args[1];
