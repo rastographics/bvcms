@@ -623,7 +623,7 @@
     <Compile Include="QueryBuilder\FieldClass2.cs" />
     <Compile Include="QueryBuilder\Condition.cs" />
     <Compile Include="QueryBuilder\QueryContext.cs" />
-    <Compile Include="QueryBuilder\ExportQuery.cs" />
+    <Compile Include="QueryBuilder\QueryExport.cs" />
     <Compile Include="QueryBuilder\QueryLexer.cs" />
     <Compile Include="QueryBuilder\Serialize2.cs" />
     <Compile Include="Extensions\Content.cs" />

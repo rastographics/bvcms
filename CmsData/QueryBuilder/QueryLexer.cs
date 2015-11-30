@@ -20,7 +20,7 @@ namespace CmsData.QueryBuilder
         Space,
         Comma,
         In,
-        End
+        Not
     }
     public class Token
     {
@@ -48,10 +48,11 @@ namespace CmsData.QueryBuilder
                 new TokenDef(TokenType.String,  @"(')(?:\\\1|.)*?\1"),
                 new TokenDef(TokenType.Num,     @"[-+]?\d*\.\d+([eE][-+]?\d+)?"),
                 new TokenDef(TokenType.Int,     @"[-+]?\d+(\[[^]]*?\])?"),
-                new TokenDef(TokenType.Op,      @"(>=|<=|=|<|>|IN(?=\s*\()|NOT\sIN(?=\s*\())"),
+                new TokenDef(TokenType.Op,      @"(>=|<=|=|<>|<|>|IN(?=\s*\()|NOT\sIN(?=\s*\())"),
                 new TokenDef(TokenType.AndNot,  @"AND\s*NOT"),
                 new TokenDef(TokenType.And,     @"AND"),
                 new TokenDef(TokenType.Or,      @"OR"),
+                new TokenDef(TokenType.Not,     @"NOT"),
                 new TokenDef(TokenType.Func,    @"[*<>\?\-+/A-Za-z->!]+(?=\()"),
                 new TokenDef(TokenType.Name,    @"[*<>\?\-+/A-Za-z->!]+"),
                 new TokenDef(TokenType.Space,   @"\s*"),
@@ -59,7 +60,6 @@ namespace CmsData.QueryBuilder
             };
             reader = new StringReader(text);
             NextLine();
-            Next();
         }
 
         private void NextLine()

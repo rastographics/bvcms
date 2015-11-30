@@ -57,35 +57,11 @@ namespace CmsWeb.Controllers
         public ActionResult Test(string id)
         {
             var input = @"
-(
-	(
-		WasMemberAsOf( Div=219[Disciple Life - Adults], StartDate='9/3/2014', EndDate='11/19/2014' ) = 1[True]
-		OR WasMemberAsOf( Org=88998[Bible Track - Old Testament], StartDate='9/3/2014', EndDate='12/17/2014' ) = 1[True]
-		OR WasMemberAsOf( Div=219[Disciple Life - Adults], StartDate='9/3/2014', EndDate='10/29/2014' ) = 1[True]
-		OR WasMemberAsOf( Div=219[Disciple Life - Adults], StartDate='9/3/2014', EndDate='10/8/2014' ) = 1[True]
-		OR WasMemberAsOf( Div=219[Disciple Life - Adults], StartDate='9/3/2014', EndDate='11/19/2014' ) = 1[True]
-		OR WasMemberAsOf( Div=219[Disciple Life - Adults], StartDate='10/15/2014', EndDate='11/19/2014' ) = 1[True]
-		OR WasMemberAsOf( Div=219[Disciple Life - Adults], StartDate='9/10/2014', EndDate='10/15/2014' ) = 1[True]
-		OR WasMemberAsOf( Org=88666[Conversational Spanish 1], StartDate='9/3/2014', EndDate='11/19/2014' ) = 1[True]
-		OR WasMemberAsOf( Div=6353[Life Crises], StartDate='9/3/2014', EndDate='12/3/2014' ) = 1[True]
-		OR WasMemberAsOf( Div=6352[Daily Challenges], StartDate='9/3/2014', EndDate='12/3/2014' ) = 1[True]
-		OR WasMemberAsOf( StartDate='9/3/2014', EndDate='12/3/2014' ) = 1[True]
-		OR WasMemberAsOf( Div=222[Adult Choir], StartDate='9/3/2014', EndDate='12/3/2014' ) = 1[True]
-		OR WasMemberAsOf( Div=6466[Wednesday Bible Study], StartDate='9/3/2014', EndDate='11/19/2014' ) = 1[True]
-		OR IsMemberOf( Div=219[Disciple Life - Adults] ) = 1[True]
-		OR IsMemberOf(  ) = 1[True]
-		OR IsMemberOf( Div=222[Adult Choir] ) = 1[True]
-		OR IsMemberOf( Div=218[CARE] ) = 1[True]
-		OR IsMemberOf( Div=6466[Wednesday Bible Study] ) = 1[True]
-	)
-	AND IsMemberOf( Org=89885[Bellevue Arlington Track] ) = 0[False]
-	AND PeopleId <> 1060378
-	AND PeopleId <> 1038174
-	AND PeopleId <> 1084800
-	AND PeopleId <> 30818
-	AND PeopleId <> 895981
-	AND PeopleId <> 1060370
-)
+NOT PrimaryBadAddrFlag = 1[True]
+AND NOT PrimaryResCode = 40[Unable to Locate]
+AND NOT PrimaryAddress = ''
+AND NOT DoNotMailFlag = 1[True]
+AND NOT EnvelopeOptionsId = 1[Individual]
 ";
             var c = QueryParser.Parse(input);
             return Content(c.ToXml(), "text/xml");

@@ -11,6 +11,7 @@ namespace CmsData
     {
         private readonly QueryLexer lexer;
         private QueryParser(string s) { lexer = new QueryLexer(s); }
+        private string PositionLine => $"{lexer.Line.Insert(lexer.Position, "^")}";
         
         private Token Token => lexer.Token;
 
@@ -20,7 +21,7 @@ namespace CmsData
                 Token.Type = TokenType.RParen;
             if(!args.Contains(Token.Type))
                 throw new Exception($@"Expected {string.Join(",", args.Select(aa => aa.ToString()))}
-{lexer.Line.Insert(lexer.Position, "^")}
+{PositionLine}
 ");
         }
         private void NextToken(string text)
@@ -29,7 +30,6 @@ namespace CmsData
             if(Token.Text != text)
                 throw new Exception($"Expected {text}");
         }
-
 
         public static Condition Parse(string s)
         {
@@ -40,12 +40,8 @@ namespace CmsData
                 return c;
             return p;
         }
-        private Condition ParseCondition(Condition p = null)
+        private void ParseCondition(Condition p = null)
         {
-            // if no surrounding group, create one
-            //if (p == null && Token.Type != TokenType.LParen)
-            //{
-            //}
             var allClauses = p == null ? new Dictionary<Guid, Condition>() : p.AllConditions;
             Guid? parentGuid = null;
             if (p != null)
@@ -61,15 +57,15 @@ namespace CmsData
             switch (Token.Type)
             {
                 case TokenType.LParen:
-                    NextToken(TokenType.Name, TokenType.Func, TokenType.LParen);
                     c.ConditionName = "Group";
-                    return AddConditions(c);
+                    AddConditions(c);
+                    return;
                 case TokenType.Name:
                     c.ConditionName = Token.Text;
                     if (c.ConditionName == "MatchAnything")
                     {
                         NextToken(TokenType.And, TokenType.Or,TokenType.AndNot, TokenType.RParen);
-                        return c;
+                        return;
                     }
                     break;
                 case TokenType.Func:
@@ -101,9 +97,9 @@ namespace CmsData
                 }
                 while (Token.Type == TokenType.Comma);
 
-                c.Comparison = op.Text.StartsWith("NOT")
-                    ? CompareType.NotOneOf.ToString()
-                    : CompareType.OneOf.ToString();
+                c.SetComparisonType(op.Text.StartsWith("NOT")
+                    ? CompareType.NotOneOf
+                    : CompareType.OneOf);
                 SetRightSide(c, sb);
             }
             else
@@ -115,81 +111,95 @@ namespace CmsData
                         if (Token.Type == TokenType.String)
                         {
                             if (Token.Text.StartsWith("*") && Token.Text.EndsWith("*"))
-                                c.Comparison = CompareType.Contains.ToString();
+                                c.SetComparisonType(CompareType.Contains);
                             else if (Token.Text.StartsWith("*"))
-                                c.Comparison = CompareType.StartsWith.ToString();
+                                c.SetComparisonType(CompareType.StartsWith);
                             else if (Token.Text.EndsWith("*"))
-                                c.Comparison = CompareType.EndsWith.ToString();
+                                c.SetComparisonType(CompareType.EndsWith);
                         }
                         else
-                            c.Comparison = CompareType.Equal.ToString();
+                            c.SetComparisonType(CompareType.Equal);
                         break;
                     case "<>":
                         if (Token.Type == TokenType.String)
                         {
                             if (Token.Text.StartsWith("*") && Token.Text.EndsWith("*"))
-                                c.Comparison = CompareType.DoesNotContain.ToString();
+                                c.SetComparisonType(CompareType.DoesNotContain);
                             else if (Token.Text.StartsWith("*"))
-                                c.Comparison = CompareType.DoesNotStartWith.ToString();
+                                c.SetComparisonType(CompareType.DoesNotStartWith);
                             else if (Token.Text.EndsWith("*"))
-                                c.Comparison = CompareType.DoesNotEndWith.ToString();
+                                c.SetComparisonType(CompareType.DoesNotEndWith);
                         }
                         else
-                            c.Comparison = CompareType.NotEqual.ToString();
+                            c.SetComparisonType(CompareType.NotEqual);
                         break;
                     case ">":
-                        c.Comparison = CompareType.Greater.ToString();
+                        c.SetComparisonType(CompareType.Greater);
                         break;
                     case "<":
-                        c.Comparison = CompareType.Less.ToString();
+                        c.SetComparisonType(CompareType.Less);
                         break;
                     case ">=":
-                        c.Comparison = CompareType.GreaterEqual.ToString();
+                        c.SetComparisonType(CompareType.GreaterEqual);
                         break;
                     case "<=":
-                        c.Comparison = CompareType.LessEqual.ToString();
+                        c.SetComparisonType(CompareType.LessEqual);
                         break;
                 }
                 SetRightSide(c);
             }
-            return c;
         }
 
         private Condition AddConditions(Condition g)
         {
+            NextToken(TokenType.Name, TokenType.Func, TokenType.Not, TokenType.LParen);
+            if(Token.Type == TokenType.Not)
+            {
+                g.SetComparisonType(CompareType.AllFalse);
+                NextToken(TokenType.Name, TokenType.Func, TokenType.LParen);
+            }
             while (Token.Type != TokenType.RParen)
             {
                 ParseCondition(g);
                 if (Token.Type == TokenType.RParen)
                 {
                     if (!g.Comparison.HasValue())
-                        g.Comparison = CompareType.AllTrue.ToString();
+                        g.SetComparisonType(CompareType.AllTrue);
+                    NextToken(TokenType.And, TokenType.Or, TokenType.RParen);
                     return g;
                 }
-                var andOrNot = Token.Type;
+                SetComparisionType(g);
                 NextToken(TokenType.Name, TokenType.Func, TokenType.LParen);
-                if (g.Comparison == CompareType.AllFalse.ToString() && andOrNot != TokenType.AndNot)
-                    throw new Exception("Expected AND NOT in AllFalse group");
-                if (g.Comparison == CompareType.AllTrue.ToString() && andOrNot != TokenType.And)
-                    throw new Exception("Expected AND in AllTrue group");
-                if (g.Comparison == CompareType.AnyTrue.ToString() && andOrNot != TokenType.Or)
-                    throw new Exception("Expected OR in AnyTrue group");
-                if (g.Comparison.HasValue())
-                    continue;
-                switch (andOrNot)
-                {
-                    case TokenType.And:
-                        g.Comparison = CompareType.AllTrue.ToString();
-                        break;
-                    case TokenType.Or:
-                        g.Comparison = CompareType.AnyTrue.ToString();
-                        break;
-                    case TokenType.AndNot:
-                        g.Comparison = CompareType.AllFalse.ToString();
-                        break;
-                }
             }
             throw new Exception("missing ) in Group");
+        }
+
+        private void SetComparisionType(Condition g)
+        {
+            CheckAndOrNotConsistency(g);
+            if (!g.Comparison.HasValue())
+                switch (Token.Type)
+                {
+                    case TokenType.And:
+                        g.SetComparisonType(CompareType.AllTrue);
+                        break;
+                    case TokenType.Or:
+                        g.SetComparisonType(CompareType.AnyTrue);
+                        break;
+                    case TokenType.AndNot:
+                        g.SetComparisonType(CompareType.AllFalse);
+                        break;
+                }
+        }
+
+        private void CheckAndOrNotConsistency(Condition g)
+        {
+            if (g.ComparisonType == CompareType.AllFalse && Token.Type != TokenType.AndNot)
+                throw new Exception("Expected AND NOT in AllFalse group");
+            if (g.ComparisonType == CompareType.AllTrue && Token.Type != TokenType.And)
+                throw new Exception("Expected AND in AllTrue group");
+            if (g.ComparisonType == CompareType.AnyTrue && Token.Type != TokenType.Or)
+                throw new Exception("Expected OR in AnyTrue group");
         }
 
         private void SetRightSide(Condition c, StringBuilder sb = null)
@@ -208,7 +218,7 @@ namespace CmsData
                     c.DateValue = text.ToDate();
                     break;
             }
-            NextToken(TokenType.And, TokenType.Or, TokenType.RParen);
+            NextToken(TokenType.And, TokenType.Or, TokenType.AndNot, TokenType.RParen);
         }
 
         private void ParseParam(Condition c)
