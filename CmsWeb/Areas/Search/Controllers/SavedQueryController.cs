@@ -53,7 +53,7 @@ namespace CmsWeb.Areas.Search.Controllers
             return Content("ok");
         }
 
-        const string SqlSavedqueries = @"
+        internal const string SqlSavedqueries = @"
 SELECT 
 	QueryId,
     owner ,

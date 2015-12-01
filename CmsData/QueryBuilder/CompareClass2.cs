@@ -83,10 +83,10 @@ namespace CmsData
                     throw new ArgumentException();
             }
         }
-        public static CompareType Convert(string type)
+        public static CompareType Convert(string type, Condition c = null)
         {
             if (!type.HasValue())
-                return CompareType.Equal;
+                return c != null && c.IsGroup ? CompareType.AllTrue : CompareType.Equal;
             return (CompareType)Enum.Parse(typeof(CompareType), type);
         }
         public static List<CompareClass2> Comparisons

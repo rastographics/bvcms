@@ -110,7 +110,7 @@
     <FamHasPrimAdultChurchMemb Title="Family Has Primary Adult Church Member" Type="Bit" DataValueField="IdCode">
       Select True or False for families with a Primary Adult who is a member of the church.
     </FamHasPrimAdultChurchMemb>
-    <FamHasStatusFlag Title="Family Member Has Status Flag" Type="Code" DataSource="StatusFlags" DataValueField="Code">
+    <FamHasStatusFlag Title="Family Member Has Status Flag" Type="CodeStr" DataSource="StatusFlags" DataValueField="Code">
       Select True or False for families with a member having a StatusFlag.
     </FamHasStatusFlag>
     <FamilyId Title="Family" Type="Integer">
@@ -632,7 +632,7 @@
     <PlusParentsOf Title="Add Primary Adults" Type="Bit" DataValueField="IdCode">
       Specify True or False to Add Primary Adults.
     </PlusParentsOf>
-    <StatusFlag Title="Status Flag" Type="Code" DataSource="StatusFlags" DataValueField="Code">
+    <StatusFlag Title="Status Flag" Type="CodeStr" DataSource="StatusFlags" DataValueField="Code">
       Select Status Flags from the list (computed in nightly batch from saved searches).
     </StatusFlag>
     <RecentFlagAdded Title="Recent Flag Added" Type="Code" DataSource="StatusFlags" DataValueField="Code" Params="Days">

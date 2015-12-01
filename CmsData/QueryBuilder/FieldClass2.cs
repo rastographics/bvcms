@@ -236,6 +236,7 @@ namespace CmsData
         OrgType,
         PmmLabels,
         Tags,
+        Tag,
         SavedQueryIdDesc
     }
 }

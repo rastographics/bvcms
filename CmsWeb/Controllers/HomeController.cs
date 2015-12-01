@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -53,18 +54,45 @@ namespace CmsWeb.Controllers
         }
 
 #if DEBUG
+        [HttpGet, Route("~/Test2")]
+        public ActionResult Test2(string id)
+        {
+            var xml = @"
+<Condition Id=""ed6b4ad9-2933-45ce-943b-e008235743b6"" Order=""0"" Field=""Group"" Comparison=""AllTrue"" Description=""scratchpad"" PreviousName=""scratchpad"" OnlineReg=""0"" OrgStatus=""0"" OrgType2=""0"">
+<Condition Id=""2d5abc6c-3f02-4721-9e27-a629f3c4e16d"" Order=""2"" Field=""StatusFlag"" Comparison=""Equal"" CodeIdValue=""F40"" OnlineReg=""0"" OrgStatus=""0"" OrgType2=""0""/>
+<Condition Id=""b857b40f-0662-45d6-b16c-746c5b7966f1"" Order=""4"" Field=""VolunteerProcessedDateMonthsAgo"" Comparison=""GreaterEqual"" TextValue=""23"" OnlineReg=""0"" OrgStatus=""0"" OrgType2=""0""/>
+</Condition>";
+            var c = Condition.Import(xml);
+            var s = c.ToCode();
+            var cc = QueryParser.Parse(s);
+
+            return Content("done");
+        }
+
         [HttpGet, Route("~/Test")]
         public ActionResult Test(string id)
         {
-            var input = @"
-NOT PrimaryBadAddrFlag = 1[True]
-AND NOT PrimaryResCode = 40[Unable to Locate]
-AND NOT PrimaryAddress = ''
-AND NOT DoNotMailFlag = 1[True]
-AND NOT EnvelopeOptionsId = 1[Individual]
-";
-            var c = QueryParser.Parse(input);
-            return Content(c.ToXml(), "text/xml");
+            var m = DbUtil.Db.Connection.Query(CmsWeb.Areas.Search.Controllers.SavedQueryController.SqlSavedqueries);
+            foreach (var q in m)
+            {
+                var g = q.QueryId as Guid?;
+                if (!g.HasValue)
+                    continue;
+                var c = DbUtil.Db.LoadExistingQuery(g.Value);
+                var s = c.ToCode();
+                if (!s.HasValue())
+                    continue;
+                try
+                {
+                    QueryParser.Parse(s);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"{g.Value}, {ex.Message}");
+                }
+                break;
+            }
+            return Content("done");
         }
 #endif
 
@@ -254,7 +282,7 @@ AND NOT EnvelopeOptionsId = 1[Individual]
             if (script.StartsWith("Not Authorized"))
                 return Message(script);
             ViewBag.name = title ?? $"Run Script {name} {parameter}";
-            var rd = cn.ExecuteReader(script, p, commandTimeout:1200);
+            var rd = cn.ExecuteReader(script, p, commandTimeout: 1200);
             return View(rd);
         }
 
@@ -304,7 +332,7 @@ AND NOT EnvelopeOptionsId = 1[Individual]
                     .Replace("@P2", p2 ?? "NULL")
                     .Replace("V1", v1 ?? "None")
                     .Replace("V2", v2 ?? "None");
-                if(script.Contains("@qtagid"))
+                if (script.Contains("@qtagid"))
                 {
                     var id = DbUtil.Db.FetchLastQuery().Id;
                     var tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
@@ -328,10 +356,10 @@ AND NOT EnvelopeOptionsId = 1[Individual]
         private string FetchPyScriptForm(string name)
         {
 #if DEBUG
-            if(name == "test")
-            return System.IO.File.ReadAllText(Server.MapPath("~/test.py"));
+            if (name == "test")
+                return System.IO.File.ReadAllText(Server.MapPath("~/test.py"));
 #endif
-                return DbUtil.Db.ContentOfTypePythonScript(name);
+            return DbUtil.Db.ContentOfTypePythonScript(name);
         }
         [HttpGet, Route("~/PyScriptForm/{name}")]
         public ActionResult PyScriptForm(string name)

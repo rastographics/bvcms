@@ -12,14 +12,14 @@ namespace CmsData
         private readonly QueryLexer lexer;
         private QueryParser(string s) { lexer = new QueryLexer(s); }
         private string PositionLine => $"{lexer.Line.Insert(lexer.Position, "^")}";
-        
+
         private Token Token => lexer.Token;
 
         private void NextToken(params TokenType[] args)
         {
             if (lexer.Next() == false)
                 Token.Type = TokenType.RParen;
-            if(!args.Contains(Token.Type))
+            if (!args.Contains(Token.Type))
                 throw new Exception($@"Expected {string.Join(",", args.Select(aa => aa.ToString()))}
 {PositionLine}
 ");
@@ -27,14 +27,20 @@ namespace CmsData
         private void NextToken(string text)
         {
             lexer.Next();
-            if(Token.Text != text)
+            if (Token.Text != text)
                 throw new Exception($"Expected {text}");
         }
 
         public static Condition Parse(string s)
         {
             var m = new QueryParser(s);
-            var p = Condition.CreateAllGroup();
+            var p = new Condition
+            {
+                Id = Guid.NewGuid(),
+                ConditionName = "Group",
+                AllConditions = new Dictionary<Guid, Condition>()
+            };
+            p?.AllConditions.Add(p.Id, p);
             var c = m.AddConditions(p);
             if (p.Conditions.Count() == 1 && c.IsGroup)
                 return c;
@@ -64,7 +70,7 @@ namespace CmsData
                     c.ConditionName = Token.Text;
                     if (c.ConditionName == "MatchAnything")
                     {
-                        NextToken(TokenType.And, TokenType.Or,TokenType.AndNot, TokenType.RParen);
+                        NextToken(TokenType.And, TokenType.Or, TokenType.AndNot, TokenType.RParen);
                         return;
                     }
                     break;
@@ -153,7 +159,7 @@ namespace CmsData
         private Condition AddConditions(Condition g)
         {
             NextToken(TokenType.Name, TokenType.Func, TokenType.Not, TokenType.LParen);
-            if(Token.Type == TokenType.Not)
+            if (Token.Type == TokenType.Not)
             {
                 g.SetComparisonType(CompareType.AllFalse);
                 NextToken(TokenType.Name, TokenType.Func, TokenType.LParen);
@@ -212,7 +218,7 @@ namespace CmsData
                     break;
                 case "idtext":
                 case "idvalue":
-                    c.CodeIdValue = text;
+                    c.CodeIdValue = Token2Csv();
                     break;
                 case "date":
                     c.DateValue = text.ToDate();
@@ -223,31 +229,31 @@ namespace CmsData
 
         private void ParseParam(Condition c)
         {
-            NextToken(TokenType.Name,TokenType.RParen);
+            NextToken(TokenType.Name, TokenType.RParen);
             if (Token.Type == TokenType.RParen)
                 return;
-            var param = ParseParam(Token.Text);
+            var param = ParamEnum(Token.Text);
             NextToken("=");
             NextToken(TokenType.String, TokenType.Int);
             switch (param)
             {
                 case Param.Program:
-                    c.Program = Token.Text;
+                    c.Program = Token2Csv();
                     break;
                 case Param.Division:
-                    c.Division = Token.Text;
+                    c.Division = Token2Csv();
                     break;
                 case Param.Organization:
-                    c.Division = Token.Text;
+                    c.Division = Token2Csv();
                     break;
                 case Param.Schedule:
-                    c.Schedule = Token.Text;
+                    c.Schedule = Token2Csv();
                     break;
                 case Param.OrgName:
-                    c.OrgName = Token.Text;
+                    c.OrgName = Token2Csv();
                     break;
                 case Param.OrgStatus:
-                    c.OrgStatus = Token.Text;
+                    c.OrgStatus = Token2Csv();
                     break;
                 case Param.StartDate:
                     c.StartDate = Token.Text.ToDate();
@@ -265,25 +271,23 @@ namespace CmsData
                     c.Days = Token.Text.ToInt();
                     break;
                 case Param.Ministry:
-                    c.Ministry = Token.Text;
+                    c.Ministry = Token2Csv();
                     break;
                 case Param.OnlineReg:
-                    c.OnlineReg = Token.Text;
+                    c.OnlineReg = Token2Csv();
                     break;
                 case Param.OrgType2:
-                    c.OrgType = Token.Text;
+                    c.OrgType = Token2Csv();
                     break;
                 case Param.Campus:
-                    c.Campus = Token.Text;
+                    c.Campus = Token2Csv();
                     break;
                 case Param.OrgType:
-                    c.OrgType = Token.Text;
+                    c.OrgType = Token2Csv();
                     break;
                 case Param.PmmLabels:
-                    c.Tags = Token.Text;
-                    break;
-                case Param.Tags:
-                    c.Tags = Token.Text;
+                case Param.Tag:
+                    AddTagParam(c);
                     break;
                 case Param.SavedQueryIdDesc:
                     c.SavedQuery = Token.Text;
@@ -294,7 +298,21 @@ namespace CmsData
             NextToken(TokenType.Comma, TokenType.RParen);
         }
 
-        private Param ParseParam(string name)
+        private void AddTagParam(Condition c)
+        {
+            var tag = Token2Csv();
+            c.Tags = c.Tags.HasValue() ? $"{c};{tag}" : tag;
+        }
+
+        private string Token2Csv()
+        {
+            if (Token.Type != TokenType.Int)
+                return Token.Text;
+            var a = Token.Text.SplitStr("[]");
+            return a.Length > 1 ? $"{a[0]},{a[1]}" : a[0];
+        }
+
+        private Param ParamEnum(string name)
         {
             switch (name)
             {
@@ -314,7 +332,7 @@ namespace CmsData
                     name = "SavedQueryIdDesc";
                     break;
             }
-            return (Param) Enum.Parse(typeof (Param), name);
+            return (Param)Enum.Parse(typeof(Param), name);
         }
     }
 }

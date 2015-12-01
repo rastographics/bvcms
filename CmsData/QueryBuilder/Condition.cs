@@ -150,7 +150,7 @@ namespace CmsData
         {
             ConditionName = value.ToString();
         }
-        public CompareType ComparisonType => CompareClass2.Convert(Comparison);
+        public CompareType ComparisonType => CompareClass2.Convert(Comparison, this);
 
         private CompareClass2 compare;
         public CompareClass2 Compare2
@@ -326,8 +326,8 @@ namespace CmsData
             {
                 if (!IsCode)
                     return "";
-                var extras = new string[] {"PeopleExtra", "FamilyExtra"};
-                if (extras.Contains(ConditionName))
+                var strings = new string[] {"PeopleExtra", "FamilyExtra", "StatusFlag"};
+                if (strings.Contains(ConditionName))
                 {
                     if (HasMultipleCodes)
                         return string.Join(", ", CodeIdValue.SplitStr(";").Select(s => $"'{s}'"));

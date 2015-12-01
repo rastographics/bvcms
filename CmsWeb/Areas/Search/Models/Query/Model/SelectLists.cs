@@ -26,13 +26,19 @@ namespace CmsWeb.Areas.Search.Models
                 case FieldType.Code:
                 case FieldType.NullCode:
                 case FieldType.CodeStr:
-                    if (fieldMap.DataSource == "ExtraValues")
-                        return SelectedList(ExtraValueCodes());
-                    if (fieldMap.DataSource == "FamilyExtraValues")
-                        return SelectedList(FamilyExtraValueCodes());
-                    if (fieldMap.DataSource == "Campuses")
-                        return SelectedList(Campuses());
-                    return ConvertToSelect(Util.CallMethod(cvctl, fieldMap.DataSource), "IdValue");
+                    switch (fieldMap.DataSource)
+                    {
+                        case "ExtraValues":
+                            return SelectedList(ExtraValueCodes());
+                        case "FamilyExtraValues":
+                            return SelectedList(FamilyExtraValueCodes());
+                        case "Campuses":
+                            return SelectedList(Campuses());
+                        case "StatusFlags":
+                            return ConvertToSelect(CodeValueModel.StatusFlags(), "Code");
+                        default:
+                            return ConvertToSelect(Util.CallMethod(cvctl, fieldMap.DataSource), "IdValue");
+                    }
                 case FieldType.DateField:
                     return ConvertToSelect(Util.CallMethod(cvctl, fieldMap.DataSource), fieldMap.DataValueField);
             }
