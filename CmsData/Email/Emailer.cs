@@ -198,11 +198,11 @@ namespace CmsData
             var p = q.FirstOrDefault() ?? CMSRoleProvider.provider.GetAdmins().First();
             return p;
         }
-        public EmailQueue CreateQueue(MailAddress From, string subject, string body, DateTime? schedule, int tagId, bool publicViewable, bool? ccParents = null)
+        public EmailQueue CreateQueue(MailAddress From, string subject, string body, DateTime? schedule, int tagId, bool publicViewable, bool? ccParents = null, string cclist = null)
         {
-            return CreateQueue(Util.UserPeopleId, From, subject, body, schedule, tagId, publicViewable, ccParents: ccParents);
+            return CreateQueue(Util.UserPeopleId, From, subject, body, schedule, tagId, publicViewable, ccParents: ccParents, cclist: cclist);
         }
-        public EmailQueue CreateQueueForOrg(MailAddress from, string subject, string body, DateTime? schedule, int orgid, bool publicViewable)
+        public EmailQueue CreateQueueForOrg(MailAddress from, string subject, string body, DateTime? schedule, int orgid, bool publicViewable, string cclist = null)
         {
             var emailqueue = new EmailQueue
             {
@@ -215,7 +215,8 @@ namespace CmsData
                 QueuedBy = Util.UserPeopleId,
                 Transactional = false,
                 PublicX = publicViewable,
-                SendFromOrgId = orgid
+                SendFromOrgId = orgid,
+                CClist = cclist
             };
             EmailQueues.InsertOnSubmit(emailqueue);
             SubmitChanges();
@@ -229,7 +230,7 @@ namespace CmsData
             SubmitChanges();
             return emailqueue;
         }
-        public EmailQueue CreateQueue(int? queuedBy, MailAddress from, string subject, string body, DateTime? schedule, int tagId, bool publicViewable, int? goerSupporterId = null, bool? ccParents = null)
+        public EmailQueue CreateQueue(int? queuedBy, MailAddress from, string subject, string body, DateTime? schedule, int tagId, bool publicViewable, int? goerSupporterId = null, bool? ccParents = null, string cclist = null)
         {
             var tag = TagById(tagId);
             if (tag == null)
@@ -248,7 +249,8 @@ namespace CmsData
                     QueuedBy = queuedBy,
                     Transactional = false,
                     PublicX = publicViewable,
-                    CCParents = ccParents
+                    CCParents = ccParents,
+                    CClist = cclist
                 };
                 EmailQueues.InsertOnSubmit(emailqueue);
                 SubmitChanges();

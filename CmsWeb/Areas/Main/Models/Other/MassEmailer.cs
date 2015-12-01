@@ -150,7 +150,7 @@ namespace CmsWeb.Areas.Main.Models
 
             if (!OrgId.HasValue)
                 throw new Exception("no org to email from");
-            var emailqueue = DbUtil.Db.CreateQueueForOrg(From, Subject, Body, Schedule, OrgId.Value, PublicViewable);
+            var emailqueue = DbUtil.Db.CreateQueueForOrg(From, Subject, Body, Schedule, OrgId.Value, PublicViewable, Cc);
             if (emailqueue == null)
                 return null;
             emailqueue.NoReplacements = noDuplicates;
@@ -175,7 +175,7 @@ namespace CmsWeb.Areas.Main.Models
                     Schedule = Util.Now.AddSeconds(10); // some time for emailqueue to be ready to go
             }
 
-            var emailqueue = DbUtil.Db.CreateQueue(From, Subject, Body, Schedule, TagId, PublicViewable, CcParents);
+            var emailqueue = DbUtil.Db.CreateQueue(From, Subject, Body, Schedule, TagId, PublicViewable, CcParents, Cc);
             if (emailqueue == null)
                 return null;
             emailqueue.NoReplacements = noDuplicates;
