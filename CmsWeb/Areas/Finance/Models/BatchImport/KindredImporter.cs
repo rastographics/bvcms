@@ -33,14 +33,19 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             var list = new List<DepositRecord>();
             while (csv.ReadNextRecord())
                 if(csv[14] == "Completed")
+                {
+                    var desc = csv[13].HasValue()
+                        ? $"keyword={csv[13]}; {csv[2]}; {csv[3]}, {csv[4]}, {csv[5]} {csv[6]}; {csv[8]}" 
+                        : $"{csv[2]}; {csv[3]}, {csv[4]}, {csv[5]} {csv[6]}; {csv[8]}";
                     list.Add(new DepositRecord()
                     {
                         Date = csv[1].ToDate(),
                         Account = csv[7],
                         Amount = csv[9],
                         CheckNo = csv[12],
-                        Description= $"{csv[2]}; {csv[3]}, {csv[4]}, {csv[5]} {csv[6]}; {csv[8]}",
+                        Description= desc,
                     });
+                }
             var q = from r in list
                     select r;
             foreach (var r in q)
