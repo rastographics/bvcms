@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CmsData;
-using LumenWorks.Framework.IO.Csv;
+using CsvHelper;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
@@ -19,19 +19,18 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
     {
         public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
         {
-            using (var csv = new CsvReader(new StringReader(text), true))
+            using (var csv = new CsvReader(new StringReader(text)))
                 return BatchProcessKindred(csv, date, fundid);
         }
 
         private static int? BatchProcessKindred(CsvReader csv, DateTime date, int? fundid)
         {
-            var cols = csv.GetFieldHeaders();
             BundleHeader bh = null;
             var firstfund = BatchImportContributions.FirstFundId();
             var fund = fundid ?? firstfund;
 
             var list = new List<DepositRecord>();
-            while (csv.ReadNextRecord())
+            while (csv.Read())
                 if(csv[14] == "Completed")
                 {
                     var desc = csv[13].HasValue()
