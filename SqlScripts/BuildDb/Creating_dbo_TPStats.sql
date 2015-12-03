@@ -30,25 +30,25 @@ RETURN
 		,[lastdt] = ISNULL(( SELECT TOP 1 ActivityDate
 					FROM dbo.ActivityLog a
 					JOIN dbo.Users u ON u.UserId = a.UserId
-					WHERE u.EmailAddress NOT IN (SELECT Value FROM dbo.Split(@emails,','))
+					WHERE NOT EXISTS(SELECT NULL FROM dbo.Split(@emails, ',') WHERE u.EmailAddress LIKE Value)
 					ORDER BY a.ActivityDate DESC
 				), '1/1/1900')
 		,[lastp] = ISNULL(( SELECT TOP 1 u.Name2
 					FROM dbo.ActivityLog a
 					JOIN dbo.Users u ON u.UserId = a.UserId
-					WHERE u.EmailAddress NOT IN (SELECT Value FROM dbo.Split(@emails,','))
+					WHERE NOT EXISTS(SELECT NULL FROM dbo.Split(@emails, ',') WHERE u.EmailAddress LIKE Value)
 					ORDER BY a.ActivityDate DESC
 				), '(null)')
 		,[nlogs] = (SELECT COUNT(*)
 					FROM dbo.ActivityLog a
 					JOIN dbo.Users u ON u.UserId = a.UserId
-					WHERE u.EmailAddress NOT IN (SELECT Value FROM dbo.Split(@emails,','))
+					WHERE NOT EXISTS(SELECT NULL FROM dbo.Split(@emails, ',') WHERE u.EmailAddress LIKE Value)
 					AND a.ActivityDate > DATEADD(DAY, -7, GETDATE())
 				)
 		,[nlogs30] = (	SELECT COUNT(*)
 						FROM dbo.ActivityLog a
 						JOIN dbo.Users u ON u.UserId = a.UserId
-						WHERE u.EmailAddress NOT IN (SELECT Value FROM dbo.Split(@emails,','))
+						WHERE NOT EXISTS(SELECT NULL FROM dbo.Split(@emails, ',') WHERE u.EmailAddress LIKE Value)
 						AND a.ActivityDate > DATEADD(DAY, -30, GETDATE())
 					)
 		,norgs = (SELECT COUNT(*) FROM dbo.Organizations)
@@ -62,7 +62,7 @@ RETURN
 				)
 		,nusers = (	SELECT COUNT(*)
 					FROM dbo.Users u
-					WHERE u.EmailAddress NOT IN (SELECT Value FROM dbo.Split(@emails,','))
+					WHERE NOT EXISTS(SELECT NULL FROM dbo.Split(@emails, ',') WHERE u.EmailAddress LIKE Value)
 					AND EXISTS(
 							SELECT NULL 
 							FROM dbo.UserRole ur
@@ -73,7 +73,7 @@ RETURN
 				)
 		,nmydata = (SELECT COUNT(*)
 					FROM dbo.Users u
-					WHERE u.EmailAddress NOT IN (SELECT Value FROM dbo.Split(@emails,','))
+					WHERE NOT EXISTS(SELECT NULL FROM dbo.Split(@emails, ',') WHERE u.EmailAddress LIKE Value)
 					AND NOT EXISTS(
 							SELECT NULL 
 							FROM dbo.UserRole ur
@@ -89,6 +89,11 @@ RETURN
 					WHERE om.EnrollmentDate > DATEADD(DAY, -120, GETDATE())
 					AND o.RegistrationTypeId > 0
 				) THEN CAST(1 AS BIT) ELSE 0 END
+		,firstactive = (SELECT TOP 1 a.ActivityDate
+					FROM dbo.ActivityLog a
+					JOIN dbo.Users u ON u.UserId = a.UserId
+					WHERE NOT EXISTS(SELECT NULL FROM dbo.Split(@emails, ',') WHERE u.EmailAddress LIKE Value)
+					ORDER BY a.ActivityDate)
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
