@@ -36,7 +36,7 @@ namespace CmsWeb.Areas.Search.Models
             using (var w = XmlWriter.Create(sb, settings))
                 UpdateCondition(w, id);
             query.Text = sb.ToString();
-            //DbUtil.Db.SubmitChanges();
+            DbUtil.Db.SubmitChanges();
         }
         private void UpdateCondition(XmlWriter w, Guid id)
         {

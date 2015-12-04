@@ -349,9 +349,12 @@ namespace CmsData
                 if (!IsCode)
                     return "";
                 if (HasMultipleCodes)
-                    return string.Join(", ", (from s in CodeIdValue.SplitStr(";")
-                                              select GetCodeIdValuePart(s, Part.Code)).ToArray());
-                return GetCodeIdValuePart(CodeIdValue, Part.Code);
+                    return string.Join(", ", (from s in CodeIdValue.SplitStr(",")
+                                              let aa = s.Split(':')
+                                              select aa[0]
+                        ).ToArray());
+                var a = CodeIdValue.SplitStr(",", 2);
+                return a[0];
             }
         }
         internal string CodeIds

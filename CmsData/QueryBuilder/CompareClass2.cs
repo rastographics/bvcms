@@ -28,10 +28,12 @@ namespace CmsData
                     return fld;
                 case FieldType.NullBit:
                 case FieldType.Bit:
-                case FieldType.Code:
                 case FieldType.NullCode:
+                case FieldType.Code:
                 case FieldType.CodeStr:
-                    return string.Format(Display, fld, c.CodeIdText);
+                    return string.Format(Display, fld, c.ConditionName == "StatusFlag" 
+                        ? c.CodeValues 
+                        : c.CodeIdText);
                 case FieldType.String:
                 case FieldType.StringEqual:
                 case FieldType.StringEqualOrStartsWith:

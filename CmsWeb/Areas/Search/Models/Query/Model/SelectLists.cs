@@ -35,7 +35,7 @@ namespace CmsWeb.Areas.Search.Models
                         case "Campuses":
                             return SelectedList(Campuses());
                         case "StatusFlags":
-                            return ConvertToSelect(CodeValueModel.StatusFlags(), "Code");
+                            return ConvertToSelect(CodeValueModel.StatusFlags(), "CodeValue");
                         default:
                             return ConvertToSelect(Util.CallMethod(cvctl, fieldMap.DataSource), "IdValue");
                     }
@@ -122,6 +122,9 @@ namespace CmsWeb.Areas.Search.Models
                     break;
                 case "Id":
                     list2 = codeValueList.Select(c => new SelectListItem { Text = c.Value, Value = c.Id.ToString(), Selected = values.Contains(c.Id.ToString()) }).ToList();
+                    break;
+                case "CodeValue":
+                    list2 = codeValueList.Select(c => new SelectListItem { Text = c.Value, Value = c.CodeValue, Selected = values.Any(vv => vv.StartsWith($"{c.Code}:"))}).ToList();
                     break;
                 case "Code":
                     list2 = codeValueList.Select(c => new SelectListItem { Text = c.Value, Value = c.Code, Selected = values.Contains(c.Code) }).ToList();
@@ -365,6 +368,17 @@ namespace CmsWeb.Areas.Search.Models
         public IEnumerable<SelectListItem> PmmLabelData()
         {
             return ToIdValueSelectList(CodeValueModel.PmmLabels());
+        }
+        public IEnumerable<SelectListItem> StatusFlags()
+        {
+            var q = from s in CodeValueModel.StatusFlags() 
+                    select new SelectListItem
+                    {
+                        Value = $"{s.Code}:{s.Value}",
+                        Text = s.Value,
+                        Selected = CodeValues.Any(vv => vv == s.Code)
+                    };
+            return q;
         }
         public IEnumerable<SelectListItem> ToIdValueSelectList(List<CodeValueItem> items)
         {
