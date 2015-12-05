@@ -676,6 +676,14 @@ namespace CmsData
             return s.FmtFone(prefix);
         }
 
+        /// <summary>
+        /// FmtZip to properly format zip codes with 9 digits
+        /// </summary>
+        public string FmtZip(string s)
+        {
+            return s.FmtZip();
+        }
+
         public string UploadExcelFromSqlToFtp(string sqlscript, string username, string password, string targetpath, string filename)
         {
             var script = db.Content(sqlscript, "");
@@ -788,9 +796,13 @@ namespace CmsData
             Handlebars.RegisterHelper("DataStyle", (writer, context, args) => { writer.Write(CssStyle.DataStyle); });
             Handlebars.RegisterHelper("ServerLink", (writer, context, args) => { writer.Write(db.ServerLink().TrimEnd('/')); });
             Handlebars.RegisterHelper("FmtDate", (writer, context, args) => { writer.Write(args[0].ToDate().FormatDate()); });
+            Handlebars.RegisterHelper("FmtZip", (writer, context, args) => { writer.Write(args[0].ToString().FmtZip()); });
             Handlebars.RegisterHelper("IfEqual", (writer, options, context, args) =>
             {
-                if (args[0] == args[1])
+                var eq = args[0] == args[1];
+                if (!eq && args[0] is int)
+                    eq = args[0].ToString() == args[1].ToString();
+                if (eq)
                     options.Template(writer, (object)context);
                 else
                     options.Inverse(writer, (object)context);

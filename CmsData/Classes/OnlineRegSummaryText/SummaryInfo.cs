@@ -15,12 +15,12 @@ namespace CmsData.OnlineRegSummaryText
         public SummaryInfo(CMSDataContext db, int pid, int oid)
         {
             this.db = db;
-            OrgMember = OrganizationMember.Load(DbUtil.Db, pid, oid);
+            OrgMember = OrganizationMember.Load(db, pid, oid);
             if (!OrgMember.OnlineRegData.HasValue())
                 return;
             // ReSharper disable once UseObjectOrCollectionInitializer
-            Person = new OnlineRegPersonModel0(OrgMember.OnlineRegData);
-            Person.setting = DbUtil.Db.CreateRegistrationSettings(OrgMember.Organization.RegSettingXml, oid);
+            Person = new OnlineRegPersonModel0(OrgMember.OnlineRegData, db);
+            Person.setting = db.CreateRegistrationSettings(OrgMember.Organization.RegSettingXml, oid);
 
             Handlebars.RegisterHelper("Registrant", Registrant);
             Handlebars.RegisterHelper("IfShowTransaction", IfShowTransaction);
@@ -279,8 +279,11 @@ namespace CmsData.OnlineRegSummaryText
         }
         private void IfAskSms(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
         {
-            if (currentAsk.IsAskSms)
-                options.Template(writer, new { Person.person.ReceiveSMS });
+            if (!currentAsk.IsAskSms)
+                return;
+            if (Person.person == null)
+                Person.person = db.LoadPersonById(Person.PeopleId);
+            options.Template(writer, new { Person.person.ReceiveSMS });
         }
         private void IfAskYesNoQuestions(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
         {
