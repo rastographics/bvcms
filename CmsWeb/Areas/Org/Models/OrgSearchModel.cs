@@ -722,7 +722,7 @@ namespace CmsWeb.Areas.Search.Models
         {
             var cc = DbUtil.Db.ScratchPadCondition();
             cc.Reset();
-            var c = cc.AddNewClause(QueryType.OrgSearchMember, CompareType.Equal, "1,T");
+            var c = cc.AddNewClause(QueryType.OrgSearchMember, CompareType.Equal, "1,True");
             if (Name.HasValue())
                 c.OrgName = Name;
             if (ProgramId != 0)

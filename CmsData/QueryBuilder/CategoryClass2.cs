@@ -61,10 +61,10 @@ namespace CmsData
                 return categories;
             }
         }
+
         private static string Attr(XElement e, string name)
         {
-            var a = e.Attribute(name);
-            return a?.Value;
+            return e.Attribute(name)?.Value;
         }
     }
 }

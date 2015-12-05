@@ -73,6 +73,19 @@ namespace CmsWeb.Code
                     };
             return q.ToList();
         }
+        public List<CodeValueItem> Activities()
+        {
+            var q = from a in DbUtil.Db.CheckInActivities
+                    group a.Activity by a.Activity
+                    into g
+                    select new CodeValueItem
+                    {
+                        Code = g.Key,
+                        Value = g.Key
+                    };
+            var list = q.ToList();
+            return list;
+        }
 
         public static IEnumerable<CodeValueItem> AttendCommitmentCodes()
         {

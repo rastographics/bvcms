@@ -118,23 +118,23 @@ namespace CmsWeb.Controllers
             switch (id)
             {
                 case 1:
-                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
+                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,True");
                     c.Quarters = "1";
                     c.Days = 7;
                     break;
                 case 2:
-                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
+                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,True");
                     c.Quarters = "2";
                     c.Days = 7;
-                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "0,F");
+                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "0,False");
                     c.Quarters = "1";
                     c.Days = 7;
                     break;
                 case 3:
-                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
+                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,True");
                     c.Quarters = "3";
                     c.Days = 7;
-                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "0,F");
+                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "0,False");
                     c.Quarters = "2";
                     c.Days = 7;
                     break;

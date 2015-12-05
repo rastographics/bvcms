@@ -120,7 +120,7 @@ namespace CmsWeb.Areas.Reports.Models
         {
             var cc = DbUtil.Db.ScratchPadCondition();
             cc.Reset();
-            var c = cc.AddNewClause(type == "Guests" ? QueryType.GuestAsOf : QueryType.AttendedAsOf, CompareType.Equal, "1,T");
+            var c = cc.AddNewClause(type == "Guests" ? QueryType.GuestAsOf : QueryType.AttendedAsOf, CompareType.Equal, "1,True");
             if (ProgramId.HasValue && ProgramId > 0)
                 c.Program = ProgramId.Value.ToString();
             if (DivisionId.HasValue && DivisionId > 0)

@@ -34,10 +34,8 @@ namespace CmsWeb.Areas.Search.Models
                             return SelectedList(FamilyExtraValueCodes());
                         case "Campuses":
                             return SelectedList(Campuses());
-                        case "StatusFlags":
-                            return ConvertToSelect(CodeValueModel.StatusFlags(), "CodeValue");
                         default:
-                            return ConvertToSelect(Util.CallMethod(cvctl, fieldMap.DataSource), "IdValue");
+                            return ConvertToSelect(Util.CallMethod(cvctl, fieldMap.DataSource), fieldMap.DataValueField);
                     }
                 case FieldType.DateField:
                     return ConvertToSelect(Util.CallMethod(cvctl, fieldMap.DataSource), fieldMap.DataValueField);
@@ -118,13 +116,13 @@ namespace CmsWeb.Areas.Search.Models
                     list2 = codeValueList.Select(c => new SelectListItem { Text = c.Value, Value = c.IdCode, Selected = values.Contains(c.IdCode) }).ToList();
                     break;
                 case "IdValue":
-                    list2 = codeValueList.Select(c => new SelectListItem { Text = c.Value, Value = c.IdValue, Selected = values.Any(vv => vv.StartsWith($"{c.Id},")) }).ToList();
+                    list2 = codeValueList.Select(c => new SelectListItem { Text = c.Value, Value = c.IdValue, Selected = values.Any(vv => vv.StartsWith($"{c.Id},") || vv == $"{c.Id}") }).ToList();
                     break;
                 case "Id":
                     list2 = codeValueList.Select(c => new SelectListItem { Text = c.Value, Value = c.Id.ToString(), Selected = values.Contains(c.Id.ToString()) }).ToList();
                     break;
                 case "CodeValue":
-                    list2 = codeValueList.Select(c => new SelectListItem { Text = c.Value, Value = c.CodeValue, Selected = values.Any(vv => vv.StartsWith($"{c.Code}:"))}).ToList();
+                    list2 = codeValueList.Select(c => new SelectListItem { Text = c.Value, Value = c.CodeValue, Selected = values.Any(vv => vv.StartsWith($"{c.Code}:") || vv == c.Code)}).ToList();
                     break;
                 case "Code":
                     list2 = codeValueList.Select(c => new SelectListItem { Text = c.Value, Value = c.Code, Selected = values.Contains(c.Code) }).ToList();

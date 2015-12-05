@@ -59,7 +59,7 @@ namespace CmsData
             if (qb == null)
             {
                 var c = Condition.CreateNewGroupClause();
-                c.AddNewClause(typ, CompareType.Equal, "1,T");
+                c.AddNewClause(typ, CompareType.Equal, "1,True");
                 qb = new Query
                 {
                     QueryId = c.Id,

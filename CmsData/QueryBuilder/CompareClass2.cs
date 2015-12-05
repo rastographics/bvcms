@@ -31,9 +31,7 @@ namespace CmsData
                 case FieldType.NullCode:
                 case FieldType.Code:
                 case FieldType.CodeStr:
-                    return string.Format(Display, fld, c.ConditionName == "StatusFlag" 
-                        ? c.CodeValues 
-                        : c.CodeIdText);
+                    return string.Format(Display, fld, c.CodeIdText);
                 case FieldType.String:
                 case FieldType.StringEqual:
                 case FieldType.StringEqualOrStartsWith:

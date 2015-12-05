@@ -405,7 +405,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var cc = DbUtil.Db.ScratchPadCondition();
             cc.Reset();
             cc.AddNewClause(QueryType.MeetingId, CompareType.NotEqual, Id);
-            var c = cc.AddNewClause(QueryType.WasMemberAsOf, CompareType.Equal, "1,T");
+            var c = cc.AddNewClause(QueryType.WasMemberAsOf, CompareType.Equal, "1,True");
             c.StartDate = m.MeetingDate;
             c.Program = m.Organization.Division.Program.Id.ToString();
             c.Division = (m.Organization.DivisionId ?? 0).ToString();
@@ -429,7 +429,7 @@ namespace CmsWeb.Areas.Org.Controllers
                         .Quarters = m.MeetingId.ToString();
                     break;
                 case "NotRegistered":
-                    cc.AddNewClause(QueryType.HasCommitmentForMeetingId, CompareType.Equal, "0,F")
+                    cc.AddNewClause(QueryType.HasCommitmentForMeetingId, CompareType.Equal, "0,False")
                         .Quarters = m.MeetingId.ToString();
                     break;
                 case "Attends":

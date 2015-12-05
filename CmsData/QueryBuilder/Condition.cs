@@ -326,8 +326,7 @@ namespace CmsData
             {
                 if (!IsCode)
                     return "";
-                var strings = new string[] {"PeopleExtra", "FamilyExtra", "StatusFlag"};
-                if (strings.Contains(ConditionName))
+                if (Compare2.FieldType == FieldType.CodeStr)
                 {
                     if (HasMultipleCodes)
                         return string.Join(", ", CodeIdValue.SplitStr(";").Select(s => $"'{s}'"));
@@ -349,11 +348,11 @@ namespace CmsData
                 if (!IsCode)
                     return "";
                 if (HasMultipleCodes)
-                    return string.Join(", ", (from s in CodeIdValue.SplitStr(",")
+                    return string.Join(", ", (from s in CodeIdValue.SplitStr(";")
                                               let aa = s.Split(':')
                                               select aa[0]
                         ).ToArray());
-                var a = CodeIdValue.SplitStr(",", 2);
+                var a = CodeIdValue.Split(':');
                 return a[0];
             }
         }

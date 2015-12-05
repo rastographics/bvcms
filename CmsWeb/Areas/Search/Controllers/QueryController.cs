@@ -6,16 +6,22 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Net;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using System.Xml;
+using System.Xml.Linq;
 using CmsWeb.Areas.Search.Models;
 using Elmah;
 using UtilityExtensions;
 using CmsData;
 using CmsWeb.Code;
+using CmsWeb.Models;
+using MoreLinq;
+using OfficeOpenXml;
 
 namespace CmsWeb.Areas.Search.Controllers
 {
@@ -339,6 +345,14 @@ namespace CmsWeb.Areas.Search.Controllers
             var ret = Condition.Import(text, name, newGuids: true);
             ret.Save(DbUtil.Db);
             return Redirect("/Query/" + ret.Id);
+        }
+
+        [HttpGet, Route("~/Query/ConditionsConfig")]
+        public ActionResult ConditionsConfig()
+        {
+            return ExportQuery.ConditionConfigs()
+                .ToDataTable()
+                .ToExcel("ConditionsConfig.xlsx");
         }
     }
 }

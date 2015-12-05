@@ -29,6 +29,8 @@ namespace CmsData
                 queryType = ConvertQueryType(value);
             }
         }
+
+        public string Category { get; set; }
         private QueryType queryType;
         public QueryType QueryType
         {
