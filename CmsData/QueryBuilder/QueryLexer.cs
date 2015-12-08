@@ -82,7 +82,7 @@ namespace CmsData.QueryBuilder
             while (true)
             {
                 var ret = GetNext();
-                if (skipTypes.Contains(Token.Type))
+                if (ret && skipTypes.Contains(Token.Type))
                     continue;
                 return ret;
             }

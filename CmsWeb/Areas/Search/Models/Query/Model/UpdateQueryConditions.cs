@@ -16,7 +16,14 @@ namespace CmsWeb.Areas.Search.Models
         public static void Run(Guid id)
         {
             var mm = new UpdateQueryConditions();
-            mm.UpdateConditions(id);
+            try
+            {
+                mm.UpdateConditions(id);
+            }
+            // ReSharper disable once EmptyGeneralCatchClause
+            catch (Exception)
+            {
+            }
         }
 
         private void UpdateConditions(Guid id)

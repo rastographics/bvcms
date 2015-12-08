@@ -353,8 +353,27 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             var m = new QueryModel(id);
             var s = m.TopClause.ToCode();
+            var q = DbUtil.Db.PeopleQueryCode(s);
+            return Content($"{q.Count():N0}");
+        }
+        [HttpGet]
+        [Route("~/Query/ParseToXml")]
+        [Route("~/Query/ParseToXml/{id?}")]
+        public ActionResult ParseToXml(Guid? id)
+        {
+            var m = new QueryModel(id);
+            var xml1 = m.TopClause.ToXml();
+            var s = m.TopClause.ToCode();
             var c = Condition.Parse(s);
-            return Content("ok");
+            var xml2 = c.ToXml();
+            var content = $@"
+ORIGINAL
+{xml1}
+
+PARSED
+{xml2}
+";
+            return Content(content, "text/plain");
         }
 
         [HttpGet, Route("~/Query/ConditionsConfig")]

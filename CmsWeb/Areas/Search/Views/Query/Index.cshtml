@@ -46,7 +46,8 @@
                           <a href="/Query/Export/@Model.QueryId" class="exportquery">view code</a>
                           @if (User.IsInRole("Developer"))
                           {
-                          <a href="/Query/Parse/@Model.QueryId">parse code</a>
+                          <a href="/Query/Parse/@Model.QueryId" class="exportquery">parse code</a>
+                          <a href="/Query/ParseToXml/@Model.QueryId" target="codexml">code xml</a>
                           }
                         </div>
                         <div class="pull-right">

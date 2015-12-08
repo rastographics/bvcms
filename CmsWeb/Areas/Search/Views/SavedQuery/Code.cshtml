@@ -18,11 +18,14 @@
   <div>
     @foreach (var q in Model.List)
     {
-        Model.GetLinks(q);
-      <h3>
-        <a href="/Query/@Model.Existing" target="query">@q.owner &mdash; @q.name</a>
-        @*&mdash; <a href="/Query/@Model.Parsed" target="query">test code</a>*@
-      </h3>
+      Model.GetLinks(q);
+        <h3>
+          <a href="/Query/@Model.Existing" target="query">@q.owner &mdash; @q.name</a>
+        </h3>
+      if (Model.Message.HasValue())
+      {
+            <div style="color: red">Error: @Model.Message</div>
+      }
       <pre>
 @Model.Code
 </pre>

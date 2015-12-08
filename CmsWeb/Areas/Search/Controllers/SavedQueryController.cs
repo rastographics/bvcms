@@ -62,7 +62,7 @@ SELECT
     text
 FROM dbo.Query
 WHERE name IS NOT NULL
-AND name <> 'scratchpad'
+--AND name <> 'scratchpad'
 AND text not like '%AnyFalse%'
 ORDER BY lastRun DESC
 ";
@@ -104,19 +104,29 @@ ORDER BY lastRun DESC
 
             public Guid? Existing;
             public Guid? Parsed;
+            public string Message;
+            public string Xml;
 
             public void GetLinks(dynamic q)
             {
                 Existing = q.QueryId as Guid?;
-                var text = q.text as string;
+                Xml = q.text as string;
                 Parsed = null;
+                Message = null;
                 if (Existing == null)
                     return;
                 var c = DbUtil.Db.LoadExistingQuery(Existing.Value);
                 Code = c.ToCode();
                 if (!Code.HasValue())
                     return;
-                var cond = Condition.Parse(Code);
+                try
+                {
+                    var cond = Condition.Parse(Code);
+                }
+                catch (Exception ex)
+                {
+                    Message = ex.Message;
+                }
             }
         }
     }

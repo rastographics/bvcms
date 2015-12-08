@@ -16,7 +16,7 @@ namespace CmsData
             text = s;
             lexer = new QueryLexer(s);
         }
-        private string PositionLine => $"{lexer.Line.Insert(lexer.Position, "^")}";
+        private string PositionLine => lexer.Line.HasValue() ? $"{lexer.Line.Insert(lexer.Position, "^")}" : "";
 
         private Token Token => lexer.Token;
 
@@ -165,7 +165,7 @@ namespace CmsData
                 {
                     if (!g.Comparison.HasValue())
                         g.SetComparisonType(CompareType.AllTrue);
-                    NextToken(TokenType.And, TokenType.Or, TokenType.RParen);
+                    NextToken(TokenType.And, TokenType.Or, TokenType.RParen, TokenType.AndNot);
                     return g;
                 }
                 SetComparisionType(g);
