@@ -433,7 +433,7 @@ namespace CmsData
             emailqueue.Started = DateTime.Now;
             SubmitChanges();
 
-            if (emailqueue.SendFromOrgId.HasValue)
+            if (emailqueue.SendFromOrgId.HasValue && emailqueue.EmailQueueTos.Count() == 0)
             {
                 var q2 = from om in OrganizationMembers
                          where om.OrganizationId == emailqueue.SendFromOrgId
