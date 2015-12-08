@@ -121,7 +121,7 @@ BEGIN
 				AND ISNULL(o.NoSecurityLabel, 0) = 0 
 			THEN 1 ELSE 0 
 		 END
-		,p.OtherNewChurch
+		,p.OtherPreviousChurch
 		 
 	FROM dbo.OrganizationMembers om
 	JOIN dbo.Organizations o ON om.OrganizationId = o.OrganizationId
@@ -192,7 +192,7 @@ BEGIN
 		,CASE WHEN ISNULL(p.Age,0) < 18 AND ISNULL(o.NoSecurityLabel, 0) = 0 
 			THEN 1 ELSE 0 
 		 END
-		,p.OtherNewChurch
+		,p.OtherPreviousChurch
 	 
 	FROM
 	(
@@ -283,7 +283,7 @@ BEGIN
 		,ISNULL(p.CustodyIssue, 0)
 		,ISNULL(p.OkTransport, 0)
 		,0 -- no security label
-		,p.OtherNewChurch
+		,p.OtherPreviousChurch
 	FROM dbo.People p
 	JOIN @pids ON pid = p.PeopleId
 	JOIN dbo.Families f ON p.FamilyId = f.FamilyId
@@ -335,7 +335,7 @@ BEGIN
 		,ISNULL(p.CustodyIssue, 0)
 		,ISNULL(p.OkTransport, 0)
 		,0 -- no security label
-		,p.OtherNewChurch
+		,p.OtherPreviousChurch
 	FROM dbo.People p
 	JOIN @pids ON pid = p.PeopleId
 	JOIN dbo.Families f ON p.FamilyId = f.FamilyId
