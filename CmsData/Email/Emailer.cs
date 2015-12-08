@@ -444,6 +444,7 @@ namespace CmsData
                          where p.EmailAddress != null
                          where p.EmailAddress != ""
                          where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
+                         where p.EmailOptOuts.All(oo => oo.FromEmail != emailqueue.FromAddr)
                          select om.PeopleId;
                 foreach (var pid in q2)
                 {
