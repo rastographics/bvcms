@@ -45,7 +45,7 @@
   , placement: "left"
   ,content: "You can have a family photo in addtion to your personal photo! " +
       "Click the + to upload a photo. " +
-      "Click the picture to edit or delete an existing photo."
+      "Click the picture to edit or delete an Existing photo."
 }, {
   title: "Stuff in the Tabs"
   , element: "#involvementstop"

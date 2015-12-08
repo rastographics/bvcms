@@ -64,7 +64,7 @@ namespace CmsWeb.Controllers
 </Condition>";
             var c = Condition.Import(xml);
             var s = c.ToCode();
-            var cc = QueryParser.Parse(s);
+            var cc = Condition.Parse(s);
 
             return Content("done");
         }
@@ -84,7 +84,7 @@ namespace CmsWeb.Controllers
                     continue;
                 try
                 {
-                    QueryParser.Parse(s);
+                    Condition.Parse(s);
                 }
                 catch (Exception ex)
                 {

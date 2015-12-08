@@ -44,12 +44,12 @@
     <Comparison Type="NotEqual" Display="{0} &lt;&gt; '{1:d}'" />
   </FieldType>
   <FieldType Name="DateField">
-    <Comparison Type="Equal" Display="{0} = {1}" />
-    <Comparison Type="Greater" Display="{0} > {1}" />
-    <Comparison Type="GreaterEqual" Display="{0} >= {1}" />
-    <Comparison Type="Less" Display="{0} &lt; {1}" />
-    <Comparison Type="LessEqual" Display="{0} &lt;= {1}" />
-    <Comparison Type="NotEqual" Display="{0} &lt;&gt; {1}" />
+    <Comparison Type="Equal" Display="{0} = '{1}'" />
+    <Comparison Type="Greater" Display="{0} > '{1}'" />
+    <Comparison Type="GreaterEqual" Display="{0} >= '{1}'" />
+    <Comparison Type="Less" Display="{0} &lt; '{1}'" />
+    <Comparison Type="LessEqual" Display="{0} &lt;= '{1}'" />
+    <Comparison Type="NotEqual" Display="{0} &lt;&gt; '{1}'" />
   </FieldType>
   <FieldType Name="Number">
     <Comparison Type="Equal" Display="{0} = {1}" />
@@ -64,6 +64,7 @@
     <Comparison Type="GreaterEqual" Display="{0} >= {1}" />
     <Comparison Type="Less" Display="{0} &lt; {1}" />
     <Comparison Type="LessEqual" Display="{0} &lt;= {1}" />
+    <Comparison Type="NotEqual" Display="{0} &lt;&gt; {1}" />
   </FieldType>
   <FieldType Name="NullNumber">
     <Comparison Type="Equal" Display="{0} = {1}" />
@@ -102,10 +103,10 @@
     <Comparison Type="DoesNotEndWith" Display="{0} &lt;&gt; '{1}*'" />
     <Comparison Type="DoesNotContain" Display="{0} &lt;&gt; '*{1}*'" />
     <Comparison Type="NotEqual" Display="{0} &lt;&gt; '{1}'" />
-    <Comparison Type="After" Display="{0} &gt; '{1}'" />
-    <Comparison Type="AfterOrSame" Display="{0} &gt;= '{1}'" />
-    <Comparison Type="Before" Display="{0} &lt; '{1}'" />
-    <Comparison Type="BeforeOrSame" Display="{0} &lt;= '{1}'" />
+    <Comparison Label="After" Type="Greater" Display="{0} &gt; '{1}'" />
+    <Comparison Label="AfterOrSame" Type="GreaterEqual" Display="{0} &gt;= '{1}'" />
+    <Comparison Label="Before" Type="Less" Display="{0} &lt; '{1}'" />
+    <Comparison Label="BeforeOrSame" Type="LessEqual" Display="{0} &lt;= '{1}'" />
   </FieldType>
   <FieldType Name="StringEqual">
     <Comparison Type="Equal" Display="{0} = '{1}'" />

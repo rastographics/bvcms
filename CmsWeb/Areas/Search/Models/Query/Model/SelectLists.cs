@@ -16,15 +16,20 @@ namespace CmsWeb.Areas.Search.Models
             if (!CodeVisible)
                 return null;
             var cvctl = new CodeValueModel();
+            var valtype = "IdValue";
             switch (fieldMap.Type)
             {
                 case FieldType.Bit:
                 case FieldType.NullBit:
-                    return ConvertToSelect(BitCodes, "IdValue");
+                    return ConvertToSelect(BitCodes, valtype);
                 case FieldType.EqualBit:
-                    return ConvertToSelect(EqualBitCodes, "IdValue");
+                    return ConvertToSelect(EqualBitCodes, valtype);
                 case FieldType.Code:
                 case FieldType.NullCode:
+                    if (fieldMap.DataSource == "Campuses")
+                        return SelectedList(Campuses());
+                    return ConvertToSelect(Util.CallMethod(cvctl, fieldMap.DataSource),
+                        Util.PickFirst(fieldMap.DataValueField, valtype));
                 case FieldType.CodeStr:
                     switch (fieldMap.DataSource)
                     {
@@ -32,8 +37,6 @@ namespace CmsWeb.Areas.Search.Models
                             return SelectedList(ExtraValueCodes());
                         case "FamilyExtraValues":
                             return SelectedList(FamilyExtraValueCodes());
-                        case "Campuses":
-                            return SelectedList(Campuses());
                         default:
                             return ConvertToSelect(Util.CallMethod(cvctl, fieldMap.DataSource), fieldMap.DataValueField);
                     }
@@ -135,7 +138,7 @@ namespace CmsWeb.Areas.Search.Models
         }
         public IEnumerable<SelectListItem> GroupComparisons()
         {
-            return from c in CompareClass2.Comparisons
+            return from c in CompareClass.Comparisons
                    where c.FieldType == FieldType.Group
                    let comp = c.CompType == CompareType.AllTrue ? "All"
                        : c.CompType == CompareType.AnyTrue ? "Any"
@@ -150,13 +153,13 @@ namespace CmsWeb.Areas.Search.Models
         }
         public IEnumerable<SelectListItem> Comparisons()
         {
-            return from c in CompareClass2.Comparisons
+            return from c in CompareClass.Comparisons
                    where c.FieldType == fieldMap.Type
                    let ct = c.CompType.ToString()
                    select new SelectListItem
                    {
                        Text = ct,
-                       Value = c.CompType.ToString(),
+                       Value = Util.PickFirst(c.Label, c.CompType.ToString()),
                        Selected = Comparison == ct
                    };
         }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using UtilityExtensions;
 
 namespace CmsData
 {
@@ -12,14 +13,7 @@ namespace CmsData
 
         public string ToString(Condition c)
         {
-            try
-            {
-                return ExportExpressionList(c);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            return ExportExpressionList(c);
         }
         private string ExportExpressionList(Condition c)
         {
@@ -45,12 +39,18 @@ namespace CmsData
                 default:
                     throw new ArgumentException();
             }
-            var inner = string.Join(andOrNot, list);
+            var inner = string.Join(andOrNot, list.Where(vv => vv.HasValue()));
             return $"{Level}{not}{inner}";
         }
 
         private string ExportExpression(Condition c)
         {
+            QueryType qt;
+            if (!Enum.TryParse(c.ConditionName, out qt))
+                return null;
+            if (c.Comparison == "IsNull")
+                return null;
+
             level++;
             var inner = ExportExpressionList(c);
             level--;
@@ -70,19 +70,6 @@ namespace CmsData
             return m.ToString(c);
         }
 
-        public class ConditionConfig
-        {
-            public string Name { get; set; }
-            public string Type { get; set; }
-            public string DataValueField { get; set; }
-            public string DataSource { get; set; }
-            public string QuartersLabel { get; set; }
-            public string Category { get; set; }
-            public string Title { get; set; }
-            public string Params { get; set; }
-            public string Description { get; set; }
-        }
-
         public static IEnumerable<ConditionConfig> ConditionConfigs()
         {
             var xdoc = XDocument.Parse(Properties.Resources.FieldMap3);
@@ -98,7 +85,7 @@ namespace CmsData
                         Title = f.Attribute("Title")?.Value,
                         Params = f.Attribute("Params")?.Value,
                         QuartersLabel = f.Attribute("QuartersLabel")?.Value,
-                        Description = f.Value.Trim(),
+                        Description = f.Value.Trim().Replace('\n',' '),
                     };
             return q;
         }

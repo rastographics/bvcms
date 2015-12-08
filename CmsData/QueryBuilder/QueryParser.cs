@@ -10,7 +10,12 @@ namespace CmsData
     public class QueryParser
     {
         private readonly QueryLexer lexer;
-        private QueryParser(string s) { lexer = new QueryLexer(s); }
+        private readonly string text;
+        public QueryParser(string s)
+        {
+            text = s;
+            lexer = new QueryLexer(s);
+        }
         private string PositionLine => $"{lexer.Line.Insert(lexer.Position, "^")}";
 
         private Token Token => lexer.Token;
@@ -19,8 +24,15 @@ namespace CmsData
         {
             if (lexer.Next() == false)
                 Token.Type = TokenType.RParen;
-            if (!args.Contains(Token.Type))
-                throw new Exception($@"Expected {string.Join(",", args.Select(aa => aa.ToString()))}
+            if (args.Contains(Token.Type))
+                return;
+            if (Token.Type == TokenType.Name && args.Contains(TokenType.Int) && Token.Text.Equal("true"))
+            {
+                Token.Text = "1[True]";
+                Token.Type = TokenType.Int;
+                return;
+            }
+            throw new QueryParserException($@"Expected {string.Join(",", args.Select(aa => aa.ToString()))}
 {PositionLine}
 ");
         }
@@ -28,24 +40,9 @@ namespace CmsData
         {
             lexer.Next();
             if (Token.Text != text)
-                throw new Exception($"Expected {text}");
+                throw new QueryParserException($"Expected {text}");
         }
 
-        public static Condition Parse(string s)
-        {
-            var m = new QueryParser(s);
-            var p = new Condition
-            {
-                Id = Guid.NewGuid(),
-                ConditionName = "Group",
-                AllConditions = new Dictionary<Guid, Condition>()
-            };
-            p?.AllConditions.Add(p.Id, p);
-            var c = m.AddConditions(p);
-            if (p.Conditions.Count() == 1 && c.IsGroup)
-                return c;
-            return p;
-        }
         private void ParseCondition(Condition p = null)
         {
             var allClauses = p == null ? new Dictionary<Guid, Condition>() : p.AllConditions;
@@ -64,15 +61,10 @@ namespace CmsData
             {
                 case TokenType.LParen:
                     c.ConditionName = "Group";
-                    AddConditions(c);
+                    ParseConditions(c);
                     return;
                 case TokenType.Name:
                     c.ConditionName = Token.Text;
-                    if (c.ConditionName == "MatchAnything")
-                    {
-                        NextToken(TokenType.And, TokenType.Or, TokenType.AndNot, TokenType.RParen);
-                        return;
-                    }
                     break;
                 case TokenType.Func:
                     c.ConditionName = Token.Text;
@@ -81,7 +73,7 @@ namespace CmsData
                         ParseParam(c);
                     while (Token.Type == TokenType.Comma);
                     if (Token.Type != TokenType.RParen)
-                        throw new Exception("missing ) on function parameters");
+                        throw new QueryParserException("missing ) on function parameters");
                     break;
             }
             NextToken(TokenType.Op); // get operator
@@ -90,12 +82,14 @@ namespace CmsData
             {
                 NextToken(TokenType.LParen);
                 var sb = new StringBuilder();
-                var expect = new[] { "PeopleExtra", "FamilyExtra" }.Contains(c.ConditionName)
+                var expect = c.FieldInfo.Type == FieldType.CodeStr
                     ? TokenType.String
                     : TokenType.Int;
                 do
                 {
-                    NextToken(expect);
+                    NextToken(expect, TokenType.RParen);
+                    if (Token.Type == TokenType.RParen)
+                        continue;
                     if (sb.Length > 0)
                         sb.Append(";");
                     sb.Append(Token.Text);
@@ -156,7 +150,7 @@ namespace CmsData
             }
         }
 
-        private Condition AddConditions(Condition g)
+        public Condition ParseConditions(Condition g)
         {
             NextToken(TokenType.Name, TokenType.Func, TokenType.Not, TokenType.LParen);
             if (Token.Type == TokenType.Not)
@@ -177,7 +171,7 @@ namespace CmsData
                 SetComparisionType(g);
                 NextToken(TokenType.Name, TokenType.Func, TokenType.LParen);
             }
-            throw new Exception("missing ) in Group");
+            throw new QueryParserException("missing ) in Group");
         }
 
         private void SetComparisionType(Condition g)
@@ -200,12 +194,14 @@ namespace CmsData
 
         private void CheckAndOrNotConsistency(Condition g)
         {
+            if (!g.Comparison.HasValue())
+                return;
             if (g.ComparisonType == CompareType.AllFalse && Token.Type != TokenType.AndNot)
-                throw new Exception("Expected AND NOT in AllFalse group");
+                throw new QueryParserException("Expected AND NOT in AllFalse group");
             if (g.ComparisonType == CompareType.AllTrue && Token.Type != TokenType.And)
-                throw new Exception("Expected AND in AllTrue group");
+                throw new QueryParserException("Expected AND in AllTrue group");
             if (g.ComparisonType == CompareType.AnyTrue && Token.Type != TokenType.Or)
-                throw new Exception("Expected OR in AnyTrue group");
+                throw new QueryParserException("Expected OR in AnyTrue group");
         }
 
         private void SetRightSide(Condition c, StringBuilder sb = null)
@@ -293,7 +289,7 @@ namespace CmsData
                     c.SavedQuery = Token.Text;
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new QueryParserException($"No Such Param:{param}");
             }
             NextToken(TokenType.Comma, TokenType.RParen);
         }
@@ -331,8 +327,29 @@ namespace CmsData
                 case "SavedQuery":
                     name = "SavedQueryIdDesc";
                     break;
+                case "VisitNumber":
+                case "Field":
+                case "Name":
+                case "FundIdOrBlank":
+                case "FundIdOrNullForAll":
+                case "AgeRange":
+                case "NthVisitNumber":
+                case "TopNumber":
+                case "UsernameOrPeopleId":
+                case "MeetingId":
+                case "NumberOfDaysForNoAttendance":
+                case "AttendCreditId":
+                    name = "Quarters";
+                    break;
             }
             return (Param)Enum.Parse(typeof(Param), name);
+        }
+
+        public class QueryParserException : Exception
+        {
+            public QueryParserException(string message) : base(message)
+            {
+            }
         }
     }
 }

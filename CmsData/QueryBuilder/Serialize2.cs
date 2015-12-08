@@ -205,6 +205,21 @@ namespace CmsData
             Guid g;
             return Guid.TryParse(a.Value, out g) ? g : Guid.NewGuid();
         }
+        public static Condition Parse(string s)
+        {
+            var p = new Condition
+            {
+                Id = Guid.NewGuid(),
+                ConditionName = "Group",
+                AllConditions = new Dictionary<Guid, Condition>()
+            };
+            p.AllConditions.Add(p.Id, p);
+            var m = new QueryParser(s);
+            var c = m.ParseConditions(p);
+            if (p.Conditions.Count() == 1 && c.IsGroup)
+                return c; // Surrounding parentheses not needed for a single group
+            return p; // return outer group
+        }
     }
 
     public static class AttributeWriter

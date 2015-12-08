@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using CmsWeb.Areas.Search.Models;
@@ -57,7 +58,8 @@ namespace CmsWeb.Areas.Search.Controllers
 SELECT 
 	QueryId,
     owner ,
-    name
+    name,
+    text
 FROM dbo.Query
 WHERE name IS NOT NULL
 AND name <> 'scratchpad'
@@ -77,7 +79,7 @@ ORDER BY lastRun DESC
                 DbUtil.DbDispose();
                 var c = DbUtil.Db.LoadExistingQuery(g.Value);
                 var s = c.ToCode();
-                if(s.HasValue())
+                if (s.HasValue())
                     UpdateQueryConditions.Run(sq.QueryId);
             }
             return RedirectToAction("Code");
@@ -85,10 +87,37 @@ ORDER BY lastRun DESC
         [HttpGet]
         public ActionResult Code()
         {
-            var q = DbUtil.Db.Connection.Query(SqlSavedqueries);
-            ViewBag.Count = q.Count();
-            return View(q);
+            return View(new CodeModel());
         }
 
+        public class CodeModel
+        {
+            public List<dynamic> List;
+            public int Count;
+            public string Code;
+
+            public CodeModel()
+            {
+                List = DbUtil.Db.Connection.Query(SqlSavedqueries).ToList();
+                Count = List.Count;
+            }
+
+            public Guid? Existing;
+            public Guid? Parsed;
+
+            public void GetLinks(dynamic q)
+            {
+                Existing = q.QueryId as Guid?;
+                var text = q.text as string;
+                Parsed = null;
+                if (Existing == null)
+                    return;
+                var c = DbUtil.Db.LoadExistingQuery(Existing.Value);
+                Code = c.ToCode();
+                if (!Code.HasValue())
+                    return;
+                var cond = Condition.Parse(Code);
+            }
+        }
     }
 }

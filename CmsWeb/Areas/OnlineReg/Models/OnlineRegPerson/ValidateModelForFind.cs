@@ -117,7 +117,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].Phone), "too many digits in phone");
 
             if (!HasOneOfThreeRequired)
-                modelState.AddModelError("FORM", "we require one of valid birthdate, email or phone to find an existing profile");
+                modelState.AddModelError("FORM", "we require one of valid birthdate, email or phone to find an Existing profile");
 
             if (!Util.ValidEmail(EmailAddress) && (person == null || !Util.ValidEmail(person.EmailAddress)))
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].EmailAddress), "valid email required for registration confirmation");

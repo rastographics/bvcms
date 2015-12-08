@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace CmsData.QueryBuilder
@@ -20,7 +21,8 @@ namespace CmsData.QueryBuilder
         Space,
         Comma,
         In,
-        Not
+        Not,
+        Comment
     }
     public class Token
     {
@@ -43,9 +45,10 @@ namespace CmsData.QueryBuilder
         {
             tokenDefs = new[]
             {
+                new TokenDef(TokenType.Comment,  @"/\*.*\*/"),
                 new TokenDef(TokenType.LParen,  @"\("),
                 new TokenDef(TokenType.RParen,  @"\)"),
-                new TokenDef(TokenType.String,  @"(')(?:\\\1|.)*?\1"),
+                new TokenDef(TokenType.String,  @"'((?>[^']+|'')*)'"),
                 new TokenDef(TokenType.Num,     @"[-+]?\d*\.\d+([eE][-+]?\d+)?"),
                 new TokenDef(TokenType.Int,     @"[-+]?\d+(\[[^]]*?\])?"),
                 new TokenDef(TokenType.Op,      @"(>=|<=|=|<>|<|>|IN(?=\s*\()|NOT\sIN(?=\s*\())"),
@@ -53,8 +56,8 @@ namespace CmsData.QueryBuilder
                 new TokenDef(TokenType.And,     @"AND"),
                 new TokenDef(TokenType.Or,      @"OR"),
                 new TokenDef(TokenType.Not,     @"NOT"),
-                new TokenDef(TokenType.Func,    @"[*<>\?\-+/A-Za-z->!]+(?=\()"),
-                new TokenDef(TokenType.Name,    @"[*<>\?\-+/A-Za-z->!]+"),
+                new TokenDef(TokenType.Func,    @"[A-Za-z][A-Za-z0-9]+(?=\()"),
+                new TokenDef(TokenType.Name,    @"[A-Za-z][A-Za-z0-9]+"),
                 new TokenDef(TokenType.Space,   @"\s*"),
                 new TokenDef(TokenType.Comma,   @","),
             };
@@ -73,10 +76,16 @@ namespace CmsData.QueryBuilder
             } while (LineRemaining != null && LineRemaining.Length == 0);
         }
 
+        private readonly TokenType[] skipTypes = { TokenType.Space, TokenType.Comment };
         public bool Next()
         {
-            var ret = GetNext();
-            return Token.Type == TokenType.Space ? Next() : ret;
+            while (true)
+            {
+                var ret = GetNext();
+                if (skipTypes.Contains(Token.Type))
+                    continue;
+                return ret;
+            }
         }
 
         private bool GetNext()
@@ -99,7 +108,7 @@ namespace CmsData.QueryBuilder
                     NextLine();
                 return true;
             }
-            throw new Exception($"Unable to match against any tokens at line {LineNumber} position {Position} \"{LineRemaining}\"");
+            throw new QueryParser.QueryParserException($"Unable to match against any tokens at line {LineNumber} position {Position} \"{LineRemaining}\"");
         }
 
         private class TokenDef

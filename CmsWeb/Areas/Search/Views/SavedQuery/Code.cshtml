@@ -1,6 +1,6 @@
 ﻿@using CmsData
 @using UtilityExtensions
-@model IEnumerable<dynamic>
+@model CmsWeb.Areas.Search.Controllers.SavedQueryController.CodeModel
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,24 +14,17 @@
   </style>
 </head>
 <body>
-  <h2>Count: @ViewBag.Count</h2>
+  <h2>Count: @Model.Count</h2>
   <div>
-    @foreach (var q in Model)
+    @foreach (var q in Model.List)
     {
-      var g = q.QueryId as Guid?;
-      if (!g.HasValue)
-      {
-        continue;
-      }
-      var c = DbUtil.Db.LoadExistingQuery(g.Value);
-      var s = c.ToCode();
-      if (!s.HasValue())
-      {
-        continue;
-      }
-      <h3><a href="/Query/@g.Value" target="query">@q.owner &mdash; @q.name</a></h3>
+        Model.GetLinks(q);
+      <h3>
+        <a href="/Query/@Model.Existing" target="query">@q.owner &mdash; @q.name</a>
+        @*&mdash; <a href="/Query/@Model.Parsed" target="query">test code</a>*@
+      </h3>
       <pre>
-@s
+@Model.Code
 </pre>
     }
 

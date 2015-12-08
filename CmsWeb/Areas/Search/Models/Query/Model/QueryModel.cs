@@ -24,7 +24,7 @@ namespace CmsWeb.Areas.Search.Models
             };
 
         private string conditionName;
-        private FieldClass2 fieldMap;
+        private FieldClass fieldMap;
 
         public Guid? SelectedId { get; set; }
         public string CodeIdValue { get; set; }
@@ -133,15 +133,15 @@ namespace CmsWeb.Areas.Search.Models
             set
             {
                 conditionName = value;
-                fieldMap = FieldClass2.Fields[value];
+                fieldMap = FieldClass.Fields[value];
             }
         }
 
         public string ConditionText { get { return fieldMap.Title; } }
 
-        public IEnumerable<CategoryClass2> FieldCategories()
+        public IEnumerable<CategoryClass> FieldCategories()
         {
-            var q = from c in CategoryClass2.Categories
+            var q = from c in CategoryClass.Categories
                     where c.Title != "Grouping"
                     select c;
             return q;

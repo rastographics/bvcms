@@ -299,7 +299,7 @@
       Select Letter Status from the list.
     </LetterStatusId>
   </Membership>
-  <CurrentEnrollments Title="Enrollments">
+  <Enrollments Title="Enrollments">
     <InBFClass Title="In Main Fellowship" Type="Bit" >
       Select True or False for those currently enrolled in a Main Fellowship class.
     </InBFClass>
@@ -345,7 +345,7 @@
     <HasBalance Title="Has Balance In Org" Type="Bit" Params="Program,Division,Organization" >
       Select True or False for Members with a Balance in the selected Program or Divison or Organization
     </HasBalance>
-  </CurrentEnrollments>
+  </Enrollments>
   <EnrollmentHistory Title="Enrollment History">
     <WasMemberAsOf Title="Was Member As Of" Type="Bit" Params="Program,Division,Organization,OrgType,StartDate,EndDate" >
       Pick the date range and select Program/Division/ Organization, Org Type.
@@ -430,7 +430,7 @@
       Select the Protect My Ministry status from the list, select the Label from the list, if you use Labels and enter the username or People ID number of the person making the background check.
     </PmmBackgroundCheckStatus>
   </Volunteer>
-  <Attendance Title="Recent Attendance">
+  <RecentAttendance Title="Recent Attendance">
     <RecentAttendMemberType Title="Recent Attended Member Type" Type="Code" Params="Program,Division,Organization,Days" DataSource="MemberTypeCodes" DataValueField="IdValue">
       Select Member Type from the list, enter a number of days to look back and select Program/Division/Organization.
     </RecentAttendMemberType>
@@ -464,7 +464,7 @@
     <RecentFirstFamilyVisit Title="Recent First Family Visit" Type="Bit" QuartersLabel="Days to Lookback" Params="Days" >
       Enter the number of days to look back to find family members where the first by any family member was since then
     </RecentFirstFamilyVisit>
-  </Attendance>
+  </RecentAttendance>
   <AttendanceHistory Title="Attendance Dates">
     <AttendMemberTypeAsOf Title="Member Type Attended As Of" Type="Code" Params="Program,Division,Organization,StartDate,EndDate" DataSource="MemberTypeCodes" DataValueField="IdValue">
       Select Member Type from the list, pick a date range and select Program/Division/Organization.

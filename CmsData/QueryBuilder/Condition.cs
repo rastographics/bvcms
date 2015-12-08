@@ -124,15 +124,15 @@ namespace CmsData
                 return null;
             }
         }
-        private FieldClass2 _FieldInfo;
-        public FieldClass2 FieldInfo
+        private FieldClass _FieldInfo;
+        public FieldClass FieldInfo
         {
             get
             {
                 try
                 {
                     if ((_FieldInfo == null || _FieldInfo.Name != ConditionName))
-                        _FieldInfo = FieldClass2.Fields[ConditionName];
+                        _FieldInfo = FieldClass.Fields[ConditionName];
                     return _FieldInfo;
                 }
                 catch (Exception)
@@ -150,16 +150,16 @@ namespace CmsData
         {
             ConditionName = value.ToString();
         }
-        public CompareType ComparisonType => CompareClass2.Convert(Comparison, this);
+        public CompareType ComparisonType => CompareClass.Convert(Comparison, this);
 
-        private CompareClass2 compare;
-        public CompareClass2 Compare2
+        private CompareClass compare;
+        public CompareClass Compare2
         {
             get
             {
                 if (compare == null)
-                    compare = CompareClass2.Comparisons.SingleOrDefault(cm =>
-                        cm.FieldType == FieldInfo.Type && cm.CompType == ComparisonType);
+                    compare = CompareClass.Comparisons.SingleOrDefault(cm =>
+                        cm.FieldType == FieldInfo.Type && (cm.CompType == ComparisonType || cm.Label == (Comparison ?? "x")));
                 return compare;
             }
         }
@@ -182,6 +182,12 @@ namespace CmsData
                 default:
                     if (Compare2 != null)
                         ret = Compare2.ToString(this);
+                    else if (ComparisonType == CompareType.Equal && FieldInfo.Type == FieldType.NumberLG)
+                    {
+                        SetComparisonType(CompareType.LessEqual);
+                        if (Compare2 != null)
+                            ret = Compare2.ToString(this);
+                    }
                     break;
             }
             return ret;
@@ -329,11 +335,12 @@ namespace CmsData
                 if (Compare2.FieldType == FieldType.CodeStr)
                 {
                     if (HasMultipleCodes)
-                        return string.Join(", ", CodeIdValue.SplitStr(";").Select(s => $"'{s}'"));
+                        return string.Join(", ", CodeIdValue.SplitStr(";").Select(s => $"'{s.Replace("'", "''")}'"));
                     return $"'{CodeIdValue}'";
                 }
                 if (HasMultipleCodes)
                     return string.Join(", ", (from s in CodeIdValue.SplitStr(";")
+                                              where s != "multiselect-all"
                                               let aa = s.Split(',')
                                               select aa.Length > 1 ? $"{aa[0]}[{aa[1]}]" : aa[0]
                         ).ToArray());

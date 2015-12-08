@@ -48,7 +48,7 @@ namespace CmsWeb.Areas.Search.Controllers
         private ActionResult ViewQuery(QueryModel m)
         {
             InitToolbar(m);
-            var newsearchid = (Guid?) TempData["newsearch"];
+            var newsearchid = (Guid?)TempData["newsearch"];
             if (m.TopClause.NewMatchAnyId.HasValue)
                 newsearchid = m.TopClause.NewMatchAnyId;
             if (newsearchid.HasValue)
@@ -61,7 +61,7 @@ namespace CmsWeb.Areas.Search.Controllers
             foreach (var c in m.TopClause.AllConditions)
             {
                 sb.AppendLine(c.Key.ToString());
-                if(c.Value.FieldInfo == null)
+                if (c.Value.FieldInfo == null)
                     return NewQuery();
             }
             ViewBag.ConditionList = sb.ToString();
@@ -286,7 +286,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult ToggleAutoRun(bool setting)
         {
-            DbUtil.Db.SetUserPreference("QueryAutoRun", setting ? "true": "false");
+            DbUtil.Db.SetUserPreference("QueryAutoRun", setting ? "true" : "false");
             return Content(setting.ToString().ToLower());
         }
         [HttpPost]
@@ -346,13 +346,35 @@ namespace CmsWeb.Areas.Search.Controllers
             ret.Save(DbUtil.Db);
             return Redirect("/Query/" + ret.Id);
         }
+        [HttpGet]
+        [Route("~/Query/Parse")]
+        [Route("~/Query/Parse/{id?}")]
+        public ActionResult Parse(Guid? id)
+        {
+            var m = new QueryModel(id);
+            var s = m.TopClause.ToCode();
+            var c = Condition.Parse(s);
+            return Content("ok");
+        }
 
         [HttpGet, Route("~/Query/ConditionsConfig")]
         public ActionResult ConditionsConfig()
         {
-            return ExportQuery.ConditionConfigs()
-                .ToDataTable()
-                .ToExcel("ConditionsConfig.xlsx");
+            return new ConitionsConfigResult();
+        }
+        public class ConitionsConfigResult : ActionResult
+        {
+            public override void ExecuteResult(ControllerContext context)
+            {
+                context.HttpContext.Response.Clear();
+                context.HttpContext.Response.ContentType = "application/csv";
+                context.HttpContext.Response.AddHeader("Content-Disposition", "attachment;filename=FieldMap.csv");
+                var csv = new CsvHelper.CsvWriter(context.HttpContext.Response.Output);
+                var q = ExportQuery.ConditionConfigs();
+                csv.WriteHeader<ConditionConfig>();
+                foreach (var row in q)
+                    csv.WriteRecord(row);
+            }
         }
     }
 }
