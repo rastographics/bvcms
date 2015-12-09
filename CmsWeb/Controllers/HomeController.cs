@@ -154,14 +154,6 @@ namespace CmsWeb.Controllers
                 return Redirect(Request.UrlReferrer.OriginalString);
             return Redirect("/");
         }
-        public ActionResult UseNewDetails(bool id)
-        {
-            Util2.UseNewDetails = !id;
-            DbUtil.Db.SubmitChanges();
-            if (Request.UrlReferrer != null)
-                return Redirect(Request.UrlReferrer.OriginalString);
-            return Redirect("/");
-        }
         public ActionResult UseNewEditor(bool id)
         {
             DbUtil.Db.SetUserPreference("UseNewEditor3", id ? "false" : "true");

@@ -262,20 +262,6 @@ namespace CmsData
                 // be sure to SubmitChanges
             }
         }
-        public static bool UseNewDetails
-        {
-            get
-            {
-                // this works at the database level, not as a user preference
-                // useful for turning the new feature on, then having a quik way to put it back in case something goes badly
-                return DbUtil.Db.Setting("UseNewDetails", "false").ToBool();
-            }
-            set
-            {
-                DbUtil.Db.SetSetting("UseNewDetails", value ? "true" : "false");
-                // be sure to SubmitChanges
-            }
-        }
         public static void Log2File(string file, string data)
         {
             string fn = ConfigurationManager.AppSettings["SharedFolder"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));

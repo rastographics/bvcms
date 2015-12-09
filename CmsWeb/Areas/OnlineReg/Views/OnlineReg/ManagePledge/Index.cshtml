@@ -1,8 +1,16 @@
 ﻿@model CmsWeb.Areas.OnlineReg.Models.ManagePledgesModel
 @{
-  Layout = "~/Views/Shared/onlinereg2.cshtml";
-  ViewBag.Title = "Online Registration";
-  var pi = Model.GetPledgeInfo();
+    Layout = "~/Views/Shared/onlinereg2.cshtml";
+    ViewBag.Title = "Online Registration";
+    var pi = Model.GetPledgeInfo();
+}
+@section head
+{
+  <style>
+    .form-control[readonly] {
+    cursor: auto;
+}
+  </style>
 }
 @section scripts
 {
@@ -17,69 +25,67 @@
           }
         },
         errorLabelContainer: "#messageBox",
-        wrapper: "div",
+        wrapper: "span",
         submitHandler: function (form) {
+          $('#submitit').attr('disabled', 'disabled');
           form.submit();
         }
       });
     });
   </script>
 }
-<h2>@Model.Organization.OrganizationName</h2>
-<h4>Pledge Information for @Model.person.Name &lt;@Model.person.EmailAddress&gt;</h4>
-@using (Html.BeginForm("ConfirmPledge", "OnlineReg", new { Area = "OnlineReg" }, FormMethod.Post, new { id = "confirm" }))
-{
+
+<form class="form-horizontal" action="/OnlineReg/ConfirmPledge" method="POST" id="confirm">
   @Html.Hidden("pid", Model.pid)
   @Html.Hidden("orgid", Model.orgid)
-  <blockquote>
-    <table>
-      <tr>
-        <td>
-          @Html.Raw(Model.Setting.InstructionOptions)
-        </td>
-      </tr>
-    </table>
-    <table cellpadding="5">
-      @if (pi.Pledged > 0)
-      {
-        <tr>
-          <td>Pledged to date:</td>
-          <td class="right">$@pi.Pledged.ToString("N2")</td>
-          <td></td>
-        </tr>
-      }
-      @if (pi.Given > 0)
-      {
-        <tr>
-          <td>Given to date:</td>
-          <td class="right">$@pi.Given.ToString("N2")</td>
-          <td></td>
-        </tr>
-      }
-      <tr>
-        <td>
-          @if (pi.Pledged > 0)
-          {
-            @:My Additional Pledge Amount
-          }
-          else
-          {
-            @:My Pledge Amount
-          }
-        </td>
-        <td>@Html.TextBox("pledge", Model.pledge, new { @class = "short" })</td>
-        <td>
-          <div id="messageBox"></div>
-        </td>
-      </tr>
-      <tr>
-        <td></td>
-        <td>
-          <input id="submitit" type="submit" class="submitbutton" value='Submit' />
-        </td>
-        <td></td>
-      </tr>
-    </table>
-  </blockquote>
-}
+  <fieldset>
+    <legend>
+      @Model.Organization.OrganizationName<br/>
+      <small>For @Model.person.Name &lt;@Model.person.EmailAddress&gt;</small>
+    </legend>
 
+    @Html.Raw(Model.Setting.InstructionOptions)
+
+    @if (pi.Pledged > 0)
+    {
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="textinput">Pledged to Date</label>
+        <div class="col-md-4">
+          <input readonly="readonly" name="textinput" type="text" placeholder="$@pi.Pledged.ToString("N2")" class="form-control input-md">
+        </div>
+      </div>
+    }
+    @if (pi.Given > 0)
+    {
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="textinput">Given to Date</label>
+        <div class="col-md-4">
+          <input readonly="readonly" name="textinput" type="text" placeholder="$@pi.Given.ToString("N2")" class="form-control input-md">
+        </div>
+      </div>
+    }
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="amt">
+        @if (pi.Pledged > 0)
+        {
+          @:My Additional Pledge
+        }
+        else
+        {
+          @:My Pledge 
+        }
+      </label>
+      <div class="col-md-4">
+        <input id="pledge" name="pledge" type="text" placeholder="Pledge Amount" class="form-control input-md">
+        <span class="help-block">no $ or commas please</span> 
+        <span id="messageBox"></span>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="submitit"></label>
+      <div class="col-md-4">
+        <button id="submitit" class="submitbutton btn btn-success">Make Pledge</button>
+      </div>
+    </div>
+  </fieldset>
+</form>

@@ -1624,13 +1624,12 @@ INSERT INTO [dbo].[Ministries] ([MinistryId], [MinistryName], [CreatedBy], [Crea
 INSERT INTO [dbo].[Ministries] ([MinistryId], [MinistryName], [CreatedBy], [CreatedDate], [ModifiedBy], [ModifiedDate], [RecordStatus], [DepartmentId], [MinistryDescription], [MinistryContactId], [ChurchId]) VALUES (335, N'Life Groups', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Ministries] OFF
 SET IDENTITY_INSERT [dbo].[MobileAppActions] ON
-INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api]) VALUES (1, 1, N'Giving', 0, N'', 1, 0, 1, N'', 0)
-INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api]) VALUES (2, 9, N'Registrations', 0, N'', 2, 1, 1, N'', 0)
-INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api]) VALUES (3, 6, N'People Search', 0, N'', 3, 1, 1, N'Access', 0)
-INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api]) VALUES (4, 7, N'Attendance', 0, N'', 4, 1, 1, N'Access, Attendance', 0)
+INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api]) VALUES (1, 6, N'People Search', 0, N'', 1, 1, 1, N'Access', 1)
+INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api]) VALUES (2, 7, N'Attendance', 0, N'', 2, 1, 1, N'Access, Attendance', 1)
+INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api]) VALUES (3, 10, N'Tasks', 0, N'', 3, 1, 1, N'Access', 3)
 SET IDENTITY_INSERT [dbo].[MobileAppActions] OFF
 SET IDENTITY_INSERT [dbo].[MobileAppActionTypes] ON
-INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (1, N'Giving', 2)
+INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (1, N'Giving', 0)
 INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (2, N'Events', 0)
 INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (3, N'Audio', 0)
 INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (4, N'Video', 0)
@@ -1638,21 +1637,23 @@ INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (5, 
 INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (6, N'People Search', 1)
 INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (7, N'Attendance', 1)
 INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (8, N'Custom', 0)
+INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (9, N'Registrations', 1)
+INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (10, N'Tasks', 1)
 SET IDENTITY_INSERT [dbo].[MobileAppActionTypes] OFF
 SET IDENTITY_INSERT [dbo].[MobileAppAudioTypes] ON
 INSERT INTO [dbo].[MobileAppAudioTypes] ([id], [name]) VALUES (1, N'SoundCloud')
 SET IDENTITY_INSERT [dbo].[MobileAppAudioTypes] OFF
 SET IDENTITY_INSERT [dbo].[MobileAppIcons] ON
-INSERT INTO [dbo].[MobileAppIcons] ([id], [setID], [actionID], [url]) VALUES (1, 1, 1, N'http://files.bvcms.com/touchpoint/giving.png')
-INSERT INTO [dbo].[MobileAppIcons] ([id], [setID], [actionID], [url]) VALUES (2, 1, 2, N'http://files.bvcms.com/touchpoint/registrations.png')
-INSERT INTO [dbo].[MobileAppIcons] ([id], [setID], [actionID], [url]) VALUES (3, 1, 3, N'http://files.bvcms.com/touchpoint/search.png')
-INSERT INTO [dbo].[MobileAppIcons] ([id], [setID], [actionID], [url]) VALUES (4, 1, 4, N'http://files.bvcms.com/touchpoint/attendance.png')
+INSERT INTO [dbo].[MobileAppIcons] ([id], [setID], [actionID], [url]) VALUES (1, 1, 1, N'http://files.bvcms.com/touchpoint/search.png')
+INSERT INTO [dbo].[MobileAppIcons] ([id], [setID], [actionID], [url]) VALUES (2, 1, 2, N'http://files.bvcms.com/touchpoint/attendance.png')
+INSERT INTO [dbo].[MobileAppIcons] ([id], [setID], [actionID], [url]) VALUES (3, 1, 3, N'http://files.bvcms.com/touchpoint/tasks.png')
 SET IDENTITY_INSERT [dbo].[MobileAppIcons] OFF
 SET IDENTITY_INSERT [dbo].[MobileAppIconSets] ON
 INSERT INTO [dbo].[MobileAppIconSets] ([id], [name], [active]) VALUES (1, N'Standard', 1)
 SET IDENTITY_INSERT [dbo].[MobileAppIconSets] OFF
 SET IDENTITY_INSERT [dbo].[MobileAppVideoTypes] ON
 INSERT INTO [dbo].[MobileAppVideoTypes] ([id], [name]) VALUES (1, N'YouTube')
+INSERT INTO [dbo].[MobileAppVideoTypes] ([id], [name]) VALUES (2, N'Vimeo')
 SET IDENTITY_INSERT [dbo].[MobileAppVideoTypes] OFF
 SET IDENTITY_INSERT [dbo].[Picture] ON
 INSERT INTO [dbo].[Picture] ([PictureId], [CreatedDate], [CreatedBy], [LargeId], [MediumId], [SmallId], [ThumbId], [X], [Y]) VALUES (1, '2012-01-20 15:08:45.873', N'karenw', 12, 11, 10, 15, NULL, NULL)

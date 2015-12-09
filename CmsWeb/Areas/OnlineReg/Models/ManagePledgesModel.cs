@@ -11,6 +11,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public int pid { get; set; }
         public int orgid { get; set; }
         private Person _Person;
+        public string ThankYouMessage { get; set; }
         public Person person
         {
             get
@@ -85,10 +86,25 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             DbUtil.Db.Email(person.FromEmail, staff, "Online Pledge",
                 $@"{person.Name} made a pledge to {Organization.OrganizationName}");
+
+            ThankYouMessage = GetThankYouMessage(@"
+  <h2>Confirmation</h2>
+  <p>
+    Thank you {first}, for making your pledge to {org}<br/>
+    You should receive a confirmation email shortly.
+  </p>
+");
         }
         public void Log(string action)
         {
             DbUtil.LogActivity("OnlineReg ManagePledge " + action, orgid, pid);
+        }
+        private string GetThankYouMessage(string def)
+        {
+            var msg = Util.PickFirst(setting.ThankYouMessage, def)
+                .Replace("{first}", person.PreferredName, ignoreCase: true)
+                .Replace("{org}", Organization.OrganizationName, ignoreCase: true);
+            return msg;
         }
     }
 }
