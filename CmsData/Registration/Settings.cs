@@ -78,12 +78,14 @@ namespace CmsData.Registration
         public string DonationLabel { get; set; }
         public string ExtraValueFeeName { get; set; }
         public bool NoReqBirthYear { get; set; }
+        // ReSharper disable once InconsistentNaming
         public bool NotReqDOB { get; set; }
         public bool NotReqAddr { get; set; }
         public bool NotReqPhone { get; set; }
         public bool NotReqGender { get; set; }
         public bool NotReqMarital { get; set; }
         public bool NotReqZip { get; set; }
+        public bool NotReqCampus { get; set; }
         public int? DonationFundId { get; set; }
         public string AccountingCode { get; set; }
         public int? TimeSlotLockDays { get; set; }

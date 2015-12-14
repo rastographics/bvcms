@@ -206,7 +206,7 @@ namespace CmsData
                     return $"<img src='{db.ServerLink("/Track/Barcode/" + p.PeopleId)}' />";
 
                 case "{campus}":
-                    return p.CampusId != null ? p.Campu.Description : "No Campus Specified";
+                    return p.CampusId != null ? p.Campu.Description : $"No {Util2.CampusLabel} Specified";
 
                 case "{cellphone}":
                     return p.CellPhone.HasValue() ? p.CellPhone.FmtFone() : "no cellphone on record";

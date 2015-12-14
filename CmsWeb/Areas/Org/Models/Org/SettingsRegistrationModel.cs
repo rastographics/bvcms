@@ -188,6 +188,9 @@ namespace CmsWeb.Areas.Org.Models
         [Reg, Display(Description = NotReqMaritalDescription)]
         public bool NotReqMarital { get; set; }
 
+        [Reg, Display(Description = NotReqCampusDescription)]
+        public bool NotReqCampus { get; set; }
+
         [Reg, Display(Description = MemberOnlyDescription)]
         public bool MemberOnly { get; set; }
 
@@ -270,7 +273,8 @@ with an optional age-based fee
         private const string NotReqZipDescription = @"Regisration does not require a a zipcode ";
         private const string NotReqPhoneDescription = @"Registration does not require any phone number ";
         private const string NotReqGenderDescription = @"Registration does not reqire a gender ";
-        private const string NotReqMaritalDescription = @"Regisration does not require a Marital status ";
+        private const string NotReqMaritalDescription = @"Registration does not require a Marital status ";
+        private const string NotReqCampusDescription = @"Registration does not require Campus";
         private const string MemberOnlyDescription = @"You must be a member of the church to register ";
 
         private const string ShellBsDescription =
