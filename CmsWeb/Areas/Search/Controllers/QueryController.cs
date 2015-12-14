@@ -6,22 +6,16 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Net;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
-using System.Xml;
-using System.Xml.Linq;
 using CmsWeb.Areas.Search.Models;
 using Elmah;
 using UtilityExtensions;
 using CmsData;
 using CmsWeb.Code;
-using CmsWeb.Models;
-using MoreLinq;
-using OfficeOpenXml;
+using Dapper;
 
 namespace CmsWeb.Areas.Search.Controllers
 {
@@ -33,6 +27,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Index(Guid? id)
         {
             ViewBag.Title = "QueryBuilder";
+            ViewBag.OrigQueryId = id;
             var m = new QueryModel(id);
             return ViewQuery(m);
         }
@@ -353,8 +348,44 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             var m = new QueryModel(id);
             var s = m.TopClause.ToCode();
-            var q = DbUtil.Db.PeopleQueryCode(s);
-            return Content($"{q.Count():N0}");
+
+            var q2 = DbUtil.Db.PeopleQueryCode(s);
+            var q1 = DbUtil.Db.PeopleQueryCondition(m.TopClause);
+
+            int cnt1 = 0, cnt2 = 0;
+            int seconds = 0;
+            string error = null;
+
+            try
+            {
+                var dt = DateTime.Now;
+                cnt1 = q1.Count();
+                seconds = DateTime.Now.Subtract(dt).TotalSeconds.ToInt();
+                cnt2 = q2.Count();
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+            }
+
+            DbUtil.Db.Connection.Execute(@"
+UPDATE QueryAnalysis 
+set seconds = @seconds, 
+    Message = @Error, 
+    OriginalCount = @cnt1, 
+    ParsedCount=@cnt2 
+where Id = @id", new { id, seconds, Error = error, cnt1, cnt2 });
+
+            return Content($"original={cnt1:N0} parsed={cnt2:N0}");
+        }
+        [HttpGet]
+        [Route("~/Query/ToXml")]
+        [Route("~/Query/ToXml/{id?}")]
+        public ActionResult ToXml(Guid? id)
+        {
+            var m = new QueryModel(id);
+            var xml1 = m.TopClause.ToXml();
+            return Content(xml1, "text/xml");
         }
         [HttpGet]
         [Route("~/Query/ParseToXml")]

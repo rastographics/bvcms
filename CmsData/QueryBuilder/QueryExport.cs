@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using UtilityExtensions;
 
@@ -13,7 +14,10 @@ namespace CmsData
 
         public string ToString(Condition c)
         {
-            return ExportExpressionList(c);
+            var s = ExportExpressionList(c);
+            if (!s.HasValue())
+                s = "MatchAnything = 1[True]";
+            return s;
         }
         private string ExportExpressionList(Condition c)
         {
@@ -39,7 +43,7 @@ namespace CmsData
                 default:
                     throw new ArgumentException();
             }
-            var inner = string.Join(andOrNot, list.Where(vv => vv.HasValue()));
+            var inner = string.Join(andOrNot, list.Where(vv => vv.HasCode()));
             return $"{Level}{not}{inner}";
         }
 
@@ -47,8 +51,6 @@ namespace CmsData
         {
             QueryType qt;
             if (!Enum.TryParse(c.ConditionName, out qt))
-                return null;
-            if (c.Comparison == "IsNull")
                 return null;
 
             level++;
@@ -68,6 +70,16 @@ namespace CmsData
         {
             var m = new ExportQueryModel();
             return m.ToString(c);
+        }
+
+        public static bool HasCode(this string s)
+        {
+            if (!s.HasValue())
+                return false;
+            var code = Regex.Replace(s, @"\s", "");
+            if (code == "()")
+                return false;
+            return true;
         }
 
         public static IEnumerable<ConditionConfig> ConditionConfigs()

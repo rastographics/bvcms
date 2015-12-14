@@ -4,6 +4,7 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -26,9 +27,9 @@ namespace CmsData
                          from c in j
                          select c).ToList();
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(tt => codes.Contains(tt.Tag.Name) && tt.Tag.TypeId == DbUtil.TagTypeId_StatusFlags);
-            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm); // substitute parm for p
+            Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
         internal Expression HasCurrentTag()
@@ -36,9 +37,9 @@ namespace CmsData
             var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                     p.Tags.Any(t => t.Tag.Name == db.CurrentTagName && t.Tag.PeopleId == db.CurrentTagOwnerId);
-            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
         internal Expression HasMyTag()
@@ -47,9 +48,9 @@ namespace CmsData
             var a = (Tags ?? "").Split(';').Select(s => s.Split(',')[0].ToInt()).ToArray();
             Expression<Func<Person, bool>> pred = p =>
                 p.Tags.Any(t => a.Contains(t.Id));
-            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
         internal Expression HasMemberDocs()
@@ -57,9 +58,9 @@ namespace CmsData
             var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                     p.MemberDocForms.Any();
-            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
         internal Expression SavedQuery2()
@@ -74,9 +75,9 @@ namespace CmsData
             var tag = db.PopulateTemporaryTag(q2.Select(pp => pp.PeopleId));
 
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
-            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
+            Expression expr = Expression.Invoke(pred, parm);
             if (!(op == CompareType.Equal && tf))
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
         internal Expression RecActiveOtherChurch()
@@ -86,11 +87,11 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                     p.RecRegs.Any(v => v.ActiveInAnotherChurch == true)
                     && p.RecRegs.Any();
-            Expression expr1 = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(hasapp, parm), typeof(bool));
-            Expression expr2 = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr1 = Expression.Convert(Expression.Invoke(hasapp, parm), typeof(bool));
+            Expression expr2 = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr2 = System.Linq.Expressions.Expression.Not(expr2);
-            return System.Linq.Expressions.Expression.And(expr1, expr2);
+                expr2 = Expression.Not(expr2);
+            return Expression.And(expr1, expr2);
         }
         internal Expression RecInterestedCoaching()
         {
@@ -99,11 +100,11 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                     p.RecRegs.Any(v => v.Coaching == true)
                     && p.RecRegs.Any();
-            Expression expr1 = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(hasapp, parm), typeof(bool));
-            Expression expr2 = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr1 = Expression.Convert(Expression.Invoke(hasapp, parm), typeof(bool));
+            Expression expr2 = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr2 = System.Linq.Expressions.Expression.Not(expr2);
-            return System.Linq.Expressions.Expression.And(expr1, expr2);
+                expr2 = Expression.Not(expr2);
+            return Expression.And(expr1, expr2);
         }
         internal Expression InOneOfMyOrgs()
         {
@@ -114,8 +115,8 @@ namespace CmsData
                     db.OrganizationMembers.Any(um =>
                         um.OrganizationId == m.OrganizationId && um.PeopleId == uid)
                 );
-            Expression left = System.Linq.Expressions.Expression.Invoke(pred, parm);
-            var right = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Constant(tf), left.Type);
+            Expression left = Expression.Invoke(pred, parm);
+            var right = Expression.Convert(Expression.Constant(tf), left.Type);
             return Compare(left, right);
         }
         internal Expression CheckInVisits()
@@ -168,7 +169,7 @@ namespace CmsData
                     break;
             }
 
-            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
+            Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
         internal Expression MedicalLength()
@@ -179,11 +180,11 @@ namespace CmsData
                 Expression<Func<Person, bool>> pp = p =>
                     !p.RecRegs.Any() || p.RecRegs.First().MedicalDescription == null ||
                     p.RecRegs.First().MedicalDescription.Length == 0;
-                return System.Linq.Expressions.Expression.Invoke(pp, parm);
+                return Expression.Invoke(pp, parm);
             }
             Expression<Func<Person, int>> pred = p => p.RecRegs.Sum(rr => rr.MedicalDescription.Length);
-            Expression left = System.Linq.Expressions.Expression.Invoke(pred, parm);
-            var right = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Constant(len), left.Type);
+            Expression left = Expression.Invoke(pred, parm);
+            var right = Expression.Convert(Expression.Constant(len), left.Type);
             return Compare(left, right);
         }
         internal Expression HasFailedEmails()
@@ -191,9 +192,9 @@ namespace CmsData
             var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                 db.EmailQueueToFails.Any(f => f.PeopleId == p.PeopleId && (f.Time >= StartDate || StartDate == null));
-            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
 
@@ -219,9 +220,9 @@ namespace CmsData
                     where t.DateCreated >= dt
                     select t
                     ).Any();
-            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm); // substitute parm for p
+            Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
     }

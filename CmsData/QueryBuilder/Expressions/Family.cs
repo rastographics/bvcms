@@ -74,7 +74,9 @@ namespace CmsData
         }
         internal Expression FamilyHasChildrenAged3()
         {
-            var range = Quarters.Split('-');
+            var range = Quarters?.Split('-');
+            if (range == null || range.Length != 2)
+                return AlwaysFalse();
             Expression<Func<Person, bool>> pred = p =>
                 p.Family.People.Any(m =>
                     (m.Age ?? 0) >= range[0].ToInt()

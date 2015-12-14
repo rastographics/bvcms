@@ -47,10 +47,10 @@ namespace CmsData
         }
 
         public string Ministry { get; set; }
-        public int? MinistryInt => Ministry.ToInt2();
+        public int? MinistryInt => Ministry.ToInt2() ?? ProgramInt; // Ministry used to be stored in Program
 
         public string Program { get; set; }
-        public int? ProgramInt => Program.GetCsvToken().ToInt2();
+        public int? ProgramInt => Division.HasValue() ? 0 : Program.GetCsvToken().ToInt();
 
         private string division;
         public string Division
@@ -63,7 +63,7 @@ namespace CmsData
             }
             set { division = value; }
         }
-        public int? DivisionInt => Division.GetCsvToken().ToInt();
+        public int? DivisionInt => Organization.HasValue() ? 0 : Division.GetCsvToken().ToInt();
 
         public string Organization { get; set; }
         public int OrganizationInt => Organization.GetCsvToken().ToInt();
@@ -98,6 +98,7 @@ namespace CmsData
         public int? OnlineRegInt => OnlineReg.GetCsvToken().ToInt2();
 
         public int? OrgType2 { get; set; }
+
         public string OrgName { get; set; }
         public Guid? NewMatchAnyId;
         internal Query JustLoadedQuery;
@@ -145,6 +146,8 @@ namespace CmsData
         public void SetComparisonType(CompareType value)
         {
             Comparison = value.ToString();
+            compare = null;
+            compare = Compare2;
         }
         public void SetQueryType(QueryType value)
         {
@@ -158,8 +161,21 @@ namespace CmsData
             get
             {
                 if (compare == null)
+                {
+                    switch (ComparisonType)
+                    {
+                        case CompareType.IsNull:
+                            Comparison = "Equal";
+                            TextValue = string.Empty;
+                            break;
+                        case CompareType.IsNotNull:
+                            Comparison = "NotEqual";
+                            TextValue = string.Empty;
+                            break;
+                    }
                     compare = CompareClass.Comparisons.SingleOrDefault(cm =>
-                        cm.FieldType == FieldInfo.Type && (cm.CompType == ComparisonType || cm.Label == (Comparison ?? "x")));
+                        cm.FieldType == FieldInfo.Type && cm.CompType == ComparisonType);
+                }
                 return compare;
             }
         }
@@ -257,6 +273,8 @@ namespace CmsData
             {
                 foreach (var clause in Conditions)
                 {
+                    if (clause.FieldInfo == null)
+                        continue;
                     if (clause.FieldInfo.QueryType == QueryType.IncludeDeceased)
                     {
                         SetIncludeDeceased();
@@ -288,12 +306,13 @@ namespace CmsData
                 return expr;
             }
             expr = Compare2 == null
-                ? AlwaysFalse()
+                ? AlwaysFalse(parm)
                 : GetExpression(parm, Db);
             if (InAllAnyFalse)
                 expr = Expression.Not(expr);
             return expr;
         }
+
         public bool HasMultipleCodes
         {
             get
@@ -336,7 +355,7 @@ namespace CmsData
                 {
                     if (HasMultipleCodes)
                         return string.Join(", ", CodeIdValue.SplitStr(";").Select(s => $"'{s.Replace("'", "''")}'"));
-                    return $"'{CodeIdValue}'";
+                    return $"'{CodeIdValue.Replace("'", "''")}'";
                 }
                 if (HasMultipleCodes)
                     return string.Join(", ", (from s in CodeIdValue.SplitStr(";")
@@ -375,7 +394,20 @@ namespace CmsData
                             select GetCodeIdValuePart(s, Part.Id);
                     return string.Join(",", q.ToArray());
                 }
-                return GetCodeIdValuePart(CodeIdValue, Part.Id);
+
+                // handle deprecated values
+                if (CodeIdValue.Equal("True"))
+                    CodeIdValue = "1,True";
+                else if (CodeIdValue.Equal("False"))
+                    CodeIdValue = "0,False";
+
+                var cid = GetCodeIdValuePart(CodeIdValue, Part.Id);
+
+                // handle reasonable default for missing true/false condition
+                if (cid == null && FieldInfo.Type == FieldType.Bit)
+                    cid = "1"; 
+
+               return cid;
             }
         }
         internal int[] CodeIntIds
@@ -387,6 +419,7 @@ namespace CmsData
                 if (HasMultipleCodes)
                 {
                     var q = from s in CodeIdValue.SplitStr(";")
+                            where s != "multiselect-all"
                             select GetCodeIdValuePart(s, Part.Id).ToInt();
                     return q.ToArray();
                 }

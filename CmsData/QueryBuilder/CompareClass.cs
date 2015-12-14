@@ -18,11 +18,27 @@ namespace CmsData
     {
         public FieldType FieldType { get; set; }
         public CompareType CompType { get; set; }
-        public string Label { get; set; }
         public string Display { get; set; }
+
         internal string ToString(Condition c)
         {
-            string fld = c.FieldInfo.ToString(c);
+            var fld = c.FieldInfo.ToString(c);
+
+            // IsNull and IsNotNull are deprecated, but this will make them still work
+            switch (c.ComparisonType)
+            {
+                case CompareType.IsNull:
+                    return $"{fld} = ''";
+                case CompareType.IsNotNull:
+                    return $"{fld} <> ''";
+            }
+
+            // handle missing Id value for True/False
+            if (c.CodeIdValue.Equal("False"))
+                c.CodeIdValue = "0,False";
+            else if (c.CodeIdValue.Equal("True"))
+                c.CodeIdValue = "1,True";
+
             switch (FieldType)
             {
                 case FieldType.EqualBit:
@@ -33,11 +49,11 @@ namespace CmsData
                     return string.Format(Display, fld, Util.PickFirst(c.CodeIdText, "''"));
                 case FieldType.Code:
                 case FieldType.CodeStr:
-                    return string.Format(Display, fld, c.CodeIdText);
+                    return string.Format(Display, fld, Util.PickFirst(c.CodeIdText, "''"));
                 case FieldType.String:
                 case FieldType.StringEqual:
                 case FieldType.StringEqualOrStartsWith:
-                    return string.Format(Display, fld, c.TextValue);
+                    return string.Format(Display, fld, c.TextValue?.Replace("'", "''") ?? c.TextValue);
                 case FieldType.NullNumber:
                 case FieldType.NullInteger:
                     return string.Format(Display, fld, Util.PickFirst(c.TextValue, "''"));
@@ -72,6 +88,7 @@ namespace CmsData
                 case FieldType.String:
                 case FieldType.StringEqual:
                 case FieldType.StringEqualOrStartsWith:
+                    return "text";
                 case FieldType.Number:
                 case FieldType.NumberLG:
                 case FieldType.NullNumber:
@@ -79,7 +96,7 @@ namespace CmsData
                 case FieldType.IntegerSimple:
                 case FieldType.IntegerEqual:
                 case FieldType.NullInteger:
-                    return "text";
+                    return "number";
                 case FieldType.Date:
                 case FieldType.DateSimple:
                     return "date";
@@ -107,7 +124,6 @@ namespace CmsData
                             {
                                 FieldType = FieldClass.Convert((string)f.Attribute("Name")),
                                 CompType = Convert((string)c.Attribute("Type")),
-                                Label = (string)c.Attribute("Label"),
                                 Display = (string)c.Attribute("Display")
                             };
                     comparisons = q.ToList();

@@ -4,11 +4,12 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using UtilityExtensions;
 using System.Reflection;
+using UtilityExtensions;
 
 namespace CmsData
 {
@@ -21,49 +22,45 @@ namespace CmsData
             {
                 case CompareType.NotEqual:
                 case CompareType.IsNotNull:
-                    expr = System.Linq.Expressions.Expression.NotEqual(left, right);
+                    expr = Expression.NotEqual(left, right);
                     break;
                 case CompareType.Equal:
                 case CompareType.IsNull:
-                    expr = System.Linq.Expressions.Expression.Equal(left, right);
+                    expr = Expression.Equal(left, right);
                     break;
                 case CompareType.Greater:
-                    expr = System.Linq.Expressions.Expression.GreaterThan(left, right);
+                    expr = Expression.GreaterThan(left, right);
                     break;
                 case CompareType.GreaterEqual:
-                    expr = System.Linq.Expressions.Expression.GreaterThanOrEqual(left, right);
+                    expr = Expression.GreaterThanOrEqual(left, right);
                     break;
                 case CompareType.Less:
-                    expr = System.Linq.Expressions.Expression.LessThan(left, right);
+                    expr = Expression.LessThan(left, right);
                     break;
                 case CompareType.LessEqual:
-                    expr = System.Linq.Expressions.Expression.LessThanOrEqual(left, right);
+                    expr = Expression.LessThanOrEqual(left, right);
                     break;
                 case CompareType.DoesNotStartWith:
                 case CompareType.StartsWith:
-                    expr = System.Linq.Expressions.Expression.Call(left,
-                        typeof(string).GetMethod("StartsWith", new[] { typeof(string) }),
-                        new[] { right });
+                    expr = Expression.Call(left,
+                        typeof(string).GetMethod("StartsWith", new[] { typeof(string) }), right);
                     break;
                 case CompareType.DoesNotEndWith:
                 case CompareType.EndsWith:
-                    expr = System.Linq.Expressions.Expression.Call(left,
-                        typeof(string).GetMethod("EndsWith", new[] { typeof(string) }),
-                        new[] { right });
+                    expr = Expression.Call(left,
+                        typeof(string).GetMethod("EndsWith", new[] { typeof(string) }), right);
                     break;
                 case CompareType.DoesNotContain:
                 case CompareType.Contains:
-                    expr = System.Linq.Expressions.Expression.Call(left,
-                        typeof(string).GetMethod("Contains", new[] { typeof(string) }),
-                        new[] { right });
+                    expr = Expression.Call(left,
+                        typeof(string).GetMethod("Contains", new[] { typeof(string) }), right);
                     break;
                 case CompareType.After:
                 case CompareType.AfterOrSame:
                 case CompareType.Before:
                 case CompareType.BeforeOrSame:
-                    expr = System.Linq.Expressions.Expression.Call(left,
-                        typeof(string).GetMethod("CompareTo", new[] { typeof(string) }),
-                        new[] { right });
+                    expr = Expression.Call(left,
+                        typeof(string).GetMethod("CompareTo", new[] { typeof(string) }), right);
                     break;
             }
             switch (op)
@@ -72,36 +69,36 @@ namespace CmsData
                 case CompareType.DoesNotEndWith:
                 case CompareType.DoesNotContain:
                 case CompareType.DoesNotStartWith:
-                    expr = System.Linq.Expressions.Expression.Not(expr);
+                    expr = Expression.Not(expr);
                     break;
                 case CompareType.After:
-                    expr = System.Linq.Expressions.Expression.GreaterThan(expr, System.Linq.Expressions.Expression.Constant(0));
+                    expr = Expression.GreaterThan(expr, Expression.Constant(0));
                     break;
                 case CompareType.AfterOrSame:
-                    expr = System.Linq.Expressions.Expression.GreaterThanOrEqual(expr, System.Linq.Expressions.Expression.Constant(0));
+                    expr = Expression.GreaterThanOrEqual(expr, Expression.Constant(0));
                     break;
                 case CompareType.Before:
-                    expr = System.Linq.Expressions.Expression.LessThan(expr, System.Linq.Expressions.Expression.Constant(0));
+                    expr = Expression.LessThan(expr, Expression.Constant(0));
                     break;
                 case CompareType.BeforeOrSame:
-                    expr = System.Linq.Expressions.Expression.LessThanOrEqual(expr, System.Linq.Expressions.Expression.Constant(0));
+                    expr = Expression.LessThanOrEqual(expr, Expression.Constant(0));
                     break;
             }
             return expr;
         }
-        private static MethodInfo EnumerableContains = null;
+        private static MethodInfo EnumerableContains;
         private static Expression CompareContains(ParameterExpression parm, string prop, CompareType op, object a, Type arrayType, Type itemType)
         {
-            var left = System.Linq.Expressions.Expression.Constant(a, arrayType);
-            var right = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Property(parm, prop), itemType);
+            var left = Expression.Constant(a, arrayType);
+            var right = Expression.Convert(Expression.Property(parm, prop), itemType);
             if (EnumerableContains == null)
                 EnumerableContains = typeof(Enumerable)
                 .GetMethods(BindingFlags.Public | BindingFlags.Static)
                 .First(m => m.Name == "Contains");
             var method = EnumerableContains.MakeGenericMethod(itemType);
-            Expression expr = System.Linq.Expressions.Expression.Call(method, new Expression[] { left, right });
+            Expression expr = Expression.Call(method, new Expression[] { left, right });
             if (op == CompareType.NotOneOf)
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
         internal static Expression CompareConstant(ParameterExpression parm, string prop, CompareType op, object value)
@@ -111,8 +108,8 @@ namespace CmsData
                     return CompareContains(parm, prop, op, value, typeof(int[]), typeof(int));
                 else if (value.GetType() == typeof(string[]))
                     return CompareContains(parm, prop, op, value, typeof(string[]), typeof(string));
-            var left = System.Linq.Expressions.Expression.Property(parm, prop);
-            var right = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Constant(value), left.Type);
+            var left = Expression.Property(parm, prop);
+            var right = Expression.Convert(Expression.Constant(value), left.Type);
             return Compare(parm, left, op, right);
         }
         internal Expression Compare(Expression left, Expression right)
@@ -128,20 +125,20 @@ namespace CmsData
                 return CompareConstant(parm, prop, CompareType.IsNull, null);
             }
 
-            Expression left = System.Linq.Expressions.Expression.Property(parm, prop);
+            Expression left = Expression.Property(parm, prop);
             if (dt.Value.Date == dt) // 12:00:00 AM?
             {
-                left = System.Linq.Expressions.Expression.MakeMemberAccess(left, typeof(DateTime?).GetProperty("Value"));
-                left = System.Linq.Expressions.Expression.MakeMemberAccess(left, typeof(DateTime).GetProperty("Date"));
+                left = Expression.MakeMemberAccess(left, typeof(DateTime?).GetProperty("Value"));
+                left = Expression.MakeMemberAccess(left, typeof(DateTime).GetProperty("Date"));
             }
-            var right = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Constant(dt), typeof(DateTime));
+            var right = Expression.Convert(Expression.Constant(dt), typeof(DateTime));
             return Compare(left, right);
         }
         internal Expression CompareIntConstant(string prop, string value)
         {
-            var left = System.Linq.Expressions.Expression.Property(parm, prop);
+            var left = Expression.Property(parm, prop);
             int? i = value.ToInt2();
-            var right = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Constant(i), left.Type);
+            var right = Expression.Convert(Expression.Constant(i), left.Type);
             return Compare(left, right);
         }
         internal Expression CompareConstant(string prop, object value)
@@ -153,8 +150,8 @@ namespace CmsData
             if (value != null)
                 if (value.GetType() == typeof(int[])) // use isarray?
                     return CompareContains(parm, prop, op, value, typeof(int[]), typeof(int));
-            var left = System.Linq.Expressions.Expression.Coalesce(System.Linq.Expressions.Expression.Property(parm, prop), System.Linq.Expressions.Expression.Constant(0));
-            var right = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Constant(value), left.Type);
+            var left = Expression.Coalesce(Expression.Property(parm, prop), Expression.Constant(0));
+            var right = Expression.Convert(Expression.Constant(value), left.Type);
             return Compare(left, right);
         }
         internal Expression CompareStringConstant(string prop, object value)
@@ -165,21 +162,22 @@ namespace CmsData
                 else if (value.GetType() == typeof(string[]))
                     return CompareContains(parm, prop, op, value, typeof(string[]), typeof(string));
 
-            var left = System.Linq.Expressions.Expression.Call(System.Linq.Expressions.Expression.Coalesce(System.Linq.Expressions.Expression.Property(parm, prop), System.Linq.Expressions.Expression.Constant("")), "Trim", null);
-            var right = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Constant(value), left.Type);
+            var left = Expression.Call(Expression.Coalesce(Expression.Property(parm, prop), Expression.Constant("")), "Trim", null);
+            var right = Expression.Convert(Expression.Constant(value), left.Type);
             return Compare(left, right);
         }
         internal Expression CompareProperty(string prop, string prop2)
         {
-            var left = System.Linq.Expressions.Expression.Property(parm, prop);
-            var right = System.Linq.Expressions.Expression.Property(parm, prop2);
+            var left = Expression.Property(parm, prop);
+            var right = Expression.Property(parm, prop2);
             return Compare(left, right);
         }
-        internal Expression AlwaysFalse()
+        internal Expression AlwaysFalse(ParameterExpression parm0 = null)
         {
             Expression<Func<Person, bool>> pred = p => false;
-            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
+            Expression expr = Expression.Invoke(pred, parm0 ?? parm);
             return expr;
         }
+
     }
 }

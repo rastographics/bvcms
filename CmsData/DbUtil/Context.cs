@@ -243,6 +243,15 @@ namespace CmsData
                 q = PersonQueryParents(q);
             return q;
         }
+        public IQueryable<Person> PeopleQueryCondition(Condition c)
+        {
+            var q = People.Where(c.Predicate(this));
+            if (c.PlusParentsOf)
+                q = PersonQueryPlusParents(q);
+            else if (c.ParentsOf)
+                q = PersonQueryParents(q);
+            return q;
+        }
         public IQueryable<Person> PersonQueryParents(IQueryable<Person> q)
         {
             var q2 = from p in q

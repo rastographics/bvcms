@@ -139,12 +139,11 @@ namespace CmsData
         internal Expression MadeContactTypeAsOf()
         {
             //StartDate, EndDate, Program, CodeIntIds
-            var ministryid = Program.ToInt();
             var to = (EndDate ?? StartDate ?? DateTime.Now).AddDays(1);
 
             Expression<Func<Person, bool>> pred = p => (
                 from c in p.contactsMade
-                where c.contact.MinistryId == ministryid || ministryid == 0
+                where c.contact.MinistryId == MinistryInt || MinistryInt == 0
                 where CodeIntIds.Contains(c.contact.ContactTypeId ?? 0) || CodeIntIds.Length == 0 || CodeIntIds[0] == 0
                 where StartDate == null || StartDate <= c.contact.ContactDate
                 where c.contact.ContactDate <= to

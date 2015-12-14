@@ -87,7 +87,11 @@ namespace CmsData
                     case Param.Campus:
                     case Param.OrgType:
                     case Param.OrgType2:
+                        list.AddParamCode(attr, prop);
+                        break;
                     case Param.Ministry:
+                        if(prop.Equals(""))
+                            prop = Util.GetProperty(c, "Program") ?? ""; // Ministry used to be stored in Program
                         list.AddParamCode(attr, prop);
                         break;
                     case Param.OrgName:
@@ -159,7 +163,7 @@ namespace CmsData
             if (!s.HasValue())
                 return;
             var n = s.GetCsvToken().ToInt2();
-            if (n == skip)
+            if (n == skip || n == null)
                 return;
             var v = s.GetCsvToken(2, 2);
             d.Add(new ParamArg(key, v.HasValue() ? $"{n}[{v}]" : n.ToString()));
@@ -168,13 +172,13 @@ namespace CmsData
         {
             var s = o.ToString();
             if (s.HasValue())
-            d.Add(new ParamArg(key, $"'{s}'"));
+            d.Add(new ParamArg(key, $"'{s.Replace("'","''")}'"));
         }
         public static void AddParamDate(this List<ParamArg> d, string key, object o)
         {
             var dt = o as DateTime?;
             if (dt.HasValue)
-                d.Add(new ParamArg(key, $"'{dt.FormatDate()}'"));
+                d.Add(new ParamArg(key, $"'{dt.FormatDateTime()}'"));
         }
         public static void AddParamInt(this List<ParamArg> d, string key, object o)
         {

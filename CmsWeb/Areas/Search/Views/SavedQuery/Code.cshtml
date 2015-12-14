@@ -19,15 +19,16 @@
     @foreach (var q in Model.List)
     {
       Model.GetLinks(q);
-        <h3>
-          <a href="/Query/@Model.Existing" target="query">@q.owner &mdash; @q.name</a>
-        </h3>
-      if (Model.Message.HasValue())
-      {
-            <div style="color: red">Error: @Model.Message</div>
-      }
+      var link = DbUtil.Db.ServerLink($"/Query/{Model.Existing}");
+      <h3>
+        <a href="@link" target="query">@q.owner &mdash; @q.name</a> @(q.ispublic ? "public" : "private")
+      </h3>
+      <div style="color: red">Counts: Original=@q.OriginalCount  Parsed=@q.ParsedCount  Seconds=@q.Seconds</div>
       <pre>
 @Model.Code
+</pre>
+      <pre>
+@q.Message
 </pre>
     }
 

@@ -4,6 +4,7 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -19,10 +20,10 @@ namespace CmsData
             var mindt = Util.Now.AddDays(-Days).Date;
             Expression<Func<Person, bool>> pred = p =>
                 p.JoinDate > mindt;
-            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
+            Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual
                 || op == CompareType.NotOneOf)
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
 
         }
@@ -32,9 +33,9 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                 p.DecisionDate > mindt
                 && CodeIntIds.Contains(p.DecisionTypeId.Value);
-            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
+            Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
         internal Expression CampusId()
@@ -49,7 +50,7 @@ namespace CmsData
                 pred = p => !ids.Contains(p.CampusId ?? 0);
             else
                 pred = p => ids.Contains(p.CampusId ?? 0);
-            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm); // substitute parm for p
+            Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
 
             return expr;
         }

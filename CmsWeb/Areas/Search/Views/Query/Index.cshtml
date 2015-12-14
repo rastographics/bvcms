@@ -43,11 +43,11 @@
                               @Html.CheckBox("AutoRun") Auto refresh?
                             </label>
                           </div>
-                          <a href="/Query/Export/@Model.QueryId" class="exportquery">view code</a>
+                          <a href="/Query/Export/@ViewBag.OrigQueryId" class="exportquery">view code</a>
                           @if (User.IsInRole("Developer"))
                           {
-                          <a href="/Query/Parse/@Model.QueryId" class="exportquery">parse code</a>
-                          <a href="/Query/ParseToXml/@Model.QueryId" target="codexml">code xml</a>
+                          <a href="/Query/Parse/@ViewBag.OrigQueryId" class="exportquery">parse code</a>
+                          <a href="/Query/ParseToXml/@ViewBag.OrigQueryId" target="codexml">code xml</a>
                           }
                         </div>
                         <div class="pull-right">

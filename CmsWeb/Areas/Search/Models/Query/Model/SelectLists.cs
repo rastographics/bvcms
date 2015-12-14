@@ -159,7 +159,7 @@ namespace CmsWeb.Areas.Search.Models
                    select new SelectListItem
                    {
                        Text = ct,
-                       Value = Util.PickFirst(c.Label, c.CompType.ToString()),
+                       Value = c.CompType.ToString(),
                        Selected = Comparison == ct
                    };
         }

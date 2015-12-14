@@ -48,8 +48,6 @@ namespace CmsData.View
 		
 		private int? _Reg;
 		
-		private DateTime? _Firstactive;
-		
 		
 		public TPStat()
 		{
@@ -324,23 +322,6 @@ namespace CmsData.View
 			{
 				if (this._Reg != value)
 					this._Reg = value;
-			}
-
-		}
-
-		
-		[Column(Name="firstactive", Storage="_Firstactive", DbType="datetime")]
-		public DateTime? Firstactive
-		{
-			get
-			{
-				return this._Firstactive;
-			}
-
-			set
-			{
-				if (this._Firstactive != value)
-					this._Firstactive = value;
 			}
 
 		}

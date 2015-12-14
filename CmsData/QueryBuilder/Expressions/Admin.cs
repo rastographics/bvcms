@@ -4,6 +4,7 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -20,25 +21,25 @@ namespace CmsData
                     || (!u.UserRoles.Any() && CodeIntIds.Contains(0))
                 );
             return op == CompareType.NotEqual || op == CompareType.NotOneOf
-                ? (Expression)System.Linq.Expressions.Expression.Not(System.Linq.Expressions.Expression.Invoke(pred, parm))
-                : (Expression)System.Linq.Expressions.Expression.Invoke(pred, parm);
+                ? Expression.Not(Expression.Invoke(pred, parm))
+                : (Expression)Expression.Invoke(pred, parm);
         }
         internal Expression IsUser()
         {
             var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                     p.Users.Any();
-            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
         internal Expression CreatedBy()
         {
             Expression<Func<Person, string>> pred = p =>
                 db.People.FirstOrDefault(u => u.Users.Any(u2 => u2.UserId == p.CreatedBy)).Name2;
-            Expression left = System.Linq.Expressions.Expression.Invoke(pred, parm);
-            var right = System.Linq.Expressions.Expression.Constant(TextValue, typeof(string));
+            Expression left = Expression.Invoke(pred, parm);
+            var right = Expression.Constant(TextValue, typeof(string));
             return Compare(parm, left, op, right);
         }
         internal Expression RecentCreated()
@@ -46,9 +47,9 @@ namespace CmsData
             var tf = CodeIds == "1";
             var dt = DateTime.Today.AddDays(-Days);
             Expression<Func<Person, bool>> pred = p => p.CreatedDate >= dt;
-            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
+            Expression expr = Expression.Invoke(pred, parm);
             if (!(op == CompareType.Equal && tf))
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
         internal Expression IsCurrentPerson()
@@ -56,9 +57,9 @@ namespace CmsData
             var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                     p.PeopleId == db.CurrentPeopleId;
-            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
         internal Expression IsCurrentUser()
@@ -66,9 +67,9 @@ namespace CmsData
             var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                 p.PeopleId == Util.UserPeopleId;
-            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
         internal Expression DuplicateEmails()
@@ -77,9 +78,9 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                     p.EmailAddress != null && p.EmailAddress != ""
                     && db.People.Any(pp => pp.PeopleId != p.PeopleId && pp.EmailAddress == p.EmailAddress);
-            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
         internal Expression DuplicateNames()
@@ -87,9 +88,9 @@ namespace CmsData
             var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                     db.People.Any(pp => pp.PeopleId != p.PeopleId && pp.FirstName == p.FirstName && pp.LastName == p.LastName);
-            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
         internal Expression HasLowerName()
@@ -98,29 +99,29 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                     db.StartsLower(p.FirstName).Value
                     || db.StartsLower(p.LastName).Value;
-            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
         internal Expression PeopleIds()
         {
             var ids = (TextValue ?? "").Split(',').Select(aa => aa.ToInt()).ToArray();
             Expression<Func<Person, bool>> pred = p => ids.Contains(p.PeopleId);
-            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
+            Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
         internal Expression MatchAnything()
         {
             Expression<Func<Person, bool>> pred = p => true;
-            return System.Linq.Expressions.Expression.Invoke(pred, parm);
+            return Expression.Invoke(pred, parm);
         }
         internal Expression MatchNothing()
         {
             Expression<Func<Person, bool>> pred = p => false;
-            return System.Linq.Expressions.Expression.Invoke(pred, parm);
+            return Expression.Invoke(pred, parm);
         }
         internal Expression HasEmailOptout()
         {
@@ -130,7 +131,7 @@ namespace CmsData
                  where email == null || email == "" || oo.FromEmail == email
                  where EndDate == null || (oo.DateX >= EndDate)
                  select oo).Any();
-            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
+            Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
 
@@ -143,9 +144,9 @@ namespace CmsData
                  where cc.Field.StartsWith(Quarters)
                  select cc
                 ).Any();
-            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
+            Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual)
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
         internal Expression HasOpenedEmail()
@@ -175,7 +176,7 @@ namespace CmsData
                 default:
                     return AlwaysFalse();
             }
-            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
+            Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
         internal Expression HasSpamBlock()
@@ -192,9 +193,9 @@ namespace CmsData
                  where reported != null && (removed == null || removed < reported)
                  select pp.PeopleId
                 ).Any();
-            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
+            Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual)
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
     }

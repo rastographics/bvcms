@@ -104,6 +104,7 @@ namespace CmsData
             w.WriteAttr("StartDate", StartDate);
             w.WriteAttr("EndDate", EndDate);
             w.WriteAttr("Program", Program);
+            w.WriteAttr("Ministry", Ministry);
             w.WriteAttr("Division", Division);
             w.WriteAttr("Organization", Organization);
             w.WriteAttr("OrgType", OrgType);
@@ -154,6 +155,7 @@ namespace CmsData
                 Days = Attribute(r, "Days").ToInt(),
                 Quarters = Attribute(r, "Quarters"),
                 Tags = Attribute(r, "Tags"),
+                Ministry = Attribute(r, "Ministry"),
                 Schedule = Attribute(r, "Schedule"),
                 Campus = Attribute(r, "Campus"),
                 Age = Attribute(r, "Age").ToInt2(),

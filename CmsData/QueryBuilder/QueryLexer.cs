@@ -84,6 +84,8 @@ namespace CmsData.QueryBuilder
                 var ret = GetNext();
                 if (ret && skipTypes.Contains(Token.Type))
                     continue;
+                if (Token.Type == TokenType.String)
+                    Token.Text = Token.Text.Trim('\'');
                 return ret;
             }
         }

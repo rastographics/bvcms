@@ -4,11 +4,12 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+
 using System;
-using System.Linq.Expressions;
-using UtilityExtensions;
 using System.Data.Linq.SqlClient;
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+using UtilityExtensions;
 
 namespace CmsData
 {
@@ -33,9 +34,9 @@ namespace CmsData
                     else
                         pred = p => p.BirthYear == y;
             }
-            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm); // substitute parm for p
+            Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
         internal Expression WeddingDate()
@@ -66,17 +67,17 @@ namespace CmsData
                             pred = p => p.WeddingDate.Value.Year == y;
                 }
             }
-            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm); // substitute parm for p
+            Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
         internal Expression WidowedDate()
         {
             Expression<Func<Person, DateTime?>> pred = p =>
                 db.WidowedDate(p.PeopleId);
-            Expression left = System.Linq.Expressions.Expression.Invoke(pred, parm);
-            var right = System.Linq.Expressions.Expression.Constant(DateValue, typeof(DateTime?));
+            Expression left = Expression.Invoke(pred, parm);
+            var right = Expression.Constant(DateValue, typeof(DateTime?));
             return Compare(left, right);
         }
         internal Expression DaysTillBirthday()
@@ -84,8 +85,8 @@ namespace CmsData
             var days = TextValue.ToInt();
             Expression<Func<Person, int?>> pred = p =>
                 SqlMethods.DateDiffDay(Util.Now.Date, db.NextBirthday(p.PeopleId));
-            Expression left = System.Linq.Expressions.Expression.Invoke(pred, parm);
-            var right = System.Linq.Expressions.Expression.Constant(days, typeof(int?));
+            Expression left = Expression.Invoke(pred, parm);
+            var right = Expression.Constant(days, typeof(int?));
             return Compare(left, right);
         }
         internal Expression DaysTillAnniversary()
@@ -93,17 +94,17 @@ namespace CmsData
             var days = TextValue.ToInt();
             Expression<Func<Person, int?>> pred = p =>
                 SqlMethods.DateDiffDay(Util.Now.Date, db.NextAnniversary(p.PeopleId));
-            Expression left = System.Linq.Expressions.Expression.Invoke(pred, parm);
-            var right = System.Linq.Expressions.Expression.Constant(days, typeof(int?));
+            Expression left = Expression.Invoke(pred, parm);
+            var right = Expression.Constant(days, typeof(int?));
             return Compare(left, right);
         }
         internal Expression HasPicture()
         {
             var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p => p.PictureId != null;
-            Expression expr = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Invoke(pred, parm), typeof(bool));
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
     }

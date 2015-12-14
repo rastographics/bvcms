@@ -26,6 +26,10 @@ namespace CmsData
                 Token.Type = TokenType.RParen;
             if (args.Contains(Token.Type))
                 return;
+
+            if (Token.Type == TokenType.String && !Token.Text.HasValue()) // allow empty string for Int
+                return;
+
             if (Token.Type == TokenType.Name && args.Contains(TokenType.Int) && Token.Text.Equal("true"))
             {
                 Token.Text = "1[True]";
@@ -81,71 +85,92 @@ namespace CmsData
             if (op.Text.Contains("IN"))
             {
                 NextToken(TokenType.LParen);
-                var sb = new StringBuilder();
                 var expect = c.FieldInfo.Type == FieldType.CodeStr
                     ? TokenType.String
                     : TokenType.Int;
+                var inlist = new List<string>();
                 do
                 {
                     NextToken(expect, TokenType.RParen);
                     if (Token.Type == TokenType.RParen)
                         continue;
-                    if (sb.Length > 0)
-                        sb.Append(";");
-                    sb.Append(Token.Text);
+                    inlist.Add(Token2Csv());
                     NextToken(TokenType.Comma, TokenType.RParen);
                 }
                 while (Token.Type == TokenType.Comma);
 
+                var s = string.Join(";", expect == TokenType.Int 
+                    ? inlist.Where(vv => vv.HasValue()) 
+                    : inlist);
+
                 c.SetComparisonType(op.Text.StartsWith("NOT")
                     ? CompareType.NotOneOf
                     : CompareType.OneOf);
-                SetRightSide(c, sb);
+                SetRightSideOneOf(c, s);
             }
             else
             {
                 NextToken(TokenType.String, TokenType.Int, TokenType.Num);
-                switch (op.Text)
-                {
-                    case "=":
-                        if (Token.Type == TokenType.String)
-                        {
+                if (Token.Type == TokenType.String && c.Compare2.ValueType() == "text")
+                    switch (op.Text)
+                    {
+                        case "=":
                             if (Token.Text.StartsWith("*") && Token.Text.EndsWith("*"))
                                 c.SetComparisonType(CompareType.Contains);
                             else if (Token.Text.StartsWith("*"))
-                                c.SetComparisonType(CompareType.StartsWith);
-                            else if (Token.Text.EndsWith("*"))
                                 c.SetComparisonType(CompareType.EndsWith);
-                        }
-                        else
-                            c.SetComparisonType(CompareType.Equal);
-                        break;
-                    case "<>":
-                        if (Token.Type == TokenType.String)
-                        {
+                            else if (Token.Text.EndsWith("*"))
+                                c.SetComparisonType(CompareType.StartsWith);
+                            else
+                                c.SetComparisonType(CompareType.Equal);
+                            Token.Text = Token.Text.Trim('*');
+                            break;
+                        case "<>":
                             if (Token.Text.StartsWith("*") && Token.Text.EndsWith("*"))
                                 c.SetComparisonType(CompareType.DoesNotContain);
                             else if (Token.Text.StartsWith("*"))
-                                c.SetComparisonType(CompareType.DoesNotStartWith);
-                            else if (Token.Text.EndsWith("*"))
                                 c.SetComparisonType(CompareType.DoesNotEndWith);
-                        }
-                        else
+                            else if (Token.Text.EndsWith("*"))
+                                c.SetComparisonType(CompareType.DoesNotStartWith);
+                            else
+                                c.SetComparisonType(CompareType.NotEqual);
+                            Token.Text = Token.Text.Trim('*');
+                            break;
+                        case ">":
+                            c.SetComparisonType(CompareType.After);
+                            break;
+                        case "<":
+                            c.SetComparisonType(CompareType.Before);
+                            break;
+                        case ">=":
+                            c.SetComparisonType(CompareType.AfterOrSame);
+                            break;
+                        case "<=":
+                            c.SetComparisonType(CompareType.BeforeOrSame);
+                            break;
+                    }
+                else
+                    switch (op.Text)
+                    {
+                        case "=":
+                            c.SetComparisonType(CompareType.Equal);
+                            break;
+                        case "<>":
                             c.SetComparisonType(CompareType.NotEqual);
-                        break;
-                    case ">":
-                        c.SetComparisonType(CompareType.Greater);
-                        break;
-                    case "<":
-                        c.SetComparisonType(CompareType.Less);
-                        break;
-                    case ">=":
-                        c.SetComparisonType(CompareType.GreaterEqual);
-                        break;
-                    case "<=":
-                        c.SetComparisonType(CompareType.LessEqual);
-                        break;
-                }
+                            break;
+                        case ">":
+                            c.SetComparisonType(CompareType.Greater);
+                            break;
+                        case "<":
+                            c.SetComparisonType(CompareType.Less);
+                            break;
+                        case ">=":
+                            c.SetComparisonType(CompareType.GreaterEqual);
+                            break;
+                        case "<=":
+                            c.SetComparisonType(CompareType.LessEqual);
+                            break;
+                    }
                 SetRightSide(c);
             }
         }
@@ -206,20 +231,33 @@ namespace CmsData
 
         private void SetRightSide(Condition c, StringBuilder sb = null)
         {
-            var text = sb?.ToString() ?? Token.Text;
-            switch (c.Compare2.ValueType())
-            {
-                case "text":
-                    c.TextValue = text;
-                    break;
-                case "idtext":
-                case "idvalue":
-                    c.CodeIdValue = Token2Csv();
-                    break;
-                case "date":
-                    c.DateValue = text.ToDate();
-                    break;
-            }
+            var s = sb?.ToString() ?? Token.Text;
+            if (c.Compare2 == null)
+                c.TextValue = null;
+            else
+                switch (c.Compare2.ValueType())
+                {
+                    case "text":
+                        c.TextValue = s.Replace("''", "'");
+                        if (!c.TextValue.HasValue())
+                            c.TextValue = null;
+                        break;
+                    case "number":
+                        c.TextValue = s.Replace("''", "'");
+                        break;
+                    case "idtext":
+                    case "idvalue":
+                        c.CodeIdValue = Token2Csv();
+                        break;
+                    case "date":
+                        c.DateValue = s.ToDate();
+                        break;
+                }
+            NextToken(TokenType.And, TokenType.Or, TokenType.AndNot, TokenType.RParen);
+        }
+        private void SetRightSideOneOf(Condition c, string s = null)
+        {
+            c.CodeIdValue = s ?? Token.Text;
             NextToken(TokenType.And, TokenType.Or, TokenType.AndNot, TokenType.RParen);
         }
 
@@ -240,7 +278,7 @@ namespace CmsData
                     c.Division = Token2Csv();
                     break;
                 case Param.Organization:
-                    c.Division = Token2Csv();
+                    c.Organization = Token2Csv();
                     break;
                 case Param.Schedule:
                     c.Schedule = Token2Csv();
@@ -258,7 +296,7 @@ namespace CmsData
                     c.EndDate = Token.Text.ToDate();
                     break;
                 case Param.Quarters:
-                    c.Quarters = Token.Text;
+                    c.Quarters = Token.Text.Replace("''", "'");
                     break;
                 case Param.Age:
                     c.Age = Token.Text.ToInt2();
@@ -273,7 +311,7 @@ namespace CmsData
                     c.OnlineReg = Token2Csv();
                     break;
                 case Param.OrgType2:
-                    c.OrgType = Token2Csv();
+                    c.OrgType2 = Token2Csv().ToInt();
                     break;
                 case Param.Campus:
                     c.Campus = Token2Csv();
@@ -286,7 +324,7 @@ namespace CmsData
                     AddTagParam(c);
                     break;
                 case Param.SavedQueryIdDesc:
-                    c.SavedQuery = Token.Text;
+                    c.SavedQuery = Token.Text.Replace("''", "'");
                     break;
                 default:
                     throw new QueryParserException($"No Such Param:{param}");
@@ -297,13 +335,13 @@ namespace CmsData
         private void AddTagParam(Condition c)
         {
             var tag = Token2Csv();
-            c.Tags = c.Tags.HasValue() ? $"{c};{tag}" : tag;
+            c.Tags = c.Tags.HasValue() ? $"{c.Tags};{tag}" : tag;
         }
 
         private string Token2Csv()
         {
             if (Token.Type != TokenType.Int)
-                return Token.Text;
+                return Token.Text.Replace("''", "'");
             var a = Token.Text.SplitStr("[]");
             return a.Length > 1 ? $"{a[0]},{a[1]}" : a[0];
         }
@@ -332,6 +370,7 @@ namespace CmsData
                 case "Name":
                 case "FundIdOrBlank":
                 case "FundIdOrNullForAll":
+                case "FundIdOrBlankForAll":
                 case "AgeRange":
                 case "NthVisitNumber":
                 case "TopNumber":
@@ -339,6 +378,8 @@ namespace CmsData
                 case "MeetingId":
                 case "NumberOfDaysForNoAttendance":
                 case "AttendCreditId":
+                case "DaysInPeriod":
+                case "MeetsOnDay0Sun":
                     name = "Quarters";
                     break;
             }

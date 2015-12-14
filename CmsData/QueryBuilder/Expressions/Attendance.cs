@@ -4,11 +4,12 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using UtilityExtensions;
 using CmsData.Codes;
+using UtilityExtensions;
 
 namespace CmsData
 {
@@ -19,9 +20,9 @@ namespace CmsData
             var q = db.RecentAttendMemberType(ProgramInt, DivisionInt, OrganizationInt, Days, string.Join(",", CodeIntIds));
             var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId.Value));
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
-            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
+            Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
         internal Expression RecentAttendCount()
@@ -45,7 +46,7 @@ namespace CmsData
             }
             var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
-            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
+            Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
         internal Expression RecentAttendCountAttCred()
@@ -88,8 +89,8 @@ namespace CmsData
                      ).Count();
 
             }
-            Expression left = System.Linq.Expressions.Expression.Invoke(pred, parm);
-            var right = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Constant(cnt), left.Type);
+            Expression left = Expression.Invoke(pred, parm);
+            var right = Expression.Convert(Expression.Constant(cnt), left.Type);
             return Compare(left, right);
         }
         internal Expression VisitNumber()
@@ -130,7 +131,7 @@ namespace CmsData
                            p.Attends.Any(aa => aa.SeqNo == n);
                     break;
             }
-            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
+            Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
         internal Expression CheckInByDate()
@@ -143,17 +144,17 @@ namespace CmsData
 
             pred = p => p.CheckInTimes.Count(ct => ct.CheckInTimeX >= StartDate && ct.CheckInTimeX <= end);
 
-            Expression left = System.Linq.Expressions.Expression.Invoke(pred, parm);
-            var right = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Constant(cnt), left.Type);
+            Expression left = Expression.Invoke(pred, parm);
+            var right = Expression.Convert(Expression.Constant(cnt), left.Type);
             return Compare(left, right);
         }
         internal Expression CheckInByActivity()
         {
             Expression<Func<Person, bool>> pred = p => p.CheckInTimes.Any(e => e.CheckInActivities.Any(a => CodeStrIds.Contains(a.Activity)));
-            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
+            Expression expr = Expression.Invoke(pred, parm);
 
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
 
             return expr;
         }
@@ -165,10 +166,10 @@ namespace CmsData
             var cdt = db.Setting("DbConvertedDate", "1/1/1900").ToDate();
             Expression<Func<Person, bool>> pred = p => p.CreatedDate > cdt &&
                 p.Attends.Any(aa => aa.SeqNo == n && aa.MeetingDate > dt);
-            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
+            Expression expr = Expression.Invoke(pred, parm);
 
             if (!(op == CompareType.Equal && tf))
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
         internal Expression RecentNewVisitCount()
@@ -192,7 +193,7 @@ namespace CmsData
                     q = q.Where(cc => cc.Cnt != cnt); break;
             }
             Expression<Func<Person, bool>> pred = p => q.Select(c => c.PeopleId).Contains(p.PeopleId);
-            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
+            Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
         internal Expression KidsRecentAttendCount()
@@ -204,8 +205,8 @@ namespace CmsData
                     ? p.Family.People.Where(k => k.PositionInFamilyId == 30).Max(k =>
                         k.Attends.Count(a => a.AttendanceFlag && a.MeetingDate >= mindt))
                     : 0;
-            Expression left = System.Linq.Expressions.Expression.Invoke(pred, parm);
-            var right = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Constant(cnt), left.Type);
+            Expression left = Expression.Invoke(pred, parm);
+            var right = Expression.Convert(Expression.Constant(cnt), left.Type);
             return Compare(left, right);
         }
         internal Expression AttendPct()
@@ -217,17 +218,17 @@ namespace CmsData
                 where ProgramInt == 0 || om.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == ProgramInt))
                 select om
                 ).Average(om => om.AttendPct).Value;
-            Expression left = System.Linq.Expressions.Expression.Invoke(pred, parm);
-            var right = System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Constant(decimal.Parse(TextValue)), left.Type);
+            Expression left = Expression.Invoke(pred, parm);
+            var right = Expression.Convert(Expression.Constant(decimal.Parse(TextValue)), left.Type);
             return Compare(left, right);
         }
         internal Expression RecentAttendType()
         {
             var q = db.RecentAttendType(ProgramInt, DivisionInt, OrganizationInt, Days, string.Join(",", CodeIntIds));
             Expression<Func<Person, bool>> pred = p => q.Select(c => c.PeopleId).Contains(p.PeopleId);
-            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
+            Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
         internal Expression NeedAttendance()
@@ -236,7 +237,7 @@ namespace CmsData
             var dow = Quarters.ToInt2();
             Expression<Func<Person, bool>> pred = p => (
                 from m in p.OrganizationMembers
-                where m.Organization.OrganizationStatusId == Codes.OrgStatusCode.Active
+                where m.Organization.OrganizationStatusId == OrgStatusCode.Active
                 let sc = m.Organization.OrgSchedules.FirstOrDefault()
                 where sc != null
                 where !dow.HasValue || sc.SchedDay == dow
@@ -247,9 +248,9 @@ namespace CmsData
                 where !m.Organization.Meetings.Any(mm => mm.MeetingDate > mindt && (mm.HeadCount > 0 || mm.Attends.Any(aa => aa.AttendanceFlag)))
                 select m
                 ).Any();
-            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm); // substitute parm for p
+            Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
         internal Expression RecentFirstFamilyVisit()
@@ -264,9 +265,9 @@ namespace CmsData
                     select fm.FamilyId;
 
             Expression<Func<Person, bool>> pred = p => q.Contains(p.FamilyId);
-            Expression expr = System.Linq.Expressions.Expression.Invoke(pred, parm);
+            Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
-                expr = System.Linq.Expressions.Expression.Not(expr);
+                expr = Expression.Not(expr);
             return expr;
         }
     }
