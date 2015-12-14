@@ -30,6 +30,8 @@ namespace CmsData.View
 		
 		private int _ContributionTypeId;
 		
+		private int _FundId;
+		
 		private int _BundleHeaderTypeId;
 		
 		
@@ -153,6 +155,23 @@ namespace CmsData.View
 			{
 				if (this._ContributionTypeId != value)
 					this._ContributionTypeId = value;
+			}
+
+		}
+
+		
+		[Column(Name="FundId", Storage="_FundId", DbType="int NOT NULL")]
+		public int FundId
+		{
+			get
+			{
+				return this._FundId;
+			}
+
+			set
+			{
+				if (this._FundId != value)
+					this._FundId = value;
 			}
 
 		}
