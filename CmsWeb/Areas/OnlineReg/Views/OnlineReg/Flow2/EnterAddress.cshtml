@@ -1,5 +1,4 @@
-﻿@using UtilityExtensions
-@model CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel
+﻿@model CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel
 @{
   var addrPlaceHolder = Model.RequiredAddr() ? "" : "optional";
   var zipPlaceHolder = Model.RequiredZip() ? "" : "optional";
@@ -52,6 +51,10 @@ else
   </div>
 </div>
 
+@if (Model.ShowCampusOnRegistration)
+{
+  @Html.EditorFor(m => m.Campus, new { placeholder = Model.RequiredCampus() ? "" : "optional" })
+}
 @Html.EditorFor(m => m.AddressLineOne, new { placeholder = addrPlaceHolder })
 @Html.EditorFor(m => m.AddressLineTwo, new { placeholder = "Optional" })
 @Html.EditorFor(m => m.City, new { placeholder = "Optional" })

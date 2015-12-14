@@ -1,5 +1,5 @@
 ﻿@model CmsWeb.Models.TotalsByFundModel
-@using UtilityExtensions
+@using CmsData
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Donor Totals By Range";
@@ -12,7 +12,7 @@
                 <div class="row">
                     <div class="col-sm-4">
                         <div class="form-group">
-                            <label for="CampusId" class="control-label">Campus</label>
+                            <label for="CampusId" class="control-label">@Util2.CampusLabel</label>
                             <div class="input-group">
                                 @Html.DropDownList("CampusId", Model.Campuses(), new { @class = "form-control" })
                             </div>

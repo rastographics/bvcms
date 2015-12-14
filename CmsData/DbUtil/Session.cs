@@ -262,6 +262,9 @@ namespace CmsData
                 // be sure to SubmitChanges
             }
         }
+
+        public static string CampusLabel => DbUtil.Db.Setting("CampusLabel", "Campus");
+
         public static void Log2File(string file, string data)
         {
             string fn = ConfigurationManager.AppSettings["SharedFolder"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));

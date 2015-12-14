@@ -7,7 +7,6 @@ using System.Linq;
 using System.Web;
 using UtilityExtensions;
 using System.Web.Caching;
-using Community.CsharpSqlite;
 using Dapper;
 
 namespace CmsData
