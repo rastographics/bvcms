@@ -355,7 +355,7 @@ namespace CmsData
                 {
                     if (HasMultipleCodes)
                         return string.Join(", ", CodeIdValue.SplitStr(";").Select(s => $"'{s.Replace("'", "''")}'"));
-                    return $"'{CodeIdValue.Replace("'", "''")}'";
+                    return $"'{CodeIdValue?.Replace("'", "''") ?? CodeIdValue}'";
                 }
                 if (HasMultipleCodes)
                     return string.Join(", ", (from s in CodeIdValue.SplitStr(";")

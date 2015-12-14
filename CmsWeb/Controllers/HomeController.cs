@@ -54,44 +54,9 @@ namespace CmsWeb.Controllers
         }
 
 #if DEBUG
-        [HttpGet, Route("~/Test2")]
-        public ActionResult Test2(string id)
-        {
-            var xml = @"
-<Condition Id=""ed6b4ad9-2933-45ce-943b-e008235743b6"" Order=""0"" Field=""Group"" Comparison=""AllTrue"" Description=""scratchpad"" PreviousName=""scratchpad"" OnlineReg=""0"" OrgStatus=""0"" OrgType2=""0"">
-<Condition Id=""2d5abc6c-3f02-4721-9e27-a629f3c4e16d"" Order=""2"" Field=""StatusFlag"" Comparison=""Equal"" CodeIdValue=""F40"" OnlineReg=""0"" OrgStatus=""0"" OrgType2=""0""/>
-<Condition Id=""b857b40f-0662-45d6-b16c-746c5b7966f1"" Order=""4"" Field=""VolunteerProcessedDateMonthsAgo"" Comparison=""GreaterEqual"" TextValue=""23"" OnlineReg=""0"" OrgStatus=""0"" OrgType2=""0""/>
-</Condition>";
-            var c = Condition.Import(xml);
-            var s = c.ToCode();
-            var cc = Condition.Parse(s);
-
-            return Content("done");
-        }
-
         [HttpGet, Route("~/Test")]
         public ActionResult Test(string id)
         {
-            var m = DbUtil.Db.Connection.Query(CmsWeb.Areas.Search.Controllers.SavedQueryController.SqlSavedqueries);
-            foreach (var q in m)
-            {
-                var g = q.QueryId as Guid?;
-                if (!g.HasValue)
-                    continue;
-                var c = DbUtil.Db.LoadExistingQuery(g.Value);
-                var s = c.ToCode();
-                if (!s.HasValue())
-                    continue;
-                try
-                {
-                    Condition.Parse(s);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"{g.Value}, {ex.Message}");
-                }
-                break;
-            }
             return Content("done");
         }
 #endif

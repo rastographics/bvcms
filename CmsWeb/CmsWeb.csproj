@@ -526,6 +526,8 @@
     <Compile Include="Areas\Reports\Models\Attendance\CheckinControlModel.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\CheckinControlResult.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\WeeklyAttendanceModel.cs" />
+    <Compile Include="Areas\Search\Controllers\CodeSql.cs" />
+    <Compile Include="Areas\Search\Controllers\QueryCodeModel.cs" />
     <Compile Include="Areas\Search\Models\Query\Model\UpdateQueryConditions.cs" />
     <Compile Include="Areas\Search\Models\RegistrationSearch\IncompleteRegistrations.cs" />
     <Compile Include="Areas\Reports\Models\Other\WeeklyDecisionsModel.cs" />
