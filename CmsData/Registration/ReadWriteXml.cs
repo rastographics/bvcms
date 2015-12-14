@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
@@ -132,6 +131,7 @@ namespace CmsData.Registration
                         NotReqPhone = e.Element("NotReqPhone")?.Value.ToBool2() ?? false;
                         NotReqGender = e.Element("NotReqGender")?.Value.ToBool2() ?? false;
                         NotReqMarital = e.Element("NotReqMarital")?.Value.ToBool2() ?? false;
+                        NotReqCampus = e.Element("NotReqCampus")?.Value.ToBool2() ?? false;
                         break;
                     case "TimeSlots":
                         TimeSlots = TimeSlots.ReadXml(e);
@@ -251,6 +251,7 @@ namespace CmsData.Registration
                 .AddIfTrue("NotReqPhone", NotReqPhone)
                 .AddIfTrue("NotReqGender", NotReqGender)
                 .AddIfTrue("NotReqMarital", NotReqMarital)
+                .AddIfTrue("NotReqCampus", NotReqMarital)
                 .EndPending();
 
             TimeSlots?.WriteXml(w);
