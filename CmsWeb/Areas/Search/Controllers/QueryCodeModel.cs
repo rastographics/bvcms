@@ -19,8 +19,10 @@ namespace CmsWeb.Areas.Search.Controllers
 
         public QueryCodeModel(string queries)
         {
+#if DEBUG
             if (!DbUtil.Db.QueryAnalyses.Any())
                 DbUtil.Db.ExecuteCommand(CodeSql.Populate);
+#endif
             List = DbUtil.Db.Connection.Query(queries).ToList();
             Count = List.Count;
             Debug.WriteLine($"{Util.Host} Count: {Count}");

@@ -17,6 +17,7 @@ SELECT
     qa.Message
 FROM dbo.Query q
 left join QueryAnalysis qa ON qa.Id = q.QueryId
+where name <> 'scratchpad'
 ORDER BY q.lastRun desc
 ";
 #if DEBUG
