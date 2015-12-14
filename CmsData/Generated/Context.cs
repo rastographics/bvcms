@@ -528,6 +528,10 @@ namespace CmsData
         partial void UpdateQuery(Query instance);
         partial void DeleteQuery(Query instance);
         
+        partial void InsertQueryAnalysi(QueryAnalysi instance);
+        partial void UpdateQueryAnalysi(QueryAnalysi instance);
+        partial void DeleteQueryAnalysi(QueryAnalysi instance);
+        
         partial void InsertQueryStat(QueryStat instance);
         partial void UpdateQueryStat(QueryStat instance);
         partial void DeleteQueryStat(QueryStat instance);
@@ -1468,6 +1472,12 @@ namespace CmsData
         public Table< Query> Queries
         {
             get { return GetTable< Query>(); }
+
+        }
+
+        public Table< QueryAnalysi> QueryAnalyses
+        {
+            get { return GetTable< QueryAnalysi>(); }
 
         }
 
@@ -3044,6 +3054,27 @@ namespace CmsData
             return CreateMethodCallQuery< View.MostRecentItem>(this,
                 ((MethodInfo)(MethodBase.GetCurrentMethod())),
                     uid
+                );
+        }
+
+        [Function(Name="dbo.NotAttendedAsOf", IsComposable = true)]
+        public IQueryable< View.NotAttendedAsOf > NotAttendedAsOf(
+            [Parameter(DbType="int")] int? progid,
+            [Parameter(DbType="int")] int? divid,
+            [Parameter(DbType="int")] int? org,
+            [Parameter(DbType="datetime")] DateTime? dt1,
+            [Parameter(DbType="datetime")] DateTime? dt2,
+            [Parameter(DbType="bit")] bool? guestonly
+            )
+        {
+            return CreateMethodCallQuery< View.NotAttendedAsOf>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    progid,
+                    divid,
+                    org,
+                    dt1,
+                    dt2,
+                    guestonly
                 );
         }
 
