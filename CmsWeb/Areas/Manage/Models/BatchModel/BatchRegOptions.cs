@@ -64,6 +64,9 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                 b = FindColumn("NotReqMarital").ToBool2();
                 if (b.HasValue)
                     rs.NotReqMarital = b.Value;
+                b = FindColumn("NotReqCampus").ToBool2();
+                if (b.HasValue)
+                    rs.NotReqCampus = b.Value;
                 b = FindColumn("NotReqPhone").ToBool2();
                 if (b.HasValue)
                     rs.NotReqPhone = b.Value;

@@ -1,6 +1,7 @@
 ﻿@using CmsData
+@using UtilityExtensions
 @model CmsWeb.Code.CodeInfo
-@if (User.IsInRole("Edit"))
+@if(DbUtil.Db.CurrentUserPerson.CanUserEditCampus)
 {
     <a id="@Model.Name" class="edit-inline-label label label-info" data-value="@Model.Value" data-pk="@Util2.CurrentPeopleId" title="@Model.Name">@Model</a>
 }
