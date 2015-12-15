@@ -26,6 +26,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 IsValidForContinue = false;
                 return;
             }
+            ValidateCampus();
             ValidateGender();
             ValidateMarital();
             ValidateMembership();
@@ -91,6 +92,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return;
             modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].gender), "Please specify gender");
             Log("GenderRequired");
+        }
+        private void ValidateCampus()
+        {
+            if (!RequiredCampus() || Campus.ToInt() > 0)
+                return;
+            modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].Campus), $"Please choose {Util2.CampusLabel}.");
+            Log("CampusRequired");
         }
 
         private void ValidateMembership()
