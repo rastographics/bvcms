@@ -438,7 +438,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
         public IEnumerable<SelectListItem> Campuses()
         {
-            var list = CodeValueModel.ConvertToSelect(CodeValueModel.AllCampusesNo(), null);
+            var campusids = DbUtil.Db.Setting("CampusIds", "").Split(',').Select(vv => vv.ToInt()).ToArray();
+            var q = from c in DbUtil.Db.Campus
+                    where campusids.Length == 0  || campusids.Contains(c.Id)
+                    orderby c.Description
+                    select new SelectListItem
+                    {
+                        Value = c.Id.ToString(),
+                        Text = c.Description
+                    };
+            var list = q.ToList();
+            if(!RequiredCampus())
+                list.Insert(0, new SelectListItem {Value = "0", Text = $"Choose {Util2.CampusLabel}"});
             return list;
         }
 
