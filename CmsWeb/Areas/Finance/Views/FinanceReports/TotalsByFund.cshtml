@@ -104,7 +104,7 @@
                 var source = Model.OnlineOptions().FirstOrDefault(c => c.Value == Model.Online.ToString());
                 var sourceName = source != null ? source.Text : "";
             }
-            <strong>Campus:</strong> <span id="campusName">@campusName</span><br />
+            <strong>@Util2.CampusLabel:</strong> <span id="campusName">@campusName</span><br />
             <strong>From Date:</strong> <span id="fromDate">@Model.Dt1.GetValueOrDefault().ToShortDateString()</span><br />
             <strong>To Date:</strong> <span id="toDate">@Model.Dt2.GetValueOrDefault().ToShortDateString()</span><br />
             <strong>Tax Status:</strong> <span id="taxStatus">@taxStatusName</span><br />

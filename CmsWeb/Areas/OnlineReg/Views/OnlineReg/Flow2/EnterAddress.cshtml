@@ -53,7 +53,7 @@ else
 
 @if (Model.ShowCampusOnRegistration)
 {
-  @Html.EditorFor(m => m.Campus, new { placeholder = Model.RequiredCampus() ? "" : "optional" })
+  @Html.EditorFor(m => m.Campus, "Dropdown", new { items = Model.Campuses() })
 }
 @Html.EditorFor(m => m.AddressLineOne, new { placeholder = addrPlaceHolder })
 @Html.EditorFor(m => m.AddressLineTwo, new { placeholder = "Optional" })

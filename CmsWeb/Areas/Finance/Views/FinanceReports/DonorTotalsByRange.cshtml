@@ -71,7 +71,7 @@
                 var campus = Model.Campuses().FirstOrDefault(c => c.Value == Model.CampusId.ToString());
                 var campusName = campus != null ? campus.Text : "";
             }
-            <strong>Campus:</strong> <span id="campusName">@campusName</span><br />
+            <strong>@Util2.CampusLabel:</strong> <span id="campusName">@campusName</span><br />
             <strong>From Date:</strong> <span id="fromDate">@Model.Dt1.GetValueOrDefault().ToShortDateString()</span><br />
             <strong>To Date:</strong> <span id="toDate">@Model.Dt2.GetValueOrDefault().ToShortDateString()</span><br />
             <strong>Non tax deductible?:</strong> <span id="nontaxDed">@Model.NonTaxDeductible</span><br />

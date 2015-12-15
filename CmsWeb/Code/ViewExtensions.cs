@@ -30,6 +30,7 @@ using MarkdownDeep;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using UtilityExtensions;
+using System.ComponentModel;
 
 namespace CmsWeb
 {
@@ -1184,6 +1185,17 @@ namespace CmsWeb
             {
                 _templateInfo.HtmlFieldPrefix = _previousPrefix;
             }
+        }
+    }
+    public class SettingDisplayNameAttribute : DisplayNameAttribute
+    {
+        public SettingDisplayNameAttribute(string setting, string format = "{0}")
+            : base(GetLabelFromSetting(setting, format))
+        { }
+
+        private static string GetLabelFromSetting(string setting, string format)
+        {
+            return string.Format(format, DbUtil.Db.Setting($"{setting}Label", setting));
         }
     }
 }

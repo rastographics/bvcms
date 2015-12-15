@@ -1,4 +1,5 @@
-﻿@using UtilityExtensions
+﻿@using CmsData
+@using UtilityExtensions
 @model CmsWeb.Models.ContributionSearchModel
 @{
     Layout = ViewExtensions2.TouchPointLayout();
@@ -10,7 +11,7 @@
         <div class="text-center">
             <strong>Start Date:</strong> @Model.SearchInfo.StartDate.FormatDate()<br />
             <strong>End Date:</strong> @Model.SearchInfo.EndDate.FormatDate()<br />
-            <strong>Campus:</strong> @Model.Campus<br />
+            <strong>@Util2.CampusLabel:</strong> @Model.Campus<br />
             <strong>Online/Not Online:</strong> @Model.Online<br />
             <strong>Tax Ded / Non Tax:</strong> @Model.TaxDedNonTax
         </div>

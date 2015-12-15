@@ -45,6 +45,7 @@ namespace CmsWeb.Areas.Search.Models
         public int? Division { get; set; }
         public int? Organization { get; set; }
         public string Schedule { get; set; }
+        [SettingDisplayName("Campus")]
         public string Campus { get; set; }
         public string OrgType { get; set; }
         public string OrgType2 { get; set; }

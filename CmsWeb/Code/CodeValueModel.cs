@@ -798,9 +798,9 @@ namespace CmsWeb.Code
             return AllCampuses().AddNotSpecified();
         }
 
-        public IEnumerable<CodeValueItem> AllCampusesNo()
+        public static IEnumerable<CodeValueItem> AllCampusesNo()
         {
-            return AllCampuses().AddNotSpecified("No Campus");
+            return new CodeValueModel().AllCampuses().AddNotSpecified("No Campus");
         }
 
         public IEnumerable<CodeValueItem> OrganizationStatusCodes()

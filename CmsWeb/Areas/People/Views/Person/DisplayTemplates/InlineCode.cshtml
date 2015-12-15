@@ -1,11 +1,14 @@
 ﻿@using CmsData
-@using UtilityExtensions
+@using CmsWeb.Code
 @model CmsWeb.Code.CodeInfo
-@if(DbUtil.Db.CurrentUserPerson.CanUserEditCampus)
+@{
+  var displayname = ViewData.ModelMetadata.DisplayName ?? Model.Name;
+}
+@if (DbUtil.Db.CurrentUserPerson.CanUserEditCampus)
 {
-    <a id="@Model.Name" class="edit-inline-label label label-info" data-value="@Model.Value" data-pk="@Util2.CurrentPeopleId" title="@Model.Name">@Model</a>
+    <a id="@Model.Name" class="edit-inline-label label label-info" data-value="@Model.Value" data-pk="@Util2.CurrentPeopleId" title="@displayname">@Model</a>
 }
 else
 {
-    <span class="label label-info" title="@Model.Name">@Model</span>
+    <span class="label label-info" title="@displayname">@Model</span>
 }
