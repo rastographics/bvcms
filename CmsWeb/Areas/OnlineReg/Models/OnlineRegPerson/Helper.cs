@@ -436,6 +436,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "" });
             return list;
         }
+        public IEnumerable<SelectListItem> Campuses()
+        {
+            var list = CodeValueModel.ConvertToSelect(CodeValueModel.AllCampusesNo(), null);
+            return list;
+        }
 
         public override string ToString()
         {
