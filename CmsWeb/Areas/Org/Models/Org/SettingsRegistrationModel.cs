@@ -46,19 +46,8 @@ namespace CmsWeb.Areas.Org.Models
             this.CopyPropertiesTo(RegSettings, typeof(RegAttribute));
             var os = DbUtil.Db.CreateRegistrationSettings(RegSettings.ToString(), Id);
             if (Org.RegistrationTypeId > 0)
-            {
-                if (!os.Subject.HasValue())
-                    os.Subject = "Confirmation for " + (Org.RegistrationTitle ?? Org.OrganizationName);
-                if (!os.Body.HasValue())
-                {
-                    var md = new Markdown();
-                    os.Body = md.Transform(
-                        DbUtil.Db.ContentHtml("DefaultConfirmation", 
-                            Resource1.SettingsRegistrationModel_DefaulConfirmation));
-                }
                 if (!Org.NotifyIds.HasValue())
                     Org.NotifyIds = Util.UserPeopleId.ToString();
-            }
             Org.UpdateRegSetting(os);
             DbUtil.Db.SubmitChanges();
         }

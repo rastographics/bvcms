@@ -1,0 +1,36 @@
+﻿@using CmsData
+@model CmsWeb.Areas.Search.Controllers.QueryCodeModel
+<!DOCTYPE html>
+<html>
+<head>
+  <title>title</title>
+  <style>
+    pre {
+      background-color: #E6E6E6;
+      padding: 1em;
+      font-family: consolas,courier;
+    }
+  </style>
+</head>
+<body>
+  <h2>Count: @Model.Count</h2>
+  <div>
+    @foreach (var q in Model.List)
+    {
+      Model.GetLinks(q);
+      var link = DbUtil.Db.ServerLink($"/Query/{Model.Existing}");
+      <h3>
+        <a href="@link" target="query">@q.owner &mdash; @q.name</a> @(q.ispublic ? "public" : "private")
+      </h3>
+      <div style="color: red">Counts: Original=@q.OriginalCount  Parsed=@q.ParsedCount  Seconds=@q.Seconds</div>
+      <pre>
+@Model.Code
+</pre>
+      <pre>
+@q.Message
+</pre>
+    }
+
+  </div>
+</body>
+</html>

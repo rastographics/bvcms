@@ -1,10 +1,12 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Web.Mvc;
 using CmsWeb.Areas.Search.Models;
-using CmsWeb.Models;
 using UtilityExtensions;
 using CmsData;
+using Dapper;
 
 namespace CmsWeb.Areas.Search.Controllers
 {
@@ -51,5 +53,84 @@ namespace CmsWeb.Areas.Search.Controllers
             DbUtil.Db.SubmitChanges();
             return Content("ok");
         }
+
+        internal const string SqlSavedqueries = @"
+SELECT 
+	QueryId,
+    owner ,
+    name,
+    text
+FROM dbo.Query q
+join QueryAnalysis qa ON qa.Id = q.QueryId
+where name >= 'YS-SR Teachers, Co-Teachers, Asst Teachers, Outreach Leaders'
+ORDER BY name
+/*
+SELECT 
+	QueryId,
+    owner ,
+    name,
+    text
+FROM dbo.Query q
+WHERE name IS NOT NULL
+AND name <> 'scratchpad'
+AND text not like '%AnyFalse%'
+*/
+";
+        [HttpGet]
+        public ActionResult UpdateAll()
+        {
+            var db = DbUtil.Db;
+            var list = db.Connection.Query(SqlSavedqueries).ToList();
+            foreach (var sq in list)
+            {
+                var g = sq.QueryId as Guid?;
+                if (!g.HasValue)
+                    continue;
+                Debug.WriteLine($"{sq.name}");
+                DbUtil.DbDispose();
+                try
+                {
+                    var c = DbUtil.Db.LoadExistingQuery(g.Value);
+                    var s = c.ToCode();
+                    if (s.HasValue())
+                    {
+                        UpdateQueryConditions.Run(sq.QueryId);
+                        DbUtil.Db.Connection.Execute(@"UPDATE QueryAnalysis set Updated = 1 where Id = @id", new { id=sq.QueryId });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            }
+            return RedirectToAction("Code");
+        }
+        [HttpGet]
+        public ActionResult Code()
+        {
+            return View(new QueryCodeModel(CodeSql.Queries));
+        }
+#if DEBUG
+        [HttpGet]
+        public ActionResult CodeErrors()
+        {
+            return View("Code", new QueryCodeModel(CodeSql.Errors));
+        }
+        [HttpGet]
+        public ActionResult CodeAnalysis()
+        {
+            QueryCodeModel.DoAnalysis();
+            return Redirect("Code");
+        }
+        [HttpGet]
+        public ActionResult CodeAnalysisAll()
+        {
+            var list = QueryCodeModel.DatabaseList();
+            var sb = new StringBuilder();
+            foreach (var db in list)
+                sb.Append(QueryCodeModel.DoAnalysis(db));
+            return Content(sb.ToString(), "text/plain");
+        }
+#endif
     }
 }

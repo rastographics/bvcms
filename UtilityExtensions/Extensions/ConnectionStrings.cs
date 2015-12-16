@@ -17,6 +17,11 @@ namespace UtilityExtensions
         {
             get
             {
+#if DEBUG
+                var testhost = HttpRuntime.Cache["testhost"] as string;
+                if (testhost.HasValue())
+                    return testhost;
+#endif
                 var h = ConfigurationManager.AppSettings["host"];
                 if (h.HasValue())
                     return h;

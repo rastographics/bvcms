@@ -179,7 +179,7 @@ Sorry, I cannot sub for you.</a>";
             Db.SubmitChanges();
 
             var qb = Db.ScratchPadCondition();
-            qb.Reset(Db);
+            qb.Reset();
             qb.AddNewClause(QueryType.HasMyTag, CompareType.Equal, $"{tag.Id},temp");
             attend.Commitment = CmsData.Codes.AttendCommitmentCode.FindSub;
             qb.Save(Db);

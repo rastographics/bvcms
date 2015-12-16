@@ -233,6 +233,25 @@ namespace CmsData
                 q = PersonQueryParents(q);
             return q;
         }
+        public IQueryable<Person> PeopleQueryCode(string code)
+        {
+            var c = Condition.Parse(code);
+            var q = People.Where(c.Predicate(this));
+            if (c.PlusParentsOf)
+                q = PersonQueryPlusParents(q);
+            else if (c.ParentsOf)
+                q = PersonQueryParents(q);
+            return q;
+        }
+        public IQueryable<Person> PeopleQueryCondition(Condition c)
+        {
+            var q = People.Where(c.Predicate(this));
+            if (c.PlusParentsOf)
+                q = PersonQueryPlusParents(q);
+            else if (c.ParentsOf)
+                q = PersonQueryParents(q);
+            return q;
+        }
         public IQueryable<Person> PersonQueryParents(IQueryable<Person> q)
         {
             var q2 = from p in q
@@ -1337,13 +1356,13 @@ namespace CmsData
             const string name = "ActiveRecords";
             var qb = Queries.FirstOrDefault(c => c.Name == name && c.Owner == "public");
             Condition cc = qb == null ? ScratchPadCondition() : qb.ToClause();
-            cc.Reset(this);
+            cc.Reset();
             cc.SetComparisonType(CompareType.AnyTrue);
             var clause = cc.AddNewClause(QueryType.RecentAttendCount, CompareType.GreaterEqual, "1");
             clause.Days = 365;
-            clause = cc.AddNewClause(QueryType.RecentHasIndContributions, CompareType.Equal, "1,T");
+            clause = cc.AddNewClause(QueryType.RecentHasIndContributions, CompareType.Equal, "1,True");
             clause.Days = 365;
-            cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
+            cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,True");
             qb = cc.JustLoadedQuery;
             cc.Description = name;
             cc.Save(this, owner: "public");
@@ -1357,13 +1376,13 @@ namespace CmsData
             const string name = "ActiveRecords2";
             var qb = Queries.FirstOrDefault(c => c.Name == name && c.Owner == "david");
             Condition cc = qb == null ? ScratchPadCondition() : qb.ToClause();
-            cc.Reset(this);
+            cc.Reset();
             cc.SetComparisonType(CompareType.AnyTrue);
             var clause = cc.AddNewClause(QueryType.RecentAttendCount, CompareType.Greater, "1");
             clause.Days = 365;
-            clause = cc.AddNewClause(QueryType.RecentHasIndContributions, CompareType.Equal, "1,T");
+            clause = cc.AddNewClause(QueryType.RecentHasIndContributions, CompareType.Equal, "1,True");
             clause.Days = 365;
-            cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
+            cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,True");
             qb = cc.JustLoadedQuery;
             cc.Description = name;
             cc.Save(this, owner: "david");
@@ -1375,15 +1394,15 @@ namespace CmsData
         public int ActiveRecordsdt(DateTime dt)
         {
             Condition cc = ScratchPadCondition();
-            cc.Reset(this);
+            cc.Reset();
             cc.SetComparisonType(CompareType.AnyTrue);
             var clause = cc.AddNewClause(QueryType.AttendCntHistory, CompareType.GreaterEqual, "1");
             clause.StartDate = dt.AddDays(-365);
             clause.EndDate = dt;
-            clause = cc.AddNewClause(QueryType.HadIndContributions, CompareType.Equal, "1,T");
+            clause = cc.AddNewClause(QueryType.HadIndContributions, CompareType.Equal, "1,True");
             clause.StartDate = dt.AddDays(-365);
             clause.EndDate = dt;
-            cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
+            cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,True");
             cc.Save(this);
             FromActiveRecords = true;
             var n = PeopleQuery(cc.Id).Count();
@@ -1393,15 +1412,15 @@ namespace CmsData
         public int ActiveRecords2dt(DateTime dt)
         {
             Condition cc = ScratchPadCondition();
-            cc.Reset(this);
+            cc.Reset();
             cc.SetComparisonType(CompareType.AnyTrue);
             var clause = cc.AddNewClause(QueryType.AttendCntHistory, CompareType.Greater, "1");
             clause.StartDate = dt.AddDays(-365);
             clause.EndDate = dt;
-            clause = cc.AddNewClause(QueryType.HadIndContributions, CompareType.Equal, "1,T");
+            clause = cc.AddNewClause(QueryType.HadIndContributions, CompareType.Equal, "1,True");
             clause.StartDate = dt.AddDays(-365);
             clause.EndDate = dt;
-            cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
+            cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,True");
             cc.Save(this);
             FromActiveRecords = true;
             var n = PeopleQuery(cc.Id).Count();

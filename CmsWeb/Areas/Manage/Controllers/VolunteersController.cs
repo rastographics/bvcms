@@ -65,7 +65,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult EmailReminders(int id)
         {
             var qb = DbUtil.Db.ScratchPadCondition();
-            qb.Reset(DbUtil.Db);
+            qb.Reset();
             qb.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.Equal, id.ToString());
             qb.Save(DbUtil.Db);
 
@@ -122,7 +122,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             var m = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == id);
             var qb = DbUtil.Db.ScratchPadCondition();
-            qb.Reset(DbUtil.Db);
+            qb.Reset();
             qb.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.Equal, m.MeetingId);
             qb.Save(DbUtil.Db);
             return Redirect($"/Email/{qb.Id}?TemplateId=0&body={m.Organization.OrganizationName} {m.MeetingDate.FormatDateTm()}&subj={m.Organization.OrganizationName} {m.MeetingDate.FormatDateTm()}");

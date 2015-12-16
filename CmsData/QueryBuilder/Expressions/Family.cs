@@ -4,11 +4,12 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using UtilityExtensions;
 using CmsData.Codes;
+using UtilityExtensions;
 
 namespace CmsData
 {
@@ -73,7 +74,9 @@ namespace CmsData
         }
         internal Expression FamilyHasChildrenAged3()
         {
-            var range = Quarters.Split('-');
+            var range = Quarters?.Split('-');
+            if (range == null || range.Length != 2)
+                return AlwaysFalse();
             Expression<Func<Person, bool>> pred = p =>
                 p.Family.People.Any(m =>
                     (m.Age ?? 0) >= range[0].ToInt()

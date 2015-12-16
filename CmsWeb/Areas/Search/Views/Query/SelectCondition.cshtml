@@ -78,10 +78,10 @@
                         {
                             var category = categories[i];
                             <div class="tab-pane" id="@category.Name">
-                                @if (category.TopMessage.HasValue())
+                                @if (category.Name == "Finance")
                                 {
                                     <div class="alert alert-info">
-                                        @category.TopMessage
+                                        Must have Finance role in order to get results for searches relating to actual contributions.
                                     </div>
                                 }
                                 <div class="condition-results">

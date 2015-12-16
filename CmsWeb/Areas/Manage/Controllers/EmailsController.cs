@@ -95,7 +95,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 		public ActionResult ConvertToSearch(int id)
 		{
             var cc = DbUtil.Db.ScratchPadCondition();
-            cc.Reset(DbUtil.Db);
+            cc.Reset();
 		    cc.AddNewClause(QueryType.EmailRecipient, CompareType.Equal, id);
             cc.Save(DbUtil.Db);
 		    return Redirect("/Query/" + cc.Id);

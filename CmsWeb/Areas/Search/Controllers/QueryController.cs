@@ -10,12 +10,12 @@ using System.Net;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
-using System.Xml;
 using CmsWeb.Areas.Search.Models;
 using Elmah;
 using UtilityExtensions;
 using CmsData;
 using CmsWeb.Code;
+using Dapper;
 
 namespace CmsWeb.Areas.Search.Controllers
 {
@@ -27,6 +27,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Index(Guid? id)
         {
             ViewBag.Title = "QueryBuilder";
+            ViewBag.OrigQueryId = id;
             var m = new QueryModel(id);
             return ViewQuery(m);
         }
@@ -42,7 +43,7 @@ namespace CmsWeb.Areas.Search.Controllers
         private ActionResult ViewQuery(QueryModel m)
         {
             InitToolbar(m);
-            var newsearchid = (Guid?) TempData["newsearch"];
+            var newsearchid = (Guid?)TempData["newsearch"];
             if (m.TopClause.NewMatchAnyId.HasValue)
                 newsearchid = m.TopClause.NewMatchAnyId;
             if (newsearchid.HasValue)
@@ -55,7 +56,7 @@ namespace CmsWeb.Areas.Search.Controllers
             foreach (var c in m.TopClause.AllConditions)
             {
                 sb.AppendLine(c.Key.ToString());
-                if(c.Value.FieldInfo == null)
+                if (c.Value.FieldInfo == null)
                     return NewQuery();
             }
             ViewBag.ConditionList = sb.ToString();
@@ -177,14 +178,16 @@ namespace CmsWeb.Areas.Search.Controllers
             return View("Conditions", m);
         }
         [HttpPost]
-        public ActionResult Divisions(int id)
+        public ActionResult Divisions(string id)
         {
-            return View(QueryModel.Divisions(id));
+            var m = new QueryModel();
+            return View(m.Divisions(id));
         }
         [HttpPost]
-        public ActionResult Organizations(int id)
+        public ActionResult Organizations(string id)
         {
-            return View(QueryModel.Organizations(id));
+            var m = new QueryModel();
+            return View(m.Organizations(id));
         }
         [HttpPost]
         public JsonResult SavedQueries(QueryModel m)
@@ -247,7 +250,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult NewQuery()
         {
             var qb = DbUtil.Db.ScratchPadCondition();
-            qb.Reset(DbUtil.Db);
+            qb.Reset();
             var nc = qb.AddNewClause();
             qb.Description = Util.ScratchPad2;
             qb.Save(DbUtil.Db);
@@ -278,7 +281,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult ToggleAutoRun(bool setting)
         {
-            DbUtil.Db.SetUserPreference("QueryAutoRun", setting ? "true": "false");
+            DbUtil.Db.SetUserPreference("QueryAutoRun", setting ? "true" : "false");
             return Content(setting.ToString().ToLower());
         }
         [HttpPost]
@@ -317,11 +320,13 @@ namespace CmsWeb.Areas.Search.Controllers
             return Content(Task.AddTasks(DbUtil.Db, m.TopClause.Id).ToString());
         }
 
-        [HttpGet, Route("~/Query/Export")]
-        public ActionResult Export()
+        [HttpGet]
+        [Route("~/Query/Export")]
+        [Route("~/Query/Export/{id?}")]
+        public ActionResult Export(Guid? id)
         {
-            var m = new QueryModel();
-            return Content(m.TopClause.ToXml(), "text/xml");
+            var m = new QueryModel(id);
+            return Content(m.TopClause.ToCode(), "text/plain");
         }
         [HttpGet, Route("~/Query/Import")]
         public ActionResult Import()
@@ -335,6 +340,91 @@ namespace CmsWeb.Areas.Search.Controllers
             var ret = Condition.Import(text, name, newGuids: true);
             ret.Save(DbUtil.Db);
             return Redirect("/Query/" + ret.Id);
+        }
+        [HttpGet]
+        [Route("~/Query/Parse")]
+        [Route("~/Query/Parse/{id?}")]
+        public ActionResult Parse(Guid? id)
+        {
+            var m = new QueryModel(id);
+            var s = m.TopClause.ToCode();
+
+            var q2 = DbUtil.Db.PeopleQueryCode(s);
+            var q1 = DbUtil.Db.PeopleQueryCondition(m.TopClause);
+
+            int cnt1 = 0, cnt2 = 0;
+            int seconds = 0;
+            string error = null;
+
+            try
+            {
+                var dt = DateTime.Now;
+                cnt1 = q1.Count();
+                seconds = DateTime.Now.Subtract(dt).TotalSeconds.ToInt();
+                cnt2 = q2.Count();
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+            }
+
+            DbUtil.Db.Connection.Execute(@"
+UPDATE QueryAnalysis 
+set seconds = @seconds, 
+    Message = @Error, 
+    OriginalCount = @cnt1, 
+    ParsedCount=@cnt2 
+where Id = @id", new { id, seconds, Error = error, cnt1, cnt2 });
+
+            return Content($"original={cnt1:N0} parsed={cnt2:N0}");
+        }
+        [HttpGet]
+        [Route("~/Query/ToXml")]
+        [Route("~/Query/ToXml/{id?}")]
+        public ActionResult ToXml(Guid? id)
+        {
+            var m = new QueryModel(id);
+            var xml1 = m.TopClause.ToXml();
+            return Content(xml1, "text/xml");
+        }
+        [HttpGet]
+        [Route("~/Query/ParseToXml")]
+        [Route("~/Query/ParseToXml/{id?}")]
+        public ActionResult ParseToXml(Guid? id)
+        {
+            var m = new QueryModel(id);
+            var xml1 = m.TopClause.ToXml();
+            var s = m.TopClause.ToCode();
+            var c = Condition.Parse(s);
+            var xml2 = c.ToXml();
+            var content = $@"
+ORIGINAL
+{xml1}
+
+PARSED
+{xml2}
+";
+            return Content(content, "text/plain");
+        }
+
+        [HttpGet, Route("~/Query/ConditionsConfig")]
+        public ActionResult ConditionsConfig()
+        {
+            return new ConitionsConfigResult();
+        }
+        public class ConitionsConfigResult : ActionResult
+        {
+            public override void ExecuteResult(ControllerContext context)
+            {
+                context.HttpContext.Response.Clear();
+                context.HttpContext.Response.ContentType = "application/csv";
+                context.HttpContext.Response.AddHeader("Content-Disposition", "attachment;filename=FieldMap.csv");
+                var csv = new CsvHelper.CsvWriter(context.HttpContext.Response.Output);
+                var q = ExportQuery.ConditionConfigs();
+                csv.WriteHeader<ConditionConfig>();
+                foreach (var row in q)
+                    csv.WriteRecord(row);
+            }
         }
     }
 }

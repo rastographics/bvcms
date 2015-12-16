@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 using CmsData;
@@ -39,6 +40,21 @@ namespace CmsWeb.Models
             }
             return dataTable;
         }
+        public static IEnumerable<dynamic> AsEnumerable(this ExcelPackage package)
+        {
+            var ws = package.Workbook.Worksheets.First();
+            var header = ws.Cells[1, 1, 1, ws.Dimension.End.Column];
+            var r = 2;
+            while (r <= ws.Dimension.End.Row)
+            {
+                var row = ws.Cells[r, 1, r, ws.Dimension.End.Column];
+                var record = new ExpandoObject() as IDictionary<string, object>;
+                for (var c = 1; c < header.Columns; c++)
+                    record.Add(header[1, c].Text, row[1, c].Value);
+                r++;
+                yield return record;
+            }
+        }
 
         public static List<ExcelPic> List(Guid queryid)
         {
@@ -73,13 +89,13 @@ namespace CmsWeb.Models
                         WorkPhone = p.WorkPhone.FmtFone(),
                         MemberStatus = p.MemberStatus.Description,
                         FellowshipLeader = p.BFClass.LeaderName,
-                        Spouse = spouse, 
-                        Children = p.PositionInFamilyId != 10 ? "" 
+                        Spouse = spouse,
+                        Children = p.PositionInFamilyId != 10 ? ""
                             : string.Join(", ", p.Family.People
                                 .Where(cc => cc.PositionInFamilyId == 30)
                                 .Where(cc => cc.Age <= 18)
-                                .Select(cc => 
-                                    cc.LastName == familyname 
+                                .Select(cc =>
+                                    cc.LastName == familyname
                                         ? cc.PreferredName
                                         : cc.Name
                                     )),
@@ -159,20 +175,20 @@ namespace CmsWeb.Models
                 ws.Cells[r, c++].Value = ep.FamilyId;
                 ws.Cells[r, c].Value = ep.ImageUrl();
 
-//                var i = ep.GetImage();
-//                if (i != null)
-//                {
-//                    var xy = ImgRowHeight(ws, i);
-//                    maxwid = Math.Max(xy.X, maxwid);
-//                    ws.Row(r).Height = xy.Y;
-//                }
+                //                var i = ep.GetImage();
+                //                if (i != null)
+                //                {
+                //                    var xy = ImgRowHeight(ws, i);
+                //                    maxwid = Math.Max(xy.X, maxwid);
+                //                    ws.Row(r).Height = xy.Y;
+                //                }
                 r++;
             }
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
-//            ws.Column(1).Width = maxwid;
+            //            ws.Column(1).Width = maxwid;
             r = 2;
-//            foreach (var ep in q)
-//                AddImage(ws, r++, 1, ep.GetImage());
+            //            foreach (var ep in q)
+            //                AddImage(ws, r++, 1, ep.GetImage());
             return new EpplusResult(excelpackage, "people-imageurl.xlsx");
         }
     }

@@ -58,7 +58,7 @@ CREATE TABLE [dbo].[People]
 [CellPhone] [nvarchar] (20) NULL,
 [WorkPhone] [nvarchar] (20) NULL,
 [EmailAddress] [nvarchar] (150) NULL,
-[OtherPreviousChurch] [nvarchar] (60) NULL,
+[OtherPreviousChurch] [nvarchar] (120) NULL,
 [OtherNewChurch] [nvarchar] (60) NULL,
 [SchoolOther] [nvarchar] (100) NULL,
 [EmployerOther] [nvarchar] (120) NULL,

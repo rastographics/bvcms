@@ -22,6 +22,7 @@ using System.Globalization;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using CsQuery.ExtensionMethods.Internal;
 
 namespace UtilityExtensions
 {
@@ -162,9 +163,19 @@ namespace UtilityExtensions
         }
         public static string ToSuitableId(this string s)
         {
-            var v = s.Replace('[', '_').Replace(']', '_').Replace(' ', '_').Replace(',', '_').Replace('.', '_');
-            return v.Replace("__", "_").TrimEnd('_');
-
+            var v = Regex.Replace(s, @"\[|\]|\s|\(|\)|,|=", "_").Replace("__", "_").TrimEnd('_');
+            var chars = v.ToCharArray();
+            var sb = new StringBuilder();
+            for (var i = 0; i < chars.Length; i++)
+            {
+                if (chars[i] == '_')
+                {
+                    i++;
+                    chars[i] = chars[i].ToUpper();
+                }
+                sb.Append(chars[i]);
+            }
+            return sb.ToString();
         }
         public static string ToCode(this Guid guid)
         {

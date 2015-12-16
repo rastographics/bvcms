@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -47,7 +48,7 @@ namespace CmsWeb.Controllers
         public ActionResult NewQuery()
         {
             var qb = DbUtil.Db.ScratchPadCondition();
-            qb.Reset(DbUtil.Db);
+            qb.Reset();
             qb.Save(DbUtil.Db);
             return Redirect("/Query");
         }
@@ -56,12 +57,7 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/Test")]
         public ActionResult Test(string id)
         {
-            var script = System.IO.File.ReadAllText(Server.MapPath("~/test2.py"));
-            var pe = new PythonEvents(Util.Host);
-            pe.Data.value = "test";
-            var s = pe.RunScript(script);
-
-            return Content(s, "text/plain");
+            return Content("done");
         }
 #endif
 
@@ -82,28 +78,28 @@ namespace CmsWeb.Controllers
 
             const CompareType comp = CompareType.Equal;
             var cc = DbUtil.Db.ScratchPadCondition();
-            cc.Reset(DbUtil.Db);
+            cc.Reset();
             Condition c;
             switch (id)
             {
                 case 1:
-                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
+                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,True");
                     c.Quarters = "1";
                     c.Days = 7;
                     break;
                 case 2:
-                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
+                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,True");
                     c.Quarters = "2";
                     c.Days = 7;
-                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "0,F");
+                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "0,False");
                     c.Quarters = "1";
                     c.Days = 7;
                     break;
                 case 3:
-                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
+                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,True");
                     c.Quarters = "3";
                     c.Days = 7;
-                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "0,F");
+                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "0,False");
                     c.Quarters = "2";
                     c.Days = 7;
                     break;
@@ -243,7 +239,7 @@ namespace CmsWeb.Controllers
             if (script.StartsWith("Not Authorized"))
                 return Message(script);
             ViewBag.name = title ?? $"Run Script {name} {parameter}";
-            var rd = cn.ExecuteReader(script, p, commandTimeout:1200);
+            var rd = cn.ExecuteReader(script, p, commandTimeout: 1200);
             return View(rd);
         }
 
@@ -293,7 +289,7 @@ namespace CmsWeb.Controllers
                     .Replace("@P2", p2 ?? "NULL")
                     .Replace("V1", v1 ?? "None")
                     .Replace("V2", v2 ?? "None");
-                if(script.Contains("@qtagid"))
+                if (script.Contains("@qtagid"))
                 {
                     var id = DbUtil.Db.FetchLastQuery().Id;
                     var tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
@@ -317,10 +313,10 @@ namespace CmsWeb.Controllers
         private string FetchPyScriptForm(string name)
         {
 #if DEBUG
-            if(name == "test")
-            return System.IO.File.ReadAllText(Server.MapPath("~/test.py"));
+            if (name == "test")
+                return System.IO.File.ReadAllText(Server.MapPath("~/test.py"));
 #endif
-                return DbUtil.Db.ContentOfTypePythonScript(name);
+            return DbUtil.Db.ContentOfTypePythonScript(name);
         }
         [HttpGet, Route("~/PyScriptForm/{name}")]
         public ActionResult PyScriptForm(string name)

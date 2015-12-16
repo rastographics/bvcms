@@ -297,7 +297,7 @@ namespace CmsWeb.Areas.Reports.Models
         public string ConvertToSearch(string command, string key)
         {
             var cc = DbUtil.Db.ScratchPadCondition();
-            cc.Reset(DbUtil.Db);
+            cc.Reset();
 
             bool NotAll = key != "All";
 
@@ -359,7 +359,7 @@ namespace CmsWeb.Areas.Reports.Models
                     cc.AddNewClause(QueryType.DropDate, CompareType.Less, dt2v);
                     if (NotAll)
                         cc.AddNewClause(QueryType.DropCodeId, CompareType.Equal, key);
-                    cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
+                    cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,True");
                     if ((Campus ?? 0) > 0)
                         cc.AddNewClause(QueryType.CampusId, CompareType.Equal, Campus);
                     break;
@@ -370,7 +370,7 @@ namespace CmsWeb.Areas.Reports.Models
                     {
                         case "Unknown":
                             cc.AddNewClause(QueryType.OtherNewChurch, CompareType.Equal, "");
-                            cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
+                            cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,True");
                             break;
                         case "All":
                             break;
@@ -378,7 +378,7 @@ namespace CmsWeb.Areas.Reports.Models
                             cc.AddNewClause(QueryType.OtherNewChurch, CompareType.Equal, key);
                             break;
                     }
-                    cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
+                    cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,True");
                     if ((Campus ?? 0) > 0)
                         cc.AddNewClause(QueryType.CampusId, CompareType.Equal, Campus);
                     break;

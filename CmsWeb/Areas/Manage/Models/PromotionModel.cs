@@ -254,7 +254,7 @@ namespace CmsWeb.Models
                     OrganizationMember.InsertOrgMembers(DbUtil.Db,
                         t.OrganizationId,
                         a[0].ToInt(),
-                        fom.MemberTypeId, // keep their existing membertype
+                        fom.MemberTypeId, // keep their Existing membertype
                         Util.Now,
                         null, true);
                 // todo: store the from orgid in tom record and use that do do promotion with

@@ -526,6 +526,9 @@
     <Compile Include="Areas\Reports\Models\Attendance\CheckinControlModel.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\CheckinControlResult.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\WeeklyAttendanceModel.cs" />
+    <Compile Include="Areas\Search\Controllers\CodeSql.cs" />
+    <Compile Include="Areas\Search\Controllers\QueryCodeModel.cs" />
+    <Compile Include="Areas\Search\Models\Query\Model\UpdateQueryConditions.cs" />
     <Compile Include="Areas\Search\Models\RegistrationSearch\IncompleteRegistrations.cs" />
     <Compile Include="Areas\Reports\Models\Other\WeeklyDecisionsModel.cs" />
     <Compile Include="Areas\Reports\Models\Enrollment\EnrollmentControlModel.cs" />
@@ -941,6 +944,7 @@
     <Content Include="Content\touchpoint\js\form-ajax.js" />
     <Content Include="Content\touchpoint\js\main.js" />
     <Content Include="Content\touchpoint\js\people\merge.js" />
+    <Content Include="Content\touchpoint\js\search\export-query.js" />
     <Content Include="Content\touchpoint\js\volunteer\calendar.js" />
     <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\dialogs\specialLink.js" />
     <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\icons\specialLink.png" />
@@ -1565,6 +1569,7 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\NotifyStaff.cshtml" />
     <Content Include="Areas\Org\Views\OrgSearch\RecentVisitsAbsents.xml" />
     <Content Include="Areas\Reports\Views\Reports\PyScript.cshtml" />
+    <Content Include="Areas\Search\Views\SavedQuery\Code.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />

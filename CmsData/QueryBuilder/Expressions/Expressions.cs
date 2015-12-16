@@ -4,11 +4,12 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using UtilityExtensions;
 using System.Reflection;
+using UtilityExtensions;
 
 namespace CmsData
 {
@@ -42,28 +43,24 @@ namespace CmsData
                 case CompareType.DoesNotStartWith:
                 case CompareType.StartsWith:
                     expr = Expression.Call(left,
-                        typeof(string).GetMethod("StartsWith", new[] { typeof(string) }),
-                        new[] { right });
+                        typeof(string).GetMethod("StartsWith", new[] { typeof(string) }), right);
                     break;
                 case CompareType.DoesNotEndWith:
                 case CompareType.EndsWith:
                     expr = Expression.Call(left,
-                        typeof(string).GetMethod("EndsWith", new[] { typeof(string) }),
-                        new[] { right });
+                        typeof(string).GetMethod("EndsWith", new[] { typeof(string) }), right);
                     break;
                 case CompareType.DoesNotContain:
                 case CompareType.Contains:
                     expr = Expression.Call(left,
-                        typeof(string).GetMethod("Contains", new[] { typeof(string) }),
-                        new[] { right });
+                        typeof(string).GetMethod("Contains", new[] { typeof(string) }), right);
                     break;
                 case CompareType.After:
                 case CompareType.AfterOrSame:
                 case CompareType.Before:
                 case CompareType.BeforeOrSame:
                     expr = Expression.Call(left,
-                        typeof(string).GetMethod("CompareTo", new[] { typeof(string) }),
-                        new[] { right });
+                        typeof(string).GetMethod("CompareTo", new[] { typeof(string) }), right);
                     break;
             }
             switch (op)
@@ -89,7 +86,7 @@ namespace CmsData
             }
             return expr;
         }
-        private static MethodInfo EnumerableContains = null;
+        private static MethodInfo EnumerableContains;
         private static Expression CompareContains(ParameterExpression parm, string prop, CompareType op, object a, Type arrayType, Type itemType)
         {
             var left = Expression.Constant(a, arrayType);
@@ -175,11 +172,12 @@ namespace CmsData
             var right = Expression.Property(parm, prop2);
             return Compare(left, right);
         }
-        internal Expression AlwaysFalse()
+        internal Expression AlwaysFalse(ParameterExpression parm0 = null)
         {
             Expression<Func<Person, bool>> pred = p => false;
-            Expression expr = Expression.Invoke(pred, parm);
+            Expression expr = Expression.Invoke(pred, parm0 ?? parm);
             return expr;
         }
+
     }
 }

@@ -618,13 +618,15 @@
     <Compile Include="Generated\Views\TransactionList.cs" />
     <Compile Include="Generated\Views\TransactionSummary.cs" />
     <Compile Include="DbUtil\ITableWithExtraValues.cs" />
+    <Compile Include="QueryBuilder\QueryParser.cs" />
     <Compile Include="QueryBuilder\Query.cs" />
-    <Compile Include="QueryBuilder\CategoryClass2.cs" />
-    <Compile Include="QueryBuilder\CompareClass2.cs" />
-    <Compile Include="QueryBuilder\FieldClass2.cs" />
+    <Compile Include="QueryBuilder\CategoryClass.cs" />
+    <Compile Include="QueryBuilder\CompareClass.cs" />
+    <Compile Include="QueryBuilder\FieldClass.cs" />
     <Compile Include="QueryBuilder\Condition.cs" />
     <Compile Include="QueryBuilder\QueryContext.cs" />
-    <Compile Include="QueryBuilder\SerializeJson.cs" />
+    <Compile Include="QueryBuilder\QueryExport.cs" />
+    <Compile Include="QueryBuilder\QueryLexer.cs" />
     <Compile Include="QueryBuilder\Serialize2.cs" />
     <Compile Include="Extensions\Content.cs" />
     <Compile Include="Generated\ActivityOld.cs" />
@@ -983,6 +985,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="QueryBuilder\FieldMap.csv" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Classes\OnlineRegSummaryText\Details2.xml">

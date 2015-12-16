@@ -55,7 +55,7 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult FamilyQuery(int id)
         {
             var c = DbUtil.Db.ScratchPadCondition();
-            c.Reset(DbUtil.Db);
+            c.Reset();
             c.AddNewClause(QueryType.FamilyId, CompareType.Equal, id);
             c.Save(DbUtil.Db);
             return Redirect("/Query/" + c.Id);
@@ -65,7 +65,7 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult RelatedFamilyQuery(int id)
         {
             var c = DbUtil.Db.ScratchPadCondition();
-            c.Reset(DbUtil.Db);
+            c.Reset();
             c.AddNewClause(QueryType.RelatedFamilyMembers, CompareType.Equal, id);
             c.Save(DbUtil.Db);
             return Redirect("/Query/" + c.Id);

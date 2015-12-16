@@ -304,7 +304,7 @@ namespace CmsWeb {
         /// <summary>
         ///   Looks up a localized string similar to Hi {name},
         ///&lt;p&gt;You registered for {org}, and we found your record, 
-        ///but there was no email address on your existing record in our database.
+        ///but there was no email address on your Existing record in our database.
         ///If you would like for us to update your record with this email address or another,
         ///Please contact the church at &lt;strong&gt;{phone}&lt;/strong&gt; to let us know.
         ///It is important that we have your email address so that

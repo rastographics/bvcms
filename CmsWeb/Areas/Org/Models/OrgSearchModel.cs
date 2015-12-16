@@ -721,24 +721,24 @@ namespace CmsWeb.Areas.Search.Models
         public string ConvertToSearch()
         {
             var cc = DbUtil.Db.ScratchPadCondition();
-            cc.Reset(DbUtil.Db);
-            var c = cc.AddNewClause(QueryType.OrgSearchMember, CompareType.Equal, "1,T");
+            cc.Reset();
+            var c = cc.AddNewClause(QueryType.OrgSearchMember, CompareType.Equal, "1,True");
             if (Name.HasValue())
                 c.OrgName = Name;
             if (ProgramId != 0)
-                c.Program = ProgramId ?? 0;
+                c.Program = ProgramId.ToString();
             if (DivisionId != 0)
-                c.Division = DivisionId ?? 0;
+                c.Division = DivisionId.ToString();
             if (StatusId != 0)
-                c.OrgStatus = StatusId ?? 0;
+                c.OrgStatus = StatusId.ToString();
             if (TypeId != 0)
                 c.OrgType2 = TypeId ?? 0;
             if (CampusId != 0)
-                c.Campus = CampusId ?? 0;
+                c.Campus = CampusId.ToString();
             if (ScheduleId != 0)
-                c.Schedule = ScheduleId ?? 0;
+                c.Schedule = ScheduleId.ToString();
             if (OnlineReg != 0)
-                c.OnlineReg = OnlineReg ?? 0;
+                c.OnlineReg = OnlineReg.ToString();
 
             cc.Save(DbUtil.Db);
             return "/Query/" + cc.Id;

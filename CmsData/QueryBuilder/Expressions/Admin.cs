@@ -4,6 +4,7 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -20,7 +21,7 @@ namespace CmsData
                     || (!u.UserRoles.Any() && CodeIntIds.Contains(0))
                 );
             return op == CompareType.NotEqual || op == CompareType.NotOneOf
-                ? (Expression)Expression.Not(Expression.Invoke(pred, parm))
+                ? Expression.Not(Expression.Invoke(pred, parm))
                 : (Expression)Expression.Invoke(pred, parm);
         }
         internal Expression IsUser()

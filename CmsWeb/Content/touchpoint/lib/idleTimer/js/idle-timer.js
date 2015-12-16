@@ -94,7 +94,7 @@
                     }
                 }
 
-                // clear any existing timeout
+                // clear any Existing timeout
                 clearTimeout(obj.tId);
 
                 // if the idle timer is enabled, flip
@@ -153,7 +153,7 @@
                 // define how much is left on the timer
                 obj.remaining = obj.timeout - ((+new Date()) - obj.olddate);
     
-                // clear any existing timeout
+                // clear any Existing timeout
                 clearTimeout(obj.tId);
             },
             /**
