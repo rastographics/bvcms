@@ -285,7 +285,11 @@ with an optional age-based fee
         private const string NotReqPhoneDescription = @"Registration does not require any phone number ";
         private const string NotReqGenderDescription = @"Registration does not reqire a gender ";
         private const string NotReqMaritalDescription = @"Registration does not require a Marital status ";
-        private const string NotReqCampusDescription = @"Registration does not require Campus";
+        private const string NotReqCampusDescription = @"
+Registration does not require Campus
+
+For this to work, your database must have the setting ShowCampusOnRegistration=true
+";
         private const string MemberOnlyDescription = @"You must be a member of the church to register ";
 
         private const string ShellBsDescription =

@@ -1,4 +1,5 @@
 ﻿@using CmsData
+@using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.SettingsRegistrationModel
 @{
   ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowRegistrationHelp") == "true";
@@ -131,12 +132,15 @@
                 <label class="checkbox-inline control-label">
                     @Html.CheckBoxFor(m => m.NotReqGender) Gender not required
                 </label>
-                <label class="checkbox-inline control-label">
-                    @Html.CheckBoxFor(m => m.NotReqMarital) Marital status not required
-                </label>
+              <label class="checkbox-inline control-label">
+                @Html.CheckBoxFor(m => m.NotReqMarital) Marital status not required
+              </label>
+              @if (DbUtil.Db.Setting("ShowCampusOnRegistration", "false").Equal("true"))
+              {
                 <label class="checkbox-inline control-label">
                     @Html.CheckBoxFor(m => m.NotReqCampus) @Util2.CampusLabel not required
                 </label>
+              }
             </div>
         </div>
     </div>
