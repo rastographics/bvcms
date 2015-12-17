@@ -50,7 +50,7 @@ namespace CmsData
         public int? MinistryInt => Ministry.ToInt2() ?? ProgramInt; // Ministry used to be stored in Program
 
         public string Program { get; set; }
-        public int? ProgramInt => Division.HasValue() ? 0 : Program.GetCsvToken().ToInt();
+        public int? ProgramInt => DivisionInt > 0 ? 0 : Program.GetCsvToken().ToInt();
 
         private string division;
         public string Division
@@ -63,7 +63,7 @@ namespace CmsData
             }
             set { division = value; }
         }
-        public int? DivisionInt => Organization.HasValue() ? 0 : Division.GetCsvToken().ToInt();
+        public int? DivisionInt => OrganizationInt > 0 ?  0 : Division.GetCsvToken().ToInt();
 
         public string Organization { get; set; }
         public int OrganizationInt => Organization.GetCsvToken().ToInt();
