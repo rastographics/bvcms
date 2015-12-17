@@ -234,6 +234,12 @@ namespace CmsData
                 case "{dob}":
                     return p.DOB;
 
+                case "{estatement}":
+                    if (p.ElectronicStatement == true)
+                        return "Online Electronic Statement Only";
+                    else
+                        return "Printed Statement in Addition to Online Option";
+
                 case "{emailhref}":
                     if (emailqueueto != null)
                         return db.ServerLink("/EmailView/" + emailqueueto.Id);
@@ -281,6 +287,12 @@ namespace CmsData
                 case "{peopleid}":
                     return p.PeopleId.ToString();
 
+                case "{receivesms}":
+                    if (p.ReceiveSMS == true)
+                        return "Yes";
+                    else
+                        return "No";
+
                 case "{salutation}":
                     if (emailqueueto != null)
                         return db.GoerSupporters.Where(ee => ee.Id == emailqueueto.GoerSupportId).Select(ee => ee.Salutation).SingleOrDefault();
@@ -289,6 +301,22 @@ namespace CmsData
                 case "{state}":
                     return p.PrimaryState;
 
+                case "{statementtype}":
+                    var stmtcode = p.ContributionOptionsId;
+                    switch (stmtcode)
+                    {
+                        case CmsData.Codes.StatementOptionCode.Individual:
+                            return "Individual";
+
+                        case CmsData.Codes.StatementOptionCode.Joint:
+                            return "Joint";
+
+                        case CmsData.Codes.StatementOptionCode.None:
+                        default:
+                            return "None";
+                    }
+
+                    
                 case "{email}":
                 case "{toemail}":
                     if (ListAddresses.Count > 0)
