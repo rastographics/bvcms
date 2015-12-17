@@ -21,17 +21,6 @@
         $.post("/Query/" + action, q, cb);
     };
     
-    $('#conditions').on("click", 'a.edit-condition', function () {
-        liedit = $(this).closest("li.condition");
-        var spanText = $(this).find('span').text();
-        if (spanText == 'Select Condition') {
-            $EditCondition({ isnew: true });
-        } else {
-            $EditCondition();
-        }
-        return false;
-    });
-
     var $EditCondition = function (option) {
         var qid = liedit.data("qid");
         $("#editcondition").attr("originalheight", liedit.height() + 9);
@@ -44,6 +33,17 @@
             });
         });
     };
+
+    $('#conditions').on("click", 'a.edit-condition', function () {
+        liedit = $(this).closest("li.condition");
+        var spanText = $(this).find('span').text();
+        if (spanText === "Select Condition") {
+            $EditCondition({ isnew: true });
+        } else {
+            $EditCondition();
+        }
+        return false;
+    });
 
     $("a.saveas").click(function (ev) {
         ev.preventDefault();
@@ -414,10 +414,9 @@
         return false;
     });
 
-    if ($("#NewSearchId").val()) {
-        liedit = $("li[data-qid='" + $("#NewSearchId").val() + "']");
+    liedit = $("li.newcondition");
+    if(liedit)
         $EditCondition({ isnew: true });
-    }
     else if ($("#AutoRun").prop("checked"))
         RefreshList();
 

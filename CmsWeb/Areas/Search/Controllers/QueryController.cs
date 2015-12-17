@@ -43,11 +43,6 @@ namespace CmsWeb.Areas.Search.Controllers
         private ActionResult ViewQuery(QueryModel m)
         {
             InitToolbar(m);
-            var newsearchid = (Guid?)TempData["newsearch"];
-            if (m.TopClause.NewMatchAnyId.HasValue)
-                newsearchid = m.TopClause.NewMatchAnyId;
-            if (newsearchid.HasValue)
-                ViewBag.NewSearchId = newsearchid.Value;
             m.TopClause.IncrementLastRun();
             DbUtil.Db.SubmitChanges();
             m.QueryId = m.TopClause.Id;
@@ -246,15 +241,14 @@ namespace CmsWeb.Areas.Search.Controllers
             ViewBag.xml = m.TopClause.ToXml();
             return View(m);
         }
-        [HttpGet]
+        [HttpGet, Route("~/NewQuery")]
         public ActionResult NewQuery()
         {
             var qb = DbUtil.Db.ScratchPadCondition();
             qb.Reset();
-            var nc = qb.AddNewClause();
+            qb.AddNewClause();
             qb.Description = Util.ScratchPad2;
-            qb.Save(DbUtil.Db);
-            TempData["newsearch"] = nc.Id;
+            qb.Save(DbUtil.Db, increment: true);
             return Redirect("/Query");
         }
         [HttpGet, Route("Help/{name}")]

@@ -26,7 +26,7 @@
                           <li><a href="#" class="saveas"><i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save As</a></li>
                             <li class="divider"></li>
                             <li><a href="/SavedQueryList"><i class="fa fa-search"></i>&nbsp;&nbsp;Saved Searches</a></li>
-                            <li><a href="/Query/NewQuery"><i class="fa fa-search-plus"></i>&nbsp;&nbsp;New Search</a></li>
+                            <li><a href="/NewQuery"><i class="fa fa-search-plus"></i>&nbsp;&nbsp;New Search</a></li>
                         </ul>
                     </div>
                 </div>
@@ -43,12 +43,7 @@
                               @Html.CheckBox("AutoRun") Auto refresh?
                             </label>
                           </div>
-                          <a href="/Query/Export/@ViewBag.OrigQueryId" class="exportquery">view code</a>
-                          @if (User.IsInRole("Developer"))
-                          {
-                          <a href="/Query/Parse/@ViewBag.OrigQueryId" class="exportquery">parse code</a>
-                          <a href="/Query/ParseToXml/@ViewBag.OrigQueryId" target="codexml">code xml</a>
-                          }
+                          <a href="/Query/Export/@ViewBag.OrigQueryId" class="exportquery">View Code</a>
                         </div>
                         <div class="pull-right">
                             <div class="btn-group visible-xs-inline">
@@ -59,7 +54,7 @@
                                     <li><a href="#" class="saveas"><i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save As</a></li>
                                     <li class="divider"></li>
                                     <li><a href="/SavedQueryList"><i class="fa fa-search"></i>&nbsp;&nbsp;Saved Searches</a></li>
-                                    <li><a href="/Query/NewQuery"><i class="fa fa-search-plus"></i>&nbsp;&nbsp;New Search</a></li>
+                                    <li><a href="/NewQuery"><i class="fa fa-search-plus"></i>&nbsp;&nbsp;New Search</a></li>
                                 </ul>
                             </div>&nbsp;<a id="Run" href="#" class="btn btn-primary">Run</a>
                         </div>

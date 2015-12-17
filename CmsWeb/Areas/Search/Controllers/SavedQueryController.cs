@@ -1,12 +1,10 @@
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using CmsWeb.Areas.Search.Models;
 using UtilityExtensions;
 using CmsData;
-using Dapper;
 
 namespace CmsWeb.Areas.Search.Controllers
 {
@@ -20,7 +18,6 @@ namespace CmsWeb.Areas.Search.Controllers
             {
                 OnlyMine = DbUtil.Db.UserPreference("SavedQueryOnlyMine", "false").ToBool()
             };
-            //m.Pager.Set("/SavedQuery/Results", 1, null, "Last Run", "desc");
             return View(m);
         }
         [HttpPost]
@@ -54,61 +51,23 @@ namespace CmsWeb.Areas.Search.Controllers
             return Content("ok");
         }
 
-        internal const string SqlSavedqueries = @"
-SELECT 
-	QueryId,
-    owner ,
-    name,
-    text
-FROM dbo.Query q
-join QueryAnalysis qa ON qa.Id = q.QueryId
-where name >= 'YS-SR Teachers, Co-Teachers, Asst Teachers, Outreach Leaders'
-ORDER BY name
-/*
-SELECT 
-	QueryId,
-    owner ,
-    name,
-    text
-FROM dbo.Query q
-WHERE name IS NOT NULL
-AND name <> 'scratchpad'
-AND text not like '%AnyFalse%'
-*/
-";
-        [HttpGet]
-        public ActionResult UpdateAll()
+        [HttpPost]
+        public ActionResult Code(SavedQueryModel m)
         {
-            var db = DbUtil.Db;
-            var list = db.Connection.Query(SqlSavedqueries).ToList();
-            foreach (var sq in list)
-            {
-                var g = sq.QueryId as Guid?;
-                if (!g.HasValue)
-                    continue;
-                Debug.WriteLine($"{sq.name}");
-                DbUtil.DbDispose();
-                try
-                {
-                    var c = DbUtil.Db.LoadExistingQuery(g.Value);
-                    var s = c.ToCode();
-                    if (s.HasValue())
-                    {
-                        UpdateQueryConditions.Run(sq.QueryId);
-                        DbUtil.Db.Connection.Execute(@"UPDATE QueryAnalysis set Updated = 1 where Id = @id", new { id=sq.QueryId });
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.Message);
-                }
-            }
-            return RedirectToAction("Code");
+            var qlist = from q in m.DefineModelList()
+                       select q.QueryId;
+            var list = string.Join(",", qlist);
+            TempData["codelist"] = list;
+            return Content("ok");
         }
         [HttpGet]
         public ActionResult Code()
         {
-            return View(new QueryCodeModel(CodeSql.Queries));
+            var list = TempData["codelist"] as string;
+            if (list == null)
+                return Content("no data");
+            var guids = list.Split(',').ToList().ConvertAll(vv => new Guid(vv));
+            return View(new QueryCodeModel(CodeSql.Queries, guids));
         }
 #if DEBUG
         [HttpGet]
@@ -130,6 +89,14 @@ AND text not like '%AnyFalse%'
             foreach (var db in list)
                 sb.Append(QueryCodeModel.DoAnalysis(db));
             return Content(sb.ToString(), "text/plain");
+        }
+        [HttpGet]
+        public ActionResult UpdateAll()
+        {
+            var list = QueryCodeModel.DatabaseList();
+            foreach (var db in list)
+                QueryCodeModel.UpdateAll(db);
+            return Content("done");
         }
 #endif
     }

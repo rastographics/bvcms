@@ -1,4 +1,4 @@
-﻿namespace CmsWeb.Areas.Search.Controllers
+﻿namespace CmsWeb.Areas.Search.Models
 {
     public class CodeSql
     {
@@ -71,6 +71,16 @@ left join QueryAnalysis qa ON qa.Id = q.QueryId
 	OR (Message LIKE '%xml version%')
     OR (Message NOT LIKE '%xml version%')
 ORDER BY q.lastRun desc
+";
+        internal const string SqlSavedqueries = @"
+SELECT 
+	QueryId,
+    owner ,
+    name,
+    text
+FROM dbo.Query q
+join QueryAnalysis qa ON qa.Id = q.QueryId
+ORDER BY name
 ";
 #endif
     }

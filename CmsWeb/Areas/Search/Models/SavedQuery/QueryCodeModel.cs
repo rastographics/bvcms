@@ -9,7 +9,7 @@ using CmsData;
 using Dapper;
 using UtilityExtensions;
 
-namespace CmsWeb.Areas.Search.Controllers
+namespace CmsWeb.Areas.Search.Models
 {
     public class QueryCodeModel
     {
@@ -17,16 +17,18 @@ namespace CmsWeb.Areas.Search.Controllers
         public int Count;
         public string Code;
 
-        public QueryCodeModel(string queries)
+        public QueryCodeModel(string queries, List<Guid> guids = null)
         {
 #if DEBUG
             if (!DbUtil.Db.QueryAnalyses.Any())
                 DbUtil.Db.ExecuteCommand(CodeSql.Populate);
 #endif
-            List = DbUtil.Db.Connection.Query(queries).ToList();
+            var all = DbUtil.Db.Connection.Query(queries).ToList();
+            List = guids == null ? all : all.Where(vv => guids.Contains((Guid) vv.QueryId)).ToList();
             Count = List.Count;
             Debug.WriteLine($"{Util.Host} Count: {Count}");
         }
+
 
         public Guid? Existing;
         public Guid? Parsed;
@@ -124,6 +126,38 @@ where Id = @id", new { id, seconds, Error, cnt1, cnt2 });
             cn.Open();
             var list = cn.Query<string>("select substring(name, 5, 40) from Databases order by name").ToList();
             return list;
+        }
+
+        public static void UpdateAll(string host)
+        {
+            if (host.HasValue())
+            {
+                HttpRuntime.Cache["testhost"] = host;
+                DbUtil.DbDispose();
+            }
+            var list = DbUtil.Db.Connection.Query(CodeSql.SqlSavedqueries).ToList();
+            foreach (var sq in list)
+            {
+                var g = sq.QueryId as Guid?;
+                if (!g.HasValue)
+                    continue;
+                Debug.WriteLine($"{sq.name}");
+                DbUtil.DbDispose();
+                try
+                {
+                    var c = DbUtil.Db.LoadExistingQuery(g.Value);
+                    var s = c.ToCode();
+                    if (s.HasValue())
+                    {
+                        UpdateQueryConditions.Run(sq.QueryId);
+                        DbUtil.Db.Connection.Execute(@"UPDATE QueryAnalysis set Updated = 1 where Id = @id", new { id=sq.QueryId });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            }
         }
 #endif
     }
