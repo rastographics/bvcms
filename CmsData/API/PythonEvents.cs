@@ -795,7 +795,6 @@ namespace CmsData
             Handlebars.RegisterHelper("LabelStyle", (writer, context, args) => { writer.Write(CssStyle.LabelStyle); });
             Handlebars.RegisterHelper("DataStyle", (writer, context, args) => { writer.Write(CssStyle.DataStyle); });
             Handlebars.RegisterHelper("ServerLink", (writer, context, args) => { writer.Write(db.ServerLink().TrimEnd('/')); });
-            //Handlebars.RegisterHelper("FmtDate", (writer, context, args) => { writer.Write(args[0].ToDate().FormatDate()); });
             Handlebars.RegisterHelper("FmtZip", (writer, context, args) => { writer.Write(args[0].ToString().FmtZip()); });
             Handlebars.RegisterHelper("IfEqual", (writer, options, context, args) =>
             {
@@ -863,10 +862,8 @@ namespace CmsData
             /// ex. {{Math Total "/" 12 "C"}}
             Handlebars.RegisterHelper("Math", (writer, context, args) =>
             {
-                // Double lval = Convert.ToDouble(args[0]);
                 Double lval = 0;
                 var oper = args[1];
-                //Double rval = Convert.ToDouble(args[2]);
                 Double rval = 0;
                 Double result = 0;
                 string fmt;
@@ -1198,6 +1195,212 @@ namespace CmsData
 
                 if (phonenum.Length>6) writer.Write(phonenum.FmtFone(prefix));
              
+            });
+
+            /// IfCond in the form of:  {{IfCond lval oper rval}} {{/IfCond}}
+            Handlebars.RegisterHelper("IfCond", (writer, options, context, args) =>
+            {
+                var lval = Convert.ToString(args[0]);
+                double lval_double = 0;
+                bool lval_bool = true;
+                var oper = args[1].ToString();
+                var rval = Convert.ToString(args[2]);
+                double rval_double = 0;
+                bool rval_bool = true;
+                bool result = true;
+                string err = "";
+                Match match;
+                Regex regex = new Regex(@"^[-+]?[0-9]*\.?[0-9]+$");
+
+                    switch (oper)
+                {
+                    case "==":
+                        result = lval == rval;
+                        break;
+                    case "!=":
+                        result = lval != rval;
+                        break;
+                    case "<":
+                        try { double.TryParse(lval, out lval_double); }
+                        catch { err = "lval not a number"; }
+                        try { double.TryParse(rval, out rval_double); }
+                        catch { err = "rval not a number"; }
+                        match = regex.Match(lval);
+                        if (!match.Success) err = "lval not a number";
+                        match = regex.Match(rval);
+                        if (!match.Success) err = "rval not a number";
+
+                        result = lval_double < rval_double;
+                        break;
+                    case "<=":
+                        try { double.TryParse(args[0].ToString(), out lval_double); }
+                        catch { err = "lval not a number"; }                          
+                        try { double.TryParse(args[2].ToString(), out rval_double); }
+                        catch { err = "rval not a number"; }
+                        match = regex.Match(lval);
+                        if (!match.Success) err = "lval not a number";
+                        match = regex.Match(rval);
+                        if (!match.Success) err = "rval not a number";
+
+                        result = lval_double <= rval_double;
+                        break;
+                    case ">":
+                        try { double.TryParse(args[0].ToString(), out lval_double); }
+                        catch { err = "lval not a number"; }
+                        try { double.TryParse(args[2].ToString(), out rval_double); }
+                        catch { err = "rval not a number"; }
+                        match = regex.Match(lval);
+                        if (!match.Success) err = "lval not a number";
+                        match = regex.Match(rval);
+                        if (!match.Success) err = "rval not a number";
+
+                        result = lval_double > rval_double;
+                        break;
+                    case ">=":
+                        try { double.TryParse(args[0].ToString(), out lval_double); }
+                        catch { err = "lval not a number"; }
+                        try { double.TryParse(args[2].ToString(), out rval_double); }
+                        catch { err = "rval not a number"; }
+                        match = regex.Match(lval);
+                        if (!match.Success) err = "lval not a number";
+                        match = regex.Match(rval);
+                        if (!match.Success) err = "rval not a number";
+
+                        result = lval_double >= rval_double;
+                        break;
+                    case "&&":
+                        try { Boolean.TryParse(args[0].ToString(), out lval_bool); }
+                        catch { err = "lval not a bool"; }
+                        try { Boolean.TryParse(args[2].ToString(), out rval_bool); }
+                        catch { err = "rval not a bool"; }
+
+                        result = lval_bool && rval_bool;
+                        break;
+                    case "||":
+                        try { Boolean.TryParse(args[0].ToString(), out lval_bool); }
+                        catch { err = "lval not a bool"; }
+                        try { Boolean.TryParse(args[2].ToString(), out rval_bool); }
+                        catch { err = "rval not a bool"; }
+
+                        result = lval_bool || rval_bool;
+                        break;
+                    default:
+                        err = "invalid operator";
+                        break;
+                }
+
+                if (err.Length == 0)
+                {
+                    if (result==true)
+                        options.Template(writer, (object)context);
+                    else
+                        options.Inverse(writer, (object)context);
+                }
+                else writer.Write(err);
+                
+            });
+
+
+            /// Compare in the form of:  {{Compare lval oper rval}} {{/IfCond}}
+            Handlebars.RegisterHelper("Compare", (writer, context, args) =>
+            {
+                var lval = Convert.ToString(args[0]);
+                double lval_double = 0;
+                bool lval_bool = true;
+                var oper = args[1].ToString();
+                var rval = Convert.ToString(args[2]);
+                double rval_double = 0;
+                bool rval_bool = true;
+                bool result = true;
+                string err = "";
+                Match match;
+                Regex regex = new Regex(@"^[-+]?[0-9]*\.?[0-9]+$");
+
+                switch (oper)
+                {
+                    case "==":
+                        result = lval == rval;
+                        break;
+                    case "!=":
+                        result = lval != rval;
+                        break;
+                    case "<":
+                        try { double.TryParse(lval, out lval_double); }
+                        catch { err = "lval not a number"; }
+                        try { double.TryParse(rval, out rval_double); }
+                        catch { err = "rval not a number"; }
+                        match = regex.Match(lval);
+                        if (!match.Success) err = "lval not a number";
+                        match = regex.Match(rval);
+                        if (!match.Success) err = "rval not a number";
+
+                        result = lval_double < rval_double;
+                        break;
+                    case "<=":
+                        try { double.TryParse(args[0].ToString(), out lval_double); }
+                        catch { err = "lval not a number"; }
+                        try { double.TryParse(args[2].ToString(), out rval_double); }
+                        catch { err = "rval not a number"; }
+                        match = regex.Match(lval);
+                        if (!match.Success) err = "lval not a number";
+                        match = regex.Match(rval);
+                        if (!match.Success) err = "rval not a number";
+
+                        result = lval_double <= rval_double;
+                        break;
+                    case ">":
+                        try { double.TryParse(args[0].ToString(), out lval_double); }
+                        catch { err = "lval not a number"; }
+                        try { double.TryParse(args[2].ToString(), out rval_double); }
+                        catch { err = "rval not a number"; }
+                        match = regex.Match(lval);
+                        if (!match.Success) err = "lval not a number";
+                        match = regex.Match(rval);
+                        if (!match.Success) err = "rval not a number";
+
+                        result = lval_double > rval_double;
+                        break;
+                    case ">=":
+                        try { double.TryParse(args[0].ToString(), out lval_double); }
+                        catch { err = "lval not a number"; }
+                        try { double.TryParse(args[2].ToString(), out rval_double); }
+                        catch { err = "rval not a number"; }
+                        match = regex.Match(lval);
+                        if (!match.Success) err = "lval not a number";
+                        match = regex.Match(rval);
+                        if (!match.Success) err = "rval not a number";
+
+                        result = lval_double >= rval_double;
+                        break;
+                    case "&&":
+                        try { Boolean.TryParse(args[0].ToString(), out lval_bool); }
+                        catch { err = "lval not a bool"; }
+                        try { Boolean.TryParse(args[2].ToString(), out rval_bool); }
+                        catch { err = "rval not a bool"; }
+
+                        result = lval_bool && rval_bool;
+                        break;
+                    case "||":
+                        try { Boolean.TryParse(args[0].ToString(), out lval_bool); }
+                        catch { err = "lval not a bool"; }
+                        try { Boolean.TryParse(args[2].ToString(), out rval_bool); }
+                        catch { err = "rval not a bool"; }
+
+                        result = lval_bool || rval_bool;
+                        break;
+                    default:
+                        err = "invalid operator";
+                        break;
+                }
+                if (err.Length == 0)
+                {
+                    if (result == true)
+                        writer.Write("True");
+                    else
+                        writer.Write("False");
+                }
+                else writer.Write(err);
+
             });
 
         }
