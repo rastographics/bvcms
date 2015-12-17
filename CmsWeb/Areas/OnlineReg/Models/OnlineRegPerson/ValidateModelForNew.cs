@@ -95,7 +95,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
         private void ValidateCampus()
         {
-            if (!RequiredCampus() || Campus.ToInt() > 0)
+            if (!ShowCampusOnRegistration || !RequiredCampus() || Campus.ToInt() > 0)
                 return;
             modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].Campus), $"Please choose {Util2.CampusLabel}.");
             Log("CampusRequired");
