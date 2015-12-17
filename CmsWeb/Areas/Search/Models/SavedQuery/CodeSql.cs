@@ -18,7 +18,7 @@ SELECT
 FROM dbo.Query q
 left join QueryAnalysis qa ON qa.Id = q.QueryId
 where name <> 'scratchpad'
-ORDER BY q.lastRun desc
+ORDER BY q.name
 ";
 #if DEBUG
         public const string Populate = @"
