@@ -451,7 +451,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         Selected = c.Id == Campus.ToInt()
                     };
             var list = q.ToList();
-            list.Insert(0, new SelectListItem {Value = "0", Text = $"Choose {Util2.CampusLabel}"});
+            var text = RequiredCampus() 
+                ? $"Choose {Util2.CampusLabel}" 
+                : "Optional";
+            list.Insert(0, new SelectListItem {Value = "0", Text = text});
             return list;
         }
 

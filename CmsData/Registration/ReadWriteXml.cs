@@ -251,7 +251,7 @@ namespace CmsData.Registration
                 .AddIfTrue("NotReqPhone", NotReqPhone)
                 .AddIfTrue("NotReqGender", NotReqGender)
                 .AddIfTrue("NotReqMarital", NotReqMarital)
-                .AddIfTrue("NotReqCampus", NotReqMarital)
+                .AddIfTrue("NotReqCampus", NotReqCampus)
                 .EndPending();
 
             TimeSlots?.WriteXml(w);
