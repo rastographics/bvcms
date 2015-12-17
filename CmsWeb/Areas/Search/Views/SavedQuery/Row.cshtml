@@ -1,15 +1,9 @@
 ﻿@model CmsWeb.Areas.Search.Models.SavedQueryInfo
 @using UtilityExtensions
-@{
-  var isDev = User.IsInRole("Developer");
-}
 <tr id="row-@Model.QueryId">
     <td>
       <a href="/Query/@Model.QueryId">@Model.Name</a>
-      @if (isDev)
-      {
-        <a href="/Query/Export/@Model.QueryId" class="exportquery" target="export">export</a>
-      }
+      <a href="/Query/Export/@Model.QueryId" class="exportquery" target="export">Code</a>
     </td>
     <td>
         @Model.Owner
