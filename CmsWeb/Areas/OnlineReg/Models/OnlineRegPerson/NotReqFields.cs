@@ -15,6 +15,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
                        ? setting.NotReqAddr == false 
                        : settings == null || !settings.Values.Any(o => o.NotReqAddr);
     	}
+    	public bool RequiredCampus()
+    	{
+    	    return org != null 
+                       ? setting.NotReqCampus == false 
+                       : settings == null || !settings.Values.Any(o => o.NotReqCampus);
+    	}
+    	public bool ShowCampusOnRegistration => DbUtil.Db.Setting("ShowCampusOnRegistration", "false").ToBool();
 
         public bool StillNeedBirthday()
         {

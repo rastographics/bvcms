@@ -86,30 +86,51 @@ namespace CmsData.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;table&gt;
+        ///{{#Registrant}}
         ///  &lt;tr&gt;
-        ///    &lt;td colspan=&apos;2&apos; style=&apos;{{@root/dd}}{{@root/bb}}&apos;&gt;
+        ///    &lt;td colspan=&apos;2&apos; style=&apos;{{DataStyle}}{{BottomBorder}}&apos;&gt;
         ///      &lt;p&gt;
         ///        &lt;hr/&gt;
-        ///        Registrant: {{person.Name}}&lt;br/&gt;
-        ///        for {{org.OrganizationName}}
+        ///        Registrant: {{Name}}&lt;br/&gt;
+        ///        for {{OrganizationName}}
         ///      &lt;/p&gt;
         ///    &lt;/td&gt;
         ///  &lt;/tr&gt;
-        ///{{#if ShowTransaction}}
+        ///{{/Registrant}}
+        ///{{#IfShowTransaction}}
         ///  &lt;tr&gt;
-        ///    &lt;td colspan=&apos;2&apos; style=&apos;{{@root/bb}}&apos;&gt;
+        ///    &lt;td colspan=&apos;2&apos; style=&apos;{{BottomBorder}}&apos;&gt;
         ///      &lt;table&gt;
         ///        &lt;tr&gt;
-        ///          &lt;td style=&apos;{{@root/lb}}&apos;&gt;Registrant Fee&lt;/td&gt;
-        ///          &lt;td style=&apos;{{@root/lb}}&apos;&gt;Amount Paid&lt;/td&gt;
-        ///          &lt;td style=&apos;{{@root/lb}}&apos;&gt;Amount Due&lt;/td&gt;
-        ///        &lt;/tr&gt;
-        ///        &lt;tr&gt;
-        ///        [rest of string was truncated]&quot;;.
+        ///          &lt;td style=&apos;{{LabelStyle}}&apos;&gt;Registrant Fee&lt;/td&gt;
+        ///          {{#if HasDonation}}
+        ///            &lt;td style=&apos;{{LabelStyle}}&apos;&gt;Donation&lt;/td&gt;
+        ///          {{/if}}
+        ///     [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Details2 {
             get {
                 return ResourceManager.GetString("Details2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name,Type,DataValueField,DataSource,QuartersLabel,Category,Title,Params,Description
+        ///Group,Group,,,,Grouping,,,&quot;
+        ///      Groups conditions or other groups together in an &quot;&quot;all true&quot;&quot; or &quot;&quot;any one true&quot;&quot; relationship
+        ///    &quot;
+        ///Age,NullInteger,,,,Personal,,,&quot;
+        ///      Enter an age. Leave blank to find those without a DOB.
+        ///    &quot;
+        ///GenderId,Code,IdValue,GenderCodes,,Personal,Gender,,&quot;
+        ///      Select Gender from the list.
+        ///    &quot;
+        ///MaritalStatusId,Code,IdValue,MaritalStatusCodes,,Personal,Marital Status,,&quot;
+        ///      Select [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string FieldMap {
+            get {
+                return ResourceManager.GetString("FieldMap", resourceCulture);
             }
         }
         
@@ -125,10 +146,10 @@ namespace CmsData.Properties {
         ///    &lt;Age Type=&quot;NullInteger&quot;&gt;
         ///      Enter an age. Leave blank to find those without a DOB.
         ///    &lt;/Age&gt;
-        ///    &lt;GenderId Title=&quot;Gender&quot; Type=&quot;Code&quot; DataSource=&quot;GenderCodes&quot; DataValueField=&quot;IdCode&quot;&gt;
+        ///    &lt;GenderId Title=&quot;Gender&quot; Type=&quot;Code&quot; DataSource=&quot;GenderCodes&quot; DataValueField=&quot;IdValue&quot;&gt;
         ///      Select Gender from the list.
         ///    &lt;/GenderId&gt;
-        ///    &lt;MaritalStatusId Title=&quot;Mari [rest of string was truncated]&quot;;.
+        ///    &lt;MaritalStatusId Title=&quot;Mar [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string FieldMap3 {
             get {

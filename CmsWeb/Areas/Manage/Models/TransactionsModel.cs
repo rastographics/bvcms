@@ -293,7 +293,7 @@ namespace CmsWeb.Models
                     });
                 }
 
-                // next update existing transactions with new batch data if there are any.
+                // next update Existing transactions with new batch data if there are any.
                 foreach (var existingTransaction in approvedMatchingTransactions)
                 {
                     if (!unMatchedKeyedByReference.ContainsKey(existingTransaction.TransactionId))

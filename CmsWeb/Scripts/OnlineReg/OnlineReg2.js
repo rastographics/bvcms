@@ -202,7 +202,7 @@
     function addFundRow(id, text) {
         var rowId = '#special-funds tbody tr#' + id;
         if ($(rowId).length) {
-            // only set focus to existing row.
+            // only set focus to Existing row.
             setDelayedFocus($(rowId).find('input:text'));
         } else {
             var i = $('#funds tbody tr').length + $('#special-funds tbody tr').length;

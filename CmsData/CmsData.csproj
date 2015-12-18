@@ -493,6 +493,7 @@
     <Compile Include="Generated\Functions\GuestList2.cs" />
     <Compile Include="Generated\Functions\HasIncompleteRegistration.cs" />
     <Compile Include="Generated\Functions\LastAttendOrg.cs" />
+    <Compile Include="Generated\Functions\NotAttendedAsOf.cs" />
     <Compile Include="Generated\Functions\OrgMember.cs" />
     <Compile Include="Generated\Functions\OrgMemberInfo.cs" />
     <Compile Include="Generated\Functions\OrgMemberQuestion.cs" />
@@ -533,6 +534,7 @@
     <Compile Include="Generated\MobileAppPushRegistration.cs" />
     <Compile Include="Generated\MobileAppRoom.cs" />
     <Compile Include="Generated\MobileAppVideoType.cs" />
+    <Compile Include="Generated\QueryAnalysi.cs" />
     <Compile Include="Generated\RegistrationDatum.cs" />
     <Compile Include="Generated\Views\ActiveRegistration.cs" />
     <Compile Include="Generated\Views\AppRegistration.cs" />
@@ -616,13 +618,15 @@
     <Compile Include="Generated\Views\TransactionList.cs" />
     <Compile Include="Generated\Views\TransactionSummary.cs" />
     <Compile Include="DbUtil\ITableWithExtraValues.cs" />
+    <Compile Include="QueryBuilder\QueryParser.cs" />
     <Compile Include="QueryBuilder\Query.cs" />
-    <Compile Include="QueryBuilder\CategoryClass2.cs" />
-    <Compile Include="QueryBuilder\CompareClass2.cs" />
-    <Compile Include="QueryBuilder\FieldClass2.cs" />
+    <Compile Include="QueryBuilder\CategoryClass.cs" />
+    <Compile Include="QueryBuilder\CompareClass.cs" />
+    <Compile Include="QueryBuilder\FieldClass.cs" />
     <Compile Include="QueryBuilder\Condition.cs" />
     <Compile Include="QueryBuilder\QueryContext.cs" />
-    <Compile Include="QueryBuilder\SerializeJson.cs" />
+    <Compile Include="QueryBuilder\QueryExport.cs" />
+    <Compile Include="QueryBuilder\QueryLexer.cs" />
     <Compile Include="QueryBuilder\Serialize2.cs" />
     <Compile Include="Extensions\Content.cs" />
     <Compile Include="Generated\ActivityOld.cs" />
@@ -981,6 +985,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="QueryBuilder\FieldMap.csv" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Classes\OnlineRegSummaryText\Details2.xml">

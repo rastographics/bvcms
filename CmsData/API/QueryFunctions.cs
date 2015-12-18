@@ -550,6 +550,15 @@ namespace CmsData
             return q;
         }
 
+        public IEnumerable<Person> QueryCode(string code)
+        {
+            return db.PeopleQueryCode(code);
+        } 
+        public int QueryCodeCount(string code)
+        {
+            return db.PeopleQueryCode(code).Count();
+        } 
+
 
         /// <summary>
         /// The BlueToolbarReport function returns the first 1000 people records populated based on

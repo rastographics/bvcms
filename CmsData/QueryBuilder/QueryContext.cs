@@ -59,7 +59,7 @@ namespace CmsData
             if (qb == null)
             {
                 var c = Condition.CreateNewGroupClause();
-                c.AddNewClause(typ, CompareType.Equal, "1,T");
+                c.AddNewClause(typ, CompareType.Equal, "1,True");
                 qb = new Query
                 {
                     QueryId = c.Id,
@@ -159,6 +159,14 @@ namespace CmsData
             c.Description = q.Name;
             return c;
         }
+        public Condition LoadExistingQuery(Guid existingId)
+        {
+            var i = (from existing in Queries
+                     where existing.QueryId == existingId
+                     select existing).First();
+            var c = Condition.Import(i.Text, i.Name, newGuids: false, topguid: i.QueryId);
+            return c;
+        }
         public Condition LoadCopyOfExistingQuery(Guid existingId)
         {
             var i = (from existing in Queries
@@ -185,7 +193,7 @@ namespace CmsData
                 return i.QueryId;
 
             var qb = ScratchPadCondition();
-            qb.Reset(this);
+            qb.Reset();
             var nc = qb.AddNewClause();
             qb.Description = Util.ScratchPad2;
             qb.Save(DbUtil.Db);

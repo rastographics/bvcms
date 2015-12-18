@@ -17,8 +17,8 @@ namespace CmsWeb.Code
         public string Code { get; set; }
         public string Value { get; set; }
 
+        public string CodeValue => $"{Code}:{Value}";
         public string IdCode => $"{Id},{Code}";
-
         public string IdValue => $"{Id},{Value}";
 
         public override string ToString()

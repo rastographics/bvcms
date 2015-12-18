@@ -4,6 +4,7 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -22,13 +23,14 @@ namespace CmsData
                     enddt = StartDate.Value.AddHours(24);
             if(EndDate.HasValue)
                 enddt = EndDate.Value.AddHours(24);
-            Expression<Func<Person, bool>> pred = p =>
-                db.AttendMemberTypeAsOf(StartDate, enddt, Program, Division, Organization, ids, null)
-                .Select(a => a.PeopleId).Contains(p.PeopleId);
-            Expression expr = Expression.Invoke(pred, parm);
-            if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
-                expr = Expression.Not(expr);
-            return expr;
+            var q = db.AttendMemberTypeAsOf(StartDate, enddt, ProgramInt, DivisionInt, OrganizationInt, ids, null)
+                  .Select(a => a.PeopleId ?? 0).Distinct();
+            var tag = db.PopulateTemporaryTag(q);
+            Expression<Func<Person, bool>> pred = p => op == CompareType.NotEqual || op == CompareType.NotOneOf
+                ? p.Tags.All(t => t.Id != tag.Id)
+                : p.Tags.Any(t => t.Id == tag.Id);
+
+            return Expression.Invoke(pred, parm);
         }
         internal Expression AttendanceTypeAsOf()
         {
@@ -38,21 +40,23 @@ namespace CmsData
                     enddt = StartDate.Value.AddHours(24);
             if(EndDate.HasValue)
                 enddt = EndDate.Value.AddHours(24);
-            Expression<Func<Person, bool>> pred = p =>
-                db.AttendanceTypeAsOf(StartDate, enddt, Program, Division, Organization, OrgType ?? 0, ids)
-                .Select(a => a.PeopleId).Contains(p.PeopleId);
-            Expression expr = Expression.Invoke(pred, parm);
-            if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
-                expr = Expression.Not(expr);
-            return expr;
+            var q = db.AttendanceTypeAsOf(StartDate, enddt, ProgramInt, DivisionInt, OrganizationInt, OrgTypeInt ?? 0, ids)
+                      .Select(a => a.PeopleId);
+
+            var tag = db.PopulateTemporaryTag(q);
+            Expression<Func<Person, bool>> pred = p => op == CompareType.NotEqual || op == CompareType.NotOneOf
+                ? p.Tags.All(t => t.Id != tag.Id)
+                : p.Tags.Any(t => t.Id == tag.Id);
+
+            return Expression.Invoke(pred, parm);
         }
         internal Expression GuestAttendedAsOf()
         {
-            return AttendedAsOf(guestonly: true);
+            return AttendedAsOf(true);
         }
         internal Expression MemberAttendedAsOf()
         {
-            return AttendedAsOf(guestonly: false);
+            return AttendedAsOf(false);
         }
         private Expression AttendedAsOf(bool guestonly)
         {
@@ -62,14 +66,15 @@ namespace CmsData
                     enddt = StartDate.Value.AddHours(24);
             if(enddt.HasValue && enddt.Value.TimeOfDay.Ticks == 0)
                 enddt = enddt.Value.AddHours(24);
-            var q = db.AttendedAsOf(Program, Division, Organization, StartDate, enddt, guestonly).Select(p => p.PeopleId);
-            Expression<Func<Person, bool>> pred;
-            if (op == CompareType.Equal ^ tf)
-                pred = p => !q.Contains(p.PeopleId);
+
+            IQueryable<int> q;
+            if(op == CompareType.Equal ^ tf)
+                q = db.NotAttendedAsOf(ProgramInt, DivisionInt, OrganizationInt, StartDate, enddt, guestonly).Select(p => p.PeopleId);
             else
-                pred = p => q.Contains(p.PeopleId);
-            Expression expr = Expression.Invoke(pred, parm);
-            return expr;
+                q = db.AttendedAsOf(ProgramInt, DivisionInt, OrganizationInt, StartDate, enddt, guestonly).Select(p => p.PeopleId);
+            var tag = db.PopulateTemporaryTag(q);
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            return Expression.Invoke(pred, parm);
         }
         internal Expression AttendPctHistory()
         {
@@ -89,9 +94,9 @@ namespace CmsData
                             where et.TransactionDate < enddt // transaction starts <= looked for end
                             where (et.Pending ?? false) == false
                             where (et.NextTranChangeDate ?? now) >= StartDate // transaction ends >= looked for start
-                            where Organization == 0 || et.OrganizationId == Organization
-                            where Division == 0 || et.Organization.DivOrgs.Any(dg => dg.DivId == Division)
-                            where Program == 0 || et.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
+                            where OrganizationInt == 0 || et.OrganizationId == OrganizationInt
+                            where DivisionInt == 0 || et.Organization.DivOrgs.Any(dg => dg.DivId == DivisionInt)
+                            where ProgramInt == 0 || et.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == ProgramInt))
                             select et
                     where m.Any()
                     select p;
@@ -104,9 +109,9 @@ namespace CmsData
                          let g = from a in p.Attends
                                  where a.MeetingDate >= StartDate
                                  where a.MeetingDate < enddt
-                                 where Organization == 0 || a.Meeting.OrganizationId == Organization
-                                 where Division == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.DivId == Division)
-                                 where Program == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
+                                 where OrganizationInt == 0 || a.Meeting.OrganizationId == OrganizationInt
+                                 where DivisionInt == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.DivId == DivisionInt)
+                                 where ProgramInt == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == ProgramInt))
                                  select a
                          let n = g.Count(aa => aa.EffAttendFlag == true)
                          let d = g.Count(aa => aa.EffAttendFlag != null)
@@ -118,9 +123,9 @@ namespace CmsData
                          let g = from a in p.Attends
                                  where a.MeetingDate >= StartDate
                                  where a.MeetingDate < enddt
-                                 where Organization == 0 || a.Meeting.OrganizationId == Organization
-                                 where Division == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.DivId == Division)
-                                 where Program == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
+                                 where OrganizationInt == 0 || a.Meeting.OrganizationId == OrganizationInt
+                                 where DivisionInt == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.DivId == DivisionInt)
+                                 where ProgramInt == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == ProgramInt))
                                  select a
                          let n = g.Count(aa => aa.EffAttendFlag == true)
                          let d = g.Count(aa => aa.EffAttendFlag != null)
@@ -132,9 +137,9 @@ namespace CmsData
                          let g = from a in p.Attends
                                  where a.MeetingDate >= StartDate
                                  where a.MeetingDate < enddt
-                                 where Organization == 0 || a.Meeting.OrganizationId == Organization
-                                 where Division == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.DivId == Division)
-                                 where Program == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
+                                 where OrganizationInt == 0 || a.Meeting.OrganizationId == OrganizationInt
+                                 where DivisionInt == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.DivId == DivisionInt)
+                                 where ProgramInt == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == ProgramInt))
                                  select a
                          let n = g.Count(aa => aa.EffAttendFlag == true)
                          let d = g.Count(aa => aa.EffAttendFlag != null)
@@ -146,9 +151,9 @@ namespace CmsData
                          let g = from a in p.Attends
                                  where a.MeetingDate >= StartDate
                                  where a.MeetingDate < enddt
-                                 where Organization == 0 || a.Meeting.OrganizationId == Organization
-                                 where Division == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.DivId == Division)
-                                 where Program == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
+                                 where OrganizationInt == 0 || a.Meeting.OrganizationId == OrganizationInt
+                                 where DivisionInt == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.DivId == DivisionInt)
+                                 where ProgramInt == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == ProgramInt))
                                  select a
                          let n = g.Count(aa => aa.EffAttendFlag == true)
                          let d = g.Count(aa => aa.EffAttendFlag != null)
@@ -177,7 +182,7 @@ namespace CmsData
                 enddt = EndDate.Value.AddHours(24);
             var cnt = TextValue.ToInt();
 
-            var q = db.AttendCntHistory(Program, Division, Organization, Schedule, StartDate, enddt);
+            var q = db.AttendCntHistory(ProgramInt, DivisionInt, OrganizationInt, ScheduleInt, StartDate, enddt);
             switch (op)
             {
                 case CompareType.Greater:
@@ -202,7 +207,7 @@ namespace CmsData
         {
             var lookback = TextValue.ToInt();
             Expression<Func<Person, int>> pred = p =>
-                    db.DaysBetween12Attend(p.PeopleId, Program, Division, Organization, lookback).Value;
+                    db.DaysBetween12Attend(p.PeopleId, ProgramInt, DivisionInt, OrganizationInt, lookback).Value;
             Expression left = Expression.Invoke(pred, parm);
             var right = Expression.Convert(Expression.Constant(Days), left.Type);
             return Compare(left, right);
@@ -210,7 +215,7 @@ namespace CmsData
         internal Expression DaysAfterNthVisitAsOf()
         {
             var tf = CodeIds == "1";
-            var q = db.AttendDaysAfterNthVisitAsOf(Program, Division, Organization, StartDate, EndDate, Quarters.ToInt(), Days).Select(p => p.PeopleId);
+            var q = db.AttendDaysAfterNthVisitAsOf(ProgramInt, DivisionInt, OrganizationInt, StartDate, EndDate, Quarters.ToInt(), Days).Select(p => p.PeopleId);
 
             Expression<Func<Person, bool>> pred;
             if (op == CompareType.Equal ^ tf)
@@ -226,7 +231,7 @@ namespace CmsData
             var meetingid = TextValue.ToInt();
             Expression<Func<Person, bool>> pred = p =>
                 p.Attends.Any(a =>
-                    (a.AttendanceFlag == true)
+                    a.AttendanceFlag
                     && a.MeetingId == meetingid
                     );
             Expression expr = Expression.Invoke(pred, parm);

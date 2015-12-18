@@ -200,7 +200,7 @@ Sorry, I cannot be there.</a>";
             }
 
             var qb = Db.ScratchPadCondition();
-            qb.Reset(Db);
+            qb.Reset();
             qb.AddNewClause(QueryType.HasMyTag, CompareType.Equal, $"{tag.Id},temp");
             meeting.AddEditExtra(Db, "TotalVolunteersNeeded", ((additional ?? 0) + limit).ToString());
             qb.Save(DbUtil.Db);

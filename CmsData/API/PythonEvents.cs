@@ -299,15 +299,15 @@ namespace CmsData
         public Guid OrgMembersQuery(int progid, int divid, int orgid, string memberTypes)
         {
             var c = db.ScratchPadCondition();
-            c.Reset(db);
+            c.Reset();
             var mtlist = memberTypes.Split(',');
             var mts = string.Join(";", from mt in db.MemberTypes
                                        where mtlist.Contains(mt.Description)
                                        select $"{mt.Id},{mt.Code}");
             var clause = c.AddNewClause(QueryType.MemberTypeCodes, CompareType.OneOf, mts);
-            clause.Program = progid;
-            clause.Division = divid;
-            clause.Organization = orgid;
+            clause.Program = progid.ToString();
+            clause.Division = divid.ToString();
+            clause.Organization = orgid.ToString();
             c.Save(db);
             return c.Id;
         }

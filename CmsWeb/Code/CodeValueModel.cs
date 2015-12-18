@@ -73,6 +73,19 @@ namespace CmsWeb.Code
                     };
             return q.ToList();
         }
+        public List<CodeValueItem> Activities()
+        {
+            var q = from a in DbUtil.Db.CheckInActivities
+                    group a.Activity by a.Activity
+                    into g
+                    select new CodeValueItem
+                    {
+                        Code = g.Key,
+                        Value = g.Key
+                    };
+            var list = q.ToList();
+            return list;
+        }
 
         public static IEnumerable<CodeValueItem> AttendCommitmentCodes()
         {
@@ -735,8 +748,8 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> QueryBuilderFields(string category)
         {
             var n = 1;
-            return from f in FieldClass2.Fields.Values
-                   where f.CategoryTitle == category
+            return from f in FieldClass.Fields.Values
+                   where f.Category == category
                    select new CodeValueItem
                    {
                        Id = n++,
@@ -747,7 +760,7 @@ namespace CmsWeb.Code
 
         public List<string> QueryBuilderCategories()
         {
-            return (from f in CategoryClass2.Categories
+            return (from f in CategoryClass.Categories
                     select f.Title).ToList();
         }
 

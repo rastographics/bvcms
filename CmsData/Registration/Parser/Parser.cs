@@ -325,6 +325,7 @@ namespace RegistrationSettingsParser
             NotReqPhone,
             NotReqGender,
             NotReqMarital,
+            NotReqCampus,
             ExtraOptions,
             Dropdown,
             Dropdown1,

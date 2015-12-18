@@ -14,7 +14,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             var m = OnlineRegModel.GetRegistrationFromDatum(id);
             if (m == null)
-                return Message("no existing registration available");
+                return Message("no Existing registration available");
             var n = m.List.Count - 1;
             m.HistoryAdd("continue");
             m.UpdateDatum();
@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Message("not logged in");
             var m = OnlineRegModel.GetRegistrationFromDatum(id);
             if (m == null)
-                return Message("no existing registration available");
+                return Message("no Existing registration available");
             m.StartOver();
             return Redirect(m.URL);
         }
@@ -89,7 +89,7 @@ We have saved your progress. An email with a link to finish this registration wi
                 return Message("not logged in");
             var m = OnlineRegModel.GetRegistrationFromDatum(id);
             if (m == null)
-                return Message("no existing registration available");
+                return Message("no Existing registration available");
             if (m.UserPeopleId != m.Datum.UserPeopleId)
                 return Message("incorrect user");
             TempData["PeopleId"] = pid;

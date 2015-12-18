@@ -333,7 +333,7 @@ namespace CmsWeb.Models
             {
                 new SearchInfo22() { url = "/PeopleSearch", line1 = "Find Person"  },
                 new SearchInfo22() { url = "/OrgSearch", line1 = "Organization Search" },
-                new SearchInfo22() { url = "/Query/NewQuery", line1 = "New Search", addmargin = true },
+                new SearchInfo22() { url = "/NewQuery", line1 = "New Search", addmargin = true },
                 new SearchInfo22() { url = "/Query", line1 = "Last Search" },
                 new SearchInfo22() { url = "/SavedQueryList", line1 = "Saved Searches" },
             });
@@ -473,7 +473,7 @@ namespace CmsWeb.Models
             {
                 new SearchInfo22() { url = "/PeopleSearch", line1 = "Find Person"  },
                 new SearchInfo22() { url = "/OrgSearch", line1 = "Organization Search" },
-                new SearchInfo22() { url = "/Query/NewQuery", line1 = "New Search", addmargin = true },
+                new SearchInfo22() { url = "/NewQuery", line1 = "New Search", addmargin = true },
                 new SearchInfo22() { url = "/Query", line1 = "Last Search" },
                 new SearchInfo22() { url = "/SavedQueryList", line1 = "Saved Searches" },
             });

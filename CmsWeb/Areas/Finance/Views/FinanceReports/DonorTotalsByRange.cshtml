@@ -1,5 +1,5 @@
 ﻿@model CmsWeb.Models.TotalsByFundModel
-@using UtilityExtensions
+@using CmsData
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Donor Totals By Range";
@@ -12,7 +12,7 @@
                 <div class="row">
                     <div class="col-sm-4">
                         <div class="form-group">
-                            <label for="CampusId" class="control-label">Campus</label>
+                            <label for="CampusId" class="control-label">@Util2.CampusLabel</label>
                             <div class="input-group">
                                 @Html.DropDownList("CampusId", Model.Campuses(), new { @class = "form-control" })
                             </div>
@@ -71,7 +71,7 @@
                 var campus = Model.Campuses().FirstOrDefault(c => c.Value == Model.CampusId.ToString());
                 var campusName = campus != null ? campus.Text : "";
             }
-            <strong>Campus:</strong> <span id="campusName">@campusName</span><br />
+            <strong>@Util2.CampusLabel:</strong> <span id="campusName">@campusName</span><br />
             <strong>From Date:</strong> <span id="fromDate">@Model.Dt1.GetValueOrDefault().ToShortDateString()</span><br />
             <strong>To Date:</strong> <span id="toDate">@Model.Dt2.GetValueOrDefault().ToShortDateString()</span><br />
             <strong>Non tax deductible?:</strong> <span id="nontaxDed">@Model.NonTaxDeductible</span><br />

@@ -24,7 +24,7 @@
     $('#conditions').on("click", 'a.edit-condition', function () {
         liedit = $(this).closest("li.condition");
         var spanText = $(this).find('span').text();
-        if (spanText == 'Select Condition') {
+        if (spanText === "Select Condition") {
             $EditCondition({ isnew: true });
         } else {
             $EditCondition();
@@ -414,10 +414,9 @@
         return false;
     });
 
-    if ($("#NewSearchId").val()) {
-        liedit = $("li[data-qid='" + $("#NewSearchId").val() + "']");
+    liedit = $("li.newcondition");
+    if(liedit.length > 0)
         $EditCondition({ isnew: true });
-    }
     else if ($("#AutoRun").prop("checked"))
         RefreshList();
 

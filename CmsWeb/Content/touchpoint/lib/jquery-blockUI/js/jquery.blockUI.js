@@ -231,7 +231,7 @@
             if (full && pageBlock)
                 remove(window, { fadeOut: 0 });
 
-            // if an existing element is being used as the blocking content then we capture
+            // if an Existing element is being used as the blocking content then we capture
             // its current place in the DOM (and current display style) so we can restore
             // it when we unblock
             if (msg && typeof msg != 'string' && (msg.parentNode || msg.jquery)) {

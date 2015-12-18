@@ -1,4 +1,4 @@
-﻿@using UtilityExtensions
+﻿@using CmsData
 @model CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel
 @{
   var addrPlaceHolder = Model.RequiredAddr() ? "" : "optional";
@@ -52,6 +52,10 @@ else
   </div>
 </div>
 
+@if (Model.ShowCampusOnRegistration)
+{
+  @Html.EditorFor(m => m.Campus, "Dropdown", new { label = Util2.CampusLabel, items = Model.Campuses() })
+}
 @Html.EditorFor(m => m.AddressLineOne, new { placeholder = addrPlaceHolder })
 @Html.EditorFor(m => m.AddressLineTwo, new { placeholder = "Optional" })
 @Html.EditorFor(m => m.City, new { placeholder = "Optional" })

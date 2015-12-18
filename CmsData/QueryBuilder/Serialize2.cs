@@ -28,7 +28,8 @@ namespace CmsData
                 };
                 Db.Queries.InsertOnSubmit(q);
             }
-            q.LastRun = DateTime.Now;
+            if(increment)
+                q.LastRun = DateTime.Now;
 
             if (Description != q.Name)
             {
@@ -69,80 +70,56 @@ namespace CmsData
             Db.SubmitChanges();
         }
 
-        public string ToXml(bool newGuids = false)
+        public string ToXml(bool newGuids = false, bool noGuids = false)
         {
             var settings = new XmlWriterSettings();
             settings.Indent = true;
             settings.Encoding = new UTF8Encoding(false);
             var sb = new StringBuilder();
             using (var w = XmlWriter.Create(sb, settings))
-                SendToWriter(w, newGuids);
+                SendToWriter(w, newGuids, noGuids);
             return sb.ToString();
         }
-        public void SendToWriter(XmlWriter w, bool newGuids = false)
+        public void SendToWriter(XmlWriter w, bool newGuids = false, bool noGuids = false)
         {
             w.WriteStartElement("Condition");
-            WriteAttributes(w, newGuids);
+            WriteAttributes(w, newGuids, noGuids);
             foreach (var qc in Conditions)
-                qc.SendToWriter(w, newGuids);
+                qc.SendToWriter(w, newGuids, noGuids);
             w.WriteEndElement();
         }
-        private void WriteAttributes(XmlWriter w, bool newGuids = false)
+        private void WriteAttributes(XmlWriter w, bool newGuids = false, bool noGuids = false)
         {
-            if (newGuids)
-                w.WriteAttributeString("Id", Guid.NewGuid().ToString());
-            else
-                w.WriteAttributeString("Id", Id.ToString());
+            w.WriteAttr("Id", newGuids 
+                ? Guid.NewGuid().ToString() : Id.ToString());
 
-            w.WriteAttributeString("Order", Order.ToString());
-            w.WriteAttributeString("Field", ConditionName);
-            w.WriteAttributeString("Comparison", Comparison);
-            if (Description.HasValue())
-                w.WriteAttributeString("Description", Description);
-            if (PreviousName.HasValue())
-                w.WriteAttributeString("PreviousName", Description);
-            if (TextValue.HasValue())
-                w.WriteAttributeString("TextValue", TextValue);
-            if (DateValue.HasValue)
-                w.WriteAttributeString("DateValue", DateValue.ToString());
-            if (CodeIdValue.HasValue())
-                w.WriteAttributeString("CodeIdValue", CodeIdValue);
-            if (StartDate.HasValue)
-                w.WriteAttributeString("StartDate", StartDate.ToString());
-            if (EndDate.HasValue)
-                w.WriteAttributeString("EndDate", EndDate.ToString());
-            if (Program > 0)
-                w.WriteAttributeString("Program", Program.ToString());
-            if (Division > 0)
-                w.WriteAttributeString("Division", Division.ToString());
-            if (Organization > 0)
-                w.WriteAttributeString("Organization", Organization.ToString());
-            if (OrgType > 0)
-                w.WriteAttributeString("OrgType", OrgType.ToString());
-            if (Days > 0)
-                w.WriteAttributeString("Days", Days.ToString());
-            if (Quarters.HasValue())
-                w.WriteAttributeString("Quarters", Quarters);
-            if (Tags.HasValue())
-                w.WriteAttributeString("Tags", Tags);
-            if (Schedule != 0)
-                w.WriteAttributeString("Schedule", Schedule.ToString());
-            if (Campus > 0)
-                w.WriteAttributeString("Campus", Campus.ToString());
-            if (ConditionName != "FamilyHasChildrenAged")
-                Age = null;
-            if (Age.HasValue)
-                w.WriteAttributeString("Age", Age.ToString());
-            if (SavedQuery.HasValue())
-                w.WriteAttributeString("SavedQueryIdDesc", SavedQuery);
-            if (OnlineReg.HasValue)
-                w.WriteAttributeString("OnlineReg", OnlineReg.ToString());
-            if (OrgStatus.HasValue)
-                w.WriteAttributeString("OrgStatus", OrgStatus.ToString());
-            if (OrgType2.HasValue)
-                w.WriteAttributeString("OrgType2", OrgType2.ToString());
-            if (OrgName.HasValue())
-                w.WriteAttributeString("OrgName", OrgName);
+            w.WriteAttr("Order", Order.ToString());
+            w.WriteAttr("Field", ConditionName);
+            w.WriteAttr("Comparison", Comparison, "AllTrue");
+            w.WriteAttr("Description", Description, "scratchpad");
+            w.WriteAttr("PreviousName", Description, "scratchpad");
+            w.WriteAttr("TextValue", TextValue);
+            w.WriteAttr("DateValue", DateValue);
+            w.WriteAttr("CodeIdValue", CodeIdValue);
+            w.WriteAttr("StartDate", StartDate);
+            w.WriteAttr("EndDate", EndDate);
+            w.WriteAttr("Program", Program);
+            w.WriteAttr("Ministry", Ministry);
+            w.WriteAttr("Division", Division);
+            w.WriteAttr("Organization", Organization);
+            w.WriteAttr("OrgType", OrgType);
+            w.WriteAttr("Days", Days);
+            w.WriteAttr("Quarters", Quarters);
+            w.WriteAttr("Tags", Tags);
+            w.WriteAttr("Schedule", Schedule);
+            w.WriteAttr("Campus", Campus);
+            if (ConditionName == "FamilyHasChildrenAged")
+                w.WriteAttr("Age", Age ?? 0, 12);
+            w.WriteAttr("SavedQueryIdDesc", SavedQuery, "scratchpad");
+            w.WriteAttr("OnlineReg", OnlineReg);
+            w.WriteAttr("OrgStatus", OrgStatus);
+            w.WriteAttr("OrgType2", OrgType2);
+            w.WriteAttr("OrgName", OrgName);
         }
         public static Condition Import(string text, string name = null, bool newGuids = false, Guid? topguid = null)
         {
@@ -165,27 +142,28 @@ namespace CmsData
                 Id = topguid ?? (newGuids ? Guid.NewGuid() : AttributeGuid(r, "Id")),
                 Order = AttributeInt(r, "Order"),
                 ConditionName = Attribute(r, "Field"),
-                Comparison = Attribute(r, "Comparison"),
+                Comparison = Attribute(r, "Comparison", "AllTrue"),
                 TextValue = Attribute(r, "TextValue"),
                 DateValue = AttributeDate(r, "DateValue"),
                 CodeIdValue = Attribute(r, "CodeIdValue"),
                 StartDate = AttributeDate(r, "StartDate"),
                 EndDate = AttributeDate(r, "EndDate"),
-                Program = Attribute(r, "Program").ToInt(),
-                Division = Attribute(r, "Division").ToInt(),
-                Organization = Attribute(r, "Organization").ToInt(),
-                OrgType = Attribute(r, "OrgType").ToInt(),
+                Program = Attribute(r, "Program"),
+                Division = Attribute(r, "Division"),
+                Organization = Attribute(r, "Organization"),
+                OrgType = Attribute(r, "OrgType"),
                 Days = Attribute(r, "Days").ToInt(),
                 Quarters = Attribute(r, "Quarters"),
                 Tags = Attribute(r, "Tags"),
-                Schedule = Attribute(r, "Schedule").ToInt(),
-                Campus = Attribute(r, "Campus").ToInt(),
+                Ministry = Attribute(r, "Ministry"),
+                Schedule = Attribute(r, "Schedule"),
+                Campus = Attribute(r, "Campus"),
                 Age = Attribute(r, "Age").ToInt2(),
                 Owner = Attribute(r, "Owner"),
                 SavedQuery = Attribute(r, "SavedQueryIdDesc"),
                 OrgName = Attribute(r, "OrgName"),
-                OrgStatus = Attribute(r, "OrgStatus").ToInt(),
-                OnlineReg = Attribute(r, "OnlineReg").ToInt(),
+                OrgStatus = Attribute(r, "OrgStatus"),
+                OnlineReg = Attribute(r, "OnlineReg"),
                 OrgType2 = Attribute(r, "OrgType2").ToInt(),
                 AllConditions = allClauses
             };
@@ -212,9 +190,7 @@ namespace CmsData
         private static DateTime? AttributeDate(XElement r, string attr)
         {
             var a = r.Attributes(attr).FirstOrDefault();
-            if (a == null)
-                return null;
-            return a.Value.ToDate();
+            return a?.Value.ToDate();
         }
         private static int AttributeInt(XElement r, string attr)
         {
@@ -230,6 +206,49 @@ namespace CmsData
                 return Guid.NewGuid();
             Guid g;
             return Guid.TryParse(a.Value, out g) ? g : Guid.NewGuid();
+        }
+        public static Condition Parse(string s)
+        {
+            var p = new Condition
+            {
+                Id = Guid.NewGuid(),
+                ConditionName = "Group",
+                AllConditions = new Dictionary<Guid, Condition>()
+            };
+            p.AllConditions.Add(p.Id, p);
+            var m = new QueryParser(s);
+            var c = m.ParseConditions(p);
+            if (p.Conditions.Count() == 1 && c.IsGroup)
+                return c; // Surrounding parentheses not needed for a single group
+            return p; // return outer group
+        }
+    }
+
+    public static class AttributeWriter
+    {
+        public static void WriteAttr(this XmlWriter w, string name, int n, int def = 0)
+        {
+            if (n.Equals(def))
+                return;
+            w.WriteAttributeString(name, n.ToString());
+        }
+        public static void WriteAttr(this XmlWriter w, string name, int? n, int def = 0)
+        {
+            if(!n.HasValue || n == def)
+                return;
+            w.WriteAttributeString(name, n.ToString());
+        }
+        public static void WriteAttr(this XmlWriter w, string name, string s, string def = null)
+        {
+            if (!s.HasValue() || s == def)
+                return;
+            w.WriteAttributeString(name, s);
+        }
+        public static void WriteAttr(this XmlWriter w, string name, DateTime? d)
+        {
+            if (!d.HasValue)
+                return;
+            w.WriteAttributeString(name, d.ToString());
         }
     }
 }

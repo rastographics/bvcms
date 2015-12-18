@@ -12,7 +12,7 @@ namespace CmsWeb.Models.ExtraValues
         public static Condition QueryCodesCondition(string field, string value)
         {
             var c = DbUtil.Db.ScratchPadCondition();
-            c.Reset(DbUtil.Db);
+            c.Reset();
             c.AddNewClause(QueryType.PeopleExtra, CompareType.Equal, $"{field}:{value}");
             c.Save(DbUtil.Db);
             return c;
@@ -21,7 +21,7 @@ namespace CmsWeb.Models.ExtraValues
         public static Condition FamilyQueryCodesCondition(string field, string value)
         {
             var c = DbUtil.Db.ScratchPadCondition();
-            c.Reset(DbUtil.Db);
+            c.Reset();
             c.AddNewClause(QueryType.FamilyExtra, CompareType.Equal, $"{field}:{value}");
             c.Save(DbUtil.Db);
             return c;
@@ -30,7 +30,7 @@ namespace CmsWeb.Models.ExtraValues
         public static Condition QueryDataCondition(string field, string type)
         {
             var cc = DbUtil.Db.ScratchPadCondition();
-            cc.Reset(DbUtil.Db);
+            cc.Reset();
             Condition c = null;
 
             switch (type.ToLower())
@@ -58,7 +58,7 @@ namespace CmsWeb.Models.ExtraValues
         public static Condition FamilyQueryDataCondition(string field, string type)
         {
             var cc = DbUtil.Db.ScratchPadCondition();
-            cc.Reset(DbUtil.Db);
+            cc.Reset();
             Condition c = null;
 
             switch (type.ToLower())

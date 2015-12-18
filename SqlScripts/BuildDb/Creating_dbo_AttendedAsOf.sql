@@ -10,7 +10,7 @@ RETURNS TABLE
 AS
 RETURN
 (
-	SELECT 
+	SELECT DISTINCT
 		a.PeopleId
 		FROM dbo.Attend a
 			JOIN dbo.Meetings m ON a.MeetingId = m.MeetingId
@@ -26,6 +26,7 @@ RETURN
 					OR EXISTS(SELECT NULL FROM dbo.DivOrg dd WHERE dd.OrgId = m.OrganizationId
 						AND EXISTS(SELECT NULL FROM dbo.ProgDiv pp WHERE pp.DivId = dd.DivId AND pp.ProgId = @progid)))
 )
+
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO

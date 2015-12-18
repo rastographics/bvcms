@@ -357,22 +357,22 @@ or just Last or *First*`space` for first name match only.
             return _count.Value;
         }
 
-        private static string IdCode(object items, int id)
+        private static string IdValue(object items, int id)
         {
             var list = items as IEnumerable<CodeValueItem>;
             var ret = (from v in list
                        where v.Id == id
-                       select v.IdCode).Single();
+                       select v.IdValue).Single();
             return ret;
         }
         public string ConvertToSearch()
         {
             var cc = DbUtil.Db.ScratchPadCondition();
-            cc.Reset(DbUtil.Db);
+            cc.Reset();
 
             if (m.memberstatus > 0)
                 cc.AddNewClause(QueryType.MemberStatusId, CompareType.Equal,
-                                IdCode(cv.MemberStatusCodes(), m.memberstatus));
+                                IdValue(cv.MemberStatusCodes(), m.memberstatus));
 
             if (m.name.HasValue())
             {
@@ -458,20 +458,20 @@ or just Last or *First*`space` for first name match only.
             }
             if (m.campus > 0)
                 cc.AddNewClause(QueryType.CampusId, CompareType.Equal,
-                                IdCode(cv.AllCampuses(), m.campus));
+                                IdValue(cv.AllCampuses(), m.campus));
             else if (m.campus == -1)
                 cc.AddNewClause(QueryType.CampusId, CompareType.IsNull,
-                                IdCode(cv.AllCampuses(), m.campus));
+                                IdValue(cv.AllCampuses(), m.campus));
             if (m.gender != 99)
                 cc.AddNewClause(QueryType.GenderId, CompareType.Equal,
-                                IdCode(cv.GenderCodes(), m.gender));
+                                IdValue(cv.GenderCodes(), m.gender));
             if (m.marital != 99)
                 cc.AddNewClause(QueryType.MaritalStatusId, CompareType.Equal,
-                                IdCode(cv.MaritalStatusCodes(), m.marital));
+                                IdValue(cv.MaritalStatusCodes(), m.marital));
             if(m.statusflags != null)
                 foreach (var f in m.statusflags)
                     cc.AddNewClause(QueryType.StatusFlag, CompareType.Equal, f);
-            cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
+            cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,True");
 
             cc.Save(DbUtil.Db);
             return "/Query/" + cc.Id;

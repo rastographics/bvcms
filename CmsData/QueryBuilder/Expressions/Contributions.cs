@@ -4,11 +4,12 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using UtilityExtensions;
 using CmsData.Codes;
+using UtilityExtensions;
 
 namespace CmsData
 {
@@ -57,14 +58,14 @@ namespace CmsData
                         select g.Key ?? 0;
                     break;
                 case CompareType.Equal:
-                    if (cnt == 0) // This is a very special case, use different approach
-                    {
-                        q = from pid in db.Contributions0(dt, now, fund, 0, false, taxnontax, true)
-                            select pid.PeopleId;
-                        Expression<Func<Person, bool>> pred0 = p => q.Contains(p.PeopleId);
-                        Expression expr0 = Expression.Invoke(pred0, parm);
-                        return expr0;
-                    }
+                    //if (cnt == 0) // This is a very special case, use different approach
+                    //{
+                    //    q = from pid in db.Contributions0(dt, now, fund, 0, false, taxnontax, true)
+                    //        select pid.PeopleId;
+                    //    Expression<Func<Person, bool>> pred0 = p => q.Contains(p.PeopleId);
+                    //    Expression expr0 = System.Linq.Expressions.Expression.Invoke(pred0, parm);
+                    //    return expr0;
+                    //}
                     q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
@@ -243,13 +244,13 @@ namespace CmsData
         {
             var fund = Quarters.ToInt();
             var cnt = TextValue.ToInt();
-            return RecentContributionCount2(Days, fund, cnt, taxnontax: false);
+            return RecentContributionCount2(Days, fund, cnt, false);
         }
         internal Expression RecentContributionAmount()
         {
             var fund = Quarters.ToInt();
             var amt = decimal.Parse(TextValue);
-            return RecentContributionAmount2(Days, fund, amt, taxnontax: false);
+            return RecentContributionAmount2(Days, fund, amt, false);
         }
         internal Expression RecentContributionAmountBothJoint()
         {
@@ -314,13 +315,13 @@ namespace CmsData
         {
             var fund = Quarters.ToInt();
             var cnt = TextValue.ToInt();
-            return RecentContributionCount2(Days, fund, cnt, taxnontax: true);
+            return RecentContributionCount2(Days, fund, cnt, true);
         }
         internal Expression RecentNonTaxDedAmount()
         {
             var fund = Quarters.ToInt();
             var amt = decimal.Parse(TextValue);
-            return RecentContributionAmount2(Days, fund, amt, taxnontax: true);
+            return RecentContributionAmount2(Days, fund, amt, true);
         }
         internal Expression RecentPledgeCount()
         {
