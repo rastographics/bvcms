@@ -81,25 +81,5 @@ namespace CmsData
                 return false;
             return true;
         }
-
-        public static IEnumerable<ConditionConfig> ConditionConfigs()
-        {
-            var xdoc = XDocument.Parse(Properties.Resources.FieldMap3);
-            var q = from c in xdoc.Root?.Elements()
-                    from f in c.Elements()
-                    select new ConditionConfig
-                    {
-                        Name = f.Name.LocalName,
-                        Type = f.Attribute("Type")?.Value,
-                        DataValueField = f.Attribute("DataValueField")?.Value,
-                        DataSource = f.Attribute("DataSource")?.Value,
-                        Category = c.Name.LocalName,
-                        Title = f.Attribute("Title")?.Value,
-                        Params = f.Attribute("Params")?.Value,
-                        QuartersLabel = f.Attribute("QuartersLabel")?.Value,
-                        Description = f.Value.Trim().Replace('\n',' '),
-                    };
-            return q;
-        }
     }
 }

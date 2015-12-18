@@ -127,9 +127,6 @@
   <data name="FieldMap" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\querybuilder\fieldmap.csv;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="FieldMap3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\querybuilder\fieldmap3.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
   <data name="ManagedGiving_FailedGivingMessage" xml:space="preserve">
     <value>{first},
 &lt;p&gt;We are very sorry, but something has gone wrong and your online giving transaction did not complete.&lt;/p&gt;
