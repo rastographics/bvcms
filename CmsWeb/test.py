@@ -1,8 +1,13 @@
 query = '''
-    AttendTypeAsOf( Prog=101[Life Groups], Div=%s, StartDate='%s', EndDate='%s' ) = 60[New Guest]
+    AttendTypeAsOf( Prog=101[Life Groups], Div={}, StartDate='{}', EndDate='{}' ) = 60[New Guest]
     AND IncludeDeceased = 1[True]
 '''
+# The above query has 3 placeholders: {}
+# which will be replaced with different values for each row/column
+# using the pattern: query2 = query.format(div, startdt, enddt)
+# where query2 has ready to execute string using QueryCodeCount(query2)
 
+# the following can be retrieved on your database from /DivisionCodes
 divisions = [
     "201[Younger Pre-School]",
     "202[Older Pre-School]",
@@ -21,42 +26,48 @@ divisions = [
     "215[Senior Adults]",
     "6477[Off Campus Ministries]"
 ]
+# this is a list of starting dates for each column
 dates = [
-	#"7/1/2007",
-	#"7/1/2008",
-	#"7/1/2009",
-	#"7/1/2010",
-	#"7/1/2011",
+	"7/1/2007",
+	"7/1/2008",
+	"7/1/2009",
+	"7/1/2010",
+	"7/1/2011",
 	"7/1/2012",
 	"7/1/2013",
 	"7/1/2014",
 	"7/1/2015"
 ]
 
+# a row object has a name and a list of columns
 class Row:
     def __init__(self, name):
         self.name = name
         self.cols = []
 
+# Data is a built-in dynamic object
 Data.rows = [] # create a list of rows
 
+# the Row constructor is passed the name when creating an instance
 Data.header = Row("Divisions")
 Data.footer = Row("Totals")
 
+# initialize the header and footer rows
 for startdt in dates:
     Data.header.cols.append(startdt)
-    Data.footer.cols.append(0) # initialize the total
+    Data.footer.cols.append(0) # initialize the total to 0
 
+# build all the rows between header and footer
 for div in divisions:
     name = div.split('[')[1].strip(']'); # strip the name from this pattern: 123[this is the name]
     row = Row(name)
     for startdt in dates: 
         enddt = model.DateAddDays(startdt, 365)
-        rowcolquery = query % (div, startdt, enddt) # create the query needed for this division/date
+        rowcolquery = query.format(div, startdt, enddt) # create the query needed for this division/date
         count = q.QueryCodeCount(rowcolquery) # execute the query and get the # people
-        i = len(row.cols)
-        Data.footer.cols[i] += count
-        row.cols.append('{0:,d}'.format(count)) # add the count formatted like 1,234
+        i = len(row.cols) # this is the index of the column we are working on
+        Data.footer.cols[i] += count # add to total row
+        row.cols.append(count)
     Data.rows.append(row)
 
 template = '''
@@ -75,7 +86,7 @@ template = '''
     <tr>
         <th>{{name}}</th>
         {{#each cols}}
-            <td align="right">{{this}}</td>
+            <td align="right">{{Fmt this "N0"}}</td>
         {{/each}}
     </tr>
     {{/each}}
@@ -84,7 +95,7 @@ template = '''
     <tr>
         <th>{{footer.name}}</th>
         {{#each footer.cols}}
-            <td align="right">{{this}}</td>
+            <td align="right">{{Fmt this "N0"}}</td>
         {{/each}}
     </tr>
     </tfoot>
