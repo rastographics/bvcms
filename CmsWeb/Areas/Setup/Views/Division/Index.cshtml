@@ -31,9 +31,10 @@
                             <div class="col-sm-9">
                                 <label for="TagProgramId" class="control-label">Target Program</label>
                                 <div class="form-inline">
-                                    <div class="input-group">
-                                        @Html.DropDownList("TagProgramId", Model.ProgramIds(), new { @class = "form-control" })
-                                    </div>
+                                  <div class="input-group">
+                                    @Html.DropDownList("TagProgramId", Model.ProgramIds(), new {@class = "form-control"})
+                                  </div>
+                                    <a href="/DivisionCodes" class="btn btn-default">Codes</a>
                                     <div class="input-group">
                                         <button type="submit" class="btn btn-default" ><i class="fa fa-refresh"></i> Refresh</button>
                                     </div>

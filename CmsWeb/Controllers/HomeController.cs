@@ -55,9 +55,11 @@ namespace CmsWeb.Controllers
 
 #if DEBUG
         [HttpGet, Route("~/Test")]
-        public ActionResult Test(string id)
+        public ActionResult Test()
         {
-            return Content("done");
+            var s = System.IO.File.ReadAllText(Server.MapPath("~/test.py"));
+            ViewBag.text = PythonEvents.RunScript(Util.Host, s);
+            return View();
         }
 #endif
 

@@ -7,6 +7,7 @@ using UtilityExtensions;
 using IronPython.Hosting;
 using System;
 using System.Configuration;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -82,6 +83,11 @@ namespace CmsData
         public string HttpMethod { get; set; }
 
         public string UserName => Util.UserName;
+
+        public void debug(object o)
+        {
+            Debug.WriteLine(o);
+        }
 
         public string RunScript(string script)
         {
@@ -752,6 +758,7 @@ namespace CmsData
 
                     var scope = engine.CreateScope();
                     scope.SetVariable("model", model);
+                    scope.SetVariable("Data", model.Data);
 
                     var qf = new QueryFunctions(model.db, model.dictionary);
                     scope.SetVariable("q", qf);
@@ -785,6 +792,14 @@ namespace CmsData
             var template = Handlebars.Compile(source);
             var result = template(data);
             return result;
+        }
+
+        public string AddDays(object dt1, int days)
+        {
+            var dt = dt1.ToDate();
+            if (dt.HasValue)
+                return dt.Value.AddDays(days).ToShortDateString();
+            return "1/1/1";
         }
         public static void RegisterHelpers(CMSDataContext db)
         {
