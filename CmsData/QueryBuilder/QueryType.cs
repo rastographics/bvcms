@@ -69,6 +69,7 @@ namespace CmsData
         FamilyHasChildrenAged,
         FamilyHasChildrenAged2,
         FamilyHasChildrenAged3,
+        FamilyHasContacts,
         FamHasPrimAdultChurchMemb,
         FamHasStatusFlag,
         FirstFamilyVisitAsOf,
