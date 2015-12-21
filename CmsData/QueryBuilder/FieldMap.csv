@@ -72,6 +72,7 @@ RecentEmailSentCount,Integer,,,,Ministry,Recent Email Sent Count,Days,Enter a nu
 EmailRecipient,IntegerEqual,,,,Ministry,Email Recipients,,Enter Email ID number.
 MadeContactTypeAsOf,Code,,ContactTypeList,,Ministry,Made Contact Type As Of,"Ministry,StartDate,EndDate",Select Contact Type from the list and pick the date range.
 HasContacts,Bit,,,,Ministry,Has Contacts,,Select True or False to find anyone who has received a Contact.
+FamilyHasContacts,Bit,,,,Ministry,Family Has Contacts,,Select True or False to find anyone in a family who has received a Contact.
 ContactRecipient,IntegerEqual,,,,Ministry,Contact Recipients,,Enter Contact ID number.
 ContactMaker,IntegerEqual,,,,Ministry,Contact Makers,,Enter Contact ID number.
 MemberStatusId,Code,,MemberStatusCodes,,Membership,Church Member Status,,Select Member Status from the list.

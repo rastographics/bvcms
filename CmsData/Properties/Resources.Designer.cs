@@ -116,44 +116,15 @@ namespace CmsData.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to Name,Type,DataValueField,DataSource,QuartersLabel,Category,Title,Params,Description
-        ///Group,Group,,,,Grouping,,,&quot;
-        ///      Groups conditions or other groups together in an &quot;&quot;all true&quot;&quot; or &quot;&quot;any one true&quot;&quot; relationship
-        ///    &quot;
-        ///Age,NullInteger,,,,Personal,,,&quot;
-        ///      Enter an age. Leave blank to find those without a DOB.
-        ///    &quot;
-        ///GenderId,Code,IdValue,GenderCodes,,Personal,Gender,,&quot;
-        ///      Select Gender from the list.
-        ///    &quot;
-        ///MaritalStatusId,Code,IdValue,MaritalStatusCodes,,Personal,Marital Status,,&quot;
-        ///      Select [rest of string was truncated]&quot;;.
+        ///Group,Group,,,,Grouping,,,&quot;Groups conditions or other groups together in an &quot;&quot;all true&quot;&quot; or &quot;&quot;any one true&quot;&quot; relationship&quot;
+        ///Age,NullInteger,,,,Personal,,,Enter an age. Leave blank to find those without a DOB.
+        ///GenderId,Code,,GenderCodes,,Personal,Gender,,Select Gender from the list.
+        ///MaritalStatusId,Code,,MaritalStatusCodes,,Personal,Marital Status,,Select Marital Status from the list.
+        ///Birthday,StringEqual,,,,Personal,Birt [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string FieldMap {
             get {
                 return ResourceManager.GetString("FieldMap", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-        ///&lt;fields&gt;
-        ///  &lt;Grouping&gt;
-        ///    &lt;Group Type=&quot;Group&quot;&gt;
-        ///      Groups conditions or other groups together in an &quot;all true&quot; or &quot;any one true&quot; relationship
-        ///    &lt;/Group&gt;
-        ///  &lt;/Grouping&gt;
-        ///  &lt;Personal&gt;
-        ///    &lt;Age Type=&quot;NullInteger&quot;&gt;
-        ///      Enter an age. Leave blank to find those without a DOB.
-        ///    &lt;/Age&gt;
-        ///    &lt;GenderId Title=&quot;Gender&quot; Type=&quot;Code&quot; DataSource=&quot;GenderCodes&quot; DataValueField=&quot;IdValue&quot;&gt;
-        ///      Select Gender from the list.
-        ///    &lt;/GenderId&gt;
-        ///    &lt;MaritalStatusId Title=&quot;Mar [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string FieldMap3 {
-            get {
-                return ResourceManager.GetString("FieldMap3", resourceCulture);
             }
         }
         

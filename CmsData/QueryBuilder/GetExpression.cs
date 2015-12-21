@@ -57,6 +57,7 @@ namespace CmsData
                 { QueryType.FamilyHasChildrenAged, FamilyHasChildrenAged },
                 { QueryType.FamilyHasChildrenAged2, FamilyHasChildrenAged2 },
                 { QueryType.FamilyHasChildrenAged3, FamilyHasChildrenAged3 },
+                { QueryType.FamilyHasContacts, FamilyHasContacts },
                 { QueryType.FirstOrgJoinDate, FirstOrgJoinDate },
                 { QueryType.FirstFamilyVisitAsOf, FirstFamilyVisitAsOf },
                 { QueryType.GivingChange, GivingChange },

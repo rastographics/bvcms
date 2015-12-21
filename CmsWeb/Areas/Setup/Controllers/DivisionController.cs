@@ -1,10 +1,12 @@
 using System;
 using System.Linq;
 using System.Data.Linq;
+using System.Text;
 using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
 using CmsWeb.Models;
+using Dapper;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
@@ -106,6 +108,35 @@ namespace CmsWeb.Areas.Setup.Controllers
             DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, division);
             var di = m.DivisionItem(id).Single();
             return View("Row", di);
+        }
+
+        [HttpGet, Route("~/DivisionCodes")]
+        public ActionResult Codes()
+        {
+            var sql = @"
+SELECT 
+	pd.ProgId
+	, p.Name Prog
+	, pd.DivId
+	, d.Name Div
+FROM dbo.Program p
+JOIN dbo.ProgDiv pd ON pd.ProgId = p.Id
+JOIN dbo.Division d ON d.Id = pd.DivId
+ORDER BY p.Name, d.Name
+";
+            var q = DbUtil.Db.Connection.Query(sql);
+            var sb = new StringBuilder();
+            var currprog = "";
+            foreach (var r in q)
+            {
+                if (r.Prog != currprog)
+                {
+                    sb.AppendLine($"\"{r.ProgId}[{r.Prog}]\",");
+                    currprog = r.Prog;
+                }
+                sb.AppendLine($"\t\"{r.DivId}[{r.Div}]\",");
+            }
+            return Content(sb.ToString(), "text/plain");
         }
     }
 }

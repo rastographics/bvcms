@@ -400,25 +400,5 @@ PARSED
 ";
             return Content(content, "text/plain");
         }
-
-        [HttpGet, Route("~/Query/ConditionsConfig")]
-        public ActionResult ConditionsConfig()
-        {
-            return new ConitionsConfigResult();
-        }
-        public class ConitionsConfigResult : ActionResult
-        {
-            public override void ExecuteResult(ControllerContext context)
-            {
-                context.HttpContext.Response.Clear();
-                context.HttpContext.Response.ContentType = "application/csv";
-                context.HttpContext.Response.AddHeader("Content-Disposition", "attachment;filename=FieldMap.csv");
-                var csv = new CsvHelper.CsvWriter(context.HttpContext.Response.Output);
-                var q = ExportQuery.ConditionConfigs();
-                csv.WriteHeader<ConditionConfig>();
-                foreach (var row in q)
-                    csv.WriteRecord(row);
-            }
-        }
     }
 }

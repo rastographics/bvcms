@@ -900,7 +900,7 @@ namespace CmsWeb
 
         public static HtmlString CkEditor()
         {
-            return new HtmlString("<script src=\"//cdn.ckeditor.com/4.5.3/full/ckeditor.js\" type=\"text/javascript\"></script>\n");
+            return new HtmlString("<script src=\"//cdn.ckeditor.com/4.5.6/full/ckeditor.js\" type=\"text/javascript\"></script>\n");
         }
 
         public static HtmlString jQuery()

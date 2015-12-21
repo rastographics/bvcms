@@ -991,9 +991,6 @@
     <Resource Include="Classes\OnlineRegSummaryText\Details2.xml">
       <SubType>Designer</SubType>
     </Resource>
-    <Content Include="QueryBuilder\FieldMap3.xml">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

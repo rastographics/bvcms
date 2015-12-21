@@ -7,6 +7,7 @@ using UtilityExtensions;
 using IronPython.Hosting;
 using System;
 using System.Configuration;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -82,6 +83,11 @@ namespace CmsData
         public string HttpMethod { get; set; }
 
         public string UserName => Util.UserName;
+
+        public void debug(object o)
+        {
+            Debug.WriteLine(o);
+        }
 
         public string RunScript(string script)
         {
@@ -752,6 +758,7 @@ namespace CmsData
 
                     var scope = engine.CreateScope();
                     scope.SetVariable("model", model);
+                    scope.SetVariable("Data", model.Data);
 
                     var qf = new QueryFunctions(model.db, model.dictionary);
                     scope.SetVariable("q", qf);
@@ -786,6 +793,14 @@ namespace CmsData
             var result = template(data);
             return result;
         }
+
+        public string AddDays(object dt1, int days)
+        {
+            var dt = dt1.ToDate();
+            if (dt.HasValue)
+                return dt.Value.AddDays(days).ToShortDateString();
+            return "1/1/1";
+        }
         public static void RegisterHelpers(CMSDataContext db)
         {
             Handlebars.RegisterHelper("BottomBorder", (writer, context, args) => { writer.Write(CssStyle.BottomBorder); });
@@ -795,7 +810,6 @@ namespace CmsData
             Handlebars.RegisterHelper("LabelStyle", (writer, context, args) => { writer.Write(CssStyle.LabelStyle); });
             Handlebars.RegisterHelper("DataStyle", (writer, context, args) => { writer.Write(CssStyle.DataStyle); });
             Handlebars.RegisterHelper("ServerLink", (writer, context, args) => { writer.Write(db.ServerLink().TrimEnd('/')); });
-            Handlebars.RegisterHelper("FmtDate", (writer, context, args) => { writer.Write(args[0].ToDate().FormatDate()); });
             Handlebars.RegisterHelper("FmtZip", (writer, context, args) => { writer.Write(args[0].ToString().FmtZip()); });
             Handlebars.RegisterHelper("IfEqual", (writer, options, context, args) =>
             {
@@ -813,6 +827,21 @@ namespace CmsData
                 var n = args[1].ToInt();
                 var a = s.SplitStr(" ", 2);
                 writer.Write(a[n]);
+            });
+
+            // Format helper in form of:  {{Fmt value "fmt"}}
+            // ex. {{Fmt Total "C"}}
+            // fmt is required. Uses standard/custom dotnet format strings
+            Handlebars.RegisterHelper("Fmt", (writer, context, args) =>
+            {
+                var fmt = $"{{0:{args[1]}}}";
+                writer.Write(fmt, args[0]);
+            });
+
+            // FmtPhone helper in form of:  {{FmtPhone phone# "prefix"}}
+            Handlebars.RegisterHelper("FmtPhone", (writer, context, args) =>
+            {
+                writer.Write(args[0].ToString().FmtFone($"{args[1]}"));
             });
         }
     }

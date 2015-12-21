@@ -314,14 +314,16 @@
     };
 
     $('body').on('change', '#Program', function (ev) {
-        $.postQuery('Divisions/' + $(this).val(), function (ret) {
+        var progid = $(this).val().split(",")[0];
+        $.postQuery('Divisions/' + progid, function (ret) {
             $.replaceSelect('#Division', ret);
             $.replaceSelect('#Organization', "<select id='Organization' name='Organization' style='display:none'><option value='0'>(not specified)</option></select>");
         });
     });
 
     $('body').on('change', '#Division', function () {
-        $.postQuery('Organizations/' + $(this).val(), function (ret) {
+        var divid = $(this).val().split(",")[0];
+        $.postQuery('Organizations/' + divid, function (ret) {
             $.replaceSelect("#Organization", ret);
         });
     });

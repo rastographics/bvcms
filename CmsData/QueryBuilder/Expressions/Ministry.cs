@@ -163,5 +163,14 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+        internal Expression FamilyHasContacts()
+        {
+            var tf = CodeIds == "1";
+            Expression<Func<Person, bool>> pred = p => p.Family.People.Any(pp => pp.contactsHad.Any());
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
+            return expr;
+        }
     }
 }
