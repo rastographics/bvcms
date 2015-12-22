@@ -96,6 +96,11 @@ namespace CmsData
                     where a.PeopleId == PeopleId
                     select a;
             var tot = q.Where(aa => aa.ContributionFund.FundStatusId == 1).Sum(aa => aa.Amt);
+            t.TransactionPeople.Add(new TransactionPerson
+            {
+                PeopleId = Person.PeopleId,
+                Amt = tot,
+            });
             if (ret.Approved)
             {
                 foreach (var a in q)
@@ -104,11 +109,6 @@ namespace CmsData
                         Person.PostUnattendedContribution(db, a.Amt ?? 0, a.FundId, "Recurring Giving", tranid: t.Id);
                 }
 
-                t.TransactionPeople.Add(new TransactionPerson
-                {
-                    PeopleId = Person.PeopleId,
-                    Amt = tot,
-                });
                 NextDate = FindNextDate(Util.Now.Date.AddDays(1));
                 db.SubmitChanges();
                 if (tot > 0)
