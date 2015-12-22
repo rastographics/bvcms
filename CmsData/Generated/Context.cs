@@ -1826,6 +1826,12 @@ namespace CmsData
 
         }
 
+        public Table< View.FailedRecurringGiving> ViewFailedRecurringGivings
+        {
+            get { return GetTable< View.FailedRecurringGiving>(); }
+
+        }
+
         public Table< View.FamilyFirstTime> ViewFamilyFirstTimes
         {
             get { return GetTable< View.FamilyFirstTime>(); }

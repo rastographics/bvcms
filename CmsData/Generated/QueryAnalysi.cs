@@ -28,6 +28,8 @@ namespace CmsData
 		
 		private string _Message;
 		
+		private bool? _Updated;
+		
    		
     	
 	#endregion
@@ -51,6 +53,9 @@ namespace CmsData
 		
 		partial void OnMessageChanging(string value);
 		partial void OnMessageChanged();
+		
+		partial void OnUpdatedChanging(bool? value);
+		partial void OnUpdatedChanged();
 		
     #endregion
 		public QueryAnalysi()
@@ -166,6 +171,28 @@ namespace CmsData
 					this._Message = value;
 					this.SendPropertyChanged("Message");
 					this.OnMessageChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Updated", UpdateCheck=UpdateCheck.Never, Storage="_Updated", DbType="bit")]
+		public bool? Updated
+		{
+			get { return this._Updated; }
+
+			set
+			{
+				if (this._Updated != value)
+				{
+				
+                    this.OnUpdatedChanging(value);
+					this.SendPropertyChanging();
+					this._Updated = value;
+					this.SendPropertyChanged("Updated");
+					this.OnUpdatedChanged();
 				}
 
 			}
