@@ -184,7 +184,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             if (text.Contains("ProfileID"))
                 return new ServiceUImporter();
 
-            if (text.StartsWith("Id,Recipient,Date,Time,Currency,Amount,Status,Payment Method,Payer Name,Email address,Mobile Number,Source,Method,Full name,Email,Giving Type"))
+            if (text.StartsWith("Id,Recipient,Date,Time,Currency,Amount,Status,Payment Method,Payer Name,Email address,Mobile Number,Source,Method"))
                 return new PushPayImporter();
 
             throw new Exception("unsupported import file");
