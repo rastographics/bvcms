@@ -164,6 +164,7 @@ namespace CmsData
                 { QueryType.RecentFirstTimeGiver, RecentFirstTimeGiver },
                 { QueryType.RecentFlagAdded, RecentFlagAdded },
                 { QueryType.RecentHasIndContributions, RecentHasIndContributions },
+                { QueryType.RecentHasFailedRecurringGiving, RecentHasFailedRecurringGiving },
                 { QueryType.RecentIncompleteRegistrations, RecentIncompleteRegistrations },
                 { QueryType.RecentJoinChurch, RecentJoinChurch },
                 { QueryType.RecentNewVisitCount, RecentNewVisitCount },

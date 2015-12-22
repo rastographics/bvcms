@@ -526,6 +526,23 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+        internal Expression RecentHasFailedRecurringGiving()
+        {
+            var tf = CodeIds == "1";
+            if (!db.FromActiveRecords && !db.FromBatch)
+                if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
+                    return AlwaysFalse();
+            var now = DateTime.Now;
+            var dt = now.AddDays(-Days);
+            Expression<Func<Person, bool>> pred = p =>
+                (from f in db.ViewFailedRecurringGivings
+                 where f.Dt >= dt
+                 select f.PeopleId).Contains(p.PeopleId);
+            Expression expr = Expression.Invoke(pred, parm);
+            if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
+            return expr;
+        }
         internal Expression RecentBundleType()
         {
             if (!db.FromBatch)

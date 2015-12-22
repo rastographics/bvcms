@@ -198,6 +198,7 @@ namespace CmsData
         RecentContributionAmountBothJoint,
         RecentContributionCount,
         RecentHasIndContributions,
+        RecentHasFailedRecurringGiving,
         RecentIncompleteRegistrations,
         RecentBundleType,
         RecentChanged,
