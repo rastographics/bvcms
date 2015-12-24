@@ -58,6 +58,8 @@ namespace CmsData
 		
 		private int? _Source;
 		
+		private int? _CampusId;
+		
    		
    		private EntitySet< BundleDetail> _BundleDetails;
 		
@@ -138,6 +140,9 @@ namespace CmsData
 		
 		partial void OnSourceChanging(int? value);
 		partial void OnSourceChanged();
+		
+		partial void OnCampusIdChanging(int? value);
+		partial void OnCampusIdChanged();
 		
     #endregion
 		public Contribution()
@@ -615,6 +620,28 @@ namespace CmsData
 					this._Source = value;
 					this.SendPropertyChanged("Source");
 					this.OnSourceChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="CampusId", UpdateCheck=UpdateCheck.Never, Storage="_CampusId", DbType="int")]
+		public int? CampusId
+		{
+			get { return this._CampusId; }
+
+			set
+			{
+				if (this._CampusId != value)
+				{
+				
+                    this.OnCampusIdChanging(value);
+					this.SendPropertyChanging();
+					this._CampusId = value;
+					this.SendPropertyChanged("CampusId");
+					this.OnCampusIdChanged();
 				}
 
 			}
