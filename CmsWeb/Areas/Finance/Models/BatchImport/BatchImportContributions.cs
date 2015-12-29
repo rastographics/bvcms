@@ -143,6 +143,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             if (subtext.Contains("Type,Date,Member ID,Account,Amount,Fund"))
                 return new AnchorBibleQbImporter();
 
+            if (subtext.Contains("AMOUNT,FRB,CHECK NUMBER,ACCOUNT NUMBER,CAPTUREDATE"))
+                return new HunterStreetImporter();
+
             if (text.Substring(0, Math.Min(text.Length, 20)).Contains("10444063,"))
                 return new AbundantLifeImporter();
 
