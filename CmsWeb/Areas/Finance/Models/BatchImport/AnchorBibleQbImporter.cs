@@ -6,7 +6,9 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using CmsData;
 using CsvHelper;
 using UtilityExtensions;
@@ -21,30 +23,61 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 return BatchProcess(csv, date, fundid);
         }
 
+        private class Row
+        {
+            public int N { get; set; }
+            public int Pid { get; set; }
+            public DateTime Dt { get; set; }
+            public string Amount { get; set; }
+            public int Fund { get; set; }
+        }
+
         private static int? BatchProcess(CsvReader csv, DateTime date, int? fundid)
         {
+            var prevdt = DateTime.MinValue;
             BundleHeader bh = null;
             var fid = fundid ?? BatchImportContributions.FirstFundId();
 
+            var rows = new List<Row>();
+
+            var n = 0;
             while (csv.Read())
             {
-                var dt = csv[1].ToDate() ?? date;
-                var amount = csv[4];
-                if (!amount.HasValue())
+                n += 1;
+                if (!csv[4].HasValue())
                     continue;
+                var row = new Row
+                {
+                    N = n,
+                    Dt = csv[1].ToDate() ?? date,
+                    Amount = csv[4],
+                    Pid = csv[2].ToInt(),
+                    Fund = csv[5].ToInt2() ?? fid
+                };
+                rows.Add(row);
+            }
 
-                var pid = csv[2].ToInt();
-                var fund = csv[5].ToInt2() ?? fid;
+            var q = from row in rows
+                    orderby row.Dt, row.N
+                    select row;
 
-                if (bh == null)
-                    bh = BatchImportContributions.GetBundleHeader(dt, DateTime.Now);
-                var bd = BatchImportContributions.AddContributionDetail(dt, fund, amount, pid);
+            foreach(var row in q)
+            {
+                if (bh == null || row.Dt != prevdt)
+                {
+                    if (bh != null)
+                        BatchImportContributions.FinishBundle(bh);
+                    bh = BatchImportContributions.GetBundleHeader(row.Dt, DateTime.Now);
+                    prevdt = row.Dt;
+                }
+                var bd = BatchImportContributions.AddContributionDetail(row.Dt, row.Fund, row.Amount, row.Pid);
                 bh.BundleDetails.Add(bd);
+                bd.Contribution.PostingDate = date;
             }
 
             BatchImportContributions.FinishBundle(bh);
 
-            return bh.BundleHeaderId;
+            return bh?.BundleHeaderId ?? 1;
         }
     }
 }
