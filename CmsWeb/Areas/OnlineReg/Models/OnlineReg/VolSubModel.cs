@@ -305,13 +305,15 @@ Sorry, I cannot sub for you.</a>";
             attend.Commitment = AttendCommitmentCode.SubFound;
             Log("Claimed", i.Requested, i.SubstituteId);
             Db.SubmitChanges();
-            var body = $@"
-<p>{i.Substitute.Name},</p>
-<p>Thank you so much.</p>
-<p>You are now assigned to cover for {i.Requestor.Name}<br />
-in the {org.OrganizationName}<br />
-on {attend.MeetingDate:MMM d, yyyy} at {attend.MeetingDate:t}.
-See you there!</p>";
+
+            message = Db.ContentHtml("VolunteerSubConfirm", Resource1.VolSubModel_VolunteerSubConfirm);
+
+            var body = message
+                .Replace("{substitute}", i.Substitute.Name)
+                .Replace("{requestor}", i.Requestor.Name)
+                .Replace("{org}", org.OrganizationName)
+                .Replace("{meetingdate}", $"{attend.MeetingDate:MMM d, yyyy}")
+                .Replace("{meetingtime}", $"{attend.MeetingDate:h:mm tt}");
 
             // on screen message
             DisplayMessage = $"<p>You have been sent the following email at {Util.ObscureEmail(i.Substitute.EmailAddress)}.</p>\n" + body;

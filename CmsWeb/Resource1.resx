@@ -331,4 +331,13 @@ Your Ministry Team for {org}
   <data name="RecentVisitsAbsents" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>areas\org\views\orgsearch\recentvisitsabsents.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="VolSubModel_VolunteerSubConfirm" xml:space="preserve">
+    <value>
+&lt;p&gt;{substitute},&lt;/p&gt;
+&lt;p&gt;Thank you so much.&lt;/p&gt;
+&lt;p&gt;You are now assigned to cover for {requestor}&lt;br /&gt;
+in the {org}&lt;br /&gt;
+on {meetingdate} at {meetingtime}.
+See you there!&lt;/p&gt;</value>
+  </data>
 </root>
