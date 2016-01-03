@@ -62,7 +62,7 @@ BEGIN
 		AND (@name IS NULL OR p.NAME LIKE '%' + @name + '%')
 		AND (@comments IS NULL OR c.ContributionDesc LIKE '%' + @comments + '%' OR c.CheckNo = @comments)
 		AND (@type IS NULL OR c.ContributionTypeId = @type)
-		AND (@campusid IS NULL OR p.CampusId = @campusid)
+		AND (@campusid IS NULL OR c.CampusId = @campusid)
 		AND (@bundletype IS NULL OR h.BundleHeaderTypeId = @bundletype)
 		AND (@year IS NULL OR DATEPART(YEAR, c.ContributionDate) = @year)
 		AND (@fundid IS NULL OR c.FundId = @fundid)

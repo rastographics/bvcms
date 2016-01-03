@@ -19,7 +19,8 @@ CREATE TABLE [dbo].[Contribution]
 [CheckNo] [nvarchar] (20) NULL,
 [QBSyncID] [int] NULL,
 [TranId] [int] NULL,
-[Source] [int] NULL
+[Source] [int] NULL,
+[CampusId] [int] NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
