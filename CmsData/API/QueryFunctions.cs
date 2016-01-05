@@ -8,7 +8,6 @@ using IronPython.Hosting;
 using System.IO;
 using CmsData.Codes;
 using HandlebarsDotNet;
-using Microsoft.Scripting.Hosting;
 
 namespace CmsData
 {
@@ -546,6 +545,17 @@ namespace CmsData
                 foreach (var kv in d)
                     p.Add("@" + kv.Key, kv.Value);
 
+            if (sql.Contains("@BlueToolbarTagId"))
+                if(dictionary.ContainsKey("BlueToolbarGuid"))
+                {
+                    var guid = (dictionary["BlueToolbarGuid"] as string).ToGuid();
+                    if(!guid.HasValue)
+                        throw new Exception("missing BlueToolbar Information");
+                    var j = DbUtil.Db.PeopleQuery(guid.Value).Select(vv => vv.PeopleId).Take(1000);
+                    var tag = DbUtil.Db.PopulateTemporaryTag(j);
+                    p.Add("@BlueToolbarTagId", tag.Id);
+                }
+
             var q = db.Connection.Query(sql, p, commandTimeout: 300);
             return q;
         }
@@ -573,7 +583,6 @@ namespace CmsData
                 return new List<Person>();
             return db.PeopleQuery(guid.Value).Take(1000);
         }
-
         public int RegistrationCount(int days, int progid, int divid, int orgid)
         {
             var dt = DateTime.Now.AddDays(-days);

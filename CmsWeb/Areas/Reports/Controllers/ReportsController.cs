@@ -797,7 +797,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             var content = DbUtil.Db.ContentOfTypePythonScript(report);
             if (content == null)
                 return Content("no script named " + report);
-            if (!content.Contains("BlueToolbarReport"))
+            if (!content.Contains("BlueToolbarReport") && !content.Contains("@BlueToolbarTagId"))
                  return Content("Missing Call to Query Function 'BlueToolbarReport'");
             if(id == Guid.Empty)
                  return Content("Must be run from the BlueToolbar");

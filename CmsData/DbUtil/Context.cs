@@ -445,9 +445,9 @@ namespace CmsData
                 s = Regex.Replace(s, $@"@p{n++}\b", $"{{{pn++}}}");
                 plist.Add(pa);
             }
+            s = Regex.Replace(s, @"^SELECT( DISTINCT| TOP \(\d+\))?", 
+                $"INSERT INTO TagPerson (Id, PeopleId) $0 {tag.Id},");
 
-            s = Regex.Replace(s, "^SELECT( DISTINCT)?",
-                @"INSERT INTO TagPerson (Id, PeopleId) $0 " + tag.Id + ",");
             ExecuteCommand(s, plist.Select(pp => pp.Value).ToArray());
             return tag;
         }
