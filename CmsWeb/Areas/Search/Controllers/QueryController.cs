@@ -273,7 +273,7 @@ namespace CmsWeb.Areas.Search.Controllers
             }
         }
         [HttpPost]
-        public ActionResult ToggleAutoRun(bool setting)
+        public ActionResult SetAutoRun(bool setting)
         {
             DbUtil.Db.SetUserPreference("QueryAutoRun", setting ? "true" : "false");
             return Content(setting.ToString().ToLower());

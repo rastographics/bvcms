@@ -173,6 +173,10 @@
         return false;
     });
 
+    $('#AutoRun').change(function () {
+        $.post("/Query/SetAutoRun", { setting: $(this).prop("checked") });
+    });
+
     $('body').on('click', '#conditions a.addnewclause', function () {
         liedit = $(this).closest("li.condition");
         var qid = liedit.data("qid");
