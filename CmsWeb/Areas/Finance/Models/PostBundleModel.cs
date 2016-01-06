@@ -192,7 +192,7 @@ namespace CmsWeb.Models
                          Pid = p.PeopleId,
                          Name = p.Name2 + age,
                          spouse = spouse.Name,
-                         Addr = p.PrimaryAddress ?? ""
+                         addr = p.PrimaryAddress ?? ""
                      };
             return rp.Take(limit);
         }
@@ -212,8 +212,9 @@ namespace CmsWeb.Models
                      {
                          Pid = p.PeopleId,
                          Name = p.Name2 + age,
+                         email = p.EmailAddress,
                          spouse = spouse.Name,
-                         Addr = p.PrimaryAddress ?? "",
+                         addr = p.PrimaryAddress ?? "",
                          recent = (from c in p.Contributions
                                    where c.ContributionStatusId == 0
                                    orderby c.ContributionDate descending
@@ -451,20 +452,17 @@ namespace CmsWeb.Models
         public class NamesInfo
         {
             public string Name { get; set; }
-            public string Addr { get; set; }
             public int Pid { get; set; }
             internal List<RecentContribution> recent { get; set; }
-            internal string spouse { get; set; }
 
-            public string Spouse
-            {
-                get
-                {
-                    if (spouse.HasValue())
-                        return "<br>Giving with: " + spouse;
-                    return "";
-                }
-            }
+            internal string addr { get; set; }
+            public string Addr => addr.HasValue() ? $"<br>{addr}" : "";
+
+            internal string spouse { get; set; }
+            public string Spouse => spouse.HasValue() ? $"<br>Giving with: {spouse}" : "";
+
+            internal string email { get; set; }
+            public string Email => email.HasValue() ? $"<br>{email}" : "";
 
             public string RecentGifts
             {
