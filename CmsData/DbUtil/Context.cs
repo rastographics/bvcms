@@ -326,7 +326,7 @@ namespace CmsData
         public void TagAll2(IQueryable<Person> list, Tag tag)
         {
             ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
-            var q2 = list.Select(pp => pp.PeopleId);
+            var q2 = list.Select(pp => pp.PeopleId).Distinct();
             var cmd = GetCommand(q2);
             var s = cmd.CommandText;
             var plist = new List<DbParameter>();
@@ -342,8 +342,8 @@ namespace CmsData
                 s = Regex.Replace(s, $@"@p{n++}\b", $"{{{pn++}}}");
                 plist.Add(pa);
             }
-            s = Regex.Replace(s, "^SELECT( DISTINCT)?",
-                @"INSERT INTO TagPerson (Id, PeopleId) $0 " + tag.Id + ",");
+            s = Regex.Replace(s, @"^SELECT( DISTINCT| TOP \(\d+\))?", 
+                $"INSERT INTO TagPerson (Id, PeopleId) $0 {tag.Id},");
             var a = plist.Select(pp => pp.Value).ToArray();
             ExecuteCommand(s, a);
         }
@@ -419,8 +419,8 @@ namespace CmsData
                 s = Regex.Replace(s, $@"@p{n++}\b", $"{{{pn++}}}");
                 plist.Add(pa);
             }
-            s = Regex.Replace(s, "^SELECT( DISTINCT)?",
-                @"INSERT INTO TagPerson (Id, PeopleId) $0 " + tag.Id + ",");
+            s = Regex.Replace(s, @"^SELECT( DISTINCT| TOP \(\d+\))?", 
+                $"INSERT INTO TagPerson (Id, PeopleId) $0 {tag.Id},");
             ExecuteCommand(s, plist.Select(pp => pp.Value).ToArray());
             return tag;
         }
