@@ -582,7 +582,7 @@ namespace CmsWeb.Models
                         || (c.ContributionTypeId != ContributionTypeCode.Pledge && !Pledges)
                     where c.BundleDetails.First().BundleHeader.BundleStatusId == 0
                     //where Pledges || c.PostingDate != null
-                    where CampusId == 0 || c.Person.CampusId == CampusId
+                    where CampusId == 0 || c.CampusId == CampusId
                     group c by c.FundId into g
                     orderby g.Key
                     select new FundTotalInfo
@@ -609,7 +609,7 @@ namespace CmsWeb.Models
                      where c.ContributionDate.Value.Date < dt2
                      where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                      where c.FundId == fundid || fundid == 0
-                     where CampusId == 0 || c.Person.CampusId == CampusId
+                     where CampusId == 0 || c.CampusId == CampusId
                      select c;
 
             switch (Pledges)
