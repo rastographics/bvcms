@@ -319,7 +319,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             try
             {
                 var script = DbUtil.Db.Content(id);
-                PythonEvents.RunScript(Util.Host, script.Body);
+                PythonModel.RunScript(Util.Host, script.Body);
             }
             catch (Exception e)
             {

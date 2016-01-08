@@ -803,7 +803,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                  return Content("Must be run from the BlueToolbar");
 
 
-            var pe = new PythonEvents(Util.Host);
+            var pe = new PythonModel(Util.Host);
 
             pe.DictionaryAdd("BlueToolbarGuid", id.ToCode());
             foreach (var key in Request.QueryString.AllKeys)
@@ -861,7 +861,14 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet]
         public ActionResult VitalStats()
         {
-            ViewData["table"] = QueryFunctions.VitalStats(DbUtil.Db);
+            var script = DbUtil.Db.ContentOfTypePythonScript("VitalStats");
+            if(!script.HasValue())
+                script = System.IO.File.ReadAllText(Server.MapPath("/Content/VitalStats.py"));
+
+            ViewBag.table = script.Contains("class VitalStats")
+                ? QueryFunctions.OldVitalStats(DbUtil.Db, script)
+                : PythonModel.RunScript(DbUtil.Db.Host, script);
+
             return View();
         }
 

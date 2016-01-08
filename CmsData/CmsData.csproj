@@ -367,7 +367,16 @@
     <Compile Include="API\ApiSessionStatus.cs" />
     <Compile Include="API\CreateExcel.cs" />
     <Compile Include="API\DynamicData.cs" />
-    <Compile Include="API\IPythonApi.cs" />
+    <Compile Include="API\PythonModel\Forms.cs" />
+    <Compile Include="API\PythonModel\Upload.cs" />
+    <Compile Include="API\PythonModel\Handlebars.cs" />
+    <Compile Include="API\PythonModel\Dates.cs" />
+    <Compile Include="API\PythonModel\Person.cs" />
+    <Compile Include="API\PythonModel\Email.cs" />
+    <Compile Include="API\PythonModel\Organizations.cs" />
+    <Compile Include="API\PythonModel\ExtraValues.cs" />
+    <Compile Include="API\PythonModel\Misc.cs" />
+    <Compile Include="API\QueryFunctionsDeprecated.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMData.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMHelper.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMMessage.cs" />
@@ -705,7 +714,7 @@
     <Compile Include="Generated\Views\PickListOrgs2.cs" />
     <Compile Include="Meetings\Meeting.cs" />
     <Compile Include="Classes\ProtectMyMinistry\ProtectMyMinistryHelper.cs" />
-    <Compile Include="API\PythonEvents.cs" />
+    <Compile Include="API\PythonModel\Internal.cs" />
     <Compile Include="Generated\AddToOrgFromTagRun.cs" />
     <Compile Include="Generated\CheckedBatch.cs" />
     <Compile Include="Generated\CheckInActivity.cs" />

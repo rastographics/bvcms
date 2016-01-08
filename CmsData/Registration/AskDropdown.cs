@@ -107,7 +107,7 @@ This will be presented as a dropdown selection.
 
             }
 
-            public void AddToSmallGroup(CMSDataContext Db, OrganizationMember om, PythonEvents pe)
+            public void AddToSmallGroup(CMSDataContext Db, OrganizationMember om, PythonModel pe)
             {
                 if (om == null)
                     return;

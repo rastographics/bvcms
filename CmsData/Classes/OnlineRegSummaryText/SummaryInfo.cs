@@ -56,7 +56,7 @@ namespace CmsData.OnlineRegSummaryText
             Handlebars.RegisterHelper("TopLabel", (writer, context, args) => { writer.Write(TopLabel); });
             Handlebars.RegisterHelper("BottomStyle", (writer, context, args) => { writer.Write(RowStyle); });
 
-            PythonEvents.RegisterHelpers(db);
+            PythonModel.RegisterHelpers(db);
         }
 
         public override string ToString()

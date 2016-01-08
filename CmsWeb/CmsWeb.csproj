@@ -1554,7 +1554,7 @@
     <Content Include="Areas\Manage\Views\Batch\BatchUpdate.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\UpdateRegOptions.cshtml" />
     <Content Include="Scripts\bundle.onlineregister.js" />
-    <Content Include="test.py" />
+    <Content Include="Content\VitalStats.py" />
     <Content Include="Views\Shared\EditorTemplates\DateAndTime.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\SqlReport.cshtml" />
     <Content Include="Areas\Org\Views\OrgSearch\Modals\Rollsheet.cshtml" />

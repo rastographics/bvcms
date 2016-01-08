@@ -629,7 +629,7 @@ namespace CmsWeb.Areas.Search.Models
                          into leaderlist
                          select leaderlist).ToList();
 
-            PythonEvents.RegisterHelpers(DbUtil.Db);
+            PythonModel.RegisterHelpers(DbUtil.Db);
             var template = HandlebarsDotNet.Handlebars.Compile(Resource1.RecentVisitsAbsents);
             var sb = new StringBuilder("Notices sent to:</br>\n<table>\n");
             foreach (var p in plist)
