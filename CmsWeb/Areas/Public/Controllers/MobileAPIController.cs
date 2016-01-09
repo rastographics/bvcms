@@ -1211,7 +1211,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             p.OriginId = OriginCode.Visit;
             p.FixTitle();
 
-            if (mpap.eMail.Length > 0)
+            if (mpap.eMail.Length > 0 && !mpap.eMail.Equal("na"))
                 p.EmailAddress = mpap.eMail;
 
             if (mpap.cellPhone.Length > 0)
