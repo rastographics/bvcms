@@ -493,7 +493,9 @@ namespace CmsData
 
         public int StatusCount(string s)
         {
-            var statusflags = s.Split(',');
+            if (s == "F00")
+                return db.People.Count();
+            var statusflags = s.Split(',').Where(ss => ss != "F00").ToArray();
             var q = from p in db.People
                     let ac = p.Tags.Count(tt => statusflags.Contains(tt.Tag.Name))
                     where ac == statusflags.Length
