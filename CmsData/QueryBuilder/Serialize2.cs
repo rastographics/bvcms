@@ -57,10 +57,10 @@ namespace CmsData
                         LastRun = q.LastRun
                     };
                     Db.Queries.InsertOnSubmit(cq);
-                    q.LastRun = DateTime.Now;
                 }
             }
             q.Name = Description;
+            q.LastRun = DateTime.Now;
             if(owner.HasValue())
                 q.Owner = owner;
             q.Ispublic = IsPublic;
