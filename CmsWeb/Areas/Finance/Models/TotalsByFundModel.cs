@@ -70,6 +70,7 @@ namespace CmsWeb.Models
                                     FundId = g.Key.FundId,
                                     QBSynced = g.Key.QBSyncID ?? 0,
                                     FundName = g.First().ContributionFund.FundName,
+                                    GeneralLedgerId = g.First().ContributionFund.FundIncomeAccount,
                                     Total = g.Sum(t => t.ContributionAmount).Value,
                                     Count = g.Count(),
                                     model = this
@@ -83,6 +84,7 @@ namespace CmsWeb.Models
                                     FundId = g.Key.FundId,
                                     QBSynced = g.Key.QBSyncID ?? 0,
                                     FundName = g.First().ContributionFund.FundName,
+                                    GeneralLedgerId = g.First().ContributionFund.FundIncomeAccount,
                                     Total = g.Sum(t => t.ContributionAmount).Value,
                                     Count = g.Count(),
                                     model = this
