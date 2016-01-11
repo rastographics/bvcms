@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using CmsData.API;
+using CmsData.Codes;
 using UtilityExtensions;
 
 namespace CmsData
@@ -124,6 +125,21 @@ namespace CmsData
                 p.LogChanges(db);
                 db.SubmitChanges();
             }
+        }
+        internal void UpdateContributionOption(object pid, int option)
+        {
+            var p = db.LoadPersonById(pid.ToInt());
+            p.UpdateContributionOption(db, option);
+        }
+        internal void UpdateEnvelopeOption(object pid, int option)
+        {
+            var p = db.LoadPersonById(pid.ToInt());
+            p.UpdateEnvelopeOption(db, option);
+        }
+        internal void UpdateElectronicStatement(object pid, bool tf)
+        {
+            var p = db.LoadPersonById(pid.ToInt());
+            p.UpdateElectronicStatement(db, tf);
         }
     }
 }
