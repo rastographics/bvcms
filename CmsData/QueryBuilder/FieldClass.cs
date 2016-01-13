@@ -5,6 +5,7 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UtilityExtensions;
@@ -144,7 +145,7 @@ namespace CmsData
                     var q = from c in CategoryClass.Categories
                             from f in c.Fields
                             select f;
-                    fields = q.ToDictionary(f => f.Name);
+                    fields = q.ToDictionary(f => f.Name, StringComparer.OrdinalIgnoreCase);
                     HttpRuntime.Cache.Insert("fields2", fields, null,
                         DateTime.Now.AddMinutes(10), Cache.NoSlidingExpiration);
                 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
@@ -206,6 +207,18 @@ namespace CmsData
                 return Guid.NewGuid();
             Guid g;
             return Guid.TryParse(a.Value, out g) ? g : Guid.NewGuid();
+        }
+
+        public static object TryParse(string s)
+        {
+            try
+            {
+                return Parse(s);
+            }
+            catch(Exception ex)
+            {
+                return ex.Message;
+            }
         }
         public static Condition Parse(string s)
         {

@@ -11,9 +11,10 @@ namespace CmsData
             var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
             {
-                Person.AddEditExtraBool(db, pid, name, b);
-                db.SubmitChanges();
-                ResetDb();
+                var db2 = NewDataContext();
+                Person.AddEditExtraBool(db2, pid, name, b);
+                db2.SubmitChanges();
+                db2.Dispose();
             }
         }
 
@@ -22,9 +23,10 @@ namespace CmsData
             var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
             {
-                Person.AddEditExtraValue(db, pid, name, text);
-                db.SubmitChanges();
-                ResetDb();
+                var db2 = NewDataContext();
+                Person.AddEditExtraValue(db2, pid, name, text);
+                db2.SubmitChanges();
+                db2.Dispose();
             }
         }
 
@@ -34,9 +36,10 @@ namespace CmsData
             var dt2 = dt.ToDate();
             foreach (var pid in list)
             {
-                Person.AddEditExtraDate(db, pid, name, dt2);
-                db.SubmitChanges();
-                ResetDb();
+                var db2 = NewDataContext();
+                Person.AddEditExtraDate(db2, pid, name, dt2);
+                db2.SubmitChanges();
+                db2.Dispose();
             }
         }
 
@@ -45,9 +48,10 @@ namespace CmsData
             var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
             {
-                Person.AddEditExtraInt(db, pid, name, n);
-                db.SubmitChanges();
-                ResetDb();
+                var db2 = NewDataContext();
+                Person.AddEditExtraInt(db2, pid, name, n);
+                db2.SubmitChanges();
+                db2.Dispose();
             }
         }
 
@@ -56,9 +60,10 @@ namespace CmsData
             var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
             {
-                Person.AddEditExtraData(db, pid, name, text);
-                db.SubmitChanges();
-                ResetDb();
+                var db2 = NewDataContext();
+                Person.AddEditExtraData(db2, pid, name, text);
+                db2.SubmitChanges();
+                db2.Dispose();
             }
         }
 

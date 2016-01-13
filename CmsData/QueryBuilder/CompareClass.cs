@@ -107,7 +107,12 @@ namespace CmsData
         public static CompareType Convert(string type, Condition c = null)
         {
             if (!type.HasValue())
-                return c != null && c.IsGroup ? CompareType.AllTrue : CompareType.Equal;
+                //return c != null && c.IsGroup ? CompareType.AllTrue : CompareType.Equal;
+                if(c != null)
+                    if (c.IsGroup)
+                        return CompareType.AllTrue;
+                    else
+                        return CompareType.Equal;
             return (CompareType)Enum.Parse(typeof(CompareType), type);
         }
         public static List<CompareClass> Comparisons

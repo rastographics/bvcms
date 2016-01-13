@@ -126,20 +126,41 @@ namespace CmsData
                 db.SubmitChanges();
             }
         }
-        internal void UpdateContributionOption(object pid, int option)
+        public void UpdateContributionOption(object savedQuery, int option)
         {
-            var p = db.LoadPersonById(pid.ToInt());
-            p.UpdateContributionOption(db, option);
+            var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
+            foreach (var pid in list)
+            {
+                var db2 = NewDataContext();
+                var p = db2.LoadPersonById(pid);
+                p.UpdateContributionOption(db2, option);
+                db2.SubmitChanges();
+                db2.Dispose();
+            }
         }
-        internal void UpdateEnvelopeOption(object pid, int option)
+        public void UpdateEnvelopeOption(object savedQuery, int option)
         {
-            var p = db.LoadPersonById(pid.ToInt());
-            p.UpdateEnvelopeOption(db, option);
+            var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
+            foreach (var pid in list)
+            {
+                var db2 = NewDataContext();
+                var p = db2.LoadPersonById(pid);
+                p.UpdateEnvelopeOption(db2, option);
+                db2.SubmitChanges();
+                db2.Dispose();
+            }
         }
-        internal void UpdateElectronicStatement(object pid, bool tf)
+        public void UpdateElectronicStatement(object savedQuery, bool tf)
         {
-            var p = db.LoadPersonById(pid.ToInt());
-            p.UpdateElectronicStatement(db, tf);
+            var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
+            foreach (var pid in list)
+            {
+                var db2 = NewDataContext();
+                var p = db2.LoadPersonById(pid);
+                p.UpdateElectronicStatement(db2, tf);
+                db2.SubmitChanges();
+                db2.Dispose();
+            }
         }
     }
 }

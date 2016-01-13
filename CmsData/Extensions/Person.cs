@@ -1691,7 +1691,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             int? opt = option;
             if (opt == 0)
                 opt = null;
-            UpdateValue(field, option);
+            UpdateValue(field, opt);
             LogChanges(db);
             var sp = db.LoadPersonById(SpouseId ?? 0);
             if (sp != null)

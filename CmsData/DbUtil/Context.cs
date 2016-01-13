@@ -199,32 +199,31 @@ namespace CmsData
             return q;
         }
 
-        public IQueryable<Person> PeopleQuery2(object name)
+        public IQueryable<Person> PeopleQuery2(object query)
         {
-            return PeopleQuery2(name.ToString());
+            return PeopleQuery2(query.ToString());
         }
 
-        public IQueryable<Person> PeopleQuery2(string name)
+        public IQueryable<Person> PeopleQuery2(string query)
         {
-            if (name.AllDigits())
-                name = "peopleid=" + name;
-            if (name.StartsWith("peopleid", StringComparison.OrdinalIgnoreCase))
+            if (query.AllDigits())
+                query = "peopleid=" + query;
+            else
             {
-                var pids = new List<int>();
-                var re = new Regex(@"(\d+)");
-                var m = re.Match(name);
-                while (m.Success)
+                var m = Regex.Match(query, @"peopleids{0,1}\s*?=\s*?(?<pids>\d+(,\s*?\d+)*)");
+                if(m.Success)
                 {
-                    pids.Add(m.Value.ToInt());
-                    m = m.NextMatch();
-                }
-                if (pids.Count > 0)
-                    return People.Where(pp => pids.Contains(pp.PeopleId));
+                    var pids = m.Groups["pids"].Value;
+                    query = $"PeopleIds = '{pids}'";
+                }                
             }
-
-            var qB = Queries.FirstOrDefault(cc => cc.Name == name);
+            var qB = Queries.FirstOrDefault(cc => cc.Name == query);
             if (qB == null)
+            {
+                if(query.HasValue())
+                    return PeopleQueryCode(query);
                 qB = MatchNothing();
+            }
             var c = qB.ToClause();
             var q = People.Where(c.Predicate(this));
             if (c.PlusParentsOf)

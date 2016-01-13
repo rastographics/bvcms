@@ -51,13 +51,9 @@ namespace CmsData
             instance = Event();
         }
 
-        private void ResetDb()
+        private CMSDataContext NewDataContext()
         {
-            if (db == null)
-                return;
-            var dbname = db.Host;
-            db.Dispose();
-            db = DbUtil.Create(dbname);
+            return DbUtil.Create(db.Host);
         }
 
         public void DebugWriteLine(object o)
