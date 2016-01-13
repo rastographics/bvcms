@@ -650,44 +650,6 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (13, N'FeaturedDonation', N'1', N'<p>
 	Please consider donating to whatever here.</p>
 ', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (58, N'VitalStats', N'Vital Stats Iron Python Script', N'import System
-import System.Text
-from System import *
-from System.Text import *
-
-class VitalStats(object):
-    def Run(self, m):
-        days = 7
-        fmt = ''<tr><td align="right">{0}:</td><td align="right">{1:n0}</td></tr>\r\n''
-        fmt0 = ''<tr><td colspan="2">{0}\r\n''
-        #fmt = ''{0,28}:{1,10:n0}\r\n''
-        #fmt0 = ''{0}\r\n''
-        sb = StringBuilder()
-
-        sb.AppendLine(''<table cellspacing="5" class="grid">'')
-        sb.AppendFormat(fmt0, String.Format("Counts for past {0} days", days))
-        sb.AppendFormat(fmt, "Members", m.QueryCount("Stats:Members"))
-        sb.AppendFormat(fmt, "Decisions", m.QueryCount("Stats:Decisions"))
-        sb.AppendFormat(fmt, "Meetings", m.MeetingCount(days, 0, 0, 0))
-        sb.AppendFormat(fmt, "Sum of Present in Meetings", m.NumPresent(days, 0, 0, 0))
-        sb.AppendFormat(fmt, "Unique Attends", m.QueryCount("Stats:Attends"))
-        sb.AppendFormat(fmt, "New Attends", m.QueryCount("Stats:New Attends"))
-        sb.AppendFormat(fmt, "Contacts", m.QueryCount("Stats:Contacts"))
-        sb.AppendFormat(fmt, "Registrations", m.RegistrationCount(days, 0, 0, 0))
-        sb.AppendFormat(fmt0, "Contributions")
-        sb.AppendFormat(fmt, "Amount Previous 7 days", m.ContributionTotals(7*2, 7, 0))
-        sb.AppendFormat(fmt, "Count Previous 7 days", m.ContributionCount(7*2, 7, 0))
-        sb.AppendFormat(fmt, "Average per Capita Year", \\
-
-            m.ContributionTotals(53*7, 7, 0) / m.ContributionCount(53*7, 7, 0))
-        sb.AppendFormat(fmt, "Weekly 4 week average", m.ContributionTotals(7*5, 7, 0) / 4)
-        sb.AppendFormat(fmt, "Weekly average past 52wks", m.ContributionTotals(53*7, 7, 0) / 52)
-        sb.AppendFormat(fmt, "Weekly average prev 52wks", \\
-
-            m.ContributionTotals(53*7*2, 53*7+7, 0) / 52)
-        sb.AppendLine(''</table>'')
-        return sb.ToString()
-', '2013-09-09 23:32:15.190', 1, 5, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (59, N'NewUserEmail', N'NewUserEmail', N'Hi {name},
 <p>You have a new account on our Church Management System which you can access at the following link:<br />
 <a href="{cmshost}">{cmshost}</a></p>

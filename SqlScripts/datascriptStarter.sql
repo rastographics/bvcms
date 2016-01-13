@@ -444,46 +444,6 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''eturn = "need a NewMemberClass date"
                 om.Drop(True) # drops and records drop in history
 '',NULL,NULL) WHERE [Id]=11
 ')
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (58, N'VitalStats', N'Vital Stats Iron Python Script', N'import System
-import System.Text
-from System import *
-from System.Text import *
-
-class VitalStats(object):
-    def Run(self, m):
-        days = 7
-        fmt = ''<tr><td align="right">{0}:</td><td align="right">{1:n0}</td></tr>\r\n''
-        fmt0 = ''<tr><td colspan="2">{0}\r\n''
-        #fmt = ''{0,28}:{1,10:n0}\r\n''
-        #fmt0 = ''{0}\r\n''
-        sb = StringBuilder()
-
-        sb.AppendLine(''<table cellspacing="5" class="grid">'')
-        sb.AppendFormat(fmt0, String.Format("Counts for past {0} days", days))
-        sb.AppendFormat(fmt, "Members", m.QueryCount("Stats:Members"))
-        sb.AppendFormat(fmt, "Decisions", m.QueryCount("Stats:Decisions"))
-        sb.AppendFormat(fmt, "Meetings", m.MeetingCount(days, 0, 0, 0))
-        sb.AppendFormat(fmt, "Sum of Present in Meetings", m.NumPresent(days, 0, 0, 0))
-        sb.AppendFormat(fmt, "Unique Attends", m.QueryCount("Stats:Attends"))
-        sb.AppendFormat(fmt, "New Attends", m.QueryCount("Stats:New Attends"))
-        sb.AppendFormat(fmt, "Contacts", m.QueryCount("Stats:Contacts"))
-        sb.AppendFormat(fmt, "Registrations", m.RegistrationCount(days, 0, 0, 0))
-        sb.AppendFormat(fmt0, "Contributions")
-        sb.AppendFormat(fmt, "Amount Previous 7 days", m.ContributionTotals(7*2, 7, 0))
-        sb.AppendFormat(fmt, "Count Previous 7 days", m.ContributionCount(7*2, 7, 0))
-        tcount = m.ContributionCount(53*7, 7, 0)
-        if tcount > 0:
-            sb.AppendFormat(fmt, "Average per Capita Year", \\
-
-                m.ContributionTotals(53*7, 7, 0) / m.ContributionCount(53*7, 7, 0))
-        sb.AppendFormat(fmt, "Weekly 4 week average", m.ContributionTotals(7*5, 7, 0) / 4)
-        sb.AppendFormat(fmt, "Weekly average past 52wks", m.ContributionTotals(53*7, 7, 0) / 52)
-        sb.AppendFormat(fmt, "Weekly average prev 52wks", \\
-
-            m.ContributionTotals(53*7*2, 53*7+7, 0) / 52)
-        sb.AppendLine(''</table>'')
-        return sb.ToString()
-', '2013-09-09 23:32:14.270', 1, 5, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (63, N'OneTimeConfirmation', N'Your link to manage your subscriptions', N'<html>
 <head>
 	<title></title>
@@ -1670,13 +1630,25 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
   <Condition Id="37da2282-e59c-4f17-aa7b-b400f99633a9" Order="2" Field="IsCurrentPerson" Comparison="Equal" CodeIdValue="1,T" />
 </Condition>', 'System', '2014-05-05 00:45:25.073', '2014-05-05 00:45:25.073', 'IsCurrentPerson', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('eee06dd1-35d2-40e3-9c77-15e9d0113edd', '<?xml version="1.0" encoding="utf-16"?>
-<Condition Id="eee06dd1-35d2-40e3-9c77-15e9d0113edd" Order="0" Field="Group" Comparison="AllTrue" Description="scratchpad">
-  <Condition Id="08e5ec17-e1b5-4e32-b62f-b092267e2b5d" Order="2" Field="RecentContactType" Comparison="OneOf" CodeIdValue="4,C;5,E;6,I;3,L;7,O;1,PV;2,PC;99,U" Days="7" />
-</Condition>', 'Admin', '2014-05-18 08:51:03.250', '2014-09-17 21:19:19.120', 'Stats:Contacts', 0, 2, NULL)
+<Condition Id="977d8eb1-4fd1-4fdd-b953-9534fbf28ff5" Order="0" Field="Group">
+  <Condition Id="d13ea092-cca0-49db-83e8-9caddf1885ff" Order="2" Field="RecentContactType" Comparison="OneOf" CodeIdValue="4,Card Sent;5,EMail Sent;6,Info Pack Sent;3,Letter Sent;7,Other;1,Personal Visit;2,Phone Call;99,Unknown" Days="7" />
+</Condition>', 'Admin', '2014-05-18 08:51:03.250', '2016-01-07 13:55:26.020', 'Stats:Contacts', 0, 2, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('efd9c925-7798-47cc-9f38-2141af6d615f', '<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="efd9c925-7798-47cc-9f38-2141af6d615f" Order="0" Field="Group">
+  <Condition Id="195a8ab5-8eae-41b9-ac3c-8308e8bf1715" Order="2" Field="RecentRegistrationType" Comparison="OneOf" CodeIdValue="1,Join Organization;10,User Selects Organization;11,Compute Org By Birthday;15,Manage Subscriptions;14,Manage Recurring Giving;8,Online Giving;9,Online Pledge;16,Special Script" Program="0" Division="0" Organization="0" OrgType="0" Days="7" />
+</Condition>', 'david', '2016-01-07 13:51:16.347', '2016-01-07 13:52:17.503', 'scratchpad', 0, 2, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('8f397843-b99b-491c-b0a4-2ba16098f8ee', '<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="8f397843-b99b-491c-b0a4-2ba16098f8ee" Order="0" Field="Group">
+  <Condition Id="2574fc31-439d-47db-9da3-86a05c408aa5" Order="2" Field="RecentRegistrationType" Comparison="OneOf" CodeIdValue="1,Join Organization;10,User Selects Organization;11,Compute Org By Birthday;15,Manage Subscriptions;14,Manage Recurring Giving;8,Online Giving;9,Online Pledge;16,Special Script" Program="0" Division="0" Organization="0" OrgType="0" Days="7" />
+</Condition>', 'david', '2016-01-07 13:51:22.603', '2016-01-07 13:53:05.870', 'scratchpad', 0, 2, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('61dadb45-326b-4d6e-b364-34568b1b1453', '<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="61dadb45-326b-4d6e-b364-34568b1b1453" Order="0" Field="Group">
+  <Condition Id="1ae9160e-7fb3-458d-b3f9-16ddb29c8a07" Order="2" Field="RecentDecisionType" Comparison="OneOf" CodeIdValue="0,Unknown;10,POF for Membership;20,POF NOT for Membership;30,Letter;40,Statement;50,Stmt requiring Baptism" Days="7" />
+</Condition>', 'david', '2016-01-07 13:51:27.620', '2016-01-07 13:53:57.357', 'scratchpad', 0, 2, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('a4bfbfa7-91be-414f-b00e-3bca9619a989', '<?xml version="1.0" encoding="utf-16"?>
-<Condition Id="a4bfbfa7-91be-414f-b00e-3bca9619a989" Order="0" Field="Group" Comparison="AllTrue" Description="scratchpad">
-  <Condition Id="9000e98f-d548-4897-a33b-ef3bdfc67dc8" Order="2" Field="RecentDecisionType" Comparison="OneOf" CodeIdValue="0,UNK;10,POF-MEM;20,POF-NON;30,LETTER;40,STATEMENT;50,BAP-REQD" Days="7" />
-</Condition>', 'Admin', '2014-05-18 08:46:03.340', '2014-09-17 21:28:59.373', 'Stats:Decisions', 0, 2, NULL)
+<Condition Id="61dadb45-326b-4d6e-b364-34568b1b1453" Order="0" Field="Group">
+  <Condition Id="1ae9160e-7fb3-458d-b3f9-16ddb29c8a07" Order="2" Field="RecentDecisionType" Comparison="OneOf" CodeIdValue="0,Unknown;10,POF for Membership;20,POF NOT for Membership;30,Letter;40,Statement;50,Stmt requiring Baptism" Days="7" />
+</Condition>', 'Admin', '2014-05-18 08:46:03.340', '2016-01-07 13:55:42.883', 'Stats:Decisions', 0, 4, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('3f1dca9e-814f-49b7-a0bb-508d8769420a', '<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="3f1dca9e-814f-49b7-a0bb-508d8769420a" Order="0" Field="Group" Comparison="AllTrue" Description="scratchpad" PreviousName="scratchpad">
   <Condition Id="fc1c98db-eca8-40e2-bf4b-bc4a1738461f" Order="2" Field="InBFClass" Comparison="Equal" CodeIdValue="1,T" />
@@ -1696,7 +1668,7 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('b8e212d3-6a0e-4de7-988f-691117df1780', '<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="b8e212d3-6a0e-4de7-988f-691117df1780" Order="0" Field="Group" Comparison="AllTrue" Description="scratchpad">
   <Condition Id="36f6ce2c-bc91-4511-9b7a-b793c71bf026" Order="2" Field="RecentAttendCount" Comparison="Greater" TextValue="0" Days="7" />
-</Condition>', 'Admin', '2014-05-18 08:49:24.667', '2014-12-16 16:36:18.330', 'Stats:Attends', 0, 4, NULL)
+</Condition>', 'Admin', '2014-05-18 08:49:24.667', '2016-01-07 13:55:32.930', 'Stats:Attends', 0, 7, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('1f730f25-2186-4335-b1b2-6fff82d70f38', '<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="1f730f25-2186-4335-b1b2-6fff82d70f38" Order="0" Field="Group" Comparison="AllTrue">
   <Condition Id="61b35095-b7e3-4955-b87f-8272b0578374" Order="2" Field="PreviousCurrentOrg" Comparison="Equal" CodeIdValue="1,T" />
@@ -1704,7 +1676,7 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('48e6b5ac-7fa8-46a0-a87f-709732590a6e', '<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="48e6b5ac-7fa8-46a0-a87f-709732590a6e" Order="0" Field="Group" Comparison="AllTrue" Description="scratchpad">
   <Condition Id="1b4f808b-3245-4cb7-bc0e-8667693f94fc" Order="2" Field="MemberStatusId" Comparison="Equal" CodeIdValue="10,Member" />
-</Condition>', 'Admin', '2014-05-18 08:43:53.543', '2015-01-05 15:22:54.187', 'Stats:Members', 0, 3, NULL)
+</Condition>', 'Admin', '2014-05-18 08:43:53.543', '2016-01-07 13:55:29.917', 'Stats:Members', 0, 6, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('822c0c06-2283-481b-be16-78677fdf87f8', '<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="822c0c06-2283-481b-be16-78677fdf87f8" Order="0" Field="Group" Comparison="AllTrue" Description="scratchpad" PreviousName="scratchpad" OnlineReg="0" OrgStatus="0" OrgType2="0">
   <Condition Id="3617ed70-9a41-4ea2-bdab-faac3831c114" Order="2" Field="RecentAttendCount" Comparison="Greater" TextValue="0" Days="7" OnlineReg="0" OrgStatus="0" OrgType2="0" />
@@ -1717,18 +1689,26 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
 <Condition Id="8887f5f6-8bd2-4612-9c51-88f9943fc91c" Order="0" Field="Group" Comparison="AllTrue" Description="scratchpad" PreviousName="scratchpad" OnlineReg="0" OrgStatus="0" OrgType2="0">
   <Condition Id="777e0d07-f596-45a0-9afd-604568c622ae" Order="2" Field="PeopleExtra" Comparison="Equal" />
 </Condition>', 'karenw', '2014-05-18 09:02:11.793', '2014-10-02 08:54:46.890', 'scratchpad', 0, 7, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('977d8eb1-4fd1-4fdd-b953-9534fbf28ff5', '<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="977d8eb1-4fd1-4fdd-b953-9534fbf28ff5" Order="0" Field="Group">
+  <Condition Id="d13ea092-cca0-49db-83e8-9caddf1885ff" Order="2" Field="RecentContactType" Comparison="OneOf" CodeIdValue="4,Card Sent;5,EMail Sent;6,Info Pack Sent;3,Letter Sent;7,Other;1,Personal Visit;2,Phone Call;99,Unknown" Days="7" />
+</Condition>', 'david', '2016-01-07 13:51:33.977', '2016-01-07 13:54:56.747', 'scratchpad', 0, 2, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('3a906bf7-69be-4282-9115-9e9c0dcf64f4', '<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="3a906bf7-69be-4282-9115-9e9c0dcf64f4" Order="0" Field="Group">
+  <Condition Id="e4dfd823-a86f-41bb-96b1-003bf5390b99" Order="2" Field="RecentDecisionType" Comparison="OneOf" CodeIdValue="0,Unknown;10,POF for Membership;20,POF NOT for Membership;30,Letter;40,Statement;50,Stmt requiring Baptism" Days="7" />
+</Condition>', 'david', '2016-01-07 13:51:37.963', '2016-01-07 13:51:37.963', 'scratchpad', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('b6f066bb-840c-4c46-9d9f-acbbe6128289', '<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="b6f066bb-840c-4c46-9d9f-acbbe6128289" Order="0" Field="Group" Comparison="AllTrue" Description="scratchpad">
   <Condition Id="06b3a649-ee95-4658-8540-67f08696ba36" Order="2" Field="RecentNewVisitCount" Comparison="Greater" TextValue="0" Days="7" Quarters="365" />
-</Condition>', 'Admin', '2014-05-18 08:48:02.683', '2014-12-16 16:27:48.097', 'Stats:New Attends', 0, 3, NULL)
+</Condition>', 'Admin', '2014-05-18 08:48:02.683', '2016-01-07 13:55:36.223', 'Stats:New Attends', 0, 6, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('3d864d5c-0b6a-4253-984b-ae989171f881', '<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="3d864d5c-0b6a-4253-984b-ae989171f881" Order="0" Field="Group" Comparison="AllTrue" Description="scratchpad" PreviousName="scratchpad" OnlineReg="0" OrgStatus="0" OrgType2="0">
   <Condition Id="c8c617c7-669e-41a6-aab7-64dce27f59f7" Order="2" Field="RecentAttendCount" Comparison="GreaterEqual" TextValue="10" Days="140" OnlineReg="0" OrgStatus="0" OrgType2="0" />
 </Condition>', 'karenw', '2014-05-18 08:52:08.437', '2014-09-17 21:26:39.870', 'scratchpad', 0, 1, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('2c145e9d-5c97-493b-af22-b40883a6095f', '<?xml version="1.0" encoding="utf-16"?>
-<Condition Id="2c145e9d-5c97-493b-af22-b40883a6095f" Order="0" Field="Group" Comparison="AllTrue" Description="scratchpad" PreviousName="scratchpad">
-  <Condition Id="ff6fbe8f-a732-48d3-9820-2af87e57e046" Order="2" Field="RecentRegistrationType" Comparison="OneOf" CodeIdValue="1,1;10,10;11,11;15,15;14,14;8,8;9,9;16,16" Days="7" />
-</Condition>', 'Admin', '2014-05-18 08:45:39.370', '2014-09-17 20:54:33.250', 'Stats:Registrations', 0, 2, NULL)
+<Condition Id="8f397843-b99b-491c-b0a4-2ba16098f8ee" Order="0" Field="Group">
+  <Condition Id="2574fc31-439d-47db-9da3-86a05c408aa5" Order="2" Field="RecentRegistrationType" Comparison="OneOf" CodeIdValue="1,Join Organization;10,User Selects Organization;11,Compute Org By Birthday;15,Manage Subscriptions;14,Manage Recurring Giving;8,Online Giving;9,Online Pledge;16,Special Script" Program="0" Division="0" Organization="0" OrgType="0" Days="7" />
+</Condition>', 'Admin', '2014-05-18 08:45:39.370', '2016-01-07 13:55:39.643', 'Stats:Registrations', 0, 4, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('785ac91d-8328-4f09-b1b1-bbf1aaa25cee', '<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="785ac91d-8328-4f09-b1b1-bbf1aaa25cee" Order="0" Field="Group" Comparison="AllTrue">
   <Condition Id="dea0500a-50a1-4301-8d64-ee84ffa90c69" Order="2" Field="PendingCurrentOrg" Comparison="Equal" CodeIdValue="1,T" />
@@ -3084,8 +3064,8 @@ INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 15)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 25)
 SET IDENTITY_INSERT [dbo].[Users] ON
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (1, 1, N'Admin', NULL, N'2352354235', NULL, NULL, 1, '2015-11-09 11:12:44.827', NULL, '2015-01-14 14:36:59.747', '2009-05-05 22:46:43.890', 0, '2014-10-16 15:43:29.923', 1, '2015-11-09 11:11:29.540', 0, NULL, NULL, NULL, 1, N'starterdb.bvcms.com', N'bvcms', N'The Admin', N'Admin, The', NULL, NULL, '2014-10-17 15:42:49.050')
-INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (2, 2, N'david', N'', N'uNVML/ZamnY7YdE1NXvMHPIznic=', NULL, NULL, 1, '2015-07-26 08:09:36.537', '2015-07-26 08:09:30.480', '2013-12-19 00:03:08.440', '2010-10-30 15:23:25.763', 0, '2013-12-19 00:03:08.360', 0, '2013-12-18 22:54:19.783', 0, '2010-10-30 15:23:25.763', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'David Carroll', N'Carroll, David', NULL, NULL, '2013-12-19 22:55:00.120')
-INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (3, 3, N'karenw', N'', N'lpSVokbyDdVaXxNGDjZT4St468A=', NULL, NULL, 1, '2015-12-10 13:58:05.237', '2015-12-10 13:55:30.633', '2013-10-14 10:43:23.743', '2010-10-30 15:29:25.757', 0, '2013-10-14 10:43:23.667', 0, '2013-10-14 10:41:24.547', 0, '2010-10-30 15:29:25.757', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'Karen Worrell', N'Worrell, Karen', NULL, NULL, '2013-10-15 10:42:47.710')
+INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (2, 2, N'david', N'', N'uNVML/ZamnY7YdE1NXvMHPIznic=', NULL, NULL, 1, '2016-01-07 13:55:54.940', '2016-01-07 12:42:32.987', '2013-12-19 00:03:08.440', '2010-10-30 15:23:25.763', 0, '2013-12-19 00:03:08.360', 0, '2013-12-18 22:54:19.783', 0, '2010-10-30 15:23:25.763', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'David Carroll', N'Carroll, David', NULL, NULL, '2013-12-19 22:55:00.120')
+INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (3, 3, N'karenw', N'', N'lpSVokbyDdVaXxNGDjZT4St468A=', NULL, NULL, 1, '2016-01-07 12:55:36.257', '2016-01-07 12:54:22.597', '2013-10-14 10:43:23.743', '2010-10-30 15:29:25.757', 0, '2013-10-14 10:43:23.667', 0, '2013-10-14 10:41:24.547', 0, '2010-10-30 15:29:25.757', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'Karen Worrell', N'Worrell, Karen', NULL, NULL, '2013-10-15 10:42:47.710')
 SET IDENTITY_INSERT [dbo].[Users] OFF
 INSERT INTO [dbo].[Volunteer] ([PeopleId], [StatusId], [ProcessedDate], [Standard], [Children], [Leader], [Comments], [MVRStatusId], [MVRProcessedDate]) VALUES (3, NULL, NULL, 0, 0, 0, NULL, NULL, NULL)
 ALTER TABLE [dbo].[Volunteer] WITH NOCHECK ADD CONSTRAINT [StatusMvrId__StatusMvr] FOREIGN KEY ([MVRStatusId]) REFERENCES [lookup].[VolApplicationStatus] ([Id])
