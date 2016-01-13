@@ -54,11 +54,13 @@ namespace CmsWeb.Controllers
         }
 
 #if DEBUG
-        [HttpGet, Route("~/Test")]
-        public ActionResult Test()
+        [HttpGet, Route("~/Test/{id?}")]
+        public ActionResult Test(int? id)
         {
-            var s = System.IO.File.ReadAllText(Server.MapPath("~/test.py"));
-            ViewBag.text = PythonModel.RunScript(Util.Host, s);
+            var script = System.IO.File.ReadAllText(Server.MapPath($"~/test{id}.py"));
+            if (!CanRunScript(script))
+                return Message("Not Authorized to run this script");
+            ViewBag.text = PythonModel.RunScript(Util.Host, script);
             return View();
         }
 #endif
@@ -247,9 +249,9 @@ namespace CmsWeb.Controllers
 
         private bool CanRunScript(string script)
         {
-            if (!script.StartsWith("--Roles="))
+            if (!script.StartsWith("#Roles=") && !script.StartsWith("--Roles"))
                 return true;
-            var re = new Regex("--Roles=(?<roles>.*)");
+            var re = new Regex("(--|#)Roles=(?<roles>.*)", RegexOptions.IgnoreCase);
             var roles = re.Match(script).Groups["roles"].Value.Split(',').Select(aa => aa.Trim());
             if (!roles.Any(rr => User.IsInRole(rr)))
                 return false;
@@ -285,6 +287,8 @@ namespace CmsWeb.Controllers
                 if (!script.HasValue())
                     return Message("no script named " + name);
 
+                if (!CanRunScript(script))
+                    return Message("Not Authorized to run this script");
                 if (script.Contains("model.Form"))
                     return Redirect("/PyScriptForm/" + name);
                 script = script.Replace("@P1", p1 ?? "NULL")
