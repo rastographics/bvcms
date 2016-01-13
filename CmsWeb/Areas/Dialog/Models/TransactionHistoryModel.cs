@@ -38,6 +38,7 @@ namespace CmsWeb.Areas.Dialog.Models
             public int OtherAttends { get; set; }
             public int Week { get; set; }
             public int? OtherOrgId { get; set; }
+            public string AttendCredit { get; set; }
         }
         public IEnumerable<AttendInfo> FetchAttends()
         {
@@ -63,6 +64,7 @@ namespace CmsWeb.Areas.Dialog.Models
                         MemberType = a.MemberType.Description,
                         OtherAttends = a.OtherAttends,
                         OtherOrgId = a.OtherOrgId,
+                        AttendCredit = a.Meeting.AttendCredit.Code
                     };
             return q;
         }
