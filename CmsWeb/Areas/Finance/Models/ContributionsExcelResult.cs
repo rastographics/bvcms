@@ -1,8 +1,13 @@
 using System;
+using System.Data;
+using System.Data.SqlClient;
 using System.Web.Mvc;
 using UtilityExtensions;
 using System.Web.UI.WebControls;
 using System.Web.UI;
+using CmsData;
+using Dapper;
+using MoreLinq;
 
 namespace CmsWeb.Models
 {
@@ -30,6 +35,16 @@ namespace CmsWeb.Models
             }
             switch (type)
             {
+                case "ledgerincome":
+                    var cd = new CommandDefinition("dbo.LedgerIncomeExport", new
+                    {
+                        fd = Dt1,
+                        td = Dt2,
+                        campusid,
+                        nontaxded = nontaxdeductible,
+                        includeunclosed = IncUnclosedBundles
+                    }, commandType: CommandType.StoredProcedure);
+                    return DbUtil.Db.Connection.ExecuteReader(cd).ToExcel("LedgerIncome.xlsx");
                 case "donorfundtotals":
     				return ExportPeople.ExcelDonorFundTotals(Dt1, Dt2, fundid, campusid, false, nontaxdeductible, IncUnclosedBundles)
                         .ToExcel("DonorFundTotals.xlsx");

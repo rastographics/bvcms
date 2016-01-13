@@ -73,7 +73,7 @@ namespace CmsData
                 }
                 else if (type == typeof (decimal))
                 {
-                    colrange.Style.Numberformat.Format = "#,##0";
+                    colrange.Style.Numberformat.Format = "#,##0.00";
                     colrange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
                     colrange.AutoFitColumns();
                 }
