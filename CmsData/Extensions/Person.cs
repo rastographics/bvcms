@@ -1715,7 +1715,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
         public void UpdateElectronicStatement(CMSDataContext db, bool tf)
         {
-            const string field = "EnvelopeOptionsId";
+            const string field = "ElectronicStatement";
             UpdateValue(field, tf);
             var sp = db.LoadPersonById(SpouseId ?? 0);
             if (sp != null && ContributionOptionsId == StatementOptionCode.Joint)
