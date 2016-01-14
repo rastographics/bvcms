@@ -710,15 +710,17 @@ namespace CmsData
         }
         internal Expression WantsElectronicStatement()
         {
-            Expression<Func<Person, bool>> pred;
-            if(CodeIds == "1" && op == CompareType.Equal)
-                pred = p => p.ElectronicStatement == true;
-            else if(CodeIds == "1" && op == CompareType.NotEqual)
-                pred = p => (p.ElectronicStatement ?? false) != true;
-            else if(CodeIds == "0" && op == CompareType.Equal)
-                pred = p => p.ElectronicStatement == false;
-            else // if(CodeIds == "0" && op == CompareType.NotEqual)
-                pred = p => (p.ElectronicStatement ?? false);
+            Expression<Func<Person, bool>> pred = p => p.ElectronicStatement == true;
+
+            if (op == CompareType.Equal)
+                pred = p => p.ElectronicStatement == (CodeIds == "1");
+
+            else if (op == CompareType.NotEqual)
+                if (CodeIds == "1")
+                    pred = p => (p.ElectronicStatement ?? false) != true; // gets falses and nulls
+                else if (CodeIds == "0")
+                    pred = p => (p.ElectronicStatement ?? true); // get trues and nulls
+
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             return expr;
         }
