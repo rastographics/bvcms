@@ -154,7 +154,7 @@ var jsFiles = [
         files: [
             'Content/touchpoint/lib/jquery-validate-globalize/js/jquery.validate.globalize.js',
             'Content/touchpoint/lib/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js',
-            'Content/touchpoint/lib/bootstrap-sweetalert/js/sweet-alert.min.js',
+            'Content/touchpoint/lib/bootstrap-sweetalert/js/sweetalert.min.js',
             'Content/touchpoint/lib/bootstrap-bootbox/js/bootbox.min.js',
             'Content/touchpoint/lib/mousetrap/js/mousetrap.min.js',
             'Content/touchpoint/lib/jquery-blockUI/js/jquery.blockUI.js',

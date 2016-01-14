@@ -72,7 +72,7 @@
                     },
                     error: function (xhr, ajaxOptions, thrownError) {
                         $.unblock();
-                        swal("Error!", thrownError, "error");
+                        swal({title: "Error!", text: thrownError, type: "error", html: true});
                     }
                 });
             }
@@ -239,7 +239,7 @@
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
                     $.unblock();
-                    swal("Error!", thrownError, "error");
+                    swal({title: "Error!", text: thrownError, type: "error", html: true});
                 }
             });
         }

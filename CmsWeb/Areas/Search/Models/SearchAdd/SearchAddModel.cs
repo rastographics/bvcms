@@ -377,7 +377,11 @@ namespace CmsWeb.Areas.Search.Models
                                 && os.ScheduleId == ss.ScheduleId)));
                     if (om != null)
                     {
-                        message = $"Already a member of {om.OrganizationId} (orgid) with same schedule";
+                        message = ViewExtensions2.Markdown($@"**Already a member of {om.OrganizationId} (orgid) with same schedule.**
+
+This is happening to help you prevent a person from having to attend two different meetings to get credit. 
+You can allow this by setting Allow Attendance Overlap checkbox on the Settings > Attendance tab for one of the Organizations 
+(the one that presumably does not require attendance at every meeting.)").ToString();
                         return new ReturnResult {close = true, how = "CloseAddDialog", message = message, from = AddContext};
                     }
                 }
