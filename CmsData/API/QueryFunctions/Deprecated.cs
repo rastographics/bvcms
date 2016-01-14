@@ -1,11 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.IO;
 using System.Linq;
-using CmsData.Codes;
-using Dapper;
-using HandlebarsDotNet;
 using IronPython.Hosting;
 using UtilityExtensions;
 
@@ -13,6 +7,28 @@ namespace CmsData
 {
     public partial class QueryFunctions
     {
+        public static string OldVitalStats(CMSDataContext db, string script)
+        {
+            var engine = Python.CreateEngine();
+            var sc = engine.CreateScriptSourceFromString(script);
+            var qf = new QueryFunctions(db);
+
+            try
+            {
+                var code = sc.Compile();
+                var scope = engine.CreateScope();
+                code.Execute(scope);
+
+                dynamic vitalStats = scope.GetVariable("VitalStats");
+                dynamic m = vitalStats();
+                return m.Run(qf);
+            }
+            catch (Exception ex)
+            {
+                return "VitalStats script error: " + ex.Message;
+            }
+        }
+
         public int QueryCountDate(string s, object startdt)
         {
             var start = startdt.ToDate();

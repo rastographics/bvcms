@@ -366,7 +366,7 @@
     <Compile Include="API\ApiSessionResult.cs" />
     <Compile Include="API\ApiSessionStatus.cs" />
     <Compile Include="API\CreateExcel.cs" />
-    <Compile Include="API\DynamicData.cs" />
+    <Compile Include="API\PythonModel\DynamicData.cs" />
     <Compile Include="API\PythonModel\Forms.cs" />
     <Compile Include="API\PythonModel\SqlGrid.cs" />
     <Compile Include="API\PythonModel\Upload.cs" />
@@ -377,7 +377,10 @@
     <Compile Include="API\PythonModel\Organizations.cs" />
     <Compile Include="API\PythonModel\ExtraValues.cs" />
     <Compile Include="API\PythonModel\Misc.cs" />
-    <Compile Include="API\QueryFunctionsDeprecated.cs" />
+    <Compile Include="API\QueryFunctions\Deprecated.cs" />
+    <Compile Include="API\QueryFunctions\Attendance.cs" />
+    <Compile Include="API\QueryFunctions\Contributions.cs" />
+    <Compile Include="API\QueryFunctions\Query.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMData.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMHelper.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMMessage.cs" />
@@ -781,7 +784,7 @@
     <Compile Include="Generated\OrganizationExtra.cs" />
     <Compile Include="Generated\PrintJob.cs" />
     <Compile Include="Generated\RecurringAmount.cs" />
-    <Compile Include="API\QueryFunctions.cs" />
+    <Compile Include="API\QueryFunctions\Internal.cs" />
     <Compile Include="Generated\AttendCredit.cs" />
     <Compile Include="Generated\Contact.cs" />
     <Compile Include="Generated\ContactReason.cs" />
