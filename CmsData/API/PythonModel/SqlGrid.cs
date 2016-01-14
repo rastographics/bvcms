@@ -106,6 +106,8 @@ namespace CmsData
                             var ii = rd[i].ToInt();
                             if (nam.Equal("peopleid"))
                                 s = $"<a href='/Person2/{ii}' target='Person'>{ii}</a>";
+                            else if (nam.Equal("organizationid"))
+                                s = $"<a href='/Org/{ii}' target='Organization'>{ii}</a>";
                             else if (nam.EndsWith("id") || nam.EndsWith("id2"))
                                 s = rd[i].ToInt().ToString();
                             else
