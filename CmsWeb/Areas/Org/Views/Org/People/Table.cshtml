@@ -54,6 +54,7 @@
     <tbody>
         @foreach (var p in Model.ViewList())
         {
+          var hastag = p.HasTag ?? false;
             <tr class="@(p.IsDeceased == true ? "danger" : "")">
                 <td style="width: 20px;">
                     <input type="checkbox" class="omck" value="@p.PeopleId" @(p.IsChecked == true ? "checked=checked" : "") />
@@ -103,7 +104,7 @@
                     }
                 </td>
                 <td>
-                    <a href="#" class="taguntag btn btn-sm @(p.HasTag.GetValueOrDefault() ? "btn-default" : "btn-success")" title="Add to/Remove from Active Tag" pid="@p.PeopleId"><i class="fa fa-tag"></i> @(p.HasTag.GetValueOrDefault() ? "Remove" : "Add")</a>
+                    <a href="#" class="taguntag btn btn-sm @(hastag ? "btn-default" : "btn-success")" title="Add to/Remove from Active Tag" pid="@p.PeopleId"><i class="fa fa-tag"></i> @(hastag ? "Remove" : "Add")</a>
                 </td>
             </tr>
         }

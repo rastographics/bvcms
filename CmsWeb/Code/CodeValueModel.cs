@@ -667,11 +667,8 @@ namespace CmsWeb.Code
 
         public List<CodeValueItem> UserTags(int? UserPeopleId)
         {
-            var ownerstring = "";
             if (UserPeopleId == Util.UserPeopleId)
                 DbUtil.Db.TagCurrent(); // make sure the current tag exists
-            else
-                ownerstring = UserPeopleId + "!";
 
             var q1 = from t in DbUtil.Db.Tags
                      where t.PeopleId == UserPeopleId
@@ -680,7 +677,7 @@ namespace CmsWeb.Code
                      select new CodeValueItem
                      {
                          Id = t.Id,
-                         Code = t.Id + "," + ownerstring + t.Name,
+                         Code = $"{t.Id},{t.PeopleId}!{t.Name}",
                          Value = t.Name
                      };
             var q2 = from t in DbUtil.Db.Tags
@@ -692,7 +689,7 @@ namespace CmsWeb.Code
                      select new CodeValueItem
                      {
                          Id = t.Id,
-                         Code = t.Id + "," + t.PeopleId + "!" + t.Name,
+                         Code = $"{t.Id},{t.PeopleId}!{t.Name}",
                          Value = op.Name + "!" + t.Name
                      };
             var list = q1.ToList();
