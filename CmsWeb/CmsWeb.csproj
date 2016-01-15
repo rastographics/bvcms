@@ -2829,9 +2829,6 @@
     <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\vendor-prefixes.less" />
     <Content Include="Content\touchpoint\src\less\bootstrap-datetimepicker\bootstrap-datetimepicker-build.less" />
     <Content Include="Content\touchpoint\src\less\bootstrap-datetimepicker\bootstrap-datetimepicker.less" />
-    <Content Include="Content\touchpoint\src\less\bootstrap-sweetalert\sweet-alert-animations.less" />
-    <Content Include="Content\touchpoint\src\less\bootstrap-sweetalert\sweet-alert-combine.less" />
-    <Content Include="Content\touchpoint\src\less\bootstrap-sweetalert\sweet-alert.less" />
     <Content Include="Content\touchpoint\src\less\print.less" />
     <Content Include="Content\touchpoint\src\less\account.less" />
     <Content Include="Content\touchpoint\src\less\error.less" />
