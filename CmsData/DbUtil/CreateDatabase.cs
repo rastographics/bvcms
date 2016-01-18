@@ -56,11 +56,30 @@ namespace CmsData
             return b;
         }
 
+        public static void EnableClr(SqlConnection cn)
+        {
+            var s = @"SELECT value FROM sys.configurations WHERE name = 'clr enabled'";
+            var cmd = new SqlCommand(s, cn);
+            if (cmd.ExecuteScalar().ToBool())
+                return;
+
+            RunScripts(cn, @"
+sp_configure 'show advanced options', 1;
+GO
+RECONFIGURE;
+GO
+sp_configure 'clr enabled', 1;
+GO
+RECONFIGURE;
+GO
+");
+        }
+
         public static CheckDatabaseResult CheckDatabaseExists(string name, bool nocache = false)
         {
             if (nocache == false)
             {
-                var r1 = HttpRuntime.Cache[Util.Host + "-CheckDatabaseResult"];
+                var r1 = HttpRuntime.Cache[Util.Host + " - CheckDatabaseResult"];
                 if (r1 != null)
                     return (CheckDatabaseResult)r1;
             }
@@ -117,6 +136,7 @@ namespace CmsData
                 using (var cn = new SqlConnection(masterConnectionString))
                 {
                     cn.Open();
+                    EnableClr(cn);
                     if (!DatabaseExists(cn, "CMSi_" + hostName))
                     {
                         RunScripts(masterConnectionString, "create database CMSi_" + hostName);
