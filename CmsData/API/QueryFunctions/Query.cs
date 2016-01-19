@@ -34,16 +34,6 @@ namespace CmsData
             return q.Count();
         }
 
-        public IEnumerable<Person> QueryCode(string code)
-        {
-            return db.PeopleQueryCode(code);
-        }
-
-        public int QueryCodeCount(string code)
-        {
-            return db.PeopleQueryCode(code).Count();
-        }
-
         public int QueryCount(string s)
         {
             var qb = db.PeopleQuery2(s);

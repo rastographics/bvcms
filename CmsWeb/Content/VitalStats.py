@@ -1,19 +1,19 @@
 Data.days = 7
 fund = 0 # 0=all funds
 
-Data.members = q.QueryCodeCount(
+Data.members = q.QueryCount(
     "MemberStatusId = 10[Member]")
 
-Data.uniqueAttends = q.QueryCodeCount(
+Data.uniqueAttends = q.QueryCount(
     "RecentAttendCount( Days=7 ) > 0")
 
-Data.newAttends = q.QueryCodeCount(
+Data.newAttends = q.QueryCount(
     "RecentNewVisitCount( Days=7, NumberOfDaysForNoAttendance='365' ) > 0")
 
 Data.meetings = q.MeetingCount(Data.days, 0, 0, 0)
 Data.numPresent = q.NumPresent(Data.days, 0, 0, 0)
 
-Data.decisions = q.QueryCodeCount("""
+Data.decisions = q.QueryCount("""
     RecentDecisionType( Days=7 ) IN ( 
         0[Unknown]
         ,10[POF for Membership]
@@ -22,7 +22,7 @@ Data.decisions = q.QueryCodeCount("""
         ,50[Stmt requiring Baptism] 
         )""")
 
-Data.contacts = q.QueryCodeCount("""
+Data.contacts = q.QueryCount("""
     RecentContactType( Days=7 ) IN ( 
         4[Card Sent]
         ,5[EMail Sent]
@@ -34,7 +34,7 @@ Data.contacts = q.QueryCodeCount("""
         ,99[Unknown] 
         )""")
 
-Data.registrations = q.QueryCodeCount("""
+Data.registrations = q.QueryCount("""
     RecentRegistrationType( Days=7 ) IN ( 
         1[Join Organization]
         , 10[User Selects Organization]
