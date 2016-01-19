@@ -72,7 +72,11 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="pull-right">
-                            <button type="submit" class="btn btn-primary">Run</button>
+                          <button type="submit" class="btn btn-primary">Run</button>
+                          @if ((bool) ViewBag.Previous)
+                          {
+                            <a href="/Statements/Progress"class="btn btn-default">Previously Run Sets</a>
+                          }
                         </div>
                     </div>
                 </div>

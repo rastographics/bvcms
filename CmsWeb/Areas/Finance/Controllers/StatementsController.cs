@@ -19,6 +19,10 @@ namespace CmsWeb.Areas.Finance.Controllers
         [Route("~/Statements")]
         public ActionResult Index()
         {
+            var r = DbUtil.Db.ContributionsRuns.OrderByDescending(mm => mm.Id).FirstOrDefault();
+            if (r != null && r.Running == 1 && DateTime.Now.Subtract(r.Started ?? DateTime.MinValue).TotalMinutes < 1)
+                return Redirect("/Statements/Progress");
+            ViewBag.Previous = r != null;
             return View();
         }
 
@@ -67,33 +71,21 @@ namespace CmsWeb.Areas.Finance.Controllers
             return output;
         }
 
-        [HttpPost]
-        public JsonResult Progress2()
-        {
-            var r = DbUtil.Db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
-            var html = new StringBuilder("<a href=\"/Statements/Download\">All Pages</a>");
-            if (r.Sets.HasValue())
-            {
-                var sets = r.Sets.Split(',').Select(ss => ss.ToInt()).ToList();
-                foreach (var set in sets)
-                    html.Append($" | <a href=\"/Statements/Download/{set}\">Set {set}</a>");
-            }
-            return Json(new
-            {
-                r.Count,
-                Error = r.Error ?? "",
-                r.Processed,
-                r.CurrSet,
-                Completed = r.Completed.ToString(),
-                r.Running,
-                html = html.ToString()
-            });
-        }
 
         [HttpGet]
         public ActionResult Progress()
         {
             var r = DbUtil.Db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
+            var html = new StringBuilder();
+            if(r.CurrSet > 0)
+                html.Append("<a href=\"/Statements/Download\">PDF with all households</a><br>");
+            if (r.Sets.HasValue())
+            {
+                var sets = r.Sets.Split(',').Select(ss => ss.ToInt()).ToList();
+                foreach (var set in sets)
+                    html.Append($"<a href=\"/Statements/Download/{set}\">PDF with {set} pages per household</a><br>");
+            }
+            ViewBag.download = html.ToString();
             return View(r);
         }
 
