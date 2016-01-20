@@ -673,6 +673,7 @@ namespace CmsWeb.Areas.Search.Models
                          Visits = (from a in visitors
                                    select new
                                    {
+                                       a.PeopleId,
                                        a.LastName,
                                        a.PreferredName,
                                        LastAttended = a.LastAttended.ToString2("d"),
