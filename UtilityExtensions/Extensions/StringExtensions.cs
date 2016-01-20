@@ -293,9 +293,9 @@ namespace UtilityExtensions
             sb.Append(" " + s);
         }
 
-        public static string GetCsvToken(this string s, int n = 1, int ntokens=1000)
+        public static string GetCsvToken(this string s, int n = 1, int ntokens=1000, string sep = ",")
         {
-            var a = s.SplitStr(",", ntokens);
+            var a = s.SplitStr(sep, ntokens);
             return a.Length >= n ? a[n-1] : "";
         }
     }

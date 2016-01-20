@@ -243,7 +243,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult TagUploadPeopleIds(string name, string text, bool newtag)
         {
             var q = from line in text.Split('\n')
-                    select line.ToInt();
+                    select line.GetCsvToken(1, sep: "\t").ToInt();
             if (newtag)
             {
                 var tag = DbUtil.Db.FetchTag(name, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
