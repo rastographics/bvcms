@@ -1661,10 +1661,6 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
 <Condition Id="4898a84d-bda0-4420-99c7-57294d4bbb1e" Order="0" Field="Group" Comparison="AllTrue">
   <Condition Id="e2fe4fed-2f8f-47e1-9d74-f66496c90a4f" Order="2" Field="InactiveCurrentOrg" Comparison="Equal" CodeIdValue="1,T" />
 </Condition>', 'System', '2014-08-20 09:23:21.693', '2014-08-20 09:23:21.693', 'InactiveCurrentOrg', 0, 0, NULL)
-INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('9d22aee6-5fb9-4619-a4fb-59c99fef6a6c', '<?xml version="1.0" encoding="utf-16"?>
-<Condition Id="9d22aee6-5fb9-4619-a4fb-59c99fef6a6c" Order="0" Field="Group" Comparison="AllTrue" Description="scratchpad" PreviousName="scratchpad" OnlineReg="0" OrgStatus="0" OrgType2="0">
-  <Condition Id="a90ab602-3f67-4c84-ab8e-f09d58fc5ce5" Order="2" Field="RecentNewVisitCount" Comparison="Greater" TextValue="0" Days="7" Quarters="365" OnlineReg="0" OrgStatus="0" OrgType2="0" />
-</Condition>', 'Admin', '2014-12-16 16:27:48.097', '2014-12-16 16:27:48.113', 'scratchpad', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('b8e212d3-6a0e-4de7-988f-691117df1780', '<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="b8e212d3-6a0e-4de7-988f-691117df1780" Order="0" Field="Group" Comparison="AllTrue" Description="scratchpad">
   <Condition Id="36f6ce2c-bc91-4511-9b7a-b793c71bf026" Order="2" Field="RecentAttendCount" Comparison="Greater" TextValue="0" Days="7" />
@@ -1698,9 +1694,10 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
   <Condition Id="e4dfd823-a86f-41bb-96b1-003bf5390b99" Order="2" Field="RecentDecisionType" Comparison="OneOf" CodeIdValue="0,Unknown;10,POF for Membership;20,POF NOT for Membership;30,Letter;40,Statement;50,Stmt requiring Baptism" Days="7" />
 </Condition>', 'david', '2016-01-07 13:51:37.963', '2016-01-07 13:51:37.963', 'scratchpad', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('b6f066bb-840c-4c46-9d9f-acbbe6128289', '<?xml version="1.0" encoding="utf-16"?>
-<Condition Id="b6f066bb-840c-4c46-9d9f-acbbe6128289" Order="0" Field="Group" Comparison="AllTrue" Description="scratchpad">
-  <Condition Id="06b3a649-ee95-4658-8540-67f08696ba36" Order="2" Field="RecentNewVisitCount" Comparison="Greater" TextValue="0" Days="7" Quarters="365" />
-</Condition>', 'Admin', '2014-05-18 08:48:02.683', '2016-01-07 13:55:36.223', 'Stats:New Attends', 0, 6, NULL)
+<Condition Id="c18bdd01-ab0e-4003-a8c1-fe0ea8063395" Order="0" Field="Group">
+  <Condition Id="5653c3e2-fff6-4ff8-8c0e-29b77ebf9970" Order="0" Field="HasRecentNewAttend" Comparison="Equal" CodeIdValue="1,True" Program="0" Division="0" Organization="0" OrgType="0" Days="7" Quarters="365" />
+</Condition>
+', 'Admin', '2014-05-18 08:48:02.683', '2016-01-07 13:55:36.223', 'Stats:New Attends', 0, 6, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('3d864d5c-0b6a-4253-984b-ae989171f881', '<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="3d864d5c-0b6a-4253-984b-ae989171f881" Order="0" Field="Group" Comparison="AllTrue" Description="scratchpad" PreviousName="scratchpad" OnlineReg="0" OrgStatus="0" OrgType2="0">
   <Condition Id="c8c617c7-669e-41a6-aab7-64dce27f59f7" Order="2" Field="RecentAttendCount" Comparison="GreaterEqual" TextValue="10" Days="140" OnlineReg="0" OrgStatus="0" OrgType2="0" />
