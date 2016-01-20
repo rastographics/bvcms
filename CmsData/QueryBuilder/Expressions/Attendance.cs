@@ -172,27 +172,16 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal Expression RecentNewVisitCount()
+
+        internal Expression HasRecentNewAttend()
         {
+            var tf = CodeIds == "1";
             var days0 = Quarters.ToInt2();
-            var cnt = TextValue.ToInt();
-            var q = db.RecentNewVisitCount(ProgramInt, DivisionInt, OrganizationInt, OrgTypeInt ?? 0, days0, Days);
-            switch (op)
-            {
-                case CompareType.Greater:
-                    q = q.Where(cc => cc.Cnt > cnt); break;
-                case CompareType.GreaterEqual:
-                    q = q.Where(cc => cc.Cnt >= cnt); break;
-                case CompareType.Less:
-                    q = q.Where(cc => cc.Cnt < cnt); break;
-                case CompareType.LessEqual:
-                    q = q.Where(cc => cc.Cnt <= cnt); break;
-                case CompareType.Equal:
-                    q = q.Where(cc => cc.Cnt == cnt); break;
-                case CompareType.NotEqual:
-                    q = q.Where(cc => cc.Cnt != cnt); break;
-            }
-            Expression<Func<Person, bool>> pred = p => q.Select(c => c.PeopleId).Contains(p.PeopleId);
+            var tag = db.NewTemporaryTag();
+            db.TagRecentStartAttend(ProgramInt ?? 0, DivisionInt ?? 0, OrganizationInt, OrgTypeInt ?? 0, days0 ?? 365, Days, tag.Id);
+            Expression<Func<Person, bool>> pred = p => op == CompareType.Equal && tf
+                ? p.Tags.Any(t => t.Id == tag.Id)
+                : p.Tags.All(t => t.Id != tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }

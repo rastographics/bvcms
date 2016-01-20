@@ -423,11 +423,16 @@ namespace CmsData
             ExecuteCommand(s, plist.Select(pp => pp.Value).ToArray());
             return tag;
         }
-        public Tag PopulateTemporaryTag(IQueryable<int> q)
+        public Tag NewTemporaryTag()
         {
             var tag = FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? Util.UserId1, NextTagId);
             Debug.Assert(NextTagId != 10, "got a 10");
             ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
+            return tag;
+        }
+        public Tag PopulateTemporaryTag(IQueryable<int> q)
+        {
+            var tag = NewTemporaryTag();
             var cmd = GetCommand(q);
             var s = cmd.CommandText;
             var plist = new List<DbParameter>();
@@ -1476,6 +1481,19 @@ namespace CmsData
             // The following will clean out any tags that no longer have a corresponding F99:name in the queries
             ExecuteCommand("dbo.DeleteOldQueryBitTags");
         }
-
+        [Function(Name = "dbo.TagRecentStartAttend")]
+        public int TagRecentStartAttend(
+            [Parameter(DbType = "Int")] int progid, 
+            [Parameter(DbType = "Int")] int divid, 
+            [Parameter(DbType = "Int")] int org, 
+            [Parameter(DbType = "Int")] int orgtype, 
+            [Parameter(DbType = "Int")] int days0, 
+            [Parameter(DbType = "Int")] int days, 
+            [Parameter(DbType = "Int")] int tagid) 
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), 
+                progid, divid, org, orgtype, days0, days, tagid);
+            return ((int)(result.ReturnValue));
+        }
     }
 }
