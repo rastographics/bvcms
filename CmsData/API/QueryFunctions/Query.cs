@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Dapper;
 using UtilityExtensions;
 
@@ -34,12 +35,17 @@ namespace CmsData
             return q.Count();
         }
 
+        public int ElapsedTime { get; private set; }
+
         public int QueryCount(string s)
         {
             var qb = db.PeopleQuery2(s);
             if (qb == null)
                 return 0;
-            return qb.Count();
+            var start = DateTime.Now;
+            var count = qb.Count();
+            ElapsedTime = Math.Round(DateTime.Now.Subtract(start).TotalSeconds).ToInt();
+            return count;
         }
 
 
