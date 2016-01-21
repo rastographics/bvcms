@@ -12,12 +12,15 @@ RETURN
 (
 	WITH ranges AS (
 		SELECT 
-			Amount = SUM(Amount), 
+			Amount = SUM(c.ContributionAmount), 
 			[Count] = COUNT(*),
 			[Range] = CASE WHEN ISNULL(p.Age, 0) = 0 THEN 0 ELSE p.Age / 10 + 1 END
-		FROM dbo.Contributions2(@fd, @td, @campusid, NULL, @nontaxded, @includeUnclosed)
-		JOIN dbo.People p ON p.PeopleId = Contributions2.CreditGiverId
-		GROUP BY CreditGiverId, Age
+		FROM dbo.ContributionSearch(NULL, NULL, NULL, NULL, 0, NULL, NULL, @fd, @td, 
+				CASE WHEN ISNULL(@nontaxded, 0) = 1 THEN 'nontaxded' ELSE 'taxded' END, 
+				NULL, @campusid, NULL, @includeUnclosed, NULL, 2) cs
+		JOIN dbo.Contribution c ON c.ContributionId = cs.ContributionId
+		JOIN dbo.People p ON p.PeopleId = c.PeopleId
+		GROUP BY c.PeopleId, p.Age
 	)
 	SELECT 
 		Total = SUM(r.Amount), 
