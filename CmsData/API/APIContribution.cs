@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Linq.SqlClient;
 using System.Data.SqlTypes;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -100,6 +101,7 @@ namespace CmsData.API
             return sw.ToString();
         }
 
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         public static IEnumerable<ContributorInfo> contributors(CMSDataContext Db,
             DateTime fromDate, DateTime toDate, int PeopleId, int? SpouseId, int FamilyId, bool noaddressok, bool useMinAmt,
             string startswith = null, string sort = null, bool singleStatement = false, int? tagid = null, bool excludeelectronic = false)
@@ -159,8 +161,8 @@ namespace CmsData.API
                             ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? NOTSPEC) != INDIV ? JOINT : INDIV)
                             : p.ContributionOptionsId
                     where option != NONE || noaddressok
-                    where (option == INDIV && (p.Amount > MinAmt))
-                            || (option == JOINT && p.HohFlag == 1 && ((p.Amount + p.SpouseAmount) > MinAmt))
+                    where (option == INDIV && (p.Amount >= MinAmt))
+                            || (option == JOINT && p.HohFlag == 1 && ((p.Amount + p.SpouseAmount) >= MinAmt))
                     where p.ElectronicStatement == false || excludeelectronic == false
                     select p;
             else
@@ -222,13 +224,13 @@ namespace CmsData.API
                              : (p.SpouseId == null
                                  ? (p.Title != null ? p.Title + " " + p.Name : p.Name)
                                  : p.CoupleName ?? (p.HohFlag == 1
-                                     ? ((p.Title != null && p.Title != "")
+                                     ? ((p.Title ?? "") != ""
                                          ? p.Title + " and Mrs. " + p.Name
                                          : "Mr. and Mrs. " + p.Name)
-                                     : ((p.SpouseTitle != null && p.SpouseTitle != "")
+                                     : ((p.SpouseTitle ?? "") != ""
                                          ? p.SpouseTitle + " and Mrs. " + p.SpouseName
                                          : "Mr. and Mrs. " + p.SpouseName))))
-                         + ((p.Suffix == null || p.Suffix == "") ? "" : ", " + p.Suffix)
+                         + ((p.Suffix ?? "") == "" ? "" : ", " + p.Suffix)
                      select new ContributorInfo
                      {
                          Name = name,
