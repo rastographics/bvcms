@@ -152,6 +152,7 @@ var legacyJsFiles = [
 var jsFiles = [
     {
         files: [
+            //DebugFilesStart
             'Content/touchpoint/lib/jquery-validate-globalize/js/jquery.validate.globalize.js',
             'Content/touchpoint/lib/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js',
             'Content/touchpoint/lib/bootstrap-sweetalert/js/sweetalert.min.js',
@@ -163,6 +164,7 @@ var jsFiles = [
             'Content/touchpoint/js/extra-value.js',
             'Content/touchpoint/js/form-ajax.js',
             'Content/touchpoint/js/search/search-add.js'
+            //DebugFilesEnd
         ],
         outputName: 'app.min.js',
         outputDir: 'Content/touchpoint/js'

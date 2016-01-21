@@ -939,7 +939,7 @@ namespace CmsWeb
 
         public static HtmlString Velocity()
         {
-            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.1/velocity.min.js\" type=\"text/javascript\"></script>\n");
+            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js\" type=\"text/javascript\"></script>\n");
         }
 
         public static HtmlString Bootstrap()

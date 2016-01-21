@@ -161,9 +161,9 @@
         var url = link
             || a.data("link")
             || ahref
-            || $form[0].action
             || $tablink.data("link")
             || $modalbody.data("target")
+            || $form[0].action
             || '#';
 
         if (a.data("size"))
