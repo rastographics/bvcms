@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 
 namespace CmsWeb.CheckInAPI
 {
@@ -10,11 +7,33 @@ namespace CmsWeb.CheckInAPI
         public int id = 0;
         public string name = "";
 
-        public List<CheckInPerson> members = new List<CheckInPerson>();
+        public List<CheckInFamilyMember> members = new List<CheckInFamilyMember>();
 
-        public void addMember(CheckInPerson person)
+        public CheckInFamily(int id, string name)
         {
-            members.Add(person);
+            this.id = id;
+            this.name = name;
+        }
+
+        public void addMember(CmsData.View.CheckinFamilyMember newMember)
+        {
+            if (members.Count == 0)
+            {
+                members.Add(new CheckInFamilyMember(newMember));
+            }
+            else
+            {
+                foreach (var member in members)
+                {
+                    if (member.id == newMember.Id)
+                    {
+                        member.addOrg(newMember);
+                        return;
+                    }
+                }
+
+                members.Add(new CheckInFamilyMember(newMember));
+            }
         }
     }
 }

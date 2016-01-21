@@ -1,35 +1,20 @@
-﻿using CmsWeb;
-using CmsData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace CmsWeb.CheckInAPI
+﻿namespace CmsWeb.Areas.Public.Models.CheckInAPI
 {
     public class CheckInPerson
     {
         public int id = 0;
-        public string name = "";
+        public int familyID = 0;
 
-        public Dictionary<string, object> fields;
+        public string first = "";
+        public string last = "";
 
-        public CheckInPerson(Object person)
-        {
-            fields = person.AsDictionary();
+        public string goesby = "";
 
-            id = (int)fields["id"];
-            name = (string)fields["name"];
-        }
+        public string cell = "";
+        public string home = "";
 
-        public void addField(string name, object value)
-        {
-            if (fields == null)
-            {
-                fields = new Dictionary<string, object>();
-            }
+        public string addr = "";
 
-            fields.Add(name, value);
-        }
+        public int age = 0;
     }
 }

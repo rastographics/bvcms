@@ -1,11 +1,16 @@
 ﻿using CmsData;
+using CmsData.Codes;
+using CmsWeb.Areas.Public.Models.CheckInAPI;
 using CmsWeb.CheckInAPI;
 using CmsWeb.MobileAPI;
 using CmsWeb.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
@@ -72,66 +77,281 @@ namespace CmsWeb.Areas.Public.Controllers
             return labels;
         }
 
-        public ActionResult Search() //string id, int campus, int day
+        [HttpPost]
+        public ActionResult NumberSearch(string data)
         {
-            //if (!Auth())
-            //    return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+            if (!Auth())
+                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
 
-            //DbUtil.LogActivity("Check-In Search: " + id);
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+            CheckInNumberSearch cns = JsonConvert.DeserializeObject<CheckInNumberSearch>(dataIn.data);
 
-            /* Replacement for CheckinMatch without the lock
-             SELECT FamilyId, PeopleId, Name, GenderId
-             FROM dbo.People
-             WHERE FamilyId IN (SELECT FamilyId FROM dbo.Families WHERE HomePhoneLU LIKE '4813443%')
-               OR FamilyId IN (SELECT FamilyId FROM dbo.People WHERE CellPhoneLU LIKE '4813443%' OR WorkPhoneLU LIKE '4813443%')
-               AND (CampusId = 1 OR CampusId IS NULL)
-             ORDER BY PositionInFamilyId, GenderId
-            */
+            DbUtil.LogActivity("Check-In Number Search: " + cns.search);
 
-            //var matches = DbUtil.Db.CheckinMatch(id).ToList();
+            var matches = DbUtil.Db.CheckinMatch(cns.search).ToList();
 
-            //if (!matches.Any())
-            //    return new FamilyResult(0, campus, day, 0, false); // not found
-            //if (matches.Count() == 1)
-            //    return new FamilyResult(matches.Single().Familyid.Value, campus, day, 0, matches[0].Locked ?? false);
-            //return new MultipleResult(matches, 1);
+            BaseMessage br = new BaseMessage();
+            br.setNoError();
 
-            var results = (from p in DbUtil.Db.People
-                           where (from f in DbUtil.Db.Families where f.HomePhoneLU.Contains("4813443") select f.FamilyId).Contains(p.FamilyId)
-                             || (from o in DbUtil.Db.People where o.CellPhone.Contains("4813443") || o.WorkPhoneLU.Contains("4813443") select o.FamilyId).Contains(p.FamilyId)
-                           where p.DeceasedDate == null
-                           orderby p.Name
-                           select new { p.FamilyId }).Distinct();
+            List<CheckInFamily> families = new List<CheckInFamily>();
 
-            var br = new BaseMessage();
-            var families = new List<CheckInFamily>();
-
-            CheckInFamily family;
-
-            foreach (var item in results)
+            if (matches.Count > 0)
             {
-                var members = (from a in DbUtil.Db.CheckinFamilyMembers(item.FamilyId, 1, 1).ToList()
-                               orderby a.Position, a.Genderid, a.Age
-                               select a).ToList();
-
-                if (members.Count() > 0)
+                foreach (var match in matches)
                 {
-                    family = new CheckInFamily();
-                    family.id = item.FamilyId;
-                    family.name = members[0].Name;
+                    if (match.Locked.HasValue && match.Locked.Value) continue;
+
+                    CheckInFamily family = new CheckInFamily(match.Familyid.Value, match.Name);
+
+                    var members = (from a in DbUtil.Db.CheckinFamilyMembers(match.Familyid, cns.campus, cns.day).ToList()
+                                   orderby a.Position, a.Position == 10 ? a.Genderid : 10, a.Age, a.Hour
+                                   select a).ToList();
 
                     foreach (var member in members)
                     {
-                        family.addMember(new CheckInPerson(member));
+                        family.addMember(member);
                     }
 
                     families.Add(family);
+                    br.count++;
                 }
+
+                br.data = SerializeJSON(families, dataIn.version);
             }
 
-            br.error = 0;
-            br.count = results.Count();
-            br.data = JsonConvert.SerializeObject(families);
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult Family(string data)
+        {
+            if (!Auth())
+                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+            CheckInNumberSearch cns = JsonConvert.DeserializeObject<CheckInNumberSearch>(dataIn.data);
+
+            DbUtil.LogActivity("Check-In Family: " + cns.search);
+
+            var matches = DbUtil.Db.CheckinMatch(cns.search).ToList();
+
+            BaseMessage br = new BaseMessage();
+            br.setNoError();
+
+            List<CheckInFamily> families = new List<CheckInFamily>();
+
+            if (matches.Count > 0)
+            {
+                foreach (var match in matches)
+                {
+                    if (match.Locked.HasValue && match.Locked.Value) continue;
+
+                    CheckInFamily family = new CheckInFamily(match.Familyid.Value, match.Name);
+
+                    var members = (from a in DbUtil.Db.CheckinFamilyMembers(match.Familyid, cns.campus, cns.day).ToList()
+                                   orderby a.Position, a.Position == 10 ? a.Genderid : 10, a.Age, a.Hour
+                                   select a).ToList();
+
+                    foreach (var member in members)
+                    {
+                        family.addMember(member);
+                    }
+
+                    families.Add(family);
+                    br.count++;
+                }
+
+                br.data = SerializeJSON(families, dataIn.version);
+            }
+
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult RecordAttend(string data)
+        {
+            // Authenticate first
+            if (!Auth())
+                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+            CheckInAttend cia = JsonConvert.DeserializeObject<CheckInAttend>(dataIn.data);
+
+            var meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.OrganizationId == cia.orgID && m.MeetingDate == cia.datetime);
+
+            if (meeting == null)
+            {
+                meeting = new Meeting
+                {
+                    OrganizationId = cia.orgID,
+                    MeetingDate = cia.datetime,
+                    CreatedDate = Util.Now,
+                    CreatedBy = Util.UserPeopleId ?? 0,
+                    GroupMeetingFlag = false,
+                };
+
+                DbUtil.Db.Meetings.InsertOnSubmit(meeting);
+                DbUtil.Db.SubmitChanges();
+
+                var acr = (from s in DbUtil.Db.OrgSchedules
+                           where s.OrganizationId == cia.orgID
+                           where s.SchedTime.Value.TimeOfDay == cia.datetime.TimeOfDay
+                           where s.SchedDay == (int)cia.datetime.DayOfWeek
+                           select s.AttendCreditId).SingleOrDefault();
+
+                meeting.AttendCreditId = acr;
+            }
+
+            Attend.RecordAttendance(cia.peopleID, meeting.MeetingId, cia.present);
+
+            DbUtil.Db.UpdateMeetingCounters(cia.orgID);
+            DbUtil.LogActivity($"Check-In Record Attend Org ID:{meeting.OrganizationId} People ID:{cia.peopleID} User ID:{Util.UserPeopleId} Attended:{cia.present}");
+
+            BaseMessage br = new BaseMessage();
+            br.setNoError();
+            br.count = 1;
+
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult ClassSearch(string data)
+        {
+            if (!Auth())
+                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+            CheckInClassSearch ccs = JsonConvert.DeserializeObject<CheckInClassSearch>(dataIn.data);
+
+            DbUtil.LogActivity("Check-In Class Search: " + ccs.peopleID);
+
+            var person = (from p in DbUtil.Db.People
+                          where p.PeopleId == ccs.peopleID
+                          select new { p.FamilyId, p.BirthDate, p.Grade }).SingleOrDefault();
+
+            if (person == null)
+                return BaseMessage.createErrorReturn("Person not found", BaseMessage.API_ERROR_PERSON_NOT_FOUND);
+
+            BaseMessage br = new BaseMessage();
+            br.setNoError();
+
+            var orgs = (from o in DbUtil.Db.Organizations
+                        let sc = o.OrgSchedules.FirstOrDefault()
+                        let meetingHours = DbUtil.Db.GetTodaysMeetingHours(o.OrganizationId, ccs.day)
+                        let bdaystart = o.BirthDayStart ?? DateTime.MaxValue
+                        where (o.SuspendCheckin ?? false) == false || ccs.noAgeCheck
+                        where person.BirthDate == null || person.BirthDate <= o.BirthDayEnd || o.BirthDayEnd == null || ccs.noAgeCheck
+                        where person.BirthDate == null || person.BirthDate >= o.BirthDayStart || o.BirthDayStart == null || ccs.noAgeCheck
+                        where o.CanSelfCheckin == true
+                        where (o.ClassFilled ?? false) == false
+                        where (o.CampusId == null && o.AllowNonCampusCheckIn == true) || o.CampusId == ccs.campus || ccs.campus == 0
+                        where o.OrganizationStatusId == OrgStatusCode.Active
+                        orderby sc.SchedTime.Value.TimeOfDay, bdaystart, o.OrganizationName
+                        from meeting in meetingHours
+                        select new CheckInOrganization()
+                        {
+                            id = o.OrganizationId,
+                            leader = o.LeaderName,
+                            name = o.OrganizationName,
+                            hour = meeting.Hour.Value,
+                            birthdayStart = o.BirthDayStart,
+                            birthdayEnd = o.BirthDayEnd,
+                            location = o.Location
+                        }).ToList();
+
+            // Add lead time adjustment for different timezones here
+            int tzOffset = DbUtil.Db.Setting("TZOffset", "0").ToInt();
+
+            foreach (var org in orgs)
+            {
+                org.adjustLeadTime(ccs.day, tzOffset);
+            }
+
+            br.data = SerializeJSON(orgs, dataIn.version);
+
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult NameSearch(string data)
+        {
+            if (!Auth())
+                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+            CheckInNameSearch cns = JsonConvert.DeserializeObject<CheckInNameSearch>(dataIn.data);
+            cns.splitName();
+
+            DbUtil.LogActivity("Check-In Name Search: " + cns.name);
+
+            var q = DbUtil.Db.People.Select(p => p);
+
+            if (cns.first.HasValue())
+            {
+                q = from p in q
+                    where (p.LastName.StartsWith(cns.last) || p.MaidenName.StartsWith(cns.last))
+                        && (p.FirstName.StartsWith(cns.first) || p.NickName.StartsWith(cns.first) || p.MiddleName.StartsWith(cns.first))
+                    select p;
+            }
+            else
+            {
+                q = from p in q
+                    where p.LastName.StartsWith(cns.last) || p.FirstName.StartsWith(cns.last) || p.NickName.StartsWith(cns.last) || p.MiddleName.StartsWith(cns.last)
+                    select p;
+            }
+
+            var q2 = (from p in q
+                      let recreg = p.RecRegs.FirstOrDefault()
+                      orderby p.Name2, p.PeopleId
+                      where p.DeceasedDate == null
+                      select new CheckInPerson
+                      {
+                          id = p.PeopleId,
+                          familyID = p.FamilyId,
+                          first = p.FirstName,
+                          last = p.LastName,
+                          goesby = p.NickName,
+                          cell = p.CellPhone,
+                          home = p.HomePhone,
+                          addr = p.Family.AddressLineOne,
+                          age = p.Age ?? 0
+                      }).ToList();
+
+            BaseMessage br = new BaseMessage();
+            br.setNoError();
+            br.count = q2.Count();
+            br.data = SerializeJSON(q2, dataIn.version);
+
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult JoinOrg(string data)
+        {
+            if (!Auth())
+                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+            CheckInJoinOrg cjo = JsonConvert.DeserializeObject<CheckInJoinOrg>(dataIn.data);
+
+            var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == cjo.peopleID && m.OrganizationId == cjo.orgID);
+
+            if (om == null && cjo.join)
+                om = OrganizationMember.InsertOrgMembers(DbUtil.Db, cjo.orgID, cjo.peopleID, MemberTypeCode.Member, DateTime.Now, null, false);
+
+            if (om != null && !cjo.join)
+            {
+                om.Drop(DbUtil.Db, DateTime.Today);
+
+                DbUtil.LogActivity($"Dropped {om.PeopleId} for {om.Organization.OrganizationId} via {dataIn.getSourceOS()} app", peopleid: om.PeopleId, orgid: om.OrganizationId);
+            }
+
+            DbUtil.Db.SubmitChanges();
+
+            BaseMessage br = new BaseMessage();
+            br.setNoError();
+            br.count = 1;
+
             return br;
         }
 
@@ -174,6 +394,11 @@ namespace CmsWeb.Areas.Public.Controllers
             br.count = 1;
 
             return br;
+        }
+
+        private static string SerializeJSON(Object item, int version)
+        {
+            return JsonConvert.SerializeObject(item, new IsoDateTimeConverter() { DateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss" });
         }
     }
 }
