@@ -8,7 +8,7 @@ Data.uniqueAttends = q.QueryCount(
     "RecentAttendCount( Days=7 ) > 0")
 
 Data.newAttends = q.QueryCount(
-    "RecentNewVisitCount( Days=7, NumberOfDaysForNoAttendance='365' ) > 0")
+    "HasRecentNewAttend( Days=7, NumberOfDaysForNoAttendance='365' ) = 1[True]")
 
 Data.meetings = q.MeetingCount(Data.days, 0, 0, 0)
 Data.numPresent = q.NumPresent(Data.days, 0, 0, 0)
@@ -71,7 +71,7 @@ template = """
     <tr><td>Registrations</td>              <td>{{Fmt registrations "N0"}}</td></tr>
 
     <tr><th colspan="2">Contributions-Budget and Love Offering</th></tr>
-    <tr><td>Average per Capita Year</td>     <td>{{Fmt cnAvgAmtPerDonorYear "N2"}}</td</tr>
+    <tr><td>Average per Capita Year</td>        <td>{{Fmt cnAvgAmtPerDonorYear "N2"}}</td</tr>
     <tr><td>Weekly 4 week average</td>          <td>{{Fmt cnWeekly4WeekAvg "N2"}}</td></tr>
     <tr><td>Weekly average current year</td>    <td>{{Fmt cnWeeklyAvgCurrYear "N2"}}</td></tr>
     <tr><td>Weekly average previous year</td>   <td>{{Fmt cnWeeklyAvgPrevYear "N2"}}</td></tr>

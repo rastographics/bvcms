@@ -14,7 +14,7 @@ namespace CmsWeb.Models
 {
     public class TotalsByFundRangeModel
     {
-        public string Pledged { get; set; }
+        public bool Pledged { get; set; }
 
         public DateTime? Dt1 { get; set; }
 
@@ -38,10 +38,26 @@ namespace CmsWeb.Models
 
         public IEnumerable<RangeInfo> GetTotalsByFundRange()
         {
-            var model = new BundleModel();
-            var rangeInfos = model.TotalsByFundRange(FundId, Dt1.GetValueOrDefault(), Dt2.GetValueOrDefault(), string.IsNullOrWhiteSpace(Pledged) ? "false" : Pledged, CampusId);
-            RangeTotal = model.RangeTotal;
-            return rangeInfos;
+            var list = (from r in DbUtil.Db.GetContributionsRange(Dt1, Dt2, CampusId, false, true, Pledged)
+                        orderby r.Range
+                        select r).ToList();
+            RangeTotal = new RangeInfo
+            {
+                Total = list.Sum(vv => vv.Total ?? 0),
+                Count = list.Sum(vv => vv.Count ?? 0),
+                DonorCount = list.Sum(vv => vv.DonorCount ?? 0),
+            };
+            var list2 = from r in list
+                        select new RangeInfo
+                        {
+                            RangeId = r.Range,
+                            Total = r.Total ?? 0,
+                            Count = r.Count ?? 0,
+                            DonorCount = r.DonorCount ?? 0,
+                            PctCount = (r.Count ?? 0) / Convert.ToDecimal(RangeTotal.Count) * 100,
+                            PctTotal = (r.Total ?? 0) / RangeTotal.Total * 100,
+                        };
+            return list2;
         }
 
         public IEnumerable<SelectListItem> Campuses()
@@ -49,10 +65,10 @@ namespace CmsWeb.Models
             var list = (from c in DbUtil.Db.Campus
                         orderby c.Description
                         select new SelectListItem()
-                                   {
-                                       Value = c.Id.ToString(),
-                                       Text = c.Description,
-                                   }).ToList();
+                        {
+                            Value = c.Id.ToString(),
+                            Text = c.Description,
+                        }).ToList();
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
@@ -70,6 +86,6 @@ namespace CmsWeb.Models
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
-        
+
     }
 }

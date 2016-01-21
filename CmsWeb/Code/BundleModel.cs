@@ -601,7 +601,7 @@ namespace CmsWeb.Models
         }
         public RangeInfo RangeTotal;
         [DataObjectMethod(DataObjectMethodType.Select, false)]
-        public IEnumerable<RangeInfo> TotalsByFundRange(int fundid, DateTime dt1, DateTime dt2, string Pledges, int CampusId)
+        public IEnumerable<RangeInfo> TotalsByFundRange(int fundid, DateTime dt1, DateTime dt2, bool Pledges, int CampusId)
         {
             dt2 = dt2.AddDays(1);
             var q0 = from c in DbUtil.Db.Contributions
@@ -612,29 +612,29 @@ namespace CmsWeb.Models
                      where CampusId == 0 || c.CampusId == CampusId
                      select c;
 
-            switch (Pledges)
-            {
-                case "true":
-                    q0 = from c in q0
-                         where c.ContributionTypeId == ContributionTypeCode.Pledge
-                         select c;
-                    break;
-                case "false":
-                    q0 = from c in q0
-                         where c.ContributionStatusId == ContributionStatusCode.Recorded
-                         where c.ContributionTypeId != ContributionTypeCode.Pledge
-                         //where c.PostingDate != null
-                         select c;
-                    break;
-                case "both":
-                    q0 = from c in q0
-                         where (c.ContributionTypeId != ContributionTypeCode.Pledge && c.ContributionStatusId == ContributionStatusCode.Recorded)
-                                || c.ContributionTypeId == ContributionTypeCode.Pledge
-                         where (c.ContributionTypeId != ContributionTypeCode.Pledge && c.PostingDate != null)
-                                || c.ContributionTypeId == ContributionTypeCode.Pledge
-                         select c;
-                    break;
-            }
+//            switch (Pledges)
+//            {
+//                case "true":
+//                    q0 = from c in q0
+//                         where c.ContributionTypeId == ContributionTypeCode.Pledge
+//                         select c;
+//                    break;
+//                case "false":
+//                    q0 = from c in q0
+//                         where c.ContributionStatusId == ContributionStatusCode.Recorded
+//                         where c.ContributionTypeId != ContributionTypeCode.Pledge
+//                         //where c.PostingDate != null
+//                         select c;
+//                    break;
+//                case "both":
+//                    q0 = from c in q0
+//                         where (c.ContributionTypeId != ContributionTypeCode.Pledge && c.ContributionStatusId == ContributionStatusCode.Recorded)
+//                                || c.ContributionTypeId == ContributionTypeCode.Pledge
+//                         where (c.ContributionTypeId != ContributionTypeCode.Pledge && c.PostingDate != null)
+//                                || c.ContributionTypeId == ContributionTypeCode.Pledge
+//                         select c;
+//                    break;
+//            }
 
             if (q0.Any())
             {

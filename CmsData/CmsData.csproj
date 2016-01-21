@@ -499,6 +499,7 @@
     <Compile Include="Generated\Functions\FilterOnlineReg.cs" />
     <Compile Include="Generated\Functions\FilterOrgSearchName.cs" />
     <Compile Include="Generated\Functions\GenRange.cs" />
+    <Compile Include="Generated\Functions\GetContributionsRange.cs" />
     <Compile Include="Generated\Functions\GetContributionTotalsBothIfJoint.cs" />
     <Compile Include="Generated\Functions\GetTotalContributionsAgeRange.cs" />
     <Compile Include="Generated\Functions\GivingChange.cs" />
