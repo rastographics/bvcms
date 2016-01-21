@@ -1574,6 +1574,7 @@
     <Content Include="Areas\Org\Views\OrgSearch\RecentVisitsAbsents.xml" />
     <Content Include="Areas\Reports\Views\Reports\PyScript.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Code.cshtml" />
+    <None Include="Areas\Finance\Views\FinanceReports\TotalsByAgeRange.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />

@@ -1699,10 +1699,10 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             {
                 case StatementOptionCode.Joint:
                 case StatementOptionCode.Individual:
+                case StatementOptionCode.None:
                     sp.UpdateValue(field, opt);
                     sp.LogChanges(db);
                     break;
-                case StatementOptionCode.None:
                 case null:
                     if (sp.ContributionOptionsId == StatementOptionCode.Joint)
                     {
