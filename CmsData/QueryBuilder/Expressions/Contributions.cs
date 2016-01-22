@@ -254,33 +254,48 @@ namespace CmsData
         }
         internal Expression RecentContributionAmountBothJoint()
         {
+            var now = DateTime.Now;
+            var dt = now.AddDays(-Days);
+            return ContributionAmountBothJoint(dt, now);
+        }
+        internal Expression ContributionAmountBothJointHistory()
+        {
+            DateTime? enddt = null;
+            if (!EndDate.HasValue && StartDate.HasValue)
+                    enddt = StartDate.Value.AddHours(24);
+            if(EndDate.HasValue)
+                enddt = EndDate.Value.AddHours(24);
+            return ContributionAmountBothJoint(StartDate, enddt);
+
+        }
+        private Expression ContributionAmountBothJoint(DateTime? startdt, DateTime? enddt)
+        {
             if (!db.FromBatch)
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
             var amt = decimal.Parse(TextValue);
-            var now = DateTime.Now;
-            var dt = now.AddDays(-Days);
+
             IQueryable<int> q = null;
             switch (op)
             {
                 case CompareType.Greater:
-                    q = from c in db.GetContributionTotalsBothIfJoint(dt, now)
+                    q = from c in db.GetContributionTotalsBothIfJoint(startdt, enddt)
                         where c.Amount > amt
                         select c.PeopleId.Value;
                     break;
                 case CompareType.GreaterEqual:
-                    q = from c in db.GetContributionTotalsBothIfJoint(dt, now)
+                    q = from c in db.GetContributionTotalsBothIfJoint(startdt, enddt)
                         where c.Amount >= amt
                         select c.PeopleId.Value;
                     break;
                 case CompareType.Less:
-                    q = from c in db.GetContributionTotalsBothIfJoint(dt, now)
+                    q = from c in db.GetContributionTotalsBothIfJoint(StartDate, enddt)
                         where c.Amount > 0
                         where c.Amount <= amt
                         select c.PeopleId.Value;
                     break;
                 case CompareType.LessEqual:
-                    q = from c in db.GetContributionTotalsBothIfJoint(dt, now)
+                    q = from c in db.GetContributionTotalsBothIfJoint(startdt, enddt)
                         where c.Amount > 0
                         where c.Amount <= amt
                         select c.PeopleId.Value;
@@ -288,19 +303,19 @@ namespace CmsData
                 case CompareType.Equal:
                     if (amt == 0) // This is a very special case, use different approach
                     {
-                        q = from pid in db.Contributions0(dt, now, 0, 0, false, false, true)
+                        q = from pid in db.Contributions0(startdt, enddt, 0, 0, false, false, true)
                             select pid.PeopleId;
                         Expression<Func<Person, bool>> pred0 = p => q.Contains(p.PeopleId);
                         Expression expr0 = Expression.Invoke(pred0, parm);
                         return expr0;
                     }
-                    q = from c in db.GetContributionTotalsBothIfJoint(dt, now)
+                    q = from c in db.GetContributionTotalsBothIfJoint(startdt, enddt)
                         where c.Amount > 0
                         where c.Amount == amt
                         select c.PeopleId.Value;
                     break;
                 case CompareType.NotEqual:
-                    q = from c in db.GetContributionTotalsBothIfJoint(dt, now)
+                    q = from c in db.GetContributionTotalsBothIfJoint(startdt, enddt)
                         where c.Amount > 0
                         where c.Amount != amt
                         select c.PeopleId.Value;

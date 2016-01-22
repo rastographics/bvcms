@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Dapper;
 using UtilityExtensions;
 
@@ -10,6 +9,8 @@ namespace CmsData
 {
     public partial class QueryFunctions
     {
+        public int ElapsedTime { get; private set; }
+
         public IEnumerable<Person> BlueToolbarReport()
         {
             if (!dictionary.ContainsKey("BlueToolbarGuid"))
@@ -34,8 +35,6 @@ namespace CmsData
                     select p;
             return q.Count();
         }
-
-        public int ElapsedTime { get; private set; }
 
         public int QueryCount(string s)
         {

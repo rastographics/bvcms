@@ -40,6 +40,7 @@ namespace CmsData
                 { QueryType.CommitmentForMeetingId, CommitmentForMeetingId },
                 { QueryType.ContactRecipient, ContactRecipient },
                 { QueryType.ContactMaker, ContactMaker },
+                { QueryType.ContributionAmountBothJointHistory, ContributionAmountBothJointHistory },
                 { QueryType.ContributionAmount2, ContributionAmount },
                 { QueryType.ContributionChange, ContributionChange },
                 { QueryType.CreatedBy, CreatedBy },

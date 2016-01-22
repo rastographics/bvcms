@@ -31,6 +31,7 @@ namespace CmsData
         ContactMaker,
         ContactRecipient,
         ContributionOptionsId,
+        ContributionAmountBothJointHistory,
         ContributionsStatement,
         ContributionAmount2,
         ContributionChange,
