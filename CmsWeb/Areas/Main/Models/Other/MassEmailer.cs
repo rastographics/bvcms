@@ -31,7 +31,8 @@ namespace CmsWeb.Areas.Main.Models
         public string Body { get; set; }
         public DateTime? Schedule { get; set; }
         public bool PublicViewable { get; set; }
-        public IEnumerable<string> Recipients { get; set; } 
+        public IEnumerable<string> Recipients { get; set; }
+        public IEnumerable<int> AdditionalRecipients { get; set; }
 
         public string Host { get; set; }
 
