@@ -22,6 +22,15 @@ BEGIN
 		WHERE f.NonTaxDeductible = 1
 	END
 
+	IF(UPDATE(PeopleId))
+	BEGIN
+		UPDATE dbo.Contribution
+		SET CampusId = p.CampusId
+		FROM dbo.Contribution c
+		JOIN INSERTED i ON i.ContributionId = c.ContributionId
+		JOIN dbo.People p ON p.PeopleId = i.PeopleId
+    END
+
 END
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION

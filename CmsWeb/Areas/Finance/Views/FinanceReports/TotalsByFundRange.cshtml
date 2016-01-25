@@ -2,15 +2,10 @@
 @model CmsWeb.Models.TotalsByFundRangeModel
 @{
     Layout = ViewExtensions2.TouchPointLayout();
-    if (Model.Pledged == "true")
+    if (Model.Pledged)
     {
         ViewBag.Title = "Pledge Totals by Fund Range";
         ViewBag.ReportPageHeader = "Pledge Totals by Fund Range";
-    }
-    else if (Model.Pledged == "both")
-    {
-        ViewBag.Title = "Pledge Totals by Range (pledges included)";
-        ViewBag.ReportPageHeader = "Pledge Totals by Range (pledges included)";
     }
     else
     {

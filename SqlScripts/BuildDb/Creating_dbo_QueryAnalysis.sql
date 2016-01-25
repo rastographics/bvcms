@@ -4,7 +4,8 @@ CREATE TABLE [dbo].[QueryAnalysis]
 [Seconds] [int] NULL,
 [OriginalCount] [int] NULL,
 [ParsedCount] [int] NULL,
-[Message] [varchar] (max) NULL
+[Message] [varchar] (max) NULL,
+[Updated] [bit] NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION

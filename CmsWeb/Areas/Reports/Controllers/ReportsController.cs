@@ -42,7 +42,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             var replacements = new EmailReplacements(DbUtil.Db, c, null);
 #else
             var c = DbUtil.Db.Content(content);
-            if(c == null)
+            if (c == null)
                 return Message("no content at " + content);
             var replacements = new EmailReplacements(DbUtil.Db, c.Body, null);
 #endif
@@ -309,7 +309,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet]
         public ActionResult Meetings(DateTime dt1, DateTime dt2, int? programid, int? divisionid)
         {
-            var m = new MeetingsModel {Dt1 = dt1, Dt2 = dt2, ProgramId = programid, DivisionId = divisionid};
+            var m = new MeetingsModel { Dt1 = dt1, Dt2 = dt2, ProgramId = programid, DivisionId = divisionid };
             return View(m);
         }
         [HttpPost]
@@ -761,24 +761,26 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             var content = DbUtil.Db.ContentOfTypeSql(report);
             if (content == null)
-                return Content("no content");
+                return Message("no content");
+            if (!CanRunScript(content.Body))
+                return Message("Not Authorized to run this script");
             if (!content.Body.Contains("@qtagid"))
-                return Content("missing @qtagid");
+                return Message("missing @qtagid");
 
             var tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
 
             var cs = User.IsInRole("Finance")
                 ? Util.ConnectionStringReadOnlyFinance
                 : Util.ConnectionStringReadOnly;
-            var cn = new SqlConnection(cs);
-            cn.Open();
-
-            var p = new DynamicParameters();
-            p.Add("@qtagid", tag.Id);
-
-            ViewBag.name = report;
-            var rd = cn.ExecuteReader(content.Body, p);
-            return View(rd);
+            using (var cn = new SqlConnection(cs))
+            {
+                cn.Open();
+                var p = new DynamicParameters();
+                p.Add("@qtagid", tag.Id);
+                ViewBag.name = report;
+                using (var rd = cn.ExecuteReader(content.Body, p))
+                    return View(rd);
+            }
         }
 
 
@@ -797,13 +799,14 @@ namespace CmsWeb.Areas.Reports.Controllers
             var content = DbUtil.Db.ContentOfTypePythonScript(report);
             if (content == null)
                 return Content("no script named " + report);
-            if (!content.Contains("BlueToolbarReport"))
-                 return Content("Missing Call to Query Function 'BlueToolbarReport'");
-            if(id == Guid.Empty)
-                 return Content("Must be run from the BlueToolbar");
+            if (!CanRunScript(content))
+                return Message("Not Authorized to run this script");
+            if (!content.Contains("BlueToolbarReport") && !content.Contains("@BlueToolbarTagId"))
+                return Content("Missing Call to Query Function 'BlueToolbarReport'");
+            if (id == Guid.Empty)
+                return Content("Must be run from the BlueToolbar");
 
-
-            var pe = new PythonEvents(Util.Host);
+            var pe = new PythonModel(Util.Host);
 
             pe.DictionaryAdd("BlueToolbarGuid", id.ToCode());
             foreach (var key in Request.QueryString.AllKeys)
@@ -812,7 +815,17 @@ namespace CmsWeb.Areas.Reports.Controllers
             pe.RunScript(content);
 
             return View(pe);
-             
+
+        }
+        private bool CanRunScript(string script)
+        {
+            if (!script.StartsWith("#Roles=") && !script.StartsWith("--Roles"))
+                return true;
+            var re = new Regex("(--|#)Roles=(?<roles>.*)", RegexOptions.IgnoreCase);
+            var roles = re.Match(script).Groups["roles"].Value.Split(',').Select(aa => aa.Trim());
+            if (!roles.Any(rr => User.IsInRole(rr)))
+                return false;
+            return true;
         }
 
         [HttpPost]
@@ -861,7 +874,14 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet]
         public ActionResult VitalStats()
         {
-            ViewData["table"] = QueryFunctions.VitalStats(DbUtil.Db);
+            var script = DbUtil.Db.ContentOfTypePythonScript("VitalStats");
+            if (!script.HasValue())
+                script = System.IO.File.ReadAllText(Server.MapPath("/Content/VitalStats.py"));
+
+            ViewBag.table = script.Contains("class VitalStats")
+                ? QueryFunctions.OldVitalStats(DbUtil.Db, script)
+                : PythonModel.RunScript(DbUtil.Db.Host, script);
+
             return View();
         }
 
@@ -940,7 +960,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             CustomReportViewModel originalReportViewModel = null;
             if (TempData[TempDataModelStateKey] != null)
             {
-                ModelState.Merge((ModelStateDictionary) TempData[TempDataModelStateKey]);
+                ModelState.Merge((ModelStateDictionary)TempData[TempDataModelStateKey]);
                 originalReportViewModel = TempData[TempDataCustomReportKey] as CustomReportViewModel;
             }
 
@@ -1022,12 +1042,12 @@ namespace CmsWeb.Areas.Reports.Controllers
         public JsonResult DeleteCustomReport(int? orgId, string reportName)
         {
             if (string.IsNullOrEmpty(reportName))
-                return new JsonResult {Data = "Report name is required."};
+                return new JsonResult { Data = "Report name is required." };
 
             var m = new CustomReportsModel(DbUtil.Db, orgId);
             m.DeleteReport(reportName);
 
-            return new JsonResult {Data = "success"};
+            return new JsonResult { Data = "success" };
         }
 
         private static IEnumerable<CustomReportColumn> GetAllStandardColumns(CustomReportsModel model)

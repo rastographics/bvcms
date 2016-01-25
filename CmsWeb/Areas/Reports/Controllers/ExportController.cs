@@ -46,12 +46,6 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             return m.ToExcel(id);
         }
-        [Authorize(Roles = "Finance")]
-        [HttpPost]
-        public ActionResult GLExport(GLExportResult m)
-        {
-            return m;
-        }
 
         [HttpPost]
         public ActionResult MeetingsForDateRange(DateTime dt1, DateTime dt2, OrgSearchModel m)

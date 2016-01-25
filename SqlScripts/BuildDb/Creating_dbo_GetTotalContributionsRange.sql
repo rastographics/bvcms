@@ -1,4 +1,3 @@
-
 CREATE FUNCTION [dbo].[GetTotalContributionsRange]
 (
 	@fd DATETIME, 
@@ -12,8 +11,11 @@ AS
 RETURN 
 (
 	WITH contributions AS (
-	    SELECT Amount, CreditGiverId 
-		FROM dbo.Contributions2(@fd, @td, @campusid, NULL, @nontaxded, @includeUnclosed)
+	    SELECT Amount = c.ContributionAmount, c.PeopleId 
+		FROM dbo.ContributionSearch(NULL, NULL, NULL, NULL, 0, NULL, NULL, @fd, @td, 
+				CASE WHEN ISNULL(@nontaxded, 0) = 1 THEN 'nontaxded' ELSE 'taxded' END, 
+				NULL, @campusid, NULL, @includeUnclosed, NULL, 2) cs
+		JOIN dbo.Contribution c ON c.ContributionId = cs.ContributionId
 	),
 	sums AS (
 		SELECT 
@@ -37,7 +39,7 @@ RETURN
 			    ELSE 1000000
 		   END AS [Range]
 		   FROM contributions
-	    GROUP BY CreditGiverId
+	    GROUP BY PeopleId
 	)
 	SELECT SUM(sums.SumAmt) AS Total, SUM(sums.Count) AS [Count], sums.RANGE
 	FROM sums

@@ -72,8 +72,8 @@ namespace CmsWeb.Areas.Finance.Models.Report
             doc.Open();
             dc = w.DirectContent;
 
-            int prevfid = 0;
-            var runningtotals = Db.ContributionsRuns.OrderByDescending(mm => mm.Id).FirstOrDefault();
+            var prevfid = 0;
+            var runningtotals = Db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
             runningtotals.Processed = 0;
             Db.SubmitChanges();
             var count = 0;

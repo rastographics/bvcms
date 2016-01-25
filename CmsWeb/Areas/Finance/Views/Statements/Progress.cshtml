@@ -1,66 +1,62 @@
-﻿@model CmsData.ContributionsRun
+﻿@using UtilityExtensions
+@model CmsData.ContributionsRun
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Contribution Statements";
     ViewBag.ReportPageHeader = "Contribution Statements";
+    var links = (string) ViewBag.download;
+}
+@section head {
+  @if (Model.Running == 1)
+  {
+    <meta http-equiv="refresh" content="5">
+  }
 }
 <div class="report box box-responsive">
     <div class="box-content">
         <div class="table-responsive">
             <table class="table table-striped">
                 <tr>
-                    <td>Started</td>
-                    <td>@Model.Started</td>
+                  <td>
+                    @if (Model.Started.HasValue)
+                    {
+                      @:Started at @Model.Started
+                    }
+                  </td>
                 </tr>
+              <tr>
+                <td>Total Contributors: @Model.Count.ToString2("N0")</td>
+              </tr>
+              @if (Model.Running == 1)
+              {
                 <tr>
-                    <td>Total Contributors</td>
-                    <td><span id="count">@Model.Count</span></td>
+                  <td>
+                    Running... working on @Model.Processed records in set #@Model.CurrSet
+                  </td>
                 </tr>
+              }
+              else
+              {
                 <tr>
-                    <td>Processed</td>
-                    <td><span id="processed">@Model.Processed</span></td>
+                    <td>Completed at @Model.Completed</td>
                 </tr>
+              }
+              @if (Model.Error.HasValue())
+              {
                 <tr>
-                    <td>Page Set</td>
-                    <td><span id="set">@Model.CurrSet</span></td>
+                    <td><span style="color:red">Error: @(Model.Error ?? "")</span></td>
                 </tr>
+              }
+              @if (links.HasValue())
+              {
                 <tr>
-                    <td>Completed</td>
-                    <td><span id="completed">@Model.Completed</span></td>
+                  <td>Download links<br/>@Html.Raw(links)</td>
                 </tr>
-                <tr>
-                    <td>Error</td>
-                    <td><span id="error">@(Model.Error ?? "")</span></td>
-                </tr>
+                
+              }
             </table>
         </div>
-        <div id="download" style="display:none">
-            Download Statements
-        </div>
+      <div id="download">
+      </div>
     </div>
 </div>
-@section scripts{
-    @if (Model.Running == 1)
-    {
-        <script type="text/javascript">
-            $(function () {
-                $.block();
-                var intervalId = window.setInterval(function () {
-                    $.post('/Statements/Progress2', null, function (json) {
-                        $("#count").text(json.Count);
-                        $("#processed").text(json.Processed);
-                        $("#completed").text(json.Completed);
-                        $("#set").text(json.CurrSet);
-                        $("#error").text(json.Error);
-                        if (json.Completed) {
-                            $("#download").show();
-                            $("#download").html(json.html);
-                            $.unblock();
-                            window.clearInterval(intervalId);
-                        }
-                    }, "json");
-                }, 5000);
-            });
-        </script>
-    }
-}

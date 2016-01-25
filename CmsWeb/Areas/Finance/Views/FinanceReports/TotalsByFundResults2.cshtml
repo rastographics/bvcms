@@ -16,10 +16,10 @@
                 <tr>
                     <td>
                         <a href="@t.BundleTotalsUrl()" target="bundles">
-                            @t.FundName (@t.FundId)
-                        </a>
+                            @t.FundName (@t.FundId)</a>
                         @(t.QBSynced == 1 ? " (QBSynced)" : "")
                         @(t.OnLine == 1 ? " (Online)" : "")
+                        @(t.GeneralLedgerId.HasValue() ? $" GL:{t.GeneralLedgerId}" : "")
                     </td>
                     <td>@t.BundleType</td>
                     <td class="text-right">

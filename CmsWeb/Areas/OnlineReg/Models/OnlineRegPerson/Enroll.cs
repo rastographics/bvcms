@@ -261,7 +261,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 foreach (var op in ((AskDropdown) ask).list)
                     op.RemoveFromSmallGroup(DbUtil.Db, om);
-                ((AskDropdown) ask).SmallGroupChoice(option).AddToSmallGroup(DbUtil.Db, om, PythonEvents);
+                ((AskDropdown) ask).SmallGroupChoice(option).AddToSmallGroup(DbUtil.Db, om, PythonModel);
             }
         }
 
@@ -297,7 +297,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 foreach (var ck in ((AskCheckboxes) ask).list)
                     ck.RemoveFromSmallGroup(DbUtil.Db, om);
                 foreach (var i in ((AskCheckboxes) ask).CheckboxItemsChosen(Checkbox))
-                    i.AddToSmallGroup(DbUtil.Db, om, PythonEvents);
+                    i.AddToSmallGroup(DbUtil.Db, om, PythonModel);
             }
         }
 

@@ -80,7 +80,7 @@
     {{#if HasLabel}}
       <tr>
         <td></td>
-        <td style='{{DataLabelStyle}}'>{{Label}}</td>
+        <td style='{{DataLabelStyle}}'>{{{Label}}}</td>
       </tr>
 		{{/if}}
     <tr>
@@ -176,7 +176,7 @@
 	{{#IfAskRequest}}
     <tr>
       <td style='{{LabelStyle}}'>Request</td>
-      <td style='{{DataLabelStyle}}'>{{Label}}</td>
+      <td style='{{DataLabelStyle}}'>{{{Label}}}</td>
     </tr>
     <tr>
       <td style='{{LabelStyle}}{{BottomBorder}}'></td>
@@ -192,7 +192,7 @@
 	{{#IfAskInstruction}}
     <tr>
       <td></td>
-      <td style='{{DataLabelStyle}}{{BottomBorder}}'>{{Label}}</td>
+      <td style='{{DataLabelStyle}}{{BottomBorder}}'>{{{Label}}}</td>
     </tr>
 	{{/IfAskInstruction}}
 	{{#IfAskAllergies}}

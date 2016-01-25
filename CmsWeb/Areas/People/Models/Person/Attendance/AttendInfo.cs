@@ -32,5 +32,6 @@ namespace CmsWeb.Areas.People.Models
         public int OtherAttends { get; set; }
         public string Commitment { get; set; }
         public bool conflict { get; set; }
+        public string AttendCredit { get; set; }
     }
 }

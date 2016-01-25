@@ -323,6 +323,8 @@
     <Compile Include="Areas\Finance\Models\BatchImport\CapitalCityImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\DepositRecord.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\AbundantLifeImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\AnchorBibleQbImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\HunterStreetImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\EnonImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\HollyCreekImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\BankOfNorthGeorgiaImporter.cs">
@@ -946,6 +948,8 @@
     <Content Include="Content\touchpoint\js\people\merge.js" />
     <Content Include="Content\touchpoint\js\search\export-query.js" />
     <Content Include="Content\touchpoint\js\volunteer\calendar.js" />
+    <Content Include="Content\touchpoint\lib\bootstrap-sweetalert\js\sweetalert.min.js" />
+    <Content Include="Content\touchpoint\lib\bootstrap-sweetalert\css\sweetalert.css" />
     <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\dialogs\specialLink.js" />
     <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\icons\specialLink.png" />
     <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\plugin.js" />
@@ -999,7 +1003,6 @@
     <Content Include="Content\touchpoint\lib\bootstrap-editable\js\bootstrap-editable.min.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-multiselect\css\bootstrap-multiselect.css" />
     <Content Include="Content\touchpoint\lib\bootstrap-multiselect\js\bootstrap-multiselect.js" />
-    <Content Include="Content\touchpoint\lib\bootstrap-sweetalert\js\sweet-alert.min.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-tabdrop\css\tabdrop.css" />
     <Content Include="Content\touchpoint\lib\bootstrap-tabdrop\js\bootstrap-tabdrop.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-tabdrop\js\extensions_bootstrap-tabdrop.js" />
@@ -1552,7 +1555,7 @@
     <Content Include="Areas\Manage\Views\Batch\BatchUpdate.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\UpdateRegOptions.cshtml" />
     <Content Include="Scripts\bundle.onlineregister.js" />
-    <Content Include="test.py" />
+    <Content Include="Content\VitalStats.py" />
     <Content Include="Views\Shared\EditorTemplates\DateAndTime.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\SqlReport.cshtml" />
     <Content Include="Areas\Org\Views\OrgSearch\Modals\Rollsheet.cshtml" />
@@ -1571,6 +1574,7 @@
     <Content Include="Areas\Org\Views\OrgSearch\RecentVisitsAbsents.xml" />
     <Content Include="Areas\Reports\Views\Reports\PyScript.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Code.cshtml" />
+    <None Include="Areas\Finance\Views\FinanceReports\TotalsByAgeRange.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />
@@ -2826,9 +2830,6 @@
     <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\vendor-prefixes.less" />
     <Content Include="Content\touchpoint\src\less\bootstrap-datetimepicker\bootstrap-datetimepicker-build.less" />
     <Content Include="Content\touchpoint\src\less\bootstrap-datetimepicker\bootstrap-datetimepicker.less" />
-    <Content Include="Content\touchpoint\src\less\bootstrap-sweetalert\sweet-alert-animations.less" />
-    <Content Include="Content\touchpoint\src\less\bootstrap-sweetalert\sweet-alert-combine.less" />
-    <Content Include="Content\touchpoint\src\less\bootstrap-sweetalert\sweet-alert.less" />
     <Content Include="Content\touchpoint\src\less\print.less" />
     <Content Include="Content\touchpoint\src\less\account.less" />
     <Content Include="Content\touchpoint\src\less\error.less" />

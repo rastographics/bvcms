@@ -22,8 +22,7 @@
         BootstrapDialog.show({
             message: $('<pre id="code" style="font-family: Consolas,Courier;' +
                     'overflow: auto;word-wrap: none;white-space: pre;' +
-                    'width:100%;height:350px;word-wrap:' +
-                    'initial;padding: 5px;"></pre>')
+                    'word-wrap:initial; padding: 5px;"></pre>')
                 .load(this.href),
             size: 'size-wide',
             closable: true,

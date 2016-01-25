@@ -60,25 +60,5 @@ namespace CmsWeb.Areas.Public.Controllers
             Session["testnofinance"] = "true";
             return Redirect("/Person2/Current");
         }
-        [HttpGet]
-        [Authorize(Roles = "Developer")]
-        public ActionResult RunScript()
-        {
-            return View();
-        }
-        [HttpPost]
-        [ValidateInput(false)]
-        [Authorize(Roles = "Developer")]
-        public ActionResult RunScript(string script)
-        {
-            return Content(QueryFunctions.RunScript(DbUtil.Db, script));
-        }
-            /*
-print """
-<div title='hellow world'>
-{0}
-</div>
-""".format("test")
-             */
     }
 }

@@ -1826,6 +1826,12 @@ namespace CmsData
 
         }
 
+        public Table< View.FailedRecurringGiving> ViewFailedRecurringGivings
+        {
+            get { return GetTable< View.FailedRecurringGiving>(); }
+
+        }
+
         public Table< View.FamilyFirstTime> ViewFamilyFirstTimes
         {
             get { return GetTable< View.FamilyFirstTime>(); }
@@ -2728,6 +2734,27 @@ namespace CmsData
             return CreateMethodCallQuery< View.GetContribution>(this,
                 ((MethodInfo)(MethodBase.GetCurrentMethod())),
                     fid,
+                    pledge
+                );
+        }
+
+        [Function(Name="dbo.GetContributionsRange", IsComposable = true)]
+        public IQueryable< View.GetContributionsRange > GetContributionsRange(
+            [Parameter(DbType="datetime")] DateTime? fd,
+            [Parameter(DbType="datetime")] DateTime? td,
+            [Parameter(DbType="int")] int? campusid,
+            [Parameter(DbType="bit")] bool? nontaxded,
+            [Parameter(DbType="bit")] bool? includeUnclosed,
+            [Parameter(DbType="bit")] bool? pledge
+            )
+        {
+            return CreateMethodCallQuery< View.GetContributionsRange>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    fd,
+                    td,
+                    campusid,
+                    nontaxded,
+                    includeUnclosed,
                     pledge
                 );
         }

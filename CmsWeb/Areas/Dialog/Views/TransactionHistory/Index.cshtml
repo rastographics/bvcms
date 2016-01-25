@@ -26,6 +26,7 @@
                                 <th></th>
                                 <th>Flag</th>
                                 <th>Wk</th>
+                                <th></th>
                                 <th>Sch</th>
                                 <th>Day</th>
                                 <th>Meeting Date</th>
@@ -41,7 +42,7 @@
                                 <tr>
                                     <td>@a.Indicator </td>
                                     <td>@a.AttendanceFlag </td>
-                                    <td>@a.MeetingDate.GetWeekNumber()</td>
+                                  <td>@a.MeetingDate.GetWeekNumber()@a.AttendCredit</td>
                                     <td>@a.ScheduleType</td>
                                     <td>@a.MeetingDate.DayOfWeek.ToString().Substring(0, 3)</td>
                                     <td>@a.MeetingDate.ToString("g") </td>

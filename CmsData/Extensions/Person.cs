@@ -187,7 +187,7 @@ namespace CmsData
                 db.TransactionPeople.DeleteAllOnSubmit(TransactionPeople);
                 TrySubmit(db, "Delete TransactionPeople");
                 foreach (var tp in tplist)
-                    if(!db.TransactionPeople.Any(tt => tt.Id == tp.Id && tt.PeopleId == targetid && tt.OrgId == tp.OrgId))
+                    if (!db.TransactionPeople.Any(tt => tt.Id == tp.Id && tt.PeopleId == targetid && tt.OrgId == tp.OrgId))
                         db.TransactionPeople.InsertOnSubmit(new TransactionPerson
                         {
                             OrgId = tp.OrgId,
@@ -1588,22 +1588,22 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 case "image/pjpeg":
                 case "image/gif":
                 case "image/png":
-                mdf.IsDocument = false;
-                mdf.SmallId = Image.NewImageFromBits(bits, 165, 220).Id;
-                mdf.MediumId = Image.NewImageFromBits(bits, 675, 900).Id;
-                mdf.LargeId = Image.NewImageFromBits(bits).Id;
-                break;
+                    mdf.IsDocument = false;
+                    mdf.SmallId = Image.NewImageFromBits(bits, 165, 220).Id;
+                    mdf.MediumId = Image.NewImageFromBits(bits, 675, 900).Id;
+                    mdf.LargeId = Image.NewImageFromBits(bits).Id;
+                    break;
                 case "text/plain":
                 case "application/pdf":
                 case "application/msword":
                 case "application/vnd.ms-excel":
-                mdf.MediumId = Image.NewImageFromBits(bits, mimetype).Id;
-                mdf.SmallId = mdf.MediumId;
-                mdf.LargeId = mdf.MediumId;
-                mdf.IsDocument = true;
-                break;
+                    mdf.MediumId = Image.NewImageFromBits(bits, mimetype).Id;
+                    mdf.SmallId = mdf.MediumId;
+                    mdf.LargeId = mdf.MediumId;
+                    mdf.IsDocument = true;
+                    break;
                 default:
-                throw new FormatException("file type not supported: " + mimetype);
+                    throw new FormatException("file type not supported: " + mimetype);
             }
             db.SubmitChanges();
         }
@@ -1677,5 +1677,55 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         {
             return Users.ToList();
         }
+        public void UpdateContributionOption(CMSDataContext db, int option)
+        {
+            UpdateOption(db, "ContributionOptionsId", option);
+        }
+
+        public void UpdateEnvelopeOption(CMSDataContext db, int option)
+        {
+            UpdateOption(db, "EnvelopeOptionsId", option);
+        }
+        private void UpdateOption(CMSDataContext db, string field, int option)
+        {
+            int? opt = option;
+            if (opt == 0)
+                opt = null;
+            UpdateValue(field, opt);
+            LogChanges(db);
+            var sp = db.LoadPersonById(SpouseId ?? 0);
+            if (sp != null)
+            switch (opt)
+            {
+                case StatementOptionCode.Joint:
+                case StatementOptionCode.Individual:
+                case StatementOptionCode.None:
+                    sp.UpdateValue(field, opt);
+                    sp.LogChanges(db);
+                    break;
+                case null:
+                    if (sp.ContributionOptionsId == StatementOptionCode.Joint)
+                    {
+                        sp.UpdateValue(field, null);
+                        sp.LogChanges(db);
+                    }
+                    break;
+            }
+            db.SubmitChanges();
+        }
+        public void UpdateElectronicStatement(CMSDataContext db, bool tf)
+        {
+            const string field = "ElectronicStatement";
+            UpdateValue(field, tf);
+            var sp = db.LoadPersonById(SpouseId ?? 0);
+            if (sp != null && ContributionOptionsId == StatementOptionCode.Joint)
+            {
+                sp.UpdateValue(field, tf);
+                sp.LogChanges(db);
+            }
+            LogChanges(db);
+            db.SubmitChanges();
+        }
+
     }
 }

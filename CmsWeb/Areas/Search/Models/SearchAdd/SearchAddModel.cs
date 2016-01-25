@@ -377,7 +377,18 @@ namespace CmsWeb.Areas.Search.Models
                                 && os.ScheduleId == ss.ScheduleId)));
                     if (om != null)
                     {
-                        message = $"Already a member of {om.OrganizationId} (orgid) with same schedule";
+                        message = ViewExtensions2.Markdown($@"
+**Already a member of {om.OrganizationId} (orgid) with same schedule**
+
+You can do one of these things:
+
+* Drop the person from the other org first
+* Use the 'move' feature to transfer them to the new org
+* Use Allow Attendance Overlap, if appropriate
+* See <a href=""http://docs.touchpointsoftware.com/Organizations/AlreadyAMember.html"" 
+  title=""Already a Member"" target=""_blank"">this help article</a>
+").ToString();
+message = $@"<div style=""text-align: left"">{message}</div>";
                         return new ReturnResult {close = true, how = "CloseAddDialog", message = message, from = AddContext};
                     }
                 }

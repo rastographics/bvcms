@@ -199,32 +199,31 @@ namespace CmsData
             return q;
         }
 
-        public IQueryable<Person> PeopleQuery2(object name)
+        public IQueryable<Person> PeopleQuery2(object query)
         {
-            return PeopleQuery2(name.ToString());
+            return PeopleQuery2(query.ToString());
         }
 
-        public IQueryable<Person> PeopleQuery2(string name)
+        public IQueryable<Person> PeopleQuery2(string query)
         {
-            if (name.AllDigits())
-                name = "peopleid=" + name;
-            if (name.StartsWith("peopleid", StringComparison.OrdinalIgnoreCase))
+            if (query.AllDigits())
+                query = "peopleid=" + query;
+            else
             {
-                var pids = new List<int>();
-                var re = new Regex(@"(\d+)");
-                var m = re.Match(name);
-                while (m.Success)
+                var m = Regex.Match(query, @"peopleids{0,1}\s*?=\s*?(?<pids>\d+(,\s*?\d+)*)");
+                if(m.Success)
                 {
-                    pids.Add(m.Value.ToInt());
-                    m = m.NextMatch();
-                }
-                if (pids.Count > 0)
-                    return People.Where(pp => pids.Contains(pp.PeopleId));
+                    var pids = m.Groups["pids"].Value;
+                    query = $"PeopleIds = '{pids}'";
+                }                
             }
-
-            var qB = Queries.FirstOrDefault(cc => cc.Name == name);
+            var qB = Queries.FirstOrDefault(cc => cc.Name == query);
             if (qB == null)
+            {
+                if(query.HasValue())
+                    return PeopleQueryCode(query);
                 qB = MatchNothing();
+            }
             var c = qB.ToClause();
             var q = People.Where(c.Predicate(this));
             if (c.PlusParentsOf)
@@ -326,7 +325,7 @@ namespace CmsData
         public void TagAll2(IQueryable<Person> list, Tag tag)
         {
             ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
-            var q2 = list.Select(pp => pp.PeopleId);
+            var q2 = list.Select(pp => pp.PeopleId).Distinct();
             var cmd = GetCommand(q2);
             var s = cmd.CommandText;
             var plist = new List<DbParameter>();
@@ -342,8 +341,8 @@ namespace CmsData
                 s = Regex.Replace(s, $@"@p{n++}\b", $"{{{pn++}}}");
                 plist.Add(pa);
             }
-            s = Regex.Replace(s, "^SELECT( DISTINCT)?",
-                @"INSERT INTO TagPerson (Id, PeopleId) $0 " + tag.Id + ",");
+            s = Regex.Replace(s, @"^SELECT( DISTINCT| TOP \(\d+\))?", 
+                $"INSERT INTO TagPerson (Id, PeopleId) $0 {tag.Id},");
             var a = plist.Select(pp => pp.Value).ToArray();
             ExecuteCommand(s, a);
         }
@@ -419,16 +418,21 @@ namespace CmsData
                 s = Regex.Replace(s, $@"@p{n++}\b", $"{{{pn++}}}");
                 plist.Add(pa);
             }
-            s = Regex.Replace(s, "^SELECT( DISTINCT)?",
-                @"INSERT INTO TagPerson (Id, PeopleId) $0 " + tag.Id + ",");
+            s = Regex.Replace(s, @"^SELECT( DISTINCT| TOP \(\d+\))?", 
+                $"INSERT INTO TagPerson (Id, PeopleId) $0 {tag.Id},");
             ExecuteCommand(s, plist.Select(pp => pp.Value).ToArray());
             return tag;
         }
-        public Tag PopulateTemporaryTag(IQueryable<int> q)
+        public Tag NewTemporaryTag()
         {
             var tag = FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? Util.UserId1, NextTagId);
             Debug.Assert(NextTagId != 10, "got a 10");
             ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
+            return tag;
+        }
+        public Tag PopulateTemporaryTag(IQueryable<int> q)
+        {
+            var tag = NewTemporaryTag();
             var cmd = GetCommand(q);
             var s = cmd.CommandText;
             var plist = new List<DbParameter>();
@@ -445,9 +449,9 @@ namespace CmsData
                 s = Regex.Replace(s, $@"@p{n++}\b", $"{{{pn++}}}");
                 plist.Add(pa);
             }
+            s = Regex.Replace(s, @"^SELECT( DISTINCT| TOP \(\d+\))?", 
+                $"INSERT INTO TagPerson (Id, PeopleId) $0 {tag.Id},");
 
-            s = Regex.Replace(s, "^SELECT( DISTINCT)?",
-                @"INSERT INTO TagPerson (Id, PeopleId) $0 " + tag.Id + ",");
             ExecuteCommand(s, plist.Select(pp => pp.Value).ToArray());
             return tag;
         }
@@ -1477,6 +1481,19 @@ namespace CmsData
             // The following will clean out any tags that no longer have a corresponding F99:name in the queries
             ExecuteCommand("dbo.DeleteOldQueryBitTags");
         }
-
+        [Function(Name = "dbo.TagRecentStartAttend")]
+        public int TagRecentStartAttend(
+            [Parameter(DbType = "Int")] int progid, 
+            [Parameter(DbType = "Int")] int divid, 
+            [Parameter(DbType = "Int")] int org, 
+            [Parameter(DbType = "Int")] int orgtype, 
+            [Parameter(DbType = "Int")] int days0, 
+            [Parameter(DbType = "Int")] int days, 
+            [Parameter(DbType = "Int")] int tagid) 
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), 
+                progid, divid, org, orgtype, days0, days, tagid);
+            return ((int)(result.ReturnValue));
+        }
     }
 }

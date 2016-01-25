@@ -115,9 +115,9 @@ namespace CmsWeb.Areas.Finance.Controllers
         }
 
         [HttpGet]
-        public ActionResult TotalsByFundRange(string pledged)
+        public ActionResult TotalsByFundRange(bool? pledged)
         {
-            var m = new TotalsByFundRangeModel{ Pledged = pledged };
+            var m = new TotalsByFundRangeModel{ Pledged = pledged ?? false };
             return View(m);
         }
 

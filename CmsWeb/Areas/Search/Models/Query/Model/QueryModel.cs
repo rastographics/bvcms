@@ -137,7 +137,7 @@ namespace CmsWeb.Areas.Search.Models
             }
         }
 
-        public string ConditionText { get { return fieldMap.Title; } }
+        public string ConditionText { get { return fieldMap.Name; } }
 
         public IEnumerable<CategoryClass> FieldCategories()
         {

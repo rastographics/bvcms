@@ -104,11 +104,13 @@ namespace CmsWeb.Areas.People.Controllers
             switch (name)
             {
                 case "ContributionOptions":
+                    m.Person.UpdateContributionOption(DbUtil.Db, value.ToInt());
+                    break;
                 case "EnvelopeOptions":
-                    m.UpdateEnvelopeOption(name, value.ToInt());
+                    m.Person.UpdateEnvelopeOption(DbUtil.Db, value.ToInt());
                     break;
                 case "ElectronicStatement":
-                    m.UpdateElectronicStatement(value.ToBool());
+                    m.Person.UpdateElectronicStatement(DbUtil.Db, value.ToBool());
                     break;
             }
             return new EmptyResult();

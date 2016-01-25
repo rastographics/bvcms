@@ -564,8 +564,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                    select f;
         }
 
-        private PythonEvents _pythonEvents;
-        public PythonEvents PythonEvents => _pythonEvents ?? (_pythonEvents = HttpContext.Current.Items["PythonEvents"] as PythonEvents);
+        private PythonModel pythonModel;
+        public PythonModel PythonModel => pythonModel ?? (pythonModel = HttpContext.Current.Items["PythonEvents"] as PythonModel);
 
         private readonly Dictionary<string, string> _nameLookup = new Dictionary<string, string>()
         {
