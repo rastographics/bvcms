@@ -252,8 +252,8 @@ namespace CmsWeb.Areas.Search.Models
                         return new ReturnResult {close = true, how = "addselected", pid = PrimaryKeyForContextType.ToInt(), pid2 = PendingList[0].PeopleId, from = AddContext};
                     break;
                 case "addtoemail":
-                    //need to add correct code here 
-                    //return AddPeopleToTag(id, 0);
+                    if (PendingList.Count > 0)
+                        return new ReturnResult { close = true, how = "addselected", pid = PendingList[0].PeopleId, from = AddContext, name=PendingList[0].Person.Name };
                     break;
             }
             return new ReturnResult {close = true, from = AddContext};
