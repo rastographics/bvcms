@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using IronPython.Hosting;
 using UtilityExtensions;
@@ -141,6 +142,14 @@ namespace CmsData
                 db.QbEndDateOverride = null;
                 db.QbDivisionOverride = null;
             }
+        }
+        public IEnumerable<Person> QueryList2(object query, string sort, bool ascending)
+        {
+            var q = db.PeopleQuery2(query);
+            if (!ascending)
+                sort = sort + " desc";
+            q = SortList(sort, q);
+            return q.Take(1000);
         }
     }
 }

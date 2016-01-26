@@ -657,7 +657,7 @@ namespace CmsData.API
         public void SendVolunteerReminders(int id, bool sendall)
         {
             var org = Db.LoadOrganizationById(id);
-            DbUtil.Db.SetCurrentOrgId(id);
+            Db.SetCurrentOrgId(id);
             var setting = Db.CreateRegistrationSettings(id);
             setting.org = org;
             var currmembers = (from om in org.OrganizationMembers

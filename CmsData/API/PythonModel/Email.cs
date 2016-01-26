@@ -40,39 +40,43 @@ namespace CmsData
 
         public void Email(object savedQuery, int queuedBy, string fromAddr, string fromName, string subject, string body)
         {
-            var q = db.PeopleQuery2(savedQuery);
-            if (q == null)
-                return;
-            Email2(q, queuedBy, fromAddr, fromName, subject, body);
+            using (var db2 = NewDataContext())
+            {
+                var q = db2.PeopleQuery2(savedQuery);
+                if (q == null)
+                    return;
+                Email2(db2, q, queuedBy, fromAddr, fromName, subject, body);
+            }
         }
 
         public void Email2(Guid qid, int queuedBy, string fromAddr, string fromName, string subject, string body)
         {
-            var q = db.PeopleQuery(qid);
-            Email2(q, queuedBy, fromAddr, fromName, subject, body);
+            using (var db2 = NewDataContext())
+            {
+                var q = db2.PeopleQuery(qid);
+                Email2(db2, q, queuedBy, fromAddr, fromName, subject, body);
+            }
         }
 
-        private void Email2(IQueryable<Person> q, int queuedBy, string fromAddr, string fromName, string subject,
+        private void Email2(CMSDataContext db2, IQueryable<Person> q, int queuedBy, string fromAddr, string fromName, string subject,
             string body)
         {
-            //db.Log($"Email2 {subject}");
             var from = new MailAddress(fromAddr, fromName);
             q = from p in q
                 where p.EmailAddress != null
                 where p.EmailAddress != ""
                 where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
                 select p;
-            var tag = db.PopulateSpecialTag(q, DbUtil.TagTypeId_Emailer);
+            var tag = db2.PopulateSpecialTag(q, DbUtil.TagTypeId_Emailer);
 
             Util.IsInRoleEmailTest = TestEmail;
-            var queueremail = db.People.Where(pp => pp.PeopleId == queuedBy).Select(pp => pp.EmailAddress).Single();
+            var queueremail = db2.People.Where(pp => pp.PeopleId == queuedBy).Select(pp => pp.EmailAddress).Single();
             Util.UserEmail = queueremail;
-            db.SetCurrentOrgId(CurrentOrgId);
+            db2.SetCurrentOrgId(CurrentOrgId);
 
-            var emailqueue = db.CreateQueue(queuedBy, from, subject, body, null, tag.Id, false);
+            var emailqueue = db2.CreateQueue(queuedBy, from, subject, body, null, tag.Id, false);
             emailqueue.Transactional = Transactional;
-            db.SendPeopleEmail(emailqueue.Id);
-            //db.Log($"Email2 (queued) {subject}");
+            db2.SendPeopleEmail(emailqueue.Id);
         }
 
         public void EmailContent(object savedQuery, int queuedBy, string fromAddr, string fromName, string contentName)
@@ -111,20 +115,26 @@ namespace CmsData
             var c = db.ContentOfTypeHtml(contentName);
             if (c == null)
                 return;
-            var q = db.PeopleQuery2(savedQuery);
-            Email2(q, queuedBy, fromAddr, fromName, subject, c.Body);
+            using (var db2 = NewDataContext())
+            {
+                var q = db2.PeopleQuery2(savedQuery);
+                Email2(db2, q, queuedBy, fromAddr, fromName, subject, c.Body);
+            }
         }
 
         public void EmailReminders(object orgId)
         {
-            var oid = orgId.ToInt();
-            var org = db.LoadOrganizationById(oid);
-            var m = new APIOrganization(db);
-            Util.IsInRoleEmailTest = TestEmail;
-            if (org.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)
-                m.SendVolunteerReminders(oid, false);
-            else
-                m.SendEventReminders(oid);
+            using (var db2 = NewDataContext())
+            {
+                var oid = orgId.ToInt();
+                var org = db2.LoadOrganizationById(oid);
+                var m = new APIOrganization(db2);
+                Util.IsInRoleEmailTest = TestEmail;
+                if (org.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)
+                    m.SendVolunteerReminders(oid, false);
+                else
+                    m.SendEventReminders(oid);
+            }
         }
 
         /// <summary>
@@ -134,27 +144,30 @@ namespace CmsData
         /// </summary>
         public void EmailReport(object savedquery, int queuedBy, string fromaddr, string fromname, string subject, string report)
         {
-            var from = new MailAddress(fromaddr, fromname);
-            var q = db.PeopleQuery2(savedquery);
+            using (var db2 = NewDataContext())
+            {
+                var from = new MailAddress(fromaddr, fromname);
+                var q = db2.PeopleQuery2(savedquery);
 
-            q = from p in q
-                where p.EmailAddress != null
-                where p.EmailAddress != ""
-                where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
-                select p;
-            var tag = db.PopulateSpecialTag(q, DbUtil.TagTypeId_Emailer);
+                q = from p in q
+                    where p.EmailAddress != null
+                    where p.EmailAddress != ""
+                    where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
+                    select p;
+                var tag = db2.PopulateSpecialTag(q, DbUtil.TagTypeId_Emailer);
 
-            var script = db.ContentOfTypePythonScript(report);
-            if (script == null)
-                return;
+                var script = db2.ContentOfTypePythonScript(report);
+                if (script == null)
+                    return;
 
-            var emailbody = RunScript(script);
-            var emailqueue = db.CreateQueue(queuedBy, from, subject, emailbody, null, tag.Id, false);
+                var emailbody = RunScript(script);
+                var emailqueue = db2.CreateQueue(queuedBy, from, subject, emailbody, null, tag.Id, false);
 
-            emailqueue.Transactional = Transactional;
-            Util.IsInRoleEmailTest = TestEmail;
+                emailqueue.Transactional = Transactional;
+                Util.IsInRoleEmailTest = TestEmail;
 
-            db.SendPeopleEmail(emailqueue.Id);
+                db2.SendPeopleEmail(emailqueue.Id);
+            }
         }
 
 
