@@ -37,7 +37,7 @@ namespace CmsWeb.Areas.Org.Models
         {
             var q = from p in DbUtil.Db.OrgPeople(Id, GroupSelect,
                         this.First(), this.Last(), SgFilter, ShowHidden,
-                        Util2.CurrentTag, Util2.CurrentTagOwnerId,
+                        Util2.CurrentTagName, Util2.CurrentTagOwnerId,
                         FilterIndividuals, FilterTag, ShowMinistryInfo, Util.UserPeopleId)
                     select p;
             return q;

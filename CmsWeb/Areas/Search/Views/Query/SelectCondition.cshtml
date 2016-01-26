@@ -4,126 +4,126 @@
     var categories = Model.FieldCategories().ToList();
 }
 <div class="modal fade" id="QueryConditionSelect">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title hidden-xs">Conditions</h4>
-                <div class="row visible-xs-block">
-                    <div class="col-xs-10">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
-                            <input type="text" class="form-control searchConditions" placeholder="Filter">
-                        </div>
-                    </div>
-                </div>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title hidden-xs">Conditions</h4>
+        <div class="row visible-xs-block">
+          <div class="col-xs-10">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
+              <input type="text" class="form-control searchConditions" placeholder="Filter">
             </div>
-            <div class="modal-body">
-                <div>
-                    <ul class="nav nav-tabs hidden-xs" id="condition-tabs">
-                        <li class="active"><a href="#all" data-toggle="tab">All</a></li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Categories <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                @for (var i = 0; i < categories.Count; i++)
-                                {
-                                    var category = categories[i];
-                                    <li><a href="#@category.Name" data-toggle="tab">@category.Title</a></li>
-                                }
-                            </ul>
-                        </li>
-                    </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="all">
-                            <div class="row hidden-xs">
-                                <div class="col-xs-12">
-                                    <div class="input-group input-group-lg">
-                                        <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
-                                        <input type="text" class="form-control searchConditions" placeholder="Filter">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <div class="condition-results">
-                                        <table class="table table-striped" id="all-conditions">
-                                            @foreach (var category in categories)
-                                            {
-                                                <thead>
-                                                    <tr>
-                                                        <th colspan="2">@category.Title</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach (var field in category.Fields)
-                                                    {
-                                                        <tr>
-                                                            <td class="FieldLink" style="cursor: pointer;">
-                                                                <a href="#" id="@field.Name">@field.Title</a><br />
-                                                                @field.Description
-                                                            </td>
-                                                            <td class="text-right">
-                                                                @GetHelpArticleButton(field.Name)
-                                                            </td>
-                                                        </tr>
-                                                    }
-                                                </tbody>
-                                            }
-                                        </table>                            
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        @for (var i = 0; i < categories.Count; i++)
-                        {
-                            var category = categories[i];
-                            <div class="tab-pane" id="@category.Name">
-                                @if (category.TopMessage.HasValue())
-                                {
-                                    <div class="alert alert-info">
-                                        @category.TopMessage
-                                    </div>
-                                }
-                                <div class="condition-results">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th colspan="2">@category.Title</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach (var field in category.Fields)
-                                            {
-                                                <tr>
-                                                    <td class="FieldLink" style="cursor: pointer;">
-                                                        <a href="#" id="@field.Name">@field.Title</a><br />
-                                                        @field.Description
-                                                    </td>
-                                                    <td class="text-right">
-                                                        @GetHelpArticleButton(field.Name)
-                                                    </td>
-                                                </tr>
-                                            }
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
+      </div>
+      <div class="modal-body">
+        <div>
+          <ul class="nav nav-tabs hidden-xs" id="condition-tabs">
+            <li class="active"><a href="#all" data-toggle="tab">All</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Categories <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                @for (var i = 0; i < categories.Count; i++)
+                {
+                  var category = categories[i];
+                    <li><a href="#@category.Name" data-toggle="tab">@category.Title</a></li>
+                }
+              </ul>
+            </li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active" id="all">
+              <div class="row hidden-xs">
+                <div class="col-xs-12">
+                  <div class="input-group input-group-lg">
+                    <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
+                    <input type="text" class="form-control searchConditions" placeholder="Filter">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="condition-results">
+                    <table class="table table-striped" id="all-conditions">
+                      @foreach (var category in categories)
+                      {
+                          <thead>
+                            <tr>
+                              <th colspan="2">@category.Title</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            @foreach (var field in category.Fields)
+                            { 
+                                <tr>
+                                  <td class="FieldLink" style="cursor: pointer;">
+                                    <a href="#" id="@field.Name">@field.Name</a><br />
+                                    @field.Description
+                                  </td>
+                                  <td class="text-right">
+                                    @GetHelpArticleButton(field.Name)
+                                  </td>
+                                </tr>
+                            }
+                          </tbody>
+                      }
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            @for (var i = 0; i < categories.Count; i++)
+            {
+              var category = categories[i];
+                <div class="tab-pane" id="@category.Name">
+                  @if (category.Name == "Finance")
+                  {
+                      <div class="alert alert-info">
+                        Must have Finance role in order to get results for searches relating to actual contributions.
+                      </div>
+                  }
+                  <div class="condition-results">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th colspan="2">@category.Title</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @foreach (var field in category.Fields)
+                        {
+                            <tr>
+                              <td class="FieldLink" style="cursor: pointer;">
+                                <a href="#" id="@field.Name">@field.Title</a><br />
+                                @field.Description
+                              </td>
+                              <td class="text-right">
+                                @GetHelpArticleButton(field.Name)
+                              </td>
+                            </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+            }
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 @helper GetHelpArticleButton(string fieldName)
 {
-    switch (fieldName)
-    {
-        case "DaysAfterNthVisitAsOf":
+switch (fieldName)
+{
+  case "DaysAfterNthVisitAsOf":
             <a href="http://docs.touchpointsoftware.com/SearchBuilder/QB-DaysAfterNthVisitDateRange.html" target="help" class="help btn btn-default"><i class="fa fa-question-circle"></i> Help<span class="hidden-xs"> Article</span></a>
-            break;
-        default:
+    break;
+  default:
             <a href="http://docs.touchpointsoftware.com/SearchBuilder/QB-@(fieldName).html" target="help" class="help btn btn-default"><i class="fa fa-question-circle"></i> Help<span class="hidden-xs"> Article</span></a>
-            break;
-    }
+    break;
+}
 }

@@ -978,7 +978,7 @@ window.Modernizr = (function( window, document, undefined ) {
          feature = feature.toLowerCase();
 
          if ( Modernizr[feature] !== undefined ) {
-           // we're going to quit if you're trying to overwrite an existing test
+           // we're going to quit if you're trying to overwrite an Existing test
            // if we were to allow it, we'd do this:
            //   var re = new RegExp("\\b(no-)?" + feature + "\\b");
            //   docElement.className = docElement.className.replace( re, '' );
@@ -1228,7 +1228,7 @@ window.Modernizr = (function( window, document, undefined ) {
 
       /**
        * The `html5` object is exposed so that more elements can be shived and
-       * existing shiving can be detected on iframes.
+       * Existing shiving can be detected on iframes.
        * @type Object
        * @example
        *

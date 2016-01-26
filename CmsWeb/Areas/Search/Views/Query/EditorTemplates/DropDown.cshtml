@@ -2,14 +2,6 @@
 @model object 
 @{
     var items = (ViewData["items"] as IEnumerable<SelectListItem> ?? new List<SelectListItem>()).ToList();
-    if (Model != null)
-    {
-        var selected = items.FirstOrDefault(ii => ii.Value == Model.ToString());
-        if (selected != null)
-        {
-            selected.Selected = true;
-        }
-    }
 }
 <div class="form-group">
     @Html.LabelFor(m => m, new { @class="control-label" })

@@ -26,9 +26,15 @@ namespace CmsData.OnlineRegSummaryText
                 Text = new List<Dictionary<string, string>> {new Dictionary<string, string>()};
         }
 
+        public OnlineRegPersonModel0(string xml = null, CMSDataContext db = null) 
+            : this(xml)
+        {
+            this.db = db;
+        }
+
         public static OnlineRegPersonModel0 CreateFromSettings(CMSDataContext db, int orgid)
         {
-            var m = new OnlineRegPersonModel0();
+            var m = new OnlineRegPersonModel0(null, db);
             var settings = db.CreateRegistrationSettings(orgid);
             foreach (var ask in settings.AskItems)
             {
@@ -62,8 +68,12 @@ namespace CmsData.OnlineRegSummaryText
         public string AgeGroup()
         {
             foreach (var i in setting.AgeGroups)
+            {
+                if (person == null)
+                    person = db.LoadPersonById(PeopleId);
                 if (person.Age >= i.StartAge && person.Age <= i.EndAge)
                     return i.SmallGroup;
+            }
             return string.Empty;
         }
         public decimal? MissionTripSupportGeneral { get; set; }
@@ -135,6 +145,7 @@ namespace CmsData.OnlineRegSummaryText
         private int eqset;
         private int menuset;
         private int txset;
+        private CMSDataContext db;
 
         private string GetAttr(XElement e, string name)
         {

@@ -91,7 +91,7 @@
         }
     }).data("uiAutocomplete")._renderItem = function (ul, item) {
         return $("<li>")
-            .append("<a><b>" + item.Name + "</b>" + item.Spouse + "<br>" + item.Addr + item.RecentGifts + "</a>")
+            .append("<a><b>" + item.Name + "</b>" + item.Spouse + item.Email + item.Addr + item.RecentGifts + "</a>")
             .appendTo(ul);
     };
 

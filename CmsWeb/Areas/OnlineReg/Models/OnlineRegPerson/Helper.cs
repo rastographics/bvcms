@@ -436,6 +436,27 @@ namespace CmsWeb.Areas.OnlineReg.Models
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "" });
             return list;
         }
+        public IEnumerable<SelectListItem> Campuses()
+        {
+            var campusids = (from cid in DbUtil.Db.Setting("CampusIds", "").Split(',')
+                             where cid.HasValue()
+                             select cid.ToInt()).ToArray();
+            var q = from c in DbUtil.Db.Campus
+                    where campusids.Length == 0  || campusids.Contains(c.Id)
+                    orderby c.Description
+                    select new SelectListItem
+                    {
+                        Value = c.Id.ToString(),
+                        Text = c.Description,
+                        Selected = c.Id == Campus.ToInt()
+                    };
+            var list = q.ToList();
+            var text = RequiredCampus() 
+                ? $"Choose {Util2.CampusLabel}" 
+                : "Optional";
+            list.Insert(0, new SelectListItem {Value = "0", Text = text});
+            return list;
+        }
 
         public override string ToString()
         {
@@ -543,8 +564,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                    select f;
         }
 
-        private PythonEvents _pythonEvents;
-        public PythonEvents PythonEvents => _pythonEvents ?? (_pythonEvents = HttpContext.Current.Items["PythonEvents"] as PythonEvents);
+        private PythonModel pythonModel;
+        public PythonModel PythonModel => pythonModel ?? (pythonModel = HttpContext.Current.Items["PythonEvents"] as PythonModel);
 
         private readonly Dictionary<string, string> _nameLookup = new Dictionary<string, string>()
         {

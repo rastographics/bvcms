@@ -131,6 +131,7 @@ namespace CmsWeb.Areas.People.Models
 
         public CodeInfo PositionInFamily { get; set; }
 
+        [SettingDisplayName("Campus")]
         public CodeInfo Campus { get; set; }
 
         [DisplayName("Birthday")]

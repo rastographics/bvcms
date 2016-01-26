@@ -16,27 +16,31 @@ namespace CmsData
 
             if (SemiEvery == "S")
             {
-                var dt1 = new DateTime(ndt.Year, ndt.Month, Day1.Value);
+                var dt1 = new DateTime(ndt.Year, ndt.Month, Day1 ?? 1);
                 var dt2 = new DateTime(ndt.Year, ndt.Month,
-                        Math.Min(DateTime.DaysInMonth(ndt.Year, ndt.Month), Day2.Value));
+                    Math.Min(DateTime.DaysInMonth(ndt.Year, ndt.Month), Day2 ?? 15));
                 if (ndt <= dt1)
                     return dt1;
                 if (ndt <= dt2)
                     return dt2;
                 return dt1.AddMonths(1);
             }
-            else
+            var startwhen = StartWhen ?? DateTime.Today;
+            var everywhen = EveryN ?? 1;
+            var dt = startwhen;
+            var n = 1;
+            switch (Period)
             {
-                var dt = StartWhen.Value;
-                var n = 1;
-                if (Period == "W")
+                case "W":
                     while (ndt > dt)
-                        dt = StartWhen.Value.AddDays(EveryN.Value * 7 * n++);
-                else if (Period == "M")
+                        dt = startwhen.AddDays(everywhen * 7 * n++);
+                    break;
+                case "M":
                     while (ndt > dt)
-                        dt = StartWhen.Value.AddMonths(EveryN.Value * n++);
-                return dt;
+                        dt = startwhen.AddMonths(everywhen * n++);
+                    break;
             }
+            return dt;
         }
         public int DoGiving(CMSDataContext db)
         {
@@ -96,6 +100,11 @@ namespace CmsData
                     where a.PeopleId == PeopleId
                     select a;
             var tot = q.Where(aa => aa.ContributionFund.FundStatusId == 1).Sum(aa => aa.Amt);
+            t.TransactionPeople.Add(new TransactionPerson
+            {
+                PeopleId = Person.PeopleId,
+                Amt = tot,
+            });
             if (ret.Approved)
             {
                 foreach (var a in q)
@@ -104,11 +113,6 @@ namespace CmsData
                         Person.PostUnattendedContribution(db, a.Amt ?? 0, a.FundId, "Recurring Giving", tranid: t.Id);
                 }
 
-                t.TransactionPeople.Add(new TransactionPerson
-                {
-                    PeopleId = Person.PeopleId,
-                    Amt = tot,
-                });
                 NextDate = FindNextDate(Util.Now.Date.AddDays(1));
                 db.SubmitChanges();
                 if (tot > 0)

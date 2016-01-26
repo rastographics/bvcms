@@ -85,7 +85,7 @@ WHERE 1 = 1
     --AND ((CASE WHEN c.ContributionTypeId = 8 THEN 1 ELSE 0 END) = @pledges OR @pledges IS NULL)
     AND c.ContributionDate >= @fd AND c.ContributionDate < DATEADD(hh, 24, @td)
 	AND (ISNULL(h.BundleStatusId, 0) = 0 OR @includeUnclosed = 1)
-    AND (@campusid = 0 OR p.CampusId = @campusid) -- campusid = 0 = all
+    AND (@campusid = 0 OR c.CampusId = @campusid) -- campusid = 0 = all
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION

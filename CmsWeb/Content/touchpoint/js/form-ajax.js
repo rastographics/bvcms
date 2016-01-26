@@ -72,7 +72,7 @@
                     },
                     error: function (xhr, ajaxOptions, thrownError) {
                         $.unblock();
-                        swal("Error!", thrownError, "error");
+                        swal({title: "Error!", text: thrownError, type: "error", html: true});
                     }
                 });
             }
@@ -161,9 +161,9 @@
         var url = link
             || a.data("link")
             || ahref
-            || $form[0].action
             || $tablink.data("link")
             || $modalbody.data("target")
+            || $form[0].action
             || '#';
 
         if (a.data("size"))
@@ -239,7 +239,7 @@
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
                     $.unblock();
-                    swal("Error!", thrownError, "error");
+                    swal({title: "Error!", text: thrownError, type: "error", html: true});
                 }
             });
         }

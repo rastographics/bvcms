@@ -69,11 +69,11 @@ namespace CmsData
                 return sb.ToString();
             }
         }
-        public string SpouseName(CMSDataContext Db)
+        public string SpouseName(CMSDataContext db)
         {
             if (SpouseId.HasValue)
             {
-                var q = from p in Db.People
+                var q = from p in db.People
                         where p.PeopleId == SpouseId
                         select p.Name;
                 return q.SingleOrDefault();
@@ -187,7 +187,7 @@ namespace CmsData
                 db.TransactionPeople.DeleteAllOnSubmit(TransactionPeople);
                 TrySubmit(db, "Delete TransactionPeople");
                 foreach (var tp in tplist)
-                    if(!db.TransactionPeople.Any(tt => tt.Id == tp.Id && tt.PeopleId == targetid && tt.OrgId == tp.OrgId))
+                    if (!db.TransactionPeople.Any(tt => tt.Id == tp.Id && tt.PeopleId == targetid && tt.OrgId == tp.OrgId))
                         db.TransactionPeople.InsertOnSubmit(new TransactionPerson
                         {
                             OrgId = tp.OrgId,
@@ -480,16 +480,16 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
 
         // Used for Conversions
-        public static Person Add(CMSDataContext Db, Family fam, string firstname, string nickname, string lastname, DateTime? dob)
+        public static Person Add(CMSDataContext db, Family fam, string firstname, string nickname, string lastname, DateTime? dob)
         {
-            return Add(Db, false, fam, 20, null, firstname, nickname, lastname, dob.FormatDate(), 0, 0, 0, 0);
+            return Add(db, false, fam, 20, null, firstname, nickname, lastname, dob.FormatDate(), 0, 0, 0, 0);
         }
-        public static Person Add(CMSDataContext Db, bool SendNotices, Family fam, int position, Tag tag, string firstname, string nickname, string lastname, string dob, int MarriedCode, int gender, int originId, int? EntryPointId, bool testing = false)
+        public static Person Add(CMSDataContext db, bool SendNotices, Family fam, int position, Tag tag, string firstname, string nickname, string lastname, string dob, int MarriedCode, int gender, int originId, int? EntryPointId, bool testing = false)
         {
             var p = new Person();
             p.CreatedDate = Util.Now;
             p.CreatedBy = Util.UserId;
-            Db.People.InsertOnSubmit(p);
+            db.People.InsertOnSubmit(p);
             p.PositionInFamilyId = position;
             p.AddressTypeId = 10;
 
@@ -552,7 +552,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             if (fam == null)
             {
                 fam = new Family();
-                Db.Families.InsertOnSubmit(fam);
+                db.Families.InsertOnSubmit(fam);
                 p.Family = fam;
             }
             else
@@ -564,25 +564,25 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             p.OriginId = originId;
             p.EntryPointId = EntryPointId;
             p.FixTitle();
-            if (Db.Setting("ElectronicStatementDefault", "false").Equal("true"))
+            if (db.Setting("ElectronicStatementDefault", "false").Equal("true"))
                 p.ElectronicStatement = true;
             if (!testing)
-                Db.SubmitChanges();
+                db.SubmitChanges();
             if (SendNotices)
             {
                 if (Util.UserPeopleId.HasValue
-                    && Util.UserPeopleId.Value != Db.NewPeopleManagerId
+                    && Util.UserPeopleId.Value != db.NewPeopleManagerId
                     && HttpContext.Current.User.IsInRole("Access")
                     && !HttpContext.Current.User.IsInRole("OrgMembersOnly")
                     && !HttpContext.Current.User.IsInRole("OrgLeadersOnly"))
-                    Task.AddNewPerson(Db, p.PeopleId);
+                    Task.AddNewPerson(db, p.PeopleId);
                 else
                 {
-                    var np = Db.GetNewPeopleManagers();
+                    var np = db.GetNewPeopleManagers();
                     if (np != null)
-                        Db.Email(Util.SysFromEmail, np,
-                            $"Just Added Person on {Db.Host}",
-                            $"<a href='{Db.ServerLink("/Person2/" + p.PeopleId)}'>{p.Name}</a>");
+                        db.Email(Util.SysFromEmail, np,
+                            $"Just Added Person on {db.Host}",
+                            $"<a href='{db.ServerLink("/Person2/" + p.PeopleId)}'>{p.Name}</a>");
                 }
             }
             return p;
@@ -812,38 +812,38 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                     return "Ms.";
             return null;
         }
-        public string OptOutKey(string FromEmail)
+        public string OptOutKey(string fromEmail)
         {
-            return Util.EncryptForUrl($"{PeopleId}|{FromEmail}");
+            return Util.EncryptForUrl($"{PeopleId}|{fromEmail}");
         }
 
-        public static bool ToggleTag(int PeopleId, string TagName, int? OwnerId, int TagTypeId)
+        public static bool ToggleTag(int peopleId, string tagName, int? ownerId, int tagTypeId)
         {
-            var Db = DbUtil.Db;
-            var tag = Db.FetchOrCreateTag(TagName, OwnerId, TagTypeId);
+            var db = DbUtil.Db;
+            var tag = db.FetchOrCreateTag(tagName, ownerId, tagTypeId);
             if (tag == null)
                 throw new Exception("ToggleTag, tag '{0}' not found");
-            var tp = Db.TagPeople.SingleOrDefault(t => t.Id == tag.Id && t.PeopleId == PeopleId);
+            var tp = db.TagPeople.SingleOrDefault(t => t.Id == tag.Id && t.PeopleId == peopleId);
             if (tp == null)
             {
-                tag.PersonTags.Add(new TagPerson { PeopleId = PeopleId });
+                tag.PersonTags.Add(new TagPerson { PeopleId = peopleId });
                 return true;
             }
-            Db.TagPeople.DeleteOnSubmit(tp);
+            db.TagPeople.DeleteOnSubmit(tp);
             return false;
         }
-        public static void Tag(CMSDataContext db, int PeopleId, string TagName, int? OwnerId, int TagTypeId)
+        public static void Tag(CMSDataContext db, int peopleId, string tagName, int? ownerId, int tagTypeId)
         {
-            var tag = db.FetchOrCreateTag(TagName, OwnerId, TagTypeId);
-            var tp = db.TagPeople.SingleOrDefault(t => t.Id == tag.Id && t.PeopleId == PeopleId);
-            var isperson = db.People.Count(p => p.PeopleId == PeopleId) > 0;
+            var tag = db.FetchOrCreateTag(tagName, ownerId, tagTypeId);
+            var tp = db.TagPeople.SingleOrDefault(t => t.Id == tag.Id && t.PeopleId == peopleId);
+            var isperson = db.People.Count(p => p.PeopleId == peopleId) > 0;
             if (tp == null && isperson)
-                tag.PersonTags.Add(new TagPerson { PeopleId = PeopleId });
+                tag.PersonTags.Add(new TagPerson { PeopleId = peopleId });
         }
-        public static void UnTag(CMSDataContext db, int PeopleId, string TagName, int? OwnerId, int TagTypeId)
+        public static void UnTag(CMSDataContext db, int peopleId, string tagName, int? ownerId, int tagTypeId)
         {
-            var tag = db.FetchOrCreateTag(TagName, OwnerId, TagTypeId);
-            var tp = db.TagPeople.SingleOrDefault(t => t.Id == tag.Id && t.PeopleId == PeopleId);
+            var tag = db.FetchOrCreateTag(tagName, ownerId, tagTypeId);
+            var tp = db.TagPeople.SingleOrDefault(t => t.Id == tag.Id && t.PeopleId == peopleId);
             if (tp != null)
                 db.TagPeople.DeleteOnSubmit(tp);
         }
@@ -852,63 +852,41 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             if (NickName != null && NickName.Trim() == String.Empty)
                 NickName = null;
         }
-        private bool _DecisionTypeIdChanged;
-        public bool DecisionTypeIdChanged
-        {
-            get { return _DecisionTypeIdChanged; }
-        }
+        private bool decisionTypeIdChanged;
+        public bool DecisionTypeIdChanged => decisionTypeIdChanged;
+
         partial void OnDecisionTypeIdChanged()
         {
-            _DecisionTypeIdChanged = true;
+            decisionTypeIdChanged = true;
         }
-        private bool _NewMemberClassStatusIdChanged;
-        public bool NewMemberClassStatusIdChanged
-        {
-            get { return _NewMemberClassStatusIdChanged; }
-        }
+        private bool newMemberClassStatusIdChanged;
+        public bool NewMemberClassStatusIdChanged => newMemberClassStatusIdChanged;
+
         partial void OnNewMemberClassStatusIdChanged()
         {
-            _NewMemberClassStatusIdChanged = true;
+            newMemberClassStatusIdChanged = true;
         }
-        private bool _BaptismStatusIdChanged;
-        public bool BaptismStatusIdChanged
-        {
-            get { return _BaptismStatusIdChanged; }
-        }
+        private bool baptismStatusIdChanged;
+        public bool BaptismStatusIdChanged => baptismStatusIdChanged;
+
         partial void OnBaptismStatusIdChanged()
         {
-            _BaptismStatusIdChanged = true;
+            baptismStatusIdChanged = true;
         }
-        private bool _DeceasedDateChanged;
-        public bool DeceasedDateChanged
-        {
-            get { return _DeceasedDateChanged; }
-        }
+        private bool deceasedDateChanged;
+        public bool DeceasedDateChanged => deceasedDateChanged;
+
         partial void OnDeceasedDateChanged()
         {
-            _DeceasedDateChanged = true;
+            deceasedDateChanged = true;
         }
-        private bool _DropCodeIdChanged;
-        public bool DropCodeIdChanged
-        {
-            get { return _DropCodeIdChanged; }
-        }
+        private bool dropCodeIdChanged;
+        public bool DropCodeIdChanged => dropCodeIdChanged;
+
         partial void OnDropCodeIdChanged()
         {
-            _DropCodeIdChanged = true;
+            dropCodeIdChanged = true;
         }
-        //internal static int FindResCode(string zipcode)
-        //{
-        //    if (zipcode.HasValue() && zipcode.Length >= 5)
-        //    {
-        //        var z5 = zipcode.Substring(0, 5);
-        //        var z = DbUtil.Db.Zips.SingleOrDefault(zip => z5 == zip.ZipCode);
-        //        if (z == null)
-        //            return 30;
-        //        return z.MetroMarginalCode ?? 30;
-        //    }
-        //    return 30;
-        //}
         private bool? canUserEditAll;
         public bool CanUserEditAll
         {
@@ -929,6 +907,18 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                         || Util.UserPeopleId == Family.HeadOfHouseholdId
                         || Util.UserPeopleId == Family.HeadOfHouseholdSpouseId;
                 return canUserEditFamilyAddress.Value;
+            }
+        }
+        private bool? canUserEditCampus;
+        public bool CanUserEditCampus
+        {
+            get
+            {
+                if (CanUserEditAll)
+                    return true;
+                if (!canUserEditCampus.HasValue)
+                    canUserEditCampus = CanUserEditFamilyAddress && DbUtil.Db.Setting("MyDataCanEditCampus", "false").ToBool();
+                return canUserEditCampus.Value;
             }
         }
         private bool? canUserEditBasic;
@@ -1037,24 +1027,24 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             Util.SetPropertyFromText(this, field, value);
         }
 
-        public void LogChanges(CMSDataContext Db)
+        public void LogChanges(CMSDataContext db)
         {
             if (psbDefault != null)
-                LogChanges(Db, psbDefault, Util.UserPeopleId ?? 0);
+                LogChanges(db, psbDefault, Util.UserPeopleId ?? 0);
         }
 
-        public void LogChanges(CMSDataContext Db, int UserPeopleId)
+        public void LogChanges(CMSDataContext db, int UserPeopleId)
         {
             if (psbDefault != null)
-                LogChanges(Db, psbDefault, UserPeopleId);
+                LogChanges(db, psbDefault, UserPeopleId);
         }
 
-        public void LogChanges(CMSDataContext Db, List<ChangeDetail> changes)
+        public void LogChanges(CMSDataContext db, List<ChangeDetail> changes)
         {
-            LogChanges(Db, changes, Util.UserPeopleId ?? 0);
+            LogChanges(db, changes, Util.UserPeopleId ?? 0);
         }
 
-        public void LogChanges(CMSDataContext Db, List<ChangeDetail> changes, int UserPeopleId)
+        public void LogChanges(CMSDataContext db, List<ChangeDetail> changes, int UserPeopleId)
         {
             if (changes.Count > 0)
             {
@@ -1065,11 +1055,11 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                     Field = "Basic Info",
                     Created = Util.Now
                 };
-                Db.ChangeLogs.InsertOnSubmit(c);
-                c.ChangeDetails.AddRange(changes.Where(x => Db.ChangeDetails.GetOriginalEntityState(x) == null));
+                db.ChangeLogs.InsertOnSubmit(c);
+                c.ChangeDetails.AddRange(changes.Where(x => db.ChangeDetails.GetOriginalEntityState(x) == null));
             }
         }
-        public void LogPictureUpload(CMSDataContext Db, int UserPeopleId)
+        public void LogPictureUpload(CMSDataContext db, int UserPeopleId)
         {
             var c = new ChangeLog
             {
@@ -1078,7 +1068,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 Field = "Basic Info",
                 Created = Util.Now
             };
-            Db.ChangeLogs.InsertOnSubmit(c);
+            db.ChangeLogs.InsertOnSubmit(c);
             c.ChangeDetails.Add(new ChangeDetail("Picture", null, "(new upload)"));
         }
         public override string ToString()
@@ -1417,63 +1407,63 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 db.LogActivity($"FundNotFound Used fund #{fund} on contribution #{bd.ContributionId}");
             return bd.Contribution;
         }
-        public static int FetchOrCreateMemberStatus(CMSDataContext Db, string type)
+        public static int FetchOrCreateMemberStatus(CMSDataContext db, string type)
         {
-            var ms = Db.MemberStatuses.SingleOrDefault(m => m.Description == type);
+            var ms = db.MemberStatuses.SingleOrDefault(m => m.Description == type);
             if (ms == null)
             {
-                var max = Db.MemberStatuses.Max(mm => mm.Id) + 1;
+                var max = db.MemberStatuses.Max(mm => mm.Id) + 1;
                 ms = new MemberStatus() { Id = max, Code = "M" + max, Description = type };
-                Db.MemberStatuses.InsertOnSubmit(ms);
-                Db.SubmitChanges();
+                db.MemberStatuses.InsertOnSubmit(ms);
+                db.SubmitChanges();
             }
             return ms.Id;
         }
-        public static int FetchOrCreateJoinType(CMSDataContext Db, string status)
+        public static int FetchOrCreateJoinType(CMSDataContext db, string status)
         {
-            var ms = Db.JoinTypes.SingleOrDefault(m => m.Description == status);
+            var ms = db.JoinTypes.SingleOrDefault(m => m.Description == status);
             if (ms == null)
             {
-                var max = Db.JoinTypes.Max(mm => mm.Id) + 1;
+                var max = db.JoinTypes.Max(mm => mm.Id) + 1;
                 ms = new JoinType() { Id = max, Code = "J" + max, Description = status };
-                Db.JoinTypes.InsertOnSubmit(ms);
-                Db.SubmitChanges();
+                db.JoinTypes.InsertOnSubmit(ms);
+                db.SubmitChanges();
             }
             return ms.Id;
         }
-        public static int FetchOrCreateBaptismType(CMSDataContext Db, string type)
+        public static int FetchOrCreateBaptismType(CMSDataContext db, string type)
         {
-            var bt = Db.BaptismTypes.SingleOrDefault(m => m.Description == type);
+            var bt = db.BaptismTypes.SingleOrDefault(m => m.Description == type);
             if (bt == null)
             {
-                var max = Db.BaptismTypes.Max(mm => mm.Id) + 10;
+                var max = db.BaptismTypes.Max(mm => mm.Id) + 10;
                 bt = new BaptismType() { Id = max, Code = "b" + max, Description = type };
-                Db.BaptismTypes.InsertOnSubmit(bt);
-                Db.SubmitChanges();
+                db.BaptismTypes.InsertOnSubmit(bt);
+                db.SubmitChanges();
             }
             return bt.Id;
         }
-        public static int FetchOrCreateMaritalStatus(CMSDataContext Db, string type)
+        public static int FetchOrCreateMaritalStatus(CMSDataContext db, string type)
         {
-            var ms = Db.MaritalStatuses.SingleOrDefault(m => m.Description == type);
+            var ms = db.MaritalStatuses.SingleOrDefault(m => m.Description == type);
             if (ms == null)
             {
-                var max = Db.BaptismTypes.Max(mm => mm.Id) + 10;
+                var max = db.BaptismTypes.Max(mm => mm.Id) + 10;
                 ms = new MaritalStatus() { Id = max, Code = "ms" + max, Description = type };
-                Db.MaritalStatuses.InsertOnSubmit(ms);
-                Db.SubmitChanges();
+                db.MaritalStatuses.InsertOnSubmit(ms);
+                db.SubmitChanges();
             }
             return ms.Id;
         }
-        public static int FetchOrCreateDecisionType(CMSDataContext Db, string type)
+        public static int FetchOrCreateDecisionType(CMSDataContext db, string type)
         {
-            var dt = Db.DecisionTypes.SingleOrDefault(m => m.Description == type);
+            var dt = db.DecisionTypes.SingleOrDefault(m => m.Description == type);
             if (dt == null)
             {
-                var max = Db.DecisionTypes.Max(mm => mm.Id) + 10;
+                var max = db.DecisionTypes.Max(mm => mm.Id) + 10;
                 dt = new DecisionType() { Id = max, Code = "d" + max, Description = type };
-                Db.DecisionTypes.InsertOnSubmit(dt);
-                Db.SubmitChanges();
+                db.DecisionTypes.InsertOnSubmit(dt);
+                db.SubmitChanges();
             }
             return dt.Id;
         }
@@ -1489,35 +1479,35 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             }
             return i.Id;
         }
-        public static Campu FetchOrCreateCampus(CMSDataContext Db, string campus)
+        public static Campu FetchOrCreateCampus(CMSDataContext db, string campus)
         {
             if (!campus.HasValue())
                 return null;
-            var cam = Db.Campus.SingleOrDefault(pp => pp.Description == campus);
+            var cam = db.Campus.SingleOrDefault(pp => pp.Description == campus);
             if (cam == null)
             {
                 int max = 10;
-                if (Db.Campus.Any())
-                    max = Db.Campus.Max(mm => mm.Id) + 10;
+                if (db.Campus.Any())
+                    max = db.Campus.Max(mm => mm.Id) + 10;
                 cam = new Campu() { Id = max, Description = campus, Code = campus.Truncate(20) };
-                Db.Campus.InsertOnSubmit(cam);
-                Db.SubmitChanges();
+                db.Campus.InsertOnSubmit(cam);
+                db.SubmitChanges();
             }
             else if (!cam.Code.HasValue())
             {
                 cam.Code = campus.Truncate(20);
-                Db.SubmitChanges();
+                db.SubmitChanges();
             }
             return cam;
         }
-        public Task AddTaskAbout(CMSDataContext Db, int AssignTo, string description)
+        public Task AddTaskAbout(CMSDataContext db, int AssignTo, string description)
         {
             var t = new Task
             {
                 OwnerId = AssignTo,
                 Description = description,
                 ForceCompleteWContact = true,
-                ListId = Task.GetRequiredTaskList(Db, "InBox", AssignTo).Id,
+                ListId = Task.GetRequiredTaskList(db, "InBox", AssignTo).Id,
                 StatusId = TaskStatusCode.Active,
             };
             TasksAboutPerson.Add(t);
@@ -1598,22 +1588,22 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 case "image/pjpeg":
                 case "image/gif":
                 case "image/png":
-                mdf.IsDocument = false;
-                mdf.SmallId = Image.NewImageFromBits(bits, 165, 220).Id;
-                mdf.MediumId = Image.NewImageFromBits(bits, 675, 900).Id;
-                mdf.LargeId = Image.NewImageFromBits(bits).Id;
-                break;
+                    mdf.IsDocument = false;
+                    mdf.SmallId = Image.NewImageFromBits(bits, 165, 220).Id;
+                    mdf.MediumId = Image.NewImageFromBits(bits, 675, 900).Id;
+                    mdf.LargeId = Image.NewImageFromBits(bits).Id;
+                    break;
                 case "text/plain":
                 case "application/pdf":
                 case "application/msword":
                 case "application/vnd.ms-excel":
-                mdf.MediumId = Image.NewImageFromBits(bits, mimetype).Id;
-                mdf.SmallId = mdf.MediumId;
-                mdf.LargeId = mdf.MediumId;
-                mdf.IsDocument = true;
-                break;
+                    mdf.MediumId = Image.NewImageFromBits(bits, mimetype).Id;
+                    mdf.SmallId = mdf.MediumId;
+                    mdf.LargeId = mdf.MediumId;
+                    mdf.IsDocument = true;
+                    break;
                 default:
-                throw new FormatException("file type not supported: " + mimetype);
+                    throw new FormatException("file type not supported: " + mimetype);
             }
             db.SubmitChanges();
         }
@@ -1687,5 +1677,55 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         {
             return Users.ToList();
         }
+        public void UpdateContributionOption(CMSDataContext db, int option)
+        {
+            UpdateOption(db, "ContributionOptionsId", option);
+        }
+
+        public void UpdateEnvelopeOption(CMSDataContext db, int option)
+        {
+            UpdateOption(db, "EnvelopeOptionsId", option);
+        }
+        private void UpdateOption(CMSDataContext db, string field, int option)
+        {
+            int? opt = option;
+            if (opt == 0)
+                opt = null;
+            UpdateValue(field, opt);
+            LogChanges(db);
+            var sp = db.LoadPersonById(SpouseId ?? 0);
+            if (sp != null)
+            switch (opt)
+            {
+                case StatementOptionCode.Joint:
+                case StatementOptionCode.Individual:
+                case StatementOptionCode.None:
+                    sp.UpdateValue(field, opt);
+                    sp.LogChanges(db);
+                    break;
+                case null:
+                    if (sp.ContributionOptionsId == StatementOptionCode.Joint)
+                    {
+                        sp.UpdateValue(field, null);
+                        sp.LogChanges(db);
+                    }
+                    break;
+            }
+            db.SubmitChanges();
+        }
+        public void UpdateElectronicStatement(CMSDataContext db, bool tf)
+        {
+            const string field = "ElectronicStatement";
+            UpdateValue(field, tf);
+            var sp = db.LoadPersonById(SpouseId ?? 0);
+            if (sp != null && ContributionOptionsId == StatementOptionCode.Joint)
+            {
+                sp.UpdateValue(field, tf);
+                sp.LogChanges(db);
+            }
+            LogChanges(db);
+            db.SubmitChanges();
+        }
+
     }
 }

@@ -1,0 +1,239 @@
+Name,Type,DataValueField,DataSource,QuartersLabel,Category,Title,Params,Description
+Group,Group,,,,Grouping,,,"Groups conditions or other groups together in an ""all true"" or ""any one true"" relationship"
+Age,NullInteger,,,,Personal,,,Enter an age. Leave blank to find those without a DOB.
+GenderId,Code,,GenderCodes,,Personal,Gender,,Select Gender from the list.
+MaritalStatusId,Code,,MaritalStatusCodes,,Personal,Marital Status,,Select Marital Status from the list.
+Birthday,StringEqual,,,,Personal,Birthday,,Enter an exact date - Equal or Not Equal. (MM/DD/YYYY) or day of month (MM/DD) or month (MM) or year (YYYY)
+BDate,Date,,,,Personal,Birthdate,,Pick a date with a comparison.
+DaysTillBirthday,Integer,,,,Personal,Days Till Birthday,,Enter a number of days less than 365.
+DaysTillAnniversary,Integer,,,,Personal,Days Till Anniversary,,Enter a number of days less than 365.
+WeddingDate,StringEqual,,,,Personal,Wedding Date,,Enter an exact date - Equal or Not Equal. (MM/DD/YYYY) or day of month (MM/DD) or month (MM) or year (YYYY)
+Grade,NullInteger,,,,Personal,,,Enter a number - grade or graduation year.
+FirstName,String,,,,Personal,First Name,,Enter all or part of a First Name.
+LastName,String,,,,Personal,Last Name,,Enter all or part of a Last Name.
+NickName,String,,,,Personal,Nick Name,,Enter all or part of Goes By Name.
+MaidenName,String,,,,Personal,Maiden Name,,Enter all or part of Maiden (Former) Name.
+MiddleName,String,,,,Personal,Middle Name,,Enter all or part of Middle Name.
+SchoolOther,CodeStr,,Schools,,Personal,School,,Select School from list.
+EmployerOther,CodeStr,,Employers,,Personal,Employer,,Select Employer from list.
+OccupationOther,CodeStr,,Occupations,,Personal,Occupation,,Select Occupation from list.
+HasPicture,Bit,,,,Personal,Has Picture,,Select True or False.
+DeceasedDate,Date,,,,Personal,Deceased Date,,Pick a date with a comparison.
+WidowedDate,Date,,,,Personal,Widowed Date,,Pick a date with a comparison.
+TitleCode,CodeStr,,,,Personal,Title,,Select Title from list.
+EmailAddress,String,,,,Personal,Email,,"Enter any part of an email address. Searches on 1st email, both active and inactive."
+EmailAddress2,String,,,,Personal,Email2,,"Enter any part of an email address. Searches on 2nd email, both active and inactive."
+PositionInFamilyId,Code,,FamilyPositionCodes,,Family,Position in Family,,Select Position from the list.
+NumberOfFamilyMembers,Integer,,,,Family,Number of Family Members,,Enter a number with a comparison.
+NumberOfPrimaryAdults,Integer,,,,Family,Number of Primary Adults,,Number of Primary Adults
+HasParents,Bit,,,,Family,Has Parents,,Select True or False for children with a Primary Adult in the family.
+FamilyHasChildren,Bit,,,,Family,Family Has Children,,Select True or False for families with members aged 12 or under.
+FamilyHasChildrenAged,Bit,,,,Family,Family Has Children Aged,Age,Enter an age for families with children that age or under.
+FamilyHasChildrenAged2,Bit,,,Age Range,Family,Family Has Children Aged Range,Quarters,Enter an age range (ex. 5-8).
+FamilyHasChildrenAged3,Code,,GenderCodes,Age Range,Family,Family Has M/F Children Aged Range,Quarters,Enter an age range (ex. 12-13) and select a gender.
+IsHeadOfHousehold,Bit,,,,Family,Is Head of Household,,Select True or False for those calculated as Head of Household.
+HasRelatedFamily,Bit,,,,Family,Has Related Family,,Select True or False for families with Family Relations.
+FamHasPrimAdultChurchMemb,Bit,,,,Family,Family Has Primary Adult Church Member,,Select True or False for families with a Primary Adult who is a member of the church.
+FamHasStatusFlag,CodeStr,CodeValue,StatusFlags,,Family,Family Member Has Status Flag,,Select True or False for families with a member having a StatusFlag.
+FamilyId,Integer,,,,Family,Family,,Enter a Family ID number and select a comparison.
+RelatedFamilyMembers,Integer,,,,Family,,,Select all persons in related families given a single family id.
+HasFamilyPicture,Bit,,,,Family,Has Family Picture,,Select True or False for families with Family Picture.
+PrimaryResCode,Code,,ResidentCodes,,Address,Resident Code,,Select Resident Code from the list.
+PrimaryZip,String,,,,Address,Zip,,Enter all or part of a Zip for the Preferred Address and select a Comparison.
+PrimaryCity,String,,,,Address,City,,Enter all or part of a City for a Preferred Address and select a Comparison.
+PrimaryState,CodeStr,Code,GetStateList,,Address,State,,Select State from the list.
+PrimaryAddress,String,,,,Address,Address,,Enter all or part of the 1st line of a Preferred Address.
+PrimaryAddress2,String,,,,Address,Address line two,,Enter all or part of the 2nd line of a Preferred Address.
+PrimaryCountry,String,,,,Address,Country,,Select Country from the list.
+PrimaryBadAddrFlag,Bit,,,,Address,Bad Address Flag,,Select True or False.
+HasZipPlus4,Bit,,,,Address,Has Zip Plus 4,,Select True or False.
+HomePhone,String,,,,ContactInfo,,,Enter all or part of Home Phone number. (no dashes)
+CellPhone,String,,,,ContactInfo,,,Enter all or part of Cell Phone number.
+WorkPhone,String,,,,ContactInfo,,,Enter all or part of Work Phone number.
+DoNotCallFlag,Bit,,,,ContactInfo,Do Not Call,,Select True or False.
+DoNotVisitFlag,Bit,,,,ContactInfo,Do Not Visit,,Select True or False.
+DoNotMailFlag,Bit,,,,ContactInfo,Do Not Mail,,Select True or False.
+DoNotPublishPhones,NullBit,,,,ContactInfo,Do Not Publish Phones,,Person has asked to not display phones on directories
+HasInvalidEmailAddress,Bit,,,,ContactInfo,Has Invalid Email Address,,"Select True or False. Looks at both 1st and 2nd email addresses, whether active or not."
+HeadOrSpouseWithEmail,EqualBit,,,,ContactInfo,Head Or Spouse With Email,,Pick Head with Email or Spouse if Head has no email or nothing
+SpouseOrHeadWithEmail,EqualBit,,,,ContactInfo,Spouse Or Head With Email,,Pick Spouse with Email or Head if no Spouse or Spouse has no email or nothing
+SpouseHasEmail,Bit,,,,ContactInfo,Spouse has Email,,Select True or False. Indicates Spouse Has an Email Address
+SendEmailAddress1,NullBit,,,,ContactInfo,Send to Email Address 1,,"True or False, First Email Address is active or not"
+SendEmailAddress2,NullBit,,,,ContactInfo,Send to Email Address 2,,"True or False, Second Email Address is active or not"
+ReceiveSms,Bit,,,,ContactInfo,Receive SMS,,Select True or False for those who have opted in for texting (SMS).
+HasTaskWithName,StringEqual,,,,Ministry,Has Task about person,,Enter all or part of the Task Name (leave blank for all) to find those whom the incomplete task is regarding.
+HasIncompleteTask,StringEqual,,,,Ministry,Has Incomplete Task,,Enter all or part of the Task Name (leave blank for all) to find those who have not completed a delegated task.
+DaysSinceContact,Integer,,,,Ministry,Days Since Last Contact,,Enter a number of days with a comparison to find those without a Contact during those days. Must have a previous Contact.
+RecentContactMinistry,Code,,Ministries,,Ministry,Recent Contact Ministry,Days,Enter a number of days and select Ministry from the list.
+RecentContactType,Code,,ContactTypeCodes,,Ministry,Recent Contact Type,Days,Enter a number of days and select Contact Type from the list.
+RecentContactReason,Code,,ContactReasonCodes,,Ministry,Recent Contact Reason,Days,Enter a number of days and select Contact Reason from the list.
+RecentEmailCount,Integer,,,,Ministry,Recent Email Count,Days,Enter a number of days and number of emails along with a Comparison.
+RecentEmailSentCount,Integer,,,,Ministry,Recent Email Sent Count,Days,Enter a number of days and number of emails along with a Comparison.
+EmailRecipient,IntegerEqual,,,,Ministry,Email Recipients,,Enter Email ID number.
+MadeContactTypeAsOf,Code,,ContactTypeList,,Ministry,Made Contact Type As Of,"Ministry,StartDate,EndDate",Select Contact Type from the list and pick the date range.
+HasContacts,Bit,,,,Ministry,Has Contacts,,Select True or False to find anyone who has received a Contact.
+FamilyHasContacts,Bit,,,,Ministry,Family Has Contacts,,Select True or False to find anyone in a family who has received a Contact.
+ContactRecipient,IntegerEqual,,,,Ministry,Contact Recipients,,Enter Contact ID number.
+ContactMaker,IntegerEqual,,,,Ministry,Contact Makers,,Enter Contact ID number.
+MemberStatusId,Code,,MemberStatusCodes,,Membership,Church Member Status,,Select Member Status from the list.
+CampusId,NullCode,,AllCampuses0,,Membership,Campus,,Select Campus from the list.
+DecisionDate,Date,,,,Membership,Decision Date,,Select Comparison and pick the date.
+DecisionTypeId,NullCode,,DecisionTypeList,,Membership,Decision Type,,Select Decision Type from the list.
+RecentDecisionType,Code,,DecisionTypeList,,Membership,Recent Decision Type,Days,Select Decision Type from the list and enter the number of days to look back.
+RecentJoinChurch,Bit,,,,Membership,Recent Join Church,Days,Select True or False and enter the number of days to look back.
+JoinDate,Date,,,,Membership,Join Date,,Pick the date and the Comparison. Leave date blank for those without a Join Date.
+JoinCodeId,Code,,JoinTypeList,,Membership,Join Type,,Select Join Type from the list.
+DropDate,Date,,,,Membership,Drop Date,,Pick the date and the Comparison. Leave date blank for those without a Drop Date.
+DropCodeId,Code,,DropTypeList,,Membership,Drop Type,,Select Drop Type from the list.
+BaptismDate,Date,,,,Membership,Baptism Date,,Pick the date and the Comparison. Leave date blank for those without a Baptism Date.
+BaptismTypeId,NullCode,,BaptismTypeList,,Membership,Baptism Type,,Select Baptism Type from the list.
+BaptismSchedDate,Date,,,,Membership,Baptism Scheduled Date,,Pick the date and the Comparison. Leave date blank for those without a Scheduled Date for Baptism.
+BaptismStatusId,NullCode,,BaptismStatusList,,Membership,Baptism Status,,Select Baptism Status from the list.
+NewMemberClassDate,Date,,,,Membership,New Member Class Date,,Pick the date and the Comparison. Leave date blank for those without a New Member Class Date.
+NewMemberClassStatusId,NullCode,,NewMemberClassStatusList,,Membership,New Member Class Status,,Select New Member Class Status from the list.
+OtherPreviousChurch,String,,,,Membership,Former Church,,Select a Comparison and enter all or part of a Previous Church name.
+OtherNewChurch,String,,,,Membership,New Church,,Select a Comparison and enter all or part of a New Church name.
+LetterDateRequested,Date,,,,Membership,Letter Requested Date,,Pick the date and the Comparison. Leave date blank for those without a Letter Requested Date.
+LetterStatusId,NullCode,,LetterStatusCodes,,Membership,Letter Status,,Select Letter Status from the list.
+InBFClass,Bit,,,,Enrollments,In Main Fellowship,,Select True or False for those currently enrolled in a Main Fellowship class.
+IsMemberOf,Bit,,,,Enrollments,Is Member Of,"Program,Division,Organization",Select Program/Division/Organization from the list for current members.
+OrgSearchMember,Bit,,,,Enrollments,OrgSearch Member,"OrgName,OrgStatus,OnlineReg,OrgType2,Schedule,Campus,Program,Division",Select Program/Division/Organization from the list for current members.
+IsInactiveMemberOf,Bit,,,,Enrollments,Is Inactive Member Of,"Program,Division,Organization",Select Program/Division/Organization from the list and specify True or False.
+IsProspectOf,Bit,,,,Enrollments,,"Program,Division,Organization",Selects prospects of organization(s). Specify the Program or Program/Division or Program/Division/Organization
+IsPendingMemberOf,Bit,,,,Enrollments,Is Pending Member Of,"Program,Division,Organization",Select Program/Division/Organization from the list and specify True or False.
+MemberTypeCodes,Code,,MemberTypeCodes,,Enrollments,Member Type Codes,"Program,Division,Organization,OrgType,Schedule,Campus","Select Member Type from the list and select other options: Program/Division/Organization, Org Type, Schedule, Campus."
+AttendTypeCodes,Code,,AttendanceTypeCodes,,Enrollments,Attend Type Codes,"Program,Division,Organization,OrgType,Schedule,Campus","Select Attend Type from the list and select other options: Program/Division/Organization, Org Type, Schedule, Campus."
+MembOfOrgWithCampus,Code,,Campuses,,Enrollments,Member Of Org With Campus,"Program,Division,Organization,OrgType",Select Campus from the list and select Program/Division/Organization.
+MembOfOrgWithSched,Code,,Schedules,,Enrollments,Member Of Org With Schedule,"Program,Division,Organization",Select Schedule from the list and select Program/Division/Organization.
+RecentRegistrationType,Code,,RegistrationTypes99,,Enrollments,Recent Registration Type,"Days,Program,Division,Organization,OrgType","Select Registration Type from the list, enter the number of days to look back and select options: Program/Division/Organization, Org Type."
+SmallGroup,StringEqualOrStartsWith,,,,Enrollments,In Sub-Group,"Program,Division,Organization","Enter all of part of a Sub-Group name, select a Comparison and select Program/Division/Organization."
+NumberOfMemberships,NullInteger,,,,Enrollments,Number of Enrollments,"Program,Division,Organization,Schedule","Enter a number of Enrollments, select a Comparison and select Program/Division/Organization."
+RecentIncompleteRegistrations,Bit,,,,Enrollments,Recent Incomplete Registrations,"Days,Program,Division,Organization",Select Days to look back and Program/Division/Organization from the list and specify True or False.
+HasBalance,Bit,,,,Enrollments,Has Balance In Org,"Program,Division,Organization",Select True or False for Members with a Balance in the selected Program or Divison or Organization
+WasMemberAsOf,Bit,,,,EnrollmentHistory,Was Member As Of,"Program,Division,Organization,OrgType,StartDate,EndDate","Pick the date range and select Program/Division/ Organization, Org Type."
+OrgMemberJoinedAsOf,Bit,,,,EnrollmentHistory,Org Member Joined As Of,"Program,Division,Organization,OrgType,StartDate,EndDate","Pick the date range and select Program/Division/ Organization, Org Type."
+WasRecentMemberOf,Bit,,,,EnrollmentHistory,Was Recent Member Of,"Days,Program,Division,Organization,OrgType","Pick the number of days to look back and select Program/Division/ Organization, Org Type."
+IsPreviousMemberOf,Bit,,,,EnrollmentHistory,Is Previous Member Of,"Program,Division,Organization",Select Program/Division/Organization from the list and specify True or False for previous members.
+MemberTypeAsOf,Code,,MemberTypeCodes,,EnrollmentHistory,Member Type As Of,"Program,Division,Organization,OrgType,StartDate,EndDate","Select Member Type from the list, pick a date range and select other options: Program/Division/Organization, Org Type."
+FirstOrgJoinDate,Date,,,,EnrollmentHistory,First Org Enrollment Date,"Program,Division,Organization",Pick the Date and Comparison and select Program/Division/Organization.
+OrgJoinDate,Date,,,,EnrollmentHistory,Org Join Date,"Program,Division,Organization",Pick the Date and Comparison and select Program/Division/Organization.
+OrgMemberCreatedDate,Date,,,,EnrollmentHistory,Org Member Created Date,"Program,Division,Organization",Pick the Date and Comparison and select Program/Division/Organization.
+OrgJoinDateDaysAgo,Integer,,,,EnrollmentHistory,Recent Org Join Date,"Program,Division,Organization",Enter the number of days to look back and select the Comparison and select Program/Division/Organization.
+OrgInactiveDate,Date,,,,EnrollmentHistory,Org Inactive Date,"Program,Division,Organization",Pick the Inactive Date (in the Member Dialog) and Comparison and select Program/Division/Organization.
+OrgJoinDateCompare,DateField,Code,DateFields,,EnrollmentHistory,Org Join Date Compared to Field,"Program,Division,Organization",Select the Compared to Field from the list along with a Comparison and select Program/Division/Organization.
+HasBalanceInCurrentOrg,Bit,,,,CurrentOrg,"In Current Organization, Has Balance",,Select True or False for Members with a Balance in the last organization you viewed.
+InCurrentOrg,Bit,,,,CurrentOrg,In Current Organization,,Select True or False for Members of the last organization you viewed.
+LeadersUnderCurrentOrg,Bit,,,,CurrentOrg,Leaders under current org,,Select True or False for Leaders of the last organization you viewed and any Leaders in any Child Organization under that org.
+MembersUnderCurrentOrg,Bit,,,,CurrentOrg,Members under current org,,Select True or False for Members of the last organization you viewed and any Members in any Child Organization under that org.
+InactiveCurrentOrg,Bit,,,,CurrentOrg,Inactive in Current Organization,,Select True or False for Inactive Members of the last organization you viewed.
+PendingCurrentOrg,Bit,,,,CurrentOrg,Pending in Current Organization,,Select True or False for Pending Members of the last organization you viewed.
+PreviousCurrentOrg,Bit,,,,CurrentOrg,Previous Member in Current Organization,,Select True or False for Previous Members of the last organization you viewed.
+ProspectCurrentOrg,Bit,,,,CurrentOrg,Prospects in Current Organization,,"Selects everyone who is a prospect in the last organization you worked with. (used internally, but you can too if it will help you)"
+VisitedCurrentOrg,Bit,,,,CurrentOrg,Has Visited Current Organization,,Specify True or False for Guests in Current Organization.
+HaveVolunteerApplications,Bit,,,,Volunteer,Has Volunteer Applications,,Select True or False.
+VolunteerApprovalCode,Code,,VolunteerCodes,,Volunteer,Volunteer Approval Code,,Select Approval Code from the list.
+VolAppStatusCode,Code,,VolApplicationStatusCodes,,Volunteer,Volunteer App Status Code,,Select Volunteer Application Status from the list.
+VolunteerProcessedDateMonthsAgo,NullInteger,,,,Volunteer,Volunteer Processed months ago,,Enter the number of months to look back for process date.
+MVRProcessedDateMonthsAgo,NullInteger,,,,Volunteer,MVR Processed months ago,,Enter the number of months to look back for process date.
+MVRStatusCode,Code,,VolApplicationStatusCodes,,Volunteer,MVR Status Code,,Select Volunteer Application Status from the list.
+PmmBackgroundCheckStatus,CodeStr,IdValue,BackgroundStatuses,Username or PeopleId,Volunteer,PMM Background Check,"Quarters,PmmLabels","Select the Protect My Ministry status from the list, select the Label from the list, if you use Labels and enter the username or People ID number of the person making the background check."
+RecentAttendMemberType,Code,,MemberTypeCodes,,RecentAttendance,Recent Attended Member Type,"Program,Division,Organization,Days","Select Member Type from the list, enter a number of days to look back and select Program/Division/Organization."
+VisitNumber,Date,,,Visit number,RecentAttendance,Visit date Nth time,Quarters,Pick a date and Comparison and enter the number of visits.
+RecentVisitNumber,Bit,,,Visit number,RecentAttendance,Recent Visit date Nth time,"Quarters,Days","Specify True or False, enter the number of days to look back and enter the number of visits."
+RecentAttendType,Code,,AttendanceTypeCodes,,RecentAttendance,Recent Attendance Type,"Days,Program,Division,Organization,OrgType","Select Attendance Type from the list, enter the number of days to look back and select other options: Program/Division/Organization, Org Type."
+AttendPct,Number,,,,RecentAttendance,Attendance %,"Program,Division,Organization",Enter a number for the Attendance Percentage and select Program/Division/Organization.
+RecentAttendCount,Integer,,,Meeting Desc (partial),RecentAttendance,Recent Attendance Count,"Days,Quarters,Program,Division,Organization,OrgType","Enter a number and select Comparison for the Attendance Count, enter a number for the days to look back and select other options: Program/Division/Organization, Org Type."
+RecentAttendCountAttCred,Integer,,,Attend Credit Id,RecentAttendance,Recent Attendance Count for Schedule/AttendCredit,"Program,Division,Organization,Days,Quarters,Schedule","Enter a number and select Comparison for the Attendance Count, enter a number for the days to look back, enter the Attend Credit ID number, select other options: Program/Division/Organization, Schedule."
+HasRecentNewAttend,Bit,,,Number of days for no attendance,RecentAttendance,Has Recent New Attend,"Days,Quarters,Program,Division,Organization,OrgType","Specify True or False and  enter a number for the days to look back, enter the number of days with no attendance, select other options: Program/Division/Organization, Org Type."
+KidsRecentAttendCount,Integer,,,,RecentAttendance,Kids Recent Attendance Count,Days,Enter a number and select a Comparison for the Attendance Count for children 12 and under and enter a number of days to look back.
+NeedAttendance,Code,,MemberTypeCodes,Meets on Day (0=Sun),RecentAttendance,Need Attendance,"Days,Quarters,Program,Division,Organization",Select Member Types and number of days to lookback for a Program/Division/Organization. Shows those who have not recorded their attendance.
+RecentFirstFamilyVisit,Bit,,,Days to Lookback,RecentAttendance,Recent First Family Visit,Days,Enter the number of days to look back to find family members where the first by any family member was since then
+AttendMemberTypeAsOf,Code,,MemberTypeCodes,,AttendanceDates,Member Type Attended As Of,"Program,Division,Organization,StartDate,EndDate","Select Member Type from the list, pick a date range and select Program/Division/Organization."
+AttendTypeAsOf,Code,,AttendanceTypeCodes,,AttendanceDates,Attendance Type As Of,"Program,Division,Organization,OrgType,StartDate,EndDate","Select Attendance Type from the list, pick a date range and select Program/Division/Organization."
+AttendPctHistory,NumberLG,,,,AttendanceDates,Attendance % History,"Program,Division,Organization,StartDate,EndDate","Enter the number for the percentage and select a Comparison, pick a date range and select Program/Division/Organization."
+AttendCntHistory,Integer,,,,AttendanceDates,Attendance Count History,"Program,Division,Organization,Schedule,StartDate,EndDate","Enter a number and select Comparison for the Attendance Count, pick a date range and select other options: Program/Division/Organization, Schedule."
+DaysBetween12Attendance,Integer,,,,AttendanceDates,Days Between First/Second Attend,"Days,Program,Division,Organization","Enter a number and select the Comparison for the number of Days between 1st and 2nd Attendance, enter a number of days to look back, select Program/Division/Organization."
+DaysAfterNthVisitAsOf,Bit,,,Nth Visit Number,AttendanceDates,Attend Days After Nth Visit,"Quarters,Program,Division,Organization,Days,StartDate,EndDate","After an Nth Visit number during a date range to anything, select a Program/Division/Organization where they made another visit with a specified number of days"
+GuestAsOf,Bit,,,,AttendanceDates,Guest As Of,"StartDate,EndDate,Program,Division","Choose a starting date/time and ending date/time, then pick a Program/Division/Organization"
+AttendedAsOf,Bit,,,,AttendanceDates,Attended As Of,"StartDate,EndDate,Program,Division,Organization","Choose a starting date/time and ending date/time, then pick a Program/Division/Organization"
+FirstFamilyVisitAsOf,Bit,,,,AttendanceDates,First Family Visit,"StartDate,EndDate",Enter Starting Date and optional ending date to find family members where the first by any family member was since then
+CheckInByDate,Integer,,,,AttendanceDates,Building Check-In Count History,"StartDate,EndDate","Searches by Date Range, can do # times visited greater than, less than, etc."
+CheckInByActivity,CodeStr,,Activities,,AttendanceDates,Building Check-In By Activity,,Searches by Building Activity
+MeetingId,Integer,,,,AttendanceDates,,,"For internal use, but you can enter a Meeting ID number for those who attended."
+RegisteredForMeetingId,Integer,,,,AttendanceDates,,,"For internal use, but you can enter a Meeting ID number for those who are registered to attend."
+CommitmentForMeetingId,Code,,AttendCommitmentCodes,MeetingId,AttendanceDates,,Quarters,"For internal use, shows those for the specified commitment type for the specified meeting (attending, regrets, etc.)"
+HasCommitmentForMeetingId,Bit,,,MeetingId,AttendanceDates,,Quarters,"For internal use, shows those who have a commitment for the specified meeting (attending, regrets, etc.)"
+EnvelopeOptionsId,NullCode,,EnvelopeOptionList,,Contributions,Envelope Options,,Select an Envelope Option from the list.
+ContributionOptionsId,NullCode,,EnvelopeOptionList,,Contributions,Contribution Options,,Select a Contribution Option from the list.
+RecentContributionCount,Integer,,,Fund Id (or null for all),Contributions,Recent Contribution Count,"Days,Quarters","Enter a number and select Comparison for the number of Contributions, enter the number of days to look back, enter a Fund ID (or leave blank for all funds)."
+RecentContributionAmount,Number,,,Fund Id (or null for all),Contributions,Recent Contribution Amount,"Days,Quarters","Enter a number and select Comparison for the Contribution Amount, enter the number of days to look back, enter a Fund ID (or leave blank for all funds)."
+RecentContributionAmountBothJoint,Number,,,,Contributions,Recent Contribution Amount With Both Joint,Days,"Enter a number and select Comparison for the Contribution Amount, enter the number of days to look back. This will include both Husband and Wife in results if they give jointly."
+ContributionAmountBothJointHistory,Number,,,,Contributions,"Contribution Amount With Both Joint by Date Range","StartDate,EndDate","Enter dates and select Comparison for the Contribution Amount. This will include both Husband and Wife in results if they give jointly."
+RecentNonTaxDedCount,Integer,,,Fund Id (or null for all),Contributions,Recent NonTaxDed Count,"Days,Quarters","Enter a number and select Comparison for the number of NonTaxDeds, enter the number of days to look back, enter a Fund ID (or leave blank for all funds)."
+RecentNonTaxDedAmount,Number,,,Fund Id (or null for all),Contributions,Recent NonTaxDed Amount,"Days,Quarters","Enter a number and select Comparison for the NonTaxDed Amount, enter the number of days to look back, enter a Fund ID (or leave blank for all funds)."
+NonTaxDedAmount,Number,,,Fund Id (or null for all),Contributions,NonTaxDed Contribution Amount History,"StartDate,EndDate,Quarters","Enter a number and select Comparison for the NonTaxDed Amount, enter the date range, enter a Fund ID (or leave blank for all funds)."
+RecentPledgeCount,Integer,,,Fund Id (or null for all),Contributions,Recent Pledge Count,"Days,Quarters","Enter a number and select Comparison for the number of Pledges, enter the number of days to look back, enter a Fund ID (or leave blank for all funds)."
+RecentPledgeAmount,Number,,,Fund Id (or null for all),Contributions,Recent Pledge Amount,"Days,Quarters","Enter a number and select Comparison for the Pledge Amount, enter the number of days to look back, enter a Fund ID (or leave blank for all funds)."
+ContributionAmount2,Number,,,Fund Id (or null for all),Contributions,Contribution Amount History,"StartDate,EndDate,Quarters","Enter a number and select Comparison for the Contribution Amount, enter a Fund ID (or leave blank for all funds), pick a date range."
+ContributionChange,Number,,,,Contributions,Contribution Change Pct,"StartDate,EndDate","Enter a number for the percentage (without the % sign) and select a Comparison (ex. 120), pick a date range."
+GivingChange,Number,,,Days in Period,Contributions,Giving Change,Quarters,"Enter a number for the percentage (e.g. -90 for 90% decrease, 100 for 100% increase. Days in Period defaults to 365."
+RecentHasIndContributions,Bit,,,,Contributions,Recent Has Individual Contributions,Days,Enter a number of days to look back and specify True or False.
+HadIndContributions,Bit,,,,Contributions,Had Individual Contributions,"StartDate,EndDate",Individual Had Contributions during Date Range
+RecentHasFailedRecurringGiving,Bit,,,,Contributions,Recent Has Failed Recurring Giving,Days,Individual Had a failed Recurring Gift within the past number of days
+RecentFirstTimeGiver,Bit,,,Fund Id (or blank for all),Contributions,Recent First Time Giver,"Days,Quarters","Enter a number of days to look back, enter a Fund ID (or leave blank for all funds) and specify True or False."
+IsRecentGiver,Bit,,,,Contributions,Recent Giver,Days,Enter a number of days to look back and specify True or False.
+IsTopGiver,Bit,,,Top number,Contributions,Recent Top Giver,"Days,Quarters","Enter a number of days to look back, enter the top number (ex. 100 for the top 100 givers) and specify True or False."
+IsTopPledger,Bit,,,Top number,Contributions,Recent Top Pledger,"Days,Quarters","Enter a number of days to look back (must include the date the pledge was made), enter the top number (ex. 100 for the top 100 pledgers) and specify True or False."
+HasManagedGiving,Bit,,,FundId or Blank,Contributions,Has Managed Giving,Quarters,Specify True or False for those with Managed Giving.
+ManagedGivingCreditCard,Bit,,,,Contributions,Managed Giving With Credit Card,,Specify True or False for those with Managed Giving and uses CreditCard
+CcExpiration,Bit,,,,Contributions,Credit Card Expire Days,Days,Specify True or False for those with Managed Giving.
+WantsElectronicStatement,Bit,,,,Contributions,Wants Electronic Statement,,Specify True or False for those wanting Electronic Statements
+RecentBundleType,Code,,BundleHeaderTypes,,Contributions,Recent Contributions In BundleType,Days,Must have Finance role for this to work.
+PeopleExtra,CodeStr,,ExtraValues,,ExtraValues,Extra Value Code,,Select the Extra Value Code from the list
+PeopleExtraData,String,,, Name,ExtraValues,Extra Value Text,Quarters,Enter the Field Name and enter all or part of the value along with a Comparison.
+PeopleExtraDate,Date,,, Name,ExtraValues,Extra Value Date,Quarters,Enter the Field Name and pick a date and a Comparison.
+PeopleExtraInt,NullInteger,,, Name,ExtraValues,Extra Value Int,Quarters,Enter the Field Name and enter all or part of the value (must be an integer) along with a Comparison.
+HasPeopleExtraField,StringEqual,,,,ExtraValues,Has Extra Value Field,,Enter the Field Name and a Comparison.
+RecentPeopleExtraFieldChanged,Bit,,, Field,ExtraValues,Recent Extra Value Changed,"Days,Quarters",Select number of days to lookback and enter Field name of Extra value. Shows those whom that Field has been recently updated.
+FamilyExtra,CodeStr,,FamilyExtraValues,,ExtraValues,FamilyExtra Value Code,,Select the Extra Value Code from the list
+FamilyExtraData,String,,, Name,ExtraValues,FamilyExtra Value Text,Quarters,Enter the Field Name and enter all or part of the value along with a Comparison.
+FamilyExtraDate,Date,,, Name,ExtraValues,FamilyExtra Value Date,Quarters,Enter the Field Name and pick a date and a Comparison.
+FamilyExtraInt,NullInteger,,, Name,ExtraValues,FamilyExtra Value Int,Quarters,Enter the Field Name and enter all or part of the value (must be an integer) along with a Comparison.
+HasFamilyExtraField,StringEqual,,,,ExtraValues,Has FamilyExtra Value Field,,Enter the Field Name and a Comparison.
+IncludeDeceased,Bit,,,,Miscellaneous,Included Deceased,,"Specify True or False to include deceased people in your query. (By default, deceased are not included.)"
+ParentsOf,Bit,,,,Miscellaneous,Parents Only,,Specify True or False to include only Primary Adults.
+PlusParentsOf,Bit,,,,Miscellaneous,Add Primary Adults,,Specify True or False to Add Primary Adults.
+StatusFlag,CodeStr,CodeValue,StatusFlags,,Miscellaneous,Status Flag,,Select Status Flags from the list (computed in nightly batch from saved searches).
+RecentFlagAdded,CodeStr,CodeValue,StatusFlags,,Miscellaneous,Recent Flag Added,Days,Select Status Flags from the list (computed in nightly batch from saved searches) and enter days to look back.
+HasCurrentTag,Bit,,,,Miscellaneous,Active Tag,,Specify True or False for those who are in your Active Tag.
+HasMyTag,Bit,,,,Miscellaneous,Tagged with,Tags,Select Tag from the list.
+HasMemberDocs,Bit,,,,Miscellaneous,Has Membership Documents,,Specify True or False for those with uploaded Membership Documents.
+EntryPointId,NullCode,,EntryPoints,,Miscellaneous,Entry Point,,Select Entry Point from the list.
+OriginId,NullCode,,Origins,,Miscellaneous,Record Origin,,Select Record Origin from the list.
+InterestPointId,NullCode,,InterestPoints,,Miscellaneous,Interest Point,,Select Interest Point from the list.
+MemberAnyChurch,NullBit,,,,Miscellaneous,Member of Any Church,,Specify True or False for those with this box checked on their Growth tab.
+SavedQuery,Bit,,,,Miscellaneous,Saved Searches,SavedQueryIdDesc,Select a Saved Search from the list and specify True or False.
+RecActiveOtherChurch,Bit,,,,Miscellaneous,Reg Other Church,,Specify True or False for those who indicated during an online registration that they attend another church.
+RecInterestedCoaching,Bit,,,,Miscellaneous,Reg Interested Coaching,,Specify True or False for those who indicated during an online registration that they (or their parents) are interested in coaching.
+InOneOfMyOrgs,Bit,,,,Miscellaneous,In one of my organizations,,Specify True or False for those enrolled in organizations in which you are enrolled.
+CheckInVisits,Integer,,,,Miscellaneous,Number of visits,,Enter a number of visits along with a Comparison for guests who used Building Checkin.
+MedicalLength,Integer,,,,Miscellaneous,Length of Medical / Allergies Info,,Enter a number of characters and select a Comparison.
+HasFailedEmails,Bit,,,,Miscellaneous,Has Failed Emails,StartDate,Select a StartDate or Leave blank
+UserRole,Code,,UserRolesMyData,,Admin,User In Role,,Select User Role from the list.
+IsUser,Bit,,,,Admin,Is System User,,Specify True or False for those with user accounts.
+CreatedBy,String,,,,Admin,Record Created By User,,"Enter a Comparison and all or part of a Last Name (or Last Name, a comma and a First Name)."
+CreatedDate,Date,,,,Admin,Record Created On Date,,Select a Comparison and pick a date.
+RecentCreated,Bit,,,,Admin,Recent Created Record,Days,Enter a number of days to look back and Specify True or False.
+RecentChanged,Bit,,, Field,Admin,Recent Changed Record,"Quarters,Days","Enter Field (or just first part of field), a number of days to look back and Specify True or False."
+IsCurrentPerson,Bit,,,,Admin,Is Current Person,,"Specify True or False for person last viewed (used internally, but you can use it if you find a need for it)"
+IsCurrentUser,Bit,,,,Admin,Is Current User,,"Specify True or False for Current User (used internally, but you can use it if you find a need for it)"
+DuplicateEmails,Bit,,,,Admin,Duplicate Emails,,Specify True or False for records with the same email.
+DuplicateNames,Bit,,,,Admin,Duplicate Names,,Specify True or False for records with the same First and Last Name.
+HasLowerName,Bit,,,,Admin,Has Lowercase Name,,Specify True or False for records with First or Last name starting with a lowercase letter.
+PeopleIds,StringEqual,,,,Admin,Has One Of PeopleIds,,Enter People ID numbers separated by a comma.
+MatchAnything,EqualBit,,,,Admin,Select Condition,,This condition is always true (used internally).
+MatchNothing,EqualBit,,,,Admin,Match Nothing,,This condition is always false (used internally).
+HasOptoutsForEmail,StringEqual,,,,Admin,Has Email Optouts for address,EndDate,Enter email address (leave value blank for any optout address) and pick an end date for those who opted out before that date (or leave date blank).
+HasOpenedEmail,IntegerEqual,,,,Admin,Opened Email,,Enter Email ID number.
+HasSpamBlock,Bit,,,,Admin,Has Spam Block,,Has Reported as Spam
+PeopleId,Integer,,,,Admin,,,"For internal use, but you can enter a People ID number."

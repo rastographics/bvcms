@@ -304,7 +304,7 @@ namespace CmsWeb {
         /// <summary>
         ///   Looks up a localized string similar to Hi {name},
         ///&lt;p&gt;You registered for {org}, and we found your record, 
-        ///but there was no email address on your existing record in our database.
+        ///but there was no email address on your Existing record in our database.
         ///If you would like for us to update your record with this email address or another,
         ///Please contact the church at &lt;strong&gt;{phone}&lt;/strong&gt; to let us know.
         ///It is important that we have your email address so that
@@ -352,16 +352,17 @@ namespace CmsWeb {
         ///   Looks up a localized string similar to &lt;div&gt;
         ///  The following meetings are ready to be viewed:&lt;br/&gt;
         ///  {{#each this}}
-        ///    &lt;a href=&apos;{{ServerLink}}/Meeting/{{MeetingId}}&apos;&gt;{{OrgName}} - {{Lastmeeting}}&lt;/a&gt;&lt;br/&gt;
+        ///    &lt;a href=&apos;{{ServerLink}}/Meeting/{{MeetingId}}&apos;&gt;{{OrgName}} - {{LastMeeting}}&lt;/a&gt;&lt;br/&gt;
         ///  {{/each}}
         ///  {{#each this}}
         ///    {{#if HasAbsents}}
         ///      &lt;h2&gt;Recent Absents&lt;/h2&gt;
         ///      &lt;hr /&gt;
-        ///      &lt;a href=&apos;{{ServerLink}}/Organization/{{OrganizationId}}&apos;&gt;{{OrganizationName}}&lt;/a&gt; ({{LeaderName}})&lt;br /&gt;
+        ///      &lt;a href=&apos;{{ServerLink}}/Org/{{OrganizationId}}&apos;&gt;{{OrgName}}&lt;/a&gt; ({{LeaderName}})&lt;br /&gt;
         ///      &lt;span&gt;
         ///        Members with ({{ConsecutiveAbsentsThreshold}})
-        ///        or more consecutive absents on and before {{MostRec [rest of string was truncated]&quot;;.
+        ///        or more consecutive absents on and before {{LastMeeting}}
+        ///      &lt;/sp [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string RecentVisitsAbsents {
             get {
@@ -451,6 +452,21 @@ namespace CmsWeb {
         internal static string VolSubModel_ComposeMessage_Body {
             get {
                 return ResourceManager.GetString("VolSubModel_ComposeMessage_Body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 
+        ///&lt;p&gt;{substitute},&lt;/p&gt;
+        ///&lt;p&gt;Thank you so much.&lt;/p&gt;
+        ///&lt;p&gt;You are now assigned to cover for {requestor}&lt;br /&gt;
+        ///in the {org}&lt;br /&gt;
+        ///on {meetingdate} at {meetingtime}.
+        ///See you there!&lt;/p&gt;.
+        /// </summary>
+        internal static string VolSubModel_VolunteerSubConfirm {
+            get {
+                return ResourceManager.GetString("VolSubModel_VolunteerSubConfirm", resourceCulture);
             }
         }
         

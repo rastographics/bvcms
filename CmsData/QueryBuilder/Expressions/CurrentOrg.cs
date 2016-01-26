@@ -4,11 +4,12 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using UtilityExtensions;
 using CmsData.Codes;
+using UtilityExtensions;
 
 namespace CmsData
 {
@@ -162,7 +163,7 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                 p.OrganizationMembers.Any(m =>
                     m.OrganizationId == db.CurrentOrgId0
-                    && (m.Pending ?? false) == true);
+                    && (m.Pending ?? false));
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
@@ -190,7 +191,7 @@ namespace CmsData
         {
             var tf = CodeIds == "1";
             var mindt = Util.Now.AddDays(-db.VisitLookbackDays).Date;
-            var ids = new int[]
+            var ids = new[]
             {
                 AttendTypeCode.NewVisitor,
                 AttendTypeCode.RecentVisitor,

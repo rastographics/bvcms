@@ -8,6 +8,7 @@ namespace CmsWeb.Models
         public string BundleType { get; set; }
         public int? BundleTypeId { get; set; }
         public string FundName { get; set; }
+        public string GeneralLedgerId { get; set; }
         public decimal? Total { get; set; }
         public int? Count { get; set; }
         internal TotalsByFundModel model;

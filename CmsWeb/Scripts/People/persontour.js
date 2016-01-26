@@ -55,7 +55,7 @@
   , placement: "left"
   ,content: "Related families show here. " +
       "Click the + to add a related family. " +
-      "For an existing related family, click the pencil to edit the desription. " +
+      "For an Existing related family, click the pencil to edit the desription. " +
       "Click the family name to go to the head of that family."
 }, {
   title: "Family Photo"
@@ -63,7 +63,7 @@
   , placement: "left"
   ,content: "You can have a family photo in addtion to the personal photo! " +
       "Click the + to upload a photo. " +
-      "Click the picture to edit or delete an existing photo."
+      "Click the picture to edit or delete an Existing photo."
 }, {
   title: "Stuff in the Tabs"
   , element: "#involvementstop"

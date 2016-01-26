@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Areas.Reports.Models.WeeklyDecisionsModel
+﻿@using CmsData
+@model CmsWeb.Areas.Reports.Models.WeeklyDecisionsModel
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Weekly Decisions Report";
@@ -11,7 +12,7 @@
                 @using (Html.BeginForm("WeeklyDecisions", "Reports", FormMethod.Get))
                 {
                     <div class="col-sm-5">
-                        <label for="Campus" class="control-label">Campus</label>
+                        <label for="Campus" class="control-label">@Util2.CampusLabel</label>
                         <div class="input-group">
                             @Html.DropDownList("Campus", Model.CampusList(), new { @class = "form-control" })
                         </div>
@@ -36,7 +37,7 @@
                 var campus = Model.CampusList().FirstOrDefault(c => c.Value == Model.Campus.ToString());
                 var campusName = campus != null ? campus.Text : "";
             }
-            <strong>Campus:</strong> @campusName<br />
+            <strong>@Util2.CampusLabel:</strong> @campusName<br />
             <strong>Sunday Date:</strong> @Model.Sunday.ToShortDateString()
         </div>
         <div class="row">

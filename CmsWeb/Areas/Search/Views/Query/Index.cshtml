@@ -8,6 +8,7 @@
 }
 @section head {
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.7/css/bootstrap-dialog.min.css" rel="stylesheet">
 }
 <div class="row">
     <div class="col-md-4">
@@ -22,10 +23,10 @@
                             Actions <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-right">
-                            <li><a href="#" class="saveas"><i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save As</a></li>
+                          <li><a href="#" class="saveas"><i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save As</a></li>
                             <li class="divider"></li>
                             <li><a href="/SavedQueryList"><i class="fa fa-search"></i>&nbsp;&nbsp;Saved Searches</a></li>
-                            <li><a href="/Query/NewQuery"><i class="fa fa-search-plus"></i>&nbsp;&nbsp;New Search</a></li>
+                            <li><a href="/NewQuery"><i class="fa fa-search-plus"></i>&nbsp;&nbsp;New Search</a></li>
                         </ul>
                     </div>
                 </div>
@@ -37,11 +38,15 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="pull-left">
-                            <div class="checkbox">
-                                <label class="control-label">
-                                    @Html.CheckBox("AutoRun") Auto refresh?
-                                </label>
-                            </div>
+                          <div class="checkbox">
+                            <label class="control-label">
+                              @Html.CheckBox("AutoRun") Auto refresh?
+                            </label>
+                          </div>
+                          @if (User.IsInRole("developer")) // waiting for documentation to open up this feature.
+                          {
+                            <a href="/Query/Export/@ViewBag.OrigQueryId" class="exportquery">View Code</a>
+                          }
                         </div>
                         <div class="pull-right">
                             <div class="btn-group visible-xs-inline">
@@ -52,7 +57,7 @@
                                     <li><a href="#" class="saveas"><i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save As</a></li>
                                     <li class="divider"></li>
                                     <li><a href="/SavedQueryList"><i class="fa fa-search"></i>&nbsp;&nbsp;Saved Searches</a></li>
-                                    <li><a href="/Query/NewQuery"><i class="fa fa-search-plus"></i>&nbsp;&nbsp;New Search</a></li>
+                                    <li><a href="/NewQuery"><i class="fa fa-search-plus"></i>&nbsp;&nbsp;New Search</a></li>
                                 </ul>
                             </div>&nbsp;<a id="Run" href="#" class="btn btn-primary">Run</a>
                         </div>
@@ -72,4 +77,6 @@
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
     @Fingerprint.Script("/Content/touchpoint/js/search/query.js")
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.7/js/bootstrap-dialog.min.js"></script>
+    @Fingerprint.Script("/Content/touchpoint/js/search/export-query.js")
 }

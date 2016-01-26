@@ -53,6 +53,7 @@ namespace CmsWeb.Areas.People.Models
                        AttendType = a.AttendType.Description ?? "(null)",
                        MeetingName = o.Division.Name + ": " + o.OrganizationName,
                        MeetingDate = a.MeetingDate,
+                       AttendCredit = a.Meeting.AttendCredit.Code,
                        MemberType = a.MemberType.Description ?? "(null)",
                        AttendFlag = a.AttendanceFlag,
                        OtherAttends = a.OtherAttends,

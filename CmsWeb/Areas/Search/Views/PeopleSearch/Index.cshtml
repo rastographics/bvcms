@@ -1,11 +1,11 @@
-﻿@using CmsWeb.Code
+﻿@using CmsData
+@using CmsWeb.Code
 @using CmsWeb.Models
-@using UtilityExtensions
 @model PeopleSearchModel
 @{
-	ViewBag.Title = "People Search";
-    ViewBag.PageHeader = "People Search";
-    Layout = ViewExtensions2.TouchPointLayout();
+  ViewBag.Title = "People Search";
+  ViewBag.PageHeader = "People Search";
+  Layout = ViewExtensions2.TouchPointLayout();
 }
 <div class="box box-responsive">
     <div class="box-content">
@@ -45,7 +45,7 @@
                 <div class="row">
                     <div class="col-lg-2 col-md-3 col-sm-4">
                         <div class="form-group">
-                            <label for="campus" class="control-label">Campus</label>
+                            <label for="campus" class="control-label">@Util2.CampusLabel</label>
                             @Html.DropDownList("campus", Model.Campuses(), new { @class = "form-control" })
                         </div>
                     </div>

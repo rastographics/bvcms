@@ -201,7 +201,7 @@
                 /* add main input element to form and store it in input */
                 var input = element.apply(form, [settings, self]);
 
-                /* set input content via POST, GET, given data or existing value */
+                /* set input content via POST, GET, given data or Existing value */
                 var input_content;
 
                 if (settings.loadurl) {

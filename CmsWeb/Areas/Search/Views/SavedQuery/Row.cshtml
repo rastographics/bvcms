@@ -2,7 +2,11 @@
 @using UtilityExtensions
 <tr id="row-@Model.QueryId">
     <td>
-        <a href="/Query/@Model.QueryId">@Model.Name</a>
+      <a href="/Query/@Model.QueryId">@Model.Name</a>
+      @if (User.IsInRole("Developer"))
+      {
+        <a href="/Query/Export/@Model.QueryId" class="exportquery" target="export">Code</a>
+      }
     </td>
     <td>
         @Model.Owner

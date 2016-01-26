@@ -91,6 +91,14 @@ namespace UtilityExtensions
                 return dt.Value.ToString("d");
             return def;
         }
+        public static string FormatDateTime(this DateTime? dt, string def = "")
+        {
+            if (dt.HasValue)
+                return dt.Value.TimeOfDay.TotalSeconds > 0 
+                    ? FormatDateTm(dt) 
+                    : dt.Value.ToString("d");
+            return def;
+        }
 
         public static string FormatDateTm(this DateTime dt)
         {

@@ -15,7 +15,7 @@
     <li class="badges">
         @if (Model.basic.Campus.Items.Count() > 1)
         {
-            @Html.DisplayFor(m => m.basic.Campus, "InlineCode")
+            @Html.DisplayFor(m => m.basic.Campus, "InlineCode", new { label=Util2.CampusLabel, canedit = Model.Person.CanUserEditCampus })
         }
         @Html.DisplayFor(m => m.basic.PositionInFamily, "InlineCode")
         @Badge(true, @Model.MemberStatus, "label-success")

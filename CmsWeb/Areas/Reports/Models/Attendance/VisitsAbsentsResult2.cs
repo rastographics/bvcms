@@ -410,6 +410,8 @@ namespace CmsWeb.Areas.Reports.Models
 
                 //---Header left
                 text = HeadText;
+                if (text == null)
+                    return;
                 const float headFontSize = 11f;
                 len = font.GetWidthPoint(text, headFontSize);
                 dc.BeginText();

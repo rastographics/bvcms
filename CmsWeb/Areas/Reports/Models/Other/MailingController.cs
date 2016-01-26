@@ -345,6 +345,8 @@ namespace CmsWeb.Models
             var q1 = EliminateCoupleDoublets(q);
             var q2 = from p in q1
                      let spouse = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
+                     let him = p.GenderId == 1 || spouse == null ? p : spouse
+                     let her = p.GenderId == 1 || spouse == null ? spouse : p
                      select new
                      {
                          PeopleId = p.PeopleId,
@@ -354,8 +356,8 @@ namespace CmsWeb.Models
                                              : (p.PreferredName + " and " + spouse.PreferredName + " " + p.LastName + (p.SuffixCode.Length > 0 ? ", " + p.SuffixCode : ""))) :
                                  (UseTitles ? (spouse.TitleCode != null ? spouse.TitleCode + " and Mrs. " + spouse.Name : "Mr. and Mrs. " + spouse.Name)
                                              : (spouse.PreferredName + " and " + p.PreferredName + " " + spouse.LastName + (spouse.SuffixCode.Length > 0 ? ", " + spouse.SuffixCode : ""))))),
-                         FirstName = p.PreferredName,
-                         FirstNameSpouse = spouse != null ? spouse.PreferredName : "",
+                         FirstName = him.PreferredName,
+                         FirstNameSpouse = her.PreferredName,
                          LastName = p.LastName,
                          Address = p.PrimaryAddress,
                          Address2 = p.PrimaryAddress2,
@@ -363,7 +365,7 @@ namespace CmsWeb.Models
                          State = p.PrimaryState,
                          Zip = p.PrimaryZip.FmtZip(),
                          Email = p.EmailAddress,
-                         EmailSpouse = spouse != null ? spouse.EmailAddress : "",
+                         EmailSpouse = spouse.EmailAddress,
                          MemberStatus = p.MemberStatus.Description,
                          Employer = p.EmployerOther,
                          HomePhone = p.HomePhone.FmtFone(),

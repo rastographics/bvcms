@@ -82,6 +82,12 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             bd.Contribution.PeopleId = peopleid;
             return bd;
         }
+        internal static BundleDetail AddContributionDetail(DateTime date, int fundid, string amount, int peopleid)
+        {
+            var bd = NewBundleDetail(date, fundid, amount);
+            bd.Contribution.PeopleId = peopleid;
+            return bd;
+        }
 
         internal static BundleDetail NewBundleDetail(DateTime date, int fundid, string amount)
         {
@@ -105,32 +111,40 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
         private static IContributionBatchImporter FindMatchingImporter(string text, bool fromFile)
         {
-            if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Amount,Account,Serial,RoutingNumber,TransmissionDate,DepositTotal"))
+            var subtext = text.Substring(0, Math.Min(text.Length, 300));
+
+            if (subtext.Contains("Amount,Account,Serial,RoutingNumber,TransmissionDate,DepositTotal"))
                 return new HollyCreekImporter();
 
-            if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Transaction Date,Status,Payment Type,Name on Account,Transaction Number,Ref. Number,Customer Number,Operation,Location Name,Amount,Check #"))
+            if (subtext.Contains("Transaction Date,Status,Payment Type,Name on Account,Transaction Number,Ref. Number,Customer Number,Operation,Location Name,Amount,Check #"))
                 return new JackHenryImporter();
 
-            if (text.Substring(0, Math.Min(text.Length, 300)).Contains("textbox32,textbox30,textbox26,textbox22,textbox10,textbox7,DepositStatus,textbox3,SourceLocation,textbox4,submittedByValue,CaptureSequence,Sequence,AmountType,Amount,Serial,Account_1,RoutingNumber,AnalysisStatus,IsOverridden"))
+            if (subtext.Contains("textbox32,textbox30,textbox26,textbox22,textbox10,textbox7,DepositStatus,textbox3,SourceLocation,textbox4,submittedByValue,CaptureSequence,Sequence,AmountType,Amount,Serial,Account_1,RoutingNumber,AnalysisStatus,IsOverridden"))
                 return new MetropolitanImporter();
 
-            if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Deposit Date,Account Number,Check Number,Check Amount,Routing Number"))
+            if (subtext.Contains("Deposit Date,Account Number,Check Number,Check Amount,Routing Number"))
                 return new RedeemerImporter();
 
-            if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Id,Date,Name,Donor Address,Donor City,Donor State,Donor Zip,Donor Id,Donor Email,Gross Amount,Net Amount,Fee,Number,Keyword,Status"))
+            if (subtext.Contains("Id,Date,Name,Donor Address,Donor City,Donor State,Donor Zip,Donor Id,Donor Email,Gross Amount,Net Amount,Fee,Number,Keyword,Status"))
                 return new KindredImporter();
 
-            if (!fromFile && text.Substring(0, Math.Min(text.Length, 200)).Contains("Customer ID\tMember Name\tPhone\tEmail\tTransaction Type\tProcess Date\tSettlement Date\tAmount\tReturn Date\tReturn/Fail Reason\tFund ID\tFund Name\tFund Text Message\tFrequency"))
+            if (!fromFile && subtext.Contains("Customer ID\tMember Name\tPhone\tEmail\tTransaction Type\tProcess Date\tSettlement Date\tAmount\tReturn Date\tReturn/Fail Reason\tFund ID\tFund Name\tFund Text Message\tFrequency"))
                 return new Vanco2Importer();
 
-            if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Date,Fund,Final Amount,Final Micr,Ck,"))
+            if (subtext.Contains("Date,Fund,Final Amount,Final Micr,Ck,"))
                 return new TeaysValleyImporter();
 
-            if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Financial_Institution,Corporate_ID,Corporate_Name,Processing_Date,Deposit_Account,Site_ID,Deposit_ID,Deposit_Receipt_Time,ISN,Account_Number,Routing_and_Transit,Serial_Number,Tran_Code,Amount,"))
+            if (subtext.Contains("Financial_Institution,Corporate_ID,Corporate_Name,Processing_Date,Deposit_Account,Site_ID,Deposit_ID,Deposit_Receipt_Time,ISN,Account_Number,Routing_and_Transit,Serial_Number,Tran_Code,Amount,"))
                 return new GraceCcImporter();
 
-            if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Deposit Item,Sequence #,Item Date,Item Status,Customer Name,Routing / Account #,Check #,Amount,Deposit As,Amount Source,Image Quality Pass,Scanned Count"))
+            if (subtext.Contains("Deposit Item,Sequence #,Item Date,Item Status,Customer Name,Routing / Account #,Check #,Amount,Deposit As,Amount Source,Image Quality Pass,Scanned Count"))
                 return new EnonImporter();
+
+            if (subtext.Contains("Type,Date,Member ID,Account,Amount,Fund"))
+                return new AnchorBibleQbImporter();
+
+            if (subtext.Contains("AMOUNT,FRB,CHECK NUMBER,ACCOUNT NUMBER,CAPTUREDATE"))
+                return new HunterStreetImporter();
 
             if (text.Substring(0, Math.Min(text.Length, 20)).Contains("10444063,"))
                 return new AbundantLifeImporter();
@@ -184,7 +198,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             if (text.Contains("ProfileID"))
                 return new ServiceUImporter();
 
-            if (text.StartsWith("Id,Recipient,Date,Time,Currency,Amount,Status,Payment Method,Payer Name,Email address,Mobile Number,Source,Method,Full name,Email,Giving Type"))
+            if (text.StartsWith("Id,Recipient,Date,Time,Currency,Amount,Status,Payment Method,Payer Name,Email address,Mobile Number,Source,Method"))
                 return new PushPayImporter();
 
             throw new Exception("unsupported import file");

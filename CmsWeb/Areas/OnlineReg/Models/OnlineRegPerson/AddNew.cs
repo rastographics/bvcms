@@ -147,6 +147,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             person.EmailAddress = EmailAddress.Trim();
             person.SendEmailAddress1 = true;
             person.CampusId = DbUtil.Db.Setting("DefaultCampusId", "").ToInt2();
+            if (Campus.ToInt() > 0)
+                person.CampusId = Campus.ToInt();
             person.CellPhone = Phone.GetDigits().Truncate(20);
 
             if (count == 0)

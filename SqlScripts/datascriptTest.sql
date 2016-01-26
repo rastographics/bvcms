@@ -650,44 +650,6 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (13, N'FeaturedDonation', N'1', N'<p>
 	Please consider donating to whatever here.</p>
 ', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (58, N'VitalStats', N'Vital Stats Iron Python Script', N'import System
-import System.Text
-from System import *
-from System.Text import *
-
-class VitalStats(object):
-    def Run(self, m):
-        days = 7
-        fmt = ''<tr><td align="right">{0}:</td><td align="right">{1:n0}</td></tr>\r\n''
-        fmt0 = ''<tr><td colspan="2">{0}\r\n''
-        #fmt = ''{0,28}:{1,10:n0}\r\n''
-        #fmt0 = ''{0}\r\n''
-        sb = StringBuilder()
-
-        sb.AppendLine(''<table cellspacing="5" class="grid">'')
-        sb.AppendFormat(fmt0, String.Format("Counts for past {0} days", days))
-        sb.AppendFormat(fmt, "Members", m.QueryCount("Stats:Members"))
-        sb.AppendFormat(fmt, "Decisions", m.QueryCount("Stats:Decisions"))
-        sb.AppendFormat(fmt, "Meetings", m.MeetingCount(days, 0, 0, 0))
-        sb.AppendFormat(fmt, "Sum of Present in Meetings", m.NumPresent(days, 0, 0, 0))
-        sb.AppendFormat(fmt, "Unique Attends", m.QueryCount("Stats:Attends"))
-        sb.AppendFormat(fmt, "New Attends", m.QueryCount("Stats:New Attends"))
-        sb.AppendFormat(fmt, "Contacts", m.QueryCount("Stats:Contacts"))
-        sb.AppendFormat(fmt, "Registrations", m.RegistrationCount(days, 0, 0, 0))
-        sb.AppendFormat(fmt0, "Contributions")
-        sb.AppendFormat(fmt, "Amount Previous 7 days", m.ContributionTotals(7*2, 7, 0))
-        sb.AppendFormat(fmt, "Count Previous 7 days", m.ContributionCount(7*2, 7, 0))
-        sb.AppendFormat(fmt, "Average per Capita Year", \\
-
-            m.ContributionTotals(53*7, 7, 0) / m.ContributionCount(53*7, 7, 0))
-        sb.AppendFormat(fmt, "Weekly 4 week average", m.ContributionTotals(7*5, 7, 0) / 4)
-        sb.AppendFormat(fmt, "Weekly average past 52wks", m.ContributionTotals(53*7, 7, 0) / 52)
-        sb.AppendFormat(fmt, "Weekly average prev 52wks", \\
-
-            m.ContributionTotals(53*7*2, 53*7+7, 0) / 52)
-        sb.AppendLine(''</table>'')
-        return sb.ToString()
-', '2013-09-09 23:32:15.190', 1, 5, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (59, N'NewUserEmail', N'NewUserEmail', N'Hi {name},
 <p>You have a new account on our Church Management System which you can access at the following link:<br />
 <a href="{cmshost}">{cmshost}</a></p>
@@ -1813,13 +1775,12 @@ INSERT INTO [dbo].[LabelFormats] ([Id], [Name], [Size], [Format]) VALUES (15, N'
 INSERT INTO [dbo].[LabelFormats] ([Id], [Name], [Size], [Format]) VALUES (16, N'Extra', 200, '1,1,0,Arial,20,first,0.010,0.01,1,1~1,1,0,Arial,16,last,0.016,0.14,1,1~1,1,0,Arial,12,extra,0.021,0.29,1,1~1,1,0,Arial,12,allergies,0.98,0.29,3,1~1,1,0,Arial,16,securitycode,0.98,0.14,3,1~1,1,0,Arial,12,location,0.026,0.42,1,1~1,1,0,Arial,12,time,0.43,0.42,1,1~1,1,0,Arial,12,date,0.98,0.42,3,1~1,1,0,Arial,10,org,0.056,.51,1,1~3,1,0,pid,0.5,0.96,200,25,2,3')
 SET IDENTITY_INSERT [dbo].[LabelFormats] OFF
 SET IDENTITY_INSERT [dbo].[MobileAppActions] ON
-INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api]) VALUES (1, 1, N'Giving', 0, N'', 1, 0, 1, N'', 0)
-INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api]) VALUES (2, 9, N'Registrations', 0, N'', 2, 1, 1, N'', 0)
-INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api]) VALUES (3, 6, N'People Search', 0, N'', 3, 1, 1, N'Access', 0)
-INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api]) VALUES (4, 7, N'Attendance', 0, N'', 4, 1, 1, N'Access, Attendance', 0)
+INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api]) VALUES (1, 6, N'People Search', 0, N'', 1, 1, 1, N'Access', 1)
+INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api]) VALUES (2, 7, N'Attendance', 0, N'', 2, 1, 1, N'Access, Attendance', 1)
+INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api]) VALUES (3, 10, N'Tasks', 0, N'', 3, 1, 1, N'Access', 3)
 SET IDENTITY_INSERT [dbo].[MobileAppActions] OFF
 SET IDENTITY_INSERT [dbo].[MobileAppActionTypes] ON
-INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (1, N'Giving', 2)
+INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (1, N'Giving', 0)
 INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (2, N'Events', 0)
 INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (3, N'Audio', 0)
 INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (4, N'Video', 0)
@@ -1827,21 +1788,23 @@ INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (5, 
 INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (6, N'People Search', 1)
 INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (7, N'Attendance', 1)
 INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (8, N'Custom', 0)
+INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (9, N'Registrations', 1)
+INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (10, N'Tasks', 1)
 SET IDENTITY_INSERT [dbo].[MobileAppActionTypes] OFF
 SET IDENTITY_INSERT [dbo].[MobileAppAudioTypes] ON
 INSERT INTO [dbo].[MobileAppAudioTypes] ([id], [name]) VALUES (1, N'SoundCloud')
 SET IDENTITY_INSERT [dbo].[MobileAppAudioTypes] OFF
 SET IDENTITY_INSERT [dbo].[MobileAppIcons] ON
-INSERT INTO [dbo].[MobileAppIcons] ([id], [setID], [actionID], [url]) VALUES (1, 1, 1, N'http://files.bvcms.com/touchpoint/giving.png')
-INSERT INTO [dbo].[MobileAppIcons] ([id], [setID], [actionID], [url]) VALUES (2, 1, 2, N'http://files.bvcms.com/touchpoint/registrations.png')
-INSERT INTO [dbo].[MobileAppIcons] ([id], [setID], [actionID], [url]) VALUES (3, 1, 3, N'http://files.bvcms.com/touchpoint/search.png')
-INSERT INTO [dbo].[MobileAppIcons] ([id], [setID], [actionID], [url]) VALUES (4, 1, 4, N'http://files.bvcms.com/touchpoint/attendance.png')
+INSERT INTO [dbo].[MobileAppIcons] ([id], [setID], [actionID], [url]) VALUES (1, 1, 1, N'http://files.bvcms.com/touchpoint/search.png')
+INSERT INTO [dbo].[MobileAppIcons] ([id], [setID], [actionID], [url]) VALUES (2, 1, 2, N'http://files.bvcms.com/touchpoint/attendance.png')
+INSERT INTO [dbo].[MobileAppIcons] ([id], [setID], [actionID], [url]) VALUES (3, 1, 3, N'http://files.bvcms.com/touchpoint/tasks.png')
 SET IDENTITY_INSERT [dbo].[MobileAppIcons] OFF
 SET IDENTITY_INSERT [dbo].[MobileAppIconSets] ON
 INSERT INTO [dbo].[MobileAppIconSets] ([id], [name], [active]) VALUES (1, N'Standard', 1)
 SET IDENTITY_INSERT [dbo].[MobileAppIconSets] OFF
 SET IDENTITY_INSERT [dbo].[MobileAppVideoTypes] ON
 INSERT INTO [dbo].[MobileAppVideoTypes] ([id], [name]) VALUES (1, N'YouTube')
+INSERT INTO [dbo].[MobileAppVideoTypes] ([id], [name]) VALUES (2, N'Vimeo')
 SET IDENTITY_INSERT [dbo].[MobileAppVideoTypes] OFF
 SET IDENTITY_INSERT [dbo].[Program] ON
 INSERT INTO [dbo].[Program] ([Id], [Name], [RptGroup], [StartHoursOffset], [EndHoursOffset]) VALUES (1, N'Worship', N'1', 1, 24)
@@ -4079,7 +4042,7 @@ INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 11)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 12)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 25)
 SET IDENTITY_INSERT [dbo].[Users] ON
-INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (1, 1, N'Admin', NULL, N'2352354235', NULL, NULL, 1, '2015-02-19 13:22:38.507', NULL, '2014-08-22 21:17:16.130', '2009-05-05 22:46:43.890', 0, '2012-09-11 15:37:25.863', 1, '2014-10-20 12:10:19.993', 0, NULL, NULL, NULL, 1, N'testdb.bvcms.com', N'bvcms', N'The Admin', N'Admin, The', '7ae5dc51-9b42-4858-9861-49a3243daaa3', NULL, '2015-10-22 10:11:01.950')
+INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (1, 1, N'Admin', NULL, N'2352354235', NULL, NULL, 1, '2015-02-19 13:22:38.507', NULL, '2014-08-22 21:17:16.130', '2009-05-05 22:46:43.890', 0, '2012-09-11 15:37:25.863', 1, '2015-12-01 13:00:22.870', 0, NULL, NULL, NULL, 1, N'testdb.bvcms.com', N'bvcms', N'The Admin', N'Admin, The', '7ae5dc51-9b42-4858-9861-49a3243daaa3', NULL, '2015-10-22 10:11:01.950')
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (2, 2, N'david', N'', N'uNVML/ZamnY7YdE1NXvMHPIznic=', NULL, NULL, 1, '2015-07-12 10:05:09.707', '2015-07-12 10:04:58.520', '2013-09-20 22:45:26.960', '2010-10-30 15:23:25.763', 0, '2013-09-20 22:45:26.880', 0, '2015-02-28 08:18:17.550', 0, '2010-10-30 15:23:25.763', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'David Carroll', N'Carroll, David', NULL, NULL, '2013-09-21 22:45:01.070')
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (3, 3, N'karenw', N'', N'2352354235', NULL, NULL, 1, '2011-09-01 15:29:59.107', NULL, '2010-10-30 15:29:49.930', '2010-10-30 15:29:25.757', 0, '2010-10-30 15:29:49.860', 0, '2010-10-30 15:29:25.757', 0, '2010-10-30 15:29:25.757', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'Karen Worrell', N'Worrell, Karen', NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Users] OFF

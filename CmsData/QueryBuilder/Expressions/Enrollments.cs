@@ -4,11 +4,12 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using UtilityExtensions;
 using CmsData.Codes;
+using UtilityExtensions;
 
 namespace CmsData
 {
@@ -21,9 +22,9 @@ namespace CmsData
                     m.MemberTypeId != MemberTypeCode.InActive
                     && m.MemberTypeId != MemberTypeCode.Prospect
                     && (m.Pending ?? false) == false
-                    && (Organization == 0 || m.OrganizationId == Organization)
-                    && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
-                    && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
+                    && (OrganizationInt == 0 || m.OrganizationId == OrganizationInt)
+                    && (DivisionInt == 0 || m.Organization.DivOrgs.Any(t => t.DivId == DivisionInt))
+                    && (ProgramInt == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == ProgramInt)))
                     );
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && CodeIds == "1"))
@@ -33,18 +34,18 @@ namespace CmsData
         internal Expression AttendTypeIds()
         {
             Expression<Func<Person, bool>> pred;
-            if (Schedule == -1)
+            if (ScheduleInt == -1)
                 pred = p => (
                     from m in p.OrganizationMembers
                     where CodeIntIds.Contains(m.MemberType.AttendanceTypeId ?? 0)
-                    where ((Campus ?? 0) == 0
-                            || m.Organization.CampusId == (Campus ?? 0)
-                            || (Campus == -1 && m.Organization.CampusId == null)
+                    where ((CampusInt ?? 0) == 0
+                            || m.Organization.CampusId == (CampusInt ?? 0)
+                            || (CampusInt == -1 && m.Organization.CampusId == null)
                             )
-                    where (OrgType ?? 0) == 0 || m.Organization.OrganizationTypeId == OrgType
-                    where Organization == 0 || m.OrganizationId == Organization
-                    where Division == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == Division)
-                    where Program == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
+                    where (OrgTypeInt ?? 0) == 0 || m.Organization.OrganizationTypeId == OrgTypeInt
+                    where OrganizationInt == 0 || m.OrganizationId == OrganizationInt
+                    where DivisionInt == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == DivisionInt)
+                    where ProgramInt == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == ProgramInt))
                     where !m.Organization.OrgSchedules.Any()
                     select m
                     ).Any();
@@ -52,37 +53,36 @@ namespace CmsData
                 pred = p => (
                     from m in p.OrganizationMembers
                     where CodeIntIds.Contains(m.MemberType.AttendanceTypeId ?? 0)
-                    where ((Campus ?? 0) == 0
-                            || m.Organization.CampusId == (Campus ?? 0)
-                            || (Campus == -1 && m.Organization.CampusId == null)
+                    where ((CampusInt ?? 0) == 0
+                            || m.Organization.CampusId == (CampusInt ?? 0)
+                            || (CampusInt == -1 && m.Organization.CampusId == null)
                             )
-                    where (OrgType ?? 0) == 0 || m.Organization.OrganizationTypeId == OrgType
-                    where Organization == 0 || m.OrganizationId == Organization
-                    where Division == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == Division)
-                    where Program == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
-                    where Schedule == 0 || m.Organization.OrgSchedules.Any(os => os.ScheduleId == Schedule)
+                    where (OrgTypeInt ?? 0) == 0 || m.Organization.OrganizationTypeId == OrgTypeInt
+                    where OrganizationInt == 0 || m.OrganizationId == OrganizationInt
+                    where DivisionInt == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == DivisionInt)
+                    where ProgramInt == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == ProgramInt))
+                    where ScheduleInt == 0 || m.Organization.OrgSchedules.Any(os => os.ScheduleId == ScheduleInt)
                     select m
                     ).Any();
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
                 return Expression.Not(Expression.Invoke(pred, parm));
-            else
-                return Expression.Invoke(pred, parm);
+            return Expression.Invoke(pred, parm);
         }
         internal Expression MemberTypeIds()
         {
             Expression<Func<Person, bool>> pred;
-            if (Schedule == -1)
+            if (ScheduleInt == -1)
                 pred = p => (
                     from m in p.OrganizationMembers
                     where CodeIntIds.Contains(m.MemberTypeId)
-                    where ((Campus ?? 0) == 0
-                            || m.Organization.CampusId == (Campus ?? 0)
-                            || (Campus == -1 && m.Organization.CampusId == null)
+                    where ((CampusInt ?? 0) == 0
+                            || m.Organization.CampusId == (CampusInt ?? 0)
+                            || (CampusInt == -1 && m.Organization.CampusId == null)
                             )
-                    where (OrgType ?? 0) == 0 || m.Organization.OrganizationTypeId == OrgType
-                    where Organization == 0 || m.OrganizationId == Organization
-                    where Division == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == Division)
-                    where Program == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
+                    where (OrgTypeInt ?? 0) == 0 || m.Organization.OrganizationTypeId == OrgTypeInt
+                    where OrganizationInt == 0 || m.OrganizationId == OrganizationInt
+                    where DivisionInt == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == DivisionInt)
+                    where ProgramInt == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == ProgramInt))
                     where !m.Organization.OrgSchedules.Any()
                     select m
                     ).Any();
@@ -90,15 +90,15 @@ namespace CmsData
                 pred = p => (
                     from m in p.OrganizationMembers
                     where CodeIntIds.Contains(m.MemberTypeId)
-                    where ((Campus ?? 0) == 0
-                            || m.Organization.CampusId == (Campus ?? 0)
-                            || (Campus == -1 && m.Organization.CampusId == null)
+                    where ((CampusInt ?? 0) == 0
+                            || m.Organization.CampusId == (CampusInt ?? 0)
+                            || (CampusInt == -1 && m.Organization.CampusId == null)
                             )
-                    where (OrgType ?? 0) == 0 || m.Organization.OrganizationTypeId == OrgType
-                    where Organization == 0 || m.OrganizationId == Organization
-                    where Division == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == Division)
-                    where Program == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
-                    where Schedule == 0 || m.Organization.OrgSchedules.Any(os => os.ScheduleId == Schedule)
+                    where (OrgTypeInt ?? 0) == 0 || m.Organization.OrganizationTypeId == OrgTypeInt
+                    where OrganizationInt == 0 || m.OrganizationId == OrganizationInt
+                    where DivisionInt == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == DivisionInt)
+                    where ProgramInt == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == ProgramInt))
+                    where ScheduleInt == 0 || m.Organization.OrgSchedules.Any(os => os.ScheduleId == ScheduleInt)
                     select m
                     ).Any();
             Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
@@ -113,9 +113,9 @@ namespace CmsData
                     where m.MemberTypeId != MemberTypeCode.InActive
                     where m.MemberTypeId != MemberTypeCode.Prospect
                     where (m.Pending ?? false) == false
-                    where Organization == 0 || m.OrganizationId == Organization
-                    where Division == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == Division)
-                    where Program == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
+                    where OrganizationInt == 0 || m.OrganizationId == OrganizationInt
+                    where DivisionInt == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == DivisionInt)
+                    where ProgramInt == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == ProgramInt))
                     where m.Organization.OrgSchedules.Any(os => CodeIntIds.Contains(os.ScheduleId ?? 0))
                     select m
                     ).Any();
@@ -131,10 +131,10 @@ namespace CmsData
                 where m.MemberTypeId != MemberTypeCode.InActive
                 where m.MemberTypeId != MemberTypeCode.Prospect
                 where (m.Pending ?? false) == false
-                where (OrgType ?? 0) == 0 || m.Organization.OrganizationTypeId == OrgType
-                where Organization == 0 || m.OrganizationId == Organization
-                where Division == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == Division)
-                where Program == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
+                where (OrgTypeInt ?? 0) == 0 || m.Organization.OrganizationTypeId == OrgTypeInt
+                where OrganizationInt == 0 || m.OrganizationId == OrganizationInt
+                where DivisionInt == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == DivisionInt)
+                where ProgramInt == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == ProgramInt))
                 where CodeIntIds.Contains(m.Organization.CampusId ?? 0)
                     || (CodeIntIds[0] == -1 && m.Organization.CampusId == null)
                 select m
@@ -166,10 +166,10 @@ namespace CmsData
                 where m.TransactionTypeId == 1
                 where m.EnrollmentDate >= mindt
                 where CodeIntIds[0] == 99 || CodeIntIds.Contains(m.Organization.RegistrationTypeId ?? 0)
-                where (OrgType ?? 0) == 0 || m.Organization.OrganizationTypeId == OrgType
-                where Organization == 0 || m.OrganizationId == Organization
-                where Division == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == Division)
-                where Program == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
+                where (OrgTypeInt ?? 0) == 0 || m.Organization.OrganizationTypeId == OrgTypeInt
+                where OrganizationInt == 0 || m.OrganizationId == OrganizationInt
+                where DivisionInt == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == DivisionInt)
+                where ProgramInt == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == ProgramInt))
                 select m
                 ).Any();
             Expression expr = Expression.Invoke(pred, parm);
@@ -190,9 +190,9 @@ namespace CmsData
                         pred = p => (
                             from m in p.OrganizationMembers
                             where m.OrgMemMemTags.Any(mt => mt.MemberTag.Name == smallgroup)
-                            where Organization == 0 || m.OrganizationId == Organization
-                            where Division == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == Division)
-                            where Program == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
+                            where OrganizationInt == 0 || m.OrganizationId == OrganizationInt
+                            where DivisionInt == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == DivisionInt)
+                            where ProgramInt == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == ProgramInt))
                             select m
                         ).Any();
                         break;
@@ -200,9 +200,9 @@ namespace CmsData
                         pred = p => (
                             from m in p.OrganizationMembers
                             where m.OrgMemMemTags.Any(mt => mt.MemberTag.Name.StartsWith(smallgroup))
-                            where Organization == 0 || m.OrganizationId == Organization
-                            where Division == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == Division)
-                            where Program == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
+                            where OrganizationInt == 0 || m.OrganizationId == OrganizationInt
+                            where DivisionInt == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == DivisionInt)
+                            where ProgramInt == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == ProgramInt))
                             select m
                         ).Any();
                         break;
@@ -217,9 +217,9 @@ namespace CmsData
                 Expression<Func<Person, bool>> pred = p => (
                             from m in p.OrganizationMembers
                             where !m.OrgMemMemTags.Any()
-                            where Organization == 0 || m.OrganizationId == Organization
-                            where Division == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == Division)
-                            where Program == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
+                            where OrganizationInt == 0 || m.OrganizationId == OrganizationInt
+                            where DivisionInt == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == DivisionInt)
+                            where ProgramInt == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == ProgramInt))
                             select m
                         ).Any();
                 var expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
@@ -232,12 +232,12 @@ namespace CmsData
         {
             var cnt = TextValue.ToInt();
             Expression<Func<Person, int>> pred;
-            if (Schedule == -1)
+            if (ScheduleInt == -1)
                 pred = p => (
                     from m in p.OrganizationMembers
-                    where Organization == 0 || m.OrganizationId == Organization
-                    where Division == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == Division)
-                    where Program == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
+                    where OrganizationInt == 0 || m.OrganizationId == OrganizationInt
+                    where DivisionInt == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == DivisionInt)
+                    where ProgramInt == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == ProgramInt))
                     where (m.Pending ?? false) == false
                     where !m.Organization.OrgSchedules.Any()
                     select m
@@ -245,11 +245,11 @@ namespace CmsData
             else
                 pred = p => (
                     from m in p.OrganizationMembers
-                    where Organization == 0 || m.OrganizationId == Organization
-                    where Division == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == Division)
-                    where Program == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
+                    where OrganizationInt == 0 || m.OrganizationId == OrganizationInt
+                    where DivisionInt == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == DivisionInt)
+                    where ProgramInt == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == ProgramInt))
                     where (m.Pending ?? false) == false
-                    where Schedule == 0 || m.Organization.OrgSchedules.Any(os => os.ScheduleId == Schedule)
+                    where ScheduleInt == 0 || m.Organization.OrgSchedules.Any(os => os.ScheduleId == ScheduleInt)
                     select m
                     ).Count();
             var left = Expression.Invoke(pred, parm);
@@ -261,10 +261,10 @@ namespace CmsData
             var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                     p.OrganizationMembers.Any(m =>
-                    (m.Pending ?? false) == true
-                    && (Organization == 0 || m.OrganizationId == Organization)
-                    && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
-                    && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
+                    (m.Pending ?? false)
+                    && (OrganizationInt == 0 || m.OrganizationId == OrganizationInt)
+                    && (DivisionInt == 0 || m.Organization.DivOrgs.Any(t => t.DivId == DivisionInt))
+                    && (ProgramInt == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == ProgramInt)))
                     );
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
@@ -277,9 +277,9 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                     p.OrganizationMembers.Any(m =>
                     m.MemberTypeId == MemberTypeCode.InActive
-                    && (Organization == 0 || m.OrganizationId == Organization)
-                    && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
-                    && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
+                    && (OrganizationInt == 0 || m.OrganizationId == OrganizationInt)
+                    && (DivisionInt == 0 || m.Organization.DivOrgs.Any(t => t.DivId == DivisionInt))
+                    && (ProgramInt == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == ProgramInt)))
                     );
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
@@ -292,9 +292,9 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                     p.OrganizationMembers.Any(m =>
                     m.MemberTypeId == MemberTypeCode.Prospect
-                    && (Organization == 0 || m.OrganizationId == Organization)
-                    && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
-                    && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
+                    && (OrganizationInt == 0 || m.OrganizationId == OrganizationInt)
+                    && (DivisionInt == 0 || m.Organization.DivOrgs.Any(t => t.DivId == DivisionInt))
+                    && (ProgramInt == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == ProgramInt)))
                     );
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
@@ -303,8 +303,8 @@ namespace CmsData
         }
         internal Expression OrgSearchMember()
         {
-            var q = db.PeopleIdsFromOrgSearch(OrgName, Program, Division, OrgType2, Campus, Schedule, OrgStatus,
-                OnlineReg, null, null);
+            var q = db.PeopleIdsFromOrgSearch(OrgName, ProgramInt, DivisionInt, OrgType2, CampusInt, ScheduleInt, OrgStatusInt,
+                OnlineRegInt, null, null);
             var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
@@ -315,7 +315,7 @@ namespace CmsData
         internal Expression RecentIncompleteRegistrations()
         {
             var mindt = Util.Now.AddDays(-Days).Date;
-            var q = db.HasIncompleteRegistrations(Program, Division, Organization, mindt, Util.Now);
+            var q = db.HasIncompleteRegistrations(ProgramInt, DivisionInt, OrganizationInt, mindt, Util.Now);
             var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId ?? 0));
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
@@ -329,9 +329,9 @@ namespace CmsData
             var co = db.CurrentOrg;
             Expression<Func<Person, bool>> pred = p =>
                     p.OrganizationMembers.Any(m =>
-                    (Organization == 0 || m.OrganizationId == Organization)
-                    && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
-                    && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
+                    (OrganizationInt == 0 || m.OrganizationId == OrganizationInt)
+                    && (DivisionInt == 0 || m.Organization.DivOrgs.Any(t => t.DivId == DivisionInt))
+                    && (ProgramInt == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == ProgramInt)))
                     && (from ts in db.ViewTransactionSummaries
                            where ts.PeopleId == p.PeopleId
                            where ts.OrganizationId == m.OrganizationId

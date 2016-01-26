@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -47,21 +48,20 @@ namespace CmsWeb.Controllers
         public ActionResult NewQuery()
         {
             var qb = DbUtil.Db.ScratchPadCondition();
-            qb.Reset(DbUtil.Db);
+            qb.Reset();
             qb.Save(DbUtil.Db);
             return Redirect("/Query");
         }
 
 #if DEBUG
-        [HttpGet, Route("~/Test")]
-        public ActionResult Test(string id)
+        [HttpGet, Route("~/Test/{id?}")]
+        public ActionResult Test(int? id)
         {
-            var script = System.IO.File.ReadAllText(Server.MapPath("~/test2.py"));
-            var pe = new PythonEvents(Util.Host);
-            pe.Data.value = "test";
-            var s = pe.RunScript(script);
-
-            return Content(s, "text/plain");
+            var script = System.IO.File.ReadAllText(Server.MapPath($"~/test{id}.py"));
+            if (!CanRunScript(script))
+                return Message("Not Authorized to run this script");
+            ViewBag.text = PythonModel.RunScript(Util.Host, script);
+            return View();
         }
 #endif
 
@@ -82,28 +82,28 @@ namespace CmsWeb.Controllers
 
             const CompareType comp = CompareType.Equal;
             var cc = DbUtil.Db.ScratchPadCondition();
-            cc.Reset(DbUtil.Db);
+            cc.Reset();
             Condition c;
             switch (id)
             {
                 case 1:
-                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
+                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,True");
                     c.Quarters = "1";
                     c.Days = 7;
                     break;
                 case 2:
-                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
+                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,True");
                     c.Quarters = "2";
                     c.Days = 7;
-                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "0,F");
+                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "0,False");
                     c.Quarters = "1";
                     c.Days = 7;
                     break;
                 case 3:
-                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
+                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,True");
                     c.Quarters = "3";
                     c.Days = 7;
-                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "0,F");
+                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "0,False");
                     c.Quarters = "2";
                     c.Days = 7;
                     break;
@@ -149,14 +149,6 @@ namespace CmsWeb.Controllers
         public ActionResult UseNewFeature(bool id)
         {
             Util2.UseNewFeature = !id;
-            DbUtil.Db.SubmitChanges();
-            if (Request.UrlReferrer != null)
-                return Redirect(Request.UrlReferrer.OriginalString);
-            return Redirect("/");
-        }
-        public ActionResult UseNewDetails(bool id)
-        {
-            Util2.UseNewDetails = !id;
             DbUtil.Db.SubmitChanges();
             if (Request.UrlReferrer != null)
                 return Redirect(Request.UrlReferrer.OriginalString);
@@ -213,7 +205,7 @@ namespace CmsWeb.Controllers
         [Authorize(Roles = "Developer")]
         public ActionResult TestScript(string script)
         {
-            return Content(PythonEvents.RunScript(Util.Host, script));
+            return Content(PythonModel.RunScript(Util.Host, script));
         }
 
         private string RunScriptSql(CMSDataContext db, string parameter, string body, DynamicParameters p)
@@ -251,15 +243,15 @@ namespace CmsWeb.Controllers
             if (script.StartsWith("Not Authorized"))
                 return Message(script);
             ViewBag.name = title ?? $"Run Script {name} {parameter}";
-            var rd = cn.ExecuteReader(script, p, commandTimeout:1200);
+            var rd = cn.ExecuteReader(script, p, commandTimeout: 1200);
             return View(rd);
         }
 
         private bool CanRunScript(string script)
         {
-            if (!script.StartsWith("--Roles="))
+            if (!script.StartsWith("#Roles=") && !script.StartsWith("--Roles"))
                 return true;
-            var re = new Regex("--Roles=(?<roles>.*)");
+            var re = new Regex("(--|#)Roles=(?<roles>.*)", RegexOptions.IgnoreCase);
             var roles = re.Match(script).Groups["roles"].Value.Split(',').Select(aa => aa.Trim());
             if (!roles.Any(rr => User.IsInRole(rr)))
                 return false;
@@ -295,20 +287,22 @@ namespace CmsWeb.Controllers
                 if (!script.HasValue())
                     return Message("no script named " + name);
 
+                if (!CanRunScript(script))
+                    return Message("Not Authorized to run this script");
                 if (script.Contains("model.Form"))
                     return Redirect("/PyScriptForm/" + name);
                 script = script.Replace("@P1", p1 ?? "NULL")
                     .Replace("@P2", p2 ?? "NULL")
                     .Replace("V1", v1 ?? "None")
                     .Replace("V2", v2 ?? "None");
-                if(script.Contains("@qtagid"))
+                if (script.Contains("@qtagid"))
                 {
                     var id = DbUtil.Db.FetchLastQuery().Id;
                     var tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
                     script = script.Replace("@qtagid", tag.Id.ToString());
                 }
 
-                var pe = new PythonEvents(Util.Host);
+                var pe = new PythonModel(Util.Host);
 
                 foreach (var key in Request.QueryString.AllKeys)
                     pe.DictionaryAdd(key, Request.QueryString[key]);
@@ -325,10 +319,10 @@ namespace CmsWeb.Controllers
         private string FetchPyScriptForm(string name)
         {
 #if DEBUG
-            if(name == "test")
-            return System.IO.File.ReadAllText(Server.MapPath("~/test.py"));
+            if (name == "test")
+                return System.IO.File.ReadAllText(Server.MapPath("~/test.py"));
 #endif
-                return DbUtil.Db.ContentOfTypePythonScript(name);
+            return DbUtil.Db.ContentOfTypePythonScript(name);
         }
         [HttpGet, Route("~/PyScriptForm/{name}")]
         public ActionResult PyScriptForm(string name)
@@ -339,7 +333,7 @@ namespace CmsWeb.Controllers
 
                 if (!script.HasValue())
                     return Message("no script named " + name);
-                var pe = new PythonEvents(Util.Host);
+                var pe = new PythonModel(Util.Host);
                 foreach (var key in Request.QueryString.AllKeys)
                     pe.DictionaryAdd(key, Request.QueryString[key]);
                 pe.Data.pyscript = name;
@@ -357,7 +351,7 @@ namespace CmsWeb.Controllers
         {
             try
             {
-                var pe = new PythonEvents(Util.Host);
+                var pe = new PythonModel(Util.Host);
                 foreach (var key in Request.Form.AllKeys)
                     pe.DictionaryAdd(key, Request.Form[key]);
                 pe.HttpMethod = "post";

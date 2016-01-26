@@ -11,7 +11,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegPersonModel
     {
-        public OrganizationMember Enroll(Transaction transaction, string paylink)
+        public OrganizationMember Enroll(Transaction transaction, string payLink)
         {
             var om = GetOrganizationMember(transaction);
 
@@ -26,21 +26,24 @@ namespace CmsWeb.Areas.OnlineReg.Models
             SaveAnswers(om);
             SaveAgeGroupChoice(om);
             DoLinkGroupsFromOrgs(om);
-            LogRegistrationOnOrgMember(transaction, om, paylink);
+            LogRegistrationOnOrgMember(transaction, om, payLink);
 
             DbUtil.Db.SubmitChanges();
             return om;
         }
 
+        private static string DefaultMessage => DbUtil.Db.ContentHtml("DefaultConfirmation", 
+                Resource1.SettingsRegistrationModel_DefaulConfirmation);
+
         public string GetMessage(string details)
         {
             var amtpaid = Parent.Transaction.Amt ?? 0;
-            var paylink = GetPayLink();
+            var payLink = GetPayLink();
             var body = settings[org.OrganizationId].Body;
             if (masterorgid.HasValue && !body.HasValue())
                 body = settings[masterorgid.Value].Body;
+            var message = Util.PickFirst(body, DefaultMessage);
 
-            var message = Util.PickFirst(body, "no message");
             var location = org.Location;
             if (!location.HasValue() && masterorg != null)
                 location = masterorg.Location;
@@ -55,21 +58,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 .Replace("{participants}", details);
             if (Parent.Transaction.Amtdue > 0)
                 message = message.Replace("{paylink}",
-                    $"<a href='{paylink}'>Click this link to make a payment on your balance of {Parent.Transaction.Amtdue:C}</a>.");
+                    $"<a href='{payLink}'>Click this link to make a payment on your balance of {Parent.Transaction.Amtdue:C}</a>.");
             else
                 message = message.Replace("{paylink}", "You have a zero balance.");
             return message;
         }
 
-        private string _paylink;
+        private string cachedPayLink;
         public string GetPayLink()
         {
-            if (_paylink.HasValue())
-                return _paylink;
-//            if (org != null && org.IsMissionTrip == true)
-//                return _paylink = DbUtil.Db.ServerLink($"/OnlineReg/{orgid}?goerid={PeopleId}");
+            if (cachedPayLink.HasValue())
+                return cachedPayLink;
             var estr = HttpUtility.UrlEncode(Util.Encrypt(Parent.Transaction.OriginalId.ToString()));
-            return _paylink = DbUtil.Db.ServerLink("/OnlineReg/PayAmtDue?q=" + estr);
+            return cachedPayLink = DbUtil.Db.ServerLink("/OnlineReg/PayAmtDue?q=" + estr);
         }
 
         private void LogRegistrationOnOrgMember(Transaction transaction, OrganizationMember om, string paylink)
@@ -260,7 +261,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 foreach (var op in ((AskDropdown) ask).list)
                     op.RemoveFromSmallGroup(DbUtil.Db, om);
-                ((AskDropdown) ask).SmallGroupChoice(option).AddToSmallGroup(DbUtil.Db, om, PythonEvents);
+                ((AskDropdown) ask).SmallGroupChoice(option).AddToSmallGroup(DbUtil.Db, om, PythonModel);
             }
         }
 
@@ -273,11 +274,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 foreach (var i in ((AskMenu) ask).MenuItemsChosen(MenuItem[ask.UniqueId]))
                 {
                     om.AddToMemberDataBelowComments(menulabel);
-                    string desc;
-                    if (i.amt > 0)
-                        desc = $"{i.number} {i.desc} (at {i.amt:N2})";
-                    else
-                        desc = $"{i.number} {i.desc}";
+                    var desc = i.amt > 0 
+                        ? $"{i.number} {i.desc} (at {i.amt:N2})" 
+                        : $"{i.number} {i.desc}";
                     om.AddToMemberDataBelowComments(desc);
                     menulabel = string.Empty;
                 }
@@ -298,7 +297,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 foreach (var ck in ((AskCheckboxes) ask).list)
                     ck.RemoveFromSmallGroup(DbUtil.Db, om);
                 foreach (var i in ((AskCheckboxes) ask).CheckboxItemsChosen(Checkbox))
-                    i.AddToSmallGroup(DbUtil.Db, om, PythonEvents);
+                    i.AddToSmallGroup(DbUtil.Db, om, PythonModel);
             }
         }
 
@@ -385,8 +384,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     else
                     {
                         omm = OrganizationMember.Load(DbUtil.Db, pp.PeopleId, org.OrganizationId);
-                        if (omm != null)
-                            omm.RemoveFromGroup(DbUtil.Db, "Attended");
+                        omm?.RemoveFromGroup(DbUtil.Db, "Attended");
                     }
                 }
                 if (omm == null)

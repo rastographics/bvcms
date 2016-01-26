@@ -166,7 +166,7 @@ namespace CmsWeb.Areas.Main.Controllers
                      where e.PeopleId == iPeopleID
                      select e).Single();
 
-            // Check for existing SSN
+            // Check for Existing SSN
             if (sSSN != null && sSSN.Length > 1)
             {
                 if (sSSN.Substring(0, 1) == "X")
@@ -184,7 +184,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 sSSN = Util.Decrypt(p.Ssn, "People");
             }
 
-            // Check for existing DLN and DL State
+            // Check for Existing DLN and DL State
             if (sDLN != null && sDLN.Length > 1)
             {
                 if (sDLN.Substring(0, 1) == "X")
