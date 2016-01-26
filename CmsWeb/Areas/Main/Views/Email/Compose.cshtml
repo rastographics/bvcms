@@ -98,7 +98,7 @@
                         }
                     }
                     <div>
-                        <ul id="additional-recipients"></ul>
+                        <ul class="pull-left" id="additional-recipients"></ul>
                         <div class="pull-right">
                             <a class="searchadd btn btn-default btn-block" href="/SearchAdd2/Dialog/addtoemail/"><i class="fa fa-plus-circle"></i>  Add Recipient</a>
                         </div>
@@ -250,9 +250,13 @@
             '<li id="additional-recipient-li-' + ret.pid + '">'+
             ret.name +
             '  <input type="hidden" name="AdditionalRecipients" value="' + ret.pid + '"/>' +
-            '  <a href="javascript:$(\'#additional-recipient-li-' + ret.pid + '\').remove();"><i class="fa fa-times-circle red"></i></a>' +
+            '  <a href="javascript:RemoveRecipient(' + ret.pid + ');"><i class="fa fa-times-circle red"></i></a>' +
             '</li>'
         );
+    }
+
+    function RemoveRecipient(pid) {
+        $('#additional-recipient-li-' + pid).remove();
     }
   </script>
 }
