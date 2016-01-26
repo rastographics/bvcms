@@ -19,7 +19,7 @@ BEGIN
 	INSERT INTO @t (PeopleId, MemberTypeId, MemberType) 
 		SELECT PeopleId, MemberTypeId, mt.Description
 		FROM dbo.Attend a
-		JOIN lookup.MemberType mt ON mt.Id = a.MemberTypeId
+		LEFT JOIN lookup.MemberType mt ON mt.Id = a.MemberTypeId
 		WHERE a.AttendanceFlag = 1
 		AND (a.MemberTypeId IN (SELECT id FROM CsvTable(@ids)) OR @ids IS NULL OR @ids = '')
 		AND a.MemberTypeId NOT IN (SELECT id FROM CsvTable(@notids))
@@ -36,6 +36,7 @@ BEGIN
 						AND d.ProgId = @progid)) OR @progid = 0)
 	RETURN
 END
+
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
