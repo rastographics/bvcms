@@ -226,23 +226,25 @@
     });
 
     function splitSubmit() {
-        var newamt = $("#amt-split").val();
-        newamt = parseFloat(newamt);
-        if (isNaN(newamt))
-            return false;
-        var tr = $('tr[cid=' + $('#contributionId').val() + ']');
-        var q = {
-            pid: $("a.pid", tr).text(),
-            name: $("td.name", tr).text(),
-            fund: $("td.fund", tr).attr('val'),
-            pledge: $("td.fund", tr).attr('pledge'),
-            amt: newamt,
-            splitfrom: tr.attr("cid"),
-            checkno: $("td.checkno", tr).text(),
-            notes: $("td.notes", tr).text(),
-            id: $("#id").val()
-        };
-        $.PostRow({ scroll: true, q: q });
+        var amounts = $("#amt-split").val().split(' ');
+        for (var i = 0, len = amounts.length; i < len; i++) {
+            var newamt = parseFloat(amounts[i]);
+            if (isNaN(newamt))
+                continue;
+            var tr = $('tr[cid=' + $('#contributionId').val() + ']');
+            var q = {
+                pid: $("a.pid", tr).text(),
+                name: $("td.name", tr).text(),
+                fund: $("td.fund", tr).attr('val'),
+                pledge: $("td.fund", tr).attr('pledge'),
+                amt: newamt,
+                splitfrom: tr.attr("cid"),
+                checkno: $("td.checkno", tr).text(),
+                notes: $("td.notes", tr).text(),
+                id: $("#id").val()
+            };
+            $.PostRow({ scroll: true, q: q });
+        }
         $('#split-modal').modal('hide');
     }
 
@@ -252,7 +254,7 @@
         splitSubmit();
     });
 
-    $('#amt-split').keydown(function(e) {
+    $('#amt-split').keydown(function (e) {
         if (e.keyCode === keys.enter) {
             splitSubmit();
         }
