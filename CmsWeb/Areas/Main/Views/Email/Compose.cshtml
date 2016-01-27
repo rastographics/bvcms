@@ -98,7 +98,7 @@
                         }
                     }
                     <div>
-                        <ul class="pull-left" id="additional-recipients"></ul>
+                        <div class="pull-left"><ul id="additional-recipients"></ul></div>
                         <div class="pull-right">
                             <a class="searchadd btn btn-default btn-block" href="/SearchAdd2/Dialog/addtoemail/"><i class="fa fa-plus-circle"></i>  Add Recipient</a>
                         </div>
@@ -246,13 +246,20 @@
     });
 
     function AddSelected(ret) {
-        $("#additional-recipients").append(
-            '<li id="additional-recipient-li-' + ret.pid + '">'+
-            ret.name +
-            '  <input type="hidden" name="AdditionalRecipients" value="' + ret.pid + '"/>' +
-            '  <a href="javascript:RemoveRecipient(' + ret.pid + ');"><i class="fa fa-times-circle red"></i></a>' +
-            '</li>'
-        );
+        // ret will be an array
+        for (var i = 0; i < ret.length; i++) {
+            // Check for duplicates among additional recipients
+            if ($("#additional-recipient-li-" + ret[i].pid).length) {
+                continue;
+            }
+            $("#additional-recipients").append(
+                '<li id="additional-recipient-li-' + ret[i].pid + '">' +
+                ret[i].name +
+                '  <input type="hidden" name="AdditionalRecipients" value="' + ret[i].pid + '"/>' +
+                '  <a href="javascript:RemoveRecipient(' + ret[i].pid + ');"><i class="fa fa-times-circle red"></i></a>' +
+                '</li>'
+            );
+        }
     }
 
     function RemoveRecipient(pid) {
