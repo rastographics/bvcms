@@ -197,7 +197,7 @@ namespace CmsWeb.Areas.Search.Models
             PendingList.Add(pp);
         }
 
-        internal ReturnResult CommitAdd()
+        internal dynamic CommitAdd()
         {
             var id = PrimaryKeyForContextType;
             var iid = PrimaryKeyForContextType.ToInt();
@@ -253,7 +253,19 @@ namespace CmsWeb.Areas.Search.Models
                     break;
                 case "addtoemail":
                     if (PendingList.Count > 0)
-                        return new ReturnResult { close = true, how = "addselected", pid = PendingList[0].PeopleId, from = AddContext, name=PendingList[0].Person.Name };
+                    {
+                        var people = new List<ReturnResult>();
+                        foreach (var p in PendingList)
+                        {
+                            var email = p.Person.EmailAddress;
+                            if (email == null || email == "")
+                            {
+                                email = p.Person.EmailAddress2;
+                            }
+                            people.Add(new ReturnResult { close = true, how = "addselected", pid = p.PeopleId, from = AddContext, name = p.Person.Name, email = email });
+                        }
+                        return people;
+                    }
                     break;
             }
             return new ReturnResult {close = true, from = AddContext};
@@ -550,6 +562,7 @@ namespace CmsWeb.Areas.Search.Models
             public string message { get; set; }
             public string error { get; set; }
             public string key { get; set; }
+            public string email { get; set; }
         }
     }
 }
