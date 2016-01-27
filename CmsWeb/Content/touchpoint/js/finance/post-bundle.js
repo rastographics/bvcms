@@ -27,8 +27,8 @@
             }
             pid = personId;
 
-            $('#name').val($("td.name span", tr).text());
-            $('#checkno').val($("td.checkno span", tr).text());
+            $('#name').val($("td.name a", tr).text());
+            $('#checkno').val($("td.checkno a", tr).text());
             $('#notes').val($("td.notes span", tr).text());
             $('#amt').focus();
             $(this).val($.trim(pid));
@@ -194,7 +194,7 @@
         }
 
         $('#pid').val(personId);
-        $('#name').val($("td.name span", tr).text());
+        $('#name').val($("td.name a", tr).text());
         $('#contributiondate').val($(".date", tr).val());
         $("#gear").show();
         $('#fund').val($("td.fund", tr).attr('val'));
@@ -205,7 +205,10 @@
 
         var a = $('#amt');
         a.val($("td.amt", tr).attr("val"));
-        $('#checkno').val($("td.checkno span", tr).text());
+        var ckno = $("td.checkno a", tr).text();
+        if (ckno === 'Empty')
+            ckno = '';
+        $('#checkno').val(ckno);
         $('#notes').val($("td.notes span", tr).text());
         tr.hide();
         if (a.val() === '0.00')
@@ -468,6 +471,6 @@
 function AddSelected(ret) {
     var tr = $('tr[cid=' + ret.cid + ']');
     $('a.pid', tr).text(ret.pid);
-    $('td.name span', tr).text(ret.name);
+    $('td.name a', tr).text(ret.name);
     $('a.edit', tr).click();
 }
