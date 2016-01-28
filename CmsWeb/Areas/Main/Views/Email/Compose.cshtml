@@ -90,7 +90,7 @@
                         </div>
                         if (Model.Count <= 500)
                         {
-                            <p class="help-block">
+                            <p class="help-block" id="person-count">
                                 @Model.Count
                                 @( Model.Count != 1 ? "people" : "person")
                                 @(Model.wantParents ? " including parents." : ".")
@@ -283,10 +283,21 @@
         } else {
             $('#additional-recipients-alerts').empty().hide();
         }
+
+        UpdatePersonCount();
     }
 
     function RemoveRecipient(pid) {
         $('#additional-recipient-li-' + pid).remove();
+        UpdatePersonCount();
+    }
+
+    function UpdatePersonCount() {
+        if ($("#person-count").length > 0) {
+            var trimmedText = $('#person-count').text().trim();
+            var newCount = $('#Recipients option').length + $('#additional-recipients li').length;
+            $('#person-count').text(trimmedText.replace(/^[0-9+]/, newCount));
+        }
     }
   </script>
 }
