@@ -9,7 +9,9 @@ using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web.Mvc;
+using System.Xml;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Public.Controllers
@@ -93,6 +95,8 @@ namespace CmsWeb.Areas.Public.Controllers
             BaseMessage br = new BaseMessage();
             br.setNoError();
 
+            int tzOffset = DbUtil.Db.Setting("TZOffset", "0").ToInt();
+
             List<CheckInFamily> families = new List<CheckInFamily>();
 
             if (matches.Count > 0)
@@ -104,12 +108,12 @@ namespace CmsWeb.Areas.Public.Controllers
                     CheckInFamily family = new CheckInFamily(match.Familyid.Value, match.Name);
 
                     var members = (from a in DbUtil.Db.CheckinFamilyMembers(match.Familyid, cns.campus, cns.day).ToList()
-                                   orderby a.Position, a.Position == 10 ? a.Genderid : 10, a.Age, a.Hour
+                                   orderby a.Position, a.Position == 10 ? a.Genderid : 10, a.Age descending, a.Hour
                                    select a).ToList();
 
                     foreach (var member in members)
                     {
-                        family.addMember(member);
+                        family.addMember(member, cns.day, tzOffset);
                     }
 
                     families.Add(family);
@@ -129,40 +133,208 @@ namespace CmsWeb.Areas.Public.Controllers
                 return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
-            CheckInNumberSearch cns = JsonConvert.DeserializeObject<CheckInNumberSearch>(dataIn.data);
+            CheckInFamilySearch cfs = JsonConvert.DeserializeObject<CheckInFamilySearch>(dataIn.data);
 
-            DbUtil.LogActivity("Check-In Family: " + cns.search);
-
-            var matches = DbUtil.Db.CheckinMatch(cns.search).ToList();
+            DbUtil.LogActivity("Check-In Family: " + cfs.familyID);
 
             BaseMessage br = new BaseMessage();
             br.setNoError();
 
+            int tzOffset = DbUtil.Db.Setting("TZOffset", "0").ToInt();
+
             List<CheckInFamily> families = new List<CheckInFamily>();
 
-            if (matches.Count > 0)
+            CheckInFamily family = new CheckInFamily(cfs.familyID, "");
+
+            var members = (from a in DbUtil.Db.CheckinFamilyMembers(cfs.familyID, cfs.campus, cfs.day).ToList()
+                           orderby a.Position, a.Position == 10 ? a.Genderid : 10, a.Age descending, a.Hour
+                           select a).ToList();
+
+            foreach (var member in members)
             {
-                foreach (var match in matches)
-                {
-                    if (match.Locked.HasValue && match.Locked.Value) continue;
-
-                    CheckInFamily family = new CheckInFamily(match.Familyid.Value, match.Name);
-
-                    var members = (from a in DbUtil.Db.CheckinFamilyMembers(match.Familyid, cns.campus, cns.day).ToList()
-                                   orderby a.Position, a.Position == 10 ? a.Genderid : 10, a.Age, a.Hour
-                                   select a).ToList();
-
-                    foreach (var member in members)
-                    {
-                        family.addMember(member);
-                    }
-
-                    families.Add(family);
-                    br.count++;
-                }
-
-                br.data = SerializeJSON(families, dataIn.version);
+                family.addMember(member, cfs.day, tzOffset);
             }
+
+            families.Add(family);
+            br.count = 1;
+
+            br.data = SerializeJSON(families, dataIn.version);
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult FetchPerson(string data)
+        {
+            // Authenticate first
+            if (!Auth())
+                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+
+            BaseMessage br = new BaseMessage();
+
+            var person = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == dataIn.argInt);
+
+            if (person == null)
+            {
+                br.setError(BaseMessage.API_ERROR_PERSON_NOT_FOUND);
+                br.data = "Person not found.";
+                return br;
+            }
+
+            br.setNoError();
+            br.count = 1;
+
+            if (dataIn.device == BaseMessage.API_DEVICE_ANDROID)
+            {
+                br.data = SerializeJSON(new CheckInPerson().populate(person), dataIn.version);
+            }
+            else
+            {
+                List<CheckInPerson> mp = new List<CheckInPerson>();
+                mp.Add(new CheckInPerson().populate(person));
+                br.data = SerializeJSON(mp, dataIn.version);
+            }
+
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult AddEditPerson(string data)
+        {
+            // Authenticate first
+            if (!Auth())
+                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+            CheckInAddEditPerson aep = JsonConvert.DeserializeObject<CheckInAddEditPerson>(dataIn.data);
+            aep.clean();
+
+            Person p;
+
+            if (aep.edit)
+            {
+                p = DbUtil.Db.LoadPersonById(aep.id);
+            }
+            else
+            {
+                p = new Person();
+
+                p.CreatedDate = Util.Now;
+                p.CreatedBy = Util.UserId;
+
+                p.MemberStatusId = MemberStatusCode.JustAdded;
+                p.AddressTypeId = 10;
+
+                p.OriginId = OriginCode.Visit;
+
+                p.Name = "";
+            }
+
+            p.FirstName = aep.firstName;
+            p.LastName = aep.lastName;
+            p.NickName = aep.goesBy;
+
+            if (aep.birthday != null)
+            {
+                p.BirthDay = aep.birthday.Value.Day;
+                p.BirthMonth = aep.birthday.Value.Month;
+                p.BirthYear = aep.birthday.Value.Year;
+            }
+
+            p.GenderId = aep.genderID;
+            p.MaritalStatusId = aep.maritalStatusID;
+
+            Family f;
+
+            if (aep.familyID > 0)
+            {
+                f = DbUtil.Db.Families.First(fam => fam.FamilyId == aep.familyID);
+
+                if (aep.edit)
+                {
+                    f.HomePhone = aep.homePhone;
+                    f.AddressLineOne = aep.address;
+                    f.AddressLineTwo = aep.address2;
+                    f.CityName = aep.city;
+                    f.StateCode = aep.state;
+                    f.ZipCode = aep.zipcode;
+                    f.CountryName = aep.country;
+                }
+                else
+                {
+                    if (aep.homePhone.Length > 0)
+                        f.HomePhone = aep.homePhone;
+
+                    if (aep.address.Length > 0)
+                        f.AddressLineOne = aep.address;
+
+                    if (aep.address2.Length > 0)
+                        f.AddressLineTwo = aep.address2;
+
+                    if (aep.city.Length > 0)
+                        f.CityName = aep.city;
+
+                    if (aep.state.Length > 0)
+                        f.StateCode = aep.state;
+
+                    if (aep.zipcode.Length > 0)
+                        f.ZipCode = aep.zipcode;
+
+                    if (aep.country.Length > 0)
+                        f.CountryName = aep.country;
+                }
+            }
+            else
+            {
+                f = new Family();
+
+                f.HomePhone = aep.homePhone;
+                f.AddressLineOne = aep.address;
+                f.AddressLineTwo = aep.address2;
+                f.CityName = aep.city;
+                f.StateCode = aep.state;
+                f.ZipCode = aep.zipcode;
+                f.CountryName = aep.country;
+
+                DbUtil.Db.Families.InsertOnSubmit(f);
+            }
+
+            if (!aep.edit)
+            {
+                f.People.Add(p);
+
+                p.PositionInFamilyId = PositionInFamily.Child;
+
+                if (aep.birthday != null && p.GetAge() >= 18)
+                {
+                    if (f.People.Count(per => per.PositionInFamilyId == PositionInFamily.PrimaryAdult) < 2)
+                        p.PositionInFamilyId = PositionInFamily.PrimaryAdult;
+                    else
+                        p.PositionInFamilyId = PositionInFamily.SecondaryAdult;
+                }
+            }
+
+            p.FixTitle();
+
+            p.EmailAddress = aep.eMail;
+            p.CellPhone = aep.cellPhone;
+            p.HomePhone = aep.homePhone;
+
+            p.SetRecReg().MedicalDescription = aep.allergies;
+
+            p.SetRecReg().Emcontact = aep.emergencyName;
+            p.SetRecReg().Emphone = aep.emergencyPhone.Truncate(50);
+
+            p.SetRecReg().ActiveInAnotherChurch = aep.church != null && aep.church.Length > 0;
+            p.OtherPreviousChurch = aep.church;
+
+            DbUtil.Db.SubmitChanges();
+
+            BaseMessage br = new BaseMessage();
+            br.setNoError();
+            br.id = p.PeopleId;
+            br.count = 1;
 
             return br;
         }
@@ -308,14 +480,19 @@ namespace CmsWeb.Areas.Public.Controllers
                       {
                           id = p.PeopleId,
                           familyID = p.FamilyId,
-                          first = p.FirstName,
+                          first = p.PreferredName,
                           last = p.LastName,
                           goesby = p.NickName,
                           cell = p.CellPhone,
                           home = p.HomePhone,
-                          addr = p.Family.AddressLineOne,
+                          address = p.Family.AddressLineOne,
                           age = p.Age ?? 0
                       }).ToList();
+
+            foreach (var person in q2)
+            {
+                person.loadImage();
+            }
 
             BaseMessage br = new BaseMessage();
             br.setNoError();
@@ -346,6 +523,50 @@ namespace CmsWeb.Areas.Public.Controllers
                 DbUtil.LogActivity($"Dropped {om.PeopleId} for {om.Organization.OrganizationId} via {dataIn.getSourceOS()} app", peopleid: om.PeopleId, orgid: om.OrganizationId);
             }
 
+            DbUtil.Db.SubmitChanges();
+
+            BaseMessage br = new BaseMessage();
+            br.setNoError();
+            br.count = 1;
+
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult PrintLabels(string data)
+        {
+            if (!Auth())
+                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+            List<CheckInPrintLabel> labels = JsonConvert.DeserializeObject<List<CheckInPrintLabel>>(dataIn.data);
+
+            string securityCode = DbUtil.Db.NextSecurityCode(DateTime.Today).Select(c => c.Code).Single();
+
+            StringBuilder builder = new StringBuilder();
+
+            XmlWriter writer = XmlWriter.Create(builder);
+            writer.WriteStartDocument();
+            writer.WriteStartElement("PrintJob");
+
+            writer.WriteElementString("securitycode", securityCode);
+
+            writer.WriteStartElement("list");
+
+            foreach (CheckInPrintLabel label in labels)
+            {
+                label.writeToXML(writer, securityCode);
+            }
+
+            // list
+            writer.WriteEndElement();
+            // PrintJob
+            writer.WriteEndElement();
+            writer.Close();
+
+            PrintJob job = new PrintJob { Id = dataIn.argString, Data = builder.ToString(), Stamp = DateTime.Now };
+
+            DbUtil.Db.PrintJobs.InsertOnSubmit(job);
             DbUtil.Db.SubmitChanges();
 
             BaseMessage br = new BaseMessage();
@@ -389,7 +610,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             DbUtil.Db.SubmitChanges();
 
-            br.error = 0;
+            br.setNoError();
             br.id = setting.Id;
             br.count = 1;
 

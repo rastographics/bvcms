@@ -10,7 +10,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPI
         public string leader;
         public DateTime? hour;
 
-        public double leadTime = 0;
+        public int leadTime = 0;
 
         public string location;
 
@@ -33,7 +33,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPI
                         theirTime = theirTime.AddDays(dayDiff);
                 }
 
-                leadTime = hour.Value.Subtract(theirTime).TotalHours;
+                leadTime = (int)hour.Value.Subtract(theirTime).TotalMinutes;
             }
         }
     }

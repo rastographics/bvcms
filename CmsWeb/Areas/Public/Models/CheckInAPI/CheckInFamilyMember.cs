@@ -1,5 +1,7 @@
-﻿using System;
+﻿using CmsData;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CmsWeb.CheckInAPI
 {
@@ -9,22 +11,39 @@ namespace CmsWeb.CheckInAPI
         public int age = 0;
 
         public string name = "";
-        public string imageURL = "";
+        public string picture = "";
+
+        public int pictureX = 0;
+        public int pictureY = 0;
 
         public List<CheckInFamilyMemberOrg> orgs = new List<CheckInFamilyMemberOrg>();
 
-        public CheckInFamilyMember(CmsData.View.CheckinFamilyMember member)
+        public CheckInFamilyMember(CmsData.View.CheckinFamilyMember member, int day, int tzOffset)
         {
             id = member.Id.Value;
             age = member.Age.Value;
             name = member.Name;
 
-            addOrg(member);
+            Person p = DbUtil.Db.LoadPersonById(id);
+
+            if (p.Picture != null)
+            {
+                var image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == p.Picture.SmallId);
+
+                if (image != null)
+                {
+                    picture = Convert.ToBase64String(image.Bits);
+                    pictureX = p.Picture.X ?? 0;
+                    pictureY = p.Picture.Y ?? 0;
+                }
+            }
+
+            addOrg(member, day, tzOffset);
         }
 
-        public void addOrg(CmsData.View.CheckinFamilyMember member)
+        public void addOrg(CmsData.View.CheckinFamilyMember member, int day, int tzOffset)
         {
-            CheckInFamilyMemberOrg org = new CheckInFamilyMemberOrg(member);
+            CheckInFamilyMemberOrg org = new CheckInFamilyMemberOrg(member, day, tzOffset);
 
             orgs.Add(org);
         }
