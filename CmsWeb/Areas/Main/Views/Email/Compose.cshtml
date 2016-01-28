@@ -97,9 +97,10 @@
                             </p>
                         }
                     }
-                    <div>
-                        <div class="pull-left"><ul id="additional-recipients"></ul></div>
-                        <div class="pull-right">
+                    <div class="row">
+                        <div class="col-sm-12 alert alert-danger" id="additional-recipients-alerts" style="display:none;"></div>
+                        <div class="col-sm-9"><ul id="additional-recipients"></ul></div>
+                        <div class="col-sm-3">
                             <a class="searchadd btn btn-default btn-block" href="/SearchAdd2/Dialog/addtoemail/"><i class="fa fa-plus-circle"></i>  Add Recipient</a>
                         </div>
                     </div>
@@ -246,10 +247,15 @@
     });
 
     function AddSelected(ret) {
+        var peopleWithoutEmail = [];
         // ret will be an array
         for (var i = 0; i < ret.length; i++) {
             // Check for duplicates among additional recipients
             if ($("#additional-recipient-li-" + ret[i].pid).length) {
+                continue;
+            }
+            if (ret[i].email === null || ret[i].email.length === 0) {
+                peopleWithoutEmail.push(ret[i].name);
                 continue;
             }
             $("#additional-recipients").append(
@@ -259,6 +265,23 @@
                 '  <a href="javascript:RemoveRecipient(' + ret[i].pid + ');"><i class="fa fa-times-circle red"></i></a>' +
                 '</li>'
             );
+        }
+
+        if (peopleWithoutEmail.length > 0) {
+            var noun = 'person', haveVerb = 'has', toBeVerb = 'was';
+            if (peopleWithoutEmail.length > 1) {
+                noun = 'people';
+                haveVerb = 'have';
+                toBeVerb = 'were';
+            }
+            $('#additional-recipients-alerts').empty().append(
+                '<p>The following ' + noun + ' ' + haveVerb + ' no email address' +
+                ((peopleWithoutEmail.length > 1) ? 'es' : '') +
+                ' and ' + toBeVerb + ' not added to this email: ' +
+                peopleWithoutEmail.join(', ') + '</p>'
+            ).show();
+        } else {
+            $('#additional-recipients-alerts').empty().hide();
         }
     }
 
