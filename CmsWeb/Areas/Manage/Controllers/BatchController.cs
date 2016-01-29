@@ -41,8 +41,8 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult UpdateOrg()
         {
-            ViewBag.Title = "Update Oranizations";
-            ViewBag.PageHeader = "Batch Update Oranizations from spreadsheet";
+            ViewBag.Title = "Update Organizations";
+            ViewBag.PageHeader = "Batch Update Organizations from spreadsheet";
             ViewBag.text = "";
             ViewBag.action = "/Batch/UpdateOrg";
             return View("BatchUpdate");
