@@ -14,6 +14,7 @@ using Dapper;
 using Elmah;
 using UtilityExtensions;
 using System.Net.Mail;
+using System.Text.RegularExpressions;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
@@ -333,7 +334,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 			var em = new EmailQueue
 			{
 				Subject = email.Subject,
-				Body = email.Body.Replace("{track}", "", ignoreCase: true).Replace("{first}", "", ignoreCase: true)
+                Body = Regex.Replace(email.Body, "({first}|{tracklinks}|{track})", "", RegexOptions.IgnoreCase)
 			};
 			return View(em);
 		}

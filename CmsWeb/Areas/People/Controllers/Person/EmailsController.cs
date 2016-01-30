@@ -2,6 +2,7 @@ using System;
 using System.Configuration;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.People.Models;
@@ -113,7 +114,7 @@ namespace CmsWeb.Areas.People.Controllers
                 var em = new EmailQueue
                 {
                     Subject = email.Subject,
-                    Body = email.Body.Replace("{track}", "", true).Replace("{first}", "", true)
+                    Body = Regex.Replace(email.Body, "({first}|{tracklinks}|{track})", "", RegexOptions.IgnoreCase)
                 };
                 return View("Emails/View", em);
             }
