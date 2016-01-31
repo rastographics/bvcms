@@ -87,13 +87,6 @@ namespace CmsData
             t.TransactionId = ret.TransactionId;
             var systemEmail = db.Setting("SystemEmailAddress", "mailer@bvcms.com");
 
-            var contributionemail = (from ex in Person.PeopleExtras
-                                     where ex.Field == "ContributionEmail"
-                                     select ex.Data).SingleOrDefault();
-            if (contributionemail.HasValue())
-                contributionemail = contributionemail.Trim();
-            if (!Util.ValidEmail(contributionemail))
-                contributionemail = Person.FromEmail;
             var gift = db.Setting("NameForPayment", "gift");
             var church = db.Setting("NameOfChurch", db.CmsHost);
             var q = from a in db.RecurringAmounts
@@ -147,6 +140,7 @@ Please contact the Finance office at the church." };
                 var adminEmail = db.Setting("AdminMail", systemEmail);
                 Util.SendMsg(systemEmail, db.CmsHost, from, subject, body,
                         Util.ToMailAddressList(contributionemail), 0, Person.PeopleId);
+                db.Email(from, Util.ToMailAddressList(contributionemail),null, subject, body, false);
                 foreach (var p in db.RecurringGivingNotifyPersons())
                     Util.SendMsg(systemEmail, db.CmsHost, Util.TryGetMailAddress(adminEmail),
                         "Recurring Giving Failed on " + db.CmsHost,
