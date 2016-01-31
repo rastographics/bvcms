@@ -38,6 +38,10 @@ BEGIN
 	OR UPDATE(BadAddressFlag) 
 	OR UPDATE(ResCodeId)
 	BEGIN		
+		UPDATE dbo.Families
+		SET ResCodeId = dbo.FindResCode(ZipCode, CountryName)
+		WHERE FamilyId IN (SELECT FamilyId FROM INSERTED)
+
 		UPDATE dbo.People
 		SET PrimaryCity = dbo.PrimaryCity(PeopleId),
 		PrimaryAddress = dbo.PrimaryAddress(PeopleId),

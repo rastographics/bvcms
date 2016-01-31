@@ -11,32 +11,35 @@ namespace CmsData
     {
         public void UploadExcelFromSqlToDropBox(string savedQuery, string sqlscript, string targetpath, string filename)
         {
-            var accesstoken = DbUtil.Db.Setting("DropBoxAccessToken", ConfigurationManager.AppSettings["DropBoxAccessToken"]);
-            var script = db.Content(sqlscript, "");
-            if (!script.HasValue())
-                throw new Exception("no sql script found");
-
-            var p = new DynamicParameters();
-            foreach (var kv in dictionary)
-                p.Add("@" + kv.Key, kv.Value);
-            if (script.Contains("@qtagid"))
+            using (var db2 = NewDataContext())
             {
-                int? qtagid = null;
-                if (savedQuery.HasValue())
-                {
-                    var q = db.PeopleQuery2(savedQuery);
-                    var tag = db.PopulateSpecialTag(q, DbUtil.TagTypeId_Query);
-                    qtagid = tag.Id;
-                }
-                p.Add("@qtagid", qtagid);
-            }
-            var bytes = db.Connection.ExecuteReader(script, p).ToExcelBytes(filename);
+                var accesstoken = db2.Setting("DropBoxAccessToken", ConfigurationManager.AppSettings["DropBoxAccessToken"]);
+                var script = db2.Content(sqlscript, "");
+                if (!script.HasValue())
+                    throw new Exception("no sql script found");
 
-            var wc = new WebClient();
-            wc.Headers.Add($"Authorization: Bearer {accesstoken}");
-            wc.Headers.Add("Content-Type: application/octet-stream");
-            wc.Headers.Add($@"Dropbox-API-Arg: {{""path"":""{targetpath}/{filename}"",""mode"":""overwrite""}}");
-            wc.UploadData("https://content.dropboxapi.com/2-beta-2/files/upload", bytes);
+                var p = new DynamicParameters();
+                foreach (var kv in dictionary)
+                    p.Add("@" + kv.Key, kv.Value);
+                if (script.Contains("@qtagid"))
+                {
+                    int? qtagid = null;
+                    if (savedQuery.HasValue())
+                    {
+                        var q = db2.PeopleQuery2(savedQuery);
+                        var tag = db2.PopulateSpecialTag(q, DbUtil.TagTypeId_Query);
+                        qtagid = tag.Id;
+                    }
+                    p.Add("@qtagid", qtagid);
+                }
+                var bytes = db2.Connection.ExecuteReader(script, p).ToExcelBytes(filename);
+
+                var wc = new WebClient();
+                wc.Headers.Add($"Authorization: Bearer {accesstoken}");
+                wc.Headers.Add("Content-Type: application/octet-stream");
+                wc.Headers.Add($@"Dropbox-API-Arg: {{""path"":""{targetpath}/{filename}"",""mode"":""overwrite""}}");
+                wc.UploadData("https://content.dropboxapi.com/2-beta-2/files/upload", bytes);
+            }
         }
 
         public void UploadExcelFromSqlToDropBox(string sqlscript, string targetpath, string filename)

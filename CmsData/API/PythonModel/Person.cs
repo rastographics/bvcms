@@ -8,13 +8,31 @@ namespace CmsData
 {
     public partial class PythonModel
     {
-        public void CreateTask(int forPeopleId, Person p, string description)
+        public void CreateTask(int ministerId, int aboutId, string description)
         {
-            var t = p.AddTaskAbout(db, forPeopleId, description);
-            db.SubmitChanges();
-            db.Email(db.Setting("AdminMail", "support@touchpointsoftware.com"), db.LoadPersonById(forPeopleId),
-                "TASK: " + description,
-                Task.TaskLink(db, description, t.Id) + "<br/>" + p.Name);
+            using (var db2 = NewDataContext())
+            {
+                var about = db2.LoadPersonById(aboutId);
+                var minister = db2.LoadPersonById(ministerId);
+                var t = new Task
+                {
+                    OwnerId = ministerId,
+                    Description = description,
+                    ForceCompleteWContact = true,
+                    ListId = Task.GetRequiredTaskList(db2, "InBox", ministerId).Id,
+                    StatusId = TaskStatusCode.Active,
+                    WhoId = aboutId,
+                };
+                db2.Tasks.InsertOnSubmit(t);
+                db2.SubmitChanges();
+                db2.Email(
+                    db2.Setting("AdminMail", "support@touchpointsoftware.com"), // from email
+                    minister, // to person
+                    "TASK: " + description, // subject
+                    Task.TaskLink(db2, description, t.Id) + "<br/>" + about.Name // body
+                );
+                db2.SubmitChanges();
+            }
         }
 
         public APIPerson.Person GetPerson(object pid)
@@ -42,88 +60,111 @@ namespace CmsData
 
         public void UpdateCampus(object savedQuery, string campus)
         {
-            var id = db.FetchOrCreateCampusId(campus);
-            var q = db.PeopleQuery2(savedQuery);
-            foreach (var p in q)
+            using (var db2 = NewDataContext())
             {
-                p.UpdateValue("CampusId", id);
-                p.LogChanges(db);
-                db.SubmitChanges();
+                var q = db2.PeopleQuery2(savedQuery);
+                var id = db2.FetchOrCreateCampusId(campus);
+                foreach (var p in q)
+                {
+                    p.UpdateValue("CampusId", id);
+                    p.LogChanges(db2);
+                    db2.SubmitChanges();
+                }
             }
         }
 
         public void UpdateField(Person p, string field, object value)
         {
-            p.UpdateValue(field, value);
+            using (var db2 = NewDataContext())
+            {
+                var pp = db2.LoadPersonById(p.PeopleId);
+                pp.UpdateValue(field, value);
+                db2.SubmitChanges();
+            }
         }
 
         public void UpdateMemberStatus(object savedQuery, string status)
         {
-            var id = Person.FetchOrCreateMemberStatus(db, status);
-            var q = db.PeopleQuery2(savedQuery);
-            foreach (var p in q)
+            using (var db2 = NewDataContext())
             {
-                p.UpdateValue("MemberStatusId", id);
-                p.LogChanges(db);
-                db.SubmitChanges();
+                var id = Person.FetchOrCreateMemberStatus(db2, status);
+                var q = db2.PeopleQuery2(savedQuery);
+                foreach (var p in q)
+                {
+                    p.UpdateValue("MemberStatusId", id);
+                    p.LogChanges(db2);
+                    db2.SubmitChanges();
+                }
             }
         }
 
         public void UpdateNamedField(object savedQuery, string field, object value)
         {
-            var q = db.PeopleQuery2(savedQuery);
-            foreach (var p in q)
+            using (var db2 = NewDataContext())
             {
-                p.UpdateValue(field, value);
-                p.LogChanges(db);
-                db.SubmitChanges();
+                var q = db2.PeopleQuery2(savedQuery);
+                foreach (var p in q)
+                {
+                    p.UpdateValue(field, value);
+                    p.LogChanges(db2);
+                    db2.SubmitChanges();
+                }
             }
         }
 
         public void UpdateNewMemberClassDate(object savedQuery, object dt)
         {
-            var q = db.PeopleQuery2(savedQuery);
-            foreach (var p in q)
+            using (var db2 = NewDataContext())
             {
-                p.UpdateValue("NewMemberClassDate", dt);
-                p.LogChanges(db);
-                db.SubmitChanges();
+                var q = db2.PeopleQuery2(savedQuery);
+                foreach (var p in q)
+                {
+                    p.UpdateValue("NewMemberClassDate", dt);
+                    p.LogChanges(db2);
+                    db2.SubmitChanges();
+                }
             }
         }
 
         public void UpdateNewMemberClassDateIfNullForLastAttended(object savedQuery, object orgId)
         {
-            var q = db.PeopleQuery2(savedQuery);
-            foreach (var p in q)
+            using (var db2 = NewDataContext())
             {
-                // skip any who already have their new member class date set
-                if (p.NewMemberClassDate.HasValue)
-                    continue;
-
-                // get the most recent attend date
-                var lastAttend = p.Attends
-                                  .Where(x => x.OrganizationId == orgId.ToInt() && x.AttendanceFlag)
-                                  .OrderByDescending(x => x.MeetingDate)
-                                  .FirstOrDefault();
-
-                if (lastAttend != null)
+                var q = db2.PeopleQuery2(savedQuery);
+                foreach (var p in q)
                 {
-                    p.UpdateValue("NewMemberClassDate", lastAttend.MeetingDate);
-                    p.LogChanges(db);
-                    db.SubmitChanges();
+                    // skip any who already have their new member class date set
+                    if (p.NewMemberClassDate.HasValue)
+                        continue;
+
+                    // get the most recent attend date
+                    var lastAttend = p.Attends
+                                      .Where(x => x.OrganizationId == orgId.ToInt() && x.AttendanceFlag)
+                                      .OrderByDescending(x => x.MeetingDate)
+                                      .FirstOrDefault();
+
+                    if (lastAttend != null)
+                    {
+                        p.UpdateValue("NewMemberClassDate", lastAttend.MeetingDate);
+                        p.LogChanges(db2);
+                        db2.SubmitChanges();
+                    }
                 }
             }
         }
 
         public void UpdateNewMemberClassStatus(object savedQuery, string status)
         {
-            var id = Person.FetchOrCreateNewMemberClassStatus(db, status);
-            var q = db.PeopleQuery2(savedQuery);
-            foreach (var p in q)
+            using (var db2 = NewDataContext())
             {
-                p.UpdateValue("NewMemberClassStatusId", id);
-                p.LogChanges(db);
-                db.SubmitChanges();
+                var id = Person.FetchOrCreateNewMemberClassStatus(db2, status);
+                var q = db2.PeopleQuery2(savedQuery);
+                foreach (var p in q)
+                {
+                    p.UpdateValue("NewMemberClassStatusId", id);
+                    p.LogChanges(db2);
+                    db2.SubmitChanges();
+                }
             }
         }
         public void UpdateContributionOption(object savedQuery, int option)

@@ -6,9 +6,9 @@ namespace CmsData
 {
     public partial class PythonModel
     {
-        public void AddExtraValueBool(object savedQuery, string name, bool b)
+        public void AddExtraValueBool(object query, string name, bool b)
         {
-            var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
+            var list = db.PeopleQuery2(query).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
             {
                 var db2 = NewDataContext();
@@ -18,9 +18,9 @@ namespace CmsData
             }
         }
 
-        public void AddExtraValueCode(object savedQuery, string name, string text)
+        public void AddExtraValueCode(object query, string name, string text)
         {
-            var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
+            var list = db.PeopleQuery2(query).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
             {
                 var db2 = NewDataContext();
@@ -30,9 +30,9 @@ namespace CmsData
             }
         }
 
-        public void AddExtraValueDate(object savedQuery, string name, object dt)
+        public void AddExtraValueDate(object query, string name, object dt)
         {
-            var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
+            var list = db.PeopleQuery2(query).Select(ii => ii.PeopleId).ToList();
             var dt2 = dt.ToDate();
             foreach (var pid in list)
             {
@@ -43,9 +43,9 @@ namespace CmsData
             }
         }
 
-        public void AddExtraValueInt(object savedQuery, string name, int n)
+        public void AddExtraValueInt(object query, string name, int n)
         {
-            var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
+            var list = db.PeopleQuery2(query).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
             {
                 var db2 = NewDataContext();
@@ -55,9 +55,9 @@ namespace CmsData
             }
         }
 
-        public void AddExtraValueText(object savedQuery, string name, string text)
+        public void AddExtraValueText(object query, string name, string text)
         {
-            var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
+            var list = db.PeopleQuery2(query).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
             {
                 var db2 = NewDataContext();
@@ -71,7 +71,21 @@ namespace CmsData
         {
             var ev = Person.GetExtraValue(db, pid.ToInt(), name);
             if (ev != null)
-                return ev.StrValue ?? "";
+                switch (ev.Type)
+                {
+                    case "Code":
+                        return ev.StrValue;
+                    case "Text":
+                        return ev.Data;
+                    case "Date":
+                        return ev.DateValue.FormatDate();
+                    case "Bit":
+                        return ev.BitValue.ToString();
+                    case "Int":
+                        return ev.IntValue.ToString();
+                    default:
+                        return $"unknown type: {ev.Type}";
+                }
             return "";
         }
 

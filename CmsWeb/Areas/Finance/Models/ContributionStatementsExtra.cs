@@ -168,7 +168,9 @@ p { font-size: 11px; }
                 var t2 = new PdfPTable(1);
                 t2.TotalWidth = 72f*3f;
                 t2.DefaultCell.Border = Rectangle.NO_BORDER;
-                t2.AddCell(new Phrase($"\nPrint Date: {DateTime.Now:d}   (id:{ci.PeopleId} {ci.CampusId})", font));
+                t2.AddCell(Db.Setting("NoPrintDateOnStatement", "false") == "true" 
+                    ? new Phrase($"\nID:{ci.PeopleId} {ci.CampusId}", font) 
+                    : new Phrase($"\nPrint Date: {DateTime.Now:d}   (id:{ci.PeopleId} {ci.CampusId})", font));
                 t2.AddCell("");
                 var mh2 = new MyHandler();
                 using (var sr = new StringReader(css + html2))

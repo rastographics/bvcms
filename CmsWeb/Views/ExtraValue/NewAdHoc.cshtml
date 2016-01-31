@@ -1,40 +1,43 @@
 ﻿@using CmsWeb.Models.ExtraValues
 @model NewExtraValueModel
 <div class="modal-dialog">
-    <div class="modal-content">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">New Extra Value</h4>
-        </div>
-        <div class="modal-body">
-            @if (ViewBag.Error != null)
-            {
-                <div id="ExtraValueError" class="alert alert-danger alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <div>@Html.Raw(ViewBag.Error)</div>
-                </div>
-            }
-            @Html.HiddenFor(m => m.Id)
-            @Html.HiddenFor(m => m.QueryId)
-            @Html.HiddenFor(m => m.ExtraValueTable)
-            @Html.HiddenFor(m => m.ExtraValueLocation)
-
-            @Html.EditorFor(m => m.AdhocExtraValueType, new { PlainSelect = true })
-            @Html.EditorFor(m => m.ExtraValueName)
-            @if (Model.ExtraValueTable == "People")
-            {
-              @Html.EditorFor(m => m.AddToFamilyRecordInsteadOfPerson)
-            }
-
-            @Html.EditorFor(m => m.ExtraValueTextBox, new { hide = "hide" })
-            @Html.EditorFor(m => m.ExtraValueTextArea)
-            @Html.EditorFor(m => m.ExtraValueCheckbox, new { hide = "hide" })
-            @Html.EditorFor(m => m.ExtraValueDate, new { hide = "hide" })
-            @Html.EditorFor(m => m.ExtraValueInteger, new { hide = "hide" })
-        </div>
-        <div class="modal-footer">
-            <a class="btn btn-default" data-dismiss="modal">Cancel</a>
-            <a href="/ExtraValue/SaveNewAdhoc" class="btn btn-primary ajax validate" data-callback="AdhocDialogCallback">Save</a>
-        </div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title">New Extra Value</h4>
     </div>
+    <div class="modal-body">
+      @if (ViewBag.Error != null)
+      {
+        <div id="ExtraValueError" class="alert alert-danger alert-dismissible">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <div>@Html.Raw(ViewBag.Error)</div>
+        </div>
+      }
+      @Html.HiddenFor(m => m.Id)
+      @Html.HiddenFor(m => m.QueryId)
+      @Html.HiddenFor(m => m.ExtraValueTable)
+      @Html.HiddenFor(m => m.ExtraValueLocation)
+
+      @Html.EditorFor(m => m.AdhocExtraValueType, new {PlainSelect = true})
+      @Html.EditorFor(m => m.ExtraValueName)
+      @if (Model.ExtraValueTable == "People")
+      {
+        @Html.EditorFor(m => m.AddToFamilyRecordInsteadOfPerson)
+      }
+      @Html.EditorFor(m => m.ExtraValueTextBox, Model.Hidden("Code"))
+      @Html.EditorFor(m => m.ExtraValueTextArea, Model.Hidden("Text"))
+      @Html.EditorFor(m => m.ExtraValueCheckbox, Model.Hidden("Bit"))
+      @Html.EditorFor(m => m.ExtraValueDate, Model.Hidden("Date"))
+      @Html.EditorFor(m => m.ExtraValueInteger, Model.Hidden("Int"))
+    </div>
+    <div class="modal-footer">
+      <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+      @if (ViewBag.Error != null)
+      {
+        @Html.EditorFor(m => m.ClearOldValuesFirst)
+      }
+      <a href="/ExtraValue/SaveNewAdhoc" class="btn btn-primary ajax validate" data-callback="AdhocDialogCallback">Save</a>
+    </div>
+  </div>
 </div>

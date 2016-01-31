@@ -21,6 +21,7 @@ namespace CmsWeb.Models.ExtraValues
         public Guid QueryId { get; set; }
         public string ExtraValueTable { get; set; }
         public string ExtraValueLocation { get; set; }
+        public bool ClearOldValuesFirst { get; set; }
 
         [DisplayName("Name"), StringLength(50), Required]
         public string ExtraValueName { get; set; }
@@ -54,6 +55,13 @@ namespace CmsWeb.Models.ExtraValues
 
         [DisplayName("Integer Value")]
         public int ExtraValueInteger { get; set; }
+
+        public object Hidden(string type)
+        {
+            return type == AdhocExtraValueType.Value 
+                ? new { hide = "" } 
+                : new { hide = "hide" };
+        }
 
         public bool RemoveAnyValue { get; set; }
 
@@ -136,6 +144,8 @@ namespace CmsWeb.Models.ExtraValues
 
         private void TryCheckIntegrity()
         {
+            if (ClearOldValuesFirst)
+                return;
             const string nameAlreadyExistsAsADifferentType = "{0} already exists as a different type";
             string type = ExtraValueLocation == "Adhoc" ? AdhocExtraValueType.Value : ExtraValueType.Value;
             if (type == "Text2")
@@ -275,6 +285,16 @@ Option 2
         private string AddNewExtraValueToSelectionFromQuery()
         {
             var list = DbUtil.Db.PeopleQuery(QueryId).Select(pp => pp.PeopleId).ToList();
+            if (ClearOldValuesFirst)
+                using (var db = DbUtil.Create(DbUtil.Db.Host))
+                {
+                    var q = db.PeopleQuery(QueryId).Select(pp => pp.PeopleId);
+                    var tag = db.PopulateTemporaryTag(q);
+                    var cmd = AddToFamilyRecordInsteadOfPerson
+                        ? "dbo.ClearFamilyExtraValuesForTag"
+                        : "dbo.ClearExtraValuesForTag";
+                    db.ExecuteCommand(cmd + " {0}, {1}", ExtraValueName, tag.Id);
+                }
             if (AddToFamilyRecordInsteadOfPerson)
                 ExtraValueTable = "Family";
 

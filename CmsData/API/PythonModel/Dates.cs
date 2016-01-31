@@ -6,9 +6,9 @@ namespace CmsData
 {
     public partial class PythonModel
     {
+        public DateTime DateTime => DateTime.Now;
         public int DayOfWeek => DateTime.Today.DayOfWeek.ToInt();
         public string ScheduledTime { get; private set; }
-        public DateTime DateTime => DateTime.Now;
 
         public string AddDays(object dt1, int days)
         {
@@ -24,6 +24,14 @@ namespace CmsData
             if (dt2 == null)
                 throw new Exception("bad date: " + dt);
             return dt2.Value.AddDays(days);
+        }
+
+        public DateTime DateAddHours(object dt, int hours)
+        {
+            var dt2 = dt.ToDate();
+            if (dt2 == null)
+                throw new Exception("bad date: " + dt);
+            return dt2.Value.AddHours(hours);
         }
 
         public DateTime MostRecentAttendedSunday(int progid)

@@ -10,8 +10,8 @@ namespace CmsData
 {
     public partial class PythonModel
     {
-// ReSharper disable InconsistentNaming
-        private CMSDataContext db;
+        // ReSharper disable InconsistentNaming
+        private readonly CMSDataContext db;
         private Dictionary<string, object> dictionary { get; }
 
         public dynamic instance { get; set; }
@@ -44,7 +44,6 @@ namespace CmsData
             var scope = engine.CreateScope();
             scope.SetVariable("model", this);
             code.Execute(scope);
-            db.SubmitChanges();
 
             dynamic Event = scope.GetVariable(classname);
 
@@ -107,8 +106,6 @@ namespace CmsData
                     var qf = new QueryFunctions(model.db, model.dictionary);
                     scope.SetVariable("q", qf);
                     code.Execute(scope);
-
-                    model.db.SubmitChanges();
 
                     ms.Position = 0;
 
