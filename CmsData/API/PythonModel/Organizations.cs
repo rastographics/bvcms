@@ -17,14 +17,15 @@ namespace CmsData
             var dt = DateTime.Now;
             foreach (var p in q)
             {
-                OrganizationMember.InsertOrgMembers(db, orgId.ToInt(), p.PeopleId, MemberTypeCode.Member, dt, null, false);
-                db.SubmitChanges();
+                var db2 = NewDataContext();
+                OrganizationMember.InsertOrgMembers(db2, orgId.ToInt(), p.PeopleId, MemberTypeCode.Member, dt, null, false);
+                db2.Dispose();
             }
         }
 
         public void AddMemberToOrg(object pid, object orgId)
         {
-            AddMembersToOrg("peopleid=" + pid.ToInt(), orgId.ToInt());
+            AddMembersToOrg(pid.ToInt(), orgId.ToInt());
         }
 
         public void AddSubGroup(object pid, object orgId, string group)
@@ -35,7 +36,9 @@ namespace CmsData
                       select mm).SingleOrDefault();
             if (om == null)
                 throw new Exception($"no orgmember {pid}:");
-            om.AddToGroup(db, group);
+            var db2 = NewDataContext();
+            om.AddToGroup(db2, group);
+            db2.Dispose();
         }
 
         public APIOrganization.Organization GetOrganization(object orgId)
@@ -67,7 +70,9 @@ namespace CmsData
 
         public void JoinOrg(int orgId, Person p)
         {
-            OrganizationMember.InsertOrgMembers(db, orgId, p.PeopleId, 220, DateTime.Now, null, false);
+            var db2 = NewDataContext();
+            OrganizationMember.InsertOrgMembers(db2, orgId, p.PeopleId, 220, DateTime.Now, null, false);
+            db2.Dispose();
         }
 
         public List<int> OrganizationIds(int progid, int divid)
@@ -103,7 +108,9 @@ namespace CmsData
                       select mm).SingleOrDefault();
             if (om == null)
                 throw new Exception($"no orgmember {pid}:");
-            om.RemoveFromGroup(db, group);
+            var db2 = NewDataContext();
+            om.RemoveFromGroup(db2, group);
+            db2.Dispose();
         }
     }
 }

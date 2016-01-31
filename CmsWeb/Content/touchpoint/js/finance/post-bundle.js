@@ -27,8 +27,8 @@
             }
             pid = personId;
 
-            $('#name').val($("td.name span", tr).text());
-            $('#checkno').val($("td.checkno span", tr).text());
+            $('#name').val($("td.name a", tr).text());
+            $('#checkno').val($("td.checkno a", tr).text());
             $('#notes').val($("td.notes span", tr).text());
             $('#amt').focus();
             $(this).val($.trim(pid));
@@ -194,7 +194,7 @@
         }
 
         $('#pid').val(personId);
-        $('#name').val($("td.name span", tr).text());
+        $('#name').val($("td.name a", tr).text());
         $('#contributiondate').val($(".date", tr).val());
         $("#gear").show();
         $('#fund').val($("td.fund", tr).attr('val'));
@@ -205,7 +205,10 @@
 
         var a = $('#amt');
         a.val($("td.amt", tr).attr("val"));
-        $('#checkno').val($("td.checkno span", tr).text());
+        var ckno = $("td.checkno a", tr).text();
+        if (ckno === 'Empty')
+            ckno = '';
+        $('#checkno').val(ckno);
         $('#notes').val($("td.notes span", tr).text());
         tr.hide();
         if (a.val() === '0.00')
@@ -226,23 +229,25 @@
     });
 
     function splitSubmit() {
-        var newamt = $("#amt-split").val();
-        newamt = parseFloat(newamt);
-        if (isNaN(newamt))
-            return false;
-        var tr = $('tr[cid=' + $('#contributionId').val() + ']');
-        var q = {
-            pid: $("a.pid", tr).text(),
-            name: $("td.name", tr).text(),
-            fund: $("td.fund", tr).attr('val'),
-            pledge: $("td.fund", tr).attr('pledge'),
-            amt: newamt,
-            splitfrom: tr.attr("cid"),
-            checkno: $("td.checkno", tr).text(),
-            notes: $("td.notes", tr).text(),
-            id: $("#id").val()
-        };
-        $.PostRow({ scroll: true, q: q });
+        var amounts = $("#amt-split").val().split(' ');
+        for (var i = 0, len = amounts.length; i < len; i++) {
+            var newamt = parseFloat(amounts[i]);
+            if (isNaN(newamt))
+                continue;
+            var tr = $('tr[cid=' + $('#contributionId').val() + ']');
+            var q = {
+                pid: $("a.pid", tr).text(),
+                name: $("td.name", tr).text(),
+                fund: $("td.fund", tr).attr('val'),
+                pledge: $("td.fund", tr).attr('pledge'),
+                amt: newamt,
+                splitfrom: tr.attr("cid"),
+                checkno: $("td.checkno", tr).text(),
+                notes: $("td.notes", tr).text(),
+                id: $("#id").val()
+            };
+            $.PostRow({ scroll: true, q: q });
+        }
         $('#split-modal').modal('hide');
     }
 
@@ -252,7 +257,7 @@
         splitSubmit();
     });
 
-    $('#amt-split').keydown(function(e) {
+    $('#amt-split').keydown(function (e) {
         if (e.keyCode === keys.enter) {
             splitSubmit();
         }
@@ -466,6 +471,6 @@
 function AddSelected(ret) {
     var tr = $('tr[cid=' + ret.cid + ']');
     $('a.pid', tr).text(ret.pid);
-    $('td.name span', tr).text(ret.name);
+    $('td.name a', tr).text(ret.name);
     $('a.edit', tr).click();
 }

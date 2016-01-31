@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UtilityExtensions;
 
 namespace CmsData
@@ -32,32 +33,37 @@ namespace CmsData
             if (start == null)
                 throw new Exception("bad date: " + startdt);
             var enddt = start.Value.AddDays(days);
-            var a = attendtype.Split(',');
 
-            var qt = from t in db.AttendTypes
-                     select t;
-
-            if (attendtype.NotEqual("All"))
-                qt = from t in qt
-                     where a.Contains(t.Description)
-                     select t;
-
-            var ids = string.Join(",", qt.Select(t => t.Id));
+            string ids;
+            var re = new Regex(@"\A(\d+(,\s*)?)+\z");
+            if (re.IsMatch(attendtype)) // all comma separated digits?
+                ids = attendtype.Replace(" ", ""); // remove whitespace
+            else // match on strings = description
+            {
+                var a = attendtype.Split(',').Select(aa => aa.trim());
+                var qt = from t in db.AttendTypes select t;
+                if (attendtype != "All")
+                    qt = qt.Where(t => a.Contains(t.Description));
+                ids = string.Join(",", qt.Select(t => t.Id));
+            }
             var q = db.AttendanceTypeAsOf(start, enddt, progid, divid, orgid, 0, ids);
             return q.Count();
         }
 
-        public int AttendCountAsOf(DateTime startdt, DateTime enddt, bool guestonly, int progid, int divid, int orgid)
+        public int AttendCountAsOf(object startdt, object enddt, bool guestonly, int progid, int divid, int orgid)
         {
-            enddt = enddt.AddHours(24);
-            return db.AttendedAsOf(progid, divid, orgid, startdt, enddt, guestonly).Count();
+            var dates = GetStartEndDates(startdt, enddt);
+            return db.AttendedAsOf(progid, divid, orgid, dates.Start, dates.End, guestonly).Count();
         }
 
-        public int AttendMemberTypeCountAsOf(DateTime startdt, DateTime enddt, string membertypes, string notmembertypes,
+        public int AttendMemberTypeCountAsOf(object startdt, object enddt, string membertypes, string notmembertypes,
             int progid, int divid, int orgid)
         {
-            enddt = enddt.AddHours(24);
-            return db.AttendMemberTypeAsOf(startdt, enddt, progid, divid, orgid, membertypes, notmembertypes).Count();
+            var dates = GetStartEndDates(startdt, enddt);
+
+            var memberids = GetMemberTypeIds(membertypes);
+            var notmemberids = GetMemberTypeIds(notmembertypes);
+            return db.AttendMemberTypeAsOf(dates.Start, dates.End, progid, divid, orgid, memberids, notmemberids).Count();
         }
 
         public int LastWeekAttendance(int progid, int divid, int starthour, int endhour)
@@ -128,7 +134,7 @@ namespace CmsData
 
             var q = from m in db.Meetings
                     where m.MeetingDate >= start
-                    where m.MeetingDate <= enddt
+                    where m.MeetingDate < enddt
                     where orgid == 0 || m.OrganizationId == orgid
                     where divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid)
                     where progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid))
@@ -136,6 +142,45 @@ namespace CmsData
             if (!q.Any())
                 return 0;
             return q.Sum(mm => mm.MaxCount ?? 0);
+        }
+
+        private string GetMemberTypeIds(string membertypes)
+        {
+            string ids;
+            var re = new Regex(@"\A(\d+(,\s*)?)+\z");
+            if (re.IsMatch(membertypes)) // all comma separated digits?
+                ids = membertypes.Replace(" ", ""); // remove whitespace
+            else // match on strings = description
+            {
+                var a = membertypes.Split(',').Select(aa => aa.trim());
+
+                var qt = from t in db.MemberTypes select t;
+                if (membertypes != "All")
+                    qt = qt.Where(t => a.Contains(t.Description));
+
+                ids = string.Join(",", qt.Select(t => t.Id));
+            }
+            return ids;
+        }
+
+        private static StartEndDates GetStartEndDates(object startdt, object enddt)
+        {
+            var d1 = startdt.ToDate();
+            if (d1 == null)
+                throw new ArgumentException("bad start date: " + startdt);
+
+            var d2 = enddt.ToDate();
+            if (d2 == null)
+                throw new ArgumentException("bad start date: " + startdt);
+            if (d2 == d2.Value.Date)
+                d2 = d2.Value.AddHours(24);
+            return new StartEndDates {Start = d1.Value, End = d2.Value};
+        }
+
+        private class StartEndDates
+        {
+            public DateTime Start { get; set; }
+            public DateTime End { get; set; }
         }
     }
 }
