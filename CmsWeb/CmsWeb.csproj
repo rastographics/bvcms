@@ -87,6 +87,15 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'work|AnyCPU'">
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AuthorizeNet">
       <HintPath>..\packages\AuthorizeNet.1.8.2\lib\AuthorizeNet.dll</HintPath>
@@ -2855,10 +2864,16 @@
     <Content Include="Views\Shared\Menu\User.cshtml" />
     <Content Include="Views\Shared\PageError.cshtml" />
     <Content Include="Views\Home\Test.cshtml" />
+    <None Include="Web.Impersonate.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
     <None Include="Web.test2.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
     <None Include="Web.test3.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.work.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
