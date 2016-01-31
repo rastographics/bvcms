@@ -37,6 +37,40 @@ namespace CmsData
             var From = Util.FirstAddress(from);
             Email(From, p, addmail, subject, body, redacted);
         }
+        public void EmailFinanceInformation(MailAddress fromaddress, Person p, List<MailAddress> addmail, string subject, string body)
+        {
+            var emailqueue = new EmailQueue
+            {
+                Queued = DateTime.Now,
+                FromAddr = fromaddress.Address,
+                FromName = fromaddress.DisplayName,
+                Subject = subject,
+                Body = body,
+                QueuedBy = Util.UserPeopleId,
+                Transactional = true,
+                FinanceOnly = true
+            };
+            var contributionemail = (from ex in p.PeopleExtras
+                                     where ex.Field == "ContributionEmail"
+                                     select ex.Data).SingleOrDefault();
+            if (contributionemail.HasValue())
+                contributionemail = contributionemail.trim();
+            if (!Util.ValidEmail(contributionemail))
+                contributionemail = p.FromEmail;
+            EmailQueues.InsertOnSubmit(emailqueue);
+            string addmailstr = null;
+            if (addmail != null)
+                addmailstr = addmail.EmailAddressListToString();
+            emailqueue.EmailQueueTos.Add(new EmailQueueTo
+            {
+                PeopleId = p.PeopleId,
+                OrgId = CurrentOrgId,
+                AddEmail = addmailstr,
+                Guid = Guid.NewGuid(),
+            });
+            SubmitChanges();
+            SendPersonEmail(emailqueue.Id, p.PeopleId);
+        }
 
         public void Email(MailAddress From, Person p, List<MailAddress> addmail, string subject, string body, bool redacted)
         {
