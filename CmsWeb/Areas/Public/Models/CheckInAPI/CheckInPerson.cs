@@ -1,35 +1,115 @@
-﻿using CmsWeb;
-using CmsData;
+﻿using CmsData;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using UtilityExtensions;
 
-namespace CmsWeb.CheckInAPI
+namespace CmsWeb.Areas.Public.Models.CheckInAPI
 {
     public class CheckInPerson
     {
         public int id = 0;
-        public string name = "";
+        public int familyID = 0;
 
-        public Dictionary<string, object> fields;
+        public string first = "";
+        public string last = "";
 
-        public CheckInPerson(Object person)
+        public string goesby = "";
+
+        public int genderID = 0;
+        public int maritalStatusID = 0;
+
+        public DateTime? birthday;
+
+        public string email = "";
+        public string cell = "";
+        public string home = "";
+
+        public string address = "";
+        public string address2 = "";
+        public string city = "";
+        public string state = "";
+        public string zipcode = "";
+
+        public string country = "";
+
+        public string church = "";
+
+        public string allergies = "";
+
+        public string emergencyName = "";
+        public string emergencyPhone = "";
+
+        public int age = 0;
+
+        public string picture = "";
+
+        public int pictureX = 0;
+        public int pictureY = 0;
+
+        public CheckInPerson populate(CmsData.Person p)
         {
-            fields = person.AsDictionary();
+            id = p.PeopleId;
+            familyID = p.FamilyId;
 
-            id = (int)fields["id"];
-            name = (string)fields["name"];
+            first = p.FirstName ?? "";
+            last = p.LastName ?? "";
+
+            goesby = p.NickName;
+
+            genderID = p.GenderId;
+            maritalStatusID = p.MaritalStatus.Id;
+
+            birthday = p.BirthDate;
+
+            email = p.EmailAddress;
+            cell = p.CellPhone.FmtFone();
+            home = p.HomePhone.FmtFone();
+
+            address = p.Family.AddressLineOne ?? "";
+            address2 = p.Family.AddressLineTwo ?? "";
+            city = p.Family.CityName ?? "";
+            state = p.Family.StateCode ?? "";
+            zipcode = p.Family.ZipCode.FmtZip() ?? "";
+
+            country = p.PrimaryCountry;
+
+            church = p.OtherPreviousChurch;
+
+            allergies = p.SetRecReg().MedicalDescription;
+
+            emergencyName = p.SetRecReg().Emcontact;
+            emergencyPhone = p.SetRecReg().Emphone;
+
+            age = p.Age ?? 0;
+
+            return this;
         }
 
-        public void addField(string name, object value)
+        public void loadImage()
         {
-            if (fields == null)
-            {
-                fields = new Dictionary<string, object>();
-            }
+            Person p = DbUtil.Db.LoadPersonById(id);
 
-            fields.Add(name, value);
+            if (p.Picture != null)
+            {
+                var image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == p.Picture.SmallId);
+
+                if (image != null)
+                {
+                    picture = Convert.ToBase64String(image.Bits);
+                    pictureX = p.Picture.X ?? 0;
+                    pictureY = p.Picture.Y ?? 0;
+                }
+            }
         }
     }
 }
+
+
+
+
+
+
+
+
+
+

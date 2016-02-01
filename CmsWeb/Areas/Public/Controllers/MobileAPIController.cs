@@ -1249,8 +1249,8 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             if (!result.IsValid) return AuthorizationError(result);
 
             // Check Role
-            if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Attendance"))
-                return BaseMessage.createErrorReturn("Attendance role is required to take attendance for organizations.");
+            if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Attendance") || !CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Checkin"))
+                return BaseMessage.createErrorReturn("Attendance or Checkin role is required to take attendance for organizations.");
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
             MobilePostJoinOrg mpjo = JsonConvert.DeserializeObject<MobilePostJoinOrg>(dataIn.data);
