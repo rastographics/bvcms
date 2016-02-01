@@ -30,6 +30,7 @@ using MarkdownDeep;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using UtilityExtensions;
+using System.ComponentModel;
 
 namespace CmsWeb
 {
@@ -899,7 +900,7 @@ namespace CmsWeb
 
         public static HtmlString CkEditor()
         {
-            return new HtmlString("<script src=\"//cdn.ckeditor.com/4.5.3/full/ckeditor.js\" type=\"text/javascript\"></script>\n");
+            return new HtmlString("<script src=\"//cdn.ckeditor.com/4.5.6/full/ckeditor.js\" type=\"text/javascript\"></script>\n");
         }
 
         public static HtmlString jQuery()
@@ -938,7 +939,7 @@ namespace CmsWeb
 
         public static HtmlString Velocity()
         {
-            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.1/velocity.min.js\" type=\"text/javascript\"></script>\n");
+            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js\" type=\"text/javascript\"></script>\n");
         }
 
         public static HtmlString Bootstrap()
@@ -1184,6 +1185,17 @@ namespace CmsWeb
             {
                 _templateInfo.HtmlFieldPrefix = _previousPrefix;
             }
+        }
+    }
+    public class SettingDisplayNameAttribute : DisplayNameAttribute
+    {
+        public SettingDisplayNameAttribute(string setting, string format = "{0}")
+            : base(GetLabelFromSetting(setting, format))
+        { }
+
+        private static string GetLabelFromSetting(string setting, string format)
+        {
+            return string.Format(format, DbUtil.Db.Setting($"{setting}Label", setting));
         }
     }
 }

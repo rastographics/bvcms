@@ -1,4 +1,4 @@
-﻿@using UtilityExtensions
+﻿@using CmsData
 @model CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel
 @{
   var addrPlaceHolder = Model.RequiredAddr() ? "" : "optional";
@@ -40,6 +40,10 @@ else
   <div class="col-sm-9">
     <label class="radio-inline"> @Html.RadioButtonFor(m => m.gender, "1") Male </label>
     <label class="radio-inline"> @Html.RadioButtonFor(m => m.gender, "2") Female </label>
+    @if (Model.RequiredGender() == false)
+    {
+      <label class="radio-inline" style="color:gray">Optional</label>
+    }
     <div>@Html.ValidationMessageFor(m => m.gender)</div>
   </div>
 </div>
@@ -48,10 +52,18 @@ else
   <div class="col-sm-9">
     <label class="radio-inline"> @Html.RadioButtonFor(m => m.married, "10") Single </label>
     <label class="radio-inline"> @Html.RadioButtonFor(m => m.married, "20") Married </label>
+    @if (Model.RequiredMarital() == false)
+    {
+      <label class="radio-inline" style="color:gray">Optional</label>
+    }
     <div>@Html.ValidationMessageFor(m => m.married)</div>
   </div>
 </div>
 
+@if (Model.ShowCampusOnRegistration)
+{
+  @Html.EditorFor(m => m.Campus, "Dropdown", new { label = Util2.CampusLabel, items = Model.Campuses() })
+}
 @Html.EditorFor(m => m.AddressLineOne, new { placeholder = addrPlaceHolder })
 @Html.EditorFor(m => m.AddressLineTwo, new { placeholder = "Optional" })
 @Html.EditorFor(m => m.City, new { placeholder = "Optional" })

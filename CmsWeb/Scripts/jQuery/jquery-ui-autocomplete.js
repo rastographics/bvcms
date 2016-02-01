@@ -362,7 +362,7 @@ $.widget = function( name, base, prototype ) {
 			this._createWidget( options, element );
 		}
 	};
-	// extend with the existing constructor to carry over any static properties
+	// extend with the Existing constructor to carry over any static properties
 	$.extend( constructor, existingConstructor, {
 		version: prototype.version,
 		// copy the object used to create the prototype in case we need to
@@ -431,7 +431,7 @@ $.widget = function( name, base, prototype ) {
 			// originally used, but inherit from the new version of the base
 			$.widget( childPrototype.namespace + "." + childPrototype.widgetName, constructor, child._proto );
 		});
-		// remove the list of existing child constructors from the old constructor
+		// remove the list of Existing child constructors from the old constructor
 		// so the old child constructors can be garbage collected
 		delete existingConstructor._childConstructors;
 	} else {

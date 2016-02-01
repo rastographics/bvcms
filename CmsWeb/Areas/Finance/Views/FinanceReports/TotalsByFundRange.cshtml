@@ -1,15 +1,11 @@
-﻿@model CmsWeb.Models.TotalsByFundRangeModel
+﻿@using CmsData
+@model CmsWeb.Models.TotalsByFundRangeModel
 @{
     Layout = ViewExtensions2.TouchPointLayout();
-    if (Model.Pledged == "true")
+    if (Model.Pledged)
     {
         ViewBag.Title = "Pledge Totals by Fund Range";
         ViewBag.ReportPageHeader = "Pledge Totals by Fund Range";
-    }
-    else if (Model.Pledged == "both")
-    {
-        ViewBag.Title = "Pledge Totals by Range (pledges included)";
-        ViewBag.ReportPageHeader = "Pledge Totals by Range (pledges included)";
     }
     else
     {
@@ -26,7 +22,7 @@
                 <div class="row">
                     <div class="col-sm-3">
                         <div class="form-group">
-                            <label for="CampusId" class="control-label">Campus</label>
+                            <label for="CampusId" class="control-label">@Util2.CampusLabel</label>
                             <div class="input-group">
                                 @Html.DropDownList("CampusId", Model.Campuses(), new { @class = "form-control" })
                             </div>
@@ -75,7 +71,7 @@
                 var fund = Model.Funds().FirstOrDefault(f => f.Value == Model.FundId.ToString());
                 var fundName = fund != null ? fund.Text : "";
             }
-            <strong>Campus:</strong> <span id="campusName">@campusName</span><br />
+            <strong>@Util2.CampusLabel:</strong> <span id="campusName">@campusName</span><br />
             <strong>Fund:</strong> <span id="fundName">@fundName</span><br />
             <strong>From Date:</strong> <span id="fromDate">@Model.Dt1.GetValueOrDefault().ToShortDateString()</span><br />
             <strong>To Date:</strong> <span id="toDate">@Model.Dt2.GetValueOrDefault().ToShortDateString()</span><br />

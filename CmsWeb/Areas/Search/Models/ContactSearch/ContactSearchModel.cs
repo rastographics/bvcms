@@ -303,15 +303,15 @@ namespace CmsWeb.Areas.Search.Models
         public Guid ConvertToQuery()
         {
             var c = DbUtil.Db.ScratchPadCondition();
-            c.Reset(DbUtil.Db);
-            var clause = c.AddNewClause(QueryType.MadeContactTypeAsOf, CompareType.Equal, "1,T");
-            clause.Program = SearchParameters.Ministry.Value.ToInt();
+            c.Reset();
+            var clause = c.AddNewClause(QueryType.MadeContactTypeAsOf, CompareType.Equal, "1,True");
+            clause.Program = SearchParameters.Ministry.Value;
             clause.StartDate = SearchParameters.StartDate ?? DateTime.Parse("1/1/2000");
             clause.EndDate = SearchParameters.EndDate ?? DateTime.Today;
             var cvc = new CodeValueModel();
             var q = from v in cvc.ContactTypeList()
                     where v.Id == SearchParameters.ContactType.Value.ToInt()
-                    select v.IdCode;
+                    select v.IdValue;
             var idvalue = q.Single();
             clause.CodeIdValue = idvalue;
             c.Save(DbUtil.Db);
@@ -320,14 +320,14 @@ namespace CmsWeb.Areas.Search.Models
         public static Guid ContactTypeQuery(int id)
         {
             var c = DbUtil.Db.ScratchPadCondition();
-            c.Reset(DbUtil.Db);
+            c.Reset();
             var comp = CompareType.Equal;
-            var clause = c.AddNewClause(QueryType.RecentContactType, comp, "1,T");
+            var clause = c.AddNewClause(QueryType.RecentContactType, comp, "1,True");
             clause.Days = 10000;
             var cvc = new CodeValueModel();
             var q = from v in cvc.ContactTypeList()
                     where v.Id == id
-                    select v.IdCode;
+                    select v.IdValue;
             clause.CodeIdValue = q.Single();
             c.Save(DbUtil.Db);
             return c.Id;

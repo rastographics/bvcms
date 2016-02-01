@@ -46,19 +46,8 @@ namespace CmsWeb.Areas.Org.Models
             this.CopyPropertiesTo(RegSettings, typeof(RegAttribute));
             var os = DbUtil.Db.CreateRegistrationSettings(RegSettings.ToString(), Id);
             if (Org.RegistrationTypeId > 0)
-            {
-                if (!os.Subject.HasValue())
-                    os.Subject = "Confirmation for " + (Org.RegistrationTitle ?? Org.OrganizationName);
-                if (!os.Body.HasValue())
-                {
-                    var md = new Markdown();
-                    os.Body = md.Transform(
-                        DbUtil.Db.ContentHtml("DefaultConfirmation", 
-                            Resource1.SettingsRegistrationModel_DefaulConfirmation));
-                }
                 if (!Org.NotifyIds.HasValue())
                     Org.NotifyIds = Util.UserPeopleId.ToString();
-            }
             Org.UpdateRegSetting(os);
             DbUtil.Db.SubmitChanges();
         }
@@ -199,6 +188,9 @@ namespace CmsWeb.Areas.Org.Models
         [Reg, Display(Description = NotReqMaritalDescription)]
         public bool NotReqMarital { get; set; }
 
+        [Reg, Display(Description = NotReqCampusDescription), SettingDisplayName("Campus", "Not Req {0}")]
+        public bool NotReqCampus { get; set; }
+
         [Reg, Display(Description = MemberOnlyDescription)]
         public bool MemberOnly { get; set; }
 
@@ -281,7 +273,12 @@ with an optional age-based fee
         private const string NotReqZipDescription = @"Regisration does not require a a zipcode ";
         private const string NotReqPhoneDescription = @"Registration does not require any phone number ";
         private const string NotReqGenderDescription = @"Registration does not reqire a gender ";
-        private const string NotReqMaritalDescription = @"Regisration does not require a Marital status ";
+        private const string NotReqMaritalDescription = @"Registration does not require a Marital status ";
+        private const string NotReqCampusDescription = @"
+Registration does not require Campus
+
+For this to work, your database must have the setting ShowCampusOnRegistration=true
+";
         private const string MemberOnlyDescription = @"You must be a member of the church to register ";
 
         private const string ShellBsDescription =

@@ -11,5 +11,6 @@ namespace CmsWeb.Models.Api
         public string FundDescription { get; set; }
         public int FundStatusId { get; set; }
         public DateTime CreatedDate { get; set; }
+        public bool FundPledgeFlag { get; set; }
     }
 }

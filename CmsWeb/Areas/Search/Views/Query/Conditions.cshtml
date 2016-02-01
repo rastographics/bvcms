@@ -4,90 +4,96 @@
 @using UtilityExtensions
 @model QueryModel
 <form id="query-form" action="/Query/" class="form" method="post">
-    @Html.Hidden("NewSearchId")
-    @Html.Hidden("NewId")
-    @Html.Hidden("QueryId")
-    @Html.Hidden("SelectedId")
-    @Html.Hidden("PageSize")
-    @Html.Hidden("Page")
-    @Html.Hidden("Sort")
-    @Html.Hidden("Direction")
-    <input id="Results_Page" name="Results_Page" type="hidden" value="1">
-    <div id="editcondition" class="condition-modal">
-        <h3 class="condition-modal-title">Edit Condition</h3>
-        <div class="condition-modal-content">
-        </div>
+  @Html.Hidden("NewId")
+  @Html.Hidden("QueryId")
+  @Html.Hidden("SelectedId")
+  @Html.Hidden("PageSize")
+  @Html.Hidden("Page")
+  @Html.Hidden("Sort")
+  @Html.Hidden("Direction")
+  <input id="Results_Page" name="Results_Page" type="hidden" value="1">
+  <div id="editcondition" class="condition-modal">
+    <h3 class="condition-modal-title">Edit Condition</h3>
+    <div class="condition-modal-content">
     </div>
+  </div>
 </form>
 @GroupItem(Model.TopClause)
 
 @helper GroupItem(Condition clause)
 {
     <ul @(clause.IsFirst ? "id=conditionsList" : "") class="subgroups">
-        <li class="group condition" data-qid="@clause.Id">
-            <header>
-                Match @Html.DropDownList4("", "", Model.GroupComparisons(), clause.Comparison, "simple changegroup") of these conditions
-                <div class="pull-right">
-                    @CogItems(clause)
-                </div>
-            </header>
-            <div class="group-actions">
-                <a href="#" class="addnewclause btn btn-xs btn-success"><i class="fa fa-plus-circle"></i> Condition</a>
-                <a href="#" class="addnewgroup btn btn-xs btn-success"><i class="fa fa-plus-circle"></i> Group</a>
-            </div>
-            <ul class="conditions">
-                @foreach (var c in clause.Conditions.Where(cc => !cc.IsGroup))
-                {
-                    @ClauseItem(c)
-                }
-            </ul>
-            @foreach (var c in clause.Conditions.Where(cc => cc.IsGroup))
-            {
-                @GroupItem(c)
-            }
-        </li>
+      <li class="group condition" data-qid="@clause.Id">
+        <header>
+          Match @Html.DropDownList4("", "", Model.GroupComparisons(), clause.Comparison, "simple changegroup") of these conditions
+          <div class="pull-right">
+            @CogItems(clause)
+          </div>
+        </header>
+        <div class="group-actions">
+          <a href="#" class="addnewclause btn btn-xs btn-success"><i class="fa fa-plus-circle"></i> Condition</a>
+          <a href="#" class="addnewgroup btn btn-xs btn-success"><i class="fa fa-plus-circle"></i> Group</a>
+        </div>
+        <ul class="conditions">
+          @foreach (var c in clause.Conditions.Where(cc => !cc.IsGroup))
+          {
+              @ClauseItem(c)
+          }
+        </ul>
+        @foreach (var c in clause.Conditions.Where(cc => cc.IsGroup))
+        {
+            @GroupItem(c)
+        }
+      </li>
     </ul>
 }
 @helper ClauseItem(Condition clause)
 {
-    <li class="condition" data-qid="@clause.Id">
-        <a href="#editcondition" class="edit edit-condition">
-            <span class="value">@(clause.ToString().Length > 30 ? $"{clause.ToString().Substring(0, 30)}..." : clause.ToString())</span>
-        </a>
-        <div class="pull-right">
-            @CogItems(clause)
-        </div>
-    </li>
+  var cstr = clause.ToString();
+  var newcondition = "";
+  if (cstr == "MatchAnything = 1[True]")
+  {
+    newcondition = "newcondition";
+    cstr = "Select Condition";
+  }
+  <li class="condition @newcondition" data-qid="@clause.Id">
+    <a href="#editcondition" class="edit edit-condition" title="@cstr">
+      <span class="value">@(cstr.Length > 30 ? $"{cstr.Substring(0, 30)}..." : cstr)</span>
+    </a>
+    <div class="pull-right">
+      @CogItems(clause)
+    </div>
+  </li>
 }
 @helper CogItems(Condition clause)
 {
     <div class="dropdown">
-        <a href="#" class="dropdown-toggle hidden-xs" data-toggle="dropdown">
-            <i class="fa fa-cog"></i>
-        </a>
-        <a href="#" class="dropdown-toggle visible-xs-inline" data-toggle="dropdown" style="padding-left: 50px;">
-            <i class="fa fa-cog" style="font-size: 1.2em;"></i>
-        </a>
-        <ul class="dropdown-menu dropdown-menu-right">
-            @if (!clause.IsGroup)
-            {
-                <li><a href="#editCondition" class="edit-condition"><i class="fa fa-pencil fa-fw"></i> Edit</a></li>
-            }
-            @if (clause.CanCut)
-            {
-                <li><a href="#" class="cutcondition"><i class="fa fa-cut fa-fw"></i> Cut</a></li>
-            }
-            @if (clause.IsGroup && !clause.CanCut && !clause.IsFirst)
-            {
-                <li><a href="#" class="maketopgroup"><i class="fa fa-long-arrow-up fa-fw"></i> Make Top Group</a></li>
-            }
-            <li><a href="#" class="copycondition"><i class="fa fa-copy fa-fw"></i> Copy</a></li>
-            <li class="pastecondition" style="display: none"><a href="#" class="pastecondition"><i class="fa fa-paste fa-fw"></i> Paste</a></li>
-            <li><a href="#" class="insgroupabove"><i class="fa fa-share-alt fa-fw"></i> Insert Group Above This</a></li>
-            @if (clause.CanRemove)
-            {
-                <li><a class="delete" href="#"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
-            }
-        </ul>
+      <a href="#" class="dropdown-toggle hidden-xs" data-toggle="dropdown">
+        <i class="fa fa-cog"></i>
+      </a>
+      <a href="#" class="dropdown-toggle visible-xs-inline" data-toggle="dropdown" style="padding-left: 50px;">
+        <i class="fa fa-cog" style="font-size: 1.2em;"></i>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-right">
+        @if (!clause.IsGroup)
+        {
+            <li><a href="#editCondition" class="edit-condition"><i class="fa fa-pencil fa-fw"></i> Edit</a></li>
+        }
+        @if (clause.CanCut)
+        {
+            <li><a href="#" class="cutcondition"><i class="fa fa-cut fa-fw"></i> Cut</a></li>
+        }
+        @if (clause.IsGroup && !clause.CanCut && !clause.IsFirst)
+        {
+            <li><a href="#" class="maketopgroup"><i class="fa fa-long-arrow-up fa-fw"></i> Make Top Group</a></li>
+        }
+        <li><a href="#" class="copycondition"><i class="fa fa-copy fa-fw"></i> Copy</a></li>
+        <li class="pastecondition" style="display: none"><a href="#" class="pastecondition"><i class="fa fa-paste fa-fw"></i> Paste</a></li>
+        <li><a href="#" class="insgroupabove"><i class="fa fa-share-alt fa-fw"></i> Insert Group Above This</a></li>
+        @if (clause.CanRemove)
+        {
+            <li><a class="delete" href="#"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+        }
+      </ul>
     </div>
 }

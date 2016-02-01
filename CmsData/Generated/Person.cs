@@ -2256,7 +2256,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="OtherPreviousChurch", UpdateCheck=UpdateCheck.Never, Storage="_OtherPreviousChurch", DbType="nvarchar(60)")]
+		[Column(Name="OtherPreviousChurch", UpdateCheck=UpdateCheck.Never, Storage="_OtherPreviousChurch", DbType="nvarchar(120)")]
 		public string OtherPreviousChurch
 		{
 			get { return this._OtherPreviousChurch; }

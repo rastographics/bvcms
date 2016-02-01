@@ -1,4 +1,8 @@
-﻿$(function () {
+﻿/*! 
+search-add.js 1/14/2016 3:50 PM
+TouchPoint Software, LLC
+*/
+$(function () {
 
     $.fn.loadWith = function (u, f) {
         var c = $(this);
@@ -88,7 +92,7 @@
         $.post(loc, q, function (ret) {
             $('#empty-dialog').modal("hide");
             if (ret.message)
-                swal("Error!", ret.message, "error");
+                swal({title: "Error!", text: ret.message, type: "error", html: true});
             else if (ret.from === 'Menu')
                 window.location = '/Person2/' + ret.pid;
             else

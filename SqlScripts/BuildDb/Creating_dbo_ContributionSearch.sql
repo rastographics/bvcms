@@ -45,8 +45,8 @@ BEGIN
 			WHEN 'both' THEN CASE WHEN c.ContributionTypeId <> 8 THEN 1 ELSE 0 END 
 			WHEN 'pledge' THEN CASE WHEN c.ContributionTypeId = 8 THEN 1 ELSE 0 END 
 			END = 1
-		AND CASE ISNULL(@online, 0)
-			WHEN 0 THEN 1
+		AND CASE ISNULL(@online, 2)
+			WHEN 2 THEN 1
 			WHEN 1 THEN CASE WHEN h.BundleHeaderTypeId = 4 THEN 1 ELSE 0 END
             WHEN 0 THEN CASE WHEN h.BundleHeaderTypeId <> 4 THEN 1 ELSE 0 END
 			END = 1
@@ -62,31 +62,13 @@ BEGIN
 		AND (@name IS NULL OR p.NAME LIKE '%' + @name + '%')
 		AND (@comments IS NULL OR c.ContributionDesc LIKE '%' + @comments + '%' OR c.CheckNo = @comments)
 		AND (@type IS NULL OR c.ContributionTypeId = @type)
-		AND (@campusid IS NULL OR p.CampusId = @campusid)
+		AND (ISNULL(@campusid, 0) = 0 OR c.CampusId = @campusid)
 		AND (@bundletype IS NULL OR h.BundleHeaderTypeId = @bundletype)
 		AND (@year IS NULL OR DATEPART(YEAR, c.ContributionDate) = @year)
 		AND (@fundid IS NULL OR c.FundId = @fundid)
 		AND (@startdate IS NULL OR c.ContributionDate >= @startdate)
 		AND (@enddate IS NULL OR c.ContributionDate < DATEADD(DAY, 1, @enddate))
     
-	/*
-            if ((model.BundleType ?? 0) != 0)
-                contributions = from c in contributions
-                                where c.BundleDetails.First().BundleHeader.BundleHeaderTypeId == model.BundleType
-                                select c;
-
-            if (model.Year.HasValue && model.Year > 0)
-                contributions = from c in contributions
-                                where c.ContributionDate.Value.Year == model.Year
-                                select c;
-
-            if (model.FundId.HasValue && model.FundId > 0)
-                contributions = from c in contributions
-                                where c.FundId == model.FundId
-                                select c;
-	
-*/
-	
 	RETURN 
 END
 GO

@@ -72,7 +72,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult QueryCodes(string field, string value)
         {
             var cc = DbUtil.Db.ScratchPadCondition();
-            cc.Reset(DbUtil.Db);
+            cc.Reset();
             cc.AddNewClause(QueryType.PeopleExtra, CompareType.Equal, $"{field}:{value}");
             cc.Save(DbUtil.Db);
             return Redirect("/Query/" + cc.Id);
@@ -81,7 +81,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult QueryDataFields(string field, string type)
         {
             var cc = DbUtil.Db.ScratchPadCondition();
-            cc.Reset(DbUtil.Db);
+            cc.Reset();
             Condition c2;
             switch (type.ToLower())
             {

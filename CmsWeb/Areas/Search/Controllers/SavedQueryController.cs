@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
+using System.Text;
 using System.Web.Mvc;
 using CmsWeb.Areas.Search.Models;
-using CmsWeb.Models;
 using UtilityExtensions;
 using CmsData;
 
@@ -18,7 +18,6 @@ namespace CmsWeb.Areas.Search.Controllers
             {
                 OnlyMine = DbUtil.Db.UserPreference("SavedQueryOnlyMine", "false").ToBool()
             };
-            //m.Pager.Set("/SavedQuery/Results", 1, null, "Last Run", "desc");
             return View(m);
         }
         [HttpPost]
@@ -51,5 +50,54 @@ namespace CmsWeb.Areas.Search.Controllers
             DbUtil.Db.SubmitChanges();
             return Content("ok");
         }
+
+        [HttpPost]
+        public ActionResult Code(SavedQueryModel m)
+        {
+            var qlist = from q in m.DefineModelList()
+                       select q.QueryId;
+            var list = string.Join(",", qlist);
+            TempData["codelist"] = list;
+            return Content("ok");
+        }
+        [HttpGet]
+        public ActionResult Code()
+        {
+            var list = TempData["codelist"] as string;
+            if (list == null)
+                return Content("no data");
+            var guids = list.Split(',').ToList().ConvertAll(vv => new Guid(vv));
+            return View(new QueryCodeModel(CodeSql.Queries, guids));
+        }
+#if DEBUG
+        [HttpGet]
+        public ActionResult CodeErrors()
+        {
+            return View("Code", new QueryCodeModel(CodeSql.Errors));
+        }
+        [HttpGet]
+        public ActionResult CodeAnalysis()
+        {
+            QueryCodeModel.DoAnalysis();
+            return Redirect("Code");
+        }
+        [HttpGet]
+        public ActionResult CodeAnalysisAll()
+        {
+            var list = QueryCodeModel.DatabaseList();
+            var sb = new StringBuilder();
+            foreach (var db in list)
+                sb.Append(QueryCodeModel.DoAnalysis(db));
+            return Content(sb.ToString(), "text/plain");
+        }
+        [HttpGet]
+        public ActionResult UpdateAll()
+        {
+            var list = QueryCodeModel.DatabaseList();
+            foreach (var db in list)
+                QueryCodeModel.UpdateAll(db);
+            return Content("done");
+        }
+#endif
     }
 }

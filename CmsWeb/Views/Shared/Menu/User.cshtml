@@ -5,8 +5,7 @@
     var targetorg = Util2.TargetLinkOrg;
     var useneweditor = Util2.UseNewEditor;
     var testnofinance = ((string)HttpContext.Current.Session["testnofinance"]) == "true";
-    var usenewdetails = Util2.UseNewDetails;
-    var developer = User.IsInRole("Developer");
+    //var developer = User.IsInRole("Developer");
 }
 <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="me">
   @if (!string.IsNullOrEmpty(Util.UserThumbPictureUrl))
@@ -79,22 +78,6 @@
             <span>&nbsp;&nbsp;Finance Role</span></a>
         }
       </li>
-  }
-  @if (developer)
-  {
-    <li>
-        <a href="/Home/UseNewDetails/@Html.Raw(usenewdetails)">
-            @if (usenewdetails)
-            {
-                <i class="dropdown-icon fa fa-toggle-on" style="color: #5cb85c"></i>
-            }
-            else
-            {
-                <i class="dropdown-icon fa fa-toggle-off"></i>
-            }
-            <span>&nbsp;&nbsp;Use New Details (do not use)</span>
-        </a>
-    </li>
   }
   <li class="divider"></li>
   @Helper.LiAnchorLinkIcon("Log Out", "dropdown-icon fa fa-power-off", "/Account/LogOff/")

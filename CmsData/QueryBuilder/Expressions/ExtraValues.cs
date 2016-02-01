@@ -4,10 +4,11 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Net.Mime;
+using CmsData.ExtraValue;
 using UtilityExtensions;
 
 namespace CmsData
@@ -25,7 +26,7 @@ namespace CmsData
         }
         internal Expression HasPeopleExtraField()
         {
-            var sev = ExtraValue.Views.GetViewableNameTypes(db, "People", nocache: true).SingleOrDefault(nn => nn.Name == TextValue);
+            var sev = Views.GetViewableNameTypes(db, "People", true).SingleOrDefault(nn => nn.Name == TextValue);
             if (!db.FromBatch)
                 if (sev != null && !sev.CanView)
                     return AlwaysFalse();
@@ -38,7 +39,7 @@ namespace CmsData
         internal Expression PeopleExtraData()
         {
             var field = Quarters;
-            var sev = ExtraValue.Views.GetViewableNameTypes(db, "People", nocache: true).SingleOrDefault(nn => nn.Name == field);
+            var sev = Views.GetViewableNameTypes(db, "People", true).SingleOrDefault(nn => nn.Name == field);
             if (!db.FromBatch)
                 if (sev != null && !sev.CanView)
                     return AlwaysFalse();
@@ -51,7 +52,7 @@ namespace CmsData
         internal Expression PeopleExtraInt()
         {
             var field = Quarters;
-            var sev = ExtraValue.Views.GetViewableNameTypes(db, "People", nocache: true).SingleOrDefault(nn => nn.Name == field);
+            var sev = Views.GetViewableNameTypes(db, "People", true).SingleOrDefault(nn => nn.Name == field);
             if (!db.FromBatch)
                 if (sev != null && !sev.CanView)
                     return AlwaysFalse();
@@ -83,7 +84,7 @@ namespace CmsData
         internal Expression PeopleExtraDate()
         {
             var field = Quarters;
-            var sev = ExtraValue.Views.GetViewableNameTypes(db, "People", nocache: true).SingleOrDefault(nn => nn.Name == field);
+            var sev = Views.GetViewableNameTypes(db, "People", true).SingleOrDefault(nn => nn.Name == field);
             if (!db.FromBatch)
                 if (sev != null && !sev.CanView)
                     return AlwaysFalse();
@@ -115,7 +116,7 @@ namespace CmsData
         internal Expression RecentPeopleExtraFieldChanged()
         {
             var mindt = Util.Now.AddDays(-Days).Date;
-            var sev = ExtraValue.Views.GetViewableNameTypes(db, "People", nocache: true).SingleOrDefault(nn => nn.Name == Quarters);
+            var sev = Views.GetViewableNameTypes(db, "People", true).SingleOrDefault(nn => nn.Name == Quarters);
             if (!db.FromBatch)
                 if (sev != null && !sev.CanView)
                     return AlwaysFalse();
@@ -141,7 +142,7 @@ namespace CmsData
         }
         internal Expression HasFamilyExtraField()
         {
-            var sev = ExtraValue.Views.GetViewableNameTypes(db, "Family", nocache: true).SingleOrDefault(nn => nn.Name == TextValue);
+            var sev = Views.GetViewableNameTypes(db, "Family", true).SingleOrDefault(nn => nn.Name == TextValue);
             if (!db.FromBatch)
                 if (sev != null && !sev.CanView)
                     return AlwaysFalse();
@@ -158,7 +159,7 @@ namespace CmsData
         internal Expression FamilyExtraData()
         {
             var field = Quarters;
-            var sev = ExtraValue.Views.GetViewableNameTypes(db, "Family", nocache: true).SingleOrDefault(nn => nn.Name == field);
+            var sev = Views.GetViewableNameTypes(db, "Family", true).SingleOrDefault(nn => nn.Name == field);
             if (!db.FromBatch)
                 if (sev != null && !sev.CanView)
                     return AlwaysFalse();
@@ -171,7 +172,7 @@ namespace CmsData
         internal Expression FamilyExtraInt()
         {
             var field = Quarters;
-            var sev = ExtraValue.Views.GetViewableNameTypes(db, "Family", nocache: true).SingleOrDefault(nn => nn.Name == field);
+            var sev = Views.GetViewableNameTypes(db, "Family", true).SingleOrDefault(nn => nn.Name == field);
             if (!db.FromBatch)
                 if (sev != null && !sev.CanView)
                     return AlwaysFalse();
@@ -203,7 +204,7 @@ namespace CmsData
         internal Expression FamilyExtraDate()
         {
             var field = Quarters;
-            var sev = ExtraValue.Views.GetViewableNameTypes(db, "Family", nocache: true).SingleOrDefault(nn => nn.Name == field);
+            var sev = Views.GetViewableNameTypes(db, "Family", true).SingleOrDefault(nn => nn.Name == field);
             if (!db.FromBatch)
                 if (sev != null && !sev.CanView)
                     return AlwaysFalse();

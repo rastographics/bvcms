@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Areas.Dialog.Models.NewOrganizationModel
+﻿@using CmsData
+@model CmsWeb.Areas.Dialog.Models.NewOrganizationModel
 <div class="modal-dialog modal-lg" id="new-org-modal">
     <div class="modal-content">
         <form action="/AddOrganization/Submit/@Model.OrganizationId" method="post">
@@ -22,7 +23,7 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="org_CampusId" class="control-label">Campus</label>
+                            <label for="org_CampusId" class="control-label">@Util2.CampusLabel</label>
                             @Html.DropDownList("org.CampusId", Model.CampusList(), new { @class = "form-control" })
                         </div>
                     </div>

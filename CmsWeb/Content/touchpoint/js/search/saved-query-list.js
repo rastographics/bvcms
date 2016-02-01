@@ -23,6 +23,18 @@
         });
     });
 
+    $('body').on('click', '#code-link', function (ev) {
+        var href = this.href;
+        var f = $(this).closest("form");
+        var q = f.serialize();
+        $.ajax({
+            type: "POST",
+            async: false,
+            url: href,
+            data: q
+        });
+    });
+
     $('body').on('click', 'a.delete-saved-query', function (ev) {
         ev.preventDefault();
         var a = $(this);

@@ -257,6 +257,24 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'work|AnyCPU'">
+    <OutputPath>bin\work\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'work|x86'">
+    <OutputPath>bin\x86\work\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AuthorizeNet">
       <HintPath>..\packages\AuthorizeNet.1.8.2\lib\AuthorizeNet.dll</HintPath>
@@ -366,8 +384,21 @@
     <Compile Include="API\ApiSessionResult.cs" />
     <Compile Include="API\ApiSessionStatus.cs" />
     <Compile Include="API\CreateExcel.cs" />
-    <Compile Include="API\DynamicData.cs" />
-    <Compile Include="API\IPythonApi.cs" />
+    <Compile Include="API\PythonModel\DynamicData.cs" />
+    <Compile Include="API\PythonModel\Forms.cs" />
+    <Compile Include="API\PythonModel\SqlGrid.cs" />
+    <Compile Include="API\PythonModel\Upload.cs" />
+    <Compile Include="API\PythonModel\Handlebars.cs" />
+    <Compile Include="API\PythonModel\Dates.cs" />
+    <Compile Include="API\PythonModel\Person.cs" />
+    <Compile Include="API\PythonModel\Email.cs" />
+    <Compile Include="API\PythonModel\Organizations.cs" />
+    <Compile Include="API\PythonModel\ExtraValues.cs" />
+    <Compile Include="API\PythonModel\Misc.cs" />
+    <Compile Include="API\QueryFunctions\Deprecated.cs" />
+    <Compile Include="API\QueryFunctions\Attendance.cs" />
+    <Compile Include="API\QueryFunctions\Contributions.cs" />
+    <Compile Include="API\QueryFunctions\Query.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMData.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMHelper.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMMessage.cs" />
@@ -486,6 +517,7 @@
     <Compile Include="Generated\Functions\FilterOnlineReg.cs" />
     <Compile Include="Generated\Functions\FilterOrgSearchName.cs" />
     <Compile Include="Generated\Functions\GenRange.cs" />
+    <Compile Include="Generated\Functions\GetContributionsRange.cs" />
     <Compile Include="Generated\Functions\GetContributionTotalsBothIfJoint.cs" />
     <Compile Include="Generated\Functions\GetTotalContributionsAgeRange.cs" />
     <Compile Include="Generated\Functions\GivingChange.cs" />
@@ -493,6 +525,7 @@
     <Compile Include="Generated\Functions\GuestList2.cs" />
     <Compile Include="Generated\Functions\HasIncompleteRegistration.cs" />
     <Compile Include="Generated\Functions\LastAttendOrg.cs" />
+    <Compile Include="Generated\Functions\NotAttendedAsOf.cs" />
     <Compile Include="Generated\Functions\OrgMember.cs" />
     <Compile Include="Generated\Functions\OrgMemberInfo.cs" />
     <Compile Include="Generated\Functions\OrgMemberQuestion.cs" />
@@ -533,6 +566,7 @@
     <Compile Include="Generated\MobileAppPushRegistration.cs" />
     <Compile Include="Generated\MobileAppRoom.cs" />
     <Compile Include="Generated\MobileAppVideoType.cs" />
+    <Compile Include="Generated\QueryAnalysi.cs" />
     <Compile Include="Generated\RegistrationDatum.cs" />
     <Compile Include="Generated\Views\ActiveRegistration.cs" />
     <Compile Include="Generated\Views\AppRegistration.cs" />
@@ -540,6 +574,7 @@
     <Compile Include="Generated\Views\ContributionsBasic.cs" />
     <Compile Include="Generated\Views\DonorProfileList.cs" />
     <Compile Include="Generated\Views\FailedEmail.cs" />
+    <Compile Include="Generated\Views\FailedRecurringGiving.cs" />
     <Compile Include="Generated\Views\FamilyFirstTime.cs" />
     <Compile Include="Generated\Views\IncompleteTask.cs" />
     <Compile Include="Generated\Views\LastAttend.cs" />
@@ -616,13 +651,15 @@
     <Compile Include="Generated\Views\TransactionList.cs" />
     <Compile Include="Generated\Views\TransactionSummary.cs" />
     <Compile Include="DbUtil\ITableWithExtraValues.cs" />
+    <Compile Include="QueryBuilder\QueryParser.cs" />
     <Compile Include="QueryBuilder\Query.cs" />
-    <Compile Include="QueryBuilder\CategoryClass2.cs" />
-    <Compile Include="QueryBuilder\CompareClass2.cs" />
-    <Compile Include="QueryBuilder\FieldClass2.cs" />
+    <Compile Include="QueryBuilder\CategoryClass.cs" />
+    <Compile Include="QueryBuilder\CompareClass.cs" />
+    <Compile Include="QueryBuilder\FieldClass.cs" />
     <Compile Include="QueryBuilder\Condition.cs" />
     <Compile Include="QueryBuilder\QueryContext.cs" />
-    <Compile Include="QueryBuilder\SerializeJson.cs" />
+    <Compile Include="QueryBuilder\QueryExport.cs" />
+    <Compile Include="QueryBuilder\QueryLexer.cs" />
     <Compile Include="QueryBuilder\Serialize2.cs" />
     <Compile Include="Extensions\Content.cs" />
     <Compile Include="Generated\ActivityOld.cs" />
@@ -700,7 +737,7 @@
     <Compile Include="Generated\Views\PickListOrgs2.cs" />
     <Compile Include="Meetings\Meeting.cs" />
     <Compile Include="Classes\ProtectMyMinistry\ProtectMyMinistryHelper.cs" />
-    <Compile Include="API\PythonEvents.cs" />
+    <Compile Include="API\PythonModel\Internal.cs" />
     <Compile Include="Generated\AddToOrgFromTagRun.cs" />
     <Compile Include="Generated\CheckedBatch.cs" />
     <Compile Include="Generated\CheckInActivity.cs" />
@@ -766,7 +803,7 @@
     <Compile Include="Generated\OrganizationExtra.cs" />
     <Compile Include="Generated\PrintJob.cs" />
     <Compile Include="Generated\RecurringAmount.cs" />
-    <Compile Include="API\QueryFunctions.cs" />
+    <Compile Include="API\QueryFunctions\Internal.cs" />
     <Compile Include="Generated\AttendCredit.cs" />
     <Compile Include="Generated\Contact.cs" />
     <Compile Include="Generated\ContactReason.cs" />
@@ -981,14 +1018,12 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="QueryBuilder\FieldMap.csv" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Classes\OnlineRegSummaryText\Details2.xml">
       <SubType>Designer</SubType>
     </Resource>
-    <Content Include="QueryBuilder\FieldMap3.xml">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

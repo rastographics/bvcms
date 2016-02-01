@@ -139,6 +139,9 @@ namespace RegistrationSettingsParser
                 case RegKeywords.NotReqMarital:
                     set.NotReqMarital = GetBool();
                     break;
+                case RegKeywords.NotReqCampus:
+                    set.NotReqCampus = GetBool();
+                    break;
                 case RegKeywords.NotReqZip:
                     set.NotReqZip = GetBool();
                     break;
@@ -614,6 +617,7 @@ namespace RegistrationSettingsParser
             AddValueCk(0, sb, "NotReqPhone", set.NotReqPhone);
             AddValueCk(0, sb, "NotReqGender", set.NotReqGender);
             AddValueCk(0, sb, "NotReqMarital", set.NotReqMarital);
+            AddValueCk(0, sb, "NotReqCampus", set.NotReqCampus);
             AddValueCk(0, sb, "TimeOut", set.TimeOut);
             AddValueCk(0, sb, "DisallowAnonymous", set.DisallowAnonymous);
 

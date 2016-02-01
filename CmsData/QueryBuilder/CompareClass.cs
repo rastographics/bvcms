@@ -1,41 +1,94 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
+using UtilityExtensions;
+using System.Xml.Linq;
 using System.Web;
 using System.Web.Caching;
-using System.Xml.Linq;
-using UtilityExtensions;
 
 namespace CmsData
 {
-    public partial class CompareClass
+    public class CompareClass
     {
         public FieldType FieldType { get; set; }
         public CompareType CompType { get; set; }
         public string Display { get; set; }
-        internal string ToString(QueryBuilderClause c)
+
+        internal string ToString(Condition c)
         {
-            string fld = c.FieldInfo.Display(c);
-            if (c.Field == "MatchAnything")
-                return fld;
+            var fld = c.FieldInfo.ToString(c);
+
+            // IsNull and IsNotNull are deprecated, but this will make them still work
+            switch (c.ComparisonType)
+            {
+                case CompareType.IsNull:
+                    return $"{fld} = ''";
+                case CompareType.IsNotNull:
+                    return $"{fld} <> ''";
+            }
+
+            // handle missing Id value for True/False
+            if (c.CodeIdValue.Equal("False"))
+                c.CodeIdValue = "0,False";
+            else if (c.CodeIdValue.Equal("True"))
+                c.CodeIdValue = "1,True";
+
             switch (FieldType)
             {
+                case FieldType.EqualBit:
+                case FieldType.Bit:
+                    return string.Format(Display, fld, Util.PickFirst(c.CodeIdText, "1[True]"));
+                case FieldType.NullBit:
+                case FieldType.NullCode:
+                    return string.Format(Display, fld, Util.PickFirst(c.CodeIdText, "''"));
+                case FieldType.Code:
+                case FieldType.CodeStr:
+                    return string.Format(Display, fld, Util.PickFirst(c.CodeIdText, "''"));
+                case FieldType.String:
+                case FieldType.StringEqual:
+                case FieldType.StringEqualOrStartsWith:
+                    return string.Format(Display, fld, c.TextValue?.Replace("'", "''") ?? c.TextValue);
+                case FieldType.NullNumber:
+                case FieldType.NullInteger:
+                    return string.Format(Display, fld, Util.PickFirst(c.TextValue, "''"));
+                case FieldType.NumberLG:
+                case FieldType.Number:
+                case FieldType.Integer:
+                case FieldType.IntegerSimple:
+                case FieldType.IntegerEqual:
+                    return string.Format(Display, fld, Util.PickFirst(c.TextValue, "0"));
+                case FieldType.Date:
+                case FieldType.DateSimple:
+                    return string.Format(Display, fld, c.DateValue);
+                case FieldType.DateField:
+                    return string.Format(Display, fld, c.CodeIdValue);
+                default:
+                    throw new ArgumentException();
+            }
+        }
+        internal string ValueType()
+        {
+            switch (FieldType)
+            {
+                case FieldType.EqualBit:
+                case FieldType.DateField:
+                    return "idvalue";
                 case FieldType.NullBit:
                 case FieldType.Bit:
                 case FieldType.Code:
                 case FieldType.NullCode:
                 case FieldType.CodeStr:
-                    return Display.Fmt(fld, c.CodeValues);
+                    return "idtext";
                 case FieldType.String:
                 case FieldType.StringEqual:
                 case FieldType.StringEqualOrStartsWith:
+                    return "text";
                 case FieldType.Number:
                 case FieldType.NumberLG:
                 case FieldType.NullNumber:
@@ -43,53 +96,31 @@ namespace CmsData
                 case FieldType.IntegerSimple:
                 case FieldType.IntegerEqual:
                 case FieldType.NullInteger:
-                    return Display.Fmt(fld, c.TextValue);
+                    return "number";
                 case FieldType.Date:
                 case FieldType.DateSimple:
-                    return Display.Fmt(fld, c.DateValue);
-                case FieldType.DateField:
-                    return Display.Fmt(fld, c.CodeIdValue);
+                    return "date";
                 default:
                     throw new ArgumentException();
             }
         }
-        internal Expression Expression(QueryBuilderClause qbc, ParameterExpression parm, CMSDataContext Db)
+        public static CompareType Convert(string type, Condition c = null)
         {
-            var c = new Condition()
-            {
-                Age = qbc.Age,
-                Campus = qbc.Campus,
-                Comparison = qbc.Comparison,
-                DateValue = qbc.DateValue,
-                CodeIdValue = qbc.CodeIdValue,
-                Days = qbc.Days,
-                Division = qbc.Division,
-                EndDate = qbc.EndDate,
-                ConditionName = qbc.Field,
-                Organization = qbc.Organization,
-                OrgType = qbc.OrgType,
-                Program = qbc.Program,
-                Quarters = qbc.Quarters,
-                Schedule = qbc.Schedule,
-                StartDate = qbc.StartDate,
-                Tags = qbc.Tags,
-                TextValue = qbc.TextValue,
-                SavedQuery = qbc.SavedQueryIdDesc
-            };
-            return c.GetExpression(parm, Db, qbc.SetIncludeDeceased, qbc.SetParentsOf);
-        }
-        public static CompareType Convert(string type)
-        {
-            if (type == null)
-                return CompareType.Equal;
+            if (!type.HasValue())
+                //return c != null && c.IsGroup ? CompareType.AllTrue : CompareType.Equal;
+                if(c != null)
+                    if (c.IsGroup)
+                        return CompareType.AllTrue;
+                    else
+                        return CompareType.Equal;
             return (CompareType)Enum.Parse(typeof(CompareType), type);
         }
         public static List<CompareClass> Comparisons
         {
             get
             {
-                var _Comparisons = (List<CompareClass>)HttpRuntime.Cache["comparisons"];
-                if (_Comparisons == null)
+                var comparisons = (List<CompareClass>)HttpRuntime.Cache["comparisons2"];
+                if (comparisons == null)
                 {
                     var xdoc = XDocument.Parse(Properties.Resources.CompareMap);
                     var q = from f in xdoc.Descendants("FieldType")
@@ -100,11 +131,11 @@ namespace CmsData
                                 CompType = Convert((string)c.Attribute("Type")),
                                 Display = (string)c.Attribute("Display")
                             };
-                    _Comparisons = q.ToList();
-                    HttpRuntime.Cache.Insert("comparisons", _Comparisons, null,
+                    comparisons = q.ToList();
+                    HttpRuntime.Cache.Insert("comparisons2", comparisons, null,
                         DateTime.Now.AddMinutes(10), Cache.NoSlidingExpiration);
                 }
-                return _Comparisons;
+                return comparisons;
             }
         }
     }

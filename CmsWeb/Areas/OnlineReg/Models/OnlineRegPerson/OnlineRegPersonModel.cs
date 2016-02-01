@@ -51,6 +51,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
             set { phone = value; }
         }
 
+        [SettingDisplayName("Campus")]
+        public string Campus { get; set; }
+
         public string AddressLineOne { get; set; }
         public string AddressLineTwo { get; set; }
         public string City { get; set; }

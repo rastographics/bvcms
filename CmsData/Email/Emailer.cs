@@ -433,7 +433,7 @@ namespace CmsData
             emailqueue.Started = DateTime.Now;
             SubmitChanges();
 
-            if (emailqueue.SendFromOrgId.HasValue)
+            if (emailqueue.SendFromOrgId.HasValue && emailqueue.EmailQueueTos.Count() == 0)
             {
                 var q2 = from om in OrganizationMembers
                          where om.OrganizationId == emailqueue.SendFromOrgId
@@ -444,6 +444,7 @@ namespace CmsData
                          where p.EmailAddress != null
                          where p.EmailAddress != ""
                          where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
+                         where p.EmailOptOuts.All(oo => oo.FromEmail != emailqueue.FromAddr)
                          select om.PeopleId;
                 foreach (var pid in q2)
                 {

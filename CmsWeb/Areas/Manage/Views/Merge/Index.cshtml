@@ -1,5 +1,6 @@
 ﻿@model CmsWeb.Models.MergeModel
 @using UtilityExtensions
+@using CmsData
 @{
     ViewBag.Title = "Merge Controller";
     ViewBag.PageHeader = "Merge Controller";
@@ -478,7 +479,7 @@
             </tr>
             <tr>
               <td>
-                Campus
+                @Util2.CampusLabel
               </td>
               <td class="text-center">
                 @Html.RadioButtonFor(m => m.UseCampusId, 0)

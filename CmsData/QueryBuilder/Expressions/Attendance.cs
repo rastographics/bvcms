@@ -4,11 +4,12 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using UtilityExtensions;
 using CmsData.Codes;
+using UtilityExtensions;
 
 namespace CmsData
 {
@@ -16,7 +17,7 @@ namespace CmsData
     {
         internal Expression RecentAttendMemberType()
         {
-            var q = db.RecentAttendMemberType(Program, Division, Organization, Days, string.Join(",", CodeIntIds));
+            var q = db.RecentAttendMemberType(ProgramInt, DivisionInt, OrganizationInt, Days, string.Join(",", CodeIntIds));
             var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId.Value));
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
@@ -27,7 +28,7 @@ namespace CmsData
         internal Expression RecentAttendCount()
         {
             var cnt = TextValue.ToInt();
-            var q = db.RecentAttendInDaysByCountDesc(Program, Division, Organization, OrgType ?? 0, Days, Quarters);
+            var q = db.RecentAttendInDaysByCountDesc(ProgramInt, DivisionInt, OrganizationInt, OrgTypeInt ?? 0, Days, Quarters);
             switch (op)
             {
                 case CompareType.Greater:
@@ -53,7 +54,7 @@ namespace CmsData
             var attcred = Quarters.ToInt();
             var cnt = TextValue.ToInt();
             var mindt = Util.Now.AddDays(-Days).Date;
-            var sc = db.OrgSchedules.FirstOrDefault(cc => cc.ScheduleId == Schedule);
+            var sc = db.OrgSchedules.FirstOrDefault(cc => cc.ScheduleId == ScheduleInt);
             DateTime? mtime = null;
             if (sc != null)
                 mtime = sc.SchedTime;
@@ -67,9 +68,9 @@ namespace CmsData
                         where a.MeetingDate >= mindt
                         where attcred == 0 || a.Meeting.AttendCreditId == attcred
                         where a.MeetingDate.TimeOfDay == mtime.Value.TimeOfDay
-                        where Organization == 0 || a.Meeting.OrganizationId == Organization
-                        where Division == 0 || a.Organization.DivOrgs.Any(dg => dg.DivId == Division)
-                        where Program == 0 || a.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
+                        where OrganizationInt == 0 || a.Meeting.OrganizationId == OrganizationInt
+                        where DivisionInt == 0 || a.Organization.DivOrgs.Any(dg => dg.DivId == DivisionInt)
+                        where ProgramInt == 0 || a.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == ProgramInt))
                         select a
                       ).Count();
             }
@@ -81,9 +82,9 @@ namespace CmsData
                         where a.AttendanceFlag
                         where a.MeetingDate >= mindt
                         where attcred == 0 || a.Meeting.AttendCreditId == attcred
-                        where Organization == 0 || a.Meeting.OrganizationId == Organization
-                        where Division == 0 || a.Organization.DivOrgs.Any(dg => dg.DivId == Division)
-                        where Program == 0 || a.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
+                        where OrganizationInt == 0 || a.Meeting.OrganizationId == OrganizationInt
+                        where DivisionInt == 0 || a.Organization.DivOrgs.Any(dg => dg.DivId == DivisionInt)
+                        where ProgramInt == 0 || a.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == ProgramInt))
                         select a
                      ).Count();
 
@@ -171,27 +172,16 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal Expression RecentNewVisitCount()
+
+        internal Expression HasRecentNewAttend()
         {
+            var tf = CodeIds == "1";
             var days0 = Quarters.ToInt2();
-            var cnt = TextValue.ToInt();
-            var q = db.RecentNewVisitCount(Program, Division, Organization, OrgType ?? 0, days0, Days);
-            switch (op)
-            {
-                case CompareType.Greater:
-                    q = q.Where(cc => cc.Cnt > cnt); break;
-                case CompareType.GreaterEqual:
-                    q = q.Where(cc => cc.Cnt >= cnt); break;
-                case CompareType.Less:
-                    q = q.Where(cc => cc.Cnt < cnt); break;
-                case CompareType.LessEqual:
-                    q = q.Where(cc => cc.Cnt <= cnt); break;
-                case CompareType.Equal:
-                    q = q.Where(cc => cc.Cnt == cnt); break;
-                case CompareType.NotEqual:
-                    q = q.Where(cc => cc.Cnt != cnt); break;
-            }
-            Expression<Func<Person, bool>> pred = p => q.Select(c => c.PeopleId).Contains(p.PeopleId);
+            var tag = db.NewTemporaryTag();
+            db.TagRecentStartAttend(ProgramInt ?? 0, DivisionInt ?? 0, OrganizationInt, OrgTypeInt ?? 0, days0 ?? 365, Days, tag.Id);
+            Expression<Func<Person, bool>> pred = p => op == CompareType.Equal && tf
+                ? p.Tags.Any(t => t.Id == tag.Id)
+                : p.Tags.All(t => t.Id != tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
@@ -212,9 +202,9 @@ namespace CmsData
         {
             Expression<Func<Person, decimal>> pred = p => (
                 from om in p.OrganizationMembers
-                where Organization == 0 || om.OrganizationId == Organization
-                where Division == 0 || om.Organization.DivOrgs.Any(dg => dg.DivId == Division)
-                where Program == 0 || om.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
+                where OrganizationInt == 0 || om.OrganizationId == OrganizationInt
+                where DivisionInt == 0 || om.Organization.DivOrgs.Any(dg => dg.DivId == DivisionInt)
+                where ProgramInt == 0 || om.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == ProgramInt))
                 select om
                 ).Average(om => om.AttendPct).Value;
             Expression left = Expression.Invoke(pred, parm);
@@ -223,7 +213,7 @@ namespace CmsData
         }
         internal Expression RecentAttendType()
         {
-            var q = db.RecentAttendType(Program, Division, Organization, Days, string.Join(",", CodeIntIds));
+            var q = db.RecentAttendType(ProgramInt, DivisionInt, OrganizationInt, Days, string.Join(",", CodeIntIds));
             Expression<Func<Person, bool>> pred = p => q.Select(c => c.PeopleId).Contains(p.PeopleId);
             Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
@@ -236,14 +226,14 @@ namespace CmsData
             var dow = Quarters.ToInt2();
             Expression<Func<Person, bool>> pred = p => (
                 from m in p.OrganizationMembers
-                where m.Organization.OrganizationStatusId == Codes.OrgStatusCode.Active
+                where m.Organization.OrganizationStatusId == OrgStatusCode.Active
                 let sc = m.Organization.OrgSchedules.FirstOrDefault()
                 where sc != null
                 where !dow.HasValue || sc.SchedDay == dow
                 where CodeIntIds.Contains(m.MemberTypeId)
-                where Organization == 0 || m.OrganizationId == Organization
-                where Division == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == Division)
-                where Program == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
+                where OrganizationInt == 0 || m.OrganizationId == OrganizationInt
+                where DivisionInt == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == DivisionInt)
+                where ProgramInt == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == ProgramInt))
                 where !m.Organization.Meetings.Any(mm => mm.MeetingDate > mindt && (mm.HeadCount > 0 || mm.Attends.Any(aa => aa.AttendanceFlag)))
                 select m
                 ).Any();

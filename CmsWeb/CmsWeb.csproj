@@ -87,6 +87,15 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'work|AnyCPU'">
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AuthorizeNet">
       <HintPath>..\packages\AuthorizeNet.1.8.2\lib\AuthorizeNet.dll</HintPath>
@@ -97,6 +106,10 @@
     </Reference>
     <Reference Include="AutoMapper.Net4, Version=3.3.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.3.3.1\lib\net40\AutoMapper.Net4.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="CsvHelper, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <HintPath>..\packages\CsvHelper.2.10.0\lib\net40-client\CsvHelper.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Dapper, Version=1.34.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -319,6 +332,8 @@
     <Compile Include="Areas\Finance\Models\BatchImport\CapitalCityImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\DepositRecord.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\AbundantLifeImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\AnchorBibleQbImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\HunterStreetImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\EnonImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\HollyCreekImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\BankOfNorthGeorgiaImporter.cs">
@@ -522,6 +537,9 @@
     <Compile Include="Areas\Reports\Models\Attendance\CheckinControlModel.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\CheckinControlResult.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\WeeklyAttendanceModel.cs" />
+    <Compile Include="Areas\Search\Models\SavedQuery\CodeSql.cs" />
+    <Compile Include="Areas\Search\Models\SavedQuery\QueryCodeModel.cs" />
+    <Compile Include="Areas\Search\Models\Query\Model\UpdateQueryConditions.cs" />
     <Compile Include="Areas\Search\Models\RegistrationSearch\IncompleteRegistrations.cs" />
     <Compile Include="Areas\Reports\Models\Other\WeeklyDecisionsModel.cs" />
     <Compile Include="Areas\Reports\Models\Enrollment\EnrollmentControlModel.cs" />
@@ -937,7 +955,10 @@
     <Content Include="Content\touchpoint\js\form-ajax.js" />
     <Content Include="Content\touchpoint\js\main.js" />
     <Content Include="Content\touchpoint\js\people\merge.js" />
+    <Content Include="Content\touchpoint\js\search\export-query.js" />
     <Content Include="Content\touchpoint\js\volunteer\calendar.js" />
+    <Content Include="Content\touchpoint\lib\bootstrap-sweetalert\js\sweetalert.min.js" />
+    <Content Include="Content\touchpoint\lib\bootstrap-sweetalert\css\sweetalert.css" />
     <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\dialogs\specialLink.js" />
     <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\icons\specialLink.png" />
     <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\plugin.js" />
@@ -991,7 +1012,6 @@
     <Content Include="Content\touchpoint\lib\bootstrap-editable\js\bootstrap-editable.min.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-multiselect\css\bootstrap-multiselect.css" />
     <Content Include="Content\touchpoint\lib\bootstrap-multiselect\js\bootstrap-multiselect.js" />
-    <Content Include="Content\touchpoint\lib\bootstrap-sweetalert\js\sweet-alert.min.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-tabdrop\css\tabdrop.css" />
     <Content Include="Content\touchpoint\lib\bootstrap-tabdrop\js\bootstrap-tabdrop.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-tabdrop\js\extensions_bootstrap-tabdrop.js" />
@@ -1544,6 +1564,7 @@
     <Content Include="Areas\Manage\Views\Batch\BatchUpdate.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\UpdateRegOptions.cshtml" />
     <Content Include="Scripts\bundle.onlineregister.js" />
+    <Content Include="Content\VitalStats.py" />
     <Content Include="Views\Shared\EditorTemplates\DateAndTime.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\SqlReport.cshtml" />
     <Content Include="Areas\Org\Views\OrgSearch\Modals\Rollsheet.cshtml" />
@@ -1561,6 +1582,8 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\NotifyStaff.cshtml" />
     <Content Include="Areas\Org\Views\OrgSearch\RecentVisitsAbsents.xml" />
     <Content Include="Areas\Reports\Views\Reports\PyScript.cshtml" />
+    <Content Include="Areas\Search\Views\SavedQuery\Code.cshtml" />
+    <None Include="Areas\Finance\Views\FinanceReports\TotalsByAgeRange.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />
@@ -2816,9 +2839,6 @@
     <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\vendor-prefixes.less" />
     <Content Include="Content\touchpoint\src\less\bootstrap-datetimepicker\bootstrap-datetimepicker-build.less" />
     <Content Include="Content\touchpoint\src\less\bootstrap-datetimepicker\bootstrap-datetimepicker.less" />
-    <Content Include="Content\touchpoint\src\less\bootstrap-sweetalert\sweet-alert-animations.less" />
-    <Content Include="Content\touchpoint\src\less\bootstrap-sweetalert\sweet-alert-combine.less" />
-    <Content Include="Content\touchpoint\src\less\bootstrap-sweetalert\sweet-alert.less" />
     <Content Include="Content\touchpoint\src\less\print.less" />
     <Content Include="Content\touchpoint\src\less\account.less" />
     <Content Include="Content\touchpoint\src\less\error.less" />
@@ -2843,10 +2863,17 @@
     <Content Include="Views\Home\PyScriptForm.cshtml" />
     <Content Include="Views\Shared\Menu\User.cshtml" />
     <Content Include="Views\Shared\PageError.cshtml" />
+    <Content Include="Views\Home\Test.cshtml" />
+    <None Include="Web.Impersonate.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
     <None Include="Web.test2.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
     <None Include="Web.test3.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.work.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>

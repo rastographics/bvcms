@@ -528,6 +528,10 @@ namespace CmsData
         partial void UpdateQuery(Query instance);
         partial void DeleteQuery(Query instance);
         
+        partial void InsertQueryAnalysi(QueryAnalysi instance);
+        partial void UpdateQueryAnalysi(QueryAnalysi instance);
+        partial void DeleteQueryAnalysi(QueryAnalysi instance);
+        
         partial void InsertQueryStat(QueryStat instance);
         partial void UpdateQueryStat(QueryStat instance);
         partial void DeleteQueryStat(QueryStat instance);
@@ -1471,6 +1475,12 @@ namespace CmsData
 
         }
 
+        public Table< QueryAnalysi> QueryAnalyses
+        {
+            get { return GetTable< QueryAnalysi>(); }
+
+        }
+
         public Table< QueryStat> QueryStats
         {
             get { return GetTable< QueryStat>(); }
@@ -1813,6 +1823,12 @@ namespace CmsData
         public Table< View.FailedEmail> ViewFailedEmails
         {
             get { return GetTable< View.FailedEmail>(); }
+
+        }
+
+        public Table< View.FailedRecurringGiving> ViewFailedRecurringGivings
+        {
+            get { return GetTable< View.FailedRecurringGiving>(); }
 
         }
 
@@ -2722,6 +2738,27 @@ namespace CmsData
                 );
         }
 
+        [Function(Name="dbo.GetContributionsRange", IsComposable = true)]
+        public IQueryable< View.GetContributionsRange > GetContributionsRange(
+            [Parameter(DbType="datetime")] DateTime? fd,
+            [Parameter(DbType="datetime")] DateTime? td,
+            [Parameter(DbType="int")] int? campusid,
+            [Parameter(DbType="bit")] bool? nontaxded,
+            [Parameter(DbType="bit")] bool? includeUnclosed,
+            [Parameter(DbType="bit")] bool? pledge
+            )
+        {
+            return CreateMethodCallQuery< View.GetContributionsRange>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    fd,
+                    td,
+                    campusid,
+                    nontaxded,
+                    includeUnclosed,
+                    pledge
+                );
+        }
+
         [Function(Name="dbo.GetContributionTotalsBothIfJoint", IsComposable = true)]
         public IQueryable< View.GetContributionTotalsBothIfJoint > GetContributionTotalsBothIfJoint(
             [Parameter(DbType="datetime")] DateTime? startdt,
@@ -3044,6 +3081,27 @@ namespace CmsData
             return CreateMethodCallQuery< View.MostRecentItem>(this,
                 ((MethodInfo)(MethodBase.GetCurrentMethod())),
                     uid
+                );
+        }
+
+        [Function(Name="dbo.NotAttendedAsOf", IsComposable = true)]
+        public IQueryable< View.NotAttendedAsOf > NotAttendedAsOf(
+            [Parameter(DbType="int")] int? progid,
+            [Parameter(DbType="int")] int? divid,
+            [Parameter(DbType="int")] int? org,
+            [Parameter(DbType="datetime")] DateTime? dt1,
+            [Parameter(DbType="datetime")] DateTime? dt2,
+            [Parameter(DbType="bit")] bool? guestonly
+            )
+        {
+            return CreateMethodCallQuery< View.NotAttendedAsOf>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    progid,
+                    divid,
+                    org,
+                    dt1,
+                    dt2,
+                    guestonly
                 );
         }
 
@@ -3849,20 +3907,6 @@ namespace CmsData
 #endregion
 #region Scalar Functions
         
-        [Function(Name="dbo.GetCurrentOnlinePledgeBundle", IsComposable = true)]
-        [return: Parameter(DbType = "int")]
-        public int? GetCurrentOnlinePledgeBundle(
-            [Parameter(Name = "next", DbType="datetime")] DateTime? next,
-            [Parameter(Name = "prev", DbType="datetime")] DateTime? prev
-            )
-        {
-            return ((int?)(ExecuteMethodCall(this,
-                ((MethodInfo)(MethodBase.GetCurrentMethod())),
-                    next,
-                    prev
-                ).ReturnValue));
-        }
-
         [Function(Name="dbo.DonorTotalUnitsSize", IsComposable = true)]
         [return: Parameter(DbType = "money")]
         public decimal? DonorTotalUnitsSize(
@@ -5008,6 +5052,20 @@ namespace CmsData
                     m,
                     d,
                     y
+                ).ReturnValue));
+        }
+
+        [Function(Name="dbo.GetCurrentOnlinePledgeBundle", IsComposable = true)]
+        [return: Parameter(DbType = "int")]
+        public int? GetCurrentOnlinePledgeBundle(
+            [Parameter(Name = "next", DbType="datetime")] DateTime? next,
+            [Parameter(Name = "prev", DbType="datetime")] DateTime? prev
+            )
+        {
+            return ((int?)(ExecuteMethodCall(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    next,
+                    prev
                 ).ReturnValue));
         }
 

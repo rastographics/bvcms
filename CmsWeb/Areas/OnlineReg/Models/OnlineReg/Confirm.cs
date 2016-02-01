@@ -7,8 +7,6 @@ using System.Web;
 using System.Web.Security;
 using CmsData;
 using CmsData.Codes;
-using CmsData.Registration;
-using CmsWeb.Areas.OnlineReg.Controllers;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -35,14 +33,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 (from t in DbUtil.Db.Transactions
                  where t.Amt == amt
                  where t.OrgId == Orgid
-                 where t.TransactionDate > DateTime.Now.AddMinutes(-60)
+                 where t.TransactionDate > DateTime.Now.AddMinutes(-20)
                  where DbUtil.Db.Contributions.Any(cc => cc.PeopleId == List[0].PeopleId && cc.TranId == t.Id)
                  select t).FirstOrDefault();
 
             if (previousTransaction == null)
                 return null;
 
-            return "You have already submitted a gift in this amount a short while ago. Please let us know if you saw an error and what the message said.";
+            return @"
+Thank you for your gift! Our records indicate that you recently submitted a gift in this amount a short while ago.
+As a safeguard against duplicate transactions we recommend that you either wait 20 minutes,
+or modify the amount of this gift by a small amount so that it does not appear as a duplicate. 
+Thank you.
+";
         }
 
         public RouteModel FinishRegistration(Transaction ti)

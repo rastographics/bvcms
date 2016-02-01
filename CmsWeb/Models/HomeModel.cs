@@ -333,7 +333,7 @@ namespace CmsWeb.Models
             {
                 new SearchInfo22() { url = "/PeopleSearch", line1 = "Find Person"  },
                 new SearchInfo22() { url = "/OrgSearch", line1 = "Organization Search" },
-                new SearchInfo22() { url = "/Query/NewQuery", line1 = "New Search", addmargin = true },
+                new SearchInfo22() { url = "/NewQuery", line1 = "New Search", addmargin = true },
                 new SearchInfo22() { url = "/Query", line1 = "Last Search" },
                 new SearchInfo22() { url = "/SavedQueryList", line1 = "Saved Searches" },
             });
@@ -473,7 +473,7 @@ namespace CmsWeb.Models
             {
                 new SearchInfo22() { url = "/PeopleSearch", line1 = "Find Person"  },
                 new SearchInfo22() { url = "/OrgSearch", line1 = "Organization Search" },
-                new SearchInfo22() { url = "/Query/NewQuery", line1 = "New Search", addmargin = true },
+                new SearchInfo22() { url = "/NewQuery", line1 = "New Search", addmargin = true },
                 new SearchInfo22() { url = "/Query", line1 = "Last Search" },
                 new SearchInfo22() { url = "/SavedQueryList", line1 = "Saved Searches" },
             });
@@ -506,19 +506,26 @@ namespace CmsWeb.Models
             if (req == null)
                 return new List<NewsInfo>();
 
-            var resp = req.GetHttpResponse();
-            if (resp == null)
-                return new List<NewsInfo>();
-            if (resp.StatusCode != HttpStatusCode.NotModified)
+            try
             {
-                feed.LastModified = resp.LastModified;
-                var rs = resp.GetResponseStream();
-                if (rs == null)
+                var resp = req.GetHttpResponse();
+                if (resp == null)
                     return new List<NewsInfo>();
-                var sr = new StreamReader(rs);
-                feed.Data = sr.ReadToEnd();
-                sr.Close();
-                DbUtil.Db.SubmitChanges();
+                if (resp.StatusCode != HttpStatusCode.NotModified)
+                {
+                    feed.LastModified = resp.LastModified;
+                    var rs = resp.GetResponseStream();
+                    if (rs == null)
+                        return new List<NewsInfo>();
+                    var sr = new StreamReader(rs);
+                    feed.Data = sr.ReadToEnd();
+                    sr.Close();
+                    DbUtil.Db.SubmitChanges();
+                }
+            }
+            catch 
+            {
+                return new List<NewsInfo>();
             }
             if (feed.Data == null)
                 return new List<NewsInfo>();
@@ -531,12 +538,12 @@ namespace CmsWeb.Models
                     return new List<NewsInfo>();
 
                 var posts = from item in f.Items
-                    select new NewsInfo
-                    {
-                        Title = item.Title.Text,
-                        Published = item.PublishDate.DateTime,
-                        Url = item.Links.Single(i => i.RelationshipType == "alternate")?.GetAbsoluteUri()?.AbsoluteUri
-                    };
+                            select new NewsInfo
+                            {
+                                Title = item.Title.Text,
+                                Published = item.PublishDate.DateTime,
+                                Url = item.Links.Single(i => i.RelationshipType == "alternate")?.GetAbsoluteUri()?.AbsoluteUri
+                            };
                 return posts;
             }
             catch

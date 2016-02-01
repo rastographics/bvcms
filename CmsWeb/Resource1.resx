@@ -226,7 +226,7 @@ so that you will receive future important notices regarding this registration.&l
   <data name="NoEmailMessage" xml:space="preserve">
     <value>Hi {name},
 &lt;p&gt;You registered for {org}, and we found your record, 
-but there was no email address on your existing record in our database.
+but there was no email address on your Existing record in our database.
 If you would like for us to update your record with this email address or another,
 Please contact the church at &lt;strong&gt;{phone}&lt;/strong&gt; to let us know.
 It is important that we have your email address so that
@@ -330,5 +330,14 @@ Your Ministry Team for {org}
   </data>
   <data name="RecentVisitsAbsents" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>areas\org\views\orgsearch\recentvisitsabsents.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="VolSubModel_VolunteerSubConfirm" xml:space="preserve">
+    <value>
+&lt;p&gt;{substitute},&lt;/p&gt;
+&lt;p&gt;Thank you so much.&lt;/p&gt;
+&lt;p&gt;You are now assigned to cover for {requestor}&lt;br /&gt;
+in the {org}&lt;br /&gt;
+on {meetingdate} at {meetingtime}.
+See you there!&lt;/p&gt;</value>
   </data>
 </root>

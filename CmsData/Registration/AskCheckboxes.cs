@@ -145,7 +145,7 @@ For each checkbox, you can specify the following:
                     .Add("SmallGroup", SmallGroup)
                     .End();
             }
-            public void AddToSmallGroup(CMSDataContext Db, OrganizationMember om, PythonEvents pe)
+            public void AddToSmallGroup(CMSDataContext Db, OrganizationMember om, PythonModel pe)
             {
                 if (om == null)
                     return;

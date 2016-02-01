@@ -73,6 +73,19 @@ namespace CmsWeb.Code
                     };
             return q.ToList();
         }
+        public List<CodeValueItem> Activities()
+        {
+            var q = from a in DbUtil.Db.CheckInActivities
+                    group a.Activity by a.Activity
+                    into g
+                    select new CodeValueItem
+                    {
+                        Code = g.Key,
+                        Value = g.Key
+                    };
+            var list = q.ToList();
+            return list;
+        }
 
         public static IEnumerable<CodeValueItem> AttendCommitmentCodes()
         {
@@ -654,11 +667,8 @@ namespace CmsWeb.Code
 
         public List<CodeValueItem> UserTags(int? UserPeopleId)
         {
-            var ownerstring = "";
             if (UserPeopleId == Util.UserPeopleId)
                 DbUtil.Db.TagCurrent(); // make sure the current tag exists
-            else
-                ownerstring = UserPeopleId + "!";
 
             var q1 = from t in DbUtil.Db.Tags
                      where t.PeopleId == UserPeopleId
@@ -667,7 +677,7 @@ namespace CmsWeb.Code
                      select new CodeValueItem
                      {
                          Id = t.Id,
-                         Code = t.Id + "," + ownerstring + t.Name,
+                         Code = $"{t.Id},{t.PeopleId}!{t.Name}",
                          Value = t.Name
                      };
             var q2 = from t in DbUtil.Db.Tags
@@ -679,7 +689,7 @@ namespace CmsWeb.Code
                      select new CodeValueItem
                      {
                          Id = t.Id,
-                         Code = t.Id + "," + t.PeopleId + "!" + t.Name,
+                         Code = $"{t.Id},{t.PeopleId}!{t.Name}",
                          Value = op.Name + "!" + t.Name
                      };
             var list = q1.ToList();
@@ -735,8 +745,8 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> QueryBuilderFields(string category)
         {
             var n = 1;
-            return from f in FieldClass2.Fields.Values
-                   where f.CategoryTitle == category
+            return from f in FieldClass.Fields.Values
+                   where f.Category == category
                    select new CodeValueItem
                    {
                        Id = n++,
@@ -747,7 +757,7 @@ namespace CmsWeb.Code
 
         public List<string> QueryBuilderCategories()
         {
-            return (from f in CategoryClass2.Categories
+            return (from f in CategoryClass.Categories
                     select f.Title).ToList();
         }
 

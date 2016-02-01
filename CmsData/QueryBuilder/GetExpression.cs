@@ -4,12 +4,10 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Web;
-using System.Web.Caching;
 using UtilityExtensions;
 
 namespace CmsData
@@ -24,7 +22,7 @@ namespace CmsData
 
         internal Expression GetExpression(ParameterExpression parm, CMSDataContext Db)
         {
-            var expressionDictionary = new Dictionary<QueryType, Func<Expression>>()
+            var expressionDictionary = new Dictionary<QueryType, Func<Expression>>
             {
                 { QueryType.AttendCntHistory, AttendCntHistory },
                 { QueryType.AttendedAsOf, MemberAttendedAsOf },
@@ -42,6 +40,7 @@ namespace CmsData
                 { QueryType.CommitmentForMeetingId, CommitmentForMeetingId },
                 { QueryType.ContactRecipient, ContactRecipient },
                 { QueryType.ContactMaker, ContactMaker },
+                { QueryType.ContributionAmountBothJointHistory, ContributionAmountBothJointHistory },
                 { QueryType.ContributionAmount2, ContributionAmount },
                 { QueryType.ContributionChange, ContributionChange },
                 { QueryType.CreatedBy, CreatedBy },
@@ -59,6 +58,7 @@ namespace CmsData
                 { QueryType.FamilyHasChildrenAged, FamilyHasChildrenAged },
                 { QueryType.FamilyHasChildrenAged2, FamilyHasChildrenAged2 },
                 { QueryType.FamilyHasChildrenAged3, FamilyHasChildrenAged3 },
+                { QueryType.FamilyHasContacts, FamilyHasContacts },
                 { QueryType.FirstOrgJoinDate, FirstOrgJoinDate },
                 { QueryType.FirstFamilyVisitAsOf, FirstFamilyVisitAsOf },
                 { QueryType.GivingChange, GivingChange },
@@ -84,6 +84,7 @@ namespace CmsData
                 { QueryType.HasPeopleExtraField, HasPeopleExtraField },
                 { QueryType.HasFamilyExtraField, HasFamilyExtraField },
                 { QueryType.HasPicture, HasPicture },
+                { QueryType.HasRecentNewAttend, HasRecentNewAttend },
                 { QueryType.HasRelatedFamily, HasRelatedFamily },
                 { QueryType.HasSpamBlock, HasSpamBlock },
                 { QueryType.HasTaskWithName, HasTaskWithName },
@@ -127,6 +128,7 @@ namespace CmsData
                 { QueryType.OrgJoinDateCompare, OrgJoinDateCompare },
                 { QueryType.OrgJoinDateDaysAgo, OrgJoinDateDaysAgo },
                 { QueryType.OrgMemberJoinedAsOf, OrgMemberJoinedAsOf },
+                { QueryType.OrgMemberCreatedDate, OrgMemberCreatedDate },
                 { QueryType.OrgSearchMember, OrgSearchMember },
                 { QueryType.PeopleExtra, PeopleExtra },
                 { QueryType.PeopleExtraData, PeopleExtraData },
@@ -164,9 +166,9 @@ namespace CmsData
                 { QueryType.RecentFirstTimeGiver, RecentFirstTimeGiver },
                 { QueryType.RecentFlagAdded, RecentFlagAdded },
                 { QueryType.RecentHasIndContributions, RecentHasIndContributions },
+                { QueryType.RecentHasFailedRecurringGiving, RecentHasFailedRecurringGiving },
                 { QueryType.RecentIncompleteRegistrations, RecentIncompleteRegistrations },
                 { QueryType.RecentJoinChurch, RecentJoinChurch },
-                { QueryType.RecentNewVisitCount, RecentNewVisitCount },
                 { QueryType.RecentNonTaxDedAmount, RecentNonTaxDedAmount },
                 { QueryType.RecentNonTaxDedCount, RecentNonTaxDedCount },
                 { QueryType.RecentPeopleExtraFieldChanged, RecentPeopleExtraFieldChanged },
@@ -193,15 +195,15 @@ namespace CmsData
                 { QueryType.WasMemberAsOf, WasMemberAsOf },
                 { QueryType.WasRecentMemberOf, WasRecentMemberOf },
                 { QueryType.WeddingDate, WeddingDate },
-                { QueryType.WidowedDate, WidowedDate },
+                { QueryType.WidowedDate, WidowedDate }
             };
             this.parm = parm;
-            this.db = Db;
+            db = Db;
             Func<Expression> f = null;
             if (expressionDictionary.TryGetValue(FieldInfo.QueryType, out f))
                 return f();
 
-            var IsMultiple = op == CompareType.OneOf || op == CompareType.NotOneOf;
+            var isMultiple = op == CompareType.OneOf || op == CompareType.NotOneOf;
             switch (FieldInfo.QueryType)
             {
                 case QueryType.MemberStatusId:
@@ -209,36 +211,15 @@ namespace CmsData
                 case QueryType.GenderId:
                 case QueryType.DropCodeId:
                 case QueryType.JoinCodeId:
-                    if (op == CompareType.IsNull || op == CompareType.IsNotNull)
-                        return CompareConstant(ConditionName, -1);
-                    return CompareConstant(ConditionName, IsMultiple ? (object)CodeIntIds : (object)CodeIds.ToInt());
-//                case QueryType.PrimaryAddress:
-//                case QueryType.PrimaryAddress2:
-//                case QueryType.PrimaryZip:
-//                case QueryType.PrimaryCountry:
-//                case QueryType.PrimaryCity:
-//                case QueryType.FirstName:
-//                case QueryType.MiddleName:
-//                case QueryType.MaidenName:
-//                case QueryType.NickName:
-//                case QueryType.CellPhone:
-//                case QueryType.WorkPhone:
-//                case QueryType.HomePhone:
-//                case QueryType.EmailAddress:
-//                case QueryType.EmailAddress2:
-//                    if (op == CompareType.IsNull || op == CompareType.IsNotNull)
-//                        return CompareConstant(ConditionName, null);
-//                    return CompareStringConstant(ConditionName, TextValue ?? "");
+                    return CompareConstant(ConditionName, isMultiple ? CodeIntIds : (object)CodeIds.ToInt());
                 default:
-                    if (op == CompareType.IsNull || op == CompareType.IsNotNull)
-                        return CompareConstant(ConditionName, null);
                     switch (FieldType)
                     {
                         case FieldType.NullBit:
                         case FieldType.Bit: return CompareConstant(ConditionName, CodeIds == "1");
-                        case FieldType.Code: return CompareConstant(ConditionName, IsMultiple ? (object)CodeIntIds : (object)CodeIds.ToInt());
-                        case FieldType.NullCode: return CompareCodeConstant(ConditionName, IsMultiple ? (object)CodeIntIds : (object)CodeIds.ToInt());
-                        case FieldType.CodeStr: return CompareConstant(ConditionName, IsMultiple ? (object)CodeStrIds : (object)CodeIdValue);
+                        case FieldType.Code: return CompareConstant(ConditionName, isMultiple ? CodeIntIds : (object)CodeIds.ToInt());
+                        case FieldType.NullCode: return CompareCodeConstant(ConditionName, isMultiple ? CodeIntIds : (object)CodeIds.ToInt());
+                        case FieldType.CodeStr: return CompareConstant(ConditionName, isMultiple ? CodeStrIds : (object)CodeIdValue);
                         case FieldType.String: return CompareStringConstant(ConditionName, TextValue ?? "");
                         case FieldType.Number:
                         case FieldType.NullNumber: return CompareConstant(ConditionName, decimal.Parse(TextValue));

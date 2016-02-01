@@ -93,6 +93,8 @@ namespace UtilityExtensions
 
         public static string[] SplitStr(this string s, string delimiter, int nitems)
         {
+            if (s == null)
+                return "".Split(delimiter.ToCharArray());
             return s.Split(delimiter.ToCharArray(), nitems);
         }
 
@@ -119,12 +121,14 @@ namespace UtilityExtensions
             return source;
         }
 
+        // ReSharper disable once InconsistentNaming
         public static string trim(this string source)
         {
             source = source?.Trim();
             return source;
         }
 
+        // ReSharper disable once InconsistentNaming
         public static string URLCombine(string baseUrl, string relativeUrl)
         {
             if (baseUrl.Length == 0)
@@ -287,6 +291,12 @@ namespace UtilityExtensions
             if (!s.HasValue())
                 return;
             sb.Append(" " + s);
+        }
+
+        public static string GetCsvToken(this string s, int n = 1, int ntokens=1000, string sep = ",")
+        {
+            var a = s.SplitStr(sep, ntokens);
+            return a.Length >= n ? a[n-1] : "";
         }
     }
 }

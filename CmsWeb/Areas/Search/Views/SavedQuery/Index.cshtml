@@ -4,63 +4,74 @@
     ViewBag.PageHeader = "Saved Search Queries";
     Layout = ViewExtensions2.TouchPointLayout();
 }
+@section head {
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.7/css/bootstrap-dialog.min.css" rel="stylesheet">
+}
 <div class="row">
-    <div class="col-lg-9">
-        <div class="box box-responsive">
-            <div class="box-content">
-                <form id="form-saved-query" class="ajax" data-results="#results" action="/SavedQuery/Results">
-                    <div class="well">
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6 col-sm-6">
-                                <div class="form-group">
-                                    <label for="SearchQuery" class="control-label">Description / Owner</label>
-                                    @Html.TextBoxFor(m => m.SearchQuery, new { @class = "form-control" })
-                                </div>
-                            </div>
-                            <div class="col-lg-3 col-md-3 col-sm-3">
-                                <div class="form-group">
-                                    <div class="checkbox">
-                                        <label class="control-label">
-                                            @Html.CheckBoxFor(m => m.OnlyMine) Only my queries?
-                                        </label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label class="control-label">
-                                            @Html.CheckBoxFor(m => m.PublicOnly) Public only?
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-3 col-md-3 col-sm-3">
-                                <div class="form-group">
-                                    <div class="checkbox">
-                                        <label class="control-label">
-                                            @Html.CheckBoxFor(m => m.ScratchPadsOnly) Scratch pads only?
-                                        </label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label class="control-label">
-                                            @Html.CheckBoxFor(m => m.StatusFlagsOnly) Status flags only?
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-2 col-lg-offset-10 col-md-3 col-md-offset-9 col-sm-3 col-sm-offset-9">
-                                <div class="pull-right">
-                                    <a id="filter-link" href="/SavedQuery/Results" class="btn btn-primary ajax">Filter</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    @Html.Partial("Results", Model)
-                </form>
+  <div class="col-lg-9">
+    <div class="box box-responsive">
+      <div class="box-content">
+        <form id="form-saved-query" class="ajax" data-results="#results" action="/SavedQuery/Results">
+          <div class="well">
+            <div class="row">
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group">
+                  <label for="SearchQuery" class="control-label">Description / Owner</label>
+                  @Html.TextBoxFor(m => m.SearchQuery, new { @class = "form-control" })
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="form-group">
+                  <div class="checkbox">
+                    <label class="control-label">
+                      @Html.CheckBoxFor(m => m.OnlyMine) Only my queries?
+                    </label>
+                  </div>
+                  <div class="checkbox">
+                    <label class="control-label">
+                      @Html.CheckBoxFor(m => m.PublicOnly) Public only?
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="form-group">
+                  <div class="checkbox">
+                    <label class="control-label">
+                      @Html.CheckBoxFor(m => m.ScratchPadsOnly) Scratch pads only?
+                    </label>
+                  </div>
+                  <div class="checkbox">
+                    <label class="control-label">
+                      @Html.CheckBoxFor(m => m.StatusFlagsOnly) Status flags only?
+                    </label>
+                  </div>
+                </div>
+              </div>
             </div>
-        </div>
+            <div class="row">
+              <div class="col-lg-4 col-lg-offset-8 col-md-4 col-md-offset-8 col-sm-3 col-sm-offset-9">
+                <div class="pull-right">
+                  <span>
+                    @if (User.IsInRole("developer")) // waiting for documentation to open up this feature
+                    {
+                      <a id="code-link" href="/SavedQuery/Code" class="btn btn-default" target="code">Code List</a>@:&nbsp;
+                    }
+                    <a id="filter-link" href="/SavedQuery/Results" class="btn btn-primary ajax">Filter</a>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          @Html.Partial("Results", Model)
+        </form>
+      </div>
     </div>
+  </div>
 </div>
 @section scripts
 {
-    @Fingerprint.Script("/Content/touchpoint/js/search/saved-query-list.js")
+  @Fingerprint.Script("/Content/touchpoint/js/search/saved-query-list.js")
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.7/js/bootstrap-dialog.min.js"></script>
+  @Fingerprint.Script("/Content/touchpoint/js/search/export-query.js")
 }

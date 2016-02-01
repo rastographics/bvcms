@@ -1,4 +1,4 @@
-/*!
+﻿/*!
  * jQuery Validation Plugin v1.13.1
  *
  * http://jqueryvalidation.org/
@@ -754,7 +754,7 @@ $.extend( $.validator, {
 			if ( error.length ) {
 				// refresh error/success class
 				error.removeClass( this.settings.validClass ).addClass( this.settings.errorClass );
-				// replace message on existing label
+				// replace message on Existing label
 				error.html( message );
 			} else {
 				// create error element
@@ -787,7 +787,7 @@ $.extend( $.validator, {
 					// to explicitly apply aria-describedby
 
 					errorID = error.attr( "id" ).replace( /(:|\.|\[|\])/g, "\\$1");
-					// Respect existing non-error aria-describedby
+					// Respect Existing non-error aria-describedby
 					if ( !describedBy ) {
 						describedBy = errorID;
 					} else if ( !describedBy.match( new RegExp( "\\b" + errorID + "\\b" ) ) ) {

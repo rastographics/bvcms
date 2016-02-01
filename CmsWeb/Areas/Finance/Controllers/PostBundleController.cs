@@ -14,7 +14,7 @@ namespace CmsWeb.Areas.Finance.Controllers
 {
     [Authorize(Roles = "Finance")]
     [ValidateInput(false)]
-    [RouteArea("Finance", AreaPrefix= "PostBundle"), Route("{action}/{id?}")]
+    [RouteArea("Finance", AreaPrefix = "PostBundle"), Route("{action}/{id?}")]
     public class PostBundleController : CmsStaffController
     {
         [Route("~/PostBundle/{id:int}")]
@@ -174,18 +174,24 @@ namespace CmsWeb.Areas.Finance.Controllers
             var iid = id.Substring(1).ToInt();
             var c = DbUtil.Db.Contributions.SingleOrDefault(co => co.ContributionId == iid);
             if (c != null)
+            {
+                var m = new PostBundleModel();
                 switch (id.Substring(0, 1))
                 {
                     case "a":
                         c.ContributionAmount = value.ToDecimal();
                         DbUtil.Db.SubmitChanges();
-                        var m = new PostBundleModel();
                         return Json(m.ContributionRowData(this, iid));
                     case "f":
                         c.FundId = value.ToInt();
                         DbUtil.Db.SubmitChanges();
                         return Content($"{c.ContributionFund.FundId} - {c.ContributionFund.FundName}");
+                    case "k":
+                        c.CheckNo = value;
+                        DbUtil.Db.SubmitChanges();
+                        return Json(m.ContributionRowData(this, iid));
                 }
+            }
             return new EmptyResult();
         }
 

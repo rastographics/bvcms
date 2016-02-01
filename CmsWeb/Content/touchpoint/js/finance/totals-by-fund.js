@@ -31,6 +31,13 @@
 		    $("#results").html(ret);
 		    initializePopovers();
 		});
+    });
+
+	$("#ledgerincome").click(function (ev) {
+		ev.preventDefault();
+		var f = $(this).closest('form');
+		f.attr("action", "/Export2/Contributions/ledgerincome");
+	    f.submit();
 	});
 
 	$("#exportdonordetails").click(function (ev) {

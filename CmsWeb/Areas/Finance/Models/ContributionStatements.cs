@@ -72,8 +72,8 @@ namespace CmsWeb.Areas.Finance.Models.Report
             doc.Open();
             dc = w.DirectContent;
 
-            int prevfid = 0;
-            var runningtotals = Db.ContributionsRuns.OrderByDescending(mm => mm.Id).FirstOrDefault();
+            var prevfid = 0;
+            var runningtotals = Db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
             runningtotals.Processed = 0;
             Db.SubmitChanges();
             var count = 0;
@@ -163,7 +163,11 @@ p { font-size: 11px; }
                 var t2 = new PdfPTable(1);
                 t2.TotalWidth = 72f * 3f;
                 t2.DefaultCell.Border = Rectangle.NO_BORDER;
-                t2.AddCell(new Phrase($"\nPrint Date: {DateTime.Now:d}   (id:{ci.PeopleId} {ci.CampusId})", font));
+
+                t2.AddCell(Db.Setting("NoPrintDateOnStatement", "false") == "true" 
+                    ? new Phrase($"\nID:{ci.PeopleId} {ci.CampusId}", font) 
+                    : new Phrase($"\nPrint Date: {DateTime.Now:d}   (id:{ci.PeopleId} {ci.CampusId})", font));
+
                 t2.AddCell("");
                 var mh2 = new MyHandler();
                 using (var sr = new StringReader(css + html2))

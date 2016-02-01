@@ -24,7 +24,7 @@
     $('#conditions').on("click", 'a.edit-condition', function () {
         liedit = $(this).closest("li.condition");
         var spanText = $(this).find('span').text();
-        if (spanText == 'Select Condition') {
+        if (spanText === "Select Condition") {
             $EditCondition({ isnew: true });
         } else {
             $EditCondition();
@@ -173,6 +173,10 @@
         return false;
     });
 
+    $('#AutoRun').change(function () {
+        $.post("/Query/SetAutoRun", { setting: $(this).prop("checked") });
+    });
+
     $('body').on('click', '#conditions a.addnewclause', function () {
         liedit = $(this).closest("li.condition");
         var qid = liedit.data("qid");
@@ -314,14 +318,16 @@
     };
 
     $('body').on('change', '#Program', function (ev) {
-        $.postQuery('Divisions/' + $(this).val(), function (ret) {
+        var progid = $(this).val().split(",")[0];
+        $.postQuery('Divisions/' + progid, function (ret) {
             $.replaceSelect('#Division', ret);
             $.replaceSelect('#Organization', "<select id='Organization' name='Organization' style='display:none'><option value='0'>(not specified)</option></select>");
         });
     });
 
     $('body').on('change', '#Division', function () {
-        $.postQuery('Organizations/' + $(this).val(), function (ret) {
+        var divid = $(this).val().split(",")[0];
+        $.postQuery('Organizations/' + divid, function (ret) {
             $.replaceSelect("#Organization", ret);
         });
     });
@@ -414,10 +420,9 @@
         return false;
     });
 
-    if ($("#NewSearchId").val()) {
-        liedit = $("li[data-qid='" + $("#NewSearchId").val() + "']");
+    liedit = $("li.newcondition");
+    if(liedit.length > 0)
         $EditCondition({ isnew: true });
-    }
     else if ($("#AutoRun").prop("checked"))
         RefreshList();
 
