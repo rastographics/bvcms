@@ -247,17 +247,32 @@
     });
 
     function AddSelected(ret) {
-        var peopleWithoutEmail = [];
+        var peopleWithoutEmail = [], duplicates = [];
+        var recipients = {};
+        $("#Recipients option").each(function (i, option) {
+            var m = option.value.match(/\(([0-9]+)\)/);
+            if (m) {
+                recipients[parseInt(m[1])] = 1;
+            }
+        });
+
         // ret will be an array
         for (var i = 0; i < ret.length; i++) {
-            // Check for duplicates among additional recipients
-            if ($("#additional-recipient-li-" + ret[i].pid).length) {
-                continue;
-            }
+            // Check for people without emails
             if (ret[i].email === null || ret[i].email.length === 0) {
                 peopleWithoutEmail.push(ret[i].name);
                 continue;
             }
+            // Check for duplicates among additional recipients
+            if ($("#additional-recipient-li-" + ret[i].pid).length) {
+                continue;
+            }
+            // Check for duplicates among original recipients
+            if (recipients[ret[i].pid]) {
+                duplicates.push(ret[i].name);
+                continue;
+            }
+
             $("#additional-recipients").append(
                 '<li id="additional-recipient-li-' + ret[i].pid + '">' +
                 ret[i].name +
@@ -267,21 +282,33 @@
             );
         }
 
+        $('#additional-recipients-alerts').empty();
         if (peopleWithoutEmail.length > 0) {
-            var noun = 'person', haveVerb = 'has', toBeVerb = 'was';
             if (peopleWithoutEmail.length > 1) {
-                noun = 'people';
-                haveVerb = 'have';
-                toBeVerb = 'were';
+                $('#additional-recipients-alerts').append('<p>The following people have no email address and were not added to this email:</p>');
+            } else {
+                $('#additional-recipients-alerts').append('<p>The following person has no email address and was not added to this email:</p>');
             }
-            $('#additional-recipients-alerts').empty().append(
-                '<p>The following ' + noun + ' ' + haveVerb + ' no email address' +
-                ((peopleWithoutEmail.length > 1) ? 'es' : '') +
-                ' and ' + toBeVerb + ' not added to this email: ' +
-                peopleWithoutEmail.join(', ') + '</p>'
-            ).show();
+            var ul = $('<ul></ul>');
+            $.each(peopleWithoutEmail, function (i, name) {
+                ul.append('<li>' + name + '</li>');
+            });
+            $('#additional-recipients-alerts').append(ul);
+        }
+
+        if (duplicates.length > 0) {
+            $('#additional-recipients-alerts').append('<p>The following ' + ((duplicates.length > 1) ? 'selected people were' : 'person was') + ' already going to receive the email:</p>');
+            var ul = $('<ul></ul>');
+            $.each(duplicates, function (i, name) {
+                ul.append('<li>' + name + '</li>');
+            });
+            $('#additional-recipients-alerts').append(ul);
+        }
+
+        if ($('#additional-recipients-alerts').is(':empty')) {
+            $('#additional-recipients-alerts').hide();
         } else {
-            $('#additional-recipients-alerts').empty().hide();
+            $('#additional-recipients-alerts').show();
         }
 
         UpdatePersonCount();
