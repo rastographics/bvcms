@@ -5,5 +5,6 @@
 		public string name = "";
 		public string comm = "";
 		public string addr = "";
+		public bool guest;
 	}
 }
