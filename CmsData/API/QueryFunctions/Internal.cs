@@ -29,7 +29,7 @@ namespace CmsData
 
         private SqlConnection GetReadonlyConnection()
         {
-            var cs = db.CurrentUser.InRole("Finance")
+            var cs = db.CurrentUser == null || db.CurrentUser.InRole("Finance")
                 ? Util.ConnectionStringReadOnlyFinance
                 : Util.ConnectionStringReadOnly;
             var cn = new SqlConnection(cs);
