@@ -317,9 +317,9 @@
         $('#additional-recipients-alerts').empty();
         if (peopleWithoutEmail.length > 0) {
             if (peopleWithoutEmail.length > 1) {
-                $('#additional-recipients-alerts').append('<p>The following people have no email address and were not added to this email:</p>');
+                $('#additional-recipients-alerts').append('<p>The following people have no active email addresses and were not added to this email:</p>');
             } else {
-                $('#additional-recipients-alerts').append('<p>The following person has no email address and was not added to this email:</p>');
+                $('#additional-recipients-alerts').append('<p>The following person has no active email address and was not added to this email:</p>');
             }
             var ul = $('<ul></ul>');
             $.each(peopleWithoutEmail, function (i, name) {

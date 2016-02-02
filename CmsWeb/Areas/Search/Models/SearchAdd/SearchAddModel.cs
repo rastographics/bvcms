@@ -257,8 +257,16 @@ namespace CmsWeb.Areas.Search.Models
                         var people = new List<ReturnResult>();
                         foreach (var p in PendingList)
                         {
-                            var email = p.Person.EmailAddress;
-                            if (email == null || email == "")
+                            String email = null;
+                            if (p.Person.EmailAddress != null && p.Person.EmailAddress != "" && 
+                                (p.Person.SendEmailAddress1 == null || p.Person.SendEmailAddress1 == true)
+                               )
+                            {
+                                email = p.Person.EmailAddress;
+                            }
+                            if (email == null && p.Person.EmailAddress2 != null && p.Person.EmailAddress2 != "" &&
+                                (p.Person.SendEmailAddress2 == null || p.Person.SendEmailAddress2 == true)
+                                )
                             {
                                 email = p.Person.EmailAddress2;
                             }
