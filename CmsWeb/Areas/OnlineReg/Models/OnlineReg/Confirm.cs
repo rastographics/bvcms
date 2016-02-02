@@ -212,12 +212,9 @@ Thank you.
 
             var body = sb.ToString();
             var from = Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(p.org.OrganizationId));
-            var mm = new EmailReplacements(DbUtil.Db, body, @from);
-            body = mm.DoReplacements(DbUtil.Db, p.person);
 
-            Util.SendMsg(Util.SysFromEmail, Util.Host, @from, p.setting.Subject, body,
-                Util.EmailAddressListFromString(contributionemail), 0, p.PeopleId);
-            DbUtil.Db.Email(contributionemail, DbUtil.Db.StaffPeopleForOrg(p.org.OrganizationId),
+            DbUtil.Db.EmailFinanceInformation(from, p.person, p.setting.Subject, body);
+            DbUtil.Db.EmailFinanceInformation(contributionemail, DbUtil.Db.StaffPeopleForOrg(p.org.OrganizationId),
                 "online giving contribution received",
                 $"see contribution records for {p.person.Name} ({p.PeopleId})");
             if (p.CreatingAccount)

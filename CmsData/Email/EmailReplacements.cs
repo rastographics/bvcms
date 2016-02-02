@@ -114,6 +114,21 @@ namespace CmsData
                     : null;
 
                 var aa = db.GetAddressList(p);
+
+                if (emailqueueto.EmailQueue.FinanceOnly == true)
+                {
+                    var contributionemail = (from ex in db.PeopleExtras
+                                             where ex.PeopleId == p.PeopleId
+                                             where ex.Field == "ContributionEmail"
+                                             select ex.Data).SingleOrDefault();
+                    if (contributionemail.HasValue())
+                        contributionemail = contributionemail.trim();
+                    if (!Util.ValidEmail(contributionemail))
+                        contributionemail = p.FromEmail;
+                    aa.Clear();
+                    aa.Add(Util.TryGetMailAddress(contributionemail));
+                }
+
                 if (emailqueueto.EmailQueue.CCParents ?? false)
                     aa.AddRange(db.GetCcList(p, emailqueueto));
 
