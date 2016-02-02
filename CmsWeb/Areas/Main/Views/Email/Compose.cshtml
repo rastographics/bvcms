@@ -353,9 +353,8 @@
 
     function UpdatePersonCount() {
         if ($("#person-count").length > 0) {
-            var trimmedText = $('#person-count').text().trim();
             var newCount = $('#Recipients option').length + $('#additional-recipients li').length;
-            $('#person-count').text(trimmedText.replace(/^-?\d+/, newCount));
+            $('#person-count').text(newCount + (newCount > 1 ? ' people' : ' person') + '@(Model.wantParents ? " including parents." : ".")');
         }
     }
   </script>
