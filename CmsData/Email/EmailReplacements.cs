@@ -129,7 +129,7 @@ namespace CmsData
                 var noreplacements = emailqueueto.EmailQueue.NoReplacements ?? false;
                 var texta = new List<string>(stringlist);
                 for (var i = 1; i < texta.Count; i += 2)
-                    if (noreplacements)
+                    if (noreplacements && !texta[i].StartsWith("<style"))
                         texta[i] = "";
                     else
                         texta[i] = DoReplaceCode(texta[i], p, pi, emailqueueto);
