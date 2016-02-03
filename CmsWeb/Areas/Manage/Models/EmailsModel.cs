@@ -71,15 +71,24 @@ namespace CmsWeb.Models
             return q2;
         }
 
-        private IQueryable<EmailQueue> _emails;
+        private IQueryable<EmailQueue> FilterOutFinanceOnly(IQueryable<EmailQueue> q)
+        {
+            var user = HttpContext.Current.User;
+            if (!user.IsInRole("Finance") && !user.IsInRole("FinanceAdmin"))
+                q = from e in q
+                    where (e.FinanceOnly ?? false) == false
+                    select e;
+            return q;
+        }
+        private IQueryable<EmailQueue> emails;
         private IQueryable<EmailQueue> FetchEmails()
         {
-            if (_emails != null)
-                return _emails;
+            if (emails != null)
+                return emails;
             var sndr = sender;
             if (sndr == null)
                 sndr = DbUtil.Db.LoadPersonById(Util.UserPeopleId.Value);
-            _emails
+            emails
                = from t in DbUtil.Db.EmailQueues
                  where t.Sent >= startdt || startdt == null
                  where subject == null || t.Subject.Contains(subject)
@@ -94,18 +103,19 @@ namespace CmsWeb.Models
             if (!edt.HasValue && startdt.HasValue)
                  edt = startdt.Value.AddHours(24);
             if (edt.HasValue)
-                _emails = _emails.Where(t => t.Sent < edt);
+                emails = emails.Where(t => t.Sent < edt);
+            emails = FilterOutFinanceOnly(emails);
             if (!HttpContext.Current.User.IsInRole("Admin")
                 && !HttpContext.Current.User.IsInRole("ManageEmails"))
             {
                 var u = DbUtil.Db.LoadPersonById(Util.UserPeopleId.Value);
-                _emails = from t in _emails
+                emails = from t in emails
                           where t.FromAddr == u.EmailAddress
 						  || t.QueuedBy == u.PeopleId
                           || t.EmailQueueTos.Any(et => et.PeopleId == u.PeopleId)
                           select t;
             }
-            return _emails;
+            return emails;
         }
         public IQueryable<EmailQueue> ApplySort()
         {
