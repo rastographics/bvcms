@@ -33,7 +33,7 @@ namespace CmsWeb.Areas.Public.Controllers
             Response.NoCache();
 
             var m = new SearchModel(name, comm, addr);
-            return new SearchResult0(m.PeopleList(), m.Count);
+            return new SearchResult0(m.PeopleList(), m.Count());
         }
 
         public ActionResult SearchResults(string name, string comm, string addr)
@@ -46,7 +46,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             DbUtil.LogActivity($"iphone search '{name}'");
             var m = new SearchModel(name, comm, addr);
-            return new SearchResult(m.PeopleList(), m.Count);
+            return new SearchResult(m.PeopleList(), m.Count());
         }
 
         public ActionResult DetailResults(int id)

@@ -1,0 +1,64 @@
+﻿using System;
+using CmsData.Codes;
+using UtilityExtensions;
+
+namespace CmsWeb.Areas.Public.Models.CheckInAPI
+{
+    public class CheckInAddEditPerson
+    {
+        public bool edit = false;
+
+        public int id = 0;
+        public int familyID = 0;
+
+        public string firstName = "";
+        public string goesBy = "";
+        public string lastName = "";
+
+        public int genderID = 0;
+        public DateTime? birthday;
+
+        public string eMail = "";
+        public string cellPhone = "";
+        public string homePhone = "";
+
+        public int maritalStatusID = 0;
+
+        public string address = "";
+        public string address2 = "";
+        public string city = "";
+        public string state = "";
+        public string zipcode = "";
+
+        public string country = "";
+
+        public string church = "";
+
+        public string allergies = "";
+
+        public string emergencyName = "";
+        public string emergencyPhone = "";
+
+        public void clean()
+        {
+            firstName = firstName.Trim();
+            goesBy = goesBy.Trim();
+            lastName = lastName.Trim();
+
+            cellPhone = cellPhone.GetDigits();
+            homePhone = homePhone.GetDigits();
+            eMail = eMail.Trim();
+
+            address = address.Trim();
+            address2 = address2.Trim();
+            city = city.Trim();
+            state = state.Trim();
+            zipcode = zipcode.Trim();
+
+            allergies = allergies.Trim();
+
+            emergencyName = emergencyName.Trim();
+            emergencyPhone = emergencyPhone.Trim();
+        }
+    }
+}
