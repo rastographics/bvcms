@@ -43,12 +43,9 @@ namespace CmsWeb.Models.iPhone
             return q;
         }
 
-        public int Count
+        public int Count(bool fromAddGuest = false)
         {
-            get
-            {
-                return ApplySearch().Count();
-            }
+            return ApplySearch(fromAddGuest).Count();
         }
         public IEnumerable<PeopleInfo> PeopleList()
         {
@@ -57,14 +54,18 @@ namespace CmsWeb.Models.iPhone
         }
 
         private IQueryable<Person> query = null;
-        public IQueryable<Person> ApplySearch()
+        public IQueryable<Person> ApplySearch(bool fromAddGuest = false)
         {
             if (query.IsNotNull())
                 return query;
             var db = DbUtil.Db;
-            query = Util2.OrgLeadersOnly 
-                ? db.OrgLeadersOnlyTag2().People(db) 
-                : db.People.Select(p => p);
+            var ignoreOrgleadersonly = DbUtil.Db.Setting("RelaxAppAddGuest", "false").ToBool() && fromAddGuest;
+            if(ignoreOrgleadersonly)
+                query = db.People.Select(p => p);
+            else
+                query = Util2.OrgLeadersOnly
+                    ? db.OrgLeadersOnlyTag2().People(db) 
+                    : db.People.Select(p => p);
 
             //query = query.Where(pp => pp.DeceasedDate == null);
 

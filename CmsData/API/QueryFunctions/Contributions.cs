@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using CmsData.Codes;
 using UtilityExtensions;
@@ -12,10 +13,10 @@ namespace CmsData
         {
             public Funds(object funds)
             {
-                var strFunds = funds as string;
+                var strFunds = funds.ToString();
                 Fundids = new List<int>();
                 ExFundIds = new List<int>();
-                if (strFunds != null)
+                if (strFunds.HasValue())
                 {
                     Fundids = (from f in strFunds.Split(',')
                                let i = f.ToInt()
@@ -38,10 +39,10 @@ namespace CmsData
             var typs = new[] { 6, 7 };
 
             var q = from c in db.Contributions
-                    where c.ContributionDate >= dt1
-                    where days2 == 0 || c.ContributionDate <= dt2
+                    where c.ContributionStatusId == ContributionStatusCode.Recorded
+                    where c.ContributionDate.Value.Date >= dt1.Date
+                    where days2 == 0 || c.ContributionDate.Value.Date <= dt2.Date
                     where c.ContributionTypeId != ContributionTypeCode.Pledge
-                    where c.ContributionAmount > 0
                     where f.Fundids.Count == 0 || f.Fundids.Contains(c.FundId)
                     where f.ExFundIds.Count == 0 || !f.ExFundIds.Contains(c.FundId)
                     where !typs.Contains(c.ContributionTypeId)
@@ -55,9 +56,9 @@ namespace CmsData
             var dt = DateTime.Now.AddDays(-days);
             var typs = new[] { 6, 7 };
             var q = from c in db.Contributions
+                    where c.ContributionStatusId == ContributionStatusCode.Recorded
                     where c.ContributionDate >= dt
                     where c.ContributionTypeId != ContributionTypeCode.Pledge
-                    where c.ContributionAmount > 0
                     where f.Fundids.Count == 0 || f.Fundids.Contains(c.FundId)
                     where f.ExFundIds.Count == 0 || !f.ExFundIds.Contains(c.FundId)
                     where !typs.Contains(c.ContributionTypeId)
@@ -69,17 +70,20 @@ namespace CmsData
         {
             var f = new Funds(funds);
 
-            var dt1 = DateTime.Now.AddDays(-days1);
-            var dt2 = DateTime.Now.AddDays(-days2);
+            var dt1 = DateTime.Today.AddDays(-days1);
+            var dt2 = DateTime.Today.AddDays(-days2);
             var typs = new[] { 6, 7 };
             var q = from c in db.Contributions
-                    where c.ContributionDate >= dt1
-                    where days2 == 0 || c.ContributionDate <= dt2
+                    where c.ContributionStatusId == ContributionStatusCode.Recorded
+                    where c.ContributionDate.Value.Date >= dt1.Date
+                    where days2 == 0 || c.ContributionDate.Value.Date <= dt2.Date
                     where c.ContributionTypeId != ContributionTypeCode.Pledge
                     where f.Fundids.Count == 0 || f.Fundids.Contains(c.FundId)
                     where f.ExFundIds.Count == 0 || !f.ExFundIds.Contains(c.FundId)
                     where !typs.Contains(c.ContributionTypeId)
                     select c;
+            foreach(var c in q)
+                Debug.WriteLine(c.ContributionId);
             return Convert.ToDouble(q.Sum(c => c.ContributionAmount) ?? 0);
         }
     }

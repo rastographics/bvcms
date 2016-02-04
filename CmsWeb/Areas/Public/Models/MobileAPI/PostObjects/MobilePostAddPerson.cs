@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using CmsData.Codes;
 using UtilityExtensions;
 
 namespace CmsWeb.MobileAPI
 {
-	public class MobilePostAddPerson
+    public class MobilePostAddPerson
 	{
 		public int familyID = 0;
 

@@ -176,9 +176,13 @@ For Managed Giving, Manage Subscribtions etc.
 For when you have the choice to register another or continue the registration.
 ";
         private const string SorryDescription = @"
-For when the Max Limit is reached or a Class is filled.
+This message appears on the registration page whenever someone cannot register: 
 
-Good for giving them a link to join a waiting list.
+* The Maximum has been reached
+* When it is checked as Filled 
+* It is prior to the Registration Start Date.
+
+see [this help article](http://docs.touchpointsoftware.com/OnlineRegistration/MessagesSettings.html)
 ";
         private const string TermsDescription = @"
 Some registrations like a camp, or sports team, or a trip require you to agree to terms (indemnification).

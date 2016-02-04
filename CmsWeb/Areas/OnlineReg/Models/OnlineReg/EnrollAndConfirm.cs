@@ -210,7 +210,7 @@ Total Fee paid for this registration session: {amtpaid:C}<br/>
                 Transaction.Amt.Value, p.setting.DonationFundId,
                 $"MissionTrip: org={p.orgid}; goer={p.PeopleId}", tranid: Transaction.Id);
             Log("GoerPayment");
-            Transaction.Description = "Mission Trip Giving";
+            //Transaction.Description = "Mission Trip Giving";
         }
 
         private List<Person> GetNotifyIds()
@@ -296,7 +296,7 @@ Total Fee paid for this registration session: {amtpaid:C}<br/>
             senderBody = senderBody.Replace("{phone}", org.PhoneNumber.FmtFone7());
             senderBody = senderBody.Replace("{paid}", Transaction.Amt.ToString2("c"));
 
-            Transaction.Description = "Mission Trip Giving";
+            //Transaction.Description = "Mission Trip Giving";
             DbUtil.Db.Email(notifyids[0].FromEmail, p.person, listMailAddress, senderSubject, senderBody, false);
             DbUtil.Db.SubmitChanges();
             return true;

@@ -403,7 +403,6 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             var m = new SearchModel(mps.name, mps.comm, mps.addr);
 
             br.setNoError();
-            br.count = m.Count;
 
             switch (dataIn.device)
             {
@@ -413,7 +412,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
                         MobilePerson mp;
 
-                        foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(100))
+                        foreach (var item in m.ApplySearch(mps.guest).OrderBy(p => p.Name2).Take(100))
                         {
                             mp = new MobilePerson().populate(item);
                             mpl.Add(mp.id, mp);
@@ -427,7 +426,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                     {
                         List<MobilePerson> mp = new List<MobilePerson>();
 
-                        foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(100))
+                        foreach (var item in m.ApplySearch(mps.guest).OrderBy(p => p.Name2).Take(100))
                         {
                             mp.Add(new MobilePerson().populate(item));
                         }
@@ -436,7 +435,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                         break;
                     }
             }
-
+            br.count = m.Count(mps.guest);
             return br;
         }
 
@@ -1250,8 +1249,8 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             if (!result.IsValid) return AuthorizationError(result);
 
             // Check Role
-            if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Attendance"))
-                return BaseMessage.createErrorReturn("Attendance role is required to take attendance for organizations.");
+            if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Attendance") || !CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Checkin"))
+                return BaseMessage.createErrorReturn("Attendance or Checkin role is required to take attendance for organizations.");
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
             MobilePostJoinOrg mpjo = JsonConvert.DeserializeObject<MobilePostJoinOrg>(dataIn.data);

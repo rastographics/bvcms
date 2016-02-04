@@ -210,12 +210,21 @@ namespace CmsData
                 query = "peopleid=" + query;
             else
             {
-                var m = Regex.Match(query, @"peopleids{0,1}\s*?=\s*?(?<pids>\d+(,\s*?\d+)*)");
-                if(m.Success)
+                var m = Regex.Match(query, @"peopleids{0,1}\s*?=(?<pids>.*)");
+                if (m.Success)
                 {
                     var pids = m.Groups["pids"].Value;
-                    query = $"PeopleIds = '{pids}'";
-                }                
+                    var pp = new List<int>();
+                    var re = new Regex(@"(\d+)");
+                    var mm = re.Match(pids);
+                    while (mm.Success)
+                    {
+                        pp.Add(mm.Value.ToInt());
+                        mm = mm.NextMatch();
+                    }
+                    if (pp.Count > 0)
+                        query = $"PeopleIds = '{string.Join(",", pp)}'";
+                }
             }
             var qB = Queries.FirstOrDefault(cc => cc.Name == query);
             if (qB == null)
