@@ -414,7 +414,7 @@ namespace CmsData
             return aa;
         }
 
-        public void SendPeopleEmail(int queueid, IEnumerable<int> AdditionalRecipients = null)
+        public void SendPeopleEmail(int queueid)
         {
             var emailqueue = EmailQueues.Single(ee => ee.Id == queueid);
             var sysFromEmail = Util.SysFromEmail;
@@ -452,29 +452,6 @@ namespace CmsData
                     {
                         PeopleId = pid,
                         OrgId = emailqueue.SendFromOrgId,
-                        Guid = Guid.NewGuid(),
-                    });
-                }
-                SubmitChanges();
-            }
-
-            if (AdditionalRecipients != null)
-            {
-                foreach (var pid in AdditionalRecipients)
-                {
-                    // Protect against duplicate PeopleIDs ending up in the queue
-                    var q3 = from eq in EmailQueueTos
-                             where eq.EmailQueue == emailqueue
-                             where eq.PeopleId == pid
-                             select eq;
-                    if (q3.Any())
-                    {
-                        continue;
-                    }
-                    emailqueue.EmailQueueTos.Add(new EmailQueueTo
-                    {
-                        PeopleId = pid,
-                        OrgId = emailqueue.SendFromOrgId.HasValue ? emailqueue.SendFromOrgId : null,
                         Guid = Guid.NewGuid(),
                     });
                 }
