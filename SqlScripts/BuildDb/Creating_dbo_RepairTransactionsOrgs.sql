@@ -57,10 +57,8 @@ BEGIN
 		WHERE PeopleId = et.PeopleId 
 		AND OrganizationId = et.OrganizationId)
 
-	UPDATE dbo.EnrollmentTransaction
-	SET NextTranChangeDate = dbo.NextTranChangeDate(PeopleId, OrganizationId, TransactionDate, TransactionTypeId),
-		EnrollmentTransactionId = dbo.EnrollmentTransactionId(PeopleId, OrganizationId, TransactionDate, TransactionTypeId)
-	WHERE OrganizationId = @orgid
+	EXEC dbo.RepairEnrollmentTransactions @orgid
+	
 	        
 	DECLARE cur3 CURSOR FOR 
 	SELECT PeopleId 
