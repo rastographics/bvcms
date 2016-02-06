@@ -1,38 +1,59 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
 using CmsData;
+using CmsWeb.Areas.Search.Models;
+using Newtonsoft.Json;
 using UtilityExtensions;
-using Tasks = System.Threading.Tasks;
+using Task = System.Threading.Tasks.Task;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
     public class RepairTransactionsOrgs : LongRunningOp
     {
-        public const string Op = "RepairTransactionsOrgs";
-
-        public RepairTransactionsOrgs() { }
-        public RepairTransactionsOrgs(int id)
+        private class OrgInfo
         {
-            Id = id;
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public int Count { get; set; }
         }
+        public const string Op = "RepairTransactionsOrgs";
         public string Orgs { get; set; }
 
+        public RepairTransactionsOrgs() { }
+        public RepairTransactionsOrgs(OrgSearchModel m)
+        {
+            Id = Util.UserPeopleId ?? 0;
+            var q = (from o in m.FetchOrgs()
+                     select new OrgInfo
+                     {
+                         Id = o.OrganizationId,
+                         Name = o.OrganizationName,
+                         Count = o.MemberCount ?? 0
+                     }).ToList();
+            Count = q.Count();
+            Orgs = JsonConvert.SerializeObject(q);
+        }
+
+        private List<OrgInfo> orginfos;
         public void Process(CMSDataContext db)
         {
-            var lop = new LongRunningOp
+            // running has not started yet, start it on a separate thread
+            orginfos = JsonConvert.DeserializeObject<List<OrgInfo>>(Orgs);
+            var lop = new LongRunningOp()
             {
                 Started = DateTime.Now,
-                Count = Orgs.Split(',').Length,
+                Count = orginfos.Count,
                 Processed = 0,
                 Id = Id,
-                Operation = Op
+                Operation = Op,
             };
             db.LongRunningOps.InsertOnSubmit(lop);
             db.SubmitChanges();
-            Tasks.Task.Run(() => DoWork(this));
+            Task.Run(() => DoWork(this));
 		}
         public static void DoWork(RepairTransactionsOrgs model)
         {
@@ -42,9 +63,9 @@ namespace CmsWeb.Areas.Dialog.Models
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
             LongRunningOp lop = null;
-		    foreach (var oid in model.Orgs.Split(',').Select(mm => mm.ToInt()))
+            foreach (var orginfo in model.orginfos)
 		    {
-	            db.RepairTransactionsOrgs(oid);
+	            db.RepairTransactionsOrgs(orginfo.Id);
                 lop = FetchLongRunningOp(db, model.Id, Op);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;

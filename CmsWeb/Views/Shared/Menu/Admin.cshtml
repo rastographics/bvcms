@@ -43,12 +43,12 @@
                 </li>
                 <li class="col-sm-4">
                     <ul>
-                        @AdminList2(admin, design, managetrans, edit, manageemails, true, developer)
+                        @AdminList2(admin, design, managetrans, edit, manageemails, finance: true, developer: developer)
                     </ul>
                 </li>
                 <li class="col-sm-4">
                     <ul>
-                        @AdminList1(admin, design, managetrans, edit, manageemails, true, developer)
+                        @AdminList1(admin, design, managetrans, edit, manageemails: manageemails, finance: true, developer: developer)
                     </ul>
                 </li>
             </ul>
@@ -110,7 +110,7 @@
 
 @helper AdminList2(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer)
 {
-    if (admin || manageemails || edit || managetrans)
+    if (admin || manageemails || edit || managetrans || finance)
     {
         <li class="dropdown-header">Manage</li>
     }
@@ -122,12 +122,12 @@
         @Helper.LiAnchorLink("Promotion", "/Promotion/")
         <li class="divider"></li>
     }
-    if (admin || manageemails || managetrans)
+    if (admin || manageemails || managetrans || finance)
     {
         <li class="dropdown-header dropdown-sub-header">Communication</li>
-        @Helper.LiAnchorLink("Emails", "/Emails/", admin || manageemails)
+        @Helper.LiAnchorLink("Emails", "/Emails/", admin || manageemails || finance)
         @Helper.LiAnchorLink("SMS Messages", "/SMS/List/", admin)
-        @Helper.LiAnchorLink("Transactions", "/Transactions/", admin || managetrans)
+        @Helper.LiAnchorLink("Transactions", "/Transactions/", admin || managetrans || finance)
         @Helper.LiAnchorLink("User Email Delegation", "/UsersCanEmailFor/", admin || manageemails)
         <li class="divider"></li>
     }
