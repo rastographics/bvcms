@@ -59,6 +59,7 @@ namespace CmsWeb.Areas.Dialog.Models
         {
 			Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
 			var db = DbUtil.Create(model.host);
+            db.CommandTimeout = 2200;
 		    var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
@@ -69,6 +70,7 @@ namespace CmsWeb.Areas.Dialog.Models
                 lop = FetchLongRunningOp(db, model.Id, Op);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
+                lop.CustomMessage = $"Working on {orginfo.Name} ({orginfo.Id})";
                 db.SubmitChanges();
 		    }
             // finished
