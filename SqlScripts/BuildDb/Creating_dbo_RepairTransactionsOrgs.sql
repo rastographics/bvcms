@@ -59,22 +59,8 @@ BEGIN
 
 	EXEC dbo.RepairEnrollmentTransactions @orgid
 	
-	        
-	DECLARE cur3 CURSOR FOR 
-	SELECT PeopleId 
-	FROM dbo.OrganizationMembers
-	WHERE OrganizationId = @orgid
-	OPEN cur3
-	DECLARE @pid INT, @n INT
-	FETCH NEXT FROM cur3 INTO @pid
-	WHILE @@FETCH_STATUS = 0
-	BEGIN
-		EXECUTE dbo.UpdateAttendStr @orgid, @pid
-		FETCH NEXT FROM cur3 INTO @pid
-	END
-	CLOSE cur3
-	DEALLOCATE cur3
 END
+
 
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
