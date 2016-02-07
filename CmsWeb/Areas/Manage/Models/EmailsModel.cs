@@ -11,6 +11,7 @@ using System.Net.Mail;
 using System.Web.UI.WebControls;
 using System.Web.UI;
 using System.Web;
+using System.Web.Security;
 
 namespace CmsWeb.Models
 {
@@ -105,16 +106,18 @@ namespace CmsWeb.Models
             if (edt.HasValue)
                 emails = emails.Where(t => t.Sent < edt);
             emails = FilterOutFinanceOnly(emails);
-            if (!HttpContext.Current.User.IsInRole("Admin")
-                && !HttpContext.Current.User.IsInRole("ManageEmails"))
-            {
-                var u = DbUtil.Db.LoadPersonById(Util.UserPeopleId.Value);
-                emails = from t in emails
-                          where t.FromAddr == u.EmailAddress
-						  || t.QueuedBy == u.PeopleId
-                          || t.EmailQueueTos.Any(et => et.PeopleId == u.PeopleId)
-                          select t;
-            }
+
+            var roles = new [] { "Admin", "ManageEmails", "Finance" };
+            if (DbUtil.Db.CurrentUser.Roles.Any(uu => roles.Contains(uu)))
+                return emails;
+
+            // show only user's emails sent or received
+            var u = DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0);
+            emails = from t in emails
+                     where t.FromAddr == u.EmailAddress
+                           || t.QueuedBy == u.PeopleId
+                           || t.EmailQueueTos.Any(et => et.PeopleId == u.PeopleId)
+                     select t;
             return emails;
         }
         public IQueryable<EmailQueue> ApplySort()
