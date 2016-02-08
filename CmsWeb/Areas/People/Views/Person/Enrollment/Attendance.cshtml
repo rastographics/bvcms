@@ -59,7 +59,7 @@
                       </td>
                       <td nowrap="nowrap">
                         <a href="/Meeting/@a.MeetingId">
-                          @a.MeetingDate.GetWeekNumber()@a.AttendCredit @a.MeetingDate?.Value?.ToString("g") (@a.MeetingDate?.Value?.ToString("ddd"))
+                          @a.MeetingDate.GetWeekNumber()@a.AttendCredit @a.MeetingDate.ToString2("g") (@a.MeetingDate.ToString2("ddd"))
                         </a>
                       </td>
                       @if (Model.Future)
@@ -82,7 +82,7 @@
                         <input type="checkbox" @(a.AttendFlag ? "checked=checked" : "") disabled="disabled" />
                       </td>
                       <td>
-                        @a.MeetingDate?.Value?.ToString("g")
+                        @(a.MeetingDate.ToString2("g"))
                       </td>
                       @if (Model.Future)
                       {
