@@ -73,9 +73,9 @@ Data.cnWeeklyAvgPrevYear = \
     q.ContributionTotals(twoyearsago, oneyearago, fund) / weeksinyear
 
 Data.cnDateRangeCurrYear = \
-    q.ContributionDateRange(oneyearago, oneweekago)
+    q.DateRangeForContributionTotals(oneyearago, oneweekago)
 Data.cnDateRangePrevYear = \
-    q.ContributionDateRange(twoyearsago, oneyearago)
+    q.DateRangeForContributionTotals(twoyearsago, oneyearago)
 
 template = """
 <style>
