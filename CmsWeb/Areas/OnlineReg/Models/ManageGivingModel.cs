@@ -63,7 +63,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             get
             {
                 var list = CodeValueModel.ConvertToSelect(CodeValueModel.GetCountryList().Where(c => c.Code != "NA"), null);
-                list.Insert(0, new SelectListItem {Text = "(not specified)", Value = ""});
+                list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "" });
                 return list;
             }
         }
@@ -265,40 +265,26 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var details = ViewExtensions2.RenderPartialViewToString(controller, "ManageGiving/EmailConfirmation", this);
 
             var staff = DbUtil.Db.StaffPeopleForOrg(orgid)[0];
-
-            var contributionEmail = (from ex in DbUtil.Db.PeopleExtras
-                                     where ex.Field == "ContributionEmail"
-                                     where ex.PeopleId == person.PeopleId
-                                     select ex.Data).SingleOrDefault();
-            if (!Util.ValidEmail(contributionEmail))
-                contributionEmail = person.FromEmail;
+            var notify = Util.EmailAddressListFromString(DbUtil.Db.StaffEmailForOrg(orgid));
+            var from = notify[0];
 
             if (!string.IsNullOrEmpty(Setting.Body))
             {
                 var text = Setting.Body.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"),
                     ignoreCase: true);
-//            text = text.Replace("{name}", person.Name, ignoreCase: true);
-            text = text.Replace("{date}", DateTime.Now.ToString("d"), ignoreCase: true);
-            text = text.Replace("{email}", person.EmailAddress, ignoreCase: true);
-            text = text.Replace("{phone}", person.HomePhone.FmtFone(), ignoreCase: true);
-            text = text.Replace("{contact}", staff.Name, ignoreCase: true);
-            text = text.Replace("{contactemail}", staff.EmailAddress, ignoreCase: true);
-            text = text.Replace("{contactphone}", Organization.PhoneNumber.FmtFone(), ignoreCase: true);
-            text = text.Replace("{details}", details, ignoreCase: true);
+                //            text = text.Replace("{name}", person.Name, ignoreCase: true);
+                text = text.Replace("{date}", DateTime.Now.ToString("d"), ignoreCase: true);
+                text = text.Replace("{email}", person.EmailAddress, ignoreCase: true);
+                text = text.Replace("{phone}", person.HomePhone.FmtFone(), ignoreCase: true);
+                text = text.Replace("{contact}", staff.Name, ignoreCase: true);
+                text = text.Replace("{contactemail}", staff.EmailAddress, ignoreCase: true);
+                text = text.Replace("{contactphone}", Organization.PhoneNumber.FmtFone(), ignoreCase: true);
+                text = text.Replace("{details}", details, ignoreCase: true);
 
-            var from = Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(orgid));
-            var mm = new EmailReplacements(DbUtil.Db, text, from);
-            text = mm.DoReplacements(DbUtil.Db, person);
-
-            Util.SendMsg(Util.SysFromEmail, Util.Host, from, Setting.Subject, text,
-                    Util.EmailAddressListFromString(contributionEmail), 0, pid);
+                DbUtil.Db.EmailFinanceInformation(from, person, Setting.Subject, text);
             }
 
-            Util.SendMsg(Util.SysFromEmail, Util.Host, Util.TryGetMailAddress(contributionEmail),
-                "Managed Giving",
-                $"Managed giving for {person.Name} ({pid})",
-                Util.EmailAddressListFromString(DbUtil.Db.StaffEmailForOrg(orgid)),
-                0, pid);
+            DbUtil.Db.EmailFinanceInformation(from, staff, notify, "Managed giving", $"Managed giving for {person.Name} ({pid})");
 
             var msg = GetThankYouMessage(@"<p>Thank you {first}, for managing your recurring giving</p>
 <p>You should receive a confirmation email shortly.</p>");
@@ -472,7 +458,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var q = from i in FundItem
                     join m in items on i.Key equals m.Value.ToInt()
                     where i.Value.HasValue
-                    select new FundItemChosen {fundid = m.Value.ToInt(), desc = m.Text, amt = i.Value.Value};
+                    select new FundItemChosen { fundid = m.Value.ToInt(), desc = m.Text, amt = i.Value.Value };
             return q;
         }
 
@@ -486,7 +472,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             get
             {
 #if DEBUG
-                return new {AUTOCOMPLETE = "on"};
+                return new { AUTOCOMPLETE = "on" };
 #else
                 return new { AUTOCOMPLETE = "off" };
 #endif

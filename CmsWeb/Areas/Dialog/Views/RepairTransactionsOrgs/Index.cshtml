@@ -7,6 +7,8 @@
         </div>
         <div class="modal-body">
             @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.Orgs)
+            @Html.HiddenFor(m => m.Count)
             @Html.DisplayFor(m => m.Count, new { Label = "Number of Organizations" })
             Are you sure you want to repair Transactions?
         </div>

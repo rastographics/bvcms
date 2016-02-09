@@ -85,15 +85,7 @@ namespace CmsData
             t.AuthCode = ret.AuthCode;
             t.Approved = ret.Approved;
             t.TransactionId = ret.TransactionId;
-            var systemEmail = db.Setting("SystemEmailAddress", "mailer@bvcms.com");
 
-            var contributionemail = (from ex in Person.PeopleExtras
-                                     where ex.Field == "ContributionEmail"
-                                     select ex.Data).SingleOrDefault();
-            if (contributionemail.HasValue())
-                contributionemail = contributionemail.Trim();
-            if (!Util.ValidEmail(contributionemail))
-                contributionemail = Person.FromEmail;
             var gift = db.Setting("NameForPayment", "gift");
             var church = db.Setting("NameOfChurch", db.CmsHost);
             var q = from a in db.RecurringAmounts
@@ -105,6 +97,8 @@ namespace CmsData
                 PeopleId = Person.PeopleId,
                 Amt = tot,
             });
+            var notify = db.RecurringGivingNotifyPersons();
+            var from = Util.TryGetMailAddress(notify[0].EmailAddress);
             if (ret.Approved)
             {
                 foreach (var a in q)
@@ -122,11 +116,9 @@ namespace CmsData
                                 Body = "Your payment of {total} was processed this morning." };
                     var subject = msg.Title.Replace("{church}", church);
                     var body = msg.Body.Replace("{total}", $"${tot:N2}");
-                    var from = Util.TryGetMailAddress(contributionemail);
                     var m = new EmailReplacements(db, body, from);
                     body = m.DoReplacements(db, Person);
-                    Util.SendMsg(systemEmail, db.CmsHost, from, subject, body,
-                                 Util.ToMailAddressList(contributionemail), 0, Person.PeopleId);
+                    db.EmailFinanceInformation(from, Person, null, subject, body);
                 }
             }
             else
@@ -140,18 +132,14 @@ Please contact the Finance office at the church." };
                 var subject = msg.Title.Replace("{church}", church);
                 var body = msg.Body.Replace("{total}", $"${tot:N2}")
                     .Replace("{message}", ret.Message);
-                var from = Util.TryGetMailAddress(contributionemail);
                 var m = new EmailReplacements(db, body, from);
                 body = m.DoReplacements(db, Person);
 
-                var adminEmail = db.Setting("AdminMail", systemEmail);
-                Util.SendMsg(systemEmail, db.CmsHost, from, subject, body,
-                        Util.ToMailAddressList(contributionemail), 0, Person.PeopleId);
+                db.Email(from, Person, null, subject, body, false);
                 foreach (var p in db.RecurringGivingNotifyPersons())
-                    Util.SendMsg(systemEmail, db.CmsHost, Util.TryGetMailAddress(adminEmail),
-                        "Recurring Giving Failed on " + db.CmsHost,
-                        $"<a href='{db.CmsHost}/Transactions/{t.Id}'>message: {ret.Message}, tranid:{t.Id}</a>",
-                        Util.ToMailAddressList(p.EmailAddress), 0, Person.PeopleId);
+                    db.EmailFinanceInformation(from, p, null,
+                        $"Recurring Giving Failed on {db.CmsHost}",
+                        $"<a href='{db.CmsHost}/Transactions/{t.Id}'>message: {ret.Message}, tranid:{t.Id}</a>");
             }
             return 1;
         }

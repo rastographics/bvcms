@@ -72,6 +72,11 @@ Data.cnWeeklyAvgCurrYear = \
 Data.cnWeeklyAvgPrevYear = \
     q.ContributionTotals(twoyearsago, oneyearago, fund) / weeksinyear
 
+Data.cnDateRangeCurrYear = \
+    q.DateRangeForContributionTotals(oneyearago, oneweekago)
+Data.cnDateRangePrevYear = \
+    q.DateRangeForContributionTotals(twoyearsago, oneyearago)
+
 template = """
 <style>
     #vitalStats { width:auto; margin-left:auto; margin-right:auto; } 
@@ -79,7 +84,7 @@ template = """
 </style>
 <table id="vitalStats" class="table">
     <tr><th colspan="2">Counts for past {{days}} days</th></tr>
-    <tr><td>Local Members</td>              
+    <tr><td>Members</td>
         <td>{{Fmt members "N0"}}</td></tr>
     <tr><td>Decisions</td>                  
         <td>{{Fmt decisions "N0"}}</td></tr>
@@ -96,15 +101,17 @@ template = """
     <tr><td>Registrations</td>              
         <td>{{Fmt registrations "N0"}}</td></tr>
 
-    <tr><th colspan="2">Contributions-Budget and Love Offering</th></tr>
+    <tr><th colspan="2">Contributions-All Funds</th></tr>
     <tr><td>Average Gift Size</td>              
         <td>{{Fmt cnAvgAmtPerDonorYear "N2"}}</td</tr>
     <tr><td>Weekly average past 4 weeks</td>    
         <td>{{Fmt cnWeekly4WeekAvg "N2"}}</td></tr>
     <tr><td>Weekly average current year</td>    
-        <td>{{Fmt cnWeeklyAvgCurrYear "N2"}}</td></tr>
+        <td>{{Fmt cnWeeklyAvgCurrYear "N2"}}</td>
+        <td>{{cnDateRangeCurrYear}}</td></tr>
     <tr><td>Weekly average previous year</td>   
-        <td>{{Fmt cnWeeklyAvgPrevYear "N2"}}</td></tr>
+        <td>{{Fmt cnWeeklyAvgPrevYear "N2"}}</td>
+        <td>{{cnDateRangePrevYear}}</td></tr>
 </table>
 """
 

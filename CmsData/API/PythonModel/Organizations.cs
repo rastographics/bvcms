@@ -11,9 +11,9 @@ namespace CmsData
     {
         public int CurrentOrgId { get; set; }
 
-        public void AddMembersToOrg(object savedQuery, object orgId)
+        public void AddMembersToOrg(object query, object orgId)
         {
-            var q = db.PeopleQuery2(savedQuery);
+            var q = db.PeopleQuery2(query);
             var dt = DateTime.Now;
             foreach (var p in q)
             {
@@ -82,22 +82,6 @@ namespace CmsData
                     where divid == 0 || o.DivOrgs.Select(dd => dd.DivId).Contains(divid)
                     select o.OrganizationId;
             return q.ToList();
-        }
-
-        public Guid OrgMembersQuery(int progid, int divid, int orgid, string memberTypes)
-        {
-            var c = db.ScratchPadCondition();
-            c.Reset();
-            var mtlist = memberTypes.Split(',');
-            var mts = string.Join(";", from mt in db.MemberTypes
-                                       where mtlist.Contains(mt.Description)
-                                       select $"{mt.Id},{mt.Code}");
-            var clause = c.AddNewClause(QueryType.MemberTypeCodes, CompareType.OneOf, mts);
-            clause.Program = progid.ToString();
-            clause.Division = divid.ToString();
-            clause.Organization = orgid.ToString();
-            c.Save(db);
-            return c.Id;
         }
 
         public void RemoveSubGroup(object pid, object orgId, string group)

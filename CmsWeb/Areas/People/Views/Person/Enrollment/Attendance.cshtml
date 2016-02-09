@@ -2,105 +2,106 @@
 @using CmsData
 @using UtilityExtensions
 <form class="non-modal ajax">
-    @if (Model.Future)
-    {
-        <div class="row">
-            <div class="col-sm-9">
-                <h4>Future Meetings</h4>
-            </div>
-            <div class="col-sm-3">
-                <div class="pull-right">
-                    <a class="ajax btn btn-default" href="/Person2/Attendance/@Model.PeopleId"><i class="fa fa-search"></i> Show Attendance History</a>
-                </div>
-            </div>
+  @if (Model.Future)
+  {
+      <div class="row">
+        <div class="col-sm-9">
+          <h4>Future Meetings</h4>
         </div>
-    }
-    else
-    {
-        <div class="row">
-            <div class="col-sm-9">
-                <h4>Attendance History</h4>
-            </div>
-            <div class="col-sm-3">
-                <div class="pull-right">
-                    <a class="ajax btn btn-default" href="/Person2/AttendanceFuture/@Model.PeopleId"><i class="fa fa-search"></i> Show Future Meetings</a>
-                </div>
-            </div>
+        <div class="col-sm-3">
+          <div class="pull-right">
+            <a class="ajax btn btn-default" href="/Person2/Attendance/@Model.PeopleId"><i class="fa fa-search"></i> Show Attendance History</a>
+          </div>
         </div>
-    }
-    <br/>
-    <div class="row">
-        <div class="col-sm-12">
-            @Html.Partial("PagerTop", Model)
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>@Model.SortLink("Meeting")</th>
-                            @if (Model.Future)
-                            {
-                                <th>Commitment</th>
-                            }
-                            <th>@Model.SortLink("Organization")</th>
-                            <th>@Model.SortLink("MemberType")</th>
-                            <th>@Model.SortLink("AttendType")</th>
-                            <th>OtherAttends</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (User.IsInRole("Access"))
-                        {
-                            foreach (var a in Model.ViewList())
-                            {
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" mid="@a.MeetingId" pid="@a.PeopleId" @(a.AttendFlag ? "checked=checked" : "") class="atck" @(User.IsInRole("Admin") ? "" : "disabled=disabled") />
-                                    </td>
-                                    <td nowrap="nowrap">
-                                        <a href="/Meeting/@a.MeetingId">
-                                            @a.MeetingDate.GetWeekNumber()@a.AttendCredit @a.MeetingDate.Value.ToString("g") (@a.MeetingDate.Value.ToString("ddd"))
-                                        </a>
-                                    </td>
-                                    @if (Model.Future)
-                                    {
-                                        <td class="@(a.conflict ? "danger" : "")">@a.Commitment</td>
-                                    }
-                                    <td><a href="/Org/@a.OrganizationId">@a.OrganizationName</a></td>
-                                    <td>@a.MemberType</td>
-                                    <td>@a.AttendType</td>
-                                    <td>@a.OtherAttends</td>
-                                </tr>
-                            }
-                        }
-                        else
-                        {
-                            foreach (var a in Model.ViewList())
-                            {
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" @(a.AttendFlag ? "checked=checked" : "") disabled="disabled" />
-                                    </td>
-                                    <td>
-                                        @a.MeetingDate.Value.ToString("g")
-                                    </td>
-                                    @if (Model.Future)
-                                    {
-                                        <td class="@(a.conflict ? "danger" : "")">@a.Commitment</td>
-                                    }
-                                    <td>@a.OrganizationName</td>
-                                    <td>@a.MemberType</td>
-                                    <td>@a.AttendType</td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
-            @Html.Partial("PagerBottom", Model)
-            @Html.Partial("PagerHidden", Model)
-            @Html.HiddenFor2(m => m.PeopleId)
+      </div>
+  }
+  else
+  {
+      <div class="row">
+        <div class="col-sm-9">
+          <h4>Attendance History</h4>
         </div>
+        <div class="col-sm-3">
+          <div class="pull-right">
+            <a class="ajax btn btn-default" href="/Person2/AttendanceFuture/@Model.PeopleId"><i class="fa fa-search"></i> Show Future Meetings</a>
+          </div>
+        </div>
+      </div>
+  }
+  <br />
+  <div class="row">
+    <div class="col-sm-12">
+      @Html.Partial("PagerTop", Model)
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th></th>
+              <th>@Model.SortLink("Meeting")</th>
+              @if (Model.Future)
+              {
+                  <th>Commitment</th>
+              }
+              <th>@Model.SortLink("Organization")</th>
+              <th>@Model.SortLink("MemberType")</th>
+              <th>@Model.SortLink("AttendType")</th>
+              <th>OtherAttends</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (User.IsInRole("Access"))
+            {
+              foreach (var a in Model.ViewList())
+              {
+                    <tr>
+                      <td>
+                        <input type="checkbox" mid="@a.MeetingId" pid="@a.PeopleId" @(a.AttendFlag ? "checked=checked" : "") class="atck" @(User.IsInRole("Admin") ? "" : "disabled=disabled") />
+                      </td>
+                      <td nowrap="nowrap">
+                        <a href="/Meeting/@a.MeetingId">
+                          @a.MeetingDate.GetWeekNumber()@a.AttendCredit @a.MeetingDate.ToString2("g") (@a.MeetingDate.ToString2("ddd"))
+                        </a>
+                      </td>
+                      @if (Model.Future)
+                      {
+                          <td class="@(a.conflict ? "danger" : "")">@a.Commitment</td>
+                      }
+                      <td><a href="/Org/@a.OrganizationId">@a.OrganizationName</a></td>
+                      <td>@a.MemberType</td>
+                      <td>@a.AttendType</td>
+                      <td>@a.OtherAttends</td>
+                    </tr>
+              }
+            }
+            else
+            {
+              foreach (var a in Model.ViewList())
+              {
+                    <tr>
+                      <td>
+                        <input type="checkbox" @(a.AttendFlag ? "checked=checked" : "") disabled="disabled" />
+                      </td>
+                      <td>
+                        @(a.MeetingDate.ToString2("g"))
+                      </td>
+                      @if (Model.Future)
+                      {
+                          <td class="@(a.conflict ? "danger" : "")">@a.Commitment</td>
+                      }
+                      <td>@a.OrganizationName</td>
+                      <td>@a.MemberType</td>
+                      <td>@a.AttendType</td>
+                      <td></td>
+                    </tr>
+              }
+            }
+          </tbody>
+        </table>
+      </div>
+      @Html.Partial("PagerBottom", Model)
+      @Html.Partial("PagerHidden", Model)
+      @Html.HiddenFor2(m => m.PeopleId)
     </div>
-    <br/>
+  </div>
+  <br />
 </form>

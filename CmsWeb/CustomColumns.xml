@@ -76,6 +76,9 @@
     <join name="lao">
       LEFT JOIN dbo.LastAttendOrg({orgid}) lao ON lao.PeopleId = p.PeopleId
     </join>
+    <join name="laa">
+      LEFT JOIN dbo.LastAttends laa ON laa.PeopleId = p.PeopleId
+    </join>
   </Joins>
   <Columns>
     <column name="PeopleId">p.peopleid</column>
@@ -205,6 +208,9 @@
     <column name="MainClass" join="bfc"> bfc.OrganizationName </column>
     <column name="AttendPct" join="bfcm"> bfcm.AttendPct </column>
     <column name="AttendStr" join="bfcm"> bfcm.AttendStr </column>
+    <column name="LastAttend" join="laa"> laa.LastAttend </column>
+    <column name="LastAttendOrg" join="laa"> laa.OrganizationName </column>
+    <column name="LastAttendOrgId" join="laa"> laa.OrganizationId </column>
     <column name="LastAttendedMF" join="bfcm"> bfcm.LastAttended </column>
     <column name="LastAttendedCO" join="lao"> lao.LastAttended </column>
   </Columns>

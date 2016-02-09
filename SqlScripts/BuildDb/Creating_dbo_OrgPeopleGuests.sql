@@ -46,6 +46,7 @@ RETURN
 		FROM dbo.OrganizationMembers om
 		WHERE om.PeopleId = a.PeopleId 
 		AND om.OrganizationId = @oid
+		AND om.MemberTypeId <> 311
 	)
 	AND (@showhidden = 1 OR ISNULL(a.NoShow, 0) = 0)
 )
