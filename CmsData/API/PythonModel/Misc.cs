@@ -53,6 +53,11 @@ namespace CmsData
             var c = db.ContentOfTypeHtml(name);
             return c.Body;
         }
+        public string TitleContent(string name)
+        {
+            var c = db.ContentOfTypeHtml(name);
+            return c.Title;
+        }
 
         public string Replace(string text, string pattern, string replacement)
         {
