@@ -34,7 +34,7 @@ namespace CmsWeb.Areas.Main.Models
         public IEnumerable<string> Recipients { get; set; }
         public IEnumerable<int> AdditionalRecipients { get; set; }
 
-        public List<MailAddress> CcAddresses;
+        public List<MailAddress> CcAddresses = new List<MailAddress>();
         public string Cc {
             get {
                 if (CcAddresses == null) { return null; }
@@ -42,9 +42,31 @@ namespace CmsWeb.Areas.Main.Models
             }
             set {
                 if (value == null) { CcAddresses = null; }
-                else { CcAddresses = value.Split(',').Select(a => new MailAddress(a)).ToList(); }
+                else
+                {
+                    try
+                    {
+                        CcAddresses = value.Split(',').Select(a => new MailAddress(a)).ToList();
+                    }
+                    catch
+                    {
+                        List<String> CcAddressesString = value.Split(',').ToList();
+                        var re1 = new Regex(@"^(.*\b(?=\w))\b[A-Z0-9._%+-]+(?<=[^.])@[A-Z0-9._-]+\.[A-Z]{2,4}\b\b(?!\w)$", RegexOptions.IgnoreCase);
+                        var re2 = new Regex(@"^[A-Z0-9._%+-]+(?<=[^.])@[A-Z0-9.-]+\.[A-Z]{2,4}$", RegexOptions.IgnoreCase);
+
+                        foreach (string s in CcAddressesString)
+                        {
+                            if (re1.IsMatch(s) || re2.IsMatch(s))
+                            {
+                                CcAddresses.Add(new MailAddress(s.trim())); 
+                            }
+                        }
+                    };
+                  
+                }
             }
         }
+
 
         public string Host { get; set; }
 
@@ -129,7 +151,7 @@ namespace CmsWeb.Areas.Main.Models
 
             if (!OrgId.HasValue)
                 throw new Exception("no org to email from");
-            var emailqueue = DbUtil.Db.CreateQueueForOrg(From, Subject, Body, Schedule, OrgId.Value, PublicViewable);
+            var emailqueue = DbUtil.Db.CreateQueueForOrg(From, Subject, Body, Schedule, OrgId.Value, PublicViewable, Cc);
             if (emailqueue == null)
                 return null;
             emailqueue.NoReplacements = noDuplicates;
@@ -154,7 +176,7 @@ namespace CmsWeb.Areas.Main.Models
                     Schedule = Util.Now.AddSeconds(10); // some time for emailqueue to be ready to go
             }
 
-            var emailqueue = DbUtil.Db.CreateQueue(From, Subject, Body, Schedule, TagId, PublicViewable, CcParents);
+            var emailqueue = DbUtil.Db.CreateQueue(From, Subject, Body, Schedule, TagId, PublicViewable, CcParents, Cc);
             if (emailqueue == null)
                 return null;
             emailqueue.NoReplacements = noDuplicates;

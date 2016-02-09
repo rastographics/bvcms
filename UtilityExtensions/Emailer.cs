@@ -53,6 +53,23 @@ namespace UtilityExtensions
                 }
             }
 
+            if (cc != null)
+            {
+               
+                foreach (var a in cc)
+                {
+                    msg.ReplyToList.Add(a);
+
+                }
+
+
+                if (!msg.ReplyToList.Contains(msg.From) && msg.From.Address.NotEqual("mailer@bvcms.com"))
+                {
+                     msg.ReplyToList.Add(msg.From);
+                }
+
+            }
+
             msg.Headers.Add("X-SMTPAPI",
                 $"{{\"unique_args\":{{\"host\":\"{CmsHost}\",\"mailid\":\"{id}\",\"pid\":\"{pid}\"}}}}");
             msg.Headers.Add("X-BVCMS", $"host:{CmsHost}, mailid:{id}, pid:{pid}");
@@ -82,6 +99,15 @@ namespace UtilityExtensions
             msg.AlternateViews.Add(htmlView1);
 
             var html = BadEmailLink + Message;
+
+            if (cc != null)
+            {
+                string cclist = (string.Join(", ", cc));
+
+                var ccstring = $"<p align='center'><small><i>This email was CC\'d to the email addresses below and they are included in the Reply-To Field.</br>" + cclist + "</i></small></p>";
+                html = html + ccstring;
+            }
+
             var result = PreMailer.Net.PreMailer.MoveCssInline(html);
             html = result.Html;
             var htmlView = AlternateView.CreateAlternateViewFromString(html, Encoding.UTF8, MediaTypeNames.Text.Html);
@@ -101,6 +127,7 @@ namespace UtilityExtensions
                 htmlView.Dispose();
             }
         }
+
 
         private static void AddAddr(this MailMessage msg, MailAddress a)
         {
