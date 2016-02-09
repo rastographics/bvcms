@@ -386,6 +386,7 @@
     <Compile Include="API\CreateExcel.cs" />
     <Compile Include="API\PythonModel\DynamicData.cs" />
     <Compile Include="API\PythonModel\Deprecated.cs" />
+    <Compile Include="API\PythonModel\ExtraValuesOrg.cs" />
     <Compile Include="API\PythonModel\Forms.cs" />
     <Compile Include="API\PythonModel\SqlGrid.cs" />
     <Compile Include="API\PythonModel\Upload.cs" />

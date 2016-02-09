@@ -67,9 +67,9 @@ namespace CmsData
             }
         }
 
-        public string ExtraValue(object pid, string name)
+        public string ExtraValue(int pid, string name)
         {
-            var ev = Person.GetExtraValue(db, pid.ToInt(), name);
+            var ev = Person.GetExtraValue(db, pid, name);
             if (ev != null)
                 switch (ev.Type)
                 {
@@ -89,38 +89,38 @@ namespace CmsData
             return "";
         }
 
-        public bool ExtraValueBit(object pid, string name)
+        public bool ExtraValueBit(int pid, string name)
         {
-            var ev = Person.GetExtraValue(db, pid.ToInt(), name);
+            var ev = Person.GetExtraValue(db, pid, name);
             if (ev != null)
                 return ev.BitValue ?? false;
             return false;
         }
 
-        public string ExtraValueCode(object pid, string name)
+        public string ExtraValueCode(int pid, string name)
         {
             return ExtraValue(pid, name);
         }
 
-        public DateTime ExtraValueDate(object pid, string name)
+        public DateTime ExtraValueDate(int pid, string name)
         {
-            var ev = Person.GetExtraValue(db, pid.ToInt(), name);
+            var ev = Person.GetExtraValue(db, pid, name);
             if (ev != null)
                 return ev.DateValue ?? DateTime.MinValue;
             return DateTime.MinValue;
         }
 
-        public int ExtraValueInt(object pid, string name)
+        public int ExtraValueInt(int pid, string name)
         {
-            var ev = Person.GetExtraValue(db, pid.ToInt(), name);
+            var ev = Person.GetExtraValue(db, pid, name);
             if (ev != null)
                 return ev.IntValue ?? 0;
             return 0;
         }
 
-        public string ExtraValueText(object pid, string name)
+        public string ExtraValueText(int pid, string name)
         {
-            var ev = Person.GetExtraValue(db, pid.ToInt(), name);
+            var ev = Person.GetExtraValue(db, pid, name);
             if (ev != null)
                 return ev.Data ?? "";
             return "";
