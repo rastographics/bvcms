@@ -26,11 +26,20 @@ namespace CmsWeb.Areas.People.Models
             : base("Sent", "desc", true)
         {}
 
-        internal IQueryable<EmailQueue> FilterForUser(IQueryable<EmailQueue> q)
+        internal IQueryable<EmailQueue> FilterOutFinanceOnly(IQueryable<EmailQueue> q)
         {
             var user = HttpContext.Current.User;
-            if(user.IsInRole("Admin") || user.IsInRole("ManageEmails"))
-                return q;
+            if (!user.IsInRole("Finance"))
+                q = from e in q
+                    where (e.FinanceOnly ?? false) == false
+                    select e;
+            return q;
+        }
+        internal IQueryable<EmailQueue> FilterForUser(IQueryable<EmailQueue> q)
+        {
+            var roles = new [] { "Admin", "ManageEmails", "Finance" };
+            if (DbUtil.Db.CurrentUser.Roles.Any(uu => roles.Contains(uu)))
+                return FilterOutFinanceOnly(q);
 
             q = from e in q
                 let p = DbUtil.Db.People.Single(pp => pp.PeopleId == Util.UserPeopleId)

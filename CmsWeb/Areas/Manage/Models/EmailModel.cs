@@ -210,7 +210,7 @@ ORDER BY Name2
 OFFSET (@currentPage-1)*@pageSize ROWS FETCH NEXT @pageSize ROWS ONLY
 ";
             var roles = DbUtil.Db.CurrentRoles();
-            var isAdmin = roles.Contains("Admin") || roles.Contains("ManageEmails");
+            var isAdmin = roles.Contains("Admin") || roles.Contains("ManageEmails") || roles.Contains("Finance");
             string filter;
 
             switch (FilterType)
@@ -248,7 +248,7 @@ OFFSET (@currentPage-1)*@pageSize ROWS FETCH NEXT @pageSize ROWS ONLY
                 return true;
             if (queue.QueuedBy == Util.UserPeopleId)
                 return true;
-            var u = DbUtil.Db.LoadPersonById(Util.UserPeopleId.Value);
+            var u = DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0);
             return queue.FromAddr == u.EmailAddress;
         }
 

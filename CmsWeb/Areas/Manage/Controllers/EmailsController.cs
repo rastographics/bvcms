@@ -52,6 +52,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     			return Content("no user");
             if (User.IsInRole("Admin") 
                 || User.IsInRole("ManageEmails")
+                || User.IsInRole("Finance")
                 || m.queue.FromAddr == curruser.EmailAddress 
                 || m.queue.QueuedBy == curruser.PeopleId
                 || m.queue.EmailQueueTos.Any(et => et.PeopleId == curruser.PeopleId))
@@ -69,6 +70,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     			return Content("no user");
             if (User.IsInRole("Admin") 
                 || User.IsInRole("ManageEmails")
+                || User.IsInRole("Finance")
                 || m.queue.FromAddr == curruser.EmailAddress 
                 || m.queue.QueuedBy == curruser.PeopleId
                 || m.queue.EmailQueueTos.Any(et => et.PeopleId == curruser.PeopleId))
@@ -86,6 +88,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return Content("no user");
             if (User.IsInRole("Admin")
                 || User.IsInRole("ManageEmails")
+                || User.IsInRole("Finance")
                 || m.queue.FromAddr == curruser.EmailAddress
                 || m.queue.QueuedBy == curruser.PeopleId
                 || m.queue.EmailQueueTos.Any(et => et.PeopleId == curruser.PeopleId))

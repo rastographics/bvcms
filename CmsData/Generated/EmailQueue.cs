@@ -52,6 +52,8 @@ namespace CmsData
 		
 		private int? _SendFromOrgId;
 		
+		private bool? _FinanceOnly;
+		
    		
    		private EntitySet< EmailLink> _EmailLinks;
 		
@@ -119,6 +121,9 @@ namespace CmsData
 		
 		partial void OnSendFromOrgIdChanging(int? value);
 		partial void OnSendFromOrgIdChanged();
+		
+		partial void OnFinanceOnlyChanging(bool? value);
+		partial void OnFinanceOnlyChanged();
 		
     #endregion
 		public EmailQueue()
@@ -510,6 +515,28 @@ namespace CmsData
 					this._SendFromOrgId = value;
 					this.SendPropertyChanged("SendFromOrgId");
 					this.OnSendFromOrgIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="FinanceOnly", UpdateCheck=UpdateCheck.Never, Storage="_FinanceOnly", DbType="bit")]
+		public bool? FinanceOnly
+		{
+			get { return this._FinanceOnly; }
+
+			set
+			{
+				if (this._FinanceOnly != value)
+				{
+				
+                    this.OnFinanceOnlyChanging(value);
+					this.SendPropertyChanging();
+					this._FinanceOnly = value;
+					this.SendPropertyChanged("FinanceOnly");
+					this.OnFinanceOnlyChanged();
 				}
 
 			}
