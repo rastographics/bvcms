@@ -120,7 +120,14 @@
                 var taskid = ret.id;
                 if (taskid === 0) {
                     $.unblock();
-                    swal("Success!", ret.content, "success");
+                    swal({
+                        title: 'Success!',
+                        text: ret.content,
+                        type: "success",
+                        showCancelButton: false,
+                    }, function () {
+                        $('button.Send').prop('disabled', true);
+                    });
                 } else {
                     $("#send-actions").remove();
                     var intervalid = window.setInterval(function () {
@@ -130,7 +137,14 @@
                                 swal("Error!", ret.error, "error");
                             } else {
                                 if (ret.title == 'Email has completed.') {
-                                    swal(ret.title, ret.message, "success");
+                                    swal({
+                                        title: ret.title,
+                                        text: ret.message,
+                                        type: "success",
+                                        showCancelButton: false,
+                                    }, function () {
+                                        $('button.Send').prop('disabled', true);
+                                    });
                                     window.clearInterval(intervalid);
                                 } else {
                                     swal({
