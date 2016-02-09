@@ -9,7 +9,7 @@ CREATE TABLE [dbo].[OrganizationMembers]
 [ModifiedBy] [int] NULL,
 [ModifiedDate] [datetime] NULL,
 [InactiveDate] [datetime] NULL,
-[AttendStr] [nvarchar] (200) NULL,
+[AttendStr] [nvarchar] (300) NULL,
 [AttendPct] [real] NULL,
 [LastAttended] [datetime] NULL,
 [Pending] [bit] NULL,
