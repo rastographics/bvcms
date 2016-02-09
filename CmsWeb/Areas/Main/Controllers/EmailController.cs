@@ -250,7 +250,7 @@ namespace CmsWeb.Areas.Main.Controllers
                     // set these again inside thread local storage
                     Util.UserEmail = userEmail;
                     Util.IsInRoleEmailTest = isInRoleEmailTest;
-                    db.SendPeopleEmail(id);
+                    db.SendPeopleEmail(id, m.CcAddresses);
                 }
                 catch (Exception ex)
                 {

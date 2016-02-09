@@ -13,7 +13,7 @@ namespace UtilityExtensions
 {
     public static partial class Util
     {
-        public static void SendMsg(string SysFromEmail, string CmsHost, MailAddress From, string subject, string Message, List<MailAddress> to, int id, int? pid, List<LinkedResource> attachments = null)
+        public static void SendMsg(string SysFromEmail, string CmsHost, MailAddress From, string subject, string Message, List<MailAddress> to, int id, int? pid, List<LinkedResource> attachments = null, List<MailAddress> cc = null)
         {
             if (ConfigurationManager.AppSettings["sendemail"] == "false")
                 return;
@@ -39,6 +39,17 @@ namespace UtilityExtensions
                     var sysmail = new MailAddress(SysFromEmail);
                     if (From.Host != sysmail.Host)
                         msg.Sender = sysmail;
+                }
+            }
+            if (cc != null)
+            {
+                foreach (var a in cc)
+                {
+                    msg.ReplyToList.Add(a);
+                }
+                if (!msg.ReplyToList.Contains(msg.From))
+                {
+                    msg.ReplyToList.Add(msg.From);
                 }
             }
 
