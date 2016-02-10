@@ -43,31 +43,15 @@ namespace UtilityExtensions
             }
             if (cc != null)
             {
-                foreach (var a in cc)
-                {
-                    msg.ReplyToList.Add(a);
-                }
-                if (!msg.ReplyToList.Contains(msg.From))
-                {
-                    msg.ReplyToList.Add(msg.From);
-                }
-            }
-
-            if (cc != null)
-            {
                
                 foreach (var a in cc)
                 {
                     msg.ReplyToList.Add(a);
-
                 }
-
-
                 if (!msg.ReplyToList.Contains(msg.From) && msg.From.Address.NotEqual("mailer@bvcms.com"))
                 {
                      msg.ReplyToList.Add(msg.From);
                 }
-
             }
 
             msg.Headers.Add("X-SMTPAPI",
