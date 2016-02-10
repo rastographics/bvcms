@@ -4669,18 +4669,6 @@ namespace CmsData
                 ).ReturnValue));
         }
 
-        [Function(Name="dbo.LastNameCount", IsComposable = true)]
-        [return: Parameter(DbType = "int")]
-        public int? LastNameCount(
-            [Parameter(Name = "last", DbType="nvarchar")] string last
-            )
-        {
-            return ((int?)(ExecuteMethodCall(this,
-                ((MethodInfo)(MethodBase.GetCurrentMethod())),
-                    last
-                ).ReturnValue));
-        }
-
         [Function(Name="dbo.PrimaryState", IsComposable = true)]
         [return: Parameter(DbType = "nvarchar")]
         public string PrimaryState(

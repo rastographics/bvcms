@@ -46,6 +46,8 @@ namespace CmsData.View
 		
 		private bool? _Conflict;
 		
+		private string _ChurchMemberStatus;
+		
 		
 		public RollList()
 		{
@@ -303,6 +305,23 @@ namespace CmsData.View
 			{
 				if (this._Conflict != value)
 					this._Conflict = value;
+			}
+
+		}
+
+		
+		[Column(Name="ChurchMemberStatus", Storage="_ChurchMemberStatus", DbType="nvarchar(100)")]
+		public string ChurchMemberStatus
+		{
+			get
+			{
+				return this._ChurchMemberStatus;
+			}
+
+			set
+			{
+				if (this._ChurchMemberStatus != value)
+					this._ChurchMemberStatus = value;
 			}
 
 		}

@@ -54,7 +54,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Name", Storage="_Name", DbType="varchar(126)")]
+		[Column(Name="NAME", Storage="_Name", DbType="nvarchar(138)")]
 		public string Name
 		{
 			get
@@ -105,7 +105,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="AttendStr", Storage="_AttendStr", DbType="varchar(200)")]
+		[Column(Name="AttendStr", Storage="_AttendStr", DbType="nvarchar(200)")]
 		public string AttendStr
 		{
 			get
@@ -122,7 +122,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="attendtype", Storage="_Attendtype", DbType="varchar(100)")]
+		[Column(Name="attendtype", Storage="_Attendtype", DbType="nvarchar(100)")]
 		public string Attendtype
 		{
 			get
