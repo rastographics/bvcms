@@ -435,7 +435,7 @@ namespace CmsData
             emailqueue.Started = DateTime.Now;
             SubmitChanges();
 
-            if (emailqueue.SendFromOrgId.HasValue && emailqueue.EmailQueueTos.Count() == 0)
+            if (emailqueue.SendFromOrgId.HasValue)
             {
                 var q2 = from om in OrganizationMembers
                          where om.OrganizationId == emailqueue.SendFromOrgId
@@ -450,6 +450,15 @@ namespace CmsData
                          select om.PeopleId;
                 foreach (var pid in q2)
                 {
+                    // Protect against duplicate PeopleIDs ending up in the queue
+                    var q3 = from eqt in EmailQueueTos
+                             where eqt.EmailQueue == emailqueue
+                             where eqt.PeopleId == pid
+                             select eqt;
+                    if (q3.Any())
+                    {
+                        continue;
+                    }
                     emailqueue.EmailQueueTos.Add(new EmailQueueTo
                     {
                         PeopleId = pid,
