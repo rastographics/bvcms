@@ -188,7 +188,11 @@ namespace CmsWeb.Areas.Manage.Controllers
 						 select e).Single();
 		    var et = email.EmailQueueTos.First();
 		    var p = DbUtil.Db.LoadPersonById(et.PeopleId);
-			DbUtil.Db.Email(email.FromAddr, p, email.Subject, email.Body);
+
+            if(email.FinanceOnly == true)
+                DbUtil.Db.EmailFinanceInformation(email.FromAddr, p, email.Subject, email.Body);
+            else
+    			DbUtil.Db.Email(email.FromAddr, p, email.Subject, email.Body);
 
 		    TempData["message"] = "Mail Resent";
 			return RedirectToAction("Details", new { id });
