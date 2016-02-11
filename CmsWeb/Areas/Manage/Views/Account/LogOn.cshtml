@@ -2,9 +2,18 @@
 @using UtilityExtensions
 @model CmsWeb.Areas.Manage.Controllers.AccountController.AccountInfo
 @{
-    Layout = "_Layout.cshtml";
     ViewBag.Title = "Logon to TouchPoint";
+
+    if ((bool?)ViewData["hasshell"] == true)
+    {
+        Layout = "_CustomLayout.cshtml";
+    }
+    else
+    {
+        Layout = "_Layout.cshtml";
+    }
 }
+
 <h1 class="form-header">@ViewExtensions2.DbSetting("NameOfChurch", "Name Of Church: " + Util.Host)</h1>
 @if (DbUtil.LoginNotice().HasValue())
 {
@@ -45,4 +54,5 @@
             $redirect.val($redirect.val() + window.location.hash);
         });
     </script>
+
 }

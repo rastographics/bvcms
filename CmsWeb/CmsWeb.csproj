@@ -2346,6 +2346,7 @@
     <Content Include="Views\Home\Test.cshtml" />
     <Content Include="Views\Shared\Toolbar\Custom.cshtml" />
     <Content Include="Views\Shared\PageMessage.cshtml" />
+    <Content Include="Areas\Manage\Views\Account\_CustomLayout.cshtml" />
     <None Include="Web.Impersonate.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

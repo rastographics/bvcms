@@ -14,12 +14,15 @@ using net.openstack.Core.Domain;
 using net.openstack.Providers.Rackspace;
 using UtilityExtensions;
 using User = CmsData.User;
+using System.Text.RegularExpressions;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
     [RouteArea("Manage", AreaPrefix = "Account"), Route("{action}/{id?}")]
     public class AccountController : CmsControllerNoHttps
     {
+        private const string LogonPageShellSettingKey = "UX-LoginPageShell";
+
         [HttpPost, MyRequireHttps]
         public ActionResult KeepAlive()
         {
@@ -146,6 +149,8 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return Redirect("/");
             }
 
+            TryLoadAlternateShell();
+
             var m = new AccountInfo {ReturnUrl = returnUrl};
             return View(m);
         }
@@ -260,12 +265,16 @@ namespace CmsWeb.Areas.Manage.Controllers
                     CMSRoleProvider.provider.GetAdmins(),
                     $"touchpoint unknown email: {email} forgot username", "no content");
 
+            TryLoadAlternateShell();
+
             return RedirectToAction("RequestUsername");
         }
 
         [HttpGet, MyRequireHttps]
         public ActionResult ForgotPassword()
         {
+            TryLoadAlternateShell();
+
             var m = new AccountInfo();
             return View(m);
         }
@@ -320,6 +329,8 @@ namespace CmsWeb.Areas.Manage.Controllers
             ViewBag.RequireSpecialCharacter = MembershipService.RequireSpecialCharacter;
             ViewBag.RequireOneNumber = MembershipService.RequireOneNumber;
             ViewBag.RequireOneUpper = MembershipService.RequireOneUpper;
+            
+            TryLoadAlternateShell();
 
             return View("SetPassword");
         }
@@ -327,12 +338,16 @@ namespace CmsWeb.Areas.Manage.Controllers
         [MyRequireHttps]
         public ActionResult RequestPassword()
         {
+            TryLoadAlternateShell();
+
             return View();
         }
 
         [MyRequireHttps]
         public ActionResult RequestUsername()
         {
+            TryLoadAlternateShell();
+
             return View();
         }
 
@@ -344,6 +359,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             ViewBag.RequireSpecialCharacter = MembershipService.RequireSpecialCharacter;
             ViewBag.RequireOneNumber = MembershipService.RequireOneNumber;
             ViewBag.RequireOneUpper = MembershipService.RequireOneUpper;
+            TryLoadAlternateShell();
             return View();
         }
 
@@ -351,6 +367,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpGet]
         public ActionResult SetPassword(Guid? id)
         {
+            TryLoadAlternateShell();
             ViewBag.Id = id;
             return View("SetPasswordConfirm");
         }
@@ -443,6 +460,36 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View();
         }
 
+        [NonAction]
+        protected void TryLoadAlternateShell()
+        {
+            var shell = string.Empty;
+            var alternateShellSetting = DbUtil.DbReadOnly.Settings.SingleOrDefault(x => x.Id == LogonPageShellSettingKey);
+            if (alternateShellSetting != null)
+            {
+                var alternateShell = DbUtil.DbReadOnly.Contents.SingleOrDefault(x => x.Name == alternateShellSetting.SettingX);
+                if (alternateShell != null)
+                {
+                    shell = alternateShell.Body;
+                }
+            }
+
+            if (shell.HasValue())
+            {
+                var re = new Regex(@"(.*<!--FORM START-->\s*).*(<!--FORM END-->.*)", RegexOptions.Singleline);
+                var t = re.Match(shell).Groups[1].Value;
+                ViewBag.hasshell = true;
+                ViewBag.top = t;
+                var b = re.Match(shell).Groups[2].Value;
+                ViewBag.bottom = b;
+            }
+            else
+            {
+                ViewBag.hasshell = false;
+            }
+        }
+
+        [NonAction]
         private bool ValidateChangePassword(string currentPassword, string newPassword, string confirmPassword)
         {
             if (string.IsNullOrEmpty(currentPassword))
