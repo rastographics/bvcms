@@ -9,6 +9,8 @@ namespace CmsWeb.CheckInAPI
     {
         public int id = 0;
         public int age = 0;
+        public int position = 0;
+        public int genderID = 0;
 
         public string name = "";
         public string picture = "";
@@ -22,6 +24,9 @@ namespace CmsWeb.CheckInAPI
         {
             id = member.Id.Value;
             age = member.Age.Value;
+            position = member.Position ?? 100;
+            genderID = member.Genderid ?? 0;
+
             name = member.Name;
 
             Person p = DbUtil.Db.LoadPersonById(id);

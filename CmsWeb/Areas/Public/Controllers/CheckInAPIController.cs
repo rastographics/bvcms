@@ -103,9 +103,7 @@ namespace CmsWeb.Areas.Public.Controllers
             {
                 foreach (var match in matches)
                 {
-                    if (match.Locked.HasValue && match.Locked.Value) continue;
-
-                    CheckInFamily family = new CheckInFamily(match.Familyid.Value, match.Name);
+                    CheckInFamily family = new CheckInFamily(match.Familyid.Value, match.Name, match.Locked ?? false);
 
                     var members = (from a in DbUtil.Db.CheckinFamilyMembers(match.Familyid, cns.campus, cns.day).ToList()
                                    orderby a.Position, a.Position == 10 ? a.Genderid : 10, a.Age descending, a.Hour
@@ -144,7 +142,9 @@ namespace CmsWeb.Areas.Public.Controllers
 
             List<CheckInFamily> families = new List<CheckInFamily>();
 
-            CheckInFamily family = new CheckInFamily(cfs.familyID, "");
+            FamilyCheckinLock familyLock = DbUtil.Db.FamilyCheckinLocks.SingleOrDefault(f => f.FamilyId == dataIn.argInt);
+
+            CheckInFamily family = new CheckInFamily(cfs.familyID, "", familyLock == null ? false : familyLock.Locked);
 
             var members = (from a in DbUtil.Db.CheckinFamilyMembers(cfs.familyID, cfs.campus, cfs.day).ToList()
                            orderby a.Position, a.Position == 10 ? a.Genderid : 10, a.Age descending, a.Hour
@@ -159,6 +159,74 @@ namespace CmsWeb.Areas.Public.Controllers
             br.count = 1;
 
             br.data = SerializeJSON(families, dataIn.version);
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult FamilyInfo(string data)
+        {
+            if (!Auth())
+                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+
+            Family family = DbUtil.Db.Families.First(fam => fam.FamilyId == dataIn.argInt);
+
+            BaseMessage br = new BaseMessage();
+            br.setNoError();
+            br.count = 1;
+            br.id = family.FamilyId;
+            br.data = SerializeJSON(new CheckInFamilyInfo(family), dataIn.version);
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult LockFamily(string data)
+        {
+            if (!Auth())
+                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+
+
+            var lockf = DbUtil.Db.FamilyCheckinLocks.SingleOrDefault(f => f.FamilyId == dataIn.argInt);
+
+            if (lockf == null)
+            {
+                lockf = new FamilyCheckinLock { FamilyId = dataIn.argInt, Created = DateTime.Now };
+                DbUtil.Db.FamilyCheckinLocks.InsertOnSubmit(lockf);
+            }
+
+            lockf.Locked = true;
+            lockf.Created = DateTime.Now;
+
+            DbUtil.Db.SubmitChanges();
+
+            BaseMessage br = new BaseMessage();
+            br.setNoError();
+            br.id = dataIn.argInt;
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult UnLockFamily(string data)
+        {
+            if (!Auth())
+                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+
+            var lockf = DbUtil.Db.FamilyCheckinLocks.SingleOrDefault(f => f.FamilyId == dataIn.argInt);
+
+            if (lockf != null)
+            {
+                lockf.Locked = false;
+                DbUtil.Db.SubmitChanges();
+            }
+
+            BaseMessage br = new BaseMessage();
+            br.setNoError();
+            br.id = dataIn.argInt;
             return br;
         }
 
@@ -210,14 +278,29 @@ namespace CmsWeb.Areas.Public.Controllers
             CheckInAddEditPerson aep = JsonConvert.DeserializeObject<CheckInAddEditPerson>(dataIn.data);
             aep.clean();
 
+            CheckInAddEditPersonResults results = new CheckInAddEditPersonResults();
+
+            Family f;
             Person p;
 
             if (aep.edit)
             {
                 p = DbUtil.Db.LoadPersonById(aep.id);
+
+                f = DbUtil.Db.Families.First(fam => fam.FamilyId == p.FamilyId);
+
+                f.HomePhone = aep.homePhone;
+                f.AddressLineOne = aep.address;
+                f.AddressLineTwo = aep.address2;
+                f.CityName = aep.city;
+                f.StateCode = aep.state;
+                f.ZipCode = aep.zipcode;
+                f.CountryName = aep.country;
             }
             else
             {
+                results.newPerson = true;
+
                 p = new Person();
 
                 p.CreatedDate = Util.Now;
@@ -229,6 +312,38 @@ namespace CmsWeb.Areas.Public.Controllers
                 p.OriginId = OriginCode.Visit;
 
                 p.Name = "";
+
+                if (aep.familyID > 0)
+                {
+                    f = DbUtil.Db.Families.First(fam => fam.FamilyId == aep.familyID);
+                }
+                else
+                {
+                    results.newFamily = true;
+
+                    f = new Family();
+                    DbUtil.Db.Families.InsertOnSubmit(f);
+                }
+
+                f.HomePhone = aep.homePhone;
+                f.AddressLineOne = aep.address;
+                f.AddressLineTwo = aep.address2;
+                f.CityName = aep.city;
+                f.StateCode = aep.state;
+                f.ZipCode = aep.zipcode;
+                f.CountryName = aep.country;
+
+                f.People.Add(p);
+
+                p.PositionInFamilyId = PositionInFamily.Child;
+
+                if (aep.birthday != null && p.GetAge() >= 18)
+                {
+                    if (f.People.Count(per => per.PositionInFamilyId == PositionInFamily.PrimaryAdult) < 2)
+                        p.PositionInFamilyId = PositionInFamily.PrimaryAdult;
+                    else
+                        p.PositionInFamilyId = PositionInFamily.SecondaryAdult;
+                }
             }
 
             p.FirstName = aep.firstName;
@@ -244,76 +359,6 @@ namespace CmsWeb.Areas.Public.Controllers
 
             p.GenderId = aep.genderID;
             p.MaritalStatusId = aep.maritalStatusID;
-
-            Family f;
-
-            if (aep.familyID > 0)
-            {
-                f = DbUtil.Db.Families.First(fam => fam.FamilyId == aep.familyID);
-
-                if (aep.edit)
-                {
-                    f.HomePhone = aep.homePhone;
-                    f.AddressLineOne = aep.address;
-                    f.AddressLineTwo = aep.address2;
-                    f.CityName = aep.city;
-                    f.StateCode = aep.state;
-                    f.ZipCode = aep.zipcode;
-                    f.CountryName = aep.country;
-                }
-                else
-                {
-                    if (aep.homePhone.Length > 0)
-                        f.HomePhone = aep.homePhone;
-
-                    if (aep.address.Length > 0)
-                        f.AddressLineOne = aep.address;
-
-                    if (aep.address2.Length > 0)
-                        f.AddressLineTwo = aep.address2;
-
-                    if (aep.city.Length > 0)
-                        f.CityName = aep.city;
-
-                    if (aep.state.Length > 0)
-                        f.StateCode = aep.state;
-
-                    if (aep.zipcode.Length > 0)
-                        f.ZipCode = aep.zipcode;
-
-                    if (aep.country.Length > 0)
-                        f.CountryName = aep.country;
-                }
-            }
-            else
-            {
-                f = new Family();
-
-                f.HomePhone = aep.homePhone;
-                f.AddressLineOne = aep.address;
-                f.AddressLineTwo = aep.address2;
-                f.CityName = aep.city;
-                f.StateCode = aep.state;
-                f.ZipCode = aep.zipcode;
-                f.CountryName = aep.country;
-
-                DbUtil.Db.Families.InsertOnSubmit(f);
-            }
-
-            if (!aep.edit)
-            {
-                f.People.Add(p);
-
-                p.PositionInFamilyId = PositionInFamily.Child;
-
-                if (aep.birthday != null && p.GetAge() >= 18)
-                {
-                    if (f.People.Count(per => per.PositionInFamilyId == PositionInFamily.PrimaryAdult) < 2)
-                        p.PositionInFamilyId = PositionInFamily.PrimaryAdult;
-                    else
-                        p.PositionInFamilyId = PositionInFamily.SecondaryAdult;
-                }
-            }
 
             p.FixTitle();
 
@@ -331,10 +376,14 @@ namespace CmsWeb.Areas.Public.Controllers
 
             DbUtil.Db.SubmitChanges();
 
+            results.familyID = f.FamilyId;
+            results.peopleID = p.PeopleId;
+            results.position = p.PositionInFamilyId;
+
             BaseMessage br = new BaseMessage();
             br.setNoError();
-            br.id = p.PeopleId;
             br.count = 1;
+            br.data = SerializeJSON(results, dataIn.version);
 
             return br;
         }
