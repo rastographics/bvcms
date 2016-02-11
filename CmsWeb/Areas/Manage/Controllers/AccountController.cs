@@ -126,6 +126,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Route("~/Error")]
         public ActionResult Error(string e)
         {
+            TryLoadAlternateShell();
             ViewBag.Message = e;
             return View();
         }
@@ -378,6 +379,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             if (!id.HasValue)
                 return Content("invalid URL");
+            TryLoadAlternateShell();
             var user = DbUtil.Db.Users.SingleOrDefault(u => u.ResetPasswordCode == id);
             if (user == null || (user.ResetPasswordExpires.HasValue && user.ResetPasswordExpires < DateTime.Now))
                 return View("LinkUsed");
