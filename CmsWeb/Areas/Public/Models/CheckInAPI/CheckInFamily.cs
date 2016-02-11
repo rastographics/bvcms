@@ -12,12 +12,15 @@ namespace CmsWeb.CheckInAPI
 
         public string picture = "";
 
+        public bool locked = false;
+
         public List<CheckInFamilyMember> members = new List<CheckInFamilyMember>();
 
-        public CheckInFamily(int id, string name)
+        public CheckInFamily(int id, string name, bool locked)
         {
             this.id = id;
             this.name = name;
+            this.locked = locked;
 
             Family family = DbUtil.Db.Families.SingleOrDefault(f => f.FamilyId == id);
 

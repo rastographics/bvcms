@@ -465,10 +465,12 @@
     <Compile Include="Areas\People\Models\Downline\DownlineSummaryModel.cs" />
     <Compile Include="Areas\Public\Controllers\CheckInAPIController.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInAddEditPerson.cs" />
+    <Compile Include="Areas\Public\Models\CheckInAPI\CheckInAddEditPersonResults.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInAttend.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInCampus.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInClassSearch.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInFamily.cs" />
+    <Compile Include="Areas\Public\Models\CheckInAPI\CheckInFamilyInfo.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInFamilySearch.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInInformation.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInJoinOrg.cs" />
