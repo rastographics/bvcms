@@ -1,6 +1,8 @@
 using System.Linq;
+using System.Text;
 using System.Web.Mvc;
 using CmsData;
+using Dapper;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
@@ -116,6 +118,16 @@ namespace CmsWeb.Areas.Setup.Controllers
             public string AttendType { get; set; }
             public int? AttendTypeId { get; set; }
             public bool? Hardwired { get; set; }
+        }
+        [HttpGet, Route("~/MemberTypeCodes")]
+        public ActionResult Codes()
+        {
+            var sql = "SELECT Id, Description FROM lookup.MemberType";
+            var q = DbUtil.Db.Connection.Query(sql);
+            var sb = new StringBuilder();
+            foreach (var r in q)
+                sb.AppendLine($"{r.Id}[{r.Description}],");
+            return Content(sb.ToString(), "text/plain");
         }
     }
 }

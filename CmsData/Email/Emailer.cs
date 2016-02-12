@@ -34,17 +34,59 @@ namespace CmsData
 
         public void Email(string from, Person p, List<MailAddress> addmail, string subject, string body, bool redacted)
         {
-            var From = Util.FirstAddress(from);
-            Email(From, p, addmail, subject, body, redacted);
+            Email(Util.FirstAddress(from), p, addmail, subject, body, redacted);
         }
-
-        public void Email(MailAddress From, Person p, List<MailAddress> addmail, string subject, string body, bool redacted)
+        public void EmailFinanceInformation(string from, Person p, string subject, string body)
+        {
+            EmailFinanceInformation(Util.FirstAddress(from), p, null, subject, body);
+        }
+        public void EmailFinanceInformation(MailAddress from, Person p, string subject, string body)
+        {
+            EmailFinanceInformation(from, p, null, subject, body);
+        }
+        public void EmailFinanceInformation(string from, IEnumerable<Person> list, string subject, string body)
+        {
+            var li = list.ToList();
+            if (!li.Any())
+                return;
+            var aa = PersonListToMailAddressList(li);
+            EmailFinanceInformation(Util.FirstAddress(from), li[0], aa, subject, body);
+        }
+        public void EmailFinanceInformation(MailAddress fromaddress, Person p, List<MailAddress> list, string subject, string body)
         {
             var emailqueue = new EmailQueue
             {
                 Queued = DateTime.Now,
-                FromAddr = From.Address,
-                FromName = From.DisplayName,
+                FromAddr = fromaddress.Address,
+                FromName = fromaddress.DisplayName,
+                Subject = subject,
+                Body = body,
+                QueuedBy = Util.UserPeopleId,
+                Transactional = true,
+                FinanceOnly = true
+            };
+            EmailQueues.InsertOnSubmit(emailqueue);
+            string addmailstr = null;
+            if (list != null)
+                addmailstr = list.EmailAddressListToString();
+            emailqueue.EmailQueueTos.Add(new EmailQueueTo
+            {
+                PeopleId = p.PeopleId,
+                OrgId = CurrentOrgId,
+                AddEmail = addmailstr,
+                Guid = Guid.NewGuid(),
+            });
+            SubmitChanges();
+            SendPersonEmail(emailqueue.Id, p.PeopleId);
+        }
+
+        public void Email(MailAddress fromAddress, Person p, List<MailAddress> addmail, string subject, string body, bool redacted)
+        {
+            var emailqueue = new EmailQueue
+            {
+                Queued = DateTime.Now,
+                FromAddr = fromAddress.Address,
+                FromName = fromAddress.DisplayName,
                 Subject = subject,
                 Body = body,
                 QueuedBy = Util.UserPeopleId,
@@ -121,17 +163,24 @@ namespace CmsData
         }
         public List<Person> RecurringGivingNotifyPersons()
         {
-            if (Setting("SendRecurringGiftFailureNoticesToFinanceUsers", "false") == "false")
+            var notifyids = (from o in Organizations
+                             where o.RegistrationTypeId == RegistrationTypeCode.ManageGiving
+                             select o.NotifyIds).FirstOrDefault();
+            var people = new List<Person>();
+            var toppid = 0;
+            if (notifyids.HasValue())
             {
-                var notifyids = (from o in Organizations
-                                 where o.RegistrationTypeId == RegistrationTypeCode.ManageGiving
-                                 select o.NotifyIds).FirstOrDefault();
-                if (notifyids.HasValue())
-                    return PeopleFromPidString(notifyids).ToList();
+                var ppl = PeopleFromPidString(notifyids).ToList();
+                if (Setting("SendRecurringGiftFailureNoticesToFinanceUsers", "false") == "false")
+                    return ppl;
+                toppid = ppl[0].PeopleId;
+                people.Add(ppl[0]);
             }
-            return (from u in Users
-                    where u.UserRoles.Any(ur => ur.Role.RoleName == "Finance")
-                    select u.Person).ToList();
+            people.AddRange(from u in Users
+                            where u.UserRoles.Any(ur => ur.Role.RoleName == "Finance")
+                            where u.PeopleId != toppid
+                            select u.Person);
+            return people;
         }
         public string StaffEmailForOrg(int orgid)
         {
@@ -236,7 +285,7 @@ namespace CmsData
             if (tag == null)
                 return null;
 
-            using(var tran = new TransactionScope(TransactionScopeOption.Required, TimeSpan.FromSeconds(1200)))
+            using (var tran = new TransactionScope(TransactionScopeOption.Required, TimeSpan.FromSeconds(1200)))
             {
                 var emailqueue = new EmailQueue
                 {
@@ -268,26 +317,26 @@ namespace CmsData
                 IQueryable<int> q2 = null;
                 if (emailqueue.CCParents == true)
                     q2 = from p in q.Distinct()
-                        where (p.EmailAddress ?? "") != ""
-                              || (p.Family.HeadOfHousehold.EmailAddress ?? "") != ""
-                              || (p.Family.HeadOfHouseholdSpouse.EmailAddress ?? "") != ""
-                        where (p.SendEmailAddress1 ?? true)
-                              || (p.SendEmailAddress2 ?? false)
-                              || (p.Family.HeadOfHousehold.SendEmailAddress1 ?? false)
-                              || (p.Family.HeadOfHousehold.SendEmailAddress2 ?? false)
-                              || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress1 ?? false)
-                              || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress2 ?? false)
-                        where p.EmailOptOuts.All(oo => oo.FromEmail != emailqueue.FromAddr)
-                        orderby p.PeopleId
-                        select p.PeopleId;
+                         where (p.EmailAddress ?? "") != ""
+                               || (p.Family.HeadOfHousehold.EmailAddress ?? "") != ""
+                               || (p.Family.HeadOfHouseholdSpouse.EmailAddress ?? "") != ""
+                         where (p.SendEmailAddress1 ?? true)
+                               || (p.SendEmailAddress2 ?? false)
+                               || (p.Family.HeadOfHousehold.SendEmailAddress1 ?? false)
+                               || (p.Family.HeadOfHousehold.SendEmailAddress2 ?? false)
+                               || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress1 ?? false)
+                               || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress2 ?? false)
+                         where p.EmailOptOuts.All(oo => oo.FromEmail != emailqueue.FromAddr)
+                         orderby p.PeopleId
+                         select p.PeopleId;
                 else
                     q2 = from p in q.Distinct()
-                        where p.EmailAddress != null
-                        where p.EmailAddress != ""
-                        where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
-                        where p.EmailOptOuts.All(oo => oo.FromEmail != emailqueue.FromAddr)
-                        orderby p.PeopleId
-                        select p.PeopleId;
+                         where p.EmailAddress != null
+                         where p.EmailAddress != ""
+                         where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
+                         where p.EmailOptOuts.All(oo => oo.FromEmail != emailqueue.FromAddr)
+                         orderby p.PeopleId
+                         select p.PeopleId;
 
                 foreach (var pid in q2)
                 {
@@ -604,12 +653,12 @@ namespace CmsData
                     var hash = hashMD5Base64(md5Hash, att.Value + DateTime.Now.ToString("o") + linkIndex);
 
                     var emailLink = new EmailLink
-                        {
-                            Created = DateTime.Now,
-                            EmailID = emailID,
-                            Hash = hash,
-                            Link = att.Value
-                        };
+                    {
+                        Created = DateTime.Now,
+                        EmailID = emailID,
+                        Hash = hash,
+                        Link = att.Value
+                    };
                     EmailLinks.InsertOnSubmit(emailLink);
                     SubmitChanges();
 

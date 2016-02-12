@@ -20,17 +20,17 @@ BEGIN
 		AttendCreditCode INT,
 		AttendanceTypeId INT
 	)
-	INSERT INTO @t SELECT TOP 52 * FROM dbo.AttendanceCredits(@orgid, @pid)
+	INSERT INTO @t SELECT TOP 52 * FROM dbo.AttendanceCredits(@orgid, @pid) 
 	
 	SELECT @tct = COUNT(*) FROM @t WHERE Attended IS NOT NULL
     SELECT @act = COUNT(*) FROM @t WHERE Attended = 1
        
 	if @tct = 0
 		SELECT @pct = 0
-	else
+	ELSE
 		SELECT @pct = @act * 100.0 / @tct
 			
-	SELECT TOP 52 @a = 
+	SELECT TOP 52 @a = @a +
 		CASE 
 		WHEN Attended IS NULL THEN
 			CASE AttendanceTypeId
@@ -43,7 +43,7 @@ BEGIN
 			END
 		WHEN Attended = 1 THEN 'P'
 		ELSE '.'
-		END + @a
+		END
 	FROM @t
 	
 	SELECT @lastattend = MAX(a.MeetingDate) FROM dbo.Attend a

@@ -422,7 +422,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="AttendStr", UpdateCheck=UpdateCheck.Never, Storage="_AttendStr", DbType="nvarchar(200)")]
+		[Column(Name="AttendStr", UpdateCheck=UpdateCheck.Never, Storage="_AttendStr", DbType="nvarchar(300)")]
 		public string AttendStr
 		{
 			get { return this._AttendStr; }

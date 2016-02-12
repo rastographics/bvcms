@@ -7,7 +7,7 @@
     var testnofinance = ((string)HttpContext.Current.Session["testnofinance"]) == "true";
     //var developer = User.IsInRole("Developer");
 }
-<a href="#" class="dropdown-toggle" data-toggle="dropdown" id="me">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" id="me" title="@Util.UserName">
   @if (!string.IsNullOrEmpty(Util.UserThumbPictureUrl))
   {
       <div id="thumbnail-picture" class="img-circle hidden-xs"></div>

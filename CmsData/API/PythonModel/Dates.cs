@@ -50,10 +50,9 @@ namespace CmsData
             return dt;
         }
 
-        public DateTime ParseDate(string dt)
+        public DateTime? ParseDate(string dt)
         {
-            var d = dt.ToDate();
-            return d ?? DateTime.MinValue;
+            return dt.ToDate();
         }
 
         public DateTime SundayForDate(object dt)

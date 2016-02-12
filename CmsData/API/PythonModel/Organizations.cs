@@ -11,9 +11,9 @@ namespace CmsData
     {
         public int CurrentOrgId { get; set; }
 
-        public void AddMembersToOrg(object savedQuery, object orgId)
+        public void AddMembersToOrg(object query, object orgId)
         {
-            var q = db.PeopleQuery2(savedQuery);
+            var q = db.PeopleQuery2(query);
             var dt = DateTime.Now;
             foreach (var p in q)
             {
@@ -68,10 +68,15 @@ namespace CmsData
             return om.IsInGroup(group);
         }
 
-        public void JoinOrg(int orgId, Person p)
+        public void JoinOrg(int orgid, object person)
         {
             var db2 = NewDataContext();
-            OrganizationMember.InsertOrgMembers(db2, orgId, p.PeopleId, 220, DateTime.Now, null, false);
+
+            if(person is int)
+                OrganizationMember.InsertOrgMembers(db2, orgid, person.ToInt(), 220, DateTime.Now, null, false);
+            else if(person is Person)
+                OrganizationMember.InsertOrgMembers(db2, orgid, ((Person)person).PeopleId, 220, DateTime.Now, null, false);
+
             db2.Dispose();
         }
 
@@ -82,22 +87,6 @@ namespace CmsData
                     where divid == 0 || o.DivOrgs.Select(dd => dd.DivId).Contains(divid)
                     select o.OrganizationId;
             return q.ToList();
-        }
-
-        public Guid OrgMembersQuery(int progid, int divid, int orgid, string memberTypes)
-        {
-            var c = db.ScratchPadCondition();
-            c.Reset();
-            var mtlist = memberTypes.Split(',');
-            var mts = string.Join(";", from mt in db.MemberTypes
-                                       where mtlist.Contains(mt.Description)
-                                       select $"{mt.Id},{mt.Code}");
-            var clause = c.AddNewClause(QueryType.MemberTypeCodes, CompareType.OneOf, mts);
-            clause.Program = progid.ToString();
-            clause.Division = divid.ToString();
-            clause.Organization = orgid.ToString();
-            c.Save(db);
-            return c.Id;
         }
 
         public void RemoveSubGroup(object pid, object orgId, string group)

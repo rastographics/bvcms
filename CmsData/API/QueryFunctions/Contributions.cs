@@ -86,5 +86,11 @@ namespace CmsData
                 Debug.WriteLine(c.ContributionId);
             return Convert.ToDouble(q.Sum(c => c.ContributionAmount) ?? 0);
         }
+        public string DateRangeForContributionTotals(int days1, int days2)
+        {
+            var dt1 = DateTime.Today.AddDays(-days1);
+            var dt2 = DateTime.Today.AddDays(-days2);
+            return $"from {dt1.ToShortDateString()} up to {dt2.ToShortDateString()}";
+        }
     }
 }

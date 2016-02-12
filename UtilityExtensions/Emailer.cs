@@ -13,31 +13,33 @@ namespace UtilityExtensions
 {
     public static partial class Util
     {
-        public static void SendMsg(string SysFromEmail, string CmsHost, MailAddress From, string subject, string Message, List<MailAddress> to, int id, int? pid, List<LinkedResource> attachments = null, List<MailAddress> cc = null)
+ 
+        public static void SendMsg(string sysFromEmail, string cmsHost, MailAddress fromAddress, string subject, string message, List<MailAddress> to, int id, int? pid, List<LinkedResource> attachments = null, List<MailAddress> cc = null)
+ 
         {
             if (ConfigurationManager.AppSettings["sendemail"] == "false")
                 return;
 
             var senderrorsto = ConfigurationManager.AppSettings["senderrorsto"];
             var msg = new MailMessage();
-            if (From == null)
-                From = FirstAddress(senderrorsto);
+            if (fromAddress == null)
+                fromAddress = FirstAddress(senderrorsto);
             var problemDomains = (ConfigurationManager.AppSettings["ProblemDomainsForEmail"] ?? "").Split(',');
-            if (problemDomains.Any(dd => From.Host.ToLower() == dd || to.Any(ee => ee.Host.ToLower() == dd)))
+            if (problemDomains.Any(dd => fromAddress.Host.ToLower() == dd || to.Any(ee => ee.Host.ToLower() == dd)))
             {
-                if (!SysFromEmail.HasValue())
-                    SysFromEmail = "mailer@bvcms.com";
-                var sysmail = new MailAddress(SysFromEmail, From.DisplayName);
+                if (!sysFromEmail.HasValue())
+                    sysFromEmail = "mailer@bvcms.com";
+                var sysmail = new MailAddress(sysFromEmail, fromAddress.DisplayName);
                 msg.From = sysmail;
-                msg.ReplyToList.Add(From);
+                msg.ReplyToList.Add(fromAddress);
             }
             else
             {
-                msg.From = From;
-                if (SysFromEmail.HasValue())
+                msg.From = fromAddress;
+                if (sysFromEmail.HasValue())
                 {
-                    var sysmail = new MailAddress(SysFromEmail);
-                    if (From.Host != sysmail.Host)
+                    var sysmail = new MailAddress(sysFromEmail);
+                    if (fromAddress.Host != sysmail.Host)
                         msg.Sender = sysmail;
                 }
             }
@@ -55,8 +57,8 @@ namespace UtilityExtensions
             }
 
             msg.Headers.Add("X-SMTPAPI",
-                $"{{\"unique_args\":{{\"host\":\"{CmsHost}\",\"mailid\":\"{id}\",\"pid\":\"{pid}\"}}}}");
-            msg.Headers.Add("X-BVCMS", $"host:{CmsHost}, mailid:{id}, pid:{pid}");
+                $"{{\"unique_args\":{{\"host\":\"{cmsHost}\",\"mailid\":\"{id}\",\"pid\":\"{pid}\"}}}}");
+            msg.Headers.Add("X-BVCMS", $"host:{cmsHost}, mailid:{id}, pid:{pid}");
 
             foreach (var ma in to)
             {
@@ -65,24 +67,25 @@ namespace UtilityExtensions
             }
             msg.Subject = subject;
             var addrs = string.Join(", ", to.Select(tt => tt.ToString()));
-            var BadEmailLink = "";
+            var badEmailLink = "";
             if (msg.To.Count == 0 && to.Any(tt => tt.Host == "nowhere.name"))
                 return;
             if (msg.To.Count == 0)
             {
                 msg.AddAddr(msg.From);
                 msg.AddAddr(FirstAddress(senderrorsto));
-                msg.Subject += $"-- bad addr for {CmsHost}({pid})";
-                BadEmailLink = $"<p><a href='{CmsHost}/Person2/{pid}'>bad addr for</a></p>\n";
+                msg.Subject += $"-- bad addr for {cmsHost}({pid})";
+                badEmailLink = $"<p><a href='{cmsHost}/Person2/{pid}'>bad addr for</a></p>\n";
             }
 
             var regex = new Regex("</?([^>]*)>", RegexOptions.IgnoreCase | RegexOptions.Multiline);
-            var text = regex.Replace(Message, string.Empty);
+            var text = regex.Replace(message, string.Empty);
             var htmlView1 = AlternateView.CreateAlternateViewFromString(text, Encoding.UTF8, MediaTypeNames.Text.Plain);
             htmlView1.TransferEncoding = TransferEncoding.Base64;
             msg.AlternateViews.Add(htmlView1);
 
-            var html = BadEmailLink + Message;
+ 
+            var html = badEmailLink + message;
 
             if (cc != null)
             {
@@ -91,6 +94,7 @@ namespace UtilityExtensions
                 var ccstring = $"<p align='center'><small><i>This email was CC\'d to the email addresses below and they are included in the Reply-To Field.</br>" + cclist + "</i></small></p>";
                 html = html + ccstring;
             }
+
 
             var result = PreMailer.Net.PreMailer.MoveCssInline(html);
             html = result.Html;

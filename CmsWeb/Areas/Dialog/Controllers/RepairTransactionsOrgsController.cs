@@ -9,14 +9,11 @@ namespace CmsWeb.Areas.Dialog.Controllers
     [RouteArea("Dialog", AreaPrefix="RepairTransactionsOrgs"), Route("{action}/{id?}")]
     public class RepairTransactionsOrgsController : CmsStaffController
     {
-        [HttpPost, Route("~/RepairTransactionsOrgs/{id:int}")]
-        public ActionResult Index(int id, OrgSearchModel osm)
+        [HttpPost, Route("~/RepairTransactionsOrgs")]
+        public ActionResult Index(OrgSearchModel osm)
         {
-            var model = new RepairTransactionsOrgs(id);
-            var orgIds = osm.FetchOrgs().Select(oo => oo.OrganizationId).ToArray();
-            model.Orgs = string.Join(",", orgIds);
-            model.Count = orgIds.Length;
-            model.RemoveExistingLop(DbUtil.Db, id, RepairTransactionsOrgs.Op);
+            var model = new RepairTransactionsOrgs(osm);
+            model.RemoveExistingLop(DbUtil.Db, model.Id, RepairTransactionsOrgs.Op);
             return View(model);
         }
 

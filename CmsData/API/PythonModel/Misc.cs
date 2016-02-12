@@ -5,6 +5,7 @@ namespace CmsData
 {
     public partial class PythonModel
     {
+        public string CmsHost => db.ServerLink().TrimEnd('/');
         public bool FromMorningBatch { get; set; }
         public string UserName => Util.UserName;
         public dynamic Data { get; }
@@ -52,6 +53,11 @@ namespace CmsData
         {
             var c = db.ContentOfTypeHtml(name);
             return c.Body;
+        }
+        public string TitleContent(string name)
+        {
+            var c = db.ContentOfTypeHtml(name);
+            return c.Title;
         }
 
         public string Replace(string text, string pattern, string replacement)

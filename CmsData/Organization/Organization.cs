@@ -407,6 +407,26 @@ namespace CmsData
             }
             return ev;
         }
+        public static OrganizationExtra GetExtraValue(CMSDataContext db, int id, string field)
+        {
+            field = field.Replace('/', '-');
+            var q = from v in db.OrganizationExtras
+                    where v.Field == field
+                    where v.OrganizationId == id
+                    select v;
+            var ev = q.SingleOrDefault();
+            if (ev == null)
+            {
+                ev = new OrganizationExtra
+                {
+                    OrganizationId = id,
+                    Field =  field,
+                    TransactionTime = DateTime.Now
+                };
+                db.OrganizationExtras.InsertOnSubmit(ev);
+            }
+            return ev;
+        }
 
         public void AddEditExtra(CMSDataContext db, string field, string value, bool multiline = false)
         {

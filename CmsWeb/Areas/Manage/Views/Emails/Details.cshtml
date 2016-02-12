@@ -185,7 +185,7 @@
                             {
                                 <li><a href="/EmailView/@Model.Id"><i class="fa fa-search"></i>&nbsp;&nbsp;View Email</a></li>
                             }
-                            else if (User.IsInRole("Admin") || Model.queue.QueuedBy == Util.UserPeopleId)
+                            else if (User.IsInRole("Admin") || User.IsInRole("Finance") || User.IsInRole("ManageEmails") || Model.queue.QueuedBy == Util.UserPeopleId)
                             {
                                 <li><a href="/Manage/Emails/MakePublic/@Model.queue.Id"><i class="fa fa-globe"></i>&nbsp;&nbsp;Make Public</a></li>
                                 if (Model.queue.Transactional == true)
