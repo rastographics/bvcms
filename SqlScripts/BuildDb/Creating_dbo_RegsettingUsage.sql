@@ -44,7 +44,7 @@ SELECT
 		+CASE WHEN RegSettingXml.value('(//AskParents)[1]', 'bit') = 1 THEN ' Parents' ELSE '' END
 		+CASE WHEN RegSettingXml.value('(//AskSMS)[1]', 'bit') = 1 THEN ' SMS' ELSE '' END
 		+CASE WHEN RegSettingXml.value('(//AskTylenolEtc)[1]', 'bit') = 1 THEN ' TylenolEtc' ELSE '' END
-		+CASE WHEN RegSettingXml.value('(//AskSuggestedFee)[1]', 'bit') = 1 THEN ' SuggestedFee' ELSE '' END
+		+CASE WHEN LEN(ISNULL(RegSettingXml.value('(//AskSuggestedFee)[1]', 'varchar(80)'), '')) > 0 THEN ' AskSuggestedFee' ELSE '' END
 		+CASE WHEN LEN(ISNULL(RegSettingXml.value('(//AskRequest)[1]', 'varchar(80)'), '')) > 0 THEN ' Request' ELSE '' END
 		+CASE WHEN LEN(ISNULL(RegSettingXml.value('(//AskTickets)[1]', 'varchar(100)'), '')) > 0 THEN ' Tickets' ELSE '' END
 		+CASE WHEN RegSettingXml.value('(//NoReqBirthYear)[1]', 'bit') = 1 THEN ' NoReqBirthYear' ELSE '' END
@@ -81,6 +81,7 @@ SELECT
 		+CASE WHEN LEN(ISNULL(RegSettingXml.value('(//DonationLabel)[1]', 'varchar(50)'), '')) > 0 THEN ' DonationLabel' ELSE '' END
 		+CASE WHEN RegSettingXml.value('(//DonationFundId)[1]', 'int') > 0 THEN ' DonationFundId' ELSE '' END
 FROM dbo.Organizations WHERE RegSettingXml IS NOT NULL
+
 
 
 GO
