@@ -1104,7 +1104,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         {
             if (!field.HasValue())
                 field = "blank";
-            field = field.Replace(",", "_");
+            //field = field.Replace(",", "_");
             var ev = PeopleExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase: true) == 0);
             if (ev == null)
             {
@@ -1200,7 +1200,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
         public static PeopleExtra GetExtraValue(CMSDataContext db, int id, string field)
         {
-            field = field.Replace('/', '-');
+            //field = field.Replace('/', '-');
             var q = from v in db.PeopleExtras
                     where v.Field == field
                     where v.PeopleId == id
@@ -1220,7 +1220,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
         public static bool ExtraValueExists(CMSDataContext db, int id, string field)
         {
-            field = field.Replace('/', '-');
+            //field = field.Replace('/', '-');
             var q = from v in db.PeopleExtras
                     where v.Field == field
                     where v.PeopleId == id
