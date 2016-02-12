@@ -1868,6 +1868,12 @@ namespace CmsData
 
         }
 
+        public Table< View.InProgressRegistration> ViewInProgressRegistrations
+        {
+            get { return GetTable< View.InProgressRegistration>(); }
+
+        }
+
         public Table< View.LastAttend> ViewLastAttends
         {
             get { return GetTable< View.LastAttend>(); }

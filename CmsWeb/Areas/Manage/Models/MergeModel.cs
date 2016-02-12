@@ -11,6 +11,8 @@ using System.Text;
 using System.Net.Mail;
 using System.Web.UI.WebControls;
 using System.Web.UI;
+using CmsWeb.Areas.OnlineReg.Controllers;
+using CmsWeb.Areas.OnlineReg.Models;
 
 namespace CmsWeb.Models
 {
@@ -97,13 +99,14 @@ namespace CmsWeb.Models
             public bool hasotherfamily { get; set; }
             public bool hasrelations { get; set; }
             public bool hasinvolvements { get; set; }
+            public bool hasinprogressreg { get; set; }
         }
 
 
         public MergeModel(int pid1, int pid2)
         {
-            var Db = DbUtil.Db;
-            var q = from p in DbUtil.Db.People
+            var db = DbUtil.Db;
+            var q = from p in db.People
                     where p.PeopleId == pid1 || p.PeopleId == pid2
                     orderby p.PeopleId == pid1 ? 1 : 2
                     let notdup = p.PeopleExtras.Any(ee => ee.Field == "notdup" && (ee.IntValue == pid1 || ee.IntValue == pid2))
@@ -142,7 +145,8 @@ namespace CmsWeb.Models
                         hasinvolvements = oinvolvements > 0,
                         hasotherfamily = ofamily > 1,
                         hasrelations = orelations > 0,
-                        MemberStatus = p.MemberStatus.Description
+                        MemberStatus = p.MemberStatus.Description,
+                        hasinprogressreg = db.ViewInProgressRegistrations.Any(vv => vv.PeopleId == p.PeopleId)
                     };
             pi = q.ToList();
             pi.Add(new BasicInfo());

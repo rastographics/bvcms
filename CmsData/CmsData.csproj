@@ -579,6 +579,7 @@
     <Compile Include="Generated\Views\FailedRecurringGiving.cs" />
     <Compile Include="Generated\Views\FamilyFirstTime.cs" />
     <Compile Include="Generated\Views\IncompleteTask.cs" />
+    <Compile Include="Generated\Views\InProgressRegistration.cs" />
     <Compile Include="Generated\Views\LastAttend.cs" />
     <Compile Include="Generated\Views\MeetingConflict.cs" />
     <Compile Include="Generated\Views\MinistryInfo.cs" />

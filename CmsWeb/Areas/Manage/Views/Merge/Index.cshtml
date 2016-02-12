@@ -73,42 +73,75 @@
               <td></td>
               <td></td>
             </tr>
-            <tr>
-              <td></td>
-              <td></td>
-              <td style="color: Red">@(Model.pi[0].FamilyId == Model.pi[1].FamilyId ? "Same Family" : "") </td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr>
-              <td></td>
-              <td></td>
-              <td style="color: Red">@(Model.pi[0].FamilyId == Model.pi[1].FamilyId ? "Same Family" : "") </td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr>
-              <td></td>
-              <td></td>
-              <td style="color: Red">@(Model.pi[0].hasotherfamily ? "Has Family" : "") </td>
-              <td></td>
-              <td style="color: Red">@(Model.pi[1].hasotherfamily ? "Has Family" : "") </td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr>
-              <td></td>
-              <td></td>
-              <td style="color: Red">@(Model.pi[0].hasrelations ? "Has Relations" : "") </td>
-              <td></td>
-              <td style="color: Red">@(Model.pi[1].hasrelations ? "Has Relations" : "") </td>
-              <td></td>
-              <td></td>
-            </tr>
+
+            @if (Model.pi[0].FamilyId == Model.pi[1].FamilyId)
+            {
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td style="color: Red">@(Model.pi[0].FamilyId == Model.pi[1].FamilyId ? "Same Family" : "") </td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+            }
+            @if (Model.pi[0].hasotherfamily || Model.pi[1].hasotherfamily)
+            {
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td style="color: Red">@(Model.pi[0].hasotherfamily ? "Has Family" : "") </td>
+                  <td></td>
+                  <td style="color: Red">@(Model.pi[1].hasotherfamily ? "Has Family" : "") </td>
+                  <td></td>
+                  <td></td>
+                </tr>
+            }
+            @if (Model.pi[0].hasrelations || Model.pi[1].hasrelations)
+            {
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td style="color: Red">@(Model.pi[0].hasrelations ? "Has Relations" : "") </td>
+                  <td></td>
+                  <td style="color: Red">@(Model.pi[1].hasrelations ? "Has Relations" : "") </td>
+                  <td></td>
+                  <td></td>
+                </tr>
+            }
+            @if (Model.pi[0].hasinprogressreg || Model.pi[1].hasinprogressreg)
+            {
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td style="color: Red">
+                    @(Model.pi[0].hasinprogressreg ? "In-Progress Registration" : "")
+                  </td>
+                  <td></td>
+                  <td style="color: Red">
+                    @(Model.pi[1].hasinprogressreg ? "In-Progress Registration" : "")
+                  </td>
+                  <td></td>
+                  <td></td>
+                </tr>
+            }
+            @if (Model.pi[0].hasinvolvements || Model.pi[1].hasinvolvements)
+            {
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td style="color: Red">
+                    @(Model.pi[0].hasinvolvements ? "Has Involvements" : "")
+                  </td>
+                  <td></td>
+                  <td style="color: Red">
+                    @(Model.pi[1].hasinvolvements ? "Has Involvements" : "")
+                  </td>
+                  <td></td>
+                  <td></td>
+                </tr>
+            }
             <tr>
               <td>
                 Title Code
@@ -649,19 +682,6 @@
               <td></td>
               <td>
                 @Model.pi[1].Created.FormatDateTm()
-              </td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr>
-              <td></td>
-              <td></td>
-              <td style="color: Red">
-                @(Model.pi[0].hasinvolvements ? "Has Involvements" : "")
-              </td>
-              <td></td>
-              <td style="color: Red">
-                @(Model.pi[1].hasinvolvements ? "Has Involvements" : "")
               </td>
               <td></td>
               <td></td>
