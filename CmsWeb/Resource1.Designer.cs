@@ -410,16 +410,13 @@ namespace CmsWeb {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 
-        ///Hi {first}
-        ///
-        ///Here is your confirmation for {org}.
-        ///
-        ///DETAILS: 
+        ///   Looks up a localized string similar to Hi {first}
+        ///&lt;p&gt;Here is your confirmation for {org}.&lt;/p&gt;
+        ///DETAILS: &lt;br/&gt;
         ///{details}
-        ///
+        ///&lt;p&gt;
         ///Your Ministry Team for {org}
-        ///.
+        ///&lt;/p&gt;.
         /// </summary>
         internal static string SettingsRegistrationModel_DefaulConfirmation {
             get {
