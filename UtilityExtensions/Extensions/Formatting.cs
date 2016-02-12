@@ -188,9 +188,11 @@ namespace UtilityExtensions
         public static string FmtFone(this string phone, string prefix)
         {
             phone = phone.FmtFone();
-            if (phone.HasValue())
+            if (!phone.HasValue())
+                return "";
+            if(prefix.HasValue())
                 return prefix + " " + phone;
-            return "";
+            return phone;
         }
 
         public static string FmtFone7(this string phone)
