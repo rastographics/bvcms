@@ -341,7 +341,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private OrganizationMember RecordAllFamilyAttends(OrganizationMember om)
         {
-            om.AddToGroup(DbUtil.Db, "Attended");
+            om.AddToGroup(DbUtil.Db, "Attending");
             om.AddToGroup(DbUtil.Db, "Registered");
             foreach (var fm in FamilyAttend)
             {
@@ -384,13 +384,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     else
                     {
                         omm = OrganizationMember.Load(DbUtil.Db, pp.PeopleId, org.OrganizationId);
-                        omm?.RemoveFromGroup(DbUtil.Db, "Attended");
+                        omm?.RemoveFromGroup(DbUtil.Db, "Attending");
                     }
                 }
                 if (omm == null)
                     continue;
                 if (fm.Attend)
-                    omm.AddToGroup(DbUtil.Db, "Attended");
+                    omm.AddToGroup(DbUtil.Db, "Attending");
                 if (!fm.PeopleId.HasValue)
                     omm.AddToGroup(DbUtil.Db, "Added");
             }
