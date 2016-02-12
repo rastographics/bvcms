@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CmsData;
@@ -39,9 +40,14 @@ namespace CmsWeb.Areas.Org.Models
             return DbUtil.Db.Setting("RegularMeetingHeadCount", "enable");
         }
 
-        public IEnumerable<RollsheetModel.AttendInfo> Attends(bool sorted = false)
+        public IEnumerable<RollsheetModel.AttendInfo> Attends(bool sorted = false, string highlight = null)
         {
-            return RollsheetModel.RollList(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted, currmembers);
+            if (!meeting.MeetingDate.HasValue)
+                throw new Exception("Meeting should have a date");
+            var rm = highlight == null 
+                ? RollsheetModel.RollList(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted, currmembers)
+                : RollsheetModel.RollListHighlight(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted, currmembers, highlight);
+            return rm;
         }
         public IEnumerable<RollsheetModel.AttendInfo> VisitAttends(bool sorted = false)
         {

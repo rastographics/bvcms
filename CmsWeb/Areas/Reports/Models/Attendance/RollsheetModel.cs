@@ -239,7 +239,8 @@ namespace CmsWeb.Areas.Reports.Models
                        AttendType = p.AttendType,
                        OtherAttend = p.OtherAttends,
                        CurrMember = p.CurrMember == true,
-                       Conflict = p.Conflict == true
+                       Conflict = p.Conflict == true,
+                       ChurchMemberStatus = p.ChurchMemberStatus
                    };
         }
         public static IEnumerable<AttendInfo> RollListHighlight(int? meetingId, int orgId, DateTime meetingDate,
@@ -273,6 +274,7 @@ namespace CmsWeb.Areas.Reports.Models
                        OtherAttend = p.OtherAttends,
                        CurrMember = p.CurrMember ?? false,
                        Highlight = p.Highlight ?? false,
+                       ChurchMemberStatus = p.ChurchMemberStatus
                    };
         }
 
@@ -291,6 +293,7 @@ namespace CmsWeb.Areas.Reports.Models
 			public string CurrMemberType { get; set; }
 			public string MemberType { get; set; }
 			public string AttendType { get; set; }
+			public string ChurchMemberStatus { get; set; }
 			public int? OtherAttend { get; set; }
             public bool Highlight { get; set; }
             public bool Conflict { get; set; }

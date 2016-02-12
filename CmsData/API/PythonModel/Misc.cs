@@ -5,6 +5,7 @@ namespace CmsData
 {
     public partial class PythonModel
     {
+        public string CmsHost => db.ServerLink().TrimEnd('/');
         public bool FromMorningBatch { get; set; }
         public string UserName => Util.UserName;
         public dynamic Data { get; }

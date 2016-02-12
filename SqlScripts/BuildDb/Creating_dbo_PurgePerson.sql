@@ -86,6 +86,7 @@ BEGIN
 		DELETE dbo.ManagedGiving WHERE PeopleId = @pid
 		DELETE dbo.PaymentInfo WHERE PeopleId = @pid
 		DELETE dbo.MemberDocForm WHERE PeopleId = @pid
+		DELETE dbo.MobileAppPushRegistrations WHERE PeopleId = @pid
 		
 		DELETE dbo.Preferences WHERE UserId IN (SELECT UserId FROM dbo.Users WHERE PeopleId = @pid)
 		DELETE dbo.ActivityLog WHERE UserId IN (SELECT UserId FROM dbo.Users WHERE PeopleId = @pid)
@@ -152,6 +153,7 @@ BEGIN
 		RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);
 	END CATCH 
 END
+
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO

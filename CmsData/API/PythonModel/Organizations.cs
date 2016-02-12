@@ -68,10 +68,15 @@ namespace CmsData
             return om.IsInGroup(group);
         }
 
-        public void JoinOrg(int orgId, Person p)
+        public void JoinOrg(int orgid, object person)
         {
             var db2 = NewDataContext();
-            OrganizationMember.InsertOrgMembers(db2, orgId, p.PeopleId, 220, DateTime.Now, null, false);
+
+            if(person is int)
+                OrganizationMember.InsertOrgMembers(db2, orgid, person.ToInt(), 220, DateTime.Now, null, false);
+            else if(person is Person)
+                OrganizationMember.InsertOrgMembers(db2, orgid, ((Person)person).PeopleId, 220, DateTime.Now, null, false);
+
             db2.Dispose();
         }
 

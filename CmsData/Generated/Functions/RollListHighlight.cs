@@ -46,6 +46,8 @@ namespace CmsData.View
 		
 		private bool? _Highlight;
 		
+		private string _ChurchMemberStatus;
+		
 		
 		public RollListHighlight()
 		{
@@ -303,6 +305,23 @@ namespace CmsData.View
 			{
 				if (this._Highlight != value)
 					this._Highlight = value;
+			}
+
+		}
+
+		
+		[Column(Name="ChurchMemberStatus", Storage="_ChurchMemberStatus", DbType="nvarchar(100)")]
+		public string ChurchMemberStatus
+		{
+			get
+			{
+				return this._ChurchMemberStatus;
+			}
+
+			set
+			{
+				if (this._ChurchMemberStatus != value)
+					this._ChurchMemberStatus = value;
 			}
 
 		}

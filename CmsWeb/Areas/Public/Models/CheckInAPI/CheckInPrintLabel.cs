@@ -23,7 +23,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPI
             string orgName = org.OrganizationName;
             string location = org.Location;
 
-            bool requiresecuritylabel = (orgMember.MemberTypeId == 220 || orgMember.MemberTypeId == 230) && (person.Age.Value < 18) && org.NoSecurityLabel.Value;
+            bool requiresecuritylabel = (orgMember != null && (orgMember.MemberTypeId == 220 || orgMember.MemberTypeId == 230)) && (person.Age.Value < 18) && org.NoSecurityLabel.Value;
 
             string first = person.PreferredName;
             string last = person.LastName;
@@ -32,7 +32,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPI
 
             bool transport = person.OkTransport ?? false;
             bool custody = person.CustodyIssue ?? false;
-            bool member = orgMember.MemberTypeId != 230 && orgMember.MemberTypeId != 310 && orgMember.MemberTypeId != 311;
+            bool member = orgMember != null && orgMember.MemberTypeId != 230 && orgMember.MemberTypeId != 310 && orgMember.MemberTypeId != 311;
 
             string allergies = person.GetRecReg().MedicalDescription;
 

@@ -1,4 +1,5 @@
 ﻿using HandlebarsDotNet;
+using IronPython.Modules;
 using UtilityExtensions;
 
 namespace CmsData
@@ -17,13 +18,17 @@ namespace CmsData
             Handlebars.RegisterHelper("FmtZip", (writer, context, args) => { writer.Write(args[0].ToString().FmtZip()); });
             Handlebars.RegisterHelper("IfEqual", (writer, options, context, args) =>
             {
-                var eq = args[0] == args[1];
-                if (!eq && args[0] is int)
-                    eq = args[0].ToString() == args[1].ToString();
-                if (eq)
-                    options.Template(writer, (object) context);
+                if (IsEqual(args))
+                    options.Template(writer, (object)context);
                 else
-                    options.Inverse(writer, (object) context);
+                    options.Inverse(writer, (object)context);
+            });
+            Handlebars.RegisterHelper("IfNotEqual", (writer, options, context, args) =>
+            {
+                if (!IsEqual(args))
+                    options.Template(writer, (object)context);
+                else
+                    options.Inverse(writer, (object)context);
             });
             Handlebars.RegisterHelper("GetToken", (writer, context, args) =>
             {
@@ -46,6 +51,15 @@ namespace CmsData
             Handlebars.RegisterHelper("FmtPhone", (writer, context, args) => { writer.Write(args[0].ToString().FmtFone($"{args[1]}")); });
         }
 
+        private static bool IsEqual(object[] args)
+        {
+            var eq = args[0] == args[1];
+            if (args[0] == null ^ args[1] == null)
+                eq = false;
+            else if (!eq && args[0] is int)
+                eq = args[0].ToString() == args[1]?.ToString();
+            return eq;
+        }
         public string RenderTemplate(string source)
         {
             return RenderTemplate(source, Data);
