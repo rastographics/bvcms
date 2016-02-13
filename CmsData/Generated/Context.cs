@@ -1814,6 +1814,12 @@ namespace CmsData
 
         }
 
+        public Table< View.DepositDateTotal> ViewDepositDateTotals
+        {
+            get { return GetTable< View.DepositDateTotal>(); }
+
+        }
+
         public Table< View.DonorProfileList> ViewDonorProfileLists
         {
             get { return GetTable< View.DonorProfileList>(); }

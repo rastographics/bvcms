@@ -146,6 +146,18 @@ namespace CmsWeb.Areas.Finance.Controllers
             var m = new DepositsModel(dt);
             return View(m);
         }
+        [HttpGet]
+        public ActionResult DepositTotalsForDates()
+        {
+            var m = new DepositTotalsModel();
+            return View(m);
+        }
+
+        [HttpPost]
+        public ActionResult DepositTotalsForDatesResults(DepositTotalsModel m)
+        {
+            return View(m);
+        }
 
         public ActionResult PledgeReport()
         {

@@ -574,6 +574,7 @@
     <Compile Include="Generated\Views\AppRegistration.cs" />
     <Compile Include="Generated\Views\AttendCredits2.cs" />
     <Compile Include="Generated\Views\ContributionsBasic.cs" />
+    <Compile Include="Generated\Views\DepositDateTotal.cs" />
     <Compile Include="Generated\Views\DonorProfileList.cs" />
     <Compile Include="Generated\Views\FailedEmail.cs" />
     <Compile Include="Generated\Views\FailedRecurringGiving.cs" />

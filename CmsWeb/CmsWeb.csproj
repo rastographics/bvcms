@@ -397,6 +397,7 @@
     <Compile Include="Areas\Finance\Models\FundTotalInfo.cs" />
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
     <Compile Include="Areas\Finance\Models\DepositsModel.cs" />
+    <Compile Include="Areas\Finance\Models\DepositTotalsModel.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundRange.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
@@ -1597,6 +1598,8 @@
     <Content Include="Areas\Reports\Views\Reports\PyScript.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Code.cshtml" />
     <None Include="Areas\Finance\Views\FinanceReports\TotalsByAgeRange.cshtml" />
+    <Content Include="Areas\Finance\Views\FinanceReports\DepositTotalsForDates.cshtml" />
+    <Content Include="Areas\Finance\Views\FinanceReports\DepositTotalsForDatesResults.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />
