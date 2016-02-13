@@ -200,12 +200,8 @@
 </form>
 @section scripts
 {
-  @(Util2.UseNewEditor 
-    ? ViewExtensions2.FroalaEditorScripts() 
-    : ViewExtensions2.CkEditor())
+  @ViewExtensions2.CkEditor()
   @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
   @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
-  @(Util2.UseNewEditor 
-    ? Fingerprint.Script("/Content/touchpoint/js/support/support.js")
-    : Fingerprint.Script("/scripts/js/Support2.js"))
+  @Fingerprint.Script("/scripts/js/Support2.js")
 }

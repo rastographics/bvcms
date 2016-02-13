@@ -98,7 +98,5 @@
   @Fingerprint.Script("/Content/touchpoint/js/dialog/search-users.js")
   @Fingerprint.Script("/Content/touchpoint/js/org/org-member-dialog.js")
   @Fingerprint.Script("/Content/touchpoint/js/org/organization.js")
-  @(Util2.UseNewEditor 
-    ? Fingerprint.Script("/Content/touchpoint/js/org/reg-setting.js")
-    : Fingerprint.Script("/scripts/org/RegSetting.js"))
+  @Fingerprint.Script("/scripts/org/RegSetting.js")
 }

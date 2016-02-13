@@ -111,14 +111,6 @@
 @section scripts
 {
   @Fingerprint.Script("/Content/touchpoint/lib/twitter-typeahead/js/typeahead.js")
-  @if (Util2.UseNewEditor)
-  {
-    @ViewExtensions2.FroalaEditorScripts()
-    @Fingerprint.Script("/Content/touchpoint/js/email/email-supporter.js")
-  }
-  else
-  {
-    @ViewExtensions2.CkEditor()
-    @Fingerprint.Script("/scripts/email/EmailSupporter.js")
-  }
+  @ViewExtensions2.CkEditor()
+  @Fingerprint.Script("/scripts/email/EmailSupporter.js")
 }

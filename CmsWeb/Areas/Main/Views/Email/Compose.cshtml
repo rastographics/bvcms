@@ -211,16 +211,8 @@
 @section scripts
 {
   @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
-  @if (Util2.UseNewEditor)
-  {
-    @ViewExtensions2.FroalaEditorScripts()
-    @Fingerprint.Script("/Content/touchpoint/js/email/compose.js")
-  }
-  else
-  {
-    @ViewExtensions2.CkEditor()
-    @Fingerprint.Script("/scripts/email/compose.js")
-  }
+  @ViewExtensions2.CkEditor()
+  @Fingerprint.Script("/scripts/email/compose.js")
   <script type="text/javascript">
     $(function () {
       var extraSmallDevice = $('.device-xs').is(':visible');
