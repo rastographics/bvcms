@@ -50,19 +50,6 @@ namespace CmsWeb
             throw new HttpException(404, "404");
         }
 
-        public static string HeaderHtml(string altcontent, string headertext, string logoimg)
-        {
-            var c = DbUtil.Content("Site2Header" + altcontent) ?? DbUtil.Content("Site2Header");
-            if (c != null)
-                return c.Body;
-            return $@"
-        <div id=""header"">
-           <div id=""title"">
-              <h1><img alt=""logo"" src='{logoimg}' align=""middle"" />&nbsp;{headertext}</h1>
-           </div>
-        </div>";
-        }
-
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             base.OnActionExecuting(filterContext);

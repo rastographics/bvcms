@@ -14,7 +14,7 @@
     };
     CKEDITOR.replace('editor', {
         height: 200,
-        customConfig: '/scripts/js/ckeditorconfig.js',
+        customConfig: '/Content/touchpoint/js/ckeditorconfig.js',
         extraPlugins: 'specialLink'
     });
     $('#Name').focus();

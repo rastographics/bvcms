@@ -6,9 +6,6 @@
   ViewBag.PageHeader = "Compose Email";
   Layout = ViewExtensions2.TouchPointLayout();
 }
-@section head{
-  @ViewExtensions2.FroalaEditorCss()
-}
 <div class="row">
   <div class="col-md-push-9 col-md-3 col-lg-push-8 col-lg-4">
     <div class="panel panel-default">
@@ -112,5 +109,5 @@
 {
   @Fingerprint.Script("/Content/touchpoint/lib/twitter-typeahead/js/typeahead.js")
   @ViewExtensions2.CkEditor()
-  @Fingerprint.Script("/scripts/email/EmailSupporter.js")
+  @Fingerprint.Script("/Content/touchpoint/js/email/EmailSupporter.js")
 }

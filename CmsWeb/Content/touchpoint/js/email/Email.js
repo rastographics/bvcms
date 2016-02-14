@@ -2,22 +2,9 @@
     $('#Recipients').select2();
     $('#Recipients').select2("readonly", true);
 
-    $('#Body').froalaEditable({
-        inlineMode: false,
-        spellcheck: true,
-        useFileName: false,
-        useClasses: false,
-        height: 400,
-        theme: 'custom',
-        buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'removeFormat', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'specialLink', 'sep', 'insertImage', 'uploadFile', 'table', 'undo', 'redo', 'html', 'fullscreen'],
-        imageUploadURL: '/Account/FroalaUpload',
-        fileUploadURL: '/Account/FroalaUpload',
-        maxFileSize: (1024 * 1024 * 15)
-    });
-
     $(".Send").click(function () {
         $.block();
-        $('#Body').text($('#Body').froalaEditable('getHTML'));
+        $('#Body').text(CKEDITOR.instances["Body"].getData());
         var q = $(this).closest('form').serialize();
 
         $.post('/Email/QueueEmails', q, function (ret) {
@@ -34,7 +21,7 @@
                     $.unblock();
                     swal("Success!", ret.content, "success");
                 } else {
-                    $(".Send").remove();
+                    $("#send-actions").remove();
                     var intervalid = window.setInterval(function () {
                         $.post('/Email/TaskProgress/' + taskid, null, function (ret) {
                             $.unblock();
@@ -61,7 +48,7 @@
 
     $(".TestSend").click(function () {
         $.block();
-        $('#Body').text($('#Body').froalaEditable('getHTML'));
+        $('#Body').text(CKEDITOR.instances["Body"].getData());
         var q = $(this).closest('form').serialize();
 
         $.post('/Email/TestEmail', q, function (ret) {
@@ -75,6 +62,17 @@
                 }
                 swal("Success!", ret, "success");
             }
+        });
+    });
+
+    $('body').on('click', '#CreateVoteTag', function (ev) {
+        ev.preventDefault();
+        CKEDITOR.instances["votetagcontent"].updateElement();
+        var q = $(this).closest('form').serialize();
+        $.post('/Email/CreateVoteTag', q, function (ret) {
+            CKEDITOR.instances["votetagcontent"].setData(ret, function () {
+                CKEDITOR.instances["votetagcontent"].setMode("source");
+            });
         });
     });
 });

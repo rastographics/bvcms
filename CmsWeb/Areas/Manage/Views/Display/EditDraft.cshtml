@@ -6,9 +6,6 @@
     ViewBag.PageHeader = "Edit Draft";
     Layout = ViewExtensions2.TouchPointLayout();
 }
-@section head{
-  @ViewExtensions2.FroalaEditorCss()
-}
 @using (Html.BeginForm("ContentUpdate", "Display", FormMethod.Post))
 {
     <div class="row">
@@ -63,147 +60,52 @@
 }
 @section scripts
 {
-  @if (Util2.UseNewEditor)
-  {
-      @ViewExtensions2.FroalaEditorScripts()
-      <script type="text/javascript">
-        $(function () {
-          function iframeLoaded() {
-            var iFrameID = document.getElementById('email-body');
-            if (iFrameID) {
-              // here you can make the height, I delete it first, then I make it again
-              iFrameID.height = "";
-              iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + 200 + "px";
+  @ViewExtensions2.CkEditor()
+  <script type="text/javascript">
+
+    $(function () {
+
+      $("a.delete").click(function (ev) {
+        ev.preventDefault();
+
+        swal({
+          title: "Are you sure?",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonClass: "btn-danger",
+          confirmButtonText: "Yes, delete it!",
+          closeOnConfirm: false
+        },
+        function () {
+          $.post("/Display/ContentDelete", { id: "@Model.Id" }, function (ret) {
+            if (ret && ret.error)
+              swal("Error!", ret.error, "error");
+            else {
+              swal({
+                title: "Deleted!",
+                type: "success"
+              },
+              function () {
+                window.location = "/Manage/Display/#tab_emailTemplates";
+              });
             }
-          }
-
-          var iframeSource = "/Display/EmailBody/@Model.Id";
-
-          $.Editable.DEFAULTS.allowedTags.push('html');
-          $.Editable.DEFAULTS.allowedTags.push('head');
-          $.Editable.DEFAULTS.allowedTags.push('style');
-          $.Editable.DEFAULTS.allowedTags.push('body');
-          $.Editable.DEFAULTS.allowedTags.push('registertag');
-          $.Editable.DEFAULTS.allowedAttrs.push('xmlns');
-          $.Editable.DEFAULTS.allowedAttrs.push('bvedit');
-          $.Editable.DEFAULTS.allowedAttrs.push('bveditadd');
-          $.Editable.DEFAULTS.allowedAttrs.push('bvrepeat');
-          $.Editable.DEFAULTS.allowedAttrs.push('bvrepeatadd');
-
-          var $emailBody = $('#email-body');
-          $emailBody.attr('src', iframeSource);
-          $emailBody.load(function () {
-            $(this).contents().find('#editor-body').froalaEditable({
-              inlineMode: false,
-              allowStyle: true,
-              spellcheck: true,
-              useFileName: false,
-              useClasses: false,
-              fullPage: true,
-              minHeight: 100,
-              theme: 'custom',
-              buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'removeFormat', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'specialLink', 'sep', 'insertImage', 'uploadFile', 'table', 'undo', 'redo', 'html'],
-              imageUploadURL: '/Account/FroalaUpload',
-              fileUploadURL: '/Account/FroalaUpload',
-              maxFileSize: (1024 * 1024 * 15)
-            });
-
-            // reset the html... it's strange but resetting the html here causes the editor to retain any html, head, body tags that might be in the html.
-            var fullHtml = $(this).contents().find('#hiddenHtml').val();
-            $(this).contents().find('#editor-body').froalaEditable('setHTML', fullHtml, true);
-
-            iframeLoaded();
-            $(this).contents().find('#editor-body').on('editable.htmlHide', function (e, editor, html) {
-              iframeLoaded();
-            });
-          });
-
-          $("a.save").click(function (ev) {
-            ev.preventDefault();
-            var emailHtml = $('#email-body').contents().find('#editor-body').froalaEditable('getHTML');
-            $('#body').val(emailHtml);
-            $(this).closest('form').submit();
-          });
-
-          $("a.delete").click(function (ev) {
-            ev.preventDefault();
-
-            swal({
-              title: "Are you sure?",
-              type: "warning",
-              showCancelButton: true,
-              confirmButtonClass: "btn-danger",
-              confirmButtonText: "Yes, delete it!",
-              closeOnConfirm: false
-            },
-            function () {
-              $.post("/Display/ContentDelete", { id: "@Model.Id" }, function (ret) {
-                if (ret && ret.error)
-                  swal("Error!", ret.error, "error");
-                else {
-                  swal({
-                    title: "Deleted!",
-                    type: "success"
-                  },
-                  function () {
-                    window.location = "/Manage/Display/#tab_savedDrafts";
-                  });
-                }
-              });
-            });
           });
         });
-      </script>
-  }
-  else
-  {
-      @ViewExtensions2.CkEditor()
-      <script type="text/javascript">
+      });
 
-        $(function () {
+      CKEDITOR.env.isCompatible = true;
 
-          $("a.delete").click(function (ev) {
-            ev.preventDefault();
+      CKEDITOR.plugins.addExternal('specialLink', '/content/touchpoint/lib/ckeditor/plugins/specialLink/', 'plugin.js');
 
-            swal({
-              title: "Are you sure?",
-              type: "warning",
-              showCancelButton: true,
-              confirmButtonClass: "btn-danger",
-              confirmButtonText: "Yes, delete it!",
-              closeOnConfirm: false
-            },
-            function () {
-              $.post("/Display/ContentDelete", { id: "@Model.Id" }, function (ret) {
-                if (ret && ret.error)
-                  swal("Error!", ret.error, "error");
-                else {
-                  swal({
-                    title: "Deleted!",
-                    type: "success"
-                  },
-                  function () {
-                    window.location = "/Manage/Display/#tab_emailTemplates";
-                  });
-                }
-              });
-            });
-          });
+      var fullpage = $("#body").text().indexOf('/html') >= 0;
+      CKEDITOR.replace('body', {
+        height: 400,
+        fullPage: fullpage,
+        allowedContent: true,
+        customConfig: '/Content/touchpoint/js/ckeditorconfig.js',
+        extraPlugins: 'specialLink'
+      });
 
-          CKEDITOR.env.isCompatible = true;
-
-          CKEDITOR.plugins.addExternal('specialLink', '/content/touchpoint/lib/ckeditor/plugins/specialLink/', 'plugin.js');
-
-          var fullpage = $("#body").text().indexOf('/html') >= 0;
-          CKEDITOR.replace('body', {
-            height: 400,
-            fullPage: fullpage,
-            allowedContent: true,
-            customConfig: '/scripts/js/ckeditorconfig.js',
-            extraPlugins: 'specialLink'
-          });
-
-        });
-      </script>
-  }
+    });
+  </script>
 }

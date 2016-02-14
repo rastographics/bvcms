@@ -8,7 +8,6 @@
   ViewBag.PageHeader = "Organization Search / Manage";
 }
 @section head{
-  @ViewExtensions2.FroalaEditorCss()
   @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
   @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
   @Fingerprint.Css("/Content/touchpoint/css/OrgSearch.css")
@@ -113,7 +112,7 @@
   @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
   @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
   @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
-  @Fingerprint.Script("/scripts/search/OrgSearch.js")
+  @Fingerprint.Script("/Content/touchpoint/js/search/OrgSearch.js")
 
   @if (User.IsInRole("Edit"))
   {

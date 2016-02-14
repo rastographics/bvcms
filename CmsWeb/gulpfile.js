@@ -12,140 +12,16 @@ var cssOutput = 'content/touchpoint/css',
 var legacyJsFiles = [
     {
         files: [
-            'Scripts/js/extensions.js',
             'Scripts/jQuery/jquery-migrate-1.1.1.js',
-            'Scripts/Bootstrap/bootstrap-modalmanager.js',
-            'Scripts/Bootstrap/bootstrap-modal.js',
-            'Scripts/Bootstrap/bootstrap-editable.js',
-            'Scripts/Bootstrap/bootbox.js',
-            'Scripts/Bootstrap/bootstrap-datetimepicker.js',
-            'Scripts/jQuery/jquery.cookie.js',
             'Scripts/jQuery/jquery.blockUI.js',
-            'Scripts/jQuery/jquery.mousewheel.js',
-            'Scripts/jquery.validate.js',
-            'Scripts/additional-methods.js',
-            'Scripts/jquery.validate.globalize.js',
             'Scripts/jQuery/jquery.sortElements.js',
-            'Scripts/jQuery/jquery.textarea.js',
-            'Scripts/jQuery/jquery.tooltip.js',
-            'Scripts/jquery/jquery.hiddenposition.1.1.js',
-            'Scripts/Bootstrap/select2.js',
-            'Scripts/js/Pager3.js',
-            'Scripts/js/header.js',
-            'Scripts/js/ExportToolBar2.js',
-            'Scripts/js/headermenu2.js',
-            'Scripts/Bootstrap/typeahead.js',
-            'Scripts/Search/SearchTypeahead.js',
-            'Scripts/js/form-ajax.js',
-            'Scripts/js/ExtraValue.js',
-            'Scripts/Search/SearchAdd.js'
-        ],
-        outputName: 'bundle.main2.js',
-        outputDir: 'Scripts'
-    },
-    {
-        files: [
-            'Scripts/js/extensions.js',
-            'Scripts/jQuery/jquery-migrate-1.1.1.js',
-            'Scripts/Bootstrap/bootstrap-modalmanager.js',
-            'Scripts/Bootstrap/bootstrap-modal.js',
-            'Scripts/Bootstrap/bootstrap-editable.js',
-            'Scripts/Bootstrap/bootbox.js',
-            'Scripts/Bootstrap/bootstrap-datetimepicker.js',
-            'Scripts/jQuery/jquery.cookie.js',
-            'Scripts/jQuery/jquery.blockUI.js',
-            'Scripts/jQuery/jquery.mousewheel.js',
-            'Scripts/jquery.validate.js',
-            'Scripts/additional-methods.js',
-            'Scripts/jquery.validate.globalize.js',
-            'Scripts/jQuery/jquery.sortElements.js',
-            'Scripts/jQuery/jquery.textarea.js',
-            'Scripts/jQuery/jquery.tooltip.js',
-            'Scripts/jQuery/jquery.jscrollpane.js',
-            'Scripts/jQuery/jquery.jeditable.js',
-            'Scripts/jQuery/jquery.multiSelect.js',
-            'Scripts/jquery/jquery.hiddenposition.1.1.js',
-            'Scripts/Bootstrap/select2.js',
-            'Scripts/chosen/chosen.jquery.js',
-            'Scripts/js/Pager.js',
-            'Scripts/js/header.js',
-            'Scripts/js/dropdown.js',
-            'Scripts/js/headermenu1c.js',
-            'Scripts/Bootstrap/typeahead.js',
-            'Scripts/Search/SearchTypeahead.js',
-            'Scripts/js/form-ajax.js',
-            'Scripts/js/ExtraValue.js',
-            'Scripts/js/ExportToolBar2.js',
-            'Scripts/js/headermenu2.js',
-            'Scripts/Search/SearchAdd.js'
-        ],
-        outputName: 'bundle.main2c.js',
-        outputDir: 'Scripts'
-    },
-    {
-        files: [
-            'Scripts/js/extensions.js',
-            'Scripts/jQuery/jquery-migrate-1.1.1.js',
-            'Scripts/jquery.validate.js',
-            'Scripts/globalize.js',
-            'Scripts/jquery.validate.globalize.js',
+            'Scripts/jQuery/jquery.showpassword.js',
+            'Content/touchpoint/lib/jquery-validate-globalize/js/jquery.validate.globalize.js',
+            'Content/touchpoint/js/extensions.js',
             'Content/touchpoint/lib/idleTimer/js/idle-timer.js',
-            'Scripts/jQuery/jquery.blockUI.js',
-            'Scripts/jQuery/jquery.sortElements.js',
-            'Scripts/jQuery/jquery.showpassword.js'
         ],
-        outputName: 'bundle.onlineregister.js',
-        outputDir: 'Scripts'
-    },
-    {
-        files: [
-            'Scripts/Org/OrganizationOld.js',
-            'Scripts/Dialog/SearchUsers.js',
-            'Scripts/Org/RegSetting2.js',
-            'Scripts/Org/OrgMemberDialog2.js'
-        ],
-        outputName: 'bundle.organization.js',
-        outputDir: 'Scripts'
-    },
-    {
-        files: [
-            'Scripts/Org/Organization.js',
-            'Scripts/Dialog/SearchUsers.js',
-            'Scripts/Org/RegSetting.js',
-            'Scripts/Org/OrgMemberDialog2.js'
-        ],
-        outputName: 'bundle.org.js',
-        outputDir: 'Scripts'
-    },
-    {
-        files: [
-            'Scripts/Bootstrap/bootstrap-multiselect.js',
-            'Scripts/jQuery/jquery.scrollintoview.js',
-            'Scripts/Search/Query.js',
-            'Scripts/jQuery/jquery.smoothscroll.js',
-            'Scripts/Bootstrap/bootstrap-tour.js'
-        ],
-        outputName: 'bundle.query2.js',
-        outputDir: 'Scripts'
-    },
-    {
-        files: [
-            'Scripts/jQuery/jquery.smoothscroll.js',
-            'Scripts/Bootstrap/bootstrap-tour.js',
-            'Scripts/People/person1.js',
-            'Scripts/Org/OrgMemberDialog2.js'
-        ],
-        outputName: 'bundle.person.js',
-        outputDir: 'Scripts'
-    },
-    {
-        files: [
-            'Scripts/jQuery/jquery.form.js',
-            'Scripts/jQuery/jquery.form2.js',
-            'Scripts/js/Task.js'
-        ],
-        outputName: 'bundle.taskpage.js',
-        outputDir: 'Scripts'
+        outputName: 'onlineregister.min.js',
+        outputDir: 'Content/touchpoint/js'
     }
 ];
 

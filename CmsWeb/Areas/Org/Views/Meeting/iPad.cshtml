@@ -9,7 +9,7 @@
   <script src="~/Scripts/jQuery/jquery-1.10.2.min.js"></script>
   <script src="~/Scripts/jQuery/jquery-migrate-1.1.1.js"></script>
   <script src="~/Scripts/Mobile/jquery.mobile-1.3.1.min.js"></script>
-  <script src="~/Scripts/Meeting/meeting-ipad.js"></script>
+  @Fingerprint.Script("/Content/touchpoint/js/meeting/meeting-ipad.js")
 </head>
 <body>
   @Html.Hidden("meetingid", Model.meeting.MeetingId)

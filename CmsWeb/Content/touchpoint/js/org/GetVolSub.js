@@ -3,7 +3,7 @@
         height: 400,
         fullPage: false,
         allowedContent: true,
-        customConfig: '/scripts/js/ckeditorconfig.js'
+        customConfig: '/Content/touchpoint/js/ckeditorconfig.js'
     });
     $("#smallgroups").change(function () {
         $("div.wrapper > div").show();

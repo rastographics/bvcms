@@ -293,7 +293,6 @@
     <Compile Include="Areas\Dialog\Controllers\OrgDropController.cs" />
     <Compile Include="Areas\Dialog\Controllers\ValidateAddressController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddToOrgFromTagController.cs" />
-    <Compile Include="Areas\Dialog\Controllers\AddToOrgPrevFromTagController.cs" />
     <Compile Include="Areas\Dialog\Controllers\DeleteMeetingController.cs" />
     <Compile Include="Areas\Dialog\Controllers\DialogController.cs" />
     <Compile Include="Areas\Dialog\Controllers\NewMeetingController.cs" />
@@ -757,7 +756,6 @@
     <Compile Include="Areas\Search\Models\SearchAdd\PendingPersonModel.cs" />
     <Compile Include="Areas\Public\Controllers\APIContributionController.cs" />
     <Compile Include="Areas\Public\Controllers\APIMetaController.cs" />
-    <Compile Include="Areas\Public\Controllers\APITestController.cs" />
     <Compile Include="Areas\Public\Controllers\APIiPhoneController.cs" />
     <Compile Include="Areas\Main\Controllers\CouponController.cs" />
     <Compile Include="Areas\Org\Controllers\OrgSearchController.cs" />
@@ -781,7 +779,6 @@
     <Compile Include="Areas\Search\Models\PeopleSearchModel.cs" />
     <Compile Include="Areas\Finance\Models\ContributionsExcelResult.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\MeetingsModel.cs" />
-    <Compile Include="Areas\Public\Models\APITestModel.cs" />
     <Compile Include="Areas\Public\Models\CheckIn\FindResult.cs" />
     <Compile Include="Areas\Public\Models\CheckIn\FindResult2.cs" />
     <Compile Include="Areas\Public\Models\Code39BarCode.cs" />
@@ -958,9 +955,6 @@
     <Content Include="Content\touchpoint\js\admin\users.js" />
     <Content Include="Content\touchpoint\js\app.min.js" />
     <Content Include="Content\touchpoint\js\dialog\search-users.js" />
-    <Content Include="Content\touchpoint\js\email\compose.js" />
-    <Content Include="Content\touchpoint\js\email\email.js" />
-    <Content Include="Content\touchpoint\js\email\email-supporter.js" />
     <Content Include="Content\touchpoint\js\export-toolbar.js" />
     <Content Include="Content\touchpoint\js\extra-value.js" />
     <Content Include="Content\touchpoint\js\finance\post-bundle.js" />
@@ -968,6 +962,7 @@
     <Content Include="Content\touchpoint\js\finance\transactions.js" />
     <Content Include="Content\touchpoint\js\form-ajax.js" />
     <Content Include="Content\touchpoint\js\main.js" />
+    <Content Include="Content\touchpoint\js\onlineregister.min.js" />
     <Content Include="Content\touchpoint\js\people\merge.js" />
     <Content Include="Content\touchpoint\js\search\export-query.js" />
     <Content Include="Content\touchpoint\js\volunteer\calendar.js" />
@@ -976,25 +971,6 @@
     <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\dialogs\specialLink.js" />
     <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\icons\specialLink.png" />
     <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\plugin.js" />
-    <Content Include="Content\touchpoint\lib\froala-editor\css\custom-theme.css" />
-    <Content Include="Content\touchpoint\lib\froala-editor\css\froala_editor.min.css" />
-    <Content Include="Content\touchpoint\lib\froala-editor\css\froala_style.min.css" />
-    <Content Include="Content\touchpoint\lib\froala-editor\js\froala_editor.min.js" />
-    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\block_styles.min.js" />
-    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\char_counter.min.js" />
-    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\colors.min.js" />
-    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\entities.min.js" />
-    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\special_links.js" />
-    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\file_upload.min.js" />
-    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\font_family.min.js" />
-    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\font_size.min.js" />
-    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\fullscreen.min.js" />
-    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\inline_styles.min.js" />
-    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\lists.min.js" />
-    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\media_manager.min.js" />
-    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\tables.min.js" />
-    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\urls.min.js" />
-    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\video.min.js" />
     <Content Include="Content\touchpoint\lib\idleTimer\js\idle-timer.js" />
     <Content Include="Content\touchpoint\lib\idleTimer\js\idle-timer.min.js" />
     <Content Include="Content\touchpoint\lib\ion-sound\js\ion.sound.min.js" />
@@ -1006,7 +982,6 @@
     <Content Include="Content\touchpoint\js\org\org-groups.js" />
     <Content Include="Content\touchpoint\js\org\org-children.js" />
     <Content Include="Content\touchpoint\js\org\promotion.js" />
-    <Content Include="Content\touchpoint\js\org\reg-setting.js" />
     <Content Include="Content\touchpoint\js\people\contact.js" />
     <Content Include="Content\touchpoint\js\people\person.js" />
     <Content Include="Content\touchpoint\js\people\task.js" />
@@ -1577,7 +1552,6 @@
     <Content Include="Areas\Main\Views\UserPref\Index.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\BatchUpdate.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\UpdateRegOptions.cshtml" />
-    <Content Include="Scripts\bundle.onlineregister.js" />
     <Content Include="Content\VitalStats.py" />
     <Content Include="Views\Shared\EditorTemplates\DateAndTime.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\SqlReport.cshtml" />
@@ -2038,26 +2012,26 @@
     <Content Include="Scripts\jQuery\jquery.ui.accordion.js" />
     <Content Include="Scripts\jQuery\jquery.ui.touch-punch.js" />
     <Content Include="Scripts\jQuery\jquery.ui.touch-punch.min.js" />
-    <Content Include="Scripts\js\ckeditorconfig.js" />
-    <Content Include="Scripts\js\extensions.js" />
+    <Content Include="Content\touchpoint\js\ckeditorconfig.js" />
+    <Content Include="Content\touchpoint\js\extensions.js" />
     <Content Include="Scripts\js\headermenu1c.js" />
     <Content Include="Scripts\js\header.js" />
     <Content Include="Scripts\js\hometour.js" />
     <Content Include="Scripts\js\htmlcontent.js" />
     <Content Include="Scripts\js\ion.sound.min.js" />
-    <Content Include="Scripts\js\MyDataSupport.js" />
-    <Content Include="Scripts\Email\EmailSupporter.js" />
+    <Content Include="Content\touchpoint\js\support\MyDataSupport.js" />
+    <Content Include="Content\touchpoint\js\email\EmailSupporter.js" />
     <Content Include="Scripts\js\Promotion.js" />
-    <Content Include="Scripts\js\Support2.js" />
+    <Content Include="Content\touchpoint\js\support\Support2.js" />
     <Content Include="Scripts\js\ExtraValueSummary.js" />
     <Content Include="Scripts\js\TestScript.js" />
-    <Content Include="Scripts\OnlineReg\AutoSaveProgress.js" />
-    <Content Include="Scripts\OnlineReg\OnlineReg2.js" />
-    <Content Include="Scripts\OnlineReg\OnlineRegPayment2.js" />
-    <Content Include="Scripts\Org\GetVolSub.js" />
+    <Content Include="Content\touchpoint\js\onlinereg\AutoSaveProgress.js" />
+    <Content Include="Content\touchpoint\js\onlinereg\OnlineReg2.js" />
+    <Content Include="Content\touchpoint\js\onlinereg\OnlineRegPayment2.js" />
+    <Content Include="Content\touchpoint\js\org\GetVolSub.js" />
     <Content Include="Scripts\Org\OrganizationOld.js" />
     <Content Include="Scripts\Search\OrgSearch.js" />
-    <Content Include="Scripts\Org\RegSetting.js" />
+    <Content Include="Content\touchpoint\js\org\RegSetting.js" />
     <Content Include="Scripts\People\mydatatour.js" />
     <Content Include="Scripts\People\persontour.js" />
     <Content Include="Scripts\Org\RegSetting2.js" />
@@ -2117,7 +2091,7 @@
     <Content Include="Scripts\Search\SearchTypeahead.js" />
     <Content Include="Scripts\Search\searchtour.js" />
     <Content Include="Scripts\select2-3.5.2\select2.min.js" />
-    <Content Include="Scripts\SpecContent\EditHtml.js" />
+    <Content Include="Content\touchpoint\js\admin\EditHtml.js" />
     <Content Include="Views\ExtraValue\AdHoc.cshtml" />
     <Content Include="Areas\People\Views\Person\System\UserEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\Photo.cshtml" />
@@ -2175,7 +2149,6 @@
     <Content Include="Areas\Finance\Views\Contributions\BundleTotals.cshtml" />
     <Content Include="Areas\People\Views\Address\Saved.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\PictureDialog.cshtml" />
-    <Content Include="Areas\Public\Views\APITest\RunScript.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\RegistrationSummary.cshtml" />
     <Content Include="Areas\Search\Views\ContactSearch\ContactorSummary.cshtml" />
     <Content Include="Areas\Search\Views\ContactSearch\ContactSummary.cshtml" />
@@ -2300,8 +2273,6 @@
     <Content Include="Areas\Org\Views\OrgSearch\Toolbar\Toolbar.cshtml" />
     <Content Include="Areas\Dialog\Views\Web.config" />
     <Content Include="Areas\Dialog\Views\AddOrganization\Index.cshtml" />
-    <Content Include="Areas\Dialog\Views\AddToOrgPrevFromTag\Index.cshtml" />
-    <Content Include="Areas\Dialog\Views\AddToOrgPrevFromTag\Progress.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMembersUpdate\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\SearchUsers\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\SearchUsers\Results.cshtml" />
@@ -2412,10 +2383,6 @@
     <Content Include="Content\styles\jquery.contextMenu.css" />
     <Content Include="Content\styles\images\animated-overlay.gif" />
     <Content Include="Content\styles\jquery-ui-1.10.0.custom.css" />
-    <Content Include="Areas\Public\Views\APITest\EditorTemplates\ApiTestInfo.cshtml">
-    </Content>
-    <Content Include="Areas\Public\Views\APITest\Index.cshtml">
-    </Content>
     <Content Include="Content\images\BUZZ.WAV" />
     <Content Include="Content\img\bvcms-provided.png" />
     <Content Include="Content\img\calendar.png" />
@@ -2586,10 +2553,10 @@
     <Content Include="Scripts\jQuery\jquery.jscrollpane.js" />
     <Content Include="Scripts\jQuery\jquery.showpassword.js" />
     <Content Include="Scripts\js\ChurchAttendance.js" />
-    <Content Include="Scripts\Email\compose.js" />
+    <Content Include="Content\touchpoint\js\email\compose.js" />
     <Content Include="Scripts\Finance\Bundles.js" />
     <Content Include="Scripts\Finance\Bundle.js" />
-    <Content Include="Scripts\Org\enroll-control-ipad.js" />
+    <Content Include="Content\touchpoint\js\org\enroll-control-ipad.js" />
     <Content Include="Scripts\Org\OrgMemberDialog2.js" />
     <Content Include="Scripts\Search\Query.js" />
     <Content Include="Scripts\Volunteer\Calendar2.js" />
@@ -2742,7 +2709,6 @@
     <Content Include="Views\Shared\Toolbar\Email.cshtml" />
     <Content Include="Views\Shared\Toolbar\Gear.cshtml" />
     <Content Include="Views\Shared\Toolbar\Reports.cshtml" />
-    <Content Include="Views\Shared\NewHeader3.cshtml" />
     <Content Include="Views\Shared\Toolbar\GearStandard.cshtml" />
     <Content Include="Views\Shared\Dialogs2.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Birthday.cshtml" />
@@ -2760,7 +2726,6 @@
     <Content Include="Views\ExtraValue\Entry.cshtml" />
     <Content Include="Views\ExtraValue\NewAdHoc.cshtml" />
     <Content Include="Views\ExtraValue\DeleteFromQuery.cshtml" />
-    <Content Include="Views\Shared\SiteLayout2c.cshtml" />
     <Content Include="Views\Shared\CustomHeader.cshtml" />
     <Content Include="Views\Shared\MyDataFooter.cshtml" />
     <Content Include="Views\Shared\Toolbar\ToolbarMyData.cshtml" />
@@ -2931,13 +2896,13 @@
     <Content Include="Scripts\Admin\Users.js" />
     <Content Include="Scripts\Meeting\meeting-ticket.js" />
     <Content Include="Scripts\Finance\TotalsByFund.js" />
-    <Content Include="Scripts\Volunteer\ManageVolunteer.js" />
+    <Content Include="Content\touchpoint\js\volunteer\ManageVolunteer.js" />
     <Content Include="Scripts\Admin\merge.js" />
     <Content Include="Scripts\js\TestAPI.js" />
-    <Content Include="Scripts\Meeting\meeting-ipad.js" />
+    <Content Include="Content\touchpoint\js\meeting\meeting-ipad.js" />
     <Content Include="Scripts\Search\SearchOrgs.js" />
     <Content Include="Scripts\Org\OrgChildren.js" />
-    <Content Include="Scripts\Meeting\Meetings.js" />
+    <Content Include="Content\touchpoint\js\meeting\Meetings.js" />
     <Content Include="Scripts\Dialog\SearchDivisions.js" />
     <Content Include="Scripts\Finance\Funds.js" />
     <Content Include="Scripts\Org\RegSetting.js" />
@@ -2945,13 +2910,12 @@
     <Content Include="Scripts\Meeting\meeting.js" />
     <Content Include="Scripts\Org\RegSettings.js" />
     <Content Include="Scripts\Dialog\SearchUsers.js" />
-    <Content Include="Scripts\OnlineReg\OnlineRegPayment.js" />
     <Content Include="Global.asax" />
     <Content Include="Content\images\bvcms120.png" />
     <Content Include="Content\images\bvcms130.png" />
     <Content Include="Content\images\bvcms150.png" />
     <Content Include="Content\images\req.gif" />
-    <Content Include="Scripts\Email\Email.js" />
+    <Content Include="Content\touchpoint\js\email\Email.js" />
     <Content Include="Scripts\Admin\TransactionHistory.js" />
     <Content Include="Scripts\Finance\Transactions.js" />
     <Content Include="Scripts\Dialog\UserDialog.js" />
@@ -3154,22 +3118,6 @@
     <Content Include="Areas\Main\Views\Coupon\List.cshtml">
     </Content>
     <Content Include="Areas\Public\Views\APICheckIn2\Campuses.cshtml">
-    </Content>
-    <Content Include="Areas\Public\Views\APICheckIn2\CheckIn.cshtml">
-    </Content>
-    <Content Include="Areas\Public\Views\APICheckIn2\CheckInList.cshtml">
-    </Content>
-    <Content Include="Areas\Public\Views\APICheckIn\Campuses.cshtml">
-    </Content>
-    <Content Include="Areas\Public\Views\APICheckIn\CheckIn.cshtml">
-    </Content>
-    <Content Include="Areas\Public\Views\APICheckIn\CheckInList.cshtml">
-    </Content>
-    <Content Include="Areas\Public\Views\APICheckIn\Index.cshtml">
-    </Content>
-    <Content Include="Areas\Public\Views\APICheckIn\Keyboard.cshtml">
-    </Content>
-    <Content Include="Areas\Public\Views\APICheckIn\Startup.cshtml">
     </Content>
     <Content Include="Areas\Finance\Views\PostBundle\Batch.cshtml">
     </Content>
@@ -3439,12 +3387,6 @@
     </Content>
     <Content Include="Views\Shared\Site2.cshtml">
     </Content>
-    <Content Include="Views\Shared\OnlineReg.cshtml">
-      <SubType>Code</SubType>
-    </Content>
-    <Content Include="Views\Shared\Reports.cshtml">
-      <SubType>Code</SubType>
-    </Content>
     <Content Include="Web.test.config">
       <DependentUpon>Web.config</DependentUpon>
       <SubType>Designer</SubType>
@@ -3452,7 +3394,6 @@
     <Content Include="Views\Shared\DatePickerDefaults.cshtml" />
     <Content Include="App_Code\Helper.cshtml" />
     <Content Include="Views\Shared\DatePickerDefaults2.cshtml" />
-    <Content Include="Views\Shared\SiteLayout2.cshtml" />
     <Content Include="Views\Shared\Dialogs.cshtml" />
     <Content Include="Views\Shared\Footer.cshtml" />
     <Content Include="Views\Shared\Notices.cshtml" />
@@ -3531,7 +3472,7 @@
     <Content Include="Scripts\Org\OrgGroups.js" />
     <Content Include="Scripts\Org\OrgMembers.js" />
     <Content Include="Scripts\Dialog\OrgMembersDialog.js" />
-    <Content Include="Scripts\OnlineReg\OnlineReg.js" />
+    <Content Include="Content\touchpoint\js\onlinereg\OnlineReg.js" />
     <Content Include="Scripts\Org\Organization.js" />
     <Content Include="Scripts\Org\OrgSearch.js" />
     <Content Include="Scripts\Dialog\SearchAdd.js" />
@@ -3563,6 +3504,7 @@
     <Folder Include="Areas\Search\Views\Shared\" />
     <Folder Include="Areas\Setup\Views\Shared\" />
     <Folder Include="Scripts\Other\" />
+    <Folder Include="Scripts\SpecContent\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />

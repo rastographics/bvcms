@@ -4,7 +4,6 @@
   Layout = ViewExtensions2.TouchPointLayout();
 }
 @section head{
-  @ViewExtensions2.FroalaEditorCss()
   <style>
     #body {
       font-family: Arial,Helvetica;
@@ -63,45 +62,6 @@
 </div>
 @section scripts
 {
-  @if (!Util2.UseNewEditor)
-  {
-      @ViewExtensions2.CkEditor()
-      @Fingerprint.Script("/Scripts/js/MyDataSupport.js")
-  }
-  else
-  {
-    @ViewExtensions2.FroalaEditorScripts()
-    <script type="text/javascript">
-      $(function() {
-        $("#body").val("");
-        $("#success").hide();
-
-        $('#body').froalaEditable({
-          inlineMode: false,
-          spellcheck: true,
-          useFileName: false,
-          useClasses: false,
-          height: 200,
-          theme: 'custom',
-          buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'removeFormat', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'insertImage', 'uploadFile', 'table', 'undo', 'redo', 'html', 'fullscreen'],
-          imageUploadURL: '/Account/FroalaUpload',
-          fileUploadURL: '/Account/FroalaUpload',
-          maxFileSize: (1024 * 1024 * 15)
-        });
-
-        $('body').on('click', '#sendSupport', function(e) {
-          $.post("/Support/MyDataSendRequest", {
-            body: $('#body').froalaEditable('getHTML')
-          }, function(data) {
-            if (data == "OK") {
-              $("#success").show();
-              $("#supportForm").hide();
-            } else {
-              swal("Error!", "There was an error submitting your support request, please try again.", "error");
-            }
-          });
-        });
-      });
-    </script>
-  }
+  @ViewExtensions2.CkEditor()
+  @Fingerprint.Script("/Content/touchpoint/js/support/MyDataSupport.js")
 }

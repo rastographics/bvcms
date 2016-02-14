@@ -176,13 +176,6 @@ namespace CmsWeb
             return ExpressionHelper.GetExpressionText(ex).ToSuitableId();
         }
 
-        public static string RegisterScript(this HtmlHelper helper, string scriptFileName)
-        {
-            var scriptRoot = VirtualPathUtility.ToAbsolute("~/Scripts");
-            var scriptFormat = "<script src=\"{0}/{1}\" type=\"text/javascript\"></script>\r\n";
-            return string.Format(scriptFormat, scriptRoot, scriptFileName);
-        }
-
         public static string ToFormattedList(this IEnumerable list, ListType listType)
         {
             var outerListFormat = "";
@@ -858,41 +851,6 @@ namespace CmsWeb
 ";
         }
 
-        public static HtmlString FroalaEditorCss()
-        {
-            return new HtmlString(@"
-<link rel=""stylesheet"" href=""/Content/touchpoint/lib/froala-editor/css/froala_editor.min.css?v=1.2.7"">
-<link rel=""stylesheet"" href=""/Content/touchpoint/lib/froala-editor/css/froala_style.min.css?v=1.2.7"">
-<link rel=""stylesheet"" href=""/Content/touchpoint/lib/froala-editor/css/custom-theme.css?v=1.2.7"">
-");
-        }
-
-        public static HtmlString FroalaEditorScripts()
-        {
-            var sb = new StringBuilder();
-            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/froala_editor.min.js"));
-            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/font_family.min.js"));
-            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/font_size.min.js"));
-            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/colors.min.js"));
-            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/fullscreen.min.js"));
-            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/lists.min.js"));
-            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/tables.min.js"));
-            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/file_upload.min.js"));
-            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/urls.min.js"));
-            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/special_links.js"));
-            sb.Append(@"
-<script type=""text/javascript"">
-    //froala key
-    $.Editable.DEFAULTS.key = '" + ConfigurationManager.AppSettings["froalaEditorKey"] + @"';
-
-    // must alias froala editor because it could conflict with the same function name with bootstrap-editable.
-    $.fn.froalaEditable = $.fn.editable;
-    delete $.fn.editable;
-</script>
-");
-            return new HtmlString(sb.ToString());
-        }
-
         public static HtmlString FontAwesome()
         {
             return new HtmlString("<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css\" rel=\"stylesheet\">\n");
@@ -922,14 +880,6 @@ namespace CmsWeb
         {
             return new HtmlString(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/jquery.validate.min.js""></script>
     <script src=""//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/additional-methods.min.js""></script>");
-        }
-
-        public static HtmlString jqueryGlobalize()
-        {
-            return new HtmlString($@"
-<script src=""{Globalize}"" type=""text/javascript""></script>
-<script src=""{GlobalizeCulture}"" type=""text/javascript""></script>
-");
         }
 
         public static HtmlString Moment()
@@ -972,11 +922,6 @@ namespace CmsWeb
         public static bool ShowOrgSettingsHelp(this HtmlHelper helper)
         {
             return DbUtil.Db.UserPreference("ShowOrgSettingsHelp", "true") == "true";
-        }
-
-        public static string Layout()
-        {
-            return "~/Views/Shared/SiteLayout2c.cshtml";
         }
 
         public static string TouchPointLayout()

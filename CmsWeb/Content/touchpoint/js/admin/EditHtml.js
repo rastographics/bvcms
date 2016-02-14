@@ -8,7 +8,7 @@
         allowedContent: true,
         autoParagraph: false,
         fullPage: !$("#snippet").prop("checked"),
-        customConfig: "/scripts/js/ckeditorconfig.js"
+        customConfig: "/Content/touchpoint/js/ckeditorconfig.js"
     });
 
     $("#snippet").change(function () {

@@ -1,7 +1,6 @@
 ﻿@using System.Configuration
 @using CmsData
 @using CmsData.Codes
-@using CmsWeb
 @model CmsWeb.Areas.Main.Models.MassEmailer
 @{
   ViewBag.Title = "Compose";
@@ -12,7 +11,6 @@
 }
 @section head
 {
-  @ViewExtensions2.FroalaEditorCss()
   @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
   @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2-bootstrap.css")
   <style>
@@ -212,7 +210,7 @@
 {
   @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
   @ViewExtensions2.CkEditor()
-  @Fingerprint.Script("/scripts/email/compose.js")
+  @Fingerprint.Script("/Content/touchpoint/js/email/compose.js")
   <script type="text/javascript">
     $(function () {
       var extraSmallDevice = $('.device-xs').is(':visible');

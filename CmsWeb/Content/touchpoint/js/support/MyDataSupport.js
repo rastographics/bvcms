@@ -6,7 +6,7 @@
         height: 200,
         fullPage: false,
         allowedContent: true,
-        customConfig: '/scripts/js/ckeditorconfig.js'
+        customConfig: '/Content/touchpoint/js/ckeditorconfig.js'
     });
     $("body").on("click", "#sendSupport", function (e) {
         $.post("/Support/MyDataSendRequest", {
