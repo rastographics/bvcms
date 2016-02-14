@@ -93,9 +93,8 @@ namespace CmsWeb.Areas.Main.Models
             IQueryable<Person> q = null;
             if (OrgId.HasValue)
                 q = from p in DbUtil.Db.PeopleQuery(DbUtil.Db.QueryInCurrentOrg().QueryId)
-                    where p.EmailAddress != null
-                    where p.EmailAddress != ""
-                    where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
+                    where ((p.EmailAddress != null) && (p.EmailAddress != "") && (p.SendEmailAddress1 ?? true))
+                        || ((p.EmailAddress2 != null) && (p.EmailAddress2 != "") && (p.SendEmailAddress2 ?? true))
                     select p;
             else
             {
@@ -108,21 +107,17 @@ namespace CmsWeb.Areas.Main.Models
 
                 if (CcParents)
                     q = from p in q
-                        where (p.EmailAddress ?? "") != ""
-                              || (p.Family.HeadOfHousehold.EmailAddress ?? "") != ""
-                              || (p.Family.HeadOfHouseholdSpouse.EmailAddress ?? "") != ""
-                        where (p.SendEmailAddress1 ?? true)
-                              || (p.SendEmailAddress2 ?? false)
-                              || (p.Family.HeadOfHousehold.SendEmailAddress1 ?? false)
-                              || (p.Family.HeadOfHousehold.SendEmailAddress2 ?? false)
-                              || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress1 ?? false)
-                              || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress2 ?? false)
+                        where ((p.EmailAddress ?? "") != "") && ((p.SendEmailAddress1 ?? true))
+                              || ((p.EmailAddress2 ?? "") != "") && ((p.SendEmailAddress2 ?? true))
+                              || ((p.Family.HeadOfHousehold.EmailAddress ?? "") != "") && (p.Family.HeadOfHousehold.SendEmailAddress1 ?? true)
+                              || ((p.Family.HeadOfHousehold.EmailAddress2 ?? "") != "") && (p.Family.HeadOfHousehold.SendEmailAddress2 ?? true)
+                              || ((p.Family.HeadOfHouseholdSpouse.EmailAddress ?? "") != "") && (p.Family.HeadOfHouseholdSpouse.SendEmailAddress1 ?? true)
+                              || ((p.Family.HeadOfHouseholdSpouse.EmailAddress2 ?? "") != "") && (p.Family.HeadOfHouseholdSpouse.SendEmailAddress2 ?? true)
                         select p;
                 else
                     q = from p in q
-                        where p.EmailAddress != null
-                        where p.EmailAddress != ""
-                        where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
+                        where ((p.EmailAddress != null) && (p.EmailAddress != "") && (p.SendEmailAddress1 ?? true))
+                        || ((p.EmailAddress2 != null) && (p.EmailAddress2 != "") && (p.SendEmailAddress2 ?? true))
                         select p;
             }
             var tag = DbUtil.Db.PopulateSpecialTag(q, DbUtil.TagTypeId_Emailer);
