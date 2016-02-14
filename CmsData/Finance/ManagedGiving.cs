@@ -113,7 +113,7 @@ namespace CmsData
                 {
                     var msg = db.Content("RecurringGiftNotice") ?? new Content
                               { Title = $"Recurring {gift} for {{church}}",
-                                Body = "Your payment of {total} was processed this morning." };
+                                Body = "Your gift of {total} was processed this morning." };
                     var subject = msg.Title.Replace("{church}", church);
                     var body = msg.Body.Replace("{total}", $"${tot:N2}");
                     var m = new EmailReplacements(db, body, from);

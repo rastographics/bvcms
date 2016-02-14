@@ -1,17 +1,6 @@
 CREATE VIEW [dbo].[TransactionBalances]
 AS
-SELECT BalancesId
-		,BegBal
-		,Payment
-		,TotDue
-		,NumPeople
-		,People
-		,CanVoid
-		,CONVERT(BIT, 
-			CASE WHEN CanVoid = 1 AND (Batchtyp = 'eft' OR Batchtyp = 'bankcard')
-			THEN 1 ELSE 0 END) CanCredit
-		,IsAdjustment
-FROM (
+WITH trans AS (
 	SELECT 
 		t.Id BalancesId
 		,(SELECT amt + amtdue - ISNULL(donate, 0)
@@ -39,7 +28,7 @@ FROM (
 			WHERE Id = t.OriginalId) 
 			NumPeople
 		,ISNULL((SELECT STUFF((
-				SELECT CHAR(10) + p.Name + '(' + CONVERT(VARCHAR, ts.IndPctC * 100) + '%)'
+				SELECT CHAR(10) + p.NAME + '(' + CONVERT(VARCHAR, ts.IndPctC * 100) + '%)'
 				FROM dbo.TransactionSummary ts 
 				JOIN dbo.People p ON p.PeopleId = ts.PeopleId
 				WHERE ts.RegId = t.OriginalId
@@ -62,6 +51,7 @@ FROM (
 				AND ISNULL(t.credited,0) != 1
 				AND ISNULL(t.coupon, 0) = 0
 				AND LEN(t.TransactionId) > 0
+				AND LEN(t.TransactionGateway) > 0
 				AND t.amt > 0
 				THEN 1 ELSE 0 END)
 			CanVoid
@@ -71,12 +61,20 @@ FROM (
 				WHEN t.TransactionId LIKE 'Initial Tran%' THEN 1 
 				ELSE 0 
 			END) IsAdjustment
-
 	FROM dbo.[Transaction] t
-) tt
-
-
-
+)
+SELECT BalancesId
+		,BegBal
+		,Payment
+		,TotDue
+		,NumPeople
+		,People
+		,CanVoid
+		,CONVERT(BIT, 
+			CASE WHEN CanVoid = 1 AND (Batchtyp = 'eft' OR Batchtyp = 'bankcard')
+			THEN 1 ELSE 0 END) CanCredit
+		,IsAdjustment
+FROM trans
 
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION

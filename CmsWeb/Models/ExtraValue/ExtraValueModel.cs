@@ -277,7 +277,7 @@ namespace CmsWeb.Models.ExtraValues
 
         public static void NewExtra(int id, string field, string type, string value)
         {
-            field = field.Replace('/', '-');
+            //field = field.Replace('/', '-');
             var v = new PeopleExtra { PeopleId = id, Field = field };
             DbUtil.Db.PeopleExtras.InsertOnSubmit(v);
             switch (type)

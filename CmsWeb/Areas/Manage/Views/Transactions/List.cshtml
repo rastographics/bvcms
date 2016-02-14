@@ -167,7 +167,10 @@
                                         }
                                         if (t.IsAdjustment ?? true)
                                         {
-                                            <li><a class="deleteadj @noadmin" href='/Transactions/DeleteManual/@t.Id'><i class="fa fa-undo"></i>&nbsp;&nbsp;Delete Adjustment</a></li>
+                                          var word = t.TransactionId.StartsWith("Initial Tran") ? "Transaction" 
+                                                  :  t.TransactionId.StartsWith("Payment") ? "Payment" 
+                                                  :  "Adjustment";
+                                            <li><a class="deleteadj @noadmin" href='/Transactions/DeleteManual/@t.Id'><i class="fa fa-undo"></i>&nbsp;&nbsp;Delete @word</a></li>
                                         }
                                         if (User.IsInRole("Developer"))
                                         {

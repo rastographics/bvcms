@@ -9,6 +9,8 @@ using CmsData.Registration;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
 using CmsData.Codes;
+using CmsData.View;
+using CmsWeb.Areas.Search.Models;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {

@@ -335,6 +335,8 @@ namespace CmsData.OnlineRegSummaryText
             if (!currentAsk.IsAskMenu || Person.MenuItem == null)
                 return;
             var obj = (AskMenu)currentAsk;
+            if (Person.MenuItem.Count <= obj.UniqueId)
+                return;
             var list = obj.MenuItemsChosen(Person.MenuItem[obj.UniqueId]).ToList();
             if (!list.Any())
                 return;

@@ -184,10 +184,11 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Authorize(Roles = "ManageTransactions,Finance")]
         public ActionResult DeleteManual(int id, TransactionsModel m)
         {
-            DbUtil.Db.ExecuteCommand("UPDATE dbo.OrganizationMembers SET TranId = NULL WHERE TranId = {0}", id);
-            var t = DbUtil.Db.Transactions.Single(tt => tt.Id == id);
-            DbUtil.Db.Transactions.DeleteOnSubmit(t);
-            DbUtil.Db.SubmitChanges();
+            DbUtil.Db.ExecuteCommand(@"
+UPDATE dbo.OrganizationMembers SET TranId = NULL WHERE TranId = {0}
+DELETE dbo.TransactionPeople WHERE Id = {0}
+DELETE dbo.[Transaction] WHERE Id = {0}
+", id);
             return View("List", m);
         }
         [HttpPost]
