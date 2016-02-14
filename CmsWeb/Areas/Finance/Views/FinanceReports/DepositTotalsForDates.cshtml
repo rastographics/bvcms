@@ -1,0 +1,73 @@
+﻿@using CmsData
+@model CmsWeb.Models.DepositTotalsModel
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Deposit Totals for Dates";
+    ViewBag.ReportPageHeader = "Deposit Totals for Dates";
+}
+<div class="report box box-responsive">
+    <div class="box-content">
+        <div class="well hidden-print" style="max-width: 850px; margin: auto;">
+            <form id="totals" method="POST">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="Dt1" class="control-label">From Date</label>
+                            <div class="input-group date">
+                                @Html.TextBox("Dt1", Model.Dt1.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                @Html.Hidden("Dt1Iso", Model.Dt2.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="Dt2" class="control-label">To Date</label>
+                            <div class="input-group date">
+                                @Html.TextBox("Dt2", Model.Dt2.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                @Html.Hidden("Dt2Iso", Model.Dt2.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="pull-right">
+                            <button type="submit" class="btn btn-primary" id="run">Run</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="visible-print-block text-center">
+            <strong>From Date:</strong> <span id="fromDate">@Model.Dt1.GetValueOrDefault().ToShortDateString()</span><br />
+            <strong>To Date:</strong> <span id="toDate">@Model.Dt2.GetValueOrDefault().ToShortDateString()</span><br />
+        </div>
+        <div id="results" style="margin-top: 25px;"></div>
+    </div>
+</div>
+@section scripts
+{
+    <script type="text/javascript">
+        $(function() {
+            $("#run").click(function (ev) {
+                ev.preventDefault();
+                if (!$.DateValid($("#Dt1").val(), true))
+                    return;
+                if (!$.DateValid($("#Dt2").val(), true))
+                    return;
+
+                $.block();
+                // set hidden print form elements
+                $('#fromDate').text($("#Dt1").val());
+                $('#toDate').text($("#Dt2").val());
+                
+                var f = $(this).closest('form');
+                var q = f.serialize();
+                $.post("/FinanceReports/DepositTotalsForDatesResults", q, function (ret) {
+                    $.unblock();
+                    $("#results").html(ret);
+                });
+            });
+        });
+    </script>
+}

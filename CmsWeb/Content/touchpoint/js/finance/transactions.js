@@ -154,14 +154,13 @@
             type: "warning",
             showCancelButton: true,
             confirmButtonClass: "btn-danger",
-            confirmButtonText: "Yes, delete the " +
-                "adjustment!",
+            confirmButtonText: "Yes, delete it!",
             closeOnConfirm: false
         },
         function () {
             $.post(a.attr("href"), q, function (ret) {
                 swal({
-                    title: "Adjustment Deleted!",
+                    title: "Deleted!",
                     type: "success"
                 },
                 function () {

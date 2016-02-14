@@ -6,6 +6,7 @@
  */
 
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -83,6 +84,11 @@ namespace UtilityExtensions
         public static string ToSortableDate(this DateTime? dt)
         {
             return dt.ToString2("yyyy-MM-dd");
+        }
+
+        public static DateTime? FromSortableDate(string dtstr)
+        {
+            return DateTime.ParseExact(dtstr, "yyyy-MM-dd", CultureInfo.InvariantCulture);
         }
 
         public static string FormatDate(this DateTime? dt, string def = "")
@@ -188,9 +194,11 @@ namespace UtilityExtensions
         public static string FmtFone(this string phone, string prefix)
         {
             phone = phone.FmtFone();
-            if (phone.HasValue())
+            if (!phone.HasValue())
+                return "";
+            if(prefix.HasValue())
                 return prefix + " " + phone;
-            return "";
+            return phone;
         }
 
         public static string FmtFone7(this string phone)

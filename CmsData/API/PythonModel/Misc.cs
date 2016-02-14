@@ -39,7 +39,7 @@ namespace CmsData
             dictionary.Add(key, value);
         }
 
-        public string FmtPhone(string s, string prefix)
+        public string FmtPhone(string s, string prefix = null)
         {
             return s.FmtFone(prefix);
         }

@@ -178,7 +178,7 @@ namespace CmsData
         {
             if (!field.HasValue())
                 field = "blank";
-            field = field.Replace(",", "_");
+            //field = field.Replace(",", "_");
             var ev = FamilyExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase: true) == 0);
             if (ev == null)
             {
@@ -262,7 +262,7 @@ namespace CmsData
                        select v.FamilyId).SingleOrDefault();
             if (fid == 0)
                 return null;
-            field = field.Replace('/', '-');
+            //field = field.Replace('/', '-');
             var q = from v in db.FamilyExtras
                     where v.Field == field
                     where v.FamilyId == fid
@@ -287,7 +287,7 @@ namespace CmsData
                        select v.FamilyId).SingleOrDefault();
             if (fid == 0)
                 return false;
-            field = field.Replace('/', '-');
+            //field = field.Replace('/', '-');
             var q = from v in db.FamilyExtras
                     where v.Field == field
                     where v.FamilyId == fid

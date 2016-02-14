@@ -419,7 +419,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         PeopleId = p.PeopleId,
                         Name = p.Name,
                         Age = p.Age,
-                        Attend = (om != null && om.IsInGroup("Attended")) || forceattend
+                        Attend = (om != null && om.IsInGroup("Attending")) || forceattend
                     };
             FamilyAttend = q.ToList();
         }

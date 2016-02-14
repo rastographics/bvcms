@@ -409,7 +409,7 @@ namespace CmsData
         }
         public static OrganizationExtra GetExtraValue(CMSDataContext db, int id, string field)
         {
-            field = field.Replace('/', '-');
+            //field = field.Replace('/', '-');
             var q = from v in db.OrganizationExtras
                     where v.Field == field
                     where v.OrganizationId == id
