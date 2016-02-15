@@ -92,14 +92,11 @@
                         Currently, this organization has <strong>@org.MemberCount members</strong>.
                       </p>
                     </div>
-                    @if (User.IsInRole("Developer"))
-                    {
-                        <div class="col-sm-2">
-                          <div class="vertical-center">
-                            <a class="searchadd btn btn-default btn-block" href="/SearchAdd2/Dialog/addtoemail/"><i class="fa fa-plus-circle"></i></a>
-                          </div>
-                        </div>
-                    }
+                    <div class="col-sm-2">
+                      <div class="vertical-center">
+                        <a class="searchadd btn btn-default btn-block" href="/SearchAdd2/Dialog/addtoemail/"><i class="fa fa-plus-circle"></i></a>
+                      </div>
+                    </div>
                   </div>
 
               }
@@ -121,10 +118,7 @@
                         }
                       }
                     </select>
-                    @if (User.IsInRole("Developer"))
-                    {
-                        <span class="input-group-addon"><a href="/SearchAdd2/Dialog/addtoemail/" class="searchadd"><i class="fa fa-plus-circle"></i></a></span>
-                    }
+                    <span class="input-group-addon"><a href="/SearchAdd2/Dialog/addtoemail/" class="searchadd"><i class="fa fa-plus-circle"></i></a></span>
                   </div>
                 if (Model.Count <= 500)
                 {
@@ -138,10 +132,8 @@
               <div class="row">
                 <div class="col-sm-12 alert alert-danger" id="additional-recipients-alerts" style="display:none;"></div>
                 <div class="col-sm-9"><ul id="additional-recipients"></ul></div>
-
               </div>
             </div>
-
           </div>
 
           <div id="ccdiv" style="display: none">
