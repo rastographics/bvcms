@@ -34,7 +34,7 @@
                 <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
             </div>
             @Html.HiddenFor(m => m.DisplaySkipSearch)
-            @if (Model.DisplaySkipSearch)
+            @if (Model.DisplaySkipSearch && Model.CanAdd)
             {
                 <a href="/SearchAdd2/NewPerson/0" class="btn btn-warning ajax" title="add new">Skip Search <i class="fa fa-arrow-circle-right"></i></a>
             }
