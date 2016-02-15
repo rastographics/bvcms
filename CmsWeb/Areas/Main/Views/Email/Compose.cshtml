@@ -18,18 +18,41 @@
       max-height: 60px !important;
       overflow-y: scroll !important;
     }
+
+    #additional-recipients .fa-times-circle {
+      color: firebrick;
+    }
+
+    .vertical-center {
+      height: 100%;
+      width: 100%;
+      text-align: center; /* align the inline(-block) elements horizontally */
+    }
+
+      .vertical-center:before { /* create a full-height inline block pseudo=element */
+        content: " ";
+        display: inline-block;
+        vertical-align: middle; /* vertical alignment of the inline element */
+        height: 100%;
+      }
+
+      .vertical-center > .container {
+        max-width: 100%;
+        display: inline-block;
+        vertical-align: middle; /* vertical alignment of the inline element */
+      }
   </style>
 }
 <div class="row">
   <div class="col-md-10 col-lg-8">
     @if (!Model.OrgId.HasValue)
     {
-      <div class="alert alert-info alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <strong>Please Note:</strong>
-        Your recipient list has been saved in a tag, so you can run queries in other tabs.
-        But you should not compose two emails simultaneously as one will overwrite the other.
-      </div>
+        <div class="alert alert-info alert-dismissible">
+          <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <strong>Please Note:</strong>
+          Your recipient list has been saved in a tag, so you can run queries in other tabs.
+          But you should not compose two emails simultaneously as one will overwrite the other.
+        </div>
     }
     <div class="box box-responsive">
       <div class="box-content">
@@ -58,85 +81,136 @@
               @if (Model.OrgId.HasValue)
               {
                 var org = DbUtil.Db.LoadOrganizationById(Model.OrgId);
-                <p class="alert alert-warning">
-                  This email will be sent to all current members of <strong>@org.OrganizationName</strong>.
-                  The recipient list will be finalized when the email is actually sent.
-                  Currently, this organization has <strong>@org.MemberCount members</strong>.
-                </p>
+
+                  <div class="row">
+                    <div class="col-sm-10">
+                      <p class="alert alert-warning">
+                        This email will be sent to all current members of <strong>@org.OrganizationName</strong>.
+                        The recipient list will be finalized when the email is actually sent.
+                        Currently, this organization has <strong>@org.MemberCount members</strong>.
+                      </p>
+                    </div>
+                    @if (User.IsInRole("Developer"))
+                    {
+                        <div class="col-sm-2">
+                          <div class="vertical-center">
+                            <a class="searchadd btn btn-default btn-block" href="/SearchAdd2/Dialog/addtoemail/"><i class="fa fa-plus-circle"></i></a>
+                          </div>
+                        </div>
+                    }
+                  </div>
+
               }
               else
               {
-                <select multiple="multiple" id="Recipients" name="Recipients" class="form-control">
-                  @if (Model.Count > 500)
-                  {
-                    <option value="" selected="selected">
-                      @Model.Count people@(Model.wantParents ? " including parents." : ".")
-                    </option>
-                  }
-                  else
-                  {
-                    foreach (var recipient in Model.Recipients)
+                  <div class="input-group">
+                    <select multiple="multiple" id="Recipients" name="Recipients" class="form-control">
+                      @if (Model.Count > 500)
+                      {
+                          <option value="" selected="selected">
+                            @Model.Count people@(Model.wantParents ? " including parents." : ".")
+                          </option>
+                      }
+                      else
+                      {
+                        foreach (var recipient in Model.Recipients)
+                        {
+                              <option value="@recipient" selected="selected">@recipient</option>
+                        }
+                      }
+                    </select>
+                    @if (User.IsInRole("Developer"))
                     {
-                      <option value="@recipient" selected="selected">@recipient</option>
+                        <span class="input-group-addon"><a href="/SearchAdd2/Dialog/addtoemail/" class="searchadd"><i class="fa fa-plus-circle"></i></a></span>
                     }
-                  }
-                </select>
+                  </div>
                 if (Model.Count <= 500)
                 {
-                  <p class="help-block">
-                    @Model.Count
-                    @( Model.Count != 1 ? "people" : "person")
-                    @(Model.wantParents ? " including parents." : ".")
-                  </p>
+                      <p class="help-block" id="person-count">
+                        @Model.Count
+                        @( Model.Count != 1 ? "people" : "person")
+                        @(Model.wantParents ? " including parents." : ".")
+                      </p>
                 }
               }
+              <div class="row">
+                <div class="col-sm-12 alert alert-danger" id="additional-recipients-alerts" style="display:none;"></div>
+                <div class="col-sm-9"><ul id="additional-recipients"></ul></div>
+
+              </div>
+            </div>
+
+          </div>
+
+          <div id="ccdiv" style="display: none">
+            <div class="form-group">
+              <label for="inputEmail3" class="col-sm-2 control-label">Cc/Reply-To:</label>
+              <div class="col-sm-10">
+                <input type="text" id="Cc" name="Cc" class="form-control">
+                <p class="help-block"><i><small>Use commas to separate addresses. Each address receives a copy of the email and each is added to the Reply-To field.</small></i></p>
+              </div>
             </div>
           </div>
           <div class="form-group">
             <label for="Subject" class="col-sm-2 control-label">Subject:</label>
             <div class="col-sm-10">
               <input name="Subject" id="Subject" size="75" value="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? "" : c.Title)" class="form-control" />
+
             </div>
           </div>
           @if ((User.IsInRole("ScheduleEmails") || User.IsInRole("Edit")) && ConfigurationManager.AppSettings["UseEmailScheduler"] == "true")
           {
-            <div class="form-group">
-              <label for="Schedule" class="col-sm-2 control-label">Schedule:</label>
-              <div class="col-sm-10">
-                <div class="input-group scheduleDateTime">
-                  @Html.TextBox("Schedule", Model.Schedule, new { @class = "form-control", placeholder = "Immediately" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                  @Html.Hidden("ScheduleIso", Model.Schedule, new { disabled = "disabled", placeholder = "Immediately" })
+              <div id="scheddiv" style="display: none">
+                <div class="form-group">
+                  <label for="Schedule" class="col-sm-2 control-label">Schedule:</label>
+                  <div class="col-sm-10">
+                    <div class="input-group scheduleDateTime">
+                      @Html.TextBox("Schedule", Model.Schedule, new { @class = "form-control", placeholder = "Immediately" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                      @Html.Hidden("ScheduleIso", Model.Schedule, new { disabled = "disabled", placeholder = "Immediately" })
+                    </div>
+                    <p class="help-block">Note: Time is Central Time (CST)</p>
+                  </div>
                 </div>
-                <p class="help-block">Note: Time is Central Time (CST)</p>
               </div>
-            </div>
           }
           <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
               <label class="checkbox-inline">
                 @Html.CheckBox("PublicViewable") Publicly viewable?
               </label>
+              @if (User.IsInRole("Developer"))
+              {
+              <label class="checkbox-inline">
+                @Html.CheckBox("AddCC") Add Cc/Reply-To?
+              </label>
+              }
+              @if ((User.IsInRole("ScheduleEmails") || User.IsInRole("Edit")) && ConfigurationManager.AppSettings["UseEmailScheduler"] == "true")
+              {
+                  <label class="checkbox-inline">
+                    @Html.CheckBox("ChangeSched") Schedule Email?
+                  </label>
+              }
             </div>
           </div>
           <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
               @if (Util2.UseNewEditor)
               {
-                <script type="text/javascript">
-                  function iframeLoaded() {
-                    var iFrameID = document.getElementById('email-body');
-                    if (iFrameID) {
-                      // here you can make the height, I delete it first, then I make it again
-                      iFrameID.height = "";
-                      iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + 20 + "px";
+                  <script type="text/javascript">
+                    function iframeLoaded() {
+                      var iFrameID = document.getElementById('email-body');
+                      if (iFrameID) {
+                        // here you can make the height, I delete it first, then I make it again
+                        iFrameID.height = "";
+                        iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + 20 + "px";
+                      }
                     }
-                  }
-                </script>
-                <iframe src="/Email/EmailBody/@tid" frameborder="0" onload=" iframeLoaded() " style="width: 100%;" id="email-body" name="email-body"></iframe>
+                  </script>
+                  <iframe src="/Email/EmailBody/@tid" frameborder="0" onload=" iframeLoaded() " style="width: 100%;" id="email-body" name="email-body"></iframe>
               }
               else
               {
-                <iframe src="/Email/EmailBody/@tid" height="600" frameborder="0" style="width: 100%; height: 600px;" id="email-body" name="email-body"></iframe>
+                  <iframe src="/Email/EmailBody/@tid" height="600" frameborder="0" style="width: 100%; height: 600px;" id="email-body" name="email-body"></iframe>
               }
             </div>
           </div>
@@ -200,7 +274,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <input type="button" value="Cancel" class="btn btn-default" id="cancel-edit"/>
+        <input type="button" value="Cancel" class="btn btn-default" id="cancel-edit" />
         <input type="submit" value="Save" class="btn btn-primary" id="save-edit" />
       </div>
     </div>
@@ -219,8 +293,113 @@
         $('#Schedule').val($('#ScheduleIso').val());
         $('#Schedule').attr('type', 'datetime-local');
       } else {
-        $("div.scheduleDateTime").datetimepicker({ format: 'MM/DD/YYYY h:mm A', widgetPositioning: { horizontal: 'left' }});
+        $("div.scheduleDateTime").datetimepicker({ format: 'MM/DD/YYYY h:mm A', widgetPositioning: { horizontal: 'left' } });
       }
+
+
+
+
+      $("#AddCC").click(function () {
+        if ($(this).is(':checked')) {
+          $("#ccdiv").show(1000);
+        }
+        else {
+          $("#ccdiv").hide(1000);
+          $("#Cc").val('');
+        }
+      });
+
+      $("#ChangeSched").click(function () {
+        if ($(this).is(':checked')) {
+          $("#scheddiv").show(1000);
+        }
+        else {
+          $("#scheddiv").hide(1000);
+          $("#Schedule").val('');
+          $("#ScheduleIso").val('');
+        }
+      });
+
     });
+
+    function AddSelected(ret) {
+      var peopleWithoutEmail = [], duplicates = [];
+      var recipients = {};
+      $("#Recipients option").each(function (i, option) {
+        var m = option.value.match(/\(([0-9]+)\)/);
+        if (m) {
+          recipients[parseInt(m[1])] = 1;
+        }
+      });
+
+      // ret will be an array
+      for (var i = 0; i < ret.length; i++) {
+        // Check for people without emails
+        if (ret[i].email === null || ret[i].email.length === 0) {
+          peopleWithoutEmail.push(ret[i].name);
+          continue;
+        }
+        // Check for duplicates among additional recipients
+        if ($("#additional-recipient-li-" + ret[i].pid).length) {
+          continue;
+        }
+        // Check for duplicates among original recipients
+        if (recipients[ret[i].pid]) {
+          duplicates.push(ret[i].name);
+          continue;
+        }
+
+        $("#additional-recipients").append(
+            '<li id="additional-recipient-li-' + ret[i].pid + '">' +
+            ret[i].name +
+            '  <input type="hidden" name="AdditionalRecipients" value="' + ret[i].pid + '"/>' +
+            '  <a href="javascript:RemoveRecipient(' + ret[i].pid + ');"><i class="fa fa-times-circle red"></i></a>' +
+            '</li>'
+        );
+      }
+
+      $('#additional-recipients-alerts').empty();
+      if (peopleWithoutEmail.length > 0) {
+        if (peopleWithoutEmail.length > 1) {
+          $('#additional-recipients-alerts').append('<p>The following people have no active email addresses and were not added to this email:</p>');
+        } else {
+          $('#additional-recipients-alerts').append('<p>The following person has no active email address and was not added to this email:</p>');
+        }
+        var ul = $('<ul></ul>');
+        $.each(peopleWithoutEmail, function (i, name) {
+          ul.append('<li>' + name + '</li>');
+        });
+        $('#additional-recipients-alerts').append(ul);
+      }
+
+      if (duplicates.length > 0) {
+        $('#additional-recipients-alerts').append('<p>The following ' + ((duplicates.length > 1) ? 'selected people were' : 'person was') + ' already going to receive the email:</p>');
+        var ul = $('<ul></ul>');
+        $.each(duplicates, function (i, name) {
+          ul.append('<li>' + name + '</li>');
+        });
+        $('#additional-recipients-alerts').append(ul);
+      }
+
+      if ($('#additional-recipients-alerts').is(':empty')) {
+        $('#additional-recipients-alerts').hide();
+      } else {
+        $('#additional-recipients-alerts').show();
+      }
+
+      UpdatePersonCount();
+    }
+
+    function RemoveRecipient(pid) {
+      $('#additional-recipient-li-' + pid).remove();
+      UpdatePersonCount();
+    }
+
+    function UpdatePersonCount() {
+      if ($("#person-count").length > 0) {
+        var newCount = $('#Recipients option').length + $('#additional-recipients li').length;
+        $('#person-count').text(newCount + (newCount > 1 ? ' people' : ' person') + '@(Model.wantParents ? " including parents." : ".")');
+      }
+    }
   </script>
 }

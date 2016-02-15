@@ -17,7 +17,8 @@ CREATE TABLE [dbo].[EmailQueue]
 [CCParents] [bit] NULL,
 [NoReplacements] [bit] NULL,
 [SendFromOrgId] [int] NULL,
-[FinanceOnly] [bit] NULL
+[FinanceOnly] [bit] NULL,
+[CClist] [nvarchar] (max) NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION

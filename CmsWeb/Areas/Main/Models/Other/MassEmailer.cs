@@ -31,7 +31,42 @@ namespace CmsWeb.Areas.Main.Models
         public string Body { get; set; }
         public DateTime? Schedule { get; set; }
         public bool PublicViewable { get; set; }
-        public IEnumerable<string> Recipients { get; set; } 
+        public IEnumerable<string> Recipients { get; set; }
+        public IEnumerable<int> AdditionalRecipients { get; set; }
+
+        public List<MailAddress> CcAddresses = new List<MailAddress>();
+        public string Cc {
+            get {
+                if (CcAddresses == null) { return null; }
+                return String.Join(",", CcAddresses);
+            }
+            set {
+                if (value == null) { CcAddresses = null; }
+                else
+                {
+                    try
+                    {
+                        CcAddresses = value.Split(',').Select(a => new MailAddress(a)).ToList();
+                    }
+                    catch
+                    {
+                        List<String> CcAddressesString = value.Split(',').ToList();
+                        var re1 = new Regex(@"^(.*\b(?=\w))\b[A-Z0-9._%+-]+(?<=[^.])@[A-Z0-9._-]+\.[A-Z]{2,4}\b\b(?!\w)$", RegexOptions.IgnoreCase);
+                        var re2 = new Regex(@"^[A-Z0-9._%+-]+(?<=[^.])@[A-Z0-9.-]+\.[A-Z]{2,4}$", RegexOptions.IgnoreCase);
+
+                        foreach (string s in CcAddressesString)
+                        {
+                            if (re1.IsMatch(s) || re2.IsMatch(s))
+                            {
+                                CcAddresses.Add(new MailAddress(s.trim())); 
+                            }
+                        }
+                    };
+                  
+                }
+            }
+        }
+
 
         public string Host { get; set; }
 
@@ -58,9 +93,8 @@ namespace CmsWeb.Areas.Main.Models
             IQueryable<Person> q = null;
             if (OrgId.HasValue)
                 q = from p in DbUtil.Db.PeopleQuery(DbUtil.Db.QueryInCurrentOrg().QueryId)
-                    where p.EmailAddress != null
-                    where p.EmailAddress != ""
-                    where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
+                    where ((p.EmailAddress ?? "") != "" && (p.SendEmailAddress1 ?? true))
+                        || ((p.EmailAddress2 ?? "") != "" && (p.SendEmailAddress2 ?? false))
                     select p;
             else
             {
@@ -73,21 +107,17 @@ namespace CmsWeb.Areas.Main.Models
 
                 if (CcParents)
                     q = from p in q
-                        where (p.EmailAddress ?? "") != ""
-                              || (p.Family.HeadOfHousehold.EmailAddress ?? "") != ""
-                              || (p.Family.HeadOfHouseholdSpouse.EmailAddress ?? "") != ""
-                        where (p.SendEmailAddress1 ?? true)
-                              || (p.SendEmailAddress2 ?? false)
-                              || (p.Family.HeadOfHousehold.SendEmailAddress1 ?? false)
-                              || (p.Family.HeadOfHousehold.SendEmailAddress2 ?? false)
-                              || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress1 ?? false)
-                              || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress2 ?? false)
+                        where ((p.EmailAddress ?? "") != "" && (p.SendEmailAddress1 ?? true))
+                              || ((p.EmailAddress2 ?? "") != "" && (p.SendEmailAddress2 ?? false))
+                              || ((p.Family.HeadOfHousehold.EmailAddress ?? "") != "" && (p.Family.HeadOfHousehold.SendEmailAddress1 ?? true))
+                              || ((p.Family.HeadOfHousehold.EmailAddress2 ?? "") != "" && (p.Family.HeadOfHousehold.SendEmailAddress2 ?? false))
+                              || ((p.Family.HeadOfHouseholdSpouse.EmailAddress ?? "") != "" && (p.Family.HeadOfHouseholdSpouse.SendEmailAddress1 ?? true))
+                              || ((p.Family.HeadOfHouseholdSpouse.EmailAddress2 ?? "") != "" && (p.Family.HeadOfHouseholdSpouse.SendEmailAddress2 ?? false))
                         select p;
                 else
                     q = from p in q
-                        where p.EmailAddress != null
-                        where p.EmailAddress != ""
-                        where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
+                        where ((p.EmailAddress ?? "") != "" && (p.SendEmailAddress1 ?? true))
+                            || ((p.EmailAddress2 ?? "") != "" && (p.SendEmailAddress2 ?? false))
                         select p;
             }
             var tag = DbUtil.Db.PopulateSpecialTag(q, DbUtil.TagTypeId_Emailer);
@@ -116,7 +146,7 @@ namespace CmsWeb.Areas.Main.Models
 
             if (!OrgId.HasValue)
                 throw new Exception("no org to email from");
-            var emailqueue = DbUtil.Db.CreateQueueForOrg(From, Subject, Body, Schedule, OrgId.Value, PublicViewable);
+            var emailqueue = DbUtil.Db.CreateQueueForOrg(From, Subject, Body, Schedule, OrgId.Value, PublicViewable, Cc);
             if (emailqueue == null)
                 return null;
             emailqueue.NoReplacements = noDuplicates;
@@ -141,7 +171,7 @@ namespace CmsWeb.Areas.Main.Models
                     Schedule = Util.Now.AddSeconds(10); // some time for emailqueue to be ready to go
             }
 
-            var emailqueue = DbUtil.Db.CreateQueue(From, Subject, Body, Schedule, TagId, PublicViewable, CcParents);
+            var emailqueue = DbUtil.Db.CreateQueue(From, Subject, Body, Schedule, TagId, PublicViewable, CcParents, Cc);
             if (emailqueue == null)
                 return null;
             emailqueue.NoReplacements = noDuplicates;
