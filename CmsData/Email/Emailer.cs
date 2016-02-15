@@ -465,7 +465,7 @@ namespace CmsData
             return aa;
         }
 
-        public void SendPeopleEmail(int queueid, List<MailAddress> cc = null)
+        public void SendPeopleEmail(int queueid)
         {
             var emailqueue = EmailQueues.Single(ee => ee.Id == queueid);
             var sysFromEmail = Util.SysFromEmail;
@@ -483,6 +483,12 @@ namespace CmsData
             var m = new EmailReplacements(this, body, from);
             emailqueue.Started = DateTime.Now;
             SubmitChanges();
+
+            List<MailAddress> cc = new List<MailAddress>();
+            if (emailqueue.CClist != null)
+            {
+                cc = emailqueue.CClist.Split(',').Select(addr => new MailAddress(addr)).ToList();
+            }
 
             if (emailqueue.SendFromOrgId.HasValue)
             {
@@ -552,7 +558,7 @@ namespace CmsData
             }
 
             // Handle CC MailAddresses.  These do not get DoReplacement support.
-            if (cc != null)
+            if (cc.Count > 0)
             {
                 foreach (var ma in cc)
                 {
@@ -591,7 +597,7 @@ namespace CmsData
             else if (emailqueue.Transactional == false)
             {
                 var nitems = emailqueue.EmailQueueTos.Count();
-                if (cc != null) { nitems += cc.Count(); }
+                if (cc.Count > 0) { nitems += cc.Count; }
                 if (nitems > 1)
                     NotifySentEmails(from.Address, from.DisplayName,
                         emailqueue.Subject, nitems, emailqueue.Id);
