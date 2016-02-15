@@ -45,7 +45,6 @@ namespace UtilityExtensions
             }
             if (cc != null)
             {
-               
                 foreach (var a in cc)
                 {
                     msg.ReplyToList.Add(a);
@@ -87,7 +86,7 @@ namespace UtilityExtensions
  
             var html = badEmailLink + message;
 
-            if (cc != null)
+            if (cc != null && cc.Count > 0)
             {
                 string cclist = (string.Join(", ", cc));
 
