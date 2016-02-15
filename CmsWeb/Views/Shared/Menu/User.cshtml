@@ -1,11 +1,8 @@
 ﻿@{
     var finance = User.IsInRole("Finance");
-    var alloweditorchoice = User.IsInRole("Developer");
     var targetperson = Util2.TargetLinkPeople;
     var targetorg = Util2.TargetLinkOrg;
-    var useneweditor = Util2.UseNewEditor;
     var testnofinance = ((string)HttpContext.Current.Session["testnofinance"]) == "true";
-    //var developer = User.IsInRole("Developer");
 }
 <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="me" title="@Util.UserName">
   @if (!string.IsNullOrEmpty(Util.UserThumbPictureUrl))
@@ -22,22 +19,6 @@
   @Helper.LiAnchorLink("Profile", "/Person2/" + Util.UserPeopleId)
   @Helper.LiAnchorLink("Change Password", "/Account/ChangePassword/")
   <li class="divider"></li>
-  @if (alloweditorchoice)
-  {
-      <li>
-        <a href="/Home/UseNewEditor/@Html.Raw(useneweditor)">
-          @if (useneweditor)
-          {
-              <i class="dropdown-icon fa fa-toggle-on" style="color: #5cb85c"></i>
-          }
-          else
-          {
-              <i class="dropdown-icon fa fa-toggle-off"></i>
-          }
-          <span>&nbsp;&nbsp;Use New Editor</span>
-        </a>
-      </li>
-  }
   <li>
     <a href="/Home/TargetPerson/@Html.Raw(targetperson)">
       @if (targetperson)

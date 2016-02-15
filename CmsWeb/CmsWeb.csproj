@@ -2036,7 +2036,7 @@
     <Content Include="Scripts\People\persontour.js" />
     <Content Include="Scripts\Org\RegSetting2.js" />
     <Content Include="Scripts\js\ExtraValue.js" />
-    <Content Include="Scripts\js\sgmap.js" />
+    <Content Include="Content\touchpoint\js\sgmap.js" />
     <Content Include="Scripts\jQuery\jquery.gmap-1.1.0.js" />
     <Content Include="Scripts\jQuery\FixedColumns.js" />
     <Content Include="Scripts\jQuery\FixedHeader.js" />
@@ -2551,7 +2551,7 @@
     <Content Include="Scripts\jQuery\jquery.form.js" />
     <Content Include="Scripts\jQuery\jquery.form2.js" />
     <Content Include="Scripts\jQuery\jquery.jscrollpane.js" />
-    <Content Include="Scripts\jQuery\jquery.showpassword.js" />
+    <Content Include="Content\touchpoint\lib\jquery.showpassword.js" />
     <Content Include="Scripts\js\ChurchAttendance.js" />
     <Content Include="Content\touchpoint\js\email\compose.js" />
     <Content Include="Scripts\Finance\Bundles.js" />
@@ -2860,7 +2860,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\images\bvcms132x55.png" />
-    <Content Include="Scripts\jQuery\jquery.sortElements.js" />
+    <Content Include="Content\touchpoint\lib\jquery.sortElements.js" />
     <Content Include="Scripts\jQuery\jquery.textarea.js" />
     <Content Include="Scripts\jQuery\jquery.transpose.js" />
     <Content Include="Scripts\jQuery\jquery.transpose.min.js" />
@@ -2905,7 +2905,6 @@
     <Content Include="Content\touchpoint\js\meeting\Meetings.js" />
     <Content Include="Scripts\Dialog\SearchDivisions.js" />
     <Content Include="Scripts\Finance\Funds.js" />
-    <Content Include="Scripts\Org\RegSetting.js" />
     <Content Include="Scripts\js\markers.js" />
     <Content Include="Scripts\Meeting\meeting.js" />
     <Content Include="Scripts\Org\RegSettings.js" />

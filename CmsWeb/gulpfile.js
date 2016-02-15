@@ -12,13 +12,12 @@ var cssOutput = 'content/touchpoint/css',
 var legacyJsFiles = [
     {
         files: [
-            'Scripts/jQuery/jquery-migrate-1.1.1.js',
-            'Scripts/jQuery/jquery.blockUI.js',
-            'Scripts/jQuery/jquery.sortElements.js',
-            'Scripts/jQuery/jquery.showpassword.js',
+            'Content/touchpoint/lib/jquery-blockUI/js/jquery.blockUI.js',
+            'Content/touchpoint/lib/jquery.sortElements.js',
+            'Content/touchpoint/lib/jquery.showpassword.js',
             'Content/touchpoint/lib/jquery-validate-globalize/js/jquery.validate.globalize.js',
             'Content/touchpoint/js/extensions.js',
-            'Content/touchpoint/lib/idleTimer/js/idle-timer.js',
+            'Content/touchpoint/lib/idleTimer/js/idle-timer.js'
         ],
         outputName: 'onlineregister.min.js',
         outputDir: 'Content/touchpoint/js'

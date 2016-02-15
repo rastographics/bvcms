@@ -70,27 +70,6 @@ namespace CmsWeb
             }
         }
 
-        public static string Globalize => "/Scripts/globalize.js";
-
-        public static string GlobalizeCulture
-        {
-            get
-            {
-                //Determine culture - GUI culture for preference, user selected culture as fallback
-                var currentCulture = CultureInfo.CurrentCulture;
-                var filePattern = "/Scripts/globalize/globalize.culture.{0}.js";
-                var regionalisedFileToUse = string.Format(filePattern, "en-US"); //Default localisation to use
-
-                //Try to pick a more appropriate regionalisation
-                if (File.Exists(HostingEnvironment.MapPath(string.Format(filePattern, currentCulture.Name)))) //First try for a globalize.culture.en-GB.js style file
-                    regionalisedFileToUse = string.Format(filePattern, currentCulture.Name);
-                else if (File.Exists(HostingEnvironment.MapPath(string.Format(filePattern, currentCulture.TwoLetterISOLanguageName)))) //That failed; now try for a globalize.culture.en.js style file
-                    regionalisedFileToUse = string.Format(filePattern, currentCulture.TwoLetterISOLanguageName);
-
-                return regionalisedFileToUse;
-            }
-        }
-
         public static string CmsHost => DbUtil.Db.CmsHost;
 
         public static string GridClass => "table table-condensed table-striped not-wide grid2";
@@ -860,7 +839,15 @@ namespace CmsWeb
         {
             return new HtmlString("<script src=\"//cdn.ckeditor.com/4.5.6/full/ckeditor.js\" type=\"text/javascript\"></script>\n");
         }
-
+        
+        public static HtmlString jQueryMobile()
+        {
+            return new HtmlString("<script src='//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js'></script>\n");
+        }
+        public static HtmlString jQueryMobileCss()
+        {
+            return new HtmlString("<link rel='stylesheet' href='//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css' />\n");
+        }
         public static HtmlString jQuery()
         {
             return new HtmlString("<script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>\n");
@@ -890,11 +877,6 @@ namespace CmsWeb
         public static HtmlString Velocity()
         {
             return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js\" type=\"text/javascript\"></script>\n");
-        }
-
-        public static HtmlString Bootstrap()
-        {
-            return Fingerprint.Script("/Scripts/Bootstrap/bootstrap.js");
         }
 
         public static HtmlString Bootstrap3()
