@@ -54,6 +54,8 @@ namespace CmsData
 		
 		private bool? _FinanceOnly;
 		
+		private string _CClist;
+		
    		
    		private EntitySet< EmailLink> _EmailLinks;
 		
@@ -124,6 +126,9 @@ namespace CmsData
 		
 		partial void OnFinanceOnlyChanging(bool? value);
 		partial void OnFinanceOnlyChanged();
+		
+		partial void OnCClistChanging(string value);
+		partial void OnCClistChanged();
 		
     #endregion
 		public EmailQueue()
@@ -537,6 +542,28 @@ namespace CmsData
 					this._FinanceOnly = value;
 					this.SendPropertyChanged("FinanceOnly");
 					this.OnFinanceOnlyChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="CClist", UpdateCheck=UpdateCheck.Never, Storage="_CClist", DbType="nvarchar")]
+		public string CClist
+		{
+			get { return this._CClist; }
+
+			set
+			{
+				if (this._CClist != value)
+				{
+				
+                    this.OnCClistChanging(value);
+					this.SendPropertyChanging();
+					this._CClist = value;
+					this.SendPropertyChanged("CClist");
+					this.OnCClistChanged();
 				}
 
 			}
