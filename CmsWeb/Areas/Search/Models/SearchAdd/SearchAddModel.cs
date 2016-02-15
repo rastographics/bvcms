@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Search.Models
 {
     public class SearchAddModel : SearchResultsModel
     {
-        private readonly string[] noaddtypes = {"relatedfamily", "mergeto", "contactor", "taskdelegate", "taskowner", "taskdelegate2"};
+        private readonly string[] noaddtypes = {"relatedfamily", "mergeto", "contactor", "taskdelegate", "taskowner", "taskdelegate2", "addtoemail" };
         private readonly string[] onlyonetypes = {"taskdelegate", "taskowner", "taskdelegate2", "mergeto", "relatedfamily"};
         private Organization org;
 
@@ -257,19 +257,11 @@ namespace CmsWeb.Areas.Search.Models
                         var people = new List<ReturnResult>();
                         foreach (var p in PendingList)
                         {
-                            String email = null;
-                            if (p.Person.EmailAddress != null && p.Person.EmailAddress != "" && 
-                                (p.Person.SendEmailAddress1 == null || p.Person.SendEmailAddress1 == true)
-                               )
-                            {
+                            string email = null;
+                            if (!string.IsNullOrEmpty(p.Person.EmailAddress) && (p.Person.SendEmailAddress1 ?? true))
                                 email = p.Person.EmailAddress;
-                            }
-                            if (email == null && p.Person.EmailAddress2 != null && p.Person.EmailAddress2 != "" &&
-                                (p.Person.SendEmailAddress2 == null || p.Person.SendEmailAddress2 == true)
-                                )
-                            {
+                            if (email == null && !string.IsNullOrEmpty(p.Person.EmailAddress2) && (p.Person.SendEmailAddress2 ?? false))
                                 email = p.Person.EmailAddress2;
-                            }
                             people.Add(new ReturnResult { close = true, how = "addselected", pid = p.PeopleId, from = AddContext, name = p.Person.Name, email = email });
                         }
                         return people;

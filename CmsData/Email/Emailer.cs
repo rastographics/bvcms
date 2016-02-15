@@ -500,14 +500,8 @@ namespace CmsData
                 foreach (var pid in q2)
                 {
                     // Protect against duplicate PeopleIDs ending up in the queue
-                    var q3 = from eqt in EmailQueueTos
-                             where eqt.EmailQueue == emailqueue
-                             where eqt.PeopleId == pid
-                             select eqt;
-                    if (q3.Any())
-                    {
+                    if(emailqueue.EmailQueueTos.Any(pp => pp.PeopleId == pid))
                         continue;
-                    }
                     emailqueue.EmailQueueTos.Add(new EmailQueueTo
                     {
                         PeopleId = pid,

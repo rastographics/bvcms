@@ -51,11 +51,12 @@ namespace CmsData
 		private bool? _NoReplacements;
 		
 		private int? _SendFromOrgId;
-
-        private string _CClist;
 		
 		private bool? _FinanceOnly;
-		   		
+		
+		private string _CClist;
+		
+   		
    		private EntitySet< EmailLink> _EmailLinks;
 		
    		private EntitySet< EmailQueueTo> _EmailQueueTos;
@@ -122,17 +123,15 @@ namespace CmsData
 		
 		partial void OnSendFromOrgIdChanging(int? value);
 		partial void OnSendFromOrgIdChanged();
-
-        partial void OnCClistChanging(string value);
-        partial void OnCClistChanged();
 		
 		partial void OnFinanceOnlyChanging(bool? value);
 		partial void OnFinanceOnlyChanged();
 		
+		partial void OnCClistChanging(string value);
+		partial void OnCClistChanged();
+		
     #endregion
 		public EmailQueue()
-
-		
 		{
 			
 			this._EmailLinks = new EntitySet< EmailLink>(new Action< EmailLink>(this.attach_EmailLinks), new Action< EmailLink>(this.detach_EmailLinks)); 
@@ -527,30 +526,6 @@ namespace CmsData
 
 		}
 
-
-        [Column(Name = "CClist", UpdateCheck = UpdateCheck.Never, Storage = "_CClist", DbType = "nvarchar")]
-        public string CClist
-        {
-            get { return this._CClist; }
-
-            set
-            {
-                if (this._CClist != value)
-                {
-
-                    this.OnCClistChanging(value);
-                    this.SendPropertyChanging();
-                    this._CClist = value;
-                    this.SendPropertyChanged("CClist");
-                    this.OnCClistChanged();
-                }
-
-            }
-
-        }
-
-
-
 		
 		[Column(Name="FinanceOnly", UpdateCheck=UpdateCheck.Never, Storage="_FinanceOnly", DbType="bit")]
 		public bool? FinanceOnly
@@ -574,12 +549,33 @@ namespace CmsData
 		}
 
 		
+		[Column(Name="CClist", UpdateCheck=UpdateCheck.Never, Storage="_CClist", DbType="nvarchar")]
+		public string CClist
+		{
+			get { return this._CClist; }
+
+			set
+			{
+				if (this._CClist != value)
+				{
+				
+                    this.OnCClistChanging(value);
+					this.SendPropertyChanging();
+					this._CClist = value;
+					this.SendPropertyChanged("CClist");
+					this.OnCClistChanged();
+				}
+
+			}
+
+		}
+
+		
     #endregion
         
     #region Foreign Key Tables
    		
    		[Association(Name="FK_EmailLinks_EmailQueue", Storage="_EmailLinks", OtherKey="EmailID")]
- 
    		public EntitySet< EmailLink> EmailLinks
    		{
    		    get { return this._EmailLinks; }
