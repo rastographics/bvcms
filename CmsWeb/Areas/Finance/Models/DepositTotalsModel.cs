@@ -29,6 +29,7 @@ namespace CmsWeb.Models
             var list = (from r in DbUtil.Db.ViewDepositDateTotals
                         where Dt1 == null || r.DepositDate >= Dt1 
                         where Dt2 == null || r.DepositDate <= Dt2
+                        orderby r.DepositDate
                         select r).ToList();
             Total = new DepositDateTotal()
             {
