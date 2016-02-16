@@ -150,6 +150,8 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpPost]
         public ActionResult CheckinControl(CheckinControlModel m)
         {
+            if(m.CheckinExport)
+                return m.list().ToDataTable().ToExcel("CheckinControl.xlsx");
             return new CheckinControlResult { model = m };
         }
 
