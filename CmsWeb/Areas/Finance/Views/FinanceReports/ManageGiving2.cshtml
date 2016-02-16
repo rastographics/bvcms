@@ -1,111 +1,113 @@
 ﻿@model CmsWeb.Areas.OnlineReg.Models.ManageGivingModel
+@using CmsData
 @using CmsWeb
 @using CmsData.Finance
 @{
     ViewBag.Title = "Managed Giving";
     ViewBag.PageHeader = "Managed Giving";
     Layout = ViewExtensions2.TouchPointLayout();
+    var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
 }
 <div class="row">
-    <div class="col-sm-9">
-        <div class="box box-responsive">
-            <div class="box-title-btn">
-                <div class="box-tools">
-                    <a class="btn btn-default" href="/FinanceReports/ManagedGiving/"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
-                </div>
-            </div>
-            <div class="box-content">
-                <div class="well">
-                    <strong><a href="/Person2/@Model.person.PeopleId" style="font-size: 1.5em;">@Model.person.Name</a></strong><br>
-                    <a href="mailto:@Model.person.EmailAddress">@Model.person.EmailAddress</a>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-striped" id="funds">
-                        <thead>
-<tr>
-                                <th>Funds</th>
-                                <th style="width:100px;">
-                                    <div class="pull-right">
-                                        Amounts
-                                    </div>
-                                </th>
-</tr>
-                        </thead>
-                        <tbody>
-                            @{ var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FullFundList(); }
-                            @foreach (var fund in funds)
-{
-                                var amt = Model.FundItemValue(UtilityExtensions.Util.ToInt(fund.Value)) ?? 0;
-    if (amt > 0)
-    {
-            <tr>
-                                        <td>@fund.Text</td>
-                                        <td style="width: 100px;">
-                                            <div class="pull-right">
-                                                @amt.ToString("C2")
-                                            </div>
-                                        </td>
-            </tr>
-    }
-}
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td><h4 class="pull-right">TOTAL:</h4></td>
-                                <td style="width:100px;"><h2 class="pull-right" style="margin: 0;">@Model.total.ToString("C2")</h2></td>
-            </tr>
-                        </tfoot>
-        </table>
-                </div>
-                <h4>Giving Schedule</h4>
-                <strong>
-                    <em>
+  <div class="col-sm-9">
+    <div class="box box-responsive">
+      <div class="box-title-btn">
+        <div class="box-tools">
+          <a class="btn btn-default" href="/FinanceReports/ManagedGiving/"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+        </div>
+      </div>
+      <div class="box-content">
+        <div class="well">
+          <strong><a href="/Person2/@Model.person.PeopleId" style="font-size: 1.5em;">@Model.person.Name</a></strong><br>
+          <a href="mailto:@Model.person.EmailAddress">@Model.person.EmailAddress</a>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-striped" id="funds">
+            <thead>
+              <tr>
+                <th>Funds</th>
+                <th style="width:100px;">
+                  <div class="pull-right">
+                    Amounts
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              @{ var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FullFundList(); }
+              @foreach (var fund in funds)
+              {
+                var amt = Model.FundItemValue(UtilityExtensions.Util.ToInt(fund.Value)) ?? 0;
+                if (amt > 0)
+                {
+                      <tr>
+                        <td>@fund.Text</td>
+                        <td style="width: 100px;">
+                          <div class="pull-right">
+                            @amt.ToString("C2")
+                          </div>
+                        </td>
+                      </tr>
+                }
+              }
+            </tbody>
+            <tfoot>
+              <tr>
+                <td><h4 class="pull-right">TOTAL:</h4></td>
+                <td style="width:100px;"><h2 class="pull-right" style="margin: 0;">@Model.total.ToString("C2")</h2></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <h4>Giving Schedule</h4>
+        <strong>
+          <em>
             @if (Model.SemiEvery == "S")
             {
-                            <span>Twice a month on day @Model.Day1 and day @Model.Day2 </span>
-                        }
-                        else
-                        {
-                            if (Model.EveryN > 1)
-                            {
-                                <span>Every @Model.EveryN @(Model.Period == "M" ? "months" : "weeks") </span>
+                <span>Twice a month on day @Model.Day1 and day @Model.Day2 </span>
             }
             else
             {
-                                <span>Every @Model.EveryN @(Model.Period == "M" ? "month" : "week") </span>
-                            }
+              if (Model.EveryN > 1)
+              {
+                    <span>Every @Model.EveryN @(Model.Period == "M" ? "months" : "weeks") </span>
+              }
+              else
+              {
+                    <span>Every @Model.EveryN @(Model.Period == "M" ? "month" : "week") </span>
+              }
             }
-                        <span>starting on or after @UtilityExtensions.Util.FormatDate(Model.StartWhen). </span><br />
-                        <span>Next payment will be @UtilityExtensions.Util.FormatDate(Model.NextDate).</span>
-                    </em>
-                </strong><br /><br />
-                <h4>Billing Information</h4>
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <strong>@Model.FirstName @Model.LastName</strong><br>
-                                @Model.Address<br>
-                                @Model.City @Model.State, @Model.Zip<br>
-                                <a href="tel:+@Model.Phone">@Model.Phone</a>
-                            </div>
-                            <div class="col-sm-6">
-    @if (Model.Type == PaymentType.CreditCard)
-    {
-                                    <span>Debit / Credit Card #:</span> @Model.CreditCard<br />
+            <span>starting on or after @UtilityExtensions.Util.FormatDate(Model.StartWhen). </span><br />
+            <span>Next payment will be @UtilityExtensions.Util.FormatDate(Model.NextDate).</span>
+          </em>
+        </strong><br /><br />
+        <h4>Billing Information</h4>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-sm-6">
+                <strong>@Model.FirstName @Model.LastName</strong><br>
+                @Model.Address<br>
+                @Model.City @Model.State, @Model.Zip<br>
+                <a href="tel:+@Model.Phone">@Model.Phone</a>
+              </div>
+              <div class="col-sm-6">
+                @if (Model.Type == PaymentType.CreditCard)
+                {
+                    <span>@debitcredit #:</span> @Model.CreditCard<br />
                                     <span>Expires:</span> @Model.Expires
-    }
-    else
-    {
-                                    <span>Bank Routing #:</span> @Model.Routing<br />
+                }
+                else
+                {
+                    <span>Bank Routing #:</span> @Model.Routing<br />
                                     <span>Bank Account #:</span> @Model.Account
-    }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <a class="btn btn-default visible-xs-block btn-block" href="/FinanceReports/ManagedGiving/"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+                }
+              </div>
             </div>
+          </div>
         </div>
+        <a class="btn btn-default visible-xs-block btn-block" href="/FinanceReports/ManagedGiving/"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+      </div>
     </div>
+  </div>
 </div>

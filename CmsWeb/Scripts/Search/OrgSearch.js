@@ -618,6 +618,7 @@
         $('#checkin-modal').modal('hide');
         var url = "/Reports/CheckinControl/";
         $("#CheckinDate").val($("#checkindate").val());
+        $("#CheckinExport").val($("#checkinexport").prop("checked"));
         $("#orgsearchform").attr("action", url);
         $("#orgsearchform").submit();
         return false;

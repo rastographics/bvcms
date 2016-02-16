@@ -107,12 +107,15 @@ namespace CmsWeb.Areas.Main.Models
 
                 if (CcParents)
                     q = from p in q
-                        where ((p.EmailAddress ?? "") != "" && (p.SendEmailAddress1 ?? true))
-                              || ((p.EmailAddress2 ?? "") != "" && (p.SendEmailAddress2 ?? false))
-                              || ((p.Family.HeadOfHousehold.EmailAddress ?? "") != "" && (p.Family.HeadOfHousehold.SendEmailAddress1 ?? true))
-                              || ((p.Family.HeadOfHousehold.EmailAddress2 ?? "") != "" && (p.Family.HeadOfHousehold.SendEmailAddress2 ?? false))
-                              || ((p.Family.HeadOfHouseholdSpouse.EmailAddress ?? "") != "" && (p.Family.HeadOfHouseholdSpouse.SendEmailAddress1 ?? true))
-                              || ((p.Family.HeadOfHouseholdSpouse.EmailAddress2 ?? "") != "" && (p.Family.HeadOfHouseholdSpouse.SendEmailAddress2 ?? false))
+                        where (p.EmailAddress ?? "") != ""
+                              || (p.Family.HeadOfHousehold.EmailAddress ?? "") != ""
+                              || (p.Family.HeadOfHouseholdSpouse.EmailAddress ?? "") != ""
+                        where (p.SendEmailAddress1 ?? true)
+                              || (p.SendEmailAddress2 ?? false)
+                              || (p.Family.HeadOfHousehold.SendEmailAddress1 ?? false)
+                              || (p.Family.HeadOfHousehold.SendEmailAddress2 ?? false)
+                              || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress1 ?? false)
+                              || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress2 ?? false)
                         select p;
                 else
                     q = from p in q

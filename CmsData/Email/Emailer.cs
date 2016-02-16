@@ -484,11 +484,7 @@ namespace CmsData
             emailqueue.Started = DateTime.Now;
             SubmitChanges();
 
-            List<MailAddress> cc = new List<MailAddress>();
-            if (emailqueue.CClist != null)
-            {
-                cc = emailqueue.CClist.Split(',').Select(addr => new MailAddress(addr)).ToList();
-            }
+            var cc = Util.ToMailAddressList(emailqueue.CClist);
 
             if (emailqueue.SendFromOrgId.HasValue)
             {

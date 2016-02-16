@@ -6,6 +6,7 @@
   ViewBag.Title = "Online Registration";
   Layout = "~/Views/Shared/onlinereg2.cshtml";
   var VaultDisabled = DbUtil.Db.Setting("VaultDisabled", "false") == "true";
+  var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
 }
 @section scripts
 {
@@ -90,7 +91,7 @@
           @Html.Label("Payment Type", new { @class = "control-label col-sm-3 labelsize" })
           <div class="col-sm-9">
             <label class="radio-inline">
-              <input type="radio" name="Type" value="@PaymentType.CreditCard" @(Model.Type == PaymentType.CreditCard ? "checked='checked'" : "") />Debit/Credit Card
+              <input type="radio" name="Type" value="@PaymentType.CreditCard" @(Model.Type == PaymentType.CreditCard ? "checked='checked'" : "") />@debitcredit
             </label>
             <label class="radio-inline">
               <input type="radio" name="Type" value="@PaymentType.Ach" @(Model.Type == PaymentType.Ach ? "checked='checked'" : "") /> Bank Account
