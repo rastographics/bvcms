@@ -865,12 +865,12 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpGet]
-        public ActionResult VisitsAbsents2(int? id)
+        public ActionResult VisitsAbsents2(int? id, string prefix = "")
         {
             //This is basically a Contact Report version of the Visits Absents
             if (!id.HasValue)
                 return Content("no meetingid");
-            return new VisitsAbsentsResult2(id);
+            return new VisitsAbsentsResult2(id.Value, prefix);
         }
 
         [HttpGet]
