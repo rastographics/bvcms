@@ -541,6 +541,10 @@ namespace CmsWeb.Areas.Reports.Controllers
                 if (x.Organization == null || SettingVisible(setting, "AskSize"))
                     AddValue(table, row, "ShirtSize", x.RecReg.ShirtSize);
 
+                if (x.Organization == null || SettingVisible(setting, "AskRequest"))
+                    AddValue(table, row, ((AskRequest)setting.AskItem("AskRequest")).Label, x.OrgMembers?.Request);
+
+
                 AddValue(table, row, "MedicalDescription", x.RecReg.MedicalDescription);
 
                 if (x.Organization == null || SettingVisible(setting, "AskTylenolEtc"))

@@ -159,6 +159,13 @@ namespace CmsWeb.Areas.Reports.Models
                         var t5 = new PdfPTable(new float[] {45, 55});
                         SetDefaults(t5);
 
+                        if (i.o == null || SettingVisible(setting, "AskRequest"))
+                        {
+                            var label = ((AskRequest)setting?.AskItem("AskRequest"))?.Label ?? "Request";
+                            t5.AddCell(label);
+                            t5.AddCell(i.m?.Request);
+                        }
+
                         if (i.o == null || SettingVisible(setting, "AskEmContact"))
                         {
                             t5.AddCell("Emergency Contact:");
