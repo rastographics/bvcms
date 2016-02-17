@@ -63,8 +63,8 @@ namespace CmsWeb.Areas.Dialog.Models
             Name = i.Name;
 
             IsMissionTrip = i.IsMissionTrip ?? false;
-            AmtFee = i.ts.IndPaid + i.ts.IndDue;
-            AmtDonation = i.ts.IndAmt - AmtFee;
+            AmtFee = i.ts?.IndPaid + i.ts?.IndDue;
+            AmtDonation = i.ts?.IndAmt - AmtFee;
             AmtPaid = om.AmountPaidTransactions(DbUtil.Db);
             AmtDue = om.AmountDueTransactions(DbUtil.Db);
 
