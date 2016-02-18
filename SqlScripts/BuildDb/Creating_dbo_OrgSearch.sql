@@ -128,7 +128,7 @@ RETURN
 			SchedTime,
 			dbo.GetScheduleDesc(MeetingTime) ScheduleDescription
 		FROM dbo.OrgSchedule
-		WHERE ((@sched IS NULL AND Id = 1) OR ScheduleId = @sched)
+		WHERE ((ISNULL(@sched, 0) = 0 AND Id = 1) OR ScheduleId = @sched)
 	), 
 	divisions AS (
 		SELECT
