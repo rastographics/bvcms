@@ -33,24 +33,26 @@ namespace CmsWeb.Areas.Reports.Models
         private Font bigboldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
         private Document doc;
         private DateTime dt;
-        private int? mtgid;
+        private readonly int mtgid;
+        private readonly string prefix;
         private PdfPTable t;
 
-        public VisitsAbsentsResult2(int? meetingid)
+        public VisitsAbsentsResult2(int meetingid, string prefix)
         {
             mtgid = meetingid;
+            this.prefix = prefix;
         }
 
         public override void ExecuteResult(ControllerContext context)
         {
-            var Response = context.HttpContext.Response;
-            Response.ContentType = "application/pdf";
-            Response.AddHeader("content-disposition", "filename=foo.pdf");
+            var response = context.HttpContext.Response;
+            response.ContentType = "application/pdf";
+            response.AddHeader("content-disposition", "filename=foo.pdf");
 
             dt = Util.Now;
 
             doc = new Document(PageSize.LETTER.Rotate(), 36, 36, 64, 64);
-            var w = PdfWriter.GetInstance(doc, Response.OutputStream);
+            var w = PdfWriter.GetInstance(doc, response.OutputStream);
 
             var i = (from m in DbUtil.Db.Meetings
                      where m.MeetingId == mtgid
@@ -64,23 +66,77 @@ namespace CmsWeb.Areas.Reports.Models
             w.PageEvent = pageEvents;
             doc.Open();
 
-            var q = VisitsAbsents(mtgid.Value);
+            var list = VisitsAbsents();
+            var usingSubGroups = prefix.HasValue();
 
-            if (!mtgid.HasValue || i == null || !q.Any())
+            if (i == null || !list.Any())
                 doc.Add(new Paragraph("no data"));
             else
             {
-                StartPageSet($"Guests/Absentees Contact Report: {i.OrganizationName} - {i.LeaderName} {i.MeetingDate:g}");
+                if(!usingSubGroups)
+                    StartPageSet($"Guests/Absentees Contact Report: {i.OrganizationName} - {i.LeaderName} {i.MeetingDate:g}");
 
-                foreach (var p in q)
+                string prevsubgroup = "";
+                foreach (var p in list)
+                {
+                    if (usingSubGroups && prevsubgroup != p.SubGroup)
+                    {
+                        if (t != null && t.Rows.Count > 1)
+                            doc.Add(t);
+                        StartPageSet($"Guests/Absentees Contact Report: {i.OrganizationName} - {i.LeaderName} {i.MeetingDate:g} {p.SubGroup}");
+                        prevsubgroup = p.SubGroup;
+                    }
                     AddRow(p);
-                if (t.Rows.Count > 1)
+                }
+                if (t != null && t.Rows.Count > 1)
                     doc.Add(t);
                 else
                     doc.Add(new Phrase("no data"));
                 pageEvents.EndPageSet();
             }
             doc.Close();
+        }
+
+        private List<AttendInfo> VisitsAbsents()
+        {
+            var visitors = new[]
+            {
+                AttendTypeCode.VisitingMember,
+                AttendTypeCode.RecentVisitor,
+                AttendTypeCode.NewVisitor
+            };
+            var q = from a in DbUtil.Db.Attends
+                    where a.MeetingId == mtgid
+                    where (a.EffAttendFlag == true && visitors.Contains(a.AttendanceTypeId.Value))
+                          || a.EffAttendFlag == false
+                    let p = a.Person
+                    let status = a.EffAttendFlag == false ? a.MemberType.Description : a.AttendType.Description
+                    let lastattend = a.Meeting.Organization.Attends
+                                      .Where(aa => aa.PeopleId == a.PeopleId && aa.AttendanceFlag)
+                                      .Where(aa => aa.MeetingId != mtgid)
+                                      .Max(aa => aa.MeetingDate)
+                    let om = a.Meeting.Organization.OrganizationMembers.SingleOrDefault(aa => aa.PeopleId == a.PeopleId) 
+                    let subgroup = om.OrgMemMemTags.FirstOrDefault(omm => omm.MemberTag.Name.StartsWith(prefix)).MemberTag.Name
+                    orderby subgroup, a.EffAttendFlag descending, a.Person.Name2
+                    select new AttendInfo
+                    {
+                        PeopleId = p.PeopleId,
+                        Name = p.Name,
+                        Address = p.PrimaryAddress,
+                        Birthday = p.DOB.ToDate().ToString2("m"),
+                        Email = p.EmailAddress,
+                        HomePhone = p.HomePhone,
+                        CellPhone = p.CellPhone,
+                        CSZ = Util.FormatCSZ4(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
+                        Status = status,
+                        LastAttend = lastattend,
+                        AttendPct = om.AttendPct,
+                        AttendStr = om.AttendStr,
+                        visitor = a.EffAttendFlag == true,
+                        MemberStatus = a.Person.MemberStatus.Description,
+                        SubGroup = subgroup ?? "No Sub-Group"
+                    };
+            return q.ToList();
         }
 
         private void StartPageSet(string header)
@@ -298,53 +354,6 @@ namespace CmsWeb.Areas.Reports.Models
             return list;
         }
 
-        public IEnumerable<AttendInfo> VisitsAbsents(int mtgid)
-        {
-            var visitors = new[]
-            {
-                AttendTypeCode.VisitingMember,
-                AttendTypeCode.RecentVisitor,
-                AttendTypeCode.NewVisitor
-            };
-            var q = from a in DbUtil.Db.Attends
-                    where a.MeetingId == mtgid
-                    where (a.EffAttendFlag == true && visitors.Contains(a.AttendanceTypeId.Value))
-                          || a.EffAttendFlag == false
-                    let p = a.Person
-                    let status = a.EffAttendFlag == false ? a.MemberType.Description : a.AttendType.Description
-                    let lastattend = a.Meeting.Organization.Attends
-                        .Where(aa => aa.PeopleId == a.PeopleId && aa.AttendanceFlag)
-                        .Where(aa => aa.MeetingId != mtgid)
-                        .Max(aa => aa.MeetingDate)
-                    let attendpct = a.Meeting.Organization.OrganizationMembers
-                        .Where(aa => aa.PeopleId == a.PeopleId)
-                        .Select(aa => aa.AttendPct)
-                        .SingleOrDefault()
-                    let attendstr = a.Meeting.Organization.OrganizationMembers
-                        .Where(aa => aa.PeopleId == a.PeopleId)
-                        .Select(aa => aa.AttendStr)
-                        .SingleOrDefault()
-                    orderby a.EffAttendFlag descending, a.Person.Name2
-                    select new AttendInfo
-                    {
-                        PeopleId = p.PeopleId,
-                        Name = p.Name,
-                        Address = p.PrimaryAddress,
-                        Birthday = p.DOB.ToDate().ToString2("m"),
-                        Email = p.EmailAddress,
-                        HomePhone = p.HomePhone,
-                        CellPhone = p.CellPhone,
-                        CSZ = Util.FormatCSZ4(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
-                        Status = status,
-                        LastAttend = lastattend,
-                        AttendPct = attendpct,
-                        AttendStr = attendstr,
-                        visitor = a.EffAttendFlag == true,
-                        MemberStatus = a.Person.MemberStatus.Description
-                    };
-            return q;
-        }
-
         public class AttendInfo
         {
             public int PeopleId { get; set; }
@@ -362,6 +371,7 @@ namespace CmsWeb.Areas.Reports.Models
             public string AttendStr { get; set; }
             public bool visitor { get; set; }
             public string MemberStatus { get; set; }
+            public string SubGroup { get; set; }
         }
 
         private class PageEvent : PdfPageEventHelper

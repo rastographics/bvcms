@@ -1,37 +1,37 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Models.DepositTotalsModel
 <div class="table-responsive">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Deposit Date</th>
-                <th class="text-right">Total Header</th>
-                <th class="text-right">Total Contributions</th>
-                <th class="text-right">Bundle Count</th>
-            </tr>
-        </thead>
-        <tbody>
-  
-        @foreach (var t in Model.FetchData())
-            {
-                <tr>
-                    <td><a href="/FinanceReports/Deposits?dt=@t.DepositDate.ToSortableDate()" target="deposit">@t.DepositDate.FormatDate()</a></td>
-                    <td class="text-right">@t.TotalHeader.ToString2("C2")</td>
-                    <td class="text-right">@t.TotalContributions.ToString2("C2")</td>
-                    <td class="text-right">@t.Count.ToString2("N0")</td>
-                </tr>
-            }
-        </tbody>
-        @if (Model.Total != null)
-        {
-            <tfoot>
-                <tr class="totals-row">
-                    <td>Total</td>
-                    <td class="text-right">@Model.Total.TotalHeader.ToString2("C2")</td>
-                    <td class="text-right">@Model.Total.TotalContributions.ToString2("C2")</td>
-                    <td class="text-right">@Model.Total.Count.ToString2("N0")</td>
-                </tr>
-            </tfoot>
-        }
-    </table>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Deposit Date</th>
+        <th class="text-right">Total Header</th>
+        <th class="text-right">Total Contributions</th>
+        <th class="text-right">Bundle Count</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      @foreach (var t in Model.FetchData())
+      {
+          <tr>
+            <td><a href="/FinanceReports/Deposits?dt=@t.DepositDate.ToSortableDate()" target="deposit">@t.DepositDate.FormatDate()</a></td>
+            <td class="text-right">@t.TotalHeader.ToString2("C2")</td>
+            <td class="text-right">@t.TotalContributions.ToString2("C2")</td>
+            <td class="text-right">@t.Count.ToString2("N0")</td>
+          </tr>
+      }
+    </tbody>
+    @if (Model.Total != null)
+    {
+        <tfoot>
+          <tr class="totals-row">
+            <td>Total</td>
+            <td class="text-right">@Model.Total.TotalHeader.ToString2("C2")</td>
+            <td class="text-right">@Model.Total.TotalContributions.ToString2("C2")</td>
+            <td class="text-right">@Model.Total.Count.ToString2("N0")</td>
+          </tr>
+        </tfoot>
+    }
+  </table>
 </div>

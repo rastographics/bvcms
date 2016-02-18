@@ -247,11 +247,11 @@ namespace CmsData
             var p = q.FirstOrDefault() ?? CMSRoleProvider.provider.GetAdmins().First();
             return p;
         }
-        public EmailQueue CreateQueue(MailAddress From, string subject, string body, DateTime? schedule, int tagId, bool publicViewable, bool? ccParents = null)
+        public EmailQueue CreateQueue(MailAddress From, string subject, string body, DateTime? schedule, int tagId, bool publicViewable, bool? ccParents = null, string cclist = null)
         {
-            return CreateQueue(Util.UserPeopleId, From, subject, body, schedule, tagId, publicViewable, ccParents: ccParents);
+            return CreateQueue(Util.UserPeopleId, From, subject, body, schedule, tagId, publicViewable, ccParents: ccParents, cclist: cclist);
         }
-        public EmailQueue CreateQueueForOrg(MailAddress from, string subject, string body, DateTime? schedule, int orgid, bool publicViewable)
+        public EmailQueue CreateQueueForOrg(MailAddress from, string subject, string body, DateTime? schedule, int orgid, bool publicViewable, string cclist = null)
         {
             var emailqueue = new EmailQueue
             {
@@ -264,7 +264,8 @@ namespace CmsData
                 QueuedBy = Util.UserPeopleId,
                 Transactional = false,
                 PublicX = publicViewable,
-                SendFromOrgId = orgid
+                SendFromOrgId = orgid,
+                CClist = cclist
             };
             EmailQueues.InsertOnSubmit(emailqueue);
             SubmitChanges();
@@ -278,7 +279,7 @@ namespace CmsData
             SubmitChanges();
             return emailqueue;
         }
-        public EmailQueue CreateQueue(int? queuedBy, MailAddress from, string subject, string body, DateTime? schedule, int tagId, bool publicViewable, int? goerSupporterId = null, bool? ccParents = null)
+        public EmailQueue CreateQueue(int? queuedBy, MailAddress from, string subject, string body, DateTime? schedule, int tagId, bool publicViewable, int? goerSupporterId = null, bool? ccParents = null, string cclist = null)
         {
             var tag = TagById(tagId);
             if (tag == null)
@@ -297,7 +298,8 @@ namespace CmsData
                     QueuedBy = queuedBy,
                     Transactional = false,
                     PublicX = publicViewable,
-                    CCParents = ccParents
+                    CCParents = ccParents,
+                    CClist = cclist
                 };
                 EmailQueues.InsertOnSubmit(emailqueue);
                 SubmitChanges();
@@ -482,7 +484,9 @@ namespace CmsData
             emailqueue.Started = DateTime.Now;
             SubmitChanges();
 
-            if (emailqueue.SendFromOrgId.HasValue && emailqueue.EmailQueueTos.Count() == 0)
+            var cc = Util.ToMailAddressList(emailqueue.CClist);
+
+            if (emailqueue.SendFromOrgId.HasValue)
             {
                 var q2 = from om in OrganizationMembers
                          where om.OrganizationId == emailqueue.SendFromOrgId
@@ -497,6 +501,9 @@ namespace CmsData
                          select om.PeopleId;
                 foreach (var pid in q2)
                 {
+                    // Protect against duplicate PeopleIDs ending up in the queue
+                    if(emailqueue.EmailQueueTos.Any(pp => pp.PeopleId == pid))
+                        continue;
                     emailqueue.EmailQueueTos.Add(new EmailQueueTo
                     {
                         PeopleId = pid,
@@ -525,7 +532,7 @@ namespace CmsData
                 if (Setting("sendemail", "true") != "false")
                 {
                     Util.SendMsg(sysFromEmail, CmsHost, from,
-                        emailqueue.Subject, text, aa, emailqueue.Id, To.PeopleId);
+                        emailqueue.Subject, text, aa, emailqueue.Id, To.PeopleId, cc: cc);
                     To.Sent = DateTime.Now;
                     SubmitChanges();
                 }
@@ -546,12 +553,47 @@ namespace CmsData
 #endif
             }
 
+            // Handle CC MailAddresses.  These do not get DoReplacement support.
+            if (cc.Count > 0)
+            {
+                foreach (var ma in cc)
+                {
+#if DEBUG
+#else
+                try
+                {
+#endif
+                if (Setting("sendemail", "true") != "false")
+                {
+                    List<MailAddress> mal = new List<MailAddress> {ma};
+                    Util.SendMsg(sysFromEmail, CmsHost, from,
+                        emailqueue.Subject, body, mal, emailqueue.Id, null, cc: cc);
+                }
+#if DEBUG
+#else
+                }
+                catch (Exception ex)
+                {
+                    Util.SendMsg(sysFromEmail, CmsHost, from,
+                        "sent emails - error: " + CmsHost, ex.Message,
+                        Util.ToMailAddressList(from),
+                        emailqueue.Id, null);
+                    Util.SendMsg(sysFromEmail, CmsHost, from,
+                        "sent emails - error: " + CmsHost, ex.Message,
+                        Util.SendErrorsTo(),
+                        emailqueue.Id, null);
+                }
+#endif
+                }
+            }
+
             emailqueue.Sent = DateTime.Now;
             if (emailqueue.Redacted ?? false)
                 emailqueue.Body = "redacted";
             else if (emailqueue.Transactional == false)
             {
                 var nitems = emailqueue.EmailQueueTos.Count();
+                if (cc.Count > 0) { nitems += cc.Count; }
                 if (nitems > 1)
                     NotifySentEmails(from.Address, from.DisplayName,
                         emailqueue.Subject, nitems, emailqueue.Id);

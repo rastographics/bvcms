@@ -13,7 +13,9 @@ namespace UtilityExtensions
 {
     public static partial class Util
     {
-        public static void SendMsg(string sysFromEmail, string cmsHost, MailAddress fromAddress, string subject, string message, List<MailAddress> to, int id, int? pid, List<LinkedResource> attachments = null)
+ 
+        public static void SendMsg(string sysFromEmail, string cmsHost, MailAddress fromAddress, string subject, string message, List<MailAddress> to, int id, int? pid, List<LinkedResource> attachments = null, List<MailAddress> cc = null)
+ 
         {
             if (ConfigurationManager.AppSettings["sendemail"] == "false")
                 return;
@@ -39,6 +41,17 @@ namespace UtilityExtensions
                     var sysmail = new MailAddress(sysFromEmail);
                     if (fromAddress.Host != sysmail.Host)
                         msg.Sender = sysmail;
+                }
+            }
+            if (cc != null)
+            {
+                foreach (var a in cc)
+                {
+                    msg.ReplyToList.Add(a);
+                }
+                if (!msg.ReplyToList.Contains(msg.From) && msg.From.Address.NotEqual("mailer@bvcms.com"))
+                {
+                     msg.ReplyToList.Add(msg.From);
                 }
             }
 
@@ -70,7 +83,18 @@ namespace UtilityExtensions
             htmlView1.TransferEncoding = TransferEncoding.Base64;
             msg.AlternateViews.Add(htmlView1);
 
+ 
             var html = badEmailLink + message;
+
+            if (cc != null && cc.Count > 0)
+            {
+                string cclist = (string.Join(", ", cc));
+
+                var ccstring = $"<p align='center'><small><i>This email was CC\'d to the email addresses below and they are included in the Reply-To Field.</br>" + cclist + "</i></small></p>";
+                html = html + ccstring;
+            }
+
+
             var result = PreMailer.Net.PreMailer.MoveCssInline(html);
             html = result.Html;
             var htmlView = AlternateView.CreateAlternateViewFromString(html, Encoding.UTF8, MediaTypeNames.Text.Html);
@@ -90,6 +114,7 @@ namespace UtilityExtensions
                 htmlView.Dispose();
             }
         }
+
 
         private static void AddAddr(this MailMessage msg, MailAddress a)
         {

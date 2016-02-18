@@ -15,6 +15,7 @@ namespace CmsWeb.Areas.Reports.Models
     public class CheckinControlModel : OrgSearchModel
     {
         public DateTime CheckinDate { get; set; }
+        public bool CheckinExport { get; set; }
 
         public class AttendInfo
         {

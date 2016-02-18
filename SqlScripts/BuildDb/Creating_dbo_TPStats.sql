@@ -94,6 +94,11 @@ RETURN
 					JOIN dbo.Users u ON u.UserId = a.UserId
 					WHERE NOT EXISTS(SELECT NULL FROM dbo.Split(@emails, ',') WHERE u.EmailAddress LIKE Value)
 					ORDER BY a.ActivityDate)
+		,notam = CASE WHEN EXISTS(
+					SELECT NULL 
+					FROM dbo.Content
+					WHERE Name = 'notam'
+				) THEN CAST(1 AS BIT) ELSE 0 END
 )
 
 GO

@@ -128,7 +128,7 @@ RETURN
 			SchedTime,
 			dbo.GetScheduleDesc(MeetingTime) ScheduleDescription
 		FROM dbo.OrgSchedule
-		WHERE Id = 1
+		WHERE ((ISNULL(@sched, 0) = 0 AND Id = 1) OR ScheduleId = @sched)
 	), 
 	divisions AS (
 		SELECT
@@ -234,6 +234,8 @@ RETURN
 		OR o.OrganizationId IN (SELECT oid FROM filterLeaders)
 	)
 )
+
+
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO

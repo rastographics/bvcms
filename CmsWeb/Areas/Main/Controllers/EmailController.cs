@@ -190,6 +190,31 @@ namespace CmsWeb.Areas.Main.Controllers
                 if (eq == null)
                     throw new Exception("No Emails to send (tag does not exist)");
                 id = eq.Id;
+
+                // If there are additional recipients, add them to the queue
+                if (m.AdditionalRecipients != null)
+                {
+                    foreach (var pid in m.AdditionalRecipients)
+                    {
+                        // Protect against duplicate PeopleIDs ending up in the queue
+                        var q3 = from eqt in DbUtil.Db.EmailQueueTos
+                                 where eqt.EmailQueue == eq
+                                 where eqt.PeopleId == pid
+                                 select eqt;
+                        if (q3.Any())
+                        {
+                            continue;
+                        }
+                        eq.EmailQueueTos.Add(new EmailQueueTo
+                        {
+                            PeopleId = pid,
+                            OrgId = eq.SendFromOrgId.HasValue ? eq.SendFromOrgId : null,
+                            Guid = Guid.NewGuid(),
+                        });
+                    }
+                    DbUtil.Db.SubmitChanges();
+                }
+
                 if (eq.SendWhen.HasValue)
                     return Json(new { id = 0, content = "Emails queued to be sent." });
             }

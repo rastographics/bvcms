@@ -150,6 +150,8 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpPost]
         public ActionResult CheckinControl(CheckinControlModel m)
         {
+            if(m.CheckinExport)
+                return m.list().ToDataTable().ToExcel("CheckinControl.xlsx");
             return new CheckinControlResult { model = m };
         }
 
@@ -539,6 +541,10 @@ namespace CmsWeb.Areas.Reports.Controllers
                 if (x.Organization == null || SettingVisible(setting, "AskSize"))
                     AddValue(table, row, "ShirtSize", x.RecReg.ShirtSize);
 
+                if (x.Organization == null || SettingVisible(setting, "AskRequest"))
+                    AddValue(table, row, ((AskRequest)setting.AskItem("AskRequest")).Label, x.OrgMembers?.Request);
+
+
                 AddValue(table, row, "MedicalDescription", x.RecReg.MedicalDescription);
 
                 if (x.Organization == null || SettingVisible(setting, "AskTylenolEtc"))
@@ -863,12 +869,12 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpGet]
-        public ActionResult VisitsAbsents2(int? id)
+        public ActionResult VisitsAbsents2(int? id, string prefix = "")
         {
             //This is basically a Contact Report version of the Visits Absents
             if (!id.HasValue)
                 return Content("no meetingid");
-            return new VisitsAbsentsResult2(id);
+            return new VisitsAbsentsResult2(id.Value, prefix);
         }
 
         [HttpGet]

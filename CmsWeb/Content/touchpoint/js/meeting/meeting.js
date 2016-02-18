@@ -187,12 +187,12 @@
             $("#addregistered").addClass("hidden");
         }
     });
-    
+
     if ($("#showregistered").val()) {
         $('#showbuttons input:radio[value=reg]').click();
         $('#registering').click();
     }
-    
+
     $('#attends').bind('mousedown', function (e) {
         if ($.atckenabled) {
             if ($(e.target).hasClass("rgck")) {
@@ -298,7 +298,7 @@
         $('#newvalueform').modal("show");
     });
 
-    $('#newvalueform').on('shown.bs.modal', function(e) {
+    $('#newvalueform').on('shown.bs.modal', function (e) {
         $("#fieldname").val("").focus();
     });
 
@@ -344,6 +344,30 @@
         });
         return false;
     });
+
+    $("#contactreport").click(function (ev) {
+        ev.preventDefault();
+        var href = this.href;
+        swal({
+            title: "Guests/Absentees Contact Report",
+            text: "Enter Sub-Group prefix (optional):",
+            type: "input",
+            showCancelButton: true,
+            closeOnConfirm: true,
+            animation: "slide-from-top",
+            inputPlaceholder: "Sub-Group prefix"
+        }, function(inputValue) {
+            if (inputValue === false)
+                return false;
+            if (inputValue === "")
+                window.open(href, '_blank');
+            else
+                window.open(href + "?prefix=" + inputValue, '_blank');
+            return false;
+        });
+        return false;
+    });
+
 
     $.InitFunctions.ReloadPeople = function () {
         window.location.reload(true);
