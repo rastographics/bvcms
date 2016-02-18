@@ -11,7 +11,7 @@
   <div class="box-content">
     <div class="well hidden-print" style="max-width: 850px; margin: auto;">
       <div class="row">
-        @using (Html.BeginForm("Decisions", "Reports", FormMethod.Get, new { id = "form", target="reports" }))
+        @using (Html.BeginForm("Decisions", "Reports", FormMethod.Get, new { id = "form" }))
         {
           <div class="col-sm-3">
             <label for="Campus" class="control-label">@Util2.CampusLabel</label>
@@ -209,9 +209,9 @@
     $(function () {
       $("a.query").click(function (ev) {
         ev.preventDefault();
-        var f = $("#form");
-        f.attr("action", $(this)[0].href);
-        f.submit();
+        var q = $("#form").serialize();
+        var href = this.href + '?' + q;
+        window.open(href, "query");
       });
     });
   </script>
