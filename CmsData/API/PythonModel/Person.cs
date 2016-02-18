@@ -52,18 +52,23 @@ namespace CmsData
             return p;
         }
 
-        public List<int> PeopleIds(object savedQuery)
+        public List<int> PeopleIds(object query)
         {
-            var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
+            var list = db.PeopleQuery2(query).Select(ii => ii.PeopleId).ToList();
             return list;
         }
 
-        public void UpdateCampus(object savedQuery, string campus)
+        public void UpdateCampus(object query, object campus)
         {
+            var str = campus as string;
             using (var db2 = NewDataContext())
             {
-                var q = db2.PeopleQuery2(savedQuery);
-                var id = db2.FetchOrCreateCampusId(campus);
+                var q = db2.PeopleQuery2(query);
+                var id = campus is int || str.AllDigits() 
+                    ? campus.ToInt() 
+                    : db2.FetchOrCreateCampusId(str);
+                if (id == 0)
+                    return;
                 foreach (var p in q)
                 {
                     p.UpdateValue("CampusId", id);
@@ -83,12 +88,17 @@ namespace CmsData
             }
         }
 
-        public void UpdateMemberStatus(object savedQuery, string status)
+        public void UpdateMemberStatus(object query, object status)
         {
+            var str = status as string;
             using (var db2 = NewDataContext())
             {
-                var id = Person.FetchOrCreateMemberStatus(db2, status);
-                var q = db2.PeopleQuery2(savedQuery);
+                var id = status is int || str.AllDigits() 
+                    ? status.ToInt() 
+                    : Person.FetchOrCreateMemberStatus(db2, str);
+                if (id == 0)
+                    return;
+                var q = db2.PeopleQuery2(query);
                 foreach (var p in q)
                 {
                     p.UpdateValue("MemberStatusId", id);
@@ -98,11 +108,11 @@ namespace CmsData
             }
         }
 
-        public void UpdateNamedField(object savedQuery, string field, object value)
+        public void UpdateNamedField(object query, string field, object value)
         {
             using (var db2 = NewDataContext())
             {
-                var q = db2.PeopleQuery2(savedQuery);
+                var q = db2.PeopleQuery2(query);
                 foreach (var p in q)
                 {
                     p.UpdateValue(field, value);
@@ -112,11 +122,11 @@ namespace CmsData
             }
         }
 
-        public void UpdateNewMemberClassDate(object savedQuery, object dt)
+        public void UpdateNewMemberClassDate(object query, object dt)
         {
             using (var db2 = NewDataContext())
             {
-                var q = db2.PeopleQuery2(savedQuery);
+                var q = db2.PeopleQuery2(query);
                 foreach (var p in q)
                 {
                     p.UpdateValue("NewMemberClassDate", dt);
@@ -126,11 +136,11 @@ namespace CmsData
             }
         }
 
-        public void UpdateNewMemberClassDateIfNullForLastAttended(object savedQuery, object orgId)
+        public void UpdateNewMemberClassDateIfNullForLastAttended(object query, object orgId)
         {
             using (var db2 = NewDataContext())
             {
-                var q = db2.PeopleQuery2(savedQuery);
+                var q = db2.PeopleQuery2(query);
                 foreach (var p in q)
                 {
                     // skip any who already have their new member class date set
@@ -153,12 +163,17 @@ namespace CmsData
             }
         }
 
-        public void UpdateNewMemberClassStatus(object savedQuery, string status)
+        public void UpdateNewMemberClassStatus(object query, object status)
         {
+            var str = status as string;
             using (var db2 = NewDataContext())
             {
-                var id = Person.FetchOrCreateNewMemberClassStatus(db2, status);
-                var q = db2.PeopleQuery2(savedQuery);
+                var id = status is int || str.AllDigits()
+                    ? status.ToInt()
+                    : Person.FetchOrCreateNewMemberClassStatus(db2, str);
+                if (id == 0)
+                    return;
+                var q = db2.PeopleQuery2(query);
                 foreach (var p in q)
                 {
                     p.UpdateValue("NewMemberClassStatusId", id);
@@ -167,9 +182,10 @@ namespace CmsData
                 }
             }
         }
-        public void UpdateContributionOption(object savedQuery, int option)
+
+        public void UpdateContributionOption(object query, int option)
         {
-            var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
+            var list = db.PeopleQuery2(query).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
             {
                 var db2 = NewDataContext();
@@ -179,9 +195,10 @@ namespace CmsData
                 db2.Dispose();
             }
         }
-        public void UpdateEnvelopeOption(object savedQuery, int option)
+
+        public void UpdateEnvelopeOption(object query, int option)
         {
-            var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
+            var list = db.PeopleQuery2(query).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
             {
                 var db2 = NewDataContext();
@@ -191,9 +208,10 @@ namespace CmsData
                 db2.Dispose();
             }
         }
-        public void UpdateElectronicStatement(object savedQuery, bool tf)
+
+        public void UpdateElectronicStatement(object query, bool tf)
         {
-            var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
+            var list = db.PeopleQuery2(query).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
             {
                 var db2 = NewDataContext();
