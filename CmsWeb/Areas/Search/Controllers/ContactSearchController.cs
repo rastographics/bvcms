@@ -39,7 +39,7 @@ namespace CmsWeb.Areas.Search.Controllers
             return Redirect($"/Query/{gid}");
         }
 
-        [HttpPost]
+        [HttpGet]
         public ActionResult ContactTypeQuery(int id)
         {
             var gid = ContactSearchModel.ContactTypeQuery(id);

@@ -63,8 +63,10 @@ namespace CmsWeb.Areas.Dialog.Models
             Name = i.Name;
 
             IsMissionTrip = i.IsMissionTrip ?? false;
-            AmountPaidTransactions = om.AmountPaidTransactions(DbUtil.Db);
-            AmountDue = om.AmountDueTransactions(DbUtil.Db);
+            AmtFee = i.ts?.IndPaid + i.ts?.IndDue;
+            AmtDonation = i.ts?.IndAmt - AmtFee;
+            AmtPaid = om.AmountPaidTransactions(DbUtil.Db);
+            AmtDue = om.AmountDueTransactions(DbUtil.Db);
 
             OrgName = i.OrganizationName;
             Organization = i.Organization;
@@ -168,14 +170,20 @@ namespace CmsWeb.Areas.Dialog.Models
         public DateTime? DropDate { get; set; }
 
 
-        [DisplayName("Total Amount")]
-        public decimal? Amount { get; set; }
+//        [DisplayName("Total Amount")]
+//        public decimal? Amount { get; set; }
 
-        [DisplayName("Amount Paid")]
-        public decimal? AmountPaidTransactions { get; set; }
+        [DisplayName("Fee")]
+        public decimal? AmtFee { get; set; }
 
-        [DisplayName("Amount Due")]
-        public decimal? AmountDue { get; set; }
+        [DisplayName("Paid")]
+        public decimal? AmtPaid { get; set; }
+
+        [DisplayName("Due")]
+        public decimal? AmtDue { get; set; }
+
+        [DisplayName("Donation")]
+        public decimal? AmtDonation { get; set; }
 
         private string transactionsLink;
         public string TransactionsLink

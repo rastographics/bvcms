@@ -1,4 +1,3 @@
-
 CREATE PROC [dbo].[LedgerIncomeExport]
 (
 	@fd DATETIME, 
@@ -37,7 +36,9 @@ BEGIN
 	FROM totals tt
 	JOIN lookup.BundleHeaderTypes bht ON tt.BundleHeaderTypeId = bht.Id
 	JOIN dbo.ContributionFund f ON f.FundId = tt.FundId
+	ORDER BY f.FundId, bht.Description
 END
+
 
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION

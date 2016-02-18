@@ -1303,6 +1303,8 @@ namespace CmsData
 
         public int FetchOrCreateCampusId(string name)
         {
+            if (!name.HasValue())
+                return 0;
             var c = Campus.SingleOrDefault(pp => pp.Description == name);
             if (c == null)
             {

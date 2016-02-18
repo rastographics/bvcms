@@ -69,7 +69,7 @@
             @if (Model.TransactionsLink.HasValue())
             {
                 <div class="form-group">
-                  <label class="control-label">Fees</label>
+                  <label class="control-label">Transaction Amounts</label>
                   <div class="controls">
                     @if (Model.TransactionSummary != null)
                     {
@@ -77,16 +77,24 @@
                           <table class="table table-condensed">
                             <thead>
                               <tr>
-                                <th>Total Fee</th>
-                                <th>Amount Paid</th>
-                                <th>Amount Due</th>
+                                <th>Fee</th>
+                                @if (Model.AmtDonation > 0)
+                                {
+                                  <th>Donation</th>
+                                }
+                                <th>Paid</th>
+                                <th>Due</th>
                               </tr>
                             </thead>
                             <tbody>
                               <tr>
-                                <td>@Model.TransactionSummary.IndAmt.ToString2("c")</td>
-                                <td>@Model.AmountPaidTransactions.ToString2("c")</td>
-                                <td>@Model.AmountDue.ToString2("c")</td>
+                                <td>@Model.AmtFee.ToString2("c")</td>
+                                @if (Model.AmtDonation > 0)
+                                {
+                                  <td>@Model.AmtDonation.ToString2("c")</td>
+                                }
+                                <td>@Model.AmtPaid.ToString2("c")</td>
+                                <td>@Model.AmtDue.ToString2("c")</td>
                               </tr>
                             </tbody>
                           </table>
@@ -97,7 +105,7 @@
                       {
                           <a href="@Model.TransactionsLink" target="transactions">View Transactions</a>
                       }
-                      @if (Model.AmountDue > 0)
+                      @if (Model.AmtDue > 0)
                       {
                           <a href="@Model.PayLink" style="margin-left: 2em;" target="_blank">PayLink</a>
                       }
