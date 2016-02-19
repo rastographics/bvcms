@@ -119,16 +119,6 @@ namespace CmsData
             EmailReport(savedquery, queuedBy, fromaddr, fromname, subject, report);
         }
 
-        public string EmailStr(int queuedBy, string fromAddr, string body)
-        {
-            using (var db2 = NewDataContext())
-            {
-                db2.SetCurrentOrgId(CurrentOrgId);
-                var m = new EmailReplacements(db2, body, new MailAddress(fromAddr));
-                var p = db2.LoadPersonById(queuedBy);
-                return m.DoReplacements(db2, p);
-            }
-        }
         public string EmailStr(string body)
         {
             if (!Util.UserPeopleId.HasValue)
