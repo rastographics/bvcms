@@ -48,17 +48,6 @@ namespace CmsData
                 Email2(db2, q, queuedBy, fromAddr, fromName, subject, body);
             }
         }
-        public string EmailStr(int queuedBy, string fromAddr, string body)
-        {
-            using (var db2 = NewDataContext())
-            {
-                db2.SetCurrentOrgId(CurrentOrgId);
-                var m = new EmailReplacements(db2, body, new MailAddress(fromAddr));
-                var p = db2.LoadPersonById(queuedBy);
-                return m.DoReplacements(db2, p);
-            }
-        }
-
         public void EmailContent(object savedQuery, int queuedBy, string fromAddr, string fromName, string contentName)
         {
             var c = db.ContentOfTypeHtml(contentName);
@@ -130,6 +119,28 @@ namespace CmsData
             EmailReport(savedquery, queuedBy, fromaddr, fromname, subject, report);
         }
 
+        public string EmailStr(int queuedBy, string fromAddr, string body)
+        {
+            using (var db2 = NewDataContext())
+            {
+                db2.SetCurrentOrgId(CurrentOrgId);
+                var m = new EmailReplacements(db2, body, new MailAddress(fromAddr));
+                var p = db2.LoadPersonById(queuedBy);
+                return m.DoReplacements(db2, p);
+            }
+        }
+        public string EmailStr(string body)
+        {
+            if (!Util.UserPeopleId.HasValue)
+                return "no user";
+            using (var db2 = NewDataContext())
+            {
+                db2.SetCurrentOrgId(CurrentOrgId);
+                var p = db2.LoadPersonById(Util.UserPeopleId.Value);
+                var m = new EmailReplacements(db2, body, new MailAddress(p.EmailAddress));
+                return m.DoReplacements(db2, p);
+            }
+        }
 
 
 
