@@ -441,6 +441,8 @@ namespace CmsData
         private OrgInfo GetOrgInfo(EmailQueueTo emailqueueto)
         {
             OrgInfo oi = null;
+            if (emailqueueto == null && db.CurrentOrgId > 0)
+                emailqueueto = new EmailQueueTo() {OrgId = db.CurrentOrgId};
             if (emailqueueto != null && emailqueueto.OrgId.HasValue)
             {
                 if (!orgcount.ContainsKey(emailqueueto.OrgId.Value))
