@@ -1,6 +1,4 @@
-﻿@using CmsWeb.Areas.Manage.Controllers
-@model System.Data.IDataReader
-@{
+﻿@{
     ViewBag.Title = "Test Script";
     ViewBag.ReportPageHeader = ViewBag.Name;
     Layout = ViewExtensions2.TouchPointLayout();
@@ -8,7 +6,7 @@
 <div class="report box box-responsive">
   <div class="box-content">
     <div class="table-responsive">
-      @Html.Raw(GridResult.Table(Model))
+      @Html.Raw(ViewBag.report)
       <strong>Total Count</strong> <span class="badge"></span>
     </div>
   </div>

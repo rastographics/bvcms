@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Dynamic;
 using System.Linq;
 using System.Security;
 using System.Text.RegularExpressions;
@@ -13,11 +12,11 @@ using CmsData;
 using CmsData.Registration;
 using CmsWeb.Areas.Main.Models.Avery;
 using CmsWeb.Areas.Main.Models.Directories;
+using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Areas.Reports.Models;
 using CmsWeb.Areas.Reports.ViewModels;
 using CmsWeb.Areas.Search.Models;
 using CmsWeb.Models;
-using CmsWeb.Controllers;
 using Dapper;
 using MoreLinq;
 using OfficeOpenXml;
@@ -785,7 +784,8 @@ namespace CmsWeb.Areas.Reports.Controllers
                 p.Add("@qtagid", tag.Id);
                 ViewBag.name = report;
                 using (var rd = cn.ExecuteReader(content.Body, p))
-                    return View(rd);
+                  ViewBag.report = GridResult.Table(rd);
+                return View();
             }
         }
 
