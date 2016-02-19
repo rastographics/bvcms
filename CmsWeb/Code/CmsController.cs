@@ -20,26 +20,6 @@ namespace CmsWeb
     [MyRequireHttps]
     public class CmsController : CmsControllerNoHttps
     {
-        public static void ConvertRegistration()
-        {
-            if (Util.IsHosted) // if hosted by Touchpoint, this is already done
-                return;
-            if (DbUtil.Db.RegistrationsConverted())
-                return;
-            var q = from o in DbUtil.Db.Organizations
-                    where (o.RegSetting ?? "").Length > 0
-                    where o.RegSettingXml == null
-                    orderby o.OrganizationId
-                    select o;
-            foreach (var o in q)
-            {
-                var rs = Parser.ParseSettings(o.RegSetting);
-                var s = Util.Serialize(rs);
-                o.RegSettingXml = s;
-                DbUtil.Db.SubmitChanges();
-            }
-            DbUtil.Db.SetRegistrationsConverted();
-        }
     }
 
     public class CmsControllerNoHttps : Controller

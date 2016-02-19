@@ -61,8 +61,6 @@ namespace CmsWeb
                     return;
                 }
                 AccountModel.SetUserInfo(Util.UserName, Session);
-
-                CmsController.ConvertRegistration(); // for non hosted churches, we will eventually remove this
             }
             Util.SysFromEmail = ConfigurationManager.AppSettings["sysfromemail"];
             Util.Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
