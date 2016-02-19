@@ -38,7 +38,8 @@ else
       @ViewExtensions2.Bootstrap3()
       @ViewExtensions2.LoDash()
       @Fingerprint.Script("/Content/touchpoint/lib/jquery-globalize/js/globalize.js")
-      <script src="@Url.Content(ViewExtensions2.jqueryGlobalizeCulture)" type="text/javascript"></script>
+    <script src="@Url.Content(ViewExtensions2.jqueryGlobalizeCulture)" type="text/javascript"></script>
+      @ViewExtensions2.jQueryValidation()
       @Fingerprint.Script("/Content/touchpoint/js/onlineregister.min.js")
       @RenderSection("scripts", false)
     </body>
