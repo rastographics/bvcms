@@ -15,12 +15,13 @@
 
         swal({
             title: "Are you sure?",
-            text: "Warning, email replacement codes will not work.",
+            text: "Warning, email replacement codes and <span> <br> special links will not work. <small><i><a href='http://docs.touchpointsoftware.com/BlueToolbar/toolbar.html#email-and-texting-envelope-icon'  target='blank'>Read more..</a></i></small></span>",
             type: "warning",
             showCancelButton: true,
             confirmButtonClass: "btn-success",
             confirmButtonText: "Yes, continue!",
-            closeOnConfirm: false
+            closeOnConfirm: false,
+            html: true
         },
         function () {
             window.location = t[0].href;
