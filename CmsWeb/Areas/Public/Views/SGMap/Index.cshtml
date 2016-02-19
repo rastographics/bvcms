@@ -6,44 +6,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Index</title>
-    <style type="text/css">
-        body
-        {
-            font-family: Verdana;
-            font-size: 9pt;
-            font-weight: normal;
-        }
-        .map
-        {
-            width: 400px;
-            height: 600px;
-            border: 1px solid #000;
-            margin-bottom: 20px;
-        }
-    </style>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
-    <script src="/Scripts/jQuery/jquery-1.10.2.min.js"></script>
-    <script src="/Scripts/js/sgmap.js"></script>
-    @Html.Raw(Html.Json("markers", Model.Locations()))
+  <title>Index</title>
+  <style type="text/css">
+    body {
+      font-family: Verdana;
+      font-size: 9pt;
+      font-weight: normal;
+    }
+
+    .map {
+      width: 400px;
+      height: 600px;
+      border: 1px solid #000;
+      margin-bottom: 20px;
+    }
+  </style>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+  @ViewExtensions2.jQuery()
+  @Fingerprint.Script("/Content/touchpoint/js/sgmap.js")
+  @Html.Raw(Html.Json("markers", Model.Locations()))
 </head>
 <body>
-<h2>Prototype TouchPoint Small Group Mapper and selector</h2>
-    <table>
-        <tr>
-            <td>
-                <div id="map" class="map">
-                </div>
-            </td>
-            <td width="180">
-                <ul style="overflow: auto; height: 600px">
-                    @foreach (var i in Model.Locations())
-                    {
-                        <li>@Html.Raw(i.html)</li>
-                    }
-                </ul>
-            </td>
-        </tr>
-    </table>
+  <h2>Prototype TouchPoint Small Group Mapper and selector</h2>
+  <table>
+    <tr>
+      <td>
+        <div id="map" class="map">
+        </div>
+      </td>
+      <td width="180">
+        <ul style="overflow: auto; height: 600px">
+          @foreach (var i in Model.Locations())
+          {
+              <li>@Html.Raw(i.html)</li>
+          }
+        </ul>
+      </td>
+    </tr>
+  </table>
 </body>
 </html>

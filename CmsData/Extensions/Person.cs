@@ -1409,6 +1409,8 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
         public static int FetchOrCreateMemberStatus(CMSDataContext db, string type)
         {
+            if (!type.HasValue())
+                return 0;
             var ms = db.MemberStatuses.SingleOrDefault(m => m.Description == type);
             if (ms == null)
             {

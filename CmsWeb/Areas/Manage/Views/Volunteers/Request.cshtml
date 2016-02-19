@@ -1,15 +1,15 @@
 ﻿@model CmsWeb.Areas.OnlineReg.Models.VolunteerRequestModel
 @{
-  Layout = "~/Views/Shared/onlinereg.cshtml";
+  Layout = "~/Views/Shared/onlinereg2.cshtml";
   ViewBag.Title = "Email Volunteer Request";
 }
 @section scripts
 {
-  @Fingerprint.Script("/Scripts/Bootstrap/select2.js")
-  @Fingerprint.Script("/Scripts/Volunteer/ManageVolunteer.js")
+  @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
+  @Fingerprint.Script("/Content/touchpoint/js/volunteer/ManageVolunteer.js")
   @ViewExtensions2.CkEditor()
-  @Fingerprint.Script("/Scripts/Email/Email.js")
-  @Fingerprint.Script("/Scripts/Org/GetVolSub.js")
+  @Fingerprint.Script("/Content/touchpoint/js/Email/Email.js")
+  @Fingerprint.Script("/Content/touchpoint/js/Org/GetVolSub.js")
 }
 @section head
 {

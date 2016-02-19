@@ -1,4 +1,6 @@
 ﻿$(function () {
+// ReSharper disable UseOfImplicitGlobalInFunctionScope
+
     $('#Recipients').select2();
     $('#Recipients').select2("readonly", true);
 
@@ -24,51 +26,80 @@
         $('#editor-modal').modal('show');
     };
 
+    var xsDevice = $('.device-xs').is(':visible');
+    var smDevice = $('.device-sm').is(':visible');
+
     $('#editor-modal').on('shown.bs.modal', function () {
-        if ($('#htmleditor').data('fa.editable')) {
-            $('#htmleditor').froalaEditable('destroy');
-        }
+        if (!xsDevice && !smDevice) {
+            if (CKEDITOR.instances['htmleditor'])
+                CKEDITOR.instances['htmleditor'].destroy();
 
-        var extraSmallDevice = $('.device-xs').is(':visible');
-        var editorButtons = ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'removeFormat', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'specialLink', 'sep', 'insertImage', 'uploadFile', 'table', 'undo', 'redo', 'html', 'fullscreen'];
-        var editorHeight = 400;
-        if (extraSmallDevice) {
-            editorButtons = ['bold', 'createLink', 'specialLink', 'insertImage', 'html', 'fullscreen'];
-            editorHeight = 200;
-        }
+            CKEDITOR.env.isCompatible = true;
+            CKEDITOR.plugins.addExternal('specialLink', '/content/touchpoint/lib/ckeditor/plugins/specialLink/', 'plugin.js');
+            $.fn.modal.Constructor.prototype.enforceFocus = function () {
+              var modalThis = this;
+              $(document).on('focusin.modal', function (e) {
+                // Fix for CKEditor + Bootstrap IE issue with dropdowns on the toolbar
+                // Adding additional condition '$(e.target.parentNode).hasClass('cke_contents cke_reset')' to
+                // avoid setting focus back on the modal window.
+                if (modalThis.$element[0] !== e.target && !modalThis.$element.has(e.target).length
+                    && $(e.target.parentNode).hasClass('cke_contents cke_reset')) {
+                  modalThis.$element.focus();
+                }
+              });
+            };
 
-        $('#htmleditor').froalaEditable({
-            inlineMode: false,
-            spellcheck: true,
-            useFileName: false,
-            useClasses: false,
-            zIndex: 2501,
-            height: editorHeight,
-            theme: 'custom',
-            buttons: editorButtons,
-            imageUploadURL: '/Account/FroalaUpload',
-            fileUploadURL: '/Account/FroalaUpload',
-            maxFileSize: (1024 * 1024 * 15)
-        });
+            CKEDITOR.replace('htmleditor', {
+                height: 200,
+                autoParagraph: false,
+                fullPage: false,
+                allowedContent: true,
+                customConfig: '/Content/touchpoint/js/ckeditorconfig.js',
+                extraPlugins: 'specialLink'
+            });
+        }
         var html = $(currentDiv).html();
-        if (html !== "Click here to edit content") {
-            $('#htmleditor').froalaEditable('setHTML', html);
+        if (html === "Click here to edit content") {
+            if (xsDevice || smDevice)
+                $('#htmleditor').val("");
+            else 
+                CKEDITOR.instances['htmleditor'].setData("");
+        }
+        else {
+            if (xsDevice || smDevice) {
+                $('#htmleditor').val(html);
+            } else {
+                CKEDITOR.instances['htmleditor'].setData(html);
+            }
         }
     });
+    $.fn.modal.Constructor.prototype.enforceFocus = function() {
+        var modalThis = this;
+        $(document).on('focusin.modal', function(e) {
+            // Fix for CKEditor + Bootstrap IE issue with dropdowns on the toolbar
+            // Adding additional condition '$(e.target.parentNode).hasClass('cke_contents cke_reset')' to
+            // avoid setting focus back on the modal window.
+            if (modalThis.$element[0] !== e.target && !modalThis.$element.has(e.target).length
+                && $(e.target.parentNode).hasClass('cke_contents cke_reset')) {
+                modalThis.$element.focus();
+            }
+        });
+    };
 
-    function adjustIframe() {
-        var iFrameID = document.getElementById('email-body');
-        if (iFrameID) {
-            // here you can make the height, I delete it first, then I make it again
-            iFrameID.height = "";
-            iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + 20 + "px";
-        }
-    }
-
+    $('#editor-modal').on('click', '#cancel-edit', function () {
+        if(!xsDevice && !smDevice)
+            CKEDITOR.instances["htmleditor"].setData("");
+        $('#editor-modal').modal('hide');
+    });
     $('#editor-modal').on('click', '#save-edit', function () {
-        var h = $('#htmleditor').froalaEditable('getHTML');
+        var h;
+        if (xsDevice || smDevice) {
+            h = $('#htmleditor').val();
+        } else {
+            h = CKEDITOR.instances['htmleditor'].getData();
+            CKEDITOR.instances["htmleditor"].setData("");
+        }
         $(currentDiv).html(h);
-        adjustIframe();
         $('#editor-modal').modal('hide');
     });
 
@@ -89,9 +120,16 @@
                 var taskid = ret.id;
                 if (taskid === 0) {
                     $.unblock();
-                    swal("Success!", ret.content, "success");
+                    swal({
+                        title: 'Success!',
+                        text: ret.content,
+                        type: "success",
+                        showCancelButton: false,
+                    }, function () {
+                        $('button.Send').prop('disabled', true);
+                    });
                 } else {
-                    $('.Send').remove();
+                    $("#send-actions").remove();
                     var intervalid = window.setInterval(function () {
                         $.post('/Email/TaskProgress/' + taskid, null, function (ret) {
                             $.unblock();
@@ -99,7 +137,14 @@
                                 swal("Error!", ret.error, "error");
                             } else {
                                 if (ret.title == 'Email has completed.') {
-                                    swal(ret.title, ret.message, "success");
+                                    swal({
+                                        title: ret.title,
+                                        text: ret.message,
+                                        type: "success",
+                                        showCancelButton: false,
+                                    }, function () {
+                                        $('button.Send').prop('disabled', true);
+                                    });
                                     window.clearInterval(intervalid);
                                 } else {
                                     swal({
@@ -121,7 +166,8 @@
             $('#draft-modal').modal('show');
         } else {
             $.clearTemplateClass();
-            $("#body").val($('#email-body').contents().find('#tempateBody').html());
+            var h = $('#email-body').contents().find('#tempateBody').html();
+            $("#body").val(h);
             $("#name").val($("#newName").val());
             $.addTemplateClass();
 

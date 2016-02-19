@@ -3,11 +3,11 @@
 @using CmsData.Codes
 @model CmsWeb.Areas.Main.Models.MassEmailer
 @{
-  ViewBag.Title = "Compose";
-  ViewBag.PageHeader = "Compose Email";
-  Layout = ViewExtensions2.TouchPointLayout();
-  int tid = ViewBag.TemplateID;
-  var c = ViewExtensions2.GetContent(tid);
+    ViewBag.Title = "Compose";
+    ViewBag.PageHeader = "Compose Email";
+    Layout = ViewExtensions2.TouchPointLayout();
+    int tid = ViewBag.TemplateID;
+    var c = ViewExtensions2.GetContent(tid);
 }
 @section head
 {
@@ -90,11 +90,14 @@
                         Currently, this organization has <strong>@org.MemberCount members</strong>.
                       </p>
                     </div>
-                    <div class="col-sm-2">
-                      <div class="vertical-center">
-                        <a class="searchadd btn btn-default btn-block" href="/SearchAdd2/Dialog/addtoemail/"><i class="fa fa-plus-circle"></i></a>
-                      </div>
-                    </div>
+                    @if (User.IsInRole("Developer"))
+                    {
+                        <div class="col-sm-2">
+                          <div class="vertical-center">
+                            <a class="searchadd btn btn-default btn-block" href="/SearchAdd2/Dialog/addtoemail/"><i class="fa fa-plus-circle"></i></a>
+                          </div>
+                        </div>
+                    }
                   </div>
 
               }
@@ -116,7 +119,10 @@
                         }
                       }
                     </select>
-                    <span class="input-group-addon"><a href="/SearchAdd2/Dialog/addtoemail/" class="searchadd"><i class="fa fa-plus-circle"></i></a></span>
+                    @if (User.IsInRole("Developer"))
+                    {
+                        <span class="input-group-addon"><a href="/SearchAdd2/Dialog/addtoemail/" class="searchadd"><i class="fa fa-plus-circle"></i></a></span>
+                    }
                   </div>
                 if (Model.Count <= 500)
                 {
@@ -130,8 +136,10 @@
               <div class="row">
                 <div class="col-sm-12 alert alert-danger" id="additional-recipients-alerts" style="display:none;"></div>
                 <div class="col-sm-9"><ul id="additional-recipients"></ul></div>
+
               </div>
             </div>
+
           </div>
 
           <div id="ccdiv" style="display: none">
@@ -186,7 +194,24 @@
           </div>
           <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-              <iframe src="/Email/EmailBody/@tid" height="600" frameborder="0" style="width: 100%; height: 600px;" id="email-body" name="email-body"></iframe>
+              @if (Util2.UseNewEditor)
+              {
+                  <script type="text/javascript">
+                    function iframeLoaded() {
+                      var iFrameID = document.getElementById('email-body');
+                      if (iFrameID) {
+                        // here you can make the height, I delete it first, then I make it again
+                        iFrameID.height = "";
+                        iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + 20 + "px";
+                      }
+                    }
+                  </script>
+                  <iframe src="/Email/EmailBody/@tid" frameborder="0" onload=" iframeLoaded() " style="width: 100%;" id="email-body" name="email-body"></iframe>
+              }
+              else
+              {
+                  <iframe src="/Email/EmailBody/@tid" height="600" frameborder="0" style="width: 100%; height: 600px;" id="email-body" name="email-body"></iframe>
+              }
             </div>
           </div>
           <div class="form-group hidden-xs">
@@ -258,8 +283,21 @@
 @section scripts
 {
   @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
+<<<<<<< HEAD
   @ViewExtensions2.CkEditor()
   @Fingerprint.Script("/Content/touchpoint/js/email/compose.js")
+=======
+  @if (Util2.UseNewEditor)
+  {
+      @ViewExtensions2.FroalaEditorScripts()
+      @Fingerprint.Script("/Content/touchpoint/js/email/compose.js")
+  }
+  else
+  {
+      @ViewExtensions2.CkEditor()
+      @Fingerprint.Script("/scripts/email/compose.js")
+  }
+>>>>>>> master
   <script type="text/javascript">
     $(function () {
       var extraSmallDevice = $('.device-xs').is(':visible');

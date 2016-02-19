@@ -70,27 +70,6 @@ namespace CmsWeb
             }
         }
 
-        public static string Globalize => "/Scripts/globalize.js";
-
-        public static string GlobalizeCulture
-        {
-            get
-            {
-                //Determine culture - GUI culture for preference, user selected culture as fallback
-                var currentCulture = CultureInfo.CurrentCulture;
-                var filePattern = "/Scripts/globalize/globalize.culture.{0}.js";
-                var regionalisedFileToUse = string.Format(filePattern, "en-US"); //Default localisation to use
-
-                //Try to pick a more appropriate regionalisation
-                if (File.Exists(HostingEnvironment.MapPath(string.Format(filePattern, currentCulture.Name)))) //First try for a globalize.culture.en-GB.js style file
-                    regionalisedFileToUse = string.Format(filePattern, currentCulture.Name);
-                else if (File.Exists(HostingEnvironment.MapPath(string.Format(filePattern, currentCulture.TwoLetterISOLanguageName)))) //That failed; now try for a globalize.culture.en.js style file
-                    regionalisedFileToUse = string.Format(filePattern, currentCulture.TwoLetterISOLanguageName);
-
-                return regionalisedFileToUse;
-            }
-        }
-
         public static string CmsHost => DbUtil.Db.CmsHost;
 
         public static string GridClass => "table table-condensed table-striped not-wide grid2";
@@ -174,13 +153,6 @@ namespace CmsWeb
         public static string GetIdFor<M, P>(this M model, Expression<Func<M, P>> ex)
         {
             return ExpressionHelper.GetExpressionText(ex).ToSuitableId();
-        }
-
-        public static string RegisterScript(this HtmlHelper helper, string scriptFileName)
-        {
-            var scriptRoot = VirtualPathUtility.ToAbsolute("~/Scripts");
-            var scriptFormat = "<script src=\"{0}/{1}\" type=\"text/javascript\"></script>\r\n";
-            return string.Format(scriptFormat, scriptRoot, scriptFileName);
         }
 
         public static string ToFormattedList(this IEnumerable list, ListType listType)
@@ -858,41 +830,6 @@ namespace CmsWeb
 ";
         }
 
-        public static HtmlString FroalaEditorCss()
-        {
-            return new HtmlString(@"
-<link rel=""stylesheet"" href=""/Content/touchpoint/lib/froala-editor/css/froala_editor.min.css?v=1.2.7"">
-<link rel=""stylesheet"" href=""/Content/touchpoint/lib/froala-editor/css/froala_style.min.css?v=1.2.7"">
-<link rel=""stylesheet"" href=""/Content/touchpoint/lib/froala-editor/css/custom-theme.css?v=1.2.7"">
-");
-        }
-
-        public static HtmlString FroalaEditorScripts()
-        {
-            var sb = new StringBuilder();
-            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/froala_editor.min.js"));
-            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/font_family.min.js"));
-            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/font_size.min.js"));
-            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/colors.min.js"));
-            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/fullscreen.min.js"));
-            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/lists.min.js"));
-            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/tables.min.js"));
-            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/file_upload.min.js"));
-            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/urls.min.js"));
-            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/special_links.js"));
-            sb.Append(@"
-<script type=""text/javascript"">
-    //froala key
-    $.Editable.DEFAULTS.key = '" + ConfigurationManager.AppSettings["froalaEditorKey"] + @"';
-
-    // must alias froala editor because it could conflict with the same function name with bootstrap-editable.
-    $.fn.froalaEditable = $.fn.editable;
-    delete $.fn.editable;
-</script>
-");
-            return new HtmlString(sb.ToString());
-        }
-
         public static HtmlString FontAwesome()
         {
             return new HtmlString("<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css\" rel=\"stylesheet\">\n");
@@ -902,7 +839,15 @@ namespace CmsWeb
         {
             return new HtmlString("<script src=\"//cdn.ckeditor.com/4.5.6/full/ckeditor.js\" type=\"text/javascript\"></script>\n");
         }
-
+        
+        public static HtmlString jQueryMobile()
+        {
+            return new HtmlString("<script src='//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js'></script>\n");
+        }
+        public static HtmlString jQueryMobileCss()
+        {
+            return new HtmlString("<link rel='stylesheet' href='//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css' />\n");
+        }
         public static HtmlString jQuery()
         {
             return new HtmlString("<script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>\n");
@@ -924,14 +869,6 @@ namespace CmsWeb
     <script src=""//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/additional-methods.min.js""></script>");
         }
 
-        public static HtmlString jqueryGlobalize()
-        {
-            return new HtmlString($@"
-<script src=""{Globalize}"" type=""text/javascript""></script>
-<script src=""{GlobalizeCulture}"" type=""text/javascript""></script>
-");
-        }
-
         public static HtmlString Moment()
         {
             return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js\" type=\"text/javascript\"></script>\n");
@@ -940,11 +877,6 @@ namespace CmsWeb
         public static HtmlString Velocity()
         {
             return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js\" type=\"text/javascript\"></script>\n");
-        }
-
-        public static HtmlString Bootstrap()
-        {
-            return Fingerprint.Script("/Scripts/Bootstrap/bootstrap.js");
         }
 
         public static HtmlString Bootstrap3()
@@ -972,11 +904,6 @@ namespace CmsWeb
         public static bool ShowOrgSettingsHelp(this HtmlHelper helper)
         {
             return DbUtil.Db.UserPreference("ShowOrgSettingsHelp", "true") == "true";
-        }
-
-        public static string Layout()
-        {
-            return "~/Views/Shared/SiteLayout2c.cshtml";
         }
 
         public static string TouchPointLayout()

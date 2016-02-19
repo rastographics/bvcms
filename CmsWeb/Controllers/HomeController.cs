@@ -154,15 +154,6 @@ namespace CmsWeb.Controllers
                 return Redirect(Request.UrlReferrer.OriginalString);
             return Redirect("/");
         }
-        public ActionResult UseNewEditor(bool id)
-        {
-            DbUtil.Db.SetUserPreference("UseNewEditor3", id ? "false" : "true");
-            DbUtil.Db.SubmitChanges();
-            if (Request.UrlReferrer != null)
-                return Redirect(Request.UrlReferrer.OriginalString);
-            return Redirect("/");
-        }
-
         public ActionResult Names(string term)
         {
             var q = HomeModel.Names(term).ToList();
@@ -433,6 +424,18 @@ namespace CmsWeb.Controllers
         {
             var p = DbUtil.Db.LoadPersonById(id);
             return new PictureResult(p.Picture.LargeId ?? 0, w, h, portrait: true, mode: mode);
+        }
+        [Authorize(Roles = "Finance")]
+        public ActionResult TurnFinanceOn()
+        {
+            Session.Remove("testnofinance");
+            return Redirect("/Person2/Current");
+        }
+        [Authorize(Roles = "Finance")]
+        public ActionResult TurnFinanceOff()
+        {
+            Session["testnofinance"] = "true";
+            return Redirect("/Person2/Current");
         }
     }
 }

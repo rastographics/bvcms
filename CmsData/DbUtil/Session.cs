@@ -218,14 +218,6 @@ namespace CmsData
                 return DbUtil.Db.UserPreference("TargetLinkOrg", "true").ToBool();
             }
         }
-        public static bool UseNewEditor
-        {
-            get
-            {
-                return DbUtil.Db.UserPreference("UseNewEditor3", "false").ToBool();
-            }
-        }
-
         public static bool UseNewOrg
         {
             get { return true; } //DbUtil.Db.UserPreference("UseNewOrg", "true").ToBool(); }

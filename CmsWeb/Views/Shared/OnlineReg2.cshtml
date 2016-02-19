@@ -9,7 +9,10 @@
     @ViewExtensions2.Bootstrap3()
     @ViewExtensions2.FontAwesome()
     @ViewExtensions2.LoDash()
-    @Fingerprint.Script("/Scripts/bundle.onlineregister.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/jquery-globalize/js/globalize.js")
+    <script src="@Url.Content(ViewExtensions2.jqueryGlobalizeCulture)" type="text/javascript"></script>
+    @ViewExtensions2.jQueryValidation()
+    @Fingerprint.Script("/Content/touchpoint/js/onlineregister.min.js")
     @RenderSection("scripts", false)
 }
 else
@@ -17,25 +20,27 @@ else
     @:<!DOCTYPE html>
     <html>
     <head>
-        <title>Online Registration</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-        @Html.Raw(ViewExtensions2.Bootstrap3Css())
-        @ViewExtensions2.FontAwesome()
-        @RenderSection("head", false)
+      <title>Online Registration</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+      @Html.Raw(ViewExtensions2.Bootstrap3Css())
+      @ViewExtensions2.FontAwesome()
+      @RenderSection("head", false)
     </head>
-        <body>
+    <body>
       @*        @Html.Action("Index", "MobileAppMenu", new { area = "" })
-    This breaks when anybody else uses the return Message("message") *@
+        This breaks when anybody else uses the return Message("message") *@
       @Html.Raw((string)ViewBag.top)
-            <div class="container">
-                @RenderBody()
-            </div>
-    @Html.Raw((string) ViewBag.bottom)
-            @ViewExtensions2.jQuery()
-            @ViewExtensions2.Bootstrap3()
-            @ViewExtensions2.LoDash()
-            @Fingerprint.Script("/Scripts/bundle.onlineregister.js")
-            @RenderSection("scripts", false)
-        </body>
-</html>
+      <div class="container">
+        @RenderBody()
+      </div>
+      @Html.Raw((string)ViewBag.bottom)
+      @ViewExtensions2.jQuery()
+      @ViewExtensions2.Bootstrap3()
+      @ViewExtensions2.LoDash()
+      @Fingerprint.Script("/Content/touchpoint/lib/jquery-globalize/js/globalize.js")
+      <script src="@Url.Content(ViewExtensions2.jqueryGlobalizeCulture)" type="text/javascript"></script>
+      @Fingerprint.Script("/Content/touchpoint/js/onlineregister.min.js")
+      @RenderSection("scripts", false)
+    </body>
+  </html>
 }
