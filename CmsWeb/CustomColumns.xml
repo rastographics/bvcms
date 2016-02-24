@@ -79,6 +79,9 @@
     <join name="laa">
       LEFT JOIN dbo.LastAttends laa ON laa.PeopleId = p.PeopleId
     </join>
+    <join name="prom">
+      LEFT JOIN dbo.OrgPeople({orgid}, '50', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) prom ON prom.PeopleId = p.PeopleId
+    </join>
   </Joins>
   <Columns>
     <column name="PeopleId">p.peopleid</column>
@@ -263,6 +266,9 @@
     <column name="SmallGroup">
       dbo.InSmallGroup({orgid}, p.PeopleId, '{smallgroup}')
     </column>
+    <column name="SubGroup">
+      dbo.InSmallGroup({orgid}, p.PeopleId, '{smallgroup}')
+    </column>
     <column name="AmountTot" join="ts">
     	ISNULL(ts.IndAmt, 0)
     </column>
@@ -271,6 +277,9 @@
     </column>
     <column name="AmountDue" join="ts">
     	ISNULL(ts.IndDue, 0)
+    </column>
+    <column name="OrgMemberDropped" join="prom"> 
+      prom.Dropped 
     </column>
   </SpecialColumns>
 </CustomColumns>

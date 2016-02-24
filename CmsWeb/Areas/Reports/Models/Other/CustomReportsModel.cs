@@ -166,6 +166,20 @@ namespace CmsWeb.Areas.Reports.Models
                     sel = sel.Replace("{smallgroup}", DblQuotes(smallgroup));
                     sb.AppendFormat("\t{0}{1} AS [{2}]\n", comma, sel, DblQuotes(smallgroup));
                 }
+                else if (name.StartsWith("OrgMember"))
+                {
+                    var cc = mc.SpecialColumns[name];
+                    var oid = (string)e.Attribute("orgid");
+                    if (!oid.HasValue())
+                        throw new Exception("missing orgid on column " + cc.Column);
+
+                    if (!joins.Contains(cc.Join))
+                    {
+                        mc.Joins[cc.Join] = mc.Joins[cc.Join].Replace("{orgid}", oid);
+                        joins.Add(cc.Join);
+                    }
+                    sb.AppendFormat("\t{0}{1} AS [{2}]\n", comma, cc.Select, DblQuotes(name));
+                }
                 else if (name.StartsWith("Amount") && Regex.IsMatch(name, @"\AAmount(Tot|Paid|Due)\z"))
                 {
                     var cc = mc.SpecialColumns[name];
@@ -273,6 +287,10 @@ namespace CmsWeb.Areas.Reports.Models
                         .End();
                     w.Start("Column")
                         .Attr("name", "AmountDue")
+                        .Attr("orgid", orgid)
+                        .End();
+                    w.Start("Column")
+                        .Attr("name", "OrgMemberDropped")
                         .Attr("orgid", orgid)
                         .End();
                     var smallgroups = from sg in _db.MemberTags

@@ -3,11 +3,13 @@
 @using CmsData.Codes
 @model CmsWeb.Areas.Main.Models.MassEmailer
 @{
-  ViewBag.Title = "Compose";
-  ViewBag.PageHeader = "Compose Email";
-  Layout = ViewExtensions2.TouchPointLayout();
-  int tid = ViewBag.TemplateID;
-  var c = ViewExtensions2.GetContent(tid);
+    ViewBag.Title = "Compose";
+    ViewBag.PageHeader = "Compose Email";
+    Layout = ViewExtensions2.TouchPointLayout();
+    int tid = ViewBag.TemplateID;
+    var c = ViewExtensions2.GetContent(tid);
+    //c.TypeID == ContentTypeCode.TypeEmailTemplate
+    //the above means that it was a template they chose if true and a draft they chose if false
 }
 @section head
 {
