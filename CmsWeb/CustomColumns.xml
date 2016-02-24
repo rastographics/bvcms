@@ -79,8 +79,8 @@
     <join name="laa">
       LEFT JOIN dbo.LastAttends laa ON laa.PeopleId = p.PeopleId
     </join>
-    <join name="prom">
-      LEFT JOIN dbo.OrgPeople({orgid}, '50', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) prom ON prom.PeopleId = p.PeopleId
+    <join name="op">
+      LEFT JOIN dbo.OrgPeople({orgid}, '1020304050', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) op ON op.PeopleId = p.PeopleId
     </join>
   </Joins>
   <Columns>
@@ -263,23 +263,35 @@
         where pe.peopleid = p.peopleid and field = '{field}'
       )
      </column>
-    <column name="SmallGroup">
+    <column name="SmallGroup" context="org">
       dbo.InSmallGroup({orgid}, p.PeopleId, '{smallgroup}')
     </column>
-    <column name="SubGroup">
-      dbo.InSmallGroup({orgid}, p.PeopleId, '{smallgroup}')
-    </column>
-    <column name="AmountTot" join="ts">
+    <column name="AmountTot" join="ts" context="org">
     	ISNULL(ts.IndAmt, 0)
     </column>
-    <column name="AmountPaid" join="ts">
+    <column name="AmountPaid" join="ts" context="org">
     	ISNULL(ts.IndPaid, 0)
     </column>
-    <column name="AmountDue" join="ts">
+    <column name="AmountDue" join="ts" context="org">
     	ISNULL(ts.IndDue, 0)
     </column>
-    <column name="OrgMemberDropped" join="prom"> 
-      prom.Dropped 
+    <column name="OrgMemberDropped" join="op" context="org"> 
+      op.Dropped 
+    </column>
+    <column name="OrgMemberJoined" join="op" context="org"> 
+      op.Joined 
+    </column>
+    <column name="OrgMemberAttPct" join="op" context="org"> 
+      op.AttPct 
+    </column>
+    <column name="OrgMemberType" join="op" context="org"> 
+      op.MemberType 
+    </column>
+    <column name="OrgMemberInactive" join="op" context="org"> 
+      op.InactiveDate
+    </column>
+    <column name="OrgMemberLastAttDt" join="op" context="org"> 
+      op.LastAttended
     </column>
   </SpecialColumns>
 </CustomColumns>

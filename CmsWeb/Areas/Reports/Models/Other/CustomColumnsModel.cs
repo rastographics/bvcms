@@ -37,6 +37,7 @@ namespace CmsWeb.Areas.Reports.Models
                     Column = c.Attribute("name").Value,
                     Join = (string)c.Attribute("join"),
                     Select = c.Value.Trim(),
+                    Context = (string)c.Attribute("context")
                 }).ToDictionary(cc => cc.Column, cc => cc);
             return ret;
         }
@@ -46,5 +47,6 @@ namespace CmsWeb.Areas.Reports.Models
         public string Column { get; set; }
         public string Join { get; set; }
         public string Select { get; set; }
+        public string Context { get; set; }
     }
 }

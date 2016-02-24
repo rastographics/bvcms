@@ -6,9 +6,9 @@ RETURN
 	SELECT etd.PeopleId
 	, 'Previous' Tab
 	, '50' GroupCode
-	, AttendancePercentage AttPct
+	, etd.AttendancePercentage AttPct
 	, a.MeetingDate LastAttended
-	, etd.EnrollmentDate Joined
+	, etj.EnrollmentDate Joined
 	, etd.TransactionDate Dropped
 	, etd.InactiveDate
 	, mt.Code MemberCode
@@ -24,6 +24,7 @@ RETURN
 					WHERE la.OrganizationId = @oid
 					AND la.PeopleId = a.PeopleId
 					AND la.AttendanceFlag = 1)
+	LEFT JOIN dbo.EnrollmentTransaction etj ON etj.TransactionId = etd.EnrollmentTransactionId
 	LEFT JOIN lookup.MemberType mt ON mt.Id = etd.MemberTypeId
 	WHERE etd.OrganizationId = @oid
 	AND etd.TransactionStatus = 0
@@ -43,6 +44,7 @@ RETURN
 		AND om.OrganizationId = @oid
 	)
 )
+
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO

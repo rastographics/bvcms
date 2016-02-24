@@ -277,22 +277,12 @@ namespace CmsWeb.Areas.Reports.Models
                 }
                 if (orgid.HasValue)
                 {
-                    w.Start("Column")
-                        .Attr("name", "AmountTot")
-                        .Attr("orgid", orgid)
-                        .End();
-                    w.Start("Column")
-                        .Attr("name", "AmountPaid")
-                        .Attr("orgid", orgid)
-                        .End();
-                    w.Start("Column")
-                        .Attr("name", "AmountDue")
-                        .Attr("orgid", orgid)
-                        .End();
-                    w.Start("Column")
-                        .Attr("name", "OrgMemberDropped")
-                        .Attr("orgid", orgid)
-                        .End();
+                    foreach (var c in mc.SpecialColumns.Values.Where(vv => vv.Context == "org"))
+                        w.Start("Column")
+                            .Attr("name", c.Column)
+                            .Attr("orgid", orgid)
+                            .End();
+
                     var smallgroups = from sg in _db.MemberTags
                                       where sg.OrgId == orgid
                                       orderby sg.Name
