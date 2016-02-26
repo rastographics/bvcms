@@ -526,11 +526,34 @@
         return true;
     });
 
+    $(".ReportDate").click(function (ev) {
+        ev.preventDefault();
+        $('#report-date-action').val(this.href);
+        $('#report-date-modal').modal('show');
+        return true;
+    });
+    $('#report-date-modal').on('hidden.bs.modal', function () {
+        $("#reportdate2").off("click");
+    });
+    $('#report-date-modal').on('shown.bs.modal', function () {
+        $('#reportdate2').on("click", function (ev2) {
+            ev2.preventDefault();
+            $('#report-date-modal').modal('hide');
+            var args = "?dt=" + $('#ReportDate').val();
+            $("#orgsearchform").attr("action", $('#report-date-action').val() + args);
+            $("#orgsearchform").submit();
+            return false;
+        });
+    });
+
     $(".StartEndReport").click(function (ev) {
         ev.preventDefault();
         $('#meetings-daterange-action').val(this.href);
         $('#meetings-daterange-modal').modal('show');
         return true;
+    });
+    $('#meetings-daterange-modal').on('hidden.bs.modal', function () {
+        $("#attdetail2").off("click");
     });
 
     $('#meetings-daterange-modal').on('shown.bs.modal', function () {
@@ -544,9 +567,6 @@
         });
     });
 
-    $('#meetings-daterange-modal').on('hidden.bs.modal', function () {
-        $("#attdetail2").off("click");
-    });
 
     $(".MonthReport").click(function (ev) {
         ev.preventDefault();

@@ -530,6 +530,7 @@
     <Compile Include="Generated\Functions\HasIncompleteRegistration.cs" />
     <Compile Include="Generated\Functions\LastAttendOrg.cs" />
     <Compile Include="Generated\Functions\NotAttendedAsOf.cs" />
+    <Compile Include="Generated\Functions\OrgDayStat.cs" />
     <Compile Include="Generated\Functions\OrgMember.cs" />
     <Compile Include="Generated\Functions\OrgMemberInfo.cs" />
     <Compile Include="Generated\Functions\OrgMemberQuestion.cs" />

@@ -88,6 +88,15 @@ namespace CmsWeb.Areas.Reports.Controllers
             var m2 = new AttendanceDetailModel(dt1.Value, dt2, m);
             return m2.FetchMeetings().ToDataTable().ToExcel("MeetingsExport.xlsx");
         }
+        [HttpPost]
+        public ActionResult OrgDayStats(DateTime? dt, OrgSearchModel m)
+        {
+            if(!dt.HasValue)
+                dt = ChurchAttendanceModel.MostRecentAttendedSunday();
+            var orgs = string.Join(",", m.FetchOrgs().Select(oo => oo.OrganizationId));
+            var q = DbUtil.Db.OrgDayStats(orgs, dt);
+            return q.ToDataTable().ToExcel("OrgDatStats.xlsx");
+        }
 
         [HttpPost]
         public ActionResult MissionTripFunding(OrgSearchModel m)

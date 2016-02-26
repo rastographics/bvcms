@@ -3117,6 +3117,19 @@ namespace CmsData
                 );
         }
 
+        [Function(Name="dbo.OrgDayStats", IsComposable = true)]
+        public IQueryable< View.OrgDayStat > OrgDayStats(
+            [Parameter(DbType="varchar")] string oids,
+            [Parameter(DbType="datetime")] DateTime? dt
+            )
+        {
+            return CreateMethodCallQuery< View.OrgDayStat>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    oids,
+                    dt
+                );
+        }
+
         [Function(Name="dbo.OrgMember", IsComposable = true)]
         public IQueryable< View.OrgMember > OrgMember(
             [Parameter(DbType="int")] int? oid,
