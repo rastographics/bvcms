@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using AuthorizeNet;
 using CmsData.Finance.TransNational.Core;
 using CmsData.Finance.TransNational.Query;
 using CmsData.Finance.TransNational.Transaction.Auth;
@@ -314,18 +315,22 @@ namespace CmsData.Finance
 
         public TransactionResponse VoidCreditCardTransaction(string reference)
         {
-            return Void(reference);
+            var creditCardVoidRequest = new CreditCardVoidRequest(_userName, _password, reference);
+            var response = creditCardVoidRequest.Execute();
+
+            return new TransactionResponse
+            {
+                Approved = response.ResponseStatus == ResponseStatus.Approved,
+                AuthCode = response.AuthCode,
+                Message = response.ResponseText,
+                TransactionId = response.TransactionId
+            };
         }
 
         public TransactionResponse VoidCheckTransaction(string reference)
         {
-            return Void(reference);
-        }
-
-        private TransactionResponse Void(string reference)
-        {
-            var voidRequest = new VoidRequest(_userName, _password, reference);
-            var response = voidRequest.Execute();
+            var achVoidRequest = new AchVoidRequest(_userName, _password, reference);
+            var response = achVoidRequest.Execute();
 
             return new TransactionResponse
             {
@@ -338,18 +343,22 @@ namespace CmsData.Finance
 
         public TransactionResponse RefundCreditCard(string reference, decimal amt, string lastDigits = "")
         {
-            return Refund(reference, amt);
+            var creditCardRefundRequest = new CreditCardRefundRequest(_userName, _password, reference, amt);
+            var response = creditCardRefundRequest.Execute();
+
+            return new TransactionResponse
+            {
+                Approved = response.ResponseStatus == ResponseStatus.Approved,
+                AuthCode = response.AuthCode,
+                Message = response.ResponseText,
+                TransactionId = response.TransactionId
+            };
         }
 
         public TransactionResponse RefundCheck(string reference, decimal amt, string lastDigits = "")
         {
-            return Refund(reference, amt);
-        }
-
-        private TransactionResponse Refund(string reference, decimal amount)
-        {
-            var refundRequest = new RefundRequest(_userName, _password, reference, amount);
-            var response = refundRequest.Execute();
+            var achRefundRequest = new AchRefundRequest(_userName, _password, reference, amt);
+            var response = achRefundRequest.Execute();
 
             return new TransactionResponse
             {

@@ -483,7 +483,8 @@
     <Compile Include="Finance\TransNational\Query\QueryResponse.cs" />
     <Compile Include="Finance\TransNational\Query\Transaction.cs" />
     <Compile Include="Finance\TransNational\Query\TransactionType.cs" />
-    <Compile Include="Finance\TransNational\Transaction\Refund\RefundRequest.cs" />
+    <Compile Include="Finance\TransNational\Transaction\Refund\AchRefundRequest.cs" />
+    <Compile Include="Finance\TransNational\Transaction\Refund\CreditCardRefundRequest.cs" />
     <Compile Include="Finance\TransNational\Transaction\Auth\CreditCardAuthRequest.cs" />
     <Compile Include="Finance\TransNational\Transaction\Auth\CreditCardVaultAuthRequest.cs" />
     <Compile Include="Finance\TransNational\Transaction\Sale\AchSaleRequest.cs" />
@@ -492,7 +493,8 @@
     <Compile Include="Finance\TransNational\Transaction\Sale\CreditCardVaultSaleRequest.cs" />
     <Compile Include="Finance\TransNational\Transaction\TransactRequest.cs" />
     <Compile Include="Finance\TransNational\Transaction\TransactResponse.cs" />
-    <Compile Include="Finance\TransNational\Transaction\Void\VoidRequest.cs" />
+    <Compile Include="Finance\TransNational\Transaction\Void\CreditCardVoidRequest.cs" />
+    <Compile Include="Finance\TransNational\Transaction\Void\AchVoidRequest.cs" />
     <Compile Include="Finance\TransNational\Vault\CreateAchVaultRequest.cs" />
     <Compile Include="Finance\TransNational\Vault\CreateCreditCardVaultRequest.cs" />
     <Compile Include="Finance\TransNational\Vault\DeleteVaultRequest.cs" />
