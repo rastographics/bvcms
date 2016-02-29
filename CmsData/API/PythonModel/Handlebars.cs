@@ -1,5 +1,4 @@
 ﻿using HandlebarsDotNet;
-using IronPython.Modules;
 using UtilityExtensions;
 
 namespace CmsData
@@ -56,10 +55,15 @@ namespace CmsData
 
         private static bool IsEqual(object[] args)
         {
-            var eq = args[0].Equals(args[1]);
+            // use the XOR operator: true if one arg is null and the other is not
             if (args[0] == null ^ args[1] == null)
-                eq = false;
-            else if (!eq && args[0] is int)
+                return false;
+            // at this point, either both are null or both are not null
+            if (args[0] == null)
+                return true;  // both must be null 
+            // at this point both are not null
+            var eq = args[0].Equals(args[1]);
+            if (!eq && args[0] is int)
                 eq = args[0].ToString() == args[1]?.ToString();
             return eq;
         }
