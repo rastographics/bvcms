@@ -7,31 +7,19 @@ RETURNS @t TABLE
 	,Location NVARCHAR(80)
 	,MeetingTime DATETIME
 	,Attends INT
-	,Visitors INT
+	,Guests INT
     ,Members INT
     ,NewMembers INT
     ,Dropped INT
-    ,CurrentCount INT
+    ,Members7 INT
     )
 AS
 BEGIN
     DECLARE @enddt1 DATETIME = DATEADD(DAY, 1, @dt);
     DECLARE @enddt7 DATETIME = DATEADD(DAY, 7, @dt);
 
-    INSERT  @t
-            (OrganizationId
-            ,OrganizationName
-			,Leader
-			,Location
-			,MeetingTime
-			,Attends
-			,Visitors
-            ,Members
-            ,NewMembers
-            ,Dropped
-            ,CurrentCount
-            )
-    SELECT  o.OrganizationId
+    ;WITH orgs AS (
+		SELECT  o.OrganizationId
            ,o.OrganizationName
 		   ,o.LeaderName
 		   ,m.Location
@@ -44,7 +32,7 @@ BEGIN
 				AND a.MeetingDate >= @dt
 				AND a.MeetingDate < @enddt1
 			)
-		   ,Visitors = (
+		   ,Guests = (
 				SELECT COUNT(*)
 				FROM dbo.Attend a
 				WHERE a.MeetingId = m.MeetingId
@@ -87,11 +75,37 @@ BEGIN
                 AND ISNULL(et.Pending, 0) = 0
                 AND et.OrganizationId = o.OrganizationId
             )
-           ,CurrentCount = o.MemberCount
-    FROM dbo.SplitInts(@oids) ids
-    JOIN dbo.Organizations o ON o.OrganizationId = ids.Value
-	JOIN dbo.Meetings m ON m.OrganizationId = o.OrganizationId
-	WHERE CONVERT(DATE, m.MeetingDate) = @dt
+           --,CurrentCount = o.MemberCount
+	    FROM dbo.SplitInts(@oids) ids
+	    JOIN dbo.Organizations o ON o.OrganizationId = ids.Value
+		JOIN dbo.Meetings m ON m.OrganizationId = o.OrganizationId
+		WHERE CONVERT(DATE, m.MeetingDate) = @dt
+	)
+    INSERT  @t
+            (OrganizationId
+            ,OrganizationName
+			,Leader
+			,Location
+			,MeetingTime
+			,Attends
+			,Guests
+            ,Members
+            ,NewMembers
+            ,Dropped
+            ,Members7
+            )
+	SELECT o.OrganizationId
+          ,o.OrganizationName
+          ,o.LeaderName
+          ,o.Location
+          ,o.MeetingDate
+          ,o.Attends
+          ,o.Guests
+          ,o.Members
+          ,o.NewMembers
+          ,o.Dropped
+		  ,Members7 = o.Members + o.NewMembers - o.Dropped
+	FROM orgs o
     ORDER BY o.OrganizationId;
     RETURN; 
 END;
