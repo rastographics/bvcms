@@ -28,7 +28,7 @@ namespace CmsData.View
 		
 		private int? _Attends;
 		
-		private int? _Visitors;
+		private int? _Guests;
 		
 		private int? _Members;
 		
@@ -36,7 +36,7 @@ namespace CmsData.View
 		
 		private int? _Dropped;
 		
-		private int? _CurrentCount;
+		private int? _Members7;
 		
 		
 		public OrgDayStat()
@@ -147,18 +147,18 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Visitors", Storage="_Visitors", DbType="int")]
-		public int? Visitors
+		[Column(Name="Guests", Storage="_Guests", DbType="int")]
+		public int? Guests
 		{
 			get
 			{
-				return this._Visitors;
+				return this._Guests;
 			}
 
 			set
 			{
-				if (this._Visitors != value)
-					this._Visitors = value;
+				if (this._Guests != value)
+					this._Guests = value;
 			}
 
 		}
@@ -215,18 +215,18 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="CurrentCount", Storage="_CurrentCount", DbType="int")]
-		public int? CurrentCount
+		[Column(Name="Members7", Storage="_Members7", DbType="int")]
+		public int? Members7
 		{
 			get
 			{
-				return this._CurrentCount;
+				return this._Members7;
 			}
 
 			set
 			{
-				if (this._CurrentCount != value)
-					this._CurrentCount = value;
+				if (this._Members7 != value)
+					this._Members7 = value;
 			}
 
 		}
