@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Security;
 using System.Text.RegularExpressions;
@@ -18,6 +19,7 @@ using CmsWeb.Areas.Reports.ViewModels;
 using CmsWeb.Areas.Search.Models;
 using CmsWeb.Models;
 using Dapper;
+using HtmlAgilityPack;
 using MoreLinq;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -149,7 +151,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpPost]
         public ActionResult CheckinControl(CheckinControlModel m)
         {
-            if(m.CheckinExport)
+            if (m.CheckinExport)
                 return m.list().ToDataTable().ToExcel("CheckinControl.xlsx");
             return new CheckinControlResult { model = m };
         }
@@ -784,7 +786,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                 p.Add("@qtagid", tag.Id);
                 ViewBag.name = report;
                 using (var rd = cn.ExecuteReader(content.Body, p))
-                  ViewBag.report = GridResult.Table(rd);
+                    ViewBag.report = GridResult.Table(rd);
                 return View();
             }
         }
@@ -943,6 +945,52 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             var m = new WeeklyDecisionsModel(sunday) { Campus = campus };
             return View(m);
+        }
+
+        public class ImageInfo
+        {
+            public string Src { get; set; }
+            public string File { get; set; }
+            public DateTime Dt { get; set; }
+            public ImageInfo(string src, string file, DateTime dt)
+            {
+                Src = src;
+                File = file;
+                Dt = dt;
+            }
+        }
+        [HttpGet]
+        public ActionResult EmailImages()
+        {
+            var q = from e in DbUtil.Db.EmailQueues
+                    where e.Body.Contains("ssl.cf2.rackcdn.com")
+                    select e;
+            var images = new List<string>();
+            foreach (var e in q)
+            {
+                var doc = new HtmlDocument();
+                doc.LoadHtml(e.Body);
+                var nodes = doc.DocumentNode.SelectNodes("//img[@src]");
+                if (nodes == null)
+                    continue;
+                var snodes = nodes.Select(node => node.Attributes["src"].Value);
+                images.AddRange(snodes.Where(img => img.Contains("ssl.cf2.rackcdn.com")));
+            }
+            var uniqImages = images.Distinct();
+            var re = new Regex(@"rackcdn.com/.*?\.(\d+)\.(.*)");
+            var dateTimeFormatInfo = new DateTimeFormatInfo();
+            var list = new List<ImageInfo>();
+            foreach (var img in uniqImages)
+            {
+                if (img.Contains("ssl.cf2.rackcdn.com"))
+                {
+                    var dts = re.Match(img).Groups[1].Value;
+                    var dt = DateTime.ParseExact(dts, "yyMMddmmss", dateTimeFormatInfo);
+                    var file = re.Match(img).Groups[2].Value;
+                    list.Add(new ImageInfo(img, file, dt));
+                }
+            }
+            return View(list.OrderByDescending(vv => vv.Dt));
         }
 
         public class ExtraInfo

@@ -1509,6 +1509,7 @@
     <Content Include="Areas\Finance\Views\FinanceReports\DepositTotalsForDates.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\DepositTotalsForDatesResults.cshtml" />
     <Content Include="Areas\Org\Views\OrgSearch\Modals\ReportDate.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\EmailImages.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />

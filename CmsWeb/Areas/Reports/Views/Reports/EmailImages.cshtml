@@ -1,0 +1,14 @@
+﻿@using UtilityExtensions
+@model IEnumerable<CmsWeb.Areas.Reports.Controllers.ReportsController.ImageInfo>
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Email Images";
+}
+<div class="report box box-responsive">
+  <div class="box-content">
+    @foreach (var r in Model)
+    {
+        @r.Dt.ToString("G") <a href="@r.Src" target="imaget">@r.File</a><br />
+    }
+  </div>
+</div>
