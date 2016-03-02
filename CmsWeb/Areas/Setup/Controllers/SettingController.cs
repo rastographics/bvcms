@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
@@ -20,6 +21,9 @@ namespace CmsWeb.Areas.Setup.Controllers
         [HttpPost]
         public ActionResult Create(string id)
         {
+            if(!Regex.IsMatch(id, @"\A[A-z0-9]*\z"))
+                return Message("Invalid characters in setting id");
+
             if (!DbUtil.Db.Settings.Any(s => s.Id == id))
             {
                 var m = new Setting {Id = id};
