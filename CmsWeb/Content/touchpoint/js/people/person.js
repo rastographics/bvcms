@@ -497,18 +497,7 @@
     var SetProfileEditable = function () {
         $(".popover-map").dropdown();
         $('#PositionInFamily').editable({
-            source: [
-                {
-                    value: 10,
-                    text: "Primary Adult"
-                }, {
-                    value: 20,
-                    text: "Secondary Adult"
-                }, {
-                    value: 30,
-                    text: "Child"
-                }
-            ],
+            source: "/Person2/FamilyPositions",
             type: "select",
             url: "/Person2/PostData",
             name: "position"

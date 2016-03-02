@@ -17,6 +17,15 @@ namespace CmsWeb.Areas.People.Controllers
             list.Insert(0, new { value = 0, text = "(not specified)" });
             return Json(list.ToArray(), JsonRequestBehavior.AllowGet);
         }
+        [HttpGet]
+        public JsonResult FamilyPositions()
+        {
+            Response.SetCacheMinutes(5);
+            var q = from c in DbUtil.Db.FamilyPositions
+                    select new { value = c.Id, text = c.Description };
+            var list = q.ToList();
+            return Json(list.ToArray(), JsonRequestBehavior.AllowGet);
+        }
         [HttpPost]
         public JsonResult Schools(string query)
         {
