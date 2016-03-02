@@ -48,7 +48,8 @@ namespace CmsWeb.Areas.Dialog.Controllers
             {
                 if (count == 0 && isordered)
                     topid = id.ToString();
-                t.PersonTags.Add(new TagPerson {PeopleId = id});
+                tp = new TagPerson() {Id = t.Id, PeopleId = id};
+                DbUtil.Db.TagPeople.InsertOnSubmit(tp);
             }
             DbUtil.Db.SubmitChanges();
             return Content(topid);
