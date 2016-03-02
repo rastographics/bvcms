@@ -348,9 +348,9 @@ Total Fee paid for this registration session: {amtpaid:C}<br/>
                 if (p.IsCreateAccount())
                     p.CreateAccount();
                 DbUtil.Db.SubmitChanges();
-
-                details.Append(p.PrepareSummaryText(Transaction));
             }
+            foreach(var p in List)
+                details.Append(p.PrepareSummaryText(Transaction));
             return List[0].GetMessage(details.ToString());
         }
 
