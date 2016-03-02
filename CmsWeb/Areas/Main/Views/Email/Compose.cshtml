@@ -172,12 +172,9 @@
               <label class="checkbox-inline">
                 @Html.CheckBox("PublicViewable") Publicly viewable?
               </label>
-              @if (User.IsInRole("Developer"))
-              {
               <label class="checkbox-inline">
                 @Html.CheckBox("AddCC") Add Cc/Reply-To?
               </label>
-              }
               @if ((User.IsInRole("ScheduleEmails") || User.IsInRole("Edit")) && ConfigurationManager.AppSettings["UseEmailScheduler"] == "true")
               {
                   <label class="checkbox-inline">
