@@ -1,13 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Dynamic;
 using System.Reflection;
+using HandlebarsDotNet;
 
 namespace CmsData.API
 {
-    internal class DynamicData : DynamicObject
+    public class DynamicData : DynamicObject
     {
         // ReSharper disable once InconsistentNaming
         private Dictionary<string, object> d { get; }
+        public DynamicData()
+        {
+            d = new Dictionary<string, object>();
+        }
         public DynamicData(Dictionary<string, object> dict)
         {
             d = dict;

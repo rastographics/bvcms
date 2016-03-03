@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Security;
 using CmsData;
+using CmsData.API;
 using CmsData.Codes;
 using UtilityExtensions;
 
@@ -292,7 +293,30 @@ Thank you.
                         $"Cannot find {pi.Person.Name} ({pi.PeopleId}), payment due completed of {pi.Amt:c} but no record");
             }
             Db.SubmitChanges();
-            var names = string.Join(", ", ti.OriginalTrans.TransactionPeople.Select(i => i.Person.Name).ToArray());
+
+            dynamic d = new DynamicData();
+            d.Name = Transaction.FullName(ti);
+            d.Amt = ti.Amt;
+            d.Description = ti.Description;
+            d.Amtdue = due;
+            d.names = string.Join(", ", ti.OriginalTrans.TransactionPeople.Select(i => i.Person.Name));
+
+            var msg = DbUtil.Db.RenderTemplate(@"
+<p>
+    Thank you {{Name}}, for your payment of {{Fmt Amt 'c'}} on {{Description}}.<br/>
+    {{#if Amtdue}}
+    Your balance is {{Fmt Amtdue 'c'}}<br/>
+    {{/if}}
+    {{names}}
+</p>", d);
+            var msgstaff = DbUtil.Db.RenderTemplate(@"
+<p>
+    {{Name}} paid {{Fmt Amt 'c'}} on {{Description}}.<br/>
+    {{#if Amtdue}}
+    The balance is {{Fmt Amtdue 'c'}}<br/>
+    {{/if}}
+    {{names}}
+</p>", d);
 
             var pid = ti.FirstTransactionPeopleId();
             var p0 = Db.LoadPersonById(pid);
@@ -301,16 +325,13 @@ Thank you.
             {
                 if (p0 == null)
                     Util.SendMsg(Util.SysFromEmail, Util.Host, Util.TryGetMailAddress(Db.StaffEmailForOrg(org.OrganizationId)),
-                        "Payment confirmation", $"Thank you for paying {ti.Amt:c} for {ti.Description}.<br/>Your balance is {ti.Amtdue:c}<br/>{names}",
-                        Util.ToMailAddressList(Util.FirstAddress(ti.Emails)), 0, pid);
+                        "Payment confirmation", msg, Util.ToMailAddressList(Util.FirstAddress(ti.Emails)), 0, pid);
                 else
                 {
                     Db.Email(Db.StaffEmailForOrg(org.OrganizationId), p0, Util.ToMailAddressList(ti.Emails),
-                        "Payment confirmation", $"Thank you for paying {ti.Amt:c} for {ti.Description}.<br/>Your balance is {ti.Amtdue:c}<br/>{names}", false);
-                    Db.Email(p0.FromEmail,
-                        Db.PeopleFromPidString(org.NotifyIds),
-                        "payment received for " + ti.Description,
-                        $"{Transaction.FullName(ti)} paid {ti.Amt:c} for {ti.Description}, balance of {due:c}\n({names})");
+                        "Payment confirmation", msg, false);
+                    Db.Email(p0.FromEmail, Db.PeopleFromPidString(org.NotifyIds),
+                        "payment received for " + ti.Description, msgstaff);
                 }
             }
         }

@@ -74,10 +74,7 @@ namespace CmsData
 
         public string RenderTemplate(string source, object data)
         {
-            RegisterHelpers(db);
-            var template = Handlebars.Compile(source);
-            var result = template(data);
-            return result;
+            return db.RenderTemplate(source, data);
         }
     }
 }

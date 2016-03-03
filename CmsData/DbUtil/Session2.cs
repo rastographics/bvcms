@@ -8,6 +8,7 @@ using System.Web;
 using UtilityExtensions;
 using System.Web.Caching;
 using Dapper;
+using HandlebarsDotNet;
 
 namespace CmsData
 {
@@ -261,6 +262,14 @@ namespace CmsData
             SubmitChanges();
             HttpRuntime.Cache.Insert(Host + "-RegistrationsConverted", true, null,
                 DateTime.Now.AddHours(2), Cache.NoSlidingExpiration);
+        }
+
+        public string RenderTemplate(string source, object data)
+        {  
+            PythonModel.RegisterHelpers(this);
+            var template = Handlebars.Compile(source);
+            var result = template(data);
+            return result;
         }
 
     }
