@@ -24,6 +24,10 @@
             <th>Background Check:</th>
             <td colspan="2">@Model.Volunteer.ProcessedDate.FormatDate()</td>
         </tr>
+        <tr>
+            <th>MVR Check:</th>
+            <td colspan="2">@Model.Volunteer.MVRProcessedDate.FormatDate()</td>
+        </tr>
     </table>
 </div>
 @FormAction(true)
