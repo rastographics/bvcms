@@ -322,7 +322,11 @@ namespace CmsWeb.Areas.Search.Controllers
             var newMtg = DbUtil.Db.Meetings.SingleOrDefault(m => m.OrganizationId == orgid && m.MeetingDate == dt);
             if (newMtg == null)
             {
-                var attsch = organization.OrgSchedules.SingleOrDefault(ss => ss.MeetingTime.Value.TimeOfDay == dt.TimeOfDay && ss.MeetingTime.Value.DayOfWeek == dt.DayOfWeek);
+                var attsch = (from s in DbUtil.Db.OrgSchedules
+                             where s.OrganizationId == organization.OrganizationId
+                             where s.MeetingTime.Value.TimeOfDay == dt.TimeOfDay
+                             where s.MeetingTime.Value.DayOfWeek == dt.DayOfWeek
+                             select s).SingleOrDefault();
                 int? attcred = null;
                 if (attsch != null)
                     attcred = attsch.AttendCreditId;
