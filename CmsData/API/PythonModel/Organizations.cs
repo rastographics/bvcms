@@ -80,11 +80,12 @@ namespace CmsData
             db2.Dispose();
         }
 
-        public List<int> OrganizationIds(int progid, int divid)
+        public List<int> OrganizationIds(int progid, int divid, bool? includeInactive)
         {
             var q = from o in db.Organizations
                     where progid == 0 || o.DivOrgs.Any(dd => dd.Division.ProgDivs.Any(pp => pp.ProgId == progid))
                     where divid == 0 || o.DivOrgs.Select(dd => dd.DivId).Contains(divid)
+                    where includeInactive == true || o.OrganizationStatusId == OrgStatusCode.Active
                     select o.OrganizationId;
             return q.ToList();
         }
