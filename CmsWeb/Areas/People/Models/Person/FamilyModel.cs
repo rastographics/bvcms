@@ -13,6 +13,7 @@ namespace CmsWeb.Areas.People.Models
         public FamilyModel(int id)
         {
             Person = DbUtil.Db.LoadPersonById(id);
+            pagesize = 100;
         }
         private Family family;
         public Family Family
