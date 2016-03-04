@@ -162,7 +162,7 @@ namespace CmsWeb.Areas.Reports.Models
                     var sel = cc.Select.Replace("{orgid}", oid);
                     var smallgroup = (string)e.Attribute("smallgroup");
                     if (!smallgroup.HasValue())
-                        throw new Exception("missing smallgroup on column " + cc.Column);
+                        continue;
                     sel = sel.Replace("{smallgroup}", DblQuotes(smallgroup));
                     sb.AppendFormat("\t{0}{1} AS [{2}]\n", comma, sel, DblQuotes(smallgroup));
                 }
@@ -277,7 +277,11 @@ namespace CmsWeb.Areas.Reports.Models
                 }
                 if (orgid.HasValue)
                 {
-                    foreach (var c in mc.SpecialColumns.Values.Where(vv => vv.Context == "org"))
+                    var specialcols = from c in mc.SpecialColumns.Values
+                                      where c.Context == "org"
+                                      where c.Column != "SmallGroup"
+                                      select c;
+                    foreach (var c in specialcols)
                         w.Start("Column")
                             .Attr("name", c.Column)
                             .Attr("orgid", orgid)
