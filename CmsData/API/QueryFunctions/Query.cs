@@ -141,6 +141,43 @@ namespace CmsData
 ]";
         }
 
+
+        /// <summary>
+        /// Function takes a sql script and then places the results into an array.
+        /// The first column in the SQL results should countain Dates.  
+        /// This is followed by 1 to 10 columns value 
+        /// Each row of SQL results is processed into a row of the array by creating a DateValueRow class
+        /// 
+        /// header: string containing the header row. (less the square brackets)
+        /// numvalcols: number of columns containing values. (do not include date column)
+        /// sql: string containing the sql script.
+        /// 
+        /// Example:
+        /// SqlDateValueArray("{label: 'Date', type: 'date'},{label: 'Sum', type: 'number'},{label: 'Avg', type: 'number'}", 2, '''sql string''')
+        /// 
+        /// If there are no results from the SQL query, then a table is returned that prints "NULL" on the chart
+        /// </summary>
+        public string SqlDateValueArray(string header, int numvalcols, string sql)
+        {
+            var cn = GetReadonlyConnection();
+            string declareqtagid = null;
+            if (sql.Contains("@qtagid"))
+            {
+                var id = db.FetchLastQuery().Id;
+                var tag = db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
+                declareqtagid = $"DECLARE @qtagid INT = {tag.Id}\n";
+            }
+            sql = $"{declareqtagid}{sql}";
+            var q = cn.Query(sql);
+
+            var list = q.Select(rr => new DateValueRow { SqlRow = rr, Columns = numvalcols }).ToList();
+
+            if (list.Count == 0)
+                return @"[[{label: 'Date', id: 'Date', type: 'date'}, 'Value'],[new Date(2000, 1, 1), 0], [new Date(2000, 1, 2), 10],[new Date(2000, 2, 1), 0],[new Date(2000, 2, 2), 10],[new Date(2000, 2, 3), 0],[new Date(2000, 3, 1), 0],[new Date(2000, 3, 2), 10],[new Date(2000, 3, 3), 1],[new Date(2000, 4, 1), 1],[new Date(2000, 4, 2), 10],[new Date(2000, 4, 3), 0],[new Date(2000, 5, 1), 0],[new Date(2000, 5, 2), 10],[new Date(2000, 5, 3), 1],[new Date(2000, 6, 1), 1],[new Date(2000, 6, 2), 0],[new Date(2000, 7, 1), 0],[new Date(2000, 7, 2), 10],[new Date(2000, 7, 3), 1],[new Date(2000, 8, 1), 1],[new Date(2000, 8, 2), 0]]";
+            return $@"[ [{header}], {string.Join(",\n", list)} ]";
+        }
+
+
         public int StatusCount(string flags)
         {
             if (flags == "F00")
@@ -174,6 +211,57 @@ namespace CmsData
             public override string ToString()
             {
                 return $"  ['{Name}', {Value}]";
+            }
+        }
+
+        /// <summary>
+        /// Takes a dynamic row resulting from executing SQL statement
+        /// Expects one value to be labled "Date" 
+        /// The remaining values are labeled "Val1", "Val2"... upto "Val10"
+        /// Columns:  is used to initialize the class and determines the number of Value columns are assumed to be in the row.
+        /// 
+        /// NOTE: Month is Converted to 0-Base Index for JavaScript Date object 
+        /// 
+        /// Example:  (assuming Columns = 2)
+        /// [new Date(2006, 02, 13), 45.23, 5006]
+        /// </summary>
+        public class DateValueRow
+        {
+            public DateTime Date { get; set; }
+            public dynamic SqlRow { get; set; }
+            public int Columns { get; set; }
+            
+            public override string ToString()
+            {
+                Date = SqlRow.Date;
+
+                switch (Columns)
+                {
+                    case 10:
+                        return $"  [new Date({Date.Year}, {Date.Month - 1}, {Date.Day}), {SqlRow.Val1}, {SqlRow.Val2}, {SqlRow.Val3}, {SqlRow.Val4}, {SqlRow.Val5}, {SqlRow.Val6}, {SqlRow.Val7}, {SqlRow.Val8}, {SqlRow.Val9}, {SqlRow.Val10}]";
+                    case 9:
+                        return $"  [new Date({Date.Year}, {Date.Month - 1}, {Date.Day}), {SqlRow.Val1}, {SqlRow.Val2}, {SqlRow.Val3}, {SqlRow.Val4}, {SqlRow.Val5}, {SqlRow.Val6}, {SqlRow.Val7}, {SqlRow.Val8}, {SqlRow.Val9}]";
+                    case 8:
+                        return $"  [new Date({Date.Year}, {Date.Month - 1}, {Date.Day}), {SqlRow.Val1}, {SqlRow.Val2}, {SqlRow.Val3}, {SqlRow.Val4}, {SqlRow.Val5}, {SqlRow.Val6}, {SqlRow.Val7}, {SqlRow.Val8}]";
+                    case 7:
+                        return $"  [new Date({Date.Year}, {Date.Month - 1}, {Date.Day}), {SqlRow.Val1}, {SqlRow.Val2}, {SqlRow.Val3}, {SqlRow.Val4}, {SqlRow.Val5}, {SqlRow.Val6}, {SqlRow.Val7}]";
+                    case 6:
+                        return $"  [new Date({Date.Year}, {Date.Month - 1}, {Date.Day}), {SqlRow.Val1}, {SqlRow.Val2}, {SqlRow.Val3}, {SqlRow.Val4}, {SqlRow.Val5}, {SqlRow.Val6}]";
+                    case 5:
+                        return $"  [new Date({Date.Year}, {Date.Month - 1}, {Date.Day}), {SqlRow.Val1}, {SqlRow.Val2}, {SqlRow.Val3}, {SqlRow.Val4}, {SqlRow.Val5}]";
+                    case 4:
+                        return $"  [new Date({Date.Year}, {Date.Month - 1}, {Date.Day}), {SqlRow.Val1}, {SqlRow.Val2}, {SqlRow.Val3}, {SqlRow.Val4}]";
+                    case 3:
+                        return $"  [new Date({Date.Year}, {Date.Month - 1}, {Date.Day}), {SqlRow.Val1}, {SqlRow.Val2}, {SqlRow.Val3}]";
+                    case 2:
+                        return $"  [new Date({Date.Year}, {Date.Month - 1}, {Date.Day}), {SqlRow.Val1}, {SqlRow.Val2}]";
+                    case 1:
+                    default:
+                        return $"  [new Date({Date.Year}, {Date.Month - 1}, {Date.Day}), {SqlRow.Val1}]";
+
+                }
+
+
             }
         }
     }
