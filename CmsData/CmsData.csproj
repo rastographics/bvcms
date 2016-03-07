@@ -401,6 +401,7 @@
     <Compile Include="API\QueryFunctions\Attendance.cs" />
     <Compile Include="API\QueryFunctions\Contributions.cs" />
     <Compile Include="API\QueryFunctions\Query.cs" />
+    <Compile Include="Classes\ExtraValues\NewStandard.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMData.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMHelper.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMMessage.cs" />

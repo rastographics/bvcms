@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.IO;
@@ -26,7 +27,7 @@ namespace CmsData
             ep.AddSheet(dt, filename, useTable);
         }
 
-        public static void AddSheet(this ExcelPackage ep, DataTable dt, string filename, bool useTable = false)
+        public static ExcelWorksheet AddSheet(this ExcelPackage ep, DataTable dt, string filename, bool useTable = false)
         {
             var sheetname = Path.GetFileNameWithoutExtension(filename);
             var ws = ep.Workbook.Worksheets.Add(sheetname);
@@ -94,6 +95,7 @@ namespace CmsData
                 else
                     colrange.AutoFitColumns();
             }
+            return ws;
         }
     }
 }

@@ -1317,6 +1317,20 @@ namespace CmsData
             }
             return c.Id;
         }
+        public int FetchOrCreatePositionId(string name)
+        {
+            if (!name.HasValue())
+                return 0;
+            var familyPosition = FamilyPositions.SingleOrDefault(pp => pp.Description == name);
+            if (familyPosition == null)
+            {
+                var max = FamilyPositions.Max(mm => mm.Id) + 10;
+                familyPosition = new FamilyPosition() { Id = max, Description = name, Code = name.Truncate(20) };
+                FamilyPositions.InsertOnSubmit(familyPosition);
+                SubmitChanges();
+            }
+            return familyPosition.Id;
+        }
 
         public ContributionFund FetchOrCreateFund(string Description)
         {
