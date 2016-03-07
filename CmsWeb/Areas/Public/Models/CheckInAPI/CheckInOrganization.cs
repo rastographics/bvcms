@@ -1,10 +1,12 @@
 ﻿using System;
 using UtilityExtensions;
 
-namespace CmsWeb.Areas.Public.Models.CheckInAPI
+namespace CmsWeb.CheckInAPI
 {
     public class CheckInOrganization
     {
+        public int peopleID = 0;
+
         public int id;
         public string name;
         public string leader;
@@ -16,6 +18,45 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPI
 
         public DateTime? birthdayStart;
         public DateTime? birthdayEnd;
+
+        public bool member = false;
+        public bool checkedIn = false;
+
+        public CheckInOrganization()
+        {
+        }
+
+        public CheckInOrganization(CmsData.View.CheckinFamilyMember familyMember, int day, int tzOffset)
+        {
+            peopleID = familyMember.Id ?? 0;
+
+            id = familyMember.OrgId.Value;
+            name = familyMember.OrgName;
+            leader = familyMember.Leader;
+            member = familyMember.MemberVisitor == "M";
+
+            checkedIn = familyMember.CheckedIn.Value;
+            //labels = familyMember.NumLabels.Value;
+
+            if (familyMember.Hour.HasValue)
+            {
+                hour = familyMember.Hour.Value;
+
+                var theirTime = DateTime.Now.AddHours(tzOffset);
+
+                if (DateTime.Now.DayOfWeek.ToInt() != day)
+                {
+                    int dayDiff = day - DateTime.Now.DayOfWeek.ToInt();
+
+                    if (dayDiff < 0)
+                        theirTime = theirTime.AddDays(7 + dayDiff);
+                    else
+                        theirTime = theirTime.AddDays(dayDiff);
+                }
+
+                leadTime = (int)familyMember.Hour.Value.Subtract(theirTime).TotalMinutes;
+            }
+        }
 
         public void adjustLeadTime(int day, int tzOffset)
         {
