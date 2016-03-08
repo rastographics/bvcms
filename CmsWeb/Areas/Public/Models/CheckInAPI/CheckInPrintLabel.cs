@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using System.Xml;
 
-namespace CmsWeb.Areas.Public.Models.CheckInAPI
+namespace CmsWeb.CheckInAPI
 {
     public class CheckInPrintLabel
     {

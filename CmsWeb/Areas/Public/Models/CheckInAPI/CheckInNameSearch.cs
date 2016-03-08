@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using UtilityExtensions;
+﻿using UtilityExtensions;
 
-namespace CmsWeb.Areas.Public.Models.CheckInAPI
+namespace CmsWeb.CheckInAPI
 {
     public class CheckInNameSearch
     {

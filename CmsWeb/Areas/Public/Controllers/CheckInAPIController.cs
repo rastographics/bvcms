@@ -1,6 +1,5 @@
 ﻿using CmsData;
 using CmsData.Codes;
-using CmsWeb.Areas.Public.Models.CheckInAPI;
 using CmsWeb.CheckInAPI;
 using CmsWeb.MobileAPI;
 using CmsWeb.Models;
@@ -263,6 +262,115 @@ namespace CmsWeb.Areas.Public.Controllers
                 mp.Add(new CheckInPerson().populate(person));
                 br.data = SerializeJSON(mp, dataIn.version);
             }
+
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult FetchImage(string data)
+        {
+            // Authenticate first
+            if (!Auth())
+                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+            CheckInFetchImage cifi = JsonConvert.DeserializeObject<CheckInFetchImage>(dataIn.data);
+
+            BaseMessage br = new BaseMessage();
+            if (cifi.id == 0) return br.setData("The ID for the person cannot be set to zero");
+
+            br.data = "The picture was not found.";
+
+            var person = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == cifi.id);
+
+            if (person.PictureId != null)
+            {
+                ImageData.Image image = null;
+
+                switch (cifi.size)
+                {
+                    case 0: // 50 x 50
+                    image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId);
+                    break;
+
+                    case 1: // 120 x 120
+                    image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId);
+                    break;
+
+                    case 2: // 320 x 400
+                    image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.MediumId);
+                    break;
+
+                    case 3: // 570 x 800
+                    image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.LargeId);
+                    break;
+
+                }
+
+                if (image != null)
+                {
+                    br.data = Convert.ToBase64String(image.Bits);
+                    br.count = 1;
+                    br.setNoError();
+                }
+            }
+
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult SaveImage(string data)
+        {
+            // Authenticate first
+            if (!Auth())
+                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+            CheckInSaveImage cisi = JsonConvert.DeserializeObject<CheckInSaveImage>(dataIn.data);
+
+            BaseMessage br = new BaseMessage();
+
+            var imageBytes = Convert.FromBase64String(cisi.image);
+
+            var person = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == cisi.id);
+
+            if (person.Picture != null)
+            {
+                if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId) != null)
+                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId));
+
+                if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId) != null)
+                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId));
+
+                if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId) != null)
+                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.MediumId));
+
+                if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId) != null)
+                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.LargeId));
+
+                person.Picture.ThumbId = ImageData.Image.NewImageFromBits(imageBytes, 50, 50).Id;
+                person.Picture.SmallId = ImageData.Image.NewImageFromBits(imageBytes, 120, 120).Id;
+                person.Picture.MediumId = ImageData.Image.NewImageFromBits(imageBytes, 320, 400).Id;
+                person.Picture.LargeId = ImageData.Image.NewImageFromBits(imageBytes).Id;
+            }
+            else
+            {
+                var newPicture = new Picture();
+
+                newPicture.ThumbId = ImageData.Image.NewImageFromBits(imageBytes, 50, 50).Id;
+                newPicture.SmallId = ImageData.Image.NewImageFromBits(imageBytes, 120, 120).Id;
+                newPicture.MediumId = ImageData.Image.NewImageFromBits(imageBytes, 320, 400).Id;
+                newPicture.LargeId = ImageData.Image.NewImageFromBits(imageBytes).Id;
+
+                person.Picture = newPicture;
+            }
+
+            DbUtil.Db.SubmitChanges();
+
+            br.setNoError();
+            br.data = "Image updated";
+            br.id = cisi.id;
+            br.count = 1;
 
             return br;
         }

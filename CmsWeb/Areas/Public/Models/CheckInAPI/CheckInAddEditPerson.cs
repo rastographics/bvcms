@@ -1,8 +1,7 @@
 ﻿using System;
-using CmsData.Codes;
 using UtilityExtensions;
 
-namespace CmsWeb.Areas.Public.Models.CheckInAPI
+namespace CmsWeb.CheckInAPI
 {
     public class CheckInAddEditPerson
     {

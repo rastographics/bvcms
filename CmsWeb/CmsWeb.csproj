@@ -472,6 +472,7 @@
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInFamily.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInFamilyInfo.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInFamilySearch.cs" />
+    <Compile Include="Areas\Public\Models\CheckInAPI\CheckInFetchImage.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInInformation.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInJoinOrg.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInLabelFormat.cs" />
@@ -479,9 +480,9 @@
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInNumberSearch.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInOrganization.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInFamilyMember.cs" />
-    <Compile Include="Areas\Public\Models\CheckInAPI\CheckInFamilyMemberOrg.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInPerson.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInPrintLabel.cs" />
+    <Compile Include="Areas\Public\Models\CheckInAPI\CheckInSaveImage.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInSettingsEntry.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileCampus.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileFloor.cs" />

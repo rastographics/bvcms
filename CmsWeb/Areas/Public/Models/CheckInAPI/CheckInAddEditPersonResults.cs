@@ -1,4 +1,4 @@
-﻿namespace CmsWeb.Areas.Public.Models.CheckInAPI
+﻿namespace CmsWeb.CheckInAPI
 {
     public class CheckInAddEditPersonResults
     {
