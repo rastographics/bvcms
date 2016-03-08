@@ -524,6 +524,47 @@ namespace CmsData
             return !db.OrganizationExtras.Any(ee => ee.Field == newfield && ee.Type != type);
         }
 
+        public static void AddEditExtraValue(CMSDataContext db, int id, string field, string value)
+        {
+            if (!value.HasValue())
+                return;
+            var ev = GetExtraValue(db, id, field);
+            ev.StrValue = value;
+            ev.TransactionTime = DateTime.Now;
+        }
+        public static void AddEditExtraData(CMSDataContext db, int id, string field, string value)
+        {
+            if (!value.HasValue())
+                return;
+            var ev = GetExtraValue(db, id, field);
+            ev.Data = value;
+            ev.TransactionTime = DateTime.Now;
+        }
+        public static void AddEditExtraDate(CMSDataContext db, int id, string field, DateTime? value)
+        {
+            if (!value.HasValue)
+                return;
+            var ev = GetExtraValue(db, id, field);
+            ev.DateValue = value;
+            ev.TransactionTime = DateTime.Now;
+        }
+        public static void AddEditExtraInt(CMSDataContext db, int id, string field, int? value)
+        {
+            if (!value.HasValue)
+                return;
+            var ev = GetExtraValue(db, id, field);
+            ev.IntValue = value;
+            ev.TransactionTime = DateTime.Now;
+        }
+        public static void AddEditExtraBool(CMSDataContext db, int id, string field, bool? value)
+        {
+            if (!value.HasValue)
+                return;
+            var ev = GetExtraValue(db, id, field);
+            ev.BitValue = value;
+            ev.TransactionTime = DateTime.Now;
+        }
+
         private int? regLimitCount;
         public int RegLimitCount(CMSDataContext db)
         {
