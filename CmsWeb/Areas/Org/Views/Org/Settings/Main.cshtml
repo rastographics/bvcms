@@ -29,11 +29,19 @@
                 @Html.DisplayFor(m => m.IsBibleFellowshipOrg)
             </div>
             <div class="col-sm-12 col-md-12 col-lg-12">
-                <div class="form-group">
-                    <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Programs & Divisions" data-content="Use this link to manage the divisions this organization belongs to. A dialog box will pop up."><i class="fa fa-info-circle"></i></a>&nbsp;
-                    <label for="name" class="control-label">Programs & Divisions</label>
-                    <a id="divisionlist" href="/SearchDivisions/@Model.Id" data-refresh="/Org/DivisionList/@Model.Id">@Html.Partial("Other/DivisionList", OrganizationModel.Divisions(Model.Id))</a>
-                </div>
+              <div class="form-group">
+                @if (User.IsInRole("Edit"))
+                {
+                <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Programs & Divisions" data-content="Use this link to manage the divisions this organization belongs to. A dialog box will pop up."><i class="fa fa-info-circle"></i></a>@:&nbsp;
+                <label for="name" class="control-label">Programs & Divisions</label>
+                <a id="divisionlist" href="/SearchDivisions/@Model.Id" data-refresh="/Org/DivisionList/@Model.Id">@Html.Partial("Other/DivisionList", OrganizationModel.Divisions(Model.Id))</a>
+                }
+                else
+                {
+                  <label for="name" class="control-label">Programs & Divisions</label>@:&nbsp;
+                  @Html.Partial("Other/DivisionList", OrganizationModel.Divisions(Model.Id))
+                }
+              </div>
                 <br />
             </div>
             <div class="col-sm-12 col-md-12 col-lg-12">

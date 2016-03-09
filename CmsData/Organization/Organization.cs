@@ -311,14 +311,14 @@ namespace CmsData
         public static Organization FetchOrCreateOrganization(CMSDataContext db, int divid, string organization)
         {
             var o = db.LoadOrganizationByName(organization);
-            if (o == null)
+            if(o == null || o.DivisionId != divid)
                 return CreateOrganization(db, divid, organization);
             return o;
         }
         public static Organization FetchOrCreateOrganization(CMSDataContext db, Division division, string organization)
         {
             var o = db.LoadOrganizationByName(organization);
-            if (o == null)
+            if(o == null || o.DivisionId != division.Id)
                 return CreateOrganization(db, division, organization);
             return o;
         }
