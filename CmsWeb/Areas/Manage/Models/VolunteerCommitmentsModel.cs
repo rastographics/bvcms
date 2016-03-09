@@ -74,7 +74,9 @@ namespace CmsWeb.Areas.Manage.Models
 //			times = from ts in Regsettings.TimeSlots.list
 //					orderby ts.DayOfWeek, ts.Time
 //					select ts.Datetime(Sunday);
-		    TimeSlots = Regsettings.TimeSlots.list;
+		    TimeSlots = (from ts in Regsettings.TimeSlots.list
+                        orderby ts.DayOfWeek, ts.Time
+                        select ts).ToList();
 
 			IsLeader = OrganizationMember.VolunteerLeaderInOrg(DbUtil.Db, id);
 		}

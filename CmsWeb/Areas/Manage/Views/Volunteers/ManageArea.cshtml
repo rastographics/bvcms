@@ -8,147 +8,147 @@
 @Html.Hidden("OrgId", Model.OrgId)
 @Html.Hidden("SortByWeek", Model.SortByWeek)
 <table>
-    <tr>
-        <td class="top">
-            <table id="month">
-                <thead>
-                    <tr>
-                        <th>Week</th>
-                        @foreach (var t in Model.TimeSlots)
+  <tr>
+    <td class="top">
+      <table id="month">
+        <thead>
+          <tr>
+            <th>Week</th>
+            @foreach (var t in Model.TimeSlots)
             {
-                            <th>@t.Description<br />@t.Datetime().ToString(DayHourFmt)</th>
-                        }
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="middle" class="center">All Weeks</td>
-                        @foreach (var t in Model.TimeSlots)
+                <th>@t.Description<br />@t.Datetime().ToString(DayHourFmt)</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="middle" class="center">All Weeks</td>
+            @foreach (var t in Model.TimeSlots)
             {
-                            <td><div class="drop day" target="week" week="0" time="@t.Datetime()">target</div></td>
-                        }
-                    </tr>
-                    @for (var wk = 1; wk <= 5; wk++)
-                    {
-                        <tr>
-                            <td class="middle" class="center">Week @wk</td>
-                            @foreach (var t in Model.TimeSlots)
-                            {
-                                <td><div class="drop day" target="week" week="@wk" time="@t.Datetime()">target</div></td>
-                            }
-                        </tr>
-                    }
-                <thead>
-                    <tr>
-                        <th> <a id="SortIt" href="#">@(Model.SortByWeek ? "Sort by Date" : "Sort by Week #")</a> </th>
-                        @foreach (var t in Model.TimeSlots)
-            {
-                            <th>@t.Datetime().ToString(DayHourFmt)</th>
-                        }
-                    </tr>
-                </thead>
-                @foreach (var w in Model.FetchSlotWeeks())
+                <td><div class="drop day" target="week" week="0" time="@t.Datetime()">target</div></td>
+            }
+          </tr>
+          @for (var wk = 1; wk <= 5; wk++)
+          {
+              <tr>
+                <td class="middle" class="center">Week @wk</td>
+                @foreach (var t in Model.TimeSlots)
                 {
-                    <tr class="wk-@w[0].Week">
-                        <td class="top" class="center">
-                            <p>
-                                <span class="date">
-                                    @w[0].Sunday.ToShortDateString()<br />
-                                    Week @w[0].Week
-                                </span>
-                            </p><div class="day"></div>
-                        </td>
-                        @foreach (var t in w)
-                        {
-                            <td>
-                                <p class="date">
-                                    @if (t.MeetingId > 0)
-                                    {
-                                        @Helper.AnchorLink($"Rollsheet ({t.Count}/{t.Limit})", "/Reports/RollsheetForMeeting/" + t.MeetingId, target: "_blank")<br />
+                    <td><div class="drop day" target="week" week="@wk" time="@t.Datetime()">target</div></td>
+                }
+              </tr>
+          }
+        <thead>
+          <tr>
+            <th> <a id="SortIt" href="#">@(Model.SortByWeek ? "Sort by Date" : "Sort by Week #")</a> </th>
+            @foreach (var t in Model.TimeSlots)
+            {
+                <th>@t.Datetime().ToString(DayHourFmt)</th>
+            }
+          </tr>
+        </thead>
+        @foreach (var w in Model.FetchSlotWeeks())
+        {
+            <tr class="wk-@w[0].Week">
+              <td class="top" class="center">
+                <p>
+                  <span class="date">
+                    @w[0].Sunday.ToShortDateString()<br />
+                    Week @w[0].Week
+                  </span>
+                </p><div class="day"></div>
+              </td>
+              @foreach (var t in w)
+              {
+                  <td>
+                    <p class="date">
+                      @if (t.MeetingId > 0)
+                      {
+                          @Helper.AnchorLink($"Rollsheet ({t.Count}/{t.Limit})", "/Reports/RollsheetForMeeting/" + t.MeetingId, target: "_blank")<br />
                                         @Helper.AnchorLink("Email", "/Volunteers/EmailSlot/" + t.MeetingId, target: "meeting")<br />
                                         @Helper.AnchorLink("Meeting", "/Meeting/" + t.MeetingId, target: "meeting")<br />
                                         @Helper.AnchorLink("Request Volunteers", $"/Volunteers/Request/{t.MeetingId}/{t.Limit}", target: "_blank", style: "volreq")
-                                    }
-                                    else
-                                    {
-                                        @Helper.AnchorLink($"Request Volunteers ({t.Limit})", $"/Volunteers/Request0/{t.ticks}/{Model.OrgId}/{t.Limit}", target: "_blank", style: "volreq")
-                                    }
-                                </p>
-                                @foreach (var p in t.OrderedPersons())
-                                {
-                                    if (Model.IsLeader)
-                                    {
-                                        <div pid="@p.PeopleId" mid="@t.MeetingId" class="selectable commit-@p.Commitment @(p.OtherCommitments ? "conflict" : "")" source="registered" title="@p.CommitmentText">@p.Name</div>
-                                    }
-                                    else
-                                    {
-                                        <div>@Helper.AnchorLink(p.Name, "/Person2/" + p.PeopleId)</div>
-                                    }
-                                }
-                                <div class="drop day" target="meeting" time="@t.Time">target</div>
-                            </td>
-                        }
-                    </tr>
-                }
-                </tbody>
-            </table>
-        </td>
-        <td>&nbsp;</td>
-        <td class="top">
-            @if (Model.IsLeader)
+                      }
+                      else
+                      {
+                          @Helper.AnchorLink($"Request Volunteers ({t.Limit})", $"/Volunteers/Request0/{t.ticks}/{Model.OrgId}/{t.Limit}", target: "_blank", style: "volreq")
+                      }
+                    </p>
+                    @foreach (var p in t.OrderedPersons())
+                    {
+                      if (Model.IsLeader)
+                      {
+                            <div pid="@p.PeopleId" mid="@t.MeetingId" class="selectable commit-@p.Commitment @(p.OtherCommitments ? "conflict" : "")" source="registered" title="@p.CommitmentText">@p.Name</div>
+                      }
+                      else
+                      {
+                            <div>@Helper.AnchorLink(p.Name, "/Person2/" + p.PeopleId)</div>
+                      }
+                    }
+                    <div class="drop day" target="meeting" time="@t.Time">target</div>
+                  </td>
+              }
+            </tr>
+        }
+        </tbody>
+      </table>
+    </td>
+    <td>&nbsp;</td>
+    <td class="top">
+      @if (Model.IsLeader)
             {
+          <p>
+            @if (User.IsInRole("Edit"))
+            {
+                <a href="@Util2.Org/Reminders/@Model.OrgId" id="sendreminders" class="btn btn-default"><i class="fa fa-envelope-o"></i> Email Reminders</a>
+            }
+            else
+            {
+                <a enabled="false">Email Reminders</a>
+            }
+            @Html.CheckBox("emailall") Email All (default next 7 days)
+          </p>
                 <p>
-                    @if (User.IsInRole("Edit"))
-                    {
-                        <a href="@Util2.Org/Reminders/@Model.OrgId" id="sendreminders" class="btn btn-default"><i class="fa fa-envelope-o"></i> Email Reminders</a>
-                    }
-                    else
-                    {
-                        <a enabled="false">Email Reminders</a>
-                    }
-                    @Html.CheckBox("emailall") Email All (default next 7 days)
-                </p>
-                <p>
-                    Sub-Group Filters<br />
-                    @Html.DropDownList("sg1", Model.SmallGroups(), new { @class = "smallgroup form-control" })<br />
-                    @Html.DropDownList("sg2", Model.SmallGroups(), new { @class = "smallgroup form-control" })
+                  Sub-Group Filters<br />
+                  @Html.DropDownList("sg1", Model.SmallGroups(), new { @class = "smallgroup form-control" })<br />
+                  @Html.DropDownList("sg2", Model.SmallGroups(), new { @class = "smallgroup form-control" })
                 </p>
                 <div class="drop day" target="clear" week="0" time="1-1-1000" style="padding:5px;height:2em;border:2px solid black;">target here to remove commitments</div>
                 <h4><em>Select header items in blue below, or a person, then click a target</em></h4>
-                var vlist = Model.Volunteers().ToList();
-                <div class="volunteers">
-                    <div class="selectable" source="all">
-                        <h3>All Volunteers</h3>
+        var vlist = Model.Volunteers().ToList();
+          <div class="volunteers">
+            <div class="selectable" source="all">
+              <h3>All Volunteers</h3>
+            </div>
+            @if (vlist.Any(vv => vv.Conflicts == true))
+            {
+                <div class="selectable" source="commits"><h3>With Conflicts</h3></div>
+              foreach (var v in vlist.Where(vv => vv.Conflicts == true).OrderBy(vv => vv.Name))
+              {
+                    <div class="selectable @(v.Conflicts == true ? "conflict" : "")" source="person" pid="@v.PeopleId">
+                      @v.Name
+                      @Helper.AnchorLink("registration page", $"/OnlineReg/ManageVolunteer/{Model.OrgId}/{v.PeopleId}", target: "committments")
                     </div>
-                    @if (vlist.Any(vv => vv.Conflicts == true))
-                    {
-                        <div class="selectable" source="commits"><h3>With Conflicts</h3></div>
-                        foreach (var v in vlist.Where(vv => vv.Conflicts == true).OrderBy(vv => vv.Name))
-                        {
-                            <div class="selectable @(v.Conflicts == true ? "conflict" : "")" source="person" pid="@v.PeopleId">
-                                @v.Name
-                                @Helper.AnchorLink("registration page", $"/OnlineReg/ManageVolunteer/{Model.OrgId}/{v.PeopleId}", target: "committments")
-                            </div>
-                        }
-                    }
-                    <div class="selectable" source="commits"><h3>With Commitments</h3></div>
-                    @foreach (var v in vlist.Where(vv => vv.Commits == true && vv.Conflicts != true).OrderBy(vv => vv.Name))
-                    {
-                        <div class="selectable @(v.Conflicts == true ? "conflict" : "")" source="person" pid="@v.PeopleId">
-                            @v.Name
-                            @Helper.AnchorLink("registration page", $"/OnlineReg/ManageVolunteer/{Model.OrgId}/{v.PeopleId}", target: "committments")
-                        </div>
-                    }
-                    <div class="selectable" source="nocommits"><h3>With No Commitments</h3></div>
-                    @foreach (var v in vlist.Where(vv => vv.Commits != true).OrderBy(vv => vv.Name))
-                    {
-                        <div class="selectable" source="person" pid="@v.PeopleId">
-                            <span class="@(v.Conflicts == true ? "conflict" : "")">@v.Name</span>
-                            @Helper.AnchorLink("registration page", $"/OnlineReg/ManageVolunteer/{Model.OrgId}/{v.PeopleId}", target: "committments")
-                        </div>
-                    }
+              }
+            }
+            <div class="selectable" source="commits"><h3>With Commitments</h3></div>
+            @foreach (var v in vlist.Where(vv => vv.Commits == true && vv.Conflicts != true).OrderBy(vv => vv.Name))
+            {
+                <div class="selectable @(v.Conflicts == true ? "conflict" : "")" source="person" pid="@v.PeopleId">
+                  @v.Name
+                  @Helper.AnchorLink("registration page", $"/OnlineReg/ManageVolunteer/{Model.OrgId}/{v.PeopleId}", target: "committments")
                 </div>
             }
-        </td>
-    </tr>
+            <div class="selectable" source="nocommits"><h3>With No Commitments</h3></div>
+            @foreach (var v in vlist.Where(vv => vv.Commits != true).OrderBy(vv => vv.Name))
+            {
+                <div class="selectable" source="person" pid="@v.PeopleId">
+                  <span class="@(v.Conflicts == true ? "conflict" : "")">@v.Name</span>
+                  @Helper.AnchorLink("registration page", $"/OnlineReg/ManageVolunteer/{Model.OrgId}/{v.PeopleId}", target: "committments")
+                </div>
+            }
+          </div>
+      }
+    </td>
+  </tr>
 </table>
