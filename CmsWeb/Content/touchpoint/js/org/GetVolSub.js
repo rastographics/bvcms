@@ -15,17 +15,11 @@
     if (jQuery().transpose) {
         $(".wrapper .item").transpose();
     }
-    $("#selectallsame").click(function () {
-        if ($(this).attr("checked"))
-            $("input[name='pids']:visible", "#allsame").attr('checked', true);
-        else
-            $("input[name='pids']:visible", "#allsame").removeAttr('checked');
+    $("body").on("click", "#selectallsame", function () {
+        $("input[name='pids']:visible", "#allsame").prop('checked', $(this).prop("checked"));
     });
-    $("#selectallothers").click(function() {
-        if ($(this).attr("checked"))
-            $("input[name='pids']:visible", "#allothers").attr('checked', true);
-        else
-            $("input[name='pids']:visible", "#allothers").removeAttr('checked');
+    $("body").on("click", "#selectallothers", function () {
+        $("input[name='pids']:visible", "#allothers").prop('checked', $(this).prop("checked"));
     });
     $("#submitit").click(function() {
         this.value = 'Sending, please wait...';
