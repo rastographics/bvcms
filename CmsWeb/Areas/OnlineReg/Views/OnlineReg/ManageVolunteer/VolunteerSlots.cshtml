@@ -14,7 +14,7 @@
     <tr>
       <td><br /><a href="#" id="sortday" title="Sort Chronologically">Sunday</a></td>
       <td><br /><a href="#" id="sortweek" title="Sort by Week of Month">Week #</a></td>
-      @foreach (var s in Model.Setting.TimeSlots.list)
+      @foreach (var s in Model.Setting.TimeSlots.list.OrderBy(vv => vv.Datetime()))
       {
         <td class="center">@s.Description<br />@s.Datetime().ToString("ddd h:mm tt")<br /> </td>
       }
