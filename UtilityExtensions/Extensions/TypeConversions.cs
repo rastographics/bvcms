@@ -163,7 +163,7 @@ namespace UtilityExtensions
         }
         public static string ToSuitableId(this string s)
         {
-            var v = Regex.Replace(s, @"\[|\]|\s|\(|\)|,|=", "_").Replace("__", "_").TrimEnd('_');
+            var v = Regex.Replace(s.Replace('/','-'), @"\[|\]|\s|\(|\)|,|=|/", "_").Replace("__", "_").TrimEnd('_');
             var chars = v.ToCharArray();
             var sb = new StringBuilder();
             for (var i = 0; i < chars.Length; i++)
@@ -176,6 +176,12 @@ namespace UtilityExtensions
                 sb.Append(chars[i]);
             }
             return sb.ToString();
+        }
+
+        public static string ToSuitableEvName(this string s)
+        {
+            var a = s.ToSuitableId().Split('_');
+            return string.Join("", a.Select(vv => vv.ToProper()));
         }
         public static string ToCode(this Guid guid)
         {

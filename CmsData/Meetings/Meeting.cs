@@ -98,13 +98,13 @@ namespace CmsData
             ev.TransactionTime = DateTime.Now;
         }
 
-        public void AddEditExtraData(string field, string value)
+        public void AddEditExtraData(string field, string value, DateTime? dt)
         {
             if (!value.HasValue())
                 return;
             var ev = GetExtraValue(field);
             ev.Data = value;
-            ev.TransactionTime = DateTime.Now;
+            ev.TransactionTime = dt ?? DateTime.Now;
         }
 
         public void AddEditExtraDate(string field, DateTime? value)

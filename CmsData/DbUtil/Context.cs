@@ -1331,6 +1331,36 @@ namespace CmsData
             }
             return familyPosition.Id;
         }
+        public int FetchOrCreateRoleId(string name)
+        {
+            if (!name.HasValue())
+                return 0;
+            var role = Roles.SingleOrDefault(pp => pp.RoleName == name);
+            if (role == null)
+            {
+                var max = Roles.Max(mm => mm.RoleId) + 10;
+                role = new Role() { RoleId = max, RoleName = name };
+                Roles.InsertOnSubmit(role);
+                SubmitChanges();
+            }
+            return role.RoleId;
+        }
+        public int FetchOrCreateOrgTypeId(string name)
+        {
+            if (!name.HasValue())
+                return 0;
+            var orgtype = OrganizationTypes.SingleOrDefault(pp => pp.Description == name);
+            if (orgtype == null)
+            {
+                var nextid = OrganizationTypes.Any()
+                    ? OrganizationTypes.Max(mm => mm.Id) + 10
+                    : 10;
+                orgtype = new OrganizationType() { Id = nextid, Description = name, Code = name.Truncate(20) };
+                OrganizationTypes.InsertOnSubmit(orgtype);
+                SubmitChanges();
+            }
+            return orgtype.Id;
+        }
 
         public ContributionFund FetchOrCreateFund(string Description)
         {
