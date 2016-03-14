@@ -34,87 +34,91 @@
 </div>
 @section scripts
 {
-    <script type="text/javascript">
-        $(function() {
-            $("#Tag").change(function(ev) {
-                ev.preventDefault();
-                if ($("#Tag option:selected").val() == '(not specified)') {
-                    $("#count").text('');
-                    $('#warning').hide();
-                    return false;
-                }
-                var f = $(this).closest("form");
-                var q = f.serialize();
-                $.post("/Batch/UpdateFieldsCount/", q, function(ret) {
-                    $("#count").text(ret + " records will be updated.");
-                    $('#warning').show();
-                });
-                return false;
-            });
-
-            $("#Field").change(function(ev) {
-                ev.preventDefault();
-
-                if ($('#Field').val() === 'Drop All Enrollments') {
-                    $('#danger').show();
-                    $('#lookup-value-selection').html('');
-                    return true;
-                } else if ($('#Field').val() === 'New OrgLeadersOnly') {
-                    $('#danger').hide();
-                    $('#lookup-value-selection').html('');
-                    return true;
-                } else {
-                    $('#danger').hide();
-                }
-
-                var f = $(this).closest("form");
-                var q = f.serialize();
-                $.post("/Batch/UpdateLookupValueSelection/", q, function(ret) {
-                    $('#lookup-value-selection').html(ret).ready(function() {
-                        $.InitializeDateElements();
-                    });
-                });
-                return false;
-            });
-
-            $('body').on('change', '#GradeSelection', function () {
-                var gradeSelection = $("#GradeSelection").val();
-                if (gradeSelection == 'YYYY') {
-                    $("#GraduationSection").show();
-                    $('#NewValue').val('');
-                } else {
-                    $("#GraduationSection").hide();
-                    $('#NewValue').val(gradeSelection);
-                }
-            });
-
-            $('body').on('blur', '#GraduationYear', function () {
-                $('#NewValue').val($("#GraduationYear").val());
-            });
-
-            $('#run-update').click(function(ev) {
-                ev.preventDefault();
-
-                if ($("#Tag option:selected").val() == '(not specified)' || $("#Field option:selected").val() == '(not specified)') {
-                    swal("Error!", "Both tag and field are required before running update.", "error");
-                } else {
-                    var f = $('#uform');
-                    console.log(f);
-                    swal({
-                            title: "Are you sure?",
-                            text: $("#count").text() + " There is no undo.",
-                            type: "warning",
-                            showCancelButton: true,
-                            confirmButtonClass: "btn-warning",
-                            confirmButtonText: "Yes, run update!",
-                            closeOnConfirm: true
-                        },
-                        function() {
-                            f.submit();
-                        });
-                }
-
-            });
+  <script type="text/javascript">
+    $(function() {
+      $("#Tag").change(function(ev) {
+        ev.preventDefault();
+        if ($("#Tag option:selected").val() == '(not specified)') {
+          $("#count").text('');
+          $('#warning').hide();
+          return false;
+        }
+        var f = $(this).closest("form");
+        var q = f.serialize();
+        $.post("/Batch/UpdateFieldsCount/", q, function(ret) {
+          $("#count").text(ret + " records will be updated.");
+          $('#warning').show();
         });
-    </script>
+        return false;
+      });
+
+      $("#Field").change(function(ev) {
+        ev.preventDefault();
+
+        if ($('#Field').val() === 'Remove Address') {
+          $('#danger').hide();
+          $('#lookup-value-selection').html('');
+          return true;
+        } else if ($('#Field').val() === 'Drop All Enrollments') {
+          $('#danger').show();
+          $('#lookup-value-selection').html('');
+          return true;
+        } else if ($('#Field').val() === 'New OrgLeadersOnly') {
+          $('#danger').hide();
+          $('#lookup-value-selection').html('');
+          return true;
+        } else {
+          $('#danger').hide();
+        }
+
+        var f = $(this).closest("form");
+        var q = f.serialize();
+        $.post("/Batch/UpdateLookupValueSelection/", q, function(ret) {
+          $('#lookup-value-selection').html(ret).ready(function() {
+            $.InitializeDateElements();
+          });
+        });
+        return false;
+      });
+
+      $('body').on('change', '#GradeSelection', function() {
+        var gradeSelection = $("#GradeSelection").val();
+        if (gradeSelection == 'YYYY') {
+          $("#GraduationSection").show();
+          $('#NewValue').val('');
+        } else {
+          $("#GraduationSection").hide();
+          $('#NewValue').val(gradeSelection);
+        }
+      });
+
+      $('body').on('blur', '#GraduationYear', function() {
+        $('#NewValue').val($("#GraduationYear").val());
+      });
+
+      $('#run-update').click(function(ev) {
+        ev.preventDefault();
+
+        if ($("#Tag option:selected").val() == '(not specified)' || $("#Field option:selected").val() == '(not specified)') {
+          swal("Error!", "Both tag and field are required before running update.", "error");
+        } else {
+          var f = $('#uform');
+          console.log(f);
+          swal({
+              title: "Are you sure?",
+              text: $("#count").text() + " There is no undo.",
+              type: "warning",
+              showCancelButton: true,
+              confirmButtonClass: "btn-warning",
+              confirmButtonText: "Yes, run update!",
+              closeOnConfirm: true
+            },
+            function() {
+              f.submit();
+            });
+        }
+
+      });
+    });
+  </script>
 }
