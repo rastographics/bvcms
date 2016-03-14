@@ -41,9 +41,9 @@ namespace CmsWeb.Models
                 "Do Not Mail",
                 "Drop Type",
                 "Drop All Enrollments",
+                "Electronic Statement",
                 "Employer",
                 "Entry Point",
-                "Electronic Statement",
                 "Envelope Options",
                 "Family Position",
                 "Gender",
@@ -56,6 +56,7 @@ namespace CmsWeb.Models
                 "New OrgLeadersOnly",
                 "Occupation",
                 "ReceiveSMS",
+                "Remove Address",
                 "School",
                 "Statement Options",
                 "Title"
@@ -217,6 +218,31 @@ namespace CmsWeb.Models
                         break;
                     case "ReceiveSMS":
                         p.ReceiveSMS = NewValue.ToBool();
+                        break;
+                    case "Remove Address":
+                        if (p.AddressTypeId == CmsData.Codes.AddressTypeCode.Personal)
+                        {
+                            var psb = new List<ChangeDetail>();
+                            p.UpdateValue(psb,"AddressLineOne", null);
+                            p.UpdateValue(psb,"AddressLineTwo", null);
+                            p.UpdateValue(psb,"CityName", null);
+                            p.UpdateValue(psb,"StateCode", null);
+                            p.UpdateValue(psb,"ZipCode", null);
+                            p.UpdateValue(psb,"ResCodeId", null);
+                            p.LogChanges(DbUtil.Db, psb);
+                        }
+                        else
+                        {
+                            var fsb = new List<ChangeDetail>();
+                            var f = p.Family;
+                            f.UpdateValue(fsb, "AddressLineOne", null);
+                            f.UpdateValue(fsb, "AddressLineTwo", null);
+                            f.UpdateValue(fsb, "CityName", null);
+                            f.UpdateValue(fsb, "StateCode", null);
+                            f.UpdateValue(fsb, "ZipCode", null);
+                            f.UpdateValue(fsb, "ResCodeId", null);
+                            f.LogChanges(DbUtil.Db, fsb, p.PeopleId);
+                        }
                         break;
                     case "School":
                         p.SchoolOther = NewValue;

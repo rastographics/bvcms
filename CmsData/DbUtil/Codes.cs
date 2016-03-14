@@ -7,6 +7,11 @@ using UtilityExtensions;
 
 namespace CmsData.Codes
 {
+    public static class AddressTypeCode
+    {
+        public const int Family = 10;
+        public const int Personal = 30;
+    }
     public class OriginCode
     {
         public const int Visit = 10;
