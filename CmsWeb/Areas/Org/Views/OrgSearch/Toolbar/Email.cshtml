@@ -1,12 +1,18 @@
 ﻿<ul class="dropdown-menu dropdown-menu-large dropdown-menu-right container bluebar-menu-col-1">
-    <li class="col-sm-12">
-        <ul>
-            <li class="dropdown-header">Email</li>
-            @if (User.IsInRole("Attendance"))
-            {
-                <li><a id="AttNotices" href="#"><span class="org-context">Email Attendance Notices</span></a></li>
-                <li><a id="ViewAttNotices" href="#"><span class="org-context">Preview Attendance Notices</span></a></li>
-            }
-        </ul>
-    </li>
+  <li class="col-sm-12">
+    <ul>
+      <li class="dropdown-header">Email</li>
+      @if (User.IsInRole("Attendance"))
+      {
+        <li>
+          <a id="AttNotices" href="#">
+            <span class="org-context">Email Attendance Notices</span></a>
+        </li>
+        <li>
+          <a id="ViewAttNotices" href="#">
+            <span class="org-context">Preview Attendance Notices</span></a>
+        </li>
+      }
+    </ul>
+  </li>
 </ul>

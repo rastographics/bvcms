@@ -16,9 +16,7 @@ using CmsData;
 using CmsData.Codes;
 using CmsData.Registration;
 using CmsData.View;
-using CmsWeb.Areas.Search.Controllers;
 using CmsWeb.Models;
-using DocumentFormat.OpenXml.Math;
 using MoreLinq;
 using Newtonsoft.Json;
 using UtilityExtensions;
@@ -156,6 +154,11 @@ namespace CmsWeb.Areas.Search.Models
         public EpplusResult OrgsMemberList()
         {
             var q = FetchOrgs();
+            if (Util2.OrgLeadersOnly)
+            {
+                var oids = DbUtil.Db.GetLeaderOrgIds(Util.UserPeopleId);
+                q = q.Where(oo => oids.Contains(oo.OrganizationId));
+            }
             return DbUtil.Db.CurrOrgMembers(string.Join(",", q.OrderBy(mm => mm.OrganizationName).Select(mm => mm.OrganizationId)))
                 .ToDataTable().ToExcel("OrgsMembers.xlsx");
         }
