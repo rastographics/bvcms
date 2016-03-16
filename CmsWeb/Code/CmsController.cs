@@ -38,9 +38,10 @@ namespace CmsWeb
             if (AccountController.TryImpersonate())
             {
                 var returnUrl = Request.QueryString["returnUrl"];
-                filterContext.Result = Redirect(returnUrl.HasValue()
-                    ? returnUrl
-                    : Request.RawUrl);
+                if (returnUrl.HasValue() && Url.IsLocalUrl(returnUrl))
+                    filterContext.Result = Redirect(returnUrl);
+                else
+                    filterContext.Result = Redirect(Request.RawUrl);
             }
         }
 

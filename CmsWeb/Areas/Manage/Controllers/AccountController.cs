@@ -141,7 +141,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 FormsAuthentication.SetAuthCookie(user, false);
                 AccountModel.SetUserInfo(user, Session);
-                if (returnUrl.HasValue())
+                if (returnUrl.HasValue() && Url.IsLocalUrl(returnUrl))
                     return Redirect(returnUrl);
                 return Redirect("/");
             }
@@ -214,7 +214,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             if (!m.ReturnUrl.HasValue())
                 if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access"))
                     return Redirect("/Person2/" + Util.UserPeopleId);
-            if (m.ReturnUrl.HasValue())
+            if (m.ReturnUrl.HasValue() && Url.IsLocalUrl(m.ReturnUrl))
                 return Redirect(m.ReturnUrl);
             return Redirect("/");
         }

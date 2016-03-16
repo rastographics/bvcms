@@ -2,7 +2,7 @@
 @model string
 <dl>
     <dt>@Html.DisplayNameFor(m => m)</dt>
-    <dd>@Html.Raw(Model.HasValue() ? Model : "&nbsp;")</dd>
+    <dd>@(Model.HasValue() ? Model : "&nbsp")</dd>
 </dl>
 @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
 {
