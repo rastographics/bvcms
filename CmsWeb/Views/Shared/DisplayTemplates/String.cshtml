@@ -1,8 +1,11 @@
-﻿@using UtilityExtensions
+﻿@using CsQuery.Output
+@using UtilityExtensions
 @model string
 <dl>
     <dt>@Html.DisplayNameFor(m => m)</dt>
-    <dd>@(Model.HasValue() ? Model : "&nbsp")</dd>
+  <dd>
+    @if (Model.HasValue()) { @Model } else { <text>&nbsp;</text> }
+  </dd>
 </dl>
 @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
 {
