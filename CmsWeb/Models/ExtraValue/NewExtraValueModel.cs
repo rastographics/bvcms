@@ -29,7 +29,7 @@ namespace CmsWeb.Models.ExtraValues
         [DisplayName("Type")]
         public CodeInfo ExtraValueType { get; set; }
 
-        [DisplayName("Checkboxes Prefix"), StringLength(4)]
+        [DisplayName("Checkboxes Prefix"), StringLength(12)]
         public string ExtraValueBitPrefix { get; set; }
 
         [DisplayName("Type")]
