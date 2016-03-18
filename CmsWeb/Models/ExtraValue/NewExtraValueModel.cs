@@ -58,9 +58,9 @@ namespace CmsWeb.Models.ExtraValues
 
         public object Hidden(string type)
         {
-            return type == AdhocExtraValueType.Value 
-                ? new { hide = "" } 
-                : new { hide = "hide" };
+            return type == AdhocExtraValueType.Value
+                ? new {hide = ""}
+                : new {hide = "hide"};
         }
 
         public bool RemoveAnyValue { get; set; }
@@ -74,6 +74,7 @@ namespace CmsWeb.Models.ExtraValues
                 return "";
             }
         }
+
         [DisplayName("Codes")]
         public string ExtraValueCodes { get; set; }
 
@@ -124,7 +125,10 @@ namespace CmsWeb.Models.ExtraValues
             ExtraValueTable = table;
             ExtraValueLocation = location;
         }
-        public NewExtraValueModel() { }
+
+        public NewExtraValueModel()
+        {
+        }
 
         public NewExtraValueModel(string table, string name)
         {
@@ -137,8 +141,12 @@ namespace CmsWeb.Models.ExtraValues
             var codes = string.Join("\n", f.Codes);
             switch (ExtraValueType.Value)
             {
-                case "Bits": ExtraValueCheckboxes = codes; break;
-                case "Code": ExtraValueCodes = codes; break;
+                case "Bits":
+                    ExtraValueCheckboxes = codes;
+                    break;
+                case "Code":
+                    ExtraValueCodes = codes;
+                    break;
             }
         }
 
@@ -329,6 +337,7 @@ Option 2
             }
             return null;
         }
+
         private string AddNewExtraValueDatums(IEnumerable<int> list)
         {
             foreach (var pid in list)
@@ -342,6 +351,7 @@ Option 2
             }
             return null;
         }
+
         private string AddNewExtraValueDates(IEnumerable<int> list)
         {
             foreach (var pid in list)
@@ -355,6 +365,7 @@ Option 2
             }
             return null;
         }
+
         private string AddNewExtraValueInts(IEnumerable<int> list)
         {
             foreach (var pid in list)
@@ -368,6 +379,7 @@ Option 2
             }
             return null;
         }
+
         private string AddNewExtraValueBools(IEnumerable<int> list)
         {
             foreach (var pid in list)
@@ -407,7 +419,7 @@ and PeopleId in (select PeopleId from TagPerson where Id = @id)
 
             if (RemoveAnyValue)
             {
-                cn.Execute(sql, new { name = ExtraValueName, id = tag.Id });
+                cn.Execute(sql, new {name = ExtraValueName, id = tag.Id});
                 DbUtil.LogActivity($"EV DeleteFromQuery {ExtraValueName}");
                 return;
             }
@@ -415,24 +427,24 @@ and PeopleId in (select PeopleId from TagPerson where Id = @id)
             {
                 case "Bit":
                     cn.Execute(sql + "and BitValue = @value",
-                        new { name = ExtraValueName, value = ExtraValueCheckbox, id = tag.Id });
+                        new {name = ExtraValueName, value = ExtraValueCheckbox, id = tag.Id});
                     break;
                 case "Code":
                     cn.Execute(sql + "and StrValue = @value",
-                        new { name = ExtraValueName, value = ExtraValueCheckbox, id = tag.Id });
+                        new {name = ExtraValueName, value = ExtraValueCheckbox, id = tag.Id});
                     break;
                 case "Text2":
                 case "Text":
                     cn.Execute(sql + "and Data = @value",
-                        new { name = ExtraValueName, value = ExtraValueTextArea, id = tag.Id });
+                        new {name = ExtraValueName, value = ExtraValueTextArea, id = tag.Id});
                     break;
                 case "Date":
                     cn.Execute(sql + "and Date = @value",
-                        new { name = ExtraValueName, value = ExtraValueDate, id = tag.Id });
+                        new {name = ExtraValueName, value = ExtraValueDate, id = tag.Id});
                     break;
                 case "Int":
                     cn.Execute(sql + "and IntValue = @value",
-                        new { name = ExtraValueName, value = ExtraValueInteger, id = tag.Id });
+                        new {name = ExtraValueName, value = ExtraValueInteger, id = tag.Id});
                     break;
             }
             DbUtil.LogActivity($"EV DeleteFromQuery {ExtraValueName} {AdhocExtraValueType.Value}");
@@ -441,16 +453,19 @@ and PeopleId in (select PeopleId from TagPerson where Id = @id)
         public void ConvertToStandard(string name)
         {
             //            var oldfields = StandardExtraValues.GetExtraValues().ToList();
-            var oldfields = CmsData.ExtraValue.Views.GetStandardExtraValues(DbUtil.Db, "People");
+            var oldfields = Views.GetStandardExtraValues(DbUtil.Db, "People");
             ExtraValue ev = null;
             List<string> codes = null;
-            var v = new CmsData.ExtraValue.Value { Name = name };
+            var v = new CmsData.ExtraValue.Value {Name = name};
             switch (ExtraValueTable)
             {
                 case "People":
                     ev = (from vv in DbUtil.Db.PeopleExtras
                           where vv.Field == name
                           select new ExtraValue(vv, null)).First();
+
+                    if (CreateExtraValueBits(name, ev, v))
+                        return;
 
                     //StandardExtraValues.Field bits = null;
                     var bits = oldfields.SingleOrDefault(ff => ff.Codes.Contains(name));
@@ -510,6 +525,27 @@ and PeopleId in (select PeopleId from TagPerson where Id = @id)
             i.view.Values.Add(v);
             i.views.Save(DbUtil.Db);
             DbUtil.LogActivity($"EV{ExtraValueTable} ConvertToStandard {name}");
+        }
+
+        private bool CreateExtraValueBits(string name, ExtraValue ev, CmsData.ExtraValue.Value v)
+        {
+            if (!name.Contains(":"))
+                return false;
+            var prefix = name.GetCsvToken(1, 2, ":");
+            var allbits = (from vv in DbUtil.Db.PeopleExtras
+                           where vv.Field.StartsWith($"{prefix}:")
+                           orderby vv.Field
+                           select vv.Field).Distinct().ToList();
+            if (allbits.Count <= 1)
+                return false;
+            v.Name = prefix;
+            v.Type = "Bits";
+            v.Codes = allbits;
+            var view = Views.GetViewsView(DbUtil.Db, ExtraValueTable, ExtraValueLocation);
+            view.view.Values.Add(v);
+            view.views.Save(DbUtil.Db);
+            DbUtil.LogActivity($"EV{ExtraValueTable} ConvertToStandard {name}");
+            return true;
         }
     }
 }
