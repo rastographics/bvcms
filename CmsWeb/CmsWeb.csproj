@@ -339,6 +339,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Areas\Finance\Models\BatchImport\IContributionBatchImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\Text2Give.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\MetropolitanImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\ChaseImporter.cs">
       <SubType>Code</SubType>

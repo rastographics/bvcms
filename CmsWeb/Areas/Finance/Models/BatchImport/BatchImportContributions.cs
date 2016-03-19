@@ -128,6 +128,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             if (subtext.Contains("Id,Date,Name,Donor Address,Donor City,Donor State,Donor Zip,Donor Id,Donor Email,Gross Amount,Net Amount,Fee,Number,Keyword,Status"))
                 return new KindredImporter();
 
+            if (subtext.Contains("Reference number,Gateway,Gross amount,Fees,Net amount,Type,Currency code,Donor external identifier,Donor first name,Donor last name"))
+                return new Text2Give();
+
             if (!fromFile && subtext.Contains("Customer ID\tMember Name\tPhone\tEmail\tTransaction Type\tProcess Date\tSettlement Date\tAmount\tReturn Date\tReturn/Fail Reason\tFund ID\tFund Name\tFund Text Message\tFrequency"))
                 return new Vanco2Importer();
 
