@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CmsData;
@@ -124,7 +125,14 @@ namespace CmsWeb.Models.ExtraValues
 
         public override void RenameAll(string field, string newname)
         {
-            DbUtil.Db.ExecuteCommand("update PeopleExtra set field = {0} where field = {1}", newname, field);
+            DbUtil.Db.ExecuteCommand(@"
+update PeopleExtra set field = {0} where field = {1}
+UPDATE dbo.PeopleExtra 
+SET Field = {0}
+FROM dbo.PeopleExtra e
+WHERE e.Field = {1}
+AND NOT EXISTS(SELECT NULL FROM dbo.PeopleExtra ee WHERE ee.Field = {0} AND ee.PeopleId = e.PeopleId)
+", newname, field);
             DbUtil.LogActivity($"EV RenameAll {Field}>{newname}");
         }
     }
