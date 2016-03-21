@@ -449,7 +449,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             var orgs = string.Join(",", m.FetchOrgs().Select(oo => oo.OrganizationId));
             var cn = new SqlConnection(Util.ConnectionString);
             cn.Open();
-            var q = cn.Query("RecentAbsentsSP3", new { orgs = orgs }, commandType: CommandType.StoredProcedure, commandTimeout: 600);
+            var q = cn.Query("RecentAbsentsSP2", new { orgs }, commandType: CommandType.StoredProcedure, commandTimeout: 600);
             return View(q);
         }
 
