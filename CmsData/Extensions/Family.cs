@@ -222,7 +222,7 @@ namespace CmsData
             ev.DateValue = value;
             ev.TransactionTime = DateTime.Now;
         }
-        public void AddEditExtraData(string field, string value, DateTime? dt)
+        public void AddEditExtraData(string field, string value, DateTime? dt = null)
         {
             if (!value.HasValue())
                 return;
