@@ -446,19 +446,10 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpPost]
         public ActionResult RecentAbsents(OrgSearchModel m)
         {
+            var orgs = string.Join(",", m.FetchOrgs().Select(oo => oo.OrganizationId));
             var cn = new SqlConnection(Util.ConnectionString);
             cn.Open();
-            var q = cn.Query("RecentAbsentsSP2", new
-            {
-                name = m.Name,
-                prog = m.ProgramId,
-                div = m.DivisionId,
-                campus = m.CampusId,
-                sched = m.ScheduleId,
-                status = m.StatusId,
-                onlinereg = m.OnlineReg,
-                orgtypeid = m.TypeId
-            }, commandType: CommandType.StoredProcedure, commandTimeout: 600);
+            var q = cn.Query("RecentAbsentsSP3", new { orgs = orgs }, commandType: CommandType.StoredProcedure, commandTimeout: 600);
             return View(q);
         }
 

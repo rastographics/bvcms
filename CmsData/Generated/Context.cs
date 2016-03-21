@@ -3025,16 +3025,12 @@ namespace CmsData
 
         [Function(Name="dbo.LastMeetings", IsComposable = true)]
         public IQueryable< View.LastMeeting > LastMeetings(
-            [Parameter(DbType="int")] int? orgid,
-            [Parameter(DbType="int")] int? divid,
-            [Parameter(DbType="int")] int? days
+            [Parameter(DbType="varchar")] string orgs
             )
         {
             return CreateMethodCallQuery< View.LastMeeting>(this,
                 ((MethodInfo)(MethodBase.GetCurrentMethod())),
-                    orgid,
-                    divid,
-                    days
+                    orgs
                 );
         }
 

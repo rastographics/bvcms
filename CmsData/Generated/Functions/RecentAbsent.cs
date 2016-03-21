@@ -34,9 +34,9 @@ namespace CmsData.View
 		
 		private string _EmailAddress;
 		
-		private DateTime? _Lastmeeting;
+		private DateTime? _LastAttend;
 		
-		private DateTime? _Mostrecentmeeting;
+		private DateTime? _LastMeeting;
 		
 		private int _MeetingId;
 		
@@ -202,35 +202,35 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="lastmeeting", Storage="_Lastmeeting", DbType="datetime")]
-		public DateTime? Lastmeeting
+		[Column(Name="LastAttend", Storage="_LastAttend", DbType="datetime")]
+		public DateTime? LastAttend
 		{
 			get
 			{
-				return this._Lastmeeting;
+				return this._LastAttend;
 			}
 
 			set
 			{
-				if (this._Lastmeeting != value)
-					this._Lastmeeting = value;
+				if (this._LastAttend != value)
+					this._LastAttend = value;
 			}
 
 		}
 
 		
-		[Column(Name="mostrecentmeeting", Storage="_Mostrecentmeeting", DbType="datetime")]
-		public DateTime? Mostrecentmeeting
+		[Column(Name="LastMeeting", Storage="_LastMeeting", DbType="datetime")]
+		public DateTime? LastMeeting
 		{
 			get
 			{
-				return this._Mostrecentmeeting;
+				return this._LastMeeting;
 			}
 
 			set
 			{
-				if (this._Mostrecentmeeting != value)
-					this._Mostrecentmeeting = value;
+				if (this._LastMeeting != value)
+					this._LastMeeting = value;
 			}
 
 		}

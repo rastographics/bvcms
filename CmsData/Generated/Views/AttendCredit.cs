@@ -24,6 +24,8 @@ namespace CmsData.View
 		
 		private DateTime? _WeekDate;
 		
+		private int? _OtherAttends;
+		
 		
 		public AttendCredit()
 		{
@@ -94,6 +96,23 @@ namespace CmsData.View
 			{
 				if (this._WeekDate != value)
 					this._WeekDate = value;
+			}
+
+		}
+
+		
+		[Column(Name="OtherAttends", Storage="_OtherAttends", DbType="int")]
+		public int? OtherAttends
+		{
+			get
+			{
+				return this._OtherAttends;
+			}
+
+			set
+			{
+				if (this._OtherAttends != value)
+					this._OtherAttends = value;
 			}
 
 		}

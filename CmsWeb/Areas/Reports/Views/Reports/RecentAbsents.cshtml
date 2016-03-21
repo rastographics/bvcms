@@ -31,6 +31,7 @@
                                 <th>Name</th>
                                 <th class="text-right">Absent</th>
                                 <th class="text-right">Last Attend</th>
+                                <th class="text-right">Other Attends</th>
                                 <th>Home Phone</th>
                                 <th>Cell Phone</th>
                                 <th>Email</th>
@@ -41,6 +42,7 @@
                         <td><a href="/Person2/@item.PeopleId" target="person">@item.Name2</a></td>
                         <td class="text-right"> @item.consecutive times </td>
                         <td class="text-right"> @Util.FormatDate(item.lastattend)</td>
+                        <td class="text-right"> @item.OtherAttends</td>
                         <td>@Util.FmtFone(item.HomePhone, prefix: "H")</td>
                         <td>@Util.FmtFone(item.CellPhone, prefix: "C")</td>
                         <td><a href="mailto:@item.EmailAddress">@item.EmailAddress</a></td>

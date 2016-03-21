@@ -46,13 +46,13 @@ namespace CmsData
 		
 		private bool? _Registered;
 		
-		private bool? _EffAttendFlag;
-		
 		private int? _SeqNo;
 		
 		private int? _Commitment;
 		
 		private bool? _NoShow;
+		
+		private bool? _EffAttendFlag;
 		
    		
    		private EntitySet< SubRequest> _SubRequests;
@@ -117,9 +117,6 @@ namespace CmsData
 		partial void OnRegisteredChanging(bool? value);
 		partial void OnRegisteredChanged();
 		
-		partial void OnEffAttendFlagChanging(bool? value);
-		partial void OnEffAttendFlagChanged();
-		
 		partial void OnSeqNoChanging(int? value);
 		partial void OnSeqNoChanged();
 		
@@ -128,6 +125,9 @@ namespace CmsData
 		
 		partial void OnNoShowChanging(bool? value);
 		partial void OnNoShowChanged();
+		
+		partial void OnEffAttendFlagChanging(bool? value);
+		partial void OnEffAttendFlagChanged();
 		
     #endregion
 		public Attend()
@@ -480,28 +480,6 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="EffAttendFlag", UpdateCheck=UpdateCheck.Never, Storage="_EffAttendFlag", DbType="bit", IsDbGenerated=true)]
-		public bool? EffAttendFlag
-		{
-			get { return this._EffAttendFlag; }
-
-			set
-			{
-				if (this._EffAttendFlag != value)
-				{
-				
-                    this.OnEffAttendFlagChanging(value);
-					this.SendPropertyChanging();
-					this._EffAttendFlag = value;
-					this.SendPropertyChanged("EffAttendFlag");
-					this.OnEffAttendFlagChanged();
-				}
-
-			}
-
-		}
-
-		
 		[Column(Name="SeqNo", UpdateCheck=UpdateCheck.Never, Storage="_SeqNo", DbType="int")]
 		public int? SeqNo
 		{
@@ -561,6 +539,28 @@ namespace CmsData
 					this._NoShow = value;
 					this.SendPropertyChanged("NoShow");
 					this.OnNoShowChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="EffAttendFlag", UpdateCheck=UpdateCheck.Never, Storage="_EffAttendFlag", DbType="bit", IsDbGenerated=true)]
+		public bool? EffAttendFlag
+		{
+			get { return this._EffAttendFlag; }
+
+			set
+			{
+				if (this._EffAttendFlag != value)
+				{
+				
+                    this.OnEffAttendFlagChanging(value);
+					this.SendPropertyChanging();
+					this._EffAttendFlag = value;
+					this.SendPropertyChanged("EffAttendFlag");
+					this.OnEffAttendFlagChanged();
 				}
 
 			}

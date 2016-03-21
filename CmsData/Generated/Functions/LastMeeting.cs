@@ -52,7 +52,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="OrganizationName", Storage="_OrganizationName", DbType="varchar(100) NOT NULL")]
+		[Column(Name="OrganizationName", Storage="_OrganizationName", DbType="nvarchar(100) NOT NULL")]
 		public string OrganizationName
 		{
 			get
@@ -69,7 +69,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="LeaderName", Storage="_LeaderName", DbType="varchar(50)")]
+		[Column(Name="LeaderName", Storage="_LeaderName", DbType="nvarchar(50)")]
 		public string LeaderName
 		{
 			get
@@ -120,7 +120,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Location", Storage="_Location", DbType="varchar(40)")]
+		[Column(Name="Location", Storage="_Location", DbType="nvarchar(200)")]
 		public string Location
 		{
 			get
