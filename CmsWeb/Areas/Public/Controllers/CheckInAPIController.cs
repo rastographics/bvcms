@@ -675,7 +675,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             if (om != null && !cjo.join)
             {
-                om.Drop(DbUtil.Db, DateTime.Today);
+                om.Drop(DbUtil.Db, DateTime.Now);
 
                 DbUtil.LogActivity($"Dropped {om.PeopleId} for {om.Organization.OrganizationId} via {dataIn.getSourceOS()} app", peopleid: om.PeopleId, orgid: om.OrganizationId);
             }

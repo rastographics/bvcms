@@ -138,9 +138,11 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var dataIn = BaseMessage.createFromString(data);
 
-            var givingOrgId = DbUtil.Db.Organizations
-                 .Where(o => o.RegistrationTypeId == RegistrationTypeCode.OnlineGiving)
-                 .Select(x => x.OrganizationId).FirstOrDefault();
+            var sql = @"
+SELECT OrganizationId FROM dbo.Organizations
+WHERE RegistrationTypeId = 8
+AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
+            var givingOrgId = DbUtil.Db.Connection.ExecuteScalar(sql) as int?;
 
             var br = new BaseMessage();
 
@@ -1262,7 +1264,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             if (om != null && !mpjo.join)
             {
-                om.Drop(DbUtil.Db, DateTime.Today);
+                om.Drop(DbUtil.Db, DateTime.Now);
 
                 DbUtil.LogActivity($"Dropped {om.PeopleId} for {om.Organization.OrganizationId} via {dataIn.getSourceOS()} app", peopleid:om.PeopleId, orgid: om.OrganizationId);
             }
