@@ -14,10 +14,10 @@ CREATE TABLE [dbo].[Attend]
 [OtherAttends] [int] NOT NULL CONSTRAINT [DF_Attend_OtherAttends] DEFAULT ((0)),
 [BFCAttendance] [bit] NULL,
 [Registered] [bit] NULL,
-[EffAttendFlag] AS (CONVERT([bit],case when [AttendanceTypeId]=(90) then NULL when [AttendanceTypeId]=(70) AND [OtherAttends]>(0) then (1) when [OtherAttends]>(0) AND [BFCAttendance]=(1) then NULL when [AttendanceFlag]=(1) then (1) when [OtherAttends]>(0) then NULL else (0) end,(0))),
 [SeqNo] [int] NULL,
 [Commitment] [int] NULL,
-[NoShow] [bit] NULL
+[NoShow] [bit] NULL,
+[EffAttendFlag] AS (CONVERT([bit],case when [AttendanceFlag]=(1) then (1) when [AttendanceTypeId]=(90) then NULL when [AttendanceTypeId]=(70) AND [OtherAttends]>(0) then (1) when [OtherAttends]>(0) AND [BFCAttendance]=(1) then NULL when [AttendanceFlag]=(1) then (1) when [OtherAttends]>(0) then NULL else (0) end,(0)))
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION

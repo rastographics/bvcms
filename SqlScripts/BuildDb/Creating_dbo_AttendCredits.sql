@@ -6,7 +6,8 @@ AS
 		OrganizationId,
 		PeopleId,
 		CONVERT(BIT, MAX(Attended)) AS Attended,
-		DATEADD(ww, [Week], DATEADD(yy, [Year]-1900, 0)) - 4 - DATEPART(dw, DATEADD(ww, [Week], DATEADD(yy, [Year]-1900, 0)) - 4) + 1 WeekDate
+		DATEADD(ww, [Week], DATEADD(yy, [Year]-1900, 0)) - 4 - DATEPART(dw, DATEADD(ww, [Week], DATEADD(yy, [Year]-1900, 0)) - 4) + 1 WeekDate,
+		OtherAttends = SUM(InlineView.OtherAttends)
 	FROM (
 		SELECT	a.OrganizationId,
 				PeopleId,
@@ -17,7 +18,8 @@ AS
 				CASE WHEN ISNULL(m.AttendCreditId, 1) = 1 
 					THEN AttendId + 20 -- make every meeting count, 20 gets it out of the way of AttendCredit codes
 					ELSE m.AttendCreditId
-				END AS AttendCredit
+				END AS AttendCredit,
+				a.OtherAttends
 		FROM dbo.Attend AS a
 		JOIN dbo.Meetings m ON a.MeetingId = m.MeetingId
 		LEFT JOIN dbo.OrgSchedule s 
@@ -28,6 +30,7 @@ AS
 	) AS InlineView
 	GROUP BY OrganizationId, PeopleId, [Year], [Week], AttendCredit
 	
+
 
 
 GO

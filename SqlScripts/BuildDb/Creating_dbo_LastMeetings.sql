@@ -1,19 +1,17 @@
-CREATE FUNCTION [dbo].[LastMeetings](@orgid INT, @divid INT, @days INT)
+CREATE FUNCTION [dbo].[LastMeetings](@orgs VARCHAR(MAX))
 RETURNS TABLE 
 AS
 RETURN 
 (
 		SELECT o.OrganizationId, o.OrganizationName, o.LeaderName, m.MeetingDate lastmeeting, m.MeetingId, m.Location
 		FROM dbo.Organizations o
+        JOIN SplitInts(@orgs) i ON i.Value = o.OrganizationId
 		JOIN dbo.Meetings m ON o.OrganizationId = m.OrganizationId 
-			AND m.MeetingDate = ( SELECT MAX(a.MeetingDate) FROM dbo.Attend a
+		WHERE m.MeetingDate = ( SELECT MAX(a.MeetingDate) FROM dbo.Attend a
 								  WHERE a.OrganizationId = o.OrganizationId
 								  AND a.EffAttendFlag = 1 
-								  AND a.MeetingDate > DATEADD(d, -@days, GETDATE()) 
 								  AND a.MeetingDate < GETDATE()
 								)
-		WHERE (o.OrganizationId = @orgid OR @orgid IS NULL)
-		AND (@divid IS NULL OR EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = o.OrganizationId AND DivId = @divid))
 		AND m.MeetingDate IS NOT NULL
 )
 GO
