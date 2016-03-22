@@ -77,7 +77,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             else if (dt1.HasValue)
                 dt = $", {dt1:MMM d}";
 
-            return o.OrganizationName + lead + dt + loc;
+            return o.Title + lead + dt + loc;
         }
 
         public class ClassInfo

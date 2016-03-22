@@ -11,6 +11,8 @@ using System.Text.RegularExpressions;
 using CmsData.Codes;
 using CmsData.View;
 using CmsWeb.Areas.Search.Models;
+using DocumentFormat.OpenXml.Bibliography;
+using Person = CmsData.Person;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -271,20 +273,20 @@ namespace CmsWeb.Areas.OnlineReg.Models
             get
             {
                 if (masterorgid.HasValue)
-                    return masterorg.OrganizationName;
+                    return masterorg.Title;
                 if (SupportMissionTrip)
                 {
                     if (GoerId.HasValue)
                     {
                         var g = DbUtil.Db.LoadPersonById(GoerId.Value);
                         if (g != null)
-                            return $"Support: {org.OrganizationName} ({g.Name})";
+                            return $"Support: {org.Title} ({g.Name})";
                     }
-                    return "Support: " + org.OrganizationName;
+                    return "Support: " + org.Title;
                 }
                 if (settings != null && org != null && settings.ContainsKey(org.OrganizationId))
-                    return Util.PickFirst(org.RegistrationTitle, org.OrganizationName);
-                return org.OrganizationName;
+                    return org.Title;
+                return org == null ? "Missing Org" : org.Title;
             }
         }
 

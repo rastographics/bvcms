@@ -25,6 +25,8 @@ namespace CmsData
 
         public string FullName2 => DivisionName + ", " + FormatOrgName(OrganizationName, LeaderName, Location);
 
+        public string Title => Util.PickFirst(RegistrationTitle, OrganizationName);
+
         private string tagString;
         public string TagString()
         {
