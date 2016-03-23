@@ -962,6 +962,23 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 return canUserSeeGiving.Value;
             }
         }
+        private bool? canUserSeeEmails;
+        public bool CanUserSeeEmails
+        {
+            get
+            {
+                if (!canUserSeeEmails.HasValue)
+                {
+                    var sameperson = Util.UserPeopleId == PeopleId;
+                    var ishead = (new int?[] {
+                        Family.HeadOfHouseholdId,
+                        Family.HeadOfHouseholdSpouseId })
+                        .Contains(Util.UserPeopleId);
+                    canUserSeeEmails = sameperson || ishead;
+                }
+                return canUserSeeEmails.Value;
+            }
+        }
 
         public RecReg GetRecReg()
         {

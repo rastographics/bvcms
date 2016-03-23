@@ -303,11 +303,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                             var accountcode = settings[masterorgid.Value].AccountingCode;
                             if (accountcode.HasValue())
                                 return $"{masterorg.OrganizationName} ({accountcode})";
-                            if (org == null)
-                                return masterorg.OrganizationName;
-                            accountcode = settings[org.OrganizationId].AccountingCode;
-                            if (accountcode.HasValue())
-                                return $"{org.OrganizationName} ({accountcode})";
                             return masterorg.OrganizationName;
                         }
                     }
