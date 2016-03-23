@@ -21,7 +21,7 @@ RETURN
 		JOIN dbo.Roles r ON r.RoleName = o.LimitToRole 
 		JOIN dbo.UserRole ur ON ur.RoleId = r.RoleId
 		JOIN dbo.Users u ON u.UserId = ur.UserId
-		WHERE @UserId = u.UserId 
+		WHERE @UserId = u.UserId OR @UserId IS NULL
 	),
 	filterLeaders1 AS ( 
 		SELECT o.OrganizationId oid, o.ParentOrgId
@@ -234,8 +234,6 @@ RETURN
 		OR o.OrganizationId IN (SELECT oid FROM filterLeaders)
 	)
 )
-
-
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
