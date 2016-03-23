@@ -15,6 +15,9 @@ The pull request would have to be able to merge automatically
 and be up to date with our code (using rebase) to avoid messy merge commits of our work. 
 Also, any third party libraries required must be available via NuGet, and no proprietary code will be accepted. 
 Your code will need to be licensed with a compatible Open Source license with the GPL v2.
+If the code is not modular, but rather integrated into the existing code, 
+it should be given to the project and will be copyrighted by Bellevue Baptist Church 
+(the current copyright holder of the project).
 
 Once the feature passes functionality tests, 
 we will review your code and provide any feedback on that. 
