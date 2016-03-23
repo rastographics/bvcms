@@ -75,11 +75,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             if (m.RegisterLinkMaster())
             {
-                if (m.registerLinkType.StartsWith("registerlink") || m.registerLinkType == "masterlink" || User.Identity.IsAuthenticated)
-                {
-                    TempData["token"] = m.registertag;
-                    TempData["PeopleId"] = m.UserPeopleId ?? Util.UserPeopleId;
-                }
+                if(m.registerLinkType.HasValue())
+                    if (m.registerLinkType.StartsWith("registerlink") || m.registerLinkType == "masterlink" || User.Identity.IsAuthenticated)
+                    {
+                        TempData["token"] = m.registertag;
+                        TempData["PeopleId"] = m.UserPeopleId ?? Util.UserPeopleId;
+                    }
                 return $"/OnlineReg/RegisterLinkMaster/{m.Orgid}";
             }
             TempData["PeopleId"] = m.UserPeopleId ?? Util.UserPeopleId;
