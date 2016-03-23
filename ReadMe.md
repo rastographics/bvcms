@@ -5,7 +5,7 @@
 [SQL]: http://msdn.microsoft.com/en-us/evalcenter/hh230763.aspx
 [WEB]: http://visualstudiogallery.msdn.microsoft.com/56633663-6799-41d7-9df7-0f2a504ca361
 [RWM]: http://www.microsoft.com/en-us/download/details.aspx?id=7435
-[PR]: PullRequestGuidlines.md
+[PR]: PullRequestGuidelines.md
 
 BVCMS Developer Quick Start Guide
 ---
