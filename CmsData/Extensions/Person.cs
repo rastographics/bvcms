@@ -974,7 +974,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                         Family.HeadOfHouseholdId,
                         Family.HeadOfHouseholdSpouseId })
                         .Contains(Util.UserPeopleId);
-                    canUserSeeEmails = sameperson || ishead;
+                    canUserSeeEmails = sameperson || ishead || HttpContext.Current.User.IsInRole("Access");
                 }
                 return canUserSeeEmails.Value;
             }
