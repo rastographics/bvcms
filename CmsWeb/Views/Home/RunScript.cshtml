@@ -6,10 +6,10 @@
     Layout = ViewExtensions2.TouchPointLayout();
 }
 <div class="report box box-responsive">
-    <div class="box-content">
-      <div class="table-responsive">
-        @Html.Raw(GridResult.Table(Model))
-        <strong>Total Count</strong> <span class="badge"></span>
-      </div>
+  <div class="box-content">
+    <div class="table-responsive">
+      @Html.Raw(GridResult.Table(Model, ViewBag.Name2))
+      <strong>Total Count</strong> <span class="badge"></span>
     </div>
+  </div>
 </div>

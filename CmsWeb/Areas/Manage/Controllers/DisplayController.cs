@@ -350,9 +350,9 @@ namespace CmsWeb.Areas.Manage.Controllers
             var t = PythonModel.HtmlTable(rd);
             t.RenderControl(new HtmlTextWriter(context.HttpContext.Response.Output));
         }
-        public static string Table(IDataReader rd)
+        public static string Table(IDataReader rd, string title = null)
         {
-            var t = PythonModel.HtmlTable(rd);
+            var t = PythonModel.HtmlTable(rd, title);
             var sb = new StringBuilder();
             t.RenderControl(new HtmlTextWriter(new StringWriter(sb)));
             return sb.ToString();

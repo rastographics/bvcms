@@ -9,6 +9,7 @@ using System.Web.UI.HtmlControls;
 using Dapper;
 using UtilityExtensions;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 
 namespace CmsData
 {
@@ -51,56 +52,68 @@ namespace CmsData
                 }
             }
         }
-        public static HtmlTable HtmlTable(IDataReader rd)
+        public static Table HtmlTable(IDataReader rd, string title = null)
         {
             var pctnames = new List<string> {"pct", "percent"};
-            var t = new HtmlTable();
+            var t = new Table();
             t.Attributes.Add("class", "table table-striped");
-            var h = new HtmlTableRow();
+            if (title.HasValue())
+            {
+                var c = new TableHeaderCell
+                {
+                    ColumnSpan = rd.FieldCount,
+                    Text = title,
+                };
+                c.Style.Add(HtmlTextWriterStyle.TextAlign, "center");
+                var r = new TableHeaderRow {TableSection = TableRowSection.TableHeader};
+                r.Cells.Add(c);
+                t.Rows.Add(r);
+            }
+            var h = new TableHeaderRow {TableSection = TableRowSection.TableHeader};
             for (var i = 0; i < rd.FieldCount; i++)
             {
                 var typ = rd.GetDataTypeName(i);
                 var nam = rd.GetName(i).ToLower();
-                string align = null;
+                var align = HorizontalAlign.NotSet;
                 switch (typ.ToLower())
                 {
                     case "decimal":
-                        align = "right";
+                        align = HorizontalAlign.Right;
                         break;
                     case "int":
-                        if (!nam.EndsWith("id") && !nam.EndsWith("id2"))
-                            align = "right";
+                        if(nam != "Year" && !nam.EndsWith("id") && !nam.EndsWith("id2"))
+                            align = HorizontalAlign.Right;
                         break;
                 }
-                h.Cells.Add(new HtmlTableCell
+                h.Cells.Add(new TableHeaderCell
                 {
-                    InnerText = rd.GetName(i),
-                    Align = align
+                    Text = rd.GetName(i),
+                    HorizontalAlign = align
                 });
             }
             t.Rows.Add(h);
             while (rd.Read())
             {
-                var r = new HtmlTableRow();
+                var r = new TableRow();
                 for (var i = 0; i < rd.FieldCount; i++)
                 {
                     var typ = rd.GetDataTypeName(i);
                     var nam = rd.GetName(i).ToLower();
                     string s;
-                    string align = null;
+                    var align = HorizontalAlign.NotSet;
                     switch (typ.ToLower())
                     {
                         case "decimal":
                             s = StartsEndsWith(pctnames, nam)
                                 ? Convert.ToDecimal(rd[i]).ToString("N1") + "%"
                                 : Convert.ToDecimal(rd[i]).ToString("c");
-                            align = "right";
+                            align = HorizontalAlign.Right;
                             break;
                         case "float":
                             s = StartsEndsWith(pctnames, nam)
                                 ? Convert.ToDouble(rd[i]).ToString("N1") + "%"
                                 : Convert.ToDouble(rd[i]).ToString("N1");
-                            align = "right";
+                            align = HorizontalAlign.Right;
                             break;
                         case "int":
                             var ii = rd[i].ToInt();
@@ -108,32 +121,32 @@ namespace CmsData
                                 s = $"<a href='/Person2/{ii}' target='Person'>{ii}</a>";
                             else if (nam.Equal("organizationid"))
                                 s = $"<a href='/Org/{ii}' target='Organization'>{ii}</a>";
-                            else if (nam.EndsWith("id") || nam.EndsWith("id2"))
+                            else if (nam.EndsWith("id") || nam.EndsWith("id2") || nam.Equal("Year"))
                                 s = rd[i].ToInt().ToString();
                             else
                             {
                                 s = rd[i].ToInt().ToString("N0");
-                                align = "right";
+                                align = HorizontalAlign.Right;
                             }
                             break;
                         default:
                             s = rd[i].ToString();
                             break;
                     }
-                    r.Cells.Add(new HtmlTableCell()
+                    r.Cells.Add(new TableCell()
                     {
-                        InnerHtml = s,
-                        Align = align
+                        Text = s,
+                        HorizontalAlign = align
                     });
                 }
                 t.Rows.Add(r);
             }
-            var tc = new HtmlTableCell
+            var tc = new TableCell
             {
-                ColSpan = rd.FieldCount,
-                InnerText = $"Count = {t.Rows.Count - 1} rows"
+                ColumnSpan = rd.FieldCount,
+                Text = $"Count = {t.Rows.Count - 1} rows"
             };
-            var tr = new HtmlTableRow();
+            var tr = new TableFooterRow();
             tr.Cells.Add(tc);
             t.Rows.Add(tr);
             return t;

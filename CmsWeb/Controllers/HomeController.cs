@@ -1,26 +1,16 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Diagnostics;
-using System.Dynamic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.UI;
 using CmsData;
-using CmsData.OnlineRegSummaryText;
-using CmsData.Registration;
-using CmsWeb.Areas.OnlineReg.Models;
 using CmsWeb.Areas.People.Models;
-using CmsWeb.Areas.Search.Models;
 using Dapper;
 using Newtonsoft.Json;
 using UtilityExtensions;
 using CmsWeb.Models;
-using HandlebarsDotNet;
-using HtmlAgilityPack;
 
 namespace CmsWeb.Controllers
 {
@@ -209,6 +199,16 @@ namespace CmsWeb.Controllers
                 var tag = db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
                 int? qtagid = tag.Id;
                 p.Add("@qtagid", qtagid);
+            }
+            if (body.Contains("@CurrentOrgId"))
+            {
+                var oid = DbUtil.Db.CurrentOrgId0;
+                p.Add("@CurrentOrgId", oid);
+                if(oid > 0)
+                {
+                    var name = DbUtil.Db.LoadOrganizationById(oid).FullName2;
+                    ViewBag.Name2 = name;
+                }
             }
             p.Add("@p1", parameter ?? "");
             return body;
