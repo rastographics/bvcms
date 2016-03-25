@@ -88,17 +88,17 @@ namespace CmsWeb.Models
             var user = userStatus.User;
 
             var roleProvider = CMSRoleProvider.provider;
-            if (role == null)
-                role = "Access";
+            //if (role == null)
+            //    role = "Access";
 
-            if (roleProvider.RoleExists(role))
-            {
-                if (!roleProvider.IsUserInRole(user.Username, role))
-                {
-                    userStatus.Status = UserValidationStatus.UserNotInRole;
-                    return userStatus;
-                }
-            }
+            //if (roleProvider.RoleExists(role))
+            //{
+            //    if (!roleProvider.IsUserInRole(user.Username, role))
+            //    {
+            //        userStatus.Status = UserValidationStatus.UserNotInRole;
+            //        return userStatus;
+            //    }
+            //}
 
             UserName2 = user.Username;
             SetUserInfo(user.Username, HttpContext.Current.Session, deleteSpecialTags: false);
