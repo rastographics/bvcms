@@ -5,7 +5,6 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Web.UI.HtmlControls;
 using Dapper;
 using UtilityExtensions;
 using System.Web.UI;
@@ -101,6 +100,7 @@ namespace CmsData
                     var nam = rd.GetName(i).ToLower();
                     string s;
                     var align = HorizontalAlign.NotSet;
+
                     switch (typ.ToLower())
                     {
                         case "decimal":
@@ -131,12 +131,14 @@ namespace CmsData
                             break;
                         default:
                             s = rd[i].ToString();
+                            if (s == "Total")
+                                s = $"<strong>{s}</strong>";
                             break;
                     }
                     r.Cells.Add(new TableCell()
                     {
                         Text = s,
-                        HorizontalAlign = align
+                        HorizontalAlign = align,
                     });
                 }
                 t.Rows.Add(r);

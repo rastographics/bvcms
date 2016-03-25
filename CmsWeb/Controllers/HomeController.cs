@@ -233,7 +233,7 @@ namespace CmsWeb.Controllers
 
             if (script.StartsWith("Not Authorized"))
                 return Message(script);
-            ViewBag.name = title ?? $"Run Script {name} {parameter}";
+            ViewBag.name = title ?? $"{name.SpaceCamelCase()} {parameter}";
             var rd = cn.ExecuteReader(script, p, commandTimeout: 1200);
             return View(rd);
         }
