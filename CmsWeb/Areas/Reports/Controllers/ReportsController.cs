@@ -4,18 +4,14 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
-using System.Security;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
-using System.Xml.Linq;
 using CmsWeb.Areas.Dialog.Models;
 using CmsData;
 using CmsData.Registration;
 using CmsWeb.Areas.Main.Models.Avery;
 using CmsWeb.Areas.Main.Models.Directories;
-using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Areas.Reports.Models;
-using CmsWeb.Areas.Reports.ViewModels;
 using CmsWeb.Areas.Search.Models;
 using CmsWeb.Models;
 using Dapper;
@@ -25,14 +21,13 @@ using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using OfficeOpenXml.Table;
 using UtilityExtensions;
-using UtilityExtensions.Extensions;
 using FamilyResult = CmsWeb.Areas.Reports.Models.FamilyResult;
 using MeetingsModel = CmsWeb.Areas.Reports.Models.MeetingsModel;
 
 namespace CmsWeb.Areas.Reports.Controllers
 {
     [RouteArea("Reports", AreaPrefix = "Reports"), Route("{action}/{id?}")]
-    public class ReportsController : CmsStaffController
+    public partial class ReportsController : CmsStaffController
     {
         [Authorize(Roles = "MembershipApp,Admin")]
         [HttpGet, Route("Application/{orgid:int}/{peopleid:int}/{content}")]
@@ -730,105 +725,8 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new RosterResult(m);
         }
 
-        [HttpGet]
-        [Route("Custom/{report}/{id?}")]
-        public ActionResult CustomReport(Guid id, string report)
-        {
-            var m = new CustomReportsModel(DbUtil.Db);
-            return m.Result(id, report);
-        }
-
-        [HttpGet]
-        [Route("CustomSql/{report}/{id?}")]
-        public ActionResult CustomReportSql(Guid id, string report)
-        {
-            try
-            {
-                var m = new CustomReportsModel(DbUtil.Db);
-                return Content($"<pre style='font-family:monospace'>{m.Sql(id, report)}\n</pre>");
-            }
-            catch (Exception ex)
-            {
-                return Message(ex.Message);
-            }
-        }
-
-        [HttpGet]
-        [Route("SqlReport/{report}/{id?}")]
-        public ActionResult SqlReport(Guid id, string report)
-        {
-            var content = DbUtil.Db.ContentOfTypeSql(report);
-            if (content == null)
-                return Message("no content");
-            if (!CanRunScript(content.Body))
-                return Message("Not Authorized to run this script");
-            if (!content.Body.Contains("@qtagid"))
-                return Message("missing @qtagid");
-
-            var tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
-
-            var cs = User.IsInRole("Finance")
-                ? Util.ConnectionStringReadOnlyFinance
-                : Util.ConnectionStringReadOnly;
-            using (var cn = new SqlConnection(cs))
-            {
-                cn.Open();
-                var p = new DynamicParameters();
-                p.Add("@qtagid", tag.Id);
-                ViewBag.name = report;
-                using (var rd = cn.ExecuteReader(content.Body, p))
-                    ViewBag.report = GridResult.Table(rd);
-                return View();
-            }
-        }
-
-
-
-        /// <summary>
-        /// PyScript ActionResult to handle a Python Custom Script being called as a Custom Report 
-        /// from the Blue Toolbar.  
-        /// The Function also verifies that the Python script contains the Query Function call to 
-        /// "BlueToolbarReport" which in turn returns the first 1000 people records in the BlueToolbar context. 
-        /// The Python script is then rendered and the output is sent to the View PyScript.cshtml
-        /// </summary>
-        [HttpGet]
-        [Route("PyScript/{report}/{id?}")]
-        public ActionResult PyScript(Guid id, string report)
-        {
-            var content = DbUtil.Db.ContentOfTypePythonScript(report);
-            if (content == null)
-                return Content("no script named " + report);
-            if (!CanRunScript(content))
-                return Message("Not Authorized to run this script");
-            if (!content.Contains("BlueToolbarReport") && !content.Contains("@BlueToolbarTagId"))
-                return Content("Missing Call to Query Function 'BlueToolbarReport'");
-            if (id == Guid.Empty)
-                return Content("Must be run from the BlueToolbar");
-
-            var pe = new PythonModel(Util.Host);
-
-            pe.DictionaryAdd("BlueToolbarGuid", id.ToCode());
-            foreach (var key in Request.QueryString.AllKeys)
-                pe.DictionaryAdd(key, Request.QueryString[key]);
-
-            pe.RunScript(content);
-
-            return View(pe);
-
-        }
-        private bool CanRunScript(string script)
-        {
-            if (!script.StartsWith("#Roles=") && !script.StartsWith("--Roles"))
-                return true;
-            var re = new Regex("(--|#)Roles=(?<roles>.*)", RegexOptions.IgnoreCase);
-            var roles = re.Match(script).Groups["roles"].Value.Split(',').Select(aa => aa.Trim());
-            if (!roles.Any(rr => User.IsInRole(rr)))
-                return false;
-            return true;
-        }
-
         [HttpPost]
-        public ActionResult SGMap(OrgSearchModel m)
+        public ActionResult SgMap(OrgSearchModel m)
         {
             return Redirect("/Sgmap/Index/" + m.DivisionId);
         }
@@ -997,127 +895,5 @@ namespace CmsWeb.Areas.Reports.Controllers
             public string Size { get; set; }
             public int Count { get; set; }
         }
-
-        [HttpGet]
-        [Authorize(Roles = "Admin, Design")]
-        public ActionResult EditCustomReport(int? orgId, string reportName, Guid queryId)
-        {
-            CustomReportViewModel originalReportViewModel = null;
-            if (TempData[TempDataModelStateKey] != null)
-            {
-                ModelState.Merge((ModelStateDictionary)TempData[TempDataModelStateKey]);
-                originalReportViewModel = TempData[TempDataCustomReportKey] as CustomReportViewModel;
-            }
-
-            var m = new CustomReportsModel(DbUtil.Db, orgId);
-
-            var orgName = (orgId.HasValue)
-                ? DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == orgId.Value).OrganizationName
-                : null;
-
-            CustomReportViewModel model;
-            if (string.IsNullOrEmpty(reportName))
-            {
-                model = new CustomReportViewModel(orgId, queryId, orgName, GetAllStandardColumns(m));
-                return View(model);
-            }
-
-            model = new CustomReportViewModel(orgId, queryId, orgName, GetAllStandardColumns(m), reportName);
-
-            var reportXml = m.GetReportByName(reportName);
-            if (reportXml == null)
-                throw new Exception("Report not found.");
-
-            var columns = MapXmlToCustomReportColumn(reportXml);
-
-            var showOnOrgIdValue = reportXml.AttributeOrNull("showOnOrgId");
-            int showOnOrgId;
-            if (!string.IsNullOrEmpty(showOnOrgIdValue) && int.TryParse(showOnOrgIdValue, out showOnOrgId))
-                model.RestrictToThisOrg = showOnOrgId == orgId;
-
-            model.SetSelectedColumns(columns);
-
-            if (originalReportViewModel != null)
-                model.ReportName = originalReportViewModel.ReportName;
-
-            var alreadySaved = TempData[TempDataSuccessfulSaved] as bool?;
-            model.CustomReportSuccessfullySaved = alreadySaved.GetValueOrDefault();
-
-            return View(model);
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "Admin, Design")]
-        public ActionResult EditCustomReport(CustomReportViewModel viewModel)
-        {
-            if (!viewModel.Columns.Any(c => c.IsSelected))
-                ModelState.AddModelError("Columns", "At least one column must be selected.");
-
-            if (ModelState.IsValid)
-            {
-                viewModel.ReportName = SecurityElement.Escape(viewModel.ReportName.Trim());
-
-                var m = new CustomReportsModel(DbUtil.Db, viewModel.OrgId);
-                var result = m.SaveReport(viewModel.OriginalReportName, viewModel.ReportName,
-                    viewModel.Columns.Where(c => c.IsSelected), viewModel.RestrictToThisOrg);
-
-                switch (result)
-                {
-                    case CustomReportsModel.SaveReportStatus.ReportAlreadyExists:
-                        ModelState.AddModelError("ReportName", "A report by this name already exists.");
-                        break;
-                    default:
-                        TempData[TempDataSuccessfulSaved] = true;
-                        break;
-                }
-            }
-
-            if (!ModelState.IsValid)
-            {
-                TempData[TempDataModelStateKey] = ModelState;
-                TempData[TempDataCustomReportKey] = viewModel;
-                return RedirectToAction("EditCustomReport", new { reportName = viewModel.OriginalReportName, orgId = viewModel.OrgId, queryId = viewModel.QueryId });
-            }
-
-            return RedirectToAction("EditCustomReport", new { reportName = viewModel.ReportName, orgId = viewModel.OrgId, queryId = viewModel.QueryId });
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "Admin, Design")]
-        public JsonResult DeleteCustomReport(int? orgId, string reportName)
-        {
-            if (string.IsNullOrEmpty(reportName))
-                return new JsonResult { Data = "Report name is required." };
-
-            var m = new CustomReportsModel(DbUtil.Db, orgId);
-            m.DeleteReport(reportName);
-
-            return new JsonResult { Data = "success" };
-        }
-
-        private static IEnumerable<CustomReportColumn> GetAllStandardColumns(CustomReportsModel model)
-        {
-            var reportXml = model.StandardColumns();
-            return MapXmlToCustomReportColumn(reportXml);
-        }
-
-        private static IEnumerable<CustomReportColumn> MapXmlToCustomReportColumn(XContainer reportXml)
-        {
-            return from column in reportXml.Descendants("Column")
-                   select new CustomReportColumn
-                   {
-                       Name = column.AttributeOrNull("name"),
-                       Description = column.AttributeOrNull("description"),
-                       Flag = column.AttributeOrNull("flag"),
-                       OrgId = column.AttributeOrNull("orgid"),
-                       SmallGroup = column.AttributeOrNull("smallgroup"),
-                       Field = column.AttributeOrNull("field"),
-                       IsDisabled = column.AttributeOrNull("disabled").ToBool(),
-                   };
-        }
-
-        private const string TempDataModelStateKey = "ModelState";
-        private const string TempDataCustomReportKey = "InvalidCustomReportViewModel";
-        private const string TempDataSuccessfulSaved = "CustomReportSuccessfullySaved";
     }
 }

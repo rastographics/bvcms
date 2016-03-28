@@ -1,0 +1,31 @@
+﻿@model CmsWeb.Areas.Reports.ViewModels.CustomReportColumn
+@using (var ci = Html.BeginCollectionItem(Model.BindName))
+{
+  <li class="checkbox">
+    @Html.Raw(ci.hiddenindex)
+    @Html.HiddenFor(m => m.Name)
+    @Html.HiddenFor(m => m.OrgId)
+    @Html.HiddenFor(m => m.Flag)
+    @Html.HiddenFor(m => m.Description)
+    @Html.HiddenFor(m => m.Field)
+    @Html.HiddenFor(m => m.IsDisabled)
+    @Html.HiddenFor(m => m.SmallGroup)
+    <label>
+      @Html.CheckBoxFor(m => m.IsSelected)
+      @(Model.Description ?? Model.SmallGroup ?? Model.Field ?? Model.Name)
+      @if (Model.IsExtraValue)
+      {
+        <span class="text-info">(Extra Value)</span>
+      }
+      else if (Model.IsSmallGroup)
+      {
+        <span class="text-info">(Small Group)</span>
+      }
+      else if (Model.IsStatusFlag)
+      {
+        <span class="text-info">(Status Flag)</span>
+      }
+    </label>
+  </li>
+}
+

@@ -233,7 +233,9 @@ namespace CmsWeb.Controllers
 
             if (script.StartsWith("Not Authorized"))
                 return Message(script);
-            ViewBag.name = title ?? $"{name.SpaceCamelCase()} {parameter}";
+            ViewBag.Name = title ?? $"{name.SpaceCamelCase()} {parameter}";
+            ViewBag.report = name;
+            ViewBag.url = Request.Url?.PathAndQuery;
             var rd = cn.ExecuteReader(script, p, commandTimeout: 1200);
             return View(rd);
         }
@@ -300,6 +302,8 @@ namespace CmsWeb.Controllers
 
                 pe.RunScript(script);
 
+                ViewBag.report = name;
+                ViewBag.url = Request.Url?.PathAndQuery;
                 return View(pe);
             }
             catch (Exception ex)

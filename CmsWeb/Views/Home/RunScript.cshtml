@@ -10,6 +10,12 @@
     <div class="table-responsive">
       @Html.Raw(GridResult.Table(Model, ViewBag.Name2))
       <strong>Total Count</strong> <span class="badge"></span>
+      @if (User.IsInRole("Admin"))
+      {
+      <p>
+        <a href="/Reports/AddReport?report=@Url.Encode(ViewBag.report)&url=@Url.Encode(ViewBag.url)&type=SqlReport">Add Report to Menu</a>
+      </p>
+      }
     </div>
   </div>
 </div>

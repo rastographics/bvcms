@@ -1,15 +1,13 @@
 ﻿@model CmsWeb.Areas.Reports.ViewModels.CustomReportViewModel
 @{
-    // TODO: it would be really nice to use a _ViewStart.cshtml file instead of specifying this everywhere
-    Layout = ViewExtensions2.TouchPointLayout();
-    ViewBag.Title = "Custom Report Builder";
-    ViewBag.PageHeader = "Custom Report Builder";
+  // TODO: it would be really nice to use a _ViewStart.cshtml file instead of specifying this everywhere
+  Layout = ViewExtensions2.TouchPointLayout();
+  ViewBag.Title = "Custom Report Builder";
+  ViewBag.PageHeader = "Custom Report Builder";
 }
 @section head{
   <style>
-    .custom-columns label:hover {
-      background-color: #f5f5f5;
-    }
+    .custom-columns label:hover { background-color: #f5f5f5; }
   </style>
 }
 <div class="row">
@@ -18,98 +16,78 @@
       <div class="box-content">
         @if (ViewData.ModelState.Keys.Any(k => ViewData.ModelState[k].Errors.Any()))
         {
-            <div class="alert alert-danger">
-              <button class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-              @Html.ValidationSummary(false, "Errors: ")
-            </div>
+          <div class="alert alert-danger">
+            <button class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            @Html.ValidationSummary(false, "Errors: ")
+          </div>
         }
         @if (Model.CustomReportSuccessfullySaved)
         {
-            <div class="alert alert-success">
-              Your report was successfully saved!
-            </div>
+          <div class="alert alert-success">
+            Your report was successfully saved!
+          </div>
         }
-        @using (Html.BeginForm("EditCustomReport", "Reports", FormMethod.Post, new { id = "edit-custom-report-form", @class = "form-horizontal" }))
+        @using (Html.BeginForm("EditCustomReport", "Reports", FormMethod.Post, new {id = "edit-custom-report-form", @class = "form-horizontal"}))
         {
-            <fieldset>
-              @Html.HiddenFor(x => x.OrgId)
-              @Html.HiddenFor(x => x.OriginalReportName)
-              @Html.HiddenFor(x => x.QueryId)
-              <div class="form-group">
-                @Html.LabelFor(x => x.ReportName, new { @class = "col-md-4 control-label" })
-                <div class="col-md-4">
-                  @Html.TextBoxFor(x => x.ReportName, true, htmlAttributes: new { placeholder = "Name Your Custom Report", @class = "form-control" })
-                  @Html.ValidationMessageFor(x => x.ReportName)
+          @Html.HiddenFor(x => x.OrgId)
+          @Html.HiddenFor(x => x.OriginalReportName)
+          @Html.HiddenFor(x => x.QueryId)
+          <div class="form-group">
+            @Html.LabelFor(x => x.ReportName, new {@class = "col-md-4 control-label"})
+            <div class="col-md-4">
+              @Html.TextBoxFor(x => x.ReportName, true, htmlAttributes: new {placeholder = "Name Your Custom Report", @class = "form-control"})
+              @Html.ValidationMessageFor(x => x.ReportName)
+            </div>
+          </div>
+
+          if (Model.OrgId.HasValue)
+          {
+            <div class="form-group">
+              <label class="col-md-4 control-label" for="restrictOrg">Restrict this report to this Org</label>
+              <div class="col-md-4">
+                <div class="checkbox">
+                  <label for="restrictOrg-0">
+                    @Html.CheckBoxFor(m => m.RestrictToThisOrg)
+                    @Model.OrgName
+                  </label>
                 </div>
               </div>
-
-              @if (Model.OrgId.HasValue)
+            </div>
+          }
+          @ActionButtons()
+          <div class="form-group">
+            <label class="col-md-4 control-label">Report Columns</label>
+            <ul class="col-md-8 sortable">
+              @foreach (var c in Model.Columns)
               {
-              <div class="form-group">
-                <label class="col-md-4 control-label" for="restrictOrg">Restrict this report to this Org</label>
-                <div class="col-md-4">
-                  <div class="checkbox">
-                    <label for="restrictOrg-0">
-                      @Html.CheckBoxFor(m => m.RestrictToThisOrg)
-                      @Model.OrgName
-                    </label>
-                  </div>
-                </div>
-              </div>
+                c.BindName = Html.NameFor2(m => m.Columns);
+                @Html.EditorFor(m => c)
               }
-
-              <div class="form-group">
-                <label class="col-md-4 control-label" for="checkboxes">Columns in Export</label>
-                <div class="col-md-4">
-                  @foreach (var c in Model.Columns.Select((x, i) => new { Value = x, Index = i }))
-                  {
-                      <div class="checkbox">
-                        <label>
-                          @Html.CheckBoxFor(x => Model.Columns[c.Index].IsSelected)
-                          @(c.Value.Description ?? c.Value.SmallGroup ?? c.Value.Field ?? c.Value.Name)
-                          @Html.HiddenFor(x => Model.Columns[c.Index].Name)
-                          @Html.HiddenFor(x => Model.Columns[c.Index].OrgId)
-                          @Html.HiddenFor(x => Model.Columns[c.Index].Flag)
-                          @Html.HiddenFor(x => Model.Columns[c.Index].Description)
-                          @Html.HiddenFor(x => Model.Columns[c.Index].Field)
-                          @Html.HiddenFor(x => Model.Columns[c.Index].IsDisabled)
-                          @Html.HiddenFor(x => Model.Columns[c.Index].SmallGroup)
-                          @if (c.Value.IsExtraValue)
-                          {
-                              <span class="text-info">(Extra Value)</span>
-                          }
-                          else if (c.Value.IsSmallGroup)
-                          {
-                              <span class="text-info">(Small Group)</span>
-                          }
-                          else if (c.Value.IsStatusFlag)
-                          {
-                              <span class="text-info">(Status Flag)</span>
-                          }
-                        </label>
-                      </div>
-                  }
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label class="col-md-4 control-label" for="button1id">Action</label>
-                <div class="col-md-8">
-                  <input type="submit" id="save-report" name="save-report" class="btn btn-primary" value="Save Report" />
-                  <button type="submit" id="run-report" name="run-report" class="btn btn-default"><i class="fa fa-cloud-download"></i>Export Report</button>
-                </div>
-              </div>
-
-            </fieldset>
+            </ul>
+          </div>
+          @ActionButtons()
         }
         <a style="display: none" id="run-report-link" href="@Url.Action("CustomReport", new {id = Model.QueryId, report = "___"})">(hidden link used by javascript)</a>
       </div>
     </div>
   </div>
 </div>
+@helper ActionButtons()
+{
+  <div class="form-group">
+    <label class="col-md-4 control-label" for="button1id">Action</label>
+    <div class="col-md-8">
+      <input type="submit" id="save-report" name="save-report" class="btn btn-primary" value="Save Report"/>
+      <button type="submit" id="run-report" name="run-report" class="btn btn-default"><i class="fa fa-cloud-download"></i>Run Report</button>
+    </div>
+  </div>
+}
+
 @section scripts{
+  @Fingerprint.Script("/Content/touchpoint/lib/html.sortable.min.js")
   <script type="text/javascript">
     (function () {
+      $('.sortable').sortable();
       var $form = $('#edit-custom-report-form');
       $form.validate();
 
@@ -118,16 +96,16 @@
         pattern: /^[A-Za-z0-9 ]+$/,
         messages: {
           required: "The report name is required.",
-          pattern: "The report name can only contain alphanumeric characters or spaces. (a-z, 0-9)"
+          pattern: "The report name can only contain alphanumeric characters. (a-z, 0-9)"
         }
       });
 
       var lastChecked = null;
-      $('#run-report').click(function (e) {
+      $('#run-report').click(function(e) {
         e.preventDefault();
 
         if ($form.valid()) {
-          $.post($form.attr('action'), $form.serialize()).then(function () {
+          $.post($form.attr('action'), $form.serialize()).then(function() {
             $('#OriginalReportName').val($('#ReportName').val());
             var runLink = $('#run-report-link').attr('href').replace('___', encodeURIComponent($('#ReportName').val()));
             window.location = runLink;
@@ -135,7 +113,7 @@
         }
       });
 
-      $('input[type="checkbox"]').click(function (e) {
+      $('input[type="checkbox"]').click(function(e) {
         if (e.shiftKey && lastChecked !== null) {
           var start = $('input[type="checkbox"]').index(this);
           var end = $('input[type="checkbox"]').index(lastChecked);

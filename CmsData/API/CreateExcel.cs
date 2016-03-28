@@ -78,6 +78,12 @@ namespace CmsData
                     colrange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
                     colrange.AutoFitColumns();
                 }
+                else if ((type == typeof (float) || type == typeof(double)) && PythonModel.StartsEndsWith("Pct", name))
+                {
+                    colrange.Style.Numberformat.Format = "#####0.0";
+                    colrange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                    colrange.AutoFitColumns();
+                }
                 else if (type == typeof (DateTime))
                 {
                     if (name.EndsWith("Time"))

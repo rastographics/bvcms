@@ -494,6 +494,7 @@
     <Compile Include="Areas\Public\Models\MobileAPI\MobileTaskList.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostHeadcount.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineDetailModel.cs" />
+    <Compile Include="Areas\Reports\Controllers\CustomReportsController.cs" />
     <Compile Include="Areas\Reports\Models\Avery\AverySpacerCell173.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -973,6 +974,7 @@
     <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\dialogs\specialLink.js" />
     <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\icons\specialLink.png" />
     <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\plugin.js" />
+    <Content Include="Content\touchpoint\lib\html.sortable.min.js" />
     <Content Include="Content\touchpoint\lib\idleTimer\js\idle-timer.js" />
     <Content Include="Content\touchpoint\lib\idleTimer\js\idle-timer.min.js" />
     <Content Include="Content\touchpoint\lib\ion-sound\js\ion.sound.min.js" />
@@ -1512,6 +1514,8 @@
     <Content Include="Areas\Finance\Views\FinanceReports\DepositTotalsForDatesResults.cshtml" />
     <Content Include="Areas\Org\Views\OrgSearch\Modals\ReportDate.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EmailImages.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\CustomReport.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\EditorTemplates\CustomReportColumn.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />
@@ -1857,7 +1861,6 @@
     <Content Include="Areas\Org\Views\Org\Registration\NotifyList.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskSize.cshtml" />
     <Content Include="Areas\Manage\Views\Account\SetPasswordConfirm.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\EditCustomReport.cshtml" />
     <Content Include="Areas\Org\Views\Meeting\AttendanceByGroups.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMembersUpdate\AddFeeAdjustment.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMembersUpdate\AddTransaction.cshtml" />
@@ -2340,6 +2343,7 @@
     <Content Include="Views\Shared\Menu\User.cshtml" />
     <Content Include="Views\Shared\PageError.cshtml" />
     <Content Include="Views\Home\Test.cshtml" />
+    <Content Include="Views\Shared\Toolbar\Custom.cshtml" />
     <None Include="Web.Impersonate.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

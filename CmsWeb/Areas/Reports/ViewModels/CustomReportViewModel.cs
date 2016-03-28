@@ -24,9 +24,11 @@ namespace CmsWeb.Areas.Reports.ViewModels
         public Guid QueryId { get; set; }
         public string OrgName { get; set; }
 
-        public CustomReportViewModel() {} // for model binding purposes
+        public CustomReportViewModel()
+        {
+        } // for model binding purposes
 
-        public CustomReportViewModel(int? orgId, Guid queryId, string orgName, IEnumerable<CustomReportColumn> standardColumns, string reportName) 
+        public CustomReportViewModel(int? orgId, Guid queryId, string orgName, IEnumerable<CustomReportColumn> standardColumns, string reportName)
             : this(orgId, queryId, orgName, standardColumns)
         {
             ReportName = reportName;
@@ -42,36 +44,30 @@ namespace CmsWeb.Areas.Reports.ViewModels
             Columns.AddRange(standardColumns);
         }
 
-        public void SetSelectedColumns(IEnumerable<CustomReportColumn> columns)
+        public void SetSelectedColumns(List<CustomReportColumn> columns)
         {
-            var columnsAsList = columns.ToList();
-
-            foreach (var column in Columns)
+            var nn = columns.Count;
+            var n = 0;
+            foreach (var column in columns)
             {
-                if (column.IsStatusFlag)
-                {
-                    if (columnsAsList.Select(c => c.Description).Contains(column.Description))
-                        column.IsSelected = true;
-                }
-                else if (column.IsExtraValue)
-                {
-                    if (columnsAsList.Select(c => c.Field).Contains(column.Field))
-                    {
-                        column.IsSelected = true;
-                        column.IsDisabled = false;
-                    }
-                }
-                else if (column.IsSmallGroup)
-                {
-                    if (columnsAsList.Select(c => c.SmallGroup).Contains(column.SmallGroup))
-                        column.IsSelected = true;
-                }
+                column.Order = n++;
+                if (column.IsExtraValue)
+                    column.IsDisabled = false;
+            }
+            var noCol = new CustomReportColumn {Name = "------"};
+            var q = from c in Columns
+                    join s in columns on c.UniqueName equals s.UniqueName into j
+                    from s in j.DefaultIfEmpty(noCol)
+                    select new {c, s};
+            foreach(var i in q)
+                if (i.s.Name == noCol.Name)
+                    i.c.Order = nn++;
                 else
                 {
-                    if (columnsAsList.Select(c => c.Name).Contains(column.Name))
-                        column.IsSelected = true;
+                    i.c.Order = i.s.Order;
+                    i.c.IsSelected = true;
+                    i.c.IsDisabled = false;
                 }
-            }
         }
     }
 
@@ -85,11 +81,14 @@ namespace CmsWeb.Areas.Reports.ViewModels
         public string OrgId { get; set; }
         public bool IsDisabled { get; set; }
         public string SmallGroup { get; set; }
-
         public bool IsSelected { get; set; }
 
-        public bool IsStatusFlag { get { return !string.IsNullOrEmpty(Flag); } }
-        public bool IsExtraValue { get { return !string.IsNullOrEmpty(Field); } }
-        public bool IsSmallGroup { get { return !string.IsNullOrEmpty(SmallGroup); } }
+        public bool IsStatusFlag => !string.IsNullOrEmpty(Flag);
+        public bool IsExtraValue => !string.IsNullOrEmpty(Field);
+        public bool IsSmallGroup => !string.IsNullOrEmpty(SmallGroup);
+        public string UniqueName => IsStatusFlag ? Description : IsExtraValue ? Field : IsSmallGroup ? SmallGroup : Name;
+
+        public int? Order { get; set; }
+        public string BindName { get; set; }
     }
 }

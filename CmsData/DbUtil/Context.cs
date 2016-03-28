@@ -1286,6 +1286,10 @@ namespace CmsData
             SubmitChanges();
             return c;
         }
+        public Content Content(string name, int contentTypeId)
+        {
+            return Contents.FirstOrDefault(cc => cc.Name == name);
+        }
         public string Content2(string name, string defaultValue, int contentTypeId)
         {
             var c = Content(name, defaultValue, contentTypeId);

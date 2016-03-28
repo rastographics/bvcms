@@ -113,13 +113,13 @@
         }
     });
 
-    $('.toolbar-custom-reports a[data-action="delete"]').click(function (e) {
+    $('#delete-report').click(function (e) {
         e.preventDefault();
 
-        var $reportNode = $(this).parent().parent();
-        var reportToDelete = $reportNode.text().trim();
-
-        var deleteUrl = $(this).attr('data-action-url');
+        var a = $(this);
+        var rowToDelete = a.parent().parent();
+        var reportToDelete = a.data("report");
+        var deleteUrl = a.data('action-url');
 
         swal({
             title: "Are you sure you want to delete this report? (" + reportToDelete + ")",
@@ -137,11 +137,10 @@
                         type: "success"
                     },
                         function () {
-                            $reportNode.remove();
+                            rowToDelete.remove();
                         });
                 }
             });
         });
     });
-
 });

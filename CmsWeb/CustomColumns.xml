@@ -11,67 +11,67 @@
       LEFT JOIN lookup.FamilyPosition fp ON fp.Id = p.PositionInFamilyId
     </join>
     <join name="rr">
-      left join dbo.recreg rr on rr.peopleid = p.peopleid
+      LEFT JOIN dbo.recreg rr ON rr.peopleid = p.peopleid
     </join>
     <join name="mo">
-      left join dbo.people mo on mo.familyid = p.familyid and mo.genderid = 2 and mo.positioninfamilyid = 10 and p.peopleid &lt;> mo.peopleid and p.positioninfamilyid not in (10,20)
+      LEFT JOIN dbo.people mo ON mo.familyid = p.familyid and mo.genderid = 2 and mo.positioninfamilyid = 10 and p.peopleid &lt;> mo.peopleid and p.positioninfamilyid not in (10,20)
     </join>
     <join name="fa">
-      left join dbo.people fa on fa.familyid = p.familyid and fa.genderid = 1 and fa.positioninfamilyid = 10 and p.peopleid &lt;> fa.peopleid and p.positioninfamilyid not in (10,20)
+      LEFT JOIN dbo.people fa ON fa.familyid = p.familyid and fa.genderid = 1 and fa.positioninfamilyid = 10 and p.peopleid &lt;> fa.peopleid and p.positioninfamilyid not in (10,20)
     </join>
     <join name="bs">
-      left join lookup.baptismstatus bs on bs.id = p.baptismstatusid
+      LEFT JOIN lookup.baptismstatus bs ON bs.id = p.baptismstatusid
     </join>
     <join name="bt">
-      left join lookup.baptismtype bt on bt.id = p.baptismtypeid
+      LEFT JOIN lookup.baptismtype bt ON bt.id = p.baptismtypeid
     </join>
     <join name="dt">
-      left join lookup.decisiontype dt on dt.id = p.decisiontypeid
+      LEFT JOIN lookup.decisiontype dt ON dt.id = p.decisiontypeid
     </join>
     <join name="jt">
-      left join lookup.jointype jt on jt.id = p.joincodeid
+      LEFT JOIN lookup.jointype jt ON jt.id = p.joincodeid
     </join>
     <join name="cp">
-      left join lookup.campus cp on cp.id = p.campusid
+      LEFT JOIN lookup.campus cp ON cp.id = p.campusid
     </join>
     <join name="drt">
-      left join lookup.droptype drt on drt.id = p.dropcodeid
+      LEFT JOIN lookup.droptype drt ON drt.id = p.dropcodeid
     </join>
     <join name="eopt">
-      left join lookup.envelopeoption eopt on eopt.id = p.envelopeoptionsid
+      LEFT JOIN lookup.envelopeoption eopt ON eopt.id = p.envelopeoptionsid
     </join>
     <join name="copt">
-      left join lookup.envelopeoption copt on copt.id = p.contributionoptionsid
+      LEFT JOIN lookup.envelopeoption copt ON copt.id = p.contributionoptionsid
     </join>
     <join name="ms">
-      left join lookup.memberstatus ms on ms.id = p.memberstatusid
+      LEFT JOIN lookup.memberstatus ms ON ms.id = p.memberstatusid
     </join>
     <join name="nmcs">
-      left join lookup.newmemberclassstatus nmcs on nmcs.id = p.newmemberclassstatusid
+      LEFT JOIN lookup.newmemberclassstatus nmcs ON nmcs.id = p.newmemberclassstatusid
     </join>
     <join name="lts">
-      left join lookup.memberletterstatus lts on lts.id = p.letterstatusid
+      LEFT JOIN lookup.memberletterstatus lts ON lts.id = p.letterstatusid
     </join>
     <join name="ep">
-      left join lookup.entrypoint ep on ep.id = p.entrypointid
+      LEFT JOIN lookup.entrypoint ep ON ep.id = p.entrypointid
     </join>
     <join name="ori">
-      left join lookup.origin ori on ori.id = p.originid
+      LEFT JOIN lookup.origin ori ON ori.id = p.originid
     </join>
     <join name="ip">
-      left join lookup.interestpoint ip on ip.id = p.interestpointid
+      LEFT JOIN lookup.interestpoint ip ON ip.id = p.interestpointid
     </join>
     <join name="rc">
-      left join lookup.residentcode rc on rc.id = p.primaryrescode
+      LEFT JOIN lookup.residentcode rc ON rc.id = p.primaryrescode
     </join>
     <join name="ts">
-  	  left join dbo.TransactionSummary ts on ts.OrganizationId = {orgid} and ts.PeopleId = p.PeopleId
+  	  LEFT JOIN dbo.TransactionSummary ts ON ts.OrganizationId = {orgid} and ts.PeopleId = p.PeopleId
     </join>
     <join name="bfcm">
-	    left join dbo.OrganizationMembers bfcm on bfcm.PeopleId = p.PeopleId AND bfcm.OrganizationId = p.BibleFellowshipClassId
+	    LEFT JOIN dbo.OrganizationMembers bfcm ON bfcm.PeopleId = p.PeopleId AND bfcm.OrganizationId = p.BibleFellowshipClassId
     </join>
     <join name="bfc">
-      left join dbo.Organizations bfc on bfc.OrganizationId = p.BibleFellowshipClassId
+      LEFT JOIN dbo.Organizations bfc ON bfc.OrganizationId = p.BibleFellowshipClassId
     </join>
     <join name="lao">
       LEFT JOIN dbo.LastAttendOrg({orgid}) lao ON lao.PeopleId = p.PeopleId
@@ -163,11 +163,7 @@
     <column name="ResidentCode" join="rc">rc.description	</column>
     <column name="CreatedDt">p.createddate</column>
     <column name="CreatedBy">
-      (
-        select name 
-        from users u 
-        where u.userid = p.createdby
-      )
+      ( SELECT name FROM users u WHERE u.userid = p.createdby )
     </column>
     <column name="Advil" join="rr">rr.advil</column>
     <column name="Tylenol" join="rr">rr.tylenol</column>
@@ -188,19 +184,10 @@
     <column name="ActiveOtherChurch" join="rr">rr.activeinanotherchurch</column>
     <column name="LeaderName">dbo.organizationleadername(p.biblefellowshipclassid)</column>
     <column name="UserId">
-      (
-        select top 1 userid 
-        from dbo.users u 
-        where u.peopleid = p.peopleid order by userid
-      )	
+      ( SELECT TOP 1 userid FROM dbo.users u WHERE u.peopleid = p.peopleid ORDER BY userid )	
     </column>
     <column name="UserName">
-      (
-        select top 1 username 
-        from dbo.users u 
-        where u.peopleid = p.peopleid 
-        order by userid
-      )	
+      ( SELECT TOP 1 username FROM dbo.users u WHERE u.peopleid = p.peopleid ORDER BY userid )	
     </column>
     <column name="Father" join="fa"> fa.name </column>
     <column name="FatherEmail" join="fa"> fa.emailaddress </column>
@@ -220,47 +207,47 @@
   <SpecialColumns>
     <column name="StatusFlag">
       (
-        select '{desc}'
-        from dbo.tag t 
-        join dbo.tagperson tp on tp.id = t.id 
-        where tp.peopleid = p.peopleid 
-        and t.name = '{flag}' 
-        and t.typeid = 100
+        SELECT '{desc}'
+        FROM dbo.tag t 
+        JOIN dbo.tagperson tp on tp.id = t.id 
+        WHERE tp.peopleid = p.peopleid 
+        AND t.name = '{flag}' 
+        AND t.typeid = 100
       )
     </column>
     <column name="ExtraValueCode">
       (
-        select strvalue 
-        from dbo.peopleextra pe 
-        where pe.peopleid = p.peopleid and field = '{field}'
+        SELECT strvalue 
+        FROM dbo.peopleextra pe 
+        WHERE pe.peopleid = p.peopleid AND field = '{field}'
       )
     </column>
     <column name="ExtraValueDate">
       (
-        select datevalue 
-        from dbo.peopleextra pe 
-        where pe.peopleid = p.peopleid and field = '{field}'
+        SELECT datevalue 
+        FROM dbo.peopleextra pe 
+        WHERE pe.peopleid = p.peopleid AND field = '{field}'
       )
     </column>
     <column name="ExtraValueText">
       (
-        select data 
-        from dbo.peopleextra pe 
-        where pe.peopleid = p.peopleid and field = '{field}'
+        SELECT data 
+        FROM dbo.peopleextra pe 
+        WHERE pe.peopleid = p.peopleid AND field = '{field}'
       )
     </column>
     <column name="ExtraValueInt">
       (
-        select intvalue 
-        from dbo.peopleextra pe 
-        where pe.peopleid = p.peopleid and field = '{field}'
+        SELECT intvalue 
+        FROM dbo.peopleextra pe 
+        WHERE pe.peopleid = p.peopleid AND field = '{field}'
       )
     </column>
     <column name="ExtraValueBit">
       (
-        select bitvalue 
-        from dbo.peopleextra pe 
-        where pe.peopleid = p.peopleid and field = '{field}'
+        SELECT bitvalue 
+        FROM dbo.peopleextra pe 
+        WHERE pe.peopleid = p.peopleid AND field = '{field}'
       )
      </column>
     <column name="SmallGroup" context="org">

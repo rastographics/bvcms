@@ -3,8 +3,6 @@
     var qid = ViewBag.queryid;
     var wid = ViewExtensions2.DbSetting("WorshipId", "0").ToInt();
     var oid = ViewBag.oid;
-    var custom = (new CustomReportsModel(DbUtil.Db, oid)).ReportList().ToList();
-    var isAdmin = User.IsInRole("Admin") || User.IsInRole("Design");
 }
 <ul class="dropdown-menu dropdown-menu-large dropdown-menu-right container bluebar-menu-col-3">
     @if (((bool?)ViewBag.OrganizationContext) == true)
@@ -106,45 +104,6 @@
                 <li><a id="RecentAbsents" href="/Reports/RecentAbsents1/@oid" target="_blank"><span class="org-context">Recent Absents Report</span></a></li>
                 <li><a id="RecentAttendRpt" href="/Reports/PastAttendee/@oid" target="_blank"><span class="org-context">Recent Attendance Report</span></a></li>
                 <li><a id="AttendanceRpt" href="/Reports/Attendance/@oid"><span class="org-context">Attendance Percentages</span></a></li>
-            }
-            @if (custom.Count > 0)
-            {
-                <li class="divider"></li>
-                <li class="dropdown-header">Custom Reports</li>
-                if (isAdmin)
-                {
-                    foreach (var r in custom)
-                    {
-                        <li>
-                            <div class="toolbar-custom-reports">
-                                <a class="run-custom-report" target="_blank" href="/Reports/@r.type/@r/@qid" class="qid">@r</a>
-                                @if (r.report != "AllColumns" && r.type == "Custom")
-                                {
-                                    <span>
-                                        <a href="@Url.Action("EditCustomReport", "Reports", new {Area = "Reports", reportName = r, orgId = oid, queryId = qid})"><i class="fa fa-pencil"></i></a>
-                                        <a href="#" data-action="delete" data-action-url="@Url.Action("DeleteCustomReport", "Reports", new {Area = "Reports", reportName = r, orgId = oid})"><i class="fa fa-trash-o"></i></a>
-                                    </span>
-                                }
-                            </div>
-                        </li>
-                      if (r.type == "Custom")
-                      {
-                        <li class="hideAlt"><a target="_blank" href="/Reports/CustomSql/@r/@qid" class="qid">@r (sql)</a></li>
-                      }
-                    }
-                    <li>@Html.ActionLink("New Custom Report", "EditCustomReport", "Reports", new { Area = "Reports", orgId = oid, queryId = qid }, null)</li>
-                }
-                else
-                {
-                    foreach (var r in custom)
-                    {
-                        <li><a target="_blank" href="/Reports/@r.type/@r/@qid" class="qid">@r</a></li>
-                      if (r.type == "Custom")
-                      {
-                        <li class="hideAlt"><a target="_blank" href="/Reports/CustomSql/@r/@qid" class="qid">@r (sql)</a></li>
-                      }
-                    }
-                }
             }
         </ul>
     </li>

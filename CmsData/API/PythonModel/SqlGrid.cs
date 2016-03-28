@@ -51,7 +51,7 @@ namespace CmsData
                 }
             }
         }
-        public static Table HtmlTable(IDataReader rd, string title = null)
+        public static Table HtmlTable(IDataReader rd, string title = null, int? maxrows = null)
         {
             var pctnames = new List<string> {"pct", "percent"};
             var t = new Table();
@@ -91,8 +91,12 @@ namespace CmsData
                 });
             }
             t.Rows.Add(h);
+            var rn = 0;
             while (rd.Read())
             {
+                rn++;
+                if (maxrows.HasValue && rn > maxrows)
+                    continue;
                 var r = new TableRow();
                 for (var i = 0; i < rd.FieldCount; i++)
                 {
@@ -109,15 +113,24 @@ namespace CmsData
                                 : Convert.ToDecimal(rd[i]).ToString("c");
                             align = HorizontalAlign.Right;
                             break;
+                        case "real":
                         case "float":
                             s = StartsEndsWith(pctnames, nam)
                                 ? Convert.ToDouble(rd[i]).ToString("N1") + "%"
                                 : Convert.ToDouble(rd[i]).ToString("N1");
                             align = HorizontalAlign.Right;
                             break;
+                        case "date":
+                        case "datetime":
+                            var dt = rd[i].ToDate();
+                            if (dt.HasValue && dt.Value.Date != dt.Value)
+                                s = dt.FormatDateTime();
+                            else
+                                s = dt.FormatDate();
+                            break;
                         case "int":
                             var ii = rd[i].ToInt();
-                            if (nam.Equal("peopleid"))
+                            if (nam.Equal("peopleid") || nam.Equal("spouseid"))
                                 s = $"<a href='/Person2/{ii}' target='Person'>{ii}</a>";
                             else if (nam.Equal("organizationid"))
                                 s = $"<a href='/Org/{ii}' target='Organization'>{ii}</a>";
@@ -143,10 +156,13 @@ namespace CmsData
                 }
                 t.Rows.Add(r);
             }
-            var tc = new TableCell
+            var rowcount = $"Count = {rn} rows";
+            if (maxrows.HasValue && rn > maxrows)
+                rowcount = $"Displaying {maxrows} of {rn} rows";
+            var tc = new TableCell()
             {
                 ColumnSpan = rd.FieldCount,
-                Text = $"Count = {t.Rows.Count - 1} rows"
+                Text = rowcount,
             };
             var tr = new TableFooterRow();
             tr.Cells.Add(tc);
@@ -155,7 +171,14 @@ namespace CmsData
         }
         public static bool StartsEndsWith(List<string> list, string name)
         {
-            return list.Any(vv => name.StartsWith(vv) || name.EndsWith(vv));
+            return list.Any(vv => 
+                name.StartsWith(vv,StringComparison.OrdinalIgnoreCase) 
+                || name.EndsWith(vv,StringComparison.OrdinalIgnoreCase));
+        }
+        public static bool StartsEndsWith(string pattern, string name)
+        {
+            return name.StartsWith(pattern,StringComparison.OrdinalIgnoreCase) 
+                || name.EndsWith(pattern,StringComparison.OrdinalIgnoreCase);
         }
         public static string Table(IDataReader rd)
         {
