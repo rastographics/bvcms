@@ -79,6 +79,9 @@
     <join name="laa">
       LEFT JOIN dbo.LastAttends laa ON laa.PeopleId = p.PeopleId
     </join>
+    <join name="faa">
+      LEFT JOIN dbo.FirstAttends faa ON faa.PeopleId = p.PeopleId
+    </join>
     <join name="op">
       LEFT JOIN dbo.OrgPeople({orgid}, '1020304050', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) op ON op.PeopleId = p.PeopleId
     </join>
@@ -203,6 +206,10 @@
     <column name="LastAttendOrgId" join="laa"> laa.OrganizationId </column>
     <column name="LastAttendedMF" join="bfcm"> bfcm.LastAttended </column>
     <column name="LastAttendedCO" join="lao"> lao.LastAttended </column>
+    <column name="FirstAttend" join="faa"> faa.FirstAttend </column>
+    <column name="FirstAttendOrg" join="faa"> faa.OrganizationName </column>
+    <column name="FirstAttendOrgId" join="faa"> faa.OrganizationId </column>
+    <column name="AttendHistory"> dbo.CompactAttendHistory(p.peopleid) </column>
   </Columns>
   <SpecialColumns>
     <column name="StatusFlag">

@@ -7,6 +7,7 @@
   var sql = m.SqlList();
   var python = m.PythonList();
   ViewBag.ReportPageHeader = ViewBag.Name;
+  var canedit = User.IsInRole("Admin") || User.IsInRole("Design");
 }
 <ul class="dropdown-menu dropdown-menu-large dropdown-menu-right container bluebar-menu-col-3">
   @if (sql.Count > 0)
@@ -46,55 +47,12 @@
           <a target="_blank" href="/Reports/Custom/@r/@qid" class="qid">@r.Display</a>
         </li>
       }
+      @if (canedit)
+      {
       <li>
         <a href="@m.NewUrl(oid,qid)"><i class="fa fa-pencil"></i> New Custom Report</a>
       </li>
-      @*
-      @if (custom.Count > 0 || isAdmin)
-      {
-        <li class="dropdown-header">Custom Reports</li>
-        if (isAdmin)
-        {
-          foreach (var r in custom)
-          {
-            <li>
-              <span class="toolbar-custom-reports">
-                <a class="run-custom-report" target="_blank" href="/Reports/@r.Type/@r/@qid" class="qid">@r.Display</a>
-                @if (r.Report != "AllColumns" && r.Type == "Custom")
-                {
-                  <span>
-                      <a href="@Url.Action("EditCustomReport", "Reports", new {Area = "Reports", reportName = r, orgId = oid, queryId = qid})"><i class="fa fa-pencil"></i></a>
-                      <a href="#" data-action="delete" data-action-url="@Url.Action("DeleteCustomReport", "Reports", new {Area = "Reports", reportName = r, orgId = oid})"><i class="fa fa-trash-o"></i></a>
-                  </span>
-                }
-              </span>
-            </li>
-            if (r.Type == "Custom")
-            {
-              <li class="hideAlt">
-                <a target="_blank" href="/Reports/CustomSql/@r/@qid" class="qid">@r (sql)</a>
-              </li>
-            }
-          }
-          <li>@Html.ActionLink("New Custom Report", "EditCustomReport", "Reports", new {Area = "Reports", orgId = oid, queryId = qid}, null)</li>
-        }
-        else
-        {
-          foreach (var r in custom)
-          {
-            <li>
-              <a target="_blank" href="/Reports/@r.Type/@r/@qid" class="qid">@r</a>
-            </li>
-            if (r.Type == "Custom")
-            {
-              <li class="hideAlt">
-                <a target="_blank" href="/Reports/CustomSql/@r/@qid" class="qid">@r (sql)</a>
-              </li>
-            }
-          }
-        }
       }
-*@
     </ul>
   </li>
 </ul>
