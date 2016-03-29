@@ -443,15 +443,6 @@ namespace CmsWeb.Areas.Public.Controllers
 
                 f.People.Add(p);
 
-                p.PositionInFamilyId = PositionInFamily.Child;
-
-                if (aep.birthday != null && p.GetAge() >= 18)
-                {
-                    if (f.People.Count(per => per.PositionInFamilyId == PositionInFamily.PrimaryAdult) < 2)
-                        p.PositionInFamilyId = PositionInFamily.PrimaryAdult;
-                    else
-                        p.PositionInFamilyId = PositionInFamily.SecondaryAdult;
-                }
             }
 
             p.FirstName = aep.firstName;
@@ -463,6 +454,16 @@ namespace CmsWeb.Areas.Public.Controllers
                 p.BirthDay = aep.birthday.Value.Day;
                 p.BirthMonth = aep.birthday.Value.Month;
                 p.BirthYear = aep.birthday.Value.Year;
+
+                p.PositionInFamilyId = PositionInFamily.Child;
+
+                if (p.GetAge() >= 18)
+                {
+                    if (f.People.Count(per => per.PositionInFamilyId == PositionInFamily.PrimaryAdult) < 2)
+                        p.PositionInFamilyId = PositionInFamily.PrimaryAdult;
+                    else
+                        p.PositionInFamilyId = PositionInFamily.SecondaryAdult;
+                }
             }
 
             p.GenderId = aep.genderID;
@@ -644,7 +645,7 @@ namespace CmsWeb.Areas.Public.Controllers
                           home = p.HomePhone,
                           address = p.Family.AddressLineOne,
                           age = p.Age ?? 0
-                      }).ToList();
+                      }).Take(200).ToList();
 
             foreach (var person in q2)
             {
