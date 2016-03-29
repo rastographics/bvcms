@@ -15,6 +15,7 @@ using CmsWeb.Areas.Reports.ViewModels;
 using CmsWeb.Models;
 using Dapper;
 using UtilityExtensions;
+using UtilityExtensions.Extensions;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -33,13 +34,14 @@ namespace CmsWeb.Areas.Reports.Models
             mc = new CustomColumnsModel();
         }
 
-        public CustomReportsModel(CMSDataContext db, string report, Guid? id = null)
-            : this(db)
+        public CustomReportsModel(CMSDataContext db, string report, Guid? id = null, int? orgId = null)
+            : this(db, orgId)
         {
             Report = report;
             if (id != null)
                 queryid = id.Value;
-            orgid = db.CurrentOrgId0;
+            if(orgid == null)
+                orgid = db.CurrentOrgId0;
         }
 
         public class ReportItem
@@ -64,7 +66,7 @@ namespace CmsWeb.Areas.Reports.Models
         public Organization Org => db.LoadOrganizationById(orgid);
         public string ExcelUrl => $"/Reports/CustomExcel/{Report}/{queryid}";
         public string EditUrl => GetEditUrl(Report, queryid, orgid);
-        public string NewUrl(int? oid) => $"/Reports/EditCustomReport/{queryid}{(oid > 0 ? $"?orgid={oid}" : "")}";
+        public string NewUrl(int? oid, Guid qid) => $"/Reports/EditCustomReport/{qid}{(oid > 0 ? $"?orgid={oid}" : "")}";
         public string DeleteUrl => $"/Reports/DeleteCustomReport/{Report}";
         public string Name => Report.SpaceCamelCase();
 
@@ -400,20 +402,23 @@ namespace CmsWeb.Areas.Reports.Models
             SetCustomReportsContent(xdoc.ToString());
         }
 
-        public XElement GetReportByName(string reportName)
+        public XElement GetReportByName()
         {
             var xdoc = GetCustomReportXml();
-            return FindReportOnDocument(xdoc, reportName);
+            return FindReportOnDocument(xdoc, Report);
         }
 
-        public SaveReportStatus SaveReport(string originalReportName, string newReportName, IEnumerable<CustomReportColumn> selectedColumns, bool restrictToThisOrg)
+        public void SaveReport(string originalReportName, string newReportName, IEnumerable<CustomReportColumn> selectedColumns, bool restrictToThisOrg)
         {
             var xdoc = GetCustomReportXml();
 
             var newColumns = from column in selectedColumns
                              select new XElement("Column", MapCustomReportToAttributes(column));
 
-            if (!string.IsNullOrEmpty(originalReportName))
+            if(restrictToThisOrg && !orgid.HasValue)
+                throw new Exception("Missing OrgId");
+
+            if (originalReportName.HasValue())
             {
                 var nodeToChange = FindReportOnDocument(xdoc, originalReportName);
                 if (nodeToChange != null)
@@ -431,17 +436,14 @@ namespace CmsWeb.Areas.Reports.Models
             else
             {
                 if (FindReportOnDocument(xdoc, newReportName) != null)
-                    return SaveReportStatus.ReportAlreadyExists;
+                    throw new Exception("Report already exists");
 
                 var reportElement = new XElement("Report", newColumns, new XAttribute("name", newReportName));
                 if (restrictToThisOrg)
                     reportElement.Add(new XAttribute("showOnOrgId", orgid.Value));
-                xdoc.Root.Add(reportElement);
+                xdoc.Root?.Add(reportElement);
             }
-
             SetCustomReportsContent(xdoc.ToString());
-
-            return SaveReportStatus.Success;
         }
 
         public string AddReport(string report, string url, string type)
@@ -563,5 +565,57 @@ namespace CmsWeb.Areas.Reports.Models
             Success,
             ReportAlreadyExists
         }
+        public CustomReportViewModel EditCustomReport(CustomReportViewModel originalReportViewModel, bool? alreadySaved)
+        {
+            var orgName = orgid.HasValue
+                ? DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == orgid.Value)?.OrganizationName
+                : null;
+
+            if (!Report.HasValue())
+                return new CustomReportViewModel(orgid, queryid, orgName, GetAllStandardColumns());
+
+            var vm = new CustomReportViewModel(orgid, queryid, orgName, GetAllStandardColumns(), Report);
+
+            var reportXml = GetReportByName();
+            if (reportXml == null)
+                throw new Exception("Report not found.");
+
+            var columns = MapXmlToCustomReportColumn(reportXml);
+
+            var showOnOrgIdValue = reportXml.AttributeOrNull("showOnOrgId");
+            int showOnOrgId;
+            if (!string.IsNullOrEmpty(showOnOrgIdValue) && int.TryParse(showOnOrgIdValue, out showOnOrgId))
+                vm.RestrictToThisOrg = showOnOrgId == orgid;
+
+            vm.SetSelectedColumns(columns);
+            vm.Columns = vm.Columns.OrderBy(cc => cc.Order).ToList();
+
+            if (originalReportViewModel != null)
+                vm.ReportName = originalReportViewModel.ReportName;
+            vm.CustomReportSuccessfullySaved = alreadySaved.GetValueOrDefault();
+            return vm;
+        }
+        private List<CustomReportColumn> GetAllStandardColumns()
+        {
+            var reportXml = StandardColumns();
+            return MapXmlToCustomReportColumn(reportXml);
+        }
+
+        private static List<CustomReportColumn> MapXmlToCustomReportColumn(XContainer reportXml)
+        {
+            var q = from column in reportXml.Descendants("Column")
+                    select new CustomReportColumn
+                    {
+                        Name = column.AttributeOrNull("name"),
+                        Description = column.AttributeOrNull("description"),
+                        Flag = column.AttributeOrNull("flag"),
+                        OrgId = column.AttributeOrNull("orgid"),
+                        SmallGroup = column.AttributeOrNull("smallgroup"),
+                        Field = column.AttributeOrNull("field"),
+                        IsDisabled = column.AttributeOrNull("disabled").ToBool(),
+                    };
+            return q.ToList();
+        }
+
     }
 }

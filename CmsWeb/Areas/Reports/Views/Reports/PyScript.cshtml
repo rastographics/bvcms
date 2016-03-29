@@ -1,13 +1,11 @@
-﻿
-@model CmsData.PythonModel
-
+﻿@model CmsWeb.Areas.Reports.Controllers.SpecialReportViewModel
 @{
-    ViewBag.Title = "Test Script";
-    //ViewBag.PageHeader = Model.ContentType;
+    ViewBag.Title = "Python Script";
+    ViewBag.PageHeader = Model.Name;
     Layout = ViewExtensions2.TouchPointLayout();
 }
 <div class="box box-responsive">
     <div class="box-content">
-        @Html.Raw(Model.Output)
+        @Html.Raw(Model.Results)
     </div>
 </div>

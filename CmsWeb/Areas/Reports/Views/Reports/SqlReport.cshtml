@@ -1,12 +1,13 @@
-﻿@{
+﻿@model CmsWeb.Areas.Reports.Controllers.SpecialReportViewModel
+@{
     ViewBag.Title = "Sql Report";
-    ViewBag.ReportPageHeader = ViewBag.Name;
+    ViewBag.ReportPageHeader = Model.Name;
     Layout = ViewExtensions2.TouchPointLayout();
 }
 <div class="report box box-responsive">
   <div class="box-content">
     <div class="table-responsive">
-      @Html.Raw(ViewBag.report)
+      @Html.Raw(Model.Results)
       <strong>Total Count</strong> <span class="badge"></span>
     </div>
   </div>
