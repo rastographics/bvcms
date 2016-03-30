@@ -17,6 +17,9 @@ ALTER TABLE [dbo].[Volunteer] DROP CONSTRAINT [FK_Volunteer_VolApplicationStatus
 ALTER TABLE [dbo].[Users] DROP CONSTRAINT [FK_Users_People]
 ALTER TABLE [dbo].[UserRole] DROP CONSTRAINT [FK_UserRole_Roles]
 ALTER TABLE [dbo].[UserRole] DROP CONSTRAINT [FK_UserRole_Users]
+ALTER TABLE [dbo].[TagPerson] DROP CONSTRAINT [PersonTags__Tag]
+ALTER TABLE [dbo].[TagPerson] DROP CONSTRAINT [Tags__Person]
+ALTER TABLE [dbo].[Tag] DROP CONSTRAINT [TagsOwned__PersonOwner]
 ALTER TABLE [dbo].[RecReg] DROP CONSTRAINT [FK_RecReg_People]
 ALTER TABLE [dbo].[People] DROP CONSTRAINT [FK_People_BaptismStatus]
 ALTER TABLE [dbo].[People] DROP CONSTRAINT [FK_People_BaptismType]
@@ -3029,6 +3032,12 @@ SET IDENTITY_INSERT [dbo].[People] OFF
 SET IDENTITY_INSERT [dbo].[RecReg] ON
 INSERT INTO [dbo].[RecReg] ([Id], [PeopleId], [ImgId], [IsDocument], [ActiveInAnotherChurch], [ShirtSize], [MedAllergy], [email], [MedicalDescription], [fname], [mname], [coaching], [member], [emcontact], [emphone], [doctor], [docphone], [insurance], [policy], [Comments], [Tylenol], [Advil], [Maalox], [Robitussin]) VALUES (2, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[RecReg] OFF
+SET IDENTITY_INSERT [dbo].[Tag] ON
+INSERT INTO [dbo].[Tag] ([Id], [Name], [TypeId], [Owner], [Active], [PeopleId], [Created]) VALUES (516, N'TrackBirthdays', 1, NULL, NULL, 3, '2016-03-29 12:35:12.727')
+INSERT INTO [dbo].[Tag] ([Id], [Name], [TypeId], [Owner], [Active], [PeopleId], [Created]) VALUES (517, N'UnNamed', 1, NULL, NULL, 3, '2016-03-29 12:35:12.977')
+INSERT INTO [dbo].[Tag] ([Id], [Name], [TypeId], [Owner], [Active], [PeopleId], [Created]) VALUES (518, N'zobkfxxzq4aqfq4if4krfcvs', 7, NULL, NULL, 3, '2016-03-29 12:35:55.040')
+SET IDENTITY_INSERT [dbo].[Tag] OFF
+INSERT INTO [dbo].[TagPerson] ([Id], [PeopleId], [DateCreated]) VALUES (518, 3, '2016-03-29 12:35:55.977')
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (1, 1)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (1, 2)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (1, 3)
@@ -3064,7 +3073,7 @@ INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 25)
 SET IDENTITY_INSERT [dbo].[Users] ON
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (1, 1, N'Admin', NULL, N'2352354235', NULL, NULL, 1, '2015-11-09 11:12:44.827', NULL, '2015-01-14 14:36:59.747', '2009-05-05 22:46:43.890', 0, '2014-10-16 15:43:29.923', 1, '2015-11-09 11:11:29.540', 0, NULL, NULL, NULL, 1, N'starterdb.bvcms.com', N'bvcms', N'The Admin', N'Admin, The', NULL, NULL, '2014-10-17 15:42:49.050')
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (2, 2, N'david', N'', N'uNVML/ZamnY7YdE1NXvMHPIznic=', NULL, NULL, 1, '2016-01-07 13:55:54.940', '2016-01-07 12:42:32.987', '2013-12-19 00:03:08.440', '2010-10-30 15:23:25.763', 0, '2013-12-19 00:03:08.360', 0, '2013-12-18 22:54:19.783', 0, '2010-10-30 15:23:25.763', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'David Carroll', N'Carroll, David', NULL, NULL, '2013-12-19 22:55:00.120')
-INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (3, 3, N'karenw', N'', N'lpSVokbyDdVaXxNGDjZT4St468A=', NULL, NULL, 1, '2016-03-04 12:16:26.690', '2016-03-04 12:16:11.077', '2013-10-14 10:43:23.743', '2010-10-30 15:29:25.757', 0, '2013-10-14 10:43:23.667', 0, '2013-10-14 10:41:24.547', 0, '2010-10-30 15:29:25.757', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'Karen Worrell', N'Worrell, Karen', NULL, NULL, '2013-10-15 10:42:47.710')
+INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (3, 3, N'karenw', N'', N'lpSVokbyDdVaXxNGDjZT4St468A=', NULL, NULL, 1, '2016-03-29 12:35:55.810', '2016-03-29 12:35:12.353', '2013-10-14 10:43:23.743', '2010-10-30 15:29:25.757', 0, '2013-10-14 10:43:23.667', 0, '2013-10-14 10:41:24.547', 0, '2010-10-30 15:29:25.757', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'Karen Worrell', N'Worrell, Karen', NULL, NULL, '2013-10-15 10:42:47.710')
 SET IDENTITY_INSERT [dbo].[Users] OFF
 INSERT INTO [dbo].[Volunteer] ([PeopleId], [StatusId], [ProcessedDate], [Standard], [Children], [Leader], [Comments], [MVRStatusId], [MVRProcessedDate]) VALUES (3, NULL, NULL, 0, 0, 0, NULL, NULL, NULL)
 ALTER TABLE [dbo].[Volunteer] WITH NOCHECK ADD CONSTRAINT [StatusMvrId__StatusMvr] FOREIGN KEY ([MVRStatusId]) REFERENCES [lookup].[VolApplicationStatus] ([Id])
@@ -3073,6 +3082,9 @@ ALTER TABLE [dbo].[Volunteer] WITH NOCHECK ADD CONSTRAINT [FK_Volunteer_VolAppli
 ALTER TABLE [dbo].[Users] ADD CONSTRAINT [FK_Users_People] FOREIGN KEY ([PeopleId]) REFERENCES [dbo].[People] ([PeopleId])
 ALTER TABLE [dbo].[UserRole] ADD CONSTRAINT [FK_UserRole_Roles] FOREIGN KEY ([RoleId]) REFERENCES [dbo].[Roles] ([RoleId])
 ALTER TABLE [dbo].[UserRole] ADD CONSTRAINT [FK_UserRole_Users] FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users] ([UserId])
+ALTER TABLE [dbo].[TagPerson] WITH NOCHECK ADD CONSTRAINT [PersonTags__Tag] FOREIGN KEY ([Id]) REFERENCES [dbo].[Tag] ([Id])
+ALTER TABLE [dbo].[TagPerson] WITH NOCHECK ADD CONSTRAINT [Tags__Person] FOREIGN KEY ([PeopleId]) REFERENCES [dbo].[People] ([PeopleId])
+ALTER TABLE [dbo].[Tag] ADD CONSTRAINT [TagsOwned__PersonOwner] FOREIGN KEY ([PeopleId]) REFERENCES [dbo].[People] ([PeopleId])
 ALTER TABLE [dbo].[RecReg] ADD CONSTRAINT [FK_RecReg_People] FOREIGN KEY ([PeopleId]) REFERENCES [dbo].[People] ([PeopleId])
 ALTER TABLE [dbo].[People] ADD CONSTRAINT [FK_People_BaptismStatus] FOREIGN KEY ([BaptismStatusId]) REFERENCES [lookup].[BaptismStatus] ([Id])
 ALTER TABLE [dbo].[People] ADD CONSTRAINT [FK_People_BaptismType] FOREIGN KEY ([BaptismTypeId]) REFERENCES [lookup].[BaptismType] ([Id])
