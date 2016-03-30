@@ -1,4 +1,5 @@
 using System;
+using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
@@ -111,7 +112,9 @@ namespace CmsWeb.Areas.Main.Controllers
             if (draftId.HasValue && draftId > 0)
                 content = DbUtil.ContentFromID(draftId.Value);
 
-            if (content == null)
+            if (content != null)
+                DbUtil.Db.ArchiveContent(draftId);
+            else 
             {
                 content = new Content
                 {
@@ -126,6 +129,8 @@ namespace CmsWeb.Areas.Main.Controllers
 
             content.Title = draftSubject;
             content.Body = GetBody(draftBody);
+            content.Archived = null;
+            content.ArchivedFromId = null;
 
             content.DateCreated = DateTime.Now;
 

@@ -1133,6 +1133,12 @@ namespace CmsData
             var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid, pid, n, answer);
             return ((int)(result.ReturnValue));
         }
+        [Function(Name = "dbo.ArchiveContent")]
+        public int ArchiveContent([Parameter(DbType = "Int")] int? id)
+        {
+            var result = ExecuteMethodCall(this, (MethodInfo)(MethodBase.GetCurrentMethod()), id);
+            return (int)(result?.ReturnValue ?? 0);
+        }
         public IQueryable<View.OrgPerson> OrgPeople(int? oid, string sgfilter)
         {
             return OrgPeople(oid, GroupSelectCode.Member, null, null, sgfilter, false, false, false);
