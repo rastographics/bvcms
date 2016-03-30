@@ -61,6 +61,12 @@ namespace CmsWeb.Areas.Public.Controllers
             };
             DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
             DbUtil.Db.SubmitChanges();
+
+            var uri = new Uri(url);
+            var b = uri.Scheme + "://" + uri.Authority;
+            if(url.StartsWith(b))
+            	url = url.Substring(b.Length);
+
             return $"{Util.CmsHost2}Logon?ReturnUrl={HttpUtility.UrlEncode(url)}&otltoken={ot.Id.ToCode()}";
         }
 
