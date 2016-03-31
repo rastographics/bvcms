@@ -36,6 +36,8 @@ namespace CmsData
 		
 		private string _FieldValue;
 		
+		private bool? _UseAllValues;
+		
 		private string _Type;
 		
    		
@@ -75,6 +77,9 @@ namespace CmsData
 		
 		partial void OnFieldValueChanging(string value);
 		partial void OnFieldValueChanged();
+		
+		partial void OnUseAllValuesChanging(bool? value);
+		partial void OnUseAllValuesChanged();
 		
 		partial void OnTypeChanging(string value);
 		partial void OnTypeChanged();
@@ -294,7 +299,29 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="Type", UpdateCheck=UpdateCheck.Never, Storage="_Type", DbType="varchar(18) NOT NULL", IsDbGenerated=true)]
+		[Column(Name="UseAllValues", UpdateCheck=UpdateCheck.Never, Storage="_UseAllValues", DbType="bit")]
+		public bool? UseAllValues
+		{
+			get { return this._UseAllValues; }
+
+			set
+			{
+				if (this._UseAllValues != value)
+				{
+				
+                    this.OnUseAllValuesChanging(value);
+					this.SendPropertyChanging();
+					this._UseAllValues = value;
+					this.SendPropertyChanged("UseAllValues");
+					this.OnUseAllValuesChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Type", UpdateCheck=UpdateCheck.Never, Storage="_Type", DbType="varchar(22) NOT NULL", IsDbGenerated=true)]
 		public string Type
 		{
 			get { return this._Type; }

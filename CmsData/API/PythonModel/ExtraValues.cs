@@ -83,6 +83,8 @@ namespace CmsData
                         return ev.BitValue.ToString();
                     case "Int":
                         return ev.IntValue.ToString();
+                    case "Data":
+                        return $"{ev.StrValue};{ev.DateValue.FormatDate()};{ev.BitValue};{ev.IntValue};{ev.Data}";
                     default:
                         return $"unknown type: {ev.Type}";
                 }

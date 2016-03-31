@@ -583,6 +583,7 @@
     <Compile Include="Generated\Views\FailedEmail.cs" />
     <Compile Include="Generated\Views\FailedRecurringGiving.cs" />
     <Compile Include="Generated\Views\FamilyFirstTime.cs" />
+    <Compile Include="Generated\Views\FirstAttend.cs" />
     <Compile Include="Generated\Views\IncompleteTask.cs" />
     <Compile Include="Generated\Views\InProgressRegistration.cs" />
     <Compile Include="Generated\Views\LastAttend.cs" />

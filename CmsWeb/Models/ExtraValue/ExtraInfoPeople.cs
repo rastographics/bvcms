@@ -64,6 +64,7 @@ namespace CmsWeb.Models.ExtraValues
             var qdatavalues = (from e in DbUtil.Db.PeopleExtras
                                where !(e.Type == "Bit" || e.Type == "Code")
                                where e.Type != "CodeText"
+                               where e.UseAllValues != true
                                group e by new
                                {
                                    e.Field,

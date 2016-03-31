@@ -192,6 +192,19 @@ namespace CmsData
             }
             return ev;
         }
+
+        public void AddEditExtraValue(string field, string code, DateTime? date, string text, bool? bit, int? intn, DateTime? dt = null)
+        {
+            var ev = GetExtraValue(field);
+            ev.StrValue = code;
+            ev.Data = text;
+            ev.DateValue = date;
+            ev.IntValue = intn;
+            ev.BitValue = bit;
+            ev.UseAllValues = true;
+            ev.TransactionTime = dt ?? DateTime.Now;
+        }
+
         public void RemoveExtraValue(CMSDataContext db, string field)
         {
             var ev = FamilyExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase: true) == 0);

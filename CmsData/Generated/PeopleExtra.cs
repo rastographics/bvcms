@@ -40,6 +40,8 @@ namespace CmsData
 		
 		private string _Type;
 		
+		private bool? _UseAllValues;
+		
    		
     	
 		private EntityRef< Person> _Person;
@@ -83,6 +85,9 @@ namespace CmsData
 		
 		partial void OnTypeChanging(string value);
 		partial void OnTypeChanged();
+		
+		partial void OnUseAllValuesChanging(bool? value);
+		partial void OnUseAllValuesChanged();
 		
     #endregion
 		public PeopleExtra()
@@ -321,7 +326,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="Type", UpdateCheck=UpdateCheck.Never, Storage="_Type", DbType="varchar(18) NOT NULL", IsDbGenerated=true)]
+		[Column(Name="Type", UpdateCheck=UpdateCheck.Never, Storage="_Type", DbType="varchar(22) NOT NULL", IsDbGenerated=true)]
 		public string Type
 		{
 			get { return this._Type; }
@@ -336,6 +341,28 @@ namespace CmsData
 					this._Type = value;
 					this.SendPropertyChanged("Type");
 					this.OnTypeChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="UseAllValues", UpdateCheck=UpdateCheck.Never, Storage="_UseAllValues", DbType="bit")]
+		public bool? UseAllValues
+		{
+			get { return this._UseAllValues; }
+
+			set
+			{
+				if (this._UseAllValues != value)
+				{
+				
+                    this.OnUseAllValuesChanging(value);
+					this.SendPropertyChanging();
+					this._UseAllValues = value;
+					this.SendPropertyChanged("UseAllValues");
+					this.OnUseAllValuesChanged();
 				}
 
 			}

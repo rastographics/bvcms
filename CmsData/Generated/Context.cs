@@ -1844,6 +1844,12 @@ namespace CmsData
 
         }
 
+        public Table< View.FirstAttend> ViewFirstAttends
+        {
+            get { return GetTable< View.FirstAttend>(); }
+
+        }
+
         public Table< View.FirstName> ViewFirstNames
         {
             get { return GetTable< View.FirstName>(); }
@@ -4155,6 +4161,18 @@ namespace CmsData
             return ((string)(ExecuteMethodCall(this,
                 ((MethodInfo)(MethodBase.GetCurrentMethod())),
                     id
+                ).ReturnValue));
+        }
+
+        [Function(Name="dbo.CompactAttendHistory", IsComposable = true)]
+        [return: Parameter(DbType = "varchar")]
+        public string CompactAttendHistory(
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+        {
+            return ((string)(ExecuteMethodCall(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    pid
                 ).ReturnValue));
         }
 

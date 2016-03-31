@@ -34,9 +34,11 @@ namespace CmsData
 		
 		private bool? _BitValue;
 		
-		private string _Type;
-		
 		private DateTime? _TransactionTime;
+		
+		private bool? _UseAllValues;
+		
+		private string _Type;
 		
    		
     	
@@ -73,11 +75,14 @@ namespace CmsData
 		partial void OnBitValueChanging(bool? value);
 		partial void OnBitValueChanged();
 		
-		partial void OnTypeChanging(string value);
-		partial void OnTypeChanged();
-		
 		partial void OnTransactionTimeChanging(DateTime? value);
 		partial void OnTransactionTimeChanged();
+		
+		partial void OnUseAllValuesChanging(bool? value);
+		partial void OnUseAllValuesChanged();
+		
+		partial void OnTypeChanging(string value);
+		partial void OnTypeChanged();
 		
     #endregion
 		public OrganizationExtra()
@@ -272,28 +277,6 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="Type", UpdateCheck=UpdateCheck.Never, Storage="_Type", DbType="varchar(18) NOT NULL", IsDbGenerated=true)]
-		public string Type
-		{
-			get { return this._Type; }
-
-			set
-			{
-				if (this._Type != value)
-				{
-				
-                    this.OnTypeChanging(value);
-					this.SendPropertyChanging();
-					this._Type = value;
-					this.SendPropertyChanged("Type");
-					this.OnTypeChanged();
-				}
-
-			}
-
-		}
-
-		
 		[Column(Name="TransactionTime", UpdateCheck=UpdateCheck.Never, Storage="_TransactionTime", DbType="datetime")]
 		public DateTime? TransactionTime
 		{
@@ -309,6 +292,50 @@ namespace CmsData
 					this._TransactionTime = value;
 					this.SendPropertyChanged("TransactionTime");
 					this.OnTransactionTimeChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="UseAllValues", UpdateCheck=UpdateCheck.Never, Storage="_UseAllValues", DbType="bit")]
+		public bool? UseAllValues
+		{
+			get { return this._UseAllValues; }
+
+			set
+			{
+				if (this._UseAllValues != value)
+				{
+				
+                    this.OnUseAllValuesChanging(value);
+					this.SendPropertyChanging();
+					this._UseAllValues = value;
+					this.SendPropertyChanged("UseAllValues");
+					this.OnUseAllValuesChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Type", UpdateCheck=UpdateCheck.Never, Storage="_Type", DbType="varchar(22) NOT NULL", IsDbGenerated=true)]
+		public string Type
+		{
+			get { return this._Type; }
+
+			set
+			{
+				if (this._Type != value)
+				{
+				
+                    this.OnTypeChanging(value);
+					this.SendPropertyChanging();
+					this._Type = value;
+					this.SendPropertyChanged("Type");
+					this.OnTypeChanged();
 				}
 
 			}
