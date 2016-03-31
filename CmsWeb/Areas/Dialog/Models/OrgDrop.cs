@@ -56,7 +56,7 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             var q = from p in DbUtil.Db.OrgPeople(Id, co.GroupSelect,
                         co.First(), co.Last(), co.SgFilter, co.ShowHidden,
-                        Util2.CurrentTag, Util2.CurrentTagOwnerId,
+                        Util2.CurrentTagName, Util2.CurrentTagOwnerId,
                         co.FilterIndividuals, co.FilterTag, false, Util.UserPeopleId)
                     select p;
             return q;

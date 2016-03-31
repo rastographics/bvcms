@@ -324,11 +324,9 @@ namespace CmsData
         }
         public void TagAll(IQueryable<Person> list, Tag tag)
         {
-            var q = from p in list
-                    where !p.Tags.Any(tp => tp.Id == tag.Id)
-                    select p.PeopleId;
-            foreach (var id in q)
-                tag.PersonTags.Add(new TagPerson { PeopleId = id });
+            var ft = PopulateTemporaryTag(list.Select(pp => pp.PeopleId));
+            AddTag1ToTag2(ft.Id, tag.Id);
+            Tags.DeleteOnSubmit(ft);
             SubmitChanges();
         }
         public void TagAll2(IQueryable<Person> list, Tag tag)
@@ -1153,7 +1151,7 @@ namespace CmsData
             )
         {
             return OrgPeople(oid, GroupSelectCode.Member, first, last, sgfilter, false,
-                Util2.CurrentTag, Util2.CurrentTagOwnerId, filterchecked,
+                Util2.CurrentTagName, Util2.CurrentTagOwnerId, filterchecked,
                 filtertag, null, Util.UserPeopleId);
         }
         public IQueryable<View.OrgPerson> OrgPeople(
@@ -1168,7 +1166,7 @@ namespace CmsData
             )
         {
             return OrgPeople(oid, grouptype, first, last, sgfilter, showhidden,
-                Util2.CurrentTag, Util2.CurrentTagOwnerId, filterchecked,
+                Util2.CurrentTagName, Util2.CurrentTagOwnerId, filterchecked,
                 filtertag, null, Util.UserPeopleId);
         }
         public OrganizationMember LoadOrgMember(int PeopleId, string OrgName, bool orgmustexist)

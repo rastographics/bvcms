@@ -56,7 +56,7 @@ namespace CmsWeb.Areas.Org.Models
             return currentList = (from p in DbUtil.Db.OrgPeople(Id, GroupSelect,
                         this.First(), this.Last(), SgFilter, ShowHidden,
                         filterchecked: false, filtertag: FilterTag,
-                        currtag: Util2.CurrentTag, currtagowner: Util2.CurrentTagOwnerId,
+                        currtag: Util2.CurrentTagName, currtagowner: Util2.CurrentTagOwnerId,
                         ministryinfo: false, userpeopleid: Util.UserPeopleId)
                                   select p.PeopleId.Value).ToList();
         }
