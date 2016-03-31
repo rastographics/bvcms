@@ -420,7 +420,7 @@ namespace CmsWeb.Models
                 else
                 {
                     var qp2 = from p in qp
-                              where p.LastName.StartsWith(text) || p.MaidenName.StartsWith(text)
+                              where p.LastName.StartsWith(text) || p.MaidenName.StartsWith(text) || p.AltName.StartsWith(text)
                               select p;
                     var qp1 = from p in qp
                               where !qp2.Select(pp => pp.PeopleId).Contains(p.PeopleId)

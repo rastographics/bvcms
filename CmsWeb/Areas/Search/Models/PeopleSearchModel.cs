@@ -98,7 +98,7 @@ or just Last or *First*`space` for first name match only.
                     Util.NameSplit(m.name, out first, out last);
                     if (first.HasValue())
                         people = from p in people
-                             where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last)
+                             where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last) || p.AltName.StartsWith(last)
                                  || p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) // gets Bob St Clair
                              where
                                  p.FirstName.StartsWith(first) || p.NickName.StartsWith(first) || p.MiddleName.StartsWith(first)
@@ -111,7 +111,7 @@ or just Last or *First*`space` for first name match only.
                                      select p;
                         else
                             people = from p in people
-                              where p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name)
+                              where p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) || p.AltName.StartsWith(last)
                               select p;
                 }
             }
