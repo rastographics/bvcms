@@ -396,7 +396,7 @@ namespace CmsWeb.Models
                     {
                         var b = name.Split('.');
                         if (name.EndsWith(".txt"))
-                            p.AddEditExtraData(b[0], a[names[name]].Trim());
+                            p.AddEditExtraText(b[0], a[names[name]].Trim());
                         else if (name.EndsWith(".org"))
                         {
                             if (testing)
@@ -441,7 +441,7 @@ namespace CmsWeb.Models
                                 p.AddEditExtraBool(b[0], v.ToInt() == 1);
                         }
                         else
-                            p.AddEditExtraValue(name, a[names[name]].Trim());
+                            p.AddEditExtraCode(name, a[names[name]].Trim());
                     }
                     rt.Processed++;
                     Db2.SubmitChanges();

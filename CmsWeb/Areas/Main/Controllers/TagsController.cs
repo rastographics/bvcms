@@ -198,7 +198,7 @@ namespace CmsWeb.Areas.Main.Controllers
             var q = t.People(DbUtil.Db);
             foreach (var p in q)
             {
-                p.AddEditExtraValue(field, value);
+                p.AddEditExtraCode(field, value);
                 DbUtil.Db.SubmitChanges();
             }
             TempData["message"] = "success";

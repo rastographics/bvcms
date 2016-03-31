@@ -144,7 +144,7 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                                 if (val.HasValue())
                                 {
                                     var a = name.Substring(0, name.Length - 3);
-                                    o.AddEditExtraData(a, val);
+                                    o.AddEditExtraText(a, val);
                                 }
                             break;
                     }

@@ -136,7 +136,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 foreach (var ag in setting.AgeGroups)
                     person.RemoveExtraValue(DbUtil.Db, ag.SmallGroup);
                 if (setting.AgeGroups.Count > 0)
-                    person.AddEditExtraValue(AgeGroup(), "true");
+                    person.AddEditExtraCode(AgeGroup(), "true");
             }
             else
             {
@@ -208,13 +208,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         foreach (var g in ExtraQuestion[ask.UniqueId])
                             if (g.Value.HasValue())
                                 if (setting.TargetExtraValues)
-                                    person.AddEditExtraData(g.Key, g.Value);
+                                    person.AddEditExtraText(g.Key, g.Value);
                         break;
                     case "AskText":
                         foreach (var g in Text[ask.UniqueId])
                             if (g.Value.HasValue())
                                 if (setting.TargetExtraValues)
-                                    person.AddEditExtraData(g.Key, g.Value);
+                                    person.AddEditExtraText(g.Key, g.Value);
                         break;
                     case "AskMenu":
                         SaveMenuChoices(om, ask);
@@ -255,7 +255,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 foreach (var op in ((AskDropdown) ask).list)
                     person.RemoveExtraValue(DbUtil.Db, op.SmallGroup);
-                person.AddEditExtraValue(((AskDropdown) ask).SmallGroupChoice(option).SmallGroup, "true");
+                person.AddEditExtraCode(((AskDropdown) ask).SmallGroupChoice(option).SmallGroup, "true");
             }
             else
             {
@@ -315,7 +315,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             else
                 foreach (var g in YesNoQuestion)
-                    person.AddEditExtraValue(g.Key, g.Value == true ? "Yes" : "No");
+                    person.AddEditExtraCode(g.Key, g.Value == true ? "Yes" : "No");
         }
 
         private OrganizationMember GetOrganizationMember(Transaction transaction)

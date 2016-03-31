@@ -272,7 +272,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             foreach (var a in csv)
             {
                 var p = DbUtil.Db.LoadPersonById(a[0].ToInt());
-                p.AddEditExtraValue(field, a[1]);
+                p.AddEditExtraCode(field, a[1]);
                 DbUtil.Db.SubmitChanges();
             }
             return Redirect("/ExtraValue/Summary/People");

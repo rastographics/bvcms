@@ -41,7 +41,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             catch (Exception ex)
             {
                 Log("PythonError");
-                org.AddToExtraData("Python.errors", ex.Message);
+                org.AddToExtraText("Python.errors", ex.Message);
                 throw;
             }
         }

@@ -41,7 +41,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 else if (item.Value == "true" || item.Value == "false")
                     person.AddEditExtraBool(item.Key, item.Value.ToBool());
                 else
-                    person.AddEditExtraValue(item.Key, item.Value);
+                    person.AddEditExtraCode(item.Key, item.Value);
                 summary.AppendFormat("{0}: {1}<br>", item.Key, item.Value);
             }
 

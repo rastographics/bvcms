@@ -42,7 +42,7 @@ namespace CmsData
             oev.Data = value;
             oev.DataType = multiline ? "text" : null;
         }
-        public void AddToExtraData(string field, string value)
+        public void AddToExtraText(string field, string value)
         {
             if (!value.HasValue())
                 return;
@@ -87,7 +87,7 @@ namespace CmsData
             return meeting;
         }
 
-        public void AddEditExtraValue(string field, string value)
+        public void AddEditExtraCode(string field, string value)
         {
             if (!field.HasValue())
                 return;
@@ -98,7 +98,7 @@ namespace CmsData
             ev.TransactionTime = DateTime.Now;
         }
 
-        public void AddEditExtraData(string field, string value, DateTime? dt)
+        public void AddEditExtraText(string field, string value, DateTime? dt)
         {
             if (!value.HasValue())
                 return;

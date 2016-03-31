@@ -1149,7 +1149,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             DbUtil.LogActivity($"EV {op}:{field}", peopleid: PeopleId);
         }
 
-        public void AddEditExtraValue(string field, string value)
+        public void AddEditExtraCode(string field, string value)
         {
             if (!field.HasValue())
                 return;
@@ -1167,7 +1167,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             ev.DateValue = value;
             ev.TransactionTime = DateTime.Now;
         }
-        public void AddEditExtraData(string field, string value, DateTime? dt = null)
+        public void AddEditExtraText(string field, string value, DateTime? dt = null)
         {
             if (!value.HasValue())
                 return;
@@ -1175,7 +1175,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             ev.Data = value;
             ev.TransactionTime = dt ?? DateTime.Now;
         }
-        public void AddToExtraData(string field, string value)
+        public void AddToExtraText(string field, string value)
         {
             if (!value.HasValue())
                 return;
@@ -1209,7 +1209,6 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
         public static PeopleExtra GetExtraValue(CMSDataContext db, int id, string field)
         {
-            //field = field.Replace('/', '-');
             var q = from v in db.PeopleExtras
                     where v.Field == field
                     where v.PeopleId == id
@@ -1229,7 +1228,6 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
         public static bool ExtraValueExists(CMSDataContext db, int id, string field)
         {
-            //field = field.Replace('/', '-');
             var q = from v in db.PeopleExtras
                     where v.Field == field
                     where v.PeopleId == id

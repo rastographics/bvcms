@@ -267,13 +267,13 @@ Option 2
             switch (AdhocExtraValueType.Value)
             {
                 case "Code":
-                    o.AddEditExtraValue(ExtraValueName, ExtraValueTextBox);
+                    o.AddEditExtraCode(ExtraValueName, ExtraValueTextBox);
                     break;
                 case "Text":
-                    o.AddEditExtraData(ExtraValueName, ExtraValueTextArea);
+                    o.AddEditExtraText(ExtraValueName, ExtraValueTextArea);
                     break;
                 case "Text2":
-                    o.AddEditExtraData(ExtraValueName, ExtraValueTextArea);
+                    o.AddEditExtraText(ExtraValueName, ExtraValueTextArea);
                     break;
                 case "Date":
                     o.AddEditExtraDate(ExtraValueName, ExtraValueDate);

@@ -226,7 +226,7 @@ namespace CmsWeb.Models.ExtraValues
             switch (type)
             {
                 case "Code":
-                    record.AddEditExtraValue(name, value);
+                    record.AddEditExtraCode(name, value);
                     break;
                 case "Data":
                 case "Text":
@@ -234,7 +234,7 @@ namespace CmsWeb.Models.ExtraValues
                     if(!value.HasValue())
                         RemoveExtraValue(record, name);
                     else
-                        record.AddEditExtraData(name, value);
+                        record.AddEditExtraText(name, value);
                     break;
                 case "Date":
                     {
