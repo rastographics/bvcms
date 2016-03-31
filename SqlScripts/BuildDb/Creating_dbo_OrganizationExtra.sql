@@ -8,8 +8,9 @@ CREATE TABLE [dbo].[OrganizationExtra]
 [DateValue] [datetime] NULL,
 [IntValue] [int] NULL,
 [BitValue] [bit] NULL,
-[Type] AS ((((case when [StrValue] IS NOT NULL then 'Code' else '' end+case when [Data] IS NOT NULL then 'Text' else '' end)+case when [DateValue] IS NOT NULL then 'Date' else '' end)+case when [IntValue] IS NOT NULL then 'Int' else '' end)+case when [BitValue] IS NOT NULL then 'Bit' else '' end),
-[TransactionTime] [datetime] NULL
+[TransactionTime] [datetime] NULL,
+[UseAllValues] [bit] NULL,
+[Type] AS (((((case when [UseAllValues]=(1) then 'Data' else '' end+case when [StrValue] IS NOT NULL then 'Code' else '' end)+case when [Data] IS NOT NULL then 'Text' else '' end)+case when [DateValue] IS NOT NULL then 'Date' else '' end)+case when [IntValue] IS NOT NULL then 'Int' else '' end)+case when [BitValue] IS NOT NULL then 'Bit' else '' end)
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
