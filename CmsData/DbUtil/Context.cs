@@ -326,7 +326,6 @@ namespace CmsData
         {
             var ft = PopulateTemporaryTag(list.Select(pp => pp.PeopleId));
             AddTag1ToTag2(ft.Id, tag.Id);
-            Tags.DeleteOnSubmit(ft);
             SubmitChanges();
         }
         public void TagAll2(IQueryable<Person> list, Tag tag)
