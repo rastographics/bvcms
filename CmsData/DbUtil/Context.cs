@@ -457,8 +457,8 @@ namespace CmsData
             }
             s = Regex.Replace(s, @"^SELECT( DISTINCT| TOP \(\d+\))?", 
                 $"INSERT INTO TagPerson (Id, PeopleId) $0 {tag.Id},");
-
-            ExecuteCommand(s, plist.Select(pp => pp.Value).ToArray());
+            var args = plist.Select(pp => pp.Value).ToArray();
+            ExecuteCommand(s, args);
             return tag;
         }
         public Tag PopulateTempTag(IEnumerable<int> a)

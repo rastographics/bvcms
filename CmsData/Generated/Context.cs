@@ -2790,6 +2790,21 @@ namespace CmsData
                 );
         }
 
+        [Function(Name="dbo.GetPledgedTotalsBothIfJoint", IsComposable = true)]
+        public IQueryable< View.GetPledgedTotalsBothIfJoint > GetPledgedTotalsBothIfJoint(
+            [Parameter(DbType="datetime")] DateTime? startdt,
+            [Parameter(DbType="datetime")] DateTime? enddt,
+            [Parameter(DbType="int")] int? fundid
+            )
+        {
+            return CreateMethodCallQuery< View.GetPledgedTotalsBothIfJoint>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    startdt,
+                    enddt,
+                    fundid
+                );
+        }
+
         [Function(Name="dbo.GetTodaysMeetingHours", IsComposable = true)]
         public IQueryable< View.GetTodaysMeetingHour > GetTodaysMeetingHours(
             [Parameter(DbType="int")] int? orgid,
@@ -2934,6 +2949,23 @@ namespace CmsData
                     campusid,
                     nontaxded,
                     includeUnclosed
+                );
+        }
+
+        [Function(Name="dbo.GetTotalPledgesDonor2", IsComposable = true)]
+        public IQueryable< View.GetTotalPledgesDonor2 > GetTotalPledgesDonor2(
+            [Parameter(DbType="datetime")] DateTime? fd,
+            [Parameter(DbType="datetime")] DateTime? td,
+            [Parameter(DbType="int")] int? campusid,
+            [Parameter(DbType="int")] int? pledgefund
+            )
+        {
+            return CreateMethodCallQuery< View.GetTotalPledgesDonor2>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    fd,
+                    td,
+                    campusid,
+                    pledgefund
                 );
         }
 

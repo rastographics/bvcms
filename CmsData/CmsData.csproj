@@ -524,7 +524,9 @@
     <Compile Include="Generated\Functions\GenRange.cs" />
     <Compile Include="Generated\Functions\GetContributionsRange.cs" />
     <Compile Include="Generated\Functions\GetContributionTotalsBothIfJoint.cs" />
+    <Compile Include="Generated\Functions\GetPledgedTotalsBothIfJoint.cs" />
     <Compile Include="Generated\Functions\GetTotalContributionsAgeRange.cs" />
+    <Compile Include="Generated\Functions\GetTotalPledgesDonor2.cs" />
     <Compile Include="Generated\Functions\GivingChange.cs" />
     <Compile Include="Generated\Functions\GuestList.cs" />
     <Compile Include="Generated\Functions\GuestList2.cs" />

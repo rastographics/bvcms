@@ -49,6 +49,7 @@ namespace CmsWeb.Areas.Search.Models
                 q = Db.PersonQueryPlusParents(q);
             else if (TopClause.ParentsOf)
                 q = Db.PersonQueryParents(q);
+            //var t = Db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
             return q;
         }
 
