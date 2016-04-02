@@ -12,7 +12,7 @@ Your feature would have to be thoroughly proven not to break any existing functi
 and any UI elements follow our existing UI patterns and code. 
 
 The pull request would have to be able to merge automatically 
-and be up to date with our code (using rebase) to avoid messy merge commits of our work. 
+and be up to date with our code (using rebase, see article link below) to avoid messy merge commits of our work. 
 Also, any third party libraries required must be available via NuGet, and no proprietary code will be accepted. 
 Your code will need to be licensed with a compatible Open Source license with the GPL v2.
 If the code is not modular, but rather integrated into the existing code, 
@@ -27,3 +27,7 @@ we would want to make it a "dark feature" (able to be made operational with a sw
 This way, we can test it in production against our real databases, without it affecting existing customers. 
 Once it passes that production test, we would document it and publish a blog post to introduce it. 
 You would need to provide some documentation for us to use as a starting point.
+
+### Excellent Article on rebase vs merge
+
+https://medium.com/@porteneuve/getting-solid-at-git-rebase-vs-merge-4fa1a48c53aa#.5gubsxb9u
