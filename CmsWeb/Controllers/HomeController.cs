@@ -294,8 +294,12 @@ namespace CmsWeb.Controllers
                     var tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
                     script = script.Replace("@qtagid", tag.Id.ToString());
                 }
-
                 var pe = new PythonModel(Util.Host);
+                if (script.Contains("@BlueToolbarTagId"))
+                {
+                    var id = DbUtil.Db.FetchLastQuery().Id;
+                    pe.DictionaryAdd("BlueToolbarGuid", id.ToCode());
+                }
 
                 foreach (var key in Request.QueryString.AllKeys)
                     pe.DictionaryAdd(key, Request.QueryString[key]);
