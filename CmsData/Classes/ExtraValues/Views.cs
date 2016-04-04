@@ -65,6 +65,18 @@ namespace CmsData.ExtraValue
 
             return list.Union(list2).OrderBy(vv => vv.Name).ToList();
         }
+        public static List<StandardValueNameType> GetViewableDataTypes(CMSDataContext db, bool nocache = false)
+        {
+            var list = (from vv in GetStandardExtraValues(db, "People", nocache)
+                        where vv.Type == "Data"
+                        select new StandardValueNameType()
+                        { 
+                            Name = vv.Name, 
+                            Type = vv.Type,
+                            CanView = vv.UserCanView(db)
+                        }).ToList();
+            return list;
+        }
 
         public class ViewValue
         {

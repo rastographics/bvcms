@@ -751,9 +751,6 @@
     <Compile Include="Areas\People\Models\Person\Profile\MemberInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\People\Models\Person\Profile\MemberNotesModel.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Areas\People\Models\Person\PersonModel.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1517,6 +1514,7 @@
     <Content Include="Areas\Reports\Views\Reports\EmailImages.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\CustomReport.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EditorTemplates\CustomReportColumn.cshtml" />
+    <Content Include="Areas\People\Views\Person\DisplayTemplates\PeopleExtra.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />
@@ -1629,7 +1627,6 @@
     <Content Include="Areas\People\Views\Person\Enrollment\Registrations.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Membership\Edit.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\MemberNotes\Display.cshtml" />
     <Content Include="Content\touchpoint\js\admin\EditHtml.js" />
     <Content Include="Views\ExtraValue\AdHoc.cshtml" />
     <Content Include="Areas\People\Views\Person\System\UserEdit.cshtml" />
@@ -1676,7 +1673,6 @@
     <Content Include="Areas\Search\Views\Query\EditorTemplates\CodeSelect.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Comments\Display.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Comments\Edit.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\MemberNotes\Edit.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Membership\UploadDocument.cshtml" />
     <Content Include="Views\Home\RunScript.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Value.cshtml" />

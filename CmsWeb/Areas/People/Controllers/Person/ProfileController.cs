@@ -48,29 +48,6 @@ namespace CmsWeb.Areas.People.Controllers
             return View("Profile/Membership/Display", m);
         }
 
-        // Member Note ---------------------------------------------------
-
-        [HttpPost]
-        public ActionResult MemberNotes(int id)
-        {
-            var m = new MemberNotesModel(id);
-            return View("Profile/MemberNotes/Display", m);
-        }
-
-        [HttpPost]
-        public ActionResult MemberNotesEdit(int id)
-        {
-            var m = new MemberNotesModel(id);
-            return View("Profile/MemberNotes/Edit", m);
-        }
-
-        [HttpPost]
-        public ActionResult MemberNotesUpdate(MemberNotesModel m)
-        {
-            m.UpdateMemberNotes();
-            return View("Profile/MemberNotes/Display", m);
-        }
-
         // Member Documents ---------------------------------------------------
 
         [HttpPost]

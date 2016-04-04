@@ -1,0 +1,13 @@
+﻿@using UtilityExtensions
+@model CmsData.PeopleExtra
+<tr>
+  <td>@Model.Field</td>
+  <td>@Model.StrValue</td>
+  <td>@Model.DateValue.FormatDateTime()</td>
+  <td>@Model.BitValue</td>
+  <td>@Model.IntValue</td>
+</tr>
+<tr>
+  <td></td>
+  <td colspan="4">@Html.Markdown(@Model.Data)</td>
+</tr>

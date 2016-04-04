@@ -611,6 +611,7 @@ namespace CmsWeb.Code
             yield return new CodeValueItem {Code = "Bits", Value = "Checkboxes"};
             yield return new CodeValueItem {Code = "Int", Value = "Integer"};
             yield return new CodeValueItem {Code = "Date", Value = "Date"};
+            yield return new CodeValueItem {Code = "Data", Value = "Data"};
         }
 
         public IEnumerable<CodeValueItem> AdhocExtraValueTypeCodes()

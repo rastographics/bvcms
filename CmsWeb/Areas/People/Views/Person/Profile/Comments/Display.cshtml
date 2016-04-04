@@ -1,33 +1,59 @@
-﻿@model CmsWeb.Areas.People.Models.CommentsModel
+﻿@using CmsData
+@using CmsData.ExtraValue
+@model CmsWeb.Areas.People.Models.CommentsModel
+@{
+  var data = DbUtil.Db.PeopleExtras
+         .Where(vv => vv.Type == "Data" && vv.PeopleId == Model.PeopleId)
+         .OrderBy(vv => vv.Field).ThenByDescending(vv => vv.DateValue);
+  var sevs = Views.GetViewableDataTypes(DbUtil.Db, true);
+}
 <form class="ajax" method="post">
-    @FormAction()
-    <div class="row">
-        <div class="col-sm-12">
-            @Html.DisplayFor(m => m.Comments)
-        </div>
+  @FormAction()
+  <div class="row">
+    <div class="col-sm-12">
+      @Html.DisplayFor(m => m.Comments)
     </div>
-    @FormAction(true)
-    <br/>
+  </div>
+  @FormAction(true)
 </form>
+  @if (data.Any())
+  {
+  <br/>
+  <table class="evnotes table table-condensed">
+    <thead>
+    <tr><td><strong>Field</strong></td><td><strong>Code</strong><br/><strong>Text</strong></td><td><strong>Date</strong></td><td><strong>Bit</strong></td><td><strong>Int</strong></td></tr>
+    </thead>
+    <tbody>
+    @foreach (var d in data)
+    {
+      var sev = sevs.SingleOrDefault(vv => vv.Name == d.Field);
+      if (sev == null || sev.CanView)
+      {
+        @Html.DisplayFor(m => d);
+      }
+    }
+    </tbody>
+  </table>
+  }
 @helper FormAction(bool xs = false)
 {
-    if (User.IsInRole("Edit"))
+  if (User.IsInRole("Edit"))
+  {
+    if (xs)
     {
-        if (xs)
-        {
-            <div class="visible-xs-block">
-                <a href="/Person2/CommentsEdit/@Model.PeopleId" class="pull-right btn btn-default btn-block ajax"><i class="fa fa-pencil"></i> Edit</a>
-            </div>
-        }
-        else
-        {
-            <div class="row hidden-xs">
-                <div class="col-sm-12">
-                    <div class="pull-right">
-                        <a href="/Person2/CommentsEdit/@Model.PeopleId" class="pull-right btn btn-default ajax"><i class="fa fa-pencil"></i> Edit</a>
-                    </div>
-                </div>
-            </div>
-        }
+      <div class="visible-xs-block">
+        <a href="/Person2/CommentsEdit/@Model.PeopleId" class="pull-right btn btn-default btn-block ajax"><i class="fa fa-pencil"></i> Edit</a>
+      </div>
     }
+    else
+    {
+      <div class="row hidden-xs">
+        <div class="col-sm-12">
+          <div class="pull-right">
+            <a href="/Person2/CommentsEdit/@Model.PeopleId" class="pull-right btn btn-default ajax"><i class="fa fa-pencil"></i> Edit</a>
+          </div>
+        </div>
+      </div>
+    }
+  }
 }

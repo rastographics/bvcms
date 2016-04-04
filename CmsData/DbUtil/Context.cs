@@ -1557,5 +1557,19 @@ namespace CmsData
                 progid, divid, org, orgtype, days0, days, tagid);
             return ((int)(result.ReturnValue));
         }
+        [Function(Name = "dbo.AddExtraValueData")]
+        public int AddExtraValueData(
+            [Parameter(DbType = "Int")] int? pid, 
+            [Parameter(DbType = "varchar(150)")] string field, 
+            [Parameter(DbType = "varchar(200)")] string strvalue, 
+            [Parameter(DbType = "datetime")] DateTime? datevalue, 
+            [Parameter(DbType = "varchar(max)")] string text, 
+            [Parameter(DbType = "Int")] int? intvalue, 
+            [Parameter(DbType = "Bit")] bool? bitvalue)
+        {
+            var result = ExecuteMethodCall(this, (MethodInfo)(MethodBase.GetCurrentMethod()), 
+                pid, field, strvalue, datevalue, text, intvalue, bitvalue );
+            return (int)(result?.ReturnValue ?? 0);
+        }
     }
 }
