@@ -147,7 +147,7 @@ namespace CmsWeb.Models.ExtraValues
             return from f in GetStandardExtraValues(Table, Location)
                    join v in realExtraValues on f.Name equals v.Field into j
                    from v in j.DefaultIfEmpty()
-                   where v.Type != "Data"
+                   where v?.Type != "Data"
                    orderby f.Order
                    select Value.AddField(f, v, this);
         }
