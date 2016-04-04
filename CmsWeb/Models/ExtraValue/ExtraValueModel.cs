@@ -115,7 +115,16 @@ namespace CmsWeb.Models.ExtraValues
 
         public List<Value> GetStandardExtraValues(string table, string location = null)
         {
-            return Views.GetStandardExtraValuesOrdered(DbUtil.Db, table, location).Select(Value.FromValue).ToList();
+            var q = from v in Views.GetStandardExtraValuesOrdered(DbUtil.Db, table, location)
+                    where v.Type != "Data"
+                    select Value.FromValue(v);
+            return q.ToList();
+        }
+        public List<Value> GetStandardExtraValuesWithDataType(string table, string location = null)
+        {
+            var q = from v in Views.GetStandardExtraValuesOrdered(DbUtil.Db, table, location)
+                    select Value.FromValue(v);
+            return q.ToList();
         }
         public IEnumerable<Value> GetExtraValues()
         {
@@ -130,6 +139,7 @@ namespace CmsWeb.Models.ExtraValues
                        where f == null
                        // only adhoc values
                        where !standardExtraValues.Any(ff => ff.Codes.Any(cc => cc == v.Field))
+                       where v.Type != "Data"
                        orderby v.Field
                        select Value.AddField(f, v, this);
             }
@@ -137,6 +147,7 @@ namespace CmsWeb.Models.ExtraValues
             return from f in GetStandardExtraValues(Table, Location)
                    join v in realExtraValues on f.Name equals v.Field into j
                    from v in j.DefaultIfEmpty()
+                   where v.Type != "Data"
                    orderby f.Order
                    select Value.AddField(f, v, this);
         }

@@ -21,7 +21,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var f in Model.GetStandardExtraValues(Model.Table, Model.Location))
+                        @foreach (var f in Model.GetStandardExtraValuesWithDataType(Model.Table, Model.Location))
                         {
                             <tr id="ev-name-@f.Name.Replace(' ', '_')">
                                 <td style="width: 85px;"><input type="number" name="orders[@f.Name]" value="@f.Order" class="form-control" /></td>
