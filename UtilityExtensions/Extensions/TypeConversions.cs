@@ -222,6 +222,30 @@ namespace UtilityExtensions
                 return null;
             }
         }
+        public static double? ToNullableDouble(this object o)
+        {
+            if (o is DBNull)
+                return null;
+            return Convert.ToDouble(o);
+        }
+        public static decimal? ToNullableDecimal(this object o)
+        {
+            if (o is DBNull)
+                return null;
+            return Convert.ToDecimal(o);
+        }
+        public static DateTime? ToNullableDate(this object o)
+        {
+            if (o is DBNull)
+                return null;
+            return o.ToDate();
+        }
+        public static int? ToNullableInt(this object o)
+        {
+            if (o is DBNull)
+                return null;
+            return o.ToInt();
+        }
     }
 }
 

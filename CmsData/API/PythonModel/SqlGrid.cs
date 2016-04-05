@@ -37,7 +37,7 @@ namespace CmsData
                 using (var rd = db.Connection.ExecuteReader(sql, p, commandTimeout: 300))
                 {
                     var table = Table(rd);
-                return $@"
+                    return $@"
 <div class=""report box box-responsive"">
   <div class=""box-content"">
     <div class=""table-responsive"">
@@ -47,10 +47,10 @@ namespace CmsData
   </div>
 </div>
 ";
-                    
                 }
             }
         }
+
         public static Table HtmlTable(IDataReader rd, string title = null, int? maxrows = null)
         {
             var pctnames = new List<string> {"pct", "percent"};
@@ -80,7 +80,7 @@ namespace CmsData
                         align = HorizontalAlign.Right;
                         break;
                     case "int":
-                        if(nam != "Year" && !nam.EndsWith("id") && !nam.EndsWith("id2"))
+                        if (nam != "Year" && !nam.EndsWith("id") && !nam.EndsWith("id2"))
                             align = HorizontalAlign.Right;
                         break;
                 }
@@ -96,7 +96,7 @@ namespace CmsData
             {
                 rn++;
                 if (maxrows.HasValue && rn > maxrows)
-                    continue;
+                    break;
                 var r = new TableRow();
                 for (var i = 0; i < rd.FieldCount; i++)
                 {
@@ -108,37 +108,39 @@ namespace CmsData
                     switch (typ.ToLower())
                     {
                         case "decimal":
+                            var dec = rd[i].ToNullableDecimal();
                             s = StartsEndsWith(pctnames, nam)
-                                ? Convert.ToDecimal(rd[i]).ToString("N1") + "%"
-                                : Convert.ToDecimal(rd[i]).ToString("c");
+                                ? dec.ToString2("N1", "%")
+                                : dec.ToString2("c");
                             align = HorizontalAlign.Right;
                             break;
                         case "real":
                         case "float":
+                            var dbl = rd[i].ToNullableDouble();
                             s = StartsEndsWith(pctnames, nam)
-                                ? Convert.ToDouble(rd[i]).ToString("N1") + "%"
-                                : Convert.ToDouble(rd[i]).ToString("N1");
+                                ? dbl.ToString2("N1", "%")
+                                : dbl.ToString2("N1");
                             align = HorizontalAlign.Right;
                             break;
                         case "date":
                         case "datetime":
-                            var dt = rd[i].ToDate();
+                            var dt = rd[i].ToNullableDate();
                             if (dt.HasValue && dt.Value.Date != dt.Value)
                                 s = dt.FormatDateTime();
                             else
                                 s = dt.FormatDate();
                             break;
                         case "int":
-                            var ii = rd[i].ToInt();
+                            var ii = rd[i].ToNullableInt();
                             if (nam.Equal("peopleid") || nam.Equal("spouseid"))
                                 s = $"<a href='/Person2/{ii}' target='Person'>{ii}</a>";
                             else if (nam.Equal("organizationid"))
                                 s = $"<a href='/Org/{ii}' target='Organization'>{ii}</a>";
                             else if (nam.EndsWith("id") || nam.EndsWith("id2") || nam.Equal("Year"))
-                                s = rd[i].ToInt().ToString();
+                                s = ii.ToString();
                             else
                             {
-                                s = rd[i].ToInt().ToString("N0");
+                                s = ii.ToString2("N0");
                                 align = HorizontalAlign.Right;
                             }
                             break;
@@ -169,17 +171,20 @@ namespace CmsData
             t.Rows.Add(tr);
             return t;
         }
+
         public static bool StartsEndsWith(List<string> list, string name)
         {
-            return list.Any(vv => 
-                name.StartsWith(vv,StringComparison.OrdinalIgnoreCase) 
-                || name.EndsWith(vv,StringComparison.OrdinalIgnoreCase));
+            return list.Any(vv =>
+                name.StartsWith(vv, StringComparison.OrdinalIgnoreCase)
+                || name.EndsWith(vv, StringComparison.OrdinalIgnoreCase));
         }
+
         public static bool StartsEndsWith(string pattern, string name)
         {
-            return name.StartsWith(pattern,StringComparison.OrdinalIgnoreCase) 
-                || name.EndsWith(pattern,StringComparison.OrdinalIgnoreCase);
+            return name.StartsWith(pattern, StringComparison.OrdinalIgnoreCase)
+                   || name.EndsWith(pattern, StringComparison.OrdinalIgnoreCase);
         }
+
         public static string Table(IDataReader rd)
         {
             var t = HtmlTable(rd);

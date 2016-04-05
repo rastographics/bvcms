@@ -148,6 +148,18 @@ namespace UtilityExtensions
                 return d.Value.ToString(fmt);
             return "";
         }
+        public static string ToString2(this decimal? d, string fmt, string postfix)
+        {
+            if (d.HasValue)
+                return d.Value.ToString(fmt) + postfix;
+            return "";
+        }
+        public static string ToString2(this double? d, string fmt, string postfix = null)
+        {
+            if (d.HasValue)
+                return d.Value.ToString(fmt) + postfix;
+            return "";
+        }
 
         public static string ToString2(this DateTime? d, string fmt)
         {
