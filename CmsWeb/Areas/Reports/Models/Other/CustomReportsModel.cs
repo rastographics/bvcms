@@ -331,7 +331,7 @@ namespace CmsWeb.Areas.Reports.Models
 
                 var extravalues = from ev in db.PeopleExtras
                                   where !protectedevs.Contains(ev.Field)
-								  where ev.UseAllValues != true
+								  where (ev.UseAllValues ?? false) == false
                                   group ev by new {ev.Field, ev.Type}
                                   into g
                                   orderby g.Key.Field
