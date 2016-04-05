@@ -122,7 +122,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 ? DbUtil.Db.Families.Single(fam => fam.FamilyId == id)
                 : new Family();
 
-            var position = DbUtil.Db.ComputePositionInFamily(m.dob.Age0(), false, id) ?? 10;
+            var position = DbUtil.Db.ComputePositionInFamily(m.dob.Age0(), m.marital == 20, id) ?? 10;
             var p = Person.Add(f, position,
                 null, m.first, m.goesby, m.last, m.dob, false, m.gender,
                 OriginCode.Visit, null);
