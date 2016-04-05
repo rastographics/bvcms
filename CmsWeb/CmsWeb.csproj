@@ -2341,6 +2341,7 @@
     <Content Include="Views\Shared\PageError.cshtml" />
     <Content Include="Views\Home\Test.cshtml" />
     <Content Include="Views\Shared\Toolbar\Custom.cshtml" />
+    <Content Include="Views\Shared\PageMessage.cshtml" />
     <None Include="Web.Impersonate.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -79,13 +79,13 @@ namespace CmsWeb.Areas.Reports.Controllers
             var m = new CustomReportsModel(DbUtil.Db);
             try
             {
+                var dest = m.AddReport(report, url, type);
+                return PageMessage($"Report Added to {dest}", "Report Added", "success");
             }
             catch (Exception ex)
             {
-                return Message(ex);
+                return PageMessage(ex.Message);
             }
-            var dest = m.AddReport(report, url, type);
-            return Message($"Report Added to {dest}");
         }
 
         [HttpGet]

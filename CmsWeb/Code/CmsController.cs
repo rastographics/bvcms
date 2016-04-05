@@ -120,6 +120,14 @@ namespace CmsWeb
         {
             return View("Message", model: text);
         }
+        public ViewResult PageMessage(string text, string title = "Error", string alert = "danger")
+        {
+            ViewBag.Title = title;
+            ViewBag.PageHeader = title;
+            ViewBag.Alert = alert;
+            ViewBag.Message = text;
+            return View("PageMessage");
+        }
 
         public ViewResult Message2(string text)
         {

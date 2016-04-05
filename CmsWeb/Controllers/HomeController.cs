@@ -237,6 +237,7 @@ namespace CmsWeb.Controllers
             ViewBag.report = name;
             ViewBag.url = Request.Url?.PathAndQuery;
             var rd = cn.ExecuteReader(script, p, commandTimeout: 1200);
+            ViewBag.ExcelUrl = Request.Url?.AbsoluteUri.Replace("RunScript/", "RunScriptExcel/");
             return View(rd);
         }
 
