@@ -47,5 +47,19 @@ namespace CmsWeb.MobileAPI
 			state = state.Trim();
 			zipcode = zipcode.Trim();
 		}
-	}
+
+        public int getAge()
+        {
+            if (birthday == null) return -1;
+
+            DateTime today = DateTime.Now;
+
+            int age = today.Year - birthday.Value.Year;
+
+            if (today.Month < birthday.Value.Month || (today.Month == birthday.Value.Month && today.Day < birthday.Value.Day))
+                age--;
+
+            return age;
+        }
+    }
 }

@@ -164,7 +164,7 @@ namespace CmsWeb.Areas.Public.Controllers
             if (!result.IsValid) return AuthorizationError(result);
 
             var dataIn = BaseMessage.createFromString(data);
-            
+
             var sql = @"
 SELECT OrganizationId FROM dbo.Organizations
 WHERE RegistrationTypeId = 8
@@ -408,33 +408,33 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             switch (dataIn.device)
             {
                 case BaseMessage.API_DEVICE_ANDROID:
+                {
+                    Dictionary<int, MobilePerson> mpl = new Dictionary<int, MobilePerson>();
+
+                    MobilePerson mp;
+
+                    foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(100))
                     {
-                        Dictionary<int, MobilePerson> mpl = new Dictionary<int, MobilePerson>();
-
-                        MobilePerson mp;
-
-                        foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(100))
-                        {
-                            mp = new MobilePerson().populate(item);
-                            mpl.Add(mp.id, mp);
-                        }
+                        mp = new MobilePerson().populate(item);
+                        mpl.Add(mp.id, mp);
+                    }
 
                     br.data = SerializeJSON(mpl, dataIn.version);
-                        break;
-                    }
+                    break;
+                }
 
                 case BaseMessage.API_DEVICE_IOS:
-                    {
-                        List<MobilePerson> mp = new List<MobilePerson>();
+                {
+                    List<MobilePerson> mp = new List<MobilePerson>();
 
-                        foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(100))
-                        {
-                            mp.Add(new MobilePerson().populate(item));
-                        }
+                    foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(100))
+                    {
+                        mp.Add(new MobilePerson().populate(item));
+                    }
 
                     br.data = SerializeJSON(mp, dataIn.version);
-                        break;
-                    }
+                    break;
+                }
             }
 
             return br;
@@ -605,20 +605,20 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                 switch (mpfi.size)
                 {
                     case 0: // 50 x 50
-                        image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId);
-                        break;
+                    image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId);
+                    break;
 
                     case 1: // 120 x 120
-                        image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId);
-                        break;
+                    image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId);
+                    break;
 
                     case 2: // 320 x 400
-                        image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.MediumId);
-                        break;
+                    image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.MediumId);
+                    break;
 
                     case 3: // 570 x 800
-                        image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.LargeId);
-                        break;
+                    image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.LargeId);
+                    break;
 
                 }
 
@@ -898,8 +898,8 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             }
 
             var orgs = from o in q
-                       //let sc = o.OrgSchedules.FirstOrDefault() // SCHED
-                       //join sch in DbUtil.Db.OrgSchedules on o.OrganizationId equals sch.OrganizationId
+                           //let sc = o.OrgSchedules.FirstOrDefault() // SCHED
+                           //join sch in DbUtil.Db.OrgSchedules on o.OrganizationId equals sch.OrganizationId
                        from sch in DbUtil.Db.ViewOrgSchedules2s.Where(s => o.OrganizationId == s.OrganizationId).DefaultIfEmpty()
                        from mtg in DbUtil.Db.Meetings.Where(m => o.OrganizationId == m.OrganizationId).OrderByDescending(m => m.MeetingDate).Take(1).DefaultIfEmpty()
                        orderby sch.SchedDay, sch.SchedTime
@@ -1198,15 +1198,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             f.People.Add(p);
 
-            p.PositionInFamilyId = PositionInFamily.Child;
-
-            if (mpap.birthday != null && p.GetAge() >= 18)
-            {
-                if (f.People.Count(per => per.PositionInFamilyId == PositionInFamily.PrimaryAdult) < 2)
-                    p.PositionInFamilyId = PositionInFamily.PrimaryAdult;
-                else
-                    p.PositionInFamilyId = PositionInFamily.SecondaryAdult;
-            }
+            p.PositionInFamilyId = DbUtil.Db.ComputePositionInFamily(mpap.getAge(), mpap.maritalStatusID == MaritalStatusCode.Married, f.FamilyId) ?? PositionInFamily.PrimaryAdult;
 
             p.OriginId = OriginCode.Visit;
             p.FixTitle();
@@ -1231,6 +1223,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                 Attend.RecordAttendance(p.PeopleId, mpap.visitMeeting, true);
                 DbUtil.Db.UpdateMeetingCounters(mpap.visitMeeting);
                 p.CampusId = meeting.Organization.CampusId;
+                p.EntryPoint = meeting.Organization.EntryPoint;
                 DbUtil.Db.SubmitChanges();
             }
 
@@ -1259,13 +1252,13 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == mpjo.peopleID && m.OrganizationId == mpjo.orgID);
 
             if (om == null && mpjo.join)
-                om = OrganizationMember.InsertOrgMembers(DbUtil.Db, mpjo.orgID, mpjo.peopleID, MemberTypeCode.Member, DateTime.Now, null, false);
+                om = OrganizationMember.InsertOrgMembers(DbUtil.Db, mpjo.orgID, mpjo.peopleID, MemberTypeCode.Member, DateTime.Today, null, false);
 
             if (om != null && !mpjo.join)
             {
-                om.Drop(DbUtil.Db, DateTime.Today);
+                om.Drop(DbUtil.Db, DateTime.Now);
 
-                DbUtil.LogActivity($"Dropped {om.PeopleId} for {om.Organization.OrganizationId} via {dataIn.getSourceOS()} app", peopleid:om.PeopleId, orgid: om.OrganizationId);
+                DbUtil.LogActivity($"Dropped {om.PeopleId} for {om.Organization.OrganizationId} via {dataIn.getSourceOS()} app", peopleid: om.PeopleId, orgid: om.OrganizationId);
             }
 
             DbUtil.Db.SubmitChanges();
@@ -1282,15 +1275,15 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             switch (status)
             {
                 case UserValidationStatus.Success:
-                    return BaseMessage.API_ERROR_NONE;
+                return BaseMessage.API_ERROR_NONE;
                 case UserValidationStatus.PinExpired:
-                    return BaseMessage.API_ERROR_PIN_EXPIRED;
+                return BaseMessage.API_ERROR_PIN_EXPIRED;
                 case UserValidationStatus.PinInvalid:
-                    return BaseMessage.API_ERROR_PIN_INVALID;
+                return BaseMessage.API_ERROR_PIN_INVALID;
                 case UserValidationStatus.SessionTokenExpired:
-                    return BaseMessage.API_ERROR_SESSION_TOKEN_EXPIRED;
+                return BaseMessage.API_ERROR_SESSION_TOKEN_EXPIRED;
                 default:
-                    return BaseMessage.API_ERROR_SESSION_TOKEN_NOT_FOUND;
+                return BaseMessage.API_ERROR_SESSION_TOKEN_NOT_FOUND;
             }
         }
 

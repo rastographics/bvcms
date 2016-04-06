@@ -59,5 +59,19 @@ namespace CmsWeb.CheckInAPI
             emergencyName = emergencyName.Trim();
             emergencyPhone = emergencyPhone.Trim();
         }
+
+        public int getAge()
+        {
+            if (birthday == null) return -1;
+
+            DateTime today = DateTime.Now;
+
+            int age = today.Year - birthday.Value.Year;
+
+            if (today.Month < birthday.Value.Month || (today.Month == birthday.Value.Month && today.Day < birthday.Value.Day))
+                age--;
+
+            return age;
+        }
     }
 }
