@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Areas.Reports.ViewModels.CustomReportColumn
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.Reports.ViewModels.CustomReportColumn
 @using (var ci = Html.BeginCollectionItem(Model.BindName))
 {
   <li class="checkbox">
@@ -19,13 +20,16 @@
       }
       else if (Model.IsSmallGroup)
       {
-        <span class="text-info">(Small Group)</span>
+        <span class="text-info">(Org SubGroup)</span>
       }
       else if (Model.IsStatusFlag)
       {
         <span class="text-info">(Status Flag)</span>
       }
+      else if (Model.OrgId.HasValue())
+      {
+        <span class="text-info">(Org Specific)</span>
+      }
     </label>
   </li>
 }
-
