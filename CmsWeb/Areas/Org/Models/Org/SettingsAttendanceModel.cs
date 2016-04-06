@@ -211,7 +211,7 @@ Some teachers prefer them to show up for a long time.
 
         [Display(Description = @"
 Default is 2 weeks.
-Number of consequtive absents that causes person to show on Recent Absents report.
+Number of consecutive absents that causes person to show on Recent Absents report.
 ")]
         public int? ConsecutiveAbsentsThreshold { get; set; }
 
