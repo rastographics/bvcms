@@ -449,22 +449,7 @@ namespace CmsWeb.Areas.Public.Controllers
             p.LastName = aep.lastName;
             p.NickName = aep.goesBy;
 
-            if (aep.birthday != null)
-            {
-                p.BirthDay = aep.birthday.Value.Day;
-                p.BirthMonth = aep.birthday.Value.Month;
-                p.BirthYear = aep.birthday.Value.Year;
-
-                p.PositionInFamilyId = PositionInFamily.Child;
-
-                if (p.GetAge() >= 18)
-                {
-                    if (f.People.Count(per => per.PositionInFamilyId == PositionInFamily.PrimaryAdult) < 2)
-                        p.PositionInFamilyId = PositionInFamily.PrimaryAdult;
-                    else
-                        p.PositionInFamilyId = PositionInFamily.SecondaryAdult;
-                }
-            }
+            p.PositionInFamilyId = DbUtil.Db.ComputePositionInFamily(aep.getAge(), aep.maritalStatusID == MaritalStatusCode.Married, f.FamilyId) ?? PositionInFamily.PrimaryAdult;
 
             p.GenderId = aep.genderID;
             p.MaritalStatusId = aep.maritalStatusID;
@@ -672,7 +657,7 @@ namespace CmsWeb.Areas.Public.Controllers
             var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == cjo.peopleID && m.OrganizationId == cjo.orgID);
 
             if (om == null && cjo.join)
-                om = OrganizationMember.InsertOrgMembers(DbUtil.Db, cjo.orgID, cjo.peopleID, MemberTypeCode.Member, DateTime.Now, null, false);
+                om = OrganizationMember.InsertOrgMembers(DbUtil.Db, cjo.orgID, cjo.peopleID, MemberTypeCode.Member, DateTime.Today, null, false);
 
             if (om != null && !cjo.join)
             {
