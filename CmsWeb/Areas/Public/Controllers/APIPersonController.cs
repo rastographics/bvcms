@@ -103,7 +103,7 @@ namespace CmsWeb.Areas.Public.Controllers
         [HttpPost]
         public ActionResult AddEditExtraValue(int peopleid, string field, string value, string type = "data")
         {
-            var ret = AuthenticateDeveloper();
+            var ret = AuthenticateDeveloper(altrole: "Checkin");
             if (ret.StartsWith("!"))
                 return Content(ret.Substring(1));
             DbUtil.LogActivity($"APIPerson AddExtraValue {peopleid}, {field}");

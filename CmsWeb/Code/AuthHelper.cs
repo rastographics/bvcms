@@ -9,7 +9,7 @@ namespace CmsWeb.Code
 {
     internal static class AuthHelper
     {
-        public static AuthResult AuthenticateDeveloper(HttpContext context, bool shouldLog = false, string additionalRole = "")
+        public static AuthResult AuthenticateDeveloper(HttpContext context, bool shouldLog = false, string additionalRole = "", string altrole = "")
         {
             var auth = context.Request.Headers["Authorization"];
 
@@ -28,7 +28,9 @@ namespace CmsWeb.Code
                 if (context.Session != null)
                     AccountModel.SetUserInfo(username, context.Session);
 
-                if (!roles.IsUserInRole(username, "Developer"))
+                var isdev = roles.IsUserInRole(username, "Developer");
+                var isalt = altrole.HasValue() && roles.IsUserInRole(username, altrole);
+                if (!isdev && !isalt)
                     valid = false;
 
                 if (additionalRole.HasValue() && !roles.IsUserInRole(username, additionalRole))

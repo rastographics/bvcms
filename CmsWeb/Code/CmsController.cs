@@ -45,9 +45,9 @@ namespace CmsWeb
             }
         }
 
-        public string AuthenticateDeveloper(bool log = false, string addrole = "")
+        public string AuthenticateDeveloper(bool log = false, string addrole = "", string altrole = "")
         {
-            return AuthHelper.AuthenticateDeveloper(System.Web.HttpContext.Current, log, addrole).Message;
+            return AuthHelper.AuthenticateDeveloper(System.Web.HttpContext.Current, log, addrole, altrole).Message;
         }
 
         public ViewResult Message(string text)
