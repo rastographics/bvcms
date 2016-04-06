@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Xml.Linq;
 using CmsData;
 using CmsData.API;
@@ -492,6 +493,7 @@ namespace CmsWeb.Areas.Reports.Models
             }
             col2.Add(e);
             content.Body = xd.ToString();
+            HttpRuntime.Cache.Remove(DbUtil.Db.Host + "CustomReportsMenu");
             db.SubmitChanges();
             return "Reports Menu";
         }
