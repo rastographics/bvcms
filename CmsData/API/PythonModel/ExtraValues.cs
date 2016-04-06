@@ -127,5 +127,18 @@ namespace CmsData
                 return ev.Data ?? "";
             return "";
         }
+
+        public void DeleteExtraValue(object query, string name)
+        {
+            var list = db.PeopleQuery2(query).Select(ii => ii.PeopleId).ToList();
+            foreach (var pid in list)
+            {
+                var db2 = NewDataContext();
+                var ev = Person.GetExtraValue(db2, pid, name);
+                db2.PeopleExtras.DeleteOnSubmit(ev);
+                db2.SubmitChanges();
+                db2.Dispose();
+            }
+        }
     }
 }
