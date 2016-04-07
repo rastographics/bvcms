@@ -284,21 +284,25 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 #endif
             DbUtil.LogActivity($"checkin {AccountModel.UserName2} authenticated");
-            var q = from c in DbUtil.Db.Campus
-                    where c.Organizations.Any(o => o.CanSelfCheckin == true)
-                    orderby c.Id
-                    select new CampusItem
-                    {
-                        Campus = c,
-                        password = DbUtil.Db.Setting("kioskpassword" + c.Id, "kio.")
-                    };
-            var list = q.ToList();
-            if (list.Count == 0)
-                list.Add(new CampusItem
+
+            var list = (from c in DbUtil.Db.Campus
+                        where c.Organizations.Any(o => o.CanSelfCheckin == true)
+                        orderby c.Id
+                        select new CampusItem
+                        {
+                            Campus = c,
+                            password = DbUtil.Db.Setting("kioskpassword" + c.Id, "kio.")
+                        }).ToList();
+
+            if (list.Count > 0)
+            {
+                list.Insert(0, new CampusItem
                 {
-                    Campus = new Campu {Id = 0, Description = "none"},
+                    Campus = new Campu { Id = 0, Description = "All Campuses" },
                     password = DbUtil.Db.Setting("kioskpassword" + 0, "kio.")
                 });
+            }
+
             return View(list);
         }
 
@@ -370,7 +374,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 DbUtil.Db.CheckInTimes.InsertOnSubmit(ck);
                 DbUtil.Db.SubmitChanges();
             }
-            return Json(new {pid});
+            return Json(new { pid });
         }
 
         [HttpPost]
@@ -387,7 +391,7 @@ namespace CmsWeb.Areas.Public.Controllers
             var card = q.SingleOrDefault();
             if (card == null)
             {
-                card = new CardIdentifier {Id = KeyCode};
+                card = new CardIdentifier { Id = KeyCode };
                 DbUtil.Db.CardIdentifiers.InsertOnSubmit(card);
             }
             card.PeopleId = pid;
@@ -408,14 +412,14 @@ namespace CmsWeb.Areas.Public.Controllers
             switch (a[0][0])
             {
                 case 's':
-                    p.SchoolOther = value;
-                    break;
+                p.SchoolOther = value;
+                break;
                 case 'y':
-                    p.Grade = value.ToInt();
-                    break;
+                p.Grade = value.ToInt();
+                break;
                 case 'n':
-                    p.CheckInNotes = value;
-                    break;
+                p.CheckInNotes = value;
+                break;
             }
             DbUtil.Db.SubmitChanges();
             return c;
@@ -677,7 +681,7 @@ namespace CmsWeb.Areas.Public.Controllers
             if (!s.HasValue())
                 s = "<Activities />";
 
-            var xs = new XmlSerializer(typeof (List<Activity>), new XmlRootAttribute("Activities"));
+            var xs = new XmlSerializer(typeof(List<Activity>), new XmlRootAttribute("Activities"));
             var activities = xs.Deserialize(new StringReader(s)) as List<Activity>;
 
             var last = from e in DbUtil.Db.CheckInTimes
@@ -711,7 +715,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 DbUtil.Db.SubmitChanges();
 
                 foreach (var a in activities)
-                    ac.CheckInActivities.Add(new CheckInActivity {Activity = a.Name});
+                    ac.CheckInActivities.Add(new CheckInActivity { Activity = a.Name });
 
                 ac.AccessTypeID = accesstype;
             }
@@ -728,7 +732,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 };
 
                 foreach (var a in activities)
-                    ac.CheckInActivities.Add(new CheckInActivity {Activity = a.Name});
+                    ac.CheckInActivities.Add(new CheckInActivity { Activity = a.Name });
 
                 DbUtil.Db.CheckInTimes.InsertOnSubmit(ac);
             }
