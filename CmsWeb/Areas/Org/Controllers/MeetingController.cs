@@ -129,9 +129,10 @@ namespace CmsWeb.Areas.Org.Controllers
                         m.meeting.HeadCount = value.ToInt();
                         break;
                     case 't':
-                        DbUtil.Db.ExecuteCommand("update dbo.Attend set MeetingDate = {0} where MeetingId = {1}",
-                            value.ToDate(), m.meeting.MeetingId);
-                        m.meeting.MeetingDate = value.ToDate();
+                        DbUtil.Db.ExecuteCommand(@"
+                        update dbo.Attend set MeetingDate = {0} where MeetingId = {1};
+                        update dbo.Meetings set MeetingDate = {0} where MeetingId = {1};
+                        ", value.ToDate(), m.meeting.MeetingId);
                         break;
                 }
                 DbUtil.Db.SubmitChanges();
