@@ -135,6 +135,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [MyRequireHttps]
         public ActionResult LogOn(string returnUrl)
         {
+            TryLoadAlternateShell();
             var r = DbUtil.CheckDatabaseExists(Util.CmsHost);
             var redirect = ViewExtensions2.DatabaseErrorUrl(r);
             if (redirect != null)
@@ -149,8 +150,6 @@ namespace CmsWeb.Areas.Manage.Controllers
                     return Redirect(returnUrl);
                 return Redirect("/");
             }
-
-            TryLoadAlternateShell();
 
             var m = new AccountInfo {ReturnUrl = returnUrl};
             return View(m);
@@ -182,6 +181,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost, MyRequireHttps]
         public ActionResult LogOn(AccountInfo m)
         {
+            TryLoadAlternateShell();
             if (m.ReturnUrl.HasValue())
             {
                 var lc = m.ReturnUrl.ToLower();
@@ -191,7 +191,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             if (!m.UsernameOrEmail.HasValue())
                 return View(m);
-
+            
             var ret = AccountModel.AuthenticateLogon(m.UsernameOrEmail, m.Password, Session, Request);
             if (ret is string)
             {
@@ -237,6 +237,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [MyRequireHttps]
         public ActionResult ForgotUsername(string email)
         {
+            TryLoadAlternateShell();
             if (Request.HttpMethod.ToUpper() == "GET")
                 return View();
 
@@ -266,8 +267,6 @@ namespace CmsWeb.Areas.Manage.Controllers
                     CMSRoleProvider.provider.GetAdmins(),
                     $"touchpoint unknown email: {email} forgot username", "no content");
 
-            TryLoadAlternateShell();
-
             return RedirectToAction("RequestUsername");
         }
 
@@ -275,7 +274,6 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult ForgotPassword()
         {
             TryLoadAlternateShell();
-
             var m = new AccountInfo();
             return View(m);
         }
@@ -283,6 +281,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost, MyRequireHttps]
         public ActionResult ForgotPassword(AccountInfo m)
         {
+            TryLoadAlternateShell();
             if (!ModelState.IsValid)
                 return View(m);
             AccountModel.ForgotPassword(m.UsernameOrEmail);
@@ -293,6 +292,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [MyRequireHttps]
         public ActionResult CreateAccount(string id)
         {
+            TryLoadAlternateShell();
             if (!id.HasValue())
                 return Content("invalid URL");
 
@@ -331,8 +331,6 @@ namespace CmsWeb.Areas.Manage.Controllers
             ViewBag.RequireOneNumber = MembershipService.RequireOneNumber;
             ViewBag.RequireOneUpper = MembershipService.RequireOneUpper;
             
-            TryLoadAlternateShell();
-
             return View("SetPassword");
         }
 
@@ -340,7 +338,6 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult RequestPassword()
         {
             TryLoadAlternateShell();
-
             return View();
         }
 
@@ -348,7 +345,6 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult RequestUsername()
         {
             TryLoadAlternateShell();
-
             return View();
         }
 
@@ -356,11 +352,11 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Authorize]
         public ActionResult ChangePassword()
         {
+            TryLoadAlternateShell();
             ViewBag.MinPasswordLength = MembershipService.MinPasswordLength;
             ViewBag.RequireSpecialCharacter = MembershipService.RequireSpecialCharacter;
             ViewBag.RequireOneNumber = MembershipService.RequireOneNumber;
             ViewBag.RequireOneUpper = MembershipService.RequireOneUpper;
-            TryLoadAlternateShell();
             return View();
         }
 
@@ -377,9 +373,10 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost]
         public ActionResult SetPasswordConfirm(Guid? id)
         {
+            TryLoadAlternateShell();
             if (!id.HasValue)
                 return Content("invalid URL");
-            TryLoadAlternateShell();
+
             var user = DbUtil.Db.Users.SingleOrDefault(u => u.ResetPasswordCode == id);
             if (user == null || (user.ResetPasswordExpires.HasValue && user.ResetPasswordExpires < DateTime.Now))
                 return View("LinkUsed");
@@ -402,6 +399,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Authorize]
         public ActionResult SetPassword(string newPassword, string confirmPassword)
         {
+            TryLoadAlternateShell();
             ViewBag.user = User.Identity.Name;
             ViewBag.MinPasswordLength = MembershipService.MinPasswordLength;
             ViewBag.RequireSpecialCharacter = MembershipService.RequireSpecialCharacter;
@@ -430,6 +428,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost]
         public ActionResult ChangePassword(string currentPassword, string newPassword, string confirmPassword)
         {
+            TryLoadAlternateShell();
             ViewBag.user = User.Identity.Name;
             ViewBag.MinPasswordLength = MembershipService.MinPasswordLength;
             ViewBag.RequireSpecialCharacter = MembershipService.RequireSpecialCharacter;
@@ -456,6 +455,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [MyRequireHttps]
         public ActionResult ChangePasswordSuccess()
         {
+            TryLoadAlternateShell();
             var rd = DbUtil.Db.Setting("RedirectAfterPasswordChange", "");
             if (rd.HasValue())
                 return Redirect(rd);
@@ -479,7 +479,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             if (shell.HasValue())
             {
                 var re = new Regex(@"(.*<!--FORM START-->\s*).*(<!--FORM END-->.*)", RegexOptions.Singleline);
-                var t = re.Match(shell).Groups[1].Value;
+                var t = re.Match(shell).Groups[1].Value.Replace("<!--FORM CSS-->", ViewExtensions2.Bootstrap3Css());
                 ViewBag.hasshell = true;
                 ViewBag.top = t;
                 var b = re.Match(shell).Groups[2].Value;
@@ -510,7 +510,6 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             [Required]
             public string UsernameOrEmail { get; set; }
-
             public string Password { get; set; }
             public string ReturnUrl { get; set; }
         }

@@ -6,15 +6,20 @@
 
     if ((bool?)ViewData["hasshell"] == true)
     {
-        Layout = "_CustomLayout.cshtml";
+        Layout = "_ShellLayout.cshtml";
     }
     else
     {
         Layout = "_Layout.cshtml";
     }
 }
-
-<h1 class="form-header">@ViewExtensions2.DbSetting("NameOfChurch", "Name Of Church: " + Util.Host)</h1>
+@if ((bool?) ViewBag.hasshell == true)
+{
+    <div class="no-header"></div>
+}
+else {
+    <h1 class="form-header">@ViewExtensions2.DbSetting("NameOfChurch", "Name Of Church: " + Util.Host)</h1>
+}
 @if (DbUtil.LoginNotice().HasValue())
 {
     <div class="col-sm-12">
