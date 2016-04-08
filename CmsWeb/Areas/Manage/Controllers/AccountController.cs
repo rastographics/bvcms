@@ -480,9 +480,11 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 var re = new Regex(@"(.*<!--FORM START-->\s*).*(<!--FORM END-->.*)", RegexOptions.Singleline);
                 var t = re.Match(shell).Groups[1].Value.Replace("<!--FORM CSS-->", ViewExtensions2.Bootstrap3Css());
+                t = t.Replace("<html>\r\n<head>\r\n\t<title></title>\r\n</head>\r\n<body>&nbsp;</body>\r\n", "");
                 ViewBag.hasshell = true;
                 ViewBag.top = t;
                 var b = re.Match(shell).Groups[2].Value;
+                b = b.Replace("</html>", "");
                 ViewBag.bottom = b;
             }
             else
