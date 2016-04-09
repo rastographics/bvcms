@@ -239,7 +239,6 @@ BEGIN
 	FROM dbo.Organizations o
 	JOIN dbo.GetTodaysMeetingHours3(@thisday) mh ON o.OrganizationId = mh.OrganizationId
 	WHERE o.OrganizationStatusId = 30
-	AND (o.CampusId = @campus OR @campus IS NULL OR @campus = 1)
 	AND o.CanSelfCheckin = 1
 	AND o.AllowNonCampusCheckIn = 1
 	
@@ -247,7 +246,7 @@ BEGIN
 	INSERT @t SELECT
 		 p.PeopleId 
 		,p.PositionInFamilyId
-		,NULL --neither Member nor Visitor
+		,CASE WHEN om.PeopleId IS NOT NULL THEN 'M' ELSE 'V' END
 		,p.Name
 		,p.FirstName 
 		,p.PreferredName
@@ -262,7 +261,7 @@ BEGIN
 		,ISNULL(p.Age, 0)
 		,g.Code -- Gender
 		,0 -- number of checkin labels
-		,NULL -- hour
+		,vo.VisitorOrgHour
 		,0 -- CheckedIn
 		,p.NickName
 		,p.EmailAddress
@@ -289,8 +288,12 @@ BEGIN
 	JOIN dbo.Families f ON p.FamilyId = f.FamilyId
 	JOIN lookup.Gender g ON g.Id = p.GenderId
 	LEFT JOIN dbo.RecReg rr ON p.PeopleId = rr.PeopleId
-	JOIN @visitorgs vo ON (p.CampusId != @campus OR p.CampusId IS NULL) AND p.Age > 12
-	WHERE NOT EXISTS(SELECT NULL FROM @t WHERE Id = p.PeopleId)		
+	JOIN @visitorgs vo ON 1=1
+	LEFT JOIN dbo.OrganizationMembers om ON om.PeopleId = p.PeopleId AND om.OrganizationId = vo.VisitorOrgId
+	LEFT JOIN dbo.Organizations o ON o.OrganizationId = vo.VisitorOrgId
+	WHERE (o.BirthDayStart IS NULL OR ISNULL(dbo.Birthday(p.PeopleId), '1/1/3000') >= o.BirthDayStart)
+	AND (o.BirthDayEnd IS NULL OR ISNULL(dbo.Birthday(p.PeopleId), '1/1/1900') <= o.BirthDayEnd)
+	AND p.PeopleId NOT IN (SELECT Id FROM @t WHERE OrgId = o.OrganizationId)
 	
 	-----------------------------------------------
 	-- Rest of Family that cannot checkin anywhere
@@ -345,6 +348,7 @@ BEGIN
 	
 	RETURN 
 END
+
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
