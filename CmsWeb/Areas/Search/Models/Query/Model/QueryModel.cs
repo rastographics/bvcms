@@ -185,7 +185,10 @@ namespace CmsWeb.Areas.Search.Models
             DateTime dt = DateTime.MinValue;
             int i = 0;
             if (DaysVisible && !int.TryParse(Days, out i))
-                m.AddModelError("Days", "must be integer");
+            {
+                if(new [] { "IsFamilyGiver", "IsFamilyPledger" }.Contains(ConditionName) == false)
+                    m.AddModelError("Days", "must be integer");
+            }
             if (i > 10000)
                 m.AddModelError("Days", "days > 10000");
             if (TagsVisible && string.Join(",", Tags).Length > 500)

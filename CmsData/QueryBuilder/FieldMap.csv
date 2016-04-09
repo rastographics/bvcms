@@ -186,6 +186,8 @@ RecentFirstTimeGiver,Bit,,,Fund Id (or blank for all),Contributions,Recent First
 IsRecentGiver,Bit,,,,Contributions,Recent Giver,Days,Enter a number of days to look back and specify True or False.
 IsTopGiver,Bit,,,Top number,Contributions,Recent Top Giver,"Days,Quarters","Enter a number of days to look back, enter the top number (ex. 100 for the top 100 givers) and specify True or False."
 IsTopPledger,Bit,,,Top number,Contributions,Recent Top Pledger,"Days,Quarters","Enter a number of days to look back (must include the date the pledge was made), enter the top number (ex. 100 for the top 100 pledgers) and specify True or False."
+IsFamilyGiver,Bit,,,Fund Id (or blank for all),Contributions,Is in a Giving Family,"Days,Quarters","Enter a number of days to look back (365 default), enter a Fund ID (or leave blank for all funds) and specify True or False."
+IsFamilyPledger,Bit,,,Fund Id (or blank for all),Contributions,Is in a Pledging Family,"Days,Quarters","Enter a number of days to look back (365 default), enter a Fund ID (or leave blank for all funds) and specify True or False."
 HasManagedGiving,Bit,,,FundId or Blank,Contributions,Has Managed Giving,Quarters,Specify True or False for those with Managed Giving.
 ManagedGivingCreditCard,Bit,,,,Contributions,Managed Giving With Credit Card,,Specify True or False for those with Managed Giving and uses CreditCard
 CcExpiration,Bit,,,,Contributions,Credit Card Expire Days,Days,Specify True or False for those with Managed Giving.

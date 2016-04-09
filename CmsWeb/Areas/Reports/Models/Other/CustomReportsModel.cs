@@ -134,6 +134,10 @@ namespace CmsWeb.Areas.Reports.Models
         {
             return List.Where(vv => vv.Type == "SqlReport").ToList();
         }
+        public List<ReportItem> OrgSearchSqlList()
+        {
+            return List.Where(vv => vv.Type == "OrgSearchSqlReport").ToList();
+        }
 
         public string Table()
         {
@@ -463,6 +467,10 @@ namespace CmsWeb.Areas.Reports.Models
                 case "SqlReport":
                     typeid = ContentTypeCode.TypeSqlScript;
                     lookfor = new[] {"@qtagid"};
+                    break;
+                case "OrgSearchSqlReport":
+                    typeid = ContentTypeCode.TypeSqlScript;
+                    lookfor = new[] {"@OrgIds"};
                     break;
                 default:
                     throw new ArgumentException($"unknown typeid: {type}");

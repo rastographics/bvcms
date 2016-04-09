@@ -677,6 +677,28 @@ namespace CmsData
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
+        internal Expression IsFamilyGiver()
+        {
+            var fundid = Quarters.ToInt2();
+            var td = DateTime.Now;
+            var fd = td.AddDays(Days == 0 ? -365 : -Days);
+            var q = db.FamilyGiver(fd, td, fundid).Where(vv => vv.FamGive == true);
+            var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            Expression expr = Expression.Invoke(pred, parm);
+            return expr;
+        }
+        internal Expression IsFamilyPledger()
+        {
+            var fundid = Quarters.ToInt2();
+            var td = DateTime.Now;
+            var fd = td.AddDays(Days == 0 ? -365 : -Days);
+            var q = db.FamilyGiver(fd, td, fundid).Where(vv => vv.FamPledge == true);
+            var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            Expression expr = Expression.Invoke(pred, parm);
+            return expr;
+        }
         internal Expression RecentFirstTimeGiver()
         {
             var tf = CodeIds == "1";

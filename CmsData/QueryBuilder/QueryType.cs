@@ -116,6 +116,8 @@ namespace CmsData
         InOneOfMyOrgs,
         IsCurrentPerson,
         IsCurrentUser,
+        IsFamilyGiver,
+        IsFamilyPledger,
         IsHeadOfHousehold,
         IsInactiveMemberOf,
         IsPendingMemberOf,

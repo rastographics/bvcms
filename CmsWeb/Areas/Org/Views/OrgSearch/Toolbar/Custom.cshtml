@@ -1,0 +1,21 @@
+﻿@using CmsData
+@using CmsWeb.Areas.Reports.Models
+@{
+  var m = new CustomReportsModel(DbUtil.Db);
+  var sql = m.OrgSearchSqlList();
+}
+<ul class="dropdown-menu dropdown-menu-large dropdown-menu-right container bluebar-menu-col-1">
+  <li class="col-sm-4">
+    <ul>
+      <li class="dropdown-header">
+        @(sql.Count > 0 ? "Custom SQL Reports" : "No Custom SQL Reports Available")
+      </li>
+      @foreach (var r in sql)
+      {
+      <li>
+        <a class="ViewReport" href="/OrgSearch/SqlReport/@r">@r.Display</a>
+      </li>
+      }
+    </ul>
+  </li>
+</ul>

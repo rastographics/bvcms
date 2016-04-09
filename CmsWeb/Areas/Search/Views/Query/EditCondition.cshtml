@@ -36,115 +36,115 @@
         @if (Model.OrgNameVisible)
         {
             <div class="col-sm-6">
-                @Html.EditorForIf(m => m.OrgName, Model.OrgNameVisible)
+                @Html.EditorFor(m => m.OrgName)
             </div>
         }
         @if (Model.OrgStatusVisible)
         {
             <div class="col-sm-6">
-                @Html.EditorForIf(m => m.OrgStatus, Model.OrgStatusVisible, "DropDown", new { items = Model.StatusIds() })
+                @Html.EditorFor(m => m.OrgStatus, "DropDown", new { items = Model.StatusIds() })
             </div>
         }
         @if (Model.OnlineRegVisible)
         {
             <div class="col-sm-6">
-                @Html.EditorForIf(m => m.OnlineReg, Model.OnlineRegVisible, "DropDown", new { items = Model.RegistrationTypeIds() })
+                @Html.EditorFor(m => m.OnlineReg, "DropDown", new { items = Model.RegistrationTypeIds() })
             </div>
         }
         @if (Model.StartDateVisible)
         {
             <div class="col-sm-6">
-                @(Model.ConditionName == "AttendedAsOf" ? Html.EditorForIf(m => m.StartDate, Model.StartDateVisible, "DateAndTime") : Html.EditorForIf(m => m.StartDate, Model.StartDateVisible))
+                @(Model.ConditionName == "AttendedAsOf" ? Html.EditorFor(m => m.StartDate, "DateAndTime") : Html.EditorFor(m => m.StartDate))
             </div>
         }
         @if (Model.EndDateVisible)
         {
             <div class="col-sm-6">
-                @(Model.ConditionName == "AttendedAsOf" ? Html.EditorForIf(m => m.EndDate, Model.EndDateVisible, "DateAndTime") : Html.EditorForIf(m => m.EndDate, Model.EndDateVisible))
+                @(Model.ConditionName == "AttendedAsOf" ? Html.EditorFor(m => m.EndDate, "DateAndTime") : Html.EditorFor(m => m.EndDate))
             </div>
         }
         @if (Model.QuartersVisible)
         {
             <div class="col-sm-6">
-                @Html.EditorForIf(m => m.Quarters, Model.QuartersVisible, new { label = Model.QuartersLabel })
+                @Html.EditorFor(m => m.Quarters, new { label = Model.QuartersLabel })
             </div>
         }
         @if (Model.DaysVisible)
         {
             <div class="col-sm-6">
-               @Html.EditorForIf(m => m.Days, Model.DaysVisible)
+               @Html.EditorFor(m => m.Days)
             </div>
         }
         @if (Model.AgeVisible)
         {
             <div class="col-sm-6">
-                @Html.EditorForIf(m => m.Age, Model.AgeVisible)
+                @Html.EditorFor(m => m.Age)
             </div>
         }
         @if (Model.TagsVisible)
         {
             <div class="col-sm-6">
-                @Html.EditorForIf(m => m.TagValues, Model.TagsVisible, "MultiSelect", new { items = Model.TagData() })
+                @Html.EditorFor(m => m.TagValues, "MultiSelect", new { items = Model.TagData() })
             </div>
         }
         @if (Model.PmmLabelsVisible)
         {
             <div class="col-sm-6">
-                @Html.EditorForIf(m => m.TagValues, Model.PmmLabelsVisible, "MultiSelect", new { items = Model.PmmLabelData() })
+                @Html.EditorFor(m => m.TagValues, "MultiSelect", new { items = Model.PmmLabelData() })
             </div>
         }
         @if (Model.MinistryVisible)
         {
             <div class="col-sm-6">
-                @Html.EditorForIf(m => m.Ministry, Model.MinistryVisible, "DropDown", new { items = Model.Ministries() })
+                @Html.EditorFor(m => m.Ministry, "DropDown", new { items = Model.Ministries() })
             </div>
         }
         @if (Model.SavedQueryVisible)
         {
             <div class="col-sm-6">
-                @Html.EditorForIf(m => m.SavedQuery, Model.SavedQueryVisible, "DropDown", new { items = Model.SavedQueries() })
+                @Html.EditorFor(m => m.SavedQuery, "DropDown", new { items = Model.SavedQueries() })
             </div>
         }
         @if (Model.ProgramVisible)
         {
             <div class="col-sm-6">
-                @Html.EditorForIf(m => m.Program, Model.ProgramVisible, "DropDown", new { items = Model.Programs() })
+                @Html.EditorFor(m => m.Program, "DropDown", new { items = Model.Programs() })
             </div>
         }
         @if (Model.DivisionVisible)
         {
             <div class="col-sm-6">
-                @Html.EditorForIf(m => m.Division, Model.DivisionVisible, "DropDown", new { items = Model.Divisions(Model.Program) })
+                @Html.EditorFor(m => m.Division, "DropDown", new { items = Model.Divisions(Model.Program) })
             </div>
         }
         @if (Model.OrganizationVisible)
         {
             <div class="col-sm-6">
-                @Html.EditorForIf(m => m.Organization, Model.OrganizationVisible, "DropDown", new { items = Model.Organizations(Model.Division) })
+                @Html.EditorFor(m => m.Organization, "DropDown", new { items = Model.Organizations(Model.Division) })
             </div>
         }
         @if (Model.OrgTypeVisible)
         {
             <div class="col-sm-6">
-               @Html.EditorForIf(m => m.OrgType, Model.OrgTypeVisible, "DropDown", new { items = Model.OrgTypes() })
+               @Html.EditorFor(m => m.OrgType, "DropDown", new { items = Model.OrgTypes() })
             </div>
         }
         @if (Model.OrgType2Visible)
         {
             <div class="col-sm-6">
-                @Html.EditorForIf(m => m.OrgType2, Model.OrgType2Visible, "DropDown", new { items = CodeValueModel.OrgTypes() })
+                @Html.EditorFor(m => m.OrgType2, "DropDown", new { items = CodeValueModel.OrgTypes() })
             </div>
         }
         @if (Model.ScheduleVisible)
         {
             <div class="col-sm-6">
-                @Html.EditorForIf(m => m.Schedule, Model.ScheduleVisible, "DropDown", new { items = Model.Schedules() })
+                @Html.EditorFor(m => m.Schedule, "DropDown", new { items = Model.Schedules() })
             </div>
         }
         @if (Model.CampusVisible)
         {
             <div class="col-sm-6">
-                @Html.EditorForIf(m => m.Campus, Model.CampusVisible, "DropDown", new { items = Model.Campuses() })
+                @Html.EditorFor(m => m.Campus, "DropDown", new { items = Model.Campuses() })
             </div>
         }
     </div>

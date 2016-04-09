@@ -193,14 +193,15 @@ namespace CmsWeb.Controllers
         {
             if (!CanRunScript(body))
                 return "Not Authorized to run this script";
-            if (body.Contains("@qtagid"))
+            if (body.Contains("@qtagid", ignoreCase:true))
             {
                 var id = db.FetchLastQuery().Id;
                 var tag = db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
                 int? qtagid = tag.Id;
                 p.Add("@qtagid", qtagid);
+                ViewBag.Type = "SqlReport";
             }
-            if (body.Contains("@CurrentOrgId"))
+            if (body.Contains("@CurrentOrgId", ignoreCase:true))
             {
                 var oid = DbUtil.Db.CurrentOrgId0;
                 p.Add("@CurrentOrgId", oid);
@@ -208,7 +209,14 @@ namespace CmsWeb.Controllers
                 {
                     var name = DbUtil.Db.LoadOrganizationById(oid).FullName2;
                     ViewBag.Name2 = name;
+                    ViewBag.Type = "SqlReport";
                 }
+            }
+            if (body.Contains("@OrgIds", ignoreCase:true))
+            {
+                var oid = DbUtil.Db.CurrentOrgId0;
+                p.Add("@OrgIds", oid.ToString());
+                ViewBag.Type = "OrgSearchSqlReport";
             }
             p.Add("@p1", parameter ?? "");
             return body;
@@ -234,8 +242,8 @@ namespace CmsWeb.Controllers
             if (script.StartsWith("Not Authorized"))
                 return Message(script);
             ViewBag.Name = title ?? $"{name.SpaceCamelCase()} {parameter}";
-            ViewBag.report = name;
-            ViewBag.url = Request.Url?.PathAndQuery;
+            ViewBag.Report = name;
+            ViewBag.Url = Request.Url?.PathAndQuery;
             var rd = cn.ExecuteReader(script, p, commandTimeout: 1200);
             ViewBag.ExcelUrl = Request.Url?.AbsoluteUri.Replace("RunScript/", "RunScriptExcel/");
             return View(rd);

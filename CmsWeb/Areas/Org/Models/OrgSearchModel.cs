@@ -18,8 +18,11 @@ using CmsData;
 using CmsData.Codes;
 using CmsData.Registration;
 using CmsData.View;
+using CmsWeb.Areas.Manage.Controllers;
+using CmsWeb.Areas.Reports.Controllers;
 using CmsWeb.Models;
 using Dapper;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using MoreLinq;
 using Newtonsoft.Json;
 using UtilityExtensions;
@@ -717,6 +720,38 @@ namespace CmsWeb.Areas.Search.Models
         {
             var j = JsonConvert.SerializeObject(this);
             return Util.EncryptForUrl(j);
+        }
+
+        public string SqlTable(string report, string oids)
+        {
+            using (var rd = ExecuteReader(report, oids))
+                return GridResult.Table(rd);
+        }
+        public EpplusResult SqlTableExcel(string report, string oids)
+        {
+            using (var rd = ExecuteReader(report, oids))
+            return rd.ToExcel(report + ".xlsx");
+        }
+
+        private IDataReader ExecuteReader(string report, string oids)
+        {
+            var content = DbUtil.Db.ContentOfTypeSql(report);
+            if (content == null)
+                throw new Exception("no content");
+            if (!SpecialReportViewModel.CanRunScript(content.Body))
+                throw new Exception("Not Authorized to run this script");
+
+            if (!content.Body.Contains("@OrgIds"))
+                throw new Exception("missing @OrgIds");
+
+            var p = new DynamicParameters();
+            p.Add("@OrgIds", oids);
+            var cs = HttpContext.Current.User.IsInRole("Finance")
+                ? Util.ConnectionStringReadOnlyFinance
+                : Util.ConnectionStringReadOnly;
+            var cn = new SqlConnection(cs);
+            cn.Open();
+            return cn.ExecuteReader(content.Body, p);
         }
 
         public static OrgSearchModel DecodedJson(string parameter)

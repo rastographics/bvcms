@@ -6,6 +6,7 @@ using System.Xml;
 using CmsData;
 using CmsData.Codes;
 using CmsData.Registration;
+using CmsWeb.Areas.Reports.Controllers;
 using CmsWeb.Areas.Search.Models;
 using CmsWeb.Code;
 using Dapper;
@@ -243,6 +244,39 @@ namespace CmsWeb.Areas.Search.Controllers
         }
 
         [HttpPost]
+        [Route("SqlReport/{report}")]
+        public ActionResult SqlReport(OrgSearchModel m, string report)
+        {
+            try
+            {
+                var orgs = m.FetchOrgs();
+                var oids = string.Join(",", orgs.Select(oo => oo.OrganizationId));
+                ViewBag.ExcelUrl = $"/OrgSearch/SqlReportExcel/{report}";
+                ViewBag.DisplayName = report.SpaceCamelCase();
+                ViewBag.Results = m.SqlTable(report, oids);
+                ViewBag.OrgIds = oids;
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return Message(ex);
+            }
+        }
+        [HttpPost]
+        [Route("SqlReportExcel/{report}")]
+        public ActionResult SqlReportExcel(string report, string orgIds)
+        {
+            try
+            {
+                var m = new OrgSearchModel();
+                return m.SqlTableExcel(report, orgIds);
+            }
+            catch (Exception ex)
+            {
+                return Message(ex);
+            }
+        }
+        [HttpPost]
         public ActionResult ToggleTag(int id, int tagdiv)
         {
             var Db = DbUtil.Db;
@@ -276,6 +310,12 @@ namespace CmsWeb.Areas.Search.Controllers
             return Content(m.FetchOrgs().Count().ToString());
         }
 
+        [HttpPost]
+        public ActionResult OrgIds(OrgSearchModel m)
+        {
+            var orgs = m.FetchOrgs();
+            return Content(string.Join(",", orgs.Select(oo => oo.OrganizationId)));
+        }
         [HttpPost]
         public ActionResult PasteSettings(OrgSearchModel m)
         {

@@ -85,7 +85,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             Results = pe.Output;
         }
 
-        private bool CanRunScript(string script)
+        public static bool CanRunScript(string script)
         {
             if (!script.StartsWith("#Roles=") && !script.StartsWith("--Roles"))
                 return true;
