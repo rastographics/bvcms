@@ -201,7 +201,7 @@ namespace CmsWeb.Controllers
                 p.Add("@qtagid", qtagid);
                 ViewBag.Type = "SqlReport";
             }
-            if (body.Contains("@CurrentOrgId", ignoreCase:true))
+            else if (body.Contains("@CurrentOrgId", ignoreCase:true))
             {
                 var oid = DbUtil.Db.CurrentOrgId0;
                 p.Add("@CurrentOrgId", oid);
@@ -212,12 +212,14 @@ namespace CmsWeb.Controllers
                     ViewBag.Type = "SqlReport";
                 }
             }
-            if (body.Contains("@OrgIds", ignoreCase:true))
+            else if (body.Contains("@OrgIds", ignoreCase: true))
             {
                 var oid = DbUtil.Db.CurrentOrgId0;
                 p.Add("@OrgIds", oid.ToString());
                 ViewBag.Type = "OrgSearchSqlReport";
             }
+            else
+                ViewBag.Type = "SqlReport";
             p.Add("@p1", parameter ?? "");
             return body;
         }

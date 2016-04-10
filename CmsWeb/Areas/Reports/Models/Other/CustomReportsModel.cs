@@ -472,6 +472,10 @@ namespace CmsWeb.Areas.Reports.Models
                     typeid = ContentTypeCode.TypeSqlScript;
                     lookfor = new[] {"@OrgIds"};
                     break;
+                case "Menu":
+                    typeid = ContentTypeCode.TypeSqlScript;
+                    lookfor = new[]{"menu"};
+                    break;
                 default:
                     throw new ArgumentException($"unknown typeid: {type}");
             }
