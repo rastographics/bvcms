@@ -8,7 +8,7 @@ namespace CmsData
 {
     public partial class PythonModel
     {
-        public void CreateTask(int ministerId, int aboutId, string description)
+        public void CreateTask(int ministerId, int aboutId, string description, string notes = null)
         {
             using (var db2 = NewDataContext())
             {
@@ -18,6 +18,7 @@ namespace CmsData
                 {
                     OwnerId = ministerId,
                     Description = description,
+                    Notes = notes,
                     ForceCompleteWContact = true,
                     ListId = Task.GetRequiredTaskList(db2, "InBox", ministerId).Id,
                     StatusId = TaskStatusCode.Active,
@@ -25,12 +26,12 @@ namespace CmsData
                 };
                 db2.Tasks.InsertOnSubmit(t);
                 db2.SubmitChanges();
+                var taskLink = Task.TaskLink(db2, description, t.Id);
                 db2.Email(
                     db2.Setting("AdminMail", "support@touchpointsoftware.com"), // from email
                     minister, // to person
                     "TASK: " + description, // subject
-                    Task.TaskLink(db2, description, t.Id) + "<br/>" + about.Name // body
-                );
+                    $@"{taskLink}<br/>\n{about.Name}\n<p>{notes}</p>"); // body
                 db2.SubmitChanges();
             }
         }
