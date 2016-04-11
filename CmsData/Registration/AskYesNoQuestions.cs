@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Xml.Linq;
 using CmsData.API;
+using UtilityExtensions;
 
 namespace CmsData.Registration
 {
@@ -54,7 +55,7 @@ If you need a longer explanation, use InstructionalText above the question so yo
 		    {
 		        var i = new YesNoQuestion();
 		        i.Question = e.Element("Question")?.Value;
-		        i.SmallGroup = e.Element("SmallGroup")?.Value ?? i.Question;
+		        i.SmallGroup = (e.Element("SmallGroup")?.Value ?? i.Question).trim();
 		        return i;
 		    }
 		}

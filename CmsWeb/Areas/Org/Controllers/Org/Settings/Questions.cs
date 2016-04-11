@@ -49,6 +49,8 @@ namespace CmsWeb.Areas.Org.Controllers
                 m = DbUtil.Db.CreateRegistrationSettings(s, id);
                 m.org.UpdateRegSetting(m);
                 DbUtil.Db.SubmitChanges();
+                CheckDuplicates(id);
+
                 if (!m.org.NotifyIds.HasValue())
                     ModelState.AddModelError("Form", needNotify);
                 return PartialView("Registration/Questions", m);
@@ -58,6 +60,22 @@ namespace CmsWeb.Areas.Org.Controllers
                 ModelState.AddModelError("Form", ex.Message);
                 return Content("error:" + ex.Message);
             }
+        }
+
+        private void CheckDuplicates(int id)
+        {
+            var dsg = (from sg in DbUtil.Db.RegistrationSmallGroups(id)
+                       where sg.Cnt > 1
+                       select $"<li>{sg.SmallGroup} ({sg.Cnt})</li>"
+                ).
+                ToList();
+            if (dsg.Any())
+                ViewBag.Duplicates = $@"<div class='alert alert-danger'><b>ERROR: Duplicate SubGroups found</b>
+<ul>
+{string.Join("\n", dsg)}
+</ul>
+</div>
+";
         }
 
         [HttpPost]

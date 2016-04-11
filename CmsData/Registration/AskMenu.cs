@@ -107,7 +107,7 @@ You can optionally associate a fee with one or more items.
 		            Limit = e.Attribute("Limit")?.Value.ToInt2(),
 		            MeetingTime = e.Attribute("Time")?.Value.ToDate()
 		        };
-		        mi.SmallGroup = e.Element("SmallGroup")?.Value ?? mi.Description;
+		        mi.SmallGroup = (e.Element("SmallGroup")?.Value ?? mi.Description).TrimEnd();
 		        return mi;
 		    }
         }

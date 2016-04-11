@@ -1483,7 +1483,6 @@
     <Content Include="Areas\People\Views\DownlineLevels\Index.cshtml" />
     <Content Include="Areas\People\Views\DownlineLevels\Results.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\RegisterLinkMaster.cshtml" />
-    <Content Include="Areas\Org\Views\RegSetting\EditXml.cshtml" />
     <Content Include="Areas\Main\Views\UserPref\Index.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\BatchUpdate.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\UpdateRegOptions.cshtml" />
@@ -2793,8 +2792,6 @@
     <Content Include="Areas\Reports\Views\Reports\VitalStats.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Display\EditText.cshtml">
-    </Content>
-    <Content Include="Areas\Org\Views\RegSetting\Edit.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\RegSetting\Index.cshtml">
     </Content>

@@ -132,7 +132,7 @@ For each checkbox, you can specify the following:
                     Limit = ele.Attribute("Limit")?.Value.ToInt2(),
                     MeetingTime = ele.Attribute("Time")?.Value.ToDate()
                 };
-                i.SmallGroup = ele.Element("SmallGroup")?.Value ?? i.Description;
+                i.SmallGroup = (ele.Element("SmallGroup")?.Value ?? i.Description).TrimEnd();
                 return i;
             }
             public void WriteXml(APIWriter w)
@@ -142,7 +142,7 @@ For each checkbox, you can specify the following:
                     .Attr("Limit", Limit)
                     .Attr("Time", MeetingTime.ToString2("s"))
                     .Add("Description", Description)
-                    .Add("SmallGroup", SmallGroup)
+                    .Add("SmallGroup", SmallGroup.trim())
                     .End();
             }
             public void AddToSmallGroup(CMSDataContext Db, OrganizationMember om, PythonModel pe)
@@ -151,21 +151,21 @@ For each checkbox, you can specify the following:
                     return;
                 if (pe != null)
                 {
-                    pe.instance.AddToSmallGroup(SmallGroup, om);
+                    pe.instance.AddToSmallGroup(SmallGroup.trim(), om);
                     om.Person.LogChanges(Db, om.PeopleId);
                 }
-                om.AddToGroup(Db, SmallGroup);
+                om.AddToGroup(Db, SmallGroup.trim());
                 if (MeetingTime.HasValue)
                     Attend.MarkRegistered(Db, om.OrganizationId, om.PeopleId, MeetingTime.Value, 1);
             }
             public void RemoveFromSmallGroup(CMSDataContext Db, OrganizationMember om)
             {
-                om.RemoveFromGroup(Db, SmallGroup);
+                om.RemoveFromGroup(Db, SmallGroup.trim());
             }
             public bool IsSmallGroupFilled(IEnumerable<string> smallgroups)
             {
                 if (!(Limit > 0)) return false;
-                var cnt = smallgroups.Count(mm => mm == SmallGroup);
+                var cnt = smallgroups.Count(mm => mm.trim() == SmallGroup.trim());
                 return cnt >= Limit;
             }
         }

@@ -1,34 +1,58 @@
-﻿@using System.Text
+﻿@using UtilityExtensions
+@using CmsWeb
 @{
     ViewBag.Title = "Registration Settings";
     ViewBag.PageHeader = "Registration Settings";
     ViewBag.PageSubHeader = $"<a href=\"/Org/{ViewData["OrganizationId"]}\">{ViewData["orgname"]}</a>";
     Layout = ViewExtensions2.TouchPointLayout();
-    var sb = new StringBuilder();
-    var lines = (string[])ViewData["lines"];
-    for (var i = 0; i < lines.Length; i++)
-    {
-        sb.AppendFormat("  {0,3}\t{1}\n", i + 1, lines[i]);
-    }
 }
 <div class="row">
-    <div class="col-md-9">
-        <div class="box box-responsive">
-            <div class="box-content">
-                @if (TempData["error"] != null)
-                {
-                    <div class="alert alert-danger">
-                        @TempData["error"]
-                    </div>
-                }
-                <pre>@sb.ToString()</pre>
-                <form action="/RegSettings/Edit/@ViewData["OrganizationId"]" method="post">
-                    <button id="edit" type="submit" class="btn btn-default" value="Edit Text"><i class="fa fa-pencil"></i> Edit Text</button>
-                    <a href="/RegSettings/ConvertFromMdy/@ViewBag.OrganizationId" class="btn btn-default">Convert From MDY</a>
-                    <a href="/RegSettings/ConvertFromDmy/@ViewBag.OrganizationId" class="btn btn-default">Convert From DMY</a>
-                    <input type="hidden" name="regsetting" value="@ViewData["regsetting"]" />
-                </form>
+  <div class="col-md-9">
+    <div class="box box-responsive">
+      <div class="box-content">
+        @if (TempData["error"] != null)
+        {
+            <div class="alert alert-danger">
+              @TempData["error"]
             </div>
-        </div>
+        }
+        <form action="/RegSettings/Update/@ViewData["OrganizationId"]" method="post">
+          <div id="editor" style="width: 100%; height: 550px; border: #ccc solid 1px;">@ViewData["Text"]</div>
+          <textarea id="mobile-text" name="mobile-text" class="form-control" rows="15" style="display:none; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;">@ViewData["Text"]</textarea>
+          <input type="hidden" id="text" name="text" />
+          <br />
+          <a href="/Org/@ViewData["OrganizationId"]" class="btn btn-default">Back To Org</a>
+          <a href="#" id="save" class="btn btn-primary">Save Changes</a>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
+@section scripts
+{
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
+  <script type="text/javascript">
+        $(function () {
+            var extraSmallDevice = $('.device-xs').is(':visible');
+            var smallDevice = $('.device-sm').is(':visible');
+            if (extraSmallDevice || smallDevice) {
+                $('#editor').hide();
+                $('#mobile-text').show();
+            } else {
+                var editor = ace.edit("editor");
+                editor.getSession().setMode("ace/mode/xml");
+                editor.setShowPrintMargin(false);
+            }
+
+            $("#save").click(function (ev) {
+                ev.preventDefault();
+                if (extraSmallDevice || smallDevice) {
+                    $("#text").val($('#mobile-text').val());
+                } else {
+                    $("#text").val(editor.getValue());
+                }
+                $("form").submit();
+            });
+        });
+  </script>
+}

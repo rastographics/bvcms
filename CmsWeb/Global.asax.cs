@@ -15,7 +15,6 @@ using CmsWeb.Code;
 using CmsWeb.Models;
 using Dapper;
 using Elmah;
-using RegistrationSettingsParser;
 using StackExchange.Profiling;
 using UtilityExtensions;
 

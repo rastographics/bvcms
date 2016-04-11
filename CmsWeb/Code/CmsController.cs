@@ -12,7 +12,6 @@ using CmsWeb.Code;
 using CmsWeb.Models;
 using Elmah;
 using OfficeOpenXml;
-using RegistrationSettingsParser;
 using UtilityExtensions;
 
 namespace CmsWeb

@@ -3783,6 +3783,17 @@ namespace CmsData
                 );
         }
 
+        [Function(Name="dbo.RegistrationSmallGroups", IsComposable = true)]
+        public IQueryable< View.RegistrationSmallGroup > RegistrationSmallGroups(
+            [Parameter(DbType="int")] int? orgid
+            )
+        {
+            return CreateMethodCallQuery< View.RegistrationSmallGroup>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    orgid
+                );
+        }
+
         [Function(Name="dbo.RollList", IsComposable = true)]
         public IQueryable< View.RollList > RollList(
             [Parameter(DbType="int")] int? mid,

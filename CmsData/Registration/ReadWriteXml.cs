@@ -6,7 +6,6 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using CmsData.API;
 using UtilityExtensions;
-using RegistrationSettingsParser;
 
 namespace CmsData.Registration
 {
@@ -20,17 +19,13 @@ namespace CmsData.Registration
 
         public static Settings CreateSettings(string s, CMSDataContext db, int orgId)
         {
-            if (s == null)
-                s = "";
-            if (s.StartsWith("<?xml") || s.StartsWith("<Settings"))
-            {
-                var settings = Util.DeSerialize<Settings>(s);
-                settings.Db = db;
-                settings.OrgId = orgId;
-                settings.org = db.LoadOrganizationById(orgId);
-                return settings;
-            }
-            return Parser.ParseSettings(s, db, orgId);
+            var settings = !s.HasValue()
+                ? new Settings()
+                : Util.DeSerialize<Settings>(s);
+            settings.Db = db;
+            settings.OrgId = orgId;
+            settings.org = db.LoadOrganizationById(orgId);
+            return settings;
         }
 
         public void ReadXml(XmlReader reader)

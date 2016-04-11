@@ -151,7 +151,7 @@ This will be presented as a dropdown selection.
 		            Limit = ele.Attribute("Limit")?.Value?.ToInt2(),
 		            MeetingTime = ele.Attribute("Time")?.Value?.ToDate()
 		        };
-		        i.SmallGroup = ele.Element("SmallGroup")?.Value ?? i.Description;
+		        i.SmallGroup = (ele.Element("SmallGroup")?.Value ?? i.Description).TrimEnd();
 				return i;
 		    }
         }

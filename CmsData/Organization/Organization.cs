@@ -594,7 +594,6 @@ namespace CmsData
         public void UpdateRegSetting(Registration.Settings os)
         {
             RegSettingXml = Util.Serialize(os);
-            RegSetting = RegistrationSettingsParser.Parser.Output(os);
         }
         public static void AddMemberTag(CMSDataContext db, int orgId, string name)
         {

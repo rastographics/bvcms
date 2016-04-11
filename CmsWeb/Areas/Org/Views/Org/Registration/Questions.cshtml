@@ -4,23 +4,24 @@
   ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowQuestionsHelp") == "true";
 }
 <form class="ajax" data-init="movequestions,updateQuestionList,showHideRegTypes,timepicker">
-    @FormAction()
+  @Html.Raw(ViewBag.Duplicates)
+  @FormAction()
   <br/>
-    @Html.DisplayFor(m => Model.TargetExtraValues)
-    <div id="QuestionList" class="movable-list noedit">
-        @foreach (var ask in Model.AskItems)
-        {
-            ask.Name = Html.NameFor2(m => m.AskItems);
-            @Html.DisplayFor(m => ask)
-        }
-    </div>
-    @Html.DisplayFor(m => m.TimeSlots)
-    @if (Model.AskItems.Any())
+  @Html.DisplayFor(m => Model.TargetExtraValues)
+  <div id="QuestionList" class="movable-list noedit">
+    @foreach (var ask in Model.AskItems)
     {
-        @FormAction()
+      ask.Name = Html.NameFor2(m => m.AskItems);
+      @Html.DisplayFor(m => ask)
     }
-    @FormAction(true)
-    <br/>
+  </div>
+  @Html.DisplayFor(m => m.TimeSlots)
+  @if (Model.AskItems.Any())
+  {
+    @FormAction()
+  }
+  @FormAction(true)
+  <br/>
 </form>
 @helper FormAction(bool xs = false)
 {
