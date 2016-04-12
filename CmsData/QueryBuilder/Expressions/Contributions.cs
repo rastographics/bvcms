@@ -97,8 +97,8 @@ namespace CmsData
             var q = db.RecentGiver(Days).Select(v => v.PeopleId.Value);
             var tag = db.PopulateTemporaryTag(q);
             Expression<Func<Person, bool>> pred = p => op == CompareType.Equal && tf
-                ? p.Tags.Any(t => t.Id == tag.Id)
-                : p.Tags.All(t => t.Id != tag.Id);
+                ? db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId)
+                : !db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId);
 
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
@@ -679,23 +679,31 @@ namespace CmsData
         }
         internal Expression IsFamilyGiver()
         {
+            var tf = CodeIds == "1";
             var fundid = Quarters.ToInt2();
             var td = DateTime.Now;
             var fd = td.AddDays(Days == 0 ? -365 : -Days);
             var q = db.FamilyGiver(fd, td, fundid).Where(vv => vv.FamGive == true);
             var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
-            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+
+            Expression<Func<Person, bool>> pred = p => op == CompareType.Equal && tf
+                ? db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId)
+                : !db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId);
+
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
         internal Expression IsFamilyPledger()
         {
+            var tf = CodeIds == "1";
             var fundid = Quarters.ToInt2();
             var td = DateTime.Now;
             var fd = td.AddDays(Days == 0 ? -365 : -Days);
             var q = db.FamilyGiver(fd, td, fundid).Where(vv => vv.FamPledge == true);
             var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
-            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            Expression<Func<Person, bool>> pred = p => op == CompareType.Equal && tf
+                ? db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId)
+                : !db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId);
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }

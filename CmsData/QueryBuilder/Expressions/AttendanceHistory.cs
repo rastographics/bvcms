@@ -27,8 +27,8 @@ namespace CmsData
                   .Select(a => a.PeopleId ?? 0).Distinct();
             var tag = db.PopulateTemporaryTag(q);
             Expression<Func<Person, bool>> pred = p => op == CompareType.NotEqual || op == CompareType.NotOneOf
-                ? p.Tags.All(t => t.Id != tag.Id)
-                : p.Tags.Any(t => t.Id == tag.Id);
+                ? !db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId)
+                : db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId);
 
             return Expression.Invoke(pred, parm);
         }
@@ -45,8 +45,8 @@ namespace CmsData
 
             var tag = db.PopulateTemporaryTag(q);
             Expression<Func<Person, bool>> pred = p => op == CompareType.NotEqual || op == CompareType.NotOneOf
-                ? p.Tags.All(t => t.Id != tag.Id)
-                : p.Tags.Any(t => t.Id == tag.Id);
+                ? !db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId)
+                : db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId);
 
             return Expression.Invoke(pred, parm);
         }
