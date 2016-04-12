@@ -12,8 +12,9 @@ AS
 RETURN 
 (
 	SELECT DISTINCT PeopleId
-	FROM dbo.OrgPeople2(@oid, @grouptype, @first, @last, @sgfilter, @showhidden, NULL, NULL, NULL, NULL, NULL, NULL)
+	FROM dbo.OrgPeople(@oid, @grouptype, @first, @last, @sgfilter, @showhidden, NULL, NULL, NULL, NULL, NULL, NULL)
 )
+
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
