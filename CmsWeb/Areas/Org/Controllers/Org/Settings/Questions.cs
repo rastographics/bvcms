@@ -64,15 +64,15 @@ namespace CmsWeb.Areas.Org.Controllers
 
         private void CheckDuplicates(int id)
         {
-            var dsg = (from sg in DbUtil.Db.RegistrationSmallGroups(id)
-                       where sg.Cnt > 1
-                       select $"<li>{sg.SmallGroup} ({sg.Cnt})</li>"
-                ).
-                ToList();
-            if (dsg.Any())
-                ViewBag.Duplicates = $@"<div class='alert alert-danger'><b>ERROR: Duplicate SubGroups found</b>
+            var dups = (from sg in DbUtil.Db.RegistrationSmallGroups(id)
+                        where sg.Cnt > 1
+                        select $"<li>{sg.SmallGroup} ({sg.Cnt})</li>").ToList();
+            if (dups.Any())
+                ViewBag.Duplicates = $@"
+<div class='alert alert-danger'><b>ERROR: Duplicate SubGroups found</b><br>
+This will prevent your registration from working properly.
 <ul>
-{string.Join("\n", dsg)}
+{string.Join("\n", dups)}
 </ul>
 </div>
 ";
