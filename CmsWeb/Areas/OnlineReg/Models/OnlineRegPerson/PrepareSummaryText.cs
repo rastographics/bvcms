@@ -8,7 +8,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegPersonModel
     {
-        public string PrepareSummaryText(Transaction ti)
+        public string PrepareSummaryText()
         {
             if (RecordFamilyAttendance())
                 return SummarizeFamilyAttendance();

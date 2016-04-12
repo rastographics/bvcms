@@ -30,6 +30,8 @@ namespace CmsData.View
 		
 		private decimal _TotPaid;
 		
+		private decimal _TotCoupon;
+		
 		private decimal? _TotDue;
 		
 		private decimal? _IndPaid;
@@ -167,6 +169,23 @@ namespace CmsData.View
 			{
 				if (this._TotPaid != value)
 					this._TotPaid = value;
+			}
+
+		}
+
+		
+		[Column(Name="TotCoupon", Storage="_TotCoupon", DbType="money NOT NULL")]
+		public decimal TotCoupon
+		{
+			get
+			{
+				return this._TotCoupon;
+			}
+
+			set
+			{
+				if (this._TotCoupon != value)
+					this._TotCoupon = value;
 			}
 
 		}

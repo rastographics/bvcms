@@ -65,6 +65,7 @@ namespace CmsWeb.Areas.Dialog.Models
             IsMissionTrip = i.IsMissionTrip ?? false;
             AmtFee = i.ts?.IndPaid + i.ts?.IndDue;
             AmtDonation = i.ts?.IndAmt - AmtFee;
+            AmtCoupon = i.ts?.TotCoupon;
             AmtPaid = om.AmountPaidTransactions(DbUtil.Db);
             AmtDue = om.AmountDueTransactions(DbUtil.Db);
 
@@ -184,6 +185,9 @@ namespace CmsWeb.Areas.Dialog.Models
 
         [DisplayName("Donation")]
         public decimal? AmtDonation { get; set; }
+
+        [DisplayName("Coupon")]
+        public decimal? AmtCoupon { get; set; }
 
         private string transactionsLink;
         public string TransactionsLink

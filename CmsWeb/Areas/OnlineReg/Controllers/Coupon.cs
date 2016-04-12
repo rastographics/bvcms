@@ -58,7 +58,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 m.TranId = ti.OriginalId;
                 m.UpdateDatum();
             }
-            var tid = $"Coupon({Util.fmtcoupon(coupon):n2})";
+            var tid = $"Coupon({Util.fmtcoupon(coupon)})";
 
             if (!pf.PayBalance)
                 OnlineRegModel.ConfirmDuePaidTransaction(ti, tid, false);

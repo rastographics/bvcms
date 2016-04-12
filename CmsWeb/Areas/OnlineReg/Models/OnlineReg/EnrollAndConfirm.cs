@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using CmsData;
 using CmsData.API;
 using CmsData.Registration;
+using CmsData.View;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -96,20 +97,25 @@ namespace CmsWeb.Areas.OnlineReg.Models
 <a href='http://docs.touchpointsoftware.com/OnlineRegistration/MessagesSettings.html'>see documentation</a><br/><br/>"
                     : "";
                 DbUtil.Db.Email(Util.PickFirst(p.person.FromEmail, notifyIds[0].FromEmail), notifyIds, Header,
-                    $@"{messageNotice}{p.person.Name} has registered for {Header}<br/>
-Total Fee for this registrant: {p.TotalAmount():C}<br/>
-Total Fee for this registration: {TotalAmount():C}<br/>
-Total Fee paid today: {amtpaid:C}<br/>
-AmountDue: {Transaction.Amtdue:C}<br/>
-{p.PrepareSummaryText(Transaction)}");
+                    $@"{messageNotice}{p.person.Name} has registered for {Header}<br/><hr>
+{GetDetailsSection()}");
             }
+        }
+
+        private TransactionSummary transactionSummary;
+        public TransactionSummary TransactionSummary()
+        {
+            if(transactionSummary == null)
+                transactionSummary = DbUtil.Db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == Transaction.OriginalId && tt.PeopleId == List[0].PeopleId);
+            return transactionSummary;
         }
 
         private void SendSingleConfirmationForOrg(OnlineRegPersonModel p)
         {
+            var ts = TransactionSummary();
             DbUtil.Db.SetCurrentOrgId(p.orgid);
             var emailSubject = GetSubject(p);
-            var details = p.PrepareSummaryText(Transaction);
+            var details = p.PrepareSummaryText();
             var message = p.GetMessage(details);
 
             var NotifyIds = DbUtil.Db.StaffPeopleForOrg(p.org.OrganizationId);
@@ -121,8 +127,6 @@ AmountDue: {Transaction.Amtdue:C}<br/>
 
             message = APIOrganization.MessageReplacements(DbUtil.Db, p.person,
                 masterorg.OrganizationName, p.org.OrganizationId, p.org.OrganizationName, location, message);
-
-            var amtpaid = Transaction.Amt ?? 0;
 
             if (Transaction.Donate > 0)
                 message = DoDonationModifyMessage(message);
@@ -141,9 +145,9 @@ AmountDue: {Transaction.Amtdue:C}<br/>
                 NotifyIds, Header,
                 $@"{p.person.Name} has registered for {Header}<br/>
 Feepaid for this registrant: {p.AmountToPay():C}<br/>
-Others in this registration session: {p.GetOthersInTransaction(Transaction):C}<br/>
-Total Fee paid for this registration session: {amtpaid:C}<br/>
-<pre>{p.PrepareSummaryText(Transaction)}</pre>");
+Others in this registration session: {p.GetOthersInTransaction(Transaction)}<br/>
+Total Fee paid for this registration session: {ts.TotPaid:C}<br/>
+<pre>{p.PrepareSummaryText()}</pre>");
         }
 
         private Settings GetMasterOrgSettings()
@@ -323,22 +327,6 @@ Total Fee paid for this registration session: {amtpaid:C}<br/>
 
         private string DoEnrollments()
         {
-            string amountRowFormat = $@"
-<table>
-    <tr>
-        <td style='{CssStyle.LabelStyle}'>Total Paid</td>
-        <td style='{CssStyle.LabelStyle}'>Total Due</td>
-    </tr>
-    <tr>
-        <td style='{CssStyle.DataStyle}{CssStyle.AlignRight}'>{{0:c}}</td>
-        <td style='{CssStyle.DataStyle}{CssStyle.AlignRight}'>{{1:c}}</td></tr>
-</table>
-";
-
-            var amtpaid = Transaction.Amt ?? 0;
-            var details = new StringBuilder();
-            if (Transaction.Amt > 0)
-                details.AppendFormat(amountRowFormat, amtpaid, Transaction.Amtdue);
             foreach (var p in List)
             {
                 p.Enroll(Transaction, p.GetPayLink());
@@ -349,10 +337,20 @@ Total Fee paid for this registration session: {amtpaid:C}<br/>
                     p.CreateAccount();
                 DbUtil.Db.SubmitChanges();
             }
-            foreach(var p in List)
-                details.Append(p.PrepareSummaryText(Transaction));
-            return List[0].GetMessage(details.ToString());
+            var details = GetDetailsSection();
+            return List[0].GetMessage(details);
         }
+
+        private string GetDetailsSection()
+        {
+            var details = new StringBuilder();
+            if (Transaction.Amt > 0)
+                details.Append(List[0].SummaryTransaction());
+            foreach (var p in List)
+                details.Append(p.PrepareSummaryText());
+            return details.ToString();
+        }
+
 
         private void AddPeopleToTransaction()
         {

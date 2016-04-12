@@ -6,6 +6,7 @@ using UtilityExtensions;
 using System.Text;
 using System.Web;
 using CmsData.Codes;
+using CmsData.View;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -35,9 +36,32 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private static string DefaultMessage => DbUtil.Db.ContentHtml("DefaultConfirmation", 
                 Resource1.SettingsRegistrationModel_DefaulConfirmation);
 
+        public string SummaryTransaction()
+        {
+            var ts = Parent.TransactionSummary();
+            var summary = DbUtil.Db.RenderTemplate(@"
+<table>
+    <tr>
+        <td style='{{LabelStyle}}'>Total Paid</td>
+        {{#if TotCoupon}}
+            <td style='{{LabelStyle}}'>Coupon</td>
+        {{/if}}
+        <td style='{{LabelStyle}}'>Total Due</td>
+    </tr>
+    <tr>
+        <td style='{{DataStyle}}{{AlignRight}}'>{{Fmt TotPaid 'c'}}</td>
+        {{#if TotCoupon}}
+            <td style='{{DataStyle}}{{AlignRight}}'>{{Fmt TotCoupon 'c'}}</td>
+        {{/if}}
+        <td style='{{DataStyle}}{{AlignRight}}'>{{Fmt TotDue 'c'}}</td>
+    </tr>
+</table>
+", ts);
+            return summary;
+        }
         public string GetMessage(string details)
         {
-            var amtpaid = Parent.Transaction.Amt ?? 0;
+            var ts = Parent.TransactionSummary();
             var payLink = GetPayLink();
             var body = settings[org.OrganizationId].Body;
             if (masterorgid.HasValue && !body.HasValue())
@@ -53,12 +77,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
             message = message.Replace("{phone}", org.PhoneNumber.FmtFone7())
                 .Replace("{tickets}", ntickets.ToString())
                 .Replace("{details}", details)
-                .Replace("{paid}", amtpaid.ToString("c"))
-                .Replace("{sessiontotal}", amtpaid.ToString("c"))
+                .Replace("{paid}", ts.TotPaid.ToString("c"))
+                .Replace("{sessiontotal}", ts.TotPaid.ToString("c"))
                 .Replace("{participants}", details);
-            if (Parent.Transaction.Amtdue > 0)
+            if (ts?.TotDue > 0)
                 message = message.Replace("{paylink}",
-                    $"<a href='{payLink}'>Click this link to make a payment on your balance of {Parent.Transaction.Amtdue:C}</a>.");
+                    $"<a href='{payLink}'>Click this link to make a payment on your balance of {ts.TotDue:C}</a>.");
             else
                 message = message.Replace("{paylink}", "You have a zero balance.");
             return message;
