@@ -206,8 +206,21 @@ namespace CmsWeb.Areas.Dialog.Controllers
                         // check for member type change to leader and doesn't have role.
                         if (m.MemberType.ToString() == LeaderMemberType && !user.InRole(OrgLeadersOnlyRole))
                         {
-                            user.AddRoles(DbUtil.Db, !user.InRole(AccessRole) ? new[] {AccessRole, OrgLeadersOnlyRole} : new[] {OrgLeadersOnlyRole});
+                            user.AddRoles(DbUtil.Db, !user.InRole(AccessRole) ? new[] { AccessRole, OrgLeadersOnlyRole } : new[] { OrgLeadersOnlyRole });
                             DbUtil.Db.SubmitChanges();
+                        }
+                        else if(m.MemberType.ToString() != LeaderMemberType && user.InRole(OrgLeadersOnlyRole))
+                        {
+                            // check to see if this user no longer has any Leader membership types
+                            if (!DbUtil.Db.OrganizationMembers
+                                .Any(x => x.MemberType.Code == LeaderMemberType && x.PeopleId == m.PeopleId))
+                            {
+                                // Get the roles list minus the org leaders only role
+                                var roles = user.Roles.Where(x => x != OrgLeadersOnlyRole).ToArray();
+
+                                user.SetRoles(DbUtil.Db, roles);
+                                DbUtil.Db.SubmitChanges();
+                            }
                         }
                     }
                 }
