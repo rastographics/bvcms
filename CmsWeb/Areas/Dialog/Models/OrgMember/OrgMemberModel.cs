@@ -378,20 +378,12 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
                         if (MemberType.Value == LeaderMemberTypeId.ToString() && !user.InRole(OrgLeadersOnlyRole))
                         {
                             user.AddRoles(DbUtil.Db, !user.InRole(AccessRole) ? new[] { AccessRole, OrgLeadersOnlyRole } : new[] { OrgLeadersOnlyRole });
-                            DbUtil.Db.SubmitChanges();
                         }
-                        else if (MemberType.Value != LeaderMemberTypeId.ToString() && user.InRole(OrgLeadersOnlyRole))
+                        else if (MemberType.Value != LeaderMemberTypeId.ToString() && user.InRole(OrgLeadersOnlyRole) &&
+                            !DbUtil.Db.OrganizationMembers.Any(x => x.MemberType.Id == LeaderMemberTypeId && x.PeopleId == PeopleId && x.OrganizationId != Organization.OrganizationId))
                         {
-                            // check to see if this user no longer has any Leader membership types
-                            if (!DbUtil.Db.OrganizationMembers
-                                .Any(x => x.MemberType.Id == LeaderMemberTypeId && x.PeopleId == PeopleId && x.OrganizationId != Organization.OrganizationId))
-                            {
-                                // Get the roles list minus the org leaders only role
-                                var roles = user.Roles.Where(x => x != OrgLeadersOnlyRole).ToArray();
-
-                                user.SetRoles(DbUtil.Db, roles);
-                                DbUtil.Db.SubmitChanges();
-                            }
+                            // Set the roles list to previous roles minus the OrgLeadersOnly role
+                            user.SetRoles(DbUtil.Db, user.Roles.Where(x => x != OrgLeadersOnlyRole).ToArray());
                         }
                     }
                 }
