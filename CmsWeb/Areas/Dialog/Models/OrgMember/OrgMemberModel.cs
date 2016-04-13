@@ -383,7 +383,7 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
                             user.InRole(OrgLeadersOnlyRole) && user.InRole(AccessRole) &&
                             !DbUtil.Db.OrganizationMembers.Any(x => x.MemberType.Id == LeaderMemberTypeId && x.PeopleId == PeopleId && x.OrganizationId != Organization.OrganizationId))
                         {
-                            // Set the roles list to previous roles minus the OrgLeadersOnly role
+                            // Resets their roles back to a "MyData" user
                             user.SetRoles(DbUtil.Db, new string[] {});
                         }
                     }
