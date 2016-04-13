@@ -375,15 +375,16 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
                     if (checkForPromotion)
                     {
                         // check for member type change to leader and doesn't have role.
-                        if (MemberType.Value == LeaderMemberTypeId.ToString() && !user.InRole(OrgLeadersOnlyRole))
+                        if (MemberType.Value == LeaderMemberTypeId.ToString() && !user.Roles.Any())
                         {
                             user.AddRoles(DbUtil.Db, !user.InRole(AccessRole) ? new[] { AccessRole, OrgLeadersOnlyRole } : new[] { OrgLeadersOnlyRole });
                         }
-                        else if (MemberType.Value != LeaderMemberTypeId.ToString() && user.InRole(OrgLeadersOnlyRole) &&
+                        else if (MemberType.Value != LeaderMemberTypeId.ToString() && user.Roles.Count() == 2 &&
+                            user.InRole(OrgLeadersOnlyRole) && user.InRole(AccessRole) &&
                             !DbUtil.Db.OrganizationMembers.Any(x => x.MemberType.Id == LeaderMemberTypeId && x.PeopleId == PeopleId && x.OrganizationId != Organization.OrganizationId))
                         {
                             // Set the roles list to previous roles minus the OrgLeadersOnly role
-                            user.SetRoles(DbUtil.Db, user.Roles.Where(x => x != OrgLeadersOnlyRole).ToArray());
+                            user.SetRoles(DbUtil.Db, new string[] {});
                         }
                     }
                 }
