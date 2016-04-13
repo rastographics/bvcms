@@ -4,7 +4,7 @@
     @if (Model.Incomplete.HasValue())
     {
         <div class="alert alert-danger scrollToTop">
-            Will not save your edits until you correct the following: @Model.Incomplete, 
+            Will not save your edits until you correct the following: @Model.Incomplete. 
         </div>
     }
     @Html.Hidden("editing", "true")
