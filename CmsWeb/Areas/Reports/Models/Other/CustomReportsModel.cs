@@ -95,28 +95,16 @@ namespace CmsWeb.Areas.Reports.Models
         {
             if (list != null)
                 return list;
+            var roles = DbUtil.Db.CurrentUser.Roles;
+            var li = DbUtil.Db.ViewCustomScriptRoles.ToList();
+            var q = from e in li
+                    where e.Role == null || roles.Contains(e.Role)
+                    where e.Name != null
+                    where e.ShowOnOrgId == null || e.ShowOnOrgId == orgid
+                    select new ReportItem(e.Name, e.Type);
             list = new List<ReportItem>();
-            var body = GetCustomReportsContent();
-            if (body.HasValue())
-            {
-                var xdoc = XDocument.Parse(body);
-                if (xdoc.Root == null)
-                    return list;
-                var roles = DbUtil.Db.CurrentUser.Roles;
-                var q = from e in xdoc.Root.Elements("Report")
-                        let r = (string) e.Attribute("name")
-                        let role = (string) e.Attribute("role")
-                        let oid = ((string) e.Attribute("showOnOrgId")).ToInt()
-                        let typ = ((string) e.Attribute("type") ?? "Custom")
-                        where oid == 0 || oid == orgid
-                        where role == null || roles.Contains(role)
-                        where r != null
-                        where r != "AllColumns"
-                        select new ReportItem(r, typ);
-
-                foreach (var r in q.Where(r => !list.Contains(r)))
-                    list.Add(r);
-            }
+            foreach (var r in q.Where(r => !list.Contains(r)))
+                list.Add(r);
             return list;
         }
 

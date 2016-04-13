@@ -1814,6 +1814,12 @@ namespace CmsData
 
         }
 
+        public Table< View.CustomScriptRole> ViewCustomScriptRoles
+        {
+            get { return GetTable< View.CustomScriptRole>(); }
+
+        }
+
         public Table< View.DepositDateTotal> ViewDepositDateTotals
         {
             get { return GetTable< View.DepositDateTotal>(); }
