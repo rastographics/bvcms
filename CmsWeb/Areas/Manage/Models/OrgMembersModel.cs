@@ -158,6 +158,18 @@ namespace CmsWeb.Models
             if (_members == null)
             {
                 var glist = new int[] {};
+                var smallGroupList = new List<string>();
+                if (null != SmallGroup)
+                {
+                    if (SmallGroup.Contains(";"))
+                    {
+                        smallGroupList.AddRange(SmallGroup.Split(';').Select(x => x.Trim()));
+                    }
+                    // Add the original SmallGroup (which might contain a semicolon) to the list in case there
+                    // is a small group name that contains a semicolon and we're searching for it
+                    smallGroupList.Add(SmallGroup);
+                }
+				
                 if (Grades.HasValue())
                     glist = (from g in (Grades ?? "").Split(',')
                              select g.ToInt()).ToArray();
@@ -165,7 +177,7 @@ namespace CmsWeb.Models
                         where om.Organization.DivOrgs.Any(di => di.DivId == DivId)
                         where SourceId == 0 || om.OrganizationId == SourceId
                         where glist.Length == 0 || glist.Contains(om.Person.Grade.Value)
-                        where !SmallGroup.HasValue() || om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == SmallGroup)
+                        where !SmallGroup.HasValue() || om.OrgMemMemTags.Any(mm => smallGroupList.Contains(mm.MemberTag.Name))
                         where !MembersOnly || om.MemberTypeId == MemberTypeCode.Member
                         select om;
                 _members = q;
