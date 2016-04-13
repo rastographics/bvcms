@@ -383,7 +383,7 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
                         {
                             // check to see if this user no longer has any Leader membership types
                             if (!DbUtil.Db.OrganizationMembers
-                                .Any(x => x.MemberType.Id == LeaderMemberTypeId && x.PeopleId == PeopleId))
+                                .Any(x => x.MemberType.Id == LeaderMemberTypeId && x.PeopleId == PeopleId && x.OrganizationId != Organization.OrganizationId))
                             {
                                 // Get the roles list minus the org leaders only role
                                 var roles = user.Roles.Where(x => x != OrgLeadersOnlyRole).ToArray();
