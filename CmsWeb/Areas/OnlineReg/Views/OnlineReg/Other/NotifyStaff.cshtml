@@ -20,27 +20,11 @@
                   </div>
                 }
                 <h4>@Model.person.Name has registered for @Model.Parent.Header</h4>
-                <table>
-                  <tr>
-                    <td>Total Fee for this registrant</td>
-                    <td>@Model.TotalAmount().ToString("C")</td>
-                  </tr>
-                  <tr>
-                    <td>Total Fee for this registration</td>
-                    <td>@Model.Parent.TotalAmount().ToString("C")</td>
-                  </tr>
-                  <tr>
-                    <td>Total Fee paid today</td>
-                    <td>@Model.Parent.TotalAmount().ToString("C")</td>
-                  </tr>
-                  <tr>
-                    <td>Amount due</td>
-                    <td>@Model.Parent.Transaction.Amtdue.ToString2("C")</td>
-                  </tr>
-                </table>
                 <p>REGISTRATION DETAILS:</p>
                 <div>
-                  @Model.PrepareSummaryText(Model.Parent.Transaction)
+                </div>
+                <div>
+                  @Html.Raw(Model.Parent.GetDetailsSection())
                 </div>
               </td>
             </tr>

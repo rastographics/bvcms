@@ -341,7 +341,7 @@ Total Fee paid for this registration session: {ts.TotPaid:C}<br/>
             return List[0].GetMessage(details);
         }
 
-        private string GetDetailsSection()
+        public string GetDetailsSection()
         {
             var details = new StringBuilder();
             if (Transaction.Amt > 0)
