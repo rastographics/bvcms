@@ -22,6 +22,11 @@ namespace CmsWeb.Areas.Dialog.Models
         private int? orgId;
         private int? peopleId;
 
+        private const string AutoOrgLeaderPromotion = "AutoOrgLeaderPromotion";
+        private const int LeaderMemberTypeId = 140;
+        private const string AccessRole = "Access";
+        private const string OrgLeadersOnlyRole = "OrgLeadersOnly";
+
         public OrgMemberModel()
         {
         }
@@ -221,7 +226,14 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             if (OrgMember == null)
                 OrgMember = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
+
+            // We have to do this by MemberTypeId rather than MemberType, since lazy loading MemberType's value on the
+            // original model causes an exception to fire
+            if(OrgMember.MemberTypeId == LeaderMemberTypeId || MemberType.Value == LeaderMemberTypeId.ToString())
+                CheckForPromotionOrDemotion();
+
             var changes = this.CopyPropertiesTo(OrgMember);
+
             DbUtil.Db.SubmitChanges();
             foreach (var g in changes)
                 DbUtil.LogActivity($"OrgMem {GroupName} change {g.Field}", OrgId, PeopleId);
@@ -345,6 +357,44 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
             r.ExtraQuestion[rq.SetX ?? 0][question] = answer;
             OrgMember.OnlineRegData = r.WriteXml();
             DbUtil.Db.SubmitChanges();
+        }
+
+        private void CheckForPromotionOrDemotion()
+        {
+            // Make sure person is a user.
+            var user = DbUtil.Db.Users.SingleOrDefault(us => us.PeopleId == PeopleId);
+            if (user != null)
+            {
+                // next check for leader org promotion.
+                var autoLeaderOrgPromotionSetting = DbUtil.DbReadOnly.Settings.SingleOrDefault(x => x.Id == AutoOrgLeaderPromotion);
+                if (autoLeaderOrgPromotionSetting != null)
+                {
+                    var checkForPromotion = false;
+                    bool.TryParse(autoLeaderOrgPromotionSetting.SettingX, out checkForPromotion);
+                    if (checkForPromotion)
+                    {
+                        // check for member type change to leader and doesn't have role.
+                        if (MemberType.Value == LeaderMemberTypeId.ToString() && !user.InRole(OrgLeadersOnlyRole))
+                        {
+                            user.AddRoles(DbUtil.Db, !user.InRole(AccessRole) ? new[] { AccessRole, OrgLeadersOnlyRole } : new[] { OrgLeadersOnlyRole });
+                            DbUtil.Db.SubmitChanges();
+                        }
+                        else if (MemberType.Value != LeaderMemberTypeId.ToString() && user.InRole(OrgLeadersOnlyRole))
+                        {
+                            // check to see if this user no longer has any Leader membership types
+                            if (!DbUtil.Db.OrganizationMembers
+                                .Any(x => x.MemberType.Id == LeaderMemberTypeId && x.PeopleId == PeopleId))
+                            {
+                                // Get the roles list minus the org leaders only role
+                                var roles = user.Roles.Where(x => x != OrgLeadersOnlyRole).ToArray();
+
+                                user.SetRoles(DbUtil.Db, roles);
+                                DbUtil.Db.SubmitChanges();
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

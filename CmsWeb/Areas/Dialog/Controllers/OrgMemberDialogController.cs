@@ -12,11 +12,6 @@ namespace CmsWeb.Areas.Dialog.Controllers
     [RouteArea("Dialog", AreaPrefix = "OrgMemberDialog"), Route("{action}")]
     public class OrgMemberDialogController : CmsStaffController
     {
-        private const string AutoOrgLeaderPromotion = "AutoOrgLeaderPromotion";
-        private const string LeaderMemberType = "Leader";
-        private const string AccessRole = "Access";
-        private const string OrgLeadersOnlyRole = "OrgLeadersOnly";
-
         [HttpPost, Route("~/OrgMemberDialog/{group}/{oid}/{pid}")]
         public ActionResult Display(string group, int oid, int pid)
         {
@@ -49,7 +44,6 @@ namespace CmsWeb.Areas.Dialog.Controllers
             try
             {
                 m.UpdateModel();
-                CheckForPromotion(m);
             }
             catch (Exception)
             {
@@ -188,43 +182,5 @@ namespace CmsWeb.Areas.Dialog.Controllers
             m.Delete(name);
             return Content("deleted");
 		}
-
-        private void CheckForPromotion(OrgMemberModel m)
-        {
-            // first make sure person is a user.
-            var user = DbUtil.Db.Users.SingleOrDefault(us => us.PeopleId == m.PeopleId);
-            if (user != null)
-            {
-                // next check for leader org promotion.
-                var autoLeaderOrgPromotionSetting = DbUtil.DbReadOnly.Settings.SingleOrDefault(x => x.Id == AutoOrgLeaderPromotion);
-                if (autoLeaderOrgPromotionSetting != null)
-                {
-                    var checkForPromotion = false;
-                    bool.TryParse(autoLeaderOrgPromotionSetting.SettingX, out checkForPromotion);
-                    if (checkForPromotion)
-                    {
-                        // check for member type change to leader and doesn't have role.
-                        if (m.MemberType.ToString() == LeaderMemberType && !user.InRole(OrgLeadersOnlyRole))
-                        {
-                            user.AddRoles(DbUtil.Db, !user.InRole(AccessRole) ? new[] { AccessRole, OrgLeadersOnlyRole } : new[] { OrgLeadersOnlyRole });
-                            DbUtil.Db.SubmitChanges();
-                        }
-                        else if(m.MemberType.ToString() != LeaderMemberType && user.InRole(OrgLeadersOnlyRole))
-                        {
-                            // check to see if this user no longer has any Leader membership types
-                            if (!DbUtil.Db.OrganizationMembers
-                                .Any(x => x.MemberType.Code == LeaderMemberType && x.PeopleId == m.PeopleId))
-                            {
-                                // Get the roles list minus the org leaders only role
-                                var roles = user.Roles.Where(x => x != OrgLeadersOnlyRole).ToArray();
-
-                                user.SetRoles(DbUtil.Db, roles);
-                                DbUtil.Db.SubmitChanges();
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 }
