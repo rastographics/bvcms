@@ -227,9 +227,10 @@ namespace CmsWeb.Areas.Dialog.Models
             if (OrgMember == null)
                 OrgMember = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
 
-            // We have to do this by MemberTypeId rather than MemberType, since lazy loading MemberType's value on the
-            // original model causes an exception to fire
-            if(OrgMember.MemberTypeId == LeaderMemberTypeId || MemberType.Value == LeaderMemberTypeId.ToString())
+            // promotion or demotion is necessary. This must be done with MemberTypeId on the model instead of
+            // MemberType, because lazy loading the MemberType value causes an exception on CopyPropertiesTo()
+            if((OrgMember.MemberTypeId == LeaderMemberTypeId && MemberType.Name != LeaderMemberTypeId.ToString())
+                || (MemberType.Value == LeaderMemberTypeId.ToString() && OrgMember.MemberTypeId != LeaderMemberTypeId))
                 CheckForPromotionOrDemotion();
 
             var changes = this.CopyPropertiesTo(OrgMember);
