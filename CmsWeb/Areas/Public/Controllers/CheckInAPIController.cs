@@ -449,6 +449,13 @@ namespace CmsWeb.Areas.Public.Controllers
             p.LastName = aep.lastName;
             p.NickName = aep.goesBy;
 
+            if (aep.birthday != null)
+            {
+                p.BirthDay = aep.birthday.Value.Day;
+                p.BirthMonth = aep.birthday.Value.Month;
+                p.BirthYear = aep.birthday.Value.Year;
+            }
+
             p.PositionInFamilyId = DbUtil.Db.ComputePositionInFamily(aep.getAge(), aep.maritalStatusID == MaritalStatusCode.Married, f.FamilyId) ?? PositionInFamily.PrimaryAdult;
 
             p.GenderId = aep.genderID;
