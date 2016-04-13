@@ -48,7 +48,8 @@ For each checkbox, you can specify the following:
                 Label = ele.Element("Label")?.Value,
             };
             foreach (var ee in ele.Elements("CheckboxItem"))
-                cb.list.Add(CheckboxItem.ReadXml(ee));
+                if(ee.Element("Description")?.Value != null)
+                    cb.list.Add(CheckboxItem.ReadXml(ee));
             return cb;
 
         }
@@ -132,7 +133,7 @@ For each checkbox, you can specify the following:
                     Limit = ele.Attribute("Limit")?.Value.ToInt2(),
                     MeetingTime = ele.Attribute("Time")?.Value.ToDate()
                 };
-                i.SmallGroup = (ele.Element("SmallGroup")?.Value ?? i.Description).TrimEnd();
+                i.SmallGroup = (ele.Element("SmallGroup")?.Value ?? i.Description)?.TrimEnd();
                 return i;
             }
             public void WriteXml(APIWriter w)

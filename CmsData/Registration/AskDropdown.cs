@@ -46,8 +46,8 @@ This will be presented as a dropdown selection.
 		{
 		    var dd = new AskDropdown {Label = ele.Element("Label")?.Value};
 		    foreach (var ee in ele.Elements("DropdownItem"))
-		        dd.list.Add(DropdownItem.ReadXml(ee));
-            // todo: prevent duplicates
+                if(ee.Element("Description")?.Value != null)
+    		        dd.list.Add(DropdownItem.ReadXml(ee));
 			return dd;
 		}
         public override List<string> SmallGroups()
@@ -151,7 +151,7 @@ This will be presented as a dropdown selection.
 		            Limit = ele.Attribute("Limit")?.Value?.ToInt2(),
 		            MeetingTime = ele.Attribute("Time")?.Value?.ToDate()
 		        };
-		        i.SmallGroup = (ele.Element("SmallGroup")?.Value ?? i.Description).TrimEnd();
+		        i.SmallGroup = (ele.Element("SmallGroup")?.Value ?? i.Description)?.TrimEnd();
 				return i;
 		    }
         }

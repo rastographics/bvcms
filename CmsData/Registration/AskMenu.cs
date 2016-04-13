@@ -40,7 +40,8 @@ You can optionally associate a fee with one or more items.
 	        m.Label = ele.Element("Label")?.Value;
 			m.list = new List<MenuItem>();
             foreach(var ee in ele.Elements("MenuItem"))
-                m.list.Add(MenuItem.ReadXml(ee));
+                if(ee.Element("Description")?.Value != null)
+                    m.list.Add(MenuItem.ReadXml(ee));
 	        return m;
 	        // todo: check duplicates
 	    }
@@ -107,7 +108,7 @@ You can optionally associate a fee with one or more items.
 		            Limit = e.Attribute("Limit")?.Value.ToInt2(),
 		            MeetingTime = e.Attribute("Time")?.Value.ToDate()
 		        };
-		        mi.SmallGroup = (e.Element("SmallGroup")?.Value ?? mi.Description).TrimEnd();
+		        mi.SmallGroup = (e.Element("SmallGroup")?.Value ?? mi.Description)?.TrimEnd();
 		        return mi;
 		    }
         }
