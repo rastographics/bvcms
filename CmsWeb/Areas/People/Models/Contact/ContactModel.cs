@@ -149,8 +149,8 @@ namespace CmsWeb.Areas.People.Models
                 }
 
                 var q = from c in DbUtil.Db.Contactees
-                        where c.ContactId == ContactId
-                        select c.PeopleId;
+                        where c.ContactId == ContactId && c.PeopleId.HasValue
+                        select c.PeopleId.Value;
                 var q2 = from c in DbUtil.Db.Contactors
                          where c.ContactId == ContactId
                          select c.PeopleId;

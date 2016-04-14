@@ -95,7 +95,8 @@ namespace CmsWeb.Areas.People.Models
         {
             public int ContactId { get; set; }
             public int? TaskId { get; set; }
-            public int PeopleId { get; set; }
+            public int? PeopleId { get; set; }
+            public int? OrganizationId { get; set; }
             public bool PrayedForPerson { get; set; }
             public bool ProfessionOfFaith { get; set; }
             public string Name { get; set; }

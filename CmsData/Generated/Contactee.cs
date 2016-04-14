@@ -20,15 +20,21 @@ namespace CmsData
 		
 		private int _ContactId;
 		
-		private int _PeopleId;
+		private int? _PeopleId;
 		
 		private bool? _ProfessionOfFaith;
 		
 		private bool? _PrayedForPerson;
 		
+		private int? _OrganizationId;
+		
+		private int _ContacteeId;
+		
    		
     	
 		private EntityRef< Contact> _contact;
+		
+		private EntityRef< Organization> _organization;
 		
 		private EntityRef< Person> _person;
 		
@@ -42,7 +48,7 @@ namespace CmsData
 		partial void OnContactIdChanging(int value);
 		partial void OnContactIdChanged();
 		
-		partial void OnPeopleIdChanging(int value);
+		partial void OnPeopleIdChanging(int? value);
 		partial void OnPeopleIdChanged();
 		
 		partial void OnProfessionOfFaithChanging(bool? value);
@@ -51,12 +57,20 @@ namespace CmsData
 		partial void OnPrayedForPersonChanging(bool? value);
 		partial void OnPrayedForPersonChanged();
 		
+		partial void OnOrganizationIdChanging(int? value);
+		partial void OnOrganizationIdChanged();
+		
+		partial void OnContacteeIdChanging(int value);
+		partial void OnContacteeIdChanged();
+		
     #endregion
 		public Contactee()
 		{
 			
 			
 			this._contact = default(EntityRef< Contact>); 
+			
+			this._organization = default(EntityRef< Organization>); 
 			
 			this._person = default(EntityRef< Person>); 
 			
@@ -66,7 +80,7 @@ namespace CmsData
 		
     #region Columns
 		
-		[Column(Name="ContactId", UpdateCheck=UpdateCheck.Never, Storage="_ContactId", DbType="int NOT NULL", IsPrimaryKey=true)]
+		[Column(Name="ContactId", UpdateCheck=UpdateCheck.Never, Storage="_ContactId", DbType="int NOT NULL")]
 		[IsForeignKey]
 		public int ContactId
 		{
@@ -92,9 +106,9 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="PeopleId", UpdateCheck=UpdateCheck.Never, Storage="_PeopleId", DbType="int NOT NULL", IsPrimaryKey=true)]
+		[Column(Name="PeopleId", UpdateCheck=UpdateCheck.Never, Storage="_PeopleId", DbType="int")]
 		[IsForeignKey]
-		public int PeopleId
+		public int? PeopleId
 		{
 			get { return this._PeopleId; }
 
@@ -162,6 +176,54 @@ namespace CmsData
 		}
 
 		
+		[Column(Name="OrganizationId", UpdateCheck=UpdateCheck.Never, Storage="_OrganizationId", DbType="int")]
+		[IsForeignKey]
+		public int? OrganizationId
+		{
+			get { return this._OrganizationId; }
+
+			set
+			{
+				if (this._OrganizationId != value)
+				{
+				
+					if (this._organization.HasLoadedOrAssignedValue)
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+				
+                    this.OnOrganizationIdChanging(value);
+					this.SendPropertyChanging();
+					this._OrganizationId = value;
+					this.SendPropertyChanged("OrganizationId");
+					this.OnOrganizationIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="ContacteeId", UpdateCheck=UpdateCheck.Never, Storage="_ContacteeId", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int ContacteeId
+		{
+			get { return this._ContacteeId; }
+
+			set
+			{
+				if (this._ContacteeId != value)
+				{
+				
+                    this.OnContacteeIdChanging(value);
+					this.SendPropertyChanging();
+					this._ContacteeId = value;
+					this.SendPropertyChanged("ContacteeId");
+					this.OnContacteeIdChanged();
+				}
+
+			}
+
+		}
+
+		
     #endregion
         
     #region Foreign Key Tables
@@ -212,6 +274,48 @@ namespace CmsData
 		}
 
 		
+		[Association(Name="contactsHad__organization", Storage="_organization", ThisKey="OrganizationId", IsForeignKey=true)]
+		public Organization organization
+		{
+			get { return this._organization.Entity; }
+
+			set
+			{
+				Organization previousValue = this._organization.Entity;
+				if (((previousValue != value) 
+							|| (this._organization.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if (previousValue != null)
+					{
+						this._organization.Entity = null;
+						previousValue.contactsHad.Remove(this);
+					}
+
+					this._organization.Entity = value;
+					if (value != null)
+					{
+						value.contactsHad.Add(this);
+						
+						this._OrganizationId = value.OrganizationId;
+						
+					}
+
+					else
+					{
+						
+						this._OrganizationId = default(int?);
+						
+					}
+
+					this.SendPropertyChanged("organization");
+				}
+
+			}
+
+		}
+
+		
 		[Association(Name="contactsHad__person", Storage="_person", ThisKey="PeopleId", IsForeignKey=true)]
 		public Person person
 		{
@@ -242,7 +346,7 @@ namespace CmsData
 					else
 					{
 						
-						this._PeopleId = default(int);
+						this._PeopleId = default(int?);
 						
 					}
 
