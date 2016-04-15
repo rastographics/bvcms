@@ -39,6 +39,20 @@ public partial class UserDefinedFunctions
         }
     }
     [SqlFunction]
+    public static SqlString RegexMatchGroup(SqlString subject, SqlString pattern, SqlString group)
+    {
+        try
+        {
+            var m = Regex.Match(subject.Value, pattern.Value, RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+            return m.Groups[group.Value].Value;
+        }
+        catch (Exception ex)
+        {
+            SqlContext.Pipe.Send("Error searching Pattern " + ex.Message);
+            return "";
+        }
+    }
+    [SqlFunction]
     public static SqlString AllRegexMatchs(SqlString subject, SqlString pattern)
     {
         try
