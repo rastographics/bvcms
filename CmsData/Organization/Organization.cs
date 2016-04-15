@@ -534,8 +534,10 @@ namespace CmsData
         {
             var ev = OrganizationExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase: true) == 0);
             if (ev != null)
+            {
                 db.OrganizationExtras.DeleteOnSubmit(ev);
-            ev.TransactionTime = DateTime.Now;
+                ev.TransactionTime = DateTime.Now;
+            }
         }
 
         public void LogExtraValue(string op, string field)
