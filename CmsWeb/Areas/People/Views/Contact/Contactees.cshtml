@@ -32,11 +32,14 @@
           </td>
           @if (Model.CanViewComments)
           {
+            if (@c.PeopleId.HasValue)
+            {
+                <td style="width: 50px;">
+                    <a class="addtask in btn btn-default btn-sm" href="/Contact2/AddTask/@c.ContactId/@c.PeopleId"><i class="fa fa-plus-circle"></i> Add Followup Task</a>
+                </td>
+            }
             <td style="width: 50px;">
-              <a class="addtask in btn btn-default btn-sm" href="/Contact2/AddTask/@c.ContactId/@c.PeopleId"><i class="fa fa-plus-circle"></i> Add Followup Task</a>
-            </td>
-            <td style="width: 50px;">
-              <a class="remove in btn btn-danger btn-sm" href="/Contact2/RemoveContactee/@c.ContactId/@c.PeopleId"><i class="fa fa-trash"></i> Remove</a>
+              <a class="remove in btn btn-danger btn-sm" href="/Contact2/RemoveContactee/@c.ContactId/@c.ContacteeId"><i class="fa fa-trash"></i> Remove</a>
             </td>
           }
         </tr>
