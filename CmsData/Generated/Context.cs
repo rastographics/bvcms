@@ -1814,6 +1814,12 @@ namespace CmsData
 
         }
 
+        public Table< View.CustomMenuRole> ViewCustomMenuRoles
+        {
+            get { return GetTable< View.CustomMenuRole>(); }
+
+        }
+
         public Table< View.CustomScriptRole> ViewCustomScriptRoles
         {
             get { return GetTable< View.CustomScriptRole>(); }
@@ -4684,20 +4690,6 @@ namespace CmsData
                 ).ReturnValue));
         }
 
-        [Function(Name="dbo.RegexMatch", IsComposable = true)]
-        [return: Parameter(DbType = "nvarchar")]
-        public string RegexMatch(
-            [Parameter(Name = "subject", DbType="nvarchar")] string subject,
-            [Parameter(Name = "pattern", DbType="nvarchar")] string pattern
-            )
-        {
-            return ((string)(ExecuteMethodCall(this,
-                ((MethodInfo)(MethodBase.GetCurrentMethod())),
-                    subject,
-                    pattern
-                ).ReturnValue));
-        }
-
         [Function(Name="dbo.NextTranChangeDate", IsComposable = true)]
         [return: Parameter(DbType = "datetime")]
         public DateTime? NextTranChangeDate(
@@ -4716,20 +4708,6 @@ namespace CmsData
                 ).ReturnValue));
         }
 
-        [Function(Name="dbo.AllRegexMatchs", IsComposable = true)]
-        [return: Parameter(DbType = "nvarchar")]
-        public string AllRegexMatchs(
-            [Parameter(Name = "subject", DbType="nvarchar")] string subject,
-            [Parameter(Name = "pattern", DbType="nvarchar")] string pattern
-            )
-        {
-            return ((string)(ExecuteMethodCall(this,
-                ((MethodInfo)(MethodBase.GetCurrentMethod())),
-                    subject,
-                    pattern
-                ).ReturnValue));
-        }
-
         [Function(Name="dbo.NextChangeTransactionId", IsComposable = true)]
         [return: Parameter(DbType = "int")]
         public int? NextChangeTransactionId(
@@ -4745,18 +4723,6 @@ namespace CmsData
                     oid,
                     tid,
                     typeid
-                ).ReturnValue));
-        }
-
-        [Function(Name="dbo.IsValidEmail", IsComposable = true)]
-        [return: Parameter(DbType = "bit")]
-        public bool? IsValidEmail(
-            [Parameter(Name = "addr", DbType="nvarchar")] string addr
-            )
-        {
-            return ((bool?)(ExecuteMethodCall(this,
-                ((MethodInfo)(MethodBase.GetCurrentMethod())),
-                    addr
                 ).ReturnValue));
         }
 
@@ -5184,6 +5150,20 @@ namespace CmsData
                 ).ReturnValue));
         }
 
+        [Function(Name="dbo.RegexMatch", IsComposable = true)]
+        [return: Parameter(DbType = "nvarchar")]
+        public string RegexMatch(
+            [Parameter(Name = "subject", DbType="nvarchar")] string subject,
+            [Parameter(Name = "pattern", DbType="nvarchar")] string pattern
+            )
+        {
+            return ((string)(ExecuteMethodCall(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    subject,
+                    pattern
+                ).ReturnValue));
+        }
+
         [Function(Name="dbo.NextAnniversary", IsComposable = true)]
         [return: Parameter(DbType = "datetime")]
         public DateTime? NextAnniversary(
@@ -5193,6 +5173,48 @@ namespace CmsData
             return ((DateTime?)(ExecuteMethodCall(this,
                 ((MethodInfo)(MethodBase.GetCurrentMethod())),
                     pid
+                ).ReturnValue));
+        }
+
+        [Function(Name="dbo.AllRegexMatchs", IsComposable = true)]
+        [return: Parameter(DbType = "nvarchar")]
+        public string AllRegexMatchs(
+            [Parameter(Name = "subject", DbType="nvarchar")] string subject,
+            [Parameter(Name = "pattern", DbType="nvarchar")] string pattern
+            )
+        {
+            return ((string)(ExecuteMethodCall(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    subject,
+                    pattern
+                ).ReturnValue));
+        }
+
+        [Function(Name="dbo.IsValidEmail", IsComposable = true)]
+        [return: Parameter(DbType = "bit")]
+        public bool? IsValidEmail(
+            [Parameter(Name = "addr", DbType="nvarchar")] string addr
+            )
+        {
+            return ((bool?)(ExecuteMethodCall(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    addr
+                ).ReturnValue));
+        }
+
+        [Function(Name="dbo.RegexMatchGroup", IsComposable = true)]
+        [return: Parameter(DbType = "nvarchar")]
+        public string RegexMatchGroup(
+            [Parameter(Name = "subject", DbType="nvarchar")] string subject,
+            [Parameter(Name = "pattern", DbType="nvarchar")] string pattern,
+            [Parameter(Name = "group", DbType="nvarchar")] string group
+            )
+        {
+            return ((string)(ExecuteMethodCall(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    subject,
+                    pattern,
+                    group
                 ).ReturnValue));
         }
 
