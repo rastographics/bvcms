@@ -6,6 +6,7 @@
 
 
 
+
 CREATE VIEW [dbo].[TransactionSummary]
 AS
 SELECT
@@ -16,6 +17,7 @@ SELECT
 	,CONVERT(MONEY, TotalAmt * IndPctC) IndAmt
 	,TotalAmt
 	,TotPaid
+	,TotCoupon
 	,(TotalAmt - TotPaid - Donation) TotDue
 	,CONVERT(MONEY, (IndPctC * TotPaid)) IndPaid
 	,CONVERT(MONEY, (IndPctC * (TotalAmt - TotPaid - Donation))) IndDue
@@ -51,6 +53,12 @@ FROM (
 			AND ISNULL(AdjustFee, 0) = 0), 0) 
 			TotPaid
 
+		,ISNULL((SELECT SUM(amt) 
+			FROM dbo.[Transaction] 
+			WHERE OriginalId = om.TranId 
+			AND TransactionId LIKE 'Coupon%'), 0)
+			TotCoupon
+
 		,(SELECT COUNT(*) 
 			FROM dbo.TransactionPeople t 
 			WHERE t.Id = om.TranId) 
@@ -81,6 +89,7 @@ FROM (
 	JOIN dbo.Organizations o ON o.OrganizationId = om.OrganizationId
 ) tt
 --WHERE (iscoupon = 1 OR isapproved = 1) --AND TotalAmt > 0
+
 
 
 

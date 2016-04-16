@@ -1,7 +1,7 @@
-CREATE FUNCTION [dbo].[IsValidEmail] (@addr [nvarchar] (4000))
+CREATE FUNCTION [dbo].[IsValidEmail] (@string [nvarchar] (100))
 RETURNS [bit]
 WITH EXECUTE AS CALLER
-EXTERNAL NAME [CmsDataSqlClr].[UserDefinedFunctions].[IsValidEmail]
+EXTERNAL NAME [CmsDataSqlClr].[CmsDataSqlClr.UserDefinedFunctions].[IsValidEmail]
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
