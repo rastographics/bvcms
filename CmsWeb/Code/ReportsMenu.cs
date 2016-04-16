@@ -94,15 +94,23 @@ namespace CmsWeb.Code
         private static string ReportItems(XDocument xdoc, string path)
         {
             var listroles = CustomMenuRoles;
+            var userroles = DbUtil.Db.CurrentUser.Roles;
             var sb = new StringBuilder();
             foreach (var e in xdoc.XPathSelectElements(path).Elements())
             {
-                var roles = (e.Attribute("roles")?.Value ?? "").Split(',').ToList();
-                var link = e.Attribute("link").Value;
-                roles.AddRange((listroles.SingleOrDefault(vv => vv.Link == link)?.Role ?? "").Split(','));
+                var link = e.Attribute("link")?.Value;
+                var roles = new List<string>();
+
+                var aroles = e.Attribute("roles")?.Value;
+                if (aroles != null && aroles.HasValue())
+                    roles.AddRange(aroles.Split(','));
+
+                var rroles = listroles.SingleOrDefault(vv => vv.Link == link)?.Role;
+                if (rroles != null && rroles.HasValue())
+                    roles.AddRange(rroles.Split(','));
 
                 if(roles.Count > 0)
-                    if (!roles.Any(rr => DbUtil.Db.CurrentUser.Roles.Contains(rr)))
+                    if (!roles.Any(rr => userroles.Contains(rr)))
                         continue;
 
                 var tb = new TagBuilder("li");
