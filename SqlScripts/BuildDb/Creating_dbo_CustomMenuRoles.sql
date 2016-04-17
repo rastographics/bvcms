@@ -1,7 +1,6 @@
-
 CREATE VIEW [dbo].[CustomMenuRoles] AS 
 WITH body AS (
-	SELECT c.Body, CONVERT(XML, c.Body) b 
+	SELECT c.Body, CONVERT(XML, Replace(c.Body, 'encoding="utf-8', 'encoding="utf-16')) b 
 	FROM dbo.Content c
 	WHERE c.Name = 'CustomReportsMenu'
 ), tbl1 AS (
@@ -38,6 +37,10 @@ SELECT r.Link
 	  ,r.Name
 	  ,r.Col
 FROM reports r
+
+
+
+
 
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
