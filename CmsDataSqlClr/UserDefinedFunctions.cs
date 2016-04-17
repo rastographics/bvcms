@@ -20,8 +20,8 @@ namespace CmsDataSqlClr
             var m = Regex.Match(subject ?? "", pattern, RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
             if (!m.Success)
                 return null;
-            var g = m.Groups["group"]?.Value;
-            return g ?? m.Value;
+            var g = m.Groups["group"];
+            return g.Success ? g.Value : m.Value;
         }
 
         public static string AllRegexMatchs(string subject, string pattern)
