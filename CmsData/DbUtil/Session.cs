@@ -126,8 +126,9 @@ namespace CmsData
             {
                 string tag = CurrentTag;
                 var a = tag.Split('!');
-                if (a.Length == 2)
-                    return a[1];
+                if(a[0].ToInt2() > 0)
+                    if (a.Length == 2)
+                        return a[1];
                 return tag;
             }
         }

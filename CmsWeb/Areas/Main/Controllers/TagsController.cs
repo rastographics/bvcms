@@ -53,10 +53,11 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult RenameTag(TagsModel m, string renamedTag = null)
         {
-            m.tagname = renamedTag;
-            if (!m.tagname.HasValue())
+            if (renamedTag == null || !renamedTag.HasValue())
                 return View("Tags", m);
-            DbUtil.Db.TagCurrent().Name = m.tagname;
+            m.tagname = renamedTag.Replace("!", "_");
+            var t = DbUtil.Db.TagCurrent();
+            t.Name = m.tagname;
             DbUtil.Db.SubmitChanges();
             Util2.CurrentTag = m.tagname;
             return View("Tags", m);
@@ -65,7 +66,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult NewTag(TagsModel m)
         {
-            Util2.CurrentTag = m.tagname;
+            Util2.CurrentTag = m.tagname.Replace("!", "_");
             DbUtil.Db.TagCurrent();
             return View("Tags", m);
         }
