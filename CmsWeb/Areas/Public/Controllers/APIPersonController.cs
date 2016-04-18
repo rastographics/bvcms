@@ -90,7 +90,7 @@ namespace CmsWeb.Areas.Public.Controllers
         [HttpGet]
         public ActionResult ExtraValues(int? id, string fields)
         {
-            var ret = AuthenticateDeveloper();
+            var ret = AuthenticateDeveloper(altrole: "Checkin");
             if (ret.StartsWith("!"))
                 return Content($"<ExtraValues error=\"{ret.Substring(1)}\" />");
             if (!id.HasValue)
