@@ -80,24 +80,24 @@ namespace CmsData.API
             PopulateTotals();
             var cc = contributions.OrderByDescending(m => m.ContributionDate).Skip(startRow).Take(pageSize);
             var a = new ContributionElements
-                {
-                    NumberOfPages = (int)Math.Ceiling((model.Count ?? 0) / 100.0),
-                    NumberOfItems = model.Count ?? 0,
-                    TotalAmount = model.Total ?? 0,
-                    List = (from c in cc
-                            let bd = c.BundleDetails.FirstOrDefault()
-                            select new APIContribution.Contribution
-                                {
-                                    ContributionId = c.ContributionId,
-                                    PeopleId = c.PeopleId ?? 0,
-                                    Name = c.Person.Name,
-                                    Date = c.ContributionDate.FormatDate(),
-                                    Amount = c.ContributionAmount ?? 0,
-                                    Fund = c.ContributionFund.FundName,
-                                    Description = c.ContributionDesc,
-                                    CheckNo = c.CheckNo
-                                }).ToArray()
-                };
+            {
+                NumberOfPages = (int) Math.Ceiling((model.Count ?? 0)/100.0),
+                NumberOfItems = model.Count ?? 0,
+                TotalAmount = model.Total ?? 0,
+                List = (from c in cc
+                        let bd = c.BundleDetails.FirstOrDefault()
+                        select new APIContribution.Contribution
+                        {
+                            ContributionId = c.ContributionId,
+                            PeopleId = c.PeopleId ?? 0,
+                            Name = c.Person.Name,
+                            Date = c.ContributionDate.FormatDate(),
+                            Amount = c.ContributionAmount ?? 0,
+                            Fund = c.ContributionFund.FundName,
+                            Description = c.ContributionDesc,
+                            CheckNo = c.CheckNo
+                        }).ToArray()
+            };
             xs.Serialize(sw, a);
             return sw.ToString();
         }
@@ -106,35 +106,39 @@ namespace CmsData.API
         {
             var q2 = from c in query
                      let bd = c.BundleDetails.FirstOrDefault()
+                     let contributionType = c.BundleDetails.Single().BundleHeader.BundleHeaderType
+                                  .Description.Contains("Online")
+                         ? c.ContributionDesc == "Recurring Giving" ? c.ContributionDesc : "Online"
+                         : c.ContributionType.Description
                      select new ContributionInfo
-                         {
-                             BundleId = bd == null ? 0 : bd.BundleHeaderId,
-                             ContributionAmount = c.ContributionAmount ?? 0,
-                             ContributionDate = c.ContributionDate ?? SqlDateTime.MinValue.Value,
-                             ContributionId = c.ContributionId,
-                             ContributionType = c.ContributionType.Description,
-                             ContributionTypeId = c.ContributionTypeId,
-                             Fund = c.ContributionFund.FundName,
-                             BundleType = bd.BundleHeader.BundleHeaderType.Description,
-                             NonTaxDed =
-                                 c.ContributionTypeId == ContributionTypeCode.NonTaxDed ||
-                                 (c.ContributionFund.NonTaxDeductible ?? false),
-                             StatusId = c.ContributionStatusId ?? -1,
-                             Status = c.ContributionStatus.Description,
-                             Name = c.Person.Name,
-                             Pledge = c.PledgeFlag ?? false,
-                             PeopleId = c.PeopleId ?? 0,
-                             Description = c.ContributionDesc,
-                             CheckNo = c.CheckNo,
-                             FamilyId = c.Person.FamilyId,
-                             MemberStatus = c.Person.MemberStatus.Description,
-                             JoinDate = c.Person.JoinDate,
-                             Address = c.Person.PrimaryAddress,
-                             Address2 = c.Person.PrimaryAddress2,
-                             City = c.Person.PrimaryCity,
-                             State = c.Person.PrimaryState,
-                             Zip = c.Person.PrimaryZip
-                         };
+                     {
+                         BundleId = bd == null ? 0 : bd.BundleHeaderId,
+                         ContributionAmount = c.ContributionAmount ?? 0,
+                         ContributionDate = c.ContributionDate ?? SqlDateTime.MinValue.Value,
+                         ContributionId = c.ContributionId,
+                         ContributionType = contributionType,
+                         ContributionTypeId = c.ContributionTypeId,
+                         Fund = c.ContributionFund.FundName,
+                         BundleType = bd.BundleHeader.BundleHeaderType.Description,
+                         NonTaxDed =
+                             c.ContributionTypeId == ContributionTypeCode.NonTaxDed ||
+                             (c.ContributionFund.NonTaxDeductible ?? false),
+                         StatusId = c.ContributionStatusId ?? -1,
+                         Status = c.ContributionStatus.Description,
+                         Name = c.Person.Name,
+                         Pledge = c.PledgeFlag ?? false,
+                         PeopleId = c.PeopleId ?? 0,
+                         Description = c.ContributionDesc,
+                         CheckNo = c.CheckNo,
+                         FamilyId = c.Person.FamilyId,
+                         MemberStatus = c.Person.MemberStatus.Description,
+                         JoinDate = c.Person.JoinDate,
+                         Address = c.Person.PrimaryAddress,
+                         Address2 = c.Person.PrimaryAddress2,
+                         City = c.Person.PrimaryCity,
+                         State = c.Person.PrimaryState,
+                         Zip = c.Person.PrimaryZip
+                     };
             return q2;
         }
 
@@ -164,23 +168,23 @@ namespace CmsData.API
             {
                 case "TaxDed":
                     contributions = from c in contributions
-                        where !ContributionTypeCode.NonTaxTypes.Contains(c.ContributionTypeId)
-                        select c;
+                                    where !ContributionTypeCode.NonTaxTypes.Contains(c.ContributionTypeId)
+                                    select c;
                     break;
                 case "NonTaxDed":
                     contributions = from c in contributions
-                        where c.ContributionTypeId == ContributionTypeCode.NonTaxDed
-                        select c;
+                                    where c.ContributionTypeId == ContributionTypeCode.NonTaxDed
+                                    select c;
                     break;
                 case "Both":
                     contributions = from c in contributions
-                        where c.ContributionTypeId != ContributionTypeCode.Pledge
-                        select c;
+                                    where c.ContributionTypeId != ContributionTypeCode.Pledge
+                                    select c;
                     break;
                 case "Pledge":
                     contributions = from c in contributions
-                        where c.ContributionTypeId == ContributionTypeCode.Pledge
-                        select c;
+                                    where c.ContributionTypeId == ContributionTypeCode.Pledge
+                                    select c;
                     break;
             }
 
@@ -188,21 +192,21 @@ namespace CmsData.API
             {
                 case ContributionStatusCode.Recorded:
                     contributions = from c in contributions
-                        where c.ContributionStatusId == ContributionStatusCode.Recorded
-                        where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
-                        select c;
+                                    where c.ContributionStatusId == ContributionStatusCode.Recorded
+                                    where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+                                    select c;
                     break;
                 case ContributionStatusCode.Returned:
                     contributions = from c in contributions
-                        where c.ContributionStatusId == ContributionStatusCode.Returned
-                              || c.ContributionTypeId == ContributionTypeCode.ReturnedCheck
-                        select c;
+                                    where c.ContributionStatusId == ContributionStatusCode.Returned
+                                          || c.ContributionTypeId == ContributionTypeCode.ReturnedCheck
+                                    select c;
                     break;
                 case ContributionStatusCode.Reversed:
                     contributions = from c in contributions
-                        where c.ContributionStatusId == ContributionStatusCode.Reversed
-                              || c.ContributionTypeId == ContributionTypeCode.Reversed
-                        select c;
+                                    where c.ContributionStatusId == ContributionStatusCode.Reversed
+                                          || c.ContributionTypeId == ContributionTypeCode.Reversed
+                                    select c;
                     break;
             }
 
@@ -293,7 +297,7 @@ namespace CmsData.API
             var q = FetchContributions();
             var count = q.Count();
             decimal total = 0;
-            if(count > 0)
+            if (count > 0)
                 total = q.Sum(cc => cc.ContributionAmount ?? 0);
             var fund = db.ContributionFunds.Where(ff => ff.FundId == model.FundId).Select(ff => ff.FundName).SingleOrDefault();
             var campus = db.Campus.Where(cc => cc.Id == model.CampusId).Select(cc => cc.Description).SingleOrDefault();
@@ -309,24 +313,29 @@ namespace CmsData.API
             PopulateTotals();
             return model.FundName;
         }
+
         public string Campus()
         {
             PopulateTotals();
             return model.Campus;
         }
+
         public string Online()
         {
             return model.Online == 2 ? "Both" : model.Online == 1 ? "Online" : "Not Online";
         }
+
         public string TaxDedNonTax()
         {
             return model.TaxNonTax == "All" ? "Both" : model.TaxNonTax == "TaxDed" ? "Tax Deductible" : "Non Tax Deductible";
         }
+
         public decimal Total()
         {
             PopulateTotals();
             return model.Total ?? 0;
         }
+
         public int Count()
         {
             PopulateTotals();
@@ -340,6 +349,7 @@ namespace CmsData.API
             public int NumberOfPages { get; set; }
             public int NumberOfItems { get; set; }
             public decimal TotalAmount { get; set; }
+
             [XmlElement("Contribution")]
             public APIContribution.Contribution[] List { get; set; }
         }
