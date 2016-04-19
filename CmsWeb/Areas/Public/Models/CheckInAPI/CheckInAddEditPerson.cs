@@ -7,6 +7,7 @@ namespace CmsWeb.CheckInAPI
     {
         public bool edit = false;
 
+        public int campus = 0;
         public int id = 0;
         public int familyID = 0;
 
