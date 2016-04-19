@@ -496,7 +496,7 @@ namespace CmsWeb.Areas.Public.Controllers
         private EntryPoint getCheckInEntryPointID()
         {
             var checkInEntryPoint = (from e in DbUtil.Db.EntryPoints
-                                     where e.Code == "CHECKIN" || e.Description == "Check-In"
+                                     where e.Code == "CHECKIN"
                                      select e).FirstOrDefault();
 
             if (checkInEntryPoint != null)
