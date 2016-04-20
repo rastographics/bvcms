@@ -45,8 +45,12 @@
         </div>
         <div class="row">
             <div class="col-sm-12 col-md-12">
-                <label class="control-label">Visit Notes</label>
-                @Html.Raw(Model.VisitNotes)
+                <dl>
+                    <dt>Visit Notes</dt>
+                    <dd>
+                        @Html.Raw(Model.VisitNotes)
+                    </dd>
+                </dl>
             </div>
         </div>
     </div>
