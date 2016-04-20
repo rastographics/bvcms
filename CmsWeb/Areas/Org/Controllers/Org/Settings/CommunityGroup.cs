@@ -27,7 +27,7 @@ namespace CmsWeb.Areas.Org.Controllers
         {
             if (!ModelState.IsValid)
                 return PartialView("CommunityGroup/CommunityGroupEdit", m);
-            DbUtil.LogActivity($"Update Fees {m.Org.OrganizationName}");
+            DbUtil.LogActivity($"Update Community Group Settings {m.Org.OrganizationName}");
             try
             {
                 m.Update();
