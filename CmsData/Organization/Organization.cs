@@ -460,7 +460,17 @@ namespace CmsData
         public string GetExtra(CMSDataContext db, string field)
         {
             var oev = db.OrganizationExtras.SingleOrDefault(oe => oe.OrganizationId == OrganizationId && oe.Field == field);
-            return oev?.Data;
+            if (oev == null)
+                return "";
+            if (oev.StrValue.HasValue())
+                return oev.StrValue;
+            if (oev.Data.HasValue())
+                return oev.Data;
+            if (oev.DateValue.HasValue)
+                return oev.DateValue.FormatDate();
+            if (oev.IntValue.HasValue)
+                return oev.IntValue.ToString();
+            return oev.BitValue.ToString();
         }
 
         public void AddEditExtraCode(string field, string value)

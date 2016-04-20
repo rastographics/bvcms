@@ -1,10 +1,18 @@
-﻿@using UtilityExtensions
+﻿@using CmsData
 @model CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel
 <input type="hidden" id="personedit"/>
 @Html.EditorFor(m => m.FirstName)
 @Html.EditorFor(m => m.LastName)
-@Html.EditorFor(m => m.DateOfBirth, new {placeholder = "M/D/YY"})
-@Html.EditorFor(m => m.Phone)
+@if (Model.org != null && Model.org.GetExtra(DbUtil.Db, "NoPhoneEmailOnFind") == "true")
+{
+    @Html.HiddenFor(m => m.DateOfBirth)
+    @Html.HiddenFor(m => m.Phone)
+}
+else
+{
+  @Html.EditorFor(m => m.DateOfBirth, new {placeholder = "M/D/YY"})
+  @Html.EditorFor(m => m.Phone)
+}
 @Html.EditorFor(m => m.EmailAddress)
 <div class="form-group">
   <div class="col-sm-offset-3 col-sm-9">

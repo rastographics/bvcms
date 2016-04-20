@@ -56,8 +56,18 @@ namespace CmsData
 
         public string GetExtra(string field)
         {
-            var oev = MeetingExtras.SingleOrDefault(oe => oe.MeetingId == MeetingId && oe.Field == field);
-            return oev?.Data;
+            var e = MeetingExtras.SingleOrDefault(oe => oe.MeetingId == MeetingId && oe.Field == field);
+            if (e == null)
+                return "";
+            if (e.StrValue.HasValue())
+                return e.StrValue;
+            if (e.Data.HasValue())
+                return e.Data;
+            if (e.DateValue.HasValue)
+                return e.DateValue.FormatDate();
+            if (e.IntValue.HasValue)
+                return e.IntValue.ToString();
+            return e.BitValue.ToString();
         }
         public static Meeting FetchOrCreateMeeting(CMSDataContext Db, int OrgId, DateTime dt, bool? noautoabsents = null)
         {
