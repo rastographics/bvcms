@@ -65,7 +65,10 @@
           <li><a href="#Meetings-tab" aria-controls="Meetings-tab" class="ajax" data-toggle="tab">Meetings</a></li>
           <li><a href="#Settings-tab" aria-controls="Settings-tab" class="ajax" data-toggle="tab">Settings</a></li>
           <li><a href="#Registrations-tab" aria-controls="Registrations-tab" class="ajax" data-toggle="tab">Registration</a></li>
-          <li><a href="#CommunityGroup-tab" aria-controls="CommunityGroup-tab" class="ajax" data-toggle="tab">Community Group</a></li>
+          @if (Model.ShowCommunityGroupTab())
+          {
+              <li><a href="#CommunityGroup-tab" aria-controls="CommunityGroup-tab" class="ajax" data-toggle="tab">Community Group</a></li>
+          }
         </ul>
         <div class="tab-content">
           <div class="tab-pane fade in active" id="Members-tab" data-link="/Org/People">
@@ -78,8 +81,11 @@
           </div>
           <div class="tab-pane fade" id="Registrations-tab" data-link="/Org/Registrations/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
           </div>
-          <div class="tab-pane fade" id="CommunityGroup-tab" data-link="/Org/CommunityGroup/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
-          </div>
+          @if (Model.ShowCommunityGroupTab())
+          {
+              <div class="tab-pane fade" id="CommunityGroup-tab" data-link="/Org/CommunityGroup/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
+              </div>
+          }
         </div>
       </div>
     </div>
