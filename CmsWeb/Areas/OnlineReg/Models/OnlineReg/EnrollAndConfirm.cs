@@ -344,7 +344,7 @@ Total Fee paid for this registration session: {ts.TotPaid:C}<br/>
         public string GetDetailsSection()
         {
             var details = new StringBuilder();
-            if (Transaction.Amt > 0)
+            if (Transaction?.Amt > 0)
                 details.Append(List[0].SummaryTransaction());
             foreach (var p in List)
                 details.Append(p.PrepareSummaryText());

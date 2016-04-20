@@ -39,6 +39,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string SummaryTransaction()
         {
             var ts = Parent.TransactionSummary();
+            if (ts == null)
+                return "";
             var summary = DbUtil.Db.RenderTemplate(@"
 <table>
     <tr>
