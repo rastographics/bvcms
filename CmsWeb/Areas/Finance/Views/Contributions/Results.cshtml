@@ -61,13 +61,13 @@
                         <td>@c.CheckNo</td>
                         <td>@c.Description</td>
                         <td class="action">
-                            @if (Model.SearchInfo.PeopleId.HasValue && !c.CanReturnReverse)
+                            @if (Model.SearchInfo.PeopleId.HasValue && c.CanReturnReverse)
                             {
                                 <a class="returnit btn btn-default btn-sm" href="/Contributions/Return/@c.ContributionId">Return</a>
                             }    
                         </td>
                         <td class="action">
-                            @if (Model.SearchInfo.PeopleId.HasValue && !c.CanReturnReverse)
+                            @if (Model.SearchInfo.PeopleId.HasValue && c.CanReturnReverse)
                             {
                                 <a class="reverseit btn btn-default btn-sm" href="/Contributions/Reverse/@c.ContributionId">Reverse</a>
                             }  
