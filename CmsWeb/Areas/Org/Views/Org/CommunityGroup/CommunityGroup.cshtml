@@ -1,0 +1,79 @@
+﻿@model CmsWeb.Areas.Org.Models.Org.SettingsCommunityGroupModel
+@using CmsData
+@{
+    ViewBag.FalseValue = "";
+}
+<form class="ajax">
+    <div class="row">
+        <div class="col-sm-6">
+            <h4>Community Group Setup</h4>
+        </div>
+        <div class="col-sm-6">
+            @FormAction()
+        </div>
+    </div>
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-3 col-md-3">
+                @Html.DisplayFor(m => m.GroupType)
+            </div>
+            <div class="col-sm-4 col-md-3">
+                @Html.DisplayFor(m => m.Term)
+            </div>
+            <div class="col-sm-2 col-md-2">
+                @Html.DisplayFor(m => m.SizeLimit)
+            </div>
+            <div class="col-sm-3 col-md-3">
+                @Html.DisplayFor(m => m.HasChildcare, new { FalseValue = "n/a" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4 col-md-4">
+                @Html.DisplayFor(m => m.Region)
+            </div>
+            <div class="col-sm-4 col-md-4">
+                @Html.DisplayFor(m => m.Neighborhood)
+            </div>
+            <div class="col-sm-4 col-md-4">
+                @Html.DisplayFor(m => m.CrossStreets)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4 col-md-4">
+                @Html.DisplayFor(m => m.LastVisitDate)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <label class="control-label">Visit Notes</label>
+                @Html.Raw(Model.VisitNotes)
+            </div>
+        </div>
+    </div>
+    @Html.Hidden("Id", Model.Id)
+    @FormAction()
+    @FormAction(true)
+    <br /><br />
+</form>
+
+@helper FormAction(bool xs = false)
+{
+    if (xs)
+    {
+        <div class="visible-xs-block">
+            @if (User.IsInRole("Edit"))
+            {
+                <a href="/Org/CommunityGroupEdit/@Model.Id" class="btn edit ajax btn-primary btn-block"><i class="fa fa-pencil"></i> Edit</a>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="pull-right hidden-xs">
+            @if (User.IsInRole("Edit"))
+            {
+                <a href="/Org/CommunityGroupEdit/@Model.Id" class="btn edit ajax btn-primary"><i class="fa fa-pencil"></i> Edit</a>
+            }
+        </div>
+    }
+}
