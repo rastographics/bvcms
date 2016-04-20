@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
+using CmsData.ExtraValue;
 using CmsWeb.Code;
 
 namespace CmsWeb.Areas.Org.Models.Org
@@ -35,43 +36,26 @@ namespace CmsWeb.Areas.Org.Models.Org
         public int? SizeLimit { get; set; }
         public bool HasChildcare { get; set; }
 
-        // TODO Fetch from the extras system instead of hard coding
+        private List<SelectListItem> _groupTypes;
+        private List<SelectListItem> _terms;
+        private List<SelectListItem> _regions;
+
         public IEnumerable<SelectListItem> GroupTypes()
         {
-            var list = new List<SelectListItem>();
-
-            list.Add(CreateBasicListItem("Women", GroupType));
-            list.Add(CreateBasicListItem("Men", GroupType));
-            list.Add(CreateBasicListItem("Co-ed", GroupType));
-            list.Add(CreateBasicListItem("Women over 50", GroupType));
-
-            return list;
+            return _groupTypes;
         }
 
-        // TODO Fetch from the extras system instead of hard coding
         public IEnumerable<SelectListItem> Terms()
         {
-            var list = new List<SelectListItem>();
-
-            list.Add(CreateBasicListItem("Community Group", Term));
-            list.Add(CreateBasicListItem("Beta Group", Term));
-
-            return list;
+            return _terms;
         }
 
-        // TODO Fetch from the extras system instead of hard coding
         public IEnumerable<SelectListItem> Regions()
         {
-            var list = new List<SelectListItem>();
-
-            list.Add(CreateBasicListItem("Downtown", Region));
-            list.Add(CreateBasicListItem("Bronx", Region));
-            list.Add(CreateBasicListItem("Brooklyn", Region));
-
-            return list;
+            return _regions;
         }
 
-        private SelectListItem CreateBasicListItem(string name, string currentValue)
+        private static SelectListItem CreateBasicListItem(string name, string currentValue)
         {
             return new SelectListItem
             {
@@ -104,6 +88,20 @@ namespace CmsWeb.Areas.Org.Models.Org
             LastVisitDate = (extras.FirstOrDefault(x => x.Field == "Last Visit Date") ?? new OrganizationExtra()).DateValue;
             SizeLimit = (extras.FirstOrDefault(x => x.Field == "Size Limit") ?? new OrganizationExtra()).IntValue;
             HasChildcare = (extras.FirstOrDefault(x => x.Field == "Has Childcare") ?? new OrganizationExtra()).BitValue ?? false;
+
+            var fields = Views.GetStandardExtraValues(DbUtil.Db, "Organization");
+
+            var groupTypeField = fields.FirstOrDefault(x => x.Name == "Group Type");
+            _groupTypes = new List<SelectListItem>();
+            groupTypeField?.Codes.ForEach(x => _groupTypes.Add(CreateBasicListItem(x, GroupType)));
+
+            var termField = fields.FirstOrDefault(x => x.Name == "Term");
+            _terms = new List<SelectListItem>();
+            termField?.Codes.ForEach(x => _terms.Add(CreateBasicListItem(x, Term)));
+
+            var regionField = fields.FirstOrDefault(x => x.Name == "Region");
+            _regions = new List<SelectListItem>();
+            regionField?.Codes.ForEach(x => _regions.Add(CreateBasicListItem(x, Region)));
         }
 
         public void Update()
@@ -112,9 +110,6 @@ namespace CmsWeb.Areas.Org.Models.Org
             Org.AddEditExtraValue("Region", Region, null, Region, null, null);
             Org.AddEditExtraValue("Term", Term, null, Term, null, null);
 
-            //Org.AddEditExtra(DbUtil.Db, "Group Type", GroupType);
-            //Org.AddEditExtra(DbUtil.Db, "Term", Term);
-            //Org.AddEditExtra(DbUtil.Db, "Region", Region);
             Org.AddEditExtra(DbUtil.Db, "Neighborhood", Neighborhood);
             Org.AddEditExtra(DbUtil.Db, "Cross-Streets", CrossStreets);
             Org.AddEditExtra(DbUtil.Db, "Visit Notes", VisitNotes, true);
@@ -122,30 +117,7 @@ namespace CmsWeb.Areas.Org.Models.Org
             Org.AddEditExtraInt("Size Limit", SizeLimit.GetValueOrDefault(0));
             Org.AddEditExtraBool("Has Childcare", HasChildcare);
 
-            /*UpdateExtraValue("Group Type", GroupType);
-            UpdateExtraValue("Term", Term);
-            UpdateExtraValue("Region", Region);
-            UpdateExtraValue("Neighborhood", Neighborhood);
-            UpdateExtraValue("Cross-Streets", CrossStreets);
-            UpdateExtraValue("Visit Notes", VisitNotes, true);
-            UpdateExtraValue("Last Visit Date", LastVisitDate.ToString());
-            UpdateExtraValue("Size Limit", SizeLimit.ToString());
-            UpdateExtraValue("Has Childcare", HasChildcare.ToString());*/
-
             DbUtil.Db.SubmitChanges();
         }
-
-        /*private void UpdateExtraValue(string field, string value, bool multiline = false)
-        {
-            var e = DbUtil.Db.OrganizationExtras.SingleOrDefault(ee => ee.OrganizationId == Id && ee.Field == field);
-            if (e == null)
-            {
-                Org.AddEditExtra(DbUtil.Db, field, value, multiline);
-            }
-            else
-            {
-                e.Data = value;
-            }
-        }*/
     }
 }
