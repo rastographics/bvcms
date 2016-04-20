@@ -322,7 +322,9 @@ Total Fee paid for this registration session: {ts.TotPaid:C}<br/>
                 return _subject;
             var orgsettings = settings[org.OrganizationId];
             _subject = Util.PickFirst(orgsettings.Subject, defaultSubject);
-            return _subject = _subject.Replace("{org}", Header);
+            if (Header.HasValue())
+                return _subject = _subject.Replace("{org}", Header);
+            return _subject;
         }
 
         private string DoEnrollments()
