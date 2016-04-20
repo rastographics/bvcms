@@ -191,10 +191,11 @@ namespace CmsData.API
             switch (model.Status)
             {
                 case ContributionStatusCode.Recorded:
-                    contributions = from c in contributions
-                                    where c.ContributionStatusId == ContributionStatusCode.Recorded
-                                    where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
-                                    select c;
+                    if(!model.PeopleId.HasValue)
+                        contributions = from c in contributions
+                                        where c.ContributionStatusId == ContributionStatusCode.Recorded
+                                        where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+                                        select c;
                     break;
                 case ContributionStatusCode.Returned:
                     contributions = from c in contributions

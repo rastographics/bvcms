@@ -24,7 +24,16 @@
             @foreach (var c in Model.Contributions())
             {
                 <tr>
-                    <td><span class="@(c.ReversedReturned ? "red" : "")">@c.Status</span></td>
+                  <td>
+                    @if (c.ReversedReturned)
+                    {
+                      <span style="color: red">@c.Status</span>
+                    }
+                    else
+                    {
+                      <span>@c.Status</span>
+                    }
+                  </td>
                     <td>@c.Date.FormatDate()</td>
                     <td><a href="/Contributions/@c.PeopleId">@c.Name</a></td>
                     <td class="right">@c.Amount.ToString2("N2")</td>

@@ -492,7 +492,6 @@ namespace CmsData.API
         public string Fund { get; set; }
         public string Description { get; set; }
         public string CheckNo { get; set; }
-
         public int BundleId { get; set; }
         public int ContributionId { get; set; }
         public string ContributionType { get; set; }
@@ -500,6 +499,19 @@ namespace CmsData.API
         public string Status { get; set; }
         public int StatusId { get; set; }
         public bool Pledge { get; set; }
+        public bool NonTaxDed { get; set; }
+        public int? FamilyId { get; set; }
+        public string MemberStatus { get; set; }
+        public DateTime? JoinDate { get; set; }
+        public string Address { get; set; }
+        public string Address2 { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Zip { get; set; }
+
+        public bool ReturnedReversed => ContributionTypeCode.ReturnedReversedTypes.Contains(ContributionTypeId);
+        public bool Recorded => StatusId == ContributionStatusCode.Recorded;
+        public bool CanReturnReverse => Recorded && !ReturnedReversed;
         public bool NotIncluded
         {
             get
@@ -510,14 +522,5 @@ namespace CmsData.API
                     || ContributionTypeCode.ReturnedReversedTypes.Contains(ContributionTypeId);
             }
         }
-        public bool NonTaxDed { get; set; }
-        public int? FamilyId { get; set; }
-        public string MemberStatus { get; set; }
-        public DateTime? JoinDate { get; set; }
-        public string Address { get; set; }
-        public string Address2 { get; set; }
-        public string City { get; set; }
-        public string State { get; set; }
-        public string Zip { get; set; }
     }
 }
