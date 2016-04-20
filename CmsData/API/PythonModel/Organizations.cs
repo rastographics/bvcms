@@ -41,6 +41,33 @@ namespace CmsData
             db2.Dispose();
         }
 
+        public int FindOrgForAgeMonths(int divid, int? monthsOld)
+        {
+            if (!monthsOld.HasValue)
+                return 0;
+            var q = from o in db.Organizations
+                    let smos = o.OrganizationExtras.FirstOrDefault(vv => vv.Field == "StartMonths").IntValue
+                    let emos = o.OrganizationExtras.FirstOrDefault(vv => vv.Field == "EndMonths").IntValue
+                    where divid == 0 || o.DivOrgs.Select(dd => dd.DivId).Contains(divid)
+                    where o.OrganizationStatusId == OrgStatusCode.Active
+                    where smos <= monthsOld && emos >= monthsOld
+                    select o.OrganizationId;
+            return q.FirstOrDefault();
+        }
+
+        public int FindOrgForBirthdate(int divid, DateTime? birthdate)
+        {
+            if (!birthdate.HasValue)
+                return 0;
+            var q = from o in db.Organizations
+                    where divid == 0 || o.DivOrgs.Select(dd => dd.DivId).Contains(divid)
+                    where o.OrganizationStatusId == OrgStatusCode.Active
+                    where o.BirthDayStart <= birthdate
+                    where o.BirthDayEnd >= birthdate
+                    select o.OrganizationId;
+            return q.FirstOrDefault();
+        }
+
         public APIOrganization.Organization GetOrganization(object orgId)
         {
             var api = new APIOrganization(db);
@@ -72,12 +99,46 @@ namespace CmsData
         {
             var db2 = NewDataContext();
 
-            if(person is int)
+            if (person is int)
                 OrganizationMember.InsertOrgMembers(db2, orgid, person.ToInt(), 220, DateTime.Now, null, false);
-            else if(person is Person)
-                OrganizationMember.InsertOrgMembers(db2, orgid, ((Person)person).PeopleId, 220, DateTime.Now, null, false);
+            else if (person is Person)
+                OrganizationMember.InsertOrgMembers(db2, orgid, ((Person) person).PeopleId, 220, DateTime.Now, null, false);
 
             db2.Dispose();
+        }
+
+        public void MoveToOrg(int pid, int fromOrg, int toOrg)
+        {
+            var db2 = NewDataContext();
+            if (fromOrg == toOrg)
+                return;
+            var om = db2.OrganizationMembers.Single(m => m.PeopleId == pid && m.OrganizationId == fromOrg);
+            var sg = om.OrgMemMemTags.Select(mt => mt.MemberTag.Name).ToList();
+            var tom = db2.OrganizationMembers.SingleOrDefault(m => m.PeopleId == pid && m.OrganizationId == toOrg);
+            if (tom == null)
+            {
+                tom = OrganizationMember.InsertOrgMembers(db2,
+                    toOrg, pid, MemberTypeCode.Member, om.EnrollmentDate ?? DateTime.Now, om.InactiveDate, om.Pending ?? false);
+                if (tom == null)
+                    return;
+            }
+            tom.Request = om.Request;
+            tom.Amount = om.Amount;
+            tom.UserData = om.UserData;
+            tom.OnlineRegData = om.OnlineRegData;
+            tom.RegistrationDataId = om.RegistrationDataId;
+            tom.Grade = om.Grade;
+            tom.RegisterEmail = om.RegisterEmail;
+            tom.MemberTypeId = om.MemberTypeId;
+            tom.ShirtSize = om.ShirtSize;
+            tom.TranId = om.TranId;
+            tom.Tickets = om.Tickets;
+            foreach (var s in sg)
+                tom.AddToGroup(db2, s);
+            if (om.OrganizationId != tom.OrganizationId)
+                tom.Moved = true;
+            om.Drop(db2);
+            db2.SubmitChanges();
         }
 
         public List<int> OrganizationIds(int progid, int divid, bool? includeInactive)
@@ -101,6 +162,12 @@ namespace CmsData
             var db2 = NewDataContext();
             om.RemoveFromGroup(db2, group);
             db2.Dispose();
+        }
+
+        public void UpdateMainFellowship(int orgId)
+        {
+            var db2 = NewDataContext();
+            db2.UpdateMainFellowship(orgId);
         }
     }
 }

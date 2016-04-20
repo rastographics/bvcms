@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CmsData.API;
 using CmsData.Codes;
@@ -8,6 +9,19 @@ namespace CmsData
 {
     public partial class PythonModel
     {
+        public int? AgeInMonths(DateTime? birthdate, DateTime asof)
+        {
+            if (!birthdate.HasValue)
+                return null;
+            if (birthdate > asof)
+                return null;
+            var dt = birthdate.Value;
+            var mos = 0;
+            while (true)
+                if (dt.AddMonths(++mos) > asof)
+                    return mos - 1;
+        }
+
         public void CreateTask(int ministerId, int aboutId, string description, string notes = null)
         {
             using (var db2 = NewDataContext())

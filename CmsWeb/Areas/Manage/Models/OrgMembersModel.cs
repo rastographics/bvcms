@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -54,7 +55,7 @@ namespace CmsWeb.Models
                     let div = DbUtil.Db.Divisions.SingleOrDefault(d => d.Id == DivId && d.ProgId == ProgId)
                     let org = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == SourceId && o.DivOrgs.Any(d => d.DivId == DivId))
                     let org2 = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == SourceId && o.DivOrgs.Any(d => d.DivId == DivId))
-                    select new { div, noorg = org == null, noorg2 = org2 == null };
+                    select new {div, noorg = org == null, noorg2 = org2 == null};
             var i = q.SingleOrDefault();
             if (i == null)
                 ProgId = DivId = SourceId = TargetId = 0;
@@ -124,7 +125,7 @@ namespace CmsWeb.Models
                         Text = o.OrganizationName + sctime
                     };
             var list = q.ToList();
-            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
+            list.Insert(0, new SelectListItem {Value = "0", Text = "(not specified)"});
             return list;
         }
 
@@ -146,7 +147,7 @@ namespace CmsWeb.Models
                         Text = o.OrganizationName + sctime + " (" + cmales + "+" + cfemales + "=" + (cmales + cfemales) + ")"
                     };
             var list = q.ToList();
-            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
+            list.Insert(0, new SelectListItem {Value = "0", Text = "(not specified)"});
             return list;
         }
 
@@ -154,7 +155,7 @@ namespace CmsWeb.Models
         {
             if (_members == null)
             {
-                var glist = new int[] { };
+                var glist = new int[] {};
                 if (Grades.HasValue())
                     glist = (from g in (Grades ?? "").Split(',')
                              select g.ToInt()).ToArray();
@@ -286,33 +287,7 @@ namespace CmsWeb.Models
                 var oid = a[1].ToInt();
                 if (oid == TargetId)
                     continue;
-                var om = DbUtil.Db.OrganizationMembers.Single(m => m.PeopleId == pid && m.OrganizationId == oid);
-                var sg = om.OrgMemMemTags.Select(mt => mt.MemberTag.Name).ToList();
-                var tom = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == pid && m.OrganizationId == TargetId);
-                if (tom == null)
-                {
-                    tom = OrganizationMember.InsertOrgMembers(DbUtil.Db,
-                        TargetId, pid, MemberTypeCode.Member, om.EnrollmentDate.Value, om.InactiveDate, om.Pending ?? false);
-                    if (tom == null)
-                        continue;
-                }
-                tom.Request = om.Request;
-                tom.Amount = om.Amount;
-                tom.UserData = om.UserData;
-                tom.OnlineRegData = om.OnlineRegData;
-                tom.RegistrationDataId = om.RegistrationDataId;
-                tom.Grade = om.Grade;
-                tom.RegisterEmail = om.RegisterEmail;
-                tom.MemberTypeId = om.MemberTypeId;
-                tom.ShirtSize = om.ShirtSize;
-                tom.TranId = om.TranId;
-                tom.Tickets = om.Tickets;
-                foreach (var s in sg)
-                    tom.AddToGroup(DbUtil.Db, s);
-                if (om.OrganizationId != tom.OrganizationId)
-                    tom.Moved = true;
-                om.Drop(DbUtil.Db);
-                DbUtil.Db.SubmitChanges();
+                new PythonModel(DbUtil.Db.CmsHost).MoveToOrg(pid, oid, TargetId);
             }
             DbUtil.Db.UpdateMainFellowship(TargetId);
         }
@@ -387,16 +362,16 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
             foreach (var i in q)
             {
                 var msg = content.Body.Replace("{name}", i.Name)
-                    .Replace("{org}", i.OrganizationName)
-                    .Replace("{room}", i.Location)
-                    .Replace("{leader}", i.LeaderName)
-                    .Replace("{phone}", DbUtil.Db.Setting("ChurchPhone", "ChurchPhone"))
-                    .Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "NameOfChurch"));
+                                 .Replace("{org}", i.OrganizationName)
+                                 .Replace("{room}", i.Location)
+                                 .Replace("{leader}", i.LeaderName)
+                                 .Replace("{phone}", DbUtil.Db.Setting("ChurchPhone", "ChurchPhone"))
+                                 .Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "NameOfChurch"));
 
                 var subj = content.Title // the title of the content is the subject
-                    .Replace("{name}", i.Name)
-                    .Replace("{org}", i.OrganizationName)
-                    .Replace("{room}", i.Location);
+                                  .Replace("{name}", i.Name)
+                                  .Replace("{org}", i.OrganizationName)
+                                  .Replace("{room}", i.Location);
 
                 if (i.om.Moved == true || EmailAllNotices)
                 {
