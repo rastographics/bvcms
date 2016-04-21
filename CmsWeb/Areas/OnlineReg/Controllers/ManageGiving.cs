@@ -132,6 +132,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 		{
             m.Confirm();
 	        SetHeaders(m.orgid);
+	        OnlineRegModel.LogOutOfOnlineReg();
+
             m.Log("Confirm");
 			return View("ManagePledge/Confirm", m);
 		}
