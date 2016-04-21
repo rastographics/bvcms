@@ -3,6 +3,7 @@ CREATE TABLE [dbo].[OrgMemMemTags]
 [OrgId] [int] NOT NULL,
 [PeopleId] [int] NOT NULL,
 [MemberTagId] [int] NOT NULL,
+[IsLeader] [bit] NULL,
 [Number] [int] NULL
 )
 GO

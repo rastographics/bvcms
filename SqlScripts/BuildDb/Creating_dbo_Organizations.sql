@@ -78,6 +78,7 @@ CREATE TABLE [dbo].[Organizations]
 [RegistrationTitle] [nvarchar] (200) NULL,
 [PrevMemberCount] [int] NULL,
 [ProspectCount] [int] NULL,
+[AttendanceBySubGroups] [bit] NULL,
 [RegSettingXml] [xml] NULL
 )
 GO

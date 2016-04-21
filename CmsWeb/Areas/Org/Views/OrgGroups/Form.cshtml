@@ -57,6 +57,11 @@
           <ul class="dropdown-menu dropdown-menu-right">
             <li><a href="#" id="AssignSelectedToTargetGroup"><i class="fa fa-plus"></i>&nbsp;&nbsp;Assign Selected to Target Group</a></li>
             <li><a href="#" id="RemoveSelectedFromTargetGroup"><i class="fa fa-minus"></i>&nbsp;&nbsp;Remove Selected from Target Group</a></li>
+            @if (Model.isAttendanceBySubgroups)
+            {
+                <li><a href="#" id="MakeSelectedLeaderOfTargetGroup"><i class="fa fa-star"></i>&nbsp;&nbsp;Make Selected a Leader of Target Group</a></li>
+                <li><a href="#" id="RemoveSelectedLeaderOfTargetGroup"><i class="fa fa-star-o"></i>&nbsp;&nbsp;Remove Selected as Leader of Target Group</a></li>
+            }
             @if (Model.isRecreationTeam)
             {
                 <li class="divider"></li>
