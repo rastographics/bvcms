@@ -1,8 +1,8 @@
-﻿@model CmsWeb.Areas.Org.Models.Org.SettingsCommunityGroupModel
+﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
 @using CmsData
 @using CmsWeb.Models.ExtraValues
 @{
-    var evmodel = new ExtraValueModel(Model.Id, "Organization", "CommunityGroup");
+    var evmodel = new ExtraValueModel(Model.Org.OrganizationId, "Organization", "CommunityGroup");
     var ExtraMembershipDataLabel = DbUtil.Db.Setting("ExtraCommunityGroupDataLabel", "Extra Community Group Data");
 }
 <h3>@ExtraMembershipDataLabel</h3>

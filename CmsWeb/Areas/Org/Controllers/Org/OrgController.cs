@@ -3,7 +3,6 @@ using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.Org.Models;
-using CmsWeb.Areas.Org.Models.Org;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Controllers
@@ -115,7 +114,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult CommunityGroup(int id)
         {
-            var m = new SettingsCommunityGroupModel(id);
+            var m = new OrganizationModel(id);
             return PartialView(m);
         }
     }
