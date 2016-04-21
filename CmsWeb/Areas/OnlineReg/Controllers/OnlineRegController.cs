@@ -43,6 +43,24 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 throw;
             }
         }
+        [HttpGet]
+        [Route("~/OnePageGiving/{id:int}")]
+        public ActionResult OnePageGiving(int? id, bool? testing, string source)
+        {
+            Response.NoCache();
+            try
+            {
+                var m = new OnlineRegModel(Request, id, testing, null, null, source);
+                SetHeaders(m);
+                return View(m);
+            }
+            catch (Exception ex)
+            {
+                if (ex is BadRegistrationException)
+                    return Message(ex.Message);
+                throw;
+            }
+        }
 
         [HttpPost]
         public ActionResult Login(OnlineRegModel m)
