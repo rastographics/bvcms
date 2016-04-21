@@ -17,15 +17,20 @@ namespace CmsData.Registration
             return Util.Serialize(this);
         }
 
-        public static Settings CreateSettings(string s, CMSDataContext db, int orgId)
+        public static Settings CreateSettings(string s, CMSDataContext db, Organization org)
         {
             var settings = !s.HasValue()
                 ? new Settings()
                 : Util.DeSerialize<Settings>(s);
             settings.Db = db;
-            settings.OrgId = orgId;
-            settings.org = db.LoadOrganizationById(orgId);
+            settings.OrgId = org.OrganizationId;
+            settings.org = org;
             return settings;
+        }
+        public static Settings CreateSettings(string s, CMSDataContext db, int orgId)
+        {
+            var org = db.LoadOrganizationById(orgId);
+            return CreateSettings(s, db, org);
         }
 
         public void ReadXml(XmlReader reader)

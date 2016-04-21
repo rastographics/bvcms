@@ -166,7 +166,6 @@ namespace CmsData.Codes
         public const int JoinOrganization = 1;
         public const int CreateAccount = 5;
         public const int ChooseVolunteerTimes = 6;
-        public const int OnePageGiving = 7;
         public const int OnlineGiving = 8;
         public const int OnlinePledge = 9;
         public const int UserSelects = 10;
@@ -186,7 +185,6 @@ namespace CmsData.Codes
             yield return new KeyValuePair<int, string>(ManageSubscriptions, "Manage Subscriptions");
             yield return new KeyValuePair<int, string>(ManageGiving, "Manage Recurring Giving");
             yield return new KeyValuePair<int, string>(OnlineGiving, "Online Giving");
-            yield return new KeyValuePair<int, string>(OnlineGiving, "One Page Giving");
             yield return new KeyValuePair<int, string>(OnlinePledge, "Online Pledge");
             yield return new KeyValuePair<int, string>(ChooseVolunteerTimes, "Choose Volunteer Times");
             yield return new KeyValuePair<int, string>(RecordFamilyAttendance, "Record Family Attendance");

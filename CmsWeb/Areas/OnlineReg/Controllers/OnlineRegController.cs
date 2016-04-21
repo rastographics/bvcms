@@ -22,7 +22,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpGet]
         [Route("~/OnlineReg/Index/{id:int}")]
         [Route("~/OnlineReg/{id:int}")]
-        // ReSharper disable once FunctionComplexityOverflow
         public ActionResult Index(int? id, bool? testing, string email, bool? login, string registertag, bool? showfamily, int? goerid, int? gsid, string source)
         {
             Response.NoCache();
