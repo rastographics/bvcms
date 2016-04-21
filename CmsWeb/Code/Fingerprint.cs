@@ -27,7 +27,27 @@ public class Fingerprint
             var result = new StringBuilder();
             foreach (var file in list)
                 result.AppendFormat($"<script type=\"text/javascript\" src=\"/{file}\"></script>\n");
-            return new HtmlString(result.ToString());
+            var paths = result.ToString();
+            return new HtmlString(paths);
+        }
+        if (path.EndsWith("onlineregister.min.js"))
+        {
+            var s = File.ReadAllText(HttpContext.Current.Server.MapPath("~/gulpfile.js"));
+            var re = new Regex(@"//DebugOnlineRegFilesStart(.*)//DebugOnlineRegFilesEnd", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
+            var fs = re.Match(s).Groups[1].Value;
+            var re2 = new Regex("'(.*?)'", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
+            var match = re2.Match(fs);
+            var list = new List<string>();
+            while (match.Success)
+            {
+                list.Add(match.Groups[1].Value);
+                match = match.NextMatch();
+            }
+            var result = new StringBuilder();
+            foreach (var file in list)
+                result.AppendFormat($"<script type=\"text/javascript\" src=\"/{file}\"></script>\n");
+            var paths = result.ToString();
+            return new HtmlString(paths);
         }
 #endif
         if (HttpRuntime.Cache[path] == null)

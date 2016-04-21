@@ -1,32 +1,80 @@
 ﻿@using UtilityExtensions
-@model CmsWeb.Areas.OnlineReg.Models.OnlineRegModel
+@using CmsData
+@using CmsData.Finance
+@using CmsWeb.Areas.OnlineReg.Models
+@model PaymentForm
+
 @{
-    Layout = "~/Views/Shared/onlinereg2.cshtml";
-    ViewBag.Title = "OnePageGiving";
-    var action = $"/OnePageGiving/{Model.qtesting}";
+  Layout = "~/Views/Shared/onlinereg2.cshtml";
+  ViewBag.Title = "OnePageGiving";
+  var action = $"/OnePageGiving/{(Model.testing ? "?testing-=true" : "")}";
+  var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
 }
 @section scripts
 {
+  @Fingerprint.Script("/Content/touchpoint/js/onlinereg/bootstrap-datepicker.js")
   <script type="text/javascript">
-        $(function () {
-            $(document).idleTimer(@Model.TimeOut);
-            $(document).on("idle.idleTimer", function (event, elem, obj) {
-                window.location.href = '/OnlineReg/Timeout?ret=' + encodeURI('@Model.URL');
-            });
-        });
+    $.dtoptions = { format: '@Util.jQueryDateFormat2' };
   </script>
-  @Fingerprint.Script("/Content/touchpoint/js/onlinereg/OnlineReg2.js")
+  @Fingerprint.Script("/Content/touchpoint/js/onlinereg/onlineregpayment2.js")
 }
 <div class="regform">
-  <h3>@Model.Header</h3>
-  @if (Model.NotAvailable())
+  <form class="showform form-horizontal" action="@action" method="post">
+      @Html.EditorFor(m => m.First)
+      @Html.EditorFor(m => m.Last)
+      @Html.EditorFor(m => m.Email)
+      @Html.EditorFor(m => m.Address)
+      @Html.EditorFor(m => m.Zip)
+    <div class="well">
+      @if (Model.NoCreditCardsAllowed || Model.NoEChecksAllowed)
+      {
+        @Html.Hidden("Type", Model.Type)
+      }
+      else
+      {
+        <div class="btn-group" data-toggle="buttons">
+          @TypeRadio(PaymentType.CreditCard, debitcredit)
+          @TypeRadio(PaymentType.Ach, "Bank Account")
+          @Html.Hidden("allowcc", "true")
+        </div>
+      }
+      @if (Model.NoCreditCardsAllowed == false)
+      {
+        <div class="Card">
+          @Html.EditorFor(m => m.CreditCard, new {autocomplete = Model.AutocompleteOnOff})
+          @Html.EditorFor(m => m.Expires, new {classes = "narrow"})
+          @Html.EditorFor(m => m.CVV, new {classes = "narrow", autocomplete = Model.AutocompleteOnOff})
+        </div>
+      }
+      @if (Model.NoEChecksAllowed == false)
+      {
+        <div class="Bank">
+          @Html.EditorFor(m => m.Routing)
+          @Html.EditorFor(m => m.Account, new {autocomplete = Model.AutocompleteOnOff})
+        </div>
+      }
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-3 col-sm-9 text-right">
+        <div>
+          @Helper.OnlineRegSubmitButton("Make Payment", onlyoneallowed: true, style: "btn-primary min-width15em")
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+@helper TypeRadio(string type, string label)
+{
+  if (Model.Type == type)
   {
-      <h4 id="sorry">Sorry, this giving page is not available at this time</h4>
-        @Html.Raw(Util.PickFirst(Model.Instructions, ""))
+    <label class="btn btn-primary active">
+      <input type="radio" name="Type" value="@type" checked="checked"/> @label
+    </label>
   }
   else
   {
-      <form id="completeReg" class="DisplayEdit form-horizontal" action="@action" method="post">
-      </form>
+    <label class="btn btn-primary">
+      <input type="radio" name="Type" value="@type" /> @label
+    </label>
   }
-</div>
+}

@@ -51,7 +51,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 var m = new OnlineRegModel(Request, id, testing, null, null, source);
                 SetHeaders(m);
-                return View(m);
+                var pf = PaymentForm.CreatePaymentForm(m);
+                pf.NoCreditCardsAllowed = false;
+                return View(pf);
             }
             catch (Exception ex)
             {

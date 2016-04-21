@@ -31,6 +31,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
         /// </summary>
         public string Type { get; set; }
 
+        public string Checked(string type) => $"value={type} {(Type==type ? "checked=checked" : "")}";
+        public string Active(string type) => Type==type ? "active" : "";
+
         public bool AskDonation { get; set; }
         public bool AllowCoupon { get; set; }
         public string Terms { get; set; }
@@ -291,7 +294,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
             pf.NoCreditCardsAllowed = m.NoCreditCardsAllowed();
             if (m.OnlineGiving())
             {
+#if DEBUG
+                pf.NoCreditCardsAllowed = false;
+#else
                 pf.NoCreditCardsAllowed = DbUtil.Db.Setting("NoCreditCardGiving", "false").ToBool();
+#endif
                 pf.IsGiving = true;
                 pf.FinanceOnly = true;
                 pf.Type = r.payinfo.PreferredGivingType;
