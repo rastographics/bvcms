@@ -1,0 +1,46 @@
+﻿@using CmsData
+@using UtilityExtensions
+@model CmsWeb.Models.ExtraValues.Value
+@if (Model.UserCanView(DbUtil.Db))
+{
+    if (Model.Type == "Header")
+    {
+        @Html.Raw(Model.Name)
+    }
+    else if (Model.Type == "Link")
+    {
+        <div class="col-sm-6">
+            @Model.HyperLink()
+        </div>
+    }
+    else
+    {
+        <div class="col-sm-6">
+            @if (Model.UserCanEdit())
+            {
+                var dv = Model.DataValue;
+                var ds = Model.DataSource;
+                <div class="form-group">
+                    <label class="control-label">@Model.DisplayName</label>
+                    <div class="controls">
+                        <a href="#"
+                           data-pk="@Model.Id"
+                           data-name="@Model.DataName"
+                           class="@Model.EditableClass"
+                           data-url="@Model.EditUrl"
+                           @if (Model.Type == "Date") { <text> data-showbuttons="false" data-savenochange="true" </text> }
+                           @if (dv.HasValue()) { <text> data-value="@dv" </text> }
+                           @if (ds.HasValue()) { <text> data-source="@ds" </text> }>@Html.Raw(Model)</a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <dl>
+                    <dt>@Model.DisplayName</dt>
+                    <dd>@Html.Raw(Model)</dd>
+                </dl>
+            }
+        </div>
+    }
+}

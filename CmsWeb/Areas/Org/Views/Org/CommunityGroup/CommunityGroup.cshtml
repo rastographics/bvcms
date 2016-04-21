@@ -1,80 +1,84 @@
 ﻿@model CmsWeb.Areas.Org.Models.Org.SettingsCommunityGroupModel
 @using CmsData
-<form class="ajax">
-    <div class="row">
-        <div class="col-sm-6">
-            <h4>Community Group Setup</h4>
-        </div>
-        <div class="col-sm-6">
-            @FormAction()
-        </div>
-    </div>
-    <div class="well">
-        <div class="row">
-            <div class="col-sm-3 col-md-3">
-                @Html.DisplayFor(m => m.GroupType)
-            </div>
-            <div class="col-sm-4 col-md-3">
-                @Html.DisplayFor(m => m.Term)
-            </div>
-            <div class="col-sm-2 col-md-2">
-                @Html.DisplayFor(m => m.SizeLimit)
-            </div>
-            <div class="col-sm-3 col-md-3">
-                @Html.DisplayFor(m => m.HasChildcare, new { FalseValue = "n/a" })
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-4 col-md-4">
-                @Html.DisplayFor(m => m.Region)
-            </div>
-            <div class="col-sm-4 col-md-4">
-                @Html.DisplayFor(m => m.Neighborhood)
-            </div>
-            <div class="col-sm-4 col-md-4">
-                @Html.DisplayFor(m => m.CrossStreets)
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-4 col-md-4">
-                @Html.DisplayFor(m => m.LastVisitDate)
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12 col-md-12">
-                <dl>
-                    <dt>Visit Notes</dt>
-                    <dd>
-                        @Html.Raw(Model.VisitNotes)
-                    </dd>
-                </dl>
-            </div>
-        </div>
-    </div>
-    @Html.Hidden("Id", Model.Id)
-    @FormAction()
-    @FormAction(true)
-    <br /><br />
-</form>
-
-@helper FormAction(bool xs = false)
-{
-    if (xs)
-    {
-        <div class="visible-xs-block">
-            @if (User.IsInRole("Edit"))
-            {
-                <a href="/Org/CommunityGroupEdit/@Model.Id" class="btn edit ajax btn-primary btn-block"><i class="fa fa-pencil"></i> Edit</a>
-            }
-        </div>
-    }
-    else
-    {
-        <div class="pull-right hidden-xs">
-            @if (User.IsInRole("Edit"))
-            {
-                <a href="/Org/CommunityGroupEdit/@Model.Id" class="btn edit ajax btn-primary"><i class="fa fa-pencil"></i> Edit</a>
-            }
-        </div>
-    }
+@using CmsWeb.Models.ExtraValues
+@{
+    var evmodel = new ExtraValueModel(Model.Id, "Organization", "CommunityGroup");
+    var ExtraMembershipDataLabel = DbUtil.Db.Setting("ExtraCommunityGroupDataLabel", "Extra Community Group Data");
 }
+<h3>@ExtraMembershipDataLabel</h3>
+@ExtraDataFormAction(evmodel)
+@{
+    var firstTime = true;
+    var list = evmodel.GetExtraValues().ToList();
+}
+<form class="ajax" method="post" data-init="Editable" data-init2="ExtraEditable">
+    @foreach (var f in list)
+    {
+        if (f.Type == "Header")
+        {
+            if (firstTime)
+            {
+                <h4>@Html.EditorFor(m => f)</h4>
+                @Html.Raw("<div class='well'>")
+                @Html.Raw("<div class='row'>")
+                firstTime = false;
+            }
+            else
+            {
+                @Html.Raw("</div>")
+                @Html.Raw("</div>")
+                <h4>@Html.EditorFor(m => f)</h4>
+                @Html.Raw("<div class='well'>")
+                @Html.Raw("<div class='row'>")
+            }
+        }
+        else
+        {
+            if (firstTime)
+            {
+                @Html.Raw("<br/>")
+                @Html.Raw("<div class='well'>")
+                @Html.Raw("<div class='row'>")
+                firstTime = false;
+            }
+            @Html.EditorFor(m => f)
+        }
+        if (f == list.Last()) // if this was the last item, close the well
+        {
+            @Html.Raw("</div>")
+            @Html.Raw("</div>")
+        }
+    }
+    @ExtraDataFormAction(evmodel, true)
+    <input type="hidden" id="StandardExtraValueReload" value="/ExtraValue/Display/@evmodel.Table/CommunityGroup/@evmodel.Id"/>
+</form>
+    @helper ExtraDataFormAction(ExtraValueModel evmodel, bool xs = false)
+    {
+        if (xs)
+        {
+            <div class="visible-xs-block">
+                @if (User.IsInRole("Admin"))
+                {
+                    <a class="extravalue btn btn-success btn-block" href="/ExtraValue/NewStandard/@evmodel.Table/CommunityGroup/@evmodel.Id"><i class="fa fa-plus-circle"></i> Add Extra Value</a>
+                    <a class="extravalue edit btn btn-default btn-block" href="/ExtraValue/ListStandard/@evmodel.Table/CommunityGroup/@evmodel.Id?title=Edit+Community+Group+Extra+Vaues"><i class="fa fa-pencil"></i> Edit Extra Value</a>
+                    <hr />
+                }
+                <a href="#" class="ajax-refresh btn btn-default btn-block"><i class="fa fa-refresh"></i> Refresh</a>
+            </div>
+        }
+        else
+        {
+            <div class="row hidden-xs">
+                <div class="col-sm-12">
+                    <div class="pull-right">
+                        <a href="#" class="ajax-refresh btn btn-default"><i class="fa fa-refresh"></i> Refresh</a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a class="extravalue edit btn btn-default" href="/ExtraValue/ListStandard/@evmodel.Table/CommunityGroup/@evmodel.Id?title=Edit+Community+Group+Extra+Vaues"><i class="fa fa-pencil"></i> Edit Extra Value</a>
+                            <a class="extravalue btn btn-success" href="/ExtraValue/NewStandard/@evmodel.Table/CommunityGroup/@evmodel.Id"><i class="fa fa-plus-circle"></i> Add Extra Value</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    }
