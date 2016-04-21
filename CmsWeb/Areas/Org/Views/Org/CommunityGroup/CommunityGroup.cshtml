@@ -4,14 +4,12 @@
 @{
     var evmodel = new ExtraValueModel(Model.Org.OrganizationId, "Organization", "CommunityGroup");
     var ExtraMembershipDataLabel = DbUtil.Db.Setting("ExtraCommunityGroupDataLabel", "Extra Community Group Data");
-}
-<h3>@ExtraMembershipDataLabel</h3>
-@ExtraDataFormAction(evmodel)
-@{
     var firstTime = true;
     var list = evmodel.GetExtraValues().ToList();
 }
 <form class="ajax" method="post" data-init="Editable" data-init2="ExtraEditable">
+    <h3>@ExtraMembershipDataLabel</h3>
+    @ExtraDataFormAction(evmodel)
     @foreach (var f in list)
     {
         if (f.Type == "Header")
