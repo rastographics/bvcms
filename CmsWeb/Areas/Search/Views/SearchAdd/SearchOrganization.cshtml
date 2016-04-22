@@ -1,0 +1,76 @@
+﻿@using System.Web.Mvc.Html
+@using CmsData
+@using CmsWeb.Areas.Search.Models
+@model OrgSearchModel
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search for Organization to Add as Contactee</h4>
+        </div>
+        <form id="orgsearchform" method="post">
+            <div class="well">
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Name" data-content="@Model.NameHelp"><i class="fa fa-info-circle"></i></a>&nbsp;
+                            <label for="Name" class="control-label">Name</label>
+                            @Html.TextBox("Name", Model.Name, new {@class = "form-control"})
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Organization Type" data-content="At the top of the list are pseudo org types. The are actually attributes of an organization. These are followed by specific Org Types you have created and assigned to organizations."><i class="fa fa-info-circle"></i></a>&nbsp;
+                            <label for="TypeId" class="control-label">Organization Type</label>
+                            @Html.DropDownList("TypeId", OrgSearchModel.OrgTypeFilters(), new {@class = "form-control"})
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label for="ProgramId" class="control-label">Program</label>
+                            @Html.DropDownList("ProgramId", Model.ProgramIds(), new {@class = "form-control"})
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label for="DivisionId" class="control-label">Division</label>
+                            @Html.DropDownList("DivisionId", Model.DivisionIds(), new {@class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label for="StatusId" class="control-label">Status</label>
+                            @Html.DropDownList("StatusId", OrgSearchModel.StatusIds(), new {@class = "form-control"})
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label for="CampusId" class="control-label">@Util2.CampusLabel</label>
+                            @Html.DropDownList("CampusId", Model.CampusIds(), new {@class = "form-control"})
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label for="ScheduleId" class="control-label">Schedule</label>
+                            @Html.DropDownList("ScheduleId", Model.ScheduleIds(), new {@class = "form-control"})
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label for="OnlineReg" class="control-label">Online Registration</label>
+                            @Html.DropDownList("OnlineReg", OrgSearchModel.RegistrationTypeIds(), new {@class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="pull-right">
+                        <a href="#" class="btn btn-default clear">Clear</a> <a id="searchorg" href="/SearchAdd2/OrgContacteeResults/@ViewBag.ContactId/" class="btn btn-primary ajax" title="add new">Search</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>

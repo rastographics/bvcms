@@ -129,5 +129,62 @@ namespace CmsWeb.Areas.Search.Controllers
             var ret = m.CommitAdd();
             return Json(ret);
         }
+
+        [HttpPost, Route("SearchAdd2/OrgContactee/{id}")]
+        public ActionResult OrgContactee(int id)
+        {
+            ViewBag.ContactId = id;
+
+            var m = new OrgSearchModel();
+            return View("SearchOrganization", m);
+        }
+
+        [HttpPost, Route("SearchAdd2/OrgContacteeResults/{id}")]
+        public ActionResult ResOrgContacteeResultsults(OrgSearchModel m, int id)
+        {
+            ViewBag.ContactId = id;
+
+            DbUtil.Db.SetNoLock();
+            ModelState.Clear();
+            return View("ResultsOrganization", m);
+        }
+
+        [HttpPost, Route("SearchAdd2/SelectOrgContactee/{cid}/{oid}")]
+        public ActionResult SelectOrg(OrgSearchModel m, int cid, int oid)
+        {
+            var contactee = new Contactee
+            {
+                ContactId = cid,
+                OrganizationId = oid
+            };
+
+            try
+            {
+                DbUtil.Db.Contactees.InsertOnSubmit(contactee);
+                DbUtil.Db.SubmitChanges();
+
+                return Json(new OrgReturnResult
+                {
+                    cid = cid,
+                    from = "Contactee"
+            });
+            }
+            catch (Exception e)
+            {
+                return Json(new OrgReturnResult
+                {
+                    cid = cid,
+                    message = e.Message,
+                    from = "Contactee"
+                });
+            }
+        }
+
+        public class OrgReturnResult
+        {
+            public int cid;
+            public string from;
+            public string message;
+        }
     }
 }

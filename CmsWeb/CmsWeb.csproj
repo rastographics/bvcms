@@ -1537,6 +1537,8 @@
     <Content Include="Areas\Org\Views\Org\CommunityGroup.cshtml" />
     <Content Include="Areas\Org\Views\Org\CommunityGroup\CommunityGroup.cshtml" />
     <Content Include="Areas\Org\Views\Shared\EditorTemplates\Value.cshtml" />
+    <Content Include="Areas\Search\Views\SearchAdd\SearchOrganization.cshtml" />
+    <Content Include="Areas\Search\Views\SearchAdd\ResultsOrganization.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />
