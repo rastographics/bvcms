@@ -25,14 +25,23 @@
         var q = f.serialize();
         $.block();
         $.post("/OrgMembers/Move", q, function (ret) {
-            $(f).html(ret).ready(function () {
+            if (ret.startsWith("!")) {
                 $.unblock();
                 swal({
-                    title: "Completed!",
-                    text: "Move completed.",
-                    type: "success"
+                    title: "Oops...",
+                    text: ret.substr(1),
+                    type: "error"
                 });
-            });
+            }
+            else
+                $(f).html(ret).ready(function () {
+                    $.unblock();
+                    swal({
+                        title: "Completed!",
+                        text: "Move completed.",
+                        type: "success"
+                    });
+                });
         });
     });
 

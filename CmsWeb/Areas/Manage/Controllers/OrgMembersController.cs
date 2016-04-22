@@ -1,7 +1,6 @@
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Models;
-using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
@@ -18,18 +17,16 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
 
         [HttpPost]
-        public ActionResult Move()
+        public ActionResult Move(OrgMembersModel m)
         {
-            var m = new OrgMembersModel();
-            UpdateModel(m);
+            if (m.TargetId == 0)
+                return Content("!Target required");
             m.Move();
             return View("List", m);
         }
         [HttpPost]
-        public ActionResult EmailNotices()
+        public ActionResult EmailNotices(OrgMembersModel m)
         {
-            var m = new OrgMembersModel();
-            UpdateModel(m);
             m.SendMovedNotices();
             return View("List", m);
         }
@@ -41,10 +38,8 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
 
         [HttpPost]
-        public ActionResult List()
+        public ActionResult List(OrgMembersModel m)
         {
-            var m = new OrgMembersModel();
-            UpdateModel(m);
             m.ValidateIds();
             DbUtil.Db.SetUserPreference("OrgMembersModelIds", $"{m.ProgId}.{m.DivId}.{m.SourceId}");
             DbUtil.DbDispose();
@@ -52,10 +47,8 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View(m);
         }
         [HttpPost]
-        public ActionResult ResetMoved()
+        public ActionResult ResetMoved(OrgMembersModel m)
         {
-            var m = new OrgMembersModel();
-            UpdateModel(m);
             m.ResetMoved();
             return View("List", m);
         }
