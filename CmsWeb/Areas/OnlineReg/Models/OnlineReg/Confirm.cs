@@ -149,7 +149,7 @@ Thank you.
                 p.AddPerson(null, p.org.EntryPointId ?? 0);
 
             var staff = DbUtil.Db.StaffPeopleForOrg(p.org.OrganizationId)[0];
-            var text = p.setting.Body;
+            var text = p.setting.Body ?? "No Body";
             text = text.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"), ignoreCase: true);
             text = text.Replace("{amt}", (Transaction.Amt ?? 0).ToString("N2"));
             text = text.Replace("{date}", DateTime.Today.ToShortDateString());
