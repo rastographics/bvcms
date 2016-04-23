@@ -57,21 +57,21 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     IsNew = true;
                     Parent.ConfirmManageSubscriptions();
                     DbUtil.Db.SubmitChanges();
-                    return "ManageSubscriptions/OneTimeLink";
+                    return "ManageSubscriptions/OneTimeLinkPartial";
                 }
                 if (Parent.OnlinePledge())
                 {
                     IsNew = true;
                     Parent.SendLinkForPledge();
                     DbUtil.Db.SubmitChanges();
-                    return "ManagePledge/OneTimeLink";
+                    return "ManagePledge/OneTimeLinkPartial";
                 }
                 if (Parent.ManageGiving())
                 {
                     IsNew = true;
                     Parent.SendLinkToManageGiving();
                     DbUtil.Db.SubmitChanges();
-                    return "ManageGiving/OneTimeLink";
+                    return "ManageGiving/OneTimeLinkPartial";
                 }
                 if (ComputesOrganizationByAge())
                 {

@@ -78,7 +78,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 desc, pledge: true);
 
             var pi = GetPledgeInfo();
-            var body = Setting.Body;
+            var body = Setting.Body ?? "no confirmation body found";
             body = body.Replace("{amt}", pi.Pledged.ToString("N2"), ignoreCase: true)
                 .Replace("{org}", Organization.OrganizationName, ignoreCase: true)
                 .Replace("{first}", person.PreferredName, ignoreCase: true);

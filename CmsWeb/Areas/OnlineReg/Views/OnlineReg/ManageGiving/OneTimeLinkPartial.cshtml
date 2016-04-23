@@ -1,0 +1,23 @@
+﻿@using UtilityExtensions
+  @model CmsWeb.Areas.OnlineReg.Models.OnlineRegModel
+  <div class="confirm">
+    <p style="color: Black">
+      Email sent to @Util.ObscureEmail(Model.List[0].person.EmailAddress) (email obscured on purpose)
+    </p>
+    <p>
+      <strong>One-Time Link</strong><br>
+      We have sent you a One-Time Link to manage your recurring giving which you should receive shortly.
+    </p>
+    @if (Model.List[0].CreatingAccount)
+    {
+      <p>
+        <strong>Account Created</strong><br />
+        We have created an account for you on our church database. You should receive your credentials shortly.
+      </p>
+    }
+    @if (Model.URL.HasValue())
+    {
+      <p style="color: Blue"><a href='@Model.URL'>Go back to your registration</a></p>
+    }
+
+  </div>
