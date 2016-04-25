@@ -112,10 +112,44 @@ namespace CmsWeb.Areas.Org.Controllers
         }
 
         [HttpPost]
+        public ActionResult ContactsReceived(int id)
+        {
+            var m = new ContactsReceivedModel
+            {
+                OrganizationId = id
+            };
+
+            return PartialView("Contacts", m);
+        }
+
+        [HttpPost]
         public ActionResult CommunityGroup(int id)
         {
             var m = new OrganizationModel(id);
             return PartialView(m);
+        }
+
+        [HttpPost]
+        public ActionResult AddContactReceived(int id)
+        {
+            var o = DbUtil.Db.LoadOrganizationById(id);
+            DbUtil.LogPersonActivity($"Adding contact to organization: {o.FullName}", id, o.FullName);
+            var c = new Contact
+            {
+                CreatedDate = Util.Now,
+                CreatedBy = Util.UserId1,
+                ContactDate = Util.Now.Date
+            };
+
+            DbUtil.Db.Contacts.InsertOnSubmit(c);
+            DbUtil.Db.SubmitChanges();
+
+            c.contactees.Add(new Contactee { OrganizationId = o.OrganizationId });
+            c.contactsMakers.Add(new Contactor { PeopleId = Util.UserPeopleId.Value });
+            DbUtil.Db.SubmitChanges();
+
+            TempData["ContactEdit"] = true;
+            return Content($"/Contact2/{c.ContactId}");
         }
     }
 }

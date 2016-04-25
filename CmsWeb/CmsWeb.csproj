@@ -446,6 +446,8 @@
     <Compile Include="Areas\Org\Controllers\OrgChildrenController.cs" />
     <Compile Include="Areas\Org\Controllers\OrgGroupsController.cs" />
     <Compile Include="Areas\Org\Controllers\RegSettingController.cs" />
+    <Compile Include="Areas\Org\Models\Org\Contacts\ContactsModel.cs" />
+    <Compile Include="Areas\Org\Models\Org\Contacts\ContactsReceivedModel.cs" />
     <Compile Include="Areas\Org\Models\Org\ScheduleInfo.cs" />
     <Compile Include="Areas\Org\Models\Org\SettingsMessagesModel.cs" />
     <Compile Include="Areas\Org\Models\Org\SettingsGeneralModel.cs" />
@@ -1539,6 +1541,7 @@
     <Content Include="Areas\Org\Views\Shared\EditorTemplates\Value.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\SearchOrganization.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\ResultsOrganization.cshtml" />
+    <Content Include="Areas\Org\Views\Org\Contacts.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />
