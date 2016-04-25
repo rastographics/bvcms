@@ -132,12 +132,12 @@ Leave **unchecked** for weekly meetings.
 ")]
         public bool NotWeekly { get; set; }
 
-        [Display(Name = "Filter Attendence Roster By Subgroup",
+        [Display(Name = "Filter Attendance Roster By Subgroup",
             Description = @"
 Allows Sub-Group leaders to be specified on the Sub-Group Members page. 
 These leaders' attendance rosters will be filtered by Sub-Group in the Mobile App.
 ")]
-        public bool AttendenceBySubGroups { get; set; }
+        public bool AttendanceBySubGroups { get; set; }
 
         [Display(Name="Allow Attendance Overlap", 
             Description = @"

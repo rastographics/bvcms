@@ -979,10 +979,10 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             var meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.MeetingId == meetingId);
             var userPersonId = Util.UserPeopleId.GetValueOrDefault();
-            var attendenceBySubGroup = meeting.Organization.AttendenceBySubGroups ?? false;
+            var attendanceBySubGroup = meeting.Organization.AttendanceBySubGroups ?? false;
             string subgroupIds = "";
             bool includeLeaderless = false;
-            if (attendenceBySubGroup)
+            if (attendanceBySubGroup)
             {
                 //get array of subgroupIds for the groups that this user is a leader of
                 var subgroups = DbUtil.Db.OrgMemMemTags.Where(t => (t.PeopleId == userPersonId) && (t.OrgId == meeting.OrganizationId) && (t.IsLeader == true)).Select(t => t.MemberTagId).ToArray();

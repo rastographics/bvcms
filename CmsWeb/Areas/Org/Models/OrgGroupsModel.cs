@@ -36,7 +36,7 @@ namespace CmsWeb.Areas.Org.Models
         public string sort { get; set; }
         public int tagfilter { get; set; }
         public bool isRecreationTeam { get; set; }
-        public bool isAttendanceBySubgroups => DbUtil.Db.LoadOrganizationById(orgid).AttendenceBySubGroups.GetValueOrDefault();
+        public bool isAttendanceBySubgroups => DbUtil.Db.LoadOrganizationById(orgid).AttendanceBySubGroups.GetValueOrDefault();
         public string OrgName => DbUtil.Db.LoadOrganizationById(orgid).OrganizationName;
         public int memtype { get; set; }
         public IList<int> List { get; set; } = new List<int>();
