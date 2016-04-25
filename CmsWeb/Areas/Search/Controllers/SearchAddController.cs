@@ -152,6 +152,16 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost, Route("SearchAdd2/SelectOrgContactee/{cid}/{oid}")]
         public ActionResult SelectOrg(OrgSearchModel m, int cid, int oid)
         {
+            // Prevent inserting duplicates
+            if (DbUtil.Db.Contactees.Any(x => x.ContactId == cid && x.OrganizationId == oid))
+            {
+                return Json(new OrgReturnResult
+                {
+                    cid = cid,
+                    from = "Contactee"
+                });
+            }
+
             var contactee = new Contactee
             {
                 ContactId = cid,
@@ -167,7 +177,7 @@ namespace CmsWeb.Areas.Search.Controllers
                 {
                     cid = cid,
                     from = "Contactee"
-            });
+                });
             }
             catch (Exception e)
             {
