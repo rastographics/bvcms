@@ -225,7 +225,7 @@ namespace CmsWeb.Areas.Search.Models
                                  + (o.GiftBagGiven == true ? "GB " : ""),
                        ContacteeList = string.Join(", ", (from c in DbUtil.Db.Contactees
                                                           where c.ContactId == o.ContactId
-                                                          select c.person.Name).Take(3)),
+                                                          select c.person != null ? c.person.Name : c.organization.FullName).Take(3)),
                        ContactorList = string.Join(", ", (from c in DbUtil.Db.Contactors
                                                           where c.ContactId == o.ContactId
                                                           select c.person.Name).Take(3))
