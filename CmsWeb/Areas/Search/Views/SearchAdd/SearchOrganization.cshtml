@@ -9,7 +9,7 @@
             <h4 class="modal-title">Search for Organization to Add as Contactee</h4>
         </div>
         <form id="orgsearchform" method="post">
-            <div class="well">
+            <div class="modal-body">
                 <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
@@ -64,13 +64,19 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-12">
-                    <div class="pull-right">
-                        <a href="#" class="btn btn-default clear">Clear</a> <a id="searchorg" href="/SearchAdd2/OrgContacteeResults/@ViewBag.ContactId/" class="btn btn-primary ajax" title="add new">Search</a>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="pull-right">
+                            <a href="#" class="btn btn-default clear">Clear</a> <a id="searchorg" href="/SearchAdd2/OrgContacteeResults/@ViewBag.ContactId/" class="btn btn-primary ajax" title="add new">Search</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </form>
-
+        <div class="modal-footer">
+            <div class="pull-left">
+                <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+            </div>
+        </div>
     </div>
 </div>
