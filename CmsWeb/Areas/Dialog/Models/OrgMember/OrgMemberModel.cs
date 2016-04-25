@@ -370,8 +370,8 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
             if (user != null)
             {
                 // Check for leader org promotion settting.
-                var autoLeaderOrgPromotionSetting = DbUtil.Db.Setting(AutoOrgLeaderPromotion, "false").ToLower();
-                if (autoLeaderOrgPromotionSetting == "true" && !user.Roles.Any())
+                var autoLeaderOrgPromotionSetting = DbUtil.Db.Setting(AutoOrgLeaderPromotion, "false").ToLower() == "true";
+                if (autoLeaderOrgPromotionSetting && !user.Roles.Any())
                 {
                     user.AddRoles(DbUtil.Db, !user.InRole(AccessRole) ? new[] { AccessRole, OrgLeadersOnlyRole } : new[] { OrgLeadersOnlyRole });
                 }
@@ -385,9 +385,9 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
             if (user != null)
             {
                 // Check for leader org promotion settting.
-                var autoLeaderOrgPromotionSetting = DbUtil.Db.Setting(AutoOrgLeaderPromotion, "false").ToLower();
+                var autoLeaderOrgPromotionSetting = DbUtil.Db.Setting(AutoOrgLeaderPromotion, "false").ToLower() == "true";
 
-                if (autoLeaderOrgPromotionSetting == "true" && user.Roles.Count() == 2 && user.InRole(OrgLeadersOnlyRole) && user.InRole(AccessRole) &&
+                if (autoLeaderOrgPromotionSetting && user.Roles.Count() == 2 && user.InRole(OrgLeadersOnlyRole) && user.InRole(AccessRole) &&
                         !DbUtil.Db.OrganizationMembers.Any(x => x.MemberType.Id == (om.Organization.LeaderMemberTypeId > 0 ? om.Organization.LeaderMemberTypeId : DefaultLeaderMemberTypeId)
                             && x.PeopleId == PeopleId && x.OrganizationId != Organization.OrganizationId))
                 {
