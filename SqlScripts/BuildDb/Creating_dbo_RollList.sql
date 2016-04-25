@@ -109,7 +109,7 @@ BEGIN
 		INSERT @subgroupsWithLeader 
 		SELECT DISTINCT MemberTagId
 		FROM dbo.OrgMemMemTags mt
-		WHERE mt.IsLeader = 1
+		WHERE mt.IsLeader = 1 AND mt.OrgId = @oid
 	END
 	
 
@@ -155,8 +155,14 @@ BEGIN
 		OR (
 			(sg.MemberTagId IN (SELECT Id FROM @subgroupIdsTable)) -- if they are in a matching subgroup, include them
 			OR 
-			-- If @includeLeaderless, then include members NOT in any subgroup that has a leader
-			(@includeLeaderless = 1 AND sg.MemberTagId NOT IN (SELECT MemberTagId FROM @subgroupsWithLeader)) 
+			-- If @includeLeaderless, then include... 
+			(@includeLeaderless = 1 AND 
+				(	
+					(sg.MemberTagId NOT IN (SELECT MemberTagId FROM @subgroupsWithLeader)) -- ...members NOT in any subgroup that has a leader
+					OR
+					(sg.MemberTagID IS NULL)  -- ...members NOT in any subgroup at all
+				)
+			) 
 		)
 	)
 
@@ -190,7 +196,7 @@ BEGIN
 	WHERE NOT EXISTS(SELECT NULL FROM @members m WHERE m.PeopleId = v.PeopleId)
 
 	 -- If we are filtering by Subgroup, do NOT show visitors unless the @IncludeLeaderless flag is true   --JoelS
-	AND ((@FilterBySubgroup = 0) OR (@IncludeLeaderless = 1 ))
+	-- AND ((@FilterBySubgroup = 0) OR (@IncludeLeaderless = 1 ))
     
 	-- now catch the odd ducks who slipped through the cracks, (should not be any if all is well)
 	INSERT @table
@@ -229,8 +235,14 @@ BEGIN
 		OR (
 			(sg.MemberTagId IN (SELECT Id FROM @subgroupIdsTable)) -- if they are in a matching subgroup, include them
 			OR 
-			-- If @includeLeaderless, then include members NOT in any subgroup that has a leader
-			(@includeLeaderless = 1 AND sg.MemberTagId NOT IN (SELECT MemberTagId FROM @subgroupsWithLeader)) 
+			-- If @includeLeaderless, then include... 
+			(@includeLeaderless = 1 AND 
+				(	
+					(sg.MemberTagId NOT IN (SELECT MemberTagId FROM @subgroupsWithLeader)) -- ...members NOT in any subgroup that has a leader
+					OR
+					(sg.MemberTagID IS NULL)  -- ...members NOT in any subgroup at all
+				)
+			) 
 		)
 	)
 
