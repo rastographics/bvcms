@@ -55,9 +55,24 @@ namespace CmsData.View
                     : "NonMember"; 
             }
         }
+
+        private static bool? _hideBirthYearForOrgLeaders = null;
         public string BirthDate
         {
-            get { return Util.FormatBirthday( BirthYear, BirthMonth, BirthDay); }
+            get
+            {
+                if(!_hideBirthYearForOrgLeaders.HasValue)
+                    _hideBirthYearForOrgLeaders = DbUtil.Db.Setting("HideBirthYearForOrgLeaders", "false").ToLower() == "true";
+
+                if (_hideBirthYearForOrgLeaders.Value && Util.IsInRole("OrgLeadersOnly"))
+                {
+                    return Util.FormatBirthday(null, BirthMonth, BirthDay);
+                }
+                else
+                {
+                    return Util.FormatBirthday(BirthYear, BirthMonth, BirthDay);
+                }
+            }
         }
 
         public IEnumerable<string> Phones
