@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="shortcut icon" href="@Url.Content("~/favicon.ico?v=2")">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0">
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    @Html.Action("Index", "MobileAppMenu", new { area = "" })
+    @Html.Raw((string)ViewBag.top)
+    <style>
+        input[type="text"] {
+            text-transform: lowercase;
+        }
+        .account {
+            text-align: center;
+        }
+        .account .form-header {
+            font-size: 25px;
+            font-weight: 300;
+            text-align: center;
+            margin: 40px 0;
+        }
+        .account .no-header {
+            margin-bottom: 40px;
+        }
+        .account .bordered, .account .panel, .account .table, .account hr {
+            border-color: #e2e2e2;
+        }
+        .account .panel {
+            max-width: 360px;
+            margin: 0 auto;
+            padding: 27px;
+        }
+        .panel, .panel-default {
+            border-color: #e4e4e4;
+            margin-bottom: 22px;
+            position: relative;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+        }
+        .account .signin-password {
+            position: relative;
+        }
+        .account .signin-password input {
+            padding-right: 70px;
+        }
+        .account .signin-password .forgot {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            color: #555;
+            background: #f1f1f1;
+            border-radius: 2px;
+            line-height: 25px;
+            padding: 0 7px;
+            font-size: 12px;
+        }
+        .account .signin-with {
+            max-width: 360px;
+            padding: 20px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .account .signin-with .header {
+            font-size: 16px;
+            font-weight: 300;
+            text-align: center;
+            margin: 0 0 20px;
+        }
+        .account .signin-with .header a {
+            text-decoration: underline;
+        }
+        .account .alert {
+            width: 360px;
+            margin: auto;
+            margin-bottom: 20px;
+            text-align: left !important;
+        }
+    </style>
+    @RenderSection("head", false)
+    <div class="account">
+        @RenderBody()
+    </div>
+    @Html.Raw((string)ViewBag.bottom)
+    @ViewExtensions2.jQuery()
+    @RenderSection("scripts", false)
+</body>
+</html>
+
+
+
