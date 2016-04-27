@@ -26,6 +26,8 @@ namespace CmsData
 		
 		private int? _Number;
 		
+		private bool? _IsLeader;
+		
    		
     	
 		private EntityRef< MemberTag> _MemberTag;
@@ -50,6 +52,9 @@ namespace CmsData
 		
 		partial void OnNumberChanging(int? value);
 		partial void OnNumberChanged();
+		
+		partial void OnIsLeaderChanging(bool? value);
+		partial void OnIsLeaderChanged();
 		
     #endregion
 		public OrgMemMemTag()
@@ -159,6 +164,28 @@ namespace CmsData
 					this._Number = value;
 					this.SendPropertyChanged("Number");
 					this.OnNumberChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="IsLeader", UpdateCheck=UpdateCheck.Never, Storage="_IsLeader", DbType="bit")]
+		public bool? IsLeader
+		{
+			get { return this._IsLeader; }
+
+			set
+			{
+				if (this._IsLeader != value)
+				{
+				
+                    this.OnIsLeaderChanging(value);
+					this.SendPropertyChanging();
+					this._IsLeader = value;
+					this.SendPropertyChanged("IsLeader");
+					this.OnIsLeaderChanged();
 				}
 
 			}

@@ -558,6 +558,7 @@
     <Compile Include="Generated\Functions\RegisterLinksFromMaster.cs" />
     <Compile Include="Generated\Functions\RegistrationSmallGroup.cs" />
     <Compile Include="Generated\Functions\RollList.cs" />
+    <Compile Include="Generated\Functions\RollListFilteredBySubgroup.cs" />
     <Compile Include="Generated\Functions\RollListHighlight.cs" />
     <Compile Include="Generated\Functions\SearchDivision.cs" />
     <Compile Include="Generated\Functions\SenderGift.cs" />

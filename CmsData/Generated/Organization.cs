@@ -176,6 +176,8 @@ namespace CmsData
 		
 		private string _RegSettingXml;
 		
+		private bool? _AttendanceBySubGroups;
+		
    		
    		private EntitySet< Person> _BFMembers;
 		
@@ -459,6 +461,9 @@ namespace CmsData
 		
 		partial void OnRegSettingXmlChanging(string value);
 		partial void OnRegSettingXmlChanged();
+		
+		partial void OnAttendanceBySubGroupsChanging(bool? value);
+		partial void OnAttendanceBySubGroupsChanged();
 		
     #endregion
 		public Organization()
@@ -2268,6 +2273,28 @@ namespace CmsData
 					this._RegSettingXml = value;
 					this.SendPropertyChanged("RegSettingXml");
 					this.OnRegSettingXmlChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="AttendanceBySubGroups", UpdateCheck=UpdateCheck.Never, Storage="_AttendanceBySubGroups", DbType="bit")]
+		public bool? AttendanceBySubGroups
+		{
+			get { return this._AttendanceBySubGroups; }
+
+			set
+			{
+				if (this._AttendanceBySubGroups != value)
+				{
+				
+                    this.OnAttendanceBySubGroupsChanging(value);
+					this.SendPropertyChanging();
+					this._AttendanceBySubGroups = value;
+					this.SendPropertyChanged("AttendanceBySubGroups");
+					this.OnAttendanceBySubGroupsChanged();
 				}
 
 			}

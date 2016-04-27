@@ -40,7 +40,7 @@ namespace CmsWeb.Areas.Org.Models
             return DbUtil.Db.Setting("RegularMeetingHeadCount", "enable");
         }
 
-        public IEnumerable<RollsheetModel.AttendInfo> Attends(bool sorted = false, string highlight = null)
+        public List<RollsheetModel.AttendInfo> Attends(bool sorted = false, string highlight = null)
         {
             if (!meeting.MeetingDate.HasValue)
                 throw new Exception("Meeting should have a date");

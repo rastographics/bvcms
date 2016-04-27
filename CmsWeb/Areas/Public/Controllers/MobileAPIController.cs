@@ -978,23 +978,10 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             var meetingId = DbUtil.Db.CreateMeeting(mprl.id, mprl.datetime);
 
             var meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.MeetingId == meetingId);
-            var userPersonId = Util.UserPeopleId.GetValueOrDefault();
             var attendanceBySubGroup = meeting.Organization.AttendanceBySubGroups ?? false;
-            string subgroupIds = "";
-            bool includeLeaderless = false;
-            if (attendanceBySubGroup)
-            {
-                //get array of subgroupIds for the groups that this user is a leader of
-                var subgroups = DbUtil.Db.OrgMemMemTags.Where(t => (t.PeopleId == userPersonId) && (t.OrgId == meeting.OrganizationId) && (t.IsLeader == true)).Select(t => t.MemberTagId).ToArray();
-                if (subgroups != null && subgroups.Any())
-                {
-                    subgroupIds = string.Join(",", subgroups);
-                    //if current user is the OrgLeader, include all members NOT in a subgroup
-                    includeLeaderless = userPersonId == meeting.Organization.LeaderId;
-                }
-            }
-
-            var people = RollsheetModel.RollList(meetingId, mprl.id, mprl.datetime, fromMobile: true, subgroupIds: subgroupIds, includeLeaderless: includeLeaderless);
+            var people = attendanceBySubGroup 
+                ? RollsheetModel.RollListFilteredBySubgroup(meetingId, mprl.id, mprl.datetime, fromMobile: true) 
+                : RollsheetModel.RollList(meetingId, mprl.id, mprl.datetime, fromMobile: true);
 
             MobileRollList mrl = new MobileRollList();
             mrl.attendees = new List<MobileAttendee>();
@@ -1005,12 +992,10 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             BaseMessage br = new BaseMessage();
             br.id = meetingId;
             br.setNoError();
-            br.count = people.Count();
+            br.count = people.Count;
 
             foreach (var person in people)
-            {
                 mrl.attendees.Add(new MobileAttendee().populate(person));
-            }
 
             br.data = SerializeJSON(mrl, dataIn.version);
             return br;
