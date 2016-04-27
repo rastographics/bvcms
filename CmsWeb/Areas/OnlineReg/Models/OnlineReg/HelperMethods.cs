@@ -9,9 +9,6 @@ using CmsData.Registration;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
 using CmsData.Codes;
-using CmsData.View;
-using CmsWeb.Areas.Search.Models;
-using DocumentFormat.OpenXml.Bibliography;
 using Person = CmsData.Person;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -227,6 +224,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (org != null)
                 return org.RegistrationTypeId == RegistrationTypeCode.OnlineGiving;
             return false;
+        }
+        public bool ShouldPullSpecificFund()
+        {
+            return OnlineGiving()
+                   && !AskDonation()
+                   && settings.Any(vv => vv.Value.DonationFundId > 0);
         }
 
         public bool NoCreditCardsAllowed()

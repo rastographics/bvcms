@@ -1,0 +1,35 @@
+﻿@using UtilityExtensions
+@using CmsData
+@using CmsData.Finance
+@using CmsWeb.Areas.OnlineReg.Models
+@model OnlineRegModel
+@{
+  Layout = "~/Views/Shared/onlinereg2.cshtml";
+  ViewBag.Title = "Login";
+  var action = $"/OnePageGiving/Login/{@Model.Orgid}{(Model.testing == true ? "?testing=true" : "")}";
+  Model.ShowLoginInstructions = true;
+}
+<div class="regform">
+  <form id="completeReg" class="DisplayEdit form-horizontal" action="@action" method="post">
+    <div class="well">
+      @Html.EditorFor(m => m.username, new {placeholder = "Enter username or email address on record"})
+      @Html.EditorFor(m => m.password, "password")
+      @Html.DivValidationMessage("authentication")
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+          <div class="text-right">
+            <div class="form-actions">
+              <a href="/OnePageGiving/@Model.Orgid" style="margin-right: 1em;">Give without logging in</a>
+              <input type="submit" id="submitit" value="Login" class="btn btn-primary">
+            </div>
+            @Html.ValidationMessage("loginerror")
+          </div>
+        </div>
+        <p class="text-center">
+          Need an account, or forgot your password?<br/>
+          <a href="/Account/ForgotPassword/">Request a password</a>
+        </p>
+      </div>
+    </div>
+  </form>
+</div>

@@ -42,35 +42,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 throw;
             }
         }
-        [HttpGet]
-        [Route("~/OnePageGiving/{id:int}")]
-        public ActionResult OnePageGiving(int? id, bool? testing, string source)
-        {
-            Response.NoCache();
-            try
-            {
-                var m = new OnlineRegModel(Request, id, testing, null, null, source);
-                SetHeaders(m);
-                var pf = PaymentForm.CreatePaymentForm(m);
-                pf.NoCreditCardsAllowed = false;
-                return View(pf);
-            }
-            catch (Exception ex)
-            {
-                if (ex is BadRegistrationException)
-                    return Message(ex.Message);
-                throw;
-            }
-        }
-
         [HttpPost]
         public ActionResult Login(OnlineRegModel m)
         {
             fromMethod = "Login";
-            // they clicked the Login button on the login page
-
-//            var ret = Util.IsDebug() && Util.IsLocalNetworkRequest
-//                ? AccountModel.AutoLogin(m.username, Session, Request) :
             var ret = AccountModel.AuthenticateLogon(m.username, m.password, Session, Request);
 
             if (ret is string)

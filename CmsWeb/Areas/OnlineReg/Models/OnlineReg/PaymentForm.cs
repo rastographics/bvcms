@@ -16,6 +16,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
     {
         private bool? _noEChecksAllowed;
         private int? timeOut;
+        public string source { get; set; }
         public decimal? AmtToPay { get; set; }
         public decimal? Donate { get; set; }
         public decimal Amtdue { get; set; }
@@ -435,7 +436,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     modelState.AddModelError("Type", "Please select Bank Account or Credit Card.");
                     break;
             }
-            ValidateBillingDetails(modelState);
+            if(ShouldValidateBilling)
+                ValidateBillingDetails(modelState);
         }
 
         public void ValidateBillingDetails(ModelStateDictionary modelState)
@@ -590,6 +592,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 First, MiddleInitial, Last, Suffix, Address, Address2, City, State, Country,
                 Zip, Phone);
         }
+
+        public bool ShouldValidateBilling = false;
 
         public RouteModel ProcessPayment(ModelStateDictionary modelState, OnlineRegModel m)
         {

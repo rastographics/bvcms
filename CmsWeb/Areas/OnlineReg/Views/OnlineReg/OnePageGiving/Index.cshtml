@@ -1,0 +1,139 @@
+﻿@using UtilityExtensions
+@using CmsData
+@using CmsData.Finance
+@using CmsWeb.Areas.OnlineReg.Models
+@model PaymentForm
+@{
+  Layout = "~/Views/Shared/onlinereg2.cshtml";
+  ViewBag.Title = "OnePageGiving";
+  var action = $"/OnePageGiving/{Model.OrgId}{(Model.testing ? "?testing=true" : "")}";
+  var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
+}
+@section scripts
+{
+  @Fingerprint.Script("/Content/touchpoint/js/onlinereg/bootstrap-datepicker.js")
+  <script type="text/javascript">
+    $.dtoptions = { format: '@Util.jQueryDateFormat2' };
+    $("form").validate();
+    $("#AmtToPay").rules("add", {number: true});
+  </script>
+  @Fingerprint.Script("/Content/touchpoint/js/onlinereg/onlineregpayment2.js")
+}
+<style>
+  #AmtToPay-error {
+    display: block;
+    text-align: right;
+    color: red;
+  }
+  /*.form-control::-webkit-input-placeholder { color: #999 !important; }*/
+   
+</style>
+<div class="regform pad-top">
+  <form action="@action" method="post">
+    <div class="form-group text-right">
+      <h4 class="inline-block">Already have an account?</h4>
+      <a id="login-here" href="/OnePageGiving/Login/@Model.OrgId" class="btn btn-success">
+        Login Here
+      </a>
+    </div>
+    <div class="row">
+      <div class="col-lg-6 form-group">
+        <input type="text" id="First" name="First" class="form-control" placeholder="First Name" required="required" value="@Model.First">
+      </div>
+      <div class="col-lg-6 form-group">
+        <input type="text" id="Last" name="Last" class="form-control" placeholder="Last Name" required="required" value="@Model.Last">
+      </div>
+    </div>
+    <div class="form-group">
+      <input type="text" id="Email" name="Email" class="form-control" placeholder="Email" required="required" value="@Model.Email">
+      @Html.ValidationMessageLabelFor(m => m.Email, "field-validation-error")
+    </div>
+    <div class="form-group">
+      <input type="text" id="Phone" name="Phone" class="form-control" placeholder="Phone Number" value="@Model.Phone">
+    </div>
+    <div class="form-group">
+      <input type="text" id="Address" name="Address" class="form-control" placeholder="Address" required="required" value="@Model.Address">
+    </div>
+    <div class="form-group">
+      <input type="text" id="Zip" name="Zip" class="form-control" placeholder="Zip" required="required" value="@Model.Zip">
+    </div>
+    <div class="form-group text-right">
+      <h4 class="inline-block">@Model.Description&nbsp;&nbsp;$ </h4>
+      <input type="text" id="AmtToPay" name="AmtToPay" class="form-control input-lg narrow" style="display: inline" placeholder="Amount" required="required" value="@Model.AmtToPay"/>
+      @Html.ValidationMessageLabelFor(m => m.AmtToPay, "field-validation-error")
+    </div>
+    @if (Model.NoCreditCardsAllowed || Model.NoEChecksAllowed)
+    {
+      @Html.Hidden("Type", Model.Type)
+    }
+    else
+    {
+      <div class="form-group" style="text-align: center; margin-bottom: 1em;">
+        <div class="btn-group" data-toggle="buttons">
+          @TypeRadio(PaymentType.CreditCard, debitcredit, "left")
+          @TypeRadio(PaymentType.Ach, "Bank Account", "right")
+          @Html.Hidden("allowcc", "true")
+        </div>
+      </div>
+    }
+    @if (Model.NoCreditCardsAllowed == false)
+    {
+      <div class="Card">
+        <div class="form-group">
+          <input type="text" id="CreditCard" name="CreditCard" class="form-control" placeholder="Card Number" required="required" value="@Model.CreditCard" autocomplete="off">
+          @Html.ValidationMessageLabelFor(m => m.CreditCard, "field-validation-error")
+        </div>
+        <div class="row">
+          <div class="col-lg-6 form-group">
+            <input type="text" id="Expires" name="Expires" class="form-control" placeholder="Card Expiration (MM/YY)" required="required" value="@Model.Expires">
+            @Html.ValidationMessageLabelFor(m => m.Expires, "field-validation-error")
+          </div>
+          <div class="col-lg-6 form-group">
+            <input type="text" id="CVV" name="CVV" class="form-control" placeholder="CCV Code" required="required" value="@Model.CVV" autocomplete="off">
+            @Html.ValidationMessageLabelFor(m => m.CVV, "field-validation-error")
+          </div>
+        </div>
+      </div>
+    }
+    @if (Model.NoEChecksAllowed == false)
+    {
+      <div class="Bank">
+        <div class="form-group">
+          <input type="text" id="Routing" name="Routing" class="form-control" placeholder="Bank Routing Number" required="required" value="@Model.Routing" autocomplete="off">
+          @Html.ValidationMessageLabelFor(m => m.Routing, "field-validation-error")
+        </div>
+        <div class="form-group">
+          <input type="text" id="Account" name="Account" class="form-control" placeholder="Bank Account Number" required="required" value="@Model.Account" autocomplete="off">
+          @Html.ValidationMessageLabelFor(m => m.Account, "field-validation-error")
+        </div>
+      </div>
+    }
+    <div class="form-actions text-right">
+      <input type="submit" id="submitit" value="Make Gift" class="btn btn-primary btn-lg">
+    </div>
+    @Html.HiddenFor(m => m.source)
+    @Html.HiddenFor(m => m.OrgId)
+    @Html.HiddenFor(m => m.testing)
+    @Html.HiddenFor(m => m.URL)
+    @Html.HiddenFor(m => m.Description)
+    @Html.HiddenFor(m => m.NoCreditCardsAllowed)
+  </form>
+</div>
+@helper TypeRadio(string type, string label, string side)
+{
+  const string radius = "17px";
+  if (Model.Type == type)
+  {
+    <label class="btn btn-primary active"
+           style="border-top-@side-radius: @radius; border-bottom-@side-radius: @radius">
+      <input type="radio" name="Type" value="@type" checked="checked"/> @label
+    </label>
+  }
+  else
+  {
+    <label class="btn btn-primary"
+           style="border-top-@side-radius: @radius; border-bottom-@side-radius: @radius">
+      <input type="radio" name="Type" value="@type"/> @label
+    </label>
+  }
+}
