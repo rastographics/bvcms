@@ -1,6 +1,7 @@
 ﻿@using CmsWeb.Code
 @{
-    var access = User.IsInRole("Access");
+    var hideNavTabsForOrgLeaders = DbUtil.Db.Setting("HideNavTabsForOrgLeaders", "false").ToLower() == "true";
+    var access = User.IsInRole("Access") && !(User.IsInRole("OrgLeadersOnly") && hideNavTabsForOrgLeaders);
     var customHeaderImage = CustomHeader.HeaderImage("~/Content/touchpoint/img/logo.png");
     var customSmallHeaderImage = CustomHeader.SmallHeaderImage("~/Content/touchpoint/img/logo_sm.png");
 }
