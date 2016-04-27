@@ -78,8 +78,8 @@ CREATE TABLE [dbo].[Organizations]
 [RegistrationTitle] [nvarchar] (200) NULL,
 [PrevMemberCount] [int] NULL,
 [ProspectCount] [int] NULL,
-[AttendanceBySubGroups] [bit] NULL,
-[RegSettingXml] [xml] NULL
+[RegSettingXml] [xml] NULL,
+[AttendanceBySubGroups] [bit] NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
