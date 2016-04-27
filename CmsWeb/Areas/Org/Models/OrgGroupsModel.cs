@@ -36,6 +36,7 @@ namespace CmsWeb.Areas.Org.Models
         public string sort { get; set; }
         public int tagfilter { get; set; }
         public bool isRecreationTeam { get; set; }
+        public bool isAttendanceBySubgroups => DbUtil.Db.LoadOrganizationById(orgid).AttendanceBySubGroups.GetValueOrDefault();
         public string OrgName => DbUtil.Db.LoadOrganizationById(orgid).OrganizationName;
         public int memtype { get; set; }
         public IList<int> List { get; set; } = new List<int>();
@@ -201,7 +202,8 @@ namespace CmsWeb.Areas.Org.Models
                                   select new GroupInfo
                                   {
                                       Name = mt.MemberTag.Name,
-                                      Count = mt.MemberTag.OrgMemMemTags.Count()
+                                      Count = mt.MemberTag.OrgMemMemTags.Count(),
+                                      IsLeader = mt.IsLeader.GetValueOrDefault() ? "- Leader" : ""
                                   }
                      };
             return q2;
@@ -348,6 +350,7 @@ namespace CmsWeb.Areas.Org.Models
         {
             public string Name { get; set; }
             public int Count { get; set; }
+            public string IsLeader { get; internal set; }
         }
 
         public class PersonInfo
@@ -375,7 +378,7 @@ namespace CmsWeb.Areas.Org.Models
             {
                 get
                 {
-                    var s = string.Join(",~", Groups.Select(g => $"{g.Name}({g.Count})").ToArray());
+                    var s = string.Join(",~", Groups.Select(g => $"{g.Name}({g.Count}) {g.IsLeader }").ToArray());
                     s = s.Replace(" ", "&nbsp;").Replace(",~", "<br />\n");
                     return new HtmlString(s);
                 }

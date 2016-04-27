@@ -36,6 +36,44 @@ namespace CmsWeb.Areas.Org.Controllers
             DbUtil.Db.SubmitChanges();
             return View("Rows", m);
         }
+
+        [HttpPost]
+        public ActionResult MakeLeaderOfTargetGroup(OrgGroupsModel m)
+        {
+            var a = m.List.ToArray();
+            var q2 = from om in m.OrgMembers()
+                     where a.Contains(om.PeopleId)
+                     select om;
+            if (m.groupid != null)
+            {
+                foreach (var om in q2)
+                {
+                    om.MakeLeaderOfGroup(DbUtil.Db, m.groupid.GetValueOrDefault());
+                }
+            }
+
+            DbUtil.Db.SubmitChanges();
+            return View("Rows", m);
+        }
+
+        [HttpPost]
+        public ActionResult RemoveAsLeaderOfTargetGroup(OrgGroupsModel m)
+        {
+            var a = m.List.ToArray();
+            var q2 = from om in m.OrgMembers()
+                     where a.Contains(om.PeopleId)
+                     select om;
+            if (m.groupid != null)
+            {
+                foreach (var om in q2)
+                {
+                    om.RemoveAsLeaderOfGroup(DbUtil.Db, m.groupid.GetValueOrDefault());
+                }
+            }
+            DbUtil.Db.SubmitChanges();
+            return View("Rows", m);
+        }
+
         [HttpPost]
         public ActionResult RemoveSelectedFromTargetGroup(OrgGroupsModel m)
         {

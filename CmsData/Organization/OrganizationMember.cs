@@ -166,6 +166,41 @@ AND a.PeopleId = {2}
             return omt != null;
         }
 
+        public void MakeLeaderOfGroup(CMSDataContext Db, int sgId)
+        {
+            var omt = Db.OrgMemMemTags.SingleOrDefault(t =>
+                                                      t.PeopleId == PeopleId
+                                                      && t.MemberTagId == sgId
+                                                      && t.OrgId == OrganizationId);
+            if (omt == null)
+            {
+                Db.OrgMemMemTags.InsertOnSubmit(new OrgMemMemTag
+                {
+                    PeopleId = PeopleId,
+                    OrgId = OrganizationId,
+                    MemberTagId = sgId,
+                    IsLeader = true
+                });
+
+            }
+            else
+            {
+                omt.IsLeader = true;
+            }
+        }
+
+        public void RemoveAsLeaderOfGroup(CMSDataContext Db, int sgId)
+        {
+            var omt = Db.OrgMemMemTags.SingleOrDefault(t =>
+                                                      t.PeopleId == PeopleId
+                                                      && t.MemberTagId == sgId
+                                                      && t.OrgId == OrganizationId);
+            if (omt != null)
+            {
+                omt.IsLeader = false;
+            }
+        }
+
         public void AddToGroup(CMSDataContext Db, string name)
         {
             int? n = null;

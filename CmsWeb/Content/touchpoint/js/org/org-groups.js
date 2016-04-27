@@ -108,6 +108,16 @@
         ev.preventDefault();
         $.performAction("/OrgGroups/RemoveSelectedFromTargetGroup");
     });
+    
+     $('body').on('click', '#MakeSelectedLeaderOfTargetGroup', function (ev) {
+        ev.preventDefault();
+        $.performAction("/OrgGroups/MakeLeaderOfTargetGroup");
+    });
+    
+    $('body').on('click', '#RemoveSelectedLeaderOfTargetGroup', function (ev) {
+        ev.preventDefault();
+        $.performAction("/OrgGroups/RemoveAsLeaderOfTargetGroup");
+    });
 
     var lastChecked = null;
     $("body").on("click", "input[name = 'list']", function (e) {

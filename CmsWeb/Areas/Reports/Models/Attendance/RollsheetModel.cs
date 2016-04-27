@@ -11,6 +11,7 @@ using UtilityExtensions;
 using CmsData;
 using CmsData.Codes;
 using CmsData.View;
+using System.Data;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -209,11 +210,12 @@ namespace CmsWeb.Areas.Reports.Models
 					  };
 			return q;
 		}
-
+        //Accept subgroup to limit query by those who are in this subgroup  --JoelS
         public static IEnumerable<AttendInfo> RollList(int? meetingId, int orgId, DateTime meetingDate,
-            bool sortByName = false, bool currentMembers = false, bool fromMobile = false)
+            bool sortByName = false, bool currentMembers = false, bool fromMobile = false, string subgroupIds = "", bool includeLeaderless = false)
         {
-            var q = DbUtil.Db.RollList(meetingId, meetingDate, orgId, currentMembers, fromMobile);
+
+            var q = DbUtil.Db.RollList(meetingId, meetingDate, orgId, currentMembers, fromMobile, subgroupIds, includeLeaderless);
 
             if (sortByName)
                 q = from p in q

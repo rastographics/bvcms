@@ -7,6 +7,8 @@ CREATE FUNCTION [dbo].[RollList]
 	,@oid INT
 	,@current BIT
 	,@FromMobile BIT
+    ,@subgroupIds VARCHAR(100)  --Filter by subgroup IDs (comma separated). Returns everyone who is in at least 1 of these subgroups. Empty string disables subgroup filtering
+	,@IncludeLeaderless BIT = 0  --Include those who are not in any subgroup with a leader (used in conjunction with @subgroupIds)
 )
 RETURNS @table TABLE 
 (
@@ -30,6 +32,14 @@ RETURNS @table TABLE
 AS
 BEGIN
 	DECLARE @AppRollListCommittedOnly BIT = 0
+	DECLARE @FilterBySubgroup BIT = 0
+	DECLARE @subgroupIdsTable TABLE (Id int)
+	INSERT INTO @subgroupIdsTable (Id) SELECT * FROM dbo.SplitInts(@subgroupIds)
+	IF (SELECT Count(*) FROM @subgroupIdsTable) > 0 
+	Begin
+		-- Only filter by Subgroup if some subgroup Ids were passed into this function.
+		SET @FilterBySubgroup = 1 
+	End
 
 	IF @FromMobile = 1 AND 
 		EXISTS(	SELECT NULL 
@@ -62,6 +72,12 @@ BEGIN
 		PeopleId INT
 	)
 
+	--Subgroups with at least 1 leader
+	DECLARE @subgroupsWithLeader TABLE
+	(
+		MemberTagId INT
+	)
+
 	INSERT @attends
 	SELECT a.PeopleId 
 		   ,a.Commitment
@@ -88,9 +104,19 @@ BEGIN
 	SELECT PeopleId 
 	FROM dbo.OrgVisitorsAsOfDate(@oid, @meetingdt, 0)
 
+	IF @FilterBySubgroup = 1 AND @IncludeLeaderless = 1
+	BEGIN
+		INSERT @subgroupsWithLeader 
+		SELECT DISTINCT MemberTagId
+		FROM dbo.OrgMemMemTags mt
+		WHERE mt.IsLeader = 1 AND mt.OrgId = @oid
+	END
+	
+
+
 	-- start building results, members first
 	INSERT @table
-	SELECT 1 -- Members
+	SELECT DISTINCT 1 -- Members
 		   ,m.PeopleId
 		   ,p.Name2
 		   ,p.LastName
@@ -115,8 +141,32 @@ BEGIN
 	LEFT JOIN lookup.MemberStatus ms ON ms.Id = p.MemberStatusId
 	LEFT JOIN dbo.OrganizationMembers om ON om.PeopleId = p.PeopleId AND om.OrganizationId = @oid
 	LEFT JOIN dbo.MeetingConflicts mc ON mc.PeopleId = a.PeopleId AND mc.MeetingDate = @meetingdt AND @oid IN (mc.OrgId1, mc.OrgId2)
-	WHERE (@current = 1 OR @meetingdt > m.joindt OR (a.PeopleId IS NOT NULL AND attendtype NOT IN (40,50,60,110)))
+    
+    -- Join Subgroups ONLY IF we were given at least 1 subgroup to filter by   --JoelS
+	LEFT JOIN dbo.OrgMemMemTags sg ON ((@FilterBySubgroup = 1) AND (m.PeopleId = sg.PeopleId))
+	
+    WHERE (@current = 1 OR @meetingdt > m.joindt OR (a.PeopleId IS NOT NULL AND attendtype NOT IN (40,50,60,110)))
 	AND (@AppRollListCommittedOnly = 0 OR CommitmentId IN (1,4))
+    
+	
+	-- Subgroup Filtering...
+	AND (
+		(@FilterBySubgroup = 0) --If subgroup filtering not activated, just include everyone and ignore the rest of these WHERE conditions
+		OR (
+			(sg.MemberTagId IN (SELECT Id FROM @subgroupIdsTable)) -- if they are in a matching subgroup, include them
+			OR 
+			-- If @includeLeaderless, then include... 
+			(@includeLeaderless = 1 AND 
+				(	
+					(sg.MemberTagId NOT IN (SELECT MemberTagId FROM @subgroupsWithLeader)) -- ...members NOT in any subgroup that has a leader
+					OR
+					(sg.MemberTagID IS NULL)  -- ...members NOT in any subgroup at all
+				)
+			) 
+		)
+	)
+
+	
 
 	-- recent visitors who have not become members as of the meeting date
 	INSERT @table
@@ -144,10 +194,13 @@ BEGIN
 	LEFT JOIN lookup.MemberStatus ms ON ms.Id = p.MemberStatusId
 	LEFT JOIN dbo.OrganizationMembers om ON om.PeopleId = p.PeopleId AND om.OrganizationId = @oid
 	WHERE NOT EXISTS(SELECT NULL FROM @members m WHERE m.PeopleId = v.PeopleId)
+
+	 -- If we are filtering by Subgroup, do NOT show visitors unless the @IncludeLeaderless flag is true   --JoelS
+	-- AND ((@FilterBySubgroup = 0) OR (@IncludeLeaderless = 1 ))
     
 	-- now catch the odd ducks who slipped through the cracks, (should not be any if all is well)
 	INSERT @table
-	SELECT 3 -- Other
+	SELECT DISTINCT 3 -- Other
 		   ,a.PeopleId
 		   ,p.Name2
 		   ,p.LastName
@@ -170,7 +223,28 @@ BEGIN
 	LEFT JOIN lookup.AttendType at ON at.Id = a.attendtype
 	LEFT JOIN lookup.MemberStatus ms ON ms.Id = p.MemberStatusId
 	LEFT JOIN dbo.OrganizationMembers om ON om.PeopleId = p.PeopleId AND om.OrganizationId = @oid
+	
+	 -- Join Subgroups ONLY IF Filtering by Subgroup   --JoelS
+	LEFT JOIN dbo.OrgMemMemTags sg ON ((@FilterBySubgroup = 1) AND (a.PeopleId = sg.PeopleId))
+
 	WHERE t.PeopleId IS NULL
+
+	-- Subgroup Filtering...
+	AND (
+		(@FilterBySubgroup = 0) --If subgroup filtering not activated, just include everyone and ignore the rest of these WHERE conditions
+		OR (
+			(sg.MemberTagId IN (SELECT Id FROM @subgroupIdsTable)) -- if they are in a matching subgroup, include them
+			OR 
+			-- If @includeLeaderless, then include... 
+			(@includeLeaderless = 1 AND 
+				(	
+					(sg.MemberTagId NOT IN (SELECT MemberTagId FROM @subgroupsWithLeader)) -- ...members NOT in any subgroup that has a leader
+					OR
+					(sg.MemberTagID IS NULL)  -- ...members NOT in any subgroup at all
+				)
+			) 
+		)
+	)
 
 	RETURN
 
