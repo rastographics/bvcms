@@ -7,13 +7,6 @@
 [RWM]: http://www.microsoft.com/en-us/download/details.aspx?id=7435
 [PR]: PullRequestGuidelines.md
 
-*IMPORTANT NOTE:* As of 4/27/16 7:00 AM Central time, this code is not in a state where it will compile.
-The latest version under tag 2016-04-23-15-10 is the code that is currently in production.
-Please only use that tag's code for now.
-I am currently reviewing some pull requests and need more time to get them ready.
-I should not have pulled them in directly to master, but I did.
-Check back later.
-
 BVCMS Developer Quick Start Guide
 ---
 
@@ -23,6 +16,11 @@ you may not use this code except in compliance with the License.
 see LICENSE file in this repository master branch
 
 BVCMS is maintained by TouchPointSoftware, LLC.
+
+**IMPORTANT NOTE:**
+The latest version that in production is tagged with a date and time stamp. 
+You can find these under the main Code tab and then under "releases" sub-tab in GitHub
+There are sub-tabs for commits, branches, releases and contributors.
 
 ### Install Development Tools and required libraries
 
