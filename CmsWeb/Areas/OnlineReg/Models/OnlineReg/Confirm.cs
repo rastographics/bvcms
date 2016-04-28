@@ -58,6 +58,11 @@ Thank you.
             ed.Completed = true;
             DbUtil.Db.SubmitChanges();
 
+            return ConfirmTransaction(ti);
+        }
+
+        public RouteModel ConfirmTransaction(Transaction ti)
+        {
             try
             {
                 LogOutOfOnlineReg();

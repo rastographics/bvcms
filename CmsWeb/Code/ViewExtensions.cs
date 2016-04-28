@@ -141,7 +141,7 @@ namespace CmsWeb
         {
             var name = ExpressionHelper.GetExpressionText(expression);
             var model = ModelMetadata.FromLambdaExpression(expression, helper.ViewData).Model;
-            var viewData = new ViewDataDictionary(helper.ViewData) { TemplateInfo = new TemplateInfo { HtmlFieldPrefix = name } };
+            var viewData = new ViewDataDictionary(helper.ViewData) {TemplateInfo = new TemplateInfo {HtmlFieldPrefix = name}};
             return helper.Partial(partialViewName, model, viewData);
         }
 
@@ -230,10 +230,10 @@ namespace CmsWeb
 
         public static IEnumerable<SelectListItem> PageSizes(this HtmlHelper helper)
         {
-            var sizes = new[] { 10, 25, 50, 75, 100, 200 };
+            var sizes = new[] {10, 25, 50, 75, 100, 200};
             var list = new List<SelectListItem>();
             foreach (var size in sizes)
-                list.Add(new SelectListItem { Text = size.ToString() });
+                list.Add(new SelectListItem {Text = size.ToString()});
             return list;
         }
 
@@ -454,7 +454,7 @@ namespace CmsWeb
             tb.MergeAttribute("name", name);
             tb.MergeAttribute("class", "datepicker");
             var s = helper.TryGetModel(name);
-            var viewDataValue = (DateTime?)helper.ViewData.Eval(name);
+            var viewDataValue = (DateTime?) helper.ViewData.Eval(name);
             tb.MergeAttribute("value", viewDataValue.FormatDate());
             return new HtmlString(tb.ToString());
         }
@@ -473,7 +473,7 @@ namespace CmsWeb
         {
             var tb = new TagBuilder("span");
             var viewDataValue = helper.ViewData.Eval(name);
-            var i = (int?)viewDataValue ?? 0;
+            var i = (int?) viewDataValue ?? 0;
 
             var si = list.SingleOrDefault(v => v.Value == i.ToString());
             if (si != null)
@@ -610,6 +610,13 @@ namespace CmsWeb
         //                return new HelpMessage();
         //            return new HelpMessage { message = new HtmlString(b.ToString()), errorClass = hasError ? "error" : "" };
         //        }
+        public static string ErrorMessage(this HtmlHelper helper, string field)
+        {
+            var em = helper.ViewData.ModelState[field];
+            return em?.Errors.Count > 0
+                ? em.Errors[0].ErrorMessage : "";
+        }
+
         public static MvcHtmlString ValidationMessageLabelFor<TModel, TProperty>(this HtmlHelper<TModel> html, Expression<Func<TModel, TProperty>> expression, string errorClass = "error")
         {
             var elementId = html.IdFor(m => m).ToString();
@@ -681,7 +688,7 @@ namespace CmsWeb
 
             var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
             var attributes = Mapper.GetUnobtrusiveValidationAttributes(htmlHelper, expression, htmlAttributes, metadata);
-            var value = (bool)ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData).Model;
+            var value = (bool) ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData).Model;
 
             var checkBox = Mapper.GenerateHtmlWithoutMvcUnobtrusiveAttributes(() =>
                 htmlHelper.CheckBoxFor(expression, value, attributes));
@@ -839,15 +846,17 @@ namespace CmsWeb
         {
             return new HtmlString("<script src=\"//cdn.ckeditor.com/4.5.6/full/ckeditor.js\" type=\"text/javascript\"></script>\n");
         }
-        
+
         public static HtmlString jQueryMobile()
         {
             return new HtmlString("<script src='//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js'></script>\n");
         }
+
         public static HtmlString jQueryMobileCss()
         {
             return new HtmlString("<link rel='stylesheet' href='//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css' />\n");
         }
+
         public static HtmlString jQuery()
         {
             return new HtmlString("<script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>\n");
@@ -896,7 +905,7 @@ namespace CmsWeb
 
         public static HtmlString Markdown(string text)
         {
-            if(text == null)
+            if (text == null)
                 return null;
             var md = new Markdown();
             var output = md.Transform(text.Trim());
@@ -979,7 +988,7 @@ namespace CmsWeb
 
         private static string GetCollectionItemIndex(string collectionIndexFieldName)
         {
-            var previousIndices = (Queue<string>)HttpContext.Current.Items[collectionIndexFieldName];
+            var previousIndices = (Queue<string>) HttpContext.Current.Items[collectionIndexFieldName];
             if (previousIndices == null)
             {
                 HttpContext.Current.Items[collectionIndexFieldName] = previousIndices = new Queue<string>();
@@ -1116,11 +1125,13 @@ namespace CmsWeb
             }
         }
     }
+
     public class SettingDisplayNameAttribute : DisplayNameAttribute
     {
         public SettingDisplayNameAttribute(string setting, string format = "{0}")
             : base(GetLabelFromSetting(setting, format))
-        { }
+        {
+        }
 
         private static string GetLabelFromSetting(string setting, string format)
         {

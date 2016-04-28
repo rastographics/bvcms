@@ -20,8 +20,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     }
                     else
                     {
-                        //_Person = SearchPeopleModel.FindPerson(first, last, birthday, email, phone, out count);
-
                         var list = DbUtil.Db.FindPerson(FirstName, LastName, birthday, EmailAddress, Phone.GetDigits()).ToList();
                         count = list.Count;
                         if (count == 1)

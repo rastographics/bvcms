@@ -68,6 +68,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool? AllowSaveProgress { get; set; }
         public bool? IsGiving { get; set; }
         public bool NoCreditCardsAllowed { get; set; }
+        public bool NeedsCityState { get; set; }
 
         public bool NoEChecksAllowed
         {
@@ -422,7 +423,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             modelState.AddModelError("form", "amount zero");
         }
 
-        public void ValidatePaymentForm(ModelStateDictionary modelState)
+        public void ValidatePaymentForm(ModelStateDictionary modelState, bool shouldValidateBilling = true)
         {
             switch (Type)
             {
@@ -436,7 +437,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     modelState.AddModelError("Type", "Please select Bank Account or Credit Card.");
                     break;
             }
-            if(ShouldValidateBilling)
+            if(shouldValidateBilling)
                 ValidateBillingDetails(modelState);
         }
 
@@ -592,8 +593,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 First, MiddleInitial, Last, Suffix, Address, Address2, City, State, Country,
                 Zip, Phone);
         }
-
-        public bool ShouldValidateBilling = false;
 
         public RouteModel ProcessPayment(ModelStateDictionary modelState, OnlineRegModel m)
         {

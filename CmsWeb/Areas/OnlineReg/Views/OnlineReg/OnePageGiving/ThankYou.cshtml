@@ -1,0 +1,25 @@
+﻿@model CmsWeb.Areas.OnlineReg.Models.OnlineRegModel
+@using CmsWeb.Controllers
+@using UtilityExtensions
+@{
+  Layout = "~/Views/Shared/onlinereg2.cshtml";
+  ViewBag.Title = "One Page Giving Thank You";
+}
+@section scripts
+{
+  <script type="text/javascript">
+    $.dateFormat = '@Util.jQueryDateFormat';
+    $.timeoutUrl = '/OnlineReg/Timeout?ret=' + encodeURI('@Model.URL');
+    $.tmout = parseInt('@Model.TimeOut');
+  </script>
+  @Fingerprint.Script("/Content/touchpoint/js/onlinereg/OnlineReg2.js")
+}
+
+<div class="confirm">
+  @Html.Raw(Model.TrackingCode)
+  @Html.Raw(Model.GetThankYouMessage())
+  @if (MobileAppMenuController.InMobileAppMode)
+  {
+    <a href="@MobileAppMenuController.MobileAppReturnUrl" class="btn btn-primary">Return to Application</a>
+  }
+</div>

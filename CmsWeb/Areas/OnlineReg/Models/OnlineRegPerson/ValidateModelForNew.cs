@@ -33,7 +33,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             IsValidForContinue = IsValidForNew = modelState.IsValid;
         }
 
-        private bool CanProceedWithThisAddress()
+        public bool CanProceedWithThisAddress()
         {
             if (!AddressLineOne.HasValue() && RequiredAddr())
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].AddressLineOne), "address required.");

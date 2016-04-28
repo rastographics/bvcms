@@ -6,8 +6,8 @@
 @{
   Layout = "~/Views/Shared/onlinereg2.cshtml";
   ViewBag.Title = "OnePageGiving";
-  var action = $"/OnePageGiving/{Model.OrgId}{(Model.testing ? "?testing=true" : "")}";
   var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
+  var processorerror = Html.ErrorMessage("TranId");
 }
 @section scripts
 {
@@ -15,21 +15,30 @@
   <script type="text/javascript">
     $.dtoptions = { format: '@Util.jQueryDateFormat2' };
     $("form").validate();
-    $("#AmtToPay").rules("add", {number: true});
+    $("#AmtToPay").rules("add", { number: true });
   </script>
   @Fingerprint.Script("/Content/touchpoint/js/onlinereg/onlineregpayment2.js")
 }
 <style>
+  
+  input.form-control.error {
+    border-color: #b94a48;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  }
+
+  .field-validation-error, .error { color: #b94a48; }
+
   #AmtToPay-error {
     display: block;
     text-align: right;
-    color: red;
+    color: #b94a48;
   }
-  /*.form-control::-webkit-input-placeholder { color: #999 !important; }*/
-   
+  .form-control::-webkit-input-placeholder { color: #999 !important; }
 </style>
 <div class="regform pad-top">
-  <form action="@action" method="post">
+  <form action="/OnePageGiving" method="post">
     <div class="form-group text-right">
       <h4 class="inline-block">Already have an account?</h4>
       <a id="login-here" href="/OnePageGiving/Login/@Model.OrgId" class="btn btn-success">
@@ -54,8 +63,28 @@
     <div class="form-group">
       <input type="text" id="Address" name="Address" class="form-control" placeholder="Address" required="required" value="@Model.Address">
     </div>
-    <div class="form-group">
-      <input type="text" id="Zip" name="Zip" class="form-control" placeholder="Zip" required="required" value="@Model.Zip">
+    @if (Model.NeedsCityState)
+    {
+      <div class="field-validation-error">
+        <b>Unable to find address, need city and state too</b>
+      </div>
+      <div class="row">
+        <div class="form-group col-lg-6">
+          <input type="text" id="City" name="City" class="form-control" placeholder="City" required="required" value="@Model.City">
+        </div>
+        <div class="form-group col-lg-6">
+          <input type="text" id="State" name="State" class="form-control" placeholder="State/Province/Region" required="required" value="@Model.State">
+        </div>
+      </div>
+    }
+    <div class="row">
+      <div class="form-group col-lg-6">
+        <input type="text" id="Zip" name="Zip" class="form-control" placeholder="Zip" value="@Model.Zip">
+        @Html.ValidationMessageLabelFor(m => m.Zip, "field-validation-error")
+      </div>
+      <div class="form-group col-lg-6">
+        <input type="text" id="Country" name="Country" class="form-control" placeholder="Country (if outside US)" value="@Model.Country">
+      </div>
     </div>
     <div class="form-group text-right">
       <h4 class="inline-block">@Model.Description&nbsp;&nbsp;$ </h4>
@@ -110,10 +139,17 @@
     }
     <div class="form-actions text-right">
       <input type="submit" id="submitit" value="Make Gift" class="btn btn-primary btn-lg">
+      @if (processorerror.HasValue())
+      {
+        <div class="field-validation-error">
+          <b>Message from Payment Processor: @processorerror</b>
+        </div>
+      }
     </div>
     @Html.HiddenFor(m => m.source)
     @Html.HiddenFor(m => m.OrgId)
     @Html.HiddenFor(m => m.testing)
+    @Html.HiddenFor(m => m.NeedsCityState)
     @Html.HiddenFor(m => m.URL)
     @Html.HiddenFor(m => m.Description)
     @Html.HiddenFor(m => m.NoCreditCardsAllowed)
