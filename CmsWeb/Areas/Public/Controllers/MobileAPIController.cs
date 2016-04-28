@@ -692,6 +692,63 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
         }
 
         [HttpPost]
+        public ActionResult SaveFamilyImage(string data)
+        {
+            // Authenticate first
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+            MobilePostSaveImage mpsi = JsonConvert.DeserializeObject<MobilePostSaveImage>(dataIn.data);
+
+            BaseMessage br = new BaseMessage();
+
+            var imageBytes = Convert.FromBase64String(mpsi.image);
+
+            var family = DbUtil.Db.Families.SingleOrDefault(pp => pp.FamilyId == mpsi.id);
+
+            if (family.Picture != null)
+            {
+                if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.ThumbId) != null)
+                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.ThumbId));
+
+                if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.ThumbId) != null)
+                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.SmallId));
+
+                if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.ThumbId) != null)
+                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.MediumId));
+
+                if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.ThumbId) != null)
+                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.LargeId));
+
+                family.Picture.ThumbId = Image.NewImageFromBits(imageBytes, 50, 50).Id;
+                family.Picture.SmallId = Image.NewImageFromBits(imageBytes, 120, 120).Id;
+                family.Picture.MediumId = Image.NewImageFromBits(imageBytes, 320, 400).Id;
+                family.Picture.LargeId = Image.NewImageFromBits(imageBytes).Id;
+            }
+            else
+            {
+                var newPicture = new Picture();
+
+                newPicture.ThumbId = Image.NewImageFromBits(imageBytes, 50, 50).Id;
+                newPicture.SmallId = Image.NewImageFromBits(imageBytes, 120, 120).Id;
+                newPicture.MediumId = Image.NewImageFromBits(imageBytes, 320, 400).Id;
+                newPicture.LargeId = Image.NewImageFromBits(imageBytes).Id;
+
+                family.Picture = newPicture;
+            }
+
+            DbUtil.Db.SubmitChanges();
+
+            br.setNoError();
+            br.data = "Image updated.";
+            br.id = mpsi.id;
+            br.count = 1;
+
+            return br;
+        }
+
+        [HttpPost]
         public ActionResult FetchTasks(string data)
         {
             var result = AuthenticateUser();

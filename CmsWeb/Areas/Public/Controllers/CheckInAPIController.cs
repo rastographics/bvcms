@@ -376,6 +376,63 @@ namespace CmsWeb.Areas.Public.Controllers
         }
 
         [HttpPost]
+        public ActionResult SaveFamilyImage(string data)
+        {
+            // Authenticate first
+            if (!Auth())
+                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+            CheckInSaveImage cisi = JsonConvert.DeserializeObject<CheckInSaveImage>(dataIn.data);
+
+            BaseMessage br = new BaseMessage();
+
+            var imageBytes = Convert.FromBase64String(cisi.image);
+
+            var family = DbUtil.Db.Families.SingleOrDefault(pp => pp.FamilyId == cisi.id);
+
+            if (family.Picture != null)
+            {
+                if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.ThumbId) != null)
+                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.ThumbId));
+
+                if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.ThumbId) != null)
+                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.SmallId));
+
+                if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.ThumbId) != null)
+                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.MediumId));
+
+                if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.ThumbId) != null)
+                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.LargeId));
+
+                family.Picture.ThumbId = ImageData.Image.NewImageFromBits(imageBytes, 50, 50).Id;
+                family.Picture.SmallId = ImageData.Image.NewImageFromBits(imageBytes, 120, 120).Id;
+                family.Picture.MediumId = ImageData.Image.NewImageFromBits(imageBytes, 320, 400).Id;
+                family.Picture.LargeId = ImageData.Image.NewImageFromBits(imageBytes).Id;
+            }
+            else
+            {
+                var newPicture = new Picture();
+
+                newPicture.ThumbId = ImageData.Image.NewImageFromBits(imageBytes, 50, 50).Id;
+                newPicture.SmallId = ImageData.Image.NewImageFromBits(imageBytes, 120, 120).Id;
+                newPicture.MediumId = ImageData.Image.NewImageFromBits(imageBytes, 320, 400).Id;
+                newPicture.LargeId = ImageData.Image.NewImageFromBits(imageBytes).Id;
+
+                family.Picture = newPicture;
+            }
+
+            DbUtil.Db.SubmitChanges();
+
+            br.setNoError();
+            br.data = "Image updated.";
+            br.id = cisi.id;
+            br.count = 1;
+
+            return br;
+        }
+
+        [HttpPost]
         public ActionResult AddEditPerson(string data)
         {
             // Authenticate first
@@ -563,7 +620,7 @@ namespace CmsWeb.Areas.Public.Controllers
             // Check Entry Point and replace if Check-In
             Person person = DbUtil.Db.People.Where(p => p.PeopleId == cia.peopleID).FirstOrDefault();
 
-            if (person != null && person.EntryPoint.Code == "CHECKIN" && meeting != null)
+            if (person != null && person.EntryPoint != null && person.EntryPoint.Code != null && person.EntryPoint.Code == "CHECKIN" && meeting != null)
             {
                 person.EntryPoint = meeting.Organization.EntryPoint;
                 DbUtil.Db.SubmitChanges();
