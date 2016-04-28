@@ -11,6 +11,7 @@
 }
 <div class="regform">
   <form id="completeReg" class="DisplayEdit form-horizontal" action="@action" method="post">
+    <h4>@Model.Header</h4>
     <div class="well">
       @Html.EditorFor(m => m.username, new {placeholder = "Enter username or email address on record"})
       @Html.EditorFor(m => m.password, "password")

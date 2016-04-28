@@ -589,32 +589,21 @@ namespace CmsWeb
             return htmlHelper.ViewContext.ViewData.TemplateInfo.GetFullHtmlFieldName(ExpressionHelper.GetExpressionText(expression));
         }
 
-        //        public static HelpMessage HelpMessageFor<TModel, TProperty>(this HtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression, string classname)
-        //        {
-        //            var name = helper.ViewContext.ViewData.TemplateInfo.GetFullHtmlFieldName(ExpressionHelper.GetExpressionText(expression));
-        //            var help = helper.ViewContext.ViewData["help"] as string;
-        //            var m = helper.ViewData.ModelState[name];
-        //            if (m == null && help == null)
-        //                return new HelpMessage();
-        //            var b = new TagBuilder("span");
-        //            b.AddCssClass(classname);
-        //            var hasError = false;
-        //            if (m != null && m.Errors.Count > 0)
-        //            {
-        //                b.SetInnerText(m.Errors[0].ErrorMessage);
-        //                hasError = true;
-        //            }
-        //            else if (help != null)
-        //                b.InnerHtml = help;
-        //            else
-        //                return new HelpMessage();
-        //            return new HelpMessage { message = new HtmlString(b.ToString()), errorClass = hasError ? "error" : "" };
-        //        }
+        public static string ErrorClass(this HtmlHelper helper, string field, string @class = "error")
+        {
+            var em = helper.ViewData.ModelState[field];
+            return em?.Errors.Count > 0
+                ? @class : "";
+        }
         public static string ErrorMessage(this HtmlHelper helper, string field)
         {
             var em = helper.ViewData.ModelState[field];
             return em?.Errors.Count > 0
                 ? em.Errors[0].ErrorMessage : "";
+        }
+        public static bool HasErrors(this HtmlHelper helper)
+        {
+            return helper.ViewData.ModelState.Any(vv => vv.Value.Errors.Count > 0);
         }
 
         public static MvcHtmlString ValidationMessageLabelFor<TModel, TProperty>(this HtmlHelper<TModel> html, Expression<Func<TModel, TProperty>> expression, string errorClass = "error")

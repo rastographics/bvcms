@@ -22,11 +22,24 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     throw new Exception("Must be a single fund OnlineGiving organization");
                 SetHeaders(m);
                 var pf = PaymentForm.CreatePaymentForm(m);
+                pf.Description = m.Header;
                 pf.AmtToPay = null;
                 pf.Type = pf.NoCreditCardsAllowed ? "B" : "C";
                 pf.First = null;
                 pf.Last = null;
                 pf.Email = null;
+
+#if DEBUG
+                pf.First = "Otis";
+                pf.Last = "Sukamotis";
+                pf.Email = "davcar@pobox.com";
+                pf.Address = "135 Riveredge Cv";
+                pf.Zip = "";
+                pf.CreditCard = "3111111111111111";
+                pf.Expires = "1018";
+                pf.CVV = "123";
+                pf.AmtToPay = 23M;
+#endif
 
                 return View("OnePageGiving/Index", pf);
             }
@@ -48,7 +61,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (!pf.Country.HasValue() && !pf.Zip.HasValue())
                 ModelState.AddModelError("Zip", "Zip is Required for US");
 
-            var m = new OnlineRegModel(Request, pf.OrgId, pf.testing, null, null, pf.source);
+            var m = new OnlineRegModel(Request, pf.OrgId, pf.testing, null, null, pf.source)
+                { URL = "/OnePageGiving/" + pf.OrgId};
             SetHeaders(m);
             if (!ModelState.IsValid)
                 return View("OnePageGiving/Index", pf);
@@ -80,7 +94,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var id = pf.OrgId;
             if(id == null)
                 return Message("Missing OrgId");
+            if (pf.Country.HasValue() && !pf.Zip.HasValue())
+                pf.Zip = "NA";
             var ti = pf.ProcessPaymentTransaction(m);
+            if (pf.Zip == "NA")
+                pf.Zip = null;
             var fundid = m.settings[id.Value].DonationFundId ?? 0;
             p.FundItem.Add(fundid, pf.AmtToPay);
             var ret = m.ConfirmTransaction(ti);
@@ -89,7 +107,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 case RouteType.ModelAction:
                     if (ti.Approved == true)
                     {
-                        TempData["PaymentForm"] = pf;
+                        TempData["onlineregmodel"] = Util.Serialize(m);
                         return Redirect("/OnePageGiving/ThankYou");
                     }
                     ErrorSignal.FromCurrentContext().Raise(new Exception(ti.Message));
@@ -99,13 +117,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     DbUtil.Db.LogActivity("OnePageGiving Error " + ret.Message, pf.OrgId);
                     return Message(ret.Message);
                 default: // unexptected Route
-                    if (ModelState.IsValid)
-                    {
-                        ErrorSignal.FromCurrentContext().Raise(new Exception("OnePageGiving Unexpected route"));
-                        DbUtil.Db.LogActivity("OnlineReg Unexpected Route " + ret.Message, pf.OrgId);
-                        ModelState.AddModelError("TranId", "unexpected error in payment processing");
-                    }
-                    return View(ret.View ?? "OnlineReg/Index", pf);
+                    ErrorSignal.FromCurrentContext().Raise(new Exception("OnePageGiving Unexpected route"));
+                    DbUtil.Db.LogActivity("OnlineReg Unexpected Route " + ret.Message, pf.OrgId);
+                    ModelState.AddModelError("TranId", "unexpected error in payment processing");
+                    return View(ret.View ?? "OnePageGiving/Index", pf);
             }
         }
 
@@ -113,16 +128,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult OnePageGivingThankYou()
         {
             Response.NoCache();
-            var pf = (PaymentForm) TempData["PaymentForm"];
-            if (pf == null)
+            var s = (string) TempData["onlineregmodel"];
+            if (s == null)
             {
-                DbUtil.LogActivity("OnePageGiving Missing Id");
-                return Message("OnePageGiving cannot be started without an Id");
+                DbUtil.LogActivity("OnlineReg Error PageRefreshNotAllowed");
+                return Message("Registration cannot be completed after a page refresh.");
             }
-            var m = new OnlineRegModel(Request, pf.OrgId, pf.testing, null, null, pf.source)
-            {
-                URL = "/OnePageGiving/" + pf.OrgId
-            };
+            var m = Util.DeSerialize<OnlineRegModel>(s);
             return View("OnePageGiving/ThankYou", m);
         }
 
@@ -153,11 +165,16 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (pf.Country.HasValue() && pf.Country != "United States")
             {
                 pf.NeedsCityState = true;
-                return false;
+                return pf.City.HasValue() && pf.State.HasValue();
             }
             var r = AddressVerify.LookupAddress(pf.Address, null, pf.City, pf.State, pf.Zip);
             if (r.Line1 == "error" || r.found == false)
             {
+                if (pf.City.HasValue()
+                        && pf.State.HasValue()
+                        && pf.Zip.HasValue()
+                        && pf.Address.HasValue())
+                    return true; // not found but complete
                 pf.NeedsCityState = true;
                 return false;
             }

@@ -35,13 +35,22 @@
     text-align: right;
     color: #b94a48;
   }
+
   .form-control::-webkit-input-placeholder { color: #999 !important; }
 </style>
 <div class="regform pad-top">
+  <h4>@Model.Description</h4>
   <form action="/OnePageGiving" method="post">
+    @if (Html.HasErrors())
+    {
+      <div class="field-validation-error">
+        <b>See Errors Below</b>
+        @Html.ValidationSummary()
+      </div>
+    }
     <div class="form-group text-right">
       <h4 class="inline-block">Already have an account?</h4>
-      <a id="login-here" href="/OnePageGiving/Login/@Model.OrgId" class="btn btn-success">
+      <a id="login-here" href="/OnePageGiving/Login/@Model.OrgId" class="btn btn-success btn-mini">
         Login Here
       </a>
     </div>
@@ -54,7 +63,7 @@
       </div>
     </div>
     <div class="form-group">
-      <input type="text" id="Email" name="Email" class="form-control" placeholder="Email" required="required" value="@Model.Email">
+      <input type="text" id="Email" name="Email" class="form-control @Html.ErrorClass("Email")" placeholder="Email" required="required" value="@Model.Email">
       @Html.ValidationMessageLabelFor(m => m.Email, "field-validation-error")
     </div>
     <div class="form-group">
@@ -65,8 +74,8 @@
     </div>
     @if (Model.NeedsCityState)
     {
-      <div class="field-validation-error">
-        <b>Unable to find address, need city and state too</b>
+      <div>
+        <b>Need a city and state too for this address</b>
       </div>
       <div class="row">
         <div class="form-group col-lg-6">
@@ -79,7 +88,7 @@
     }
     <div class="row">
       <div class="form-group col-lg-6">
-        <input type="text" id="Zip" name="Zip" class="form-control" placeholder="Zip" value="@Model.Zip">
+        <input type="text" id="Zip" name="Zip" class="form-control @Html.ErrorClass("Zip")" placeholder="Zip" value="@Model.Zip">
         @Html.ValidationMessageLabelFor(m => m.Zip, "field-validation-error")
       </div>
       <div class="form-group col-lg-6">
@@ -88,7 +97,7 @@
     </div>
     <div class="form-group text-right">
       <h4 class="inline-block">@Model.Description&nbsp;&nbsp;$ </h4>
-      <input type="text" id="AmtToPay" name="AmtToPay" class="form-control input-lg narrow" style="display: inline" placeholder="Amount" required="required" value="@Model.AmtToPay"/>
+      <input type="text" id="AmtToPay" name="AmtToPay" class="form-control input-lg narrow @Html.ErrorClass("AmtToPay")" style="display: inline" placeholder="Amount" required="required" value="@Model.AmtToPay"/>
       @Html.ValidationMessageLabelFor(m => m.AmtToPay, "field-validation-error")
     </div>
     @if (Model.NoCreditCardsAllowed || Model.NoEChecksAllowed)
@@ -109,16 +118,16 @@
     {
       <div class="Card">
         <div class="form-group">
-          <input type="text" id="CreditCard" name="CreditCard" class="form-control" placeholder="Card Number" required="required" value="@Model.CreditCard" autocomplete="off">
+          <input type="text" id="CreditCard" name="CreditCard" class="form-control @Html.ErrorClass("CreditCard")" placeholder="Card Number" required="required" value="@Model.CreditCard" autocomplete="off">
           @Html.ValidationMessageLabelFor(m => m.CreditCard, "field-validation-error")
         </div>
         <div class="row">
           <div class="col-lg-6 form-group">
-            <input type="text" id="Expires" name="Expires" class="form-control" placeholder="Card Expiration (MM/YY)" required="required" value="@Model.Expires">
+            <input type="text" id="Expires" name="Expires" class="form-control @Html.ErrorClass("Expires")" placeholder="Card Expiration (MM/YY)" required="required" value="@Model.Expires">
             @Html.ValidationMessageLabelFor(m => m.Expires, "field-validation-error")
           </div>
           <div class="col-lg-6 form-group">
-            <input type="text" id="CVV" name="CVV" class="form-control" placeholder="CCV Code" required="required" value="@Model.CVV" autocomplete="off">
+            <input type="text" id="CVV" name="CVV" class="form-control @Html.ErrorClass("CVV")" placeholder="CCV Code" required="required" value="@Model.CVV" autocomplete="off">
             @Html.ValidationMessageLabelFor(m => m.CVV, "field-validation-error")
           </div>
         </div>
@@ -128,11 +137,11 @@
     {
       <div class="Bank">
         <div class="form-group">
-          <input type="text" id="Routing" name="Routing" class="form-control" placeholder="Bank Routing Number" required="required" value="@Model.Routing" autocomplete="off">
+          <input type="text" id="Routing" name="Routing" class="form-control @Html.ErrorClass("Routing")" placeholder="Bank Routing Number" required="required" value="@Model.Routing" autocomplete="off">
           @Html.ValidationMessageLabelFor(m => m.Routing, "field-validation-error")
         </div>
         <div class="form-group">
-          <input type="text" id="Account" name="Account" class="form-control" placeholder="Bank Account Number" required="required" value="@Model.Account" autocomplete="off">
+          <input type="text" id="Account" name="Account" class="form-control @Html.ErrorClass("Account")" placeholder="Bank Account Number" required="required" value="@Model.Account" autocomplete="off">
           @Html.ValidationMessageLabelFor(m => m.Account, "field-validation-error")
         </div>
       </div>
@@ -146,13 +155,13 @@
         </div>
       }
     </div>
-    @Html.HiddenFor(m => m.source)
-    @Html.HiddenFor(m => m.OrgId)
-    @Html.HiddenFor(m => m.testing)
-    @Html.HiddenFor(m => m.NeedsCityState)
-    @Html.HiddenFor(m => m.URL)
-    @Html.HiddenFor(m => m.Description)
-    @Html.HiddenFor(m => m.NoCreditCardsAllowed)
+    @Html.HiddenFor2(m => m.source)
+    @Html.HiddenFor2(m => m.OrgId)
+    @Html.HiddenFor2(m => m.testing)
+    @Html.HiddenFor2(m => m.NeedsCityState)
+    @Html.HiddenFor2(m => m.URL)
+    @Html.HiddenFor2(m => m.Description)
+    @Html.HiddenFor2(m => m.NoCreditCardsAllowed)
   </form>
 </div>
 @helper TypeRadio(string type, string label, string side)
