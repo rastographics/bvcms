@@ -463,6 +463,7 @@
     <Compile Include="Areas\People\Controllers\DownlineDetailController.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineLevelsModel.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineSummaryModel.cs" />
+    <Compile Include="Areas\People\Models\Person\InvolvementTableModel.cs" />
     <Compile Include="Areas\Public\Controllers\CheckInAPIController.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInAddEditPerson.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInAddEditPersonResults.cs" />

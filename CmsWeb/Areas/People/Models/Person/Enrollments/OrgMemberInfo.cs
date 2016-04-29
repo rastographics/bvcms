@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
@@ -24,5 +27,50 @@ namespace CmsWeb.Areas.People.Models
         public string Schedule => $"{MeetingTime:ddd h:mm tt}";
         public string SchComma => MeetingTime.HasValue ? ", " : "";
         public string LocComma => Location.HasValue() ? ", " : "";
+
+        private IEnumerable<OrganizationExtra> _extraFields; 
+        public string GetFieldValue(string field, bool inAccessRole)
+        {
+            field = field.ToLower();
+
+            switch (field)
+            {
+                case "orgid":
+                    return OrgId.ToString();
+                case "name":
+                case "organization":
+                    if (inAccessRole)
+                    {
+                        return $"<a href=\"{Util2.Org}/{OrgId}\">{Name}</a>";
+                    }
+                    else if (HasDirectory)
+                    {
+                        return $"<a title=\"{DivisionName}\" href=\"/MemberDirectory/{OrgId}\">{Name}</a>";
+                    }
+                    else
+                    {
+                        return $"<a title=\"{DivisionName}\" href=\"/OrgContent/{OrgId}\">{Name}</a>";
+                    }
+                case "location":
+                    return Location;
+                case "leader":
+                    return $"<a href=\" /Person2/{LeaderId}\">{LeaderName}</a>";
+                case "attendpct":
+                    return AttendPct > 0 ? AttendPct.Value.ToString("N1") : "";
+                case "division":
+                    return DivisionName;
+                case "program":
+                    return ProgramName;
+                case "orgtype":
+                    return OrgType;
+                case "membertype":
+                    return
+                        $"<a class=\"membertype\" href=\"/OrgMemberDialog/Member/{OrgId}/{PeopleId}\">{MemberType}</a>";
+                default:
+                    if(_extraFields == null)
+                        _extraFields = DbUtil.Db.LoadOrganizationById(OrgId)?.GetOrganizationExtras();
+                    return _extraFields?.SingleOrDefault(x => x.Field.ToLower() == field)?.Data;
+            }
+        }
     }
 }

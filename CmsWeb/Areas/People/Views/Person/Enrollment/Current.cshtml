@@ -1,9 +1,12 @@
 ﻿@using CmsData
+@using CmsWeb.Areas.People.Models
 @using UtilityExtensions
 @model CmsWeb.Areas.People.Models.CurrentEnrollments
 @{
     var pOrgType = "---";
     var rownum = 0;
+
+    var columns = InvolvementTableModel.Columns;
 }
 <form class="non-modal ajax">
     @FormAction()
@@ -14,14 +17,27 @@
             <div class="table-responsive">
                 <table class="expanding table table-hover">
                     <thead>
-                        <tr>
-                            <th>@Model.SortLink2("default", @"<i class=""fa fa-sort""></i>")</th>
-                            <th>@Model.SortLink("Organization")</th>
-                            <th>Leader</th>
-                            <th>@Model.SortLink("Enroll Date")</th>
-                            <th>MemberType</th>
-                            <th>AttendPct</th>
-                        </tr>
+                    <tr>
+                        <th>@Model.SortLink2("default", @"<i class=""fa fa-sort""></i>")</th>
+                        @foreach (var column in columns)
+                        {
+                            if (column.Sortable)
+                            {
+                                <th>@Model.SortLink(column.Field)</th>
+                            }
+                            else
+                            {
+                                <th>@column.Field</th>
+                            }
+                        }
+                    <!--
+                    <th>@Model.SortLink("Organization")</th>
+                    <th>Leader</th>
+                    <th>@Model.SortLink("Enroll Date")</th>
+                    <th>MemberType</th>
+                    <th>AttendPct</th>
+                        -->
+                    </tr>
                     </thead>
                     <tbody>
                         @foreach (var om in Model.ViewList())
@@ -33,14 +49,20 @@
                                 pOrgType = om.OrgType;
                                 <tr class="section notshown info">
                                     <td><a rel="reveal" title="More Information" href="#" class="reveal"><i class="fa fa-caret-right"></i></a></td>
-                                    <td colspan="5"><span style="font-weight: 600;">@om.OrgType</span></td>
+                                    <td colspan="@columns.Count"><span style="font-weight: 600;">@om.OrgType</span></td>
                                 </tr>
                             }
                             if (User.IsInRole("Access"))
                             {
                                 <tr class="master @oddrow">
                                     <td><a rel="reveal" title="More Information" href="#" class="reveal"><i class="fa fa-info-circle"></i></a></td>
-                                    <td><a href="/Org/@om.OrgId">@om.Name</a></td>
+
+                                    @foreach (var column in columns)
+                                    {
+                                        <td>@Html.Raw(om.GetFieldValue(column.Field, true))</td>
+                                    }
+
+                                    <!--<td><a href="/Org/@om.OrgId">@om.Name</a></td>
                                     <td><a href="/Person2/@om.LeaderId">@om.LeaderName</a></td>
                                     <td>@om.EnrollDate.FormatDate()</td>
                                     <td>
@@ -48,10 +70,10 @@
                                             @om.MemberType
                                         </a>
                                     </td>
-                                    <td>@(om.AttendPct > 0 ? om.AttendPct.Value.ToString("N1") : "")</td>
+                                    <td>@(om.AttendPct > 0 ? om.AttendPct.Value.ToString("N1") : "")</td>-->
                                 </tr>
                                 <tr class="details @oddrow">
-                                    <td colspan="6">
+                                    <td colspan="@(columns.Count+1)">
                                         <div class="collapse indent">
                                             <strong>Program:</strong> <span>@om.ProgramName,</span>
                                             <strong>Division:</strong> <span>@om.DivisionName</span>
@@ -78,7 +100,11 @@
                             {
                                 <tr>
                                     <td></td>
-                                    <td class="indent">
+                                    @foreach (var column in columns)
+                                    {
+                                        <td>@Html.Raw(om.GetFieldValue(column.Field, false))</td>
+                                    }
+                                    <!--<td class="indent">
                                         @if (om.HasDirectory)
                                         {
                                             <a title="@om.DivisionName" href="/MemberDirectory/@om.OrgId">@om.Name</a>
@@ -91,7 +117,7 @@
                                     <td>@om.LeaderName</td>
                                     <td>@om.EnrollDate.FormatDate()</td>
                                     <td>@om.MemberType</td>
-                                    <td>@om.AttendPct.ToString2("N1")</td>
+                                    <td>@om.AttendPct.ToString2("N1")</td>-->
                                 </tr>
                             }
                         }
