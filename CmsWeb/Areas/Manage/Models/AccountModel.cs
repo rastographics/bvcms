@@ -80,7 +80,6 @@ namespace CmsWeb.Models
 
             if (userStatus == null)
                 return UserValidationResult.Invalid(UserValidationStatus.ImproperHeaderStructure, "Could not authenticate user, Authorization or SessionToken headers likely missing.", null);
-                //throw new Exception("Could not authenticate user, Authorization or SessionToken headers likely missing.");
 
             if (!userStatus.IsValid)
                 return userStatus;
@@ -88,17 +87,15 @@ namespace CmsWeb.Models
             var user = userStatus.User;
 
             var roleProvider = CMSRoleProvider.provider;
-            //if (role == null)
-            //    role = "Access";
 
-            //if (roleProvider.RoleExists(role))
-            //{
-            //    if (!roleProvider.IsUserInRole(user.Username, role))
-            //    {
-            //        userStatus.Status = UserValidationStatus.UserNotInRole;
-            //        return userStatus;
-            //    }
-            //}
+            if (role != null)
+            {
+                if (!roleProvider.IsUserInRole(user.Username, role))
+                {
+                    userStatus.Status = UserValidationStatus.UserNotInRole;
+                    return userStatus;
+                }
+            }
 
             UserName2 = user.Username;
             SetUserInfo(user.Username, HttpContext.Current.Session, deleteSpecialTags: false);
