@@ -22,7 +22,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     throw new Exception("Must be a single fund OnlineGiving organization");
                 SetHeaders(m);
                 var pf = PaymentForm.CreatePaymentForm(m);
-                pf.Description = m.Header;
                 pf.AmtToPay = null;
                 pf.Type = pf.NoCreditCardsAllowed ? "B" : "C";
                 pf.First = null;
@@ -40,6 +39,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 pf.CVV = "123";
                 pf.AmtToPay = 23M;
 #endif
+                SetInstructions(m);
 
                 return View("OnePageGiving/Index", pf);
             }
@@ -51,6 +51,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
         }
 
+        private void SetInstructions(OnlineRegModel m)
+        {
+            var s = m.SubmitInstructions();
+            ViewBag.Instructions = s.HasValue() ? s : $"<h4>{m.Header}</h4>";
+        }
+
+
         [HttpPost, Route("~/OnePageGiving")]
         public ActionResult OnePageGiving(PaymentForm pf)
         {
@@ -58,12 +65,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 ModelState.AddModelError("Email", "Need a valid email address");
             if (pf.AmtToPay == 0)
                 ModelState.AddModelError("AmtToPay", "Invalid Amount");
-            if (!pf.Country.HasValue() && !pf.Zip.HasValue())
+            if (pf.IsUs && !pf.Zip.HasValue())
                 ModelState.AddModelError("Zip", "Zip is Required for US");
 
             var m = new OnlineRegModel(Request, pf.OrgId, pf.testing, null, null, pf.source)
                 { URL = "/OnePageGiving/" + pf.OrgId};
             SetHeaders(m);
+            SetInstructions(m);
             if (!ModelState.IsValid)
                 return View("OnePageGiving/Index", pf);
 
@@ -162,7 +170,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         private bool CheckAddress(PaymentForm pf)
         {
-            if (pf.Country.HasValue() && pf.Country != "United States")
+            if (!pf.IsUs)
             {
                 pf.NeedsCityState = true;
                 return pf.City.HasValue() && pf.State.HasValue();

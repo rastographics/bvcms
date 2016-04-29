@@ -331,6 +331,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
         }
 
+        public string SubmitInstructions() 
+        {
+            Settings v;
+            settings.TryGetValue(org?.OrganizationId ?? 0, out v);
+            return v?.InstructionSubmit;
+        }
+
         public string Instructions
         {
             get

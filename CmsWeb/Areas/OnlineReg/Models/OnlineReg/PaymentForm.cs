@@ -5,7 +5,6 @@ using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Finance;
-using CmsData.Registration;
 using CmsWeb.Code;
 using Elmah;
 using UtilityExtensions;
@@ -87,6 +86,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string State { get; set; }
         public string Zip { get; set; }
         public string Country { get; set; }
+        public bool IsUs => Country == "United States" || !Country.HasValue();
 
         public IEnumerable<SelectListItem> Countries
         {
