@@ -51,10 +51,22 @@ namespace CmsWeb.Areas.People.Models
                     {
                         return $"<a title=\"{DivisionName}\" href=\"/OrgContent/{OrgId}\">{Name}</a>";
                     }
+                case "enroll date":
+                case "enrolldate":
+                    return EnrollDate.FormatDate();
                 case "location":
                     return Location;
+                case "schedule":
+                    return Schedule;
                 case "leader":
-                    return $"<a href=\" /Person2/{LeaderId}\">{LeaderName}</a>";
+                    if (inAccessRole)
+                    {
+                        return $"<a href=\" /Person2/{LeaderId}\">{LeaderName}</a>";
+                    }
+                    else
+                    {
+                        return LeaderName;
+                    }
                 case "attendpct":
                     return AttendPct > 0 ? AttendPct.Value.ToString("N1") : "";
                 case "division":

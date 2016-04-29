@@ -20,53 +20,55 @@ namespace CmsWeb.Areas.People.Models
 
     public class InvolvementTableModel
     {
-        private static XDocument TableDoc
+        public static List<InvolvementTableColumn> GetColumns(string page)
         {
-            get
+            string customTextName, defaultXml;
+            switch (page)
             {
-
-                var db = DbUtil.Db;
-
-                var s = HttpRuntime.Cache[DbUtil.Db.Host + "InvolvementTables"] as string;
-                if (s == null)
-                {
-                    s = db.ContentText("InvolvementTables", Resource1.ReportsMenuCustom);
-                    HttpRuntime.Cache.Insert(db.Host + "InvolvementTables", s, null,
-                        DateTime.Now.AddMinutes(Util.IsDebug() ? 0 : 1), Cache.NoSlidingExpiration);
-                }
-                if (!s.HasValue())
-                    return null;
-
-                var xdoc = XDocument.Parse(s);
-                return xdoc;
+                default:
+                    customTextName = "InvolvementTableCurrent";
+                    break;
+                case "Pending":
+                    customTextName = "InvolvementTablePending";
+                    break;
+                case "Previous":
+                    customTextName = "InvolvementTablePrevious";
+                    break;
             }
-        }
 
-        public static List<InvolvementTableColumn> Columns
-        {
-            get
+            var db = DbUtil.Db;
+
+            var s = HttpRuntime.Cache[DbUtil.Db.Host + customTextName] as string;
+            if (s == null)
             {
-                var xdoc = TableDoc;
-                if (xdoc?.Root == null)
-                    return new List<InvolvementTableColumn>();
-
-                var list = new List<InvolvementTableColumn>();
-                foreach (var e in xdoc.XPathSelectElements("/InvolvementTable/Columns").Elements())
-                {
-                    if (e.Name.LocalName.ToLower() == "column")
-                    {
-                        var column = new InvolvementTableColumn();
-                        column.Field = e.Attribute("field")?.Value;
-
-                        bool sortable;
-                        bool.TryParse(e.Attribute("sortable")?.Value ?? "false", out sortable);
-                        column.Sortable = sortable;
-
-                        list.Add(column);
-                    }
-                }
-                return list;
+                s = db.ContentText(customTextName, Resource1.ReportsMenuCustom);
+                HttpRuntime.Cache.Insert(db.Host + customTextName, s, null,
+                    DateTime.Now.AddMinutes(Util.IsDebug() ? 0 : 1), Cache.NoSlidingExpiration);
             }
+            if (!s.HasValue())
+                return null;
+
+            var xdoc = XDocument.Parse(s);
+
+            if (xdoc?.Root == null)
+                return new List<InvolvementTableColumn>();
+
+            var list = new List<InvolvementTableColumn>();
+            foreach (var e in xdoc.XPathSelectElements("/InvolvementTable/Columns").Elements())
+            {
+                if (e.Name.LocalName.ToLower() == "column")
+                {
+                    var column = new InvolvementTableColumn();
+                    column.Field = e.Attribute("field")?.Value;
+
+                    bool sortable;
+                    bool.TryParse(e.Attribute("sortable")?.Value ?? "false", out sortable);
+                    column.Sortable = sortable;
+
+                    list.Add(column);
+                }
+            }
+            return list;
         }
     }
 }
