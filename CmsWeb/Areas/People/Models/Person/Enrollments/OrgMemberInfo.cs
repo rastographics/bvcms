@@ -29,9 +29,9 @@ namespace CmsWeb.Areas.People.Models
         public string LocComma => Location.HasValue() ? ", " : "";
 
         private IEnumerable<OrganizationExtra> _extraFields; 
-        public string GetFieldValue(string field, bool inAccessRole)
+        public string GetColumnValue(InvolvementTableColumn column, bool inAccessRole)
         {
-            field = field.ToLower();
+            var field = column.Field.ToLower();
 
             switch (field)
             {
@@ -42,6 +42,10 @@ namespace CmsWeb.Areas.People.Models
                     if (inAccessRole)
                     {
                         return $"<a href=\"{Util2.Org}/{OrgId}\">{Name}</a>";
+                    }
+                    else if (column.Page != "Current")
+                    {
+                        return $"<span title=\"{DivisionName}\">{Name}</span>";
                     }
                     else if (HasDirectory)
                     {

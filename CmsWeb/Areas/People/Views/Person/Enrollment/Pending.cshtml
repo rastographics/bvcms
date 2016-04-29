@@ -1,8 +1,11 @@
 ﻿@using CmsData
+@using CmsWeb.Areas.People.Models
 @using UtilityExtensions
 @model CmsWeb.Areas.People.Models.PendingEnrollments
 @{
     var list = Model.ViewList().ToList();
+
+    var columns = InvolvementTableModel.GetColumns("Pending");
 }
 <form class="non-modal ajax">
     @FormAction()
@@ -14,12 +17,17 @@
                 <table class="expanding table table-hover">
                     <thead>
                         <tr>
-                            <th>Organization</th>
-                            <th>Enroll Date</th>
-                            <th>Member Type</th>
-                            <th>Location</th>
-                            <th>Leader</th>
-                            <th>Schedule</th>
+                            @foreach (var column in columns)
+                            {
+                                if (column.Sortable)
+                                {
+                                    <th>@Model.SortLink(column.Field)</th>
+                                }
+                                else
+                                {
+                                    <th>@column.Field</th>
+                                }
+                            }
                         </tr>
                     </thead>
                     <tbody>
@@ -36,27 +44,19 @@
                             if (User.IsInRole("Access"))
                             {
                                 <tr>
-                                    <td><a href="/Org/@om.OrgId" title="@om.DivisionName">@om.Name</a></td>
-                                    <td>@om.EnrollDate.FormatDate()</td>
-                                    <td>
-                                        <a class="membertype" href="/OrgMemberDialog/Pending/@om.OrgId/@om.PeopleId">
-                                            @om.MemberType
-                                        </a>
-                                    </td>
-                                    <td>@om.Location</td>
-                                    <td><a href="/Person2/@om.LeaderId">@om.LeaderName</a></td>
-                                    <td>@om.Schedule</td>
+                                    @foreach (var column in columns)
+                                    {
+                                        <td>@Html.Raw(om.GetColumnValue(column, true))</td>
+                                    }
                                 </tr>
                             }
                             else
                             {
                                 <tr>
-                                    <td><span title="@om.DivisionName">@om.Name</span></td>
-                                    <td>@om.EnrollDate.FormatDate()</td>
-                                    <td>@om.MemberType</td>
-                                    <td>@om.Location</td>
-                                    <td>@om.LeaderId">@om.LeaderName</td>
-                                    <td>@om.Schedule</td>
+                                    @foreach (var column in columns)
+                                    {
+                                        <td>@Html.Raw(om.GetColumnValue(column, false))</td>
+                                    }
                                 </tr>
                             }
                         }

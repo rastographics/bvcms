@@ -59,7 +59,7 @@
 
                                     @foreach (var column in columns)
                                     {
-                                        <td>@Html.Raw(om.GetFieldValue(column.Field, true))</td>
+                                        <td>@Html.Raw(om.GetColumnValue(column, true))</td>
                                     }
 
                                     <!--<td><a href="/Org/@om.OrgId">@om.Name</a></td>
@@ -102,7 +102,7 @@
                                     <td></td>
                                     @foreach (var column in columns)
                                     {
-                                        <td>@Html.Raw(om.GetFieldValue(column.Field, false))</td>
+                                        <td>@Html.Raw(om.GetColumnValue(column, false))</td>
                                     }
                                     <!--<td class="indent">
                                         @if (om.HasDirectory)

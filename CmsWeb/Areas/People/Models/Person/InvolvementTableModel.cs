@@ -14,6 +14,7 @@ namespace CmsWeb.Areas.People.Models
 {
     public class InvolvementTableColumn
     {
+        public string Page { get; set; }
         public string Field { get; set; }
         public bool Sortable { get; set; }
     }
@@ -60,6 +61,7 @@ namespace CmsWeb.Areas.People.Models
                 {
                     var column = new InvolvementTableColumn();
                     column.Field = e.Attribute("field")?.Value;
+                    column.Page = page;
 
                     bool sortable;
                     bool.TryParse(e.Attribute("sortable")?.Value ?? "false", out sortable);

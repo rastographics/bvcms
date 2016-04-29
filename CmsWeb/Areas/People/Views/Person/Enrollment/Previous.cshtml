@@ -1,9 +1,12 @@
 ﻿@using CmsData
+@using CmsWeb.Areas.People.Models
 @using UtilityExtensions
 @model CmsWeb.Areas.People.Models.PreviousEnrollments
 @{
     var pOrgType = "Other";
     var rownum = 0;
+
+    var columns = InvolvementTableModel.GetColumns("Previous");
 }
 <form class="non-modal ajax">
     @FormAction()
