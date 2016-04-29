@@ -26,6 +26,7 @@
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    background-color: #FFEEEE
   }
 
   .field-validation-error, .error { color: #b94a48; }
@@ -65,9 +66,26 @@
       <input type="text" id="Email" name="Email" class="form-control @Html.ErrorClass("Email")" placeholder="Email" required="required" value="@Model.Email">
       @Html.ValidationMessageLabelFor(m => m.Email, "field-validation-error")
     </div>
-    <div class="form-group">
-      <input type="text" id="Phone" name="Phone" class="form-control" placeholder="Phone Number" value="@Model.Phone">
-    </div>
+    @if (Model.ShowCampusOnePageGiving)
+    {
+      <div class="row">
+        <div class="form-group col-lg-6">
+          <input type="text" id="Phone" name="Phone" class="form-control" placeholder="Phone Number" value="@Model.Phone">
+        </div>
+        <div class="form-group col-lg-6">
+          <div>
+            @Html.DropDownListFor(m => m.CampusId, Model.Campuses, new {@class = $"form-control {Html.ErrorClass("CampusId")}" })
+            @Html.ValidationMessageLabelFor(m => m.CampusId, "field-validation-error")
+          </div>
+        </div>
+      </div>
+    }
+    else
+    {
+      <div class="form-group">
+        <input type="text" id="Phone" name="Phone" class="form-control" placeholder="Phone Number" value="@Model.Phone">
+      </div>
+    }
     <div class="form-group">
       <input type="text" id="Address" name="Address" class="form-control" placeholder="Street Address" required="required" value="@Model.Address">
     </div>

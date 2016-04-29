@@ -68,6 +68,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool? IsGiving { get; set; }
         public bool NoCreditCardsAllowed { get; set; }
         public bool NeedsCityState { get; set; }
+        public int? CampusId { get; set; }
+        public bool ShowCampusOnePageGiving => DbUtil.Db.Setting("ShowCampusOnRegistration", "false").ToBool();
 
         public bool NoEChecksAllowed
         {
@@ -97,6 +99,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return list;
             }
         }
+        public List<SelectListItem> Campuses;
 
         public string Phone { get; set; }
         public int? TranId { get; set; }

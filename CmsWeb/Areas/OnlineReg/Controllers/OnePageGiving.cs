@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.OnlineReg.Models;
@@ -27,6 +28,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 pf.First = null;
                 pf.Last = null;
                 pf.Email = null;
+                var p = m.List[0];
+                if(pf.ShowCampusOnePageGiving)
+                    pf.Campuses = p.Campuses().ToList();
+                var funds = p.Funds();
+                pf.Description = funds[0].Text;
 
 #if DEBUG
                 pf.First = "Otis";
@@ -67,11 +73,18 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 ModelState.AddModelError("AmtToPay", "Invalid Amount");
             if (pf.IsUs && !pf.Zip.HasValue())
                 ModelState.AddModelError("Zip", "Zip is Required for US");
+            if(pf.ShowCampusOnePageGiving)
+                if((pf.CampusId ?? 0) == 0)
+                    ModelState.AddModelError("CampusId", "Campus is Required");
 
             var m = new OnlineRegModel(Request, pf.OrgId, pf.testing, null, null, pf.source)
                 { URL = "/OnePageGiving/" + pf.OrgId};
             SetHeaders(m);
             SetInstructions(m);
+            var p = m.List[0];
+            if(pf.ShowCampusOnePageGiving)
+                pf.Campuses = p.Campuses().ToList();
+
             if (!ModelState.IsValid)
                 return View("OnePageGiving/Index", pf);
 
@@ -82,7 +95,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (!ModelState.IsValid)
                 return View("OnePageGiving/Index", pf);
 
-            var p = m.List[0];
             p.orgid = m.Orgid;
             p.FirstName = pf.First;
             p.LastName = pf.Last;
@@ -93,6 +105,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             p.State = pf.State;
             p.ZipCode = pf.Zip;
             p.Country = pf.Country;
+            if(pf.ShowCampusOnePageGiving)
+                p.Campus = pf.CampusId.ToString();
             pf.State = pf.State;
 
             p.IsNew = p.person == null;
