@@ -506,6 +506,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private SelectListItem[] ReturnContributionForSetting()
         {
             var fund = DbUtil.Db.ContributionFunds.SingleOrDefault(f => f.FundId == setting.DonationFundId);
+            if (fund == null)
+                throw new Exception($"DonationFundId {setting.DonationFundId} does not point to a fund");
             return new[]
             {
                 new SelectListItem
