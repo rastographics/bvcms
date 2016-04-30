@@ -275,6 +275,15 @@ namespace CmsWeb.Models
                         u.Password = "";
                         u.MustChangePassword = true;
                     }
+                    else
+                    {
+                        var mu = CMSMembershipProvider.provider.GetUser(userName, false);
+                        mu?.UnlockUser();
+                        CMSMembershipProvider.provider.AdminOverride = true;
+                        mu?.ChangePassword(mu.ResetPassword(), password);
+                        CMSMembershipProvider.provider.AdminOverride = false;
+                        u.MustChangePassword = true;
+                    }
                     u.IsLockedOut = false;
                     DbUtil.Db.SubmitChanges();
                     user = u;
