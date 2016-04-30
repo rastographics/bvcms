@@ -110,4 +110,18 @@
             $("#Dir").val('asc');
         $.RefreshPage();
     });
+
+    $('body').on('click', 'a.selectsg', function (ev) {
+        ev.preventDefault();
+        var t = $(this).text();
+        var sg = $("#SmallGroup").val();
+        if (sg)
+            sg = sg + ';';
+        sg = sg + t;
+        $("#SmallGroup").val(sg);
+        $("a.selectsg .fa-minus").hide();
+        return false;
+    });
+
+    $('[data-toggle="popover"]').popover({ html: true });
 });

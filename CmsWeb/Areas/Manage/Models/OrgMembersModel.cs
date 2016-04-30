@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
@@ -33,6 +34,13 @@ namespace CmsWeb.Models
         public string Sort { get; set; }
         public string Dir { get; set; }
         public IList<string> List { get; set; } = new List<string>();
+
+        public HtmlString SgFilterHelp => ViewExtensions2.Markdown(@"
+**Match a sub-group name.**
+
+* Use a semi-colon (`;`) to separate multiple sub-groups.
+* When there are more groups than fit into the textbox, most browsers will let you resize that box so you can see the rest.
+");
 
         public void FetchSavedIds()
         {
@@ -209,6 +217,22 @@ namespace CmsWeb.Models
         public int Count()
         {
             return GetMembers().Count();
+        }
+
+        public IEnumerable<string> GetOrganizationSmallGroups()
+        {
+            var g = new List<Dictionary<string, string>>();
+
+            var roles = DbUtil.Db.CurrentRoles();
+            var q = from om in DbUtil.Db.OrganizationMembers
+                    join org in DbUtil.Db.Organizations on om.OrganizationId equals org.OrganizationId
+                    join omt in DbUtil.Db.OrgMemMemTags on om.OrganizationId equals omt.OrgId
+                    join mt in DbUtil.Db.MemberTags on omt.MemberTagId equals mt.Id
+                    where org.DivisionId == DivId
+                    where SourceId == 0 || om.OrganizationId == SourceId
+                    select mt.Name;
+
+            return q.Distinct();
         }
 
         public IEnumerable<OrganizationMember> ApplySort()
@@ -462,6 +486,13 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
             {
                 get { return isChecked ? "checked='checked'" : ""; }
             }
+        }
+
+        public class SmallGroupInfo
+        {
+            public string orgName { get; set; }
+            public int orgId { get; set; }
+            public string smallGroup { get; set; }
         }
     }
 }

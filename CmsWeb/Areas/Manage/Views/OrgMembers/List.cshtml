@@ -41,10 +41,52 @@
                         @Html.TextBox("Grades", "", new { @class = "form-control" })
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-3 col-sm-6">
-                    <div class="form-group">
-                        <label for="SmallGroup" class="control-label">Sub-Group</label>
-                        @Html.TextBox("SmallGroup", "", new { @class = "form-control" })
+                <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+                    <label for="SmallGroup" class="control-label">Sub-Group</label>
+                    <div class="input-group">
+                        <a class="input-group-addon" tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Sub-Group Filter" data-content="@Model.SgFilterHelp"><i class="fa fa-info-circle"></i></a>
+                        <textarea rows="4" id="SmallGroup" name="SmallGroup" class="form-control">@Model.SmallGroup</textarea>
+                        <div class="input-group-btn">
+                            <button class="btn btn-info dropdown-toggle" data-toggle="dropdown" style="margin-top: 0; width: 2em;">
+                                <span class="caret"></span>
+                            </button>
+                            @{IEnumerable<string> subgroups = Model.GetOrganizationSmallGroups();}
+                            <ul class="dropdown-menu dropdown-menu-right" style="height: 200px; overflow: auto;">
+                                @if (Model.DivId != 0)
+                                {
+                                    if (subgroups.Count() == 0)
+                                    {
+                                        if (Model.SourceId == 0)
+                                        {
+                                            <li>
+                                                <a href="#" class="selectsg"><i class="fa fa-minus hide"></i>No Sub-Groups in this division</a>
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li>
+                                                <a href="#" class="selectsg"><i class="fa fa-minus hide"></i>No Sub-Groups in this division and source</a>
+                                            </li>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        foreach (var sg in subgroups)
+                                        {
+                                            <li>
+                                                <a href="#" class="selectsg"><i class="fa fa-minus hide"></i>@sg</a>
+                                            </li>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    <li>
+                                        <a href="#" class="selectsg"><i class="fa fa-minus hide"></i>Select a division first</a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <div class="col-sm-6">
