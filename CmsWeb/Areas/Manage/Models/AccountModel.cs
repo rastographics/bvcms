@@ -90,6 +90,11 @@ namespace CmsWeb.Models
 
             if (role != null)
             {
+                // Temporarily change checkin to just Access role
+                // until we figure out what to do with a church that does not have the checkin role
+                if (role == "Checkin")
+                    role = "Access";
+
                 if (!roleProvider.IsUserInRole(user.Username, role))
                 {
                     userStatus.Status = UserValidationStatus.UserNotInRole;
