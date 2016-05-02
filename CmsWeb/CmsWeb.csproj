@@ -446,6 +446,8 @@
     <Compile Include="Areas\Org\Controllers\OrgChildrenController.cs" />
     <Compile Include="Areas\Org\Controllers\OrgGroupsController.cs" />
     <Compile Include="Areas\Org\Controllers\RegSettingController.cs" />
+    <Compile Include="Areas\Org\Models\Org\Contacts\ContactsModel.cs" />
+    <Compile Include="Areas\Org\Models\Org\Contacts\ContactsReceivedModel.cs" />
     <Compile Include="Areas\Org\Models\Org\ScheduleInfo.cs" />
     <Compile Include="Areas\Org\Models\Org\SettingsMessagesModel.cs" />
     <Compile Include="Areas\Org\Models\Org\SettingsGeneralModel.cs" />
