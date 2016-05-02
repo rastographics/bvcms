@@ -138,13 +138,13 @@ namespace CmsWeb.Areas.Org.Controllers
             {
                 CreatedDate = Util.Now,
                 CreatedBy = Util.UserId1,
-                ContactDate = Util.Now.Date
+                ContactDate = Util.Now.Date,
+                OrganizationId = o.OrganizationId
             };
 
             DbUtil.Db.Contacts.InsertOnSubmit(c);
             DbUtil.Db.SubmitChanges();
 
-            c.contactees.Add(new Contactee { OrganizationId = o.OrganizationId });
             c.contactsMakers.Add(new Contactor { PeopleId = Util.UserPeopleId.Value });
             DbUtil.Db.SubmitChanges();
 

@@ -15,7 +15,7 @@ namespace CmsWeb.Areas.Org.Models
         override public IQueryable<Contact> DefineModelList()
         {
             return from c in FilteredModelList()
-                   where c.contactees.Any(p => p.OrganizationId == OrganizationId)
+                   where c.OrganizationId == OrganizationId
                    select c;
         }
 
