@@ -27,11 +27,11 @@ namespace CmsWeb.Areas.People.Controllers
             }
         }
 
-        [HttpPost, Route("RemoveContactee/{contactid:int}/{contacteeid:int}")]
-        public ActionResult RemoveContactee(int contactid, int contacteeid)
+        [HttpPost, Route("RemoveContactee/{cid:int}/{c2id:int}")]
+        public ActionResult RemoveContactee(int cid, int c2id)
         {
-            var m = new ContacteesModel(contactid);
-            m.RemoveContactee(contacteeid);
+            var m = new ContacteesModel(cid);
+            m.RemoveContactee(c2id);
             return Content("ok");
 
         }
