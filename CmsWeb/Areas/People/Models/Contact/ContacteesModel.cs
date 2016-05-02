@@ -93,23 +93,6 @@ namespace CmsWeb.Areas.People.Models
             return task.Id;
         }
 
-        public int AddOrgContactee(int orgId)
-        {
-            // Prevent inserting duplicates
-            if (DbUtil.Db.Contactees.Any(x => x.ContactId == Contact.ContactId && x.OrganizationId == orgId))
-                return -1;
-
-            var contactee = new Contactee
-            {
-                ContactId = Contact.ContactId,
-                OrganizationId = orgId
-            };
-
-            DbUtil.Db.Contactees.InsertOnSubmit(contactee);
-            DbUtil.Db.SubmitChanges();
-            return contactee.ContacteeId;
-        }
-
         public class ContactInfo
         {
             public int ContacteeId { get; set; }

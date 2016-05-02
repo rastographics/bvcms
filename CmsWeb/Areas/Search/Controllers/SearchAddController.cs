@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
-using CmsWeb.Areas.People.Models;
 using CmsWeb.Areas.Search.Models;
 using CmsWeb.Models;
 using UtilityExtensions;
@@ -153,24 +152,42 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost, Route("SearchAdd2/SelectOrgContactee/{cid}/{oid}")]
         public ActionResult SelectOrg(OrgSearchModel m, int cid, int oid)
         {
-            var model = new ContacteesModel(cid);
-
-            var ret = new OrgReturnResult
+            // Prevent inserting duplicates
+            if (DbUtil.Db.Contactees.Any(x => x.ContactId == cid && x.OrganizationId == oid))
             {
-                cid = cid,
-                from = "Contactee"
+                return Json(new OrgReturnResult
+                {
+                    cid = cid,
+                    from = "Contactee"
+                });
+            }
+
+            var contactee = new Contactee
+            {
+                ContactId = cid,
+                OrganizationId = oid
             };
 
             try
             {
-                model.AddOrgContactee(oid);
+                DbUtil.Db.Contactees.InsertOnSubmit(contactee);
+                DbUtil.Db.SubmitChanges();
+
+                return Json(new OrgReturnResult
+                {
+                    cid = cid,
+                    from = "Contactee"
+                });
             }
             catch (Exception e)
             {
-                ret.message = e.Message;
+                return Json(new OrgReturnResult
+                {
+                    cid = cid,
+                    message = e.Message,
+                    from = "Contactee"
+                });
             }
-
-            return Json(ret);
         }
 
         public class OrgReturnResult
