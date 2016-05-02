@@ -42,7 +42,7 @@ namespace CmsWeb.Areas.People.Models
         public CodeInfo ContactReason { get; set; }
         public CodeInfo Ministry { get; set; }
 
-        public int OrganizationId { get; set; }
+        public int? OrganizationId { get; set; }
 
         public IEnumerable<SelectListItem> Roles()
         {
@@ -62,6 +62,7 @@ namespace CmsWeb.Areas.People.Models
         {
             get
             {
+                if (!OrganizationId.HasValue) return "";
                 var name = DbUtil.Db.LoadOrganizationById(OrganizationId);
                 return name != null ? name.OrganizationName : "";
             }
@@ -121,6 +122,9 @@ namespace CmsWeb.Areas.People.Models
         {
             if (LimitToRole == "0")
                 LimitToRole = null;
+
+            if (OrganizationId == 0)
+                OrganizationId = null;
 
             LoadContact(ContactId);
             this.CopyPropertiesTo(contact);
@@ -226,7 +230,7 @@ namespace CmsWeb.Areas.People.Models
             Append(ContactType.Value == "0", sb, "no type");
             Append(ContactReason.Value == "0", sb, "no reason");
             Append(Ministers.Count() == 0, sb, "no contactors");
-            Append(MinisteredTo.Count() == 0, sb, "no contactees");
+            Append(MinisteredTo.Count() == 0 && OrganizationId < 1, sb, "no contactees");
             if (sb.Length > 0)
                 return sb.ToString();
             return "";

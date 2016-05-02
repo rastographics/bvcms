@@ -1,5 +1,6 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.People.Models.ContactModel
+
 <form id="edit-contact" class="form ajax" method="post">
     @if (Model.Incomplete.HasValue())
     {
@@ -59,3 +60,8 @@
         </div>
     </div>
 </form>
+<script>
+    $(function() {
+        $("#OrganizationId").select2();
+    });
+</script>

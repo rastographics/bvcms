@@ -4,7 +4,11 @@
   ViewBag.PageHeader = "Contact";
   Layout = ViewExtensions2.TouchPointLayout();
 }
-
+@section head
+{
+    @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2-bootstrap.css")
+}
 @Html.Hidden("Id")
 <div class="row">
   <div class="col-sm-12 col-md-9 col-lg-7">
@@ -60,11 +64,12 @@
 @section scripts
 {
   @Fingerprint.Script("/Content/touchpoint/js/people/contact.js")
+  @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
   @if (ViewBag.edit == true)
   {
     <script>
       $(function () {
-        $("#edit").click();
+          $("#edit").click();
       });
     </script>
   }
