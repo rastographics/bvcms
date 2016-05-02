@@ -152,32 +152,8 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost, Route("SearchAdd2/SelectOrgContactee/{cid}/{oid}")]
         public ActionResult SelectOrg(OrgSearchModel m, int cid, int oid)
         {
-            var contactee = new Contactee
-            {
-                ContactId = cid,
-                OrganizationId = oid
-            };
-
-            try
-            {
-                DbUtil.Db.Contactees.InsertOnSubmit(contactee);
-                DbUtil.Db.SubmitChanges();
-
-                return Json(new OrgReturnResult
-                {
-                    cid = cid,
-                    from = "Contactee"
-            });
-            }
-            catch (Exception e)
-            {
-                return Json(new OrgReturnResult
-                {
-                    cid = cid,
-                    message = e.Message,
-                    from = "Contactee"
-                });
-            }
+            // TODO Reimplement with new paradigm
+            return null;
         }
 
         public class OrgReturnResult

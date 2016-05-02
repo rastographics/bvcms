@@ -19,9 +19,16 @@
                     @Html.EditorFor(m => m.ContactReason)
 
                     <div class="form-group">
+                        <label for="OrganizationId" class="control-label">Contacted Organization</label>
+                        <div class="controls">
+                            @Html.DropDownList("OrganizationId", new SelectList(Model.Organizations(), "Value", "Text"), new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="LimitToRole" class="control-label">Limit to Role</label>
                         <div class="controls">
-                            @Html.DropDownList("LimitToRole", new SelectList(Model.Roles(), "Value", "Text"), new { @class = "form-control" })
+                            @Html.DropDownList("LimitToRole", new SelectList(Model.Roles(), "Value", "Text"), new {@class = "form-control"})
                         </div>
                     </div>
                 </div>

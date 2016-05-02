@@ -23,15 +23,18 @@
                 <div class="col-sm-6">
                     @Html.DisplayFor(m => m.ContactDate)
                     @Html.DisplayFor(m => m.Ministry)
-                    @if (!string.IsNullOrWhiteSpace(Model.LimitToRole))
+                    @if (!string.IsNullOrWhiteSpace(Model.OrganizationName))
                     {
-                        @Html.DisplayFor(m => m.LimitToRole)
+                        @Html.DisplayFor(m => m.OrganizationName)
                     }
                 </div>
                 <div class="col-sm-6">
                     @Html.DisplayFor(m => m.ContactType)
                     @Html.DisplayFor(m => m.ContactReason)
-
+                    @if (!string.IsNullOrWhiteSpace(Model.LimitToRole))
+                    {
+                        @Html.DisplayFor(m => m.LimitToRole)
+                    }
                 </div>
                 <div class="col-sm-12">
                     @if (Model.NotAtHome)

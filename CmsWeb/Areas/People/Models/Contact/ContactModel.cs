@@ -42,6 +42,8 @@ namespace CmsWeb.Areas.People.Models
         public CodeInfo ContactReason { get; set; }
         public CodeInfo Ministry { get; set; }
 
+        public int OrganizationId { get; set; }
+
         public IEnumerable<SelectListItem> Roles()
         {
             var list = DbUtil.Db.Roles.OrderBy(r => r.RoleName).ToList().Select(x => new SelectListItem
@@ -52,6 +54,29 @@ namespace CmsWeb.Areas.People.Models
             }).ToList();
 
             list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)", Selected = true});
+            return list;
+        }
+
+        [DisplayName("Contacted Organization")]
+        public string OrganizationName
+        {
+            get
+            {
+                var name = DbUtil.Db.LoadOrganizationById(OrganizationId);
+                return name != null ? name.OrganizationName : "";
+            }
+        }
+
+        public IEnumerable<SelectListItem> Organizations()
+        {
+            var list = DbUtil.Db.Organizations.OrderBy(r => r.OrganizationName).ToList().Select(x => new SelectListItem
+            {
+                Value = x.OrganizationId.ToString(),
+                Text = x.OrganizationName,
+                Selected = x.OrganizationId == OrganizationId
+            }).ToList();
+
+            list.Insert(0, new SelectListItem { Value = "0", Text = "(none)", Selected = true });
             return list;
         }
 
