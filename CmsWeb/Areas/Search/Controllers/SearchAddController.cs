@@ -141,7 +141,7 @@ namespace CmsWeb.Areas.Search.Controllers
         }
 
         [HttpPost, Route("SearchAdd2/OrgContacteeResults/{id}")]
-        public ActionResult ResOrgContacteeResults(OrgSearchModel m, int id)
+        public ActionResult ResOrgContacteeResultsults(OrgSearchModel m, int id)
         {
             ViewBag.ContactId = id;
 
