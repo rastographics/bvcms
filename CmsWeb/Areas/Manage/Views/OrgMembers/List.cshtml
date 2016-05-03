@@ -35,10 +35,51 @@
                         @Html.DropDownList("DivId", Model.Divisions(), new { @class = "form-control" })
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-3 col-sm-6">
-                    <div class="form-group">
-                        <label for="Grades" class="control-label">Grades</label>
-                        @Html.TextBox("Grades", "", new { @class = "form-control" })
+                <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+                    <label for="Grades" class="control-label">Grades</label>
+                    <div class="input-group">
+                        <textarea rows="4" id="Grades" name="Grades" class="form-control">@Model.Grades</textarea>
+                        <div class="input-group-btn">
+                            <button class="btn btn-info dropdown-toggle" data-toggle="dropdown" style="margin-top: 0; width: 2em;">
+                                <span class="caret"></span>
+                            </button>
+                            @{IEnumerable<int?> grades = Model.GetOrganizationGrades();}
+                            <ul class="dropdown-menu dropdown-menu-right" style="height: 200px; overflow: auto;">
+                                @if (Model.DivId != 0)
+                                {
+                                    if (grades.Count() == 0)
+                                    {
+                                        if (Model.SourceId == 0)
+                                        {
+                                            <li>
+                                                <a href="#" class="selectgrades"><i class="fa fa-minus hide"></i>No grades in this division</a>
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li>
+                                                <a href="#" class="selectgrades"><i class="fa fa-minus hide"></i>No grades in this division and source</a>
+                                            </li>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        foreach (var g in grades)
+                                        {
+                                            <li>
+                                                <a href="#" class="selectgrades"><i class="fa fa-minus hide"></i>@g</a>
+                                            </li>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    <li>
+                                        <a href="#" class="selectgrades"><i class="fa fa-minus hide"></i>Select a division first</a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-6 form-group">

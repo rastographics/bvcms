@@ -123,5 +123,17 @@
         return false;
     });
 
+    $('body').on('click', 'a.selectgrades', function (ev) {
+        ev.preventDefault();
+        var t = $(this).text();
+        var g = $("#Grades").val();
+        if (g)
+            g = g + ',';
+        g = g + t;
+        $("#Grades").val(g);
+        $("a.selectgrades .fa-minus").hide();
+        return false;
+    });
+
     $('[data-toggle="popover"]').popover({ html: true });
 });

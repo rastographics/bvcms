@@ -179,7 +179,7 @@ namespace CmsWeb.Models
                 }
 				
                 if (Grades.HasValue())
-                    glist = (from g in (Grades ?? "").Split(',')
+                    glist = (from g in (Grades ?? "").Split(new char[] { ',', ';' })
                              select g.ToInt()).ToArray();
                 var q = from om in DbUtil.Db.OrganizationMembers
                         where om.Organization.DivOrgs.Any(di => di.DivId == DivId)
@@ -221,9 +221,6 @@ namespace CmsWeb.Models
 
         public IEnumerable<string> GetOrganizationSmallGroups()
         {
-            var g = new List<Dictionary<string, string>>();
-
-            var roles = DbUtil.Db.CurrentRoles();
             var q = from om in DbUtil.Db.OrganizationMembers
                     join org in DbUtil.Db.Organizations on om.OrganizationId equals org.OrganizationId
                     join omt in DbUtil.Db.OrgMemMemTags on om.OrganizationId equals omt.OrgId
@@ -231,6 +228,18 @@ namespace CmsWeb.Models
                     where org.DivisionId == DivId
                     where SourceId == 0 || om.OrganizationId == SourceId
                     select mt.Name;
+
+            return q.Distinct();
+        }
+
+        public IEnumerable<int?> GetOrganizationGrades()
+        {
+            var q = from om in DbUtil.Db.OrganizationMembers
+                    join org in DbUtil.Db.Organizations on om.OrganizationId equals org.OrganizationId
+                    where org.DivisionId == DivId
+                    where SourceId == 0 || om.OrganizationId == SourceId
+                    where om.Person.Grade != null
+                    select om.Person.Grade;
 
             return q.Distinct();
         }
