@@ -101,26 +101,16 @@ namespace CmsWeb.Areas.Org.Models
         private Settings _RegSettings;
         public Settings RegSettings => _RegSettings ?? (_RegSettings = DbUtil.Db.CreateRegistrationSettings(Org.OrganizationId));
 
-        private bool? _showTab;
+
+        internal bool? _showCommunityGroupTab;
         public bool ShowCommunityGroupTab()
         {
             // We request this twice per Org Index.cshtml. Let's not do the DB calls twice.
-            if (_showTab.HasValue) return _showTab.Value;
+            if (_showCommunityGroupTab.HasValue) return _showCommunityGroupTab.Value;
 
-            var cgSetting = DbUtil.DbReadOnly.Settings.SingleOrDefault(x => x.Id == "ShowCommunityGroupTab");
-            if (cgSetting != null)
-            {
-                bool showTab;
-                bool.TryParse(cgSetting.SettingX, out showTab);
+            _showCommunityGroupTab = DbUtil.Db.Setting("ShowCommunityGroupTab", "false").ToLower() == "false";
 
-                _showTab = showTab;
-            }
-            else
-            {
-                _showTab = false;
-            }
-
-            return _showTab.Value;
+            return _showCommunityGroupTab.Value;
         }
     }
 }
