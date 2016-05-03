@@ -147,6 +147,8 @@ namespace CmsWeb.Models.ExtraValues
 
         public HtmlString HyperLink()
         {
+            if (Link == null)
+                Link = "missing html hyperlink";
             var s = HttpUtility.HtmlDecode(Link);
             s = s.Replace("{id}", Id.ToString());
             if (s.Contains("{queryid}"))
