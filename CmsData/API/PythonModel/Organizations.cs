@@ -15,6 +15,7 @@ namespace CmsData
         {
             var q = db.PeopleQuery2(query);
             var dt = DateTime.Now;
+            db.LogActivity($"PythonModel.AddMembersToOrg(query,{orgId})");
             foreach (var p in q)
             {
                 var db2 = NewDataContext();
@@ -25,6 +26,7 @@ namespace CmsData
 
         public void AddMemberToOrg(object pid, object orgId)
         {
+            db.LogActivity($"PythonModel.AddMemberToOrg({pid},{orgId})");
             AddMembersToOrg(pid.ToInt(), orgId.ToInt());
         }
 
@@ -99,10 +101,15 @@ namespace CmsData
         {
             var db2 = NewDataContext();
 
+            int? pid = null;
             if (person is int)
-                OrganizationMember.InsertOrgMembers(db2, orgid, person.ToInt(), 220, DateTime.Now, null, false);
+                pid = person.ToInt2();
             else if (person is Person)
-                OrganizationMember.InsertOrgMembers(db2, orgid, ((Person) person).PeopleId, 220, DateTime.Now, null, false);
+                pid = ((Person) person).PeopleId;
+            db.LogActivity($"PythonModel.JoinOrg({pid},{orgid})");
+            if (pid == null)
+                return;
+            OrganizationMember.InsertOrgMembers(db2, orgid, pid.Value, 220, DateTime.Now, null, false);
 
             db2.Dispose();
         }
@@ -112,6 +119,7 @@ namespace CmsData
             var db2 = NewDataContext();
             if (fromOrg == toOrg)
                 return;
+            db.LogActivity($"PythonModel.MoveToOrg({pid},{fromOrg},{toOrg})");
             var om = db2.OrganizationMembers.Single(m => m.PeopleId == pid && m.OrganizationId == fromOrg);
             var sg = om.OrgMemMemTags.Select(mt => mt.MemberTag.Name).ToList();
             var tom = db2.OrganizationMembers.SingleOrDefault(m => m.PeopleId == pid && m.OrganizationId == toOrg);
@@ -168,6 +176,14 @@ namespace CmsData
         {
             var db2 = NewDataContext();
             db2.UpdateMainFellowship(orgId);
+        }
+
+        public void DropOrgMember(int pid, int orgId)
+        {
+            var db2 = NewDataContext();
+            db.LogActivity($"PythonModel.DropOrgMember({pid},{orgId})");
+            var om = db2.OrganizationMembers.Single(m => m.PeopleId == pid && m.OrganizationId == orgId);
+            om.Drop(db2);
         }
     }
 }
