@@ -19,11 +19,17 @@
                     <thead>
                         <tr>
                             <th>@Model.SortLink2("default", @"<i class=""fa fa-sort""></i>")</th>
-                            <th>@Model.SortLink("Organization")</th>
-                            <th>@Model.SortLink("Enroll Date")</th>
-                            <th>@Model.SortLink("Drop Date")</th>
-                            <th>MemberType</th>
-                            <th>AttendPct</th>
+                            @foreach (var column in columns)
+                            {
+                                if (column.Sortable)
+                                {
+                                    <th>@Model.SortLink(column.Field)</th>
+                                }
+                                else
+                                {
+                                    <th>@column.Field</th>
+                                }
+                            }
                         </tr>
                     </thead>
                     <tbody>
@@ -43,11 +49,10 @@
                             {
                                 <tr class="master @oddrow">
                                     <td><a rel="reveal" title="More Information" href="#" class="reveal"><i class="fa fa-info-circle"></i></a></td>
-                                    <td><a href="/Org/@om.OrgId" class="reveal">@om.Name</a></td>
-                                    <td>@om.EnrollDate.FormatDate()</td>
-                                    <td>@om.DropDate.FormatDate()</td>
-                                    <td><a target="_blank" href="/TransactionHistory/@om.PeopleId/@om.OrgId">@om.MemberType</a></td>
-                                    <td>@(om.AttendPct > 0 ? om.AttendPct.Value.ToString("N1") : "")</td>
+                                    @foreach (var column in columns)
+                                    {
+                                        <td>@Html.Raw(om.GetColumnValue(column, true))</td>
+                                    }
                                 </tr>
                                 <tr class="details @oddrow">
                                     <td colspan="6">
@@ -62,11 +67,10 @@
                             {
                                 <tr>
                                     <td></td>
-                                    <td class="indent"><span title="@om.DivisionName">@om.Name</span></td>
-                                    <td>@om.EnrollDate.FormatDate()</td>
-                                    <td>@om.DropDate.FormatDate()</td>
-                                    <td>@om.MemberType</td>
-                                    <td>@(om.AttendPct.HasValue ? om.AttendPct.Value.ToString("N1") : "")</td>
+                                    @foreach (var column in columns)
+                                    {
+                                        <td>@Html.Raw(om.GetColumnValue(column, false))</td>
+                                    }
                                 </tr>
                             }
                         }

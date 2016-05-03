@@ -30,13 +30,6 @@
                                 <th>@column.Field</th>
                             }
                         }
-                    <!--
-                    <th>@Model.SortLink("Organization")</th>
-                    <th>Leader</th>
-                    <th>@Model.SortLink("Enroll Date")</th>
-                    <th>MemberType</th>
-                    <th>AttendPct</th>
-                        -->
                     </tr>
                     </thead>
                     <tbody>
@@ -61,16 +54,6 @@
                                     {
                                         <td>@Html.Raw(om.GetColumnValue(column, true))</td>
                                     }
-
-                                    <!--<td><a href="/Org/@om.OrgId">@om.Name</a></td>
-                                    <td><a href="/Person2/@om.LeaderId">@om.LeaderName</a></td>
-                                    <td>@om.EnrollDate.FormatDate()</td>
-                                    <td>
-                                        <a class="membertype" href="/OrgMemberDialog/Member/@om.OrgId/@om.PeopleId">
-                                            @om.MemberType
-                                        </a>
-                                    </td>
-                                    <td>@(om.AttendPct > 0 ? om.AttendPct.Value.ToString("N1") : "")</td>-->
                                 </tr>
                                 <tr class="details @oddrow">
                                     <td colspan="@(columns.Count+1)">
@@ -104,20 +87,6 @@
                                     {
                                         <td>@Html.Raw(om.GetColumnValue(column, false))</td>
                                     }
-                                    <!--<td class="indent">
-                                        @if (om.HasDirectory)
-                                        {
-                                            <a title="@om.DivisionName" href="/MemberDirectory/@om.OrgId">@om.Name</a>
-                                        }
-                                        else
-                                        {
-                                            <a title="@om.DivisionName" href="/OrgContent/@om.OrgId">@om.Name</a>
-                                        }
-                                    </td>
-                                    <td>@om.LeaderName</td>
-                                    <td>@om.EnrollDate.FormatDate()</td>
-                                    <td>@om.MemberType</td>
-                                    <td>@om.AttendPct.ToString2("N1")</td>-->
                                 </tr>
                             }
                         }

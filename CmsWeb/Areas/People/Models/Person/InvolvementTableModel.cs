@@ -28,12 +28,15 @@ namespace CmsWeb.Areas.People.Models
             {
                 default:
                     customTextName = "InvolvementTableCurrent";
+                    defaultXml = Resource1.InvolvementTableCurrent;
                     break;
                 case "Pending":
                     customTextName = "InvolvementTablePending";
+                    defaultXml = Resource1.InvolvementTablePending;
                     break;
                 case "Previous":
                     customTextName = "InvolvementTablePrevious";
+                    defaultXml = Resource1.InvolvementTablePrevious;
                     break;
             }
 
@@ -42,14 +45,24 @@ namespace CmsWeb.Areas.People.Models
             var s = HttpRuntime.Cache[DbUtil.Db.Host + customTextName] as string;
             if (s == null)
             {
-                s = db.ContentText(customTextName, Resource1.ReportsMenuCustom);
+                s = db.ContentText(customTextName, defaultXml);
                 HttpRuntime.Cache.Insert(db.Host + customTextName, s, null,
                     DateTime.Now.AddMinutes(Util.IsDebug() ? 0 : 1), Cache.NoSlidingExpiration);
             }
             if (!s.HasValue())
                 return null;
 
-            var xdoc = XDocument.Parse(s);
+            XDocument xdoc;
+
+            try
+            {
+                xdoc = XDocument.Parse(s);
+            }
+            catch (Exception)
+            {
+                // If the above fails for any reason, fall back on the default
+                xdoc = XDocument.Parse(defaultXml);
+            }
 
             if (xdoc?.Root == null)
                 return new List<InvolvementTableColumn>();

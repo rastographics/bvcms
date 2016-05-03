@@ -348,4 +348,41 @@ so that your data will not stay duplicated.&lt;/p&gt;
 &lt;p&gt;{church}&lt;/p&gt;
 </value>
   </data>
+  <data name="InvolvementTableCurrent" xml:space="preserve">
+    <value>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;InvolvementTable&gt;
+  &lt;Columns&gt;
+	&lt;Column field="Organization" sortable="true" /&gt;
+	&lt;Column field="Leader" /&gt;
+	&lt;Column field="Enroll Date" /&gt;
+	&lt;Column field="MemberType" /&gt;
+	&lt;Column field="AttendPct" /&gt;
+  &lt;/Columns&gt;
+&lt;/InvolvementTable&gt;</value>
+  </data>
+  <data name="InvolvementTablePending" xml:space="preserve">
+    <value>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;InvolvementTable&gt;
+  &lt;Columns&gt;
+	&lt;Column field="Organization" /&gt;
+	&lt;Column field="Enroll Date" /&gt;
+	&lt;Column field="MemberType" /&gt;
+	&lt;Column field="Location" /&gt;
+	&lt;Column field="Leader" /&gt;
+	&lt;Column field="Schedule" /&gt;
+  &lt;/Columns&gt;
+&lt;/InvolvementTable&gt;</value>
+  </data>
+  <data name="InvolvementTablePrevious" xml:space="preserve">
+    <value>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;InvolvementTable&gt;
+  &lt;Columns&gt;
+	&lt;Column field="Organization" sortable="true" /&gt;
+	&lt;Column field="Enroll Date" sortable="true" /&gt;
+	&lt;Column field="Drop Date" sortable="true" /&gt;
+	&lt;Column field="MemberType" /&gt;
+	&lt;Column field="AttendPct" /&gt;
+  &lt;/Columns&gt;
+&lt;/InvolvementTable&gt;</value>
+  </data>
 </root>

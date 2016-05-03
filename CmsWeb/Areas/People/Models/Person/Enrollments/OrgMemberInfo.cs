@@ -58,6 +58,9 @@ namespace CmsWeb.Areas.People.Models
                 case "enroll date":
                 case "enrolldate":
                     return EnrollDate.FormatDate();
+                case "drop date":
+                case "dropdate":
+                    return DropDate.FormatDate();
                 case "location":
                     return Location;
                 case "schedule":
@@ -80,6 +83,8 @@ namespace CmsWeb.Areas.People.Models
                 case "orgtype":
                     return OrgType;
                 case "membertype":
+                    if(column.Page == "Previous" && inAccessRole)
+                        return $"<a target=\"_blank\" href=\"/TransactionHistory/{PeopleId}/{OrgId}\">{MemberType}</a>";
                     return
                         $"<a class=\"membertype\" href=\"/OrgMemberDialog/Member/{OrgId}/{PeopleId}\">{MemberType}</a>";
                 default:

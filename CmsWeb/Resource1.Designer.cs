@@ -302,6 +302,61 @@ namespace CmsWeb {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;InvolvementTable&gt;
+        ///  &lt;Columns&gt;
+        ///	&lt;Column field=&quot;Organization&quot; sortable=&quot;true&quot; /&gt;
+        ///	&lt;Column field=&quot;Leader&quot; /&gt;
+        ///	&lt;Column field=&quot;Enroll Date&quot; /&gt;
+        ///	&lt;Column field=&quot;MemberType&quot; /&gt;
+        ///	&lt;Column field=&quot;AttendPct&quot; /&gt;
+        ///  &lt;/Columns&gt;
+        ///&lt;/InvolvementTable&gt;.
+        /// </summary>
+        internal static string InvolvementTableCurrent {
+            get {
+                return ResourceManager.GetString("InvolvementTableCurrent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;InvolvementTable&gt;
+        ///  &lt;Columns&gt;
+        ///	&lt;Column field=&quot;Organization&quot; /&gt;
+        ///	&lt;Column field=&quot;Enroll Date&quot; /&gt;
+        ///	&lt;Column field=&quot;MemberType&quot; /&gt;
+        ///	&lt;Column field=&quot;Location&quot; /&gt;
+        ///	&lt;Column field=&quot;Leader&quot; /&gt;
+        ///	&lt;Column field=&quot;Schedule&quot; /&gt;
+        ///  &lt;/Columns&gt;
+        ///&lt;/InvolvementTable&gt;.
+        /// </summary>
+        internal static string InvolvementTablePending {
+            get {
+                return ResourceManager.GetString("InvolvementTablePending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;InvolvementTable&gt;
+        ///  &lt;Columns&gt;
+        ///	&lt;Column field=&quot;Organization&quot; sortable=&quot;true&quot; /&gt;
+        ///	&lt;Column field=&quot;Enroll Date&quot; sortable=&quot;true&quot; /&gt;
+        ///	&lt;Column field=&quot;Drop Date&quot; sortable=&quot;true&quot; /&gt;
+        ///	&lt;Column field=&quot;MemberType&quot; /&gt;
+        ///	&lt;Column field=&quot;AttendPct&quot; /&gt;
+        ///  &lt;/Columns&gt;
+        ///&lt;/InvolvementTable&gt;.
+        /// </summary>
+        internal static string InvolvementTablePrevious {
+            get {
+                return ResourceManager.GetString("InvolvementTablePrevious", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hi {name},
         ///&lt;p&gt;You registered for {org}, and we found your record, 
         ///but there was no email address on your Existing record in our database.
