@@ -354,7 +354,7 @@ so that your data will not stay duplicated.&lt;/p&gt;
   &lt;Columns&gt;
 	&lt;Column field="Organization" sortable="true" /&gt;
 	&lt;Column field="Leader" /&gt;
-	&lt;Column field="Enroll Date" /&gt;
+	&lt;Column field="Enroll Date" sortable="true"  /&gt;
 	&lt;Column field="MemberType" /&gt;
 	&lt;Column field="AttendPct" /&gt;
   &lt;/Columns&gt;

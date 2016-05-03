@@ -307,7 +307,7 @@ namespace CmsWeb {
         ///  &lt;Columns&gt;
         ///	&lt;Column field=&quot;Organization&quot; sortable=&quot;true&quot; /&gt;
         ///	&lt;Column field=&quot;Leader&quot; /&gt;
-        ///	&lt;Column field=&quot;Enroll Date&quot; /&gt;
+        ///	&lt;Column field=&quot;Enroll Date&quot; sortable=&quot;true&quot;  /&gt;
         ///	&lt;Column field=&quot;MemberType&quot; /&gt;
         ///	&lt;Column field=&quot;AttendPct&quot; /&gt;
         ///  &lt;/Columns&gt;
