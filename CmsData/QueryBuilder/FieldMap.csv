@@ -61,7 +61,8 @@ SpouseHasEmail,Bit,,,,ContactInfo,Spouse has Email,,Select True or False. Indica
 SendEmailAddress1,NullBit,,,,ContactInfo,Send to Email Address 1,,"True or False, First Email Address is active or not"
 SendEmailAddress2,NullBit,,,,ContactInfo,Send to Email Address 2,,"True or False, Second Email Address is active or not"
 ReceiveSms,Bit,,,,ContactInfo,Receive SMS,,Select True or False for those who have opted in for texting (SMS).
-HasTaskWithName,StringEqual,,,,Ministry,Has Task about person,,Enter all or part of the Task Name (leave blank for all) to find those whom the incomplete task is regarding.
+HasTaskWithName,StringEqual,,,,Ministry,Has Task With Name,,Enter all or part of the Task Name (leave blank for all) to find those whom the incomplete task is regarding.
+HasTaskWithNotes,StringEqual,,,,Ministry,Has Task with notes,,Enter exact phrase in the Task Notes.
 HasIncompleteTask,StringEqual,,,,Ministry,Has Incomplete Task,,Enter all or part of the Task Name (leave blank for all) to find those who have not completed a delegated task.
 DaysSinceContact,Integer,,,,Ministry,Days Since Last Contact,,Enter a number of days with a comparison to find those without a Contact during those days. Must have a previous Contact.
 RecentContactMinistry,Code,,Ministries,,Ministry,Recent Contact Ministry,Days,Enter a number of days and select Ministry from the list.

@@ -106,6 +106,7 @@ namespace CmsData
         HasRelatedFamily,
         HasSpamBlock,
         HasTaskWithName,
+        HasTaskWithNotes,
         HaveVolunteerApplications,
         HeadOrSpouseWithEmail,
         HomePhone,

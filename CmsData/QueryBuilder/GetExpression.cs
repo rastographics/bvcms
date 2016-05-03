@@ -89,6 +89,7 @@ namespace CmsData
                 { QueryType.HasRelatedFamily, HasRelatedFamily },
                 { QueryType.HasSpamBlock, HasSpamBlock },
                 { QueryType.HasTaskWithName, HasTaskWithName },
+                { QueryType.HasTaskWithNotes, HasTaskWithNotes },
                 { QueryType.HaveVolunteerApplications, HasVolunteerApplications },
                 { QueryType.HeadOrSpouseWithEmail, HeadOrSpouseWithEmail },
                 { QueryType.InBFClass, InBFClass },

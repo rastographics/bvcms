@@ -27,6 +27,17 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+        internal Expression HasTaskWithNotes()
+        {
+            var phrase = TextValue ?? "";
+            Expression<Func<Person, bool>> pred = p =>
+                p.TasksAboutPerson.Any(t => t.Notes.Contains(phrase)
+                    && t.StatusId != TaskStatusCode.Complete);
+            Expression expr = Expression.Invoke(pred, parm);
+            if (op == CompareType.NotEqual)
+                expr = Expression.Not(expr);
+            return expr;
+        }
         internal Expression HasIncompleteTask()
         {
             var task = TextValue;
