@@ -100,6 +100,15 @@ namespace CmsWeb
                 if (r.HasValue())
                     filterContext.Result = Redirect(r);
             }
+
+            var disableHomePageForOrgLeaders = DbUtil.Db.Setting("UX-DisableHomePageForOrgLeaders", "false").ToLower() == "true";
+            if (filterContext.RouteData.Values["Controller"].ToString() == "Home" &&
+                filterContext.RouteData.Values["Action"].ToString() == "Index" && 
+                disableHomePageForOrgLeaders)
+            {
+                filterContext.Result = Redirect($"/Person2/{Util.UserPeopleId}");
+            }
+
             base.OnActionExecuting(filterContext);
             Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
             DbUtil.Db.UpdateLastActivity(Util.UserId);
