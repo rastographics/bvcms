@@ -1,4 +1,5 @@
 ﻿@using CmsData
+@using UtilityExtensions
 @model CmsWeb.Models.OrgContentInfo
 @{
     ViewBag.Title = "OrgContent";
@@ -22,10 +23,34 @@ else if (Model.Inactive)
 else
 {
     <div style="max-width: 600px;">
-    @if (!Model.HideBanner)
-    {
-        <h1><a href="/Org/@Model.OrgId">@Model.OrgName</a></h1>
-    }
-    @Html.Raw(Model.Html)
+        @if (!Model.HideBanner)
+        {
+            <h1><a href="/Org/@Model.OrgId">@Model.OrgName</a>
+            </h1>
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.Html))
+        {
+            @Html.Raw(Model.Html)
+        }
+        else
+        {
+            <table>
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>MemberType</th>
+                    <th>Birthday</th>
+                </tr>
+                </thead>
+                @foreach (var member in Model.GetMemberList())
+                {
+                    <tr>
+                        <td>@member.Person.Name</td>
+                        <td>@member.MemberType.Description</td>
+                        <td>@member.Person.BirthDate.FormatDate("MMM d")</td>
+                    </tr>
+                }
+            </table>
+        }
     </div>
 }

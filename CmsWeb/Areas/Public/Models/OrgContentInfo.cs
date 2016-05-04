@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -128,6 +129,12 @@ namespace CmsWeb.Models
                 o.IsLeader = true;
             }
             return o;
+        }
+
+        public List<OrganizationMember> GetMemberList()
+        {
+            var org = DbUtil.Db.LoadOrganizationById(OrgId);
+            return org.OrganizationMembers.ToList();
         }
     }
 }
