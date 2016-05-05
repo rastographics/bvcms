@@ -87,6 +87,8 @@ namespace CmsWeb
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
+            NoCheckRole = NoCheckRole || DbUtil.Db.Setting("UX-AllowMyDataUserEmails", "false").ToLower() == "true";
+
             if (!User.Identity.IsAuthenticated)
             {
                 var s = "/Logon?ReturnUrl=" + HttpUtility.UrlEncode(Request.RawUrl);

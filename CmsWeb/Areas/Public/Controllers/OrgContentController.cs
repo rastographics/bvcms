@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
@@ -15,6 +16,12 @@ namespace CmsWeb.Areas.Public
                 return Content("<h2>Not an Organization</h2>");
             if (!Util.UserPeopleId.HasValue)
                 return Redirect("/OrgContent/Login/" + id);
+
+            if (string.IsNullOrEmpty(o.Html))
+            {
+                ViewBag.qid = DbUtil.Db.QueryMembersUnderCurrentOrg().QueryId;
+            }
+
             return View(o);
         }
         public ActionResult Edit(int id)

@@ -4,6 +4,8 @@
 @{
     ViewBag.Title = "OrgContent";
     Layout = "~/Views/Shared/Site2.cshtml";
+
+    var allowEmails = DbUtil.Db.Setting("UX-AllowMyDataUserEmails", "false").ToLower() == "true";
 }
 @section edit {
     @if (Model.CanEdit)
@@ -40,6 +42,10 @@ else
                     <th>Name</th>
                     <th>MemberType</th>
                     <th>Birthday</th>
+                    @if (allowEmails)
+                    {
+                        <th>Email</th>
+                    }
                 </tr>
                 </thead>
                 @foreach (var member in Model.GetMemberList())
@@ -47,7 +53,11 @@ else
                     <tr>
                         <td>@member.Person.Name</td>
                         <td>@member.MemberType.Description</td>
-                        <td>@member.Person.BirthDate.FormatDate("MMM d")</td>
+                        <td>@(member.Person.BirthDate.HasValue ? member.Person.BirthDate.FormatDate("MMM d") : "")</td>
+                        @if (allowEmails)
+                        {
+                            <td><a href="/Email/@ViewBag.qid">Email</a></td>
+                        }
                     </tr>
                 }
             </table>
