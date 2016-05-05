@@ -17,7 +17,8 @@ CREATE TABLE [dbo].[Contact]
 [Comments] [nvarchar] (max) NULL,
 [ModifiedBy] [int] NULL,
 [ModifiedDate] [datetime] NULL,
-[LimitToRole] [nvarchar] (50) NULL
+[LimitToRole] [nvarchar] (50) NULL,
+[OrganizationId] [int] NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
