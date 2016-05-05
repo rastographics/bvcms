@@ -75,7 +75,7 @@ namespace CmsWeb.Models
             set { HttpContext.Current.Items[STR_UserName2] = value; }
         }
 
-        public static UserValidationResult AuthenticateMobile(string role = null, bool checkOrgLeadersOnly = false, bool requirePin = false)
+        public static UserValidationResult AuthenticateMobile(string requiredRole = null, bool checkOrgLeadersOnly = false, bool requirePin = false)
         {
             var userStatus = GetUserViaCredentials() ?? GetUserViaSessionToken(requirePin);
 
@@ -89,11 +89,11 @@ namespace CmsWeb.Models
 
             var roleProvider = CMSRoleProvider.provider;
 
-            if (role != null)
+            if (requiredRole != null)
             {
                 if (!roleProvider.RoleExists("Checkin"))
-                    role = "Access";
-                if (!roleProvider.IsUserInRole(user.Username, role))
+                    requiredRole = "Access";
+                if (!roleProvider.IsUserInRole(user.Username, requiredRole))
                 {
                     userStatus.Status = UserValidationStatus.UserNotInRole;
                     return userStatus;
