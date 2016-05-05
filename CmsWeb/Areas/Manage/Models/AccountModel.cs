@@ -68,6 +68,7 @@ namespace CmsWeb.Models
         }
 
         private const string STR_UserName2 = "UserName2";
+
         public static string UserName2
         {
             get { return HttpContext.Current.Items[STR_UserName2] as string; }
@@ -90,11 +91,8 @@ namespace CmsWeb.Models
 
             if (role != null)
             {
-                // Temporarily change checkin to just Access role
-                // until we figure out what to do with a church that does not have the checkin role
-                if (role == "Checkin")
+                if (!roleProvider.RoleExists("Checkin"))
                     role = "Access";
-
                 if (!roleProvider.IsUserInRole(user.Username, role))
                 {
                     userStatus.Status = UserValidationStatus.UserNotInRole;
@@ -166,13 +164,13 @@ namespace CmsWeb.Models
         {
             if (string.IsNullOrEmpty(sessionToken))
                 return UserValidationResult.Invalid(UserValidationStatus.ImproperHeaderStructure, "Could not authenticate user, Authorization or SessionToken headers likely missing.", null);
-                //throw new ArgumentNullException("sessionToken");
+            //throw new ArgumentNullException("sessionToken");
 
             var userStatus = AuthenticateMobile(requirePin: true);
 
             if (userStatus.Status == UserValidationStatus.Success
-                 || userStatus.Status == UserValidationStatus.PinExpired
-                 || userStatus.Status == UserValidationStatus.SessionTokenExpired)
+                || userStatus.Status == UserValidationStatus.PinExpired
+                || userStatus.Status == UserValidationStatus.SessionTokenExpired)
             {
                 var result = ApiSessionModel.ResetSessionExpiration(userStatus.User, HttpContext.Current.Request.Headers["PIN"].ToInt2());
                 if (!result)
@@ -226,7 +224,7 @@ namespace CmsWeb.Models
             if (auth.HasValue())
             {
                 var cred = Encoding.ASCII.GetString(
-                     Convert.FromBase64String(auth.Substring(6))).SplitStr(":", 2);
+                    Convert.FromBase64String(auth.Substring(6))).SplitStr(":", 2);
                 username = cred[0];
                 password = cred[1];
             }
@@ -252,10 +250,10 @@ namespace CmsWeb.Models
         public static UserValidationResult AuthenticateLogon(string userName, string password, string url)
         {
             var userQuery = DbUtil.Db.Users.Where(uu =>
-                 uu.Username == userName ||
-                 uu.Person.EmailAddress == userName ||
-                 uu.Person.EmailAddress2 == userName
-                 );
+                uu.Username == userName ||
+                uu.Person.EmailAddress == userName ||
+                uu.Person.EmailAddress2 == userName
+                );
 
             var impersonating = false;
             User user = null;
@@ -340,7 +338,7 @@ namespace CmsWeb.Models
             if (user.IsLockedOut)
             {
                 NotifyAdmins($"{userName} locked out #{user.FailedPasswordAttemptCount} on {url}",
-                     $"{userName} tried to login at {Util.Now} but is locked out");
+                    $"{userName} tried to login at {Util.Now} but is locked out");
 
                 return UserValidationResult.Invalid(UserValidationStatus.LockedOut,
                     $"Your account has been locked out for {maxInvalidPasswordAttempts} failed attempts in a short window of time, please use the forgot password link or notify an Admin");
@@ -413,7 +411,7 @@ namespace CmsWeb.Models
             if (u == null)
                 return;
             Session["ActivePerson"] = u.Name;
-            if(deleteSpecialTags)
+            if (deleteSpecialTags)
                 DbUtil.Db.DeleteSpecialTags(Util.UserPeopleId);
         }
 
@@ -429,8 +427,8 @@ namespace CmsWeb.Models
         private static User SetUserInfo(string username)
         {
             var i = (from u in DbUtil.Db.Users
-                        where u.Username == username
-                        select new { u, u.Person.PreferredName }).SingleOrDefault();
+                     where u.Username == username
+                     select new {u, u.Person.PreferredName}).SingleOrDefault();
             if (i == null)
                 return null;
             //var u = DbUtil.Db.Users.SingleOrDefault(us => us.Username == username);
@@ -515,10 +513,10 @@ namespace CmsWeb.Models
 
             username = username.Trim();
             var q = DbUtil.Db.Users.Where(uu =>
-                 uu.Username == username ||
-                 uu.Person.EmailAddress == username ||
-                 uu.Person.EmailAddress2 == username
-                 );
+                uu.Username == username ||
+                uu.Person.EmailAddress == username ||
+                uu.Person.EmailAddress2 == username
+                );
             if (!q.Any())
             {
                 path.Append("u0");
@@ -527,9 +525,9 @@ namespace CmsWeb.Models
 
                 var minage = DbUtil.Db.Setting("MinimumUserAge", "16").ToInt();
                 var q2 = from uu in DbUtil.Db.People
-                            where uu.EmailAddress == username || uu.EmailAddress2 == username
-                            where uu.Age == null || uu.Age >= minage
-                            select uu;
+                         where uu.EmailAddress == username || uu.EmailAddress2 == username
+                         where uu.Age == null || uu.Age >= minage
+                         select uu;
                 if (q2.Any())
                 {
                     path.Append("p+");
@@ -551,8 +549,8 @@ namespace CmsWeb.Models
                         msg = msg.Replace("{email}", username);
                         msg = msg.Replace("{resetlink}", url);
                         Util.SendMsg(ConfigurationManager.AppSettings["sysfromemail"],
-                             DbUtil.Db.CmsHost, Util.FirstAddress(DbUtil.AdminMail),
-                             "touchpointsoftware new password link", msg, Util.ToMailAddressList(p.EmailAddress ?? p.EmailAddress2), 0, null);
+                            DbUtil.Db.CmsHost, Util.FirstAddress(DbUtil.AdminMail),
+                            "touchpointsoftware new password link", msg, Util.ToMailAddressList(p.EmailAddress ?? p.EmailAddress2), 0, null);
                     }
                     DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
                     return;
@@ -568,9 +566,9 @@ namespace CmsWeb.Models
                 msg = DbUtil.Db.ContentHtml("ForgotPasswordBadEmail", Resource1.AccountModel_ForgotPasswordBadEmail);
                 msg = msg.Replace("{email}", username);
                 Util.SendMsg(ConfigurationManager.AppSettings["sysfromemail"],
-                     DbUtil.Db.CmsHost, Util.FirstAddress(DbUtil.AdminMail),
-                     "Forgot password request for " + DbUtil.Db.Setting("NameOfChurch", "bvcms"),
-                     msg, Util.ToMailAddressList(username), 0, null);
+                    DbUtil.Db.CmsHost, Util.FirstAddress(DbUtil.AdminMail),
+                    "Forgot password request for " + DbUtil.Db.Setting("NameOfChurch", "bvcms"),
+                    msg, Util.ToMailAddressList(username), 0, null);
                 DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
                 return;
             }
@@ -594,8 +592,8 @@ namespace CmsWeb.Models
             msg = msg.Replace("{email}", username);
             msg = msg.Replace("{resetlink}", sb.ToString());
             Util.SendMsg(ConfigurationManager.AppSettings["sysfromemail"],
-                 DbUtil.Db.CmsHost, Util.FirstAddress(DbUtil.AdminMail),
-                 "TouchPoint password reset link", msg, addrlist, 0, null);
+                DbUtil.Db.CmsHost, Util.FirstAddress(DbUtil.AdminMail),
+                "TouchPoint password reset link", msg, addrlist, 0, null);
             DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
         }
     }
