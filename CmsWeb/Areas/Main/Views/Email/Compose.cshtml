@@ -100,34 +100,42 @@
                   </div>
 
               }
+              else if (!User.IsInRole("Access"))
+              {
+                  foreach (var recipient in Model.AdditionalRecipients)
+                  {
+                      <span>@ViewBag.ToName</span>
+                      <input type="hidden" name="AdditionalRecipients" value="@recipient">
+                  }
+              }
               else
               {
                   <div class="input-group">
-                    <select multiple="multiple" id="Recipients" name="Recipients" class="form-control">
-                      @if (Model.Count > 500)
-                      {
-                          <option value="" selected="selected">
-                            @Model.Count people@(Model.wantParents ? " including parents." : ".")
-                          </option>
-                      }
-                      else
-                      {
-                        foreach (var recipient in Model.Recipients)
-                        {
-                              <option value="@recipient" selected="selected">@recipient</option>
-                        }
-                      }
-                    </select>
-                    <span class="input-group-addon"><a href="/SearchAdd2/Dialog/addtoemail/" class="searchadd"><i class="fa fa-plus-circle"></i></a></span>
+                      <select multiple="multiple" id="Recipients" name="Recipients" class="form-control">
+                          @if (Model.Count > 500)
+                          {
+                              <option value="" selected="selected">
+                                  @Model.Count people@(Model.wantParents ? " including parents." : ".")
+                              </option>
+                          }
+                          else
+                          {
+                              foreach (var recipient in Model.Recipients)
+                              {
+                                  <option value="@recipient" selected="selected">@recipient</option>
+                              }
+                          }
+                      </select>
+                      <span class="input-group-addon"><a href="/SearchAdd2/Dialog/addtoemail/" class="searchadd"><i class="fa fa-plus-circle"></i></a></span>
                   </div>
-                if (Model.Count <= 500)
-                {
+                  if (Model.Count <= 500)
+                  {
                       <p class="help-block" id="person-count">
-                        @Model.Count
-                        @( Model.Count != 1 ? "people" : "person")
-                        @(Model.wantParents ? " including parents." : ".")
+                          @Model.Count
+                          @( Model.Count != 1 ? "people" : "person")
+                          @(Model.wantParents ? " including parents." : ".")
                       </p>
-                }
+                  }
               }
               <div class="row">
                 <div class="col-sm-12 alert alert-danger" id="additional-recipients-alerts" style="display:none;"></div>

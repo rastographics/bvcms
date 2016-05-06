@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Public
 
             if (string.IsNullOrEmpty(o.Html))
             {
-                ViewBag.qid = DbUtil.Db.QueryMembersUnderCurrentOrg().QueryId;
+                ViewBag.qid = DbUtil.Db.QueryInCurrentOrg().QueryId;
             }
 
             return View(o);

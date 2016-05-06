@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
@@ -21,11 +22,14 @@ namespace CmsWeb.Areas.Main.Controllers
     {
         [ValidateInput(false)]
         [Route("~/Email/{id:guid}")]
-        public ActionResult Index(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml, bool? ccparents, bool? nodups, int? orgid)
+        public ActionResult Index(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml, bool? ccparents, bool? nodups, int? orgid, int? personid)
         {
             if (Util.SessionTimedOut()) return Redirect("/Errors/SessionTimeout.htm");
             if (!body.HasValue())
                 body = TempData["body"] as string;
+
+            if(!User.IsInRole("Access") && (templateID != 0 || !personid.HasValue))
+                return Redirect($"/Person2/{Util.UserPeopleId}");
 
             if (!subj.HasValue() && templateID != 0)
             {
@@ -38,7 +42,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
                 DbUtil.LogActivity("Emailing people");
 
-                var m = new MassEmailer(id, parents, ccparents, nodups);
+                var m = new MassEmailer(id, parents, ccparents, nodups);  
 
                 m.Host = Util.Host;
 
@@ -56,6 +60,14 @@ namespace CmsWeb.Areas.Main.Controllers
 
             var me = new MassEmailer(id, parents, ccparents, nodups);
             me.Host = Util.Host;
+
+            if (personid.HasValue)
+            {
+                me.AdditionalRecipients = new List<int> { personid.Value };
+
+                var person = DbUtil.Db.LoadPersonById(personid.Value);
+                ViewBag.ToName = person?.Name;
+            }
 
             if (body.HasValue())
                 me.Body = Server.UrlDecode(body);
