@@ -1387,7 +1387,7 @@ namespace CmsData
             }
             return ep;
         }
-        public ContributionFund FetchOrCreateFund(int FundId, string Description)
+        public ContributionFund FetchOrCreateFund(int FundId, string Description, bool? NonTax = null)
         {
             ContributionFund fund;
             if (FundId > 0)
@@ -1411,6 +1411,7 @@ namespace CmsData
                     FundStatusId = 1,
                     FundTypeId = 1,
                     FundPledgeFlag = false,
+                    NonTaxDeductible = NonTax
                 };
                 ContributionFunds.InsertOnSubmit(fund);
                 SubmitChanges();

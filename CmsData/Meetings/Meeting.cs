@@ -108,7 +108,7 @@ namespace CmsData
             ev.TransactionTime = DateTime.Now;
         }
 
-        public void AddEditExtraText(string field, string value, DateTime? dt)
+        public void AddEditExtraText(string field, string value, DateTime? dt = null)
         {
             if (!value.HasValue())
                 return;

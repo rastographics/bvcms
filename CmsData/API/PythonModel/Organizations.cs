@@ -43,6 +43,14 @@ namespace CmsData
             db2.Dispose();
         }
 
+        public void DropOrgMember(int pid, int orgId)
+        {
+            var db2 = NewDataContext();
+            db.LogActivity($"PythonModel.DropOrgMember({pid},{orgId})");
+            var om = db2.OrganizationMembers.Single(m => m.PeopleId == pid && m.OrganizationId == orgId);
+            om.Drop(db2);
+        }
+
         public APIOrganization.Organization GetOrganization(object orgId)
         {
             var api = new APIOrganization(db);
@@ -138,14 +146,6 @@ namespace CmsData
         {
             var db2 = NewDataContext();
             db2.UpdateMainFellowship(orgId);
-        }
-
-        public void DropOrgMember(int pid, int orgId)
-        {
-            var db2 = NewDataContext();
-            db.LogActivity($"PythonModel.DropOrgMember({pid},{orgId})");
-            var om = db2.OrganizationMembers.Single(m => m.PeopleId == pid && m.OrganizationId == orgId);
-            om.Drop(db2);
         }
     }
 }
