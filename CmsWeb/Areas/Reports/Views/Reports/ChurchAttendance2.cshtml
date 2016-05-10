@@ -67,12 +67,12 @@
                                 @foreach (var c in p.Cols)
                                 {
                                     var a = d.Column(c);
-                                    <td class="text-right" title='@a.totalpeople / @a.totalmeetings'>@a.avg.ToString("n0")</td>
+                                    <td class="text-right" title='@a.TotalPeople / @a.TotalMeetings'>@a.Avg.ToString("n0")</td>
                                 }
                                 @{var ta = d.Total();}
-                                <td class="text-right" title='@ta.totalpeople / @ta.totalmeetings'>@ta.avg.ToString("n0")</td>
-                                <td class="text-right">@ta.totalpeople.ToString("n0")</td>
-                                <td class="text-right">@ta.totalmeetings.ToString("n0")</td>
+                                <td class="text-right" title='@ta.TotalPeople / @ta.TotalMeetings'>@ta.Avg.ToString("n0")</td>
+                                <td class="text-right">@ta.TotalPeople.ToString("n0")</td>
+                                <td class="text-right">@ta.TotalMeetings.ToString("n0")</td>
                             </tr>
                         }
                         <tr class="totals-row">
@@ -80,12 +80,12 @@
                             @foreach (var c in p.Cols)
                             {
                                 var a = p.Column(c);
-                                <td class="text-right" title='@a.totalpeople / @a.totalmeetings'>@a.avg.ToString("n0")</td>
+                                <td class="text-right" title='@a.TotalPeople / @a.TotalMeetings'>@a.Avg.ToString("n0")</td>
                             }
                             @{ var tta = p.Total(); }
-                            <td class="text-right" title='@tta.totalpeople / @tta.totalmeetings'>@tta.avg.ToString("n0")</td>
-                            <td class="text-right">@tta.totalpeople.ToString("n0")</td>
-                            <td class="text-right">@tta.totalmeetings.ToString("n0")</td>
+                            <td class="text-right" title='@tta.TotalPeople / @tta.TotalMeetings'>@tta.Avg.ToString("n0")</td>
+                            <td class="text-right">@tta.TotalPeople.ToString("n0")</td>
+                            <td class="text-right">@tta.TotalMeetings.ToString("n0")</td>
                         </tr>
                     </table>
                 </div>
