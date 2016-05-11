@@ -28,6 +28,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (RequiredDOB())
                 if(!DateOfBirth.HasValue() || byear == null)
                     return true;
+            if (NoAppropriateOrgFound())
+                return true;
             return false;
         }
         public bool ShowOptionalBirthday()

@@ -225,11 +225,11 @@ Please call the church to resolve this before we can complete your information."
             return true;
         }
 
-        private bool NoAppropriateOrgFound(bool selectFromFamily)
+        private bool NoAppropriateOrgFound(bool selectFromFamily = false)
         {
             if (!ComputesOrganizationByAge() || org != null)
                 return false;
-            var msg = NoAppropriateOrgError ?? "Sorry, no approprate org";
+            var msg = NoAppropriateOrgError ?? "Sorry, cannot find an appropriate age group";
             Log("NoAppropriateOrg");
             if (selectFromFamily)
                 modelState.AddModelError("fammember-" + person.PeopleId, msg);
