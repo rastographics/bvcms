@@ -42,6 +42,21 @@ namespace CmsData
             om.AddToGroup(db2, group);
             db2.Dispose();
         }
+        public void AddSubGroupFromQuery(object query, object orgId, string group)
+        {
+            var q = db.PeopleQuery2(query);
+            db.LogActivity($"PythonModel.AddSubGroupFromQuery(query,{orgId})");
+            foreach (var p in q)
+            {
+                var db2 = NewDataContext();
+                var om = (from mm in db.OrganizationMembers
+                          where mm.PeopleId == p.PeopleId
+                          where mm.OrganizationId == orgId.ToInt()
+                          select mm).SingleOrDefault();
+                om?.AddToGroup(db2, group);
+                db2.Dispose();
+            }
+        }
 
         public void DropOrgMember(int pid, int orgId)
         {

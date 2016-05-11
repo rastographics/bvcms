@@ -146,7 +146,9 @@ namespace CmsData
             var tag = db2.PopulateSpecialTag(q, DbUtil.TagTypeId_Emailer);
 
             Util.IsInRoleEmailTest = TestEmail;
-            var queueremail = db2.People.Where(pp => pp.PeopleId == queuedBy).Select(pp => pp.EmailAddress).Single();
+            var queueremail = db2.People.Where(pp => pp.PeopleId == queuedBy).Select(pp => pp.EmailAddress).SingleOrDefault();
+            if(!queueremail.HasValue())
+                throw new Exception("QueuedBy PeopleId not found in model.Email");
             Util.UserEmail = queueremail;
             db2.SetCurrentOrgId(CurrentOrgId);
 

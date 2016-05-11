@@ -44,6 +44,14 @@ namespace CmsData
             return count;
         }
 
+        public string SqlPeopleIdsToQuery(string sql)
+        {
+            var cn = GetReadonlyConnection();
+            var pids = cn.Query<int>(sql).ToList();
+            if (pids.Count == 0)
+                return "";
+            return $"peopleids='{string.Join(",", pids)}'";
+        }
         public IEnumerable<Person> QueryList(object query, string sort="name")
         {
             return SortList(sort, db.PeopleQuery2(query)).Take(1000);
