@@ -70,7 +70,11 @@ namespace CmsWeb.Areas.People.Models
 
         public IEnumerable<SelectListItem> Organizations()
         {
-            var list = DbUtil.Db.Organizations.OrderBy(r => r.OrganizationName).ToList().Select(x => new SelectListItem
+            var orgType = DbUtil.Db.Setting("UX-ContactedOrgType", null);
+
+            var list = DbUtil.Db.Organizations
+                .Where(x => string.IsNullOrEmpty(orgType) || orgType == x.OrganizationType.Description)
+                .OrderBy(r => r.OrganizationName).ToList().Select(x => new SelectListItem
             {
                 Value = x.OrganizationId.ToString(),
                 Text = x.OrganizationName,

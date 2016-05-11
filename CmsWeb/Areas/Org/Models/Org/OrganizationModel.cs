@@ -101,6 +101,18 @@ namespace CmsWeb.Areas.Org.Models
         private Settings _RegSettings;
         public Settings RegSettings => _RegSettings ?? (_RegSettings = DbUtil.Db.CreateRegistrationSettings(Org.OrganizationId));
 
+        internal bool? _showContactsReceivedTab;
+        public bool ShowContactsReceivedTab()
+        {
+            // We request this twice per Org Index.cshtml. Let's not do the DB calls twice.
+            if (_showContactsReceivedTab.HasValue) return _showContactsReceivedTab.Value;
+
+            var orgType = DbUtil.Db.Setting("UX-ContactedOrgType", null);
+
+            _showContactsReceivedTab = OrgMain.OrganizationType.ToString() == orgType;
+
+            return _showContactsReceivedTab.Value;
+        }
 
         internal bool? _showCommunityGroupTab;
         public bool ShowCommunityGroupTab()
@@ -108,7 +120,7 @@ namespace CmsWeb.Areas.Org.Models
             // We request this twice per Org Index.cshtml. Let's not do the DB calls twice.
             if (_showCommunityGroupTab.HasValue) return _showCommunityGroupTab.Value;
 
-            _showCommunityGroupTab = DbUtil.Db.Setting("ShowCommunityGroupTab", "false").ToLower() == "false";
+            _showCommunityGroupTab = DbUtil.Db.Setting("ShowCommunityGroupTab", "false").ToLower() == "true";
 
             return _showCommunityGroupTab.Value;
         }
