@@ -134,7 +134,7 @@ namespace CmsData
                             var ii = rd[i].ToNullableInt();
                             if (nam.Equal("peopleid") || nam.Equal("spouseid"))
                                 s = $"<a href='/Person2/{ii}' target='Person'>{ii}</a>";
-                            else if (nam.Equal("organizationid"))
+                            else if (nam.Equal("organizationid") || nam.EndsWith("OrgId"))
                                 s = $"<a href='/Org/{ii}' target='Organization'>{ii}</a>";
                             else if (nam.EndsWith("id") || nam.EndsWith("id2") || nam.Equal("Year"))
                                 s = ii.ToString();

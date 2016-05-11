@@ -135,6 +135,7 @@ namespace CmsWeb.Areas.Search.Models
                          RegEnd = os.RegEnd.FormatDate(),
                          RollSheetVisitorWks = o.RollSheetVisitorWks ?? 0,
                          Limit = o.Limit.ToString(),
+                         o.LimitToRole,
                          CanSelfCheckin = os.CanSelfCheckin ?? false,
                          BirthDayStart = os.BirthDayStart.FormatDate(),
                          BirthDayEnd = os.BirthDayEnd.FormatDate(),

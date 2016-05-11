@@ -99,6 +99,12 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                         case "Limit":
                             o.Limit = val.ToInt2();
                             break;
+                        case "LimitToRole":
+                            if (o.LimitToRole.Equal("none"))
+                                o.LimitToRole = null;
+                            else if(o.LimitToRole.HasValue())
+                                o.LimitToRole = val;
+                            break;
                         case "Location":
                             o.Location = val;
                             break;
