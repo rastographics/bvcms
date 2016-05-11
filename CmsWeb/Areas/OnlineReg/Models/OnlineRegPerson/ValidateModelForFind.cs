@@ -154,8 +154,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private void ValidateBirthdayRange(bool selectFromFamily)
         {
             if (org == null)
-                return;
-            if (!BestBirthday.HasValue && (org.BirthDayStart.HasValue || org.BirthDayEnd.HasValue))
+            {
+                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth), "No Appropriate Org Found");
+                Log("No appropriate org");
+            }
+            else if (!BestBirthday.HasValue && (org.BirthDayStart.HasValue || org.BirthDayEnd.HasValue))
             {
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth), "birthday required");
                 RegistrantProblem = @"**Birthday is required for this registration**";

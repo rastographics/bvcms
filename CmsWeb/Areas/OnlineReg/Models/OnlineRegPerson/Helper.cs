@@ -246,7 +246,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var oo = q2.FirstOrDefault();
 
             if (oo == null)
-                NoAppropriateOrgError = "Sorry, cannot find an appropriate age group";
+            {
+                NoAppropriateOrgError = person?.BirthDate != null 
+                    ? "Sorry, cannot find an appropriate age group for the birthday we have on record for you" 
+                    : "Sorry, cannot find an appropriate age group";
+            }
             else if (oo.RegEnd.HasValue && DateTime.Now > oo.RegEnd)
                 NoAppropriateOrgError = $"Sorry, registration has ended for {oo.OrganizationName}";
             else if (oo.OrganizationStatusId == OrgStatusCode.Inactive)
