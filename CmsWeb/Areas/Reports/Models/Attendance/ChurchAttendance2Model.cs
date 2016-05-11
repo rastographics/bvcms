@@ -226,7 +226,7 @@ namespace CmsWeb.Areas.Reports.Models
 
         public List<ProgInfo> FetchInfo()
         {
-            const string sql = @"
+            string sql = $@"
 WITH progs AS (
 	SELECT * FROM dbo.Program
 	WHERE LEN(RptGroup) > 0
@@ -265,14 +265,14 @@ meetings AS (
 	JOIN dbo.Organizations o ON o.OrganizationId = m.OrganizationId
 	JOIN dbo.DivOrg dd ON dd.OrgId = o.OrganizationId
 	JOIN progdivs pd ON pd.DivId = dd.DivId
-	WHERE m.MeetingDate >= '4/29/15'
-	AND m.MeetingDate <= '4/27/16'
+	WHERE m.MeetingDate >= @Dt1
+	AND m.MeetingDate <= @Dt2
 	AND m.MaxCount > 0
 )
 SELECT * FROM meetings
 ORDER BY RptGroup, ReportLine
 ";
-            var j = DbUtil.Db.Connection.Query<Data>(sql).ToList();
+            var j = DbUtil.Db.Connection.Query<Data>(sql, new {Dt1, Dt2}).ToList();
             var q = from prog in j
                     group prog by prog.RptGroup
                     into g
