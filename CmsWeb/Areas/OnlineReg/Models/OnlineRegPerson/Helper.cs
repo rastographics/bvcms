@@ -185,7 +185,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     //                    else
                     _org = DbUtil.Db.LoadOrganizationById(orgid.Value);
                 }
-                if (_org == null && (divid.HasValue || masterorgid.HasValue) && (Found == true || IsValidForNew))
+                if (_org == null && (divid.HasValue || masterorgid.HasValue))
                 {
                     if (ComputesOrganizationByAge())
                         _org = GetAppropriateOrg();
