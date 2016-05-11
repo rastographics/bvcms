@@ -131,6 +131,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return FlowList(m);
             }
             p.ValidateModelForFind(ModelState, id);
+            if (!ModelState.IsValid)
+                return FlowList(m);
 
             if (p.AnonymousReRegistrant())
                 return View("Continue/ConfirmReregister", m); // send email with link to reg-register
@@ -195,11 +197,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 orgid = m.Orgid,
                 masterorgid = m.masterorgid,
-#if DEBUG
-                FirstName = "Delaine",
-                LastName = "Carroll",
-                EmailAddress = "delaine@davidcarroll.name"
-#endif
             });
             return FlowList(m);
         }
