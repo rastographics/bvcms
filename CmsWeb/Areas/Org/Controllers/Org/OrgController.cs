@@ -142,6 +142,10 @@ namespace CmsWeb.Areas.Org.Controllers
                 OrganizationId = o.OrganizationId
             };
 
+            var defaultRole = DbUtil.Db.Setting("Contacts-DefaultRole", null);
+            if (!string.IsNullOrEmpty(defaultRole) && DbUtil.Db.Roles.Any(x => x.RoleName == defaultRole))
+                c.LimitToRole = defaultRole;
+
             DbUtil.Db.Contacts.InsertOnSubmit(c);
             DbUtil.Db.SubmitChanges();
 

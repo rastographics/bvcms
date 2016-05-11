@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Main.Models.Other;
@@ -59,6 +60,10 @@ namespace CmsWeb.Areas.People.Controllers
                 CreatedBy = Util.UserId1,
                 ContactDate = Util.Now.Date
             };
+
+            var defaultRole = DbUtil.Db.Setting("Contacts-DefaultRole", null);
+            if (!string.IsNullOrEmpty(defaultRole) && DbUtil.Db.Roles.Any(x => x.RoleName == defaultRole))
+                c.LimitToRole = defaultRole;
 
             DbUtil.Db.Contacts.InsertOnSubmit(c);
             DbUtil.Db.SubmitChanges();
