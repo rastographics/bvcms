@@ -1,7 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
+using CmsData.Resource;
 using CmsWeb.Areas.Org.Models;
 using UtilityExtensions;
 
@@ -120,6 +123,26 @@ namespace CmsWeb.Areas.Org.Controllers
             };
 
             return PartialView("Contacts", m);
+        }
+
+        [HttpPost]
+        public ActionResult Resources(int id)
+        {
+            var resources = new List<CmsData.Resource.Resource>();
+            resources.Add(new CmsData.Resource.Resource
+            {
+                Name = "South America Mission Goals",
+                Type = ResourceType.Pdf,
+                UpdatedTime = DateTime.Now.AddDays(-22)
+            });
+            resources.Add(new CmsData.Resource.Resource
+            {
+                Name = "Trip Budget",
+                Type = ResourceType.Spreadsheet,
+                UpdatedTime = DateTime.Now.AddDays(-12)
+            });
+            
+            return PartialView(resources);
         }
 
         [HttpPost]

@@ -232,6 +232,9 @@
           <a href="#emails" aria-controls="emails" data-toggle="tab">Emails</a>
         </li>
       }
+        <li>
+            <a href="#resources" aria-controls="resources" data-toggle="tab">Resources</a>
+        </li>
       @if (User.IsInRole("Edit") || User.IsInRole("Admin"))
       {
         <li>
@@ -267,6 +270,9 @@
           @Html.Partial("Emails/Tab", Model)
         </div>
       }
+        <div class="tab-pane fade" id="resources">
+            @Html.Partial("Resources/Tab", Model)
+        </div>
       @if (User.IsInRole("Edit") || User.IsInRole("Admin"))
       {
         <div class="tab-pane fade" id="system">

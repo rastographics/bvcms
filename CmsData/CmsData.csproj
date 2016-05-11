@@ -1016,6 +1016,7 @@
     <Compile Include="QueryBuilder\QueryType.cs" />
     <Compile Include="Extensions\Tag.cs" />
     <Compile Include="API\APIWriter.cs" />
+    <Compile Include="Resource\Resource.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

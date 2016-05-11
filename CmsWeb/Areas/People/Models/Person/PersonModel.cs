@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using CmsData;
 using CmsData.Codes;
+using CmsData.Resource;
 using CmsWeb.Code;
 using UtilityExtensions;
 
@@ -200,6 +202,36 @@ namespace CmsWeb.Areas.People.Models
                 }
             }
             return null;
+        }
+
+        public List<CmsData.Resource.Resource> Resources
+        {
+            get
+            {
+                return new List<CmsData.Resource.Resource>()
+                {
+                    new CmsData.Resource.Resource
+                    {
+                        Name = "Church Guidebook",
+                        Type = ResourceType.Pdf,
+                        UpdatedTime = DateTime.Now.AddDays(-33)
+                    },
+                    new CmsData.Resource.Resource
+                    {
+                        Name = "South America Mission Goals",
+                        OrgId = 1,
+                        Type = ResourceType.Pdf,
+                        UpdatedTime = DateTime.Now.AddDays(-22)
+                    },
+                    new CmsData.Resource.Resource
+                    {
+                        Name = "Baseball Team Roster",
+                        OrgId = 1,
+                        Type = ResourceType.Spreadsheet,
+                        UpdatedTime = DateTime.Now.AddDays(-52)
+                    }
+                };
+            }
         }
     }
 }
