@@ -146,7 +146,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 $@"{p.person.Name} has registered for {Header}<br/>
 Feepaid for this registrant: {p.AmountToPay():C}<br/>
 Others in this registration session: {p.GetOthersInTransaction(Transaction)}<br/>
-Total Fee paid for this registration session: {ts.TotPaid:C}<br/>
+Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
 <pre>{p.PrepareSummaryText()}</pre>");
         }
 
