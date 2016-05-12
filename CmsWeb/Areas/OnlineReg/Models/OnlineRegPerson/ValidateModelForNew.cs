@@ -138,7 +138,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 modelState.AddModelError(dobname, $"must be {minage} to create account");
                 Log("UnderAgeForAccount");
             }
-            if (ComputesOrganizationByAge() && GetAppropriateOrg() == null)
+            if (ComputesOrganizationByAge() && org == null)
             {
                 modelState.AddModelError(dobname, NoAppropriateOrgError);
                 Log("NoAppropriateOrg");

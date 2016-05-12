@@ -17,13 +17,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
         public IEnumerable<FamilyMember> FamilyMembers()
         {
-            var family = from p in user.Family.People
+            var family = (from p in user.Family.People
                          where p.DeceasedDate == null
-                         select new { p.PeopleId, p.Name2, p.Age, p.Name };
+                         select new { p.PeopleId, p.Name2, p.Age, p.Name }).ToList();
             var q = from m in family
-                    join r in _list on m.PeopleId equals r.PeopleId into j
-                    from r in j.DefaultIfEmpty()
-                    where r == null || r.IsValidForContinue == false
+                    where _list.All(vv => vv.PeopleId != m.PeopleId)
                     orderby m.PeopleId == user.Family.HeadOfHouseholdId ? 1 :
                             m.PeopleId == user.Family.HeadOfHouseholdSpouseId ? 2 :
                             3, m.Age descending, m.Name2
@@ -42,13 +40,20 @@ namespace CmsWeb.Areas.OnlineReg.Models
             HistoryAdd("Register");
             int index = List.Count - 1;
             var p = LoadExistingPerson(id, index);
-            List[index] = p;
-
             if (p.NeedsToChooseClass())
             {
                 modelState.AddModelError("fammember-" + p.PeopleId, "Please make selection above");
                 return;
             }
+            if (p.ComputesOrganizationByAge())
+            {
+                if(p.org == null)
+                {
+                    modelState.AddModelError("fammember-" + p.PeopleId, "No Appropriate Org");
+                    return;
+                }
+            }
+            List[index] = p;
 
             p.ValidateModelForFind(modelState, id, selectFromFamily: true);
             if (!modelState.IsValid)

@@ -173,11 +173,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return settings.Values.Any(o => o.MemberOnly);
         }
 
+        private bool? noorg = null;
         private Organization _org;
         public Organization org
         {
             get
             {
+                if (noorg == true)
+                    return null;
                 if (_org == null && orgid.HasValue)
                 {
                     //                    if (orgid == Util.CreateAccountCode)
@@ -192,6 +195,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 }
                 if (_org != null)
                     orgid = _org.OrganizationId;
+                if (!orgid.HasValue)
+                    noorg = true;
                 return _org;
             }
         }
@@ -224,8 +229,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public string NoAppropriateOrgError;
 
-        internal Organization GetAppropriateOrg()
+        private Organization GetAppropriateOrg()
         {
+            if (_org != null)
+                return _org;
             NoAppropriateOrgError = null;
 
             if (!masterorgid.HasValue)
