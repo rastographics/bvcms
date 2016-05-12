@@ -91,7 +91,10 @@
           else
           {
             Model.Parent.ShowFindInstructions = true;
-            if (Model.Found == null || !ViewData.ModelState.IsValid || Model.RegistrantProblem.HasValue() || Model.Parent.UserNeedsSelection) // have not searched yet
+            if (Model.Found == null 
+                      || Model.NoAppropriateOrgError.HasValue() 
+                      || Model.RegistrantProblem.HasValue() 
+                      || Model.Parent.UserNeedsSelection)
             {
               @Html.Partial("Flow2/PersonFind", Model)
             }

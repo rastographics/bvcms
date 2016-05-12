@@ -157,9 +157,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void ValidateBirthdayRange(bool selectFromFamily)
         {
+            if (ManageSubscriptions())
+                return;
             if (org == null)
             {
-                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth), "No Appropriate Org Found");
+                NoAppropriateOrgError = "No Appropriate Org Found";
+                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth), NoAppropriateOrgError);
                 Log("No appropriate org");
             }
             else if (!BestBirthday.HasValue && (org.BirthDayStart.HasValue || org.BirthDayEnd.HasValue))
@@ -236,12 +239,13 @@ Please call the church to resolve this before we can complete your information."
         {
             if (!ComputesOrganizationByAge() || org != null)
                 return false;
-            var msg = NoAppropriateOrgError ?? "Sorry, cannot find an appropriate age group";
+            NoAppropriateOrgError = "Sorry, cannot find an appropriate age group";
+            RegistrantProblem = NoAppropriateOrgError;
             Log("NoAppropriateOrg");
             if (selectFromFamily)
-                modelState.AddModelError("fammember-" + person.PeopleId, msg);
+                modelState.AddModelError("fammember-" + person.PeopleId, NoAppropriateOrgError);
             else
-                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth), msg);
+                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth), NoAppropriateOrgError);
             IsValidForContinue = false;
             IsValidForExisting = false;
             return true;

@@ -661,7 +661,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 {
                     orgid = Orgid,
                     masterorgid = masterorgid,
-#if DEBUG
+#if DEBUG2
                     FirstName = "Another",
                     LastName = "Person",
                     DateOfBirth = "12/1/1955",

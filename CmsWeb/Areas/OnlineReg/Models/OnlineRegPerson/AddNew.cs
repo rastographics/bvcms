@@ -78,17 +78,20 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     if (org == null)
                     {
                         Log("NoApproprateAgeGroup");
-                        modelState.AddModelError(Parent.GetNameFor(mm => mm.List[id].Found), "Sorry, cannot find an appropriate age group");
+                        NoAppropriateOrgError = "Sorry, cannot find an appropriate age group";
+                        modelState.AddModelError(Parent.GetNameFor(mm => mm.List[id].Found), NoAppropriateOrgError);
                     }
                     else if (org.RegEnd.HasValue && DateTime.Now > org.RegEnd)
                     {
                         Log("Closed");
-                        modelState.AddModelError(Parent.GetNameFor(mm => mm.List[id].Found), "Sorry, registration has ended for that group");
+                        NoAppropriateOrgError = "Sorry, registration has ended for that group";
+                        modelState.AddModelError(Parent.GetNameFor(mm => mm.List[id].Found), NoAppropriateOrgError);
                     }
                     else if (org.OrganizationStatusId == OrgStatusCode.Inactive)
                     {
                         Log("Inactive");
-                        modelState.AddModelError(Parent.GetNameFor(mm => mm.List[id].Found), "Sorry, that group is inactive");
+                        NoAppropriateOrgError = "Sorry, that group is inactive";
+                        modelState.AddModelError(Parent.GetNameFor(mm => mm.List[id].Found), NoAppropriateOrgError);
                     }
                 }
                 else if (!ManageSubscriptions())
