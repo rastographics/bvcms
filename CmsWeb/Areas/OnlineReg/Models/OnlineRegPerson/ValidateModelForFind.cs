@@ -100,6 +100,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var mindate = DateTime.Parse("1/1/1753");
             var HasOneOfThreeRequired = false;
 
+            DateTime dt;
+            if (DateOfBirth.HasValue() && !Util.BirthDateValid(bmon, bday, byear, out dt))
+                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth), "birthday invalid");
+
             if (BestBirthday.HasValue && BestBirthday < mindate)
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth), "invalid date");
 
