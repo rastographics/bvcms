@@ -54,6 +54,8 @@ namespace CmsData
 		
 		private string _LimitToRole;
 		
+		private int? _OrganizationId;
+		
    		
    		private EntitySet< Contactee> _contactees;
 		
@@ -64,6 +66,8 @@ namespace CmsData
    		private EntitySet< Task> _TasksCompleted;
 		
     	
+		private EntityRef< Organization> _organization;
+		
 		private EntityRef< ContactType> _ContactType;
 		
 		private EntityRef< Ministry> _Ministry;
@@ -131,6 +135,9 @@ namespace CmsData
 		partial void OnLimitToRoleChanging(string value);
 		partial void OnLimitToRoleChanged();
 		
+		partial void OnOrganizationIdChanging(int? value);
+		partial void OnOrganizationIdChanged();
+		
     #endregion
 		public Contact()
 		{
@@ -143,6 +150,8 @@ namespace CmsData
 			
 			this._TasksCompleted = new EntitySet< Task>(new Action< Task>(this.attach_TasksCompleted), new Action< Task>(this.detach_TasksCompleted)); 
 			
+			
+			this._organization = default(EntityRef< Organization>); 
 			
 			this._ContactType = default(EntityRef< ContactType>); 
 			
@@ -564,6 +573,32 @@ namespace CmsData
 		}
 
 		
+		[Column(Name="OrganizationId", UpdateCheck=UpdateCheck.Never, Storage="_OrganizationId", DbType="int")]
+		[IsForeignKey]
+		public int? OrganizationId
+		{
+			get { return this._OrganizationId; }
+
+			set
+			{
+				if (this._OrganizationId != value)
+				{
+				
+					if (this._organization.HasLoadedOrAssignedValue)
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+				
+                    this.OnOrganizationIdChanging(value);
+					this.SendPropertyChanging();
+					this._OrganizationId = value;
+					this.SendPropertyChanged("OrganizationId");
+					this.OnOrganizationIdChanged();
+				}
+
+			}
+
+		}
+
+		
     #endregion
         
     #region Foreign Key Tables
@@ -612,6 +647,48 @@ namespace CmsData
 	
 	#region Foreign Keys
     	
+		[Association(Name="contactsHad__organization", Storage="_organization", ThisKey="OrganizationId", IsForeignKey=true)]
+		public Organization organization
+		{
+			get { return this._organization.Entity; }
+
+			set
+			{
+				Organization previousValue = this._organization.Entity;
+				if (((previousValue != value) 
+							|| (this._organization.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if (previousValue != null)
+					{
+						this._organization.Entity = null;
+						previousValue.contactsHad.Remove(this);
+					}
+
+					this._organization.Entity = value;
+					if (value != null)
+					{
+						value.contactsHad.Add(this);
+						
+						this._OrganizationId = value.OrganizationId;
+						
+					}
+
+					else
+					{
+						
+						this._OrganizationId = default(int?);
+						
+					}
+
+					this.SendPropertyChanged("organization");
+				}
+
+			}
+
+		}
+
+		
 		[Association(Name="FK_Contacts_ContactTypes", Storage="_ContactType", ThisKey="ContactTypeId", IsForeignKey=true)]
 		public ContactType ContactType
 		{

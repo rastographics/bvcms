@@ -38,11 +38,11 @@ namespace CmsData
 		
 		private string _FieldValue;
 		
-		private string _Type;
-		
 		private bool? _UseAllValues;
 		
 		private int _Instance;
+		
+		private string _Type;
 		
    		
     	
@@ -85,14 +85,14 @@ namespace CmsData
 		partial void OnFieldValueChanging(string value);
 		partial void OnFieldValueChanged();
 		
-		partial void OnTypeChanging(string value);
-		partial void OnTypeChanged();
-		
 		partial void OnUseAllValuesChanging(bool? value);
 		partial void OnUseAllValuesChanged();
 		
 		partial void OnInstanceChanging(int value);
 		partial void OnInstanceChanged();
+		
+		partial void OnTypeChanging(string value);
+		partial void OnTypeChanged();
 		
     #endregion
 		public PeopleExtra()
@@ -331,28 +331,6 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="Type", UpdateCheck=UpdateCheck.Never, Storage="_Type", DbType="varchar(18) NOT NULL", IsDbGenerated=true)]
-		public string Type
-		{
-			get { return this._Type; }
-
-			set
-			{
-				if (this._Type != value)
-				{
-				
-                    this.OnTypeChanging(value);
-					this.SendPropertyChanging();
-					this._Type = value;
-					this.SendPropertyChanged("Type");
-					this.OnTypeChanged();
-				}
-
-			}
-
-		}
-
-		
 		[Column(Name="UseAllValues", UpdateCheck=UpdateCheck.Never, Storage="_UseAllValues", DbType="bit")]
 		public bool? UseAllValues
 		{
@@ -390,6 +368,28 @@ namespace CmsData
 					this._Instance = value;
 					this.SendPropertyChanged("Instance");
 					this.OnInstanceChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Type", UpdateCheck=UpdateCheck.Never, Storage="_Type", DbType="varchar(18) NOT NULL", IsDbGenerated=true)]
+		public string Type
+		{
+			get { return this._Type; }
+
+			set
+			{
+				if (this._Type != value)
+				{
+				
+                    this.OnTypeChanging(value);
+					this.SendPropertyChanging();
+					this._Type = value;
+					this.SendPropertyChanged("Type");
+					this.OnTypeChanged();
 				}
 
 			}

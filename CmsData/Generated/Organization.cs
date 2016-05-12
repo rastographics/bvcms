@@ -183,6 +183,8 @@ namespace CmsData
 		
    		private EntitySet< Organization> _ChildOrgs;
 		
+   		private EntitySet< Contact> _contactsHad;
+		
    		private EntitySet< EnrollmentTransaction> _EnrollmentTransactions;
 		
    		private EntitySet< Attend> _Attends;
@@ -472,6 +474,8 @@ namespace CmsData
 			this._BFMembers = new EntitySet< Person>(new Action< Person>(this.attach_BFMembers), new Action< Person>(this.detach_BFMembers)); 
 			
 			this._ChildOrgs = new EntitySet< Organization>(new Action< Organization>(this.attach_ChildOrgs), new Action< Organization>(this.detach_ChildOrgs)); 
+			
+			this._contactsHad = new EntitySet< Contact>(new Action< Contact>(this.attach_contactsHad), new Action< Contact>(this.detach_contactsHad)); 
 			
 			this._EnrollmentTransactions = new EntitySet< EnrollmentTransaction>(new Action< EnrollmentTransaction>(this.attach_EnrollmentTransactions), new Action< EnrollmentTransaction>(this.detach_EnrollmentTransactions)); 
 			
@@ -2326,6 +2330,16 @@ namespace CmsData
    		}
 
 		
+   		[Association(Name="contactsHad__organization", Storage="_contactsHad", OtherKey="OrganizationId")]
+   		public EntitySet< Contact> contactsHad
+   		{
+   		    get { return this._contactsHad; }
+
+			set	{ this._contactsHad.Assign(value); }
+
+   		}
+
+		
    		[Association(Name="ENROLLMENT_TRANSACTION_ORG_FK", Storage="_EnrollmentTransactions", OtherKey="OrganizationId")]
    		public EntitySet< EnrollmentTransaction> EnrollmentTransactions
    		{
@@ -2764,6 +2778,19 @@ namespace CmsData
 		{
 			this.SendPropertyChanging();
 			entity.ParentOrg = null;
+		}
+
+		
+		private void attach_contactsHad(Contact entity)
+		{
+			this.SendPropertyChanging();
+			entity.organization = this;
+		}
+
+		private void detach_contactsHad(Contact entity)
+		{
+			this.SendPropertyChanging();
+			entity.organization = null;
 		}
 
 		

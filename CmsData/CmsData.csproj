@@ -596,6 +596,7 @@
     <Compile Include="Generated\Views\LastAttend.cs" />
     <Compile Include="Generated\Views\MeetingConflict.cs" />
     <Compile Include="Generated\Views\MinistryInfo.cs" />
+    <Compile Include="Generated\Views\MoveSchedule.cs" />
     <Compile Include="Generated\Views\OnlineRegQA.cs" />
     <Compile Include="Generated\Views\OrgSchedules2.cs" />
     <Compile Include="Generated\Views\OrgsWithFee.cs" />

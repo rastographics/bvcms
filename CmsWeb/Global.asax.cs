@@ -15,7 +15,6 @@ using CmsWeb.Code;
 using CmsWeb.Models;
 using Dapper;
 using Elmah;
-using StackExchange.Profiling;
 using UtilityExtensions;
 
 namespace CmsWeb
@@ -40,8 +39,8 @@ namespace CmsWeb
             ValueProviderFactories.Factories.Remove(ValueProviderFactories.Factories.OfType<JsonValueProviderFactory>().FirstOrDefault());
             ValueProviderFactories.Factories.Add(new JsonNetValueProviderFactory());
 
-            MiniProfiler.Settings.Results_List_Authorize = IsAuthorizedToViewProfiler;
-            MiniProfiler.Settings.Results_Authorize = IsAuthorizedToViewProfiler;
+//            MiniProfiler.Settings.Results_List_Authorize = IsAuthorizedToViewProfiler;
+//            MiniProfiler.Settings.Results_Authorize = IsAuthorizedToViewProfiler;
         }
 
         protected void Session_Start(object sender, EventArgs e)
@@ -76,7 +75,7 @@ namespace CmsWeb
                 return;
             }
 
-            MiniProfiler.Start();
+//            MiniProfiler.Start();
 
             var r = DbUtil.CheckDatabaseExists(Util.CmsHost);
             var redirect = ViewExtensions2.DatabaseErrorUrl(r);
@@ -132,15 +131,15 @@ namespace CmsWeb
                     Response.Redirect(r);
             }
 
-            MiniProfiler.Stop();
+//            MiniProfiler.Stop();
         }
 
         protected void Application_PostAuthorizeRequest()
         {
             if (ShouldBypassProcessing()) return;
 
-            if (!IsAuthorizedToViewProfiler(Request))
-                MiniProfiler.Stop(discardResults: true);
+//            if (!IsAuthorizedToViewProfiler(Request))
+//                MiniProfiler.Stop(discardResults: true);
         }
 
         public void ErrorLog_Logged(object sender, ErrorLoggedEventArgs args)
@@ -233,17 +232,17 @@ namespace CmsWeb
             return false;
         }
 
-        private static bool IsAuthorizedToViewProfiler(HttpRequest request)
-        {
-            if (request.IsLocal)
-                return false;
-
-            var ctx = request.RequestContext.HttpContext;
-            if (ctx?.User == null)
-                return false;
-
-            return ctx.User.IsInRole("Developer") && DbUtil.Db.Setting("MiniProfileEnabled", "false") == "true";
-        }
+//        private static bool IsAuthorizedToViewProfiler(HttpRequest request)
+//        {
+//            if (request.IsLocal)
+//                return false;
+//
+//            var ctx = request.RequestContext.HttpContext;
+//            if (ctx?.User == null)
+//                return false;
+//
+//            return ctx.User.IsInRole("Developer") && DbUtil.Db.Setting("MiniProfileEnabled", "false") == "true";
+//        }
 
         private bool ShouldBypassProcessing()
         {
