@@ -100,7 +100,7 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                             o.Limit = val.ToInt2();
                             break;
                         case "LimitToRole":
-                            if (o.LimitToRole.Equal("none"))
+                            if (val.Equal("none"))
                                 o.LimitToRole = null;
                             else if(o.LimitToRole.HasValue())
                                 o.LimitToRole = val;
