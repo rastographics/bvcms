@@ -1,6 +1,7 @@
-﻿@model CmsWeb.Models.PagerModel2
+﻿@using CmsWeb.Areas.People.Models
+@model CmsWeb.Models.PagerModel2
 <div class="row hidden-print">
-    <div class="col-lg-4 col-md-4 col-sm-4 form-inline">
+    <div class="col-lg-6 col-md-6 col-sm-6 form-inline">
         @if (Model.ShowPageSize)
         {
             if (Model.AjaxPager)
@@ -11,6 +12,22 @@
             {
                 <span>Show </span>@Html.DropDownList("PageSize", Model.PageSizeList(), new { onchange = "$.setPageSize(this)", @class = "form-control" })<span> rows</span>
             }
+        }
+        @if (Model.GetType() == typeof(CurrentEnrollments) || Model.GetType() == typeof(PreviousEnrollments) || Model.GetType() == typeof(PendingEnrollments))
+        {
+            <span> of types </span><input name="OrgTypesFilter" value="@(string.Join(" ,", ((dynamic)Model).OrgTypesFilter ?? new List<string>()))" class="form-control org-types-filter" style="display: inline-block; min-width:180px" />
+            <script>
+                $(function() {
+                    $(".org-types-filter").select2({
+                        tags: [
+                            @foreach (var type in ((dynamic)Model).OrgTypes)
+                            {
+                                <text>"@type",</text>
+                            }
+                        ]
+                    });
+                });
+            </script>
         }
     </div>
     @Html.Partial("Pagination", Model)

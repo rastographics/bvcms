@@ -130,6 +130,13 @@
         return false;
     });
 
+    $('body').on('change', 'form.ajax .org-types-filter', function (event) {
+        event.preventDefault();
+        var t = $(this);
+        $.formAjaxClick(t);
+        return false;
+    });
+
     $('body').on('click', 'form.ajax a.ajax', function (event) {
         event.preventDefault();
         var t = $(this);

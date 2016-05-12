@@ -9,57 +9,57 @@
 }
 <form class="non-modal ajax">
     @FormAction()
-    <br />
+    <br/>
     <div class="row">
         <div class="col-sm-12">
             @Html.Partial("PagerTop", Model)
             <div class="table-responsive">
                 <table class="expanding table table-hover">
                     <thead>
-                        <tr>
-                            @foreach (var column in columns)
-                            {
-                                if (column.Sortable)
-                                {
-                                    <th>@Model.SortLink(column.Field)</th>
-                                }
-                                else
-                                {
-                                    <th>@column.Field</th>
-                                }
-                            }
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (!list.Any())
+                    <tr>
+                        @foreach (var column in columns)
                         {
-                            <tr>
-                                <td colspan="5" class="center">
-                                    No Pending Enrollments
-                                </td>
-                            </tr>
-                        }
-                        @foreach (var om in list)
-                        {
-                            if (User.IsInRole("Access"))
+                            if (column.Sortable)
                             {
-                                <tr>
-                                    @foreach (var column in columns)
-                                    {
-                                        <td>@Html.Raw(om.GetColumnValue(column, true))</td>
-                                    }
-                                </tr>
+                                <th>@Model.SortLink(column.Field)</th>
                             }
                             else
                             {
-                                <tr>
-                                    @foreach (var column in columns)
-                                    {
-                                        <td>@Html.Raw(om.GetColumnValue(column, false))</td>
-                                    }
-                                </tr>
+                                <th>@column.Field</th>
                             }
                         }
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @if (!list.Any())
+                    {
+                        <tr>
+                            <td colspan="5" class="center">
+                                No Pending Enrollments
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var om in list)
+                    {
+                        if (User.IsInRole("Access"))
+                        {
+                            <tr>
+                                @foreach (var column in columns)
+                                {
+                                    <td>@Html.Raw(om.GetColumnValue(column, true))</td>
+                                }
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                @foreach (var column in columns)
+                                {
+                                    <td>@Html.Raw(om.GetColumnValue(column, false))</td>
+                                }
+                            </tr>
+                        }
+                    }
                     </tbody>
                 </table>
             </div>
@@ -67,9 +67,9 @@
             @Html.Partial("PagerHidden", Model)
             @Html.HiddenFor2(m => m.PeopleId)
         </div>
-    </div>  
+    </div>
     @FormAction(true)
-    <br/>  
+    <br/>
 </form>
 @helper FormAction(bool xs = false)
 {

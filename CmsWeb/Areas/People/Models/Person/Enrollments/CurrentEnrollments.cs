@@ -22,6 +22,32 @@ namespace CmsWeb.Areas.People.Models
         }
         private Person _person;
 
+        public IEnumerable<string> OrgTypesFilter
+        {
+            get
+            {
+                if (_orgTypesFilter == null)
+                {
+                    var defaultFilter = DbUtil.Db.Setting("UX-DefaultInvolvementOrgTypeFilter", "");
+
+                    _orgTypesFilter = string.IsNullOrEmpty(defaultFilter) ?
+                        new List<string>() : defaultFilter.Split(',').Select(x => x.Trim());
+                }
+                else
+                {
+                    _orgTypesFilter = _orgTypesFilter?.Where(x => !string.IsNullOrEmpty(x));
+                }
+                return _orgTypesFilter;
+            }
+            set { _orgTypesFilter = value; }
+        }
+        private IEnumerable<string> _orgTypesFilter; 
+
+        public IEnumerable<string> OrgTypes
+        {
+            get { return DbUtil.Db.OrganizationTypes.Select(x => x.Description); }
+        } 
+
         public CurrentEnrollments()
             : base("default", "asc", true)
         {}
@@ -33,12 +59,14 @@ namespace CmsWeb.Areas.People.Models
             if (Util2.OrgLeadersOnly)
                 oids = DbUtil.Db.GetLeaderOrgIds(Util.UserPeopleId);
             var roles = DbUtil.Db.CurrentRoles();
+
             return from om in DbUtil.Db.OrganizationMembers
                    let org = om.Organization
                    where om.PeopleId == PeopleId
                    where (om.Pending ?? false) == false
                    where oids.Contains(om.OrganizationId) || !(limitvisibility && om.Organization.SecurityTypeId == 3)
                    where org.LimitToRole == null || roles.Contains(org.LimitToRole)
+                   where (!OrgTypesFilter.Any() || OrgTypesFilter.Contains(om.Organization.OrganizationType.Description))
                    select om;
         }
         override public IQueryable<OrganizationMember> DefineModelSort(IQueryable<OrganizationMember> q)

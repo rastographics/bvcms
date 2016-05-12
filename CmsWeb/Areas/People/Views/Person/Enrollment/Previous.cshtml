@@ -10,70 +10,70 @@
 }
 <form class="non-modal ajax">
     @FormAction()
-    <br />
+    <br/>
     <div class="row">
         <div class="col-sm-12">
             @Html.Partial("PagerTop", Model)
             <div class="table-responsive">
                 <table class="enrollments expanding table table-hover">
                     <thead>
-                        <tr>
-                            <th>@Model.SortLink2("default", @"<i class=""fa fa-sort""></i>")</th>
-                            @foreach (var column in columns)
-                            {
-                                if (column.Sortable)
-                                {
-                                    <th>@Model.SortLink(column.Field)</th>
-                                }
-                                else
-                                {
-                                    <th>@column.Field</th>
-                                }
-                            }
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var om in Model.ViewList())
+                    <tr>
+                        <th>@Model.SortLink2("default", @"<i class=""fa fa-sort""></i>")</th>
+                        @foreach (var column in columns)
                         {
-                            rownum++;
-                            var oddrow = rownum % 2 == 0 ? "oddrow" : "";
-                            if (om.OrgType != pOrgType && Model.Sort == "default")
+                            if (column.Sortable)
                             {
-                                pOrgType = om.OrgType;
-                                <tr class="section notshown info">
-                                    <td><a rel="reveal" title="More Information" href="#" class="reveal"><i class="fa fa-caret-right"></i></a></td>
-                                    <td colspan="5"><span style="font-weight: 600;">@om.OrgType</span></td>
-                                </tr>
-                            }
-                            if (User.IsInRole("Access"))
-                            {
-                                <tr class="master @oddrow">
-                                    <td><a rel="reveal" title="More Information" href="#" class="reveal"><i class="fa fa-info-circle"></i></a></td>
-                                    @foreach (var column in columns)
-                                    {
-                                        <td>@Html.Raw(om.GetColumnValue(column, true))</td>
-                                    }
-                                </tr>
-                                <tr class="details @oddrow">
-                                    <td colspan="6">
-                                        <div class="collapse indent">
-                                            <strong>Program:</strong> <span>@om.ProgramName,</span>
-                                            <strong>Division:</strong> <span>@om.DivisionName</span>
-                                        </div>
-                                    </td>
-                                </tr>
+                                <th>@Model.SortLink(column.Field)</th>
                             }
                             else
                             {
-                                <tr>
-                                    <td></td>
-                                    @foreach (var column in columns)
-                                    {
-                                        <td>@Html.Raw(om.GetColumnValue(column, false))</td>
-                                    }
-                                </tr>
+                                <th>@column.Field</th>
                             }
                         }
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var om in Model.ViewList())
+                    {
+                        rownum++;
+                        var oddrow = rownum%2 == 0 ? "oddrow" : "";
+                        if (om.OrgType != pOrgType && Model.Sort == "default")
+                        {
+                            pOrgType = om.OrgType;
+                            <tr class="section notshown info">
+                                <td><a rel="reveal" title="More Information" href="#" class="reveal"><i class="fa fa-caret-right"></i></a></td>
+                                <td colspan="5"><span style="font-weight: 600;">@om.OrgType</span></td>
+                            </tr>
+                        }
+                        if (User.IsInRole("Access"))
+                        {
+                            <tr class="master @oddrow">
+                                <td><a rel="reveal" title="More Information" href="#" class="reveal"><i class="fa fa-info-circle"></i></a></td>
+                                @foreach (var column in columns)
+                                {
+                                    <td>@Html.Raw(om.GetColumnValue(column, true))</td>
+                                }
+                            </tr>
+                            <tr class="details @oddrow">
+                                <td colspan="6">
+                                    <div class="collapse indent">
+                                        <strong>Program:</strong> <span>@om.ProgramName,</span>
+                                        <strong>Division:</strong> <span>@om.DivisionName</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td></td>
+                                @foreach (var column in columns)
+                                {
+                                    <td>@Html.Raw(om.GetColumnValue(column, false))</td>
+                                }
+                            </tr>
+                        }
+                    }
                     </tbody>
                 </table>
             </div>
@@ -83,7 +83,7 @@
         </div>
     </div>
     @FormAction(true)
-    <br />
+    <br/>
 </form>
 @helper FormAction(bool xs = false)
 {

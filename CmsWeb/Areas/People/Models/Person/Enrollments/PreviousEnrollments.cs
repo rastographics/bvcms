@@ -21,6 +21,32 @@ namespace CmsWeb.Areas.People.Models
         }
         private Person _person;
 
+        public IEnumerable<string> OrgTypesFilter
+        {
+            get
+            {
+                if (_orgTypesFilter == null)
+                {
+                    var defaultFilter = DbUtil.Db.Setting("UX-DefaultInvolvementOrgTypeFilter", "");
+
+                    _orgTypesFilter = string.IsNullOrEmpty(defaultFilter) ?
+                        new List<string>() : defaultFilter.Split(',').Select(x => x.Trim());
+                }
+                else
+                {
+                    _orgTypesFilter = _orgTypesFilter?.Where(x => !string.IsNullOrEmpty(x));
+                }
+                return _orgTypesFilter;
+            }
+            set { _orgTypesFilter = value; }
+        }
+        private IEnumerable<string> _orgTypesFilter;
+
+        public IEnumerable<string> OrgTypes
+        {
+            get { return DbUtil.Db.OrganizationTypes.Select(x => x.Description); }
+        }
+
         public PreviousEnrollments()
             : base("default", "asc", true)
         {}
@@ -36,6 +62,7 @@ namespace CmsWeb.Areas.People.Models
                    where etd.TransactionTypeId >= 4
                    where !(limitvisibility && etd.Organization.SecurityTypeId == 3)
                    where org.LimitToRole == null || roles.Contains(org.LimitToRole)
+                   where (!OrgTypesFilter.Any() || OrgTypesFilter.Contains(org.OrganizationType.Description))
                    select etd;
         }
         public override IEnumerable<OrgMemberInfo> DefineViewList(IQueryable<EnrollmentTransaction> q)
