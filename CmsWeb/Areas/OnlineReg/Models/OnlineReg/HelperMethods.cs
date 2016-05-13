@@ -652,6 +652,22 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
 #endif
 
+        // Make sure that we only use the 5 find fields and no previous data from a previous find attempt
+        public OnlineRegPersonModel GetFreshFindInfo(int id)
+        {
+            var p = List[id]; 
+            List[id] = new OnlineRegPersonModel
+            {
+                FirstName = p.FirstName,
+                LastName = p.LastName,
+                DateOfBirth = p.DateOfBirth,
+                Phone = p.Phone,
+                EmailAddress = p.EmailAddress,
+                orgid = Orgid,
+                masterorgid = masterorgid,
+            };
+            return List[id];
+        }
         public void CancelRegistrant(int n)
         {
             HistoryAdd("Cancel id=" + n);

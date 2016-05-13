@@ -123,7 +123,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.HistoryAdd("FindRecord id=" + id);
             if (id >= m.List.Count)
                 return FlowList(m);
-            var p = m.List[id];
+
+            var p = m.GetFreshFindInfo(id);
 
             if (p.NeedsToChooseClass())
             {
@@ -156,6 +157,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             p.Found = false;
             return FlowList(m);
         }
+
 
         [HttpPost]
         public ActionResult SubmitNew(int id, OnlineRegModel m)
