@@ -38,7 +38,7 @@
 if (xs)
 {
         <div class="visible-xs-block">
-            <a class="btn btn-success btn-block ajax validate" data-confirm="Add a contact?" data-confirm-type="warning" data-confirm-btn-class="btn-warning" data-confirm-btn-text="Yes, add contact!" data-redirect="true" href="#"><i class="fa fa-plus-circle"></i> Add New Resource</a>
+            <a class="btn btn-success btn-block ajax" id="addresource" data-confirm="Add a Resource?" data-confirm-type="warning" data-confirm-btn-class="btn-warning" data-confirm-btn-text="Yes, add task!" data-redirect="true" href="#/"><i class="fa fa-plus-circle"></i> Add Resource</a>
         </div>
 }
 else
@@ -46,9 +46,27 @@ else
         <div class="row hidden-xs">
             <div class="col-sm-12">
                 <div class="pull-right">
-                    <a class="btn btn-success ajax validate" data-confirm="Add a contact?" data-confirm-type="warning" data-confirm-btn-class="btn-warning" data-confirm-btn-text="Yes, add contact!" data-redirect="true" href="#"><i class="fa fa-plus-circle"></i> Add New Resource</a>
+                    <a class="btn btn-success ajax validate" id="addresource" data-confirm="Add a Resource?" data-confirm-type="warning" data-confirm-btn-class="btn-warning" data-confirm-btn-text="Yes, add resource!" data-redirect="true" href="#"><i class="fa fa-plus-circle"></i> Add Resource</a>
                 </div>
             </div>
         </div>
 }
 }
+<script>
+    $('#addresource').click(function (e) {
+        e.preventDefault();
+        var url = '/AddResource';
+
+        $("<div />").load(url, {}, function () {
+            var div = $(this);
+            var dialog = div.find("#new-resource-modal");
+            $('#empty-dialog').html(dialog);
+            $('#empty-dialog').modal("show");
+            dialog.on('hidden', function () {
+                div.remove();
+                dialog.remove();
+            });
+
+        });
+    });
+</script>

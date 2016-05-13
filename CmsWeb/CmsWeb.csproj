@@ -313,6 +313,7 @@
     <Compile Include="Areas\Dialog\Models\OrgMember\OrgMemberMoveModel.cs" />
     <Compile Include="Areas\Dialog\Models\OrgMember\OrgMemberTransactionModel.cs" />
     <Compile Include="Areas\Dialog\Models\OrgMember\OrgMoveInfo.cs" />
+    <Compile Include="Areas\Dialog\Models\ResourceModel.cs" />
     <Compile Include="Areas\Dialog\Models\ValidateAddress.cs" />
     <Compile Include="Areas\Dialog\Models\RepairTransactions.cs" />
     <Compile Include="Areas\Dialog\Models\RepairTransactionsOrgs.cs" />
@@ -1521,6 +1522,7 @@
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\Tabs\ExtraValue\NewAdhoc.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\EditorTemplates\Value.cshtml" />
     <None Include="Areas\Dialog\Views\OrgMemberDialog\ExtraValue.cshtml" />
+    <Content Include="Areas\Dialog\Views\AddResource\Index.cshtml" />
     <None Include="Areas\Finance\Views\FinanceReports\TotalsByAgeRange.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\DepositTotalsForDates.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\DepositTotalsForDatesResults.cshtml" />

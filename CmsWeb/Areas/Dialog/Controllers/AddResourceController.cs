@@ -12,17 +12,13 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [Route("~/AddResource")]
         public ActionResult Index(bool displayCopySettings = false)
         {
-            /*var m = new NewOrganizationModel(DbUtil.Db.CurrentOrgId0, displayCopySettings);
-            m.org.OrganizationName = "";
-            m.org.Location = "";
-            return View(m);*/
-            return null;
+            return View(new NewResourceModel());
         }
 
         [HttpPost, Route("Submit/{id:int}")]
         public ActionResult Submit(int id, NewOrganizationModel m)
         {
-            var org = DbUtil.Db.LoadOrganizationById(id);
+            /*var org = DbUtil.Db.LoadOrganizationById(id);
             m.org.CreatedDate = Util.Now;
             m.org.CreatedBy = Util.UserId1;
             m.org.EntryPointId = org.EntryPointId;
@@ -53,7 +49,8 @@ namespace CmsWeb.Areas.Dialog.Controllers
             }
             DbUtil.Db.SubmitChanges();
             DbUtil.LogActivity($"Add new org {m.org.OrganizationName}");
-            return Redirect($"/Org/{m.org.OrganizationId}");
+            return Redirect($"/Org/{m.org.OrganizationId}");*/
+            return null;
         }
     }
 }
