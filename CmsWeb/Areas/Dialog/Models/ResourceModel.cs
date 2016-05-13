@@ -30,6 +30,18 @@ namespace CmsWeb.Areas.Dialog.Models
             }
         }
 
+        public IEnumerable<SelectListItem> Campuses
+        {
+            get
+            {
+                var list = new List<SelectListItem>();
+
+                list.Insert(0, new SelectListItem { Value = "0", Text = "(none)", Selected = true });
+                list.Insert(0, new SelectListItem { Value = "1", Text = "West Side", Selected = true });
+                return list;
+            }
+        }
+
         public IEnumerable<MemberType> MemberTypes
         {
             get { return DbUtil.Db.MemberTypes; }

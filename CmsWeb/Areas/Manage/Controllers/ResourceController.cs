@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult Index()
         {
             var resources = new List<Resource>();
-            resources.Add(new Resource
+            /*resources.Add(new Resource
             {
                 Name = "South America Mission Goals",
                 Type = ResourceType.Pdf,
@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 Name = "Trip Budget",
                 Type = ResourceType.Spreadsheet,
                 UpdatedTime = DateTime.Now.AddDays(-12)
-            });
+            });*/
 
             return View(resources);
         }

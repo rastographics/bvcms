@@ -212,23 +212,77 @@ namespace CmsWeb.Areas.People.Models
                 {
                     new CmsData.Resource.Resource
                     {
-                        Name = "Church Guidebook",
-                        Type = ResourceType.Pdf,
-                        UpdatedTime = DateTime.Now.AddDays(-33)
+                        Name = "General Church Information",
+                        UpdatedTime = DateTime.Now.AddDays(-33),
+                        MemberTypes = "All",
+                        Attachments = new List<Attachment>()
+                        {
+                            new Attachment
+                            {
+                                Type = AttachmentType.Pdf,
+                                Name = "Church Guidebook"
+                            },
+                            new Attachment
+                            {
+                                Type = AttachmentType.Pdf,
+                                Name = "Church Rules"
+                            }
+                        }
+                    },
+                    new CmsData.Resource.Resource
+                    {
+                        Name = "West Side Sports Teams",
+                        UpdatedTime = DateTime.Now.AddDays(-36),
+                        MemberTypes = "All",
+                        CampusId = 1,
+                        Attachments = new List<Attachment>()
+                        {
+                            new Attachment
+                            {
+                                Type = AttachmentType.Spreadsheet,
+                                Name = "Team Rosters"
+                            },
+                            new Attachment
+                            {
+                                Type = AttachmentType.Pdf,
+                                Name = "Minor Parental Waiver"
+                            }
+                        }
                     },
                     new CmsData.Resource.Resource
                     {
                         Name = "South America Mission Goals",
                         OrgId = 1,
-                        Type = ResourceType.Pdf,
-                        UpdatedTime = DateTime.Now.AddDays(-22)
+                        UpdatedTime = DateTime.Now.AddDays(-22),
+                        MemberTypes = "All",
+                        Attachments = new List<Attachment>()
+                        {
+                            new Attachment
+                            {
+                                Type = AttachmentType.Pdf,
+                                Name = "Mission Mission Statement"
+                            },
+                            new Attachment
+                            {
+                                Type = AttachmentType.Pdf,
+                                Name = "Portugese Phrases"
+                            }
+                        }
                     },
                     new CmsData.Resource.Resource
                     {
-                        Name = "Baseball Team Roster",
+                        Name = "Leader Information",
                         OrgId = 1,
-                        Type = ResourceType.Spreadsheet,
-                        UpdatedTime = DateTime.Now.AddDays(-52)
+                        UpdatedTime = DateTime.Now.AddDays(-52),
+                        MemberTypes = "Leader, Leader-Coach",
+                        Attachments = new List<Attachment>()
+                        {
+                            new Attachment
+                            {
+                                Type = AttachmentType.Spreadsheet,
+                                Name = "Trip Budget"
+                            }
+                        }
                     }
                 };
             }

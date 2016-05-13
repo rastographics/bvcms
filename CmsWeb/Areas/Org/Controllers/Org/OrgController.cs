@@ -132,13 +132,11 @@ namespace CmsWeb.Areas.Org.Controllers
             resources.Add(new CmsData.Resource.Resource
             {
                 Name = "South America Mission Goals",
-                Type = ResourceType.Pdf,
                 UpdatedTime = DateTime.Now.AddDays(-22)
             });
             resources.Add(new CmsData.Resource.Resource
             {
                 Name = "Trip Budget",
-                Type = ResourceType.Spreadsheet,
                 UpdatedTime = DateTime.Now.AddDays(-12)
             });
             

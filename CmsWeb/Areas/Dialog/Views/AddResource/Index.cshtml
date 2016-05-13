@@ -7,7 +7,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Add New Resource</h4>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="overflow:auto">
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
@@ -23,15 +23,29 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="resource_Roles" class="control-label">Limit to Member Types</label>
-                            <input class="types-picker form-control"/>
+                            <label for="resource_OrgId" class="control-label">Congregation</label>
+                            @Html.DropDownList("resource.CampusId", Model.Campuses, new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="resource_File" class="control-label">File</label>
-                            @Html.TextBoxFor(m => m.File, new {type = "file"})
+                            <label for="resource_Roles" class="control-label">Limit to Member Types</label>
+                            <input class="types-picker form-control"/>
                         </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="resource_File" class="control-label">Files</label>
+                            @Html.TextBoxFor(m => m.File, new {type = "file"})
+                            <a href="#">Add More Files</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        @Html.TextArea("body", new {@class = "form-control", rows = "26"})
                     </div>
                 </div>
             </div>
@@ -41,7 +55,17 @@
             </div>
         </form>
     </div>
-    <script>
+    @ViewExtensions2.CkEditor()
+    <script type="text/javascript">
+
+    function getParameterByName(name) {
+      name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+      var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+          results = regex.exec(location.search);
+      return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
+    $(function () {
         $(function () {
             $(".types-picker").select2({
                 tags: [
@@ -49,8 +73,20 @@
                     {
                         <text>"@type.Description",</text>
                     }
-                ]
-            });
+                    ]
+                    });
         });
+
+      CKEDITOR.env.isCompatible = true;
+
+      CKEDITOR.replace('body', {
+        height: 400,
+        allowedContent: true,
+        autoParagraph: false,
+        fullPage: !$("#snippet").prop("checked"),
+        customConfig: "/Content/touchpoint/js/ckeditorconfig.js"
+      });
+    });
     </script>
 </div>
+    
