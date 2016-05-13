@@ -158,11 +158,11 @@ namespace CmsData.API
             if (MinAmt > 0)
                 q = from p in q
                     let option = (p.ContributionOptionsId ?? NOTSPEC) == NOTSPEC
-                            ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? NOTSPEC) != INDIV ? JOINT : INDIV)
-                            : p.ContributionOptionsId
+                        ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? NOTSPEC) != INDIV ? JOINT : INDIV)
+                        : p.ContributionOptionsId
                     where option != NONE || noaddressok
                     where (option == INDIV && (p.Amount >= MinAmt))
-                            || (option == JOINT && p.HohFlag == 1 && ((p.Amount + p.SpouseAmount) >= MinAmt))
+                          || (option == JOINT && p.HohFlag == 1 && ((p.Amount + p.SpouseAmount) >= MinAmt))
                     where p.ElectronicStatement == false || excludeelectronic == false
                     select p;
             else
@@ -174,7 +174,7 @@ namespace CmsData.API
                     where option != NONE || noaddressok
                     where p.ElectronicStatement == false || excludeelectronic == false
                     where
-                        (option == INDIV && (p.Amount > 0 || p.GiftInKind == true))  // GiftInKind = NonTaxDeductible Fund or Pledge OR GiftInkind
+                        (option == INDIV && (p.Amount > 0 || p.GiftInKind == true)) // GiftInKind = NonTaxDeductible Fund or Pledge OR GiftInkind
                         || (option == JOINT && p.HohFlag == 1 && ((p.Amount + p.SpouseAmount) > 0 || p.GiftInKind == true))
                     select p;
 
@@ -267,7 +267,7 @@ namespace CmsData.API
                     where c.ContributionTypeId != ContributionTypeCode.GiftInKind
                     where c.ContributionTypeId != ContributionTypeCode.Stock
                     where c.ContributionStatusId == ContributionStatusCode.Recorded
-                    where c.ContributionDate >= fromDate 
+                    where c.ContributionDate >= fromDate
                     where c.ContributionDate.Value.Date <= toDate.Date
                     where c.PeopleId == ci.PeopleId || (ci.Joint && c.PeopleId == ci.SpouseID)
                     where !(c.ContributionFund.NonTaxDeductible ?? false)
@@ -294,7 +294,6 @@ namespace CmsData.API
                     where c.ContributionTypeId != ContributionTypeCode.Stock
                     where c.ContributionTypeId != ContributionTypeCode.GiftInKind
                     where c.ContributionTypeId != ContributionTypeCode.Pledge
-                    where !Codes.ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                     where c.ContributionStatusId == ContributionStatusCode.Recorded
                     where c.ContributionDate >= fromDate
                     where c.ContributionDate.Value.Date <= toDate.Date
@@ -302,18 +301,21 @@ namespace CmsData.API
                     where c.ContributionFund.NonTaxDeductible == true || ContributionTypeCode.NonTaxTypes.Contains(c.ContributionTypeId)
                     where (c.PledgeFlag ?? false) == false
                     orderby c.ContributionDate
-                    select new ContributionInfo
-                    {
-                        ContributionId = c.ContributionId,
-                        ContributionAmount = c.ContributionAmount ?? 0,
-                        ContributionDate = c.ContributionDate ?? SqlDateTime.MinValue.Value,
-                        Fund = c.ContributionFund.FundName,
-                        CheckNo = c.CheckNo,
-                        Name = c.Person.Name,
-                        Description = c.ContributionDesc
-                    };
-            return q;
+                    select c;
+            return from c in q
+                   select new ContributionInfo
+                   {
+                       ContributionId = c.ContributionId,
+                       ContributionAmount = c.ContributionAmount ?? 0,
+                       ContributionDate = c.ContributionDate ?? SqlDateTime.MinValue.Value,
+                       Fund = c.ContributionFund.FundName,
+                       CheckNo = c.CheckNo,
+                       Name = c.Person.Name,
+                       Description = c.ContributionDesc,
+                       ContributionTypeId = c.ContributionTypeId,
+                   };
         }
+
         public static IEnumerable<ContributionInfo> StockGifts(CMSDataContext db, ContributorInfo ci, DateTime fromDate, DateTime toDate)
         {
             var q = from c in db.Contributions
@@ -321,7 +323,7 @@ namespace CmsData.API
                     where c.ContributionTypeId == ContributionTypeCode.Stock
                     where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                     where c.ContributionStatusId == ContributionStatusCode.Recorded
-                    where c.ContributionDate >= fromDate 
+                    where c.ContributionDate >= fromDate
                     where c.ContributionDate.Value.Date <= toDate.Date
                     where c.PeopleId == ci.PeopleId || (ci.Joint && c.PeopleId == ci.SpouseID)
                     orderby c.ContributionDate
@@ -354,7 +356,7 @@ namespace CmsData.API
                      where p.ContributionFund.FundStatusId == 1 // active
                      where p.ContributionDate.Value.Date <= toDate.Date
                      group p by p.FundId into g
-                     select new { FundId = g.Key, Fund = g.First().ContributionFund.FundName, Total = g.Sum(p => p.ContributionAmount) };
+                     select new {FundId = g.Key, Fund = g.First().ContributionFund.FundName, Total = g.Sum(p => p.ContributionAmount)};
             var qc = from c in db.Contributions
                      where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                      where c.ContributionTypeId != ContributionTypeCode.GiftInKind
@@ -365,7 +367,7 @@ namespace CmsData.API
                      where c.ContributionStatusId != ContributionStatusCode.Reversed
                      where c.ContributionDate.Value.Date <= toDate.Date
                      group c by c.FundId into g
-                     select new { FundId = g.Key, Total = g.Sum(c => c.ContributionAmount) };
+                     select new {FundId = g.Key, Total = g.Sum(c => c.ContributionAmount)};
             var q = from p in qp
                     join c in qc on p.FundId equals c.FundId into items
                     from c in items.DefaultIfEmpty()
@@ -383,18 +385,18 @@ namespace CmsData.API
         public static IEnumerable<ContributionInfo> quarterlySummary(CMSDataContext Db, ContributorInfo ci, DateTime fromDate, DateTime toDate)
         {
             int[] excludetypes = new int[]
-             {
-                 ContributionTypeCode.ReturnedCheck,
-                 ContributionTypeCode.Reversed,
-                 ContributionTypeCode.GiftInKind,
-                 ContributionTypeCode.Stock,
-                 ContributionTypeCode.NonTaxDed,
-                 ContributionTypeCode.Pledge,
-             };
+            {
+                ContributionTypeCode.ReturnedCheck,
+                ContributionTypeCode.Reversed,
+                ContributionTypeCode.GiftInKind,
+                ContributionTypeCode.Stock,
+                ContributionTypeCode.NonTaxDed,
+                ContributionTypeCode.Pledge,
+            };
             var q = from c in Db.Contributions
                     where !excludetypes.Contains(c.ContributionTypeId)
                     where c.ContributionStatusId == ContributionStatusCode.Recorded
-                    where c.ContributionDate >= fromDate 
+                    where c.ContributionDate >= fromDate
                     where c.ContributionDate.Value.Date <= toDate.Date
                     where c.PeopleId == ci.PeopleId || (ci.Joint && c.PeopleId == ci.SpouseID)
                     where c.ContributionTypeId != ContributionTypeCode.Pledge
@@ -434,16 +436,20 @@ namespace CmsData.API
         {
             [XmlAttribute]
             public string status { get; set; }
+
             public List<Contributor> Contributors { get; set; }
         }
+
         [Serializable]
         public class Contributor
         {
             [XmlAttribute]
             public string Type { get; set; }
+
             public string Name { get; set; }
             public List<Contribution> Contributions { get; set; }
         }
+
         [Serializable]
         public class Contribution
         {
@@ -453,12 +459,15 @@ namespace CmsData.API
             public string Date { get; set; }
             public decimal Amount { get; set; }
             public string Fund { get; set; }
+
             [DefaultValue("")]
             public string Description { get; set; }
+
             [DefaultValue("")]
             public string CheckNo { get; set; }
         }
     }
+
     public class PledgeSummaryInfo
     {
         public string Fund { get; set; }
@@ -466,6 +475,7 @@ namespace CmsData.API
         public decimal? PledgeAmount { get; set; }
         public string Description { get; set; }
     }
+
     public class ContributorInfo
     {
         public string Name { get; set; }
@@ -512,14 +522,15 @@ namespace CmsData.API
         public bool ReturnedReversed => ContributionTypeCode.ReturnedReversedTypes.Contains(ContributionTypeId);
         public bool Recorded => StatusId == ContributionStatusCode.Recorded;
         public bool CanReturnReverse => Recorded && !ReturnedReversed;
+
         public bool NotIncluded
         {
             get
             {
                 if (StatusId < 0)
                     return true;
-                return StatusId != (int)ContributionStatusCode.Recorded
-                    || ContributionTypeCode.ReturnedReversedTypes.Contains(ContributionTypeId);
+                return StatusId != (int) ContributionStatusCode.Recorded
+                       || ContributionTypeCode.ReturnedReversedTypes.Contains(ContributionTypeId);
             }
         }
     }
