@@ -1,4 +1,5 @@
-﻿@using UtilityExtensions
+﻿@using CmsData
+@using UtilityExtensions
 @model CmsWeb.Areas.People.Models.ContactModel
 
 <form id="edit-contact" class="form ajax" method="post">
@@ -20,7 +21,7 @@
                     @Html.EditorFor(m => m.ContactReason)
 
                     <div class="form-group">
-                        <label for="OrganizationId" class="control-label">Contacted Organization</label>
+                        <label for="OrganizationId" class="control-label">@DbUtil.Db.Setting("UX-VisitedOrgLabel", "Visited Organization")</label>
                         <div class="controls">
                             @Html.DropDownList("OrganizationId", new SelectList(Model.Organizations(), "Value", "Text"), new { @class = "form-control" })
                         </div>
