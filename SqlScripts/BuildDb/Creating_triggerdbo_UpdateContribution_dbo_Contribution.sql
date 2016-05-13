@@ -19,7 +19,7 @@ BEGIN
 		FROM dbo.Contribution c
 		JOIN INSERTED i ON c.ContributionId = i.ContributionId
 		JOIN dbo.ContributionFund f ON i.FundId = f.FundId
-		WHERE f.NonTaxDeductible = 1
+		WHERE f.NonTaxDeductible = 1 AND i.ContributionTypeId NOT IN (6,7)
 	END
 
 	IF(UPDATE(PeopleId))
