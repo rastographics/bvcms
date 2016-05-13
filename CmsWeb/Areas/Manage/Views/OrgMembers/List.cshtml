@@ -130,6 +130,19 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-lg-3 col-md-3 col-sm-6 form-group @( !@Model.ValidAgeFilter() ? "has-error" : "" )">
+                    <label for="Age" class="control-label">Age</label>
+                    <div class="input-group">
+                        <a class="input-group-addon" tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Age Filter" data-content="@Model.AgeFilterHelp"><i class="fa fa-info-circle"></i></a>
+                        <input type="text" id="Age" name="Age" class="form-control" value="@Model.Age">
+                    </div>
+                    @if (!Model.ValidAgeFilter())
+                    {
+                        <span class="help-block">This is not a valid age filter; it was not applied to the search results.  Click the icon for details.</span>
+                    }
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="SourceId" class="control-label">Source</label>
