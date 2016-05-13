@@ -76,6 +76,18 @@ This will prevent your registration from working properly.
 </ul>
 </div>
 ";
+            var dups2 = (from sg in DbUtil.Db.RegistrationGradeOptions(id)
+                        where sg.Cnt > 1
+                        select $"<li>Code={sg.GradeCode}({sg.Cnt}): {sg.GradeOption} </li>").ToList();
+            if (dups2.Any())
+                ViewBag.Duplicates2 = $@"
+<div class='alert alert-danger'><b>ERROR: Duplicate GradeOption Codes found</b><br>
+This will prevent your registration from working properly.
+<ul>
+{string.Join("\n", dups2)}
+</ul>
+</div>
+";
         }
 
         [HttpPost]

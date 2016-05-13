@@ -1,5 +1,4 @@
-﻿@using StackExchange.Profiling
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name">
 <head>
     <link rel="shortcut icon" href="@Url.Content("~/favicon.ico?v=2")">
@@ -49,6 +48,5 @@
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-multiselect/js/bootstrap-multiselect.js")
     @RenderSection("scripts", false)
     @Html.Partial("SearchBox")
-    @MiniProfiler.RenderIncludes()
 </body>
 </html>

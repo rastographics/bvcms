@@ -3817,6 +3817,17 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.RegistrationGradeOptions", IsComposable = true)]
+		public IQueryable< View.RegistrationGradeOption > RegistrationGradeOptions(
+            [Parameter(DbType="int")] int? orgid
+            )
+		{
+			return this.CreateMethodCallQuery< View.RegistrationGradeOption>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                orgid
+                );
+		}
+
 		[Function(Name="dbo.Registrations", IsComposable = true)]
 		public IQueryable< View.Registration > Registrations(
             [Parameter(DbType="int")] int? days
