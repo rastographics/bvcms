@@ -308,7 +308,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             get
             {
-                if (Parent.UserNeedsSelection)
+                if (Parent.UserNeedsSelection && LastItem())
                     return false;
                 if (Found == true && IsValidForExisting)
                     return true;
