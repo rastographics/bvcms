@@ -176,7 +176,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (ret is string)
             {
                 ModelState.AddModelError("loginerror", ret.ToString());
-                return View("OnePageGiving/Login");
+                var m = new OnlineRegModel(Request, id, testing, null, null, source);
+                return View("OnePageGiving/Login", m);
             }
             Session["OnlineRegLogin"] = true;
             return Redirect($"/OnlineReg/{id}{(testing == true ? "?testing=true" : "")}");

@@ -15,6 +15,8 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult Membership(int id)
         {
             var m = new MemberInfo(id);
+            if (m.person == null)
+                return Content("Cannot find person");
             return View("Profile/Membership/Display", m);
         }
 

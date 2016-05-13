@@ -10,6 +10,8 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult EnrollGrid(CurrentEnrollments m)
         {
+            if (m.Person == null)
+                return Content("Cannot find person");
             if (!m.Sort.HasValue())
                 m.Sort = "default";
             DbUtil.LogPersonActivity($"Viewing Enrollments for: {m.Person.Name}", m.Person.PeopleId, m.Person.Name);
