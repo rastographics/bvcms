@@ -331,11 +331,15 @@ namespace CmsWeb.Areas.Public.Models
 				}
 			}
 
+		    var loadAllValues = DbUtil.Db.Setting("SGF-LoadAllExtraValues", "false").ToLower() == "true";
+
 			foreach (var extra in org.OrganizationExtras)
 			{
 				if (extra.Field.StartsWith("SGF:"))
 					values[extra.Field] = extra.Data;
-			}
+                else if(loadAllValues)
+                    values[$"SGF:{extra.Field}"] = extra.Data;
+            }
 		}
 	}
 
