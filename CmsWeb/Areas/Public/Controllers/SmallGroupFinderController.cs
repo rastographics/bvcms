@@ -33,9 +33,11 @@ namespace CmsWeb.Areas.Public.Controllers
 
 				var encoded = Request.Form.ToString();
 
-				foreach (string item in encoded.Split('&'))
+                var loadAllValues = DbUtil.Db.Setting("SGF-LoadAllExtraValues", "false").ToLower() == "true";
+
+                foreach (string item in encoded.Split('&'))
 				{
-					if (item.StartsWith("SGF"))
+					if (item.StartsWith("SGF") || loadAllValues)
 					{
 						var parts = item.Split('=');
 
