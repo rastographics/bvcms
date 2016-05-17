@@ -36,6 +36,10 @@ else
         }
         else
         {
+            if (allowEmails)
+            {
+                <a href="/Email/@ViewBag.qid?templateID=0&orgid=@Model.OrgId">Email All Members</a>
+            }
             <table>
                 <thead>
                 <tr>

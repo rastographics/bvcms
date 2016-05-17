@@ -87,7 +87,8 @@ namespace CmsWeb
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            NoCheckRole = NoCheckRole || DbUtil.Db.Setting("UX-AllowMyDataUserEmails", "false").ToLower() == "true";
+            NoCheckRole = NoCheckRole || 
+                (filterContext.RouteData.Values["Controller"].ToString() == "Email" && DbUtil.Db.Setting("UX-AllowMyDataUserEmails", "false").ToLower() == "true");
 
             if (!User.Identity.IsAuthenticated)
             {

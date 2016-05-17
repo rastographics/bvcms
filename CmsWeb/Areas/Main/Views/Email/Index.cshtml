@@ -23,112 +23,118 @@
   </style>
 }
 <div class="row">
-  <div class="col-md-10 col-lg-8">
-    <div class="alert alert-info alert-dismissible">
-      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-      <strong>Please Note:</strong> Your recipient list has been saved in a tag, so you can run queries in other tabs. But you should not compose two emails simultaneously as one will overwrite the other.
-    </div>
-    <div class="box box-responsive">
-      <div class="box-content">
-        @using (Html.BeginForm("QueueEmails", "Email", FormMethod.Post, new { @class = "form-horizontal" }))
+    <div class="col-md-10 col-lg-8">
+        @if (User.IsInRole("Access"))
         {
-          @Html.Hidden("TagId")
-          @Html.Hidden("Host")
-          @Html.Hidden("CmsHost")
-          @Html.Hidden("Count", Model.Count)
-          @Html.Hidden("wantParents", Model.wantParents)
-          @Html.Hidden("ccparents", Model.CcParents)
-          @Html.Hidden("noDuplicates", Model.noDuplicates)
-          <div class="form-group">
-            <label for="FromAddress" class="col-sm-2 control-label">From:</label>
-            <div class="col-sm-10">
-              @Html.DropDownList("FromAddress", Model.EmailFroms(), new { @class = "form-control" })
+            <div class="alert alert-info alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <strong>Please Note:</strong> Your recipient list has been saved in a tag, so you can run queries in other tabs. But you should not compose two emails simultaneously as one will overwrite the other.
             </div>
-          </div>
-          <div class="form-group">
-            <label for="inputEmail3" class="col-sm-2 control-label">To:</label>
-              <div class="col-sm-10">
-                  @if (!User.IsInRole("Access"))
-                  {
-                      foreach (var recipient in Model.AdditionalRecipients)
-                      {
-                          <span>@ViewBag.ToName</span>
-                          <input type="hidden" name="AdditionalRecipients" value="@recipient">
-                      }
-                  }
-                  else
-                  {
-                    <select multiple="multiple" id="Recipients" name="Recipients" class="form-control">
-                        @if (Model.Recipients.Count() > 500)
-                        {
-                            <option value="" selected="selected">@Model.Count people@(Model.wantParents ? " including parents." : ".")</option>
-                        }
-                        else
-                        {
-                            foreach (var recipient in Model.Recipients)
-                            {
-                                <option value="@recipient" selected="selected">@recipient</option>
-                            }
-                        }
-                    </select>
-                    if (Model.Recipients.Count() <= 500)
-                    {
-                        <p class="help-block">@Model.Count @( Model.Count != 1 ? "people" : "person")@(Model.wantParents ? " including parents." : ".")</p>
-                    }
-                  }
-              </div>
-          </div>
-          <div class="form-group">
-            <label for="Subject" class="col-sm-2 control-label">Subject:</label>
-            <div class="col-sm-10">
-              @Html.TextBox("Subject", Model.Subject, new { @class = "form-control" })
-            </div>
-          </div>
-          if ((User.IsInRole("ScheduleEmails") || User.IsInRole("Edit")) && ConfigurationManager.AppSettings["UseEmailScheduler"] == "true")
-          {
-            <div class="form-group">
-              <label for="Schedule" class="col-sm-2 control-label">Schedule:</label>
-              <div class="col-sm-10">
-                <div class="input-group scheduleDateTime">
-                  @Html.TextBox("Schedule", Model.Schedule, new { @class = "form-control", placeholder = "Immediately" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                  @Html.Hidden("ScheduleIso", Model.Schedule, new { disabled = "disabled", placeholder = "Immediately" })
-                </div>
-                <p class="help-block">Note: Time is Central Time (CST)</p>
-              </div>
-            </div>
-          }
-          <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-              <label class="checkbox-inline">
-                @Html.CheckBox("PublicViewable") Publicly viewable?
-              </label>
-            </div>
-          </div>
-          <div class="pull-right" style="margin-bottom: 5px;">
-            <a href="http://docs.touchpointsoftware.com/EmailTexting/EmailReplacements.html" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-question-circle"></i> Email Replacement Codes</a>
-          </div>
-          <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-              @Html.TextArea("Body", Model.Body, new { @class = "form-control" })
-            </div>
-          </div>
-          <div class="form-group hidden-xs">
-            <div class="col-sm-offset-2 col-sm-10">
-              <div class="pull-right">
-                <a href="#" class="btn btn-default TestSend">Send Test Email (To Me)</a>
-                <button type="button" class="btn btn-primary Send"><i class="fa fa-paper-plane"></i> Send</button>
-              </div>
-            </div>
-          </div>
-          <div class="visible-xs-block">
-            <button type="button" class="btn btn-primary btn-block Send"><i class="fa fa-paper-plane"></i> Send</button>
-            <a href="#" class="btn btn-default btn-block TestSend">Send Test Email (To Me)</a>
-          </div>
-          <br />
         }
-      </div>
+        <div class="box box-responsive">
+            <div class="box-content">
+                @using (Html.BeginForm("QueueEmails", "Email", FormMethod.Post, new {@class = "form-horizontal"}))
+                {
+                    @Html.Hidden("TagId")
+                    @Html.Hidden("Host")
+                    @Html.Hidden("CmsHost")
+                    @Html.Hidden("Count", Model.Count)
+                    @Html.Hidden("wantParents", Model.wantParents)
+                    @Html.Hidden("ccparents", Model.CcParents)
+                    @Html.Hidden("noDuplicates", Model.noDuplicates)
+                    <div class="form-group">
+                        <label for="FromAddress" class="col-sm-2 control-label">From:</label>
+                        <div class="col-sm-10">
+                            @Html.DropDownList("FromAddress", Model.EmailFroms(), new {@class = "form-control"})
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2 control-label">To:</label>
+                        <div class="col-sm-10">
+                            @if (!User.IsInRole("Access"))
+                            {
+                                <input class="form-control" disabled type="text" value="@ViewBag.ToName">
+                                if (Model.AdditionalRecipients != null)
+                                {
+                                    foreach (var recipient in Model.AdditionalRecipients)
+                                    {
+                                        <input type="hidden" name="AdditionalRecipients" value="@recipient">
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <select multiple="multiple" id="Recipients" name="Recipients" class="form-control">
+                                    @if (Model.Recipients.Count() > 500)
+                                    {
+                                        <option value="" selected="selected">@Model.Count people@(Model.wantParents ? " including parents." : ".")</option>
+                                    }
+                                    else
+                                    {
+                                        foreach (var recipient in Model.Recipients)
+                                        {
+                                            <option value="@recipient" selected="selected">@recipient</option>
+                                        }
+                                    }
+                                </select>
+                                if (Model.Recipients.Count() <= 500)
+                                {
+                                    <p class="help-block">@Model.Count @( Model.Count != 1 ? "people" : "person")@(Model.wantParents ? " including parents." : ".")</p>
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Subject" class="col-sm-2 control-label">Subject:</label>
+                        <div class="col-sm-10">
+                            @Html.TextBox("Subject", Model.Subject, new {@class = "form-control"})
+                        </div>
+                    </div>
+                    if ((User.IsInRole("ScheduleEmails") || User.IsInRole("Edit")) && ConfigurationManager.AppSettings["UseEmailScheduler"] == "true")
+                    {
+                        <div class="form-group">
+                            <label for="Schedule" class="col-sm-2 control-label">Schedule:</label>
+                            <div class="col-sm-10">
+                                <div class="input-group scheduleDateTime">
+                                    @Html.TextBox("Schedule", Model.Schedule, new {@class = "form-control", placeholder = "Immediately"})<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                    @Html.Hidden("ScheduleIso", Model.Schedule, new {disabled = "disabled", placeholder = "Immediately"})
+                                </div>
+                                <p class="help-block">Note: Time is Central Time (CST)</p>
+                            </div>
+                        </div>
+                    }
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <label class="checkbox-inline">
+                                @Html.CheckBox("PublicViewable") Publicly viewable?
+                            </label>
+                        </div>
+                    </div>
+                    <div class="pull-right" style="margin-bottom: 5px;">
+                        <a href="http://docs.touchpointsoftware.com/EmailTexting/EmailReplacements.html" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-question-circle"></i> Email Replacement Codes</a>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            @Html.TextArea("Body", Model.Body, new {@class = "form-control"})
+                        </div>
+                    </div>
+                    <div class="form-group hidden-xs">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="pull-right">
+                                <a href="#" class="btn btn-default TestSend">Send Test Email (To Me)</a>
+                                <button type="button" class="btn btn-primary Send"><i class="fa fa-paper-plane"></i> Send</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="visible-xs-block">
+                        <button type="button" class="btn btn-primary btn-block Send"><i class="fa fa-paper-plane"></i> Send</button>
+                        <a href="#" class="btn btn-default btn-block TestSend">Send Test Email (To Me)</a>
+                    </div>
+                    <br/>
+                }
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 @section scripts
 {

@@ -28,9 +28,6 @@ namespace CmsWeb.Areas.Main.Controllers
             if (!body.HasValue())
                 body = TempData["body"] as string;
 
-            if(!User.IsInRole("Access") && (templateID != 0 || !personid.HasValue))
-                return Redirect($"/Person2/{Util.UserPeopleId}");
-
             if (!subj.HasValue() && templateID != 0)
             {
                 if (templateID == null)
@@ -61,12 +58,24 @@ namespace CmsWeb.Areas.Main.Controllers
             var me = new MassEmailer(id, parents, ccparents, nodups);
             me.Host = Util.Host;
 
-            if (personid.HasValue)
+            // Unless UX-AllowMyDataUserEmails is true, CmsController.OnActionExecuting() will filter them
+            if (!User.IsInRole("Access"))
             {
-                me.AdditionalRecipients = new List<int> { personid.Value };
+                if (templateID != 0 || (!personid.HasValue && !orgid.HasValue))
+                    return Redirect($"/Person2/{Util.UserPeopleId}");
 
-                var person = DbUtil.Db.LoadPersonById(personid.Value);
-                ViewBag.ToName = person?.Name;
+                if (personid.HasValue)
+                {
+                    me.AdditionalRecipients = new List<int> {personid.Value};
+
+                    var person = DbUtil.Db.LoadPersonById(personid.Value);
+                    ViewBag.ToName = person?.Name;
+                }
+                else
+                {
+                    var org = DbUtil.Db.LoadOrganizationById(orgid.Value);
+                    ViewBag.ToName = org?.OrganizationName;
+                }
             }
 
             if (body.HasValue())
