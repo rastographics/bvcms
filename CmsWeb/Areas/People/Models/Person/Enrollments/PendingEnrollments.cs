@@ -28,7 +28,6 @@ namespace CmsWeb.Areas.People.Models
                 if (_orgTypesFilter == null)
                 {
                     var defaultFilter = DbUtil.Db.Setting("UX-DefaultInvolvementOrgTypeFilter", "");
-
                     _orgTypesFilter = string.IsNullOrEmpty(defaultFilter) ?
                         new List<string>() : defaultFilter.Split(',').Select(x => x.Trim()).ToList();
                 }
@@ -36,10 +35,10 @@ namespace CmsWeb.Areas.People.Models
             }
             set
             {
-                if (value.Any())
-                {
+                if (value.Any() && !string.IsNullOrWhiteSpace(value[0]))
                     _orgTypesFilter = value[0].Split(',').Select(x => x.Trim()).ToList();
-                }
+                else
+                    _orgTypesFilter = new List<string>();
             }
         }
         private List<string> _orgTypesFilter;
