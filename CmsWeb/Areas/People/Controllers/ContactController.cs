@@ -21,6 +21,9 @@ namespace CmsWeb.Areas.People.Controllers
             }
             else
             {
+                if (TempData.ContainsKey("SetRole"))
+                    m.LimitToRole = TempData["SetRole"].ToString();
+
                 var showEdit = (bool?)TempData["ContactEdit"] == true;
                 ViewBag.edit = showEdit;
                 return View(m);

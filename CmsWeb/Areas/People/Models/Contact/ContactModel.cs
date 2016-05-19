@@ -50,7 +50,7 @@ namespace CmsWeb.Areas.People.Models
             {
                 Value = x.RoleName,
                 Text = x.RoleName,
-                Selected = !string.IsNullOrWhiteSpace(LimitToRole) && LimitToRole.Contains(x.RoleName)
+                Selected = !string.IsNullOrWhiteSpace(LimitToRole) && LimitToRole == x.RoleName
             }).ToList();
 
             list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)", Selected = true});

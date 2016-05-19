@@ -142,15 +142,15 @@ namespace CmsWeb.Areas.Org.Controllers
                 OrganizationId = o.OrganizationId
             };
 
-            var defaultRole = DbUtil.Db.Setting("Contacts-DefaultRole", null);
-            if (!string.IsNullOrEmpty(defaultRole) && DbUtil.Db.Roles.Any(x => x.RoleName == defaultRole))
-                c.LimitToRole = defaultRole;
-
             DbUtil.Db.Contacts.InsertOnSubmit(c);
             DbUtil.Db.SubmitChanges();
 
             c.contactsMakers.Add(new Contactor { PeopleId = Util.UserPeopleId.Value });
             DbUtil.Db.SubmitChanges();
+
+            var defaultRole = DbUtil.Db.Setting("Contacts-DefaultRole", null);
+            if (!string.IsNullOrEmpty(defaultRole) && DbUtil.Db.Roles.Any(x => x.RoleName == defaultRole))
+                TempData["SetRole"] = defaultRole;
 
             TempData["ContactEdit"] = true;
             return Content($"/Contact2/{c.ContactId}");

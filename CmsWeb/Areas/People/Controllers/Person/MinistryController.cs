@@ -39,6 +39,10 @@ namespace CmsWeb.Areas.People.Controllers
             DbUtil.Db.Contactors.InsertOnSubmit(cp);
             DbUtil.Db.SubmitChanges();
 
+            var defaultRole = DbUtil.Db.Setting("Contacts-DefaultRole", null);
+            if (!string.IsNullOrEmpty(defaultRole) && DbUtil.Db.Roles.Any(x => x.RoleName == defaultRole))
+                TempData["SetRole"] = defaultRole;
+
             TempData["ContactEdit"] = true;
             return Content("/Contact2/" + c.ContactId);
         }
@@ -61,16 +65,16 @@ namespace CmsWeb.Areas.People.Controllers
                 ContactDate = Util.Now.Date
             };
 
-            var defaultRole = DbUtil.Db.Setting("Contacts-DefaultRole", null);
-            if (!string.IsNullOrEmpty(defaultRole) && DbUtil.Db.Roles.Any(x => x.RoleName == defaultRole))
-                c.LimitToRole = defaultRole;
-
             DbUtil.Db.Contacts.InsertOnSubmit(c);
             DbUtil.Db.SubmitChanges();
 
             c.contactees.Add(new Contactee {PeopleId = p.PeopleId});
             c.contactsMakers.Add(new Contactor {PeopleId = Util.UserPeopleId.Value});
             DbUtil.Db.SubmitChanges();
+
+            var defaultRole = DbUtil.Db.Setting("Contacts-DefaultRole", null);
+            if (!string.IsNullOrEmpty(defaultRole) && DbUtil.Db.Roles.Any(x => x.RoleName == defaultRole))
+                TempData["SetRole"] = defaultRole;
 
             TempData["ContactEdit"] = true;
             return Content($"/Contact2/{c.ContactId}");
