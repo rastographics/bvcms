@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.People.Models
         }
         private Person _person;
 
-        public IEnumerable<string> OrgTypesFilter
+        public List<string> OrgTypesFilter
         {
             get
             {
@@ -31,17 +31,19 @@ namespace CmsWeb.Areas.People.Models
                     var defaultFilter = DbUtil.Db.Setting("UX-DefaultInvolvementOrgTypeFilter", "");
 
                     _orgTypesFilter = string.IsNullOrEmpty(defaultFilter) ?
-                        new List<string>() : defaultFilter.Split(',').Select(x => x.Trim());
-                }
-                else
-                {
-                    _orgTypesFilter = _orgTypesFilter?.Where(x => !string.IsNullOrEmpty(x));
+                        new List<string>() : defaultFilter.Split(',').Select(x => x.Trim()).ToList();
                 }
                 return _orgTypesFilter;
             }
-            set { _orgTypesFilter = value; }
+            set
+            {
+                if (value.Any())
+                {
+                    _orgTypesFilter = value[0].Split(',').Select(x => x.Trim()).ToList();
+                }
+            }
         }
-        private IEnumerable<string> _orgTypesFilter; 
+        private List<string> _orgTypesFilter; 
 
         public IEnumerable<string> OrgTypes
         {
