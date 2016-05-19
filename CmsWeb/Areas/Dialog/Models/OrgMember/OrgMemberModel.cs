@@ -365,34 +365,39 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
 
         private void CheckForAutoPromotion()
         {
-            // Make sure person is a user.
-            var user = DbUtil.Db.Users.SingleOrDefault(us => us.PeopleId == PeopleId);
-            if (user != null)
+            var autoLeaderOrgPromotionSetting = DbUtil.Db.Setting(AutoOrgLeaderPromotion, "false").ToLower() == "true";
+            if (!autoLeaderOrgPromotionSetting) return;
+
+            var users = DbUtil.Db.Users.Where(us => us.PeopleId == PeopleId);
+            if (users.Any())
             {
-                // Check for leader org promotion settting.
-                var autoLeaderOrgPromotionSetting = DbUtil.Db.Setting(AutoOrgLeaderPromotion, "false").ToLower() == "true";
-                if (autoLeaderOrgPromotionSetting && !user.Roles.Any())
+                foreach (var user in users)
                 {
-                    user.AddRoles(DbUtil.Db, !user.InRole(AccessRole) ? new[] { AccessRole, OrgLeadersOnlyRole } : new[] { OrgLeadersOnlyRole });
+                    if (!user.Roles.Any())
+                    {
+                        user.AddRoles(DbUtil.Db, !user.InRole(AccessRole) ? new[] { AccessRole, OrgLeadersOnlyRole } : new[] { OrgLeadersOnlyRole });
+                    }
                 }
             }
         }
 
         private void CheckForAutoDemotion()
         {
-            // Make sure person is a user.
-            var user = DbUtil.Db.Users.SingleOrDefault(us => us.PeopleId == PeopleId);
-            if (user != null)
-            {
-                // Check for leader org promotion settting.
-                var autoLeaderOrgPromotionSetting = DbUtil.Db.Setting(AutoOrgLeaderPromotion, "false").ToLower() == "true";
+            var autoLeaderOrgPromotionSetting = DbUtil.Db.Setting(AutoOrgLeaderPromotion, "false").ToLower() == "true";
+            if (!autoLeaderOrgPromotionSetting) return;
 
-                if (autoLeaderOrgPromotionSetting && user.Roles.Count() == 2 && user.InRole(OrgLeadersOnlyRole) && user.InRole(AccessRole) &&
-                        !DbUtil.Db.OrganizationMembers.Any(x => x.MemberType.Id == (om.Organization.LeaderMemberTypeId > 0 ? om.Organization.LeaderMemberTypeId : DefaultLeaderMemberTypeId)
-                            && x.PeopleId == PeopleId && x.OrganizationId != Organization.OrganizationId))
+            var users = DbUtil.Db.Users.Where(us => us.PeopleId == PeopleId);
+            if (users.Any())
+            {
+                foreach (var user in users)
                 {
-                    // Resets their roles back to a "MyData" user
-                    user.SetRoles(DbUtil.Db, new string[] { });
+                    if (user.Roles.Count() == 2 && user.InRole(OrgLeadersOnlyRole) && user.InRole(AccessRole) &&
+                            !DbUtil.Db.OrganizationMembers.Any(x => x.MemberType.Id == (om.Organization.LeaderMemberTypeId > 0 ? om.Organization.LeaderMemberTypeId : DefaultLeaderMemberTypeId)
+                                && x.PeopleId == PeopleId && x.OrganizationId != Organization.OrganizationId))
+                    {
+                        // Resets their roles back to a "MyData" user
+                        user.SetRoles(DbUtil.Db, new string[] { });
+                    }
                 }
             }
         }
