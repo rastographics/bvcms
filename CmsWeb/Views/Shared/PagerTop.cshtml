@@ -1,19 +1,23 @@
 ﻿@using CmsWeb.Areas.People.Models
 @model CmsWeb.Models.PagerModel2
+@{
+    var showOrgTypeFilter = Model.GetType() == typeof (CurrentEnrollments) || Model.GetType() == typeof (PreviousEnrollments) || Model.GetType() == typeof (PendingEnrollments);
+    var colClasses = showOrgTypeFilter ? "col-lg-8 col-md-8 col-sm-8" : "col-lg-4 col-md-4 col-sm-4";
+}
 <div class="row hidden-print">
-    <div class="col-lg-6 col-md-6 col-sm-6 form-inline">
+    <div class="@colClasses form-inline">
         @if (Model.ShowPageSize)
         {
             if (Model.AjaxPager)
             {
-                <span>Show </span>@Html.DropDownList("Size", Model.PageSizeList(), new { @class = "form-control" })<span> rows</span>
+                <span>Show </span>@Html.DropDownList("Size", Model.PageSizeList(), new {@class = "form-control"})<span> rows</span>
             }
             else
             {
-                <span>Show </span>@Html.DropDownList("PageSize", Model.PageSizeList(), new { onchange = "$.setPageSize(this)", @class = "form-control" })<span> rows</span>
+                <span>Show </span>@Html.DropDownList("PageSize", Model.PageSizeList(), new {onchange = "$.setPageSize(this)", @class = "form-control"})<span> rows</span>
             }
         }
-        @if (Model.GetType() == typeof(CurrentEnrollments) || Model.GetType() == typeof(PreviousEnrollments) || Model.GetType() == typeof(PendingEnrollments))
+        @if (showOrgTypeFilter)
         {
             <span> of types </span><input name="OrgTypesFilter" value="@(string.Join(" ,", ((dynamic)Model).OrgTypesFilter ?? new List<string>()))" class="form-control org-types-filter" style="display: inline-block; min-width:180px" />
             <script>
