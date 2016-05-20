@@ -88,34 +88,40 @@
                     </ul>
                 }
                 <ul id="tagstop" class="nav navbar-nav navbar-right">
-                    <li class="hidden-xs"><a href="#" data-toggle="modal" data-target="#search-box" id="search-button"><i class="fa fa-search"></i><span class="visible-lg-inline visible-xs-inline">&nbsp;&nbsp;Search</span></a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <div class="truncate" style="max-width: 130px;">
-                                <span class="currentTag username"><i class="fa fa-tag"></i>&nbsp;&nbsp;<span id="current-tag1" class="visible-lg-inline visible-xs-inline">@Util2.CurrentTagName</span></span> <span class="caret"></span>
-                            </div>
-                        </a>
-                        <ul id="tag-dropdown" class="dropdown-menu">
-                            <li><a href="/Tags"><b><i id="current-tag2">@Util2.CurrentTagName</i></b></a></li>
-                            <li><a class="cleartag" href="/Tags/ClearTag"><i>Empty Active Tag</i></a></li>
-                            @{
-                                var userTags = CodeValueModel.UserTags();
-                            }
-                            @if (userTags.Any())
-                            {
-                                <li class="divider"></li>
-                                <li class="dropdown-header">User Tags</li>
-                                foreach (var t in userTags)
-                                {
-                                    <li><a href="/Home/SwitchTag?tag=@t.Code">@t.Value</a></li>
+                    @if (!hideNavTabs)
+                    {
+                        <li class="hidden-xs"><a href="#" data-toggle="modal" data-target="#search-box" id="search-button"><i class="fa fa-search"></i><span class="visible-lg-inline visible-xs-inline">&nbsp;&nbsp;Search</span></a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <div class="truncate" style="max-width: 130px;">
+                                    <span class="currentTag username"><i class="fa fa-tag"></i>&nbsp;&nbsp;<span id="current-tag1" class="visible-lg-inline visible-xs-inline">@Util2.CurrentTagName</span></span> <span class="caret"></span>
+                                </div>
+                            </a>
+                            <ul id="tag-dropdown" class="dropdown-menu">
+                                <li><a href="/Tags"><b><i id="current-tag2">@Util2.CurrentTagName</i></b></a></li>
+                                <li><a class="cleartag" href="/Tags/ClearTag"><i>Empty Active Tag</i></a></li>
+                                @{
+                                    var userTags = CodeValueModel.UserTags();
                                 }
-                            }
-                        </ul>
-                    </li>
+                                @if (userTags.Any())
+                                {
+                                    <li class="divider"></li>
+                                    <li class="dropdown-header">User Tags</li>
+                                    foreach (var t in userTags)
+                                    {
+                                        <li><a href="/Home/SwitchTag?tag=@t.Code">@t.Value</a></li>
+                                    }
+                                }
+                            </ul>
+                        </li>
+                    }
                     <li class="dropdown">
                         @Html.Partial("Menu/User")
                     </li>
-                    <li>@Html.Partial("Menu/Help")</li>
+                    @if (!hideNavTabs)
+                    {
+                        <li>@Html.Partial("Menu/Help")</li>
+                    }
                 </ul>
             </div>
         }
