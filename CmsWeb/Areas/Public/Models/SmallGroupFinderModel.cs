@@ -200,7 +200,7 @@ namespace CmsWeb.Areas.Public.Models
 
 			var orgs = from o in DbUtil.Db.Organizations
 						  where o.DivOrgs.Any(ee => divList.Contains(ee.DivId))
-                          where o.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
+                          //where o.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
 						  select o;
 
 			foreach (var filter in search)

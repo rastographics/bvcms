@@ -66,7 +66,7 @@ namespace CmsWeb.Areas.Public.Controllers
 				// Process shell here
 				return Content(sgfm.createFromShell());
 			else
-				return View(sgfm);
+				return View("Index2", sgfm);
 		}
 	}
 }

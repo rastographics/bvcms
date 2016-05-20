@@ -4,8 +4,11 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web;
+using System.Web.Script.Serialization;
 using System.Xml.Linq;
 using CmsData;
+using CmsWeb.Areas.Public.Models;
+using Newtonsoft.Json;
 
 namespace CmsWeb.Models
 {
@@ -18,16 +21,25 @@ namespace CmsWeb.Models
             divid = id;
         }
 
-        public int? divid { get; set; }
-
-        public IEnumerable<MarkerInfo> Locations()
+        public SGMapModel(List<Organization> orgList)
         {
+            _orgList = orgList;
+        }
+
+        private readonly List<Organization> _orgList;
+        private readonly int? divid;
+
+        public IEnumerable<SGInfo> SmallGroupInfo()
+        {
+            var orgIdList = _orgList?.Select(x => x.OrganizationId).Distinct() ?? new List<int>();
+
             var q = from o in DbUtil.Db.Organizations
                     let host = o.OrganizationMembers.FirstOrDefault(mm => mm.OrgMemMemTags.Any(mt => mt.MemberTag.Name == "HostHome") || mm.PeopleId == o.LeaderId).Person
-                    let schedule = o.OrgSchedules.First().MeetingTime
+                    let schedule = o.OrgSchedules.FirstOrDefault().MeetingTime
                     where host != null && (host.PrimaryAddress ?? "") != ""
                     where !divid.HasValue || o.DivOrgs.Any(dd => dd.DivId == divid) || o.DivisionId == divid
-                    select new {host, o, schedule};
+                    where !orgIdList.Any() || orgIdList.Contains(o.OrganizationId)
+                    select new { host, o, schedule };
 
             var q2 = from i in q.ToList()
                      let addr = i.host.AddrCityStateZip
@@ -42,10 +54,17 @@ namespace CmsWeb.Models
                          cmshost = DbUtil.Db.CmsHost,
                          id = i.o.OrganizationId,
                          gc = geocode,
+                         org = i.o,
                          markertext = i.o.OrganizationType?.Description == "Beta Group" ? "B" : " ",
-                         color = DbUtil.Db.Setting($"Campus-{i.o.CampusId.GetValueOrDefault(-1)}", "FFFFFF").Replace("#","")
+                         color = DbUtil.Db.Setting($"Campus-{i.o.CampusId.GetValueOrDefault(-1)}", "FFFFFF").Replace("#", "")
                      };
-            var qlist = q2.ToList();
+            return q2.ToList();
+        } 
+
+        public IEnumerable<MarkerInfo> Locations()
+        {
+            var qlist = SmallGroupInfo();
+
             var addlist = new List<GeoCode>();
 
             foreach (var i in qlist.Where(ii => ii.gc == null))
@@ -73,6 +92,7 @@ namespace CmsWeb.Models
                    select new MarkerInfo
                    {
                        html = string.Format(template, i.desc, i.schedule, i.cmshost, i.id),
+                       org = i.org,
                        latitude = i.gc.Latitude,
                        longitude = i.gc.Longitude,
                        image = $"http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld={i.markertext}|{i.color}"
@@ -122,6 +142,7 @@ namespace CmsWeb.Models
             public string markertext { get; set; }
             public GeoCode gc { get; set; }
             public int campusId { get; set; }
+            public Organization org { get; set; }
         }
 
         public class MarkerInfo
@@ -131,6 +152,9 @@ namespace CmsWeb.Models
             public string image { get; set; }
             public double latitude { get; set; }
             public double longitude { get; set; }
+
+            [ScriptIgnore]
+            public Organization org { get; set; }
         }
     }
 }
