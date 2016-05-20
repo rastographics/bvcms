@@ -145,4 +145,12 @@
     });
 
     $('[data-toggle="popover"]').popover({ html: true });
+
+    $('body').on('change', '#ChangeMemberType', function () {
+        if ($(this).is(':checked')) {
+            $("#member-types").show();
+        } else {
+            $("#member-types").hide();
+        }
+    });
 });

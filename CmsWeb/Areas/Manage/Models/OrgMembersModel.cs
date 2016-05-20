@@ -36,6 +36,8 @@ namespace CmsWeb.Models
         public string Sort { get; set; }
         public string Dir { get; set; }
         public IList<string> List { get; set; } = new List<string>();
+        public bool ChangeMemberType { get; set; }
+        public int MoveToMemberTypeId { get; set; }
 
         public HtmlString SgFilterHelp => ViewExtensions2.Markdown(@"
 **Match a sub-group name.**
@@ -355,6 +357,18 @@ namespace CmsWeb.Models
                     select om.Person.Grade;
 
             return q.Distinct();
+        }
+
+        public IEnumerable<SelectListItem> GetMemberTypes()
+        {
+            var q = from mt in DbUtil.Db.MemberTypes
+                    orderby mt.Description
+                    select new SelectListItem
+                    {
+                        Value = mt.Id.ToString(),
+                        Text = mt.Description
+                    };
+            return q;
         }
 
         public IEnumerable<OrganizationMember> ApplySort()
