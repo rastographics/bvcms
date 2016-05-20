@@ -41,7 +41,9 @@ namespace CmsWeb.Models
                          schedule = i.schedule,
                          cmshost = DbUtil.Db.CmsHost,
                          id = i.o.OrganizationId,
-                         gc = geocode
+                         gc = geocode,
+                         color = DbUtil.Db.Setting($"Campus-{i.o.CampusId.GetValueOrDefault(-1)}", "FFFFFF").Replace("#",""),
+                         campusId = i.o.CampusId.GetValueOrDefault(-1)
                      };
             var qlist = q2.ToList();
             var addlist = new List<GeoCode>();
@@ -60,8 +62,6 @@ namespace CmsWeb.Models
                 DbUtil.Db.GeoCodes.InsertAllOnSubmit(addlist);
             DbUtil.Db.SubmitChanges();
 
-            var hex = "FE7569";
-
             var template = @"
 <div>
 {0}<br />
@@ -75,7 +75,7 @@ namespace CmsWeb.Models
                        html = string.Format(template, i.desc, i.schedule, i.cmshost, i.id),
                        latitude = i.gc.Latitude,
                        longitude = i.gc.Longitude,
-                       image = $"http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%20|{hex}"
+                       image = $"http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%20|{i.color}"
                    };
         }
 
@@ -118,7 +118,9 @@ namespace CmsWeb.Models
             public DateTime? schedule { get; set; }
             public string cmshost { get; set; }
             public int id { get; set; }
+            public string color { get; set; }
             public GeoCode gc { get; set; }
+            public int campusId { get; set; }
         }
 
         public class MarkerInfo
