@@ -13,12 +13,12 @@ namespace CmsWeb.Models
     {
         public StringBuilder sb = new StringBuilder();
 
-        public SGMapModel(int id)
+        public SGMapModel(int? id)
         {
             divid = id;
         }
 
-        public int divid { get; set; }
+        public int? divid { get; set; }
 
         public IEnumerable<MarkerInfo> Locations()
         {
@@ -26,7 +26,7 @@ namespace CmsWeb.Models
                     let host = o.OrganizationMembers.FirstOrDefault(mm => mm.OrgMemMemTags.Any(mt => mt.MemberTag.Name == "HostHome") || mm.PeopleId == o.LeaderId).Person
                     let schedule = o.OrgSchedules.First().MeetingTime
                     where host != null && (host.PrimaryAddress ?? "") != ""
-                    where o.DivOrgs.Any(dd => dd.DivId == divid) || o.DivisionId == divid
+                    where !divid.HasValue || o.DivOrgs.Any(dd => dd.DivId == divid) || o.DivisionId == divid
                     select new {host, o, schedule};
 
             var q2 = from i in q.ToList()
@@ -48,7 +48,8 @@ namespace CmsWeb.Models
 
             foreach (var i in qlist.Where(ii => ii.gc == null))
             {
-                i.gc = addlist.SingleOrDefault(g => g.Address == i.addr);
+                i.gc = addlist.SingleOrDefault(g => g.Address == i.addr) 
+                    ?? DbUtil.Db.GeoCodes.FirstOrDefault(g => g.Address == i.addr);
                 if (i.gc == null)
                 {
                     i.gc = GetGeocode(i.addr);

@@ -5,7 +5,7 @@ namespace CmsWeb.Areas.Public.Controllers
 {
     public class SGMapController : CmsController
     {
-        public ActionResult Index(int id) // int id)
+        public ActionResult Index(int? id = null) // int id)
         {
             var m = new SGMapModel(id);
             return View(m);
