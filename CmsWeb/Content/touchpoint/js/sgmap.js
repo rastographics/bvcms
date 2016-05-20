@@ -15,8 +15,10 @@ function initializeMaps() {
     for (i = 0; i < markers.length; i++) {
         marker = new google.maps.Marker({
             position: new google.maps.LatLng(markers[i].latitude, markers[i].longitude),
-            map: map
+            map: map,
+            icon: markers[i].image
         });
+
         bounds.extend(marker.position);
         google.maps.event.addListener(marker, 'click', (function (marker, i) {
             return function () {
