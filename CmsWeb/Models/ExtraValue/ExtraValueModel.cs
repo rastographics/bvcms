@@ -15,6 +15,7 @@ namespace CmsWeb.Models.ExtraValues
     {
         public string Location { get; set; }
         public int Id { get; set; }
+        public int? Id2 { get; set; }
         public string Table { get; set; }
         public string OtherLocations;
 
@@ -53,6 +54,13 @@ namespace CmsWeb.Models.ExtraValues
             Location = location;
             Table = table;
         }
+        public ExtraValueModel(int id, int id2, string table, string location)
+        {
+            Id = id;
+            Id2 = id2;
+            Location = location;
+            Table = table;
+        }
 
         public static string HelpLink(string page)
         {
@@ -84,6 +92,12 @@ namespace CmsWeb.Models.ExtraValues
                         where ee.MeetingId == Id
                         select new ExtraValue(ee, this);
                     break;
+                case "OrgMember":
+                    q = from ee in DbUtil.Db.OrgMemberExtras
+                        where ee.OrganizationId == Id
+                        where ee.PeopleId == Id2
+                        select new ExtraValue(ee, this);
+                    break;
                 default:
                     q = new List<ExtraValue>();
                     break;
@@ -93,10 +107,10 @@ namespace CmsWeb.Models.ExtraValues
 
         private ITableWithExtraValues TableObject()
         {
-            return TableObject(Id, Table);
+            return TableObject(Id, Table, Id2);
         }
 
-        public static ITableWithExtraValues TableObject(int id, string table)
+        public static ITableWithExtraValues TableObject(int id, string table, int? id2 = null)
         {
             switch (table)
             {
@@ -106,13 +120,12 @@ namespace CmsWeb.Models.ExtraValues
                     return DbUtil.Db.LoadOrganizationById(id);
                 case "Family":
                     return DbUtil.Db.Families.SingleOrDefault(f => f.FamilyId == id);
-                //                                case "Meeting":
-                //                                    return DbUtil.Db.Meetings.SingleOrDefault(m => m.MeetingId == Id);
+                case "OrgMember":
+                    return DbUtil.Db.OrganizationMembers.SingleOrDefault(f => f.OrganizationId == id && f.PeopleId == id2);
                 default:
                     return null;
             }
         }
-
         public List<Value> GetStandardExtraValues(string table, string location = null)
         {
             var q = from v in Views.GetStandardExtraValuesOrdered(DbUtil.Db, table, location)

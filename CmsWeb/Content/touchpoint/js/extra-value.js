@@ -120,35 +120,9 @@
                 $('#empty-dialog').on('hidden', function () {
                     $('#empty-dialog').remove();
                 });
-                var showHide = function () {
-                    $("#ExtraValueTextBox").parent().parent().addClass('hide');
-                    $("#ExtraValueTextArea").parent().parent().addClass('hide');
-                    $("#ExtraValueCheckbox").parent().parent().parent().addClass('hide');
-                    $("#ExtraValueDate").parent().parent().parent().addClass('hide');
-                    $("#ExtraValueInteger").parent().parent().addClass('hide');
-
-                    switch ($("#AdhocExtraValueType_Value").val()) {
-                        case "Code":
-                            $("#ExtraValueTextBox").parent().parent().removeClass('hide');
-                            break;
-                        case "Text":
-                            $("#ExtraValueTextArea").parent().parent().removeClass('hide');
-                            break;
-                        case "Bit":
-                            $("#ExtraValueCheckbox").parent().parent().parent().removeClass('hide');
-                            break;
-                        case "Date":
-                            $("#ExtraValueDate").parent().parent().parent().removeClass('hide');
-                            break;
-                        case "Int":
-                            $("#ExtraValueInteger").parent().parent().removeClass('hide');
-                            break;
-                    }
-                };
-                $('body').on('change', '#AdhocExtraValueType_Value', showHide);
             });
         $.InitFunctions.AdhocDialogCallback = function () {
-            if ($("#ExtraValueError").length == 0) {
+            if ($("#ExtraValueError").length === 0) {
                 $("#empty-dialog").modal("hide");
                 var a = $a.closest("form").find("a.ajax.reload");
                 if (a.length > 0)
@@ -156,6 +130,33 @@
             }
         };
     });
+    var showHideExtraValueTypes = function () {
+        $("#ExtraValueTextBox").parent().parent().addClass('hide');
+        $("#ExtraValueTextArea").parent().parent().addClass('hide');
+        $("#ExtraValueCheckbox").parent().parent().parent().addClass('hide');
+        $("#ExtraValueDate").parent().parent().parent().addClass('hide');
+        $("#ExtraValueInteger").parent().parent().addClass('hide');
+
+        switch ($("#AdhocExtraValueType_Value").val()) {
+            case "Code":
+                $("#ExtraValueTextBox").parent().parent().removeClass('hide');
+                break;
+            case "Text":
+                $("#ExtraValueTextArea").parent().parent().removeClass('hide');
+                break;
+            case "Bit":
+                $("#ExtraValueCheckbox").parent().parent().parent().removeClass('hide');
+                break;
+            case "Date":
+                $("#ExtraValueDate").parent().parent().parent().removeClass('hide');
+                break;
+            case "Int":
+                $("#ExtraValueInteger").parent().parent().removeClass('hide');
+                break;
+        }
+    };
+    $('body').on('change', '#AdhocExtraValueType_Value', showHideExtraValueTypes);
+
     $.InitFunctions.ExtraEditable = function () {
         $.fn.editabletypes.abstractinput.prototype.value2input = function (value) {
             this.$input.val((value || "").toString());

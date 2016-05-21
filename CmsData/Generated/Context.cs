@@ -462,6 +462,10 @@ namespace CmsData
         partial void UpdateOrgContent(OrgContent instance);
         partial void DeleteOrgContent(OrgContent instance);
         
+        partial void InsertOrgMemberExtra(OrgMemberExtra instance);
+        partial void UpdateOrgMemberExtra(OrgMemberExtra instance);
+        partial void DeleteOrgMemberExtra(OrgMemberExtra instance);
+        
         partial void InsertOrgMemMemTag(OrgMemMemTag instance);
         partial void UpdateOrgMemMemTag(OrgMemMemTag instance);
         partial void DeleteOrgMemMemTag(OrgMemMemTag instance);
@@ -1403,6 +1407,12 @@ namespace CmsData
 		public Table< OrgContent> OrgContents
 		{
 			get	{ return this.GetTable< OrgContent>(); }
+
+		}
+
+		public Table< OrgMemberExtra> OrgMemberExtras
+		{
+			get	{ return this.GetTable< OrgMemberExtra>(); }
 
 		}
 

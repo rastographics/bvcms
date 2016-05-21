@@ -11,6 +11,9 @@ namespace CmsWeb.Models.ExtraValues
         internal ExtraValueModel Model; // only applies to standard extra values
         public bool HasValue => Extravalue != null && Extravalue.ToString().HasValue();
 
+        public string PrimaryKey => Model.Id2.HasValue ? $"{Model.Id}.{Model.Id2}" : Id.ToString();
+        public int? Id2 => Extravalue.Id2;
+
         public string DataSource
         {
             get

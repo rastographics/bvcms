@@ -283,6 +283,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddOrganizationController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddAttendeesFromTagController.cs" />
+    <Compile Include="Areas\Dialog\Controllers\OrgMemberDialogController.cs" />
     <Compile Include="Areas\Dialog\Controllers\OrgSearchDropController.cs" />
     <Compile Include="Areas\Dialog\Controllers\OrgDropController.cs" />
     <Compile Include="Areas\Dialog\Controllers\ValidateAddressController.cs" />
@@ -290,7 +291,6 @@
     <Compile Include="Areas\Dialog\Controllers\DeleteMeetingController.cs" />
     <Compile Include="Areas\Dialog\Controllers\DialogController.cs" />
     <Compile Include="Areas\Dialog\Controllers\NewMeetingController.cs" />
-    <Compile Include="Areas\Dialog\Controllers\OrgMemberDialogController.cs" />
     <Compile Include="Areas\Dialog\Controllers\OrgMembersUpdateController.cs" />
     <Compile Include="Areas\Dialog\Controllers\RepairTransactionsController.cs" />
     <Compile Include="Areas\Dialog\Controllers\RepairTransactionsOrgsController.cs" />
@@ -1501,6 +1501,15 @@
     <Content Include="Areas\Org\Views\OrgSearch\RecentVisitsAbsents.xml" />
     <Content Include="Areas\Reports\Views\Reports\PyScript.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Code.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Tabs\MemberData.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Tabs\Questions.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Tabs\Groups.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Tabs\Notes.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Tabs\ExtraValue\Entry.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Tabs\ExtraValue\Adhoc.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Tabs\ExtraValue\NewAdhoc.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgMemberDialog\EditorTemplates\Value.cshtml" />
+    <None Include="Areas\Dialog\Views\OrgMemberDialog\ExtraValue.cshtml" />
     <None Include="Areas\Finance\Views\FinanceReports\TotalsByAgeRange.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\DepositTotalsForDates.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\DepositTotalsForDatesResults.cshtml" />

@@ -19,7 +19,7 @@
         $.InitializeDateElements();
     };
 
-    $('body').on('click', 'ul.nav-tabs a.ajax, a.ajax.ui-tabs-anchor, ul.nav-pills a.ajax, a.ajax.ui-tabs-anchor', function (event) {
+    $('body').on('click', 'ul.nav-tabs a.tabajax, ul.nav-tabs a.ajax, a.ajax.ui-tabs-anchor, ul.nav-pills a.ajax, a.ajax.ui-tabs-anchor', function (event) {
         var $this = $(this);
         var alreadyClicked = $this.data('clicked');
         if (alreadyClicked) {
@@ -72,7 +72,7 @@
                     },
                     error: function (xhr, ajaxOptions, thrownError) {
                         $.unblock();
-                        swal({title: "Error!", text: thrownError, type: "error", html: true});
+                        swal({ title: "Error!", text: thrownError, type: "error", html: true });
                     }
                 });
             }
@@ -153,7 +153,14 @@
 
     $.formAjaxClick = function (a, link) {
         var $form = a.closest("form.ajax");
+        var $load = $form;
+        var $tabinit = $form.closest("div.tab-pane[data-init]");
         var $tablink = $form.closest("div.tab-pane");
+        if (a.data("loadele")) {
+            $load = $(a.data("loadele"));
+//            $tabinit = {};
+//            $tablink = {};
+        }
         var $modalbody = a.closest("div.modal-body");
         var ahref = a.attr("href");
         if (ahref === '#')
@@ -174,19 +181,18 @@
             $("input[name='Sort']", $form).val(a.data("sortby"));
         if (a.data("dir"))
             $("input[name='Direction']", $form).val(a.data("dir"));
-        var $tabinit = $form.closest("div.tab-pane[data-init]");
 
         var data = $form.serialize();
         if (data.length === 0 || a.data("data") === "none")
             data = {};
         if (!a.hasClass("validate") || $form.valid()) {
-            var isModal = $form.hasClass("modal-form");
+            var isModal = $load.hasClass("modal-form");
             $.ajax({
                 type: 'POST',
                 url: url,
                 data: data,
                 beforeSend: function () {
-                    if (isModal == false)
+                    if (isModal === false)
                         $.block();
                 },
                 complete: function () {
@@ -196,25 +202,24 @@
                     $.unblock();
                     if (a.data("redirect"))
                         window.location = ret;
-                    else if (isModal == true) {
-                        $form.html(ret).ready(function () {
+                    else if (isModal === true) {
+                        $load.html(ret).ready(function () {
                             $.resizeModalBackDrop();
                             $.AttachFormElements();
                             if (a.data("callback"))
                                 $.InitFunctions[a.data("callback")]();
                         });
                     } else {
-                        var results = $($form.data("results") || $form);
+                        var results = $($load.data("results") || $load);
 
-                        results.replaceWith(ret);
-                        results.ready(function () {
+                        results.replaceWith(ret).ready(function () {
                             if ($(".scrollToTop").length > 0) {
                                 $("html, body").animate({ scrollTop: 0 }, "slow");
                             }
 
                             $.AttachFormElements();
 
-                            if ($tabinit.data("init")) {
+                            if ($tabinit.data && $tabinit.data("init")) {
                                 var temp = $tabinit.data("init").split(",");
                                 for (var i in temp) {
                                     if (temp.hasOwnProperty(i)) {
@@ -228,12 +233,14 @@
                                     if (t.hasOwnProperty(ii))
                                         $.InitFunctions[t[ii]]();
                             }
-                            if ($tabinit.data("init2"))
+                            if ($tabinit.data && $tabinit.data("init2"))
                                 $.InitFunctions[$tabinit.data("init2")]();
                             if ($form.data("init2"))
                                 $.InitFunctions[$form.data("init2")]();
                             if (a.data("callback"))
                                 $.InitFunctions[a.data("callback")]();
+                            if (a.data("reload"))
+                                $(a.data("reload")).click();
                         });
                     }
                 },
@@ -309,7 +316,7 @@
                             }
 
                             if ($a.data("callback")) {
-                                $.InitFunctions[$a.data("callback")]($a);
+                                $.InitFunctions[$a.data("callback")]();
                             }
                         });
                     } else {

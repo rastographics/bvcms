@@ -1,0 +1,26 @@
+﻿@using CmsData
+@model CmsWeb.Areas.Dialog.Models.OrgMemberModel
+@{
+  var admin = User.IsInRole("Admin");
+  var manager = User.IsInRole("ManageGroups");
+}
+<div class="tab-pane" id="membergroups">
+  <div class="row">
+    <div class="col-sm-12">
+      @{
+        var list = Model.Organization.MemberTags.OrderBy(t => t.Name).ToList();
+      }
+      @foreach (var item in list)
+      {
+        @SmallGroup(item, manager || admin)
+      }
+    </div>
+  </div>
+  <br/>
+</div>
+@helper SmallGroup(MemberTag mt, bool canedit)
+{
+  <label class="checkbox-inline control-label">
+    <input href="/OrgMemberDialog/SmallGroupChecked/@mt.Id" class="ckbox" @(canedit ? "" : "disabled=disabled") type="checkbox" @(Model.OrgMemMemTags.Any(omt => omt.MemberTagId == mt.Id) ? "checked='checked'" : "")/> @mt.Name
+  </label>
+}

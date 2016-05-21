@@ -79,6 +79,8 @@ namespace CmsData
 		private string _OnlineRegData;
 		
    		
+   		private EntitySet< OrgMemberExtra> _OrgMemberExtras;
+		
    		private EntitySet< OrgMemMemTag> _OrgMemMemTags;
 		
     	
@@ -192,6 +194,8 @@ namespace CmsData
     #endregion
 		public OrganizationMember()
 		{
+			
+			this._OrgMemberExtras = new EntitySet< OrgMemberExtra>(new Action< OrgMemberExtra>(this.attach_OrgMemberExtras), new Action< OrgMemberExtra>(this.detach_OrgMemberExtras)); 
 			
 			this._OrgMemMemTags = new EntitySet< OrgMemMemTag>(new Action< OrgMemMemTag>(this.attach_OrgMemMemTags), new Action< OrgMemMemTag>(this.detach_OrgMemMemTags)); 
 			
@@ -896,6 +900,16 @@ namespace CmsData
         
     #region Foreign Key Tables
    		
+   		[Association(Name="FK_OrgMemberExtra_OrganizationMembers", Storage="_OrgMemberExtras", OtherKey="OrganizationId,PeopleId")]
+   		public EntitySet< OrgMemberExtra> OrgMemberExtras
+   		{
+   		    get { return this._OrgMemberExtras; }
+
+			set	{ this._OrgMemberExtras.Assign(value); }
+
+   		}
+
+		
    		[Association(Name="FK_OrgMemMemTags_OrganizationMembers", Storage="_OrgMemMemTags", OtherKey="OrgId,PeopleId")]
    		public EntitySet< OrgMemMemTag> OrgMemMemTags
    		{
@@ -1137,6 +1151,19 @@ namespace CmsData
 		}
 
    		
+		private void attach_OrgMemberExtras(OrgMemberExtra entity)
+		{
+			this.SendPropertyChanging();
+			entity.OrganizationMember = this;
+		}
+
+		private void detach_OrgMemberExtras(OrgMemberExtra entity)
+		{
+			this.SendPropertyChanging();
+			entity.OrganizationMember = null;
+		}
+
+		
 		private void attach_OrgMemMemTags(OrgMemMemTag entity)
 		{
 			this.SendPropertyChanging();

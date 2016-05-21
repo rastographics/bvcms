@@ -578,6 +578,7 @@
     <Compile Include="Generated\MobileAppPushRegistration.cs" />
     <Compile Include="Generated\MobileAppRoom.cs" />
     <Compile Include="Generated\MobileAppVideoType.cs" />
+    <Compile Include="Generated\OrgMemberExtra.cs" />
     <Compile Include="Generated\QueryAnalysi.cs" />
     <Compile Include="Generated\RegistrationDatum.cs" />
     <Compile Include="Generated\Views\ActiveRegistration.cs" />

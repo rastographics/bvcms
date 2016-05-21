@@ -18,6 +18,7 @@ namespace CmsWeb.Models.ExtraValues
     public class NewExtraValueModel
     {
         public int Id { get; set; }
+        public int Id2 { get; set; }
         public Guid QueryId { get; set; }
         public string ExtraValueTable { get; set; }
         public string ExtraValueLocation { get; set; }
@@ -125,6 +126,15 @@ namespace CmsWeb.Models.ExtraValues
             ExtraValueTable = table;
             ExtraValueLocation = location;
         }
+        public NewExtraValueModel(int id, int id2, string table, string location)
+        {
+            ExtraValueType = new CodeInfo("Text", "ExtraValueType");
+            AdhocExtraValueType = new CodeInfo("Text", "AdhocExtraValueType");
+            Id = id;
+            Id2 = id2;
+            ExtraValueTable = table;
+            ExtraValueLocation = location;
+        }
 
         public NewExtraValueModel()
         {
@@ -204,6 +214,17 @@ namespace CmsWeb.Models.ExtraValues
                         CheckDifferentCase();
                     }
                     break;
+                case "OrgMember":
+                    if (type == "Bits")
+                        foreach (var b in ConvertToCodes().Where(b => DbUtil.Db.OrgMemberExtras.Any(ee => ee.Field == b && ee.Type != "Bit")))
+                            throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, b));
+                    else
+                    {
+                        if (DbUtil.Db.OrgMemberExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != type))
+                            throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, ExtraValueName));
+                        CheckDifferentCase();
+                    }
+                    break;
             }
         }
 
@@ -263,7 +284,7 @@ Option 2
 
         private string AddNewExtraValueToRecord()
         {
-            var o = ExtraValueModel.TableObject(Id, ExtraValueTable);
+            var o = ExtraValueModel.TableObject(Id, ExtraValueTable, Id2);
             switch (AdhocExtraValueType.Value)
             {
                 case "Code":
@@ -513,6 +534,15 @@ and PeopleId in (select PeopleId from TagPerson where Id = @id)
                           select new ExtraValue(vv, null)).First();
                     if (ev.Type == "Code")
                         codes = (from vv in DbUtil.Db.MeetingExtras
+                                 where vv.Field == name
+                                 select vv.StrValue).Distinct().ToList();
+                    break;
+                case "OrgMember":
+                    ev = (from vv in DbUtil.Db.OrgMemberExtras
+                          where vv.Field == name
+                          select new ExtraValue(vv, null)).First();
+                    if (ev.Type == "Code")
+                        codes = (from vv in DbUtil.Db.OrgMemberExtras
                                  where vv.Field == name
                                  select vv.StrValue).Distinct().ToList();
                     break;

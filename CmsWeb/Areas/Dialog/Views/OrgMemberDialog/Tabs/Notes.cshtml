@@ -1,0 +1,18 @@
+﻿@model CmsWeb.Areas.Dialog.Models.OrgMemberModel
+@{
+  var edit = User.IsInRole("Edit");
+}
+<div id="membernotes" class="tab-pane">
+  @Html.DisplayFor(m => m.UserData, "TextArea", new {AddClass = "scroll150"})
+  @if (edit)
+  {
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="pull-right">
+          <a href="/OrgMemberDialog/Edit" class="btn btn-default ajax"><i class="fa fa-pencil"></i> Edit</a>
+        </div>
+      </div>
+    </div>
+    <br/>
+  }
+</div>

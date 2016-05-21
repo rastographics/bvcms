@@ -1,0 +1,32 @@
+﻿@using CmsWeb.Models.ExtraValues
+@model NewExtraValueModel
+<div id="memberextravalues">
+  @if (ViewBag.Error != null)
+  {
+    <div id="ExtraValueError" class="alert alert-danger alert-dismissible">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+      <div>@Html.Raw(ViewBag.Error)</div>
+    </div>
+  }
+  @Html.HiddenFor(m => m.Id)
+  @Html.HiddenFor(m => m.Id2)
+  @Html.HiddenFor(m => m.ExtraValueTable)
+  @Html.HiddenFor(m => m.ExtraValueLocation)
+
+  @Html.EditorFor(m => m.AdhocExtraValueType, new {PlainSelect = true})
+  @Html.EditorFor(m => m.ExtraValueName)
+  @Html.EditorFor(m => m.ExtraValueTextBox, Model.Hidden("Code"))
+  @Html.EditorFor(m => m.ExtraValueTextArea, Model.Hidden("Text"))
+  @Html.EditorFor(m => m.ExtraValueCheckbox, Model.Hidden("Bit"))
+  @Html.EditorFor(m => m.ExtraValueDate, Model.Hidden("Date"))
+  @Html.EditorFor(m => m.ExtraValueInteger, Model.Hidden("Int"))
+  <div class="text-right">
+    <a href="/OrgMemberDialog/ExtraValues/@Model.Id/@Model.Id2"
+       class="btn btn-default ajax reload"
+       data-loadele="#memberextravalues"> Cancel Add </a>
+    <a href="/OrgMemberDialog/AddExtraValue"
+       class="btn btn-primary ajax" 
+       data-loadele="#memberextravalues"> Save </a>
+  </div>
+</div>

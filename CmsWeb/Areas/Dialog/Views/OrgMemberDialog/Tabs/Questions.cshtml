@@ -1,0 +1,32 @@
+﻿@model CmsWeb.Areas.Dialog.Models.OrgMemberModel
+@{
+  var hadQuestions = false;
+}
+<div id="regquestions" class="tab-pane">
+  <dl>
+    @if (User.IsInRole("Edit"))
+    {
+      foreach (var q in Model.RegQuestions())
+      {
+        hadQuestions = true;
+        var pk = $"{Model.OrgId},{Model.PeopleId},{q.Row}";
+        <dt>@q.Question</dt>
+        <dd class="pre-wrap">
+          <a id="@pk" data-pk="@pk" href="#" data-title="Answer" class="clickEdit editable editable-click">@q.Answer</a>
+        </dd>
+      }
+    }
+    else
+    {
+      foreach (var q in Model.RegQuestions())
+      {
+        <dt>@q.Question</dt>
+        <dd class="pre-wrap">@q.Answer</dd>
+      }
+    }
+  </dl>
+  @if (hadQuestions == false)
+  {
+    <a id="addQuestions" class="btn btn-success">Add Missing Questions</a>
+  }
+</div>

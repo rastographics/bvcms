@@ -1,0 +1,131 @@
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.Dialog.Models.OrgMemberModel
+@{
+  var admin = User.IsInRole("Admin");
+  var managetransactions = User.IsInRole("ManageTransactions");
+  var edit = User.IsInRole("Edit");
+  var missiongiving = User.IsInRole("MissionGiving") || User.IsInRole("Developer");
+  var member = Model.Group == "Member";
+  var sender = Model.Group == "Inactive" && Model.Organization.IsMissionTrip == true;
+}
+<div class="tab-pane active" id="memberdata">
+  <a href="/TransactionHistory/@Model.PeopleId/@Model.OrgId" target="_blank"
+     style="font-family: Courier New">
+    Attendance
+  </a>: @Model.AttendStr
+  @Html.DisplayFor(m => m.MemberType)
+  @Html.DisplayFor(m => m.InactiveDate)
+  @Html.DisplayFor(m => m.EnrollmentDate, "DateAndTime")
+  @Html.DisplayFor(m => m.Pending)
+  @if (Model.RegisterEmail.HasValue())
+  {
+    @Html.DisplayFor(m => m.RegisterEmail)
+  }
+  @if (Model.Setting.AskVisible("AskRequest"))
+  {
+    @Html.DisplayFor(m => m.Request)
+  }
+  @if (Model.Grade.HasValue)
+  {
+    @Html.DisplayFor(m => m.Grade)
+  }
+  @if (Model.Setting.AskVisible("AskTickets"))
+  {
+    @Html.DisplayFor(m => m.Tickets)
+  }
+  @if (Model.TransactionsLink.HasValue())
+  {
+    <div class="form-group">
+      <label class="control-label">Transaction Amounts</label>
+      <div class="controls">
+        @if (Model.TransactionSummary != null)
+        {
+          <div class="table-responsive">
+            <table class="table table-condensed">
+              <thead>
+              <tr>
+                <th>Fee</th>
+                @if (Model.AmtDonation > 0)
+                {
+                  <th>Donation</th>
+                }
+                <th>Paid</th>
+                <th>Due</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>@Model.AmtFee.ToString2("c")</td>
+                @if (Model.AmtDonation > 0)
+                {
+                  <td>@Model.AmtDonation.ToString2("c")</td>
+                }
+                <td>@Model.AmtPaid.ToString2("c")</td>
+                <td>@Model.AmtDue.ToString2("c")</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        }
+        @if (Model.AmtCoupon > 0)
+        {
+          <p>Coupon Applied: @Model.AmtCoupon.ToString2("C")</p>
+        }
+        <p>
+          @if (admin || managetransactions)
+          {
+            <a href="@Model.TransactionsLink" target="transactions">View Transactions</a>
+          }
+          @if (Model.AmtDue > 0)
+          {
+            <a href="@Model.PayLink" style="margin-left: 2em;" target="_blank">PayLink</a>
+          }
+          @if (Model.SupportLink.HasValue())
+          {
+            <a href="@Model.SupportLink" style="margin-left: 2em;" target="_blank">Support Link</a>
+          }
+        </p>
+      </div>
+    </div>
+  }
+  @if (Model.Setting.AskVisible("AskSize"))
+  {
+    @Html.DisplayFor(m => m.ShirtSize)
+  }
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="pull-right">
+        @if ((managetransactions || admin || missiongiving) && (member || sender))
+        {
+          <div class="btn-group">
+            <button class="btn btn-success dropdown-toggle" data-toggle="dropdown">Transaction <span class="caret"></span></button>
+            <ul class="dropdown-menu">
+              <li>
+                <a href="/OrgMemberDialog/AddTransaction" class="ajax"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Transaction</a>
+              </li>
+              @if (Model.TransactionSummary != null)
+              {
+                <li>
+                  <a href="/OrgMemberDialog/AddFeeAdjustment" class="ajax"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Make Fee Adjustment</a>
+                </li>
+              }
+              @if (Model.IsMissionTrip)
+              {
+                <li>
+                  <a href="/OrgMemberDialog/MissionSupport" class="ajax"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Mission Trip Support</a>
+                </li>
+              }
+            </ul>
+          </div>
+        }
+        @if (edit)
+        {
+          <a href="/OrgMemberDialog/Move" class="btn btn-warning ajax">Move</a>
+          <a href="/OrgMemberDialog/ShowDrop" class="btn btn-danger ajax">Drop</a>
+          <a href="/OrgMemberDialog/Edit" class="btn btn-default ajax"><i class="fa fa-pencil"></i> Edit</a>
+        }
+      </div>
+    </div>
+  </div>
+  <br/>
+</div>

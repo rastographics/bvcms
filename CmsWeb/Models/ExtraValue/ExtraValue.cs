@@ -6,6 +6,7 @@ namespace CmsWeb.Models.ExtraValues
     public class ExtraValue
     {
         public int Id;
+        public int? Id2;
         public string Field { get; set; }
         public string StrValue { get; set; }
         public DateTime? DateValue { get; set; }
@@ -58,8 +59,25 @@ namespace CmsWeb.Models.ExtraValues
         {
             Type = v.Type;
             Field = v.Field;
+            StrValue = v.StrValue;
+            DateValue = v.DateValue;
             Data = v.Data;
+            IntValue = v.IntValue;
+            BitValue = v.BitValue;
             Id = v.MeetingId;
+            Model = model;
+        }
+        public ExtraValue(OrgMemberExtra v, ExtraValueModel model)
+        {
+            Type = v.Type;
+            Field = v.Field;
+            StrValue = v.StrValue;
+            DateValue = v.DateValue;
+            Data = v.Data;
+            IntValue = v.IntValue;
+            BitValue = v.BitValue;
+            Id = v.OrganizationId;
+            Id2 = v.PeopleId;
             Model = model;
         }
     }

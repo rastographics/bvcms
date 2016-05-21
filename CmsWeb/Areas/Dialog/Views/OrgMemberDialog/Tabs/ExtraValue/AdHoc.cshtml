@@ -1,0 +1,34 @@
+﻿@model CmsWeb.Models.ExtraValues.ExtraValueModel
+<div class="table-responsive" id="memberextravalues">
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Value</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var f in Model.GetExtraValues().ToList())
+    {
+      @Html.EditorFor(m => f)
+    }
+    </tbody>
+    <tfoot>
+    <tr>
+      <td colspan="3" class="text-right">
+        <a href="/OrgMemberDialog/ExtraValues/@Model.Id/@Model.Id2" 
+           class="btn btn-default ajax reload btn-xs"
+           data-loadele="#memberextravalues">
+          <i class="fa fa-refresh"></i> Refresh
+        </a>
+        <a class="btn btn-success ajax btn-xs"
+           data-loadele="#memberextravalues"
+           href="/OrgMemberDialog/NewExtraValue/@Model.Id/@Model.Id2">
+          <i class="fa fa-plus-circle"></i> Add Extra Value
+        </a>
+      </td>
+    </tr>
+    </tfoot>
+  </table>
+</div>

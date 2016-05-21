@@ -1,0 +1,97 @@
+﻿@using CmsWeb.Models.ExtraValues
+@model ExtraValueModel
+@{
+    var model2 = new EntryModel(Model.Id);
+}
+<form class="ajax" method="post" data-init="ExtraEditable">
+    <h4>Origin and Entry Point</h4>
+    <div class="table-responsive">
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td class="nowrap"><strong>Origin:</strong></td>
+                    @if (User.IsInRole("Edit"))
+                    {
+                        <td style="width: 200px;">
+                            <a href="#" data-pk="@Model.Id" data-name="Origin" class="click-Code-Select"
+                               data-url="/ExtraValue/EditEntry" data-value="@model2.Origin.Value" data-source="/ExtraValue/OriginList"><span>@model2.Origin</span></a>
+                        </td>
+                    }
+                    else
+                    {
+                        <td style="width: 200px;">@model2.Origin</td>
+                    }
+                    <td class="nowrap"><strong>Entry Point:</strong></td>
+                    @if (User.IsInRole("Edit"))
+                    {
+                        <td style="width: 200px;">
+                            <a href="#" data-pk="@Model.Id" data-name="EntryPoint" class="click-Code-Select"
+                               data-url="/ExtraValue/EditEntry" data-value="@model2.EntryPoint.Value" data-source="/ExtraValue/EntryPointList"><span>@model2.EntryPoint</span></a>
+                        </td>
+                    }
+                    else
+                    {
+                        <td style="width: 200px;">@model2.EntryPoint</td>
+                    }
+                    <td class="nowrap"><strong>Interest Point:</strong></td>
+                    @if (User.IsInRole("Edit"))
+                    {
+                        <td style="width: 200px;">
+                            <a href="#" data-pk="@Model.Id" data-name="InterestPoint" class="click-Code-Select"
+                               data-url="/ExtraValue/EditEntry" data-value="@model2.InterestPoint.Value" data-source="/ExtraValue/InterestPointList"><span>@model2.InterestPoint</span></a>
+                        </td>
+                    }
+                    else
+                    {
+                        <td style="width: 200px;">@model2.InterestPoint</td>
+                    }
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <h4>Information Card</h4>
+    @FormAction()
+    <br />
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <tbody>
+                @foreach (var f in Model.GetExtraValues())
+                {
+                    @Html.EditorFor(m => f)
+                }
+            </tbody>
+        </table>
+    </div>
+    @FormAction(true)
+    <input type="hidden" id="StandardExtraValueReload" value="/ExtraValue/Display/@Model.Table/Entry/@Model.Id" />
+</form>
+@helper FormAction(bool xs = false)
+{
+    if (xs)
+    {
+        <div class="visible-xs-block">
+            @if (User.IsInRole("Admin"))
+            {
+                <a class="extravalue btn btn-success btn-block" href="/ExtraValue/NewStandard/@Model.Table/Entry/@Model.Id"><i class="fa fa-plus-circle"></i> Add Extra Value</a>
+                <a class="extravalue btn btn-default btn-block" href="/ExtraValue/ListStandard/@Model.Table/Entry/@Model.Id?title=Edit+Entry+Card"><i class="fa fa-pencil"></i> Edit</a>
+                <hr />
+            }
+            <a href="#" class="btn btn-default btn-block ajax-refresh"><i class="fa fa-refresh"></i> Refresh</a>
+        </div>
+    }
+    else
+    {
+        <div class="row hidden-xs">
+            <div class="col-sm-12">
+                <div class="pull-right">
+                    <a href="#" class="btn btn-default ajax-refresh"><i class="fa fa-refresh"></i> Refresh</a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a class="extravalue btn btn-default" href="/ExtraValue/ListStandard/@Model.Table/Entry/@Model.Id?title=Edit+Entry+Card"><i class="fa fa-pencil"></i> Edit</a>
+                        <a class="extravalue btn btn-success" href="/ExtraValue/NewStandard/@Model.Table/Entry/@Model.Id"><i class="fa fa-plus-circle"></i> Add Extra Value</a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+}
