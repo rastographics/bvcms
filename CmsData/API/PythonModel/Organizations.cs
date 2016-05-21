@@ -111,12 +111,11 @@ namespace CmsData
             db2.Dispose();
         }
 
-
-        public void MoveToOrg(int pid, int fromOrg, int toOrg, bool? moveregdata = true)
+        public void MoveToOrg(int pid, int fromOrg, int toOrg, bool? moveregdata = true, int toMemberTypeId = -1)
         {
             db.LogActivity($"PythonModel.MoveToOrg({pid},{fromOrg},{toOrg})");
             var db2 = NewDataContext();
-            OrganizationMember.MoveToOrg(db2, pid, fromOrg, toOrg, moveregdata);
+            OrganizationMember.MoveToOrg(db2, pid, fromOrg, toOrg, moveregdata, toMemberTypeId);
         }
 
         public List<int> OrganizationIds(int progid, int divid, bool? includeInactive)

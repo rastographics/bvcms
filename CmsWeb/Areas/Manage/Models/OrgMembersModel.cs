@@ -461,7 +461,7 @@ namespace CmsWeb.Models
                 var oid = a[1].ToInt();
                 if (oid == TargetId)
                     continue;
-                OrganizationMember.MoveToOrg(DbUtil.Db, pid, oid, TargetId, MoveRegistrationData);
+                OrganizationMember.MoveToOrg(DbUtil.Db, pid, oid, TargetId, MoveRegistrationData, ChangeMemberType == true ? MoveToMemberTypeId : -1);
             }
             DbUtil.Db.UpdateMainFellowship(TargetId);
         }
