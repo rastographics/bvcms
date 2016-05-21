@@ -15,8 +15,9 @@
 
     $('body').on('click', '#refresh', $.RefreshPage);
     $('body').on('change', '#ProgId', $.RefreshPage);
-    $('body').on('change', '#DivId', $.RefreshPage);
+    $('body').on('change', '#SourceDivId', $.RefreshPage);
     $('body').on('change', '#SourceId', $.RefreshPage);
+    $('body').on('change', '#TargetDivId', $.RefreshPage);
     $('body').on('change', '#TargetId', $.RefreshPage);
     $('body').on('change', '#MembersOnly', $.RefreshPage);
     $('body').on('change', '#Grades', $.RefreshPage);

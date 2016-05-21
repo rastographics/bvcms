@@ -27,7 +27,8 @@ namespace CmsWeb.Models
         public int TargetId { get; set; }
         public int SourceId { get; set; }
         public int ProgId { get; set; }
-        public int DivId { get; set; }
+        public int SourceDivId { get; set; }
+        public int TargetDivId { get; set; }
         public bool EmailAllNotices { get; set; }
         public bool MoveRegistrationData { get; set; }
         public string Grades { get; set; }
@@ -63,7 +64,7 @@ namespace CmsWeb.Models
 
             var div = DbUtil.Db.Divisions.SingleOrDefault(d => d.Id == a[1] && d.ProgId == ProgId);
             if (div != null)
-                DivId = a[1];
+                SourceDivId = a[1];
 
             var source = DbUtil.Db.Organizations.Where(o => o.OrganizationId == a[2]).Select(o => o.OrganizationId).SingleOrDefault();
             SourceId = a[2];
@@ -73,17 +74,17 @@ namespace CmsWeb.Models
         {
             var q = from prog in DbUtil.Db.Programs
                     where prog.Id == ProgId
-                    let div = DbUtil.Db.Divisions.SingleOrDefault(d => d.Id == DivId && d.ProgId == ProgId)
-                    let org = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == SourceId && o.DivOrgs.Any(d => d.DivId == DivId))
-                    let org2 = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == SourceId && o.DivOrgs.Any(d => d.DivId == DivId))
+                    let div = DbUtil.Db.Divisions.SingleOrDefault(d => d.Id == SourceDivId && d.ProgId == ProgId)
+                    let org = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == SourceId && o.DivOrgs.Any(d => d.DivId == SourceDivId))
+                    let org2 = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == SourceId && o.DivOrgs.Any(d => d.DivId == SourceDivId))
                     select new {div, noorg = org == null, noorg2 = org2 == null};
             var i = q.SingleOrDefault();
             if (i == null)
-                ProgId = DivId = SourceId = TargetId = 0;
+                ProgId = SourceDivId = SourceId = TargetDivId = TargetId = 0;
             else
             {
                 if (i.div == null)
-                    DivId = SourceId = TargetId = 0;
+                    SourceDivId = SourceId = TargetDivId = TargetId = 0;
                 else
                 {
                     if (i.noorg)
@@ -136,7 +137,7 @@ namespace CmsWeb.Models
             var roles = DbUtil.Db.CurrentRoles();
             var q = from o in DbUtil.Db.Organizations
                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
-                    where o.DivOrgs.Any(di => di.DivId == DivId)
+                    where o.DivOrgs.Any(di => di.DivId == SourceDivId)
                     where o.OrganizationStatusId == OrgStatusCode.Active
                     orderby o.OrganizationName
                     let sctime = o.OrgSchedules.Count() == 1 ? " " + DbUtil.Db.GetScheduleDesc(o.OrgSchedules.First().MeetingTime) : ""
@@ -152,11 +153,12 @@ namespace CmsWeb.Models
 
         public IEnumerable<SelectListItem> Organizations2()
         {
+            int divId = (TargetDivId == 0) ? SourceDivId : TargetDivId;
             var member = MemberTypeCode.Member;
             var roles = DbUtil.Db.CurrentRoles();
             var q = from o in DbUtil.Db.Organizations
                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
-                    where o.DivOrgs.Any(di => di.DivId == DivId)
+                    where o.DivOrgs.Any(di => di.DivId == divId)
                     where o.OrganizationStatusId == OrgStatusCode.Active
                     orderby o.OrganizationName
                     let sctime = o.OrgSchedules.Count() == 1 ? " " + DbUtil.Db.GetScheduleDesc(o.OrgSchedules.First().MeetingTime) : ""
@@ -193,7 +195,7 @@ namespace CmsWeb.Models
                     glist = (from g in (Grades ?? "").Split(new char[] { ',', ';' })
                              select g.ToInt()).ToArray();
                 var q = from om in DbUtil.Db.OrganizationMembers
-                        where om.Organization.DivOrgs.Any(di => di.DivId == DivId)
+                        where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                         where SourceId == 0 || om.OrganizationId == SourceId
                         where glist.Length == 0 || glist.Contains(om.Person.Grade.Value)
                         where !SmallGroup.HasValue() || om.OrgMemMemTags.Any(mm => smallGroupList.Contains(mm.MemberTag.Name))
@@ -216,7 +218,7 @@ namespace CmsWeb.Models
                     if ((new Regex(@"^[0-9]+$")).IsMatch(str))
                     {
                         q = from om in DbUtil.Db.OrganizationMembers
-                            where om.Organization.DivOrgs.Any(di => di.DivId == DivId)
+                            where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                             where SourceId == 0 || om.OrganizationId == SourceId
                             where glist.Length == 0 || glist.Contains(om.Person.Grade.Value)
                             where !SmallGroup.HasValue() || om.OrgMemMemTags.Any(mm => smallGroupList.Contains(mm.MemberTag.Name))
@@ -228,7 +230,7 @@ namespace CmsWeb.Models
                     {
                         var matches = Regex.Matches(str, @"^([0-9]+)\-([0-9]+)$");
                         q = from om in DbUtil.Db.OrganizationMembers
-                            where om.Organization.DivOrgs.Any(di => di.DivId == DivId)
+                            where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                             where SourceId == 0 || om.OrganizationId == SourceId
                             where glist.Length == 0 || glist.Contains(om.Person.Grade.Value)
                             where !SmallGroup.HasValue() || om.OrgMemMemTags.Any(mm => smallGroupList.Contains(mm.MemberTag.Name))
@@ -241,7 +243,7 @@ namespace CmsWeb.Models
                     {
                         var matches = Regex.Matches(str, @"^>=([0-9]+)$");
                         q = from om in DbUtil.Db.OrganizationMembers
-                            where om.Organization.DivOrgs.Any(di => di.DivId == DivId)
+                            where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                             where SourceId == 0 || om.OrganizationId == SourceId
                             where glist.Length == 0 || glist.Contains(om.Person.Grade.Value)
                             where !SmallGroup.HasValue() || om.OrgMemMemTags.Any(mm => smallGroupList.Contains(mm.MemberTag.Name))
@@ -253,7 +255,7 @@ namespace CmsWeb.Models
                     {
                         var matches = Regex.Matches(str, @"^>([0-9]+)$");
                         q = from om in DbUtil.Db.OrganizationMembers
-                            where om.Organization.DivOrgs.Any(di => di.DivId == DivId)
+                            where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                             where SourceId == 0 || om.OrganizationId == SourceId
                             where glist.Length == 0 || glist.Contains(om.Person.Grade.Value)
                             where !SmallGroup.HasValue() || om.OrgMemMemTags.Any(mm => smallGroupList.Contains(mm.MemberTag.Name))
@@ -265,7 +267,7 @@ namespace CmsWeb.Models
                     {
                         var matches = Regex.Matches(str, @"^<=([0-9]+)$");
                         q = from om in DbUtil.Db.OrganizationMembers
-                            where om.Organization.DivOrgs.Any(di => di.DivId == DivId)
+                            where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                             where SourceId == 0 || om.OrganizationId == SourceId
                             where glist.Length == 0 || glist.Contains(om.Person.Grade.Value)
                             where !SmallGroup.HasValue() || om.OrgMemMemTags.Any(mm => smallGroupList.Contains(mm.MemberTag.Name))
@@ -277,7 +279,7 @@ namespace CmsWeb.Models
                     {
                         var matches = Regex.Matches(str, @"^<([0-9]+)$");
                         q = from om in DbUtil.Db.OrganizationMembers
-                            where om.Organization.DivOrgs.Any(di => di.DivId == DivId)
+                            where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                             where SourceId == 0 || om.OrganizationId == SourceId
                             where glist.Length == 0 || glist.Contains(om.Person.Grade.Value)
                             where !SmallGroup.HasValue() || om.OrgMemMemTags.Any(mm => smallGroupList.Contains(mm.MemberTag.Name))
@@ -340,7 +342,7 @@ namespace CmsWeb.Models
                     join org in DbUtil.Db.Organizations on om.OrganizationId equals org.OrganizationId
                     join omt in DbUtil.Db.OrgMemMemTags on om.OrganizationId equals omt.OrgId
                     join mt in DbUtil.Db.MemberTags on omt.MemberTagId equals mt.Id
-                    where org.DivisionId == DivId
+                    where org.DivisionId == SourceDivId
                     where SourceId == 0 || om.OrganizationId == SourceId
                     select mt.Name;
 
@@ -351,7 +353,7 @@ namespace CmsWeb.Models
         {
             var q = from om in DbUtil.Db.OrganizationMembers
                     join org in DbUtil.Db.Organizations on om.OrganizationId equals org.OrganizationId
-                    where org.DivisionId == DivId
+                    where org.DivisionId == SourceDivId
                     where SourceId == 0 || om.OrganizationId == SourceId
                     where om.Person.Grade != null
                     select om.Person.Grade;
@@ -469,7 +471,7 @@ namespace CmsWeb.Models
         public int MovedCount()
         {
             var q = from om in DbUtil.Db.OrganizationMembers
-                    where om.Organization.DivOrgs.Any(di => di.DivId == DivId)
+                    where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                     where om.Moved == true
                     select om;
             return q.Count();
@@ -478,19 +480,19 @@ namespace CmsWeb.Models
         public void ResetMoved()
         {
             var q = from om in DbUtil.Db.OrganizationMembers
-                    where om.Organization.DivOrgs.Any(di => di.DivId == DivId)
+                    where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                     where om.Moved == true
                     select om;
             DbUtil.Db.ExecuteCommand(@"
 UPDATE dbo.OrganizationMembers
 SET Moved = NULL
-WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId = {0})", DivId);
+WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId = {0})", SourceDivId);
         }
 
         public int AllCount()
         {
             var q = from om in DbUtil.Db.OrganizationMembers
-                    where om.Organization.DivOrgs.Any(di => di.DivId == DivId)
+                    where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                     where om.Moved == true || EmailAllNotices
                     select om;
             return q.Count();
@@ -501,7 +503,7 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
             var Db = DbUtil.Db;
 
             var q = from om in Db.OrganizationMembers
-                    where om.Organization.DivOrgs.Any(di => di.DivId == DivId)
+                    where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                     where om.Moved == true || EmailAllNotices
                     select new
                     {
@@ -574,7 +576,7 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
             sb.Append("</pre>\n");
 
             var q0 = from o in Db.Organizations
-                     where o.DivOrgs.Any(di => di.DivId == DivId)
+                     where o.DivOrgs.Any(di => di.DivId == SourceDivId)
                      where o.NotifyIds.Length > 0
                      where o.RegistrationTypeId > 0
                      select o;
