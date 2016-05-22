@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.Dialog.Models
         public Organization Organization;
         public List<OrgMemMemTag> OrgMemMemTags;
         public bool IsMissionTrip;
-        public CmsData.View.TransactionSummary TransactionSummary;
+        public TransactionSummary TransactionSummary;
         private int? orgId;
         private int? peopleId;
 

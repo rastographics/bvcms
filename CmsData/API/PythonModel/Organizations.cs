@@ -42,6 +42,7 @@ namespace CmsData
             om.AddToGroup(db2, group);
             db2.Dispose();
         }
+
         public void AddSubGroupFromQuery(object query, object orgId, string group)
         {
             var q = db.PeopleQuery2(query);
@@ -110,28 +111,12 @@ namespace CmsData
             db2.Dispose();
         }
 
-        public void MoveToOrg(int pid, int fromOrg, int toOrg)
+
+        public void MoveToOrg(int pid, int fromOrg, int toOrg, bool? moveregdata = true)
         {
-            var db2 = NewDataContext();
-            if (fromOrg == toOrg)
-                return;
             db.LogActivity($"PythonModel.MoveToOrg({pid},{fromOrg},{toOrg})");
-            var om = db2.OrganizationMembers.Single(m => m.PeopleId == pid && m.OrganizationId == fromOrg);
-            var tom = db2.OrganizationMembers.SingleOrDefault(m => m.PeopleId == pid && m.OrganizationId == toOrg);
-            if (tom == null)
-            {
-                tom = OrganizationMember.InsertOrgMembers(db2,
-                    toOrg, pid, MemberTypeCode.Member, DateTime.Now, null, om.Pending ?? false);
-                if (tom == null)
-                    return;
-            }
-            tom.UserData = om.UserData;
-            tom.MemberTypeId = om.MemberTypeId;
-            tom.ShirtSize = om.ShirtSize;
-            if (om.OrganizationId != tom.OrganizationId)
-                tom.Moved = true;
-            om.Drop(db2);
-            db2.SubmitChanges();
+            var db2 = NewDataContext();
+            OrganizationMember.MoveToOrg(db2, pid, fromOrg, toOrg, moveregdata);
         }
 
         public List<int> OrganizationIds(int progid, int divid, bool? includeInactive)

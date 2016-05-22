@@ -17,6 +17,7 @@ namespace CmsWeb.Models
         public OrgMembersModel()
         {
             MembersOnly = true;
+            MoveRegistrationData = true;
         }
 
         public bool MembersOnly { get; set; }
@@ -26,6 +27,7 @@ namespace CmsWeb.Models
         public int ProgId { get; set; }
         public int DivId { get; set; }
         public bool EmailAllNotices { get; set; }
+        public bool MoveRegistrationData { get; set; }
         public string Grades { get; set; }
         public string SmallGroup { get; set; }
         public string Sort { get; set; }
@@ -287,7 +289,7 @@ namespace CmsWeb.Models
                 var oid = a[1].ToInt();
                 if (oid == TargetId)
                     continue;
-                new PythonModel(Util.Host).MoveToOrg(pid, oid, TargetId);
+                OrganizationMember.MoveToOrg(DbUtil.Db, pid, oid, TargetId, MoveRegistrationData);
             }
             DbUtil.Db.UpdateMainFellowship(TargetId);
         }

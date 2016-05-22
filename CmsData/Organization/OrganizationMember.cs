@@ -109,6 +109,7 @@ AND a.PeopleId = {2}
 
             db.EnrollmentTransactions.InsertOnSubmit(droptrans);
             db.OrgMemMemTags.DeleteAllOnSubmit(this.OrgMemMemTags);
+            db.OrgMemberExtras.DeleteAllOnSubmit(this.OrgMemberExtras);
             db.OrganizationMembers.DeleteOnSubmit(this);
             db.SubmitChanges();
         }
@@ -699,6 +700,44 @@ AND a.PeopleId = {2}
         public void LogExtraValue(string op, string field)
         {
             DbUtil.LogActivity($"EVOrgMem {op}:{field}", orgid: OrganizationId, peopleid: PeopleId);
+        }
+        public static void MoveToOrg(CMSDataContext db, int pid, int fromOrg, int toOrg, bool? moveregdata = true)
+        {
+            if (fromOrg == toOrg)
+                return;
+            var om = db.OrganizationMembers.Single(m => m.PeopleId == pid && m.OrganizationId == fromOrg);
+            var tom = db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == pid && m.OrganizationId == toOrg);
+            if (tom == null)
+            {
+                tom = InsertOrgMembers(db,
+                    toOrg, pid, MemberTypeCode.Member, DateTime.Now, null, om.Pending ?? false);
+                if (tom == null)
+                    return;
+            }
+            tom.MemberTypeId = om.MemberTypeId;
+            tom.UserData = om.UserData;
+
+            if (moveregdata == true)
+            {
+                tom.Request = om.Request;
+                tom.Amount = om.Amount;
+                tom.OnlineRegData = om.OnlineRegData;
+                tom.RegistrationDataId = om.RegistrationDataId;
+                tom.Grade = om.Grade;
+                tom.RegisterEmail = om.RegisterEmail;
+                tom.ShirtSize = om.ShirtSize;
+                tom.TranId = om.TranId;
+                tom.Tickets = om.Tickets;
+
+                var sg = om.OrgMemMemTags.Select(mt => mt.MemberTag.Name).ToList();
+                foreach (var s in sg)
+                    tom.AddToGroup(db, s);
+            }
+
+            if (om.OrganizationId != tom.OrganizationId)
+                tom.Moved = true;
+            om.Drop(db);
+            db.SubmitChanges();
         }
     }
 }

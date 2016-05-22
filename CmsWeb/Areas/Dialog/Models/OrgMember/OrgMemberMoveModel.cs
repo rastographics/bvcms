@@ -31,10 +31,11 @@ namespace CmsWeb.Areas.Dialog.Models
             AjaxPager = true;
             pagesize = 10;
             ShowPageSize = false;
+            MoveRegistrationData = true;
         }
 
+        public bool MoveRegistrationData { get; set; }
         public string OrgSearch { get; set; }
-
         public string Group { get; set; }
 
         public int? OrgId
@@ -93,25 +94,10 @@ namespace CmsWeb.Areas.Dialog.Models
 
         public string Move(int toid)
         {
-            var om1 = DbUtil.Db.OrganizationMembers.FirstOrDefault(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
-            if (om1 == null)
-                return "not found";
-            var om2 = OrganizationMember.InsertOrgMembers(DbUtil.Db,
-                toid, om1.PeopleId, om1.MemberTypeId, DateTime.Now, om1.InactiveDate, om1.Pending ?? false);
-            DbUtil.Db.UpdateMainFellowship(om2.OrganizationId);
-            om2.EnrollmentDate = om1.EnrollmentDate;
-            if (om2.EnrollmentDate.HasValue && om2.EnrollmentDate.Value.Date == DateTime.Today)
-                om2.EnrollmentDate = DateTime.Today; // force it to be midnight, so you can check them in.
-            om2.TranId = om1.TranId;
-            om2.ShirtSize = om1.ShirtSize;
-            om2.Request = om1.Request;
-            om2.Amount = om1.Amount;
-            om2.UserData = om1.UserData;
-            om2.OnlineRegData = om1.OnlineRegData;
-            om2.RegistrationDataId = om1.RegistrationDataId;
-            om1.Drop(DbUtil.Db);
-            DbUtil.Db.SubmitChanges();
-            DbUtil.LogActivity("OrgMem Move to " + om2.OrganizationId, OrgId, PeopleId);
+            if (!PeopleId.HasValue || !OrgId.HasValue)
+                return "not moved";
+            OrganizationMember.MoveToOrg(DbUtil.Db, PeopleId.Value, OrgId.Value, toid, MoveRegistrationData);
+            DbUtil.LogActivity("OrgMem Move to " + toid, OrgId, PeopleId);
             return "moved";
         }
     }
