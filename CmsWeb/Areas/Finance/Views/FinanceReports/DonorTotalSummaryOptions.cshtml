@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Models.DonorTotalSummaryOptionsModel
+﻿@using CmsData
+@model CmsWeb.Models.DonorTotalSummaryOptionsModel
 <div class="modal-dialog">
     <div class="modal-content">
         <form id="donorTotalSummaryOptions" target="_blank" method="GET">
@@ -13,7 +14,7 @@
                             @Html.EditorFor(m => m.StartDate)
                             @Html.EditorFor(m => m.NumberOfYears)
                             @Html.EditorFor(m => m.Fund)
-                            @Html.EditorFor(m => m.Campus)
+                            @Html.EditorFor(m => m.Campus, new {label = Util2.CampusLabel})
                             @Html.EditorFor(m => m.MinimumMedianTotal)
                         </div>
                     </div>

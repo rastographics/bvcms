@@ -138,7 +138,7 @@
               @if (DbUtil.Db.Setting("ShowCampusOnRegistration", "false").Equal("true"))
               {
                 <label class="checkbox-inline control-label">
-                    @Html.CheckBoxFor(m => m.NotReqCampus) @Util2.CampusLabel not required
+                    @Html.CheckBoxFor(m => m.NotReqCampus) Not Req @Util2.CampusLabel
                 </label>
               }
             </div>

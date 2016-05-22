@@ -3,7 +3,7 @@
     var t = Model ? ViewBag.TrueValue ?? "True" : ViewBag.FalseValue ?? "False";
 }
 <dl>
-    <dt>@Html.DisplayNameFor(m => m)</dt>
+    <dt>@(ViewBag.label ?? Html.DisplayNameFor(m => m))</dt>
     <dd>@t</dd>
     
 </dl>

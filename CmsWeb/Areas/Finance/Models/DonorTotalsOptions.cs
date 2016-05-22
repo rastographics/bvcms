@@ -12,7 +12,6 @@ namespace CmsWeb.Models
 
         public int MinimumMedianTotal { get; set; }
 
-        [SettingDisplayName("Campus")]
         public CodeInfo Campus { get; set; }
 
         [DisplayName("Fund")]

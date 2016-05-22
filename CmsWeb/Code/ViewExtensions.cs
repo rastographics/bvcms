@@ -1114,17 +1114,4 @@ namespace CmsWeb
             }
         }
     }
-
-    public class SettingDisplayNameAttribute : DisplayNameAttribute
-    {
-        public SettingDisplayNameAttribute(string setting, string format = "{0}")
-            : base(GetLabelFromSetting(setting, format))
-        {
-        }
-
-        private static string GetLabelFromSetting(string setting, string format)
-        {
-            return string.Format(format, DbUtil.Db.Setting($"{setting}Label", setting));
-        }
-    }
 }

@@ -35,7 +35,6 @@ namespace CmsWeb.Areas.Org.Models
         public string LeaderName { get { return Org.LeaderName; } }
 
         public string OrganizationName { get; set; }
-        [SettingDisplayName("Campus")]
         public CodeInfo Campus { get; set; }
         public CodeInfo LeaderMemberType { get; set; }
         public CodeInfo OrganizationType { get; set; }

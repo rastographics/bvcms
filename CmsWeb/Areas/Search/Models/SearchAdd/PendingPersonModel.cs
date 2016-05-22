@@ -50,7 +50,6 @@ namespace CmsWeb.Areas.Search.Models
         [UnallowedCode("99", ErrorMessage = "specify marital status (or unknown)")]
         public CodeInfo MaritalStatus { get; set; }
 
-        [SettingDisplayName("Campus")]
         public CodeInfo Campus { get; set; }
 
         public CodeInfo EntryPoint { get; set; }

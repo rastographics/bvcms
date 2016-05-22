@@ -188,7 +188,7 @@ namespace CmsWeb.Areas.Org.Models
         [Reg, Display(Description = NotReqMaritalDescription)]
         public bool NotReqMarital { get; set; }
 
-        [Reg, Display(Description = NotReqCampusDescription), SettingDisplayName("Campus", "Not Req {0}")]
+        [Reg, Display(Description = NotReqCampusDescription)]
         public bool NotReqCampus { get; set; }
 
         [Reg, Display(Description = MemberOnlyDescription)]

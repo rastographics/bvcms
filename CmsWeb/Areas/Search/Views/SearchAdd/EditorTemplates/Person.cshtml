@@ -1,61 +1,61 @@
-﻿@model CmsWeb.Areas.Search.Models.PendingPersonModel
+﻿@using CmsData
+@model CmsWeb.Areas.Search.Models.PendingPersonModel
 @{
-    var noShowCampusDropdown = (new string[] { "org", "pending", "visitor", "registered" }).Contains(Model.context);
-    var plainselect = new {PlainSelect = true};
+  var noShowCampusDropdown = (new string[] {"org", "pending", "visitor", "registered"}).Contains(Model.context);
+  var plainselect = new {PlainSelect = true};
 }
 <div class="col-md-2">
-    @Html.EditorFor(m => m.TitleCode)
+  @Html.EditorFor(m => m.TitleCode)
 </div>
 <div class="col-md-6">
-    @Html.EditorFor(m => m.FirstName)
+  @Html.EditorFor(m => m.FirstName)
 </div>
 <div class="col-md-4">
-    @Html.EditorFor(m => m.MiddleName)
+  @Html.EditorFor(m => m.MiddleName)
 </div>
 <div class="col-md-6">
-    @Html.EditorFor(m => m.LastName)
+  @Html.EditorFor(m => m.LastName)
 </div>
 <div class="col-md-2">
-    @Html.EditorFor(m => m.SuffixCode)
+  @Html.EditorFor(m => m.SuffixCode)
 </div>
 <div class="col-md-4">
-    @Html.EditorFor(m => m.NickName)
+  @Html.EditorFor(m => m.NickName)
 </div>
 <div class="clearfix"></div>
 <div class="col-md-4">
-    @Html.EditorFor(m => m.DOB, "Birthday", new { help = "Please enter a birthday if possible" })
+  @Html.EditorFor(m => m.DOB, "Birthday", new {help = "Please enter a birthday if possible"})
 </div>
 <div class="col-md-4">
-    @Html.EditorFor(m => m.EmailAddress, new { help = "Please enter an email address if possible" })
+  @Html.EditorFor(m => m.EmailAddress, new {help = "Please enter an email address if possible"})
 </div>
 <div class="col-md-4">
-    @Html.EditorFor(m => m.CellPhone)
+  @Html.EditorFor(m => m.CellPhone)
 </div>
 <div class="clearfix"></div>
 <div class="col-md-3">
-    @Html.EditorFor(m => m.Gender, plainselect)
+  @Html.EditorFor(m => m.Gender, plainselect)
 </div>
 <div class="col-md-3">
-    @Html.EditorFor(m => m.MaritalStatus, plainselect)
+  @Html.EditorFor(m => m.MaritalStatus, plainselect)
 </div>
 @if (noShowCampusDropdown)
 {
-    <div class="col-md-3">
-        @Html.DisplayFor(m => m.Campus)
-    </div>
-    <div class="col-md-3">
-        @Html.DisplayFor(m => m.EntryPoint)
-    </div>
-    @Html.EditorFor(m => m.Campus, "HiddenCodeInfo")
-    @Html.EditorFor(m => m.EntryPoint, "HiddenCodeInfo")
+  <div class="col-md-3">
+    @Html.DisplayFor(m => m.Campus, new {label = Util2.CampusLabel})
+  </div>
+  <div class="col-md-3">
+    @Html.DisplayFor(m => m.EntryPoint)
+  </div>
+  @Html.EditorFor(m => m.Campus, "HiddenCodeInfo")
+  @Html.EditorFor(m => m.EntryPoint, "HiddenCodeInfo")
 }
 else
 {
-    <div class="col-md-3">
-        @Html.EditorFor(m => m.Campus, plainselect)
-    </div>
-    <div class="col-md-3">
-        @Html.EditorFor(m => m.EntryPoint, plainselect)
-    </div>
-
+  <div class="col-md-3">
+    @Html.EditorFor(m => m.Campus, new {label = Util2.CampusLabel, PlainSelect = true})
+  </div>
+  <div class="col-md-3">
+    @Html.EditorFor(m => m.EntryPoint, plainselect)
+  </div>
 }
