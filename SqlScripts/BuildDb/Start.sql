@@ -10,13 +10,13 @@ SET XACT_ABORT ON
 GO
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
 GO
-IF NOT EXISTS (SELECT * FROM master.dbo.syslogins WHERE loginname = N'ro-CMS_StarterDb-finance')
-CREATE LOGIN [ro-CMS_StarterDb-finance] WITH PASSWORD = 'p@ssw0rd'
-GO
-CREATE USER [ro-CMS_StarterDb-finance] FOR LOGIN [ro-CMS_StarterDb-finance] WITH DEFAULT_SCHEMA=[dbo.]
-GO
 IF NOT EXISTS (SELECT * FROM master.dbo.syslogins WHERE loginname = N'ro-CMS_StarterDb')
 CREATE LOGIN [ro-CMS_StarterDb] WITH PASSWORD = 'p@ssw0rd'
 GO
 CREATE USER [ro-CMS_StarterDb] FOR LOGIN [ro-CMS_StarterDb] WITH DEFAULT_SCHEMA=[dbo.]
+GO
+IF NOT EXISTS (SELECT * FROM master.dbo.syslogins WHERE loginname = N'ro-CMS_StarterDb-finance')
+CREATE LOGIN [ro-CMS_StarterDb-finance] WITH PASSWORD = 'p@ssw0rd'
+GO
+CREATE USER [ro-CMS_StarterDb-finance] FOR LOGIN [ro-CMS_StarterDb-finance] WITH DEFAULT_SCHEMA=[dbo.]
 GO
