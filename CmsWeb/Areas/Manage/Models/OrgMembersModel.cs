@@ -40,6 +40,12 @@ namespace CmsWeb.Models
         public bool ChangeMemberType { get; set; }
         public int MoveToMemberTypeId { get; set; }
 
+        public HtmlString GradesFilterHelp => ViewExtensions2.Markdown(@"
+**Match Grade Level.**
+
+* Use a comma (`,`) to separate multiple sub-groups.
+* Does not accept range queries. 
+");
         public HtmlString SgFilterHelp => ViewExtensions2.Markdown(@"
 **Match a sub-group name.**
 
