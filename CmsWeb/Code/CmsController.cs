@@ -104,10 +104,10 @@ namespace CmsWeb
                     filterContext.Result = Redirect(r);
             }
 
-            var disableHomePageForOrgLeaders = DbUtil.Db.Setting("UX-DisableHomePageForOrgLeaders", "false").ToLower() == "true";
+            var disableHomePageForOrgLeaders = DbUtil.Db.Setting("UX-DisableHomePageForOrgLeaders", false);
             if (filterContext.RouteData.Values["Controller"].ToString() == "Home" &&
                 filterContext.RouteData.Values["Action"].ToString() == "Index" && 
-                disableHomePageForOrgLeaders)
+                disableHomePageForOrgLeaders && User.IsInRole("OrgLeadersOnly"))
             {
                 filterContext.Result = Redirect($"/Person2/{Util.UserPeopleId}");
             }
