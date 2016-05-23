@@ -144,7 +144,7 @@
         var t = $(this).text();
         var g = $("#Grades").val();
         if (g)
-            g = g + ',';
+            g = g + ';';
         g = g + t;
         $("#Grades").val(g);
         $("a.selectgrades .fa-minus").hide();

@@ -43,7 +43,7 @@ namespace CmsWeb.Models
         public HtmlString GradesFilterHelp => ViewExtensions2.Markdown(@"
 **Match Grade Level.**
 
-* Use a comma (`,`) to separate multiple sub-groups.
+* Use a semi-colon (`;`) or comma (`,`) to separate multiple grades.
 * Does not accept range queries. 
 ");
         public HtmlString SgFilterHelp => ViewExtensions2.Markdown(@"
