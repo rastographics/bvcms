@@ -63,6 +63,14 @@
 </div>
 @section scripts
 {
-  @Fingerprint.Script("/Content/touchpoint/js/people/contact.js")
-  @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
+    @Fingerprint.Script("/Content/touchpoint/js/people/contact.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
+    @if (ViewBag.edit)
+    {
+        <script>
+            $(function () {
+                $("#OrganizationId").select2();
+            });
+        </script>
+    }
 }

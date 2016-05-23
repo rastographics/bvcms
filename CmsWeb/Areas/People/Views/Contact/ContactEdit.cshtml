@@ -53,16 +53,21 @@
                 }
             </div>
             <br/>
-         <a id="cancel" class="btn btn-default ajax" href="/Contact2/ContactDisplay/@Model.ContactId">Cancel</a> 
-         <a id="update" class="btn btn-primary ajax validate" href="/Contact2/ContactUpdate/@Model.ContactId">Update</a>
+            <a id="cancel" class="btn btn-default ajax" href="/Contact2/ContactDisplay/@Model.ContactId">Cancel</a>
+            <a id="update" class="btn btn-primary ajax validate" href="/Contact2/ContactUpdate/@Model.ContactId">Update</a>
             @Html.ValidationMessage("contactors")
             @Html.ValidationMessage("contactees")
             <br/><br/>
         </div>
     </div>
 </form>
-<script>
-    $(function() {
-        $("#OrganizationId").select2();
-    });
-</script>
+@if (ViewBag.edit == null)
+{
+    <script>
+        // This only runs when the view is loaded over AJAX, otherwise jQuery won't be loaded
+        // Index.cshtml will run this when it is being directly loaded into the DOM
+        $(function () {
+            $("#OrganizationId").select2();
+        });
+    </script>
+}
