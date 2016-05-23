@@ -62,7 +62,7 @@ namespace CmsData.View
             get
             {
                 if(!_hideBirthYearForOrgLeaders.HasValue)
-                    _hideBirthYearForOrgLeaders = DbUtil.Db.Setting("HideBirthYearForOrgLeaders", "false").ToLower() == "true";
+                    _hideBirthYearForOrgLeaders = DbUtil.Db.Setting("HideBirthYearForOrgLeaders", false);
 
                 if (_hideBirthYearForOrgLeaders.Value && Util.IsInRole("OrgLeadersOnly"))
                     return Util.FormatBirthday(null, BirthMonth, BirthDay);

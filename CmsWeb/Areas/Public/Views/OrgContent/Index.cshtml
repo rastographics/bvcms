@@ -5,7 +5,7 @@
     ViewBag.Title = "OrgContent";
     Layout = "~/Views/Shared/Site2.cshtml";
 
-    var allowEmails = DbUtil.Db.Setting("UX-AllowMyDataUserEmails", "false").ToLower() == "true";
+    var allowEmails = DbUtil.Db.Setting("UX-AllowMyDataUserEmails", false);
 }
 @section edit {
     @if (Model.CanEdit)

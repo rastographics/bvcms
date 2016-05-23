@@ -365,7 +365,7 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
 
         private void CheckForAutoPromotion()
         {
-            var autoLeaderOrgPromotionSetting = DbUtil.Db.Setting(AutoOrgLeaderPromotion, "false").ToLower() == "true";
+            var autoLeaderOrgPromotionSetting = DbUtil.Db.Setting(AutoOrgLeaderPromotion, false);
             if (!autoLeaderOrgPromotionSetting) return;
 
             var users = DbUtil.Db.Users.Where(us => us.PeopleId == PeopleId);
@@ -383,7 +383,7 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
 
         private void CheckForAutoDemotion()
         {
-            var autoLeaderOrgPromotionSetting = DbUtil.Db.Setting(AutoOrgLeaderPromotion, "false").ToLower() == "true";
+            var autoLeaderOrgPromotionSetting = DbUtil.Db.Setting(AutoOrgLeaderPromotion, false);
             if (!autoLeaderOrgPromotionSetting) return;
 
             var users = DbUtil.Db.Users.Where(us => us.PeopleId == PeopleId);

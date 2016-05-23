@@ -42,10 +42,10 @@ namespace CmsWeb.Areas.Finance.Models.Report
 		public ContributionStatementResult()
 		{
 			useMinAmt = true;
-            noaddressok = DbUtil.Db.Setting("RequireAddressOnStatement", "true") == "false";
+		    noaddressok = DbUtil.Db.Setting("RequireAddressOnStatement", true);
 
-            showCheckNo = DbUtil.Db.Setting("RequireCheckNoOnStatement", "false").ToLower() == "true";
-            showNotes = DbUtil.Db.Setting("RequireNotesOnStatement", "false").ToLower() == "true";
+		    showCheckNo = DbUtil.Db.Setting("RequireCheckNoOnStatement", false);
+		    showNotes = DbUtil.Db.Setting("RequireNotesOnStatement", false);
 		}
 
         public override void ExecuteResult(ControllerContext context)

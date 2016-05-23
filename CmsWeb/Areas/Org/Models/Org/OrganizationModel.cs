@@ -120,7 +120,7 @@ namespace CmsWeb.Areas.Org.Models
             // We request this twice per Org Index.cshtml. Let's not do the DB calls twice.
             if (_showCommunityGroupTab.HasValue) return _showCommunityGroupTab.Value;
 
-            _showCommunityGroupTab = DbUtil.Db.Setting("ShowCommunityGroupTab", "false").ToLower() == "true";
+            _showCommunityGroupTab = DbUtil.Db.Setting("ShowCommunityGroupTab", false);
 
             return _showCommunityGroupTab.Value;
         }
