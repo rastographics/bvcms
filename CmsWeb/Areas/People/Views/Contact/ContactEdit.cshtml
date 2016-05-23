@@ -20,12 +20,15 @@
                     @Html.EditorFor(m => m.ContactType)
                     @Html.EditorFor(m => m.ContactReason)
 
-                    <div class="form-group">
-                        <label for="OrganizationId" class="control-label">@DbUtil.Db.Setting("UX-VisitedOrgLabel", "Visited Organization")</label>
-                        <div class="controls">
-                            @Html.DropDownList("OrganizationId", new SelectList(Model.Organizations(), "Value", "Text"), new { @class = "form-control" })
+                    @if (DbUtil.Db.Setting("UseContactVisitedOrgs", false))
+                    {
+                        <div class="form-group">
+                            <label for="OrganizationId" class="control-label">@DbUtil.Db.Setting("UX-VisitedOrgLabel", "Visited Organization")</label>
+                            <div class="controls">
+                                @Html.DropDownList("OrganizationId", new SelectList(Model.Organizations(), "Value", "Text"), new { @class = "form-control" })
+                            </div>
                         </div>
-                    </div>
+                    }
 
                     <div class="form-group">
                         <label for="LimitToRole" class="control-label">Limit to Role</label>

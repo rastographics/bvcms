@@ -1,4 +1,5 @@
-﻿@using UtilityExtensions
+﻿@using CmsData
+@using UtilityExtensions
 @model CmsWeb.Areas.People.Models.ContactModel
 @{
     var prewrap = Model.Ministry.ToString() == "TouchPoint Support" ? "" : "pre-wrap";
@@ -23,9 +24,13 @@
                 <div class="col-sm-6">
                     @Html.DisplayFor(m => m.ContactDate)
                     @Html.DisplayFor(m => m.Ministry)
-                    @if (!string.IsNullOrWhiteSpace(Model.OrganizationName))
+                    @if (DbUtil.Db.Setting("UseContactVisitedOrgs", false) &&
+                        !string.IsNullOrWhiteSpace(Model.OrganizationName))
                     {
-                        @Html.DisplayFor(m => m.OrganizationName)
+                        <dl>
+                            <dt>@DbUtil.Db.Setting("UX-VisitedOrgLabel", "Visited Organization")</dt>
+                            <dd>@Model.OrganizationName</dd>
+                        </dl>
                     }
                 </div>
                 <div class="col-sm-6">
