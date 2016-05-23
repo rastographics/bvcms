@@ -144,6 +144,13 @@ namespace CmsData
                 return defaultvalue;
             return string.Empty;
         }
+        public bool Setting(string name, bool defaultValue)
+        {
+            var setting = Setting(name, null);
+            if (setting == null) return defaultValue;
+
+            return setting.ToLower() == "true";
+        }
         public void SetSetting(string name, string value)
         {
             name = name.Trim();
