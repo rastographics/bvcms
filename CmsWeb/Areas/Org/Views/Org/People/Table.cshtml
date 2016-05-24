@@ -64,9 +64,17 @@
                     <td>@p.Tab</td>
                 }
                 <td>
-                    <a href="/Person2/@p.PeopleId" class="target" @target>@p.Name</a>
+                    @if (User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-DisablePersonLinksForOrgLeaders", true))
+                    {
+                        <text>@p.Name</text>
+                    }
+                    else
+                    {
+                        <a href="/Person2/@p.PeopleId" class="target" @target>@p.Name</a>
+                    }
+                    
                     @if (Model.ShowAddress)
-                {
+                    {
                         @p.AddressBlock
                     }
                 </td>
