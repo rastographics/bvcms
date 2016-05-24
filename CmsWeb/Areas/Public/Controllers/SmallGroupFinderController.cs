@@ -65,8 +65,11 @@ namespace CmsWeb.Areas.Public.Controllers
 			if (sgfm.hasShell())
 				// Process shell here
 				return Content(sgfm.createFromShell());
+			else if (DbUtil.Db.Setting("SGF-UseEmbeddedMap", "false").ToLower() == "true")
+			    return View("MapIndex", sgfm);
 			else
-				return View("Index2", sgfm);
+			    return View("Index", sgfm);
+			    
 		}
 	}
 }
