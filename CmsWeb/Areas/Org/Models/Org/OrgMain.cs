@@ -43,6 +43,15 @@ namespace CmsWeb.Areas.Org.Models
         [DisplayName("Main Fellowship")]
         public bool IsBibleFellowshipOrg { get; set; }
 
+        [DisplayName("Parent Organization")]
+        public string ParentOrgName
+        {
+            get
+            {
+                return Org?.ParentOrg?.OrganizationName;
+            }
+        }
+
         private string _schedule;
         public string Schedule
         {
