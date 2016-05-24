@@ -33,7 +33,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 				var encoded = Request.Form.ToString();
 
-                var loadAllValues = DbUtil.Db.Setting("SGF-LoadAllExtraValues", "false").ToLower() == "true";
+                var loadAllValues = DbUtil.Db.Setting("SGF-LoadAllExtraValues", false);
 
                 foreach (string item in encoded.Split('&'))
 				{
@@ -65,7 +65,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			if (sgfm.hasShell())
 				// Process shell here
 				return Content(sgfm.createFromShell());
-			else if (DbUtil.Db.Setting("SGF-UseEmbeddedMap", "false").ToLower() == "true")
+			else if (DbUtil.Db.Setting("SGF-UseEmbeddedMap", false))
 			    return View("MapIndex", sgfm);
 			else
 			    return View("Index", sgfm);

@@ -331,7 +331,7 @@ namespace CmsWeb.Areas.Public.Models
 				}
 			}
 
-		    var loadAllValues = DbUtil.Db.Setting("SGF-LoadAllExtraValues", "false").ToLower() == "true";
+		    var loadAllValues = DbUtil.Db.Setting("SGF-LoadAllExtraValues", false);
 
 			foreach (var extra in org.OrganizationExtras)
 			{
