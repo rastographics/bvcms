@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Areas.Org.Models.OrgChildrenModel
+﻿@using CmsData
+@model CmsWeb.Areas.Org.Models.OrgChildrenModel
 @foreach(var o in Model.FetchOrgList())
 { 
     // Parent is purple, isOther is pink
@@ -7,6 +8,10 @@
             @if (o.isChecked)
             {
                 <input type="checkbox" oid="@o.Id" checked="checked" class="orgcheck" />
+            }
+            else if (o.isOther && DbUtil.Db.Setting("UX-ManageShowAllChildOrgs", true))
+            {
+                <input type="checkbox" oid="@o.Id" class="orgcheck" />
             }
             else if (o.isOther)
             {

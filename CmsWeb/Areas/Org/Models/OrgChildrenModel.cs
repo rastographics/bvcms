@@ -29,12 +29,14 @@ namespace CmsWeb.Areas.Org.Models
 
         public IEnumerable<OrgInfo> FetchOrgList()
         {
+            var showAllChildOrgs = DbUtil.Db.Setting("UX-ManageShowAllChildOrgs", true);
+
             var q = from o in DbUtil.Db.Organizations
                     let org = DbUtil.Db.Organizations.Single(oo => oo.OrganizationId == org.OrganizationId)
                     let ck = (o.ParentOrgId ?? 0) == org.OrganizationId
                     let ot = o.ParentOrgId != null && o.ParentOrgId != org.OrganizationId
-                    let pa = o.ChildOrgs.Count() > 0
-                    where o.DivOrgs.Any(dd => org.DivOrgs.Select(oo => oo.DivId).Contains(dd.DivId)) || o.ParentOrgId == orgid
+                    let pa = o.ChildOrgs.Any()
+                    where o.DivOrgs.Any(dd => org.DivOrgs.Select(oo => oo.DivId).Contains(dd.DivId)) || o.ParentOrgId == orgid || (o.ParentOrgId.HasValue && showAllChildOrgs)
                     where namesearch == null || o.OrganizationName.Contains(namesearch) || o.DivOrgs.Any(dd => dd.Division.Name.Contains(namesearch)) || ck
                     where o.OrganizationId != org.OrganizationId
                     where o.OrganizationStatusId == OrgStatusCode.Active || o.ParentOrgId == orgid
