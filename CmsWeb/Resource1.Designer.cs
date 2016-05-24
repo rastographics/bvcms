@@ -265,6 +265,22 @@ namespace CmsWeb {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hi {name},
+        ///&lt;p&gt;It appears that you created a user account from your mobile device. 
+        ///We found your existing record but you used a different email address than the one we have on record.
+        ///We went ahead and created a new account but it is a separate from your existing account.
+        ///You should have received a welcome message for that new account.&lt;/p&gt;
+        ///&lt;p&gt;It is important that you contact your church&apos;s administrator &lt;strong&gt;{phone}&lt;/strong&gt; to update our records
+        ///so that your data will not stay duplicated.&lt;/p&gt;
+        ///.
+        /// </summary>
+        internal static string CreateNewUserAndNotifyPersonFound {
+            get {
+                return ResourceManager.GetString("CreateNewUserAndNotifyPersonFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
         ///&lt;CustomColumns&gt;
         ///  &lt;Joins&gt;
@@ -278,10 +294,10 @@ namespace CmsWeb {
         ///      LEFT JOIN lookup.FamilyPosition fp ON fp.Id = p.PositionInFamilyId
         ///    &lt;/join&gt;
         ///    &lt;join name=&quot;rr&quot;&gt;
-        ///      left join dbo.recreg rr on rr.peopleid = p.peopleid
+        ///      LEFT JOIN dbo.recreg rr ON rr.peopleid = p.peopleid
         ///    &lt;/join&gt;
         ///    &lt;join name=&quot;mo&quot;&gt;
-        ///      left join dbo [rest of string was truncated]&quot;;.
+        ///      LEFT JOIN dbo [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CustomColumns {
             get {
@@ -350,9 +366,9 @@ namespace CmsWeb {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;div&gt;
-        ///  The following meetings are ready to be viewed:&lt;br/&gt;
+        ///  The following meetings are ready to be viewed:&lt;br /&gt;
         ///  {{#each this}}
-        ///    &lt;a href=&apos;{{ServerLink}}/Meeting/{{MeetingId}}&apos;&gt;{{OrgName}} - {{LastMeeting}}&lt;/a&gt;&lt;br/&gt;
+        ///    &lt;a href=&apos;{{ServerLink}}/Meeting/{{MeetingId}}&apos;&gt;{{OrgName}} - {{LastMeeting}}&lt;/a&gt;&lt;br /&gt;
         ///  {{/each}}
         ///  {{#each this}}
         ///    {{#if HasAbsents}}
@@ -361,8 +377,8 @@ namespace CmsWeb {
         ///      &lt;a href=&apos;{{ServerLink}}/Org/{{OrganizationId}}&apos;&gt;{{OrgName}}&lt;/a&gt; ({{LeaderName}})&lt;br /&gt;
         ///      &lt;span&gt;
         ///        Members with ({{ConsecutiveAbsentsThreshold}})
-        ///        or more consecutive absents on and before {{LastMeeting}}
-        ///      &lt;/sp [rest of string was truncated]&quot;;.
+        ///        or more consecutive absents on and before {{Fmt LastMeeting &quot;d&quot;}}
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string RecentVisitsAbsents {
             get {

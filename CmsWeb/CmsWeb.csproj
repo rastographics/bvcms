@@ -482,6 +482,7 @@
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInSettingsEntry.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileCampus.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileFloor.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileAccount.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileHomeAction.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileRegistration.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileRollList.cs" />
