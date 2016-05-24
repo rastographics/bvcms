@@ -64,7 +64,7 @@
                     <td>@p.Tab</td>
                 }
                 <td>
-                    @if (User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-DisablePersonLinksForOrgLeaders", true))
+                    @if (User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-DisablePersonLinksForOrgLeaders", false))
                     {
                         <text>@p.Name</text>
                     }
