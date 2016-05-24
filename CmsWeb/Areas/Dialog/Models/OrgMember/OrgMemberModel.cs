@@ -227,13 +227,15 @@ namespace CmsWeb.Areas.Dialog.Models
             if (OrgMember == null)
                 OrgMember = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
 
-            var leaderTypeId = OrgMember.Organization.LeaderMemberTypeId > 0 
-                ? OrgMember.Organization.LeaderMemberTypeId : DefaultLeaderMemberTypeId;
+            // AttendanceTypeId of 10 is "Leader"
+            var leaderTypeIds = DbUtil.Db.MemberTypes
+                .Where(x => x.AttendanceTypeId == 10)
+                .Select(x => x.Id.ToString());
             
-            if (OrgMember.MemberTypeId == leaderTypeId && MemberType.Name != leaderTypeId.ToString())
+            if (leaderTypeIds.Contains(OrgMember.MemberTypeId.ToString()) && !leaderTypeIds.Contains(MemberType.Value))
                 CheckForAutoDemotion();
-            if(MemberType.Value == leaderTypeId.ToString() && OrgMember.MemberTypeId != leaderTypeId)
-                CheckForAutoPrOrgMemberotion();
+            if (!leaderTypeIds.Contains(OrgMember.MemberTypeId.ToString()) && leaderTypeIds.Contains(MemberType.Value))
+                CheckForAutoPromotion();
 
             var changes = this.CopyPropertiesTo(OrgMember);
 
