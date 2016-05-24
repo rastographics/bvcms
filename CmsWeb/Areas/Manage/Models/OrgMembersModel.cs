@@ -243,32 +243,17 @@ namespace CmsWeb.Models
                      * Additionally, use `<=`, `>=`, `<`, and `>` for searching ranges.
                     */
 
-                    // Okay, this is crazy and I hate myself for doing this.  But I couldn't figure out a good way
-                    // to dynamically generate predicates that included a join with People (om.Person).  So this
-                    // branching logic checks for each of the supported age filters and builds the appropriate query.
-                    // If there is a better, more elegant way to do this please let me know or fix this.
-
                     var str = Regex.Replace(Age, @"[^0-9\-<>=]", "");
                     if ((new Regex(@"^[0-9]+$")).IsMatch(str))
                     {
-                        q = from om in DbUtil.Db.OrganizationMembers
-                            where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
-                            where SourceId == 0 || om.OrganizationId == SourceId
-                            where glist.Length == 0 || glist.Contains(om.Person.Grade.Value)
-                            where !SmallGroup.HasValue() || om.OrgMemMemTags.Any(mm => smallGroupList.Contains(mm.MemberTag.Name))
-                            where !MembersOnly || om.MemberTypeId == MemberTypeCode.Member
+                        q = from om in q
                             where om.Person.Age == str.ToInt()
                             select om;
                     }
                     else if ((new Regex(@"^[0-9]+\-[0-9]+$")).IsMatch(str))
                     {
                         var matches = Regex.Matches(str, @"^([0-9]+)\-([0-9]+)$");
-                        q = from om in DbUtil.Db.OrganizationMembers
-                            where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
-                            where SourceId == 0 || om.OrganizationId == SourceId
-                            where glist.Length == 0 || glist.Contains(om.Person.Grade.Value)
-                            where !SmallGroup.HasValue() || om.OrgMemMemTags.Any(mm => smallGroupList.Contains(mm.MemberTag.Name))
-                            where !MembersOnly || om.MemberTypeId == MemberTypeCode.Member
+                        q = from om in q
                             where om.Person.Age >= matches[0].Groups[1].Value.ToInt()
                             where om.Person.Age <= matches[0].Groups[2].Value.ToInt()
                             select om;
@@ -276,48 +261,28 @@ namespace CmsWeb.Models
                     else if ((new Regex(@"^>=[0-9]+$")).IsMatch(str))
                     {
                         var matches = Regex.Matches(str, @"^>=([0-9]+)$");
-                        q = from om in DbUtil.Db.OrganizationMembers
-                            where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
-                            where SourceId == 0 || om.OrganizationId == SourceId
-                            where glist.Length == 0 || glist.Contains(om.Person.Grade.Value)
-                            where !SmallGroup.HasValue() || om.OrgMemMemTags.Any(mm => smallGroupList.Contains(mm.MemberTag.Name))
-                            where !MembersOnly || om.MemberTypeId == MemberTypeCode.Member
+                        q = from om in q
                             where om.Person.Age >= matches[0].Groups[1].Value.ToInt()
                             select om;
                     }
                     else if ((new Regex(@"^>[0-9]+$")).IsMatch(str))
                     {
                         var matches = Regex.Matches(str, @"^>([0-9]+)$");
-                        q = from om in DbUtil.Db.OrganizationMembers
-                            where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
-                            where SourceId == 0 || om.OrganizationId == SourceId
-                            where glist.Length == 0 || glist.Contains(om.Person.Grade.Value)
-                            where !SmallGroup.HasValue() || om.OrgMemMemTags.Any(mm => smallGroupList.Contains(mm.MemberTag.Name))
-                            where !MembersOnly || om.MemberTypeId == MemberTypeCode.Member
+                        q = from om in q
                             where om.Person.Age > matches[0].Groups[1].Value.ToInt()
                             select om;
                     }
                     else if ((new Regex(@"^<=[0-9]+$")).IsMatch(str))
                     {
                         var matches = Regex.Matches(str, @"^<=([0-9]+)$");
-                        q = from om in DbUtil.Db.OrganizationMembers
-                            where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
-                            where SourceId == 0 || om.OrganizationId == SourceId
-                            where glist.Length == 0 || glist.Contains(om.Person.Grade.Value)
-                            where !SmallGroup.HasValue() || om.OrgMemMemTags.Any(mm => smallGroupList.Contains(mm.MemberTag.Name))
-                            where !MembersOnly || om.MemberTypeId == MemberTypeCode.Member
+                        q = from om in q
                             where om.Person.Age <= matches[0].Groups[1].Value.ToInt()
                             select om;
                     }
                     else if ((new Regex(@"^<[0-9]+$")).IsMatch(str))
                     {
                         var matches = Regex.Matches(str, @"^<([0-9]+)$");
-                        q = from om in DbUtil.Db.OrganizationMembers
-                            where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
-                            where SourceId == 0 || om.OrganizationId == SourceId
-                            where glist.Length == 0 || glist.Contains(om.Person.Grade.Value)
-                            where !SmallGroup.HasValue() || om.OrgMemMemTags.Any(mm => smallGroupList.Contains(mm.MemberTag.Name))
-                            where !MembersOnly || om.MemberTypeId == MemberTypeCode.Member
+                        q = from om in q
                             where om.Person.Age < matches[0].Groups[1].Value.ToInt()
                             select om;
                     }
