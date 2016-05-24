@@ -50,6 +50,7 @@ namespace CmsWeb.Models
 **Match a sub-group name.**
 
 * Use a semi-colon (`;`) to separate multiple sub-groups.
+* `ALL:` to match people who are in each group specified.
 * When there are more groups than fit into the textbox, most browsers will let you resize that box so you can see the rest.
 ");
         public HtmlString AgeFilterHelp => ViewExtensions2.Markdown(@"
@@ -186,15 +187,24 @@ namespace CmsWeb.Models
             {
                 var glist = new int[] {};
                 var smallGroupList = new List<string>();
+                var matchAllSubgroups = false;
                 if (null != SmallGroup)
                 {
+                    if (SmallGroup.StartsWith("All:", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        matchAllSubgroups = true;
+                        SmallGroup = SmallGroup.Substring(4);
+                    }
                     if (SmallGroup.Contains(";"))
                     {
                         smallGroupList.AddRange(SmallGroup.Split(';').Select(x => x.Trim()));
+                    } else if (SmallGroup.Contains(","))
+                    {
+                        smallGroupList.AddRange(SmallGroup.Split(';').Select(x => x.Trim()));
+                    } else
+                    {
+                        smallGroupList.Add(SmallGroup);
                     }
-                    // Add the original SmallGroup (which might contain a semicolon) to the list in case there
-                    // is a small group name that contains a semicolon and we're searching for it
-                    smallGroupList.Add(SmallGroup);
                 }
 				
                 if (Grades.HasValue())
@@ -204,9 +214,27 @@ namespace CmsWeb.Models
                         where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                         where SourceId == 0 || om.OrganizationId == SourceId
                         where glist.Length == 0 || glist.Contains(om.Person.Grade.Value)
-                        where !SmallGroup.HasValue() || om.OrgMemMemTags.Any(mm => smallGroupList.Contains(mm.MemberTag.Name))
                         where !MembersOnly || om.MemberTypeId == MemberTypeCode.Member
                         select om;
+                if (smallGroupList.Count() > 0)
+                {
+                    if (matchAllSubgroups)
+                    {
+                        foreach (var sg in smallGroupList)
+                        {
+                            q = from om in q
+                                where om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == sg)
+                                select om;
+                        }
+                    }
+                    else
+                    {
+                        q = from om in q
+                            where om.OrgMemMemTags.Any(mm => smallGroupList.Contains(mm.MemberTag.Name))
+                            select om;
+
+                    }
+                }
                 if (null != Age && Age.Trim().Length > 0)
                 {
                     /*

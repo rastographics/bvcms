@@ -131,9 +131,19 @@
         ev.preventDefault();
         var t = $(this).text();
         var sg = $("#SmallGroup").val();
-        if (sg)
-            sg = sg + ';';
-        sg = sg + t;
+        switch (t) {
+            case "Match All":
+                if (!sg.match(/^ALL/i)) {
+                    sg = "All:" + sg;
+                }
+                break;
+            default:
+                if (sg && !sg.match(/^ALL:$/i)) {
+                    sg = sg + ';';
+                }
+                sg = sg + t;
+                break;
+        }
         $("#SmallGroup").val(sg);
         $("a.selectsg .fa-minus").hide();
         return false;

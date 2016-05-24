@@ -109,18 +109,19 @@
                                         if (Model.SourceId == 0)
                                         {
                                             <li>
-                                                <a href="#" class="selectsg"><i class="fa fa-minus hide"></i>No Sub-Groups in this division</a>
+                                                <a href="#" class="selectsg"><i class="fa fa-minus hide"></i>No Sub-Groups in this source division</a>
                                             </li>
                                         }
                                         else
                                         {
                                             <li>
-                                                <a href="#" class="selectsg"><i class="fa fa-minus hide"></i>No Sub-Groups in this division and source</a>
+                                                <a href="#" class="selectsg"><i class="fa fa-minus hide"></i>No Sub-Groups in this source division and source</a>
                                             </li>
                                         }
                                     }
                                     else
                                     {
+                                        <li><a href="#" class="selectsg"><i class="fa fa-minus hide"></i>Match All</li>
                                         foreach (var sg in subgroups)
                                         {
                                             <li>
