@@ -24,6 +24,8 @@ namespace CmsWeb.Areas.People.Models
         public string OrgType { get; set; }
         public bool HasDirectory { get; set; }
 
+        public List<OrgMemberInfo> ChildOrgs { get; set; } 
+
         public string Schedule => $"{MeetingTime:ddd h:mm tt}";
         public string SchComma => MeetingTime.HasValue ? ", " : "";
         public string LocComma => Location.HasValue() ? ", " : "";

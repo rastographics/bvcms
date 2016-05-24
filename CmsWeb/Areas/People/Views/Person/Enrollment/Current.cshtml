@@ -56,17 +56,19 @@
                                     }
                                 </tr>
                                 <tr class="details @oddrow">
-                                    <td colspan="@(columns.Count+1)">
+                                    <td colspan="@(columns.Count + 1)">
                                         <div class="collapse indent">
                                             <strong>Program:</strong> <span>@om.ProgramName,</span>
                                             <strong>Division:</strong> <span>@om.DivisionName</span>
                                             @if (om.Location.HasValue())
                                             {
-                                                @om.LocComma<strong>Location:</strong> <span>@om.Location</span>
+                                                @om.LocComma<strong>Location:</strong>
+                                                <span>@om.Location</span>
                                             }
                                             @if (om.Schedule.HasValue())
                                             {
-                                                @om.SchComma<strong>Schedule:</strong> <span>@om.Schedule</span>
+                                                @om.SchComma<strong>Schedule:</strong>
+                                                <span>@om.Schedule</span>
                                             }
                                             <div>
                                                 <a href="/OrgContent/@om.OrgId">Members Page</a>
@@ -78,6 +80,22 @@
                                         </div>
                                     </td>
                                 </tr>
+                                if (om.ChildOrgs != null)
+                                {
+                                    foreach (var child in om.ChildOrgs)
+                                    {
+                                        rownum++;
+                                        oddrow = rownum % 2 == 0 ? "oddrow" : "";
+                                        <tr class="@oddrow">
+                                            <td><i class="fa fa-child"></i></td>
+                                            @foreach (var column in columns)
+                                            {
+                                                <td>@Html.Raw(child.GetColumnValue(column, true))</td>
+                                            }
+                                        </tr>
+                                    }
+                                }
+                                
                             }
                             else
                             {
@@ -88,6 +106,21 @@
                                         <td>@Html.Raw(om.GetColumnValue(column, false))</td>
                                     }
                                 </tr>
+                                if (om.ChildOrgs != null)
+                                {
+                                    foreach (var child in om.ChildOrgs)
+                                    {
+                                        rownum++;
+                                        oddrow = rownum % 2 == 0 ? "oddrow" : "";
+                                        <tr class="@oddrow">
+                                            <td><i class="fa fa-child"></i></td>
+                                            @foreach (var column in columns)
+                                            {
+                                                <td>@Html.Raw(child.GetColumnValue(column, false))</td>
+                                            }
+                                        </tr>
+                                    }
+                                }
                             }
                         }
                     </tbody>

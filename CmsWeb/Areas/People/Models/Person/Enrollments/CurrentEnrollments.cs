@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using CmsData;
 using CmsWeb.Models;
+using MoreLinq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
@@ -61,14 +62,16 @@ namespace CmsWeb.Areas.People.Models
                 oids = DbUtil.Db.GetLeaderOrgIds(Util.UserPeopleId);
             var roles = DbUtil.Db.CurrentRoles();
 
-            return from om in DbUtil.Db.OrganizationMembers
-                   let org = om.Organization
-                   where om.PeopleId == PeopleId
-                   where (om.Pending ?? false) == false
-                   where oids.Contains(om.OrganizationId) || !(limitvisibility && om.Organization.SecurityTypeId == 3)
-                   where org.LimitToRole == null || roles.Contains(org.LimitToRole)
-                   where (!OrgTypesFilter.Any() || OrgTypesFilter.Contains(om.Organization.OrganizationType.Description))
-                   select om;
+            var modelList = from om in DbUtil.Db.OrganizationMembers
+                                   let org = om.Organization
+                                   where om.PeopleId == PeopleId
+                                   where (om.Pending ?? false) == false
+                                   where oids.Contains(om.OrganizationId) || !(limitvisibility && om.Organization.SecurityTypeId == 3)
+                                   where org.LimitToRole == null || roles.Contains(org.LimitToRole)
+                                   where (!OrgTypesFilter.Any() || OrgTypesFilter.Contains(om.Organization.OrganizationType.Description))
+                                   select om;
+
+            return modelList;
         }
         override public IQueryable<OrganizationMember> DefineModelSort(IQueryable<OrganizationMember> q)
         {
@@ -103,7 +106,7 @@ namespace CmsWeb.Areas.People.Models
 
         public override IEnumerable<OrgMemberInfo> DefineViewList(IQueryable<OrganizationMember> q)
         {
-            return from om in q
+            var viewList = from om in q
                    let sc = om.Organization.OrgSchedules.FirstOrDefault() // SCHED
                    select new OrgMemberInfo
                    {
@@ -122,6 +125,40 @@ namespace CmsWeb.Areas.People.Models
                        OrgType = om.Organization.OrganizationType.Description ?? "Other",
                        HasDirectory = (om.Organization.PublishDirectory ?? 0) > 0
                    };
+
+            if (DbUtil.Db.Setting("UX-ShowChildOrgsOnInvolvementTabs", false))
+            {
+                var viewListAsList = viewList.ToList();
+                var parentIds = viewListAsList.Select(x => x.OrgId).ToList();
+
+                var childGroups = from org in DbUtil.Db.Organizations
+                                   where org.ParentOrgId.HasValue && parentIds.Contains(org.ParentOrgId.Value)
+                                   group new OrgMemberInfo
+                                   {
+                                       OrgId = org.OrganizationId,
+                                       Name = org.OrganizationName,
+                                       Location = org.Location,
+                                       LeaderName = org.LeaderName,
+                                       MeetingTime = org.OrgSchedules.FirstOrDefault().MeetingTime,
+                                       LeaderId = org.LeaderId,
+                                       DivisionName = org.Division.Name,
+                                       ProgramName = org.Division.Program.Name,
+                                       OrgType = org.OrganizationType.Description ?? "Other",
+                                       HasDirectory = (org.PublishDirectory ?? 0) > 0
+                                   } by org.ParentOrgId into childGroup
+                                   select childGroup;
+
+                foreach (var group in viewListAsList)
+                {
+                    var childOrgs = childGroups.FirstOrDefault(x => x.Key == group.OrgId)?.ToList();
+
+                    group.ChildOrgs = childOrgs;
+                }
+
+                return viewListAsList;
+            }
+
+            return viewList;
         }
     }
 }
