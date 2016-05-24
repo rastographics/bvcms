@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
 using CmsWeb.Models;
+using MoreLinq;
 
 namespace CmsWeb.Areas.Public
 {
@@ -20,6 +21,28 @@ namespace CmsWeb.Areas.Public
             if (string.IsNullOrEmpty(o.Html))
             {
                 ViewBag.qid = DbUtil.Db.QueryInCurrentOrg().QueryId;
+            }
+
+            var template = DbUtil.Db.ContentHtml("OrgContent", null);
+
+            if (template != null)
+            { 
+                var org = DbUtil.Db.LoadOrganizationById(o.OrgId);
+
+                template = template.Replace("{content}", o.Html)
+                    .Replace("{location}", org.Location)
+                    .Replace("{type}", org.OrganizationType.Description)
+                    .Replace("{division}", org.Division.Name)
+                    .Replace("{campus}", org.Campu.Description)
+                    .Replace("{name}", org.OrganizationName);
+
+                org.GetOrganizationExtras().ForEach(ev =>
+                {
+                    template = template.Replace($"{{{ev.Field}}}", ev.Data ?? ev.StrValue);
+                });
+
+                ViewBag.template = template;
+                return View(o);
             }
 
             return View(o);

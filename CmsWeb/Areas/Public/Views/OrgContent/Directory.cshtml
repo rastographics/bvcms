@@ -1,0 +1,43 @@
+﻿@using CmsData
+@using UtilityExtensions
+@model CmsWeb.Models.OrgContentInfo
+@{
+    Layout = null;
+    var allowEmails = DbUtil.Db.Setting("UX-AllowMyDataUserEmails", false);
+}
+@if (allowEmails)
+{
+    <a href="/Email/@ViewBag.qid?templateID=0&orgid=@Model.OrgId">Email All Members</a>
+}
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>MemberType</th>
+            <th>Birthday</th>
+            @if (allowEmails)
+            {
+                <th>Email</th>
+            }
+        </tr>
+    </thead>
+    @foreach (var member in Model.GetMemberList())
+    {
+        <tr>
+            <td>@member.Person.Name</td>
+            <td>@member.MemberType.Description</td>
+            <td>@FormatDate(member.Person.BirthDate)</td>
+            @if (allowEmails)
+            {
+                <td><a href="/Email/@ViewBag.qid?templateID=0&personid=@member.Person.PeopleId">Email</a></td>
+            }
+        </tr>
+    }
+</table>
+@helper FormatDate(DateTime? dt)
+{
+    if (dt.HasValue)
+    {
+        <text>@dt.Value.ToString("MMM d")</text>   
+    }
+}
