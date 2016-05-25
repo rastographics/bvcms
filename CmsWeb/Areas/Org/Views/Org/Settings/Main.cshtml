@@ -26,15 +26,23 @@
             <div class="col-sm-3 col-md-4 col-lg-4">
                 @Html.DisplayFor(m => m.OrganizationStatus)
             </div>
-            <div class="col-sm-4 col-md-4 col-lg-4">
-                @Html.DisplayFor(m => m.IsBibleFellowshipOrg)
-            </div>
             @if (DbUtil.Db.Setting("UX-ShowParentOrgInDetails", false))
             {
                 <div class="col-sm-4 col-md-4 col-lg-4">
-                    @Html.DisplayFor(m => m.ParentOrgName)
+                    <dl>
+                        <dt>Parent Organization</dt>
+                        <dd>
+                            @if (Model.Org.ParentOrgId.HasValue)
+                            {
+                                <a href="/Org/@Model.Org.ParentOrgId.Value">@Model.ParentOrgName</a>
+                            }
+                        </dd>
+                    </dl>
                 </div>
             }
+            <div class="col-sm-4 col-md-4 col-lg-4">
+                @Html.DisplayFor(m => m.IsBibleFellowshipOrg)
+            </div>
             <div class="col-sm-12 col-md-12 col-lg-12">
               <div class="form-group">
                 @if (User.IsInRole("Edit"))

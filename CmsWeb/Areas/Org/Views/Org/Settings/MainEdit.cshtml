@@ -19,8 +19,22 @@
             <div class="col-sm-4 col-md-3 col-lg-3">
                 @Html.EditorFor(m => m.OrganizationStatus)
             </div>
+            @if (DbUtil.Db.Setting("UX-ShowParentOrgInDetails", false))
+            {
+                <div class="col-sm-4 col-md-3 col-lg-3">
+                    <label class="control-label">Parent Organization</label>
+                    <dl>
+                        <dd>
+                            @if (Model.Org.ParentOrgId.HasValue)
+                            {
+                                <a href="/Org/@Model.Org.ParentOrgId.Value">@Model.ParentOrgName</a>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+            }
             <div class="col-sm-4 col-md-3 col-lg-3">
-                <br class="hidden-xs hidden-sm" />
+                <br class="hidden-xs hidden-sm"/>
                 @Html.EditorFor(m => m.IsBibleFellowshipOrg)
             </div>
             <div class="col-sm-12 col-md-12 col-lg-12">
