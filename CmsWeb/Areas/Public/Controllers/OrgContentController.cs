@@ -29,16 +29,16 @@ namespace CmsWeb.Areas.Public
             { 
                 var org = DbUtil.Db.LoadOrganizationById(o.OrgId);
 
-                template = template.Replace("{content}", o.Html)
-                    .Replace("{location}", org.Location)
-                    .Replace("{type}", org.OrganizationType.Description)
-                    .Replace("{division}", org.Division.Name)
-                    .Replace("{campus}", org.Campu.Description)
-                    .Replace("{name}", org.OrganizationName);
+                template = template.Replace("{content}", o.Html ?? string.Empty)
+                    .Replace("{location}", org.Location ?? string.Empty)
+                    .Replace("{type}", org.OrganizationType?.Description ?? string.Empty)
+                    .Replace("{division}", org.Division?.Name ?? string.Empty)
+                    .Replace("{campus}", org.Campu?.Description ?? string.Empty)
+                    .Replace("{name}", org.OrganizationName ?? string.Empty);
 
                 org.GetOrganizationExtras().ForEach(ev =>
                 {
-                    template = template.Replace($"{{{ev.Field}}}", ev.Data ?? ev.StrValue);
+                    template = template.Replace($"{{{ev.Field}}}", ev.Data ?? ev.StrValue ?? string.Empty);
                 });
 
                 ViewBag.template = template;
