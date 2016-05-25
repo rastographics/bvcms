@@ -26,6 +26,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 // No need to pick family, so prepare first registrant ready to answer questions
                 p = m.LoadExistingPerson(pid, 0);
+                if (p == null)
+                    throw new Exception($"No person found with PeopleId = {pid}");
+
                 p.ValidateModelForFind(ModelState, 0);
                 if (m.masterorg == null)
                 {
