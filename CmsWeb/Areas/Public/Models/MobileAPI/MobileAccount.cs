@@ -24,7 +24,7 @@ namespace CmsWeb.MobileAPI
 	    {
 	        db = DbUtil.Db;
 	    }
-        public static User Create(string first, string last, string email, string phone, string dob)
+        public static MobileAccount Create(string first, string last, string email, string phone, string dob)
 	    {
             var m = new MobileAccount
             {
@@ -42,7 +42,7 @@ namespace CmsWeb.MobileAPI
 	            return null;
 	        }
             m.FindPersonSendAccountInfo();
-            return m.User;
+            return m;
 	    }
 
 	    private void FindPersonSendAccountInfo()
