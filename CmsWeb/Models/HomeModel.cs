@@ -419,9 +419,13 @@ namespace CmsWeb.Models
                 }
                 else
                 {
-                    var qp2 = from p in qp
-                              where p.LastName.StartsWith(text) || p.MaidenName.StartsWith(text) || p.AltName.StartsWith(text)
-                              select p;
+                    var qp2 = DbUtil.Db.Setting("UseAltnameContains", "false") == "true"
+                        ? from p in qp
+                          where p.LastName.StartsWith(text) || p.MaidenName.StartsWith(text) || p.AltName.Contains(text)
+                          select p
+                        : from p in qp
+                          where p.LastName.StartsWith(text) || p.MaidenName.StartsWith(text) || p.AltName.StartsWith(text)
+                          select p;
                     var qp1 = from p in qp
                               where !qp2.Select(pp => pp.PeopleId).Contains(p.PeopleId)
                               where p.FirstName.StartsWith(text) || p.NickName.StartsWith(text) || p.MiddleName.StartsWith(text)

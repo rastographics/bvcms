@@ -629,6 +629,7 @@
     <Compile Include="Code\ReportsMenu.cs" />
     <Compile Include="Code\UserInputException.cs" />
     <Compile Include="Controllers\Api\ApiOptions.cs" />
+    <Compile Include="Controllers\Api\CustomController.cs" />
     <Compile Include="Controllers\Api\Lookup\BundleHeaderTypesController.cs" />
     <Compile Include="Controllers\Api\OrganizationsController.cs" />
     <Compile Include="Controllers\Api\OrganizationMembersController.cs" />
