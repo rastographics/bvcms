@@ -194,7 +194,7 @@
   </div>
   <div class="col-sm-8 col-md-9 col-lg-10">
     <div id="toolbar-container" class="hidden-print">
-      @(User.IsInRole("Access") && !(User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-DisableAdvancedToolbarForOrgLeaders", false)) ? Html.Partial("Toolbar/Toolbar", Model.Users) : Html.Partial("Toolbar/ToolbarMyData", Model.Users))
+      @(User.IsInRole("Access") ? Html.Partial("Toolbar/Toolbar", Model.Users) : Html.Partial("Toolbar/ToolbarMyData", Model.Users))
     </div>
     <div id="profile-header">@Html.Partial("Personal/Header", Model)</div>
     <br/>

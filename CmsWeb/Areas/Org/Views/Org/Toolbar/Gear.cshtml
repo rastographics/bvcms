@@ -1,59 +1,74 @@
-﻿@using CmsData.Codes
+﻿@using CmsData
+@using CmsData.Codes
 @using CmsWeb.Areas.Org.Models
 @{
-  var admin = User.IsInRole("Admin");
-  var edit = User.IsInRole("Edit");
-  var delete = User.IsInRole("Delete");
-  var manager = User.IsInRole("ManageGroups");
-  var missiongiving = User.IsInRole("MissionGiving") || User.IsInRole("Developer");
-  var oid = ViewBag.oid;
-  var model = (OrganizationModel)ViewBag.model;
-  var o = model.Org;
+    var admin = User.IsInRole("Admin");
+    var edit = User.IsInRole("Edit");
+    var delete = User.IsInRole("Delete");
+    var manager = User.IsInRole("ManageGroups");
+    var missiongiving = User.IsInRole("MissionGiving") || User.IsInRole("Developer");
+    var oid = ViewBag.oid;
+    var model = (OrganizationModel)ViewBag.model;
+    var o = model.Org;
+    var showAdvanced = !(User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-LimitToolbarForOrgLeaders", false));
 }
-<ul class="dropdown-menu dropdown-menu-large container row dropdown-menu-right bluebar-menu-col-2" role="menu">
-    <li class="col-sm-6">
-        <ul id="ultoolbar">
-            <li class="dropdown-header">Administrative</li>
-            @if (admin || manager)
-            {
-                <li><a href="/OrgGroups/@oid"><span class="org-context">Sub-Group Management</span></a></li>
-                <li class="hideAlt"><a href="/RegSettings/@oid"><span class="org-context">View Registration Document</span></a></li>
-            }
-            <li><a href="/OrgContent/@oid" target="_blank"><span class="org-context">Members Only Page</span></a></li>
-            <li><a id="tryreg" href="#TryRegDialog" data-toggle="modal"><span class="org-context">Try Registration</span></a></li>
-            @if (model.IsVolunteerLeader && o.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)
-            {
-                <li><a id="VolunteerCalendar" href="/Volunteers/Calendar/@oid" target="calendar"><span class="org-context">Volunteer Calendar</span></a></li>
-            }
-            @if (edit)
-            {
-                <li><a href="/Org/CopySettings/@oid"><span class="org-context">Copy Settings</span></a></li>
-                <li><a href="/OrgChildren/@oid"><span class="org-context">Child Organization Management</span></a></li>
-            }
-            @if (o.IsMissionTrip == true && missiongiving)
-            {
-                <li><a href="/Reports/MissionTripFunding/@oid"><span class="org-context">Mission Trip Funding</span></a></li>
-                <li><a href="/Reports/MissionTripSenders/@oid"><span class="org-context">Mission Trip Senders Export</span></a></li>
-            }
-            @if (admin)
-            {
-                if (delete)
+
+@if (showAdvanced)
+{
+    <ul class="dropdown-menu dropdown-menu-large container row dropdown-menu-right bluebar-menu-col-2" role="menu">
+        <li class="col-sm-6">
+            <ul id="ultoolbar">
+                <li class="dropdown-header">Administrative</li>
+                @if (admin || manager)
                 {
-                    <li><a id="deleteorg" href="/Org/Delete/@oid"><span class="org-context">Delete Organization</span></a></li>
+                    <li><a href="/OrgGroups/@oid"><span class="org-context">Sub-Group Management</span></a></li>
+                    <li class="hideAlt"><a href="/RegSettings/@oid"><span class="org-context">View Registration Document</span></a></li>
                 }
-                else
+                <li><a href="/OrgContent/@oid" target="_blank"><span class="org-context">Members Only Page</span></a></li>
+                <li><a id="tryreg" href="#TryRegDialog" data-toggle="modal"><span class="org-context">Try Registration</span></a></li>
+                @if (model.IsVolunteerLeader && o.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)
                 {
-                    <li><a href="http://docs.touchpointsoftware.com/Organizations/DeleteOrganization.html" target="_blank"><span class="org-context">Delete Organization</span></a></li>
+                    <li><a id="VolunteerCalendar" href="/Volunteers/Calendar/@oid" target="calendar"><span class="org-context">Volunteer Calendar</span></a></li>
                 }
-                <li><a href="/RepairTransactions/@oid" class="longrunop"><span class="org-context">Repair Transactions</span></a></li>
-            }
-            @*@if (User.IsInRole("ministrEspace"))
-            {
-                <li><a id="addMESEvent" href="#" orgid="@oid"><span class="org-context">Add ministrEspace Event</span></a></li>
-            }*@
-        </ul>
-    </li>
-    <li class="col-sm-6">
-        @Html.Partial("Toolbar/GearStandard")
-    </li>
-</ul>
+                @if (edit)
+                {
+                    <li><a href="/Org/CopySettings/@oid"><span class="org-context">Copy Settings</span></a></li>
+                    <li><a href="/OrgChildren/@oid"><span class="org-context">Child Organization Management</span></a></li>
+                }
+                @if (o.IsMissionTrip == true && missiongiving)
+                {
+                    <li><a href="/Reports/MissionTripFunding/@oid"><span class="org-context">Mission Trip Funding</span></a></li>
+                    <li><a href="/Reports/MissionTripSenders/@oid"><span class="org-context">Mission Trip Senders Export</span></a></li>
+                }
+                @if (admin)
+                {
+                    if (delete)
+                    {
+                        <li><a id="deleteorg" href="/Org/Delete/@oid"><span class="org-context">Delete Organization</span></a></li>
+                    }
+                    else
+                    {
+                        <li><a href="http://docs.touchpointsoftware.com/Organizations/DeleteOrganization.html" target="_blank"><span class="org-context">Delete Organization</span></a></li>
+                    }
+                    <li><a href="/RepairTransactions/@oid" class="longrunop"><span class="org-context">Repair Transactions</span></a></li>
+                } @*@if (User.IsInRole("ministrEspace"))
+                    {
+                        <li><a id="addMESEvent" href="#" orgid="@oid"><span class="org-context">Add ministrEspace Event</span></a></li>
+                    }*@</ul>
+        </li>
+        <li class="col-sm-6">
+            @Html.Partial("Toolbar/GearStandard")
+        </li>
+    </ul>
+}
+else
+{
+    <ul class="dropdown-menu dropdown-menu-large container row dropdown-menu-right bluebar-menu-col-1" role="menu">
+        <li class="col-sm-6">
+            <ul>
+                <li class="dropdown-header">Content</li>
+                <li><a href="/OrgContent/@o.OrganizationId" class="qid">Members Only Page</a></li>
+            </ul>
+        </li>
+    </ul>
+}

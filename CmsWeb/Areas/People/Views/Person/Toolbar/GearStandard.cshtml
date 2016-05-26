@@ -1,18 +1,23 @@
-﻿@{
+﻿@using CmsData
+@{
     var edit = User.IsInRole("Edit");
     var developer = User.IsInRole("Developer");
+    var showAdvanced = !(User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-LimitToolbarForOrgLeaders", false));
 }
 <ul>
-    <li class="dropdown-header">Tags</li>
-    <li><a href='@ViewBag.TagAction' class="dialog-options qid" data-target="/Dialog/TagAll" data-callback="TagAllCallBack">Add All</a></li>
-    <li><a id="UnTagAll" href='@ViewBag.UnTagAction' class="qid">Remove All</a></li>
-    <li class="divider"></li>
-    <li class="dropdown-header">Contacts / Tasks</li>
-    <li><a href='/Task/NotesExcel2/@ViewBag.queryid' class="qid">Export Task Notes</a></li>
-    @if (edit)
+    @if (showAdvanced)
     {
+        <li class="dropdown-header">Tags</li>
+        <li><a href='@ViewBag.TagAction' class="dialog-options qid" data-target="/Dialog/TagAll" data-callback="TagAllCallBack">Add All</a></li>
+        <li><a id="UnTagAll" href='@ViewBag.UnTagAction' class="qid">Remove All</a></li>
         <li class="divider"></li>
-        <li class="dropdown-header">Extra Values</li>
-        <li><a href="/ExtraValue/Grid/@ViewBag.queryid" class="qid">Extra Values Grid</a></li>
+        <li class="dropdown-header">Contacts / Tasks</li>
+        <li><a href='/Task/NotesExcel2/@ViewBag.queryid' class="qid">Export Task Notes</a></li>
+        if (edit)
+        {
+            <li class="divider"></li>
+            <li class="dropdown-header">Extra Values</li>
+            <li><a href="/ExtraValue/Grid/@ViewBag.queryid" class="qid">Extra Values Grid</a></li>
+        }
     }
 </ul>

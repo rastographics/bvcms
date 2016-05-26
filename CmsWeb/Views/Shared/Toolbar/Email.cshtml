@@ -1,31 +1,35 @@
 ﻿@using CmsData.Classes.Twilio
 @{
-  var twilio = TwilioHelper.userSendSMS(Util.UserId);
-  var qb = DbUtil.Db.QueryIsCurrentUser();
+    var twilio = TwilioHelper.userSendSMS(Util.UserId);
+    var qb = DbUtil.Db.QueryIsCurrentUser();
+    var showAdvanced = !(User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-LimitToolbarForOrgLeaders", false));
 }
 <ul class="dropdown-menu dropdown-menu-large dropdown-menu-right container bluebar-menu-col-1">
   <li class="col-sm-12">
     <ul>
-      <li class="dropdown-header">Email</li>
-      <li><a href='/Email/@ViewBag.queryid' class="qid">Individuals</a></li>
-      <li><a href='/Email/@ViewBag.queryid?parents=true' class="qid">Parents</a></li>
-      <li><a href='/Email/@ViewBag.queryid?ccparents=true' class="qid"> Child with Parents CC'd</a></li>
-      <li>
-        <a id="singleemail" href="/Email/@ViewBag.queryid?nodups=true" class="qid">
-          Single Email Addresses
-        </a>
-      </li>
-      <li class="divider"></li>
-      <li><a href='/Email/@qb.QueryId' class="qid">Create/Edit Saved Draft</a></li>
-      @if ((bool?)ViewBag.ParentOrgContext == true)
-      {
-        <li class="divider"></li>
-        <li><a href='/Email/@ViewBag.leadersqid'><span class="org-context">Leaders under this org</span></a></li>
-        <li><a href='/Email/@ViewBag.membersqid'><span class="org-context">Members under this org</span></a></li>
-      }
-      <li class="divider"></li>
-      <li class="dropdown-header">SMS</li>
-      <li><a href="@(twilio ? "/SMS/Options/" + @ViewBag.queryid : "http://docs.touchpointsoftware.com/EmailTexting/TextingTwilio.html")" class="qid">Send Text</a></li>
+        <li class="dropdown-header">Email</li>
+        <li><a href='/Email/@ViewBag.queryid' class="qid">Individuals</a></li>
+        @if (showAdvanced)
+        {
+            <li><a href='/Email/@ViewBag.queryid?parents=true' class="qid">Parents</a></li>
+            <li><a href='/Email/@ViewBag.queryid?ccparents=true' class="qid"> Child with Parents CC'd</a></li>
+            <li>
+                <a id="singleemail" href="/Email/@ViewBag.queryid?nodups=true" class="qid">
+                    Single Email Addresses
+                </a>
+            </li>
+            <li class="divider"></li>
+            <li><a href='/Email/@qb.QueryId' class="qid">Create/Edit Saved Draft</a></li>
+            if ((bool?) ViewBag.ParentOrgContext == true)
+             {
+                 <li class="divider"></li>
+                 <li><a href='/Email/@ViewBag.leadersqid'><span class="org-context">Leaders under this org</span></a></li>
+                 <li><a href='/Email/@ViewBag.membersqid'><span class="org-context">Members under this org</span></a></li>
+             }
+            <li class="divider"></li>
+            <li class="dropdown-header">SMS</li>
+            <li><a href="@(twilio ? "/SMS/Options/" + @ViewBag.queryid : "http://docs.touchpointsoftware.com/EmailTexting/TextingTwilio.html")" class="qid">Send Text</a></li>
+        }
     </ul>
   </li>
 </ul>
