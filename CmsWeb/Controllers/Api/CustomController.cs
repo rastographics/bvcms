@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Web.Http;
 using System.Web.OData;
@@ -28,12 +29,12 @@ namespace CmsWeb.Controllers.Api
                 : Util.ConnectionStringReadOnly;
             var cn = new SqlConnection(cs);
             cn.Open();
-            var d = Request.Properties;
+            var d = Request.GetQueryNameValuePairs();
             var p = new DynamicParameters();
             foreach (var kv in d)
                 p.Add("@" + kv.Key, kv.Value);
             var script = RunScriptSql(parameter, content.Body, p);
-            return cn.Query(script);
+            return cn.Query(script, p);
         }
         private string RunScriptSql(string parameter, string body, DynamicParameters p)
         {
