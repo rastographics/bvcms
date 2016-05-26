@@ -1,16 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Web.Http;
-using System.Web.OData;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using CmsData;
-using CmsWeb.Models;
-using CmsWeb.Models.Api;
 using Dapper;
 using UtilityExtensions;
 
@@ -18,12 +11,14 @@ namespace CmsWeb.Controllers.Api
 {
     public class CustomController : ApiController
     {
-        [HttpGet, Route("~/CustomAPI/{name}/{parameter?}")]
-        public IEnumerable<dynamic> Get(string name, string parameter)
+        [HttpGet, Route("~/CustomAPI/{name}")]
+        public IEnumerable<dynamic> Get(string name)
         {
             var content = DbUtil.Db.ContentOfTypeSql(name);
             if (content == null)
                 throw new Exception("no content");
+            if (!CanRunScript(content.Body))
+                throw new Exception("Not Authorized to run this script");
             var cs = User.IsInRole("Finance")
                 ? Util.ConnectionStringReadOnlyFinance
                 : Util.ConnectionStringReadOnly;
@@ -33,15 +28,7 @@ namespace CmsWeb.Controllers.Api
             var p = new DynamicParameters();
             foreach (var kv in d)
                 p.Add("@" + kv.Key, kv.Value);
-            var script = RunScriptSql(parameter, content.Body, p);
-            return cn.Query(script, p);
-        }
-        private string RunScriptSql(string parameter, string body, DynamicParameters p)
-        {
-            if (!CanRunScript(body))
-                throw new Exception("Not Authorized to run this script");
-            p.Add("@p1", parameter ?? "");
-            return body;
+            return cn.Query(content.Body, p);
         }
         private bool CanRunScript(string script)
         {
