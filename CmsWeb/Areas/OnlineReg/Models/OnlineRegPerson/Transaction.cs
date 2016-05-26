@@ -12,6 +12,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
     {
         public decimal AmountToPay()
         {
+            if (DbUtil.Db.Setting("UseOnlinePayments", "true") == "false")
+                return 0;
             if (paydeposit == true && setting.Deposit.HasValue && setting.Deposit > 0)
             {
                 var regulardeposit = setting.Deposit.Value;
