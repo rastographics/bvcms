@@ -147,10 +147,16 @@ namespace CmsWeb.Areas.Org.Models
         internal bool? _showCommunityGroupTab;
         public bool ShowCommunityGroupTab()
         {
-            // We request this twice per Org Index.cshtml. Let's not do the DB calls twice.
             if (_showCommunityGroupTab.HasValue) return _showCommunityGroupTab.Value;
 
             _showCommunityGroupTab = DbUtil.Db.Setting("ShowCommunityGroupTab", false);
+            if (!_showCommunityGroupTab.Value) return false;
+
+            var orgTypes = DbUtil.Db.Setting("UX-CommunityGroupTabOrgTypes", "");
+            if (!string.IsNullOrEmpty(orgTypes))
+            {
+                _showCommunityGroupTab = orgTypes.Split(',').Select(x => x.Trim()).Contains(Org.OrganizationType.Description);
+            }
 
             return _showCommunityGroupTab.Value;
         }
