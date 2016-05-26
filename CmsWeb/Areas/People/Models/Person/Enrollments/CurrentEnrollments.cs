@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.WebPages;
 using CmsData;
 using CmsWeb.Models;
 using MoreLinq;
@@ -29,7 +30,15 @@ namespace CmsWeb.Areas.People.Models
             {
                 if (_orgTypesFilter == null)
                 {
-                    var defaultFilter = DbUtil.Db.Setting("UX-DefaultInvolvementOrgTypeFilter", "");
+                    var isInAccess = WebPageContext.Current.Page.User.IsInRole("Access");
+                    string defaultFilter = null;
+
+                    if(isInAccess)
+                        defaultFilter = DbUtil.Db.Setting("UX-DefaultAcccessInvolvementOrgTypeFilter", null);
+
+                    if(defaultFilter == null)
+                        defaultFilter = DbUtil.Db.Setting("UX-DefaultInvolvementOrgTypeFilter", "");
+
                     _orgTypesFilter = string.IsNullOrEmpty(defaultFilter) ?
                         new List<string>() : defaultFilter.Split(',').Select(x => x.Trim()).ToList();
                 }
