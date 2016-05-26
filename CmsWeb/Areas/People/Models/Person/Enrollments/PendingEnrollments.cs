@@ -58,7 +58,7 @@ namespace CmsWeb.Areas.People.Models
             {
                 var excludedTypes =
                     DbUtil.Db.Setting("UX-ExcludeFromInvolvementOrgTypeFilter", "").Split(',').Select(x => x.Trim());
-                return DbUtil.Db.OrganizationTypes.Where(x => !excludedTypes.Contains(x.Description)).Select(x => x.Description);
+                return DefineModelList(false).Select(x => x.Organization.OrganizationType.Description).Distinct().Where(x => !excludedTypes.Contains(x));
             }
         }
 
@@ -66,15 +66,20 @@ namespace CmsWeb.Areas.People.Models
             : base ("", "", true)
         {}
 
-        override public IQueryable<OrganizationMember> DefineModelList()
+        public IQueryable<OrganizationMember> DefineModelList(bool useOrgFilter)
         {
             var roles = DbUtil.Db.CurrentRoles();
             return from o in DbUtil.Db.Organizations
                    from om in o.OrganizationMembers
                    where om.PeopleId == PeopleId && om.Pending.Value == true
                    where o.LimitToRole == null || roles.Contains(o.LimitToRole)
-                   where (!OrgTypesFilter.Any() || OrgTypesFilter.Contains(om.Organization.OrganizationType.Description))
+                   where (!useOrgFilter || !OrgTypesFilter.Any() || OrgTypesFilter.Contains(om.Organization.OrganizationType.Description))
                    select om;
+        }
+
+        override public IQueryable<OrganizationMember> DefineModelList()
+        {
+            return DefineModelList(true);
         }
 
         override public IQueryable<OrganizationMember> DefineModelSort(IQueryable<OrganizationMember> q)

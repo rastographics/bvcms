@@ -56,9 +56,9 @@ namespace CmsWeb.Areas.People.Models
         {
             get
             {
-                var excludedTypes =
+               var excludedTypes =
                     DbUtil.Db.Setting("UX-ExcludeFromInvolvementOrgTypeFilter", "").Split(',').Select(x => x.Trim());
-                return DbUtil.Db.OrganizationTypes.Where(x => !excludedTypes.Contains(x.Description)).Select(x => x.Description);
+                return DefineModelList(false).Select(x => x.Organization.OrganizationType.Description).Distinct().Where(x => !excludedTypes.Contains(x));
             }
         }
 
@@ -66,7 +66,7 @@ namespace CmsWeb.Areas.People.Models
             : base("default", "asc", true)
         {}
 
-        override public IQueryable<EnrollmentTransaction> DefineModelList()
+        public IQueryable<EnrollmentTransaction> DefineModelList(bool useOrgFilter)
         {
             var limitvisibility = Util2.OrgLeadersOnly || !HttpContext.Current.User.IsInRole("Access");
             var roles = DbUtil.Db.CurrentRoles();
@@ -77,8 +77,13 @@ namespace CmsWeb.Areas.People.Models
                    where etd.TransactionTypeId >= 4
                    where !(limitvisibility && etd.Organization.SecurityTypeId == 3)
                    where org.LimitToRole == null || roles.Contains(org.LimitToRole)
-                   where (!OrgTypesFilter.Any() || OrgTypesFilter.Contains(org.OrganizationType.Description))
+                   where (!useOrgFilter || !OrgTypesFilter.Any() || OrgTypesFilter.Contains(org.OrganizationType.Description))
                    select etd;
+        }
+
+        override public IQueryable<EnrollmentTransaction> DefineModelList()
+        {
+            return DefineModelList(true);
         }
         public override IEnumerable<OrgMemberInfo> DefineViewList(IQueryable<EnrollmentTransaction> q)
         {

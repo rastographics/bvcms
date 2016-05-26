@@ -19,10 +19,10 @@
         }
         @if (showOrgTypeFilter)
         {
-            <span> of types </span><input name="OrgTypesFilter" value="@(string.Join(" ,", ((dynamic)Model).OrgTypesFilter ?? new List<string>()))" class="form-control org-types-filter" style="display: inline-block; min-width:180px" />
+            <span> of types </span><input name="OrgTypesFilter" value="@(string.Join(" ,", ((dynamic)Model).OrgTypesFilter ?? new List<string>()))" class="form-control org-types-filter" id="org-types-filter-@Model.GetType().Name" style="display: inline-block; min-width:180px" />
             <script>
                 $(function() {
-                    $(".org-types-filter").select2({
+                    $("#org-types-filter-@Model.GetType().Name").select2({
                         tags: [
                             @foreach (var type in ((dynamic)Model).OrgTypes)
                             {

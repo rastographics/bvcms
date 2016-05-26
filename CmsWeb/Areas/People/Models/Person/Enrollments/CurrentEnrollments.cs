@@ -60,7 +60,7 @@ namespace CmsWeb.Areas.People.Models
             {
                 var excludedTypes =
                     DbUtil.Db.Setting("UX-ExcludeFromInvolvementOrgTypeFilter", "").Split(',').Select(x => x.Trim());
-                return DbUtil.Db.OrganizationTypes.Where(x => !excludedTypes.Contains(x.Description)).Select(x => x.Description);
+                return DefineModelList(false).Select(x => x.Organization.OrganizationType.Description).Distinct().Where(x => !excludedTypes.Contains(x));
             }
         } 
 
@@ -68,7 +68,7 @@ namespace CmsWeb.Areas.People.Models
             : base("default", "asc", true)
         {}
 
-        override public IQueryable<OrganizationMember> DefineModelList()
+        public IQueryable<OrganizationMember> DefineModelList(bool useOrgFilter)
         {
             var limitvisibility = Util2.OrgLeadersOnly || !HttpContext.Current.User.IsInRole("Access");
             var oids = new int[0];
@@ -77,15 +77,20 @@ namespace CmsWeb.Areas.People.Models
             var roles = DbUtil.Db.CurrentRoles();
 
             var modelList = from om in DbUtil.Db.OrganizationMembers
-                                   let org = om.Organization
-                                   where om.PeopleId == PeopleId
-                                   where (om.Pending ?? false) == false
-                                   where oids.Contains(om.OrganizationId) || !(limitvisibility && om.Organization.SecurityTypeId == 3)
-                                   where org.LimitToRole == null || roles.Contains(org.LimitToRole)
-                                   where (!OrgTypesFilter.Any() || OrgTypesFilter.Contains(om.Organization.OrganizationType.Description))
-                                   select om;
+                            let org = om.Organization
+                            where om.PeopleId == PeopleId
+                            where (om.Pending ?? false) == false
+                            where oids.Contains(om.OrganizationId) || !(limitvisibility && om.Organization.SecurityTypeId == 3)
+                            where org.LimitToRole == null || roles.Contains(org.LimitToRole)
+                            where (!useOrgFilter || !OrgTypesFilter.Any() || OrgTypesFilter.Contains(om.Organization.OrganizationType.Description))
+                            select om;
 
             return modelList;
+        } 
+
+        override public IQueryable<OrganizationMember> DefineModelList()
+        {
+            return DefineModelList(true);
         }
         override public IQueryable<OrganizationMember> DefineModelSort(IQueryable<OrganizationMember> q)
         {
