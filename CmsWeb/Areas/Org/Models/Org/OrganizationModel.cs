@@ -104,12 +104,42 @@ namespace CmsWeb.Areas.Org.Models
         internal bool? _showContactsReceivedTab;
         public bool ShowContactsReceivedTab()
         {
-            // We request this twice per Org Index.cshtml. Let's not do the DB calls twice.
+            // Simple caching to avoid repeating all this logic since this is called twice
             if (_showContactsReceivedTab.HasValue) return _showContactsReceivedTab.Value;
 
-            var orgType = DbUtil.Db.Setting("UX-ContactedOrgType", null);
+            // Check and see if org visits are turned on at all
+            _showContactsReceivedTab = DbUtil.Db.Setting("UseContactVisitedOrgs", false);
+            if (!_showContactsReceivedTab.Value) return false;
 
-            _showContactsReceivedTab = OrgMain.OrganizationType.ToString() == orgType;
+            // Check and see if this is the wrong type of org
+            var orgType = DbUtil.Db.Setting("UX-ContactedOrgType", string.Empty);
+            if (!string.IsNullOrEmpty(orgType))
+            {
+                _showContactsReceivedTab = OrgMain.OrganizationType.ToString() == orgType;
+                if (!_showContactsReceivedTab.Value) return false;
+            }
+            
+            // Check and see if the user doesn't have access to the tab
+            var accessTypeList = DbUtil.Db.Setting("UX-VisitedOrgTabMemberTypes", null);
+            if (!string.IsNullOrEmpty(accessTypeList))
+            {
+                var user = DbUtil.Db.Users.FirstOrDefault(x => x.Username == HttpContext.Current.User.Identity.Name);
+                if (user == null)
+                {
+                    _showContactsReceivedTab = false;
+                    return false;
+                }
+
+                var om = DbUtil.Db.OrganizationMembers
+                    .FirstOrDefault(x => x.OrganizationId == Id && x.PeopleId == user.PeopleId);
+                if (om == null)
+                {
+                    _showContactsReceivedTab = false;
+                    return false;
+                }
+
+                _showContactsReceivedTab = accessTypeList.Split(',').Select(x => x.Trim()).Contains(om.MemberType.Description);
+            }
 
             return _showContactsReceivedTab.Value;
         }
