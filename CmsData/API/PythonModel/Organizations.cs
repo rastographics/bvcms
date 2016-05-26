@@ -119,7 +119,7 @@ namespace CmsData
             OrganizationMember.MoveToOrg(db2, pid, fromOrg, toOrg, moveregdata);
         }
 
-        public List<int> OrganizationIds(int progid, int divid, bool? includeInactive)
+        public List<int> OrganizationIds(int progid, int divid, bool includeInactive = false)
         {
             var q = from o in db.Organizations
                     where progid == 0 || o.DivOrgs.Any(dd => dd.Division.ProgDivs.Any(pp => pp.ProgId == progid))
