@@ -45,7 +45,12 @@ namespace CmsWeb.Areas.People.Models
 
         public IEnumerable<string> OrgTypes
         {
-            get { return DbUtil.Db.OrganizationTypes.Select(x => x.Description); }
+            get
+            {
+                var excludedTypes =
+                    DbUtil.Db.Setting("UX-ExcludeFromInvolvementOrgTypeFilter", "").Split(',').Select(x => x.Trim());
+                return DbUtil.Db.OrganizationTypes.Where(x => !excludedTypes.Contains(x.Description)).Select(x => x.Description);
+            }
         }
 
         public PendingEnrollments() 
