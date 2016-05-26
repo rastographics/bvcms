@@ -28,7 +28,7 @@ namespace CmsWeb.Areas.People.Models
             {
                 if (_orgTypesFilter == null)
                 {
-                    var isInAccess = WebPageContext.Current.Page.User.IsInRole("Access");
+                    var isInAccess = WebPageContext.Current?.Page?.User?.IsInRole("Access") ?? false;
                     string defaultFilter = null;
 
                     if (isInAccess)
