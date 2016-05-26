@@ -105,6 +105,7 @@ namespace CmsWeb.Areas.People.Models
                        EnrollDate = om.EnrollmentDate,
                        MemberType = om.MemberType.Description,
                        DivisionName = om.Organization.Division.Program.Name + "/" + om.Organization.Division.Name,
+                       IsLeaderAttendanceType = false
                    };
         }
     }

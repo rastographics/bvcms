@@ -98,7 +98,8 @@ namespace CmsWeb.Areas.People.Models
                          DropDate = om.TransactionDate,
                          AttendPct = om.AttendancePercentage,
                          DivisionName = om.Organization.Division.Program.Name + "/" + om.Organization.Division.Name,
-                         OrgType = om.Organization.OrganizationType.Description ?? "Other"
+                         OrgType = om.Organization.OrganizationType.Description ?? "Other",
+                         IsLeaderAttendanceType = false
                      };
             return q2;
         }

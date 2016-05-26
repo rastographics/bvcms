@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using CmsData;
 using UtilityExtensions;
 
@@ -23,6 +24,7 @@ namespace CmsWeb.Areas.People.Models
         public string ProgramName { get; set; }
         public string OrgType { get; set; }
         public bool HasDirectory { get; set; }
+        public bool IsLeaderAttendanceType { get; set; }
 
         public List<OrgMemberInfo> ChildOrgs { get; set; } 
 
@@ -41,7 +43,7 @@ namespace CmsWeb.Areas.People.Models
                     return OrgId.ToString();
                 case "name":
                 case "organization":
-                    if (inAccessRole)
+                    if (inAccessRole && (IsLeaderAttendanceType || !DbUtil.Db.Setting("UX-OrgLeadersOtherGroupsContentOnly", false)))
                     {
                         return $"<a href=\"{Util2.Org}/{OrgId}\">{Name}</a>";
                     }

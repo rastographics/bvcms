@@ -142,7 +142,8 @@ namespace CmsWeb.Areas.People.Models
                        DivisionName = om.Organization.Division.Name,
                        ProgramName = om.Organization.Division.Program.Name,
                        OrgType = om.Organization.OrganizationType.Description ?? "Other",
-                       HasDirectory = (om.Organization.PublishDirectory ?? 0) > 0
+                       HasDirectory = (om.Organization.PublishDirectory ?? 0) > 0,
+                       IsLeaderAttendanceType = om.MemberType.AttendanceTypeId == 10
                    };
 
             if (DbUtil.Db.Setting("UX-ShowChildOrgsOnInvolvementTabs", false))
@@ -170,8 +171,11 @@ namespace CmsWeb.Areas.People.Models
                 foreach (var group in viewListAsList)
                 {
                     var childOrgs = childGroups.FirstOrDefault(x => x.Key == group.OrgId)?.ToList();
-
-                    group.ChildOrgs = childOrgs;
+                    if (childOrgs != null)
+                    {
+                        childOrgs.ForEach(x => x.IsLeaderAttendanceType = group.IsLeaderAttendanceType);
+                        group.ChildOrgs = childOrgs;
+                    }
                 }
 
                 return viewListAsList;
