@@ -352,7 +352,7 @@ namespace CmsWeb.Models
         {
             var q = from om in DbUtil.Db.OrganizationMembers
                     join org in DbUtil.Db.Organizations on om.OrganizationId equals org.OrganizationId
-                    where org.DivisionId == SourceDivId
+                    where org.DivOrgs.Any(di => di.DivId == SourceDivId)
                     where SourceId == 0 || om.OrganizationId == SourceId
                     where om.Person.Grade != null
                     select om.Person.Grade;
