@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
 using MoreLinq;
 using UtilityExtensions;
+using System.Text.RegularExpressions;
 
 namespace CmsWeb.Models
 {
@@ -25,14 +27,39 @@ namespace CmsWeb.Models
         public int TargetId { get; set; }
         public int SourceId { get; set; }
         public int ProgId { get; set; }
-        public int DivId { get; set; }
+        public int SourceDivId { get; set; }
+        public int TargetDivId { get; set; }
         public bool EmailAllNotices { get; set; }
         public bool MoveRegistrationData { get; set; }
         public string Grades { get; set; }
         public string SmallGroup { get; set; }
+        public string Age { get; set; }
         public string Sort { get; set; }
         public string Dir { get; set; }
         public IList<string> List { get; set; } = new List<string>();
+        public bool ChangeMemberType { get; set; }
+        public int MoveToMemberTypeId { get; set; }
+
+        public HtmlString GradesFilterHelp => ViewExtensions2.Markdown(@"
+**Match Grade Level.**
+
+* Use a semi-colon (`;`) or comma (`,`) to separate multiple grades.
+* Does not accept range queries. 
+");
+        public HtmlString SgFilterHelp => ViewExtensions2.Markdown(@"
+**Match a sub-group name.**
+
+* Use a semi-colon (`;`) to separate multiple sub-groups.
+* `ALL:` to match people who are in each group specified.
+* When there are more groups than fit into the textbox, most browsers will let you resize that box so you can see the rest.
+");
+        public HtmlString AgeFilterHelp => ViewExtensions2.Markdown(@"
+**Match on age.**
+
+* Enter a single number for a specific age (`50`).
+* Use a dash to search for a range of ages (`30-40`).
+* Or use `<=`, `>=`, `<`, and `>` for searching ranges.
+");
 
         public void FetchSavedIds()
         {
@@ -44,7 +71,7 @@ namespace CmsWeb.Models
 
             var div = DbUtil.Db.Divisions.SingleOrDefault(d => d.Id == a[1] && d.ProgId == ProgId);
             if (div != null)
-                DivId = a[1];
+                SourceDivId = a[1];
 
             var source = DbUtil.Db.Organizations.Where(o => o.OrganizationId == a[2]).Select(o => o.OrganizationId).SingleOrDefault();
             SourceId = a[2];
@@ -54,17 +81,17 @@ namespace CmsWeb.Models
         {
             var q = from prog in DbUtil.Db.Programs
                     where prog.Id == ProgId
-                    let div = DbUtil.Db.Divisions.SingleOrDefault(d => d.Id == DivId && d.ProgId == ProgId)
-                    let org = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == SourceId && o.DivOrgs.Any(d => d.DivId == DivId))
-                    let org2 = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == SourceId && o.DivOrgs.Any(d => d.DivId == DivId))
+                    let div = DbUtil.Db.Divisions.SingleOrDefault(d => d.Id == SourceDivId && d.ProgId == ProgId)
+                    let org = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == SourceId && o.DivOrgs.Any(d => d.DivId == SourceDivId))
+                    let org2 = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == SourceId && o.DivOrgs.Any(d => d.DivId == SourceDivId))
                     select new {div, noorg = org == null, noorg2 = org2 == null};
             var i = q.SingleOrDefault();
             if (i == null)
-                ProgId = DivId = SourceId = TargetId = 0;
+                ProgId = SourceDivId = SourceId = TargetDivId = TargetId = 0;
             else
             {
                 if (i.div == null)
-                    DivId = SourceId = TargetId = 0;
+                    SourceDivId = SourceId = TargetDivId = TargetId = 0;
                 else
                 {
                     if (i.noorg)
@@ -117,7 +144,7 @@ namespace CmsWeb.Models
             var roles = DbUtil.Db.CurrentRoles();
             var q = from o in DbUtil.Db.Organizations
                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
-                    where o.DivOrgs.Any(di => di.DivId == DivId)
+                    where o.DivOrgs.Any(di => di.DivId == SourceDivId)
                     where o.OrganizationStatusId == OrgStatusCode.Active
                     orderby o.OrganizationName
                     let sctime = o.OrgSchedules.Count() == 1 ? " " + DbUtil.Db.GetScheduleDesc(o.OrgSchedules.First().MeetingTime) : ""
@@ -133,11 +160,12 @@ namespace CmsWeb.Models
 
         public IEnumerable<SelectListItem> Organizations2()
         {
+            int divId = (TargetDivId == 0) ? SourceDivId : TargetDivId;
             var member = MemberTypeCode.Member;
             var roles = DbUtil.Db.CurrentRoles();
             var q = from o in DbUtil.Db.Organizations
                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
-                    where o.DivOrgs.Any(di => di.DivId == DivId)
+                    where o.DivOrgs.Any(di => di.DivId == divId)
                     where o.OrganizationStatusId == OrgStatusCode.Active
                     orderby o.OrganizationName
                     let sctime = o.OrgSchedules.Count() == 1 ? " " + DbUtil.Db.GetScheduleDesc(o.OrgSchedules.First().MeetingTime) : ""
@@ -158,19 +186,127 @@ namespace CmsWeb.Models
             if (_members == null)
             {
                 var glist = new int[] {};
+                var smallGroupList = new List<string>();
+                var matchAllSubgroups = false;
+                if (null != SmallGroup)
+                {
+                    if (SmallGroup.StartsWith("All:", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        matchAllSubgroups = true;
+                        SmallGroup = SmallGroup.Substring(4);
+                    }
+                    if (SmallGroup.Contains(";"))
+                    {
+                        smallGroupList.AddRange(SmallGroup.Split(';').Select(x => x.Trim()));
+                    } else if (SmallGroup.Contains(","))
+                    {
+                        smallGroupList.AddRange(SmallGroup.Split(';').Select(x => x.Trim()));
+                    } else
+                    {
+                        smallGroupList.Add(SmallGroup);
+                    }
+                }
+				
                 if (Grades.HasValue())
-                    glist = (from g in (Grades ?? "").Split(',')
+                    glist = (from g in (Grades ?? "").Split(new char[] { ',', ';' })
                              select g.ToInt()).ToArray();
                 var q = from om in DbUtil.Db.OrganizationMembers
-                        where om.Organization.DivOrgs.Any(di => di.DivId == DivId)
+                        where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                         where SourceId == 0 || om.OrganizationId == SourceId
                         where glist.Length == 0 || glist.Contains(om.Person.Grade.Value)
-                        where !SmallGroup.HasValue() || om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == SmallGroup)
                         where !MembersOnly || om.MemberTypeId == MemberTypeCode.Member
                         select om;
+                if (smallGroupList.Count() > 0)
+                {
+                    if (matchAllSubgroups)
+                    {
+                        foreach (var sg in smallGroupList)
+                        {
+                            q = from om in q
+                                where om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == sg)
+                                select om;
+                        }
+                    }
+                    else
+                    {
+                        q = from om in q
+                            where om.OrgMemMemTags.Any(mm => smallGroupList.Contains(mm.MemberTag.Name))
+                            select om;
+
+                    }
+                }
+                if (null != Age && Age.Trim().Length > 0)
+                {
+                    /*
+                     * Enter a single number for a specific age (`50`).
+                     * Use a dash to search for a range of ages (`30-40`).
+                     * Additionally, use `<=`, `>=`, `<`, and `>` for searching ranges.
+                    */
+
+                    var str = Regex.Replace(Age, @"[^0-9\-<>=]", "");
+                    if ((new Regex(@"^[0-9]+$")).IsMatch(str))
+                    {
+                        q = from om in q
+                            where om.Person.Age == str.ToInt()
+                            select om;
+                    }
+                    else if ((new Regex(@"^[0-9]+\-[0-9]+$")).IsMatch(str))
+                    {
+                        var matches = Regex.Matches(str, @"^([0-9]+)\-([0-9]+)$");
+                        q = from om in q
+                            where om.Person.Age >= matches[0].Groups[1].Value.ToInt()
+                            where om.Person.Age <= matches[0].Groups[2].Value.ToInt()
+                            select om;
+                    }
+                    else if ((new Regex(@"^>=[0-9]+$")).IsMatch(str))
+                    {
+                        var matches = Regex.Matches(str, @"^>=([0-9]+)$");
+                        q = from om in q
+                            where om.Person.Age >= matches[0].Groups[1].Value.ToInt()
+                            select om;
+                    }
+                    else if ((new Regex(@"^>[0-9]+$")).IsMatch(str))
+                    {
+                        var matches = Regex.Matches(str, @"^>([0-9]+)$");
+                        q = from om in q
+                            where om.Person.Age > matches[0].Groups[1].Value.ToInt()
+                            select om;
+                    }
+                    else if ((new Regex(@"^<=[0-9]+$")).IsMatch(str))
+                    {
+                        var matches = Regex.Matches(str, @"^<=([0-9]+)$");
+                        q = from om in q
+                            where om.Person.Age <= matches[0].Groups[1].Value.ToInt()
+                            select om;
+                    }
+                    else if ((new Regex(@"^<[0-9]+$")).IsMatch(str))
+                    {
+                        var matches = Regex.Matches(str, @"^<([0-9]+)$");
+                        q = from om in q
+                            where om.Person.Age < matches[0].Groups[1].Value.ToInt()
+                            select om;
+                    }
+                }
                 _members = q;
             }
             return _members;
+        }
+
+        public bool ValidAgeFilter()
+        {
+            if (null != Age && Age.Trim().Length > 0)
+            {
+                var str = Regex.Replace(Age, @"[^0-9\-<>=]", "");
+                if ((new Regex(@"^[0-9]+$|^[0-9]+\-[0-9]+$|^>=?[0-9]+$|^<=?[0-9]+$")).IsMatch(str))
+                {
+                    return true;
+                }
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         public IEnumerable<MemberInfo> Members()
@@ -197,6 +333,43 @@ namespace CmsWeb.Models
         public int Count()
         {
             return GetMembers().Count();
+        }
+
+        public IEnumerable<string> GetOrganizationSmallGroups()
+        {
+            var q = from om in DbUtil.Db.OrganizationMembers
+                    join org in DbUtil.Db.Organizations on om.OrganizationId equals org.OrganizationId
+                    join omt in DbUtil.Db.OrgMemMemTags on om.OrganizationId equals omt.OrgId
+                    join mt in DbUtil.Db.MemberTags on omt.MemberTagId equals mt.Id
+                    where org.DivisionId == SourceDivId
+                    where SourceId == 0 || om.OrganizationId == SourceId
+                    select mt.Name;
+
+            return q.Distinct();
+        }
+
+        public IEnumerable<int?> GetOrganizationGrades()
+        {
+            var q = from om in DbUtil.Db.OrganizationMembers
+                    join org in DbUtil.Db.Organizations on om.OrganizationId equals org.OrganizationId
+                    where org.DivOrgs.Any(di => di.DivId == SourceDivId)
+                    where SourceId == 0 || om.OrganizationId == SourceId
+                    where om.Person.Grade != null
+                    select om.Person.Grade;
+
+            return q.Distinct();
+        }
+
+        public IEnumerable<SelectListItem> GetMemberTypes()
+        {
+            var q = from mt in DbUtil.Db.MemberTypes
+                    orderby mt.Description
+                    select new SelectListItem
+                    {
+                        Value = mt.Id.ToString(),
+                        Text = mt.Description
+                    };
+            return q;
         }
 
         public IEnumerable<OrganizationMember> ApplySort()
@@ -289,7 +462,7 @@ namespace CmsWeb.Models
                 var oid = a[1].ToInt();
                 if (oid == TargetId)
                     continue;
-                OrganizationMember.MoveToOrg(DbUtil.Db, pid, oid, TargetId, MoveRegistrationData);
+                OrganizationMember.MoveToOrg(DbUtil.Db, pid, oid, TargetId, MoveRegistrationData, ChangeMemberType == true ? MoveToMemberTypeId : -1);
             }
             DbUtil.Db.UpdateMainFellowship(TargetId);
         }
@@ -297,7 +470,7 @@ namespace CmsWeb.Models
         public int MovedCount()
         {
             var q = from om in DbUtil.Db.OrganizationMembers
-                    where om.Organization.DivOrgs.Any(di => di.DivId == DivId)
+                    where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                     where om.Moved == true
                     select om;
             return q.Count();
@@ -306,19 +479,19 @@ namespace CmsWeb.Models
         public void ResetMoved()
         {
             var q = from om in DbUtil.Db.OrganizationMembers
-                    where om.Organization.DivOrgs.Any(di => di.DivId == DivId)
+                    where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                     where om.Moved == true
                     select om;
             DbUtil.Db.ExecuteCommand(@"
 UPDATE dbo.OrganizationMembers
 SET Moved = NULL
-WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId = {0})", DivId);
+WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId = {0})", SourceDivId);
         }
 
         public int AllCount()
         {
             var q = from om in DbUtil.Db.OrganizationMembers
-                    where om.Organization.DivOrgs.Any(di => di.DivId == DivId)
+                    where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                     where om.Moved == true || EmailAllNotices
                     select om;
             return q.Count();
@@ -329,7 +502,7 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
             var Db = DbUtil.Db;
 
             var q = from om in Db.OrganizationMembers
-                    where om.Organization.DivOrgs.Any(di => di.DivId == DivId)
+                    where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                     where om.Moved == true || EmailAllNotices
                     select new
                     {
@@ -402,7 +575,7 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
             sb.Append("</pre>\n");
 
             var q0 = from o in Db.Organizations
-                     where o.DivOrgs.Any(di => di.DivId == DivId)
+                     where o.DivOrgs.Any(di => di.DivId == SourceDivId)
                      where o.NotifyIds.Length > 0
                      where o.RegistrationTypeId > 0
                      select o;
@@ -450,6 +623,13 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
             {
                 get { return isChecked ? "checked='checked'" : ""; }
             }
+        }
+
+        public class SmallGroupInfo
+        {
+            public string orgName { get; set; }
+            public int orgId { get; set; }
+            public string smallGroup { get; set; }
         }
     }
 }

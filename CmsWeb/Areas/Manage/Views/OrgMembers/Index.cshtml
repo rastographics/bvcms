@@ -5,6 +5,15 @@
     ViewBag.Title = "Manage Organization Members";
     ViewBag.PageHeader = "Manage Organization Members";
 }
+@section head
+{
+    <style>
+        #SmallGroup, #Grades, #Age {
+            height: 34px;
+            overflow: hidden;
+        }
+    </style>
+}
 <form id="form" method="post" action="/OrgMembers/Move">
     @Html.Partial("List", Model)
 </form>

@@ -701,7 +701,7 @@ AND a.PeopleId = {2}
         {
             DbUtil.LogActivity($"EVOrgMem {op}:{field}", orgid: OrganizationId, peopleid: PeopleId);
         }
-        public static void MoveToOrg(CMSDataContext db, int pid, int fromOrg, int toOrg, bool? moveregdata = true)
+        public static void MoveToOrg(CMSDataContext db, int pid, int fromOrg, int toOrg, bool? moveregdata = true, int toMemberTypeId = -1)
         {
             if (fromOrg == toOrg)
                 return;
@@ -714,7 +714,14 @@ AND a.PeopleId = {2}
                 if (tom == null)
                     return;
             }
-            tom.MemberTypeId = om.MemberTypeId;
+            if (toMemberTypeId != -1)
+            {
+                tom.MemberTypeId = toMemberTypeId;
+            }
+            else
+            {
+                tom.MemberTypeId = om.MemberTypeId;
+            }
             tom.UserData = om.UserData;
 
             if (moveregdata == true)

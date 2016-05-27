@@ -41,7 +41,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult List(OrgMembersModel m)
         {
             m.ValidateIds();
-            DbUtil.Db.SetUserPreference("OrgMembersModelIds", $"{m.ProgId}.{m.DivId}.{m.SourceId}");
+            DbUtil.Db.SetUserPreference("OrgMembersModelIds", $"{m.ProgId}.{m.SourceDivId}.{m.SourceId}");
             DbUtil.DbDispose();
             DbUtil.Db.SetNoLock();
             return View(m);

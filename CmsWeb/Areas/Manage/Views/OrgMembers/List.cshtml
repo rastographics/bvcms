@@ -4,6 +4,9 @@
 <div class="box box-responsive">
     <div class="box-title-btn">
         <div class="box-tools">
+            <label class="checkbox-inline">
+                @Html.CheckBox("EmailAllNotices") Email all?
+            </label>
             <div class="btn-group">
                 <a href="#" class="btn btn-default EmailNotices"><i class="fa fa-envelope-o"></i> Email Org Assignment Notices(@Model.MovedCount())</a>
                 @if (User.IsInRole("Admin"))
@@ -29,43 +32,158 @@
                         @Html.DropDownList("ProgId", Model.Programs(), new { @class = "form-control" })
                     </div>
                 </div>
+                <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+                    <label for="Grades" class="control-label">Grades</label>
+                    <div class="input-group">
+                        <a class="input-group-addon" tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Grades Filter" data-content="@Model.GradesFilterHelp"><i class="fa fa-info-circle"></i></a>
+                        <textarea rows="4" id="Grades" name="Grades" class="form-control">@Model.Grades</textarea>
+                        <div class="input-group-btn">
+                            <button class="btn btn-info dropdown-toggle" data-toggle="dropdown" style="margin-top: 0; width: 2em;">
+                                <span class="caret"></span>
+                            </button>
+                            @{IEnumerable<int?> grades = Model.GetOrganizationGrades();}
+                            <ul class="dropdown-menu dropdown-menu-right" style="height: 200px; overflow: auto;">
+                                @if (Model.SourceDivId != 0)
+                                {
+                                    if (grades.Count() == 0)
+                                    {
+                                        if (Model.SourceId == 0)
+                                        {
+                                            <li>
+                                                <a href="#" class="selectgrades"><i class="fa fa-minus hide"></i>No grades in this division</a>
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li>
+                                                <a href="#" class="selectgrades"><i class="fa fa-minus hide"></i>No grades in this division and source</a>
+                                            </li>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        foreach (var g in grades)
+                                        {
+                                            <li>
+                                                <a href="#" class="selectgrades"><i class="fa fa-minus hide"></i>@g</a>
+                                            </li>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    <li>
+                                        <a href="#" class="selectgrades"><i class="fa fa-minus hide"></i>Select a division first</a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-6 form-group @( !@Model.ValidAgeFilter() ? "has-error" : "" )">
+                    <label for="Age" class="control-label">Age</label>
+                    <div class="input-group">
+                        <a class="input-group-addon" tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Age Filter" data-content="@Model.AgeFilterHelp"><i class="fa fa-info-circle"></i></a>
+                        <input type="text" id="Age" name="Age" class="form-control" value="@Model.Age">
+                    </div>
+                    @if (!Model.ValidAgeFilter())
+                    {
+                        <span class="help-block">This is not a valid age filter; it was not applied to the search results.  Click the icon for details.</span>
+                    }
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+                    <label for="SmallGroup" class="control-label">Sub-Group</label>
+                    <div class="input-group">
+                        <a class="input-group-addon" tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Sub-Group Filter" data-content="@Model.SgFilterHelp"><i class="fa fa-info-circle"></i></a>
+                        <textarea rows="4" id="SmallGroup" name="SmallGroup" class="form-control">@Model.SmallGroup</textarea>
+                        <div class="input-group-btn">
+                            <button class="btn btn-info dropdown-toggle" data-toggle="dropdown" style="margin-top: 0; width: 2em;">
+                                <span class="caret"></span>
+                            </button>
+                            @{IEnumerable<string> subgroups = Model.GetOrganizationSmallGroups();}
+                            <ul class="dropdown-menu dropdown-menu-right" style="height: 200px; overflow: auto;">
+                                @if (Model.SourceDivId != 0)
+                                {
+                                    if (subgroups.Count() == 0)
+                                    {
+                                        if (Model.SourceId == 0)
+                                        {
+                                            <li>
+                                                <a href="#" class="selectsg"><i class="fa fa-minus hide"></i>No Sub-Groups in this source division</a>
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li>
+                                                <a href="#" class="selectsg"><i class="fa fa-minus hide"></i>No Sub-Groups in this source division and source</a>
+                                            </li>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <li>
+                                            <a href="#" class="selectsg"><i class="fa fa-minus hide"></i>Match All</a>
+                                        </li>
+                                        foreach (var sg in subgroups)
+                                        {
+                                            <li>
+                                                <a href="#" class="selectsg"><i class="fa fa-minus hide"></i>@sg</a>
+                                            </li>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    <li>
+                                        <a href="#" class="selectsg"><i class="fa fa-minus hide"></i>Select a division first</a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-lg-3 col-md-3 col-sm-6">
                     <div class="form-group">
-                        <label for="DivId" class="control-label">Division</label>
-                        @Html.DropDownList("DivId", Model.Divisions(), new { @class = "form-control" })
+                        <label for="SourceDivId" class="control-label">Source Division</label>
+                        @Html.DropDownList("SourceDivId", Model.Divisions(), new { @class = "form-control" })
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-6">
-                    <div class="form-group">
-                        <label for="Grades" class="control-label">Grades</label>
-                        @Html.TextBox("Grades", "", new { @class = "form-control" })
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-3 col-sm-6">
-                    <div class="form-group">
-                        <label for="SmallGroup" class="control-label">Sub-Group</label>
-                        @Html.TextBox("SmallGroup", "", new { @class = "form-control" })
-                    </div>
-                </div>
-                <div class="col-sm-6">
                     <div class="form-group">
                         <label for="SourceId" class="control-label">Source</label>
                         @Html.DropDownList("SourceId", Model.Organizations(), new { @class = "form-control" })
                     </div>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-lg-3 col-md-3 col-sm-6">
+                    <div class="form-group">
+                        <label for="TargetDivId" class="control-label">Target Division</label>
+                        @Html.DropDownList("TargetDivId", Model.Divisions(), new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-6">
                     <div class="form-group">
                         <label for="TargetId" class="control-label">Target</label>
                         @Html.DropDownList("TargetId", Model.Organizations2(), new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-6">
+                    <div class="form-group">
                         <label class="checkbox-inline">
                             @Html.CheckBox("MembersOnly") Exclude teachers?
-                        </label>
-                        <label class="checkbox-inline">
-                            @Html.CheckBox("EmailAllNotices") Email all?
-                        </label>
+                        </label><br />
                         <label class="checkbox-inline">
                             @Html.CheckBox("MoveRegistrationData") Move Registration Data?
+                        </label><br />
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="ChangeMemberType" id="ChangeMemberType" value="true" /> Change member type when moving
                         </label>
+                        <div id="member-types" style="display:none">
+                            @Html.DropDownList("MoveToMemberTypeId", Model.GetMemberTypes(), new { @class = "form-control" })
+                        </div>
                     </div>
                 </div>
             </div>
