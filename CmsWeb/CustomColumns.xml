@@ -85,20 +85,8 @@
     <join name="op">
       LEFT JOIN dbo.OrgPeople({orgid}, '1020304050', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) op ON op.PeopleId = p.PeopleId
     </join>
-    <join name="laddr">
-      LEFT JOIN dbo.LastAddrElement('AddressLineOne') laddr ON laddr.PeopleId = p.PeopleId
-    </join>
-    <join name="laddr2">
-      LEFT JOIN dbo.LastAddrElement('AddressLineTwo') laddr2 ON laddr2.PeopleId = p.PeopleId
-    </join>
-    <join name="lcity">
-      LEFT JOIN dbo.LastAddrElement('CityName') lcity ON lcity.PeopleId = p.PeopleId
-    </join>
-    <join name="lstate">
-      LEFT JOIN dbo.LastAddrElement('StateCode') lstate ON lstate.PeopleId = p.PeopleId
-    </join>
-    <join name="lzip">
-      LEFT JOIN dbo.LastAddrElement('ZipCode') lzip ON lzip.PeopleId = p.PeopleId
+    <join name="pa">
+      LEFT JOIN dbo.PrevAddress pa ON pa.PeopleId = p.PeopleId
     </join>
   </Joins>
   <Columns>
@@ -180,11 +168,11 @@
     <column name="Badaddr">p.primarybadaddrflag</column>
     <column name="ResidentCode" join="rc">rc.description	</column>
     
-    <column name="PrevAddr" join="laddr">laddr.Prev</column>
-    <column name="PrevAddr2" join="laddr2">laddr2.Prev</column>
-    <column name="PrevCity" join="lcity">lcity.Prev</column>
-    <column name="PrevState" join="lstate">lstate.Prev</column>
-    <column name="PrevZip" join="lzip">lzip.Prev</column>
+    <column name="PrevAddr" join="pa">pa.PrevAddr</column>
+    <column name="PrevAddr2" join="pa">pa.PrevAddr2</column>
+    <column name="PrevCity" join="pa">pa.PrevCity</column>
+    <column name="PrevState" join="pa">pa.PrevState</column>
+    <column name="PrevZip" join="pa">pa.PrevZip</column>
     
     <column name="CreatedDt">p.createddate</column>
     <column name="CreatedBy">
