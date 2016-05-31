@@ -65,6 +65,7 @@ namespace CmsData
             db.LogActivity($"PythonModel.DropOrgMember({pid},{orgId})");
             var om = db2.OrganizationMembers.Single(m => m.PeopleId == pid && m.OrganizationId == orgId);
             om.Drop(db2);
+            db2.SubmitChanges();
         }
 
         public APIOrganization.Organization GetOrganization(object orgId)
