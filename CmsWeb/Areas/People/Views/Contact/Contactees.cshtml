@@ -28,9 +28,15 @@
       {
         <tr>
           <td>
-            <a class="link in" href="/Person2/@c.PeopleId">@c.Name</a>
-          </td>
-          @if (Model.CanViewComments)
+              @if (c.IsOrg)
+              {
+                <a class="link in" href="/Org/@c.OrgId">@c.Name</a>
+              }
+              else
+              {
+                <a class="link in" href="/Person2/@c.PeopleId">@c.Name</a>
+              }          </td>
+          @if (Model.CanViewComments && !c.IsOrg)
           {
             <td style="width: 50px;">
               <a class="addtask in btn btn-default btn-sm" href="/Contact2/AddTask/@c.ContactId/@c.PeopleId"><i class="fa fa-plus-circle"></i> Add Followup Task</a>

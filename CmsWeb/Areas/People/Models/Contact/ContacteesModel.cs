@@ -52,6 +52,27 @@ namespace CmsWeb.Areas.People.Models
                          ProfessionOfFaith = c.ProfessionOfFaith ?? false,
                          Name = c.person.Name
                      };
+
+            if (DbUtil.Db.Setting("UseContactVisitedOrgs", false) &&
+                DbUtil.Db.Setting("UX-ShowVisitedOrgInContactees", false))
+            {
+                if (Contact.OrganizationId.HasValue)
+                {
+                    var orgContact = new ContactInfo
+                    {
+                        ContactId = Contact.ContactId,
+                        Name = Contact.organization.OrganizationName,
+                        IsOrg = true,
+                        OrgId = Contact.OrganizationId.Value
+                    };
+
+                    var q3 = q2.ToList();
+                    q3.Add(orgContact);
+
+                    return q3;
+                }
+            }
+
             return q2; 
         }
         public Guid ConvertToQuery()
@@ -96,6 +117,8 @@ namespace CmsWeb.Areas.People.Models
             public int ContactId { get; set; }
             public int? TaskId { get; set; }
             public int PeopleId { get; set; }
+            public bool IsOrg { get; set; }
+            public int OrgId { get; set; }
             public bool PrayedForPerson { get; set; }
             public bool ProfessionOfFaith { get; set; }
             public string Name { get; set; }

@@ -25,6 +25,7 @@
                     @Html.DisplayFor(m => m.ContactDate)
                     @Html.DisplayFor(m => m.Ministry)
                     @if (DbUtil.Db.Setting("UseContactVisitedOrgs", false) &&
+                        !DbUtil.Db.Setting("UX-ShowVisitedOrgInContactees", false) &&
                         !string.IsNullOrWhiteSpace(Model.OrganizationName))
                     {
                         <dl>
