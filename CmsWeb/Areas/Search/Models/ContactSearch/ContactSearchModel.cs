@@ -49,7 +49,9 @@ namespace CmsWeb.Areas.Search.Models
 
             if (SearchParameters.ContacteeName.HasValue())
                 q = from c in q
-                    where c.contactees.Any(p => p.person.Name.Contains(SearchParameters.ContacteeName))
+                    where
+                        c.contactees.Any(p => p.person.Name.Contains(SearchParameters.ContacteeName)) ||
+                        c.organization.OrganizationName.Contains(SearchParameters.ContacteeName)
                     select c;
 
             if (SearchParameters.ContactorName.HasValue())
@@ -223,7 +225,8 @@ namespace CmsWeb.Areas.Search.Models
                                  + (o.ContactMade == true ? "CM " : "")
                                  + (o.PrayerRequest == true ? "PR " : "")
                                  + (o.GiftBagGiven == true ? "GB " : ""),
-                       ContacteeList = string.Join(", ", (from c in DbUtil.Db.Contactees
+                       ContacteeList = o.OrganizationId.HasValue ? o.organization.OrganizationName :
+                                        string.Join(", ", (from c in DbUtil.Db.Contactees
                                                           where c.ContactId == o.ContactId
                                                           select c.person.Name).Take(3)),
                        ContactorList = string.Join(", ", (from c in DbUtil.Db.Contactors
