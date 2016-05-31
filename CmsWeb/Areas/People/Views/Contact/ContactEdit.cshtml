@@ -20,7 +20,7 @@
                     @Html.EditorFor(m => m.ContactType)
                     @Html.EditorFor(m => m.ContactReason)
 
-                    @if (DbUtil.Db.Setting("UseContactVisitedOrgs", false))
+                    @if (DbUtil.Db.Setting("UseContactVisitedOrgs", false) && Model.OrganizationId.HasValue)
                     {
                         <div class="form-group">
                             <label for="OrganizationId" class="control-label">@DbUtil.Db.Setting("UX-VisitedOrgLabel", "Visited Organization")</label>
