@@ -68,7 +68,10 @@
               <li><a href="#ContactsReceived-tab" aria-controls="ContactsReceived-tab" class="ajax" data-toggle="tab">@DbUtil.Db.Setting("UX-CGVisitsTabLabel", "Visits")</a></li>
           }
           <li><a href="#Settings-tab" aria-controls="Settings-tab" class="ajax" data-toggle="tab">Settings</a></li>
-          <li><a href="#Registrations-tab" aria-controls="Registrations-tab" class="ajax" data-toggle="tab">Registration</a></li>
+          @if (Model.ShowRegistrationTab())
+          {
+              <li><a href="#Registrations-tab" aria-controls="Registrations-tab" class="ajax" data-toggle="tab">Registration</a></li>
+          }
           @if (Model.ShowCommunityGroupTab())
           {
               <li><a href="#CommunityGroup-tab" aria-controls="CommunityGroup-tab" class="ajax" data-toggle="tab">@DbUtil.Db.Setting("UX-CGInfoTabLabel", "CG Info")</a></li>

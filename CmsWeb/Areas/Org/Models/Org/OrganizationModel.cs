@@ -101,6 +101,24 @@ namespace CmsWeb.Areas.Org.Models
         private Settings _RegSettings;
         public Settings RegSettings => _RegSettings ?? (_RegSettings = DbUtil.Db.CreateRegistrationSettings(Org.OrganizationId));
 
+        internal bool? _showRegistrationTab;
+        public bool ShowRegistrationTab()
+        {
+            if (_showRegistrationTab.HasValue) return _showRegistrationTab.Value;
+
+            var typeName = OrgMain.OrganizationType.ToString().Replace(" ", "");
+
+            if (OrgMain.OrganizationType.ToString() != "Community Group")
+                _showRegistrationTab = true;
+            else if (HttpContext.Current.User.IsInRole("OrgLeadersOnly") &&
+                     DbUtil.Db.Setting($"UX-HideRegistrationTabForOrgLeaders-{typeName}", false))
+                _showRegistrationTab = false;
+            else
+                _showRegistrationTab = true;
+
+            return _showRegistrationTab.Value;
+        }
+
         internal bool? _showContactsReceivedTab;
         public bool ShowContactsReceivedTab()
         {
