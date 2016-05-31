@@ -34,9 +34,9 @@ namespace CmsWeb.Areas.People.Models
                     string defaultFilter = null;
 
                     if(isInAccess)
-                        defaultFilter = DbUtil.Db.Setting("UX-DefaultAcccessInvolvementOrgTypeFilter", null);
+                        defaultFilter = DbUtil.Db.Setting("UX-DefaultAcccessInvolvementOrgTypeFilter", "");
 
-                    if(defaultFilter == null)
+                    if(string.IsNullOrEmpty(defaultFilter))
                         defaultFilter = DbUtil.Db.Setting("UX-DefaultInvolvementOrgTypeFilter", "");
 
                     _orgTypesFilter = string.IsNullOrEmpty(defaultFilter) ?
