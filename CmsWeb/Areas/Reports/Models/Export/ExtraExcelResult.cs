@@ -20,7 +20,7 @@ namespace CmsWeb.Models
             var xml = XDocument.Parse(DbUtil.Db.Content("StandardExtraValues2", "<Fields/>"));
             var fields = (from ff in xml.Root.Descendants("Value")
                           let vroles = ff.Attribute("VisibilityRoles")
-                          where vroles != null && (vroles.Value.Split(',').All(rr => !roles.Contains(rr)))
+                          where vroles != null && vroles.Value.HasValue() && (vroles.Value.Split(',').All(rr => !roles.Contains(rr)))
                           select ff.Attribute("Name").Value);
             var nodisplaycols = string.Join("|", fields);
 
