@@ -173,7 +173,7 @@ namespace CmsWeb.Areas.Org.Models
             var orgTypes = DbUtil.Db.Setting("UX-CommunityGroupTabOrgTypes", "");
             if (!string.IsNullOrEmpty(orgTypes))
             {
-                _showCommunityGroupTab = orgTypes.Split(',').Select(x => x.Trim()).Contains(Org.OrganizationType.Description);
+                _showCommunityGroupTab = Org.OrganizationType == null || orgTypes.Split(',').Select(x => x.Trim()).Contains(Org.OrganizationType.Description);
             }
 
             return _showCommunityGroupTab.Value;
