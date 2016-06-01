@@ -29,12 +29,13 @@ namespace CmsWeb.Areas.People.Models
                 if (_orgTypesFilter == null)
                 {
                     var isInAccess = WebPageContext.Current?.Page?.User?.IsInRole("Access") ?? false;
+                    var isInOrgLeadersOnly = WebPageContext.Current?.Page?.User?.IsInRole("OrgLeadersOnly") ?? false;
                     string defaultFilter = null;
 
-                    if (isInAccess)
-                        defaultFilter = DbUtil.Db.Setting("UX-DefaultAcccessInvolvementOrgTypeFilter", null);
+                    if (isInAccess && !isInOrgLeadersOnly)
+                        defaultFilter = DbUtil.Db.Setting("UX-DefaultAcccessInvolvementOrgTypeFilter", "");
 
-                    if (defaultFilter == null)
+                    if (string.IsNullOrEmpty(defaultFilter))
                         defaultFilter = DbUtil.Db.Setting("UX-DefaultInvolvementOrgTypeFilter", "");
 
                     _orgTypesFilter = string.IsNullOrEmpty(defaultFilter) ?
