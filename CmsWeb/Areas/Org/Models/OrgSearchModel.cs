@@ -53,7 +53,8 @@ namespace CmsWeb.Areas.Search.Models
         public int? OnlineReg { get; set; }
         public bool FromWeekAtAGlance { get; set; }
         public bool PublicView { get; set; }
-        public Dictionary<string, string> ExtraValues { get; set; }
+
+        public List<string> ExtraValues { get; set; }
 
         [JsonIgnore]
         public PagerModel2 Pager { get; set; }
@@ -262,9 +263,13 @@ namespace CmsWeb.Areas.Search.Models
 
                     foreach (var ev in ExtraValues)
                     {
+                        var parts = ev.Split('=');
+
+                        if (parts.Count() != 2) continue;
+
                         orgIds = DbUtil.Db.OrganizationExtras
-                            .Where(x => orgIds.Contains(x.OrganizationId) && x.Field == ev.Key && 
-                                (x.StrValue.ToLower().Contains(ev.Value) || x.Data.ToLower().Contains(ev.Value)))
+                            .Where(x => orgIds.Contains(x.OrganizationId) && x.Field == parts[0] && 
+                                (x.StrValue.ToLower().Contains(parts[1]) || x.Data.ToLower().Contains(parts[1])))
                             .Select(x => x.OrganizationId).ToList();
                     }
 

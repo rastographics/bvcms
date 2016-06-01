@@ -89,6 +89,15 @@
 
     $.getTable = function () {
         var f = $('#results').closest('form');
+        var evs = [];
+        $(".ev-input").each(function (i, e) {
+            console.log($(e).attr("name"));
+            console.log($(e).val());
+            console.log("---");
+            evs.push($(e).attr("name") + "=" + $(e).val());
+        });
+        $("#ExtraValues").val(evs);
+
         var q = f.serialize();
         $.block();
         $.post($('#search').attr('href'), q, function (ret) {
