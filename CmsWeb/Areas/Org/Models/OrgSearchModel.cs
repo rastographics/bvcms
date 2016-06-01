@@ -53,6 +53,7 @@ namespace CmsWeb.Areas.Search.Models
         public int? OnlineReg { get; set; }
         public bool FromWeekAtAGlance { get; set; }
         public bool PublicView { get; set; }
+        public Dictionary<string, string> ExtraValues { get; set; }
 
         [JsonIgnore]
         public PagerModel2 Pager { get; set; }
@@ -68,6 +69,7 @@ namespace CmsWeb.Areas.Search.Models
             organizations = FetchOrgsList();
             if (!_count.HasValue)
                 _count = organizations.Count;
+
             organizations = ApplySort(organizations).Skip(Pager.StartRow).Take(Pager.PageSize).ToList();
             return OrganizationList(organizations, TagProgramId, TagDiv);
         }
@@ -250,8 +252,28 @@ namespace CmsWeb.Areas.Search.Models
         private List<OrgSearch> FetchOrgsList()
         {
             if (organizations == null)
-                organizations = DbUtil.Db.OrgSearch(Name, ProgramId, DivisionId, TypeId, CampusId, ScheduleId, StatusId, OnlineReg,
-                    DbUtil.Db.CurrentUser.UserId, TagDiv).ToList();
+            {
+                var queryable = DbUtil.Db.OrgSearch(Name, ProgramId, DivisionId, TypeId, CampusId, ScheduleId, StatusId, OnlineReg,
+                     DbUtil.Db.CurrentUser.UserId, TagDiv);
+
+                if (ExtraValues != null && ExtraValues.Any())
+                {
+                    var orgIds = queryable.Select(x => x.OrganizationId).ToList();
+
+                    foreach (var ev in ExtraValues)
+                    {
+                        orgIds = DbUtil.Db.OrganizationExtras
+                            .Where(x => orgIds.Contains(x.OrganizationId) && x.Field == ev.Key && 
+                                (x.StrValue.ToLower().Contains(ev.Value) || x.Data.ToLower().Contains(ev.Value)))
+                            .Select(x => x.OrganizationId).ToList();
+                    }
+
+                    queryable = queryable.Where(x => orgIds.Contains(x.OrganizationId));
+                }
+
+                organizations = queryable.ToList();
+            }
+
             return organizations;
         }
 
