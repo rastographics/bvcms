@@ -68,9 +68,13 @@ namespace CmsWeb.Areas.Search.Models
                         where p.PeopleId == last.ToInt()
                         select p;
                 else
-                    q = from p in q
-                        where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last)
-                        select p;
+                    q = DbUtil.Db.Setting("UseAltnameContains", "false") == "true"
+                        ? from p in q
+                          where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last) || p.AltName.Contains(last)
+                          select p
+                        : from p in q
+                          where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last)
+                          select p;
             }
             if (Address.IsNotNull())
             {
