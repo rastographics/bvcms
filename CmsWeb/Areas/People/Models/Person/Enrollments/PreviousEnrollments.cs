@@ -34,8 +34,7 @@ namespace CmsWeb.Areas.People.Models
 
                     if (isInAccess && !isInOrgLeadersOnly)
                         defaultFilter = DbUtil.Db.Setting("UX-DefaultAcccessInvolvementOrgTypeFilter", "");
-
-                    if (string.IsNullOrEmpty(defaultFilter))
+                    else
                         defaultFilter = DbUtil.Db.Setting("UX-DefaultInvolvementOrgTypeFilter", "");
 
                     _orgTypesFilter = string.IsNullOrEmpty(defaultFilter) ?
