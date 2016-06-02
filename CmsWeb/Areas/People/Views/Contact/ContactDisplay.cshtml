@@ -24,6 +24,14 @@
                 <div class="col-sm-6">
                     @Html.DisplayFor(m => m.ContactDate)
                     @Html.DisplayFor(m => m.Ministry)
+                    @if (!string.IsNullOrWhiteSpace(Model.LimitToRole))
+                    {
+                        @Html.DisplayFor(m => m.LimitToRole)
+                    }
+                </div>
+                <div class="col-sm-6">
+                    @Html.DisplayFor(m => m.ContactType)
+                    @Html.DisplayFor(m => m.ContactReason)
                     @if (DbUtil.Db.Setting("UseContactVisitedOrgs", false) &&
                         !DbUtil.Db.Setting("UX-ShowVisitedOrgInContactees", false) &&
                         !string.IsNullOrWhiteSpace(Model.OrganizationName))
@@ -32,14 +40,6 @@
                             <dt>@DbUtil.Db.Setting("UX-VisitedOrgLabel", "Visited Organization")</dt>
                             <dd>@Model.OrganizationName</dd>
                         </dl>
-                    }
-                </div>
-                <div class="col-sm-6">
-                    @Html.DisplayFor(m => m.ContactType)
-                    @Html.DisplayFor(m => m.ContactReason)
-                    @if (!string.IsNullOrWhiteSpace(Model.LimitToRole))
-                    {
-                        @Html.DisplayFor(m => m.LimitToRole)
                     }
                 </div>
                 <div class="col-sm-12">

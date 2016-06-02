@@ -35,15 +35,20 @@
               else
               {
                 <a class="link in" href="/Person2/@c.PeopleId">@c.Name</a>
-              }          </td>
+              }
+          </td>
           @if (Model.CanViewComments && !c.IsOrg)
           {
-            <td style="width: 50px;">
-              <a class="addtask in btn btn-default btn-sm" href="/Contact2/AddTask/@c.ContactId/@c.PeopleId"><i class="fa fa-plus-circle"></i> Add Followup Task</a>
-            </td>
-            <td style="width: 50px;">
-              <a class="remove in btn btn-danger btn-sm" href="/Contact2/RemoveContactee/@c.ContactId/@c.PeopleId"><i class="fa fa-trash"></i> Remove</a>
-            </td>
+              <td style="width: 50px;">
+                  <a class="addtask in btn btn-default btn-sm" href="/Contact2/AddTask/@c.ContactId/@c.PeopleId"><i class="fa fa-plus-circle"></i> Add Followup Task</a>
+              </td>
+              <td style="width: 50px;">
+                  <a class="remove in btn btn-danger btn-sm" href="/Contact2/RemoveContactee/@c.ContactId/@c.PeopleId"><i class="fa fa-trash"></i> Remove</a>
+              </td>
+          }
+          else if(Model.CanViewComments && c.IsOrg)
+          {
+              <td></td>
           }
         </tr>
       }
