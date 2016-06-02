@@ -65,9 +65,8 @@ namespace CmsWeb.MobileAPI
             p.HomePhone = Phone;
             db.SubmitChanges();
             User = MembershipService.CreateUser(db, p.PeopleId);
-            var username = MembershipService.FetchUsername(db, First, Last);
             db.SubmitChanges();
-            AccountModel.SendNewUserEmail(username);
+            AccountModel.SendNewUserEmail(User.Username);
             Result = "created new person/user";
         }
 
