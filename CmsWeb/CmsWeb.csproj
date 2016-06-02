@@ -488,6 +488,7 @@
     <Compile Include="Areas\Public\Models\MobileAPI\MobileRollList.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileRoom.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileTaskList.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostCreate.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostHeadcount.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineDetailModel.cs" />
     <Compile Include="Areas\Reports\Controllers\CustomReportsController.cs" />
