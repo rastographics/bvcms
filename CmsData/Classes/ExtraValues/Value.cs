@@ -39,6 +39,13 @@ namespace CmsData.ExtraValue
             var user = HttpContext.Current?.User;
             if (user == null)
                 return false;
+
+            var path = HttpContext.Current?.Request.Path;
+            if (path != null && path.Contains("CommunityGroup"))
+            {
+                return user.IsInRole("Edit") || (user.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-OrgLeadersOnlyCanEditCGInfoEVs", false));
+            }
+
             return user.IsInRole("Edit");
         }
 
