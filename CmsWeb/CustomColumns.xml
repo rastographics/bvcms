@@ -88,6 +88,9 @@
     <join name="pa">
       LEFT JOIN dbo.PrevAddress pa ON pa.PeopleId = p.PeopleId
     </join>
+    <join name="vo">
+      LEFT JOIN dbo.Volunteer vo ON vo.PeopleId = p.PeopleId 
+    </join>
   </Joins>
   <Columns>
     <column name="PeopleId">p.peopleid</column>
@@ -220,6 +223,8 @@
     <column name="FirstAttendOrg" join="faa"> faa.OrganizationName </column>
     <column name="FirstAttendOrgId" join="faa"> faa.OrganizationId </column>
     <column name="AttendHistory"> dbo.CompactAttendHistory(p.peopleid) </column>
+    <column name="BackgroundCheck" join="vo">vo.ProcessedDate</column>
+    <column name="MVRCheck" join="vo">vo.MVRProcessedDate</column>
   </Columns>
   <SpecialColumns>
     <column name="StatusFlag">
