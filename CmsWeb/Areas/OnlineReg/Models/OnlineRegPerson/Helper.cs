@@ -181,13 +181,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 if (noorg == true)
                     return null;
+                if (orgid == null)
+                    _org = null;
                 if (_org == null && orgid.HasValue)
-                {
-                    //                    if (orgid == Util.CreateAccountCode)
-                    //                        _org = OnlineRegModel.CreateAccountOrg();
-                    //                    else
                     _org = DbUtil.Db.LoadOrganizationById(orgid.Value);
-                }
                 if (_org == null && (divid.HasValue || masterorgid.HasValue))
                 {
                     if (ComputesOrganizationByAge())

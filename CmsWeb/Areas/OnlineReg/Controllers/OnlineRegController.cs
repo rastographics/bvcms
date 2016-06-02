@@ -167,6 +167,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             ModelState.Clear();
             m.HistoryAdd("SubmitNew id=" + id);
             var p = m.List[id];
+            if (p.ComputesOrganizationByAge()) 
+                p.orgid = null; // forget any previous information about selected org, may have new information like gender
             p.ValidateModelForNew(ModelState, id);
 
             SetHeaders(m);
