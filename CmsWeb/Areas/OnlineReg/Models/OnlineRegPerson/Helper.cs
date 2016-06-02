@@ -236,9 +236,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return null;
 
             var cklist = masterorg.OrgPickList.Split(',').Select(o => o.ToInt()).ToList();
+            var bestgender = gender ?? person?.GenderId;
             var q = from o in DbUtil.Db.Organizations
                     where cklist.Contains(o.OrganizationId)
-                    where gender == null || o.GenderId == gender || (o.GenderId ?? 0) == 0
+                    where bestgender == null || o.GenderId == bestgender || (o.GenderId ?? 0) == 0
                     select o;
 
             var list = q.ToList();
