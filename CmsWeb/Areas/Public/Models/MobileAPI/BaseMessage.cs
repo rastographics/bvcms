@@ -121,6 +121,9 @@ namespace CmsWeb.MobileAPI
         public const int API_ERROR_IMPROPER_HEADER_STRUCTURE = -5;
         public const int API_ERROR_INVALID_CREDENTIALS = -6;
 
+        // API Create Errors
+        public const int API_ERROR_CREATE_FAILED = 50;
+
         // API People Errors
         public const int API_ERROR_PERSON_NOT_FOUND = 100;
 

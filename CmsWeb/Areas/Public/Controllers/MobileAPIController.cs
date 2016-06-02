@@ -28,6 +28,29 @@ namespace CmsWeb.Areas.Public.Controllers
             return Content("1");
         }
 
+        [HttpPost]
+        public ActionResult CreateUser(string data)
+        {
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+            MobilePostCreate mpc = JsonConvert.DeserializeObject<MobilePostCreate>(dataIn.data);
+
+            MobileAccount account = MobileAccount.Create(mpc.first, mpc.last, mpc.email, mpc.phone, mpc.dob);
+
+            var br = new BaseMessage();
+
+            if (account == null)
+            {
+                br.setError(BaseMessage.API_ERROR_CREATE_FAILED);
+            }
+            else
+            {
+                br.setNoError();
+                br.data = account.User.Username;
+            }
+
+            return br;
+        }
+
         private UserValidationResult AuthenticateUser(bool requirePin = false)
         {
             // Username and password checks are only necessary for the old iOS application
