@@ -96,7 +96,7 @@ RETURN
 		OR NOT EXISTS(SELECT NULL FROM split(@sgfilter, ';') pf WHERE pf.value NOT LIKE '-%')
 	)
 	AND (NOT EXISTS(SELECT NULL FROM split(@sgfilter, ';') pf WHERE pf.value LIKE '-%')
-		OR (ISNULL(LEN(@sgfilter), 0) > 0 AND @sgfilter NOT LIKE 'ALL:%' AND @sgfilter <> 'NONE' 
+		OR (ISNULL(LEN(@sgfilter), 0) > 0 AND @sgfilter <> 'NONE' --AND @sgfilter NOT LIKE 'ALL:%' 
 			AND NOT EXISTS(SELECT NULL FROM split(Groups, CHAR(10)) mt
 			    WHERE EXISTS(SELECT NULL FROM split(@sgfilter, ';') pf 
 					WHERE pf.value LIKE '-%' AND mt.Value LIKE SUBSTRING(REPLACE(pf.Value, '*', '%'),2,200)

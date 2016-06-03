@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.People.Models;
+using CmsWeb.MobileAPI;
 using Dapper;
 using Newtonsoft.Json;
 using UtilityExtensions;
@@ -47,10 +48,14 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/Test/{id?}")]
         public ActionResult Test(int? id)
         {
-            var script = System.IO.File.ReadAllText(Server.MapPath($"~/test{id}.py"));
-            if (!CanRunScript(script))
-                return Message("Not Authorized to run this script");
-            ViewBag.text = PythonModel.RunScript(Util.Host, script);
+//            var script = System.IO.File.ReadAllText(Server.MapPath($"~/test{id}.py"));
+//            if (!CanRunScript(script))
+//                return Message("Not Authorized to run this script");
+//            ViewBag.text = PythonModel.RunScript(Util.Host, script);
+            var m1 = MobileAccount.Create("David", "Carroll", "david@bvcms.com", "9017581862", "5/30/52");
+            var m2 = MobileAccount.Create("David", "Carroll", "davcar@pobox.com", "9017581862", "5/30/52");
+            var m3 = MobileAccount.Create("Delaine", "Carroll", "", "9017581862", "5/30/52");
+
             return View();
         }
 #endif
