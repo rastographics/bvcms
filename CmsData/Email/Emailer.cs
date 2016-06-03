@@ -429,7 +429,7 @@ namespace CmsData
             catch (Exception ex)
             {
                 Util.SendMsg(sysFromEmail, CmsHost, from,
-                    "sent emails - error", ex.ToString(),
+                    $"sent emails - error(emailid={emailqueue.Id})", ex.ToString(),
                     Util.ToMailAddressList(from),
                     emailqueue.Id, null);
                 throw;
@@ -473,7 +473,7 @@ namespace CmsData
             if (!emailqueue.Subject.HasValue() || !emailqueue.Body.HasValue())
             {
                 Util.SendMsg(sysFromEmail, CmsHost, from,
-                    "sent emails - error", "no subject or body, no emails sent",
+                    $"sent emails - error(emailid={emailqueue.Id})", "no subject or body, no emails sent",
                     Util.ToMailAddressList(from),
                     emailqueue.Id, null);
                 return;
@@ -541,12 +541,13 @@ namespace CmsData
             }
                 catch (Exception ex)
                 {
+                    var subject = $"sent emails - error:(emailid={emailqueue.Id}) {CmsHost}";
                     Util.SendMsg(sysFromEmail, CmsHost, from,
-                        $"sent emails - error: {CmsHost}", ex.Message,
+                        subject, ex.Message,
                         Util.ToMailAddressList(from),
                         emailqueue.Id, null);
                     Util.SendMsg(sysFromEmail, CmsHost, from,
-                        $"sent emails - error: {CmsHost}", ex.Message,
+                        subject, ex.Message,
                         Util.SendErrorsTo(),
                         emailqueue.Id, null);
                 }
@@ -574,12 +575,13 @@ namespace CmsData
                 }
                 catch (Exception ex)
                 {
+                    var subject = $"sent emails - error:(emailid={emailqueue.Id}) {CmsHost}";
                     Util.SendMsg(sysFromEmail, CmsHost, from,
-                        "sent emails - error: " + CmsHost, ex.Message,
+                        subject, ex.Message,
                         Util.ToMailAddressList(from),
                         emailqueue.Id, null);
                     Util.SendMsg(sysFromEmail, CmsHost, from,
-                        "sent emails - error: " + CmsHost, ex.Message,
+                        subject, ex.Message,
                         Util.SendErrorsTo(),
                         emailqueue.Id, null);
                 }
