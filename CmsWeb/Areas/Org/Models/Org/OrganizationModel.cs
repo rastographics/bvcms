@@ -142,24 +142,37 @@ namespace CmsWeb.Areas.Org.Models
             if (!string.IsNullOrEmpty(accessTypeList))
             {
                 var user = DbUtil.Db.Users.FirstOrDefault(x => x.Username == HttpContext.Current.User.Identity.Name);
-                if (user == null)
+                if (user == null || !user.PeopleId.HasValue)
                 {
                     _showContactsReceivedTab = false;
                     return false;
                 }
 
-                var om = DbUtil.Db.OrganizationMembers
-                    .FirstOrDefault(x => x.OrganizationId == Id && x.PeopleId == user.PeopleId);
-                if (om == null)
-                {
-                    _showContactsReceivedTab = false;
-                    return false;
-                }
+                var memberTypes = accessTypeList.Split(',').Select(x => x.Trim()).ToList();
 
-                _showContactsReceivedTab = accessTypeList.Split(',').Select(x => x.Trim()).Contains(om.MemberType.Description);
+                _showContactsReceivedTab = ShowContactsCheckOrgAndParents(Org, user.PeopleId.Value, memberTypes);
             }
 
             return _showContactsReceivedTab.Value;
+        }
+
+        private bool ShowContactsCheckOrgAndParents(Organization org, int peopleId, List<string> memberTypes)
+        {
+            var om = DbUtil.Db.OrganizationMembers
+                    .FirstOrDefault(x => x.OrganizationId == org.OrganizationId && x.PeopleId == peopleId);
+
+            bool result = false;
+            if (om != null)
+            {
+                result = memberTypes.Contains(om.MemberType.Description);
+            }
+
+            if (!result && org.ParentOrgId.HasValue)
+            {
+                result = ShowContactsCheckOrgAndParents(org.ParentOrg, peopleId, memberTypes);
+            }
+
+            return result;
         }
 
         internal bool? _showCommunityGroupTab;
