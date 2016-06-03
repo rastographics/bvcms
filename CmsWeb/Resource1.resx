@@ -337,7 +337,7 @@ in the {org}&lt;br /&gt;
 on {meetingdate} at {meetingtime}.
 See you there!&lt;/p&gt;</value>
   </data>
-  <data name="CreateNewUserAndNotifyPersonFound" xml:space="preserve">
+  <data name="NotifyDuplicateUserOnMobile" xml:space="preserve">
     <value>Hi {name},
 &lt;p&gt;It appears that you created a user account from your mobile device. 
 We found your existing record but you used a different email address than the one we have on record.

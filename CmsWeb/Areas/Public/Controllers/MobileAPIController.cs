@@ -38,7 +38,8 @@ namespace CmsWeb.Areas.Public.Controllers
 
             var br = new BaseMessage();
 
-            if (account == null)
+            // todo: notify user based on ResultCode
+            if (account.Result == MobileAccount.ResultCode.BadEmailAddress)
             {
                 br.setError(BaseMessage.API_ERROR_CREATE_FAILED);
             }

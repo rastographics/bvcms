@@ -6,26 +6,35 @@ using UtilityExtensions;
 
 namespace CmsWeb.MobileAPI
 {
-	public class MobileAccount
-	{
-	    private readonly CMSDataContext db;
+    public class MobileAccount
+    {
+        private readonly CMSDataContext db;
 
-	    public string First { get; set; }
-	    public string Last { get; set; }
-	    public string Email { get; set; }
-	    public string Phone { get; set; }
-	    public DateTime? Birthdate { get; set; }
+        public enum ResultCode
+        {
+            CreatedNewUser,
+            FoundPersonWithDiffEmailButCreatedNewUser,
+            FoundPersonWithSameEmail,
+            BadEmailAddress
+        }
+
+        public string First { get; set; }
+        public string Last { get; set; }
+        public string Email { get; set; }
+        public string Phone { get; set; }
+        public DateTime? Birthdate { get; set; }
         public User User { get; set; }
         public Person FoundPerson { get; set; }
         public Person NewPerson { get; set; }
-        public string Result { get; set; }
+        public ResultCode Result { get; set; }
 
-	    public MobileAccount()
-	    {
-	        db = DbUtil.Db;
-	    }
+        public MobileAccount()
+        {
+            db = DbUtil.Db;
+        }
+
         public static MobileAccount Create(string first, string last, string email, string phone, string dob)
-	    {
+        {
             var m = new MobileAccount
             {
                 First = first,
@@ -34,31 +43,50 @@ namespace CmsWeb.MobileAPI
                 Phone = phone.GetDigits()
             };
             DateTime bd;
-	        if (Util.DateValid(dob, out bd))
-	            m.Birthdate = bd;
-	        if (!Util.ValidEmail(m.Email))
-	        {
-	            m.Result = "email not valid";
-	            return null;
-	        }
+            if (Util.DateValid(dob, out bd))
+                m.Birthdate = bd;
+            if (!Util.ValidEmail(m.Email))
+            {
+                m.Result = ResultCode.BadEmailAddress;
+                return m;
+            }
             m.FindPersonSendAccountInfo();
             return m;
-	    }
+        }
 
-	    private void FindPersonSendAccountInfo()
-	    {
-	        var list = db.FindPerson(First, Last, Birthdate, Email, Phone).ToList();
-	        var count = list.Count;
-	        FoundPerson = count == 1 ? db.LoadPersonById(list[0].PeopleId ?? 0) : null;
-	        if (FoundPerson == null)
-	            CreateEmailNewUser();
-	        else if (FoundPerson.EmailAddress.Equal(Email) || FoundPerson.EmailAddress2.Equal(Email))
-	            EmailExistingPerson();
-	        else
-	            CreateEmailNewUserAndNotifyPersonFound();
-	    }
+        private void FindPersonSendAccountInfo()
+        {
+            var foundpeopleids = db.FindPerson(First, Last, Birthdate, Email, Phone).Select(vv => vv.PeopleId.Value).ToArray();
+            var foundpeople = (from p in db.People
+                               where foundpeopleids.Contains(p.PeopleId)
+                               select p).ToList();
 
-	    private void CreateEmailNewUser()
+            // the simplest case is that we did not find an existing person
+            if (foundpeople.Count == 0)
+            {
+                Result = ResultCode.CreatedNewUser;
+                CreateEmailNewUser();
+                return;
+            }
+
+            // notify all found matches
+            foreach (var p in foundpeople)
+                if (p.EmailAddress.Equal(Email) || p.EmailAddress2.Equal(Email))
+                    NotifyAboutExistingAccount(p);
+                else
+                    NotifyAboutDuplicateUser(p);
+
+            // if we did not find anybody with same email, then create a new account
+            if (foundPersonWithSameEmail == null)
+            {
+                CreateEmailNewUser();
+                Result = ResultCode.FoundPersonWithDiffEmailButCreatedNewUser;
+            }
+
+            FoundPerson = foundPersonWithSameEmail ?? foundPersonWithDiffEmail;
+        }
+
+        private void CreateEmailNewUser()
         {
             var p = Person.Add(db, null, First, null, Last, Birthdate);
             p.EmailAddress = Email;
@@ -67,27 +95,31 @@ namespace CmsWeb.MobileAPI
             User = MembershipService.CreateUser(db, p.PeopleId);
             db.SubmitChanges();
             AccountModel.SendNewUserEmail(User.Username);
-            Result = "created new person/user";
         }
 
-        private void EmailExistingPerson()
+        private Person foundPersonWithDiffEmail;
+        private Person foundPersonWithSameEmail;
+
+        private void NotifyAboutExistingAccount(Person p)
         {
             var message = db.ContentHtml("ExistingUserConfirmation", Resource1.CreateAccount_ExistingUser);
             message = message
-                .Replace("{name}", FoundPerson.Name)
+                .Replace("{name}", p.Name)
                 .Replace("{host}", db.CmsHost);
-            db.Email(DbUtil.AdminMail, FoundPerson, "Account information for " + db.Host, message);
-            User = FoundPerson.Users.OrderByDescending(uu => uu.LastActivityDate).FirstOrDefault() 
-                ?? MembershipService.CreateUser(db, FoundPerson.PeopleId);
-            Result = "found existing person";
+            db.Email(DbUtil.AdminMail, p, "Account information for " + db.Host, message);
+            User = p.Users.OrderByDescending(uu => uu.LastActivityDate).FirstOrDefault()
+                   ?? MembershipService.CreateUser(db, p.PeopleId);
+            if(foundPersonWithSameEmail == null)
+                foundPersonWithSameEmail = p;
+            Result = ResultCode.FoundPersonWithSameEmail;
         }
 
-        private void CreateEmailNewUserAndNotifyPersonFound()
+        private void NotifyAboutDuplicateUser(Person p)
         {
-            CreateEmailNewUser();
-            var message = db.ContentHtml("DuplicateUserOnMobile", Resource1.CreateNewUserAndNotifyPersonFound);
-            db.Email(DbUtil.AdminMail, FoundPerson, "New User Account on " + db.Host, message);
-            Result = "created new person/user, found person with different email";
+            var message = db.ContentHtml("DuplicateUserOnMobile", Resource1.NotifyDuplicateUserOnMobile);
+            db.Email(DbUtil.AdminMail, p, "New User Account on " + db.Host, message);
+            if(foundPersonWithDiffEmail == null)
+                foundPersonWithDiffEmail = p;
         }
-	}
+    }
 }

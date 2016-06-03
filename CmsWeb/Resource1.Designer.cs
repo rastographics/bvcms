@@ -265,22 +265,6 @@ namespace CmsWeb {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hi {name},
-        ///&lt;p&gt;It appears that you created a user account from your mobile device. 
-        ///We found your existing record but you used a different email address than the one we have on record.
-        ///We went ahead and created a new account but it is a separate from your existing account.
-        ///You should have received a welcome message for that new account.&lt;/p&gt;
-        ///&lt;p&gt;It is important that you contact your church&apos;s administrator &lt;strong&gt;{phone}&lt;/strong&gt; to update our records
-        ///so that your data will not stay duplicated.&lt;/p&gt;
-        ///.
-        /// </summary>
-        internal static string CreateNewUserAndNotifyPersonFound {
-            get {
-                return ResourceManager.GetString("CreateNewUserAndNotifyPersonFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
         ///&lt;CustomColumns&gt;
         ///  &lt;Joins&gt;
@@ -332,6 +316,22 @@ namespace CmsWeb {
         internal static string NoEmailMessage {
             get {
                 return ResourceManager.GetString("NoEmailMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hi {name},
+        ///&lt;p&gt;It appears that you created a user account from your mobile device. 
+        ///We found your existing record but you used a different email address than the one we have on record.
+        ///We went ahead and created a new account but it is a separate from your existing account.
+        ///You should have received a welcome message for that new account.&lt;/p&gt;
+        ///&lt;p&gt;It is important that you contact your church&apos;s administrator &lt;strong&gt;{phone}&lt;/strong&gt; to update our records
+        ///so that your data will not stay duplicated.&lt;/p&gt;
+        ///.
+        /// </summary>
+        internal static string NotifyDuplicateUserOnMobile {
+            get {
+                return ResourceManager.GetString("NotifyDuplicateUserOnMobile", resourceCulture);
             }
         }
         
