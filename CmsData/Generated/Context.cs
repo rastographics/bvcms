@@ -2043,6 +2043,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.PrevAddress> ViewPrevAddresses
+	    {
+		    get { return this.GetTable< View.PrevAddress>(); }
+
+	    }
+
 	    public Table< View.PreviousMemberCount> ViewPreviousMemberCounts
 	    {
 		    get { return this.GetTable< View.PreviousMemberCount>(); }
@@ -3120,6 +3126,17 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.LastAddrElement", IsComposable = true)]
+		public IQueryable< View.LastAddrElement > LastAddrElement(
+            [Parameter(DbType="varchar")] string ele
+            )
+		{
+			return this.CreateMethodCallQuery< View.LastAddrElement>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                ele
+                );
+		}
+
 		[Function(Name="dbo.LastAttendOrg", IsComposable = true)]
 		public IQueryable< View.LastAttendOrg > LastAttendOrg(
             [Parameter(DbType="int")] int? oid
@@ -3289,6 +3306,19 @@ namespace CmsData
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgid,
                 meetingdt
+                );
+		}
+
+		[Function(Name="dbo.OrgMembersGroupFiltered", IsComposable = true)]
+		public IQueryable< View.OrgMembersGroupFiltered > OrgMembersGroupFiltered(
+            [Parameter(DbType="varchar")] string oids,
+            [Parameter(DbType="varchar")] string sgfilter
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgMembersGroupFiltered>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oids,
+                sgfilter
                 );
 		}
 

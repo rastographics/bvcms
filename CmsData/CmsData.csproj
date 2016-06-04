@@ -532,12 +532,14 @@
     <Compile Include="Generated\Functions\GuestList.cs" />
     <Compile Include="Generated\Functions\GuestList2.cs" />
     <Compile Include="Generated\Functions\HasIncompleteRegistration.cs" />
+    <Compile Include="Generated\Functions\LastAddrElement.cs" />
     <Compile Include="Generated\Functions\LastAttendOrg.cs" />
     <Compile Include="Generated\Functions\NotAttendedAsOf.cs" />
     <Compile Include="Generated\Functions\OrgDayStat.cs" />
     <Compile Include="Generated\Functions\OrgMember.cs" />
     <Compile Include="Generated\Functions\OrgMemberInfo.cs" />
     <Compile Include="Generated\Functions\OrgMemberQuestion.cs" />
+    <Compile Include="Generated\Functions\OrgMembersGroupFiltered.cs" />
     <Compile Include="Generated\Functions\OrgMinistryInfo.cs" />
     <Compile Include="Generated\Functions\OrgPeople2.cs" />
     <Compile Include="Generated\Functions\OrgPeopleCurrent.cs" />
@@ -604,6 +606,7 @@
     <Compile Include="Generated\Views\OrgsWithFee.cs" />
     <Compile Include="Generated\Views\OrgsWithoutFee.cs" />
     <Compile Include="Generated\Views\PeopleBasicModifed.cs" />
+    <Compile Include="Generated\Views\PrevAddress.cs" />
     <Compile Include="Generated\Views\ProspectCount.cs" />
     <Compile Include="Generated\Views\RegistrationList.cs" />
     <Compile Include="Generated\Views\RegsettingCount.cs" />
