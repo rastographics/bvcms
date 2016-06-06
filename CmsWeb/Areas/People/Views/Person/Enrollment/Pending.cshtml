@@ -46,7 +46,7 @@
                             <tr>
                                 @foreach (var column in columns)
                                 {
-                                    <td>@Html.Raw(om.GetColumnValue(column, true))</td>
+                                    <td>@Html.Raw(om.GetColumnValue(column, true, User.IsInRole("OrgLeadersOnly")))</td>
                                 }
                             </tr>
                         }
@@ -55,7 +55,7 @@
                             <tr>
                                 @foreach (var column in columns)
                                 {
-                                    <td>@Html.Raw(om.GetColumnValue(column, false))</td>
+                                    <td>@Html.Raw(om.GetColumnValue(column, false, User.IsInRole("OrgLeadersOnly")))</td>
                                 }
                             </tr>
                         }

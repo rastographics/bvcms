@@ -52,7 +52,7 @@
 
                                     @foreach (var column in columns)
                                     {
-                                        <td>@Html.Raw(om.GetColumnValue(column, true))</td>
+                                        <td>@Html.Raw(om.GetColumnValue(column, true, User.IsInRole("OrgLeadersOnly")))</td>
                                     }
                                 </tr>
                                 <tr class="details @oddrow">
@@ -90,7 +90,7 @@
                                             <td><i class="fa fa-child"></i></td>
                                             @foreach (var column in columns)
                                             {
-                                                <td>@Html.Raw(child.GetColumnValue(column, true))</td>
+                                                <td>@Html.Raw(child.GetColumnValue(column, true, User.IsInRole("OrgLeadersOnly")))</td>
                                             }
                                         </tr>
                                     }
@@ -103,7 +103,7 @@
                                     <td></td>
                                     @foreach (var column in columns)
                                     {
-                                        <td>@Html.Raw(om.GetColumnValue(column, false))</td>
+                                        <td>@Html.Raw(om.GetColumnValue(column, false, User.IsInRole("OrgLeadersOnly")))</td>
                                     }
                                 </tr>
                                 if (om.ChildOrgs != null)
@@ -116,7 +116,7 @@
                                             <td><i class="fa fa-child"></i></td>
                                             @foreach (var column in columns)
                                             {
-                                                <td>@Html.Raw(child.GetColumnValue(column, false))</td>
+                                                <td>@Html.Raw(child.GetColumnValue(column, false, User.IsInRole("OrgLeadersOnly")))</td>
                                             }
                                         </tr>
                                     }

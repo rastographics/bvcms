@@ -33,7 +33,7 @@ namespace CmsWeb.Areas.People.Models
         public string LocComma => Location.HasValue() ? ", " : "";
 
         private IEnumerable<OrganizationExtra> _extraFields; 
-        public string GetColumnValue(InvolvementTableColumn column, bool inAccessRole)
+        public string GetColumnValue(InvolvementTableColumn column, bool inAccessRole, bool inOrgLeadersOnlyRole)
         {
             var field = column.Field.ToLower();
 
@@ -43,7 +43,8 @@ namespace CmsWeb.Areas.People.Models
                     return OrgId.ToString();
                 case "name":
                 case "organization":
-                    if (inAccessRole && (IsLeaderAttendanceType || !DbUtil.Db.Setting("UX-OrgLeadersOtherGroupsContentOnly", false)))
+                    if (inAccessRole && 
+                        (IsLeaderAttendanceType || !inOrgLeadersOnlyRole || !DbUtil.Db.Setting("UX-OrgLeadersOtherGroupsContentOnly", false)))
                     {
                         return $"<a href=\"{Util2.Org}/{OrgId}\">{Name}</a>";
                     }
