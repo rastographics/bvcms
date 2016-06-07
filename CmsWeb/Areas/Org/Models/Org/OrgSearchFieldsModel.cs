@@ -17,7 +17,17 @@ namespace CmsWeb.Areas.Org.Models.Org
     {
         public string Field { get; set; }
         public bool Dropdown { get; set; }
+        public string OrgType { get; set; }
         public List<SelectListItem> SelectList { get; set; }
+
+        public string DivClass
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(OrgType)) return "";
+                return $"{OrgType.ToLower().Replace(" ", "")}-cell ev-orgtype-cell";
+            }
+        }
     }
 
     public class OrgSearchFieldsModel
@@ -58,6 +68,7 @@ namespace CmsWeb.Areas.Org.Models.Org
                 {
                     var field = new OrgSearchField();
                     field.Field = e.Value;
+                    field.OrgType = e.Attribute("orgtype")?.Value;
 
                     bool dropdown;
                     bool.TryParse(e.Attribute("dropdown")?.Value ?? "false", out dropdown);

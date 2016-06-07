@@ -759,6 +759,13 @@
                 return s + '?' + q;
         return q;
     };
+
+    $("#TypeId").change(function() {
+        var orgtype = $(this).find(':selected').text().replace(" ", "").toLowerCase();
+
+        $(".ev-orgtype-cell").hide();
+        $("." + orgtype + "-cell").show();
+    });
 });
 
 
