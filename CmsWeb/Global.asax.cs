@@ -107,7 +107,8 @@ namespace CmsWeb
             }
             catch (SqlException)
             {
-                Response.Redirect($"/Errors/DatabaseNotInitialized.aspx?dbname={Util.Host}");
+                throw;
+                //Response.Redirect($"/Errors/DatabaseNotInitialized.aspx?dbname={Util.Host}");
             }
 
             var cul = DbUtil.Db.Setting("Culture", "en-US");
