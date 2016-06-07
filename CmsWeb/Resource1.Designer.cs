@@ -419,6 +419,25 @@ namespace CmsWeb {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;OrgSearch&gt;
+        ///  &lt;Fields&gt;
+        ///	&lt;Field&gt;Name&lt;/Field&gt;
+        ///	&lt;Field dropdown=&quot;true&quot; label=&quot;Organization Type&quot;&gt;TypeId&lt;/Field&gt;
+        ///	&lt;Field dropdown=&quot;true&quot; label=&quot;Program&quot;&gt;ProgramId&lt;/Field&gt;
+        ///	&lt;Field dropdown=&quot;true&quot; label=&quot;Division&quot;&gt;DivisionId&lt;/Field&gt;
+        ///	&lt;Field dropdown=&quot;true&quot; label=&quot;Status&quot;&gt;StatusId&lt;/Field&gt;
+        ///	&lt;Field dropdown=&quot;true&quot; label=&quot;Campus&quot;&gt;CampusId&lt;/Field&gt;
+        ///	&lt;Field dropdown=&quot;true&quot; label=&quot;Schedule&quot;&gt;ScheduleId&lt;/Field&gt;
+        ///	&lt;Field dropdown=&quot;true&quot; label=&quot;Online Registration&quot;&gt;OnlineReg&lt;/F [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string OrgSearchFields {
+            get {
+                return ResourceManager.GetString("OrgSearchFields", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;div&gt;
         ///  The following meetings are ready to be viewed:&lt;br /&gt;
         ///  {{#each this}}

@@ -385,4 +385,19 @@ so that your data will not stay duplicated.&lt;/p&gt;
   &lt;/Columns&gt;
 &lt;/InvolvementTable&gt;</value>
   </data>
+  <data name="OrgSearchFields" xml:space="preserve">
+    <value>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;OrgSearch&gt;
+  &lt;Fields&gt;
+	&lt;Field&gt;Name&lt;/Field&gt;
+	&lt;Field dropdown="true" label="Organization Type"&gt;TypeId&lt;/Field&gt;
+	&lt;Field dropdown="true" label="Program"&gt;ProgramId&lt;/Field&gt;
+	&lt;Field dropdown="true" label="Division"&gt;DivisionId&lt;/Field&gt;
+	&lt;Field dropdown="true" label="Status"&gt;StatusId&lt;/Field&gt;
+	&lt;Field dropdown="true" label="Campus"&gt;CampusId&lt;/Field&gt;
+	&lt;Field dropdown="true" label="Schedule"&gt;ScheduleId&lt;/Field&gt;
+	&lt;Field dropdown="true" label="Online Registration"&gt;OnlineReg&lt;/Field&gt;
+  &lt;/Fields&gt;
+&lt;/OrgSearch&gt;</value>
+  </data>
 </root>

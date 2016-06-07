@@ -8,6 +8,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using CmsData;
 using CmsWeb.Areas.People.Models;
+using CmsWeb.Areas.Search.Models;
 using MoreLinq;
 using UtilityExtensions;
 
@@ -16,9 +17,11 @@ namespace CmsWeb.Areas.Org.Models.Org
     public class OrgSearchField
     {
         public string Field { get; set; }
+        public string Label { get; set; }
         public bool Dropdown { get; set; }
+        public bool ExtraValue { get; set; }
         public string OrgType { get; set; }
-        public List<SelectListItem> SelectList { get; set; }
+        public IEnumerable<SelectListItem> SelectList { get; set; }
 
         public string DivClass
         {
@@ -28,11 +31,28 @@ namespace CmsWeb.Areas.Org.Models.Org
                 return $"{OrgType.ToLower().Replace(" ", "")}-cell ev-orgtype-cell";
             }
         }
+
+        public string FieldClass
+        {
+            get { return ExtraValue ? "form-control ev-input" : "form-control"; }
+        }
     }
 
     public class OrgSearchFieldsModel
     {
-        public static List<OrgSearchField> GetFields()
+        private static readonly List<string> standardFields = new List<string>()
+        {
+            "Name",
+            "TypeId",
+            "ProgramId",
+            "DivisionId",
+            "StatusId",
+            "CampusId",
+            "ScheduleId",
+            "OnlineReg"
+        };
+
+        public static List<OrgSearchField> GetFields(OrgSearchModel osm)
         {
             string customTextName = "OrgSearchFields";
             var db = DbUtil.Db;
@@ -41,12 +61,12 @@ namespace CmsWeb.Areas.Org.Models.Org
             var s = HttpRuntime.Cache[DbUtil.Db.Host + customTextName] as string;
             if (s == null)
             {
-                s = db.ContentText(customTextName, string.Empty);
+                s = db.ContentText(customTextName, Resource1.OrgSearchFields);
                 HttpRuntime.Cache.Insert(db.Host + customTextName, s, null,
                     DateTime.Now.AddMinutes(Util.IsDebug() ? 0 : 1), Cache.NoSlidingExpiration);
             }
-            if (!s.HasValue() || s == string.Empty)
-                return list; // Empty, but we already will display all the default fields
+            if (!s.HasValue())
+                return list;
 
             XDocument xdoc;
 
@@ -56,7 +76,7 @@ namespace CmsWeb.Areas.Org.Models.Org
             }
             catch (Exception)
             {
-                return list; // Invalid XML, return empty list so just default list displayed
+                xdoc = XDocument.Parse(Resource1.OrgSearchFields);
             }
 
             if (xdoc?.Root == null)
@@ -70,11 +90,18 @@ namespace CmsWeb.Areas.Org.Models.Org
                     field.Field = e.Value;
                     field.OrgType = e.Attribute("orgtype")?.Value;
 
+                    if (field.Field == "Campus")
+                        field.Label = Util2.CampusLabel;
+                    else
+                        field.Label = e.Attribute("label")?.Value ?? field.Field;
+
                     bool dropdown;
                     bool.TryParse(e.Attribute("dropdown")?.Value ?? "false", out dropdown);
                     field.Dropdown = dropdown;
 
-                    if (dropdown)
+                    field.ExtraValue = !standardFields.Contains(field.Field);
+
+                    if (dropdown && field.ExtraValue)
                     {
                         var values =
                             DbUtil.Db.OrganizationExtras.Where(x => x.Field == field.Field)
@@ -94,6 +121,33 @@ namespace CmsWeb.Areas.Org.Models.Org
                         }));
 
                         field.SelectList = items;
+                    }
+                    else
+                    {
+                        switch (field.Field)
+                        {
+                            case "TypeId":
+                                field.SelectList = OrgSearchModel.OrgTypeFilters();
+                                break;
+                            case "ProgramId":
+                                field.SelectList = osm.ProgramIds();
+                                break;
+                            case "DivisionId":
+                                field.SelectList = osm.DivisionIds();
+                                break;
+                            case "StatusId":
+                                field.SelectList = OrgSearchModel.StatusIds();
+                                break;
+                            case "CampusId":
+                                field.SelectList = osm.CampusIds();
+                                break;
+                            case "ScheduleId":
+                                field.SelectList = osm.ScheduleIds();
+                                break;
+                            case "OnlineReg":
+                                field.SelectList = OrgSearchModel.RegistrationTypeIds();
+                                break;
+                        }
                     }
 
                     list.Add(field);

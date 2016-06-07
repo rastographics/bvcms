@@ -19,68 +19,19 @@
       @Html.Partial("Toolbar/Toolbar")
       <div class="well">
         <div class="row">
-          <div class="col-lg-3 col-md-3 col-sm-6">
-            <div class="form-group">
-              <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Name" data-content="@Model.NameHelp"><i class="fa fa-info-circle"></i></a>&nbsp;
-              <label for="Name" class="control-label">Name</label>
-              @Html.TextBox("Name", Model.Name, new { @class = "form-control" })
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-3 col-sm-6">
-            <div class="form-group">
-              <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Organization Type" data-content="At the top of the list are pseudo org types. The are actually attributes of an organization. These are followed by specific Org Types you have created and assigned to organizations."><i class="fa fa-info-circle"></i></a>&nbsp;
-              <label for="TypeId" class="control-label">Organization Type</label>
-              @Html.DropDownList("TypeId", OrgSearchModel.OrgTypeFilters(), new { @class = "form-control" })
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-3 col-sm-6">
-            <div class="form-group">
-              <label for="ProgramId" class="control-label">Program</label>
-              @Html.DropDownList("ProgramId", Model.ProgramIds(), new { @class = "form-control" })
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-3 col-sm-6">
-            <div class="form-group">
-              <label for="DivisionId" class="control-label">Division</label>
-              @Html.DropDownList("DivisionId", Model.DivisionIds(), new { @class = "form-control" })
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-3 col-md-3 col-sm-6">
-            <div class="form-group">
-              <label for="StatusId" class="control-label">Status</label>
-              @Html.DropDownList("StatusId", OrgSearchModel.StatusIds(), new { @class = "form-control" })
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-3 col-sm-6">
-            <div class="form-group">
-              <label for="CampusId" class="control-label">@Util2.CampusLabel</label>
-              @Html.DropDownList("CampusId", Model.CampusIds(), new { @class = "form-control" })
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-3 col-sm-6">
-            <div class="form-group">
-              <label for="ScheduleId" class="control-label">Schedule</label>
-              @Html.DropDownList("ScheduleId", Model.ScheduleIds(), new { @class = "form-control" })
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-3 col-sm-6">
-            <div class="form-group">
-              <label for="OnlineReg" class="control-label">Online Registration</label>
-              @Html.DropDownList("OnlineReg", OrgSearchModel.RegistrationTypeIds(), new { @class = "form-control" })
-            </div>
-          </div>
-
           @Html.HiddenFor(model => model.ExtraValues)
-          @foreach (var field in OrgSearchFieldsModel.GetFields())
+          @foreach (var field in OrgSearchFieldsModel.GetFields(Model))
           {
               if (field.Dropdown)
               {
                 <div class="col-lg-3 col-md-3 col-sm-6 @field.DivClass"@Html.Raw(string.IsNullOrEmpty(field.OrgType)?"":" style=\"display:none\"")>
                     <div class="form-group">
-                        <label for="@field.Field" class="control-label">@field.Field</label>
-                        @Html.DropDownList(field.Field, @field.SelectList, new { @class = "form-control ev-input" })
+                        @if (field.Field == "TypeId")
+                        {
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Organization Type" data-content="At the top of the list are pseudo org types. The are actually attributes of an organization. These are followed by specific Org Types you have created and assigned to organizations."><i class="fa fa-info-circle"></i></a><text>&nbsp;</text>
+                        }
+                        <label for="@field.Field" class="control-label">@field.Label</label>
+                        @Html.DropDownList(field.Field, @field.SelectList, new {@class = field.FieldClass})
                     </div>
                 </div>
               }
@@ -88,8 +39,12 @@
               {
                 <div class="col-lg-3 col-md-3 col-sm-6 @field.DivClass"@Html.Raw(string.IsNullOrEmpty(field.OrgType)?"":" style=\"display:none\"")>
                     <div class="form-group">
+                        @if (field.Field == "Name")
+                        {
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Name" data-content="@Model.NameHelp"><i class="fa fa-info-circle"></i></a><text>&nbsp</text>;
+}
                         <label for="@field.Field" class="control-label">@field.Field</label>
-                        @Html.TextBox(field.Field, "", new { @class = "form-control ev-input" })
+                        @Html.TextBox(field.Field, "", new {@class = field.FieldClass })
                     </div>
                 </div>
               }
