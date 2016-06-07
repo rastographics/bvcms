@@ -70,6 +70,12 @@ namespace CmsWeb.Areas.Org.Models.Org
                                 .Select(x => x.Data ?? x.StrValue).Distinct().OrderBy(x => x);
 
                         var items = new List<SelectListItem>();
+                        items.Add(new SelectListItem
+                        {
+                            Text = "(not specified)",
+                            Value = ""
+                        });
+
                         values.ForEach(x => items.Add(new SelectListItem
                         {
                             Text = x,
