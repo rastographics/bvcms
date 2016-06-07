@@ -983,7 +983,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                            //let sc = o.OrgSchedules.FirstOrDefault() // SCHED
                            //join sch in DbUtil.Db.OrgSchedules on o.OrganizationId equals sch.OrganizationId
                        from sch in DbUtil.Db.ViewOrgSchedules2s.Where(s => o.OrganizationId == s.OrganizationId).DefaultIfEmpty()
-                       from mtg in DbUtil.Db.Meetings.Where(m => o.OrganizationId == m.OrganizationId).OrderByDescending(m => m.MeetingDate).Take(1).DefaultIfEmpty()
+                       from mtg in DbUtil.Db.Meetings.Where(m => o.OrganizationId == m.OrganizationId && m.MeetingDate < DateTime.Today.AddDays(1)).OrderByDescending(m => m.MeetingDate).Take(1).DefaultIfEmpty()
                        orderby sch.SchedDay, sch.SchedTime
                        select new OrganizationInfo
                        {
