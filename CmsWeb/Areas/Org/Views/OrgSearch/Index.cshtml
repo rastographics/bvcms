@@ -1,5 +1,6 @@
 ﻿@using System.Web.Mvc.Html
 @using CmsData
+@using CmsWeb.Areas.Org.Models.Org
 @using CmsWeb.Areas.Search.Models
 @model OrgSearchModel
 @{
@@ -72,12 +73,27 @@
           </div>
 
           @Html.HiddenFor(model => model.ExtraValues)
-            <div class="col-lg-3 col-md-3 col-sm-6">
-                <div class="form-group">
-                    <label for="Neighborhood" class="control-label">Neighborhood</label>
-                    @Html.TextBox("Neighborhood", "", new { @class = "form-control ev-input" })
+          @foreach (var field in OrgSearchFieldsModel.GetFields())
+          {
+              if (field.Dropdown)
+              {
+                <div class="col-lg-3 col-md-3 col-sm-6">
+                    <div class="form-group">
+                        <label for="@field.Field" class="control-label">@field.Field</label>
+                        @Html.DropDownList(field.Field, @field.SelectList, new { @class = "form-control ev-input" })
+                    </div>
                 </div>
-            </div>
+              }
+              else
+              {
+                <div class="col-lg-3 col-md-3 col-sm-6">
+                    <div class="form-group">
+                        <label for="@field.Field" class="control-label">@field.Field</label>
+                        @Html.TextBox(field.Field, "", new { @class = "form-control ev-input" })
+                    </div>
+                </div>
+              }
+          }
         </div>
         <div class="row">
           <div class="col-lg-3 col-md-3 col-sm-4">
