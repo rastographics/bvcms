@@ -24,7 +24,7 @@
           {
               if (field.Dropdown)
               {
-                <div class="col-lg-3 col-md-3 col-sm-6 @field.DivClass"@Html.Raw(string.IsNullOrEmpty(field.OrgType)?"":" style=\"display:none\"")>
+                <div class="col-lg-3 col-md-3 col-sm-6 @field.DivClass"@Html.Raw(field.Display?"":" style=\"display:none\"")>
                     <div class="form-group">
                         @if (field.Field == "TypeId")
                         {
@@ -37,14 +37,14 @@
               }
               else
               {
-                <div class="col-lg-3 col-md-3 col-sm-6 @field.DivClass"@Html.Raw(string.IsNullOrEmpty(field.OrgType)?"":" style=\"display:none\"")>
+                <div class="col-lg-3 col-md-3 col-sm-6 @field.DivClass"@Html.Raw(field.Display ?"":" style=\"display:none\"")>
                     <div class="form-group">
                         @if (field.Field == "Name")
                         {
                             <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Name" data-content="@Model.NameHelp"><i class="fa fa-info-circle"></i></a><text>&nbsp</text>;
-}
+                        }
                         <label for="@field.Field" class="control-label">@field.Field</label>
-                        @Html.TextBox(field.Field, "", new {@class = field.FieldClass })
+                        @Html.TextBox(field.Field, field.Value, new {@class = field.FieldClass })
                     </div>
                 </div>
               }

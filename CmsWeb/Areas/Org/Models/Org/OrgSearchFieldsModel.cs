@@ -20,8 +20,10 @@ namespace CmsWeb.Areas.Org.Models.Org
         public string Label { get; set; }
         public bool Dropdown { get; set; }
         public bool ExtraValue { get; set; }
+        public bool Display { get; set; }
         public string OrgType { get; set; }
         public IEnumerable<SelectListItem> SelectList { get; set; }
+        public OrgSearchModel OrgSearchModel { get; set; }
 
         public string DivClass
         {
@@ -35,6 +37,23 @@ namespace CmsWeb.Areas.Org.Models.Org
         public string FieldClass
         {
             get { return ExtraValue ? "form-control ev-input" : "form-control"; }
+        }
+
+        public string Value
+        {
+            get
+            {
+                if (Field == "Name")
+                {
+                    return OrgSearchModel.Name;
+                }
+                else
+                {
+                    var value = "";
+                    OrgSearchModel.ExtraValuesDict?.TryGetValue(Field, out value);
+                    return value;
+                }
+            }
         }
     }
 
@@ -82,13 +101,17 @@ namespace CmsWeb.Areas.Org.Models.Org
             if (xdoc?.Root == null)
                 return list;
 
+            string selectedOrgType = null;
+
             foreach (var e in xdoc.XPathSelectElements("/OrgSearch/Fields").Elements())
             {
                 if (e.Name.LocalName.ToLower() == "field")
                 {
                     var field = new OrgSearchField();
+                    field.OrgSearchModel = osm;
                     field.Field = e.Value;
                     field.OrgType = e.Attribute("orgtype")?.Value;
+                    field.Display = string.IsNullOrEmpty(field.OrgType);
 
                     if (field.Field == "Campus")
                         field.Label = Util2.CampusLabel;
@@ -105,7 +128,9 @@ namespace CmsWeb.Areas.Org.Models.Org
                     {
                         var values =
                             DbUtil.Db.OrganizationExtras.Where(x => x.Field == field.Field)
-                                .Select(x => x.Data ?? x.StrValue).Distinct().OrderBy(x => x);
+                                .Select(x => x.Data ?? x.StrValue).Distinct().OrderBy(x => x).ToList()
+                                .Where(x => !string.IsNullOrEmpty(x));
+                                // IsNullOrEmpty() doesn't work in LINQ-to-SQL, so this comes after materializing query
 
                         var items = new List<SelectListItem>();
                         items.Add(new SelectListItem
@@ -117,7 +142,8 @@ namespace CmsWeb.Areas.Org.Models.Org
                         values.ForEach(x => items.Add(new SelectListItem
                         {
                             Text = x,
-                            Value = x
+                            Value = x,
+                            Selected = field.Value == x
                         }));
 
                         field.SelectList = items;
@@ -128,6 +154,7 @@ namespace CmsWeb.Areas.Org.Models.Org
                         {
                             case "TypeId":
                                 field.SelectList = OrgSearchModel.OrgTypeFilters();
+                                selectedOrgType = field.SelectList.FirstOrDefault(x => x.Selected)?.Text;
                                 break;
                             case "ProgramId":
                                 field.SelectList = osm.ProgramIds();
@@ -151,6 +178,13 @@ namespace CmsWeb.Areas.Org.Models.Org
                     }
 
                     list.Add(field);
+                }
+
+                // Handles cases where a pre-existing OrgType value will mean we need to
+                // display some OrgType-specific fields on load.
+                if (!string.IsNullOrEmpty(selectedOrgType))
+                {
+                    list.Where(x => x.OrgType == selectedOrgType).ForEach(x => x.Display = true);
                 }
             }
             return list;
