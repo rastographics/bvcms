@@ -38,7 +38,16 @@ namespace CmsWeb.MobileAPI
 
         public DateTime createOrgDateTime(DateTime time, int day)
         {
-            DateTime dt = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek).AddDays(day).AddHours(time.Hour).AddMinutes(time.Minute);
+            DateTime dt;
+
+            if (day < 0 || day > 6) // This is for "Any Day" schedule
+            {
+                dt = DateTime.Today.AddHours(time.Hour).AddMinutes(time.Minute);
+            }
+            else
+            {
+                dt = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek).AddDays(day).AddHours(time.Hour).AddMinutes(time.Minute);
+            }
 
             if (dt.Date > DateTime.Today)
                 dt = dt.AddDays(-7);
