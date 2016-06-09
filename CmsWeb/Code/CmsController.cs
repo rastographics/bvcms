@@ -87,8 +87,10 @@ namespace CmsWeb
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            NoCheckRole = NoCheckRole || 
-                (filterContext.RouteData.Values["Controller"].ToString() == "Email" && DbUtil.Db.Setting("UX-AllowMyDataUserEmails", false));
+            NoCheckRole = NoCheckRole ||
+                          (filterContext.RouteData.Values["Controller"].ToString() == "Email" && DbUtil.Db.Setting("UX-AllowMyDataUserEmails", false)) ||
+                          (filterContext.RouteData.Values["Controller"].ToString() == "OrgMemberDialog" && filterContext.RouteData.Values["Action"].ToString() == "Drop" 
+                            && DbUtil.Db.Setting("UX-AllowMyDataUserLeaveOrg", false) && Util.UserPeopleId.ToString() == filterContext.RequestContext?.HttpContext?.Request?.Params["PeopleId"]);
 
             if (!User.Identity.IsAuthenticated)
             {

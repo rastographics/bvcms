@@ -92,6 +92,8 @@ namespace CmsWeb.Areas.People.Models
                         return $"<a target=\"_blank\" href=\"/TransactionHistory/{PeopleId}/{OrgId}\">{MemberType}</a>";
                     return
                         $"<a class=\"membertype\" href=\"/OrgMemberDialog/Member/{OrgId}/{PeopleId}\">{MemberType}</a>";
+                case "leave":
+                    return $"<button class=\"leave-org\" data-personid=\"{PeopleId}\" data-orgid=\"{OrgId}\">{column.Label}</button>";
                 default:
                     if(_extraFields == null)
                         _extraFields = DbUtil.Db.LoadOrganizationById(OrgId)?.GetOrganizationExtras();

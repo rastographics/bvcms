@@ -581,6 +581,19 @@
         });
     });
 
+    $(".leave-org")
+        .click(function() {
+            $.post("/OrgMemberDialog/Drop",
+            {
+                OrgId: $(this).data("orgid"),
+                PeopleId: $(this).data("peopleid"),
+                RemoveFromEnrollmentHistory: false,
+                Group: "Member"
+            });
+
+            $(this).parent("tr").remove();
+        });
+
     $.RebindMemberGrids = function() {
         $("a.refresh-current").click();
         $("a.refresh-pending").click();
