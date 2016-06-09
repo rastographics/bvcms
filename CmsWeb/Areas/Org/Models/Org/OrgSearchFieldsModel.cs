@@ -21,6 +21,7 @@ namespace CmsWeb.Areas.Org.Models.Org
         public bool Dropdown { get; set; }
         public bool ExtraValue { get; set; }
         public bool Display { get; set; }
+        public bool Weekdays { get; set; }
         public string OrgType { get; set; }
         public IEnumerable<SelectListItem> SelectList { get; set; }
         public OrgSearchModel OrgSearchModel { get; set; }
@@ -69,6 +70,17 @@ namespace CmsWeb.Areas.Org.Models.Org
             "CampusId",
             "ScheduleId",
             "OnlineReg"
+        };
+
+        private static readonly List<string> weekdayList = new List<string>()
+        {
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday"
         };
 
         public static List<OrgSearchField> GetFields(OrgSearchModel osm)
@@ -122,15 +134,27 @@ namespace CmsWeb.Areas.Org.Models.Org
                     bool.TryParse(e.Attribute("dropdown")?.Value ?? "false", out dropdown);
                     field.Dropdown = dropdown;
 
+                    bool weekdays;
+                    bool.TryParse(e.Attribute("weekdays")?.Value ?? "false", out weekdays);
+                    field.Weekdays = weekdays;
+
                     field.ExtraValue = !standardFields.Contains(field.Field);
 
                     if (dropdown && field.ExtraValue)
                     {
-                        var values =
-                            DbUtil.Db.OrganizationExtras.Where(x => x.Field == field.Field)
+                        IEnumerable<string> values;
+
+                        if(field.Weekdays)
+                        {
+                            values = weekdayList;
+                        }
+                        else
+                        {
+                            values = DbUtil.Db.OrganizationExtras.Where(x => x.Field == field.Field)
                                 .Select(x => x.Data ?? x.StrValue).Distinct().OrderBy(x => x).ToList()
                                 .Where(x => !string.IsNullOrEmpty(x));
                                 // IsNullOrEmpty() doesn't work in LINQ-to-SQL, so this comes after materializing query
+                        }
 
                         var items = new List<SelectListItem>();
                         items.Add(new SelectListItem
