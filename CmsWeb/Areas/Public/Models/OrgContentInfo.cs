@@ -22,7 +22,7 @@ namespace CmsWeb.Models
         public bool NotAuthenticated { get; set; }
         public OrgContent oc { get; set; }
 
-        public bool CanEdit => ((Util.IsInRole("ContentEdit") || Util.IsInRole("Edit")) && IsLeader) ||  Util.IsInRole("Admin");
+        public bool CanEdit => ((Util.IsInRole("ContentEdit") || Util.IsInRole("Edit") || DbUtil.Db.Setting("UX-LeadersCanAlwaysEditOrgContent", false)) && IsLeader) ||  Util.IsInRole("Admin");
 
         public string Html
         {
