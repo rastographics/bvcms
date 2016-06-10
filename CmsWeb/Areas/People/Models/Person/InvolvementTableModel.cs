@@ -20,9 +20,44 @@ namespace CmsWeb.Areas.People.Models
         public bool Sortable { get; set; }
     }
 
+    public class InvolvementTableColumnSet
+    {
+        public List<InvolvementTableColumn> DefaultColumns { get; set; }
+        public Dictionary<string, List<InvolvementTableColumn>> OrgTypeColumns { get; set; }
+
+        public InvolvementTableColumnSet()
+        {
+            DefaultColumns = new List<InvolvementTableColumn>();
+            OrgTypeColumns = new Dictionary<string, List<InvolvementTableColumn>>();
+        }
+
+        public bool HasOrgTypeColumns
+        {
+            get { return OrgTypeColumns.Any(); }
+        }
+
+        public List<InvolvementTableColumn> GetColumnsForOrgType(string orgtype)
+        {
+            if (OrgTypeColumns.ContainsKey(orgtype))
+            {
+                return OrgTypeColumns[orgtype];
+            }
+            else
+            {
+                return DefaultColumns;
+            }
+        }
+    }
+
     public class InvolvementTableModel
     {
         public static List<InvolvementTableColumn> GetColumns(string page)
+        {
+            var columnset = GetColumnSet(page);
+            return columnset.DefaultColumns;
+        }
+
+        public static InvolvementTableColumnSet GetColumnSet(string page)
         {
             string customTextName, defaultXml;
             switch (page)
@@ -66,26 +101,40 @@ namespace CmsWeb.Areas.People.Models
             }
 
             if (xdoc?.Root == null)
-                return new List<InvolvementTableColumn>();
+                return new InvolvementTableColumnSet();
 
-            var list = new List<InvolvementTableColumn>();
-            foreach (var e in xdoc.XPathSelectElements("/InvolvementTable/Columns").Elements())
+            var set = new InvolvementTableColumnSet();
+            foreach (var d in xdoc.XPathSelectElements("/InvolvementTable").Elements())
             {
-                if (e.Name.LocalName.ToLower() == "column")
+                if (d.Name.LocalName.ToLower() == "columns")
                 {
-                    var column = new InvolvementTableColumn();
-                    column.Field = e.Attribute("field")?.Value;
-                    column.Label = e.Attribute("label")?.Value ?? column.Field;
-                    column.Page = page;
+                    var list = new List<InvolvementTableColumn>();
 
-                    bool sortable;
-                    bool.TryParse(e.Attribute("sortable")?.Value ?? "false", out sortable);
-                    column.Sortable = sortable;
+                    foreach (var e in d.DescendantsAndSelf())
+                    {
+                        if (e.Name.LocalName.ToLower() == "column")
+                        {
+                            var column = new InvolvementTableColumn();
+                            column.Field = e.Attribute("field")?.Value;
+                            column.Label = e.Attribute("label")?.Value ?? column.Field;
+                            column.Page = page;
 
-                    list.Add(column);
+                            bool sortable;
+                            bool.TryParse(e.Attribute("sortable")?.Value ?? "false", out sortable);
+                            column.Sortable = sortable;
+
+                            list.Add(column);
+                        }
+                    }
+
+                    var orgtype = d.Attribute("orgtype")?.Value;
+                    if (orgtype != null)
+                        set.OrgTypeColumns.Add(orgtype, list);
+                    else
+                        set.DefaultColumns = list;
                 }
             }
-            return list;
+            return set;
         }
     }
 }
