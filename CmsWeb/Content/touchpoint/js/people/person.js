@@ -581,18 +581,18 @@
         });
     });
 
-    $(".leave-org")
-        .click(function() {
-            $.post("/OrgMemberDialog/Drop",
-            {
-                OrgId: $(this).data("orgid"),
-                PeopleId: $(this).data("peopleid"),
-                RemoveFromEnrollmentHistory: false,
-                Group: "Member"
-            });
-
-            $(this).parent("tr").remove();
+    $('body').on('click', ".leave-org", function (e) {
+        e.preventDefault();
+        $.post("/OrgMemberDialog/Drop",
+        {
+            OrgId: $(this).data("orgid"),
+            PeopleId: $(this).data("personid"),
+            RemoveFromEnrollmentHistory: false,
+            Group: "Member"
         });
+
+        $(this).parents("tr").remove();
+    });
 
     $.RebindMemberGrids = function() {
         $("a.refresh-current").click();
