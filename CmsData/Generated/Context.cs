@@ -1600,6 +1600,18 @@ namespace CmsData
 
 		}
 
+        public Table< Resource> Resources
+        {
+            get { return GetTable< Resource>(); }
+
+        }
+
+        public Table< ResourceAttachment> ResourceAttachments
+        {
+            get { return GetTable< ResourceAttachment>(); }
+
+        }
+
 		public Table< Role> Roles
 		{
 			get	{ return this.GetTable< Role>(); }
