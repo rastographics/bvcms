@@ -6,6 +6,7 @@ using System.Web;
 using CmsData;
 using CmsData.Codes;
 using CmsData.Resources;
+using CmsWeb.Areas.Manage.Models;
 using CmsWeb.Code;
 using UtilityExtensions;
 
@@ -204,87 +205,25 @@ namespace CmsWeb.Areas.People.Models
             return null;
         }
 
-        public List<CmsData.Resource> Resources
+        private List<ResourceModel> _resources;
+        public List<ResourceModel> Resources
         {
             get
             {
-                return new List<CmsData.Resource>()
-                {
-                    new CmsData.Resource
-                    {
-                        Name = "General Church Information",
-                        //UpdatedTime = DateTime.Now.AddDays(-33),
-                        MemberTypeIds = "All"/*,
-                        Attachments = new List<Attachment>()
-                        {
-                            new Attachment
-                            {
-                                Type = AttachmentType.Pdf,
-                                Name = "Church Guidebook"
-                            },
-                            new Attachment
-                            {
-                                Type = AttachmentType.Pdf,
-                                Name = "Church Rules"
-                            }
-                        }*/
-                    },
-                    /*new CmsData.Resource.Resource
-                    {
-                        Name = "West Side Sports Teams",
-                        UpdatedTime = DateTime.Now.AddDays(-36),
-                        MemberTypes = "All",
-                        CampusId = 1,
-                        Attachments = new List<Attachment>()
-                        {
-                            new Attachment
-                            {
-                                Type = AttachmentType.Spreadsheet,
-                                Name = "Team Rosters"
-                            },
-                            new Attachment
-                            {
-                                Type = AttachmentType.Pdf,
-                                Name = "Minor Parental Waiver"
-                            }
-                        }
-                    },
-                    new CmsData.Resource.Resource
-                    {
-                        Name = "South America Mission Goals",
-                        OrgId = 1,
-                        UpdatedTime = DateTime.Now.AddDays(-22),
-                        MemberTypes = "All",
-                        Attachments = new List<Attachment>()
-                        {
-                            new Attachment
-                            {
-                                Type = AttachmentType.Pdf,
-                                Name = "Mission Mission Statement"
-                            },
-                            new Attachment
-                            {
-                                Type = AttachmentType.Pdf,
-                                Name = "Portugese Phrases"
-                            }
-                        }
-                    },
-                    new CmsData.Resource.Resource
-                    {
-                        Name = "Leader Information",
-                        OrgId = 1,
-                        UpdatedTime = DateTime.Now.AddDays(-52),
-                        MemberTypes = "Leader, Leader-Coach",
-                        Attachments = new List<Attachment>()
-                        {
-                            new Attachment
-                            {
-                                Type = AttachmentType.Spreadsheet,
-                                Name = "Trip Budget"
-                            }
-                        }
-                    }*/
-                };
+                if (_resources != null) return _resources;
+
+                var orgIds =
+                    DbUtil.Db.OrganizationMembers.Where(x => x.PeopleId == PeopleId)
+                        .Select(x => x.OrganizationId)
+                        .ToList();
+
+                var resources = DbUtil.Db.Resources
+                    .Where(x => (!x.OrganizationId.HasValue && !x.DivisionId.HasValue) || 
+                        orgIds.Contains(x.OrganizationId ?? -1));
+
+                _resources = resources.Select(x => new ResourceModel(x)).ToList();
+
+                return _resources;
             }
         }
     }

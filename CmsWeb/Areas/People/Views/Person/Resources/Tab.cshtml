@@ -1,58 +1,23 @@
 ﻿@using CmsData
-@using CmsData.Resource
 @model CmsWeb.Areas.People.Models.PersonModel
 <div class="table-responsive">
-    <table class="expanding table table-hover">
-        <thead>
-        <tr>
-            <th><a href='#' class='ajaxasc'>Name</a></th>
-            <th>Files</th>
-            <th><a href='#' class='ajaxasc'>Organization</a></th>
-            <th>Congregation</th>
-            <th>Member Types</th>
-            <th><a href='#' class='ajaxasc'>Updated</a></th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var resource in Model.Resources)
-        {
-            <tr>
-                <td>@resource.Name</td>
+    @foreach (var resource in Model.Resources)
+    {
+        <h3>@resource.Resource.Name</h3>
+        <p>
+            @resource.Resource.Description
+        </p>
+        <table>
+            @foreach (var attachment in resource.Attachments)
+            {
                 <td>
-                    @foreach (var att in resource.Attachments)
-                    {
-                        <div>
-                            @Html.Raw(att.ImgTag)
-                            <a href="#">@att.Name</a>
-                        </div>
-                    }
+                    @attachment.FileTypeId
                 </td>
                 <td>
-                    @if (resource.OrgId.HasValue)
-                    {
-                        <a href="/Org/@resource.OrgId.Value/">South America Mission Trip</a>
-                        @*var org = DbUtil.Db.LoadOrganizationById(resource.OrgId.Value);
-                        <a href="/Org/@resource.OrgId.Value/">@org.OrganizationName</a>*@
-                    }
-                    else
-                    {
-                        <text>n/a</text>
-                    }
+                    <a href="@attachment.FilePath">@attachment.Name</a>
                 </td>
-                <td>
-                    @if (resource.CampusId.HasValue)
-                    {
-                        <text>West-Side</text>
-                    }
-                    else
-                    {
-                        <text>n/a</text>
-                    }
-                </td>
-                <td>@resource.MemberTypes</td>
-                <td>@resource.UpdatedTime</td>
-            </tr>
-        }
-        </tbody>
-    </table>
+            }
+        </table>
+        <hr/>
+    }
 </div>

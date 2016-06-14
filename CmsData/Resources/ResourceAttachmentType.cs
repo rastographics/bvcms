@@ -11,7 +11,9 @@ namespace CmsData.Resources
     {
         Pdf,
         Image,
-        Spreadsheet
+        Spreadsheet,
+        Word,
+        Powerpoint
     }
 }
 
