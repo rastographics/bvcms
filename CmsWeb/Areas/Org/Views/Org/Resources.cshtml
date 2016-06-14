@@ -1,65 +1,65 @@
-﻿@using CmsData.Resource
-@model List<CmsData.Resource.Resource>
-<div class="tab-content" style="border: none;">
-    @FormAction()
-    <div class="table-responsive">
-        <table class="expanding table table-hover">
-            <thead>
-            <tr>
-                <th><a href='#' class='ajaxasc'>Type</a></th>
-                <th><a href='#' class='ajaxasc'>Name</a></th>
-                <th><a href='#' class='ajaxasc'>Updated</a></th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var resource in Model)
-            {
+﻿@*using CmsData.Resource
+    @model List<CmsData.Resource>
+    <div class="tab-content" style="border: none;">
+        @FormAction()
+        <div class="table-responsive">
+            <table class="expanding table table-hover">
+                <thead>
                 <tr>
-                    <td>
-                        
-                    </td>
-                    <td><a href="#">@resource.Name</a></td>
-                    <td>@resource.UpdatedTime</td>
+                    <th><a href='#' class='ajaxasc'>Type</a></th>
+                    <th><a href='#' class='ajaxasc'>Name</a></th>
+                    <th><a href='#' class='ajaxasc'>Updated</a></th>
                 </tr>
-            }
-            </tbody>
-        </table>
-    </div>
-</div>
-@helper FormAction(bool xs = false)
-{
-if (xs)
-{
-        <div class="visible-xs-block">
-            <a class="btn btn-success btn-block ajax" id="addresource" data-confirm="Add a Resource?" data-confirm-type="warning" data-confirm-btn-class="btn-warning" data-confirm-btn-text="Yes, add task!" data-redirect="true" href="#/"><i class="fa fa-plus-circle"></i> Add Resource</a>
+                </thead>
+                <tbody>
+                @foreach (var resource in Model)
+                {
+                    <tr>
+                        <td>
+
+                        </td>
+                        <td><a href="#">@resource.Name</a></td>
+                        <td>@resource.UpdatedTime</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
         </div>
-}
-else
-{
-        <div class="row hidden-xs">
-            <div class="col-sm-12">
-                <div class="pull-right">
-                    <a class="btn btn-success ajax validate" id="addresource" data-confirm="Add a Resource?" data-confirm-type="warning" data-confirm-btn-class="btn-warning" data-confirm-btn-text="Yes, add resource!" data-redirect="true" href="#"><i class="fa fa-plus-circle"></i> Add Resource</a>
+    </div>
+    @helper FormAction(bool xs = false)
+    {
+    if (xs)
+    {
+            <div class="visible-xs-block">
+                <a class="btn btn-success btn-block ajax" id="addresource" data-confirm="Add a Resource?" data-confirm-type="warning" data-confirm-btn-class="btn-warning" data-confirm-btn-text="Yes, add task!" data-redirect="true" href="#/"><i class="fa fa-plus-circle"></i> Add Resource</a>
+            </div>
+    }
+    else
+    {
+            <div class="row hidden-xs">
+                <div class="col-sm-12">
+                    <div class="pull-right">
+                        <a class="btn btn-success ajax validate" id="addresource" data-confirm="Add a Resource?" data-confirm-type="warning" data-confirm-btn-class="btn-warning" data-confirm-btn-text="Yes, add resource!" data-redirect="true" href="#"><i class="fa fa-plus-circle"></i> Add Resource</a>
+                    </div>
                 </div>
             </div>
-        </div>
-}
-}
-<script>
-    $('#addresource').click(function (e) {
-        e.preventDefault();
-        var url = '/AddResource';
+    }
+    }
+    <script>
+        $('#addresource').click(function (e) {
+            e.preventDefault();
+            var url = '/AddResource';
 
-        $("<div />").load(url, {}, function () {
-            var div = $(this);
-            var dialog = div.find("#new-resource-modal");
-            $('#empty-dialog').html(dialog);
-            $('#empty-dialog').modal("show");
-            dialog.on('hidden', function () {
-                div.remove();
-                dialog.remove();
+            $("<div />").load(url, {}, function () {
+                var div = $(this);
+                var dialog = div.find("#new-resource-modal");
+                $('#empty-dialog').html(dialog);
+                $('#empty-dialog').modal("show");
+                dialog.on('hidden', function () {
+                    div.remove();
+                    dialog.remove();
+                });
+
             });
-
         });
-    });
-</script>
+    </script>*@

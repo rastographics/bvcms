@@ -4,7 +4,6 @@ using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
-using CmsData.Resource;
 using CmsWeb.Areas.Org.Models;
 using UtilityExtensions;
 
@@ -125,7 +124,7 @@ namespace CmsWeb.Areas.Org.Controllers
             return PartialView("Contacts", m);
         }
 
-        [HttpPost]
+        /*[HttpPost]
         public ActionResult Resources(int id)
         {
             var resources = new List<CmsData.Resource.Resource>();
@@ -141,7 +140,7 @@ namespace CmsWeb.Areas.Org.Controllers
             });
             
             return PartialView(resources);
-        }
+        }*/
 
         [HttpPost]
         public ActionResult CommunityGroup(int id)

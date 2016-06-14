@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using CmsData;
 using CmsData.Codes;
-using CmsData.Resource;
+using CmsData.Resources;
 using CmsWeb.Code;
 using UtilityExtensions;
 
@@ -204,17 +204,17 @@ namespace CmsWeb.Areas.People.Models
             return null;
         }
 
-        public List<CmsData.Resource.Resource> Resources
+        public List<CmsData.Resource> Resources
         {
             get
             {
-                return new List<CmsData.Resource.Resource>()
+                return new List<CmsData.Resource>()
                 {
-                    new CmsData.Resource.Resource
+                    new CmsData.Resource
                     {
                         Name = "General Church Information",
-                        UpdatedTime = DateTime.Now.AddDays(-33),
-                        MemberTypes = "All",
+                        //UpdatedTime = DateTime.Now.AddDays(-33),
+                        MemberTypeIds = "All"/*,
                         Attachments = new List<Attachment>()
                         {
                             new Attachment
@@ -227,9 +227,9 @@ namespace CmsWeb.Areas.People.Models
                                 Type = AttachmentType.Pdf,
                                 Name = "Church Rules"
                             }
-                        }
+                        }*/
                     },
-                    new CmsData.Resource.Resource
+                    /*new CmsData.Resource.Resource
                     {
                         Name = "West Side Sports Teams",
                         UpdatedTime = DateTime.Now.AddDays(-36),
@@ -283,7 +283,7 @@ namespace CmsWeb.Areas.People.Models
                                 Name = "Trip Budget"
                             }
                         }
-                    }
+                    }*/
                 };
             }
         }
