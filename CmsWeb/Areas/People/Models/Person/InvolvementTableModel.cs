@@ -36,9 +36,9 @@ namespace CmsWeb.Areas.People.Models
             get { return OrgTypeColumns.Any(); }
         }
 
-        public List<InvolvementTableColumn> GetColumnsForOrgType(string orgtype)
+        public List<InvolvementTableColumn> GetColumnsForOrgType(string orgtype, string sort)
         {
-            if (OrgTypeColumns.ContainsKey(orgtype))
+            if (OrgTypeColumns.ContainsKey(orgtype) && sort == "default")
             {
                 return OrgTypeColumns[orgtype];
             }

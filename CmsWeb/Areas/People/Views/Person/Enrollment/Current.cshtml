@@ -26,11 +26,11 @@
                             {
                                 if (column.Sortable)
                                 {
-                                    <th>@Model.SortLink(column.Field)</th>
+                                    <th>@Model.SortLink(column.Label, column.Field)</th>
                                 }
                                 else
                                 {
-                                    <th>@column.Field</th>
+                                    <th>@column.Label</th>
                                 }
                             }
                         </tr>
@@ -51,22 +51,22 @@
                                 pOrgType = om.OrgType;
                                 <tr class="section notshown info">
                                     <td><a rel="reveal" title="More Information" href="#" class="reveal"><i class="fa fa-caret-right"></i></a></td>
-                                    <td colspan="@columnset.GetColumnsForOrgType(om.OrgType).Count"><span style="font-weight: 600;">@om.OrgType</span></td>
+                                    <td colspan="@columnset.GetColumnsForOrgType(om.OrgType, Model.Sort).Count"><span style="font-weight: 600;">@om.OrgType</span></td>
                                 </tr>
 
                                 if (columnset.HasOrgTypeColumns)
                                 {
                                      <tr>
                                         <th></th>
-                                        @foreach (var column in columnset.GetColumnsForOrgType(om.OrgType))
+                                        @foreach (var column in columnset.GetColumnsForOrgType(om.OrgType, Model.Sort))
                                         {
                                             if (column.Sortable)
                                             {
-                                                <th>@Model.SortLink(column.Field)</th>
+                                                <th>@Model.SortLink(column.Label, column.Field)</th>
                                             }
                                             else
                                             {
-                                                <th>@column.Field</th>
+                                                <th>@column.Label</th>
                                             }
                                         }
                                     </tr>
@@ -77,13 +77,13 @@
                                 <tr class="master @oddrow">
                                     <td><a rel="reveal" title="More Information" href="#" class="reveal"><i class="fa fa-info-circle"></i></a></td>
 
-                                    @foreach (var column in columnset.GetColumnsForOrgType(@om.OrgType))
+                                    @foreach (var column in columnset.GetColumnsForOrgType(om.OrgType, Model.Sort))
                                     {
                                         <td>@Html.Raw(om.GetColumnValue(column, true, User.IsInRole("OrgLeadersOnly")))</td>
                                     }
                                 </tr>
                                 <tr class="details @oddrow">
-                                    <td colspan="@(columnset.GetColumnsForOrgType(om.OrgType).Count + 1)">
+                                    <td colspan="@(columnset.GetColumnsForOrgType(om.OrgType, Model.Sort).Count + 1)">
                                         <div class="collapse indent">
                                             <strong>Program:</strong> <span>@om.ProgramName,</span>
                                             <strong>Division:</strong> <span>@om.DivisionName</span>
@@ -115,7 +115,7 @@
                                         oddrow = rownum % 2 == 0 ? "oddrow" : "";
                                         <tr class="@oddrow">
                                             <td><i class="fa fa-child"></i></td>
-                                            @foreach (var column in columnset.GetColumnsForOrgType(om.OrgType))
+                                            @foreach (var column in columnset.GetColumnsForOrgType(om.OrgType, Model.Sort))
                                             {
                                                 <td>@Html.Raw(child.GetColumnValue(column, true, User.IsInRole("OrgLeadersOnly")))</td>
                                             }
@@ -128,7 +128,7 @@
                             {
                                 <tr>
                                     <td></td>
-                                    @foreach (var column in columnset.GetColumnsForOrgType(om.OrgType))
+                                    @foreach (var column in columnset.GetColumnsForOrgType(om.OrgType, Model.Sort))
                                     {
                                         <td>@Html.Raw(om.GetColumnValue(column, false, User.IsInRole("OrgLeadersOnly")))</td>
                                     }
@@ -141,7 +141,7 @@
                                         oddrow = rownum % 2 == 0 ? "oddrow" : "";
                                         <tr class="@oddrow">
                                             <td><i class="fa fa-child"></i></td>
-                                            @foreach (var column in columnset.GetColumnsForOrgType(om.OrgType))
+                                            @foreach (var column in columnset.GetColumnsForOrgType(om.OrgType, Model.Sort))
                                             {
                                                 <td>@Html.Raw(child.GetColumnValue(column, false, User.IsInRole("OrgLeadersOnly")))</td>
                                             }

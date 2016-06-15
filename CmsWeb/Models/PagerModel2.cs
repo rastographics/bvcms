@@ -127,8 +127,10 @@ namespace CmsWeb.Models
             }
         }
 
-        public HtmlString SortLink(string sortLabel)
+        public HtmlString SortLink(string sortLabel, string fieldName = null)
         {
+            fieldName = fieldName ?? sortLabel;
+
             var active = "";
             var asc = " asc";
             var dir = "asc";
@@ -139,7 +141,7 @@ namespace CmsWeb.Models
                     asc = "";
                 dir = Direction == "asc" ? "desc" : "asc";
             }
-            return new HtmlString($"<a href='#' data-sortby='{sortLabel}' data-dir='{dir}' class='ajax{active}{asc}'>{sortLabel}</a>");
+            return new HtmlString($"<a href='#' data-sortby='{fieldName}' data-dir='{dir}' class='ajax{active}{asc}'>{sortLabel}</a>");
         }
 
         public HtmlString SortLink2(string label, string html)

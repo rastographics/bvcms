@@ -23,11 +23,11 @@
                         {
                             if (column.Sortable)
                             {
-                                <th>@Model.SortLink(column.Field)</th>
+                                <th>@Model.SortLink(column.Label, column.Field)</th>
                             }
                             else
                             {
-                                <th>@column.Field</th>
+                                <th>@column.Label</th>
                             }
                         }
                     </tr>
