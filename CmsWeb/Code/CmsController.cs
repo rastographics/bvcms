@@ -89,7 +89,7 @@ namespace CmsWeb
         {
             NoCheckRole = NoCheckRole ||
                           (filterContext.RouteData.Values["Controller"].ToString() == "Email" && DbUtil.Db.Setting("UX-AllowMyDataUserEmails", false)) ||
-                          (filterContext.RouteData.Values["Controller"].ToString() == "OrgMemberDialog" && filterContext.RouteData.Values["Action"].ToString() == "Drop" 
+                          (filterContext.RouteData.Values["Controller"].ToString() == "OrgMemberDialog" && filterContext.RouteData.Values["Action"].ToString() == "Drop"
                             && DbUtil.Db.Setting("UX-AllowMyDataUserLeaveOrg", false) && Util.UserPeopleId.ToString() == filterContext.RequestContext?.HttpContext?.Request?.Params["PeopleId"]);
 
             if (!User.Identity.IsAuthenticated)
@@ -108,9 +108,12 @@ namespace CmsWeb
 
             var disableHomePageForOrgLeaders = DbUtil.Db.Setting("UX-DisableHomePageForOrgLeaders", false);
             if (filterContext.RouteData.Values["Controller"].ToString() == "Home" &&
-                filterContext.RouteData.Values["Action"].ToString() == "Index" && 
+                filterContext.RouteData.Values["Action"].ToString() == "Index" &&
                 disableHomePageForOrgLeaders && User.IsInRole("OrgLeadersOnly"))
             {
+                Util2.OrgLeadersOnly = true;
+                DbUtil.Db.SetOrgLeadersOnly();
+
                 filterContext.Result = Redirect($"/Person2/{Util.UserPeopleId}");
             }
 

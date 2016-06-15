@@ -191,7 +191,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             if (!m.UsernameOrEmail.HasValue())
                 return View(m);
-            
+
             var ret = AccountModel.AuthenticateLogon(m.UsernameOrEmail, m.Password, Session, Request);
             if (ret is string)
             {
@@ -330,7 +330,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             ViewBag.RequireSpecialCharacter = MembershipService.RequireSpecialCharacter;
             ViewBag.RequireOneNumber = MembershipService.RequireOneNumber;
             ViewBag.RequireOneUpper = MembershipService.RequireOneUpper;
-            
+
             return View("SetPassword");
         }
 
