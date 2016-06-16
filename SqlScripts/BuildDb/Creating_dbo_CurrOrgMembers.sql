@@ -6,25 +6,25 @@ RETURNS @tt TABLE
 (
 		OrganizationId int NOT NULL,
 		OrganizationName nvarchar(100) NOT NULL,
-		FirstName nvarchar(25),
+		FirstName nvarchar(50),
 		LastName nvarchar(100) NOT NULL,
 		Gender nvarchar(20),
 		Grade int,
-		ShirtSize nvarchar(20),
+		ShirtSize nvarchar(50),
 		Request nvarchar(140),
 		Amount money NOT NULL,
 		AmountPaid money NOT NULL,
 		HasBalance int NOT NULL,
 		Groups NVARCHAR(MAX),
 		Email nvarchar(150),
-		HomePhone nvarchar(20),
-		CellPhone nvarchar(20),
-		WorkPhone nvarchar(20),
+		HomePhone nvarchar(50),
+		CellPhone NVARCHAR(50),
+		WorkPhone NVARCHAR(50),
 		Age int,
 		BirthDate datetime,
 		JoinDate datetime,
 		MemberStatus nvarchar(50),
-		SchoolOther nvarchar(100),
+		SchoolOther NVARCHAR(200),
 		LastAttend datetime,
 		AttendPct real,
 		AttendStr nvarchar(200),
@@ -92,6 +92,7 @@ LEFT JOIN dbo.TransactionSummary ts ON ts.OrganizationId = om.OrganizationId AND
 WHERE om.OrganizationId IN (SELECT id FROM @t)
 	RETURN 
 END
+
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
