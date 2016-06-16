@@ -198,10 +198,23 @@ namespace CmsWeb.Areas.Public.Models
 		{
 			if (search == null) return new List<Organization>();
 
-			var orgs = from o in DbUtil.Db.Organizations
-						  where o.DivOrgs.Any(ee => divList.Contains(ee.DivId))
-                          //where o.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
-						  select o;
+		    var orgTypes = DbUtil.Db.Setting("SGF-OrgTypes", "").Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
+
+		    IQueryable<Organization> orgs;
+		    if (!orgTypes.Any())
+		    {
+                orgs = from o in DbUtil.Db.Organizations
+                           where o.DivOrgs.Any(ee => divList.Contains(ee.DivId))
+                           //where o.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
+                           select o;
+            }
+		    else
+		    {
+                orgs = from o in DbUtil.Db.Organizations
+                           where orgTypes.Contains(o.OrganizationType.Description)
+                           //where o.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
+                           select o;
+            }
 
 			foreach (var filter in search)
 			{
@@ -216,7 +229,7 @@ namespace CmsWeb.Areas.Public.Models
 				else
 				{
 					orgs = from g in orgs
-							 where g.OrganizationExtras.Any(oe => oe.Field == filter.Key && oe.Data == filter.Value.values[0])
+							 where g.OrganizationExtras.Any(oe => oe.OrganizationId == g.OrganizationId && oe.Field == filter.Key && oe.Data == filter.Value.values[0])
 							 select g;
 				}
 			}
