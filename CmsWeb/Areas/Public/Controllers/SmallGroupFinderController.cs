@@ -66,7 +66,11 @@ namespace CmsWeb.Areas.Public.Controllers
 				// Process shell here
 				return Content(sgfm.createFromShell());
 			else if (DbUtil.Db.Setting("SGF-UseEmbeddedMap", false))
-			    return View("MapIndex", sgfm);
+            {
+                var template = DbUtil.Db.ContentHtml("ShellDefaultSGF", "<!-- CONTAINER -->");
+                ViewBag.Shell = template;
+                return View("MapShell", sgfm);
+            } 
 			else
 			    return View("Index", sgfm);
 			    

@@ -180,7 +180,7 @@ namespace CmsWeb.Areas.Public.Models
 			else
 			{
 				i = (from e in DbUtil.Db.OrganizationExtras
-					  where e.Organization.DivOrgs.Any(ee => divList.Contains(ee.DivId))
+					  //where e.Organization.DivOrgs.Any(ee => divList.Contains(ee.DivId))
 					  where e.Field == f.name
                       orderby e.Data
                      select new FilterItem
@@ -338,7 +338,7 @@ namespace CmsWeb.Areas.Public.Models
 				if (extra.Field.StartsWith("SGF:"))
 					values[extra.Field] = extra.Data;
                 else if(loadAllValues)
-                    values[$"SGF:{extra.Field}"] = extra.Data;
+                    values[$"SGF:{extra.Field.Replace(" ", "")}"] = extra.Data;
             }
 		}
 	}

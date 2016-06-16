@@ -1,129 +1,55 @@
-﻿@using CmsWeb.Areas.Public.Models;
-@using CmsWeb.Models
+﻿@using CmsWeb.Areas.Public.Models
 @model CmsWeb.Areas.Public.Models.SmallGroupFinderModel
 @{
     var st = Model.getSetting("SubmitText");
-    var ts = Model.getSetting("TextSize");
-    var ff = Model.getSetting("FontFamily");
-    
-    var bc = Model.getSetting("BGColor");
-    var fc = Model.getSetting("FGColor");
-    var sh = Model.getSetting("ShowHeaders");
-
     var SubmitText = st != null ? st.value : "Find Groups";
-    var FontFamily = ff != null ? ff.value : "Verdana,Arial,Helvetica,sans-serif";
-    var TextSize = ts != null ? ts.value : "12";
-    var BGColor = bc != null ? bc.value : "#FFFFFF";
-    var FGColor = fc != null ? fc.value : "#000000";
-    var ShowHeaders = sh != null ? bool.Parse(sh.value) : false;
 
     var GroupsFound = Model.getGroups();
 }
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Small Group Finder</title>
-    <style type="text/css">
-        body {
-            font-size: @(TextSize)px;
-            font-family: @(FontFamily);
-            background-color: @(BGColor);
-            color: @(FGColor);
-        }
-
-        input {
-            font-size: @(TextSize)px;
-            font-family: @(FontFamily);
-        }
-
-        select {
-            font-size: @(TextSize)px;
-            font-family: @(FontFamily);
-        }
-
-        .search {
-            padding:1px 5px 1px 5px;
-        }
-
-        .right {
-            text-align: right;
-        }
-
-        .left {
-            text-align: left;
-        }
-
-        .center {
-            text-align: center;
-        }
-
-        .top {
-            vertical-align: top;
-        }
-
-        .nowrap {
-            white-space: nowrap;
-        }
-
-        .submit {
-            padding-top:10px;
-        }
-        select {
-          width: 12em;
-        }
-    </style>
-</head>
-<body>
-    <!--
-    Setting Count: @Model.getCount( SmallGroupFinderModel.TYPE_SETTING )<br />
-    Filter Count: @Model.getCount( SmallGroupFinderModel.TYPE_FILTER )<br />
-    <br />
-    -->
-    <table style="width: 100%; height:100%">
-        <tbody>
-            <tr>
-                <td width="1%" class="nowrap center top">
-                    @if( ShowHeaders ) {
-                        <text>Select Group Options</text>
-                        <hr />
-                    }
-                    <div class="search">
-                        <form method="post">
-                            <table width="100%">
-                                @for( var iX = 0; iX < Model.getCount( SmallGroupFinderModel.TYPE_FILTER ); iX++ )
+<table style="background: #FFF; margin: auto">
+    <tbody>
+        <tr>
+            <td colspan="2">
+                <h3>Small Group Finder</h3>
+            </td>
+        </tr>
+        <tr>
+            <td class="nowrap center top">
+                <div class="search">
+                    <form method="post">
+                        <table>
+                            @for (var iX = 0; iX < Model.getCount(SmallGroupFinderModel.TYPE_FILTER); iX++)
                                 {
                                     var f = Model.getFilter(iX);
                                     var fi = Model.getFilterItems(iX);
-                        
-                                    <tr>
-                                        <td class="right nowrap">@(f.title + ":")</td>
-                                        <td class="left">
-                                            <select name="@f.name">
-                                            @foreach( var item in fi )
-                                            {
-                                                <option @(Model.IsSelectedValue( f.name, item.value ) ? "selected" : "") value="@item.value">@item.value</option>
-                                            }
-                                            </select>
-                                        </td>
-                                    </tr>
-                                }
+
                                 <tr>
-                                    <td colspan="2" class="center submit">
-                                        <input type="submit" value="@(SubmitText)" />
+                                    <td class="right nowrap">@(f.title + ":")</td>
+                                    <td class="left">
+                                        <select name="@f.name">
+                                            @foreach (var item in fi)
+                                                {
+                                                <option @(Model.IsSelectedValue(f.name, item.value) ? "selected" : "") value="@item.value">@item.value</option>
+                                            }
+                                        </select>
                                     </td>
                                 </tr>
-                            </table>
-                        </form>
-                    </div>
-                    <div>
-                        @Html.Raw(Model.getGutter())
-                    </div>
-                </td>
-                <td width="99%" class="top">
-                    @Html.Partial("Map", Model)
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</body>
-</html>
+                            }
+                            <tr>
+                                <td colspan="2" class="center submit">
+                                    <input type="submit" value="@(SubmitText)" />
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+                <div>
+                    @Html.Raw(Model.getGutter())
+                </div>
+            </td>
+            <td lass="top">
+                @Html.Partial("Map", Model)
+            </td>
+        </tr>
+    </tbody>
+</table>

@@ -1,0 +1,2 @@
+﻿@model CmsWeb.Areas.Public.Models.SmallGroupFinderModel
+@Html.Raw(((string)ViewBag.Shell).Replace("<!-- CONTAINER -->", Html.Partial("MapIndex", Model).ToString()))
