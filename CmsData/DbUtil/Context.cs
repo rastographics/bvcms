@@ -164,7 +164,11 @@ namespace CmsData
         }
         public Organization LoadOrganizationByName(string name)
         {
-            return this.Organizations.FirstOrDefault(o => o.OrganizationName == name);
+            return Organizations.FirstOrDefault(o => o.OrganizationName == name);
+        }
+        public Organization LoadOrganizationByName(string name, int divid)
+        {
+            return Organizations.SingleOrDefault(o => o.OrganizationName == name && o.DivisionId == divid);
         }
         public string FetchExtra(int pid, string field)
         {

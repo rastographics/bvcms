@@ -312,15 +312,15 @@ namespace CmsData
         }
         public static Organization FetchOrCreateOrganization(CMSDataContext db, int divid, string organization)
         {
-            var o = db.LoadOrganizationByName(organization);
-            if(o == null || o.DivisionId != divid)
+            var o = db.LoadOrganizationByName(organization, divid);
+            if(o == null)
                 return CreateOrganization(db, divid, organization);
             return o;
         }
         public static Organization FetchOrCreateOrganization(CMSDataContext db, Division division, string organization)
         {
-            var o = db.LoadOrganizationByName(organization);
-            if(o == null || o.DivisionId != division.Id)
+            var o = db.LoadOrganizationByName(organization, division.Id);
+            if(o == null)
                 return CreateOrganization(db, division, organization);
             return o;
         }

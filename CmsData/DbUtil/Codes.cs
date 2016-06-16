@@ -268,6 +268,13 @@ namespace CmsData.Codes
         public const string Previous = "50";
         public const string Guest = "60";
     }
+    public class VolApplicationStatusCode
+    {
+        public const int Approved = 10;
+        public const int Withdrawn = 20;
+        public const int NotApproved = 30;
+        public const int Pending = 40;
+    }
     public class ContributionTypeCode
     {
         public const int CheckCash = 1;
