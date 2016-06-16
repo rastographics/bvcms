@@ -18,11 +18,6 @@ namespace CmsWeb.Areas.Public
             if (!Util.UserPeopleId.HasValue)
                 return Redirect("/OrgContent/Login/" + id);
 
-            if (string.IsNullOrEmpty(o.Html))
-            {
-                ViewBag.qid = DbUtil.Db.QueryInCurrentOrg().QueryId;
-            }
-
             var org = DbUtil.Db.LoadOrganizationById(o.OrgId);
 
             // Try to load a template specific to this org type
@@ -45,6 +40,11 @@ namespace CmsWeb.Areas.Public
                 {
                     template = template.Replace($"{{{ev.Field}}}", ev.Data ?? ev.StrValue ?? string.Empty);
                 });
+
+                if (template.Contains("{directory}"))
+                {
+                    ViewBag.qid = DbUtil.Db.QueryInCurrentOrg().QueryId;
+                }
 
                 ViewBag.template = template;
                 return View(o);
