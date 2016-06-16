@@ -1547,6 +1547,7 @@
     <Content Include="Areas\Public\Views\SmallGroupFinder\Map.cshtml" />
     <Content Include="Areas\Public\Views\SmallGroupFinder\MapIndex.cshtml" />
     <Content Include="Areas\Public\Views\OrgContent\Directory.cshtml" />
+    <Content Include="Areas\Public\Views\SmallGroupFinder\MapShell.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />

@@ -170,7 +170,9 @@ namespace CmsWeb.Areas.Public.Models
 
 		public List<FilterItem> getFilterItems(int id)
 		{
-			var f = getFilter(id);
+            var orgTypes = DbUtil.Db.Setting("SGF-OrgTypes", "").Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
+
+            var f = getFilter(id);
 			List<FilterItem> i = new List<FilterItem>();
 
 			if (f.locked)
@@ -180,9 +182,9 @@ namespace CmsWeb.Areas.Public.Models
 			else
 			{
 				i = (from e in DbUtil.Db.OrganizationExtras
-					  //where e.Organization.DivOrgs.Any(ee => divList.Contains(ee.DivId))
-					  where e.Field == f.name
-                      orderby e.Data
+					 where e.Organization.DivOrgs.Any(ee => divList.Contains(ee.DivId)) || orgTypes.Contains(e.Organization.OrganizationType.Description)
+					 where e.Field == f.name
+                     orderby e.Data
                      select new FilterItem
 					  {
 						  value = e.Data
