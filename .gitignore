@@ -59,6 +59,7 @@ node_modules/
 #other
 secrets.config
 CmsWeb/ProdConnectionStrings.config
+CmsWeb/StagingConnectionStrings.config
 cassette-cache/
 CmsDataSqlClr.dbmdl
 CmsWeb/Upload/
