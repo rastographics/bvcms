@@ -15,7 +15,7 @@
   <tr>
     <td>DateTime</td>
     <td>
-      @if (User.IsInRole("Developer"))
+      @if (User.IsInRole("Admin"))
       {
         <a href="@(DbUtil.Db.ServerLink("/OnlineReg/ConfirmTestXml"))/@Model.DatumId">@Model.Datum.Stamp.FormatDateTm()</a>
       }
