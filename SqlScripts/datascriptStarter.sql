@@ -10283,7 +10283,7 @@ INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (29, N'Task
 INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (30, N'BackgroundCheck', NULL)
 INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (31, N'FinanceAdmin', NULL)
 INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (32, N'ManageEvents', NULL)
-INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (33, N'Send SMS', NULL)
+INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (33, N'SendSMS', NULL)
 SET IDENTITY_INSERT [dbo].[Roles] OFF
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'AdminCoupon', N'YourPasswordGoesHere')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'AdminMail', N'info@touchpointsoftware.com')
