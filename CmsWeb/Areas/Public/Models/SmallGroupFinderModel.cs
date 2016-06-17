@@ -182,7 +182,8 @@ namespace CmsWeb.Areas.Public.Models
 				i = (from e in DbUtil.Db.OrganizationExtras
 					  where e.Organization.DivOrgs.Any(ee => divList.Contains(ee.DivId))
 					  where e.Field == f.name
-					  select new FilterItem
+                      orderby e.Data
+                     select new FilterItem
 					  {
 						  value = e.Data
 					  }).DistinctBy(n => n.value).ToList<FilterItem>();
