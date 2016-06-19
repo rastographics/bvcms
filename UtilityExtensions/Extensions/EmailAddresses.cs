@@ -22,16 +22,17 @@ namespace UtilityExtensions
                 return "";
             return $"mailto:{addr}";
         }
-        public static string FullEmail(string Email, string Name)
+        public static string FullEmail(string email, string name)
         {
-            if (Email.HasValue())
-                if (Name.Contains("?"))
-                    return Email;
+            if (email.HasValue())
+                if (name.Contains("?"))
+                    return email;
                 else
                 {
-                    var a = Email.SplitStr(",;");
+                    var na = Regex.Replace(name, @";|,|\""", "");
+                    var a = email.SplitStr(",;");
                     var q = from ad in a
-                            select Name.Replace(",", "").Replace(";", "") + " <" + ad.Trim() + ">";
+                            select na + " <" + ad.Trim() + ">";
                     return string.Join(";", q);
                 }
             return string.Empty;
