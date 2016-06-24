@@ -19,38 +19,76 @@
       @Html.HiddenFor(m => m.Group)
 
       @Html.EditorFor(m => m.MemberType)
-      @Html.EditorFor(m => m.InactiveDate)
-      @Html.EditorFor(m => m.EnrollmentDate, "DateAndTime")
-      @Html.EditorFor(m => m.Pending)
-      @if (Model.RegisterEmail.HasValue())
+      @if (User.IsInRole("Edit"))
       {
-        @Html.EditorFor(m => m.RegisterEmail)
-      }
-      @if (Model.Setting.AskVisible("AskRequest"))
-      {
-        @Html.EditorFor(m => m.Request)
-      }
-      @if (Model.Grade.HasValue)
-      {
-        @Html.EditorFor(m => m.Grade)
-      }
-      @if (Model.Setting.AskVisible("AskTickets"))
-      {
-        @Html.EditorFor(m => m.Tickets)
-      }
-      @if (Model.Setting.AskVisible("AskSize"))
-      {
-        @Html.EditorFor(m => m.ShirtSize)
-      }
-      @if (User.IsInRole("Developer"))
-      {
-        @Html.EditorFor(m => m.TranId)
+          @Html.EditorFor(m => m.InactiveDate)
+          @Html.EditorFor(m => m.EnrollmentDate, "DateAndTime")
+          @Html.EditorFor(m => m.Pending)
+          if (Model.RegisterEmail.HasValue())
+          {
+              @Html.EditorFor(m => m.RegisterEmail)
+          }
+          if (Model.Setting.AskVisible("AskRequest"))
+          {
+              @Html.EditorFor(m => m.Request)
+          }
+          if (Model.Grade.HasValue)
+          {
+              @Html.EditorFor(m => m.Grade)
+          }
+          if (Model.Setting.AskVisible("AskTickets"))
+          {
+              @Html.EditorFor(m => m.Tickets)
+          }
+          if (Model.Setting.AskVisible("AskSize"))
+          {
+              @Html.EditorFor(m => m.ShirtSize)
+          }
+          if (User.IsInRole("Developer"))
+          {
+              @Html.EditorFor(m => m.TranId)
+          }
+          else
+          {
+              @Html.HiddenFor(m => m.TranId)
+          }
+          @Html.EditorFor(m => m.UserData, "TextArea")
       }
       else
       {
-        @Html.HiddenFor(m => m.TranId)
+          @Html.HiddenFor(m => m.InactiveDate)
+          @Html.HiddenFor(m => m.EnrollmentDate, "DateAndTime")
+          @Html.HiddenFor(m => m.Pending)
+          if (Model.RegisterEmail.HasValue())
+          {
+            @Html.HiddenFor(m => m.RegisterEmail)
+          }
+          if (Model.Setting.AskVisible("AskRequest"))
+          {
+            @Html.HiddenFor(m => m.Request)
+          }
+          if (Model.Grade.HasValue)
+          {
+            @Html.HiddenFor(m => m.Grade)
+          }
+          if (Model.Setting.AskVisible("AskTickets"))
+          {
+            @Html.HiddenFor(m => m.Tickets)
+          }
+          if (Model.Setting.AskVisible("AskSize"))
+          {
+            @Html.HiddenFor(m => m.ShirtSize)
+          }
+          if (User.IsInRole("Developer"))
+          {
+            @Html.HiddenFor(m => m.TranId)
+          }
+          else
+          {
+            @Html.HiddenFor(m => m.TranId)
+          }
+          @Html.HiddenFor(m => m.UserData, "TextArea")
       }
-      @Html.EditorFor(m => m.UserData, "TextArea")
     </div>
     <div class="modal-footer">
       <a href="/OrgMemberDialog/Display" class="btn btn-default ajax">Cancel</a>
