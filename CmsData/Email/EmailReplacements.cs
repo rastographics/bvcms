@@ -241,7 +241,10 @@ namespace CmsData
                     break;
 
                 case "{church}":
-                    return db.Setting("NameOfChurch", "Set this in NameOfChurch setting");
+                    return db.Setting("NameOfChurch", "No NameOfChurch in Settings");
+
+                case "{churchphone}":
+                    return db.Setting("ChurchPhone", "No ChurchPhone in Settings");
 
                 case "{cmshost}":
                     return db.ServerLink();

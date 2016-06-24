@@ -65,33 +65,44 @@ namespace CmsWeb.MobileAPI
             if (foundpeople.Count == 0)
             {
                 Result = ResultCode.CreatedNewUser;
-                CreateEmailNewUser();
+                var p = CreateNewPerson();
+                CreateNewUser(p);
                 return;
             }
 
             // notify all found matches
             foreach (var p in foundpeople)
                 if (p.EmailAddress.Equal(Email) || p.EmailAddress2.Equal(Email))
-                    NotifyAboutExistingAccount(p);
+                    if (p.Users.Any())
+                        NotifyAboutExistingAccount(p);
+                    else
+                        CreateNewUser(p);
                 else
                     NotifyAboutDuplicateUser(p);
 
             // if we did not find anybody with same email, then create a new account
             if (foundPersonWithSameEmail == null)
             {
-                CreateEmailNewUser();
+                var p = CreateNewPerson();
+                CreateNewUser(p);
                 Result = ResultCode.FoundPersonWithDiffEmailButCreatedNewUser;
             }
 
             FoundPerson = foundPersonWithSameEmail ?? foundPersonWithDiffEmail;
         }
 
-        private void CreateEmailNewUser()
+        private Person CreateNewPerson()
         {
             var p = Person.Add(db, null, First, null, Last, Birthdate);
+            p.PositionInFamilyId = CmsData.Codes.PositionInFamily.PrimaryAdult;
             p.EmailAddress = Email;
             p.HomePhone = Phone;
             db.SubmitChanges();
+            return p;
+        }
+
+        private void CreateNewUser(Person p)
+        {
             User = MembershipService.CreateUser(db, p.PeopleId);
             db.SubmitChanges();
             AccountModel.SendNewUserEmail(User.Username);
