@@ -14,7 +14,7 @@
         <tr>
             <th>Name</th>
             <th>MemberType</th>
-            <th>Birthday</th>
+            @*<th>Birthday</th*@
             @if (allowEmails)
             {
                 <th>Email</th>
@@ -26,7 +26,7 @@
         <tr>
             <td>@member.Person.Name</td>
             <td>@member.MemberType.Description</td>
-            <td>@FormatDate(member.Person.BirthDate)</td>
+            @*<td>@FormatDate(member.Person.BirthDate)</td>*@
             @if (allowEmails)
             {
                 <td><a href="/Email/@ViewBag.qid?templateID=0&personid=@member.Person.PeopleId">Email</a></td>
