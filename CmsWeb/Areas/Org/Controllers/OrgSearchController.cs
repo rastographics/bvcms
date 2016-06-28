@@ -245,7 +245,7 @@ namespace CmsWeb.Areas.Search.Controllers
 
         [HttpPost]
         [Route("SqlReport/{report}")]
-        public ActionResult SqlReport(OrgSearchModel m, string report)
+        public ActionResult SqlReport(OrgSearchModel m, string report, DateTime? dt1 = null, DateTime? dt2 = null)
         {
             try
             {
@@ -253,8 +253,10 @@ namespace CmsWeb.Areas.Search.Controllers
                 var oids = string.Join(",", orgs.Select(oo => oo.OrganizationId));
                 ViewBag.ExcelUrl = $"/OrgSearch/SqlReportExcel/{report}";
                 ViewBag.DisplayName = report.SpaceCamelCase();
-                ViewBag.Results = m.SqlTable(report, oids);
+                ViewBag.Results = m.SqlTable(report, oids, dt1, dt2);
                 ViewBag.OrgIds = oids;
+                ViewBag.dt1 = dt1;
+                ViewBag.dt2 = dt2;
                 return View();
             }
             catch (Exception ex)
@@ -264,12 +266,12 @@ namespace CmsWeb.Areas.Search.Controllers
         }
         [HttpPost]
         [Route("SqlReportExcel/{report}")]
-        public ActionResult SqlReportExcel(string report, string orgIds)
+        public ActionResult SqlReportExcel(string report, string orgIds, DateTime? dt1 = null, DateTime? dt2 = null)
         {
             try
             {
                 var m = new OrgSearchModel();
-                return m.SqlTableExcel(report, orgIds);
+                return m.SqlTableExcel(report, orgIds, dt1, dt2);
             }
             catch (Exception ex)
             {

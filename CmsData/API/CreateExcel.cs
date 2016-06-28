@@ -6,6 +6,7 @@ using System.IO;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using OfficeOpenXml.Table;
+using UtilityExtensions;
 
 namespace CmsData
 {
@@ -18,6 +19,32 @@ namespace CmsData
             var ep = new ExcelPackage();
             ep.AddSheet(dt, filename, useTable);
             return ep.GetAsByteArray();
+        }
+
+        public static DataTable DataReaderToTable(this IDataReader rd)
+        {
+            var schema = rd.GetSchemaTable();
+            if (schema == null)
+                throw new Exception("null schema in DataReaderToTable");
+            var dt = new DataTable();
+            var cols = new List<DataColumn>();
+            foreach (DataRow row in schema.Rows)
+            {
+                var name = row["ColumnName"].ToString();
+                if (name.Equal("linkfornext"))
+                    continue;
+                var col = new DataColumn(name, (Type) row["DataType"]);
+                cols.Add(col);
+                dt.Columns.Add(col);
+            }
+            while (rd.Read())
+            {
+                var row = dt.NewRow();
+                foreach (var col in cols)
+                    row[col] = rd[col.ColumnName];
+                dt.Rows.Add(row);
+            }
+            return dt;
         }
 
         public static void AddSheet(this ExcelPackage ep, IDataReader rd, string filename, bool useTable = false)
@@ -66,25 +93,25 @@ namespace CmsData
                     colrange.Style.WrapText = true;
                     ws.Column(col).Width = 40.0;
                 }
-                else if (!name.ToLower().EndsWith("id") && type == typeof (int))
+                else if (!name.ToLower().EndsWith("id") && type == typeof(int))
                 {
                     colrange.Style.Numberformat.Format = "#,##0";
                     colrange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
                     colrange.AutoFitColumns();
                 }
-                else if (type == typeof (decimal))
+                else if (type == typeof(decimal))
                 {
                     colrange.Style.Numberformat.Format = "#,##0.00";
                     colrange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
                     colrange.AutoFitColumns();
                 }
-                else if ((type == typeof (float) || type == typeof(double)) && PythonModel.StartsEndsWith("Pct", name))
+                else if ((type == typeof(float) || type == typeof(double)) && PythonModel.StartsEndsWith("Pct", name))
                 {
                     colrange.Style.Numberformat.Format = "#####0.0";
                     colrange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
                     colrange.AutoFitColumns();
                 }
-                else if (type == typeof (DateTime))
+                else if (type == typeof(DateTime))
                 {
                     if (name.EndsWith("Time"))
                     {

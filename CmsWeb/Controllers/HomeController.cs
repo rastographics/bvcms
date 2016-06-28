@@ -222,6 +222,12 @@ namespace CmsWeb.Controllers
                 var oid = DbUtil.Db.CurrentOrgId0;
                 p.Add("@OrgIds", oid.ToString());
                 ViewBag.Type = "OrgSearchSqlReport";
+
+                if (body.Contains("--class=StartEndReport"))
+                {
+                    p.Add("@MeetingDate1", DateTime.Now.AddDays(-90));
+                    p.Add("@MeetingDate2", DateTime.Now);
+                }
             }
             else
                 ViewBag.Type = "SqlReport";

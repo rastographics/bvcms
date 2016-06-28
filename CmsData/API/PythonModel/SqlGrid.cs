@@ -80,18 +80,20 @@ namespace CmsData
                         align = HorizontalAlign.Right;
                         break;
                     case "int":
-                        if (nam != "Year" && !nam.EndsWith("id") && !nam.EndsWith("id2"))
+                        if (nam != "year" && !nam.EndsWith("id") && !nam.EndsWith("id2"))
                             align = HorizontalAlign.Right;
                         break;
                 }
-                h.Cells.Add(new TableHeaderCell
-                {
-                    Text = rd.GetName(i),
-                    HorizontalAlign = align
-                });
+                if(!nam.Equal("linkfornext"))
+                    h.Cells.Add(new TableHeaderCell
+                    {
+                        Text = rd.GetName(i),
+                        HorizontalAlign = align
+                    });
             }
             t.Rows.Add(h);
             var rn = 0;
+            string linkfornext = null;
             while (rd.Read())
             {
                 rn++;
@@ -102,6 +104,11 @@ namespace CmsData
                 {
                     var typ = rd.GetDataTypeName(i);
                     var nam = rd.GetName(i).ToLower();
+                    if (nam == "linkfornext")
+                    {
+                        linkfornext = rd.GetString(i);
+                        continue;
+                    }
                     string s;
                     var align = HorizontalAlign.NotSet;
 
@@ -149,6 +156,11 @@ namespace CmsData
                             if (s == "Total")
                                 s = $"<strong>{s}</strong>";
                             break;
+                    }
+                    if (linkfornext.HasValue())
+                    {
+                        s = $"<a href='{linkfornext}' target='link'>{s}</a>";
+                        linkfornext = null;
                     }
                     r.Cells.Add(new TableCell()
                     {

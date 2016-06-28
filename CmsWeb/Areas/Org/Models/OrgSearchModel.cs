@@ -22,7 +22,6 @@ using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Areas.Reports.Controllers;
 using CmsWeb.Models;
 using Dapper;
-using DocumentFormat.OpenXml.Office2010.Excel;
 using MoreLinq;
 using Newtonsoft.Json;
 using UtilityExtensions;
@@ -723,18 +722,18 @@ namespace CmsWeb.Areas.Search.Models
             return Util.EncryptForUrl(j);
         }
 
-        public string SqlTable(string report, string oids)
+        public string SqlTable(string report, string oids, DateTime? meetingDate1, DateTime? meetingDate2)
         {
-            using (var rd = ExecuteReader(report, oids))
+            using (var rd = ExecuteReader(report, oids, meetingDate1, meetingDate2))
                 return GridResult.Table(rd);
         }
-        public EpplusResult SqlTableExcel(string report, string oids)
+        public EpplusResult SqlTableExcel(string report, string oids, DateTime? meetingDate1, DateTime? meetingDate2)
         {
-            using (var rd = ExecuteReader(report, oids))
+            using (var rd = ExecuteReader(report, oids, meetingDate1, meetingDate2))
             return rd.ToExcel(report + ".xlsx");
         }
 
-        private IDataReader ExecuteReader(string report, string oids)
+        private IDataReader ExecuteReader(string report, string oids, DateTime? meetingDate1, DateTime? meetingDate2)
         {
             var content = DbUtil.Db.ContentOfTypeSql(report);
             if (content == null)
@@ -747,6 +746,11 @@ namespace CmsWeb.Areas.Search.Models
 
             var p = new DynamicParameters();
             p.Add("@OrgIds", oids);
+            if (content.Body.Contains("@MeetingDate1"))
+            {
+                p.Add("@MeetingDate1", meetingDate1);
+                p.Add("@MeetingDate2", meetingDate2);
+            }
             var cs = HttpContext.Current.User.IsInRole("Finance")
                 ? Util.ConnectionStringReadOnlyFinance
                 : Util.ConnectionStringReadOnly;

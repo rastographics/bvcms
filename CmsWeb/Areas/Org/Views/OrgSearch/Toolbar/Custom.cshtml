@@ -13,7 +13,7 @@
       @foreach (var r in sql)
       {
       <li>
-        <a class="ViewReport" href="/OrgSearch/SqlReport/@r">@r.Display</a>
+        <a class="@r.Class" href="/OrgSearch/SqlReport/@r">@r.Display</a>
       </li>
       }
     </ul>

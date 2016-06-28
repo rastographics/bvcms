@@ -24,6 +24,8 @@ namespace CmsData.View
 		
 		private int? _ShowOnOrgId;
 		
+		private string _ClassX;
+		
 		
 		public CustomScriptRole()
 		{
@@ -65,7 +67,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Role", Storage="_Role", DbType="nvarchar(4000)")]
+		[Column(Name="Role", Storage="_Role", DbType="nvarchar")]
 		public string Role
 		{
 			get
@@ -94,6 +96,23 @@ namespace CmsData.View
 			{
 				if (this._ShowOnOrgId != value)
 					this._ShowOnOrgId = value;
+			}
+
+		}
+
+		
+		[Column(Name="class", Storage="_ClassX", DbType="nvarchar")]
+		public string ClassX
+		{
+			get
+			{
+				return this._ClassX;
+			}
+
+			set
+			{
+				if (this._ClassX != value)
+					this._ClassX = value;
 			}
 
 		}

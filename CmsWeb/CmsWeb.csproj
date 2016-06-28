@@ -986,7 +986,6 @@
     <Content Include="Content\touchpoint\js\people\person.js" />
     <Content Include="Content\touchpoint\js\people\task.js" />
     <Content Include="Content\touchpoint\js\people\volunteering.js" />
-    <Content Include="Content\touchpoint\js\search\org-search.js" />
     <Content Include="Content\touchpoint\js\search\people-search.js" />
     <Content Include="Content\touchpoint\js\search\query.js" />
     <Content Include="Content\touchpoint\js\search\saved-query-list.js" />

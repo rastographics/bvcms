@@ -7,6 +7,8 @@
   <div class="box-content">
     <form action="@ViewBag.ExcelUrl" target="_blank" method="POST">
       <input type="hidden" name="orgIds" value="@ViewBag.OrgIds" />
+      <input type="hidden" name="dt1" value="@ViewBag.dt1" />
+      <input type="hidden" name="dt2" value="@ViewBag.dt2" />
       <button type="submit" class="btn btn-default" value="Submit"><i class="fa fa-file-excel-o"></i> Download as Excel</button>
     </form>
     <div class="table-responsive">

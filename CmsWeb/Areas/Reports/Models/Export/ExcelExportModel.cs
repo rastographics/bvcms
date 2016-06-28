@@ -20,8 +20,7 @@ namespace CmsWeb.Models
         }
         public static EpplusResult ToExcel(this IDataReader rd, string filename = null, bool useTable = false)
         {
-            var dt = new DataTable();
-            dt.Load(rd);
+            var dt = rd.DataReaderToTable();
             return dt.ToExcel(filename, useTable);
         }
 
