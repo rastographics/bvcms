@@ -39,7 +39,7 @@ namespace CmsWeb.Areas.Public.Controllers
             var br = new BaseMessage();
 
             // todo: notify user based on ResultCode
-            if (account.Result == MobileAccount.ResultCode.BadEmailAddress)
+            if (account.Result == MobileAccount.ResultCode.BadEmailAddress || account.Result == MobileAccount.ResultCode.FoundMultipleMatches)
             {
                 br.setError(BaseMessage.API_ERROR_CREATE_FAILED);
             }

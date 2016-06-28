@@ -322,11 +322,11 @@ namespace CmsWeb {
         /// <summary>
         ///   Looks up a localized string similar to Hi {name},
         ///&lt;p&gt;It appears that you created a user account from your mobile device. 
-        ///We found your existing record but you used a different email address than the one we have on record.
+        ///We found your existing record but you used this email address &apos;{otheremail}&apos; which is not the one we have your record.
         ///We went ahead and created a new account for you. However, it is a separate one from your existing account.
         ///You should have also received a welcome message for that new account.&lt;/p&gt;
-        ///&lt;p&gt;It is important that you contact your church&apos;s records &lt;strong&gt;{phone}&lt;/strong&gt; to update our records
-        ///so that your data will not stay dupl [rest of string was truncated]&quot;;.
+        ///&lt;p&gt;It is important that you contact the church at &lt;strong&gt;{churchphone}&lt;/strong&gt; to update your records
+        ///so that your data w [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string NotifyDuplicateUserOnMobile {
             get {

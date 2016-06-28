@@ -12,9 +12,12 @@ namespace CmsWeb.MobileAPI
 
         public enum ResultCode
         {
-            CreatedNewUser,
-            FoundPersonWithDiffEmailButCreatedNewUser,
+            NoMatchNewPersonUserAccount,
+            FoundPersonWithDiffEmailCreatedNewPersonUser,
             FoundPersonWithSameEmail,
+            FoundMultipleMatches,
+            NotifiedAboutExistingAccount,
+            ExistingPersonNewUserAccount,
             BadEmailAddress
         }
 
@@ -57,38 +60,50 @@ namespace CmsWeb.MobileAPI
         private void FindPersonSendAccountInfo()
         {
             var foundpeopleids = db.FindPerson(First, Last, Birthdate, Email, Phone).Select(vv => vv.PeopleId.Value).ToArray();
-            var foundpeople = (from p in db.People
-                               where foundpeopleids.Contains(p.PeopleId)
-                               select p).ToList();
+            var foundpeople = (from pp in db.People
+                               where foundpeopleids.Contains(pp.PeopleId)
+                               select pp).ToList();
 
             // the simplest case is that we did not find an existing person
-            if (foundpeople.Count == 0)
+            Person p = null;
+
+            if (foundpeople.Count == 0) //Test1 OK
             {
-                Result = ResultCode.CreatedNewUser;
-                var p = CreateNewPerson();
-                CreateNewUser(p);
+                Result = ResultCode.NoMatchNewPersonUserAccount;
+                p = CreateNewPerson();
+                CreateNewUserSendNewUserWelcome(p);
                 return;
             }
 
-            // notify all found matches
-            foreach (var p in foundpeople)
-                if (p.EmailAddress.Equal(Email) || p.EmailAddress2.Equal(Email))
-                    if (p.Users.Any())
-                        NotifyAboutExistingAccount(p);
-                    else
-                        CreateNewUser(p);
-                else
-                    NotifyAboutDuplicateUser(p);
-
-            // if we did not find anybody with same email, then create a new account
-            if (foundPersonWithSameEmail == null)
+            if (foundpeople.Count > 1)
             {
-                var p = CreateNewPerson();
-                CreateNewUser(p);
-                Result = ResultCode.FoundPersonWithDiffEmailButCreatedNewUser;
+                Result = ResultCode.FoundMultipleMatches;
+                return;
             }
-
-            FoundPerson = foundPersonWithSameEmail ?? foundPersonWithDiffEmail;
+            // we only matched on one person
+            p = foundpeople[0];
+            if (p.EmailAddress.Equal(Email) || p.EmailAddress2.Equal(Email)) 
+            {
+                // they match on an email plus everything else
+                if (p.Users.Any())
+                {
+                    Result = ResultCode.NotifiedAboutExistingAccount; // Test3 OK
+                    NotifyAboutExistingAccount(p);
+                }
+                else
+                {
+                    Result = ResultCode.ExistingPersonNewUserAccount; // Test2 OK
+                    CreateNewUserSendNewUserWelcome(p);
+                }
+            }
+            else
+            {
+                // they match on everything except email
+                NotifyAboutDuplicateUser(p); // Test4
+                var p2 = CreateNewPerson();
+                CreateNewUserSendNewUserWelcome(p2);
+                Result = ResultCode.FoundPersonWithDiffEmailCreatedNewPersonUser;
+            }
         }
 
         private Person CreateNewPerson()
@@ -98,10 +113,10 @@ namespace CmsWeb.MobileAPI
             p.EmailAddress = Email;
             p.HomePhone = Phone;
             db.SubmitChanges();
-            return p;
+            return NewPerson = p;
         }
 
-        private void CreateNewUser(Person p)
+        private void CreateNewUserSendNewUserWelcome(Person p)
         {
             User = MembershipService.CreateUser(db, p.PeopleId);
             db.SubmitChanges();
@@ -109,7 +124,6 @@ namespace CmsWeb.MobileAPI
         }
 
         private Person foundPersonWithDiffEmail;
-        private Person foundPersonWithSameEmail;
 
         private void NotifyAboutExistingAccount(Person p)
         {
@@ -120,14 +134,13 @@ namespace CmsWeb.MobileAPI
             db.Email(DbUtil.AdminMail, p, "Account information for " + db.Host, message);
             User = p.Users.OrderByDescending(uu => uu.LastActivityDate).FirstOrDefault()
                    ?? MembershipService.CreateUser(db, p.PeopleId);
-            if(foundPersonWithSameEmail == null)
-                foundPersonWithSameEmail = p;
             Result = ResultCode.FoundPersonWithSameEmail;
         }
 
         private void NotifyAboutDuplicateUser(Person p)
         {
-            var message = db.ContentHtml("DuplicateUserOnMobile", Resource1.NotifyDuplicateUserOnMobile);
+            var message = db.ContentHtml("NotifyDuplicateUserOnMobile", Resource1.NotifyDuplicateUserOnMobile);
+            message = message.Replace("{otheremail}", Email);
             db.Email(DbUtil.AdminMail, p, "New User Account on " + db.Host, message);
             if(foundPersonWithDiffEmail == null)
                 foundPersonWithDiffEmail = p;
