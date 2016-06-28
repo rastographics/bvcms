@@ -15,6 +15,7 @@ WITH body AS (
           ,ISNULL(tbl.[Type], 'Custom') [Type]
 		  ,tbl.ShowOnOrgId
 		  ,CASE WHEN tbl.Type IS NULL THEN tbl.Role ELSE REPLACE(REPLACE(dbo.RegexMatch(ISNULL(s.Body, ''), '(?<=^(#|--)roles=)(.*)$'),CHAR(10), ''),CHAR(13), '') END [Role]
+		  ,dbo.RegexMatch(ISNULL(s.Body, ''), '(?<=^(#|--)class=)(.*)$') [class]
 	FROM tbl
 	LEFT JOIN dbo.Content s ON s.Name = tbl.name
 
@@ -23,7 +24,9 @@ SELECT r.Name
       ,r.[Type]
       ,r.[Role]
 	  ,r.ShowOnOrgId
+	  ,r.class
 FROM reports r
+
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
