@@ -730,7 +730,7 @@ namespace CmsWeb.Areas.Search.Models
         public EpplusResult SqlTableExcel(string report, string oids, DateTime? meetingDate1, DateTime? meetingDate2)
         {
             using (var rd = ExecuteReader(report, oids, meetingDate1, meetingDate2))
-            return rd.ToExcel(report + ".xlsx");
+            return rd.ToExcel(report + ".xlsx", fromSql: true);
         }
 
         private IDataReader ExecuteReader(string report, string oids, DateTime? meetingDate1, DateTime? meetingDate2)

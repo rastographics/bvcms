@@ -290,7 +290,7 @@ namespace CmsWeb.Controllers
             var script = RunScriptSql(DbUtil.Db, parameter, content.Body, p);
             if (script.StartsWith("Not Authorized"))
                 return Message(script);
-            return cn.ExecuteReader(script, p).ToExcel("RunScript.xlsx");
+            return cn.ExecuteReader(script, p).ToExcel("RunScript.xlsx", fromSql: true);
         }
 
         [HttpGet, Route("~/PyScript/{name}")]

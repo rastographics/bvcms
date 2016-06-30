@@ -18,9 +18,16 @@ namespace CmsWeb.Models
             ep.AddSheet(dt, filename, useTable);
             return new EpplusResult(ep, filename);
         }
-        public static EpplusResult ToExcel(this IDataReader rd, string filename = null, bool useTable = false)
+        public static EpplusResult ToExcel(this IDataReader rd, string filename = null, bool useTable = false, bool fromSql = false)
         {
-            var dt = rd.DataReaderToTable();
+            DataTable dt;
+            if (fromSql)
+                dt = rd.DataReaderToTable();
+            else
+            {
+                dt = new DataTable();
+                dt.Load(rd);
+            }
             return dt.ToExcel(filename, useTable);
         }
 
