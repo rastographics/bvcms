@@ -144,6 +144,10 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                         case "RollSheetVisitorWks":
                             o.RollSheetVisitorWks = val == "0" ? null : val.ToInt2();
                             break;
+                        case "SubGroups":
+                            foreach(var sg in val.Split(','))
+                                o.MemberTags.Add(new MemberTag() {Name = sg.trim()});
+                            break;
 
                         default:
                             if (name.EndsWith(".ev"))
