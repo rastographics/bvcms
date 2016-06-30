@@ -1,17 +1,18 @@
 ﻿@using UtilityExtensions
 @model DateTime?
 <div class="form-group @ViewBag.height33 @ViewBag.hide">
-    @Html.LabelFor(m => m, new { @class = "control-label" })
-    <div class="controls">
-        <div class="input-group date">
-            @Html.TextBoxFor2(m => m, useNativeUnobtrusiveAttributes: true, format: "{0:d}", htmlAttributes: new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-            <input type="hidden" id="@Html.IdForModel()Iso" disabled="disabled" value="@(Model.HasValue ? Model.Value.ToString("yyyy-MM-dd") : "")" />
-        </div>
-        <span class="help-block">@Html.Raw(ViewData["help"])</span>
-        @Html.ValidationMessageLabelFor(m => m)
-        @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
-        {
-            <div class="alert alert-info">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
-        }
+  @Html.LabelFor(m => m, new {@class = "control-label"})
+  <div class="controls">
+    <div class="input-group date">
+      @Html.TextBoxFor2(m => m, useNativeUnobtrusiveAttributes: true, format: "{0:d}", htmlAttributes: new {@class = "form-control"})
+      <span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+      <input type="hidden" id="@Html.IdForModel()Iso" disabled="disabled" value="@(Model.HasValue ? Model.Value.ToString("yyyy-MM-dd") : "")"/>
     </div>
+    <span class="help-block">@Html.Raw(ViewData["help"])</span>
+    @Html.ValidationMessageLabelFor(m => m)
+    @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+    {
+      <div class="alert alert-info">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+    }
+  </div>
 </div>

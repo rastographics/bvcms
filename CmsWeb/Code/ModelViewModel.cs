@@ -25,7 +25,7 @@ namespace CmsWeb.Code
     public interface IModelViewModelObject
     {
         List<ChangeDetail> CopyToModel(PropertyInfo vm, object model, PropertyInfo[] modelProps, bool track);
-        void CopyFromModel(PropertyInfo vm, object model, PropertyInfo[] modelProps);
+        void CopyFromModel(PropertyInfo vm, object existing, object model, PropertyInfo[] modelProps);
     }
 
     public static class ModelViewModel
@@ -50,8 +50,9 @@ namespace CmsWeb.Code
 
                 if (typeof(IModelViewModelObject).IsAssignableFrom(vm.PropertyType))
                 {
+                    var existing = vm.GetValue(viewmodel);
                     var ivm = Activator.CreateInstance(vm.PropertyType);
-                    ((IModelViewModelObject)ivm).CopyFromModel(vm, model, modelProps);
+                    ((IModelViewModelObject)ivm).CopyFromModel(vm, existing, model, modelProps);
                     vm.SetValue(viewmodel, ivm, null);
                     continue;
                 }

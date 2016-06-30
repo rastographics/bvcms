@@ -97,6 +97,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult VolunteerApprovals(VolunteerModel m)
         {
+            m.Populate(m.PeopleId);
             return View("Ministry/Volunteer", m);
         }
     }

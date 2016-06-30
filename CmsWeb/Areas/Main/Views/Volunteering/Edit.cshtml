@@ -1,82 +1,48 @@
 ﻿@using CmsData
-@using UtilityExtensions
 @model CmsWeb.Areas.Main.Models.Other.VolunteerModel
-@{
-    var s = from e in DbUtil.Db.VolApplicationStatuses
-            select e;
-}
 
 <form class="ajax" method="post">
-    <div class="row hidden-xs">
-        <div class="col-sm-12">
-            <div class="pull-right">
-                <a href="/Volunteering/Display/@Model.Volunteer.PeopleId" class="edit-basic btn btn-default ajax">Cancel</a>
-                <a href="/Volunteering/Update/@Model.Volunteer.PeopleId" class="edit-basic btn btn-primary ajax validate">Save Changes</a>
-            </div>
-        </div>
+  <div class="row hidden-xs">
+    <div class="col-sm-12">
+      <div class="pull-right">
+        <a href="/Volunteering/Display/@Model.Volunteer.PeopleId" class="edit-basic btn btn-default ajax">Cancel</a>
+        <a href="/Volunteering/Update/@Model.Volunteer.PeopleId" class="edit-basic btn btn-primary ajax validate">Save Changes</a>
+      </div>
     </div>
-    <div class="row">
-        <div class="col-md-6 col-lg-4">
-            <label>Approvals</label>
-            @foreach (var ck in Model.ApprovalList)
-            {
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" name="approvals" @(ck.Approved ? "checked='checked'" : "") value="@ck.Id" />
-                        @ck.Description<br />
-                    </label>
-                </div>
-            }
+  </div>
+  <div class="row">
+    <div class="col-md-6 col-lg-4">
+      <label>Approvals</label>
+      @foreach (var ck in Model.ApprovalList)
+      {
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="approvals" @(ck.Approved ? "checked='checked'" : "") value="@ck.Id"/>
+            @ck.Description<br/>
+          </label>
         </div>
-        <div class="col-md-6 col-lg-8">
-            <div class="form-group">
-                <label for="comments">Comments</label>
-                <div class="controls">
-                    <textarea name="comments" id="comments" rows="4" class="form-control" style="height: 75px;">@Model.Volunteer.Comments</textarea>
-                </div>
-            </div>
-        </div>
+      }
     </div>
-    <div class="row">
-        <div class="col-md-6 col-lg-3">
-            <div class="form-group">
-                <label for="processDate">Last Background Check</label>
-                <div class="controls">
-                    <div class="input-group date">
-                        @Html.TextBox("processDate", Model.Volunteer.ProcessedDate.FormatDate(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 col-lg-3">
-            <div class="form-group">
-                <label for="statusId">Status Code</label>
-                <div class="controls">
-                    @Html.DropDownList("statusId", new SelectList(s, "Id", "Description", Model.Volunteer.StatusId), new { @class = "form-control" })
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 col-lg-3">
-            <div class="form-group">
-                <label for="mvrDate">Last MVR Check</label>
-                <div class="controls">
-                    <div class="input-group date">
-                        @Html.TextBox("mvrDate", Model.Volunteer.MVRProcessedDate.FormatDate(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 col-lg-3">
-            <div class="form-group">
-                <label for="mvrStatusId">MVR Status Code</label>
-                <div class="controls">
-                    @Html.DropDownList("mvrStatusId", new SelectList(s, "Id", "Description", Model.Volunteer.MVRStatusId), new { @class = "form-control"})
-                </div>
-            </div>
-        </div>
+    <div class="col-md-6 col-lg-8">
+      @Html.EditorFor(m => m.Volunteer.Comments, "TextArea")
     </div>
-    <div class="visible-xs-block">
-        <a href="/Volunteering/Update/@Model.Volunteer.PeopleId" class="edit-basic btn btn-block btn-primary ajax validate">Save Changes</a>
-        <a href="/Volunteering/Display/@Model.Volunteer.PeopleId" class="edit-basic btn btn-block btn-default ajax">Cancel</a>
+  </div>
+  <div class="row">
+    <div class="col-md-6 col-lg-3">
+      @Html.EditorFor(m => m.ProcessedDate)
     </div>
+    <div class="col-md-6 col-lg-3">
+      @Html.EditorFor(m => m.Status, Model.Statuses())
+    </div>
+    <div class="col-md-6 col-lg-3">
+      @Html.EditorFor(m => m.MVRProcessedDate)
+    </div>
+    <div class="col-md-6 col-lg-3">
+      @Html.EditorFor(m => m.MVRStatus, Model.Statuses())
+    </div>
+  </div>
+  <div class="visible-xs-block">
+    <a href="/Volunteering/Update/@Model.Volunteer.PeopleId" class="edit-basic btn btn-block btn-primary ajax validate">Save Changes</a>
+    <a href="/Volunteering/Display/@Model.Volunteer.PeopleId" class="edit-basic btn btn-block btn-default ajax">Cancel</a>
+  </div>
 </form>

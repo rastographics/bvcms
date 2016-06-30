@@ -35,12 +35,9 @@ namespace CmsWeb.Areas.Main.Controllers
         }
 
         [HttpPost]
-        public ActionResult Update(int id, DateTime? processDate, int statusId, string comments, List<int> approvals, DateTime? mvrDate, int mvrStatusId)
+        public ActionResult Update(int id, VolunteerModel m)
         {
-            var m = new VolunteerModel(id);
-            m.Update(processDate, statusId, comments, approvals, mvrDate, mvrStatusId);
-
-            m = new VolunteerModel(id);
+            m.Update(id);
             return View("Display", m);
         }
 

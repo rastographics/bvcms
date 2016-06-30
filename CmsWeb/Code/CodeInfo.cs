@@ -129,7 +129,7 @@ namespace CmsWeb.Code
             return changes;
         }
 
-        public void CopyFromModel(PropertyInfo vm, object model, PropertyInfo[] modelProps)
+        public void CopyFromModel(PropertyInfo vm, object existing, object model, PropertyInfo[] modelProps)
         {
             string altname = vm.Name + "Id";
             var fiattr = vm.GetAttribute<FieldInfoAttribute>();
@@ -146,6 +146,8 @@ namespace CmsWeb.Code
             else
                 Value = midvalue.ToString();
             var cinfo = midvalue as CodeInfo;
+            if(cinfo == null && existing != null)
+                cinfo = existing as CodeInfo;
             if (items == null && cinfo != null && cinfo.items != null)
                 items = cinfo.items;
             Name = vm.Name;

@@ -37,7 +37,7 @@ namespace CmsWeb.Areas.People.Models
             return changes;
         }
 
-        public void CopyFromModel(PropertyInfo vm, object model, PropertyInfo[] modelProps)
+        public void CopyFromModel(PropertyInfo vm, object existing, object model, PropertyInfo[] modelProps)
         {
             var ckf = vm.GetAttribute<FieldInfoAttribute>().CheckboxField;
             var ckpi = modelProps.Single(ss => ss.Name == ckf);
@@ -72,7 +72,7 @@ namespace CmsWeb.Areas.People.Models
             return changes;
         }
 
-        public void CopyFromModel(PropertyInfo vm, object model, PropertyInfo[] modelProps)
+        public void CopyFromModel(PropertyInfo vm, object existing, object model, PropertyInfo[] modelProps)
         {
             var ckf = vm.GetAttribute<FieldInfoAttribute>().CheckboxField;
             var ckpi = modelProps.Single(ss => ss.Name == ckf);
