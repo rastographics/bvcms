@@ -4,7 +4,7 @@
   @Html.LabelFor(m => m, new {@class = "control-label"})
   <div class="controls">
     <div class="input-group datetime">
-      @Html.TextBoxFor2(m => m, useNativeUnobtrusiveAttributes: true, format: "{0:g}", htmlAttributes: new {@class = "form-control"})
+      @Html.TextBoxFor(m => m, useNativeUnobtrusiveAttributes: false, format: "{0:g}", htmlAttributes: new {@class = "form-control"})
       <span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
       <input type="hidden" id="@Html.IdForModel()Iso" disabled="disabled" value="@(Model.HasValue ? Model.Value.ToString("s") : "")"/>
     </div>
