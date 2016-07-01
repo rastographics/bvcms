@@ -9,6 +9,7 @@ using System.Xml.Linq;
 using CmsData;
 using CmsWeb.Areas.Public.Models;
 using Newtonsoft.Json;
+using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
@@ -83,22 +84,80 @@ namespace CmsWeb.Models
                 DbUtil.Db.GeoCodes.InsertAllOnSubmit(addlist);
             DbUtil.Db.SubmitChanges();
 
-            var template = @"
+            var template = DbUtil.Content("SGF-MapTooltip", "");
+            if (string.IsNullOrEmpty(template))
+            {
+                template = @"
 <div>
-{0}<br />
-{1:ddd h:mm tt}<br />
-<a target='smallgroup' href='{2}OnlineReg/{3}'>More Information</a>
+[SGF:Name]<br />
+[SGF:Neighborhood]<br />
+Group Type: [SGF:Type]<br />
+Meeting Time: [SGF:Day] at [SGF:Time]<br />
+<a target='smallgroup' href='/OnlineReg/[SGF:OrgID]'>Signup</a>
 </div>";
+            }
+
             return from i in qlist
                    where i.gc.Latitude != 0
                    select new MarkerInfo
                    {
-                       html = string.Format(template, i.desc, i.schedule, i.cmshost, i.id),
+                       //html = string.Format(template, i.desc, i.schedule, i.cmshost, i.id),
+                       html = GetMapTooltip(template, i.org),
                        org = i.org,
                        latitude = i.gc.Latitude,
                        longitude = i.gc.Longitude,
                        image = $"http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld={i.markertext}|{i.color}"
                    };
+        }
+
+        public string GetMapTooltip(string template, Organization org)
+        {
+            var values = new Dictionary<string, string>();
+
+            var leader = (from e in DbUtil.Db.People
+                          where e.PeopleId == org.LeaderId
+                          select e).SingleOrDefault();
+
+            values["SGF:OrgID"] = org.OrganizationId.ToString();
+            values["SGF:Name"] = org.OrganizationName;
+            values["SGF:Description"] = org.Description;
+            values["SGF:Room"] = org.Location;
+            values["SGF:Leader"] = org.LeaderName;
+            values["SGF:DateStamp"] = DateTime.Now.ToString("yyyy-MM-dd");
+            values["SGF:Schedule"] = "";
+
+            if (leader != null && leader.PictureId != null)
+                values["SGF:LeaderPicSrc"] = "/Portrait/" + leader.Picture.SmallId.Value + "?v=" + DateTime.Now.ToString("yyyyMMddHHmmssffff");
+            else
+                values["SGF:LeaderPicSrc"] = "/Portrait/-3";
+
+            if (org.OrgSchedules.Count > 0)
+            {
+                int count = 0;
+                foreach (var schedule in org.OrgSchedules)
+                {
+                    if (count > 0) values["SGF:Schedule"] += "; ";
+                    values["SGF:Schedule"] += GroupLookup.DAY_LAST[schedule.SchedDay ?? 0] + ", " + schedule.SchedTime.ToString2("t"); ;
+                    count++;
+                }
+            }
+
+            var loadAllValues = DbUtil.Db.Setting("SGF-LoadAllExtraValues", false);
+
+            foreach (var extra in org.OrganizationExtras)
+            {
+                if (extra.Field.StartsWith("SGF:"))
+                    values[extra.Field] = extra.Data;
+                else if (loadAllValues)
+                    values[$"SGF:{extra.Field.Replace(" ", "")}"] = extra.Data;
+            }
+
+            foreach (KeyValuePair<string, string> pair in values)
+            {
+                template = template.Replace($"[{pair.Key}]", pair.Value);
+            }
+
+            return template;
         }
 
         private GeoCode GetGeocode(string address)
