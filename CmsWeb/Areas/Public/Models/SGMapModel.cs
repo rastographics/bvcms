@@ -31,6 +31,7 @@ namespace CmsWeb.Models
 
         public IEnumerable<SGInfo> SmallGroupInfo()
         {
+            var orgTypes = DbUtil.Db.Setting("SGF-OrgTypes", "").Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
             var orgIdList = _orgList?.Select(x => x.OrganizationId).Distinct() ?? new List<int>();
 
             var q = from o in DbUtil.Db.Organizations
@@ -39,6 +40,7 @@ namespace CmsWeb.Models
                     where host != null && (host.PrimaryAddress ?? "") != ""
                     where !divid.HasValue || o.DivOrgs.Any(dd => dd.DivId == divid) || o.DivisionId == divid
                     where !orgIdList.Any() || orgIdList.Contains(o.OrganizationId)
+                    where !orgTypes.Any() || orgTypes.Contains(o.OrganizationType.Description)
                     select new { host, o, schedule };
 
             var q2 = from i in q.ToList()
