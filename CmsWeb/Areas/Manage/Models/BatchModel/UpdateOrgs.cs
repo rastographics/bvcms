@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using CmsData;
-using LumenWorks.Framework.IO.Csv;
+using CsvHelper;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Models.BatchModel
@@ -10,17 +10,20 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
     {
         public static void UpdateOrgs(string text)
         {
-            var csv = new CsvReader(new StringReader(text), true, '\t');
-            var cols = csv.GetFieldHeaders();
+            text = text.trim();
+            var csv = new CsvReader(new StringReader(text));
+            csv.Configuration.Delimiter = "\t";
+            csv.Configuration.TrimHeaders = true;
+            csv.Configuration.TrimFields = true;
 
-            while (csv.ReadNextRecord())
+            while (csv.Read())
             {
-                var oid = csv[0].ToInt();
+                var oid = csv.GetField<int>(0);
                 var o = DbUtil.Db.LoadOrganizationById(oid);
-                for (var c = 1; c < csv.FieldCount; c++)
+                for (var c = 1; c < csv.CurrentRecord.Length; c++)
                 {
-                    var val = csv[c].Trim();
-                    var name = cols[c].Trim();
+                    var val = csv.GetField<string>(c);
+                    var name = csv.FieldHeaders[c];
                     switch (name)
                     {
                         case "Campus":
@@ -145,8 +148,11 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                             o.RollSheetVisitorWks = val == "0" ? null : val.ToInt2();
                             break;
                         case "SubGroups":
-                            foreach(var sg in val.Split(','))
-                                o.MemberTags.Add(new MemberTag() {Name = sg.trim()});
+                            if(val == "(clear)")
+                                DbUtil.Db.MemberTags.DeleteAllOnSubmit(o.MemberTags);
+                            else
+                                foreach (var sg in val.Split(','))
+                                    o.AddMemberTag(sg);
                             break;
 
                         default:
