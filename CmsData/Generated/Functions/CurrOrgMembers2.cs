@@ -66,7 +66,7 @@ namespace CmsData.View
 		
 		private string _MemberType;
 		
-		private string _UserData;
+		private string _MemberInfo;
 		
 		private string _Questions;
 		
@@ -512,18 +512,18 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="UserData", Storage="_UserData", DbType="nvarchar")]
-		public string UserData
+		[Column(Name="MemberInfo", Storage="_MemberInfo", DbType="nvarchar")]
+		public string MemberInfo
 		{
 			get
 			{
-				return this._UserData;
+				return this._MemberInfo;
 			}
 
 			set
 			{
-				if (this._UserData != value)
-					this._UserData = value;
+				if (this._MemberInfo != value)
+					this._MemberInfo = value;
 			}
 
 		}
