@@ -86,7 +86,7 @@ namespace CmsWeb.Areas.Org.Models
         [Display(Description = NoCreditCardsDescription)]
         public bool NoCreditCards { get; set; }
 
-        [Display(Name = "Limit to Role", Description = LimitToRoleDescription)]
+        [Display(Name = "Limit Org to Role", Description = LimitToRoleDescription)]
         public string LimitToRole { get; set; }
 
         #region Description
