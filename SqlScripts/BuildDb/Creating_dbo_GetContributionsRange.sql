@@ -5,7 +5,8 @@ CREATE FUNCTION [dbo].[GetContributionsRange]
 	@campusid INT,
 	@nontaxded BIT,
 	@includeUnclosed BIT,
-	@pledge BIT
+	@pledge BIT,
+	@fundid INT
 )
 RETURNS TABLE 
 AS
@@ -33,7 +34,7 @@ RETURN
 				END
 		FROM dbo.ContributionSearch(NULL, NULL, NULL, NULL, 0, NULL, NULL, @fd, @td, 
 				CASE WHEN ISNULL(@nontaxded, 0) = 1 THEN 'nontaxded' WHEN @pledge = 1 THEN 'pledge' ELSE 'taxded' END, 
-				NULL, @campusid, NULL, @includeUnclosed, NULL, 2) cs
+				NULLIF(@fundid, 0), @campusid, NULL, @includeUnclosed, NULL, 2) cs
 		JOIN dbo.Contribution c ON c.ContributionId = cs.ContributionId
 	),
 	sumpeoplerange AS (
