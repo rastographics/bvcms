@@ -29,7 +29,7 @@ RETURNS @tt TABLE
 		AttendPct real,
 		AttendStr nvarchar(200),
 		MemberType nvarchar(100),
-		UserData NVARCHAR(MAX),
+		MemberInfo NVARCHAR(MAX),
 		Questions NVARCHAR(MAX),
 		InactiveDate datetime,
 		Medical nvarchar(1000),
@@ -79,7 +79,7 @@ BEGIN
 	om.AttendPct,
 	om.AttendStr,
 	mt.Description MemberType,
-	om.UserData,
+	MemberInfo = om.UserData,
 
 	(SELECT STUFF((
 		SELECT CHAR(13) + '    ' + Question + ': ' + Answer
