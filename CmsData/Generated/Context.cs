@@ -2839,7 +2839,8 @@ namespace CmsData
             [Parameter(DbType="int")] int? campusid,
             [Parameter(DbType="bit")] bool? nontaxded,
             [Parameter(DbType="bit")] bool? includeUnclosed,
-            [Parameter(DbType="bit")] bool? pledge
+            [Parameter(DbType="bit")] bool? pledge,
+            [Parameter(DbType="int")] int? fundid
             )
 		{
 			return this.CreateMethodCallQuery< View.GetContributionsRange>(this, 
@@ -2849,7 +2850,8 @@ namespace CmsData
                 campusid,
                 nontaxded,
                 includeUnclosed,
-                pledge
+                pledge,
+                fundid
                 );
 		}
 
