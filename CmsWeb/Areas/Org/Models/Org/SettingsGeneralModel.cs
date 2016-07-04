@@ -14,7 +14,7 @@ namespace CmsWeb.Areas.Org.Models
 
         public int Id
         {
-            get { return Org != null ? Org.OrganizationId : 0; }
+            get { return Org?.OrganizationId ?? 0; }
             set
             {
                 if (Org == null)
@@ -23,8 +23,8 @@ namespace CmsWeb.Areas.Org.Models
         }
         public void Update()
         {
-            if (LimitToRole == "0")
-                LimitToRole = null;
+            if (LimitToRole.Value == "0")
+                LimitToRole.Value = null;
             if (Gender.Value == "99")
                 Gender.Value = null;
             this.CopyPropertiesTo(Org);
@@ -32,6 +32,7 @@ namespace CmsWeb.Areas.Org.Models
         }
 
         public SettingsGeneralModel(int id)
+            : this()
         {
             Id = id;
             this.CopyPropertiesFrom(Org);
@@ -39,17 +40,20 @@ namespace CmsWeb.Areas.Org.Models
 
         public SettingsGeneralModel()
         {
+            LimitToRole = new CodeInfo("0", new SelectList(Roles(), "Value", "Text"));
         }
         public IEnumerable<SelectListItem> Roles()
         {
+            var s = LimitToRole?.Value;
             var list = DbUtil.Db.Roles.OrderBy(r => r.RoleName).ToList().Select(x => new SelectListItem
             {
                 Value = x.RoleName,
                 Text = x.RoleName,
-                Selected = !string.IsNullOrWhiteSpace(LimitToRole) && LimitToRole.Contains(x.RoleName)
+                Selected = !string.IsNullOrWhiteSpace(s) && LimitToRole.Value.Contains(x.RoleName)
             }).ToList();
 
-            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)", Selected = true});
+            var seldefault = !list.Any(vv => vv.Selected);
+            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)", Selected = seldefault});
             return list;
         }
 
@@ -87,7 +91,7 @@ namespace CmsWeb.Areas.Org.Models
         public bool NoCreditCards { get; set; }
 
         [Display(Name = "Limit Org to Role", Description = LimitToRoleDescription)]
-        public string LimitToRole { get; set; }
+        public CodeInfo LimitToRole { get; set; }
 
         #region Description
 
