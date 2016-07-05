@@ -1,14 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Linq;
-using System.Web;
 using CmsData;
 using System.Web.Mvc;
-using System.Text;
-using System.Configuration;
 using UtilityExtensions;
-using System.Data.Linq.SqlClient;
 
 namespace CmsWeb.Areas.Setup.Models
 {
@@ -34,30 +28,30 @@ namespace CmsWeb.Areas.Setup.Models
         {
             var p = DbUtil.Db.Promotions.Single(pr => pr.Id == id);
             var fromdiv = p.FromDivId;
-            var todiv = p.ToDivId;
             var q = from om in DbUtil.Db.OrganizationMembers
                     where om.Organization.DivOrgs.Any(d => d.DivId == fromdiv)
                     where (om.Pending ?? false) == false
+                    let pcid = om.OrgMemberExtras.Where(vv => vv.Field == "PromotingTo").Select(vv => vv.IntValue).SingleOrDefault()
                     let pc = DbUtil.Db.OrganizationMembers.FirstOrDefault(op =>
                        op.Pending == true
                        && op.PeopleId == om.PeopleId
-                       && op.Organization.DivOrgs.Any(dd => dd.DivId == todiv))
+                       && op.OrganizationId == pcid)
                     where pc != null
                     select pc;
-            return q.Count() > 0;
+            return q.Any();
         }
         public void Promote(int id)
         {
             var p = DbUtil.Db.Promotions.Single(pr => pr.Id == id);
             var fromdiv = p.FromDivId;
-            var todiv = p.ToDivId;
             var q = from om in DbUtil.Db.OrganizationMembers
                     where om.Organization.DivOrgs.Any(d => d.DivId == fromdiv)
                     where (om.Pending ?? false) == false
+                    let pcid = om.OrgMemberExtras.Where(vv => vv.Field == "PromotingTo").Select(vv => vv.IntValue).SingleOrDefault()
                     let pc = DbUtil.Db.OrganizationMembers.FirstOrDefault(op =>
                        op.Pending == true
                        && op.PeopleId == om.PeopleId
-                       && op.Organization.DivOrgs.Any(dd => dd.DivId == todiv))
+                       && op.OrganizationId == pcid)
                     where pc != null
                     where om.OrganizationId != pc.OrganizationId // should not promote to same class
                     select new { om, pc };

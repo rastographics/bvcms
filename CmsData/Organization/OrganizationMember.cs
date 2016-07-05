@@ -618,7 +618,7 @@ AND a.PeopleId = {2}
 
         public string GetExtra(CMSDataContext db, string field)
         {
-            var oev = db.OrganizationExtras.SingleOrDefault(oe => oe.OrganizationId == OrganizationId && oe.Field == field);
+            var oev = db.OrgMemberExtras.SingleOrDefault(oe => oe.OrganizationId == OrganizationId && oe.PeopleId == PeopleId && oe.Field == field);
             if (oev == null)
                 return "";
             if (oev.StrValue.HasValue())

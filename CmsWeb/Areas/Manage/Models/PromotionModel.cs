@@ -125,7 +125,6 @@ namespace CmsWeb.Models
         public IEnumerable<PromoteInfo> FetchStudents()
         {
             var fromdiv = Promotion.FromDivId;
-            var todiv = Promotion.ToDivId;
 
             var q = from om in DbUtil.Db.OrganizationMembers
                     let sc = om.Organization.OrgSchedules.FirstOrDefault() // SCHED
@@ -133,10 +132,12 @@ namespace CmsWeb.Models
                     where ScheduleId == 0 || om.Organization.OrgSchedules.Any(os => os.ScheduleId == ScheduleId)
                     where (om.Pending ?? false) == false
                     where !NormalMembersOnly || om.MemberTypeId == MemberTypeCode.Member
+
+                    let pcid = om.OrgMemberExtras.Where(vv => vv.Field == "PromotingTo").Select(vv => vv.IntValue).SingleOrDefault()
                     let pc = DbUtil.Db.OrganizationMembers.FirstOrDefault(op =>
                         op.Pending == true
                         && op.PeopleId == om.PeopleId
-                        && op.Organization.DivOrgs.Any(dd => dd.DivId == todiv))
+                        && op.OrganizationId == pcid)
                     let pt = pc.Organization.OrganizationMembers.FirstOrDefault(om2 =>
                         om2.Pending == true
                         && om2.MemberTypeId == MemberTypeCode.Teacher)
@@ -228,15 +229,16 @@ namespace CmsWeb.Models
             var t = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == TargetClassId);
             if (t == null)
                 return;
-            var fromdiv = Promotion.FromDivId;
             var todiv = Promotion.ToDivId;
 
             foreach (var i in selected)
             {
                 var a = i.Split(',');
+                var foid = a[1].ToInt();
+                var pid = a[0].ToInt();
                 var q = from om in DbUtil.Db.OrganizationMembers
                         where om.Pending == true
-                        where om.PeopleId == a[0].ToInt()
+                        where om.PeopleId == pid 
                         where om.Organization.DivOrgs.Any(dd => dd.DivId == todiv)
                         where om.OrganizationId != t.OrganizationId // prevent promoting into the same class
                         where ScheduleId == 0 || om.Organization.OrgSchedules.Any(os => os.ScheduleId == ScheduleId)
@@ -248,16 +250,26 @@ namespace CmsWeb.Models
                     DbUtil.Db.SubmitChanges();
                 }
                 // this is their membership where they are currently a member
-                var fom = DbUtil.Db.OrganizationMembers.Single(m => m.OrganizationId == a[1].ToInt() && m.PeopleId == a[0].ToInt());
+                var fom = DbUtil.Db.OrganizationMembers.Single(m => m.OrganizationId == foid && m.PeopleId == pid);
+
+                // drop pending in previously assigned to org
+                var prevtoid = fom.GetExtra(DbUtil.Db, "PromotingTo").ToInt();
+                var prevto = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.OrganizationId == prevtoid && m.PeopleId == pid && m.Pending == true);
+                prevto?.Drop(DbUtil.Db);
+                DbUtil.Db.SubmitChanges();
+
                 // now put them in the to class as pending member
-                if(t.OrganizationId != fom.OrganizationId) // prevent promoting into the same class as they are currently in
+                if (t.OrganizationId != fom.OrganizationId) // prevent promoting into the same class as they are currently in
+                {
                     OrganizationMember.InsertOrgMembers(DbUtil.Db,
                         t.OrganizationId,
                         a[0].ToInt(),
                         fom.MemberTypeId, // keep their Existing membertype
                         Util.Now,
                         null, true);
-                // todo: store the from orgid in tom record and use that do do promotion with
+                    // record where they will be going
+                    fom.AddEditExtraInt("PromotingTo", t.OrganizationId);
+                }
             }
             DbUtil.Db.UpdateMainFellowship(t.OrganizationId);
         }
@@ -265,15 +277,15 @@ namespace CmsWeb.Models
         public DataTable Export()
         {
             var fromdiv = Promotion.FromDivId;
-            var todiv = Promotion.ToDivId;
             var q = from om in DbUtil.Db.OrganizationMembers
                     where om.Organization.DivOrgs.Any(d => d.DivId == fromdiv)
                     where (om.Pending ?? false) == false
                     where om.MemberTypeId == MemberTypeCode.Member
+                    let pcid = om.OrgMemberExtras.Where(vv => vv.Field == "PromotingTo").Select(vv => vv.IntValue).SingleOrDefault()
                     let pc = DbUtil.Db.OrganizationMembers.FirstOrDefault(op =>
                         op.Pending == true
                         && op.PeopleId == om.PeopleId
-                        && op.Organization.DivOrgs.Any(dd => dd.DivId == todiv))
+                        && op.OrganizationId == pcid)
                     let sc = pc.Organization.OrgSchedules.FirstOrDefault() // SCHED
                     let tm = sc.SchedTime.Value
                     let pt = pc.Organization.OrganizationMembers.FirstOrDefault(om2 =>
