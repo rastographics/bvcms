@@ -269,6 +269,7 @@ namespace CmsWeb.Models
                         null, true);
                     // record where they will be going
                     fom.AddEditExtraInt("PromotingTo", t.OrganizationId);
+                    DbUtil.Db.SubmitChanges();
                 }
             }
             DbUtil.Db.UpdateMainFellowship(t.OrganizationId);

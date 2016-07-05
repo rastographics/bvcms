@@ -100,7 +100,6 @@ namespace CmsWeb.Areas.Setup.Controllers
         {
             var iid = id.Substring(1).ToInt();
             var m = new Models.PromotionModel();
-            UpdateModel(m);
             m.Promote(iid);
             return RedirectToAction("Index");
         }

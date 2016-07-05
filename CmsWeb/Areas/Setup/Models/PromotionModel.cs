@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CmsData;
@@ -59,9 +60,11 @@ namespace CmsWeb.Areas.Setup.Models
             var qlist = q.ToList();
             foreach (var i in qlist)
             {
+                DbUtil.Db.SubmitChanges();
                 i.om.Drop(DbUtil.Db);
                 DbUtil.Db.SubmitChanges();
                 i.pc.Pending = false;
+                i.pc.EnrollmentDate = DateTime.Now;
                 DbUtil.Db.SubmitChanges();
                 list[i.pc.OrganizationId] = i.pc.Organization;
             }

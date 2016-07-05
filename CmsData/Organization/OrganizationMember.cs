@@ -66,6 +66,7 @@ namespace CmsData
 
                 db.EnrollmentTransactions.InsertOnSubmit(droptrans);
                 db.OrgMemMemTags.DeleteAllOnSubmit(this.OrgMemMemTags);
+                db.OrgMemberExtras.DeleteAllOnSubmit(this.OrgMemberExtras);
                 db.OrganizationMembers.DeleteOnSubmit(this);
                 db.ExecuteCommand(@"
 DELETE dbo.SubRequest
