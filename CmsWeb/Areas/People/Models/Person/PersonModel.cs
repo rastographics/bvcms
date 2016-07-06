@@ -212,6 +212,8 @@ namespace CmsWeb.Areas.People.Models
             {
                 if (_resources != null) return _resources;
 
+                _resources = new List<ResourceModel>();
+
                 var orgLevels = DbUtil.Db.OrganizationMembers.Where(x => x.PeopleId == PeopleId)
                     .ToDictionary(x => x.OrganizationId, x => x.MemberType.Description);
 
@@ -228,11 +230,16 @@ namespace CmsWeb.Areas.People.Models
                 // Filter out resources that have an org the user isn't in
                 resources = resources.Where(x => !x.OrganizationId.HasValue || orgIds.Contains(x.OrganizationId.Value));
 
-                // Filter out resources that requires a certain level of access.
-                //TODO Fix this
-                //resources = resources.Where(x => (x.MemberTypeIds == "" || x.MemberTypeIds == null) || !x.OrganizationId.HasValue || x.MemberTypeIds.Contains(orgLevels[x.OrganizationId.Value]));
-            
-                _resources = resources.Select(x => new ResourceModel(x)).ToList().OrderByDescending(x => x.Resource.DisplayOrder).ToList();
+                foreach (var resource in resources)
+                {
+                    if (string.IsNullOrEmpty(resource.MemberTypeIds) || !resource.OrganizationId.HasValue ||
+                        resource.MemberTypeIds.Contains(orgLevels[resource.OrganizationId.Value]))
+                    {
+                        _resources.Add(new ResourceModel(resource));
+                    }
+                }
+
+                _resources = _resources.OrderByDescending(x => x.Resource.DisplayOrder).ToList();
 
                 return _resources;
             }
