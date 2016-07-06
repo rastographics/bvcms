@@ -34,16 +34,16 @@ SELECT
 		+CASE WHEN LEN(ISNULL(RegSettingXml.value('(//Instructions/Special)[1]', 'varchar(max)'),'')) > 0 THEN ' InstructionsSpecial' ELSE '' END
 		+CASE WHEN LEN(ISNULL(RegSettingXml.value('(//Instructions/Thanks)[1]', 'varchar(max)'),'')) > 0 THEN ' InstructionsThanks' ELSE '' END
 		+CASE WHEN LEN(ISNULL(RegSettingXml.value('(//Instructions/Terms)[1]', 'varchar(max)'),'')) > 0 THEN ' InstructionsTerms' ELSE '' END
-		+CASE WHEN RegSettingXml.value('(//AskAllergies)[1]', 'bit') = 1 THEN ' Allergies' ELSE '' END
-		+CASE WHEN RegSettingXml.value('(//AnswersNotRequired)[1]', 'bit') = 1 THEN ' AnswersNotRequired' ELSE '' END
-		+CASE WHEN RegSettingXml.value('(//AskChurch)[1]', 'bit') = 1 THEN ' Church' ELSE '' END
-		+CASE WHEN RegSettingXml.value('(//AskCoaching)[1]', 'bit') = 1 THEN ' Coaching' ELSE '' END
-		+CASE WHEN RegSettingXml.value('(//AskDoctor)[1]', 'bit') = 1 THEN ' Doctor' ELSE '' END
-		+CASE WHEN RegSettingXml.value('(//AskEmContact)[1]', 'bit') = 1 THEN ' EmContact' ELSE '' END
-		+CASE WHEN RegSettingXml.value('(//AskInsurance)[1]', 'bit') = 1 THEN ' Insurance' ELSE '' END
-		+CASE WHEN RegSettingXml.value('(//AskParents)[1]', 'bit') = 1 THEN ' Parents' ELSE '' END
-		+CASE WHEN RegSettingXml.value('(//AskSMS)[1]', 'bit') = 1 THEN ' SMS' ELSE '' END
-		+CASE WHEN RegSettingXml.value('(//AskTylenolEtc)[1]', 'bit') = 1 THEN ' TylenolEtc' ELSE '' END
+		+CASE WHEN RegSettingXml.value('(//AskAllergies)[1]', 'varchar') IS NOT NULL THEN ' Allergies' ELSE '' END
+		+CASE WHEN RegSettingXml.value('(//AnswersNotRequired)[1]', 'varchar') IS NOT NULL THEN ' AnswersNotRequired' ELSE '' END
+		+CASE WHEN RegSettingXml.value('(//AskChurch)[1]', 'varchar') IS NOT NULL THEN ' Church' ELSE '' END
+		+CASE WHEN RegSettingXml.value('(//AskCoaching)[1]', 'varchar') IS NOT NULL THEN ' Coaching' ELSE '' END
+		+CASE WHEN RegSettingXml.value('(//AskDoctor)[1]', 'varchar') IS NOT NULL THEN ' Doctor' ELSE '' END
+		+CASE WHEN RegSettingXml.value('(//AskEmContact)[1]', 'varchar') IS NOT NULL THEN ' EmContact' ELSE '' END
+		+CASE WHEN RegSettingXml.value('(//AskInsurance)[1]', 'varchar') IS NOT NULL THEN ' Insurance' ELSE '' END
+		+CASE WHEN RegSettingXml.value('(//AskParents)[1]', 'varchar') IS NOT NULL THEN ' Parents' ELSE '' END
+		+CASE WHEN RegSettingXml.value('(//AskSMS)[1]', 'varchar') IS NOT NULL THEN ' SMS' ELSE '' END
+		+CASE WHEN RegSettingXml.value('(//AskTylenolEtc)[1]', 'varchar') IS NOT NULL THEN ' TylenolEtc' ELSE '' END
 		+CASE WHEN LEN(ISNULL(RegSettingXml.value('(//AskSuggestedFee)[1]', 'varchar(80)'), '')) > 0 THEN ' AskSuggestedFee' ELSE '' END
 		+CASE WHEN LEN(ISNULL(RegSettingXml.value('(//AskRequest)[1]', 'varchar(80)'), '')) > 0 THEN ' Request' ELSE '' END
 		+CASE WHEN LEN(ISNULL(RegSettingXml.value('(//AskTickets)[1]', 'varchar(100)'), '')) > 0 THEN ' Tickets' ELSE '' END
@@ -81,6 +81,7 @@ SELECT
 		+CASE WHEN LEN(ISNULL(RegSettingXml.value('(//DonationLabel)[1]', 'varchar(50)'), '')) > 0 THEN ' DonationLabel' ELSE '' END
 		+CASE WHEN RegSettingXml.value('(//DonationFundId)[1]', 'int') > 0 THEN ' DonationFundId' ELSE '' END
 FROM dbo.Organizations WHERE RegSettingXml IS NOT NULL
+
 
 
 

@@ -4,17 +4,17 @@ AS
 SELECT 
 	OrganizationId
 	,OrganizationName
-	,RegSettingXml.value('(/Settings/AskItems/AskAllergies)[1]', 'bit') AskAllergies
-	,RegSettingXml.value('(/Settings/AskItems/AnswersNotRequired)[1]', 'bit') AnswersNotRequired
-	,RegSettingXml.value('(/Settings/AskItems/AskChurch)[1]', 'bit') AskChurch
-	,RegSettingXml.value('(/Settings/AskItems/AskCoaching)[1]', 'bit') AskCoaching
-	,RegSettingXml.value('(/Settings/AskItems/AskDoctor)[1]', 'bit') AskDoctor
-	,RegSettingXml.value('(/Settings/AskItems/AskEmContact)[1]', 'bit') AskEmContact
-	,RegSettingXml.value('(/Settings/AskItems/AskInsurance)[1]', 'bit') AskInsurance
-	,RegSettingXml.value('(/Settings/AskItems/AskParents)[1]', 'bit') AskParents
-	,RegSettingXml.value('(/Settings/AskItems/AskSMS)[1]', 'bit') AskSMS
-	,RegSettingXml.value('(/Settings/AskItems/AskTylenolEtc)[1]', 'bit') AskTylenolEtc
-	,RegSettingXml.value('(/Settings/AskItems/AskSuggestedFee)[1]', 'bit') AskSuggestedFee
+	,CAST(RegSettingXml.value('(/Settings/AskItems/AskAllergies)[1]', 'bit') + 1 AS BIT) AskAllergies
+	,CAST(RegSettingXml.value('(/Settings/AskItems/AnswersNotRequired)[1]', 'bit') + 1 AS BIT) AnswersNotRequired
+	,CAST(RegSettingXml.value('(/Settings/AskItems/AskChurch)[1]', 'bit') + 1 AS BIT) AskChurch
+	,CAST(RegSettingXml.value('(/Settings/AskItems/AskCoaching)[1]', 'bit') + 1 AS BIT) AskCoaching
+	,CAST(RegSettingXml.value('(/Settings/AskItems/AskDoctor)[1]', 'bit') + 1 AS BIT) AskDoctor
+	,CAST(RegSettingXml.value('(/Settings/AskItems/AskEmContact)[1]', 'bit') + 1 AS BIT) AskEmContact
+	,CAST(RegSettingXml.value('(/Settings/AskItems/AskInsurance)[1]', 'bit') + 1 AS BIT) AskInsurance
+	,CAST(RegSettingXml.value('(/Settings/AskItems/AskParents)[1]', 'bit') + 1 AS BIT) AskParents
+	,CAST(RegSettingXml.value('(/Settings/AskItems/AskSMS)[1]', 'bit') + 1 AS BIT) AskSMS
+	,CAST(RegSettingXml.value('(/Settings/AskItems/AskTylenolEtc)[1]', 'bit') + 1 AS BIT) AskTylenolEtc
+	,CAST(RegSettingXml.value('(/Settings/AskItems/AskSuggestedFee)[1]', 'bit') + 1 AS BIT) AskSuggestedFee
 
 	,RegSettingXml.value('(/Settings/AskItems/AskRequest)[1]', 'varchar(80)') AskRequest
 	,RegSettingXml.value('(/Settings/AskItems/AskTickets)[1]', 'varchar(100)') AskTickets
@@ -58,6 +58,8 @@ SELECT
 	,RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') DonationFundId
 
 FROM dbo.Organizations WHERE RegSettingXml IS NOT NULL
+
+
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
