@@ -85,6 +85,9 @@
     <join name="op">
       LEFT JOIN dbo.OrgPeople({orgid}, '1020304050', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) op ON op.PeopleId = p.PeopleId
     </join>
+    <join name="om">
+      LEFT JOIN dbo.OrganizationMembers om ON om.PeopleId = p.PeopleId AND om.OrganizationId = {orgid}
+    </join>
     <join name="pa">
       LEFT JOIN dbo.PrevAddress pa ON pa.PeopleId = p.PeopleId
     </join>
@@ -225,6 +228,9 @@
     <column name="AttendHistory"> dbo.CompactAttendHistory(p.peopleid) </column>
     <column name="BackgroundCheck" join="vo">vo.ProcessedDate</column>
     <column name="MVRCheck" join="vo">vo.MVRProcessedDate</column>
+    <column name="Request" join="om" context="org"> 
+      om.Request
+    </column>
   </Columns>
   <SpecialColumns>
     <column name="StatusFlag">
