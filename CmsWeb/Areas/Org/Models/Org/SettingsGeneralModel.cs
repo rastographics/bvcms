@@ -23,6 +23,8 @@ namespace CmsWeb.Areas.Org.Models
         }
         public void Update()
         {
+            if(LimitToRole == null)
+                LimitToRole = new CodeInfo("0", new SelectList(Roles(), "Value", "Text"));
             if (LimitToRole.Value == "0")
                 LimitToRole.Value = null;
             if (Gender.Value == "99")

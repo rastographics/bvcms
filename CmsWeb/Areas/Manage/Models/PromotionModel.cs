@@ -132,7 +132,6 @@ namespace CmsWeb.Models
                     where ScheduleId == 0 || om.Organization.OrgSchedules.Any(os => os.ScheduleId == ScheduleId)
                     where (om.Pending ?? false) == false
                     where !NormalMembersOnly || om.MemberTypeId == MemberTypeCode.Member
-
                     let pcid = om.OrgMemberExtras.Where(vv => vv.Field == "PromotingTo").Select(vv => vv.IntValue).SingleOrDefault()
                     let pc = DbUtil.Db.OrganizationMembers.FirstOrDefault(op =>
                         op.Pending == true
@@ -226,10 +225,14 @@ namespace CmsWeb.Models
 
         public void AssignPending()
         {
+            if (TargetClassId == 0)
+            {
+                RemoveAssignments();
+                return;
+            }
             var t = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == TargetClassId);
             if (t == null)
                 return;
-            var todiv = Promotion.ToDivId;
 
             foreach (var i in selected)
             {
@@ -261,6 +264,26 @@ namespace CmsWeb.Models
                 }
             }
             DbUtil.Db.UpdateMainFellowship(t.OrganizationId);
+        }
+
+        private void RemoveAssignments()
+        {
+            foreach (var i in selected)
+            {
+                var a = i.Split(',');
+                var foid = a[1].ToInt();
+                var pid = a[0].ToInt();
+
+                // this is their membership where they are currently a member
+                var fom = DbUtil.Db.OrganizationMembers.Single(m => m.OrganizationId == foid && m.PeopleId == pid);
+
+                // drop pending in previously assigned to org
+                var prevtoid = fom.GetExtra(DbUtil.Db, "PromotingTo").ToInt();
+                var prevto = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.OrganizationId == prevtoid && m.PeopleId == pid && m.Pending == true);
+                prevto?.Drop(DbUtil.Db);
+                fom.RemoveExtraValue(DbUtil.Db, "PromotingTo");
+                DbUtil.Db.SubmitChanges();
+            }
         }
 
         public DataTable Export()
@@ -368,14 +391,14 @@ namespace CmsWeb.Models
                         Time = sc.MeetingTime,
                         Value = o.OrganizationId.ToString()
                     };
-            var list = q.ToList();
-            var qq = from i in list
-                     select new SelectListItem
-                     {
-                         Text = i.Text + $", {i.Time.Value:t}",
-                         Value = i.Value
-                     };
-            return qq;
+            var list = (from i in q.ToList()
+                        select new SelectListItem
+                        {
+                            Text = i.Text + $", {i.Time.Value:t}",
+                            Value = i.Value
+                        }).ToList();
+            list.Add(new SelectListItem() {Text = "(Remove Assignment)", Value = "0"});
+            return list;
         }
     }
 }
