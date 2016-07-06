@@ -266,7 +266,7 @@ meetings AS (
 	JOIN dbo.DivOrg dd ON dd.OrgId = o.OrganizationId
 	JOIN progdivs pd ON pd.DivId = dd.DivId
 	WHERE m.MeetingDate >= @Dt1
-	AND m.MeetingDate <= @Dt2
+	AND CONVERT(DATE, m.MeetingDate) <= @Dt2
 	AND m.MaxCount > 0
 )
 SELECT * FROM meetings
