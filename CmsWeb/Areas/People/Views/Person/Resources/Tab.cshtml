@@ -5,19 +5,17 @@
     {
         <h3>@resource.Resource.Name</h3>
         <p>
-            @resource.Resource.Description
+            @Html.Raw(resource.Resource.Description)
         </p>
-        <table>
-            @foreach (var attachment in resource.Attachments)
-            {
-                <td>
-                    @attachment.FileTypeId
-                </td>
-                <td>
-                    <a href="@attachment.FilePath">@attachment.Name</a>
-                </td>
-            }
-        </table>
+        if (resource.Attachments.Any())
+        {
+            <ul style="list-style-type: circle">
+                @foreach (var attachment in resource.Attachments.OrderBy(x => x.DisplayOrder))
+                {
+                    <li><a href="@attachment.FilePath">@attachment.Name</a></li>
+                }
+            </ul>    
+        }
         <hr/>
     }
 </div>

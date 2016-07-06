@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Web;
 using CmsData;
@@ -24,6 +25,24 @@ namespace CmsWeb.Areas.Manage.Models
             Resource = resource;
             ResourceId = resource.ResourceId;
             Attachments = DbUtil.Db.ResourceAttachments.Where(x => x.ResourceId == ResourceId).ToList();
+        }
+
+        [DisplayName("Organization")]
+        public string OrganizationName
+        {
+            get { return Resource.Organization?.OrganizationName; }
+        }
+
+        [DisplayName("Congregation")]
+        public string CampusName
+        {
+            get { return Resource.Campu?.Description; }
+        }
+
+        [DisplayName("Member Types")]
+        public string MemberTypes
+        {
+            get { return Resource.MemberTypeIds; }
         }
     }
 }

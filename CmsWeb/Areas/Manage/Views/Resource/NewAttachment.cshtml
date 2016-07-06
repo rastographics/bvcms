@@ -1,0 +1,37 @@
+﻿@using CmsData
+@model ResourceAttachment
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Upload Attachment";
+    ViewBag.PageHeader = "Upload Attachment";
+}
+<div class="well">
+    <form action="/Resources/@Model.ResourceId/Attachments/Upload/" method="post" enctype="multipart/form-data">
+        @Html.HiddenFor(x => x.ResourceId)
+        <div class="modal-body" style="overflow: auto">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="Name" class="control-label">Name</label>
+                        @Html.TextBoxFor(x => x.Name, "", new {@class = "form-control"})
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="DisplayOrder" class="control-label">Display Order</label>
+                        @Html.TextBoxFor(x => x.DisplayOrder, "", new {@class = "form-control"})
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="File" class="control-label">File</label>
+                        @Html.TextBox("File", "", new { type = "file" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <input type="submit" class="btn btn-primary" value="Submit"/>
+        </div>
+    </form>
+</div>

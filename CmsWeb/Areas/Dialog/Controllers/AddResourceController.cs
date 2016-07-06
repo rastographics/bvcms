@@ -1,6 +1,15 @@
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
+using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Dialog.Models;
+using CmsWeb.Models;
+using net.openstack.Core.Domain;
+using net.openstack.Providers.Rackspace;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
@@ -16,41 +25,86 @@ namespace CmsWeb.Areas.Dialog.Controllers
         }
 
         [HttpPost, Route("Submit/{id:int}")]
-        public ActionResult Submit(int id, NewOrganizationModel m)
+        public ActionResult Submit(int id, NewResourceModel m, IEnumerable<HttpPostedFileBase> files)
         {
-            /*var org = DbUtil.Db.LoadOrganizationById(id);
-            m.org.CreatedDate = Util.Now;
-            m.org.CreatedBy = Util.UserId1;
-            m.org.EntryPointId = org.EntryPointId;
-            m.org.OrganizationTypeId = org.OrganizationTypeId;
-            if (m.org.CampusId == 0)
-                m.org.CampusId = null;
-            if (!m.org.OrganizationName.HasValue())
-                m.org.OrganizationName = $"New organization needs a name ({Util.UserFullName})";
-            m.org.OrganizationStatusId = 30;
-            m.org.DivisionId = org.DivisionId;
-
-            DbUtil.Db.Organizations.InsertOnSubmit(m.org);
-            DbUtil.Db.SubmitChanges();
-            foreach (var div in org.DivOrgs)
-                m.org.DivOrgs.Add(new DivOrg { Organization = m.org, DivId = div.DivId });
-            if (m.copysettings)
+            var resource = new Resource
             {
-                foreach (var sc in org.OrgSchedules)
-                    m.org.OrgSchedules.Add(new OrgSchedule
-                    {
-                        OrganizationId = m.org.OrganizationId,
-                        AttendCreditId = sc.AttendCreditId,
-                        SchedDay = sc.SchedDay,
-                        SchedTime = sc.SchedTime,
-                        Id = sc.Id
-                    });
-                m.org.CopySettings(DbUtil.Db, id);
-            }
+                CreationDate = Util.Now,
+                Description = m.Description,
+                MemberTypeIds = m.MemberTypeIds,
+                DivisionId = m.DivisionId,
+                CampusId = m.CampusId,
+                Name = m.Name,
+                DisplayOrder = m.DisplayOrder,
+                OrganizationId = m.OrganizationId
+            };
+
+            if (resource.CampusId.HasValue && resource.CampusId < 1) resource.CampusId = null;
+            if (resource.DivisionId.HasValue && resource.DivisionId < 1) resource.DivisionId = null;
+            if (resource.OrganizationId.HasValue && resource.OrganizationId < 1) resource.OrganizationId = null;
+
+            DbUtil.Db.Resources.InsertOnSubmit(resource);
             DbUtil.Db.SubmitChanges();
-            DbUtil.LogActivity($"Add new org {m.org.OrganizationName}");
-            return Redirect($"/Org/{m.org.OrganizationId}");*/
-            return null;
+
+            if (files != null && files.Any())
+            {
+                foreach (var file in files)
+                {
+                    if (file == null) continue;
+
+                    var attachment = new ResourceAttachment
+                    {
+                        ResourceId = resource.ResourceId,
+                        FilePath = UploadAttachment(file),
+                        Name = file.FileName,
+                        CreationDate = Util.Now
+                    };
+
+                    DbUtil.Db.ResourceAttachments.InsertOnSubmit(attachment);
+                    DbUtil.Db.SubmitChanges();
+                }
+            }
+
+            return Redirect("/Resources");
+        }
+
+        public string UploadAttachment(HttpPostedFileBase file)
+        {
+            var m = new AccountModel();
+            string baseurl = null;
+
+            var fn = $"{DbUtil.Db.Host}.{DateTime.Now:yyMMddHHmm}.{m.CleanFileName(Path.GetFileName(file.FileName))}";
+            var error = string.Empty;
+            var rackspacecdn = ConfigurationManager.AppSettings["RackspaceUrlCDN"];
+
+            if (rackspacecdn.HasValue())
+            {
+                baseurl = rackspacecdn;
+                var username = ConfigurationManager.AppSettings["RackspaceUser"];
+                var key = ConfigurationManager.AppSettings["RackspaceKey"];
+                var cloudIdentity = new CloudIdentity { APIKey = key, Username = username };
+                var cloudFilesProvider = new CloudFilesProvider(cloudIdentity);
+                cloudFilesProvider.CreateObject("AllFiles", file.InputStream, fn);
+            }
+            else // local server
+            {
+                baseurl = $"{Request.Url.Scheme}://{Request.Url.Authority}/Upload/";
+                try
+                {
+                    var path = Server.MapPath("/Upload/");
+                    path += fn;
+
+                    path = m.GetNewFileName(path);
+                    file.SaveAs(path);
+                }
+                catch (Exception ex)
+                {
+                    error = ex.Message;
+                    baseurl = string.Empty;
+                }
+            }
+
+            return baseurl + fn;
         }
     }
 }

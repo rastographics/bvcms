@@ -1,0 +1,31 @@
+﻿@using CmsData
+@model ResourceAttachment
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Edit Resource Attachment";
+    ViewBag.PageHeader = "Edit Resource Attachment";
+}
+<div class="well">
+    <form action="/Resources/Attachments/Save/@Model.ResourceAttachmentId" method="post">
+        <h4 class="modal-title">Edit Resource Attachment</h4>
+        <div class="modal-body" style="overflow: auto">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="Name" class="control-label">Name</label>
+                        @Html.TextBoxFor(x => x.Name, Model.Name, new {@class = "form-control"})
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="DisplayOrder" class="control-label">Display Order</label>
+                        @Html.TextBoxFor(x => x.DisplayOrder, Model.DisplayOrder.ToString(), new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <input type="submit" class="btn btn-primary" value="Submit"/>
+        </div>
+    </form>
+</div>

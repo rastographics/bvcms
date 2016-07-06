@@ -406,6 +406,7 @@
     <Compile Include="Areas\Manage\Models\BatchModel\BatchRegSettings.cs" />
     <Compile Include="Areas\Manage\Models\BatchModel\FindTagPeople.cs" />
     <Compile Include="Areas\Manage\Models\BatchModel\UpdateOrgs.cs" />
+    <Compile Include="Areas\Manage\Models\ResourceModel.cs" />
     <Compile Include="Areas\Manage\Models\UpdateFieldsLookups.cs" />
     <Compile Include="Areas\Manage\Models\UploadAddressesModel.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
@@ -1557,6 +1558,13 @@
     <Content Include="Areas\People\Views\Person\Resources\Tab.cshtml" />
     <Content Include="Areas\Org\Views\Org\Resources.cshtml" />
     <Content Include="Areas\Manage\Views\Resource\Index.cshtml" />
+    <Content Include="Areas\Public\Views\OrgContent\Directory.cshtml" />
+    <Content Include="Areas\Public\Views\SmallGroupFinder\Map.cshtml" />
+    <Content Include="Areas\Public\Views\SmallGroupFinder\MapIndex.cshtml" />
+    <Content Include="Areas\Manage\Views\Resource\Display.cshtml" />
+    <Content Include="Areas\Manage\Views\Resource\Edit.cshtml" />
+    <Content Include="Areas\Manage\Views\Resource\EditAttachment.cshtml" />
+    <Content Include="Areas\Manage\Views\Resource\NewAttachment.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />

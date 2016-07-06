@@ -1,0 +1,85 @@
+﻿@using CmsData
+@model CmsWeb.Areas.Dialog.Models.EditResourceModel
+<div class="well">
+    <form action="/Resources/Save/@Model.ResourceId" method="post">
+        <h4 class="modal-title">Edit Resource</h4>
+        <div class="modal-body" style="overflow: auto">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="resource_Name" class="control-label">Name</label>
+                        @Html.TextBoxFor(x => x.Name, Model.Name, new {@class = "form-control"})
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="resource_OrgId" class="control-label">Organization</label>
+                        @Html.DropDownListFor(x => x.OrganizationId, Model.Orgs, new {@class = "form-control"})
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="resource_CampusId" class="control-label">Congregation</label>
+                        @Html.DropDownListFor(x => x.CampusId, Model.Campuses, new {@class = "form-control"})
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="resource_Roles" class="control-label">Limit to Member Types</label>
+                        <input name="MemberTypeIds" value="@Model.MemberTypeIds" class="types-picker form-control"/>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="resource_SortOrder" class="control-label">Sort Order</label>
+                        @Html.TextBoxFor(x => x.DisplayOrder, Model.DisplayOrder.ToString(), new {@class = "form-control"})
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    @Html.TextAreaFor(m => m.Description, new {@class = "form-control", rows = "26"})
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+            <input type="submit" class="btn btn-primary" value="Submit"/>
+        </div>
+    </form>
+    @ViewExtensions2.CkEditor()
+    <script type="text/javascript">
+
+        function getParameterByName(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+            return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+
+        $(function() {
+            $(function() {
+                $(".types-picker")
+                    .select2({
+                        tags: [
+                            @foreach (var type in Model.MemberTypes)
+                            {
+                                <text>"@type.Description",</text>
+                            }
+                        ]
+                    });
+            });
+
+            CKEDITOR.env.isCompatible = true;
+
+            CKEDITOR.replace('Description',
+            {
+                height: 400,
+                allowedContent: true,
+                autoParagraph: false,
+                fullPage: !$("#snippet").prop("checked"),
+                customConfig: "/Content/touchpoint/js/ckeditorconfig.js"
+            });
+        });
+    </script>
+</div>

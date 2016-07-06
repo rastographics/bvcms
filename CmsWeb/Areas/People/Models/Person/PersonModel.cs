@@ -212,16 +212,27 @@ namespace CmsWeb.Areas.People.Models
             {
                 if (_resources != null) return _resources;
 
-                var orgIds =
-                    DbUtil.Db.OrganizationMembers.Where(x => x.PeopleId == PeopleId)
-                        .Select(x => x.OrganizationId)
-                        .ToList();
+                var orgLevels = DbUtil.Db.OrganizationMembers.Where(x => x.PeopleId == PeopleId)
+                    .ToDictionary(x => x.OrganizationId, x => x.MemberType.Description);
 
-                var resources = DbUtil.Db.Resources
-                    .Where(x => (!x.OrganizationId.HasValue && !x.DivisionId.HasValue) || 
-                        orgIds.Contains(x.OrganizationId ?? -1));
+                var orgIds = orgLevels.Keys.ToList();
 
-                _resources = resources.Select(x => new ResourceModel(x)).ToList();
+                var divisionIds = DbUtil.Db.OrganizationMembers.Where(x => x.PeopleId == PeopleId)
+                    .Select(x => x.Organization.DivisionId).Distinct().ToList();
+
+                // Filter out any resources that have a division the user isn't in
+                IQueryable<Resource> resources =
+                    DbUtil.Db.Resources
+                        .Where(x => !x.DivisionId.HasValue || divisionIds.Contains(x.DivisionId));
+
+                // Filter out resources that have an org the user isn't in
+                resources = resources.Where(x => !x.OrganizationId.HasValue || orgIds.Contains(x.OrganizationId.Value));
+
+                // Filter out resources that requires a certain level of access.
+                //TODO Fix this
+                //resources = resources.Where(x => (x.MemberTypeIds == "" || x.MemberTypeIds == null) || !x.OrganizationId.HasValue || x.MemberTypeIds.Contains(orgLevels[x.OrganizationId.Value]));
+            
+                _resources = resources.Select(x => new ResourceModel(x)).ToList().OrderByDescending(x => x.Resource.DisplayOrder).ToList();
 
                 return _resources;
             }

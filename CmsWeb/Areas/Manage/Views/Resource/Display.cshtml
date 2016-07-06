@@ -1,0 +1,124 @@
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.Manage.Models.ResourceModel
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = @Model.Resource.Name;
+    ViewBag.PageHeader = @Model.Resource.Name;
+}
+@section head
+{
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/jcrop/css/jcrop.min.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2-bootstrap.css")
+    <style>
+        dt {
+            font-weight: normal;
+            color: #808080;
+        }
+
+        dd {
+            font-weight: 600;
+            padding: 5px;
+            border: solid 1px #eee;
+            min-height: 32px;
+        }
+    </style>
+}
+@section scripts {
+    @ViewExtensions2.CkEditor()
+    @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
+}
+<form class="ajax" method="post">
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-6">
+                <h4>General</h4>
+            </div>
+            <div class="col-sm-6">
+                @FormAction()
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-6">
+                @Html.DisplayFor(m => m.Resource.Name)
+            </div>
+            <div class="col-md-12 col-lg-6">
+                @Html.DisplayFor(m => m.OrganizationName)
+            </div>
+            <div class="col-md-12 col-lg-6">
+                @Html.DisplayFor(m => m.CampusName)
+            </div>
+            <div class="col-md-12 col-lg-6">
+                @Html.DisplayFor(m => m.MemberTypes)
+            </div>
+            <div class="col-md-12 col-lg-6">
+                @Html.DisplayFor(m => m.Resource.DisplayOrder)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-24 col-lg-12">
+                <dl>
+                    <dt>@Html.LabelFor(m => m.Resource.Description)</dt>
+                    <dd>@Html.Raw(Model.Resource.Description)</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-6">
+                <h4>Files</h4>
+            </div>
+            <div class="col-sm-6" style="text-align:right">
+                <a href="/Resources/@Model.ResourceId/Attachments/New" class="btn btn-default ajax"><i class="fa fa-plus"></i> New Attachment</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="table-responsive">
+                <table id="resources" class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>File Name</th>
+                        <th>Display Order</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var a in @Model.Resource.ResourceAttachments.OrderBy(x => x.DisplayOrder))
+                    {
+                        <tr>
+                            <td><a href="@a.FilePath">@a.Name</a></td>
+                            <td><a href="@a.FilePath">@a.FilePath</a></td>
+                            <td>@a.DisplayOrder</td>
+                            <td>
+                                <a href="/Resources/Attachments/Edit/@a.ResourceAttachmentId/" class="edit-basic btn btn-default"><i class="fa fa-pencil"></i> Edit</a>
+                                <a id="delete" class="btn btn-danger" href="/Resources/Attachments/Delete/@a.ResourceAttachmentId">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</form>
+@helper FormAction(bool xs = false)
+{
+    if (xs)
+    {
+        <div class="visible-xs-block">
+            <a href="/Resources/Edit/@Model.ResourceId" class="edit-basic btn btn-default btn-block ajax"><i class="fa fa-pencil"></i> Edit</a>
+        </div>
+    }
+    else
+    {
+        <div class="pull-right hidden-xs">
+            <a href="/Resources/Edit/@Model.ResourceId" class="edit-basic btn btn-default ajax"><i class="fa fa-pencil"></i> Edit</a>
+            <a id="delete" class="btn btn-danger" href="/Resources/Delete/@Model.ResourceId">Delete</a>
+        </div>
+    }
+}
