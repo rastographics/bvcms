@@ -21,14 +21,14 @@ namespace CmsWeb.Areas.Public
             var org = DbUtil.Db.LoadOrganizationById(o.OrgId);
 
             // Try to load a template specific to this org type
-            var template = DbUtil.Db.ContentHtml($"OrgContent-{org.OrganizationType.Description}", null);
+            var template = DbUtil.Db.ContentHtml($"OrgContent-{org.OrganizationType?.Description}", null);
 
             // Try to fall back on a standard template
             if(template == null)
                 template = DbUtil.Db.ContentHtml("OrgContent", null);
 
             if (template != null)
-            { 
+            {
                 template = template.Replace("{content}", o.Html ?? string.Empty)
                     .Replace("{location}", org.Location ?? string.Empty)
                     .Replace("{type}", org.OrganizationType?.Description ?? string.Empty)
