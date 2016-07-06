@@ -175,10 +175,10 @@ namespace CmsWeb.Models
                     case "Name":
                         q = q.OrderBy(i => i.Name2);
                         break;
-                    case "CurrentClass":
+                    case "Current Class":
                         q = q.OrderBy(i => i.CurrOrgName);
                         break;
-                    case "PendingClass":
+                    case "Pending Class":
                         q = q.OrderBy(i => i.PendingOrgName);
                         break;
                     case "Attendance":
@@ -202,10 +202,10 @@ namespace CmsWeb.Models
                     case "Name":
                         q = q.OrderByDescending(i => i.Name2);
                         break;
-                    case "CurrentClass":
+                    case "Current Class":
                         q = q.OrderByDescending(i => i.CurrOrgName);
                         break;
-                    case "PendingClass":
+                    case "Pending Class":
                         q = q.OrderByDescending(i => i.PendingOrgName);
                         break;
                     case "Attendance":
