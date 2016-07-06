@@ -236,19 +236,7 @@ namespace CmsWeb.Models
                 var a = i.Split(',');
                 var foid = a[1].ToInt();
                 var pid = a[0].ToInt();
-                var q = from om in DbUtil.Db.OrganizationMembers
-                        where om.Pending == true
-                        where om.PeopleId == pid 
-                        where om.Organization.DivOrgs.Any(dd => dd.DivId == todiv)
-                        where om.OrganizationId != t.OrganizationId // prevent promoting into the same class
-                        where ScheduleId == 0 || om.Organization.OrgSchedules.Any(os => os.ScheduleId == ScheduleId)
-                        select om;
-                // get them out of the class they will be going to first
-                foreach (var pc in q)
-                {
-                    pc.Drop(DbUtil.Db);
-                    DbUtil.Db.SubmitChanges();
-                }
+
                 // this is their membership where they are currently a member
                 var fom = DbUtil.Db.OrganizationMembers.Single(m => m.OrganizationId == foid && m.PeopleId == pid);
 
