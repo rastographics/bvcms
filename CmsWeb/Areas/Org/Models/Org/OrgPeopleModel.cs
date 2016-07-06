@@ -278,6 +278,7 @@ to `Add`, `Drop`, `Update` Members etc.
 
 * First and last name or just last name.
 * You can put just the first few letters of each.
+* Put a space after the first name to search first only.
 * PeopleId works too.
 ");
 
