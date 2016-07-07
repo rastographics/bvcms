@@ -15,7 +15,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 {
     [ValidateInput(false)]
     [RouteArea("Manage", AreaPrefix = "Batch"), Route("{action}/{id?}")]
-    public class BatchController : CmsStaffController
+    public partial class BatchController : CmsStaffController
     {
         public ActionResult Grade(string text)
         {

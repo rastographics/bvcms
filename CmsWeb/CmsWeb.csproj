@@ -396,6 +396,7 @@
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
+    <Compile Include="Areas\Manage\Controllers\UploadAddressesController.cs" />
     <Compile Include="Areas\Manage\Models\Activity\ActivityInfo.cs" />
     <Compile Include="Areas\Manage\Models\BatchModel\BatchRegMessages.cs" />
     <Compile Include="Areas\Manage\Models\BatchModel\BatchRegOptions.cs" />
@@ -403,6 +404,7 @@
     <Compile Include="Areas\Manage\Models\BatchModel\FindTagPeople.cs" />
     <Compile Include="Areas\Manage\Models\BatchModel\UpdateOrgs.cs" />
     <Compile Include="Areas\Manage\Models\UpdateFieldsLookups.cs" />
+    <Compile Include="Areas\Manage\Models\UploadAddressesModel.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationStatus.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\OnePageGiving.cs" />
@@ -1525,6 +1527,8 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManagePledge\OneTimeLinkPartial.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\OneTimeLinkPartial.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageSubscriptions\OneTimeLinkPartial.cshtml" />
+    <Content Include="Areas\Manage\Views\Batch\UploadAddresses.cshtml" />
+    <Content Include="Areas\Manage\Views\Batch\UploadAddressesProgress.cshtml" />
     <None Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\Login.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\Index.cshtml" />

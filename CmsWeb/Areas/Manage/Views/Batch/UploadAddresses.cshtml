@@ -1,13 +1,14 @@
-﻿@{
+﻿@using CmsWeb
+@{
     Layout = ViewExtensions2.TouchPointLayout();
-    ViewBag.Title = "Upload People";
-    ViewBag.PageHeader = "Upload People";
+    ViewBag.Title = "Upload Addresses";
+    ViewBag.PageHeader = "Upload Addresses";
 }
 <div class="row">
     <div class="col-md-8">
         <div class="box box-responsive">
             <div class="box-content">
-                <form method="POST" action="/Batch/UploadPeople">
+                <form method="POST" action="/Batch/UploadAddresses">
                     @Html.TextArea("text", ViewData["text"].ToString(), new { rows = "30", cols = "1000", wrap = "off", @class="form-control" })
                     <div class="form-group">
                         <div class="checkbox">
