@@ -19,7 +19,7 @@ namespace CmsWeb.Models
         {
             this.db = db;
             userpeopleid = peopleId;
-            var spec = db.Setting("NcoaColumns", "PeopleId=1,Addr1=4,Addr2=5,City=6,State=7,Zip=8");
+            var spec = db.Setting("NcoaColumns", "PeopleId=1,Addr1=4,Addr2=5,City=6,State=7,Zip=8,MoveDate=10");
             NcoaCols = spec.Split(',').Select(vv => vv.Split('=')).ToDictionary(vv => vv[0], vv => vv[1].ToInt()-1);
         }
 
@@ -45,6 +45,9 @@ namespace CmsWeb.Models
                 f.UpdateValue(fsb, "ZipCode", csv[NcoaCols["Zip"]]);
 
                 p.Family.LogChanges(db, fsb, p.PeopleId, userpeopleid);
+                if(NcoaCols.ContainsKey("MoveDate"))
+                    p.AddEditExtraDate("MoveEffectiveDate", 
+                        csv[NcoaCols["MoveDate"]].ToDate() ?? DateTime.Today);
                 rt.Processed++;
                 db.SubmitChanges();
             }
