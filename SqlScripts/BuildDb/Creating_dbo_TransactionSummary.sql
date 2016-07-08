@@ -1,12 +1,4 @@
 
-
-
-
-
-
-
-
-
 CREATE VIEW [dbo].[TransactionSummary]
 AS
 SELECT
@@ -14,13 +6,13 @@ SELECT
 	,OrganizationId
 	,PeopleId
 	,TranDate
-	,CONVERT(MONEY, TotalAmt * IndPctC) IndAmt
+	,CONVERT(MONEY, ISNULL(TotalAmt,0) * IndPctC) IndAmt
 	,TotalAmt
 	,TotPaid
 	,TotCoupon
 	,(TotalAmt - TotPaid - Donation) TotDue
 	,CONVERT(MONEY, (IndPctC * TotPaid)) IndPaid
-	,CONVERT(MONEY, (IndPctC * (TotalAmt - TotPaid - Donation))) IndDue
+	,CONVERT(MONEY, (IndPctC * (ISNULL(TotalAmt,0) - TotPaid - Donation))) IndDue
 	,IndPctC
 	,NumPeople
 	,isdeposit
@@ -36,14 +28,15 @@ FROM (
 					FROM dbo.TransactionPeople tp2
 					JOIN dbo.OrganizationMembers om2 
 					ON om2.PeopleId = tp2.PeopleId AND om2.OrganizationId = tp2.OrgId
-					WHERE Id = om.TranId), 0), 0)
-			IndPctC
+					WHERE Id = om.TranId), 0), 
+				IIF((SELECT COUNT(*) FROM dbo.TransactionPeople t WHERE t.Id = om.TranId) = 1, 1, 0) -- default = 100% if one person otherwise 0%			
+		) IndPctC
 
 		,-ISNULL((SELECT SUM(Amt - ISNULL(donate, 0)) 
 					FROM dbo.[Transaction] 
 					WHERE OriginalId = om.TranId 
 					AND ISNULL(AdjustFee, 0) = 1), 0) 
-			+ ot.amt + ot.amtdue 
+			+ ISNULL(ot.amt, 0) + ISNULL(ot.amtdue, 0)
 			TotalAmt
 
 		,ISNULL((SELECT SUM(amt - ISNULL(donate, 0)) 
@@ -88,16 +81,6 @@ FROM (
 	JOIN dbo.OrganizationMembers om ON om.TranId = ot.Id AND tp.PeopleId = om.PeopleId AND om.OrganizationId = tp.OrgId
 	JOIN dbo.Organizations o ON o.OrganizationId = om.OrganizationId
 ) tt
---WHERE (iscoupon = 1 OR isapproved = 1) --AND TotalAmt > 0
-
-
-
-
-
-
-
-
-
 
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
