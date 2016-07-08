@@ -10,14 +10,6 @@
             <div class="box-content">
                 <form method="POST" action="/Batch/UploadAddresses">
                     @Html.TextArea("text", ViewData["text"].ToString(), new { rows = "30", cols = "1000", wrap = "off", @class="form-control" })
-                    <div class="form-group">
-                        <div class="checkbox">
-                            <label for="noupdate" class="control-label">
-                                @Html.CheckBox("noupdate") Inserts only?
-                            </label>
-                        </div>
-                    </div>
-                    <br />
                     <p>
                         <input type="submit" class="btn btn-primary" value="Submit" />
                     </p>

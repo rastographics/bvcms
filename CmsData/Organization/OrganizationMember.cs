@@ -715,16 +715,21 @@ AND a.PeopleId = {2}
                 if (tom == null)
                     return;
             }
-            if (toMemberTypeId != -1)
-            {
-                tom.MemberTypeId = toMemberTypeId;
-            }
-            else
-            {
-                tom.MemberTypeId = om.MemberTypeId;
-            }
+            tom.MemberTypeId = toMemberTypeId != -1 
+                ? toMemberTypeId 
+                : om.MemberTypeId;
             tom.UserData = om.UserData;
 
+            if (om.Pending == true) // search for PromotingTo Extra Value to update
+            {
+                var fromev = (from vv in db.OrgMemberExtras
+                             where vv.PeopleId == om.PeopleId
+                             where vv.IntValue == om.OrganizationId
+                             where vv.Field == "PromotingTo"
+                             select vv).SingleOrDefault();
+                if (fromev != null)
+                    fromev.IntValue = tom.OrganizationId;
+            }
             if (moveregdata == true)
             {
                 tom.Request = om.Request;
