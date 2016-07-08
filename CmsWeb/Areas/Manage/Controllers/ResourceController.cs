@@ -48,7 +48,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
 
         [HttpPost]
-        [Route("~/Resources/Save/{id}")]
+        [Route("~/Resources/Save/{id}"), ValidateInput(false)]
         public ActionResult Save(int id, EditResourceModel model)
         {
             var resource = DbUtil.Db.Resources.FirstOrDefault(x => x.ResourceId == id);

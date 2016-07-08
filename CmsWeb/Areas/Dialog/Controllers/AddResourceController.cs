@@ -24,7 +24,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             return View(new NewResourceModel());
         }
 
-        [HttpPost, Route("Submit/{id:int}")]
+        [HttpPost, Route("Submit/{id:int}"), ValidateInput(false)]
         public ActionResult Submit(int id, NewResourceModel m, IEnumerable<HttpPostedFileBase> files)
         {
             var resource = new Resource
