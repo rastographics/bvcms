@@ -93,6 +93,8 @@ namespace CmsWeb.Areas.People.Models
                     if(inAccessRole)
                         return $"<a class=\"membertype\" href=\"/OrgMemberDialog/Member/{OrgId}/{PeopleId}\">{MemberType}</a>";
                     return MemberType;
+                case "viewcalendar":
+                    return $"<a href=\"/OnlineReg/{OrgId}\">{column.Label}</a>";
                 case "leave":
                     if(column.Page == "Current")
                         return $"<button class=\"leave-org\" data-personid=\"{PeopleId}\" data-orgid=\"{OrgId}\">{column.Label}</button>";
