@@ -59,7 +59,7 @@ namespace CmsWeb.Areas.People.Models
         [DisplayName("Doctor's Phone")]
         public string Docphone { get; set; }
 
-        [UIHint("Textarea")]
+        [UIHint("Textarea"), DisplayName("Allergies")]
         public string MedicalDescription { get; set; }
 
         [UIHint("Textarea"), DisplayName("Registration Log")]

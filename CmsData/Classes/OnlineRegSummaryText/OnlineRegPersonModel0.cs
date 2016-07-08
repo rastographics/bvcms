@@ -133,10 +133,7 @@ namespace CmsData.OnlineRegSummaryText
                         MissionTripGoerId = e.Value.ToInt();
                         break;
                     default:
-                        var tf = Util.SetPropertyFromText(this, name, e.Value);
-                        if (tf)
-                            Debug.WriteLine("here");
-                            
+                        Util.SetPropertyFromText(this, name, e.Value);
                         break;
                 }
             }

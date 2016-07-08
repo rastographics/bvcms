@@ -87,7 +87,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         [DisplayName("Physician Phone"), StringLength(15)]
         public string docphone { get; set; }
 
-        [DisplayName("Medical Issues"), StringLength(200)]
+        [DisplayName("Allergies"), StringLength(200)]
         public string medical
         {
             get { return _medical; }

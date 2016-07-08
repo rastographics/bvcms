@@ -532,7 +532,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                     AddValue(table, row, ((AskRequest)setting.AskItem("AskRequest")).Label, x.OrgMembers?.Request);
 
 
-                AddValue(table, row, "MedicalDescription", x.RecReg.MedicalDescription);
+                AddValue(table, row, "Allergies", x.RecReg.MedicalDescription);
 
                 if (x.Organization == null || SettingVisible(setting, "AskTylenolEtc"))
                 {

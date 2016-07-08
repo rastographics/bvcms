@@ -139,7 +139,7 @@ namespace CmsWeb.Areas.Reports.Models
                         doc.Add(t2);
 
                         if (rr.MedicalDescription.HasValue())
-                            doc.Add(new Phrase("Allergies or Medical Problems: " + rr.MedicalDescription));
+                            doc.Add(new Phrase("Allergies: " + rr.MedicalDescription));
 
                         if (i.o == null || SettingVisible(setting, "AskTylenolEtc"))
                         {
