@@ -7,8 +7,10 @@ using CmsData;
 using CmsData.Classes.SmallGroupFinder;
 using System.Web;
 using System;
+using System.Web.Mvc;
 using MoreLinq;
 using UtilityExtensions;
+using CmsWeb.Areas.Public.Controllers;
 
 namespace CmsWeb.Areas.Public.Models
 {
@@ -26,8 +28,14 @@ namespace CmsWeb.Areas.Public.Models
 		string sTemplate;
 		string sGutter;
 		string sShell;
+        private Controller _controller;
 
-		public void load(string sName)
+        public SmallGroupFinderModel(Controller controller)
+        {
+            _controller = controller;
+        }
+
+        public void load(string sName)
 		{
 			var xml = DbUtil.Content("SGF-" + sName + ".xml", "");
 
@@ -46,15 +54,12 @@ namespace CmsWeb.Areas.Public.Models
 			sGutter = DbUtil.Content(sgf.gutter, "");
 		}
 
-		public Boolean hasShell()
+		public bool hasShell()
 		{
-			if (sShell != null && sShell.Length > 0)
-				return true;
-			else
-				return false;
+		    return !string.IsNullOrEmpty(sShell);
 		}
 
-		public String createFromShell()
+	    public String createFromShell()
 		{
 			sShell = sShell.Replace("[SGF:Gutter]", getGutter());
 			sShell = sShell.Replace("[SGF:Form]", getForm());
@@ -87,19 +92,6 @@ namespace CmsWeb.Areas.Public.Models
 		{
 			search = newserach;
 		}
-
-		/*
-		public void setDefaultSearch()
-		{
-			search = new Dictionary<string, string>();
-
-			foreach (var item in getFilters())
-			{
-				if (item.locked)
-					search.Add(item.name, item.lockedvalue);
-			}
-		}
-		*/
 
 		public bool IsSelectedValue(string key, string value)
 		{
@@ -258,34 +250,22 @@ namespace CmsWeb.Areas.Public.Models
 			return sGutter;
 		}
 
+        public string RenderViewToString(string viewName, object model)
+        {
+            _controller.ViewData.Model = model;
+            using (var sw = new StringWriter())
+            {
+                var viewResult = ViewEngines.Engines.FindPartialView(_controller.ControllerContext, viewName);
+                var viewContext = new ViewContext(_controller.ControllerContext, viewResult.View, _controller.ViewData, _controller.TempData, sw);
+                viewResult.View.Render(viewContext, sw);
+                viewResult.ViewEngine.ReleaseView(_controller.ControllerContext, viewResult.View);
+                return sw.GetStringBuilder().ToString();
+            }
+        }
+
 		public string getForm()
 		{
-			string sForm = "<form method=\"post\"><table class=\"sgfform\">";
-
-			for (var iX = 0; iX < getCount(SmallGroupFinderModel.TYPE_FILTER); iX++)
-			{
-				var f = getFilter(iX);
-				var fi = getFilterItems(iX);
-
-				sForm += "<tr class=\"sgftr\">";
-				sForm += "<td class=\"sgftdlabel\">" + f.title + ":</td>";
-				sForm += "<td class=\"sgftdfield\">";
-				sForm += "<select name=" + f.name + ">";
-
-				foreach (var item in fi)
-				{
-					sForm += "<option " + (IsSelectedValue(f.name, item.value) ? "selected" : "") + ">" + item.value + "</option>";
-				}
-
-				sForm += "</select></td></tr>";
-			}
-
-			var submitText = getSetting("SubmitText");
-
-			sForm += "<tr><td colspan=\"2\" class=\"sgfsubmitholder\"><input class=\"sgfsubmitbutton\" type=\"submit\" value=\"" + (submitText != null ? submitText.value : "Find Groups") + "\" /></td></tr>";
-			sForm += "</table></form>";
-
-			return sForm;
+		    return RenderViewToString("MapForm", this);
 		}
 
 		public string getGroupList()

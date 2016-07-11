@@ -1,39 +1,45 @@
-﻿@model CmsWeb.Areas.Public.Models.SmallGroupFinderModel
+﻿@model SmallGroupFinderModel
 @using CmsWeb
 @using CmsWeb.Areas.Public.Models
 @using CmsWeb.Models
 @{
     var mapModel = new SGMapModel(Model.getGroups());
-}
-<!DOCTYPE html>
-<html>
-<style type="text/css">
-    .map {
-        width: 400px;
-        height: 600px;
-        border: 1px solid #000;
-        margin-bottom: 20px;
+    var isPartial = (bool) ViewData["AsPartial"];
+
+    if (isPartial)
+    {
+        @Html.Raw("<!DOCTYPE html>\n<html>")
     }
-</style>
+}
+
+@if (!isPartial) {
+    <style type="text/css">
+        .map {
+            width: 400px;
+            height: 600px;
+            margin-bottom: 20px;
+        }
+    </style>
+}
+
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 @ViewExtensions2.jQuery()
 @Fingerprint.Script("/Content/touchpoint/js/sgmap.js")
 @Html.Raw(Html.Json("markers", mapModel.Locations()))
-<table>
-<tr>
-    <td>
-        <div id="map" class="map">
+
+    <div class="row">
+        <div class="col-md-6">
+            <div id="map" class="map">
+            </div>
         </div>
-    </td>
-    <td style="width:400px">
-        <ul style="overflow: auto; height: 600px">
-            @foreach (var i in mapModel.Locations())
-            {
-                var gl = new GroupLookup();
-                gl.populateFromOrg(i.org);
-                @Html.Raw(Model.replaceAndWrite(gl));
-            }
-        </ul>
-    </td>
-</tr>
-</table>
+        <div class="col-md-6">
+            <ul style="overflow: auto; height: 600px">
+                @foreach (var i in mapModel.Locations())
+                {
+                    var gl = new GroupLookup();
+                    gl.populateFromOrg(i.org);
+                    @Html.Raw(Model.replaceAndWrite(gl));
+                }
+            </ul>
+        </div>
+    </div>

@@ -20,7 +20,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			if (check == null)
 				return new HttpNotFoundResult("Page not found!");
 
-			SmallGroupFinderModel sgfm = new SmallGroupFinderModel();
+			SmallGroupFinderModel sgfm = new SmallGroupFinderModel(this);
 			sgfm.load(id);
 
 			if (Request.Form.Count == 0)

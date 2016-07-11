@@ -42,7 +42,12 @@ namespace CmsWeb.Models
                     where !divid.HasValue || o.DivOrgs.Any(dd => dd.DivId == divid) || o.DivisionId == divid
                     where !orgIdList.Any() || orgIdList.Contains(o.OrganizationId)
                     where !orgTypes.Any() || orgTypes.Contains(o.OrganizationType.Description)
-                    select new { host, o, schedule };
+                    select new
+                    {
+                        host,
+                        o,
+                        schedule
+                    };
 
             var q2 = from i in q.ToList()
                      let addr = i.host.AddrCityStateZip
@@ -62,7 +67,7 @@ namespace CmsWeb.Models
                          color = DbUtil.Db.Setting($"Campus-{i.o.CampusId.GetValueOrDefault(-1)}", "FFFFFF").Replace("#", "")
                      };
             return q2.ToList();
-        } 
+        }
 
         public IEnumerable<MarkerInfo> Locations()
         {
@@ -72,7 +77,7 @@ namespace CmsWeb.Models
 
             foreach (var i in qlist.Where(ii => ii.gc == null))
             {
-                i.gc = addlist.SingleOrDefault(g => g.Address == i.addr) 
+                i.gc = addlist.SingleOrDefault(g => g.Address == i.addr)
                     ?? DbUtil.Db.GeoCodes.FirstOrDefault(g => g.Address == i.addr);
                 if (i.gc == null)
                 {
@@ -106,7 +111,7 @@ Meeting Time: [SGF:Day] at [SGF:Time]<br />
                        org = i.org,
                        latitude = i.gc.Latitude,
                        longitude = i.gc.Longitude,
-                       image = $"http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld={i.markertext}|{i.color}"
+                       image = $"//chart.apis.google.com/chart?chst=d_map_pin_letter&chld={i.markertext}|{i.color}"
                    };
         }
 

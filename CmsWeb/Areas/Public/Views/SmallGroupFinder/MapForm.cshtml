@@ -1,0 +1,30 @@
+﻿@using CmsWeb.Areas.Public.Models
+@model SmallGroupFinderModel
+
+<form method="post">
+    <table class="sgfform">
+        @for (var iX = 0; iX < Model.getCount(SmallGroupFinderModel.TYPE_FILTER); iX++)
+        {
+            var f = Model.getFilter(iX);
+            var fi = Model.getFilterItems(iX);
+
+            <tr class="sgftr">
+                <td class="sgftdlabel">" + f.title + ":</td>
+                <td class="sgftdfield">
+                    <select name=@f.name>
+                        @foreach (var item in fi)
+                        {
+                            <option @(Model.IsSelectedValue(f.name, item.value) ? "selected" : "" )>@item.value</option>
+                        }
+                    </select>
+                </td>
+            </tr>
+        }
+
+        @{ var submitText = Model.getSetting("SubmitText"); }
+
+        <tr>
+            <td colspan="2" class="sgfsubmitholder"><input class="sgfsubmitbutton" type="submit" value="@(submitText != null ? submitText.value : "Find Groups")" />
+        </tr>
+    </table>
+</form>
