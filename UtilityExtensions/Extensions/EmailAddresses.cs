@@ -228,24 +228,6 @@ namespace UtilityExtensions
                     HttpContext.Current.Items[STR_AdminMail] = value;
             }
         }
-        private const string STR_SysFromEmail = "UnNamed";
-        public static string SysFromEmail
-        {
-            get
-            {
-                var tag = ConfigurationManager.AppSettings["sysfromemail"];
-                if (HttpContext.Current != null)
-                    if (HttpContext.Current.Session != null)
-                        if (HttpContext.Current.Session[STR_SysFromEmail] != null)
-                            tag = HttpContext.Current.Session[STR_SysFromEmail].ToString();
-                return tag.HasValue() ? tag : "david@touchpointsoftware.com";
-            }
-            set
-            {
-                if (HttpContext.Current != null)
-                    HttpContext.Current.Session[STR_SysFromEmail] = value;
-            }
-        }
     }
 }
 

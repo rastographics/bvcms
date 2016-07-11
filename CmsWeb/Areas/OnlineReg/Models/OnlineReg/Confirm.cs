@@ -329,7 +329,7 @@ Thank you.
             if (sendmail)
             {
                 if (p0 == null)
-                    Util.SendMsg(Util.SysFromEmail, Util.Host, Util.TryGetMailAddress(Db.StaffEmailForOrg(org.OrganizationId)),
+                    Util.SendMsg(Db.SysFromEmail, Util.Host, Util.TryGetMailAddress(Db.StaffEmailForOrg(org.OrganizationId)),
                         "Payment confirmation", msg, Util.ToMailAddressList(Util.FirstAddress(ti.Emails)), 0, pid);
                 else
                 {

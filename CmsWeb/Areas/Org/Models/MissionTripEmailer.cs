@@ -245,7 +245,7 @@ namespace CmsWeb.Areas.Org.Models
 
         private void SendNoDbEmail(Person goer, GoerSupporter gs)
         {
-            var sysFromEmail = Util.SysFromEmail;
+            var sysFromEmail = DbUtil.Db.SysFromEmail;
             var from = new MailAddress(goer.EmailAddress ?? goer.EmailAddress2, goer.Name);
 
             try

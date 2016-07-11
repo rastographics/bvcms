@@ -271,6 +271,6 @@ namespace CmsData
             var result = template(data);
             return result;
         }
-
+        public string SysFromEmail => Setting("SysFromEmail", ConfigurationManager.AppSettings["sysfromemail"]);
     }
 }

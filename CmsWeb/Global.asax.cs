@@ -60,7 +60,6 @@ namespace CmsWeb
                 }
                 AccountModel.SetUserInfo(Util.UserName, Session);
             }
-            Util.SysFromEmail = ConfigurationManager.AppSettings["sysfromemail"];
             Util.Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             Util.SessionStarting = true;
         }

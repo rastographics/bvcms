@@ -394,7 +394,7 @@ namespace CmsData
         }
         public void SendPersonEmail(int id, int pid)
         {
-            var sysFromEmail = Util.SysFromEmail;
+            var sysFromEmail = SysFromEmail;
             var emailqueue = EmailQueues.Single(eq => eq.Id == id);
             var emailqueueto = EmailQueueTos.Single(eq => eq.Id == id && eq.PeopleId == pid);
             var fromname = emailqueueto.EmailQueue.FromName;
@@ -468,7 +468,7 @@ namespace CmsData
         public void SendPeopleEmail(int queueid)
         {
             var emailqueue = EmailQueues.Single(ee => ee.Id == queueid);
-            var sysFromEmail = Util.SysFromEmail;
+            var sysFromEmail = SysFromEmail;
             var from = Util.FirstAddress(emailqueue.FromAddr, emailqueue.FromName);
             if (!emailqueue.Subject.HasValue() || !emailqueue.Body.HasValue())
             {
@@ -622,7 +622,7 @@ namespace CmsData
                 string subj = "sent emails: " + subject;
                 var link = ServerLink("/Emails/Details/" + id);
                 string body = $@"<a href=""{link}"">{count} emails sent</a>";
-                var sysFromEmail = Util.SysFromEmail;
+                var sysFromEmail = SysFromEmail;
 
                 Util.SendMsg(sysFromEmail, CmsHost, from,
                     subj, body, Util.ToMailAddressList(from), id, null);

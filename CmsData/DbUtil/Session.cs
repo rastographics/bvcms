@@ -11,6 +11,7 @@ namespace CmsData
     {
         private const string STR_CurrentTag = "CurrentTag";
         private const string STR_DefaultTag = "UnNamed";
+
         public static object GetSessionObj(string key, object def)
         {
             if (HttpContext.Current != null && HttpContext.Current.Session != null)
