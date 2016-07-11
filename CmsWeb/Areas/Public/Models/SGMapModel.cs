@@ -111,7 +111,7 @@ Meeting Time: [SGF:Day] at [SGF:Time]<br />
                        org = i.org,
                        latitude = i.gc.Latitude,
                        longitude = i.gc.Longitude,
-                       image = $"//chart.apis.google.com/chart?chst=d_map_pin_letter&chld={i.markertext}|{i.color}"
+                       image = $"//chart.googleapis.com/chart?chst=d_map_pin_letter&chld={i.markertext}|{i.color}"
                    };
         }
 
