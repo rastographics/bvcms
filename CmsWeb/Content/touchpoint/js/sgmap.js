@@ -28,4 +28,12 @@ function initializeMaps() {
         })(marker, i));
     }
     map.fitBounds(bounds);
+
+    google.maps.event.addListenerOnce(map, 'idle', function(){
+        var center = new google.maps.LatLng(40.757577, -73.969246);
+        map.setCenter(center);
+        map.setZoom(12);
+    });
+
+    window.map = map;
 }

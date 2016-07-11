@@ -19,7 +19,14 @@
     }
 </style>
 
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&key=AIzaSyA-z7tWeIR76NaSM-58ESYlJuQ4RIFJKGs"></script>
+@if (Request.IsLocal)
+{
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&key=AIzaSyD8NYfDRQUKgB0Jra9hsYNIRoKwo4Xyvws"></script>
+}
+else
+{
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&key=AIzaSyA-z7tWeIR76NaSM-58ESYlJuQ4RIFJKGs"></script>
+}
 @ViewExtensions2.jQuery()
 @Fingerprint.Script("/Content/touchpoint/js/sgmap.js")
 @Html.Raw(Html.Json("markers", mapModel.Locations()))
