@@ -241,26 +241,26 @@ Thank you.
 
         public static void ConfirmDuePaidTransaction(Transaction ti, string transactionId, bool sendmail)
         {
-            var Db = DbUtil.Db;
-            var org = Db.LoadOrganizationById(ti.OrgId);
+            var db = DbUtil.Db;
+            var org = db.LoadOrganizationById(ti.OrgId);
             ti.TransactionId = transactionId;
             if (ti.Testing == true && !ti.TransactionId.Contains("(testing)"))
                 ti.TransactionId += "(testing)";
 
             var amt = ti.Amt;
-            var due = PaymentForm.AmountDueTrans(Db, ti);
+            var due = PaymentForm.AmountDueTrans(db, ti);
             foreach (var pi in ti.OriginalTrans.TransactionPeople)
             {
-                var p = Db.LoadPersonById(pi.PeopleId);
+                var p = db.LoadPersonById(pi.PeopleId);
                 if (p != null)
                 {
-                    var om = Db.OrganizationMembers.SingleOrDefault(m => m.OrganizationId == ti.OrgId && m.PeopleId == pi.PeopleId);
+                    var om = db.OrganizationMembers.SingleOrDefault(m => m.OrganizationId == ti.OrgId && m.PeopleId == pi.PeopleId);
                     if (om == null)
                         continue;
-                    Db.SubmitChanges();
+                    db.SubmitChanges();
                     if (org.IsMissionTrip == true)
                     {
-                        Db.GoerSenderAmounts.InsertOnSubmit(
+                        db.GoerSenderAmounts.InsertOnSubmit(
                             new GoerSenderAmount
                             {
                                 Amount = ti.Amt,
@@ -269,9 +269,9 @@ Thank you.
                                 OrgId = org.OrganizationId,
                                 SupporterId = pi.PeopleId,
                             });
-                        var setting = Db.CreateRegistrationSettings(org.OrganizationId);
+                        var setting = db.CreateRegistrationSettings(org.OrganizationId);
                         var fund = setting.DonationFundId;
-                        p.PostUnattendedContribution(Db, ti.Amt ?? 0, fund,
+                        p.PostUnattendedContribution(db, ti.Amt ?? 0, fund,
                             $"SupportMissionTrip: org={org.OrganizationId}; goer={pi.PeopleId}", typecode: BundleTypeCode.Online);
                     }
                     var pay = amt;
@@ -292,18 +292,18 @@ Thank you.
                     amt -= pay;
                 }
                 else
-                    Db.Email(Db.StaffEmailForOrg(org.OrganizationId),
-                        Db.PeopleFromPidString(org.NotifyIds),
+                    db.Email(db.StaffEmailForOrg(org.OrganizationId),
+                        db.PeopleFromPidString(org.NotifyIds),
                         "missing person on payment due",
                         $"Cannot find {pi.Person.Name} ({pi.PeopleId}), payment due completed of {pi.Amt:c} but no record");
             }
-            Db.SubmitChanges();
+            db.SubmitChanges();
 
             dynamic d = new DynamicData();
             d.Name = Transaction.FullName(ti);
             d.Amt = ti.Amt;
             d.Description = ti.Description;
-            d.Amtdue = due;
+            d.Amtdue = PaymentForm.AmountDueTrans(db, ti);
             d.names = string.Join(", ", ti.OriginalTrans.TransactionPeople.Select(i => i.Person.Name));
 
             var msg = DbUtil.Db.RenderTemplate(@"
@@ -324,18 +324,18 @@ Thank you.
 </p>", d);
 
             var pid = ti.FirstTransactionPeopleId();
-            var p0 = Db.LoadPersonById(pid);
+            var p0 = db.LoadPersonById(pid);
             // question: should we be sending to all TransactionPeople?
             if (sendmail)
             {
                 if (p0 == null)
-                    Util.SendMsg(Db.SysFromEmail, Util.Host, Util.TryGetMailAddress(Db.StaffEmailForOrg(org.OrganizationId)),
+                    Util.SendMsg(db.SysFromEmail, Util.Host, Util.TryGetMailAddress(db.StaffEmailForOrg(org.OrganizationId)),
                         "Payment confirmation", msg, Util.ToMailAddressList(Util.FirstAddress(ti.Emails)), 0, pid);
                 else
                 {
-                    Db.Email(Db.StaffEmailForOrg(org.OrganizationId), p0, Util.ToMailAddressList(ti.Emails),
+                    db.Email(db.StaffEmailForOrg(org.OrganizationId), p0, Util.ToMailAddressList(ti.Emails),
                         "Payment confirmation", msg, false);
-                    Db.Email(p0.FromEmail, Db.PeopleFromPidString(org.NotifyIds),
+                    db.Email(p0.FromEmail, db.PeopleFromPidString(org.NotifyIds),
                         "payment received for " + ti.Description, msgstaff);
                 }
             }
