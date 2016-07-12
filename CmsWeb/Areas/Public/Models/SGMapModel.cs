@@ -64,7 +64,7 @@ namespace CmsWeb.Models
                          gc = geocode,
                          org = i.o,
                          markertext = i.o.OrganizationType?.Description == "Beta Group" ? "B" : " ",
-                         color = DbUtil.Db.Setting($"Campus-{i.o.CampusId.GetValueOrDefault(-1)}", "FFFFFF").Replace("#", "")
+                         color = DbUtil.Db.Setting($"UX-MapPinColor-Campus-{i.o.CampusId.GetValueOrDefault(-1)}", "FFFFFF").Replace("#", "")
                      };
             return q2.ToList();
         }
