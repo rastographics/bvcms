@@ -237,7 +237,7 @@ namespace CmsWeb.Areas.Reports.Models
                         children = p.PositionInFamilyId != 10
                             ? ""
                             : string.Join("~", p.Family.People
-                                .Where(cc => cc.PositionInFamilyId == 30)
+                                .Where(cc => cc.PositionInFamilyId > 10)
                                 .Select(cc =>
                                     $"{(cc.LastName == familyname ? cc.PreferredName : cc.Name)}|{cc.Age}|{cc.BirthMonth}|{cc.BirthDay}"
                                 )),
