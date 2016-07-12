@@ -160,6 +160,9 @@ namespace CmsWeb.Areas.Org.Models
         {
             get
             {
+                if (!HttpContext.Current.User.IsInRole("OrgLeadersOnly"))
+                    return true;
+
                 var typeName = OrgMain.OrganizationType.ToString().Replace(" ", "");
                 return !DbUtil.Db.Setting($"UX-HideMeetingsTabForOrgLeaders-{typeName}", false);
             }
