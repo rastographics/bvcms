@@ -3,14 +3,14 @@
 }
 <div id="bluetoolbarstop">
     <div id="bluebar-menu" class="btn-group pull-right">
-        <div class="btn-group btn-group-lg dropdown-large">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                <span class="fa fa-envelope-o"></span>
-            </button>
-            @Html.Partial("Toolbar/Email")
-        </div>
         @if (showAdvanced)
         {
+            <div class="btn-group btn-group-lg dropdown-large">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                    <span class="fa fa-envelope-o"></span>
+                </button>
+                @Html.Partial("Toolbar/Email")
+            </div>
             <div class="btn-group btn-group-lg dropdown-large">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                     <span class="fa fa-code"></span>
