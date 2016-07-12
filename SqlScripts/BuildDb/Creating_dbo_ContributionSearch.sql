@@ -36,7 +36,7 @@ BEGIN
 		JOIN dbo.BundleHeader h ON h.BundleHeaderId = d.BundleHeaderId
 		LEFT JOIN dbo.People p ON p.PeopleId = c.PeopleId
 		WHERE 1=1
-		AND (ISNULL(@includeunclosedbundles, 0) = 0 OR h.BundleStatusId = 0)
+		AND (ISNULL(@includeunclosedbundles, 0) = 1 OR h.BundleStatusId = 0)
 		AND (ISNULL(@mobile, 0) = 0 OR c.SOURCE > 0)
 		AND CASE ISNULL(@taxnontax, 'na')
 			WHEN 'na' THEN 1
@@ -71,6 +71,8 @@ BEGIN
     
 	RETURN 
 END
+
+
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
