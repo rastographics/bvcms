@@ -76,7 +76,7 @@ namespace CmsWeb.Areas.Org.Models
         public static IEnumerable<SearchDivision> Divisions(int? id)
         {
             var q = from d in DbUtil.Db.SearchDivisions(id, null)
-                where d.IsChecked == true                
+                where d.IsChecked == true
                 orderby d.IsMain descending, d.IsChecked descending, d.Program, d.Division
                 select d;
             return q;
@@ -136,7 +136,7 @@ namespace CmsWeb.Areas.Org.Models
                 _showContactsReceivedTab = OrgMain.OrganizationType.ToString() == orgType;
                 if (!_showContactsReceivedTab.Value) return false;
             }
-            
+
             // Check and see if the user doesn't have access to the tab
             var accessTypeList = DbUtil.Db.Setting("UX-VisitedOrgTabMemberTypes", null);
             if (!string.IsNullOrEmpty(accessTypeList))
@@ -154,6 +154,15 @@ namespace CmsWeb.Areas.Org.Models
             }
 
             return _showContactsReceivedTab.Value;
+        }
+
+        public bool ShowMeetingsTab
+        {
+            get
+            {
+                var typeName = OrgMain.OrganizationType.ToString().Replace(" ", "");
+                return !DbUtil.Db.Setting($"UX-HideMeetingsTabForOrgLeaders-{typeName}", false);
+            }
         }
 
         private bool ShowContactsCheckOrgAndParents(Organization org, int peopleId, List<string> memberTypes)

@@ -62,7 +62,10 @@
         @Html.Partial("Settings/Main", Model.OrgMain)
         <ul class="nav nav-tabs" id="organization-tabs">
           <li class="active"><a href="#Members-tab" aria-controls="Members-tab" class="ajax" data-toggle="tab">People</a></li>
-          <li><a href="#Meetings-tab" aria-controls="Meetings-tab" class="ajax" data-toggle="tab">Meetings</a></li>
+          @if (Model.ShowMeetingsTab)
+          {
+              <li><a href="#Meetings-tab" aria-controls="Meetings-tab" class="ajax" data-toggle="tab">Meetings</a></li>
+          }
           @if (Model.ShowContactsReceivedTab())
           {
               <li><a href="#ContactsReceived-tab" aria-controls="ContactsReceived-tab" class="ajax" data-toggle="tab">@DbUtil.Db.Setting("UX-CGVisitsTabLabel", "Visits")</a></li>
