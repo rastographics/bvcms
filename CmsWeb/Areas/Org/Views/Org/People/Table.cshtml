@@ -6,6 +6,7 @@
 @model CmsWeb.Areas.Org.Models.OrgPeopleModel
 @{
     var target = Util2.TargetLinkPeople ? "target='people'" : "";
+    var hideBirthDate = DbUtil.Db.Setting("HideBirthYearForOrgLeaders", false);
 }
 <table class="table table-striped">
     <thead>
@@ -23,7 +24,10 @@
             </th>
             <th>
                 @Model.SortLink("Church")<br />
-                @Model.SortLink("Age") - @Model.SortLink("Bday")
+                @if (!hideBirthDate)
+                {
+                    <text>Model.SortLink("Age") - @Model.SortLink("Bday")</text>
+                }
             </th>
             <th>Communication</th>
             <th>@Model.SortLink("% Att.")</th>
@@ -72,7 +76,7 @@
                     {
                         <a href="/Person2/@p.PeopleId" class="target" @target>@p.Name</a>
                     }
-                    
+
                     @if (Model.ShowAddress)
                     {
                         @p.AddressBlock
@@ -86,7 +90,10 @@
                 </td>
                 <td>
                     @p.MemberStatus<br />
-                    @p.Age - @p.BirthDate
+                    @if (!hideBirthDate)
+                    {
+                        <text>p.Age - p.BirthDate</text>
+                    }
                 </td>
                 <td>
                     @foreach (var ph in p.Phones)

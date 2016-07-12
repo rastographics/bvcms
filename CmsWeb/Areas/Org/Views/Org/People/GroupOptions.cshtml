@@ -1,4 +1,8 @@
-﻿@model CmsWeb.Areas.Org.Models.OrgPeopleModel
+﻿@using CmsData
+@model CmsWeb.Areas.Org.Models.OrgPeopleModel
+@{
+    var disablePersonLinks = DbUtil.Db.Setting("UX-DisablePersonLinksForOrgLeaders", false);
+}
 <div class="btn-group">
   <button data-toggle="dropdown" class="btn dropdown-toggle btn-info">
     @Model.GroupOptions
@@ -11,11 +15,14 @@
       <li class="@Model.ShowHiddenActive">
           <a id="showhide" href="#" class="grp2 @Model.ShowHiddenActive">Show Hidden</a>
       </li>
-      <li class="@Model.ShowMinistryInfoActive">
-          <a id="ministryinfo" href="#" class="grp2 @Model.ShowMinistryInfoActive">Ministry Info</a>
-      </li>
-      <li class="@Model.ShowAddressActive">
-          <a id="showaddress" href="#" class="grp2 @Model.ShowAddressActive">Show Address</a>
-      </li>
+      @if (!disablePersonLinks)
+      {
+          <li class="@Model.ShowMinistryInfoActive">
+              <a id="ministryinfo" href="#" class="grp2 @Model.ShowMinistryInfoActive">Ministry Info</a>
+          </li>
+          <li class="@Model.ShowAddressActive">
+              <a id="showaddress" href="#" class="grp2 @Model.ShowAddressActive">Show Address</a>
+          </li>
+      }
   </ul>
 </div>
