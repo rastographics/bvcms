@@ -1,2 +1,17 @@
 ﻿@model CmsWeb.Areas.Public.Models.SmallGroupFinderModel
-@Html.Raw(((string)ViewBag.Shell).Replace("<!-- CONTAINER -->", Html.Partial("MapIndex", Model).ToString()))
+@if (Model.UseShell)
+{
+    @Html.Raw(((string)ViewBag.Shell).Replace("<!-- CONTAINER -->", Html.Partial("MapIndex", Model).ToString()))
+}
+else
+{
+    @:<!doctype html>
+    <html>
+    <head>
+        @Html.Raw(ViewExtensions2.Bootstrap3Css())
+    </head>
+    <body>
+        @Html.Partial("MapIndex", Model)
+    </body>
+</html>
+}

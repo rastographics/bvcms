@@ -10,7 +10,6 @@ using System;
 using System.Web.Mvc;
 using MoreLinq;
 using UtilityExtensions;
-using CmsWeb.Areas.Public.Controllers;
 
 namespace CmsWeb.Areas.Public.Models
 {
@@ -21,18 +20,21 @@ namespace CmsWeb.Areas.Public.Models
 
 		public const string SHOW_ALL = "-- All --";
 
-		SmallGroupFinder sgf;
-		Dictionary<string, SearchItem> search;
-		List<int> divList = new List<int>();
+		private SmallGroupFinder _sgf;
+		private Dictionary<string, SearchItem> _search;
+		private readonly List<int> _divList = new List<int>();
 
-		string sTemplate;
-		string sGutter;
-		string sShell;
-        private Controller _controller;
+	    private string _template;
+		private string _gutter;
+		private string _shell;
+        private readonly Controller _controller;
 
-        public SmallGroupFinderModel(Controller controller)
+        public bool UseShell { get; private set; }
+
+        public SmallGroupFinderModel(Controller controller, bool useShell = true)
         {
             _controller = controller;
+            UseShell = useShell;
         }
 
         public void load(string sName)
@@ -41,65 +43,65 @@ namespace CmsWeb.Areas.Public.Models
 
 			var xs = new XmlSerializer(typeof(SmallGroupFinder), new XmlRootAttribute("SGF"));
 			var sr = new StringReader(xml);
-			sgf = (SmallGroupFinder)xs.Deserialize(sr);
+			_sgf = (SmallGroupFinder)xs.Deserialize(sr);
 
-			string[] divs = sgf.divisionid.Split(',');
+			var divs = _sgf.divisionid.Split(',');
 			foreach (var div in divs)
 			{
-				divList.Add(Convert.ToInt32(div));
+				_divList.Add(Convert.ToInt32(div));
 			}
 
-			sShell = DbUtil.Content(sgf.shell, "");
-			sTemplate = DbUtil.Content(sgf.layout, "");
-			sGutter = DbUtil.Content(sgf.gutter, "");
+			_shell = DbUtil.Content(_sgf.shell, "");
+			_template = DbUtil.Content(_sgf.layout, "");
+			_gutter = DbUtil.Content(_sgf.gutter, "");
 		}
 
 		public bool hasShell()
 		{
-		    return !string.IsNullOrEmpty(sShell);
+		    return !string.IsNullOrEmpty(_shell);
 		}
 
-	    public String createFromShell()
+	    public string createFromShell()
 		{
-			sShell = sShell.Replace("[SGF:Gutter]", getGutter());
-			sShell = sShell.Replace("[SGF:Form]", getForm());
-			sShell = sShell.Replace("[SGF:Groups]", getGroupList());
+			_shell = _shell.Replace("[SGF:Gutter]", getGutter());
+			_shell = _shell.Replace("[SGF:Form]", getForm());
+			_shell = _shell.Replace("[SGF:Groups]", getGroupList());
 
-			if (search != null)
+			if (_search != null)
 			{
-				foreach (var entry in search)
+				foreach (var entry in _search)
 				{
 					if (entry.Value.parse)
 					{
 						foreach (var value in entry.Value.values)
 						{
-							sShell = sShell.Replace("[" + entry.Key + ":" + value + "]", "checked=\"checked\"");
+							_shell = _shell.Replace("[" + entry.Key + ":" + value + "]", "checked=\"checked\"");
 						}
 					}
 					else
 					{
-						sShell = sShell.Replace("[" + entry.Key + ":" + entry.Value.values[0] + "]", "checked=\"checked\"");
+						_shell = _shell.Replace("[" + entry.Key + ":" + entry.Value.values[0] + "]", "checked=\"checked\"");
 					}
 				}
 
-				sShell = Regex.Replace(sShell, GroupLookup.PATTERN_CLEAN_CHECKED, "");
+				_shell = Regex.Replace(_shell, GroupLookup.PATTERN_CLEAN_CHECKED, "");
 			}
 
-			return sShell;
+			return _shell;
 		}
 
 		public void setSearch(Dictionary<string, SearchItem> newserach)
 		{
-			search = newserach;
+			_search = newserach;
 		}
 
 		public bool IsSelectedValue(string key, string value)
 		{
-			if (search == null) return false;
+			if (_search == null) return false;
 
-			if (search.ContainsKey(key))
+			if (_search.ContainsKey(key))
 			{
-				if (search[key].values.Contains(value))
+				if (_search[key].values.Contains(value))
 					return true;
 				else
 					return false;
@@ -111,24 +113,24 @@ namespace CmsWeb.Areas.Public.Models
 		public List<Division> getDivisions()
 		{
 			return (from e in DbUtil.Db.Divisions
-					  where divList.Contains(e.Id)
+					  where _divList.Contains(e.Id)
 					  select e).ToList();
 		}
 
 		public int getCount(int type)
 		{
-			if (sgf == null) return 0;
+			if (_sgf == null) return 0;
 
 			switch (type)
 			{
 				case TYPE_SETTING:
 					{
-						return sgf.SGFSettings.Count();
+						return _sgf.SGFSettings.Count();
 					}
 
 				case TYPE_FILTER:
 					{
-						return sgf.SGFFilters.Count();
+						return _sgf.SGFFilters.Count();
 					}
 
 				default: return 0;
@@ -137,27 +139,27 @@ namespace CmsWeb.Areas.Public.Models
 
 		public List<SGFSetting> getSettings()
 		{
-			return sgf.SGFSettings;
+			return _sgf.SGFSettings;
 		}
 
 		public SGFSetting getSetting(int id)
 		{
-			return sgf.SGFSettings[id];
+			return _sgf.SGFSettings[id];
 		}
 
 		public SGFSetting getSetting(string name)
 		{
-			return (from s in sgf.SGFSettings where s.name == name select s).FirstOrDefault();
+			return (from s in _sgf.SGFSettings where s.name == name select s).FirstOrDefault();
 		}
 
 		public List<SGFFilter> getFilters()
 		{
-			return sgf.SGFFilters;
+			return _sgf.SGFFilters;
 		}
 
 		public SGFFilter getFilter(int id)
 		{
-			return sgf.SGFFilters[id];
+			return _sgf.SGFFilters[id];
 		}
 
 		public List<FilterItem> getFilterItems(int id)
@@ -165,7 +167,7 @@ namespace CmsWeb.Areas.Public.Models
             var orgTypes = DbUtil.Db.Setting("SGF-OrgTypes", "").Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
 
             var f = getFilter(id);
-			List<FilterItem> i = new List<FilterItem>();
+			var i = new List<FilterItem>();
 
 			if (f.locked)
 			{
@@ -174,7 +176,7 @@ namespace CmsWeb.Areas.Public.Models
 			else
 			{
 				i = (from e in DbUtil.Db.OrganizationExtras
-					 where e.Organization.DivOrgs.Any(ee => divList.Contains(ee.DivId)) || orgTypes.Contains(e.Organization.OrganizationType.Description)
+					  where e.Organization.DivOrgs.Any(ee => _divList.Contains(ee.DivId)) || orgTypes.Contains(e.Organization.OrganizationType.Description)
 					 where e.Field == f.name
                      orderby e.Data
                      select new FilterItem
@@ -190,7 +192,7 @@ namespace CmsWeb.Areas.Public.Models
 
 		public List<Organization> getGroups()
 		{
-			if (search == null) return new List<Organization>();
+			if (_search == null) return new List<Organization>();
 
 		    var orgTypes = DbUtil.Db.Setting("SGF-OrgTypes", "").Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
 
@@ -198,7 +200,7 @@ namespace CmsWeb.Areas.Public.Models
 		    if (!orgTypes.Any())
 		    {
                 orgs = from o in DbUtil.Db.Organizations
-                           where o.DivOrgs.Any(ee => divList.Contains(ee.DivId))
+                           where o.DivOrgs.Any(ee => _divList.Contains(ee.DivId))
                            //where o.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
                            select o;
             }
@@ -210,7 +212,7 @@ namespace CmsWeb.Areas.Public.Models
                            select o;
             }
 
-			foreach (var filter in search)
+			foreach (var filter in _search)
 			{
 				if (filter.Value.values.Contains(SHOW_ALL)) continue;
 
@@ -233,7 +235,7 @@ namespace CmsWeb.Areas.Public.Models
 
 		public string replaceAndWrite(GroupLookup gl)
 		{
-			string temp = HttpUtility.HtmlDecode(string.Copy(sTemplate));
+			var temp = HttpUtility.HtmlDecode(string.Copy(_template));
 
 			foreach (var item in gl.values)
 			{
@@ -247,7 +249,7 @@ namespace CmsWeb.Areas.Public.Models
 
 		public string getGutter()
 		{
-			return sGutter;
+			return _gutter;
 		}
 
         public string RenderViewToString(string viewName, object model)
@@ -270,11 +272,11 @@ namespace CmsWeb.Areas.Public.Models
 
 		public string getGroupList()
 		{
-			string sList = "";
+			var sList = "";
 
 			foreach (var group in getGroups())
 			{
-				GroupLookup gl = new GroupLookup();
+				var gl = new GroupLookup();
 				gl.populateFromOrg(group);
 				sList += replaceAndWrite(gl);
 			}
