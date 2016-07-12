@@ -1,15 +1,11 @@
 ﻿@using System.Text.RegularExpressions
 @using CmsWeb.Areas.Public.Models
 @model SmallGroupFinderModel
-@{
-    var st = Model.getSetting("SubmitText");
-    var submitText = st != null ? st.value : "Find Groups";
-}
 <div style="background-color: white; padding: 20px;">
     <h2>Small Group Finder</h2>
     <div class="row">
         <div class="col-md-4">
-            <form method="post">
+            <form id="search-form" method="post" class="ajax">
                 @for (var iX = 0; iX < Model.getCount(SmallGroupFinderModel.TYPE_FILTER); iX++)
                 {
                     var f = Model.getFilter(iX);
@@ -18,7 +14,7 @@
 
                     <div class="form-group">
                         <label for="@filterId">@f.title</label>
-                        <select id="@filterId" class="form-control">
+                        <select id="@filterId" name="@filterId" class="form-control update-control">
                             @foreach (var item in fi)
                             {
                                 <option @(Model.IsSelectedValue(f.name, item.value) ? "selected" : "") value="@item.value">@item.value</option>
@@ -26,7 +22,7 @@
                         </select>
                     </div>
                 }
-                <input type="submit" class="btn btn-default" value="@submitText"/>
+                <input type="reset" class="btn btn-default" value="Reset"/>
             </form>
         </div>
         <div class="col-md-8">

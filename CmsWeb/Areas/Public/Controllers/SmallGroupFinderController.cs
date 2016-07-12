@@ -18,6 +18,32 @@ namespace CmsWeb.Areas.Public.Controllers
             if (check == null)
                 return new HttpNotFoundResult("Page not found!");
 
+            var sgfm = BuildSmallGroupFinderModel(id, useShell);
+
+            // Process shell here
+            if (sgfm.hasShell())
+                return Content(sgfm.createFromShell());
+
+            if (DbUtil.Db.Setting("SGF-UseEmbeddedMap", false))
+            {
+                var template = DbUtil.Db.ContentHtml("ShellDefaultSGF", "<!-- CONTAINER -->");
+                ViewBag.Shell = template;
+                return View("MapShell", sgfm);
+            }
+
+            return View("Index", sgfm);
+        }
+
+        [HttpPost]
+        public ActionResult GetMapContent(string id)
+        {
+            var sgfm = BuildSmallGroupFinderModel(id);
+
+            return PartialView("MapContent", sgfm);
+        }
+
+        private SmallGroupFinderModel BuildSmallGroupFinderModel(string id, bool useShell = true)
+        {
             var sgfm = new SmallGroupFinderModel(this, useShell);
             sgfm.load(id);
 
@@ -46,25 +72,13 @@ namespace CmsWeb.Areas.Public.Controllers
                     }
                     else
                     {
-                        search.Add(parts[0], new SearchItem { name = parts[0], values = { parts[1] } });
+                        search.Add(parts[0], new SearchItem {name = parts[0], values = {parts[1]}});
                     }
                 }
 
                 sgfm.setSearch(search);
             }
-
-            // Process shell here
-            if (sgfm.hasShell())
-                return Content(sgfm.createFromShell());
-
-            if (DbUtil.Db.Setting("SGF-UseEmbeddedMap", false))
-            {
-                var template = DbUtil.Db.ContentHtml("ShellDefaultSGF", "<!-- CONTAINER -->");
-                ViewBag.Shell = template;
-                return View("MapShell", sgfm);
-            }
-
-            return View("Index", sgfm);
+            return sgfm;
         }
     }
 }

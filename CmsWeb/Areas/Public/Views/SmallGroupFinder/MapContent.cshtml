@@ -1,0 +1,24 @@
+﻿@using CmsWeb.Areas.Public.Models
+@using CmsWeb.Models
+@model SmallGroupFinderModel
+@{
+    var mapModel = new SGMapModel(Model.getGroups());
+}
+
+<div class="row map-content">
+    @Html.Raw(Html.Json("markers", mapModel.Locations()))
+    <div class="col-md-6">
+        <div id="map" class="map">
+        </div>
+    </div>
+    <div class="col-md-6">
+        <ul style="overflow: auto; height: 600px">
+            @foreach (var i in mapModel.Locations())
+            {
+                var gl = new GroupLookup();
+                gl.populateFromOrg(i.org);
+                @Html.Raw(Model.replaceAndWrite(gl));
+            }
+        </ul>
+    </div>
+</div>

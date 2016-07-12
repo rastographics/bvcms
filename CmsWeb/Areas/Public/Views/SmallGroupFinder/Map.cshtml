@@ -1,9 +1,7 @@
 ﻿@model SmallGroupFinderModel
-@using CmsWeb
 @using CmsWeb.Areas.Public.Models
 @using CmsWeb.Models
 @{
-    var mapModel = new SGMapModel(Model.getGroups());
     var isPartial = (bool) ViewData["AsPartial"];
 
     if (isPartial)
@@ -29,21 +27,5 @@ else
 }
 @ViewExtensions2.jQuery()
 @Fingerprint.Script("/Content/touchpoint/js/sgmap.js")
-@Html.Raw(Html.Json("markers", mapModel.Locations()))
 
-    <div class="row">
-        <div class="col-md-6">
-            <div id="map" class="map">
-            </div>
-        </div>
-        <div class="col-md-6">
-            <ul style="overflow: auto; height: 600px">
-                @foreach (var i in mapModel.Locations())
-                {
-                    var gl = new GroupLookup();
-                    gl.populateFromOrg(i.org);
-                    @Html.Raw(Model.replaceAndWrite(gl));
-                }
-            </ul>
-        </div>
-    </div>
+@Html.Partial("MapContent", Model)
