@@ -32,6 +32,7 @@
             $('#DivisionId').html(ret);
         });
         $.getTable();
+        $('.ev-input').val($('.ev-input option:first').val());
         return false;
     });
 

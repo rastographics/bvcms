@@ -7,7 +7,6 @@ using System.Web.Mvc;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using CmsData;
-using CmsWeb.Areas.People.Models;
 using CmsWeb.Areas.Search.Models;
 using MoreLinq;
 using UtilityExtensions;
