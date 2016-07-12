@@ -1,10 +1,8 @@
 using System;
-using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
-using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using CmsData.Codes;
 using CmsWeb.Areas.Main.Models;
@@ -12,6 +10,7 @@ using UtilityExtensions;
 using CmsData;
 using Elmah;
 using System.Threading;
+using System.Web.Hosting;
 using Dapper;
 using HtmlAgilityPack;
 
@@ -213,7 +212,7 @@ namespace CmsWeb.Areas.Main.Controllers
                         eq.EmailQueueTos.Add(new EmailQueueTo
                         {
                             PeopleId = pid,
-                            OrgId = eq.SendFromOrgId.HasValue ? eq.SendFromOrgId : null,
+                            OrgId = eq.SendFromOrgId,
                             Guid = Guid.NewGuid(),
                         });
                     }
@@ -243,9 +242,8 @@ namespace CmsWeb.Areas.Main.Controllers
                 return Json(new { error = ex.Message });
             }
 
-            System.Threading.Tasks.Task.Factory.StartNew(() =>
+            HostingEnvironment.QueueBackgroundWorkItem(ct =>
             {
-                Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
                 try
                 {
                     var db = DbUtil.Create(host);

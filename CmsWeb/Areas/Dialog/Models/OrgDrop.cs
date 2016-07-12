@@ -4,11 +4,11 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
+using System.Web.Hosting;
 using CmsData;
 using CmsData.Codes;
 using CmsData.View;
 using UtilityExtensions;
-using Task = System.Threading.Tasks.Task;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
@@ -78,12 +78,11 @@ namespace CmsWeb.Areas.Dialog.Models
             };
             db.LongRunningOps.InsertOnSubmit(lop);
             db.SubmitChanges();
-            Task.Run(() => DoWork(this));
+            HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
         }
 
         private void DoWork(OrgDrop model)
         {
-            Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
             var db = DbUtil.Create(model.host);
             var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);

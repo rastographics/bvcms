@@ -1,17 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Threading;
 using CmsData;
 using CmsWeb.Code;
-using MoreLinq;
 using UtilityExtensions;
-using System.IO;
 using System.Web.Mvc;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
-using CmsWeb.Models;
 
 namespace CmsWeb.Areas.Main.Models
 {
@@ -170,7 +165,7 @@ namespace CmsWeb.Areas.Main.Models
                     throw new Exception("email tag is missing");
                 var q = tag.People(DbUtil.Db);
                 Count = q.Count();
-                if (Count >= 300)
+                if (Count >= 150)
                     Schedule = Util.Now.AddSeconds(10); // some time for emailqueue to be ready to go
             }
 

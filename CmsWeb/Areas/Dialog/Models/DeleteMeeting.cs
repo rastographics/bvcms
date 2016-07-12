@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
+using System.Web.Hosting;
 using CmsData;
 using UtilityExtensions;
 using Tasks = System.Threading.Tasks;
@@ -41,12 +42,11 @@ namespace CmsWeb.Areas.Dialog.Models
             };
             db.LongRunningOps.InsertOnSubmit(lop);
             db.SubmitChanges();
-            Tasks.Task.Run(() => DoWork(this));
+            HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
         }
 
         private static void DoWork(DeleteMeeting model)
         {
-            Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
             var db = DbUtil.Create(model.host);
             var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);

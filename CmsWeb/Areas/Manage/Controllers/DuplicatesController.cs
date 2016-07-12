@@ -1,10 +1,10 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Web.Mvc;
-using System.Threading;
+using System.Web.Hosting;
 using UtilityExtensions;
 using CmsData;
-using Alias = System.Threading.Tasks;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
@@ -12,6 +12,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage", AreaPrefix= "Duplicates"), Route("{action}")]
     public class DuplicatesController : CmsStaffController
     {
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         public class DuplicateInfo
         {
             public Duplicate d {get; set;}
@@ -41,10 +42,10 @@ namespace CmsWeb.Areas.Manage.Controllers
 			return View();
 		}
         [HttpPost]
-		public ActionResult Find(string FromDate, string ToDate)
+		public ActionResult Find(string fromDate, string toDate)
         {
-            var fdt = FromDate.ToDate();
-            var tdt = ToDate.ToDate();
+            var fdt = fromDate.ToDate();
+            var tdt = toDate.ToDate();
 			string host = Util.Host; 
 			var runningtotals = new DuplicatesRun
 			{
@@ -56,31 +57,31 @@ namespace CmsWeb.Areas.Manage.Controllers
 			DbUtil.Db.DuplicatesRuns.InsertOnSubmit(runningtotals);
 			DbUtil.Db.SubmitChanges();
 
-            Alias.Task.Factory.StartNew(() =>
+            HostingEnvironment.QueueBackgroundWorkItem(ct => 
             {
-				Thread.CurrentThread.Priority = ThreadPriority.Lowest;
-                var Db = DbUtil.Create(host);
-				var rt = Db.DuplicatesRuns.OrderByDescending(mm => mm.Id).First();
-                Db.ExecuteCommand("delete duplicate");
-				var q = from p in Db.People
+                var db = DbUtil.Create(host);
+				var rt = db.DuplicatesRuns.OrderByDescending(mm => mm.Id).First();
+                db.ExecuteCommand("delete duplicate");
+				var q = from p in db.People
 						where p.CreatedDate > fdt
 						where p.CreatedDate < tdt.Value.AddDays(1)
 						select p.PeopleId;
 				rt.Count = q.Count();
-				Db.SubmitChanges();
+				db.SubmitChanges();
                 foreach(var p in q)
                 {
-                    var pids = Db.FindPerson4(p);
+                    var pids = db.FindPerson4(p);
 					rt.Processed++;
-					Db.SubmitChanges();
-                    if (pids.Count() == 0)
+					db.SubmitChanges();
+                    if (!pids.Any())
                         continue;
                     foreach(var pid in pids)
-                        Db.InsertDuplicate(p, pid.PeopleId.Value);
-					rt.Found++;
+                        if (pid.PeopleId != null)
+                            db.InsertDuplicate(p, pid.PeopleId.Value);
+                    rt.Found++;
                 }
 				rt.Completed = DateTime.Now;
-				Db.SubmitChanges();
+				db.SubmitChanges();
             });
             return Redirect("/Duplicates/Progress");
         }

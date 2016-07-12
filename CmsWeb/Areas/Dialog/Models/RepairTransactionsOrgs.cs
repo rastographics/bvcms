@@ -4,11 +4,11 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
+using System.Web.Hosting;
 using CmsData;
 using CmsWeb.Areas.Search.Models;
 using Newtonsoft.Json;
 using UtilityExtensions;
-using Task = System.Threading.Tasks.Task;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
@@ -53,11 +53,10 @@ namespace CmsWeb.Areas.Dialog.Models
             };
             db.LongRunningOps.InsertOnSubmit(lop);
             db.SubmitChanges();
-            Task.Run(() => DoWork(this));
+            HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
 		}
         public static void DoWork(RepairTransactionsOrgs model)
         {
-			Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
 			var db = DbUtil.Create(model.host);
             db.CommandTimeout = 2200;
 		    var cul = db.Setting("Culture", "en-US");

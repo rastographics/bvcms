@@ -1,11 +1,10 @@
 using System;
 using System.Linq;
 using System.Web.Mvc;
-using System.Threading;
+using System.Web.Hosting;
 using CmsWeb.Models;
 using UtilityExtensions;
 using CmsData;
-using Alias = System.Threading.Tasks;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
@@ -30,9 +29,8 @@ namespace CmsWeb.Areas.Manage.Controllers
 			DbUtil.Db.SubmitChanges();
 			var pid = Util.UserPeopleId;
 
-			Alias.Task.Factory.StartNew(() =>
+            HostingEnvironment.QueueBackgroundWorkItem(ct => 
 			{
-				Thread.CurrentThread.Priority = ThreadPriority.Lowest;
 				var Db = DbUtil.Create(host);
 				try
 				{

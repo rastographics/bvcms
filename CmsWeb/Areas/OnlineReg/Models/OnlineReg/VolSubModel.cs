@@ -6,8 +6,7 @@ using CmsData;
 using CmsData.Registration;
 using UtilityExtensions;
 using CmsWeb.Areas.Main.Models;
-using TaskAlias = System.Threading.Tasks.Task;
-using System.Threading;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using CmsData.Codes;
 using CmsData.View;
@@ -211,9 +210,8 @@ Sorry, I cannot sub for you.</a>";
             var isinroleemailtest = HttpContext.Current.User.IsInRole("EmailTest");
             Log("Send Emails");
 
-            TaskAlias.Factory.StartNew(() =>
+            HostingEnvironment.QueueBackgroundWorkItem(ct =>
             {
-                Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
                 try
                 {
                     var db = DbUtil.Create(host);

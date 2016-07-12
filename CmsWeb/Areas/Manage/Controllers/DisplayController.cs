@@ -5,22 +5,16 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.IO;
 using System.Text;
 using System.Web.Mvc;
 using System.Web.UI;
-using System.Web.UI.HtmlControls;
 using System.Windows.Forms;
 using CmsData;
 using CmsData.Codes;
-using Dapper;
 using UtilityExtensions;
 using CmsWeb.Models;
-// Used for pulling image from service
-using System.Net;
 // Used for HTML Image Capture
 using System.Threading;
 using System.Drawing;

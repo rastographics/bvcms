@@ -5,11 +5,11 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Code;
 using UtilityExtensions;
-using Tasks = System.Threading.Tasks;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
@@ -40,7 +40,7 @@ namespace CmsWeb.Areas.Dialog.Models
             db.LongRunningOps.InsertOnSubmit(lop);
             db.SubmitChanges();
 
-            Tasks.Task.Run(() => DoWork(this));
+            HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
         }
 
         internal List<int> pids;
@@ -52,7 +52,6 @@ namespace CmsWeb.Areas.Dialog.Models
 
         public static void DoWork(ValidateAddress model)
         {
-            Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
             var db = DbUtil.Create(model.host);
             var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);

@@ -4,7 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading;
+using System.Web.Hosting;
 using UtilityExtensions;
 
 namespace CmsData.Classes.GoogleCloudMessaging
@@ -24,11 +24,10 @@ namespace CmsData.Classes.GoogleCloudMessaging
 
             if (message.registration_ids.Count == 0 || gcmkey.Length == 0) return;
 
-            System.Threading.Tasks.Task.Factory.StartNew(() => {
+            HostingEnvironment.QueueBackgroundWorkItem(ct =>
+            {
                 string json = JsonConvert.SerializeObject(message);
                 string host = Util.Host;
-
-                Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
 
                 using (var webClient = new WebClient())
                 {
@@ -46,10 +45,10 @@ namespace CmsData.Classes.GoogleCloudMessaging
                     {
                         if (response.results.Count > iX)
                         {
-                            string registrationID = message.registration_ids[iX];
+                            string registrationId = message.registration_ids[iX];
                             GCMResponseResult result = response.results[iX];
 
-                            if (result.error != null && result.error.Length > 0)
+                            if (!string.IsNullOrEmpty(result.error))
                             {
                                 switch (result.error)
                                 {
@@ -57,7 +56,7 @@ namespace CmsData.Classes.GoogleCloudMessaging
                                     case "NotRegistered":
                                     {
                                         var record = (from r in Db.MobileAppPushRegistrations
-                                                      where r.RegistrationId == registrationID
+                                                      where r.RegistrationId == registrationId
                                                       select r).SingleOrDefault();
 
                                         if (record != null)
@@ -70,10 +69,11 @@ namespace CmsData.Classes.GoogleCloudMessaging
                             else if (result.error != null && result.registration_id.Length > 0)
                             {
                                 var record = (from r in Db.MobileAppPushRegistrations
-                                              where r.RegistrationId == registrationID
+                                              where r.RegistrationId == registrationId
                                               select r).SingleOrDefault();
 
-                                record.RegistrationId = result.registration_id;
+                                if (record != null)
+                                    record.RegistrationId = result.registration_id;
                             }
                         }
                     }

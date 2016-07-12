@@ -4,11 +4,11 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Finance.Models.Report;
 using UtilityExtensions;
-using Task = System.Threading.Tasks.Task;
 
 namespace CmsWeb.Areas.Finance.Controllers
 {
@@ -48,9 +48,8 @@ namespace CmsWeb.Areas.Finance.Controllers
             if (tagid == 0)
                 tagid = null;
 
-            Task.Factory.StartNew(() =>
+            HostingEnvironment.QueueBackgroundWorkItem(ct =>
             {
-                Thread.CurrentThread.Priority = ThreadPriority.Lowest;
                 Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
                 Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
                 var m = new ContributionStatementsExtract(host, fromDate.Value, endDate.Value, output, startswith, sort, tagid, excludeelectronic);

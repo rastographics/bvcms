@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
@@ -47,10 +48,7 @@ namespace CmsWeb.Areas.Dialog.Models
 
         internal List<int> pids;
 
-        public bool TagHasBeenSelected
-        {
-            get { return Count.HasValue; }
-        }
+        public bool TagHasBeenSelected => Count.HasValue;
 
         public void Process(CMSDataContext db)
         {
@@ -66,12 +64,11 @@ namespace CmsWeb.Areas.Dialog.Models
             };
             db.LongRunningOps.InsertOnSubmit(lop);
             db.SubmitChanges();
-            Tasks.Task.Run(() => DoWork(this));
+            HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
         }
 
         private static void DoWork(AddAttendeesFromTag model)
         {
-            Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
             var db = DbUtil.Create(model.host);
             var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
@@ -90,7 +87,6 @@ namespace CmsWeb.Areas.Dialog.Models
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
                 db.SubmitChanges();
-                //Thread.Sleep(1000);
             }
             // finished
             lop = FetchLongRunningOp(db, model.Id, Op);

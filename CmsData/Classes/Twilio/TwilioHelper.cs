@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Web.Hosting;
 using Twilio;
 using UtilityExtensions;
 
@@ -82,27 +83,25 @@ namespace CmsData.Classes.Twilio
 
             if (sSID.Length == 0 || sToken.Length == 0) return;
 
-            System.Threading.Tasks.Task.Factory.StartNew(() =>
+            HostingEnvironment.QueueBackgroundWorkItem(ct =>
             {
-                Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
-
                 var stSID = sSID;
                 var stToken = sToken;
                 var itListID = iListID;
 
                 try
                 {
-                    var Db = DbUtil.Create(sHost);
+                    var db = DbUtil.Create(sHost);
 
-                    var smsList = (from e in Db.SMSLists
+                    var smsList = (from e in db.SMSLists
                                    where e.Id == itListID
                                    select e).Single();
 
-                    var smsItems = from e in Db.SMSItems
+                    var smsItems = from e in db.SMSItems
                                    where e.ListID == itListID
                                    select e;
 
-                    var smsGroup = (from e in Db.SMSNumbers
+                    var smsGroup = (from e in db.SMSNumbers
                                     where e.GroupID == smsList.SendGroupID
                                     select e).ToList();
 
@@ -117,7 +116,7 @@ namespace CmsData.Classes.Twilio
                         if (btSent)
                         {
                             item.Sent = true;
-                            Db.SubmitChanges();
+                            db.SubmitChanges();
                         }
 
                         iCount++;

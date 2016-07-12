@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Web;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
@@ -11,7 +11,6 @@ using CmsData.View;
 using CmsWeb.Areas.Main.Models;
 using Elmah;
 using UtilityExtensions;
-using TaskAlias = System.Threading.Tasks.Task;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -232,9 +231,8 @@ Sorry, I cannot be there.</a>";
             var useremail = Util.UserEmail;
             var isinroleemailtest = HttpContext.Current.User.IsInRole("EmailTest");
 
-            TaskAlias.Factory.StartNew(() =>
+            HostingEnvironment.QueueBackgroundWorkItem(ct =>
             {
-                Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
                 try
                 {
                     var db = DbUtil.Create(host);

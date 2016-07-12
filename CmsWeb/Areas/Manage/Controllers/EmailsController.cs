@@ -1,20 +1,18 @@
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Threading;
-using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Models;
 using Dapper;
 using Elmah;
 using UtilityExtensions;
-using System.Net.Mail;
 using System.Text.RegularExpressions;
+using System.Web.Hosting;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
@@ -119,9 +117,8 @@ namespace CmsWeb.Areas.Manage.Controllers
 			var useremail = Util.UserEmail;
 			var isinroleemailtest = User.IsInRole("EmailTest");
 
-			System.Threading.Tasks.Task.Factory.StartNew(() =>
+            HostingEnvironment.QueueBackgroundWorkItem(ct => 
 			{
-				Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
 				try
 				{
 					var Db = DbUtil.Create(host);

@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Threading;
+using System.Web.Hosting;
 using CmsData;
-using UtilityExtensions;
-using Tasks = System.Threading.Tasks;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
@@ -33,7 +29,7 @@ namespace CmsWeb.Areas.Dialog.Models
             db.LongRunningOps.InsertOnSubmit(lop);
             db.SubmitChanges();
 
-            Tasks.Task.Run(() => DoWork(host, Id));
+            HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(host, Id));
         }
 
         public static void DoWork(string host, int id)
