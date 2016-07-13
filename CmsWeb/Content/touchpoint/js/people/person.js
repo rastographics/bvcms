@@ -576,22 +576,34 @@
         },
         function () {
             $.post("/Manage/Emails/Unspam", { email: address }, function (ret) {
-                swal({ title: "Email unspamed!", type: "success" });
+                swal({ title: "Email unspammed!", type: "success" });
             });
         });
     });
 
     $('body').on('click', ".leave-org", function (e) {
+        var elem = this;
         e.preventDefault();
-        $.post("/OrgMemberDialog/Drop",
-        {
-            OrgId: $(this).data("orgid"),
-            PeopleId: $(this).data("personid"),
-            RemoveFromEnrollmentHistory: false,
-            Group: "Member"
+        swal({
+            title: "Are you sure?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-warning",
+            confirmButtonText: "Yes, unspam it!",
+            closeOnConfirm: false
+        },
+        function() {
+            $.post("/OrgMemberDialog/Drop",
+            {
+                OrgId: $(elem).data("orgid"),
+                PeopleId: $(elem).data("personid"),
+                RemoveFromEnrollmentHistory: false,
+                Group: "Member"
+            }, function(ret) {
+                swal({ title: "Unsubscribed!", type: "success" });
+                $(elem).parents("tr").remove();
+            });
         });
-
-        $(this).parents("tr").remove();
     });
 
     $.RebindMemberGrids = function() {
