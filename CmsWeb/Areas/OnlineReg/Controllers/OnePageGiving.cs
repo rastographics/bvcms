@@ -119,6 +119,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (pf.Country.HasValue() && !pf.Zip.HasValue())
                 pf.Zip = "NA";
             var ti = pf.ProcessPaymentTransaction(m);
+            if ((ti.Approved ?? false) == false)
+            {
+                ModelState.AddModelError("TranId", ti.Message);
+                return View("OnePageGiving/Index", pf);
+            }
             if (pf.Zip == "NA")
                 pf.Zip = null;
             var fundid = m.settings[id.Value].DonationFundId ?? 0;
