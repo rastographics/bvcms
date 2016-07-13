@@ -90,9 +90,9 @@ namespace CmsWeb.Areas.Public.Models
 			return _shell;
 		}
 
-		public void setSearch(Dictionary<string, SearchItem> newserach)
+		public void setSearch(Dictionary<string, SearchItem> newSearch)
 		{
-			_search = newserach;
+			_search = newSearch;
 		}
 
 		public bool IsSelectedValue(string key, string value)
@@ -226,7 +226,13 @@ namespace CmsWeb.Areas.Public.Models
 			{
 				if (filter.Value.values.Contains(SHOW_ALL)) continue;
 
-				if (filter.Value.parse)
+			    if (filter.Key == "Campus")
+			    {
+					orgs = from g in orgs
+							 where g.Campu.Description == filter.Value.values[0]
+							 select g;
+			    }
+				else if (filter.Value.parse)
 				{
 					orgs = from g in orgs
 							 where g.OrganizationExtras.Any(oe => oe.Field == filter.Key && filter.Value.values.Contains(oe.Data))
@@ -238,6 +244,7 @@ namespace CmsWeb.Areas.Public.Models
 							 where g.OrganizationExtras.Any(oe => oe.OrganizationId == g.OrganizationId && oe.Field == filter.Key && oe.Data == filter.Value.values[0])
 							 select g;
 				}
+
 			}
 
 			return orgs.OrderBy(gg => gg.OrganizationName).ToList<Organization>();

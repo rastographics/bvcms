@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Web.Mvc;
 using CmsWeb.Areas.Public.Models;
 using System.Linq;
@@ -47,13 +48,13 @@ namespace CmsWeb.Areas.Public.Controllers
             var sgfm = new SmallGroupFinderModel(this, useShell);
             sgfm.load(id);
 
+            var search = new Dictionary<string, SearchItem>();
+
+            var loadAllValues = DbUtil.Db.Setting("SGF-LoadAllExtraValues", false);
+
             if (Request.Form.Count != 0)
             {
-                var search = new Dictionary<string, SearchItem>();
-
                 var encoded = Request.Form.ToString();
-
-                var loadAllValues = DbUtil.Db.Setting("SGF-LoadAllExtraValues", false);
 
                 foreach (var item in encoded.Split('&'))
                 {
@@ -72,12 +73,27 @@ namespace CmsWeb.Areas.Public.Controllers
                     }
                     else
                     {
-                        search.Add(parts[0], new SearchItem {name = parts[0], values = {parts[1]}});
+                        search.Add(parts[0], new SearchItem { name = parts[0], values = { parts[1] } });
                     }
                 }
-
-                sgfm.setSearch(search);
             }
+
+            foreach (var query in Request.QueryString.AllKeys.Where(x => x.ToLower() != "id"))
+            {
+                if (!query.StartsWith("SGF") && !loadAllValues) continue;
+
+                if (search.ContainsKey(query))
+                {
+                    search[query].values.Clear();
+                    search[query].values.Add(Request.QueryString[query]);
+                }
+                else
+                {
+                    search.Add(query, new SearchItem { name = query, values = { Request.QueryString[query] } });
+                }
+            }
+
+            sgfm.setSearch(search);
             return sgfm;
         }
     }
