@@ -589,7 +589,7 @@
             type: "warning",
             showCancelButton: true,
             confirmButtonClass: "btn-warning",
-            confirmButtonText: "Yes, unspam it!",
+            confirmButtonText: "Yes, unsubscribe!",
             closeOnConfirm: false
         },
         function() {
