@@ -311,6 +311,7 @@ namespace CmsWeb.Areas.Public.Models
 			values["SGF:Leader"] = org.LeaderName;
 			values["SGF:DateStamp"] = DateTime.Now.ToString("yyyy-MM-dd");
 			values["SGF:Schedule"] = "";
+			values["SGF:Campus"] = org.Campu?.Description;
 
 			if (leader != null && leader.PictureId != null)
 				values["SGF:LeaderPicSrc"] = "/Portrait/" + leader.Picture.SmallId.Value + "?v=" + DateTime.Now.ToString("yyyyMMddHHmmssffff");
