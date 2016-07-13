@@ -176,13 +176,23 @@ namespace CmsWeb.Areas.Public.Models
 			else
 			{
 				i = (from e in DbUtil.Db.OrganizationExtras
-					  where e.Organization.DivOrgs.Any(ee => _divList.Contains(ee.DivId)) || orgTypes.Contains(e.Organization.OrganizationType.Description)
+					 where e.Organization.DivOrgs.Any(ee => _divList.Contains(ee.DivId)) || orgTypes.Contains(e.Organization.OrganizationType.Description)
 					 where e.Field == f.name
                      orderby e.Data
                      select new FilterItem
 					  {
 						  value = e.Data
-					  }).DistinctBy(n => n.value).ToList<FilterItem>();
+					  }).DistinctBy(n => n.value).ToList();
+
+			    if (f.name == "Campus")
+			    {
+			        i = (from campus in DbUtil.Db.Campus
+                         orderby campus.Description
+			            select new FilterItem
+			            {
+			                value = campus.Description
+			            }).ToList();
+			    }
 
 				i.Insert(0, new FilterItem { value = SHOW_ALL });
 			}
