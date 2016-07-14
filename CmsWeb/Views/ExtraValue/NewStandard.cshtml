@@ -22,9 +22,18 @@
             <div class="form-group">
                 <label for="VisibilityRolesList" class="control-label">Limit to Roles</label>
                 <div class="controls">
-                    @Html.DropDownList("VisibilityRolesList", new SelectList(Model.VisibilityRoles(), "Value", "Text"), new { multiple = "multiple", @class = "form-control multi-select" })
+                    @Html.DropDownList("VisibilityRolesList", new SelectList(Model.VisibilitySelectedRoles(), "Value", "Text"), new { multiple = "multiple", @class = "form-control multi-select" })
                 </div>
             </div>
+            @if (DbUtil.Db.Setting("UX-OrgLeadersOnlyCanEditCGInfoEVs", false))
+            {
+                <div class="form-group">
+                    <label for="EditableRolesList" class="control-label">Editable by Roles</label>
+                    <div class="controls">
+                        @Html.DropDownList("EditableRolesList", new SelectList(Model.EditableRolesList, "Value", "Text"), new { multiple = "multiple", @class = "form-control multi-select" })
+                    </div>
+                </div>
+            }
             @Html.EditorFor(m => m.ExtraValueBitPrefix, new { hide = "hide", help = "Short abbreviation (no spaces) to prepend to each checkbox name" })
             @Html.EditorFor(m => m.ExtraValueCodes, "TextArea", new { hide = "hide", help = "Each code should be a short name on a separate line" })
             @Html.EditorFor(m => m.ExtraValueCheckboxes, "TextArea", new { hide = "hide", help = "Short names of each checkbox on separate lines. These will be prepended with the prefix and a -" })
