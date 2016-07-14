@@ -142,7 +142,7 @@ namespace CmsWeb.Areas.Org.Models
             if (!string.IsNullOrEmpty(accessTypeList))
             {
                 var user = DbUtil.Db.Users.FirstOrDefault(x => x.Username == HttpContext.Current.User.Identity.Name);
-                if (user == null || !user.PeopleId.HasValue)
+                if (user?.PeopleId == null)
                 {
                     _showContactsReceivedTab = false;
                     return false;
@@ -151,6 +151,10 @@ namespace CmsWeb.Areas.Org.Models
                 var memberTypes = accessTypeList.Split(',').Select(x => x.Trim()).ToList();
 
                 _showContactsReceivedTab = ShowContactsCheckOrgAndParents(Org, user.PeopleId.Value, memberTypes);
+            }
+            else
+            {
+                _showContactsReceivedTab = !HttpContext.Current.User.IsInRole("CG");
             }
 
             return _showContactsReceivedTab.Value;
