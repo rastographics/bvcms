@@ -13,7 +13,7 @@ namespace CmsData
 {
     public class EmailReplacements
     {
-        private const string RegisterLinkRe = @"\A<a[^>]*?href=""https{0,1}://registerlink2{0,1}/{0,1}""[^>]*>.*?</a>";
+        private const string RegisterLinkRe = "<a[^>]*?href=\"https{0,1}://registerlink2{0,1}/{0,1}\"[^>]*>.*?</a>";
         private readonly Regex registerLinkRe = new Regex(RegisterLinkRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
         private const string RegisterTagRe = "(?:<|&lt;)registertag[^>]*(?:>|&gt;).+?(?:<|&lt;)/registertag(?:>|&gt;)";
