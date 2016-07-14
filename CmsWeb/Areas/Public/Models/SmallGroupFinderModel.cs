@@ -162,6 +162,17 @@ namespace CmsWeb.Areas.Public.Models
 			return _sgf.SGFFilters[id];
 		}
 
+        private static readonly List<string> weekdayList = new List<string>()
+        {
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday"
+        };
+
 		public List<FilterItem> getFilterItems(int id)
 		{
             var orgTypes = DbUtil.Db.Setting("SGF-OrgTypes", "").Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
@@ -175,24 +186,33 @@ namespace CmsWeb.Areas.Public.Models
 			}
 			else
 			{
-				i = (from e in DbUtil.Db.OrganizationExtras
-					 where e.Organization.DivOrgs.Any(ee => _divList.Contains(ee.DivId)) || orgTypes.Contains(e.Organization.OrganizationType.Description)
-					 where e.Field == f.name
-                     orderby e.Data
-                     select new FilterItem
-					  {
-						  value = e.Data
-					  }).DistinctBy(n => n.value).ToList();
-
-			    if (f.name == "Campus")
+			    if (f.weekdays)
 			    {
+			        i.AddRange(weekdayList.Select(w => new FilterItem
+			        {
+                        value = w
+			        }));
+			    }
+                else if (f.name == "Campus")
+                {
 			        i = (from campus in DbUtil.Db.Campus
                          orderby campus.Description
 			            select new FilterItem
 			            {
 			                value = campus.Description
 			            }).ToList();
-			    }
+                }
+                else
+                {
+                    i = (from e in DbUtil.Db.OrganizationExtras
+                         where e.Organization.DivOrgs.Any(ee => _divList.Contains(ee.DivId)) || orgTypes.Contains(e.Organization.OrganizationType.Description)
+                         where e.Field == f.name
+                         orderby e.Data
+                         select new FilterItem
+                          {
+                              value = e.Data
+                          }).DistinctBy(n => n.value).ToList();
+                }
 
 				i.Insert(0, new FilterItem { value = SHOW_ALL });
 			}

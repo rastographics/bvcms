@@ -58,5 +58,8 @@ namespace CmsData.Classes.SmallGroupFinder
 
 		[XmlAttribute]
 		public string lockedvalue { get; set; }
+
+		[XmlAttribute]
+		public bool weekdays { get; set; }
 	}
 }
