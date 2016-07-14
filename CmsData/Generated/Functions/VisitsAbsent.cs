@@ -193,7 +193,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="AttendStr", Storage="_AttendStr", DbType="nvarchar(200)")]
+		[Column(Name="AttendStr", Storage="_AttendStr", DbType="nvarchar(300)")]
 		public string AttendStr
 		{
 			get

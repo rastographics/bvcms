@@ -54,7 +54,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="ContactType", Storage="_ContactType", DbType="varchar(100)")]
+		[Column(Name="ContactType", Storage="_ContactType", DbType="nvarchar(100)")]
 		public string ContactType
 		{
 			get
@@ -71,7 +71,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="ReasonType", Storage="_ReasonType", DbType="varchar(100)")]
+		[Column(Name="ReasonType", Storage="_ReasonType", DbType="nvarchar(100)")]
 		public string ReasonType
 		{
 			get
@@ -88,7 +88,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Ministry", Storage="_Ministry", DbType="varchar(50)")]
+		[Column(Name="Ministry", Storage="_Ministry", DbType="nvarchar(50)")]
 		public string Ministry
 		{
 			get
