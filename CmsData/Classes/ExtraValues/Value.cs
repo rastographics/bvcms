@@ -12,6 +12,7 @@ namespace CmsData.ExtraValue
         [XmlAttribute] public string Name { get; set; }
         [XmlAttribute] public string Type { get; set; }
         [XmlAttribute] public string VisibilityRoles { get; set; }
+        [XmlAttribute] public string EditableRoles { get; set; }
         [XmlAttribute] public string Link { get; set; }
 
         [XmlElement("Code")]
@@ -34,6 +35,7 @@ namespace CmsData.ExtraValue
                 return true;
             return a.Any(role => user.IsInRole(role.Trim()));
         }
+
         public bool UserCanEdit()
         {
             var user = HttpContext.Current?.User;
@@ -43,7 +45,19 @@ namespace CmsData.ExtraValue
             var path = HttpContext.Current?.Request.Path;
             if (path != null && path.Contains("CommunityGroup"))
             {
-                return user.IsInRole("Edit") || (user.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-OrgLeadersOnlyCanEditCGInfoEVs", false));
+                if (user.IsInRole("Edit"))
+                    return true;
+
+                if (user.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-OrgLeadersOnlyCanEditCGInfoEVs", false))
+                {
+                    if (string.IsNullOrEmpty(EditableRoles))
+                        return true;
+
+                    var editableRoles = EditableRoles.SplitStr(",");
+                    return editableRoles.Any(role => user.IsInRole(role.Trim()));
+                }
+
+                return false;
             }
 
             return user.IsInRole("Edit");

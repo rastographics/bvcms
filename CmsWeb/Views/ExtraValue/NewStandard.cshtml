@@ -22,7 +22,7 @@
             <div class="form-group">
                 <label for="VisibilityRolesList" class="control-label">Limit to Roles</label>
                 <div class="controls">
-                    @Html.DropDownList("VisibilityRolesList", new SelectList(Model.Roles(), "Value", "Text"), new { multiple = "multiple", @class = "form-control multi-select" })
+                    @Html.DropDownList("VisibilityRolesList", new SelectList(Model.VisibilityRoles(), "Value", "Text"), new { multiple = "multiple", @class = "form-control multi-select" })
                 </div>
             </div>
             @Html.EditorFor(m => m.ExtraValueBitPrefix, new { hide = "hide", help = "Short abbreviation (no spaces) to prepend to each checkbox name" })

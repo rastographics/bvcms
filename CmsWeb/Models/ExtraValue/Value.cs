@@ -78,6 +78,7 @@ namespace CmsWeb.Models.ExtraValues
                 Name = ptr.Name,
                 Type = ptr.Type,
                 VisibilityRoles = ptr.VisibilityRoles,
+                EditableRoles = ptr.EditableRoles,
                 Codes = ptr.Codes,
                 Order = ptr.Order,
                 Standard = ptr.Standard,
@@ -98,7 +99,9 @@ namespace CmsWeb.Models.ExtraValues
                 f.Type = ev.Type;
             }
             else
+            {
                 f.Standard = true;
+            }
 
             f.Id = ev?.Id ?? (m?.Id ?? 0);
             f.Extravalue = ev;

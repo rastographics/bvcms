@@ -99,21 +99,56 @@ namespace CmsWeb.Models.ExtraValues
         [DisplayName("Limit to Roles")]
         public string[] VisibilityRolesList { get; set; }
 
-        public IEnumerable<SelectListItem> Roles()
+        [DisplayName("Editable by Roles")]
+        public string EditableRoles
         {
-            var q = from r in DbUtil.Db.Roles
+            get
+            {
+                var s = string.Join(", ", EditableRolesList ?? new string[0]);
+                return !s.HasValue() ? null : s;
+            }
+            set
+            {
+                EditableRolesList = (value ?? "").Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+            }
+        }
+
+        [DisplayName("Editable by Roles")]
+        public string[] EditableRolesList { get; set; }
+
+        public IEnumerable<SelectListItem> VisibilitySelectedRoles()
+        {
+            var list = AllRoles.ToList();
+            foreach (var item in list.Where(item => (VisibilityRoles ?? "").Contains(item.Text)))
+            {
+                item.Selected = true;
+            }
+            return list;
+        }
+
+        public IEnumerable<SelectListItem> EditableSelectedRoles()
+        {
+            var list = AllRoles.ToList();
+            foreach (var item in AllRoles.Where(item => (VisibilityRoles ?? "").Contains(item.Text)))
+            {
+                item.Selected = true;
+            }
+            return list;
+        }
+
+        private IEnumerable<SelectListItem> AllRoles
+        {
+            get
+            {
+                var q = from r in DbUtil.Db.Roles
                     orderby r.RoleName
                     select new SelectListItem
                     {
                         Value = r.RoleName,
                         Text = r.RoleName
                     };
-            var list = q.ToList();
-            foreach (var item in list.Where(item => (VisibilityRoles ?? "").Contains(item.Text)))
-            {
-                item.Selected = true;
+                return q.ToList();
             }
-            return list;
         }
 
         public NewExtraValueModel(Guid id)
@@ -154,6 +189,7 @@ namespace CmsWeb.Models.ExtraValues
             ExtraValueName = name;
             ExtraValueTable = table;
             VisibilityRoles = f.VisibilityRoles;
+            EditableRoles = f.EditableRoles;
             ExtraValueLink = HttpUtility.HtmlDecode(f.Link);
             var codes = string.Join("\n", f.Codes);
             switch (ExtraValueType.Value)
@@ -272,6 +308,7 @@ Option 2
                 Type = ExtraValueType.Value,
                 Name = ExtraValueName,
                 VisibilityRoles = VisibilityRoles,
+                EditableRoles = EditableRoles,
                 Codes = ConvertToCodes(),
                 Link = HttpUtility.HtmlEncode(ExtraValueLink)
             };
@@ -434,7 +471,7 @@ DELETE dbo.FamilyExtra
 FROM FamilyExtra fe
 WHERE fe.Field = @name
 AND EXISTS(SELECT NULL FROM dbo.People p
-			WHERE p.FamilyId = fe.FamilyId  
+			WHERE p.FamilyId = fe.FamilyId
 			AND p.PeopleId IN (
 				SELECT PeopleId FROM TagPerson WHERE Id = @id))
 ";
@@ -503,12 +540,16 @@ and PeopleId in (select PeopleId from TagPerson where Id = @id)
                         ev.Type = "Bits";
                         v.Name = bits.Name;
                         v.VisibilityRoles = bits.VisibilityRoles;
+                        v.EditableRoles = bits.EditableRoles;
                     }
                     else
                     {
                         var f = oldfields.SingleOrDefault(ff => ff.Name == name);
                         if (f != null)
+                        {
                             v.VisibilityRoles = f.VisibilityRoles;
+                            v.EditableRoles = f.EditableRoles;
+                        }
                         if (ev.Type == "Code")
                         {
                             codes = (from vv in DbUtil.Db.PeopleExtras

@@ -30,6 +30,7 @@ namespace CmsWeb.Controllers
         {
             var i = Views.GetViewsViewValue(DbUtil.Db, m.ExtraValueTable, m.ExtraValueName);
             i.value.VisibilityRoles = m.VisibilityRoles;
+            i.value.EditableRoles = m.EditableRoles;
             i.value.Codes = m.ConvertToCodes();
             i.value.Link = Server.HtmlEncode(m.ExtraValueLink);
             i.views.Save(DbUtil.Db);
