@@ -42,6 +42,20 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpGet]
+        [Route("SqlReportExcel/{report}/{id?}")]
+        public ActionResult SqlReportExcel(string report, Guid id)
+        {
+            try
+            {
+                var m = new SpecialReportViewModel(report, id);
+                return m.RunSqlExcel();
+            }
+            catch (Exception ex)
+            {
+                return Message(ex);
+            }
+        }
+        [HttpGet]
         [Route("SqlReport/{report}/{id?}")]
         public ActionResult SqlReport(string report, Guid id)
         {

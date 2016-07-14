@@ -1,11 +1,15 @@
 ﻿@model CmsWeb.Areas.Reports.Controllers.SpecialReportViewModel
 @{
-    ViewBag.Title = "Sql Report";
-    ViewBag.ReportPageHeader = Model.Name;
-    Layout = ViewExtensions2.TouchPointLayout();
+  var isAdmin = User.IsInRole("Admin") || User.IsInRole("Design");
+  ViewBag.Title = "Sql Report";
+  ViewBag.ReportPageHeader = Model.Name;
+  Layout = ViewExtensions2.TouchPointLayout();
 }
 <div class="report box box-responsive">
   <div class="box-content">
+    <div id="reportlinks">
+      <a href="@Model.ExcelUrl" target="_blank" class="btn btn-default"><i class="fa fa-file-excel-o"></i> Download as Excel</a>
+    </div>
     <div class="table-responsive">
       @Html.Raw(Model.Results)
       <strong>Total Count</strong> <span class="badge"></span>

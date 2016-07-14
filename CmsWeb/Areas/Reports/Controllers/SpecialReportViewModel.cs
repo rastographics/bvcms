@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using CmsData;
 using CmsWeb.Areas.Manage.Controllers;
+using CmsWeb.Models;
 using Dapper;
 using UtilityExtensions;
 
@@ -17,6 +18,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         public string Name2 { get; set; }
         public Guid Id { get; set; }
         public string Results { get; set; }
+        public string ExcelUrl => $"/Reports/SqlReportExcel/{Report}/{Id}";
 
         public SpecialReportViewModel(string report, Guid id)
         {
@@ -26,6 +28,35 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         public void RunSqlReport()
+        {
+            DynamicParameters p;
+            var content = GetParameters(out p);
+
+            var cs = HttpContext.Current.User.IsInRole("Finance")
+                ? Util.ConnectionStringReadOnlyFinance
+                : Util.ConnectionStringReadOnly;
+            using (var cn = new SqlConnection(cs))
+            {
+                cn.Open();
+                using (var rd = cn.ExecuteReader(content.Body, p))
+                    Results = GridResult.Table(rd, Name2);
+            }
+        }
+        public EpplusResult RunSqlExcel()
+        {
+            DynamicParameters p;
+            var content = GetParameters(out p);
+            var cs = HttpContext.Current.User.IsInRole("Finance")
+                ? Util.ConnectionStringReadOnlyFinance
+                : Util.ConnectionStringReadOnly;
+            using (var cn = new SqlConnection(cs))
+            {
+                cn.Open();
+                return cn.ExecuteReader(content.Body, p).ToExcel($"{Report.Replace(" ", "")}.xlsx", fromSql: true);
+            }
+        }
+
+        private Content GetParameters(out DynamicParameters p)
         {
             var content = DbUtil.Db.ContentOfTypeSql(Report);
             if (content == null)
@@ -38,7 +69,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             if (!hasqtag && !hascurrentorg)
                 throw new Exception("missing @qtagid or @CurrentOrgId");
 
-            var p = new DynamicParameters();
+            p = new DynamicParameters();
             if (hasqtag)
             {
                 var tag = DbUtil.Db.PopulateSpecialTag(Id, DbUtil.TagTypeId_Query);
@@ -51,17 +82,9 @@ namespace CmsWeb.Areas.Reports.Controllers
                 if (oid > 0)
                     Name2 = DbUtil.Db.LoadOrganizationById(oid).FullName2;
             }
-
-            var cs = HttpContext.Current.User.IsInRole("Finance")
-                ? Util.ConnectionStringReadOnlyFinance
-                : Util.ConnectionStringReadOnly;
-            using (var cn = new SqlConnection(cs))
-            {
-                cn.Open();
-                using (var rd = cn.ExecuteReader(content.Body, p))
-                    Results = GridResult.Table(rd, Name2);
-            }
+            return content;
         }
+
 
         public void RunPyScript()
         {
