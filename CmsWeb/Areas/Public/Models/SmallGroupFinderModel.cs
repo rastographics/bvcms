@@ -193,6 +193,13 @@ namespace CmsWeb.Areas.Public.Models
                         value = w
 			        }));
 			    }
+                else if (f.timeofdayonly)
+                {
+                    i.AddRange(new [] {"AM", "PM"}.Select(x => new FilterItem
+                    {
+                        value = x
+                    }));
+                }
                 else if (f.name == "Campus")
                 {
 			        i = (from campus in DbUtil.Db.Campus
@@ -253,6 +260,12 @@ namespace CmsWeb.Areas.Public.Models
 							 where g.Campu.Description == filter.Value.values[0]
 							 select g;
 			    }
+                else if (filter.Key == "Time")
+                {
+					orgs = from g in orgs
+							 where g.OrganizationExtras.SingleOrDefault(oe => oe.Field == "Time").Data.EndsWith(filter.Value.values[0])
+							 select g;
+                }
 				else if (filter.Value.parse)
 				{
 					orgs = from g in orgs
