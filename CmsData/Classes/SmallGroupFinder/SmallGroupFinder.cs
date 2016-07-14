@@ -61,5 +61,8 @@ namespace CmsData.Classes.SmallGroupFinder
 
 		[XmlAttribute]
 		public bool weekdays { get; set; }
+
+        [XmlAttribute]
+        public string exclude { get; set; }
 	}
 }

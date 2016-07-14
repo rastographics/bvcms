@@ -197,6 +197,7 @@ namespace CmsWeb.Areas.Public.Models
                 {
 			        i = (from campus in DbUtil.Db.Campus
                          orderby campus.Description
+                         where !f.exclude.Split(',').Contains(campus.Description)
 			            select new FilterItem
 			            {
 			                value = campus.Description
