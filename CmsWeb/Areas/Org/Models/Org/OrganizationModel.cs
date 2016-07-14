@@ -154,7 +154,7 @@ namespace CmsWeb.Areas.Org.Models
             }
             else
             {
-                _showContactsReceivedTab = !HttpContext.Current.User.IsInRole("CG");
+                _showContactsReceivedTab = HttpContext.Current.User.IsInRole("CG");
             }
 
             return _showContactsReceivedTab.Value;
