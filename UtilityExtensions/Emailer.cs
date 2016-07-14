@@ -13,9 +13,7 @@ namespace UtilityExtensions
 {
     public static partial class Util
     {
- 
         public static void SendMsg(string sysFromEmail, string cmsHost, MailAddress fromAddress, string subject, string message, List<MailAddress> to, int id, int? pid, List<LinkedResource> attachments = null, List<MailAddress> cc = null)
- 
         {
             if (ConfigurationManager.AppSettings["sendemail"] == "false")
                 return;
@@ -49,14 +47,14 @@ namespace UtilityExtensions
                 {
                     msg.ReplyToList.Add(a);
                 }
-                if (!msg.ReplyToList.Contains(msg.From) && msg.From.Address.NotEqual("mailer@bvcms.com"))
+                if (!msg.ReplyToList.Contains(msg.From) && msg.From.Address.NotEqual(sysFromEmail))
                 {
                      msg.ReplyToList.Add(msg.From);
                 }
             }
 
             msg.Headers.Add("X-SMTPAPI",
-                $"{{\"unique_args\":{{\"host\":\"{cmsHost}\",\"mailid\":\"{id}\",\"pid\":\"{pid}\"}}}}");
+                $"{{\"unique_args\":{{\"host\":\"{cmsHost}\",\"mailid\":\"{id}\",\"pid\":\"{pid},\"mailer\":\"{sysFromEmail}\"}}}}");
             msg.Headers.Add("X-BVCMS", $"host:{cmsHost}, mailid:{id}, pid:{pid}");
 
             foreach (var ma in to)
