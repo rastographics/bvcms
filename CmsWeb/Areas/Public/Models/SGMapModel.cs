@@ -102,20 +102,39 @@ Meeting Time: [SGF:Day] at [SGF:Time]<br />
 </div>";
             }
 
-            return from i in qlist
-                   where i.gc.Latitude != 0
-                   select new MarkerInfo
-                   {
-                       //html = string.Format(template, i.desc, i.schedule, i.cmshost, i.id),
-                       html = GetMapTooltip(template, i.org),
-                       org = i.org,
-                       latitude = i.gc.Latitude,
-                       longitude = i.gc.Longitude,
-                       image = $"//chart.googleapis.com/chart?chst=d_map_pin_letter&chld={i.markertext}|{i.color}"
-                   };
+            var loadAllValues = DbUtil.Db.Setting("SGF-LoadAllExtraValues", false);
+            var sortSettings = DbUtil.Db.Setting("UX-SGFSortBy", "SGF:Name");
+
+            return (from ql in qlist
+                where ql.gc.Latitude != 0
+                select new
+                {
+                    model = ql,
+                    dict = GetValuesDictionary(ql.org, loadAllValues)
+                })
+                .OrderBy(x => x.dict[sortSettings])
+                .Select(i => new MarkerInfo
+                {
+                    html = BuildMapFromTemplate(template, i.dict),
+                    org = i.model.org,
+                    latitude = i.model.gc.Latitude,
+                    longitude = i.model.gc.Longitude,
+                    image =
+                        $"//chart.googleapis.com/chart?chst=d_map_pin_letter&chld={i.model.markertext}|{i.model.color}"
+                });
         }
 
-        public string GetMapTooltip(string template, Organization org)
+        public string BuildMapFromTemplate(string template, Dictionary<string, string> values)
+        {
+            foreach (var pair in values)
+            {
+                template = template.Replace($"[{pair.Key}]", pair.Value);
+            }
+ 
+            return template;
+        }
+
+        public Dictionary<string, string> GetValuesDictionary(Organization org, bool loadAllValues)
         {
             var values = new Dictionary<string, string>();
 
@@ -138,7 +157,7 @@ Meeting Time: [SGF:Day] at [SGF:Time]<br />
 
             if (org.OrgSchedules.Count > 0)
             {
-                int count = 0;
+                var count = 0;
                 foreach (var schedule in org.OrgSchedules)
                 {
                     if (count > 0) values["SGF:Schedule"] += "; ";
@@ -146,8 +165,6 @@ Meeting Time: [SGF:Day] at [SGF:Time]<br />
                     count++;
                 }
             }
-
-            var loadAllValues = DbUtil.Db.Setting("SGF-LoadAllExtraValues", false);
 
             foreach (var extra in org.OrganizationExtras)
             {
@@ -157,12 +174,7 @@ Meeting Time: [SGF:Day] at [SGF:Time]<br />
                     values[$"SGF:{extra.Field.Replace(" ", "")}"] = extra.Data;
             }
 
-            foreach (KeyValuePair<string, string> pair in values)
-            {
-                template = template.Replace($"[{pair.Key}]", pair.Value);
-            }
-
-            return template;
+            return values;
         }
 
         private GeoCode GetGeocode(string address)
