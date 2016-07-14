@@ -19,6 +19,9 @@
     <join name="fa">
       LEFT JOIN dbo.people fa ON fa.familyid = p.familyid and fa.genderid = 1 and fa.positioninfamilyid = 10 and p.peopleid &lt;> fa.peopleid and p.positioninfamilyid not in (10,20)
     </join>
+    <join name="sp">
+      LEFT JOIN dbo.people sp ON sp.PeopleId = p.SpouseId
+    </join>
     <join name="bs">
       LEFT JOIN lookup.baptismstatus bs ON bs.id = p.baptismstatusid
     </join>
@@ -208,6 +211,10 @@
     <column name="UserName">
       ( SELECT TOP 1 username FROM dbo.users u WHERE u.peopleid = p.peopleid ORDER BY userid )	
     </column>
+    <column name="SpouseFirst" join="sp"> sp.preferredname </column>
+    <column name="SpouseLast" join="sp"> sp.lastname </column>
+    <column name="SpouseEmail" join="sp"> sp.emailaddress </column>
+    <column name="SpouseCell" join="sp"> dbo.fmtphone(sp.cellphone) </column>
     <column name="Father" join="fa"> fa.name </column>
     <column name="FatherEmail" join="fa"> fa.emailaddress </column>
     <column name="FatherCell" join="fa"> dbo.fmtphone(fa.cellphone) </column>
