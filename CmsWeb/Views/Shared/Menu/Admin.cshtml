@@ -133,12 +133,18 @@
         @Helper.LiAnchorLink("User Email Delegation", "/UsersCanEmailFor/", admin || manageemails)
         <li class="divider"></li>
     }
+    if (DbUtil.Db.Setting("Resources-Enabled", false))
+    {
+        <li class="dropdown-header dropdown-sub-header">Resources</li>
+        @Helper.LiAnchorLink("Resources", "/Resources/", admin)
+        <li class="divider"></li>
+    }
     if (admin || edit)
     {
-        <li class="dropdown-header dropdown-sub-header">Misc</li>
-        @Helper.LiAnchorLink("Activity Log", "/LastActivity/", admin)
-        @Helper.LiAnchorLink("Checkin Activity", "/CheckinTimes/")
-        @Helper.LiAnchorLink("Checkin Labels", "/CheckinLabels", admin)
-        @Helper.LiAnchorLink("Users", "/Users/", admin)
+            <li class="dropdown-header dropdown-sub-header">Misc</li>
+            @Helper.LiAnchorLink("Activity Log", "/LastActivity/", admin)
+            @Helper.LiAnchorLink("Checkin Activity", "/CheckinTimes/")
+            @Helper.LiAnchorLink("Checkin Labels", "/CheckinLabels", admin)
+            @Helper.LiAnchorLink("Users", "/Users/", admin)
+        }
     }
-}
