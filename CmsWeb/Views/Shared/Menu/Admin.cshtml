@@ -136,6 +136,8 @@
     if (DbUtil.Db.Setting("Resources-Enabled", false))
     {
         <li class="dropdown-header dropdown-sub-header">Resources</li>
+        @Helper.LiAnchorLink("Resource Types", "/ResourceTypes/", admin)
+        @Helper.LiAnchorLink("Resource Categories", "/ResourceCategories/", admin)
         @Helper.LiAnchorLink("Resources", "/Resources/", admin)
         <li class="divider"></li>
     }

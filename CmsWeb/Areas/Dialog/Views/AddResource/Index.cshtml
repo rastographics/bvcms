@@ -12,7 +12,19 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label for="resource_Name" class="control-label">Name</label>
-                            @Html.TextBoxFor(x => x.Name, Model.Name, new {@class = "form-control"})
+                            @Html.TextBoxFor(x => x.Name, Model.Name, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="resource_ResourceType" class="control-label">Resource Type</label>
+                            @Html.DropDownListFor(x => x.ResourceTypeId, Model.ResourceTypes, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="resource_Category" class="control-label">Resource Category</label>
+                            @Html.DropDownListFor(x => x.ResourceCategoryId, Model.ResourceCategories, new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-sm-6">

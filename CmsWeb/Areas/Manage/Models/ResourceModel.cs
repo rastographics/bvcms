@@ -44,5 +44,17 @@ namespace CmsWeb.Areas.Manage.Models
         {
             get { return Resource.MemberTypeIds; }
         }
+
+        [DisplayName("Resource Type")]
+        public string ResourceTypeName
+        {
+            get { return Resource.ResourceType.Name; }
+        }
+
+        [DisplayName("Resource Category")]
+        public string ResourceCategoryName
+        {
+            get { return Resource.ResourceCategory.Name; }
+        }
     }
 }

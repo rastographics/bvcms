@@ -5,12 +5,15 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using CmsData;
+using System.ComponentModel.DataAnnotations;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
     public class NewResourceModel
     {
         public int ResourceId { get; set; }
+        public int ResourceTypeId { get; set; }
+        public int ResourceCategoryId { get; set; }
         public string Name { get; set; }
         public int? DivisionId { get; set; }
         public int? OrganizationId { get; set; }
@@ -31,6 +34,32 @@ namespace CmsWeb.Areas.Dialog.Models
                 }).ToList();
 
                 list.Insert(0, new SelectListItem { Value = "0", Text = "(none)", Selected = true });
+                return list;
+            }
+        }
+
+        public IEnumerable<SelectListItem> ResourceTypes
+        {
+            get
+            {
+                var list = DbUtil.Db.ResourceTypes.Select(x => new SelectListItem
+                {
+                    Text = x.Name,
+                    Value = x.ResourceTypeId.ToString()
+                }).ToList();                
+                return list;
+            }
+        }
+
+        public IEnumerable<SelectListItem> ResourceCategories
+        {
+            get
+            {
+                var list = DbUtil.Db.ResourceCategories.Select(x => new SelectListItem
+                {
+                    Text = x.Name,
+                    Value = x.ResourceCategoryId.ToString()
+                }).ToList();
                 return list;
             }
         }
@@ -56,6 +85,8 @@ namespace CmsWeb.Areas.Dialog.Models
     public class EditResourceModel
     {
         public int ResourceId { get; set; }
+        public int ResourceTypeId { get; set; }
+        public int ResourceCategoryId { get; set; }
         public string Name { get; set; }
         public int? DivisionId { get; set; }
         public int? OrganizationId { get; set; }
@@ -92,6 +123,32 @@ namespace CmsWeb.Areas.Dialog.Models
                 }).ToList();
 
                 list.Insert(0, new SelectListItem { Value = "0", Text = "(none)", Selected = true });
+                return list;
+            }
+        }
+
+        public IEnumerable<SelectListItem> ResourceTypes
+        {
+            get
+            {
+                var list = DbUtil.Db.ResourceTypes.Select(x => new SelectListItem
+                {
+                    Text = x.Name,
+                    Value = x.ResourceTypeId.ToString()
+                }).ToList();
+                return list;
+            }
+        }
+
+        public IEnumerable<SelectListItem> ResourceCategories
+        {
+            get
+            {
+                var list = DbUtil.Db.ResourceCategories.Select(x => new SelectListItem
+                {
+                    Text = x.Name,
+                    Value = x.ResourceCategoryId.ToString()
+                }).ToList();
                 return list;
             }
         }

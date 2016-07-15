@@ -1,5 +1,5 @@
 ﻿@using CmsData
-@model IEnumerable<CmsWeb.Areas.Manage.Models.ResourceModel>
+@model List<CmsWeb.Areas.Manage.Models.ResourceTypeModel>
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Resources";
@@ -18,7 +18,7 @@
         $(document).ready(function() {
             $('#addresource').click(function (e) {
                 e.preventDefault();
-                var url = '/AddResource';
+                var url = '/AddResource?resourceTypeId='+ $('.resource-type-tab.active').data('id') || 0;
 
                 $("<div />").load(url, {}, function () {
                     var div = $(this);
@@ -31,7 +31,7 @@
                     });
 
                 });
-            });
+            });            
         });
     </script>
 }
@@ -42,39 +42,70 @@
                 <div class="box-tools">
                     <a href="#" id="addresource" class="btn btn-success create-new"><i class="fa fa-plus-circle"></i> Add Resource</a>
                 </div>
-            </div>
+            </div>            
             <div class="box-content">
-                <div class="table-responsive">
-                    <table id="resources" class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th><a href='#' class='ajaxasc'>Name</a></th>
-                                <th>@Util2.CampusLabel</th>
-                                <th>Organization</th>
-                                <th>Display Order</th>
-                                <th>Files</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td><a href="/Resources/@item.Resource.ResourceId">@item.Resource.Name</a></td>
-                                <td>@(item.Resource.Campu?.Description ?? "(All)")</td>
-                                <td>@(item.Resource.Organization?.OrganizationName ?? "(All)")</td>
-                                <td>@item.Resource.DisplayOrder</td>
-                                <td>@(item.Resource.ResourceAttachments?.Count ?? 0)</td>
-                            </tr>
-                        }
-                        @if (!Model.Any())
-                        {
-                            <tr>
-                                <td colspan="5"><div class="text-center">You have no resources configured.</div></td>
-                            </tr>
-                        }
-                        </tbody>
-                    </table>
+                <div class="well m-b-0">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <ul class="nav nav-pills subnav hidden-sm hidden-xs" data-tabparent="system">
+                                @for (int i = 0; i < Model.Count; i++)
+            {
+                                    <li class="resource-type-tab @(i == 0 ? "active" : null)" data-id="@Model[i].ResourceType.ResourceTypeId">
+                                        <a href="#resourcetab@(Model[i].ResourceType.ResourceTypeId)" data-toggle="tab">
+                                            <span>@Model[i].ResourceType.Name</span>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
                 </div>
+                <div class="tab-content">
+                    @if (!Model.Any())
+                    {
+                        <h3 class="text-center">You have no resources configured.</h3>
+                    }
+                    
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        var resourceTypeGroup = Model[i];
+
+                        <div class="table-responsive tab-pane @(i == 0 ? "active" : null)" 
+                             id="resourcetab@(resourceTypeGroup.ResourceType.ResourceTypeId)">
+                            <table id="resources" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th><a href='#' class='ajaxasc'>Name</a></th>
+                                        <th>@Util2.CampusLabel</th>
+                                        <th>Organization</th>
+                                        <th>Category</th>
+                                        <th>Display Order</th>
+                                        <th>Files</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in resourceTypeGroup.Resources)
+                                    {
+                                        <tr>
+                                            <td><a href="/Resources/@item.ResourceId">@item.Name</a></td>
+                                            <td>@(item.Campu?.Description ?? "(All)")</td>
+                                            <td>@(item.Organization?.OrganizationName ?? "(All)")</td>
+                                            <td>@(item.ResourceCategory?.Name ?? "(None)")</td>
+                                            <td>@item.DisplayOrder</td>
+                                            <td>@(item.ResourceAttachments?.Count ?? 0)</td>
+                                        </tr>
+                                    }
+                                    @if (!resourceTypeGroup.Resources.Any())
+                                    {
+                                        <tr>
+                                            <td colspan="5"><div class="text-center">You have no resources configured for this type.</div></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>                
             </div>
         </div>
     </div>

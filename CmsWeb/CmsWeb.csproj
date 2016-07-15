@@ -407,6 +407,7 @@
     <Compile Include="Areas\Manage\Models\BatchModel\FindTagPeople.cs" />
     <Compile Include="Areas\Manage\Models\BatchModel\UpdateOrgs.cs" />
     <Compile Include="Areas\Manage\Models\ResourceModel.cs" />
+    <Compile Include="Areas\Manage\Models\ResourceTypeModel.cs" />
     <Compile Include="Areas\Manage\Models\UpdateFieldsLookups.cs" />
     <Compile Include="Areas\Manage\Models\UploadAddressesModel.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
@@ -628,6 +629,8 @@
     <Compile Include="Areas\Search\Models\RegistrationSearch\RegistrationSearchModel.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryInfo.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryModel.cs" />
+    <Compile Include="Areas\Setup\Controllers\ResourceCategoryController.cs" />
+    <Compile Include="Areas\Setup\Controllers\ResourceTypeController.cs" />
     <Compile Include="Code\AuthHelper.cs" />
     <Compile Include="Code\CodeValueList.cs" />
     <Compile Include="Code\JsonNetResult.cs" />
@@ -1565,6 +1568,9 @@
     <Content Include="Areas\Manage\Views\Resource\Edit.cshtml" />
     <Content Include="Areas\Manage\Views\Resource\EditAttachment.cshtml" />
     <Content Include="Areas\Manage\Views\Resource\NewAttachment.cshtml" />
+    <Content Include="Areas\Setup\Views\ResourceType\Index.cshtml" />
+    <Content Include="Areas\Setup\Views\ResourceCategory\Index.cshtml" />
+    <Content Include="Content\touchpoint\src\less\utils.less" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />

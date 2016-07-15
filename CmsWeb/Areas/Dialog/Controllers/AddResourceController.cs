@@ -19,9 +19,9 @@ namespace CmsWeb.Areas.Dialog.Controllers
     public class AddResourceController : CmsStaffController
     {
         [Route("~/AddResource")]
-        public ActionResult Index(bool displayCopySettings = false)
+        public ActionResult Index(bool displayCopySettings = false, int? resourceTypeId = null)
         {
-            return View(new NewResourceModel());
+            return View(new NewResourceModel() { ResourceTypeId = resourceTypeId.GetValueOrDefault() } );
         }
 
         [HttpPost, Route("Submit/{id:int}"), ValidateInput(false)]
@@ -36,7 +36,9 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 CampusId = m.CampusId,
                 Name = m.Name,
                 DisplayOrder = m.DisplayOrder,
-                OrganizationId = m.OrganizationId
+                OrganizationId = m.OrganizationId,
+                ResourceTypeId = m.ResourceTypeId,
+                ResourceCategoryId = m.ResourceCategoryId
             };
 
             if (resource.CampusId.HasValue && resource.CampusId < 1) resource.CampusId = null;

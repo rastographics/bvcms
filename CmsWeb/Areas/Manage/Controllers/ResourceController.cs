@@ -1,15 +1,12 @@
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
-using CmsData.Codes;
 using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Areas.Manage.Models;
-using CmsWeb.Areas.Org.Models;
 using CmsWeb.Models;
 using net.openstack.Core.Domain;
 using net.openstack.Providers.Rackspace;
@@ -25,9 +22,9 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Route("~/Resources")]
         public ActionResult Index()
         {
-            var resources = DbUtil.Db.Resources.Select(x => new ResourceModel(x));
+            var resourceTypes = DbUtil.Db.ResourceTypes.OrderBy(x => x.Name).Select(x => new ResourceTypeModel(x)).ToList();
 
-            return View(resources);
+            return View(resourceTypes);
         }
 
         [HttpGet]
@@ -67,6 +64,8 @@ namespace CmsWeb.Areas.Manage.Controllers
             resource.CampusId = model.CampusId;
             resource.MemberTypeIds = model.MemberTypeIds;
             resource.Description = model.Description;
+            resource.ResourceTypeId = model.ResourceTypeId;
+            resource.ResourceCategoryId = model.ResourceCategoryId;
 
             DbUtil.Db.SubmitChanges();
 
