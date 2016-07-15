@@ -1,25 +1,68 @@
 ﻿@using CmsData
 @model CmsWeb.Areas.People.Models.PersonModel
-<div class="table-responsive">
-    @if (!Model.Resources.Any())
-    {
-        <h4>There are no resources to display.</h4>
-    }
-    @foreach (var resource in Model.Resources)
-    {
-        <h3>@resource.Resource.Name</h3>
-        <p>
-            @Html.Raw(resource.Resource.Description)
-        </p>
-        if (resource.Attachments.Any())
-        {
-            <ul style="list-style-type: circle">
-                @foreach (var attachment in resource.Attachments.OrderBy(x => x.DisplayOrder))
-                {
-                    <li><a href="@attachment.FilePath">@attachment.Name</a></li>
+
+<div class="well m-b-0">
+    <div class="row">
+        <div class="col-lg-12">
+            <ul class="nav nav-pills subnav hidden-sm hidden-xs" data-tabparent="system">
+                @for (int i = 0; i < Model.ResourceTypes.Count; i++)
+            {
+                    <li class="resource-type-tab @(i == 0 ? "active" : null)" data-id="@Model.ResourceTypes[i].ResourceType.ResourceTypeId">
+                        <a href="#resourcetab@(Model.ResourceTypes[i].ResourceType.ResourceTypeId)" data-toggle="tab">
+                            <span>@Model.ResourceTypes[i].ResourceType.Name</span>
+                        </a>
+                    </li>
                 }
-            </ul>    
-        }
-        <hr/>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="tab-content">
+    @if (!Model.ResourceTypes.Any())
+    {
+        <h3 class="text-center">You have no resources configured.</h3>
+    }
+    @for (int i = 0; i < Model.ResourceTypes.Count; i++)
+    {
+        var resourceTypeGroup = Model.ResourceTypes[i];
+
+        <div class="tab-pane @(i == 0 ? "active" : null)"
+             id="resourcetab@(resourceTypeGroup.ResourceType.ResourceTypeId)">
+
+            <div class="panel panel-default">
+                @foreach (var category in resourceTypeGroup.Resources.GroupBy(x => x.ResourceCategory))
+                {
+                    <div class="panel-heading" role="tab" id="@category.Key.ResourceCategoryId">
+                        <h4 class="panel-title">
+                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse@(category.Key.ResourceCategoryId)" aria-expanded="true" aria-controls="collapse@(category.Key.ResourceCategoryId)">
+                                @category.Key.Name
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse@(category.Key.ResourceCategoryId)" class="panel-collapse collapse in" role="tabpanel">
+                        <div class="panel-body">
+                            @foreach (var resourceItem in category)
+                            {
+                                <h3>@resourceItem.Name</h3>
+                                <p>
+                                    @Html.Raw(resourceItem.Description)
+                                </p>
+                                if (resourceItem.ResourceAttachments.Any())
+                                {
+                                    <ul style="list-style-type: circle">
+                                        @foreach (var attachment in resourceItem.ResourceAttachments.OrderBy(x => x.DisplayOrder))
+                                        {
+                                            <li><a href="@attachment.FilePath">@attachment.Name</a></li>
+                                        }
+                                    </ul>
+                                }
+                                <hr />
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
     }
 </div>
+<br />

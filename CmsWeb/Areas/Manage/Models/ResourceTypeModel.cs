@@ -15,5 +15,11 @@ namespace CmsWeb.Areas.Manage.Models
             ResourceType = resourceType;
             Resources = resourceType.Resources;
         }
+
+        public ResourceTypeModel(ResourceType resourceType, IEnumerable<Resource> resources)
+        {
+            ResourceType = resourceType;
+            Resources = resources;
+        }
     }
 }

@@ -205,14 +205,14 @@ namespace CmsWeb.Areas.People.Models
             return null;
         }
 
-        private List<ResourceModel> _resources;
-        public List<ResourceModel> Resources
+        private List<ResourceTypeModel> _resourceTypes;
+        public List<ResourceTypeModel> ResourceTypes
         {
             get
             {
-                if (_resources != null) return _resources;
+                if (_resourceTypes != null) return _resourceTypes;
 
-                _resources = new List<ResourceModel>();
+                _resourceTypes = new List<ResourceTypeModel>();
 
                 var orgLevels = DbUtil.Db.OrganizationMembers.Where(x => x.PeopleId == PeopleId)
                     .ToDictionary(x => x.OrganizationId, x => x.MemberType.Description);
@@ -220,7 +220,7 @@ namespace CmsWeb.Areas.People.Models
                 var orgIds = orgLevels.Keys.ToList();
 
                 var divisionIds = DbUtil.Db.OrganizationMembers.Where(x => x.PeopleId == PeopleId)
-                    .Select(x => x.Organization.DivisionId).Distinct().ToList();
+                    .Select(x => x.Organization.DivisionId).Distinct().ToList();                
 
                 // Filter out any resources that have a division the user isn't in
                 IQueryable<Resource> resources =
@@ -230,19 +230,25 @@ namespace CmsWeb.Areas.People.Models
                 // Filter out resources that have an org the user isn't in
                 resources = resources.Where(x => !x.OrganizationId.HasValue || orgIds.Contains(x.OrganizationId.Value));
 
+                List<Resource> resourceModels = new List<Resource>();
+
                 foreach (var resource in resources)
                 {
                     if (string.IsNullOrEmpty(resource.MemberTypeIds) || !resource.OrganizationId.HasValue ||
                         resource.MemberTypeIds.Contains(orgLevels[resource.OrganizationId.Value]))
                     {
-                        _resources.Add(new ResourceModel(resource));
+                        resourceModels.Add(resource);
                     }
                 }
 
-                _resources = _resources.OrderByDescending(x => x.Resource.DisplayOrder).ToList();
+                // after filtering to the individual resources, make the list by type for easy rendering
+                _resourceTypes = resourceModels
+                    .GroupBy(x => x.ResourceTypeId)
+                    .Select(x => new ResourceTypeModel(x.First().ResourceType, x)).ToList();
+                
 
-                return _resources;
+                return _resourceTypes;
             }
-        }
+        }        
     }
 }
