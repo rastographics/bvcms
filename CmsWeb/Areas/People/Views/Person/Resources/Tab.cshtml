@@ -1,6 +1,10 @@
 ﻿@using CmsData
 @model CmsWeb.Areas.People.Models.PersonModel
 <div class="table-responsive">
+    @if (!Model.Resources.Any())
+    {
+        <h4>There are no resources to display.</h4>
+    }
     @foreach (var resource in Model.Resources)
     {
         <h3>@resource.Resource.Name</h3>

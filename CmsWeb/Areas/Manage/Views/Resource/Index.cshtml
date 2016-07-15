@@ -66,6 +66,12 @@
                                 <td>@(item.Resource.ResourceAttachments?.Count ?? 0)</td>
                             </tr>
                         }
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="5"><div class="text-center">You have no resources configured.</div></td>
+                            </tr>
+                        }
                         </tbody>
                     </table>
                 </div>
