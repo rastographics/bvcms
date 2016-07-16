@@ -22,46 +22,27 @@ namespace UtilityExtensions
             var msg = new MailMessage();
             if (fromAddress == null)
                 fromAddress = FirstAddress(senderrorsto);
-            var problemDomains = (ConfigurationManager.AppSettings["ProblemDomainsForEmail"] ?? "").Split(',');
-            if (problemDomains.Any(dd => fromAddress.Host.ToLower() == dd || to.Any(ee => ee.Host.ToLower() == dd)))
-            {
-                if (!sysFromEmail.HasValue())
-                    sysFromEmail = "mailer@bvcms.com";
-                var sysmail = new MailAddress(sysFromEmail, fromAddress.DisplayName);
-                msg.From = sysmail;
-                msg.ReplyToList.Add(fromAddress);
-            }
-            else
-            {
-                msg.From = fromAddress;
-                if (sysFromEmail.HasValue())
-                {
-                    var sysmail = new MailAddress(sysFromEmail);
-                    if (fromAddress.Host != sysmail.Host)
-                        msg.Sender = sysmail;
-                }
-            }
+
+            if (!sysFromEmail.HasValue())
+                sysFromEmail = "mailer@bvcms.com";
+            msg.From = new MailAddress(sysFromEmail, fromAddress.DisplayName);
+            msg.ReplyToList.Add(fromAddress);
             if (cc != null)
             {
                 foreach (var a in cc)
-                {
                     msg.ReplyToList.Add(a);
-                }
                 if (!msg.ReplyToList.Contains(msg.From) && msg.From.Address.NotEqual(sysFromEmail))
-                {
-                     msg.ReplyToList.Add(msg.From);
-                }
+                    msg.ReplyToList.Add(msg.From);
             }
 
             msg.Headers.Add("X-SMTPAPI",
-                $"{{\"unique_args\":{{\"host\":\"{cmsHost}\",\"mailid\":\"{id}\",\"pid\":\"{pid}\"}}}}");
+                $"{{\"unique_args\":{{\"host\":\"{cmsHost}\",\"mailid\":\"{id}\",\"pid\":\"{pid}\",\"domain\":\"{sysFromEmail}\"}}}}");
             msg.Headers.Add("X-BVCMS", $"host:{cmsHost}, mailid:{id}, pid:{pid}");
 
             foreach (var ma in to)
-            {
                 if (ma.Host != "nowhere.name" || IsInRoleEmailTest)
                     msg.AddAddr(ma);
-            }
+
             msg.Subject = subject;
             var addrs = string.Join(", ", to.Select(tt => tt.ToString()));
             var badEmailLink = "";
@@ -81,7 +62,7 @@ namespace UtilityExtensions
             htmlView1.TransferEncoding = TransferEncoding.Base64;
             msg.AlternateViews.Add(htmlView1);
 
- 
+
             var html = badEmailLink + message;
 
             if (cc != null && cc.Count > 0)
@@ -92,9 +73,15 @@ namespace UtilityExtensions
                 html = html + ccstring;
             }
 
-
-            var result = PreMailer.Net.PreMailer.MoveCssInline(html);
-            html = result.Html;
+            try
+            {
+                var result = PreMailer.Net.PreMailer.MoveCssInline(html);
+                html = result.Html;
+            }
+            catch
+            {
+                // ignore Premailer exceptions
+            }
             var htmlView = AlternateView.CreateAlternateViewFromString(html, Encoding.UTF8, MediaTypeNames.Text.Html);
             htmlView.TransferEncoding = TransferEncoding.Base64;
             if (attachments != null)
@@ -126,8 +113,8 @@ namespace UtilityExtensions
             get
             {
                 if (HttpContext.Current != null)
-                    return HttpContext.Current.User.IsInRole("EmailTest") || ((bool?)HttpContext.Current.Session["IsInRoleEmailTest"] ?? false);
-                return (bool?)Thread.GetData(Thread.GetNamedDataSlot("IsInRoleEmailTest")) ?? false;
+                    return HttpContext.Current.User.IsInRole("EmailTest") || ((bool?) HttpContext.Current.Session["IsInRoleEmailTest"] ?? false);
+                return (bool?) Thread.GetData(Thread.GetNamedDataSlot("IsInRoleEmailTest")) ?? false;
             }
             set
             {
@@ -142,6 +129,7 @@ namespace UtilityExtensions
         }
 
         private const string STR_UserEmail = "UserEmail";
+
         public static string UserEmail
         {
             get
@@ -154,7 +142,7 @@ namespace UtilityExtensions
                             email = HttpContext.Current.Session[STR_UserEmail] as String;
                 }
                 else
-                    email = (string)Thread.GetData(Thread.GetNamedDataSlot("UserEmail"));
+                    email = (string) Thread.GetData(Thread.GetNamedDataSlot("UserEmail"));
                 return email;
             }
             set
