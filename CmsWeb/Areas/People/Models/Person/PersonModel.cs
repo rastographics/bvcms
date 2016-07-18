@@ -247,7 +247,7 @@ namespace CmsWeb.Areas.People.Models
                 _resourceTypes = resourceModels
                     .GroupBy(x => x.ResourceTypeId)
                     .Select(x => new ResourceTypeModel(x.First().ResourceType, x.OrderBy(y => y.DisplayOrder)))
-                    .OrderBy(x => x.ResourceType.Name)
+                    .OrderBy(x => x.ResourceType.DisplayOrder)
                     .ToList();
                 
 

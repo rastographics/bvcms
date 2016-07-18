@@ -19,9 +19,9 @@ namespace CmsWeb.Areas.Dialog.Controllers
     public class AddResourceController : CmsStaffController
     {
         [Route("~/AddResource")]
-        public ActionResult Index(bool displayCopySettings = false, int? resourceTypeId = null)
+        public ActionResult Index(int resourceTypeId)
         {
-            return View(new NewResourceModel() { ResourceTypeId = resourceTypeId.GetValueOrDefault() } );
+            return View(new NewResourceModel() { ResourceTypeId = resourceTypeId} );
         }
 
         [HttpPost, Route("Submit/{id:int}"), ValidateInput(false)]

@@ -15,7 +15,7 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label for="resource_ResourceType" class="control-label">Resource Type</label>
-                            @Html.DropDownListFor2(x => x.ResourceTypeId, true, Model.ResourceTypes, null, new { @class = "form-control" })
+                            @Html.DropDownListFor2(x => x.ResourceTypeId, true, Model.ResourceTypes, null, new { @class = "form-control", disabled="disabled" })
                             @Html.ValidationMessageFor(x => x.ResourceTypeId)
                         </div>
                     </div>                    

@@ -18,7 +18,7 @@
         $(document).ready(function() {
             $('#addresource').click(function (e) {
                 e.preventDefault();
-                var url = '/AddResource?resourceTypeId='+ $('.resource-type-tab.active').data('id') || 0;
+                var url = '/AddResource?resourceTypeId='+ ($('.resource-type-tab.active').data('id') || 0);
 
                 $("<div />").load(url, {}, function () {
                     var div = $(this);

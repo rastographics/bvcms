@@ -23,7 +23,9 @@
                     <table class="table table-striped">
                         <tr>
                             <th style="width: 300px;">Resource Category Id</th>
-                            <th style="width: 300px;">Name</th>
+                            <th style="width: 300px;">Name</th>                            
+                            <th style="width: 300px;">Display Order</th>
+                            <th style="width: 200px;">Resource Type</th>
                             <th style="width: 100px;">Action</th>
                         </tr>
                         @foreach (var item in Model)
@@ -32,7 +34,13 @@
                                 <td style="width: 300px;">@item.ResourceCategoryId<a href="#" id="@item.ResourceCategoryId"></a></td>
                                 <td style="width: 300px;">
                                     <a id="Name.@item.ResourceCategoryId" data-pk="Name.@item.ResourceCategoryId" class="clickEdit">@item.Name</a>
-                                </td>                                
+                                </td>
+                                <td style="width: 300px;">
+                                    <a id="DisplayOrder.@item.ResourceCategoryId" data-pk="DisplayOrder.@item.ResourceCategoryId" class="clickEdit">@item.DisplayOrder</a>
+                                </td>
+                                <td style="width: 200px;">
+                                    <a id="a@(item.ResourceCategoryId)" class="clickSelect" data-value="@(item.ResourceTypeId.ToString())" data-pk="a@(item.ResourceCategoryId)">@(item.ResourceType.Name)</a>
+                                </td>
                                 <td style="width: 100px;">
                                     <a id="d@(item.ResourceCategoryId)" href="#" data-pk="d@(item.ResourceCategoryId)" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
                                 </td>
@@ -83,6 +91,19 @@
                     return false;
                 }
                 return null;
+            });
+
+            $(".clickSelect").editable({
+                mode: 'inline',
+                type: 'select',
+                url: "/ResourceCategory/EditResourceType/",
+                source: "/ResourceType/ResourceTypes",
+                params: function (params) {
+                    var data = {};
+                    data['id'] = params.pk;
+                    data['value'] = params.value;
+                    return data;
+                }
             });
 
             $("a.delete").click(function (e) {

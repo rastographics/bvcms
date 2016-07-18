@@ -24,6 +24,7 @@
                         <tr>
                             <th style="width: 300px;">Resource Type Id</th>
                             <th style="width: 300px;">Name</th>
+                            <th style="width: 300px;">Display Order</th>
                             <th style="width: 100px;">Action</th>
                         </tr>
                         @foreach (var item in Model)
@@ -32,7 +33,10 @@
                                 <td style="width: 300px;">@item.ResourceTypeId<a href="#" id="@item.ResourceTypeId"></a></td>
                                 <td style="width: 300px;">
                                     <a id="Name.@item.ResourceTypeId" data-pk="Name.@item.ResourceTypeId" class="clickEdit">@item.Name</a>
-                                </td>                                
+                                </td>
+                                <td style="width: 300px;">
+                                    <a id="DisplayOrder.@item.ResourceTypeId" data-pk="DisplayOrder.@item.ResourceTypeId" class="clickEdit">@item.DisplayOrder</a>
+                                </td>
                                 <td style="width: 100px;">
                                     <a id="d@(item.ResourceTypeId)" href="#" data-pk="d@(item.ResourceTypeId)" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
                                 </td>

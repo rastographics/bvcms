@@ -13,9 +13,21 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult Index()
         {
             var m = from rt in DbUtil.Db.ResourceTypes
-                    orderby rt.Name
+                    orderby rt.DisplayOrder
                     select rt;
             return View(m);
+        }
+
+        public JsonResult ResourceTypes()
+        {
+            var q = from c in DbUtil.Db.ResourceTypes
+                    select new
+                    {
+                        value = c.ResourceTypeId.ToString(),
+                        text = c.Name
+                    };
+
+            return Json(q.ToList(), JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -40,7 +52,12 @@ namespace CmsWeb.Areas.Setup.Controllers
             {
                 case "Name":
                     resourceType.Name = value;
-                    break;                
+                    break;
+                case "DisplayOrder":
+                    int displayOrder = resourceType.DisplayOrder;
+                    int.TryParse(value, out displayOrder);
+                    resourceType.DisplayOrder = displayOrder;
+                    break;
             }
             DbUtil.Db.SubmitChanges();
             return c;

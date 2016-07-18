@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using CmsData;
@@ -45,7 +43,9 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             get
             {
-                var list = DbUtil.Db.ResourceTypes.Select(x => new SelectListItem
+                var list = DbUtil.Db.ResourceTypes
+                .OrderBy(x => x.DisplayOrder)
+                .Select(x => new SelectListItem
                 {
                     Text = x.Name,
                     Value = x.ResourceTypeId.ToString()
@@ -58,7 +58,10 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             get
             {
-                var list = DbUtil.Db.ResourceCategories.Select(x => new SelectListItem
+                var list = DbUtil.Db.ResourceCategories
+                .Where(x => x.ResourceTypeId == ResourceTypeId)
+                .OrderBy(x => x.DisplayOrder)
+                .Select(x => new SelectListItem
                 {
                     Text = x.Name,
                     Value = x.ResourceCategoryId.ToString()
@@ -137,7 +140,9 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             get
             {
-                var list = DbUtil.Db.ResourceTypes.Select(x => new SelectListItem
+                var list = DbUtil.Db.ResourceTypes
+                .OrderBy(x => x.DisplayOrder)
+                .Select(x => new SelectListItem
                 {
                     Text = x.Name,
                     Value = x.ResourceTypeId.ToString()
@@ -150,7 +155,10 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             get
             {
-                var list = DbUtil.Db.ResourceCategories.Select(x => new SelectListItem
+                var list = DbUtil.Db.ResourceCategories
+                .Where(x => x.ResourceTypeId == ResourceTypeId)
+                .OrderBy(x => x.DisplayOrder)
+                .Select(x => new SelectListItem
                 {
                     Text = x.Name,
                     Value = x.ResourceCategoryId.ToString()
