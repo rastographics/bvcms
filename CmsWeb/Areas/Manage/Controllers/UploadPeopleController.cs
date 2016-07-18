@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
 		[HttpPost]
 		[ValidateInput(false)]
-		public ActionResult Upload(string text, bool noupdate)
+		public ActionResult Index(string text, bool noupdate)
 		{
 			string host = Util.Host;
 			var runningtotals = new UploadPeopleRun { Started = DateTime.Now, Count = 0, Processed = 0 };
