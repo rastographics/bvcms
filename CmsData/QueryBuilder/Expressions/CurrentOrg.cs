@@ -34,75 +34,18 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal Expression InCurrentOrgNew()
+        internal Expression InCurrentOrg()
         {
             var tf = CodeIds == "1";
             var co = db.CurrentOrg;
             Expression<Func<Person, bool>> pred = p =>
                 db.OrgPeopleIds(db.CurrentOrgId0, co.GroupSelect, co.First(), co.Last(), 
-                        co.SgFilter, co.ShowHidden, Util2.CurrentTag, Util2.CurrentTagOwnerId,
+                        co.SgFilter, co.ShowHidden, Util2.CurrentTagName, Util2.CurrentTagOwnerId,
                         co.FilterIndividuals, co.FilterTag, null, Util.UserPeopleId)
                     .Select(gg => gg.PeopleId)
                     .Contains(p.PeopleId);
 
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-
-            if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
-            return expr;
-        }
-        internal Expression InCurrentOrg()
-        {
-            if (Util2.UseNewOrg)
-                return InCurrentOrgNew();
-
-            var tf = CodeIds == "1";
-            var cg = db.CurrentGroups.ToArray();
-            var cgmode = db.CurrentGroupsMode;
-            Expression<Func<Person, bool>> pred = p => (
-                from m in p.OrganizationMembers
-                where m.OrganizationId == db.CurrentOrgId0
-                let gc = m.OrgMemMemTags.Count(mt => cg.Contains(mt.MemberTagId))
-                // for Match Any
-                where gc > 0 || cg[0] <= 0 || cgmode == 1
-                // for Match All
-                where gc == cg.Length || cg[0] <= 0 || cgmode == 0
-                // for Match No SmallGroup assigned
-                where !m.OrgMemMemTags.Any() || cg[0] != -1
-                where m.MemberTypeId != MemberTypeCode.InActive
-                where m.MemberTypeId != MemberTypeCode.Prospect
-                where (m.Pending ?? false) == false
-                select m
-                ).Any();
-
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (db.CurrentGroupsPrefix.HasValue())
-            {
-                var aa = db.CurrentGroupsPrefix.Split(',');
-                foreach (var sg in aa)
-                {
-                    Expression<Func<Person, bool>> pred2 = null;
-                    if (sg.StartsWith("-"))
-                    {
-                        var g = sg.Substring(1);
-                        pred2 = p => (from om in p.OrganizationMembers
-                                      where om.OrganizationId == db.CurrentOrgId0
-                                      where om.OrgMemMemTags.All(
-                                          mm => !mm.MemberTag.Name.StartsWith(g))
-                                      select om).Any();
-                    }
-                    else
-                    {
-                        pred2 = p => (from om in p.OrganizationMembers
-                                      where om.OrganizationId == db.CurrentOrgId0
-                                      where om.OrgMemMemTags.Any(
-                                          mm => mm.MemberTag.Name.StartsWith(sg))
-                                      select om).Any();
-                    }
-                    var expr1 = Expression.Invoke(pred2, parm);
-                    expr = Expression.And(expr1, expr);
-                }
-            }
 
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);

@@ -220,14 +220,6 @@ namespace CmsData
                 return DbUtil.Db.UserPreference("TargetLinkOrg", "true").ToBool();
             }
         }
-        public static bool UseNewOrg
-        {
-            get { return true; } //DbUtil.Db.UserPreference("UseNewOrg", "true").ToBool(); }
-        }
-        public static string Org
-        {
-            get { return UseNewOrg ? "/Org" : "/Organization"; }
-        }
 
         //        const string STR_ActiveOrganizationId = "ActiveOrganizationId";
         //        public static int? CurrentOrgId

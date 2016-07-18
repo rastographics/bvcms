@@ -183,7 +183,7 @@ namespace CmsWeb.Areas.Public.Controllers
             if (ret.StartsWith("!"))
                 return Content($@"<EmailReminders status=""error"">{ret.Substring(1)}</EmailReminders>");
             DbUtil.LogActivity("APIOrganization EmailReminders");
-            var URL = DbUtil.Db.ServerLink($"{Util2.Org}/Reminders/{id}");
+            var URL = DbUtil.Db.ServerLink($"/Org/Reminders/{id}");
             var wc = new WebClient();
             var content = wc.UploadString(URL, "");
             if (content == "ok")

@@ -99,19 +99,9 @@ namespace CmsData
         {
             if (HttpContext.Current != null && HttpContext.Current.Session != null)
             {
-                if (Util2.UseNewOrg)
-                {
-                    if (CurrentOrg == null)
-                        CurrentOrg = new CurrentOrg() {Id = Util2.CurrentOrgId};
-                    CurrentOrgId = CurrentOrg.Id;
-                }
-                else
-                {
-                    CurrentOrgId = Util2.CurrentOrgId;
-                    CurrentGroups = Util2.CurrentGroups;
-                    CurrentGroupsPrefix = Util2.CurrentGroupsPrefix;
-                    CurrentGroupsMode = Util2.CurrentGroupsMode;
-                }
+                if (CurrentOrg == null)
+                    CurrentOrg = new CurrentOrg() {Id = Util2.CurrentOrgId};
+                CurrentOrgId = CurrentOrg.Id;
                 CurrentPeopleId = Util2.CurrentPeopleId;
                 CurrentTagOwnerId = Util2.CurrentTagOwnerId;
                 CurrentTagName = Util2.CurrentTagName;
