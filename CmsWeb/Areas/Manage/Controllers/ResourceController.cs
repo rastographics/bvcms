@@ -23,7 +23,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Route("~/Resources")]
         public ActionResult Index()
         {
-            var resourceTypes = DbUtil.Db.ResourceTypes.OrderBy(x => x.Name).Select(x => new ResourceTypeModel(x)).ToList();
+            var resourceTypes = DbUtil.Db.ResourceTypes.OrderBy(x => x.DisplayOrder).Select(x => new ResourceTypeModel(x)).ToList();
 
             return View(resourceTypes);
         }
