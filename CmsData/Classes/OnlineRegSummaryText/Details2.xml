@@ -197,7 +197,7 @@
 	{{/IfAskInstruction}}
 	{{#IfAskAllergies}}
     <tr>
-      <td style='{{LabelStyle}}{{BottomBorder}}'>Medical</td>
+      <td style='{{LabelStyle}}{{BottomBorder}}'>Allergies</td>
       <td style='{{DataStyle}}{{BottomBorder}}'>{{MedicalDescription}}</td>
     </tr>
 	{{/IfAskAllergies}}

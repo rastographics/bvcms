@@ -174,7 +174,7 @@ namespace CmsWeb.Areas.Reports.Models
             t.AddCell(new Phrase("\nContact Info", boldfont));
             t.AddCell(new Phrase("\nChurch", boldfont));
             t.AddCell(new Phrase("Member\nType", boldfont));
-            t.AddCell(new Phrase("\nMedical", boldfont));
+            t.AddCell(new Phrase("\nAllergies", boldfont));
             return t;
         }
 

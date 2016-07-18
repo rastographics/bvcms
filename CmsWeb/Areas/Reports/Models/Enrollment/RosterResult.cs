@@ -132,7 +132,7 @@ namespace CmsWeb.Areas.Reports.Models
             t.AddCell(new Phrase("PeopleId", boldfont));
             t.AddCell(new Phrase("Name", boldfont));
             t.AddCell(new Phrase("Member Type", boldfont));
-            t.AddCell(new Phrase("Medical", boldfont));
+            t.AddCell(new Phrase("Allergies", boldfont));
             pagesetstarted = true;
         }
         private void AddRow(string Code, string name, string med, int pid, Font font)
