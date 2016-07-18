@@ -124,7 +124,8 @@ namespace CmsWeb.Areas.Manage.Controllers
             var resource = DbUtil.Db.Resources.FirstOrDefault(x => x.ResourceId == id);
 
             if (resource != null)
-            {
+            {                
+                DbUtil.Db.ResourceAttachments.DeleteAllOnSubmit(resource.ResourceAttachments);
                 DbUtil.Db.Resources.DeleteOnSubmit(resource);
                 DbUtil.Db.SubmitChanges();
             }

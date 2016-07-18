@@ -50,11 +50,14 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult Delete(string id)
         {
             id = id.Substring(1);
-            var p = DbUtil.Db.ResourceCategories.SingleOrDefault(m => m.ResourceCategoryId == id.ToInt());
-            if (p == null)
+            var category = DbUtil.Db.ResourceCategories.SingleOrDefault(m => m.ResourceCategoryId == id.ToInt());
+            if (category == null)
                 return new EmptyResult();
 
-            DbUtil.Db.ResourceCategories.DeleteOnSubmit(p);
+            if (category.Resources.Any())
+                return Json(new { error = "Resources have that category, not deleted" });
+
+            DbUtil.Db.ResourceCategories.DeleteOnSubmit(category);
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();
         }

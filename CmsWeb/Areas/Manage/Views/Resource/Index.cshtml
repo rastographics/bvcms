@@ -31,7 +31,35 @@
                     });
 
                 });
-            });            
+            });
+
+            $("a.resource.delete").click(function (e) {
+                e.preventDefault();
+                var id = $(this).data("resource-id");
+                swal({
+                    title: "Are you sure?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                },
+                function () {
+                    $.post("/Resources/Delete/" + id, null, function (ret) {
+                        if (ret && ret.error)
+                            swal("Error!", ret.error, "error");
+                        else {
+                            swal({
+                                title: "Deleted!",
+                                type: "success"
+                            },
+                            function () {
+                                window.location = "/Resources/";
+                            });
+                        }
+                    });
+                });
+            });
         });
     </script>
 }
@@ -81,6 +109,7 @@
                                         <th>Category</th>
                                         <th>Display Order</th>
                                         <th>Files</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -93,6 +122,9 @@
                                             <td>@(item.ResourceCategory?.Name ?? "(None)")</td>
                                             <td>@item.DisplayOrder</td>
                                             <td>@(item.ResourceAttachments?.Count ?? 0)</td>
+                                            <td style="width: 100px;">
+                                                <a data-resource-id="@(item.ResourceId)" href="#" class="delete resource btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                                            </td>
                                         </tr>
                                     }
                                     @if (!resourceTypeGroup.Resources.Any())
