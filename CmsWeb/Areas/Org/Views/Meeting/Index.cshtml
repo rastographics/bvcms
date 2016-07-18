@@ -4,7 +4,7 @@
 @{
     ViewBag.Title = "Meeting";
     ViewBag.PageHeader = "Meeting";
-    ViewBag.PageSubHeader = $"<a href=\"{Util2.Org}/{Model.meeting.OrganizationId}\">{Model.meeting.Organization.OrganizationName}</a>";
+    ViewBag.PageSubHeader = $"<a href=\"/Org/{Model.meeting.OrganizationId}\">{Model.meeting.Organization.OrganizationName}</a>";
     Layout = ViewExtensions2.TouchPointLayout();
     var RegularMeetingHeadCount = Model.RegularMeetingHeadCountSetting();
     var CanEditHeadCount = Model.meeting.GroupMeetingFlag || RegularMeetingHeadCount == "enable";

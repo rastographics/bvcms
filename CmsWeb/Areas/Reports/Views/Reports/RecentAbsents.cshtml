@@ -23,7 +23,7 @@
                         <thead>
                             <tr>
                                 <td colspan="6" class="text-center">
-                                    <h3><a href="@Util2.Org/@item.OrganizationId">@item.OrganizationName</a> @(string.IsNullOrEmpty(item.LeaderName) ? "" : $"({item.LeaderName})")</h3>
+                                    <h3><a href="/Org/@item.OrganizationId">@item.OrganizationName</a> @(string.IsNullOrEmpty(item.LeaderName) ? "" : $"({item.LeaderName})")</h3>
                                     <em>Members with @(item.ConsecutiveAbsentsThreshold ?? 2) or more consecutive absents on and before @Util.FormatDate(item.lastmeeting)</em>
                                 </td>
                             </tr>

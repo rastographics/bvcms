@@ -5,7 +5,7 @@
     ViewBag.Title = "Manage Child Organizations";
     ViewBag.PageHeader = "Manage Child Organizations";
     var parentOrgLink = (Model.parentorg != null ? $" (Parent Org: <a href=\"/OrgChildren/{Model.parentorg.OrganizationId}\">{Model.parentorg.OrganizationName}</a>)" : "");
-    ViewBag.PageSubHeader = $"<a href=\"{Util2.Org}/{Model.org.OrganizationId}\">{Model.org.OrganizationName}</a>{parentOrgLink}";
+    ViewBag.PageSubHeader = $"<a href=\"/Org/{Model.org.OrganizationId}\">{Model.org.OrganizationName}</a>{parentOrgLink}";
 }
 <div class="row">
     <div class="col-md-9">

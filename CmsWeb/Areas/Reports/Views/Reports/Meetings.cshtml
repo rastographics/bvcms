@@ -110,7 +110,7 @@
         <td class="right">@(m.OtherAttends > 0 ? "*" : "")</td>
         <td class="right">@m.Guests.ToStringNoZero()</td>
         <td> <span title="@m.Program">@m.Division</span> </td>
-        <td style="color: @(m.Inactive?"#555":"inherit")"> <a title="@m.Tracking" href="@Util2.Org/@m.OrganizationId">@m.Organization</a> </td>
+        <td style="color: @(m.Inactive?"#555":"inherit")"> <a title="@m.Tracking" href="/Org/@m.OrganizationId">@m.Organization</a> </td>
         <td>@m.Leader</td>
         <td>@m.Description</td>
       </tr>

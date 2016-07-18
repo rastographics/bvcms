@@ -21,11 +21,11 @@
           </td>
           @if (i.m.Orgid > 0 && i.m.org != null)
           {
-            <td><a href='@Util2.Org/@i.m.Orgid'>@i.m.org.OrganizationName</a></td>
+            <td><a href='/Org/@i.m.Orgid'>@i.m.org.OrganizationName</a></td>
           }
           else if (i.m.masterorgid > 0)
           {
-            <td><a href='@Util2.Org/@i.m.masterorgid'>@i.m.masterorg.OrganizationName</a></td>
+            <td><a href='/Org/@i.m.masterorgid'>@i.m.masterorg.OrganizationName</a></td>
           }
           else
           {
@@ -41,7 +41,7 @@
             <td>Item @n</td>
             <td colspan="2">
               <a href="/Person2/@p.PeopleId">@p.FirstName @p.LastName</a><br />
-              <a href="@Util2.Org/@p.orgid">@(p.org != null ? p.org.OrganizationName : "na")</a><br />
+              <a href="/Org/@p.orgid">@(p.org != null ? p.org.OrganizationName : "na")</a><br />
               @p.DateOfBirth (@p.age)<br />
               @p.Phone.FmtFone()<br />
               @p.EmailAddress<br />

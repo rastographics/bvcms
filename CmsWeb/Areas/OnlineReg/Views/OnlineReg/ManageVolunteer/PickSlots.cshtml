@@ -34,7 +34,7 @@
 }
 @if (Model.IsLeader)
 {
-<h2><a href="@Util2.Org/@Model.OrgId">@Model.Org.OrganizationName</a></h2>
+<h2><a href="/Org/@Model.OrgId">@Model.Org.OrganizationName</a></h2>
 <h4><a href="/Volunteers/Calendar/@Model.OrgId" target="calendar">View Calendar</a></h4><br />
 @*<p>Select Volunteer: @Html.DropDownList("volunteer", Model.Volunteers())</p>*@
 }
