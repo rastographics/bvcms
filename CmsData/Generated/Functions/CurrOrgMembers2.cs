@@ -72,7 +72,7 @@ namespace CmsData.View
 		
 		private DateTime? _InactiveDate;
 		
-		private string _Medical;
+		private string _Allergies;
 		
 		private int _PeopleId;
 		
@@ -563,18 +563,18 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Medical", Storage="_Medical", DbType="nvarchar(1000)")]
-		public string Medical
+		[Column(Name="Allergies", Storage="_Allergies", DbType="nvarchar(1000)")]
+		public string Allergies
 		{
 			get
 			{
-				return this._Medical;
+				return this._Allergies;
 			}
 
 			set
 			{
-				if (this._Medical != value)
-					this._Medical = value;
+				if (this._Allergies != value)
+					this._Allergies = value;
 			}
 
 		}

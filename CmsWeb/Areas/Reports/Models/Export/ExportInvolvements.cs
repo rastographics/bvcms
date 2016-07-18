@@ -90,7 +90,7 @@ namespace CmsWeb.Models
                          Grade = p.Grade.ToString(),
                          EmContact = rr.Emcontact,
                          EmPhone = rr.Emphone,
-                         Medical = rr.MedicalDescription
+                         Allergies = rr.MedicalDescription
                      };
             return q2.Take(maximumRows).ToDataTable().ToExcel("ChildrenList.xlsx");
         }
