@@ -200,12 +200,22 @@ namespace CmsWeb.Areas.Manage.Controllers
 			var email = (from e in DbUtil.Db.EmailQueues
 						 where e.Id == id
 						 select e).Single();
-			var m = new EmailModel(id);
-			if (!User.IsInRole("Admin") && m.queue.QueuedBy != Util.UserPeopleId)
-				return Redirect("/");
+			if (!User.IsInRole("Admin") && email.QueuedBy != Util.UserPeopleId)
+    			return Redirect("/Emails/Details/" + id);
 			email.PublicX = true;
 			DbUtil.Db.SubmitChanges();
             return Redirect("/EmailView/" + id);
+		}
+		public ActionResult MakePrivate(int id)
+		{
+			var email = (from e in DbUtil.Db.EmailQueues
+						 where e.Id == id
+						 select e).Single();
+			if (!User.IsInRole("Admin") && email.QueuedBy != Util.UserPeopleId)
+    			return Redirect("/Emails/Details/" + id);
+			email.PublicX = false;
+			DbUtil.Db.SubmitChanges();
+			return Redirect("/Emails/Details/" + id);
 		}
 
 		[HttpPost]
