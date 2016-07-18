@@ -6,7 +6,7 @@ RETURN
 	FROM
 	(
 		SELECT CreditGiverId, SUM(Amount) AS Amt, MIN(Date) as FirstDate
-		FROM dbo.Contributions2('1/1/1900', GETDATE(), 0, 0, NULL, 1) c
+		FROM dbo.Contributions2('1/1/1900', GETDATE(), 0, 0, 0, 1) c
 		WHERE c.FundId = @fundid OR @fundid = 0
 		GROUP BY CreditGiverId
 	) tt

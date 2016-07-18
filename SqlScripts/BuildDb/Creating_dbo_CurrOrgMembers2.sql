@@ -32,7 +32,7 @@ RETURNS @tt TABLE
 		MemberInfo NVARCHAR(MAX),
 		Questions NVARCHAR(MAX),
 		InactiveDate datetime,
-		Medical nvarchar(1000),
+		Allergies nvarchar(1000),
 		PeopleId int NOT NULL,
 		EnrollDate datetime,
 		Tickets int
@@ -91,7 +91,7 @@ BEGIN
 	).value('.', 'varchar(max)'), 1, 1, '')),
 
 	om.InactiveDate,
-	rr.MedicalDescription Medical,
+	rr.MedicalDescription Allergies,
 	p.PeopleId,
 	om.EnrollmentDate EnrollDate,
 	om.Tickets
@@ -107,6 +107,7 @@ LEFT JOIN dbo.TransactionSummary ts ON ts.OrganizationId = om.OrganizationId AND
 WHERE om.OrganizationId IN (SELECT id FROM @t)
 	RETURN 
 END
+
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
