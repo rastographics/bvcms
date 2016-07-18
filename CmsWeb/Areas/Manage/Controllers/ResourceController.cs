@@ -16,6 +16,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 {
     [RouteArea("Manage", AreaPrefix = "Resources"), Route("{action}/{id?}")]
     [ValidateInput(false)]
+    [Authorize(Roles = "Edit")]
     public class ResourceController : CmsStaffController
     {
         [HttpGet]
