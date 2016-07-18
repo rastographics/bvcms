@@ -12,8 +12,11 @@ namespace CmsWeb.Areas.Dialog.Models
     public class NewResourceModel
     {
         public int ResourceId { get; set; }
+        [Required(ErrorMessage = "required")]
         public int ResourceTypeId { get; set; }
+        [Required(ErrorMessage = "required")]
         public int ResourceCategoryId { get; set; }
+        [Required(ErrorMessage = "required")]
         public string Name { get; set; }
         public int? DivisionId { get; set; }
         public int? OrganizationId { get; set; }
