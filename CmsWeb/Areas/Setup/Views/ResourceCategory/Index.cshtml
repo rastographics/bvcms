@@ -8,7 +8,13 @@
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
 }
 <div class="row">
-    <div class="col-md-9">        
+    <div class="col-md-9">
+        @if (TempData.ContainsKey("Error"))
+        {
+            <div class="alert alert-danger">
+                @TempData["Error"]
+            </div>
+        }
         <div class="box box-responsive">
             <div class="box-title-btn">
                 <div class="box-tools">

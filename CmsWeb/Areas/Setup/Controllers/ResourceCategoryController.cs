@@ -28,6 +28,12 @@ namespace CmsWeb.Areas.Setup.Controllers
             if (resourceType == null)
                 resourceType = DbUtil.Db.ResourceTypes.FirstOrDefault();
 
+            if (resourceType == null)
+            {
+                TempData["Error"] = "You need to configure at least one Resource Type first.";
+                return Redirect("~/ResourceCategories");
+            }
+
             var ResourceCategory = new ResourceCategory { Name = "new resource category", ResourceTypeId = resourceType.ResourceTypeId };
             DbUtil.Db.ResourceCategories.InsertOnSubmit(ResourceCategory);
             DbUtil.Db.SubmitChanges();
