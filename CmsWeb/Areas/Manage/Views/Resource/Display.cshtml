@@ -47,21 +47,30 @@
             <div class="col-md-12 col-lg-6">
                 @Html.DisplayFor(m => m.ResourceTypeName)
             </div>
+        </div>
+        <div class="row">
             <div class="col-md-12 col-lg-6">
                 @Html.DisplayFor(m => m.ResourceCategoryName)
             </div>
             <div class="col-md-12 col-lg-6">
+                @Html.DisplayFor(m => m.Resource.DisplayOrder)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-6">
                 @Html.DisplayFor(m => m.OrganizationName)
             </div>
+            <div class="col-md-12 col-lg-6">
+                @Html.DisplayFor(m => m.OrganizationTypeName)
+            </div>
+        </div>
+        <div class="row">            
             <div class="col-md-12 col-lg-6">
                 @Html.DisplayFor(m => m.CampusName)
             </div>
             <div class="col-md-12 col-lg-6">
                 @Html.DisplayFor(m => m.MemberTypes)
-            </div>
-            <div class="col-md-12 col-lg-6">
-                @Html.DisplayFor(m => m.Resource.DisplayOrder)
-            </div>
+            </div>            
         </div>
         <div class="row">
             <div class="col-md-24 col-lg-12">

@@ -53,6 +53,8 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             if (model.OrganizationId.HasValue && model.OrganizationId < 1)
                 model.OrganizationId = null;
+            if (model.OrganizationTypeId.HasValue && model.OrganizationTypeId < 1)
+                model.OrganizationTypeId = null;
             if (model.DivisionId.HasValue && model.DivisionId < 1)
                 model.DivisionId = null;
             if (model.CampusId.HasValue && model.CampusId < 1)
@@ -61,9 +63,10 @@ namespace CmsWeb.Areas.Manage.Controllers
             resource.Name = model.Name;
             resource.DisplayOrder = model.DisplayOrder;
             resource.OrganizationId = model.OrganizationId;
+            resource.OrganizationTypeId = model.OrganizationTypeId;
             resource.DivisionId = model.DivisionId;
             resource.CampusId = model.CampusId;
-            resource.MemberTypeIds = model.MemberTypeIds;
+            resource.MemberTypeIds = model.MemberTypeIds != null ? string.Join(",", model.MemberTypeIds) : string.Empty;
             resource.Description = model.Description;
             resource.ResourceTypeId = model.ResourceTypeId;
             resource.ResourceCategoryId = model.ResourceCategoryId;

@@ -14,24 +14,39 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
+                            @Html.HiddenFor(x => x.ResourceTypeId)
                             <label for="resource_ResourceType" class="control-label">Resource Type</label>
-                            @Html.DropDownListFor2(x => x.ResourceTypeId, true, Model.ResourceTypes, null, new { @class = "form-control", disabled="disabled" })
+                            @Html.DropDownListFor2(x => x.ResourceTypeId, true, Model.ResourceTypes, null, new { @class = "form-control", disabled = "disabled" })
                             @Html.ValidationMessageFor(x => x.ResourceTypeId)
                         </div>
-                    </div>                    
+                    </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-6">                                          
+                    <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="resource_Category" class="control-label">Resource Category</label>
+                            <label for="resource_Category" class="control-label">Resource Category</label>                            
                             @Html.DropDownListFor2(x => x.ResourceCategoryId, true, Model.ResourceCategories, null, new { @class = "form-control" })
                             @Html.ValidationMessageFor(x => x.ResourceCategoryId)
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
+                            <label for="resource_SortOrder" class="control-label">Sort Order</label>
+                            @Html.TextBoxFor(x => x.DisplayOrder, Model.DisplayOrder.ToString(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
                             <label for="resource_OrgId" class="control-label">Organization</label>
-                            @Html.DropDownListFor(x => x.OrganizationId, Model.Orgs, new { @class = "form-control" })
+                            @Html.DropDownListFor(x => x.OrganizationId, Model.Orgs, new { @class = "form-control select2" })
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="resource_OrgTypeId" class="control-label">Organization Type</label>
+                            @Html.DropDownListFor(x => x.OrganizationTypeId, Model.OrgTypes, new { @class = "form-control select2" })
                         </div>
                     </div>
                 </div>
@@ -39,21 +54,13 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label for="resource_CampusId" class="control-label">Congregation</label>
-                            @Html.DropDownListFor(x => x.CampusId, Model.Campuses, new { @class = "form-control" })
+                            @Html.DropDownListFor(x => x.CampusId, Model.Campuses, new { @class = "form-control select2" })
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label for="resource_Roles" class="control-label">Limit to Member Types</label>
-                            <input name="MemberTypeIds" class="types-picker form-control" />
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="resource_SortOrder" class="control-label">Sort Order</label>
-                            @Html.TextBoxFor(x => x.DisplayOrder, Model.DisplayOrder.ToString(), new { @class = "form-control" })
+                            @Html.ListBoxFor(x => x.MemberTypeIds, Model.MemberTypes, new { @class = "form-control select2" })
                         </div>
                     </div>
                 </div>
@@ -70,7 +77,7 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-12">
-                        @Html.TextAreaFor(m => m.Description, new {@class = "form-control", rows = "26"})
+                        @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = "26" })
                     </div>
                 </div>
             </div>
@@ -83,38 +90,30 @@
     @ViewExtensions2.CkEditor()
     <script type="text/javascript">
 
-    function getParameterByName(name) {
-      name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-      var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-          results = regex.exec(location.search);
-      return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-    }
+        function getParameterByName(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+            return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
 
-    $(function () {
-        $("#add-file-upload")
-            .click(function () {
-                $("#upload-fields").html($("#upload-fields").html()+'<input name="Files" type="file" value="">');
+        $(function () {
+            $("#add-file-upload")
+                .click(function () {
+                    $("#upload-fields").html($("#upload-fields").html() + '<input name="Files" type="file" value="">');
+                });
+
+            $(".select2").select2();
+
+            CKEDITOR.env.isCompatible = true;
+
+            CKEDITOR.replace('Description', {
+                height: 400,
+                allowedContent: true,
+                autoParagraph: false,
+                fullPage: !$("#snippet").prop("checked"),
+                customConfig: "/Content/touchpoint/js/ckeditorconfig.js"
             });
-
-        $(".types-picker").select2({
-            tags: [
-                @foreach (var type in Model.MemberTypes)
-            {
-                    <text>"@type.Description",</text>
-                    }
-                    ]
-                    });
-
-      CKEDITOR.env.isCompatible = true;
-
-      CKEDITOR.replace('Description', {
-        height: 400,
-        allowedContent: true,
-        autoParagraph: false,
-        fullPage: !$("#snippet").prop("checked"),
-        customConfig: "/Content/touchpoint/js/ckeditorconfig.js"
-      });
-    });
+        });
     </script>
 </div>
-    

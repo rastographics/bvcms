@@ -8,45 +8,61 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="resource_Name" class="control-label">Name</label>
-                        @Html.TextBoxFor(x => x.Name, Model.Name, new {@class = "form-control"})
+                        @Html.TextBoxFor(x => x.Name, Model.Name, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.Name)
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="resource_ResourceType" class="control-label">Resource Type</label>
-                        @Html.DropDownListFor(x => x.ResourceTypeId, Model.ResourceTypes, new { @class = "form-control" })
+                        @Html.HiddenFor(x => x.ResourceTypeId)
+                        @Html.DropDownListFor(x => x.ResourceTypeId, Model.ResourceTypes, new { @class = "form-control", disabled = "disabled" })
+                        @Html.ValidationMessageFor(x => x.Name)
                     </div>
                 </div>
+            </div>
+            <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="resource_Category" class="control-label">Resource Category</label>
                         @Html.DropDownListFor(x => x.ResourceCategoryId, Model.ResourceCategories, new { @class = "form-control" })
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="resource_OrgId" class="control-label">Organization</label>
-                        @Html.DropDownListFor(x => x.OrganizationId, Model.Orgs, new {@class = "form-control"})
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="resource_CampusId" class="control-label">Congregation</label>
-                        @Html.DropDownListFor(x => x.CampusId, Model.Campuses, new {@class = "form-control"})
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="resource_Roles" class="control-label">Limit to Member Types</label>
-                        <input name="MemberTypeIds" value="@Model.MemberTypeIds" class="types-picker form-control"/>
+                        @Html.ValidationMessageFor(x => x.Name)
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="resource_SortOrder" class="control-label">Sort Order</label>
-                        @Html.TextBoxFor(x => x.DisplayOrder, Model.DisplayOrder.ToString(), new {@class = "form-control"})
+                        @Html.TextBoxFor(x => x.DisplayOrder, Model.DisplayOrder.ToString(), new { @class = "form-control" })
                     </div>
                 </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="resource_OrgId" class="control-label">Organization</label>
+                        @Html.DropDownListFor(x => x.OrganizationId, Model.Orgs, new { @class = "form-control select2" })
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="resource_OrgTypeId" class="control-label">Organization Type</label>
+                        @Html.DropDownListFor(x => x.OrganizationTypeId, Model.OrgTypes, new { @class = "form-control select2" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">                
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="resource_CampusId" class="control-label">Congregation</label>
+                        @Html.DropDownListFor(x => x.CampusId, Model.Campuses, new {@class = "form-control select2" })
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="resource_Roles" class="control-label">Limit to Member Types</label>
+                        @Html.ListBoxFor(x => x.MemberTypeIds, Model.MemberTypes, new { @class = "form-control select2" })                        
+                    </div>
+                </div>                
             </div>
             <div class="row">
                 <div class="col-sm-12">
@@ -71,15 +87,7 @@
 
         $(function() {
             $(function() {
-                $(".types-picker")
-                    .select2({
-                        tags: [
-                            @foreach (var type in Model.MemberTypes)
-                            {
-                                <text>"@type.Description",</text>
-                            }
-                        ]
-                    });
+                $(".select2").select2();
             });
 
             CKEDITOR.env.isCompatible = true;

@@ -18,8 +18,9 @@ namespace CmsWeb.Areas.Dialog.Models
         public string Name { get; set; }
         public int? DivisionId { get; set; }
         public int? OrganizationId { get; set; }
+        public int? OrganizationTypeId { get; set; }
         public int? CampusId { get; set; }
-        public string MemberTypeIds { get; set; }
+        public IEnumerable<int> MemberTypeIds { get; set; }
         public string Description { get; set; }
         public int DisplayOrder { get; set; }
         public IEnumerable<FileUpload> Files { get; set; }
@@ -32,6 +33,21 @@ namespace CmsWeb.Areas.Dialog.Models
                 {
                     Text = x.OrganizationName,
                     Value = x.OrganizationId.ToString()
+                }).ToList();
+
+                list.Insert(0, new SelectListItem { Value = "0", Text = "(none)", Selected = true });
+                return list;
+            }
+        }
+
+        public IEnumerable<SelectListItem> OrgTypes
+        {
+            get
+            {
+                var list = DbUtil.Db.OrganizationTypes.Select(x => new SelectListItem
+                {
+                    Text = x.Description,
+                    Value = x.Id.ToString()
                 }).ToList();
 
                 list.Insert(0, new SelectListItem { Value = "0", Text = "(none)", Selected = true });
@@ -85,10 +101,19 @@ namespace CmsWeb.Areas.Dialog.Models
             }
         }
 
-        public IEnumerable<MemberType> MemberTypes
+        public IEnumerable<SelectListItem> MemberTypes
         {
-            get { return DbUtil.Db.MemberTypes; }
-        } 
+            get
+            {
+                var list = DbUtil.Db.MemberTypes.Select(x => new SelectListItem
+                {
+                    Text = x.Description,
+                    Value = x.Id.ToString()
+                }).ToList();
+
+                return list;
+            }
+        }
     }
 
     public class EditResourceModel
@@ -99,8 +124,9 @@ namespace CmsWeb.Areas.Dialog.Models
         public string Name { get; set; }
         public int? DivisionId { get; set; }
         public int? OrganizationId { get; set; }
+        public int? OrganizationTypeId { get; set; }
         public int? CampusId { get; set; }
-        public string MemberTypeIds { get; set; }
+        public IEnumerable<int> MemberTypeIds { get; set; }
         public string Description { get; set; }
         public int DisplayOrder { get; set; }
 
@@ -112,11 +138,14 @@ namespace CmsWeb.Areas.Dialog.Models
         public EditResourceModel(Resource r)
         {
             ResourceId = r.ResourceId;
+            ResourceTypeId = r.ResourceTypeId;
+            ResourceCategoryId = r.ResourceCategoryId;
             Name = r.Name;
             DivisionId = r.DivisionId;
             OrganizationId = r.OrganizationId;
+            OrganizationTypeId = r.OrganizationTypeId;
             CampusId = r.CampusId;
-            MemberTypeIds = r.MemberTypeIds;
+            MemberTypeIds = string.IsNullOrWhiteSpace(r.MemberTypeIds) ? new List<int>() : r.MemberTypeIds.Split(',').Select(int.Parse).ToList();
             Description = r.Description;
             DisplayOrder = r.DisplayOrder ?? 0;
         }
@@ -129,6 +158,21 @@ namespace CmsWeb.Areas.Dialog.Models
                 {
                     Text = x.OrganizationName,
                     Value = x.OrganizationId.ToString()
+                }).ToList();
+
+                list.Insert(0, new SelectListItem { Value = "0", Text = "(none)", Selected = true });
+                return list;
+            }
+        }
+
+        public IEnumerable<SelectListItem> OrgTypes
+        {
+            get
+            {
+                var list = DbUtil.Db.OrganizationTypes.Select(x => new SelectListItem
+                {
+                    Text = x.Description,
+                    Value = x.Id.ToString()
                 }).ToList();
 
                 list.Insert(0, new SelectListItem { Value = "0", Text = "(none)", Selected = true });
@@ -182,9 +226,18 @@ namespace CmsWeb.Areas.Dialog.Models
             }
         }
 
-        public IEnumerable<MemberType> MemberTypes
+        public IEnumerable<SelectListItem> MemberTypes
         {
-            get { return DbUtil.Db.MemberTypes; }
+            get
+            {
+                var list = DbUtil.Db.MemberTypes.Select(x => new SelectListItem
+                {
+                    Text = x.Description,
+                    Value = x.Id.ToString()
+                }).ToList();
+
+                return list;
+            }
         }
     }
 }

@@ -33,6 +33,12 @@ namespace CmsWeb.Areas.Manage.Models
             get { return Resource.Organization?.OrganizationName; }
         }
 
+        [DisplayName("Organization Type")]
+        public string OrganizationTypeName
+        {
+            get { return Resource.OrganizationType?.Description; }
+        }
+
         [DisplayName("Congregation")]
         public string CampusName
         {
@@ -42,7 +48,13 @@ namespace CmsWeb.Areas.Manage.Models
         [DisplayName("Member Types")]
         public string MemberTypes
         {
-            get { return Resource.MemberTypeIds; }
+            get {
+                if (string.IsNullOrWhiteSpace(Resource.MemberTypeIds))
+                    return string.Empty;
+
+                var memberTypeIds = Resource.MemberTypeIds.Split(',').Select(int.Parse) ;
+                return string.Join(", ", DbUtil.Db.MemberTypes.Where(x => memberTypeIds.Contains(x.Id)).Select(x => x.Description));
+            }
         }
 
         [DisplayName("Resource Type")]
