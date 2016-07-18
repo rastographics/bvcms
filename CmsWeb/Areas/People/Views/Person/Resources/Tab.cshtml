@@ -30,7 +30,7 @@
         <div class="tab-pane @(i == 0 ? "active" : null)"
              id="resourcetab@(resourceTypeGroup.ResourceType.ResourceTypeId)">
             <div class="panel-group" id="accordion@(i)" role="tablist">
-                @foreach (var category in resourceTypeGroup.Resources.GroupBy(x => x.ResourceCategory))
+                @foreach (var category in resourceTypeGroup.Resources.GroupBy(x => x.ResourceCategory).OrderBy(x => x.Key.Name))
                 {
                     <div class="panel panel-default">
                         <div class="panel-heading" role="tab" id="@i-@category.Key.ResourceCategoryId">

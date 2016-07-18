@@ -71,10 +71,13 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             get
             {
-                var list = new List<SelectListItem>();
+                var list = DbUtil.Db.Campus.Select(x => new SelectListItem
+                {
+                    Text = x.Description,
+                    Value = x.Id.ToString()
+                }).ToList();
 
                 list.Insert(0, new SelectListItem { Value = "0", Text = "(none)", Selected = true });
-                list.Insert(0, new SelectListItem { Value = "1", Text = "West Side", Selected = true });
                 return list;
             }
         }
@@ -160,10 +163,13 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             get
             {
-                var list = new List<SelectListItem>();
+                var list = DbUtil.Db.Campus.Select(x => new SelectListItem
+                {
+                    Text = x.Description,
+                    Value = x.Id.ToString()
+                }).ToList();
 
                 list.Insert(0, new SelectListItem { Value = "0", Text = "(none)", Selected = true });
-                list.Insert(0, new SelectListItem { Value = "1", Text = "West Side", Selected = true });
                 return list;
             }
         }

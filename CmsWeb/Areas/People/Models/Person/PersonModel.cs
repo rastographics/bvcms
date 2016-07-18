@@ -220,12 +220,14 @@ namespace CmsWeb.Areas.People.Models
                 var orgIds = orgLevels.Keys.ToList();
 
                 var divisionIds = DbUtil.Db.OrganizationMembers.Where(x => x.PeopleId == PeopleId)
-                    .Select(x => x.Organization.DivisionId).Distinct().ToList();                
-
+                    .Select(x => x.Organization.DivisionId).Distinct().ToList();
+                
                 // Filter out any resources that have a division the user isn't in
+                // same for campus
                 IQueryable<Resource> resources =
                     DbUtil.Db.Resources
-                        .Where(x => !x.DivisionId.HasValue || divisionIds.Contains(x.DivisionId));
+                        .Where(x => !x.DivisionId.HasValue || divisionIds.Contains(x.DivisionId))
+                        .Where(x => !x.CampusId.HasValue || Person.CampusId == x.CampusId.Value);
 
                 // Filter out resources that have an org the user isn't in
                 resources = resources.Where(x => !x.OrganizationId.HasValue || orgIds.Contains(x.OrganizationId.Value));
@@ -244,7 +246,9 @@ namespace CmsWeb.Areas.People.Models
                 // after filtering to the individual resources, make the list by type for easy rendering
                 _resourceTypes = resourceModels
                     .GroupBy(x => x.ResourceTypeId)
-                    .Select(x => new ResourceTypeModel(x.First().ResourceType, x)).ToList();
+                    .Select(x => new ResourceTypeModel(x.First().ResourceType, x.OrderBy(y => y.DisplayOrder)))
+                    .OrderBy(x => x.ResourceType.Name)
+                    .ToList();
                 
 
                 return _resourceTypes;
