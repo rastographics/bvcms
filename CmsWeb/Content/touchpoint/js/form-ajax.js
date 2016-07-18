@@ -115,7 +115,9 @@
     $.formAjaxSubmit = function (a) {
         var $form = a.closest("form.ajax");
         $form.attr("action", a[0].href);
-        $form.submit();
+        if (!a.hasClass("validate") || $form.valid()) {
+            $form.submit();
+        }
     };
 
     $('body').on('click', 'form.ajax input.ajax', function () {
