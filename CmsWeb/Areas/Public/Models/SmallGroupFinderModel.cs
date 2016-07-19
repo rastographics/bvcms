@@ -29,6 +29,18 @@ namespace CmsWeb.Areas.Public.Models
 		private string _shell;
         private readonly Controller _controller;
 
+	    public string Title
+	    {
+	        get
+	        {
+	            string title = null;
+	            if (_sgf != null)
+	                title = getSetting("Title")?.value;
+
+	            return title ?? "Small Group Finder";
+	        }
+	    }
+
         public bool UseShell { get; private set; }
 
         public SmallGroupFinderModel(Controller controller, bool useShell = true)
