@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 {
     [RouteArea("Manage", AreaPrefix = "Resources"), Route("{action}/{id?}")]
     [ValidateInput(false)]
-    [Authorize(Roles = "Edit")]
+    [Authorize(Roles = "ManageResources")]
     public class ResourceController : CmsStaffController
     {
         [HttpGet]
@@ -114,7 +114,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             attachment.CreationDate = Util.Now;
             attachment.UpdateDate = Util.Now;
             attachment.FilePath = UploadAttachment(file);
-            
+
             DbUtil.Db.ResourceAttachments.InsertOnSubmit(attachment);
             DbUtil.Db.SubmitChanges();
 
@@ -127,7 +127,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             var resource = DbUtil.Db.Resources.FirstOrDefault(x => x.ResourceId == id);
 
             if (resource != null)
-            {                
+            {
                 DbUtil.Db.ResourceAttachments.DeleteAllOnSubmit(resource.ResourceAttachments);
                 DbUtil.Db.Resources.DeleteOnSubmit(resource);
                 DbUtil.Db.SubmitChanges();
