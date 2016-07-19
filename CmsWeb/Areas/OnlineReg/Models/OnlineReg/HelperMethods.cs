@@ -617,12 +617,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
 #if DEBUG
         public void DebugCleanUp()
         {
+//            var q = from om in DbUtil.Db.OrganizationMembers
+//                    where new[] {828612, Util.UserPeopleId}.Contains(om.PeopleId)
+//                    where om.OrganizationId == Orgid
+//                    select om;
             var q = from om in DbUtil.Db.OrganizationMembers
                     where new[] {828612, Util.UserPeopleId}.Contains(om.PeopleId)
-                    where om.OrganizationId == Orgid
+                    where new[] {2192117,2192118}.Contains(om.OrganizationId)
                     select om;
             foreach (var om in q)
+            {
                 om.Drop(DbUtil.Db, DateTime.Now);
+                DbUtil.Db.ExecuteCommand("DELETE dbo.EnrollmentTransaction WHERE PeopleId = {0} AND OrganizationId = {1}", om.PeopleId, om.OrganizationId);
+            }
             DbUtil.Db.SubmitChanges();
             //                DbUtil.Db.ExecuteCommand(@"
             //DELETE dbo.EnrollmentTransaction WHERE PeopleId = 58207 AND OrganizationId = 2202

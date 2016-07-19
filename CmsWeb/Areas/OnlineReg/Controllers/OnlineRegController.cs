@@ -218,6 +218,18 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             SetHeaders(m);
             return View("Other/AskDonation", m);
         }
+        [HttpPost]
+        public ActionResult PostDonation(OnlineRegModel m)
+        {
+            if (m.donor == null && m.donation > 0)
+            {
+                ModelState.AddModelError("donation", "Please indicate who is the donor");
+                SetHeaders(m);
+                return View("Other/AskDonation", m);
+            }
+            TempData["onlineregmodel"] = Util.Serialize(m);
+            return Redirect("/OnlineReg/CompleteRegistration");
+        }
 
         [HttpPost]
         public ActionResult CompleteRegistration(OnlineRegModel m)

@@ -175,7 +175,7 @@ Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
                     tranid: Transaction.Id);
                 Log("ExtraDonation");
             }
-            var subject = GetSubject();
+            var subject = GetSubject(p);
             var ma = donationtext.Match(message);
             if (ma.Success)
             {
@@ -184,7 +184,7 @@ Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
             }
             message = message.Replace("{donation}", Transaction.Donate.ToString2("N2"));
             // send donation confirmations
-            var notifyIds = GetNotifyIds();
+            var notifyIds = GetNotifyIds(p);
             DbUtil.Db.Email(notifyIds[0].FromEmail, notifyIds, subject + "-donation",
                 $"${Transaction.Donate:N2} donation received from {Transaction.FullName(Transaction)}");
             return message;
@@ -217,6 +217,12 @@ Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
             //Transaction.Description = "Mission Trip Giving";
         }
 
+        private List<Person> GetNotifyIds(OnlineRegPersonModel p)
+        {
+            if (_notifyIds != null)
+                return _notifyIds;
+            return _notifyIds = DbUtil.Db.StaffPeopleForOrg(p.org.OrganizationId, out UsedAdminsForNotify);
+        }
         private List<Person> GetNotifyIds()
         {
             if (_notifyIds != null)
