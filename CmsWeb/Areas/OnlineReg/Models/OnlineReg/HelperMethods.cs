@@ -622,7 +622,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
 //                    where om.OrganizationId == Orgid
 //                    select om;
             var q = from om in DbUtil.Db.OrganizationMembers
-                    where new[] {828612, Util.UserPeopleId}.Contains(om.PeopleId)
                     where new[] {2192117,2192118}.Contains(om.OrganizationId)
                     select om;
             foreach (var om in q)

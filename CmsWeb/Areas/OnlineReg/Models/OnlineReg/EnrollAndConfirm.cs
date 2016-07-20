@@ -128,7 +128,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             message = APIOrganization.MessageReplacements(DbUtil.Db, p.person,
                 masterorg.OrganizationName, p.org.OrganizationId, p.org.OrganizationName, location, message);
 
-            if (Transaction.Donate > 0)
+            if (Transaction.Donate > 0 && p == List[donor ?? 0])
                 message = DoDonationModifyMessage(message);
             else
                 message = donationtext.Replace(message, "");
@@ -166,7 +166,7 @@ Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
 
         private string DoDonationModifyMessage(string message)
         {
-            var p = List[donor.Value];
+            var p = List[donor ?? 0];
             Transaction.Fund = p.setting.DonationFund();
             var desc = $"{p.person.Name}; {p.person.PrimaryAddress}; {p.person.PrimaryCity}, {p.person.PrimaryState} {p.person.PrimaryZip}";
             if (!Transaction.TransactionId.StartsWith("Coupon") && Transaction.Donate.HasValue)
@@ -185,8 +185,8 @@ Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
             message = message.Replace("{donation}", Transaction.Donate.ToString2("N2"));
             // send donation confirmations
             var notifyIds = GetNotifyIds(p);
-            DbUtil.Db.Email(notifyIds[0].FromEmail, notifyIds, subject + "-donation",
-                $"${Transaction.Donate:N2} donation received from {Transaction.FullName(Transaction)}");
+            var notice = $"${Transaction.Donate:N2} donation received from {Transaction.FullName(Transaction)} on behalf of {p.person.Name}";
+            DbUtil.Db.Email(notifyIds[0].FromEmail, notifyIds, subject + "-donation", notice);
             return message;
         }
 
