@@ -147,7 +147,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 DbUtil.Db.ResourceAttachments.DeleteOnSubmit(attachment);
                 DbUtil.Db.SubmitChanges();
-            }            
+            }
 
             return Content("/Resources/"+id);
         }
