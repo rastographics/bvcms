@@ -29,6 +29,38 @@
 @section scripts {
     @ViewExtensions2.CkEditor()
     @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
+
+    <script>
+        $('body').on('click', '#delete', function (ev) {
+            ev.preventDefault();
+            var href = $(this).attr("href");
+
+            swal({
+                title: "Are you sure?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: false
+            },
+                function () {
+                    $.post(href, null, function (ret) {
+                        if (ret && ret.error)
+                            swal("Error!", ret.error, "error");
+                        else {
+                            swal({
+                                title: "Deleted!",
+                                type: "success"
+                            },
+                                function () {
+                                    window.location = ret;
+                                });
+                        }
+                    });
+                });
+            return true;
+        });
+    </script>    
 }
 <form class="ajax" method="post">
     <div class="well">

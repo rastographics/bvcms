@@ -122,6 +122,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
 
         [Route("~/Resources/Delete/{id}")]
+        [HttpPost]
         public ActionResult Delete(int id)
         {
             var resource = DbUtil.Db.Resources.FirstOrDefault(x => x.ResourceId == id);
@@ -133,10 +134,11 @@ namespace CmsWeb.Areas.Manage.Controllers
                 DbUtil.Db.SubmitChanges();
             }
 
-            return Redirect("/Resources/");
+            return Content("/Resources/");
         }
 
         [Route("~/Resources/Attachments/Delete/{id}")]
+        [HttpPost]
         public ActionResult DeleteAttachment(int id)
         {
             var attachment = DbUtil.Db.ResourceAttachments.FirstOrDefault(x => x.ResourceAttachmentId == id);
@@ -145,9 +147,9 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 DbUtil.Db.ResourceAttachments.DeleteOnSubmit(attachment);
                 DbUtil.Db.SubmitChanges();
-            }
+            }            
 
-            return Redirect("/Resources/" + attachment.ResourceId);
+            return Content("/Resources/"+id);
         }
 
         public string UploadAttachment(HttpPostedFileBase file)
