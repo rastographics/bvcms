@@ -8,6 +8,7 @@ using CmsData.Codes;
 using CmsData.Resources;
 using CmsWeb.Areas.Manage.Models;
 using CmsWeb.Code;
+using MoreLinq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
@@ -214,10 +215,18 @@ namespace CmsWeb.Areas.People.Models
 
                 _resourceTypes = new List<ResourceTypeModel>();
 
-                var orgLevels = DbUtil.Db.OrganizationMembers.Where(x => x.PeopleId == PeopleId)
-                    .ToDictionary(x => x.OrganizationId, x => x.MemberType.Description);
+                var memberOrgs = DbUtil.Db.OrganizationMembers.Where(x => x.PeopleId == PeopleId);
+
+                var orgLevels = memberOrgs.ToDictionary(x => x.OrganizationId, x => x.MemberType.Description);
 
                 var orgIds = orgLevels.Keys.ToList();
+
+                // Ensure child level orgs also show up, too
+                foreach (var org in memberOrgs.Select(o => o.Organization))
+                {
+                    if (!org.ChildOrgs.Any()) continue;
+                    orgIds.AddRange(org.ChildOrgs.Select(o => o.OrganizationId));
+                }
 
                 var divisionIds = DbUtil.Db.OrganizationMembers.Where(x => x.PeopleId == PeopleId)
                     .Select(x => x.Organization.DivisionId).Distinct().ToList();
