@@ -77,7 +77,6 @@
           {
               <li><a href="#Registrations-tab" aria-controls="Registrations-tab" class="ajax" data-toggle="tab">Registration</a></li>
           }
-          <li><a href="#Resources-tab" aria-controls="Resources-tab" class="ajax" data-toggle="tab">Resources</a></li>	  
           @if (Model.ShowCommunityGroupTab())
           {
               <li><a href="#CommunityGroup-tab" aria-controls="CommunityGroup-tab" class="ajax" data-toggle="tab">@DbUtil.Db.Setting("UX-CGInfoTabLabel", "CG Info")</a></li>
@@ -99,8 +98,6 @@
           </div>
           <div class="tab-pane fade" id="Registrations-tab" data-link="/Org/Registrations/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
           </div>
-          <div class="tab-pane fade" id="Resources-tab" data-link="/Org/Resources/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
-          </div>  
           @if (Model.ShowCommunityGroupTab())
           {
               <div class="tab-pane fade" id="CommunityGroup-tab" data-link="/Org/CommunityGroup/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
