@@ -157,7 +157,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             var fn = $"{DbUtil.Db.Host}.{DateTime.Now:yyMMddHHmm}.{m.CleanFileName(Path.GetFileName(file.FileName))}";
             var error = string.Empty;
-            var rackspacecdn = ConfigurationManager.AppSettings["RackspaceUrlCDN"];
+            var rackspacecdn = DbUtil.Db.Setting("RackspaceUrlCDN", ConfigurationManager.AppSettings["RackspaceUrlCDN"]);
 
             if (rackspacecdn.HasValue())
             {
