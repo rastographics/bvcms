@@ -157,13 +157,25 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             var fn = $"{DbUtil.Db.Host}.{DateTime.Now:yyMMddHHmm}.{m.CleanFileName(Path.GetFileName(file.FileName))}";
             var error = string.Empty;
-            var rackspacecdn = DbUtil.Db.Setting("RackspaceUrlCDN", ConfigurationManager.AppSettings["RackspaceUrlCDN"]);
+
+            var rackspacecdn = DbUtil.Db.Setting("RackspaceUrlCDN", null);
+            string username;
+            string key;
+            if (string.IsNullOrEmpty(rackspacecdn))
+            {
+                rackspacecdn = ConfigurationManager.AppSettings["RackspaceUrlCDN"];
+                username = ConfigurationManager.AppSettings["RackspaceUser"];
+                key = ConfigurationManager.AppSettings["RackspaceKey"];
+            }
+            else
+            {
+                username = DbUtil.Db.Setting("RackspaceUser", null);
+                key = DbUtil.Db.Setting("RackspaceKey", null);
+            }
 
             if (rackspacecdn.HasValue())
             {
                 baseurl = rackspacecdn;
-                var username = ConfigurationManager.AppSettings["RackspaceUser"];
-                var key = ConfigurationManager.AppSettings["RackspaceKey"];
                 var cloudIdentity = new CloudIdentity { APIKey = key, Username = username };
                 var cloudFilesProvider = new CloudFilesProvider(cloudIdentity);
                 cloudFilesProvider.CreateObject("AllFiles", file.InputStream, fn);
