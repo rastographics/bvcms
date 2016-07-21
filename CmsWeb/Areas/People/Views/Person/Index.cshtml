@@ -1,12 +1,20 @@
 ﻿@using CmsData
+@using UtilityExtensions
 @using CmsWeb.Areas.People.Models
 @model PersonModel
 @{
-  Layout = ViewExtensions2.TouchPointLayout();
-  ViewBag.Title = "Person";
-  var gender = Model.Person.Gender.Code;
-  var portraitUrl = gender == "M" ? Model.Picture.MediumMaleUrl : gender == "F" ? Model.Picture.MediumFemaleUrl : Model.Picture.MediumUrl;
-  var portraitBgPos = Model.Picture.X.HasValue || Model.Picture.Y.HasValue ? $"{Model.Picture.X.GetValueOrDefault()}% {Model.Picture.Y.GetValueOrDefault()}%" : "top";
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Person";
+    var gender = Model.Person.Gender.Code;
+    var portraitUrl = gender == "M" ? Model.Picture.MediumMaleUrl : gender == "F" ? Model.Picture.MediumFemaleUrl : Model.Picture.MediumUrl;
+    var portraitBgPos = Model.Picture.X.HasValue || Model.Picture.Y.HasValue ? $"{Model.Picture.X.GetValueOrDefault()}% {Model.Picture.Y.GetValueOrDefault()}%" : "top";
+
+    var showResourcesTab = false;
+    var resourcesEnabled = DbUtil.Db.Setting("Resources-Enabled", false);
+    if (resourcesEnabled)
+    {
+        showResourcesTab = Model.PeopleId == Util.UserPeopleId || User.IsInRole("ViewResources");
+    }
 }
 @section head
 {
@@ -153,8 +161,8 @@
 
     .icon-arrow-right:before { content: "\f054"; }
 
-  table.evnotes th, table.evnotes td { 
-       border-top: none !important; 
+  table.evnotes th, table.evnotes td {
+       border-top: none !important;
    }
   table.evnotes tr:nth-child(4n-1), table.evnotes tr:nth-child(4n)  {
       background: #eee;
@@ -232,7 +240,7 @@
           <a href="#emails" aria-controls="emails" data-toggle="tab">Emails</a>
         </li>
       }
-      @if (DbUtil.Db.Setting("Resources-Enabled", false))
+      @if (showResourcesTab)
       {
         <li>
             <a href="#resources" aria-controls="resources" data-toggle="tab">Resources</a>
