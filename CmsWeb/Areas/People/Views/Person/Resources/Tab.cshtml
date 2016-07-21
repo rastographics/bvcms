@@ -44,22 +44,22 @@
                         <div id="collapse-@i-@category.Key.ResourceCategoryId" class="panel-collapse collapse" role="tabpanel">
                             <div class="panel-body">
                                 @foreach (var resourceItem in category)
-                                    {
+                                {
                                     <h3>@resourceItem.Name</h3>
                                     <p>
                                         @Html.Raw(resourceItem.Description)
                                     </p>
-                                        if (resourceItem.ResourceAttachments.Any())
-                                        {
-                                    <ul style="list-style-type: circle">
-                                        @foreach (var attachment in resourceItem.ResourceAttachments.OrderBy(x => x.DisplayOrder))
-                                                {
-                                                <li><a href="@attachment.FilePath">@attachment.Name</a></li>
-                                                }
-                                    </ul>
-                                        }
-                                    <hr />
+                                    if (resourceItem.ResourceAttachments.Any())
+                                    {
+                                        <ul style="list-style-type: circle">
+                                            @foreach (var attachment in resourceItem.ResourceAttachments.OrderBy(x => x.DisplayOrder))
+                                            {
+                                                <li><a href="@attachment.FilePath" target="_blank">@attachment.Name</a></li>
+                                            }
+                                        </ul>
                                     }
+                                    <hr />
+                                }
                             </div>
                         </div>
                     </div>
