@@ -142,6 +142,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult DeleteAttachment(int id)
         {
             var attachment = DbUtil.Db.ResourceAttachments.FirstOrDefault(x => x.ResourceAttachmentId == id);
+            var resourceId = attachment.ResourceId;
 
             if (attachment != null)
             {
@@ -149,7 +150,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 DbUtil.Db.SubmitChanges();
             }
 
-            return Content("/Resources/"+id);
+            return Content("/Resources/" + resourceId);
         }
 
         public string UploadAttachment(HttpPostedFileBase file)
