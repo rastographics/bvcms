@@ -76,6 +76,7 @@ ALTER TABLE [dbo].[MemberTags] DROP CONSTRAINT [FK_MemberTags_Organizations]
 ALTER TABLE [dbo].[OrganizationExtra] DROP CONSTRAINT [FK_OrganizationExtra_Organizations]
 ALTER TABLE [dbo].[OrganizationMembers] DROP CONSTRAINT [ORGANIZATION_MEMBERS_ORG_FK]
 ALTER TABLE [dbo].[OrgMemberExtra] DROP CONSTRAINT [FK_OrgMemberExtra_Organizations]
+ALTER TABLE [dbo].[Resource] DROP CONSTRAINT [FK_Resource_Organization]
 ALTER TABLE [lookup].[MemberType] DROP CONSTRAINT [FK_MemberType_AttendType]
 ALTER TABLE [dbo].[Attend] DROP CONSTRAINT [FK_Attend_MemberType]
 ALTER TABLE [dbo].[EnrollmentTransaction] DROP CONSTRAINT [FK_ENROLLMENT_TRANSACTION_TBL_MemberType]
@@ -84,6 +85,7 @@ ALTER TABLE [dbo].[Division] DROP CONSTRAINT [FK_Division_Program]
 ALTER TABLE [dbo].[Coupons] DROP CONSTRAINT [FK_Coupons_Division]
 ALTER TABLE [dbo].[Promotion] DROP CONSTRAINT [FromPromotions__FromDivision]
 ALTER TABLE [dbo].[Promotion] DROP CONSTRAINT [ToPromotions__ToDivision]
+ALTER TABLE [dbo].[Resource] DROP CONSTRAINT [FK_Resource_Division]
 ALTER TABLE [dbo].[ChangeDetails] DROP CONSTRAINT [FK_ChangeDetails_ChangeLog]
 ALTER TABLE [dbo].[VoluteerApprovalIds] DROP CONSTRAINT [FK_VoluteerApprovalIds_VolunteerCodes]
 ALTER TABLE [dbo].[Zips] DROP CONSTRAINT [FK_Zips_ResidentCode]
@@ -11660,6 +11662,7 @@ ALTER TABLE [dbo].[MemberTags] WITH NOCHECK ADD CONSTRAINT [FK_MemberTags_Organi
 ALTER TABLE [dbo].[OrganizationExtra] WITH NOCHECK ADD CONSTRAINT [FK_OrganizationExtra_Organizations] FOREIGN KEY ([OrganizationId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
 ALTER TABLE [dbo].[OrganizationMembers] WITH NOCHECK ADD CONSTRAINT [ORGANIZATION_MEMBERS_ORG_FK] FOREIGN KEY ([OrganizationId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
 ALTER TABLE [dbo].[OrgMemberExtra] WITH NOCHECK ADD CONSTRAINT [FK_OrgMemberExtra_Organizations] FOREIGN KEY ([OrganizationId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
+ALTER TABLE [dbo].[Resource] WITH NOCHECK ADD CONSTRAINT [FK_Resource_Organization] FOREIGN KEY ([OrganizationId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
 ALTER TABLE [lookup].[MemberType] ADD CONSTRAINT [FK_MemberType_AttendType] FOREIGN KEY ([AttendanceTypeId]) REFERENCES [lookup].[AttendType] ([Id])
 ALTER TABLE [dbo].[Attend] WITH NOCHECK ADD CONSTRAINT [FK_Attend_MemberType] FOREIGN KEY ([MemberTypeId]) REFERENCES [lookup].[MemberType] ([Id])
 ALTER TABLE [dbo].[EnrollmentTransaction] WITH NOCHECK ADD CONSTRAINT [FK_ENROLLMENT_TRANSACTION_TBL_MemberType] FOREIGN KEY ([MemberTypeId]) REFERENCES [lookup].[MemberType] ([Id])
@@ -11668,6 +11671,7 @@ ALTER TABLE [dbo].[Division] ADD CONSTRAINT [FK_Division_Program] FOREIGN KEY ([
 ALTER TABLE [dbo].[Coupons] WITH NOCHECK ADD CONSTRAINT [FK_Coupons_Division] FOREIGN KEY ([DivId]) REFERENCES [dbo].[Division] ([Id])
 ALTER TABLE [dbo].[Promotion] WITH NOCHECK ADD CONSTRAINT [FromPromotions__FromDivision] FOREIGN KEY ([FromDivId]) REFERENCES [dbo].[Division] ([Id])
 ALTER TABLE [dbo].[Promotion] WITH NOCHECK ADD CONSTRAINT [ToPromotions__ToDivision] FOREIGN KEY ([ToDivId]) REFERENCES [dbo].[Division] ([Id])
+ALTER TABLE [dbo].[Resource] WITH NOCHECK ADD CONSTRAINT [FK_Resource_Division] FOREIGN KEY ([DivisionId]) REFERENCES [dbo].[Division] ([Id])
 ALTER TABLE [dbo].[ChangeDetails] WITH NOCHECK ADD CONSTRAINT [FK_ChangeDetails_ChangeLog] FOREIGN KEY ([Id]) REFERENCES [dbo].[ChangeLog] ([Id])
 ALTER TABLE [dbo].[VoluteerApprovalIds] WITH NOCHECK ADD CONSTRAINT [FK_VoluteerApprovalIds_VolunteerCodes] FOREIGN KEY ([ApprovalId]) REFERENCES [lookup].[VolunteerCodes] ([Id])
 ALTER TABLE [dbo].[Zips] WITH NOCHECK ADD CONSTRAINT [FK_Zips_ResidentCode] FOREIGN KEY ([MetroMarginalCode]) REFERENCES [lookup].[ResidentCode] ([Id])

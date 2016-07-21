@@ -82,11 +82,13 @@ ALTER TABLE [dbo].[Coupons] DROP CONSTRAINT [FK_Coupons_Organizations]
 ALTER TABLE [dbo].[GoerSenderAmounts] DROP CONSTRAINT [FK_GoerSenderAmounts_Organizations]
 ALTER TABLE [dbo].[OrganizationExtra] DROP CONSTRAINT [FK_OrganizationExtra_Organizations]
 ALTER TABLE [dbo].[OrgMemberExtra] DROP CONSTRAINT [FK_OrgMemberExtra_Organizations]
+ALTER TABLE [dbo].[Resource] DROP CONSTRAINT [FK_Resource_Organization]
 ALTER TABLE [lookup].[MemberType] DROP CONSTRAINT [FK_MemberType_AttendType]
 ALTER TABLE [dbo].[Division] DROP CONSTRAINT [FK_Division_Program]
 ALTER TABLE [dbo].[Coupons] DROP CONSTRAINT [FK_Coupons_Division]
 ALTER TABLE [dbo].[Promotion] DROP CONSTRAINT [FromPromotions__FromDivision]
 ALTER TABLE [dbo].[Promotion] DROP CONSTRAINT [ToPromotions__ToDivision]
+ALTER TABLE [dbo].[Resource] DROP CONSTRAINT [FK_Resource_Division]
 ALTER TABLE [dbo].[VoluteerApprovalIds] DROP CONSTRAINT [FK_VoluteerApprovalIds_VolunteerCodes]
 ALTER TABLE [dbo].[Volunteer] DROP CONSTRAINT [StatusMvrId__StatusMvr]
 ALTER TABLE [dbo].[Volunteer] DROP CONSTRAINT [FK_Volunteer_VolApplicationStatus]
@@ -96,6 +98,7 @@ ALTER TABLE [dbo].[Contribution] DROP CONSTRAINT [FK_Contribution_ContributionTy
 ALTER TABLE [dbo].[Contribution] DROP CONSTRAINT [FK_Contribution_ContributionStatus]
 ALTER TABLE [dbo].[Contact] DROP CONSTRAINT [FK_Contacts_ContactTypes]
 ALTER TABLE [dbo].[Contact] DROP CONSTRAINT [FK_NewContacts_ContactReasons]
+ALTER TABLE [dbo].[Resource] DROP CONSTRAINT [FK_Resource_Campus]
 ALTER TABLE [dbo].[BundleHeader] DROP CONSTRAINT [FK_BUNDLE_HEADER_TBL_BundleStatusTypes]
 ALTER TABLE [dbo].[BundleHeader] DROP CONSTRAINT [FK_BUNDLE_HEADER_TBL_BundleHeaderTypes]
 ALTER TABLE [dbo].[Contribution] DROP CONSTRAINT [FK_Contribution_ExtraData]
@@ -4119,11 +4122,13 @@ ALTER TABLE [dbo].[Coupons] WITH NOCHECK ADD CONSTRAINT [FK_Coupons_Organization
 ALTER TABLE [dbo].[GoerSenderAmounts] WITH NOCHECK ADD CONSTRAINT [FK_GoerSenderAmounts_Organizations] FOREIGN KEY ([OrgId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
 ALTER TABLE [dbo].[OrganizationExtra] WITH NOCHECK ADD CONSTRAINT [FK_OrganizationExtra_Organizations] FOREIGN KEY ([OrganizationId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
 ALTER TABLE [dbo].[OrgMemberExtra] WITH NOCHECK ADD CONSTRAINT [FK_OrgMemberExtra_Organizations] FOREIGN KEY ([OrganizationId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
+ALTER TABLE [dbo].[Resource] WITH NOCHECK ADD CONSTRAINT [FK_Resource_Organization] FOREIGN KEY ([OrganizationId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
 ALTER TABLE [lookup].[MemberType] ADD CONSTRAINT [FK_MemberType_AttendType] FOREIGN KEY ([AttendanceTypeId]) REFERENCES [lookup].[AttendType] ([Id])
 ALTER TABLE [dbo].[Division] ADD CONSTRAINT [FK_Division_Program] FOREIGN KEY ([ProgId]) REFERENCES [dbo].[Program] ([Id])
 ALTER TABLE [dbo].[Coupons] WITH NOCHECK ADD CONSTRAINT [FK_Coupons_Division] FOREIGN KEY ([DivId]) REFERENCES [dbo].[Division] ([Id])
 ALTER TABLE [dbo].[Promotion] WITH NOCHECK ADD CONSTRAINT [FromPromotions__FromDivision] FOREIGN KEY ([FromDivId]) REFERENCES [dbo].[Division] ([Id])
 ALTER TABLE [dbo].[Promotion] WITH NOCHECK ADD CONSTRAINT [ToPromotions__ToDivision] FOREIGN KEY ([ToDivId]) REFERENCES [dbo].[Division] ([Id])
+ALTER TABLE [dbo].[Resource] WITH NOCHECK ADD CONSTRAINT [FK_Resource_Division] FOREIGN KEY ([DivisionId]) REFERENCES [dbo].[Division] ([Id])
 ALTER TABLE [dbo].[VoluteerApprovalIds] WITH NOCHECK ADD CONSTRAINT [FK_VoluteerApprovalIds_VolunteerCodes] FOREIGN KEY ([ApprovalId]) REFERENCES [lookup].[VolunteerCodes] ([Id])
 ALTER TABLE [dbo].[Volunteer] WITH NOCHECK ADD CONSTRAINT [StatusMvrId__StatusMvr] FOREIGN KEY ([MVRStatusId]) REFERENCES [lookup].[VolApplicationStatus] ([Id])
 ALTER TABLE [dbo].[Volunteer] WITH NOCHECK ADD CONSTRAINT [FK_Volunteer_VolApplicationStatus] FOREIGN KEY ([StatusId]) REFERENCES [lookup].[VolApplicationStatus] ([Id])
@@ -4133,6 +4138,7 @@ ALTER TABLE [dbo].[Contribution] WITH NOCHECK ADD CONSTRAINT [FK_Contribution_Co
 ALTER TABLE [dbo].[Contribution] WITH NOCHECK ADD CONSTRAINT [FK_Contribution_ContributionStatus] FOREIGN KEY ([ContributionStatusId]) REFERENCES [lookup].[ContributionStatus] ([Id])
 ALTER TABLE [dbo].[Contact] WITH NOCHECK ADD CONSTRAINT [FK_Contacts_ContactTypes] FOREIGN KEY ([ContactTypeId]) REFERENCES [lookup].[ContactType] ([Id])
 ALTER TABLE [dbo].[Contact] WITH NOCHECK ADD CONSTRAINT [FK_NewContacts_ContactReasons] FOREIGN KEY ([ContactReasonId]) REFERENCES [lookup].[ContactReason] ([Id])
+ALTER TABLE [dbo].[Resource] WITH NOCHECK ADD CONSTRAINT [FK_Resource_Campus] FOREIGN KEY ([CampusId]) REFERENCES [lookup].[Campus] ([Id])
 ALTER TABLE [dbo].[BundleHeader] WITH NOCHECK ADD CONSTRAINT [FK_BUNDLE_HEADER_TBL_BundleStatusTypes] FOREIGN KEY ([BundleStatusId]) REFERENCES [lookup].[BundleStatusTypes] ([Id])
 ALTER TABLE [dbo].[BundleHeader] WITH NOCHECK ADD CONSTRAINT [FK_BUNDLE_HEADER_TBL_BundleHeaderTypes] FOREIGN KEY ([BundleHeaderTypeId]) REFERENCES [lookup].[BundleHeaderTypes] ([Id])
 ALTER TABLE [dbo].[Contribution] WITH NOCHECK ADD CONSTRAINT [FK_Contribution_ExtraData] FOREIGN KEY ([ExtraDataId]) REFERENCES [dbo].[ExtraData] ([Id])
