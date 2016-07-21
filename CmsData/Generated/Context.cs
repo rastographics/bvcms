@@ -1,4 +1,4 @@
-using System; 
+using System;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Data;
@@ -14,752 +14,752 @@ namespace CmsData
 	public partial class CMSDataContext : DataContext
 	{
 		private static MappingSource mappingSource = new AttributeMappingSource();
-		
+
 #region Extensibility Method Definitions
         partial void OnCreated();
-		
+
         partial void InsertActivityLog(ActivityLog instance);
         partial void UpdateActivityLog(ActivityLog instance);
         partial void DeleteActivityLog(ActivityLog instance);
-        
+
         partial void InsertAddress(Address instance);
         partial void UpdateAddress(Address instance);
         partial void DeleteAddress(Address instance);
-        
+
         partial void InsertAddressType(AddressType instance);
         partial void UpdateAddressType(AddressType instance);
         partial void DeleteAddressType(AddressType instance);
-        
+
         partial void InsertAddToOrgFromTagRun(AddToOrgFromTagRun instance);
         partial void UpdateAddToOrgFromTagRun(AddToOrgFromTagRun instance);
         partial void DeleteAddToOrgFromTagRun(AddToOrgFromTagRun instance);
-        
+
         partial void InsertApiSession(ApiSession instance);
         partial void UpdateApiSession(ApiSession instance);
         partial void DeleteApiSession(ApiSession instance);
-        
+
         partial void InsertAttend(Attend instance);
         partial void UpdateAttend(Attend instance);
         partial void DeleteAttend(Attend instance);
-        
+
         partial void InsertAttendCredit(AttendCredit instance);
         partial void UpdateAttendCredit(AttendCredit instance);
         partial void DeleteAttendCredit(AttendCredit instance);
-        
+
         partial void InsertAttendType(AttendType instance);
         partial void UpdateAttendType(AttendType instance);
         partial void DeleteAttendType(AttendType instance);
-        
+
         partial void InsertAudit(Audit instance);
         partial void UpdateAudit(Audit instance);
         partial void DeleteAudit(Audit instance);
-        
+
         partial void InsertAuditValue(AuditValue instance);
         partial void UpdateAuditValue(AuditValue instance);
         partial void DeleteAuditValue(AuditValue instance);
-        
+
         partial void InsertBackgroundCheckLabel(BackgroundCheckLabel instance);
         partial void UpdateBackgroundCheckLabel(BackgroundCheckLabel instance);
         partial void DeleteBackgroundCheckLabel(BackgroundCheckLabel instance);
-        
+
         partial void InsertBackgroundCheckMVRCode(BackgroundCheckMVRCode instance);
         partial void UpdateBackgroundCheckMVRCode(BackgroundCheckMVRCode instance);
         partial void DeleteBackgroundCheckMVRCode(BackgroundCheckMVRCode instance);
-        
+
         partial void InsertBackgroundCheck(BackgroundCheck instance);
         partial void UpdateBackgroundCheck(BackgroundCheck instance);
         partial void DeleteBackgroundCheck(BackgroundCheck instance);
-        
+
         partial void InsertBaptismStatus(BaptismStatus instance);
         partial void UpdateBaptismStatus(BaptismStatus instance);
         partial void DeleteBaptismStatus(BaptismStatus instance);
-        
+
         partial void InsertBaptismType(BaptismType instance);
         partial void UpdateBaptismType(BaptismType instance);
         partial void DeleteBaptismType(BaptismType instance);
-        
+
         partial void InsertBuildingAccessType(BuildingAccessType instance);
         partial void UpdateBuildingAccessType(BuildingAccessType instance);
         partial void DeleteBuildingAccessType(BuildingAccessType instance);
-        
+
         partial void InsertBundleDetail(BundleDetail instance);
         partial void UpdateBundleDetail(BundleDetail instance);
         partial void DeleteBundleDetail(BundleDetail instance);
-        
+
         partial void InsertBundleHeader(BundleHeader instance);
         partial void UpdateBundleHeader(BundleHeader instance);
         partial void DeleteBundleHeader(BundleHeader instance);
-        
+
         partial void InsertBundleHeaderType(BundleHeaderType instance);
         partial void UpdateBundleHeaderType(BundleHeaderType instance);
         partial void DeleteBundleHeaderType(BundleHeaderType instance);
-        
+
         partial void InsertBundleStatusType(BundleStatusType instance);
         partial void UpdateBundleStatusType(BundleStatusType instance);
         partial void DeleteBundleStatusType(BundleStatusType instance);
-        
+
         partial void InsertCampu(Campu instance);
         partial void UpdateCampu(Campu instance);
         partial void DeleteCampu(Campu instance);
-        
+
         partial void InsertCardIdentifier(CardIdentifier instance);
         partial void UpdateCardIdentifier(CardIdentifier instance);
         partial void DeleteCardIdentifier(CardIdentifier instance);
-        
+
         partial void InsertChangeDetail(ChangeDetail instance);
         partial void UpdateChangeDetail(ChangeDetail instance);
         partial void DeleteChangeDetail(ChangeDetail instance);
-        
+
         partial void InsertChangeLog(ChangeLog instance);
         partial void UpdateChangeLog(ChangeLog instance);
         partial void DeleteChangeLog(ChangeLog instance);
-        
+
         partial void InsertCheckedBatch(CheckedBatch instance);
         partial void UpdateCheckedBatch(CheckedBatch instance);
         partial void DeleteCheckedBatch(CheckedBatch instance);
-        
+
         partial void InsertCheckInActivity(CheckInActivity instance);
         partial void UpdateCheckInActivity(CheckInActivity instance);
         partial void DeleteCheckInActivity(CheckInActivity instance);
-        
+
         partial void InsertCheckInSetting(CheckInSetting instance);
         partial void UpdateCheckInSetting(CheckInSetting instance);
         partial void DeleteCheckInSetting(CheckInSetting instance);
-        
+
         partial void InsertCheckInTime(CheckInTime instance);
         partial void UpdateCheckInTime(CheckInTime instance);
         partial void DeleteCheckInTime(CheckInTime instance);
-        
+
         partial void InsertChurchAttReportId(ChurchAttReportId instance);
         partial void UpdateChurchAttReportId(ChurchAttReportId instance);
         partial void DeleteChurchAttReportId(ChurchAttReportId instance);
-        
+
         partial void InsertContact(Contact instance);
         partial void UpdateContact(Contact instance);
         partial void DeleteContact(Contact instance);
-        
+
         partial void InsertContactee(Contactee instance);
         partial void UpdateContactee(Contactee instance);
         partial void DeleteContactee(Contactee instance);
-        
+
         partial void InsertContactor(Contactor instance);
         partial void UpdateContactor(Contactor instance);
         partial void DeleteContactor(Contactor instance);
-        
+
         partial void InsertContactPreference(ContactPreference instance);
         partial void UpdateContactPreference(ContactPreference instance);
         partial void DeleteContactPreference(ContactPreference instance);
-        
+
         partial void InsertContactReason(ContactReason instance);
         partial void UpdateContactReason(ContactReason instance);
         partial void DeleteContactReason(ContactReason instance);
-        
+
         partial void InsertContactType(ContactType instance);
         partial void UpdateContactType(ContactType instance);
         partial void DeleteContactType(ContactType instance);
-        
+
         partial void InsertContent(Content instance);
         partial void UpdateContent(Content instance);
         partial void DeleteContent(Content instance);
-        
+
         partial void InsertContentKeyWord(ContentKeyWord instance);
         partial void UpdateContentKeyWord(ContentKeyWord instance);
         partial void DeleteContentKeyWord(ContentKeyWord instance);
-        
+
         partial void InsertContribution(Contribution instance);
         partial void UpdateContribution(Contribution instance);
         partial void DeleteContribution(Contribution instance);
-        
+
         partial void InsertContributionFund(ContributionFund instance);
         partial void UpdateContributionFund(ContributionFund instance);
         partial void DeleteContributionFund(ContributionFund instance);
-        
+
         partial void InsertContributionsRun(ContributionsRun instance);
         partial void UpdateContributionsRun(ContributionsRun instance);
         partial void DeleteContributionsRun(ContributionsRun instance);
-        
+
         partial void InsertContributionStatus(ContributionStatus instance);
         partial void UpdateContributionStatus(ContributionStatus instance);
         partial void DeleteContributionStatus(ContributionStatus instance);
-        
+
         partial void InsertContributionType(ContributionType instance);
         partial void UpdateContributionType(ContributionType instance);
         partial void DeleteContributionType(ContributionType instance);
-        
+
         partial void InsertCountry(Country instance);
         partial void UpdateCountry(Country instance);
         partial void DeleteCountry(Country instance);
-        
+
         partial void InsertCoupon(Coupon instance);
         partial void UpdateCoupon(Coupon instance);
         partial void DeleteCoupon(Coupon instance);
-        
+
         partial void InsertCustomColumn(CustomColumn instance);
         partial void UpdateCustomColumn(CustomColumn instance);
         partial void DeleteCustomColumn(CustomColumn instance);
-        
+
         partial void InsertDecisionType(DecisionType instance);
         partial void UpdateDecisionType(DecisionType instance);
         partial void DeleteDecisionType(DecisionType instance);
-        
+
         partial void InsertDeleteMeetingRun(DeleteMeetingRun instance);
         partial void UpdateDeleteMeetingRun(DeleteMeetingRun instance);
         partial void DeleteDeleteMeetingRun(DeleteMeetingRun instance);
-        
+
         partial void InsertDivision(Division instance);
         partial void UpdateDivision(Division instance);
         partial void DeleteDivision(Division instance);
-        
+
         partial void InsertDivOrg(DivOrg instance);
         partial void UpdateDivOrg(DivOrg instance);
         partial void DeleteDivOrg(DivOrg instance);
-        
+
         partial void InsertDownline(Downline instance);
         partial void UpdateDownline(Downline instance);
         partial void DeleteDownline(Downline instance);
-        
+
         partial void InsertDownlineLeader(DownlineLeader instance);
         partial void UpdateDownlineLeader(DownlineLeader instance);
         partial void DeleteDownlineLeader(DownlineLeader instance);
-        
+
         partial void InsertDropType(DropType instance);
         partial void UpdateDropType(DropType instance);
         partial void DeleteDropType(DropType instance);
-        
+
         partial void InsertDuplicate(Duplicate instance);
         partial void UpdateDuplicate(Duplicate instance);
         partial void DeleteDuplicate(Duplicate instance);
-        
+
         partial void InsertDuplicatesRun(DuplicatesRun instance);
         partial void UpdateDuplicatesRun(DuplicatesRun instance);
         partial void DeleteDuplicatesRun(DuplicatesRun instance);
-        
+
         partial void InsertEmailLink(EmailLink instance);
         partial void UpdateEmailLink(EmailLink instance);
         partial void DeleteEmailLink(EmailLink instance);
-        
+
         partial void InsertEmailLog(EmailLog instance);
         partial void UpdateEmailLog(EmailLog instance);
         partial void DeleteEmailLog(EmailLog instance);
-        
+
         partial void InsertEmailOptOut(EmailOptOut instance);
         partial void UpdateEmailOptOut(EmailOptOut instance);
         partial void DeleteEmailOptOut(EmailOptOut instance);
-        
+
         partial void InsertEmailQueue(EmailQueue instance);
         partial void UpdateEmailQueue(EmailQueue instance);
         partial void DeleteEmailQueue(EmailQueue instance);
-        
+
         partial void InsertEmailQueueTo(EmailQueueTo instance);
         partial void UpdateEmailQueueTo(EmailQueueTo instance);
         partial void DeleteEmailQueueTo(EmailQueueTo instance);
-        
+
         partial void InsertEmailQueueToFail(EmailQueueToFail instance);
         partial void UpdateEmailQueueToFail(EmailQueueToFail instance);
         partial void DeleteEmailQueueToFail(EmailQueueToFail instance);
-        
+
         partial void InsertEmailResponse(EmailResponse instance);
         partial void UpdateEmailResponse(EmailResponse instance);
         partial void DeleteEmailResponse(EmailResponse instance);
-        
+
         partial void InsertEmailToText(EmailToText instance);
         partial void UpdateEmailToText(EmailToText instance);
         partial void DeleteEmailToText(EmailToText instance);
-        
+
         partial void InsertEnrollmentTransaction(EnrollmentTransaction instance);
         partial void UpdateEnrollmentTransaction(EnrollmentTransaction instance);
         partial void DeleteEnrollmentTransaction(EnrollmentTransaction instance);
-        
+
         partial void InsertEntryPoint(EntryPoint instance);
         partial void UpdateEntryPoint(EntryPoint instance);
         partial void DeleteEntryPoint(EntryPoint instance);
-        
+
         partial void InsertEnvelopeOption(EnvelopeOption instance);
         partial void UpdateEnvelopeOption(EnvelopeOption instance);
         partial void DeleteEnvelopeOption(EnvelopeOption instance);
-        
+
         partial void InsertExtraDatum(ExtraDatum instance);
         partial void UpdateExtraDatum(ExtraDatum instance);
         partial void DeleteExtraDatum(ExtraDatum instance);
-        
+
         partial void InsertFamily(Family instance);
         partial void UpdateFamily(Family instance);
         partial void DeleteFamily(Family instance);
-        
+
         partial void InsertFamilyCheckinLock(FamilyCheckinLock instance);
         partial void UpdateFamilyCheckinLock(FamilyCheckinLock instance);
         partial void DeleteFamilyCheckinLock(FamilyCheckinLock instance);
-        
+
         partial void InsertFamilyExtra(FamilyExtra instance);
         partial void UpdateFamilyExtra(FamilyExtra instance);
         partial void DeleteFamilyExtra(FamilyExtra instance);
-        
+
         partial void InsertFamilyMemberType(FamilyMemberType instance);
         partial void UpdateFamilyMemberType(FamilyMemberType instance);
         partial void DeleteFamilyMemberType(FamilyMemberType instance);
-        
+
         partial void InsertFamilyPosition(FamilyPosition instance);
         partial void UpdateFamilyPosition(FamilyPosition instance);
         partial void DeleteFamilyPosition(FamilyPosition instance);
-        
+
         partial void InsertFamilyRelationship(FamilyRelationship instance);
         partial void UpdateFamilyRelationship(FamilyRelationship instance);
         partial void DeleteFamilyRelationship(FamilyRelationship instance);
-        
+
         partial void InsertGender(Gender instance);
         partial void UpdateGender(Gender instance);
         partial void DeleteGender(Gender instance);
-        
+
         partial void InsertGeoCode(GeoCode instance);
         partial void UpdateGeoCode(GeoCode instance);
         partial void DeleteGeoCode(GeoCode instance);
-        
+
         partial void InsertGoerSenderAmount(GoerSenderAmount instance);
         partial void UpdateGoerSenderAmount(GoerSenderAmount instance);
         partial void DeleteGoerSenderAmount(GoerSenderAmount instance);
-        
+
         partial void InsertGoerSupporter(GoerSupporter instance);
         partial void UpdateGoerSupporter(GoerSupporter instance);
         partial void DeleteGoerSupporter(GoerSupporter instance);
-        
+
         partial void InsertInterestPoint(InterestPoint instance);
         partial void UpdateInterestPoint(InterestPoint instance);
         partial void DeleteInterestPoint(InterestPoint instance);
-        
+
         partial void InsertJoinType(JoinType instance);
         partial void UpdateJoinType(JoinType instance);
         partial void DeleteJoinType(JoinType instance);
-        
+
         partial void InsertLabelFormat(LabelFormat instance);
         partial void UpdateLabelFormat(LabelFormat instance);
         partial void DeleteLabelFormat(LabelFormat instance);
-        
+
         partial void InsertLongRunningOp(LongRunningOp instance);
         partial void UpdateLongRunningOp(LongRunningOp instance);
         partial void DeleteLongRunningOp(LongRunningOp instance);
-        
+
         partial void InsertManagedGiving(ManagedGiving instance);
         partial void UpdateManagedGiving(ManagedGiving instance);
         partial void DeleteManagedGiving(ManagedGiving instance);
-        
+
         partial void InsertMaritalStatus(MaritalStatus instance);
         partial void UpdateMaritalStatus(MaritalStatus instance);
         partial void DeleteMaritalStatus(MaritalStatus instance);
-        
+
         partial void InsertMeetingExtra(MeetingExtra instance);
         partial void UpdateMeetingExtra(MeetingExtra instance);
         partial void DeleteMeetingExtra(MeetingExtra instance);
-        
+
         partial void InsertMeeting(Meeting instance);
         partial void UpdateMeeting(Meeting instance);
         partial void DeleteMeeting(Meeting instance);
-        
+
         partial void InsertMeetingType(MeetingType instance);
         partial void UpdateMeetingType(MeetingType instance);
         partial void DeleteMeetingType(MeetingType instance);
-        
+
         partial void InsertMemberDocForm(MemberDocForm instance);
         partial void UpdateMemberDocForm(MemberDocForm instance);
         partial void DeleteMemberDocForm(MemberDocForm instance);
-        
+
         partial void InsertMemberLetterStatus(MemberLetterStatus instance);
         partial void UpdateMemberLetterStatus(MemberLetterStatus instance);
         partial void DeleteMemberLetterStatus(MemberLetterStatus instance);
-        
+
         partial void InsertMemberStatus(MemberStatus instance);
         partial void UpdateMemberStatus(MemberStatus instance);
         partial void DeleteMemberStatus(MemberStatus instance);
-        
+
         partial void InsertMemberTag(MemberTag instance);
         partial void UpdateMemberTag(MemberTag instance);
         partial void DeleteMemberTag(MemberTag instance);
-        
+
         partial void InsertMemberType(MemberType instance);
         partial void UpdateMemberType(MemberType instance);
         partial void DeleteMemberType(MemberType instance);
-        
+
         partial void InsertMergeHistory(MergeHistory instance);
         partial void UpdateMergeHistory(MergeHistory instance);
         partial void DeleteMergeHistory(MergeHistory instance);
-        
+
         partial void InsertMinistry(Ministry instance);
         partial void UpdateMinistry(Ministry instance);
         partial void DeleteMinistry(Ministry instance);
-        
+
         partial void InsertMobileAppAction(MobileAppAction instance);
         partial void UpdateMobileAppAction(MobileAppAction instance);
         partial void DeleteMobileAppAction(MobileAppAction instance);
-        
+
         partial void InsertMobileAppActionType(MobileAppActionType instance);
         partial void UpdateMobileAppActionType(MobileAppActionType instance);
         partial void DeleteMobileAppActionType(MobileAppActionType instance);
-        
+
         partial void InsertMobileAppAudioType(MobileAppAudioType instance);
         partial void UpdateMobileAppAudioType(MobileAppAudioType instance);
         partial void DeleteMobileAppAudioType(MobileAppAudioType instance);
-        
+
         partial void InsertMobileAppBuilding(MobileAppBuilding instance);
         partial void UpdateMobileAppBuilding(MobileAppBuilding instance);
         partial void DeleteMobileAppBuilding(MobileAppBuilding instance);
-        
+
         partial void InsertMobileAppFloor(MobileAppFloor instance);
         partial void UpdateMobileAppFloor(MobileAppFloor instance);
         partial void DeleteMobileAppFloor(MobileAppFloor instance);
-        
+
         partial void InsertMobileAppIcon(MobileAppIcon instance);
         partial void UpdateMobileAppIcon(MobileAppIcon instance);
         partial void DeleteMobileAppIcon(MobileAppIcon instance);
-        
+
         partial void InsertMobileAppIconSet(MobileAppIconSet instance);
         partial void UpdateMobileAppIconSet(MobileAppIconSet instance);
         partial void DeleteMobileAppIconSet(MobileAppIconSet instance);
-        
+
         partial void InsertMobileAppPushRegistration(MobileAppPushRegistration instance);
         partial void UpdateMobileAppPushRegistration(MobileAppPushRegistration instance);
         partial void DeleteMobileAppPushRegistration(MobileAppPushRegistration instance);
-        
+
         partial void InsertMobileAppRoom(MobileAppRoom instance);
         partial void UpdateMobileAppRoom(MobileAppRoom instance);
         partial void DeleteMobileAppRoom(MobileAppRoom instance);
-        
+
         partial void InsertMobileAppVideoType(MobileAppVideoType instance);
         partial void UpdateMobileAppVideoType(MobileAppVideoType instance);
         partial void DeleteMobileAppVideoType(MobileAppVideoType instance);
-        
+
         partial void InsertNewMemberClassStatus(NewMemberClassStatus instance);
         partial void UpdateNewMemberClassStatus(NewMemberClassStatus instance);
         partial void DeleteNewMemberClassStatus(NewMemberClassStatus instance);
-        
+
         partial void InsertNumber(Number instance);
         partial void UpdateNumber(Number instance);
         partial void DeleteNumber(Number instance);
-        
+
         partial void InsertOneTimeLink(OneTimeLink instance);
         partial void UpdateOneTimeLink(OneTimeLink instance);
         partial void DeleteOneTimeLink(OneTimeLink instance);
-        
+
         partial void InsertOrganizationExtra(OrganizationExtra instance);
         partial void UpdateOrganizationExtra(OrganizationExtra instance);
         partial void DeleteOrganizationExtra(OrganizationExtra instance);
-        
+
         partial void InsertOrganizationMember(OrganizationMember instance);
         partial void UpdateOrganizationMember(OrganizationMember instance);
         partial void DeleteOrganizationMember(OrganizationMember instance);
-        
+
         partial void InsertOrganization(Organization instance);
         partial void UpdateOrganization(Organization instance);
         partial void DeleteOrganization(Organization instance);
-        
+
         partial void InsertOrganizationStatus(OrganizationStatus instance);
         partial void UpdateOrganizationStatus(OrganizationStatus instance);
         partial void DeleteOrganizationStatus(OrganizationStatus instance);
-        
+
         partial void InsertOrganizationType(OrganizationType instance);
         partial void UpdateOrganizationType(OrganizationType instance);
         partial void DeleteOrganizationType(OrganizationType instance);
-        
+
         partial void InsertOrgContent(OrgContent instance);
         partial void UpdateOrgContent(OrgContent instance);
         partial void DeleteOrgContent(OrgContent instance);
-        
+
         partial void InsertOrgMemberExtra(OrgMemberExtra instance);
         partial void UpdateOrgMemberExtra(OrgMemberExtra instance);
         partial void DeleteOrgMemberExtra(OrgMemberExtra instance);
-        
+
         partial void InsertOrgMemMemTag(OrgMemMemTag instance);
         partial void UpdateOrgMemMemTag(OrgMemMemTag instance);
         partial void DeleteOrgMemMemTag(OrgMemMemTag instance);
-        
+
         partial void InsertOrgSchedule(OrgSchedule instance);
         partial void UpdateOrgSchedule(OrgSchedule instance);
         partial void DeleteOrgSchedule(OrgSchedule instance);
-        
+
         partial void InsertOrigin(Origin instance);
         partial void UpdateOrigin(Origin instance);
         partial void DeleteOrigin(Origin instance);
-        
+
         partial void InsertPaymentInfo(PaymentInfo instance);
         partial void UpdatePaymentInfo(PaymentInfo instance);
         partial void DeletePaymentInfo(PaymentInfo instance);
-        
+
         partial void InsertPerson(Person instance);
         partial void UpdatePerson(Person instance);
         partial void DeletePerson(Person instance);
-        
+
         partial void InsertPeopleCanEmailFor(PeopleCanEmailFor instance);
         partial void UpdatePeopleCanEmailFor(PeopleCanEmailFor instance);
         partial void DeletePeopleCanEmailFor(PeopleCanEmailFor instance);
-        
+
         partial void InsertPeopleExtra(PeopleExtra instance);
         partial void UpdatePeopleExtra(PeopleExtra instance);
         partial void DeletePeopleExtra(PeopleExtra instance);
-        
+
         partial void InsertPicture(Picture instance);
         partial void UpdatePicture(Picture instance);
         partial void DeletePicture(Picture instance);
-        
+
         partial void InsertPostalLookup(PostalLookup instance);
         partial void UpdatePostalLookup(PostalLookup instance);
         partial void DeletePostalLookup(PostalLookup instance);
-        
+
         partial void InsertPreference(Preference instance);
         partial void UpdatePreference(Preference instance);
         partial void DeletePreference(Preference instance);
-        
+
         partial void InsertPrintJob(PrintJob instance);
         partial void UpdatePrintJob(PrintJob instance);
         partial void DeletePrintJob(PrintJob instance);
-        
+
         partial void InsertProgDiv(ProgDiv instance);
         partial void UpdateProgDiv(ProgDiv instance);
         partial void DeleteProgDiv(ProgDiv instance);
-        
+
         partial void InsertProgram(Program instance);
         partial void UpdateProgram(Program instance);
         partial void DeleteProgram(Program instance);
-        
+
         partial void InsertPromotion(Promotion instance);
         partial void UpdatePromotion(Promotion instance);
         partial void DeletePromotion(Promotion instance);
-        
+
         partial void InsertQBConnection(QBConnection instance);
         partial void UpdateQBConnection(QBConnection instance);
         partial void DeleteQBConnection(QBConnection instance);
-        
+
         partial void InsertQuery(Query instance);
         partial void UpdateQuery(Query instance);
         partial void DeleteQuery(Query instance);
-        
+
         partial void InsertQueryAnalysi(QueryAnalysi instance);
         partial void UpdateQueryAnalysi(QueryAnalysi instance);
         partial void DeleteQueryAnalysi(QueryAnalysi instance);
-        
+
         partial void InsertQueryStat(QueryStat instance);
         partial void UpdateQueryStat(QueryStat instance);
         partial void DeleteQueryStat(QueryStat instance);
-        
+
         partial void InsertRecReg(RecReg instance);
         partial void UpdateRecReg(RecReg instance);
         partial void DeleteRecReg(RecReg instance);
-        
+
         partial void InsertRecurringAmount(RecurringAmount instance);
         partial void UpdateRecurringAmount(RecurringAmount instance);
         partial void DeleteRecurringAmount(RecurringAmount instance);
-        
+
         partial void InsertRegistrationDatum(RegistrationDatum instance);
         partial void UpdateRegistrationDatum(RegistrationDatum instance);
         partial void DeleteRegistrationDatum(RegistrationDatum instance);
-        
+
         partial void InsertRelatedFamily(RelatedFamily instance);
         partial void UpdateRelatedFamily(RelatedFamily instance);
         partial void DeleteRelatedFamily(RelatedFamily instance);
-        
+
         partial void InsertRepairTransactionsRun(RepairTransactionsRun instance);
         partial void UpdateRepairTransactionsRun(RepairTransactionsRun instance);
         partial void DeleteRepairTransactionsRun(RepairTransactionsRun instance);
-        
+
         partial void InsertResidentCode(ResidentCode instance);
         partial void UpdateResidentCode(ResidentCode instance);
         partial void DeleteResidentCode(ResidentCode instance);
-        
+
         partial void InsertResource(Resource instance);
         partial void UpdateResource(Resource instance);
         partial void DeleteResource(Resource instance);
-        
+
         partial void InsertResourceAttachment(ResourceAttachment instance);
         partial void UpdateResourceAttachment(ResourceAttachment instance);
         partial void DeleteResourceAttachment(ResourceAttachment instance);
-        
+
         partial void InsertResourceCategory(ResourceCategory instance);
         partial void UpdateResourceCategory(ResourceCategory instance);
         partial void DeleteResourceCategory(ResourceCategory instance);
-        
+
         partial void InsertResourceType(ResourceType instance);
         partial void UpdateResourceType(ResourceType instance);
         partial void DeleteResourceType(ResourceType instance);
-        
+
         partial void InsertRole(Role instance);
         partial void UpdateRole(Role instance);
         partial void DeleteRole(Role instance);
-        
+
         partial void InsertRssFeed(RssFeed instance);
         partial void UpdateRssFeed(RssFeed instance);
         partial void DeleteRssFeed(RssFeed instance);
-        
+
         partial void InsertSecurityCode(SecurityCode instance);
         partial void UpdateSecurityCode(SecurityCode instance);
         partial void DeleteSecurityCode(SecurityCode instance);
-        
+
         partial void InsertSetting(Setting instance);
         partial void UpdateSetting(Setting instance);
         partial void DeleteSetting(Setting instance);
-        
+
         partial void InsertSMSGroupMember(SMSGroupMember instance);
         partial void UpdateSMSGroupMember(SMSGroupMember instance);
         partial void DeleteSMSGroupMember(SMSGroupMember instance);
-        
+
         partial void InsertSMSGroup(SMSGroup instance);
         partial void UpdateSMSGroup(SMSGroup instance);
         partial void DeleteSMSGroup(SMSGroup instance);
-        
+
         partial void InsertSMSItem(SMSItem instance);
         partial void UpdateSMSItem(SMSItem instance);
         partial void DeleteSMSItem(SMSItem instance);
-        
+
         partial void InsertSMSList(SMSList instance);
         partial void UpdateSMSList(SMSList instance);
         partial void DeleteSMSList(SMSList instance);
-        
+
         partial void InsertSMSNumber(SMSNumber instance);
         partial void UpdateSMSNumber(SMSNumber instance);
         partial void DeleteSMSNumber(SMSNumber instance);
-        
+
         partial void InsertStateLookup(StateLookup instance);
         partial void UpdateStateLookup(StateLookup instance);
         partial void DeleteStateLookup(StateLookup instance);
-        
+
         partial void InsertStreetType(StreetType instance);
         partial void UpdateStreetType(StreetType instance);
         partial void DeleteStreetType(StreetType instance);
-        
+
         partial void InsertSubRequest(SubRequest instance);
         partial void UpdateSubRequest(SubRequest instance);
         partial void DeleteSubRequest(SubRequest instance);
-        
+
         partial void InsertTag(Tag instance);
         partial void UpdateTag(Tag instance);
         partial void DeleteTag(Tag instance);
-        
+
         partial void InsertTagPerson(TagPerson instance);
         partial void UpdateTagPerson(TagPerson instance);
         partial void DeleteTagPerson(TagPerson instance);
-        
+
         partial void InsertTagShare(TagShare instance);
         partial void UpdateTagShare(TagShare instance);
         partial void DeleteTagShare(TagShare instance);
-        
+
         partial void InsertTagType(TagType instance);
         partial void UpdateTagType(TagType instance);
         partial void DeleteTagType(TagType instance);
-        
+
         partial void InsertTask(Task instance);
         partial void UpdateTask(Task instance);
         partial void DeleteTask(Task instance);
-        
+
         partial void InsertTaskList(TaskList instance);
         partial void UpdateTaskList(TaskList instance);
         partial void DeleteTaskList(TaskList instance);
-        
+
         partial void InsertTaskListOwner(TaskListOwner instance);
         partial void UpdateTaskListOwner(TaskListOwner instance);
         partial void DeleteTaskListOwner(TaskListOwner instance);
-        
+
         partial void InsertTaskStatus(TaskStatus instance);
         partial void UpdateTaskStatus(TaskStatus instance);
         partial void DeleteTaskStatus(TaskStatus instance);
-        
+
         partial void InsertTransaction(Transaction instance);
         partial void UpdateTransaction(Transaction instance);
         partial void DeleteTransaction(Transaction instance);
-        
+
         partial void InsertTransactionPerson(TransactionPerson instance);
         partial void UpdateTransactionPerson(TransactionPerson instance);
         partial void DeleteTransactionPerson(TransactionPerson instance);
-        
+
         partial void InsertUploadPeopleRun(UploadPeopleRun instance);
         partial void UpdateUploadPeopleRun(UploadPeopleRun instance);
         partial void DeleteUploadPeopleRun(UploadPeopleRun instance);
-        
+
         partial void InsertUserRole(UserRole instance);
         partial void UpdateUserRole(UserRole instance);
         partial void DeleteUserRole(UserRole instance);
-        
+
         partial void InsertUser(User instance);
         partial void UpdateUser(User instance);
         partial void DeleteUser(User instance);
-        
+
         partial void InsertVolApplicationStatus(VolApplicationStatus instance);
         partial void UpdateVolApplicationStatus(VolApplicationStatus instance);
         partial void DeleteVolApplicationStatus(VolApplicationStatus instance);
-        
+
         partial void InsertVolInterestCode(VolInterestCode instance);
         partial void UpdateVolInterestCode(VolInterestCode instance);
         partial void DeleteVolInterestCode(VolInterestCode instance);
-        
+
         partial void InsertVolInterestInterestCode(VolInterestInterestCode instance);
         partial void UpdateVolInterestInterestCode(VolInterestInterestCode instance);
         partial void DeleteVolInterestInterestCode(VolInterestInterestCode instance);
-        
+
         partial void InsertVolRequest(VolRequest instance);
         partial void UpdateVolRequest(VolRequest instance);
         partial void DeleteVolRequest(VolRequest instance);
-        
+
         partial void InsertVolunteer(Volunteer instance);
         partial void UpdateVolunteer(Volunteer instance);
         partial void DeleteVolunteer(Volunteer instance);
-        
+
         partial void InsertVolunteerCode(VolunteerCode instance);
         partial void UpdateVolunteerCode(VolunteerCode instance);
         partial void DeleteVolunteerCode(VolunteerCode instance);
-        
+
         partial void InsertVolunteerForm(VolunteerForm instance);
         partial void UpdateVolunteerForm(VolunteerForm instance);
         partial void DeleteVolunteerForm(VolunteerForm instance);
-        
+
         partial void InsertVoluteerApprovalId(VoluteerApprovalId instance);
         partial void UpdateVoluteerApprovalId(VoluteerApprovalId instance);
         partial void DeleteVoluteerApprovalId(VoluteerApprovalId instance);
-        
+
         partial void InsertWord(Word instance);
         partial void UpdateWord(Word instance);
         partial void DeleteWord(Word instance);
-        
+
         partial void InsertZipCode(ZipCode instance);
         partial void UpdateZipCode(ZipCode instance);
         partial void DeleteZipCode(ZipCode instance);
-        
+
         partial void InsertZip(Zip instance);
         partial void UpdateZip(Zip instance);
         partial void DeleteZip(Zip instance);
-        
+
 #endregion
-		
-		public CMSDataContext() : 
+
+		public CMSDataContext() :
 				base(System.Configuration.ConfigurationManager.ConnectionStrings["CMS"].ConnectionString, mappingSource)
 		{
 			OnCreated();
 		}
 
-		
-		public CMSDataContext(string connection) : 
+
+		public CMSDataContext(string connection) :
 				base(connection, mappingSource)
 		{
 			OnCreated();
 		}
 
-		
-		public CMSDataContext(IDbConnection connection) : 
+
+		public CMSDataContext(IDbConnection connection) :
 				base(connection, mappingSource)
 		{
 			OnCreated();
 		}
 
-		
-		public CMSDataContext(string connection, MappingSource mappingSource) : 
+
+		public CMSDataContext(string connection, MappingSource mappingSource) :
 				base(connection, mappingSource)
 		{
 			OnCreated();
 		}
 
-		
-		public CMSDataContext(IDbConnection connection, MappingSource mappingSource) : 
+
+		public CMSDataContext(IDbConnection connection, MappingSource mappingSource) :
 				base(connection, mappingSource)
 		{
 			OnCreated();
 		}
 
     #region Tables
-		
+
 		public Table< ActivityLog> ActivityLogs
 		{
 			get	{ return this.GetTable< ActivityLog>(); }
@@ -1600,18 +1600,6 @@ namespace CmsData
 
 		}
 
-        public Table< Resource> Resources
-        {
-            get { return GetTable< Resource>(); }
-
-        }
-
-        public Table< ResourceAttachment> ResourceAttachments
-        {
-            get { return GetTable< ResourceAttachment>(); }
-
-        }
-
 		public Table< Role> Roles
 		{
 			get	{ return this.GetTable< Role>(); }
@@ -1830,7 +1818,7 @@ namespace CmsData
 
 	#endregion
 	#region Views
-		
+
 	    public Table< View.ActiveRegistration> ViewActiveRegistrations
 	    {
 		    get { return this.GetTable< View.ActiveRegistration>(); }
@@ -2229,7 +2217,7 @@ namespace CmsData
 
     #endregion
 	#region Table Functions
-		
+
 		[Function(Name="dbo.ActivityLogSearch", IsComposable = true)]
 		public IQueryable< View.ActivityLogSearch > ActivityLogSearch(
             [Parameter(DbType="varchar")] string machine,
@@ -2243,7 +2231,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? pagenum
             )
 		{
-			return this.CreateMethodCallQuery< View.ActivityLogSearch>(this, 
+			return this.CreateMethodCallQuery< View.ActivityLogSearch>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 machine,
                 activity,
@@ -2263,7 +2251,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? pid
             )
 		{
-			return this.CreateMethodCallQuery< View.AttendanceCredit>(this, 
+			return this.CreateMethodCallQuery< View.AttendanceCredit>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgid,
                 pid
@@ -2281,7 +2269,7 @@ namespace CmsData
             [Parameter(DbType="nvarchar")] string ids
             )
 		{
-			return this.CreateMethodCallQuery< View.AttendanceTypeAsOf>(this, 
+			return this.CreateMethodCallQuery< View.AttendanceTypeAsOf>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 from,
                 to,
@@ -2303,7 +2291,7 @@ namespace CmsData
             [Parameter(DbType="datetime")] DateTime? end
             )
 		{
-			return this.CreateMethodCallQuery< View.AttendCntHistory>(this, 
+			return this.CreateMethodCallQuery< View.AttendCntHistory>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 progid,
                 divid,
@@ -2319,7 +2307,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? oid
             )
 		{
-			return this.CreateMethodCallQuery< View.AttendCommitment>(this, 
+			return this.CreateMethodCallQuery< View.AttendCommitment>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid
                 );
@@ -2336,7 +2324,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? days
             )
 		{
-			return this.CreateMethodCallQuery< View.AttendDaysAfterNthVisitAsOf>(this, 
+			return this.CreateMethodCallQuery< View.AttendDaysAfterNthVisitAsOf>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 progid,
                 divid,
@@ -2358,7 +2346,7 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? guestonly
             )
 		{
-			return this.CreateMethodCallQuery< View.AttendedAsOf>(this, 
+			return this.CreateMethodCallQuery< View.AttendedAsOf>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 progid,
                 divid,
@@ -2380,7 +2368,7 @@ namespace CmsData
             [Parameter(DbType="nvarchar")] string notids
             )
 		{
-			return this.CreateMethodCallQuery< View.AttendMemberTypeAsOf>(this, 
+			return this.CreateMethodCallQuery< View.AttendMemberTypeAsOf>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 from,
                 to,
@@ -2397,7 +2385,7 @@ namespace CmsData
             [Parameter(DbType="datetime")] DateTime? dt
             )
 		{
-			return this.CreateMethodCallQuery< View.CheckinByDate>(this, 
+			return this.CreateMethodCallQuery< View.CheckinByDate>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 dt
                 );
@@ -2410,7 +2398,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? thisday
             )
 		{
-			return this.CreateMethodCallQuery< View.CheckinFamilyMember>(this, 
+			return this.CreateMethodCallQuery< View.CheckinFamilyMember>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 familyid,
                 campus,
@@ -2423,7 +2411,7 @@ namespace CmsData
             [Parameter(DbType="nvarchar")] string id
             )
 		{
-			return this.CreateMethodCallQuery< View.CheckinMatch>(this, 
+			return this.CreateMethodCallQuery< View.CheckinMatch>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 id
                 );
@@ -2436,7 +2424,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? days
             )
 		{
-			return this.CreateMethodCallQuery< View.ConsecutiveAbsent>(this, 
+			return this.CreateMethodCallQuery< View.ConsecutiveAbsent>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgid,
                 divid,
@@ -2453,7 +2441,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? reas
             )
 		{
-			return this.CreateMethodCallQuery< View.ContactSummary>(this, 
+			return this.CreateMethodCallQuery< View.ContactSummary>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 dt1,
                 dt2,
@@ -2470,7 +2458,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? min
             )
 		{
-			return this.CreateMethodCallQuery< View.ContactTypeTotal>(this, 
+			return this.CreateMethodCallQuery< View.ContactTypeTotal>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 dt1,
                 dt2,
@@ -2486,7 +2474,7 @@ namespace CmsData
             [Parameter(DbType="nvarchar")] string op
             )
 		{
-			return this.CreateMethodCallQuery< View.ContributionCountTable>(this, 
+			return this.CreateMethodCallQuery< View.ContributionCountTable>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 days,
                 cnt,
@@ -2506,7 +2494,7 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? includeUnclosed
             )
 		{
-			return this.CreateMethodCallQuery< View.Contributions0>(this, 
+			return this.CreateMethodCallQuery< View.Contributions0>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 fd,
                 td,
@@ -2528,7 +2516,7 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? includeUnclosed
             )
 		{
-			return this.CreateMethodCallQuery< View.Contributions2>(this, 
+			return this.CreateMethodCallQuery< View.Contributions2>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 fd,
                 td,
@@ -2559,7 +2547,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? online
             )
 		{
-			return this.CreateMethodCallQuery< View.ContributionSearch>(this, 
+			return this.CreateMethodCallQuery< View.ContributionSearch>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 name,
                 comments,
@@ -2591,7 +2579,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? tagid
             )
 		{
-			return this.CreateMethodCallQuery< View.Contributor>(this, 
+			return this.CreateMethodCallQuery< View.Contributor>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 fd,
                 td,
@@ -2608,7 +2596,7 @@ namespace CmsData
             [Parameter(DbType="nvarchar")] string csv
             )
 		{
-			return this.CreateMethodCallQuery< View.CsvTable>(this, 
+			return this.CreateMethodCallQuery< View.CsvTable>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 csv
                 );
@@ -2619,7 +2607,7 @@ namespace CmsData
             [Parameter(DbType="varchar")] string orgs
             )
 		{
-			return this.CreateMethodCallQuery< View.CurrOrgMember>(this, 
+			return this.CreateMethodCallQuery< View.CurrOrgMember>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgs
                 );
@@ -2631,7 +2619,7 @@ namespace CmsData
             [Parameter(DbType="varchar")] string pids
             )
 		{
-			return this.CreateMethodCallQuery< View.CurrOrgMembers2>(this, 
+			return this.CreateMethodCallQuery< View.CurrOrgMembers2>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgs,
                 pids
@@ -2643,7 +2631,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? categoryId
             )
 		{
-			return this.CreateMethodCallQuery< View.DownlineCategory>(this, 
+			return this.CreateMethodCallQuery< View.DownlineCategory>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 categoryId
                 );
@@ -2658,7 +2646,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? pagesize
             )
 		{
-			return this.CreateMethodCallQuery< View.DownlineDetail>(this, 
+			return this.CreateMethodCallQuery< View.DownlineDetail>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 categoryid,
                 leaderid,
@@ -2676,7 +2664,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? pagesize
             )
 		{
-			return this.CreateMethodCallQuery< View.DownlineLevel>(this, 
+			return this.CreateMethodCallQuery< View.DownlineLevel>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 categoryid,
                 leaderid,
@@ -2692,7 +2680,7 @@ namespace CmsData
             [Parameter(DbType="varchar")] string trace
             )
 		{
-			return this.CreateMethodCallQuery< View.DownlineSingleTrace>(this, 
+			return this.CreateMethodCallQuery< View.DownlineSingleTrace>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 categoryid,
                 leaderid,
@@ -2707,7 +2695,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? pagesize
             )
 		{
-			return this.CreateMethodCallQuery< View.DownlineSummary>(this, 
+			return this.CreateMethodCallQuery< View.DownlineSummary>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 categoryid,
                 pagenum,
@@ -2722,7 +2710,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? fundid
             )
 		{
-			return this.CreateMethodCallQuery< View.FamilyGiver>(this, 
+			return this.CreateMethodCallQuery< View.FamilyGiver>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 fd,
                 td,
@@ -2735,7 +2723,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? pid
             )
 		{
-			return this.CreateMethodCallQuery< View.FamilyMember>(this, 
+			return this.CreateMethodCallQuery< View.FamilyMember>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 );
@@ -2746,7 +2734,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? onlinereg
             )
 		{
-			return this.CreateMethodCallQuery< View.FilterOnlineReg>(this, 
+			return this.CreateMethodCallQuery< View.FilterOnlineReg>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 onlinereg
                 );
@@ -2757,7 +2745,7 @@ namespace CmsData
             [Parameter(DbType="varchar")] string name
             )
 		{
-			return this.CreateMethodCallQuery< View.FilterOrgSearchName>(this, 
+			return this.CreateMethodCallQuery< View.FilterOrgSearchName>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 name
                 );
@@ -2772,7 +2760,7 @@ namespace CmsData
             [Parameter(DbType="nvarchar")] string phone
             )
 		{
-			return this.CreateMethodCallQuery< View.FindPerson>(this, 
+			return this.CreateMethodCallQuery< View.FindPerson>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 first,
                 last,
@@ -2797,7 +2785,7 @@ namespace CmsData
             [Parameter(DbType="nvarchar")] string phone3
             )
 		{
-			return this.CreateMethodCallQuery< View.FindPerson2>(this, 
+			return this.CreateMethodCallQuery< View.FindPerson2>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 first,
                 goesby,
@@ -2824,7 +2812,7 @@ namespace CmsData
             [Parameter(DbType="nvarchar")] string phone3
             )
 		{
-			return this.CreateMethodCallQuery< View.FindPerson3>(this, 
+			return this.CreateMethodCallQuery< View.FindPerson3>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 first,
                 last,
@@ -2841,7 +2829,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? PeopleId1
             )
 		{
-			return this.CreateMethodCallQuery< View.FindPerson4>(this, 
+			return this.CreateMethodCallQuery< View.FindPerson4>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 PeopleId1
                 );
@@ -2853,7 +2841,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? fundid
             )
 		{
-			return this.CreateMethodCallQuery< View.FirstTimeGiver>(this, 
+			return this.CreateMethodCallQuery< View.FirstTimeGiver>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 days,
                 fundid
@@ -2865,7 +2853,7 @@ namespace CmsData
             [Parameter(DbType="varchar")] string amts
             )
 		{
-			return this.CreateMethodCallQuery< View.GenRange>(this, 
+			return this.CreateMethodCallQuery< View.GenRange>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 amts
                 );
@@ -2877,7 +2865,7 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? pledge
             )
 		{
-			return this.CreateMethodCallQuery< View.GetContribution>(this, 
+			return this.CreateMethodCallQuery< View.GetContribution>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 fid,
                 pledge
@@ -2895,7 +2883,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? fundid
             )
 		{
-			return this.CreateMethodCallQuery< View.GetContributionsRange>(this, 
+			return this.CreateMethodCallQuery< View.GetContributionsRange>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 fd,
                 td,
@@ -2913,7 +2901,7 @@ namespace CmsData
             [Parameter(DbType="datetime")] DateTime? enddt
             )
 		{
-			return this.CreateMethodCallQuery< View.GetContributionTotalsBothIfJoint>(this, 
+			return this.CreateMethodCallQuery< View.GetContributionTotalsBothIfJoint>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 startdt,
                 enddt
@@ -2927,7 +2915,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? fundid
             )
 		{
-			return this.CreateMethodCallQuery< View.GetPledgedTotalsBothIfJoint>(this, 
+			return this.CreateMethodCallQuery< View.GetPledgedTotalsBothIfJoint>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 startdt,
                 enddt,
@@ -2941,7 +2929,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? thisday
             )
 		{
-			return this.CreateMethodCallQuery< View.GetTodaysMeetingHour>(this, 
+			return this.CreateMethodCallQuery< View.GetTodaysMeetingHour>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgid,
                 thisday
@@ -2955,7 +2943,7 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? kioskmode
             )
 		{
-			return this.CreateMethodCallQuery< View.GetTodaysMeetingHours2>(this, 
+			return this.CreateMethodCallQuery< View.GetTodaysMeetingHours2>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgid,
                 thisday,
@@ -2968,7 +2956,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? thisday
             )
 		{
-			return this.CreateMethodCallQuery< View.GetTodaysMeetingHours3>(this, 
+			return this.CreateMethodCallQuery< View.GetTodaysMeetingHours3>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 thisday
                 );
@@ -2980,7 +2968,7 @@ namespace CmsData
             [Parameter(DbType="datetime")] DateTime? enddt
             )
 		{
-			return this.CreateMethodCallQuery< View.GetTotalContribution>(this, 
+			return this.CreateMethodCallQuery< View.GetTotalContribution>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 startdt,
                 enddt
@@ -2996,7 +2984,7 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? includeUnclosed
             )
 		{
-			return this.CreateMethodCallQuery< View.GetTotalContributions2>(this, 
+			return this.CreateMethodCallQuery< View.GetTotalContributions2>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 fd,
                 td,
@@ -3015,7 +3003,7 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? includeUnclosed
             )
 		{
-			return this.CreateMethodCallQuery< View.GetTotalContributions3>(this, 
+			return this.CreateMethodCallQuery< View.GetTotalContributions3>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 fd,
                 td,
@@ -3034,7 +3022,7 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? includeUnclosed
             )
 		{
-			return this.CreateMethodCallQuery< View.GetTotalContributionsAgeRange>(this, 
+			return this.CreateMethodCallQuery< View.GetTotalContributionsAgeRange>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 fd,
                 td,
@@ -3053,7 +3041,7 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? includeUnclosed
             )
 		{
-			return this.CreateMethodCallQuery< View.GetTotalContributionsDonor2>(this, 
+			return this.CreateMethodCallQuery< View.GetTotalContributionsDonor2>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 fd,
                 td,
@@ -3072,7 +3060,7 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? includeUnclosed
             )
 		{
-			return this.CreateMethodCallQuery< View.GetTotalContributionsRange>(this, 
+			return this.CreateMethodCallQuery< View.GetTotalContributionsRange>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 fd,
                 td,
@@ -3090,7 +3078,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? pledgefund
             )
 		{
-			return this.CreateMethodCallQuery< View.GetTotalPledgesDonor2>(this, 
+			return this.CreateMethodCallQuery< View.GetTotalPledgesDonor2>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 fd,
                 td,
@@ -3104,7 +3092,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? days
             )
 		{
-			return this.CreateMethodCallQuery< View.GivingChange>(this, 
+			return this.CreateMethodCallQuery< View.GivingChange>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 days
                 );
@@ -3118,7 +3106,7 @@ namespace CmsData
             [Parameter(DbType="float")] double? pct
             )
 		{
-			return this.CreateMethodCallQuery< View.GivingCurrentPercentOfFormer>(this, 
+			return this.CreateMethodCallQuery< View.GivingCurrentPercentOfFormer>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 dt1,
                 dt2,
@@ -3136,7 +3124,7 @@ namespace CmsData
             [Parameter(DbType="varchar")] string last
             )
 		{
-			return this.CreateMethodCallQuery< View.GuestList>(this, 
+			return this.CreateMethodCallQuery< View.GuestList>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 since,
@@ -3153,7 +3141,7 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? showHidden
             )
 		{
-			return this.CreateMethodCallQuery< View.GuestList2>(this, 
+			return this.CreateMethodCallQuery< View.GuestList2>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 since,
@@ -3170,7 +3158,7 @@ namespace CmsData
             [Parameter(DbType="datetime")] DateTime? enddt
             )
 		{
-			return this.CreateMethodCallQuery< View.HasIncompleteRegistration>(this, 
+			return this.CreateMethodCallQuery< View.HasIncompleteRegistration>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 prog,
                 div,
@@ -3185,7 +3173,7 @@ namespace CmsData
             [Parameter(DbType="varchar")] string ele
             )
 		{
-			return this.CreateMethodCallQuery< View.LastAddrElement>(this, 
+			return this.CreateMethodCallQuery< View.LastAddrElement>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 ele
                 );
@@ -3196,7 +3184,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? oid
             )
 		{
-			return this.CreateMethodCallQuery< View.LastAttendOrg>(this, 
+			return this.CreateMethodCallQuery< View.LastAttendOrg>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid
                 );
@@ -3207,7 +3195,7 @@ namespace CmsData
             [Parameter(DbType="varchar")] string orgs
             )
 		{
-			return this.CreateMethodCallQuery< View.LastMeeting>(this, 
+			return this.CreateMethodCallQuery< View.LastMeeting>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgs
                 );
@@ -3220,7 +3208,7 @@ namespace CmsData
             [Parameter(DbType="datetime")] DateTime? enddate
             )
 		{
-			return this.CreateMethodCallQuery< View.MeetingsDataForDateRange>(this, 
+			return this.CreateMethodCallQuery< View.MeetingsDataForDateRange>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgs,
                 startdate,
@@ -3237,7 +3225,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? orgid
             )
 		{
-			return this.CreateMethodCallQuery< View.MembersAsOf>(this, 
+			return this.CreateMethodCallQuery< View.MembersAsOf>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 from,
                 to,
@@ -3253,7 +3241,7 @@ namespace CmsData
             [Parameter(DbType="datetime")] DateTime? firstdate
             )
 		{
-			return this.CreateMethodCallQuery< View.MembersWhoAttendedOrg>(this, 
+			return this.CreateMethodCallQuery< View.MembersWhoAttendedOrg>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgs,
                 firstdate
@@ -3265,7 +3253,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? uid
             )
 		{
-			return this.CreateMethodCallQuery< View.MostRecentItem>(this, 
+			return this.CreateMethodCallQuery< View.MostRecentItem>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 uid
                 );
@@ -3281,7 +3269,7 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? guestonly
             )
 		{
-			return this.CreateMethodCallQuery< View.NotAttendedAsOf>(this, 
+			return this.CreateMethodCallQuery< View.NotAttendedAsOf>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 progid,
                 divid,
@@ -3298,7 +3286,7 @@ namespace CmsData
             [Parameter(DbType="datetime")] DateTime? dt
             )
 		{
-			return this.CreateMethodCallQuery< View.OrgDayStat>(this, 
+			return this.CreateMethodCallQuery< View.OrgDayStat>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oids,
                 dt
@@ -3315,7 +3303,7 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? showhidden
             )
 		{
-			return this.CreateMethodCallQuery< View.OrgMember>(this, 
+			return this.CreateMethodCallQuery< View.OrgMember>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 grouptype,
@@ -3331,7 +3319,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? oid
             )
 		{
-			return this.CreateMethodCallQuery< View.OrgMemberInfo>(this, 
+			return this.CreateMethodCallQuery< View.OrgMemberInfo>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid
                 );
@@ -3343,7 +3331,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? pid
             )
 		{
-			return this.CreateMethodCallQuery< View.OrgMemberQuestion>(this, 
+			return this.CreateMethodCallQuery< View.OrgMemberQuestion>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 pid
@@ -3356,7 +3344,7 @@ namespace CmsData
             [Parameter(DbType="datetime")] DateTime? meetingdt
             )
 		{
-			return this.CreateMethodCallQuery< View.OrgMembersAsOfDate>(this, 
+			return this.CreateMethodCallQuery< View.OrgMembersAsOfDate>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgid,
                 meetingdt
@@ -3369,7 +3357,7 @@ namespace CmsData
             [Parameter(DbType="varchar")] string sgfilter
             )
 		{
-			return this.CreateMethodCallQuery< View.OrgMembersGroupFiltered>(this, 
+			return this.CreateMethodCallQuery< View.OrgMembersGroupFiltered>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oids,
                 sgfilter
@@ -3386,7 +3374,7 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? showhidden
             )
 		{
-			return this.CreateMethodCallQuery< View.OrgMinistryInfo>(this, 
+			return this.CreateMethodCallQuery< View.OrgMinistryInfo>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 grouptype,
@@ -3413,7 +3401,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? userpeopleid
             )
 		{
-			return this.CreateMethodCallQuery< View.OrgPerson>(this, 
+			return this.CreateMethodCallQuery< View.OrgPerson>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 grouptype,
@@ -3446,7 +3434,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? userpeopleid
             )
 		{
-			return this.CreateMethodCallQuery< View.OrgPeople2>(this, 
+			return this.CreateMethodCallQuery< View.OrgPeople2>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 grouptype,
@@ -3468,7 +3456,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? oid
             )
 		{
-			return this.CreateMethodCallQuery< View.OrgPeopleCurrent>(this, 
+			return this.CreateMethodCallQuery< View.OrgPeopleCurrent>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid
                 );
@@ -3480,7 +3468,7 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? showhidden
             )
 		{
-			return this.CreateMethodCallQuery< View.OrgPeopleGuest>(this, 
+			return this.CreateMethodCallQuery< View.OrgPeopleGuest>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 showhidden
@@ -3503,7 +3491,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? userpeopleid
             )
 		{
-			return this.CreateMethodCallQuery< View.OrgPeopleId>(this, 
+			return this.CreateMethodCallQuery< View.OrgPeopleId>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 grouptype,
@@ -3525,7 +3513,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? oid
             )
 		{
-			return this.CreateMethodCallQuery< View.OrgPeopleInactive>(this, 
+			return this.CreateMethodCallQuery< View.OrgPeopleInactive>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid
                 );
@@ -3536,7 +3524,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? oid
             )
 		{
-			return this.CreateMethodCallQuery< View.OrgPeoplePending>(this, 
+			return this.CreateMethodCallQuery< View.OrgPeoplePending>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid
                 );
@@ -3547,7 +3535,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? oid
             )
 		{
-			return this.CreateMethodCallQuery< View.OrgPeoplePreviou>(this, 
+			return this.CreateMethodCallQuery< View.OrgPeoplePreviou>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid
                 );
@@ -3559,7 +3547,7 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? showhidden
             )
 		{
-			return this.CreateMethodCallQuery< View.OrgPeopleProspect>(this, 
+			return this.CreateMethodCallQuery< View.OrgPeopleProspect>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 showhidden
@@ -3580,7 +3568,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? targetDiv
             )
 		{
-			return this.CreateMethodCallQuery< View.OrgSearch>(this, 
+			return this.CreateMethodCallQuery< View.OrgSearch>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 name,
                 prog,
@@ -3602,7 +3590,7 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? NoCurrentMembers
             )
 		{
-			return this.CreateMethodCallQuery< View.OrgVisitorsAsOfDate>(this, 
+			return this.CreateMethodCallQuery< View.OrgVisitorsAsOfDate>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgid,
                 meetingdt,
@@ -3624,7 +3612,7 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? parentorg
             )
 		{
-			return this.CreateMethodCallQuery< View.PeopleIdsFromOrgSearch>(this, 
+			return this.CreateMethodCallQuery< View.PeopleIdsFromOrgSearch>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 name,
                 prog,
@@ -3644,7 +3632,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? tagid
             )
 		{
-			return this.CreateMethodCallQuery< View.PersonStatusFlag>(this, 
+			return this.CreateMethodCallQuery< View.PersonStatusFlag>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 tagid
                 );
@@ -3655,7 +3643,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? fundid
             )
 		{
-			return this.CreateMethodCallQuery< View.PledgeFulfillment>(this, 
+			return this.CreateMethodCallQuery< View.PledgeFulfillment>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 fundid
                 );
@@ -3668,7 +3656,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? campusid
             )
 		{
-			return this.CreateMethodCallQuery< View.PledgeReport>(this, 
+			return this.CreateMethodCallQuery< View.PledgeReport>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 fd,
                 td,
@@ -3684,7 +3672,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? campusid
             )
 		{
-			return this.CreateMethodCallQuery< View.Pledges0>(this, 
+			return this.CreateMethodCallQuery< View.Pledges0>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 fd,
                 td,
@@ -3699,7 +3687,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? mid
             )
 		{
-			return this.CreateMethodCallQuery< View.PotentialSubstitute>(this, 
+			return this.CreateMethodCallQuery< View.PotentialSubstitute>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 mid
@@ -3713,7 +3701,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? days
             )
 		{
-			return this.CreateMethodCallQuery< View.RecentAbsent>(this, 
+			return this.CreateMethodCallQuery< View.RecentAbsent>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgid,
                 divid,
@@ -3728,7 +3716,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? days
             )
 		{
-			return this.CreateMethodCallQuery< View.RecentAbsents2>(this, 
+			return this.CreateMethodCallQuery< View.RecentAbsents2>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgid,
                 divid,
@@ -3741,7 +3729,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? oid
             )
 		{
-			return this.CreateMethodCallQuery< View.RecentAttendance>(this, 
+			return this.CreateMethodCallQuery< View.RecentAttendance>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid
                 );
@@ -3756,7 +3744,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? days
             )
 		{
-			return this.CreateMethodCallQuery< View.RecentAttendInDaysByCount>(this, 
+			return this.CreateMethodCallQuery< View.RecentAttendInDaysByCount>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 progid,
                 divid,
@@ -3776,7 +3764,7 @@ namespace CmsData
             [Parameter(DbType="varchar")] string desc
             )
 		{
-			return this.CreateMethodCallQuery< View.RecentAttendInDaysByCountDesc>(this, 
+			return this.CreateMethodCallQuery< View.RecentAttendInDaysByCountDesc>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 progid,
                 divid,
@@ -3796,7 +3784,7 @@ namespace CmsData
             [Parameter(DbType="varchar")] string idstring
             )
 		{
-			return this.CreateMethodCallQuery< View.RecentAttendMemberType>(this, 
+			return this.CreateMethodCallQuery< View.RecentAttendMemberType>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 progid,
                 divid,
@@ -3815,7 +3803,7 @@ namespace CmsData
             [Parameter(DbType="varchar")] string idstring
             )
 		{
-			return this.CreateMethodCallQuery< View.RecentAttendType>(this, 
+			return this.CreateMethodCallQuery< View.RecentAttendType>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 progid,
                 divid,
@@ -3830,7 +3818,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? days
             )
 		{
-			return this.CreateMethodCallQuery< View.RecentGiver>(this, 
+			return this.CreateMethodCallQuery< View.RecentGiver>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 days
                 );
@@ -3845,7 +3833,7 @@ namespace CmsData
             [Parameter(DbType="datetime")] DateTime? enddt
             )
 		{
-			return this.CreateMethodCallQuery< View.RecentIncompleteRegistration>(this, 
+			return this.CreateMethodCallQuery< View.RecentIncompleteRegistration>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 prog,
                 div,
@@ -3861,7 +3849,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? days
             )
 		{
-			return this.CreateMethodCallQuery< View.RecentIncompleteRegistrations2>(this, 
+			return this.CreateMethodCallQuery< View.RecentIncompleteRegistrations2>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgs,
                 days
@@ -3878,7 +3866,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? days
             )
 		{
-			return this.CreateMethodCallQuery< View.RecentNewVisitCount>(this, 
+			return this.CreateMethodCallQuery< View.RecentNewVisitCount>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 progid,
                 divid,
@@ -3894,7 +3882,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? days
             )
 		{
-			return this.CreateMethodCallQuery< View.RecentRegistration>(this, 
+			return this.CreateMethodCallQuery< View.RecentRegistration>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 days
                 );
@@ -3905,7 +3893,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? master
             )
 		{
-			return this.CreateMethodCallQuery< View.RegisterLinksFromMaster>(this, 
+			return this.CreateMethodCallQuery< View.RegisterLinksFromMaster>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 master
                 );
@@ -3916,7 +3904,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? orgid
             )
 		{
-			return this.CreateMethodCallQuery< View.RegistrationGradeOption>(this, 
+			return this.CreateMethodCallQuery< View.RegistrationGradeOption>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgid
                 );
@@ -3927,7 +3915,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? days
             )
 		{
-			return this.CreateMethodCallQuery< View.Registration>(this, 
+			return this.CreateMethodCallQuery< View.Registration>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 days
                 );
@@ -3938,7 +3926,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? orgid
             )
 		{
-			return this.CreateMethodCallQuery< View.RegistrationSmallGroup>(this, 
+			return this.CreateMethodCallQuery< View.RegistrationSmallGroup>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgid
                 );
@@ -3953,7 +3941,7 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? FromMobile
             )
 		{
-			return this.CreateMethodCallQuery< View.RollList>(this, 
+			return this.CreateMethodCallQuery< View.RollList>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 mid,
                 meetingdt,
@@ -3974,7 +3962,7 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? IncludeLeaderless
             )
 		{
-			return this.CreateMethodCallQuery< View.RollListFilteredBySubgroup>(this, 
+			return this.CreateMethodCallQuery< View.RollListFilteredBySubgroup>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 mid,
                 meetingdt,
@@ -3995,7 +3983,7 @@ namespace CmsData
             [Parameter(DbType="varchar")] string highlight
             )
 		{
-			return this.CreateMethodCallQuery< View.RollListHighlight>(this, 
+			return this.CreateMethodCallQuery< View.RollListHighlight>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 mid,
                 meetingdt,
@@ -4011,7 +3999,7 @@ namespace CmsData
             [Parameter(DbType="varchar")] string name
             )
 		{
-			return this.CreateMethodCallQuery< View.SearchDivision>(this, 
+			return this.CreateMethodCallQuery< View.SearchDivision>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 name
@@ -4023,7 +4011,7 @@ namespace CmsData
             [Parameter(DbType="varchar")] string oids
             )
 		{
-			return this.CreateMethodCallQuery< View.SenderGift>(this, 
+			return this.CreateMethodCallQuery< View.SenderGift>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oids
                 );
@@ -4035,7 +4023,7 @@ namespace CmsData
             [Parameter(DbType="nvarchar")] string Delimiter
             )
 		{
-			return this.CreateMethodCallQuery< View.Split>(this, 
+			return this.CreateMethodCallQuery< View.Split>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 InputText,
                 Delimiter
@@ -4047,7 +4035,7 @@ namespace CmsData
             [Parameter(DbType="varchar")] string List
             )
 		{
-			return this.CreateMethodCallQuery< View.SplitInt>(this, 
+			return this.CreateMethodCallQuery< View.SplitInt>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 List
                 );
@@ -4058,7 +4046,7 @@ namespace CmsData
             [Parameter(DbType="nvarchar")] string flags
             )
 		{
-			return this.CreateMethodCallQuery< View.StatusFlag>(this, 
+			return this.CreateMethodCallQuery< View.StatusFlag>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 flags
                 );
@@ -4069,7 +4057,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? pid
             )
 		{
-			return this.CreateMethodCallQuery< View.StatusFlagsPerson>(this, 
+			return this.CreateMethodCallQuery< View.StatusFlagsPerson>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 );
@@ -4081,7 +4069,7 @@ namespace CmsData
             [Parameter(DbType="datetime")] DateTime? dt2
             )
 		{
-			return this.CreateMethodCallQuery< View.SundayDate>(this, 
+			return this.CreateMethodCallQuery< View.SundayDate>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 dt1,
                 dt2
@@ -4093,7 +4081,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? tagid
             )
 		{
-			return this.CreateMethodCallQuery< View.TaggedPerson>(this, 
+			return this.CreateMethodCallQuery< View.TaggedPerson>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 tagid
                 );
@@ -4104,7 +4092,7 @@ namespace CmsData
             [Parameter(DbType="varchar")] string emails
             )
 		{
-			return this.CreateMethodCallQuery< View.TPStat>(this, 
+			return this.CreateMethodCallQuery< View.TPStat>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 emails
                 );
@@ -4116,7 +4104,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? n
             )
 		{
-			return this.CreateMethodCallQuery< View.VisitNumberSinceDate>(this, 
+			return this.CreateMethodCallQuery< View.VisitNumberSinceDate>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 dt,
                 n
@@ -4128,7 +4116,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? meetingid
             )
 		{
-			return this.CreateMethodCallQuery< View.VisitsAbsent>(this, 
+			return this.CreateMethodCallQuery< View.VisitsAbsent>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 meetingid
                 );
@@ -4141,7 +4129,7 @@ namespace CmsData
             [Parameter(DbType="nvarchar")] string sg2
             )
 		{
-			return this.CreateMethodCallQuery< View.VolunteerCalendar>(this, 
+			return this.CreateMethodCallQuery< View.VolunteerCalendar>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 sg1,
@@ -4155,7 +4143,7 @@ namespace CmsData
             [Parameter(DbType="datetime")] DateTime? firstdate
             )
 		{
-			return this.CreateMethodCallQuery< View.WeeklyAttendsForOrg>(this, 
+			return this.CreateMethodCallQuery< View.WeeklyAttendsForOrg>(this,
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgs,
                 firstdate
@@ -4164,7 +4152,7 @@ namespace CmsData
 
     #endregion
 	#region Scalar Functions
-		
+
 		[Function(Name="dbo.DonorTotalUnitsSize", IsComposable = true)]
 		[return: Parameter(DbType = "money")]
 		public decimal? DonorTotalUnitsSize(
@@ -4173,7 +4161,7 @@ namespace CmsData
             [Parameter(Name = "max", DbType="int")] int? max
             )
 		{
-			return ((decimal?)(this.ExecuteMethodCall(this, 
+			return ((decimal?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 t,
                 min,
@@ -4188,7 +4176,7 @@ namespace CmsData
             [Parameter(Name = "n", DbType="int")] int? n
             )
 		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
+			return ((DateTime?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid,
                 n
@@ -4203,7 +4191,7 @@ namespace CmsData
             [Parameter(Name = "dt2", DbType="datetime")] DateTime? dt2
             )
 		{
-			return ((double?)(this.ExecuteMethodCall(this, 
+			return ((double?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid,
                 dt1,
@@ -4219,7 +4207,7 @@ namespace CmsData
             [Parameter(Name = "max", DbType="int")] int? max
             )
 		{
-			return ((decimal?)(this.ExecuteMethodCall(this, 
+			return ((decimal?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 t,
                 min,
@@ -4233,7 +4221,7 @@ namespace CmsData
             [Parameter(Name = "uid", DbType="int")] int? uid
             )
 		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
+			return ((DateTime?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 uid
                 ).ReturnValue));
@@ -4248,7 +4236,7 @@ namespace CmsData
             [Parameter(Name = "fundid", DbType="int")] int? fundid
             )
 		{
-			return ((decimal?)(this.ExecuteMethodCall(this, 
+			return ((decimal?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid,
                 dt1,
@@ -4265,7 +4253,7 @@ namespace CmsData
             [Parameter(Name = "max", DbType="int")] int? max
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 t,
                 min,
@@ -4280,7 +4268,7 @@ namespace CmsData
             [Parameter(Name = "pattern", DbType="nvarchar")] string pattern
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 subject,
                 pattern
@@ -4294,7 +4282,7 @@ namespace CmsData
             [Parameter(Name = "pattern", DbType="nvarchar")] string pattern
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 subject,
                 pattern
@@ -4307,7 +4295,7 @@ namespace CmsData
             [Parameter(Name = "stringX", DbType="nvarchar")] string stringX
             )
 		{
-			return ((bool?)(this.ExecuteMethodCall(this, 
+			return ((bool?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 stringX
                 ).ReturnValue));
@@ -4319,7 +4307,7 @@ namespace CmsData
             [Parameter(Name = "fid", DbType="int")] int? fid
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 fid
                 ).ReturnValue));
@@ -4332,7 +4320,7 @@ namespace CmsData
             [Parameter(Name = "var2", DbType="nvarchar")] string var2
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 var1,
                 var2
@@ -4344,7 +4332,7 @@ namespace CmsData
 		public int? AvgSunAttendance(
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod()))
                 ).ReturnValue));
 		}
@@ -4357,7 +4345,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((bool?)(this.ExecuteMethodCall(this, 
+			return ((bool?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgid,
                 thisday,
@@ -4373,7 +4361,7 @@ namespace CmsData
             [Parameter(Name = "fid", DbType="int")] int? fid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 age,
                 married,
@@ -4389,7 +4377,7 @@ namespace CmsData
             [Parameter(Name = "SchedDay", DbType="int")] int? SchedDay
             )
 		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
+			return ((DateTime?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 thisday,
                 MeetingTime,
@@ -4404,7 +4392,7 @@ namespace CmsData
             [Parameter(Name = "thisday", DbType="int")] int? thisday
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgid,
                 thisday
@@ -4418,7 +4406,7 @@ namespace CmsData
             [Parameter(Name = "asof", DbType="datetime")] DateTime? asof
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid,
                 asof
@@ -4431,7 +4419,7 @@ namespace CmsData
             [Parameter(Name = "peopleid", DbType="int")] int? peopleid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 peopleid
                 ).ReturnValue));
@@ -4443,7 +4431,7 @@ namespace CmsData
             [Parameter(Name = "id", DbType="int")] int? id
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 id
                 ).ReturnValue));
@@ -4455,7 +4443,7 @@ namespace CmsData
             [Parameter(Name = "id", DbType="int")] int? id
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 id
                 ).ReturnValue));
@@ -4466,7 +4454,7 @@ namespace CmsData
 		public int? FnDiagramobjects(
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod()))
                 ).ReturnValue));
 		}
@@ -4477,7 +4465,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -4490,7 +4478,7 @@ namespace CmsData
             [Parameter(Name = "dt", DbType="datetime")] DateTime? dt
             )
 		{
-			return ((bool?)(this.ExecuteMethodCall(this, 
+			return ((bool?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid,
                 dt
@@ -4504,7 +4492,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
+			return ((DateTime?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgid,
                 pid
@@ -4518,7 +4506,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
+			return ((DateTime?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgid,
                 pid
@@ -4532,7 +4520,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
+			return ((DateTime?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgid,
                 pid
@@ -4545,7 +4533,7 @@ namespace CmsData
             [Parameter(Name = "age", DbType="int")] int? age
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 age
                 ).ReturnValue));
@@ -4558,7 +4546,7 @@ namespace CmsData
             [Parameter(Name = "oid", DbType="int")] int? oid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid,
                 oid
@@ -4572,7 +4560,7 @@ namespace CmsData
             [Parameter(Name = "week", DbType="int")] int? week
             )
 		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
+			return ((DateTime?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 year,
                 week
@@ -4586,7 +4574,7 @@ namespace CmsData
             [Parameter(Name = "time", DbType="datetime")] DateTime? time
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 day,
                 time
@@ -4600,7 +4588,7 @@ namespace CmsData
             [Parameter(Name = "time", DbType="datetime")] DateTime? time
             )
 		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
+			return ((DateTime?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 day,
                 time
@@ -4613,7 +4601,7 @@ namespace CmsData
             [Parameter(Name = "oid", DbType="int")] int? oid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid
                 ).ReturnValue));
@@ -4626,7 +4614,7 @@ namespace CmsData
             [Parameter(Name = "oid", DbType="int")] int? oid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid,
                 oid
@@ -4639,7 +4627,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -4651,7 +4639,7 @@ namespace CmsData
             [Parameter(Name = "fid", DbType="int")] int? fid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 fid
                 ).ReturnValue));
@@ -4663,7 +4651,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
+			return ((DateTime?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -4675,7 +4663,7 @@ namespace CmsData
             [Parameter(Name = "familyid", DbType="int")] int? familyid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 familyid
                 ).ReturnValue));
@@ -4689,7 +4677,7 @@ namespace CmsData
             [Parameter(Name = "y", DbType="int")] int? y
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 m,
                 d,
@@ -4703,7 +4691,7 @@ namespace CmsData
             [Parameter(Name = "familyid", DbType="int")] int? familyid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 familyid
                 ).ReturnValue));
@@ -4715,7 +4703,7 @@ namespace CmsData
             [Parameter(Name = "familyid", DbType="int")] int? familyid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 familyid
                 ).ReturnValue));
@@ -4730,7 +4718,7 @@ namespace CmsData
             [Parameter(Name = "typeid", DbType="int")] int? typeid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid,
                 oid,
@@ -4745,7 +4733,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -4757,7 +4745,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -4771,7 +4759,7 @@ namespace CmsData
             [Parameter(Name = "sg", DbType="varchar")] string sg
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 pid,
@@ -4785,7 +4773,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -4797,7 +4785,7 @@ namespace CmsData
             [Parameter(Name = "peopleid", DbType="int")] int? peopleid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 peopleid
                 ).ReturnValue));
@@ -4811,7 +4799,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 groupselect,
@@ -4825,7 +4813,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -4837,7 +4825,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -4850,7 +4838,7 @@ namespace CmsData
             [Parameter(Name = "prev", DbType="datetime")] DateTime? prev
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 next,
                 prev
@@ -4863,7 +4851,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -4875,7 +4863,7 @@ namespace CmsData
             [Parameter(Name = "VarbinaryValue", DbType="varbinary")] byte[] VarbinaryValue
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 VarbinaryValue
                 ).ReturnValue));
@@ -4887,7 +4875,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -4902,7 +4890,7 @@ namespace CmsData
             [Parameter(Name = "typeid", DbType="int")] int? typeid
             )
 		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
+			return ((DateTime?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid,
                 oid,
@@ -4920,7 +4908,7 @@ namespace CmsData
             [Parameter(Name = "typeid", DbType="int")] int? typeid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid,
                 oid,
@@ -4935,7 +4923,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -4947,7 +4935,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -4959,7 +4947,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -4971,7 +4959,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -4983,7 +4971,7 @@ namespace CmsData
             [Parameter(Name = "orgid", DbType="int")] int? orgid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgid
                 ).ReturnValue));
@@ -4995,7 +4983,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -5010,7 +4998,7 @@ namespace CmsData
             [Parameter(Name = "ttid", DbType="int")] int? ttid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid,
                 oid,
@@ -5025,7 +5013,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
+			return ((DateTime?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -5037,7 +5025,7 @@ namespace CmsData
             [Parameter(Name = "indnum", DbType="int")] int? indnum
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 indnum
                 ).ReturnValue));
@@ -5049,7 +5037,7 @@ namespace CmsData
             [Parameter(Name = "orgid", DbType="int")] int? orgid
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgid
                 ).ReturnValue));
@@ -5061,7 +5049,7 @@ namespace CmsData
             [Parameter(Name = "email", DbType="nvarchar")] string email
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 email
                 ).ReturnValue));
@@ -5074,7 +5062,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 pid
@@ -5087,7 +5075,7 @@ namespace CmsData
             [Parameter(Name = "dt", DbType="datetime")] DateTime? dt
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 dt
                 ).ReturnValue));
@@ -5099,7 +5087,7 @@ namespace CmsData
             [Parameter(Name = "dt", DbType="datetime")] DateTime? dt
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 dt
                 ).ReturnValue));
@@ -5111,7 +5099,7 @@ namespace CmsData
             [Parameter(Name = "amt", DbType="decimal")] decimal? amt
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 amt
                 ).ReturnValue));
@@ -5123,7 +5111,7 @@ namespace CmsData
             [Parameter(Name = "wkn", DbType="int")] int? wkn
             )
 		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
+			return ((DateTime?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 wkn
                 ).ReturnValue));
@@ -5135,7 +5123,7 @@ namespace CmsData
             [Parameter(Name = "inputDate", DbType="datetime")] DateTime? inputDate
             )
 		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
+			return ((DateTime?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 inputDate
                 ).ReturnValue));
@@ -5147,7 +5135,7 @@ namespace CmsData
             [Parameter(Name = "s", DbType="nvarchar")] string s
             )
 		{
-			return ((bool?)(this.ExecuteMethodCall(this, 
+			return ((bool?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 s
                 ).ReturnValue));
@@ -5159,7 +5147,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
+			return ((DateTime?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -5170,7 +5158,7 @@ namespace CmsData
 		public DateTime? MaxPastMeeting(
             )
 		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
+			return ((DateTime?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod()))
                 ).ReturnValue));
 		}
@@ -5181,7 +5169,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -5197,7 +5185,7 @@ namespace CmsData
             [Parameter(Name = "lookback", DbType="int")] int? lookback
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid,
                 progid,
@@ -5213,7 +5201,7 @@ namespace CmsData
             [Parameter(Name = "oid", DbType="int")] int? oid
             )
 		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
+			return ((DateTime?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid
                 ).ReturnValue));
@@ -5226,7 +5214,7 @@ namespace CmsData
             [Parameter(Name = "prev", DbType="datetime")] DateTime? prev
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 next,
                 prev
@@ -5239,7 +5227,7 @@ namespace CmsData
             [Parameter(Name = "uid", DbType="int")] int? uid
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 uid
                 ).ReturnValue));
@@ -5252,7 +5240,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 pid
@@ -5266,7 +5254,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 pid
@@ -5279,7 +5267,7 @@ namespace CmsData
             [Parameter(Name = "oid", DbType="int")] int? oid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid
                 ).ReturnValue));
@@ -5292,7 +5280,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 pid
@@ -5307,7 +5295,7 @@ namespace CmsData
             [Parameter(Name = "y", DbType="int")] int? y
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 m,
                 d,
@@ -5322,7 +5310,7 @@ namespace CmsData
             [Parameter(Name = "prev", DbType="datetime")] DateTime? prev
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 next,
                 prev
@@ -5335,7 +5323,7 @@ namespace CmsData
             [Parameter(Name = "DateX", DbType="datetime")] DateTime? DateX
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 DateX
                 ).ReturnValue));
@@ -5347,7 +5335,7 @@ namespace CmsData
             [Parameter(Name = "meetingtime", DbType="datetime")] DateTime? meetingtime
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 meetingtime
                 ).ReturnValue));
@@ -5359,7 +5347,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
+			return ((DateTime?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -5372,7 +5360,7 @@ namespace CmsData
             [Parameter(Name = "country", DbType="nvarchar")] string country
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 zipcode,
                 country
@@ -5385,7 +5373,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -5397,7 +5385,7 @@ namespace CmsData
             [Parameter(Name = "peopleid", DbType="int")] int? peopleid
             )
 		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
+			return ((DateTime?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 peopleid
                 ).ReturnValue));
@@ -5408,7 +5396,7 @@ namespace CmsData
 		public DateTime? FirstActivity(
             )
 		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
+			return ((DateTime?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod()))
                 ).ReturnValue));
 		}
@@ -5420,7 +5408,7 @@ namespace CmsData
             [Parameter(Name = "indnum", DbType="int")] int? indnum
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 famnum,
                 indnum
@@ -5433,7 +5421,7 @@ namespace CmsData
             [Parameter(Name = "dt", DbType="datetime")] DateTime? dt
             )
 		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
+			return ((DateTime?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 dt
                 ).ReturnValue));
@@ -5444,7 +5432,7 @@ namespace CmsData
 		public string CreateForeignKeys(
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod()))
                 ).ReturnValue));
 		}
@@ -5454,7 +5442,7 @@ namespace CmsData
 		public string DropForeignKeys(
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod()))
                 ).ReturnValue));
 		}
@@ -5466,7 +5454,7 @@ namespace CmsData
             [Parameter(Name = "end", DbType="datetime")] DateTime? end
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 start,
                 end
@@ -5479,7 +5467,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -5492,7 +5480,7 @@ namespace CmsData
             [Parameter(Name = "baseX", DbType="int")] int? baseX
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 val,
                 baseX
@@ -5509,7 +5497,7 @@ namespace CmsData
             [Parameter(Name = "phone", DbType="nvarchar")] string phone
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 first,
                 last,
@@ -5525,7 +5513,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -5537,7 +5525,7 @@ namespace CmsData
             [Parameter(Name = "dtin", DbType="varchar")] string dtin
             )
 		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
+			return ((DateTime?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 dtin
                 ).ReturnValue));
@@ -5551,7 +5539,7 @@ namespace CmsData
             [Parameter(Name = "dt", DbType="datetime")] DateTime? dt
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 pid,
@@ -5564,7 +5552,7 @@ namespace CmsData
 		public string GetSecurityCode(
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod()))
                 ).ReturnValue));
 		}
@@ -5577,7 +5565,7 @@ namespace CmsData
             [Parameter(Name = "fundid", DbType="int")] int? fundid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid,
                 days,
@@ -5593,7 +5581,7 @@ namespace CmsData
             [Parameter(Name = "fundid", DbType="int")] int? fundid
             )
 		{
-			return ((decimal?)(this.ExecuteMethodCall(this, 
+			return ((decimal?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid,
                 days,
@@ -5607,7 +5595,7 @@ namespace CmsData
             [Parameter(Name = "oid", DbType="int")] int? oid
             )
 		{
-			return ((decimal?)(this.ExecuteMethodCall(this, 
+			return ((decimal?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid
                 ).ReturnValue));
@@ -5619,7 +5607,7 @@ namespace CmsData
             [Parameter(Name = "PhoneNumber", DbType="nvarchar")] string PhoneNumber
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 PhoneNumber
                 ).ReturnValue));
@@ -5631,7 +5619,7 @@ namespace CmsData
             [Parameter(Name = "oid", DbType="int")] int? oid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid
                 ).ReturnValue));
@@ -5644,7 +5632,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 pid
@@ -5657,7 +5645,7 @@ namespace CmsData
             [Parameter(Name = "oid", DbType="int")] int? oid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid
                 ).ReturnValue));
@@ -5671,7 +5659,7 @@ namespace CmsData
             [Parameter(Name = "group", DbType="bit")] bool? group
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 attended,
                 membertypeid,
@@ -5686,7 +5674,7 @@ namespace CmsData
             [Parameter(Name = "field", DbType="nvarchar")] string field
             )
 		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
+			return ((DateTime?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid,
                 field
@@ -5699,7 +5687,7 @@ namespace CmsData
             [Parameter(Name = "Str", DbType="nvarchar")] string Str
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 Str
                 ).ReturnValue));
@@ -5711,7 +5699,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -5723,7 +5711,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -5735,7 +5723,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -5748,7 +5736,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((decimal?)(this.ExecuteMethodCall(this, 
+			return ((decimal?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 pid
@@ -5761,7 +5749,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -5773,7 +5761,7 @@ namespace CmsData
             [Parameter(Name = "oid", DbType="int")] int? oid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid
                 ).ReturnValue));
@@ -5786,7 +5774,7 @@ namespace CmsData
             [Parameter(Name = "attr", DbType="int")] int? attr
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 t,
                 attr
@@ -5800,7 +5788,7 @@ namespace CmsData
             [Parameter(Name = "attr", DbType="int")] int? attr
             )
 		{
-			return ((decimal?)(this.ExecuteMethodCall(this, 
+			return ((decimal?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 t,
                 attr
@@ -5814,7 +5802,7 @@ namespace CmsData
             [Parameter(Name = "attr", DbType="int")] int? attr
             )
 		{
-			return ((decimal?)(this.ExecuteMethodCall(this, 
+			return ((decimal?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 t,
                 attr
@@ -5827,7 +5815,7 @@ namespace CmsData
             [Parameter(Name = "s", DbType="nvarchar")] string s
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 s
                 ).ReturnValue));
@@ -5841,7 +5829,7 @@ namespace CmsData
             [Parameter(Name = "fundid", DbType="int")] int? fundid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid,
                 days,
@@ -5857,7 +5845,7 @@ namespace CmsData
             [Parameter(Name = "threshold", DbType="money")] decimal? threshold
             )
 		{
-			return ((decimal?)(this.ExecuteMethodCall(this, 
+			return ((decimal?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 t,
                 attr,
@@ -5873,7 +5861,7 @@ namespace CmsData
             [Parameter(Name = "fundid", DbType="int")] int? fundid
             )
 		{
-			return ((decimal?)(this.ExecuteMethodCall(this, 
+			return ((decimal?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid,
                 days,
@@ -5887,7 +5875,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -5899,7 +5887,7 @@ namespace CmsData
             [Parameter(Name = "fid", DbType="int")] int? fid
             )
 		{
-			return ((bool?)(this.ExecuteMethodCall(this, 
+			return ((bool?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 fid
                 ).ReturnValue));
@@ -5911,7 +5899,7 @@ namespace CmsData
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
@@ -5925,7 +5913,7 @@ namespace CmsData
             [Parameter(Name = "max", DbType="int")] int? max
             )
 		{
-			return ((decimal?)(this.ExecuteMethodCall(this, 
+			return ((decimal?)(this.ExecuteMethodCall(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 t,
                 min,
@@ -5935,7 +5923,7 @@ namespace CmsData
 
     #endregion
 	#region Stored Procedures
-		
+
 		[Function(Name="dbo.NextSecurityCode")]
 		public ISingleResult< SecurityCode> NextSecurityCode(
             [Parameter(Name = "dt", DbType="datetime")] DateTime? dt

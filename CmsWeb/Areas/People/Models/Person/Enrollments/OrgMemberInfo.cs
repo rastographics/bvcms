@@ -26,13 +26,13 @@ namespace CmsWeb.Areas.People.Models
         public bool HasDirectory { get; set; }
         public bool IsLeaderAttendanceType { get; set; }
 
-        public List<OrgMemberInfo> ChildOrgs { get; set; } 
+        public List<OrgMemberInfo> ChildOrgs { get; set; }
 
         public string Schedule => $"{MeetingTime:ddd h:mm tt}";
         public string SchComma => MeetingTime.HasValue ? ", " : "";
         public string LocComma => Location.HasValue() ? ", " : "";
 
-        private IEnumerable<OrganizationExtra> _extraFields; 
+        private IEnumerable<OrganizationExtra> _extraFields;
         public string GetColumnValue(InvolvementTableColumn column, bool inAccessRole, bool inOrgLeadersOnlyRole)
         {
             var field = column.Field.ToLower();
@@ -43,10 +43,10 @@ namespace CmsWeb.Areas.People.Models
                     return OrgId.ToString();
                 case "name":
                 case "organization":
-                    if (inAccessRole && 
+                    if (inAccessRole &&
                         (IsLeaderAttendanceType || !inOrgLeadersOnlyRole || !DbUtil.Db.Setting("UX-OrgLeadersOtherGroupsContentOnly", false)))
                     {
-                        return $"<a href=\"{Util2.Org}/{OrgId}\">{Name}</a>";
+                        return $"<a href=\"/Org/{OrgId}\">{Name}</a>";
                     }
                     else if (column.Page != "Current")
                     {
