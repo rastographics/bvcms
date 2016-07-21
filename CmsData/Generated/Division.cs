@@ -47,6 +47,8 @@ namespace CmsData
 		
    		private EntitySet< ProgDiv> _ProgDivs;
 		
+   		private EntitySet< Resource> _Resources;
+		
    		private EntitySet< Promotion> _FromPromotions;
 		
    		private EntitySet< Promotion> _ToPromotions;
@@ -102,6 +104,8 @@ namespace CmsData
 			this._Organizations = new EntitySet< Organization>(new Action< Organization>(this.attach_Organizations), new Action< Organization>(this.detach_Organizations)); 
 			
 			this._ProgDivs = new EntitySet< ProgDiv>(new Action< ProgDiv>(this.attach_ProgDivs), new Action< ProgDiv>(this.detach_ProgDivs)); 
+			
+			this._Resources = new EntitySet< Resource>(new Action< Resource>(this.attach_Resources), new Action< Resource>(this.detach_Resources)); 
 			
 			this._FromPromotions = new EntitySet< Promotion>(new Action< Promotion>(this.attach_FromPromotions), new Action< Promotion>(this.detach_FromPromotions)); 
 			
@@ -384,6 +388,16 @@ namespace CmsData
    		}
 
 		
+   		[Association(Name="FK_Resource_Division", Storage="_Resources", OtherKey="DivisionId")]
+   		public EntitySet< Resource> Resources
+   		{
+   		    get { return this._Resources; }
+
+			set	{ this._Resources.Assign(value); }
+
+   		}
+
+		
    		[Association(Name="FromPromotions__FromDivision", Storage="_FromPromotions", OtherKey="FromDivId")]
    		public EntitySet< Promotion> FromPromotions
    		{
@@ -513,6 +527,19 @@ namespace CmsData
 		}
 
 		private void detach_ProgDivs(ProgDiv entity)
+		{
+			this.SendPropertyChanging();
+			entity.Division = null;
+		}
+
+		
+		private void attach_Resources(Resource entity)
+		{
+			this.SendPropertyChanging();
+			entity.Division = this;
+		}
+
+		private void detach_Resources(Resource entity)
 		{
 			this.SendPropertyChanging();
 			entity.Division = null;

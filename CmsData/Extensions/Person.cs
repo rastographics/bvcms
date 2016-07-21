@@ -1371,6 +1371,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                     BundleTotal = 0
                 };
                 db.BundleHeaders.InsertOnSubmit(bundle);
+                db.SubmitChanges();
             }
             if (!fund.HasValue)
                 fund = db.Setting("DefaultFundId", "1").ToInt();

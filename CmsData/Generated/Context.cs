@@ -562,6 +562,22 @@ namespace CmsData
         partial void UpdateResidentCode(ResidentCode instance);
         partial void DeleteResidentCode(ResidentCode instance);
         
+        partial void InsertResource(Resource instance);
+        partial void UpdateResource(Resource instance);
+        partial void DeleteResource(Resource instance);
+        
+        partial void InsertResourceAttachment(ResourceAttachment instance);
+        partial void UpdateResourceAttachment(ResourceAttachment instance);
+        partial void DeleteResourceAttachment(ResourceAttachment instance);
+        
+        partial void InsertResourceCategory(ResourceCategory instance);
+        partial void UpdateResourceCategory(ResourceCategory instance);
+        partial void DeleteResourceCategory(ResourceCategory instance);
+        
+        partial void InsertResourceType(ResourceType instance);
+        partial void UpdateResourceType(ResourceType instance);
+        partial void DeleteResourceType(ResourceType instance);
+        
         partial void InsertRole(Role instance);
         partial void UpdateRole(Role instance);
         partial void DeleteRole(Role instance);
@@ -1557,6 +1573,30 @@ namespace CmsData
 		public Table< ResidentCode> ResidentCodes
 		{
 			get	{ return this.GetTable< ResidentCode>(); }
+
+		}
+
+		public Table< Resource> Resources
+		{
+			get	{ return this.GetTable< Resource>(); }
+
+		}
+
+		public Table< ResourceAttachment> ResourceAttachments
+		{
+			get	{ return this.GetTable< ResourceAttachment>(); }
+
+		}
+
+		public Table< ResourceCategory> ResourceCategories
+		{
+			get	{ return this.GetTable< ResourceCategory>(); }
+
+		}
+
+		public Table< ResourceType> ResourceTypes
+		{
+			get	{ return this.GetTable< ResourceType>(); }
 
 		}
 

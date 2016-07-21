@@ -31,6 +31,8 @@ namespace CmsData
 		
    		private EntitySet< Person> _People;
 		
+   		private EntitySet< Resource> _Resources;
+		
     	
 	#endregion
 	
@@ -58,6 +60,8 @@ namespace CmsData
 			this._Organizations = new EntitySet< Organization>(new Action< Organization>(this.attach_Organizations), new Action< Organization>(this.detach_Organizations)); 
 			
 			this._People = new EntitySet< Person>(new Action< Person>(this.attach_People), new Action< Person>(this.detach_People)); 
+			
+			this._Resources = new EntitySet< Resource>(new Action< Resource>(this.attach_Resources), new Action< Resource>(this.detach_Resources)); 
 			
 			
 			OnCreated();
@@ -178,6 +182,16 @@ namespace CmsData
    		}
 
 		
+   		[Association(Name="FK_Resource_Campus", Storage="_Resources", OtherKey="CampusId")]
+   		public EntitySet< Resource> Resources
+   		{
+   		    get { return this._Resources; }
+
+			set	{ this._Resources.Assign(value); }
+
+   		}
+
+		
 	#endregion
 	
 	#region Foreign Keys
@@ -219,6 +233,19 @@ namespace CmsData
 		}
 
 		private void detach_People(Person entity)
+		{
+			this.SendPropertyChanging();
+			entity.Campu = null;
+		}
+
+		
+		private void attach_Resources(Resource entity)
+		{
+			this.SendPropertyChanging();
+			entity.Campu = this;
+		}
+
+		private void detach_Resources(Resource entity)
 		{
 			this.SendPropertyChanging();
 			entity.Campu = null;
