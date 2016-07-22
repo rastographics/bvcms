@@ -3,10 +3,19 @@
 @model SmallGroupFinderModel
 @{
     var mapModel = new SGMapModel(Model.getGroups());
+
+    var latitude = double.Parse(Model.getSetting("Latitude")?.value ?? "40.757577");
+    var longitude = double.Parse(Model.getSetting("Longitude")?.value ?? "-73.969246");
+    var mapZoom = int.Parse(Model.getSetting("MapZoom")?.value ?? "12");
 }
 
 <div class="row map-content">
     @Html.Raw(Html.Json("markers", mapModel.Locations()))
+    <script type="text/javascript">
+        var latitude = @latitude;
+        var longitude = @longitude;
+        var mapZoom = @mapZoom;
+    </script>
     <div class="col-md-6">
         <div id="map" class="map">
         </div>

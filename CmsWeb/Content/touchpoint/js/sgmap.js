@@ -32,9 +32,9 @@ $(function () {
         map.fitBounds(bounds);
 
         google.maps.event.addListenerOnce(map, 'idle', function(){
-            var center = new google.maps.LatLng(40.757577, -73.969246);
+            var center = new google.maps.LatLng(latitude, longitude);
             map.setCenter(center);
-            map.setZoom(12);
+            map.setZoom(mapZoom);
         });
     }
 

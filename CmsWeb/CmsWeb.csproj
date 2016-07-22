@@ -1552,7 +1552,6 @@
     <Content Include="Areas\Search\Views\SearchAdd\SearchOrganization.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\ResultsOrganization.cshtml" />
     <Content Include="Areas\Org\Views\Org\Contacts.cshtml" />
-    <Content Include="Areas\Public\Views\SmallGroupFinder\Map.cshtml" />
     <Content Include="Areas\Public\Views\SmallGroupFinder\MapIndex.cshtml" />
     <Content Include="Areas\Public\Views\OrgContent\Directory.cshtml" />
     <Content Include="Areas\Public\Views\SmallGroupFinder\MapShell.cshtml" />
@@ -1562,7 +1561,6 @@
     <Content Include="Areas\Manage\Views\Resource\Index.cshtml" />
     <Content Include="Areas\Public\Views\OrgContent\Directory.cshtml" />
     <Content Include="Areas\Public\Views\SmallGroupFinder\Map.cshtml" />
-    <Content Include="Areas\Public\Views\SmallGroupFinder\MapIndex.cshtml" />
     <Content Include="Areas\Manage\Views\Resource\Display.cshtml" />
     <Content Include="Areas\Manage\Views\Resource\Edit.cshtml" />
     <Content Include="Areas\Manage\Views\Resource\EditAttachment.cshtml" />
