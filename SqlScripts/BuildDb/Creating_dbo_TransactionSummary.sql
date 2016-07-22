@@ -6,18 +6,20 @@ SELECT
 	,OrganizationId
 	,PeopleId
 	,TranDate
-	,CONVERT(MONEY, ISNULL(TotalAmt,0) * IndPctC) IndAmt
+	,CONVERT(MONEY, ISNULL(TotalFee,0) * IndPctC) IndAmt
 	,TotalAmt
+	,TotalFee
 	,TotPaid
 	,TotCoupon
-	,(TotalAmt - TotPaid - Donation) TotDue
+	,(TotalFee - TotPaid) TotDue
 	,CONVERT(MONEY, (IndPctC * TotPaid)) IndPaid
-	,CONVERT(MONEY, (IndPctC * (ISNULL(TotalAmt,0) - TotPaid - Donation))) IndDue
+	,CONVERT(MONEY, (IndPctC * (ISNULL(TotalFee,0) - TotPaid))) IndDue
 	,IndPctC
 	,NumPeople
 	,isdeposit
 	,iscoupon
 	,Donation
+	,IsDonor
 
 FROM (
 	SELECT 
@@ -38,6 +40,13 @@ FROM (
 					AND ISNULL(AdjustFee, 0) = 1), 0) 
 			+ ISNULL(ot.amt, 0) + ISNULL(ot.amtdue, 0)
 			TotalAmt
+
+		,-ISNULL((SELECT SUM(Amt - ISNULL(donate, 0)) 
+					FROM dbo.[Transaction] 
+					WHERE OriginalId = om.TranId 
+					AND ISNULL(AdjustFee, 0) = 1), 0) 
+			+ ISNULL(ot.amt, 0) + ISNULL(ot.amtdue, 0) - ISNULL(ot.donate, 0)
+			TotalFee
 
 		,ISNULL((SELECT SUM(amt - ISNULL(donate, 0)) 
 			FROM dbo.[Transaction] 
@@ -76,11 +85,14 @@ FROM (
 					WHERE OriginalId = om.TranId AND donate > 0), 0) 
 			Donation
 
+		,ISNULL(tp.donor, 1) IsDonor
+
 	FROM dbo.TransactionPeople tp
 	JOIN dbo.[Transaction] ot ON ot.Id = tp.Id
 	JOIN dbo.OrganizationMembers om ON om.TranId = ot.Id AND tp.PeopleId = om.PeopleId AND om.OrganizationId = tp.OrgId
 	JOIN dbo.Organizations o ON o.OrganizationId = om.OrganizationId
 ) tt
+
 
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
