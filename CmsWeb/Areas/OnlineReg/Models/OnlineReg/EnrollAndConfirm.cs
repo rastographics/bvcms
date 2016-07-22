@@ -371,12 +371,14 @@ Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
                     continue;
                 if (transactionPeople.Any(pp => pp.PeopleId == p.PeopleId))
                     continue;
-                transactionPeople.Add(new TransactionPerson
+                var tp = new TransactionPerson
                 {
                     PeopleId = p.PeopleId.Value,
                     Amt = p.TotalAmount(),
                     OrgId = p.orgid ?? Orgid
-                });
+                };
+                tp.Donor = Transaction.Donate > 0 && p == List[donor ?? 0];
+                transactionPeople.Add(tp);
             }
 
             if (SupportMissionTrip && GoerId == _list[0].PeopleId)

@@ -26,6 +26,8 @@ namespace CmsData
 		
 		private int? _OrgId;
 		
+		private bool? _Donor;
+		
    		
     	
 		private EntityRef< Person> _Person;
@@ -50,6 +52,9 @@ namespace CmsData
 		
 		partial void OnOrgIdChanging(int? value);
 		partial void OnOrgIdChanged();
+		
+		partial void OnDonorChanging(bool? value);
+		partial void OnDonorChanged();
 		
     #endregion
 		public TransactionPerson()
@@ -155,6 +160,28 @@ namespace CmsData
 					this._OrgId = value;
 					this.SendPropertyChanged("OrgId");
 					this.OnOrgIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Donor", UpdateCheck=UpdateCheck.Never, Storage="_Donor", DbType="bit")]
+		public bool? Donor
+		{
+			get { return this._Donor; }
+
+			set
+			{
+				if (this._Donor != value)
+				{
+				
+                    this.OnDonorChanging(value);
+					this.SendPropertyChanging();
+					this._Donor = value;
+					this.SendPropertyChanged("Donor");
+					this.OnDonorChanged();
 				}
 
 			}

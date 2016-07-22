@@ -28,6 +28,8 @@ namespace CmsData.View
 		
 		private decimal? _TotalAmt;
 		
+		private decimal? _TotalFee;
+		
 		private decimal _TotPaid;
 		
 		private decimal _TotCoupon;
@@ -47,6 +49,8 @@ namespace CmsData.View
 		private bool? _Iscoupon;
 		
 		private decimal _Donation;
+		
+		private bool _IsDonor;
 		
 		
 		public TransactionSummary()
@@ -152,6 +156,23 @@ namespace CmsData.View
 			{
 				if (this._TotalAmt != value)
 					this._TotalAmt = value;
+			}
+
+		}
+
+		
+		[Column(Name="TotalFee", Storage="_TotalFee", DbType="money")]
+		public decimal? TotalFee
+		{
+			get
+			{
+				return this._TotalFee;
+			}
+
+			set
+			{
+				if (this._TotalFee != value)
+					this._TotalFee = value;
 			}
 
 		}
@@ -322,6 +343,23 @@ namespace CmsData.View
 			{
 				if (this._Donation != value)
 					this._Donation = value;
+			}
+
+		}
+
+		
+		[Column(Name="IsDonor", Storage="_IsDonor", DbType="bit NOT NULL")]
+		public bool IsDonor
+		{
+			get
+			{
+				return this._IsDonor;
+			}
+
+			set
+			{
+				if (this._IsDonor != value)
+					this._IsDonor = value;
 			}
 
 		}

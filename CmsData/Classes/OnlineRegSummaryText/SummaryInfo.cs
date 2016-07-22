@@ -110,15 +110,14 @@ namespace CmsData.OnlineRegSummaryText
                 return;
             var ts = OrgMember.TransactionSummary(db);
             var amtFee = (ts.IndPaid + ts.IndDue);
-            var amtDonation = ts.IndAmt - amtFee;
+            var amtDonation = ts.IsDonor ? ts.Donation : 0;
             var info = new
             {
                 AmtFee = amtFee.ToString2("c"),
-                AmtDonation = amtDonation.ToString2("c"),
+                AmtDonation = amtDonation.ToString("c"),
                 AmtPaid = OrgMember.AmountPaidTransactions(db).ToString2("c"),
                 AmtDue = OrgMember.AmountDueTransactions(db).ToString2("c"),
-
-                HasDonation = amtDonation.HasValue,
+                HasDonation = ts.IsDonor,
             };
             options.Template(writer, info);
         }

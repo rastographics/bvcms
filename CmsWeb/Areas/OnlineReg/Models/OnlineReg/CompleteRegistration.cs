@@ -46,7 +46,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             var pf = PaymentForm.CreatePaymentForm(this);
 
-#if DEBUG
+#if DEBUG2
             pf.CheckTesting();
 #endif
             Log("PaymentForm");

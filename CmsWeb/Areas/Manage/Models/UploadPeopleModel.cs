@@ -186,7 +186,9 @@ namespace CmsWeb.Models
         public bool DoUpload(string text, bool testing = false)
         {
             var rt = Db2.UploadPeopleRuns.OrderByDescending(mm => mm.Id).First();
-            var csv = new CsvReader(new StringReader(text), false, '\t');
+            var sep = text.First(vv => new char[] {'\t', ','}.Contains(vv));
+            var csv = new CsvReader(new StringReader(text), false, sep);
+            csv.SupportsMultiline = true;
             var list = csv.ToList();
 
             var list0 = list.First().Select(kk => kk).ToList();
