@@ -57,7 +57,7 @@ namespace CmsWeb.Areas.Public.Models
 			var sr = new StringReader(xml);
 			_sgf = (SmallGroupFinder)xs.Deserialize(sr);
 
-			var divs = _sgf.divisionid.Split(',');
+			var divs = _sgf.divisionid?.Split(',') ?? new string [] {};
 			foreach (var div in divs)
 			{
 				_divList.Add(Convert.ToInt32(div));
@@ -214,9 +214,10 @@ namespace CmsWeb.Areas.Public.Models
                 }
                 else if (f.name == "Campus")
                 {
+                    var campusExclusions = f.exclude?.Split(',') ?? new string [] {};
 			        i = (from campus in DbUtil.Db.Campus
                          orderby campus.Description
-                         where !f.exclude.Split(',').Contains(campus.Description)
+                         where !campusExclusions.Contains(campus.Description)
 			            select new FilterItem
 			            {
 			                value = campus.Description

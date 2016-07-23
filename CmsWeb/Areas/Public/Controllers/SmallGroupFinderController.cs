@@ -23,7 +23,11 @@ namespace CmsWeb.Areas.Public.Controllers
 
             // Process shell here
             if (sgfm.hasShell())
-                return Content(sgfm.createFromShell());
+            {
+                var template = sgfm.createFromShell();
+                ViewBag.Shell = template;
+                return View("MapShell", sgfm);
+            }
 
             if (DbUtil.Db.Setting("SGF-UseEmbeddedMap", false))
             {
