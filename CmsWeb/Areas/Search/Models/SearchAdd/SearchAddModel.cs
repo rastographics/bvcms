@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
+using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Code;
@@ -158,13 +159,16 @@ namespace CmsWeb.Areas.Search.Models
 
         public PendingPersonModel NewPerson(int familyid)
         {
+            var campuses = DbUtil.Db.Setting("CampusRequired", "false") == "true" 
+                ? new SelectList(new CodeValueModel().AllCampuses(), "Id", "Value") 
+                : new SelectList(new CodeValueModel().AllCampusesNo(), "Id", "Value");
             var p = new PendingPersonModel
             {
                 FamilyId = familyid,
                 index = PendingList.Count,
                 Gender = new CodeInfo(99, "Gender"),
                 MaritalStatus = new CodeInfo(99, "MaritalStatus"),
-                Campus = new CodeInfo(CampusId, "Campus"),
+                Campus = new CodeInfo(CampusId, campuses),
                 EntryPoint = new CodeInfo(EntryPointId, "EntryPoint"),
                 context = AddContext
             };

@@ -10,11 +10,13 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpGet]
         public JsonResult Campuses()
         {
-            Response.SetCacheMinutes(5);
             var q = from c in DbUtil.Db.Campus
                     select new { value = c.Id, text = c.Description };
             var list = q.ToList();
-            list.Insert(0, new { value = 0, text = "(not specified)" });
+            if (DbUtil.Db.Setting("CampusRequired", "false") != "true" 
+                    || DbUtil.Db.CurrentUser.Roles.Length != 0)
+                // MyData user cannot use (not specified)
+                list.Insert(0, new { value = 0, text = "(not specified)" });
             return Json(list.ToArray(), JsonRequestBehavior.AllowGet);
         }
         [HttpGet]

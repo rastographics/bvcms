@@ -235,7 +235,7 @@ Your registration will become **available** on this date and time *(Central Time
 Your registration will become **unavailable** on this date and time *(Central Time Zone)*
 ";
         private const string MasterOrgDescription = @"
-This is the parent Organization for a group of sub-registrations like this one
+This is the master organization which serves as the entrypoint for a group of sub-registrations like this one
 ";
         private const string PickListDescription = @"
 This is used on the master organization and will become the dropdown for 'User Chooses Organization'.
