@@ -264,9 +264,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             var details = ViewExtensions2.RenderPartialViewToString(controller, "ManageGiving/EmailConfirmation", this);
 
-            var staff = DbUtil.Db.StaffPeopleForOrg(orgid)[0];
-            var notify = Util.EmailAddressListFromString(DbUtil.Db.StaffEmailForOrg(orgid));
-            var from = notify[0];
+            var staff = DbUtil.Db.StaffPeopleForOrg(orgid);
+            var from = staff[0];
 
             if (!string.IsNullOrEmpty(Setting.Body))
             {
@@ -276,15 +275,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 text = text.Replace("{date}", DateTime.Now.ToString("d"), ignoreCase: true);
                 text = text.Replace("{email}", person.EmailAddress, ignoreCase: true);
                 text = text.Replace("{phone}", person.HomePhone.FmtFone(), ignoreCase: true);
-                text = text.Replace("{contact}", staff.Name, ignoreCase: true);
-                text = text.Replace("{contactemail}", staff.EmailAddress, ignoreCase: true);
+                text = text.Replace("{contact}", from.Name, ignoreCase: true);
+                text = text.Replace("{contactemail}", from.EmailAddress, ignoreCase: true);
                 text = text.Replace("{contactphone}", Organization.PhoneNumber.FmtFone(), ignoreCase: true);
                 text = text.Replace("{details}", details, ignoreCase: true);
 
-                DbUtil.Db.EmailFinanceInformation(from, person, Setting.Subject, text);
+                DbUtil.Db.EmailFinanceInformation(from.FromEmail, person, Setting.Subject, text);
             }
 
-            DbUtil.Db.EmailFinanceInformation(from, staff, notify, "Managed giving", $"Managed giving for {person.Name} ({pid})");
+            DbUtil.Db.EmailFinanceInformation(from.FromEmail, staff, "Managed giving", $"Managed giving for {person.Name} ({pid})");
 
             var msg = GetThankYouMessage(@"<p>Thank you {first}, for managing your recurring giving</p>
 <p>You should receive a confirmation email shortly.</p>");

@@ -71,6 +71,16 @@ namespace UtilityExtensions
             return "";
         }
 
+        public static string ToSortableDateTime(this DateTime dt)
+        {
+            return dt.ToString("yyyy-MM-dd HHmmss");
+        }
+
+        public static string ToSortableDateTime(this DateTime? dt)
+        {
+            return dt.ToString2("yyyy-MM-dd HHmmss");
+        }
+
         public static string ToSortableDate(this DateTime dt)
         {
             return dt.ToString("yyyy-MM-dd");
@@ -78,7 +88,7 @@ namespace UtilityExtensions
 
         public static string ToSortableTime(this DateTime dt)
         {
-            return dt.ToString("hhmmss.ff");
+            return dt.ToString("HHmmss.ff");
         }
 
         public static string ToSortableDate(this DateTime? dt)

@@ -197,6 +197,21 @@ namespace CmsData
                 return Setting("AdminMail", "info@touchpointsoftware.com");
             return q2.SingleOrDefault();
         }
+        public List<MailAddress> StaffEmailsForOrg(int orgid)
+        {
+            var q = from o in Organizations
+                    where o.OrganizationId == orgid
+                    where o.NotifyIds != null && o.NotifyIds != ""
+                    select o.NotifyIds;
+            var pids = string.Join(",", q);
+            var a = pids.SplitStr(",").Select(ss => ss.ToInt()).ToArray();
+            var q2 = from p in People
+                     where p.PeopleId == a[0]
+                     select Util.TryGetMailAddress(p.FromEmail);
+            if (!q2.Any())
+                return Util.ToMailAddressList(Setting("AdminMail", "info@touchpointsoftware.com"));
+            return q2.ToList();
+        }
         public List<Person> StaffPeopleForOrg(int orgid, out bool usedAdmins)
         {
             usedAdmins = false;
