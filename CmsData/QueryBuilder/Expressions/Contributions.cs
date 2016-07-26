@@ -144,20 +144,16 @@ namespace CmsData
                         select g.Key ?? 0;
                     break;
                 case CompareType.Equal:
-                    if (amt == 0) // This is a very special case, use different approach
-                    {
+                    if (amt == 0)
                         q = from pid in db.Contributions0(dt, now, fund, 0, false, taxnontax, true)
                             select pid.PeopleId;
-                        Expression<Func<Person, bool>> pred0 = p => q.Contains(p.PeopleId);
-                        Expression expr0 = Expression.Invoke(pred0, parm);
-                        return expr0;
-                    }
-                    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true)
-                        where fund == 0 || c.FundId == fund
-                        where c.Amount > 0
-                        group c by c.CreditGiverId into g
-                        where g.Sum(cc => cc.Amount) == amt
-                        select g.Key ?? 0;
+                    else
+                        q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true)
+                            where fund == 0 || c.FundId == fund
+                            where c.Amount > 0
+                            group c by c.CreditGiverId into g
+                            where g.Sum(cc => cc.Amount) == amt
+                            select g.Key ?? 0;
                     break;
                 case CompareType.NotEqual:
                     q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true)
@@ -212,19 +208,15 @@ namespace CmsData
                         select g.Key ?? 0;
                     break;
                 case CompareType.Equal:
-                    if (amt == 0) // This is a very special case, use different approach
-                    {
+                    if (amt == 0) // This is a special case, use different approach
                         q = from pid in db.Contributions0(start, end, fund, 0, false, nontaxded, true)
                             select pid.PeopleId;
-                        Expression<Func<Person, bool>> pred0 = p => q.Contains(p.PeopleId);
-                        Expression expr0 = Expression.Invoke(pred0, parm);
-                        return expr0;
-                    }
-                    q = from c in db.Contributions2(start, end, 0, false, nontaxded, true)
-                        where fund == 0 || c.FundId == fund
-                        group c by c.CreditGiverId into g
-                        where g.Sum(cc => cc.Amount) == amt
-                        select g.Key ?? 0;
+                    else
+                        q = from c in db.Contributions2(start, end, 0, false, nontaxded, true)
+                            where fund == 0 || c.FundId == fund
+                            group c by c.CreditGiverId into g
+                            where g.Sum(cc => cc.Amount) == amt
+                            select g.Key ?? 0;
                     break;
                 case CompareType.NotEqual:
                     q = from c in db.Contributions2(start, end, 0, false, nontaxded, true)
