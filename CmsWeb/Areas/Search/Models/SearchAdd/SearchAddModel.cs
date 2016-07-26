@@ -159,16 +159,15 @@ namespace CmsWeb.Areas.Search.Models
 
         public PendingPersonModel NewPerson(int familyid)
         {
-            var campuses = DbUtil.Db.Setting("CampusRequired", "false") == "true" 
-                ? new SelectList(new CodeValueModel().AllCampuses(), "Id", "Value") 
-                : new SelectList(new CodeValueModel().AllCampusesNo(), "Id", "Value");
+            var campuslist = DbUtil.Db.Setting("CampusRequired", "false") == "true" ? "CampusNoNoCampus" : "Campus";
+
             var p = new PendingPersonModel
             {
                 FamilyId = familyid,
                 index = PendingList.Count,
                 Gender = new CodeInfo(99, "Gender"),
                 MaritalStatus = new CodeInfo(99, "MaritalStatus"),
-                Campus = new CodeInfo(CampusId, campuses),
+                Campus = new CodeInfo(CampusId, campuslist),
                 EntryPoint = new CodeInfo(EntryPointId, "EntryPoint"),
                 context = AddContext
             };

@@ -56,7 +56,7 @@ namespace CmsWeb.Code
                     return;
                 name = value;
                 var cv = new CodeValueModel();
-                switch (value)
+                switch (name)
                 {
                     case "State":
                         Items = cv.StateList().ToSelect("Code");
