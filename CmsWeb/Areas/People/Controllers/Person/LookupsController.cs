@@ -13,10 +13,11 @@ namespace CmsWeb.Areas.People.Controllers
             var q = from c in DbUtil.Db.Campus
                     select new { value = c.Id, text = c.Description };
             var list = q.ToList();
-            if (DbUtil.Db.Setting("CampusRequired", "false") != "true" 
-                    || DbUtil.Db.CurrentUser.Roles.Length != 0)
-                // MyData user cannot use (not specified)
-                list.Insert(0, new { value = 0, text = "(not specified)" });
+            list.Insert(0, new { value = 0, text = "(not specified)" });
+            if (DbUtil.Db.Setting("CampusRequired", "false") == "true"
+                && Util.UserPeopleId == Util2.CurrentPeopleId
+                && !User.IsInRole("Admin"))
+                list.RemoveAt(0);
             return Json(list.ToArray(), JsonRequestBehavior.AllowGet);
         }
         [HttpGet]

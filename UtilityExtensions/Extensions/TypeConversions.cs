@@ -181,7 +181,7 @@ namespace UtilityExtensions
         public static string ToSuitableEvName(this string s)
         {
             var a = s.ToSuitableId().Split('_');
-            return string.Join("", a.Select(vv => vv.ToProper()));
+            return string.Join("", a.Select(vv => vv.ToProper())).Truncate(150);
         }
         public static string ToCode(this Guid guid)
         {
