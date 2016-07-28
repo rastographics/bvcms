@@ -775,7 +775,7 @@ namespace CmsWeb.Areas.Public.Controllers
             // Check Entry Point and replace if Check-In
             Person person = DbUtil.Db.People.Where(p => p.PeopleId == cjo.peopleID).FirstOrDefault();
 
-            if (person != null && person.EntryPoint.Code == "CHECKIN" && om != null)
+            if (person != null && person.EntryPoint != null && person.EntryPoint.Code == "CHECKIN" && om != null)
             {
                 person.EntryPoint = om.Organization.EntryPoint;
                 DbUtil.Db.SubmitChanges();
