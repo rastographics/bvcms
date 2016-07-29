@@ -24,7 +24,7 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="resource_Category" class="control-label">Resource Category</label>                            
+                            <label for="resource_Category" class="control-label">Resource Category</label>
                             @Html.DropDownListFor2(x => x.ResourceCategoryId, true, Model.ResourceCategories, null, new { @class = "form-control" })
                             @Html.ValidationMessageFor(x => x.ResourceCategoryId)
                         </div>
@@ -100,7 +100,7 @@
         $(function () {
             $("#add-file-upload")
                 .click(function () {
-                    $("#upload-fields").html($("#upload-fields").html() + '<input name="Files" type="file" value="">');
+                    $("#upload-fields").append('<input name="Files" type="file" value="">');
                 });
 
             $(".select2").select2();
