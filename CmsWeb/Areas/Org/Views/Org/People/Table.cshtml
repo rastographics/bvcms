@@ -26,7 +26,7 @@
                 @Model.SortLink("Church")<br />
                 @if (!hideBirthDate)
                 {
-                    <text>Model.SortLink("Age") - @Model.SortLink("Bday")</text>
+                    <text>@Model.SortLink("Age") - @Model.SortLink("Bday")</text>
                 }
             </th>
             <th>Communication</th>
@@ -92,7 +92,7 @@
                     @p.MemberStatus<br />
                     @if (!hideBirthDate)
                     {
-                        <text>p.Age - p.BirthDate</text>
+                        <text>@p.Age - @p.BirthDate</text>
                     }
                 </td>
                 <td>
