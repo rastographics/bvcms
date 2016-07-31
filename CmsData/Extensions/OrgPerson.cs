@@ -43,16 +43,16 @@ namespace CmsData.View
                     sb.Append("</div>");
                 }
                 return new HtmlString(sb.ToString());
-            } 
+            }
         }
 
         public string Group
         {
-            get 
-            { 
-                return GroupCode == GroupSelectCode.Member ? "Member" 
+            get
+            {
+                return GroupCode == GroupSelectCode.Member ? "Member"
                     : GroupCode == GroupSelectCode.Inactive ? "Inactive"
-                    : "NonMember"; 
+                    : "NonMember";
             }
         }
 
@@ -61,7 +61,7 @@ namespace CmsData.View
         {
             get
             {
-                if(!_hideBirthYearForOrgLeaders.HasValue)
+                if (!_hideBirthYearForOrgLeaders.HasValue)
                     _hideBirthYearForOrgLeaders = DbUtil.Db.Setting("HideBirthYearForOrgLeaders", false);
 
                 if (_hideBirthYearForOrgLeaders.Value && Util.IsInRole("OrgLeadersOnly"))

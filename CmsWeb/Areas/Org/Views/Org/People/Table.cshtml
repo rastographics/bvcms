@@ -6,7 +6,7 @@
 @model CmsWeb.Areas.Org.Models.OrgPeopleModel
 @{
     var target = Util2.TargetLinkPeople ? "target='people'" : "";
-    var hideBirthDate = DbUtil.Db.Setting("HideBirthYearForOrgLeaders", false);
+    var hideBirthDate = DbUtil.Db.Setting("HideBirthYearForOrgLeaders", false) && Util.IsInRole("OrgLeadersOnly");
 }
 <table class="table table-striped">
     <thead>
