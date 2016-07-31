@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Web;
 using CmsData;
 
 namespace CmsWeb.Areas.Manage.Models
@@ -28,22 +26,13 @@ namespace CmsWeb.Areas.Manage.Models
         }
 
         [DisplayName("Organization")]
-        public string OrganizationName
-        {
-            get { return Resource.Organization?.OrganizationName; }
-        }
+        public string OrganizationName => Resource.Organization?.OrganizationName;
 
         [DisplayName("Organization Type")]
-        public string OrganizationTypeName
-        {
-            get { return Resource.OrganizationType?.Description; }
-        }
+        public string OrganizationTypeName => Resource.OrganizationType?.Description;
 
         [DisplayName("Congregation")]
-        public string CampusName
-        {
-            get { return Resource.Campu?.Description; }
-        }
+        public string CampusName => Resource.Campu?.Description;
 
         [DisplayName("Member Types")]
         public string MemberTypes
@@ -58,15 +47,9 @@ namespace CmsWeb.Areas.Manage.Models
         }
 
         [DisplayName("Resource Type")]
-        public string ResourceTypeName
-        {
-            get { return Resource.ResourceType.Name; }
-        }
+        public string ResourceTypeName => Resource.ResourceType.Name;
 
         [DisplayName("Resource Category")]
-        public string ResourceCategoryName
-        {
-            get { return Resource.ResourceCategory.Name; }
-        }
+        public string ResourceCategoryName => Resource.ResourceCategory.Name;
     }
 }

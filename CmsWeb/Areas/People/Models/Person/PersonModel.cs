@@ -217,7 +217,7 @@ namespace CmsWeb.Areas.People.Models
 
                 var memberOrgs = DbUtil.Db.OrganizationMembers.Where(x => x.PeopleId == PeopleId);
 
-                var orgLevels = memberOrgs.ToDictionary(x => x.OrganizationId, x => x.MemberType.Description);
+                var orgLevels = memberOrgs.ToDictionary(x => x.OrganizationId, x => x.MemberType.Id);
 
                 var orgIds = orgLevels.Keys.ToList();
 
@@ -250,12 +250,12 @@ namespace CmsWeb.Areas.People.Models
                 // Filter out resources that have an org type the user isn't associated with (thru orgs)
                 resources = resources.Where(x => !x.OrganizationTypeId.HasValue || orgTypeIds.Contains(x.OrganizationTypeId.Value));
 
-                List<Resource> resourceModels = new List<Resource>();
+                var resourceModels = new List<Resource>();
 
                 foreach (var resource in resources)
                 {
                     if (string.IsNullOrEmpty(resource.MemberTypeIds) || !resource.OrganizationId.HasValue ||
-                        resource.MemberTypeIds.Contains(orgLevels[resource.OrganizationId.Value]))
+                        resource.MemberTypeIds.Contains(orgLevels[resource.OrganizationId.Value].ToString()))
                     {
                         resourceModels.Add(resource);
                     }
