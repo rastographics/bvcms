@@ -631,20 +631,20 @@ namespace CmsData
 
         private void NotifySentEmails(string From, string FromName, string subject, int count, int id)
         {
-            if (Setting("sendemail", "true") != "false")
-            {
-                var from = new MailAddress(From, FromName);
-                string subj = "sent emails: " + subject;
-                var link = ServerLink("/Emails/Details/" + id);
-                string body = $@"<a href=""{link}"">{count} emails sent</a>";
-                var sysFromEmail = SysFromEmail;
+            if (!System.Web.Security.Roles.IsUserInRole("Access")) return;
+            if (Setting("sendemail", "true") == "false") return;
 
-                Util.SendMsg(sysFromEmail, CmsHost, from,
-                    subj, body, Util.ToMailAddressList(from), id, null);
-                Util.SendMsg(sysFromEmail, CmsHost, from,
-                    Host + " " + subj, body,
-                    Util.SendErrorsTo(), id, null);
-            }
+            var from = new MailAddress(From, FromName);
+            string subj = "sent emails: " + subject;
+            var link = ServerLink("/Emails/Details/" + id);
+            string body = $@"<a href=""{link}"">{count} emails sent</a>";
+            var sysFromEmail = SysFromEmail;
+
+            Util.SendMsg(sysFromEmail, CmsHost, @from,
+                subj, body, Util.ToMailAddressList(@from), id, null);
+            Util.SendMsg(sysFromEmail, CmsHost, @from,
+                Host + " " + subj, body,
+                Util.SendErrorsTo(), id, null);
         }
 
         private string createClickTracking(int emailID, string input)
