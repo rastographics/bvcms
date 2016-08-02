@@ -56,20 +56,7 @@ namespace CmsData.View
             }
         }
 
-        private static bool? _hideBirthYearForOrgLeaders;
-        public string BirthDate
-        {
-            get
-            {
-                if (!_hideBirthYearForOrgLeaders.HasValue)
-                    _hideBirthYearForOrgLeaders = DbUtil.Db.Setting("HideBirthYearForOrgLeaders", false);
-
-                if (_hideBirthYearForOrgLeaders.Value && Util.IsInRole("OrgLeadersOnly"))
-                    return Util.FormatBirthday(null, BirthMonth, BirthDay);
-
-                return Util.FormatBirthday(BirthYear, BirthMonth, BirthDay);
-            }
-        }
+        public string BirthDate => Util.FormatBirthday(BirthYear, BirthMonth, BirthDay);
 
         public IEnumerable<string> Phones
         {
