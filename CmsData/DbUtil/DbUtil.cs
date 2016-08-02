@@ -328,6 +328,7 @@ namespace CmsData
         public static bool CheckRemoteAccessRole => Db.Setting("CheckRemoteAccessRole", "") == "true";
 
         public const string MiscTagsString = "Misc Tags";
+        // ReSharper disable InconsistentNaming
         public const int TagTypeId_Personal = 1;
         public const int TagTypeId_System = 2;
         public const int TagTypeId_OrgLeadersOnly = 10;
@@ -338,6 +339,7 @@ namespace CmsData
         public const int TagTypeId_Query = 7;
         public const int TagTypeId_Emailer = 8;
         public const int TagTypeId_StatusFlags = 100;
+        // ReSharper restore InconsistentNaming
 
         public static void UpdateValue(this object obj, List<ChangeDetail> psb, string field, object value)
         {

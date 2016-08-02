@@ -44,7 +44,6 @@ namespace UtilityExtensions
                     msg.AddAddr(ma);
 
             msg.Subject = subject;
-            var addrs = string.Join(", ", to.Select(tt => tt.ToString()));
             var badEmailLink = "";
             if (msg.To.Count == 0 && to.Any(tt => tt.Host == "nowhere.name"))
                 return;
@@ -67,9 +66,9 @@ namespace UtilityExtensions
 
             if (cc != null && cc.Count > 0)
             {
-                string cclist = (string.Join(", ", cc));
+                string cclist = string.Join(", ", cc);
 
-                var ccstring = $"<p align='center'><small><i>This email was CC\'d to the email addresses below and they are included in the Reply-To Field.</br>" + cclist + "</i></small></p>";
+                var ccstring = "<p align='center'><small><i>This email was CC\'d to the email addresses below and they are included in the Reply-To Field.</br>" + cclist + "</i></small></p>";
                 html = html + ccstring;
             }
 

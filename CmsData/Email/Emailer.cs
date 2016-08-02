@@ -10,7 +10,7 @@ using CmsData.Codes;
 using UtilityExtensions;
 using System.Linq;
 using System.Collections.Generic;
-using System.Net;
+using System.Configuration;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
 using System.Text;
@@ -18,6 +18,9 @@ using System.Transactions;
 using System.Web;
 using HtmlAgilityPack;
 using SendGrid;
+using SendGrid.Helpers.Mail;
+using TTask = System.Threading.Tasks.Task;
+using MContent = SendGrid.Helpers.Mail.Content;
 
 namespace CmsData
 {
@@ -427,9 +430,9 @@ namespace CmsData
                 if (Setting("sendemail", "true") != "false")
                 {
                     if (aa.Count > 0)
-                        Util.SendMsg(sysFromEmail, CmsHost, from, emailqueue.Subject, text, aa, emailqueue.Id, pid);
+                        SendEmail(from, emailqueue.Subject, text, aa, emailqueue.Id, pid);
                     else
-                        Util.SendMsg(sysFromEmail, CmsHost, from,
+                        SendEmail(from,
                             $"(no email address) {emailqueue.Subject}",
                             $"<p style='color:red'>You are receiving this because there is no email address for {p.Name}({p.PeopleId}). You should probably contact them since they were probably expecting this information.</p>\n{text}",
                             Util.ToMailAddressList(from),
@@ -443,7 +446,7 @@ namespace CmsData
             }
             catch (Exception ex)
             {
-                Util.SendMsg(sysFromEmail, CmsHost, from,
+                SendEmail(from,
                     $"sent emails - error(emailid={emailqueue.Id})", ex.ToString(),
                     Util.ToMailAddressList(from),
                     emailqueue.Id, null);
@@ -487,7 +490,7 @@ namespace CmsData
             var from = Util.FirstAddress(emailqueue.FromAddr, emailqueue.FromName);
             if (!emailqueue.Subject.HasValue() || !emailqueue.Body.HasValue())
             {
-                Util.SendMsg(sysFromEmail, CmsHost, from,
+                SendEmail(from,
                     $"sent emails - error(emailid={emailqueue.Id})", "no subject or body, no emails sent",
                     Util.ToMailAddressList(from),
                     emailqueue.Id, null);
@@ -546,7 +549,7 @@ namespace CmsData
 
                 if (Setting("sendemail", "true") != "false")
                 {
-                    Util.SendMsg(sysFromEmail, CmsHost, from,
+                    SendEmail(from,
                         emailqueue.Subject, text, aa, emailqueue.Id, To.PeopleId, cc: cc);
                     To.Sent = DateTime.Now;
                     SubmitChanges();
@@ -557,11 +560,11 @@ namespace CmsData
                 catch (Exception ex)
                 {
                     var subject = $"sent emails - error:(emailid={emailqueue.Id}) {CmsHost}";
-                    Util.SendMsg(sysFromEmail, CmsHost, from,
+                    SendEmail(from,
                         subject, ex.Message,
                         Util.ToMailAddressList(from),
                         emailqueue.Id, null);
-                    Util.SendMsg(sysFromEmail, CmsHost, from,
+                    SendEmail(from,
                         subject, ex.Message,
                         Util.SendErrorsTo(),
                         emailqueue.Id, null);
@@ -582,7 +585,7 @@ namespace CmsData
                 if (Setting("sendemail", "true") != "false")
                 {
                     List<MailAddress> mal = new List<MailAddress> {ma};
-                    Util.SendMsg(sysFromEmail, CmsHost, from,
+                    SendEmail(from,
                         emailqueue.Subject, body, mal, emailqueue.Id, null, cc: cc);
                 }
 #if DEBUG
@@ -591,11 +594,11 @@ namespace CmsData
                 catch (Exception ex)
                 {
                     var subject = $"sent emails - error:(emailid={emailqueue.Id}) {CmsHost}";
-                    Util.SendMsg(sysFromEmail, CmsHost, from,
+                    SendEmail(from,
                         subject, ex.Message,
                         Util.ToMailAddressList(from),
                         emailqueue.Id, null);
-                    Util.SendMsg(sysFromEmail, CmsHost, from,
+                    SendEmail(from,
                         subject, ex.Message,
                         Util.SendErrorsTo(),
                         emailqueue.Id, null);
@@ -629,21 +632,17 @@ namespace CmsData
             return body;
         }
 
-        private void NotifySentEmails(string From, string FromName, string subject, int count, int id)
+        private void NotifySentEmails(string fromemail, string fromName, string subject, int count, int id)
         {
             if (Setting("sendemail", "true") != "false")
             {
-                var from = new MailAddress(From, FromName);
+                var from = new MailAddress(fromemail, fromName);
                 string subj = "sent emails: " + subject;
                 var link = ServerLink("/Emails/Details/" + id);
                 string body = $@"<a href=""{link}"">{count} emails sent</a>";
-                var sysFromEmail = SysFromEmail;
 
-                Util.SendMsg(sysFromEmail, CmsHost, from,
-                    subj, body, Util.ToMailAddressList(from), id, null);
-                Util.SendMsg(sysFromEmail, CmsHost, from,
-                    Host + " " + subj, body,
-                    Util.SendErrorsTo(), id, null);
+                SendEmail(from, subj, body, Util.ToMailAddressList(from), id, null);
+                SendEmail(from, Host + " " + subj, body, Util.SendErrorsTo(), id, null);
             }
         }
 
@@ -694,28 +693,111 @@ namespace CmsData
             return Convert.ToBase64String(data, 0, data.Length);
         }
 
-        public void SendGrid(string sysFromEmail, string cmsHost, MailAddress fromaddr, string subject, string message, List<MailAddress> to, int id, int? pid)
+        public void SendEmail(MailAddress fromAddress, string subject, string message, List<MailAddress> to, int id, int? pid, List<MailAddress> cc = null)
         {
+            if(Setting("SendGridAPIKey", "").HasValue() || Setting("UseSendGridApi", "false") == "true")
+                SendGridMsg(fromAddress, subject, message, to, id, pid, cc).Wait();
+            else
+                Util.SendMsg(SysFromEmail, CmsHost, fromAddress, subject, message, to, id, pid, cc: cc);
+        }
+        public async TTask SendGridMsg(MailAddress from, string subject, string message, List<MailAddress> to, int id, int? pid, List<MailAddress> cc = null)
+        {
+            //#if DEBUG
+            //            Util.SendMsg(SysFromEmail, CmsHost, fromAddress, subject, message, to, id, pid, cc: cc);
+            //#endif
+            if (ConfigurationManager.AppSettings["sendemail"] == "false")
+                return;
+            var senderrorsto = ConfigurationManager.AppSettings["senderrorsto"];
+
+            var apiKey = Setting("SendGridAPIKey", ConfigurationManager.AppSettings["SendGridAPIKeyTpsdb"]);
+
+            dynamic sg = new SendGridAPIClient(apiKey);
+
+            if (from == null)
+                from = Util.FirstAddress(senderrorsto);
+
+            var sysFromEmail = SysFromEmail;
+            if (!sysFromEmail.HasValue())
+                sysFromEmail = "mailer@bvcms.com"; // change this to tpsdb.com when ready
+
+            var mail = new Mail
+            {
+                From = new Email(sysFromEmail, from.DisplayName),
+                Subject = subject,
+                ReplyTo = new Email(from.Address, from.DisplayName)
+            };
+            var pe = new Personalization();
+            foreach (var ma in to)
+                if (ma.Host != "nowhere.name" || Util.IsInRoleEmailTest)
+                    pe.AddTo(new Email(ma.Address, ma.DisplayName));
+
+            if (cc?.Count > 0)
+            {
+                string cclist = string.Join(",", cc);
+                if (!cc.Any(vv => vv.Address.Equal(from.Address)))
+                    cclist = $"{from.Address},{cclist}";
+                mail.ReplyTo = new Email(cclist);
+            }
+
+            pe.AddHeader("X-SMTPAPI",
+                $"{{\"unique_args\":{{\"host\":\"{CmsHost}\",\"mailid\":\"{id}\",\"pid\":\"{pid}\",\"domain\":\"{sysFromEmail}\"}}}}");
+            pe.AddHeader("X-BVCMS", $"host:{CmsHost}, mailid:{id}, pid:{pid}");
+
+            mail.AddPersonalization(pe);
+
+            if (pe.Tos.Count == 0 && pe.Tos.Any(tt => tt.Address.EndsWith("@nowhere.name")))
+                return;
+            var badEmailLink = "";
+            if (pe.Tos.Count == 0)
+            {
+                pe.AddTo(new Email(from.Address, from.DisplayName));
+                pe.AddTo(new Email(Util.FirstAddress(senderrorsto).Address));
+                mail.Subject += $"-- bad addr for {CmsHost}({pid})";
+                badEmailLink = $"<p><a href='{CmsHost}/Person2/{pid}'>bad addr for</a></p>\n";
+            }
+
+            var regex = new Regex("</?([^>]*)>", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            var text = regex.Replace(message, string.Empty);
+            var html = badEmailLink + message;
+
+            if (cc != null && cc.Count > 0)
+            {
+                var cclist = string.Join(", ", cc);
+                var ccstring = $"<p align='center'><small><i>This email was CC\'d to the email addresses below and they are included in the Reply-To Field.</br>" + cclist + "</i></small></p>";
+                html = html + ccstring;
+            }
+
             try
             {
-                var msg = new SendGridMessage();
-                msg.To = to.ToArray();
-                msg.From = fromaddr;
-                msg.Subject = subject;
-
-                var regex = new Regex("</?([^>]*)>", RegexOptions.IgnoreCase | RegexOptions.Multiline);
-                msg.Text = regex.Replace(message, string.Empty);
-
-                msg.Html = message;
-
-                var credentials = new NetworkCredential(SendGridMailUser, SendGridMailPassword);
-                var transportWeb = new Web(credentials);
-
-                System.Threading.Tasks.Task.WaitAll(transportWeb.DeliverAsync(msg));
+                var result = PreMailer.Net.PreMailer.MoveCssInline(html);
+                html = result.Html;
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine(ex.Message);
+                // ignore Premailer exceptions
+            }
+            /*
+                        if (attachments != null)
+                            foreach (var a in attachments)
+                            {
+                                var attachment = new SendGrid.Helpers.Mail.Attachment();
+                                attachment.Content = "";
+                                attachment.Type = a.ContentType.ToString();
+                                attachment.Filename = "banner.png";
+                                attachment.Disposition = "inline";
+                                attachment.ContentId = "Banner";
+                                mail.AddAttachment(attachment);
+                            }
+            */
+
+            mail.AddContent(new MContent("text/plain", text));
+            mail.AddContent(new MContent("text/html", html));
+
+            dynamic response = await sg.client.mail.send.post(requestBody: mail.Get());
+            if(response.StatusCode != "OK")
+            {
+                var ret = $"statuscode:{response.StatusCode}\n{response.Body.ReadAsStringAsync().Result}\n{response.Headers.ToString()}";
+                ExecuteCommand("insert dbo.ExtraData (Data,Stamp,abandoned) VALUES ({0},GETDATE(),1)", ret);
             }
         }
     }

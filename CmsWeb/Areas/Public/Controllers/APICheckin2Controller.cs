@@ -501,10 +501,8 @@ namespace CmsWeb.Areas.Public.Controllers
                 try
                 {
 
-                    var sysFromEmail = DbUtil.Db.SysFromEmail;
                     var msg = kiosk + " at " + DateTime.Now.ToShortTimeString();
-                    Util.SendMsg(sysFromEmail, DbUtil.Db.CmsHost,
-                        Util.TryGetMailAddress(sysFromEmail),
+                    DbUtil.Db.SendEmail(Util.TryGetMailAddress(DbUtil.AdminMail),
                         "Printer Problem", msg, Util.ToMailAddressList(address), 0, null);
                 }
                 catch (Exception)

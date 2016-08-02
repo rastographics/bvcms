@@ -263,11 +263,11 @@ namespace CmsWeb.Areas.Org.Models
                 var supportlink = DbUtil.Db.ServerLink($"/OnlineReg/{OrgId}?gsid={gs.Id}");
                 text = text.Replace("http://supportlink", supportlink, true);
                 text = text.Replace("https://supportlink", supportlink, true);
-                Util.SendMsg(sysFromEmail, DbUtil.Db.CmsHost, from, Subject, text, Util.ToMailAddressList(gs.NoDbEmail), gs.Id, null);
+                DbUtil.Db.SendEmail(from, Subject, text, Util.ToMailAddressList(gs.NoDbEmail), gs.Id, null);
             }
             catch (Exception ex)
             {
-                Util.SendMsg(sysFromEmail, DbUtil.Db.CmsHost, from, "sent emails - error", ex.ToString(),
+                DbUtil.Db.SendEmail(from, "sent emails - error", ex.ToString(),
                     Util.ToMailAddressList(from), gs.Id, null);
                 throw;
             }

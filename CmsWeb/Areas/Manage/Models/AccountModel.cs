@@ -548,7 +548,7 @@ namespace CmsWeb.Models
                         msg = msg.Replace("{first}", p.PreferredName);
                         msg = msg.Replace("{email}", username);
                         msg = msg.Replace("{resetlink}", url);
-                        Util.SendMsg(DbUtil.Db.SysFromEmail, DbUtil.Db.CmsHost, Util.FirstAddress(DbUtil.AdminMail),
+                        DbUtil.Db.SendEmail(Util.FirstAddress(DbUtil.AdminMail),
                             "touchpointsoftware new password link", msg, Util.ToMailAddressList(p.EmailAddress ?? p.EmailAddress2), 0, null);
                     }
                     DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
@@ -564,7 +564,7 @@ namespace CmsWeb.Models
 
                 msg = DbUtil.Db.ContentHtml("ForgotPasswordBadEmail", Resource1.AccountModel_ForgotPasswordBadEmail);
                 msg = msg.Replace("{email}", username);
-                Util.SendMsg(DbUtil.Db.SysFromEmail, DbUtil.Db.CmsHost, Util.FirstAddress(DbUtil.AdminMail),
+                DbUtil.Db.SendEmail(Util.FirstAddress(DbUtil.AdminMail),
                     "Forgot password request for " + DbUtil.Db.Setting("NameOfChurch", "bvcms"),
                     msg, Util.ToMailAddressList(username), 0, null);
                 DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
@@ -589,7 +589,7 @@ namespace CmsWeb.Models
             msg = DbUtil.Db.ContentHtml("ForgotPasswordReset2", Resource1.AccountModel_ForgotPasswordReset2);
             msg = msg.Replace("{email}", username);
             msg = msg.Replace("{resetlink}", sb.ToString());
-            Util.SendMsg(DbUtil.Db.SysFromEmail, DbUtil.Db.CmsHost, Util.FirstAddress(DbUtil.AdminMail),
+            DbUtil.Db.SendEmail(Util.FirstAddress(DbUtil.AdminMail),
                 "TouchPoint password reset link", msg, addrlist, 0, null);
             DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
         }

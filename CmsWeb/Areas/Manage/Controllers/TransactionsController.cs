@@ -159,8 +159,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             DbUtil.Db.Transactions.InsertOnSubmit(transaction);
             DbUtil.Db.SubmitChanges();
-            Util.SendMsg(DbUtil.Db.SysFromEmail, Util.Host,
-                Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(transaction.OrgId ?? 0)),
+            DbUtil.Db.SendEmail(Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(transaction.OrgId ?? 0)),
                 "Void/Credit Transaction Type: " + type,
                 $@"<table>
 <tr><td>Name</td><td>{Transaction.FullName(t)}</td></tr>
@@ -254,8 +253,7 @@ DELETE dbo.[Transaction] WHERE Id = {0}
 
             DbUtil.Db.Transactions.InsertOnSubmit(t2);
             DbUtil.Db.SubmitChanges();
-            Util.SendMsg(DbUtil.Db.SysFromEmail, Util.Host,
-                Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(t2.OrgId ?? 0)),
+            DbUtil.Db.SendEmail(Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(t2.OrgId ?? 0)),
                 "Adjustment Transaction",
                 $@"<table>
 <tr><td>Name</td><td>{Transaction.FullName(t)}</td></tr>
