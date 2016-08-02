@@ -9,7 +9,7 @@
     var finance = User.IsInRole("Finance") && ((string)Session["testnofinance"]) != "true";
     var quickbooks = ViewExtensions2.DbSetting("ShowQuickBooksMenu", "false") == "true";
 }
-@if (admin || manageemails || managetrans || edit || design || finance)
+@if (admin || manageemails || managetrans || edit || design || finance || manageResources)
 {
     <li class="dropdown dropdown-large">
         @if (finance)
