@@ -833,16 +833,6 @@ namespace CmsData
             var text = regex.Replace(message, string.Empty);
             var html = badEmailLink + message + CcMessage(cc);
 
-//            try
-//            {
-//                var result = PreMailer.Net.PreMailer.MoveCssInline(html);
-//                html = result.Html;
-//            }
-//            catch
-//            {
-//                // ignore Premailer exceptions
-//            }
-
             mail.AddContent(new MContent("text/plain", text));
             mail.AddContent(new MContent("text/html", html));
 
@@ -900,15 +890,6 @@ namespace CmsData
             msg.AlternateViews.Add(textview);
 
             var html = badEmailLink + message + CcMessage(cc);
-//            try
-//            {
-//                var result = PreMailer.Net.PreMailer.MoveCssInline(html);
-//                html = result.Html;
-//            }
-//            catch
-//            {
-//                // ignore Premailer exceptions
-//            }
             using (var htmlView = AlternateView.CreateAlternateViewFromString(html, Encoding.UTF8, MediaTypeNames.Text.Html))
             {
                 htmlView.TransferEncoding = TransferEncoding.Base64;
@@ -922,7 +903,7 @@ namespace CmsData
             }
         }
 
-        public static SmtpClient Smtp()
+        public SmtpClient Smtp()
         {
             var smtp = new SmtpClient();
             if (ConfigurationManager.AppSettings["requiresSsl"] == "true")
