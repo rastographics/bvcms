@@ -326,6 +326,10 @@ namespace CmsData
         partial void UpdateInterestPoint(InterestPoint instance);
         partial void DeleteInterestPoint(InterestPoint instance);
         
+        partial void InsertIpWarmup(IpWarmup instance);
+        partial void UpdateIpWarmup(IpWarmup instance);
+        partial void DeleteIpWarmup(IpWarmup instance);
+        
         partial void InsertJoinType(JoinType instance);
         partial void UpdateJoinType(JoinType instance);
         partial void DeleteJoinType(JoinType instance);
@@ -1219,6 +1223,12 @@ namespace CmsData
 		public Table< InterestPoint> InterestPoints
 		{
 			get	{ return this.GetTable< InterestPoint>(); }
+
+		}
+
+		public Table< IpWarmup> IpWarmups
+		{
+			get	{ return this.GetTable< IpWarmup>(); }
 
 		}
 

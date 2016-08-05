@@ -21,11 +21,9 @@ else if (Model.Inactive)
 }
 else
 {
-    <div style="max-width: 600px;">
-    @if (!Model.HideBanner)
+    if (!Model.HideBanner)
     {
         <h1><a href="/Org/@Model.OrgId">@Model.OrgName</a></h1>
     }
     @Html.Raw(Model.Html)
-    </div>
 }

@@ -503,7 +503,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
                     var msg = kiosk + " at " + DateTime.Now.ToShortTimeString();
                     DbUtil.Db.SendEmail(Util.TryGetMailAddress(DbUtil.AdminMail),
-                        "Printer Problem", msg, Util.ToMailAddressList(address), 0, null);
+                        "Printer Problem", msg, Util.ToMailAddressList(address));
                 }
                 catch (Exception)
                 {

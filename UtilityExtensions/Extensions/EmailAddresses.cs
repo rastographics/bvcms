@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Linq;
 using System.Configuration;
 using System.Net.Mail;
+using System.Threading;
 using System.Web;
 
 namespace UtilityExtensions
@@ -198,20 +199,7 @@ namespace UtilityExtensions
             var rest = new string('x', acct.Length - 4);
             return rest + acct.Substring(acct.Length - 4);
         }
-        public static SmtpClient Smtp()
-        {
-            var smtp = new SmtpClient();
-            if (ConfigurationManager.AppSettings["requiresSsl"] == "true")
-                smtp.EnableSsl = true;
-            if (SmtpDebug)
-            {
-                smtp.DeliveryMethod = SmtpDeliveryMethod.SpecifiedPickupDirectory;
-                smtp.PickupDirectoryLocation = @"c:\email";
-                smtp.Host = "localhost";
-            }
-            return smtp;
-        }
-        private const string STR_AdminMail = "UnNamed";
+        private const string STR_AdminMail = "AdminMail";
         public static string AdminMail
         {
             get
@@ -226,6 +214,59 @@ namespace UtilityExtensions
             {
                 if (HttpContext.Current != null)
                     HttpContext.Current.Items[STR_AdminMail] = value;
+            }
+        }
+        public static void AddAddr(this MailMessage msg, MailAddress a)
+        {
+            if (IsInRoleEmailTest)
+                a = new MailAddress(UserEmail, a.DisplayName + " (test)");
+            msg.To.Add(a);
+        }
+        private const string STR_UserEmail = "UserEmail";
+
+        public static string UserEmail
+        {
+            get
+            {
+                string email = null;
+                if (HttpContext.Current != null)
+                {
+                    if (HttpContext.Current.Session != null)
+                        if (HttpContext.Current.Session[STR_UserEmail] != null)
+                            email = HttpContext.Current.Session[STR_UserEmail] as String;
+                }
+                else
+                    email = (string) Thread.GetData(Thread.GetNamedDataSlot("UserEmail"));
+                return email;
+            }
+            set
+            {
+                if (HttpContext.Current != null)
+                {
+                    if (HttpContext.Current.Session != null)
+                        HttpContext.Current.Session[STR_UserEmail] = value;
+                }
+                else
+                    Thread.SetData(Thread.GetNamedDataSlot(STR_UserEmail), value);
+            }
+        }
+        public static bool IsInRoleEmailTest
+        {
+            get
+            {
+                if (HttpContext.Current != null)
+                    return HttpContext.Current.User.IsInRole("EmailTest") || ((bool?) HttpContext.Current.Session["IsInRoleEmailTest"] ?? false);
+                return (bool?) Thread.GetData(Thread.GetNamedDataSlot("IsInRoleEmailTest")) ?? false;
+            }
+            set
+            {
+                if (HttpContext.Current != null)
+                {
+                    if (HttpContext.Current.Session != null)
+                        HttpContext.Current.Session["IsInRoleEmailTest"] = value;
+                }
+                else
+                    Thread.SetData(Thread.GetNamedDataSlot("IsInRoleEmailTest"), value);
             }
         }
     }

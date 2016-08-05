@@ -257,8 +257,9 @@ namespace CmsWeb.Areas.Main.Controllers
                 }
                 catch (Exception ex)
                 {
-                    var ex2 = new Exception("Emailing error for queueid " + id, ex);
-                    var errorLog = ErrorLog.GetDefault(null);
+                    var ex2 = new Exception($"Emailing error for queueid {id} on {host}\n{ex.Message}", ex);
+                    var cb = new SqlConnectionStringBuilder(Util.ConnectionString) {InitialCatalog = "ELMAH"};
+                    var errorLog = new SqlErrorLog(cb.ConnectionString) {ApplicationName = "BVCMS"};
                     errorLog.Log(new Error(ex2));
 
                     var db = DbUtil.Create(host);

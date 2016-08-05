@@ -1576,5 +1576,11 @@ namespace CmsData
                 pid, field, strvalue, datevalue, text, intvalue, bitvalue );
             return (int)(result?.ReturnValue ?? 0);
         }
+        [Function(Name = "dbo.TryIpWarmup")]
+        public int TryIpWarmup()
+        {
+            var result = ExecuteMethodCall(this, (MethodInfo)MethodBase.GetCurrentMethod());
+            return (int) (result?.ReturnValue ?? 0);
+        }
     }
 }

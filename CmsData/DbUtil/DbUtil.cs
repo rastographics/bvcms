@@ -322,8 +322,7 @@ namespace CmsData
             return def;
         }
 
-        public static string SystemEmailAddress => Db.SysFromEmail;
-        public static string AdminMail => Db.Setting("AdminMail", SystemEmailAddress);
+        public static string AdminMail => Db.Setting("AdminMail", "support@touchpointsoftware.com");
         public static string StartAddress => Db.Setting("StartAddress", "2000+Appling+Rd,+Cordova,+Tennessee+38016");
         public static bool CheckRemoteAccessRole => Db.Setting("CheckRemoteAccessRole", "") == "true";
 

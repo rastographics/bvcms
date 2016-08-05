@@ -205,11 +205,10 @@ namespace CmsData
         }
         internal Expression DaysBetween12Attendance()
         {
-            var lookback = TextValue.ToInt();
             Expression<Func<Person, int>> pred = p =>
-                    db.DaysBetween12Attend(p.PeopleId, ProgramInt, DivisionInt, OrganizationInt, lookback).Value;
+                    db.DaysBetween12Attend(p.PeopleId, ProgramInt, DivisionInt, OrganizationInt, Days).Value;
             Expression left = Expression.Invoke(pred, parm);
-            var right = Expression.Convert(Expression.Constant(Days), left.Type);
+            var right = Expression.Convert(Expression.Constant(TextValue.ToInt()), left.Type);
             return Compare(left, right);
         }
         internal Expression DaysAfterNthVisitAsOf()

@@ -549,7 +549,7 @@ namespace CmsWeb.Models
                         msg = msg.Replace("{email}", username);
                         msg = msg.Replace("{resetlink}", url);
                         DbUtil.Db.SendEmail(Util.FirstAddress(DbUtil.AdminMail),
-                            "touchpointsoftware new password link", msg, Util.ToMailAddressList(p.EmailAddress ?? p.EmailAddress2), 0, null);
+                            "touchpointsoftware new password link", msg, Util.ToMailAddressList(p.EmailAddress ?? p.EmailAddress2));
                     }
                     DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
                     return;
@@ -566,7 +566,7 @@ namespace CmsWeb.Models
                 msg = msg.Replace("{email}", username);
                 DbUtil.Db.SendEmail(Util.FirstAddress(DbUtil.AdminMail),
                     "Forgot password request for " + DbUtil.Db.Setting("NameOfChurch", "bvcms"),
-                    msg, Util.ToMailAddressList(username), 0, null);
+                    msg, Util.ToMailAddressList(username));
                 DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
                 return;
             }
@@ -590,7 +590,7 @@ namespace CmsWeb.Models
             msg = msg.Replace("{email}", username);
             msg = msg.Replace("{resetlink}", sb.ToString());
             DbUtil.Db.SendEmail(Util.FirstAddress(DbUtil.AdminMail),
-                "TouchPoint password reset link", msg, addrlist, 0, null);
+                "TouchPoint password reset link", msg, addrlist);
             DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
         }
     }

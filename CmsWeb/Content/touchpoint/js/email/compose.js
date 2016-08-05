@@ -135,6 +135,7 @@
                             $.unblock();
                             if (ret && ret.error) {
                                 swal("Error!", ret.error, "error");
+                                window.clearInterval(intervalid);
                             } else {
                                 if (ret.title == 'Email has completed.') {
                                     swal({

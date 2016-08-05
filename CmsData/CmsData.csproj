@@ -295,6 +295,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\DDay.iCal.1.0.2.575\lib\DDay.iCal.dll</HintPath>
     </Reference>
+    <Reference Include="Elmah, Version=1.2.14706.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="EPPlus, Version=4.0.5.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
       <HintPath>..\..\conversions\libs\packages\EPPlus.4.0.5\lib\net20\EPPlus.dll</HintPath>
       <Private>True</Private>
@@ -610,6 +614,7 @@
     <Compile Include="Generated\Functions\TPStat.cs" />
     <Compile Include="Generated\Functions\VisitsAbsent.cs" />
     <Compile Include="Generated\Functions\VolunteerCalendar.cs" />
+    <Compile Include="Generated\IpWarmup.cs" />
     <Compile Include="Generated\LongRunningOp.cs" />
     <Compile Include="Generated\MergeHistory.cs" />
     <Compile Include="Generated\MobileAppAction.cs" />
@@ -1075,6 +1080,7 @@
     <Resource Include="Classes\OnlineRegSummaryText\Details2.xml">
       <SubType>Designer</SubType>
     </Resource>
+    <Content Include="App_Readme\Elmah.txt" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

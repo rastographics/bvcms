@@ -46,8 +46,7 @@ namespace CmsWeb.Models
                 DbUtil.Db.SubmitChanges();
             }
 
-            var smtp = Util.Smtp();
-            smtp.Send(msg);
+            DbUtil.Db.SendEmail(msg);
 
             const string responseSubject = "Your TouchPoint support request has been received";
             const string responseBody = "Your support request has been received. We will respond to you as quickly as possible.<br><br>TouchPoint Support Team";
@@ -55,20 +54,18 @@ namespace CmsWeb.Models
             var response = new MailMessage("support@touchpointsoftware.com", Util.UserEmail, responseSubject, responseBody)
             {IsBodyHtml = true};
 
-            smtp.Send(response);
+            DbUtil.Db.SendEmail(response);
 
             if (DbUtil.AdminMail.Length > 0)
             {
-                var toAdmin = new MailMessage("support@touchpointsoftware.com", DbUtil.AdminMail, msg.Subject, Util.UserFullName + " submitted a support request to TouchPoint:<br><br>" + body)
-                {IsBodyHtml = true};
-                smtp.Send(toAdmin);
+                var toAdmin = new MailMessage("support@touchpointsoftware.com", DbUtil.AdminMail, msg.Subject, Util.UserFullName + " submitted a support request to TouchPoint:<br><br>" + body);
+                DbUtil.Db.SendEmail(toAdmin);
             }
 
             foreach (var ccsend in ccAddrs)
             {
-                var toCC = new MailMessage("support@touchpointsoftware.com", ccsend, msg.Subject, Util.UserFullName + " submitted a support request to TouchPoint and CCed you:<br><br>" + body)
-                {IsBodyHtml = true};
-                smtp.Send(toCC);
+                var toCc = new MailMessage("support@touchpointsoftware.com", ccsend, msg.Subject, Util.UserFullName + " submitted a support request to TouchPoint and CCed you:<br><br>" + body);
+                DbUtil.Db.SendEmail(toCc);
             }
         }
 
@@ -76,8 +73,7 @@ namespace CmsWeb.Models
         {
             var to = DbUtil.AdminMail;
             var msg = CreateRequest("TouchPoint MyData Request", to);
-            var smtp = Util.Smtp();
-            smtp.Send(msg);
+            DbUtil.Db.SendEmail(msg);
         }
 
         private MailMessage CreateRequest(string prefix, string toaddress)

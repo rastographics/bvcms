@@ -245,7 +245,6 @@ namespace CmsWeb.Areas.Org.Models
 
         private void SendNoDbEmail(Person goer, GoerSupporter gs)
         {
-            var sysFromEmail = DbUtil.Db.SysFromEmail;
             var from = new MailAddress(goer.EmailAddress ?? goer.EmailAddress2, goer.Name);
 
             try
@@ -263,12 +262,12 @@ namespace CmsWeb.Areas.Org.Models
                 var supportlink = DbUtil.Db.ServerLink($"/OnlineReg/{OrgId}?gsid={gs.Id}");
                 text = text.Replace("http://supportlink", supportlink, true);
                 text = text.Replace("https://supportlink", supportlink, true);
-                DbUtil.Db.SendEmail(from, Subject, text, Util.ToMailAddressList(gs.NoDbEmail), gs.Id, null);
+                DbUtil.Db.SendEmail(from, Subject, text, Util.ToMailAddressList(gs.NoDbEmail), gs.Id);
             }
             catch (Exception ex)
             {
                 DbUtil.Db.SendEmail(from, "sent emails - error", ex.ToString(),
-                    Util.ToMailAddressList(from), gs.Id, null);
+                    Util.ToMailAddressList(from), gs.Id);
                 throw;
             }
         }
