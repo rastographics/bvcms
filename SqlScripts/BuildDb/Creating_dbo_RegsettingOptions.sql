@@ -1,4 +1,3 @@
-
 CREATE VIEW [dbo].[RegsettingOptions]
 AS
 SELECT 
@@ -29,7 +28,6 @@ SELECT
 
 	,ConfirmationTrackingCode = RegSettingXml.value('(/Settings/Options/ConfirmationTrackingCode)[1]', 'varchar(max)')
 	,ValidateOrgs = RegSettingXml.value('(/Settings/Options/ValidateOrgs)[1]', 'varchar(200)')
-	,Shell = RegSettingXml.value('(/Settings/Options/Shell)[1]', 'varchar(50)')
 	,ShellBs = RegSettingXml.value('(/Settings/Options/ShellBs)[1]', 'varchar(50)')
 	,FinishRegistrationButton = RegSettingXml.value('(/Settings/Options/FinishRegistrationButton)[1]', 'varchar(80)')
 	,SpecialScript = RegSettingXml.value('(/Settings/Options/SpecialScript)[1]', 'varchar(50)')
@@ -58,9 +56,6 @@ SELECT
 	,DonationFundId = RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int')
 
 FROM dbo.Organizations WHERE RegSettingXml IS NOT NULL
-
-
-
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
