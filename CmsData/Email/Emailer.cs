@@ -92,7 +92,7 @@ namespace CmsData
             SendPersonEmail(emailqueue.Id, p.PeopleId);
         }
 
-        public void Email(MailAddress fromAddress, Person p, List<MailAddress> addmail, string subject, string body, bool redacted)
+        public void Email(MailAddress fromAddress, Person p, List<MailAddress> addmail, string subject, string body, bool redacted = false)
         {
             var emailqueue = new EmailQueue
             {
@@ -461,7 +461,7 @@ namespace CmsData
                             $"(no email address) {emailqueue.Subject}",
                             $"<p style='color:red'>You are receiving this because there is no email address for {p.Name}({p.PeopleId}). You should probably contact them since they were probably expecting this information.</p>\n{text}",
                             Util.ToMailAddressList(from),
-                            emailqueue.Id, pid);
+                            emailqueueto);
                     emailqueueto.Sent = DateTime.Now;
                     emailqueue.Sent = DateTime.Now;
                     if (emailqueue.Redacted ?? false)
@@ -508,30 +508,6 @@ namespace CmsData
                 foreach (var ad in regemail.SplitStr(",;"))
                     Util.AddGoodAddress(aa, ad);
             return aa;
-        }
-
-        const int MAX_DOWNLOADS = 50;
-
-        static async TTask DownloadAsync(string[] urls)
-        {
-            using (var semaphore = new SemaphoreSlim(MAX_DOWNLOADS))
-            using (var httpClient = new HttpClient())
-            {
-                var tasks = urls.Select(async (url) =>
-                {
-                    await semaphore.WaitAsync();
-                    try
-                    {
-                        var data = await httpClient.GetStringAsync(url);
-                        Console.WriteLine(data);
-                    }
-                    finally
-                    {
-                        semaphore.Release();
-                    }
-                });
-                await TTask.WhenAll(tasks.ToArray());
-            }
         }
 
         public void SendPeopleEmail(int queueid)
@@ -599,7 +575,7 @@ namespace CmsData
 
                 if (Setting("sendemail", "true") != "false")
                 {
-                    SendEmail(from, emailqueue.Subject, text, aa, emailqueue.Id, to.PeopleId, cc);
+                    SendEmail(from, emailqueue.Subject, text, aa, to, cc);
                     to.Sent = DateTime.Now;
                     SubmitChanges();
                 }
@@ -609,8 +585,8 @@ namespace CmsData
                 catch (Exception ex)
                 {
                     var subject = $"sent emails - error:(emailid={emailqueue.Id}) {CmsHost}";
-                    SendEmail(from, subject, ex.Message, Util.ToMailAddressList(from), emailqueue.Id);
-                    SendEmail(from, subject, ex.Message, Util.SendErrorsTo(), emailqueue.Id);
+                    SendEmail(from, subject, ex.Message, Util.ToMailAddressList(from), to);
+                    SendEmail(from, subject, ex.Message, Util.SendErrorsTo(), to);
                 }
 #endif
             }
@@ -672,7 +648,7 @@ namespace CmsData
             if (body.Contains("{tracklinks}", true))
             {
                 body = body.Replace("{tracklinks}", "", ignoreCase: true);
-                body = createClickTracking(emailqueue.Id, body);
+                body = CreateClickTracking(emailqueue.Id, body);
             }
             return body;
         }
@@ -691,7 +667,7 @@ namespace CmsData
             }
         }
 
-        private string createClickTracking(int emailID, string input)
+        private string CreateClickTracking(int emailId, string input)
         {
             var doc = new HtmlDocument();
             doc.LoadHtml(input);
@@ -709,12 +685,12 @@ namespace CmsData
                     if (EmailReplacements.IsSpecialLink(att.Value))
                         continue;
 
-                    var hash = hashMD5Base64(md5Hash, att.Value + DateTime.Now.ToString("o") + linkIndex);
+                    var hash = HashMd5Base64(md5Hash, att.Value + DateTime.Now.ToString("o") + linkIndex);
 
                     var emailLink = new EmailLink
                     {
                         Created = DateTime.Now,
-                        EmailID = emailID,
+                        EmailID = emailId,
                         Hash = hash,
                         Link = att.Value
                     };
@@ -734,7 +710,7 @@ namespace CmsData
             return doc.DocumentNode.OuterHtml;
         }
 
-        private static string hashMD5Base64(MD5 md5Hash, string input)
+        private static string HashMd5Base64(MD5 md5Hash, string input)
         {
             byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
             return Convert.ToBase64String(data, 0, data.Length);
@@ -754,40 +730,38 @@ namespace CmsData
         public bool UseCustomEmailDomain => CustomSendGridApiKey.HasValue() && CustomFromDomain.HasValue();
         public bool ShouldUseCustomEmailDomain => UseCustomEmailDomain && (!UseIpWarmup || TryIpWarmup() == 1);
 
-        public void SendEmail(MailMessage m)
+        private void SendEmail(MailAddress fromAddress, string subject, string message, List<MailAddress> to, EmailQueueTo eqto, List<MailAddress> cc = null)
         {
-            SendEmail(m.From, m.Subject, m.Body, m.To.ToList());
+            var domain = SendEmail(fromAddress, subject, message, to, eqto.Id, eqto.PeopleId, cc);
+            eqto.DomainFrom = domain;
         }
 
-        public void SendEmail(MailAddress fromAddress, string subject, string message, List<MailAddress> to, int? id = null, int? pid = null, List<MailAddress> cc = null)
+        public string SendEmail(MailAddress fromAddress, string subject, string message, List<MailAddress> to, int? id = null, int? pid = null, List<MailAddress> cc = null)
         {
             if (ConfigurationManager.AppSettings["sendemail"] == "false")
-                return;
+                return null;
 #if DEBUG
 #else
             if (UseSendGridApi && CanUseSendGrid)
-            {
-                SendGridMsg(fromAddress, subject, message, to, id, pid, cc);
-                return;
-            }
+                return SendGridMsg(fromAddress, subject, message, to, id, pid, cc);
 #endif
-            SendSmtpMsg(fromAddress, subject, message, to, id, pid, cc: cc);
+            return SendSmtpMsg(fromAddress, subject, message, to, id, pid, cc: cc);
         }
 
-        public void SendGridMsg(MailAddress from, string subject, string message, List<MailAddress> to, int? id, int? pid, List<MailAddress> cc = null)
+        public string SendGridMsg(MailAddress from, string subject, string message, List<MailAddress> to, int? id, int? pid, List<MailAddress> cc = null)
         {
             var senderrorsto = ConfigurationManager.AppSettings["senderrorsto"];
 
-            string fromEmail, apiKey;
+            string fromDomain, apiKey;
 
             if (ShouldUseCustomEmailDomain)
             {
-                fromEmail = CustomFromDomain;
+                fromDomain = CustomFromDomain;
                 apiKey = CustomSendGridApiKey;
             }
             else
             {
-                fromEmail = DefaultFromDomain;
+                fromDomain = DefaultFromDomain;
                 apiKey = DefaultSendGridApiKey;
             }
 
@@ -796,7 +770,7 @@ namespace CmsData
 
             var mail = new Mail
             {
-                From = new Email(fromEmail, from.DisplayName),
+                From = new Email(fromDomain, from.DisplayName),
                 Subject = subject,
                 ReplyTo = new Email(from.Address, from.DisplayName)
             };
@@ -813,13 +787,13 @@ namespace CmsData
                 mail.ReplyTo = new Email(cclist);
             }
 
-            pe.AddHeader(XSmtpApi, XSmtpApiHeader(id, pid, fromEmail));
+            pe.AddHeader(XSmtpApi, XSmtpApiHeader(id, pid, fromDomain));
             pe.AddHeader(XBvcms, XBvcmsHeader(id, pid));
 
             mail.AddPersonalization(pe);
 
             if (pe.Tos.Count == 0 && pe.Tos.Any(tt => tt.Address.EndsWith("@nowhere.name")))
-                return;
+                return null;
             var badEmailLink = "";
             if (pe.Tos.Count == 0)
             {
@@ -844,27 +818,28 @@ namespace CmsData
                 wc.Headers.Add("Content-Type", "application/json");
                 wc.UploadString("https://api.sendgrid.com/v3/mail/send", reqBody);
             }
+            return fromDomain;
         }
 
-        public void SendSmtpMsg(MailAddress fromAddress, string subject, string message, List<MailAddress> to, int? id, int? pid, List<LinkedResource> attachments = null, List<MailAddress> cc = null)
+        public string SendSmtpMsg(MailAddress fromAddress, string subject, string message, List<MailAddress> to, int? id, int? pid, List<LinkedResource> attachments = null, List<MailAddress> cc = null)
         {
             var senderrorsto = ConfigurationManager.AppSettings["senderrorsto"];
             var msg = new MailMessage();
             if (fromAddress == null)
                 fromAddress = Util.FirstAddress(senderrorsto);
 
-            var fromEmail = DefaultFromDomain;
-            msg.From = new MailAddress(fromEmail, fromAddress.DisplayName);
+            var fromDomain = DefaultFromDomain;
+            msg.From = new MailAddress(fromDomain, fromAddress.DisplayName);
             msg.ReplyToList.Add(fromAddress);
             if (cc != null)
             {
                 foreach (var a in cc)
                     msg.ReplyToList.Add(a);
-                if (!msg.ReplyToList.Contains(msg.From) && msg.From.Address.NotEqual(fromEmail))
+                if (!msg.ReplyToList.Contains(msg.From) && msg.From.Address.NotEqual(fromDomain))
                     msg.ReplyToList.Add(msg.From);
             }
 
-            msg.Headers.Add(XSmtpApi, XSmtpApiHeader(id, pid, fromEmail));
+            msg.Headers.Add(XSmtpApi, XSmtpApiHeader(id, pid, fromDomain));
             msg.Headers.Add(XBvcms,  XBvcmsHeader(id, pid));
 
             foreach (var ma in to)
@@ -874,7 +849,7 @@ namespace CmsData
             msg.Subject = subject;
             var badEmailLink = "";
             if (msg.To.Count == 0 && to.Any(tt => tt.Host == "nowhere.name"))
-                return;
+                return null;
             if (msg.To.Count == 0)
             {
                 msg.AddAddr(msg.From);
@@ -901,6 +876,7 @@ namespace CmsData
                 var smtp = Smtp();
                 smtp.Send(msg);
             }
+            return fromDomain;
         }
 
         public SmtpClient Smtp()

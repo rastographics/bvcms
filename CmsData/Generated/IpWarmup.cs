@@ -26,6 +26,8 @@ namespace CmsData
 		
 		private int? _Totalsent;
 		
+		private int? _Totaltries;
+		
    		
     	
 	#endregion
@@ -46,6 +48,9 @@ namespace CmsData
 		
 		partial void OnTotalsentChanging(int? value);
 		partial void OnTotalsentChanged();
+		
+		partial void OnTotaltriesChanging(int? value);
+		partial void OnTotaltriesChanged();
 		
     #endregion
 		public IpWarmup()
@@ -139,6 +144,28 @@ namespace CmsData
 					this._Totalsent = value;
 					this.SendPropertyChanged("Totalsent");
 					this.OnTotalsentChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="totaltries", UpdateCheck=UpdateCheck.Never, Storage="_Totaltries", DbType="int")]
+		public int? Totaltries
+		{
+			get { return this._Totaltries; }
+
+			set
+			{
+				if (this._Totaltries != value)
+				{
+				
+                    this.OnTotaltriesChanging(value);
+					this.SendPropertyChanging();
+					this._Totaltries = value;
+					this.SendPropertyChanged("Totaltries");
+					this.OnTotaltriesChanged();
 				}
 
 			}
