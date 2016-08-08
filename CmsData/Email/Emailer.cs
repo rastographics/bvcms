@@ -663,9 +663,8 @@ namespace CmsData
             var link = ServerLink("/Emails/Details/" + id);
             string body = $@"<a href=""{link}"">{count} emails sent</a>";
 
-                Util.SendMsg(sysFromEmail, CmsHost, from,
-                    subj, body, Util.ToMailAddressList(from), id, null);
-                Util.SendMsg(sysFromEmail, CmsHost, from,
+            SendEmail(from, subj, body, Util.ToMailAddressList(from), id);
+            SendEmail(from, Host + " " + subj, body, Util.SendErrorsTo(), id);
         }
 
         private string CreateClickTracking(int emailId, string input)
