@@ -675,7 +675,8 @@ namespace CmsWeb.Areas.Public.Controllers
                             hour = meeting.Hour.Value,
                             birthdayStart = o.BirthDayStart,
                             birthdayEnd = o.BirthDayEnd,
-                            location = o.Location
+                            location = o.Location,
+                            allowOverlap = o.AllowAttendOverlap
                         }).ToList();
 
             // Add lead time adjustment for different timezones here
