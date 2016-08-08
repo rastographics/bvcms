@@ -159,8 +159,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             DbUtil.Db.Transactions.InsertOnSubmit(transaction);
             DbUtil.Db.SubmitChanges();
-            Util.SendMsg(DbUtil.Db.SysFromEmail, Util.Host,
-                Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(transaction.OrgId ?? 0)),
+            DbUtil.Db.SendEmail(Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(transaction.OrgId ?? 0)),
                 "Void/Credit Transaction Type: " + type,
                 $@"<table>
 <tr><td>Name</td><td>{Transaction.FullName(t)}</td></tr>
@@ -170,11 +169,10 @@ namespace CmsWeb.Areas.Manage.Controllers
 <tr><th colspan=""2"">Transaction Info</th></tr>
 <tr><td>Description</td><td>{t.Description}</td></tr>
 <tr><td>Amount</td><td>{-amt:N2}</td></tr>
-<tr><td>Date</td><td>{t.TransactionDate.Value.FormatDateTm()}</td></tr>
+<tr><td>Date</td><td>{t.TransactionDate.FormatDateTm()}</td></tr>
 <tr><td>TranIds</td><td>Org: {t.Id} {t.TransactionId}, Curr: {transaction.Id} {transaction.TransactionId}</td></tr>
 <tr><td>User</td><td>{Util.UserFullName}</td></tr>
-</table>", Util.EmailAddressListFromString(DbUtil.Db.StaffEmailForOrg(transaction.OrgId ?? 0)),
-                0, 0);
+</table>", Util.EmailAddressListFromString(DbUtil.Db.StaffEmailForOrg(transaction.OrgId ?? 0)));
             DbUtil.LogActivity("CreditVoid for " + t.TransactionId);
 
             return View("List", m);
@@ -254,8 +252,7 @@ DELETE dbo.[Transaction] WHERE Id = {0}
 
             DbUtil.Db.Transactions.InsertOnSubmit(t2);
             DbUtil.Db.SubmitChanges();
-            Util.SendMsg(DbUtil.Db.SysFromEmail, Util.Host,
-                Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(t2.OrgId ?? 0)),
+            DbUtil.Db.SendEmail(Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(t2.OrgId ?? 0)),
                 "Adjustment Transaction",
                 $@"<table>
 <tr><td>Name</td><td>{Transaction.FullName(t)}</td></tr>
@@ -265,10 +262,9 @@ DELETE dbo.[Transaction] WHERE Id = {0}
 <tr><th colspan=""2"">Transaction Info</th></tr>
 <tr><td>Description</td><td>{t.Description}</td></tr>
 <tr><td>Amount</td><td>{t.Amt:N2}</td></tr>
-<tr><td>Date</td><td>{t.TransactionDate.Value.FormatDateTm()}</td></tr>
+<tr><td>Date</td><td>{t.TransactionDate.FormatDateTm()}</td></tr>
 <tr><td>TranIds</td><td>Org: {t.Id} {t.TransactionId}, Curr: {t2.Id} {t2.TransactionId}</td></tr>
-</table>", Util.EmailAddressListFromString(DbUtil.Db.StaffEmailForOrg(t2.OrgId ?? 0)),
-                0, 0);
+</table>", Util.EmailAddressListFromString(DbUtil.Db.StaffEmailForOrg(t2.OrgId ?? 0)));
             DbUtil.LogActivity("Adjust for " + t.TransactionId);
             return View("List", m);
         }

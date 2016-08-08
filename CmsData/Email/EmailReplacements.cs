@@ -70,6 +70,15 @@ namespace CmsData
             text = DoInsertDrafts(text);
 
             text = MapUrlEncodedReplacementCodes(text, new[] { "emailhref" });
+            try
+            {
+                var result = PreMailer.Net.PreMailer.MoveCssInline(text);
+                text = result.Html;
+            }
+            catch
+            {
+                // ignore Premailer exceptions
+            }
 
             stringlist = Regex.Split(text, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
         }

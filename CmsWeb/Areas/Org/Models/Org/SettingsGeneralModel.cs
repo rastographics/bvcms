@@ -138,7 +138,7 @@ allows you to specify a different number for each org
 and have only one confirmation #.
 ";
         private const string IsRecreationTeamDescription = @"
-User to designate an orginazation as a recreation team.
+Used to designate an organization as a recreation team.
 
 This enables special handling for team handling and creation.
 ";

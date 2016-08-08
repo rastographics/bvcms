@@ -46,28 +46,28 @@ namespace CmsWeb.Models
                 DbUtil.Db.SubmitChanges();
             }
 
-            var smtp = Util.Smtp();
+            var smtp = DbUtil.Db.Smtp();
             smtp.Send(msg);
 
             const string responseSubject = "Your TouchPoint support request has been received";
             const string responseBody = "Your support request has been received. We will respond to you as quickly as possible.<br><br>TouchPoint Support Team";
 
             var response = new MailMessage("support@touchpointsoftware.com", Util.UserEmail, responseSubject, responseBody)
-            {IsBodyHtml = true};
+            { IsBodyHtml = true };
 
             smtp.Send(response);
 
             if (DbUtil.AdminMail.Length > 0)
             {
                 var toAdmin = new MailMessage("support@touchpointsoftware.com", DbUtil.AdminMail, msg.Subject, Util.UserFullName + " submitted a support request to TouchPoint:<br><br>" + body)
-                {IsBodyHtml = true};
+                { IsBodyHtml = true };
                 smtp.Send(toAdmin);
             }
 
             foreach (var ccsend in ccAddrs)
             {
                 var toCC = new MailMessage("support@touchpointsoftware.com", ccsend, msg.Subject, Util.UserFullName + " submitted a support request to TouchPoint and CCed you:<br><br>" + body)
-                {IsBodyHtml = true};
+                { IsBodyHtml = true };
                 smtp.Send(toCC);
             }
         }
@@ -76,7 +76,7 @@ namespace CmsWeb.Models
         {
             var to = DbUtil.AdminMail;
             var msg = CreateRequest("TouchPoint MyData Request", to);
-            var smtp = Util.Smtp();
+            var smtp = DbUtil.Db.Smtp();
             smtp.Send(msg);
         }
 
@@ -102,10 +102,10 @@ namespace CmsWeb.Models
                 }).Single();
                 subject += $" [{id}]";
 
-                cn.Execute(SupportUpdate, new {subject, id});
+                cn.Execute(SupportUpdate, new { subject, id });
                 cn.Close();
             }
-            const string @from = "support-system@touchpointsoftware.com";
+            const string @from = "mailer@bvcms.com";
 
             var sb = new StringBuilder();
             sb.AppendFormat(@"<b>Request ID: {0}</b><br>
@@ -149,7 +149,8 @@ namespace CmsWeb.Models
                     }
                 }
             }
-            msg.To.Add("support@touchpointsoftware.com");
+            if (prefix.Contains("MyData"))
+                msg.To.Add("support@touchpointsoftware.com");
             msg.ReplyToList.Add(who);
             msg.ReplyToList.Add("support@touchpointsoftware.com");
             msg.IsBodyHtml = true;
@@ -169,7 +170,7 @@ namespace CmsWeb.Models
             for (var i = 0; i < dibLinks.Count; i++)
             {
                 var a = dibLinks[i];
-                if (i%4 == 0)
+                if (i % 4 == 0)
                 {
                     sb.Append($"{closetr}<tr>");
                     closetr = "</tr>";

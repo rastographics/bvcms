@@ -17,7 +17,8 @@ CREATE TABLE [dbo].[EmailQueueTo]
 [SpamContent] [bit] NULL,
 [Invalid] [bit] NULL,
 [BouncedAddress] [bit] NULL,
-[SpamReporting] [bit] NULL
+[SpamReporting] [bit] NULL,
+[DomainFrom] [varchar] (30) NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION

@@ -64,8 +64,6 @@ namespace CmsData.View
 		
 		private string _ValidateOrgs;
 		
-		private string _Shell;
-		
 		private string _ShellBs;
 		
 		private string _FinishRegistrationButton;
@@ -524,23 +522,6 @@ namespace CmsData.View
 			{
 				if (this._ValidateOrgs != value)
 					this._ValidateOrgs = value;
-			}
-
-		}
-
-		
-		[Column(Name="Shell", Storage="_Shell", DbType="varchar(50)")]
-		public string Shell
-		{
-			get
-			{
-				return this._Shell;
-			}
-
-			set
-			{
-				if (this._Shell != value)
-					this._Shell = value;
 			}
 
 		}

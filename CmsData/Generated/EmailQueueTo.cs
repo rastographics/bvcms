@@ -54,6 +54,8 @@ namespace CmsData
 		
 		private bool? _SpamReporting;
 		
+		private string _DomainFrom;
+		
    		
     	
 		private EntityRef< EmailQueue> _EmailQueue;
@@ -120,6 +122,9 @@ namespace CmsData
 		
 		partial void OnSpamReportingChanging(bool? value);
 		partial void OnSpamReportingChanged();
+		
+		partial void OnDomainFromChanging(string value);
+		partial void OnDomainFromChanged();
 		
     #endregion
 		public EmailQueueTo()
@@ -533,6 +538,28 @@ namespace CmsData
 					this._SpamReporting = value;
 					this.SendPropertyChanged("SpamReporting");
 					this.OnSpamReportingChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="DomainFrom", UpdateCheck=UpdateCheck.Never, Storage="_DomainFrom", DbType="varchar(30)")]
+		public string DomainFrom
+		{
+			get { return this._DomainFrom; }
+
+			set
+			{
+				if (this._DomainFrom != value)
+				{
+				
+                    this.OnDomainFromChanging(value);
+					this.SendPropertyChanging();
+					this._DomainFrom = value;
+					this.SendPropertyChanged("DomainFrom");
+					this.OnDomainFromChanged();
 				}
 
 			}

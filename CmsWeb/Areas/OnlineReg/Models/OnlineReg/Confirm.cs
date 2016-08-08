@@ -329,8 +329,8 @@ Thank you.
             if (sendmail)
             {
                 if (p0 == null)
-                    Util.SendMsg(db.SysFromEmail, Util.Host, Util.TryGetMailAddress(db.StaffEmailForOrg(org.OrganizationId)),
-                        "Payment confirmation", msg, Util.ToMailAddressList(Util.FirstAddress(ti.Emails)), 0, pid);
+                    db.SendEmail(Util.TryGetMailAddress(db.StaffEmailForOrg(org.OrganizationId)),
+                        "Payment confirmation", msg, Util.ToMailAddressList(Util.FirstAddress(ti.Emails)), pid: pid).Wait();
                 else
                 {
                     db.Email(db.StaffEmailForOrg(org.OrganizationId), p0, Util.ToMailAddressList(ti.Emails),
