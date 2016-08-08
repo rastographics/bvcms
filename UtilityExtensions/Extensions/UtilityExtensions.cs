@@ -41,7 +41,8 @@ namespace UtilityExtensions
                 if (HttpContext.Current != null)
                     if (HttpContext.Current.Session != null)
                         return HttpContext.Current.Session.SessionID;
-                return (string)HttpRuntime.Cache["SessionId"];
+                var s = (string)HttpRuntime.Cache["SessionId"] ?? (SessionId = Guid.NewGuid().ToString());
+                return s;
             }
             set { HttpRuntime.Cache["SessionId"] = value; }
         }

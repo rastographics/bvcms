@@ -34,8 +34,8 @@ namespace CmsWeb.Areas.Manage.Controllers
 				var Db = DbUtil.Create(host);
 				try
 				{
-					var m = new UploadPeopleModel(Db, pid ?? 0, noupdate);
-					m.DoUpload(text, testing: true);
+					var m = new UploadPeopleModel(host, pid ?? 0, noupdate, testing: true);
+					m.DoUpload(text);
 					Db.Dispose();
     				Db = DbUtil.Create(host);
 
@@ -43,7 +43,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         			Db.UploadPeopleRuns.InsertOnSubmit(runningtotals);
         			Db.SubmitChanges();
 
-					m = new UploadPeopleModel(Db, pid ?? 0, noupdate);
+					m = new UploadPeopleModel(host, pid ?? 0, noupdate);
 					m.DoUpload(text);
 				}
 				catch (Exception ex)
