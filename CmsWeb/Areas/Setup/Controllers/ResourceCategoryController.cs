@@ -5,7 +5,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "ManageResources")]
     [RouteArea("Setup", AreaPrefix = "ResourceCategory"), Route("{action}/{id?}")]
     public class ResourceCategoryController : CmsStaffController
     {
