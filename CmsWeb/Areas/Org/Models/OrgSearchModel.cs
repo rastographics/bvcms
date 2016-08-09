@@ -279,8 +279,14 @@ namespace CmsWeb.Areas.Search.Models
                     foreach (var ev in ExtraValuesDict)
                     {
                         orgIds = DbUtil.Db.OrganizationExtras
-                            .Where(x => orgIds.Contains(x.OrganizationId) && x.Field == ev.Key && 
-                                (x.StrValue.ToLower().Contains(ev.Value) || x.Data.ToLower().Contains(ev.Value)))
+                            .Where(x => orgIds.Contains(x.OrganizationId) && x.Field == ev.Key &&
+                                (
+                                 x.StrValue.ToLower().Contains(ev.Value) ||
+                                 x.Data.ToLower().Contains(ev.Value)) ||
+                                 x.DateValue != null && x.DateValue.ToString().Contains(ev.Value) ||
+                                 x.IntValue != null && x.IntValue.ToString().Contains(ev.Value) ||
+                                 x.BitValue != null && x.BitValue.ToString().Contains(ev.Value)
+                                 )
                             .Select(x => x.OrganizationId).ToList();
                     }
 
@@ -669,7 +675,7 @@ namespace CmsWeb.Areas.Search.Models
             var cn = new SqlConnection(Util.ConnectionString);
             cn.Open();
             var orgs = string.Join(",", olist);
-            var alist = cn.Query<RecentAbsentsInfo>("RecentAbsentsSP2", new {orgs}, 
+            var alist = cn.Query<RecentAbsentsInfo>("RecentAbsentsSP2", new {orgs},
                 commandType: CommandType.StoredProcedure, commandTimeout: 600).ToList();
 
             var mlist = (from r in DbUtil.Db.LastMeetings(orgs)
