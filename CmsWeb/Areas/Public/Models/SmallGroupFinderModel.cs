@@ -229,10 +229,16 @@ namespace CmsWeb.Areas.Public.Models
                          where e.Organization.DivOrgs.Any(ee => _divList.Contains(ee.DivId)) || orgTypes.Contains(e.Organization.OrganizationType.Description)
                          where e.Field == f.name
                          orderby e.Data
-                         select new FilterItem
-                          {
-                              value = e.Data
-                          }).DistinctBy(n => n.value).ToList();
+                         select e)
+                         .ToList()
+                         .Select(x => new FilterItem
+                         {
+                             value = x.Data ??
+                                     x.StrValue ??
+                                     x.DateValue?.ToString() ??
+                                     x.IntValue?.ToString() ??
+                                     x.BitValue?.ToString()
+                         }).DistinctBy(n => n.value).ToList();
                 }
 
 				i.Insert(0, new FilterItem { value = SHOW_ALL });
