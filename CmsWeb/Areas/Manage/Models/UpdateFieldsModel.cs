@@ -273,6 +273,8 @@ namespace CmsWeb.Models
         {
             if (NewValue == "+1")
                 p.Grade = p.Grade + 1;
+            else if (NewValue.Equal("none"))
+                p.Grade = null;
             else
                 p.Grade = NewValue.ToInt2();
         }
@@ -359,7 +361,9 @@ namespace CmsWeb.Models
                 new CodeValueItem {Code = "16", Value = "Senior"},
                 new CodeValueItem {Code = "99", Value = "Special Class"},
                 new CodeValueItem {Code = "YYYY", Value = "Graduation Year"},
-                new CodeValueItem {Code = "+1", Value = "Add 1 Grade Level"}
+                new CodeValueItem {Code = "+1", Value = "Add 1 Grade Level"},
+                new CodeValueItem {Code = "None", Value = "Remove Grade"},
+                new CodeValueItem {Code = "Custom", Value = "Custom Grade (int)"},
             };
         }
 

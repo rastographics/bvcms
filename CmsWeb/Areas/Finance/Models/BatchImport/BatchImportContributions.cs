@@ -137,7 +137,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             if (subtext.Contains("Date,Fund,Final Amount,Final Micr,Ck,"))
                 return new TeaysValleyImporter();
 
-            if (subtext.Contains("Financial_Institution,Corporate_ID,Corporate_Name,Processing_Date,Deposit_Account,Site_ID,Deposit_ID,Deposit_Receipt_Time,ISN,Account_Number,Routing_and_Transit,Serial_Number,Tran_Code,Amount,"))
+            if (subtext.Contains("Financial_Institution,Corporate_ID,Corporate_Name,Processing_Date,Deposit_Account,Site_ID,Deposit_ID,Deposit_Receipt_Time,ISN,Account_Number,Routing_Transit,Serial_Number,Tran_Code,Amount,"))
                 return new GraceCcImporter();
 
             if (subtext.Contains("Deposit Item,Sequence #,Item Date,Item Status,Customer Name,Routing / Account #,Check #,Amount,Deposit As,Amount Source,Image Quality Pass,Scanned Count"))

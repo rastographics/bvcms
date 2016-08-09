@@ -83,7 +83,7 @@
 
       $('body').on('change', '#GradeSelection', function() {
         var gradeSelection = $("#GradeSelection").val();
-        if (gradeSelection == 'YYYY') {
+        if (gradeSelection === 'YYYY' || gradeSelection === "Custom") {
           $("#GraduationSection").show();
           $('#NewValue').val('');
         } else {
