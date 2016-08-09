@@ -34,6 +34,7 @@ namespace CmsWeb.Models
 
         public void SendSupportRequest()
         {
+            const string fromsupport = "Touchpoint Support <mailer@bvcms.com>";
             const string to = "support@touchpointsoftware.com";
 
             var msg = CreateRequest("Support Request", to);
@@ -52,21 +53,21 @@ namespace CmsWeb.Models
             const string responseSubject = "Your TouchPoint support request has been received";
             const string responseBody = "Your support request has been received. We will respond to you as quickly as possible.<br><br>TouchPoint Support Team";
 
-            var response = new MailMessage("support@touchpointsoftware.com", Util.UserEmail, responseSubject, responseBody)
+            var response = new MailMessage(fromsupport, Util.UserEmail, responseSubject, responseBody)
             { IsBodyHtml = true };
 
             smtp.Send(response);
 
             if (DbUtil.AdminMail.Length > 0)
             {
-                var toAdmin = new MailMessage("support@touchpointsoftware.com", DbUtil.AdminMail, msg.Subject, Util.UserFullName + " submitted a support request to TouchPoint:<br><br>" + body)
+                var toAdmin = new MailMessage(fromsupport, DbUtil.AdminMail, msg.Subject, Util.UserFullName + " submitted a support request to TouchPoint:<br><br>" + body)
                 { IsBodyHtml = true };
                 smtp.Send(toAdmin);
             }
 
             foreach (var ccsend in ccAddrs)
             {
-                var toCC = new MailMessage("support@touchpointsoftware.com", ccsend, msg.Subject, Util.UserFullName + " submitted a support request to TouchPoint and CCed you:<br><br>" + body)
+                var toCC = new MailMessage(fromsupport, ccsend, msg.Subject, Util.UserFullName + " submitted a support request to TouchPoint and CCed you:<br><br>" + body)
                 { IsBodyHtml = true };
                 smtp.Send(toCC);
             }
@@ -105,7 +106,7 @@ namespace CmsWeb.Models
                 cn.Execute(SupportUpdate, new { subject, id });
                 cn.Close();
             }
-            const string @from = "mailer@bvcms.com";
+            const string fromsupport = "Touchpoint Support <mailer@bvcms.com>";
 
             var sb = new StringBuilder();
             sb.AppendFormat(@"<b>Request ID: {0}</b><br>
@@ -133,7 +134,7 @@ namespace CmsWeb.Models
             }
             sb.Append(body);
 
-            var msg = new MailMessage(from, toaddress, subject, sb.ToString());
+            var msg = new MailMessage(fromsupport, toaddress, subject, sb.ToString());
             if (!string.IsNullOrEmpty(cc))
             {
                 var ccs = cc.Split(',');
