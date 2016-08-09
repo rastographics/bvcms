@@ -30,7 +30,7 @@
                 <div class="form-group">
                     <label for="EditableRolesList" class="control-label">Editable by Roles</label>
                     <div class="controls">
-                        @Html.DropDownList("EditableRolesList", new SelectList(Model.EditableRolesList, "Value", "Text"), new { multiple = "multiple", @class = "form-control multi-select" })
+                        @Html.DropDownList("EditableRolesList", new SelectList(Model.EditableSelectedRoles(), "Value", "Text"), new { multiple = "multiple", @class = "form-control multi-select" })
                     </div>
                 </div>
             }
