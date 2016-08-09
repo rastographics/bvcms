@@ -1,6 +1,4 @@
 using System;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -29,9 +27,9 @@ namespace CmsWeb.Areas.People.Models
         }
         public override void ExecuteResult(ControllerContext context)
         {
-            context.HttpContext.Response.Clear();
-            context.HttpContext.Response.Cache.SetExpires(DateTime.Now.AddYears(1));
-            context.HttpContext.Response.Cache.SetCacheability(HttpCacheability.Public);
+//            context.HttpContext.Response.Clear();
+//            context.HttpContext.Response.Cache.SetExpires(DateTime.Now.AddYears(1));
+//            context.HttpContext.Response.Cache.SetCacheability(HttpCacheability.Public);
 
             if (id == -2)
             {
