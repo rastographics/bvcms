@@ -52,9 +52,10 @@
                     }
                     <li><a href="/RepairTransactions/@oid" class="longrunop"><span class="org-context">Repair Transactions</span></a></li>
                 } @*@if (User.IsInRole("ministrEspace"))
-                    {
-                        <li><a id="addMESEvent" href="#" orgid="@oid"><span class="org-context">Add ministrEspace Event</span></a></li>
-                    }*@</ul>
+                {
+                    <li><a id="addMESEvent" href="#" orgid="@oid"><span class="org-context">Add ministrEspace Event</span></a></li>
+                }*@
+            </ul>
         </li>
         <li class="col-sm-6">
             @Html.Partial("Toolbar/GearStandard")
@@ -68,6 +69,10 @@ else
             <ul>
                 <li class="dropdown-header">Content</li>
                 <li><a href="/OrgContent/@o.OrganizationId" class="qid">Members Only Page</a></li>
+                @if (model.IsVolunteerLeader && o.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)
+                {
+                    <li><a id="VolunteerCalendar" href="/Volunteers/Calendar/@oid" target="calendar"><span class="org-context">Volunteer Calendar</span></a></li>
+                }
             </ul>
         </li>
     </ul>
