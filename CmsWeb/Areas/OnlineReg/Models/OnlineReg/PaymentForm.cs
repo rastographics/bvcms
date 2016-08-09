@@ -235,8 +235,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             ClearMaskedNumbers(pf, pi);
 
-            pf.Type = pf.NoEChecksAllowed ? PaymentType.CreditCard : "";
             var org = DbUtil.Db.LoadOrganizationById(ti.OrgId);
+            pf.NoCreditCardsAllowed = org?.NoCreditCards == true;
+            pf.Type = pf.NoEChecksAllowed ? PaymentType.CreditCard : pf.NoCreditCardsAllowed ? PaymentType.Ach : "";
             return pf;
         }
 
