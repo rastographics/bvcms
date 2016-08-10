@@ -32,25 +32,28 @@ namespace CmsWeb.Models
 
         public IEnumerable<SGInfo> SmallGroupInfo()
         {
+            var extraValueForAddress = DbUtil.Db.Setting("SGF-ExtraValueHost", null);
             var orgTypes = DbUtil.Db.Setting("SGF-OrgTypes", "").Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
             var orgIdList = _orgList?.Select(x => x.OrganizationId).Distinct() ?? new List<int>();
 
             var q = from o in DbUtil.Db.Organizations
                     let host = o.OrganizationMembers.FirstOrDefault(mm => mm.OrgMemMemTags.Any(mt => mt.MemberTag.Name == "HostHome") || mm.PeopleId == o.LeaderId).Person
                     let schedule = o.OrgSchedules.FirstOrDefault().MeetingTime
-                    where host != null && (host.PrimaryAddress ?? "") != ""
+                    let addr = o.OrganizationExtras.FirstOrDefault(oe => extraValueForAddress != null && oe.Field == extraValueForAddress).Data
+                    where (host != null && (host.PrimaryAddress ?? "") != "") || addr != null
                     where !divid.HasValue || o.DivOrgs.Any(dd => dd.DivId == divid) || o.DivisionId == divid
                     where !orgIdList.Any() || orgIdList.Contains(o.OrganizationId)
                     where !orgTypes.Any() || orgTypes.Contains(o.OrganizationType.Description)
                     select new
                     {
                         host,
+                        addr,
                         o,
                         schedule
                     };
 
             var q2 = from i in q.ToList()
-                     let addr = i.host.AddrCityStateZip
+                     let addr = i.addr ?? i.host.AddrCityStateZip
                      join gc in DbUtil.Db.GeoCodes on addr equals gc.Address into g
                      from geocode in g.DefaultIfEmpty()
                      select new SGInfo
@@ -66,7 +69,7 @@ namespace CmsWeb.Models
                          markertext = i.o.OrganizationExtras.SingleOrDefault(oe => oe.Field == "Term")?.Data == "Beta Group" ? "B" : " ",
                          color = DbUtil.Db.Setting($"UX-MapPinColor-Campus-{i.o.CampusId.GetValueOrDefault(-1)}", "FFFFFF").Replace("#", "")
                      };
-            return q2.ToList();
+            return q2.Where(x => !string.IsNullOrWhiteSpace(x.addr)).ToList();
         }
 
         public IEnumerable<MarkerInfo> Locations()
@@ -130,7 +133,7 @@ Meeting Time: [SGF:Day] at [SGF:Time]<br />
             {
                 template = template.Replace($"[{pair.Key}]", pair.Value);
             }
- 
+
             return template;
         }
 
