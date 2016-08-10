@@ -152,7 +152,9 @@ namespace CmsWeb.Areas.Org.Models
 
                 _showContactsReceivedTab = ShowContactsCheckOrgAndParents(Org, user.PeopleId.Value, memberTypes);
             }
-            else
+
+            // Finally check to see if user is in CG role
+            if (!_showContactsReceivedTab.Value)
             {
                 _showContactsReceivedTab = HttpContext.Current.User.IsInRole("CG");
             }
