@@ -29,10 +29,6 @@ namespace CmsWeb.Models
             this.noupdate = noupdate;
             this.testing = testing;
             this.host = host;
-#if DEBUG
-            if (!testing)
-                Debugger.Break();
-#endif
         }
 
         private void UpdateField(Family f, string[] a, string prop, string s)
@@ -272,10 +268,6 @@ namespace CmsWeb.Models
             rt.Count = q.Sum(ff => ff.Count());
             Db2.SubmitChanges();
 
-#if DEBUG
-            const int pidtocheck = 27381;
-#endif
-
             foreach (var fam in q)
             {
                 Family f = null;
@@ -329,10 +321,6 @@ namespace CmsWeb.Models
                     {
                         p = db.LoadPersonById(pid.PeopleId.Value);
                         prevpid = p.PeopleId;
-#if DEBUG2
-                        if (!testing && p.PeopleId == pidtocheck)
-                            Debugger.Break();
-#endif
                         psb = new List<ChangeDetail>();
                         fsb = new List<ChangeDetail>();
 
@@ -402,10 +390,6 @@ namespace CmsWeb.Models
                             dob.FormatDate(),
                             0, 0, 0, null, testing);
                         prevpid = p.PeopleId;
-#if DEBUG2
-                        if (!testing && p.PeopleId == pidtocheck)
-                            Debugger.Break();
-#endif
                         p.FixTitle();
 
                         SetField(p, a, "AltName", "altname");
