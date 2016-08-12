@@ -44,6 +44,20 @@ namespace CmsData
             Db.SubmitChanges();
 			return c;
         }
+        public static Contact AddOrgContact(CMSDataContext db, int orgId, DateTime? date, string comments, int contactmakerid)
+        {
+            var c = new Contact 
+			{ 
+                OrganizationId = orgId,
+				ContactDate = date ?? DateTime.Parse("1/1/1900"), 
+	            CreatedDate = DateTime.Now,
+				Comments = comments
+			};
+            c.contactsMakers.Add(new Contactor { PeopleId = contactmakerid });
+            db.Contacts.InsertOnSubmit(c);
+            db.SubmitChanges();
+			return c;
+        }
 		public static ContactType FetchOrCreateContactType(CMSDataContext Db, string type)
 		{
 			var ct = Db.ContactTypes.SingleOrDefault(pp => pp.Description == type);
