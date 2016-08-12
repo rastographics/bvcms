@@ -34,6 +34,7 @@ namespace CmsWeb.Areas.Public
                     .Replace("{type}", org.OrganizationType?.Description ?? string.Empty)
                     .Replace("{division}", org.Division?.Name ?? string.Empty)
                     .Replace("{campus}", org.Campu?.Description ?? string.Empty)
+                    .Replace("{orgid}", org.OrganizationId.ToString())
                     .Replace("{name}", org.OrganizationName ?? string.Empty);
 
                 org.GetOrganizationExtras().ForEach(ev =>

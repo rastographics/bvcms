@@ -171,10 +171,16 @@ Meeting Time: [SGF:Day] at [SGF:Time]<br />
 
             foreach (var extra in org.OrganizationExtras)
             {
+                var val = extra.Data ??
+                          extra.StrValue ??
+                          extra.DateValue?.ToString() ??
+                          extra.IntValue?.ToString() ??
+                          extra.BitValue?.ToString();
+
                 if (extra.Field.StartsWith("SGF:"))
-                    values[extra.Field] = extra.Data;
+                    values[extra.Field] = val;
                 else if (loadAllValues)
-                    values[$"SGF:{extra.Field.Replace(" ", "")}"] = extra.Data;
+                    values[$"SGF:{extra.Field}"] = val;
             }
 
             return values;
