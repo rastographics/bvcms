@@ -25,7 +25,7 @@
                         <tr>
                             <th>@Model.SortLink(sentlabel)</th>
                             <th>@Model.SortLink("From")</th>
-                            @if (access)
+                            @if (showEmailDetails)
                             {
                                 <th>@Model.SortLink("Count")</th>
                             }
@@ -51,7 +51,7 @@
                                     @i.From<br />
                                 @i.FromAddr
                             </td>
-                            @if (access)
+                            @if (showEmailDetails)
                             {
                                 <td>@i.Count</td>
                             }
