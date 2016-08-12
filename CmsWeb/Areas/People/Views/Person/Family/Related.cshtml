@@ -1,7 +1,17 @@
-﻿@using CmsWeb.Areas.People.Models
+﻿@using CmsData
+@using CmsWeb.Areas.People.Models
 @model FamilyModel
 @{
     var dialog = "/SearchAdd2/Dialog/RelatedFamily/" + Model.Person.PeopleId;
+    var showFamilyQueryLink = false;
+    if (User.IsInRole("OrgLeadersOnly"))
+    {
+        showFamilyQueryLink = !DbUtil.Db.Setting("UX-HideQueriesForOrgLeaders", false);
+    }
+    else if (User.IsInRole("Access"))
+    {
+        showFamilyQueryLink = true;
+    }
 }
 <div id="related-families-div">
     @if (!Model.RelatedFamilies().Any())
@@ -27,7 +37,14 @@
     {
         <div class="row">
             <div class="col-sm-12">
-                <h4><a id="related-family-collapse" data-toggle="collapse" href="#related-family-section" aria-expanded="true" aria-controls="related-family-section"><i class="fa fa-chevron-circle-down"></i></a> <a href="/Person2/RelatedFamilyQuery/@Model.Family.FamilyId">Related Families</a></h4>
+                @if (showFamilyQueryLink)
+                {
+                    <h4><a id="related-family-collapse" data-toggle="collapse" href="#related-family-section" aria-expanded="true" aria-controls="related-family-section"><i class="fa fa-chevron-circle-down"></i></a> <a href="/Person2/RelatedFamilyQuery/@Model.Family.FamilyId">Related Families</a></h4>
+                }
+                else
+                {
+                    <h4><a id="related-family-collapse" data-toggle="collapse" href="#related-family-section" aria-expanded="true" aria-controls="related-family-section"><i class="fa fa-chevron-circle-down"></i></a> Related Families</h4>
+                }
             </div>
         </div>
         <div class="row collapse in" id="related-family-section">

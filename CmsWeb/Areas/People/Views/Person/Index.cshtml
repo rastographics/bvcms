@@ -15,10 +15,15 @@
     {
         showResourcesTab = Model.PeopleId == Util.UserPeopleId || User.IsInRole("ViewResources");
     }
-    var showMinistryTab = User.IsInRole("Access");
-    if (!(User.IsInRole("OrgLeadersOnly") && !DbUtil.Db.Setting("UX-HideMinistryTabForOrgLeaders", false)))
+
+    var showMinistryTab = false;
+    if (User.IsInRole("OrgLeadersOnly"))
     {
-        showMinistryTab = false;
+        showMinistryTab = !DbUtil.Db.Setting("UX-HideMinistryTabForOrgLeaders", false);
+    }
+    else if (User.IsInRole("Access"))
+    {
+        showMinistryTab = true;
     }
 }
 @section head
