@@ -43,10 +43,7 @@
                               @Html.CheckBox("AutoRun") Auto refresh?
                             </label>
                           </div>
-                          @if (User.IsInRole("developer")) // waiting for documentation to open up this feature.
-                          {
-                            <a href="/Query/Export/@ViewBag.OrigQueryId" class="exportquery">View Code</a>
-                          }
+                          <a href="/Query/Export/@ViewBag.OrigQueryId" class="exportquery">View Code</a>
                         </div>
                         <div class="pull-right">
                             <div class="btn-group visible-xs-inline">
