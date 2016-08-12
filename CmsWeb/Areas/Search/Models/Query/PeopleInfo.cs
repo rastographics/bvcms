@@ -20,6 +20,7 @@ namespace CmsWeb.Areas.Search.Models
         public string MemberStatus { get; set; }
         public string Name { get; set; }
         public string Name2 { get; set; }
+        public string AltName { get; set; }
         public string BirthDate { get; set; }
         public string Address { get; set; }
         public string Address2 { get; set; }
@@ -85,6 +86,7 @@ namespace CmsWeb.Areas.Search.Models
         public string BFTeacher { get; set; }
         public string Employer { get; set; }
         public int? BFTeacherId { get; set; }
+        public bool Deceased { get; set; }
         public bool HasTag { get; set; }
         
     }

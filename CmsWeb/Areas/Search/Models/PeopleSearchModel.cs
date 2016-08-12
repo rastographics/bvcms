@@ -6,14 +6,13 @@
  */
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Code;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
-using System.Web;
+using CmsWeb.Areas.Search.Models;
 
 namespace CmsWeb.Models
 {
@@ -185,7 +184,7 @@ or just Last or *First*`space` for first name match only.
             return people;
         }
 
-        public IEnumerable<MailingController.TaggedPersonInfo> PeopleList()
+        public IEnumerable<PeopleInfo> PeopleList()
         {
             var people = FetchPeople();
             if (!_count.HasValue)
@@ -194,13 +193,14 @@ or just Last or *First*`space` for first name match only.
                 .Skip(StartRow).Take(PageSize);
             return PeopleList(people);
         }
-        private IEnumerable<MailingController.TaggedPersonInfo> PeopleList(IQueryable<Person> query)
+        private IEnumerable<PeopleInfo> PeopleList(IQueryable<Person> query)
         {
             var q = from p in query
-                    select new MailingController.TaggedPersonInfo
+                    select new PeopleInfo()
                     {
                         PeopleId = p.PeopleId,
                         Name = p.Name,
+                        AltName = p.AltName,
                         BirthDate = Util.FormatBirthday(p.BirthYear, p.BirthMonth, p.BirthDay),
                         Address = p.PrimaryAddress,
                         Address2 = p.PrimaryAddress2,

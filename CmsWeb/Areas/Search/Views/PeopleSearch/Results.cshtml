@@ -5,6 +5,7 @@
 @model PeopleSearchModel
 @{
     var target = Util2.TargetLinkPeople ? "target='people'" : "";
+  var showAltName = DbUtil.Db.Setting("ShowAltNameOnSearchResults", false);
 }
 <div id="results">
     @Html.Partial("PagerTop", Model)
@@ -30,7 +31,11 @@
                 {
                     <tr>
                         <td>
-                            <a href='/Person2/@p.PeopleId' class="target" @target>@p.Name</a>
+                          <a href='/Person2/@p.PeopleId' class="target" @target>@p.Name</a>
+                          @if (showAltName)
+                          {
+                              <br/><text>@p.AltName</text>
+                          }
                         </td>
                         <td>
                             @p.MemberStatus<br />
