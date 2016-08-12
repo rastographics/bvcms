@@ -52,10 +52,15 @@
 </form>
     @helper ExtraDataFormAction(ExtraValueModel evmodel, bool xs = false)
     {
+        var canAddExtraValues = User.IsInRole("Admin") ||
+            (User.IsInRole("OrgLeadersOnly")
+            && DbUtil.Db.Setting("UX-OrgLeadersOnlyCanEditCGInfoEVs", false)
+            && !DbUtil.Db.Setting("UX-HideExtraValueEditForOrgLeaderOnly", false));
+
         if (xs)
         {
             <div class="visible-xs-block">
-                @if (User.IsInRole("Admin") || (User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-OrgLeadersOnlyCanEditCGInfoEVs", false)))
+                @if (canAddExtraValues)
                 {
                     <a class="extravalue btn btn-success btn-block" href="/ExtraValue/NewStandard/@evmodel.Table/CommunityGroup/@evmodel.Id"><i class="fa fa-plus-circle"></i> Add Extra Value</a>
                     <a class="extravalue edit btn btn-default btn-block" href="/ExtraValue/ListStandard/@evmodel.Table/CommunityGroup/@evmodel.Id?title=Edit+Community+Group+Extra+Vaues"><i class="fa fa-pencil"></i> Edit Extra Value</a>
@@ -70,7 +75,7 @@
                 <div class="col-sm-12">
                     <div class="pull-right">
                         <a href="#" class="ajax-refresh btn btn-default"><i class="fa fa-refresh"></i> Refresh</a>
-                        @if (User.IsInRole("Admin") || (User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-OrgLeadersOnlyCanEditCGInfoEVs", false)))
+                        @if (canAddExtraValues)
                         {
                             <a class="extravalue edit btn btn-default" href="/ExtraValue/ListStandard/@evmodel.Table/CommunityGroup/@evmodel.Id?title=Edit+Community+Group+Extra+Vaues"><i class="fa fa-pencil"></i> Edit Extra Value</a>
                             <a class="extravalue btn btn-success" href="/ExtraValue/NewStandard/@evmodel.Table/CommunityGroup/@evmodel.Id"><i class="fa fa-plus-circle"></i> Add Extra Value</a>
