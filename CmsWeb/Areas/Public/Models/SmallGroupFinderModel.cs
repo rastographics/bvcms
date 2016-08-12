@@ -277,7 +277,7 @@ namespace CmsWeb.Areas.Public.Models
                            where g.Campu.Description == filter.Value.values[0]
                            select g;
                 }
-                else if (filter.Key == "Time")
+                else if (filter.Key.EndsWith("Time"))
                 {
                     var val = filter.Value.values[0];
                     orgs = from g in orgs
