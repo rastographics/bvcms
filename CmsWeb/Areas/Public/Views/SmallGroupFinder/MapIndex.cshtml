@@ -10,11 +10,11 @@
                 {
                     var f = Model.getFilter(iX);
                     var fi = Model.getFilterItems(iX);
-                    var filterId = Regex.Replace(f.title, "[ /]", "");
+                    var filterId = Regex.Replace(f.name, "[ /]", "");
 
                     <div class="form-group">
                         <label for="@filterId">@f.title</label>
-                        <select id="@filterId" name="@f.title" class="form-control update-control">
+                        <select id="@filterId" name="@f.name" class="form-control update-control">
                             @foreach (var item in fi)
                             {
                                 <option @(Model.IsSelectedValue(f.name, item.value) ? "selected" : "") value="@item.value">@item.value</option>
