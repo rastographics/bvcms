@@ -251,22 +251,20 @@ namespace CmsWeb.Areas.Public.Models
         {
             if (_search == null) return new List<Organization>();
 
-            var orgTypes = DbUtil.Db.Setting("SGF-OrgTypes", "").Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
+            var orgTypes = DbUtil.Db.Setting("SGF-OrgTypes", "").Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToList();
 
             IQueryable<Organization> orgs;
             if (!orgTypes.Any())
             {
                 orgs = from o in DbUtil.Db.Organizations
-                           where o.DivOrgs.Any(ee => _divList.Contains(ee.DivId))
-                           //where o.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
-                           select o;
+                       where o.DivOrgs.Any(ee => _divList.Contains(ee.DivId))
+                       select o;
             }
             else
             {
                 orgs = from o in DbUtil.Db.Organizations
-                           where orgTypes.Contains(o.OrganizationType.Description)
-                           //where o.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
-                           select o;
+                       where orgTypes.Contains(o.OrganizationType.Description)
+                       select o;
             }
 
             foreach (var filter in _search)
@@ -276,8 +274,8 @@ namespace CmsWeb.Areas.Public.Models
                 if (filter.Key == "Campus")
                 {
                     orgs = from g in orgs
-                             where g.Campu.Description == filter.Value.values[0]
-                             select g;
+                           where g.Campu.Description == filter.Value.values[0]
+                           select g;
                 }
                 else if (filter.Key == "Time")
                 {
