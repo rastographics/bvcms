@@ -1,57 +1,69 @@
-﻿@using CmsWeb.Areas.People.Models
+﻿@using CmsData
+@using CmsWeb.Areas.People.Models
 @using UtilityExtensions
 @model FamilyModel
-<div id="family-div">
-  <div class="row">
-    <div class="col-sm-12">
-      @if (User.IsInRole("Access"))
-      {
-          <h4>
-            <a id="family-members-collapse" data-toggle="collapse" href="#family-members-section" aria-expanded="true" aria-controls="family-members-section"><i class="fa fa-chevron-circle-down"></i></a> <a href="/Person2/FamilyQuery/@Model.Family.FamilyId">Family Members</a>
-          </h4>
-      }
-      else
-      {
-          <h4>
-            <a id="family-members-collapse" data-toggle="collapse" href="#family-members-section" aria-expanded="true" aria-controls="family-members-section"><i class="fa fa-chevron-circle-down"></i></a> Family Members
-          </h4>
-      }
-    </div>
-  </div>
-  <div class="row collapse in" id="family-members-section">
-    <div class="col-sm-12">
-      <ul id="family_members" class="nav nav-stacked nav-tabs nav-tabs-left" style="margin-bottom: 10px;">
-        @foreach (var m in Model.ViewList())
-        {
-          var active = m.Id == Model.Person.PeopleId ? "active" : "";
-          var ifdeceased = !active.HasValue() && m.IsDeceased == true ? "alert alert-danger" : "";
-          var picdt = (m.PicDate ?? DateTime.Now);
-          var portraitUrl = $"/Portrait/{m.PortraitId}?v={picdt.Ticks}";
-          var portraitBgPos = m.PicXPos.HasValue || m.PicYPos.HasValue ? $"{m.PicXPos ?? 0}% {m.PicYPos ?? 0}%" : "top";
-            <li class="@active @ifdeceased" style="font-size: 0.85em;">
-              <a href="/Person2/@m.Id">
-                <div class="headshot" style="background-image:url(@portraitUrl); background-position: @portraitBgPos"></div>
-                <span class="name">@m.Name @Html.Raw(m.SpouseIndicator)</span><br />
-                <span class="meta">
-                  <span class="age">@m.Age</span>
-                  &bull; <span class="status">@m.MemberStatus</span>
-                  &bull; <span class="role">@m.PositionInFamily</span>
-                </span>
-                <div class="email email_display truncate">@m.Email</div>
-              </a>
-            </li>
-        }
-      </ul>
-    </div>
-    @if (Model.Person.CanUserEditAll)
+@{
+    var showFamilyQueryLink = false;
+    if (User.IsInRole("OrgLeadersOnly"))
     {
-        <div class="col-sm-12">
-          <a href="/SearchAdd2/Dialog/Family/@Model.Person.PeopleId" class="searchadd btn btn-success btn-sm btn-block"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Family Member</a>
-        </div>
-
+        showFamilyQueryLink = !DbUtil.Db.Setting("UX-HideQueriesForOrgLeaders", false);
     }
-    <div class="col-sm-12">
-      <br />
+    else if (User.IsInRole("Access"))
+    {
+        showFamilyQueryLink = true;
+    }
+}
+<div id="family-div">
+    <div class="row">
+        <div class="col-sm-12">
+            @if (showFamilyQueryLink)
+            {
+                <h4>
+                    <a id="family-members-collapse" data-toggle="collapse" href="#family-members-section" aria-expanded="true" aria-controls="family-members-section"><i class="fa fa-chevron-circle-down"></i></a> <a href="/Person2/FamilyQuery/@Model.Family.FamilyId">Family Members</a>
+                </h4>
+            }
+            else
+            {
+                <h4>
+                    <a id="family-members-collapse" data-toggle="collapse" href="#family-members-section" aria-expanded="true" aria-controls="family-members-section"><i class="fa fa-chevron-circle-down"></i></a> Family Members
+                </h4>
+            }
+        </div>
     </div>
-  </div>
+    <div class="row collapse in" id="family-members-section">
+        <div class="col-sm-12">
+            <ul id="family_members" class="nav nav-stacked nav-tabs nav-tabs-left" style="margin-bottom: 10px;">
+                @foreach (var m in Model.ViewList())
+                {
+                    var active = m.Id == Model.Person.PeopleId ? "active" : "";
+                    var ifdeceased = !active.HasValue() && m.IsDeceased == true ? "alert alert-danger" : "";
+                    var picdt = (m.PicDate ?? DateTime.Now);
+                    var portraitUrl = $"/Portrait/{m.PortraitId}?v={picdt.Ticks}";
+                    var portraitBgPos = m.PicXPos.HasValue || m.PicYPos.HasValue ? $"{m.PicXPos ?? 0}% {m.PicYPos ?? 0}%" : "top";
+                    <li class="@active @ifdeceased" style="font-size: 0.85em;">
+                        <a href="/Person2/@m.Id">
+                            <div class="headshot" style="background-image:url(@portraitUrl); background-position: @portraitBgPos"></div>
+                            <span class="name">@m.Name @Html.Raw(m.SpouseIndicator)</span><br />
+                            <span class="meta">
+                                <span class="age">@m.Age</span>
+                                &bull; <span class="status">@m.MemberStatus</span>
+                                &bull; <span class="role">@m.PositionInFamily</span>
+                            </span>
+                            <div class="email email_display truncate">@m.Email</div>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+        @if (Model.Person.CanUserEditAll)
+        {
+            <div class="col-sm-12">
+                <a href="/SearchAdd2/Dialog/Family/@Model.Person.PeopleId" class="searchadd btn btn-success btn-sm btn-block"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Family Member</a>
+            </div>
+
+        }
+        <div class="col-sm-12">
+            <br />
+        </div>
+    </div>
 </div>

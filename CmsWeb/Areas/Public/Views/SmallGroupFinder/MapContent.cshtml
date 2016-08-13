@@ -7,6 +7,14 @@
     var latitude = double.Parse(Model.getSetting("Latitude")?.value ?? "40.757577");
     var longitude = double.Parse(Model.getSetting("Longitude")?.value ?? "-73.969246");
     var mapZoom = int.Parse(Model.getSetting("MapZoom")?.value ?? "12");
+
+    var showOnlyName = Model.getSetting("ShowOnlyName")?.value;
+    var showOnlyValue = Model.getSetting("ShowOnlyValue")?.value;
+
+    if (!string.IsNullOrWhiteSpace(showOnlyName) && !string.IsNullOrWhiteSpace(showOnlyValue))
+    {
+        mapModel.SetShowOnly(showOnlyName, showOnlyValue);
+    }
 }
 
 <div class="row map-content">

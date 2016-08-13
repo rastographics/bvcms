@@ -30,6 +30,15 @@ namespace CmsWeb.Models
         private readonly List<Organization> _orgList;
         private readonly int? divid;
 
+        private string showOnlyName;
+        private string showOnlyValue;
+
+        public void SetShowOnly(string name, string value)
+        {
+            showOnlyName = name;
+            showOnlyValue = value;
+        }
+
         public IEnumerable<SGInfo> SmallGroupInfo()
         {
             var extraValueForAddress = DbUtil.Db.Setting("SGF-ExtraValueHost", null);
@@ -44,6 +53,18 @@ namespace CmsWeb.Models
                     where !divid.HasValue || o.DivOrgs.Any(dd => dd.DivId == divid) || o.DivisionId == divid
                     where !orgIdList.Any() || orgIdList.Contains(o.OrganizationId)
                     where !orgTypes.Any() || orgTypes.Contains(o.OrganizationType.Description)
+                    where o.OrganizationExtras.Any(oe =>
+                        showOnlyName == null && showOnlyValue == null || (
+                            oe.Field == showOnlyName &&
+                            (
+                                oe.StrValue.ToLower() == showOnlyValue ||
+                                oe.Data.ToLower() == showOnlyValue ||
+                                oe.DateValue != null && oe.DateValue.ToString() == showOnlyValue ||
+                                oe.IntValue != null && oe.IntValue.ToString() == showOnlyValue ||
+                                oe.BitValue != null && oe.BitValue.ToString() == showOnlyValue
+                            )
+                        )
+                    )
                     select new
                     {
                         host,
@@ -115,7 +136,13 @@ Meeting Time: [SGF:Day] at [SGF:Time]<br />
                     model = ql,
                     dict = GetValuesDictionary(ql.org, loadAllValues)
                 })
-                .OrderBy(x => x.dict[sortSettings])
+                .OrderBy(x =>
+                {
+                    string orderBy;
+                    return x.dict.TryGetValue(sortSettings, out orderBy)
+                        ? orderBy
+                        : "SGF:Name";
+                })
                 .Select(i => new MarkerInfo
                 {
                     html = BuildMapFromTemplate(template, i.dict),

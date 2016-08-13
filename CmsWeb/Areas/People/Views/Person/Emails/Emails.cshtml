@@ -1,8 +1,18 @@
 ﻿@model CmsWeb.Areas.People.Models.EmailModel
+@using CmsData
 @using CmsWeb.Areas.People.Models
 @using UtilityExtensions
 @{
     var access = User.IsInRole("Access");
+    var showEmailDetails = false;
+    if (User.IsInRole("OrgLeadersOnly"))
+    {
+        showEmailDetails = !DbUtil.Db.Setting("UX-HideEmailDetailsForOrgLeaders", false);
+    }
+    else if (User.IsInRole("Access"))
+    {
+        showEmailDetails = true;
+    }
     var sentlabel = Model is EmailScheduledModel ? "Scheduled" : "Sent";
 }
 <form class="non-modal ajax" method="post">
@@ -15,7 +25,7 @@
                         <tr>
                             <th>@Model.SortLink(sentlabel)</th>
                             <th>@Model.SortLink("From")</th>
-                            @if (access)
+                            @if (showEmailDetails)
                             {
                                 <th>@Model.SortLink("Count")</th>
                             }
@@ -41,12 +51,12 @@
                                     @i.From<br />
                                 @i.FromAddr
                             </td>
-                            @if (access)
+                            @if (showEmailDetails)
                             {
                                 <td>@i.Count</td>
                             }
                             <td>
-                                @if (access)
+                                @if (showEmailDetails)
                                 {
                                     <a target="viewemail" href="/Emails/Details/@i.Id">@i.Subject</a>
                                 }
