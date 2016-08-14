@@ -8,6 +8,7 @@ namespace CmsData
     public enum QueryType
     {
         Age,
+        AltName,
         AttendTypeCodes,
         AttendMemberTypeAsOf,
         AttendPct,

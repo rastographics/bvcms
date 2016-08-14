@@ -4,6 +4,7 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,7 @@ namespace CmsWeb.Models
             marital = 99;
             gender = 99;
         }
+
         public string name { get; set; }
         public string communication { get; set; }
         public string address { get; set; }
@@ -40,6 +42,7 @@ Search names using starting letters of *First*`space`*Last*
 or just Last or *First*`space` for first name match only.
 ").ToString();
     }
+
     public class PeopleSearchModel : PagerModel2
     {
         private CMSDataContext Db;
@@ -64,6 +67,7 @@ or just Last or *First*`space` for first name match only.
         public bool usersonly { get; set; }
 
         private IQueryable<Person> people;
+
         public IQueryable<Person> FetchPeople()
         {
             if (people != null)
@@ -71,8 +75,8 @@ or just Last or *First*`space` for first name match only.
 
             DbUtil.Db.SetNoLock();
 
-            people = Util2.OrgLeadersOnly 
-                ? DbUtil.Db.OrgLeadersOnlyTag2().People(DbUtil.Db) 
+            people = Util2.OrgLeadersOnly
+                ? DbUtil.Db.OrgLeadersOnlyTag2().People(DbUtil.Db)
                 : DbUtil.Db.People.AsQueryable();
 
             if (usersonly)
@@ -97,21 +101,24 @@ or just Last or *First*`space` for first name match only.
                     Util.NameSplit(m.name, out first, out last);
                     if (first.HasValue())
                         people = from p in people
-                             where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last) || p.AltName.StartsWith(last)
-                                 || p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) // gets Bob St Clair
-                             where
-                                 p.FirstName.StartsWith(first) || p.NickName.StartsWith(first) || p.MiddleName.StartsWith(first)
-                                 || p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) // gets Bob St Clair
-                             select p;
+                                 where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last) || p.AltName.StartsWith(last)
+                                       || p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) // gets Bob St Clair
+                                 where
+                                     p.FirstName.StartsWith(first) || p.NickName.StartsWith(first) || p.MiddleName.StartsWith(first)
+                                     || p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) // gets Bob St Clair
+                                 select p;
+                    else if (last.AllDigits())
+                        people = from p in people
+                                 where p.PeopleId == last.ToInt()
+                                 select p;
+                    else if (DbUtil.Db.Setting("UseAltnameContains"))
+                        people = from p in people
+                                 where p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) || p.AltName.Contains(last)
+                                 select p;
                     else
-                        if (last.AllDigits())
-                            people = from p in people
-                                     where p.PeopleId == last.ToInt()
-                                     select p;
-                        else
-                            people = from p in people
-                              where p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) || p.AltName.StartsWith(last)
-                              select p;
+                        people = from p in people
+                                 where p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) || p.AltName.StartsWith(last)
+                                 select p;
                 }
             }
             if (m.address.IsNotNull())
@@ -125,9 +132,9 @@ or just Last or *First*`space` for first name match only.
                 if (m.address.HasValue())
                     people = from p in people
                              where p.Family.AddressLineOne.Contains(m.address)
-                                || p.Family.AddressLineTwo.Contains(m.address)
-                                || p.Family.CityName.Contains(m.address)
-                                || p.Family.ZipCode.Contains(m.address)
+                                   || p.Family.AddressLineTwo.Contains(m.address)
+                                   || p.Family.CityName.Contains(m.address)
+                                   || p.Family.ZipCode.Contains(m.address)
                              select p;
             }
             if (m.statusflags != null)
@@ -141,7 +148,6 @@ or just Last or *First*`space` for first name match only.
                          let ac = p.Tags.Count(tt => m.statusflags.Contains(tt.Tag.Name))
                          where ac == m.statusflags.Length
                          select p;
-
             }
             if (m.communication.IsNotNull())
             {
@@ -149,10 +155,10 @@ or just Last or *First*`space` for first name match only.
                 if (m.communication.HasValue())
                     people = from p in people
                              where p.CellPhone.Contains(m.communication)
-                             || p.EmailAddress.Contains(m.communication)
-                             || p.EmailAddress2.Contains(m.communication)
-                             || p.Family.HomePhone.Contains(m.communication)
-                             || p.WorkPhone.Contains(m.communication)
+                                   || p.EmailAddress.Contains(m.communication)
+                                   || p.EmailAddress2.Contains(m.communication)
+                                   || p.Family.HomePhone.Contains(m.communication)
+                                   || p.WorkPhone.Contains(m.communication)
                              select p;
             }
             if (m.birthdate.HasValue() && m.birthdate.NotEqual("na"))
@@ -193,6 +199,7 @@ or just Last or *First*`space` for first name match only.
                 .Skip(StartRow).Take(PageSize);
             return PeopleList(people);
         }
+
         private IEnumerable<PeopleInfo> PeopleList(IQueryable<Person> query)
         {
             var q = from p in query
@@ -221,7 +228,7 @@ or just Last or *First*`space` for first name match only.
         }
 
         public Regex AddrRegex = new Regex(
-        @"\A(?<addr>.*);\s*(?<city>.*),\s+(?<state>[A-Z]*)\s+(?<zip>\d{5}(-\d{4})?)\z");
+            @"\A(?<addr>.*);\s*(?<city>.*),\s+(?<state>[A-Z]*)\s+(?<zip>\d{5}(-\d{4})?)\z");
 
         public IQueryable<Person> ApplySort(IQueryable<Person> query)
         {
@@ -233,38 +240,38 @@ or just Last or *First*`space` for first name match only.
                         case "Status":
                             query = from p in query
                                     orderby p.MemberStatus.Code,
-                                    p.LastName,
-                                    p.FirstName,
-                                    p.PeopleId
+                                        p.LastName,
+                                        p.FirstName,
+                                        p.PeopleId
                                     select p;
                             break;
                         case "Address":
                             query = from p in query
                                     orderby p.PrimaryState,
-                                    p.PrimaryCity,
-                                    p.PrimaryAddress,
-                                    p.PeopleId
+                                        p.PrimaryCity,
+                                        p.PrimaryAddress,
+                                        p.PeopleId
                                     select p;
                             break;
                         case "Fellowship Leader":
                             query = from p in query
                                     orderby p.BFClass.LeaderName,
-                                    p.LastName,
-                                    p.FirstName,
-                                    p.PeopleId
+                                        p.LastName,
+                                        p.FirstName,
+                                        p.PeopleId
                                     select p;
                             break;
                         case "DOB":
                             query = from p in query
                                     orderby p.BirthMonth, p.BirthDay,
-                                    p.LastName, p.FirstName
+                                        p.LastName, p.FirstName
                                     select p;
                             break;
                         case "Name":
                             query = from p in query
                                     orderby p.LastName,
-                                    p.FirstName,
-                                    p.PeopleId
+                                        p.FirstName,
+                                        p.PeopleId
                                     select p;
                             break;
                     }
@@ -275,38 +282,38 @@ or just Last or *First*`space` for first name match only.
                         case "Name":
                             query = from p in query
                                     orderby p.LastName descending,
-                                    p.FirstName,
-                                    p.PeopleId
+                                        p.FirstName,
+                                        p.PeopleId
                                     select p;
                             break;
                         case "Status":
                             query = from p in query
                                     orderby p.MemberStatus.Code descending,
-                                    p.LastName descending,
-                                    p.FirstName descending,
-                                    p.PeopleId descending
+                                        p.LastName descending,
+                                        p.FirstName descending,
+                                        p.PeopleId descending
                                     select p;
                             break;
                         case "Address":
                             query = from p in query
                                     orderby p.PrimaryState descending,
-                                    p.PrimaryCity descending,
-                                    p.PrimaryAddress descending,
-                                    p.PeopleId descending
+                                        p.PrimaryCity descending,
+                                        p.PrimaryAddress descending,
+                                        p.PeopleId descending
                                     select p;
                             break;
                         case "Fellowship Leader":
                             query = from p in query
                                     orderby p.BFClass.LeaderName descending,
-                                    p.LastName descending,
-                                    p.FirstName descending,
-                                    p.PeopleId descending
+                                        p.LastName descending,
+                                        p.FirstName descending,
+                                        p.PeopleId descending
                                     select p;
                             break;
                         case "DOB":
                             query = from p in query
                                     orderby p.BirthMonth descending, p.BirthDay descending,
-                                    p.LastName descending, p.FirstName descending
+                                        p.LastName descending, p.FirstName descending
                                     select p;
                             break;
                     }
@@ -314,15 +321,19 @@ or just Last or *First*`space` for first name match only.
             }
             return query;
         }
+
         CodeValueModel cv = new CodeValueModel();
+
         public SelectList GenderCodes()
         {
             return new SelectList(cv.GenderCodesWithUnspecified(), "Id", "Value", m.gender);
         }
+
         public SelectList MaritalCodes()
         {
             return new SelectList(cv.MaritalStatusCodes99(), "Id", "Value", m.marital);
         }
+
         public IEnumerable<SelectListItem> Campuses()
         {
             var q = from c in DbUtil.Db.Campus
@@ -345,11 +356,14 @@ or just Last or *First*`space` for first name match only.
             });
             return list;
         }
+
         public SelectList MemberStatusCodes()
         {
             return new SelectList(cv.MemberStatusCodes0(), "Id", "Value", m.memberstatus);
         }
+
         private int? _count;
+
         public int Count()
         {
             if (!_count.HasValue)
@@ -365,6 +379,7 @@ or just Last or *First*`space` for first name match only.
                        select v.IdValue).Single();
             return ret;
         }
+
         public string ConvertToSearch()
         {
             var cc = DbUtil.Db.ScratchPadCondition();
@@ -372,7 +387,7 @@ or just Last or *First*`space` for first name match only.
 
             if (m.memberstatus > 0)
                 cc.AddNewClause(QueryType.MemberStatusId, CompareType.Equal,
-                                IdValue(cv.MemberStatusCodes(), m.memberstatus));
+                    IdValue(cv.MemberStatusCodes(), m.memberstatus));
 
             if (m.name.HasValue())
             {
@@ -398,11 +413,11 @@ or just Last or *First*`space` for first name match only.
                     {
                         var g = cc.AddNewGroupClause();
                         g.SetComparisonType(CompareType.AnyTrue);
+                        var compareTypeAltname = DbUtil.Db.Setting("UseAltnameContains") 
+                            ? CompareType.Contains : CompareType.StartsWith;
+                        g.AddNewClause(QueryType.AltName, compareTypeAltname, m.name);
                         g.AddNewClause(QueryType.LastName, CompareType.StartsWith, m.name);
                         g.AddNewClause(QueryType.MaidenName, CompareType.StartsWith, m.name);
-//                        g.AddNewClause(QueryType.FirstName, CompareType.StartsWith, m.name);
-//                        g.AddNewClause(QueryType.NickName, CompareType.StartsWith, m.name);
-//                        g.AddNewClause(QueryType.MiddleName, CompareType.StartsWith, m.name);
                     }
                 }
             }
@@ -458,17 +473,17 @@ or just Last or *First*`space` for first name match only.
             }
             if (m.campus > 0)
                 cc.AddNewClause(QueryType.CampusId, CompareType.Equal,
-                                IdValue(cv.AllCampuses(), m.campus));
+                    IdValue(cv.AllCampuses(), m.campus));
             else if (m.campus == -1)
                 cc.AddNewClause(QueryType.CampusId, CompareType.IsNull,
-                                IdValue(cv.AllCampuses(), m.campus));
+                    IdValue(cv.AllCampuses(), m.campus));
             if (m.gender != 99)
                 cc.AddNewClause(QueryType.GenderId, CompareType.Equal,
-                                IdValue(cv.GenderCodes(), m.gender));
+                    IdValue(cv.GenderCodes(), m.gender));
             if (m.marital != 99)
                 cc.AddNewClause(QueryType.MaritalStatusId, CompareType.Equal,
-                                IdValue(cv.MaritalStatusCodes(), m.marital));
-            if(m.statusflags != null)
+                    IdValue(cv.MaritalStatusCodes(), m.marital));
+            if (m.statusflags != null)
                 foreach (var f in m.statusflags)
                     cc.AddNewClause(QueryType.StatusFlag, CompareType.Equal, f);
             cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,True");
@@ -531,6 +546,7 @@ or just Last or *First*`space` for first name match only.
             }
             return null;
         }
+
         private static Person PersonFound(CMSDataContext ctx, IQueryable<Person> q)
         {
             var pid = q.Select(p => p.PeopleId).SingleOrDefault();

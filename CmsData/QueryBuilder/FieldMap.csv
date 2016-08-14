@@ -14,6 +14,7 @@ LastName,String,,,,Personal,Last Name,,Enter all or part of a Last Name.
 NickName,String,,,,Personal,Nick Name,,Enter all or part of Goes By Name.
 MaidenName,String,,,,Personal,Maiden Name,,Enter all or part of Maiden (Former) Name.
 MiddleName,String,,,,Personal,Middle Name,,Enter all or part of Middle Name.
+AltName,String,,,,Personal,AltName,,Enter all or part of a AltName.
 SchoolOther,CodeStr,,Schools,,Personal,School,,Select School from list.
 EmployerOther,CodeStr,,Employers,,Personal,Employer,,Select Employer from list.
 OccupationOther,CodeStr,,Occupations,,Personal,Occupation,,Select Occupation from list.
