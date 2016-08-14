@@ -20,7 +20,7 @@ namespace CmsData.View
 		
 		private string _GroupCode;
 		
-		private int? _PeopleId;
+		private int _PeopleId;
 		
 		private DateTime? _LastContactMadeDt;
 		
@@ -45,7 +45,7 @@ namespace CmsData.View
 
 		
 		
-		[Column(Name="Tab", Storage="_Tab", DbType="varchar(30)")]
+		[Column(Name="Tab", Storage="_Tab", DbType="varchar(9) NOT NULL")]
 		public string Tab
 		{
 			get
@@ -62,7 +62,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="GroupCode", Storage="_GroupCode", DbType="char(2)")]
+		[Column(Name="GroupCode", Storage="_GroupCode", DbType="varchar(2) NOT NULL")]
 		public string GroupCode
 		{
 			get
@@ -79,8 +79,8 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int")]
-		public int? PeopleId
+		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int NOT NULL")]
+		public int PeopleId
 		{
 			get
 			{
