@@ -48,7 +48,7 @@ namespace CmsData.ExtraValue
                 if (user.IsInRole("Edit"))
                     return true;
 
-                if (user.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-OrgLeadersOnlyCanEditCGInfoEVs", false))
+                if (user.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-OrgLeadersOnlyCanEditCGInfoEVs"))
                 {
                     if (string.IsNullOrEmpty(EditableRoles))
                         return true;

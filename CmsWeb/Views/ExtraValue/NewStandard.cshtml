@@ -25,7 +25,7 @@
                     @Html.DropDownList("VisibilityRolesList", new SelectList(Model.VisibilitySelectedRoles(), "Value", "Text"), new { multiple = "multiple", @class = "form-control multi-select" })
                 </div>
             </div>
-            @if (DbUtil.Db.Setting("UX-OrgLeadersOnlyCanEditCGInfoEVs", false))
+            @if (DbUtil.Db.Setting("UX-OrgLeadersOnlyCanEditCGInfoEVs"))
             {
                 <div class="form-group">
                     <label for="EditableRolesList" class="control-label">Editable by Roles</label>

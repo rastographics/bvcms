@@ -718,8 +718,8 @@ namespace CmsData
 
         // Settings for SendGrid
         public string CustomSendGridApiKey => Setting("SendGridAPIKey", "");
-        public bool UseSendGridApi => Setting("UseSendGridApi", "false") == "true";
-        public bool UseIpWarmup => Setting("UseIpWarmup", "false") == "true";
+        public bool UseSendGridApi => Setting("UseSendGridApi");
+        public bool UseIpWarmup => Setting("UseIpWarmup");
         public string CustomFromDomain => Setting("SysFromEmail", "");
 
         // Configuration for SendGrid

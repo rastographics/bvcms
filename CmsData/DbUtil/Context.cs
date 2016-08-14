@@ -876,9 +876,9 @@ namespace CmsData
         //            var r = RollListMeeting(mid, meetingdt, oid, current, createmeeting);
         //            return r.GetResult<RollListView>();
         //        }
-        public string UserPreference(string pref)
+        public bool UserPreference(string pref, bool def = false)
         {
-            return UserPreference(pref, string.Empty);
+            return UserPreference(pref, "").ToBool();
         }
         public string UserPreference(string pref, string defaultValue)
         {
@@ -904,12 +904,12 @@ namespace CmsData
 
         public void ToggleUserPreference(string pref)
         {
-            var value = UserPreference(pref);
+            var value = UserPreference(pref, "");
             SetUserPreference(pref, value == "true" ? "false" : "true");
         }
         public void SetUserPreference(string pref, object value)
         {
-            if (UserPreference(pref) == value.ToString())
+            if (UserPreference(pref, "") == value.ToString())
                 return;
             if (CurrentUser == null)
                 return;

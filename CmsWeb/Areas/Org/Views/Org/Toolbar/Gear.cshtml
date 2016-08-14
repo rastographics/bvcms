@@ -10,7 +10,7 @@
     var oid = ViewBag.oid;
     var model = (OrganizationModel)ViewBag.model;
     var o = model.Org;
-    var showAdvanced = !(User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-LimitToolbarForOrgLeaders", false));
+    var showAdvanced = !(User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-LimitToolbarForOrgLeaders"));
 }
 
 @if (showAdvanced)

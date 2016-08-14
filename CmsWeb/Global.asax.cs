@@ -241,7 +241,7 @@ namespace CmsWeb
 //            if (ctx?.User == null)
 //                return false;
 //
-//            return ctx.User.IsInRole("Developer") && DbUtil.Db.Setting("MiniProfileEnabled", "false") == "true";
+//            return ctx.User.IsInRole("Developer") && DbUtil.Db.Setting("MiniProfileEnabled");
 //        }
 
         private bool ShouldBypassProcessing()

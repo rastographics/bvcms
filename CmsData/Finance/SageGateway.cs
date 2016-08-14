@@ -26,7 +26,7 @@ namespace CmsData.Finance
         public SageGateway(CMSDataContext db, bool testing)
         {
             this.db = db;
-            var gatewayTesting = db.Setting("GatewayTesting", "false").ToLower() == "true";
+            var gatewayTesting = db.Setting("GatewayTesting");
             if (testing || gatewayTesting)
             {
                 _id = "856423594649";

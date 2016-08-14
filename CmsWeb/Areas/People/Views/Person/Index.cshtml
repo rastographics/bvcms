@@ -10,7 +10,7 @@
     var portraitBgPos = Model.Picture.X.HasValue || Model.Picture.Y.HasValue ? $"{Model.Picture.X.GetValueOrDefault()}% {Model.Picture.Y.GetValueOrDefault()}%" : "top";
 
     var showResourcesTab = false;
-    var resourcesEnabled = DbUtil.Db.Setting("Resources-Enabled", false);
+    var resourcesEnabled = DbUtil.Db.Setting("Resources-Enabled");
     if (resourcesEnabled)
     {
         showResourcesTab = Model.PeopleId == Util.UserPeopleId || User.IsInRole("ViewResources");
@@ -19,7 +19,7 @@
     var showMinistryTab = false;
     if (User.IsInRole("OrgLeadersOnly"))
     {
-        showMinistryTab = !DbUtil.Db.Setting("UX-HideMinistryTabForOrgLeaders", false);
+        showMinistryTab = !DbUtil.Db.Setting("UX-HideMinistryTabForOrgLeaders");
     }
     else if (User.IsInRole("Access"))
     {

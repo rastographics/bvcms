@@ -3,7 +3,7 @@
 @model CmsWeb.Models.OrgContentInfo
 @{
     Layout = null;
-    var allowEmails = DbUtil.Db.Setting("UX-AllowMyDataUserEmails", false);
+    var allowEmails = DbUtil.Db.Setting("UX-AllowMyDataUserEmails");
 }
 @if (allowEmails)
 {

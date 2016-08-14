@@ -1,5 +1,5 @@
 ﻿@{
-    var menuaddpeople = ViewExtensions2.DbSetting("MenuAddPeople", "true") == "true" || Util.IsDebug();
+    var menuaddpeople = DbUtil.Db.Setting("MenuAddPeople", true) || Util.IsDebug();
 }
 <li class="dropdown">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="visible-xs-inline"><i class="fa fa-user"></i>&nbsp;&nbsp;</span>People <span class="caret"></span></a>

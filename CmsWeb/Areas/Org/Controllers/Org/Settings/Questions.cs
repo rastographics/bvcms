@@ -147,7 +147,7 @@ This will prevent your registration from working properly.
         [HttpPost]
         public ActionResult NewAsk(string id, string type)
         {
-            ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowQuestionsHelp") == "true";
+            ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowQuestionsHelp");
             var template = "EditorTemplates/" + type;
             switch (type)
             {

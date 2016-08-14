@@ -2,9 +2,9 @@
 @using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.SettingsRegistrationModel
 @{
-  var NotJoinOrg = Model.Org.RegistrationTypeId != CmsData.Codes.RegistrationTypeCode.JoinOrganization;
-  ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowRegistrationHelp") == "true";
-  ViewBag.FalseValue = "";
+    var NotJoinOrg = Model.Org.RegistrationTypeId != CmsData.Codes.RegistrationTypeCode.JoinOrganization;
+    ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowRegistrationHelp");
+    ViewBag.FalseValue = "";
 }
 <form class="ajax">
   <div class="row">

@@ -164,7 +164,7 @@ p { font-size: 11px; }
                 t2.TotalWidth = 72f * 3f;
                 t2.DefaultCell.Border = Rectangle.NO_BORDER;
 
-                t2.AddCell(Db.Setting("NoPrintDateOnStatement", "false") == "true" 
+                t2.AddCell(Db.Setting("NoPrintDateOnStatement")
                     ? new Phrase($"\nID:{ci.PeopleId} {ci.CampusId}", font) 
                     : new Phrase($"\nPrint Date: {DateTime.Now:d}   (id:{ci.PeopleId} {ci.CampusId})", font));
 

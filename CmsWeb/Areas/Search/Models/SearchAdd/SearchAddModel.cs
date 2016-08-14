@@ -159,7 +159,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public PendingPersonModel NewPerson(int familyid)
         {
-            var campuslist = DbUtil.Db.Setting("CampusRequired", "false") == "true" ? "CampusNoNoCampus" : "Campus";
+            var campuslist = DbUtil.Db.Setting("CampusRequired") ? "CampusNoNoCampus" : "Campus";
 
             var p = new PendingPersonModel
             {

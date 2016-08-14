@@ -3,10 +3,10 @@
 @using CmsData.Finance
 @model CmsWeb.Areas.OnlineReg.Models.PaymentForm
 @{
-  ViewBag.Title = "Online Registration";
-  Layout = "~/Views/Shared/onlinereg2.cshtml";
-  var VaultDisabled = DbUtil.Db.Setting("VaultDisabled", "false") == "true";
-  var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
+    ViewBag.Title = "Online Registration";
+    Layout = "~/Views/Shared/onlinereg2.cshtml";
+    var VaultDisabled = DbUtil.Db.Setting("VaultDisabled");
+    var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
 }
 @section scripts
 {

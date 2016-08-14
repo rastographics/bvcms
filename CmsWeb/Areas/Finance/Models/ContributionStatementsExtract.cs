@@ -41,8 +41,8 @@ namespace CmsWeb.Areas.Finance.Models.Report
             Db.CommandTimeout = 1200;
 
             var noaddressok = Db.Setting("RequireAddressOnStatement", true);
-            showCheckNo = Db.Setting("RequireCheckNoOnStatement", false);
-            showNotes = Db.Setting("RequireNotesOnStatement", false);
+            showCheckNo = Db.Setting("RequireCheckNoOnStatement");
+            showNotes = Db.Setting("RequireNotesOnStatement");
             const bool UseMinAmt = true;
 
             var qc = APIContribution.contributors(Db, fd, td, 0, 0, 0, noaddressok, UseMinAmt, StartsWith, Sort, tagid: TagId, excludeelectronic: ExcludeElectronic);

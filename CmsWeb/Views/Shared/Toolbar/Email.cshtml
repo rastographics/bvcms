@@ -2,7 +2,7 @@
 @{
     var twilio = TwilioHelper.userSendSMS(Util.UserId);
     var qb = DbUtil.Db.QueryIsCurrentUser();
-    var showAdvanced = !(User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-LimitToolbarForOrgLeaders", false));
+    var showAdvanced = !(User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-LimitToolbarForOrgLeaders"));
 }
 <ul class="dropdown-menu dropdown-menu-large dropdown-menu-right container bluebar-menu-col-1">
   <li class="col-sm-12">

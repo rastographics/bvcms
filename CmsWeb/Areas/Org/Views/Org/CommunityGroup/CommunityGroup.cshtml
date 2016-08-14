@@ -54,8 +54,8 @@
     {
         var canAddExtraValues = User.IsInRole("Admin") ||
             (User.IsInRole("OrgLeadersOnly")
-            && DbUtil.Db.Setting("UX-OrgLeadersOnlyCanEditCGInfoEVs", false)
-            && !DbUtil.Db.Setting("UX-HideExtraValueEditForOrgLeaderOnly", false));
+            && DbUtil.Db.Setting("UX-OrgLeadersOnlyCanEditCGInfoEVs")
+            && !DbUtil.Db.Setting("UX-HideExtraValueEditForOrgLeaderOnly"));
 
         if (xs)
         {

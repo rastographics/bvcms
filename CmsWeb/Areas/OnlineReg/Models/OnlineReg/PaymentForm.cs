@@ -76,7 +76,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             get
             {
                 if (!_noEChecksAllowed.HasValue)
-                    _noEChecksAllowed = DbUtil.Db.Setting("NoEChecksAllowed", "false") == "true";
+                    _noEChecksAllowed = DbUtil.Db.Setting("NoEChecksAllowed");
                 return _noEChecksAllowed.Value;
             }
         }

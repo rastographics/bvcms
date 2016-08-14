@@ -2,7 +2,7 @@
     var finance = User.IsInRole("Finance");
     var targetperson = Util2.TargetLinkPeople;
     var targetorg = Util2.TargetLinkOrg;
-    var testnofinance = ((string)HttpContext.Current.Session["testnofinance"]) == "true";
+    var testnofinance = (string)HttpContext.Current.Session["testnofinance"] == "true";
 }
 <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="me" title="@Util.UserName">
   @if (!string.IsNullOrEmpty(Util.UserThumbPictureUrl))

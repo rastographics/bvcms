@@ -419,7 +419,7 @@ namespace CmsWeb.Models
                 }
                 else
                 {
-                    var qp2 = DbUtil.Db.Setting("UseAltnameContains", "false") == "true"
+                    var qp2 = DbUtil.Db.Setting("UseAltnameContains")
                         ? from p in qp
                           where p.LastName.StartsWith(text) || p.MaidenName.StartsWith(text) || p.AltName.Contains(text)
                           select p

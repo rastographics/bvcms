@@ -20,7 +20,7 @@ namespace CmsData.Finance
         public BluePayGateway(CMSDataContext db, bool testing)
         {
             this.db = db;
-            IsLive = !(testing || db.Setting("GatewayTesting", "false").ToLower() == "true");
+            IsLive = !(testing || db.Setting("GatewayTesting"));
 
             _login = db.Setting("bluepay_accountId", "");
             _key = db.Setting("bluepay_secretKey", "");

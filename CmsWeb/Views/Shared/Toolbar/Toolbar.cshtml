@@ -1,5 +1,5 @@
 ﻿@{
-    var showAdvanced = !(User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-LimitToolbarForOrgLeaders", false));
+    var showAdvanced = !(User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-LimitToolbarForOrgLeaders"));
 }
 <div id="bluetoolbarstop">
     <div id="bluebar-menu" class="btn-group pull-right">

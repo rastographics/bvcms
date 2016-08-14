@@ -68,7 +68,7 @@ namespace CmsWeb.Areas.Search.Models
                         where p.PeopleId == last.ToInt()
                         select p;
                 else
-                    q = DbUtil.Db.Setting("UseAltnameContains", "false") == "true"
+                    q = DbUtil.Db.Setting("UseAltnameContains")
                         ? from p in q
                           where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last) || p.AltName.Contains(last)
                           select p

@@ -6,7 +6,7 @@
 @model CmsWeb.Areas.Org.Models.OrgPeopleModel
 @{
     var target = Util2.TargetLinkPeople ? "target='people'" : "";
-    var hideBirthDate = DbUtil.Db.Setting("HideBirthDateForOrgLeaders", false) && Util.IsInRole("OrgLeadersOnly");
+    var hideBirthDate = DbUtil.Db.Setting("HideBirthDateForOrgLeaders") && Util.IsInRole("OrgLeadersOnly");
 }
 <table class="table table-striped">
     <thead>
@@ -68,7 +68,7 @@
                     <td>@p.Tab</td>
                 }
                 <td>
-                    @if (User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-DisablePersonLinksForOrgLeaders", false))
+                    @if (User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-DisablePersonLinksForOrgLeaders"))
                     {
                         <text>@p.Name</text>
                     }

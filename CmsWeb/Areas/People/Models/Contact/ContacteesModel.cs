@@ -53,8 +53,8 @@ namespace CmsWeb.Areas.People.Models
                          Name = c.person.Name
                      };
 
-            if (DbUtil.Db.Setting("UseContactVisitedOrgs", false) &&
-                DbUtil.Db.Setting("UX-ShowVisitedOrgInContactees", false))
+            if (DbUtil.Db.Setting("UseContactVisitedOrgs") &&
+                DbUtil.Db.Setting("UX-ShowVisitedOrgInContactees"))
             {
                 if (Contact.OrganizationId.HasValue)
                 {

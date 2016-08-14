@@ -1,8 +1,8 @@
 ﻿@using CmsData
 @model CmsWeb.Areas.Org.Models.SettingsAttendanceModel
 @{
-  ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowAttendanceHelp") == "true";
-  ViewBag.FalseValue = "";
+    ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowAttendanceHelp");
+    ViewBag.FalseValue = "";
 }
 <form class="ajax" data-init="timepicker">
     <div class="row">

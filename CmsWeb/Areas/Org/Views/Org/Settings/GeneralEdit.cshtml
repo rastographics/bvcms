@@ -1,10 +1,10 @@
 ﻿@using CmsData
 @model CmsWeb.Areas.Org.Models.SettingsGeneralModel
 @{
-  var showhelp = DbUtil.Db.UserPreference("ShowGeneralHelp") == "true";
-  ViewBag.ShowHelp = showhelp;
-  var mforg = Model.Org.IsBibleFellowshipOrg == true;
-  var gradehelp = showhelp || mforg ? null : new {help = "See Show Help for how the Grade works only on Main Fellowship orgs"};
+    var showhelp = DbUtil.Db.UserPreference("ShowGeneralHelp");
+    ViewBag.ShowHelp = showhelp;
+    var mforg = Model.Org.IsBibleFellowshipOrg == true;
+    var gradehelp = showhelp || mforg ? null : new {help = "See Show Help for how the Grade works only on Main Fellowship orgs"};
 }
 <form class="ajax">
   @if (!Html.ViewData.ModelState.IsValid)

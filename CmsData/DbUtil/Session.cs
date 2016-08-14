@@ -206,20 +206,8 @@ namespace CmsData
         //                return mru;
         //            }
         //        }
-        public static bool TargetLinkPeople
-        {
-            get
-            {
-                return DbUtil.Db.UserPreference("TargetLinkPeople", "true").ToBool();
-            }
-        }
-        public static bool TargetLinkOrg
-        {
-            get
-            {
-                return DbUtil.Db.UserPreference("TargetLinkOrg", "true").ToBool();
-            }
-        }
+        public static bool TargetLinkPeople => DbUtil.Db.UserPreference("TargetLinkPeople", true);
+        public static bool TargetLinkOrg => DbUtil.Db.UserPreference("TargetLinkOrg", true);
 
         //        const string STR_ActiveOrganizationId = "ActiveOrganizationId";
         //        public static int? CurrentOrgId
@@ -240,7 +228,7 @@ namespace CmsData
             {
                 // this works at the database level, not as a user preference
                 // useful for turning the new feature on, then having a quik way to put it back in case something goes badly
-                return DbUtil.Db.Setting("UseNewFeature", "true").ToBool();
+                return DbUtil.Db.Setting("UseNewFeature", true);
             }
             set
             {

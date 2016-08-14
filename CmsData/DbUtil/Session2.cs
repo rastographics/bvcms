@@ -144,7 +144,7 @@ namespace CmsData
                 return defaultvalue;
             return string.Empty;
         }
-        public bool Setting(string name, bool defaultValue)
+        public bool Setting(string name, bool defaultValue = false)
         {
             var setting = Setting(name, null);
             if (setting == null) return defaultValue;
@@ -241,7 +241,7 @@ namespace CmsData
             if (converted.HasValue)
                 return converted.Value;
 
-            var b = Setting("RegistrationsConverted", "false") == "true";
+            var b = Setting("RegistrationsConverted");
             if(!b)
                 b = Connection.ExecuteScalar(
                     @"SELECT CASE WHEN EXISTS(

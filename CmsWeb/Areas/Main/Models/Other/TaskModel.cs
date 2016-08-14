@@ -130,7 +130,7 @@ namespace CmsWeb.Models
 
         public string CurTab
         {
-            get { return DbUtil.Db.UserPreference("CurTaskTab"); }
+            get { return DbUtil.Db.UserPreference("CurTaskTab", ""); }
             set
             {
                 if (value.HasValue())
@@ -140,7 +140,7 @@ namespace CmsWeb.Models
 
         public bool? OwnerOnly
         {
-            get { return DbUtil.Db.UserPreference("tasks-owneronly").ToBool2(); }
+            get { return DbUtil.Db.UserPreference("tasks-owneronly"); }
             set
             {
                 if (value.HasValue)

@@ -1,7 +1,7 @@
 ﻿@using CmsData
 @model CmsWeb.Areas.Org.Models.OrgPeopleModel
 @{
-    var disablePersonLinks = DbUtil.Db.Setting("UX-DisablePersonLinksForOrgLeaders", false);
+    var disablePersonLinks = DbUtil.Db.Setting("UX-DisablePersonLinksForOrgLeaders");
 }
 <div class="btn-group">
   <button data-toggle="dropdown" class="btn dropdown-toggle btn-info">

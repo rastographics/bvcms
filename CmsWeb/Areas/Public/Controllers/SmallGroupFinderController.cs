@@ -29,7 +29,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return View("MapShell", sgfm);
             }
 
-            if (DbUtil.Db.Setting("SGF-UseEmbeddedMap", false))
+            if (DbUtil.Db.Setting("SGF-UseEmbeddedMap"))
             {
                 var template = DbUtil.Db.ContentHtml("ShellDefaultSGF", "<!-- CONTAINER -->");
                 ViewBag.Shell = template;
@@ -54,7 +54,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             var search = new Dictionary<string, SearchItem>();
 
-            var loadAllValues = DbUtil.Db.Setting("SGF-LoadAllExtraValues", false);
+            var loadAllValues = DbUtil.Db.Setting("SGF-LoadAllExtraValues");
 
             if (Request.Form.Count != 0)
             {

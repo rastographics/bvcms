@@ -14,7 +14,7 @@ namespace CmsWeb.Areas.People.Controllers
                     select new { value = c.Id, text = c.Description };
             var list = q.ToList();
             list.Insert(0, new { value = 0, text = "(not specified)" });
-            if (DbUtil.Db.Setting("CampusRequired", "false") == "true"
+            if (DbUtil.Db.Setting("CampusRequired")
                 && Util.UserPeopleId == Util2.CurrentPeopleId
                 && !User.IsInRole("Admin"))
                 list.RemoveAt(0);

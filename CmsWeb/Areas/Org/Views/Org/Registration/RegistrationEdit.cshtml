@@ -2,7 +2,7 @@
 @using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.SettingsRegistrationModel
 @{
-  ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowRegistrationHelp") == "true";
+    ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowRegistrationHelp");
 }
 <form class="ajax">
     @if (!Html.ViewData.ModelState.IsValid)

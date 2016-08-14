@@ -7,7 +7,7 @@
     var manageResources = User.IsInRole("ManageResources");
     var design = User.IsInRole("Design");
     var finance = User.IsInRole("Finance") && ((string)Session["testnofinance"]) != "true";
-    var quickbooks = ViewExtensions2.DbSetting("ShowQuickBooksMenu", "false") == "true";
+  var quickbooks = DbUtil.Db.Setting("ShowQuickBooksMenu");
 }
 @if (admin || manageemails || managetrans || edit || design || finance || manageResources)
 {
@@ -134,7 +134,7 @@
         @Helper.LiAnchorLink("User Email Delegation", "/UsersCanEmailFor/", admin || manageemails)
         <li class="divider"></li>
     }
-    if (manageResources && DbUtil.Db.Setting("Resources-Enabled", false))
+    if (manageResources && DbUtil.Db.Setting("Resources-Enabled"))
     {
         <li class="dropdown-header dropdown-sub-header">Resources</li>
         @Helper.LiAnchorLink("Resource Types", "/ResourceTypes/")

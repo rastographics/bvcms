@@ -126,7 +126,7 @@ Meeting Time: [SGF:Day] at [SGF:Time]<br />
 </div>";
             }
 
-            var loadAllValues = DbUtil.Db.Setting("SGF-LoadAllExtraValues", false);
+            var loadAllValues = DbUtil.Db.Setting("SGF-LoadAllExtraValues");
             var sortSettings = DbUtil.Db.Setting("UX-SGFSortBy", "SGF:Name");
 
             return (from ql in qlist

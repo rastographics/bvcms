@@ -27,7 +27,7 @@ namespace CmsData.Finance
         {
             this.db = db;
 
-            if(testing || db.Setting("GatewayTesting", "false").ToLower() == "true")
+            if(testing || db.Setting("GatewayTesting"))
             {
                 _userName = "faithbased";
                 _password = "bprogram2";

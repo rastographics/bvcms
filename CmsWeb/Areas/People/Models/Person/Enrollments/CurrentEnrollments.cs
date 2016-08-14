@@ -146,7 +146,7 @@ namespace CmsWeb.Areas.People.Models
                        IsLeaderAttendanceType = om.MemberType.AttendanceTypeId == 10
                    };
 
-            if (DbUtil.Db.Setting("UX-ShowChildOrgsOnInvolvementTabs", false))
+            if (DbUtil.Db.Setting("UX-ShowChildOrgsOnInvolvementTabs"))
             {
                 var viewListAsList = viewList.ToList();
                 var parentIds = viewListAsList.Select(x => x.OrgId).ToList();

@@ -11,8 +11,8 @@
     IQueryable<BackgroundCheck> credit = null;
     IQueryable<BackgroundCheckLabel> labels = null;
 
-    var labelEnabled = ViewExtensions2.DbSetting("EnableBackgroundLabels", "false") == "true";
-    var areBackgroundChecksEnabled = ViewExtensions2.DbSetting("EnableBackgroundChecks", "false") == "true";
+  var labelEnabled = DbUtil.Db.Setting("EnableBackgroundLabels");
+  var areBackgroundChecksEnabled = DbUtil.Db.Setting("EnableBackgroundChecks");
 
     var i = from e in DbUtil.Db.VolunteerForms
             where e.PeopleId == Model.Volunteer.PeopleId

@@ -2,8 +2,8 @@
 @using CmsData
 @using UtilityExtensions
 @{
-    var giving = UtilityExtensions.Util.UserPeopleId == Util2.CurrentPeopleId && ViewExtensions2.DbSetting("TransactionGateway", "").HasValue() && ViewExtensions2.DbSetting("OnlineGiving", "true").ToBool();
-    var vaultDisabled = DbUtil.Db.Setting("VaultDisabled", "false") == "true";
+  var giving = Util.UserPeopleId == Util2.CurrentPeopleId && ViewExtensions2.DbSetting("TransactionGateway", "").HasValue() && DbUtil.Db.Setting("OnlineGiving", true);
+  var vaultDisabled = DbUtil.Db.Setting("VaultDisabled");
 }
 <form class="non-modal ajax">
     @FormAction(giving, vaultDisabled)

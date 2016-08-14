@@ -44,7 +44,7 @@ namespace CmsWeb.Areas.People.Models
                 case "name":
                 case "organization":
                     if (inAccessRole &&
-                        (IsLeaderAttendanceType || !inOrgLeadersOnlyRole || !DbUtil.Db.Setting("UX-OrgLeadersOtherGroupsContentOnly", false)))
+                        (IsLeaderAttendanceType || !inOrgLeadersOnlyRole || !DbUtil.Db.Setting("UX-OrgLeadersOtherGroupsContentOnly")))
                     {
                         return $"<a href=\"/Org/{OrgId}\">{Name}</a>";
                     }

@@ -111,7 +111,7 @@ namespace CmsWeb.Areas.Org.Models
             if (OrgMain.OrganizationType.ToString() != "Community Group")
                 _showRegistrationTab = true;
             else if (HttpContext.Current.User.IsInRole("OrgLeadersOnly") &&
-                     DbUtil.Db.Setting($"UX-HideRegistrationTabForOrgLeaders-{typeName}", false))
+                     DbUtil.Db.Setting($"UX-HideRegistrationTabForOrgLeaders-{typeName}"))
                 _showRegistrationTab = false;
             else
                 _showRegistrationTab = true;
@@ -126,7 +126,7 @@ namespace CmsWeb.Areas.Org.Models
             if (_showContactsReceivedTab.HasValue) return _showContactsReceivedTab.Value;
 
             // Check and see if org visits are turned on at all
-            _showContactsReceivedTab = DbUtil.Db.Setting("UseContactVisitedOrgs", false);
+            _showContactsReceivedTab = DbUtil.Db.Setting("UseContactVisitedOrgs");
             if (!_showContactsReceivedTab.Value) return false;
 
             // Check and see if this is the wrong type of org
@@ -170,7 +170,7 @@ namespace CmsWeb.Areas.Org.Models
                     return true;
 
                 var typeName = OrgMain.OrganizationType.ToString().Replace(" ", "");
-                return !DbUtil.Db.Setting($"UX-HideMeetingsTabForOrgLeaders-{typeName}", false);
+                return !DbUtil.Db.Setting($"UX-HideMeetingsTabForOrgLeaders-{typeName}");
             }
         }
 
@@ -198,7 +198,7 @@ namespace CmsWeb.Areas.Org.Models
         {
             if (_showCommunityGroupTab.HasValue) return _showCommunityGroupTab.Value;
 
-            _showCommunityGroupTab = DbUtil.Db.Setting("ShowCommunityGroupTab", false);
+            _showCommunityGroupTab = DbUtil.Db.Setting("ShowCommunityGroupTab");
             if (!_showCommunityGroupTab.Value) return false;
 
             var orgTypes = DbUtil.Db.Setting("UX-CommunityGroupTabOrgTypes", "");

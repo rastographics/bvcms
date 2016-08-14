@@ -10,7 +10,7 @@
     var o = model.Org;
     var edit = User.IsInRole("Edit");
     var qb = DbUtil.Db.QueryIsCurrentUser();
-    var showAdvanced = !(User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-LimitToolbarForOrgLeaders", false));
+    var showAdvanced = !(User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-LimitToolbarForOrgLeaders"));
 }
 @if (showAdvanced)
 {

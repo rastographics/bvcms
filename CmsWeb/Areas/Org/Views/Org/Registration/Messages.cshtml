@@ -1,8 +1,8 @@
 ﻿@using CmsData
 @model CmsWeb.Areas.Org.Models.SettingsMessagesModel
 @{
-  ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowMessagesHelp") == "true";
-  ViewBag.FalseValue = "";
+    ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowMessagesHelp");
+    ViewBag.FalseValue = "";
 }
 <form class="ajax">
     <div class="row">

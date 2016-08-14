@@ -69,7 +69,7 @@ namespace CmsData.Classes.ProtectMyMinistry
 			sb.sSSN = sSSN;
 			sb.sServiceCode = bc.ServiceCode;
 			sb.sResponseURL = sResponseURL;
-			sb.bTestMode = (DbUtil.Db.Setting("PMMTestMode", "false") == "true");
+			sb.bTestMode = DbUtil.Db.Setting("PMMTestMode");
 			sb.sPlusCounty = sPlusCounty;
 			sb.sPlusState = sPlusState;
 

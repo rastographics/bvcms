@@ -9,7 +9,7 @@
                  orderby e.Description
                  select e;
 
-    var labelEnabled = ViewExtensions2.DbSetting("EnableBackgroundLabels", "false") == "true";
+  var labelEnabled = DbUtil.Db.Setting("EnableBackgroundLabels");
 }
 <form action="/Volunteering/CreateCheck/@Model.PeopleId" method="post">
     <input type="hidden" name="type" value="@type" />
