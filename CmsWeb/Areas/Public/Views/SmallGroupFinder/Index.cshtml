@@ -4,7 +4,7 @@
     var st = Model.getSetting("SubmitText");
     var ts = Model.getSetting("TextSize");
     var ff = Model.getSetting("FontFamily");
-    
+
     var bc = Model.getSetting("BGColor");
     var fc = Model.getSetting("FGColor");
     var sh = Model.getSetting("ShowHeaders");
@@ -16,7 +16,7 @@
     var FGColor = fc != null ? fc.value : "#000000";
     var ShowHeaders = sh != null ? bool.Parse(sh.value) : false;
 
-    var GroupsFound = Model.getGroups();
+    var GroupsFound = Model.getGroups().Organizations;
 }
 <!DOCTYPE html>
 <html>
@@ -93,7 +93,7 @@
                                 {
                                     var f = Model.getFilter(iX);
                                     var fi = Model.getFilterItems(iX);
-                        
+
                                     <tr>
                                         <td class="right nowrap">@(f.title + ":")</td>
                                         <td class="left">

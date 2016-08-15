@@ -8,6 +8,7 @@ using CmsData.Classes.SmallGroupFinder;
 using System.Web;
 using System;
 using System.Web.Mvc;
+using CmsWeb.Models;
 using MoreLinq;
 using UtilityExtensions;
 
@@ -251,9 +252,10 @@ namespace CmsWeb.Areas.Public.Models
             return i;
         }
 
-        public List<Organization> getGroups()
+        public SmallGroupSearchResult getGroups()
         {
-            if (_search == null) return new List<Organization>();
+            if (_search == null)
+                return new SmallGroupSearchResult {Organizations = new List<Organization>(), IsInitialSearch = true};
 
             var orgTypes = DbUtil.Db.Setting("SGF-OrgTypes", "").Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToList();
 
@@ -332,7 +334,11 @@ namespace CmsWeb.Areas.Public.Models
 
             }
 
-            return orgs.OrderBy(gg => gg.OrganizationName).ToList();
+            return new SmallGroupSearchResult
+            {
+                Organizations = orgs.OrderBy(gg => gg.OrganizationName).ToList(),
+                IsInitialSearch = false
+            };
         }
 
         public string replaceAndWrite(GroupLookup gl)
@@ -376,7 +382,7 @@ namespace CmsWeb.Areas.Public.Models
         {
             var sList = "";
 
-            foreach (var group in getGroups())
+            foreach (var group in getGroups().Organizations)
             {
                 var gl = new GroupLookup();
                 gl.populateFromOrg(group);

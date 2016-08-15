@@ -8,7 +8,6 @@ using System.Web.Script.Serialization;
 using System.Xml.Linq;
 using CmsData;
 using CmsWeb.Areas.Public.Models;
-using Newtonsoft.Json;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -22,9 +21,10 @@ namespace CmsWeb.Models
             divid = id;
         }
 
-        public SGMapModel(List<Organization> orgList)
+        public SGMapModel(SmallGroupSearchResult searchResult)
         {
-            _orgList = orgList;
+            _orgList = searchResult.Organizations;
+            _isInitialSearchResult = searchResult.IsInitialSearch;
         }
 
         private readonly List<Organization> _orgList;
@@ -32,6 +32,7 @@ namespace CmsWeb.Models
 
         private string showOnlyName;
         private string showOnlyValue;
+        private readonly bool _isInitialSearchResult;
 
         public void SetShowOnly(string name, string value)
         {
@@ -44,6 +45,8 @@ namespace CmsWeb.Models
             var extraValueForAddress = DbUtil.Db.Setting("SGF-ExtraValueHost", null);
             var orgTypes = DbUtil.Db.Setting("SGF-OrgTypes", "").Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
             var orgIdList = _orgList?.Select(x => x.OrganizationId).Distinct() ?? new List<int>();
+
+            if (!orgIdList.Any() && !_isInitialSearchResult) return new SGInfo[] {};
 
             var q = from o in DbUtil.Db.Organizations
                     let host = o.OrganizationMembers.FirstOrDefault(mm => mm.OrgMemMemTags.Any(mt => mt.MemberTag.Name == "HostHome") || mm.PeopleId == o.LeaderId).Person
