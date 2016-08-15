@@ -282,7 +282,7 @@ namespace CmsWeb.Areas.Public.Models
                     var val = filter.Value.values[0];
                     orgs = from g in orgs
                            where g.OrganizationExtras
-                              .Any(oe => oe.Field == "Time" &&
+                              .Any(oe => oe.Field == filter.Key &&
                                   (
                                       oe.StrValue.ToLower().EndsWith(val) ||
                                       oe.Data.ToLower().EndsWith(val) ||
