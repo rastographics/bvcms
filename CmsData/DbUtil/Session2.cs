@@ -147,7 +147,8 @@ namespace CmsData
         public bool Setting(string name, bool defaultValue = false)
         {
             var setting = Setting(name, null);
-            if (setting == null) return defaultValue;
+            if (!setting.HasValue())
+                return defaultValue;
 
             return setting.ToLower() == "true";
         }
