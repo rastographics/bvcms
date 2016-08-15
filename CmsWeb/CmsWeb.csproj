@@ -502,6 +502,7 @@
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostCreate.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostHeadcount.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineDetailModel.cs" />
+    <Compile Include="Areas\Public\Models\SmallGroupSearchResult.cs" />
     <Compile Include="Areas\Reports\Controllers\CustomReportsController.cs" />
     <Compile Include="Areas\Reports\Controllers\SpecialReportViewModel.cs" />
     <Compile Include="Areas\Reports\Models\Avery\AverySpacerCell173.cs">
