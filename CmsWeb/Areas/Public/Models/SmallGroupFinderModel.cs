@@ -228,7 +228,11 @@ namespace CmsWeb.Areas.Public.Models
                     i = (from e in DbUtil.Db.OrganizationExtras
                          where e.Organization.DivOrgs.Any(ee => _divList.Contains(ee.DivId)) || orgTypes.Contains(e.Organization.OrganizationType.Description)
                          where e.Field == f.name
-                         orderby e.Data
+                         orderby e.Data ??
+                             e.StrValue ??
+                             (e.DateValue != null ? e.DateValue.ToString() : null) ??
+                             (e.IntValue != null ? e.IntValue.ToString() : null) ??
+                             (e.BitValue != null ? e.BitValue.ToString() : null)
                          select e)
                          .ToList()
                          .Select(x => new FilterItem
