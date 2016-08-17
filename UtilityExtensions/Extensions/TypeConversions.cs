@@ -156,7 +156,7 @@ namespace UtilityExtensions
                 return null;
             var digits = new StringBuilder();
             foreach (var c in s.ToCharArray())
-                if (Char.IsDigit(c) || c == '.')
+                if (char.IsDigit(c) || c == '.')
                     digits.Append(c);
             var a = digits.ToString().ToDecimal();
             return a;

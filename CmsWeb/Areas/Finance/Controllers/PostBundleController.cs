@@ -150,7 +150,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             }
             catch (Exception ex)
             {
-                return Content(ex.Message);
+                return PageMessage(ViewExtensions2.Markdown(ex.Message).ToString());
             }
         }
 

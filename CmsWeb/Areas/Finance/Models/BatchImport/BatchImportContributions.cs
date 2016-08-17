@@ -146,6 +146,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             if (subtext.Contains("Type,Date,Member ID,Account,Amount,Fund"))
                 return new AnchorBibleQbImporter();
 
+            if (subtext.Contains("#Item Number,Item Date,Aux On Us,Route/Transit,Bank On Us,Amount,Deposit Number,Customer Name,Account Number,Account Name,Deposit Date"))
+                return new TulsaFbcImporter();
+
             if (subtext.Contains("AMOUNT,FRB,CHECK NUMBER,ACCOUNT NUMBER,CAPTUREDATE"))
                 return new HunterStreetImporter();
 
