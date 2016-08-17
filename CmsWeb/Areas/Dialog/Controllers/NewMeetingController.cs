@@ -15,11 +15,14 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult ForNewMeeting(int orgid)
         {
             var oi = new SettingsAttendanceModel() { Id = orgid };
-            var m = new NewMeetingInfo()
+            var defaultAttendCreditId = "0";
+            if(oi.Schedules.Count > 0)
+                defaultAttendCreditId = oi.Schedules[0].AttendCredit.Value;
+            var m = new NewMeetingInfo
             {
                 MeetingDate = oi.PrevMeetingDate,
                 Schedule = new CodeInfo(0, oi.SchedulesPrev()),
-                AttendCredit = new CodeInfo(0, oi.AttendCreditList()),
+                AttendCredit = new CodeInfo(defaultAttendCreditId, oi.AttendCreditList()),
             };
             ViewBag.Action = "/CreateNewMeeting/";
             ViewBag.Method = "POST";
