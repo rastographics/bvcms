@@ -10,6 +10,17 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 {
     internal class TulsaFbcImporter : IContributionBatchImporter
     {
+        private const string Patterns = @"
+matchnothinghere
+|\A\s*(?!/)(?<ac>\d+)/\s*(?<ck>\d+)
+|\A\s*/(?<ac>(\d|\s)+)/\s*(?<ck>\d+)
+|\A\s*(?<ck>\d+)\s*(?<ac>\d+)/
+|\A\s*(?<ac>\d+)/(?<ck>\d+)
+|\A\s*(?<ck>\d+)\s*/(?<ac>\d+)/
+|\A\s*(?<ac>(\d|\s|-)+)/\s*(?<ck>\d+)
+|\A\s*(?<ac>(\d|\s|-)+)/
+";
+
         public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
         {
             using (var csv = new CsvReader(new StringReader(text)))
@@ -22,26 +33,27 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             var fid = fundid ?? BatchImportContributions.FirstFundId();
             var now = DateTime.Now;
             var list = new List<Record>();
-            csv.Read(); // skip first row which is the total row
 
             // for parsing account and checkno
-            var regex = new Regex(@"
-                matchnothinghere
-                |\A\s*(?!/)(?<ac>\d+)/\s(?<ck>\d+)
-                |\A\s*/(?<ac>(\d|\s)+)/\s(?<ck>\d+)
-                |\A\s*(?<ck>\d+)\s(?<ac>\d+)/
-                |\A\s*(?<ac>\d+)/(?<ck>\d+)
-                |\A\s*(?<ck>\d+)\s/(?<ac>\d+)/
-                ", RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
+            var regex = new Regex(Patterns, RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
 
+            csv.Read(); // read header;
+            var newBundle = true;
             while (csv.Read())
             {
+                if (csv[4] == "Bank On Us")
+                {
+                    csv.Read(); // read the next row past the header row
+                    newBundle = true;
+                }
+
                 var rec = new Record
                 {
                     Dt = csv[1].PadLeft(8, '0').ToDate(),
                     Amount = csv[5],
                     Routing = csv[3],
-                    AccCk = csv[4]
+                    AccCk = csv[4],
+                    NewBundle = newBundle,
                 };
                 // Parse out account and checkno
                 var m = regex.Match(rec.AccCk);
@@ -52,14 +64,21 @@ No Contributions have been imported from this batch.");
                 rec.Account = m.Groups["ac"].Value;
                 rec.CheckNo = m.Groups["ck"].Value;
                 list.Add(rec);
+                newBundle = false;
             }
             foreach(var rec in list)
             {
                 if (!rec.HasAmount || !rec.Dt.HasValue)
                     continue;
 
-                if (bh == null)
+                if(rec.NewBundle)
+                {
+                    if (bh != null)
+                        BatchImportContributions.FinishBundle(bh);
                     bh = BatchImportContributions.GetBundleHeader(date, now);
+                }
+                if (bh == null)
+                    throw new Exception($@"Unexpected error: header row not found, aborting");
 
                 var bd = BatchImportContributions.AddContributionDetail(rec.Dt.Value, fid, rec.Amount, rec.CheckNo, rec.Routing, rec.Account);
                 bd.Contribution.PostingDate = now;
@@ -81,6 +100,7 @@ No Contributions have been imported from this batch.");
             public bool HasAmount => Amount.GetAmount() > 0;
             public string Account { get; set; }
             public string CheckNo { get; set; }
+            public bool NewBundle { get; set; }
         }
     }
 }
