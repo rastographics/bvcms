@@ -129,6 +129,7 @@ namespace CmsData
             RegStart = frorg.RegStart;
             RegEnd = frorg.RegEnd;
             IsMissionTrip = frorg.IsMissionTrip;
+            AddToSmallGroupScript = frorg.AddToSmallGroupScript;
 
             RegSetting = frorg.RegSetting;
             RegSettingXml = frorg.RegSettingXml;
