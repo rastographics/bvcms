@@ -46,8 +46,9 @@ namespace CmsWeb.Models
 
                 p.Family.LogChanges(db, fsb, p.PeopleId, userpeopleid);
                 if(NcoaCols.ContainsKey("MoveDate"))
-                    p.AddEditExtraDate("MoveEffectiveDate", 
-                        csv[NcoaCols["MoveDate"]].ToDate() ?? DateTime.Today);
+                    if(csv.FieldHeaders.Contains("MoveEffectiveDate"))
+                        p.AddEditExtraDate("MoveEffectiveDate", 
+                            csv[NcoaCols["MoveDate"]].ToDate() ?? DateTime.Today);
                 rt.Processed++;
                 db.SubmitChanges();
             }
