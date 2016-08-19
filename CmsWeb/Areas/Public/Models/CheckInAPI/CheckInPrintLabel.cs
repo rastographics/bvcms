@@ -18,7 +18,16 @@ namespace CmsWeb.CheckInAPI
             Organization org = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == orgID);
             OrganizationMember orgMember = DbUtil.Db.OrganizationMembers.SingleOrDefault(om => om.PeopleId == person.PeopleId && om.OrganizationId == org.OrganizationId);
 
-            int labelCount = org.NumCheckInLabels ?? 0;
+            int labelCount = 1;
+
+            if (orgMember != null && (orgMember.MemberTypeId == 220 || orgMember.MemberTypeId == 230))
+            {
+                labelCount = org.NumCheckInLabels ?? 1;
+            }
+            else
+            {
+                labelCount = org.NumWorkerCheckInLabels ?? 0;
+            }
 
             string orgName = org.OrganizationName;
             string location = org.Location;
