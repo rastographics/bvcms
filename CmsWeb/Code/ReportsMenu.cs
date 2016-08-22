@@ -105,7 +105,7 @@ namespace CmsWeb.Code
                 if (aroles != null && aroles.HasValue())
                     roles.AddRange(aroles.Split(','));
 
-                var rroles = listroles.SingleOrDefault(vv => vv.Link == link)?.Role;
+                var rroles = listroles.FirstOrDefault(vv => vv.Link == link)?.Role;
                 if (rroles != null && rroles.HasValue())
                     roles.AddRange(rroles.Split(','));
 
