@@ -1561,7 +1561,6 @@
     <Content Include="Areas\Public\Views\SmallGroupFinder\MapContent.cshtml" />
     <Content Include="Areas\People\Views\Person\Resources\Tab.cshtml" />
     <Content Include="Areas\Manage\Views\Resource\Index.cshtml" />
-    <Content Include="Areas\Public\Views\OrgContent\Directory.cshtml" />
     <Content Include="Areas\Public\Views\SmallGroupFinder\Map.cshtml" />
     <Content Include="Areas\Manage\Views\Resource\Display.cshtml" />
     <Content Include="Areas\Manage\Views\Resource\Edit.cshtml" />

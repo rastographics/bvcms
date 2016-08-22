@@ -134,7 +134,7 @@ namespace CmsWeb.Models
         public List<OrganizationMember> GetMemberList()
         {
             var org = DbUtil.Db.LoadOrganizationById(OrgId);
-            return org.OrganizationMembers.ToList();
+            return org.OrganizationMembers.OrderBy(o => o.Person.Name).ToList();
         }
     }
 }
