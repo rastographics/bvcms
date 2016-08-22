@@ -19,6 +19,8 @@ namespace CmsWeb.CheckInAPI
             OrganizationMember orgMember = DbUtil.Db.OrganizationMembers.SingleOrDefault(om => om.PeopleId == person.PeopleId && om.OrganizationId == org.OrganizationId);
 
             int labelCount = 1;
+            bool requiresecuritylabel = false;
+            DateTime dob;
 
             if (orgMember != null && (orgMember.MemberTypeId == 220 || orgMember.MemberTypeId == 230))
             {
@@ -32,12 +34,54 @@ namespace CmsWeb.CheckInAPI
             string orgName = org.OrganizationName;
             string location = org.Location;
 
-            bool requiresecuritylabel = (orgMember != null && (orgMember.MemberTypeId == 220 || orgMember.MemberTypeId == 230)) && (person.Age.Value < 18) && !org.NoSecurityLabel.Value;
+            if ((orgMember != null && (orgMember.MemberTypeId == 220 || orgMember.MemberTypeId == 230)) && !org.NoSecurityLabel.Value)
+            {
+                if (person.Age != null)
+                {
+                    if (person.Age.Value < 18)
+                    {
+                        requiresecuritylabel = true;
+                    }
+                    else
+                    {
+                        requiresecuritylabel = false;
+                    }
+                }
+                else
+                {
+                    if (person.FamilyPosition.Id == 30)
+                    {
+                        requiresecuritylabel = true;
+                    }
+                    else
+                    {
+                        requiresecuritylabel = false;
+                    }
+                }
+            }
+            else
+            {
+                requiresecuritylabel = false;
+            }
+
+            if (person.BirthDate == null)
+            {
+                if (person.FamilyPosition.Id == 30)
+                {
+                    dob = DateTime.Now;
+                }
+                else
+                {
+                    dob = DateTime.MinValue;
+                }
+            }
+            else
+            {
+                dob = person.BirthDate.Value;
+            }
 
             string first = person.PreferredName;
             string last = person.LastName;
-
-            DateTime? dob = person.BirthDate;
 
             bool transport = person.OkTransport ?? false;
             bool custody = person.CustodyIssue ?? false;
@@ -67,7 +111,7 @@ namespace CmsWeb.CheckInAPI
             writer.WriteStartElement("LabelInfo");
 
             writer.WriteElementString("n", labelCount.ToString());
-            writer.WriteElementString("dob", dob != null ? dob.Value.ToString("s") : "");
+            writer.WriteElementString("dob", dob.ToString("s"));
             writer.WriteElementString("location", location);
             writer.WriteElementString("allergies", allergies);
             writer.WriteElementString("org", orgName);
