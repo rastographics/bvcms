@@ -1817,34 +1817,34 @@ INSERT INTO [dbo].[Program] ([Id], [Name], [RptGroup], [StartHoursOffset], [EndH
 INSERT INTO [dbo].[Program] ([Id], [Name], [RptGroup], [StartHoursOffset], [EndHoursOffset]) VALUES (1106, N'Volunteers', NULL, NULL, NULL)
 INSERT INTO [dbo].[Program] ([Id], [Name], [RptGroup], [StartHoursOffset], [EndHoursOffset]) VALUES (1107, N'Miscellaneous Groups', NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Program] OFF
-INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('e0bf6a55-2c1f-44c7-be34-176c6a55771c', '<?xml version="1.0" encoding="utf-16"?>
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('e0bf6a55-2c1f-44c7-be34-176c6a55771c', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="e0bf6a55-2c1f-44c7-be34-176c6a55771c" Order="0" Field="Group" Comparison="AllTrue">
   <Condition Id="3b640586-b5b7-4041-ad48-0acc41e1144f" Order="2" Field="IsCurrentPerson" Comparison="Equal" CodeIdValue="1,T" />
-</Condition>', 'System', '2014-08-22 21:15:01.573', '2014-08-22 21:15:01.573', 'IsCurrentPerson', 0, 0, NULL)
-INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('f1d571cf-d712-4c6d-b774-61dfc0403606', '<?xml version="1.0" encoding="utf-16"?>
+</Condition>', N'System', '2014-08-22 21:15:01.573', '2014-08-22 21:15:01.573', N'IsCurrentPerson', 0, 0, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('f1d571cf-d712-4c6d-b774-61dfc0403606', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="f1d571cf-d712-4c6d-b774-61dfc0403606" Order="0" Field="Group" Comparison="AllTrue">
   <Condition Id="5294d7e4-0aee-4634-9c2a-3ccd8a473e98" Order="2" Field="VisitedCurrentOrg" Comparison="Equal" CodeIdValue="1,T" />
-</Condition>', 'System', '2014-12-14 20:57:11.500', '2014-12-14 20:57:11.500', 'VisitedCurrentOrg', 0, 0, NULL)
-INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('0ce70ca6-dd2c-4610-a274-786d4f9a67b5', '<?xml version="1.0" encoding="utf-16"?>
+</Condition>', N'System', '2014-12-14 20:57:11.500', '2014-12-14 20:57:11.500', N'VisitedCurrentOrg', 0, 0, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('0ce70ca6-dd2c-4610-a274-786d4f9a67b5', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="0ce70ca6-dd2c-4610-a274-786d4f9a67b5" Order="0" Field="Group" Comparison="AllTrue">
   <Condition Id="891b5ec9-51b5-453b-aec5-01421ff73808" Order="2" Field="PendingCurrentOrg" Comparison="Equal" CodeIdValue="1,T" />
-</Condition>', 'System', '2014-12-14 20:57:11.500', '2014-12-14 20:57:11.500', 'PendingCurrentOrg', 0, 0, NULL)
-INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('f9947126-b457-4e37-8803-8c7c8e156118', '<?xml version="1.0" encoding="utf-16"?>
+</Condition>', N'System', '2014-12-14 20:57:11.500', '2014-12-14 20:57:11.500', N'PendingCurrentOrg', 0, 0, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('f9947126-b457-4e37-8803-8c7c8e156118', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="f9947126-b457-4e37-8803-8c7c8e156118" Order="0" Field="Group" Comparison="AllTrue">
   <Condition Id="3e2f24db-194f-4a63-b0f2-9c2e2822f103" Order="2" Field="PreviousCurrentOrg" Comparison="Equal" CodeIdValue="1,T" />
-</Condition>', 'System', '2014-12-14 20:57:11.483', '2014-12-14 20:57:11.483', 'PreviousCurrentOrg', 0, 0, NULL)
-INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('35cd389a-0c4e-44c3-aac6-98da79c47250', '<?xml version="1.0" encoding="utf-16"?>
+</Condition>', N'System', '2014-12-14 20:57:11.483', '2014-12-14 20:57:11.483', N'PreviousCurrentOrg', 0, 0, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('35cd389a-0c4e-44c3-aac6-98da79c47250', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="35cd389a-0c4e-44c3-aac6-98da79c47250" Order="0" Field="Group" Comparison="AllTrue">
   <Condition Id="b0f71329-5336-4fc7-8f5b-14d9a5d31e87" Order="2" Field="InCurrentOrg" Comparison="Equal" CodeIdValue="1,T" />
-</Condition>', 'System', '2014-12-14 20:57:11.483', '2014-12-14 20:57:11.483', 'InCurrentOrg', 0, 0, NULL)
-INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('1cb171ac-1a51-404a-84e1-98ec0689fdb5', '<?xml version="1.0" encoding="utf-16"?>
+</Condition>', N'System', '2014-12-14 20:57:11.483', '2014-12-14 20:57:11.483', N'InCurrentOrg', 0, 0, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('1cb171ac-1a51-404a-84e1-98ec0689fdb5', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="1cb171ac-1a51-404a-84e1-98ec0689fdb5" Order="0" Field="Group" Comparison="AllTrue">
   <Condition Id="a2c1551f-68f2-4a52-8756-80fed759db22" Order="2" Field="InactiveCurrentOrg" Comparison="Equal" CodeIdValue="1,T" />
-</Condition>', 'System', '2014-12-14 20:57:11.500', '2014-12-14 20:57:11.500', 'InactiveCurrentOrg', 0, 0, NULL)
-INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('a235ae8b-f893-40e2-bf57-d9e4252d5048', '<?xml version="1.0" encoding="utf-16"?>
+</Condition>', N'System', '2014-12-14 20:57:11.500', '2014-12-14 20:57:11.500', N'InactiveCurrentOrg', 0, 0, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('a235ae8b-f893-40e2-bf57-d9e4252d5048', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="a235ae8b-f893-40e2-bf57-d9e4252d5048" Order="0" Field="Group" Comparison="AllTrue">
   <Condition Id="ef295216-34b0-496e-87f4-9db022ae713b" Order="2" Field="ProspectCurrentOrg" Comparison="Equal" CodeIdValue="1,T" />
-</Condition>', 'System', '2014-12-14 20:57:11.517', '2014-12-14 20:57:11.517', 'ProspectCurrentOrg', 0, 0, NULL)
+</Condition>', N'System', '2014-12-14 20:57:11.517', '2014-12-14 20:57:11.517', N'ProspectCurrentOrg', 0, 0, NULL)
 SET IDENTITY_INSERT [dbo].[Roles] ON
 INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (1, N'Admin', 1)
 INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (2, N'Access', 1)
