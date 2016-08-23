@@ -39,7 +39,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
                 DbUtil.LogActivity("Emailing people");
 
-                var m = new MassEmailer(id, parents, ccparents, nodups);  
+                var m = new MassEmailer(id, parents, ccparents, nodups);
 
                 m.Host = Util.Host;
 
@@ -63,19 +63,21 @@ namespace CmsWeb.Areas.Main.Controllers
             {
                 if (templateID != 0 || (!personid.HasValue && !orgid.HasValue))
                     return Redirect($"/Person2/{Util.UserPeopleId}");
+            }
 
-                if (personid.HasValue)
-                {
-                    me.AdditionalRecipients = new List<int> {personid.Value};
+            if (personid.HasValue)
+            {
+                me.AdditionalRecipients = new List<int> {personid.Value};
 
-                    var person = DbUtil.Db.LoadPersonById(personid.Value);
-                    ViewBag.ToName = person?.Name;
-                }
-                else
-                {
-                    var org = DbUtil.Db.LoadOrganizationById(orgid.Value);
-                    ViewBag.ToName = org?.OrganizationName;
-                }
+                var person = DbUtil.Db.LoadPersonById(personid.Value);
+                ViewBag.ToName = person?.Name;
+            }
+            else if (orgid.HasValue)
+            {
+                var org = DbUtil.Db.LoadOrganizationById(orgid.Value);
+                me.Recipients = org.OrganizationMembers.Select(x => x.Person.ToString()).ToList();
+                me.Count = me.Recipients.Count();
+                ViewBag.ToName = org?.OrganizationName;
             }
 
             if (body.HasValue())
@@ -134,7 +136,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
             if (content != null)
                 DbUtil.Db.ArchiveContent(draftId);
-            else 
+            else
             {
                 content = new Content
                 {
