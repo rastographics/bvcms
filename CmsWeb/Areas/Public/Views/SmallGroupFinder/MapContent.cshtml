@@ -11,9 +11,20 @@
     var showOnlyName = Model.getSetting("ShowOnlyName")?.value;
     var showOnlyValue = Model.getSetting("ShowOnlyValue")?.value;
 
+    var markerName = Model.getSetting("MarkerTextName")?.value;
+    var markerValue = Model.getSetting("MarkerTextValue")?.value;
+    var markerText = Model.getSetting("MarkerText")?.value;
+
     if (!string.IsNullOrWhiteSpace(showOnlyName) && !string.IsNullOrWhiteSpace(showOnlyValue))
     {
         mapModel.SetShowOnly(showOnlyName, showOnlyValue);
+    }
+
+    if (!string.IsNullOrWhiteSpace(markerName) &&
+        !string.IsNullOrWhiteSpace(markerValue) &&
+        !string.IsNullOrWhiteSpace(markerText))
+    {
+        mapModel.SetMarkerText(markerName, markerValue, markerText);
     }
 }
 
