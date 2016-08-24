@@ -281,7 +281,7 @@ namespace CmsWeb.Models
                     {
                         db.SubmitChanges();
                         db.Dispose();
-                        db = DbUtil.Create(Util.Host);
+                        db = DbUtil.Create(host);
                     }
 
                     var potentialdup = false;
