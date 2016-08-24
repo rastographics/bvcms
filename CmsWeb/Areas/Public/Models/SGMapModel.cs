@@ -32,12 +32,24 @@ namespace CmsWeb.Models
 
         private string showOnlyName;
         private string showOnlyValue;
+
+        private string markerName;
+        private string markerValue;
+        private string markerText;
+
         private readonly bool _isInitialSearchResult;
 
         public void SetShowOnly(string name, string value)
         {
             showOnlyName = name;
             showOnlyValue = value;
+        }
+
+        public void SetMarkerText(string name, string value, string text)
+        {
+            markerName = name;
+            markerValue = value;
+            markerText = text;
         }
 
         public IEnumerable<SGInfo> SmallGroupInfo()
@@ -90,7 +102,14 @@ namespace CmsWeb.Models
                          id = i.o.OrganizationId,
                          gc = geocode,
                          org = i.o,
-                         markertext = i.o.OrganizationExtras.SingleOrDefault(oe => oe.Field == "Term")?.Data == "Beta Group" ? "B" : " ",
+                         markertext = i.o.OrganizationExtras
+                                         .Where(oe => oe.Field == markerName)
+                                         .Select(oe => oe.StrValue ??
+                                            oe.Data ??
+                                            oe.DateValue?.ToString() ??
+                                            oe.IntValue?.ToString() ??
+                                            oe.BitValue?.ToString()
+                                         ).Select(x => x == markerValue ? markerText : " ").SingleOrDefault(),
                          color = DbUtil.Db.Setting($"UX-MapPinColor-Campus-{i.o.CampusId.GetValueOrDefault(-1)}", "FFFFFF").Replace("#", "")
                      };
             return q2.Where(x => !string.IsNullOrWhiteSpace(x.addr)).ToList();
