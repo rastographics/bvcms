@@ -190,10 +190,11 @@ namespace CmsWeb.Models
     				new CodeValueItem { Id = 0, Value = "Not Online" },
                 }, "Id", "Value", SearchInfo.Online.ToString());
         }
-        public SelectList BundleTypes()
+        public IEnumerable<SelectListItem> BundleTypes()
         {
-            return new SelectList(new CodeValueModel().BundleHeaderTypes0(),
-                "Id", "Value", SearchInfo.Type.ToString());
+            var list = new CodeValueModel().BundleHeaderTypes0().ToList();
+            list.Add(new CodeValueItem {Id = 9999, Value = "No Bundle"});
+            return new SelectList(list, "Id", "Value", SearchInfo.Type.ToString());
         }
         public IEnumerable<SelectListItem> Years()
         {

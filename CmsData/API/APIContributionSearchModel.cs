@@ -272,7 +272,11 @@ namespace CmsData.API
                                 where c.CampusId == model.CampusId
                                 select c;
 
-            if ((model.BundleType ?? 0) != 0)
+            if (model.BundleType == 9999)
+                contributions = from c in contributions
+                                where !c.BundleDetails.Any()
+                                select c;
+            else if ((model.BundleType ?? 0) != 0)
                 contributions = from c in contributions
                                 where c.BundleDetails.First().BundleHeader.BundleHeaderTypeId == model.BundleType
                                 select c;
