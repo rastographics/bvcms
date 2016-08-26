@@ -496,6 +496,7 @@
     <Compile Include="Areas\Public\Models\MobileAPI\MobileFloor.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileAccount.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileHomeAction.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobilePersonCreateLists.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileRegistration.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileRollList.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileRoom.cs" />

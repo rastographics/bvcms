@@ -2,23 +2,31 @@
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.MobileAPI;
-using CmsWeb.Models;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
     public class MobileAPIListController : Controller
     {
+        public ActionResult PersonCreateLists(string data)
+        {
+            MobilePersonCreateLists allLists = new MobilePersonCreateLists();
+            allLists.countries = getCountries();
+            allLists.states = getStates();
+            allLists.maritalStatuses = getMaritalStatuses();
+
+            BaseMessage br = new BaseMessage();
+            br.error = 0;
+            br.count = 3;
+            br.data = JsonConvert.SerializeObject(allLists);
+
+            return br;
+        }
+
         public ActionResult Countries(string data)
         {
-            var countries = from e in DbUtil.Db.Countries
-                            orderby e.Id
-                            select new MobileCountry
-                            {
-                                id = e.Id,
-                                code = e.Code,
-                                description = e.Description
-                            };
+            var countries = getCountries();
 
             BaseMessage br = new BaseMessage();
             br.error = 0;
@@ -28,15 +36,21 @@ namespace CmsWeb.Areas.Public.Controllers
             return br;
         }
 
+        private List<MobileCountry> getCountries()
+        {
+            return (from e in DbUtil.Db.Countries
+                    orderby e.Id
+                    select new MobileCountry
+                    {
+                        id = e.Id,
+                        code = e.Code,
+                        description = e.Description
+                    }).ToList();
+        }
+
         public ActionResult States(string data)
         {
-            var states = from e in DbUtil.Db.StateLookups
-                         orderby e.StateCode
-                         select new MobileState
-                         {
-                             code = e.StateCode,
-                             name = e.StateName
-                         };
+            var states = getStates();
 
             BaseMessage br = new BaseMessage();
             br.error = 0;
@@ -46,16 +60,20 @@ namespace CmsWeb.Areas.Public.Controllers
             return br;
         }
 
+        private List<MobileState> getStates()
+        {
+            return (from e in DbUtil.Db.StateLookups
+                    orderby e.StateCode
+                    select new MobileState
+                    {
+                        code = e.StateCode,
+                        name = e.StateName
+                    }).ToList();
+        }
+
         public ActionResult MaritalStatuses(string data)
         {
-            var statuses = from e in DbUtil.Db.MaritalStatuses
-                           orderby e.Id
-                           select new MobileMaritalStatus
-                           {
-                               id = e.Id,
-                               code = e.Code,
-                               description = e.Description
-                           };
+            var statuses = getMaritalStatuses();
 
             BaseMessage br = new BaseMessage();
             br.error = 0;
@@ -63,6 +81,18 @@ namespace CmsWeb.Areas.Public.Controllers
             br.data = JsonConvert.SerializeObject(statuses.ToList());
 
             return br;
+        }
+
+        private List<MobileMaritalStatus> getMaritalStatuses()
+        {
+            return (from e in DbUtil.Db.MaritalStatuses
+                    orderby e.Id
+                    select new MobileMaritalStatus
+                    {
+                        id = e.Id,
+                        code = e.Code,
+                        description = e.Description
+                    }).ToList();
         }
 
         public ActionResult HomeActions(string data)
