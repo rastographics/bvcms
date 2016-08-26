@@ -63,7 +63,6 @@ namespace CmsData
             return dt2.Value.Sunday();
         }
 
-
         public DateTime SundayForWeek(int year, int week)
         {
             return Util.SundayForWeek(year, week);
@@ -75,6 +74,11 @@ namespace CmsData
             if (dt2 == null)
                 throw new Exception("bad date: " + dt);
             return dt2.Value.GetWeekNumber();
+        }
+        public int WeekOfMonth(object dt)
+        {
+            var sunday = SundayForDate(dt);
+            return sunday.WeekOfMonth();
         }
     }
 }
