@@ -150,7 +150,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 return new TulsaFbcImporter();
 
             if (subtext.Contains("ItemId,Deposit_Tracking_No,Sequence,TransmissionID,TransmissionDate,ItemTypeName,CaptureSequence,Amount,IsCancelled,CapturedDate,UserEdited,MicrAuxOnUs,MicrOnUs,MicrOnUsA,MicrOnUsB,MicrOnUsC,MicrEPC,Account,Serial,TranCode,RoutingNumber,AnalysisStatus,CaptureUserName,AccountName"))
-                return new SalemImporter();
+                return new CspcImporter();
 
             if (subtext.Contains("AMOUNT,FRB,CHECK NUMBER,ACCOUNT NUMBER,CAPTUREDATE"))
                 return new HunterStreetImporter();

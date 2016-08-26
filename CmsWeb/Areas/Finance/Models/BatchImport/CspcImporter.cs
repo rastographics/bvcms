@@ -9,7 +9,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
 {
-    internal class SalemImporter : IContributionBatchImporter
+    internal class CspcImporter : IContributionBatchImporter
     {
         public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
         {
