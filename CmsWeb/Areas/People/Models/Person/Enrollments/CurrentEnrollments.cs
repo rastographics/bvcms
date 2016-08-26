@@ -143,7 +143,7 @@ namespace CmsWeb.Areas.People.Models
                        ProgramName = om.Organization.Division.Program.Name,
                        OrgType = om.Organization.OrganizationType.Description ?? "Other",
                        HasDirectory = (om.Organization.PublishDirectory ?? 0) > 0,
-                       IsLeaderAttendanceType = om.MemberType.AttendanceTypeId == 10
+                       IsLeaderAttendanceType = (om.MemberType.AttendanceTypeId ?? 0) == 10
                    };
 
             if (DbUtil.Db.Setting("UX-ShowChildOrgsOnInvolvementTabs"))
