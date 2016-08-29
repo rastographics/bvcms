@@ -899,6 +899,15 @@ namespace CmsCheckin
         public string allergies { get; set; }
         public string org { get; set; } // orgname attribute
         public DateTime? hour { get; set; }
+        public int pid { get; set; } // id attribute
+        public string mv { get; set; }
+        public string first { get; set; }
+        public string last { get; set; }
+        public bool transport { get; set; }
+        public bool custody { get; set; }
+        public bool requiressecuritylabel { get; set; }
+        public string securitycode { get; set; }
+        public string parents { get; set; }
 
         public int age
         {
@@ -908,6 +917,14 @@ namespace CmsCheckin
                 int age = now.Year - dob.Year;
                 if (now < dob.AddYears(age)) age--;
                 return age;
+            }
+        }
+
+        public string birthday
+        {
+            get
+            {
+                return dob.ToString("d");
             }
         }
 
@@ -963,16 +980,6 @@ namespace CmsCheckin
                 return ((allergies.Length > 0 ? "A|" : "") + (custody ? "C|" : "") + (transport ? "T" : "")).TrimEnd(new char[] { '|' });
             }
         }
-
-        public int pid { get; set; } // id attribute
-        public string mv { get; set; }
-        public string first { get; set; }
-        public string last { get; set; }
-        public bool transport { get; set; }
-        public bool custody { get; set; }
-        public bool requiressecuritylabel { get; set; }
-        public string securitycode { get; set; }
-        public string parents { get; set; }
     }
     [Serializable]
     public class PrintJob
