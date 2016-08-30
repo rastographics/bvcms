@@ -210,11 +210,12 @@ namespace CmsWeb.Models
                 if (Grades.HasValue())
                     glist = (from g in (Grades ?? "").Split(new char[] { ',', ';' })
                              select g.ToInt()).ToArray();
+                var typesToShowForMembersOnly = new [] {MemberTypeCode.Member, MemberTypeCode.Prospect, MemberTypeCode.InActive};
                 var q = from om in DbUtil.Db.OrganizationMembers
                         where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                         where SourceId == 0 || om.OrganizationId == SourceId
                         where glist.Length == 0 || glist.Contains(om.Person.Grade.Value)
-                        where !MembersOnly || om.MemberTypeId == MemberTypeCode.Member
+                        where !MembersOnly || typesToShowForMembersOnly.Contains(om.MemberTypeId)
                         select om;
                 if (smallGroupList.Count() > 0)
                 {
