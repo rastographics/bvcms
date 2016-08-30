@@ -21,7 +21,9 @@ $(function () {
         var f = $(this).closest('form');
         var href = this.href;
         var q = f.serialize();
+        $.blockUI();
         $.post(href, q, function (ret) {
+            $.unblockUI();
             if (ret.error) {
                 $("#formerror").show();
                 $('#errormessage').text(ret.error);

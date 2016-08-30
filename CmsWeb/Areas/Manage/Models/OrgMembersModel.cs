@@ -14,7 +14,7 @@ namespace CmsWeb.Models
 {
     public class OrgMembersModel
     {
-        private IQueryable<OrganizationMember> _members;
+        private IQueryable<OrganizationMember> members;
 
         public OrgMembersModel()
         {
@@ -183,7 +183,7 @@ namespace CmsWeb.Models
 
         private IQueryable<OrganizationMember> GetMembers()
         {
-            if (_members == null)
+            if (members == null)
             {
                 var glist = new int[] {};
                 var smallGroupList = new List<string>();
@@ -217,7 +217,7 @@ namespace CmsWeb.Models
                         where glist.Length == 0 || glist.Contains(om.Person.Grade.Value)
                         where !MembersOnly || typesToShowForMembersOnly.Contains(om.MemberTypeId)
                         select om;
-                if (smallGroupList.Count() > 0)
+                if (smallGroupList.Any())
                 {
                     if (matchAllSubgroups)
                     {
@@ -288,9 +288,9 @@ namespace CmsWeb.Models
                             select om;
                     }
                 }
-                _members = q;
+                members = q;
             }
-            return _members;
+            return members;
         }
 
         public bool ValidAgeFilter()
