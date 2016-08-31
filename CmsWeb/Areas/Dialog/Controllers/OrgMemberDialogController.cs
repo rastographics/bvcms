@@ -3,6 +3,7 @@ using System.Data.Linq;
 using System.Web.Mvc;
 using CmsWeb.Areas.Dialog.Models;
 using CmsData;
+using CmsWeb.Areas.OnlineReg.Models;
 using CmsWeb.Code;
 using CmsWeb.Models.ExtraValues;
 using UtilityExtensions;
@@ -114,6 +115,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost]
         public ActionResult AddTransaction(OrgMemberTransactionModel m)
         {
+            m.Description = OnlineRegModel.GetDescriptionForPayment(m.OrgId);
             return View(m);
         }
 
@@ -121,6 +123,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult AddFeeAdjustment(OrgMemberTransactionModel m)
         {
             m.AdjustFee = true;
+            m.Description = OnlineRegModel.GetDescriptionForPayment(m.OrgId);
             return View(m);
         }
 

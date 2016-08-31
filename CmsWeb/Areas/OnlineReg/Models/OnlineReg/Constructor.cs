@@ -25,7 +25,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             : this()
         {
             Orgid = id;
-            if (req.Url != null)
+            if (req?.Url != null)
                 URL = req.Url.OriginalString;
 
             if (DbUtil.Db.Roles.Any(rr => rr.RoleName == "disabled"))
@@ -83,6 +83,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
 #endif
                         }
                 };
+        }
+        public static string GetDescriptionForPayment(int? id)
+        {
+            try
+            {
+                var m = new OnlineRegModel(null, id, false, null, null, null);
+                return m.DescriptionForPayment;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
     }
 }
