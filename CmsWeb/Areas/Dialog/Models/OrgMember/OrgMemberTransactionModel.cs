@@ -4,6 +4,7 @@ using System.Linq;
 using CmsData;
 using CmsWeb.Models;
 using System.Web.Mvc;
+using CmsWeb.Areas.OnlineReg.Models;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
@@ -105,7 +106,8 @@ namespace CmsWeb.Areas.Dialog.Models
                     DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(gs);
                 }
             }
-            om.AddTransaction(DbUtil.Db, reason, Payment ?? 0, Description, Amount, AdjustFee);
+            var descriptionForPayment = OnlineRegModel.GetDescriptionForPayment(OrgId);
+            om.AddTransaction(DbUtil.Db, reason, Payment ?? 0, Description, Amount, AdjustFee, descriptionForPayment);
             var showcount = "";
             if (TransactionSummary != null && TransactionSummary.NumPeople > 1)
                 showcount = $"({TransactionSummary.NumPeople}) ";

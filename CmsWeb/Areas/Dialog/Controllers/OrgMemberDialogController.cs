@@ -115,7 +115,6 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost]
         public ActionResult AddTransaction(OrgMemberTransactionModel m)
         {
-            m.Description = OnlineRegModel.GetDescriptionForPayment(m.OrgId);
             return View(m);
         }
 
@@ -123,7 +122,6 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult AddFeeAdjustment(OrgMemberTransactionModel m)
         {
             m.AdjustFee = true;
-            m.Description = OnlineRegModel.GetDescriptionForPayment(m.OrgId);
             return View(m);
         }
 

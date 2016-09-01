@@ -6,6 +6,7 @@ using CmsData.Codes;
 using CmsData.Registration;
 using CmsWeb.Code;
 using UtilityExtensions;
+using CmsWeb.Areas.OnlineReg.Models;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
@@ -106,7 +107,8 @@ namespace CmsWeb.Areas.Dialog.Models
                 {
                     var om = DbUtil.Db.OrganizationMembers.Single(
                         mm => mm.PeopleId == goerid && mm.OrganizationId == OrgId);
-                    om.AddTransaction(DbUtil.Db, "Payment", AmountGoer ?? 0, "Payment");
+                    var descriptionForPayment = OnlineRegModel.GetDescriptionForPayment(OrgId);
+                    om.AddTransaction(DbUtil.Db, "Payment", AmountGoer ?? 0, "Payment", pmtDescription: descriptionForPayment);
                 }
                 // send notices
                 var goer = DbUtil.Db.LoadPersonById(goerid);

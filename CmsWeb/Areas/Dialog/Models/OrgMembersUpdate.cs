@@ -5,6 +5,7 @@ using System.Linq;
 using CmsData;
 using CmsData.Codes;
 using CmsData.View;
+using CmsWeb.Areas.OnlineReg.Models;
 using CmsWeb.Code;
 using UtilityExtensions;
 
@@ -200,7 +201,8 @@ AND NOT EXISTS(SELECT NULL FROM dbo.OrgMemMemTags WHERE OrgId = {0} AND MemberTa
                 var ts = db.ViewTransactionSummaries.SingleOrDefault(
                         tt => tt.RegId == om.TranId && tt.PeopleId == om.PeopleId);
                 var reason = ts == null ? "Initial Tran" : "Adjustment";
-                om.AddTransaction(db, reason, Payment ?? 0, Description, Amount, AdjustFee);
+                var descriptionForPayment = OnlineRegModel.GetDescriptionForPayment(Id);
+                om.AddTransaction(db, reason, Payment ?? 0, Description, Amount, AdjustFee, descriptionForPayment);
                 db.SubmitChanges();
                 DbUtil.LogActivity("OrgMem " + reason, Id, pid);
             }

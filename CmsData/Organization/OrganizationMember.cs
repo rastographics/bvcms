@@ -398,7 +398,7 @@ AND a.PeopleId = {2}
             transactionSummaryLoaded = true;
             return transactionSummary;
         }
-        public Transaction AddTransaction(CMSDataContext db, string reason, decimal payment, string description, decimal? amount = null, bool? adjustFee = false)
+        public Transaction AddTransaction(CMSDataContext db, string reason, decimal payment, string description, decimal? amount = null, bool? adjustFee = false, string pmtDescription = null)
         {
             var ts = TransactionSummary(db);
             var ti = db.Transactions.SingleOrDefault(tt => tt.Id == TranId);
@@ -416,7 +416,7 @@ AND a.PeopleId = {2}
             var ti2 = new Transaction
             {
                 TransactionId = $"{reason} ({Util.UserPeopleId ?? Util.UserId1})",
-                Description = Organization.OrganizationName,
+                Description = Util.PickFirst(pmtDescription, Organization.OrganizationName),
                 TransactionDate = DateTime.Now,
                 OrgId = OrganizationId,
                 Name = Person.Name,
