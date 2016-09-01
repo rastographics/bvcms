@@ -471,7 +471,10 @@
     <Compile Include="Areas\People\Controllers\DownlineDetailController.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineLevelsModel.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineSummaryModel.cs" />
+    <Compile Include="Areas\Search\Models\DirectoryInfo.cs" />
+    <Compile Include="Areas\Search\Models\MemberDirectoryModel.cs" />
     <Compile Include="Areas\People\Models\Person\InvolvementTableModel.cs" />
+    <Compile Include="Areas\Search\Controllers\MemberDirectoryController.cs" />
     <Compile Include="Areas\Public\Controllers\CheckInAPIController.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInAddEditPerson.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInAddEditPersonResults.cs" />
@@ -1572,6 +1575,9 @@
     <Content Include="Areas\Setup\Views\ResourceCategory\Index.cshtml" />
     <Content Include="Content\touchpoint\src\less\utils.less" />
     <Content Include="Content\touchpoint\src\less\resources.less" />
+    <Content Include="Areas\Search\Views\MemberDirectory\Index.cshtml" />
+    <Content Include="Areas\Search\Views\MemberDirectory\NoAccess.cshtml" />
+    <Content Include="Areas\Search\Views\MemberDirectory\Results.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />

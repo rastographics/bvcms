@@ -1,0 +1,42 @@
+﻿<div id="results">
+  {{PagerTop}}
+  <div class="table-responsive">
+    <table id="results-table" class="table table-striped">
+      <thead>
+        <tr>
+          <th><a href="#" class="sortable">Family</a></th>
+          <th>Name</th>
+          <th><a href="#" class="sortable">Birthday</a></th>
+          <th>Address</th>
+          <th>Phones</th>
+          <th>Email</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each Members}}
+        <tr>
+          <td>{{Family}}</td>
+          <td>{{Name}}{{#if Suffix}}, {{Suffix}{{/if}}</td>
+          <td>{{Fmt Birthday "M/d"}}</td>
+          <td>
+            {{#if Address}}<div>{{Address}}</div>{{/if}}
+            {{#if Address2}}<div>{{Address2}}</div>{{/if}}
+            {{#if CityStateZip}}<div>{{CityStateZip}}</div>{{/if}}
+          </td>
+          <td>
+            {{#if DoNotPublishPhones}}
+            {{#if Home}}<div>{{Home}}</div>{{/if}
+						{{#if Cell}}<div>{{Cell}}</div>{{/if}
+					{{/if}}
+          </td>
+          <td>
+						{{#if Email}}<div><a href='mailto:{{Email}}'>{{Email}}</a></div>{{/if}
+						{{#if Email2}}<div><a href='mailto:{{Email2}}'>{{Email2}}</a></div>{{/if}
+					</td>
+				</tr>
+				{{/each}}
+      </tbody>
+    </table>
+  </div>
+  {{PagerBottom}}
+</div>
