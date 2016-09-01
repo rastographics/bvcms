@@ -7,6 +7,7 @@
 using System;
 using System.Web;
 using System.Configuration;
+using System.Threading;
 
 namespace UtilityExtensions
 {
@@ -172,6 +173,20 @@ namespace UtilityExtensions
             if (a.Length == 2)
                 return a[1];
             return a[0];
+        }
+        public static bool IsMyDataUser
+        {
+            get
+            {
+                if (HttpContext.Current != null)
+                    return HttpContext.Current.User.IsInRole("Access") == false; 
+                return (bool?) Thread.GetData(Thread.GetNamedDataSlot("IsMyDataUser")) ?? false;
+            }
+            set
+            {
+                if (HttpContext.Current == null)
+                    Thread.SetData(Thread.GetNamedDataSlot("IsMyDataUser"), value);
+            }
         }
     }
 }

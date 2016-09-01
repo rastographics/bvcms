@@ -255,6 +255,7 @@ namespace CmsWeb.Areas.Main.Controllers
             // save these from HttpContext to set again inside thread local storage
             var userEmail = Util.UserEmail;
             var isInRoleEmailTest = User.IsInRole("EmailTest");
+            var isMyDataUser = User.IsInRole("Access") == false;
 
             try
             {
@@ -276,6 +277,7 @@ namespace CmsWeb.Areas.Main.Controllers
                     // set these again inside thread local storage
                     Util.UserEmail = userEmail;
                     Util.IsInRoleEmailTest = isInRoleEmailTest;
+                    Util.IsMyDataUser = isMyDataUser;
                     db.SendPeopleEmail(id);
                 }
                 catch (Exception ex)

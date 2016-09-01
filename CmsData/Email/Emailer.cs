@@ -655,15 +655,16 @@ namespace CmsData
 
         private void NotifySentEmails(string fromemail, string fromName, string subject, int count, int id)
         {
-            if (!System.Web.Security.Roles.IsUserInRole("Access")) return;
-            if (Setting("sendemail", "true") == "false") return;
+            if (Setting("sendemail", "true") == "false")
+                return;
 
-                var from = new MailAddress(fromemail, fromName);
+            var from = new MailAddress(fromemail, fromName);
             string subj = "sent emails: " + subject;
             var link = ServerLink("/Emails/Details/" + id);
             string body = $@"<a href=""{link}"">{count} emails sent</a>";
 
-            SendEmail(from, subj, body, Util.ToMailAddressList(from), id);
+            if(Util.IsMyDataUser == false)
+                SendEmail(from, subj, body, Util.ToMailAddressList(from), id);
             SendEmail(from, Host + " " + subj, body, Util.SendErrorsTo(), id);
         }
 
