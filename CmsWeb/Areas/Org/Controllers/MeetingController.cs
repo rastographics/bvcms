@@ -437,6 +437,11 @@ namespace CmsWeb.Areas.Org.Controllers
                     cc.AddNewClause(QueryType.HasCommitmentForMeetingId, CompareType.Equal, "0,False")
                         .Quarters = m.MeetingId.ToString();
                     break;
+                case "UnregisteredAbsents":
+                    cc.AddNewClause(QueryType.HasCommitmentForMeetingId, CompareType.Equal, "0,False")
+                        .Quarters = m.MeetingId.ToString();
+                    cc.AddNewClause(QueryType.MeetingId, CompareType.NotEqual, m.MeetingId);
+                    break;
                 case "Attends":
                     cc.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.Equal, m.MeetingId);
                     cc.AddNewClause(QueryType.MeetingId, CompareType.Equal, m.MeetingId);
