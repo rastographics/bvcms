@@ -26,16 +26,18 @@ namespace CmsData
         }
         public static void AddNewPerson(CMSDataContext Db, int newpersonid)
         {
-            var NewPeopleManagerId = Db.NewPeopleManagerId;
+            if (Db.Setting("NoNewPersonTasks"))
+                return;
+            var newPeopleManagerId = Db.NewPeopleManagerId;
             var task = new Task
             {
-                ListId = GetRequiredTaskList(Db, "InBox", NewPeopleManagerId).Id,
-                OwnerId = NewPeopleManagerId,
+                ListId = GetRequiredTaskList(Db, "InBox", newPeopleManagerId).Id,
+                OwnerId = newPeopleManagerId,
                 Description = "New Person Data Entry",
                 WhoId = newpersonid,
                 StatusId = TaskStatusCode.Active,
             };
-            if (Util.UserPeopleId.HasValue && Util.UserPeopleId.Value != NewPeopleManagerId)
+            if (Util.UserPeopleId.HasValue && Util.UserPeopleId.Value != newPeopleManagerId)
             {
                 task.CoOwnerId = Util.UserPeopleId.Value;
                 task.CoListId = GetRequiredTaskList(Db, "InBox", Util.UserPeopleId.Value).Id;
