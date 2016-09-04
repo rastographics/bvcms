@@ -972,6 +972,7 @@
     <Content Include="Content\touchpoint\js\admin\users.js" />
     <Content Include="Content\touchpoint\js\app.min.js" />
     <Content Include="Content\touchpoint\js\dialog\search-users.js" />
+    <Content Include="Content\touchpoint\js\edit-custom-report.js" />
     <Content Include="Content\touchpoint\js\export-toolbar.js" />
     <Content Include="Content\touchpoint\js\extra-value.js" />
     <Content Include="Content\touchpoint\js\finance\post-bundle.js" />

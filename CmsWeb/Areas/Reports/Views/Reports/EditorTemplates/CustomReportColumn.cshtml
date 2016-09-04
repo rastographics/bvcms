@@ -11,8 +11,15 @@
     @Html.HiddenFor(m => m.Field)
     @Html.HiddenFor(m => m.IsDisabled)
     @Html.HiddenFor(m => m.SmallGroup)
-    <label>
+    @if (ViewBag.IsIe == true)
+    {
       @Html.CheckBoxFor(m => m.IsSelected)
+    }
+    <label>
+      @if (ViewBag.IsIe == false)
+      {
+        @Html.CheckBoxFor(m => m.IsSelected)
+      }
       @(Model.Description ?? Model.SmallGroup ?? Model.Field ?? Model.Name)
       @if (Model.IsExtraValue)
       {
