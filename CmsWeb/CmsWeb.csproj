@@ -1402,6 +1402,8 @@
     <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\jquery-ui.min.css" />
     <Content Include="Content\touchpoint\lib\jquery-ui-custom\js\jquery-ui.min.js" />
     <Content Include="Content\touchpoint\lib\jquery-validate-globalize\js\jquery.validate.globalize.js" />
+    <Content Include="Content\touchpoint\lib\magnific-popup\jquery.magnific-popup.min.js" />
+    <Content Include="Content\touchpoint\lib\magnific-popup\magnific-popup.css" />
     <Content Include="Content\touchpoint\lib\mousetrap\js\mousetrap.min.js" />
     <Content Include="Content\touchpoint\lib\select2\css\select2-bootstrap.css" />
     <Content Include="Content\touchpoint\lib\select2\css\select2-spinner.gif" />
