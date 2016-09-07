@@ -99,6 +99,11 @@
                     @Html.EditorFor(m => m.AddToSmallGroupScript)
                 </div>
             }
+            else
+            {
+              <text>@Html.HiddenFor(m => m.AddToSmallGroupScript)</text>
+            }
+
             <div class="col-sm-4 col-md-4">
                 @Html.EditorFor(m => m.TimeOut)
             </div>
