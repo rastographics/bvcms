@@ -1307,6 +1307,10 @@ namespace CmsData
         {
             return Content2(name, defaultValue, ContentTypeCode.TypeText);
         }
+        public string ContentSql(string name, string defaultValue)
+        {
+            return Content2(name, defaultValue, ContentTypeCode.TypeSqlScript);
+        }
         public void SetNoLock()
         {
             //ExecuteCommand("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED");

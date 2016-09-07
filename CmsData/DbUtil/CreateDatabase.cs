@@ -75,11 +75,46 @@ GO
 ");
         }
 
+        public static CheckDatabaseResult CheckImageDatabaseExists(string name, bool nocache = false)
+        {
+            if (nocache == false)
+            {
+                var r1 = HttpRuntime.Cache[Util.Host + "-CheckImageDatabaseResult"];
+                if (r1 != null)
+                    return (CheckDatabaseResult)r1;
+            }
+
+            using (var cn = new SqlConnection(Util.GetConnectionString2("master", 3)))
+            {
+                CheckDatabaseResult ret;
+                try
+                {
+                    cn.Open();
+                    var b = DatabaseExists(cn, name);
+                    ret = b ? CheckDatabaseResult.DatabaseExists : CheckDatabaseResult.DatabaseDoesNotExist;
+                }
+                catch (Exception ex)
+                {
+                    if (ex.Message.StartsWith("A network-related"))
+                        ret = CheckDatabaseResult.ServerNotFound;
+                    else
+                        throw;
+                }
+                if (nocache == false)
+                {
+                    HttpRuntime.Cache.Insert(Util.Host + "-ImageCheckDatabaseResult", ret, null,
+                        ret == CheckDatabaseResult.DatabaseExists
+                            ? DateTime.Now.AddSeconds(60)
+                            : DateTime.Now.AddSeconds(5), Cache.NoSlidingExpiration);
+                }
+                return ret;
+            }
+        }
         public static CheckDatabaseResult CheckDatabaseExists(string name, bool nocache = false)
         {
             if (nocache == false)
             {
-                var r1 = HttpRuntime.Cache[Util.Host + " - CheckDatabaseResult"];
+                var r1 = HttpRuntime.Cache[Util.Host + "-CheckDatabaseResult"];
                 if (r1 != null)
                     return (CheckDatabaseResult)r1;
             }

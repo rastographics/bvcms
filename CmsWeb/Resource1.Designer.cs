@@ -438,6 +438,69 @@ namespace CmsWeb {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SELECT
+        ///	p.PeopleId,
+        ///	p.LastName,
+        ///	p.FamilyId,
+        ///	p.Name,
+        ///	p.PreferredName,
+        ///	p.SuffixCode,
+        ///	Birthday = dbo.DOB(p.BirthMonth,p.BirthDay, p.BirthYear),
+        ///	[Address] = p.PrimaryAddress,
+        ///	Address2 = p.PrimaryAddress2,
+        ///	City = p.PrimaryCity,
+        ///	St = p.PrimaryState,
+        ///	Zip = p.PrimaryZip,
+        ///	Cell = p.CellPhone,
+        ///	Home = p.HomePhone,
+        ///	p.EmailAddress,
+        ///	p.EmailAddress2,
+        ///	PhonesOk = ISNULL(p.DoNotPublishPhones, 0),
+        ///	pp.MediumId,
+        ///	pp.SmallId,
+        ///	pp.X,
+        ///	pp.Y,
+        ///	PicDate = pp.CreatedDate,
+        ///	p.GenderId
+        ///FROM dbo.Ta [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string PictureDirectorySql {
+            get {
+                return ResourceManager.GetString("PictureDirectorySql", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;div id=&quot;results&quot;&gt;
+        ///  &lt;style&gt;
+        ///    .profile-portrait {
+        ///      height: 75px;
+        ///      width: 75px;
+        ///      display: inline-block;
+        ///      background-repeat: no-repeat;
+        ///      background-size: cover;
+        ///    }
+        ///    .profile-photo {
+        ///      display: inline-block;
+        ///      margin-bottom: 10px;
+        ///      border-radius: 999999px;
+        ///      background-color: #fff;
+        ///      border: 1px solid #e6e6e6;
+        ///      padding-top: 5px;
+        ///      padding-left: 5px;
+        ///      padding-right: 5px;
+        ///    }
+        ///  &lt;/style&gt;
+        ///  {{{PagerTop}}}
+        ///  &lt;div class=&quot;tabl [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string PictureDirectoryTemplate {
+            get {
+                return ResourceManager.GetString("PictureDirectoryTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;div&gt;
         ///  The following meetings are ready to be viewed:&lt;br /&gt;
         ///  {{#each this}}

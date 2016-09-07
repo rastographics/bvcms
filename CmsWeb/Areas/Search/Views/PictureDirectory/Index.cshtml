@@ -1,0 +1,59 @@
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.Search.Models.PictureDirectoryModel
+@{
+  ViewBag.Title = "Member Directory";
+  ViewBag.PageSubHeader = $"<a href=\"/Person2/{Util.UserPeopleId}\">{Util.UserFullName}</a>";
+  Layout = ViewExtensions2.TouchPointLayout();
+}
+@section head
+{
+  <link rel="stylesheet" type="text/css" href="/Content/touchpoint/lib/magnific-popup/magnific-popup.css"/>
+}
+<div class="box box-responsive">
+  <div class="box-content">
+    <form id="form-picture-directory" class="ajax" data-results="#results" method="post" action="/PictureDirectory/Results" data-init="InitPopup">
+      <div class="well">
+        @Html.LabelFor(vv => vv.Name, "Part of Name")
+        <div class="row">
+          <div class="col-sm-12 form-inline">
+            <div class="input-group col-xs-12 col-sm-6">
+              @Html.TextBoxFor(vv => vv.Name, new {title = "Part of the Name", @class = "form-control"})
+            </div>
+            <div class="input-group">
+              <a class="btn btn-default" href="/PictureDirectory">Clear</a>
+              <a id="search" class="btn btn-primary ajax" href="/PictureDirectory/Results">Search</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      @Html.Raw(Model.Results(ViewBag.Controller))
+    </form>
+  </div>
+</div>
+@section scripts
+{
+  <script src="/Content/touchpoint/lib/magnific-popup/jquery.magnific-popup.min.js"></script>
+  <script>
+    $(function() {
+      $.InitFunctions.InitPopup = function() {
+        $('.image-popup-vertical-fit').magnificPopup({
+            type: 'image',
+            closeOnContentClick: true,
+            mainClass: 'mfp-img-mobile',
+            image: {
+              verticalFit: true
+            }
+          });
+      };
+      $("body").on('keydown', "#Name", function(ev) {
+          if (ev.keyCode === 13) {
+            ev.preventDefault();
+            $('#search').click();
+            return false;
+          }
+          return true;
+        });
+      $.InitFunctions.InitPopup();
+    });
+  </script>
+}

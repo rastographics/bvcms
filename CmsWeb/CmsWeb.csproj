@@ -136,10 +136,6 @@
       <HintPath>..\packages\EPPlus.4.1.0\lib\net40\EPPlus.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Handlebars, Version=1.0.0.0, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
-      <HintPath>..\packages\Handlebars.Net.1.4.4\lib\Handlebars.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.4.9.5, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.4.9.5\lib\Net45\HtmlAgilityPack.dll</HintPath>
       <Private>True</Private>
@@ -472,9 +468,9 @@
     <Compile Include="Areas\People\Models\Downline\DownlineLevelsModel.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineSummaryModel.cs" />
     <Compile Include="Areas\Search\Models\DirectoryInfo.cs" />
-    <Compile Include="Areas\Search\Models\MemberDirectoryModel.cs" />
+    <Compile Include="Areas\Search\Models\PictureDirectoryModel.cs" />
     <Compile Include="Areas\People\Models\Person\InvolvementTableModel.cs" />
-    <Compile Include="Areas\Search\Controllers\MemberDirectoryController.cs" />
+    <Compile Include="Areas\Search\Controllers\PictureDirectoryController.cs" />
     <Compile Include="Areas\Public\Controllers\CheckInAPIController.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInAddEditPerson.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInAddEditPersonResults.cs" />
@@ -885,6 +881,7 @@
     <Content Include="Areas\Reports\Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Areas\Search\Views\PictureDirectory\PictureDirectory.sql" />
     <Content Include="Content\css\bootstrap-datetimepicker.css" />
     <Content Include="Content\css\bootstrap-datetimepicker.min.css">
       <DependentUpon>bootstrap-datetimepicker.css</DependentUpon>
@@ -1521,7 +1518,9 @@
     <Content Include="Areas\Org\Views\OrgSearch\Tabs.cshtml" />
     <Content Include="Areas\Org\Views\OrgSearch\Modals\ExportMessages.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\NotifyStaff.cshtml" />
-    <Content Include="Areas\Org\Views\OrgSearch\RecentVisitsAbsents.xml" />
+    <Content Include="Areas\Org\Views\OrgSearch\RecentVisitsAbsents.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Areas\Reports\Views\Reports\PyScript.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Code.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\Tabs\MemberData.cshtml" />
@@ -1575,9 +1574,11 @@
     <Content Include="Areas\Setup\Views\ResourceCategory\Index.cshtml" />
     <Content Include="Content\touchpoint\src\less\utils.less" />
     <Content Include="Content\touchpoint\src\less\resources.less" />
-    <Content Include="Areas\Search\Views\MemberDirectory\Index.cshtml" />
-    <Content Include="Areas\Search\Views\MemberDirectory\NoAccess.cshtml" />
-    <Content Include="Areas\Search\Views\MemberDirectory\Results.cshtml" />
+    <Content Include="Areas\Search\Views\PictureDirectory\Index.cshtml" />
+    <Content Include="Areas\Search\Views\PictureDirectory\NoAccess.cshtml" />
+    <Content Include="Areas\Search\Views\PictureDirectory\Results.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />
@@ -2958,6 +2959,10 @@
     <Content Include="Content\images\work.gif" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Handlebars.Net\source\Handlebars\Handlebars.csproj">
+      <Project>{a09cff95-b671-48fe-96a8-d3cbdc110b75}</Project>
+      <Name>Handlebars</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CmsData\CmsData.csproj">
       <Project>{98aee43c-4226-49e7-bd46-c1a85467eced}</Project>
       <Name>CmsData</Name>

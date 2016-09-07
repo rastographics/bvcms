@@ -9,6 +9,7 @@ namespace CmsWeb.Models.Api
         public int PeopleId { get; set; }
         public int FamilyId { get; set; }
         public int PositionInFamilyId { get; set; }
+        public int MemberStatusId { get; set; }
         public int? CampusId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
