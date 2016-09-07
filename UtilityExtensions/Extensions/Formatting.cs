@@ -203,6 +203,10 @@ namespace UtilityExtensions
             csz += " " + FmtZip(zip);
             return csz.Trim();
         }
+        public static string FormatCSZ4(object city, object st, object zip)
+        {
+            return FormatCSZ4(city?.ToString(), st?.ToString(), zip?.ToString());
+        }
 
         public static string FormatCSZ5(string city, string st, string zip)
         {

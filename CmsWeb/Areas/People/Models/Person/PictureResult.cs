@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Mvc;
+using CmsData;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
 {
@@ -27,9 +29,9 @@ namespace CmsWeb.Areas.People.Models
         }
         public override void ExecuteResult(ControllerContext context)
         {
-//            context.HttpContext.Response.Clear();
-//            context.HttpContext.Response.Cache.SetExpires(DateTime.Now.AddYears(1));
-//            context.HttpContext.Response.Cache.SetCacheability(HttpCacheability.Public);
+            context.HttpContext.Response.Clear();
+            context.HttpContext.Response.Cache.SetExpires(DateTime.Now.AddMinutes(10));
+            context.HttpContext.Response.Cache.SetCacheability(HttpCacheability.Public);
 
             if (id == -2)
             {
@@ -74,7 +76,18 @@ namespace CmsWeb.Areas.People.Models
             else
             {
                 ImageData.Image i = null;
-                try { i = ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == id); } catch (Exception) { }
+#if DEBUG
+                var idb = DbUtil.CheckImageDatabaseExists(Util.CmsHost.Replace("CMS_", "CMSi_"));
+                if(idb == DbUtil.CheckDatabaseResult.DatabaseExists)
+#endif
+                try
+                {
+                    i = ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == id);
+                }
+                // ReSharper disable once EmptyGeneralCatchClause
+                catch (Exception)
+                {
+                }
                 if (i == null || i.Secure == true)
                 {
                     if (nodefault)

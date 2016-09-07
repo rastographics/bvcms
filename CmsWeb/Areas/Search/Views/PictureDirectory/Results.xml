@@ -1,0 +1,70 @@
+﻿<div id="results">
+  <style>
+    .profile-portrait {
+      height: 75px;
+      width: 75px;
+      display: inline-block;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+    .profile-photo {
+      display: inline-block;
+      margin-bottom: 10px;
+      border-radius: 999999px;
+      background-color: #fff;
+      border: 1px solid #e6e6e6;
+      padding-top: 5px;
+      padding-left: 5px;
+      padding-right: 5px;
+    }
+  </style>
+  {{{PagerTop}}}
+  <div class="table-responsive">
+    <table class="table table-striped" style="width: auto; margin-left: auto; margin-right: auto">
+      <thead>
+        <tr>
+          <th></th>
+          <th>{{{SortName}}}</th>
+          <th></th>
+          <th>{{{SortBirthday}}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each Entry}}
+        <tr>
+          <th>
+            <div class="profile-photo">
+              <a class="image-popup-vertical-fit" href="{{MediumUrl}}" title="{{Name}}">
+                <div class="profile-portrait img-circle" 
+                     style="background-image: url({{SmallUrl}}); background-position: {{ImagePos}}">
+                </div>
+              </a>
+            </div>
+          </th>
+          <td>
+            {{#IfAccess}}
+              <b><a href="/Person2/{{PeopleId}}" target="Person">{{Name}}</a></b>
+            {{/else}}
+              {{Name}}
+            {{/IfAccess}}
+            {{#if Address}}<div>{{Address}}</div>{{/if}}
+            {{#if Address2}}<div>{{Address2}}</div>{{/if}}
+            {{#if City}}<div>{{CSZ City State Zip}}</div>{{/if}}
+          </td>
+          <td>
+            {{#if PhonesOk}}
+              {{#if Home}}<div>{{Home}}</div>{{/if}}
+              {{#if Cell}}<div>{{Cell}}</div>{{/if}}
+            {{/if}}
+            {{#if Email}}<div><a href='mailto:{{Email}}'>{{Email}}</a></div>{{/if}}
+            {{#if Email2}}<div><a href='mailto:{{Email2}}'>{{Email2}}</a></div>{{/if}}
+          </td>
+          <td>{{Birthday}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+  {{{PagerBottom}}}
+  {{{PagerHidden}}}
+</div>

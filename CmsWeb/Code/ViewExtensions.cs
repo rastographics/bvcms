@@ -493,7 +493,6 @@ namespace CmsWeb
             tb.MergeAttribute("value", value != null ? value.ToString() : "");
             return new HtmlString(tb.ToString());
         }
-
         public static HtmlString Hidden3(this HtmlHelper helper, string name, object value)
         {
             return helper.Hidden3(null, name, value);
