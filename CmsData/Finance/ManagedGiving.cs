@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using CmsData.Codes;
 using CmsData.Finance;
 using UtilityExtensions;
 
@@ -58,6 +59,10 @@ namespace CmsData
 
             var gw = GetGateway(db, paymentInfo);
 
+            var orgid = (from o in db.Organizations
+                             where o.RegistrationTypeId == RegistrationTypeCode.ManageGiving
+                             select o.OrganizationId).FirstOrDefault();
+
             var t = new Transaction
             {
                 TransactionDate = DateTime.Now,
@@ -73,7 +78,8 @@ namespace CmsData
                 Financeonly = true,
                 PaymentType = preferredType,
                 LastFourCC = preferredType == PaymentType.CreditCard ? paymentInfo.MaskedCard.Last(4) : null,
-                LastFourACH = preferredType == PaymentType.Ach ? paymentInfo.MaskedAccount.Last(4) : null
+                LastFourACH = preferredType == PaymentType.Ach ? paymentInfo.MaskedAccount.Last(4) : null,
+                OrgId = orgid,
             };
 
             db.Transactions.InsertOnSubmit(t);
