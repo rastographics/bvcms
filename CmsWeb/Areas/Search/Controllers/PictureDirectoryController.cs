@@ -1,23 +1,24 @@
 ﻿using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Search.Models;
-using System.Text.RegularExpressions;
 
 namespace CmsWeb.Areas.Search.Controllers
 {
     [RouteArea("Search", AreaPrefix="PictureDirectory"), Route("{action=index}")]
     public class PictureDirectoryController : CmsController
     {
-        [Route("~/PictureDirectory")]
-        [Route("~/PictureDirectory/Index")]
-        public ActionResult Index()
+        [Route("~/PictureDirectory/{id:int?}")]
+        public ActionResult Index(int? id = null)
         {
-            var flag = DbUtil.Db.Setting("PictureDirectoryStatusFlag", "");
-            var match = Regex.IsMatch(flag, @"\AF\d\d\z");
-            if (!match)
-                return Message("No PictureDirectory Configured");
+#if DEBUG
+            DbUtil.Db.ExecuteCommand(@"
+DELETE dbo.Content 
+WHERE (name = 'PictureDirectory' AND TypeID = 4)
+OR (name = 'PictureDirectoryTemplate' AND TypeID = 1)
+");
+#endif
             ViewBag.Controller = this;
-            return View(new PictureDirectoryModel());
+            return View(new PictureDirectoryModel(id));
         }
         [HttpPost]
         public ActionResult Results(PictureDirectoryModel m)

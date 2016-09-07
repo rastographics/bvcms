@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using CmsData;
 using CmsWeb.Areas.Search.Controllers;
@@ -20,21 +21,63 @@ namespace CmsWeb.Areas.Search.Models
 {
     public class PictureDirectoryModel : PagedTableModel<Person, dynamic>
     {
-        private readonly string flag;
-        private readonly bool hasAccess;
-        public readonly bool CanView;
-        private string orderby;
+        public string StatusFlag;
+        public int? OrgId;
+        public bool CanView;
+        private string OrderBy { get; set; }
+        public bool HasAccess { get; set; }
+        private static string Setting => DbUtil.Db.Setting("PictureDirectorySelector", "");
+        private string Sql { get; set; }
+        private string Template { get; set; }
+        private string TemplateName { get; set; }
 
         public PictureDirectoryModel()
-            : base("Name", "asc", true)
         {
-            flag = DbUtil.Db.Setting("PictureDirectoryStatusFlag", "");
-            hasAccess = HttpContext.Current.User.IsInRole("Access");
-            var hasstatus = (from v in DbUtil.Db.StatusFlags(flag)
-                             where v.PeopleId == Util.UserPeopleId
-                             select v).Any();
-            CanView = hasstatus || HttpContext.Current.User.IsInRole("Admin");
+            Initialize();
+        }
+
+        public PictureDirectoryModel(int? orgId)
+            : base("Name", "asc")
+        {
+            OrgId = orgId;
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            AjaxPager = true;
+            HasAccess = HttpContext.Current.User.IsInRole("Access");
             GetCount = CountEntries;
+            if (OrgId == null)
+                if (Regex.IsMatch(Setting, @"\AF\d\d\z"))
+                    StatusFlag = Setting;
+                else if (Regex.IsMatch(Setting, @"\A\d+\z"))
+                    OrgId = Setting.ToInt();
+            TemplateName = "PictureDirectoryTemplate";
+            if (OrgId.HasValue)
+            {
+                var inorg = (from om in DbUtil.Db.OrganizationMembers
+                             where om.PeopleId == Util.UserPeopleId
+                             where om.OrganizationId == OrgId
+                             where om.Organization.PublishDirectory > 0
+                             where !om.OrgMemberExtras.Any(vv => vv.BitValue == true && vv.Field == "DoNotPublish")
+                             where om.OrgMemMemTags.All(vv => vv.MemberTag.Name != "DoNotPublish")
+                             select om).Any();
+                CanView = inorg || HttpContext.Current.User.IsInRole("Admin");
+                Template = DbUtil.Db.OrganizationExtras.SingleOrDefault(vv => vv.OrganizationId == OrgId && vv.Field == TemplateName)?.Data
+                    ?? DbUtil.Db.ContentText(TemplateName, Resource1.PictureDirectoryTemplate);
+                var sqlname = DbUtil.Db.OrganizationExtras.SingleOrDefault(vv => vv.OrganizationId == OrgId && vv.Field == "PictureDirectorySql")?.Data;
+                Sql = DbUtil.Db.ContentSql(sqlname ?? "PictureDirectory", Resource1.PictureDirectorySql);
+            }
+            else if (StatusFlag.HasValue())
+            {
+                var hasstatus = (from v in DbUtil.Db.StatusFlags(StatusFlag)
+                                 where v.PeopleId == Util.UserPeopleId
+                                 select v).Any();
+                CanView = hasstatus || HttpContext.Current.User.IsInRole("Admin");
+                Template = DbUtil.Db.ContentText(TemplateName, Resource1.PictureDirectoryTemplate);
+                Sql = DbUtil.Db.ContentSql("PictureDirectory", Resource1.PictureDirectorySql);
+            }
         }
 
         public string Name { get; set; }
@@ -54,12 +97,13 @@ namespace CmsWeb.Areas.Search.Models
         {
             IQueryable<Person> qmembers;
             if (!CanView)
-                qmembers = DbUtil.Db.PeopleQuery2($"PeopleId = {Util.UserPeopleId}");
+                qmembers = DbUtil.Db.PeopleQuery2("PeopleId = 0");
+            else if (StatusFlag.HasValue())
+                qmembers = DbUtil.Db.PeopleQuery2($"StatusFlag = '{StatusFlag}'");
+            else if (OrgId.HasValue)
+                qmembers = DbUtil.Db.PeopleQuery2($"IsMemberOf( Org={OrgId} ) = 1");
             else
-            {
-                var qs = $"StatusFlag = '{flag}'";
-                qmembers = DbUtil.Db.PeopleQuery2(qs);
-            }
+                qmembers = DbUtil.Db.PeopleQuery2("PeopleId = 0");
 
             if (Name.HasValue())
                 qmembers = from p in qmembers
@@ -77,13 +121,13 @@ namespace CmsWeb.Areas.Search.Models
                         q = from p in q
                             orderby p.Name2
                             select p;
-                        orderby = "ORDER BY p.Name2";
+                        OrderBy = "ORDER BY p.Name2";
                         break;
                     case "Birthday":
                         q = from p in q
                             orderby DbUtil.Db.NextBirthday(p.PeopleId)
                             select p;
-                        orderby = "ORDER BY dbo.NextBirthday(PeopleId)";
+                        OrderBy = "ORDER BY dbo.NextBirthday(p.PeopleId)";
                         break;
                 }
             else
@@ -94,13 +138,13 @@ namespace CmsWeb.Areas.Search.Models
                         q = from p in q
                             orderby p.Name2 descending
                             select p;
-                        orderby = "ORDER BY p.Name2 DESC";
+                        OrderBy = "ORDER BY p.Name2 DESC";
                         break;
                     case "Birthday":
                         q = from p in q
                             orderby DbUtil.Db.NextBirthday(p.PeopleId) descending
                             select p;
-                        orderby = "ORDER BY dbo.NextBirthday(PeopleId) DESC";
+                        OrderBy = "ORDER BY dbo.NextBirthday(p.PeopleId) DESC";
                         break;
                 }
             }
@@ -111,48 +155,16 @@ namespace CmsWeb.Areas.Search.Models
         {
             var tagid = DbUtil.Db.PopulateTemporaryTag(q.Select(vv => vv.PeopleId)).Id;
             var qf = new QueryFunctions(DbUtil.Db);
-            var sq = qf.QuerySql(
-                $"{DbUtil.Db.ContentSql("PictureDirectory", Resource1.PictureDirectorySql)}\n{@orderby}", 
-                tagid);
-            return sq;
+            return qf.QuerySql($"{Sql}\n{OrderBy}", tagid);
         }
 
         public string Results(PictureDirectoryController ctl)
         {
             try
             {
-                PythonModel.RegisterHelpers(DbUtil.Db);
-                Handlebars.RegisterHelper("SmallUrl", (w, ctx, args) =>
-                {
-                    GetPictureUrl(ctx, w, ctx.SmallId, 
-                        Picture.SmallMissingMaleId, Picture.SmallMissingFemaleId, Picture.SmallMissingGenericId);
-                });
-                Handlebars.RegisterHelper("MediumUrl", (w, ctx, args) =>
-                {
-                    GetPictureUrl(ctx, w, ctx.MediumId, 
-                        Picture.MediumMissingMaleId, Picture.MediumMissingFemaleId, Picture.MediumMissingGenericId);
-                });
-                Handlebars.RegisterHelper("ImagePos", (w, ctx, args) =>
-                {
-                    var x = ctx.X;
-                    var y = ctx.Y;
-                    w.Write(x != null || y != null ? $"{x ?? 0}% {y ?? 0}%" : "top");
-                });
-                Handlebars.RegisterHelper("IfAccess", (w, opt, ctx, args) =>
-                {
-                    if (hasAccess)
-                        opt.Template(w, (object)ctx);
-                    else
-                        opt.Inverse(w, (object)ctx);
-                });
-                Handlebars.RegisterHelper("PagerTop", (w, ctx, args) => { w.Write(ViewExtensions2.RenderPartialViewToString(ctl, "PagerTop", this)); });
-                Handlebars.RegisterHelper("PagerBottom", (w, ctx, args) => { w.Write(ViewExtensions2.RenderPartialViewToString(ctl, "PagerBottom", this)); });
-                Handlebars.RegisterHelper("PagerHidden", (w, ctx, args) => { w.Write(ViewExtensions2.RenderPartialViewToString(ctl, "PagerHidden", this)); });
-                Handlebars.RegisterHelper("SortBirthday", (w, ctx, args) => { w.Write(SortLink("Birthday")); });
-                Handlebars.RegisterHelper("SortName", (w, ctx, args) => { w.Write(SortLink("Name")); });
-                Handlebars.RegisterHelper("CSZ", (w, ctx, args) => { w.Write(Util.FormatCSZ4(args[0], args[1], args[2])); });
-                var template = Handlebars.Compile(DbUtil.Db.ContentText("PictureDirectoryTemplate", Resource1.PictureDirectoryTemplate));
-                var s = template(this);
+                RegisterHelpers(ctl);
+                var compiledTemplate = Handlebars.Compile(Template);
+                var s = compiledTemplate(this);
                 return s;
             }
             catch (Exception ex)
@@ -161,7 +173,41 @@ namespace CmsWeb.Areas.Search.Models
             }
         }
 
-        private static void GetPictureUrl(dynamic ctx, TextWriter w, int? id, 
+        private void RegisterHelpers(PictureDirectoryController ctl)
+        {
+            PythonModel.RegisterHelpers(DbUtil.Db);
+            Handlebars.RegisterHelper("SmallUrl", (w, ctx, args) =>
+            {
+                GetPictureUrl(ctx, w, ctx.SmallId,
+                    Picture.SmallMissingMaleId, Picture.SmallMissingFemaleId, Picture.SmallMissingGenericId);
+            });
+            Handlebars.RegisterHelper("MediumUrl", (w, ctx, args) =>
+            {
+                GetPictureUrl(ctx, w, ctx.MediumId,
+                    Picture.MediumMissingMaleId, Picture.MediumMissingFemaleId, Picture.MediumMissingGenericId);
+            });
+            Handlebars.RegisterHelper("ImagePos", (w, ctx, args) => { w.Write(ctx.X != null || ctx.Y != null ? $"{ctx.X ?? 0}% {ctx.Y ?? 0}%" : "top"); });
+            Handlebars.RegisterHelper("IfAccess", (w, opt, ctx, args) =>
+            {
+                if (HasAccess)
+                    opt.Template(w, (object) ctx);
+                else
+                    opt.Inverse(w, (object) ctx);
+            });
+            Handlebars.RegisterHelper("PagerTop", (w, ctx, args) => { w.Write(ViewExtensions2.RenderPartialViewToString(ctl, "PagerTop", this)); });
+            Handlebars.RegisterHelper("PagerBottom", (w, ctx, args) => { w.Write(ViewExtensions2.RenderPartialViewToString(ctl, "PagerBottom", this)); });
+            Handlebars.RegisterHelper("PagerHidden", (w, ctx, args) => { w.Write(ViewExtensions2.RenderPartialViewToString(ctl, "PagerHidden", this)); });
+            Handlebars.RegisterHelper("SortBirthday", (w, ctx, args) => { w.Write(SortLink("Birthday")); });
+            Handlebars.RegisterHelper("SortName", (w, ctx, args) => { w.Write(SortLink("Name")); });
+            Handlebars.RegisterHelper("CityStateZip", (w, ctx, args) => { w.Write(Util.FormatCSZ4(ctx.City, ctx.St, ctx.Zip)); });
+            Handlebars.RegisterHelper("BirthDay", (w, ctx, args) =>
+            {
+                var dob = (string) ctx.DOB;
+                w.Write(dob.ToDate().ToString2("m"));
+            });
+        }
+
+        private static void GetPictureUrl(dynamic ctx, TextWriter w, int? id,
             int missingMaleId, int missingFemailId, int missingGenericId)
         {
             var genderid = ctx.GenderId;

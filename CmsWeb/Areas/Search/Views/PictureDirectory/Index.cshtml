@@ -13,6 +13,7 @@
   <div class="box-content">
     <form id="form-picture-directory" class="ajax" data-results="#results" method="post" action="/PictureDirectory/Results" data-init="InitPopup">
       <div class="well">
+        @Html.HiddenFor(vv => vv.OrgId)
         @Html.LabelFor(vv => vv.Name, "Part of Name")
         <div class="row">
           <div class="col-sm-12 form-inline">
@@ -43,7 +44,7 @@
             image: {
               verticalFit: true
             }
-          });
+        });
       };
       $("body").on('keydown', "#Name", function(ev) {
           if (ev.keyCode === 13) {

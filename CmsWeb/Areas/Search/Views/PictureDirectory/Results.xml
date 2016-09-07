@@ -42,19 +42,19 @@
             </div>
           </th>
           <td>
-            {{#IfAccess}}
+            {{#if ../HasAccess}}
               <b><a href="/Person2/{{PeopleId}}" target="Person">{{Name}}</a></b>
-            {{/else}}
+            {{else}}
               {{Name}}
-            {{/IfAccess}}
+            {{/if}}
             {{#if Address}}<div>{{Address}}</div>{{/if}}
             {{#if Address2}}<div>{{Address2}}</div>{{/if}}
-            {{#if City}}<div>{{CSZ City State Zip}}</div>{{/if}}
+            {{#if City}}<div>{{CityStateZip}}</div>{{/if}}
           </td>
           <td>
             {{#if PhonesOk}}
-              {{#if Home}}<div>{{Home}}</div>{{/if}}
-              {{#if Cell}}<div>{{Cell}}</div>{{/if}}
+              {{#if Home}}<div>{{FmtPhone Home 'H'}}</div>{{/if}}
+              {{#if Cell}}<div>{{FmtPhone Cell 'C'}}</div>{{/if}}
             {{/if}}
             {{#if Email}}<div><a href='mailto:{{Email}}'>{{Email}}</a></div>{{/if}}
             {{#if Email2}}<div><a href='mailto:{{Email2}}'>{{Email2}}</a></div>{{/if}}
