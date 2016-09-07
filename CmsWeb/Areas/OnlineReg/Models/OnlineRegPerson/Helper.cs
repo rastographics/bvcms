@@ -680,6 +680,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
             sb.AppendNewLine(csz);
             return sb.ToString();
         }
+
+        public bool NoPhoneEmailOnFind()
+        {
+            var o = masterorg ?? org;
+            return o != null && o.GetExtra(DbUtil.Db, "NoPhoneEmailOnFind") == "true";
+        }
     }
 
     public class FamilyAttendInfo

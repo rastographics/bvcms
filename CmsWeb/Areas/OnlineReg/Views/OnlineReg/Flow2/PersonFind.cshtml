@@ -1,9 +1,8 @@
-﻿@using CmsData
-@model CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel
+﻿@model CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel
 <input type="hidden" id="personedit"/>
 @Html.EditorFor(m => m.FirstName)
 @Html.EditorFor(m => m.LastName)
-@if (Model.org != null && Model.org.GetExtra(DbUtil.Db, "NoPhoneEmailOnFind") == "true")
+@if (Model.NoPhoneEmailOnFind())
 {
     @Html.HiddenFor(m => m.DateOfBirth)
     @Html.HiddenFor(m => m.Phone)
