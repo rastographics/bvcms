@@ -21,19 +21,23 @@ namespace CmsWeb.Areas.Search.Models
 {
     public class PictureDirectoryModel : PagedTableModel<Person, dynamic>
     {
-        public string StatusFlag;
-        public int? OrgId;
-        public bool CanView;
-        private string OrderBy { get; set; }
         public bool HasAccess { get; set; }
-        private static string Setting => DbUtil.Db.Setting("PictureDirectorySelector", "");
-        private string Sql { get; set; }
-        private string Template { get; set; }
-        private string TemplateName { get; set; }
+        public bool? CanView { get; set; }
+        public string TemplateName { get; set; }
+        public string SqlName { get; set; }
+        public string StatusFlag { get; set; }
+        public int? OrgId { get; set; }
+        public string Selector { get; set; }
+
+        private string template;
+        private string sql;
+        private string orderBy;
+
+        private const string PictureDirectoryTemplateName = "PictureDirectoryTemplate";
+        private const string PictureDirectorySqlName = "PictureDirectorySql";
 
         public PictureDirectoryModel()
         {
-            Initialize();
         }
 
         public PictureDirectoryModel(int? orgId)
@@ -43,41 +47,87 @@ namespace CmsWeb.Areas.Search.Models
             Initialize();
         }
 
-        private void Initialize()
+        public void Initialize()
         {
             AjaxPager = true;
             HasAccess = HttpContext.Current.User.IsInRole("Access");
-            GetCount = CountEntries;
-            if (OrgId == null)
-                if (Regex.IsMatch(Setting, @"\AF\d\d\z"))
-                    StatusFlag = Setting;
-                else if (Regex.IsMatch(Setting, @"\A\d+\z"))
-                    OrgId = Setting.ToInt();
-            TemplateName = "PictureDirectoryTemplate";
+
+            if (!Selector.HasValue())
+                GetConfiguration();
+            if (ErrorMessage.HasValue())
+                return;
+
+            template = GetModifiedOrLatestText(TemplateName);
+            sql = GetModifiedOrLatestSql(SqlName);
+        }
+
+        private void GetConfiguration()
+        {
+            Selector = DbUtil.Db.Setting("PictureDirectorySelector", "");
+            if (Regex.IsMatch(Selector, @"\AF\d\d\z"))
+                StatusFlag = Selector;
+            else if (Regex.IsMatch(Selector, @"\A\d+\z"))
+                OrgId = Selector.ToInt();
+
             if (OrgId.HasValue)
             {
-                var inorg = (from om in DbUtil.Db.OrganizationMembers
-                             where om.PeopleId == Util.UserPeopleId
-                             where om.OrganizationId == OrgId
-                             where om.Organization.PublishDirectory > 0
-                             where !om.OrgMemberExtras.Any(vv => vv.BitValue == true && vv.Field == "DoNotPublish")
-                             where om.OrgMemMemTags.All(vv => vv.MemberTag.Name != "DoNotPublish")
-                             select om).Any();
-                CanView = inorg || HttpContext.Current.User.IsInRole("Admin");
-                Template = DbUtil.Db.OrganizationExtras.SingleOrDefault(vv => vv.OrganizationId == OrgId && vv.Field == TemplateName)?.Data
-                    ?? DbUtil.Db.ContentText(TemplateName, Resource1.PictureDirectoryTemplate);
-                var sqlname = DbUtil.Db.OrganizationExtras.SingleOrDefault(vv => vv.OrganizationId == OrgId && vv.Field == "PictureDirectorySql")?.Data;
-                Sql = DbUtil.Db.ContentSql(sqlname ?? "PictureDirectory", Resource1.PictureDirectorySql);
+                if (!CanView.HasValue)
+                {
+                    var inOrg = (from om in DbUtil.Db.OrganizationMembers
+                                 where om.PeopleId == Util.UserPeopleId
+                                 where om.OrganizationId == OrgId
+                                 where om.Organization.PublishDirectory > 0
+                                 where !om.OrgMemberExtras.Any(vv => vv.BitValue == true && vv.Field == "DoNotPublish")
+                                 where om.OrgMemMemTags.All(vv => vv.MemberTag.Name != "DoNotPublish")
+                                 select om).Any();
+                    CanView = inOrg || HttpContext.Current.User.IsInRole("Admin");
+                }
+                TemplateName = Util.PickFirst(
+                    Organization.GetExtra(DbUtil.Db, OrgId.Value, PictureDirectoryTemplateName),
+                    PictureDirectoryTemplateName);
+                SqlName = Util.PickFirst(
+                    Organization.GetExtra(DbUtil.Db, OrgId.Value, PictureDirectorySqlName),
+                    PictureDirectorySqlName);
             }
             else if (StatusFlag.HasValue())
             {
-                var hasstatus = (from v in DbUtil.Db.StatusFlags(StatusFlag)
-                                 where v.PeopleId == Util.UserPeopleId
-                                 select v).Any();
-                CanView = hasstatus || HttpContext.Current.User.IsInRole("Admin");
-                Template = DbUtil.Db.ContentText(TemplateName, Resource1.PictureDirectoryTemplate);
-                Sql = DbUtil.Db.ContentSql("PictureDirectory", Resource1.PictureDirectorySql);
+                if (!CanView.HasValue)
+                {
+                    var hasstatus = (from v in DbUtil.Db.StatusFlags(StatusFlag)
+                                     where v.PeopleId == Util.UserPeopleId
+                                     where v.StatusFlags != null
+                                     select v).Any();
+                    CanView = hasstatus || HttpContext.Current.User.IsInRole("Admin");
+                }
+                TemplateName = DbUtil.Db.Setting(PictureDirectoryTemplateName, PictureDirectoryTemplateName);
+                SqlName = DbUtil.Db.Setting(PictureDirectorySqlName, PictureDirectorySqlName);
             }
+            else
+                ErrorMessage = "No Directory Configured";
+        }
+
+        public static string GetModifiedOrLatestText(string name)
+        {
+            var s = DbUtil.Db.ContentOfTypeText(name);
+            var re = new Regex(@"\A<!--default\.v(?<ver>\d+)");
+            var m = re.Match(s);
+            var ver = m.Groups["ver"].Value.ToInt();
+            var currver = re.Match(Resource1.PictureDirectoryTemplate).Groups["ver"].Value.ToInt();
+            if (!s.HasValue() || (m.Success && currver > ver))
+                s = DbUtil.Db.ContentText(name, Resource1.PictureDirectoryTemplate);
+            return s;
+        }
+
+        private static string GetModifiedOrLatestSql(string name)
+        {
+            var s = DbUtil.Db.ContentOfTypeSql(name);
+            var re = new Regex(@"\A--default\.v(?<ver>\d+)");
+            var m = re.Match(s);
+            var ver = m.Groups["ver"].Value.ToInt();
+            var currver = re.Match(Resource1.PictureDirectorySql).Groups["ver"].Value.ToInt();
+            if (!s.HasValue() || (m.Success && currver > ver))
+                s = DbUtil.Db.ContentSql(name, Resource1.PictureDirectorySql);
+            return s;
         }
 
         public string Name { get; set; }
@@ -86,18 +136,16 @@ namespace CmsWeb.Areas.Search.Models
         private List<dynamic> entries;
         public IEnumerable<dynamic> Entry => entries ?? (entries = ViewList().ToList());
 
-        public int CountEntries()
-        {
-            if (!count.HasValue)
-                count = DefineModelList().Count();
-            return count.Value;
-        }
+        public string ErrorMessage { get; set; }
 
         public override IQueryable<Person> DefineModelList()
         {
             IQueryable<Person> qmembers;
-            if (!CanView)
+            if (CanView != true)
+            {
+                ErrorMessage = "Not Authorized to View";
                 qmembers = DbUtil.Db.PeopleQuery2("PeopleId = 0");
+            }
             else if (StatusFlag.HasValue())
                 qmembers = DbUtil.Db.PeopleQuery2($"StatusFlag = '{StatusFlag}'");
             else if (OrgId.HasValue)
@@ -107,7 +155,7 @@ namespace CmsWeb.Areas.Search.Models
 
             if (Name.HasValue())
                 qmembers = from p in qmembers
-                           where p.Name.Contains(Name)
+                           where p.Family.HeadOfHousehold.LastName.Contains(Name) || p.Name.Contains(Name)
                            select p;
             return qmembers;
         }
@@ -119,15 +167,19 @@ namespace CmsWeb.Areas.Search.Models
                 {
                     case "Name":
                         q = from p in q
-                            orderby p.Name2
+                            orderby p.Family.HeadOfHousehold.LastName,
+                            p.FamilyId,
+                            p.PositionInFamilyId,
+                            p.PeopleId == p.Family.HeadOfHouseholdId ? 0 : 1,
+                            p.Age descending
                             select p;
-                        OrderBy = "ORDER BY p.Name2";
+                        orderBy = "ORDER BY hh.LastName, p.FamilyId, p.PositionInFamilyId, IIF(p.PeopleId = hh.PeopleId, 0, 1), p.Age DESC";
                         break;
                     case "Birthday":
                         q = from p in q
                             orderby DbUtil.Db.NextBirthday(p.PeopleId)
                             select p;
-                        OrderBy = "ORDER BY dbo.NextBirthday(p.PeopleId)";
+                        orderBy = "ORDER BY dbo.NextBirthday(p.PeopleId)";
                         break;
                 }
             else
@@ -136,15 +188,19 @@ namespace CmsWeb.Areas.Search.Models
                 {
                     case "Name":
                         q = from p in q
-                            orderby p.Name2 descending
+                            orderby p.Family.HeadOfHousehold.LastName descending,
+                            p.FamilyId,
+                            p.PositionInFamilyId,
+                            p.PeopleId == p.Family.HeadOfHouseholdId ? 0 : 1,
+                            p.Age descending
                             select p;
-                        OrderBy = "ORDER BY p.Name2 DESC";
+                        orderBy = "ORDER BY hh.LastName DESC, p.FamilyId, p.PositionInFamilyId, IIF(p.PeopleId = hh.PeopleId, 0, 1), p.Age DESC";
                         break;
                     case "Birthday":
                         q = from p in q
                             orderby DbUtil.Db.NextBirthday(p.PeopleId) descending
                             select p;
-                        OrderBy = "ORDER BY dbo.NextBirthday(p.PeopleId) DESC";
+                        orderBy = "ORDER BY dbo.NextBirthday(p.PeopleId) DESC";
                         break;
                 }
             }
@@ -154,8 +210,9 @@ namespace CmsWeb.Areas.Search.Models
         public override IEnumerable<dynamic> DefineViewList(IQueryable<Person> q)
         {
             var tagid = DbUtil.Db.PopulateTemporaryTag(q.Select(vv => vv.PeopleId)).Id;
+            sql = sql.Replace("@p1", tagid.ToString());
             var qf = new QueryFunctions(DbUtil.Db);
-            return qf.QuerySql($"{Sql}\n{OrderBy}", tagid);
+            return qf.QuerySql($"{sql}\n{orderBy}", tagid);
         }
 
         public string Results(PictureDirectoryController ctl)
@@ -163,7 +220,7 @@ namespace CmsWeb.Areas.Search.Models
             try
             {
                 RegisterHelpers(ctl);
-                var compiledTemplate = Handlebars.Compile(Template);
+                var compiledTemplate = Handlebars.Compile(template);
                 var s = compiledTemplate(this);
                 return s;
             }

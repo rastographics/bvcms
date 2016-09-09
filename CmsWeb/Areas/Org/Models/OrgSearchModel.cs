@@ -780,17 +780,17 @@ namespace CmsWeb.Areas.Search.Models
         private IDataReader ExecuteReader(string report, string oids, DateTime? meetingDate1, DateTime? meetingDate2)
         {
             var content = DbUtil.Db.ContentOfTypeSql(report);
-            if (content == null)
+            if (!content.HasValue())
                 throw new Exception("no content");
-            if (!SpecialReportViewModel.CanRunScript(content.Body))
+            if (!SpecialReportViewModel.CanRunScript(content))
                 throw new Exception("Not Authorized to run this script");
 
-            if (!content.Body.Contains("@OrgIds"))
+            if (!content.Contains("@OrgIds"))
                 throw new Exception("missing @OrgIds");
 
             var p = new DynamicParameters();
             p.Add("@OrgIds", oids);
-            if (content.Body.Contains("@MeetingDate1"))
+            if (content.Contains("@MeetingDate1"))
             {
                 p.Add("@MeetingDate1", meetingDate1);
                 p.Add("@MeetingDate2", meetingDate2);
@@ -800,7 +800,7 @@ namespace CmsWeb.Areas.Search.Models
                 : Util.ConnectionStringReadOnly;
             var cn = new SqlConnection(cs);
             cn.Open();
-            return cn.ExecuteReader(content.Body, p);
+            return cn.ExecuteReader(content, p);
         }
 
         public static OrgSearchModel DecodedJson(string parameter)

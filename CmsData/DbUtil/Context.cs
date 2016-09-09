@@ -1234,13 +1234,15 @@ namespace CmsData
                            select c).FirstOrDefault();
             return content;
         }
-        public Content ContentOfTypeSql(string name)
+        public string ContentOfTypeSql(string name)
         {
             var content = (from c in Contents
                            where c.Name == name
                            where c.TypeID == ContentTypeCode.TypeSqlScript
                            select c).FirstOrDefault();
-            return content;
+            if (content == null)
+                return "";
+            return content.Body;
         }
         public string ContentOfTypeSavedDraft(string name)
         {

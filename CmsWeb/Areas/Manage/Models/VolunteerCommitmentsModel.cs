@@ -272,40 +272,41 @@ namespace CmsWeb.Areas.Manage.Models
 					return;
 			}
 
-			if (target == "week")
+			if (target == "week" && time.HasValue)
 			{
 				var slots = (from s in FetchSlots()
 							 where s.Time.TimeOfDay == time.Value.TimeOfDay
+							 where s.Time.DayOfWeek == time.Value.DayOfWeek
 							 where s.Week == week || week == 0
 							 select s).ToList();
-				foreach (var PeopleId in volids)
+				foreach (var peopleId in volids)
 				{
 					if (i.source == "registered")
-						DropFromAll(PeopleId);
+						DropFromAll(peopleId);
 					foreach (var s in slots)
-						Attend.MarkRegistered(DbUtil.Db, OrgId, PeopleId, s.Time,
+						Attend.MarkRegistered(DbUtil.Db, OrgId, peopleId, s.Time,
 							AttendCommitmentCode.Attending, AvoidRegrets: true);
 				}
 			}
-			else if (target == "meeting")
+			else if (target == "meeting" && time.HasValue && i.mid.HasValue)
 			{
-				foreach (var PeopleId in volids)
+				foreach (var peopleId in volids)
 				{
 					if (i.source == "registered")
-						DropFromMeeting(i.mid.Value, PeopleId);
-					Attend.MarkRegistered(DbUtil.Db, OrgId, PeopleId, time.Value,
+						DropFromMeeting(i.mid.Value, peopleId);
+					Attend.MarkRegistered(DbUtil.Db, OrgId, peopleId, time.Value,
 						AttendCommitmentCode.Attending, AvoidRegrets: true);
 				}
 
 			}
-			else if (target == "clear")
+			else if (target == "clear" && i.mid.HasValue)
 			{
-				foreach (var PeopleId in volids)
+				foreach (var peopleId in volids)
 				{
 					if (i.source == "registered")
-						DropFromMeeting(i.mid.Value, PeopleId);
+						DropFromMeeting(i.mid.Value, peopleId);
 					else
-						DropFromAll(PeopleId);
+						DropFromAll(peopleId);
 				}
 			}
 		}

@@ -1,6 +1,7 @@
 ﻿using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Search.Models;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Controllers
 {
@@ -13,7 +14,8 @@ namespace CmsWeb.Areas.Search.Controllers
 #if DEBUG
             DbUtil.Db.ExecuteCommand(@"
 DELETE dbo.Content 
-WHERE (name = 'PictureDirectory' AND TypeID = 4)
+WHERE (name = 'PictureDirectorySql' AND TypeID = 4)
+OR (name = 'PictureDirectory' AND TypeID = 4)
 OR (name = 'PictureDirectoryTemplate' AND TypeID = 1)
 ");
 #endif
@@ -23,7 +25,8 @@ OR (name = 'PictureDirectoryTemplate' AND TypeID = 1)
         [HttpPost]
         public ActionResult Results(PictureDirectoryModel m)
         {
-            if (m.CanView || User.IsInRole("Admin"))
+            m.Initialize();
+            if (m.TemplateName.HasValue() && (m.CanView == true || User.IsInRole("Admin")))
                 return Content(m.Results(this));
             return Content("unauthorized");
         }

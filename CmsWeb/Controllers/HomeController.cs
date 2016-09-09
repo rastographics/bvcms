@@ -250,7 +250,7 @@ namespace CmsWeb.Controllers
             var p = new DynamicParameters();
             foreach (var kv in d)
                 p.Add("@" + kv.Key, kv.Value);
-            var script = RunScriptSql(DbUtil.Db, parameter, content.Body, p);
+            var script = RunScriptSql(DbUtil.Db, parameter, content, p);
 
             if (script.StartsWith("Not Authorized"))
                 return Message(script);
@@ -287,7 +287,7 @@ namespace CmsWeb.Controllers
             var p = new DynamicParameters();
             foreach (var kv in d)
                 p.Add("@" + kv.Key, kv.Value);
-            var script = RunScriptSql(DbUtil.Db, parameter, content.Body, p);
+            var script = RunScriptSql(DbUtil.Db, parameter, content, p);
             if (script.StartsWith("Not Authorized"))
                 return Message(script);
             return cn.ExecuteReader(script, p).ToExcel("RunScript.xlsx", fromSql: true);

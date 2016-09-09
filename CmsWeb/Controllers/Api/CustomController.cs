@@ -17,7 +17,7 @@ namespace CmsWeb.Controllers.Api
             var content = DbUtil.Db.ContentOfTypeSql(name);
             if (content == null)
                 throw new Exception("no content");
-            if (!CanRunScript(content.Body))
+            if (!CanRunScript(content))
                 throw new Exception("Not Authorized to run this script");
             var cs = User.IsInRole("Finance")
                 ? Util.ConnectionStringReadOnlyFinance
@@ -28,7 +28,7 @@ namespace CmsWeb.Controllers.Api
             var p = new DynamicParameters();
             foreach (var kv in d)
                 p.Add("@" + kv.Key, kv.Value);
-            return cn.Query(content.Body, p);
+            return cn.Query(content, p);
         }
         private bool CanRunScript(string script)
         {

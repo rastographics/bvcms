@@ -38,7 +38,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             using (var cn = new SqlConnection(cs))
             {
                 cn.Open();
-                using (var rd = cn.ExecuteReader(content.Body, p))
+                using (var rd = cn.ExecuteReader(content, p))
                     Results = GridResult.Table(rd, Name2);
             }
         }
@@ -52,20 +52,20 @@ namespace CmsWeb.Areas.Reports.Controllers
             using (var cn = new SqlConnection(cs))
             {
                 cn.Open();
-                return cn.ExecuteReader(content.Body, p).ToExcel($"{Report.Replace(" ", "")}.xlsx", fromSql: true);
+                return cn.ExecuteReader(content, p).ToExcel($"{Report.Replace(" ", "")}.xlsx", fromSql: true);
             }
         }
 
-        private Content GetParameters(out DynamicParameters p)
+        private string GetParameters(out DynamicParameters p)
         {
             var content = DbUtil.Db.ContentOfTypeSql(Report);
-            if (content == null)
+            if (!content.HasValue())
                 throw new Exception("no content");
-            if (!CanRunScript(content.Body))
+            if (!CanRunScript(content))
                 throw new Exception("Not Authorized to run this script");
 
-            var hasqtag = content.Body.Contains("@qtagid");
-            var hascurrentorg = content.Body.Contains("@CurrentOrgId");
+            var hasqtag = content.Contains("@qtagid");
+            var hascurrentorg = content.Contains("@CurrentOrgId");
             if (!hasqtag && !hascurrentorg)
                 throw new Exception("missing @qtagid or @CurrentOrgId");
 

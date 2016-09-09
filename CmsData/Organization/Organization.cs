@@ -458,9 +458,9 @@ namespace CmsData
                 ev.Data = value;
         }
 
-        public string GetExtra(CMSDataContext db, string field)
+        public static string GetExtra(CMSDataContext db, int id, string field)
         {
-            var oev = db.OrganizationExtras.SingleOrDefault(oe => oe.OrganizationId == OrganizationId && oe.Field == field);
+            var oev = db.OrganizationExtras.SingleOrDefault(oe => oe.OrganizationId == id && oe.Field == field);
             if (oev == null)
                 return "";
             if (oev.StrValue.HasValue())
@@ -472,6 +472,10 @@ namespace CmsData
             if (oev.IntValue.HasValue)
                 return oev.IntValue.ToString();
             return oev.BitValue.ToString();
+        }
+        public string GetExtra(CMSDataContext db, string field)
+        {
+            return GetExtra(db, OrganizationId, field);
         }
 
         public void AddEditExtraCode(string field, string value)
