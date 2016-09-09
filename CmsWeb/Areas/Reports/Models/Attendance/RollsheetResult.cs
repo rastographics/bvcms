@@ -355,6 +355,7 @@ namespace CmsWeb.Areas.Reports.Models
                     from sg in DbUtil.Db.MemberTags
                     where sg.OrgId == o.OrganizationId
                     where (NewMeetingInfo.GroupFilterPrefix ?? "") == "" || sg.Name.StartsWith(NewMeetingInfo.GroupFilterPrefix)
+                    orderby sg.Name
                     select new OrgInfo
                     {
                         OrgId = o.OrganizationId,
