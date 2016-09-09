@@ -533,6 +533,13 @@ namespace CmsWeb.Areas.Org.Controllers
             return Json(MeetingModel.AttendCommitments());
         }
 
+        [HttpGet]
+        public ActionResult AddAbsentsToMeeting(int id)
+        {
+            DbUtil.Db.ExecuteCommand("dbo.AddAbsentsToMeeting {0}", id);
+            return Redirect($"/Meeting/{id}");
+        }
+
         public class ScanTicketInfo
         {
             public enum Error

@@ -90,22 +90,21 @@
         }
     });
 
-    $('#a' +
-        'ddallguests').click(function (e) {
-            swal({
-                title: "Are you sure you want to join all guests to org?",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonClass: "btn-warning",
-                confirmButtonText: "Yes, continue!",
-                closeOnConfirm: true
-            },
-            function () {
-                $.post("/Meeting/JoinAllVisitors/" + $("#meetingid").val(), {}, function (ret) {
-                    swal(ret);
-                });
+    $('#addallguests').click(function (e) {
+        swal({
+            title: "Are you sure you want to join all guests to org?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-warning",
+            confirmButtonText: "Yes, continue!",
+            closeOnConfirm: true
+        },
+        function () {
+            $.post("/Meeting/JoinAllVisitors/" + $("#meetingid").val(), {}, function (ret) {
+                swal(ret);
             });
         });
+    });
 
     if ($("#showbuttons input[name=show]:checked").val() == "attends") {
         $(".atck:not(:checked)").parent().parent().hide();
