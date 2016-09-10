@@ -6,7 +6,6 @@ using CmsData;
 using CmsData.Codes;
 using CmsData.Registration;
 using CmsData.View;
-using CmsWeb.Areas.Org.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Models
@@ -27,22 +26,14 @@ namespace CmsWeb.Areas.Manage.Models
 			{
 				get
 				{
-					return CmsData.Codes.AttendCommitmentCode.Lookup(Commitment);
+					return AttendCommitmentCode.Lookup(Commitment);
 				}
 			}
 		}
-//		public IEnumerable<DateTime> times;
 		public string OrgName { get; set; }
 		public int OrgId { get; set; }
 		public bool IsLeader { get; set; }
 
-        //        public class VolunteerInfo
-        //        {
-        //            public string Name { get; set; }
-        //            public int commits { get; set; }
-        //            public int PeopleId { get; set; }
-        //            public int OrgId { get; set; }
-        //        }
 		public SelectList SmallGroups()
 		{
 			var q = from m in DbUtil.Db.MemberTags
@@ -71,9 +62,6 @@ namespace CmsWeb.Areas.Manage.Models
 		{
 			OrgName = (from o in DbUtil.Db.Organizations where o.OrganizationId == id select o.OrganizationName).Single();
 			OrgId = id;
-//			times = from ts in Regsettings.TimeSlots.list
-//					orderby ts.DayOfWeek, ts.Time
-//					select ts.Datetime(Sunday);
 		    TimeSlots = (from ts in Regsettings.TimeSlots.list
                         orderby ts.DayOfWeek, ts.Time
                         select ts).ToList();
@@ -83,8 +71,8 @@ namespace CmsWeb.Areas.Manage.Models
 		public class Slot
 		{
 			public DateTime Time { get; set; }
-			public long ticks { get { return Time.Ticks; } }
-			public DateTime Sunday { get; set; }
+			public long ticks => Time.Ticks;
+		    public DateTime Sunday { get; set; }
 			public int Week { get; set; }
 			public bool Disabled { get; set; }
 			public DateTime DayHour { get; set; }
@@ -114,13 +102,12 @@ namespace CmsWeb.Areas.Manage.Models
 					   where g.Any(gg => gg.Time > DateTime.Today)
 					   orderby g.Key.WeekOfMonth(), g.Key
 					   select g.OrderBy(gg => gg.Time).ToList();
-			else
-				return from slot in FetchSlots()
-                       where !exweeks.Contains(slot.Week)
-					   group slot by slot.Sunday into g
-					   where g.Any(gg => gg.Time > DateTime.Today)
-					   orderby g.Key
-					   select g.OrderBy(gg => gg.Time).ToList();
+			return from slot in FetchSlots()
+                   where !exweeks.Contains(slot.Week)
+				   group slot by slot.Sunday into g
+				   where g.Any(gg => gg.Time > DateTime.Today)
+				   orderby g.Key
+				   select g.OrderBy(gg => gg.Time).ToList();
 		}
 		public IEnumerable<Slot> FetchSlots()
 		{
@@ -133,30 +120,11 @@ namespace CmsWeb.Areas.Manage.Models
             var alist = (from a in DbUtil.Db.AttendCommitments(OrgId)
 						 orderby a.MeetingDate
                          select a).ToList();
-            //            var alist = (from a in DbUtil.Db.Attends
-            //                         where a.MeetingDate > Util.Now.Date
-            //                         where a.OrganizationId == OrgId
-            //                         where a.Commitment != null
-            //                         let other = (from oa in a.Person.Attends
-            //                                      where oa.OrganizationId != OrgId
-            //                                      where oa.MeetingDate == a.MeetingDate
-            //                                      where oa.Commitment == AttendCommitmentCode.Attending
-            //                                      select oa.AttendId).Count()
-            //                         orderby a.MeetingDate
-            //                         select new
-            //                         {
-            //                             a.MeetingId,
-            //                             a.MeetingDate,
-            //                             a.PeopleId,
-            //                             Name = a.Person.Name2,
-            //                             a.Commitment,
-            //                             other,
-            //                         }).ToList();
 
 			var list = new List<Slot>();
-			for (var sunday = Sunday; sunday <= EndDt; sunday = sunday.AddDays(7))
+			for (var sd = Sunday; sd <= EndDt; sd = sd.AddDays(7))
 			{
-				var dt = sunday;
+				var dt = sd;
 				{
 					var u = from ts in Regsettings.TimeSlots.list
 							orderby ts.Datetime()
@@ -166,7 +134,7 @@ namespace CmsWeb.Areas.Manage.Models
 									(from e in meeting.MeetingExtras
 								     where e.Field == "TotalVolunteersNeeded"
 									 select e.Data).SingleOrDefault().ToInt2() : null
-							let meetingid = meeting != null ? meeting.MeetingId : 0
+							let meetingid = meeting?.MeetingId ?? 0
 							select new Slot()
 									{
 										Time = time,
@@ -191,56 +159,50 @@ namespace CmsWeb.Areas.Manage.Models
 			}
 			return list;
 		}
-		private Organization _org;
+		private Organization org;
 		public Organization Org
 		{
 			get
 			{
-				return _org ??
-					(_org = DbUtil.Db.Organizations.Single(oo => oo.OrganizationId == OrgId));
+				return org ??
+					(org = DbUtil.Db.Organizations.Single(oo => oo.OrganizationId == OrgId));
 			}
 		}
-		private DateTime? _endDt;
+		private DateTime? endDt;
 		public DateTime EndDt
 		{
 			get
 			{
-				if (!_endDt.HasValue)
+				if (!endDt.HasValue)
 				{
 					var dt = Org.LastMeetingDate ?? DateTime.MinValue;
 					if (dt == DateTime.MinValue)
 						dt = DateTime.Today.AddMonths(7);
-					_endDt = dt;
+					endDt = dt;
 				}
-				return _endDt.Value;
+				return endDt.Value;
 			}
 		}
 
-		private DateTime? _sunday;
+		private DateTime? sunday;
 		public DateTime Sunday
 		{
 			get
 			{
-				if (!_sunday.HasValue)
+				if (!sunday.HasValue)
 				{
 					var dt = Org.FirstMeetingDate ?? DateTime.MinValue;
 					if (dt == DateTime.MinValue || dt < DateTime.Today)
 						dt = DateTime.Today;
-					_sunday = dt.AddDays(-(int)dt.DayOfWeek);
+					sunday = dt.AddDays(-(int)dt.DayOfWeek);
 				}
-				return _sunday.Value;
+				return sunday.Value;
 			}
 		}
-		private Settings _regsettings;
-		public Settings Regsettings
-		{
-			get
-			{
-				return _regsettings ??
-					(_regsettings = DbUtil.Db.CreateRegistrationSettings(OrgId));
-			}
-		}
-		public void ApplyDragDrop(
+		private Settings regsettings;
+		public Settings Regsettings => regsettings ?? (regsettings = DbUtil.Db.CreateRegistrationSettings(OrgId));
+
+	    public void ApplyDragDrop(
 			string target,
 			int? week,
 			DateTime? time,
@@ -272,11 +234,11 @@ namespace CmsWeb.Areas.Manage.Models
 					return;
 			}
 
-			if (target == "week" && time.HasValue)
+			if (target == "week")
 			{
 				var slots = (from s in FetchSlots()
-							 where s.Time.TimeOfDay == time.Value.TimeOfDay
-							 where s.Time.DayOfWeek == time.Value.DayOfWeek
+							 where time != null && s.Time.TimeOfDay == time.Value.TimeOfDay
+							 where time != null && s.Time.DayOfWeek == time.Value.DayOfWeek
 							 where s.Week == week || week == 0
 							 select s).ToList();
 				foreach (var peopleId in volids)
@@ -288,23 +250,28 @@ namespace CmsWeb.Areas.Manage.Models
 							AttendCommitmentCode.Attending, AvoidRegrets: true);
 				}
 			}
-			else if (target == "meeting" && time.HasValue && i.mid.HasValue)
+			else if (target == "meeting")
 			{
 				foreach (var peopleId in volids)
 				{
-					if (i.source == "registered")
-						DropFromMeeting(i.mid.Value, peopleId);
-					Attend.MarkRegistered(DbUtil.Db, OrgId, peopleId, time.Value,
-						AttendCommitmentCode.Attending, AvoidRegrets: true);
+				    if (i.source == "registered")
+				        if (i.mid != null)
+				            DropFromMeeting(i.mid.Value, peopleId);
+				    if (time != null)
+				        Attend.MarkRegistered(DbUtil.Db, OrgId, peopleId, time.Value,
+				            AttendCommitmentCode.Attending, AvoidRegrets: true);
 				}
 
 			}
-			else if (target == "clear" && i.mid.HasValue)
+			else if (target == "clear")
 			{
 				foreach (var peopleId in volids)
 				{
 					if (i.source == "registered")
-						DropFromMeeting(i.mid.Value, peopleId);
+					{
+					    if (i.mid != null)
+					        DropFromMeeting(i.mid.Value, peopleId);
+					}
 					else
 						DropFromAll(peopleId);
 				}
