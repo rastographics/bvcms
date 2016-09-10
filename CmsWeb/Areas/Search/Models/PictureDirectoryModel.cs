@@ -64,7 +64,9 @@ namespace CmsWeb.Areas.Search.Models
         private void GetConfiguration()
         {
             Selector = DbUtil.Db.Setting("PictureDirectorySelector", "");
-            if (Regex.IsMatch(Selector, @"\AF\d\d\z"))
+            if (OrgId.HasValue)
+                Selector = "FromUrl";
+            else if (Regex.IsMatch(Selector, @"\AF\d\d\z"))
                 StatusFlag = Selector;
             else if (Regex.IsMatch(Selector, @"\A\d+\z"))
                 OrgId = Selector.ToInt();
@@ -77,7 +79,6 @@ namespace CmsWeb.Areas.Search.Models
                                  where om.PeopleId == Util.UserPeopleId
                                  where om.OrganizationId == OrgId
                                  where om.Organization.PublishDirectory > 0
-                                 where !om.OrgMemberExtras.Any(vv => vv.BitValue == true && vv.Field == "DoNotPublish")
                                  where om.OrgMemMemTags.All(vv => vv.MemberTag.Name != "DoNotPublish")
                                  select om).Any();
                     CanView = inOrg || HttpContext.Current.User.IsInRole("Admin");
@@ -149,7 +150,9 @@ namespace CmsWeb.Areas.Search.Models
             else if (StatusFlag.HasValue())
                 qmembers = DbUtil.Db.PeopleQuery2($"StatusFlag = '{StatusFlag}'");
             else if (OrgId.HasValue)
-                qmembers = DbUtil.Db.PeopleQuery2($"IsMemberOf( Org={OrgId} ) = 1");
+                qmembers = DbUtil.Db.PeopleQuery2($@"
+                    IsMemberOf( Org={OrgId} ) = 1 
+                    AND SmallGroup( Org={OrgId} ) <> 'DoNotPublish'");
             else
                 qmembers = DbUtil.Db.PeopleQuery2("PeopleId = 0");
 
