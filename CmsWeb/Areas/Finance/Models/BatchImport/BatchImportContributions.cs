@@ -158,6 +158,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             if (text.Substring(0, Math.Min(text.Length, 20)).Contains("10444063,"))
                 return new AbundantLifeImporter();
 
+            if (subtext.Contains("Type,Date,Num,Name,Memo,Class,Split,Amount"))
+                return new ChristLutheranVailImporter();
+
             switch (DbUtil.Db.Setting("BankDepositFormat", "none").ToLower())
             {
                 case "fcchudson":
