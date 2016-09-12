@@ -14,55 +14,78 @@ namespace CmsWeb.CheckInAPI
 
         public void writeToXML(XmlWriter writer, string securityCode)
         {
-            Person person = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == peopleID);
-            Organization org = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == orgID);
-            OrganizationMember orgMember = DbUtil.Db.OrganizationMembers.SingleOrDefault(om => om.PeopleId == person.PeopleId && om.OrganizationId == org.OrganizationId);
-
             int labelCount = 1;
             bool requiresecuritylabel = false;
+            bool member = false;
+
             DateTime dob;
 
-            if (orgMember != null && (orgMember.MemberTypeId == 220 || orgMember.MemberTypeId == 230))
-            {
-                labelCount = org.NumCheckInLabels ?? 1;
-            }
-            else
-            {
-                labelCount = org.NumWorkerCheckInLabels ?? 0;
-            }
+            Person person = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == peopleID);
+            Organization org = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == orgID);
 
-            string orgName = org.OrganizationName;
-            string location = org.Location;
+            OrganizationMember orgMember = DbUtil.Db.OrganizationMembers.SingleOrDefault(om => om.PeopleId == person.PeopleId && om.OrganizationId == org.OrganizationId);
 
-            if ((orgMember != null && (orgMember.MemberTypeId == 220 || orgMember.MemberTypeId == 230)) && !org.NoSecurityLabel.Value)
+            if (orgMember != null)
             {
-                if (person.Age != null)
+                // Members
+                member = orgMember.MemberTypeId != 310 && orgMember.MemberTypeId != 311;
+
+                if ((orgMember.MemberTypeId == 220 || orgMember.MemberTypeId == 230) && !org.NoSecurityLabel.Value)
                 {
-                    if (person.Age.Value < 18)
+                    if (person.Age != null)
                     {
-                        requiresecuritylabel = true;
+                        if (person.Age.Value < 18)
+                        {
+                            requiresecuritylabel = true;
+                        }
+                        else
+                        {
+                            requiresecuritylabel = false;
+                        }
                     }
                     else
                     {
-                        requiresecuritylabel = false;
+                        if (person.FamilyPosition.Id == 30)
+                        {
+                            requiresecuritylabel = true;
+                        }
+                        else
+                        {
+                            requiresecuritylabel = false;
+                        }
+                    }
+                }
+
+                if (orgMember.MemberTypeId == 220 || orgMember.MemberTypeId == 230)
+                {
+                    labelCount = org.NumCheckInLabels ?? 1;
+                }
+                else
+                {
+                    labelCount = org.NumWorkerCheckInLabels ?? 0;
+                }
+            }
+            else
+            {
+                Attend attend = DbUtil.Db.Attends.SingleOrDefault(om => om.PeopleId == person.PeopleId && om.OrganizationId == org.OrganizationId && om.MeetingDate == hour);
+
+                if (attend != null)
+                {
+                    labelCount = org.NumCheckInLabels ?? 1;
+
+                    if (!org.NoSecurityLabel.Value)
+                    {
+                        requiresecuritylabel = true;
                     }
                 }
                 else
                 {
-                    if (person.FamilyPosition.Id == 30)
-                    {
-                        requiresecuritylabel = true;
-                    }
-                    else
-                    {
-                        requiresecuritylabel = false;
-                    }
+                    return;
                 }
             }
-            else
-            {
-                requiresecuritylabel = false;
-            }
+
+            string orgName = org.OrganizationName;
+            string location = org.Location;
 
             if (person.BirthDate == null)
             {
@@ -85,7 +108,6 @@ namespace CmsWeb.CheckInAPI
 
             bool transport = person.OkTransport ?? false;
             bool custody = person.CustodyIssue ?? false;
-            bool member = orgMember != null && orgMember.MemberTypeId != 230 && orgMember.MemberTypeId != 310 && orgMember.MemberTypeId != 311;
 
             string allergies = person.GetRecReg().MedicalDescription;
 
