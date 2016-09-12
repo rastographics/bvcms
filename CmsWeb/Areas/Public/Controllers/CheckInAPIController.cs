@@ -591,6 +591,12 @@ namespace CmsWeb.Areas.Public.Controllers
 
             if (meeting == null)
             {
+                var acr = (from s in DbUtil.Db.OrgSchedules
+                           where s.OrganizationId == cia.orgID
+                           where s.SchedTime.Value.TimeOfDay == cia.datetime.TimeOfDay
+                           where s.SchedDay == (int)cia.datetime.DayOfWeek
+                           select s.AttendCreditId).SingleOrDefault();
+
                 meeting = new Meeting
                 {
                     OrganizationId = cia.orgID,
@@ -598,21 +604,14 @@ namespace CmsWeb.Areas.Public.Controllers
                     CreatedDate = Util.Now,
                     CreatedBy = Util.UserPeopleId ?? 0,
                     GroupMeetingFlag = false,
+                    AttendCreditId = acr
                 };
 
                 DbUtil.Db.Meetings.InsertOnSubmit(meeting);
                 DbUtil.Db.SubmitChanges();
-
-                var acr = (from s in DbUtil.Db.OrgSchedules
-                           where s.OrganizationId == cia.orgID
-                           where s.SchedTime.Value.TimeOfDay == cia.datetime.TimeOfDay
-                           where s.SchedDay == (int)cia.datetime.DayOfWeek
-                           select s.AttendCreditId).SingleOrDefault();
-
-                meeting.AttendCreditId = acr;
             }
 
-            Attend.RecordAttendance(cia.peopleID, meeting.MeetingId, cia.present);
+            Attend.RecordAttend(DbUtil.Db, cia.peopleID, cia.orgID, cia.present, cia.datetime);
 
             DbUtil.Db.UpdateMeetingCounters(cia.orgID);
             DbUtil.LogActivity($"Check-In Record Attend Org ID:{meeting.OrganizationId} People ID:{cia.peopleID} User ID:{Util.UserPeopleId} Attended:{cia.present}");
