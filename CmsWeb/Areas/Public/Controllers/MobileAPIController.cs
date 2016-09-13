@@ -438,7 +438,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
                     MobilePerson mp;
 
-                        foreach (var item in m.ApplySearch(mps.guest).OrderBy(p => p.Name2).Take(100))
+                    foreach (var item in m.ApplySearch(mps.guest).OrderBy(p => p.Name2).Take(100))
                     {
                         mp = new MobilePerson().populate(item);
                         mpl.Add(mp.id, mp);
@@ -452,7 +452,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                 {
                     List<MobilePerson> mp = new List<MobilePerson>();
 
-                        foreach (var item in m.ApplySearch(mps.guest).OrderBy(p => p.Name2).Take(100))
+                    foreach (var item in m.ApplySearch(mps.guest).OrderBy(p => p.Name2).Take(100))
                     {
                         mp.Add(new MobilePerson().populate(item));
                     }
@@ -1060,8 +1060,8 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             var meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.MeetingId == meetingId);
             var attendanceBySubGroup = meeting.Organization.AttendanceBySubGroups ?? false;
-            var people = attendanceBySubGroup 
-                ? RollsheetModel.RollListFilteredBySubgroup(meetingId, mprl.id, mprl.datetime, fromMobile: true) 
+            var people = attendanceBySubGroup
+                ? RollsheetModel.RollListFilteredBySubgroup(meetingId, mprl.id, mprl.datetime, fromMobile: true)
                 : RollsheetModel.RollList(meetingId, mprl.id, mprl.datetime, fromMobile: true);
 
             MobileRollList mrl = new MobileRollList();
@@ -1121,28 +1121,13 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             if (meeting == null)
             {
-                meeting = new Meeting
-                {
-                    OrganizationId = mpa.orgID,
-                    MeetingDate = mpa.datetime,
-                    CreatedDate = Util.Now,
-                    CreatedBy = Util.UserPeopleId ?? 0,
-                    GroupMeetingFlag = false,
-                };
-                DbUtil.Db.Meetings.InsertOnSubmit(meeting);
-                DbUtil.Db.SubmitChanges();
-                var acr = (from s in DbUtil.Db.OrgSchedules
-                           where s.OrganizationId == mpa.orgID
-                           where s.SchedTime.Value.TimeOfDay == mpa.datetime.TimeOfDay
-                           where s.SchedDay == (int)mpa.datetime.DayOfWeek
-                           select s.AttendCreditId).SingleOrDefault();
-                meeting.AttendCreditId = acr;
+                DbUtil.Db.CreateMeeting(mpa.orgID, mpa.datetime);
             }
 
-            Attend.RecordAttendance(mpa.peopleID, meeting.MeetingId, mpa.present);
+            Attend.RecordAttend(DbUtil.Db, mpa.peopleID, mpa.orgID, mpa.present, mpa.datetime);
 
             DbUtil.Db.UpdateMeetingCounters(mpa.orgID);
-            DbUtil.LogActivity($"Mobile RecAtt o:{meeting.OrganizationId} p:{mpa.peopleID} u:{Util.UserPeopleId} a:{mpa.present}");
+            DbUtil.LogActivity($"Mobile RecAtt o:{mpa.orgID} p:{mpa.peopleID} u:{Util.UserPeopleId} a:{mpa.present}");
 
             BaseMessage br = new BaseMessage();
             br.setNoError();
