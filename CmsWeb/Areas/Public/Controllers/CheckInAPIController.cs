@@ -591,30 +591,15 @@ namespace CmsWeb.Areas.Public.Controllers
 
             if (meeting == null)
             {
-                var acr = (from s in DbUtil.Db.OrgSchedules
-                           where s.OrganizationId == cia.orgID
-                           where s.SchedTime.Value.TimeOfDay == cia.datetime.TimeOfDay
-                           where s.SchedDay == (int)cia.datetime.DayOfWeek
-                           select s.AttendCreditId).SingleOrDefault();
+                var meetingID = DbUtil.Db.CreateMeeting(cia.orgID, cia.datetime);
 
-                meeting = new Meeting
-                {
-                    OrganizationId = cia.orgID,
-                    MeetingDate = cia.datetime,
-                    CreatedDate = Util.Now,
-                    CreatedBy = Util.UserPeopleId ?? 0,
-                    GroupMeetingFlag = false,
-                    AttendCreditId = acr
-                };
-
-                DbUtil.Db.Meetings.InsertOnSubmit(meeting);
-                DbUtil.Db.SubmitChanges();
+                meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.MeetingId == meetingID);
             }
 
             Attend.RecordAttend(DbUtil.Db, cia.peopleID, cia.orgID, cia.present, cia.datetime);
 
             DbUtil.Db.UpdateMeetingCounters(cia.orgID);
-            DbUtil.LogActivity($"Check-In Record Attend Org ID:{meeting.OrganizationId} People ID:{cia.peopleID} User ID:{Util.UserPeopleId} Attended:{cia.present}");
+            DbUtil.LogActivity($"Check-In Record Attend Org ID:{cia.orgID} People ID:{cia.peopleID} User ID:{Util.UserPeopleId} Attended:{cia.present}");
 
             // Check Entry Point and replace if Check-In
             Person person = DbUtil.Db.People.Where(p => p.PeopleId == cia.peopleID).FirstOrDefault();
