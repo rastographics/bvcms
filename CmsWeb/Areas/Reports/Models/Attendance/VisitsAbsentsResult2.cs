@@ -115,8 +115,8 @@ namespace CmsWeb.Areas.Reports.Models
                                       .Where(aa => aa.PeopleId == a.PeopleId && aa.AttendanceFlag)
                                       .Where(aa => aa.MeetingId != mtgid)
                                       .Max(aa => aa.MeetingDate)
-                    let om = a.Meeting.Organization.OrganizationMembers.SingleOrDefault(aa => aa.PeopleId == a.PeopleId) 
-                    let subgroup = om.OrgMemMemTags.FirstOrDefault(omm => omm.MemberTag.Name.StartsWith(prefix)).MemberTag.Name
+                    let om = a.Meeting.Organization.OrganizationMembers.SingleOrDefault(aa => aa.PeopleId == a.PeopleId)
+                    let subgroup = prefix.Length > 0 ? om.OrgMemMemTags.FirstOrDefault(omm => omm.MemberTag.Name.StartsWith(prefix)).MemberTag.Name : null 
                     orderby subgroup, a.EffAttendFlag descending, a.Person.Name2
                     select new AttendInfo
                     {
