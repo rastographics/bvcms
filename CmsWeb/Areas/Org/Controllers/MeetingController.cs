@@ -53,12 +53,13 @@ namespace CmsWeb.Areas.Org.Controllers
             return Content($"<h3 style='color:red'>{error}</h3>\n<a href='{"javascript: history.go(-1)"}'>{"Go Back"}</a>");
         }
 
-        public ActionResult iPad(int? id)
+        public ActionResult iPad(int? id, bool? commitsOnly)
         {
             if (!id.HasValue)
                 return RedirectShowError("no id");
             var m = new MeetingModel(id.Value);
             m.showall = true;
+            m.CommitsOnly = commitsOnly == true;
             if (m.meeting == null)
                 return RedirectShowError("no meeting");
 

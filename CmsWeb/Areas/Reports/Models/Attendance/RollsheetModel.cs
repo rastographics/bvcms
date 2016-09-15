@@ -270,7 +270,7 @@ namespace CmsWeb.Areas.Reports.Models
         }
 
         public static List<AttendInfo> RollList(int? meetingId, int orgId, DateTime meetingDate,
-            bool sortByName = false, bool currentMembers = false, bool fromMobile = false)
+            bool sortByName = false, bool currentMembers = false, bool fromMobile = false, bool registeredOnly = false)
         {
             var q = DbUtil.Db.RollList(meetingId, meetingDate, orgId, currentMembers, fromMobile);
 
@@ -281,6 +281,10 @@ namespace CmsWeb.Areas.Reports.Models
             else
                 q = from p in q
                     orderby p.Section, p.Last, p.FamilyId, p.First
+                    select p;
+            if (registeredOnly)
+                q = from p in q
+                    where AttendCommitmentCode.committed.Contains(p.CommitmentId ?? 0)
                     select p;
 
             var q2 = from p in q
@@ -305,7 +309,7 @@ namespace CmsWeb.Areas.Reports.Models
         }
 
         public static List<AttendInfo> RollListHighlight(int? meetingId, int orgId, DateTime meetingDate,
-            bool sortByName = false, bool currentMembers = false, string highlight = null)
+            bool sortByName = false, bool currentMembers = false, string highlight = null, bool registeredOnly = false)
         {
             var q = from p in DbUtil.Db.RollListHighlight(meetingId, meetingDate, orgId, currentMembers, highlight)
                     select p;
@@ -317,6 +321,11 @@ namespace CmsWeb.Areas.Reports.Models
             else
                 q = from p in q
                     orderby p.Section, p.Last, p.FamilyId, p.First
+                    select p;
+
+            if (registeredOnly)
+                q = from p in q
+                    where AttendCommitmentCode.committed.Contains(p.CommitmentId ?? 0)
                     select p;
 
             var q2 = from p in q

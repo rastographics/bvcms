@@ -19,6 +19,7 @@ namespace CmsWeb.Areas.Org.Models
         public bool showregistered { get; set; }
         public bool sortbyname { get; set; }
         public bool showlarge { get; set; }
+        public bool CommitsOnly { get; set; }
 
         public MeetingModel(int id)
         {
@@ -45,8 +46,8 @@ namespace CmsWeb.Areas.Org.Models
             if (!meeting.MeetingDate.HasValue)
                 throw new Exception("Meeting should have a date");
             var rm = highlight == null 
-                ? RollsheetModel.RollList(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted, currmembers)
-                : RollsheetModel.RollListHighlight(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted, currmembers, highlight);
+                ? RollsheetModel.RollList(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted, currmembers, CommitsOnly)
+                : RollsheetModel.RollListHighlight(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted, currmembers, highlight, CommitsOnly);
             return rm;
         }
         public IEnumerable<RollsheetModel.AttendInfo> VisitAttends(bool sorted = false)
