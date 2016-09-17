@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CmsData;
@@ -35,27 +36,33 @@ namespace CmsWeb.Areas.Main.Models
                     select i).SingleOrDefault();
         }
 
-        public IQueryable<ContentModel.SavedDraft> FetchDrafts()
+        private List<ContentModel.SavedDraft> drafts;
+
+        public List<ContentModel.SavedDraft> FetchDrafts()
         {
             var currentRoleIds = DbUtil.Db.CurrentRoleIds();
-
-            return from c in DbUtil.Db.Contents
-                   where c.TypeID == ContentTypeCode.TypeSavedDraft
-                   from u in DbUtil.Db.Users.Where(u => u.UserId == c.OwnerID).DefaultIfEmpty()
-                   from p in DbUtil.Db.People.Where(p => p.PeopleId == u.PeopleId).DefaultIfEmpty()
-                   from r in DbUtil.Db.Roles.Where(r => r.RoleId == c.RoleID).DefaultIfEmpty()
-                   where c.RoleID == 0 || c.OwnerID == Util.UserId || currentRoleIds.Contains(c.RoleID)
-                   orderby (c.OwnerID == Util.UserId ? 1 : 0) descending, c.Name
-                   select new ContentModel.SavedDraft()
-                   {
-                       created = c.DateCreated,
-                       id = c.Id,
-                       name = c.Name,
-                       owner = p.Name,
-                       ownerID = c.OwnerID,
-                       role = r.RoleName,
-                       roleID = c.RoleID
-                   };
+            return drafts ?? (drafts =
+                   (from c in DbUtil.Db.Contents
+                    where c.TypeID == ContentTypeCode.TypeSavedDraft
+                    let u = DbUtil.Db.Users.First(vv => vv.UserId == c.OwnerID)
+                    let r = DbUtil.Db.Roles.FirstOrDefault(vv => vv.RoleId == c.RoleID)
+                    let isshared = (from tt in DbUtil.Db.Tags
+                                    where tt.Name == "SharedDrafts"
+                                    where tt.PersonOwner.Users.Any(uu => uu.UserId == c.OwnerID)
+                                    select tt.PersonTags.Any(vv => vv.PeopleId == Util.UserPeopleId))
+                    where c.RoleID == 0 || c.OwnerID == Util.UserId || currentRoleIds.Contains(c.RoleID)
+                    orderby (c.OwnerID == Util.UserId ? 1 : 0) descending, c.Name
+                    select new ContentModel.SavedDraft()
+                    {
+                        created = c.DateCreated,
+                        id = c.Id,
+                        name = c.Name,
+                        owner = u.Person.Name,
+                        ownerID = c.OwnerID,
+                        role = r.RoleName,
+                        roleID = c.RoleID
+                    }).ToList());
         }
+
     }
 }

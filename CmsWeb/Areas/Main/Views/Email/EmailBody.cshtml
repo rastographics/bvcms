@@ -5,107 +5,114 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, maximum-scale=1.0">
-    <title></title>
-    @Fingerprint.Css("/Content/touchpoint/css/editor.css")
-    <style>
-        #tempateBody {
-            font-family: Arial,Helvetica;
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, maximum-scale=1.0">
+  <title></title>
+  @Fingerprint.Css("/Content/touchpoint/css/editor.css")
+  <style>
+    #tempateBody { font-family: Arial, Helvetica; }
+  </style>
 </head>
-    <body>
-        <div id="tempateBody">
-            @if (c.Body == "<div bvedit=\"\" style=\"max-width:600px;\">Click here to edit content</div>\r\n")
-            {
-                <font face="Arial,Helvetica">@Html.Raw(c.Body)</font>
-            }
-            else
-            {
-                @Html.Raw(c.Body)
-            }
-        </div>
-        @ViewExtensions2.jQuery()
-        <script type="text/javascript">
-            $(function () {              
-                $.hClick = function (e) {
-                    $.removeButtons();
-                    window.parent.displayEditor(this);
-                };
+<body>
+<div id="tempateBody">
+  @if (c.Body == "<div bvedit=\"\" style=\"max-width:600px;\">Click here to edit content</div>\r\n")
+  {
+    <font face="Arial,Helvetica">@Html.Raw(c.Body)</font>
+  }
+  else
+  {
+    @Html.Raw(c.Body)
+  }
+</div>
+@ViewExtensions2.jQuery()
+<script type="text/javascript">
+  $(function() {
+    $.hClick = function(e) {
+      $.removeButtons();
+      window.parent.displayEditor(this);
+    };
 
-              $("a").bind('click', function() {
-                return false;
-              });
-                $('div[bvedit],div.bvedit').bind('click', $.hClick).addClass("ti");
-                $('td[bvrepeat]').mouseenter($.hHoverIn).mouseleave($.hHoverOut);
+    $("a")
+      .bind('click',
+        function() {
+          return false;
+        });
+    $('div[bvedit], div.bvedit').bind('click', $.hClick).addClass("ti");
+    $('td[bvrepeat]').mouseenter($.hHoverIn).mouseleave($.hHoverOut);
 
-                $.hHoverIn = function (ev) {
-                    currentHover = this;
-                    $(this).css("border", "solid 1px #ff0000");
-                    $(this).append("<div id='controlButtons' class='tiAdd'><input id='addButton' type='button' value='Copy Section' /></div>");
-                    $("#controlButtons").css("top", $(this).offset().top + 5).css("left", $(this).offset().left + 5);
-                    $("#addButton").bind("click", $.hClickAdd);
-                    ev.stopPropagation();
-                };
+    $.hHoverIn = function(ev) {
+      currentHover = this;
+      $(this).css("border", "solid 1px #ff0000");
+      $(this)
+        .append("<div id='controlButtons' class='tiAdd'><input id='addButton' type='button' value='Copy Section' /></div>");
+      $("#controlButtons").css("top", $(this).offset().top + 5).css("left", $(this).offset().left + 5);
+      $("#addButton").bind("click", $.hClickAdd);
+      ev.stopPropagation();
+    };
 
-                $.hHoverOut = function (ev) {
-                    currentHover = null;
-                    $(this).css("border", "");
-                    $.removeButtons();
-                    ev.stopPropagation();
-                };
+    $.hHoverOut = function(ev) {
+      currentHover = null;
+      $(this).css("border", "");
+      $.removeButtons();
+      ev.stopPropagation();
+    };
 
-                $.removeButtons = function () {
-                    $("#controlButtons").remove();
-                };
+    $.removeButtons = function() {
+      $("#controlButtons").remove();
+    };
 
-                $.hClickAdd = function (e) {
-                    $.removeButtons();
-                    parentTR = $(currentHover).parent();
-                    var dup = $(currentHover).clone();
-                    $(parentTR).after($(dup));
-                    dup.wrap("<tr></tr>");
-                    dup.attr("bvrepeatadd", "");
-                    dup.removeAttr("bvrepeat");
-                    dup.mouseenter($.hAddHoverIn).mouseleave($.hHoverOut);
-                    $('div[bvedit],div.bvedit').bind('click', $.hClick).addClass("ti");
-                };
+    $.hClickAdd = function(e) {
+      $.removeButtons();
+      parentTR = $(currentHover).parent();
+      var dup = $(currentHover).clone();
+      $(parentTR).after($(dup));
+      dup.wrap("<tr></tr>");
+      dup.attr("bvrepeatadd", "");
+      dup.removeAttr("bvrepeat");
+      dup.mouseenter($.hAddHoverIn).mouseleave($.hHoverOut);
+      $('div[bvedit], div.bvedit').bind('click', $.hClick).addClass("ti");
+    };
 
-                $.hAddHoverIn = function (ev) {
-                    currentHover = this;
-                    $(this).css("border", "solid 1px #ff0000");
-                    $(this).append("<div id='controlButtons' class='tiAdd'><input id='removeButton' type='button' value='Remove' /></div>");
-                    $("#controlButtons").css("top", $(this).offset().top + 5).css("left", $(this).offset().left + 5);
-                    $("#removeButton").bind('click', $.removeSection);
-                };
+    $.hAddHoverIn = function(ev) {
+      currentHover = this;
+      $(this).css("border", "solid 1px #ff0000");
+      $(this)
+        .append("<div id='controlButtons' class='tiAdd'><input id='removeButton' type='button' value='Remove' /></div>");
+      $("#controlButtons").css("top", $(this).offset().top + 5).css("left", $(this).offset().left + 5);
+      $("#removeButton").bind('click', $.removeSection);
+    };
 
-                $.removeSection = function (ev) {
-                    $(currentHover).parent().remove();
-                    ev.stopPropagation();
-                };
+    $.removeSection = function(ev) {
+      $(currentHover).parent().remove();
+      ev.stopPropagation();
+    };
 
-                $.clearTemplateClass = function () {
-                    $.removeButtons();
-                    $("div[bvedit],div.bvedit").removeClass("ti");
-                    $("div[bveditadd],div.bveditadd").removeClass("ti");
-                };
+    $.clearTemplateClass = function() {
+      $.removeButtons();
+      $("div[bvedit], div.bvedit").removeClass("ti");
+      $("div[bveditadd], div.bveditadd").removeClass("ti");
+    };
 
-                $.addTemplateClass = function () {
-                    $("div[bveditadd],div.bveditadd").addClass("ti");
-                    $("div[bvedit],div.bvedit").addClass("ti");
-                };
+    $.addTemplateClass = function() {
+      $("div[bveditadd], div.bveditadd").addClass("ti");
+      $("div[bvedit], div.bvedit").addClass("ti");
+    };
 
-                $.addRowAfter = function (ev) {
-                    $(this).parent().parent().after("<tr bvrepeatadd=''>" + $(this).html() + "</tr>");
-                    $("div[bvrepeatadd]").hover($.hAddHoverIn, $.hHoverOut);
-                    ev.stopPropagation();
-                };
-                window.parent.$.clearFunction = $.clearTemplateClass;
-                window.parent.$.addFunction = $.addTemplateClass;
-
-            });
-        </script>
-    </body>
+    $.addRowAfter = function(ev) {
+      $(this).parent().parent().after("<tr bvrepeatadd=''>" + $(this).html() + "</tr>");
+      $("div[bvrepeatadd]").hover($.hAddHoverIn, $.hHoverOut);
+      ev.stopPropagation();
+    };
+    window.parent.$.clearFunction = $.clearTemplateClass;
+    window.parent.$.addFunction = $.addTemplateClass;
+    if ($('#recover', window.parent.document).val()) {
+      var eb = localStorage.email;
+      $('#tempateBody').html(eb).ready(function() {
+        $('div[bvedit], div.bvedit').bind('click', $.hClick).addClass("ti");
+      });
+    }
+  });
+</script>
+</body>
 </html>

@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.Main.Controllers
     {
         [ValidateInput(false)]
         [Route("~/Email/{id:guid}")]
-        public ActionResult Index(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml, bool? ccparents, bool? nodups, int? orgid, int? personid)
+        public ActionResult Index(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml, bool? ccparents, bool? nodups, int? orgid, int? personid, bool? recover)
         {
             if (Util.SessionTimedOut()) return Redirect("/Errors/SessionTimeout.htm");
             if (!body.HasValue())
@@ -48,6 +48,9 @@ namespace CmsWeb.Areas.Main.Controllers
 
                 ViewBag.templateID = templateID;
                 m.OrgId = orgid;
+                m.guid = id;
+                if (recover == true)
+                    m.recovery = true;
                 return View("Compose", m);
             }
 

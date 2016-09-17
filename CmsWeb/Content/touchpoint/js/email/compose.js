@@ -58,7 +58,7 @@
                 extraPlugins: 'specialLink'
             });
         }
-        var html = $(currentDiv).html();
+        var html = $(currentDiv).html();0
         if (html === "Click here to edit content") {
             if (xsDevice || smDevice)
                 $('#htmleditor').val("");
@@ -100,6 +100,8 @@
             CKEDITOR.instances["htmleditor"].setData("");
         }
         $(currentDiv).html(h);
+        var eb = $('#email-body').contents().find('#tempateBody').html();
+        localStorage.email = eb;
         $('#editor-modal').modal('hide');
     });
 

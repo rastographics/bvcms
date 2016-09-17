@@ -7,26 +7,9 @@
     ViewBag.PageHeader = "Select Template";
     Layout = ViewExtensions2.TouchPointLayout();
     var url = "/Email/" + Model.QueryId;
-
-    var sdMine = new List<ContentModel.SavedDraft>();
-    var sdRole = new List<ContentModel.SavedDraft>();
-    var sdShared = new List<ContentModel.SavedDraft>();
-
-    foreach (var t in Model.FetchDrafts())
-    {
-        if (t.ownerID == Util.UserId)
-        {
-            sdMine.Add(t);
-        }
-        else if (Tag.IsInTag("SHaredDrafts", t.ownerID, Util.UserPeopleId ?? 0))
-        {
-            sdShared.Add(t);
-        }
-        else if (t.roleID != 0)
-        {
-            sdRole.Add(t);
-        }
-    }
+    var sdMine = Model.FetchDrafts().Where(vv => vv.Owner);
+    var sdShared = Model.FetchDrafts().Where(vv => vv.Shared);
+    var sdRole = Model.FetchDrafts().Where(vv => vv.Other);
 }
 @section head{
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")

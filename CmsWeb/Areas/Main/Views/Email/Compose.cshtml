@@ -49,16 +49,22 @@
   <div class="col-md-10 col-lg-8">
     @if (!Model.OrgId.HasValue)
     {
-        <div class="alert alert-info alert-dismissible">
-          <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-          <strong>Please Note:</strong>
-          Your recipient list has been saved in a tag, so you can run queries in other tabs.
-          But you should not compose two emails simultaneously as one will overwrite the other.
-        </div>
+      <div class="alert alert-info alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <strong>Please Note:</strong>
+        Your recipient list has been saved in a tag, so you can run queries in other tabs.
+        But you should not compose two emails simultaneously as one will overwrite the other.
+      </div>
     }
     <div class="box box-responsive">
       <div class="box-content">
         <form class="form-horizontal" id="SendEmail" method="post">
+          @if (Model.recovery == true)
+          {
+            @Html.Hidden("recover", true)
+          }
+          @Html.Hidden("id", Model.guid)
+          @Html.Hidden("TemplateID")
           @Html.Hidden("TagId")
           @Html.Hidden("Host")
           @Html.Hidden("CmsHost")
@@ -68,13 +74,13 @@
           @Html.Hidden("roleid", c.RoleID)
           @Html.Hidden("orgid", Model.OrgId)
           @Html.Hidden("noDuplicates", Model.noDuplicates)
-          <input type="hidden" name="saveid" value="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : c.Id )" />
-          <input type="hidden" id="body" name="body" />
-          <input type="hidden" id="name" name="name" value="@c.Name" />
+          <input type="hidden" name="saveid" value="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : c.Id)"/>
+          <input type="hidden" id="body" name="body"/>
+          <input type="hidden" id="name" name="name" value="@c.Name"/>
           <div class="form-group">
             <label for="FromAddress" class="col-sm-2 control-label">From:</label>
             <div class="col-sm-10">
-              @Html.DropDownList("FromAddress", Model.EmailFroms(), new { @class = "form-control" })
+              @Html.DropDownList("FromAddress", Model.EmailFroms(), new {@class = "form-control"})
             </div>
           </div>
           <div class="form-group">
@@ -84,61 +90,61 @@
               {
                 var org = DbUtil.Db.LoadOrganizationById(Model.OrgId);
 
-                  <div class="row">
-                    <div class="col-sm-10">
-                      <p class="alert alert-warning">
-                        This email will be sent to all current members of <strong>@org.OrganizationName</strong>.
-                        The recipient list will be finalized when the email is actually sent.
-                        Currently, this organization has <strong>@org.MemberCount members</strong>.
-                      </p>
-                    </div>
-                    <div class="col-sm-2">
-                      <div class="vertical-center">
-                        <a class="searchadd btn btn-default btn-block" href="/SearchAdd2/Dialog/addtoemail/"><i class="fa fa-plus-circle"></i></a>
-                      </div>
+                <div class="row">
+                  <div class="col-sm-10">
+                    <p class="alert alert-warning">
+                      This email will be sent to all current members of <strong>@org.OrganizationName</strong>.
+                      The recipient list will be finalized when the email is actually sent.
+                      Currently, this organization has <strong>@org.MemberCount members</strong>.
+                    </p>
+                  </div>
+                  <div class="col-sm-2">
+                    <div class="vertical-center">
+                      <a class="searchadd btn btn-default btn-block" href="/SearchAdd2/Dialog/addtoemail/"><i class="fa fa-plus-circle"></i></a>
                     </div>
                   </div>
+                </div>
 
               }
               else if (!User.IsInRole("Access"))
               {
-                  foreach (var recipient in Model.AdditionalRecipients)
-                  {
-                      <span>@ViewBag.ToName</span>
-                      <input type="hidden" name="AdditionalRecipients" value="@recipient">
-                  }
+                foreach (var recipient in Model.AdditionalRecipients)
+                {
+                  <span>@ViewBag.ToName</span>
+                  <input type="hidden" name="AdditionalRecipients" value="@recipient">
+                }
               }
               else
               {
-                  <div class="input-group">
-                      <select multiple="multiple" id="Recipients" name="Recipients" class="form-control">
-                          @if (Model.Count > 500)
-                          {
-                              <option value="" selected="selected">
-                                  @Model.Count people@(Model.wantParents ? " including parents." : ".")
-                              </option>
-                          }
-                          else
-                          {
-                              foreach (var recipient in Model.Recipients)
-                              {
-                                  <option value="@recipient" selected="selected">@recipient</option>
-                              }
-                          }
-                      </select>
-                      <span class="input-group-addon"><a href="/SearchAdd2/Dialog/addtoemail/" class="searchadd"><i class="fa fa-plus-circle"></i></a></span>
-                  </div>
-                  if (Model.Count <= 500)
-                  {
-                      <p class="help-block" id="person-count">
-                          @Model.Count
-                          @( Model.Count != 1 ? "people" : "person")
-                          @(Model.wantParents ? " including parents." : ".")
-                      </p>
-                  }
+                <div class="input-group">
+                  <select multiple="multiple" id="Recipients" name="Recipients" class="form-control">
+                    @if (Model.Count > 500)
+                    {
+                      <option value="" selected="selected">
+                        @Model.Count people@(Model.wantParents ? " including parents." : ".")
+                      </option>
+                    }
+                    else
+                    {
+                      foreach (var recipient in Model.Recipients)
+                      {
+                        <option value="@recipient" selected="selected">@recipient</option>
+                      }
+                    }
+                  </select>
+                  <span class="input-group-addon"><a href="/SearchAdd2/Dialog/addtoemail/" class="searchadd"><i class="fa fa-plus-circle"></i></a></span>
+                </div>
+                if (Model.Count <= 500)
+                {
+                  <p class="help-block" id="person-count">
+                    @Model.Count
+                    @(Model.Count != 1 ? "people" : "person")
+                    @(Model.wantParents ? " including parents." : ".")
+                  </p>
+                }
               }
               <div class="row">
-                <div class="col-sm-12 alert alert-danger" id="additional-recipients-alerts" style="display:none;"></div>
+                <div class="col-sm-12 alert alert-danger" id="additional-recipients-alerts" style="display: none;"></div>
                 <div class="col-sm-9"><ul id="additional-recipients"></ul></div>
               </div>
             </div>
@@ -149,31 +155,32 @@
               <label for="inputEmail3" class="col-sm-2 control-label">Cc/Reply-To:</label>
               <div class="col-sm-10">
                 <input type="text" id="Cc" name="Cc" class="form-control">
-                <p class="help-block"><i><small>Use commas to separate addresses. Each address receives a copy of the email and each is added to the Reply-To field.</small></i></p>
+                <p class="help-block"><i><small>Use commas to separate addresses. Each address receives a copy of the email and each is added to the Reply-To field.</small></i>
+                </p>
               </div>
             </div>
           </div>
           <div class="form-group">
             <label for="Subject" class="col-sm-2 control-label">Subject:</label>
             <div class="col-sm-10">
-              <input name="Subject" id="Subject" size="75" value="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? "" : c.Title)" class="form-control" />
+              <input name="Subject" id="Subject" size="75" value="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? "" : c.Title)" class="form-control"/>
 
             </div>
           </div>
           @if ((User.IsInRole("ScheduleEmails") || User.IsInRole("Edit")) && ConfigurationManager.AppSettings["UseEmailScheduler"] == "true")
           {
-              <div id="scheddiv" style="display: none">
-                <div class="form-group">
-                  <label for="Schedule" class="col-sm-2 control-label">Schedule:</label>
-                  <div class="col-sm-10">
-                    <div class="input-group scheduleDateTime">
-                      @Html.TextBox("Schedule", Model.Schedule, new { @class = "form-control", placeholder = "Immediately" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                      @Html.Hidden("ScheduleIso", Model.Schedule, new { disabled = "disabled", placeholder = "Immediately" })
-                    </div>
-                    <p class="help-block">Note: Time is Central Time (CST)</p>
+            <div id="scheddiv" style="display: none">
+              <div class="form-group">
+                <label for="Schedule" class="col-sm-2 control-label">Schedule:</label>
+                <div class="col-sm-10">
+                  <div class="input-group scheduleDateTime">
+                    @Html.TextBox("Schedule", Model.Schedule, new {@class = "form-control", placeholder = "Immediately"})<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                    @Html.Hidden("ScheduleIso", Model.Schedule, new {disabled = "disabled", placeholder = "Immediately"})
                   </div>
+                  <p class="help-block">Note: Time is Central Time (CST)</p>
                 </div>
               </div>
+            </div>
           }
           <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
@@ -185,9 +192,9 @@
               </label>
               @if ((User.IsInRole("ScheduleEmails") || User.IsInRole("Edit")) && ConfigurationManager.AppSettings["UseEmailScheduler"] == "true")
               {
-                  <label class="checkbox-inline">
-                    @Html.CheckBox("ChangeSched") Schedule Email?
-                  </label>
+                <label class="checkbox-inline">
+                  @Html.CheckBox("ChangeSched") Schedule Email?
+                </label>
               }
             </div>
           </div>
@@ -199,7 +206,8 @@
           <div class="form-group hidden-xs">
             <div class="col-sm-offset-2 col-sm-10">
               <div class="pull-right">
-                <input type="button" class="btn btn-default SaveDraft" savetype="@( c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : 1 )" value="@( c.TypeID == ContentTypeCode.TypeEmailTemplate ? "Save As Draft" : "Save Current Draft" )" />
+            <a id="Recover" href="#" class="btn btn-mini btn-default" data-confirm="This will overwrite your content with the most recent from your browser's local storage. Continue?'">Recover</a>
+                <input type="button" class="btn btn-default SaveDraft" savetype="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : 1)" value="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? "Save As Draft" : "Save Current Draft")"/>
                 <a href="#" class="btn btn-default TestSend">Send Test Email (To Me)</a>
                 <button type="button" class="btn btn-primary Send"><i class="fa fa-paper-plane"></i> Send</button>
               </div>
@@ -208,9 +216,10 @@
           <div class="visible-xs-block">
             <button type="button" class="btn btn-primary btn-block Send"><i class="fa fa-paper-plane"></i> Send</button>
             <a href="#" class="btn btn-default btn-block TestSend">Send Test Email (To Me)</a>
-            <input type="button" class="btn btn-default btn-block SaveDraft" savetype="@( c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : 1 )" value="@( c.TypeID == ContentTypeCode.TypeEmailTemplate ? "Save As Draft" : "Save Current Draft" )" />
+            <input type="button" class="btn btn-default btn-block SaveDraft" savetype="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : 1)" value="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? "Save As Draft" : "Save Current Draft")"/>
+            <a id="Recover" href="#" class="btn btn-mini btn-default" data-confirm="This will overwrite your content with the most recent from your browser's local storage. Continue?'">Recover</a>
           </div>
-          <br />
+          <br/>
         </form>
       </div>
     </div>
@@ -268,51 +277,65 @@
   @ViewExtensions2.CkEditor()
   @Fingerprint.Script("/Content/touchpoint/js/email/compose.js")
   <script type="text/javascript">
-    $(function () {
+    $(function() {
       var extraSmallDevice = $('.device-xs').is(':visible');
       var smallDevice = $('.device-sm').is(':visible');
       if (extraSmallDevice || smallDevice) {
         $('#Schedule').val($('#ScheduleIso').val());
         $('#Schedule').attr('type', 'datetime-local');
       } else {
-        $("div.scheduleDateTime").datetimepicker({ format: 'MM/DD/YYYY h:mm A', widgetPositioning: { horizontal: 'left' } });
+        $("div.scheduleDateTime")
+          .datetimepicker({ format: 'MM/DD/YYYY h:mm A', widgetPositioning: { horizontal: 'left' } });
       }
 
+      $("#Recover").click(function() {
+          var t = $(this);
+          swal({
+              title: "Are you sure?",
+              text: t.data("confirm"),
+              showCancelButton: true,
+              closeOnConfirm: true
+            },
+            function() {
+              window.location = "/Email/{0}?templateID={1}&recover=true"
+                .format($("#id").val(), $("#TemplateID").val());
+            });
+        });
 
 
+      $("#AddCC")
+        .click(function() {
+          if ($(this).is(':checked')) {
+            $("#ccdiv").show(1000);
+          } else {
+            $("#ccdiv").hide(1000);
+            $("#Cc").val('');
+          }
+        });
 
-      $("#AddCC").click(function () {
-        if ($(this).is(':checked')) {
-          $("#ccdiv").show(1000);
-        }
-        else {
-          $("#ccdiv").hide(1000);
-          $("#Cc").val('');
-        }
-      });
-
-      $("#ChangeSched").click(function () {
-        if ($(this).is(':checked')) {
-          $("#scheddiv").show(1000);
-        }
-        else {
-          $("#scheddiv").hide(1000);
-          $("#Schedule").val('');
-          $("#ScheduleIso").val('');
-        }
-      });
+      $("#ChangeSched")
+        .click(function() {
+          if ($(this).is(':checked')) {
+            $("#scheddiv").show(1000);
+          } else {
+            $("#scheddiv").hide(1000);
+            $("#Schedule").val('');
+            $("#ScheduleIso").val('');
+          }
+        });
 
     });
 
     function AddSelected(ret) {
       var peopleWithoutEmail = [], duplicates = [];
       var recipients = {};
-      $("#Recipients option").each(function (i, option) {
-        var m = option.value.match(/\(([0-9]+)\)/);
-        if (m) {
-          recipients[parseInt(m[1])] = 1;
-        }
-      });
+      $("#Recipients option")
+        .each(function(i, option) {
+          var m = option.value.match(/\(([0-9]+)\)/);
+          if (m) {
+            recipients[parseInt(m[1])] = 1;
+          }
+        });
 
       // ret will be an array
       for (var i = 0; i < ret.length; i++) {
@@ -331,35 +354,49 @@
           continue;
         }
 
-        $("#additional-recipients").append(
-            '<li id="additional-recipient-li-' + ret[i].pid + '">' +
+        $("#additional-recipients")
+          .append(
+            '<li id="additional-recipient-li-' +
+            ret[i].pid +
+            '">' +
             ret[i].name +
-            '  <input type="hidden" name="AdditionalRecipients" value="' + ret[i].pid + '"/>' +
-            '  <a href="javascript:RemoveRecipient(' + ret[i].pid + ');"><i class="fa fa-times-circle red"></i></a>' +
+            '  <input type="hidden" name="AdditionalRecipients" value="' +
+            ret[i].pid +
+            '"/>' +
+            '  <a href="javascript:RemoveRecipient(' +
+            ret[i].pid +
+            ');"><i class="fa fa-times-circle red"></i></a>' +
             '</li>'
-        );
+          );
       }
 
       $('#additional-recipients-alerts').empty();
       if (peopleWithoutEmail.length > 0) {
         if (peopleWithoutEmail.length > 1) {
-          $('#additional-recipients-alerts').append('<p>The following people have no active email addresses and were not added to this email:</p>');
+          $('#additional-recipients-alerts')
+            .append('<p>The following people have no active email addresses and were not added to this email:</p>');
         } else {
-          $('#additional-recipients-alerts').append('<p>The following person has no active email address and was not added to this email:</p>');
+          $('#additional-recipients-alerts')
+            .append('<p>The following person has no active email address and was not added to this email:</p>');
         }
         var ul = $('<ul></ul>');
-        $.each(peopleWithoutEmail, function (i, name) {
-          ul.append('<li>' + name + '</li>');
-        });
+        $.each(peopleWithoutEmail,
+          function(i, name) {
+            ul.append('<li>' + name + '</li>');
+          });
         $('#additional-recipients-alerts').append(ul);
       }
 
       if (duplicates.length > 0) {
-        $('#additional-recipients-alerts').append('<p>The following ' + ((duplicates.length > 1) ? 'selected people were' : 'person was') + ' already going to receive the email:</p>');
+        $('#additional-recipients-alerts')
+          .append('<p>The following ' +
+            ((duplicates.length > 1) ? 'selected people were' : 'person was') +
+            ' already going to receive the email:</p>');
         var ul = $('<ul></ul>');
-        $.each(duplicates, function (i, name) {
-          ul.append('<li>' + name + '</li>');
-        });
+        $.each(duplicates,
+          function(i, name) {
+            ul.append('<li>' + name + '</li>');
+          });
         $('#additional-recipients-alerts').append(ul);
       }
 
@@ -380,7 +417,8 @@
     function UpdatePersonCount() {
       if ($("#person-count").length > 0) {
         var newCount = $('#Recipients option').length + $('#additional-recipients li').length;
-        $('#person-count').text(newCount + (newCount > 1 ? ' people' : ' person') + '@(Model.wantParents ? " including parents." : ".")');
+        $('#person-count')
+          .text(newCount + (newCount > 1 ? ' people' : ' person') + '@(Model.wantParents ? " including parents." : ".")');
       }
     }
   </script>

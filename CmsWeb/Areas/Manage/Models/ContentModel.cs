@@ -5,6 +5,7 @@ using System.Web;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.Manage.Controllers;
+using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
@@ -85,6 +86,11 @@ namespace CmsWeb.Models
             public string role { get; set; }
             public int roleID { get; set; }
             public DateTime? created { get; set; }
+            public bool shared { get; set; }
+
+            public bool Owner => ownerID == Util.UserId;
+            public bool Shared => !Owner && shared;
+            public bool Other => !Shared && roleID != 0;
         }
 	}
 }

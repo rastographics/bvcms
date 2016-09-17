@@ -30,6 +30,9 @@ namespace CmsWeb.Areas.Main.Models
         public IEnumerable<int> AdditionalRecipients { get; set; }
 
         public List<MailAddress> CcAddresses = new List<MailAddress>();
+        public bool recovery;
+        public Guid guid;
+
         public string Cc {
             get {
                 if (CcAddresses == null) { return null; }
@@ -93,7 +96,10 @@ namespace CmsWeb.Areas.Main.Models
                     select p;
             else
             {
-                q = DbUtil.Db.PeopleQuery(id);
+                if (id == Guid.Empty)
+                    q = DbUtil.Db.PeopleQuery2(Util.UserPeopleId.ToString());
+                else
+                    q = DbUtil.Db.PeopleQuery(id);
                 var c = DbUtil.Db.LoadQueryById2(id);
                 var cc = c.ToClause();
 
