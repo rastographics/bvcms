@@ -26,8 +26,9 @@
         $('#editor-modal').modal('show');
     };
 
-    var xsDevice = $('.device-xs').is(':visible');
-    var smDevice = $('.device-sm').is(':visible');
+    // set these two lines to false will cause the editor to show on a mobile device. Expermental.
+    var xsDevice = false;//$('.device-xs').is(':visible');
+    var smDevice = false;//$('.device-sm').is(':visible');
 
     $('#editor-modal').on('shown.bs.modal', function () {
         if (!xsDevice && !smDevice) {
