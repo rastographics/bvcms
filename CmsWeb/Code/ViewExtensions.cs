@@ -832,7 +832,8 @@ namespace CmsWeb
 
         public static HtmlString CkEditor()
         {
-            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/ckeditor/4.5.11/ckeditor.js\" type=\"text/javascript\"></script>\n");
+//            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/ckeditor/4.5.11/ckeditor.js\" type=\"text/javascript\"></script>\n");
+            return new HtmlString("<script src=\"//cdn.ckeditor.com/4.5.11/full/ckeditor.js\" type=\"text/javascript\"></script>\n");
         }
 
         public static HtmlString jQueryMobile()
