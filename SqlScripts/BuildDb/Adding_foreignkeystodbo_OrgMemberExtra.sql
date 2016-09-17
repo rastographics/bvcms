@@ -1,6 +1,6 @@
-ALTER TABLE [dbo].[OrgMemberExtra] ADD CONSTRAINT [FK_OrgMemberExtra_People] FOREIGN KEY ([PeopleId]) REFERENCES [dbo].[People] ([PeopleId])
 ALTER TABLE [dbo].[OrgMemberExtra] ADD CONSTRAINT [FK_OrgMemberExtra_OrganizationMembers] FOREIGN KEY ([OrganizationId], [PeopleId]) REFERENCES [dbo].[OrganizationMembers] ([OrganizationId], [PeopleId])
 ALTER TABLE [dbo].[OrgMemberExtra] ADD CONSTRAINT [FK_OrgMemberExtra_Organizations] FOREIGN KEY ([OrganizationId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
+ALTER TABLE [dbo].[OrgMemberExtra] ADD CONSTRAINT [FK_OrgMemberExtra_People] FOREIGN KEY ([PeopleId]) REFERENCES [dbo].[People] ([PeopleId])
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO

@@ -19,12 +19,16 @@ BEGIN
 		@mid = MeetingId,
 		@mdt = MeetingDate,
 		@grp = GroupMeetingFlag,
-		@acr = AttendCreditId,
 		@NoAutoAbsents = NoAutoAbsents
 	FROM dbo.Meetings
 	WHERE MeetingId = @mid
 
-
+	SELECT @acr = AttendCreditId
+	FROM dbo.OrgSchedule
+	WHERE OrganizationId = @oid
+	AND CAST(SchedTime AS TIME) = CAST(@mdt AS TIME)
+	AND SchedDay = (DATEPART(dw, @mdt) - 1)
+	
 	DECLARE c CURSOR FOR
 	SELECT m.PeopleId, m.MemberTypeId, mt.AttendanceTypeId 
 	FROM dbo.OrganizationMembers m
@@ -37,7 +41,7 @@ BEGIN
 	AND m.MemberTypeId <> 311 -- Prospect
 	AND ISNULL(m.Pending, 0) = 0
 	AND a.PeopleId IS NULL
-	
+
 	OPEN c;
 	FETCH NEXT FROM c INTO @pid, @mbr, @atyp;
 	
@@ -101,6 +105,8 @@ BEGIN
 		
 	END
 END
+
+
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO

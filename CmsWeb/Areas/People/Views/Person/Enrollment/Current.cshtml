@@ -1,12 +1,10 @@
 ﻿@using CmsData
 @using CmsWeb.Areas.People.Models
 @using UtilityExtensions
-@model CmsWeb.Areas.People.Models.CurrentEnrollments
+@model CurrentEnrollments
 @{
     var pOrgType = "---";
     var rownum = 0;
-
-    var firstGroup = true;
     var columnset = InvolvementTableModel.GetColumnSet("Current");
 }
 <form class="non-modal ajax">
