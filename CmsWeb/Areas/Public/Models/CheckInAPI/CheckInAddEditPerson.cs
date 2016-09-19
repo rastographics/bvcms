@@ -16,7 +16,10 @@ namespace CmsWeb.CheckInAPI
         public string lastName = "";
 
         public int genderID = 0;
+
         public DateTime? birthday;
+        public bool birthdaySet = false;
+        public bool birthdayClear = false;
 
         public string eMail = "";
         public string cellPhone = "";
