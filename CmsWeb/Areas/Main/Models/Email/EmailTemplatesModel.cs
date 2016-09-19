@@ -47,9 +47,10 @@ namespace CmsWeb.Areas.Main.Models
                     let u = DbUtil.Db.Users.First(vv => vv.UserId == c.OwnerID)
                     let r = DbUtil.Db.Roles.FirstOrDefault(vv => vv.RoleId == c.RoleID)
                     let isshared = (from tt in DbUtil.Db.Tags
-                                    where tt.Name == "SharedDrafts"
-                                    where tt.PersonOwner.Users.Any(uu => uu.UserId == c.OwnerID)
-                                    select tt.PersonTags.Any(vv => vv.PeopleId == Util.UserPeopleId))
+                    				where tt.Name == "SharedDrafts"
+                    				where tt.PersonOwner.Users.Any(uu => uu.UserId == c.OwnerID)
+                                    where tt.PersonTags.Any(vv => vv.PeopleId == Util.UserPeopleId)
+                                    select tt.Id).Any()
                     where c.RoleID == 0 || c.OwnerID == Util.UserId || currentRoleIds.Contains(c.RoleID)
                     orderby (c.OwnerID == Util.UserId ? 1 : 0) descending, c.Name
                     select new ContentModel.SavedDraft()
@@ -57,12 +58,12 @@ namespace CmsWeb.Areas.Main.Models
                         created = c.DateCreated,
                         id = c.Id,
                         name = c.Name,
+                        shared = isshared,
                         owner = u.Person.Name,
                         ownerID = c.OwnerID,
                         role = r.RoleName,
                         roleID = c.RoleID
                     }).ToList());
         }
-
     }
 }
