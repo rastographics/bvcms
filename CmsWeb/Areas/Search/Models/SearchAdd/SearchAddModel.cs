@@ -81,8 +81,6 @@ namespace CmsWeb.Areas.Search.Models
                 case "addtoemail":
                     EntryPointId = 0;
                     break;
-
-                    
             }
         }
 
@@ -204,72 +202,79 @@ namespace CmsWeb.Areas.Search.Models
         {
             var id = PrimaryKeyForContextType;
             var iid = PrimaryKeyForContextType.ToInt();
-            switch (AddContext.ToLower())
+            try
             {
-                case "menu":
-                case "addpeople":
-                    return AddPeople(OriginCode.MainMenu);
-                case "addtotag":
-                    return AddPeopleToTag(id, 0);
-                case "family":
-                    return AddFamilyMembers(iid, OriginCode.NewFamilyMember);
-                case "relatedfamily":
-                    return AddRelatedFamilys(iid, OriginCode.NewFamilyMember);
-                case "org":
-                    return AddOrgMembers(iid, OriginCode.Enrollment);
-                case "pending":
-                    return AddOrgMembers(iid, OriginCode.Enrollment, pending: true);
-                case "inactive":
-                    return AddOrgMembers(iid, OriginCode.Enrollment, MemberTypeCode.InActive);
-                case "prospect":
-                case "prospects":
-                    return AddOrgMembers(iid, OriginCode.Enrollment, MemberTypeCode.Prospect);
-                case "visitor":
-                    return AddVisitors(iid, OriginCode.Visit);
-                case "registered":
-                    return AddRegistered(iid, OriginCode.Visit);
-                case "contactee":
-                    return AddContactees(iid, OriginCode.Visit);
-                case "contactor":
-                    return AddContactors(iid, 0);
-                case "contributor":
-                    return AddContributor(iid, OriginCode.Contribution);
-                case "taskdelegate":
-                    if (PendingList.Count > 0)
-                        return new ReturnResult {close = true, how = "addselected", url = "/Task/Delegate/", pid = PendingList[0].PeopleId, from = AddContext};
-                    break;
-                case "taskdelegate2":
-                    if (PendingList.Count > 0)
-                        return new ReturnResult {close = true, how = "addselected2", url = "/Task/Action/1", pid = PendingList[0].PeopleId, from = AddContext};
-                    break;
-                case "taskabout":
-                    if (PendingList.Count > 0)
-                        return new ReturnResult {close = true, how = "addselected", url = "/Task/ChangeAbout/", pid = PendingList[0].PeopleId, from = AddContext};
-                    break;
-                case "taskowner":
-                    if (PendingList.Count > 0)
-                        return new ReturnResult {close = true, how = "addselected", url = "/Task/ChangeOwner/", pid = PendingList[0].PeopleId, from = AddContext};
-                    break;
-                case "mergeto":
-                    if (PendingList.Count > 0)
-                        return new ReturnResult {close = true, how = "addselected", pid = PrimaryKeyForContextType.ToInt(), pid2 = PendingList[0].PeopleId, from = AddContext};
-                    break;
-                case "addtoemail":
-                    if (PendingList.Count > 0)
-                    {
-                        var people = new List<ReturnResult>();
-                        foreach (var p in PendingList)
+                switch (AddContext.ToLower())
+                {
+                    case "menu":
+                    case "addpeople":
+                        return AddPeople(OriginCode.MainMenu);
+                    case "addtotag":
+                        return AddPeopleToTag(id, 0);
+                    case "family":
+                        return AddFamilyMembers(iid, OriginCode.NewFamilyMember);
+                    case "relatedfamily":
+                        return AddRelatedFamilys(iid, OriginCode.NewFamilyMember);
+                    case "org":
+                        return AddOrgMembers(iid, OriginCode.Enrollment);
+                    case "pending":
+                        return AddOrgMembers(iid, OriginCode.Enrollment, pending: true);
+                    case "inactive":
+                        return AddOrgMembers(iid, OriginCode.Enrollment, MemberTypeCode.InActive);
+                    case "prospect":
+                    case "prospects":
+                        return AddOrgMembers(iid, OriginCode.Enrollment, MemberTypeCode.Prospect);
+                    case "visitor":
+                        return AddVisitors(iid, OriginCode.Visit);
+                    case "registered":
+                        return AddRegistered(iid, OriginCode.Visit);
+                    case "contactee":
+                        return AddContactees(iid, OriginCode.Visit);
+                    case "contactor":
+                        return AddContactors(iid, 0);
+                    case "contributor":
+                        return AddContributor(iid, OriginCode.Contribution);
+                    case "taskdelegate":
+                        if (PendingList.Count > 0)
+                            return new ReturnResult {close = true, how = "addselected", url = "/Task/Delegate/", pid = PendingList[0].PeopleId, from = AddContext};
+                        break;
+                    case "taskdelegate2":
+                        if (PendingList.Count > 0)
+                            return new ReturnResult {close = true, how = "addselected2", url = "/Task/Action/1", pid = PendingList[0].PeopleId, from = AddContext};
+                        break;
+                    case "taskabout":
+                        if (PendingList.Count > 0)
+                            return new ReturnResult {close = true, how = "addselected", url = "/Task/ChangeAbout/", pid = PendingList[0].PeopleId, from = AddContext};
+                        break;
+                    case "taskowner":
+                        if (PendingList.Count > 0)
+                            return new ReturnResult {close = true, how = "addselected", url = "/Task/ChangeOwner/", pid = PendingList[0].PeopleId, from = AddContext};
+                        break;
+                    case "mergeto":
+                        if (PendingList.Count > 0)
+                            return new ReturnResult {close = true, how = "addselected", pid = PrimaryKeyForContextType.ToInt(), pid2 = PendingList[0].PeopleId, from = AddContext};
+                        break;
+                    case "addtoemail":
+                        if (PendingList.Count > 0)
                         {
-                            string email = null;
-                            if (!string.IsNullOrEmpty(p.Person.EmailAddress) && (p.Person.SendEmailAddress1 ?? true))
-                                email = p.Person.EmailAddress;
-                            if (email == null && !string.IsNullOrEmpty(p.Person.EmailAddress2) && (p.Person.SendEmailAddress2 ?? false))
-                                email = p.Person.EmailAddress2;
-                            people.Add(new ReturnResult { close = true, how = "addselected", pid = p.PeopleId, from = AddContext, name = p.Person.Name, email = email });
+                            var people = new List<ReturnResult>();
+                            foreach (var p in PendingList)
+                            {
+                                string email = null;
+                                if (!string.IsNullOrEmpty(p.Person.EmailAddress) && (p.Person.SendEmailAddress1 ?? true))
+                                    email = p.Person.EmailAddress;
+                                if (email == null && !string.IsNullOrEmpty(p.Person.EmailAddress2) && (p.Person.SendEmailAddress2 ?? false))
+                                    email = p.Person.EmailAddress2;
+                                people.Add(new ReturnResult {close = true, how = "addselected", pid = p.PeopleId, from = AddContext, name = p.Person.Name, email = email});
+                            }
+                            return people;
                         }
-                        return people;
-                    }
-                    break;
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ReturnResult {close = true, how = "addselected", error = ex.Message, from = AddContext};
             }
             return new ReturnResult {close = true, from = AddContext};
         }
@@ -414,8 +419,8 @@ You can do one of these things:
 * See <a href=""http://docs.touchpointsoftware.com/Organizations/AlreadyAMember.html"" 
   title=""Already a Member"" target=""_blank"">this help article</a>
 ").ToString();
-message = $@"<div style=""text-align: left"">{message}</div>";
-                        return new ReturnResult {close = true, how = "CloseAddDialog", message = message, from = AddContext};
+                        message = $@"<div style=""text-align: left"">{message}</div>";
+                        return new ReturnResult {close = true, how = "CloseAddDialog", error = message, from = AddContext};
                     }
                 }
                 foreach (var p in PendingList)
@@ -441,7 +446,7 @@ message = $@"<div style=""text-align: left"">{message}</div>";
                 DbUtil.Db.SubmitChanges();
                 DbUtil.Db.UpdateMainFellowship(id);
             }
-            return new ReturnResult {close = true, how = "rebindgrids", message = message, from = AddContext};
+            return new ReturnResult {close = true, how = "rebindgrids", error = message, from = AddContext};
         }
 
         private ReturnResult AddContributor(int id, int origin)

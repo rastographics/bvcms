@@ -91,8 +91,8 @@ $(function () {
         var loc = $this.attr("href");
         $.post(loc, q, function (ret) {
             $('#empty-dialog').modal("hide");
-            if (ret.message)
-                swal({title: "Error!", text: ret.message, type: "error", html: true});
+            if (ret.error)
+                swal({title: "Error!", text: ret.error, type: "error", html: true});
             else if (ret.from === 'Menu')
                 window.location = '/Person2/' + ret.pid;
             else

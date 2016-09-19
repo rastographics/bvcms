@@ -26,9 +26,9 @@ namespace CmsData
         }
         public static void AddNewPerson(CMSDataContext Db, int newpersonid)
         {
-            if (Db.Setting("NoNewPersonTasks"))
-                return;
             var newPeopleManagerId = Db.NewPeopleManagerId;
+            if (Db.Setting("NoNewPersonTasks") || newPeopleManagerId == 0)
+                return;
             var task = new Task
             {
                 ListId = GetRequiredTaskList(Db, "InBox", newPeopleManagerId).Id,
