@@ -510,11 +510,33 @@ namespace CmsWeb.Areas.Public.Controllers
             p.LastName = aep.lastName;
             p.NickName = aep.goesBy;
 
-            if (aep.birthday != null)
+            // Check-In API Version 2 or greater adds the ability to clear the birthday
+            if (dataIn.version > 1)
             {
-                p.BirthDay = aep.birthday.Value.Day;
-                p.BirthMonth = aep.birthday.Value.Month;
-                p.BirthYear = aep.birthday.Value.Year;
+                if (aep.birthdaySet && aep.birthday != null)
+                {
+                    p.BirthDay = aep.birthday.Value.Day;
+                    p.BirthMonth = aep.birthday.Value.Month;
+                    p.BirthYear = aep.birthday.Value.Year;
+                }
+                else
+                {
+                    if (aep.birthdayClear)
+                    {
+                        p.BirthDay = null;
+                        p.BirthMonth = null;
+                        p.BirthYear = null;
+                    }
+                }
+            }
+            else
+            {
+                if (aep.birthday != null)
+                {
+                    p.BirthDay = aep.birthday.Value.Day;
+                    p.BirthMonth = aep.birthday.Value.Month;
+                    p.BirthYear = aep.birthday.Value.Year;
+                }
             }
 
             p.PositionInFamilyId = DbUtil.Db.ComputePositionInFamily(aep.getAge(), aep.maritalStatusID == MaritalStatusCode.Married, f.FamilyId) ?? PositionInFamily.PrimaryAdult;
