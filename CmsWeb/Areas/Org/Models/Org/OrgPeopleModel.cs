@@ -266,11 +266,11 @@ namespace CmsWeb.Areas.Org.Models
 
         public HtmlString GroupHelp => ViewExtensions2.Markdown(@"
 * Click one of the buttons to see those people.
-* You can work with them individually 
+* You can work with them individually
 * or combine them with the options dropdown.
 
-When a single group is shown (not combined), 
-use the dropdown menu immediately to it's right 
+When a single group is shown (not combined),
+use the dropdown menu immediately to it's right
 to `Add`, `Drop`, `Update` Members etc.
 ");
         public HtmlString NameFilterHelp => ViewExtensions2.Markdown(@"
@@ -309,7 +309,11 @@ to `Add`, `Drop`, `Update` Members etc.
 
         public bool Showdrop(string group)
         {
-            return HttpContext.Current.User.IsInRole("Edit") && (MultiSelect ? "" : GroupSelect) == group;
+            var u = HttpContext.Current.User;
+            var orgLeader = u.IsInRole("OrgLeadersOnly");
+
+            return (u.IsInRole("Edit") || (orgLeader && DbUtil.Db.Setting("UX-OrgLeadersOnlyOrgMembersDropAdd"))) &&
+                (MultiSelect ? "" : GroupSelect) == group;
         }
     }
 }

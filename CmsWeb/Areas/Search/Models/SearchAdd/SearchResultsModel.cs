@@ -10,8 +10,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Web;
 using CmsData;
 using CmsWeb.Models;
+using MoreLinq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
@@ -29,6 +31,10 @@ namespace CmsWeb.Areas.Search.Models
         public string AddContext { get; set; }
         public string Name { get; set; }
 
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+
         [DisplayName("Communication")]
         public string Phone { get; set; }
 
@@ -39,6 +45,8 @@ namespace CmsWeb.Areas.Search.Models
 
         public bool UsersOnly => usersOnlyContextTypes.Contains(AddContext.ToLower());
 
+        public bool ShowLimitedSearch => (HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-OrgLeaderLimitedSearchPerson"));
+
         public string HelpLink(string page)
         {
             return Util.HelpLink($"_SearchAdd_{page}");
@@ -47,17 +55,21 @@ namespace CmsWeb.Areas.Search.Models
         public override IQueryable<Person> DefineModelList()
         {
             var db = DbUtil.Db;
-            var q = Util2.OrgLeadersOnly 
-                ? db.OrgLeadersOnlyTag2().People(db) 
+            var q = Util2.OrgLeadersOnly
+                ? db.OrgLeadersOnlyTag2().People(db)
                 : db.People.AsQueryable();
 
             if (UsersOnly)
                 q = q.Where(p => p.Users.Any(uu => uu.UserRoles.Any(ur => ur.Role.RoleName == "Access")));
 
+            if (ShowLimitedSearch)
+                return RunLimitedSearch();
+
             if (Name.HasValue())
             {
                 string first, last;
                 Util.NameSplit(Name, out first, out last);
+
                 if (first.HasValue())
                     q = from p in q
                         where (p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last))
@@ -76,6 +88,7 @@ namespace CmsWeb.Areas.Search.Models
                           where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last)
                           select p;
             }
+
             if (Address.IsNotNull())
             {
                 Address = Address.Trim();
@@ -147,6 +160,17 @@ namespace CmsWeb.Areas.Search.Models
                        MemberStatus = p.MemberStatus.Description,
                        Email = p.EmailAddress
                    };
+        }
+
+        private IQueryable<Person> RunLimitedSearch()
+        {
+            var matches = new List<Person>();
+            var results = DbUtil.Db.FindPerson(FirstName, LastName, null, Email, null);
+            foreach (var result in results)
+            {
+                matches.Add(DbUtil.Db.LoadPersonById(result.PeopleId.GetValueOrDefault()));
+            }
+            return matches.AsQueryable();
         }
     }
 }

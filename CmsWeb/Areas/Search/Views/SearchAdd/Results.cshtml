@@ -18,17 +18,19 @@
             }
             else
             {
-                <div class="table-responsive">
-                    <table id="people" class="table expanding table-condensed table-hover">
-                        <thead>
+                if (!Model.ShowLimitedSearch)
+                {
+                    <div class="table-responsive">
+                        <table id="people" class="table expanding table-condensed table-hover">
+                            <thead>
                             <tr>
                                 <th></th>
                                 <th>Name</th>
                                 <th>Address</th>
                                 <th>Age</th>
                             </tr>
-                        </thead>
-                        <tbody>
+                            </thead>
+                            <tbody>
                             <tr class="section notshown">
                                 <td><a rel="reveal" href="#" class="reveal"><i class="fa fa-caret-right"></i></a></td>
                                 <td colspan="3"><span>Toggle Details Display</span></td>
@@ -36,7 +38,7 @@
                             @foreach (var c in Model.ViewList())
                             {
                                 rownum++;
-                                var oddrow = rownum % 2 == 0 ? "oddrow" : "";
+                                var oddrow = rownum%2 == 0 ? "oddrow" : "";
                                 <tr class="master @oddrow">
                                     @if (Model.OnlyOne)
                                     {
@@ -60,9 +62,40 @@
                                     </td>
                                 </tr>
                             }
-                        </tbody>
-                    </table>
-                </div>
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+
+                    <div class="table-responsive">
+                        <table id="people" class="table expanding table-condensed table-hover">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var c in Model.ViewList())
+                            {
+                                rownum++;
+                                var oddrow = rownum%2 == 0 ? "oddrow" : "";
+                                <tr class="master @oddrow">
+                                    @if (Model.OnlyOne)
+                                    {
+                                        <td><a href="/SearchAdd2/Select/@c.PeopleId" class="commit">@c.Name</a></td>
+                                    }
+                                    else
+                                    {
+                                        <td><a href="/SearchAdd2/Select/@c.PeopleId" class="ajax">@c.Name</a></td>
+                                    }
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
                 @Html.Partial("PagerBottom", Model)
                 @Html.Partial("PagerHidden", Model)
             }
@@ -84,7 +117,14 @@
                 }
                 else
                 {
-                    <a href="/SearchAdd2/SearchFamily" class="btn btn-primary ajax">Search for Family</a>
+                    if (Model.ShowLimitedSearch)
+                    {
+                        <a href="/SearchAdd2/NewPerson/0" class="btn btn-success ajax"><i class="fa fa-plus-circle"></i> Add New Person</a>
+                    }
+                    else
+                    {
+                        <a href="/SearchAdd2/SearchFamily" class="btn btn-primary ajax">Search for Family</a>
+                    }
                 }
             }
         </div>
