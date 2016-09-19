@@ -162,6 +162,17 @@ namespace CmsWeb.Areas.Org.Models
             return _showContactsReceivedTab.Value;
         }
 
+        public bool ShowSettingsTab
+        {
+            get
+            {
+                if (!HttpContext.Current.User.IsInRole("OrgLeadersOnly"))
+                    return true;
+
+                return !DbUtil.Db.Setting("UX-HideSettingsTabForOrgLeaders");
+            }
+        }
+
         public bool ShowMeetingsTab
         {
             get
