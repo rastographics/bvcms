@@ -26,5 +26,13 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 model.Process(DbUtil.Db);
             return View(model);
         }
+
+        [HttpPost]
+        public ActionResult DropSingleMember(int orgId, int peopleId)
+        {
+            var model = new OrgDrop();
+            model.DropSingleMember(orgId, peopleId);
+            return Content("ok");
+        }
     }
 }

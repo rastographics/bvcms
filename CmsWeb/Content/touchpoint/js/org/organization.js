@@ -812,15 +812,38 @@
         $.post(a.attr("href"), null, function (ret) {
             var dest = a.data('dest');
             var $destTag = $(dest, a.closest('.movable'));
-            if (!$destTag.length) 
+            if (!$destTag.length)
                 $destTag = $(dest, a.closest('.well'));
-            if (!$destTag.length) 
+            if (!$destTag.length)
                 $destTag = $(dest);
             $destTag.append(ret);
             $.InitFunctions.movequestions();
             $.InitFunctions.timepicker();
             $(dest).children().last().children().first().effect("highlight", { color: '#eaab00' }, 2000);
         });
+    });
+
+    $('body').on('click', '.dropMember', function(ev) {
+        ev.preventDefault();
+
+        var orgId = $('#Id').val();
+        var peopleId = $(this).data('people-id');
+
+        swal({
+            title: 'Are you sure?',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonClass: "btn-warning",
+            confirmButtonText: "Yes, Drop Member",
+            closeOnConfirm: true
+        },
+        function() {
+            $.post('/OrgDrop/DropSingleMember', { orgId: orgId, peopleId: peopleId }, function(ret) {
+                window.location.reload(true);
+            });
+        });
+
+        return false;
     });
 
     function clearCuttingBoard() {

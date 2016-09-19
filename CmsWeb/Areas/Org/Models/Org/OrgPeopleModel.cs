@@ -247,12 +247,14 @@ namespace CmsWeb.Areas.Org.Models
             }
         }
 
-        public string MultiSelectActive { get { return MultiSelect ? "active" : ""; } }
-        public string ShowMinistryInfoActive { get { return ShowMinistryInfo ? "active" : ""; } }
-        public string ShowHiddenActive { get { return ShowHidden ? "active" : ""; } }
-        public string ShowAddressActive { get { return ShowAddress ? "active" : ""; } }
-        public string FilterTagActive { get { return FilterTag ? "active" : ""; } }
-        public string FilterIndActive { get { return FilterIndividuals ? "active" : ""; } }
+        public string MultiSelectActive => MultiSelect ? "active" : "";
+        public string ShowMinistryInfoActive => ShowMinistryInfo ? "active" : "";
+        public string ShowHiddenActive => ShowHidden ? "active" : "";
+        public string ShowAddressActive => ShowAddress ? "active" : "";
+        public string FilterTagActive => FilterTag ? "active" : "";
+        public string FilterIndActive => FilterIndividuals ? "active" : "";
+        public bool ShowPeopleLink => HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-DisablePersonLinksForOrgLeaders");
+        public bool OrgLeaderAddDrop => HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-OrgLeadersOnlyOrgMembersDropAdd");
 
         public int? Id { get; set; }
         public string GroupSelect { get; set; }

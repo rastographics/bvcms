@@ -150,7 +150,7 @@ namespace CmsWeb.Areas.Search.Models
                        First = p.FirstName,
                        Maiden = p.MaidenName,
                        Address = p.PrimaryAddress,
-                       CityStateZip = p.PrimaryCity + ", " + p.PrimaryState + " " + p.PrimaryZip.Substring(0, 5),
+                       CityStateZip = p.PrimaryCity + ", " + p.PrimaryState + " " + (p.PrimaryZip != null && p.PrimaryZip.Length >= 5 ? p.PrimaryZip.Substring(0, 5) : p.PrimaryZip),
                        Age = p.Age,
                        JoinDate = p.JoinDate,
                        BirthDate = p.BirthMonth + "/" + p.BirthDay + "/" + p.BirthYear,

@@ -23,6 +23,16 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             DbUtil.Db.SetNoLock();
             ModelState.Clear();
+
+            if (m.Count() == 0 && m.ShowLimitedSearch)
+            {
+                NewPerson(0, m);
+                m.PendingList[0].FirstName = m.FirstName;
+                m.PendingList[0].LastName = m.LastName;
+                m.PendingList[0].EmailAddress = m.Email;
+                return View("NewPerson", m);
+            }
+
             return View(m);
         }
 
