@@ -120,6 +120,11 @@
                     if (Model.ShowLimitedSearch)
                     {
                         <a href="/SearchAdd2/NewPerson/0" class="btn btn-success ajax"><i class="fa fa-plus-circle"></i> Add New Person</a>
+                        if (Model.ViewList().Count() == 1)
+                        {
+                            var first = Model.ViewList().First();
+                            @:or <a href="/SearchAdd2/Select/@first.PeopleId" class="commit btn btn-primary"><i class="fa fa-plus-circle"></i> Select This Person</a>
+                        }
                     }
                     else
                     {
