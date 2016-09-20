@@ -818,12 +818,19 @@ namespace CmsWeb
 
         public static string Bootstrap3Css()
         {
+//<link rel=""stylesheet"" href=""//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"" integrity=""sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"" crossorigin=""anonymous"">
             return @"
 <link rel=""stylesheet"" href=""//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"">
 <link rel=""stylesheet"" href=""/Content/css/OnlineReg2.css"">
 <link rel=""stylesheet"" href=""/Content/css/fixups3.css"">
 ";
         }
+        public static HtmlString Bootstrap3()
+        {
+            return new HtmlString(@"<script src=""//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js""></script>");
+            //return new HtmlString(@"<script src=""//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"" integrity=""sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"" crossorigin=""anonymous""></script>");
+        }
+
 
         public static HtmlString FontAwesome()
         {
@@ -875,11 +882,6 @@ namespace CmsWeb
         public static HtmlString Velocity()
         {
             return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js\" type=\"text/javascript\"></script>\n");
-        }
-
-        public static HtmlString Bootstrap3()
-        {
-            return new HtmlString(@"<script src=""//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js""></script>");
         }
 
         public static HtmlString LoDash()
