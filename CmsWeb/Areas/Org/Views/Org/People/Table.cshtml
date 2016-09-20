@@ -59,7 +59,7 @@
             {
                 <th>Tag</th>
             }
-            else
+            else if (Model.GroupSelect == GroupSelectCode.Member)
             {
                 <th>Actions</th>
             }
@@ -124,7 +124,7 @@
                     @ShowDate(p.Dropped, "Dropped")
                     @ShowDate(p.InactiveDate, "Inactive")
                     @if (Model.ShowMinistryInfo)
-                {
+                    {
                         @ShowDateLink(p.LastContactReceivedDt, "/Contact2", p.LastContactReceivedId, "Contactee")
                         @ShowDateLink(p.LastContactMadeDt, "/Contact2", p.LastContactMadeId, "Minister")
                         @ShowDateLink(p.TaskAboutDt, "/Person2", p.PeopleId, "Needs Touch", "#tab-tasksabout")
@@ -137,7 +137,7 @@
                         <a href="#" class="taguntag btn btn-sm @(hastag ? "btn-default" : "btn-success")" title="Add to/Remove from Active Tag" pid="@p.PeopleId"><i class="fa fa-tag"></i> @(hastag ? "Remove" : "Add")</a>
                     </td>
                 }
-                else
+                else if (Model.GroupSelect == GroupSelectCode.Member)
                 {
                     <td>
                         <a href="#" class="btn btn-sm btn-danger dropMember" title="Drop Member" data-people-id="@p.PeopleId"><i class="fa fa-trash"></i> Drop</a>
