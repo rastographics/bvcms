@@ -1000,6 +1000,9 @@
 
     $.InitFunctions.movequestions();
 
+    if (window.collapseOrgSection === true) {
+        $('#org-main-section').collapse('hide');
+    }
 });
 
 $.RebindMemberGrids = function() {

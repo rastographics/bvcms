@@ -70,6 +70,14 @@
         </div>
     </div>
 </form>
+
+@if (Model.CollapsedOrganizationDetails)
+{
+    <script>
+        window.collapseOrgSection = true;
+    </script>
+}
+
 @helper FormAction(bool xs = false)
 {
     if (User.IsInRole("Edit"))

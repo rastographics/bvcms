@@ -258,6 +258,8 @@ namespace CmsWeb.Areas.Org.Models
         public bool HideInactiveButton => HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-HideInactiveOrgMembersForOrgLeadersOnly");
         public bool HidePendingButton => HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-HidePendingOrgMembersForOrgLeadersOnly");
         public bool HideGuestsButton => HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-HideGuestsOrgMembersForOrgLeadersOnly");
+        public bool HideOptionsButton => HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-OrgLeaderLimitedSearchPerson");
+        public bool HideFilterOptions => HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-OrgLeaderLimitedSearchPerson");
 
         public int? Id { get; set; }
         public string GroupSelect { get; set; }

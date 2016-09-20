@@ -5,11 +5,25 @@
         <div class="col-sm-12">
             <div id="groupSelector" class="btn-group">
                 @Html.Partial("People/GroupButtons", Model)
-                @Html.Partial("People/GroupOptions", Model)
+                @if (!Model.HideOptionsButton)
+                {
+                    @Html.Partial("People/GroupOptions", Model)
+                }
             </div>
         </div>
     </div>
-    @Html.Partial("People/FilterPeople", Model)
+    @if (Model.HideFilterOptions)
+    {
+        <div style="display: none">
+            @Html.Partial("People/FilterPeople", Model)
+        </div>
+        <br />
+    }
+    else
+    {
+        @Html.Partial("People/FilterPeople", Model)
+        <br />
+    }
     <div class="row">
         <div class="col-sm-12">
             @Html.Partial("PagerTop", Model)
@@ -20,5 +34,5 @@
             @Html.Partial("PagerHidden", Model)
         </div>
     </div>
-    <br/><br/><br/><br/>
+    <br /><br /><br /><br />
 </form>
