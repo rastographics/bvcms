@@ -19,6 +19,7 @@ matchnothinghere
 |\A\s*(?<ck>\d+)\s*/(?<ac>\d+)/
 |\A\s*(?<ac>(\d|\s|-)+)/\s*(?<ck>\d+)
 |\A\s*(?<ac>(\d|\s|-)+)/
+|\A(?<ac>\d+)
 ";
 
         public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
