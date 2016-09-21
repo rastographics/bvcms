@@ -232,23 +232,35 @@ if (p.GroupCode == GroupSelectCode.Guest)
 {
 if (p.GroupCode == GroupSelectCode.Prospect)
 {
-    if (p.Hidden == true)
+    if (!Model.HideFilterOptions)
     {
+        if (p.Hidden == true)
+        {
             <div>
                 <a href="/Org/ShowProspect/@Model.Id/@p.PeopleId/Show" class="joinlink"
                    confirm="Show @p.Name in Prospect List for this Org?">
                     Show
                 </a>
             </div>
-    }
-    else
-    {
+        }
+        else
+        {
             <div>
                 <a href="/Org/ShowProspect/@Model.Id/@p.PeopleId/Hide" class="joinlink"
                    confirm="Hide @p.Name on Prospect List for this Org?">
                     Hide
                 </a>
             </div>
+        }
+    }
+    else
+    {
+        <div>
+            <a href="/Org/Join/@Model.Id/@p.PeopleId" class="joinlink"
+               confirm="Join @p.Name to this Org?">
+                Join
+            </a>
+        </div>
     }
 }
 }
