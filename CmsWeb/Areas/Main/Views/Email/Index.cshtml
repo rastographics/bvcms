@@ -6,6 +6,8 @@
   Layout = ViewExtensions2.TouchPointLayout();
   ViewBag.Title = "Email";
   ViewBag.PageHeader = "Email";
+
+  var showAdvanced = !(User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-LimitToolbarForOrgLeaders"));
 }
 @section head
 {
@@ -103,9 +105,12 @@
                     }
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-10">
-                            <label class="checkbox-inline">
-                                @Html.CheckBox("PublicViewable") Publicly viewable?
-                            </label>
+                            @if (showAdvanced)
+                            {
+                                <label class="checkbox-inline">
+                                    @Html.CheckBox("PublicViewable") Publicly viewable?
+                                </label>
+                            }
                         </div>
                     </div>
                     <div class="pull-right" style="margin-bottom: 5px;">
