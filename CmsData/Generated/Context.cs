@@ -2427,6 +2427,17 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.CheckinMatchBarCodeOnly", IsComposable = true)]
+		public IQueryable< View.CheckinMatchBarCodeOnly > CheckinMatchBarCodeOnly(
+            [Parameter(DbType="nvarchar")] string id
+            )
+		{
+			return this.CreateMethodCallQuery< View.CheckinMatchBarCodeOnly>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                id
+                );
+		}
+
 		[Function(Name="dbo.ConsecutiveAbsents", IsComposable = true)]
 		public IQueryable< View.ConsecutiveAbsent > ConsecutiveAbsents(
             [Parameter(DbType="int")] int? orgid,
@@ -3645,6 +3656,17 @@ namespace CmsData
 			return this.CreateMethodCallQuery< View.PersonStatusFlag>(this, 
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 tagid
+                );
+		}
+
+		[Function(Name="dbo.PledgeBalances", IsComposable = true)]
+		public IQueryable< View.PledgeBalance > PledgeBalances(
+            [Parameter(DbType="int")] int? fundid
+            )
+		{
+			return this.CreateMethodCallQuery< View.PledgeBalance>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                fundid
                 );
 		}
 

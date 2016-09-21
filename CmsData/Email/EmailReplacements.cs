@@ -6,6 +6,7 @@ using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Web;
 using CmsData.Codes;
+using CmsData.View;
 using HtmlAgilityPack;
 using UtilityExtensions;
 
@@ -187,6 +188,18 @@ namespace CmsData
             public string Count { get; set; }
         }
         private readonly Dictionary<int, OrgInfo> orgcount = new Dictionary<int, OrgInfo>();
+
+        private List<PledgeBalance> pledgeinfos;
+        private PledgeBalance GetPledgeInfo(int fundid, EmailQueueTo emailqueueto)
+        {
+            var pid = emailqueueto.PeopleId;
+            if(pledgeinfos == null)
+                pledgeinfos = DbUtil.Db.PledgeBalances(fundid).Where(vv => vv.PledgeAmt > 0).ToList();
+            var pi = pledgeinfos.SingleOrDefault(vv => vv.CreditGiverId == pid || vv.SpouseId == pid);
+            if (pi == null)
+                pi = new PledgeBalance();
+            return pi;
+        }
 
         private class PayInfo
         {
@@ -420,6 +433,9 @@ namespace CmsData
                         return SmallGroups(code, emailqueueto);
                     if (code.StartsWith("{subgroups", StringComparison.OrdinalIgnoreCase))
                         return SmallGroups(code, emailqueueto);
+
+                    if (code.StartsWith("{pledge", StringComparison.OrdinalIgnoreCase))
+                        return Pledge(code, emailqueueto);
 
                     if (supportLinkRe.IsMatch(code))
                         return SupportLink(code, emailqueueto);
@@ -1038,6 +1054,28 @@ namespace CmsData
             return $@"<a href=""{url}"">{inside}</a>";
         }
 
+        const string PledgeRe = @"{pledge(?<type>amt|bal):\s*(?<fundid>\d+)}";
+        readonly Regex pledgeRe = new Regex(PledgeRe, RegexOptions.Singleline);
+        private string Pledge(string code, EmailQueueTo emailqueueto)
+        {
+            var match = pledgeRe.Match(code);
+            if (!match.Success)
+                return code;
+            var type = match.Groups["type"].Value;
+            var fundid = match.Groups["fundid"].Value.ToInt();
+            var pi = GetPledgeInfo(fundid, emailqueueto);
+            if (pi == null)
+                return "";
+
+            switch (type.ToLower())
+            {
+                case "bal":
+                    return (pi.Balance ?? 0).ToString("c");
+                case "amt":
+                    return (pi.PledgeAmt ?? 0).ToString("c");
+            }
+            return code;
+        }
         private static string GetId(IReadOnlyDictionary<string, string> d, string from)
         {
             string id = null;

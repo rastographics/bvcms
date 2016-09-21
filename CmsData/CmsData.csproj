@@ -553,6 +553,7 @@
     <Compile Include="Generated\DownlineLeader.cs" />
     <Compile Include="Generated\Functions\ActivityLogSearch.cs" />
     <Compile Include="Generated\Functions\AttendCommitment.cs" />
+    <Compile Include="Generated\Functions\CheckinMatchBarCodeOnly.cs" />
     <Compile Include="Generated\Functions\ContributionSearch.cs" />
     <Compile Include="Generated\Functions\CurrOrgMember.cs" />
     <Compile Include="Generated\Functions\CurrOrgMembers2.cs" />
@@ -595,6 +596,7 @@
     <Compile Include="Generated\Functions\OrgPerson.cs" />
     <Compile Include="Generated\Functions\OrgSearch.cs" />
     <Compile Include="Generated\Functions\PeopleIdsFromOrgSearch.cs" />
+    <Compile Include="Generated\Functions\PledgeBalance.cs" />
     <Compile Include="Generated\Functions\PotentialSubstitute.cs" />
     <Compile Include="Generated\Functions\RecentAttendInDaysByCountDesc.cs" />
     <Compile Include="Generated\Functions\RecentGiver.cs" />
