@@ -59,7 +59,7 @@
             {
                 <th>Tag</th>
             }
-            else if (Model.GroupSelect == GroupSelectCode.Member)
+            else if (Model.GroupSelect == GroupSelectCode.Member || Model.GroupSelect == GroupSelectCode.Prospect)
             {
                 <th>Actions</th>
             }
@@ -137,7 +137,7 @@
                         <a href="#" class="taguntag btn btn-sm @(hastag ? "btn-default" : "btn-success")" title="Add to/Remove from Active Tag" pid="@p.PeopleId"><i class="fa fa-tag"></i> @(hastag ? "Remove" : "Add")</a>
                     </td>
                 }
-                else if (Model.GroupSelect == GroupSelectCode.Member)
+                else if (Model.GroupSelect == GroupSelectCode.Member || Model.GroupSelect == GroupSelectCode.Prospect)
                 {
                     <td>
                         <a href="#" class="btn btn-sm btn-danger dropMember" title="Drop Member" data-people-id="@p.PeopleId"><i class="fa fa-trash"></i> Drop</a>
