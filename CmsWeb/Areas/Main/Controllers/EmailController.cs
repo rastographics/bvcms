@@ -78,7 +78,7 @@ namespace CmsWeb.Areas.Main.Controllers
             else if (orgid.HasValue)
             {
                 var org = DbUtil.Db.LoadOrganizationById(orgid.Value);
-                me.Recipients = org.OrganizationMembers.Select(x => x.Person.ToString()).ToList();
+                me.Recipients = DbUtil.Db.OrgPeopleCurrent(orgid.Value).Select(x => DbUtil.Db.LoadPersonById(x.PeopleId).ToString());
                 me.Count = me.Recipients.Count();
                 ViewBag.ToName = org?.OrganizationName;
             }
