@@ -479,22 +479,6 @@ namespace CmsData
             }
         }
 
-        public List<MailAddress> GetCcList(Person p, EmailQueueTo to)
-        {
-            var aa = new List<MailAddress>();
-            if (p.PeopleId != p.Family.HeadOfHouseholdId && p.Family.HeadOfHouseholdId.HasValue)
-            {
-                aa.AddRange(GetAddressList(p.Family.HeadOfHousehold));
-                to.Parent1 = p.Family.HeadOfHouseholdId;
-            }
-            if (p.PeopleId != p.Family.HeadOfHouseholdSpouseId && p.Family.HeadOfHouseholdSpouseId.HasValue)
-            {
-                aa.AddRange(GetAddressList(p.Family.HeadOfHouseholdSpouse));
-                to.Parent2 = p.Family.HeadOfHouseholdSpouseId;
-            }
-            return aa;
-        }
-
         public List<MailAddress> GetAddressList(Person p, string regemail = null)
         {
             var aa = new List<MailAddress>();
@@ -524,7 +508,7 @@ namespace CmsData
             }
 
             var body = DoClickTracking(emailqueue);
-            var m = new EmailReplacements(this, body, from);
+            var m = new EmailReplacements(this, body, from, queueid);
             emailqueue.Started = DateTime.Now;
             SubmitChanges();
 
@@ -565,11 +549,13 @@ namespace CmsData
                     select to;
             foreach (var to in q)
             {
-#if DEBUG2
+#if DEBUG
 #else
                 try
                 {
 #endif
+                if (m.OptOuts?.Single(vv => vv.PeopleId == to.PeopleId).OptOutX == true)
+                    continue;
                 var text = m.DoReplacements(to.PeopleId, to);
                 var aa = m.ListAddresses;
 
@@ -579,7 +565,7 @@ namespace CmsData
                     to.Sent = DateTime.Now;
                     SubmitChanges();
                 }
-#if DEBUG2
+#if DEBUG
 #else
                 }
                 catch (Exception ex)

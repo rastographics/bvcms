@@ -51,13 +51,15 @@ namespace CmsData
         private int? currentOrgId;
         private CMSDataContext db;
 
-        public EmailReplacements(CMSDataContext callingContext, string text, MailAddress from)
+        public EmailReplacements(CMSDataContext callingContext, string text, MailAddress from, int? queueid = null)
         {
             currentOrgId = callingContext.CurrentOrgId;
             connStr = callingContext.ConnectionString;
             host = callingContext.Host;
             db = callingContext;
             this.from = from;
+            if(queueid > 0)
+                OptOuts = db.OptOuts(queueid, from.Address).ToList();
 
             if (text == null)
                 text = "(no content)";
@@ -96,6 +98,7 @@ namespace CmsData
         }
 
         public List<MailAddress> ListAddresses { get; set; }
+        public List<OptOut> OptOuts;
 
         private Person person;
 
@@ -139,9 +142,20 @@ namespace CmsData
                     aa.Add(Util.TryGetMailAddress(contributionemail));
                 }
 
-                if (emailqueueto.EmailQueue.CCParents ?? false)
-                    aa.AddRange(db.GetCcList(p, emailqueueto));
-
+                if (emailqueueto.EmailQueue.CCParents == true)
+                {
+                    var pp = OptOuts.Single(vv => vv.PeopleId == emailqueueto.PeopleId);
+                    if (pp.HhPeopleId.HasValue)
+                    {
+                        aa.Add(new MailAddress(pp.HhEmail, pp.HhName));
+                        emailqueueto.Parent1 = pp.HhPeopleId;
+                    }
+                    if (pp.HhSpPeopleId.HasValue)
+                    {
+                        aa.Add(new MailAddress(pp.HhSpEmail, pp.HhSpName));
+                        emailqueueto.Parent2 = pp.HhSpPeopleId;
+                    }
+                }
                 if (emailqueueto.AddEmail.HasValue())
                     foreach (var ad in emailqueueto.AddEmail.SplitStr(","))
                         Util.AddGoodAddress(aa, ad);

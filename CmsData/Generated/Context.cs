@@ -3301,6 +3301,19 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.OptOuts", IsComposable = true)]
+		public IQueryable< View.OptOut > OptOuts(
+            [Parameter(DbType="int")] int? queueid,
+            [Parameter(DbType="varchar")] string fromemail
+            )
+		{
+			return this.CreateMethodCallQuery< View.OptOut>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                queueid,
+                fromemail
+                );
+		}
+
 		[Function(Name="dbo.OrgDayStats", IsComposable = true)]
 		public IQueryable< View.OrgDayStat > OrgDayStats(
             [Parameter(DbType="varchar")] string oids,
