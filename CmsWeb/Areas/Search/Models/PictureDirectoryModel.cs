@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using CmsData;
+using CmsData.Codes;
 using CmsWeb.Areas.Search.Controllers;
 using CmsWeb.Models;
 using HandlebarsDotNet;
@@ -27,6 +28,7 @@ namespace CmsWeb.Areas.Search.Models
         public string SqlName { get; set; }
         public string StatusFlag { get; set; }
         public int? OrgId { get; set; }
+        public int? DivId { get; set; }
         public string Selector { get; set; }
 
         private string template;
@@ -40,10 +42,13 @@ namespace CmsWeb.Areas.Search.Models
         {
         }
 
-        public PictureDirectoryModel(int? orgId)
+        public PictureDirectoryModel(string id)
             : base("Name", "asc")
         {
-            OrgId = orgId;
+            if (Regex.IsMatch(id, @"\Ad\d+\z", RegexOptions.IgnoreCase))
+                DivId = id.Substring(1).ToInt();
+            else if(id.HasValue() && id.GetDigits() == id)
+                OrgId = id.ToInt();
             Initialize();
         }
 
@@ -66,6 +71,8 @@ namespace CmsWeb.Areas.Search.Models
             Selector = DbUtil.Db.Setting("PictureDirectorySelector", "");
             if (OrgId.HasValue)
                 Selector = "FromUrl";
+            else if (DivId.HasValue)
+                Selector = "FromUrl";
             else if (Regex.IsMatch(Selector, @"\AF\d\d\z"))
                 StatusFlag = Selector;
             else if (Regex.IsMatch(Selector, @"\A\d+\z"))
@@ -74,21 +81,33 @@ namespace CmsWeb.Areas.Search.Models
             if (OrgId.HasValue)
             {
                 if (!CanView.HasValue)
-                {
-                    var inOrg = (from om in DbUtil.Db.OrganizationMembers
-                                 where om.PeopleId == Util.UserPeopleId
-                                 where om.OrganizationId == OrgId
-                                 where om.Organization.PublishDirectory > 0
-                                 where om.OrgMemMemTags.All(vv => vv.MemberTag.Name != "DoNotPublish")
-                                 select om).Any();
-                    CanView = inOrg || HttpContext.Current.User.IsInRole("Admin");
-                }
+                    CanView = HttpContext.Current.User.IsInRole("Admin") || DbUtil.Db.PeopleQuery2($@"
+IsMemberOf( Org={OrgId} ) = 1 
+AND SmallGroup( Org={OrgId} ) <> 'DoNotPublish' 
+AND PeopleId = {Util.UserPeopleId}").Any();
+
                 TemplateName = Util.PickFirst(
                     Organization.GetExtra(DbUtil.Db, OrgId.Value, PictureDirectoryTemplateName),
                     PictureDirectoryTemplateName);
                 SqlName = Util.PickFirst(
                     Organization.GetExtra(DbUtil.Db, OrgId.Value, PictureDirectorySqlName),
                     PictureDirectorySqlName);
+            }
+            else if (DivId.HasValue)
+            {
+                if (!CanView.HasValue)
+                    CanView = HttpContext.Current.User.IsInRole("Admin") || DbUtil.Db.PeopleQuery2($@"
+IsMemberOf( Div={DivId} ) = 1 
+AND SmallGroup( Div={DivId} ) <> 'DoNotPublish' 
+AND PeopleId = {Util.UserPeopleId}").Any();
+
+                TemplateName = PictureDirectoryTemplateName + "-" + Selector;
+                if (!DbUtil.Db.Contents.Any(vv => vv.Name == TemplateName && vv.TypeID == ContentTypeCode.TypeText))
+                    TemplateName = PictureDirectoryTemplateName;
+
+                SqlName = PictureDirectorySqlName + "-" + Selector;
+                if (!DbUtil.Db.Contents.Any(vv => vv.Name == TemplateName && vv.TypeID == ContentTypeCode.TypeSqlScript))
+                    TemplateName = PictureDirectoryTemplateName;
             }
             else if (StatusFlag.HasValue())
             {
@@ -153,6 +172,10 @@ namespace CmsWeb.Areas.Search.Models
                 qmembers = DbUtil.Db.PeopleQuery2($@"
                     IsMemberOf( Org={OrgId} ) = 1 
                     AND SmallGroup( Org={OrgId} ) <> 'DoNotPublish'");
+            else if (DivId.HasValue)
+                qmembers = DbUtil.Db.PeopleQuery2($@"
+                    IsMemberOf( Div={DivId} ) = 1 
+                    AND SmallGroup( Div={DivId} ) <> 'DoNotPublish'");
             else
                 qmembers = DbUtil.Db.PeopleQuery2("PeopleId = 0");
 

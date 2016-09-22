@@ -8,8 +8,8 @@ namespace CmsWeb.Areas.Search.Controllers
     [RouteArea("Search", AreaPrefix="PictureDirectory"), Route("{action=index}")]
     public class PictureDirectoryController : CmsController
     {
-        [Route("~/PictureDirectory/{id:int?}")]
-        public ActionResult Index(int? id = null)
+        [Route("~/PictureDirectory/{id?}")]
+        public ActionResult Index(string id = null)
         {
 #if DEBUG
             DbUtil.Db.ExecuteCommand(@"
