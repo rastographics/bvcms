@@ -54,7 +54,14 @@
             }
             else
             {
-                <a href="/SearchAdd2/AddNewPerson" class="btn btn-primary ajax validate">Submit</a>
+                if (!Model.ShowLimitedSearch)
+                {
+                    <a href="/SearchAdd2/AddNewPerson" class="btn btn-primary ajax validate">Submit</a>
+                }
+                else
+                {
+                    <a href="/SearchAdd2/AddNewPerson/NoDupCheck" class="btn btn-primary ajax validate">Submit</a>
+                }
             }
         </div>
     </div>
