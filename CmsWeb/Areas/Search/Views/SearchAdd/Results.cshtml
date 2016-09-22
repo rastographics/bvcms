@@ -68,7 +68,6 @@
                 }
                 else
                 {
-
                     <div class="table-responsive">
                         <table id="people" class="table expanding table-condensed table-hover">
                             <thead>
@@ -82,13 +81,20 @@
                                 rownum++;
                                 var oddrow = rownum%2 == 0 ? "oddrow" : "";
                                 <tr class="master @oddrow">
-                                    @if (Model.OnlyOne)
+                                    @if (Model.ShowLimitedSearch)
                                     {
-                                        <td><a href="/SearchAdd2/Select/@c.PeopleId" class="commit">@c.Name</a></td>
+                                        <td><a href="/SearchAdd2/CommitAdd" class="commit">@c.Name</a></td>
                                     }
                                     else
                                     {
-                                        <td><a href="/SearchAdd2/Select/@c.PeopleId" class="ajax">@c.Name</a></td>
+                                        if (Model.OnlyOne)
+                                        {
+                                            <td><a href="/SearchAdd2/Select/@c.PeopleId" class="commit">@c.Name</a></td>
+                                        }
+                                        else
+                                        {
+                                            <td><a href="/SearchAdd2/Select/@c.PeopleId" class="ajax">@c.Name</a></td>
+                                        }
                                     }
                                 </tr>
                             }
@@ -105,10 +111,11 @@
         </div>
         <div class="modal-footer">
             <a href="/SearchAdd2/SearchPerson?displaySkipSearch=@Model.DisplaySkipSearch.ToString().ToLower()" class="btn btn-default ajax"><i class="fa fa-arrow-circle-left"></i> Refine your Search</a>
-            @if (Model.PendingList.Count > 0)
+            @if (Model.PendingList.Count > 0 && !Model.ShowLimitedSearch)
             {
                 <a href="/SearchAdd2/CancelSearch" class="btn btn-default ajax">List</a>
             }
+
             @if (!Model.OnlyOne)
             {
                 if (Model.AddContext == "Family")
@@ -119,11 +126,10 @@
                 {
                     if (Model.ShowLimitedSearch)
                     {
-                        <a href="/SearchAdd2/NewPerson/0" class="btn btn-success ajax"><i class="fa fa-plus-circle"></i> Add New Person</a>
+                        <a href="/SearchAdd2/NewPerson/0" class="btn btn-success ajax"><i class="fa fa-plus-circle"></i> Create New Person</a>
                         if (Model.ViewList().Count() == 1)
                         {
-                            var first = Model.ViewList().First();
-                            @:or <a href="/SearchAdd2/Select/@first.PeopleId" class="commit btn btn-primary"><i class="fa fa-plus-circle"></i> Select This Person</a>
+                            @:or <a href="/SearchAdd2/CommitAdd" class="commit btn btn-primary"><i class="fa fa-plus-circle"></i> Add This Person to Org</a>
                         }
                     }
                     else

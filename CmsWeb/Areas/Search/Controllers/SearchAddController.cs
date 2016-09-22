@@ -46,6 +46,11 @@ namespace CmsWeb.Areas.Search.Controllers
                 return View("NewPerson", m);
             }
 
+            if (m.Count() == 1 && m.ShowLimitedSearch)
+            {
+                m.AddExisting(m.ViewList().First().PeopleId);
+            }
+
             return View(m);
         }
 
