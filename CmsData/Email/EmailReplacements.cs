@@ -208,7 +208,7 @@ namespace CmsData
         {
             var pid = emailqueueto.PeopleId;
             if(pledgeinfos == null)
-                pledgeinfos = DbUtil.Db.PledgeBalances(fundid).Where(vv => vv.PledgeAmt > 0).ToList();
+                pledgeinfos = db.PledgeBalances(fundid).Where(vv => vv.PledgeAmt > 0).ToList();
             var pi = pledgeinfos.SingleOrDefault(vv => vv.CreditGiverId == pid || vv.SpouseId == pid);
             if (pi == null)
                 pi = new PledgeBalance();
