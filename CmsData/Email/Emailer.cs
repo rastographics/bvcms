@@ -555,7 +555,7 @@ namespace CmsData
                 try
                 {
 #endif
-                if (m.OptOuts?.Single(vv => vv.PeopleId == to.PeopleId)?.OptOutX == true)
+                if (m.OptOuts != null && m.OptOuts.Any(vv => vv.PeopleId == to.PeopleId && vv.OptOutX == true))
                     continue;
                 var text = m.DoReplacements(to.PeopleId, to);
                 var aa = m.ListAddresses;
