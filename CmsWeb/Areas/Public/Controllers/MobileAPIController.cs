@@ -90,6 +90,32 @@ namespace CmsWeb.Areas.Public.Controllers
         }
 
         [HttpPost]
+        public ActionResult AuthenticatedLink(string data)
+        {
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
+
+            // Link in data string is path only include leading slash
+            var dataIn = BaseMessage.createFromString(data);
+
+            var ot = new OneTimeLink
+            {
+                Id = Guid.NewGuid(),
+                Querystring = Util.UserName,
+                Expires = DateTime.Now.AddMinutes(15)
+            };
+
+            DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
+            DbUtil.Db.SubmitChanges();
+
+            var br = new BaseMessage();
+            br.setNoError();
+            br.data = $"{DbUtil.Db.ServerLink($"Logon?ReturnUrl={HttpUtility.UrlEncode(dataIn.argString)}&otltoken={ot.Id.ToCode()}")}";
+
+            return br;
+        }
+
+        [HttpPost]
         public ActionResult CheckSessionToken(string data)
         {
             var result = AuthenticateUser();
