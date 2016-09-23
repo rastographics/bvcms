@@ -147,12 +147,12 @@ namespace CmsData
                     var pp = OptOuts.SingleOrDefault(vv => vv.PeopleId == emailqueueto.PeopleId);
                     if(pp != null)
                     {
-                        if (pp.HhPeopleId.HasValue)
+                        if (pp.HhPeopleId.HasValue && pp.HhEmail.HasValue())
                         {
                             aa.Add(new MailAddress(pp.HhEmail, pp.HhName));
                             emailqueueto.Parent1 = pp.HhPeopleId;
                         }
-                        if (pp.HhSpPeopleId.HasValue)
+                        if (pp.HhSpPeopleId.HasValue && pp.HhSpEmail.HasValue())
                         {
                             aa.Add(new MailAddress(pp.HhSpEmail, pp.HhSpName));
                             emailqueueto.Parent2 = pp.HhSpPeopleId;
