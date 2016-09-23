@@ -23,6 +23,34 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             DbUtil.Db.SetNoLock();
             ModelState.Clear();
+
+            if (m.ShowLimitedSearch)
+            {
+                if (string.IsNullOrWhiteSpace(m.FirstName))
+                    ModelState.AddModelError("FirstName", "First name is required");
+                if (string.IsNullOrWhiteSpace(m.LastName))
+                    ModelState.AddModelError("LastName", "Last name is required");
+                if (string.IsNullOrWhiteSpace(m.Email))
+                    ModelState.AddModelError("Email", "Email is required");
+
+                if (!ModelState.IsValid)
+                    return View("SearchPerson", m);
+            }
+
+            if (m.Count() == 0 && m.ShowLimitedSearch)
+            {
+                NewPerson(0, m);
+                m.PendingList[0].FirstName = m.FirstName;
+                m.PendingList[0].LastName = m.LastName;
+                m.PendingList[0].EmailAddress = m.Email;
+                return View("NewPerson", m);
+            }
+
+            if (m.Count() == 1 && m.ShowLimitedSearch)
+            {
+                m.AddExisting(m.ViewList().First().PeopleId);
+            }
+
             return View(m);
         }
 

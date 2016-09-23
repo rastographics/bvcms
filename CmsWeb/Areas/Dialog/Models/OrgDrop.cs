@@ -112,5 +112,13 @@ namespace CmsWeb.Areas.Dialog.Models
             lop.Completed = DateTime.Now;
             db.SubmitChanges();
         }
+
+        public void DropSingleMember(int orgId, int peopleId)
+        {
+            var org = DbUtil.Db.LoadOrganizationById(orgId);
+            var om = org.OrganizationMembers.Single(mm => mm.PeopleId == peopleId);
+            om.Drop(DbUtil.Db);
+            DbUtil.Db.SubmitChanges();
+        }
     }
 }

@@ -3,7 +3,7 @@
 }
 <div id="bluetoolbarstop">
     <div id="bluebar-menu" class="btn-group pull-right">
-        @if (showAdvanced)
+        @if (showAdvanced || ViewContext.Controller.GetType().Name == "OrgController")
         {
             <div class="btn-group btn-group-lg dropdown-large">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -11,6 +11,9 @@
                 </button>
                 @Html.Partial("Toolbar/Email")
             </div>
+        }
+        @if (showAdvanced)
+        {
             <div class="btn-group btn-group-lg dropdown-large">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                     <span class="fa fa-cloud-download"></span>

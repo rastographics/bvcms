@@ -247,12 +247,19 @@ namespace CmsWeb.Areas.Org.Models
             }
         }
 
-        public string MultiSelectActive { get { return MultiSelect ? "active" : ""; } }
-        public string ShowMinistryInfoActive { get { return ShowMinistryInfo ? "active" : ""; } }
-        public string ShowHiddenActive { get { return ShowHidden ? "active" : ""; } }
-        public string ShowAddressActive { get { return ShowAddress ? "active" : ""; } }
-        public string FilterTagActive { get { return FilterTag ? "active" : ""; } }
-        public string FilterIndActive { get { return FilterIndividuals ? "active" : ""; } }
+        public string MultiSelectActive => MultiSelect ? "active" : "";
+        public string ShowMinistryInfoActive => ShowMinistryInfo ? "active" : "";
+        public string ShowHiddenActive => ShowHidden ? "active" : "";
+        public string ShowAddressActive => ShowAddress ? "active" : "";
+        public string FilterTagActive => FilterTag ? "active" : "";
+        public string FilterIndActive => FilterIndividuals ? "active" : "";
+        public bool ShowPeopleLink => HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-DisablePersonLinksForOrgLeaders");
+        public bool OrgLeaderAddDrop => HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-OrgLeadersOnlyOrgMembersDropAdd");
+        public bool HideInactiveButton => HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-HideInactiveOrgMembersForOrgLeadersOnly");
+        public bool HidePendingButton => HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-HidePendingOrgMembersForOrgLeadersOnly");
+        public bool HideGuestsButton => HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-HideGuestsOrgMembersForOrgLeadersOnly");
+        public bool HideOptionsButton => HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-OrgLeaderLimitedSearchPerson");
+        public bool HideFilterOptions => HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-OrgLeaderLimitedSearchPerson");
 
         public int? Id { get; set; }
         public string GroupSelect { get; set; }
@@ -266,11 +273,11 @@ namespace CmsWeb.Areas.Org.Models
 
         public HtmlString GroupHelp => ViewExtensions2.Markdown(@"
 * Click one of the buttons to see those people.
-* You can work with them individually 
+* You can work with them individually
 * or combine them with the options dropdown.
 
-When a single group is shown (not combined), 
-use the dropdown menu immediately to it's right 
+When a single group is shown (not combined),
+use the dropdown menu immediately to it's right
 to `Add`, `Drop`, `Update` Members etc.
 ");
         public HtmlString NameFilterHelp => ViewExtensions2.Markdown(@"
@@ -309,7 +316,11 @@ to `Add`, `Drop`, `Update` Members etc.
 
         public bool Showdrop(string group)
         {
-            return HttpContext.Current.User.IsInRole("Edit") && (MultiSelect ? "" : GroupSelect) == group;
+            var u = HttpContext.Current.User;
+            var orgLeader = u.IsInRole("OrgLeadersOnly");
+
+            return (u.IsInRole("Edit") || (orgLeader && DbUtil.Db.Setting("UX-OrgLeadersOnlyOrgMembersDropAdd"))) &&
+                (MultiSelect ? "" : GroupSelect) == group;
         }
     }
 }

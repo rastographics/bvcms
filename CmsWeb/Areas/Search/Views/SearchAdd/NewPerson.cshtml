@@ -5,14 +5,16 @@
 }
 @Html.EditorFor(m => m, "HiddenSearch")
 @Html.EditorFor(m => m, "HiddenMeta")
-@{  var n = 0;
+@{
+    var n = 0;
     for (n = 0; n < Model.PendingList.Count - 1; n++)
     {
-    @Html.EditorFor(m => m.PendingList[n], "HiddenPerson")
-    @Html.EditorFor(m => m.PendingList[n], "HiddenAddress")
+        @Html.EditorFor(m => m.PendingList[n], "HiddenPerson")
+        @Html.EditorFor(m => m.PendingList[n], "HiddenAddress")
     }
+
     var p = Model.PendingList[n];
-    var potentialDuplicate = p.PotentialDuplicate.HasValue() && !hasErrors;
+    var potentialDuplicate = p.PotentialDuplicate.HasValue() && !hasErrors && !Model.ShowLimitedSearch;
     @Html.HiddenFor(m => Model.PendingList[n].IsNewFamily)
     @Html.HiddenFor(m => Model.PendingList[n].context)
     @Html.HiddenFor(m => Model.PendingList[n].FamilyId)
@@ -52,7 +54,14 @@
             }
             else
             {
-                <a href="/SearchAdd2/AddNewPerson" class="btn btn-primary ajax validate">Submit</a>
+                if (!Model.ShowLimitedSearch)
+                {
+                    <a href="/SearchAdd2/AddNewPerson" class="btn btn-primary ajax validate">Submit</a>
+                }
+                else
+                {
+                    <a href="/SearchAdd2/AddNewPerson/NoDupCheck" class="btn btn-primary ajax validate">Submit</a>
+                }
             }
         </div>
     </div>

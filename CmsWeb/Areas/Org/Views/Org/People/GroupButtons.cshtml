@@ -5,17 +5,29 @@
   @GroupButton(GroupSelectCode.Member, "Members")
 </div>
 @GroupButton(GroupSelectCode.Previous, "Previous")
-@GroupButton(GroupSelectCode.Inactive, Model.Org.IsMissionTrip == true ? "Senders" : "Inactive")
-@GroupButton(GroupSelectCode.Pending, "Pending")
+@if (!Model.HideInactiveButton)
+{
+    @GroupButton(GroupSelectCode.Inactive, Model.Org.IsMissionTrip == true ? "Senders" : "Inactive")
+}
+
+@if (!Model.HidePendingButton)
+{
+    @GroupButton(GroupSelectCode.Pending, "Pending")
+}
+
 @GroupButton(GroupSelectCode.Prospect, "Prospects")
-@GroupButton(GroupSelectCode.Guest, "Guests")
+
+@if (!Model.HideGuestsButton)
+{
+    @GroupButton(GroupSelectCode.Guest, "Guests")
+}
 
 @helper GroupButton(string group, string name)
 {
-  if (!Model.GroupNeedsMenu(group))
-  {
+if (!Model.GroupNeedsMenu(group))
+{
     <button class="btn btn-default grp @Model.GroupActive(group)" value="@group">@name</button>
-    return; 
+    return;
   }
   var showdrop = Model.Showdrop(group);
   <div class="btn-group">
@@ -26,17 +38,23 @@
       case GroupSelectCode.Member:
         <ul class="dropdown-menu dropdown-menu-right">
             <li><a href="/SearchAdd2/Dialog/org/@Model.Id" class="searchadd"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Members</a></li>
-            <li><a href="/AddToOrgFromTag/@Model.Id/@GroupSelectCode.Member" class="longrunop" title="Add Members From Tag"><i class="fa fa-tag"></i>&nbsp;&nbsp;Add from Tag</a></li>
-            <li><a href="/OrgMembersUpdate/@Model.Id" title="Update Members" class="members-dialog"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Update Members</a></li>
-            <li><a href="/OrgDrop/@Model.Id" title="Drop Members" class="longrunop"><i class="fa fa-trash"></i>&nbsp;&nbsp;Drop Members</a></li>
+            @if (!Model.OrgLeaderAddDrop)
+            {
+                <li><a href="/AddToOrgFromTag/@Model.Id/@GroupSelectCode.Member" class="longrunop" title="Add Members From Tag"><i class="fa fa-tag"></i>&nbsp;&nbsp;Add from Tag</a></li>
+                <li><a href="/OrgMembersUpdate/@Model.Id" title="Update Members" class="members-dialog"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Update Members</a></li>
+                <li><a href="/OrgDrop/@Model.Id" title="Drop Members" class="longrunop"><i class="fa fa-trash"></i>&nbsp;&nbsp;Drop Members</a></li>
+            }
         </ul>
         break;
       case GroupSelectCode.Prospect:
         <ul class="dropdown-menu dropdown-menu-right">
             <li><a href="/SearchAdd2/Dialog/prospects/@Model.Id" class="searchadd"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Prospects</a></li>
-            <li><a href="/AddToOrgFromTag/@Model.Id/@GroupSelectCode.Prospect" title="Add Prospects From Tag" class="longrunop"><i class="fa fa-tag"></i>&nbsp;&nbsp;Add From Tag</a></li>
-            <li><a href="/OrgMembersUpdate/@Model.Id" title="Update Prospects" class="members-dialog"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Update Prospects</a></li>
-            <li><a href="/OrgDrop/@Model.Id" title="Drop Prospects" class="longrunop"><i class="fa fa-trash"></i>&nbsp;&nbsp;Drop Prospects</a></li>
+            @if (!Model.OrgLeaderAddDrop)
+            {
+                <li><a href="/AddToOrgFromTag/@Model.Id/@GroupSelectCode.Prospect" title="Add Prospects From Tag" class="longrunop"><i class="fa fa-tag"></i>&nbsp;&nbsp;Add From Tag</a></li>
+                <li><a href="/OrgMembersUpdate/@Model.Id" title="Update Prospects" class="members-dialog"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Update Prospects</a></li>
+                <li><a href="/OrgDrop/@Model.Id" title="Drop Prospects" class="longrunop"><i class="fa fa-trash"></i>&nbsp;&nbsp;Drop Prospects</a></li>
+            }
         </ul>
         break;
       case GroupSelectCode.Previous:
@@ -47,16 +65,22 @@
       case GroupSelectCode.Inactive:
         <ul class="dropdown-menu dropdown-menu-right">
             <li><a href="/SearchAdd2/Dialog/inactive/@Model.Id" class="searchadd"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;@(Model.Org.IsMissionTrip == true ? "Add Sender" : "Add Inactive Members")</a></li>
-            <li><a href="/OrgMembersUpdate/@Model.Id" title="Update Inactive Members" class="members-dialog"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Update Inactive</a></li>
-            <li><a href="/OrgDrop/@Model.Id" title="Drop Inactive" class="longrunop"><i class="fa fa-trash"></i>&nbsp;&nbsp;Drop Inactive</a></li>
+            @if (!Model.OrgLeaderAddDrop)
+            {
+                <li><a href="/OrgMembersUpdate/@Model.Id" title="Update Inactive Members" class="members-dialog"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Update Inactive</a></li>
+                <li><a href="/OrgDrop/@Model.Id" title="Drop Inactive" class="longrunop"><i class="fa fa-trash"></i>&nbsp;&nbsp;Drop Inactive</a></li>
+            }
         </ul>
         break;
       case GroupSelectCode.Pending:
         <ul class="dropdown-menu dropdown-menu-right">
             <li><a href="/SearchAdd2/Dialog/pending/@Model.Id" class="searchadd"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Pending Members</a></li>
-            <li><a href="/AddToOrgFromTag/@Model.Id/@GroupSelectCode.Pending" title="Add Pendings From Tag" class="longrunop"><i class="fa fa-tag"></i>&nbsp;&nbsp;Add From Tag</a></li>
-            <li><a href="/OrgMembersUpdate/@Model.Id" title="Update Pending Members" class="members-dialog"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Update Pending</a></li>
-            <li><a href="/OrgDrop/@Model.Id" title="Drop Pending" class="longrunop"><i class="fa fa-trash"></i>&nbsp;&nbsp;Drop Pending</a></li>
+            @if (!Model.OrgLeaderAddDrop)
+            {
+                <li><a href="/AddToOrgFromTag/@Model.Id/@GroupSelectCode.Pending" title="Add Pendings From Tag" class="longrunop"><i class="fa fa-tag"></i>&nbsp;&nbsp;Add From Tag</a></li>
+                <li><a href="/OrgMembersUpdate/@Model.Id" title="Update Pending Members" class="members-dialog"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Update Pending</a></li>
+                <li><a href="/OrgDrop/@Model.Id" title="Drop Pending" class="longrunop"><i class="fa fa-trash"></i>&nbsp;&nbsp;Drop Pending</a></li>
+            }
         </ul>
         break;
     }

@@ -48,18 +48,18 @@ namespace CmsWeb.Areas.People.Models
                     {
                         return $"<a href=\"/Org/{OrgId}\">{Name}</a>";
                     }
-                    else if (column.Page != "Current")
+
+                    if (column.Page != "Current")
                     {
                         return $"<span title=\"{DivisionName}\">{Name}</span>";
                     }
-                    else if (HasDirectory)
+
+                    if (HasDirectory)
                     {
                         return $"<a title=\"{DivisionName}\" href=\"/MemberDirectory/{OrgId}\">{Name}</a>";
                     }
-                    else
-                    {
-                        return $"<a title=\"{DivisionName}\" href=\"/OrgContent/{OrgId}\">{Name}</a>";
-                    }
+
+                    return $"<a title=\"{DivisionName}\" href=\"/OrgContent/{OrgId}\">{Name}</a>";
                 case "enroll date":
                 case "enrolldate":
                     return EnrollDate.FormatDate();
@@ -71,14 +71,11 @@ namespace CmsWeb.Areas.People.Models
                 case "schedule":
                     return Schedule;
                 case "leader":
-                    if (inAccessRole)
+                    if (inAccessRole && !(inOrgLeadersOnlyRole && DbUtil.Db.Setting("UX-OrgLeadersOtherGroupsContentOnly")))
                     {
                         return $"<a href=\" /Person2/{LeaderId}\">{LeaderName}</a>";
                     }
-                    else
-                    {
-                        return LeaderName;
-                    }
+                    return LeaderName;
                 case "attendpct":
                     return AttendPct > 0 ? AttendPct.Value.ToString("N1") : "";
                 case "division":

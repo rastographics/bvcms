@@ -12,11 +12,11 @@
     var qb = DbUtil.Db.QueryIsCurrentUser();
     var showAdvanced = !(User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-LimitToolbarForOrgLeaders"));
 }
-@if (showAdvanced)
-{
-    <ul class="dropdown-menu dropdown-menu-large dropdown-menu-right container bluebar-menu-col-1">
-        <li class="col-sm-12">
-            <ul>
+<ul class="dropdown-menu dropdown-menu-large dropdown-menu-right container bluebar-menu-col-1">
+    <li class="col-sm-12">
+        <ul>
+            @if (showAdvanced)
+            {
                 <li class="dropdown-header">Email</li>
                 <li><a href='/Email/@ViewBag.queryid' class="qid">Individuals</a></li>
 
@@ -31,28 +31,33 @@
                 </li>
                 <li class="divider"></li>
                 <li><a href='/Email/@qb.QueryId' class="qid">Create/Edit Saved Draft</a></li>
-                @if ((bool?)ViewBag.ParentOrgContext == true)
-                {
-                    <li class="divider"></li>
-                    <li><a href="/Email/@ViewBag.leadersqid"><span class="org-context">Leaders under this org</span></a></li>
-                    <li><a href="/Email/@ViewBag.membersqid"><span class="org-context">Members under this org</span></a></li>
-                }
-                @if (edit)
-                {
-                    <li class="divider"></li>
-                    if (o.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)
-                    {
-                        <li><a id="sendreminders" href="/Org/Reminders/@oid"><span class="org-context">Send Volunteer Reminders</span></a></li>
-                    }
-                    else
-                    {
-                        <li><a id="sendreminders" href="/Org/Reminders/@oid"><span class="org-context">Send Event Reminders</span></a></li>
-                    }
-                }
+                 if ((bool?) ViewBag.ParentOrgContext == true)
+                 {
+                     <li class="divider"></li>
+                     <li><a href="/Email/@ViewBag.leadersqid"><span class="org-context">Leaders under this org</span></a></li>
+                     <li><a href="/Email/@ViewBag.membersqid"><span class="org-context">Members under this org</span></a></li>
+                 }
+                 if (edit)
+                 {
+                     <li class="divider"></li>
+                     if (o.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)
+                     {
+                         <li><a id="sendreminders" href="/Org/Reminders/@oid"><span class="org-context">Send Volunteer Reminders</span></a></li>
+                     }
+                     else
+                     {
+                         <li><a id="sendreminders" href="/Org/Reminders/@oid"><span class="org-context">Send Event Reminders</span></a></li>
+                     }
+                 }
                 <li class="divider"></li>
                 <li class="dropdown-header">SMS</li>
                 <li><a href="@(twilio ? "/SMS/Options/" + @ViewBag.queryid : "http://docs.touchpointsoftware.com/EmailTexting/TextingTwilio.html")" class="qid">Send Text</a></li>
-            </ul>
-        </li>
-    </ul>
-}
+            }
+            else
+            {
+                <li class="dropdown-header">Email</li>
+                <li><a href='/Email/@ViewBag.queryid?templateID=0&orgid=@oid' class="qid">Email All Members</a></li>
+            }
+        </ul>
+    </li>
+</ul>

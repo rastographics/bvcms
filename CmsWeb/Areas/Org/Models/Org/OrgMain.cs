@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Web;
 using CmsData;
 using CmsWeb.Code;
 using CmsWeb.Models;
@@ -52,12 +53,14 @@ namespace CmsWeb.Areas.Org.Models
             }
         }
 
+        public bool CollapsedOrganizationDetails => HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-OrgLeaderLimitedSearchPerson");
+
         private string _schedule;
         public string Schedule
         {
             get
             {
-                if (_schedule.HasValue()) 
+                if (_schedule.HasValue())
                     return _schedule;
                 var sch = (from sc in DbUtil.Db.OrgSchedules
                     where sc.OrganizationId == Id

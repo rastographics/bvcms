@@ -11,9 +11,12 @@
                     @Html.EditorFor(m => m, "HiddenSearch")
                     @Html.EditorFor(m => m, "HiddenMeta")
                     @Html.EditorFor(m => m, "HiddenPeople")
-                    <div class="table-responsive">
-                        <table id="people" class="table table-condensed">
-                            <thead>
+
+                    @if (!Model.ShowLimitedSearch)
+                    {
+                        <div class="table-responsive">
+                            <table id="people" class="table table-condensed">
+                                <thead>
                                 <tr>
                                     <th>Name</th>
                                     <th>Address</th>
@@ -21,15 +24,35 @@
                                     <th>Age</th>
                                     <th></th>
                                 </tr>
-                            </thead>
-                            <tbody>
+                                </thead>
+                                <tbody>
                                 @for (var n = 0; n < Model.PendingList.Count; n++)
                                 {
-                                    @Html.DisplayFor(m => m.PendingList[n], "Person", new { index = n })
+                                    @Html.DisplayFor(m => m.PendingList[n], "Person", new {index = n})
                                 }
-                            </tbody>
-                        </table>
-                    </div>
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table id="people" class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (var n = 0; n < Model.PendingList.Count; n++)
+                                    {
+                                        @Html.DisplayFor(m => m.PendingList[n], "Person", new { index = n, limitedSearch = true })
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
@@ -40,7 +63,7 @@
             @if (!Model.OnlyOne)
             {
                 <a href="/SearchAdd2/SearchPerson" class="btn btn-default ajax">Another Search</a> @:or
-                if (Model.CanAdd)
+                if (Model.CanAdd && !Model.ShowLimitedSearch)
                 {
                     <a href="/SearchAdd2/NewPerson/@Model.PendingList[Model.PendingList.Count - 1].FamilyId" class="btn btn-default ajax">Add to Last Family</a> @:or
                 }
