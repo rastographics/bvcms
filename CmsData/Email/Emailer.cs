@@ -571,9 +571,8 @@ namespace CmsData
                 }
                 catch (Exception ex)
                 {
-                    Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-
                     var subject = $"sent emails - error:(emailid={emailqueue.Id}) {CmsHost}";
+                    ErrorLog.GetDefault(null).Log(new Error(new Exception(subject, ex)));
                     SendEmail(from, subject, ex.Message, Util.ToMailAddressList(from), to);
                     SendEmail(from, subject, ex.Message, Util.SendErrorsTo(), to);
                 }
@@ -600,17 +599,10 @@ namespace CmsData
                 }
                 catch (Exception ex)
                 {
-                    Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-
                     var subject = $"sent emails - error:(emailid={emailqueue.Id}) {CmsHost}";
-                    SendEmail(from,
-                        subject, ex.Message,
-                        Util.ToMailAddressList(from),
-                        emailqueue.Id);
-                    SendEmail(from,
-                        subject, ex.Message,
-                        Util.SendErrorsTo(),
-                        emailqueue.Id);
+                    ErrorLog.GetDefault(null).Log(new Error(new Exception(subject, ex)));
+                    SendEmail(from, subject, ex.Message, Util.ToMailAddressList(from));
+                    SendEmail(from, subject, ex.Message, Util.SendErrorsTo());
                 }
 #endif
                 }
