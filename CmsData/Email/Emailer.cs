@@ -21,6 +21,7 @@ using System.Text;
 using System.Threading;
 using System.Transactions;
 using System.Web;
+using Elmah;
 using HtmlAgilityPack;
 using SendGrid.Helpers.Mail;
 using TTask = System.Threading.Tasks.Task;
@@ -549,12 +550,12 @@ namespace CmsData
                     select to;
             foreach (var to in q)
             {
-#if DEBUG
+#if DEBUG2
 #else
                 try
                 {
 #endif
-                if (m.OptOuts?.Single(vv => vv.PeopleId == to.PeopleId).OptOutX == true)
+                if (m.OptOuts?.Single(vv => vv.PeopleId == to.PeopleId)?.OptOutX == true)
                     continue;
                 var text = m.DoReplacements(to.PeopleId, to);
                 var aa = m.ListAddresses;
@@ -565,11 +566,13 @@ namespace CmsData
                     to.Sent = DateTime.Now;
                     SubmitChanges();
                 }
-#if DEBUG
+#if DEBUG2
 #else
                 }
                 catch (Exception ex)
                 {
+                    Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+
                     var subject = $"sent emails - error:(emailid={emailqueue.Id}) {CmsHost}";
                     SendEmail(from, subject, ex.Message, Util.ToMailAddressList(from), to);
                     SendEmail(from, subject, ex.Message, Util.SendErrorsTo(), to);
@@ -582,7 +585,7 @@ namespace CmsData
             {
                 foreach (var ma in cc)
                 {
-#if DEBUG
+#if DEBUG2
 #else
                 try
                 {
@@ -592,11 +595,13 @@ namespace CmsData
                         List<MailAddress> mal = new List<MailAddress> {ma};
                         SendEmail(from, emailqueue.Subject, body, mal, emailqueue.Id, cc: cc);
                     }
-#if DEBUG
+#if DEBUG2
 #else
                 }
                 catch (Exception ex)
                 {
+                    Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+
                     var subject = $"sent emails - error:(emailid={emailqueue.Id}) {CmsHost}";
                     SendEmail(from,
                         subject, ex.Message,

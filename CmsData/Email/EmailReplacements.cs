@@ -142,18 +142,22 @@ namespace CmsData
                     aa.Add(Util.TryGetMailAddress(contributionemail));
                 }
 
-                if (emailqueueto.EmailQueue.CCParents == true)
+                if (OptOuts != null && emailqueueto.EmailQueue.CCParents == true)
                 {
-                    var pp = OptOuts.Single(vv => vv.PeopleId == emailqueueto.PeopleId);
-                    if (pp.HhPeopleId.HasValue)
+                    var pp = OptOuts.SingleOrDefault(vv => vv.PeopleId == emailqueueto.PeopleId);
+                    if(pp != null)
                     {
-                        aa.Add(new MailAddress(pp.HhEmail, pp.HhName));
-                        emailqueueto.Parent1 = pp.HhPeopleId;
-                    }
-                    if (pp.HhSpPeopleId.HasValue)
-                    {
-                        aa.Add(new MailAddress(pp.HhSpEmail, pp.HhSpName));
-                        emailqueueto.Parent2 = pp.HhSpPeopleId;
+                        if (pp.HhPeopleId.HasValue)
+                        {
+                            aa.Add(new MailAddress(pp.HhEmail, pp.HhName));
+                            emailqueueto.Parent1 = pp.HhPeopleId;
+                        }
+                        if (pp.HhSpPeopleId.HasValue)
+                        {
+                            aa.Add(new MailAddress(pp.HhSpEmail, pp.HhSpName));
+                            emailqueueto.Parent2 = pp.HhSpPeopleId;
+                        }
+                        
                     }
                 }
                 if (emailqueueto.AddEmail.HasValue())
