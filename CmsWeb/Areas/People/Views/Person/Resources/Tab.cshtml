@@ -1,23 +1,23 @@
 ﻿@using CmsData
 @model CmsWeb.Areas.People.Models.PersonModel
 
-<div class="well m-b-0">
-    <div class="row">
-        <div class="col-lg-12">
-            <ul class="nav nav-pills subnav hidden-sm hidden-xs" data-tabparent="system">
-                @for (int i = 0; i < Model.ResourceTypes.Count; i++)
-            {
-                    <li class="resource-type-tab @(i == 0 ? "active" : null)" data-id="@Model.ResourceTypes[i].ResourceType.ResourceTypeId">
-                        <a href="#resourcetab@(Model.ResourceTypes[i].ResourceType.ResourceTypeId)" data-toggle="tab">
-                            <span>@Model.ResourceTypes[i].ResourceType.Name</span>
-                        </a>
-                    </li>
-                }
-            </ul>
-        </div>
-    </div>
-</div>
-<div class="tab-content">
+<ul class="nav nav-pills subnav hidden-sm hidden-xs" data-tabparent="system">
+    @for (var i = 0; i < Model.ResourceTypes.Count; i++)
+    {
+        <li class="resource-type-tab @(i == 0 ? "active" : null)" data-id="@Model.ResourceTypes[i].ResourceType.ResourceTypeId">
+            <a href="#resourcetab@(Model.ResourceTypes[i].ResourceType.ResourceTypeId)" data-toggle="tab">
+                <span>@Model.ResourceTypes[i].ResourceType.Name</span>
+            </a>
+        </li>
+    }
+</ul>
+<select class="form-control visible-sm-block visible-xs-block nav-select-pills">
+    @for (var i = 0; i < Model.ResourceTypes.Count; i++)
+    {
+        <option value="#resourcetab@(Model.ResourceTypes[i].ResourceType.ResourceTypeId)">@Model.ResourceTypes[i].ResourceType.Name</option>
+    }
+</select>
+<div class="tab-content" style="border: none">
     @if (!Model.ResourceTypes.Any())
     {
         <h3 class="text-center">You have no resources configured.</h3>
