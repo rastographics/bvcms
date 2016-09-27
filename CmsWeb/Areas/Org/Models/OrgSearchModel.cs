@@ -785,7 +785,7 @@ namespace CmsWeb.Areas.Search.Models
             if (!SpecialReportViewModel.CanRunScript(content))
                 throw new Exception("Not Authorized to run this script");
 
-            if (!content.Contains("@OrgIds"))
+            if (!content.Contains("@OrgIds", ignoreCase: true))
                 throw new Exception("missing @OrgIds");
 
             var p = new DynamicParameters();

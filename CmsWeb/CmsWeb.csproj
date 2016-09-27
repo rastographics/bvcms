@@ -988,6 +988,7 @@
     <Content Include="Content\touchpoint\js\onlineregister.min.js" />
     <Content Include="Content\touchpoint\js\people\merge.js" />
     <Content Include="Content\touchpoint\js\search\export-query.js" />
+    <Content Include="Content\touchpoint\js\tranhistory.js" />
     <Content Include="Content\touchpoint\js\volunteer\calendar.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-sweetalert\js\sweetalert.min.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-sweetalert\css\sweetalert.css" />
@@ -1541,6 +1542,7 @@
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\EditorTemplates\Value.cshtml" />
     <None Include="Areas\Dialog\Views\OrgMemberDialog\ExtraValue.cshtml" />
     <Content Include="Areas\Dialog\Views\AddResource\Index.cshtml" />
+    <Content Include="Areas\Dialog\Views\TransactionHistory\TransHistory.cshtml" />
     <None Include="Areas\Finance\Views\FinanceReports\TotalsByAgeRange.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\DepositTotalsForDates.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\DepositTotalsForDatesResults.cshtml" />

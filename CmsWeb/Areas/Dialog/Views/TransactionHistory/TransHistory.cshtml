@@ -1,0 +1,30 @@
+﻿@model CmsWeb.Areas.Dialog.Models.TransactionHistoryModel
+@{
+  Layout = ViewExtensions2.TouchPointLayout();
+  ViewBag.Title = "TranHistory";
+  ViewBag.PageHeader = Model.Name;
+  ViewBag.PageSubHeader = Model.Org;
+}
+@section head{
+  @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+  @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
+}
+<div class="row">
+  <div class="col-md-9">
+    <div id="transactions">
+      @{ Html.RenderPartial("History", Model.FetchHistory()); }
+    </div>
+  </div>
+</div>
+@section scripts
+{
+  @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
+  @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
+  @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
+  @Fingerprint.Script("/Content/touchpoint/js/tranhistory.js")
+  <script type="text/javascript">
+    $(function() {
+      $('#history-tabs').tabdrop();
+    });
+  </script>
+}

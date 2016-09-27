@@ -1,57 +1,64 @@
 ﻿@model IEnumerable<CmsWeb.Areas.Dialog.Models.TransactionHistoryModel.TransactionInfo>
-@using CmsWeb
 @using UtilityExtensions
 <div class="row">
-    <div class="col-sm-12">
-        @if (User.IsInRole("Admin") && ViewBag.IsMember == false)
-        {
-            <div class="pull-right">
-                <a id="deleteall" class="btn btn-danger" href="/TransactionHistory/DeleteAll/@ViewBag.orgid/@ViewBag.PeopleId">Delete all Enrollment History</a>
-            </div>
-        }
-    </div>
+  <div class="col-sm-12">
+    @if (User.IsInRole("Admin") && ViewBag.IsMember == false)
+    {
+      <div class="pull-right">
+        <a id="deleteall" class="btn btn-danger" href="/TransactionHistory/DeleteAll/@ViewBag.orgid/@ViewBag.PeopleId">Delete all Enrollment History</a>
+      </div>
+    }
+    @if (User.IsInRole("Admin"))
+    {
+      <div class="pull-right">
+        <a id="repair" class="btn btn-default btn-sm" href="/TransactionHistory/Repair/@ViewBag.orgid/@ViewBag.PeopleId">Repair Transactions</a>
+      </div>
+    }
+  </div>
 </div>
 <div class="table-responsive">
-    <table id="history" class="table table-striped">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Enroll Id</th>
-                <th>Tran Date</th>
-                <th>Tran Type</th>
-                <th>Member Type</th>
-                <th>Pending</th>
-                <th>Enroll Date</th>
-                <th>Next Tran Date</th>
-                @if (User.IsInRole("Developer"))
-                {
-                    <th style="width: 50px;">Actions</th>
-                }
-              <th>UserId</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var a in Model)
-            {
-                <tr>
-                    <td>@a.TransactionId</td>
-                    <td>@a.EnrollmentTransactionId</td>
-                    <td><a id="d.@a.TransactionId" data-pk="d.@a.TransactionId" data-title="Transaction Date" class="clickDate">@a.TransactionDate.ToString("g")</a></td>
-                    <td>@a.TransactionType</td>
-                    <td>@a.MemberType</td>
-                    <td>@a.Pending</td>
-                    <td>@a.EnrollmentDate.ToString2("g")</td>
-                    <td>@a.NextTranChangeDate.ToString2("g")</td>
-                    @if (User.IsInRole("Developer"))
-                    {
-                        <td>
-                            <a class="deltran btn btn-danger btn-sm" href="/TransactionHistory/Delete/@a.TransactionId"><i class="fa fa-trash"></i> Delete</a>
-                        </td>
-                    }
-                  <td>@a.UserId</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+  <table id="history" class="table table-striped">
+    <thead>
+    <tr>
+      <th>Id</th>
+      <th>Enroll Id</th>
+      <th>Tran Date</th>
+      <th>Tran Type</th>
+      <th>Member Type</th>
+      <th>Pending</th>
+      <th>Enroll Date</th>
+      <th>Next Tran Date</th>
+      @if (User.IsInRole("Developer"))
+      {
+        <th style="width: 50px;">Actions</th>
+      }
+      <th>UserId</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var a in Model)
+    {
+      <tr>
+        <td>@a.TransactionId</td>
+        <td>@a.EnrollmentTransactionId</td>
+        <td>
+          <a id="d.@a.TransactionId" data-pk="d.@a.TransactionId" data-title="Transaction Date" class="clickDate">@a.TransactionDate.ToString("g")</a>
+        </td>
+        <td>
+          <span @(a.BadTransaction ? "style=color:red" : "")>@a.TransactionType</span></td>
+        <td>@a.MemberType</td>
+        <td>@a.Pending</td>
+        <td>@a.EnrollmentDate.ToString2("g")</td>
+        <td>@a.NextTranChangeDate.ToString2("g")</td>
+        @if (User.IsInRole("Developer"))
+        {
+          <td>
+            <a class="deltran btn btn-danger btn-sm" href="/TransactionHistory/Delete/@a.TransactionId"><i class="fa fa-trash"></i> Delete</a>
+          </td>
+        }
+        <td>@a.UserId</td>
+      </tr>
+    }
+    </tbody>
+  </table>
 </div>
-        

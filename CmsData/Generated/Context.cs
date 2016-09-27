@@ -2724,6 +2724,19 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.EnrollmentHistory", IsComposable = true)]
+		public IQueryable< View.EnrollmentHistory > EnrollmentHistory(
+            [Parameter(DbType="int")] int? pid,
+            [Parameter(DbType="int")] int? orgid
+            )
+		{
+			return this.CreateMethodCallQuery< View.EnrollmentHistory>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid,
+                orgid
+                );
+		}
+
 		[Function(Name="dbo.FamilyGiver", IsComposable = true)]
 		public IQueryable< View.FamilyGiver > FamilyGiver(
             [Parameter(DbType="datetime")] DateTime? fd,

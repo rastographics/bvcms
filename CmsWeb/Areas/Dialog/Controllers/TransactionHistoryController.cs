@@ -20,12 +20,27 @@ namespace CmsWeb.Areas.Dialog.Controllers
             ViewBag.IsMember = DbUtil.Db.OrganizationMembers.Any(mm => mm.OrganizationId == oid && mm.PeopleId == id);
             return View(m);
         }
+        [Route("~/TransactionHistory/Enrollment/{id:int}/{oid:int}")]
+        public ActionResult TransHistory(int id, int oid)
+        {
+            var m = new TransactionHistoryModel(id, oid);
+            ViewBag.orgid = oid;
+            ViewBag.PeopleId = id;
+            ViewBag.IsMember = DbUtil.Db.OrganizationMembers.Any(mm => mm.OrganizationId == oid && mm.PeopleId == id);
+            return View(m);
+        }
+        [Route("Repair/{orgid:int}/{peopleid:int}")]
+        public ActionResult Repair(int orgid, int peopleid)
+        {
+            DbUtil.Db.RepairEnrollmentTransaction(orgid, peopleid);
+            var m = new TransactionHistoryModel(peopleid, orgid);
+            return View("History", m.FetchHistory());
+        }
         public ActionResult Delete(int id)
         {
             var t = DbUtil.Db.EnrollmentTransactions.Single(tt => tt.TransactionId == id);
+            DbUtil.Db.DeleteEnrollmentTransaction(id);
             var m = new TransactionHistoryModel(t.PeopleId, t.OrganizationId);
-            DbUtil.Db.EnrollmentTransactions.DeleteOnSubmit(t);
-            DbUtil.Db.SubmitChanges();
             return View("History", m.FetchHistory());
         }
         [Route("DeleteAll/{orgid:int}/{peopleid:int}")]

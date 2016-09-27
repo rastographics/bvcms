@@ -562,6 +562,7 @@
     <Compile Include="Generated\Functions\DownlineLevel.cs" />
     <Compile Include="Generated\Functions\DownlineSingleTrace.cs" />
     <Compile Include="Generated\Functions\DownlineSummary.cs" />
+    <Compile Include="Generated\Functions\EnrollmentHistory.cs" />
     <Compile Include="Generated\Functions\FamilyGiver.cs" />
     <Compile Include="Generated\Functions\FamilyMember.cs" />
     <Compile Include="Generated\Functions\FilterOnlineReg.cs" />

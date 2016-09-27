@@ -1,134 +1,78 @@
 ﻿@model CmsWeb.Areas.Dialog.Models.TransactionHistoryModel
-@using CmsWeb
 @using UtilityExtensions
 @{
-    Layout = ViewExtensions2.TouchPointLayout();
-    ViewBag.Title = "Ministry";
-    ViewBag.PageHeader = Model.Name;
-    ViewBag.PageSubHeader = Model.Org;
+  Layout = ViewExtensions2.TouchPointLayout();
+  ViewBag.Title = "Ministry";
+  ViewBag.PageHeader = Model.Name;
+  ViewBag.PageSubHeader = Model.Org;
 }
 @section head{
-    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
-    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
+  @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+  @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
 }
 <div class="row">
-    <div class="col-md-9">
-        <ul class="nav nav-tabs" id="history-tabs">
-            <li class="active"><a href="#attendance" aria-controls="attendance" data-toggle="tab">Attendance History</a></li>
-            <li><a href="#transactions" aria-controls="transactions" data-toggle="tab">Transaction History</a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane fade in active" id="attendance">
-                <div class="table-responsive">
-                    <table id="attends" class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Flag</th>
-                                <th>Wk</th>
-                                <th>Sch</th>
-                                <th>Day</th>
-                                <th>Meeting Date</th>
-                                <th>Attend Type</th>
-                                <th>Member Type</th>
-                                <th>Other Attends</th>
-                                <th>Other OrgId</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var a in Model.FetchAttends())
-                            {
-                                <tr>
-                                    <td>@a.Indicator </td>
-                                    <td>@a.AttendanceFlag </td>
-                                  <td>@a.MeetingDate.GetWeekNumber()@a.AttendCredit</td>
-                                    <td>@a.ScheduleType</td>
-                                    <td>@a.MeetingDate.DayOfWeek.ToString().Substring(0, 3)</td>
-                                    <td>@a.MeetingDate.ToString("g") </td>
-                                    <td>@a.AttendType </td>
-                                    <td>@a.MemberType </td>
-                                    <td>@a.OtherAttends </td>
-                                    <td>@a.OtherOrgId </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="transactions">
-                @{Html.RenderPartial("History", Model.FetchHistory()); }
-            </div>
+  <div class="col-md-9">
+    <ul class="nav nav-tabs" id="history-tabs">
+      <li class="active">
+        <a href="#attendance" aria-controls="attendance" data-toggle="tab">Attendance History</a>
+      </li>
+      <li>
+        <a href="#transactions" aria-controls="transactions" data-toggle="tab">Transaction History</a>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div class="tab-pane fade in active" id="attendance">
+        <div class="table-responsive">
+          <table id="attends" class="table table-striped">
+            <thead>
+            <tr>
+              <th></th>
+              <th>Flag</th>
+              <th>Wk</th>
+              <th>Sch</th>
+              <th>Day</th>
+              <th>Meeting Date</th>
+              <th>Attend Type</th>
+              <th>Member Type</th>
+              <th>Other Attends</th>
+              <th>Other OrgId</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var a in Model.FetchAttends())
+            {
+              <tr>
+                <td>@a.Indicator </td>
+                <td>@a.AttendanceFlag </td>
+                <td>@a.MeetingDate.GetWeekNumber()@a.AttendCredit</td>
+                <td>@a.ScheduleType</td>
+                <td>@a.MeetingDate.DayOfWeek.ToString().Substring(0, 3)</td>
+                <td>@a.MeetingDate.ToString("g") </td>
+                <td>@a.AttendType </td>
+                <td>@a.MemberType </td>
+                <td>@a.OtherAttends </td>
+                <td>@a.OtherOrgId </td>
+              </tr>
+            }
+            </tbody>
+          </table>
         </div>
+      </div>
+      <div class="tab-pane fade" id="transactions">
+        @{ Html.RenderPartial("History", Model.FetchHistory()); }
+      </div>
     </div>
+  </div>
 </div>
 @section scripts
 {
-    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
-    <script type="text/javascript">
-        $(function () {
-            $('#history-tabs').tabdrop();
-
-            $('.clickDate').editable({
-                mode: 'popup',
-                type: 'text',
-                url: '/TransactionHistory/Edit/',
-                params: function (params) {
-                    var data = {};
-                    data['id'] = params.pk;
-                    data['value'] = params.value;
-                    return data;
-                }
-            });
-
-            $("body").on("click", 'a.deltran', function (ev) {
-                ev.preventDefault();
-                var url = $(this).attr("href");
-                swal({
-                    title: "Are you sure?",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonClass: "btn-danger",
-                    confirmButtonText: "Yes, delete it!",
-                    closeOnConfirm: false
-                },
-                function () {
-                    $.post(url, {}, function (ret) {
-                        $("#history").replaceWith(ret);
-                        swal({
-                            title: "Deleted!",
-                            type: "success"
-                        });
-                    });
-                });
-                return false;
-            });
-
-            $("body").on("click", '#deleteall', function (ev) {
-                ev.preventDefault();
-                var url = $(this).attr("href");
-                swal({
-                    title: "Are you sure you want to delete all transactions?",
-                    text: "This will not affect attendance.",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonClass: "btn-danger",
-                    confirmButtonText: "Yes, delete them all!",
-                    closeOnConfirm: false
-                },
-                function () {
-                    $.post(url, {}, function () {
-                        $("#history").replaceWith('');
-                        swal({
-                            title: "Deleted!",
-                            text: "You will need to refresh your organization page to see the changes there.",
-                            type: "success"
-                        });
-                    });
-                });
-                return false;
-            });
-        });
-    </script>
+  @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
+  @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
+  @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
+  @Fingerprint.Script("/Content/touchpoint/js/tranhistory.js")
+  <script type="text/javascript">
+    $(function() {
+      $('#history-tabs').tabdrop();
+    });
+  </script>
 }

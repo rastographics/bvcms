@@ -80,24 +80,26 @@ namespace CmsWeb.Areas.Dialog.Models
             public DateTime? EnrollmentDate { get; set; }
             public DateTime? NextTranChangeDate { get; set; }
             public int? UserId { get; set; }
+            public bool BadTransaction { get; set; }
         }
         public IEnumerable<TransactionInfo> FetchHistory()
         {
-            var q2 = from et in DbUtil.Db.EnrollmentTransactions
+            var q2 = from et in DbUtil.Db.EnrollmentHistory(id, oid)
                      where et.PeopleId == id && et.OrganizationId == oid
                      where et.TransactionStatus == false
-                     orderby et.TransactionDate descending
+                     orderby et.TransactionDate descending, et.TransactionTypeId descending 
                      select new TransactionInfo
                      {
                          TransactionId = et.TransactionId,
                          EnrollmentTransactionId = et.EnrollmentTransactionId,
                          TransactionDate = et.TransactionDate,
                          TransactionType = et.TransactionTypeId == 1 ? "Join" : et.TransactionTypeId == 3 ? "Change" : "Drop",
-                         MemberType = et.MemberType.Description,
+                         MemberType = et.MemberType,
                          Pending = et.Pending == true ? "pending" : "",
                          EnrollmentDate = et.EnrollmentDate,
                          NextTranChangeDate = et.NextTranChangeDate,
-                         UserId = et.CreatedBy
+                         UserId = et.CreatedBy,
+                         BadTransaction = et.Isgood == 0
                      };
             return q2;
         }

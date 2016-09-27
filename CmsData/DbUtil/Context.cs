@@ -1112,6 +1112,18 @@ namespace CmsData
             var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid, pid);
             return ((int)(result.ReturnValue));
         }
+        [Function(Name = "dbo.DeleteEnrollmentTransaction")]
+        public int DeleteEnrollmentTransaction([Parameter(DbType = "Int")] int id)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), id);
+            return ((int)(result.ReturnValue));
+        }
+        [Function(Name = "dbo.RepairEnrollmentTransaction")]
+        public int RepairEnrollmentTransaction([Parameter(DbType = "Int")] int oid, [Parameter(DbType = "Int")] int pid)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid, pid);
+            return ((int)(result.ReturnValue));
+        }
         [Function(Name = "dbo.PopulateTempTag")]
         public int PopulateTempTag([Parameter(DbType = "Int")] int id, [Parameter(DbType = "VARCHAR(MAX)")] string list)
         {
