@@ -550,33 +550,26 @@ namespace CmsData
                     select to;
             foreach (var to in q)
             {
-#if DEBUG2
-#else
                 try
                 {
-#endif
-                if (m.OptOuts != null && m.OptOuts.Any(vv => vv.PeopleId == to.PeopleId && vv.OptOutX == true))
-                    continue;
-                var text = m.DoReplacements(to.PeopleId, to);
-                var aa = m.ListAddresses;
+                    if (m.OptOuts != null && m.OptOuts.Any(vv => vv.PeopleId == to.PeopleId && vv.OptOutX == true))
+                        continue;
+                    var text = m.DoReplacements(to.PeopleId, to);
+                    var aa = m.ListAddresses;
 
-                if (Setting("sendemail", "true") != "false")
-                {
-                    SendEmail(from, emailqueue.Subject, text, aa, to, cc);
-                    to.Sent = DateTime.Now;
-                    SubmitChanges();
-                }
-#if DEBUG2
-#else
+                    if (Setting("sendemail", "true") != "false")
+                    {
+                        SendEmail(from, emailqueue.Subject, text, aa, to, cc);
+                        to.Sent = DateTime.Now;
+                        SubmitChanges();
+                    }
                 }
                 catch (Exception ex)
                 {
                     var subject = $"sent emails - error:(emailid={emailqueue.Id}) {CmsHost}";
                     ErrorLog.GetDefault(null).Log(new Error(new Exception(subject, ex)));
                     SendEmail(from, subject, ex.Message, Util.ToMailAddressList(from), to);
-                    SendEmail(from, subject, ex.Message, Util.SendErrorsTo(), to);
                 }
-#endif
             }
 
             // Handle CC MailAddresses.  These do not get DoReplacement support.
@@ -584,27 +577,20 @@ namespace CmsData
             {
                 foreach (var ma in cc)
                 {
-#if DEBUG2
-#else
-                try
-                {
-#endif
-                    if (Setting("sendemail", "true") != "false")
+                    try
                     {
-                        List<MailAddress> mal = new List<MailAddress> {ma};
-                        SendEmail(from, emailqueue.Subject, body, mal, emailqueue.Id, cc: cc);
+                        if (Setting("sendemail", "true") != "false")
+                        {
+                            List<MailAddress> mal = new List<MailAddress> {ma};
+                            SendEmail(from, emailqueue.Subject, body, mal, emailqueue.Id, cc: cc);
+                        }
                     }
-#if DEBUG2
-#else
-                }
-                catch (Exception ex)
-                {
-                    var subject = $"sent emails - error:(emailid={emailqueue.Id}) {CmsHost}";
-                    ErrorLog.GetDefault(null).Log(new Error(new Exception(subject, ex)));
-                    SendEmail(from, subject, ex.Message, Util.ToMailAddressList(from));
-                    SendEmail(from, subject, ex.Message, Util.SendErrorsTo());
-                }
-#endif
+                    catch (Exception ex)
+                    {
+                        var subject = $"sent emails - error:(emailid={emailqueue.Id}) {CmsHost}";
+                        ErrorLog.GetDefault(null).Log(new Error(new Exception(subject, ex)));
+                        SendEmail(from, subject, ex.Message, Util.ToMailAddressList(from));
+                    }
                 }
             }
 
