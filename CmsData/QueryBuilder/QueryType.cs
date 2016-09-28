@@ -124,6 +124,7 @@ namespace CmsData
         IsInactiveMemberOf,
         IsPendingMemberOf,
         IsPreviousMemberOf,
+        IsMemberOfDirectory,
         IsMemberOf,
         IsProspectOf,
         IsRecentGiver,

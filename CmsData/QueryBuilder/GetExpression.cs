@@ -101,6 +101,7 @@ namespace CmsData
                 { QueryType.IsFamilyPledger, IsFamilyPledger },
                 { QueryType.IsHeadOfHousehold, IsHeadOfHousehold },
                 { QueryType.IsInactiveMemberOf, IsInactiveMemberOf },
+                { QueryType.IsMemberOfDirectory, IsMemberOfDirectory },
                 { QueryType.IsMemberOf, IsMemberOf },
                 { QueryType.IsPendingMemberOf, IsPendingMemberOf },
                 { QueryType.IsPreviousMemberOf, IsPreviousMemberOf },

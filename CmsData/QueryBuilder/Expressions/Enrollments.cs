@@ -31,6 +31,28 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+        internal Expression IsMemberOfDirectory()
+        {
+            Expression<Func<Person, bool>> pred = p =>
+                    p.OrganizationMembers.Any(m =>
+                    m.Organization.PublishDirectory > 0
+                    && (m.MemberTypeId != MemberTypeCode.InActive 
+                        || m.Organization.OrganizationExtras.Any(ev => 
+                            ev.Field == "IncludeInactiveInDirectory" && ev.BitValue == true))
+                    && (m.MemberTypeId != MemberTypeCode.Prospect
+                        || m.Organization.OrganizationExtras.Any(ev => 
+                            ev.Field == "IncludeProspectInDirectory" && ev.BitValue == true))
+                    && m.OrgMemMemTags.All(vv => vv.MemberTag.Name != "DoNotPublish")
+                    && (m.Pending ?? false) == false
+                    && (OrganizationInt == 0 || m.OrganizationId == OrganizationInt)
+                    && (DivisionInt == 0 || m.Organization.DivOrgs.Any(t => t.DivId == DivisionInt))
+                    && (ProgramInt == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == ProgramInt)))
+                    );
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            if (!(op == CompareType.Equal && CodeIds == "1"))
+                expr = Expression.Not(expr);
+            return expr;
+        }
         internal Expression AttendTypeIds()
         {
             Expression<Func<Person, bool>> pred;

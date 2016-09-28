@@ -82,9 +82,9 @@ namespace CmsWeb.Areas.Search.Models
             {
                 if (!CanView.HasValue)
                     CanView = HttpContext.Current.User.IsInRole("Admin") || DbUtil.Db.PeopleQuery2($@"
-IsMemberOf( Org={OrgId} ) = 1 
-AND SmallGroup( Org={OrgId} ) <> 'DoNotPublish' 
+IsMemberOfDirectory( Org={OrgId} ) = 1 
 AND PeopleId = {Util.UserPeopleId}").Any();
+                //HasDirectory = (om.Organization.PublishDirectory ?? 0) > 0,
 
                 TemplateName = Util.PickFirst(
                     Organization.GetExtra(DbUtil.Db, OrgId.Value, PictureDirectoryTemplateName),
@@ -97,8 +97,7 @@ AND PeopleId = {Util.UserPeopleId}").Any();
             {
                 if (!CanView.HasValue)
                     CanView = HttpContext.Current.User.IsInRole("Admin") || DbUtil.Db.PeopleQuery2($@"
-IsMemberOf( Div={DivId} ) = 1 
-AND SmallGroup( Div={DivId} ) <> 'DoNotPublish' 
+IsMemberOfDirectory( Div={DivId} ) = 1 
 AND PeopleId = {Util.UserPeopleId}").Any();
 
                 TemplateName = PictureDirectoryTemplateName + "-" + Selector;
@@ -169,13 +168,9 @@ AND PeopleId = {Util.UserPeopleId}").Any();
             else if (StatusFlag.HasValue())
                 qmembers = DbUtil.Db.PeopleQuery2($"StatusFlag = '{StatusFlag}'");
             else if (OrgId.HasValue)
-                qmembers = DbUtil.Db.PeopleQuery2($@"
-                    IsMemberOf( Org={OrgId} ) = 1 
-                    AND SmallGroup( Org={OrgId} ) <> 'DoNotPublish'");
+                qmembers = DbUtil.Db.PeopleQuery2($"IsMemberOfDirectory( Org={OrgId} ) = 1 ");
             else if (DivId.HasValue)
-                qmembers = DbUtil.Db.PeopleQuery2($@"
-                    IsMemberOf( Div={DivId} ) = 1 
-                    AND SmallGroup( Div={DivId} ) <> 'DoNotPublish'");
+                qmembers = DbUtil.Db.PeopleQuery2($"IsMemberOfDirectory( Div={DivId} ) = 1");
             else
                 qmembers = DbUtil.Db.PeopleQuery2("PeopleId = 0");
 

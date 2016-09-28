@@ -19,6 +19,7 @@ namespace CmsWeb.Areas.Dialog.Models
         public List<OrgMemMemTag> OrgMemMemTags;
         public bool IsMissionTrip;
         public TransactionSummary TransactionSummary;
+        public string NewGroup { get; set; }
         private int? orgId;
         private int? peopleId;
 
@@ -402,6 +403,16 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
                     }
                 }
             }
+        }
+        public string AddNewSmallGroup(int pid)
+        {
+            var o = DbUtil.Db.LoadOrganizationById(OrgId);
+            var mt = new MemberTag { Name = NewGroup };
+            o.MemberTags.Add(mt);
+            DbUtil.Db.SubmitChanges();
+            DbUtil.LogActivity("OrgMem AddNewSubGroup " + NewGroup, OrgId);
+            NewGroup = null;
+            return SmallGroupChanged(mt.Id, true);
         }
     }
 }

@@ -149,6 +149,13 @@ namespace CmsWeb.Areas.Dialog.Controllers
             m.Drop();
             return Content("Done");
         }
+        [HttpPost, Route("AddNewSmallGroup/{id:int}")]
+        public ActionResult AddNewSmallGroup(int id, OrgMemberModel m)
+        {
+            m.AddNewSmallGroup(id);
+            ModelState.Clear();
+            return View("Tabs/Groups", m);
+        }
         [HttpPost, Route("ExtraValues/{oid}/{pid}")]
         public ActionResult ExtraValues(int oid, int pid)
         {

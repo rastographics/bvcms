@@ -38,7 +38,9 @@
         </ul>
         <div class="tab-content">
           @Html.Partial("Tabs/MemberData", Model)
-          @Html.Partial("Tabs/Groups", Model)
+          <div class="tab-pane" id="membergroups">
+            @Html.Partial("Tabs/Groups", Model)
+          </div>
           @Html.Partial("Tabs/Questions", Model)
           @Html.Partial("Tabs/Notes", Model)
           @if (developer)

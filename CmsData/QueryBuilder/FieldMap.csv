@@ -112,6 +112,7 @@ SmallGroup,StringEqualOrStartsWith,,,,Enrollments,In Sub-Group,"Program,Division
 NumberOfMemberships,NullInteger,,,,Enrollments,Number of Enrollments,"Program,Division,Organization,Schedule","Enter a number of Enrollments, select a Comparison and select Program/Division/Organization."
 RecentIncompleteRegistrations,Bit,,,,Enrollments,Recent Incomplete Registrations,"Days,Program,Division,Organization",Select Days to look back and Program/Division/Organization from the list and specify True or False.
 HasBalance,Bit,,,,Enrollments,Has Balance In Org,"Program,Division,Organization",Select True or False for Members with a Balance in the selected Program or Divison or Organization
+IsMemberOfDirectory,Bit,,,,Enrollments,Is Member Of Directory,"Program,Division,Organization",Select Program/Division/Organization from the list of those in Directory
 WasMemberAsOf,Bit,,,,EnrollmentHistory,Was Member As Of,"Program,Division,Organization,OrgType,StartDate,EndDate","Pick the date range and select Program/Division/ Organization, Org Type."
 OrgMemberJoinedAsOf,Bit,,,,EnrollmentHistory,Org Member Joined As Of,"Program,Division,Organization,OrgType,StartDate,EndDate","Pick the date range and select Program/Division/ Organization, Org Type."
 WasRecentMemberOf,Bit,,,,EnrollmentHistory,Was Recent Member Of,"Days,Program,Division,Organization,OrgType","Pick the number of days to look back and select Program/Division/ Organization, Org Type."

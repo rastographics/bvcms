@@ -1141,7 +1141,8 @@ namespace CmsData
             "http://sendlink2",
             "https://sendlink2",
 
-            "{emailhref}"
+            "{emailhref}",
+            "mailto"
         };
         public static bool IsSpecialLink(string link)
         {
