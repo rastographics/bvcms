@@ -800,7 +800,7 @@ namespace CmsWeb.Areas.Search.Models
                 : Util.ConnectionStringReadOnly;
             var cn = new SqlConnection(cs);
             cn.Open();
-            return cn.ExecuteReader(content, p);
+            return cn.ExecuteReader(content, p, commandTimeout: 1200);
         }
 
         public static OrgSearchModel DecodedJson(string parameter)
