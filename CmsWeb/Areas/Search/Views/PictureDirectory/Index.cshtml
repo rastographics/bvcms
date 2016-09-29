@@ -22,6 +22,7 @@
           @Html.HiddenFor(vv => vv.CanView)
           @Html.HiddenFor(vv => vv.Selector)
           @Html.HiddenFor(vv => vv.OrgId)
+          @Html.HiddenFor(vv => vv.DivId)
           @Html.HiddenFor(vv => vv.StatusFlag)
           @Html.HiddenFor(vv => vv.TemplateName)
           @Html.HiddenFor(vv => vv.SqlName)
@@ -32,7 +33,7 @@
                 @Html.TextBoxFor(vv => vv.Name, new {title = "Part of the Name", @class = "form-control"})
               </div>
               <div class="input-group">
-                <a class="btn btn-default" href="/PictureDirectory">Clear</a>
+                <a class="btn btn-default" href="@Model.Url">Clear</a>
                 <a id="search" class="btn btn-primary ajax" href="/PictureDirectory/Results">Search</a>
               </div>
             </div>

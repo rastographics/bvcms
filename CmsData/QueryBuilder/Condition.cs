@@ -233,6 +233,7 @@ namespace CmsData
         private bool includeDeceased;
         public bool ParentsOf { get; set; }
         public bool PlusParentsOf { get; set; }
+        public bool FromDirectory { get; set; }
         public Expression<Func<Person, bool>> Predicate(CMSDataContext db)
         {
             db.CopySession();
@@ -251,7 +252,7 @@ namespace CmsData
                 tree = CompareConstant(parameter, "PeopleId", CompareType.NotEqual, 0);
             if (includeDeceased == false)
                 tree = Expression.And(tree, CompareConstant(parameter, "IsDeceased", CompareType.NotEqual, true));
-            if (Util2.OrgLeadersOnly)
+            if (Util2.OrgLeadersOnly && !FromDirectory)
                 tree = Expression.And(OrgLeadersOnly(db, parameter), tree);
             return Expression.Lambda<Func<Person, bool>>(tree, parameter);
         }

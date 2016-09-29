@@ -30,6 +30,7 @@ namespace CmsWeb.Areas.Search.Models
         public int? OrgId { get; set; }
         public int? DivId { get; set; }
         public string Selector { get; set; }
+        public string Url { get; set; }
 
         private string template;
         private string sql;
@@ -45,6 +46,7 @@ namespace CmsWeb.Areas.Search.Models
         public PictureDirectoryModel(string id)
             : base("Name", "asc")
         {
+            Url = $"/PictureDirectory/{id}";
             if (Regex.IsMatch(id, @"\Ad\d+\z", RegexOptions.IgnoreCase))
                 DivId = id.Substring(1).ToInt();
             else if(id.HasValue() && id.GetDigits() == id)
@@ -83,7 +85,7 @@ namespace CmsWeb.Areas.Search.Models
                 if (!CanView.HasValue)
                     CanView = HttpContext.Current.User.IsInRole("Admin") || DbUtil.Db.PeopleQuery2($@"
 IsMemberOfDirectory( Org={OrgId} ) = 1 
-AND PeopleId = {Util.UserPeopleId}").Any();
+AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
                 //HasDirectory = (om.Organization.PublishDirectory ?? 0) > 0,
 
                 TemplateName = Util.PickFirst(
@@ -98,7 +100,7 @@ AND PeopleId = {Util.UserPeopleId}").Any();
                 if (!CanView.HasValue)
                     CanView = HttpContext.Current.User.IsInRole("Admin") || DbUtil.Db.PeopleQuery2($@"
 IsMemberOfDirectory( Div={DivId} ) = 1 
-AND PeopleId = {Util.UserPeopleId}").Any();
+AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
 
                 TemplateName = PictureDirectoryTemplateName + "-" + Selector;
                 if (!DbUtil.Db.Contents.Any(vv => vv.Name == TemplateName && vv.TypeID == ContentTypeCode.TypeText))
@@ -166,11 +168,11 @@ AND PeopleId = {Util.UserPeopleId}").Any();
                 qmembers = DbUtil.Db.PeopleQuery2("PeopleId = 0");
             }
             else if (StatusFlag.HasValue())
-                qmembers = DbUtil.Db.PeopleQuery2($"StatusFlag = '{StatusFlag}'");
+                qmembers = DbUtil.Db.PeopleQuery2($"StatusFlag = '{StatusFlag}'", fromDirectory: true);
             else if (OrgId.HasValue)
-                qmembers = DbUtil.Db.PeopleQuery2($"IsMemberOfDirectory( Org={OrgId} ) = 1 ");
+                qmembers = DbUtil.Db.PeopleQuery2($"IsMemberOfDirectory( Org={OrgId} ) = 1 ", fromDirectory: true);
             else if (DivId.HasValue)
-                qmembers = DbUtil.Db.PeopleQuery2($"IsMemberOfDirectory( Div={DivId} ) = 1");
+                qmembers = DbUtil.Db.PeopleQuery2($"IsMemberOfDirectory( Div={DivId} ) = 1", fromDirectory: true);
             else
                 qmembers = DbUtil.Db.PeopleQuery2("PeopleId = 0");
 

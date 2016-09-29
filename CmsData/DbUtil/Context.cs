@@ -203,12 +203,12 @@ namespace CmsData
             return q;
         }
 
-        public IQueryable<Person> PeopleQuery2(object query)
+        public IQueryable<Person> PeopleQuery2(object query, bool fromDirectory = false)
         {
             return PeopleQuery2(query.ToString());
         }
 
-        public IQueryable<Person> PeopleQuery2(string query)
+        public IQueryable<Person> PeopleQuery2(string query, bool fromDirectory = false)
         {
             if (query.AllDigits())
                 query = "peopleid=" + query;
@@ -234,7 +234,7 @@ namespace CmsData
             if (qB == null)
             {
                 if(query.HasValue())
-                    return PeopleQueryCode(query);
+                    return PeopleQueryCode(query, fromDirectory);
                 qB = MatchNothing();
             }
             var c = qB.ToClause();
@@ -245,9 +245,11 @@ namespace CmsData
                 q = PersonQueryParents(q);
             return q;
         }
-        public IQueryable<Person> PeopleQueryCode(string code)
+        public IQueryable<Person> PeopleQueryCode(string code, bool fromDirectory = false)
         {
             var c = Condition.Parse(code);
+            if (fromDirectory)
+                c.FromDirectory = true;
             var q = People.Where(c.Predicate(this));
             if (c.PlusParentsOf)
                 q = PersonQueryPlusParents(q);
