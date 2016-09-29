@@ -297,6 +297,7 @@ namespace CmsWeb.Models
                 {
                     user = u;
                     impersonating = true;
+                    HttpContext.Current.Session["IsNonFinanceImpersonator"] = "true";
                     break;
                 }
 

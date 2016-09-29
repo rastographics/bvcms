@@ -181,6 +181,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost, MyRequireHttps]
         public ActionResult LogOn(AccountInfo m)
         {
+            Session.Remove("IsNonFinanceImpersonator");
             TryLoadAlternateShell();
             if (m.ReturnUrl.HasValue())
             {

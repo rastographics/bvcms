@@ -86,6 +86,8 @@ namespace CmsWeb.Areas.People.Controllers
                 return Content("cannot impersonate finance");
             Session.Remove("CurrentTag");
             Session.Remove("preferences");
+            if (!User.IsInRole("Finance"))
+                Session["IsNonFinanceImpersonator"] = "true";
             FormsAuthentication.SetAuthCookie(user.Username, false);
             AccountModel.SetUserInfo(user.Username, Session);
             Util.UserPeopleId = user.PeopleId;

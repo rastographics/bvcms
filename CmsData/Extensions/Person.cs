@@ -957,7 +957,11 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                         Family.HeadOfHouseholdId,
                         Family.HeadOfHouseholdSpouseId })
                         .Contains(Util.UserPeopleId);
-                    canUserSeeGiving = sameperson || infinance || ishead;
+
+                    if ((string) HttpContext.Current.Session["IsNonFinanceImpersonator"] == "true")
+                        canUserSeeGiving = false;
+                    else
+                        canUserSeeGiving = sameperson || infinance || ishead;
                 }
                 return canUserSeeGiving.Value;
             }
