@@ -51,12 +51,12 @@ namespace CmsWeb.Areas.Main.Controllers
             var name = System.IO.Path.GetFileName(file.FileName);
 
             var f = new VolunteerForm
-                        {
-                            UploaderId = Util.UserId1,
-                            PeopleId = vol.Volunteer.PeopleId,
-                            Name = name.Truncate(100),
-                            AppDate = Util.Now,
-                        };
+            {
+                UploaderId = Util.UserId1,
+                PeopleId = vol.Volunteer.PeopleId,
+                Name = name.Truncate(100),
+                AppDate = Util.Now,
+            };
 
             var bits = new byte[file.ContentLength];
             file.InputStream.Read(bits, 0, bits.Length);
@@ -69,34 +69,34 @@ namespace CmsWeb.Areas.Main.Controllers
                 case "image/pjpeg":
                 case "image/gif":
                 case "image/png":
+                {
+                    f.IsDocument = false;
+
+                    try
                     {
-                        f.IsDocument = false;
-
-                        try
-                        {
-                            f.SmallId = ImageData.Image.NewImageFromBits(bits, 165, 220).Id;
-                            f.MediumId = ImageData.Image.NewImageFromBits(bits, 675, 900).Id;
-                            f.LargeId = ImageData.Image.NewImageFromBits(bits).Id;
-                        }
-                        catch
-                        {
-                            return View("Index", vol);
-                        }
-
-                        break;
+                        f.SmallId = ImageData.Image.NewImageFromBits(bits, 165, 220).Id;
+                        f.MediumId = ImageData.Image.NewImageFromBits(bits, 675, 900).Id;
+                        f.LargeId = ImageData.Image.NewImageFromBits(bits).Id;
                     }
+                    catch
+                    {
+                        return View("Index", vol);
+                    }
+
+                    break;
+                }
 
                 case "text/plain":
                 case "application/pdf":
                 case "application/msword":
                 case "application/vnd.ms-excel":
-                    {
-                        f.MediumId = ImageData.Image.NewImageFromBits(bits, mimetype).Id;
-                        f.SmallId = f.MediumId;
-                        f.LargeId = f.MediumId;
-                        f.IsDocument = true;
-                        break;
-                    }
+                {
+                    f.MediumId = ImageData.Image.NewImageFromBits(bits, mimetype).Id;
+                    f.SmallId = f.MediumId;
+                    f.LargeId = f.MediumId;
+                    f.IsDocument = true;
+                    break;
+                }
 
                 default: return View("Index", vol);
             }
@@ -204,10 +204,22 @@ namespace CmsWeb.Areas.Main.Controllers
                       where e.Id == id
                       select e).Single();
 
-            if (bc != null && (bc.ServiceCode == "Combo" || bc.ServiceCode == "ComboPC" || bc.ServiceCode == "ComboPS"))
+            if (bc != null)
             {
                 var vol = DbUtil.Db.Volunteers.SingleOrDefault(e => e.PeopleId == iPeopleID);
-                vol.ProcessedDate = DateTime.Now;
+
+                if (vol != null)
+                {
+                    if (bc.ServiceCode == "Combo" || bc.ServiceCode == "ComboPC" || bc.ServiceCode == "ComboPS")
+                    {
+                        vol.ProcessedDate = DateTime.Now;
+                    }
+                    else if (bc.ServiceCode == "MVR")
+                    {
+                        vol.MVRProcessedDate = DateTime.Now;
+                    }
+                }
+
                 DbUtil.Db.SubmitChanges();
             }
 
