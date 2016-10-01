@@ -239,9 +239,9 @@ namespace CmsWeb.Areas.Search.Models
         public IEnumerable<ContactorSummaryInfo> ContactorSummary()
         {
             int ministryid = SearchParameters.Ministry.Value.ToInt();
-            return from c in DbUtil.Db.Contactors
-                   where c.contact.ContactDate >= SearchParameters.StartDate
-                   where c.contact.ContactDate <= SearchParameters.EndDate
+            var q = from c in DbUtil.Db.Contactors
+                   where c.contact.ContactDate >= SearchParameters.StartDate || SearchParameters.StartDate == null
+                   where c.contact.ContactDate <= SearchParameters.EndDate || SearchParameters.EndDate == null
                    where ministryid == 0 || ministryid == c.contact.MinistryId
                    group c by new
                    {
@@ -261,6 +261,7 @@ namespace CmsWeb.Areas.Search.Models
                        Ministry = g.Key.MinistryName,
                        Count = g.Count()
                    };
+            return q;
         }
 
         public IEnumerable<ContactSummaryInfo> ContactSummary()
