@@ -260,9 +260,10 @@ namespace CmsWeb.Areas.Reports.Models
             var ctl = new CodeValueModel();
             var cts = ctl.ContactTypeCodes();
 
+            var managecontacts = DbUtil.Db.CurrentUser.InRole("ManagePrivateContacts");
             var cq = from ce in DbUtil.Db.Contactees
                      where ce.PeopleId == p.PeopleId
-                     where (ce.contact.LimitToRole ?? "") == ""
+                     where (ce.contact.LimitToRole ?? "") == "" || managecontacts
                      orderby ce.contact.ContactDate descending
                      select new
                      {
