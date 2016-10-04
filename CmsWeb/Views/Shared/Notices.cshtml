@@ -12,6 +12,12 @@
         <div class="alert alert-danger">@Html.Raw(DbUtil.NoticeToAdmins())</div>
     </div>
 }
+@if (User.IsInRole("Admin") && Util.AdminMessage.HasValue())
+{
+    <div class="col-sm-12">
+        <div class="alert alert-warning">@Html.Raw(Util.AdminMessage)</div>
+    </div>
+}
 <!--[if lte IE 9]>
     <div id="urgentNotice">You are running IE9 or less. This application requires IE10+, Firefox, Chrome or Safari</div>
 <![endif]-->

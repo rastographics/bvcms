@@ -101,6 +101,9 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test|AnyCPU'">
+    <OutputPath>bin\test\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ImageResizer, Version=3.4.3.103, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

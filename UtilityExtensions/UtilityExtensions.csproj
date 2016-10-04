@@ -166,6 +166,12 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test|AnyCPU'">
+    <OutputPath>bin\test\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test|x86'">
+    <OutputPath>bin\x86\test\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AngleSharp, Version=0.9.5.41771, Culture=neutral, PublicKeyToken=e83494dcdc6d31ea, processorArchitecture=MSIL">
       <HintPath>..\packages\AngleSharp.0.9.5\lib\net45\AngleSharp.dll</HintPath>

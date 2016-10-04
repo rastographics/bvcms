@@ -202,6 +202,38 @@ namespace UtilityExtensions
                 HttpRuntime.Cache.Insert("UrgentMessage", value, new System.Web.Caching.CacheDependency(path));
             }
         }
+        public static string AdminMessage
+        {
+            get
+            {
+                var path = ConfigurationManager.AppSettings["NotamTextFile"].Replace("%USERPROFILE%",
+                    Environment.GetEnvironmentVariable("USERPROFILE"));
+                if (!path.HasValue())
+                    return HttpContext.Current.Application["AdminMessage"] as string;
+                string fileContent = HttpRuntime.Cache["AdminMessage"] as string;
+                if (fileContent == null && File.Exists(path))
+                {
+                    fileContent = File.ReadAllText(path);
+                    HttpRuntime.Cache.Insert("AdminMessage", fileContent, new System.Web.Caching.CacheDependency(path));
+                }
+                return fileContent;
+            }
+            set
+            {
+                var path = ConfigurationManager.AppSettings["NotamTextFile"].Replace("%USERPROFILE%",
+                    Environment.GetEnvironmentVariable("USERPROFILE"));
+                if (!path.HasValue())
+                {
+                    if (value.HasValue())
+                        HttpContext.Current.Application["AdminMessage"] = value;
+                    else
+                        HttpContext.Current.Application.Remove("AdminMessage");
+                    return;
+                }
+                File.WriteAllText(path, value);
+                HttpRuntime.Cache.Insert("AdminMessage", value, new System.Web.Caching.CacheDependency(path));
+            }
+        }
 
         public static bool SmtpDebug
         {
