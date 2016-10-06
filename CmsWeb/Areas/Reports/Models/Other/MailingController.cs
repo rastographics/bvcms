@@ -28,7 +28,9 @@ namespace CmsWeb.Models
                 q = FilterMailFlags(q);
             q = ApplySort(q, sortExpression);
             var q2 = from p in q
-                     let altaddr = p.Family.FamilyExtras.SingleOrDefault(ee => ee.FamilyId == p.FamilyId && ee.Field == "MailingAddress").Data
+                     let altaddr = p.AddressTypeId == 10 
+                        ? p.PeopleExtras.SingleOrDefault(ee => ee.PeopleId == p.PeopleId && ee.Field == "MailingAddress").Data
+                        : p.Family.FamilyExtras.SingleOrDefault(ee => ee.FamilyId == p.FamilyId && ee.Field == "MailingAddress").Data
                      where p.DeceasedDate == null
                      select new MailingInfo
                      {
