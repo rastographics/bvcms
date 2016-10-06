@@ -47,10 +47,11 @@ namespace CmsWeb.Areas.Search.Models
             : base("Name", "asc")
         {
             Url = $"/PictureDirectory/{id}";
-            if (Regex.IsMatch(id, @"\Ad\d+\z", RegexOptions.IgnoreCase))
-                DivId = id.Substring(1).ToInt();
-            else if(id.HasValue() && id.GetDigits() == id)
-                OrgId = id.ToInt();
+            if (id.HasValue())
+                if (Regex.IsMatch(id, @"\Ad\d+\z", RegexOptions.IgnoreCase))
+                    DivId = id.Substring(1).ToInt();
+                else if (id.GetDigits() == id)
+                    OrgId = id.ToInt();
             Initialize();
         }
 
