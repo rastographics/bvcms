@@ -33,6 +33,14 @@ namespace CmsWeb.Models.ExtraValues
             return qb.QueryId;
         }
 
+        public int? CurrentPersonMainFellowshipId()
+        {
+            var qb = (from p in DbUtil.Db.People
+                      where p.PeopleId == Id
+                      select p.BibleFellowshipClassId).SingleOrDefault();
+            return qb;
+        }
+
         public ExtraValueModel(int id, string table)
             : this(id, table, null)
         {
@@ -54,6 +62,7 @@ namespace CmsWeb.Models.ExtraValues
             Location = location;
             Table = table;
         }
+
         public ExtraValueModel(int id, int id2, string table, string location)
         {
             Id = id;
@@ -126,6 +135,7 @@ namespace CmsWeb.Models.ExtraValues
                     return null;
             }
         }
+
         public List<Value> GetStandardExtraValues(string table, string location = null)
         {
             var q = from v in Views.GetStandardExtraValuesOrdered(DbUtil.Db, table, location)
@@ -133,12 +143,14 @@ namespace CmsWeb.Models.ExtraValues
                     select Value.FromValue(v);
             return q.ToList();
         }
+
         public List<Value> GetStandardExtraValuesWithDataType(string table, string location = null)
         {
             var q = from v in Views.GetStandardExtraValuesOrdered(DbUtil.Db, table, location)
                     select Value.FromValue(v);
             return q.ToList();
         }
+
         public IEnumerable<Value> GetExtraValues()
         {
             var realExtraValues = ListExtraValues();
@@ -175,7 +187,7 @@ namespace CmsWeb.Models.ExtraValues
         {
             var f = Views.GetStandardExtraValues(DbUtil.Db, Table).Single(ee => ee.Name == name);
             var q = from c in f.Codes
-                    select new { value = c, text = c };
+                    select new {value = c, text = c};
             return JsonConvert.SerializeObject(q.ToArray());
         }
 
@@ -228,6 +240,7 @@ namespace CmsWeb.Models.ExtraValues
         }
 
         private bool logged;
+
         private void Log(ITableWithExtraValues record, string op, string name)
         {
             if (logged)
@@ -255,19 +268,19 @@ namespace CmsWeb.Models.ExtraValues
                 case "Data":
                 case "Text":
                 case "Text2":
-                    if(!value.HasValue())
+                    if (!value.HasValue())
                         RemoveExtraValue(record, name);
                     else
                         record.AddEditExtraText(name, value);
                     break;
                 case "Date":
-                    {
-                        DateTime dt;
-                        if (DateTime.TryParse(value, out dt))
-                            record.AddEditExtraDate(name, dt);
-                        else
-                            RemoveExtraValue(record, name);
-                    }
+                {
+                    DateTime dt;
+                    if (DateTime.TryParse(value, out dt))
+                        record.AddEditExtraDate(name, dt);
+                    else
+                        RemoveExtraValue(record, name);
+                }
                     break;
                 case "Int":
                     record.AddEditExtraInt(name, value.ToInt());
@@ -279,21 +292,21 @@ namespace CmsWeb.Models.ExtraValues
                         record.RemoveExtraValue(DbUtil.Db, name);
                     break;
                 case "Bits":
+                {
+                    var existingBits = ExtraValueBits(name);
+                    value = HttpContext.Current.Request.Form["value[]"] ?? "";
+                    var newCheckedBits = value.Split(',');
+                    foreach (var currentBit in existingBits)
                     {
-                        var existingBits = ExtraValueBits(name);
-                        value = HttpContext.Current.Request.Form["value[]"] ?? "";
-                        var newCheckedBits = value.Split(',');
-                        foreach (var currentBit in existingBits)
-                        {
-                            if (newCheckedBits.Contains(currentBit.Name))
-                                if (!currentBit.Checked)
-                                    record.AddEditExtraBool(currentBit.Name, true);
-                            if (!newCheckedBits.Contains(currentBit.Name))
-                                if (currentBit.Checked)
-                                    RemoveExtraValue(record, currentBit.Name);
-                        }
-                        break;
+                        if (newCheckedBits.Contains(currentBit.Name))
+                            if (!currentBit.Checked)
+                                record.AddEditExtraBool(currentBit.Name, true);
+                        if (!newCheckedBits.Contains(currentBit.Name))
+                            if (currentBit.Checked)
+                                RemoveExtraValue(record, currentBit.Name);
                     }
+                    break;
+                }
             }
             DbUtil.Db.SubmitChanges();
             Log(record, "set", name);
@@ -302,7 +315,7 @@ namespace CmsWeb.Models.ExtraValues
         public static void NewExtra(int id, string field, string type, string value)
         {
             //field = field.Replace('/', '-');
-            var v = new PeopleExtra { PeopleId = id, Field = field };
+            var v = new PeopleExtra {PeopleId = id, Field = field};
             DbUtil.Db.PeopleExtras.InsertOnSubmit(v);
             switch (type)
             {
@@ -335,9 +348,9 @@ namespace CmsWeb.Models.ExtraValues
             var cn = DbUtil.Db.Connection;
             cn.Open();
             if (i.value.Codes.Count == 0)
-                cn.Execute($"delete from dbo.{Table}Extra where Field = @name", new { name });
+                cn.Execute($"delete from dbo.{Table}Extra where Field = @name", new {name});
             else
-                cn.Execute($"delete from dbo.{Table}Extra where Field in @codes", new { codes = i.value.Codes });
+                cn.Execute($"delete from dbo.{Table}Extra where Field in @codes", new {codes = i.value.Codes});
         }
 
         public void Delete(string name)

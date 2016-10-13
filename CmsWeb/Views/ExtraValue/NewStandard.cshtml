@@ -37,7 +37,7 @@
             @Html.EditorFor(m => m.ExtraValueBitPrefix, new { hide = "hide", help = "Short abbreviation (no spaces) to prepend to each checkbox name" })
             @Html.EditorFor(m => m.ExtraValueCodes, "TextArea", new { hide = "hide", help = "Each code should be a short name on a separate line" })
             @Html.EditorFor(m => m.ExtraValueCheckboxes, "TextArea", new { hide = "hide", help = "Short names of each checkbox on separate lines. These will be prepended with the prefix and a -" })
-            @Html.EditorFor(m => m.ExtraValueLink, new { hide = "hide", help = "use html to create hyperlink, replacement code {orgid}, and {peopleid} work" })
+            @Html.EditorFor(m => m.ExtraValueLink, new { hide = "hide", help = "use html to create hyperlink, use {id} to replace orgid, peopleid" })
         </div>
         <div class="modal-footer">
             <a class="btn btn-default" data-dismiss="modal">Cancel</a>

@@ -159,6 +159,8 @@ namespace CmsWeb.Models.ExtraValues
             s = s.Replace("{id}", Id.ToString());
             if (s.Contains("{queryid}"))
                 s = s.Replace("{queryid}", Model.CurrentPersonQueryId().ToString());
+            if (s.Contains("{mfid}"))
+                s = s.Replace("{mfid}", Model.CurrentPersonMainFellowshipId().ToString());
             return new HtmlString(s);
         }
     }
