@@ -1,40 +1,49 @@
 ﻿@using UtilityExtensions
 @using CmsWeb.Areas.People.Models
+@{
+  var caneditmemberdocs = User.IsInRole("Membership") || User.IsInRole("Admin");
+}
 @model int
 <form id="memberdocs-form" action="/Person2/UploadDocument/@Model" class="ajax" data-init="MemberDocsEditable" method="post" enctype="multipart/form-data">
     <h4>Membership Documents</h4>
     <br/>
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="well">
-                <label for="doc" class="control-label">Select Image File to Upload</label>
-                <div class="form-inline">
-                    <div class="input-group">
-                        <input type="file" name="doc" class="form-control" />
-                        @Html.ValidationMessage("doc")
-                    </div>
-                    <div class="input-group">
-                        <input type="submit" name="Upload" value="Submit" class="btn btn-primary" />
-                    </div>
-                </div>
-            </div>
+  <div class="row">
+    @if (caneditmemberdocs)
+    {
+    <div class="col-sm-12">
+      <div class="well">
+        <label for="doc" class="control-label">Select Image File to Upload</label>
+        <div class="form-inline">
+          <div class="input-group">
+            <input type="file" name="doc" class="form-control"/>
+            @Html.ValidationMessage("doc")
+          </div>
+          <div class="input-group">
+            <input type="submit" name="Upload" value="Submit" class="btn btn-primary"/>
+          </div>
         </div>
-        @foreach (var i in MemberDocModel.DocForms(Model))
-        {
-            <div class="col-sm-6 col-md-4 col-lg-3" style="margin-top: 5px; margin-bottom: 5px;">
-                <div class="row">
-                    <div class="col-xs-4">
-                        <a href="@i.DocUrl" target="docpage">
-                            <img title="Uploaded: @i.DocDate.FormatDateTm()" src="@i.ImgUrl" alt="" class="img-responsive img-thumbnail" />
-                        </a>
-                    </div>
-                    <div class="col-xs-8">
-                        <a class="name editable click-pencil" href="#" data-pk="@i.Id" data-url="/Person2/MemberDocumentUpdateName" data-title="Enter Document Name"><strong>@i.FormName</strong></a><br/><br/>
-                        <a class="ajax btn btn-danger btn-sm" href="/Person2/DeleteDocument/@Model/@i.Id" data-confirm="Are you sure you want to delete this document?" data-confirm-type="warning" data-confirm-btn-class="btn-danger" data-confirm-btn-text="Yes, delete document!"><i class="fa fa-trash"></i> Delete</a>
-                    </div>
-                </div>
-            </div>
-        }
+      </div>
     </div>
+    }
+    @foreach (var i in MemberDocModel.DocForms(Model))
+    {
+      <div class="col-sm-6 col-md-4 col-lg-3" style="margin-top: 5px; margin-bottom: 5px;">
+        <div class="row">
+          <div class="col-xs-4">
+            <a href="@i.DocUrl" target="docpage">
+              <img title="Uploaded: @i.DocDate.FormatDateTm()" src="@i.ImgUrl" alt="" class="img-responsive img-thumbnail"/>
+            </a>
+          </div>
+          @if (caneditmemberdocs)
+          {
+          <div class="col-xs-8">
+            <a class="name editable click-pencil" href="#" data-pk="@i.Id" data-url="/Person2/MemberDocumentUpdateName" data-title="Enter Document Name"><strong>@i.FormName</strong></a><br/><br/>
+            <a class="ajax btn btn-danger btn-sm" href="/Person2/DeleteDocument/@Model/@i.Id" data-confirm="Are you sure you want to delete this document?" data-confirm-type="warning" data-confirm-btn-class="btn-danger" data-confirm-btn-text="Yes, delete document!"><i class="fa fa-trash"></i> Delete</a>
+          </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
     <br/>
 </form>

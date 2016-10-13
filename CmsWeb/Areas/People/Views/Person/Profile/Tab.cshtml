@@ -1,6 +1,6 @@
 ﻿@model CmsWeb.Areas.People.Models.PersonModel
 @{
-    var canviewmemberdocs = User.IsInRole("Membership") || User.IsInRole("Admin");
+    var canviewmemberdocs = User.IsInRole("Membership") || User.IsInRole("Admin") || User.IsInRole("MemberDocs");
 }
 <ul class="nav nav-pills subnav hidden-sm hidden-xs" data-tabparent="profile">
     <li><a href="#memberstatus" data-toggle="tab" class="ajax">Member</a></li>
