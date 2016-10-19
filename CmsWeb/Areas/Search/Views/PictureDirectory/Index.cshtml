@@ -13,7 +13,16 @@
   <div class="box-content">
     @if (Model.ErrorMessage.HasValue())
     {
+      if (Model.ErrorMessage == "NotConfigured")
+      {
+        <h4>Not Configured</h4>
+        <p>Sorry, this directory has not been configured for your church.</p>
+        <p>See <a href="http://docs.touchpointsoftware.com/SummaryReports/OnlinePictureDirectory.html">Online Picture Directory documentation</a></p>
+      }
+      else
+      {
       <div class="alert alert-block alert-danger"><h1>@Model.ErrorMessage</h1></div>
+      }
     }
     else
     {

@@ -1,153 +1,148 @@
 ﻿@{
-    var admin = User.IsInRole("Admin");
-    var developer = User.IsInRole("Developer");
-    var manageemails = User.IsInRole("ManageEmails");
-    var managetrans = User.IsInRole("ManageTransactions");
-    var edit = User.IsInRole("Edit");
-    var manageResources = User.IsInRole("ManageResources");
-    var design = User.IsInRole("Design");
-    var finance = User.IsInRole("Finance") && ((string)Session["testnofinance"]) != "true";
-  var quickbooks = DbUtil.Db.Setting("ShowQuickBooksMenu");
+  var admin = User.IsInRole("Admin");
+  var developer = User.IsInRole("Developer");
+  var manageemails = User.IsInRole("ManageEmails");
+  var managetrans = User.IsInRole("ManageTransactions");
+  var edit = User.IsInRole("Edit");
+  var manageResources = User.IsInRole("ManageResources");
+  var design = User.IsInRole("Design");
+  var finance = User.IsInRole("Finance") && ((string) Session["testnofinance"]) != "true";
 }
 @if (admin || manageemails || managetrans || edit || design || finance || manageResources)
 {
-    <li class="dropdown dropdown-large">
-        @if (finance)
-        {
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="visible-xs-inline"><i class="fa fa-cogs"></i>&nbsp;&nbsp;</span><span class="hidden-lg hidden-xs">Admin</span><span class="visible-lg-inline visible-xs-inline">Administration</span> <b class="caret"></b></a>
-            <ul class="dropdown-menu dropdown-menu-large row">
-                <li class="col-sm-4">
-                    <ul>
-                        <li class="dropdown-header">Contributions</li>
-                        <li class="dropdown-header dropdown-sub-header">Basics</li>
-                        @Helper.LiAnchorLink("Bundles", "/Bundles/")
-                        @Helper.LiAnchorLink("Search", "/Contributions/")
-                        @Helper.LiAnchorLink("Statements (Create All)", "/Statements/", true)
-                        @Helper.LiAnchorLink("Deposits Totals", "/FinanceReports/DepositTotalsForDates/")
-                        @Helper.LiAnchorLink("Totals by Fund", "/FinanceReports/TotalsByFund/")
-                        <li class="divider"></li>
-                        <li class="dropdown-header dropdown-sub-header">Management</li>
-                        @Helper.LiAnchorLink("Batch Upload Contributions", "/PostBundle/Batch/")
-                        @Helper.LiAnchorLink("Fund Management", "/Funds/")
-                        @Helper.LiAnchorLink("Managed Giving", "/FinanceReports/ManagedGiving/")
-                        @Helper.LiAnchorLink("QuickBooks", "/QuickBooks/", quickbooks)
-                        <li class="divider"></li>
-                        <li class="dropdown-header dropdown-sub-header">Reports</li>
-                        <li><a href='/FinanceReports/DonorTotalSummary' class="dialog-options" data-target="/FinanceReports/DonorTotalSummaryOptions">Donor Total Summary Export</a></li>
-                        @Helper.LiAnchorLink("Pledge Report", "/FinanceReports/PledgeReport/")
-                        <li class="divider"></li>
-                        <li class="dropdown-header dropdown-sub-header">Range Reports</li>
-                        @Helper.LiAnchorLink("Donor Totals by Range", "/FinanceReports/DonorTotalsByRange/")
-                        @Helper.LiAnchorLink("Totals by Age Range", "/FinanceReports/TotalsByFundAgeRange/")
-                        @Helper.LiAnchorLink("Totals by Fund Range", "/FinanceReports/TotalsByFundRange/")
-                        @Helper.LiAnchorLink("Pledge Totals by Fund Range", "/FinanceReports/TotalsByFundRange/?pledged=true")
-                    </ul>
-                </li>
-                <li class="col-sm-4">
-                    <ul>
-                        @AdminList2(admin, design, managetrans, edit, manageemails, finance: true, developer: developer, manageResources: manageResources)
-                    </ul>
-                </li>
-                <li class="col-sm-4">
-                    <ul>
-                        @AdminList1(admin, design, managetrans, edit, manageemails: manageemails, finance: true, developer: developer)
-                    </ul>
-                </li>
-            </ul>
-        }
-        else
-        {
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="visible-xs-inline"><i class="fa fa-cogs"></i>&nbsp;&nbsp;</span><span class="hidden-lg hidden-xs">Admin</span><span class="visible-lg-inline visible-xs-inline">Administration</span> <b class="caret"></b></a>
-            <ul id="admin-menu-col-2" class="dropdown-menu dropdown-menu-large row">
-                <li class="col-sm-6">
-                    <ul>
-                        @AdminList2(admin, design, managetrans, edit, manageemails, finance: false, developer: developer, manageResources: manageResources)
-                    </ul>
-                </li>
-                <li class="col-sm-6">
-                    <ul>
-                        @AdminList1(admin, design, managetrans, edit, manageemails, finance: false, developer: developer)
-                    </ul>
-                </li>
-            </ul>
-        }
-    </li>
+  <li class="dropdown dropdown-large">
+    @if (finance)
+    {
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <span class="visible-xs-inline"><i class="fa fa-cogs"></i>&nbsp;&nbsp;</span><span class="hidden-lg hidden-xs">Admin</span><span class="visible-lg-inline visible-xs-inline">Administration</span> <b class="caret"></b>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-large row">
+        <li class="col-sm-4">
+          <ul>
+            <li class="dropdown-header dropdown-sub-header">Contributions</li>
+            @Helper.LiAnchorLink("Bundles", "/Bundles/")
+            @Helper.LiAnchorLink("Search", "/Contributions/")
+            @Helper.LiAnchorLink("Statements (Create All)", "/Statements/", true)
+            @Helper.LiAnchorLink("Deposits Totals", "/FinanceReports/DepositTotalsForDates/")
+            @Helper.LiAnchorLink("Totals by Fund", "/FinanceReports/TotalsByFund/")
+            <li class="dropdown-header dropdown-sub-header">Manage</li>
+            @Helper.LiAnchorLink("Batch Upload Contributions", "/PostBundle/Batch/")
+            @Helper.LiAnchorLink("Fund Management", "/Funds/")
+            @Helper.LiAnchorLink("Managed Giving", "/FinanceReports/ManagedGiving/")
+            <li class="dropdown-header dropdown-sub-header">Reports</li>
+            <li>
+              <a href='/FinanceReports/DonorTotalSummary' class="dialog-options" data-target="/FinanceReports/DonorTotalSummaryOptions">Donor Total Summary Export</a>
+            </li>
+            @Helper.LiAnchorLink("Pledge Report", "/FinanceReports/PledgeReport/")
+            <li class="dropdown-header dropdown-sub-header">Range Reports</li>
+            @Helper.LiAnchorLink("Donor Totals by Range", "/FinanceReports/DonorTotalsByRange/")
+            @Helper.LiAnchorLink("Totals by Age Range", "/FinanceReports/TotalsByFundAgeRange/")
+            @Helper.LiAnchorLink("Totals by Fund Range", "/FinanceReports/TotalsByFundRange/")
+            @Helper.LiAnchorLink("Pledge Totals by Fund Range", "/FinanceReports/TotalsByFundRange/?pledged=true")
+          </ul>
+        </li>
+        <li class="col-sm-4">
+          <ul>
+            @AdminList2(admin, design, managetrans, edit, manageemails, finance: true, developer: developer, manageResources: manageResources)
+          </ul>
+        </li>
+        <li class="col-sm-4">
+          <ul>
+            @AdminList1(admin, design, managetrans, edit, manageemails: manageemails, finance: true, developer: developer)
+          </ul>
+        </li>
+      </ul>
+    }
+    else
+    {
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <span class="visible-xs-inline"><i class="fa fa-cogs"></i>&nbsp;&nbsp;</span><span class="hidden-lg hidden-xs">Admin</span><span class="visible-lg-inline visible-xs-inline">Administration</span> <b class="caret"></b>
+      </a>
+      <ul id="admin-menu-col-2" class="dropdown-menu dropdown-menu-large row">
+        <li class="col-sm-6">
+          <ul>
+            @AdminList2(admin, design, managetrans, edit, manageemails, finance: false, developer: developer, manageResources: manageResources)
+          </ul>
+        </li>
+        <li class="col-sm-6">
+          <ul>
+            @AdminList1(admin, design, managetrans, edit, manageemails, finance: false, developer: developer)
+          </ul>
+        </li>
+      </ul>
+    }
+  </li>
 }
 @helper AdminList1(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer)
 {
-    if (admin)
+  if (admin)
+  {
+    <li class="dropdown-header dropdown-sub-header">Batch Actions</li>
+    @Helper.LiAnchorLink("Find Duplicates", "/Duplicates/Find")
+    @Helper.LiAnchorLink("Tag People Ids", "/Batch/TagPeopleIds")
+    @Helper.LiAnchorLink("Update Fields from a Tag/Query", "/Batch/UpdateFields")
+    @Helper.LiAnchorLink("Update Organizations", "/Batch/UpdateOrg")
+    @Helper.LiAnchorLink("Update Status Flags", "/Batch/UpdateStatusFlags")
+    @Helper.LiAnchorLink("Upload Addresses", "/Batch/UploadAddresses")
+    if (User.IsInRole("developer"))
     {
-        <li class="dropdown-header">Batch Actions</li>
-        @Helper.LiAnchorLink("Find Duplicates", "/Duplicates/Find")
-        @Helper.LiAnchorLink("Tag People Ids", "/Batch/TagPeopleIds")
-        @Helper.LiAnchorLink("Update Fields from a Tag/Query", "/Batch/UpdateFields")
-        @Helper.LiAnchorLink("Update Organizations", "/Batch/UpdateOrg")
-        @Helper.LiAnchorLink("Update Status Flags", "/Batch/UpdateStatusFlags")
-        @Helper.LiAnchorLink("Upload Addresses", "/Batch/UploadAddresses")
-        if (User.IsInRole("developer"))
-        {
-            <li><a href="/ValidateAddress" class="longrunop">Validate Address for a Tag/Query</a></li>
-            <li><a href="/Batch/OtherDeveloperActions">Other Developer Actions</a></li>
-        }
-        <li class="divider"></li>
+      <li>
+        <a href="/ValidateAddress" class="longrunop">Validate Address for a Tag/Query</a>
+      </li>
+      <li>
+        <a href="/Batch/OtherDeveloperActions">Other Developer Actions</a>
+      </li>
     }
-    if (admin || finance || design)
-    {
-        <li class="dropdown-header">Setup</li>
-    }
-    @Helper.LiAnchorLink("Lookup Codes", "/Lookups/", admin || finance)
-    @Helper.LiAnchorLink("Promotion", "/PromotionSetup/", admin)
-    @Helper.LiAnchorLink("Settings", "/Settings/", admin)
-    @Helper.LiAnchorLink("Special Content", "/Display/", admin || design)
-    @Helper.LiAnchorLink("Twilio", "/Twilio/", admin)
-    @Helper.LiAnchorLink("Zip Codes", "/MetroZips/", admin)
-    if (admin)
-    {
-        <li class="divider"></li>
-        <li class="dropdown-header">Reports</li>
-    }
-    @Helper.LiAnchorLink("Duplicates Find Result", "/Duplicates", admin)
-    @Helper.LiAnchorLink("Registration History", "/RegistrationSearch", admin)
-    @Helper.LiAnchorLink("Registration Summary", "/Reports/RegistrationSummary?days=90", admin)
+  }
+  if (admin || finance || design)
+  {
+    <li class="dropdown-header dropdown-sub-header">Setup</li>
+  }
+  @Helper.LiAnchorLink("Lookup Codes", "/Lookups/", admin || finance)
+  @Helper.LiAnchorLink("Promotion", "/PromotionSetup/", admin)
+  @Helper.LiAnchorLink("Settings", "/Settings/", admin)
+  @Helper.LiAnchorLink("Special Content", "/Display/", admin || design)
+  @Helper.LiAnchorLink("Twilio", "/Twilio/", admin)
+  @Helper.LiAnchorLink("Zip Codes", "/MetroZips/", admin)
+  if (admin)
+  {
+    <li class="dropdown-header dropdown-sub-header">Reports</li>
+  }
+  @Helper.LiAnchorLink("Duplicates Find Result", "/Duplicates", admin)
+  @Helper.LiAnchorLink("Registration History", "/RegistrationSearch", admin)
+  @Helper.LiAnchorLink("Registration Summary", "/Reports/RegistrationSummary?days=90", admin)
 }
 
 @helper AdminList2(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer, bool manageResources)
 {
-    if (admin || manageemails || edit || managetrans || finance)
-    {
-        <li class="dropdown-header">Manage</li>
-    }
-    if (admin)
-    {
-        <li class="dropdown-header dropdown-sub-header">Organizations</li>
-        @Helper.LiAnchorLink("Divisions", "/Divisions/")
-        @Helper.LiAnchorLink("Programs", "/Programs/")
-        @Helper.LiAnchorLink("Promotion", "/Promotion/")
-        <li class="divider"></li>
-    }
-    if (admin || manageemails || managetrans || finance)
-    {
-        <li class="dropdown-header dropdown-sub-header">Communication</li>
-        @Helper.LiAnchorLink("Emails", "/Emails/", admin || manageemails || finance)
-        @Helper.LiAnchorLink("SMS Messages", "/SMS/List/", admin)
-        @Helper.LiAnchorLink("Transactions", "/Transactions/", admin || managetrans || finance)
-        @Helper.LiAnchorLink("User Email Delegation", "/UsersCanEmailFor/", admin || manageemails)
-        <li class="divider"></li>
-    }
-    if (manageResources && DbUtil.Db.Setting("Resources-Enabled"))
-    {
-        <li class="dropdown-header dropdown-sub-header">Resources</li>
-        @Helper.LiAnchorLink("Resource Types", "/ResourceTypes/")
-        @Helper.LiAnchorLink("Resource Categories", "/ResourceCategories/")
-        @Helper.LiAnchorLink("Resources", "/Resources/")
-        <li class="divider"></li>
-    }
-    if (admin || edit)
-    {
-            <li class="dropdown-header dropdown-sub-header">Misc</li>
-            @Helper.LiAnchorLink("Activity Log", "/LastActivity/", admin)
-            @Helper.LiAnchorLink("Checkin Activity", "/CheckinTimes/")
-            @Helper.LiAnchorLink("Checkin Labels", "/CheckinLabels", admin)
-            @Helper.LiAnchorLink("Users", "/Users/", admin)
-        }
-    }
+  if (admin)
+  {
+    <li class="dropdown-header dropdown-sub-header">Organizations</li>
+    @Helper.LiAnchorLink("Divisions", "/Divisions/")
+    @Helper.LiAnchorLink("Programs", "/Programs/")
+    @Helper.LiAnchorLink("Promotion", "/Promotion/")
+  }
+  if (admin || manageemails || managetrans || finance)
+  {
+    <li class="dropdown-header dropdown-sub-header">Communication</li>
+    @Helper.LiAnchorLink("Emails", "/Emails/", admin || manageemails || finance)
+    @Helper.LiAnchorLink("SMS Messages", "/SMS/List/", admin)
+    @Helper.LiAnchorLink("Transactions", "/Transactions/", admin || managetrans || finance)
+    @Helper.LiAnchorLink("User Email Delegation", "/UsersCanEmailFor/", admin || manageemails)
+  }
+  if (manageResources && DbUtil.Db.Setting("Resources-Enabled"))
+  {
+    <li class="dropdown-header dropdown-sub-header">Resources</li>
+    @Helper.LiAnchorLink("Resource Types", "/ResourceTypes/")
+    @Helper.LiAnchorLink("Resource Categories", "/ResourceCategories/")
+    @Helper.LiAnchorLink("Resources", "/Resources/")
+  }
+  if (admin || edit)
+  {
+    <li class="dropdown-header dropdown-sub-header">Misc</li>
+    @Helper.LiAnchorLink("Activity Log", "/LastActivity/", admin)
+    @Helper.LiAnchorLink("Checkin Activity", "/CheckinTimes/")
+    @Helper.LiAnchorLink("Checkin Labels", "/CheckinLabels", admin)
+    @Helper.LiAnchorLink("Users", "/Users/", admin)
+  }
+}

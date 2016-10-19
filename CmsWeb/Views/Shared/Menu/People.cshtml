@@ -1,32 +1,47 @@
 ﻿@{
-    var menuaddpeople = DbUtil.Db.Setting("MenuAddPeople", true) || Util.IsDebug();
+  var menuaddpeople = DbUtil.Db.Setting("MenuAddPeople", true) || Util.IsDebug();
 }
-<li class="dropdown">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="visible-xs-inline"><i class="fa fa-user"></i>&nbsp;&nbsp;</span>People <span class="caret"></span></a>
-    <ul class="dropdown-menu">
-        <li><a href="/PeopleSearch">Find</a></li>
+<li class="dropdown dropdown-large">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="visible-xs-inline"><i class="fa fa-bar-chart"></i>&nbsp;&nbsp;</span>People <span class="caret"></span></a>
+  <ul class="dropdown-menu dropdown-menu-large row">
+    <li class="col-sm-6">
+      <ul>
+        <li class="dropdown-header dropdown-sub-header">Find People</li>
+        <li><a href="#" data-toggle="modal" data-target="#search-box"><span class="visible-lg-inline visible-xs-inline">Quick Search</span></a></li>
+        @Helper.LiAnchorLink("Basic Search", "/PeopleSearch")
+        <li class="dropdown-header dropdown-sub-header">Search Builder Query</li>
+          @Helper.LiAnchorLink("New Search", "/NewQuery")
+          @Helper.LiAnchorLink("Last Search", "/Query")
+          @Helper.LiAnchorLink("Saved Searches", "/SavedQueryList")
+        <li class="dropdown-header dropdown-sub-header">Other</li>
+          @Helper.LiAnchorLink("Church Picture Directory", "/PictureDirectory")
+      </ul>
+    </li>
+    <li class="col-sm-6">
+      <ul>
+        <li class="dropdown-header dropdown-sub-header">Manage People</li>
+        @Helper.LiAnchorLink("Contacts", "/ContactSearch2/")
+        @Helper.LiAnchorLink("Tags", "/Tags/")
+        @Helper.LiAnchorLink("Tasks", "/Task/List/")
         @if (menuaddpeople)
         {
             <li><a href="/SearchAdd2/Dialog/Menu" class="searchadd">Add Person</a></li>
         }
         @Helper.LiAnchorLink("Add Person", "http://docs.touchpointsoftware.com/SearchAdd/AddPeopleContext.html", !menuaddpeople, "_blank")
-        @Helper.LiAnchorLink("Contacts", "/ContactSearch2/")
-        @Helper.LiAnchorLink("Tags", "/Tags/")
-        @Helper.LiAnchorLink("Tasks", "/Task/List/")
-        
         @{
-            var recentPeople = Util2.MostRecentPeople;
+          var recentPeople = Util2.MostRecentPeople;
         }
         @if (recentPeople.Any())
         {
-            <li class="divider"></li>
-            <li class="dropdown-header">Recent</li>
+            <li class="dropdown-header dropdown-sub-header">Recently Viewed</li>
             foreach (var p in Util2.MostRecentPeople)
             {
                 @Helper.LiAnchorLink(p.Name, "/Person2/" + p.Id)
             }
         }
-        <li class="divider"></li>
-        @Helper.LiAnchorLink(Util.UserFullName, "/Person2/" + Util.UserPeopleId)
-    </ul>
+        <li class="dropdown-header dropdown-sub-header">My Record</li>
+        @Helper.LiAnchorLink(Util.UserFullName, "/Person2/" + Util.UserPeopleId) 
+      </ul>
+    </li>
+  </ul>
 </li>

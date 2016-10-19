@@ -125,7 +125,7 @@ AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
                 SqlName = DbUtil.Db.Setting(PictureDirectorySqlName, PictureDirectorySqlName);
             }
             else
-                ErrorMessage = "No Directory Configured";
+                ErrorMessage = "NotConfigured";
         }
 
         public static string GetModifiedOrLatestText(string name)
