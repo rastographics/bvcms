@@ -51,10 +51,6 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             var resource = DbUtil.Db.Resources.FirstOrDefault(x => x.ResourceId == id);
 
-            if (model.OrganizationId.HasValue && model.OrganizationId < 1)
-                model.OrganizationId = null;
-            if (model.OrganizationTypeId.HasValue && model.OrganizationTypeId < 1)
-                model.OrganizationTypeId = null;
             if (model.DivisionId.HasValue && model.DivisionId < 1)
                 model.DivisionId = null;
             if (model.CampusId.HasValue && model.CampusId < 1)
@@ -62,14 +58,36 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             resource.Name = model.Name;
             resource.DisplayOrder = model.DisplayOrder;
-            resource.OrganizationId = model.OrganizationId;
-            resource.OrganizationTypeId = model.OrganizationTypeId;
             resource.DivisionId = model.DivisionId;
             resource.CampusId = model.CampusId;
             resource.MemberTypeIds = model.MemberTypeIds != null ? string.Join(",", model.MemberTypeIds) : string.Empty;
             resource.Description = model.Description;
             resource.ResourceTypeId = model.ResourceTypeId;
             resource.ResourceCategoryId = model.ResourceCategoryId;
+
+            DbUtil.Db.ResourceOrganizations.DeleteAllOnSubmit(
+                DbUtil.Db.ResourceOrganizations.Where(ro => ro.ResourceId == resource.ResourceId)
+                );
+            foreach (var orgId in model.OrganizationIds)
+            {
+                resource.ResourceOrganizations.Add(new ResourceOrganization
+                {
+                    Resource = resource,
+                    OrganizationId = orgId
+                });
+            }
+
+            DbUtil.Db.ResourceOrganizationTypes.DeleteAllOnSubmit(
+                DbUtil.Db.ResourceOrganizationTypes.Where(ro => ro.ResourceId == resource.ResourceId)
+                );
+            foreach (var orgTypeId in model.OrganizationTypeIds)
+            {
+                resource.ResourceOrganizationTypes.Add(new ResourceOrganizationType
+                {
+                    Resource = resource,
+                    OrganizationTypeId = orgTypeId
+                });
+            }
 
             DbUtil.Db.SubmitChanges();
 

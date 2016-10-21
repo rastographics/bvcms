@@ -38,9 +38,9 @@ namespace CmsData
 		
 		private int _OwnerID;
 		
-		private DateTime? _Archived;
-		
 		private string _CreatedBy;
+		
+		private DateTime? _Archived;
 		
 		private int? _ArchivedFromId;
 		
@@ -89,11 +89,11 @@ namespace CmsData
 		partial void OnOwnerIDChanging(int value);
 		partial void OnOwnerIDChanged();
 		
-		partial void OnArchivedChanging(DateTime? value);
-		partial void OnArchivedChanged();
-		
 		partial void OnCreatedByChanging(string value);
 		partial void OnCreatedByChanged();
+		
+		partial void OnArchivedChanging(DateTime? value);
+		partial void OnArchivedChanged();
 		
 		partial void OnArchivedFromIdChanging(int? value);
 		partial void OnArchivedFromIdChanged();
@@ -337,28 +337,6 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="Archived", UpdateCheck=UpdateCheck.Never, Storage="_Archived", DbType="datetime")]
-		public DateTime? Archived
-		{
-			get { return this._Archived; }
-
-			set
-			{
-				if (this._Archived != value)
-				{
-				
-                    this.OnArchivedChanging(value);
-					this.SendPropertyChanging();
-					this._Archived = value;
-					this.SendPropertyChanged("Archived");
-					this.OnArchivedChanged();
-				}
-
-			}
-
-		}
-
-		
 		[Column(Name="CreatedBy", UpdateCheck=UpdateCheck.Never, Storage="_CreatedBy", DbType="nvarchar(50)")]
 		public string CreatedBy
 		{
@@ -374,6 +352,28 @@ namespace CmsData
 					this._CreatedBy = value;
 					this.SendPropertyChanged("CreatedBy");
 					this.OnCreatedByChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Archived", UpdateCheck=UpdateCheck.Never, Storage="_Archived", DbType="datetime")]
+		public DateTime? Archived
+		{
+			get { return this._Archived; }
+
+			set
+			{
+				if (this._Archived != value)
+				{
+				
+                    this.OnArchivedChanging(value);
+					this.SendPropertyChanging();
+					this._Archived = value;
+					this.SendPropertyChanged("Archived");
+					this.OnArchivedChanged();
 				}
 
 			}

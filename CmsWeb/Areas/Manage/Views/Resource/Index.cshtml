@@ -105,7 +105,7 @@
                                     <tr>
                                         <th><a href='#' class='ajaxasc'>Name</a></th>
                                         <th>@Util2.CampusLabel</th>
-                                        <th>Organization</th>
+                                        <th>Organizations</th>
                                         <th>Category</th>
                                         <th>Display Order</th>
                                         <th>Files</th>
@@ -118,7 +118,16 @@
                                         <tr>
                                             <td><a href="/Resources/@item.ResourceId">@item.Name</a></td>
                                             <td>@(item.Campu?.Description ?? "(All)")</td>
-                                            <td>@(item.Organization?.OrganizationName ?? "(All)")</td>
+                                            <td>
+                                                @if (item.ResourceOrganizations.Count == 0)
+                                                {
+                                                    <text>(All)</text>
+                                                }
+                                                else
+                                                {
+                                                    string.Join(", ", item.ResourceOrganizations.Select(ro => ro.Organization.OrganizationName));
+                                                }
+                                            </td>
                                             <td>@(item.ResourceCategory?.Name ?? "(None)")</td>
                                             <td>@item.DisplayOrder</td>
                                             <td>@(item.ResourceAttachments?.Count ?? 0)</td>

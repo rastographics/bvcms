@@ -60,7 +60,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="First", Storage="_First", DbType="varchar(25)")]
+		[Column(Name="First", Storage="_First", DbType="nvarchar(25)")]
 		public string First
 		{
 			get
@@ -77,7 +77,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Spouse", Storage="_Spouse", DbType="varchar(25)")]
+		[Column(Name="Spouse", Storage="_Spouse", DbType="nvarchar(25)")]
 		public string Spouse
 		{
 			get
@@ -94,7 +94,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="LAST", Storage="_Last", DbType="varchar(100) NOT NULL")]
+		[Column(Name="LAST", Storage="_Last", DbType="nvarchar(100) NOT NULL")]
 		public string Last
 		{
 			get
@@ -111,7 +111,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Addr", Storage="_Addr", DbType="varchar(100)")]
+		[Column(Name="Addr", Storage="_Addr", DbType="nvarchar(100)")]
 		public string Addr
 		{
 			get
@@ -128,7 +128,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="City", Storage="_City", DbType="varchar(30)")]
+		[Column(Name="City", Storage="_City", DbType="nvarchar(30)")]
 		public string City
 		{
 			get
@@ -145,7 +145,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="ST", Storage="_St", DbType="varchar(20)")]
+		[Column(Name="ST", Storage="_St", DbType="nvarchar(20)")]
 		public string St
 		{
 			get
@@ -162,7 +162,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Zip", Storage="_Zip", DbType="varchar(15)")]
+		[Column(Name="Zip", Storage="_Zip", DbType="nvarchar(15)")]
 		public string Zip
 		{
 			get
