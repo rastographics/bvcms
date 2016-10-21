@@ -236,5 +236,75 @@ namespace CmsData
                 db2.Dispose();
             }
         }
+
+        public void AddRole(object query, string role)
+        {
+            var disallow = new[]
+            {
+                "admin",
+                "applicationreview",
+                "backgroundcheck",
+                "creditcheck",
+                "delete",
+                "developer",
+                "finance",
+                "financeadmin",
+                "manager",
+                "manager2",
+                "membership",
+                "managetransactions",
+                "memberdocs",
+            };
+            if (disallow.Any(rr => rr.Equal(role)))
+            {
+                db.LogActivity($"PythonModel.AddRole(query, {role}) denied");
+                return;
+            }
+            db.LogActivity($"PythonModel.AddRole(query, {role})");
+            using (var db2 = NewDataContext())
+            {
+                var q = db2.PeopleQuery2(query);
+                foreach (var p in q)
+                {
+                    var user = p.Users.FirstOrDefault();
+                    if (user != null)
+                    {
+                        user.AddRole(db2, role);
+                        db2.SubmitChanges();
+                    }
+                    else
+                    {
+                        var uname = MembershipService.FetchUsername(db2, p.PreferredName, p.LastName);
+                        var pword = Guid.NewGuid().ToString();
+                        user = new User() { PeopleId = p.PeopleId, Password = pword, Username = uname, MustChangePassword = false, IsApproved = true, Name = p.Name };
+                        db2.SubmitChanges();
+                        db2.Users.InsertOnSubmit(user);
+                        user.AddRole(db2, role);
+                        db2.SubmitChanges();
+                    }
+                }
+            }
+        }
+        public void RemoveRole(object query, string role)
+        {
+            db.LogActivity($"PythonModel.RemoveRole(query, {role})");
+            using (var db2 = NewDataContext())
+            {
+                var q = db2.PeopleQuery2(query);
+                foreach (var p in q)
+                {
+                    var user = p.Users.FirstOrDefault();
+                    if (user != null)
+                    {
+                        var oldroles = user.Roles;
+                        var newroles = oldroles.Where(rr => !rr.Equal(role)).ToArray();
+                        if(newroles.Length == oldroles.Length)
+                            continue;
+                        user.SetRoles(db2, newroles);
+                        db2.SubmitChanges();
+                    }
+                }
+            }
+        }
     }
 }
