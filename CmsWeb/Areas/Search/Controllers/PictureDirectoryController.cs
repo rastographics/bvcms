@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Index(string id = null)
         {
             ViewBag.Controller = this;
-            return View(new PictureDirectoryModel(id));
+            return View("Index", new PictureDirectoryModel(id));
         }
         [HttpPost]
         public ActionResult Results(PictureDirectoryModel m)

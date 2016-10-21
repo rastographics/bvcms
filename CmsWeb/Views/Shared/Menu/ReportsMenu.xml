@@ -2,20 +2,16 @@
 <ReportsMenu>
   <Header>Statistics</Header>
   <Report link="/Reports/VitalStats">Vital Stats</Report>
-  <Space></Space>
   <Header>Attendance Summary</Header>
   <Report link="/Reports/ChurchAttendance" target="_blank">Week at a Glance</Report>
   <Report link="/Reports/ChurchAttendance2" target="_blank">Average Week at a Glance</Report>
-  <Space></Space>
   <Header>Decisions</Header>
   <Report link="/Reports/WeeklyDecisions" target="_blank">Weekly Decisions</Report>
   <Report link="/Reports/Decisions" target="_blank">Decision Summary</Report>
-  <Space></Space>
   <Header>New Guests</Header>
   <Report link="/Home/NthTimeAttenders/1">First Attendance</Report>
   <Report link="/Home/NthTimeAttenders/2">Second Attendance</Report>
   <Report link="/Home/NthTimeAttenders/3">Third Attendance</Report>
-  <Space></Space>
   <Header>Extra Value Summary</Header>
   <Report link="/ExtraValue/Summary/People">People</Report>
   <Report link="/ExtraValue/Summary/Family">Family</Report>
