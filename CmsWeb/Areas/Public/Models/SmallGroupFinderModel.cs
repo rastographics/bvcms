@@ -42,6 +42,21 @@ namespace CmsWeb.Areas.Public.Models
             }
         }
 
+        public string Subtitle
+        {
+            get
+            {
+                string subtitle = null;
+                if (_sgf != null)
+                {
+                    var subtitleContent = getSetting("Subtitle-Content")?.value;
+                    subtitle = DbUtil.Db.Content(subtitleContent).Body;
+                }
+
+                return subtitle ?? "";
+            }
+        }
+
         public bool UseShell { get; private set; }
 
         public SmallGroupFinderModel(Controller controller, bool useShell = true)
