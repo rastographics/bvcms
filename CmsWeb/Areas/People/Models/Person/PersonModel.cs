@@ -215,7 +215,7 @@ namespace CmsWeb.Areas.People.Models
 
                 _resourceTypes = new List<ResourceTypeModel>();
 
-                var memberOrgs = DbUtil.Db.OrganizationMembers.Where(x => x.PeopleId == PeopleId);
+                var memberOrgs = DbUtil.Db.OrganizationMembers.Where(x => x.PeopleId == PeopleId).ToList();
 
                 var orgLevels = memberOrgs.ToDictionary(x => x.OrganizationId, x => x.MemberType.Id);
 
@@ -297,6 +297,23 @@ namespace CmsWeb.Areas.People.Models
                         {
                             if (resource.MemberTypeIds.Split(',').Contains(orgLevels[ro.OrganizationId].ToString()))
                                 okayToAdd = true;
+                        }
+                        if (okayToAdd)
+                            resourceModels.Add(resource);
+                    }
+                    else if (noOrgRestrictionsSet && orgTypeRestrictionsSet)
+                    {
+                        // only okay to add if the user is of member type in one of the restricted org types
+                        var okayToAdd = false;
+                        foreach (var rot in resource.ResourceOrganizationTypes)
+                        {
+                            if (memberOrgs.Any(mo =>
+                                    mo.Organization.OrganizationTypeId == rot.OrganizationTypeId &&
+                                    resource.MemberTypeIds.Split(',').Contains(orgLevels[mo.OrganizationId].ToString())
+                            ))
+                            {
+                                okayToAdd = true;
+                            }
                         }
                         if (okayToAdd)
                             resourceModels.Add(resource);
