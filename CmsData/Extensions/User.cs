@@ -74,7 +74,9 @@ namespace CmsData
 
             foreach (var s in q)
             {
-                var role = db.Roles.Single(r => r.RoleName == s);
+                var role = db.Roles.SingleOrDefault(r => r.RoleName == s);
+                if (role == null)
+                    throw new Exception($"Role {s} does not exist");
                 UserRoles.Add(new UserRole {Role = role});
             }
         }

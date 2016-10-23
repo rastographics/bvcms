@@ -105,10 +105,7 @@ namespace UtilityExtensions
             }
         }
 
-        public static int UserId1
-        {
-            get { return UserId == 0 ? 1 : UserId; }
-        }
+        public static int UserId1 => UserId == 0 ? 1 : UserId;
 
         private const string STR_UserPeopleId = "UserPeopleId";
         public static int? UserPeopleId
