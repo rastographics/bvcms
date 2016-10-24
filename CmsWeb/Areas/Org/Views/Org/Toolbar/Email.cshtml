@@ -56,7 +56,9 @@
             else
             {
                 <li class="dropdown-header">Email</li>
-                <li><a href='/Email/@ViewBag.queryid?templateID=0&orgid=@oid' class="qid">Email All Members</a></li>
+                <li><a href='/Email/@ViewBag.queryid?templateID=0&orgid=@oid' class="qid">Email Members</a></li>
+                <li><a href='/Email/@ViewBag.queryid?templateID=0&orgid=@oid&onlyProspects=true' class="qid">Email Prospects</a></li>
+                <li><a href='/Email/@ViewBag.queryid?templateID=0&orgid=@oid&membersAndProspects=true' class="qid">Email Members & Prospects</a></li>
             }
         </ul>
     </li>
