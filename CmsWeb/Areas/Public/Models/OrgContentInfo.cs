@@ -131,10 +131,26 @@ namespace CmsWeb.Models
             return o;
         }
 
-        public List<OrganizationMember> GetMemberList()
+        public IEnumerable<MemberInfo> GetMemberList()
         {
-            var org = DbUtil.Db.LoadOrganizationById(OrgId);
-            return org.OrganizationMembers.OrderBy(o => o.Person.Name).ToList();
+            var members = DbUtil.Db.OrgPeopleCurrent(OrgId);
+            foreach (var member in members)
+            {
+                var person = DbUtil.Db.LoadPersonById(member.PeopleId);
+                yield return new MemberInfo
+                {
+                    Name = person.Name,
+                    MemberType = member.MemberType,
+                    PeopleId = member.PeopleId
+                };
+            }
+        }
+
+        public class MemberInfo
+        {
+            public string Name { get; set; }
+            public string MemberType { get; set; }
+            public int PeopleId { get; set; }
         }
     }
 }

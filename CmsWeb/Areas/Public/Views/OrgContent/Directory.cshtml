@@ -14,7 +14,6 @@
         <tr>
             <th>Name</th>
             <th>MemberType</th>
-            @*<th>Birthday</th*@
             @if (allowEmails)
             {
                 <th>Email</th>
@@ -24,12 +23,11 @@
     @foreach (var member in Model.GetMemberList())
     {
         <tr>
-            <td>@member.Person.Name</td>
-            <td>@member.MemberType.Description</td>
-            @*<td>@FormatDate(member.Person.BirthDate)</td>*@
+            <td>@member.Name</td>
+            <td>@member.MemberType</td>
             @if (allowEmails)
             {
-                <td><a href="/Email/@ViewBag.qid?templateID=0&personid=@member.Person.PeopleId">Email</a></td>
+                <td><a href="/Email/@ViewBag.qid?templateID=0&personid=@member.PeopleId">Email</a></td>
             }
         </tr>
     }
@@ -38,6 +36,6 @@
 {
     if (dt.HasValue)
     {
-        <text>@dt.Value.ToString("MMM d")</text>   
+        <text>@dt.Value.ToString("MMM d")</text>
     }
 }
