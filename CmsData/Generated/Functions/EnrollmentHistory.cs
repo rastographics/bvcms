@@ -68,7 +68,7 @@ namespace CmsData.View
 		
 		private bool? _SkipInsertTriggerProcessing;
 		
-		private int? _PrevTranType;
+		private int _PrevTranType;
 		
 		private int _Isgood;
 		
@@ -533,8 +533,8 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="PrevTranType", Storage="_PrevTranType", DbType="int")]
-		public int? PrevTranType
+		[Column(Name="PrevTranType", Storage="_PrevTranType", DbType="int NOT NULL")]
+		public int PrevTranType
 		{
 			get
 			{

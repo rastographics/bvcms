@@ -585,6 +585,7 @@
     <Compile Include="Generated\Functions\OrgMember.cs" />
     <Compile Include="Generated\Functions\OrgMemberInfo.cs" />
     <Compile Include="Generated\Functions\OrgMemberQuestion.cs" />
+    <Compile Include="Generated\Functions\OrgMembersAsOfDate2.cs" />
     <Compile Include="Generated\Functions\OrgMembersGroupFiltered.cs" />
     <Compile Include="Generated\Functions\OrgMinistryInfo.cs" />
     <Compile Include="Generated\Functions\OrgPeople2.cs" />
@@ -634,6 +635,8 @@
     <Compile Include="Generated\Resource.cs" />
     <Compile Include="Generated\ResourceAttachment.cs" />
     <Compile Include="Generated\ResourceCategory.cs" />
+    <Compile Include="Generated\ResourceOrganization.cs" />
+    <Compile Include="Generated\ResourceOrganizationType.cs" />
     <Compile Include="Generated\ResourceType.cs" />
     <Compile Include="Generated\Views\ActiveRegistration.cs" />
     <Compile Include="Generated\Views\AppRegistration.cs" />

@@ -578,6 +578,14 @@ namespace CmsData
         partial void UpdateResourceCategory(ResourceCategory instance);
         partial void DeleteResourceCategory(ResourceCategory instance);
         
+        partial void InsertResourceOrganization(ResourceOrganization instance);
+        partial void UpdateResourceOrganization(ResourceOrganization instance);
+        partial void DeleteResourceOrganization(ResourceOrganization instance);
+        
+        partial void InsertResourceOrganizationType(ResourceOrganizationType instance);
+        partial void UpdateResourceOrganizationType(ResourceOrganizationType instance);
+        partial void DeleteResourceOrganizationType(ResourceOrganizationType instance);
+        
         partial void InsertResourceType(ResourceType instance);
         partial void UpdateResourceType(ResourceType instance);
         partial void DeleteResourceType(ResourceType instance);
@@ -1601,6 +1609,18 @@ namespace CmsData
 		public Table< ResourceCategory> ResourceCategories
 		{
 			get	{ return this.GetTable< ResourceCategory>(); }
+
+		}
+
+		public Table< ResourceOrganization> ResourceOrganizations
+		{
+			get	{ return this.GetTable< ResourceOrganization>(); }
+
+		}
+
+		public Table< ResourceOrganizationType> ResourceOrganizationTypes
+		{
+			get	{ return this.GetTable< ResourceOrganizationType>(); }
 
 		}
 
@@ -3392,6 +3412,19 @@ namespace CmsData
             )
 		{
 			return this.CreateMethodCallQuery< View.OrgMembersAsOfDate>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                orgid,
+                meetingdt
+                );
+		}
+
+		[Function(Name="dbo.OrgMembersAsOfDate2", IsComposable = true)]
+		public IQueryable< View.OrgMembersAsOfDate2 > OrgMembersAsOfDate2(
+            [Parameter(DbType="int")] int? orgid,
+            [Parameter(DbType="datetime")] DateTime? meetingdt
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgMembersAsOfDate2>(this, 
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgid,
                 meetingdt

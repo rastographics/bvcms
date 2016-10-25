@@ -49,6 +49,10 @@ namespace CmsData
    		
    		private EntitySet< ResourceAttachment> _ResourceAttachments;
 		
+   		private EntitySet< ResourceOrganization> _ResourceOrganizations;
+		
+   		private EntitySet< ResourceOrganizationType> _ResourceOrganizationTypes;
+		
     	
 		private EntityRef< Campu> _Campu;
 		
@@ -116,6 +120,10 @@ namespace CmsData
 		{
 			
 			this._ResourceAttachments = new EntitySet< ResourceAttachment>(new Action< ResourceAttachment>(this.attach_ResourceAttachments), new Action< ResourceAttachment>(this.detach_ResourceAttachments)); 
+			
+			this._ResourceOrganizations = new EntitySet< ResourceOrganization>(new Action< ResourceOrganization>(this.attach_ResourceOrganizations), new Action< ResourceOrganization>(this.detach_ResourceOrganizations)); 
+			
+			this._ResourceOrganizationTypes = new EntitySet< ResourceOrganizationType>(new Action< ResourceOrganizationType>(this.attach_ResourceOrganizationTypes), new Action< ResourceOrganizationType>(this.detach_ResourceOrganizationTypes)); 
 			
 			
 			this._Campu = default(EntityRef< Campu>); 
@@ -482,6 +490,26 @@ namespace CmsData
    		}
 
 		
+   		[Association(Name="FK_ResourceOrganization_Resource", Storage="_ResourceOrganizations", OtherKey="ResourceId")]
+   		public EntitySet< ResourceOrganization> ResourceOrganizations
+   		{
+   		    get { return this._ResourceOrganizations; }
+
+			set	{ this._ResourceOrganizations.Assign(value); }
+
+   		}
+
+		
+   		[Association(Name="FK_ResourceOrganizationType_Resource", Storage="_ResourceOrganizationTypes", OtherKey="ResourceId")]
+   		public EntitySet< ResourceOrganizationType> ResourceOrganizationTypes
+   		{
+   		    get { return this._ResourceOrganizationTypes; }
+
+			set	{ this._ResourceOrganizationTypes.Assign(value); }
+
+   		}
+
+		
 	#endregion
 	
 	#region Foreign Keys
@@ -762,6 +790,32 @@ namespace CmsData
 		}
 
 		private void detach_ResourceAttachments(ResourceAttachment entity)
+		{
+			this.SendPropertyChanging();
+			entity.Resource = null;
+		}
+
+		
+		private void attach_ResourceOrganizations(ResourceOrganization entity)
+		{
+			this.SendPropertyChanging();
+			entity.Resource = this;
+		}
+
+		private void detach_ResourceOrganizations(ResourceOrganization entity)
+		{
+			this.SendPropertyChanging();
+			entity.Resource = null;
+		}
+
+		
+		private void attach_ResourceOrganizationTypes(ResourceOrganizationType entity)
+		{
+			this.SendPropertyChanging();
+			entity.Resource = this;
+		}
+
+		private void detach_ResourceOrganizationTypes(ResourceOrganizationType entity)
 		{
 			this.SendPropertyChanging();
 			entity.Resource = null;

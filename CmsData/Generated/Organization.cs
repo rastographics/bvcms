@@ -207,6 +207,8 @@ namespace CmsData
 		
    		private EntitySet< Resource> _Resources;
 		
+   		private EntitySet< ResourceOrganization> _ResourceOrganizations;
+		
    		private EntitySet< OrganizationMember> _OrganizationMembers;
 		
     	
@@ -502,6 +504,8 @@ namespace CmsData
 			this._OrgSchedules = new EntitySet< OrgSchedule>(new Action< OrgSchedule>(this.attach_OrgSchedules), new Action< OrgSchedule>(this.detach_OrgSchedules)); 
 			
 			this._Resources = new EntitySet< Resource>(new Action< Resource>(this.attach_Resources), new Action< Resource>(this.detach_Resources)); 
+			
+			this._ResourceOrganizations = new EntitySet< ResourceOrganization>(new Action< ResourceOrganization>(this.attach_ResourceOrganizations), new Action< ResourceOrganization>(this.detach_ResourceOrganizations)); 
 			
 			this._OrganizationMembers = new EntitySet< OrganizationMember>(new Action< OrganizationMember>(this.attach_OrganizationMembers), new Action< OrganizationMember>(this.detach_OrganizationMembers)); 
 			
@@ -2458,6 +2462,16 @@ namespace CmsData
    		}
 
 		
+   		[Association(Name="FK_ResourceOrganization_Organizations", Storage="_ResourceOrganizations", OtherKey="OrganizationId")]
+   		public EntitySet< ResourceOrganization> ResourceOrganizations
+   		{
+   		    get { return this._ResourceOrganizations; }
+
+			set	{ this._ResourceOrganizations.Assign(value); }
+
+   		}
+
+		
    		[Association(Name="ORGANIZATION_MEMBERS_ORG_FK", Storage="_OrganizationMembers", OtherKey="OrganizationId")]
    		public EntitySet< OrganizationMember> OrganizationMembers
    		{
@@ -2959,6 +2973,19 @@ namespace CmsData
 		}
 
 		private void detach_Resources(Resource entity)
+		{
+			this.SendPropertyChanging();
+			entity.Organization = null;
+		}
+
+		
+		private void attach_ResourceOrganizations(ResourceOrganization entity)
+		{
+			this.SendPropertyChanging();
+			entity.Organization = this;
+		}
+
+		private void detach_ResourceOrganizations(ResourceOrganization entity)
 		{
 			this.SendPropertyChanging();
 			entity.Organization = null;

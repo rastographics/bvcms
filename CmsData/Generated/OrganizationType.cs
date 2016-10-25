@@ -31,6 +31,8 @@ namespace CmsData
 		
    		private EntitySet< Resource> _Resources;
 		
+   		private EntitySet< ResourceOrganizationType> _ResourceOrganizationTypes;
+		
     	
 	#endregion
 	
@@ -58,6 +60,8 @@ namespace CmsData
 			this._Organizations = new EntitySet< Organization>(new Action< Organization>(this.attach_Organizations), new Action< Organization>(this.detach_Organizations)); 
 			
 			this._Resources = new EntitySet< Resource>(new Action< Resource>(this.attach_Resources), new Action< Resource>(this.detach_Resources)); 
+			
+			this._ResourceOrganizationTypes = new EntitySet< ResourceOrganizationType>(new Action< ResourceOrganizationType>(this.attach_ResourceOrganizationTypes), new Action< ResourceOrganizationType>(this.detach_ResourceOrganizationTypes)); 
 			
 			
 			OnCreated();
@@ -178,6 +182,16 @@ namespace CmsData
    		}
 
 		
+   		[Association(Name="FK_ResourceOrganizationType_OrganizationType", Storage="_ResourceOrganizationTypes", OtherKey="OrganizationTypeId")]
+   		public EntitySet< ResourceOrganizationType> ResourceOrganizationTypes
+   		{
+   		    get { return this._ResourceOrganizationTypes; }
+
+			set	{ this._ResourceOrganizationTypes.Assign(value); }
+
+   		}
+
+		
 	#endregion
 	
 	#region Foreign Keys
@@ -219,6 +233,19 @@ namespace CmsData
 		}
 
 		private void detach_Resources(Resource entity)
+		{
+			this.SendPropertyChanging();
+			entity.OrganizationType = null;
+		}
+
+		
+		private void attach_ResourceOrganizationTypes(ResourceOrganizationType entity)
+		{
+			this.SendPropertyChanging();
+			entity.OrganizationType = this;
+		}
+
+		private void detach_ResourceOrganizationTypes(ResourceOrganizationType entity)
 		{
 			this.SendPropertyChanging();
 			entity.OrganizationType = null;
