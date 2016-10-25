@@ -1,8 +1,7 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.Search.Models.PictureDirectoryModel
 @{
-  ViewBag.Title = "Member Directory";
-  ViewBag.PageSubHeader = $"<a href=\"/Person2/{Util.UserPeopleId}\">{Util.UserFullName}</a>";
+  ViewBag.Title = "Picture Directory";
   Layout = ViewExtensions2.TouchPointLayout();
 }
 @section head
@@ -13,7 +12,25 @@
   <div class="box-content">
     @if (Model.ErrorMessage.HasValue())
     {
-      <div class="alert alert-block alert-danger"><h1>@Model.ErrorMessage</h1></div>
+      if (Model.ErrorMessage == "NotConfigured")
+      {
+        <div class="alert alert-block alert-info">
+          <h4>Not Configured</h4>
+          <p>Sorry, this directory has not been configured for your church.</p>
+          <p>See <a href="http://docs.touchpointsoftware.com/SummaryReports/OnlinePictureDirectory.html">Online Picture Directory documentation</a></p>
+        </div>
+      }
+      else if (Model.ErrorMessage == "NotAuthorized")
+      {
+        <div class="alert alert-block alert-warning">
+          <h4>Not able to View Directory</h4>
+          <p>Sorry, you may not be a member of this Directory or have opted out. Contact the church.</p>
+        </div>
+      }
+      else
+      {
+      <div class="alert alert-block alert-danger"><h4>@Model.ErrorMessage</h4></div>
+      }
     }
     else
     {

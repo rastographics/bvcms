@@ -125,7 +125,9 @@ AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
                 SqlName = DbUtil.Db.Setting(PictureDirectorySqlName, PictureDirectorySqlName);
             }
             else
-                ErrorMessage = "No Directory Configured";
+                ErrorMessage = "NotConfigured";
+            if(!ErrorMessage.HasValue() && CanView == false)
+                ErrorMessage = "NotAuthorized";
         }
 
         public static string GetModifiedOrLatestText(string name)
@@ -165,7 +167,6 @@ AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
             IQueryable<Person> qmembers;
             if (CanView != true)
             {
-                ErrorMessage = "Not Authorized to View";
                 qmembers = DbUtil.Db.PeopleQuery2("PeopleId = 0");
             }
             else if (StatusFlag.HasValue())

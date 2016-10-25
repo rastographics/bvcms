@@ -127,6 +127,7 @@ namespace CmsWeb.Code
                         break;
                     case "Header":
                         tb.AddCssClass("dropdown-header");
+                        tb.AddCssClass("dropdown-sub-header");
                         tb.SetInnerText(e.Value);
                         break;
                     case "Space":
