@@ -1,4 +1,4 @@
-CREATE VIEW [dbo].SpouseOrHeadWithEmail AS
+CREATE VIEW [dbo].[SpouseOrHeadWithEmail] AS
 	SELECT pid PeopleId FROM
 	(
 		SELECT 
@@ -25,7 +25,5 @@ CREATE VIEW [dbo].SpouseOrHeadWithEmail AS
 	WHERE LEN(email) > 0
 
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

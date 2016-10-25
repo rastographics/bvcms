@@ -36,7 +36,5 @@ select @m = BirthMonth, @d = BirthDay, @y = BirthYear, @p_deceased_date = Deceas
 	RETURN @v_return
 	END
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

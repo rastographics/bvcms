@@ -31,7 +31,5 @@ RETURN
 	GROUP BY c.CreditGiverId, c.SpouseId, p.PreferredName, p.LastName, sp.PreferredName, p.PrimaryAddress, p.PrimaryCity, p.PrimaryState, p.PrimaryZip, ms.Description, c.FamilyId
 )
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

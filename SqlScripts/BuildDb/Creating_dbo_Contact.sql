@@ -14,14 +14,12 @@ CREATE TABLE [dbo].[Contact]
 [PrayerRequest] [bit] NULL,
 [ContactMade] [bit] NULL,
 [GiftBagGiven] [bit] NULL,
-[Comments] [nvarchar] (max) NULL,
+[Comments] [nvarchar] (max) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 [ModifiedBy] [int] NULL,
 [ModifiedDate] [datetime] NULL,
-[LimitToRole] [nvarchar] (50) NULL,
+[LimitToRole] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 [OrganizationId] [int] NULL
 )
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

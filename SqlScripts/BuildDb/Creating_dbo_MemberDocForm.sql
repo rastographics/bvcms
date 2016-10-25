@@ -5,14 +5,12 @@ CREATE TABLE [dbo].[MemberDocForm]
 [DocDate] [datetime] NULL,
 [UploaderId] [int] NULL,
 [IsDocument] [bit] NULL,
-[Purpose] [nvarchar] (30) NULL,
+[Purpose] [nvarchar] (30) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 [LargeId] [int] NULL,
 [MediumId] [int] NULL,
 [SmallId] [int] NULL,
-[Name] [nvarchar] (100) NULL
+[Name] [nvarchar] (100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL
 )
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

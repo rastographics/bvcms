@@ -32,7 +32,5 @@ WHERE (@comp <> '<=' OR t3.pct <= @pct)
 AND (@comp <> '>' OR t3.pct > @pct)
 )
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

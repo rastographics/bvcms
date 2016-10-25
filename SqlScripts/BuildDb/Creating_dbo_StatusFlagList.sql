@@ -11,7 +11,5 @@ CREATE VIEW [dbo].[StatusFlagList]
 	LEFT JOIN dbo.Split((SELECT Setting FROM Setting WHERE Id = 'StatusFlags'), ',') ff ON sf.Flag = ff.Value
 	LEFT JOIN dbo.Roles r ON r.RoleName = 'StatusFlag:' + Flag
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

@@ -3,7 +3,7 @@
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-CREATE PROCEDURE dbo.RenumberWords
+CREATE PROCEDURE [dbo].[RenumberWords]
 AS
 BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
@@ -18,7 +18,5 @@ BEGIN
 	ON w.word = tt.word
 	END
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

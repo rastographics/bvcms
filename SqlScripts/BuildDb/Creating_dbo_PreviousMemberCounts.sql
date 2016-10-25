@@ -9,7 +9,5 @@ AND TransactionDate = (SELECT MAX(TransactionDate) FROM dbo.EnrollmentTransactio
 AND NOT EXISTS(SELECT NULL FROM dbo.OrganizationMembers WHERE PeopleId = et.PeopleId AND OrganizationId = et.OrganizationId)
 GROUP BY et.OrganizationId
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

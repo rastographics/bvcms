@@ -22,7 +22,5 @@ CREATE VIEW [dbo].[InProgressRegistrations] AS
 	AND RegSettingXml.value('(//AllowSaveProgress)[1]', 'bit') = 1
 )
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

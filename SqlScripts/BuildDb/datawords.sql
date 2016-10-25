@@ -1958,3 +1958,6 @@ INSERT INTO [dbo].[words] ([word], [n]) VALUES (N'yourself', 1958)
 INSERT INTO [dbo].[words] ([word], [n]) VALUES (N'youth', 1959)
 INSERT INTO [dbo].[words] ([word], [n]) VALUES (N'zero', 1960)
 INSERT INTO [dbo].[words] ([word], [n]) VALUES (N'zoo', 1961)
+PRINT(N'Operation applied to 1960 rows out of 1960')
+
+PRINT(N'Add rows to [dbo].[ZipCodes]')

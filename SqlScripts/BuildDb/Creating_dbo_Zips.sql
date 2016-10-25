@@ -1,10 +1,8 @@
 CREATE TABLE [dbo].[Zips]
 (
-[ZipCode] [nvarchar] (10) NOT NULL,
+[ZipCode] [nvarchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
 [MetroMarginalCode] [int] NULL
 )
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

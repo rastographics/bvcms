@@ -16,7 +16,5 @@ left JOIN lookup.MaritalStatus Marital ON Marital.Id = p.MaritalStatusId
 LEFT JOIN lookup.DecisionType Decision ON Decision.Id = p.DecisionTypeId
 left JOIN lookup.BaptismStatus Baptism ON Baptism.Id = p.BaptismStatusId
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

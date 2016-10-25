@@ -7,11 +7,9 @@ CREATE TABLE [dbo].[Downline]
 [LeaderId] [int] NULL,
 [DiscipleId] [int] NULL,
 [StartDt] [datetime] NULL,
-[Trace] [varchar] (400) NULL,
+[Trace] [varchar] (400) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 [EndDt] [datetime] NULL
 )
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

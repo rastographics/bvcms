@@ -9,20 +9,18 @@ CREATE TABLE [dbo].[Meetings]
 [NumVstMembers] [int] NOT NULL CONSTRAINT [DF__MEETINGS___NUM_V__5027A6DA] DEFAULT ((0)),
 [NumRepeatVst] [int] NOT NULL CONSTRAINT [DF__MEETINGS___NUM_R__511BCB13] DEFAULT ((0)),
 [NumNewVisit] [int] NOT NULL CONSTRAINT [DF__MEETINGS___NUM_N__520FEF4C] DEFAULT ((0)),
-[Location] [nvarchar] (200) NULL,
+[Location] [nvarchar] (200) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 [MeetingDate] [datetime] NULL,
 [GroupMeetingFlag] [bit] NOT NULL CONSTRAINT [DF__MEETINGS___GROUP__5AA5354D] DEFAULT ((0)),
-[Description] [nvarchar] (100) NULL,
+[Description] [nvarchar] (100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 [NumOutTown] [int] NULL,
 [NumOtherAttends] [int] NULL,
 [AttendCreditId] [int] NULL,
-[ScheduleId] AS ((datepart(weekday,[MeetingDate])*(10000)+datepart(hour,[MeetingDate])*(100))+datepart(minute,[MeetingDate])),
+[ScheduleId] AS ((datepart(weekday,[MeetingDate])*(10000)+(datepart(hour,[MeetingDate])*(100)))+datepart(minute,[MeetingDate])),
 [NoAutoAbsents] [bit] NULL,
 [HeadCount] [int] NULL,
-[MaxCount] AS (case when [HeadCount]>[NumPresent] then [HeadCount] else [NumPresent] end)
+[MaxCount] AS (case  when [HeadCount]>[NumPresent] then [HeadCount] else [NumPresent] end)
 )
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

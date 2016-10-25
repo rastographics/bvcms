@@ -1,7 +1,7 @@
 CREATE TABLE [dbo].[ExtraData]
 (
 [Id] [int] NOT NULL IDENTITY(1, 1),
-[Data] [nvarchar] (max) NULL,
+[Data] [nvarchar] (max) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 [Stamp] [datetime] NULL,
 [completed] [bit] NULL,
 [OrganizationId] [int] NULL,
@@ -9,7 +9,5 @@ CREATE TABLE [dbo].[ExtraData]
 [abandoned] [bit] NULL
 )
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

@@ -2,7 +2,7 @@ CREATE TABLE [dbo].[Picture]
 (
 [PictureId] [int] NOT NULL IDENTITY(1, 1),
 [CreatedDate] [datetime] NULL,
-[CreatedBy] [nvarchar] (50) NULL,
+[CreatedBy] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 [LargeId] [int] NULL,
 [MediumId] [int] NULL,
 [SmallId] [int] NULL,
@@ -11,7 +11,5 @@ CREATE TABLE [dbo].[Picture]
 [Y] [int] NULL
 )
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

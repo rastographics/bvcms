@@ -8,10 +8,8 @@ CREATE TABLE [dbo].[VolunteerForm]
 [Id] [int] NOT NULL IDENTITY(1, 1),
 [UploaderId] [int] NULL,
 [IsDocument] [bit] NULL,
-[Name] [nvarchar] (50) NULL
+[Name] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL
 )
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

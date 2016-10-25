@@ -15,7 +15,5 @@ WHERE EmailAddress NOT IN ('david@bvcms.com','karen@bvcms.com', 'support@bvcms.c
 ) tt
 
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

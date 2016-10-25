@@ -17,7 +17,5 @@ WHERE (CASE WHEN c.ContributionTypeId = 8 THEN 1 ELSE 0 END) = @pledge AND c.Con
 GROUP BY P.PeopleId, p.LastName, p.PreferredName, sp.PreferredName, p.PrimaryAddress, p.PrimaryCity, p.PrimaryState, p.PrimaryZip
 )
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

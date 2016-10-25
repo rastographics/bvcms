@@ -11,101 +11,204 @@ GO
 BEGIN TRANSACTION
 -- Pointer used for text / image updates. This might not be needed, but is declared here just in case
 DECLARE @pv binary(16)
-ALTER TABLE [dbo].[Users] DROP CONSTRAINT [FK_Users_People]
-ALTER TABLE [dbo].[UserRole] DROP CONSTRAINT [FK_UserRole_Roles]
-ALTER TABLE [dbo].[UserRole] DROP CONSTRAINT [FK_UserRole_Users]
-ALTER TABLE [dbo].[RelatedFamilies] DROP CONSTRAINT [RelatedFamilies1__RelatedFamily1]
-ALTER TABLE [dbo].[RelatedFamilies] DROP CONSTRAINT [RelatedFamilies2__RelatedFamily2]
-ALTER TABLE [dbo].[RecReg] DROP CONSTRAINT [FK_RecReg_People]
-ALTER TABLE [dbo].[PeopleExtra] DROP CONSTRAINT [FK_PeopleExtra_People]
-ALTER TABLE [dbo].[People] DROP CONSTRAINT [FK_People_BaptismStatus]
-ALTER TABLE [dbo].[People] DROP CONSTRAINT [FK_People_BaptismType]
-ALTER TABLE [dbo].[People] DROP CONSTRAINT [BFMembers__BFClass]
-ALTER TABLE [dbo].[People] DROP CONSTRAINT [FK_People_Campus]
-ALTER TABLE [dbo].[People] DROP CONSTRAINT [StmtPeople__ContributionStatementOption]
-ALTER TABLE [dbo].[People] DROP CONSTRAINT [FK_People_DecisionType]
-ALTER TABLE [dbo].[People] DROP CONSTRAINT [FK_People_DropType]
-ALTER TABLE [dbo].[People] DROP CONSTRAINT [FK_People_EntryPoint]
-ALTER TABLE [dbo].[People] DROP CONSTRAINT [EnvPeople__EnvelopeOption]
-ALTER TABLE [dbo].[People] DROP CONSTRAINT [FK_People_Families]
-ALTER TABLE [dbo].[People] DROP CONSTRAINT [FK_People_Gender]
-ALTER TABLE [dbo].[People] DROP CONSTRAINT [FK_People_InterestPoint]
-ALTER TABLE [dbo].[People] DROP CONSTRAINT [FK_People_JoinType]
-ALTER TABLE [dbo].[People] DROP CONSTRAINT [FK_People_MemberLetterStatus]
-ALTER TABLE [dbo].[People] DROP CONSTRAINT [FK_People_MaritalStatus]
-ALTER TABLE [dbo].[People] DROP CONSTRAINT [FK_People_MemberStatus]
-ALTER TABLE [dbo].[People] DROP CONSTRAINT [FK_People_DiscoveryClassStatus]
-ALTER TABLE [dbo].[People] DROP CONSTRAINT [FK_People_Origin]
-ALTER TABLE [dbo].[People] DROP CONSTRAINT [FK_PEOPLE_TBL_Picture]
-ALTER TABLE [dbo].[People] DROP CONSTRAINT [FK_People_FamilyPosition]
-ALTER TABLE [dbo].[People] DROP CONSTRAINT [ResCodePeople__ResidentCode]
-ALTER TABLE [dbo].[OrgMemMemTags] DROP CONSTRAINT [FK_OrgMemMemTags_MemberTags]
-ALTER TABLE [dbo].[OrgMemMemTags] DROP CONSTRAINT [FK_OrgMemMemTags_OrganizationMembers]
-ALTER TABLE [dbo].[OrganizationMembers] DROP CONSTRAINT [FK_ORGANIZATION_MEMBERS_TBL_MemberType]
-ALTER TABLE [dbo].[OrganizationMembers] DROP CONSTRAINT [ORGANIZATION_MEMBERS_ORG_FK]
-ALTER TABLE [dbo].[OrganizationMembers] DROP CONSTRAINT [ORGANIZATION_MEMBERS_PPL_FK]
-ALTER TABLE [dbo].[OrganizationMembers] DROP CONSTRAINT [FK_OrganizationMembers_RegistrationData]
-ALTER TABLE [dbo].[OrganizationMembers] DROP CONSTRAINT [FK_OrganizationMembers_Transaction]
-ALTER TABLE [dbo].[Families] DROP CONSTRAINT [FamiliesHeaded__HeadOfHousehold]
-ALTER TABLE [dbo].[Families] DROP CONSTRAINT [FamiliesHeaded2__HeadOfHouseholdSpouse]
-ALTER TABLE [dbo].[Families] DROP CONSTRAINT [FK_Families_Picture]
-ALTER TABLE [dbo].[Families] DROP CONSTRAINT [ResCodeFamilies__ResidentCode]
-ALTER TABLE [dbo].[EnrollmentTransaction] DROP CONSTRAINT [DescTransactions__FirstTransaction]
-ALTER TABLE [dbo].[EnrollmentTransaction] DROP CONSTRAINT [FK_ENROLLMENT_TRANSACTION_TBL_MemberType]
-ALTER TABLE [dbo].[EnrollmentTransaction] DROP CONSTRAINT [ENROLLMENT_TRANSACTION_ORG_FK]
-ALTER TABLE [dbo].[EnrollmentTransaction] DROP CONSTRAINT [ENROLLMENT_TRANSACTION_PPL_FK]
-ALTER TABLE [dbo].[Attend] DROP CONSTRAINT [FK_AttendWithAbsents_TBL_AttendType]
-ALTER TABLE [dbo].[Attend] DROP CONSTRAINT [FK_AttendWithAbsents_TBL_MEETINGS_TBL]
-ALTER TABLE [dbo].[Attend] DROP CONSTRAINT [FK_Attend_MemberType]
-ALTER TABLE [dbo].[Attend] DROP CONSTRAINT [FK_AttendWithAbsents_TBL_ORGANIZATIONS_TBL]
-ALTER TABLE [dbo].[Attend] DROP CONSTRAINT [FK_AttendWithAbsents_TBL_PEOPLE_TBL]
-ALTER TABLE [dbo].[ApiSession] DROP CONSTRAINT [FK_Users_ApiSession]
-ALTER TABLE [dbo].[OrgSchedule] DROP CONSTRAINT [FK_OrgSchedule_Organizations]
-ALTER TABLE [dbo].[MemberTags] DROP CONSTRAINT [FK_MemberTags_Organizations]
-ALTER TABLE [dbo].[Meetings] DROP CONSTRAINT [FK_Meetings_AttendCredit]
-ALTER TABLE [dbo].[Meetings] DROP CONSTRAINT [FK_MEETINGS_TBL_ORGANIZATIONS_TBL]
-ALTER TABLE [dbo].[MeetingExtra] DROP CONSTRAINT [FK_MeetingExtra_Meetings]
-ALTER TABLE [dbo].[VolRequest] DROP CONSTRAINT [VolRequests__Meeting]
-ALTER TABLE [dbo].[DivOrg] DROP CONSTRAINT [FK_DivOrg_Division]
-ALTER TABLE [dbo].[DivOrg] DROP CONSTRAINT [FK_DivOrg_Organizations]
-ALTER TABLE [dbo].[ProgDiv] DROP CONSTRAINT [FK_ProgDiv_Division]
-ALTER TABLE [dbo].[ProgDiv] DROP CONSTRAINT [FK_ProgDiv_Program]
-ALTER TABLE [dbo].[Organizations] DROP CONSTRAINT [FK_Organizations_Campus]
-ALTER TABLE [dbo].[Organizations] DROP CONSTRAINT [FK_Organizations_Division]
-ALTER TABLE [dbo].[Organizations] DROP CONSTRAINT [FK_ORGANIZATIONS_TBL_EntryPoint]
-ALTER TABLE [dbo].[Organizations] DROP CONSTRAINT [FK_Organizations_Gender]
-ALTER TABLE [dbo].[Organizations] DROP CONSTRAINT [FK_ORGANIZATIONS_TBL_OrganizationStatus]
-ALTER TABLE [dbo].[Organizations] DROP CONSTRAINT [FK_Organizations_OrganizationType]
-ALTER TABLE [dbo].[Organizations] DROP CONSTRAINT [ChildOrgs__ParentOrg]
-ALTER TABLE [dbo].[Contact] DROP CONSTRAINT [contactsHad__organization]
-ALTER TABLE [dbo].[Coupons] DROP CONSTRAINT [FK_Coupons_Organizations]
-ALTER TABLE [dbo].[GoerSenderAmounts] DROP CONSTRAINT [FK_GoerSenderAmounts_Organizations]
-ALTER TABLE [dbo].[OrganizationExtra] DROP CONSTRAINT [FK_OrganizationExtra_Organizations]
-ALTER TABLE [dbo].[OrgMemberExtra] DROP CONSTRAINT [FK_OrgMemberExtra_Organizations]
-ALTER TABLE [dbo].[Resource] DROP CONSTRAINT [FK_Resource_Organization]
-ALTER TABLE [lookup].[MemberType] DROP CONSTRAINT [FK_MemberType_AttendType]
-ALTER TABLE [dbo].[Division] DROP CONSTRAINT [FK_Division_Program]
-ALTER TABLE [dbo].[Coupons] DROP CONSTRAINT [FK_Coupons_Division]
-ALTER TABLE [dbo].[Promotion] DROP CONSTRAINT [FromPromotions__FromDivision]
-ALTER TABLE [dbo].[Promotion] DROP CONSTRAINT [ToPromotions__ToDivision]
-ALTER TABLE [dbo].[Resource] DROP CONSTRAINT [FK_Resource_Division]
-ALTER TABLE [dbo].[VoluteerApprovalIds] DROP CONSTRAINT [FK_VoluteerApprovalIds_VolunteerCodes]
-ALTER TABLE [dbo].[Volunteer] DROP CONSTRAINT [StatusMvrId__StatusMvr]
-ALTER TABLE [dbo].[Volunteer] DROP CONSTRAINT [FK_Volunteer_VolApplicationStatus]
-ALTER TABLE [dbo].[Task] DROP CONSTRAINT [FK_Task_TaskStatus]
-ALTER TABLE [dbo].[Zips] DROP CONSTRAINT [FK_Zips_ResidentCode]
-ALTER TABLE [dbo].[Contribution] DROP CONSTRAINT [FK_Contribution_ContributionType]
-ALTER TABLE [dbo].[Contribution] DROP CONSTRAINT [FK_Contribution_ContributionStatus]
-ALTER TABLE [dbo].[Contact] DROP CONSTRAINT [FK_Contacts_ContactTypes]
-ALTER TABLE [dbo].[Contact] DROP CONSTRAINT [FK_NewContacts_ContactReasons]
-ALTER TABLE [dbo].[Resource] DROP CONSTRAINT [FK_Resource_Campus]
-ALTER TABLE [dbo].[BundleHeader] DROP CONSTRAINT [FK_BUNDLE_HEADER_TBL_BundleStatusTypes]
-ALTER TABLE [dbo].[BundleHeader] DROP CONSTRAINT [FK_BUNDLE_HEADER_TBL_BundleHeaderTypes]
-ALTER TABLE [dbo].[Contribution] DROP CONSTRAINT [FK_Contribution_ExtraData]
-ALTER TABLE [dbo].[BundleHeader] DROP CONSTRAINT [BundleHeaders__Fund]
-ALTER TABLE [dbo].[Contribution] DROP CONSTRAINT [FK_Contribution_ContributionFund]
-ALTER TABLE [dbo].[RecurringAmounts] DROP CONSTRAINT [FK_RecurringAmounts_ContributionFund]
-ALTER TABLE [dbo].[ContentKeyWords] DROP CONSTRAINT [FK_ContentKeyWords_Content]
+
+PRINT(N'Drop constraints from [dbo].[Users]')
+ALTER TABLE [dbo].[Users] NOCHECK CONSTRAINT [FK_Users_People]
+
+PRINT(N'Drop constraints from [dbo].[UserRole]')
+ALTER TABLE [dbo].[UserRole] NOCHECK CONSTRAINT [FK_UserRole_Roles]
+ALTER TABLE [dbo].[UserRole] NOCHECK CONSTRAINT [FK_UserRole_Users]
+
+PRINT(N'Drop constraints from [dbo].[RelatedFamilies]')
+ALTER TABLE [dbo].[RelatedFamilies] NOCHECK CONSTRAINT [RelatedFamilies1__RelatedFamily1]
+ALTER TABLE [dbo].[RelatedFamilies] NOCHECK CONSTRAINT [RelatedFamilies2__RelatedFamily2]
+
+PRINT(N'Drop constraints from [dbo].[RecReg]')
+ALTER TABLE [dbo].[RecReg] NOCHECK CONSTRAINT [FK_RecReg_People]
+
+PRINT(N'Drop constraints from [dbo].[PeopleExtra]')
+ALTER TABLE [dbo].[PeopleExtra] NOCHECK CONSTRAINT [FK_PeopleExtra_People]
+
+PRINT(N'Drop constraints from [dbo].[People]')
+ALTER TABLE [dbo].[People] NOCHECK CONSTRAINT [BFMembers__BFClass]
+ALTER TABLE [dbo].[People] NOCHECK CONSTRAINT [EnvPeople__EnvelopeOption]
+ALTER TABLE [dbo].[People] NOCHECK CONSTRAINT [FK_People_BaptismStatus]
+ALTER TABLE [dbo].[People] NOCHECK CONSTRAINT [FK_People_BaptismType]
+ALTER TABLE [dbo].[People] NOCHECK CONSTRAINT [FK_People_Campus]
+ALTER TABLE [dbo].[People] NOCHECK CONSTRAINT [FK_People_DecisionType]
+ALTER TABLE [dbo].[People] NOCHECK CONSTRAINT [FK_People_DiscoveryClassStatus]
+ALTER TABLE [dbo].[People] NOCHECK CONSTRAINT [FK_People_DropType]
+ALTER TABLE [dbo].[People] NOCHECK CONSTRAINT [FK_People_EntryPoint]
+ALTER TABLE [dbo].[People] NOCHECK CONSTRAINT [FK_People_Families]
+ALTER TABLE [dbo].[People] NOCHECK CONSTRAINT [FK_People_FamilyPosition]
+ALTER TABLE [dbo].[People] NOCHECK CONSTRAINT [FK_People_Gender]
+ALTER TABLE [dbo].[People] NOCHECK CONSTRAINT [FK_People_InterestPoint]
+ALTER TABLE [dbo].[People] NOCHECK CONSTRAINT [FK_People_JoinType]
+ALTER TABLE [dbo].[People] NOCHECK CONSTRAINT [FK_People_MaritalStatus]
+ALTER TABLE [dbo].[People] NOCHECK CONSTRAINT [FK_People_MemberLetterStatus]
+ALTER TABLE [dbo].[People] NOCHECK CONSTRAINT [FK_People_MemberStatus]
+ALTER TABLE [dbo].[People] NOCHECK CONSTRAINT [FK_People_Origin]
+ALTER TABLE [dbo].[People] NOCHECK CONSTRAINT [FK_PEOPLE_TBL_Picture]
+ALTER TABLE [dbo].[People] NOCHECK CONSTRAINT [ResCodePeople__ResidentCode]
+ALTER TABLE [dbo].[People] NOCHECK CONSTRAINT [StmtPeople__ContributionStatementOption]
+
+PRINT(N'Drop constraints from [dbo].[OrgMemMemTags]')
+ALTER TABLE [dbo].[OrgMemMemTags] NOCHECK CONSTRAINT [FK_OrgMemMemTags_MemberTags]
+ALTER TABLE [dbo].[OrgMemMemTags] NOCHECK CONSTRAINT [FK_OrgMemMemTags_OrganizationMembers]
+
+PRINT(N'Drop constraints from [dbo].[OrganizationMembers]')
+ALTER TABLE [dbo].[OrganizationMembers] NOCHECK CONSTRAINT [FK_ORGANIZATION_MEMBERS_TBL_MemberType]
+ALTER TABLE [dbo].[OrganizationMembers] NOCHECK CONSTRAINT [FK_OrganizationMembers_RegistrationData]
+ALTER TABLE [dbo].[OrganizationMembers] NOCHECK CONSTRAINT [FK_OrganizationMembers_Transaction]
+ALTER TABLE [dbo].[OrganizationMembers] NOCHECK CONSTRAINT [ORGANIZATION_MEMBERS_ORG_FK]
+ALTER TABLE [dbo].[OrganizationMembers] NOCHECK CONSTRAINT [ORGANIZATION_MEMBERS_PPL_FK]
+
+PRINT(N'Drop constraints from [dbo].[Families]')
+ALTER TABLE [dbo].[Families] NOCHECK CONSTRAINT [FamiliesHeaded__HeadOfHousehold]
+ALTER TABLE [dbo].[Families] NOCHECK CONSTRAINT [FamiliesHeaded2__HeadOfHouseholdSpouse]
+ALTER TABLE [dbo].[Families] NOCHECK CONSTRAINT [FK_Families_Picture]
+ALTER TABLE [dbo].[Families] NOCHECK CONSTRAINT [ResCodeFamilies__ResidentCode]
+
+PRINT(N'Drop constraints from [dbo].[EnrollmentTransaction]')
+ALTER TABLE [dbo].[EnrollmentTransaction] NOCHECK CONSTRAINT [DescTransactions__FirstTransaction]
+ALTER TABLE [dbo].[EnrollmentTransaction] NOCHECK CONSTRAINT [ENROLLMENT_TRANSACTION_ORG_FK]
+ALTER TABLE [dbo].[EnrollmentTransaction] NOCHECK CONSTRAINT [ENROLLMENT_TRANSACTION_PPL_FK]
+ALTER TABLE [dbo].[EnrollmentTransaction] NOCHECK CONSTRAINT [FK_ENROLLMENT_TRANSACTION_TBL_MemberType]
+
+PRINT(N'Drop constraints from [dbo].[Attend]')
+ALTER TABLE [dbo].[Attend] NOCHECK CONSTRAINT [FK_Attend_MemberType]
+ALTER TABLE [dbo].[Attend] NOCHECK CONSTRAINT [FK_AttendWithAbsents_TBL_AttendType]
+ALTER TABLE [dbo].[Attend] NOCHECK CONSTRAINT [FK_AttendWithAbsents_TBL_MEETINGS_TBL]
+ALTER TABLE [dbo].[Attend] NOCHECK CONSTRAINT [FK_AttendWithAbsents_TBL_ORGANIZATIONS_TBL]
+ALTER TABLE [dbo].[Attend] NOCHECK CONSTRAINT [FK_AttendWithAbsents_TBL_PEOPLE_TBL]
+
+PRINT(N'Drop constraints from [dbo].[ApiSession]')
+ALTER TABLE [dbo].[ApiSession] NOCHECK CONSTRAINT [FK_Users_ApiSession]
+
+PRINT(N'Drop constraints from [dbo].[OrgSchedule]')
+ALTER TABLE [dbo].[OrgSchedule] NOCHECK CONSTRAINT [FK_OrgSchedule_Organizations]
+
+PRINT(N'Drop constraints from [dbo].[MemberTags]')
+ALTER TABLE [dbo].[MemberTags] NOCHECK CONSTRAINT [FK_MemberTags_Organizations]
+
+PRINT(N'Drop constraints from [dbo].[Meetings]')
+ALTER TABLE [dbo].[Meetings] NOCHECK CONSTRAINT [FK_Meetings_AttendCredit]
+ALTER TABLE [dbo].[Meetings] NOCHECK CONSTRAINT [FK_MEETINGS_TBL_ORGANIZATIONS_TBL]
+
+PRINT(N'Drop constraint FK_MeetingExtra_Meetings from [dbo].[MeetingExtra]')
+ALTER TABLE [dbo].[MeetingExtra] NOCHECK CONSTRAINT [FK_MeetingExtra_Meetings]
+
+PRINT(N'Drop constraint VolRequests__Meeting from [dbo].[VolRequest]')
+ALTER TABLE [dbo].[VolRequest] NOCHECK CONSTRAINT [VolRequests__Meeting]
+
+PRINT(N'Drop constraints from [dbo].[DivOrg]')
+ALTER TABLE [dbo].[DivOrg] NOCHECK CONSTRAINT [FK_DivOrg_Division]
+ALTER TABLE [dbo].[DivOrg] NOCHECK CONSTRAINT [FK_DivOrg_Organizations]
+
+PRINT(N'Drop constraints from [dbo].[ProgDiv]')
+ALTER TABLE [dbo].[ProgDiv] NOCHECK CONSTRAINT [FK_ProgDiv_Division]
+ALTER TABLE [dbo].[ProgDiv] NOCHECK CONSTRAINT [FK_ProgDiv_Program]
+
+PRINT(N'Drop constraints from [dbo].[Organizations]')
+ALTER TABLE [dbo].[Organizations] NOCHECK CONSTRAINT [ChildOrgs__ParentOrg]
+ALTER TABLE [dbo].[Organizations] NOCHECK CONSTRAINT [FK_Organizations_Campus]
+ALTER TABLE [dbo].[Organizations] NOCHECK CONSTRAINT [FK_Organizations_Division]
+ALTER TABLE [dbo].[Organizations] NOCHECK CONSTRAINT [FK_Organizations_Gender]
+ALTER TABLE [dbo].[Organizations] NOCHECK CONSTRAINT [FK_Organizations_OrganizationType]
+ALTER TABLE [dbo].[Organizations] NOCHECK CONSTRAINT [FK_ORGANIZATIONS_TBL_EntryPoint]
+ALTER TABLE [dbo].[Organizations] NOCHECK CONSTRAINT [FK_ORGANIZATIONS_TBL_OrganizationStatus]
+
+PRINT(N'Drop constraint contactsHad__organization from [dbo].[Contact]')
+ALTER TABLE [dbo].[Contact] NOCHECK CONSTRAINT [contactsHad__organization]
+
+PRINT(N'Drop constraint FK_Coupons_Organizations from [dbo].[Coupons]')
+ALTER TABLE [dbo].[Coupons] NOCHECK CONSTRAINT [FK_Coupons_Organizations]
+
+PRINT(N'Drop constraint FK_GoerSenderAmounts_Organizations from [dbo].[GoerSenderAmounts]')
+ALTER TABLE [dbo].[GoerSenderAmounts] NOCHECK CONSTRAINT [FK_GoerSenderAmounts_Organizations]
+
+PRINT(N'Drop constraint FK_OrganizationExtra_Organizations from [dbo].[OrganizationExtra]')
+ALTER TABLE [dbo].[OrganizationExtra] NOCHECK CONSTRAINT [FK_OrganizationExtra_Organizations]
+
+PRINT(N'Drop constraint FK_OrgMemberExtra_Organizations from [dbo].[OrgMemberExtra]')
+ALTER TABLE [dbo].[OrgMemberExtra] NOCHECK CONSTRAINT [FK_OrgMemberExtra_Organizations]
+
+PRINT(N'Drop constraint FK_Resource_Organization from [dbo].[Resource]')
+ALTER TABLE [dbo].[Resource] NOCHECK CONSTRAINT [FK_Resource_Organization]
+
+PRINT(N'Drop constraint FK_ResourceOrganization_Organizations from [dbo].[ResourceOrganization]')
+ALTER TABLE [dbo].[ResourceOrganization] NOCHECK CONSTRAINT [FK_ResourceOrganization_Organizations]
+
+PRINT(N'Drop constraints from [lookup].[MemberType]')
+ALTER TABLE [lookup].[MemberType] NOCHECK CONSTRAINT [FK_MemberType_AttendType]
+
+PRINT(N'Drop constraints from [dbo].[Division]')
+ALTER TABLE [dbo].[Division] NOCHECK CONSTRAINT [FK_Division_Program]
+
+PRINT(N'Drop constraint FK_Coupons_Division from [dbo].[Coupons]')
+ALTER TABLE [dbo].[Coupons] NOCHECK CONSTRAINT [FK_Coupons_Division]
+
+PRINT(N'Drop constraint FromPromotions__FromDivision from [dbo].[Promotion]')
+ALTER TABLE [dbo].[Promotion] NOCHECK CONSTRAINT [FromPromotions__FromDivision]
+
+PRINT(N'Drop constraint ToPromotions__ToDivision from [dbo].[Promotion]')
+ALTER TABLE [dbo].[Promotion] NOCHECK CONSTRAINT [ToPromotions__ToDivision]
+
+PRINT(N'Drop constraint FK_Resource_Division from [dbo].[Resource]')
+ALTER TABLE [dbo].[Resource] NOCHECK CONSTRAINT [FK_Resource_Division]
+
+PRINT(N'Drop constraint FK_VoluteerApprovalIds_VolunteerCodes from [dbo].[VoluteerApprovalIds]')
+ALTER TABLE [dbo].[VoluteerApprovalIds] NOCHECK CONSTRAINT [FK_VoluteerApprovalIds_VolunteerCodes]
+
+PRINT(N'Drop constraint FK_Volunteer_VolApplicationStatus from [dbo].[Volunteer]')
+ALTER TABLE [dbo].[Volunteer] NOCHECK CONSTRAINT [FK_Volunteer_VolApplicationStatus]
+
+PRINT(N'Drop constraint StatusMvrId__StatusMvr from [dbo].[Volunteer]')
+ALTER TABLE [dbo].[Volunteer] NOCHECK CONSTRAINT [StatusMvrId__StatusMvr]
+
+PRINT(N'Drop constraint FK_Task_TaskStatus from [dbo].[Task]')
+ALTER TABLE [dbo].[Task] NOCHECK CONSTRAINT [FK_Task_TaskStatus]
+
+PRINT(N'Drop constraint FK_Zips_ResidentCode from [dbo].[Zips]')
+ALTER TABLE [dbo].[Zips] NOCHECK CONSTRAINT [FK_Zips_ResidentCode]
+
+PRINT(N'Drop constraint FK_Contribution_ContributionType from [dbo].[Contribution]')
+ALTER TABLE [dbo].[Contribution] NOCHECK CONSTRAINT [FK_Contribution_ContributionType]
+
+PRINT(N'Drop constraint FK_Contribution_ContributionStatus from [dbo].[Contribution]')
+ALTER TABLE [dbo].[Contribution] NOCHECK CONSTRAINT [FK_Contribution_ContributionStatus]
+
+PRINT(N'Drop constraint FK_Contacts_ContactTypes from [dbo].[Contact]')
+ALTER TABLE [dbo].[Contact] NOCHECK CONSTRAINT [FK_Contacts_ContactTypes]
+
+PRINT(N'Drop constraint FK_NewContacts_ContactReasons from [dbo].[Contact]')
+ALTER TABLE [dbo].[Contact] NOCHECK CONSTRAINT [FK_NewContacts_ContactReasons]
+
+PRINT(N'Drop constraint FK_Resource_Campus from [dbo].[Resource]')
+ALTER TABLE [dbo].[Resource] NOCHECK CONSTRAINT [FK_Resource_Campus]
+
+PRINT(N'Drop constraint FK_BUNDLE_HEADER_TBL_BundleStatusTypes from [dbo].[BundleHeader]')
+ALTER TABLE [dbo].[BundleHeader] NOCHECK CONSTRAINT [FK_BUNDLE_HEADER_TBL_BundleStatusTypes]
+
+PRINT(N'Drop constraint FK_BUNDLE_HEADER_TBL_BundleHeaderTypes from [dbo].[BundleHeader]')
+ALTER TABLE [dbo].[BundleHeader] NOCHECK CONSTRAINT [FK_BUNDLE_HEADER_TBL_BundleHeaderTypes]
+
+PRINT(N'Drop constraint FK_Contribution_ExtraData from [dbo].[Contribution]')
+ALTER TABLE [dbo].[Contribution] NOCHECK CONSTRAINT [FK_Contribution_ExtraData]
+
+PRINT(N'Drop constraint BundleHeaders__Fund from [dbo].[BundleHeader]')
+ALTER TABLE [dbo].[BundleHeader] NOCHECK CONSTRAINT [BundleHeaders__Fund]
+
+PRINT(N'Drop constraint FK_Contribution_ContributionFund from [dbo].[Contribution]')
+ALTER TABLE [dbo].[Contribution] NOCHECK CONSTRAINT [FK_Contribution_ContributionFund]
+
+PRINT(N'Drop constraint FK_RecurringAmounts_ContributionFund from [dbo].[RecurringAmounts]')
+ALTER TABLE [dbo].[RecurringAmounts] NOCHECK CONSTRAINT [FK_RecurringAmounts_ContributionFund]
+
+PRINT(N'Drop constraint FK_ContentKeyWords_Content from [dbo].[ContentKeyWords]')
+ALTER TABLE [dbo].[ContentKeyWords] NOCHECK CONSTRAINT [FK_ContentKeyWords_Content]
+
+PRINT(N'Add rows to [dbo].[BackgroundCheckMVRCodes]')
 SET IDENTITY_INSERT [dbo].[BackgroundCheckMVRCodes] ON
 INSERT INTO [dbo].[BackgroundCheckMVRCodes] ([ID], [Code], [Description], [StateAbbr]) VALUES (2, N'AL', N'Alabama', N'AL')
 INSERT INTO [dbo].[BackgroundCheckMVRCodes] ([ID], [Code], [Description], [StateAbbr]) VALUES (3, N'AK', N'Alaska', N'AK')
@@ -159,6 +262,9 @@ INSERT INTO [dbo].[BackgroundCheckMVRCodes] ([ID], [Code], [Description], [State
 INSERT INTO [dbo].[BackgroundCheckMVRCodes] ([ID], [Code], [Description], [StateAbbr]) VALUES (59, N'WI', N'Wisconsin', N'WI')
 INSERT INTO [dbo].[BackgroundCheckMVRCodes] ([ID], [Code], [Description], [StateAbbr]) VALUES (60, N'WY', N'Wyoming', N'WY')
 SET IDENTITY_INSERT [dbo].[BackgroundCheckMVRCodes] OFF
+PRINT(N'Operation applied to 51 rows out of 51')
+
+PRINT(N'Add rows to [dbo].[Content]')
 SET IDENTITY_INSERT [dbo].[Content] ON
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (1, N'Header', N'Header', N'<h1>
 	Fake People</h1>
@@ -538,7 +644,7 @@ class MembershipAutomation(object):
             CheckDecisionStatus(p)
 
         if (p.NewMemberClassStatusId == NewMemberClassStatusCode.AdminApproval         or p.NewMemberClassStatusId == NewMemberClassStatusCode.Attended         or p.NewMemberClassStatusId == NewMemberClassStatusCode.GrandFathered         or p.NewMemberClassStatusId == NewMemberClassStatusCode.ExemptedChild)         and p.NewMemberClassDate == None:
-            p.errorR'',NULL,NULL) WHERE [Id]=11
+            p.errorR'',NULL,NULL) WHERE [Id] = 11
 UPDATE [dbo].[Content] SET [Body].WRITE(N''eturn = "need a NewMemberClass date"
 
         if (p.DecisionTypeId == DecisionCode.Letter         or p.DecisionTypeId == DecisionCode.Statement         or p.DecisionTypeId == DecisionCode.ProfessionForMembership         or p.DecisionTypeId == DecisionCode.ProfessionNotForMembership         or p.DecisionTypeId == DecisionCode.StatementReqBaptism)         and p.DecisionDate == None:
@@ -561,7 +667,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''eturn = "need a NewMemberClass date"
             om = Db.LoadOrgMember(p.PeopleId, "Step 1", False)
             if om != None:
                 om.Drop(True) # drops and records drop in history
-'',NULL,NULL) WHERE [Id]=11
+'',NULL,NULL) WHERE [Id] = 11
 ')
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (12, N'GivingReceipt', N'Giving Receipt', N'<div style="margin:10px;max-width: 600px">
 	<table cellpadding="0" cellspacing="5" style="width: 100%; font-family:Arial; font-size: 13px; line-height: 15px;">
@@ -1041,7 +1147,7 @@ EXEC(N'UPDATE [dbo].[Content] SET [Body].WRITE(N''nd-color:#FFFFFF;
                                 	<table border="0" cellpadding="0" cellspacing="0" width="600" id="templateBody">
                                     	<tr>
                                         	<td valign="top" width="200" id="templateSidebar">
-                                            	<table border="0" cellpadding="0" cel'',NULL,NULL) WHERE [Id]=69
+                                            	<table border="0" cellpadding="0" cel'',NULL,NULL) WHERE [Id] = 69
 UPDATE [dbo].[Content] SET [Body].WRITE(N''lspacing="0" width="200">
                                                 	<tr>
                                                     	<td valign="top" class="sidebarContent">
@@ -1081,7 +1187,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''lspacing="0" width="200">
                                                                             <h4>Heading 4</h4>
                                                                             Sections in the side bar are shown here.</div>
                                                                     </td>
-                                                                </t'',NULL,NULL) WHERE [Id]=69
+                                                                </t'',NULL,NULL) WHERE [Id] = 69
 UPDATE [dbo].[Content] SET [Body].WRITE(N''r>
                                                             </table>
                                                         </td>
@@ -1125,7 +1231,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''r>
                                                                             <tr bvrepeat>
                                                                                 <td valign="top">
                                                                                     <img src="http://www.bvcms.com/content/images/placeholder_160.gif" style="max-width:160px;"/>
-          '',NULL,NULL) WHERE [Id]=69
+          '',NULL,NULL) WHERE [Id] = 69
 UPDATE [dbo].[Content] SET [Body].WRITE(N''                                                                          <div bvedit>
                                                                                         <h4>Heading 4</h4>
                                                                                         <strong>Content blocks:</strong> Put all the great things you want to say here 
@@ -1171,10 +1277,10 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''                                     
                                                             </div>
                                                         </td>
                                                     </tr>
-                           '',NULL,NULL) WHERE [Id]=69
+                           '',NULL,NULL) WHERE [Id] = 69
 UPDATE [dbo].[Content] SET [Body].WRITE(N''                         <tr>
-                             '
-+N'                           <td valign="top" width="350">
+                     '
++N'                                   <td valign="top" width="350">
                                                             <br />
                                                             <div>
                                                                 <strong>Our mailing address is:</strong>
@@ -1214,7 +1320,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''                         <tr>
         </center>
     </body>
 </html>
-'',NULL,NULL) WHERE [Id]=69
+'',NULL,NULL) WHERE [Id] = 69
 ')
 EXEC(N'INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (70, N''Basic Template'', N''Basic Template With Header'', N''<html>
 	<head>
@@ -1479,7 +1585,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N'ign="top">
 		</center>
 	</body>
 </html>
-',NULL,NULL) WHERE [Id]=70
+',NULL,NULL) WHERE [Id] = 70
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (71, N'ForgotPasswordReset2', N'ForgotPasswordReset2', N'<p>Someone recently requested a new password for {email}.
 To set your password, click your username below:</p>
 <blockquote>{resetlink}</blockquote>
@@ -1522,10 +1628,17 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 </ReportsMenu>
 ', NULL, NULL, 1, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Content] OFF
+PRINT(N'Operation applied to 31 rows out of 31')
+
+PRINT(N'Add row to [dbo].[ContributionFund]')
 INSERT INTO [dbo].[ContributionFund] ([FundId], [CreatedBy], [CreatedDate], [FundName], [FundDescription], [FundStatusId], [FundTypeId], [FundPledgeFlag], [FundAccountCode], [FundIncomeDept], [FundIncomeAccount], [FundIncomeFund], [FundCashDept], [FundCashAccount], [FundCashFund], [OnlineSort], [NonTaxDeductible], [QBIncomeAccount], [QBAssetAccount]) VALUES (1, 1, '2010-10-30 15:36:12.533', N'General Tithe', N'General Tithe', 1, 1, 0, NULL, N'0', N'0', N'0', N'0', N'0', N'0', NULL, NULL, 0, 0)
+
+PRINT(N'Add row to [dbo].[ContributionsRun]')
 SET IDENTITY_INSERT [dbo].[ContributionsRun] ON
 INSERT INTO [dbo].[ContributionsRun] ([id], [started], [count], [processed], [completed], [error], [LastSet], [CurrSet], [Sets]) VALUES (1, '2012-02-13 15:50:01.000', 0, 0, '2012-02-13 15:50:01.000', N'', NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[ContributionsRun] OFF
+
+PRINT(N'Add rows to [dbo].[CustomColumns]')
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('ActiveOtherChurch', 94, 'rr.ActiveInAnotherChurch', 'LEFT JOIN dbo.RecReg rr ON rr.PeopleId = p.PeopleId')
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('Addr', 68, 'p.PrimaryAddress', NULL)
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('Addr2', 69, 'p.PrimaryAddress2', NULL)
@@ -1635,6 +1748,9 @@ INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUE
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('Wedding', 16, 'p.WeddingDate', NULL)
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('Work', 24, 'dbo.FmtPhone(p.WorkPhone)', NULL)
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('Zip', 72, 'p.PrimaryZip', NULL)
+PRINT(N'Operation applied to 109 rows out of 109')
+
+PRINT(N'Add rows to [dbo].[Downline]')
 INSERT INTO [dbo].[Downline] ([CategoryId], [DownlineId], [Generation], [OrgId], [LeaderId], [DiscipleId], [StartDt], [Trace], [EndDt]) VALUES (1, 9, 1, 14, 9, 5, '2011-05-20 06:24:15.137', '9/5', '3000-01-01 00:00:00.000')
 INSERT INTO [dbo].[Downline] ([CategoryId], [DownlineId], [Generation], [OrgId], [LeaderId], [DiscipleId], [StartDt], [Trace], [EndDt]) VALUES (1, 9, 1, 14, 9, 6, '2011-05-20 06:24:15.137', '9/6', '3000-01-01 00:00:00.000')
 INSERT INTO [dbo].[Downline] ([CategoryId], [DownlineId], [Generation], [OrgId], [LeaderId], [DiscipleId], [StartDt], [Trace], [EndDt]) VALUES (1, 9, 1, 14, 9, 7, '2011-05-20 06:24:15.137', '9/7', '3000-01-01 00:00:00.000')
@@ -1753,6 +1869,9 @@ INSERT INTO [dbo].[Downline] ([CategoryId], [DownlineId], [Generation], [OrgId],
 INSERT INTO [dbo].[Downline] ([CategoryId], [DownlineId], [Generation], [OrgId], [LeaderId], [DiscipleId], [StartDt], [Trace], [EndDt]) VALUES (1, 111, 1, 5, 111, 148, '2011-05-20 06:02:52.613', '111/148', '3000-01-01 00:00:00.000')
 INSERT INTO [dbo].[Downline] ([CategoryId], [DownlineId], [Generation], [OrgId], [LeaderId], [DiscipleId], [StartDt], [Trace], [EndDt]) VALUES (1, 111, 1, 5, 111, 114, '2011-05-20 06:04:50.207', '111/114', '3000-01-01 00:00:00.000')
 INSERT INTO [dbo].[Downline] ([CategoryId], [DownlineId], [Generation], [OrgId], [LeaderId], [DiscipleId], [StartDt], [Trace], [EndDt]) VALUES (1, 111, 1, 5, 111, 112, '2011-05-20 05:58:33.610', '111/112', '3000-01-01 00:00:00.000')
+PRINT(N'Operation applied to 118 rows out of 118')
+
+PRINT(N'Add rows to [dbo].[DownlineLeaders]')
 INSERT INTO [dbo].[DownlineLeaders] ([CategoryId], [PeopleId], [Name], [Cnt], [Levels]) VALUES (1, 9, N'Kirk Witten', 23, 3)
 INSERT INTO [dbo].[DownlineLeaders] ([CategoryId], [PeopleId], [Name], [Cnt], [Levels]) VALUES (1, 13, N'Maddy Eberhart', 2, 1)
 INSERT INTO [dbo].[DownlineLeaders] ([CategoryId], [PeopleId], [Name], [Cnt], [Levels]) VALUES (1, 24, N'Terry Hooks', 18, 2)
@@ -1761,10 +1880,15 @@ INSERT INTO [dbo].[DownlineLeaders] ([CategoryId], [PeopleId], [Name], [Cnt], [L
 INSERT INTO [dbo].[DownlineLeaders] ([CategoryId], [PeopleId], [Name], [Cnt], [Levels]) VALUES (1, 67, N'George Walker', 17, 2)
 INSERT INTO [dbo].[DownlineLeaders] ([CategoryId], [PeopleId], [Name], [Cnt], [Levels]) VALUES (1, 99, N'Teresa Sell', 9, 1)
 INSERT INTO [dbo].[DownlineLeaders] ([CategoryId], [PeopleId], [Name], [Cnt], [Levels]) VALUES (1, 111, N'Ellie Jenkins', 16, 1)
+PRINT(N'Operation applied to 8 rows out of 8')
+
+PRINT(N'Add row to [dbo].[ExtraData]')
 SET IDENTITY_INSERT [dbo].[ExtraData] ON
 EXEC(N'INSERT INTO [dbo].[ExtraData] ([Id], [Data], [Stamp], [completed], [OrganizationId], [UserPeopleId], [abandoned]) VALUES (1, N''<OnlineRegModel xmlns="http://schemas.datacontract.org/2004/07/CmsWeb.Models" xmlns:i="http://www.w3.org/2001/XMLSchema-instance"><_Classid i:nil="true"/><_Nologin>true</_Nologin><_Password i:nil="true"/><_TranId>1</_TranId><_UserPeopleId i:nil="true"/><_Username i:nil="true"/><_donation i:nil="true"/><_donor i:nil="true"/><_meeting i:nil="true" xmlns:a="http://schemas.datacontract.org/2004/07/CmsData"/><_x003C_URL_x003E_k__BackingField>https://starterdb.bvcms.com:443/onlinereg/Index/30?testing=true</_x003C_URL_x003E_k__BackingField><_x003C_divid_x003E_k__BackingField i:nil="true"/><_x003C_orgid_x003E_k__BackingField>30</_x003C_orgid_x003E_k__BackingField><_x003C_testing_x003E_k__BackingField>true</_x003C_testing_x003E_k__BackingField><list><OnlineRegPersonModel><CannotCreateAccount>false</CannotCreateAccount><CreatedAccount>false</CreatedAccount><NotFoundText i:nil="true"/><SawExistingAccount>false</SawExistingAccount><_Checkbox i:nil="true" xmlns:a="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/><_ExtraQuestion xmlns:a="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/><_Homephone i:nil="true"/><_IsFamily>false</_IsFamily><_LoggedIn>false</_LoggedIn><_MenuItem xmlns:a="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/><_Middle i:nil="true"/><_Option2 i:nil="true"/><_Whatfamily i:nil="true"/><_YesNoQuestion xmlns:a="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/><_notreq i:nil="true"/><_x003C_CreatingAccount_x003E_k__BackingField i:nil="true"/><_x003C_Found_x003E_k__BackingField>true</_x003C_Found_x003E_k__BackingField><_x003C_IsFilled_x003E_k__BackingField>false</_x003C_IsFilled_x003E_k__BackingField><_x003C_IsNew_x003E_k__BackingField>false</_x003C_IsNew_x003E_k__BackingField><_x003C_IsValidForContinue_x003E_k__BackingField>false</_x003C_IsValidForContinue_x003E_k__BackingField><_x003C_IsValidForExisting_x003E_k__BackingField>true</_x003C_IsValidForExisting_x003E_k__BackingField><_x003C_IsValidForNew_x003E_k__BackingField>false</_x003C_IsValidForNew_x003E_k__BackingField><_x003C_LastItem_x003E_k__BackingField>false</_x003C_LastItem_x003E_k__BackingField><_x003C_OtherOK_x003E_k__BackingField>true</_x003C_OtherOK_x003E_k__BackingField><_x003C_PeopleId_x003E_k__BackingField>64</_x003C_PeopleId_x003E_k__BackingField><_x003C_ShowAddress_x003E_k__BackingField>false</_x003C_ShowAddress_x003E_k__BackingField><_x003C_address_x003E_k__BackingField>9486 Mountain Spring Way</_x003C_address_x003E_k__BackingField><_x003C_advil_x003E_k__BackingField>true</_x003C_advil_x003E_k__BackingField><_x003C_city_x003E_k__BackingField>Germantown</_x003C_city_x003E_k__BackingField><_x003C_classid_x003E_k__BackingField i:nil="true"/><_x003C_coaching_x003E_k__BackingField i:nil="true"/><_x003C_divid_x003E_k__BackingField i:nil="true"/><_x003C_dob_x003E_k__BackingField>10/20/00</_x003C_dob_x003E_k__BackingField><_x003C_docphone_x003E_k__BackingField>901-555-6688</_x003C_docphone_x003E_k__BackingField><_x003C_doctor_x003E_k__BackingField>Dr. Smith</_x003C_doctor_x003E_k__BackingField><_x003C_email_x003E_k__BackingField>karen@bvcms.com</_x003C_email_x003E_k__BackingField><_x003C_emcontact_x003E_k__BackingField>Karen Worrell</_x003C_emcontact_x003E_k__BackingField><_x003C_emphone_x003E_k__BackingField>901-555-7799</_x003C_emphone_x003E_k__BackingField><_x003C_first_x003E_k__BackingField>Sharon </_x003C_first_x003E_k__BackingField><_x003C_fname_x003E_k__BackingField>George Eaton</_x003C_fname_x003E_k__BackingField><_x003C_gender_x003E_k__BackingField>2</_x003C_gender_x003E_k__BackingField><_x003C_grade_x003E_k__BackingField i:nil="true"/><_x003C_gradeoption_x003E_k__BackingField>4</_x003C_gradeoption_x003E_k__BackingField><_x003C_index_x003E_k__BackingField>0</_x003C_index_x003E_k__BackingField><_x003C_insurance_x003E_k__BackingField>Blue Cross</_x003C_insurance_x003E_k__BackingField><_x003C_last_x003E_k__BackingField>Eaton</_x003C_last_x003E_k__BackingField><_x003C_maalox_x003E_k__BackingField>true</_x003C_maal'', ''2011-05-29 20:19:35.977'', NULL, NULL, NULL, NULL)')
-UPDATE [dbo].[ExtraData] SET [Data].WRITE(N'ox_x003E_k__BackingField><_x003C_married_x003E_k__BackingField>1</_x003C_married_x003E_k__BackingField><_x003C_medical_x003E_k__BackingField>peanuts</_x003C_medical_x003E_k__BackingField><_x003C_memberus_x003E_k__BackingField>false</_x003C_memberus_x003E_k__BackingField><_x003C_mname_x003E_k__BackingField>Cheryl Eaton</_x003C_mname_x003E_k__BackingField><_x003C_ntickets_x003E_k__BackingField i:nil="true"/><_x003C_option_x003E_k__BackingField i:nil="true"/><_x003C_orgid_x003E_k__BackingField>30</_x003C_orgid_x003E_k__BackingField><_x003C_otherchurch_x003E_k__BackingField>true</_x003C_otherchurch_x003E_k__BackingField><_x003C_paydeposit_x003E_k__BackingField>true</_x003C_paydeposit_x003E_k__BackingField><_x003C_phone_x003E_k__BackingField>9017565372</_x003C_phone_x003E_k__BackingField><_x003C_policy_x003E_k__BackingField>123</_x003C_policy_x003E_k__BackingField><_x003C_request_x003E_k__BackingField>Betsy Williams, Joan Ralston</_x003C_request_x003E_k__BackingField><_x003C_robitussin_x003E_k__BackingField>true</_x003C_robitussin_x003E_k__BackingField><_x003C_shirtsize_x003E_k__BackingField>Y M</_x003C_shirtsize_x003E_k__BackingField><_x003C_state_x003E_k__BackingField>TN</_x003C_state_x003E_k__BackingField><_x003C_suffix_x003E_k__BackingField i:nil="true"/><_x003C_tylenol_x003E_k__BackingField>true</_x003C_tylenol_x003E_k__BackingField><_x003C_zip_x003E_k__BackingField>38139</_x003C_zip_x003E_k__BackingField><count>1</count></OnlineRegPersonModel></list></OnlineRegModel>',NULL,NULL) WHERE [Id]=1
+UPDATE [dbo].[ExtraData] SET [Data].WRITE(N'ox_x003E_k__BackingField><_x003C_married_x003E_k__BackingField>1</_x003C_married_x003E_k__BackingField><_x003C_medical_x003E_k__BackingField>peanuts</_x003C_medical_x003E_k__BackingField><_x003C_memberus_x003E_k__BackingField>false</_x003C_memberus_x003E_k__BackingField><_x003C_mname_x003E_k__BackingField>Cheryl Eaton</_x003C_mname_x003E_k__BackingField><_x003C_ntickets_x003E_k__BackingField i:nil="true"/><_x003C_option_x003E_k__BackingField i:nil="true"/><_x003C_orgid_x003E_k__BackingField>30</_x003C_orgid_x003E_k__BackingField><_x003C_otherchurch_x003E_k__BackingField>true</_x003C_otherchurch_x003E_k__BackingField><_x003C_paydeposit_x003E_k__BackingField>true</_x003C_paydeposit_x003E_k__BackingField><_x003C_phone_x003E_k__BackingField>9017565372</_x003C_phone_x003E_k__BackingField><_x003C_policy_x003E_k__BackingField>123</_x003C_policy_x003E_k__BackingField><_x003C_request_x003E_k__BackingField>Betsy Williams, Joan Ralston</_x003C_request_x003E_k__BackingField><_x003C_robitussin_x003E_k__BackingField>true</_x003C_robitussin_x003E_k__BackingField><_x003C_shirtsize_x003E_k__BackingField>Y M</_x003C_shirtsize_x003E_k__BackingField><_x003C_state_x003E_k__BackingField>TN</_x003C_state_x003E_k__BackingField><_x003C_suffix_x003E_k__BackingField i:nil="true"/><_x003C_tylenol_x003E_k__BackingField>true</_x003C_tylenol_x003E_k__BackingField><_x003C_zip_x003E_k__BackingField>38139</_x003C_zip_x003E_k__BackingField><count>1</count></OnlineRegPersonModel></list></OnlineRegModel>',NULL,NULL) WHERE [Id] = 1
 SET IDENTITY_INSERT [dbo].[ExtraData] OFF
+
+PRINT(N'Add rows to [dbo].[LabelFormats]')
 SET IDENTITY_INSERT [dbo].[LabelFormats] ON
 INSERT INTO [dbo].[LabelFormats] ([Id], [Name], [Size], [Format]) VALUES (1, N'Security', 100, '1,1,0,Arial,32,securitycode,0.25,0.45,2,2~1,1,0,Arial,32,securitycode,0.75,0.45,2,2~1,1,0,Arial,16,date,0.25,0.70,2,2~1,1,0,Arial,16,date,0.75,0.70,2,2~2,1,0,4,0.5,0.1,0.5,0.9')
 INSERT INTO [dbo].[LabelFormats] ([Id], [Name], [Size], [Format]) VALUES (2, N'Security', 200, '1,1,0,Arial,32,securitycode,0.25,0.45,2,2~1,1,0,Arial,32,securitycode,0.75,0.45,2,2~1,1,0,Arial,16,date,0.25,0.60,2,2~1,1,0,Arial,16,date,0.75,0.60,2,2~2,1,0,4,0.5,0.1,0.5,0.9')
@@ -1779,11 +1903,17 @@ INSERT INTO [dbo].[LabelFormats] ([Id], [Name], [Size], [Format]) VALUES (14, N'
 INSERT INTO [dbo].[LabelFormats] ([Id], [Name], [Size], [Format]) VALUES (15, N'Extra', 100, '1,1,0,Arial,20,first,0.004,0.02,1,1~1,1,0,Arial,16,last,0.010,0.28,1,1~1,1,0,Arial,10,extra,0.015,0.5,1,1~1,1,0,Arial,10,allergies,0.97,0.5,3,1~1,1,0,Arial,10,location,0.026,0.82,1,3~1,1,0,Arial,10,time,0.43,0.82,1,3~1,1,0,Arial,10,date,0.97,0.82,3,3~1,1,0,Arial,10,org,0.05,0.97,1,3~1,1,0,Arial,16,securitycode,0.97,0.28,3,1')
 INSERT INTO [dbo].[LabelFormats] ([Id], [Name], [Size], [Format]) VALUES (16, N'Extra', 200, '1,1,0,Arial,20,first,0.010,0.01,1,1~1,1,0,Arial,16,last,0.016,0.14,1,1~1,1,0,Arial,12,extra,0.021,0.29,1,1~1,1,0,Arial,12,allergies,0.98,0.29,3,1~1,1,0,Arial,16,securitycode,0.98,0.14,3,1~1,1,0,Arial,12,location,0.026,0.42,1,1~1,1,0,Arial,12,time,0.43,0.42,1,1~1,1,0,Arial,12,date,0.98,0.42,3,1~1,1,0,Arial,10,org,0.056,.51,1,1~3,1,0,pid,0.5,0.96,200,25,2,3')
 SET IDENTITY_INSERT [dbo].[LabelFormats] OFF
+PRINT(N'Operation applied to 12 rows out of 12')
+
+PRINT(N'Add rows to [dbo].[MobileAppActions]')
 SET IDENTITY_INSERT [dbo].[MobileAppActions] ON
 INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api]) VALUES (1, 6, N'People Search', 0, N'', 1, 1, 1, N'Access', 1)
 INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api]) VALUES (2, 7, N'Attendance', 0, N'', 2, 1, 1, N'Access, Attendance', 1)
 INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api]) VALUES (3, 10, N'Tasks', 0, N'', 3, 1, 1, N'Access', 3)
 SET IDENTITY_INSERT [dbo].[MobileAppActions] OFF
+PRINT(N'Operation applied to 3 rows out of 3')
+
+PRINT(N'Add rows to [dbo].[MobileAppActionTypes]')
 SET IDENTITY_INSERT [dbo].[MobileAppActionTypes] ON
 INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (1, N'Giving', 0)
 INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (2, N'Events', 0)
@@ -1796,27 +1926,43 @@ INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (8, 
 INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (9, N'Registrations', 1)
 INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (10, N'Tasks', 1)
 SET IDENTITY_INSERT [dbo].[MobileAppActionTypes] OFF
+PRINT(N'Operation applied to 10 rows out of 10')
+
+PRINT(N'Add row to [dbo].[MobileAppAudioTypes]')
 SET IDENTITY_INSERT [dbo].[MobileAppAudioTypes] ON
 INSERT INTO [dbo].[MobileAppAudioTypes] ([id], [name]) VALUES (1, N'SoundCloud')
 SET IDENTITY_INSERT [dbo].[MobileAppAudioTypes] OFF
+
+PRINT(N'Add rows to [dbo].[MobileAppIcons]')
 SET IDENTITY_INSERT [dbo].[MobileAppIcons] ON
 INSERT INTO [dbo].[MobileAppIcons] ([id], [setID], [actionID], [url]) VALUES (1, 1, 1, N'http://files.bvcms.com/touchpoint/search.png')
 INSERT INTO [dbo].[MobileAppIcons] ([id], [setID], [actionID], [url]) VALUES (2, 1, 2, N'http://files.bvcms.com/touchpoint/attendance.png')
 INSERT INTO [dbo].[MobileAppIcons] ([id], [setID], [actionID], [url]) VALUES (3, 1, 3, N'http://files.bvcms.com/touchpoint/tasks.png')
 SET IDENTITY_INSERT [dbo].[MobileAppIcons] OFF
+PRINT(N'Operation applied to 3 rows out of 3')
+
+PRINT(N'Add row to [dbo].[MobileAppIconSets]')
 SET IDENTITY_INSERT [dbo].[MobileAppIconSets] ON
 INSERT INTO [dbo].[MobileAppIconSets] ([id], [name], [active]) VALUES (1, N'Standard', 1)
 SET IDENTITY_INSERT [dbo].[MobileAppIconSets] OFF
+
+PRINT(N'Add rows to [dbo].[MobileAppVideoTypes]')
 SET IDENTITY_INSERT [dbo].[MobileAppVideoTypes] ON
 INSERT INTO [dbo].[MobileAppVideoTypes] ([id], [name]) VALUES (1, N'YouTube')
 INSERT INTO [dbo].[MobileAppVideoTypes] ([id], [name]) VALUES (2, N'Vimeo')
 SET IDENTITY_INSERT [dbo].[MobileAppVideoTypes] OFF
+PRINT(N'Operation applied to 2 rows out of 2')
+
+PRINT(N'Add rows to [dbo].[Program]')
 SET IDENTITY_INSERT [dbo].[Program] ON
 INSERT INTO [dbo].[Program] ([Id], [Name], [RptGroup], [StartHoursOffset], [EndHoursOffset]) VALUES (1, N'Worship', N'1', 1, 24)
 INSERT INTO [dbo].[Program] ([Id], [Name], [RptGroup], [StartHoursOffset], [EndHoursOffset]) VALUES (2, N'Small Groups', N'2', 1, 24)
 INSERT INTO [dbo].[Program] ([Id], [Name], [RptGroup], [StartHoursOffset], [EndHoursOffset]) VALUES (1106, N'Volunteers', NULL, NULL, NULL)
 INSERT INTO [dbo].[Program] ([Id], [Name], [RptGroup], [StartHoursOffset], [EndHoursOffset]) VALUES (1107, N'Miscellaneous Groups', NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Program] OFF
+PRINT(N'Operation applied to 4 rows out of 4')
+
+PRINT(N'Add rows to [dbo].[Query]')
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('e0bf6a55-2c1f-44c7-be34-176c6a55771c', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="e0bf6a55-2c1f-44c7-be34-176c6a55771c" Order="0" Field="Group" Comparison="AllTrue">
   <Condition Id="3b640586-b5b7-4041-ad48-0acc41e1144f" Order="2" Field="IsCurrentPerson" Comparison="Equal" CodeIdValue="1,T" />
@@ -1845,6 +1991,9 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
 <Condition Id="a235ae8b-f893-40e2-bf57-d9e4252d5048" Order="0" Field="Group" Comparison="AllTrue">
   <Condition Id="ef295216-34b0-496e-87f4-9db022ae713b" Order="2" Field="ProspectCurrentOrg" Comparison="Equal" CodeIdValue="1,T" />
 </Condition>', N'System', '2014-12-14 20:57:11.517', '2014-12-14 20:57:11.517', N'ProspectCurrentOrg', 0, 0, NULL)
+PRINT(N'Operation applied to 7 rows out of 7')
+
+PRINT(N'Add rows to [dbo].[Roles]')
 SET IDENTITY_INSERT [dbo].[Roles] ON
 INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (1, N'Admin', 1)
 INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (2, N'Access', 1)
@@ -1871,6 +2020,9 @@ INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (25, N'Mana
 INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (26, N'Delete', 1)
 INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (28, N'Tasks', 1)
 SET IDENTITY_INSERT [dbo].[Roles] OFF
+PRINT(N'Operation applied to 24 rows out of 24')
+
+PRINT(N'Add rows to [dbo].[Setting]')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'AdminCoupon', N'itsasecret')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'AdminMail', N'david@bvcms.com')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'BlogAppUrl', N'http://blog.touchpointsoftware.com')
@@ -1891,6 +2043,9 @@ INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'UseMemberProfileAutomati
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'UseNewSupport', N'true')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'UseStandardExtraValues', N'true')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'UseStatusFlags', N'true')
+PRINT(N'Operation applied to 20 rows out of 20')
+
+PRINT(N'Add rows to [dbo].[StreetTypes]')
 INSERT INTO [dbo].[StreetTypes] ([Type]) VALUES (N'ALLEE')
 INSERT INTO [dbo].[StreetTypes] ([Type]) VALUES (N'ALLEY')
 INSERT INTO [dbo].[StreetTypes] ([Type]) VALUES (N'ALLY')
@@ -2448,15 +2603,27 @@ INSERT INTO [dbo].[StreetTypes] ([Type]) VALUES (N'WLS')
 INSERT INTO [dbo].[StreetTypes] ([Type]) VALUES (N'WY')
 INSERT INTO [dbo].[StreetTypes] ([Type]) VALUES (N'XING')
 INSERT INTO [dbo].[StreetTypes] ([Type]) VALUES (N'XRD')
+PRINT(N'Operation applied to 557 rows out of 557')
+
+PRINT(N'Add rows to [dbo].[TagType]')
 INSERT INTO [dbo].[TagType] ([Id], [Name]) VALUES (1, N'Personal')
 INSERT INTO [dbo].[TagType] ([Id], [Name]) VALUES (3, N'CouplesHelper')
 INSERT INTO [dbo].[TagType] ([Id], [Name]) VALUES (4, N'AddSelected')
 INSERT INTO [dbo].[TagType] ([Id], [Name]) VALUES (5, N'OrgMembersOnly')
+PRINT(N'Operation applied to 4 rows out of 4')
+
+PRINT(N'Add rows to [dbo].[words]')
 INSERT INTO [lookup].[AddressType] ([Id], [Code], [Description], [Hardwired]) VALUES (10, N'F1', N'Family', 1)
 INSERT INTO [lookup].[AddressType] ([Id], [Code], [Description], [Hardwired]) VALUES (30, N'P1', N'Personal', 1)
+PRINT(N'Operation applied to 2 rows out of 2')
+
+PRINT(N'Add rows to [lookup].[AttendCredit]')
 INSERT INTO [lookup].[AttendCredit] ([Id], [Code], [Description], [Hardwired]) VALUES (1, N'E', N'Every Meeting', 1)
 INSERT INTO [lookup].[AttendCredit] ([Id], [Code], [Description], [Hardwired]) VALUES (2, N'W', N'Once Per Week Group 1', 1)
 INSERT INTO [lookup].[AttendCredit] ([Id], [Code], [Description], [Hardwired]) VALUES (3, N'W', N'Once Per Week Group 2', 1)
+PRINT(N'Operation applied to 3 rows out of 3')
+
+PRINT(N'Add rows to [lookup].[AttendType]')
 INSERT INTO [lookup].[AttendType] ([Id], [Code], [Description], [Hardwired]) VALUES (10, N'L', N'Leader', 1)
 INSERT INTO [lookup].[AttendType] ([Id], [Code], [Description], [Hardwired]) VALUES (20, N'VO', N'Volunteer', 1)
 INSERT INTO [lookup].[AttendType] ([Id], [Code], [Description], [Hardwired]) VALUES (30, N'M', N'Member', 1)
@@ -2469,17 +2636,26 @@ INSERT INTO [lookup].[AttendType] ([Id], [Code], [Description], [Hardwired]) VAL
 INSERT INTO [lookup].[AttendType] ([Id], [Code], [Description], [Hardwired]) VALUES (100, N'HMB', N'Homebound', 1)
 INSERT INTO [lookup].[AttendType] ([Id], [Code], [Description], [Hardwired]) VALUES (110, N'OC', N'Other Class', 1)
 INSERT INTO [lookup].[AttendType] ([Id], [Code], [Description], [Hardwired]) VALUES (190, N'PR', N'Prospect', 1)
+PRINT(N'Operation applied to 12 rows out of 12')
+
+PRINT(N'Add rows to [lookup].[BaptismStatus]')
 INSERT INTO [lookup].[BaptismStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (0, N'NSP', N'(not specified)', 1)
 INSERT INTO [lookup].[BaptismStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (10, N'SCH', N'Scheduled', 1)
 INSERT INTO [lookup].[BaptismStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (20, N'NSC', N'Not Scheduled', 1)
 INSERT INTO [lookup].[BaptismStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (30, N'CMP', N'Completed', 1)
 INSERT INTO [lookup].[BaptismStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (40, N'CAN', N'Cancelled', 1)
+PRINT(N'Operation applied to 5 rows out of 5')
+
+PRINT(N'Add rows to [lookup].[BaptismType]')
 INSERT INTO [lookup].[BaptismType] ([Id], [Code], [Description], [Hardwired]) VALUES (0, N'NSP', N'(not specified)', 1)
 INSERT INTO [lookup].[BaptismType] ([Id], [Code], [Description], [Hardwired]) VALUES (10, N'ORI', N'Original', 1)
 INSERT INTO [lookup].[BaptismType] ([Id], [Code], [Description], [Hardwired]) VALUES (20, N'SUB', N'Subsequent', 1)
 INSERT INTO [lookup].[BaptismType] ([Id], [Code], [Description], [Hardwired]) VALUES (30, N'BIO', N'Biological', 1)
 INSERT INTO [lookup].[BaptismType] ([Id], [Code], [Description], [Hardwired]) VALUES (40, N'NON', N'Non-Member', 1)
 INSERT INTO [lookup].[BaptismType] ([Id], [Code], [Description], [Hardwired]) VALUES (50, N'RFM', N'Required', 1)
+PRINT(N'Operation applied to 6 rows out of 6')
+
+PRINT(N'Add rows to [lookup].[BundleHeaderTypes]')
 INSERT INTO [lookup].[BundleHeaderTypes] ([Id], [Code], [Description], [Hardwired]) VALUES (1, N'G', N'Generic Envelopes', NULL)
 INSERT INTO [lookup].[BundleHeaderTypes] ([Id], [Code], [Description], [Hardwired]) VALUES (2, N'LC', N'Loose Checks and Cash', 1)
 INSERT INTO [lookup].[BundleHeaderTypes] ([Id], [Code], [Description], [Hardwired]) VALUES (3, N'PE', N'Preprinted Envelopes', 1)
@@ -2489,15 +2665,27 @@ INSERT INTO [lookup].[BundleHeaderTypes] ([Id], [Code], [Description], [Hardwire
 INSERT INTO [lookup].[BundleHeaderTypes] ([Id], [Code], [Description], [Hardwired]) VALUES (20, N'MTT', N'Mission Trip Transaction', 1)
 INSERT INTO [lookup].[BundleHeaderTypes] ([Id], [Code], [Description], [Hardwired]) VALUES (30, N'GK', N'Gifts in Kind', 1)
 INSERT INTO [lookup].[BundleHeaderTypes] ([Id], [Code], [Description], [Hardwired]) VALUES (32, N'SK', N'Stock', 1)
+PRINT(N'Operation applied to 9 rows out of 9')
+
+PRINT(N'Add rows to [lookup].[BundleStatusTypes]')
 INSERT INTO [lookup].[BundleStatusTypes] ([Id], [Code], [Description], [Hardwired]) VALUES (0, N'C', N'Closed', 1)
 INSERT INTO [lookup].[BundleStatusTypes] ([Id], [Code], [Description], [Hardwired]) VALUES (1, N'O', N'Open', 1)
+PRINT(N'Operation applied to 2 rows out of 2')
+
+PRINT(N'Add rows to [lookup].[Campus]')
 INSERT INTO [lookup].[Campus] ([Id], [Code], [Description], [Hardwired]) VALUES (1, N'M', N'Main', NULL)
 INSERT INTO [lookup].[Campus] ([Id], [Code], [Description], [Hardwired]) VALUES (99, N'TT', N'Test', NULL)
+PRINT(N'Operation applied to 2 rows out of 2')
+
+PRINT(N'Add rows to [lookup].[ContactPreference]')
 INSERT INTO [lookup].[ContactPreference] ([Id], [Code], [Description], [Hardwired]) VALUES (0, N'NO', N'Do Not Contact', NULL)
 INSERT INTO [lookup].[ContactPreference] ([Id], [Code], [Description], [Hardwired]) VALUES (10, N'PST', N'Mail', NULL)
 INSERT INTO [lookup].[ContactPreference] ([Id], [Code], [Description], [Hardwired]) VALUES (20, N'PHN', N'Phone', NULL)
 INSERT INTO [lookup].[ContactPreference] ([Id], [Code], [Description], [Hardwired]) VALUES (30, N'EML', N'Email', NULL)
 INSERT INTO [lookup].[ContactPreference] ([Id], [Code], [Description], [Hardwired]) VALUES (40, N'VST', N'Visit', NULL)
+PRINT(N'Operation applied to 5 rows out of 5')
+
+PRINT(N'Add rows to [lookup].[ContactReason]')
 INSERT INTO [lookup].[ContactReason] ([Id], [Code], [Description], [Hardwired]) VALUES (99, N'U', N'Unknown', NULL)
 INSERT INTO [lookup].[ContactReason] ([Id], [Code], [Description], [Hardwired]) VALUES (100, N'B', N'Bereavement', NULL)
 INSERT INTO [lookup].[ContactReason] ([Id], [Code], [Description], [Hardwired]) VALUES (110, N'H', N'Health', NULL)
@@ -2507,6 +2695,9 @@ INSERT INTO [lookup].[ContactReason] ([Id], [Code], [Description], [Hardwired]) 
 INSERT INTO [lookup].[ContactReason] ([Id], [Code], [Description], [Hardwired]) VALUES (140, N'IR', N'In-Reach', NULL)
 INSERT INTO [lookup].[ContactReason] ([Id], [Code], [Description], [Hardwired]) VALUES (150, N'I', N'Information', NULL)
 INSERT INTO [lookup].[ContactReason] ([Id], [Code], [Description], [Hardwired]) VALUES (160, N'O', N'Other', 1)
+PRINT(N'Operation applied to 9 rows out of 9')
+
+PRINT(N'Add rows to [lookup].[ContactType]')
 INSERT INTO [lookup].[ContactType] ([Id], [Code], [Description], [Hardwired]) VALUES (1, N'PV', N'Personal Visit', NULL)
 INSERT INTO [lookup].[ContactType] ([Id], [Code], [Description], [Hardwired]) VALUES (2, N'PC', N'Phone Call', NULL)
 INSERT INTO [lookup].[ContactType] ([Id], [Code], [Description], [Hardwired]) VALUES (3, N'L', N'Letter Sent', NULL)
@@ -2520,9 +2711,15 @@ INSERT INTO [lookup].[ContactType] ([Id], [Code], [Description], [Hardwired]) VA
 INSERT INTO [lookup].[ContactType] ([Id], [Code], [Description], [Hardwired]) VALUES (11, N'PI', N'Phone In', NULL)
 INSERT INTO [lookup].[ContactType] ([Id], [Code], [Description], [Hardwired]) VALUES (12, N'SV', N'SurveyEE', NULL)
 INSERT INTO [lookup].[ContactType] ([Id], [Code], [Description], [Hardwired]) VALUES (99, N'U', N'Unknown', NULL)
+PRINT(N'Operation applied to 13 rows out of 13')
+
+PRINT(N'Add rows to [lookup].[ContributionStatus]')
 INSERT INTO [lookup].[ContributionStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (0, N'C', N'Recorded', 1)
 INSERT INTO [lookup].[ContributionStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (1, N'V', N'Reversed', 1)
 INSERT INTO [lookup].[ContributionStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (2, N'R', N'Returned', 1)
+PRINT(N'Operation applied to 3 rows out of 3')
+
+PRINT(N'Add rows to [lookup].[ContributionType]')
 INSERT INTO [lookup].[ContributionType] ([Id], [Code], [Description], [Hardwired]) VALUES (1, N'CC', N'Check/Cash', 1)
 INSERT INTO [lookup].[ContributionType] ([Id], [Code], [Description], [Hardwired]) VALUES (5, N'OL', N'Online', 1)
 INSERT INTO [lookup].[ContributionType] ([Id], [Code], [Description], [Hardwired]) VALUES (6, N'RC', N'Returned Check', 1)
@@ -2531,6 +2728,9 @@ INSERT INTO [lookup].[ContributionType] ([Id], [Code], [Description], [Hardwired
 INSERT INTO [lookup].[ContributionType] ([Id], [Code], [Description], [Hardwired]) VALUES (9, N'NT', N'Non Tax-Deductible', 1)
 INSERT INTO [lookup].[ContributionType] ([Id], [Code], [Description], [Hardwired]) VALUES (10, N'GK', N'Gift in Kind', 1)
 INSERT INTO [lookup].[ContributionType] ([Id], [Code], [Description], [Hardwired]) VALUES (20, N'SK', N'Stock', 1)
+PRINT(N'Operation applied to 8 rows out of 8')
+
+PRINT(N'Add rows to [lookup].[Country]')
 INSERT INTO [lookup].[Country] ([Id], [Code], [Description], [Hardwired]) VALUES (1, N'US', N'United States', 1)
 INSERT INTO [lookup].[Country] ([Id], [Code], [Description], [Hardwired]) VALUES (2, N'NA', N'USA, Not Validated', 1)
 INSERT INTO [lookup].[Country] ([Id], [Code], [Description], [Hardwired]) VALUES (3, N'AF', N'Afghanistan', NULL)
@@ -2776,6 +2976,9 @@ INSERT INTO [lookup].[Country] ([Id], [Code], [Description], [Hardwired]) VALUES
 INSERT INTO [lookup].[Country] ([Id], [Code], [Description], [Hardwired]) VALUES (244, N'YE', N'Yemen', NULL)
 INSERT INTO [lookup].[Country] ([Id], [Code], [Description], [Hardwired]) VALUES (245, N'ZM', N'Zambia', NULL)
 INSERT INTO [lookup].[Country] ([Id], [Code], [Description], [Hardwired]) VALUES (246, N'ZW', N'Zimbabwe', NULL)
+PRINT(N'Operation applied to 245 rows out of 245')
+
+PRINT(N'Add rows to [lookup].[DecisionType]')
 INSERT INTO [lookup].[DecisionType] ([Id], [Code], [Description], [Hardwired]) VALUES (0, N'UNK', N'Unknown', 1)
 INSERT INTO [lookup].[DecisionType] ([Id], [Code], [Description], [Hardwired]) VALUES (10, N'POF-MEM', N'POF for Membership', 1)
 INSERT INTO [lookup].[DecisionType] ([Id], [Code], [Description], [Hardwired]) VALUES (20, N'POF-NON', N'POF NOT for Membership', 1)
@@ -2783,6 +2986,9 @@ INSERT INTO [lookup].[DecisionType] ([Id], [Code], [Description], [Hardwired]) V
 INSERT INTO [lookup].[DecisionType] ([Id], [Code], [Description], [Hardwired]) VALUES (40, N'STATEMENT', N'Statement', 1)
 INSERT INTO [lookup].[DecisionType] ([Id], [Code], [Description], [Hardwired]) VALUES (50, N'BAP-REQD', N'Stmt requiring Baptism', 1)
 INSERT INTO [lookup].[DecisionType] ([Id], [Code], [Description], [Hardwired]) VALUES (60, N'CANCELLED', N'Cancelled', 1)
+PRINT(N'Operation applied to 7 rows out of 7')
+
+PRINT(N'Add rows to [lookup].[DropType]')
 INSERT INTO [lookup].[DropType] ([Id], [Code], [Description], [Hardwired]) VALUES (0, N'NON', N'Non-Dropped', 1)
 INSERT INTO [lookup].[DropType] ([Id], [Code], [Description], [Hardwired]) VALUES (20, N'ADM', N'Administrative', 1)
 INSERT INTO [lookup].[DropType] ([Id], [Code], [Description], [Hardwired]) VALUES (30, N'DEC', N'Deceased', 1)
@@ -2790,6 +2996,9 @@ INSERT INTO [lookup].[DropType] ([Id], [Code], [Description], [Hardwired]) VALUE
 INSERT INTO [lookup].[DropType] ([Id], [Code], [Description], [Hardwired]) VALUES (50, N'REQ', N'Requested Drop', 1)
 INSERT INTO [lookup].[DropType] ([Id], [Code], [Description], [Hardwired]) VALUES (60, N'AND', N'Another Denomination', 1)
 INSERT INTO [lookup].[DropType] ([Id], [Code], [Description], [Hardwired]) VALUES (98, N'OTH', N'Other', 1)
+PRINT(N'Operation applied to 7 rows out of 7')
+
+PRINT(N'Add rows to [lookup].[EntryPoint]')
 INSERT INTO [lookup].[EntryPoint] ([Id], [Code], [Description], [Hardwired]) VALUES (0, N'NSP', N'(not specified)', NULL)
 INSERT INTO [lookup].[EntryPoint] ([Id], [Code], [Description], [Hardwired]) VALUES (10, N'BFC', N'Main Fellowship', NULL)
 INSERT INTO [lookup].[EntryPoint] ([Id], [Code], [Description], [Hardwired]) VALUES (15, N'ENROLL', N'Other Enrollments', NULL)
@@ -2797,15 +3006,27 @@ INSERT INTO [lookup].[EntryPoint] ([Id], [Code], [Description], [Hardwired]) VAL
 INSERT INTO [lookup].[EntryPoint] ([Id], [Code], [Description], [Hardwired]) VALUES (30, N'SPEC', N'Special Events', NULL)
 INSERT INTO [lookup].[EntryPoint] ([Id], [Code], [Description], [Hardwired]) VALUES (98, N'OTHER', N'Other', NULL)
 INSERT INTO [lookup].[EntryPoint] ([Id], [Code], [Description], [Hardwired]) VALUES (99, N'UNKNOWN', N'Unknown', NULL)
+PRINT(N'Operation applied to 7 rows out of 7')
+
+PRINT(N'Add rows to [lookup].[EnvelopeOption]')
 INSERT INTO [lookup].[EnvelopeOption] ([Id], [Code], [Description], [Hardwired]) VALUES (0, N'Null', N'(not specified)', 1)
 INSERT INTO [lookup].[EnvelopeOption] ([Id], [Code], [Description], [Hardwired]) VALUES (1, N'I', N'Individual', 1)
 INSERT INTO [lookup].[EnvelopeOption] ([Id], [Code], [Description], [Hardwired]) VALUES (2, N'J', N'Joint', 1)
 INSERT INTO [lookup].[EnvelopeOption] ([Id], [Code], [Description], [Hardwired]) VALUES (9, N'N', N'None', 1)
+PRINT(N'Operation applied to 4 rows out of 4')
+
+PRINT(N'Add rows to [lookup].[FamilyMemberType]')
 INSERT INTO [lookup].[FamilyMemberType] ([Id], [Code], [Description], [Hardwired]) VALUES (0, N'ADU', N'Adult', NULL)
 INSERT INTO [lookup].[FamilyMemberType] ([Id], [Code], [Description], [Hardwired]) VALUES (1, N'CHI', N'Child', NULL)
+PRINT(N'Operation applied to 2 rows out of 2')
+
+PRINT(N'Add rows to [lookup].[FamilyPosition]')
 INSERT INTO [lookup].[FamilyPosition] ([Id], [Code], [Description], [Hardwired]) VALUES (10, N'Primary', N'Primary Adult', 1)
 INSERT INTO [lookup].[FamilyPosition] ([Id], [Code], [Description], [Hardwired]) VALUES (20, N'Other', N'Secondary Adult', 1)
 INSERT INTO [lookup].[FamilyPosition] ([Id], [Code], [Description], [Hardwired]) VALUES (30, N'Child', N'Child', 1)
+PRINT(N'Operation applied to 3 rows out of 3')
+
+PRINT(N'Add rows to [lookup].[FamilyRelationship]')
 INSERT INTO [lookup].[FamilyRelationship] ([Id], [Code], [Description], [Hardwired]) VALUES (100, N'HOH', N'Head of Household', NULL)
 INSERT INTO [lookup].[FamilyRelationship] ([Id], [Code], [Description], [Hardwired]) VALUES (110, N'SPS', N'Spouse', NULL)
 INSERT INTO [lookup].[FamilyRelationship] ([Id], [Code], [Description], [Hardwired]) VALUES (120, N'SEC', N'Secondary Adult', NULL)
@@ -2821,9 +3042,15 @@ INSERT INTO [lookup].[FamilyRelationship] ([Id], [Code], [Description], [Hardwir
 INSERT INTO [lookup].[FamilyRelationship] ([Id], [Code], [Description], [Hardwired]) VALUES (230, N'GRD', N'Grand Daughter', NULL)
 INSERT INTO [lookup].[FamilyRelationship] ([Id], [Code], [Description], [Hardwired]) VALUES (235, N'GRS', N'Grand Son', NULL)
 INSERT INTO [lookup].[FamilyRelationship] ([Id], [Code], [Description], [Hardwired]) VALUES (980, N'OTH', N'Other', NULL)
+PRINT(N'Operation applied to 15 rows out of 15')
+
+PRINT(N'Add rows to [lookup].[Gender]')
 INSERT INTO [lookup].[Gender] ([Id], [Code], [Description], [Hardwired]) VALUES (0, N'U', N'Unknown', NULL)
 INSERT INTO [lookup].[Gender] ([Id], [Code], [Description], [Hardwired]) VALUES (1, N'M', N'Male', NULL)
 INSERT INTO [lookup].[Gender] ([Id], [Code], [Description], [Hardwired]) VALUES (2, N'F', N'Female', NULL)
+PRINT(N'Operation applied to 3 rows out of 3')
+
+PRINT(N'Add rows to [lookup].[InterestPoint]')
 INSERT INTO [lookup].[InterestPoint] ([Id], [Code], [Description], [Hardwired]) VALUES (0, N'NSP', N'(not specified)', NULL)
 INSERT INTO [lookup].[InterestPoint] ([Id], [Code], [Description], [Hardwired]) VALUES (10, N'TV', N'TV', NULL)
 INSERT INTO [lookup].[InterestPoint] ([Id], [Code], [Description], [Hardwired]) VALUES (15, N'TV Ad', N'TV Ad', NULL)
@@ -2838,30 +3065,48 @@ INSERT INTO [lookup].[InterestPoint] ([Id], [Code], [Description], [Hardwired]) 
 INSERT INTO [lookup].[InterestPoint] ([Id], [Code], [Description], [Hardwired]) VALUES (80, N'EE Team', N'EE Team', NULL)
 INSERT INTO [lookup].[InterestPoint] ([Id], [Code], [Description], [Hardwired]) VALUES (98, N'Other', N'Other', NULL)
 INSERT INTO [lookup].[InterestPoint] ([Id], [Code], [Description], [Hardwired]) VALUES (99, N'UNKNOWN', N'Unknown', NULL)
+PRINT(N'Operation applied to 14 rows out of 14')
+
+PRINT(N'Add rows to [lookup].[JoinType]')
 INSERT INTO [lookup].[JoinType] ([Id], [Code], [Description], [Hardwired]) VALUES (0, N'UNK', N'Unknown', 1)
 INSERT INTO [lookup].[JoinType] ([Id], [Code], [Description], [Hardwired]) VALUES (10, N'BPP', N'Baptism POF', 1)
 INSERT INTO [lookup].[JoinType] ([Id], [Code], [Description], [Hardwired]) VALUES (20, N'BPS', N'Baptism SRB', 1)
 INSERT INTO [lookup].[JoinType] ([Id], [Code], [Description], [Hardwired]) VALUES (30, N'BPB', N'Baptism BIO', 1)
 INSERT INTO [lookup].[JoinType] ([Id], [Code], [Description], [Hardwired]) VALUES (40, N'STM', N'Statement', 1)
 INSERT INTO [lookup].[JoinType] ([Id], [Code], [Description], [Hardwired]) VALUES (50, N'LET', N'Letter', 1)
+PRINT(N'Operation applied to 6 rows out of 6')
+
+PRINT(N'Add rows to [lookup].[MaritalStatus]')
 INSERT INTO [lookup].[MaritalStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (0, N'UNK', N'Unknown', 1)
 INSERT INTO [lookup].[MaritalStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (10, N'SNG', N'Single', 1)
 INSERT INTO [lookup].[MaritalStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (20, N'MAR', N'Married', 1)
 INSERT INTO [lookup].[MaritalStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (30, N'SEP', N'Separated', NULL)
 INSERT INTO [lookup].[MaritalStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (40, N'DIV', N'Divorced', 1)
 INSERT INTO [lookup].[MaritalStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (50, N'WID', N'Widowed', 1)
+PRINT(N'Operation applied to 6 rows out of 6')
+
+PRINT(N'Add rows to [lookup].[MeetingType]')
 INSERT INTO [lookup].[MeetingType] ([Id], [Code], [Description], [Hardwired]) VALUES (0, 'G', N'Group', NULL)
 INSERT INTO [lookup].[MeetingType] ([Id], [Code], [Description], [Hardwired]) VALUES (1, 'R', N'Roster', NULL)
+PRINT(N'Operation applied to 2 rows out of 2')
+
+PRINT(N'Add rows to [lookup].[MemberLetterStatus]')
 INSERT INTO [lookup].[MemberLetterStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (0, N'NSP', N'(not specified)', NULL)
 INSERT INTO [lookup].[MemberLetterStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (10, N'1stReq', N'1st Request', NULL)
 INSERT INTO [lookup].[MemberLetterStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (20, N'2ndReq', N'2nd Request', NULL)
 INSERT INTO [lookup].[MemberLetterStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (30, N'Non-Resp', N'Non-Responsive', NULL)
 INSERT INTO [lookup].[MemberLetterStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (40, N'Complete', N'Complete', NULL)
+PRINT(N'Operation applied to 5 rows out of 5')
+
+PRINT(N'Add rows to [lookup].[MemberStatus]')
 INSERT INTO [lookup].[MemberStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (10, N'Member', N'Member', 1)
 INSERT INTO [lookup].[MemberStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (20, N'NonMember', N'Not Member', NULL)
 INSERT INTO [lookup].[MemberStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (30, N'Pending', N'Pending Member', NULL)
 INSERT INTO [lookup].[MemberStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (40, N'Previous', N'Previous Member', 1)
 INSERT INTO [lookup].[MemberStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (50, N'Added', N'Just Added', 1)
+PRINT(N'Operation applied to 5 rows out of 5')
+
+PRINT(N'Add rows to [lookup].[NewMemberClassStatus]')
 INSERT INTO [lookup].[NewMemberClassStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (0, N'NSP', N'(not specified)', 1)
 INSERT INTO [lookup].[NewMemberClassStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (10, N'PN', N'Pending', 1)
 INSERT INTO [lookup].[NewMemberClassStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (20, N'AT', N'Attended', 1)
@@ -2869,8 +3114,14 @@ INSERT INTO [lookup].[NewMemberClassStatus] ([Id], [Code], [Description], [Hardw
 INSERT INTO [lookup].[NewMemberClassStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (40, N'GF', N'Grandfathered', 1)
 INSERT INTO [lookup].[NewMemberClassStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (50, N'EX', N'Exempted Child (thru Grade 8)', 1)
 INSERT INTO [lookup].[NewMemberClassStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (99, N'UNK', N'Unknown', NULL)
+PRINT(N'Operation applied to 7 rows out of 7')
+
+PRINT(N'Add rows to [lookup].[OrganizationStatus]')
 INSERT INTO [lookup].[OrganizationStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (30, N'A', N'Active', 1)
 INSERT INTO [lookup].[OrganizationStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (40, N'I', N'Inactive', 1)
+PRINT(N'Operation applied to 2 rows out of 2')
+
+PRINT(N'Add rows to [lookup].[Origin]')
 INSERT INTO [lookup].[Origin] ([Id], [Code], [Description], [Hardwired]) VALUES (0, N'NSP', N'Not Specified', NULL)
 INSERT INTO [lookup].[Origin] ([Id], [Code], [Description], [Hardwired]) VALUES (10, N'VISIT', N'Visit', 1)
 INSERT INTO [lookup].[Origin] ([Id], [Code], [Description], [Hardwired]) VALUES (20, N'NEWNBR', N'New Neighbor List', NULL)
@@ -2885,10 +3136,16 @@ INSERT INTO [lookup].[Origin] ([Id], [Code], [Description], [Hardwired]) VALUES 
 INSERT INTO [lookup].[Origin] ([Id], [Code], [Description], [Hardwired]) VALUES (98, N'OTHER', N'Other', NULL)
 INSERT INTO [lookup].[Origin] ([Id], [Code], [Description], [Hardwired]) VALUES (99, N'UNKNOWN', N'Unknown', NULL)
 INSERT INTO [lookup].[Origin] ([Id], [Code], [Description], [Hardwired]) VALUES (100, N'FAM', N'New Family Member', 1)
+PRINT(N'Operation applied to 14 rows out of 14')
+
+PRINT(N'Add rows to [lookup].[ResidentCode]')
 INSERT INTO [lookup].[ResidentCode] ([Id], [Code], [Description], [Hardwired]) VALUES (10, N'M', N'Metro', NULL)
 INSERT INTO [lookup].[ResidentCode] ([Id], [Code], [Description], [Hardwired]) VALUES (20, N'G', N'Marginal', NULL)
 INSERT INTO [lookup].[ResidentCode] ([Id], [Code], [Description], [Hardwired]) VALUES (30, N'N', N'Non-Resident', NULL)
 INSERT INTO [lookup].[ResidentCode] ([Id], [Code], [Description], [Hardwired]) VALUES (40, N'U', N'Unable to Locate', NULL)
+PRINT(N'Operation applied to 4 rows out of 4')
+
+PRINT(N'Add rows to [lookup].[StateLookup]')
 INSERT INTO [lookup].[StateLookup] ([StateCode], [StateName], [Hardwired]) VALUES (N'AA', N'Armed Forces America', NULL)
 INSERT INTO [lookup].[StateLookup] ([StateCode], [StateName], [Hardwired]) VALUES (N'AB', N'Alberta', NULL)
 INSERT INTO [lookup].[StateLookup] ([StateCode], [StateName], [Hardwired]) VALUES (N'AE', N'Armed Forces East', NULL)
@@ -2961,6 +3218,9 @@ INSERT INTO [lookup].[StateLookup] ([StateCode], [StateName], [Hardwired]) VALUE
 INSERT INTO [lookup].[StateLookup] ([StateCode], [StateName], [Hardwired]) VALUES (N'WV', N'West Virginia', NULL)
 INSERT INTO [lookup].[StateLookup] ([StateCode], [StateName], [Hardwired]) VALUES (N'WY', N'Wyoming', NULL)
 INSERT INTO [lookup].[StateLookup] ([StateCode], [StateName], [Hardwired]) VALUES (N'YT', N'Yukon', NULL)
+PRINT(N'Operation applied to 72 rows out of 72')
+
+PRINT(N'Add rows to [lookup].[TaskStatus]')
 INSERT INTO [lookup].[TaskStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (10, N'A', N'Active', 1)
 INSERT INTO [lookup].[TaskStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (20, N'W', N'Waiting For', 1)
 INSERT INTO [lookup].[TaskStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (30, N'S', N'Someday', 1)
@@ -2968,14 +3228,23 @@ INSERT INTO [lookup].[TaskStatus] ([Id], [Code], [Description], [Hardwired]) VAL
 INSERT INTO [lookup].[TaskStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (50, N'P', N'Pending Acceptance', 1)
 INSERT INTO [lookup].[TaskStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (60, N'R', N'ReDelegated', 1)
 INSERT INTO [lookup].[TaskStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (70, N'D', N'Declined', 1)
+PRINT(N'Operation applied to 7 rows out of 7')
+
+PRINT(N'Add rows to [lookup].[VolApplicationStatus]')
 INSERT INTO [lookup].[VolApplicationStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (0, N'UK', N'(not specified)', NULL)
 INSERT INTO [lookup].[VolApplicationStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (10, N'Appr', N'Approved', 1)
 INSERT INTO [lookup].[VolApplicationStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (20, N'WD', N'Withdrawn', NULL)
 INSERT INTO [lookup].[VolApplicationStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (30, N'Not', N'Not Approved', 1)
 INSERT INTO [lookup].[VolApplicationStatus] ([Id], [Code], [Description], [Hardwired]) VALUES (40, N'Pend', N'Pending', 1)
+PRINT(N'Operation applied to 5 rows out of 5')
+
+PRINT(N'Add rows to [lookup].[VolunteerCodes]')
 INSERT INTO [lookup].[VolunteerCodes] ([Id], [Code], [Description], [Hardwired]) VALUES (0, N'NA', N'None', NULL)
 INSERT INTO [lookup].[VolunteerCodes] ([Id], [Code], [Description], [Hardwired]) VALUES (10, N'S', N'Standard', NULL)
 INSERT INTO [lookup].[VolunteerCodes] ([Id], [Code], [Description], [Hardwired]) VALUES (30, N'L', N'Leader', NULL)
+PRINT(N'Operation applied to 3 rows out of 3')
+
+PRINT(N'Add rows to [dbo].[Division]')
 SET IDENTITY_INSERT [dbo].[Division] ON
 INSERT INTO [dbo].[Division] ([Id], [Name], [ProgId], [SortOrder], [EmailMessage], [EmailSubject], [Instructions], [Terms], [ReportLine], [NoDisplayZero]) VALUES (1, N'Sunday Services', 1, NULL, NULL, NULL, NULL, NULL, 1, NULL)
 INSERT INTO [dbo].[Division] ([Id], [Name], [ProgId], [SortOrder], [EmailMessage], [EmailSubject], [Instructions], [Terms], [ReportLine], [NoDisplayZero]) VALUES (2, N'Children''s Worship', 1, NULL, NULL, NULL, NULL, NULL, 2, NULL)
@@ -2987,6 +3256,9 @@ INSERT INTO [dbo].[Division] ([Id], [Name], [ProgId], [SortOrder], [EmailMessage
 INSERT INTO [dbo].[Division] ([Id], [Name], [ProgId], [SortOrder], [EmailMessage], [EmailSubject], [Instructions], [Terms], [ReportLine], [NoDisplayZero]) VALUES (8, N'Worship Service Volunteers', 1106, NULL, NULL, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Division] ([Id], [Name], [ProgId], [SortOrder], [EmailMessage], [EmailSubject], [Instructions], [Terms], [ReportLine], [NoDisplayZero]) VALUES (9, N'Weekday Volunteers', 1106, NULL, NULL, NULL, NULL, NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Division] OFF
+PRINT(N'Operation applied to 9 rows out of 9')
+
+PRINT(N'Add rows to [lookup].[MemberType]')
 INSERT INTO [lookup].[MemberType] ([Id], [Code], [Description], [AttendanceTypeId], [Hardwired]) VALUES (100, N'AD', N'Administrator', 30, NULL)
 INSERT INTO [lookup].[MemberType] ([Id], [Code], [Description], [AttendanceTypeId], [Hardwired]) VALUES (101, N'PR', N'President', 10, NULL)
 INSERT INTO [lookup].[MemberType] ([Id], [Code], [Description], [AttendanceTypeId], [Hardwired]) VALUES (102, N'VP', N'Vice President', 30, NULL)
@@ -3035,6 +3307,9 @@ INSERT INTO [lookup].[MemberType] ([Id], [Code], [Description], [AttendanceTypeI
 INSERT INTO [lookup].[MemberType] ([Id], [Code], [Description], [AttendanceTypeId], [Hardwired]) VALUES (500, N'IM', N'In-Service Member', 70, 1)
 INSERT INTO [lookup].[MemberType] ([Id], [Code], [Description], [AttendanceTypeId], [Hardwired]) VALUES (700, N'VI', N'VIP', 20, 1)
 INSERT INTO [lookup].[MemberType] ([Id], [Code], [Description], [AttendanceTypeId], [Hardwired]) VALUES (710, N'VL', N'Volunteer', 20, NULL)
+PRINT(N'Operation applied to 48 rows out of 48')
+
+PRINT(N'Add rows to [dbo].[Organizations]')
 SET IDENTITY_INSERT [dbo].[Organizations] ON
 INSERT INTO [dbo].[Organizations] ([OrganizationId], [CreatedBy], [CreatedDate], [OrganizationStatusId], [DivisionId], [LeaderMemberTypeId], [GradeAgeStart], [GradeAgeEnd], [RollSheetVisitorWks], [SecurityTypeId], [FirstMeetingDate], [LastMeetingDate], [OrganizationClosedDate], [Location], [OrganizationName], [ModifiedBy], [ModifiedDate], [EntryPointId], [ParentOrgId], [AllowAttendOverlap], [MemberCount], [LeaderId], [LeaderName], [ClassFilled], [OnLineCatalogSort], [PendingLoc], [CanSelfCheckin], [NumCheckInLabels], [CampusId], [AllowNonCampusCheckIn], [NumWorkerCheckInLabels], [ShowOnlyRegisteredAtCheckIn], [Limit], [GenderId], [Description], [BirthDayStart], [BirthDayEnd], [LastDayBeforeExtra], [RegistrationTypeId], [ValidateOrgs], [PhoneNumber], [RegistrationClosed], [AllowKioskRegister], [WorshipGroupCodes], [IsBibleFellowshipOrg], [NoSecurityLabel], [AlwaysSecurityLabel], [DaysToIgnoreHistory], [NotifyIds], [lat], [long], [RegSetting], [OrgPickList], [Offsite], [RegStart], [RegEnd], [LimitToRole], [OrganizationTypeId], [MemberJoinScript], [AddToSmallGroupScript], [RemoveFromSmallGroupScript], [SuspendCheckin], [NoAutoAbsents], [PublishDirectory], [ConsecutiveAbsentsThreshold], [IsRecreationTeam], [NotWeekly], [IsMissionTrip], [NoCreditCards], [GiftNotifyIds], [UseBootstrap], [PublicSortOrder], [UseRegisterLink2], [AppCategory], [RegistrationTitle], [PrevMemberCount], [ProspectCount], [RegSettingXml], [AttendanceBySubGroups]) VALUES (1, 1, '2009-05-05 22:46:43.983', 30, 1, NULL, 0, 0, NULL, 0, NULL, NULL, NULL, N'', N'First Organization', NULL, NULL, 0, NULL, 0, 2, NULL, NULL, 0, NULL, NULL, 0, 0, NULL, 0, 0, NULL, NULL, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, 0, 0, NULL, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Organizations] ([OrganizationId], [CreatedBy], [CreatedDate], [OrganizationStatusId], [DivisionId], [LeaderMemberTypeId], [GradeAgeStart], [GradeAgeEnd], [RollSheetVisitorWks], [SecurityTypeId], [FirstMeetingDate], [LastMeetingDate], [OrganizationClosedDate], [Location], [OrganizationName], [ModifiedBy], [ModifiedDate], [EntryPointId], [ParentOrgId], [AllowAttendOverlap], [MemberCount], [LeaderId], [LeaderName], [ClassFilled], [OnLineCatalogSort], [PendingLoc], [CanSelfCheckin], [NumCheckInLabels], [CampusId], [AllowNonCampusCheckIn], [NumWorkerCheckInLabels], [ShowOnlyRegisteredAtCheckIn], [Limit], [GenderId], [Description], [BirthDayStart], [BirthDayEnd], [LastDayBeforeExtra], [RegistrationTypeId], [ValidateOrgs], [PhoneNumber], [RegistrationClosed], [AllowKioskRegister], [WorshipGroupCodes], [IsBibleFellowshipOrg], [NoSecurityLabel], [AlwaysSecurityLabel], [DaysToIgnoreHistory], [NotifyIds], [lat], [long], [RegSetting], [OrgPickList], [Offsite], [RegStart], [RegEnd], [LimitToRole], [OrganizationTypeId], [MemberJoinScript], [AddToSmallGroupScript], [RemoveFromSmallGroupScript], [SuspendCheckin], [NoAutoAbsents], [PublishDirectory], [ConsecutiveAbsentsThreshold], [IsRecreationTeam], [NotWeekly], [IsMissionTrip], [NoCreditCards], [GiftNotifyIds], [UseBootstrap], [PublicSortOrder], [UseRegisterLink2], [AppCategory], [RegistrationTitle], [PrevMemberCount], [ProspectCount], [RegSettingXml], [AttendanceBySubGroups]) VALUES (2, 3, '2011-05-19 14:40:30.987', 30, 1, 0, 0, 0, 4, 4, NULL, NULL, NULL, N'Worship Center', N'9:30 Worship', NULL, NULL, 20, NULL, 0, NULL, NULL, NULL, 0, NULL, NULL, 0, 0, 99, 0, 0, NULL, NULL, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, 0, 0, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)
@@ -3064,6 +3339,9 @@ INSERT INTO [dbo].[Organizations] ([OrganizationId], [CreatedBy], [CreatedDate],
 INSERT INTO [dbo].[Organizations] ([OrganizationId], [CreatedBy], [CreatedDate], [OrganizationStatusId], [DivisionId], [LeaderMemberTypeId], [GradeAgeStart], [GradeAgeEnd], [RollSheetVisitorWks], [SecurityTypeId], [FirstMeetingDate], [LastMeetingDate], [OrganizationClosedDate], [Location], [OrganizationName], [ModifiedBy], [ModifiedDate], [EntryPointId], [ParentOrgId], [AllowAttendOverlap], [MemberCount], [LeaderId], [LeaderName], [ClassFilled], [OnLineCatalogSort], [PendingLoc], [CanSelfCheckin], [NumCheckInLabels], [CampusId], [AllowNonCampusCheckIn], [NumWorkerCheckInLabels], [ShowOnlyRegisteredAtCheckIn], [Limit], [GenderId], [Description], [BirthDayStart], [BirthDayEnd], [LastDayBeforeExtra], [RegistrationTypeId], [ValidateOrgs], [PhoneNumber], [RegistrationClosed], [AllowKioskRegister], [WorshipGroupCodes], [IsBibleFellowshipOrg], [NoSecurityLabel], [AlwaysSecurityLabel], [DaysToIgnoreHistory], [NotifyIds], [lat], [long], [RegSetting], [OrgPickList], [Offsite], [RegStart], [RegEnd], [LimitToRole], [OrganizationTypeId], [MemberJoinScript], [AddToSmallGroupScript], [RemoveFromSmallGroupScript], [SuspendCheckin], [NoAutoAbsents], [PublishDirectory], [ConsecutiveAbsentsThreshold], [IsRecreationTeam], [NotWeekly], [IsMissionTrip], [NoCreditCards], [GiftNotifyIds], [UseBootstrap], [PublicSortOrder], [UseRegisterLink2], [AppCategory], [RegistrationTitle], [PrevMemberCount], [ProspectCount], [RegSettingXml], [AttendanceBySubGroups]) VALUES (30, 3, '2011-05-23 11:50:18.367', 30, 3, 103, 4, 5, NULL, 0, NULL, NULL, NULL, NULL, N'Children''s Camp', NULL, NULL, 15, NULL, 0, 1, NULL, NULL, 0, NULL, NULL, 0, 0, 99, 0, 0, NULL, NULL, 0, NULL, NULL, NULL, NULL, 1, NULL, N'9015559944', 0, 0, NULL, 1, 0, NULL, NULL, '3,2', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Organizations] ([OrganizationId], [CreatedBy], [CreatedDate], [OrganizationStatusId], [DivisionId], [LeaderMemberTypeId], [GradeAgeStart], [GradeAgeEnd], [RollSheetVisitorWks], [SecurityTypeId], [FirstMeetingDate], [LastMeetingDate], [OrganizationClosedDate], [Location], [OrganizationName], [ModifiedBy], [ModifiedDate], [EntryPointId], [ParentOrgId], [AllowAttendOverlap], [MemberCount], [LeaderId], [LeaderName], [ClassFilled], [OnLineCatalogSort], [PendingLoc], [CanSelfCheckin], [NumCheckInLabels], [CampusId], [AllowNonCampusCheckIn], [NumWorkerCheckInLabels], [ShowOnlyRegisteredAtCheckIn], [Limit], [GenderId], [Description], [BirthDayStart], [BirthDayEnd], [LastDayBeforeExtra], [RegistrationTypeId], [ValidateOrgs], [PhoneNumber], [RegistrationClosed], [AllowKioskRegister], [WorshipGroupCodes], [IsBibleFellowshipOrg], [NoSecurityLabel], [AlwaysSecurityLabel], [DaysToIgnoreHistory], [NotifyIds], [lat], [long], [RegSetting], [OrgPickList], [Offsite], [RegStart], [RegEnd], [LimitToRole], [OrganizationTypeId], [MemberJoinScript], [AddToSmallGroupScript], [RemoveFromSmallGroupScript], [SuspendCheckin], [NoAutoAbsents], [PublishDirectory], [ConsecutiveAbsentsThreshold], [IsRecreationTeam], [NotWeekly], [IsMissionTrip], [NoCreditCards], [GiftNotifyIds], [UseBootstrap], [PublicSortOrder], [UseRegisterLink2], [AppCategory], [RegistrationTitle], [PrevMemberCount], [ProspectCount], [RegSettingXml], [AttendanceBySubGroups]) VALUES (31, 3, '2011-05-29 20:35:33.030', 30, 3, 103, 4, 5, NULL, 0, NULL, NULL, NULL, NULL, N'VBS Volunteers', NULL, NULL, 15, NULL, 0, 1, NULL, NULL, 0, NULL, NULL, 0, 0, 99, 0, 0, NULL, NULL, 0, NULL, NULL, NULL, NULL, 1, NULL, N'9015559944', 0, 0, NULL, 1, 0, NULL, NULL, '3,2', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Organizations] OFF
+PRINT(N'Operation applied to 27 rows out of 27')
+
+PRINT(N'Add rows to [dbo].[ProgDiv]')
 INSERT INTO [dbo].[ProgDiv] ([ProgId], [DivId]) VALUES (1, 1)
 INSERT INTO [dbo].[ProgDiv] ([ProgId], [DivId]) VALUES (1, 2)
 INSERT INTO [dbo].[ProgDiv] ([ProgId], [DivId]) VALUES (1, 3)
@@ -3074,6 +3352,9 @@ INSERT INTO [dbo].[ProgDiv] ([ProgId], [DivId]) VALUES (2, 7)
 INSERT INTO [dbo].[ProgDiv] ([ProgId], [DivId]) VALUES (1106, 8)
 INSERT INTO [dbo].[ProgDiv] ([ProgId], [DivId]) VALUES (1106, 9)
 INSERT INTO [dbo].[ProgDiv] ([ProgId], [DivId]) VALUES (1107, 3)
+PRINT(N'Operation applied to 10 rows out of 10')
+
+PRINT(N'Add rows to [dbo].[DivOrg]')
 INSERT INTO [dbo].[DivOrg] ([DivId], [OrgId], [id]) VALUES (1, 1, 1)
 INSERT INTO [dbo].[DivOrg] ([DivId], [OrgId], [id]) VALUES (1, 2, 1)
 INSERT INTO [dbo].[DivOrg] ([DivId], [OrgId], [id]) VALUES (1, 3, 1)
@@ -3101,6 +3382,9 @@ INSERT INTO [dbo].[DivOrg] ([DivId], [OrgId], [id]) VALUES (8, 10, 1)
 INSERT INTO [dbo].[DivOrg] ([DivId], [OrgId], [id]) VALUES (8, 11, 1)
 INSERT INTO [dbo].[DivOrg] ([DivId], [OrgId], [id]) VALUES (9, 12, 1)
 INSERT INTO [dbo].[DivOrg] ([DivId], [OrgId], [id]) VALUES (9, 13, 1)
+PRINT(N'Operation applied to 27 rows out of 27')
+
+PRINT(N'Add rows to [dbo].[Meetings]')
 SET IDENTITY_INSERT [dbo].[Meetings] ON
 INSERT INTO [dbo].[Meetings] ([MeetingId], [CreatedBy], [CreatedDate], [OrganizationId], [NumPresent], [NumMembers], [NumVstMembers], [NumRepeatVst], [NumNewVisit], [Location], [MeetingDate], [GroupMeetingFlag], [Description], [NumOutTown], [NumOtherAttends], [AttendCreditId], [NoAutoAbsents], [HeadCount]) VALUES (1, 3, '2011-05-20 05:45:12.243', 2, 5, 0, 0, 0, 5, N'Worship Center', '2011-01-02 09:30:00.000', 1, NULL, 5, 0, NULL, NULL, 80)
 INSERT INTO [dbo].[Meetings] ([MeetingId], [CreatedBy], [CreatedDate], [OrganizationId], [NumPresent], [NumMembers], [NumVstMembers], [NumRepeatVst], [NumNewVisit], [Location], [MeetingDate], [GroupMeetingFlag], [Description], [NumOutTown], [NumOtherAttends], [AttendCreditId], [NoAutoAbsents], [HeadCount]) VALUES (2, 3, '2011-05-20 05:48:30.057', 2, 4, 0, 0, 2, 2, N'Worship Center', '2011-01-09 09:30:00.000', 1, NULL, 4, 0, NULL, NULL, 76)
@@ -3152,12 +3436,18 @@ INSERT INTO [dbo].[Meetings] ([MeetingId], [CreatedBy], [CreatedDate], [Organiza
 INSERT INTO [dbo].[Meetings] ([MeetingId], [CreatedBy], [CreatedDate], [OrganizationId], [NumPresent], [NumMembers], [NumVstMembers], [NumRepeatVst], [NumNewVisit], [Location], [MeetingDate], [GroupMeetingFlag], [Description], [NumOutTown], [NumOtherAttends], [AttendCreditId], [NoAutoAbsents], [HeadCount]) VALUES (48, 3, '2011-05-20 08:45:44.770', 20, 10, 8, 0, 2, 0, N'Room 16', '2011-01-30 11:00:00.000', 0, NULL, 2, 1, NULL, NULL, NULL)
 INSERT INTO [dbo].[Meetings] ([MeetingId], [CreatedBy], [CreatedDate], [OrganizationId], [NumPresent], [NumMembers], [NumVstMembers], [NumRepeatVst], [NumNewVisit], [Location], [MeetingDate], [GroupMeetingFlag], [Description], [NumOutTown], [NumOtherAttends], [AttendCreditId], [NoAutoAbsents], [HeadCount]) VALUES (50, 2, '2011-12-21 13:43:58.757', 1, 0, 0, 0, 0, 0, N'', '2011-12-18 09:30:00.000', 0, NULL, 0, 0, 1, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Meetings] OFF
+PRINT(N'Operation applied to 49 rows out of 49')
+
+PRINT(N'Add rows to [dbo].[MemberTags]')
 SET IDENTITY_INSERT [dbo].[MemberTags] ON
 INSERT INTO [dbo].[MemberTags] ([Id], [Name], [OrgId], [VolFrequency], [VolStartDate], [VolEndDate], [NoCancelWeeks]) VALUES (1, N'Girls Cabin A', 30, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[MemberTags] ([Id], [Name], [OrgId], [VolFrequency], [VolStartDate], [VolEndDate], [NoCancelWeeks]) VALUES (2, N'IN:Birth-3_yrs', 31, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[MemberTags] ([Id], [Name], [OrgId], [VolFrequency], [VolStartDate], [VolEndDate], [NoCancelWeeks]) VALUES (3, N'CL:Class_Teacher_Helper', 31, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[MemberTags] ([Id], [Name], [OrgId], [VolFrequency], [VolStartDate], [VolEndDate], [NoCancelWeeks]) VALUES (4, N'PD:Set_Painting_Decorating', 31, NULL, NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[MemberTags] OFF
+PRINT(N'Operation applied to 4 rows out of 4')
+
+PRINT(N'Add rows to [dbo].[OrgSchedule]')
 INSERT INTO [dbo].[OrgSchedule] ([OrganizationId], [Id], [ScheduleId], [SchedTime], [SchedDay], [MeetingTime], [AttendCreditId]) VALUES (1, 1, 10930, '2011-06-23 09:30:00.000', 0, '1900-01-07 09:30:00.000', 1)
 INSERT INTO [dbo].[OrgSchedule] ([OrganizationId], [Id], [ScheduleId], [SchedTime], [SchedDay], [MeetingTime], [AttendCreditId]) VALUES (2, 1, 10930, '2011-05-19 09:30:00.000', 0, '1900-01-07 09:30:00.000', 1)
 INSERT INTO [dbo].[OrgSchedule] ([OrganizationId], [Id], [ScheduleId], [SchedTime], [SchedDay], [MeetingTime], [AttendCreditId]) VALUES (3, 1, 11100, '2011-05-19 11:00:00.000', 0, '1900-01-07 11:00:00.000', 1)
@@ -3185,7 +3475,12 @@ INSERT INTO [dbo].[OrgSchedule] ([OrganizationId], [Id], [ScheduleId], [SchedTim
 INSERT INTO [dbo].[OrgSchedule] ([OrganizationId], [Id], [ScheduleId], [SchedTime], [SchedDay], [MeetingTime], [AttendCreditId]) VALUES (28, 1, 51900, '2011-05-19 19:00:00.000', 4, '1900-01-04 19:00:00.000', 1)
 INSERT INTO [dbo].[OrgSchedule] ([OrganizationId], [Id], [ScheduleId], [SchedTime], [SchedDay], [MeetingTime], [AttendCreditId]) VALUES (30, 1, NULL, NULL, 0, NULL, 1)
 INSERT INTO [dbo].[OrgSchedule] ([OrganizationId], [Id], [ScheduleId], [SchedTime], [SchedDay], [MeetingTime], [AttendCreditId]) VALUES (31, 1, 10800, '2011-07-21 08:00:00.000', 0, '1900-01-07 08:00:00.000', 1)
+PRINT(N'Operation applied to 27 rows out of 27')
+
+PRINT(N'Add row to [dbo].[ApiSession]')
 INSERT INTO [dbo].[ApiSession] ([UserId], [SessionToken], [PIN], [LastAccessedDate], [CreatedDate]) VALUES (2, 'c0db9f93-6f92-465c-87d0-32fabfa9f095', 5906, '1753-01-01 00:00:00.000', '2015-06-30 21:38:27.960')
+
+PRINT(N'Add rows to [dbo].[Attend]')
 SET IDENTITY_INSERT [dbo].[Attend] ON
 INSERT INTO [dbo].[Attend] ([AttendId], [PeopleId], [MeetingId], [OrganizationId], [MeetingDate], [AttendanceFlag], [OtherOrgId], [AttendanceTypeId], [CreatedBy], [CreatedDate], [MemberTypeId], [OtherAttends], [BFCAttendance], [Registered], [SeqNo], [Commitment], [NoShow]) VALUES (1, 138, 1, 2, '2011-01-02 09:30:00.000', 1, NULL, 60, 3, '2011-05-20 05:47:35.127', 310, 0, NULL, NULL, 1, NULL, NULL)
 INSERT INTO [dbo].[Attend] ([AttendId], [PeopleId], [MeetingId], [OrganizationId], [MeetingDate], [AttendanceFlag], [OtherOrgId], [AttendanceTypeId], [CreatedBy], [CreatedDate], [MemberTypeId], [OtherAttends], [BFCAttendance], [Registered], [SeqNo], [Commitment], [NoShow]) VALUES (2, 115, 1, 2, '2011-01-02 09:30:00.000', 1, NULL, 60, 3, '2011-05-20 05:47:35.400', 310, 0, NULL, NULL, 1, NULL, NULL)
@@ -3595,6 +3890,9 @@ INSERT INTO [dbo].[Attend] ([AttendId], [PeopleId], [MeetingId], [OrganizationId
 INSERT INTO [dbo].[Attend] ([AttendId], [PeopleId], [MeetingId], [OrganizationId], [MeetingDate], [AttendanceFlag], [OtherOrgId], [AttendanceTypeId], [CreatedBy], [CreatedDate], [MemberTypeId], [OtherAttends], [BFCAttendance], [Registered], [SeqNo], [Commitment], [NoShow]) VALUES (417, 2, 50, 1, '2011-12-18 09:30:00.000', 0, NULL, 30, NULL, '2011-12-21 13:43:56.577', 220, 0, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Attend] ([AttendId], [PeopleId], [MeetingId], [OrganizationId], [MeetingDate], [AttendanceFlag], [OtherOrgId], [AttendanceTypeId], [CreatedBy], [CreatedDate], [MemberTypeId], [OtherAttends], [BFCAttendance], [Registered], [SeqNo], [Commitment], [NoShow]) VALUES (418, 3, 50, 1, '2011-12-18 09:30:00.000', 0, NULL, 30, NULL, '2011-12-21 13:43:56.587', 220, 0, NULL, NULL, NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Attend] OFF
+PRINT(N'Operation applied to 407 rows out of 407')
+
+PRINT(N'Add rows to [dbo].[EnrollmentTransaction]')
 SET IDENTITY_INSERT [dbo].[EnrollmentTransaction] ON
 INSERT INTO [dbo].[EnrollmentTransaction] ([TransactionId], [TransactionStatus], [CreatedBy], [CreatedDate], [TransactionDate], [TransactionTypeId], [OrganizationId], [OrganizationName], [PeopleId], [MemberTypeId], [EnrollmentDate], [AttendancePercentage], [NextTranChangeDate], [EnrollmentTransactionId], [Pending], [InactiveDate], [UserData], [Request], [ShirtSize], [Grade], [Tickets], [RegisterEmail], [TranId], [Score], [SmallGroups], [SkipInsertTriggerProcessing]) VALUES (1, 0, 1, '2010-10-30 15:23:12.107', '2010-10-30 15:23:12.103', 1, 1, N'First Organization', 2, 220, '2010-10-30 15:23:12.027', NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL)
 INSERT INTO [dbo].[EnrollmentTransaction] ([TransactionId], [TransactionStatus], [CreatedBy], [CreatedDate], [TransactionDate], [TransactionTypeId], [OrganizationId], [OrganizationName], [PeopleId], [MemberTypeId], [EnrollmentDate], [AttendancePercentage], [NextTranChangeDate], [EnrollmentTransactionId], [Pending], [InactiveDate], [UserData], [Request], [ShirtSize], [Grade], [Tickets], [RegisterEmail], [TranId], [Score], [SmallGroups], [SkipInsertTriggerProcessing]) VALUES (2, 0, 1, '2010-10-30 15:23:12.537', '2010-10-30 15:23:12.537', 1, 1, N'First Organization', 3, 220, '2010-10-30 15:23:12.527', NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL)
@@ -3680,6 +3978,9 @@ INSERT INTO [dbo].[EnrollmentTransaction] ([TransactionId], [TransactionStatus],
 INSERT INTO [dbo].[EnrollmentTransaction] ([TransactionId], [TransactionStatus], [CreatedBy], [CreatedDate], [TransactionDate], [TransactionTypeId], [OrganizationId], [OrganizationName], [PeopleId], [MemberTypeId], [EnrollmentDate], [AttendancePercentage], [NextTranChangeDate], [EnrollmentTransactionId], [Pending], [InactiveDate], [UserData], [Request], [ShirtSize], [Grade], [Tickets], [RegisterEmail], [TranId], [Score], [SmallGroups], [SkipInsertTriggerProcessing]) VALUES (83, 0, 3, '2011-05-29 20:41:10.577', '2011-05-29 20:41:10.577', 1, 31, N'VBS Volunteers', 3, 220, '2011-05-29 20:41:10.557', NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL)
 INSERT INTO [dbo].[EnrollmentTransaction] ([TransactionId], [TransactionStatus], [CreatedBy], [CreatedDate], [TransactionDate], [TransactionTypeId], [OrganizationId], [OrganizationName], [PeopleId], [MemberTypeId], [EnrollmentDate], [AttendancePercentage], [NextTranChangeDate], [EnrollmentTransactionId], [Pending], [InactiveDate], [UserData], [Request], [ShirtSize], [Grade], [Tickets], [RegisterEmail], [TranId], [Score], [SmallGroups], [SkipInsertTriggerProcessing]) VALUES (228, 0, 2, '2011-06-14 09:52:23.077', '2011-06-14 09:52:23.077', 5, 18, N'College-Young Adults', 52, 220, NULL, 80, NULL, 44, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[EnrollmentTransaction] OFF
+PRINT(N'Operation applied to 83 rows out of 83')
+
+PRINT(N'Add rows to [dbo].[Families]')
 SET IDENTITY_INSERT [dbo].[Families] ON
 INSERT INTO [dbo].[Families] ([FamilyId], [CreatedBy], [CreatedDate], [RecordStatus], [BadAddressFlag], [AltBadAddressFlag], [ResCodeId], [AltResCodeId], [AddressFromDate], [AddressToDate], [AddressLineOne], [AddressLineTwo], [CityName], [StateCode], [ZipCode], [CountryName], [StreetName], [HomePhone], [ModifiedBy], [ModifiedDate], [HeadOfHouseholdId], [HeadOfHouseholdSpouseId], [CoupleFlag], [HomePhoneLU], [HomePhoneAC], [Comments], [PictureId]) VALUES (1, 1, '2009-05-05 22:46:43.970', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, N'', NULL, NULL, NULL, NULL, NULL, 1, NULL, 0, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Families] ([FamilyId], [CreatedBy], [CreatedDate], [RecordStatus], [BadAddressFlag], [AltBadAddressFlag], [ResCodeId], [AltResCodeId], [AddressFromDate], [AddressToDate], [AddressLineOne], [AddressLineTwo], [CityName], [StateCode], [ZipCode], [CountryName], [StreetName], [HomePhone], [ModifiedBy], [ModifiedDate], [HeadOfHouseholdId], [HeadOfHouseholdSpouseId], [CoupleFlag], [HomePhoneLU], [HomePhoneAC], [Comments], [PictureId]) VALUES (2, 0, NULL, 0, NULL, NULL, 30, NULL, NULL, NULL, N'235 Riveredge Cv.', NULL, N'Cordova', N'TN', N'38018', NULL, NULL, N'9017580791', NULL, NULL, 2, NULL, 0, '7580791', '901', NULL, NULL)
@@ -3751,6 +4052,9 @@ INSERT INTO [dbo].[Families] ([FamilyId], [CreatedBy], [CreatedDate], [RecordSta
 INSERT INTO [dbo].[Families] ([FamilyId], [CreatedBy], [CreatedDate], [RecordStatus], [BadAddressFlag], [AltBadAddressFlag], [ResCodeId], [AltResCodeId], [AddressFromDate], [AddressToDate], [AddressLineOne], [AddressLineTwo], [CityName], [StateCode], [ZipCode], [CountryName], [StreetName], [HomePhone], [ModifiedBy], [ModifiedDate], [HeadOfHouseholdId], [HeadOfHouseholdSpouseId], [CoupleFlag], [HomePhoneLU], [HomePhoneAC], [Comments], [PictureId]) VALUES (68, 0, NULL, 0, NULL, NULL, 30, NULL, NULL, NULL, N'2477 Noe Ln', N'', N'Germantown', N'TN', N'38139', NULL, NULL, N'9017545065', NULL, NULL, 146, NULL, 0, '7545065', '901', NULL, NULL)
 INSERT INTO [dbo].[Families] ([FamilyId], [CreatedBy], [CreatedDate], [RecordStatus], [BadAddressFlag], [AltBadAddressFlag], [ResCodeId], [AltResCodeId], [AddressFromDate], [AddressToDate], [AddressLineOne], [AddressLineTwo], [CityName], [StateCode], [ZipCode], [CountryName], [StreetName], [HomePhone], [ModifiedBy], [ModifiedDate], [HeadOfHouseholdId], [HeadOfHouseholdSpouseId], [CoupleFlag], [HomePhoneLU], [HomePhoneAC], [Comments], [PictureId]) VALUES (69, 0, NULL, 0, NULL, NULL, 30, NULL, NULL, NULL, N'9981 Morningside Dr', N'', N'Germantown', N'TN', N'38139', NULL, NULL, N'9014052191', NULL, NULL, 147, NULL, 4, '4052191', '901', NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Families] OFF
+PRINT(N'Operation applied to 69 rows out of 69')
+
+PRINT(N'Add rows to [dbo].[OrganizationMembers]')
 INSERT INTO [dbo].[OrganizationMembers] ([OrganizationId], [PeopleId], [CreatedBy], [CreatedDate], [MemberTypeId], [EnrollmentDate], [ModifiedBy], [ModifiedDate], [InactiveDate], [AttendStr], [AttendPct], [LastAttended], [Pending], [UserData], [Amount], [Request], [ShirtSize], [Grade], [Tickets], [Moved], [RegisterEmail], [AmountPaid], [PayLink], [TranId], [Score], [DatumId], [Hidden], [SkipInsertTriggerProcessing], [RegistrationDataId], [OnlineRegData]) VALUES (1, 2, NULL, '2010-10-30 15:23:12.087', 220, '2010-10-30 15:23:12.027', NULL, NULL, NULL, N'-', 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[OrganizationMembers] ([OrganizationId], [PeopleId], [CreatedBy], [CreatedDate], [MemberTypeId], [EnrollmentDate], [ModifiedBy], [ModifiedDate], [InactiveDate], [AttendStr], [AttendPct], [LastAttended], [Pending], [UserData], [Amount], [Request], [ShirtSize], [Grade], [Tickets], [Moved], [RegisterEmail], [AmountPaid], [PayLink], [TranId], [Score], [DatumId], [Hidden], [SkipInsertTriggerProcessing], [RegistrationDataId], [OnlineRegData]) VALUES (1, 3, NULL, '2010-10-30 15:23:12.530', 220, '2010-10-30 15:23:12.527', NULL, NULL, NULL, N'-', 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[OrganizationMembers] ([OrganizationId], [PeopleId], [CreatedBy], [CreatedDate], [MemberTypeId], [EnrollmentDate], [ModifiedBy], [ModifiedDate], [InactiveDate], [AttendStr], [AttendPct], [LastAttended], [Pending], [UserData], [Amount], [Request], [ShirtSize], [Grade], [Tickets], [Moved], [RegisterEmail], [AmountPaid], [PayLink], [TranId], [Score], [DatumId], [Hidden], [SkipInsertTriggerProcessing], [RegistrationDataId], [OnlineRegData]) VALUES (5, 42, NULL, '2011-05-20 06:02:52.367', 220, '2011-05-20 06:02:52.350', NULL, NULL, NULL, N'----', 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL)
@@ -3827,10 +4131,16 @@ Others: (Total due $100.00)', 205.0000, N'Besty Williams, Susan Johnson', N'Y M'
 INSERT INTO [dbo].[OrganizationMembers] ([OrganizationId], [PeopleId], [CreatedBy], [CreatedDate], [MemberTypeId], [EnrollmentDate], [ModifiedBy], [ModifiedDate], [InactiveDate], [AttendStr], [AttendPct], [LastAttended], [Pending], [UserData], [Amount], [Request], [ShirtSize], [Grade], [Tickets], [Moved], [RegisterEmail], [AmountPaid], [PayLink], [TranId], [Score], [DatumId], [Hidden], [SkipInsertTriggerProcessing], [RegistrationDataId], [OnlineRegData]) VALUES (31, 3, NULL, '2011-05-29 20:41:10.570', 220, '2011-05-29 20:41:10.557', NULL, NULL, NULL, NULL, NULL, NULL, 0, N'--Add comments above this line--
 insert: 5/29/2011 8:41:10 PM
 insert: 5/29/2011 8:41:10 PM', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL)
+PRINT(N'Operation applied to 70 rows out of 70')
+
+PRINT(N'Add rows to [dbo].[OrgMemMemTags]')
 INSERT INTO [dbo].[OrgMemMemTags] ([OrgId], [PeopleId], [MemberTagId], [Number], [IsLeader]) VALUES (30, 64, 1, NULL, NULL)
 INSERT INTO [dbo].[OrgMemMemTags] ([OrgId], [PeopleId], [MemberTagId], [Number], [IsLeader]) VALUES (31, 3, 2, NULL, NULL)
 INSERT INTO [dbo].[OrgMemMemTags] ([OrgId], [PeopleId], [MemberTagId], [Number], [IsLeader]) VALUES (31, 3, 3, NULL, NULL)
 INSERT INTO [dbo].[OrgMemMemTags] ([OrgId], [PeopleId], [MemberTagId], [Number], [IsLeader]) VALUES (31, 3, 4, NULL, NULL)
+PRINT(N'Operation applied to 4 rows out of 4')
+
+PRINT(N'Add rows to [dbo].[People]')
 SET IDENTITY_INSERT [dbo].[People] ON
 INSERT INTO [dbo].[People] ([PeopleId], [CreatedBy], [CreatedDate], [DropCodeId], [GenderId], [DoNotMailFlag], [DoNotCallFlag], [DoNotVisitFlag], [AddressTypeId], [PhonePrefId], [MaritalStatusId], [PositionInFamilyId], [MemberStatusId], [FamilyId], [BirthMonth], [BirthDay], [BirthYear], [OriginId], [EntryPointId], [InterestPointId], [BaptismTypeId], [BaptismStatusId], [DecisionTypeId], [NewMemberClassStatusId], [LetterStatusId], [JoinCodeId], [EnvelopeOptionsId], [BadAddressFlag], [ResCodeId], [AddressFromDate], [AddressToDate], [WeddingDate], [OriginDate], [BaptismSchedDate], [BaptismDate], [DecisionDate], [LetterDateRequested], [LetterDateReceived], [JoinDate], [DropDate], [DeceasedDate], [TitleCode], [FirstName], [MiddleName], [MaidenName], [LastName], [SuffixCode], [NickName], [AddressLineOne], [AddressLineTwo], [CityName], [StateCode], [ZipCode], [CountryName], [StreetName], [CellPhone], [WorkPhone], [EmailAddress], [OtherPreviousChurch], [OtherNewChurch], [SchoolOther], [EmployerOther], [OccupationOther], [HobbyOther], [SkillOther], [InterestOther], [LetterStatusNotes], [Comments], [ChristAsSavior], [MemberAnyChurch], [InterestedInJoining], [PleaseVisit], [InfoBecomeAChristian], [ContributionsStatement], [ModifiedBy], [ModifiedDate], [PictureId], [ContributionOptionsId], [PrimaryCity], [PrimaryZip], [PrimaryAddress], [PrimaryState], [HomePhone], [SpouseId], [PrimaryAddress2], [PrimaryResCode], [PrimaryBadAddrFlag], [LastContact], [Grade], [CellPhoneLU], [WorkPhoneLU], [BibleFellowshipClassId], [CampusId], [CellPhoneAC], [CheckInNotes], [AltName], [CustodyIssue], [OkTransport], [HasDuplicates], [FirstName2], [EmailAddress2], [SendEmailAddress1], [SendEmailAddress2], [NewMemberClassDate], [PrimaryCountry], [ReceiveSMS], [DoNotPublishPhones], [SSN], [DLN], [DLStateID], [ElectronicStatement]) VALUES (1, 1, '2009-05-05 22:46:43.970', 0, 0, 0, 0, 0, 10, 0, 0, 10, 20, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, N'The', NULL, NULL, N'Admin', NULL, NULL, NULL, NULL, NULL, NULL, N'', NULL, NULL, NULL, NULL, N'info@bvcms.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, N'', NULL, NULL, NULL, NULL, NULL, 40, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, N'The', NULL, 1, 0, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[People] ([PeopleId], [CreatedBy], [CreatedDate], [DropCodeId], [GenderId], [DoNotMailFlag], [DoNotCallFlag], [DoNotVisitFlag], [AddressTypeId], [PhonePrefId], [MaritalStatusId], [PositionInFamilyId], [MemberStatusId], [FamilyId], [BirthMonth], [BirthDay], [BirthYear], [OriginId], [EntryPointId], [InterestPointId], [BaptismTypeId], [BaptismStatusId], [DecisionTypeId], [NewMemberClassStatusId], [LetterStatusId], [JoinCodeId], [EnvelopeOptionsId], [BadAddressFlag], [ResCodeId], [AddressFromDate], [AddressToDate], [WeddingDate], [OriginDate], [BaptismSchedDate], [BaptismDate], [DecisionDate], [LetterDateRequested], [LetterDateReceived], [JoinDate], [DropDate], [DeceasedDate], [TitleCode], [FirstName], [MiddleName], [MaidenName], [LastName], [SuffixCode], [NickName], [AddressLineOne], [AddressLineTwo], [CityName], [StateCode], [ZipCode], [CountryName], [StreetName], [CellPhone], [WorkPhone], [EmailAddress], [OtherPreviousChurch], [OtherNewChurch], [SchoolOther], [EmployerOther], [OccupationOther], [HobbyOther], [SkillOther], [InterestOther], [LetterStatusNotes], [Comments], [ChristAsSavior], [MemberAnyChurch], [InterestedInJoining], [PleaseVisit], [InfoBecomeAChristian], [ContributionsStatement], [ModifiedBy], [ModifiedDate], [PictureId], [ContributionOptionsId], [PrimaryCity], [PrimaryZip], [PrimaryAddress], [PrimaryState], [HomePhone], [SpouseId], [PrimaryAddress2], [PrimaryResCode], [PrimaryBadAddrFlag], [LastContact], [Grade], [CellPhoneLU], [WorkPhoneLU], [BibleFellowshipClassId], [CampusId], [CellPhoneAC], [CheckInNotes], [AltName], [CustodyIssue], [OkTransport], [HasDuplicates], [FirstName2], [EmailAddress2], [SendEmailAddress1], [SendEmailAddress2], [NewMemberClassDate], [PrimaryCountry], [ReceiveSMS], [DoNotPublishPhones], [SSN], [DLN], [DLStateID], [ElectronicStatement]) VALUES (2, 0, '2010-10-30 15:23:10.743', 0, 1, 0, 0, 0, 10, 0, 20, 10, 20, 2, 5, 30, 1952, 70, 0, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, N'Mr.', N'David', NULL, NULL, N'Carroll', NULL, NULL, NULL, NULL, NULL, NULL, N'', NULL, NULL, N'9014890611', NULL, N'david@davidcarroll.name', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, N'Cordova', N'38018', N'235 Riveredge Cv.', N'TN', N'9017580791', NULL, NULL, 30, 0, NULL, NULL, '4890611', NULL, 1, NULL, '901', NULL, NULL, NULL, NULL, NULL, N'David', NULL, 1, 0, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL)
@@ -3981,6 +4291,9 @@ INSERT INTO [dbo].[People] ([PeopleId], [CreatedBy], [CreatedDate], [DropCodeId]
 INSERT INTO [dbo].[People] ([PeopleId], [CreatedBy], [CreatedDate], [DropCodeId], [GenderId], [DoNotMailFlag], [DoNotCallFlag], [DoNotVisitFlag], [AddressTypeId], [PhonePrefId], [MaritalStatusId], [PositionInFamilyId], [MemberStatusId], [FamilyId], [BirthMonth], [BirthDay], [BirthYear], [OriginId], [EntryPointId], [InterestPointId], [BaptismTypeId], [BaptismStatusId], [DecisionTypeId], [NewMemberClassStatusId], [LetterStatusId], [JoinCodeId], [EnvelopeOptionsId], [BadAddressFlag], [ResCodeId], [AddressFromDate], [AddressToDate], [WeddingDate], [OriginDate], [BaptismSchedDate], [BaptismDate], [DecisionDate], [LetterDateRequested], [LetterDateReceived], [JoinDate], [DropDate], [DeceasedDate], [TitleCode], [FirstName], [MiddleName], [MaidenName], [LastName], [SuffixCode], [NickName], [AddressLineOne], [AddressLineTwo], [CityName], [StateCode], [ZipCode], [CountryName], [StreetName], [CellPhone], [WorkPhone], [EmailAddress], [OtherPreviousChurch], [OtherNewChurch], [SchoolOther], [EmployerOther], [OccupationOther], [HobbyOther], [SkillOther], [InterestOther], [LetterStatusNotes], [Comments], [ChristAsSavior], [MemberAnyChurch], [InterestedInJoining], [PleaseVisit], [InfoBecomeAChristian], [ContributionsStatement], [ModifiedBy], [ModifiedDate], [PictureId], [ContributionOptionsId], [PrimaryCity], [PrimaryZip], [PrimaryAddress], [PrimaryState], [HomePhone], [SpouseId], [PrimaryAddress2], [PrimaryResCode], [PrimaryBadAddrFlag], [LastContact], [Grade], [CellPhoneLU], [WorkPhoneLU], [BibleFellowshipClassId], [CampusId], [CellPhoneAC], [CheckInNotes], [AltName], [CustodyIssue], [OkTransport], [HasDuplicates], [FirstName2], [EmailAddress2], [SendEmailAddress1], [SendEmailAddress2], [NewMemberClassDate], [PrimaryCountry], [ReceiveSMS], [DoNotPublishPhones], [SSN], [DLN], [DLStateID], [ElectronicStatement]) VALUES (147, 0, '2011-05-19 15:57:01.390', 0, 1, 0, 0, 0, 10, 0, 10, 30, 20, 69, 7, 1, 1999, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, N'Mr.', N'Greg', NULL, NULL, N'Gonzalez', NULL, NULL, NULL, NULL, NULL, NULL, N'', NULL, NULL, N'9016438451', NULL, N'G.Gonzalez@nowhere.name', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, N'Germantown', N'38139', N'9981 Morningside Dr', N'TN', N'9014052191', NULL, N'', 30, 0, NULL, NULL, '6438451', NULL, 5, 99, '901', NULL, N'', NULL, NULL, NULL, N'Greg', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[People] ([PeopleId], [CreatedBy], [CreatedDate], [DropCodeId], [GenderId], [DoNotMailFlag], [DoNotCallFlag], [DoNotVisitFlag], [AddressTypeId], [PhonePrefId], [MaritalStatusId], [PositionInFamilyId], [MemberStatusId], [FamilyId], [BirthMonth], [BirthDay], [BirthYear], [OriginId], [EntryPointId], [InterestPointId], [BaptismTypeId], [BaptismStatusId], [DecisionTypeId], [NewMemberClassStatusId], [LetterStatusId], [JoinCodeId], [EnvelopeOptionsId], [BadAddressFlag], [ResCodeId], [AddressFromDate], [AddressToDate], [WeddingDate], [OriginDate], [BaptismSchedDate], [BaptismDate], [DecisionDate], [LetterDateRequested], [LetterDateReceived], [JoinDate], [DropDate], [DeceasedDate], [TitleCode], [FirstName], [MiddleName], [MaidenName], [LastName], [SuffixCode], [NickName], [AddressLineOne], [AddressLineTwo], [CityName], [StateCode], [ZipCode], [CountryName], [StreetName], [CellPhone], [WorkPhone], [EmailAddress], [OtherPreviousChurch], [OtherNewChurch], [SchoolOther], [EmployerOther], [OccupationOther], [HobbyOther], [SkillOther], [InterestOther], [LetterStatusNotes], [Comments], [ChristAsSavior], [MemberAnyChurch], [InterestedInJoining], [PleaseVisit], [InfoBecomeAChristian], [ContributionsStatement], [ModifiedBy], [ModifiedDate], [PictureId], [ContributionOptionsId], [PrimaryCity], [PrimaryZip], [PrimaryAddress], [PrimaryState], [HomePhone], [SpouseId], [PrimaryAddress2], [PrimaryResCode], [PrimaryBadAddrFlag], [LastContact], [Grade], [CellPhoneLU], [WorkPhoneLU], [BibleFellowshipClassId], [CampusId], [CellPhoneAC], [CheckInNotes], [AltName], [CustodyIssue], [OkTransport], [HasDuplicates], [FirstName2], [EmailAddress2], [SendEmailAddress1], [SendEmailAddress2], [NewMemberClassDate], [PrimaryCountry], [ReceiveSMS], [DoNotPublishPhones], [SSN], [DLN], [DLStateID], [ElectronicStatement]) VALUES (148, 0, '2011-05-19 15:57:01.413', 0, 1, 0, 0, 0, 10, 0, 10, 30, 20, 69, 8, 28, 2000, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, N'Mr.', N'Randell', NULL, NULL, N'Gonzalez', NULL, NULL, NULL, NULL, NULL, NULL, N'', NULL, NULL, N'9016438515', NULL, N'R.Gonzalez@nowhere.name', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, N'Germantown', N'38139', N'9981 Morningside Dr', N'TN', N'9014052191', NULL, N'', 30, 0, NULL, NULL, '6438515', NULL, 5, 99, '901', NULL, N'', NULL, NULL, NULL, N'Randell', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[People] OFF
+PRINT(N'Operation applied to 148 rows out of 148')
+
+PRINT(N'Add rows to [dbo].[PeopleExtra]')
 INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues]) VALUES (2, N'SG:giving', 1, '2012-08-20 14:13:23.260', NULL, NULL, NULL, NULL, NULL, 1, NULL)
 INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues]) VALUES (2, N'SG:helps', 1, '2012-08-20 14:13:23.260', NULL, NULL, NULL, NULL, NULL, 1, NULL)
 INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues]) VALUES (2, N'SG:knowledge', 1, '2012-08-20 14:13:23.260', NULL, NULL, NULL, NULL, NULL, 1, NULL)
@@ -4000,6 +4313,9 @@ INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTi
 INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues]) VALUES (18, N'SG:discernment', 1, '2012-05-21 05:37:36.210', NULL, NULL, NULL, NULL, NULL, 1, NULL)
 INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues]) VALUES (138, N'SG:giving', 1, '2012-05-21 05:36:17.693', NULL, NULL, NULL, NULL, NULL, 1, NULL)
 INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues]) VALUES (138, N'SG:mercy', 1, '2012-05-21 05:36:17.693', NULL, NULL, NULL, NULL, NULL, 1, NULL)
+PRINT(N'Operation applied to 19 rows out of 19')
+
+PRINT(N'Add row to [dbo].[RecReg]')
 SET IDENTITY_INSERT [dbo].[RecReg] ON
 INSERT INTO [dbo].[RecReg] ([Id], [PeopleId], [ImgId], [IsDocument], [ActiveInAnotherChurch], [ShirtSize], [MedAllergy], [email], [MedicalDescription], [fname], [mname], [coaching], [member], [emcontact], [emphone], [doctor], [docphone], [insurance], [policy], [Comments], [Tylenol], [Advil], [Maalox], [Robitussin]) VALUES (1, 64, NULL, NULL, 1, N'Y M', 1, NULL, N'peanuts', N'Jackson Eaton', N'Cindy Eaton', NULL, 0, N'Kathy Long', N'555-6677', N'Dr. Smith', N'555-9988', N'Blue Cross', N'1234', N'Miscellaneous Groups:Camps and Special Events - Children''s Camp
 May 29 2011 8:22 PM
@@ -4011,10 +4327,15 @@ karen@bvcms.com
 -------------
 ', 1, 1, 1, 1)
 SET IDENTITY_INSERT [dbo].[RecReg] OFF
+
+PRINT(N'Add rows to [dbo].[RelatedFamilies]')
 INSERT INTO [dbo].[RelatedFamilies] ([FamilyId], [RelatedFamilyId], [CreatedBy], [CreatedDate], [FamilyRelationshipDesc], [ModifiedBy], [ModifiedDate]) VALUES (4, 14, 3, '2011-06-19 18:39:55.223', N'Sherry Murphy is the daughter of Rosemary Alston.', NULL, NULL)
 INSERT INTO [dbo].[RelatedFamilies] ([FamilyId], [RelatedFamilyId], [CreatedBy], [CreatedDate], [FamilyRelationshipDesc], [ModifiedBy], [ModifiedDate]) VALUES (11, 28, 3, '2011-06-19 18:41:54.393', N'Benton Briggs is the cousin of Johnny Miller.', NULL, NULL)
 INSERT INTO [dbo].[RelatedFamilies] ([FamilyId], [RelatedFamilyId], [CreatedBy], [CreatedDate], [FamilyRelationshipDesc], [ModifiedBy], [ModifiedDate]) VALUES (21, 32, 3, '2011-06-19 18:38:11.247', N'Cheryl Horvath and Mel Anderson are sisters.', NULL, NULL)
 INSERT INTO [dbo].[RelatedFamilies] ([FamilyId], [RelatedFamilyId], [CreatedBy], [CreatedDate], [FamilyRelationshipDesc], [ModifiedBy], [ModifiedDate]) VALUES (63, 43, 3, '2011-06-19 18:44:45.717', N'Caryn Coffey and Reta Abrams are step-sisters.', NULL, NULL)
+PRINT(N'Operation applied to 4 rows out of 4')
+
+PRINT(N'Add rows to [dbo].[UserRole]')
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (1, 1)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (1, 2)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (1, 3)
@@ -4046,105 +4367,150 @@ INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 9)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 11)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 12)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 25)
+PRINT(N'Operation applied to 31 rows out of 31')
+
+PRINT(N'Add rows to [dbo].[Users]')
 SET IDENTITY_INSERT [dbo].[Users] ON
-INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (1, 1, N'Admin', NULL, N'2352354235', NULL, NULL, 1, '2016-04-07 10:10:04.790', NULL, '2016-04-07 10:09:40.130', '2009-05-05 22:46:43.890', 0, '2016-04-07 10:09:39.990', 0, '2016-04-07 09:17:52.163', 0, NULL, NULL, NULL, 0, N'testdb.bvcms.com', N'bvcms', N'The Admin', N'Admin, The', NULL, NULL, '2016-04-08 10:03:26.053')
+INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (1, 1, N'Admin', NULL, N'2352354235', NULL, NULL, 1, '2016-09-30 16:48:10.320', NULL, '2016-04-07 10:09:40.130', '2009-05-05 22:46:43.890', 0, '2016-04-07 10:09:39.990', 1, '2016-09-30 16:47:22.923', 0, NULL, NULL, NULL, 1, N'testdb.bvcms.com', N'bvcms', N'The Admin', N'Admin, The', NULL, NULL, '2016-04-08 10:03:26.053')
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (2, 2, N'david', N'', N'uNVML/ZamnY7YdE1NXvMHPIznic=', NULL, NULL, 1, '2015-07-12 10:05:09.707', '2015-07-12 10:04:58.520', '2013-09-20 22:45:26.960', '2010-10-30 15:23:25.763', 0, '2013-09-20 22:45:26.880', 0, '2015-02-28 08:18:17.550', 0, '2010-10-30 15:23:25.763', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'David Carroll', N'Carroll, David', NULL, NULL, '2013-09-21 22:45:01.070')
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (3, 3, N'karenw', N'', N'2352354235', NULL, NULL, 1, '2011-09-01 15:29:59.107', NULL, '2010-10-30 15:29:49.930', '2010-10-30 15:29:25.757', 0, '2010-10-30 15:29:49.860', 0, '2010-10-30 15:29:25.757', 0, '2010-10-30 15:29:25.757', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'Karen Worrell', N'Worrell, Karen', NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Users] OFF
-ALTER TABLE [dbo].[Users] ADD CONSTRAINT [FK_Users_People] FOREIGN KEY ([PeopleId]) REFERENCES [dbo].[People] ([PeopleId])
-ALTER TABLE [dbo].[UserRole] ADD CONSTRAINT [FK_UserRole_Roles] FOREIGN KEY ([RoleId]) REFERENCES [dbo].[Roles] ([RoleId])
-ALTER TABLE [dbo].[UserRole] ADD CONSTRAINT [FK_UserRole_Users] FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users] ([UserId])
-ALTER TABLE [dbo].[RelatedFamilies] WITH NOCHECK ADD CONSTRAINT [RelatedFamilies1__RelatedFamily1] FOREIGN KEY ([FamilyId]) REFERENCES [dbo].[Families] ([FamilyId])
-ALTER TABLE [dbo].[RelatedFamilies] WITH NOCHECK ADD CONSTRAINT [RelatedFamilies2__RelatedFamily2] FOREIGN KEY ([RelatedFamilyId]) REFERENCES [dbo].[Families] ([FamilyId])
-ALTER TABLE [dbo].[RecReg] ADD CONSTRAINT [FK_RecReg_People] FOREIGN KEY ([PeopleId]) REFERENCES [dbo].[People] ([PeopleId])
-ALTER TABLE [dbo].[PeopleExtra] ADD CONSTRAINT [FK_PeopleExtra_People] FOREIGN KEY ([PeopleId]) REFERENCES [dbo].[People] ([PeopleId])
-ALTER TABLE [dbo].[People] ADD CONSTRAINT [FK_People_BaptismStatus] FOREIGN KEY ([BaptismStatusId]) REFERENCES [lookup].[BaptismStatus] ([Id])
-ALTER TABLE [dbo].[People] ADD CONSTRAINT [FK_People_BaptismType] FOREIGN KEY ([BaptismTypeId]) REFERENCES [lookup].[BaptismType] ([Id])
-ALTER TABLE [dbo].[People] ADD CONSTRAINT [BFMembers__BFClass] FOREIGN KEY ([BibleFellowshipClassId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
-ALTER TABLE [dbo].[People] ADD CONSTRAINT [FK_People_Campus] FOREIGN KEY ([CampusId]) REFERENCES [lookup].[Campus] ([Id])
-ALTER TABLE [dbo].[People] ADD CONSTRAINT [StmtPeople__ContributionStatementOption] FOREIGN KEY ([ContributionOptionsId]) REFERENCES [lookup].[EnvelopeOption] ([Id])
-ALTER TABLE [dbo].[People] ADD CONSTRAINT [FK_People_DecisionType] FOREIGN KEY ([DecisionTypeId]) REFERENCES [lookup].[DecisionType] ([Id])
-ALTER TABLE [dbo].[People] ADD CONSTRAINT [FK_People_DropType] FOREIGN KEY ([DropCodeId]) REFERENCES [lookup].[DropType] ([Id])
-ALTER TABLE [dbo].[People] ADD CONSTRAINT [FK_People_EntryPoint] FOREIGN KEY ([EntryPointId]) REFERENCES [lookup].[EntryPoint] ([Id])
-ALTER TABLE [dbo].[People] ADD CONSTRAINT [EnvPeople__EnvelopeOption] FOREIGN KEY ([EnvelopeOptionsId]) REFERENCES [lookup].[EnvelopeOption] ([Id])
-ALTER TABLE [dbo].[People] ADD CONSTRAINT [FK_People_Families] FOREIGN KEY ([FamilyId]) REFERENCES [dbo].[Families] ([FamilyId])
-ALTER TABLE [dbo].[People] ADD CONSTRAINT [FK_People_Gender] FOREIGN KEY ([GenderId]) REFERENCES [lookup].[Gender] ([Id])
-ALTER TABLE [dbo].[People] ADD CONSTRAINT [FK_People_InterestPoint] FOREIGN KEY ([InterestPointId]) REFERENCES [lookup].[InterestPoint] ([Id])
-ALTER TABLE [dbo].[People] ADD CONSTRAINT [FK_People_JoinType] FOREIGN KEY ([JoinCodeId]) REFERENCES [lookup].[JoinType] ([Id])
-ALTER TABLE [dbo].[People] ADD CONSTRAINT [FK_People_MemberLetterStatus] FOREIGN KEY ([LetterStatusId]) REFERENCES [lookup].[MemberLetterStatus] ([Id])
-ALTER TABLE [dbo].[People] ADD CONSTRAINT [FK_People_MaritalStatus] FOREIGN KEY ([MaritalStatusId]) REFERENCES [lookup].[MaritalStatus] ([Id])
-ALTER TABLE [dbo].[People] ADD CONSTRAINT [FK_People_MemberStatus] FOREIGN KEY ([MemberStatusId]) REFERENCES [lookup].[MemberStatus] ([Id])
-ALTER TABLE [dbo].[People] ADD CONSTRAINT [FK_People_DiscoveryClassStatus] FOREIGN KEY ([NewMemberClassStatusId]) REFERENCES [lookup].[NewMemberClassStatus] ([Id])
-ALTER TABLE [dbo].[People] ADD CONSTRAINT [FK_People_Origin] FOREIGN KEY ([OriginId]) REFERENCES [lookup].[Origin] ([Id])
-ALTER TABLE [dbo].[People] ADD CONSTRAINT [FK_PEOPLE_TBL_Picture] FOREIGN KEY ([PictureId]) REFERENCES [dbo].[Picture] ([PictureId])
-ALTER TABLE [dbo].[People] ADD CONSTRAINT [FK_People_FamilyPosition] FOREIGN KEY ([PositionInFamilyId]) REFERENCES [lookup].[FamilyPosition] ([Id])
-ALTER TABLE [dbo].[People] ADD CONSTRAINT [ResCodePeople__ResidentCode] FOREIGN KEY ([ResCodeId]) REFERENCES [lookup].[ResidentCode] ([Id])
-ALTER TABLE [dbo].[OrgMemMemTags] ADD CONSTRAINT [FK_OrgMemMemTags_MemberTags] FOREIGN KEY ([MemberTagId]) REFERENCES [dbo].[MemberTags] ([Id])
-ALTER TABLE [dbo].[OrgMemMemTags] ADD CONSTRAINT [FK_OrgMemMemTags_OrganizationMembers] FOREIGN KEY ([OrgId], [PeopleId]) REFERENCES [dbo].[OrganizationMembers] ([OrganizationId], [PeopleId])
-ALTER TABLE [dbo].[OrganizationMembers] WITH NOCHECK ADD CONSTRAINT [FK_ORGANIZATION_MEMBERS_TBL_MemberType] FOREIGN KEY ([MemberTypeId]) REFERENCES [lookup].[MemberType] ([Id])
-ALTER TABLE [dbo].[OrganizationMembers] WITH NOCHECK ADD CONSTRAINT [ORGANIZATION_MEMBERS_ORG_FK] FOREIGN KEY ([OrganizationId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
-ALTER TABLE [dbo].[OrganizationMembers] WITH NOCHECK ADD CONSTRAINT [ORGANIZATION_MEMBERS_PPL_FK] FOREIGN KEY ([PeopleId]) REFERENCES [dbo].[People] ([PeopleId]) ON DELETE CASCADE
-ALTER TABLE [dbo].[OrganizationMembers] ADD CONSTRAINT [FK_OrganizationMembers_RegistrationData] FOREIGN KEY ([RegistrationDataId]) REFERENCES [dbo].[RegistrationData] ([Id])
-ALTER TABLE [dbo].[OrganizationMembers] ADD CONSTRAINT [FK_OrganizationMembers_Transaction] FOREIGN KEY ([TranId]) REFERENCES [dbo].[Transaction] ([Id])
-ALTER TABLE [dbo].[Families] ADD CONSTRAINT [FamiliesHeaded__HeadOfHousehold] FOREIGN KEY ([HeadOfHouseholdId]) REFERENCES [dbo].[People] ([PeopleId])
-ALTER TABLE [dbo].[Families] ADD CONSTRAINT [FamiliesHeaded2__HeadOfHouseholdSpouse] FOREIGN KEY ([HeadOfHouseholdSpouseId]) REFERENCES [dbo].[People] ([PeopleId])
-ALTER TABLE [dbo].[Families] ADD CONSTRAINT [FK_Families_Picture] FOREIGN KEY ([PictureId]) REFERENCES [dbo].[Picture] ([PictureId])
-ALTER TABLE [dbo].[Families] ADD CONSTRAINT [ResCodeFamilies__ResidentCode] FOREIGN KEY ([ResCodeId]) REFERENCES [lookup].[ResidentCode] ([Id])
-ALTER TABLE [dbo].[EnrollmentTransaction] ADD CONSTRAINT [DescTransactions__FirstTransaction] FOREIGN KEY ([EnrollmentTransactionId]) REFERENCES [dbo].[EnrollmentTransaction] ([TransactionId])
-ALTER TABLE [dbo].[EnrollmentTransaction] ADD CONSTRAINT [FK_ENROLLMENT_TRANSACTION_TBL_MemberType] FOREIGN KEY ([MemberTypeId]) REFERENCES [lookup].[MemberType] ([Id])
-ALTER TABLE [dbo].[EnrollmentTransaction] ADD CONSTRAINT [ENROLLMENT_TRANSACTION_ORG_FK] FOREIGN KEY ([OrganizationId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
-ALTER TABLE [dbo].[EnrollmentTransaction] ADD CONSTRAINT [ENROLLMENT_TRANSACTION_PPL_FK] FOREIGN KEY ([PeopleId]) REFERENCES [dbo].[People] ([PeopleId])
-ALTER TABLE [dbo].[Attend] WITH NOCHECK ADD CONSTRAINT [FK_AttendWithAbsents_TBL_AttendType] FOREIGN KEY ([AttendanceTypeId]) REFERENCES [lookup].[AttendType] ([Id])
-ALTER TABLE [dbo].[Attend] ADD CONSTRAINT [FK_AttendWithAbsents_TBL_MEETINGS_TBL] FOREIGN KEY ([MeetingId]) REFERENCES [dbo].[Meetings] ([MeetingId])
-ALTER TABLE [dbo].[Attend] WITH NOCHECK ADD CONSTRAINT [FK_Attend_MemberType] FOREIGN KEY ([MemberTypeId]) REFERENCES [lookup].[MemberType] ([Id])
-ALTER TABLE [dbo].[Attend] WITH NOCHECK ADD CONSTRAINT [FK_AttendWithAbsents_TBL_ORGANIZATIONS_TBL] FOREIGN KEY ([OrganizationId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
-ALTER TABLE [dbo].[Attend] ADD CONSTRAINT [FK_AttendWithAbsents_TBL_PEOPLE_TBL] FOREIGN KEY ([PeopleId]) REFERENCES [dbo].[People] ([PeopleId])
-ALTER TABLE [dbo].[ApiSession] ADD CONSTRAINT [FK_Users_ApiSession] FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users] ([UserId])
-ALTER TABLE [dbo].[OrgSchedule] ADD CONSTRAINT [FK_OrgSchedule_Organizations] FOREIGN KEY ([OrganizationId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
-ALTER TABLE [dbo].[MemberTags] WITH NOCHECK ADD CONSTRAINT [FK_MemberTags_Organizations] FOREIGN KEY ([OrgId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
-ALTER TABLE [dbo].[Meetings] WITH NOCHECK ADD CONSTRAINT [FK_Meetings_AttendCredit] FOREIGN KEY ([AttendCreditId]) REFERENCES [lookup].[AttendCredit] ([Id])
-ALTER TABLE [dbo].[Meetings] WITH NOCHECK ADD CONSTRAINT [FK_MEETINGS_TBL_ORGANIZATIONS_TBL] FOREIGN KEY ([OrganizationId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
-ALTER TABLE [dbo].[MeetingExtra] WITH NOCHECK ADD CONSTRAINT [FK_MeetingExtra_Meetings] FOREIGN KEY ([MeetingId]) REFERENCES [dbo].[Meetings] ([MeetingId])
-ALTER TABLE [dbo].[VolRequest] WITH NOCHECK ADD CONSTRAINT [VolRequests__Meeting] FOREIGN KEY ([MeetingId]) REFERENCES [dbo].[Meetings] ([MeetingId])
-ALTER TABLE [dbo].[DivOrg] ADD CONSTRAINT [FK_DivOrg_Division] FOREIGN KEY ([DivId]) REFERENCES [dbo].[Division] ([Id])
-ALTER TABLE [dbo].[DivOrg] ADD CONSTRAINT [FK_DivOrg_Organizations] FOREIGN KEY ([OrgId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
-ALTER TABLE [dbo].[ProgDiv] ADD CONSTRAINT [FK_ProgDiv_Division] FOREIGN KEY ([DivId]) REFERENCES [dbo].[Division] ([Id])
-ALTER TABLE [dbo].[ProgDiv] ADD CONSTRAINT [FK_ProgDiv_Program] FOREIGN KEY ([ProgId]) REFERENCES [dbo].[Program] ([Id])
-ALTER TABLE [dbo].[Organizations] ADD CONSTRAINT [FK_Organizations_Campus] FOREIGN KEY ([CampusId]) REFERENCES [lookup].[Campus] ([Id])
-ALTER TABLE [dbo].[Organizations] ADD CONSTRAINT [FK_Organizations_Division] FOREIGN KEY ([DivisionId]) REFERENCES [dbo].[Division] ([Id])
-ALTER TABLE [dbo].[Organizations] ADD CONSTRAINT [FK_ORGANIZATIONS_TBL_EntryPoint] FOREIGN KEY ([EntryPointId]) REFERENCES [lookup].[EntryPoint] ([Id])
-ALTER TABLE [dbo].[Organizations] ADD CONSTRAINT [FK_Organizations_Gender] FOREIGN KEY ([GenderId]) REFERENCES [lookup].[Gender] ([Id])
-ALTER TABLE [dbo].[Organizations] ADD CONSTRAINT [FK_ORGANIZATIONS_TBL_OrganizationStatus] FOREIGN KEY ([OrganizationStatusId]) REFERENCES [lookup].[OrganizationStatus] ([Id])
-ALTER TABLE [dbo].[Organizations] ADD CONSTRAINT [FK_Organizations_OrganizationType] FOREIGN KEY ([OrganizationTypeId]) REFERENCES [lookup].[OrganizationType] ([Id])
-ALTER TABLE [dbo].[Organizations] WITH NOCHECK ADD CONSTRAINT [ChildOrgs__ParentOrg] FOREIGN KEY ([ParentOrgId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
-ALTER TABLE [dbo].[Contact] WITH NOCHECK ADD CONSTRAINT [contactsHad__organization] FOREIGN KEY ([OrganizationId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
-ALTER TABLE [dbo].[Coupons] WITH NOCHECK ADD CONSTRAINT [FK_Coupons_Organizations] FOREIGN KEY ([OrgId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
-ALTER TABLE [dbo].[GoerSenderAmounts] WITH NOCHECK ADD CONSTRAINT [FK_GoerSenderAmounts_Organizations] FOREIGN KEY ([OrgId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
-ALTER TABLE [dbo].[OrganizationExtra] WITH NOCHECK ADD CONSTRAINT [FK_OrganizationExtra_Organizations] FOREIGN KEY ([OrganizationId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
-ALTER TABLE [dbo].[OrgMemberExtra] WITH NOCHECK ADD CONSTRAINT [FK_OrgMemberExtra_Organizations] FOREIGN KEY ([OrganizationId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
-ALTER TABLE [dbo].[Resource] WITH NOCHECK ADD CONSTRAINT [FK_Resource_Organization] FOREIGN KEY ([OrganizationId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
-ALTER TABLE [lookup].[MemberType] ADD CONSTRAINT [FK_MemberType_AttendType] FOREIGN KEY ([AttendanceTypeId]) REFERENCES [lookup].[AttendType] ([Id])
-ALTER TABLE [dbo].[Division] ADD CONSTRAINT [FK_Division_Program] FOREIGN KEY ([ProgId]) REFERENCES [dbo].[Program] ([Id])
-ALTER TABLE [dbo].[Coupons] WITH NOCHECK ADD CONSTRAINT [FK_Coupons_Division] FOREIGN KEY ([DivId]) REFERENCES [dbo].[Division] ([Id])
-ALTER TABLE [dbo].[Promotion] WITH NOCHECK ADD CONSTRAINT [FromPromotions__FromDivision] FOREIGN KEY ([FromDivId]) REFERENCES [dbo].[Division] ([Id])
-ALTER TABLE [dbo].[Promotion] WITH NOCHECK ADD CONSTRAINT [ToPromotions__ToDivision] FOREIGN KEY ([ToDivId]) REFERENCES [dbo].[Division] ([Id])
-ALTER TABLE [dbo].[Resource] WITH NOCHECK ADD CONSTRAINT [FK_Resource_Division] FOREIGN KEY ([DivisionId]) REFERENCES [dbo].[Division] ([Id])
-ALTER TABLE [dbo].[VoluteerApprovalIds] WITH NOCHECK ADD CONSTRAINT [FK_VoluteerApprovalIds_VolunteerCodes] FOREIGN KEY ([ApprovalId]) REFERENCES [lookup].[VolunteerCodes] ([Id])
-ALTER TABLE [dbo].[Volunteer] WITH NOCHECK ADD CONSTRAINT [StatusMvrId__StatusMvr] FOREIGN KEY ([MVRStatusId]) REFERENCES [lookup].[VolApplicationStatus] ([Id])
-ALTER TABLE [dbo].[Volunteer] WITH NOCHECK ADD CONSTRAINT [FK_Volunteer_VolApplicationStatus] FOREIGN KEY ([StatusId]) REFERENCES [lookup].[VolApplicationStatus] ([Id])
-ALTER TABLE [dbo].[Task] WITH NOCHECK ADD CONSTRAINT [FK_Task_TaskStatus] FOREIGN KEY ([StatusId]) REFERENCES [lookup].[TaskStatus] ([Id])
-ALTER TABLE [dbo].[Zips] WITH NOCHECK ADD CONSTRAINT [FK_Zips_ResidentCode] FOREIGN KEY ([MetroMarginalCode]) REFERENCES [lookup].[ResidentCode] ([Id])
-ALTER TABLE [dbo].[Contribution] WITH NOCHECK ADD CONSTRAINT [FK_Contribution_ContributionType] FOREIGN KEY ([ContributionTypeId]) REFERENCES [lookup].[ContributionType] ([Id])
-ALTER TABLE [dbo].[Contribution] WITH NOCHECK ADD CONSTRAINT [FK_Contribution_ContributionStatus] FOREIGN KEY ([ContributionStatusId]) REFERENCES [lookup].[ContributionStatus] ([Id])
-ALTER TABLE [dbo].[Contact] WITH NOCHECK ADD CONSTRAINT [FK_Contacts_ContactTypes] FOREIGN KEY ([ContactTypeId]) REFERENCES [lookup].[ContactType] ([Id])
-ALTER TABLE [dbo].[Contact] WITH NOCHECK ADD CONSTRAINT [FK_NewContacts_ContactReasons] FOREIGN KEY ([ContactReasonId]) REFERENCES [lookup].[ContactReason] ([Id])
-ALTER TABLE [dbo].[Resource] WITH NOCHECK ADD CONSTRAINT [FK_Resource_Campus] FOREIGN KEY ([CampusId]) REFERENCES [lookup].[Campus] ([Id])
-ALTER TABLE [dbo].[BundleHeader] WITH NOCHECK ADD CONSTRAINT [FK_BUNDLE_HEADER_TBL_BundleStatusTypes] FOREIGN KEY ([BundleStatusId]) REFERENCES [lookup].[BundleStatusTypes] ([Id])
-ALTER TABLE [dbo].[BundleHeader] WITH NOCHECK ADD CONSTRAINT [FK_BUNDLE_HEADER_TBL_BundleHeaderTypes] FOREIGN KEY ([BundleHeaderTypeId]) REFERENCES [lookup].[BundleHeaderTypes] ([Id])
-ALTER TABLE [dbo].[Contribution] WITH NOCHECK ADD CONSTRAINT [FK_Contribution_ExtraData] FOREIGN KEY ([ExtraDataId]) REFERENCES [dbo].[ExtraData] ([Id])
-ALTER TABLE [dbo].[BundleHeader] WITH NOCHECK ADD CONSTRAINT [BundleHeaders__Fund] FOREIGN KEY ([FundId]) REFERENCES [dbo].[ContributionFund] ([FundId])
-ALTER TABLE [dbo].[Contribution] WITH NOCHECK ADD CONSTRAINT [FK_Contribution_ContributionFund] FOREIGN KEY ([FundId]) REFERENCES [dbo].[ContributionFund] ([FundId])
-ALTER TABLE [dbo].[RecurringAmounts] WITH NOCHECK ADD CONSTRAINT [FK_RecurringAmounts_ContributionFund] FOREIGN KEY ([FundId]) REFERENCES [dbo].[ContributionFund] ([FundId])
-ALTER TABLE [dbo].[ContentKeyWords] WITH NOCHECK ADD CONSTRAINT [FK_ContentKeyWords_Content] FOREIGN KEY ([Id]) REFERENCES [dbo].[Content] ([Id])
+PRINT(N'Operation applied to 3 rows out of 3')
+
+PRINT(N'Add constraints to [dbo].[Users]')
+ALTER TABLE [dbo].[Users] WITH CHECK CHECK CONSTRAINT [FK_Users_People]
+
+PRINT(N'Add constraints to [dbo].[UserRole]')
+ALTER TABLE [dbo].[UserRole] WITH CHECK CHECK CONSTRAINT [FK_UserRole_Roles]
+ALTER TABLE [dbo].[UserRole] WITH CHECK CHECK CONSTRAINT [FK_UserRole_Users]
+
+PRINT(N'Add constraints to [dbo].[RelatedFamilies]')
+ALTER TABLE [dbo].[RelatedFamilies] CHECK CONSTRAINT [RelatedFamilies1__RelatedFamily1]
+ALTER TABLE [dbo].[RelatedFamilies] CHECK CONSTRAINT [RelatedFamilies2__RelatedFamily2]
+
+PRINT(N'Add constraints to [dbo].[RecReg]')
+ALTER TABLE [dbo].[RecReg] WITH CHECK CHECK CONSTRAINT [FK_RecReg_People]
+
+PRINT(N'Add constraints to [dbo].[PeopleExtra]')
+ALTER TABLE [dbo].[PeopleExtra] WITH CHECK CHECK CONSTRAINT [FK_PeopleExtra_People]
+
+PRINT(N'Add constraints to [dbo].[People]')
+ALTER TABLE [dbo].[People] WITH CHECK CHECK CONSTRAINT [BFMembers__BFClass]
+ALTER TABLE [dbo].[People] WITH CHECK CHECK CONSTRAINT [EnvPeople__EnvelopeOption]
+ALTER TABLE [dbo].[People] WITH CHECK CHECK CONSTRAINT [FK_People_BaptismStatus]
+ALTER TABLE [dbo].[People] WITH CHECK CHECK CONSTRAINT [FK_People_BaptismType]
+ALTER TABLE [dbo].[People] WITH CHECK CHECK CONSTRAINT [FK_People_Campus]
+ALTER TABLE [dbo].[People] WITH CHECK CHECK CONSTRAINT [FK_People_DecisionType]
+ALTER TABLE [dbo].[People] WITH CHECK CHECK CONSTRAINT [FK_People_DiscoveryClassStatus]
+ALTER TABLE [dbo].[People] WITH CHECK CHECK CONSTRAINT [FK_People_DropType]
+ALTER TABLE [dbo].[People] WITH CHECK CHECK CONSTRAINT [FK_People_EntryPoint]
+ALTER TABLE [dbo].[People] WITH CHECK CHECK CONSTRAINT [FK_People_Families]
+ALTER TABLE [dbo].[People] WITH CHECK CHECK CONSTRAINT [FK_People_FamilyPosition]
+ALTER TABLE [dbo].[People] WITH CHECK CHECK CONSTRAINT [FK_People_Gender]
+ALTER TABLE [dbo].[People] WITH CHECK CHECK CONSTRAINT [FK_People_InterestPoint]
+ALTER TABLE [dbo].[People] WITH CHECK CHECK CONSTRAINT [FK_People_JoinType]
+ALTER TABLE [dbo].[People] WITH CHECK CHECK CONSTRAINT [FK_People_MaritalStatus]
+ALTER TABLE [dbo].[People] WITH CHECK CHECK CONSTRAINT [FK_People_MemberLetterStatus]
+ALTER TABLE [dbo].[People] WITH CHECK CHECK CONSTRAINT [FK_People_MemberStatus]
+ALTER TABLE [dbo].[People] WITH CHECK CHECK CONSTRAINT [FK_People_Origin]
+ALTER TABLE [dbo].[People] WITH CHECK CHECK CONSTRAINT [FK_PEOPLE_TBL_Picture]
+ALTER TABLE [dbo].[People] WITH CHECK CHECK CONSTRAINT [ResCodePeople__ResidentCode]
+ALTER TABLE [dbo].[People] WITH CHECK CHECK CONSTRAINT [StmtPeople__ContributionStatementOption]
+
+PRINT(N'Add constraints to [dbo].[OrgMemMemTags]')
+ALTER TABLE [dbo].[OrgMemMemTags] WITH CHECK CHECK CONSTRAINT [FK_OrgMemMemTags_MemberTags]
+ALTER TABLE [dbo].[OrgMemMemTags] WITH CHECK CHECK CONSTRAINT [FK_OrgMemMemTags_OrganizationMembers]
+
+PRINT(N'Add constraints to [dbo].[OrganizationMembers]')
+ALTER TABLE [dbo].[OrganizationMembers] CHECK CONSTRAINT [FK_ORGANIZATION_MEMBERS_TBL_MemberType]
+ALTER TABLE [dbo].[OrganizationMembers] WITH CHECK CHECK CONSTRAINT [FK_OrganizationMembers_RegistrationData]
+ALTER TABLE [dbo].[OrganizationMembers] WITH CHECK CHECK CONSTRAINT [FK_OrganizationMembers_Transaction]
+ALTER TABLE [dbo].[OrganizationMembers] CHECK CONSTRAINT [ORGANIZATION_MEMBERS_ORG_FK]
+ALTER TABLE [dbo].[OrganizationMembers] CHECK CONSTRAINT [ORGANIZATION_MEMBERS_PPL_FK]
+
+PRINT(N'Add constraints to [dbo].[Families]')
+ALTER TABLE [dbo].[Families] WITH CHECK CHECK CONSTRAINT [FamiliesHeaded__HeadOfHousehold]
+ALTER TABLE [dbo].[Families] WITH CHECK CHECK CONSTRAINT [FamiliesHeaded2__HeadOfHouseholdSpouse]
+ALTER TABLE [dbo].[Families] WITH CHECK CHECK CONSTRAINT [FK_Families_Picture]
+ALTER TABLE [dbo].[Families] WITH CHECK CHECK CONSTRAINT [ResCodeFamilies__ResidentCode]
+
+PRINT(N'Add constraints to [dbo].[EnrollmentTransaction]')
+ALTER TABLE [dbo].[EnrollmentTransaction] WITH CHECK CHECK CONSTRAINT [DescTransactions__FirstTransaction]
+ALTER TABLE [dbo].[EnrollmentTransaction] WITH CHECK CHECK CONSTRAINT [ENROLLMENT_TRANSACTION_ORG_FK]
+ALTER TABLE [dbo].[EnrollmentTransaction] WITH CHECK CHECK CONSTRAINT [ENROLLMENT_TRANSACTION_PPL_FK]
+ALTER TABLE [dbo].[EnrollmentTransaction] WITH CHECK CHECK CONSTRAINT [FK_ENROLLMENT_TRANSACTION_TBL_MemberType]
+
+PRINT(N'Add constraints to [dbo].[Attend]')
+ALTER TABLE [dbo].[Attend] CHECK CONSTRAINT [FK_Attend_MemberType]
+ALTER TABLE [dbo].[Attend] CHECK CONSTRAINT [FK_AttendWithAbsents_TBL_AttendType]
+ALTER TABLE [dbo].[Attend] WITH CHECK CHECK CONSTRAINT [FK_AttendWithAbsents_TBL_MEETINGS_TBL]
+ALTER TABLE [dbo].[Attend] CHECK CONSTRAINT [FK_AttendWithAbsents_TBL_ORGANIZATIONS_TBL]
+ALTER TABLE [dbo].[Attend] WITH CHECK CHECK CONSTRAINT [FK_AttendWithAbsents_TBL_PEOPLE_TBL]
+
+PRINT(N'Add constraints to [dbo].[ApiSession]')
+ALTER TABLE [dbo].[ApiSession] WITH CHECK CHECK CONSTRAINT [FK_Users_ApiSession]
+
+PRINT(N'Add constraints to [dbo].[OrgSchedule]')
+ALTER TABLE [dbo].[OrgSchedule] WITH CHECK CHECK CONSTRAINT [FK_OrgSchedule_Organizations]
+
+PRINT(N'Add constraints to [dbo].[MemberTags]')
+ALTER TABLE [dbo].[MemberTags] CHECK CONSTRAINT [FK_MemberTags_Organizations]
+
+PRINT(N'Add constraints to [dbo].[Meetings]')
+ALTER TABLE [dbo].[Meetings] CHECK CONSTRAINT [FK_Meetings_AttendCredit]
+ALTER TABLE [dbo].[Meetings] CHECK CONSTRAINT [FK_MEETINGS_TBL_ORGANIZATIONS_TBL]
+ALTER TABLE [dbo].[MeetingExtra] WITH CHECK CHECK CONSTRAINT [FK_MeetingExtra_Meetings]
+ALTER TABLE [dbo].[VolRequest] WITH CHECK CHECK CONSTRAINT [VolRequests__Meeting]
+
+PRINT(N'Add constraints to [dbo].[DivOrg]')
+ALTER TABLE [dbo].[DivOrg] WITH CHECK CHECK CONSTRAINT [FK_DivOrg_Division]
+ALTER TABLE [dbo].[DivOrg] WITH CHECK CHECK CONSTRAINT [FK_DivOrg_Organizations]
+
+PRINT(N'Add constraints to [dbo].[ProgDiv]')
+ALTER TABLE [dbo].[ProgDiv] WITH CHECK CHECK CONSTRAINT [FK_ProgDiv_Division]
+ALTER TABLE [dbo].[ProgDiv] WITH CHECK CHECK CONSTRAINT [FK_ProgDiv_Program]
+
+PRINT(N'Add constraints to [dbo].[Organizations]')
+ALTER TABLE [dbo].[Organizations] CHECK CONSTRAINT [ChildOrgs__ParentOrg]
+ALTER TABLE [dbo].[Organizations] WITH CHECK CHECK CONSTRAINT [FK_Organizations_Campus]
+ALTER TABLE [dbo].[Organizations] WITH CHECK CHECK CONSTRAINT [FK_Organizations_Division]
+ALTER TABLE [dbo].[Organizations] WITH CHECK CHECK CONSTRAINT [FK_Organizations_Gender]
+ALTER TABLE [dbo].[Organizations] WITH CHECK CHECK CONSTRAINT [FK_Organizations_OrganizationType]
+ALTER TABLE [dbo].[Organizations] WITH CHECK CHECK CONSTRAINT [FK_ORGANIZATIONS_TBL_EntryPoint]
+ALTER TABLE [dbo].[Organizations] WITH CHECK CHECK CONSTRAINT [FK_ORGANIZATIONS_TBL_OrganizationStatus]
+ALTER TABLE [dbo].[Contact] WITH CHECK CHECK CONSTRAINT [contactsHad__organization]
+ALTER TABLE [dbo].[Coupons] CHECK CONSTRAINT [FK_Coupons_Organizations]
+ALTER TABLE [dbo].[GoerSenderAmounts] WITH CHECK CHECK CONSTRAINT [FK_GoerSenderAmounts_Organizations]
+ALTER TABLE [dbo].[OrganizationExtra] CHECK CONSTRAINT [FK_OrganizationExtra_Organizations]
+ALTER TABLE [dbo].[OrgMemberExtra] WITH CHECK CHECK CONSTRAINT [FK_OrgMemberExtra_Organizations]
+ALTER TABLE [dbo].[Resource] WITH CHECK CHECK CONSTRAINT [FK_Resource_Organization]
+ALTER TABLE [dbo].[ResourceOrganization] WITH CHECK CHECK CONSTRAINT [FK_ResourceOrganization_Organizations]
+
+PRINT(N'Add constraints to [lookup].[MemberType]')
+ALTER TABLE [lookup].[MemberType] WITH CHECK CHECK CONSTRAINT [FK_MemberType_AttendType]
+
+PRINT(N'Add constraints to [dbo].[Division]')
+ALTER TABLE [dbo].[Division] WITH CHECK CHECK CONSTRAINT [FK_Division_Program]
+ALTER TABLE [dbo].[Coupons] CHECK CONSTRAINT [FK_Coupons_Division]
+ALTER TABLE [dbo].[Promotion] CHECK CONSTRAINT [FromPromotions__FromDivision]
+ALTER TABLE [dbo].[Promotion] CHECK CONSTRAINT [ToPromotions__ToDivision]
+ALTER TABLE [dbo].[Resource] WITH CHECK CHECK CONSTRAINT [FK_Resource_Division]
+ALTER TABLE [dbo].[VoluteerApprovalIds] CHECK CONSTRAINT [FK_VoluteerApprovalIds_VolunteerCodes]
+ALTER TABLE [dbo].[Volunteer] CHECK CONSTRAINT [FK_Volunteer_VolApplicationStatus]
+ALTER TABLE [dbo].[Volunteer] CHECK CONSTRAINT [StatusMvrId__StatusMvr]
+ALTER TABLE [dbo].[Task] CHECK CONSTRAINT [FK_Task_TaskStatus]
+ALTER TABLE [dbo].[Zips] CHECK CONSTRAINT [FK_Zips_ResidentCode]
+ALTER TABLE [dbo].[Contribution] CHECK CONSTRAINT [FK_Contribution_ContributionType]
+ALTER TABLE [dbo].[Contribution] CHECK CONSTRAINT [FK_Contribution_ContributionStatus]
+ALTER TABLE [dbo].[Contact] CHECK CONSTRAINT [FK_Contacts_ContactTypes]
+ALTER TABLE [dbo].[Contact] CHECK CONSTRAINT [FK_NewContacts_ContactReasons]
+ALTER TABLE [dbo].[Resource] WITH CHECK CHECK CONSTRAINT [FK_Resource_Campus]
+ALTER TABLE [dbo].[BundleHeader] CHECK CONSTRAINT [FK_BUNDLE_HEADER_TBL_BundleStatusTypes]
+ALTER TABLE [dbo].[BundleHeader] CHECK CONSTRAINT [FK_BUNDLE_HEADER_TBL_BundleHeaderTypes]
+ALTER TABLE [dbo].[Contribution] CHECK CONSTRAINT [FK_Contribution_ExtraData]
+ALTER TABLE [dbo].[BundleHeader] CHECK CONSTRAINT [BundleHeaders__Fund]
+ALTER TABLE [dbo].[Contribution] CHECK CONSTRAINT [FK_Contribution_ContributionFund]
+ALTER TABLE [dbo].[RecurringAmounts] CHECK CONSTRAINT [FK_RecurringAmounts_ContributionFund]
+ALTER TABLE [dbo].[ContentKeyWords] CHECK CONSTRAINT [FK_ContentKeyWords_Content]
 COMMIT TRANSACTION
 GO

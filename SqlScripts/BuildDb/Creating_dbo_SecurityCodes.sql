@@ -1,11 +1,9 @@
 CREATE TABLE [dbo].[SecurityCodes]
 (
 [Id] [int] NOT NULL IDENTITY(1, 1),
-[Code] [char] (4) NOT NULL,
+[Code] [char] (4) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
 [DateUsed] [datetime] NULL
 )
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

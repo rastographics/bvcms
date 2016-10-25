@@ -9,23 +9,21 @@ CREATE TABLE [dbo].[Task]
 [CreatedOn] [datetime] NOT NULL,
 [SourceContactId] [int] NULL,
 [CompletedContactId] [int] NULL,
-[Notes] [nvarchar] (max) NULL,
+[Notes] [nvarchar] (max) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 [ModifiedBy] [int] NULL,
 [ModifiedOn] [datetime] NULL,
-[Project] [nvarchar] (50) NULL,
+[Project] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 [Archive] [bit] NOT NULL CONSTRAINT [DF_Task_Archive] DEFAULT ((0)),
 [Priority] [int] NULL,
 [WhoId] [int] NULL,
 [Due] [datetime] NULL,
-[Location] [nvarchar] (50) NULL,
-[Description] [nvarchar] (100) NULL,
+[Location] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[Description] [nvarchar] (100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 [CompletedOn] [datetime] NULL,
 [ForceCompleteWContact] [bit] NULL,
 [OrginatorId] [int] NULL,
-[DeclineReason] [nvarchar] (max) NULL
+[DeclineReason] [nvarchar] (max) COLLATE SQL_Latin1_General_CP1_CI_AS NULL
 )
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

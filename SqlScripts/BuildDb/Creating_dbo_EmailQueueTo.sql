@@ -4,9 +4,9 @@ CREATE TABLE [dbo].[EmailQueueTo]
 [PeopleId] [int] NOT NULL,
 [OrgId] [int] NULL,
 [Sent] [datetime] NULL,
-[AddEmail] [nvarchar] (max) NULL,
+[AddEmail] [nvarchar] (max) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 [guid] [uniqueidentifier] NULL,
-[messageid] [nvarchar] (100) NULL,
+[messageid] [nvarchar] (100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 [GoerSupportId] [int] NULL,
 [Parent1] [int] NULL,
 [Parent2] [int] NULL,
@@ -18,10 +18,8 @@ CREATE TABLE [dbo].[EmailQueueTo]
 [Invalid] [bit] NULL,
 [BouncedAddress] [bit] NULL,
 [SpamReporting] [bit] NULL,
-[DomainFrom] [varchar] (30) NULL
+[DomainFrom] [varchar] (30) COLLATE SQL_Latin1_General_CP1_CI_AS NULL
 )
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

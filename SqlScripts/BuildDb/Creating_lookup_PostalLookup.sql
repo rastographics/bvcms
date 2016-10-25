@@ -1,14 +1,12 @@
 CREATE TABLE [lookup].[PostalLookup]
 (
-[PostalCode] [nvarchar] (15) NOT NULL,
-[CityName] [nvarchar] (20) NULL,
-[StateCode] [nvarchar] (20) NULL,
-[CountryName] [nvarchar] (30) NULL,
+[PostalCode] [nvarchar] (15) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+[CityName] [nvarchar] (20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[StateCode] [nvarchar] (20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[CountryName] [nvarchar] (30) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 [ResCodeId] [int] NULL,
 [Hardwired] [bit] NULL
 )
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

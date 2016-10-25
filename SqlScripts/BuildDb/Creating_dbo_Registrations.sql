@@ -42,7 +42,5 @@ LEFT JOIN dbo.Organizations o ON  xdata.value('(/OnlineRegModel/List/OnlineRegPe
 LEFT JOIN dbo.People pu ON xdata.value('(/OnlineRegModel/UserPeopleId)[1]', 'int') = pu.PeopleId
 )
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

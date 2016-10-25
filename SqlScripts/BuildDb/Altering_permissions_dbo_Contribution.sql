@@ -1,12 +1,17 @@
 DENY SELECT ON  [dbo].[Contribution] TO [ro-CMS_StarterDb]
 GO
-IF EXISTS (SELECT * FROM #tmpErrors) ROLLBACK TRANSACTION
+IF @@ERROR <> 0 SET NOEXEC ON
 GO
-IF @@TRANCOUNT>0 BEGIN
-PRINT 'The database update succeeded'
 COMMIT TRANSACTION
-END
-ELSE PRINT 'The database update failed'
 GO
-DROP TABLE #tmpErrors
+IF @@ERROR <> 0 SET NOEXEC ON
+GO
+DECLARE @Success AS BIT
+SET @Success = 1
+SET NOEXEC OFF
+IF (@Success = 1) PRINT 'The database update succeeded'
+ELSE BEGIN
+	IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION
+	PRINT 'The database update failed'
+END
 GO

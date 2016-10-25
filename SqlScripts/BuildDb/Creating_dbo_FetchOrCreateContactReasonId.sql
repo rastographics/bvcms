@@ -1,4 +1,4 @@
-CREATE PROC [dbo].FetchOrCreateContactReasonId(@reason VARCHAR(100), @rid INT OUTPUT)
+CREATE PROC [dbo].[FetchOrCreateContactReasonId](@reason VARCHAR(100), @rid INT OUTPUT)
 AS
 BEGIN
 	SELECT @rid = Id FROM lookup.ContactReason WHERE [Description] = @reason
@@ -9,7 +9,5 @@ BEGIN
 	END  
 END
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

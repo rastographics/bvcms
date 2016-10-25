@@ -1,3 +1,15 @@
+EXEC sp_addextendedproperty N'ReturnType', N'SecurityCode', 'SCHEMA', N'dbo', 'PROCEDURE', N'NextSecurityCode', NULL, NULL
+GO
+IF @@ERROR <> 0 SET NOEXEC ON
+GO
+EXEC sp_addextendedproperty N'ReturnType', N'TopGiver', 'SCHEMA', N'dbo', 'PROCEDURE', N'TopGivers', NULL, NULL
+GO
+IF @@ERROR <> 0 SET NOEXEC ON
+GO
+EXEC sp_addextendedproperty N'ReturnType', N'TopGiver', 'SCHEMA', N'dbo', 'PROCEDURE', N'TopPledgers', NULL, NULL
+GO
+IF @@ERROR <> 0 SET NOEXEC ON
+GO
 EXEC sp_addextendedproperty N'MS_DiagramPane1', N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
 Begin DesignProperties = 
    Begin PaneConfigurations = 
@@ -127,33 +139,11 @@ Begin DesignProperties =
 End
 ', 'SCHEMA', N'dbo', 'VIEW', N'Triggers', NULL, NULL
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO
 DECLARE @xp int
 SELECT @xp=1
 EXEC sp_addextendedproperty N'MS_DiagramPaneCount', @xp, 'SCHEMA', N'dbo', 'VIEW', N'Triggers', NULL, NULL
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
-GO
-EXEC sp_addextendedproperty N'ReturnType', N'TopGiver', 'SCHEMA', N'dbo', 'PROCEDURE', N'TopPledgers', NULL, NULL
-GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
-GO
-EXEC sp_addextendedproperty N'ReturnType', N'SecurityCode', 'SCHEMA', N'dbo', 'PROCEDURE', N'NextSecurityCode', NULL, NULL
-GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
-GO
-EXEC sp_addextendedproperty N'ReturnType', N'TopGiver', 'SCHEMA', N'dbo', 'PROCEDURE', N'TopGivers', NULL, NULL
-GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO

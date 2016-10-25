@@ -42191,3 +42191,6 @@ INSERT INTO [dbo].[ZipCodes] ([zip], [state], [City]) VALUES (N'99927', 'AK', N'
 INSERT INTO [dbo].[ZipCodes] ([zip], [state], [City]) VALUES (N'99928', 'AK', N'Ward Cove')
 INSERT INTO [dbo].[ZipCodes] ([zip], [state], [City]) VALUES (N'99929', 'AK', N'Wrangell')
 INSERT INTO [dbo].[ZipCodes] ([zip], [state], [City]) VALUES (N'99950', 'AK', N'Ketchikan')
+PRINT(N'Operation applied to 42193 rows out of 42193')
+
+PRINT(N'Add rows to [lookup].[AddressType]')

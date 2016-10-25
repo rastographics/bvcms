@@ -21,7 +21,5 @@ AS
 		) t2 ON t2.MeetingDate = t1.MeetingDate AND t2.PeopleId = t1.PeopleId AND t1.OrganizationId <> t2.OrganizationId
 		GROUP BY t1.OrganizationId, t2.OrganizationId, t1.PeopleId, t1.MeetingDate
 GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+IF @@ERROR <> 0 SET NOEXEC ON
 GO
