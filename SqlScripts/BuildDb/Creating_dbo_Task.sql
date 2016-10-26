@@ -22,7 +22,8 @@ CREATE TABLE [dbo].[Task]
 [CompletedOn] [datetime] NULL,
 [ForceCompleteWContact] [bit] NULL,
 [OrginatorId] [int] NULL,
-[DeclineReason] [nvarchar] (max) COLLATE SQL_Latin1_General_CP1_CI_AS NULL
+[DeclineReason] [nvarchar] (max) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[LimitToRole] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL
 )
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
