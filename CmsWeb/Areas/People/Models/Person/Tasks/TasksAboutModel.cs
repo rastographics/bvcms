@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using CmsData;
 using CmsWeb.Models;
 
@@ -9,7 +10,7 @@ namespace CmsWeb.Areas.People.Models
     {
         public override IQueryable<Task> DefineModelList()
         {
-            return from t in DbUtil.Db.Tasks
+            return from t in FilteredModelList()
                    where t.WhoId == Person.PeopleId
                    select t;
         }

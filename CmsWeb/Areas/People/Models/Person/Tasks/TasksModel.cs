@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using CmsData;
 using CmsWeb.Models;
 
@@ -20,6 +21,17 @@ namespace CmsWeb.Areas.People.Models
         protected TasksModel()
             : base("Completed", "desc", true)
         {}
+
+        public IQueryable<Task> FilteredModelList()
+        {
+            var u = DbUtil.Db.CurrentUser;
+            var roles = u.UserRoles.Select(uu => uu.Role.RoleName.ToLower()).ToArray();
+            var managePrivateContacts = HttpContext.Current.User.IsInRole("ManagePrivateContacts");
+            return from t in DbUtil.Db.Tasks
+                   where t.WhoId == Person.PeopleId
+                   where (t.LimitToRole ?? "") == "" || roles.Contains(t.LimitToRole) || managePrivateContacts
+                   select t;
+        }
 
         public override IQueryable<Task> DefineModelSort(IQueryable<Task> q)
         {

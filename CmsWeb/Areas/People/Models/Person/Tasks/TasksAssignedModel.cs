@@ -8,7 +8,7 @@ namespace CmsWeb.Areas.People.Models
     {
         override public IQueryable<Task> DefineModelList()
         {
-            return from t in DbUtil.Db.Tasks
+            return from t in FilteredModelList()
                    where t.WhoId != null
                    where (t.CoOwnerId ?? t.OwnerId) == Person.PeopleId
                    select t;

@@ -64,6 +64,8 @@ namespace CmsData
 		
 		private string _DeclineReason;
 		
+		private string _LimitToRole;
+		
    		
     	
 		private EntityRef< TaskList> _CoTaskList;
@@ -157,6 +159,9 @@ namespace CmsData
 		
 		partial void OnDeclineReasonChanging(string value);
 		partial void OnDeclineReasonChanged();
+		
+		partial void OnLimitToRoleChanging(string value);
+		partial void OnLimitToRoleChanged();
 		
     #endregion
 		public Task()
@@ -716,6 +721,28 @@ namespace CmsData
 					this._DeclineReason = value;
 					this.SendPropertyChanged("DeclineReason");
 					this.OnDeclineReasonChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="LimitToRole", UpdateCheck=UpdateCheck.Never, Storage="_LimitToRole", DbType="nvarchar(50)")]
+		public string LimitToRole
+		{
+			get { return this._LimitToRole; }
+
+			set
+			{
+				if (this._LimitToRole != value)
+				{
+				
+                    this.OnLimitToRoleChanging(value);
+					this.SendPropertyChanging();
+					this._LimitToRole = value;
+					this.SendPropertyChanged("LimitToRole");
+					this.OnLimitToRoleChanged();
 				}
 
 			}
