@@ -46,11 +46,14 @@ namespace CmsWeb.Areas.People.Models
 
         public IEnumerable<SelectListItem> Roles()
         {
-            var list = DbUtil.Db.Roles.OrderBy(r => r.RoleName).ToList().Select(x => new SelectListItem
+            var roles = DbUtil.Db.Setting("LimitToRolesForContacts", "").SplitStr(",").Where(rr => rr.HasValue()).ToArray();
+            if (roles.Length == 0)
+                roles = DbUtil.Db.Roles.OrderBy(r => r.RoleName).Select(r => r.RoleName).ToArray();
+            var list = roles.Select(rolename => new SelectListItem
             {
-                Value = x.RoleName,
-                Text = x.RoleName,
-                Selected = !string.IsNullOrWhiteSpace(LimitToRole) && LimitToRole == x.RoleName
+                Value = rolename,
+                Text = rolename,
+                Selected = !string.IsNullOrWhiteSpace(LimitToRole) && LimitToRole == rolename
             }).ToList();
 
             list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)", Selected = true});

@@ -34,7 +34,7 @@
                     <div class="form-group">
                         <label for="LimitToRole" class="control-label">Limit to Role</label>
                         <div class="controls">
-                            @Html.DropDownList("LimitToRole", new SelectList(Model.Roles(), "Value", "Text"), new {@class = "form-control"})
+                            @Html.DropDownListFor(m => m.LimitToRole, new SelectList(Model.Roles(), "Value", "Text"), new { @class = "form-control" })
                         </div>
                     </div>
                 </div>
