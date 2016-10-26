@@ -24,6 +24,7 @@ namespace CmsWeb.Areas.Dialog.Models
         private int? peopleId;
 
         private const string AutoOrgLeaderPromotion = "AutoOrgLeaderPromotion";
+        private const string AutoOrgLeaderPromoteCustom = "AutoOrgLeaderPromoteCustom";
         private const int DefaultLeaderMemberTypeId = 140;
         private const string AccessRole = "Access";
         private const string OrgLeadersOnlyRole = "OrgLeadersOnly";
@@ -228,15 +229,8 @@ namespace CmsWeb.Areas.Dialog.Models
             if (OrgMember == null)
                 OrgMember = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
 
-            // AttendanceTypeId of 10 is "Leader"
-            var leaderTypeIds = DbUtil.Db.MemberTypes
-                .Where(x => x.AttendanceTypeId == 10)
-                .Select(x => x.Id.ToString());
-            
-            if (leaderTypeIds.Contains(OrgMember.MemberTypeId.ToString()) && !leaderTypeIds.Contains(MemberType.Value))
-                CheckForAutoDemotion();
-            if (!leaderTypeIds.Contains(OrgMember.MemberTypeId.ToString()) && leaderTypeIds.Contains(MemberType.Value))
-                CheckForAutoPromotion();
+            CheckForAutoDemotion();
+            CheckForAutoPromotion();
 
             var changes = this.CopyPropertiesTo(OrgMember);
 
@@ -245,6 +239,22 @@ namespace CmsWeb.Areas.Dialog.Models
             foreach (var g in changes)
                 DbUtil.LogActivity($"OrgMem {GroupName} change {g.Field}", OrgId, PeopleId);
             Populate();
+        }
+
+        private IEnumerable<string> _leaderTypeIds;
+        private IEnumerable<string> LeaderTypeIds
+        {
+            get
+            {
+                if (_leaderTypeIds == null)
+                {
+                    // AttendanceTypeId of 10 is "Leader"
+                    _leaderTypeIds = DbUtil.Db.MemberTypes
+                        .Where(x => x.AttendanceTypeId == 10)
+                        .Select(x => x.Id.ToString());
+                }
+                return _leaderTypeIds;
+            }
         }
 
         private string payLink;
@@ -371,15 +381,30 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
             var autoLeaderOrgPromotionSetting = DbUtil.Db.Setting(AutoOrgLeaderPromotion);
             if (!autoLeaderOrgPromotionSetting) return;
 
-            var users = DbUtil.Db.Users.Where(us => us.PeopleId == PeopleId);
-            if (users.Any())
+            var isPromotingToLeader = !LeaderTypeIds.Contains(OrgMember.MemberTypeId.ToString()) &&
+                                      LeaderTypeIds.Contains(MemberType.Value);
+
+            var autoPromoteCustom = GetAutoPromoteCustomSetting();
+            if (autoPromoteCustom != null && autoPromoteCustom.NewMemberType != MemberType.ToString())
             {
-                foreach (var user in users)
+                autoPromoteCustom = null;
+            }
+
+            var users = DbUtil.Db.Users.Where(us => us.PeopleId == PeopleId);
+            if (!users.Any()) return;
+
+            foreach (var user in users)
+            {
+                if (!user.Roles.Any() && isPromotingToLeader)
                 {
-                    if (!user.Roles.Any())
-                    {
-                        user.AddRoles(DbUtil.Db, !user.InRole(AccessRole) ? new[] { AccessRole, OrgLeadersOnlyRole } : new[] { OrgLeadersOnlyRole });
-                    }
+                    user.AddRoles(DbUtil.Db,
+                        !user.InRole(AccessRole)
+                            ? new[] {AccessRole, OrgLeadersOnlyRole}
+                            : new[] {OrgLeadersOnlyRole});
+                }
+                if (autoPromoteCustom != null)
+                {
+                    user.AddRoles(DbUtil.Db, autoPromoteCustom.NewRole);
                 }
             }
         }
@@ -389,17 +414,38 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
             var autoLeaderOrgPromotionSetting = DbUtil.Db.Setting(AutoOrgLeaderPromotion);
             if (!autoLeaderOrgPromotionSetting) return;
 
+            var autoPromoteCustom = GetAutoPromoteCustomSetting();
+
+            var isPromotingFromLeader = LeaderTypeIds.Contains(OrgMember.MemberTypeId.ToString()) &&
+                                        !LeaderTypeIds.Contains(MemberType.Value);
+
             var users = DbUtil.Db.Users.Where(us => us.PeopleId == PeopleId);
-            if (users.Any())
+            if (!users.Any()) return;
+
+            foreach (var user in users)
             {
-                foreach (var user in users)
+                if (autoPromoteCustom != null && user.Roles.Contains(autoPromoteCustom.NewRole))
+                {
+                    if (user.Roles.Count() == 3 && user.InRole(OrgLeadersOnlyRole) && user.InRole(AccessRole) && user.InRole(autoPromoteCustom.NewRole) &&
+                        !DbUtil.Db.OrganizationMembers.Any(x => x.MemberType.Id == (OrgMember.Organization.LeaderMemberTypeId > 0 ? OrgMember.Organization.LeaderMemberTypeId : DefaultLeaderMemberTypeId)
+                            && x.PeopleId == PeopleId && x.OrganizationId != Organization.OrganizationId))
+                    {
+                        user.RemoveRoles(DbUtil.Db, autoPromoteCustom.NewRole);
+                    }
+                }
+
+                if (isPromotingFromLeader)
                 {
                     if (user.Roles.Count() == 2 && user.InRole(OrgLeadersOnlyRole) && user.InRole(AccessRole) &&
-                            !DbUtil.Db.OrganizationMembers.Any(x => x.MemberType.Id == (OrgMember.Organization.LeaderMemberTypeId > 0 ? OrgMember.Organization.LeaderMemberTypeId : DefaultLeaderMemberTypeId)
+                        !DbUtil.Db.OrganizationMembers.Any(
+                            x => x.MemberType.Id ==
+                                (OrgMember.Organization.LeaderMemberTypeId > 0
+                                    ? OrgMember.Organization.LeaderMemberTypeId
+                                    : DefaultLeaderMemberTypeId)
                                 && x.PeopleId == PeopleId && x.OrganizationId != Organization.OrganizationId))
                     {
                         // Resets their roles back to a "MyData" user
-                        user.SetRoles(DbUtil.Db, new string[] { });
+                        user.SetRoles(DbUtil.Db, new string[] {});
                     }
                 }
             }
@@ -413,6 +459,27 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
             DbUtil.LogActivity("OrgMem AddNewSubGroup " + NewGroup, OrgId);
             NewGroup = null;
             return SmallGroupChanged(mt.Id, true);
+        }
+
+        private AutoPromoteCustomSettings GetAutoPromoteCustomSetting()
+        {
+            var settingContent = DbUtil.Db.Setting(AutoOrgLeaderPromoteCustom, "");
+            if (string.IsNullOrWhiteSpace(settingContent)) return null;
+
+            var values = settingContent.Split(new [] {"__"}, StringSplitOptions.RemoveEmptyEntries);
+            if (values.Length != 2) return null;
+
+            return new AutoPromoteCustomSettings
+            {
+                NewMemberType = values[0],
+                NewRole = values[1]
+            };
+        }
+
+        private class AutoPromoteCustomSettings
+        {
+            public string NewMemberType { get; set; }
+            public string NewRole { get; set; }
         }
     }
 }

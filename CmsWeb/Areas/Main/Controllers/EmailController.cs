@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.Main.Controllers
     {
         [ValidateInput(false)]
         [Route("~/Email/{id:guid}")]
-        public ActionResult Index(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml, bool? ccparents, bool? nodups, int? orgid, int? personid, bool? recover)
+        public ActionResult Index(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml, bool? ccparents, bool? nodups, int? orgid, int? personid, bool? recover, bool? onlyProspects, bool? membersAndProspects)
         {
             if (Util.SessionTimedOut()) return Redirect("/Errors/SessionTimeout.htm");
             if (!body.HasValue())
@@ -78,7 +78,7 @@ namespace CmsWeb.Areas.Main.Controllers
             else if (orgid.HasValue)
             {
                 var org = DbUtil.Db.LoadOrganizationById(orgid.Value);
-                me.Recipients = DbUtil.Db.OrgPeopleCurrent(orgid.Value).Select(x => DbUtil.Db.LoadPersonById(x.PeopleId).ToString());
+                me.Recipients = GetRecipientsFromOrg(orgid.Value, onlyProspects, membersAndProspects);
                 me.Count = me.Recipients.Count();
                 ViewBag.ToName = org?.OrganizationName;
             }
@@ -97,6 +97,20 @@ namespace CmsWeb.Areas.Main.Controllers
                 ViewData["parentsof"] = "with ParentsOf option";
 
             return View("Index", me);
+        }
+
+        private static IEnumerable<string> GetRecipientsFromOrg(int orgId, bool? onlyProspects, bool? membersAndProspects)
+        {
+            var members = DbUtil.Db.OrgPeopleCurrent(orgId).Select(x => DbUtil.Db.LoadPersonById(x.PeopleId).ToString());
+            var prospects = DbUtil.Db.OrgPeopleProspects(orgId, false).Select(x => DbUtil.Db.LoadPersonById(x.PeopleId).ToString());
+
+            if (onlyProspects.GetValueOrDefault())
+                return prospects;
+
+            if (membersAndProspects.GetValueOrDefault())
+                return members.Union(prospects);
+
+            return members;
         }
 
         public ActionResult EmailBody(string id)

@@ -40,13 +40,13 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label for="resource_OrgId" class="control-label">Organization</label>
-                            @Html.DropDownListFor(x => x.OrganizationId, Model.Orgs, new { @class = "form-control select2" })
+                            @Html.ListBoxFor(x => x.OrganizationIds, Model.Orgs, new { @class = "form-control select2" })
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label for="resource_OrgTypeId" class="control-label">Organization Type</label>
-                            @Html.DropDownListFor(x => x.OrganizationTypeId, Model.OrgTypes, new { @class = "form-control select2" })
+                            @Html.ListBoxFor(x => x.OrganizationTypeIds, Model.OrgTypes, new { @class = "form-control select2" })
                         </div>
                     </div>
                 </div>

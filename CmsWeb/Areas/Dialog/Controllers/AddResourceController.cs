@@ -31,21 +31,35 @@ namespace CmsWeb.Areas.Dialog.Controllers
             {
                 CreationDate = Util.Now,
                 Description = m.Description,
-                MemberTypeIds = m.MemberTypeIds != null ? string.Join(",", m.MemberTypeIds) : string.Empty,            
+                MemberTypeIds = m.MemberTypeIds != null ? string.Join(",", m.MemberTypeIds) : string.Empty,
                 DivisionId = m.DivisionId,
                 CampusId = m.CampusId,
                 Name = m.Name,
                 DisplayOrder = m.DisplayOrder,
-                OrganizationId = m.OrganizationId,
-                OrganizationTypeId = m.OrganizationTypeId,
                 ResourceTypeId = m.ResourceTypeId,
                 ResourceCategoryId = m.ResourceCategoryId
             };
 
+            foreach (var orgId in m.OrganizationIds)
+            {
+                resource.ResourceOrganizations.Add(new ResourceOrganization
+                {
+                    Resource = resource,
+                    OrganizationId = orgId
+                });
+            }
+
+            foreach (var orgTypeId in m.OrganizationTypeIds)
+            {
+                resource.ResourceOrganizationTypes.Add(new ResourceOrganizationType
+                {
+                    Resource = resource,
+                    OrganizationTypeId = orgTypeId
+                });
+            }
+
             if (resource.CampusId.HasValue && resource.CampusId < 1) resource.CampusId = null;
             if (resource.DivisionId.HasValue && resource.DivisionId < 1) resource.DivisionId = null;
-            if (resource.OrganizationId.HasValue && resource.OrganizationId < 1) resource.OrganizationId = null;
-            if (resource.OrganizationTypeId.HasValue && resource.OrganizationTypeId < 1) resource.OrganizationTypeId = null;
 
             DbUtil.Db.Resources.InsertOnSubmit(resource);
             DbUtil.Db.SubmitChanges();

@@ -215,7 +215,7 @@ namespace CmsWeb.Areas.People.Models
 
                 _resourceTypes = new List<ResourceTypeModel>();
 
-                var memberOrgs = DbUtil.Db.OrganizationMembers.Where(x => x.PeopleId == PeopleId);
+                var memberOrgs = DbUtil.Db.OrganizationMembers.Where(x => x.PeopleId == PeopleId).ToList();
 
                 var orgLevels = memberOrgs.ToDictionary(x => x.OrganizationId, x => x.MemberType.Id);
 
@@ -245,19 +245,89 @@ namespace CmsWeb.Areas.People.Models
                         .Where(x => !x.CampusId.HasValue || Person.CampusId == x.CampusId.Value);
 
                 // Filter out resources that have an org the user isn't in
-                resources = resources.Where(x => !x.OrganizationId.HasValue || orgIds.Contains(x.OrganizationId.Value));
+                resources = resources.Where(
+                    x => !x.ResourceOrganizations.Any() ||
+                         x.ResourceOrganizations.Select(ro => ro.OrganizationId).Any(o => orgIds.Contains(o)));
 
                 // Filter out resources that have an org type the user isn't associated with (thru orgs)
-                resources = resources.Where(x => !x.OrganizationTypeId.HasValue || orgTypeIds.Contains(x.OrganizationTypeId.Value));
+                resources = resources.Where(
+                    x => !x.ResourceOrganizationTypes.Any() ||
+                         x.ResourceOrganizationTypes.Select(ro => ro.OrganizationTypeId).Any(ot => orgTypeIds.Contains(ot)));
 
                 var resourceModels = new List<Resource>();
 
                 foreach (var resource in resources)
                 {
-                    if (string.IsNullOrEmpty(resource.MemberTypeIds) || !resource.OrganizationId.HasValue ||
-                        resource.MemberTypeIds.Contains(orgLevels[resource.OrganizationId.Value].ToString()))
+                    var noMemberTypesSet = string.IsNullOrEmpty(resource.MemberTypeIds);
+
+                    var noOrgRestrictionsSet = !resource.ResourceOrganizations.Any();
+                    var orgRestrictionsSet = !noOrgRestrictionsSet;
+
+                    var noOrgTypeRestrictionsSet = !resource.ResourceOrganizationTypes.Any();
+                    var orgTypeRestrictionsSet = !noOrgTypeRestrictionsSet;
+
+                    if (noMemberTypesSet)
                     {
                         resourceModels.Add(resource);
+                    }
+                    else if (orgRestrictionsSet && orgTypeRestrictionsSet)
+                    {
+                        // only okay to add if the user is of member type in one of the restricted orgs and the restricted org is in the restricted org types list
+                        var okayToAdd = false;
+                        foreach (var ro in resource.ResourceOrganizations)
+                        {
+                            if (!resource.MemberTypeIds.Split(',').Contains(orgLevels[ro.OrganizationId].ToString()))
+                                continue;
+
+                            if (resource.ResourceOrganizationTypes
+                                .Select(rot => rot.OrganizationTypeId)
+                                .Contains(ro.Organization.OrganizationTypeId.GetValueOrDefault()))
+                            {
+                                okayToAdd = true;
+                            }
+                        }
+                        if (okayToAdd)
+                            resourceModels.Add(resource);
+                    }
+                    else if (orgRestrictionsSet && noOrgTypeRestrictionsSet)
+                    {
+                        // only okay to add if the user is of member type in one of the restricted orgs
+                        var okayToAdd = false;
+                        foreach (var ro in resource.ResourceOrganizations)
+                        {
+                            if (resource.MemberTypeIds.Split(',').Contains(orgLevels[ro.OrganizationId].ToString()))
+                                okayToAdd = true;
+                        }
+                        if (okayToAdd)
+                            resourceModels.Add(resource);
+                    }
+                    else if (noOrgRestrictionsSet && orgTypeRestrictionsSet)
+                    {
+                        // only okay to add if the user is of member type in one of the restricted org types
+                        var okayToAdd = false;
+                        foreach (var rot in resource.ResourceOrganizationTypes)
+                        {
+                            if (memberOrgs.Any(mo =>
+                                    mo.Organization.OrganizationTypeId == rot.OrganizationTypeId &&
+                                    resource.MemberTypeIds.Split(',').Contains(orgLevels[mo.OrganizationId].ToString())
+                            ))
+                            {
+                                okayToAdd = true;
+                            }
+                        }
+                        if (okayToAdd)
+                            resourceModels.Add(resource);
+                    }
+                    else if (noOrgRestrictionsSet && noOrgTypeRestrictionsSet)
+                    {
+                        var restrictedMemberTypes = resource.MemberTypeIds.Split(',').ToList();
+                        var assignedMemberTypes = orgLevels.Values.Select(x => x.ToString());
+
+                        // only okay to add if the user has any of the restricted member types
+                        if (restrictedMemberTypes.Intersect(assignedMemberTypes).Any())
+                        {
+                            resourceModels.Add(resource);
+                        }
                     }
                 }
 

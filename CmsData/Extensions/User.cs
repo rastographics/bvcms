@@ -64,7 +64,7 @@ namespace CmsData
                 UserRoles.Add(new UserRole {Role = role});
             }
         }
-        public void AddRoles(CMSDataContext db, string[] value)
+        public void AddRoles(CMSDataContext db, params string[] value)
         {
             var q = from s in value
                 join r in UserRoles on s equals r.Role.RoleName into g
@@ -84,6 +84,17 @@ namespace CmsData
         {
             var a = new [] {value};
             AddRoles(db, a);
+		}
+
+        public void RemoveRoles(CMSDataContext Db, params string[] values)
+        {
+            foreach (var s in values)
+            {
+                var role = Db.Roles.SingleOrDefault(r => r.RoleName == s);
+                if (role == null) continue;
+                Db.UserRoles.DeleteOnSubmit(UserRoles.Single(x => x.Role.RoleName == role.RoleName));
+            }
+            Db.SubmitChanges();
         }
 
         public void ChangePassword(string newpassword)

@@ -25,11 +25,13 @@ namespace CmsWeb.Areas.Manage.Models
             Attachments = DbUtil.Db.ResourceAttachments.Where(x => x.ResourceId == ResourceId).ToList();
         }
 
-        [DisplayName("Organization")]
-        public string OrganizationName => Resource.Organization?.OrganizationName;
+        [DisplayName("Organizations")]
+        public string OrganizationNames
+            => string.Join(", ", Resource.ResourceOrganizations.Select(ro => ro.Organization.OrganizationName));
 
-        [DisplayName("Organization Type")]
-        public string OrganizationTypeName => Resource.OrganizationType?.Description;
+        [DisplayName("Organization Types")]
+        public string OrganizationTypeNames 
+            => string.Join(", ", Resource.ResourceOrganizationTypes.Select(rot => rot.OrganizationType.Description));
 
         [DisplayName("Congregation")]
         public string CampusName => Resource.Campu?.Description;

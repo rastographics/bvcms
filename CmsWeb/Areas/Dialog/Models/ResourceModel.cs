@@ -17,8 +17,8 @@ namespace CmsWeb.Areas.Dialog.Models
         [Required(ErrorMessage = "required")]
         public string Name { get; set; }
         public int? DivisionId { get; set; }
-        public int? OrganizationId { get; set; }
-        public int? OrganizationTypeId { get; set; }
+        public IEnumerable<int> OrganizationIds { get; set; } = new List<int>();
+        public IEnumerable<int> OrganizationTypeIds { get; set; } = new List<int>();
         public int? CampusId { get; set; }
         public IEnumerable<int> MemberTypeIds { get; set; }
         public string Description { get; set; }
@@ -65,7 +65,7 @@ namespace CmsWeb.Areas.Dialog.Models
                 {
                     Text = x.Name,
                     Value = x.ResourceTypeId.ToString()
-                }).ToList();                
+                }).ToList();
                 return list;
             }
         }
@@ -123,8 +123,8 @@ namespace CmsWeb.Areas.Dialog.Models
         public int ResourceCategoryId { get; set; }
         public string Name { get; set; }
         public int? DivisionId { get; set; }
-        public int? OrganizationId { get; set; }
-        public int? OrganizationTypeId { get; set; }
+        public IEnumerable<int> OrganizationIds { get; set; } = new List<int>();
+        public IEnumerable<int> OrganizationTypeIds { get; set; } = new List<int>();
         public int? CampusId { get; set; }
         public IEnumerable<int> MemberTypeIds { get; set; }
         public string Description { get; set; }
@@ -132,7 +132,6 @@ namespace CmsWeb.Areas.Dialog.Models
 
         public EditResourceModel()
         {
-            
         }
 
         public EditResourceModel(Resource r)
@@ -142,8 +141,8 @@ namespace CmsWeb.Areas.Dialog.Models
             ResourceCategoryId = r.ResourceCategoryId;
             Name = r.Name;
             DivisionId = r.DivisionId;
-            OrganizationId = r.OrganizationId;
-            OrganizationTypeId = r.OrganizationTypeId;
+            OrganizationIds = r.ResourceOrganizations.Select(x => x.OrganizationId);
+            OrganizationTypeIds = r.ResourceOrganizationTypes.Select(x => x.OrganizationTypeId);
             CampusId = r.CampusId;
             MemberTypeIds = string.IsNullOrWhiteSpace(r.MemberTypeIds) ? new List<int>() : r.MemberTypeIds.Split(',').Select(int.Parse).ToList();
             Description = r.Description;
