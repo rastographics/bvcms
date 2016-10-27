@@ -18,7 +18,7 @@
                 @foreach (var c in Model.ViewList())
                 {
                     <tr>
-                        <td><a href="/Contact2/@c.ContactId">@c.ContactDate.ToString("d")</a></td>
+                        <td><a href="/Contact2/@c.ContactId" target="Contact">@c.ContactDate.ToString("d")</a></td>
                         <td>@c.ContactReason</td>
                         <td>@c.TypeOfContact</td>
                         <td>@c.ContactorList</td>
