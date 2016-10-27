@@ -686,6 +686,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var o = masterorg ?? org;
             return o != null && o.GetExtra(DbUtil.Db, "NoPhoneEmailOnFind") == "true";
         }
+        public int MinimumUserAge => DbUtil.Db.Setting("MinimumUserAge", "16").ToInt();
+
     }
 
     public class FamilyAttendInfo

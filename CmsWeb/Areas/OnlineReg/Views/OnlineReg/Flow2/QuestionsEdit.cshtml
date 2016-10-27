@@ -1,4 +1,5 @@
 ﻿@model CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel
+@using CmsData
 @using CmsData.Registration
 @using CmsWeb
 @using UtilityExtensions
@@ -156,9 +157,9 @@
     <div class="form-group">
         <div class="col-sm-offset-3 col-sm-9 text-right">
 
-            @if ((Model.age >= 16 || !Model.BestBirthday.HasValue) && !Model.IsCreateAccount())
+            @if ((Model.age >= Model.MinimumUserAge || !Model.BestBirthday.HasValue) && !Model.IsCreateAccount())
             {
-              if (Model.InMobileAppMode && !UtilityExtensions.Util.UserPeopleId.HasValue && !Model.LoggedIn)
+              if (Model.InMobileAppMode && !Util.UserPeopleId.HasValue && !Model.LoggedIn)
               {
                 @Html.Hidden("CreatingAccount", true)
               }
