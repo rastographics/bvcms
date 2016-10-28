@@ -11,7 +11,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Index()
         {
             Response.NoCache();
-            var m = new ContactSearchModel();
+            var m = new TaskSearchModel();
 
             m.GetFromSession();
             return View(m);
