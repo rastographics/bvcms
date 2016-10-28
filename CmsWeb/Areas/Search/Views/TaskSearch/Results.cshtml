@@ -1,0 +1,36 @@
+﻿@model CmsWeb.Areas.Search.Models.ContactSearchModel
+<div id="results">
+    @Html.Partial("PagerTop", Model)
+    <div class="table-responsive">
+        <table id="results-table" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Reason</th>
+                    <th>Type</th>
+                    <th>Contactors</th>
+                    <th>Contactees</th>
+                    <th>Ministry</th>
+                    <th>Results</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model.ViewList())
+                {
+                    <tr>
+                        <td><a href="/Contact2/@c.ContactId" target="Contact">@c.ContactDate.ToString("d")</a></td>
+                        <td>@c.ContactReason</td>
+                        <td>@c.TypeOfContact</td>
+                        <td>@c.ContactorList</td>
+                        <td>@c.ContacteeList</td>
+                        <td>@c.Ministry</td>
+                        <td>@c.Results</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @Html.Partial("PagerBottom", Model)
+    @Html.Hidden("totcnt", Model.Count().ToString("N0"))
+    @Html.Partial("PagerHidden", Model)
+</div>           

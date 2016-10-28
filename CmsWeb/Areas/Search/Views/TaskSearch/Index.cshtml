@@ -1,0 +1,102 @@
+﻿@model CmsWeb.Areas.Search.Models.ContactSearchModel
+@{
+    ViewBag.Title = "Contact Search";
+    ViewBag.PageHeader = "Contact Search";
+    Layout = ViewExtensions2.TouchPointLayout();
+}
+<div class="box box-responsive">
+    <div class="box-content">
+        <form id="form-contact-search" class="ajax" data-results="#results" method="post" action="/ContactSearch2/Results">
+            <div class="well">
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        @Html.EditorFor(m => m.SearchParameters.ContacteeName)
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        @Html.EditorFor(m => m.SearchParameters.ContactorName)
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        @Html.EditorFor(m => m.SearchParameters.StartDate)
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        @Html.EditorFor(m => m.SearchParameters.EndDate)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2 col-md-3 col-sm-4">
+                        @Html.EditorFor(m => m.SearchParameters.CreatedBy)
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-sm-4">
+                        @Html.EditorFor(m => m.SearchParameters.ContactType)
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-sm-4">
+                        @Html.EditorFor(m => m.SearchParameters.ContactReason)
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-sm-4">
+                        @Html.EditorFor(m => m.SearchParameters.Ministry)
+                    </div>
+                    <div class="col-lg-4 col-md-5 col-sm-6">
+                        @Html.EditorFor(m => m.SearchParameters.ContactResult)
+                        <div class="form-group">
+                            <label class="checkbox-inline control-label">
+                                @Html.CheckBoxFor(m => m.SearchParameters.Incomplete) Incomplete?
+                            </label>
+                            <label class="checkbox-inline control-label">
+                                @Html.CheckBoxFor(m => m.SearchParameters.Private) Private?
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-4">
+                        <strong>Total Count</strong> <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span>
+                    </div>
+                    <div class="col-lg-9 col-md-9 col-sm-8">
+                        <div class="pull-right">
+                            <a class="btn btn-default submit" href="/ContactSearch2/Clear">Clear</a>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-table"></i> Other Reports <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="submit" href="/ContactSearch2/ContactorSummary">Contactor Summary Report</a></li>
+                                    <li><a class="submit" href="/ContactSearch2/ContactTypeTotals">Contact Type Totals</a></li>
+                                    <li><a class="submit" href="/ContactSearch2/ContactSummary">Contact Summary</a></li>
+                                </ul>
+                            </div>
+                            <div class="btn-group">
+                                <a id="filter" href="/ContactSearch2/Results" class="btn btn-primary ajax" data-callback="UpdateTotal">Search</a>
+                                <button type="button" id="filter-dropdown" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Filter Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li><a class="submit" href="/ContactSearch2/ConvertToQuery/">Convert To Search (Contactors)</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @Html.Partial("Results", Model)
+        </form>
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            $.InitFunctions.UpdateTotal = function () {
+                $('#totalcount').text($('#totcnt').val());
+            };
+
+            $("form").on("keypress", 'input', function (e) {
+                if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+                    $('#filter').click();
+                    return false;
+                }
+                return true;
+            });
+
+        });
+    </script>
+}
