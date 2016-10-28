@@ -50,7 +50,7 @@ namespace CmsWeb.Areas.Public.Models
                 if (_sgf != null)
                 {
                     var subtitleContent = getSetting("Subtitle-Content")?.value;
-                    subtitle = DbUtil.Db.Content(subtitleContent).Body;
+                    subtitle = DbUtil.Db.Content(subtitleContent)?.Body;
                 }
 
                 return subtitle ?? "";
