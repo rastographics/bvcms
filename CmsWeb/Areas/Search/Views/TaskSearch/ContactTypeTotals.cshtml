@@ -1,0 +1,61 @@
+﻿@using CmsWeb
+@model IEnumerable<CmsData.View.ContactTypeTotal>
+@{
+    ViewBag.Title = "Contact Type Totals";
+    Layout = ViewExtensions2.TouchPointLayout();
+}
+<form method="POST">
+    <div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <td>Description</td>
+                    <td class="text-right"># Contacts</td>
+                    <td class="text-right"># People</td>
+                    <td>Actions</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var i in Model)
+                {
+                    <tr>
+                        <td>
+                            <a class="submit" href="/ContactSearch2/ContactTypeQuery/@i.Id">@i.Description</a>
+                        </td>
+                        <td class="text-right">@i.Count</td>
+                        <td class="text-right">@i.CountPeople</td>
+                        <td>
+                            @if (ViewBag.candelete == true)
+                            {
+                                <a class="submit btn btn-danger btn-sm" href="/ContactSearch2/DeleteContactsForType/@i.Id"><i class="fa fa-trash"></i> Delete</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</form>
+@section scripts
+{
+    <script>
+        $(function () {
+            $("a.delete").click(function (ev) {
+                ev.preventDefault();
+                var url = $(this).attr("href");
+                swal({
+                    title: "Are you sure?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                },
+                function () {
+                    window.location = url;
+                });
+                return false;
+            });
+        });
+    </script>
+}

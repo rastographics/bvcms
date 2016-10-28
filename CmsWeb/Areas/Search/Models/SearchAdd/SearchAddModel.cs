@@ -143,7 +143,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public bool OnlyOne => onlyonetypes.Contains(AddContext.ToLower());
 
-        public bool ShowLimitedSearch => (HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-OrgLeaderLimitedSearchPerson"));
+        public new bool ShowLimitedSearch => (HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-OrgLeaderLimitedSearchPerson"));
 
         public int NewFamilyId { get; set; }
         public int? EntryPointId { get; set; }
