@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Areas.Search.Models.ContactSearchModel
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.Search.Models.TaskSearchModel
 <div id="results">
     @Html.Partial("PagerTop", Model)
     <div class="table-responsive">
@@ -6,25 +7,25 @@
             <thead>
                 <tr>
                     <th>Date</th>
-                    <th>Reason</th>
-                    <th>Type</th>
-                    <th>Contactors</th>
-                    <th>Contactees</th>
-                    <th>Ministry</th>
-                    <th>Results</th>
+                    <th>About</th>
+                    <th>Status</th>
+                    <th>Owner</th>
+                    <th>Delegate</th>
+                    <th>Originator</th>
+                    <th>LimitToRole</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var c in Model.ViewList())
+                @foreach (var t in Model.ViewList())
                 {
                     <tr>
-                        <td><a href="/Contact2/@c.ContactId" target="Contact">@c.ContactDate.ToString("d")</a></td>
-                        <td>@c.ContactReason</td>
-                        <td>@c.TypeOfContact</td>
-                        <td>@c.ContactorList</td>
-                        <td>@c.ContacteeList</td>
-                        <td>@c.Ministry</td>
-                        <td>@c.Results</td>
+                        <td><a href="/Task/@t.Id" target="Contact">@t.Created.ToString2("d")</a></td>
+                        <td>@t.About</td>
+                        <td>@t.Status</td>
+                        <td>@t.Owner</td>
+                        <td>@t.DelegateX</td>
+                        <td>@t.Originator</td>
+                        <td>@t.LimitToRole</td>
                     </tr>
                 }
             </tbody>

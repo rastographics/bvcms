@@ -293,5 +293,9 @@ namespace CmsWeb.Code
         {
             return MemberStatusCodes();
         }
+        public IEnumerable<CodeValueItem> TaskStatusList()
+        {
+            return TaskStatusCodes().AddNotSpecified();
+        }
     }
 }

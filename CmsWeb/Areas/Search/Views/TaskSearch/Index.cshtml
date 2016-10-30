@@ -6,43 +6,30 @@
 }
 <div class="box box-responsive">
     <div class="box-content">
-        <form id="form-contact-search" class="ajax" data-results="#results" method="post" action="/ContactSearch2/Results">
+        <form id="form-contact-search" class="ajax" data-results="#results" method="post" action="/TaskSearch/Results">
             <div class="well">
                 <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-6">
-                        @Html.EditorFor(m => m.SearchParameters.ContacteeName)
+                        @Html.EditorFor(m => m.SearchParameters.About)
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
-                        @Html.EditorFor(m => m.SearchParameters.ContactorName)
+                        @Html.EditorFor(m => m.SearchParameters.Owner)
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
-                        @Html.EditorFor(m => m.SearchParameters.StartDate)
+                        @Html.EditorFor(m => m.SearchParameters.Delegate)
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
-                        @Html.EditorFor(m => m.SearchParameters.EndDate)
+                        @Html.EditorFor(m => m.SearchParameters.Originator)
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-2 col-md-3 col-sm-4">
-                        @Html.EditorFor(m => m.SearchParameters.CreatedBy)
-                    </div>
-                    <div class="col-lg-2 col-md-3 col-sm-4">
-                        @Html.EditorFor(m => m.SearchParameters.ContactType)
-                    </div>
-                    <div class="col-lg-2 col-md-3 col-sm-4">
-                        @Html.EditorFor(m => m.SearchParameters.ContactReason)
-                    </div>
-                    <div class="col-lg-2 col-md-3 col-sm-4">
-                        @Html.EditorFor(m => m.SearchParameters.Ministry)
+                        @Html.EditorFor(m => m.SearchParameters.Status)
                     </div>
                     <div class="col-lg-4 col-md-5 col-sm-6">
-                        @Html.EditorFor(m => m.SearchParameters.ContactResult)
                         <div class="form-group">
                             <label class="checkbox-inline control-label">
-                                @Html.CheckBoxFor(m => m.SearchParameters.Incomplete) Incomplete?
-                            </label>
-                            <label class="checkbox-inline control-label">
-                                @Html.CheckBoxFor(m => m.SearchParameters.Private) Private?
+                                @Html.CheckBoxFor(m => m.SearchParameters.IsPrivate) Private?
                             </label>
                         </div>
                     </div>
@@ -53,26 +40,9 @@
                     </div>
                     <div class="col-lg-9 col-md-9 col-sm-8">
                         <div class="pull-right">
-                            <a class="btn btn-default submit" href="/ContactSearch2/Clear">Clear</a>
+                            <a class="btn btn-default submit" href="/TaskSearch/Clear">Clear</a>
                             <div class="btn-group">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                    <i class="fa fa-table"></i> Other Reports <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="submit" href="/ContactSearch2/ContactorSummary">Contactor Summary Report</a></li>
-                                    <li><a class="submit" href="/ContactSearch2/ContactTypeTotals">Contact Type Totals</a></li>
-                                    <li><a class="submit" href="/ContactSearch2/ContactSummary">Contact Summary</a></li>
-                                </ul>
-                            </div>
-                            <div class="btn-group">
-                                <a id="filter" href="/ContactSearch2/Results" class="btn btn-primary ajax" data-callback="UpdateTotal">Search</a>
-                                <button type="button" id="filter-dropdown" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Filter Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-right">
-                                    <li><a class="submit" href="/ContactSearch2/ConvertToQuery/">Convert To Search (Contactors)</a></li>
-                                </ul>
+                                <a id="filter" href="/TaskSearch/Results" class="btn btn-primary ajax" data-callback="UpdateTotal">Search</a>
                             </div>
                         </div>
                     </div>
