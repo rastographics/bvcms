@@ -4,14 +4,14 @@ namespace CmsWeb.Areas.Search.Models
 {
     public class TaskInfo
     {
-        public int ContactId { get; set; }
-        public string Comments { get; set; }
-        public DateTime ContactDate { get; set; }
-        public string TypeOfContact { get; set; }
-        public string ContactReason { get; set; }
-        public string ContactorList { get; set; }
-        public string ContacteeList { get; set; }
-        public string Ministry { get; set; }
-        public string Results { get; set; }
+        public int TaskId { get; set; }
+        public string Description { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime? CompletedOn { get; set; }
+        public string Status { get; set; }
+        public string About { get; set; }
+        public string Delegate { get; set; }
+        public string Owner { get; set; }
+        public int? ContactId { get; set; }
     }
 }

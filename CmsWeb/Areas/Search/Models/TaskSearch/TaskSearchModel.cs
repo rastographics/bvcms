@@ -13,10 +13,11 @@ using CmsWeb.Code;
 using CmsWeb.Models;
 using UtilityExtensions;
 using CmsData;
+using CmsData.Codes;
 
 namespace CmsWeb.Areas.Search.Models
 {
-    public class TaskSearchModel : PagedTableModel<Task, TaskInfo>
+    public class TaskSearchModel : PagedTableModel<TaskSearch, TaskInfo>
     {
         public TaskSearchInfo SearchParameters { get; set; }
 
@@ -26,7 +27,7 @@ namespace CmsWeb.Areas.Search.Models
             SearchParameters = new TaskSearchInfo();
         }
 
-        public override IQueryable<Task> DefineModelList()
+        public override IQueryable<TaskSearch> DefineModelList()
         {
 //            var db = DbUtil.Db;
 //
@@ -169,52 +170,31 @@ namespace CmsWeb.Areas.Search.Models
             return null;
         }
 
-        public override IQueryable<Task> DefineModelSort(IQueryable<Task> q)
+        public override IQueryable<TaskSearch> DefineModelSort(IQueryable<TaskSearch> q)
         {
-//            switch (sortexpression)
-//            {
-//                case "id":
-//                    return from c in q
-//                           orderby c.contactid
-//                           select c;
-//                case "date":
-//                    return from c in q
-//                           orderby c.contactdate
-//                           select c;
-//                case "reason":
-//                    return from c in q
-//                           orderby c.contactreasonid, c.contactdate descending
-//                           select c;
-//                case "type":
-//                    return from c in q
-//                           orderby c.contacttypeid, c.contactdate descending
-//                           select c;
-//                case "id desc":
-//                    return from c in q
-//                           orderby c.contactid descending
-//                           select c;
-//                case "reason desc":
-//                    return from c in q
-//                           orderby c.contactreasonid descending, c.contactdate descending
-//                           select c;
-//                case "type desc":
-//                    return from c in q
-//                           orderby c.contacttypeid descending, c.contactdate descending
-//                           select c;
-//                case "date desc":
-//                default:
-//                    return from c in q
-//                           orderby c.contactdate descending
-//                           select c;
-//            }
-            return null;
+            switch (SortExpression)
+            {
+                case "created":
+                    return q.OrderBy(tt => tt.Created);
+                case "created desc":
+                    return q.OrderByDescending(tt => tt.Created);
+            }
+            return q;
         }
 
-        public override IEnumerable<TaskInfo> DefineViewList(IQueryable<Task> q)
+        public override IEnumerable<TaskInfo> DefineViewList(IQueryable<TaskSearch> q)
         {
-            return from o in q
+            var list = DbUtil.Db.TaskStatuses.ToDictionary(tt => tt.Id, tt => tt.Description); 
+            list.Add(0, "not specified");
+
+            return from t in q
                    select new TaskInfo
                    {
+                       TaskId = t.Id,
+                       Description = t.Description,
+                       CreatedOn = t.Created.Value,
+                       CompletedOn = t.Completed,
+                       Status = list[t.StatusId ?? 0],
                    };
         }
 
