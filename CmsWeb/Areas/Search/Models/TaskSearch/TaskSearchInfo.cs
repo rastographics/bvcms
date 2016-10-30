@@ -13,6 +13,5 @@ namespace CmsWeb.Areas.Search.Models
         public bool Archived { get; set; }
         public int Status { get; set; }
         public DateTime Created { get; set; }
-
     }
 }

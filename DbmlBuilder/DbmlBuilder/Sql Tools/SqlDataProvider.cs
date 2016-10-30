@@ -429,6 +429,8 @@ namespace DbmlBuilder
                     return DbType.Guid;
                 case "datetime":
                     return DbType.DateTime;
+                case "date":
+                    return DbType.Date;
                 case "bigint":
                     return DbType.Int64;
                 case "binary":
