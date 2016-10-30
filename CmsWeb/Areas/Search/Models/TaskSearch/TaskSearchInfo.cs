@@ -10,8 +10,16 @@ namespace CmsWeb.Areas.Search.Models
         public string Originator { get; set; }
         public string Owner { get; set; }
         public string About { get; set; }
-        public bool Archived { get; set; }
-        public int Status { get; set; }
-        public DateTime Created { get; set; }
+        public bool? Archived { get; set; }
+        public CodeInfo Status { get; set; }
+        public DateTime? StartDt { get; set; }
+        public DateTime? EndDt { get; set; }
+        public int? Lookback { get; set; }
+        public bool? IsPrivate { get; set; }
+
+        public TaskSearchInfo()
+        {
+            Status = new CodeInfo("TaskStatus");
+        }
     }
 }

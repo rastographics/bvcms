@@ -474,10 +474,8 @@
     <Compile Include="Areas\People\Models\Downline\DownlineSummaryModel.cs" />
     <Compile Include="Areas\Reports\Models\Export\DocXReplacements.cs" />
     <Compile Include="Areas\Search\Controllers\TaskSearchController.cs" />
-    <Compile Include="Areas\Search\Models\TaskSearch\TaskInfo.cs" />
     <Compile Include="Areas\Search\Models\TaskSearch\TaskSearchInfo.cs" />
     <Compile Include="Areas\Search\Models\TaskSearch\TaskSearchModel.cs" />
-    <Compile Include="Areas\Search\Models\TaskSearch\TaskSummaryInfo.cs" />
     <Compile Include="Areas\Search\Models\DirectoryInfo.cs" />
     <Compile Include="Areas\Search\Models\PictureDirectoryModel.cs" />
     <Compile Include="Areas\People\Models\Person\InvolvementTableModel.cs" />
@@ -1595,9 +1593,6 @@
     <Content Include="Areas\Search\Views\PictureDirectory\Results.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Areas\Search\Views\TaskSearch\ContactorSummary.cshtml" />
-    <Content Include="Areas\Search\Views\TaskSearch\ContactSummary.cshtml" />
-    <Content Include="Areas\Search\Views\TaskSearch\ContactTypeTotals.cshtml" />
     <Content Include="Areas\Search\Views\TaskSearch\Index.cshtml" />
     <Content Include="Areas\Search\Views\TaskSearch\Results.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
