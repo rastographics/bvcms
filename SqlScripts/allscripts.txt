@@ -706,6 +706,7 @@ Creating_dbo_RecentAbsentsSP2.sql
 Creating_dbo_MemberDesc.sql
 Creating_dbo_ProspectCounts.sql
 Creating_dbo_ChangedGiving.sql
+Creating_dbo_TaskSearch.sql
 Creating_dbo_AddEditExtraValues.sql
 Creating_dbo_OrganizationLeaders.sql
 Creating_dbo_DaysSinceContact.sql
