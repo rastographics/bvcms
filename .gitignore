@@ -78,3 +78,4 @@ CmsDataSqlClr_.*.sqlproj
 
 .vs
 *.pyc
+.localhistory/
