@@ -2197,6 +2197,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.TaskSearch> ViewTaskSearches
+	    {
+		    get { return this.GetTable< View.TaskSearch>(); }
+
+	    }
+
 	    public Table< View.TransactionBalance> ViewTransactionBalances
 	    {
 		    get { return this.GetTable< View.TransactionBalance>(); }

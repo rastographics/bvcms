@@ -8,6 +8,7 @@ using System.Web;
 using CmsData.Codes;
 using CmsData.View;
 using HtmlAgilityPack;
+using Novacode;
 using UtilityExtensions;
 
 namespace CmsData
@@ -197,6 +198,36 @@ namespace CmsData
                 texta[i] = DoReplaceCode(texta[i], p);
 
             return string.Join("", texta);
+        }
+
+        private DocX DocXDocument { get; set; }
+        public EmailReplacements(CMSDataContext callingContext, DocX doc)
+        {
+            currentOrgId = callingContext.CurrentOrgId;
+            connStr = callingContext.ConnectionString;
+            host = callingContext.Host;
+            db = callingContext;
+            DocXDocument = doc;
+
+            var text = doc.Text;
+
+            var pattern =
+                $@"({{[^}}]*?}}|{RegisterLinkRe}|{RegisterTagRe}|{RsvpLinkRe}|{RegisterHrefRe}|
+                    {SendLinkRe}|{SupportLinkRe}|{MasterLinkRe}|{VolReqLinkRe}|{VolReqLinkRe}|{VolSubLinkRe}|{VoteLinkRe})";
+
+            stringlist = Regex.Split(text, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        }
+        public DocX DocXReplacements(Person p)
+        {
+            person = p;
+            var texta = new List<string>(stringlist);
+            var dict = new Dictionary<string, string>();
+            for (var i = 1; i < texta.Count; i += 2)
+                dict.Add(texta[i], DoReplaceCode(texta[i], p));
+            var doc = DocXDocument.Copy();
+            foreach(var d in dict)
+                doc.ReplaceText(d.Key, d.Value);
+            return doc;
         }
 
         private class OrgInfo

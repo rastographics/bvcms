@@ -10,6 +10,7 @@ using CmsWeb.Areas.Search.Models;
 using CmsWeb.Models;
 using Dapper;
 using MoreLinq;
+using Novacode;
 using OfficeOpenXml;
 using UtilityExtensions;
 
@@ -185,5 +186,15 @@ namespace CmsWeb.Areas.Reports.Controllers
             get { return DbUtil.Db.Setting("MaxExcelRows", "10000").ToInt(); }
         }
 
+        [HttpGet]
+        public ActionResult DocXMerge(Guid id, string filename, string template)
+        {
+            return new DocXReplacements(id, filename, template);
+        }
+        [HttpGet]
+        public ActionResult DocXMerge1(int id, string filename, string template)
+        {
+            return new DocXReplacements(id, filename, template);
+        }
     }
 }

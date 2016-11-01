@@ -26,6 +26,8 @@ namespace CmsData.View
 		
 		private string _ClassX;
 		
+		private string _Url;
+		
 		
 		public CustomScriptRole()
 		{
@@ -113,6 +115,23 @@ namespace CmsData.View
 			{
 				if (this._ClassX != value)
 					this._ClassX = value;
+			}
+
+		}
+
+		
+		[Column(Name="Url", Storage="_Url", DbType="varchar(200)")]
+		public string Url
+		{
+			get
+			{
+				return this._Url;
+			}
+
+			set
+			{
+				if (this._Url != value)
+					this._Url = value;
 			}
 
 		}

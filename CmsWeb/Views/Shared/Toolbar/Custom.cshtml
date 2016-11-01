@@ -6,6 +6,7 @@
   var custom = m.CustomList();
   var sql = m.SqlList();
   var python = m.PythonList();
+  var urls = m.UrlList();
   ViewBag.ReportPageHeader = ViewBag.Name;
   var canedit = User.IsInRole("Admin") || User.IsInRole("Design");
 }
@@ -24,16 +25,29 @@
       </ul>
     </li>
   }
-  @if (python.Count > 0)
+  @if (python.Count > 0 || urls.Count > 0)
   {
     <li class="col-sm-4">
       <ul>
+        @if (python.Count > 0)
+        {
         <li class="dropdown-header">Python Scripts</li>
-        @foreach (var r in python)
+          foreach (var r in python)
         {
           <li>
             <a target="_blank" href="/Reports/PyScript/@r/@qid" class="qid">@r.Display</a>
           </li>
+          }
+        }
+        @if (urls.Count > 0)
+        {
+          <li class="dropdown-header">Other Reports</li>
+          foreach (var r in urls)
+          {
+            <li>
+              <a target="_blank" href="@r.Url.Replace("@qid", qid.ToString())" class="qid">@r.Display</a>
+            </li>
+          }
         }
       </ul>
     </li>

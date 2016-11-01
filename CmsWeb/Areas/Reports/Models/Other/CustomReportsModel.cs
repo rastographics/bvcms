@@ -47,16 +47,18 @@ namespace CmsWeb.Areas.Reports.Models
 
         public class ReportItem
         {
-            public ReportItem(string report, string type = "Custom", string @class = null)
+            public ReportItem(string report, string type, string @class, string url)
             {
                 Report = report;
                 Type = type;
                 Class = @class ?? "ViewReport";
+                Url = url;
             }
 
             public string Report { get; set; }
             public string Type { get; set; }
             public string Class { get; set; }
+            public string Url { get; set; }
 
             public override string ToString()
             {
@@ -103,7 +105,7 @@ namespace CmsWeb.Areas.Reports.Models
                     where e.Role == null || roles.Contains(e.Role)
                     where e.Name != null
                     where e.ShowOnOrgId == null || e.ShowOnOrgId == orgid
-                    select new ReportItem(e.Name, e.Type, e.ClassX);
+                    select new ReportItem(e.Name, e.Type, e.ClassX, e.Url);
             list = new List<ReportItem>();
             foreach (var r in q.Where(r => !list.Contains(r)))
                 list.Add(r);
@@ -113,6 +115,10 @@ namespace CmsWeb.Areas.Reports.Models
         public List<ReportItem> CustomList()
         {
             return List.Where(vv => vv.Type == "Custom").ToList();
+        }
+        public List<ReportItem> UrlList()
+        {
+            return List.Where(vv => vv.Type == "URL").ToList();
         }
 
         public List<ReportItem> PythonList()
