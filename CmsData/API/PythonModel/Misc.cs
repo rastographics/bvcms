@@ -1,4 +1,6 @@
 using System.Text.RegularExpressions;
+using System.Web;
+using MarkdownDeep;
 using UtilityExtensions;
 
 namespace CmsData
@@ -63,6 +65,13 @@ namespace CmsData
         public string Replace(string text, string pattern, string replacement)
         {
             return Regex.Replace(text, pattern, replacement);
+        }
+        public static string Markdown(string text)
+        {
+            if (text == null)
+                return "";
+            var md = new Markdown();
+            return md.Transform(text.Trim());
         }
     }
 }

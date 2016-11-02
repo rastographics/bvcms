@@ -1019,7 +1019,7 @@ namespace CmsWeb.Models
                 body.Append($"Delegated To: {PeopleLink(task.CoOwner.Name, task.CoOwner.PeopleId)}<br/>\n");
 
 
-            body.Append($"Notes:<br/>\n{task.Notes}");
+            body.Append($"Notes:<br/>\n{PythonModel.Markdown(task.Notes)}");
 
             return body.ToString();
         }

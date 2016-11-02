@@ -896,10 +896,7 @@ namespace CmsWeb
 
         public static HtmlString Markdown(string text)
         {
-            if (text == null)
-                return null;
-            var md = new Markdown();
-            var output = md.Transform(text.Trim());
+            var output = PythonModel.Markdown(text);
             return new HtmlString(output);
         }
 

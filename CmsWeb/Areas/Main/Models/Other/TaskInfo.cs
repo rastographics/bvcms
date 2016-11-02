@@ -144,7 +144,7 @@ namespace CmsWeb.Models
         public int? CompletedContactId { get; set; }
         public DateTime? CompletedContact { get; set; }
         public string Notes { get; set; }
-        public string FmtNotes => Util.SafeFormat(Notes);
+        public string FmtNotes => ViewExtensions2.Markdown(Notes.Replace("{peopleid}", WhoId.ToString())).ToString();
 
         public bool HasNotes => string.IsNullOrEmpty(Notes);
 
