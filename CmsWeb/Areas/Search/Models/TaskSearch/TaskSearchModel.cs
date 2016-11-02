@@ -4,6 +4,7 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,14 +31,18 @@ namespace CmsWeb.Areas.Search.Models
         {
             var db = DbUtil.Db;
 
-            var u = DbUtil.Db.CurrentUser;
+            var u = db.CurrentUser;
             var roles = u.UserRoles.Select(uu => uu.Role.RoleName.ToLower()).ToArray();
             var managePrivateContacts = HttpContext.Current.User.IsInRole("ManagePrivateContacts");
-            var q = from t in DbUtil.Db.ViewTaskSearches
-                   where (t.LimitToRole ?? "") == "" || roles.Contains(t.LimitToRole) || managePrivateContacts
-                   select t;
+            var manageTasks = HttpContext.Current.User.IsInRole("ManageTasks");
+            var uid = Util.UserPeopleId;
+            var q = from t in db.ViewTaskSearches
+                    where (t.LimitToRole ?? "") == "" || roles.Contains(t.LimitToRole) || managePrivateContacts
+                    where manageTasks || t.OrginatorId == uid || t.OwnerId == uid || t.CoOwnerId == uid
+                    select t;
 
-            if(SearchParameters.About.HasValue())
+
+            if (SearchParameters.About.HasValue())
                 if (SearchParameters.About.AllDigits())
                     q = from t in q
                         where t.WhoId == SearchParameters.About.ToInt()
@@ -47,7 +52,7 @@ namespace CmsWeb.Areas.Search.Models
                         where t.About.Contains(SearchParameters.About)
                         select t;
 
-            if(SearchParameters.Owner.HasValue())
+            if (SearchParameters.Owner.HasValue())
                 if (SearchParameters.Owner.AllDigits())
                     q = from t in q
                         where t.OwnerId == SearchParameters.Owner.ToInt()
@@ -57,7 +62,7 @@ namespace CmsWeb.Areas.Search.Models
                         where t.Owner.Contains(SearchParameters.Owner)
                         select t;
 
-            if(SearchParameters.Delegate.HasValue())
+            if (SearchParameters.Delegate.HasValue())
                 if (SearchParameters.Delegate.AllDigits())
                     q = from t in q
                         where t.CoOwnerId == SearchParameters.Delegate.ToInt()
@@ -67,7 +72,7 @@ namespace CmsWeb.Areas.Search.Models
                         where t.DelegateX.Contains(SearchParameters.Delegate)
                         select t;
 
-            if(SearchParameters.Originator.HasValue())
+            if (SearchParameters.Originator.HasValue())
                 if (SearchParameters.Originator.AllDigits())
                     q = from t in q
                         where t.OrginatorId == SearchParameters.Originator.ToInt()
@@ -81,7 +86,7 @@ namespace CmsWeb.Areas.Search.Models
                 q = from t in q
                     where t.Description.Contains(SearchParameters.Description)
                     select t;
-            
+
             if (SearchParameters.Notes.HasValue())
                 q = from t in q
                     where t.Notes.Contains(SearchParameters.Notes)
@@ -111,10 +116,10 @@ namespace CmsWeb.Areas.Search.Models
                     where t.Created >= SearchParameters.EndDt.Value
                     select t;
 
-            if(SearchParameters.IsPrivate)
-                    q = from t in q
-                        where (t.LimitToRole ?? "") != ""
-                        select t;
+            if (SearchParameters.IsPrivate)
+                q = from t in q
+                    where (t.LimitToRole ?? "") != ""
+                    select t;
 
 //            IQueryable<int> ppl = null;
 //            if (Util2.OrgLeadersOnly)
@@ -146,12 +151,14 @@ namespace CmsWeb.Areas.Search.Models
 
 
         private const string StrTaskSearch = "TaskSearch";
+
         internal void GetFromSession()
         {
             var os = HttpContext.Current.Session[StrTaskSearch] as TaskSearchInfo;
             if (os != null)
                 SearchParameters.CopyPropertiesFrom(os);
         }
+
         internal void SaveToSession()
         {
             var os = new TaskSearchModel();

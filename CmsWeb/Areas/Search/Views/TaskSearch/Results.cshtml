@@ -24,7 +24,7 @@
       {
         <tr>
           <td>
-            <a href="/Task/@t.Id" target="Task">@t.Created.ToString2("d")</a>
+            <a href="/Task/Detail/@t.Id" target="Task">@t.Created.ToString2("d")</a>
           </td>
           <td>
             @t.Description<br/>
@@ -50,7 +50,7 @@
           </td>
         @if (Model.SearchParameters.ShowNotes)
         {
-          <td>@ViewExtensions2.Markdown(t.Notes)</td>
+          <td class="maxwidth">@ViewExtensions2.Markdown(t.Notes)</td>
         }
         </tr>
       }

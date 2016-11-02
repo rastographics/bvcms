@@ -3,10 +3,10 @@
 @model User
 @{
   var definedBasicLevel1 = new[] { "Access", "Attendance", "Edit", "ManageGroups" };
-  var definedBasicLevel2 = new[] { "Coupon", "SendSMS", "ManageEmails", "ManageTransactions", "ScheduleEmails" };
+  var definedBasicLevel2 = new[] { "Coupon", "SendSMS", "ManageEmails", "ScheduleEmails" };
   var definedSpecialPurpose = new[] { "ApplicationReview", "BackgroundCheck", "ContentEdit", "CreditCheck", "Coupon2", "Design", "Membership", "MissionGiving", "OrgLeadersOnly" };
-  var definedFinancialRoles = new[] { "Finance", "FinanceAdmin" };
-  var definedAdvancedRoles = new[] { "Admin", "Delete", "Developer", "Manager", "Manager2", "OrgTagger" };
+  var definedFinancialRoles = new[] { "Finance", "FinanceAdmin", "ManageTransactions" };
+  var definedAdvancedRoles = new[] { "Admin", "Delete", "Developer", "Manager", "Manager2", "OrgTagger", "ManageTasks", "ManagePrivateContacts" };
   
   var allRoles = CmsData.User.AllRoles(DbUtil.Db);
   var basicLevel1Roles = allRoles.Where(r => definedBasicLevel1.Contains(r.RoleName)).Select(r => r.RoleName).ToList();
