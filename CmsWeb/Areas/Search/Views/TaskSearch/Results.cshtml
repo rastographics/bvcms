@@ -1,37 +1,63 @@
-﻿@using UtilityExtensions
+﻿@using CmsData
+@using UtilityExtensions
 @model CmsWeb.Areas.Search.Models.TaskSearchModel
 <div id="results">
-    @Html.Partial("PagerTop", Model)
-    <div class="table-responsive">
-        <table id="results-table" class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>About</th>
-                    <th>Status</th>
-                    <th>Owner</th>
-                    <th>Delegate</th>
-                    <th>Originator</th>
-                    <th>LimitToRole</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var t in Model.ViewList())
-                {
-                    <tr>
-                        <td><a href="/Task/@t.Id" target="Contact">@t.Created.ToString2("d")</a></td>
-                        <td>@t.About</td>
-                        <td>@t.Status</td>
-                        <td>@t.Owner</td>
-                        <td>@t.DelegateX</td>
-                        <td>@t.Originator</td>
-                        <td>@t.LimitToRole</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-    @Html.Partial("PagerBottom", Model)
-    @Html.Hidden("totcnt", Model.Count().ToString("N0"))
-    @Html.Partial("PagerHidden", Model)
-</div>           
+  @Html.Partial("PagerTop", Model)
+  <div class="table-responsive">
+    <table id="results-table" class="table table-striped">
+      <thead>
+      <tr>
+        <th><a href="#" class="sortable">Date</a></th>
+        <th>
+          Description<br/>
+          <a href="#" class="sortable">Status</a>
+        </th>
+        <th>People</th>
+        @if (Model.SearchParameters.ShowNotes)
+        {
+          <th>Notes</th>
+        }
+      </tr>
+      </thead>
+      <tbody>
+      @foreach (var t in Model.ViewList())
+      {
+        <tr>
+          <td>
+            <a href="/Task/@t.Id" target="Task">@t.Created.ToString2("d")</a>
+          </td>
+          <td>
+            @t.Description<br/>
+            @t.Status
+            @if (t.LimitToRole.HasValue())
+            {
+              <br/>@:Limited to: @t.LimitToRole
+            }
+          </td>
+          <td>
+            <div class="tbl">
+              @if (t.Originator.HasValue())
+              {
+                <div class="row"><div class="cell">Originator</div><div class="cell">@t.Originator</div></div>
+              }
+              <div class="row"><div class="cell">About</div><div class="cell"><a href="/Person2/@t.WhoId" target="person">@t.About</a></div></div>
+              <div class="row"><div class="cell">Owner</div><div class="cell">@t.Owner</div></div>
+              @if (t.DelegateX.HasValue())
+              {
+                <div class="row"><div class="cell">Delegate</div><div class="cell">@t.DelegateX</div></div>
+              }
+            </div>
+          </td>
+        @if (Model.SearchParameters.ShowNotes)
+        {
+          <td>@ViewExtensions2.Markdown(t.Notes)</td>
+        }
+        </tr>
+      }
+      </tbody>
+    </table>
+  </div>
+  @Html.Partial("PagerBottom", Model)
+  @Html.Hidden("totcnt", Model.Count().ToString("N0"))
+  @Html.Partial("PagerHidden", Model)
+</div>

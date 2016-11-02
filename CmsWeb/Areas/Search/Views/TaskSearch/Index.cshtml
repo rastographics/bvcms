@@ -1,72 +1,98 @@
 ﻿@model CmsWeb.Areas.Search.Models.TaskSearchModel
 @{
-    ViewBag.Title = "Task Search";
-    ViewBag.PageHeader = "Task Search";
-    Layout = ViewExtensions2.TouchPointLayout();
+  ViewBag.Title = "Task Search";
+  ViewBag.PageHeader = "Task Search";
+  Layout = ViewExtensions2.TouchPointLayout();
+}
+@section head
+{
+  <style>
+    div.tbl { 
+      display: table;
+      background-color: inherit !important;
+    }
+    div.tbl div.row { display: table-row; }
+    div.tbl div.cell {
+      display: table-cell;
+      padding-right: 1em;
+      padding-top: 2px;
+      padding-bottom: 2px;
+    }
+  </style>
 }
 <div class="box box-responsive">
-    <div class="box-content">
-        <form id="form-contact-search" class="ajax" data-results="#results" method="post" action="/TaskSearch/Results">
-            <div class="well">
-                <div class="row">
-                    <div class="col-lg-3 col-md-3 col-sm-6">
-                        @Html.EditorFor(m => m.SearchParameters.About)
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6">
-                        @Html.EditorFor(m => m.SearchParameters.Owner)
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6">
-                        @Html.EditorFor(m => m.SearchParameters.Delegate)
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6">
-                        @Html.EditorFor(m => m.SearchParameters.Originator)
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-2 col-md-3 col-sm-4">
-                        @Html.EditorFor(m => m.SearchParameters.Status)
-                    </div>
-                    <div class="col-lg-4 col-md-5 col-sm-6">
-                        <div class="form-group">
-                            <label class="checkbox-inline control-label">
-                                @Html.CheckBoxFor(m => m.SearchParameters.IsPrivate) Private?
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-3 col-md-3 col-sm-4">
-                        <strong>Total Count</strong> <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span>
-                    </div>
-                    <div class="col-lg-9 col-md-9 col-sm-8">
-                        <div class="pull-right">
-                            <a class="btn btn-default submit" href="/TaskSearch/Clear">Clear</a>
-                            <div class="btn-group">
-                                <a id="filter" href="/TaskSearch/Results" class="btn btn-primary ajax" data-callback="UpdateTotal">Search</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  <div class="box-content">
+    <form id="form-contact-search" class="ajax" data-results="#results" method="post" action="/TaskSearch/Results">
+      <div class="well">
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-sm-6">
+            @Html.EditorFor(m => m.SearchParameters.About)
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-6">
+            @Html.EditorFor(m => m.SearchParameters.Owner)
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-6">
+            @Html.EditorFor(m => m.SearchParameters.Delegate)
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-6">
+            @Html.EditorFor(m => m.SearchParameters.Originator)
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-2 col-md-3 col-sm-4">
+            @Html.EditorFor(m => m.SearchParameters.Status)
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-4">
+            @Html.EditorFor(m => m.SearchParameters.IsPrivate)
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-4">
+            @Html.EditorFor(m => m.SearchParameters.ShowNotes)
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-4 col-md-4 col-sm-6">
+            @Html.EditorFor(m => m.SearchParameters.Description)
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-6">
+            @Html.EditorFor(m => m.SearchParameters.Notes)
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-sm-4">
+            <strong>Total Count</strong> <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span>
+          </div>
+          <div class="col-lg-9 col-md-9 col-sm-8">
+            <div class="pull-right">
+              <a class="btn btn-default submit" href="/TaskSearch/Clear">Clear</a>
+              <div class="btn-group">
+                <a id="filter" href="/TaskSearch/Results" class="btn btn-primary ajax" data-callback="UpdateTotal">Search</a>
+              </div>
             </div>
-            @Html.Partial("Results", Model)
-        </form>
-    </div>
+          </div>
+        </div>
+      </div>
+      @Html.Partial("Results", Model)
+    </form>
+  </div>
 </div>
 @section scripts{
-    <script type="text/javascript">
-        $(function () {
-            $.InitFunctions.UpdateTotal = function () {
-                $('#totalcount').text($('#totcnt').val());
-            };
+  <script type="text/javascript">
+    $(function() {
+      $.InitFunctions.UpdateTotal = function() {
+        $('#totalcount').text($('#totcnt').val());
+      };
 
-            $("form").on("keypress", 'input', function (e) {
-                if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
-                    $('#filter').click();
-                    return false;
-                }
-                return true;
-            });
+      $("form")
+        .on("keypress",
+          'input',
+          function(e) {
+            if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+              $('#filter').click();
+              return false;
+            }
+            return true;
+          });
 
-        });
-    </script>
+    });
+  </script>
 }

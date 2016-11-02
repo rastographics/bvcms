@@ -77,6 +77,16 @@ namespace CmsWeb.Areas.Search.Models
                         where t.Originator.Contains(SearchParameters.Originator)
                         select t;
 
+            if (SearchParameters.Description.HasValue())
+                q = from t in q
+                    where t.Description.Contains(SearchParameters.Description)
+                    select t;
+            
+            if (SearchParameters.Notes.HasValue())
+                q = from t in q
+                    where t.Notes.Contains(SearchParameters.Notes)
+                    select t;
+
             if (SearchParameters.Status.Value.ToInt() > 0)
                 q = from t in q
                     where t.StatusId == SearchParameters.Status.Value.ToInt()
@@ -101,8 +111,7 @@ namespace CmsWeb.Areas.Search.Models
                     where t.Created >= SearchParameters.EndDt.Value
                     select t;
 
-            if(SearchParameters.IsPrivate.HasValue)
-                if (SearchParameters.IsPrivate.Value)
+            if(SearchParameters.IsPrivate)
                     q = from t in q
                         where (t.LimitToRole ?? "") != ""
                         select t;
@@ -122,9 +131,9 @@ namespace CmsWeb.Areas.Search.Models
         {
             switch (SortExpression)
             {
-                case "created":
+                case "Date":
                     return q.OrderBy(tt => tt.Created);
-                case "created desc":
+                case "Date desc":
                     return q.OrderByDescending(tt => tt.Created);
             }
             return q;
@@ -145,7 +154,7 @@ namespace CmsWeb.Areas.Search.Models
         }
         internal void SaveToSession()
         {
-            var os = new ContactSearchInfo();
+            var os = new TaskSearchModel();
             SearchParameters.CopyPropertiesTo(os);
             HttpContext.Current.Session[StrTaskSearch] = os;
         }

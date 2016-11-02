@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.Search.Controllers
         }
 
         [HttpPost]
-        public ActionResult Results(ContactSearchModel m)
+        public ActionResult Results(TaskSearchModel m)
         {
             m.SaveToSession();
             return View(m);
@@ -27,52 +27,9 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult Clear()
         {
-            var m = new ContactSearchModel();
+            var m = new TaskSearchModel();
             m.ClearSession();
-            return Redirect("/ContactSearch2");
-        }
-
-        [HttpPost]
-        public ActionResult ConvertToQuery(ContactSearchModel m)
-        {
-            var gid = m.ConvertToQuery();
-            return Redirect($"/Query/{gid}");
-        }
-
-        [HttpGet]
-        public ActionResult ContactTypeQuery(int id)
-        {
-            var gid = ContactSearchModel.ContactTypeQuery(id);
-            return Redirect($"/Query/{gid}");
-        }
-
-        [HttpPost]
-        public ActionResult ContactorSummary(ContactSearchModel m)
-        {
-            var q = m.ContactorSummary();
-            return View(q);
-        }
-
-        [HttpPost]
-        public ActionResult ContactSummary(ContactSearchModel m)
-        {
-            var q = m.ContactSummary();
-            return View(q);
-        }
-
-        [HttpPost]
-        public ActionResult ContactTypeTotals(ContactSearchModel m)
-        {
-            ViewBag.candelete = m.CanDeleteTotal();
-            var q = m.ContactTypeTotals();
-            return View(q);
-        }
-
-        [Authorize(Roles = "Developer")]
-        public ActionResult DeleteContactsForType(int id)
-        {
-            ContactSearchModel.DeleteContactsForType(id);
-            return Redirect("/ContactSearch/ContactTypeTotals");
+            return Redirect("/TaskSearch");
         }
     }
 }

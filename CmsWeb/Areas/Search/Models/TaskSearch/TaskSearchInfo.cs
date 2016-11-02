@@ -15,7 +15,10 @@ namespace CmsWeb.Areas.Search.Models
         public DateTime? StartDt { get; set; }
         public DateTime? EndDt { get; set; }
         public int? Lookback { get; set; }
-        public bool? IsPrivate { get; set; }
+        public bool IsPrivate { get; set; }
+        public bool ShowNotes { get; set; }
+        public string Description { get; set; }
+        public string Notes { get; set; }
 
         public TaskSearchInfo()
         {
