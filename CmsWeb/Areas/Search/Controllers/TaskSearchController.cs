@@ -14,6 +14,7 @@ namespace CmsWeb.Areas.Search.Controllers
             var m = new TaskSearchModel();
 
             m.GetFromSession();
+            m.SearchParameters.ExcludeCompleted = true;
             return View(m);
         }
 

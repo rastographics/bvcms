@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UtilityExtensions;
 using System.Web.Security;
+using Dapper;
 
 namespace CmsData
 {
@@ -34,23 +34,24 @@ namespace CmsData
             get { return UserRoles.Select(ur => ur.Role.RoleName).ToArray(); }
         }
 
-        public static IEnumerable<Role> AllRoles(CMSDataContext Db)
+        public static List<Role> AllRoles(CMSDataContext Db)
         {
             var roles = Db.Roles.ToList();
-            return roles.OrderBy(rr => rr.RoleName == "NEW" ? 1 : 0).ThenBy(rr => rr.RoleName);
+            return roles.OrderBy(rr => rr.RoleName == "NEW" ? 1 : 0).ThenBy(rr => rr.RoleName).ToList();
         }
 
-        public void SetRoles(CMSDataContext Db, string[] value)
+        public void SetRoles(CMSDataContext db, string[] value)
         {
             if (value == null)
             {
-                Db.UserRoles.DeleteAllOnSubmit(UserRoles);
+                db.UserRoles.DeleteAllOnSubmit(UserRoles);
+                db.SubmitChanges();
                 return;
             }
             var qdelete = from r in UserRoles
                 where !value.Contains(r.Role.RoleName)
                 select r;
-            Db.UserRoles.DeleteAllOnSubmit(qdelete);
+            db.UserRoles.DeleteAllOnSubmit(qdelete);
 
             var q = from s in value
                 join r in UserRoles on s equals r.Role.RoleName into g
@@ -60,10 +61,15 @@ namespace CmsData
 
             foreach (var s in q)
             {
-                var role = Db.Roles.Single(r => r.RoleName == s);
-                UserRoles.Add(new UserRole {Role = role});
+                var role = db.Roles.SingleOrDefault(r => r.RoleName == s);
+                var roleid = role?.RoleId;
+                if (role == null)
+                    roleid = CreateRole(db, s);
+                UserRoles.Add(new UserRole { RoleId = roleid.Value, UserId = UserId });
             }
+            db.SubmitChanges();
         }
+
         public void AddRoles(CMSDataContext db, params string[] value)
         {
             var q = from s in value
@@ -80,11 +86,12 @@ namespace CmsData
                 UserRoles.Add(new UserRole {Role = role});
             }
         }
+
         public void AddRole(CMSDataContext db, string value)
         {
-            var a = new [] {value};
+            var a = new[] {value};
             AddRoles(db, a);
-		}
+        }
 
         public void RemoveRoles(CMSDataContext Db, params string[] values)
         {
@@ -120,6 +127,80 @@ namespace CmsData
             if (role == "Delete")
                 return db.CurrentUser.InRole("Developer");
             return db.CurrentUser.InRole("Admin");
+        }
+
+        public static string[] BasicLevel1 =
+        {
+            "Access", "Attendance", "Edit", "ManageGroups"
+        };
+
+        public static string[] BasicLevel2 =
+        {
+            "Coupon", "SendSMS", "ManageEmails", "ScheduleEmails"
+        };
+
+        public static string[] SpecialPurpose =
+        {
+            "ApplicationReview",
+            "BackgroundCheck",
+            "Checkin",
+            "ContentEdit",
+            "CreditCheck",
+            "Coupon2",
+            "Design",
+            "Membership",
+            "MemberDocs",
+            "MissionGiving",
+            "OrgLeadersOnly"
+        };
+
+        public static string[] Financial =
+        {
+            "Finance", "FinanceAdmin", "ManageTransactions"
+        };
+
+        public static string[] Advanced =
+        {
+            "Admin",
+            "Delete",
+            "Developer",
+            "Manager",
+            "Manager2",
+            "OrgTagger",
+            "ManagePrivateContacts",
+            "ManageTasks"
+        };
+
+        public static List<string> Hardwired()
+        {
+            var list = new List<string>();
+            list.AddRange(BasicLevel1);
+            list.AddRange(BasicLevel2);
+            list.AddRange(SpecialPurpose);
+            list.AddRange(Financial);
+            list.AddRange(Advanced);
+            return list;
+        }
+
+        public static string[] CustomRoles(CMSDataContext db)
+        {
+            var allroles = AllRoles(db);
+            var hardwired = Hardwired();
+            var q = from r in allroles
+                where !hardwired.Contains(r.RoleName)
+                select r.RoleName;
+            return q.ToArray();
+        }
+
+        public static int CreateRole(CMSDataContext db, string name)
+        {
+            bool? hardwired = null;
+            if (Hardwired().Contains(name))
+                hardwired = true;
+            var role = new Role {Hardwired = hardwired, RoleName = name};
+            db.Roles.InsertOnSubmit(role);
+            db.SubmitChanges();
+            return role.RoleId;
         }
     }
 }

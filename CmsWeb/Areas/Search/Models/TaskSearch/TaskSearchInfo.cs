@@ -17,6 +17,7 @@ namespace CmsWeb.Areas.Search.Models
         public int? Lookback { get; set; }
         public bool IsPrivate { get; set; }
         public bool ShowNotes { get; set; }
+        public bool ExcludeCompleted { get; set; }
         public string Description { get; set; }
         public string Notes { get; set; }
 

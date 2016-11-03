@@ -1,26 +1,7 @@
-﻿@using UtilityExtensions
-@using CmsData
-@model User
-@{
-  var definedBasicLevel1 = new[] { "Access", "Attendance", "Edit", "ManageGroups" };
-  var definedBasicLevel2 = new[] { "Coupon", "SendSMS", "ManageEmails", "ScheduleEmails" };
-  var definedSpecialPurpose = new[] { "ApplicationReview", "BackgroundCheck", "ContentEdit", "CreditCheck", "Coupon2", "Design", "Membership", "MissionGiving", "OrgLeadersOnly" };
-  var definedFinancialRoles = new[] { "Finance", "FinanceAdmin", "ManageTransactions" };
-  var definedAdvancedRoles = new[] { "Admin", "Delete", "Developer", "Manager", "Manager2", "OrgTagger", "ManageTasks", "ManagePrivateContacts" };
-  
-  var allRoles = CmsData.User.AllRoles(DbUtil.Db);
-  var basicLevel1Roles = allRoles.Where(r => definedBasicLevel1.Contains(r.RoleName)).Select(r => r.RoleName).ToList();
-  var basicLevel2Roles = allRoles.Where(r => definedBasicLevel2.Contains(r.RoleName)).Select(r => r.RoleName).ToList();
-  var specialPurposeRoles = allRoles.Where(r => definedSpecialPurpose.Contains(r.RoleName)).Select(r => r.RoleName).ToList();
-  var financialRoles = allRoles.Where(r => definedFinancialRoles.Contains(r.RoleName)).Select(r => r.RoleName).ToList();
-  var advancedRoles = allRoles.Where(r => definedAdvancedRoles.Contains(r.RoleName)).Select(r => r.RoleName).ToList();
-  var customRoles = allRoles.Where(r => !definedBasicLevel1.Contains(r.RoleName) &&
-                                        !definedBasicLevel2.Contains(r.RoleName) &&
-                                        !definedSpecialPurpose.Contains(r.RoleName) &&
-                                        !definedFinancialRoles.Contains(r.RoleName) &&
-                                        !definedAdvancedRoles.Contains(r.RoleName)).Select(r => r.RoleName).ToList();
-    
-}
+﻿@using CmsData
+@using UtilityExtensions
+@using roles = CmsData.User
+@model roles
 <form class="ajax" autocomplete="off">
     <div class="row">
         <div class="col-sm-7">
@@ -75,7 +56,7 @@
         <strong>Basic Level 1</strong>
         <div class="row">
             <div class="col-sm-12">
-                @foreach (var role in basicLevel1Roles)
+                @foreach (var role in roles.BasicLevel1)
                 {
                     @Role(role)
                 }
@@ -85,7 +66,7 @@
         <strong>Basic Level 2</strong>
         <div class="row">
             <div class="col-sm-12">
-                @foreach (var role in basicLevel2Roles)
+                @foreach (var role in roles.BasicLevel2)
                 {
                     @Role(role)
                 }
@@ -95,11 +76,11 @@
         <strong>Special Purpose</strong>
         <div class="row">
             <div class="col-sm-12">
-                @foreach (var role in specialPurposeRoles.Where(r => r != "OrgLeadersOnly"))
+                @foreach (var role in roles.SpecialPurpose.Where(r => r != "OrgLeadersOnly"))
                 {
                     @Role(role)
                 }
-                @if (specialPurposeRoles.Contains("OrgLeadersOnly"))
+                @if (roles.SpecialPurpose.Contains("OrgLeadersOnly"))
                 {
                     if (!Model.CanAssign(DbUtil.Db, "OrgLeadersOnly"))
                     {
@@ -122,7 +103,7 @@
         <strong>Financial</strong>
         <div class="row">
             <div class="col-sm-12">
-                @foreach (var role in financialRoles)
+                @foreach (var role in roles.Financial)
                 {
                     @Role(role)
                 }
@@ -132,7 +113,7 @@
         <strong>Advanced Roles</strong>
         <div class="row">
             <div class="col-sm-12">
-                @foreach (var role in advancedRoles)
+                @foreach (var role in roles.Advanced)
                 {
                     @Role(role)
                 }
@@ -142,7 +123,7 @@
         <strong>Custom</strong>
         <div class="row">
             <div class="col-sm-12">
-                @foreach (var role in customRoles)
+                @foreach (var role in roles.CustomRoles(DbUtil.Db))
                 {
                     @Role(role)
                 }

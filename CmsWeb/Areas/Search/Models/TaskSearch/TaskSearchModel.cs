@@ -13,6 +13,7 @@ using CmsData.View;
 using CmsWeb.Code;
 using CmsWeb.Models;
 using CmsData;
+using CmsData.Codes;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
@@ -121,6 +122,11 @@ namespace CmsWeb.Areas.Search.Models
                     where (t.LimitToRole ?? "") != ""
                     select t;
 
+            if (SearchParameters.ExcludeCompleted)
+                q = from t in q
+                    where t.StatusId != TaskStatusCode.Complete
+                    select t;
+
 //            IQueryable<int> ppl = null;
 //            if (Util2.OrgLeadersOnly)
 //                ppl = db.OrgLeadersOnlyTag2().People(db).Select(pp => pp.PeopleId);
@@ -161,7 +167,7 @@ namespace CmsWeb.Areas.Search.Models
 
         internal void SaveToSession()
         {
-            var os = new TaskSearchModel();
+            var os = new TaskSearchInfo();
             SearchParameters.CopyPropertiesTo(os);
             HttpContext.Current.Session[StrTaskSearch] = os;
         }
