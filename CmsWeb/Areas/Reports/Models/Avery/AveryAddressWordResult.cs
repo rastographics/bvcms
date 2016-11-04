@@ -73,8 +73,8 @@ namespace CmsWeb.Areas.Reports.Models
                 dd.MarginRight = 24;
                 dd.MarginTop = 48;
                 dd.MarginBottom = 30;
-                dd.PageHeight = 1056;
-                dd.PageWidth = 816;
+//                dd.PageHeight = 1056;
+//                dd.PageWidth = 816;
                 var col = 0;
                 var row = 0;
                 Table tt = null;
