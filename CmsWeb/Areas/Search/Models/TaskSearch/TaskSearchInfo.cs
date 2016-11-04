@@ -10,20 +10,21 @@ namespace CmsWeb.Areas.Search.Models
         public string Originator { get; set; }
         public string Owner { get; set; }
         public string About { get; set; }
-        public bool? Archived { get; set; }
+        public bool Archived { get; set; }
         public CodeInfo Status { get; set; }
-        public DateTime? StartDt { get; set; }
         public DateTime? EndDt { get; set; }
         public int? Lookback { get; set; }
         public bool IsPrivate { get; set; }
         public bool ShowNotes { get; set; }
         public bool ExcludeCompleted { get; set; }
+        public bool ExcludeNewPerson { get; set; }
         public string Description { get; set; }
         public string Notes { get; set; }
 
         public TaskSearchInfo()
         {
-            Status = new CodeInfo("TaskStatus");
+            if(Status == null)
+                Status = new CodeInfo("TaskStatus");
         }
     }
 }

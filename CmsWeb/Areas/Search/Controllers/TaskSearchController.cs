@@ -13,7 +13,7 @@ namespace CmsWeb.Areas.Search.Controllers
             Response.NoCache();
             var m = new TaskSearchModel();
 
-            m.GetFromSession();
+            m.GetPreference();
             m.SearchParameters.ExcludeCompleted = true;
             return View(m);
         }
@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult Results(TaskSearchModel m)
         {
-            m.SaveToSession();
+            m.SavePreference();
             return View(m);
         }
 
@@ -29,7 +29,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Clear()
         {
             var m = new TaskSearchModel();
-            m.ClearSession();
+            m.ClearPreference();
             return Redirect("/TaskSearch");
         }
     }

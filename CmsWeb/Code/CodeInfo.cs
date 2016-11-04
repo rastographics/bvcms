@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
@@ -9,32 +10,35 @@ using UtilityExtensions;
 namespace CmsWeb.Code
 {
     [Serializable]
-    public class CodeInfo : IModelViewModelObject
+    public class CodeInfo : IModelViewModelObject, ISerializable
     {
         private string name;
         private string value;
 
-        [NonSerialized]
-        [NoUpdate]
-        private SelectList items;
+        [NoUpdate] private SelectList items;
 
         public CodeInfo()
         {
-
         }
-        public CodeInfo(string name) : this(null, name) { }
+
+        public CodeInfo(string name) : this(null, name)
+        {
+        }
+
         public CodeInfo(object value, string name)
         {
             if (value != null)
                 Value = value.ToString();
             Name = name;
         }
+
         public CodeInfo(object value, SelectList items)
         {
             if (value != null)
                 Value = value.ToString();
             Items = items;
         }
+
         public string Value
         {
             get { return value; }
@@ -75,9 +79,9 @@ namespace CmsWeb.Code
                         {
                             var list = getlist.Invoke(cv, null);
                             if (list is IEnumerable<CodeValueItem>)
-                                Items = ((IEnumerable<CodeValueItem>)getlist.Invoke(cv, null)).ToSelect();
+                                Items = ((IEnumerable<CodeValueItem>) getlist.Invoke(cv, null)).ToSelect();
                             else if (list is SelectList)
-                                Items = ((SelectList)getlist.Invoke(cv, null));
+                                Items = ((SelectList) getlist.Invoke(cv, null));
                         }
                         else
                             Items = new List<CodeValueItem>().ToSelect();
@@ -116,7 +120,7 @@ namespace CmsWeb.Code
             {
                 if (track)
                 {
-                    if (mid.PropertyType == typeof (int?) || mid.PropertyType == typeof (int))
+                    if (mid.PropertyType == typeof(int?) || mid.PropertyType == typeof(int))
                         if (Value == "0")
                             model.UpdateValue(changes, altname, null);
                         else
@@ -142,15 +146,27 @@ namespace CmsWeb.Code
             else if (midvalue == null)
                 Value = null;
             else if (mid.PropertyType.Name == "CodeInfo")
-                Value = ((CodeInfo)midvalue).Value;
+                Value = ((CodeInfo) midvalue).Value;
             else
                 Value = midvalue.ToString();
             var cinfo = midvalue as CodeInfo;
-            if(cinfo == null && existing != null)
+            if (cinfo == null && existing != null)
                 cinfo = existing as CodeInfo;
             if (items == null && cinfo != null && cinfo.items != null)
                 items = cinfo.items;
             Name = vm.Name;
+        }
+
+        protected CodeInfo(SerializationInfo info, StreamingContext context)
+        {
+            Name = info.GetString("Name");
+            Value = info.GetString("Value");
+        }
+
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Name", Name);
+            info.AddValue("Value", Value);
         }
     }
 }

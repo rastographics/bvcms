@@ -14,6 +14,7 @@ using CmsWeb.Code;
 using CmsWeb.Models;
 using CmsData;
 using CmsData.Codes;
+using Newtonsoft.Json;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
@@ -40,6 +41,7 @@ namespace CmsWeb.Areas.Search.Models
             var q = from t in db.ViewTaskSearches
                     where (t.LimitToRole ?? "") == "" || roles.Contains(t.LimitToRole) || managePrivateContacts
                     where manageTasks || t.OrginatorId == uid || t.OwnerId == uid || t.CoOwnerId == uid
+                    where t.Archive == SearchParameters.Archived
                     select t;
 
 
@@ -83,6 +85,11 @@ namespace CmsWeb.Areas.Search.Models
                         where t.Originator.Contains(SearchParameters.Originator)
                         select t;
 
+            if (SearchParameters.ExcludeNewPerson)
+                q = from t in q
+                    where !t.Description.StartsWith("New Person")
+                    select t;
+
             if (SearchParameters.Description.HasValue())
                 q = from t in q
                     where t.Description.Contains(SearchParameters.Description)
@@ -98,23 +105,18 @@ namespace CmsWeb.Areas.Search.Models
                     where t.StatusId == SearchParameters.Status.Value.ToInt()
                     select t;
 
-            if (SearchParameters.Archived.HasValue)
+            if (SearchParameters.Lookback.HasValue)
+            {
+                var enddt = SearchParameters.EndDt;
+                if(!enddt.HasValue)
+                    enddt = DateTime.Today.AddDays(1);
                 q = from t in q
-                    where t.Archive == SearchParameters.Archived.Value
+                    where t.Created >= enddt.Value.AddDays(-SearchParameters.Lookback.Value)
                     select t;
-
-            if (SearchParameters.StartDt.HasValue)
-                q = from t in q
-                    where t.Created >= SearchParameters.StartDt.Value
-                    select t;
-            else if (SearchParameters.Lookback.HasValue)
-                q = from t in q
-                    where t.Created >= DateTime.Today.AddDays(-SearchParameters.Lookback.Value)
-                    select t;
-
+            }
             if (SearchParameters.EndDt.HasValue)
                 q = from t in q
-                    where t.Created >= SearchParameters.EndDt.Value
+                    where t.Created <= SearchParameters.EndDt.Value
                     select t;
 
             if (SearchParameters.IsPrivate)
@@ -155,26 +157,27 @@ namespace CmsWeb.Areas.Search.Models
             return q;
         }
 
-
         private const string StrTaskSearch = "TaskSearch";
 
-        internal void GetFromSession()
+        private string NewTaskSearchString => JsonConvert.SerializeObject(new TaskSearchInfo());
+
+        internal void GetPreference()
         {
-            var os = HttpContext.Current.Session[StrTaskSearch] as TaskSearchInfo;
+            var os = JsonConvert.DeserializeObject<TaskSearchInfo>(
+                DbUtil.Db.UserPreference(StrTaskSearch, NewTaskSearchString));
             if (os != null)
                 SearchParameters.CopyPropertiesFrom(os);
         }
 
-        internal void SaveToSession()
+        internal void SavePreference()
         {
-            var os = new TaskSearchInfo();
-            SearchParameters.CopyPropertiesTo(os);
-            HttpContext.Current.Session[StrTaskSearch] = os;
+            DbUtil.Db.SetUserPreference(StrTaskSearch, 
+                JsonConvert.SerializeObject(SearchParameters));
         }
 
-        internal void ClearSession()
+        internal void ClearPreference()
         {
-            HttpContext.Current.Session.Remove(StrTaskSearch);
+            DbUtil.Db.SetUserPreference(StrTaskSearch, NewTaskSearchString);
         }
     }
 }

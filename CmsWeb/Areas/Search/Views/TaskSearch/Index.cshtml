@@ -12,9 +12,15 @@
       background-color: inherit !important;
     }
     div.tbl div.row { display: table-row; }
+    div.tbl div.cell1 {
+      display: table-cell;
+      width: 5.5em;
+      padding-right: 1em;
+      padding-top: 2px;
+      padding-bottom: 2px;
+    }
     div.tbl div.cell {
       display: table-cell;
-      padding-right: 1em;
       padding-top: 2px;
       padding-bottom: 2px;
     }
@@ -28,39 +34,51 @@
     <form id="form-contact-search" class="ajax" data-results="#results" method="post" action="/TaskSearch/Results">
       <div class="well">
         <div class="row">
-          <div class="col-lg-3 col-md-3 col-sm-6">
+          <div class="col-lg-3 col-md-3 col-sm-3">
+            @Html.EditorFor(m => m.SearchParameters.Status)
+          </div>
+          <div class="col-lg-2 col-md-2 col-sm-4">
             @Html.EditorFor(m => m.SearchParameters.About)
           </div>
-          <div class="col-lg-3 col-md-3 col-sm-6">
+          <div class="col-lg-2 col-md-2 col-sm-4">
             @Html.EditorFor(m => m.SearchParameters.Owner)
           </div>
-          <div class="col-lg-3 col-md-3 col-sm-6">
+          <div class="col-lg-2 col-md-2 col-sm-4">
             @Html.EditorFor(m => m.SearchParameters.Delegate)
           </div>
-          <div class="col-lg-3 col-md-3 col-sm-6">
+          <div class="col-lg-2 col-md-2 col-sm-4">
             @Html.EditorFor(m => m.SearchParameters.Originator)
           </div>
         </div>
         <div class="row">
-          <div class="col-lg-3 col-md-3 col-sm-3">
-            @Html.EditorFor(m => m.SearchParameters.Status)
-          </div>
-          <div class="col-lg-2 col-md-3 col-sm-3">
+          <div class="col-lg-2 col-md-2 col-sm-3">
             @Html.EditorFor(m => m.SearchParameters.ExcludeCompleted)
           </div>
-          <div class="col-lg-2 col-md-3 col-sm-3">
+          <div class="col-lg-2 col-md-2 col-sm-3">
+            @Html.EditorFor(m => m.SearchParameters.ExcludeNewPerson)
+          </div>
+          <div class="col-lg-2 col-md-2 col-sm-3">
+            @Html.EditorFor(m => m.SearchParameters.Archived)
+          </div>
+          <div class="col-lg-2 col-md-2 col-sm-3">
             @Html.EditorFor(m => m.SearchParameters.IsPrivate)
           </div>
-          <div class="col-lg-2 col-md-3 col-sm-3">
+          <div class="col-lg-2 col-md-2 col-sm-3">
             @Html.EditorFor(m => m.SearchParameters.ShowNotes)
           </div>
         </div>
         <div class="row">
-          <div class="col-lg-4 col-md-4 col-sm-6">
+          <div class="col-lg-3 col-md-3 col-sm-6">
             @Html.EditorFor(m => m.SearchParameters.Description)
           </div>
-          <div class="col-lg-4 col-md-4 col-sm-6">
+          <div class="col-lg-3 col-md-3 col-sm-6">
             @Html.EditorFor(m => m.SearchParameters.Notes)
+          </div>
+          <div class="col-lg-2 col-md-2 col-sm-6">
+            @Html.EditorFor(m => m.SearchParameters.Lookback)
+          </div>
+          <div class="col-lg-2 col-md-2 col-sm-6">
+            @Html.EditorFor(m => m.SearchParameters.EndDt)
           </div>
         </div>
         <div class="row">

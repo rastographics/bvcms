@@ -1,5 +1,4 @@
-﻿@using CmsData
-@using UtilityExtensions
+﻿@using UtilityExtensions
 @model CmsWeb.Areas.Search.Models.TaskSearchModel
 <div id="results">
   @Html.Partial("PagerTop", Model)
@@ -26,7 +25,7 @@
           <td>
             <a href="/Task/Detail/@t.Id" target="Task">@t.Created.ToString2("d")</a>
           </td>
-          <td>
+          <td @(t.Archive? "style=color:red" : "")>
             @t.Description<br/>
             @t.Status
             @if (t.LimitToRole.HasValue())
@@ -38,13 +37,13 @@
             <div class="tbl">
               @if (t.Originator.HasValue())
               {
-                <div class="row"><div class="cell">Originator</div><div class="cell">@t.Originator</div></div>
+                <div class="row"><div class="cell1">Originator</div><div class="cell">@t.Originator</div></div>
               }
-              <div class="row"><div class="cell">About</div><div class="cell"><a href="/Person2/@t.WhoId" target="person">@t.About</a></div></div>
-              <div class="row"><div class="cell">Owner</div><div class="cell">@t.Owner</div></div>
+              <div class="row"><div class="cell1">About</div><div class="cell"><a href="/Person2/@t.WhoId" target="person">@t.About</a></div></div>
+              <div class="row"><div class="cell1">Owner</div><div class="cell">@t.Owner</div></div>
               @if (t.DelegateX.HasValue())
               {
-                <div class="row"><div class="cell">Delegate</div><div class="cell">@t.DelegateX</div></div>
+                <div class="row"><div class="cell1">Delegate</div><div class="cell">@t.DelegateX</div></div>
               }
             </div>
           </td>
