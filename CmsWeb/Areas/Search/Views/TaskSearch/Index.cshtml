@@ -1,8 +1,10 @@
-﻿@model CmsWeb.Areas.Search.Models.TaskSearchModel
+﻿@using HtmlParserSharp.Core
+@model CmsWeb.Areas.Search.Models.TaskSearchModel
 @{
   ViewBag.Title = "Task Search";
   ViewBag.PageHeader = "Task Search";
   Layout = ViewExtensions2.TouchPointLayout();
+  var personClass = new {@class = "person"};
 }
 @section head
 {
@@ -31,54 +33,55 @@
 }
 <div class="box box-responsive">
   <div class="box-content">
-    <form id="form-contact-search" class="ajax" data-results="#results" method="post" action="/TaskSearch/Results">
+    <form id="form-task-search" class="ajax" data-results="#results" method="post" action="/TaskSearch/Results">
+      @Html.Hidden("Options", Model.Search.GetOptions())
       <div class="well">
         <div class="row">
           <div class="col-lg-3 col-md-3 col-sm-3">
-            @Html.EditorFor(m => m.SearchParameters.Status)
+            @Html.EditorFor(m => m.Search.Status)
           </div>
           <div class="col-lg-2 col-md-2 col-sm-4">
-            @Html.EditorFor(m => m.SearchParameters.About)
+            @Html.EditorFor(m => m.Search.About, personClass)
           </div>
           <div class="col-lg-2 col-md-2 col-sm-4">
-            @Html.EditorFor(m => m.SearchParameters.Owner)
+            @Html.EditorFor(m => m.Search.Owner, personClass)
           </div>
           <div class="col-lg-2 col-md-2 col-sm-4">
-            @Html.EditorFor(m => m.SearchParameters.Delegate)
+            @Html.EditorFor(m => m.Search.Delegate, personClass)
           </div>
           <div class="col-lg-2 col-md-2 col-sm-4">
-            @Html.EditorFor(m => m.SearchParameters.Originator)
+            @Html.EditorFor(m => m.Search.Originator, personClass)
           </div>
         </div>
         <div class="row">
           <div class="col-lg-2 col-md-2 col-sm-3">
-            @Html.EditorFor(m => m.SearchParameters.ExcludeCompleted)
+            @Html.EditorFor(m => m.Search.ActivePendingOnly)
           </div>
           <div class="col-lg-2 col-md-2 col-sm-3">
-            @Html.EditorFor(m => m.SearchParameters.ExcludeNewPerson)
+            @Html.EditorFor(m => m.Search.ExcludeNewPerson)
           </div>
           <div class="col-lg-2 col-md-2 col-sm-3">
-            @Html.EditorFor(m => m.SearchParameters.Archived)
+            @Html.EditorFor(m => m.Search.Archived)
           </div>
           <div class="col-lg-2 col-md-2 col-sm-3">
-            @Html.EditorFor(m => m.SearchParameters.IsPrivate)
+            @Html.EditorFor(m => m.Search.IsPrivate)
           </div>
           <div class="col-lg-2 col-md-2 col-sm-3">
-            @Html.EditorFor(m => m.SearchParameters.ShowNotes)
+            @Html.EditorFor(m => m.Search.ShowNotes)
           </div>
         </div>
         <div class="row">
           <div class="col-lg-3 col-md-3 col-sm-6">
-            @Html.EditorFor(m => m.SearchParameters.Description)
+            @Html.EditorFor(m => m.Search.Description)
           </div>
           <div class="col-lg-3 col-md-3 col-sm-6">
-            @Html.EditorFor(m => m.SearchParameters.Notes)
+            @Html.EditorFor(m => m.Search.Notes)
           </div>
           <div class="col-lg-2 col-md-2 col-sm-6">
-            @Html.EditorFor(m => m.SearchParameters.Lookback)
+            @Html.EditorFor(m => m.Search.Lookback)
           </div>
           <div class="col-lg-2 col-md-2 col-sm-6">
-            @Html.EditorFor(m => m.SearchParameters.EndDt)
+            @Html.EditorFor(m => m.Search.EndDt)
           </div>
         </div>
         <div class="row">
@@ -100,23 +103,5 @@
   </div>
 </div>
 @section scripts{
-  <script type="text/javascript">
-    $(function() {
-      $.InitFunctions.UpdateTotal = function() {
-        $('#totalcount').text($('#totcnt').val());
-      };
-
-      $("form")
-        .on("keypress",
-          'input',
-          function(e) {
-            if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
-              $('#filter').click();
-              return false;
-            }
-            return true;
-          });
-
-    });
-  </script>
+  @Fingerprint.Script("/Content/touchpoint/js/search/TaskSearch.js")
 }

@@ -1,10 +1,13 @@
 ﻿@model string
+@{
+      var cls = "form-control " + ViewBag.@class;
+}
 <div class="form-group @ViewBag.hide">
     @(ViewBag.label != null
         ? Html.Label(ViewBag.label as string, new { @class = "control-label" }) 
         : Html.LabelFor(m => m, new { @class = "control-label" }))
     <div class="controls">
-        @Html.TextBoxFor2(m => m, true, null, new { @class = "form-control" })
+        @Html.TextBoxFor2(m => m, true, null, new { @class = cls })
         <span class="help-block">@Html.Raw(ViewBag.help)</span>
         @Html.ValidationMessageLabelFor(m => m)
         @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())

@@ -10,133 +10,134 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CmsData.View;
-using CmsWeb.Code;
 using CmsWeb.Models;
 using CmsData;
 using CmsData.Codes;
-using Newtonsoft.Json;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
 {
     public class TaskSearchModel : PagedTableModel<TaskSearch, TaskSearch>
     {
-        public TaskSearchInfo SearchParameters { get; set; }
+        public TaskSearchInfo Search { get; set; }
 
         public TaskSearchModel()
             : base("Date", "desc", true)
         {
-            SearchParameters = new TaskSearchInfo();
+            Search = new TaskSearchInfo();
         }
 
         public override IQueryable<TaskSearch> DefineModelList()
         {
             var db = DbUtil.Db;
 
+            var q = GetBaseResults(db, Search.GetOptions());
+
+            if (Search.About.HasValue())
+                if (Search.About.AllDigits())
+                    q = from t in q
+                        where t.WhoId == Search.About.ToInt()
+                        select t;
+                else
+                    q = from t in q
+                        where t.About2.StartsWith(Search.About)
+                        select t;
+
+            if (Search.Owner.HasValue())
+                if (Search.Owner.AllDigits())
+                    q = from t in q
+                        where t.OwnerId == Search.Owner.ToInt()
+                        select t;
+                else
+                    q = from t in q
+                        where t.Owner2.StartsWith(Search.Owner)
+                        select t;
+
+            if (Search.Delegate.HasValue())
+                if (Search.Delegate.AllDigits())
+                    q = from t in q
+                        where t.CoOwnerId == Search.Delegate.ToInt()
+                        select t;
+                else
+                    q = from t in q
+                        where t.Delegate2.StartsWith(Search.Delegate)
+                        select t;
+
+            if (Search.Originator.HasValue())
+                if (Search.Originator.AllDigits())
+                    q = from t in q
+                        where t.OrginatorId == Search.Originator.ToInt()
+                        select t;
+                else
+                    q = from t in q
+                        where t.Originator2.StartsWith(Search.Originator)
+                        select t;
+
+            if (Search.Description.HasValue())
+                q = from t in q
+                    where t.Description.Contains(Search.Description)
+                    select t;
+
+            if (Search.Notes.HasValue())
+                q = from t in q
+                    where t.Notes.Contains(Search.Notes)
+                    select t;
+
+            if (Search.IsPrivate)
+                q = from t in q
+                    where (t.LimitToRole ?? "") != ""
+                    select t;
+
+            return q;
+        }
+
+        internal void Archive()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static IQueryable<TaskSearch> GetBaseResults(CMSDataContext db, TaskSearchInfo.OptionInfo opt)
+        {
             var u = db.CurrentUser;
             var roles = u.UserRoles.Select(uu => uu.Role.RoleName.ToLower()).ToArray();
             var managePrivateContacts = HttpContext.Current.User.IsInRole("ManagePrivateContacts");
             var manageTasks = HttpContext.Current.User.IsInRole("ManageTasks");
             var uid = Util.UserPeopleId;
             var q = from t in db.ViewTaskSearches
-                    where (t.LimitToRole ?? "") == "" || roles.Contains(t.LimitToRole) || managePrivateContacts
-                    where manageTasks || t.OrginatorId == uid || t.OwnerId == uid || t.CoOwnerId == uid
-                    where t.Archive == SearchParameters.Archived
+                where (t.LimitToRole ?? "") == "" || roles.Contains(t.LimitToRole) || managePrivateContacts
+                where manageTasks || t.OrginatorId == uid || t.OwnerId == uid || t.CoOwnerId == uid
+                where t.Archive == opt.Archived
+                select t;
+
+            if (opt.Status > 0)
+                q = from t in q
+                    where t.StatusId == opt.Status
                     select t;
 
-
-            if (SearchParameters.About.HasValue())
-                if (SearchParameters.About.AllDigits())
-                    q = from t in q
-                        where t.WhoId == SearchParameters.About.ToInt()
-                        select t;
-                else
-                    q = from t in q
-                        where t.About.Contains(SearchParameters.About)
-                        select t;
-
-            if (SearchParameters.Owner.HasValue())
-                if (SearchParameters.Owner.AllDigits())
-                    q = from t in q
-                        where t.OwnerId == SearchParameters.Owner.ToInt()
-                        select t;
-                else
-                    q = from t in q
-                        where t.Owner.Contains(SearchParameters.Owner)
-                        select t;
-
-            if (SearchParameters.Delegate.HasValue())
-                if (SearchParameters.Delegate.AllDigits())
-                    q = from t in q
-                        where t.CoOwnerId == SearchParameters.Delegate.ToInt()
-                        select t;
-                else
-                    q = from t in q
-                        where t.DelegateX.Contains(SearchParameters.Delegate)
-                        select t;
-
-            if (SearchParameters.Originator.HasValue())
-                if (SearchParameters.Originator.AllDigits())
-                    q = from t in q
-                        where t.OrginatorId == SearchParameters.Originator.ToInt()
-                        select t;
-                else
-                    q = from t in q
-                        where t.Originator.Contains(SearchParameters.Originator)
-                        select t;
-
-            if (SearchParameters.ExcludeNewPerson)
+            if (opt.ExcludeNewPerson)
                 q = from t in q
                     where !t.Description.StartsWith("New Person")
                     select t;
 
-            if (SearchParameters.Description.HasValue())
+            if (opt.ActivePendingOnly)
                 q = from t in q
-                    where t.Description.Contains(SearchParameters.Description)
+                    where new[] {TaskStatusCode.Active, TaskStatusCode.Pending}.Contains(t.StatusId ?? 0)
                     select t;
 
-            if (SearchParameters.Notes.HasValue())
-                q = from t in q
-                    where t.Notes.Contains(SearchParameters.Notes)
-                    select t;
-
-            if (SearchParameters.Status.Value.ToInt() > 0)
-                q = from t in q
-                    where t.StatusId == SearchParameters.Status.Value.ToInt()
-                    select t;
-
-            if (SearchParameters.Lookback.HasValue)
+            if (opt.Lookback.HasValue)
             {
-                var enddt = SearchParameters.EndDt;
-                if(!enddt.HasValue)
-                    enddt = DateTime.Today.AddDays(1);
+                var ed = opt.EndDt;
+                if (!ed.HasValue)
+                    ed = DateTime.Today.AddDays(1);
                 q = from t in q
-                    where t.Created >= enddt.Value.AddDays(-SearchParameters.Lookback.Value)
+                    where t.Created >= ed.Value.AddDays(-opt.Lookback.Value)
                     select t;
             }
-            if (SearchParameters.EndDt.HasValue)
+            if (opt.EndDt.HasValue)
                 q = from t in q
-                    where t.Created <= SearchParameters.EndDt.Value
+                    where t.Created <= opt.EndDt
                     select t;
 
-            if (SearchParameters.IsPrivate)
-                q = from t in q
-                    where (t.LimitToRole ?? "") != ""
-                    select t;
-
-            if (SearchParameters.ExcludeCompleted)
-                q = from t in q
-                    where t.StatusId != TaskStatusCode.Complete
-                    select t;
-
-//            IQueryable<int> ppl = null;
-//            if (Util2.OrgLeadersOnly)
-//                ppl = db.OrgLeadersOnlyTag2().People(db).Select(pp => pp.PeopleId);
-
-//            if (ppl != null && Util.UserPeopleId != null)
-//                q = from c in q
-//                    where c.contactsMakers.Any(cm => cm.PeopleId == Util.UserPeopleId.Value)
-//                    select c;
             return q;
         }
 
@@ -148,6 +149,26 @@ namespace CmsWeb.Areas.Search.Models
                     return q.OrderBy(tt => tt.Created);
                 case "Date desc":
                     return q.OrderByDescending(tt => tt.Created);
+                case "Status":
+                    return q.OrderBy(tt => tt.Status).ThenByDescending(tt => tt.Created);
+                case "Status desc":
+                    return q.OrderByDescending(tt => tt.Status).ThenByDescending(tt => tt.Created);
+                case "Originator":
+                    return q.OrderBy(tt => tt.Originator2 ?? "zzz").ThenByDescending(tt => tt.Created);
+                case "Originator desc":
+                    return q.OrderByDescending(tt => tt.Originator2 ?? "zzz").ThenByDescending(tt => tt.Created);
+                case "About":
+                    return q.OrderBy(tt => tt.About2).ThenByDescending(tt => tt.Created);
+                case "About desc":
+                    return q.OrderByDescending(tt => tt.About2).ThenByDescending(tt => tt.Created);
+                case "Owner":
+                    return q.OrderBy(tt => tt.Owner2).ThenByDescending(tt => tt.Created);
+                case "Owner desc":
+                    return q.OrderByDescending(tt => tt.Owner2).ThenByDescending(tt => tt.Created);
+                case "Delegate":
+                    return q.OrderBy(tt => tt.Delegate2 ?? "zzz").ThenByDescending(tt => tt.Created);
+                case "Delegate desc":
+                    return q.OrderByDescending(tt => tt.Delegate2 ?? "zzz").ThenByDescending(tt => tt.Created);
             }
             return q;
         }
@@ -157,27 +178,31 @@ namespace CmsWeb.Areas.Search.Models
             return q;
         }
 
-        private const string StrTaskSearch = "TaskSearch";
-
-        private string NewTaskSearchString => JsonConvert.SerializeObject(new TaskSearchInfo());
-
-        internal void GetPreference()
+        public static string[] FindNames(string type, string term, int limit, string optionstring)
         {
-            var os = JsonConvert.DeserializeObject<TaskSearchInfo>(
-                DbUtil.Db.UserPreference(StrTaskSearch, NewTaskSearchString));
-            if (os != null)
-                SearchParameters.CopyPropertiesFrom(os);
-        }
+            var options = TaskSearchInfo.GetOptions(optionstring);
+            var q = GetBaseResults(DbUtil.Db, options);
 
-        internal void SavePreference()
-        {
-            DbUtil.Db.SetUserPreference(StrTaskSearch, 
-                JsonConvert.SerializeObject(SearchParameters));
-        }
-
-        internal void ClearPreference()
-        {
-            DbUtil.Db.SetUserPreference(StrTaskSearch, NewTaskSearchString);
+            switch (type)
+            {
+                case "Delegate":
+                    return (from t in q
+                        where t.Delegate2.StartsWith(term)
+                        select t.Delegate2).Distinct().Take(limit).ToArray();
+                case "About":
+                    return (from t in q
+                        where t.About2.StartsWith(term)
+                        select t.About2).Distinct().Take(limit).ToArray();
+                case "Owner":
+                    return (from t in q
+                        where t.Owner2.StartsWith(term)
+                        select t.Owner2).Distinct().Take(limit).ToArray();
+                case "Originator":
+                    return (from t in q
+                        where t.Originator2.StartsWith(term)
+                        select t.Originator2).Distinct().Take(limit).ToArray();
+            }
+            return new string[0];
         }
     }
 }

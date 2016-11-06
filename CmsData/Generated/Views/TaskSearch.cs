@@ -44,6 +44,14 @@ namespace CmsData.View
 		
 		private string _About;
 		
+		private string _Originator2;
+		
+		private string _Owner2;
+		
+		private string _Delegate2;
+		
+		private string _About2;
+		
 		private int _Id;
 		
 		private int? _StatusId;
@@ -300,6 +308,74 @@ namespace CmsData.View
 			{
 				if (this._About != value)
 					this._About = value;
+			}
+
+		}
+
+		
+		[Column(Name="Originator2", Storage="_Originator2", DbType="nvarchar(139)")]
+		public string Originator2
+		{
+			get
+			{
+				return this._Originator2;
+			}
+
+			set
+			{
+				if (this._Originator2 != value)
+					this._Originator2 = value;
+			}
+
+		}
+
+		
+		[Column(Name="Owner2", Storage="_Owner2", DbType="nvarchar(139)")]
+		public string Owner2
+		{
+			get
+			{
+				return this._Owner2;
+			}
+
+			set
+			{
+				if (this._Owner2 != value)
+					this._Owner2 = value;
+			}
+
+		}
+
+		
+		[Column(Name="Delegate2", Storage="_Delegate2", DbType="nvarchar(139)")]
+		public string Delegate2
+		{
+			get
+			{
+				return this._Delegate2;
+			}
+
+			set
+			{
+				if (this._Delegate2 != value)
+					this._Delegate2 = value;
+			}
+
+		}
+
+		
+		[Column(Name="About2", Storage="_About2", DbType="nvarchar(139)")]
+		public string About2
+		{
+			get
+			{
+				return this._About2;
+			}
+
+			set
+			{
+				if (this._About2 != value)
+					this._About2 = value;
 			}
 
 		}

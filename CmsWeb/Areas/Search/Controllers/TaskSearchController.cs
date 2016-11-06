@@ -13,15 +13,14 @@ namespace CmsWeb.Areas.Search.Controllers
             Response.NoCache();
             var m = new TaskSearchModel();
 
-            m.GetPreference();
-            m.SearchParameters.ExcludeCompleted = true;
+            m.Search.GetPreference();
             return View(m);
         }
 
         [HttpPost]
         public ActionResult Results(TaskSearchModel m)
         {
-            m.SavePreference();
+            m.Search.SavePreference();
             return View(m);
         }
 
@@ -29,8 +28,34 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Clear()
         {
             var m = new TaskSearchModel();
-            m.ClearPreference();
+            m.Search.ClearPreference();
             return Redirect("/TaskSearch");
+        }
+        public ActionResult DelegateNames(string term, string options)
+        {
+            var n = TaskSearchModel.FindNames("Delegate", term, 10, options);
+            return Json(n, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult OwnerNames(string term, string options)
+        {
+            var n = TaskSearchModel.FindNames("Owner", term, 10, options);
+            return Json(n, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult OriginatorNames(string term, string options)
+        {
+            var n = TaskSearchModel.FindNames("Originator", term, 10, options);
+            return Json(n, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult AboutNames(string term, string options)
+        {
+            var n = TaskSearchModel.FindNames("About", term, 10, options);
+            return Json(n, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Archive(TaskSearchModel m)
+        {
+            m.Archive();
+            return Content("ok");
         }
     }
 }

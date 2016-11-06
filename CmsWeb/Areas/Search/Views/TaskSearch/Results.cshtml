@@ -6,13 +6,26 @@
     <table id="results-table" class="table table-striped notwide centered">
       <thead>
       <tr>
-        <th><a href="#" class="sortable">Date</a></th>
+        <th>@Model.SortLink("Date")</th>
         <th>
           Description<br/>
-          <a href="#" class="sortable">Status</a>
+          @Model.SortLink("Status")
         </th>
-        <th>People</th>
-        @if (Model.SearchParameters.ShowNotes)
+        <th>
+          <div class="btn-group">
+            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
+              People <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <li class="dropdown-header">Sort by Name</li>
+              <li>@Model.SortLink("Originator")</li>
+              <li>@Model.SortLink("About")</li>
+              <li>@Model.SortLink("Owner")</li>
+              <li>@Model.SortLink("Delegate")</li>
+            </ul>
+          </div>
+        </th>
+        @if (Model.Search.ShowNotes)
         {
           <th>Notes</th>
         }
@@ -25,32 +38,61 @@
           <td>
             <a href="/Task/Detail/@t.Id" target="Task">@t.Created.ToString2("d")</a>
           </td>
-          <td @(t.Archive? "style=color:red" : "")>
+          <td @(t.Archive ? "style=color:red" : "")>
             @t.Description<br/>
             @t.Status
             @if (t.LimitToRole.HasValue())
             {
-              <br/>@:Limited to: @t.LimitToRole
+              <br/>
+              @:Limited to: @t.LimitToRole
             }
           </td>
           <td>
             <div class="tbl">
               @if (t.Originator.HasValue())
               {
-                <div class="row"><div class="cell1">Originator</div><div class="cell">@t.Originator</div></div>
+                <div class="row">
+                  <div class="cell1">
+                    <a href="#" data-filter="Originator-@t.OrginatorId-@t.Originator2">Originator</a>
+                  </div>
+                  <div class="cell">
+                    <a href="/Person2/@t.OrginatorId" target="person">@t.Originator</a>
+                  </div>
+                </div>
               }
-              <div class="row"><div class="cell1">About</div><div class="cell"><a href="/Person2/@t.WhoId" target="person">@t.About</a></div></div>
-              <div class="row"><div class="cell1">Owner</div><div class="cell">@t.Owner</div></div>
+              <div class="row">
+                <div class="cell1">
+                  <a href="#" data-filter="About-@t.WhoId-@t.About2">About</a>
+                </div>
+                <div class="cell">
+                  <a href="/Person2/@t.WhoId" target="person">@t.About</a>
+                </div>
+              </div>
+              <div class="row">
+                <div class="cell1">
+                  <a href="#" data-filter="Owner-@t.OwnerId-@t.Owner2">Owner</a>
+                </div>
+                <div class="cell">
+                  <a href="/Person2/@t.OwnerId" target="person">@t.Owner</a>
+                </div>
+              </div>
               @if (t.DelegateX.HasValue())
               {
-                <div class="row"><div class="cell1">Delegate</div><div class="cell">@t.DelegateX</div></div>
+                <div class="row">
+                  <div class="cell1">
+                    <a href="#" data-filter="Delegate-@t.CoOwnerId-@t.Delegate2">Delegate</a>
+                  </div>
+                  <div class="cell">
+                    <a href="/Person2/@t.CoOwnerId" target="person">@t.DelegateX</a>
+                  </div>
+                </div>
               }
             </div>
           </td>
-        @if (Model.SearchParameters.ShowNotes)
-        {
-          <td class="maxwidth">@ViewExtensions2.Markdown(t.Notes)</td>
-        }
+          @if (Model.Search.ShowNotes)
+          {
+            <td class="maxwidth">@ViewExtensions2.Markdown(t.Notes)</td>
+          }
         </tr>
       }
       </tbody>
