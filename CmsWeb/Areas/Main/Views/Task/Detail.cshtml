@@ -1,267 +1,330 @@
 ﻿@using CmsData
-@using CmsWeb
 @using UtilityExtensions
 @model CmsWeb.Models.TaskDetail
 @{
-    Layout = ViewExtensions2.TouchPointLayout();
-    ViewBag.Title = "Task Details";
-    ViewBag.PageHeader = "Task Details";
+  Layout = ViewExtensions2.TouchPointLayout();
+  ViewBag.Title = "Task Details";
+  ViewBag.PageHeader = "Task Details";
 }
-@{var link = Server.UrlEncode(ViewExtensions2.CmsHost + "/Task/Detail/" + Model.Id); }
+@{ var link = Server.UrlEncode(ViewExtensions2.CmsHost + "/Task/Detail/" + Model.Id); }
 <div class="row">
-    <div class="col-sm-12 col-md-12 col-lg-7">
-        <div class="box box-responsive">
-            <div class="box-title-btn">
-                <h5>@Model.Description</h5>
-                <div class="box-tools">
-                    <a class="btn btn-default" href="/Task/List"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
-                    @if (Model.CanAccept)
-                    {
-                        <a href="#" class="accept btn btn-success"><i class="fa fa-thumbs-o-up fa-fw"></i> Accept Task</a>
-                        <a href="#" class="decline btn btn-danger"><i class="fa fa-thumbs-o-down fa-fw"></i> Decline Task</a>
-                    }
-                    @if (Model.IsOwner)
-                    {
-                        <a href="/Task/Edit/@Model.Id" class="btn btn-default"><i class="fa fa-pencil fa-fw"></i> Edit</a>
-                    }
-                    @if (Model.IsOwner || ((Model.CanComplete || Model.CanCompleteWithContact) && !Model.CanAccept))
-                    {
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                Actions <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-right">
-                                @if (Model.CanAccept)
-                                {
-                                    <li><a href="#" class="accept"><i class="fa fa-thumbs-o-up fa-fw"></i>&nbsp;&nbsp;Accept Task</a></li>
-                                    <li><a href="#" class="decline"><i class="fa fa-thumbs-o-down fa-fw"></i>&nbsp;&nbsp;Decline Task</a></li>
-                                }
-                                @if (Model.CanComplete)
-                                {
-                                    <li><a href="#" class="complete"><i class="fa fa-check fa-fw"></i>&nbsp;&nbsp;Complete Task</a></li>
-                                }
-                                @if (Model.CanCompleteWithContact && Model.Description != "New Person Data Entry")
-                                {
-                                    <li><a href="#" class="completewcontact"><i class="fa fa-check-square-o fa-fw"></i>&nbsp;&nbsp;Complete Task w/ Contact</a></li>
-                                }
-                                @if (Model.IsOwner)
-                                {
-                                    <li class="divider"></li>
-                                    <li><a href="/SearchAdd2/Dialog/taskabout/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-user-plus fa-fw"></i>&nbsp;&nbsp;Change Regarding</a></li>
-                                    <li><a href="/Task/Edit/@Model.Id"><i class="fa fa-pencil fa-fw"></i>&nbsp;&nbsp;Edit Task</a></li>
-                                }
-                                @if (Model.IsOwner)
-                                {
-                                    <li class="divider"></li>
-                                    <li><a href="/SearchAdd2/Dialog/taskowner/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-share-square-o fa-fw"></i>&nbsp;&nbsp;Transfer Ownership</a></li>
-                                    <li><a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-users fa-fw"></i>&nbsp;&nbsp;Delegate Task</a></li>
-                                }
-                            </ul>
-                        </div>
-                    }
-                </div>
-            </div>
-            <div class="box-content">
-                @Html.Hidden("TaskId", Model.Id)
-                @if (Model.WhoId.HasValue)
-                {
-                    <div class="well">
-                        <strong><a href="@Model.PersonUrl" style="font-size: 1.5em;" target="person">@Model.Who</a></strong>
-                        <br />
-                        <a href="@Model.ProspectReportLink()" target="_blank">Prospect Report</a>
-                        <div>
-                            <ul class="list-inline" style="margin-bottom: 0;">
-                                <li><i class="fa fa-map-marker"></i>&nbsp;&nbsp;<a href="http://www.google.com/maps?q=@Model.WhoAddrCityStateZip" target="_blank">@Model.WhoAddress</a></li>
-                                <li><i class="fa fa-car"></i>&nbsp;&nbsp;<a href="http://www.google.com/maps?f=d&saddr=@DbUtil.StartAddress&pw=2&daddr=@Model.WhoAddrCityStateZip" target="_blank">Driving Directions</a></li>
-                            </ul>
-                            @if (!string.IsNullOrWhiteSpace(Model.WhoEmail2) && !string.IsNullOrWhiteSpace(Model.WhoPhone))
-                            {
-                                <ul class="list-inline">
-                                    <li><i class="fa fa-envelope-o"></i>&nbsp;&nbsp;<a href="mailto:@Model.WhoEmail">@Model.WhoEmail2</a></li>
-                                    <li><i class="fa fa-phone"></i>&nbsp;&nbsp;<a href="tel:+@Model.WhoPhone">@Model.WhoPhone</a></li>
-                                </ul>
-                            }
-                            else
-                            {
-                                if (!string.IsNullOrWhiteSpace(Model.WhoEmail2))
-                                {
-                                    <i class="fa fa-envelope-o"></i><text>&nbsp;&nbsp;</text><a href="mailto:@Model.WhoEmail">@Model.WhoEmail2</a>
-                                }
-                                if (!string.IsNullOrWhiteSpace(Model.WhoPhone))
-                                {
-                                    <i class="fa fa-phone"></i><text>&nbsp;&nbsp;</text><a href="tel:+@Model.WhoPhone">@Model.WhoPhone</a>
-                                }
-                            }
-                        </div>
-                    </div>
-                }
-                <div class="row">
-                    <div class="col-sm-6">
-                        <dl>
-                            <dt>Owner</dt>
-                            <dd>
-                                <a href="mailto:@Model.OwnerEmail?subject=@Model.Description&body=@link">@Model.Owner</a>
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>Delegated To</dt>
-                            <dd>
-                                @if (Model.CoOwnerId.HasValue)
-                                {
-                                    <a href="mailto:@Model.CoOwnerEmail">@Model.CoOwner</a>
-                                }
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>Status</dt>
-                            <dd>
-                                @Model.Status
-                                @if (Model.ShowCompleted)
-                                {
-                                    <span>@Model.CompletedOn.ToString2("f")</span>
-                                }
-                                @if (Model.StatusId == CmsData.Codes.TaskStatusCode.Declined)
-                                {
-                                    @:&nbsp- @Model.DeclineReason
-                                }
-                            </dd>
-                        </dl>
-                    </div>
-                    <div class="col-sm-6">
-                        <dl>
-                            <dt>Created Date</dt>
-                            <dd>@Model.CreatedOn.ToString("f")</dd>
-                        </dl>
-                        <dl>
-                            <dt>Due Date</dt>
-                            <dd>@Model.Due.ToString2("d")</dd>
-                        </dl>
-                        @if (Model.Description != "New Person Data Entry")
-                        {
-                            <dl>
-                                <dt>Completed Contact</dt>
-                                <dd>
-                                    <a href="@Model.ContactUrl">@Model.CompletedContact.FormatDate()</a>
-                                </dd>
-                            </dl>
-                        }
-
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <dl>
-                            <dt>Notes</dt>
-                            <dd>@Html.Raw(Model.FmtNotes)</dd>
-                        </dl>
-                    </div>
-                </div>
-                <div class="visible-xs-block">
-                    <div class="btn-group btn-block">
-                        <button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                            Actions <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-right btn-block">
-                            @if (Model.CanAccept)
-                            {
-                                <li><a href="#" class="accept"><i class="fa fa-thumbs-o-up fa-fw"></i>&nbsp;&nbsp;Accept Task</a></li>
-                            }
-                            @if (Model.CanComplete)
-                            {
-                                <li><a href="#" class="complete"><i class="fa fa-check fa-fw"></i>&nbsp;&nbsp;Complete Task</a></li>
-                            }
-                            @if (Model.CanCompleteWithContact && Model.Description != "New Person Data Entry")
-                            {
-                                <li><a href="#" class="completewcontact"><i class="fa fa-check-square-o fa-fw"></i>&nbsp;&nbsp;Complete Task w/ Contact</a></li>
-                            }
-                            @if (Model.IsAnOwner)
-                            {
-                                <li class="divider"></li>
-                                <li><a href="/SearchAdd2/Dialog/taskabout/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-user-plus fa-fw"></i>&nbsp;&nbsp;Change Regarding</a></li>
-                                <li><a href="/Task/Edit/@Model.Id"><i class="fa fa-pencil fa-fw"></i>&nbsp;&nbsp;Edit Task</a></li>
-                            }
-                            @if (Model.IsOwner)
-                            {
-                                <li class="divider"></li>
-                                <li><a href="/SearchAdd2/Dialog/taskowner/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-share-square-o fa-fw"></i>&nbsp;&nbsp;Transfer Ownership</a></li>
-                                <li><a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-users fa-fw"></i>&nbsp;&nbsp;Delegate Task</a></li>
-                            }
-                        </ul>
-                    </div>
-                    <a class="btn btn-default btn-block" href="/Task/List"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
-                </div>
-            </div>
-        </div>
+<div class="col-sm-12 col-md-12 col-lg-7">
+<div class="box box-responsive">
+<div class="box-title-btn">
+  <h5>@Model.Description</h5>
+  <div class="box-tools">
+    <a class="btn btn-default" href="/Task/List"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+    @if (Model.CanAccept)
+    {
+      <a href="#" class="accept btn btn-success"><i class="fa fa-thumbs-o-up fa-fw"></i> Accept Task</a>
+      <a href="#" class="decline btn btn-danger"><i class="fa fa-thumbs-o-down fa-fw"></i> Decline Task</a>
+    }
+    @if (Model.IsAnOwner)
+    {
+      <a href="/Task/Edit/@Model.Id" class="btn btn-default"><i class="fa fa-pencil fa-fw"></i> Edit</a>
+    }
+    @if (Model.IsOwner || ((Model.CanComplete || Model.CanCompleteWithContact) && !Model.CanAccept))
+    {
+      <div class="btn-group">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+          Actions <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right">
+          @if (Model.CanAccept)
+          {
+            <li>
+              <a href="#" class="accept"><i class="fa fa-thumbs-o-up fa-fw"></i>&nbsp;&nbsp;Accept Task</a>
+            </li>
+            <li>
+              <a href="#" class="decline"><i class="fa fa-thumbs-o-down fa-fw"></i>&nbsp;&nbsp;Decline Task</a>
+            </li>
+          }
+          @if (Model.CanComplete)
+          {
+            <li>
+              <a href="#" class="complete"><i class="fa fa-check fa-fw"></i>&nbsp;&nbsp;Complete Task</a>
+            </li>
+          }
+          @if (Model.CanCompleteWithContact && Model.Description != "New Person Data Entry")
+          {
+            <li>
+              <a href="#" class="completewcontact"><i class="fa fa-check-square-o fa-fw"></i>&nbsp;&nbsp;Complete Task w/ Contact</a>
+            </li>
+          }
+          @if (Model.IsOwner)
+          {
+            <li class="divider"></li>
+            <li>
+              <a href="/SearchAdd2/Dialog/taskabout/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-user-plus fa-fw"></i>&nbsp;&nbsp;Change Regarding</a>
+            </li>
+            <li>
+              <a href="/Task/Edit/@Model.Id"><i class="fa fa-pencil fa-fw"></i>&nbsp;&nbsp;Edit Task</a>
+            </li>
+          }
+          @if (Model.IsOwner)
+          {
+            <li class="divider"></li>
+            <li>
+              <a href="/SearchAdd2/Dialog/taskowner/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-share-square-o fa-fw"></i>&nbsp;&nbsp;Transfer Ownership</a>
+            </li>
+            <li>
+              <a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-users fa-fw"></i>&nbsp;&nbsp;Delegate Task</a>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+  </div>
+</div>
+<div class="box-content">
+  @Html.Hidden("TaskId", Model.Id)
+  @if (Model.WhoId.HasValue)
+  {
+    <div class="well">
+      <strong>
+        <a href="@Model.PersonUrl" style="font-size: 1.5em;" target="person">@Model.Who</a>
+      </strong>
+      <br/>
+      <a href="@Model.ProspectReportLink()" target="_blank">Prospect Report</a>
+      <div>
+        <ul class="list-inline" style="margin-bottom: 0;">
+          <li><i class="fa fa-map-marker"></i>&nbsp;&nbsp;<a href="http://www.google.com/maps?q=@Model.WhoAddrCityStateZip" target="_blank">@Model.WhoAddress</a></li>
+          <li><i class="fa fa-car"></i>&nbsp;&nbsp;<a href="http://www.google.com/maps?f=d&saddr=@DbUtil.StartAddress&pw=2&daddr=@Model.WhoAddrCityStateZip" target="_blank">Driving Directions</a></li>
+        </ul>
+        @if (!string.IsNullOrWhiteSpace(Model.WhoEmail2) && !string.IsNullOrWhiteSpace(Model.WhoPhone))
+        {
+          <ul class="list-inline">
+            <li><i class="fa fa-envelope-o"></i>&nbsp;&nbsp;<a href="mailto:@Model.WhoEmail">@Model.WhoEmail2</a></li>
+            <li><i class="fa fa-phone"></i>&nbsp;&nbsp;<a href="tel:+@Model.WhoPhone">@Model.WhoPhone</a></li>
+          </ul>
+        }
+        else
+        {
+          if (!string.IsNullOrWhiteSpace(Model.WhoEmail2))
+          {
+            <i class="fa fa-envelope-o"></i>
+            <text>&nbsp;&nbsp;</text>
+            <a href="mailto:@Model.WhoEmail">@Model.WhoEmail2</a>
+          }
+          if (!string.IsNullOrWhiteSpace(Model.WhoPhone))
+          {
+            <i class="fa fa-phone"></i>
+            <text>&nbsp;&nbsp;</text>
+            <a href="tel:+@Model.WhoPhone">@Model.WhoPhone</a>
+          }
+        }
+      </div>
     </div>
+  }
+  <div class="row">
+    <div class="col-sm-6">
+      @if (Model.LimitToRole.HasValue())
+      {
+        <dl>
+          <dt>Limit To Role</dt>
+          <dd>
+            @Model.LimitToRole
+          </dd>
+        </dl>
+      }
+      <dl>
+        <dt>Owner</dt>
+        <dd>
+          <a href="mailto:@Model.OwnerEmail?subject=@Model.Description&body=@link">@Model.Owner</a>
+        </dd>
+      </dl>
+      <dl>
+        <dt>Delegated To</dt>
+        <dd>
+          @if (Model.CoOwnerId.HasValue)
+          {
+            <a href="mailto:@Model.CoOwnerEmail">@Model.CoOwner</a>
+          }
+        </dd>
+      </dl>
+      <dl>
+        <dt>Status</dt>
+        <dd>
+          @Model.Status
+          @if (Model.ShowCompleted)
+          {
+            <span>@Model.CompletedOn.ToString2("f")</span>
+          }
+          @if (Model.StatusId == CmsData.Codes.TaskStatusCode.Declined)
+          {
+            @:&nbsp- @Model.DeclineReason
+          }
+        </dd>
+      </dl>
+    </div>
+    <div class="col-sm-6">
+      <dl>
+        <dt>Created Date</dt>
+        <dd>@Model.CreatedOn.ToString("f")</dd>
+      </dl>
+      <dl>
+        <dt>Due Date</dt>
+        <dd>@Model.Due.ToString2("d")</dd>
+      </dl>
+      @if (Model.Description != "New Person Data Entry")
+      {
+        <dl>
+          <dt>Completed Contact</dt>
+          <dd>
+            <a href="@Model.ContactUrl">@Model.CompletedContact.FormatDate()</a>
+          </dd>
+        </dl>
+      }
+
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <dl>
+        <dt>Notes</dt>
+        <dd>@Html.Raw(Model.FmtNotes)</dd>
+      </dl>
+    </div>
+  </div>
+  <div class="visible-xs-block">
+    <div class="btn-group btn-block">
+      <button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+        Actions <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-right btn-block">
+        @if (Model.CanAccept)
+        {
+          <li>
+            <a href="#" class="accept"><i class="fa fa-thumbs-o-up fa-fw"></i>&nbsp;&nbsp;Accept Task</a>
+          </li>
+        }
+        @if (Model.CanComplete)
+        {
+          <li>
+            <a href="#" class="complete"><i class="fa fa-check fa-fw"></i>&nbsp;&nbsp;Complete Task</a>
+          </li>
+        }
+        @if (Model.CanCompleteWithContact && Model.Description != "New Person Data Entry")
+        {
+          <li>
+            <a href="#" class="completewcontact"><i class="fa fa-check-square-o fa-fw"></i>&nbsp;&nbsp;Complete Task w/ Contact</a>
+          </li>
+        }
+        @if (Model.IsAnOwner)
+        {
+          <li class="divider"></li>
+          <li>
+            <a href="/SearchAdd2/Dialog/taskabout/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-user-plus fa-fw"></i>&nbsp;&nbsp;Change Regarding</a>
+          </li>
+          <li>
+            <a href="/Task/Edit/@Model.Id"><i class="fa fa-pencil fa-fw"></i>&nbsp;&nbsp;Edit Task</a>
+          </li>
+        }
+        @if (Model.IsOwner)
+        {
+          <li class="divider"></li>
+          <li>
+            <a href="/SearchAdd2/Dialog/taskowner/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-share-square-o fa-fw"></i>&nbsp;&nbsp;Transfer Ownership</a>
+          </li>
+          <li>
+            <a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-users fa-fw"></i>&nbsp;&nbsp;Delegate Task</a>
+          </li>
+        }
+      </ul>
+    </div>
+    <a class="btn btn-default btn-block" href="/Task/List"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+  </div>
+</div>
+</div>
+</div>
 </div>
 <div class="modal fade" id="declineModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="/Task/Decline/@Model.Id" method="post">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Decline Task</h4>
-                </div>
-                <div class="modal-body">
-                    <input id="declineReason" name="reason" style="width:100%" placeholder="Decline reason..." />
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-danger">Decline</button>
-                </div>
-            </form>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="/Task/Decline/@Model.Id" method="post">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Decline Task</h4>
+        </div>
+        <div class="modal-body">
+          <input id="declineReason" name="reason" style="width: 100%" placeholder="Decline reason..."/>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-danger">Decline</button>
+        </div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 @section scripts{
-    <script type="text/javascript">
-        $(function () {
-            $("body").on("click", 'a.completewcontact', function (ev) {
-                ev.preventDefault();
-                var taskid = $('#TaskId').val();
-                $.post('/Task/CompleteWithContact/' + taskid, null, function (ret) {
-                    window.location = "/Contact2/" + ret.ContactId + "?edit=true";
-                });
-                return false;
+  <script type="text/javascript">
+    $(function() {
+      $("body").on("click",
+        'a.completewcontact',
+        function(ev) {
+          ev.preventDefault();
+          var taskid = $('#TaskId').val();
+          $.post('/Task/CompleteWithContact/' + taskid,
+            null,
+            function(ret) {
+              window.location = "/Contact2/" + ret.ContactId + "?edit=true";
             });
-
-            $("body").on("click", 'a.complete', function (ev) {
-                ev.preventDefault();
-                var id = $('#TaskId').val();
-                $.post('/Task/SetComplete/' + id, null, function (ret) {
-                    window.location = "/Task/Detail/" + id;
-                });
-                return false;
-            });
-
-            $("body").on("click", 'a.accept', function (ev) {
-                ev.preventDefault();
-                var id = $('#TaskId').val();
-                $.post('/Task/Accept/' + id, null, function (ret) {
-                    window.location = "/Task/Detail/" + id;
-                });
-                return false;
-            });
-
-            $("body").on("click", 'a.decline', function (ev) {
-                ev.preventDefault();
-                $('#declineModal').modal();
-                $('#declineModal').on('shown.bs.modal', function () {
-                    $('#declineReason').focus();
-                })
-                return false;
-            });
-
+          return false;
         });
 
-        function AddSelected(ret) {
-            ActOnPerson(ret.url, ret.pid);
-        }
-        function ActOnPerson(action, peopleid) {
-            var id = $('#TaskId').val();
-            $.post(action + id + "?peopleid=" + peopleid, null, function (ret) {
-                window.location = "/Task/Detail/" + id;
+      $("body").on("click",
+        'a.complete',
+        function(ev) {
+          ev.preventDefault();
+          var id = $('#TaskId').val();
+          $.post('/Task/SetComplete/' + id,
+            null,
+            function(ret) {
+              window.location = "/Task/Detail/" + id;
             });
-        }
-    </script>
+          return false;
+        });
+
+      $("body").on("click",
+        'a.accept',
+        function(ev) {
+          ev.preventDefault();
+          var id = $('#TaskId').val();
+          $.post('/Task/Accept/' + id,
+            null,
+            function(ret) {
+              window.location = "/Task/Detail/" + id;
+            });
+          return false;
+        });
+
+      $("body").on("click",
+        'a.decline',
+        function(ev) {
+          ev.preventDefault();
+          $('#declineModal').modal();
+          $('#declineModal').on('shown.bs.modal',
+            function() {
+              $('#declineReason').focus();
+            })
+          return false;
+        });
+
+    });
+
+    function AddSelected(ret) {
+      ActOnPerson(ret.url, ret.pid);
+    }
+
+    function ActOnPerson(action, peopleid) {
+      var id = $('#TaskId').val();
+      $.post(action + id + "?peopleid=" + peopleid,
+        null,
+        function(ret) {
+          window.location = "/Task/Detail/" + id;
+        });
+    }
+  </script>
 }

@@ -170,25 +170,25 @@ namespace CmsWeb.Models
             Task.GetRequiredTaskList(DbUtil.Db, STR_InBox, PeopleId);
             Task.GetRequiredTaskList(DbUtil.Db, "Personal", PeopleId);
             return from t in DbUtil.Db.TaskLists
-                   where t.TaskListOwners.Any(tlo => tlo.PeopleId == PeopleId) || t.CreatedBy == PeopleId
-                   orderby t.Name
-                   select new TaskListInfo
-                   {
-                       Id = "t" + t.Id,
-                       Name = t.Name
-                   };
+                where t.TaskListOwners.Any(tlo => tlo.PeopleId == PeopleId) || t.CreatedBy == PeopleId
+                orderby t.Name
+                select new TaskListInfo
+                {
+                    Id = "t" + t.Id,
+                    Name = t.Name
+                };
         }
 
         public IEnumerable<SelectListItem> ActionItems()
         {
             var q = from t in DbUtil.Db.TaskLists
-                    where t.TaskListOwners.Any(tlo => tlo.PeopleId == PeopleId) || t.CreatedBy == PeopleId
-                    orderby t.Name
-                    select new SelectListItem
-                    {
-                        Text = ".. " + t.Name,
-                        Value = "M" + t.Id
-                    };
+                where t.TaskListOwners.Any(tlo => tlo.PeopleId == PeopleId) || t.CreatedBy == PeopleId
+                orderby t.Name
+                select new SelectListItem
+                {
+                    Text = ".. " + t.Name,
+                    Value = "M" + t.Id
+                };
             return actions.Union(q);
         }
 
@@ -200,62 +200,64 @@ namespace CmsWeb.Models
             {
                 case "123":
                 case "123 DESC":
-                q = from t in q
-                    orderby (t.StatusId == completedcode ? 3 : (t.StatusId == somedaycode ? 2 : 1)), t.Priority ?? 4, t.Due ?? DateTime.MaxValue.Date, t.Description
-                    select t;
-                break;
+                    q = from t in q
+                        orderby (t.StatusId == completedcode ? 3 : (t.StatusId == somedaycode ? 2 : 1)), t.Priority ?? 4,
+                        t.Due ?? DateTime.MaxValue.Date, t.Description
+                        select t;
+                    break;
                 case "Task":
                 case "Task DESC":
-                q = from t in q
-                    orderby t.Description
-                    select t;
-                break;
+                    q = from t in q
+                        orderby t.Description
+                        select t;
+                    break;
                 case "About":
                 case "About DESC":
-                q = from t in q
-                    orderby t.AboutWho.Name2, t.Description
-                    select t;
-                break;
+                    q = from t in q
+                        orderby t.AboutWho.Name2, t.Description
+                        select t;
+                    break;
                 case "Assigned":
                 case "Assigned DESC":
-                q = from t in q
-                    orderby t.CoOwner.Name2, t.Owner.Name2
-                    select t;
-                break;
+                    q = from t in q
+                        orderby t.CoOwner.Name2, t.Owner.Name2
+                        select t;
+                    break;
                 case "Due/Completed":
                 case "Due DESC":
                 default:
-                q = from t in q
-                    orderby (t.StatusId == completedcode ? 3 : (t.StatusId == somedaycode ? 2 : 1)), t.CompletedOn ?? (t.Due ?? DateTime.MaxValue.Date) descending, t.Priority ?? 4, t.Description
-                    select t;
-                break;
+                    q = from t in q
+                        orderby (t.StatusId == completedcode ? 3 : (t.StatusId == somedaycode ? 2 : 1)),
+                        t.CompletedOn ?? (t.Due ?? DateTime.MaxValue.Date) descending, t.Priority ?? 4, t.Description
+                        select t;
+                    break;
             }
 
             var q2 = from t in q
-                         //let tListId = t.CoOwnerId == PeopleId ? t.CoListId.Value : t.ListId
-                     select new TaskInfo
-                     {
-                         Id = t.Id,
-                         Owner = t.Owner.Name,
-                         OwnerId = t.OwnerId,
-                         WhoId = t.WhoId,
-                         //ListId = tListId,
-                         //cListId = listid,
-                         Description = t.Description,
-                         SortDue = t.Due ?? DateTime.MaxValue.Date,
-                         SortDueOrCompleted = t.CompletedOn ?? (t.Due ?? DateTime.MaxValue.Date),
-                         CoOwner = t.CoOwner.Name,
-                         CoOwnerId = t.CoOwnerId,
-                         Status = t.TaskStatus.Description,
-                         IsSelected = t.Id == intId,
-                         Completed = t.StatusId == completedcode,
-                         PrimarySort = t.StatusId == completedcode ? 3 : (t.StatusId == somedaycode ? 2 : 1),
-                         SortPriority = t.Priority ?? 4,
-                         IsCoOwner = t.CoOwnerId != null && t.CoOwnerId == PeopleId,
-                         IsOwner = t.OwnerId == PeopleId,
-                         CompletedOn = t.CompletedOn,
-                         NotiPhone = !iPhone
-                     };
+                //let tListId = t.CoOwnerId == PeopleId ? t.CoListId.Value : t.ListId
+                select new TaskInfo
+                {
+                    Id = t.Id,
+                    Owner = t.Owner.Name,
+                    OwnerId = t.OwnerId,
+                    WhoId = t.WhoId,
+                    //ListId = tListId,
+                    //cListId = listid,
+                    Description = t.Description,
+                    SortDue = t.Due ?? DateTime.MaxValue.Date,
+                    SortDueOrCompleted = t.CompletedOn ?? (t.Due ?? DateTime.MaxValue.Date),
+                    CoOwner = t.CoOwner.Name,
+                    CoOwnerId = t.CoOwnerId,
+                    Status = t.TaskStatus.Description,
+                    IsSelected = t.Id == intId,
+                    Completed = t.StatusId == completedcode,
+                    PrimarySort = t.StatusId == completedcode ? 3 : (t.StatusId == somedaycode ? 2 : 1),
+                    SortPriority = t.Priority ?? 4,
+                    IsCoOwner = t.CoOwnerId != null && t.CoOwnerId == PeopleId,
+                    IsOwner = t.OwnerId == PeopleId,
+                    CompletedOn = t.CompletedOn,
+                    NotiPhone = !iPhone
+                };
             return q2.Skip(StartRow).Take(PageSize);
         }
 
@@ -266,44 +268,45 @@ namespace CmsWeb.Models
 
             var iPhone = HttpContext.Current.Request.UserAgent.Contains("iPhone");
             var q2 = from t in DbUtil.Db.Tasks
-                     where t.Id == id
-                     //let tListId = t.CoOwnerId == PeopleId ? t.CoListId.Value : t.ListId
-                     select new TaskDetail
-                     {
-                         Id = t.Id,
-                         Owner = t.Owner.Name,
-                         OwnerId = t.OwnerId,
-                         OwnerEmail = t.Owner.EmailAddress,
-                         WhoId = t.WhoId,
-                         //ListId = tListId,
-                         //cListId = CurListId,
-                         Description = t.Description,
-                         SortDue = t.Due ?? DateTime.MaxValue.Date,
-                         SortDueOrCompleted = t.CompletedOn ?? (t.Due ?? DateTime.MaxValue.Date),
-                         CoOwner = t.CoOwner.Name,
-                         CoOwnerId = t.CoOwnerId,
-                         CoOwnerEmail = t.CoOwner.EmailAddress,
-                         Status = t.TaskStatus.Description,
-                         StatusId = t.StatusId.Value,
-                         IsSelected = t.Id == intId,
-                         Location = t.Location,
-                         Project = t.Project,
-                         Completed = t.StatusId == completedcode,
-                         PrimarySort = t.StatusId == completedcode ? 3 : (t.StatusId == somedaycode ? 2 : 1),
-                         SortPriority = t.Priority ?? 4,
-                         IsCoOwner = t.CoOwnerId != null && t.CoOwnerId == PeopleId,
-                         IsOwner = t.OwnerId == PeopleId,
-                         SourceContactId = t.SourceContactId,
-                         SourceContact = t.SourceContact.ContactDate,
-                         CompletedContactId = t.CompletedContactId,
-                         CompletedContact = t.CompletedContact.ContactDate,
-                         Notes = t.Notes,
-                         CreatedOn = t.CreatedOn,
-                         CompletedOn = t.CompletedOn,
-                         NotiPhone = !iPhone,
-                         ForceCompleteWContact = t.ForceCompleteWContact ?? false,
-                         DeclineReason = t.DeclineReason
-                     };
+                where t.Id == id
+                //let tListId = t.CoOwnerId == PeopleId ? t.CoListId.Value : t.ListId
+                select new TaskDetail
+                {
+                    Id = t.Id,
+                    Owner = t.Owner.Name,
+                    OwnerId = t.OwnerId,
+                    OwnerEmail = t.Owner.EmailAddress,
+                    WhoId = t.WhoId,
+                    //ListId = tListId,
+                    //cListId = CurListId,
+                    Description = t.Description,
+                    SortDue = t.Due ?? DateTime.MaxValue.Date,
+                    SortDueOrCompleted = t.CompletedOn ?? (t.Due ?? DateTime.MaxValue.Date),
+                    CoOwner = t.CoOwner.Name,
+                    CoOwnerId = t.CoOwnerId,
+                    CoOwnerEmail = t.CoOwner.EmailAddress,
+                    LimitToRole = t.LimitToRole,
+                    Status = t.TaskStatus.Description,
+                    StatusId = t.StatusId.Value,
+                    IsSelected = t.Id == intId,
+                    Location = t.Location,
+                    Project = t.Project,
+                    Completed = t.StatusId == completedcode,
+                    PrimarySort = t.StatusId == completedcode ? 3 : (t.StatusId == somedaycode ? 2 : 1),
+                    SortPriority = t.Priority ?? 4,
+                    IsCoOwner = t.CoOwnerId != null && t.CoOwnerId == PeopleId,
+                    IsOwner = t.OwnerId == PeopleId,
+                    SourceContactId = t.SourceContactId,
+                    SourceContact = t.SourceContact.ContactDate,
+                    CompletedContactId = t.CompletedContactId,
+                    CompletedContact = t.CompletedContact.ContactDate,
+                    Notes = t.Notes,
+                    CreatedOn = t.CreatedOn,
+                    CompletedOn = t.CompletedOn,
+                    NotiPhone = !iPhone,
+                    ForceCompleteWContact = t.ForceCompleteWContact ?? false,
+                    DeclineReason = t.DeclineReason
+                };
             var tt = q2.SingleOrDefault();
             return tt;
         }
@@ -312,22 +315,23 @@ namespace CmsWeb.Models
         {
             var completedcode = TaskStatusCode.Complete;
             var q = from t in DbUtil.Db.Tasks
-                        // not archived
-                    where t.Archive == false // not archived
-                    // I am involved in
-                    where t.OwnerId == PeopleId || t.CoOwnerId == PeopleId
-                    // only contact related and not completed
-                    where t.WhoId != null && t.StatusId != completedcode
-                    // filter out any I own and have delegated
-                    where !(t.OwnerId == PeopleId && t.CoOwnerId != null)
-                    orderby t.CreatedOn
-                    select new ContactTaskInfo
-                    {
-                        Id = t.Id,
-                        PeopleId = t.AboutWho.PeopleId,
-                        Who = t.AboutWho.Name,
-                        Description = t.Description
-                    };
+                // not archived
+                where t.Archive == false
+                // not archived
+                // I am involved in
+                where t.OwnerId == PeopleId || t.CoOwnerId == PeopleId
+                // only contact related and not completed
+                where t.WhoId != null && t.StatusId != completedcode
+                // filter out any I own and have delegated
+                where !(t.OwnerId == PeopleId && t.CoOwnerId != null)
+                orderby t.CreatedOn
+                select new ContactTaskInfo
+                {
+                    Id = t.Id,
+                    PeopleId = t.AboutWho.PeopleId,
+                    Who = t.AboutWho.Name,
+                    Description = t.Description
+                };
             return q;
         }
 
@@ -345,33 +349,33 @@ namespace CmsWeb.Models
         public IEnumerable<IncompleteTask> IncompleteTasksList(int pid)
         {
             var q2 = from t in DbUtil.Db.Tasks
-                     where t.StatusId != TaskStatusCode.Complete
-                     where t.CoOwnerId == pid
-                     where t.WhoId != null
-                     select new IncompleteTask
-                     {
-                         Desc = t.Description,
-                         About = t.AboutName,
-                         AboutId = t.WhoId,
-                         AssignedDt = t.CreatedOn,
-                         link = TaskLink0(t.Id)
-                     };
+                where t.StatusId != TaskStatusCode.Complete
+                where t.CoOwnerId == pid
+                where t.WhoId != null
+                select new IncompleteTask
+                {
+                    Desc = t.Description,
+                    About = t.AboutName,
+                    AboutId = t.WhoId,
+                    AssignedDt = t.CreatedOn,
+                    link = TaskLink0(t.Id)
+                };
             return q2;
         }
 
         public IEnumerable<TasksAbout> TasksAboutList(int pid)
         {
             var q2 = from t in DbUtil.Db.Tasks
-                     where t.StatusId != TaskStatusCode.Complete
-                     where t.WhoId == pid
-                     select new TasksAbout
-                     {
-                         Desc = t.Description,
-                         AssignedTo = t.CoOwnerId != null ? t.CoOwner.Name : t.Owner.Name,
-                         AssignedDt = t.CreatedOn,
-                         AssignedId = t.CoOwnerId,
-                         link = TaskLink0(t.Id)
-                     };
+                where t.StatusId != TaskStatusCode.Complete
+                where t.WhoId == pid
+                select new TasksAbout
+                {
+                    Desc = t.Description,
+                    AssignedTo = t.CoOwnerId != null ? t.CoOwner.Name : t.Owner.Name,
+                    AssignedDt = t.CreatedOn,
+                    AssignedId = t.CoOwnerId,
+                    link = TaskLink0(t.Id)
+                };
             return q2;
         }
 
@@ -396,7 +400,7 @@ namespace CmsWeb.Models
             {
                 case "Due":
                 {
-                    var dt = (DateTime?)value;
+                    var dt = (DateTime?) value;
                     if (dt.HasValue)
                     {
                         if ((task.Due.HasValue && task.Due.Value != dt) || !task.Due.HasValue)
@@ -410,37 +414,42 @@ namespace CmsWeb.Models
                         task.Due = null;
                     }
                 }
-                break;
+                    break;
                 case "Notes":
-                if (task.Notes != (string)value)
-                    sb.AppendFormat("Notes changed: {{<br />\n{0}<br />}}<br />\n", Util.SafeFormat((string)value));
-                task.Notes = (string)value;
-                break;
+                    if (task.Notes != (string) value)
+                        sb.AppendFormat("Notes changed: {{<br />\n{0}<br />}}<br />\n", Util.SafeFormat((string) value));
+                    task.Notes = (string) value;
+                    break;
                 case "StatusId":
-                if (task.StatusId != (int)value)
-                {
-                    var dict = DbUtil.Db.TaskStatuses.AsEnumerable().ToDictionary(ts => ts.Id, ts => ts.Description);
-                    sb.AppendFormat("Task Status changed from {0} to {1}<br />\n",
-                        dict[task.StatusId ?? 10], dict[(int)value]);
-                    if ((int)value == TaskStatusCode.Complete)
-                        task.CompletedOn = Util.Now;
-                    else
-                        task.CompletedOn = null;
-                }
-                task.StatusId = (int)value;
-                break;
+                    if (task.StatusId != (int) value)
+                    {
+                        var dict = DbUtil.Db.TaskStatuses.AsEnumerable().ToDictionary(ts => ts.Id, ts => ts.Description);
+                        sb.AppendFormat("Task Status changed from {0} to {1}<br />\n",
+                            dict[task.StatusId ?? 10], dict[(int) value]);
+                        if ((int) value == TaskStatusCode.Complete)
+                            task.CompletedOn = Util.Now;
+                        else
+                            task.CompletedOn = null;
+                    }
+                    task.StatusId = (int) value;
+                    break;
                 case "Description":
-                if (task.Description != (string)value)
-                    sb.AppendFormat("Description changed from \"{0}\" to \"{1}\"<br />\n", task.Description, value);
-                task.Description = (string)value;
-                break;
+                    if (task.Description != (string) value)
+                        sb.AppendFormat("Description changed from \"{0}\" to \"{1}\"<br />\n", task.Description, value);
+                    task.Description = (string) value;
+                    break;
+                case "LimitToRole":
+                    if (task.LimitToRole != (string) value)
+                        sb.AppendFormat("LimitToRole changed from \"{0}\" to \"{1}\"<br />\n", task.LimitToRole, value);
+                    task.LimitToRole = (string) value;
+                    break;
                 case "Project":
-                if (task.Project != (string)value)
-                    sb.AppendFormat("Project changed from \"{0}\" to \"{1}\"<br />\n", task.Project, value);
-                task.Project = (string)value;
-                break;
+                    if (task.Project != (string) value)
+                        sb.AppendFormat("Project changed from \"{0}\" to \"{1}\"<br />\n", task.Project, value);
+                    task.Project = (string) value;
+                    break;
                 default:
-                throw new ArgumentException("Invalid field in ChangeTask", field);
+                    throw new ArgumentException("Invalid field in ChangeTask", field);
             }
         }
 
@@ -466,7 +475,8 @@ namespace CmsWeb.Models
             if (task.OwnerId == PeopleId)
             {
                 if (task.CoOwnerId != null)
-                    DbUtil.Db.Email(task.Owner.EmailAddress, task.CoOwner, $"Task deleted by {Util.UserFullName}", CreateEmailBody(task));
+                    DbUtil.Db.Email(task.Owner.EmailAddress, task.CoOwner, $"Task deleted by {Util.UserFullName}",
+                        CreateEmailBody(task));
 
                 DbUtil.Db.Tasks.DeleteOnSubmit(task);
                 DbUtil.Db.SubmitChanges();
@@ -478,7 +488,8 @@ namespace CmsWeb.Models
             }
             else // I must be cowner, I can't delete
             {
-                DbUtil.Db.Email(task.CoOwner.EmailAddress, task.Owner, $"{Util.UserFullName} tried to delete task", CreateEmailBody(task));
+                DbUtil.Db.Email(task.CoOwner.EmailAddress, task.Owner, $"{Util.UserFullName} tried to delete task",
+                    CreateEmailBody(task));
             }
 
             if (notify)
@@ -486,11 +497,13 @@ namespace CmsWeb.Models
                 if (task.Owner.PeopleId == Util.UserPeopleId.Value)
                 {
                     if (task.CoOwner != null)
-                        GCMHelper.sendNotification(task.CoOwner.PeopleId, GCMHelper.TYPE_TASK, 0, "Task Deleted", $"{Util.UserFullName} has deleted a task delegated to you");
+                        GCMHelper.sendNotification(task.CoOwner.PeopleId, GCMHelper.TYPE_TASK, 0, "Task Deleted",
+                            $"{Util.UserFullName} has deleted a task delegated to you");
                 }
                 else
                 {
-                    GCMHelper.sendNotification(task.Owner.PeopleId, GCMHelper.TYPE_TASK, 0, "Task Deleted", $"{Util.UserFullName} has deleted a task you owned");
+                    GCMHelper.sendNotification(task.Owner.PeopleId, GCMHelper.TYPE_TASK, 0, "Task Deleted",
+                        $"{Util.UserFullName} has deleted a task you owned");
                 }
 
                 GCMHelper.sendRefresh(Util.UserPeopleId.Value, GCMHelper.ACTION_REFRESH);
@@ -503,7 +516,8 @@ namespace CmsWeb.Models
             var q = DbUtil.Db.Tasks.Where(t => t.Archive == false);
             if (OwnerOnly == true) // I see only my own tasks or tasks I have been delegated
                 q = q.Where(t => t.OwnerId == PeopleId || t.CoOwnerId == PeopleId || t.OrginatorId == PeopleId);
-            else // I see my own tasks where I am owner or cowner plus other people's tasks where I share the list the task is in
+            else
+                // I see my own tasks where I am owner or cowner plus other people's tasks where I share the list the task is in
                 q = q.Where(t => t.OwnerId == PeopleId || t.CoOwnerId == PeopleId || t.OrginatorId == PeopleId
                                  || t.TaskList.TaskListOwners.Any(tlo => tlo.PeopleId == PeopleId)
                                  || t.CoTaskList.TaskListOwners.Any(tlo => tlo.PeopleId == PeopleId)
@@ -529,39 +543,39 @@ namespace CmsWeb.Models
 
         public IEnumerable<SelectListItem> Locations()
         {
-            string[] a = { "@work", "@home", "@car", "@computer" };
+            string[] a = {"@work", "@home", "@car", "@computer"};
             var q = from t in DbUtil.Db.Tasks
-                    where t.OwnerId == PeopleId
-                    where t.Location != ""
-                    orderby t.Location
-                    select t.Location;
+                where t.OwnerId == PeopleId
+                where t.Location != ""
+                orderby t.Location
+                select t.Location;
             return top.Union(
                 a.Union(q.Distinct()).Distinct(StringComparer.OrdinalIgnoreCase)
-                    .Select(i => new SelectListItem { Text = i }));
+                    .Select(i => new SelectListItem {Text = i}));
         }
 
         public IEnumerable<SelectListItem> TaskStatusCodes()
         {
             var c = new CodeValueModel();
             return top.Union(c.TaskStatusCodes().Select(cv =>
-                new SelectListItem { Text = cv.Value, Value = cv.Id.ToString() }));
+                    new SelectListItem {Text = cv.Value, Value = cv.Id.ToString()}));
             ;
         }
 
         private IQueryable<string> projects()
         {
             return from t in DbUtil.Db.Tasks
-                   where t.Archive == false
-                   where t.TaskList.TaskListOwners.Any(tlo => tlo.PeopleId == PeopleId) || t.TaskList.CreatedBy == PeopleId
-                   where t.Project != ""
-                   orderby t.Project
-                   select t.Project;
+                where t.Archive == false
+                where t.TaskList.TaskListOwners.Any(tlo => tlo.PeopleId == PeopleId) || t.TaskList.CreatedBy == PeopleId
+                where t.Project != ""
+                orderby t.Project
+                select t.Project;
         }
 
         public IEnumerable<SelectListItem> Projects()
         {
             var q = projects();
-            return top.Union(q.Distinct().Select(p => new SelectListItem { Text = p }));
+            return top.Union(q.Distinct().Select(p => new SelectListItem {Text = p}));
         }
 
         public IEnumerable<string> Projects(string startswith)
@@ -573,21 +587,23 @@ namespace CmsWeb.Models
         public int AddCompletedContact(int id)
         {
             var task = DbUtil.Db.Tasks.SingleOrDefault(t => t.Id == id);
-            var c = new Contact { ContactDate = Util.Now.Date };
+            var c = new Contact {ContactDate = Util.Now.Date};
             c.CreatedDate = c.ContactDate;
             var min = DbUtil.Db.Ministries.SingleOrDefault(m => m.MinistryName == task.Project);
             if (min != null)
                 c.MinistryId = min.MinistryId;
-            c.contactees.Add(new Contactee { PeopleId = task.WhoId.Value });
-            c.contactsMakers.Add(new Contactor { PeopleId = PeopleId });
+            c.contactees.Add(new Contactee {PeopleId = task.WhoId.Value});
+            c.contactsMakers.Add(new Contactor {PeopleId = PeopleId});
             c.Comments = task.Notes;
             task.CompletedContact = c;
             task.StatusId = TaskStatusCode.Complete;
 
             if (task.CoOwnerId == PeopleId)
-                DbUtil.Db.Email(task.CoOwner.EmailAddress, task.Owner, $"Task completed with a Contact by {Util.UserFullName}", CreateEmailBody(task));
+                DbUtil.Db.Email(task.CoOwner.EmailAddress, task.Owner,
+                    $"Task completed with a Contact by {Util.UserFullName}", CreateEmailBody(task));
             else if (task.CoOwnerId != null)
-                DbUtil.Db.Email(task.Owner.EmailAddress, task.CoOwner, $"Task completed with a Contact by {Util.UserFullName}", CreateEmailBody(task));
+                DbUtil.Db.Email(task.Owner.EmailAddress, task.CoOwner,
+                    $"Task completed with a Contact by {Util.UserFullName}", CreateEmailBody(task));
 
             task.CompletedOn = c.ContactDate;
 
@@ -596,11 +612,13 @@ namespace CmsWeb.Models
             if (task.Owner.PeopleId == Util.UserPeopleId)
             {
                 if (task.CoOwner != null)
-                    GCMHelper.sendNotification(task.CoOwner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Task Complete", $"{Util.UserFullName} completed a task they delegated to you");
+                    GCMHelper.sendNotification(task.CoOwner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Task Complete",
+                        $"{Util.UserFullName} completed a task they delegated to you");
             }
             else
             {
-                GCMHelper.sendNotification(task.Owner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Task Complete", $"{Util.UserFullName} completed a task you delegated them");
+                GCMHelper.sendNotification(task.Owner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Task Complete",
+                    $"{Util.UserFullName} completed a task you delegated them");
             }
 
             GCMHelper.sendRefresh(Util.UserPeopleId.Value, GCMHelper.TYPE_TASK);
@@ -613,9 +631,11 @@ namespace CmsWeb.Models
             var task = DbUtil.Db.Tasks.SingleOrDefault(t => t.Id == id);
             task.StatusId = TaskStatusCode.Active;
             DbUtil.Db.SubmitChanges();
-            DbUtil.Db.Email(task.CoOwner.EmailAddress, task.Owner, $"Task accepted by {Util.UserFullName}", CreateEmailBody(task));
+            DbUtil.Db.Email(task.CoOwner.EmailAddress, task.Owner, $"Task accepted by {Util.UserFullName}",
+                CreateEmailBody(task));
 
-            GCMHelper.sendNotification(task.Owner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Task Accepted", $"{Util.UserFullName} accepted a task");
+            GCMHelper.sendNotification(task.Owner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Task Accepted",
+                $"{Util.UserFullName} accepted a task");
             GCMHelper.sendRefresh(Util.UserPeopleId.Value, GCMHelper.TYPE_TASK);
         }
 
@@ -626,9 +646,11 @@ namespace CmsWeb.Models
             task.DeclineReason = reason;
 
             DbUtil.Db.SubmitChanges();
-            DbUtil.Db.Email(task.CoOwner.EmailAddress, task.Owner, $"Task declined by {Util.UserFullName}", CreateEmailBody(task));
+            DbUtil.Db.Email(task.CoOwner.EmailAddress, task.Owner, $"Task declined by {Util.UserFullName}",
+                CreateEmailBody(task));
 
-            GCMHelper.sendNotification(task.Owner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Task Declined", $"{Util.UserFullName} declined a task");
+            GCMHelper.sendNotification(task.Owner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Task Declined",
+                $"{Util.UserFullName} declined a task");
             GCMHelper.sendRefresh(Util.UserPeopleId.Value, GCMHelper.TYPE_TASK);
         }
 
@@ -668,13 +690,15 @@ namespace CmsWeb.Models
             Person toPerson = DbUtil.Db.LoadPersonById(toid);
 
             DbUtil.Db.SubmitChanges();
-            DbUtil.Db.Email(task.Owner.EmailAddress, toPerson, $"Task delegated to you by {Util.UserFullName}", CreateEmailBody(task));
+            DbUtil.Db.Email(task.Owner.EmailAddress, toPerson, $"Task delegated to you by {Util.UserFullName}",
+                CreateEmailBody(task));
 
             if (notify)
             {
                 if (previousDelegatee == 0) // No previous delegatee
                 {
-                    GCMHelper.sendNotification(toPerson.PeopleId, GCMHelper.TYPE_TASK, taskid, "Task Delegated", $"{Util.UserFullName} delegated you a task");
+                    GCMHelper.sendNotification(toPerson.PeopleId, GCMHelper.TYPE_TASK, taskid, "Task Delegated",
+                        $"{Util.UserFullName} delegated you a task");
                     GCMHelper.sendRefresh(task.Owner.PeopleId, GCMHelper.TYPE_TASK);
                 }
                 else // Had a previous delegatee
@@ -682,14 +706,18 @@ namespace CmsWeb.Models
                     if (previousDelegatee == Util.UserPeopleId.Value) // Delegatee redelegating
                     {
                         GCMHelper.sendRefresh(previousDelegatee, GCMHelper.TYPE_TASK);
-                        GCMHelper.sendNotification(toPerson.PeopleId, GCMHelper.TYPE_TASK, taskid, "Task Delegated", $"{Util.UserFullName} has delegated a task to you");
-                        GCMHelper.sendNotification(task.Owner.PeopleId, GCMHelper.TYPE_TASK, taskid, "Task Redelegated", $"{Util.UserFullName} has redelegated a task you delegated to them");
+                        GCMHelper.sendNotification(toPerson.PeopleId, GCMHelper.TYPE_TASK, taskid, "Task Delegated",
+                            $"{Util.UserFullName} has delegated a task to you");
+                        GCMHelper.sendNotification(task.Owner.PeopleId, GCMHelper.TYPE_TASK, taskid, "Task Redelegated",
+                            $"{Util.UserFullName} has redelegated a task you delegated to them");
                     }
                     else // Owner, with previous delegatee
                     {
                         GCMHelper.sendRefresh(task.Owner.PeopleId, GCMHelper.TYPE_TASK);
-                        GCMHelper.sendNotification(toPerson.PeopleId, GCMHelper.TYPE_TASK, taskid, "Task Delegated", $"{Util.UserFullName} delegated you a task");
-                        GCMHelper.sendNotification(previousDelegatee, GCMHelper.TYPE_TASK, 0, "Task Redelegated", $"{Util.UserFullName} has redelegated a task to someone else");
+                        GCMHelper.sendNotification(toPerson.PeopleId, GCMHelper.TYPE_TASK, taskid, "Task Delegated",
+                            $"{Util.UserFullName} delegated you a task");
+                        GCMHelper.sendNotification(previousDelegatee, GCMHelper.TYPE_TASK, 0, "Task Redelegated",
+                            $"{Util.UserFullName} has redelegated a task to someone else");
                     }
                 }
             }
@@ -700,13 +728,13 @@ namespace CmsWeb.Models
         public void DelegateAll(IEnumerable<int> tasks, int peopleID)
         {
             var owners = (from o in DbUtil.Db.Tasks
-                          where tasks.Contains(o.Id)
-                          select o.OwnerId).Distinct().ToList();
+                where tasks.Contains(o.Id)
+                select o.OwnerId).Distinct().ToList();
 
             var delegates = (from o in DbUtil.Db.Tasks
-                             where tasks.Contains(o.Id)
-                             where o.CoOwnerId != null
-                             select o.CoOwnerId ?? 0).Distinct().ToList();
+                where tasks.Contains(o.Id)
+                where o.CoOwnerId != null
+                select o.CoOwnerId ?? 0).Distinct().ToList();
 
             foreach (var tid in tasks)
                 Delegate(tid, peopleID, false, true);
@@ -718,9 +746,12 @@ namespace CmsWeb.Models
 
             string taskString = tasks.Count() > 1 ? "tasks" : "a task";
 
-            GCMHelper.sendNotification(owners, GCMHelper.TYPE_TASK, 0, "Tasks Redelegated", $"{Util.UserFullName} has redelegated {taskString} you own");
-            GCMHelper.sendNotification(delegates, GCMHelper.TYPE_TASK, 0, "Tasks Redelegated", $"{Util.UserFullName} has redelegated {taskString} to someone else");
-            GCMHelper.sendNotification(peopleID, GCMHelper.TYPE_TASK, 0, "Task Delegated", $"{Util.UserFullName} delegated you {taskString}");
+            GCMHelper.sendNotification(owners, GCMHelper.TYPE_TASK, 0, "Tasks Redelegated",
+                $"{Util.UserFullName} has redelegated {taskString} you own");
+            GCMHelper.sendNotification(delegates, GCMHelper.TYPE_TASK, 0, "Tasks Redelegated",
+                $"{Util.UserFullName} has redelegated {taskString} to someone else");
+            GCMHelper.sendNotification(peopleID, GCMHelper.TYPE_TASK, 0, "Task Delegated",
+                $"{Util.UserFullName} delegated you {taskString}");
             GCMHelper.sendRefresh(Util.UserPeopleId.Value, GCMHelper.ACTION_REFRESH);
 
             DbUtil.Db.SubmitChanges();
@@ -747,9 +778,11 @@ namespace CmsWeb.Models
             task.Owner = toowner;
 
             DbUtil.Db.SubmitChanges();
-            DbUtil.Db.Email(owner.EmailAddress, toowner, $"Task transferred to you from {owner.Name}", CreateEmailBody(task));
+            DbUtil.Db.Email(owner.EmailAddress, toowner, $"Task transferred to you from {owner.Name}",
+                CreateEmailBody(task));
 
-            GCMHelper.sendNotification(toid, GCMHelper.TYPE_TASK, task.Id, "Task Transferred", $"{Util.UserFullName} has transferred a task to you");
+            GCMHelper.sendNotification(toid, GCMHelper.TYPE_TASK, task.Id, "Task Transferred",
+                $"{Util.UserFullName} has transferred a task to you");
             GCMHelper.sendRefresh(Util.UserPeopleId.Value, GCMHelper.ACTION_REFRESH);
 
             if (task.CoOwner != null)
@@ -763,7 +796,8 @@ namespace CmsWeb.Models
             DbUtil.Db.SubmitChanges();
 
             if (task.CoOwner != null)
-                GCMHelper.sendNotification(task.CoOwner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Tasks About Changed", $"{Util.UserFullName} has change the about person on a task delegated to you");
+                GCMHelper.sendNotification(task.CoOwner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Tasks About Changed",
+                    $"{Util.UserFullName} has change the about person on a task delegated to you");
 
             GCMHelper.sendRefresh(Util.UserPeopleId.Value, GCMHelper.ACTION_REFRESH);
         }
@@ -800,15 +834,16 @@ namespace CmsWeb.Models
         {
             var mlist = DbUtil.Db.TaskLists.Single(tl => tl.Id == listid);
             var q = from t in DbUtil.Db.Tasks
-                    where tids.Contains(t.Id)
-                    // if I am the coowner
-                    // and if this task is on a shared list
-                    // and that list is the same as my owner's list
-                    // then don't move it
-                    where !(t.CoOwnerId == PeopleId && t.CoTaskList.TaskListOwners.Count() > 0 && t.CoListId == t.ListId)
-                    select t;
+                where tids.Contains(t.Id)
+                // if I am the coowner
+                // and if this task is on a shared list
+                // and that list is the same as my owner's list
+                // then don't move it
+                where !(t.CoOwnerId == PeopleId && t.CoTaskList.TaskListOwners.Count() > 0 && t.CoListId == t.ListId)
+                select t;
             foreach (var t in q)
-                if (t.OwnerId == PeopleId && (mlist.TaskListOwners.Any(tlo => tlo.PeopleId == t.CoOwnerId) || mlist.CreatedBy == t.CoOwnerId))
+                if (t.OwnerId == PeopleId &&
+                    (mlist.TaskListOwners.Any(tlo => tlo.PeopleId == t.CoOwnerId) || mlist.CreatedBy == t.CoOwnerId))
                 {
                     mlist.CoTasks.Add(t);
                     mlist.Tasks.Add(t);
@@ -852,7 +887,7 @@ namespace CmsWeb.Models
                 return;
             if (Db.TaskLists.Count(t => t.Name == name && t.CreatedBy == PeopleId) > 0)
                 return;
-            var list = new TaskList { Name = name, CreatedBy = PeopleId };
+            var list = new TaskList {Name = name, CreatedBy = PeopleId};
             Db.TaskLists.InsertOnSubmit(list);
             Db.SubmitChanges();
         }
@@ -903,13 +938,13 @@ namespace CmsWeb.Models
         public void DeleteTasks(IEnumerable<int> list)
         {
             var owners = (from o in DbUtil.Db.Tasks
-                          where list.Contains(o.Id)
-                          select o.OwnerId).Distinct().ToList();
+                where list.Contains(o.Id)
+                select o.OwnerId).Distinct().ToList();
 
             var delegates = (from o in DbUtil.Db.Tasks
-                             where list.Contains(o.Id)
-                             where o.CoOwnerId != null
-                             select o.CoOwnerId ?? 0).Distinct().ToList();
+                where list.Contains(o.Id)
+                where o.CoOwnerId != null
+                select o.CoOwnerId ?? 0).Distinct().ToList();
 
             foreach (var id in list)
                 DeleteTask(id, false);
@@ -919,16 +954,18 @@ namespace CmsWeb.Models
 
             string taskString = list.Count() > 1 ? "tasks" : "a task";
 
-            GCMHelper.sendNotification(owners, GCMHelper.TYPE_TASK, 0, "Tasks Deleted", $"{Util.UserFullName} has deleted {taskString} you owned");
-            GCMHelper.sendNotification(delegates, GCMHelper.TYPE_TASK, 0, "Tasks Deleted", $"{Util.UserFullName} has deleted {taskString} delegated to you");
+            GCMHelper.sendNotification(owners, GCMHelper.TYPE_TASK, 0, "Tasks Deleted",
+                $"{Util.UserFullName} has deleted {taskString} you owned");
+            GCMHelper.sendNotification(delegates, GCMHelper.TYPE_TASK, 0, "Tasks Deleted",
+                $"{Util.UserFullName} has deleted {taskString} delegated to you");
             GCMHelper.sendRefresh(Util.UserPeopleId.Value, GCMHelper.ACTION_REFRESH);
         }
 
         public void Priortize(IEnumerable<int> list, string p)
         {
             var q = from t in DbUtil.Db.Tasks
-                    where list.Contains(t.Id)
-                    select t;
+                where list.Contains(t.Id)
+                select t;
             int? priority = p.Substring(1).ToInt();
             if (priority == 0)
                 priority = null;
@@ -949,11 +986,13 @@ namespace CmsWeb.Models
             if (task.Owner.PeopleId == Util.UserPeopleId)
             {
                 if (task.CoOwner != null)
-                    GCMHelper.sendNotification(task.CoOwner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Task Complete", $"{Util.UserFullName} completed a task they delegated to you");
+                    GCMHelper.sendNotification(task.CoOwner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Task Complete",
+                        $"{Util.UserFullName} completed a task they delegated to you");
             }
             else
             {
-                GCMHelper.sendNotification(task.Owner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Task Complete", $"{Util.UserFullName} completed a task you delegated them");
+                GCMHelper.sendNotification(task.Owner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Task Complete",
+                    $"{Util.UserFullName} completed a task you delegated them");
             }
 
             GCMHelper.sendRefresh(Util.UserPeopleId.Value, GCMHelper.TYPE_TASK);
@@ -968,14 +1007,16 @@ namespace CmsWeb.Models
             if (task.OwnerId == PeopleId)
             {
                 if (task.CoOwnerId != null)
-                    DbUtil.Db.Email(task.Owner.EmailAddress, task.CoOwner, $"Task archived by {Util.UserFullName}", CreateEmailBody(task));
+                    DbUtil.Db.Email(task.Owner.EmailAddress, task.CoOwner, $"Task archived by {Util.UserFullName}",
+                        CreateEmailBody(task));
 
                 task.Archive = true;
                 DbUtil.Db.SubmitChanges();
             }
             else // I must be cowner, I can't archive
             {
-                DbUtil.Db.Email(task.CoOwner.EmailAddress, task.Owner, $"{Util.UserFullName} tried to archive task", CreateEmailBody(task));
+                DbUtil.Db.Email(task.CoOwner.EmailAddress, task.Owner, $"{Util.UserFullName} tried to archive task",
+                    CreateEmailBody(task));
             }
         }
 

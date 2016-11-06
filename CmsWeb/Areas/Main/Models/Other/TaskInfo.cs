@@ -27,15 +27,15 @@ namespace CmsWeb.Models
         {
             get
             {
-                var pid = Util.UserPeopleId.Value;
+                var pid = Util.UserPeopleId;
                 if (CoOwnerId == pid) // if task has been delegated to me
                     return "You"; // display nothing
-                else if (OwnerId == pid) // if I am owner
+                if (OwnerId == pid) // if I am owner
                     if (CoOwnerId.HasValue) // and task has been delegated
                         return CoOwner; // display delegate
                     else // otherwise
                         return ""; // display nothing
-                else if (CoOwnerId.HasValue) // if this task has been delegated
+                if (CoOwnerId.HasValue) // if this task has been delegated
                     return CoOwner; // display the delegate
                 return Owner; // otherwise display the owner
             }
@@ -76,7 +76,7 @@ namespace CmsWeb.Models
             get { return SortPriority == 4 ? null : (int?)SortPriority; }
             set { SortPriority = value ?? 4; }
         }
-        public bool IsAnOwner => IsOwner || IsCoOwner;
+        public bool IsAnOwner => IsOwner || IsCoOwner || Util.IsInRole("ManageTasks");
         public bool IsOwner { get; set; }
         public bool IsCoOwner { get; set; }
 
@@ -95,6 +95,7 @@ namespace CmsWeb.Models
         public bool ForceCompleteWContact { get; set; }
         public string CoOwnerEmail { get; set; }
         public string WhoEmail => who?.EmailAddress ?? "";
+        public string LimitToRole { get; set; }
 
         public string WhoEmail2
         {
@@ -175,6 +176,7 @@ namespace CmsWeb.Models
             var sb = new StringBuilder();
             var task = DbUtil.Db.Tasks.Single(t => t.Id == Id);
             TaskModel.ChangeTask(sb, task, "Description", Description);
+            TaskModel.ChangeTask(sb, task, "LimitToRole", LimitToRole);
             TaskModel.ChangeTask(sb, task, "Due", Due);
             TaskModel.ChangeTask(sb, task, "Notes", Notes);
             TaskModel.ChangeTask(sb, task, "StatusId", StatusId);

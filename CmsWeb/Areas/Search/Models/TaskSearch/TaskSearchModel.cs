@@ -109,7 +109,11 @@ namespace CmsWeb.Areas.Search.Models
                 where t.Archive == opt.Archived
                 select t;
 
-            if (opt.Status > 0)
+            if (opt.Status == 99)
+                q = from t in q
+                    where new[] {TaskStatusCode.Active, TaskStatusCode.Pending}.Contains(t.StatusId ?? 0)
+                    select t;
+            else if (opt.Status > 0)
                 q = from t in q
                     where t.StatusId == opt.Status
                     select t;
@@ -117,11 +121,6 @@ namespace CmsWeb.Areas.Search.Models
             if (opt.ExcludeNewPerson)
                 q = from t in q
                     where !t.Description.StartsWith("New Person")
-                    select t;
-
-            if (opt.ActivePendingOnly)
-                q = from t in q
-                    where new[] {TaskStatusCode.Active, TaskStatusCode.Pending}.Contains(t.StatusId ?? 0)
                     select t;
 
             if (opt.Lookback.HasValue)
@@ -203,6 +202,11 @@ namespace CmsWeb.Areas.Search.Models
                         select t.Originator2).Distinct().Take(limit).ToArray();
             }
             return new string[0];
+        }
+
+        public HtmlString Icon(string which)
+        {
+            return Search.Icon(which);
         }
     }
 }

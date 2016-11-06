@@ -1,4 +1,6 @@
 using System;
+using System.Web;
+using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Code;
 using Newtonsoft.Json;
@@ -14,20 +16,19 @@ namespace CmsWeb.Areas.Search.Models
         public string Owner { get; set; }
         public string About { get; set; }
         public bool Archived { get; set; }
-        public CodeInfo Status { get; set; }
+        public CodeInfo TaskStatus { get; set; }
         public DateTime? EndDt { get; set; }
         public int? Lookback { get; set; }
         public bool IsPrivate { get; set; }
         public bool ShowNotes { get; set; }
         public bool ExcludeNewPerson { get; set; }
-        public bool ActivePendingOnly { get; set; }
         public string Description { get; set; }
         public string Notes { get; set; }
 
         public TaskSearchInfo()
         {
-            if (Status == null)
-                Status = new CodeInfo("TaskStatus");
+            if (TaskStatus == null)
+                TaskStatus = new CodeInfo("TaskStatus");
         }
 
         private static string NewTaskSearchString => JsonConvert.SerializeObject(new TaskSearchInfo());
@@ -59,7 +60,6 @@ namespace CmsWeb.Areas.Search.Models
             public int Status { get; set; }
             public bool Archived { get; set; }
             public bool ExcludeNewPerson { get; set; }
-            public bool ActivePendingOnly { get; set; }
             public int? Lookback { get; set; }
             public DateTime? EndDt { get; set; }
 
@@ -73,15 +73,37 @@ namespace CmsWeb.Areas.Search.Models
         {
             return new OptionInfo
             {
-                Status = Status.Value.ToInt(),
+                Status = TaskStatus.Value.ToInt(),
                 Archived = Archived,
                 ExcludeNewPerson = ExcludeNewPerson,
-                ActivePendingOnly = ActivePendingOnly,
                 Lookback = Lookback,
                 EndDt = EndDt,
             };
         }
 
         public static OptionInfo GetOptions(string s) => JsonConvert.DeserializeObject<OptionInfo>(s);
+
+        public string OnePersonFilter()
+        {
+            return (Originator.HasValue() ? "Ori" : "")
+                   + (About.HasValue() ? "Abo" : "")
+                   + (Owner.HasValue() ? "Own" : "")
+                   + (Delegate.HasValue() ? "Del" : "");
+        }
+
+        public HtmlString Icon(string which)
+        {
+            var i = new TagBuilder("i");
+            i.AddCssClass("fa");
+            i.AddCssClass("fa-lg");
+            if (OnePersonFilter() == which)
+            {
+                i.AddCssClass("fa-close");
+                i.AddCssClass("red");
+            }
+            else
+                i.AddCssClass("fa-filter");
+            return new HtmlString(i.ToString());
+        }
     }
 }

@@ -1,5 +1,8 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.Search.Models.TaskSearchModel
+@{
+  var onePersonFilter = Model.Search.OnePersonFilter();
+}
 <div id="results">
   @Html.Partial("PagerTop", Model)
   <div class="table-responsive">
@@ -14,7 +17,7 @@
         <th>
           <div class="btn-group">
             <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
-              People <span class="caret"></span>
+              <strong>People</strong> <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
               <li class="dropdown-header">Sort by Name</li>
@@ -40,7 +43,14 @@
           </td>
           <td @(t.Archive ? "style=color:red" : "")>
             @t.Description<br/>
-            @t.Status
+            @if (t.CompletedContactId.HasValue)
+            {
+              <a href="/Contact2/@t.CompletedContactId" target="contact">@t.Status</a>
+            }
+            else
+            {
+              @t.Status
+            }
             @if (t.LimitToRole.HasValue())
             {
               <br/>
@@ -52,37 +62,33 @@
               @if (t.Originator.HasValue())
               {
                 <div class="row">
-                  <div class="cell1">
-                    <a href="#" data-filter="Originator-@t.OrginatorId-@t.Originator2">Originator</a>
-                  </div>
+                  <div class="cell1">Originator</div>
                   <div class="cell">
+                    <a href="#" data-filter="Originator-@t.OrginatorId-@t.Originator2">@Model.Icon("Ori")</a> 
                     <a href="/Person2/@t.OrginatorId" target="person">@t.Originator</a>
                   </div>
                 </div>
               }
               <div class="row">
-                <div class="cell1">
-                  <a href="#" data-filter="About-@t.WhoId-@t.About2">About</a>
-                </div>
+                <div class="cell1">About</div>
                 <div class="cell">
+                    <a href="#" data-filter="About-@t.WhoId-@t.About2">@Model.Icon("Abo")</a> 
                   <a href="/Person2/@t.WhoId" target="person">@t.About</a>
                 </div>
               </div>
               <div class="row">
-                <div class="cell1">
-                  <a href="#" data-filter="Owner-@t.OwnerId-@t.Owner2">Owner</a>
-                </div>
+                <div class="cell1">Owner</div>
                 <div class="cell">
+                    <a href="#" data-filter="Owner-@t.OwnerId-@t.Owner2">@Model.Icon("Own")</a> 
                   <a href="/Person2/@t.OwnerId" target="person">@t.Owner</a>
                 </div>
               </div>
               @if (t.DelegateX.HasValue())
               {
                 <div class="row">
-                  <div class="cell1">
-                    <a href="#" data-filter="Delegate-@t.CoOwnerId-@t.Delegate2">Delegate</a>
-                  </div>
+                  <div class="cell1">Delegate</div>
                   <div class="cell">
+                    <a href="#" data-filter="Delegate-@t.CoOwnerId-@t.Delegate2">@Model.Icon("Del")</a> 
                     <a href="/Person2/@t.CoOwnerId" target="person">@t.DelegateX</a>
                   </div>
                 </div>

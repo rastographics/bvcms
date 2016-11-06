@@ -9,7 +9,7 @@
     ViewBag.PageHeader = "Edit Task";
 }
 <div class="row">
-    <div class="col-sm-12 col-md-12 col-lg-7">
+    <div class="col-sm-12 col-md-12 col-lg-10">
         <div class="box box-responsive">
             <div class="box-title-btn">
                 <div class="box-tools">
@@ -58,15 +58,21 @@
                                 @Html.TextBox("Description", Model.Description, new { @class = "form-control" })
                             </div>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-2">
                             <div class="form-group">
                                 @Html.EditorFor(m => m.Due)
                             </div>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <div class="form-group">
                                 <label for="StatusId" class="control-label">Status</label>
                                 @Html.DropDownList("StatusId", Model.StatusList(), new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="LimitToRole" class="control-label">Limit To Role</label>
+                                @Html.TextBox("LimitToRole", Model.LimitToRole, new { @class = "form-control" })
                             </div>
                         </div>
                         <div class="col-sm-12">
