@@ -52,43 +52,27 @@
             return false;
         }
     });
-//    $("#Search_Owner").autocomplete({
-//        source: function (request, response) {
-//            $.extend(request, { options: $("#Options").val() });
-//            $.post("/TaskSearch/OwnerNames/", request,
-//                function (ret) { response(ret.slice(0, 10)); }, "json");
-//        },
-//        select: function (event, ui) {
-//            $("[id^=Search_]").val('');
-//            $("#Search_Owner").val(ui.item.value);
-//            $("#filter").click();
-//            return false;
-//        }
-//    });
-//    $("#Search_Originator").autocomplete({
-//        source: function (request, response) {
-//            $.extend(request, { options: $("#Options").val() });
-//            $.post("/TaskSearch/OrginatorNames", request,
-//                function (ret) { response(ret.slice(0, 10)); }, "json");
-//        },
-//        select: function (event, ui) {
-//            $("[id^=Search_]").val('');
-//            $("#Search_Orginator").val(ui.item.value);
-//            $("#filter").click();
-//            return false;
-//        }
-//    });
-//    $("#Search_About").autocomplete({
-//        source: function (request, response) {
-//            $.extend(request, { options: $("#Options").val() });
-//            $.post("/TaskSearch/AboutNames", request,
-//                function (ret) { response(ret.slice(0, 10)); }, "json");
-//        },
-//        select: function (event, ui) {
-//            $("[id^=Search_]").val('');
-//            $("#Search_About").val(ui.item.value);
-//            $("#filter").click();
-//            return false;
-//        }
-//    });
+    $("#archive").click(function (ev) {
+        ev.preventDefault();
+        var url = $(this)[0].href;
+        var cnt = 0;
+        var request = $("#form-task-search").serialize();
+        $.post("/TaskSearch/ArchiveCount", request, function (data) {
+            cnt = parseInt(data);
+            swal({
+                title: "Are you sure you want to archive " + cnt + " tasks?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-warning",
+                confirmButtonText: "Yes, archive them!",
+                closeOnConfirm: false
+            },
+            function () {
+                var f = $("#form-task-search");
+                f.attr("action", url);
+                f.submit();
+            });
+        });
+        return false;
+    });
 });

@@ -8,11 +8,13 @@
 @section head
 {
   <style>
-    div.tbl { 
+    div.tbl {
       display: table;
       background-color: inherit !important;
     }
+
     div.tbl div.row { display: table-row; }
+
     div.tbl div.cell1 {
       display: table-cell;
       width: 5.5em;
@@ -20,17 +22,18 @@
       padding-top: 2px;
       padding-bottom: 2px;
     }
+
     div.tbl div.cell {
       display: table-cell;
       padding-top: 2px;
       padding-bottom: 2px;
     }
-    .maxwidth {
-      max-width: 300px;
-    }
-    .red { 
-      color:red; 
-    }
+
+    .maxwidth { max-width: 300px; }
+
+    .red { color: red; }
+
+    .alert-danger { color: #a94442 !important; }
   </style>
 }
 <div class="box box-responsive">
@@ -92,6 +95,15 @@
               <a class="btn btn-default submit" href="/TaskSearch/Clear">Clear</a>
               <div class="btn-group">
                 <a id="filter" href="/TaskSearch/Results" class="btn btn-primary ajax" data-callback="UpdateTotal">Search</a>
+                <button type="button" id="filter-dropdown" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                  <span class="caret"></span>
+                  <span class="sr-only">Action Dropdown</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                  <li>
+                    <a id="archive" class="alert alert-danger" href="/TaskSearch/Archive/">Archive Tasks</a>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>

@@ -93,7 +93,9 @@ namespace CmsWeb.Areas.Search.Models
 
         internal void Archive()
         {
-            throw new NotImplementedException();
+            var q = DefineModelList().ToList();
+            foreach (var t in q)
+                DbUtil.Db.ExecuteCommand("UPDATE dbo.Task SET Archive = 1 WHERE Id = {0}", t.Id);
         }
 
         private static IQueryable<TaskSearch> GetBaseResults(CMSDataContext db, TaskSearchInfo.OptionInfo opt)

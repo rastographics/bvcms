@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Web.Mvc;
 using CmsWeb.Areas.Search.Models;
 using UtilityExtensions;
@@ -55,7 +56,13 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Archive(TaskSearchModel m)
         {
             m.Archive();
-            return Content("ok");
+            m.Search.SavePreference();
+            return Redirect("/TaskSearch");
+        }
+        public ActionResult ArchiveCount(TaskSearchModel m)
+        {
+            var cnt = m.DefineModelList().Count();
+            return Content(cnt.ToString("N0"));
         }
     }
 }

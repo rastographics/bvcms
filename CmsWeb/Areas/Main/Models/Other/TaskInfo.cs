@@ -205,5 +205,23 @@ namespace CmsWeb.Models
 
             GCMHelper.sendRefresh(Util.UserPeopleId.Value, GCMHelper.TYPE_TASK);
         }
+        public IEnumerable<SelectListItem> Roles()
+        {
+            var roles = DbUtil.Db.Setting("LimitToRolesForTasks", 
+                DbUtil.Db.Setting("LimitToRolesForContacts", ""))
+                .SplitStr(",").Where(rr => rr.HasValue()).ToArray();
+            
+            if (roles.Length == 0)
+                roles = DbUtil.Db.Roles.OrderBy(r => r.RoleName).Select(r => r.RoleName).ToArray();
+            var list = roles.Select(rolename => new SelectListItem
+            {
+                Value = rolename,
+                Text = rolename,
+                Selected = !string.IsNullOrWhiteSpace(LimitToRole) && LimitToRole == rolename
+            }).ToList();
+
+            list.Insert(0, new SelectListItem { Value = "0", Text = @"(not specified)", Selected = true});
+            return list;
+        }
     }
 }
