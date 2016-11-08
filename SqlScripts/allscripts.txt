@@ -712,6 +712,7 @@ Creating_dbo_OrganizationLeaders.sql
 Creating_dbo_DaysSinceContact.sql
 Creating_dbo_InSmallGroup.sql
 Creating_dbo_CheckinByDate.sql
+Creating_dbo_CreateRole.sql
 Creating_dbo_MembersAsOf.sql
 Creating_dbo_OrgMember.sql
 Creating_dbo_HeadOrSpouseWithEmail.sql
