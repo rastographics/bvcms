@@ -75,4 +75,11 @@
         });
         return false;
     });
+    function initializePopovers() {
+        $('[data-toggle="popover"]').popover({ html: true });
+        $('[data-toggle="popover"]').click(function (ev) {
+            ev.preventDefault();
+        });
+    }
+    initializePopovers();
 });

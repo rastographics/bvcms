@@ -99,7 +99,7 @@ namespace CmsWeb.Areas.Search.Models
             if (OnePersonFilter() == which)
             {
                 i.AddCssClass("fa-close");
-                i.AddCssClass("red");
+                i.AddCssClass("green");
             }
             else
                 i.AddCssClass("fa-filter");

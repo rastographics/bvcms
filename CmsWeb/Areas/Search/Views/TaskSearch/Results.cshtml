@@ -1,8 +1,5 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.Search.Models.TaskSearchModel
-@{
-  var onePersonFilter = Model.Search.OnePersonFilter();
-}
 <div id="results">
   @Html.Partial("PagerTop", Model)
   <div class="table-responsive">
@@ -39,10 +36,10 @@
       {
         <tr>
           <td>
-            <a href="/Task/Detail/@t.Id" target="Task">@t.Created.ToString2("d")</a>
+            @t.Created.ToString2("d")
           </td>
-          <td @(t.Archive ? "style=color:red" : "")>
-            @t.Description<br/>
+          <td class="maxwidth @(t.Archive ? "red" : "")">
+            <a href="/Task/Detail/@t.Id" target="Task">@t.Description</a><br/>
             @if (t.CompletedContactId.HasValue)
             {
               <a href="/Contact2/@t.CompletedContactId" target="contact">@t.Status</a>

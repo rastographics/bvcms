@@ -1,9 +1,9 @@
 ﻿@model CmsWeb.Areas.Search.Models.TaskSearchModel
 @{
-  ViewBag.Title = "Task Search";
-  ViewBag.PageHeader = "Task Search";
-  Layout = ViewExtensions2.TouchPointLayout();
-  var personClass = new {@class = "person"};
+    ViewBag.Title = "Task Search";
+    ViewBag.PageHeader = "Task Search";
+    Layout = ViewExtensions2.TouchPointLayout();
+    var personAttributes = new {@class = "person", popup="Start typing lastname to get a dropdown of names"};
 }
 @section head
 {
@@ -32,6 +32,7 @@
     .maxwidth { max-width: 300px; }
 
     .red { color: red; }
+    .green { color: green; }
 
     .alert-danger { color: #a94442 !important; }
   </style>
@@ -43,19 +44,19 @@
       <div class="well">
         <div class="row">
           <div class="col-lg-3 col-md-3 col-sm-3">
-            @Html.EditorFor(m => m.Search.TaskStatus)
+            @Html.EditorFor(m => m.Search.TaskStatus, personAttributes)
           </div>
           <div class="col-lg-2 col-md-2 col-sm-4">
-            @Html.EditorFor(m => m.Search.About, personClass)
+            @Html.EditorFor(m => m.Search.About, personAttributes)
           </div>
           <div class="col-lg-2 col-md-2 col-sm-4">
-            @Html.EditorFor(m => m.Search.Owner, personClass)
+            @Html.EditorFor(m => m.Search.Owner, personAttributes)
           </div>
           <div class="col-lg-2 col-md-2 col-sm-4">
-            @Html.EditorFor(m => m.Search.Delegate, personClass)
+            @Html.EditorFor(m => m.Search.Delegate, personAttributes)
           </div>
           <div class="col-lg-2 col-md-2 col-sm-4">
-            @Html.EditorFor(m => m.Search.Originator, personClass)
+            @Html.EditorFor(m => m.Search.Originator, personAttributes)
           </div>
         </div>
         <div class="row">
