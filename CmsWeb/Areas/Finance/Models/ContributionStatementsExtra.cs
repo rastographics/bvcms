@@ -87,6 +87,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
                 if (set > 0 && pageEvents.FamilySet[ci.PeopleId] != set)
                     continue;
 
+                pageEvents.PeopleId = ci.PeopleId;
                 var contributions = APIContribution.contributions(Db, ci, FromDate, ToDate).ToList();
                 var pledges = APIContribution.pledges(Db, ci, ToDate).ToList();
                 var giftsinkind = APIContribution.GiftsInKind(Db, ci, FromDate, ToDate).ToList();
@@ -530,12 +531,14 @@ p { font-size: 11px; }
         private class PageEvent : PdfPageEventHelper
         {
             private PdfContentByte dc;
-            private Document document;
             private BaseFont font;
             private NPages npages;
             private int pg;
             private PdfWriter writer;
+            private Document document;
+
             public int set { get; set; }
+            public int PeopleId { get; set; }
             public Dictionary<int, int> FamilySet { get; set; }
 
             public override void OnOpenDocument(PdfWriter writer, Document document)
@@ -583,7 +586,7 @@ p { font-size: 11px; }
                 string text;
                 float len;
 
-                text = "Page " + (pg) + " of ";
+                text = $"id: {PeopleId}   Page {pg} of ";
                 len = font.GetWidthPoint(text, 8);
                 dc.BeginText();
                 dc.SetFontAndSize(font, 8);

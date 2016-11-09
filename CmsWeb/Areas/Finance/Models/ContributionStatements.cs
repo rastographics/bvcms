@@ -465,13 +465,13 @@ p { font-size: 11px; }
             }
             private NPages npages;
             private int pg;
-            public int PeopleId { get; set; }
-
             private PdfWriter writer;
             private Document document;
             private PdfContentByte dc;
             private BaseFont font;
+
             public int set { get; set; }
+            public int PeopleId { get; set; }
 
             public Dictionary<int, int> FamilySet { get; set; }
 
