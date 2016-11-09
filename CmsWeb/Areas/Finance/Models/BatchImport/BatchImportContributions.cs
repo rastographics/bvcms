@@ -116,7 +116,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             if (subtext.Contains("Amount,Account,Serial,RoutingNumber,TransmissionDate,DepositTotal"))
                 return new HollyCreekImporter();
 
-            if (subtext.Contains("Transaction Date,Status,Payment Type,Name on Account,Transaction Number,Ref. Number,Customer Number,Operation,Location Name,Amount,Check #"))
+            if (subtext.Contains("Transaction Date,Status,Payment Type,Name on Account,Transaction Number,Ref. Number,Customer Number,Operation,Location Name,Amount,Check #", ignoreCase: true))
                 return new JackHenryImporter();
 
             if (subtext.Contains("textbox32,textbox30,textbox26,textbox22,textbox10,textbox7,DepositStatus,textbox3,SourceLocation,textbox4,submittedByValue,CaptureSequence,Sequence,AmountType,Amount,Serial,Account_1,RoutingNumber,AnalysisStatus,IsOverridden"))
