@@ -10,10 +10,14 @@
 @switch (ncols)
 {
   case 1:
-    <li class="dropdown">
+    <li class="dropdown dropdown-large menu-1col">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="visible-xs-inline"><i class="fa fa-bar-chart"></i>&nbsp;&nbsp;</span>Reports <span class="caret"></span></a>
-      <ul class="dropdown-menu">
-        @Column(c3)
+      <ul class="dropdown-menu dropdown-menu-large menu-1col row">
+        <li class="col-sm-12">
+          <ul>
+            @Column(c3)
+          </ul>
+        </li>
       </ul>
     </li>
     break;
