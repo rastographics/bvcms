@@ -188,13 +188,13 @@ namespace CmsData
             if (setting != null)
                 Settings.DeleteOnSubmit(setting);
         }
-        public new void Log(string s)
-        {
-            var output = ConfigurationManager.AppSettings["SharedFolder"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
-            output = output + $"\\log-{Host}-{DateTime.Today.ToSortableDate()}.txt";
-            var text = $"{DateTime.Now.ToSortableTime()} {s}\r\n";
-            File.AppendAllText(output, text);
-        }
+//        public new void Log(string s)
+//        {
+//            var output = ConfigurationManager.AppSettings["SharedFolder"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
+//            output = output + $"\\log-{Host}-{DateTime.Today.ToSortableDate()}.txt";
+//            var text = $"{DateTime.Now.ToSortableTime()} {s}\r\n";
+//            File.AppendAllText(output, text);
+//        }
         public void LogActivity(string activity, int? oid = null, int? pid = null, int? did = null, int? uid = null)
         {
             DbUtil.LogActivity(Host, activity, oid, pid, did, uid);

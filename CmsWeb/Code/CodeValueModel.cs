@@ -922,19 +922,6 @@ namespace CmsWeb.Code
             return tg;
         }
 
-        public IEnumerable<CodeValueItem> TaskStatusCodes()
-        {
-            var list = (from vc in DbUtil.Db.TaskStatuses
-                orderby vc.Description
-                select new CodeValueItem
-                {
-                    Id = vc.Id,
-                    Code = vc.Code,
-                    Value = vc.Description
-                }).ToList();
-            list.Insert(0, new CodeValueItem {Id = 99, Value = "Active + Pending"});
-            return list;
-        }
 
         public IEnumerable<CodeValueItem> UserRoles()
         {

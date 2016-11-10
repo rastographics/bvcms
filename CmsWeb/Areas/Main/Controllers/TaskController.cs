@@ -132,13 +132,12 @@ namespace CmsWeb.Areas.Main.Controllers
         }
 
         [HttpPost]
-        public ActionResult Update(int id)
+        public ActionResult Update(TaskDetail t)
         {
-            var m = new TaskModel();
-            var t = m.FetchTask(id);
-            UpdateModel(t);
+            if (!ModelState.IsValid)
+                return View("Edit", t);
             t.UpdateTask();
-            return RedirectToAction("Detail", new { id = id });
+            return RedirectToAction("Detail", new { id = t.Id });
         }
 
         [HttpPost]

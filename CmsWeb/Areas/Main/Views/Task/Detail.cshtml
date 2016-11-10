@@ -81,7 +81,7 @@
   {
     <div class="well">
       <strong>
-        <a href="@Model.PersonUrl" style="font-size: 1.5em;" target="person">@Model.Who</a>
+        <a href="@Model.PersonUrl" style="font-size: 1.5em;" target="person">@Model.About</a>
       </strong>
       <br/>
       <a href="@Model.ProspectReportLink()" target="_blank">Prospect Report</a>
@@ -117,12 +117,12 @@
   }
   <div class="row">
     <div class="col-sm-6">
-      @if (Model.LimitToRole.HasValue())
+      @if (Model.TaskLimitToRole.Value.HasValue())
       {
         <dl>
           <dt>Limit To Role</dt>
           <dd>
-            @Model.LimitToRole
+            @Model.TaskLimitToRole.Value
           </dd>
         </dl>
       }
@@ -149,9 +149,9 @@
           {
             <span>@Model.CompletedOn.ToString2("f")</span>
           }
-          @if (Model.StatusId == CmsData.Codes.TaskStatusCode.Declined)
+          @if (Model.TaskStatus.IntVal == CmsData.Codes.TaskStatusCode.Declined)
           {
-            @:&nbsp- @Model.DeclineReason
+            @:&nbsp; @Model.DeclineReason
           }
         </dd>
       </dl>

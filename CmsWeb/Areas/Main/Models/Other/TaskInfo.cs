@@ -6,21 +6,18 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web;
-using System.Web.Mvc;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using CmsData;
-using CmsData.Codes;
 using UtilityExtensions;
-using CmsData.Classes.GoogleCloudMessaging;
+using CmsWeb.Code;
 
 namespace CmsWeb.Models
 {
     public class TaskInfo
     {
         public int Id { get; set; }
+        [StringLength(50)]
         public string Description { get; set; }
         public bool IsSelected { get; set; }
         public string DispOwner
@@ -44,6 +41,7 @@ namespace CmsWeb.Models
         public int OwnerId { get; set; }
         public string CoOwner { get; set; }
         public int? CoOwnerId { get; set; }
+
         internal Person who;
 
         public string PersonUrl => "/Person2/" + WhoId;
@@ -60,9 +58,8 @@ namespace CmsWeb.Models
                     who = DbUtil.Db.LoadPersonById(value.Value);
             }
         }
-        public string Who => who == null ? "" : who.Name;
+        public string About => who == null ? "" : who.Name;
         public int PrimarySort { get; set; }
-        //public int ListId { get; set; }
         public DateTime? SortDue { get; set; }
         public DateTime? DueOrCompleted => SortDueOrCompleted != DateTime.MaxValue.Date ? (DateTime?)SortDueOrCompleted : null;
         public DateTime SortDueOrCompleted { get; set; }
@@ -86,142 +83,6 @@ namespace CmsWeb.Models
         {
             var m = new TaskModel();
             return m.FetchTask(Id);
-        }
-    }
-
-    public class TaskDetail : TaskInfo
-    {
-        public string OwnerEmail { get; set; }
-        public bool ForceCompleteWContact { get; set; }
-        public string CoOwnerEmail { get; set; }
-        public string WhoEmail => who?.EmailAddress ?? "";
-        public string LimitToRole { get; set; }
-
-        public string WhoEmail2
-        {
-            get
-            {
-                if (who != null && who.EmailAddress.HasValue())
-                    return who.EmailAddress;
-                return string.Empty;
-            }
-        }
-        public string ContactUrl => "/Contact2/" + CompletedContactId;
-
-        public string WhoAddress => who == null ? "" : who.PrimaryAddress;
-
-        public string WhoAddrCityStateZip => who == null ? "" : who.AddrCityStateZip;
-
-        public string WhoPhone => who == null ? "" : who.HomePhone.FmtFone();
-        public DateTime CreatedOn { get; set; }
-        public string ChangeWho => AssignChange(WhoId);
-
-        private string AssignChange(int? id)
-        {
-            return id == null ? "(assign)" : "(change)";
-        }
-
-        public DateTime? Due
-        {
-            get { return (SortDue.HasValue && SortDue != DateTime.MaxValue.Date) ? SortDue : null; }
-            set { SortDue = value; }
-        }
-        public string ChangeCoOwner => CoOwnerId == null ? "(delegate)" : "(redelegate)";
-        public int StatusId { get; set; }
-        public int StatusEnum
-        {
-            get { return StatusId; }
-            set { StatusId = value; }
-        }
-        public string Location { get; set; }
-        public string Project { get; set; }
-        public bool ShowCompleted => CompletedOn.HasValue;
-        public bool ShowLocation => HttpContext.Current.User.IsInRole("AdvancedTask");
-
-        public bool HasProject => string.IsNullOrEmpty(Project);
-        public int? SourceContactId { get; set; }
-        public DateTime? SourceContact { get; set; }
-        public string SourceContactChange => AssignChange(SourceContactId);
-        public int? CompletedContactId { get; set; }
-        public DateTime? CompletedContact { get; set; }
-        public string Notes { get; set; }
-        public string FmtNotes => ViewExtensions2.Markdown(Notes?.Replace("{peopleid}", WhoId.ToString())).ToString();
-
-        public bool HasNotes => string.IsNullOrEmpty(Notes);
-
-        public bool CanComplete => IsAnOwner && this.StatusId != TaskStatusCode.Complete && !ForceCompleteWContact;
-
-        public bool CanCompleteWithContact => IsAnOwner && this.StatusId != TaskStatusCode.Complete && WhoId != null;
-
-        public bool CanAccept => IsCoOwner && (this.StatusId == TaskStatusCode.Pending || this.StatusId == TaskStatusCode.Declined);
-
-        public string ProspectReportLink()
-        {
-            Util2.CurrentPeopleId = WhoId.Value;
-            HttpContext.Current.Session["ActivePerson"] = Who;
-            var qb = DbUtil.Db.QueryIsCurrentPerson();
-            return "/Reports/Prospect/" + qb.QueryId + "?form=true";
-        }
-        public IEnumerable<SelectListItem> StatusList()
-        {
-            return from s in DbUtil.Db.TaskStatuses
-                   select new SelectListItem
-                   {
-                       Text = s.Description,
-                       Value = s.Id.ToString()
-                   };
-        }
-        public void UpdateTask()
-        {
-            var sb = new StringBuilder();
-            var task = DbUtil.Db.Tasks.Single(t => t.Id == Id);
-            TaskModel.ChangeTask(sb, task, "Description", Description);
-            TaskModel.ChangeTask(sb, task, "LimitToRole", LimitToRole);
-            TaskModel.ChangeTask(sb, task, "Due", Due);
-            TaskModel.ChangeTask(sb, task, "Notes", Notes);
-            TaskModel.ChangeTask(sb, task, "StatusId", StatusId);
-            task.ForceCompleteWContact = ForceCompleteWContact;
-            if (HttpContext.Current.User.IsInRole("AdvancedTask"))
-                TaskModel.ChangeTask(sb, task, "Project", Project);
-
-            task.Location = Location;
-            if (Priority == 0)
-                task.Priority = null;
-            else
-                task.Priority = Priority;
-            DbUtil.Db.SubmitChanges();
-            TaskModel.NotifyIfNeeded(sb, task);
-
-            if (task.Owner.PeopleId == Util.UserPeopleId.Value)
-            {
-                if (task.CoOwner != null)
-                    GCMHelper.sendNotification(task.CoOwner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Task Updated", $"{Util.UserFullName} updated a task delegated to you");
-            }
-            else
-            {
-                GCMHelper.sendNotification(task.Owner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Task Updated", $"{Util.UserFullName} updated a task you own");
-            }
-
-
-            GCMHelper.sendRefresh(Util.UserPeopleId.Value, GCMHelper.TYPE_TASK);
-        }
-        public IEnumerable<SelectListItem> Roles()
-        {
-            var roles = DbUtil.Db.Setting("LimitToRolesForTasks", 
-                DbUtil.Db.Setting("LimitToRolesForContacts", ""))
-                .SplitStr(",").Where(rr => rr.HasValue()).ToArray();
-            
-            if (roles.Length == 0)
-                roles = DbUtil.Db.Roles.OrderBy(r => r.RoleName).Select(r => r.RoleName).ToArray();
-            var list = roles.Select(rolename => new SelectListItem
-            {
-                Value = rolename,
-                Text = rolename,
-                Selected = !string.IsNullOrWhiteSpace(LimitToRole) && LimitToRole == rolename
-            }).ToList();
-
-            list.Insert(0, new SelectListItem { Value = "0", Text = @"(not specified)", Selected = true});
-            return list;
         }
     }
 }

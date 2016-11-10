@@ -266,7 +266,7 @@ namespace CmsWeb.Models
             var completedcode = TaskStatusCode.Complete;
             var somedaycode = TaskStatusCode.Someday;
 
-            var iPhone = HttpContext.Current.Request.UserAgent.Contains("iPhone");
+            var iPhone = HttpContext.Current.Request.UserAgent?.Contains("iPhone");
             var q2 = from t in DbUtil.Db.Tasks
                 where t.Id == id
                 //let tListId = t.CoOwnerId == PeopleId ? t.CoListId.Value : t.ListId
@@ -277,17 +277,15 @@ namespace CmsWeb.Models
                     OwnerId = t.OwnerId,
                     OwnerEmail = t.Owner.EmailAddress,
                     WhoId = t.WhoId,
-                    //ListId = tListId,
-                    //cListId = CurListId,
                     Description = t.Description,
                     SortDue = t.Due ?? DateTime.MaxValue.Date,
                     SortDueOrCompleted = t.CompletedOn ?? (t.Due ?? DateTime.MaxValue.Date),
                     CoOwner = t.CoOwner.Name,
                     CoOwnerId = t.CoOwnerId,
                     CoOwnerEmail = t.CoOwner.EmailAddress,
-                    LimitToRole = t.LimitToRole,
+                    TaskLimitToRole = new CodeInfo(t.LimitToRole, "TaskLimitToRole"),
                     Status = t.TaskStatus.Description,
-                    StatusId = t.StatusId.Value,
+                    TaskStatus = new CodeInfo(t.StatusId, "TaskStatus"),
                     IsSelected = t.Id == intId,
                     Location = t.Location,
                     Project = t.Project,
@@ -303,7 +301,7 @@ namespace CmsWeb.Models
                     Notes = t.Notes,
                     CreatedOn = t.CreatedOn,
                     CompletedOn = t.CompletedOn,
-                    NotiPhone = !iPhone,
+                    NotiPhone = iPhone != true,
                     ForceCompleteWContact = t.ForceCompleteWContact ?? false,
                     DeclineReason = t.DeclineReason
                 };
@@ -453,19 +451,19 @@ namespace CmsWeb.Models
             }
         }
 
-        public string JsonStatusCodes()
-        {
-            var cv = new CodeValueModel();
-            var sb = new StringBuilder("{");
-            foreach (var c in cv.TaskStatusCodes())
-            {
-                if (sb.Length > 1)
-                    sb.Append(",");
-                sb.AppendFormat("'{0}':'{1}'", c.Value, c.Value);
-            }
-            sb.Append("}");
-            return sb.ToString();
-        }
+//        public string JsonStatusCodes()
+//        {
+//            var cv = new CodeValueModel();
+//            var sb = new StringBuilder("{");
+//            foreach (var c in cv.TaskStatusCodes())
+//            {
+//                if (sb.Length > 1)
+//                    sb.Append(",");
+//                sb.AppendFormat("'{0}':'{1}'", c.Value, c.Value);
+//            }
+//            sb.Append("}");
+//            return sb.ToString();
+//        }
 
         public void DeleteTask(int TaskId, bool notify = true)
         {
@@ -554,13 +552,13 @@ namespace CmsWeb.Models
                     .Select(i => new SelectListItem {Text = i}));
         }
 
-        public IEnumerable<SelectListItem> TaskStatusCodes()
-        {
-            var c = new CodeValueModel();
-            return top.Union(c.TaskStatusCodes().Select(cv =>
-                    new SelectListItem {Text = cv.Value, Value = cv.Id.ToString()}));
-            ;
-        }
+//        public IEnumerable<SelectListItem> TaskStatusCodes()
+//        {
+//            var c = new CodeValueModel();
+//            return top.Union(c.TaskStatusCodes().Select(cv =>
+//                    new SelectListItem {Text = cv.Value, Value = cv.Id.ToString()}));
+//            ;
+//        }
 
         private IQueryable<string> projects()
         {
@@ -818,17 +816,17 @@ namespace CmsWeb.Models
             DbUtil.Db.SubmitChanges();
         }
 
-        public void SetStatus(int id, string value)
-        {
-            var task = DbUtil.Db.Tasks.Single(t => t.Id == id);
-            var cvc = new CodeValueModel();
-            var ts = cvc.TaskStatusCodes();
-            var statusid = ts.Single(t => t.Value == value).Id;
-            var sb = new StringBuilder();
-            ChangeTask(sb, task, "StatusId", statusid);
-            NotifyIfNeeded(sb, task);
-            DbUtil.Db.SubmitChanges();
-        }
+//        public void SetStatus(int id, string value)
+//        {
+//            var task = DbUtil.Db.Tasks.Single(t => t.Id == id);
+//            var cvc = new CodeValueModel();
+//            var ts = cvc.TaskStatusCodes();
+//            var statusid = ts.Single(t => t.Value == value).Id;
+//            var sb = new StringBuilder();
+//            ChangeTask(sb, task, "StatusId", statusid);
+//            NotifyIfNeeded(sb, task);
+//            DbUtil.Db.SubmitChanges();
+//        }
 
         public void MoveTasksToList(IEnumerable<int> tids, int listid)
         {

@@ -32,6 +32,12 @@ namespace CmsWeb.Code
             Name = name;
         }
 
+        public CodeInfo(object value, string name, SelectList items)
+            : this(value, items)
+        {
+            this.name = name;
+        }
+
         public CodeInfo(object value, SelectList items)
         {
             if (value != null)
@@ -44,6 +50,7 @@ namespace CmsWeb.Code
             get { return value; }
             set { this.value = value; }
         }
+        public int? IntVal => value.ToInt();
 
         public SelectList Items
         {
@@ -78,10 +85,11 @@ namespace CmsWeb.Code
                         if (getlist != null)
                         {
                             var list = getlist.Invoke(cv, null);
-                            if (list is IEnumerable<CodeValueItem>)
-                                Items = ((IEnumerable<CodeValueItem>) getlist.Invoke(cv, null)).ToSelect();
+                            var enumerable = list as IEnumerable<CodeValueItem>;
+                            if (enumerable != null)
+                                Items = enumerable.ToSelect();
                             else if (list is SelectList)
-                                Items = ((SelectList) getlist.Invoke(cv, null));
+                                Items = (SelectList)list;
                         }
                         else
                             Items = new List<CodeValueItem>().ToSelect();

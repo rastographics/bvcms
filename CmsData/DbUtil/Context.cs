@@ -16,6 +16,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Text;
 using CmsData.Codes;
 using System.Text.RegularExpressions;
 
@@ -32,10 +33,30 @@ namespace CmsData
             get { return nextTagId++; }
         }
 
+#if DEBUG
+        class DebugTextWriter : System.IO.TextWriter {
+           public override void Write(char[] buffer, int index, int count) {
+               Debug.Write(new string(buffer, index, count));
+           }
+
+           public override void Write(string value) {
+               Debug.Write(value);
+           }
+
+           public override Encoding Encoding => Encoding.Default;
+        }
+#endif
         internal string ConnectionString;
         public static CMSDataContext Create(string connStr, string host)
         {
-            return new CMSDataContext(connStr) { ConnectionString = connStr, Host = host };
+            return new CMSDataContext(connStr)
+            {
+                ConnectionString = connStr,
+                Host = host,
+#if DEBUG
+                Log = new DebugTextWriter()
+#endif
+            };
         }
         partial void OnCreated()
         {

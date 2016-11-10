@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.Search.Models
         public string Owner { get; set; }
         public string About { get; set; }
         public bool Archived { get; set; }
-        public CodeInfo TaskStatus { get; set; }
+        public CodeInfo TaskSearchStatus { get; set; }
         public DateTime? EndDt { get; set; }
         public int? Lookback { get; set; }
         public bool IsPrivate { get; set; }
@@ -25,11 +25,11 @@ namespace CmsWeb.Areas.Search.Models
         public string Description { get; set; }
         public string Notes { get; set; }
 
-        public TaskSearchInfo()
-        {
-            if (TaskStatus == null)
-                TaskStatus = new CodeInfo("TaskStatus");
-        }
+//        public TaskSearchInfo()
+//        {
+//            if (TaskStatus == null)
+//                TaskStatus = new CodeInfo("TaskSearchStatus");
+//        }
 
         private static string NewTaskSearchString => JsonConvert.SerializeObject(new TaskSearchInfo());
 
@@ -73,7 +73,7 @@ namespace CmsWeb.Areas.Search.Models
         {
             return new OptionInfo
             {
-                Status = TaskStatus.Value.ToInt(),
+                Status = TaskSearchStatus.Value.ToInt(),
                 Archived = Archived,
                 ExcludeNewPerson = ExcludeNewPerson,
                 Lookback = Lookback,

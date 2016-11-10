@@ -399,6 +399,7 @@
     <Compile Include="Areas\Finance\Models\DepositTotalsModel.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundRange.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
+    <Compile Include="Areas\Main\Models\Other\TaskDetail.cs" />
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadAddressesController.cs" />
