@@ -68,7 +68,7 @@ namespace CmsData
         }
         private static string TaskLink0(int id)
         {
-            return $"/Task/Detail/{id}";
+            return $"/Task/{id}";
         }
         public static string TaskLink(CMSDataContext Db, string text, int id)
         {

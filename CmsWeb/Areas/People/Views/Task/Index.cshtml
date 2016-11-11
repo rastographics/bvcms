@@ -1,12 +1,12 @@
-﻿@using CmsData
+﻿@model CmsWeb.Areas.People.Models.Task.TaskModel
+@using CmsData
 @using UtilityExtensions
-@model CmsWeb.Models.TaskDetail
 @{
   Layout = ViewExtensions2.TouchPointLayout();
   ViewBag.Title = "Task Details";
   ViewBag.PageHeader = "Task Details";
+  var link = Server.UrlEncode($"{ViewExtensions2.CmsHost}/Task/{Model.Id}");
 }
-@{ var link = Server.UrlEncode(ViewExtensions2.CmsHost + "/Task/Detail/" + Model.Id); }
 <div class="row">
 <div class="col-sm-12 col-md-12 col-lg-7">
 <div class="box box-responsive">
@@ -20,7 +20,9 @@
     }
     @if (Model.IsAnOwner)
     {
-      <a href="/Task/Edit/@Model.Id" class="btn btn-default"><i class="fa fa-pencil fa-fw"></i> Edit</a>
+      <a href="/Task/Edit/@Model.Id" class="btn btn-default">
+        <i class="fa fa-pencil fa-fw"></i> Edit
+      </a>
     }
     @if (Model.IsOwner || ((Model.CanComplete || Model.CanCompleteWithContact) && !Model.CanAccept))
     {
@@ -32,42 +34,58 @@
           @if (Model.CanAccept)
           {
             <li>
-              <a href="#" class="accept"><i class="fa fa-thumbs-o-up fa-fw"></i>&nbsp;&nbsp;Accept Task</a>
+              <a href="#" class="accept">
+                <i class="fa fa-thumbs-o-up fa-fw"></i> Accept Task
+              </a>
             </li>
             <li>
-              <a href="#" class="decline"><i class="fa fa-thumbs-o-down fa-fw"></i>&nbsp;&nbsp;Decline Task</a>
+              <a href="#" class="decline">
+                <i class="fa fa-thumbs-o-down fa-fw"></i> Decline Task
+              </a>
             </li>
           }
           @if (Model.CanComplete)
           {
             <li>
-              <a href="#" class="complete"><i class="fa fa-check fa-fw"></i>&nbsp;&nbsp;Complete Task</a>
+              <a href="#" class="complete">
+                <i class="fa fa-check fa-fw"></i> Complete Task
+              </a>
             </li>
           }
           @if (Model.CanCompleteWithContact && Model.Description != "New Person Data Entry")
           {
             <li>
-              <a href="#" class="completewcontact"><i class="fa fa-check-square-o fa-fw"></i>&nbsp;&nbsp;Complete Task w/ Contact</a>
+              <a href="#" class="completewcontact">
+                <i class="fa fa-check-square-o fa-fw"></i> Complete Task w/ Contact
+              </a>
             </li>
           }
           @if (Model.IsOwner)
           {
             <li class="divider"></li>
             <li>
-              <a href="/SearchAdd2/Dialog/taskabout/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-user-plus fa-fw"></i>&nbsp;&nbsp;Change Regarding</a>
+              <a href="/SearchAdd2/Dialog/taskabout/@Model.Id?displaySkipSearch=false" class="searchadd">
+                <i class="fa fa-user-plus fa-fw"></i> Change Regarding
+              </a>
             </li>
             <li>
-              <a href="/Task/Edit/@Model.Id"><i class="fa fa-pencil fa-fw"></i>&nbsp;&nbsp;Edit Task</a>
+              <a href="/Task/Edit/@Model.Id">
+                <i class="fa fa-pencil fa-fw"></i> Edit Task
+              </a>
             </li>
           }
           @if (Model.IsOwner)
           {
             <li class="divider"></li>
             <li>
-              <a href="/SearchAdd2/Dialog/taskowner/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-share-square-o fa-fw"></i>&nbsp;&nbsp;Transfer Ownership</a>
+              <a href="/SearchAdd2/Dialog/taskowner/@Model.Id?displaySkipSearch=false" class="searchadd">
+                <i class="fa fa-share-square-o fa-fw"></i> Transfer Ownership
+              </a>
             </li>
             <li>
-              <a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-users fa-fw"></i>&nbsp;&nbsp;Delegate Task</a>
+              <a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id?displaySkipSearch=false" class="searchadd">
+                <i class="fa fa-users fa-fw"></i> Delegate Task
+              </a>
             </li>
           }
         </ul>
@@ -81,34 +99,44 @@
   {
     <div class="well">
       <strong>
-        <a href="@Model.PersonUrl" style="font-size: 1.5em;" target="person">@Model.About</a>
+        <a href="/Person2/@Model.WhoId" style="font-size: 1.5em;" target="person">@Model.About</a>
       </strong>
       <br/>
       <a href="@Model.ProspectReportLink()" target="_blank">Prospect Report</a>
       <div>
         <ul class="list-inline" style="margin-bottom: 0;">
-          <li><i class="fa fa-map-marker"></i>&nbsp;&nbsp;<a href="http://www.google.com/maps?q=@Model.WhoAddrCityStateZip" target="_blank">@Model.WhoAddress</a></li>
-          <li><i class="fa fa-car"></i>&nbsp;&nbsp;<a href="http://www.google.com/maps?f=d&saddr=@DbUtil.StartAddress&pw=2&daddr=@Model.WhoAddrCityStateZip" target="_blank">Driving Directions</a></li>
+          <li>
+            <i class="fa fa-map-marker"></i>
+            <a href="http://www.google.com/maps?q=@Model.WhoAddrCityStateZip" target="_blank">@Model.WhoAddress</a>
+          </li>
+          <li>
+            <i class="fa fa-car"></i>
+            <a href="http://www.google.com/maps?f=d&saddr=@DbUtil.StartAddress&pw=2&daddr=@Model.WhoAddrCityStateZip" target="_blank">Driving Directions</a>
+          </li>
         </ul>
-        @if (!string.IsNullOrWhiteSpace(Model.WhoEmail2) && !string.IsNullOrWhiteSpace(Model.WhoPhone))
+        @if (!string.IsNullOrWhiteSpace(Model.WhoEmail) && !string.IsNullOrWhiteSpace(Model.WhoPhone))
         {
           <ul class="list-inline">
-            <li><i class="fa fa-envelope-o"></i>&nbsp;&nbsp;<a href="mailto:@Model.WhoEmail">@Model.WhoEmail2</a></li>
-            <li><i class="fa fa-phone"></i>&nbsp;&nbsp;<a href="tel:+@Model.WhoPhone">@Model.WhoPhone</a></li>
+            <li>
+              <i class="fa fa-envelope-o"></i>
+              <a href="mailto:@Model.WhoEmail">@Model.WhoEmail</a>
+            </li>
+            <li>
+              <i class="fa fa-phone"></i>
+              <a href="tel:+@Model.WhoPhone">@Model.WhoPhone</a>
+            </li>
           </ul>
         }
         else
         {
-          if (!string.IsNullOrWhiteSpace(Model.WhoEmail2))
+          if (!string.IsNullOrWhiteSpace(Model.WhoEmail))
           {
             <i class="fa fa-envelope-o"></i>
-            <text>&nbsp;&nbsp;</text>
-            <a href="mailto:@Model.WhoEmail">@Model.WhoEmail2</a>
+            <a href="mailto:@Model.WhoEmail">@Model.WhoEmail</a>
           }
           if (!string.IsNullOrWhiteSpace(Model.WhoPhone))
           {
             <i class="fa fa-phone"></i>
-            <text>&nbsp;&nbsp;</text>
             <a href="tel:+@Model.WhoPhone">@Model.WhoPhone</a>
           }
         }
@@ -151,7 +179,7 @@
           }
           @if (Model.TaskStatus.IntVal == CmsData.Codes.TaskStatusCode.Declined)
           {
-            @:&nbsp; @Model.DeclineReason
+            @Model.DeclineReason
           }
         </dd>
       </dl>
@@ -194,39 +222,47 @@
         @if (Model.CanAccept)
         {
           <li>
-            <a href="#" class="accept"><i class="fa fa-thumbs-o-up fa-fw"></i>&nbsp;&nbsp;Accept Task</a>
+            <a href="#" class="accept"><i class="fa fa-thumbs-o-up fa-fw"></i> Accept Task</a>
           </li>
         }
         @if (Model.CanComplete)
         {
           <li>
-            <a href="#" class="complete"><i class="fa fa-check fa-fw"></i>&nbsp;&nbsp;Complete Task</a>
+            <a href="#" class="complete"><i class="fa fa-check fa-fw"></i> Complete Task</a>
           </li>
         }
         @if (Model.CanCompleteWithContact && Model.Description != "New Person Data Entry")
         {
           <li>
-            <a href="#" class="completewcontact"><i class="fa fa-check-square-o fa-fw"></i>&nbsp;&nbsp;Complete Task w/ Contact</a>
+            <a href="#" class="completewcontact"><i class="fa fa-check-square-o fa-fw"></i> Complete Task w/ Contact</a>
           </li>
         }
         @if (Model.IsAnOwner)
         {
           <li class="divider"></li>
           <li>
-            <a href="/SearchAdd2/Dialog/taskabout/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-user-plus fa-fw"></i>&nbsp;&nbsp;Change Regarding</a>
+            <a href="/SearchAdd2/Dialog/taskabout/@Model.Id?displaySkipSearch=false" class="searchadd">
+              <i class="fa fa-user-plus fa-fw"></i> Change Regarding
+            </a>
           </li>
           <li>
-            <a href="/Task/Edit/@Model.Id"><i class="fa fa-pencil fa-fw"></i>&nbsp;&nbsp;Edit Task</a>
+            <a href="/Task/Edit/@Model.Id">
+              <i class="fa fa-pencil fa-fw"></i> Edit Task
+            </a>
           </li>
         }
         @if (Model.IsOwner)
         {
           <li class="divider"></li>
           <li>
-            <a href="/SearchAdd2/Dialog/taskowner/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-share-square-o fa-fw"></i>&nbsp;&nbsp;Transfer Ownership</a>
+            <a href="/SearchAdd2/Dialog/taskowner/@Model.Id?displaySkipSearch=false" class="searchadd">
+              <i class="fa fa-share-square-o fa-fw"></i> Transfer Ownership
+            </a>
           </li>
           <li>
-            <a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-users fa-fw"></i>&nbsp;&nbsp;Delegate Task</a>
+            <a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id?displaySkipSearch=false" class="searchadd">
+              <i class="fa fa-users fa-fw"></i> Delegate Task
+            </a>
           </li>
         }
       </ul>
@@ -242,7 +278,8 @@
       <form action="/Task/Decline/@Model.Id" method="post">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span></button>
+            <span aria-hidden="true">&times;</span>
+          </button>
           <h4 class="modal-title">Decline Task</h4>
         </div>
         <div class="modal-body">
@@ -256,7 +293,7 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-@section scripts{
+@section scripts {
   <script type="text/javascript">
     $(function() {
       $("body").on("click",
@@ -280,7 +317,7 @@
           $.post('/Task/SetComplete/' + id,
             null,
             function(ret) {
-              window.location = "/Task/Detail/" + id;
+              window.location = "/Task/" + id;
             });
           return false;
         });
@@ -293,7 +330,7 @@
           $.post('/Task/Accept/' + id,
             null,
             function(ret) {
-              window.location = "/Task/Detail/" + id;
+              window.location = "/Task/" + id;
             });
           return false;
         });
@@ -306,7 +343,7 @@
           $('#declineModal').on('shown.bs.modal',
             function() {
               $('#declineReason').focus();
-            })
+            });
           return false;
         });
 
@@ -321,7 +358,7 @@
       $.post(action + id + "?peopleid=" + peopleid,
         null,
         function(ret) {
-          window.location = "/Task/Detail/" + id;
+          window.location = "/Task/" + id;
         });
     }
   </script>

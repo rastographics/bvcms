@@ -7,12 +7,12 @@ using CmsWeb.Models;
 
 namespace CmsWeb.Areas.People.Models
 {
-    public abstract class TasksModel : PagedTableModel<Task, TaskInfo>
+    public abstract class TasksModel : PagedTableModel<CmsData.Task, TaskInfo>
     {
         public Person Person { get; set; }
         public int? PeopleId
         {
-            get { return Person == null ? (int?)null : Person.PeopleId; }
+            get { return Person?.PeopleId; }
             set { Person = DbUtil.Db.LoadPersonById(value ?? 0); }
         }
 
@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.People.Models
             : base("Completed", "desc", true)
         {}
 
-        public IQueryable<Task> FilteredModelList()
+        public IQueryable<CmsData.Task> FilteredModelList()
         {
             var u = DbUtil.Db.CurrentUser;
             var roles = u.UserRoles.Select(uu => uu.Role.RoleName.ToLower()).ToArray();
@@ -33,7 +33,7 @@ namespace CmsWeb.Areas.People.Models
                    select t;
         }
 
-        public override IQueryable<Task> DefineModelSort(IQueryable<Task> q)
+        public override IQueryable<CmsData.Task> DefineModelSort(IQueryable<CmsData.Task> q)
         {
             switch (SortExpression)
             {

@@ -1,5 +1,6 @@
 ﻿@using CmsData
-@model CmsWeb.Models.TaskDetail
+@using UtilityExtensions
+@model CmsWeb.Areas.People.Models.Task.TaskModel
 @{
   Layout = ViewExtensions2.TouchPointLayout();
   ViewBag.Title = "Edit Task";
@@ -9,13 +10,13 @@
   <div class="col-sm-12 col-md-12 col-lg-10">
     <div class="box box-responsive">
       <div class="box-content">
-        <form id="Edit" action="/Task/Update/@Model.Id" method="POST">
-          @Html.Hidden("TaskId", Model.Id)
+        <form id="Edit" action="/Task/Update" method="POST">
+          @Html.HiddenFor(m => m.Id)
           @if (Model.WhoId.HasValue)
           {
             <div class="well">
               <strong>
-                <a href="@Model.PersonUrl" style="font-size: 1.5em;">@Model.About</a>
+                <a href="/Person2/@Model.WhoId" style="font-size: 1.5em;">@Model.About</a>
               </strong>
               <br/>
               <a href="@Model.ProspectReportLink()" target="_blank">Prospect Report</a>
@@ -24,25 +25,29 @@
                   <li><i class="fa fa-map-marker"></i>&nbsp;&nbsp;<a href="http://www.google.com/maps?q=@Model.WhoAddrCityStateZip" target="_blank">@Model.WhoAddress</a></li>
                   <li><i class="fa fa-car"></i>&nbsp;&nbsp;<a href="http://www.google.com/maps?f=d&saddr=@DbUtil.StartAddress&pw=2&daddr=@Model.WhoAddrCityStateZip" target="_blank">Driving Directions</a></li>
                 </ul>
-                @if (!string.IsNullOrWhiteSpace(Model.WhoEmail2) && !string.IsNullOrWhiteSpace(Model.WhoPhone))
+                @if (Model.WhoEmail.HasValue() && Model.WhoPhone.HasValue())
                 {
                   <ul class="list-inline">
-                    <li><i class="fa fa-envelope-o"></i>&nbsp;&nbsp;<a href="mailto:@Model.WhoEmail">@Model.WhoEmail2</a></li>
-                    <li><i class="fa fa-phone"></i>&nbsp;&nbsp;<a href="tel:+@Model.WhoPhone">@Model.WhoPhone</a></li>
+                    <li>
+                      <i class="fa fa-envelope-o"></i>
+                      <a href="mailto:@Model.WhoEmail">@Model.WhoEmail</a>
+                    </li>
+                    <li>
+                      <i class="fa fa-phone"></i>
+                      <a href="tel:+@Model.WhoPhone">@Model.WhoPhone</a>
+                    </li>
                   </ul>
                 }
                 else
                 {
-                  if (!string.IsNullOrWhiteSpace(Model.WhoEmail2))
+                  if (Model.WhoEmail.HasValue())
                   {
                     <i class="fa fa-envelope-o"></i>
-                    <text>&nbsp;&nbsp;</text>
-                    <a href="mailto:@Model.WhoEmail">@Model.WhoEmail2</a>
+                    <a href="mailto:@Model.WhoEmail">@Model.WhoEmail</a>
                   }
-                  if (!string.IsNullOrWhiteSpace(Model.WhoPhone))
+                  if (Model.WhoPhone.HasValue())
                   {
                     <i class="fa fa-phone"></i>
-                    <text>&nbsp;&nbsp;</text>
                     <a href="tel:+@Model.WhoPhone">@Model.WhoPhone</a>
                   }
                 }
@@ -51,43 +56,33 @@
           }
           <div class="row">
             <div class="col-sm-4">
-              <div class="form-group">
-                <label for="Description" class="control-label">Task</label>
-                @Html.TextBox("Description", Model.Description, new {@class = "form-control"})
-              </div>
+              @Html.EditorFor(m => m.Description)
             </div>
             <div class="col-sm-2">
-              <div class="form-group">
-                @Html.EditorFor(m => m.Due)
-              </div>
+              @Html.EditorFor(m => m.Due)
             </div>
             <div class="col-sm-3">
               @Html.EditorFor(m => m.TaskStatus)
             </div>
             <div class="col-sm-3">
-              @Html.EditorFor(m => m.TaskLimitToRole, new {})
+              @Html.EditorFor(m => m.TaskLimitToRole)
             </div>
             <div class="col-sm-12">
-              <div class="form-group">
-                <label for="Notes" class="control-label">Notes</label>
-                @Html.TextArea("Notes", Model.Notes, new {@class = "form-control"})
-                @if (Model.IsOwner)
-                {
-                  <div class="checkbox">
-                    <label class="control-label">
-                      @Html.CheckBox("ForceCompleteWContact") Complete with contact?
-                    </label>
-                  </div>
-                }
-              </div>
+              @Html.EditorFor(m => m.Notes, "TextArea")
+              @if (Model.IsOwner)
+              {
+                @Html.EditorFor(m => m.ForceCompleteWithContact)
+                ;
+              }
             </div>
           </div>
           <div class="hidden-xs">
-            <a href="/Task/Detail/@Model.Id" class="btn btn-default">Cancel</a> <button type="submit" class="btn btn-primary">Save</button>
+            <a href="/Task/@Model.Id" class="btn btn-default">Cancel</a>
+            <button type="submit" class="btn btn-primary">Save</button>
           </div>
           <div class="visible-xs-block">
             <button type="submit" class="btn btn-primary btn-block">Save</button>
-            <a href="/Task/Detail/@Model.Id" class="btn btn-default btn-block">Cancel</a>
+            <a href="/Task/@Model.Id" class="btn btn-default btn-block">Cancel</a>
           </div>
         </form>
       </div>

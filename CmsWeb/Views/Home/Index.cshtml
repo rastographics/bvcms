@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Models.HomeModel
+﻿@using System.Linq
+@model CmsWeb.Models.HomeModel
 @{
     ViewBag.Title = "Home";
     Layout = ViewExtensions2.TouchPointLayout();
@@ -40,7 +41,7 @@
     <div class="col-sm-4">
         <div class="box">
             @{
-                var birthdays = Model.Birthdays().ToList();
+              var birthdays = Model.Birthdays().ToList();
             }
             <div class="box-title hidden-xs">
                 <h5><a href="Tags?tag=TrackBirthdays">Birthdays</a></h5>
@@ -283,7 +284,7 @@
                     <ul class="list-group">
                         @foreach (var task in tasks)
                         {
-                            <li class="list-group-item"><a href="/Task/Detail/@task.TaskId">@task.Description</a> (<a href="@task.Url">@task.Who</a>)</li>
+                            <li class="list-group-item"><a href="/Task/@task.TaskId">@task.Description</a> (<a href="@task.Url">@task.Who</a>)</li>
                         }
                     </ul>
                 }

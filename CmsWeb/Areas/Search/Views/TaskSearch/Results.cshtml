@@ -39,7 +39,7 @@
             @t.Created.ToString2("d")
           </td>
           <td class="maxwidth @(t.Archive ? "red" : "")">
-            <a href="/Task/Detail/@t.Id" target="Task">@t.Description</a><br/>
+            <a href="/Task/@t.Id" target="Task">@t.Description</a><br/>
             @if (t.CompletedContactId.HasValue)
             {
               <a href="/Contact2/@t.CompletedContactId" target="contact">@t.Status</a>

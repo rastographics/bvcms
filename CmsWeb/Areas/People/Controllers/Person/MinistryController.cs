@@ -94,7 +94,7 @@ namespace CmsWeb.Areas.People.Controllers
                 return Content("no id");
             var t = p.AddTaskAbout(DbUtil.Db, Util.UserPeopleId.Value, "Please Contact");
             DbUtil.Db.SubmitChanges();
-            return Content($"/Task/Detail/{t.Id}");
+            return Content($"/Task/{t.Id}");
         }
 
         [HttpPost]

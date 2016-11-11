@@ -399,7 +399,6 @@
     <Compile Include="Areas\Finance\Models\DepositTotalsModel.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundRange.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
-    <Compile Include="Areas\Main\Models\Other\TaskDetail.cs" />
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadAddressesController.cs" />
@@ -468,11 +467,13 @@
     <Compile Include="Areas\Org\Models\MeetingModel.cs" />
     <Compile Include="Areas\Org\Models\MemberDirectoryModel.cs" />
     <Compile Include="Areas\Org\Models\MissionTripEmailer.cs" />
+    <Compile Include="Areas\People\Controllers\TaskController.cs" />
     <Compile Include="Areas\People\Controllers\DownlineLevelsController.cs" />
     <Compile Include="Areas\People\Controllers\DownlineSummaryController.cs" />
     <Compile Include="Areas\People\Controllers\DownlineDetailController.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineLevelsModel.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineSummaryModel.cs" />
+    <Compile Include="Areas\People\Models\Task\TaskModel.cs" />
     <Compile Include="Areas\Reports\Models\Export\DocXReplacements.cs" />
     <Compile Include="Areas\Search\Controllers\TaskSearchController.cs" />
     <Compile Include="Areas\Search\Models\TaskSearch\TaskSearchInfo.cs" />
@@ -1482,9 +1483,6 @@
     <Content Include="Areas\Finance\Views\FinanceReports\TotalsByFundRangeResults.cshtml" />
     <Content Include="Areas\Finance\Views\Bundle\Create.cshtml" />
     <Content Include="Content\touchpoint\src\less\jquery-ui-overrides.less" />
-    <Content Include="Areas\Main\Views\Task\Rows.cshtml" />
-    <Content Include="Areas\Main\Views\Task\Row.cshtml" />
-    <Content Include="Areas\Main\Views\Task\Columns.cshtml" />
     <Content Include="Areas\People\Views\Person\System\MergeHistory.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\Deposits.cshtml" />
     <Content Include="Areas\People\Views\Person\Toolbar\GearStandard.cshtml" />
@@ -1597,6 +1595,8 @@
     </Content>
     <Content Include="Areas\Search\Views\TaskSearch\Index.cshtml" />
     <Content Include="Areas\Search\Views\TaskSearch\Results.cshtml" />
+    <None Include="Areas\People\Views\Task\Index.cshtml" />
+    <None Include="Areas\People\Views\Task\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />
@@ -2226,7 +2226,6 @@
     <Compile Include="Areas\Public\Controllers\APICheckin2Controller.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Areas\Manage\Controllers\PromotionController.cs" />
-    <Compile Include="Areas\Main\Controllers\TaskController.cs" />
     <Compile Include="Areas\Manage\Controllers\VolunteersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -2238,8 +2237,6 @@
     <Compile Include="Areas\Manage\Models\PromoteInfo.cs" />
     <Compile Include="Areas\Manage\Models\PromotionModel.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\AttendanceModel.cs" />
-    <Compile Include="Areas\Main\Models\Other\TaskInfo.cs" />
-    <Compile Include="Areas\Main\Models\Other\TaskModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings1.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -2675,12 +2672,6 @@
     <Content Include="Areas\Finance\Views\PostBundle\FundTotals.cshtml">
     </Content>
     <Content Include="Areas\Finance\Views\PostBundle\Index.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\Task\Detail.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\Task\Edit.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\Task\List.cshtml">
     </Content>
     <Content Include="Areas\Search\Views\SearchAdd\NewPerson.cshtml">
     </Content>

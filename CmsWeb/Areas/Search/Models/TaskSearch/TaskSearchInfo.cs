@@ -22,6 +22,7 @@ namespace CmsWeb.Areas.Search.Models
         public bool IsPrivate { get; set; }
         public bool ShowNotes { get; set; }
         public bool ExcludeNewPerson { get; set; }
+        public bool MyTasksOnly { get; set; }
         public string Description { get; set; }
         public string Notes { get; set; }
 
@@ -60,6 +61,7 @@ namespace CmsWeb.Areas.Search.Models
             public int Status { get; set; }
             public bool Archived { get; set; }
             public bool ExcludeNewPerson { get; set; }
+            public bool MyTasksOnly { get; set; }
             public int? Lookback { get; set; }
             public DateTime? EndDt { get; set; }
 
@@ -76,6 +78,7 @@ namespace CmsWeb.Areas.Search.Models
                 Status = TaskSearchStatus.Value.ToInt(),
                 Archived = Archived,
                 ExcludeNewPerson = ExcludeNewPerson,
+                MyTasksOnly = MyTasksOnly,
                 Lookback = Lookback,
                 EndDt = EndDt,
             };

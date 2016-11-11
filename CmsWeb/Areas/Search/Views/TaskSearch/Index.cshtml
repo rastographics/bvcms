@@ -63,12 +63,18 @@
           <div class="col-lg-2 col-md-2 col-sm-3">
             @Html.EditorFor(m => m.Search.ExcludeNewPerson)
           </div>
-          <div class="col-lg-2 col-md-2 col-sm-3">
-            @Html.EditorFor(m => m.Search.Archived)
-          </div>
-          <div class="col-lg-2 col-md-2 col-sm-3">
-            @Html.EditorFor(m => m.Search.IsPrivate)
-          </div>
+          @if (User.IsInRole("ManageTasks"))
+          {
+            <div class="col-lg-2 col-md-2 col-sm-3">
+              @Html.EditorFor(m => m.Search.Archived)
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-3">
+              @Html.EditorFor(m => m.Search.IsPrivate)
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-3">
+              @Html.EditorFor(m => m.Search.MyTasksOnly)
+            </div>
+          }
           <div class="col-lg-2 col-md-2 col-sm-3">
             @Html.EditorFor(m => m.Search.ShowNotes)
           </div>
