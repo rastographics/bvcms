@@ -17,6 +17,7 @@ using System.IO;
 using UtilityExtensions;
 using DbUtil = CmsData.DbUtil;
 using System.Web;
+using CmsWeb.Areas.People.Models.Task;
 using Dapper;
 
 namespace CmsWeb.Areas.Public.Controllers
@@ -732,6 +733,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             }
 
             DbUtil.Db.SubmitChanges();
+            person.LogPictureUpload(DbUtil.Db, Util.UserPeopleId ?? 1);
 
             br.setNoError();
             br.data = "Image updated.";
@@ -875,8 +877,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
 
-            var task = new TaskModel();
-            task.AcceptTask(dataIn.argInt);
+            TaskModel.AcceptTask(dataIn.argInt);
 
             BaseMessage br = new BaseMessage();
             br.count = 1;
@@ -893,8 +894,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
 
-            var task = new TaskModel();
-            task.DeclineTask(dataIn.argInt, dataIn.argString);
+            TaskModel.DeclineTask(dataIn.argInt, dataIn.argString);
 
             BaseMessage br = new BaseMessage();
             br.count = 1;
@@ -911,8 +911,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
 
-            var task = new TaskModel();
-            task.CompleteTask(dataIn.argInt);
+            TaskModel.CompleteTask(dataIn.argInt);
 
             BaseMessage br = new BaseMessage();
             br.count = 1;
@@ -929,8 +928,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
 
-            var tasks = new TaskModel();
-            var contactid = tasks.AddCompletedContact(dataIn.argInt);
+            var contactid = TaskModel.AddCompletedContact(dataIn.argInt);
 
             BaseMessage br = new BaseMessage();
             br.data = GetOneTimeLoginLink($"/Contact2/{contactid}?edit=true&{dataIn.getSourceQueryString()}", Util.UserName);
