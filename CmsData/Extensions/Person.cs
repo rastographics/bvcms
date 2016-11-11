@@ -1080,17 +1080,22 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 c.ChangeDetails.AddRange(changes.Where(x => db.ChangeDetails.GetOriginalEntityState(x) == null));
             }
         }
-        public void LogPictureUpload(CMSDataContext db, int UserPeopleId)
+        public void LogPictureUpload(CMSDataContext db, int userPeopleId)
         {
             var c = new ChangeLog
             {
-                UserPeopleId = UserPeopleId,
+                UserPeopleId = userPeopleId,
                 PeopleId = PeopleId,
                 Field = "Basic Info",
                 Created = Util.Now
             };
             db.ChangeLogs.InsertOnSubmit(c);
             c.ChangeDetails.Add(new ChangeDetail("Picture", null, "(new upload)"));
+            var np = db.GetNewPeopleManagers();
+            if (np != null)
+                db.EmailRedacted(db.Setting("AdminMail", "support@touchpointsoftware.com"), np,
+                    "Picture Uploaded on " + Util.Host,
+                    $"{Util.UserName} Uploaded a picture for {FirstName + " " + LastName} ({PeopleId}):<br />\n");
         }
         public override string ToString()
         {
@@ -1581,7 +1586,6 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             p.SmallId = Image.NewImageFromBits(bits, 120, 120).Id;
             p.MediumId = Image.NewImageFromBits(bits, 320, 400).Id;
             p.LargeId = Image.NewImageFromBits(bits).Id;
-            LogPictureUpload(db, Util.UserPeopleId ?? 1);
             db.SubmitChanges();
 
         }

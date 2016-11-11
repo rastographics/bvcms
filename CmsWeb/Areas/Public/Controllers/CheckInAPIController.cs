@@ -365,6 +365,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 person.Picture = newPicture;
             }
 
+            person.LogPictureUpload(DbUtil.Db, Util.UserPeopleId ?? 1);
             DbUtil.Db.SubmitChanges();
 
             br.setNoError();
