@@ -17,7 +17,6 @@ using System.IO;
 using UtilityExtensions;
 using DbUtil = CmsData.DbUtil;
 using System.Web;
-using CmsWeb.Areas.People.Models.Task;
 using Dapper;
 
 namespace CmsWeb.Areas.Public.Controllers
@@ -877,7 +876,8 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
 
-            TaskModel.AcceptTask(dataIn.argInt);
+            var task = new TaskModel();
+            task.AcceptTask(dataIn.argInt);
 
             BaseMessage br = new BaseMessage();
             br.count = 1;
@@ -894,7 +894,8 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
 
-            TaskModel.DeclineTask(dataIn.argInt, dataIn.argString);
+            var task = new TaskModel();
+            task.DeclineTask(dataIn.argInt, dataIn.argString);
 
             BaseMessage br = new BaseMessage();
             br.count = 1;
@@ -911,7 +912,8 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
 
-            TaskModel.CompleteTask(dataIn.argInt);
+            var task = new TaskModel();
+            task.CompleteTask(dataIn.argInt);
 
             BaseMessage br = new BaseMessage();
             br.count = 1;
@@ -928,7 +930,8 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
 
-            var contactid = TaskModel.AddCompletedContact(dataIn.argInt);
+            var tasks = new TaskModel();
+            var contactid = tasks.AddCompletedContact(dataIn.argInt);
 
             BaseMessage br = new BaseMessage();
             br.data = GetOneTimeLoginLink($"/Contact2/{contactid}?edit=true&{dataIn.getSourceQueryString()}", Util.UserName);
