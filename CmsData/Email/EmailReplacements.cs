@@ -290,6 +290,9 @@ namespace CmsData
                 case "{barcode}":
                     return $"<img src='{db.ServerLink("/Track/Barcode/" + p.PeopleId)}' />";
 
+                case "{birthdate}":
+                    return Util.FormatBirthday(p.BirthYear, p.BirthMonth, p.BirthDay, "not available");
+
                 case "{campus}":
                     return p.CampusId != null ? p.Campu.Description : $"No {Util2.CampusLabel} Specified";
 
