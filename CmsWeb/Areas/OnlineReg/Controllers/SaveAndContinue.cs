@@ -2,6 +2,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using CmsData;
+using CmsData.Codes;
 using CmsWeb.Areas.OnlineReg.Models;
 using UtilityExtensions;
 
