@@ -26,7 +26,7 @@ namespace CmsWeb.Areas.People.Controllers
             return View(t);
         }
 
-        [HttpPost]
+        [HttpPost, Route("~/Task/Update")]
         public ActionResult Update(TaskModel t)
         {
             if (!ModelState.IsValid)
