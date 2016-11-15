@@ -182,7 +182,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 if (noorg == true)
                     return null;
                 if (orgid == null)
+                {
                     _org = null;
+                    _setting = null;
+                }
                 if (_org == null && orgid.HasValue)
                     _org = DbUtil.Db.LoadOrganizationById(orgid.Value);
                 if (_org == null && (divid.HasValue || masterorgid.HasValue))
