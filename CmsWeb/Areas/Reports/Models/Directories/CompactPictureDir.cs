@@ -51,8 +51,8 @@ namespace CmsWeb.Areas.Reports.Models
 
             pa = JsonConvert.DeserializeObject<Parameters>(parameters);
 
-            dd.PageHeight = Pixels(pa.PageHeight);
-            dd.PageWidth = Pixels(pa.PageWidth);
+//            dd.PageHeight = Pixels(pa.PageHeight);
+//            dd.PageWidth = Pixels(pa.PageWidth);
             dd.MarginLeft = Pixels(pa.MarginLeft);
             dd.MarginRight = Pixels(pa.MarginRight);
             dd.MarginTop = Pixels(pa.MarginTop);
