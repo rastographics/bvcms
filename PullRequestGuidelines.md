@@ -4,7 +4,7 @@ We are expecting no less from you than we expect of our developers.
 So it would be up to you to install a working version of the software with a test database 
 (the code comes with a test database) on that server 
 and provide credentials to us for testing. 
-It is also helpful to create a video of your working code so we can understand what it does and the intent. 
+It is also helpful to create a video of your working test site so we can understand what it does and the intent. 
 
 We do not have the resources to help you with coding your feature. 
 But we will test it and provide feedback. 
