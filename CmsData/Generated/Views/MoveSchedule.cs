@@ -20,13 +20,13 @@ namespace CmsData.View
 		
 		private string _Name;
 		
-		private string _BirthDate;
+		private DateTime? _BirthDate;
 		
 		private int _FromOrgId;
 		
 		private string _FromOrg;
 		
-		private string _LastSunday;
+		private DateTime? _LastSunday;
 		
 		private int? _MosMax;
 		
@@ -78,7 +78,7 @@ namespace CmsData.View
 
 		
 		[Column(Name="BirthDate", Storage="_BirthDate", DbType="date")]
-		public string BirthDate
+		public DateTime? BirthDate
 		{
 			get
 			{
@@ -129,7 +129,7 @@ namespace CmsData.View
 
 		
 		[Column(Name="LastSunday", Storage="_LastSunday", DbType="date")]
-		public string LastSunday
+		public DateTime? LastSunday
 		{
 			get
 			{

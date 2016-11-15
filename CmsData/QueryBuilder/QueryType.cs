@@ -77,6 +77,7 @@ namespace CmsData
         FirstFamilyVisitAsOf,
         FirstOrgJoinDate,
         FirstName,
+        FirstPersonSameEmail,
         GenderId,
         GivingChange,
         Grade,
