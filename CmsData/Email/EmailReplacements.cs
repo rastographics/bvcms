@@ -84,7 +84,7 @@ namespace CmsData
                 // ignore Premailer exceptions
             }
 
-            stringlist = Regex.Split(text, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+            stringlist = Regex.Split(text, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
         }
         private string DoInsertDrafts(string text)
         {
