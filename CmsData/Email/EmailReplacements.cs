@@ -215,7 +215,7 @@ namespace CmsData
                 $@"({{[^}}]*?}}|{RegisterLinkRe}|{RegisterTagRe}|{RsvpLinkRe}|{RegisterHrefRe}|
                     {SendLinkRe}|{SupportLinkRe}|{MasterLinkRe}|{VolReqLinkRe}|{VolReqLinkRe}|{VolSubLinkRe}|{VoteLinkRe})";
 
-            stringlist = Regex.Split(text, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+            stringlist = Regex.Split(text, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
         }
         public DocX DocXReplacements(Person p)
         {
