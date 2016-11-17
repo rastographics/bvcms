@@ -1115,6 +1115,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             if (np != null)
                 db.EmailRedacted(db.Setting("AdminMail", "support@touchpointsoftware.com"), np,
                     "Picture Uploaded on " + Util.Host,
+                    $"{Util.UserName} Uploaded a picture for {FirstName + " " + LastName} ({PeopleId}):<br />\n");
         }
         public override string ToString()
         {

@@ -81,16 +81,6 @@ namespace CmsData
             db2.Dispose();
         }
 
-        public void AddTag(object query, string tagName, int ownerId)
-        {
-            var list = PeopleIds(query);
-            var db2 = NewDataContext();
-            foreach (var pid in list)
-                Person.Tag(db2, pid, tagName, ownerId, DbUtil.TagTypeId_Personal);
-            db2.SubmitChanges();
-            db2.Dispose();
-        }
-
         public int? AgeInMonths(DateTime? birthdate, DateTime asof)
         {
             if (!birthdate.HasValue)
