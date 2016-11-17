@@ -226,6 +226,7 @@ InOneOfMyOrgs,Bit,,,,Miscellaneous,In one of my organizations,,Specify True or F
 CheckInVisits,Integer,,,,Miscellaneous,Number of visits,,Enter a number of visits along with a Comparison for guests who used Building Checkin.
 MedicalLength,Integer,,,,Miscellaneous,Length of Medical / Allergies Info,,Enter a number of characters and select a Comparison.
 HasFailedEmails,Bit,,,,Miscellaneous,Has Failed Emails,StartDate,Select a StartDate or Leave blank
+FirstPersonSameEmail,EqualBit,,,,Miscellaneous,First Person of Same Email,,Returns only one person of many who have same email
 UserRole,Code,,UserRolesMyData,,Admin,User In Role,,Select User Role from the list.
 IsUser,Bit,,,,Admin,Is System User,,Specify True or False for those with user accounts.
 CreatedBy,String,,,,Admin,Record Created By User,,"Enter a Comparison and all or part of a Last Name (or Last Name, a comma and a First Name)."

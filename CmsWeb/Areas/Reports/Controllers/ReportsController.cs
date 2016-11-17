@@ -512,6 +512,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                     AddValue(table, row, "CellPhone", x.Person.CellPhone.FmtFone("C"));
 
                 AddValue(table, row, "DOB", x.Person.DOB);
+                AddValue(table, row, "Grade", x.Person.Grade);
 
                 AddValue(table, row, "HeadOfHouseholdName", x.HeadOfHousehold?.Name);
                 if (!string.IsNullOrEmpty(x.HeadOfHousehold?.CellPhone))

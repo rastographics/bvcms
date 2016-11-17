@@ -646,6 +646,7 @@
     <Compile Include="Generated\ResourceOrganization.cs" />
     <Compile Include="Generated\ResourceOrganizationType.cs" />
     <Compile Include="Generated\ResourceType.cs" />
+    <Compile Include="Generated\Views\AccessUserInfo.cs" />
     <Compile Include="Generated\Views\ActiveRegistration.cs" />
     <Compile Include="Generated\Views\AppRegistration.cs" />
     <Compile Include="Generated\Views\AttendCredits2.cs" />
@@ -658,6 +659,7 @@
     <Compile Include="Generated\Views\FailedRecurringGiving.cs" />
     <Compile Include="Generated\Views\FamilyFirstTime.cs" />
     <Compile Include="Generated\Views\FirstAttend.cs" />
+    <Compile Include="Generated\Views\FirstPersonSameEmail.cs" />
     <Compile Include="Generated\Views\IncompleteTask.cs" />
     <Compile Include="Generated\Views\InProgressRegistration.cs" />
     <Compile Include="Generated\Views\LastAttend.cs" />

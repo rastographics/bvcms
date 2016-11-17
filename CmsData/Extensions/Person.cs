@@ -166,12 +166,32 @@ namespace CmsData
                 om2.UserData = om.UserData;
                 om2.OnlineRegData = om.OnlineRegData;
                 db.SubmitChanges();
+
                 foreach (var m in om.OrgMemMemTags)
-                    if (!om2.OrgMemMemTags.Any(mm => mm.MemberTagId == m.MemberTagId))
+                    if (om2.OrgMemMemTags.All(mm => mm.MemberTagId != m.MemberTagId))
                         om2.OrgMemMemTags.Add(new OrgMemMemTag { MemberTagId = m.MemberTagId });
                 db.SubmitChanges();
                 db.OrgMemMemTags.DeleteAllOnSubmit(om.OrgMemMemTags);
                 db.SubmitChanges();
+
+                foreach (var m in om.OrgMemberExtras)
+                    if (om2.OrgMemberExtras.All(mm => mm.Field != m.Field))
+                    {
+                        var ev = new OrgMemberExtra()
+                        {
+                            Field = m.Field,
+                            PeopleId = om2.PeopleId,
+                            OrganizationId = m.OrganizationId,
+                            StrValue = m.StrValue,
+                            Data = m.Data,
+                            BitValue = m.BitValue,
+                            IntValue = m.IntValue,
+                            DateValue = m.DateValue,
+                        };
+                        db.OrgMemberExtras.InsertOnSubmit(ev);
+                    }
+                db.SubmitChanges();
+                db.OrgMemberExtras.DeleteAllOnSubmit(om.OrgMemberExtras);
                 TrySubmit(db, $"Organizations (orgid:{om.OrganizationId})");
             }
             db.OrganizationMembers.DeleteAllOnSubmit(this.OrganizationMembers);
@@ -1095,7 +1115,6 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             if (np != null)
                 db.EmailRedacted(db.Setting("AdminMail", "support@touchpointsoftware.com"), np,
                     "Picture Uploaded on " + Util.Host,
-                    $"{Util.UserName} Uploaded a picture for {FirstName + " " + LastName} ({PeopleId}):<br />\n");
         }
         public override string ToString()
         {

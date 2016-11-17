@@ -261,6 +261,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return settings[org.OrganizationId].AllowSaveProgress;
             if (settings == null)
                 return false;
+            if (masterorg?.RegistrationTypeId == RegistrationTypeCode.ComputeOrgByAge)
+                return false;
             return settings.Values.Any(o => o.AllowSaveProgress);
         }
 

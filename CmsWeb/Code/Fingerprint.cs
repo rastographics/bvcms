@@ -81,6 +81,17 @@ public class Fingerprint
     {
         return Include(path);
     }
+    public static HtmlString CssPrint(string path)
+    {
+        var absolute = HostingEnvironment.MapPath(path) ?? "";
+        var ext = Path.GetExtension(absolute);
+        var dt = File.GetLastWriteTime(absolute);
+        var f = Path.GetFileNameWithoutExtension(absolute);
+        var d = path.Remove(path.LastIndexOf('/'));
+        var t = $"v-{dt:yyMMddhhmmss}-";
+        var p = $"{d}/{t}{f}{ext}";
+        return new HtmlString($"<link href=\"{p}\" rel=\"stylesheet\" media=\"print\" />\n");
+    }
 
     public static HtmlString Script(string path)
     {

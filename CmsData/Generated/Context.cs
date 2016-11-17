@@ -1849,6 +1849,12 @@ namespace CmsData
 	#endregion
 	#region Views
 		
+	    public Table< View.AccessUserInfo> ViewAccessUserInfos
+	    {
+		    get { return this.GetTable< View.AccessUserInfo>(); }
+
+	    }
+
 	    public Table< View.ActiveRegistration> ViewActiveRegistrations
 	    {
 		    get { return this.GetTable< View.ActiveRegistration>(); }
@@ -1984,6 +1990,12 @@ namespace CmsData
 	    public Table< View.FirstNick> ViewFirstNicks
 	    {
 		    get { return this.GetTable< View.FirstNick>(); }
+
+	    }
+
+	    public Table< View.FirstPersonSameEmail> ViewFirstPersonSameEmails
+	    {
+		    get { return this.GetTable< View.FirstPersonSameEmail>(); }
 
 	    }
 

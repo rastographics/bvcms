@@ -59,6 +59,8 @@ namespace CmsWeb.Areas.Search.Models
             set
             {
                 ExtraValuesDict = new Dictionary<string, string>();
+                if (value == null)
+                    return;
                 var list = value.Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
                 foreach (var item in list)
                 {

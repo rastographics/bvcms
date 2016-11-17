@@ -84,7 +84,7 @@ namespace CmsData
                 // ignore Premailer exceptions
             }
 
-            stringlist = Regex.Split(text, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+            stringlist = Regex.Split(text, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
         }
         private string DoInsertDrafts(string text)
         {
@@ -215,7 +215,7 @@ namespace CmsData
                 $@"({{[^}}]*?}}|{RegisterLinkRe}|{RegisterTagRe}|{RsvpLinkRe}|{RegisterHrefRe}|
                     {SendLinkRe}|{SupportLinkRe}|{MasterLinkRe}|{VolReqLinkRe}|{VolReqLinkRe}|{VolSubLinkRe}|{VoteLinkRe})";
 
-            stringlist = Regex.Split(text, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+            stringlist = Regex.Split(text, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
         }
         public DocX DocXReplacements(Person p)
         {
@@ -289,6 +289,9 @@ namespace CmsData
 
                 case "{barcode}":
                     return $"<img src='{db.ServerLink("/Track/Barcode/" + p.PeopleId)}' />";
+
+                case "{birthdate}":
+                    return Util.FormatBirthday(p.BirthYear, p.BirthMonth, p.BirthDay, "not available");
 
                 case "{campus}":
                     return p.CampusId != null ? p.Campu.Description : $"No {Util2.CampusLabel} Specified";
