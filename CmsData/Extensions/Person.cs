@@ -166,32 +166,12 @@ namespace CmsData
                 om2.UserData = om.UserData;
                 om2.OnlineRegData = om.OnlineRegData;
                 db.SubmitChanges();
-
                 foreach (var m in om.OrgMemMemTags)
-                    if (om2.OrgMemMemTags.All(mm => mm.MemberTagId != m.MemberTagId))
+                    if (!om2.OrgMemMemTags.Any(mm => mm.MemberTagId == m.MemberTagId))
                         om2.OrgMemMemTags.Add(new OrgMemMemTag { MemberTagId = m.MemberTagId });
                 db.SubmitChanges();
                 db.OrgMemMemTags.DeleteAllOnSubmit(om.OrgMemMemTags);
                 db.SubmitChanges();
-
-                foreach (var m in om.OrgMemberExtras)
-                    if (om2.OrgMemberExtras.All(mm => mm.Field != m.Field))
-                    {
-                        var ev = new OrgMemberExtra()
-                        {
-                            Field = m.Field,
-                            PeopleId = om2.PeopleId,
-                            OrganizationId = m.OrganizationId,
-                            StrValue = m.StrValue,
-                            Data = m.Data,
-                            BitValue = m.BitValue,
-                            IntValue = m.IntValue,
-                            DateValue = m.DateValue,
-                        };
-                        db.OrgMemberExtras.InsertOnSubmit(ev);
-                    }
-                db.SubmitChanges();
-                db.OrgMemberExtras.DeleteAllOnSubmit(om.OrgMemberExtras);
                 TrySubmit(db, $"Organizations (orgid:{om.OrganizationId})");
             }
             db.OrganizationMembers.DeleteAllOnSubmit(this.OrganizationMembers);
@@ -929,18 +909,29 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 return canUserEditFamilyAddress.Value;
             }
         }
+
         private bool? canUserEditCampus;
         public bool CanUserEditCampus
         {
             get
             {
                 if (CanUserEditAll)
-                    return true;
+                    if (DbUtil.Db.Setting("EnforceEditCampusRole", "false").ToBool())
+                        return ((HttpContext.Current.User.IsInRole("EditCampus")) || Util.UserPeopleId == Family.HeadOfHouseholdId
+                         || Util.UserPeopleId == Family.HeadOfHouseholdSpouseId);
+                    else
+                        return (true);
+
                 if (!canUserEditCampus.HasValue)
                     canUserEditCampus = CanUserEditFamilyAddress && DbUtil.Db.Setting("MyDataCanEditCampus", "false").ToBool();
+
+                if (DbUtil.Db.Setting("EnforceEditCampusRole", "false").ToBool())
+                    canUserEditCampus = (canUserEditCampus.Value) || (HttpContext.Current.User.IsInRole("EditCampus"));
+
                 return canUserEditCampus.Value;
             }
         }
+
         private bool? canUserEditBasic;
         public bool CanUserEditBasic
         {
@@ -977,11 +968,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                         Family.HeadOfHouseholdId,
                         Family.HeadOfHouseholdSpouseId })
                         .Contains(Util.UserPeopleId);
-
-                    if ((string) HttpContext.Current.Session["IsNonFinanceImpersonator"] == "true")
-                        canUserSeeGiving = false;
-                    else
-                        canUserSeeGiving = sameperson || infinance || ishead;
+                    canUserSeeGiving = sameperson || infinance || ishead;
                 }
                 return canUserSeeGiving.Value;
             }
@@ -1100,22 +1087,17 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 c.ChangeDetails.AddRange(changes.Where(x => db.ChangeDetails.GetOriginalEntityState(x) == null));
             }
         }
-        public void LogPictureUpload(CMSDataContext db, int userPeopleId)
+        public void LogPictureUpload(CMSDataContext db, int UserPeopleId)
         {
             var c = new ChangeLog
             {
-                UserPeopleId = userPeopleId,
+                UserPeopleId = UserPeopleId,
                 PeopleId = PeopleId,
                 Field = "Basic Info",
                 Created = Util.Now
             };
             db.ChangeLogs.InsertOnSubmit(c);
             c.ChangeDetails.Add(new ChangeDetail("Picture", null, "(new upload)"));
-            var np = db.GetNewPeopleManagers();
-            if (np != null)
-                db.EmailRedacted(db.Setting("AdminMail", "support@touchpointsoftware.com"), np,
-                    "Picture Uploaded on " + Util.Host,
-                    $"{Util.UserName} Uploaded a picture for <a href=\"{db.ServerLink($"/Person2/{PeopleId}")}\">{Name} ({PeopleId})</a>:<br />\n");
         }
         public override string ToString()
         {
@@ -1236,7 +1218,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             ev.IntValue2 = value2;
             ev.TransactionTime = DateTime.Now;
         }
-        public void AddEditExtraValue(string field, string code, DateTime? date ,string text, bool? bit, int? intn, DateTime? dt = null)
+        public void AddEditExtraValue(string field, string code, DateTime? date, string text, bool? bit, int? intn, DateTime? dt = null)
         {
             var ev = GetExtraValue(field);
             ev.StrValue = code;
@@ -1606,6 +1588,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             p.SmallId = Image.NewImageFromBits(bits, 120, 120).Id;
             p.MediumId = Image.NewImageFromBits(bits, 320, 400).Id;
             p.LargeId = Image.NewImageFromBits(bits).Id;
+            LogPictureUpload(db, Util.UserPeopleId ?? 1);
             db.SubmitChanges();
 
         }
@@ -1756,22 +1739,22 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             LogChanges(db);
             var sp = db.LoadPersonById(SpouseId ?? 0);
             if (sp != null)
-            switch (opt)
-            {
-                case StatementOptionCode.Joint:
-                case StatementOptionCode.Individual:
-                case StatementOptionCode.None:
-                    sp.UpdateValue(field, opt);
-                    sp.LogChanges(db);
-                    break;
-                case null:
-                    if (sp.ContributionOptionsId == StatementOptionCode.Joint)
-                    {
-                        sp.UpdateValue(field, null);
+                switch (opt)
+                {
+                    case StatementOptionCode.Joint:
+                    case StatementOptionCode.Individual:
+                    case StatementOptionCode.None:
+                        sp.UpdateValue(field, opt);
                         sp.LogChanges(db);
-                    }
-                    break;
-            }
+                        break;
+                    case null:
+                        if (sp.ContributionOptionsId == StatementOptionCode.Joint)
+                        {
+                            sp.UpdateValue(field, null);
+                            sp.LogChanges(db);
+                        }
+                        break;
+                }
             db.SubmitChanges();
         }
         public void UpdateElectronicStatement(CMSDataContext db, bool tf)

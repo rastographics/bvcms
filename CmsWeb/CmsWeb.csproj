@@ -1590,6 +1590,7 @@
     <Content Include="Areas\Search\Views\PictureDirectory\Results.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Areas\People\Views\Person\DisplayTemplates\InlineCodeEditCampus.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />
