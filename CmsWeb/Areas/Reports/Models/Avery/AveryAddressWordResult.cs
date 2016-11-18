@@ -69,12 +69,12 @@ namespace CmsWeb.Areas.Reports.Models
             using (var ms = new MemoryStream())
             {
                 var dd = DocX.Create("ttt.docx");
-                dd.MarginLeft = 30;
-                dd.MarginRight = 24;
-                dd.MarginTop = 48;
-                dd.MarginBottom = 30;
-                dd.PageHeight = 1056;
-                dd.PageWidth = 816;
+                dd.PageHeight = 11F * 72;
+                dd.PageWidth = 8.5F * 72;
+                dd.MarginLeft = .25F * 72;
+                dd.MarginRight = .32F * 72;
+                dd.MarginTop = .5F * 72;
+                dd.MarginBottom = .42F * 72;
                 var col = 0;
                 var row = 0;
                 Table tt = null;
@@ -87,12 +87,13 @@ namespace CmsWeb.Areas.Reports.Models
                             for (var i = 0; i < 5; i++)
                             {
                                 rr.Cells[i].VerticalAlignment = VerticalAlignment.Center;
-                                rr.Height = 96.0;
+                                rr.Height = Pixels(1F);
                                 rr.Cells[i].Width = i % 2 == 0
-                                    ? 252.4667
-                                    : 11.4;
-                                if (i % 2 == 0)
-                                    rr.Cells[i].MarginLeft = 30;
+                                    ? Pixels(2.63F)
+                                    : Pixels(.12F);
+                                if (i%2 == 0)
+                                    rr.Cells[i].MarginLeft = Pixels(.06F);
+                                rr.Cells[i].MarginRight = Pixels(.06F);
                             }
                     }
                     if (skip > 0)
@@ -140,6 +141,10 @@ namespace CmsWeb.Areas.Reports.Models
                 Response.BinaryWrite(ms.ToArray());
                 Response.End();
             }
+        }
+        private static float Pixels(double inches)
+        {
+            return Convert.ToSingle(inches * 1440 / 15);
         }
     }
 }
