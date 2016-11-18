@@ -6,6 +6,7 @@
     <table id="results-table" class="table table-striped notwide centered">
       <thead>
       <tr>
+        <th style="width: 5px;"></th>
         <th>@Model.SortLink("Date")</th>
         <th>
           Description<br/>
@@ -35,6 +36,9 @@
       @foreach (var t in Model.ViewList())
       {
         <tr>
+          <td style="width: 5px;">
+            <input type="checkbox" name="selecteditem" value="@t.Id" />
+          </td>
           <td>
             @t.Created.ToString2("d")
           </td>

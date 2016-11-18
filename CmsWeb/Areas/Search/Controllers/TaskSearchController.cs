@@ -53,7 +53,7 @@ namespace CmsWeb.Areas.Search.Controllers
             return Json(n, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Archive(TaskSearchModel m)
+        public ActionResult Archive(TaskSearchModel m, int[] selecteditem)
         {
             m.Archive();
             m.Search.SavePreference();
