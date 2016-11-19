@@ -53,16 +53,19 @@ namespace CmsWeb.Areas.Search.Controllers
             return Json(n, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Archive(TaskSearchModel m, int[] selecteditem)
+        [HttpPost]
+        public ActionResult Archive(TaskSearchModel m)
         {
             m.Archive();
             m.Search.SavePreference();
             return Redirect("/TaskSearch");
         }
-        public ActionResult ArchiveCount(TaskSearchModel m)
+        [HttpPost]
+        public ActionResult Delegate(int id, TaskSearchModel m)
         {
-            var cnt = m.DefineModelList().Count();
-            return Content(cnt.ToString("N0"));
+            m.Delegate(id);
+            m.Search.SavePreference();
+            return Redirect("/TaskSearch");
         }
     }
 }

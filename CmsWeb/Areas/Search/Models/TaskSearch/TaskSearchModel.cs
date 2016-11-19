@@ -12,7 +12,9 @@ using System.Web;
 using CmsData.View;
 using CmsWeb.Models;
 using CmsData;
+using CmsData.Classes.GoogleCloudMessaging;
 using CmsData.Codes;
+using CmsWeb.Areas.People.Models.Task;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
@@ -26,6 +28,8 @@ namespace CmsWeb.Areas.Search.Models
         {
             Search = new TaskSearchInfo();
         }
+
+        public int[] SelectedItem { get; set; }
 
         public override IQueryable<TaskSearch> DefineModelList()
         {
@@ -96,6 +100,38 @@ namespace CmsWeb.Areas.Search.Models
             var q = DefineModelList().ToList();
             foreach (var t in q)
                 DbUtil.Db.ExecuteCommand("UPDATE dbo.Task SET Archive = 1 WHERE Id = {0}", t.Id);
+        }
+        internal void Delegate(int toPeopleId)
+        {
+            var owners = (from o in DbUtil.Db.Tasks
+                          where SelectedItem.Contains(o.Id)
+                          select o.OwnerId).Distinct().ToList();
+
+            var delegates = (from o in DbUtil.Db.Tasks
+                             where SelectedItem.Contains(o.Id)
+                             where o.CoOwnerId != null
+                             select o.CoOwnerId ?? 0).Distinct().ToList();
+
+            foreach (var tid in SelectedItem)
+                TaskModel.Delegate(tid, toPeopleId, false, true);
+
+            if(Util.UserPeopleId.HasValue)
+            {
+                owners.Remove(Util.UserPeopleId.Value);
+                delegates.Remove(Util.UserPeopleId.Value);
+            }
+            owners.Remove(toPeopleId);
+            delegates.Remove(toPeopleId);
+
+            string taskString = SelectedItem.Count() > 1 ? "tasks" : "a task";
+
+            GCMHelper.sendNotification(owners, GCMHelper.TYPE_TASK, 0, "Tasks Redelegated", $"{Util.UserFullName} has redelegated {taskString} you own");
+            GCMHelper.sendNotification(delegates, GCMHelper.TYPE_TASK, 0, "Tasks Redelegated", $"{Util.UserFullName} has redelegated {taskString} to someone else");
+            GCMHelper.sendNotification(toPeopleId, GCMHelper.TYPE_TASK, 0, "Task Delegated", $"{Util.UserFullName} delegated you {taskString}");
+            if(Util.UserPeopleId.HasValue)
+                GCMHelper.sendRefresh(Util.UserPeopleId.Value, GCMHelper.ACTION_REFRESH);
+
+            DbUtil.Db.SubmitChanges();
         }
 
         private static IQueryable<TaskSearch> GetBaseResults(CMSDataContext db, TaskSearchInfo.OptionInfo opt)

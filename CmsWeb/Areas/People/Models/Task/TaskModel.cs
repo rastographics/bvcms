@@ -350,40 +350,6 @@ namespace CmsWeb.Areas.People.Models.Task
             }
         }
 
-        public void DelegateAll(int[] tasks, int peopleId)
-        {
-            if (!Util.UserPeopleId.HasValue)
-                return;
-            var owners = (from o in DbUtil.Db.Tasks
-                where tasks.Contains(o.Id)
-                select o.OwnerId).Distinct().ToList();
-
-            var delegates = (from o in DbUtil.Db.Tasks
-                where tasks.Contains(o.Id)
-                where o.CoOwnerId != null
-                select o.CoOwnerId ?? 0).Distinct().ToList();
-
-            foreach (var tid in tasks)
-                Delegate(tid, peopleId, false, true);
-
-            owners.Remove(Util.UserPeopleId.Value);
-            owners.Remove(peopleId);
-            delegates.Remove(Util.UserPeopleId.Value);
-            delegates.Remove(peopleId);
-
-            string taskString = tasks.Count() > 1 ? "tasks" : "a task";
-
-            GCMHelper.sendNotification(owners, GCMHelper.TYPE_TASK, 0, "Tasks Redelegated",
-                $"{Util.UserFullName} has redelegated {taskString} you own");
-            GCMHelper.sendNotification(delegates, GCMHelper.TYPE_TASK, 0, "Tasks Redelegated",
-                $"{Util.UserFullName} has redelegated {taskString} to someone else");
-            GCMHelper.sendNotification(peopleId, GCMHelper.TYPE_TASK, 0, "Task Delegated",
-                $"{Util.UserFullName} delegated you {taskString}");
-            GCMHelper.sendRefresh(Util.UserPeopleId.Value, GCMHelper.ACTION_REFRESH);
-
-            DbUtil.Db.SubmitChanges();
-        }
-
         public static TaskModel FetchModel(int id)
         {
             var q = from t in DbUtil.Db.Tasks
@@ -491,7 +457,7 @@ namespace CmsWeb.Areas.People.Models.Task
                 GCMHelper.sendRefresh(Util.UserPeopleId.Value, GCMHelper.TYPE_TASK);
         }
 
-        private static string CreateEmailBody(CmsData.Task task)
+        public static string CreateEmailBody(CmsData.Task task)
         {
             var body = new StringBuilder();
 

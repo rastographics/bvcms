@@ -84,16 +84,6 @@ namespace CmsWeb.Areas.People.Controllers
             return View("Index", TaskModel.FetchModel(id));
         }
 
-        [HttpPost]
-        public ActionResult DelegateAll(int id, string items)
-        {
-            var tasks = new TaskModel();
-            var tasksToAlter = items.SplitStr(",").Select(i => i.ToInt()).ToArray();
-
-            tasks.DelegateAll(tasksToAlter, id);
-            return Content("ok");
-        }
-
         public ActionResult NotesExcel2(Guid? id)
         {
             if (!id.HasValue)

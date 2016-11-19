@@ -40,6 +40,7 @@
 <div class="box box-responsive">
   <div class="box-content">
     <form id="form-task-search" class="ajax" data-results="#results" method="post" action="/TaskSearch/Results">
+      <a id="delegateall" href="/SearchAdd2/Dialog/taskdelegate2/1?displaySkipSearch=false" class="searchadd"></a>
       @Html.Hidden("Options", Model.Search.GetOptions())
       <div class="well">
         <div class="row">
@@ -109,6 +110,9 @@
                 <ul class="dropdown-menu dropdown-menu-right">
                   <li>
                     <a id="archive" class="alert alert-danger" href="/TaskSearch/Archive/">Archive Tasks</a>
+                  </li>
+                  <li>
+                    <a id="delegate" href="/TaskSearch/Delegate/">Delegate Tasks</a>
                   </li>
                 </ul>
               </div>
