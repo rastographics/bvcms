@@ -97,7 +97,7 @@
                 else if (ret == 0)
                     swal("Error!", "No results.", "error");
                 else
-                    window.location = "/Task";
+                    window.location = "/TaskSearch";
             });
         });
         return true;
