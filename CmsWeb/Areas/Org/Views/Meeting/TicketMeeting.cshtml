@@ -1,62 +1,61 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.MeetingModel
 @Html.Hidden("meetingid", Model.meeting.MeetingId)
-@{
-    var RegularMeetingHeadCount = Model.RegularMeetingHeadCountSetting();
-    var CanEditHeadCount = Model.meeting.GroupMeetingFlag || RegularMeetingHeadCount == "enable";
-}
 <div class="box box-responsive">
-    <div class="box-content">
-        <div class="well">
-            <div class="row">
-                <div class="col-sm-6">
-                    <dl>
-                        <dt>Schedule</dt>
-                        <dd><a href="/Meeting/@Model.meeting.MeetingId">@Model.meeting.MeetingDate.FormatDateTm()</a></dd>
-                    </dl>
-                </div>
-                <div class="col-sm-6">
-                    <dl>
-                        <dt>Meeting Type</dt>
-                        <dd>
-                            @(Model.meeting.GroupMeetingFlag ? "Group (headcount)" : "Regular") | 
-                            @Model.AttendCreditType()
-                        </dd>
-                    </dl>
-                </div>
-                <div class="col-sm-12">
-                    <dl>
-                        <dt>Description</dt>
-                        <dd>
-                            @Model.meeting.Description
-                        </dd>
-                    </dl>
-                </div>
-            </div>
+  <div class="box-content">
+    <div class="well">
+      <div class="row">
+        <div class="col-sm-6">
+          <dl>
+            <dt>Schedule</dt>
+            <dd>
+              <a href="/Meeting/@Model.meeting.MeetingId">@Model.meeting.MeetingDate.FormatDateTm()</a>
+            </dd>
+          </dl>
         </div>
-        <div class="well">
-            <div class="row">
-                <div class="col-sm-4">
-                    <div class="form-group">
-                        <label class="control-label" for="name">Find Name</label>
-                        <input type="text" id="name" name="name" class="form-control" />
-                    </div>
-                </div>
-                <div class="col-sm-8">
-                    <br/>
-                    <div class="form-group">
-                        <label class="checkbox-inline">
-                            @Html.CheckBox("requireMember") Require org member
-                        </label>
-                        <label class="checkbox-inline">
-                            @Html.CheckBox("requireRegistered") Require registered
-                        </label>
-                    </div>
-                    <div class="pull-right">
-                        <a href="/SearchAdd2/Dialog/visitor/@Model.meeting.MeetingId" class="btn btn-success searchadd" title="Click to Add Guests to Meeting"><i class="fa fa-plus-circle"></i> Add Guests</a>
-                    </div>
-                </div>
-            </div>
+        <div class="col-sm-6">
+          <dl>
+            <dt>Meeting Type</dt>
+            <dd>
+              @(Model.meeting.GroupMeetingFlag ? "Group (headcount)" : "Regular") |
+              @Model.AttendCreditType()
+            </dd>
+          </dl>
         </div>
+        <div class="col-sm-12">
+          <dl>
+            <dt>Description</dt>
+            <dd>
+              @Model.meeting.Description
+            </dd>
+          </dl>
+        </div>
+      </div>
     </div>
+    <div class="well">
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label class="control-label" for="name">Find Name</label>
+            <input type="text" id="name" name="name" class="form-control"
+                   autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+          </div>
+        </div>
+        <div class="col-sm-8">
+          <br/>
+          <div class="form-group">
+            <label class="checkbox-inline">
+              @Html.CheckBox("requireMember") Require org member
+            </label>
+            <label class="checkbox-inline">
+              @Html.CheckBox("requireRegistered") Require registered
+            </label>
+          </div>
+          <div class="pull-right">
+            <a href="/SearchAdd2/Dialog/visitor/@Model.meeting.MeetingId" class="btn btn-success searchadd" title="Click to Add Guests to Meeting"><i class="fa fa-plus-circle"></i> Add Guests</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
