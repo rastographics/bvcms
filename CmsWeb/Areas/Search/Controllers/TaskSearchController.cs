@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Web.Mvc;
 using CmsWeb.Areas.Search.Models;
 using UtilityExtensions;
@@ -57,6 +56,20 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Archive(TaskSearchModel m)
         {
             m.Archive();
+            m.Search.SavePreference();
+            return Redirect("/TaskSearch");
+        }
+        [HttpPost]
+        public ActionResult UnArchive(TaskSearchModel m)
+        {
+            m.Archive();
+            m.Search.SavePreference();
+            return Redirect("/TaskSearch");
+        }
+        [HttpPost]
+        public ActionResult Delete(TaskSearchModel m)
+        {
+            m.Delete();
             m.Search.SavePreference();
             return Redirect("/TaskSearch");
         }

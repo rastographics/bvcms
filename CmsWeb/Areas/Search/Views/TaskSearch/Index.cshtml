@@ -109,10 +109,20 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-right">
                   <li>
-                    <a id="archive" class="alert alert-danger" href="/TaskSearch/Archive/">Archive Tasks</a>
+                    <a id="delegate" href="/TaskSearch/Delegate/">Delegate Tasks</a>
                   </li>
                   <li>
-                    <a id="delegate" href="/TaskSearch/Delegate/">Delegate Tasks</a>
+                    @if (Model.Search.Archived)
+                    {
+                      <a id="unarchive" href="/TaskSearch/UnArchive/">UnArchive Tasks</a>
+                    }
+                    else
+                    {
+                      <a id="archive" href="/TaskSearch/Archive/">Archive Tasks</a>
+                    }
+                  </li>
+                  <li>
+                    <a id="delete" href="/TaskSearch/Delete/">Delete Tasks</a>
                   </li>
                 </ul>
               </div>

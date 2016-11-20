@@ -57,16 +57,29 @@
     $("#archive").click(function(ev) {
         ev.preventDefault();
         var url = $(this)[0].href;
+        return archivetasks(url, "archive");
+    });
+    $("#unarchive").click(function(ev) {
+        ev.preventDefault();
+        var url = $(this)[0].href;
+        return archivetasks(url, "unarchive");
+    });
+    $("#delete").click(function(ev) {
+        ev.preventDefault();
+        var url = $(this)[0].href;
+        return archivetasks(url, "delete");
+    });
+    function archivetasks (url, dowhat) {
         var cnt = $("#results").find('input[name="SelectedItem"]:checked').length;
         if (cnt === 0)
             swal("Sorry...", "You must check some boxes in the list", "error");
         else
             swal({
-                title: "Are you sure you want to archive " + cnt + " tasks?",
+                title: "Are you sure you want to " + dowhat + " " + cnt + " tasks?",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonClass: "btn-warning",
-                confirmButtonText: "Yes, archive them!",
+                confirmButtonText: "Yes, " + dowhat + " them!",
                 closeOnConfirm: false
             },
             function() {
@@ -74,8 +87,7 @@
                 f.attr("action", url);
                 f.submit();
             });
-        return false;
-    });
+    }
     $("#delegate").click(function(ev) {
         ev.preventDefault();
         var cnt = $("#results").find('input[name="SelectedItem"]:checked').length;
