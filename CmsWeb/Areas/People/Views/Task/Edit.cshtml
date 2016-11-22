@@ -1,0 +1,91 @@
+﻿@using CmsData
+@using UtilityExtensions
+@model CmsWeb.Areas.People.Models.Task.TaskModel
+@{
+  Layout = ViewExtensions2.TouchPointLayout();
+  ViewBag.Title = "Edit Task";
+  ViewBag.PageHeader = "Edit Task";
+}
+<div class="row">
+  <div class="col-sm-12 col-md-12 col-lg-10">
+    <div class="box box-responsive">
+      <div class="box-content">
+        <form id="Edit" action="/Task/Update" method="POST">
+          @Html.HiddenFor(m => m.Id)
+          @if (Model.WhoId.HasValue)
+          {
+            <div class="well">
+              <strong>
+                <a href="/Person2/@Model.WhoId" style="font-size: 1.5em;">@Model.About</a>
+              </strong>
+              <br/>
+              <a href="@Model.ProspectReportLink()" target="_blank">Prospect Report</a>
+              <div>
+                <ul class="list-inline" style="margin-bottom: 0;">
+                  <li><i class="fa fa-map-marker"></i>&nbsp;&nbsp;<a href="http://www.google.com/maps?q=@Model.WhoAddrCityStateZip" target="_blank">@Model.WhoAddress</a></li>
+                  <li><i class="fa fa-car"></i>&nbsp;&nbsp;<a href="http://www.google.com/maps?f=d&saddr=@DbUtil.StartAddress&pw=2&daddr=@Model.WhoAddrCityStateZip" target="_blank">Driving Directions</a></li>
+                </ul>
+                @if (Model.WhoEmail.HasValue() && Model.WhoPhone.HasValue())
+                {
+                  <ul class="list-inline">
+                    <li>
+                      <i class="fa fa-envelope-o"></i>
+                      <a href="mailto:@Model.WhoEmail">@Model.WhoEmail</a>
+                    </li>
+                    <li>
+                      <i class="fa fa-phone"></i>
+                      <a href="tel:+@Model.WhoPhone">@Model.WhoPhone</a>
+                    </li>
+                  </ul>
+                }
+                else
+                {
+                  if (Model.WhoEmail.HasValue())
+                  {
+                    <i class="fa fa-envelope-o"></i>
+                    <a href="mailto:@Model.WhoEmail">@Model.WhoEmail</a>
+                  }
+                  if (Model.WhoPhone.HasValue())
+                  {
+                    <i class="fa fa-phone"></i>
+                    <a href="tel:+@Model.WhoPhone">@Model.WhoPhone</a>
+                  }
+                }
+              </div>
+            </div>
+          }
+          <div class="row">
+            <div class="col-sm-4">
+              @Html.EditorFor(m => m.Description)
+            </div>
+            <div class="col-sm-2">
+              @Html.EditorFor(m => m.Due)
+            </div>
+            <div class="col-sm-3">
+              @Html.EditorFor(m => m.TaskStatus)
+            </div>
+            <div class="col-sm-3">
+              @Html.EditorFor(m => m.TaskLimitToRole)
+            </div>
+            <div class="col-sm-12">
+              @Html.EditorFor(m => m.Notes, "TextArea")
+              @if (Model.IsOwner)
+              {
+                @Html.EditorFor(m => m.ForceCompleteWithContact)
+                ;
+              }
+            </div>
+          </div>
+          <div class="hidden-xs">
+            <a href="/Task/@Model.Id" class="btn btn-default">Cancel</a>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+          <div class="visible-xs-block">
+            <button type="submit" class="btn btn-primary btn-block">Save</button>
+            <a href="/Task/@Model.Id" class="btn btn-default btn-block">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

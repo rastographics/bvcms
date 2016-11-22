@@ -95,14 +95,13 @@ namespace CmsWeb.Areas.People.Models
         public int AddTask(int PeopleId)
         {
             var uid = Util.UserPeopleId.Value;
-            var task = new Task
+            var task = new CmsData.Task
             {
                 OwnerId = uid,
                 WhoId = PeopleId,
                 SourceContactId = Contact.ContactId,
                 Description = "Follow up",
                 Notes = Contact.Comments,
-                ListId = TaskModel.InBoxId(uid),
                 StatusId = TaskStatusCode.Active,
                 Project = Contact.MinistryId == null ? null : Contact.Ministry.MinistryName,
                 ForceCompleteWContact = true

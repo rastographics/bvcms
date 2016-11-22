@@ -293,5 +293,41 @@ namespace CmsWeb.Code
         {
             return MemberStatusCodes();
         }
+        public SelectList TaskSearchStatusList()
+        {
+            var list = (from vc in DbUtil.Db.TaskStatuses
+                orderby vc.Description
+                select new CodeValueItem
+                {
+                    Id = vc.Id,
+                    Code = vc.Code,
+                    Value = vc.Description
+                }).ToList();
+            list.Insert(0, new CodeValueItem {Id = 99, Value = "Active + Pending"});
+            return list.AddNotSpecified().ToSelect();
+        }
+        public static SelectList TaskStatusList()
+        {
+            var list = DbUtil.Db.TaskStatuses.ToList();
+            return new SelectList(list, "Id", "Description");
+        }
+        public SelectList TaskLimitToRoleList()
+        {
+            var roles = DbUtil.Db.Setting("LimitToRolesForTasks", 
+                    DbUtil.Db.Setting("LimitToRolesForContacts", ""))
+                .SplitStr(",").Where(rr => rr.HasValue()).ToArray();
+            
+            if (roles.Length == 0)
+                roles = DbUtil.Db.Roles.OrderBy(r => r.RoleName).Select(r => r.RoleName).ToArray();
+            var list = roles.Select(rolename => new 
+            {
+                Value = rolename,
+                Text = rolename,
+                //Selected = !string.IsNullOrWhiteSpace(TaskLimitToRole.Value) && TaskLimitToRole.Value == rolename
+            }).ToList();
+
+            list.Insert(0, new { Value = "0", Text = @"(not specified)"});
+            return new SelectList(list, "Value", "Text");
+        }
     }
 }

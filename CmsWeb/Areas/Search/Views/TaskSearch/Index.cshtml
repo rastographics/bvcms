@@ -1,0 +1,139 @@
+﻿@model CmsWeb.Areas.Search.Models.TaskSearchModel
+@{
+    ViewBag.Title = "Task Search";
+    ViewBag.PageHeader = "Task Search";
+    Layout = ViewExtensions2.TouchPointLayout();
+    var personAttributes = new {@class = "person", popup="Start typing lastname to get a dropdown of names"};
+}
+@section head
+{
+  <style>
+    div.tbl {
+      display: table;
+      background-color: inherit !important;
+    }
+
+    div.tbl div.row { display: table-row; }
+
+    div.tbl div.cell1 {
+      display: table-cell;
+      width: 5.5em;
+      padding-right: 1em;
+      padding-top: 2px;
+      padding-bottom: 2px;
+    }
+
+    div.tbl div.cell {
+      display: table-cell;
+      padding-top: 2px;
+      padding-bottom: 2px;
+    }
+
+    .maxwidth { max-width: 300px; }
+
+    .red { color: red; }
+    .green { color: green; }
+
+    .alert-danger { color: #a94442 !important; }
+  </style>
+}
+<div class="box box-responsive">
+  <div class="box-content">
+    <form id="form-task-search" class="ajax" data-results="#results" method="post" action="/TaskSearch/Results">
+      <a id="delegateall" href="/SearchAdd2/Dialog/taskdelegate2/1?displaySkipSearch=false" class="searchadd"></a>
+      @Html.Hidden("Options", Model.Search.GetOptions())
+      <div class="well">
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-sm-3">
+            @Html.EditorFor(m => m.Search.TaskSearchStatus, personAttributes)
+          </div>
+          <div class="col-lg-2 col-md-2 col-sm-4">
+            @Html.EditorFor(m => m.Search.About, personAttributes)
+          </div>
+          <div class="col-lg-2 col-md-2 col-sm-4">
+            @Html.EditorFor(m => m.Search.Owner, personAttributes)
+          </div>
+          <div class="col-lg-2 col-md-2 col-sm-4">
+            @Html.EditorFor(m => m.Search.Delegate, personAttributes)
+          </div>
+          <div class="col-lg-2 col-md-2 col-sm-4">
+            @Html.EditorFor(m => m.Search.Originator, personAttributes)
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-2 col-md-2 col-sm-3">
+            @Html.EditorFor(m => m.Search.ExcludeNewPerson)
+          </div>
+          @if (User.IsInRole("ManageTasks"))
+          {
+            <div class="col-lg-2 col-md-2 col-sm-3">
+              @Html.EditorFor(m => m.Search.Archived)
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-3">
+              @Html.EditorFor(m => m.Search.IsPrivate)
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-3">
+              @Html.EditorFor(m => m.Search.MyTasksOnly)
+            </div>
+          }
+          <div class="col-lg-2 col-md-2 col-sm-3">
+            @Html.EditorFor(m => m.Search.ShowNotes)
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-sm-6">
+            @Html.EditorFor(m => m.Search.Description)
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-6">
+            @Html.EditorFor(m => m.Search.Notes)
+          </div>
+          <div class="col-lg-2 col-md-2 col-sm-6">
+            @Html.EditorFor(m => m.Search.Lookback)
+          </div>
+          <div class="col-lg-2 col-md-2 col-sm-6">
+            @Html.EditorFor(m => m.Search.EndDt)
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-sm-4">
+            <strong>Total Count</strong> <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span>
+          </div>
+          <div class="col-lg-9 col-md-9 col-sm-8">
+            <div class="pull-right">
+              <a class="btn btn-default submit" href="/TaskSearch/Clear">Clear</a>
+              <div class="btn-group">
+                <a id="filter" href="/TaskSearch/Results" class="btn btn-primary ajax" data-callback="UpdateTotal">Search</a>
+                <button type="button" id="filter-dropdown" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                  <span class="caret"></span>
+                  <span class="sr-only">Action Dropdown</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                  <li>
+                    <a id="delegate" href="/TaskSearch/Delegate/">Delegate Tasks</a>
+                  </li>
+                  <li>
+                    @if (Model.Search.Archived)
+                    {
+                      <a id="unarchive" href="/TaskSearch/UnArchive/">UnArchive Tasks</a>
+                    }
+                    else
+                    {
+                      <a id="archive" href="/TaskSearch/Archive/">Archive Tasks</a>
+                    }
+                  </li>
+                  <li>
+                    <a id="delete" href="/TaskSearch/Delete/">Delete Tasks</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      @Html.Partial("Results", Model)
+    </form>
+  </div>
+</div>
+@section scripts{
+  @Fingerprint.Script("/Content/touchpoint/js/search/TaskSearch.js")
+}

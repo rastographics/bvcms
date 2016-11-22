@@ -6,7 +6,7 @@ namespace CmsWeb.Areas.People.Models
 {
     public class TasksAssignedModel : TasksModel
     {
-        override public IQueryable<Task> DefineModelList()
+        override public IQueryable<CmsData.Task> DefineModelList()
         {
             return from t in FilteredModelList()
                    where t.WhoId != null
@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.People.Models
 
         public override string AddTask { get { return null; } }
 
-        public override IEnumerable<TaskInfo> DefineViewList(IQueryable<Task> q)
+        public override IEnumerable<TaskInfo> DefineViewList(IQueryable<CmsData.Task> q)
         {
             return from t in q
                    select new TaskInfo
@@ -28,7 +28,7 @@ namespace CmsWeb.Areas.People.Models
                        AssignedTo = Person.PreferredName,
                        AboutId = t.WhoId,
                        AssignedToId = (t.CoOwnerId ?? t.OwnerId),
-                       link = "/Task/Detail/" + t.Id,
+                       link = "/Task/" + t.Id,
                        Desc = t.Description,
                        completed = t.CompletedOn
                    };
