@@ -425,7 +425,8 @@ namespace CmsWeb.Areas.People.Models.Task
             var sb = new StringBuilder();
             var task = DbUtil.Db.Tasks.Single(t => t.Id == Id);
             ChangeTask(sb, task, "Description", Description);
-            ChangeTask(sb, task, "LimitToRole", TaskLimitToRole.Value);
+            ChangeTask(sb, task, "LimitToRole", 
+                TaskLimitToRole.Value == "0" ? null : TaskLimitToRole.Value);
             ChangeTask(sb, task, "Due", Due);
             ChangeTask(sb, task, "Notes", Notes);
             ChangeTask(sb, task, "StatusId", TaskStatus.IntVal);
