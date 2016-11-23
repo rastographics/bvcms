@@ -355,6 +355,7 @@ namespace CmsData.API
                      where p.ContributionStatusId.Value != ContributionStatusCode.Reversed
                      where p.ContributionFund.FundStatusId == 1 // active
                      where p.ContributionDate.Value.Date <= toDate.Date
+                     where p.ContributionFund.FundPledgeFlag
                      group p by p.FundId into g
                      select new {FundId = g.Key, Fund = g.First().ContributionFund.FundName, Total = g.Sum(p => p.ContributionAmount)};
             var qc = from c in db.Contributions
@@ -366,6 +367,7 @@ namespace CmsData.API
                      where c.ContributionTypeId != ContributionTypeCode.Pledge
                      where c.ContributionStatusId != ContributionStatusCode.Reversed
                      where c.ContributionDate.Value.Date <= toDate.Date
+                     where c.ContributionFund.FundPledgeFlag
                      group c by c.FundId into g
                      select new {FundId = g.Key, Total = g.Sum(c => c.ContributionAmount)};
             var q = from p in qp
