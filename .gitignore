@@ -79,3 +79,4 @@ CmsDataSqlClr_.*.sqlproj
 .vs
 *.pyc
 .localhistory/
+CmsWeb/LocalConnectionStrings.config

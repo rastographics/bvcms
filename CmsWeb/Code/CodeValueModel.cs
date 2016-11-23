@@ -922,6 +922,19 @@ namespace CmsWeb.Code
             return tg;
         }
 
+        public IEnumerable<CodeValueItem> TitleCodes()
+        {
+            var q = from ms in DbUtil.Db.People.Where(mm => mm.TitleCode.Length > 0).Select(tt => tt.TitleCode).Distinct()
+                select new CodeValueItem
+                {
+                    Code = ms,
+                    Value = ms
+                };
+            var list = q.ToList();
+            list.Insert(0, new CodeValueItem {Code = "", Value = "(not specified)"});
+            return list;
+        }
+
 
         public IEnumerable<CodeValueItem> UserRoles()
         {

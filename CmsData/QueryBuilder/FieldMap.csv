@@ -21,7 +21,7 @@ OccupationOther,CodeStr,,Occupations,,Personal,Occupation,,Select Occupation fro
 HasPicture,Bit,,,,Personal,Has Picture,,Select True or False.
 DeceasedDate,Date,,,,Personal,Deceased Date,,Pick a date with a comparison.
 WidowedDate,Date,,,,Personal,Widowed Date,,Pick a date with a comparison.
-TitleCode,CodeStr,,,,Personal,Title,,Select Title from list.
+TitleCode,CodeStr,Code,TitleCodes,,Personal,Title,,Select Title from list.
 EmailAddress,String,,,,Personal,Email,,"Enter any part of an email address. Searches on 1st email, both active and inactive."
 EmailAddress2,String,,,,Personal,Email2,,"Enter any part of an email address. Searches on 2nd email, both active and inactive."
 PositionInFamilyId,Code,,FamilyPositionCodes,,Family,Position in Family,,Select Position from the list.
