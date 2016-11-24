@@ -717,6 +717,7 @@ Creating_dbo_AccessUserInfo.sql
 Creating_dbo_MembersAsOf.sql
 Creating_dbo_OrgMember.sql
 Creating_dbo_HeadOrSpouseWithEmail.sql
+Creating_dbo_FirstPersonSameEmail.sql
 Creating_dbo_OrganizationMemberCount2.sql
 Creating_dbo_UpdateAllAttendStrBig.sql
 Creating_dbo_AttendMemberTypeAsOf.sql
