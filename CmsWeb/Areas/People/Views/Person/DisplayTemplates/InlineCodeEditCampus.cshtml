@@ -1,0 +1,14 @@
+﻿@using CmsData
+@model CmsWeb.Code.CodeInfo
+@{
+    var displayname = (string)ViewData["label"] ?? Model.Name;
+    var canedit = (bool?)ViewData["canedit"] == true;
+}
+@if (canedit)
+{
+    <a id="@Model.Name" class="edit-inline-label label label-info" data-value="@Model.Value" data-pk="@Util2.CurrentPeopleId" title="@displayname">@Model</a>
+}
+else
+{
+    <span class="label label-info" title="@displayname">@Model</span>
+}

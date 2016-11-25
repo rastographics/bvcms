@@ -3,7 +3,7 @@
 @using CmsWeb.Areas.People.Models
 @using UtilityExtensions
 @model PersonModel
- <h1 id="nameline" class="@(Model.Person.IsDeceased == true ? "alert alert-danger" : "")">
+<h1 id="nameline" class="@(Model.Person.IsDeceased == true ? "alert alert-danger" : "")">
     @Model.Name
 </h1>
 <ul class="meta list-unstyled">
@@ -15,8 +15,9 @@
     <li class="badges">
         @if (Model.basic.Campus.Items.Count() > 1)
         {
-            @Html.DisplayFor(m => m.basic.Campus, "InlineCode", new { label=Util2.CampusLabel, canedit = Model.Person.CanUserEditCampus })
+            @Html.DisplayFor(m => m.basic.Campus, "InlineCodeEditCampus", new { label = Util2.CampusLabel, canedit = Model.Person.CanUserEditCampus })
         }
+
         @Html.DisplayFor(m => m.basic.PositionInFamily, "InlineCode")
         @Badge(true, @Model.MemberStatus, "label-success")
         @foreach (var status in Model.StatusFlags)
@@ -30,12 +31,12 @@
 </ul>
 @helper ShowAddress(AddressInfo a)
 {
-    var editHide = Model.Person.CanUserEditFamilyAddress ? "" : "hide";
-    if (a.AddressLineOne.HasValue() || a.Preferred)
-    {
-        var icon = a.Name == "FamilyAddr" ? "fa-home" : "fa-male";
-        var addr = a.AddrCityStateZipLine();
-        var start = DbUtil.StartAddress;
+var editHide = Model.Person.CanUserEditFamilyAddress ? "" : "hide";
+if (a.AddressLineOne.HasValue() || a.Preferred)
+{
+    var icon = a.Name == "FamilyAddr" ? "fa-home" : "fa-male";
+    var addr = a.AddrCityStateZipLine();
+    var start = DbUtil.StartAddress;
         <div class="dropdown">
             <i class="fa @icon fa-fw"></i>
             <a href="#" class="dropdown-toggle @a.BadAddressClass" data-toggle="dropdown">@addr</a>&nbsp;&nbsp;
@@ -48,24 +49,24 @@
                 <li><a href='https://www.google.com/maps/dir/@start.Replace(' ','+')/@addr.Replace(' ', '+')' target="_blank">Driving Directions (Google)</a></li>
             </ul>
         </div>
-    }
+}
 }
 @helper ContactLine()
 {
-    const string bull = " &bull; ";
-    var sb = new StringBuilder(Model.Email);
-    sb.AppendNext(bull, Model.Cell);
-    sb.AppendNext(bull, Model.HomePhone);
-    if (sb.Length > 0)
-    {
+const string bull = " &bull; ";
+var sb = new StringBuilder(Model.Email);
+sb.AppendNext(bull, Model.Cell);
+sb.AppendNext(bull, Model.HomePhone);
+if (sb.Length > 0)
+{
         <i class="fa fa-envelope fa-fw"></i>
         <span id="contactline">@Html.Raw(sb)</span>
-    }
+}
 }
 @helper Badge(bool tf, string badge, string labeltype)
 {
-    if (tf)
-    {
+if (tf)
+{
         <span class="label @labeltype">@badge</span>
-    }
+}
 }
