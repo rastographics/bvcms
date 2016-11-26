@@ -5,12 +5,13 @@ using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Classes.ProtectMyMinistry;
-using CmsWeb.Areas.Main.Models.Other;
+using CmsWeb.Areas.People.Models;
+using CmsWeb.Models.ExtraValues;
 using UtilityExtensions;
 
-namespace CmsWeb.Areas.Main.Controllers
+namespace CmsWeb.Areas.People.Controllers
 {
-    [RouteArea("Main", AreaPrefix = "Volunteering"), Route("{action}/{id?}")]
+    [RouteArea("People", AreaPrefix = "Volunteering"), Route("{action}/{id?}")]
     public class VolunteeringController : Controller
     {
         [Route("~/Volunteering/{id:int}")]
@@ -268,6 +269,13 @@ namespace CmsWeb.Areas.Main.Controllers
             var c = new ContentResult();
             c.Content = value;
             return c;
+        }
+        [HttpPost]
+        public ActionResult ExtraValues(int id)
+        {
+            var m = new ExtraValueModel(id, "People", "Volunteer");
+            ViewBag.EvLocationLabel = DbUtil.Db.Setting("ExtraVolunteerDataLabel", "Extra Volunteer Data");
+            return View("/Views/ExtraValue/Location.cshtml", m);
         }
     }
 }

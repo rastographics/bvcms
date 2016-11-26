@@ -598,7 +598,7 @@
     <Compile Include="Areas\Reports\ViewModels\CustomReportViewModel.cs" />
     <Compile Include="Areas\Search\Controllers\PeopleSearchController.cs" />
     <Compile Include="Areas\Main\Controllers\SMSController.cs" />
-    <Compile Include="Areas\Main\Controllers\VolunteeringController.cs" />
+    <Compile Include="Areas\People\Controllers\VolunteeringController.cs" />
     <Compile Include="Areas\Reports\Models\Directories\CompactDir.cs" />
     <Compile Include="Areas\Reports\Models\Directories\CompactRow.cs" />
     <Compile Include="Areas\Reports\Models\Directories\PictureDir.cs" />
@@ -606,7 +606,7 @@
     <Compile Include="Areas\Reports\Models\Directories\FamilyDir.cs" />
     <Compile Include="Areas\Reports\Models\Directories\FamilyRow.cs" />
     <Compile Include="Areas\Main\Models\Email\EmailTemplatesModel.cs" />
-    <Compile Include="Areas\Main\Models\Other\VolunteerModel.cs" />
+    <Compile Include="Areas\People\Models\VolunteerModel.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundModel.cs" />
     <Compile Include="Areas\Reports\Models\Other\MailingController.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\VisitsAbsentsResult2.cs" />
@@ -1486,7 +1486,7 @@
     <Content Include="Areas\People\Views\Person\System\MergeHistory.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\Deposits.cshtml" />
     <Content Include="Areas\People\Views\Person\Toolbar\GearStandard.cshtml" />
-    <Content Include="Areas\Main\Views\Volunteering\Display.cshtml" />
+    <Content Include="Areas\People\Views\Volunteering\Display.cshtml" />
     <Content Include="Areas\Org\Views\MissionTripEmail\EmailBody.cshtml" />
     <Content Include="Content\touchpoint\src\less\twitter-typeahead\twitter-typeahead.less" />
     <Content Include="Content\touchpoint\lib\ion-sound\sounds\glass.ogg" />
@@ -1682,7 +1682,7 @@
     <Content Include="Areas\People\Views\Person\DisplayTemplates\InlineCode.cshtml" />
     <Content Include="Areas\People\Views\Person\EditorTemplates\InlineCode.cshtml" />
     <Content Include="Areas\Public\Views\SmallGroupFinder\Index.cshtml" />
-    <Content Include="Areas\Main\Views\Volunteering\DialogSubmit.cshtml" />
+    <Content Include="Areas\People\Views\Volunteering\DialogSubmit.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\Address.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenMeta.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenSearch.cshtml" />
@@ -2423,6 +2423,7 @@
     <Content Include="Views\Shared\Toolbar\Custom.cshtml" />
     <Content Include="Views\Shared\PageMessage.cshtml" />
     <Content Include="Areas\Manage\Views\Account\_ShellLayout.cshtml" />
+    <Content Include="Views\ExtraValue\Location.cshtml" />
     <None Include="Web.Impersonate.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2532,9 +2533,9 @@
     <Content Include="Areas\Org\Views\Org\EditorTemplates\AskCheckboxes.cshtml" />
     <Content Include="Areas\Org\Views\Org\EditorTemplates\DropdownItem.cshtml" />
     <Content Include="Areas\Org\Views\Org\EditorTemplates\Ask.cshtml" />
-    <Content Include="Areas\Main\Views\Volunteering\DialogType.cshtml" />
-    <Content Include="Areas\Main\Views\Volunteering\Edit.cshtml" />
-    <Content Include="Areas\Main\Views\Volunteering\Index.cshtml" />
+    <Content Include="Areas\People\Views\Volunteering\DialogType.cshtml" />
+    <Content Include="Areas\People\Views\Volunteering\Edit.cshtml" />
+    <Content Include="Areas\People\Views\Volunteering\Index.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageVolunteer\VolunteerSlots.cshtml" />
     <Content Include="Areas\Org\Views\Meeting\TicketMeeting.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\SQLView.cshtml" />
@@ -2568,7 +2569,7 @@
     <Content Include="Areas\Search\Views\Query\EditorTemplates\CodesDropdown.cshtml" />
     <Content Include="Areas\Search\Views\Query\Divisions.cshtml" />
     <Content Include="Areas\Search\Views\Query\Organizations.cshtml" />
-    <Content Include="Areas\Main\Views\Volunteering\DialogEdit.cshtml" />
+    <Content Include="Areas\People\Views\Volunteering\DialogEdit.cshtml" />
     <Content Include="Areas\Main\Views\SMS\Options.cshtml" />
     <Content Include="Areas\Main\Views\SMS\Send.cshtml" />
     <Content Include="Areas\Manage\Views\SMS\Details.cshtml" />

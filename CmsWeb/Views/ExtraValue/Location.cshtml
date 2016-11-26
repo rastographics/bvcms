@@ -1,0 +1,81 @@
+﻿@using CmsWeb.Models.ExtraValues
+@model ExtraValueModel
+@{
+  var evmodel = Model;
+  var firstTime = true;
+  var list = evmodel.GetExtraValues().ToList();
+}
+<div id="ExtraValueLocation">
+  <h3>@ViewBag.EvLocationLabel</h3>
+  @ExtraDataFormAction(Model)
+  @foreach (var f in list)
+  {
+    if (f.Type == "Header")
+    {
+      if (firstTime)
+      {
+        <h4>@Html.EditorFor(m => f)</h4>
+        @Html.Raw("<div class='well'>")
+        @Html.Raw("<div class='row'>")
+        firstTime = false;
+      }
+      else
+      {
+        @Html.Raw("</div>")
+        @Html.Raw("</div>")
+        <h4>@Html.EditorFor(m => f)</h4>
+        @Html.Raw("<div class='well'>")
+        @Html.Raw("<div class='row'>")
+      }
+    }
+    else
+    {
+      if (firstTime)
+      {
+        @Html.Raw("<br/>")
+        @Html.Raw("<div class='well'>")
+        @Html.Raw("<div class='row'>")
+        firstTime = false;
+      }
+      @Html.EditorFor(m => f, "/Value")
+    }
+    if (f == list.Last()) // if this was the last item, close the well
+    {
+      @Html.Raw("</div>")
+      @Html.Raw("</div>")
+    }
+  }
+  @ExtraDataFormAction(Model, true)
+  <input type="hidden" id="StandardExtraValueReload" value="/ExtraValue/Display/@Model.Table/@Model.Location/@Model.Id"/>
+</div>
+
+@helper ExtraDataFormAction(ExtraValueModel evmodel, bool xs = false)
+{
+  if (xs)
+  {
+    <div class="visible-xs-block">
+      @if (User.IsInRole("Admin"))
+      {
+        <a class="extravalue btn btn-success btn-block" href="/ExtraValue/NewStandard/@evmodel.Table/@Model.Location/@evmodel.Id"><i class="fa fa-plus-circle"></i> Add Extra Value</a>
+        <a class="extravalue edit btn btn-default btn-block" href="/ExtraValue/ListStandard/@evmodel.Table/@Model.Location/@evmodel.Id?title=Edit+@Model.Location+Extra+Vaues"><i class="fa fa-pencil"></i> Edit Extra Value</a>
+        <hr/>
+      }
+      <a href="#" class="ajax-refresh btn btn-default btn-block"><i class="fa fa-refresh"></i> Refresh</a>
+    </div>
+  }
+  else
+  {
+    <div class="row hidden-xs">
+      <div class="col-sm-12">
+        <div class="pull-right">
+          <a href="#" class="ajax-refresh btn btn-default"><i class="fa fa-refresh"></i> Refresh</a>
+          @if (User.IsInRole("Admin"))
+          {
+            <a class="extravalue edit btn btn-default" href="/ExtraValue/ListStandard/@evmodel.Table/@Model.Location/@evmodel.Id?title=Edit+@Model.Location+Extra+Vaues"><i class="fa fa-pencil"></i> Edit Extra Value</a>
+            <a class="extravalue btn btn-success" href="/ExtraValue/NewStandard/@evmodel.Table/@Model.Location/@evmodel.Id"><i class="fa fa-plus-circle"></i> Add Extra Value</a>
+          }
+        </div>
+      </div>
+    </div>
+  }
+}

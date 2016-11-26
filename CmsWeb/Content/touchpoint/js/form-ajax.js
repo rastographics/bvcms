@@ -90,6 +90,11 @@
         $.formAjaxClick($(this), d.data("link"));
         return false;
     });
+    $("body").on("click", "form.ajax a.ajax-refresh", function (event) {
+        event.preventDefault();
+        $.formAjaxClick($(this));
+        return false;
+    });
 
     $('body').on('click', 'form.ajax a.submit', function (event) {
         event.preventDefault();

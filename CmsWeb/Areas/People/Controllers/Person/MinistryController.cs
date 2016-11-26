@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
-using CmsWeb.Areas.Main.Models.Other;
 using CmsWeb.Areas.People.Models;
 using UtilityExtensions;
 

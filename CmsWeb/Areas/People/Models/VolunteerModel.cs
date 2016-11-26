@@ -13,7 +13,7 @@ using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Code;
 
-namespace CmsWeb.Areas.Main.Models.Other
+namespace CmsWeb.Areas.People.Models
 {
 	public class VolunteerModel
 	{

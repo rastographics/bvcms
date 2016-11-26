@@ -67,9 +67,16 @@
         });
     });
 
-    $('a.editable').editable({
+    $('#documents a.editable').editable({
         mode: 'inline',
         type: 'text',
         url: '/Volunteering/EditForm/'
     });
+
+    $.InitFunctions.Editable = function () {
+        $("#ev-form a.editable").editable();
+        $("#ev-form a.editable-bit").editable({ type: 'checklist', mode: 'popup', source: { 'True': 'True' }, emptytext: 'False' });
+    };
+    $.InitFunctions.Editable();
+    $.InitFunctions.ExtraEditable();
 });

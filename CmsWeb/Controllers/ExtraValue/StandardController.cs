@@ -4,7 +4,6 @@ using System.Web.Mvc;
 using CmsData;
 using CmsData.ExtraValue;
 using CmsWeb.Models.ExtraValues;
-using UtilityExtensions;
 
 namespace CmsWeb.Controllers
 {
@@ -105,6 +104,13 @@ namespace CmsWeb.Controllers
         public ActionResult ConvertInfoCard()
         {
             return Redirect("/ExtraValue/Summary");
+        }
+        [HttpPost, Route("ExtraValue/Location/{table}/{location}/{id:int}")]
+        public ActionResult Location(string location, string table, int id, string label)
+        {
+            var m = new ExtraValueModel(id, table, location);
+            ViewBag.EvLocationLabel = label;
+            return View(m);
         }
     }
 }
