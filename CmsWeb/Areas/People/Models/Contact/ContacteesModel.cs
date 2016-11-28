@@ -84,21 +84,24 @@ namespace CmsWeb.Areas.People.Models
             return c.Id;
         }
 
-        public void RemoveContactee(int PeopleId)
+        public void RemoveContactee(int peopleId)
         {
             var cn = new SqlConnection(Util.ConnectionString);
             cn.Open();
             cn.Execute("delete Contactees where ContactId = @cid and PeopleId = @pid",
-                new {cid = Contact.ContactId, pid = PeopleId});
+                new {cid = Contact.ContactId, pid = peopleId});
         }
 
-        public int AddTask(int PeopleId)
+        public int AddTask(int peopleId)
         {
+            if (!Util.UserPeopleId.HasValue)
+                throw new Exception("missing user on AddFollowup Task");
             var uid = Util.UserPeopleId.Value;
             var task = new CmsData.Task
             {
                 OwnerId = uid,
-                WhoId = PeopleId,
+                WhoId = peopleId,
+                ListId = CmsData.Task.GetRequiredTaskList(DbUtil.Db, "InBox", uid).Id,
                 SourceContactId = Contact.ContactId,
                 Description = "Follow up",
                 Notes = Contact.Comments,
