@@ -346,7 +346,7 @@ namespace CmsWeb.Areas.People.Models
                     if(np != null)
                         DbUtil.Db.EmailRedacted(p.FromEmail, np,
                             "Address Info Changed",
-                            $"{Util.UserName} changed the following information:<br />\n<table>{sb}</table>");
+                            $"{Util.UserName} changed the <a href='/Person2/{PeopleId}'>following information</a>:<br />\n<table>{sb}</table>");
                 }
         }
 
