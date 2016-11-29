@@ -84,6 +84,7 @@ namespace CmsWeb.Areas.People.Controllers
             return View("Index", TaskModel.FetchModel(id));
         }
 
+        [Route("~/Task/NotesExcel2/{id}")]
         public ActionResult NotesExcel2(Guid? id)
         {
             if (!id.HasValue)
