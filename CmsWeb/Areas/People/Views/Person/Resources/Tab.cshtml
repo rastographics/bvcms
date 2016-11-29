@@ -1,28 +1,52 @@
 ﻿@using CmsData
 @model CmsWeb.Areas.People.Models.PersonModel
 
-<div class="well m-b-0">
-    <div class="row">
-        <div class="col-lg-12">
-            <ul class="nav nav-pills subnav hidden-sm hidden-xs" data-tabparent="system">
-                @for (int i = 0; i < Model.ResourceTypes.Count; i++)
-                {
-                    <li class="resource-type-tab @(i == 0 ? "active" : null)" data-id="@Model.ResourceTypes[i].ResourceType.ResourceTypeId">
-                        <a href="#resourcetab@(Model.ResourceTypes[i].ResourceType.ResourceTypeId)" data-toggle="tab">
-                            <span>@Model.ResourceTypes[i].ResourceType.Name</span>
-                        </a>
-                    </li>
-                }
-            </ul>
-        </div>
-    </div>
-</div>
-<div class="tab-content">
-    @if (!Model.ResourceTypes.Any())
-    {
-        <h3 class="text-center">You have no resources configured.</h3>
+<ul class="nav nav-pills subnav hidden-sm hidden-xs" data-tabparent="system">
+    @for (var i = 0; i < Model.ResourceTypes.Count; i++)
+       {
+        <li class="resource-type-tab @(i == 0 ? "active" : null)" data-id="@Model.ResourceTypes[i].ResourceType.ResourceTypeId">
+            <a href = "#resourcetab@(Model.ResourceTypes[i].ResourceType.ResourceTypeId)" data-toggle="tab">
+                <span>@Model.ResourceTypes[i].ResourceType.Name</span>
+            </a>
+        </li>
     }
-    @for (int i = 0; i < Model.ResourceTypes.Count; i++)
+
+    </ul>
+    <select class="form-control visible-sm-block visible-xs-block nav-select-pills">
+    @for (var i = 0; i<Model.ResourceTypes.Count; i++)
+    {
+        <option value = "#resourcetab@(Model.ResourceTypes[i].ResourceType.ResourceTypeId)" > @Model.ResourceTypes[i].ResourceType.Name </option>
+    }
+
+    </select>
+    <div class="tab-content" style="border: none">
+
+        <!--
+            <div class="tab-content" style="border: none">
+                <div class="well m-b-0">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <ul class="nav nav-pills subnav hidden-sm hidden-xs" data-tabparent="system">
+                                @for (int i = 0; i<Model.ResourceTypes.Count; i++)
+                        {
+                                    <li class="resource-type-tab @(i == 0 ? "active" : null)" data-id="@Model.ResourceTypes[i].ResourceType.ResourceTypeId">
+                                        <a href="#resourcetab@(Model.ResourceTypes[i].ResourceType.ResourceTypeId)" data-toggle="tab">
+                                            <span>@Model.ResourceTypes[i].ResourceType.Name</span>
+                                        </a>
+                                    </li>
+                        }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-content">
+            -->
+
+        @if (!Model.ResourceTypes.Any())
+    {
+            <h3 class="text-center">You have no resources configured.</h3>
+    }
+        @for (int i = 0; i<Model.ResourceTypes.Count; i++)
     {
         var resourceTypeGroup = Model.ResourceTypes[i];
 
@@ -37,59 +61,60 @@
             <div class="panel-group" id="accordion@(i)" role="tablist">
                 @foreach (var category in resourceTypeGroup.Resources.GroupBy(x => x.ResourceCategory).OrderBy(x => x.Key.DisplayOrder))
                 {
-                    <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="@i-@category.Key.ResourceCategoryId">
-                            <h4 class="panel-title">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="@i-@category.Key.ResourceCategoryId">
+                        <h4 class="panel-title">
 
-                                <!-- <a role="button" data-toggle="collapse" data-parent="#accordion@(i)" href="#collapse-@i-@category.Key.ResourceCategoryId" aria-controls="collapse-@i-@category.Key.ResourceCategoryId"
-                                     class="collapsed">
-                                 -->
+                            <!-- <a role="button" data-toggle="collapse" data-parent="#accordion@(i)" href="#collapse-@i-@category.Key.ResourceCategoryId" aria-controls="collapse-@i-@category.Key.ResourceCategoryId"
+                                 class="collapsed">
+                             -->
 
-                                <a role="button" data-toggle="collapse" data-parent="#accordion@(i)" href="#collapse-@i-@category.Key.ResourceCategoryId" aria-controls="collapse-@i-@category.Key.ResourceCategoryId" class=@classCollapsed>
-                                    @category.Key.Name
-                                </a>
-                            </h4>
-                        </div>
+                            <a role="button" data-toggle="collapse" data-parent="#accordion@(i)" href="#collapse-@i-@category.Key.ResourceCategoryId" aria-controls="collapse-@i-@category.Key.ResourceCategoryId" class=@classCollapsed>
+                                @category.Key.Name
+                            </a>
+                        </h4>
+                    </div>
 
-                        <!-- Original :    <div id="collapse-@i-@category.Key.ResourceCategoryId" class="panel-collapse collapse" role="tabpanel">  -->
+                    <!-- Original :    <div id="collapse-@i-@category.Key.ResourceCategoryId" class="panel-collapse collapse" role="tabpanel">  -->
 
-                        <div id="collapse-@i-@category.Key.ResourceCategoryId" class="panel-collapse collapse @panelcollapse" role="tabpanel" aria-expanded=@ariaExpandedState>
+                    <div id="collapse-@i-@category.Key.ResourceCategoryId" class="panel-collapse collapse @panelcollapse" role="tabpanel" aria-expanded=@ariaExpandedState>
 
-                            <div class="panel-body">
+                        <div class="panel-body">
 
-                                @foreach (var resourceItem in category)
+                            @foreach (var resourceItem in category)
                                 {
-                                    <h3>@resourceItem.Name</h3>
-                                    <p>
-                                        @Html.Raw(resourceItem.Description)
-                                    </p>
+    <h3>@resourceItem.Name</h3>
+    <p>
+        @Html.Raw(resourceItem.Description)
+    </p>
                                     if (resourceItem.ResourceAttachments.Any())
                                     {
-                                        <ul style="list-style-type: circle">
-                                            @foreach (var attachment in resourceItem.ResourceAttachments.OrderBy(x => x.DisplayOrder))
+                                <ul style="list-style-type: circle">
+                                    @foreach (var attachment in resourceItem.ResourceAttachments.OrderBy(x => x.DisplayOrder))
                                             {
-                                                <li><a href="@attachment.FilePath" target="_blank">@attachment.Name</a></li>
+                                        <li><a href="@attachment.FilePath" target="_blank">@attachment.Name</a></li>
                                             }
-                                        </ul>
+                                </ul>
                                     }
-                                    <hr />
+                                            <hr />
                                 }
 
-                            </div>
                         </div>
+                    </div>
 
-                        @{
+                    @{
                             <!-- Collapse other categories -->
                             panelcollapse = null;
                             ariaExpandedState = "false";
                             classCollapsed = "collapsed";
 
-                        }
+                    }
 
-                    </div>
+                </div>
                             }
             </div>
         </div>
                             }
-</div>
-<br />
+    </div>
+
+        <br />
