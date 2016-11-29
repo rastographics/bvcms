@@ -238,7 +238,7 @@ namespace CmsWeb.Areas.People.Models
                     if(np != null)
                         DbUtil.Db.EmailRedacted(p.FromEmail, np,
                             "Basic Person Info Changed on " + Util.Host,
-                            $"{Util.UserName} changed the following information for <a href='/Person2/{PeopleId}'>{FirstName} {LastName}</a> ({PeopleId}):<br />\n"
+                            $"{Util.UserName} changed the following information for <a href='{DbUtil.Db.ServerLink($"/Person2/{PeopleId}")}'>{FirstName} {LastName}</a> ({PeopleId}):<br />\n"
                             + ChangeTable(changes));
                 }
             }

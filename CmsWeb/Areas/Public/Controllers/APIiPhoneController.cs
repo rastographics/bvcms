@@ -177,7 +177,7 @@ namespace CmsWeb.Areas.Public.Controllers
             if (np != null)
                 DbUtil.Db.EmailRedacted(p.FromEmail, np,
                     "Basic Person Info Changed during checkin on " + Util.Host,
-                    $"{Util.UserName} changed the following information for <a href='/Person2/{p.PeopleId}'>{p.PreferredName} {p.LastName}</a>:<br />\n<table>{sb}</table>");
+                    $"{Util.UserName} changed the following information for <a href='{DbUtil.Db.ServerLink($"/Person2/{p.PeopleId}")}'>{p.PreferredName} {p.LastName}</a>:<br />\n<table>{sb}</table>");
         }
 
         [HttpPost]
