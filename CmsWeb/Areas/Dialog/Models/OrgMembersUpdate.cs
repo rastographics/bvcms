@@ -140,7 +140,6 @@ namespace CmsWeb.Areas.Dialog.Models
         public string AddSmallGroup(int sgtagid)
         {
             var pids = (from p in People(DbUtil.Db.CurrentOrg) select p.PeopleId).ToList();
-            var n = 0;
             var name = DbUtil.Db.MemberTags.Single(mm => mm.Id == sgtagid && mm.OrgId == Id).Name;
             foreach (var pid in pids)
             {
@@ -148,11 +147,10 @@ namespace CmsWeb.Areas.Dialog.Models
                 DbUtil.Db = DbUtil.Create(Util.Host);
                 var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == Id);
                 var nn = om.AddToGroup(DbUtil.Db, sgtagid);
-                n += nn;
                 if(nn == 1)
                     DbUtil.LogActivity("OrgMem AddSubGroup " + name, om.OrganizationId, om.PeopleId);
             }
-            return $"{n} added to sub-group {name}";
+            return $"{pids.Count} added to sub-group {name}";
         }
 
         public void RemoveSmallGroup(int sgtagid)
