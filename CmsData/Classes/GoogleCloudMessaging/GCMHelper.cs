@@ -16,7 +16,7 @@ namespace CmsData.Classes.GoogleCloudMessaging
         public static int ACTION_REFRESH = 1;
         public static int ACTION_REFRESH_AND_NOTIFY = 2;
 
-        private const string GCM_URL = "https://gcm-http.googleapis.com/gcm/send";
+        private const string GCM_URL = "https://fcm.googleapis.com/fcm/send";
 
         private static void send(GCMMessage message)
         {

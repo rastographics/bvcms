@@ -6,6 +6,7 @@
         public string body;
 
         public string sound = "default";
+        public string icon = "app_icon_notification";
 
         public int badge = 0;
 
