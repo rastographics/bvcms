@@ -44,6 +44,16 @@ Creating_dbo_Families.sql
 Creating_pk_FAMILIES_PK_dbo_Families.sql
 Creating_IX_Families_dbo_Families.sql
 Creating_dbo_SpouseOrHeadWithEmail.sql
+Creating_dbo_Numbers.sql
+Creating_n_dbo_Numbers.sql
+Creating_dbo_SplitInts.sql
+Creating_dbo_Setting.sql
+Creating_pk_PK_Setting_dbo_Setting.sql
+Creating_dbo_ScheduleId.sql
+Creating_dbo_OrgSchedule.sql
+Creating_pk_PK_OrgSchedule_dbo_OrgSchedule.sql
+Creating_dbo_AttendCredits.sql
+Creating_dbo_AttendanceChange.sql
 Creating_dbo_ProgDiv.sql
 Creating_pk_PK_ProgDiv_dbo_ProgDiv.sql
 Creating_dbo_Organizations.sql
@@ -80,8 +90,6 @@ Creating_dbo_SpouseIdJoint.sql
 Creating_dbo_UEmail.sql
 Creating_dbo_Users.sql
 Creating_pk_PK_Users_1_dbo_Users.sql
-Creating_dbo_Setting.sql
-Creating_pk_PK_Setting_dbo_Setting.sql
 Creating_dbo_MaxPastMeeting.sql
 Creating_dbo_SpouseId.sql
 Creating_dbo_HeadOfHouseHoldSpouseId.sql
@@ -175,8 +183,6 @@ Creating_IX_PeopleExtra_2_dbo_PeopleExtra.sql
 Creating_IX_PeopleExtra_dbo_PeopleExtra.sql
 Creating_dbo_ClearExtraValuesForTag.sql
 Creating_dbo_UpdateMainFellowship.sql
-Creating_dbo_OrgSchedule.sql
-Creating_pk_PK_OrgSchedule_dbo_OrgSchedule.sql
 Creating_dbo_PeopleIdsFromOrgSearch.sql
 Creating_dbo_FamilyExtra.sql
 Creating_pk_PK_FamilyExtra_1_dbo_FamilyExtra.sql
@@ -187,9 +193,6 @@ Creating_pk_PK_TransactionPeople_dbo_TransactionPeople.sql
 Creating_dbo_Transaction.sql
 Creating_pk_PK_Transaction_dbo_Transaction.sql
 Creating_dbo_TransactionSummary.sql
-Creating_dbo_Numbers.sql
-Creating_n_dbo_Numbers.sql
-Creating_dbo_SplitInts.sql
 Creating_dbo_RecReg.sql
 Creating_pk_PK_Participant_dbo_RecReg.sql
 Creating_RecRegPeopleId_dbo_RecReg.sql
@@ -326,7 +329,6 @@ Creating_dbo_WasDeaconActive2008.sql
 Creating_dbo_PickListOrgs.sql
 Creating_dbo_AttendCntHistory.sql
 Creating_dbo_CustomScriptRoles.sql
-Creating_dbo_ScheduleId.sql
 Creating_dbo_AttendanceCredits.sql
 Creating_dbo_UpdateAttendStr.sql
 Creating_dbo_UpdateAllAttendStr.sql
@@ -480,7 +482,6 @@ Creating_IX_Downline_dbo_Downline.sql
 Creating_IXDownlineCatLeaderDisc_dbo_Downline.sql
 Creating_dbo_DownlineAddLeader.sql
 Creating_dbo_UName2.sql
-Creating_dbo_AttendCredits.sql
 Creating_dbo_DownlineAddLeaders.sql
 Creating_dbo_WeekNumber.sql
 Creating_dbo_SundayForWeekNumber.sql
