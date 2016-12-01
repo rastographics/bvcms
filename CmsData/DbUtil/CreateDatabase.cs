@@ -204,6 +204,12 @@ GO
                         : "datascriptStarter.sql";
                     var datascript = File.ReadAllText(sqlScriptsPath + currentFile);
                     RunScripts(cn, datascript);
+
+                    var datawords = File.ReadAllText(sqlScriptsPath + "datawords.sql");
+                    RunScripts(cn, datawords);
+
+                    var datazips = File.ReadAllText(sqlScriptsPath + "datazips.sql");
+                    RunScripts(cn, datazips);
                 }
             }
             catch (Exception ex)
