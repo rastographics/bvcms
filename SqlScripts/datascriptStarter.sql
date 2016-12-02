@@ -130,6 +130,9 @@ ALTER TABLE [dbo].[OrganizationExtra] NOCHECK CONSTRAINT [FK_OrganizationExtra_O
 PRINT(N'Drop constraint FK_OrgMemberExtra_Organizations from [dbo].[OrgMemberExtra]')
 ALTER TABLE [dbo].[OrgMemberExtra] NOCHECK CONSTRAINT [FK_OrgMemberExtra_Organizations]
 
+PRINT(N'Drop constraint FK_PrevOrgMemberExtra_Organization from [dbo].[PrevOrgMemberExtra]')
+ALTER TABLE [dbo].[PrevOrgMemberExtra] NOCHECK CONSTRAINT [FK_PrevOrgMemberExtra_Organization]
+
 PRINT(N'Drop constraint FK_Resource_Organization from [dbo].[Resource]')
 ALTER TABLE [dbo].[Resource] NOCHECK CONSTRAINT [FK_Resource_Organization]
 
@@ -12085,6 +12088,7 @@ ALTER TABLE [dbo].[Meetings] CHECK CONSTRAINT [FK_MEETINGS_TBL_ORGANIZATIONS_TBL
 ALTER TABLE [dbo].[MemberTags] CHECK CONSTRAINT [FK_MemberTags_Organizations]
 ALTER TABLE [dbo].[OrganizationExtra] CHECK CONSTRAINT [FK_OrganizationExtra_Organizations]
 ALTER TABLE [dbo].[OrgMemberExtra] WITH CHECK CHECK CONSTRAINT [FK_OrgMemberExtra_Organizations]
+ALTER TABLE [dbo].[PrevOrgMemberExtra] WITH CHECK CHECK CONSTRAINT [FK_PrevOrgMemberExtra_Organization]
 ALTER TABLE [dbo].[Resource] WITH CHECK CHECK CONSTRAINT [FK_Resource_Organization]
 ALTER TABLE [dbo].[ResourceOrganization] WITH CHECK CHECK CONSTRAINT [FK_ResourceOrganization_Organizations]
 
