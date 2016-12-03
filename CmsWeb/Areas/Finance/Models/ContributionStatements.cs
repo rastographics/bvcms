@@ -58,6 +58,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
         public void Run(Stream stream, CMSDataContext Db, IEnumerable<ContributorInfo> q, int set = 0)
         {
             pageEvents.set = set;
+            pageEvents.PeopleId = 0;
             IEnumerable<ContributorInfo> contributors = q;
             var toDate = ToDate.Date.AddHours(24).AddSeconds(-1);
 
@@ -82,7 +83,6 @@ namespace CmsWeb.Areas.Finance.Models.Report
                 if (set > 0 && pageEvents.FamilySet[ci.PeopleId] != set)
                     continue;
 
-                pageEvents.PeopleId = ci.PeopleId;
                 var contributions = APIContribution.contributions(Db, ci, FromDate, toDate).ToList();
                 var pledges = APIContribution.pledges(Db, ci, toDate).ToList();
                 var giftsinkind = APIContribution.GiftsInKind(Db, ci, FromDate, toDate).ToList();
@@ -100,11 +100,13 @@ namespace CmsWeb.Areas.Finance.Models.Report
                     continue;
                 }
 
+                pageEvents.NextPeopleId = ci.PeopleId;
                 doc.NewPage();
                 if (prevfid != ci.FamilyId)
                 {
                     prevfid = ci.FamilyId;
                     pageEvents.EndPageSet();
+                    pageEvents.PeopleId = ci.PeopleId;
                 }
                 if (set == 0)
                     pageEvents.FamilySet[ci.PeopleId] = 0;
@@ -472,6 +474,7 @@ p { font-size: 11px; }
 
             public int set { get; set; }
             public int PeopleId { get; set; }
+            public int NextPeopleId { get; set; }
 
             public Dictionary<int, int> FamilySet { get; set; }
 
@@ -519,6 +522,7 @@ p { font-size: 11px; }
                 float len;
 
                 text = $"id: {PeopleId}   Page {pg} of ";
+                PeopleId = NextPeopleId;
                 len = font.GetWidthPoint(text, 8);
                 dc.BeginText();
                 dc.SetFontAndSize(font, 8);
