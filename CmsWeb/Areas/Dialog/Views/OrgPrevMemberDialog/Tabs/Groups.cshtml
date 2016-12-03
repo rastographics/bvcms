@@ -1,0 +1,12 @@
+﻿@using CmsData
+@model CmsWeb.Areas.Dialog.Models.OrgPrevMemberModel
+  <div class="row">
+    <div class="col-sm-12">
+      @foreach (var item in Model.OrgMemMemTags)
+      {
+  <label class="checkbox-inline control-label">
+    <input class="ckbox" disabled="disabled" type="checkbox" checked="checked"/> @item
+  </label>
+      }
+    </div>
+  </div>

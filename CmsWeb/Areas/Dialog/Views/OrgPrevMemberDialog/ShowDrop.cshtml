@@ -1,0 +1,23 @@
+﻿@model CmsWeb.Areas.Dialog.Models.OrgMemberModel
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4>Drop @Model.Name from @Model.OrgName</h4>
+        </div>
+        <div class="modal-body">
+            <div class="alert alert-danger">
+                Are you sure you want to drop @Model.Name from @Model.OrgName?
+            </div>
+            @Html.HiddenFor(m => m.PeopleId)
+            @Html.HiddenFor(m => m.OrgId)
+            @Html.HiddenFor(m => m.Group)
+            @Html.EditorFor(m => m.DropDate, new { help = "Optional, Leaving it blank will default it to the current date/time." })
+            @Html.EditorFor(m => m.RemoveFromEnrollmentHistory, new { help = "Optional, only recommended for mistakes or test enrollments." })
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+            <a id="org-member-drop" href="/OrgMemberDialog/Drop" class="btn btn-danger">Yes, Drop Member!</a>
+        </div>
+    </div>
+</div>

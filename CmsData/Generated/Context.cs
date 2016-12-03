@@ -510,6 +510,10 @@ namespace CmsData
         partial void UpdatePreference(Preference instance);
         partial void DeletePreference(Preference instance);
         
+        partial void InsertPrevOrgMemberExtra(PrevOrgMemberExtra instance);
+        partial void UpdatePrevOrgMemberExtra(PrevOrgMemberExtra instance);
+        partial void DeletePrevOrgMemberExtra(PrevOrgMemberExtra instance);
+        
         partial void InsertPrintJob(PrintJob instance);
         partial void UpdatePrintJob(PrintJob instance);
         partial void DeletePrintJob(PrintJob instance);
@@ -1510,6 +1514,12 @@ namespace CmsData
 
 		}
 
+		public Table< PrevOrgMemberExtra> PrevOrgMemberExtras
+		{
+			get	{ return this.GetTable< PrevOrgMemberExtra>(); }
+
+		}
+
 		public Table< PrintJob> PrintJobs
 		{
 			get	{ return this.GetTable< PrintJob>(); }
@@ -2290,6 +2300,36 @@ namespace CmsData
                 lookback,
                 pagesize,
                 pagenum
+                );
+		}
+
+		[Function(Name="dbo.AttendanceChange", IsComposable = true)]
+		public IQueryable< View.AttendanceChange > AttendanceChange(
+            [Parameter(DbType="varchar")] string orgids,
+            [Parameter(DbType="datetime")] DateTime? MeetingDate1,
+            [Parameter(DbType="datetime")] DateTime? MeetingDate2
+            )
+		{
+			return this.CreateMethodCallQuery< View.AttendanceChange>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                orgids,
+                MeetingDate1,
+                MeetingDate2
+                );
+		}
+
+		[Function(Name="dbo.AttendanceChangeDetail", IsComposable = true)]
+		public IQueryable< View.AttendanceChangeDetail > AttendanceChangeDetail(
+            [Parameter(DbType="varchar")] string orgids,
+            [Parameter(DbType="datetime")] DateTime? MeetingDate1,
+            [Parameter(DbType="datetime")] DateTime? MeetingDate2
+            )
+		{
+			return this.CreateMethodCallQuery< View.AttendanceChangeDetail>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                orgids,
+                MeetingDate1,
+                MeetingDate2
                 );
 		}
 

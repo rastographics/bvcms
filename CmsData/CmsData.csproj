@@ -560,6 +560,8 @@
     <Compile Include="Generated\Downline.cs" />
     <Compile Include="Generated\DownlineLeader.cs" />
     <Compile Include="Generated\Functions\ActivityLogSearch.cs" />
+    <Compile Include="Generated\Functions\AttendanceChange.cs" />
+    <Compile Include="Generated\Functions\AttendanceChangeDetail.cs" />
     <Compile Include="Generated\Functions\AttendCommitment.cs" />
     <Compile Include="Generated\Functions\CheckinMatchBarCodeOnly.cs" />
     <Compile Include="Generated\Functions\ContributionSearch.cs" />
@@ -638,6 +640,7 @@
     <Compile Include="Generated\MobileAppRoom.cs" />
     <Compile Include="Generated\MobileAppVideoType.cs" />
     <Compile Include="Generated\OrgMemberExtra.cs" />
+    <Compile Include="Generated\PrevOrgMemberExtra.cs" />
     <Compile Include="Generated\QueryAnalysi.cs" />
     <Compile Include="Generated\RegistrationDatum.cs" />
     <Compile Include="Generated\Resource.cs" />

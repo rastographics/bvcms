@@ -205,6 +205,8 @@ namespace CmsData
 		
    		private EntitySet< OrgSchedule> _OrgSchedules;
 		
+   		private EntitySet< PrevOrgMemberExtra> _PrevOrgMemberExtras;
+		
    		private EntitySet< Resource> _Resources;
 		
    		private EntitySet< ResourceOrganization> _ResourceOrganizations;
@@ -502,6 +504,8 @@ namespace CmsData
 			this._OrgMemberExtras = new EntitySet< OrgMemberExtra>(new Action< OrgMemberExtra>(this.attach_OrgMemberExtras), new Action< OrgMemberExtra>(this.detach_OrgMemberExtras)); 
 			
 			this._OrgSchedules = new EntitySet< OrgSchedule>(new Action< OrgSchedule>(this.attach_OrgSchedules), new Action< OrgSchedule>(this.detach_OrgSchedules)); 
+			
+			this._PrevOrgMemberExtras = new EntitySet< PrevOrgMemberExtra>(new Action< PrevOrgMemberExtra>(this.attach_PrevOrgMemberExtras), new Action< PrevOrgMemberExtra>(this.detach_PrevOrgMemberExtras)); 
 			
 			this._Resources = new EntitySet< Resource>(new Action< Resource>(this.attach_Resources), new Action< Resource>(this.detach_Resources)); 
 			
@@ -2452,6 +2456,16 @@ namespace CmsData
    		}
 
 		
+   		[Association(Name="FK_PrevOrgMemberExtra_Organization", Storage="_PrevOrgMemberExtras", OtherKey="OrganizationId")]
+   		public EntitySet< PrevOrgMemberExtra> PrevOrgMemberExtras
+   		{
+   		    get { return this._PrevOrgMemberExtras; }
+
+			set	{ this._PrevOrgMemberExtras.Assign(value); }
+
+   		}
+
+		
    		[Association(Name="FK_Resource_Organization", Storage="_Resources", OtherKey="OrganizationId")]
    		public EntitySet< Resource> Resources
    		{
@@ -2960,6 +2974,19 @@ namespace CmsData
 		}
 
 		private void detach_OrgSchedules(OrgSchedule entity)
+		{
+			this.SendPropertyChanging();
+			entity.Organization = null;
+		}
+
+		
+		private void attach_PrevOrgMemberExtras(PrevOrgMemberExtra entity)
+		{
+			this.SendPropertyChanging();
+			entity.Organization = this;
+		}
+
+		private void detach_PrevOrgMemberExtras(PrevOrgMemberExtra entity)
 		{
 			this.SendPropertyChanging();
 			entity.Organization = null;

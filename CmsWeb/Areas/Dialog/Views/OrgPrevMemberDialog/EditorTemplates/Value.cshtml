@@ -1,0 +1,63 @@
+﻿@using CmsData
+@using UtilityExtensions
+@model CmsWeb.Models.ExtraValues.Value
+@if (Model.UserCanView(DbUtil.Db))
+{
+  <tr>
+    @if (Model.Type == "Header")
+    {
+      <td colspan="3"><h4>@Html.Raw(Model.Name)</h4></td>
+    }
+    else if (Model.Type == "Link")
+    {
+      <td><span class="pad-left">@Model.DisplayName</span></td>
+      <td>@Model.HyperLink()</td>
+      <td></td>
+    }
+    else
+    {
+      <td><span class="pad-left">@Model.DisplayName</span></td>
+      if (Model.UserCanEdit())
+      {
+        var dv = Model.DataValue;
+        var ds = Model.DataSource;
+        var typ = Model.EditableClass.Replace("-Text", "-Text2");
+        <td>
+          <a href="#" data-pk="@Model.PrimaryKey"
+             data-name="@Model.DataName"
+             class="@typ"
+             style="white-space: pre-line;"
+             data-url="@Model.EditUrl"
+             @if (Model.Type == "Date") { <text> data-showbuttons="false" data-savenochange="true" </text>  }
+             @if (dv.HasValue()) { <text> data-value="@dv" </text>  }
+             @if (ds.HasValue()) { <text> data-source="@ds" </text>  }>@Html.Raw(Model)</a>
+          </td>
+      }
+      else
+      {
+        <td>@Html.Raw(Model)</td>
+      }
+      if (Model.UserCanEdit())
+      {
+        var verb = Model.Standard ? "Clear" : "Delete";
+        <td>
+          <a href="/OrgMemberDialog/DeleteExtraValue/@Model.Id/@Model.Id2?name=@Model.Name"
+             class="ajax btn btn-danger btn-xs"
+             data-confirm="Are you sure?"
+             data-confirm-type="warning"
+             data-confirm-btn-class="btn-danger"
+             data-confirm-btn-text="Yes, @(verb)!"
+             data-reload="#memberextravalues a.ajax.reload"
+             data-loadele="#memberextras">
+            <i class="fa fa-trash"></i>
+            @verb
+          </a>
+        </td>
+      }
+      else
+      {
+        <td></td>
+      }
+    }
+  </tr>
+}

@@ -1,0 +1,10 @@
+﻿@model CmsWeb.Areas.Dialog.Models.OrgPrevMemberModel
+<div id="regquestions" class="tab-pane">
+  <dl>
+      @foreach (var q in Model.RegQuestions())
+      {
+        <dt>@q.Question</dt>
+        <dd class="pre-wrap">@q.Answer</dd>
+      }
+  </dl>
+</div>
