@@ -1,0 +1,83 @@
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.Dialog.Models.OrgPrevMemberModel
+@{
+  var admin = User.IsInRole("Admin");
+  var managetransactions = User.IsInRole("ManageTransactions");
+}
+<div class="tab-pane active" id="memberdata">
+  <a href="/TransactionHistory/@Model.PeopleId/@Model.OrgId" target="_blank"
+     style="font-family: Courier New">
+    Attendance
+  </a>: @Model.AttendStr
+  @Html.DisplayFor(m => m.MemberType)
+  @Html.DisplayFor(m => m.InactiveDate)
+  @Html.DisplayFor(m => m.EnrollmentDate, "DateAndTime")
+  @Html.DisplayFor(m => m.Pending)
+  @if (Model.RegisterEmail.HasValue())
+  {
+    @Html.DisplayFor(m => m.RegisterEmail)
+  }
+  @if (Model.Request.HasValue())
+  {
+    @Html.DisplayFor(m => m.Request)
+  }
+  @if (Model.Grade.HasValue)
+  {
+    @Html.DisplayFor(m => m.Grade)
+  }
+  @if (Model.Tickets.HasValue)
+  {
+    @Html.DisplayFor(m => m.Tickets)
+  }
+  @if (Model.TransactionsLink.HasValue())
+  {
+    <div class="form-group">
+      <label class="control-label">Transaction Amounts</label>
+      <div class="controls">
+        @if (Model.TransactionSummary != null)
+        {
+          <div class="table-responsive">
+            <table class="table table-condensed">
+              <thead>
+              <tr>
+                <th>Fee</th>
+                @if (Model.AmtDonation > 0)
+                {
+                  <th>Donation</th>
+                }
+                <th>Paid</th>
+                <th>Due</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>@Model.AmtFee.ToString2("c")</td>
+                @if (Model.AmtDonation > 0)
+                {
+                  <td>@Model.AmtDonation.ToString2("c")</td>
+                }
+                <td>@Model.AmtPaid.ToString2("c")</td>
+                <td>@Model.AmtDue.ToString2("c")</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        }
+        @if (Model.AmtCoupon > 0)
+        {
+          <p>Coupon Applied: @Model.AmtCoupon.ToString2("C")</p>
+        }
+        <p>
+          @if (admin || managetransactions)
+          {
+            <a href="@Model.TransactionsLink" target="transactions">View Transactions</a>
+          }
+        </p>
+      </div>
+    </div>
+  }
+  @if (Model.ShirtSize.HasValue())
+  {
+    @Html.DisplayFor(m => m.ShirtSize)
+  }
+</div>

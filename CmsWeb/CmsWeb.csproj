@@ -284,6 +284,7 @@
     <Compile Include="Areas\Dialog\Controllers\AddResourceController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddOrganizationController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddAttendeesFromTagController.cs" />
+    <Compile Include="Areas\Dialog\Controllers\OrgPrevMemberDialogController.cs" />
     <Compile Include="Areas\Dialog\Controllers\OrgMemberDialogController.cs" />
     <Compile Include="Areas\Dialog\Controllers\OrgSearchDropController.cs" />
     <Compile Include="Areas\Dialog\Controllers\OrgDropController.cs" />
@@ -304,6 +305,7 @@
     <Compile Include="Areas\Dialog\Models\DeleteMeeting.cs" />
     <Compile Include="Areas\Dialog\Models\NewMeetingInfo.cs" />
     <Compile Include="Areas\Dialog\Models\OrganizationModel.cs" />
+    <Compile Include="Areas\Dialog\Models\OrgPrevMember\OrgPrevMemberModel.cs" />
     <Compile Include="Areas\Dialog\Models\OrgSearchDrop.cs" />
     <Compile Include="Areas\Dialog\Models\OrgDrop.cs" />
     <Compile Include="Areas\Dialog\Models\OrgMembers.cs" />
@@ -1544,6 +1546,12 @@
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\Tabs\ExtraValue\Adhoc.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\Tabs\ExtraValue\NewAdhoc.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\EditorTemplates\Value.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgPrevMemberDialog\Display.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgPrevMemberDialog\Tabs\AdHoc.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgPrevMemberDialog\Tabs\Groups.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgPrevMemberDialog\Tabs\MemberData.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgPrevMemberDialog\Tabs\Notes.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgPrevMemberDialog\Tabs\Questions.cshtml" />
     <None Include="Areas\Dialog\Views\OrgMemberDialog\ExtraValue.cshtml" />
     <Content Include="Areas\Dialog\Views\AddResource\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\TransactionHistory\TransHistory.cshtml" />

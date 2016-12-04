@@ -1,0 +1,86 @@
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.Dialog.Models.OrgPrevMemberModel
+<div class="modal-dialog">
+  <div class="modal-content">
+    @Html.HiddenFor(m => m.OrgId)
+    @Html.HiddenFor(m => m.PeopleId)
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <h4>@Model.OrgName</h4>
+      <strong>@Model.Name</strong>
+    </div>
+    <div class="modal-body">
+      <div class="tabbable group">
+        <ul class="nav nav-tabs">
+          <li class="active">
+            <a href="#memberdata" data-toggle="tab">Prev Member Data</a>
+          </li>
+          <li>
+            <a href="#membergroups" data-toggle="tab">Groups</a>
+          </li>
+          <li>
+            <a href="#regquestions" data-toggle="tab">Questions</a>
+          </li>
+          <li>
+            <a href="#membernotes" data-toggle="tab">Notes</a>
+          </li>
+          <li>
+            <a href="#memberextrastab" data-toggle="tab">Extra Values</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          @Html.Partial("Tabs/MemberData", Model)
+          <div class="tab-pane" id="membergroups">
+            @Html.Partial("Tabs/Groups", Model)
+          </div>
+          @Html.Partial("Tabs/Questions", Model)
+          @Html.Partial("Tabs/Notes", Model)
+          <div class="tab-pane" id="memberextrastab">
+            <div class="table-responsive" id="memberextravalues">
+              <table class="table table-striped">
+                <thead>
+                <tr>
+                  <th>Name</th> <th>Value</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var ev in Model.ExtraValues())
+                {
+                  <tr>
+                    <td>@ev.Field</td>
+                    <td>
+                      @switch (ev.Type)
+                          {
+                            case "Code":
+                              @ev.StrValue
+                              break;
+                            case "Text":
+                              @ev.Data
+                              break;
+                            case "Date":
+                              @ev.DateValue.ToString2("d")
+                              break;
+                            case "Int":
+                              @ev.IntValue
+                              break;
+                            case "Bit":
+                              @(ev.BitValue == true ? "True" : "False")
+                              break;
+                          }
+                    </td>
+                  </tr>
+                }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+    </div>
+  </div>
+</div>

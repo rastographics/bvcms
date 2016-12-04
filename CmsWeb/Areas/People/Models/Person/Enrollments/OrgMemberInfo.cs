@@ -86,7 +86,7 @@ namespace CmsWeb.Areas.People.Models
                     return OrgType;
                 case "membertype":
                     if(column.Page == "Previous" && inAccessRole)
-                        return $"<a target=\"_blank\" href=\"/TransactionHistory/{PeopleId}/{OrgId}\">{MemberType}</a>";
+                        return $"<a class=\"membertype\" href=\"/OrgPrevMemberDialog/{OrgId}/{PeopleId}\">{MemberType}</a>";
                     if(inAccessRole)
                         return $"<a class=\"membertype\" href=\"/OrgMemberDialog/Member/{OrgId}/{PeopleId}\">{MemberType}</a>";
                     return MemberType;

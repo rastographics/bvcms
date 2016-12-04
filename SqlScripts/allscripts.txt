@@ -145,6 +145,7 @@ Creating_pk_PK_AttendType_lookup_AttendType.sql
 Creating_dbo_AttendDesc.sql
 Creating_dbo_SpaceToNull.sql
 Creating_dbo_FindPerson2.sql
+Creating_dbo_PastAttendanceCredits.sql
 Creating_dbo_ContributionFund.sql
 Creating_pk_FUND_PK_dbo_ContributionFund.sql
 Creating_FUND_NAME_IX_dbo_ContributionFund.sql
@@ -159,6 +160,7 @@ Creating_BUNDLE_DETAIL_CONTR_FK_IX_dbo_BundleDetail.sql
 Creating_dbo_Contributions2.sql
 Creating_dbo_LedgerIncomeExport.sql
 Creating_dbo_PrimaryCountry.sql
+Creating_dbo_UpdatePastAttendStr.sql
 Creating_dbo_TagPerson.sql
 Creating_pk_PK_TagPeople_dbo_TagPerson.sql
 Creating_IX_TagPerson_dbo_TagPerson.sql

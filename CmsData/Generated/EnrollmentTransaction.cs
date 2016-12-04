@@ -73,6 +73,8 @@ namespace CmsData
    		
    		private EntitySet< EnrollmentTransaction> _DescTransactions;
 		
+   		private EntitySet< PrevOrgMemberExtra> _PrevOrgMemberExtras;
+		
     	
 		private EntityRef< EnrollmentTransaction> _FirstTransaction;
 		
@@ -172,6 +174,8 @@ namespace CmsData
 		{
 			
 			this._DescTransactions = new EntitySet< EnrollmentTransaction>(new Action< EnrollmentTransaction>(this.attach_DescTransactions), new Action< EnrollmentTransaction>(this.detach_DescTransactions)); 
+			
+			this._PrevOrgMemberExtras = new EntitySet< PrevOrgMemberExtra>(new Action< PrevOrgMemberExtra>(this.attach_PrevOrgMemberExtras), new Action< PrevOrgMemberExtra>(this.detach_PrevOrgMemberExtras)); 
 			
 			
 			this._FirstTransaction = default(EntityRef< EnrollmentTransaction>); 
@@ -790,6 +794,16 @@ namespace CmsData
    		}
 
 		
+   		[Association(Name="FK_PrevOrgMemberExtra_EnrollmentTransaction", Storage="_PrevOrgMemberExtras", OtherKey="EnrollmentTranId")]
+   		public EntitySet< PrevOrgMemberExtra> PrevOrgMemberExtras
+   		{
+   		    get { return this._PrevOrgMemberExtras; }
+
+			set	{ this._PrevOrgMemberExtras.Assign(value); }
+
+   		}
+
+		
 	#endregion
 	
 	#region Foreign Keys
@@ -989,6 +1003,19 @@ namespace CmsData
 		{
 			this.SendPropertyChanging();
 			entity.FirstTransaction = null;
+		}
+
+		
+		private void attach_PrevOrgMemberExtras(PrevOrgMemberExtra entity)
+		{
+			this.SendPropertyChanging();
+			entity.EnrollmentTransaction = this;
+		}
+
+		private void detach_PrevOrgMemberExtras(PrevOrgMemberExtra entity)
+		{
+			this.SendPropertyChanging();
+			entity.EnrollmentTransaction = null;
 		}
 
 		

@@ -299,6 +299,8 @@ namespace CmsData
 		
    		private EntitySet< PeopleExtra> _PeopleExtras;
 		
+   		private EntitySet< PrevOrgMemberExtra> _PrevOrgMemberExtras;
+		
    		private EntitySet< RecReg> _RecRegs;
 		
    		private EntitySet< RecurringAmount> _RecurringAmounts;
@@ -808,6 +810,8 @@ namespace CmsData
 			this._PaymentInfos = new EntitySet< PaymentInfo>(new Action< PaymentInfo>(this.attach_PaymentInfos), new Action< PaymentInfo>(this.detach_PaymentInfos)); 
 			
 			this._PeopleExtras = new EntitySet< PeopleExtra>(new Action< PeopleExtra>(this.attach_PeopleExtras), new Action< PeopleExtra>(this.detach_PeopleExtras)); 
+			
+			this._PrevOrgMemberExtras = new EntitySet< PrevOrgMemberExtra>(new Action< PrevOrgMemberExtra>(this.attach_PrevOrgMemberExtras), new Action< PrevOrgMemberExtra>(this.detach_PrevOrgMemberExtras)); 
 			
 			this._RecRegs = new EntitySet< RecReg>(new Action< RecReg>(this.attach_RecRegs), new Action< RecReg>(this.detach_RecRegs)); 
 			
@@ -3820,6 +3824,16 @@ namespace CmsData
    		}
 
 		
+   		[Association(Name="FK_PrevOrgMemberExtra_People]", Storage="_PrevOrgMemberExtras", OtherKey="PeopleId")]
+   		public EntitySet< PrevOrgMemberExtra> PrevOrgMemberExtras
+   		{
+   		    get { return this._PrevOrgMemberExtras; }
+
+			set	{ this._PrevOrgMemberExtras.Assign(value); }
+
+   		}
+
+		
    		[Association(Name="FK_RecReg_People", Storage="_RecRegs", OtherKey="PeopleId")]
    		public EntitySet< RecReg> RecRegs
    		{
@@ -5293,6 +5307,19 @@ namespace CmsData
 		}
 
 		private void detach_PeopleExtras(PeopleExtra entity)
+		{
+			this.SendPropertyChanging();
+			entity.Person = null;
+		}
+
+		
+		private void attach_PrevOrgMemberExtras(PrevOrgMemberExtra entity)
+		{
+			this.SendPropertyChanging();
+			entity.Person = this;
+		}
+
+		private void detach_PrevOrgMemberExtras(PrevOrgMemberExtra entity)
 		{
 			this.SendPropertyChanging();
 			entity.Person = null;
