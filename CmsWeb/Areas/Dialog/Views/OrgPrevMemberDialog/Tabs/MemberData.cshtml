@@ -17,7 +17,7 @@
   {
     @Html.DisplayFor(m => m.RegisterEmail)
   }
-  @if (Model.Setting.AskVisible("AskRequest"))
+  @if (Model.Request.HasValue())
   {
     @Html.DisplayFor(m => m.Request)
   }
@@ -25,7 +25,7 @@
   {
     @Html.DisplayFor(m => m.Grade)
   }
-  @if (Model.Setting.AskVisible("AskTickets"))
+  @if (Model.Tickets.HasValue)
   {
     @Html.DisplayFor(m => m.Tickets)
   }
@@ -76,7 +76,7 @@
       </div>
     </div>
   }
-  @if (Model.Setting.AskVisible("AskSize"))
+  @if (Model.ShirtSize.HasValue())
   {
     @Html.DisplayFor(m => m.ShirtSize)
   }

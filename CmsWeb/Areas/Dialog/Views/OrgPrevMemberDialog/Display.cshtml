@@ -1,8 +1,5 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.Dialog.Models.OrgPrevMemberModel
-@{
-  var developer = User.IsInRole("Developer");
-}
 <div class="modal-dialog">
   <div class="modal-content">
     @Html.HiddenFor(m => m.OrgId)
@@ -18,7 +15,7 @@
       <div class="tabbable group">
         <ul class="nav nav-tabs">
           <li class="active">
-            <a href="#memberdata" data-toggle="tab">Member Data</a>
+            <a href="#memberdata" data-toggle="tab">Prev Member Data</a>
           </li>
           <li>
             <a href="#membergroups" data-toggle="tab">Groups</a>
@@ -29,12 +26,9 @@
           <li>
             <a href="#membernotes" data-toggle="tab">Notes</a>
           </li>
-          @if (developer)
-          {
-            <li>
-              <a href="#memberextrastab" data-toggle="tab">Extra Values</a>
-            </li>
-          }
+          <li>
+            <a href="#memberextrastab" data-toggle="tab">Extra Values</a>
+          </li>
         </ul>
         <div class="tab-content">
           @Html.Partial("Tabs/MemberData", Model)

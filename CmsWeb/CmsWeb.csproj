@@ -1546,17 +1546,7 @@
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\Tabs\ExtraValue\Adhoc.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\Tabs\ExtraValue\NewAdhoc.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\EditorTemplates\Value.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgPrevMemberDialog\AddFeeAdjustment.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgPrevMemberDialog\AddTransaction.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgPrevMemberDialog\AddTransactionDone.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgPrevMemberDialog\Display.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgPrevMemberDialog\Edit.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgPrevMemberDialog\EditorTemplates\Value.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgPrevMemberDialog\ExtraValue.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgPrevMemberDialog\MissionSupport.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgPrevMemberDialog\MissionSupportDone.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgPrevMemberDialog\Move.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgPrevMemberDialog\ShowDrop.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgPrevMemberDialog\Tabs\AdHoc.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgPrevMemberDialog\Tabs\Groups.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgPrevMemberDialog\Tabs\MemberData.cshtml" />

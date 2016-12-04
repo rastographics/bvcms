@@ -2,11 +2,6 @@ using System;
 using System.Data.Linq;
 using System.Web.Mvc;
 using CmsWeb.Areas.Dialog.Models;
-using CmsData;
-using CmsWeb.Areas.OnlineReg.Models;
-using CmsWeb.Code;
-using CmsWeb.Models.ExtraValues;
-using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
@@ -24,12 +19,6 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult Display(OrgPrevMemberModel m)
         {
             return View("Display", m);
-        }
-        [HttpPost, Route("ExtraValues/{oid}/{pid}")]
-        public ActionResult ExtraValues(int oid, int pid)
-        {
-            var em = new ExtraValueModel(oid, pid, "OrgMember", "Adhoc");
-            return View("Tabs/ExtraValue/Adhoc", em);
         }
     }
 }

@@ -747,6 +747,12 @@ namespace CmsData
             var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid, pid);
             return ((int)(result.ReturnValue));
         }
+        [Function(Name = "dbo.UpdatePastAttendStr")]
+        public int UpdatePastAttendStr([Parameter(DbType = "Int")] int? orgid, [Parameter(DbType = "Int")] int? pid)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid, pid);
+            return ((int)(result.ReturnValue));
+        }
         public class TopGiver
         {
             public int PeopleId;
