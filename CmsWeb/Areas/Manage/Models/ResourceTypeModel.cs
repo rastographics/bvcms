@@ -13,7 +13,9 @@ namespace CmsWeb.Areas.Manage.Models
         public ResourceTypeModel(ResourceType resourceType)
         {
             ResourceType = resourceType;
-            Resources = resourceType.Resources;
+            Resources = resourceType.Resources
+                .OrderBy(r => r.ResourceCategory.DisplayOrder)
+                .ThenBy(r => r.DisplayOrder);
         }
 
         public ResourceTypeModel(ResourceType resourceType, IEnumerable<Resource> resources)
