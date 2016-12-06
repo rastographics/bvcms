@@ -12,9 +12,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         [Route("~/ResourceCategories")]
         public ActionResult Index()
         {
-            var m = from rt in DbUtil.Db.ResourceCategories
-                    orderby rt.DisplayOrder
-                    select rt;
+            var m = DbUtil.Db.ResourceCategories.OrderBy(rt => rt.ResourceType.DisplayOrder).ThenBy(rt => rt.DisplayOrder);
             return View(m);
         }
 
@@ -72,7 +70,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             mt.ResourceTypeId = value.ToInt();
             DbUtil.Db.SubmitChanges();
             return Content(mt.ResourceType.Name);
-        }        
+        }
 
         [HttpPost]
         public ActionResult Delete(string id)

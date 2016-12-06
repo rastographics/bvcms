@@ -32,7 +32,7 @@ namespace CmsWeb.Areas.Search.Models
     {
         private int? _count;
         internal string noticelist;
-        private List<OrgSearch> organizations;
+        private List<OrgSearch> _organizations;
 
         public OrgSearchModel()
         {
@@ -84,7 +84,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public IEnumerable<OrganizationInfo> OrganizationList()
         {
-            organizations = FetchOrgsList();
+            var organizations = FetchOrgsList();
             if (!_count.HasValue)
                 _count = organizations.Count;
 
@@ -269,42 +269,41 @@ namespace CmsWeb.Areas.Search.Models
 
         private List<OrgSearch> FetchOrgsList()
         {
-            if (organizations == null)
+            if (_organizations == null)
             {
-                var queryable = DbUtil.Db.OrgSearch(Name, ProgramId, DivisionId, TypeId, CampusId, ScheduleId, StatusId, OnlineReg,
-                     DbUtil.Db.CurrentUser.UserId, TagDiv);
-
-                if (ExtraValuesDict != null && ExtraValuesDict.Any())
-                {
-                    var orgIds = queryable.Select(x => x.OrganizationId).ToList();
-
-                    foreach (var ev in ExtraValuesDict)
-                    {
-                        orgIds = DbUtil.Db.OrganizationExtras
-                            .Where(x => orgIds.Contains(x.OrganizationId) && x.Field == ev.Key &&
-                                (
-                                 x.StrValue.ToLower().Contains(ev.Value) ||
-                                 x.Data.ToLower().Contains(ev.Value)) ||
-                                 x.DateValue != null && x.DateValue.ToString().Contains(ev.Value) ||
-                                 x.IntValue != null && x.IntValue.ToString().Contains(ev.Value) ||
-                                 x.BitValue != null && x.BitValue.ToString().Contains(ev.Value)
-                                 )
-                            .Select(x => x.OrganizationId).ToList();
-                    }
-
-                    queryable = queryable.Where(x => orgIds.Contains(x.OrganizationId));
-                }
-
-                organizations = queryable.ToList();
+                _organizations = FetchOrgs().ToList();
             }
 
-            return organizations;
+            return _organizations;
         }
 
         public IQueryable<OrgSearch> FetchOrgs()
         {
-            return DbUtil.Db.OrgSearch(Name, ProgramId, DivisionId, TypeId, CampusId, ScheduleId, StatusId, OnlineReg,
-                DbUtil.Db.CurrentUser.UserId, TagDiv);
+            var queryable = DbUtil.Db.OrgSearch(Name, ProgramId, DivisionId, TypeId, CampusId, ScheduleId, StatusId, OnlineReg,
+                 DbUtil.Db.CurrentUser.UserId, TagDiv);
+
+            if (ExtraValuesDict != null && ExtraValuesDict.Any())
+            {
+                var orgIds = queryable.Select(x => x.OrganizationId).ToList();
+
+                foreach (var ev in ExtraValuesDict)
+                {
+                    orgIds = DbUtil.Db.OrganizationExtras
+                        .Where(x => orgIds.Contains(x.OrganizationId) && x.Field == ev.Key &&
+                            (
+                             x.StrValue.ToLower().Contains(ev.Value) ||
+                             x.Data.ToLower().Contains(ev.Value)) ||
+                             x.DateValue != null && x.DateValue.ToString().Contains(ev.Value) ||
+                             x.IntValue != null && x.IntValue.ToString().Contains(ev.Value) ||
+                             x.BitValue != null && x.BitValue.ToString().Contains(ev.Value)
+                             )
+                        .Select(x => x.OrganizationId).ToList();
+                }
+
+                queryable = queryable.Where(x => orgIds.Contains(x.OrganizationId));
+            }
+
+            return queryable;
         }
 
         public static IQueryable<OrgSearch> FetchOrgs(int orgId)
