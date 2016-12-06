@@ -229,12 +229,10 @@ namespace CmsWeb.Controllers
                     p.Add("@MeetingDate2", DateTime.Now);
                 }
             }
-            else if (body.Contains("@userid", ignoreCase:true))
-            {
-                p.Add("@userid", Util.UserId);
-            }
             else
                 ViewBag.Type = "SqlReport";
+            if (body.Contains("@userid", ignoreCase:true))
+                p.Add("@userid", Util.UserId);
             p.Add("@p1", parameter ?? "");
             return body;
         }

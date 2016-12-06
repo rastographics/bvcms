@@ -792,11 +792,13 @@ namespace CmsWeb.Areas.Search.Models
 
             var p = new DynamicParameters();
             p.Add("@OrgIds", oids);
-            if (content.Contains("@MeetingDate1"))
+            if (content.Contains("@MeetingDate1", ignoreCase: true))
             {
                 p.Add("@MeetingDate1", meetingDate1);
                 p.Add("@MeetingDate2", meetingDate2);
             }
+            if(content.Contains("@userid", ignoreCase:true))
+                p.Add("@userid", Util.UserId);
             var cs = HttpContext.Current.User.IsInRole("Finance")
                 ? Util.ConnectionStringReadOnlyFinance
                 : Util.ConnectionStringReadOnly;
