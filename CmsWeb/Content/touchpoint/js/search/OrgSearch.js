@@ -764,8 +764,10 @@
     function toggleExtraValueDisplay(elem) {
         var orgtype = $(elem).find(':selected').text().replace(" ", "").toLowerCase();
 
-        $(".ev-orgtype-cell").hide();
-        $("." + orgtype + "-cell").show();
+        if (orgtype != '(notspecified)') {
+            $(".ev-orgtype-cell").hide();
+            $("." + orgtype + "-cell").show();
+        }
     }
 
     $("#TypeId").change(function() {
