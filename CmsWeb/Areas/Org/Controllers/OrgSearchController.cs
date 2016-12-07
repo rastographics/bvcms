@@ -469,6 +469,7 @@ namespace CmsWeb.Areas.Search.Controllers
             public int? StatusId { get; set; }
             public int? OnlineReg { get; set; }
             public bool PublicView { get; set; }
+            public string ExtraValues { get; set; }
         }
     }
 }

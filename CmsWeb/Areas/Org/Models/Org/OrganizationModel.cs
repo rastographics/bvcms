@@ -108,13 +108,15 @@ namespace CmsWeb.Areas.Org.Models
 
             var typeName = OrgMain.OrganizationType.ToString().Replace(" ", "");
 
-            if (OrgMain.OrganizationType.ToString() != "Community Group")
-                _showRegistrationTab = true;
-            else if (HttpContext.Current.User.IsInRole("OrgLeadersOnly") &&
-                     DbUtil.Db.Setting($"UX-HideRegistrationTabForOrgLeaders-{typeName}"))
+            if (HttpContext.Current.User.IsInRole("OrgLeadersOnly") &&
+                DbUtil.Db.Setting($"UX-HideRegistrationTabForOrgLeaders-{typeName}"))
+            {
                 _showRegistrationTab = false;
+            }
             else
+            {
                 _showRegistrationTab = true;
+            }
 
             return _showRegistrationTab.Value;
         }
