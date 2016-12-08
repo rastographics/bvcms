@@ -171,6 +171,10 @@ namespace CmsData
                         om2.OrgMemMemTags.Add(new OrgMemMemTag { MemberTagId = m.MemberTagId });
                 db.SubmitChanges();
                 db.OrgMemMemTags.DeleteAllOnSubmit(om.OrgMemMemTags);
+                foreach (var m in om.OrgMemberExtras)
+                    om2.AddEditExtraValue(m.Field, m.StrValue, m.DateValue, m.Data, m.BitValue, m.IntValue, m.DateValue);
+                db.SubmitChanges();
+                db.OrgMemberExtras.DeleteAllOnSubmit(om.OrgMemberExtras);
                 db.SubmitChanges();
                 TrySubmit(db, $"Organizations (orgid:{om.OrganizationId})");
             }
