@@ -143,6 +143,8 @@ namespace CmsWeb.Areas.Reports.Models
             var cn = new SqlConnection(cs);
             var p = Parameters();
             var sql = Sql();
+            if(sql.Contains("@userid"))
+                p.Add("@userid", Util.UserId);
             var rd = cn.ExecuteReader(sql, p);
             return GridResult.Table(rd, Name2, 2000);
         }
@@ -155,6 +157,8 @@ namespace CmsWeb.Areas.Reports.Models
             var cn = new SqlConnection(cs);
             var p = Parameters();
             var sql = Sql();
+            if(sql.Contains("@userid"))
+                p.Add("@userid", Util.UserId);
             return cn.ExecuteReader(sql, p).ToExcel(Report + ".xlsx");
         }
 
@@ -178,6 +182,8 @@ namespace CmsWeb.Areas.Reports.Models
             var cn = new SqlConnection(cs);
             var p = Parameters(savedQuery);
             var sql = Sql();
+            if(sql.Contains("@userid"))
+                p.Add("@userid", Util.UserId);
             return cn.ExecuteReader(sql, p).ToExcel(Report + ".xlsx");
         }
 

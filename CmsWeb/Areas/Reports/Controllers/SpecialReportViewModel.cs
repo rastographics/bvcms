@@ -82,6 +82,8 @@ namespace CmsWeb.Areas.Reports.Controllers
                 if (oid > 0)
                     Name2 = DbUtil.Db.LoadOrganizationById(oid).FullName2;
             }
+            if(content.Contains("@userid"))
+                p.Add("@userid", Util.UserId);
             return content;
         }
 
