@@ -150,7 +150,8 @@ Meeting Time: [SGF:Day] at [SGF:Time]<br />
 
             var loadAllValues = DbUtil.Db.Setting("SGF-LoadAllExtraValues");
             var sortSettings = DbUtil.Db.Setting("UX-SGFSortBy", "SGF:Name");
-
+            var mapPinTextColor = DbUtil.Db.Setting("UX-MapPinTextColor", "000000");
+            
             return (from ql in qlist
                 where ql.gc.Latitude != 0
                 select new
@@ -172,7 +173,7 @@ Meeting Time: [SGF:Day] at [SGF:Time]<br />
                     latitude = i.model.gc.Latitude,
                     longitude = i.model.gc.Longitude,
                     image =
-                        $"//chart.googleapis.com/chart?chst=d_map_pin_letter&chld={i.model.markertext}|{i.model.color}"
+                        $"//chart.googleapis.com/chart?chst=d_map_pin_letter&chld={i.model.markertext}|{i.model.color}|{mapPinTextColor}"
                 });
         }
 

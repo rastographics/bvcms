@@ -761,12 +761,20 @@
         return q;
     };
 
-    $("#TypeId").change(function() {
-        var orgtype = $(this).find(':selected').text().replace(" ", "").toLowerCase();
+    function toggleExtraValueDisplay(elem) {
+        var orgtype = $(elem).find(':selected').text().replace(" ", "").toLowerCase();
 
-        $(".ev-orgtype-cell").hide();
-        $("." + orgtype + "-cell").show();
+        if (orgtype != '(notspecified)') {
+            $(".ev-orgtype-cell").hide();
+            $("." + orgtype + "-cell").show();
+        }
+    }
+
+    $("#TypeId").change(function() {
+        toggleExtraValueDisplay(this);
     });
+
+    toggleExtraValueDisplay($("#TypeId"));
 });
 
 

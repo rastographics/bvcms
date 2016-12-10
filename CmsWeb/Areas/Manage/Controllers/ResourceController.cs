@@ -148,6 +148,8 @@ namespace CmsWeb.Areas.Manage.Controllers
             if (resource != null)
             {
                 DbUtil.Db.ResourceAttachments.DeleteAllOnSubmit(resource.ResourceAttachments);
+                DbUtil.Db.ResourceOrganizationTypes.DeleteAllOnSubmit(resource.ResourceOrganizationTypes);
+                DbUtil.Db.ResourceOrganizations.DeleteAllOnSubmit(resource.ResourceOrganizations);
                 DbUtil.Db.Resources.DeleteOnSubmit(resource);
                 DbUtil.Db.SubmitChanges();
             }
