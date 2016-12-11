@@ -136,8 +136,8 @@ namespace CmsWeb.Models.ExtraValues
                             where e.BitValue == true
                             where e.Id == Id
                             where Codes.Contains(e.Field)
-                            select e.Field;
-                    return string.Join("<br/>\n", q);
+                            select NoPrefix(e.Field);
+                    return string.Join("\n", q);
                 }
                 case "Int":
                     return ev.IntValue.ToString2("d");
