@@ -326,6 +326,7 @@
     <Compile Include="Areas\Dialog\Models\SearchUsersModel.cs" />
     <Compile Include="Areas\Dialog\Models\TransactionHistoryModel.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\AchImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\SimpleGiveImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\CapitalCityImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\DepositRecord.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\AbundantLifeImporter.cs" />

@@ -161,6 +161,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             if (subtext.Contains("Type,Date,Num,Name,Memo,Class,Split,Amount"))
                 return new ChristLutheranVailImporter();
 
+            if (subtext.Contains("Amount,Type,Date,Txn ID #,Fund,Name,Email,Address,Phone,Env Num"))
+                return new SimpleGiveImporter();
+
             switch (DbUtil.Db.Setting("BankDepositFormat", "none").ToLower())
             {
                 case "fcchudson":
