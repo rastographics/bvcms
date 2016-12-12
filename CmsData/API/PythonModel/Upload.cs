@@ -53,7 +53,7 @@ namespace CmsData
             if (!script.HasValue())
                 throw new Exception("no sql script found");
             var bytes = db.Connection.ExecuteReader(sqlscript).ToExcelBytes(filename);
-            var url = Path.Combine(targetpath, filename);
+            var url = Util.URLCombine(targetpath, filename);
             using (var webClient = new WebClient())
             {
                 webClient.Credentials = new NetworkCredential(username, password);

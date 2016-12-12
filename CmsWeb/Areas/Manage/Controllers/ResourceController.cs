@@ -221,7 +221,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 }
             }
 
-            return baseurl + fn;
+            return Util.URLCombine(baseurl, fn);
         }
     }
 }

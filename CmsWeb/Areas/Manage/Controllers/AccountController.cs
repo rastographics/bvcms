@@ -105,7 +105,8 @@ namespace CmsWeb.Areas.Manage.Controllers
                     baseurl = string.Empty;
                 }
             }
-            return Content($"<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction( {CKEditorFuncNum}, '{baseurl + fn}', '{error}' );</script>");
+            var url = Util.URLCombine(baseurl, fn);
+            return Content($"<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction( {CKEditorFuncNum}, '{url}', '{error}' );</script>");
         }
 
         [Route("~/Abandon")]
