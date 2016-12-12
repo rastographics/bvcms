@@ -209,6 +209,10 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult QueueEmails(MassEmailer m)
         {
             m.Body = GetBody(m.Body);
+            if (UsesGrammarly(m))
+                return Json(new { error = GrammarlyNotAllowed });
+            if (TooLarge(m))
+                return Json(new { error = TooLargeError });
             if (!m.Subject.HasValue() || !m.Body.HasValue())
                 return Json(new { id = 0, error = "Both subject and body need some text." });
             if (!User.IsInRole("Admin") && m.Body.Contains("{createaccount}", ignoreCase: true))
@@ -313,11 +317,26 @@ namespace CmsWeb.Areas.Main.Controllers
             return Json(new { id = id });
         }
 
+        private const string TooLargeError = "This email is too large. It appears that it may contain an embedded image. Please see <b><a href='http://docs.touchpointsoftware.com/EmailTexting/EmailFileUpload.html' target='_blank'>this document</a></b> for instructions on how to send an image.";
+        private static bool TooLarge(MassEmailer m)
+        {
+            return m.Body.Contains("data:image") || m.Body.Length > 400000;
+        }
+        private const string GrammarlyNotAllowed = "It appears that you are using Grammarly. Please see <b><a href='https://blog.touchpointsoftware.com/2016/06/29/warning-re-grammarly-and-ck-editor/' target='_blank'>this document</a></b> for important information about why we cannot allow Grammarly";
+        private static bool UsesGrammarly(MassEmailer m)
+        {
+            return m.Body.Contains("btn_grammarly");
+        }
+
         [HttpPost]
         [ValidateInput(false)]
         public ActionResult TestEmail(MassEmailer m)
         {
             m.Body = GetBody(m.Body);
+            if (UsesGrammarly(m))
+                return Json(new { error = GrammarlyNotAllowed });
+            if (TooLarge(m))
+                return Json(new { error = TooLargeError });
             if (Util.SessionTimedOut())
             {
                 Session["massemailer"] = m;

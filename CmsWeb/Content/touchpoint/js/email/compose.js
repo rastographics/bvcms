@@ -114,7 +114,12 @@
         $.post('/Email/QueueEmails', q, function (ret) {
             if (ret && ret.error) {
                 $.unblock();
-                swal("Error!", ret.error, "error");
+                swal({
+                    title: "Error!",
+                    text: ret.error,
+                    html: true,
+                    type: "error"
+                });
             } else {
                 if (ret === "timeout") {
                     swal("Session Timeout!", 'Your session timed out. Please copy your email content and start over.', "error");
