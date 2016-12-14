@@ -15,13 +15,19 @@ namespace CmsData
 {
     public class EmailReplacements
     {
+        private const string CodeRe = "{[^}]*?}";
+        //private const string CodeNoHandlebarsRe = "(?<!{){(?!{).*?}";
+
         private const string RegisterLinkRe = "<a[^>]*?href=\"https{0,1}://registerlink2{0,1}/{0,1}\"[^>]*>.*?</a>";
+
         private readonly Regex registerLinkRe = new Regex(RegisterLinkRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
         private const string RegisterTagRe = "(?:<|&lt;)registertag[^>]*(?:>|&gt;).+?(?:<|&lt;)/registertag(?:>|&gt;)";
+
         private readonly Regex registerTagRe = new Regex(RegisterTagRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
         private const string RegisterHrefRe = "href=\"https{0,1}://registerlink2{0,1}/\\d+\"";
+
         private readonly Regex registerHrefRe = new Regex(RegisterHrefRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
         private const string RsvpLinkRe = "<a[^>]*?href=\"https{0,1}://(?:rsvplink|regretslink)/{0,1}\"[^>]*>.*?</a>";
@@ -31,6 +37,7 @@ namespace CmsData
         private readonly Regex sendLinkRe = new Regex(SendLinkRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
         private const string SupportLinkRe = "<a[^>]*?href=\"https{0,1}://supportlink/{0,1}\"[^>]*>.*?</a>";
+
         private readonly Regex supportLinkRe = new Regex(SupportLinkRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
         private const string MasterLinkRe = "<a[^>]*?href=\"https{0,1}://masterlink/{0,1}\"[^>]*>.*?</a>";
@@ -52,40 +59,43 @@ namespace CmsData
         private int? currentOrgId;
         private CMSDataContext db;
 
-        public EmailReplacements(CMSDataContext callingContext, string text, MailAddress from, int? queueid = null)
+        public EmailReplacements(CMSDataContext callingContext, string text, MailAddress from, int? queueid = null, bool noPremailer = false)
         {
             currentOrgId = callingContext.CurrentOrgId;
             connStr = callingContext.ConnectionString;
             host = callingContext.Host;
             db = callingContext;
             this.from = from;
-            if(queueid > 0)
+            if (queueid > 0)
                 OptOuts = db.OptOuts(queueid, from.Address).ToList();
 
             if (text == null)
                 text = "(no content)";
 
+
             var pattern =
-                $@"(<style.*?</style>|{{[^}}]*?}}|{RegisterLinkRe}|{RegisterTagRe}|{RsvpLinkRe}|{RegisterHrefRe}|
+                $@"(<style.*?</style>|{CodeRe}|{RegisterLinkRe}|{RegisterTagRe}|{RsvpLinkRe}|{RegisterHrefRe}|
                     {SendLinkRe}|{SupportLinkRe}|{MasterLinkRe}|{VolReqLinkRe}|{VolReqLinkRe}|{VolSubLinkRe}|{VoteLinkRe})";
 
             // we do the InsertDrafts replacement code here so that it is only inserted once before the replacements
             // and so that there can be replacement codes in the draft itself and they will get replaced.
             text = DoInsertDrafts(text);
 
-            text = MapUrlEncodedReplacementCodes(text, new[] { "emailhref" });
-            try
-            {
-                var result = PreMailer.Net.PreMailer.MoveCssInline(text);
-                text = result.Html;
-            }
-            catch
-            {
-                // ignore Premailer exceptions
-            }
+            text = MapUrlEncodedReplacementCodes(text, new[] {"emailhref"});
+            if (!noPremailer)
+                try
+                {
+                    var result = PreMailer.Net.PreMailer.MoveCssInline(text);
+                    text = result.Html;
+                }
+                catch
+                {
+                    // ignore Premailer exceptions
+                }
 
             stringlist = Regex.Split(text, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
         }
+
         private string DoInsertDrafts(string text)
         {
             var a = Regex.Split(text, "({insertdraft:.*?})", RegexOptions.IgnoreCase | RegexOptions.Singleline);
@@ -113,28 +123,17 @@ namespace CmsData
                     db.SetCurrentOrgId(currentOrgId);
                 var p = db.LoadPersonById(pid);
                 person = p;
-                var pi = emailqueueto.OrgId.HasValue
-                    ? (from m in db.OrganizationMembers
-                       let ts = db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == m.TranId && tt.PeopleId == m.PeopleId)
-                       where m.PeopleId == emailqueueto.PeopleId && m.OrganizationId == emailqueueto.OrgId
-                       select new PayInfo
-                       {
-                           PayLink = m.PayLink2(db),
-                           Amount = ts.IndAmt,
-                           AmountPaid = ts.IndPaid,
-                           AmountDue = ts.IndDue,
-                           RegisterMail = m.RegisterEmail
-                       }).SingleOrDefault()
-                    : null;
+
+                var pi = GetPayInfo(currentOrgId, p.PeopleId);
 
                 var aa = db.GetAddressList(p);
 
                 if (emailqueueto.EmailQueue.FinanceOnly == true)
                 {
                     var contributionemail = (from ex in db.PeopleExtras
-                                             where ex.PeopleId == p.PeopleId
-                                             where ex.Field == "ContributionEmail"
-                                             select ex.Data).SingleOrDefault();
+                        where ex.PeopleId == p.PeopleId
+                        where ex.Field == "ContributionEmail"
+                        select ex.Data).SingleOrDefault();
                     if (contributionemail.HasValue())
                         contributionemail = contributionemail.trim();
                     if (!Util.ValidEmail(contributionemail))
@@ -146,7 +145,7 @@ namespace CmsData
                 if (OptOuts != null && emailqueueto.EmailQueue.CCParents == true)
                 {
                     var pp = OptOuts.SingleOrDefault(vv => vv.PeopleId == emailqueueto.PeopleId);
-                    if(pp != null)
+                    if (pp != null)
                     {
                         if (pp.HhPeopleId.HasValue && Util.ValidEmail(pp.HhEmail))
                         {
@@ -201,6 +200,7 @@ namespace CmsData
         }
 
         private DocX DocXDocument { get; set; }
+
         public EmailReplacements(CMSDataContext callingContext, DocX doc)
         {
             currentOrgId = callingContext.CurrentOrgId;
@@ -217,6 +217,15 @@ namespace CmsData
 
             stringlist = Regex.Split(text, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
         }
+
+        public EmailReplacements(CMSDataContext callingContext)
+        {
+            currentOrgId = callingContext.CurrentOrgId;
+            connStr = callingContext.ConnectionString;
+            host = callingContext.Host;
+            db = callingContext;
+        }
+
         public DocX DocXReplacements(Person p)
         {
             person = p;
@@ -225,7 +234,7 @@ namespace CmsData
             for (var i = 1; i < texta.Count; i += 2)
                 dict.Add(texta[i], DoReplaceCode(texta[i], p));
             var doc = DocXDocument.Copy();
-            foreach(var d in dict)
+            foreach (var d in dict)
                 doc.ReplaceText(d.Key, d.Value);
             return doc;
         }
@@ -235,13 +244,15 @@ namespace CmsData
             public string Name { get; set; }
             public string Count { get; set; }
         }
+
         private readonly Dictionary<int, OrgInfo> orgcount = new Dictionary<int, OrgInfo>();
 
         private List<PledgeBalance> pledgeinfos;
+
         private PledgeBalance GetPledgeInfo(int fundid, EmailQueueTo emailqueueto)
         {
             var pid = emailqueueto.PeopleId;
-            if(pledgeinfos == null)
+            if (pledgeinfos == null)
                 pledgeinfos = db.PledgeBalances(fundid).Where(vv => vv.PledgeAmt > 0).ToList();
             var pi = pledgeinfos.SingleOrDefault(vv => vv.CreditGiverId == pid || vv.SpouseId == pid);
             if (pi == null)
@@ -353,11 +364,11 @@ namespace CmsData
 
                 case "{nextmeetingtime}":
                     if (emailqueueto != null)
-                        return NextMeetingDate(code, emailqueueto);
+                        return NextMeetingDate(emailqueueto.OrgId, emailqueueto.PeopleId) ?? code;
                     break;
                 case "{nextmeetingtime0}":
                     if (emailqueueto != null)
-                        return NextMeetingDate0(code, emailqueueto);
+                        return NextMeetingDate0(emailqueueto.OrgId) ?? code;
                     break;
 
                 case "{occupation}":
@@ -365,10 +376,10 @@ namespace CmsData
 
                 case "{orgname}":
                 case "{org}":
-                    return GetOrgInfo(emailqueueto).Name;
+                    return GetOrgInfo(emailqueueto?.OrgId).Name;
 
                 case "{orgmembercount}":
-                    return GetOrgInfo(emailqueueto).Count;
+                    return GetOrgInfo(emailqueueto?.OrgId).Count;
 
                 case "{paylink}":
                     if (pi != null && pi.PayLink.HasValue())
@@ -407,7 +418,7 @@ namespace CmsData
                             return "None";
                     }
 
-                    
+
                 case "{email}":
                 case "{toemail}":
                     if (ListAddresses.Count > 0)
@@ -517,33 +528,34 @@ namespace CmsData
             return $@"<img src='{db.ServerLink($"/Track/Barcode/{oid}-{emailqueueto.PeopleId}")}' width='95%' />";
         }
 
-        private OrgInfo GetOrgInfo(EmailQueueTo emailqueueto)
+        private OrgInfo GetOrgInfo(int? orgid)
         {
             OrgInfo oi = null;
-            if (emailqueueto == null && db.CurrentOrgId > 0)
-                emailqueueto = new EmailQueueTo() {OrgId = db.CurrentOrgId};
-            if (emailqueueto != null && emailqueueto.OrgId.HasValue)
+            var oid = orgid ?? db.CurrentOrgId;
+
+            if (oid.HasValue)
             {
-                if (!orgcount.ContainsKey(emailqueueto.OrgId.Value))
+                if (!orgcount.ContainsKey(oid.Value))
                 {
                     var q = from i in db.Organizations
-                            where i.OrganizationId == emailqueueto.OrgId.Value
-                            select new OrgInfo()
-                            {
-                                Name = i.OrganizationName,
-                                Count = i.OrganizationMembers.Count().ToString()
-                            };
+                        where i.OrganizationId == oid
+                        select new OrgInfo()
+                        {
+                            Name = i.OrganizationName,
+                            Count = i.OrganizationMembers.Count().ToString()
+                        };
                     oi = q.SingleOrDefault();
-                    orgcount.Add(emailqueueto.OrgId.Value, oi);
+                    orgcount.Add(oid.Value, oi);
                 }
                 else
-                    oi = orgcount[emailqueueto.OrgId.Value];
+                    oi = orgcount[oid.Value];
             }
             return oi ?? new OrgInfo();
         }
 
         const string AddSmallGroupRe = @"\{addsmallgroup:\[(?<group>[^\]]*)\]\}";
         readonly Regex addSmallGroupRe = new Regex(AddSmallGroupRe, RegexOptions.Singleline);
+
         private string AddSmallGroup(string code, EmailQueueTo emailqueueto)
         {
             var match = addSmallGroupRe.Match(code);
@@ -552,15 +564,17 @@ namespace CmsData
 
             var group = match.Groups["group"].Value;
             var om = (from mm in db.OrganizationMembers
-                      where mm.OrganizationId == emailqueueto.OrgId
-                      where mm.PeopleId == emailqueueto.PeopleId
-                      select mm).SingleOrDefault();
+                where mm.OrganizationId == emailqueueto.OrgId
+                where mm.PeopleId == emailqueueto.PeopleId
+                select mm).SingleOrDefault();
             if (om != null)
                 om.AddToGroup(db, @group);
             return "";
         }
+
         const string InsertDraftRe = @"\{insertdraft:(?<draft>.*?)}";
         readonly Regex insertDraftRe = new Regex(InsertDraftRe, RegexOptions.Singleline);
+
         private string InsertDraft(string code)
         {
             var match = insertDraftRe.Match(code);
@@ -575,6 +589,7 @@ namespace CmsData
 
         const string OrgExtraRe = @"\{orgextra:(?<field>[^\]]*)\}";
         readonly Regex orgExtraRe = new Regex(OrgExtraRe, RegexOptions.Singleline);
+
         private string OrgExtra(string code, EmailQueueTo emailqueueto)
         {
             var match = orgExtraRe.Match(code);
@@ -589,6 +604,7 @@ namespace CmsData
 
         const string OrgMemberRe = @"{orgmember:(?<type>.*?),(?<divid>.*?)}";
         readonly Regex orgMemberRe = new Regex(OrgMemberRe, RegexOptions.Singleline);
+
         private string OrgMember(string code, EmailQueueTo emailqueueto)
         {
             var match = orgMemberRe.Match(code);
@@ -597,9 +613,9 @@ namespace CmsData
             var divid = match.Groups["divid"].Value.ToInt();
             var type = match.Groups["type"].Value;
             var org = (from om in db.OrganizationMembers
-                       where om.PeopleId == emailqueueto.PeopleId
-                       where om.Organization.DivOrgs.Any(dd => dd.DivId == divid)
-                       select om.Organization).FirstOrDefault();
+                where om.PeopleId == emailqueueto.PeopleId
+                where om.Organization.DivOrgs.Any(dd => dd.DivId == divid)
+                select om.Organization).FirstOrDefault();
 
             if (org == null)
                 return "?";
@@ -623,8 +639,8 @@ namespace CmsData
         private string CreateUserTag(EmailQueueTo emailqueueto)
         {
             User user = (from u in db.Users
-                         where u.PeopleId == emailqueueto.PeopleId
-                         select u).FirstOrDefault();
+                where u.PeopleId == emailqueueto.PeopleId
+                select u).FirstOrDefault();
             if (user != null)
             {
                 user.ResetPasswordCode = Guid.NewGuid();
@@ -646,6 +662,7 @@ namespace CmsData
 
         const string ExtraValueRe = @"{extra(?<type>.*?):(?<field>.*?)}";
         readonly Regex extraValueRe = new Regex(ExtraValueRe, RegexOptions.Singleline);
+
         private string ExtraValue(string code, EmailQueueTo emailqueueto)
         {
             var match = extraValueRe.Match(code);
@@ -676,31 +693,31 @@ namespace CmsData
             return code;
         }
 
-        private string NextMeetingDate(string code, EmailQueueTo emailqueueto)
+        private string NextMeetingDate(int? orgid, int pid)
         {
-            if (!emailqueueto.OrgId.HasValue)
-                return code;
+            if (!orgid.HasValue)
+                return null;
 
             var mt = (from aa in db.Attends
-                      where aa.OrganizationId == emailqueueto.OrgId
-                      where aa.PeopleId == emailqueueto.PeopleId
-                      where AttendCommitmentCode.committed.Contains(aa.Commitment ?? 0)
-                      where aa.MeetingDate > DateTime.Now
-                      orderby aa.MeetingDate
-                      select aa.MeetingDate).FirstOrDefault();
+                where aa.OrganizationId == orgid
+                where aa.PeopleId == pid
+                where AttendCommitmentCode.committed.Contains(aa.Commitment ?? 0)
+                where aa.MeetingDate > DateTime.Now
+                orderby aa.MeetingDate
+                select aa.MeetingDate).FirstOrDefault();
             return mt == DateTime.MinValue ? "none" : mt.ToString("g");
         }
 
-        private string NextMeetingDate0(string code, EmailQueueTo emailqueueto)
+        private string NextMeetingDate0(int? orgid)
         {
-            if (!emailqueueto.OrgId.HasValue)
-                return code;
+            if (!orgid.HasValue)
+                return null;
 
             var mt = (from mm in db.Meetings
-                      where mm.OrganizationId == emailqueueto.OrgId
-                      where mm.MeetingDate > DateTime.Now
-                      orderby mm.MeetingDate
-                      select mm.MeetingDate).FirstOrDefault() ?? DateTime.MinValue;
+                         where mm.OrganizationId == orgid
+                         where mm.MeetingDate > DateTime.Now
+                         orderby mm.MeetingDate
+                         select mm.MeetingDate).FirstOrDefault() ?? DateTime.MinValue;
             return mt == DateTime.MinValue ? "none" : mt.ToString("g");
         }
 
@@ -742,6 +759,7 @@ namespace CmsData
 
         private const string RegisterHrefReId = "href=\"https{0,1}://registerlink2{0,1}/(?<id>\\d+)\"";
         readonly Regex registerHrefReId = new Regex(RegisterHrefReId, RegexOptions.Singleline);
+
         private string RegisterLinkHref(string code, EmailQueueTo emailqueueto)
         {
             var list = new Dictionary<string, OneTimeLink>();
@@ -871,6 +889,7 @@ namespace CmsData
 
         const string SmallGroupRe = @"\{(smallgroup|subgroup):\[(?<prefix>[^\]]*)\](?:,(?<def>[^}]*)){0,1}\}";
         readonly Regex smallGroupRe = new Regex(SmallGroupRe, RegexOptions.Singleline);
+
         private string SmallGroup(string code, EmailQueueTo emailqueueto)
         {
             var match = smallGroupRe.Match(code);
@@ -880,10 +899,10 @@ namespace CmsData
             var prefix = match.Groups["prefix"].Value;
             var def = match.Groups["def"].Value;
             var sg = (from mm in db.OrgMemMemTags
-                      where mm.OrgId == emailqueueto.OrgId
-                      where mm.PeopleId == emailqueueto.PeopleId
-                      where mm.MemberTag.Name.StartsWith(prefix)
-                      select mm.MemberTag.Name).FirstOrDefault();
+                where mm.OrgId == emailqueueto.OrgId
+                where mm.PeopleId == emailqueueto.PeopleId
+                where mm.MemberTag.Name.StartsWith(prefix)
+                select mm.MemberTag.Name).FirstOrDefault();
             if (!sg.HasValue())
                 sg = def;
             return sg;
@@ -891,6 +910,7 @@ namespace CmsData
 
         const string RegTextRe = @"{reg(?<type>.*?):(?<field>.*?)}";
         readonly Regex regTextRe = new Regex(RegTextRe, RegexOptions.Singleline);
+
         private string RegText(string code, EmailQueueTo emailqueueto)
         {
             var match = regTextRe.Match(code);
@@ -899,11 +919,11 @@ namespace CmsData
             var field = match.Groups["field"].Value;
             var type = match.Groups["type"].Value;
             var answer = (from qa in db.ViewOnlineRegQAs
-                          where qa.Question == field
-                          where qa.Type == type
-                          where qa.PeopleId == emailqueueto.PeopleId
-                          where qa.OrganizationId == emailqueueto.OrgId
-                          select qa.Answer).SingleOrDefault();
+                where qa.Question == field
+                where qa.Type == type
+                where qa.PeopleId == emailqueueto.PeopleId
+                where qa.OrganizationId == emailqueueto.OrgId
+                select qa.Answer).SingleOrDefault();
 
             return answer;
         }
@@ -911,6 +931,7 @@ namespace CmsData
 
         const string SubGroupsRe = @"\{(smallgroups|subgroups)(:\[(?<prefix>[^\]]*)\]){0,1}\}";
         readonly Regex subGroupsRe = new Regex(SubGroupsRe, RegexOptions.Singleline);
+
         private string SmallGroups(string code, EmailQueueTo emailqueueto)
         {
             var match = subGroupsRe.Match(code);
@@ -919,11 +940,11 @@ namespace CmsData
 
             var prefix = match.Groups["prefix"].Value;
             var q = from mm in db.OrgMemMemTags
-                    where mm.OrgId == emailqueueto.OrgId
-                    where mm.PeopleId == emailqueueto.PeopleId
-                    where mm.MemberTag.Name.StartsWith(prefix) || prefix == null || prefix == ""
-                    orderby mm.MemberTag.Name
-                    select mm.MemberTag.Name.Substring(prefix.Length);
+                where mm.OrgId == emailqueueto.OrgId
+                where mm.PeopleId == emailqueueto.PeopleId
+                where mm.MemberTag.Name.StartsWith(prefix) || prefix == null || prefix == ""
+                orderby mm.MemberTag.Name
+                select mm.MemberTag.Name.Substring(prefix.Length);
             return string.Join("<br/>\n", q);
         }
 
@@ -1107,6 +1128,7 @@ namespace CmsData
 
         const string PledgeRe = @"{pledge(?<type>amt|bal):\s*(?<fundid>\d+)}";
         readonly Regex pledgeRe = new Regex(PledgeRe, RegexOptions.Singleline);
+
         private string Pledge(string code, EmailQueueTo emailqueueto)
         {
             var match = pledgeRe.Match(code);
@@ -1127,6 +1149,7 @@ namespace CmsData
             }
             return code;
         }
+
         private static string GetId(IReadOnlyDictionary<string, string> d, string from)
         {
             string id = null;
@@ -1143,40 +1166,30 @@ namespace CmsData
         {
             "http://votelink",
             "https://votelink",
-
             "http://registerlink",
             "https://registerlink",
-
             "http://registerlink2",
             "https://registerlink2",
-
             "http://supportlink",
             "https://supportlink",
-
             "http://masterlink",
             "https://masterlink",
-
             "http://rsvplink",
             "https://rsvplink",
-
             "http://regretslink",
             "https://regretslink",
-
             "http://volsublink",
             "https://volsublink",
-
             "http://volreqlink",
             "https://volreqlink",
-
             "http://sendlink",
             "https://sendlink",
-
             "http://sendlink2",
             "https://sendlink2",
-
             "{emailhref}",
             "mailto"
         };
+
         public static bool IsSpecialLink(string link)
         {
             return SPECIAL_FORMATS.Contains(link.ToLower());
@@ -1221,6 +1234,38 @@ namespace CmsData
                 text = text.Replace(WebUtility.UrlEncode(codeToReplace), codeToReplace);
             }
             return text;
+        }
+
+        public string RenderCode(string code, Person p, int? orgId = null)
+        {
+            if (!code.StartsWith("{"))
+                code = $"{{{code}}}";
+
+            PayInfo pi = null;
+            if (orgId != null)
+                pi = GetPayInfo(orgId.Value, p.PeopleId);
+
+            return DoReplaceCode(code, p, pi, new EmailQueueTo() {OrgId = orgId, PeopleId = p.PeopleId});
+        }
+
+        private PayInfo GetPayInfo(int? orgid, int pid)
+        {
+            if (orgid == null)
+                return null;
+            return (
+                from m in db.OrganizationMembers
+                let ts = db.ViewTransactionSummaries.SingleOrDefault(
+                    tt => tt.RegId == m.TranId && tt.PeopleId == m.PeopleId)
+                where m.PeopleId == pid && m.OrganizationId == orgid
+                select new PayInfo
+                {
+                    PayLink = m.PayLink2(db),
+                    Amount = ts.IndAmt,
+                    AmountPaid = ts.IndPaid,
+                    AmountDue = ts.IndDue,
+                    RegisterMail = m.RegisterEmail
+                }
+            ).SingleOrDefault();
         }
     }
 }

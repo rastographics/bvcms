@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
@@ -18,13 +19,16 @@ namespace CmsWeb.Areas.Public
             if (!Util.UserPeopleId.HasValue)
                 return Redirect("/OrgContent/Login/" + id);
 
+            if(o.TryRunPython())
+                return View("ScriptResults", o);
+
             var org = DbUtil.Db.LoadOrganizationById(o.OrgId);
 
             // Try to load a template specific to this org type
             var template = DbUtil.Db.ContentHtml($"OrgContent-{org.OrganizationType?.Description}", null);
 
             // Try to fall back on a standard template
-            if(template == null)
+            if (template == null)
                 template = DbUtil.Db.ContentHtml("OrgContent", null);
 
             if (template != null)
@@ -37,10 +41,12 @@ namespace CmsWeb.Areas.Public
                     .Replace("{orgid}", org.OrganizationId.ToString())
                     .Replace("{name}", org.OrganizationName ?? string.Empty);
 
-                org.GetOrganizationExtras().ForEach(ev =>
-                {
-                    template = template.Replace($"{{{ev.Field}}}", ev.Data ?? ev.StrValue ?? string.Empty);
-                });
+                org.GetOrganizationExtras()
+                    .ForEach(
+                        ev =>
+                        {
+                            template = template.Replace($"{{{ev.Field}}}", ev.Data ?? ev.StrValue ?? string.Empty);
+                        });
 
                 if (template.Contains("{directory}"))
                 {
@@ -53,6 +59,7 @@ namespace CmsWeb.Areas.Public
 
             return View(o);
         }
+
         public ActionResult Edit(int id)
         {
             var o = OrgContentInfo.Get(id);
@@ -60,6 +67,7 @@ namespace CmsWeb.Areas.Public
                 return Redirect("/OrgContent/" + id);
             return View(o);
         }
+
         [HttpPost]
         public ActionResult CKEditorUpload(int id, string CKEditorFuncNum)
         {
@@ -68,7 +76,7 @@ namespace CmsWeb.Areas.Public
             var bits = new byte[file.ContentLength];
             file.InputStream.Read(bits, 0, bits.Length);
             var mimetype = file.ContentType.ToLower();
-            var oc = new OrgContent { OrgId = id };
+            var oc = new OrgContent {OrgId = id};
             switch (mimetype)
             {
                 case "image/jpeg":
@@ -95,15 +103,17 @@ namespace CmsWeb.Areas.Public
                     break;
             }
             return Content(string.Format(
-"<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction( {0}, '/OrgContent/Display/{1}', '{2}' );</script>",
-CKEditorFuncNum, oc.Id, error));
+                "<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction( {0}, '/OrgContent/Display/{1}', '{2}' );</script>",
+                CKEditorFuncNum, oc.Id, error));
         }
+
         public FileResult Display(int id)
         {
             var o = OrgContentInfo.GetOc(id);
             var image = o.image;
             return File(image.Bits, image.Mimetype);
         }
+
         [HttpPost]
         [ValidateInput(false)]
         public ActionResult Update(int id, string Html)

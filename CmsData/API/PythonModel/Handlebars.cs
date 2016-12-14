@@ -1,4 +1,5 @@
-﻿using HandlebarsDotNet;
+﻿using CmsData;
+using HandlebarsDotNet;
 using UtilityExtensions;
 
 namespace CmsData
@@ -51,6 +52,18 @@ namespace CmsData
 
             // FmtPhone helper in form of:  {{FmtPhone phone# "prefix"}}
             Handlebars.RegisterHelper("FmtPhone", (writer, context, args) => { writer.Write(args[0].ToString().FmtFone($"{args[1]}")); });
+
+            Handlebars.RegisterHelper("ReplaceCode", (writer, context, args) =>
+            {
+                EmailReplacements r = context.Replacements as EmailReplacements
+                    ?? (context.Replacements = new EmailReplacements(db));
+                var code = args[0].ToString();
+                var p = db.LoadPersonById(args[1].ToInt());
+                int? oid = null;
+                if(args.Length == 3)
+                    oid = args[2].ToInt2();
+                writer.Write(r.RenderCode(code, p, oid));
+            });
         }
 
         private static bool IsEqual(object[] args)
@@ -67,6 +80,9 @@ namespace CmsData
                 eq = args[0].ToString() == args[1]?.ToString();
             return eq;
         }
+
+        public EmailReplacements Replacements { get; set; }
+
         public string RenderTemplate(string source)
         {
             return RenderTemplate(source, Data);

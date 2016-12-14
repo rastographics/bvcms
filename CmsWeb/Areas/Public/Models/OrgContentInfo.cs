@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using CmsData;
 using CmsData.Codes;
 using UtilityExtensions;
@@ -24,13 +25,17 @@ namespace CmsWeb.Models
 
         public bool CanEdit => ((Util.IsInRole("ContentEdit") || Util.IsInRole("Edit") || DbUtil.Db.Setting("UX-LeadersCanAlwaysEditOrgContent")) && IsLeader) ||  Util.IsInRole("Admin");
 
+        private string html;
         public string Html
         {
             get
             {
+                if (html.HasValue())
+                    return html;
                 if (oc == null)
                     return "<h2>" + OrgName + "</h2>";
-                return Image.Content(oc.ImageId ?? 0);
+                var s = Image.Content(oc.ImageId ?? 0);
+                return html = s;
             }
             set
             {
@@ -70,6 +75,8 @@ namespace CmsWeb.Models
                 return ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == oc.ImageId);
             }
         }
+
+        public string Results { get; set; }
 
         public static OrgContentInfo Get(int id)
         {
@@ -151,6 +158,18 @@ namespace CmsWeb.Models
             public string Name { get; set; }
             public string MemberType { get; set; }
             public int PeopleId { get; set; }
+        }
+
+        public bool TryRunPython()
+        {
+            var regexObj = new Regex(@"\A\s*{runpython\(\s*""(?<name>.*)""\s*\)}\s*\z",
+                RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace | RegexOptions.Singleline);
+            if (!regexObj.IsMatch(Html))
+                return false;
+            var name = regexObj.Match(Html).Groups["name"].Value;
+            var script = DbUtil.Db.ContentOfTypePythonScript(name);
+            Results = PythonModel.RunScript(Util.Host, script);
+            return true;
         }
     }
 }
