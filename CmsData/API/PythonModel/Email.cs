@@ -38,14 +38,14 @@ namespace CmsData
             return "cannot find email content";
         }
 
-        public void Email(object savedQuery, int queuedBy, string fromAddr, string fromName, string subject, string body, string cclist = null)
+        public void Email(object savedQuery, int queuedBy, string fromAddr, string fromName, string subject, string body, string cclist = null, DateTime? dateWanted = null) 
         {
             using (var db2 = NewDataContext())
             {
                 var q = db2.PeopleQuery2(savedQuery);
                 if (q == null)
                     return;
-                Email2(db2, q, queuedBy, fromAddr, fromName, subject, body, cclist);
+                Email2(db2, q, queuedBy, fromAddr, fromName, subject, body, cclist, dateWanted);
             }
         }
         public void EmailContent(object savedQuery, int queuedBy, string fromAddr, string fromName, string contentName)
@@ -56,9 +56,9 @@ namespace CmsData
             EmailContent(savedQuery, queuedBy, fromAddr, fromName, c.Title, contentName);
         }
 
-        public void EmailContentWithSubject(object savedQuery, int queuedBy, string fromAddr, string fromName, string subject, string contentName, string cclist=null)
+        public void EmailContentWithSubject(object savedQuery, int queuedBy, string fromAddr, string fromName, string subject, string contentName, string cclist=null, DateTime? dateWanted = null)
         {
-            EmailContent2(savedQuery, queuedBy, fromAddr, fromName, subject, contentName, cclist: cclist);
+            EmailContent2(savedQuery, queuedBy, fromAddr, fromName, subject, contentName, cclist: cclist, dateWanted: dateWanted);
         }
 
         public void EmailReminders(object orgId)
@@ -135,7 +135,7 @@ namespace CmsData
 
 
         private void Email2(CMSDataContext db2, IQueryable<Person> q, int queuedBy, string fromAddr, string fromName, string subject,
-            string body, string cclist = null)
+            string body, string cclist = null, DateTime? dateWanted = null)
         {
             var from = new MailAddress(fromAddr, fromName);
             q = from p in q
@@ -152,11 +152,15 @@ namespace CmsData
             Util.UserEmail = queueremail;
             db2.SetCurrentOrgId(CurrentOrgId);
 
-            var emailqueue = db2.CreateQueue(queuedBy, from, subject, body, null, tag.Id, false, cclist: cclist);
+            var emailqueue = db2.CreateQueue(queuedBy, from, subject, body, dateWanted, tag.Id, false, cclist: cclist);
             emailqueue.Transactional = Transactional;
-            db2.SendPeopleEmail(emailqueue.Id);
+            if (dateWanted == null)
+            {
+                db2.SendPeopleEmail(emailqueue.Id);
+            }
         }
-        private void EmailContent2(object savedQuery, int queuedBy, string fromAddr, string fromName, string subject, string contentName, string cclist = null)
+
+        private void EmailContent2(object savedQuery, int queuedBy, string fromAddr, string fromName, string subject, string contentName, string cclist = null, DateTime? dateWanted = null)
         {
             var c = db.ContentOfTypeHtml(contentName);
             if (c == null)
@@ -164,7 +168,7 @@ namespace CmsData
             using (var db2 = NewDataContext())
             {
                 var q = db2.PeopleQuery2(savedQuery);
-                Email2(db2, q, queuedBy, fromAddr, fromName, subject, c.Body, cclist);
+                Email2(db2, q, queuedBy, fromAddr, fromName, subject, c.Body, cclist, dateWanted);
             }
         }
 
