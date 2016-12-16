@@ -322,6 +322,15 @@ namespace CmsWeb.Areas.Search.Controllers
             var m = new QueryModel(id);
             return Content(m.TopClause.ToCode(), "text/plain");
         }
+        [HttpGet]
+        [Route("~/Query/ExportSql")]
+        [Route("~/Query/ExportSql/{id?}")]
+        public ActionResult ExportSql(Guid? id)
+        {
+            var m = new QueryModel(id);
+            var q = DbUtil.Db.PeopleQueryCondition(m.TopClause);
+            return Content(DbUtil.Db.GetWhereClause(q), "text/plain");
+        }
         [HttpGet, Route("~/Query/Import")]
         public ActionResult Import()
         {

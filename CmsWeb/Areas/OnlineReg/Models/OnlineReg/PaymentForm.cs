@@ -25,6 +25,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string CVV { get; set; }
         public string Routing { get; set; }
         public string Account { get; set; }
+        public bool SupportMissionTrip { get; set; }
 
         /// <summary>
         ///     "B" for e-check and "C" for credit card, see PaymentType
@@ -273,13 +274,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 State = r.State,
                 Country = r.Country,
                 Zip = r.Zip,
-                Phone = r.Phone
+                Phone = r.Phone,
+                SupportMissionTrip = m.SupportMissionTrip,
 #if DEBUG2
                  CreditCard = "4111111111111111",
                  CVV = "123",
                  Expires = "1017",
                  Routing = "056008849",
-                 Account = "12345678901234"
+                 Account = "12345678901234",
 #endif
             };
             if (r.payinfo.PeopleId == m.UserPeopleId) // Is this the logged in user?
