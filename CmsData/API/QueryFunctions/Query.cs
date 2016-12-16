@@ -95,6 +95,22 @@ namespace CmsData
             return q;
         }
 
+        public dynamic QuerySqlTop1(string sql)
+        {
+            return QuerySqlTop1(sql, null);
+        }
+
+        public dynamic QuerySqlTop1(string sql, object p1)
+        {
+            return QuerySqlTop1(sql, p1, null);
+        }
+
+        public dynamic QuerySqlTop1(string sql, object p1, Dictionary<string, string> d)
+        {
+            var q = QuerySql(sql, p1, d);
+            return q.FirstOrDefault();
+        }
+
         public IEnumerable<dynamic> QuerySql(string sql)
         {
             return QuerySql(sql, null);
@@ -113,6 +129,11 @@ namespace CmsData
             if (d != null)
                 foreach (var kv in d)
                     parameters.Add("@" + kv.Key, kv.Value);
+
+            if (sql.Contains("@UserPeopleId"))
+                parameters.Add("@UserPeopleId", Util.UserPeopleId);
+            if (sql.Contains("@CurrentOrgId"))
+                parameters.Add("@CurrentOrgId", data.OrgId ?? db.CurrentOrgId0);
 
             if (sql.Contains("@BlueToolbarTagId"))
                 if (dictionary.ContainsKey("BlueToolbarGuid"))
