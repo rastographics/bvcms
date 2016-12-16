@@ -379,6 +379,40 @@ namespace CmsData
             var a = plist.Select(pp => pp.Value).ToArray();
             ExecuteCommand(s, a);
         }
+        public string GetWhereClause(IQueryable<Person> list)
+        {
+            var q2 = list.Select(pp => pp.PeopleId).Distinct();
+            var cmd = GetCommand(q2);
+            var s = cmd.CommandText;
+            foreach (DbParameter p in cmd.Parameters)
+            {
+                if (p == null)
+                    continue;
+
+                var pname = p.ParameterName + "\\b";
+                var typ = p.Value.GetType();
+
+                if(p.Value is DBNull)
+                    s = Regex.Replace(s, pname, "NULL");
+                else if (typ == typeof(DateTime) || typ == typeof(DateTime?))
+                    s = Regex.Replace(s, pname, $"'{p.Value:MM/dd/yy HH:mm:ss}'");
+                else if (typ == typeof(int) 
+                        || typ == typeof(int?) 
+                        || typ == typeof(long) 
+                        || typ == typeof(long?) 
+                        || typ == typeof(decimal) 
+                        || typ == typeof(decimal?) 
+                        || typ == typeof(double)
+                        || typ == typeof(double?)
+                        || typ == typeof(float)
+                        || typ == typeof(float?)
+                    )
+                    s = Regex.Replace(s, pname, p.Value.ToString());
+                else
+                    s = Regex.Replace(s, pname, $"'{p.Value.ToString().Replace("'", "''")}'");
+            }
+            return s;
+        }
         public void TagAll(IEnumerable<int> list, Tag tag)
         {
             foreach (var id in list)
