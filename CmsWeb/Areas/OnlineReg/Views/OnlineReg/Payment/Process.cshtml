@@ -20,6 +20,12 @@
   <h2>Payment Processing</h2>
   @if (Model.Terms.HasValue())
   {
+    if (Model.SupportMissionTrip)
+    {
+          @Html.Hidden("IAgree", true)
+    }
+    else
+    {
     <p>
       @Html.CheckBox("IAgree")
       I agree to the terms and conditions.
@@ -31,6 +37,7 @@
       </p>
       @Html.Raw(Model.Terms)
     </div>
+    }
   }
   <form class="showform form-horizontal" action="/OnlineReg/ProcessPayment" method="post">
     @Html.ValidationSummary()

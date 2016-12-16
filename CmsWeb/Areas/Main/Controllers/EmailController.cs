@@ -320,7 +320,7 @@ namespace CmsWeb.Areas.Main.Controllers
         private const string TooLargeError = "This email is too large. It appears that it may contain an embedded image. Please see <b><a href='http://docs.touchpointsoftware.com/EmailTexting/EmailFileUpload.html' target='_blank'>this document</a></b> for instructions on how to send an image.";
         private static bool TooLarge(MassEmailer m)
         {
-            return m.Body.Contains("data:image") || m.Body.Length > 400000;
+            return (m.Body.Contains("data:image") && m.Body.Length > 100000) || m.Body.Length > 400000;
         }
         private const string GrammarlyNotAllowed = "It appears that you are using Grammarly. Please see <b><a href='https://blog.touchpointsoftware.com/2016/06/29/warning-re-grammarly-and-ck-editor/' target='_blank'>this document</a></b> for important information about why we cannot allow Grammarly";
         private static bool UsesGrammarly(MassEmailer m)
