@@ -20,6 +20,12 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult Index(int id, int? peopleid = null)
         {
             var db = DbUtil.Db;
+            if (id == 0)
+            {
+                var recent = Util2.MostRecentOrgs;
+                id = recent.Any() ? recent[0].Id : 1;
+                return Redirect($"/Org/{id}");
+            }
             db.CurrentOrg = new CurrentOrg {Id = id, GroupSelect = GroupSelectCode.Member};
 
             var m = new OrganizationModel(id);
