@@ -2434,6 +2434,7 @@
     <Content Include="Views\Shared\PageMessage.cshtml" />
     <Content Include="Areas\Manage\Views\Account\_ShellLayout.cshtml" />
     <Content Include="Views\ExtraValue\Location.cshtml" />
+    <Content Include="Views\Home\Warmup.cshtml" />
     <None Include="Web.Impersonate.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

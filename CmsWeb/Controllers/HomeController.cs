@@ -58,6 +58,11 @@ namespace CmsWeb.Controllers
 
             return View();
         }
+        [HttpGet, Route("~/Warmup")]
+        public ActionResult Warmup()
+        {
+            return View();
+        }
 #endif
 
         public ActionResult RecordTest(int id, string v)
@@ -470,5 +475,6 @@ namespace CmsWeb.Controllers
             Session["testnofinance"] = "true";
             return Redirect("/Person2/Current");
         }
+
     }
 }
