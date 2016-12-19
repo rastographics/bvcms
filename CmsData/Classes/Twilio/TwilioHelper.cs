@@ -11,10 +11,20 @@ namespace CmsData.Classes.Twilio
 {
     public class TwilioHelper
     {
+        public static void QueueSms(object query, int iSendGroupID, string sTitle, string sMessage)
+        {
+            var q = DbUtil.Db.PeopleQuery2(query);
+            QueueSms(q, iSendGroupID, sTitle, sMessage);
+        }
+
         public static void QueueSms(Guid iQBID, int iSendGroupID, string sTitle, string sMessage)
         {
             var q = DbUtil.Db.PeopleQuery(iQBID);
+            QueueSms(q, iSendGroupID, sTitle, sMessage);
+        }
 
+        public static void QueueSms(IQueryable<Person> q, int iSendGroupID, string sTitle, string sMessage)
+        {
             // Create new SMS send list
             var list = new SMSList();
 
