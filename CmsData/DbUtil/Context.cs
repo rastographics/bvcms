@@ -415,6 +415,11 @@ namespace CmsData
             }
             s = Regex.Replace(s, @"\[([^]]*)\]", "$1")
                 .Replace("t0", "p");
+            if (s.Contains("TagPerson AS t"))
+                s = @"
+A WHERE clause cannot be created.
+This search uses multiple steps which cannot be duplicated in a single query.
+";
             return s;
         }
         public void TagAll(IEnumerable<int> list, Tag tag)
