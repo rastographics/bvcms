@@ -396,6 +396,8 @@ namespace CmsData
                     s = Regex.Replace(s, pname, "NULL");
                 else if (typ == typeof(DateTime) || typ == typeof(DateTime?))
                     s = Regex.Replace(s, pname, $"'{p.Value:MM/dd/yy HH:mm:ss}'");
+                else if (typ == typeof(bool) || typ == typeof(bool?))
+                    s = Regex.Replace(s, pname, p.Value.ToBool()? "1" : "0");
                 else if (typ == typeof(int) 
                         || typ == typeof(int?) 
                         || typ == typeof(long) 
@@ -411,6 +413,13 @@ namespace CmsData
                 else
                     s = Regex.Replace(s, pname, $"'{p.Value.ToString().Replace("'", "''")}'");
             }
+            s = Regex.Replace(s, @"\[([^]]*)\]", "$1")
+                .Replace("t0", "p");
+            if (s.Contains("TagPerson AS t"))
+                s = @"
+A WHERE clause cannot be created.
+This search uses multiple steps which cannot be duplicated in a single query.
+";
             return s;
         }
         public void TagAll(IEnumerable<int> list, Tag tag)

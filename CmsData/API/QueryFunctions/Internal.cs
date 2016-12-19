@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
+using CmsData.API;
 using UtilityExtensions;
 
 namespace CmsData
@@ -12,6 +13,7 @@ namespace CmsData
     {
         private readonly CMSDataContext db;
         private readonly Dictionary<string, object> dictionary;
+        private dynamic data;
         private DateTime? lastSunday;
 
         public QueryFunctions(CMSDataContext db)
@@ -27,6 +29,7 @@ namespace CmsData
         public QueryFunctions(CMSDataContext db, Dictionary<string, object> dictionary) : this(db)
         {
             this.dictionary = dictionary;
+            this.data = new DynamicData(dictionary);
         }
 
         private DbConnection GetReadonlyConnection()

@@ -58,6 +58,11 @@ namespace CmsWeb.Controllers
 
             return View();
         }
+        [HttpGet, Route("~/Warmup")]
+        public ActionResult Warmup()
+        {
+            return View();
+        }
 #endif
 
         public ActionResult RecordTest(int id, string v)
@@ -183,7 +188,8 @@ namespace CmsWeb.Controllers
         [Authorize(Roles = "Developer")]
         public ActionResult TestScript()
         {
-            return View();
+            var text = System.IO.File.ReadAllText(Server.MapPath("ttt.py"));
+            return Content(PythonModel.RunScript(Util.Host, text));
         }
 
         [HttpPost, Route("~/TestScript")]
@@ -469,5 +475,6 @@ namespace CmsWeb.Controllers
             Session["testnofinance"] = "true";
             return Redirect("/Person2/Current");
         }
+
     }
 }

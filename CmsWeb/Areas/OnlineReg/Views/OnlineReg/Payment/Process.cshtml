@@ -18,26 +18,19 @@
 }
 <div class="regform">
   <h2>Payment Processing</h2>
-  @if (Model.Terms.HasValue())
+  @if (Model.Terms.HasValue() && !Model.SupportMissionTrip)
   {
-    if (Model.SupportMissionTrip)
-    {
-          @Html.Hidden("IAgree", true)
-    }
-    else
-    {
-    <p>
-      @Html.CheckBox("IAgree")
-      I agree to the terms and conditions.
-      <small class="showform">Uncheck the agreement box to display the terms again.</small>
-    </p>
-    <div id="Terms" title="Terms of Agreement">
       <p>
-        You must agree to the terms below for you or your minor child before you can complete your registration.
+        @Html.CheckBox("IAgree")
+        I agree to the terms and conditions.
+        <small class="showform">Uncheck the agreement box to display the terms again.</small>
       </p>
-      @Html.Raw(Model.Terms)
-    </div>
-    }
+      <div id="Terms" title="Terms of Agreement">
+        <p>
+          You must agree to the terms below for you or your minor child before you can complete your registration.
+        </p>
+        @Html.Raw(Model.Terms)
+      </div>
   }
   <form class="showform form-horizontal" action="/OnlineReg/ProcessPayment" method="post">
     @Html.ValidationSummary()
@@ -46,12 +39,12 @@
       <div class="col-sm-9">
         @if (Model.PayBalance)
         {
-          @Html.EditorFor(m => m.AmtToPay)
+            @Html.EditorFor(m => m.AmtToPay)
         }
         else
         {
-          <p class="form-control-static" id="amt">@Model.AmtToPay.ToString2("C")</p>
-          @Html.HiddenFor(m => m.AmtToPay)
+            <p class="form-control-static" id="amt">@Model.AmtToPay.ToString2("C")</p>
+            @Html.HiddenFor(m => m.AmtToPay)
         }
       </div>
     </div>
@@ -90,37 +83,37 @@
     <div class="well">
       @if (Model.NoCreditCardsAllowed || Model.NoEChecksAllowed)
       {
-        @Html.Hidden("Type", Model.Type)
+          @Html.Hidden("Type", Model.Type)
       }
       else
       {
-        <div class="form-group">
-          @Html.Label("Payment Type", new { @class = "control-label col-sm-3 labelsize" })
-          <div class="col-sm-9">
-            <label class="radio-inline">
-              <input type="radio" name="Type" value="@PaymentType.CreditCard" @(Model.Type == PaymentType.CreditCard ? "checked='checked'" : "") />@debitcredit
-            </label>
-            <label class="radio-inline">
-              <input type="radio" name="Type" value="@PaymentType.Ach" @(Model.Type == PaymentType.Ach ? "checked='checked'" : "") /> Bank Account
-            </label>
-            @Html.Hidden("allowcc", "true")
+          <div class="form-group">
+            @Html.Label("Payment Type", new { @class = "control-label col-sm-3 labelsize" })
+            <div class="col-sm-9">
+              <label class="radio-inline">
+                <input type="radio" name="Type" value="@PaymentType.CreditCard" @(Model.Type == PaymentType.CreditCard ? "checked='checked'" : "") />@debitcredit
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="Type" value="@PaymentType.Ach" @(Model.Type == PaymentType.Ach ? "checked='checked'" : "") /> Bank Account
+              </label>
+              @Html.Hidden("allowcc", "true")
+            </div>
           </div>
-        </div>
       }
       @if (Model.NoCreditCardsAllowed == false)
       {
-        <div class="Card">
-          @Html.EditorFor(m => m.CreditCard, new { autocomplete = Model.AutocompleteOnOff, Label = debitcredit })
-          @Html.EditorFor(m => m.Expires, new { classes = "narrow" })
-          @Html.EditorFor(m => m.CVV, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
-        </div>
+          <div class="Card">
+            @Html.EditorFor(m => m.CreditCard, new { autocomplete = Model.AutocompleteOnOff, Label = debitcredit })
+            @Html.EditorFor(m => m.Expires, new { classes = "narrow" })
+            @Html.EditorFor(m => m.CVV, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
+          </div>
       }
       @if (Model.NoEChecksAllowed == false)
       {
-        <div class="Bank">
-          @Html.EditorFor(m => m.Routing)
-          @Html.EditorFor(m => m.Account, new { autocomplete = Model.AutocompleteOnOff })
-        </div>
+          <div class="Bank">
+            @Html.EditorFor(m => m.Routing)
+            @Html.EditorFor(m => m.Account, new { autocomplete = Model.AutocompleteOnOff })
+          </div>
       }
     </div>
     <div class="form-group">
@@ -128,31 +121,31 @@
         <div>
           @if (Model.IsLoggedIn == true && !VaultDisabled)
           {
-            <span style="margin-right: 2em;">@Html.CheckBoxFor(m => m.SavePayInfo) Save Payment Information</span>
+              <span style="margin-right: 2em;">@Html.CheckBoxFor(m => m.SavePayInfo) Save Payment Information</span>
           }
           @Helper.OnlineRegSubmitButton("Make Payment", onlyoneallowed: true, style: "btn-primary min-width15em")
         </div>
         @if (Model.AllowSaveProgress == true)
         {
-          <div>
-            @Helper.OnlineRegAjaxButton("/OnlineReg/SaveProgressPayment/" + Model.DatumId, "Save Progress, Finish Later", style: "btn-warning min-width15em")
-          </div>
+            <div>
+              @Helper.OnlineRegAjaxButton("/OnlineReg/SaveProgressPayment/" + Model.DatumId, "Save Progress, Finish Later", style: "btn-warning min-width15em")
+            </div>
         }
       </div>
     </div>
     @if (Model.AllowCoupon)
     {
-      @Html.EditorFor(m => m.Coupon)
-      <div class="form-group" id="form-msg" style="display:none">
-        <div class="alert alert-info" id="coupon-msg">
+        @Html.EditorFor(m => m.Coupon)
+        <div class="form-group" id="form-msg" style="display:none">
+          <div class="alert alert-info" id="coupon-msg">
+          </div>
         </div>
-      </div>
-      @Helper.OnlineRegAjaxButtonRow("/OnlineReg/ApplyCoupon", "Apply Coupon", id: "ApplyCoupon", style: "btn-success")
-      <div class="form-group" id="formerror">
-        <div class="col-sm-offset-3 col-sm-9">
-          <div class="alert alert-danger field-validation-error" id="errormessage"></div>
+        @Helper.OnlineRegAjaxButtonRow("/OnlineReg/ApplyCoupon", "Apply Coupon", id: "ApplyCoupon", style: "btn-success")
+        <div class="form-group" id="formerror">
+          <div class="col-sm-offset-3 col-sm-9">
+            <div class="alert alert-danger field-validation-error" id="errormessage"></div>
+          </div>
         </div>
-      </div>
     }
   </form>
 </div>

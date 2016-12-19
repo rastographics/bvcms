@@ -34,13 +34,6 @@ ALTER TABLE [dbo].[Task] NOCHECK CONSTRAINT [TasksAssigned__SourceContact]
 ALTER TABLE [dbo].[Task] NOCHECK CONSTRAINT [TasksCompleted__CompletedContact]
 ALTER TABLE [dbo].[Task] NOCHECK CONSTRAINT [TasksCoOwned__CoOwner]
 
-PRINT(N'Drop constraints from [dbo].[TagPerson]')
-ALTER TABLE [dbo].[TagPerson] NOCHECK CONSTRAINT [PersonTags__Tag]
-ALTER TABLE [dbo].[TagPerson] NOCHECK CONSTRAINT [Tags__Person]
-
-PRINT(N'Drop constraints from [dbo].[Tag]')
-ALTER TABLE [dbo].[Tag] NOCHECK CONSTRAINT [TagsOwned__PersonOwner]
-
 PRINT(N'Drop constraints from [dbo].[RecReg]')
 ALTER TABLE [dbo].[RecReg] NOCHECK CONSTRAINT [FK_RecReg_People]
 
@@ -286,21 +279,6 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 <h2>
 	<em>{byline}</em></h2>
 ', '2009-04-17 20:42:09.213', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (2, N'ShellDefault', N'Default Online Reg Shell', N'<html>
-<head>
-	<title>Online Registration</title>
-<!--Do not delete the following comment-->
-    <!--FORM CSS-->
-</head>
-<body>
-<!--Do not delete the following comment-->
-<!--FORM START-->
-<p>Form goes here</p>
-<!--Do not delete the following comment-->
-<!--FORM END-->
-</body>
-</html>
-', '2013-09-09 23:32:14.270', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (3, N'ShellIFrame', N'Plain Online Reg Shell for iFrame use', N'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
 <html> 
 <head> 
@@ -10078,6 +10056,38 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 </body>
 </html>
 ', '2016-11-28 17:29:19.933', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 0)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (90, N'ShellDefaultBs', N'ShellDefaultBs', N'<html>
+<head>
+  <title>Online Registration</title>
+  <meta content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+  <!--FORM CSS-->
+  <style>
+    div.form-wrapper {
+      max-width: 700px;
+      margin-left: auto; 
+      margin-right: auto; 
+      padding: 0 20px 25px 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header_image">
+      <img alt="Our Church Banner" 
+        src="https://c4265878.ssl.cf2.rackcdn.com/OurChurchBanner.png" 
+        style="width: 100%;" />
+    </div>
+    <div class="form-wrapper">
+      <!--FORM START-->
+      <!--FORM END-->
+    </div>
+    <div class="text-center">
+      <p>&copy; Our Church. All rights reserved. | <a href="http://www.bvcms.com">ourchurch.org</a></p>
+    </div>
+  </div>
+</body>
+</html>
+', '2016-12-13 14:09:36.220', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 0)
 SET IDENTITY_INSERT [dbo].[Content] OFF
 PRINT(N'Operation applied to 30 rows out of 30')
 
@@ -10453,10 +10463,13 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
 </Condition>', N'System', '2014-05-05 00:44:39.297', '2014-05-05 00:44:39.297', N'InCurrentOrg', 0, 0, NULL)
 PRINT(N'Operation applied to 31 rows out of 31')
 
-PRINT(N'Add row to [dbo].[RegistrationData]')
+PRINT(N'Add rows to [dbo].[RegistrationData]')
 SET IDENTITY_INSERT [dbo].[RegistrationData] ON
 INSERT INTO [dbo].[RegistrationData] ([Id], [Data], [Stamp], [completed], [OrganizationId], [UserPeopleId], [abandoned]) VALUES (1, CONVERT(xml,N'<OnlineRegModel><!--11/3/2015 9:00:56 AM--><Orgid>33</Orgid><Completed>False</Completed><DatumId>1</DatumId><Datum>CmsData.RegistrationDatum</Datum><URL>http://starterdb.tpsdb.com:80/OnlineReg/33</URL><nologin>True</nologin><List><OnlineRegPersonModel><IsValidForContinue>False</IsValidForContinue><IsValidForNew>False</IsValidForNew><orgid>33</orgid><IsNew>False</IsNew><QuestionsOK>False</QuestionsOK><LoggedIn>False</LoggedIn><IsValidForExisting>False</IsValidForExisting><ShowAddress>False</ShowAddress><ShowCountry>False</ShowCountry><IsFamily>False</IsFamily><Index>0</Index></OnlineRegPersonModel></List><History><item>index 11/3/2015 9:00 AM (c-ip=12.168.188.238)</item></History></OnlineRegModel>',1), '2015-11-03 09:00:56.187', NULL, 33, NULL, NULL)
+INSERT INTO [dbo].[RegistrationData] ([Id], [Data], [Stamp], [completed], [OrganizationId], [UserPeopleId], [abandoned]) VALUES (2, CONVERT(xml,N'<OnlineRegModel><!--12/13/2016 2:10:25 PM--><Orgid>35</Orgid><Completed>False</Completed><DatumId>2</DatumId><Datum>CmsData.RegistrationDatum</Datum><URL>http://starterdb.tpsdb.com:80/OnlineReg/35</URL><nologin>True</nologin><List><OnlineRegPersonModel><IsValidForContinue>False</IsValidForContinue><IsValidForNew>False</IsValidForNew><orgid>35</orgid><IsNew>False</IsNew><QuestionsOK>False</QuestionsOK><LoggedIn>False</LoggedIn><IsValidForExisting>False</IsValidForExisting><ShowAddress>False</ShowAddress><ShowCountry>False</ShowCountry><IsFamily>False</IsFamily><Index>0</Index></OnlineRegPersonModel></List><History><item>index 12/13/2016 2:10 PM (c-ip=75.64.70.222)</item></History></OnlineRegModel>',1), '2016-12-13 14:10:25.930', NULL, 35, NULL, NULL)
+INSERT INTO [dbo].[RegistrationData] ([Id], [Data], [Stamp], [completed], [OrganizationId], [UserPeopleId], [abandoned]) VALUES (3, CONVERT(xml,N'<OnlineRegModel><!--12/13/2016 2:14:00 PM--><Orgid>35</Orgid><Completed>False</Completed><DatumId>3</DatumId><Datum>CmsData.RegistrationDatum</Datum><URL>http://starterdb.tpsdb.com:80/OnlineReg/35?showfamily=false</URL><username>karenw</username><nologin>False</nologin><UserPeopleId>3</UserPeopleId><List><OnlineRegPersonModel><IsValidForContinue>False</IsValidForContinue><IsValidForNew>False</IsValidForNew><orgid>35</orgid><IsNew>False</IsNew><QuestionsOK>False</QuestionsOK><LoggedIn>True</LoggedIn><IsValidForExisting>False</IsValidForExisting><ShowAddress>False</ShowAddress><ShowCountry>False</ShowCountry><IsFamily>False</IsFamily><Index>0</Index></OnlineRegPersonModel></List><History><item>index 12/13/2016 2:13 PM (c-ip=75.64.70.222)</item><item>yeslogin 12/13/2016 2:12 PM (c-ip=75.64.70.222)</item><item>login 12/13/2016 2:14 PM (c-ip=75.64.70.222)</item></History></OnlineRegModel>',1), '2016-12-13 14:13:46.233', NULL, 35, 3, NULL)
 SET IDENTITY_INSERT [dbo].[RegistrationData] OFF
+PRINT(N'Operation applied to 3 rows out of 3')
 
 PRINT(N'Add rows to [dbo].[Roles]')
 SET IDENTITY_INSERT [dbo].[Roles] ON
@@ -11912,21 +11925,6 @@ SET IDENTITY_INSERT [dbo].[RecReg] ON
 INSERT INTO [dbo].[RecReg] ([Id], [PeopleId], [ImgId], [IsDocument], [ActiveInAnotherChurch], [ShirtSize], [MedAllergy], [email], [MedicalDescription], [fname], [mname], [coaching], [member], [emcontact], [emphone], [doctor], [docphone], [insurance], [policy], [Comments], [Tylenol], [Advil], [Maalox], [Robitussin]) VALUES (2, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[RecReg] OFF
 
-PRINT(N'Add rows to [dbo].[Tag]')
-SET IDENTITY_INSERT [dbo].[Tag] ON
-INSERT INTO [dbo].[Tag] ([Id], [Name], [TypeId], [Owner], [Active], [PeopleId], [Created]) VALUES (516, N'TrackBirthdays', 1, NULL, NULL, 3, '2016-03-29 12:35:12.727')
-INSERT INTO [dbo].[Tag] ([Id], [Name], [TypeId], [Owner], [Active], [PeopleId], [Created]) VALUES (517, N'UnNamed', 1, NULL, NULL, 3, '2016-03-29 12:35:12.977')
-INSERT INTO [dbo].[Tag] ([Id], [Name], [TypeId], [Owner], [Active], [PeopleId], [Created]) VALUES (518, N'zobkfxxzq4aqfq4if4krfcvs', 7, NULL, NULL, 3, '2016-03-29 12:35:55.040')
-INSERT INTO [dbo].[Tag] ([Id], [Name], [TypeId], [Owner], [Active], [PeopleId], [Created]) VALUES (519, N'TrackBirthdays', 1, NULL, NULL, 1, '2016-06-17 09:53:00.323')
-INSERT INTO [dbo].[Tag] ([Id], [Name], [TypeId], [Owner], [Active], [PeopleId], [Created]) VALUES (520, N'UnNamed', 1, NULL, NULL, 1, '2016-06-17 09:53:00.590')
-INSERT INTO [dbo].[Tag] ([Id], [Name], [TypeId], [Owner], [Active], [PeopleId], [Created]) VALUES (521, N'TrackBirthdays', 1, NULL, NULL, 2, '2016-10-22 09:36:02.380')
-INSERT INTO [dbo].[Tag] ([Id], [Name], [TypeId], [Owner], [Active], [PeopleId], [Created]) VALUES (522, N'UnNamed', 1, NULL, NULL, 2, '2016-10-22 09:36:02.677')
-SET IDENTITY_INSERT [dbo].[Tag] OFF
-PRINT(N'Operation applied to 7 rows out of 7')
-
-PRINT(N'Add row to [dbo].[TagPerson]')
-INSERT INTO [dbo].[TagPerson] ([Id], [PeopleId], [DateCreated]) VALUES (518, 3, '2016-03-29 12:35:55.977')
-
 PRINT(N'Add rows to [dbo].[Task]')
 SET IDENTITY_INSERT [dbo].[Task] ON
 INSERT INTO [dbo].[Task] ([Id], [OwnerId], [ListId], [CoOwnerId], [CoListId], [StatusId], [CreatedOn], [SourceContactId], [CompletedContactId], [Notes], [ModifiedBy], [ModifiedOn], [Project], [Archive], [Priority], [WhoId], [Due], [Location], [Description], [CompletedOn], [ForceCompleteWContact], [OrginatorId], [DeclineReason], [LimitToRole]) VALUES (3, 1, 9, 3, 10, 10, '2016-05-04 15:46:41.830', NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 101, NULL, NULL, N'New Person Data Entry', NULL, NULL, NULL, NULL, NULL)
@@ -11978,7 +11976,7 @@ PRINT(N'Add rows to [dbo].[Users]')
 SET IDENTITY_INSERT [dbo].[Users] ON
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (1, 1, N'Admin', NULL, N'2352354235', NULL, NULL, 1, '2016-10-21 09:14:34.877', NULL, '2016-06-17 09:52:58.323', '2009-05-05 22:46:43.890', 0, '2014-10-16 15:43:29.923', 0, '2016-06-17 09:52:17.480', 0, NULL, NULL, NULL, 1, N'starterdb.tpsdb.com', N'bvcms', N'The Admin', N'Admin, The', NULL, NULL, '2014-10-17 15:42:49.050')
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (2, 2, N'david', N'', N'uNVML/ZamnY7YdE1NXvMHPIznic=', NULL, NULL, 1, '2016-10-23 07:44:52.280', '2016-10-23 07:44:05.380', '2013-12-19 00:03:08.440', '2010-10-30 15:23:25.763', 0, '2013-12-19 00:03:08.360', 0, '2013-12-18 22:54:19.783', 0, '2010-10-30 15:23:25.763', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'David Carroll', N'Carroll, David', NULL, NULL, '2013-12-19 22:55:00.120')
-INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (3, 3, N'karenw', N'', N'lpSVokbyDdVaXxNGDjZT4St468A=', NULL, NULL, 1, '2016-11-28 17:31:07.760', '2016-11-28 17:27:39.430', '2013-10-14 10:43:23.743', '2010-10-30 15:29:25.757', 0, '2013-10-14 10:43:23.667', 0, '2013-10-14 10:41:24.547', 0, '2010-10-30 15:29:25.757', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'Karen Worrell', N'Worrell, Karen', NULL, NULL, '2013-10-15 10:42:47.710')
+INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (3, 3, N'karenw', N'', N'lpSVokbyDdVaXxNGDjZT4St468A=', NULL, NULL, 1, '2016-12-13 14:25:05.820', '2016-12-13 14:24:49.570', '2013-10-14 10:43:23.743', '2010-10-30 15:29:25.757', 0, '2013-10-14 10:43:23.667', 0, '2013-10-14 10:41:24.547', 0, '2010-10-30 15:29:25.757', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'Karen Worrell', N'Worrell, Karen', NULL, NULL, '2013-10-15 10:42:47.710')
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (5, 101, N'checkin', N'', N'FtPZkua8z2a+Pu/j6WqWYEex3F4=', NULL, NULL, 1, '2016-05-04 15:46:47.893', NULL, '2016-05-04 15:46:47.893', '2016-05-04 15:46:47.893', 0, '2016-05-04 15:46:47.893', 0, '2016-05-04 15:46:47.893', 0, '2016-05-04 15:46:47.893', NULL, NULL, 0, NULL, NULL, N'Checkin Ministry', N'Ministry, Checkin', NULL, NULL, NULL)
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (6, 102, N'atester', N'', N'xurYGXdkthV25voxxUHgKk5PnnU=', NULL, NULL, 1, '2016-10-21 15:45:25.440', '2016-10-21 15:45:46.073', '2016-10-21 15:45:46.090', '2016-10-21 15:45:25.440', 0, '2016-10-21 15:45:46.013', 0, '2016-10-21 15:45:25.440', 0, '2016-10-21 15:45:25.440', NULL, NULL, 0, NULL, N'John3:16', N'App Tester', N'Tester, App', NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Users] OFF
@@ -12008,13 +12006,6 @@ ALTER TABLE [dbo].[Task] WITH CHECK CHECK CONSTRAINT [TasksAboutPerson__AboutWho
 ALTER TABLE [dbo].[Task] WITH CHECK CHECK CONSTRAINT [TasksAssigned__SourceContact]
 ALTER TABLE [dbo].[Task] WITH CHECK CHECK CONSTRAINT [TasksCompleted__CompletedContact]
 ALTER TABLE [dbo].[Task] WITH CHECK CHECK CONSTRAINT [TasksCoOwned__CoOwner]
-
-PRINT(N'Add constraints to [dbo].[TagPerson]')
-ALTER TABLE [dbo].[TagPerson] CHECK CONSTRAINT [PersonTags__Tag]
-ALTER TABLE [dbo].[TagPerson] CHECK CONSTRAINT [Tags__Person]
-
-PRINT(N'Add constraints to [dbo].[Tag]')
-ALTER TABLE [dbo].[Tag] WITH CHECK CHECK CONSTRAINT [TagsOwned__PersonOwner]
 
 PRINT(N'Add constraints to [dbo].[RecReg]')
 ALTER TABLE [dbo].[RecReg] WITH CHECK CHECK CONSTRAINT [FK_RecReg_People]

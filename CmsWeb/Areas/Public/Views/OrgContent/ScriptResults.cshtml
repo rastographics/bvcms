@@ -1,0 +1,19 @@
+﻿@using CmsData
+@model CmsWeb.Models.OrgContentInfo
+@{
+    ViewBag.Title = "OrgContent";
+    Layout = "~/Views/Shared/Site2.cshtml";
+}
+
+@if (!Model.IsMember)
+{
+    <h2>Sorry, members only</h2>
+}
+else if (Model.Inactive)
+{
+    <h2>Sorry, Organization is Inactive</h2>
+}
+else
+{
+  @Html.Raw(Model.Results)
+}

@@ -4,7 +4,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using CmsData;
-using CmsData.Codes;
 using UtilityExtensions;
 using DbUtil = CmsData.DbUtil;
 using Image = ImageData.Image;
@@ -24,13 +23,17 @@ namespace CmsWeb.Models
 
         public bool CanEdit => ((Util.IsInRole("ContentEdit") || Util.IsInRole("Edit") || DbUtil.Db.Setting("UX-LeadersCanAlwaysEditOrgContent")) && IsLeader) ||  Util.IsInRole("Admin");
 
+        private string html;
         public string Html
         {
             get
             {
+                if (html.HasValue())
+                    return html;
                 if (oc == null)
                     return "<h2>" + OrgName + "</h2>";
-                return Image.Content(oc.ImageId ?? 0);
+                var s = Image.Content(oc.ImageId ?? 0);
+                return html = s;
             }
             set
             {
@@ -71,20 +74,22 @@ namespace CmsWeb.Models
             }
         }
 
+        public string Results { get; set; }
+
         public static OrgContentInfo Get(int id)
         {
             var q = from oo in DbUtil.Db.Organizations
                     where oo.OrganizationId == id
                     let om = oo.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == Util.UserPeopleId)
                     let oc = DbUtil.Db.OrgContents.SingleOrDefault(cc => cc.OrgId == id && cc.Landing == true)
-                    let MemberLeaderType = om.MemberType.AttendanceTypeId
+                    let memberLeaderType = om.MemberType.AttendanceTypeId
                     select new OrgContentInfo
                     {
                         OrgId = oo.OrganizationId,
                         OrgName = oo.OrganizationName,
                         Inactive = oo.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Inactive,
                         IsMember = om != null && om.MemberTypeId != CmsData.Codes.MemberTypeCode.InActive,
-                        IsLeader = (MemberLeaderType ?? 0) == CmsData.Codes.AttendTypeCode.Leader,
+                        IsLeader = (memberLeaderType ?? 0) == CmsData.Codes.AttendTypeCode.Leader,
                         oc = oc,
                         NotAuthenticated = !Util.UserPeopleId.HasValue
                     };
@@ -107,14 +112,14 @@ namespace CmsWeb.Models
                     let oc = DbUtil.Db.OrgContents.SingleOrDefault(cc => cc.Id == id)
                     where oo.OrganizationId == oc.OrgId
                     let om = oo.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == Util.UserPeopleId)
-                    let MemberLeaderType = om.MemberType.AttendanceTypeId
+                    let memberLeaderType = om.MemberType.AttendanceTypeId
                     select new OrgContentInfo
                     {
                         OrgId = oo.OrganizationId,
                         OrgName = oo.OrganizationName,
                         Inactive = oo.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Inactive,
                         IsMember = om != null && om.MemberTypeId != CmsData.Codes.MemberTypeCode.InActive,
-                        IsLeader = (MemberLeaderType ?? 0) == CmsData.Codes.AttendTypeCode.Leader,
+                        IsLeader = (memberLeaderType ?? 0) == CmsData.Codes.AttendTypeCode.Leader,
                         oc = oc,
                         NotAuthenticated = !Util.UserPeopleId.HasValue
                     };
@@ -151,6 +156,21 @@ namespace CmsWeb.Models
             public string Name { get; set; }
             public string MemberType { get; set; }
             public int PeopleId { get; set; }
+        }
+
+        public bool TryRunPython()
+        {
+            var ev = Organization.GetExtra(DbUtil.Db, OrgId, "OrgMembersPageScript");
+            if (!ev.HasValue())
+                return false;
+            var script = DbUtil.Db.ContentOfTypePythonScript(ev);
+            if (!script.HasValue())
+                return false;
+            var pe = new PythonModel(Util.Host);
+            pe.Data.OrgId = OrgId;
+            pe.Data.PeopleId = Util.UserPeopleId;
+            Results = pe.RunScript(script);
+            return true;
         }
     }
 }
