@@ -49,6 +49,8 @@ namespace CmsWeb.Areas.Search.Models
                 q = Db.PersonQueryPlusParents(q);
             else if (TopClause.ParentsOf)
                 q = Db.PersonQueryParents(q);
+            if (TopClause.FirstPersonSameEmail)
+                q = Db.PersonQueryFirstPersonSameEmail(q);
             //var t = Db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
             return q;
         }

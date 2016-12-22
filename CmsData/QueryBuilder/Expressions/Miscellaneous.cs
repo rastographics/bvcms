@@ -197,14 +197,6 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal Expression FirstPersonSameEmail()
-        {
-            var q = db.ViewFirstPersonSameEmails.Select(p => p.PeopleId.Value);
-            var tag = db.PopulateTemporaryTag(q);
-            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
-            return Expression.Invoke(pred, parm);
-        }
-
         internal Expression RecentFlagAdded()
         {
             var codes0 = CodeValues.Split(',').Select(ff => ff.Trim()).ToList();

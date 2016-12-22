@@ -221,6 +221,8 @@ namespace CmsData
                 q = PersonQueryPlusParents(q);
             else if (c.ParentsOf)
                 q = PersonQueryParents(q);
+            if (c.FirstPersonSameEmail)
+                q = PersonQueryFirstPersonSameEmail(q);
             return q;
         }
 
@@ -264,6 +266,8 @@ namespace CmsData
                 q = PersonQueryPlusParents(q);
             else if (c.ParentsOf)
                 q = PersonQueryParents(q);
+            if (c.FirstPersonSameEmail)
+                q = PersonQueryFirstPersonSameEmail(q);
             return q;
         }
         public IQueryable<Person> PeopleQueryCode(string code, bool fromDirectory = false)
@@ -276,6 +280,8 @@ namespace CmsData
                 q = PersonQueryPlusParents(q);
             else if (c.ParentsOf)
                 q = PersonQueryParents(q);
+            if (c.FirstPersonSameEmail)
+                q = PersonQueryFirstPersonSameEmail(q);
             return q;
         }
         public IQueryable<Person> PeopleQueryCondition(Condition c)
@@ -285,6 +291,8 @@ namespace CmsData
                 q = PersonQueryPlusParents(q);
             else if (c.ParentsOf)
                 q = PersonQueryParents(q);
+            if (c.FirstPersonSameEmail)
+                q = PersonQueryFirstPersonSameEmail(q);
             return q;
         }
         public IQueryable<Person> PersonQueryParents(IQueryable<Person> q)
@@ -331,6 +339,15 @@ namespace CmsData
             SubmitChanges();
             AddTag1ToTag2(tag1.Id, tag2.Id);
             return tag2.People(this);
+        }
+        public IQueryable<Person> PersonQueryFirstPersonSameEmail(IQueryable<Person> q)
+        {
+            var qq = from p in q
+                group p by p.EmailAddress into g
+                from j in g
+                select g.Min(gg => gg.PeopleId);
+            var tag = PopulateTemporaryTag(qq.Distinct());
+            return tag.People(this);
         }
         public IQueryable<Person> ReturnPrimaryAdults(IQueryable<Person> q)
         {

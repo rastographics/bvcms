@@ -223,6 +223,13 @@ namespace CmsData
                 c = c.Parent;
             c.ParentsOf = ((tf && op == CompareType.Equal) || (!tf && op == CompareType.NotEqual));
         }
+        internal void SetFirstPersonSameEmail(CompareType op, bool tf)
+        {
+            var c = this;
+            while (c.Parent != null)
+                c = c.Parent;
+            c.FirstPersonSameEmail = ((tf && op == CompareType.Equal) || (!tf && op == CompareType.NotEqual));
+        }
         internal void SetPlusParentsOf(CompareType op, bool tf)
         {
             var c = this;
@@ -232,6 +239,7 @@ namespace CmsData
         }
         private bool includeDeceased;
         public bool ParentsOf { get; set; }
+        public bool FirstPersonSameEmail { get; set; }
         public bool PlusParentsOf { get; set; }
         public bool FromDirectory { get; set; }
         public Expression<Func<Person, bool>> Predicate(CMSDataContext db)
@@ -284,6 +292,11 @@ namespace CmsData
                     if (clause.FieldInfo.QueryType == QueryType.ParentsOf)
                     {
                         SetParentsOf(clause.ComparisonType, clause.CodeIds == "1");
+                        continue;
+                    }
+                    if (clause.FieldInfo.QueryType == QueryType.FirstPersonSameEmail)
+                    {
+                        SetFirstPersonSameEmail(clause.ComparisonType, true);
                         continue;
                     }
                     if (clause.FieldInfo.QueryType == QueryType.PlusParentsOf)

@@ -161,6 +161,8 @@ namespace CmsWeb.Areas.Search.Models
             var q = Db.People.Where(TopClause.Predicate(Db));
             if (TopClause.ParentsOf)
                 q = Db.PersonQueryParents(q);
+            if(TopClause.FirstPersonSameEmail)
+                q = Db.PersonQueryFirstPersonSameEmail(q);
             if (tag != null)
                 Db.TagAll(q, tag);
             else
