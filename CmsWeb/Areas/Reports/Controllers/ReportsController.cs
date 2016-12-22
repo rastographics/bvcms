@@ -69,15 +69,15 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpPost]
-        public ActionResult AttendanceDetail(string Dt1, string Dt2, OrgSearchModel m)
+        public ActionResult AttendanceDetail(string dt1, string dt2, OrgSearchModel m)
         {
-            var dt1 = Dt1.ToDate();
-            if (!dt1.HasValue)
-                dt1 = ChurchAttendanceModel.MostRecentAttendedSunday();
-            var dt2 = Dt2.ToDate();
-            if (!dt2.HasValue)
-                dt2 = dt1.Value.AddDays(1);
-            var m2 = new AttendanceDetailModel(dt1.Value, dt2, m);
+            var d1 = dt1.ToDate();
+            if (!d1.HasValue)
+                d1 = ChurchAttendanceModel.MostRecentAttendedSunday();
+            var d2 = dt2.ToDate();
+            if (!d2.HasValue)
+                d2 = d1.Value.AddDays(1);
+            var m2 = new AttendanceDetailModel(d1.Value, d2, m);
             return View(m2);
         }
 
@@ -151,23 +151,26 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new CheckinControlResult { model = m };
         }
 
-        [HttpGet, Route("ChurchAttendance/{dt:datetime?}")]
-        public ActionResult ChurchAttendance(DateTime? dt)
+        [HttpGet, Route("ChurchAttendance/{dt?}")]
+        public ActionResult ChurchAttendance(string dt)
         {
-            if (!dt.HasValue)
-                dt = ChurchAttendanceModel.MostRecentAttendedSunday();
-            var m = new ChurchAttendanceModel(dt.Value);
+            var d = dt.ToDate();
+            if (!d.HasValue)
+                d = ChurchAttendanceModel.MostRecentAttendedSunday();
+            var m = new ChurchAttendanceModel(d.Value);
             return View(m);
         }
 
         [HttpGet]
-        public ActionResult ChurchAttendance2(DateTime? dt1, DateTime? dt2, string skipweeks)
+        public ActionResult ChurchAttendance2(string dt1, string dt2, string skipweeks)
         {
-            if (!dt1.HasValue)
-                dt1 = ChurchAttendanceModel.MostRecentAttendedSunday();
-            if (!dt2.HasValue)
-                dt2 = DateTime.Today;
-            var m = new ChurchAttendance2Model(dt1, dt2, skipweeks);
+            var d1 = dt1.ToDate();
+            var d2 = dt2.ToDate();
+            if (!d1.HasValue)
+                d1 = ChurchAttendanceModel.MostRecentAttendedSunday();
+            if (!d2.HasValue)
+                d2 = DateTime.Today;
+            var m = new ChurchAttendance2Model(d1, d2, skipweeks);
             return View(m);
         }
 
@@ -207,21 +210,25 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpGet]
-        public ActionResult Decisions(int? campus, DateTime? dt1, DateTime? dt2)
+        public ActionResult Decisions(int? campus, string dt1, string dt2)
         {
             DateTime today = Util.Now.Date;
-            if (!dt1.HasValue)
-                dt1 = new DateTime(today.Year, 1, 1);
-            if (!dt2.HasValue)
-                dt2 = today;
-            var m = new DecisionSummaryModel(dt1, dt2) { Campus = campus };
+            var d1 = dt1.ToDate();
+            var d2 = dt2.ToDate();
+            if (!d1.HasValue)
+                d1 = new DateTime(today.Year, 1, 1);
+            if (!d2.HasValue)
+                d2 = today;
+            var m = new DecisionSummaryModel(d1, d2) { Campus = campus };
             return View(m);
         }
 
         [HttpGet, Route("DecisionsToQuery/{command}/{key}")]
-        public ActionResult DecisionsToQuery(string command, string key, int? campus, DateTime? dt1, DateTime? dt2)
+        public ActionResult DecisionsToQuery(string command, string key, int? campus, string dt1, string dt2)
         {
-            var r = new DecisionSummaryModel(dt1, dt2) { Campus = campus }.ConvertToSearch(command, key);
+            var d1 = dt1.ToDate();
+            var d2 = dt2.ToDate();
+            var r = new DecisionSummaryModel(d1, d2) { Campus = campus }.ConvertToSearch(command, key);
             return Redirect(r);
         }
 
@@ -305,9 +312,11 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpGet]
-        public ActionResult Meetings(DateTime dt1, DateTime dt2, int? programid, int? divisionid)
+        public ActionResult Meetings(string dt1, string dt2, int? programid, int? divisionid)
         {
-            var m = new MeetingsModel { Dt1 = dt1, Dt2 = dt2, ProgramId = programid, DivisionId = divisionid };
+            var d1 = dt1.ToDate();
+            var d2 = dt2.ToDate();
+            var m = new MeetingsModel { Dt1 = d1, Dt2 = d2, ProgramId = programid, DivisionId = divisionid };
             return View(m);
         }
         [HttpPost]
@@ -321,13 +330,16 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpPost]
-        public ActionResult MeetingsForMonth(DateTime dt1, OrgSearchModel m)
+        public ActionResult MeetingsForMonth(string dt1, OrgSearchModel m)
         {
             var orgs = string.Join(",", m.FetchOrgs().Select(oo => oo.OrganizationId));
-            ViewBag.Month = dt1.ToString("MMMM yyyy");
-            dt1 = new DateTime(dt1.Year, dt1.Month, 1);
-            var dt2 = dt1.AddMonths(1).AddDays(-1);
-            var hasmeetings = DbUtil.Db.MeetingsDataForDateRange(orgs, dt1, dt2).AsEnumerable().Any();
+            var d1 = dt1.ToDate();
+            if (!d1.HasValue)
+                throw new ArgumentException($"invalid date: {dt1}", nameof(dt1));
+            ViewBag.Month = d1.Value.ToString("MMMM yyyy");
+            d1 = new DateTime(d1.Value.Year, d1.Value.Month, 1);
+            var dt2 = d1.Value.AddMonths(1).AddDays(-1);
+            var hasmeetings = DbUtil.Db.MeetingsDataForDateRange(orgs, d1, dt2).AsEnumerable().Any();
             if (!hasmeetings)
                 return RedirectShowError("No meetings to show");
 
@@ -831,9 +843,10 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpGet]
-        public ActionResult WeeklyDecisions(int? campus, DateTime? sunday)
+        public ActionResult WeeklyDecisions(int? campus, string sunday)
         {
-            var m = new WeeklyDecisionsModel(sunday) { Campus = campus };
+            var sun = sunday.ToDate();
+            var m = new WeeklyDecisionsModel(sun) { Campus = campus };
             return View(m);
         }
 
