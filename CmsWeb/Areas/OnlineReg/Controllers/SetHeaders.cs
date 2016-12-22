@@ -32,19 +32,19 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if ((settings == null || !settings.ContainsKey(id)) && org != null)
             {
                 var setting = DbUtil.Db.CreateRegistrationSettings(id);
-                shell = DbUtil.Content(setting.ShellBs, null);
+                shell = DbUtil.Db.ContentOfTypeHtml(setting.ShellBs)?.Body;
             }
             if (!shell.HasValue() && settings != null && settings.ContainsKey(id))
-                shell = DbUtil.Content(settings[id].ShellBs, null);
+                shell = DbUtil.Db.ContentOfTypeHtml(settings[id].ShellBs)?.Body;
             if (!shell.HasValue())
             {
-                shell = DbUtil.Content("ShellDefaultBs", "");
+                shell = DbUtil.Db.ContentOfTypeHtml("ShellDefaultBs")?.Body;
                 if(!shell.HasValue())
-                    shell = DbUtil.Content("DefaultShellBs", "");
+                    shell = DbUtil.Db.ContentOfTypeHtml("DefaultShellBs")?.Body;
             }
 
 
-            if (shell.HasValue())
+            if (shell != null && shell.HasValue())
             {
                 var re = new Regex(@"(.*<!--FORM START-->\s*).*(<!--FORM END-->.*)", RegexOptions.Singleline);
                 var t = re.Match(shell).Groups[1].Value.Replace("<!--FORM CSS-->", ViewExtensions2.Bootstrap3Css());
