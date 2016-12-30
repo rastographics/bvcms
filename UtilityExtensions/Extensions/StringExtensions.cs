@@ -105,7 +105,7 @@ namespace UtilityExtensions
             var option = noblanks
                 ? StringSplitOptions.RemoveEmptyEntries
                 : StringSplitOptions.None;
-            return source.Split(new[] {"\r\n", "\n"}, option);
+            return source.Split(new[] {"\r\n", "\n", "\r"}, option);
         }
 
         public static string GetAttr(this XElement e, string n, string def = null)
@@ -297,6 +297,11 @@ namespace UtilityExtensions
         {
             var a = s.SplitStr(sep, ntokens);
             return a.Length >= n ? a[n-1] : "";
+        }
+        public static string RemoveGrammarly(this string s)
+        {
+            s = Regex.Replace(s, "<style type=\"text/css\">._44eb54-hoverMenu.*?</style>", "", RegexOptions.Singleline);
+            return Regex.Replace(s, @"\sdata-gramm\w*?="".*?""", "", RegexOptions.Singleline);
         }
     }
 }

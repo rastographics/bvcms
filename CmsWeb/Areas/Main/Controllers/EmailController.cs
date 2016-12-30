@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using CmsData.Codes;
 using CmsWeb.Areas.Main.Models;
@@ -185,6 +186,7 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             if (body == null)
                 body = "";
+            body = body.RemoveGrammarly();
             var doc = new HtmlDocument();
             doc.LoadHtml(body);
             var ele = doc.DocumentNode.SelectSingleNode("/div[@bvedit='discardthis']");

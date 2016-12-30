@@ -79,7 +79,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             var content = DbUtil.ContentFromID(id);
             content.Name = name;
             content.Title = string.IsNullOrWhiteSpace(title) ? name : title;
-            content.Body = body;
+            content.RemoveGrammarly();
             content.RoleID = roleid ?? 0;
             content.Snippet = snippet;
 
@@ -142,6 +142,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             switch (cContent.TypeID) // 0 = HTML, 1 = Text, 2 = eMail Template
             {
                 case ContentTypeCode.TypeHtml:
+                    cContent.RemoveGrammarly();
                     return View("EditHTML", cContent);
 
                 case ContentTypeCode.TypeText:
@@ -155,9 +156,11 @@ namespace CmsWeb.Areas.Manage.Controllers
                     return View("EditPythonScript", cContent);
 
                 case ContentTypeCode.TypeEmailTemplate:
+                    cContent.RemoveGrammarly();
                     return View("EditTemplate", cContent);
 
                 case ContentTypeCode.TypeSavedDraft:
+                    cContent.RemoveGrammarly();
                     return View("EditDraft", cContent);
             }
 
@@ -167,6 +170,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult EmailBody(int id)
         {
             var content = DbUtil.ContentFromID(id);
+            content.RemoveGrammarly();
             return View(content);
         }
 
