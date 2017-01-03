@@ -79,6 +79,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             var content = DbUtil.ContentFromID(id);
             content.Name = name;
             content.Title = string.IsNullOrWhiteSpace(title) ? name : title;
+            content.Body = body;
             content.RemoveGrammarly();
             content.RoleID = roleid ?? 0;
             content.Snippet = snippet;
