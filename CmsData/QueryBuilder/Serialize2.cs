@@ -168,6 +168,8 @@ namespace CmsData
                 OrgType2 = Attribute(r, "OrgType2").ToInt(),
                 AllConditions = allClauses
             };
+            if (c.ConditionName == "MatchAnything")
+                c.Comparison = "Equal";
             if (c.ConditionName != "FamilyHasChildrenAged")
                 c.Age = null;
             if (p == null)

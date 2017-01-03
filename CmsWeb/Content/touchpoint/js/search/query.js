@@ -425,6 +425,8 @@
         $EditCondition({ isnew: true });
     else if ($("#AutoRun").prop("checked"))
         RefreshList();
+    else if ($("#ForceAutoRun").val("true"))
+        RefreshList();
 
     $('body').on('click', 'a.taguntag', function (ev) {
         $.block();

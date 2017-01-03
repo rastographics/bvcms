@@ -41,6 +41,10 @@
                           <div class="checkbox">
                             <label class="control-label">
                               @Html.CheckBox("AutoRun") Auto refresh?
+                              @if (ViewBag.ForceAutoRun != null)
+                              {
+                              <input type="hidden" id="ForceAutoRun" value="true" />
+                              }
                             </label>
                           </div>
                           <a href="/Query/Export/@ViewBag.OrigQueryId" class="exportquery">View Code</a>
