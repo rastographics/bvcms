@@ -26,8 +26,8 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             {
                 var batchDate = csv[0].ToDate();
                 var amount = csv[14];
-                var totalBatchAmount = csv[4];
-                if (!amount.HasValue() || !batchDate.HasValue || amount == totalBatchAmount)
+                var type = csv[13];
+                if (!amount.HasValue() || !batchDate.HasValue || type == "Credit")
                     continue;
 
                 var routingNumber = csv[17];
