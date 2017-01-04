@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using CmsData;
 using CmsData.Registration;
@@ -105,6 +106,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 .Replace("{first}", person.PreferredName, ignoreCase: true)
                 .Replace("{org}", Organization.OrganizationName, ignoreCase: true);
             return msg;
+        }
+        public bool NotAvailable()
+        {
+            var dt = DateTime.Now;
+            var dt1 = DateTime.Parse("1/1/1900");
+            var dt2 = DateTime.Parse("1/1/2200");
+            return Organization.RegistrationClosed == true
+                   || Organization.OrganizationStatusId == OrgStatusCode.Inactive
+                   || dt < (Organization.RegStart ?? dt1)
+                   || (dt > (Organization.RegEnd ?? dt2));
         }
     }
 }

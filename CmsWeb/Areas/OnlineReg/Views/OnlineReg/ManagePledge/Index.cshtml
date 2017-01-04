@@ -1,21 +1,20 @@
-﻿@model CmsWeb.Areas.OnlineReg.Models.ManagePledgesModel
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.OnlineReg.Models.ManagePledgesModel
 @{
-    Layout = "~/Views/Shared/onlinereg2.cshtml";
-    ViewBag.Title = "Online Registration";
-    var pi = Model.GetPledgeInfo();
+  Layout = "~/Views/Shared/onlinereg2.cshtml";
+  ViewBag.Title = "Online Registration";
+  var pi = Model.GetPledgeInfo();
 }
 @section head
 {
   <style>
-    .form-control[readonly] {
-    cursor: auto;
-}
+    .form-control[readonly] { cursor: auto; }
   </style>
 }
 @section scripts
 {
   <script type="text/javascript">
-    $(function () {
+    $(function() {
       $("#confirm").validate({
         rules: {
           "pledge": {
@@ -26,7 +25,7 @@
         },
         errorLabelContainer: "#messageBox",
         wrapper: "span",
-        submitHandler: function (form) {
+        submitHandler: function(form) {
           $('#submitit').attr('disabled', 'disabled');
           form.submit();
         }
@@ -35,57 +34,71 @@
   </script>
 }
 
-<form class="form-horizontal" action="/OnlineReg/ConfirmPledge" method="POST" id="confirm">
-  @Html.Hidden("pid", Model.pid)
-  @Html.Hidden("orgid", Model.orgid)
-  <fieldset>
-    <legend>
-      @Model.Organization.OrganizationName<br/>
-      <small>For @Model.person.Name &lt;@Model.person.EmailAddress&gt;</small>
-    </legend>
+@if (Model.NotAvailable())
+{
+  if (Model.Setting.InstructionSorry.HasValue())
+  {
+    @Html.Raw(Model.Setting.InstructionSorry)
+  }
+  else
+  {
+    <h4 id="sorry">Sorry, Pledging is not available at this time</h4>
+  }
+}
+else
+{
+  <form class="form-horizontal" action="/OnlineReg/ConfirmPledge" method="POST" id="confirm">
+    @Html.Hidden("pid", Model.pid)
+    @Html.Hidden("orgid", Model.orgid)
+    <fieldset>
+      <legend>
+        @Model.Organization.OrganizationName<br/>
+        <small>For @Model.person.Name &lt;@Model.person.EmailAddress&gt;</small>
+      </legend>
 
-    @Html.Raw(Model.Setting.InstructionOptions)
+      @Html.Raw(Model.Setting.InstructionOptions)
 
-    @if (pi.Pledged > 0)
-    {
+      @if (pi.Pledged > 0)
+      {
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="textinput">Pledged to Date</label>
+          <div class="col-md-4">
+            <input readonly="readonly" name="textinput" type="text" placeholder="$@pi.Pledged.ToString("N2")" class="form-control input-md">
+          </div>
+        </div>
+      }
+      @if (pi.Given > 0)
+      {
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="textinput">Given to Date</label>
+          <div class="col-md-4">
+            <input readonly="readonly" name="textinput" type="text" placeholder="$@pi.Given.ToString("N2")" class="form-control input-md">
+          </div>
+        </div>
+      }
       <div class="form-group">
-        <label class="col-md-4 control-label" for="textinput">Pledged to Date</label>
+        <label class="col-md-4 control-label" for="amt">
+          @if (pi.Pledged > 0)
+          {
+            @:My Additional Pledge
+          }
+          else
+          {
+            @:My Pledge 
+          }
+        </label>
         <div class="col-md-4">
-          <input readonly="readonly" name="textinput" type="text" placeholder="$@pi.Pledged.ToString("N2")" class="form-control input-md">
+          <input id="pledge" name="pledge" type="text" placeholder="Pledge Amount" class="form-control input-md">
+          <span class="help-block">no $ or commas please</span> 
+          <span id="messageBox"></span>
         </div>
       </div>
-    }
-    @if (pi.Given > 0)
-    {
       <div class="form-group">
-        <label class="col-md-4 control-label" for="textinput">Given to Date</label>
+        <label class="col-md-4 control-label" for="submitit"></label>
         <div class="col-md-4">
-          <input readonly="readonly" name="textinput" type="text" placeholder="$@pi.Given.ToString("N2")" class="form-control input-md">
+          <button id="submitit" class="submitbutton btn btn-success">Make Pledge</button>
         </div>
       </div>
-    }
-    <div class="form-group">
-      <label class="col-md-4 control-label" for="amt">
-        @if (pi.Pledged > 0)
-        {
-          @:My Additional Pledge
-        }
-        else
-        {
-          @:My Pledge 
-        }
-      </label>
-      <div class="col-md-4">
-        <input id="pledge" name="pledge" type="text" placeholder="Pledge Amount" class="form-control input-md">
-        <span class="help-block">no $ or commas please</span> 
-        <span id="messageBox"></span>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-md-4 control-label" for="submitit"></label>
-      <div class="col-md-4">
-        <button id="submitit" class="submitbutton btn btn-success">Make Pledge</button>
-      </div>
-    </div>
-  </fieldset>
-</form>
+    </fieldset>
+  </form>
+}
