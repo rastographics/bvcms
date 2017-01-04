@@ -124,7 +124,7 @@ namespace CmsData
                 var p = db.LoadPersonById(pid);
                 person = p;
 
-                var pi = GetPayInfo(currentOrgId, p.PeopleId);
+                var pi = GetPayInfo(emailqueueto.OrgId ?? currentOrgId, p.PeopleId);
 
                 var aa = db.GetAddressList(p);
 
