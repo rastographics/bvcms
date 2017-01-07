@@ -302,6 +302,16 @@ namespace CmsWeb {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] DocxAveryLabel {
+            get {
+                object obj = ResourceManager.GetObject("DocxAveryLabel", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
         ///&lt;InvolvementTable&gt;
         ///  &lt;Columns&gt;
@@ -438,31 +448,24 @@ namespace CmsWeb {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT
+        ///   Looks up a localized string similar to --default.v1   IMPORTANT! delete this line if you want to customize, otherwise your changes will be overwritten
+        ///SELECT
         ///	p.PeopleId,
         ///	p.LastName,
         ///	p.FamilyId,
-        ///	p.Name,
+        ///	Name = p.Name2,
         ///	p.PreferredName,
-        ///	p.SuffixCode,
-        ///	Birthday = dbo.DOB(p.BirthMonth,p.BirthDay, p.BirthYear),
+        ///	Suffix = p.SuffixCode,
+        ///	DOB = dbo.DOB(p.BirthMonth,p.BirthDay, p.BirthYear),
         ///	[Address] = p.PrimaryAddress,
         ///	Address2 = p.PrimaryAddress2,
         ///	City = p.PrimaryCity,
-        ///	St = p.PrimaryState,
+        ///	[State] = p.PrimaryState,
         ///	Zip = p.PrimaryZip,
         ///	Cell = p.CellPhone,
         ///	Home = p.HomePhone,
-        ///	p.EmailAddress,
-        ///	p.EmailAddress2,
-        ///	PhonesOk = ISNULL(p.DoNotPublishPhones, 0),
-        ///	pp.MediumId,
-        ///	pp.SmallId,
-        ///	pp.X,
-        ///	pp.Y,
-        ///	PicDate = pp.CreatedDate,
-        ///	p.GenderId
-        ///FROM dbo.Ta [rest of string was truncated]&quot;;.
+        ///	Email = p.EmailAddress,
+        ///	Email2 = p.EmailAddress [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string PictureDirectorySql {
             get {
@@ -471,7 +474,8 @@ namespace CmsWeb {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;div id=&quot;results&quot;&gt;
+        ///   Looks up a localized string similar to &lt;!--default.v1   IMPORTANT! delete this line if you want to customize, otherwise your changes will be overwritten--&gt;
+        ///&lt;div id=&quot;results&quot;&gt;
         ///  &lt;style&gt;
         ///    .profile-portrait {
         ///      height: 75px;
@@ -486,13 +490,7 @@ namespace CmsWeb {
         ///      border-radius: 999999px;
         ///      background-color: #fff;
         ///      border: 1px solid #e6e6e6;
-        ///      padding-top: 5px;
-        ///      padding-left: 5px;
-        ///      padding-right: 5px;
-        ///    }
-        ///  &lt;/style&gt;
-        ///  {{{PagerTop}}}
-        ///  &lt;div class=&quot;tabl [rest of string was truncated]&quot;;.
+        ///      padding-t [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string PictureDirectoryTemplate {
             get {
@@ -527,13 +525,12 @@ namespace CmsWeb {
         ///&lt;ReportsMenu&gt;
         ///  &lt;Header&gt;Statistics&lt;/Header&gt;
         ///  &lt;Report link=&quot;/Reports/VitalStats&quot;&gt;Vital Stats&lt;/Report&gt;
-        ///  &lt;Space&gt;&lt;/Space&gt;
         ///  &lt;Header&gt;Attendance Summary&lt;/Header&gt;
         ///  &lt;Report link=&quot;/Reports/ChurchAttendance&quot; target=&quot;_blank&quot;&gt;Week at a Glance&lt;/Report&gt;
         ///  &lt;Report link=&quot;/Reports/ChurchAttendance2&quot; target=&quot;_blank&quot;&gt;Average Week at a Glance&lt;/Report&gt;
-        ///  &lt;Space&gt;&lt;/Space&gt;
         ///  &lt;Header&gt;Decisions&lt;/Header&gt;
-        ///  &lt;Report link=&quot;/Reports/WeeklyDecisions&quot; target=&quot;_blank&quot;&gt;Weekly Decisions&lt;/Rep [rest of string was truncated]&quot;;.
+        ///  &lt;Report link=&quot;/Reports/WeeklyDecisions&quot; target=&quot;_blank&quot;&gt;Weekly Decisions&lt;/Report&gt;
+        ///  &lt;Report link=&quot;/Reports/Decisio [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ReportsMenu {
             get {

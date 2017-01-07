@@ -406,4 +406,7 @@ so that your data will not stay duplicated.&lt;/p&gt;
   <data name="PictureDirectorySql" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>areas\search\views\picturedirectory\picturedirectory.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
+  <data name="DocxAveryLabel" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>areas\reports\models\avery\docxaverylabel.docx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

@@ -123,15 +123,13 @@ namespace CmsWeb.Areas.Reports.Controllers
                 return Content("no query");
             if (!format.HasValue())
                 return Content("no format");
-            return new AveryAddressWordResult
+            return new DocXAveryLabels(id.Value)
             {
-                id = id.Value,
-                format = format,
-                titles = titles,
-                usephone = usephone ?? false,
-                skip = skipNum,
-                sortzip = sortzip,
-                useMailFlags = useMailFlags,
+                Format = format,
+                Titles = titles,
+                Skip = skipNum,
+                SortZip = sortzip,
+                UseMailFlags = useMailFlags,
             };
         }
 
