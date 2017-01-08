@@ -21,6 +21,13 @@ namespace CmsData
         public string Content(string name)
         {
             var c = db.Content(name);
+#if DEBUG
+            if (c == null)
+            {
+                var s = System.IO.File.ReadAllText(name);
+                return s;
+            }
+#endif
             return c.Body;
         }
 

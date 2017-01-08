@@ -131,7 +131,7 @@ namespace CmsData
                     parameters.Add("@" + kv.Key, kv.Value);
 
             if (sql.Contains("@UserPeopleId"))
-                parameters.Add("@UserPeopleId", Util.UserPeopleId);
+                parameters.Add("@UserPeopleId", data.PeopleId ?? Util.UserPeopleId);
             if (sql.Contains("@CurrentOrgId"))
                 parameters.Add("@CurrentOrgId", data.OrgId ?? db.CurrentOrgId0);
 

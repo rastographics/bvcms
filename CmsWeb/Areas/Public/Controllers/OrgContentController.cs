@@ -9,9 +9,11 @@ using MoreLinq;
 
 namespace CmsWeb.Areas.Public
 {
+    [RouteArea("Public", AreaPrefix = "OrgContent"), Route("{action}/{id?}")]
     public class OrgContentController : CmsController
     {
-        public ActionResult Index(int id)
+        [Route("~/OrgContent/{id:int}/{pid:int?}")]
+        public ActionResult Index(int id, int? pid)
         {
             var o = OrgContentInfo.Get(id);
             if (o == null)
@@ -19,7 +21,7 @@ namespace CmsWeb.Areas.Public
             if (!Util.UserPeopleId.HasValue)
                 return Redirect("/OrgContent/Login/" + id);
 
-            if(o.TryRunPython())
+            if(o.TryRunPython(pid ?? Util.UserPeopleId.Value))
                 return View("ScriptResults", o);
 
             var org = DbUtil.Db.LoadOrganizationById(o.OrgId);

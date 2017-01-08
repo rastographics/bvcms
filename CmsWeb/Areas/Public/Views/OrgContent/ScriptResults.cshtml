@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/Site2.cshtml";
 }
 
-@if (!Model.IsMember)
+@if (!Model.IsMember && !User.IsInRole("Admin"))
 {
     <h2>Sorry, members only</h2>
 }

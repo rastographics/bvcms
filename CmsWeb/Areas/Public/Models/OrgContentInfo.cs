@@ -158,7 +158,7 @@ namespace CmsWeb.Models
             public int PeopleId { get; set; }
         }
 
-        public bool TryRunPython()
+        public bool TryRunPython(int pid)
         {
             var ev = Organization.GetExtra(DbUtil.Db, OrgId, "OrgMembersPageScript");
             if (!ev.HasValue())
@@ -168,7 +168,7 @@ namespace CmsWeb.Models
                 return false;
             var pe = new PythonModel(Util.Host);
             pe.Data.OrgId = OrgId;
-            pe.Data.PeopleId = Util.UserPeopleId;
+            pe.Data.PeopleId = pid;
             Results = pe.RunScript(script);
             return true;
         }

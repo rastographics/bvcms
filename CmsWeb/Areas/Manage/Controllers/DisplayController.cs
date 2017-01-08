@@ -55,6 +55,16 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
             return RedirectEdit(content);
         }
+        public ActionResult Content(int? id)
+        {
+            if (!id.HasValue)
+                throw new HttpException(404, "No ID found.");
+
+            var content = DbUtil.ContentFromID(id.Value);
+            if (content == null)
+                throw new HttpException(404, "No ID found.");
+            return Content(content.Body);
+        }
 
         [HttpPost]
         public ActionResult ContentCreate(int newType, string newName, int? newRole)
