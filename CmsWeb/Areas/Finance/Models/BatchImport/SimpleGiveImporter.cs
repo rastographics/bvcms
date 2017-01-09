@@ -12,9 +12,8 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
     {
         public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
         {
-            var lines = text.SplitLines().SkipUntil(vv => vv.StartsWith("Amount,Type"));
-            var txt = string.Join("\n", lines);
-            using (var csv = new CsvReader(new StringReader(txt)))
+            using (var csv = new CsvReader(new StringReader(text) )
+                    { Configuration = { Delimiter = "\t"} })
                 return Import(csv, date, fundid);
         }
 
@@ -27,24 +26,28 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
             while (csv.Read())
             {
-                var amount = csv[0];
-                var dt = csv[2].ToDate();
+                if(csv[0].EndsWith("ENDTRNS"))
+                    continue;
+                var amount = csv[6];
+                var dt = csv[3].ToDate();
                 if (!amount.HasValue())
                     continue;
 
                 var fund = csv[4];
                 int ffid = !fund.HasValue() ? fid : DbUtil.Db.FetchOrCreateFund(fund).FundId;
+
                 var name = csv[5];
-                var email = csv[6];
-                var address = csv[7];
-                var phone = csv[8];
+                var address = csv[12];
+                var city = csv[13];
+                var st = csv[14];
+                var zip = csv[15];
 
                 if (bundleHeader == null)
                     bundleHeader = BatchImportContributions.GetBundleHeader(date, DateTime.Now);
 
-                var bd = BatchImportContributions.AddContributionDetail(dt ?? date, ffid, amount, null, "", email);
+                var bd = BatchImportContributions.AddContributionDetail(dt ?? date, ffid, amount, null, "", $"{name};{address}");
                 details.Add(bd);
-                bd.Contribution.ContributionDesc = $"{name};{address};{phone}";
+                bd.Contribution.ContributionDesc = $"{name};{address},{city},{st},{zip}";
             }
 
             details.Reverse();

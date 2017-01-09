@@ -161,7 +161,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             if (subtext.Contains("Type,Date,Num,Name,Memo,Class,Split,Amount"))
                 return new ChristLutheranVailImporter();
 
-            if (subtext.Contains("Amount,Type,Date,Txn ID #,Fund,Name,Email,Address,Phone,Env Num"))
+            if (subtext.Contains("!TRNS	TRNSID	TRNSTYPE	DATE	ACCNT	NAME	AMOUNT	DOCNUM	MEMO	CLASS	PAYMETH	PONUM	ADDR1	ADDR2	ADDR3	ADDR4	ADDR5	SADDR1	SADDR2	SADDR3	SADDR4	SADDR5	TOPRINT"))
                 return new SimpleGiveImporter();
 
             switch (DbUtil.Db.Setting("BankDepositFormat", "none").ToLower())
