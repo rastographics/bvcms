@@ -86,7 +86,7 @@ namespace CmsWeb.Models
                     pg.InsertText(p.LabelName);
 
                 if (p.MailingAddress.HasValue())
-                    pg.InsertText(p.MailingAddress.Trim());
+                    pg.InsertText($"\n{p.MailingAddress.Trim()}");
                 else
                 {
                     pg.InsertText($"\n{p.Address}");
