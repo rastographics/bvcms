@@ -109,12 +109,14 @@ namespace CmsWeb.Models
                     finaldoc.InsertDocument(currpage);
                 currpage = null;
             }
-            if(finaldoc == null)
+            if(finaldoc == null && currpage == null)
             {
                 response.Write("no data found");
                 return;
             }
-            if(currpage != null)
+            if (finaldoc == null)
+                finaldoc = currpage;
+            else if(currpage != null)
                 finaldoc.InsertDocument(currpage);
 
             context.HttpContext.Response.Clear();
