@@ -486,7 +486,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         // Used for Conversions
         public static Person Add(CMSDataContext db, Family fam, string firstname, string nickname, string lastname, DateTime? dob)
         {
-            return Add(db, false, fam, 20, null, firstname, nickname, lastname, dob.FormatDate(), 0, 0, 0, 0);
+            return Add(db, false, fam, 20, null, firstname, nickname, lastname, dob.ToString2("M/d/yyyy"), 0, 0, 0, 0);
         }
         public static Person Add(CMSDataContext db, bool SendNotices, Family fam, int position, Tag tag, string firstname, string nickname, string lastname, string dob, int MarriedCode, int gender, int originId, int? EntryPointId, bool testing = false)
         {
