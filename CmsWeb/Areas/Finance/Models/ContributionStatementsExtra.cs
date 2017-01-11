@@ -270,7 +270,7 @@ p { font-size: 11px; }
                     t.AddCell(cell);
 
                     if (ShowNotes)
-                        t.AddCell(new Phrase(c.Description, font));
+                        t.AddCell(new Phrase(c.Description.trim(), font));
                     else
                         t.AddCell(new Phrase("", font));
 
