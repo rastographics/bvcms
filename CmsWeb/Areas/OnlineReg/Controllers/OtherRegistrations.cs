@@ -85,8 +85,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (IsSmallGroupFilled(setting, li.oid.Value, smallgroup))
                     throw new Exception("sorry, maximum limit has been reached for " + smallgroup);
 
-                var omb = OrganizationMember.InsertOrgMembers(DbUtil.Db,
-                    li.oid.Value, li.pid.Value, MemberTypeCode.Member, DateTime.Now, null, false);
+                var omb = OrganizationMember.Load(DbUtil.Db, li.pid.Value, li.oid.Value) ??
+                          OrganizationMember.InsertOrgMembers(DbUtil.Db,
+                              li.oid.Value, li.pid.Value, MemberTypeCode.Member, DateTime.Now, null, false);
 
                 if (q.org.AddToSmallGroupScript.HasValue())
                 {
@@ -197,11 +198,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
                 if (q.org.Limit <= q.meeting.Attends.Count(aa => aa.Commitment == 1))
                     throw new Exception("sorry, maximum limit has been reached");
-                var omb = OrganizationMember.InsertOrgMembers(DbUtil.Db,
-                    q.meeting.OrganizationId, li.pid.Value, MemberTypeCode.Member, DateTime.Now, null, false);
+                var omb = OrganizationMember.Load(DbUtil.Db, li.pid.Value, q.meeting.OrganizationId) ??
+                          OrganizationMember.InsertOrgMembers(DbUtil.Db,
+                              q.meeting.OrganizationId, li.pid.Value, MemberTypeCode.Member, DateTime.Now, null, false);
                 if (smallgroup.HasValue())
                     omb.AddToGroup(DbUtil.Db, smallgroup);
-
 
                 li.ot.Used = true;
                 DbUtil.Db.SubmitChanges();
