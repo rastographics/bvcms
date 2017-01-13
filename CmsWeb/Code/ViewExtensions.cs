@@ -72,7 +72,7 @@ namespace CmsWeb
 
         public static string CmsHost => DbUtil.Db.CmsHost;
 
-        public static string GridClass => "table table-condensed table-striped not-wide grid2";
+        public static string GridClass => "table table-condensed table-striped notwide grid2 centered";
 
         public static MvcHtmlString DivValidationMessageFor<TModel, TProperty>(this HtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression)
         {

@@ -41,7 +41,7 @@ namespace CmsWeb.Areas.Org.Models
                         ? q.OrderByDescending(m => m.NumPresent)
                         : q.OrderBy(m => m.NumPresent);
                     break;
-                case "Headcount":
+                case "Count":
                     q = Direction == "asc"
                         ? q.OrderBy(m => m.HeadCount).ThenBy(m => m.NumPresent)
                         : q.OrderByDescending(m => m.HeadCount).ThenByDescending(m => m.NumPresent);
@@ -51,7 +51,7 @@ namespace CmsWeb.Areas.Org.Models
                         ? q.OrderByDescending(m => (m.NumNewVisit + m.NumRepeatVst + m.NumVstMembers))
                         : q.OrderBy(m => (m.NumNewVisit + m.NumRepeatVst + m.NumVstMembers)).ThenBy(m => m.NumPresent);
                     break;
-                case "Time":
+                case "Meeting Time":
                     q = Direction == "asc"
                         ? q.OrderBy(m => m.MeetingDate.Value.TimeOfDay).ThenBy(m => m.MeetingDate)
                         : q.OrderByDescending(m => m.MeetingDate.Value.TimeOfDay).ThenByDescending(m => m.MeetingDate);

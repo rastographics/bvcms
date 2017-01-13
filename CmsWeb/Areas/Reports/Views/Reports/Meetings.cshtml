@@ -10,14 +10,12 @@
 @section head
 {
   <style>
-    table.grid a, table.grid a:visited {
+    table.grid a, table.grid a:visited { color: #0088cc; }
+    table.grid a:hover {
+      text-decoration: underline;
       color: #0088cc;
     }
-
-      table.grid a:hover {
-        text-decoration: underline;
-        color: #0088cc;
-      }
+    .padding-left { padding-left: 1em !important; }
   </style>
 }
 @section scripts
@@ -29,9 +27,9 @@
   Meeting Dates:
   @if (!Model.FromWeekAtAGlance)
   {
-    @:Start: <input type="text" id="Dt1" name="Dt1" value="@Model.Dt1.ToString2("g")" style="width: 200px; font-size: 110%" class="datepicker" />
-    @:End: <input type="text" id="Dt2" name="Dt2" value="@Model.Dt2.ToString2("g")" style="width: 200px; font-size: 110%" class="datepicker" />
-    }
+    @:Start: <input type="text" id="Dt1" name="Dt1" value="@Model.Dt1.ToString2("g")" style="width: 200px; font-size: 110%" class="datepicker"/>
+    @:End: <input type="text" id="Dt2" name="Dt2" value="@Model.Dt2.ToString2("g")" style="width: 200px; font-size: 110%" class="datepicker"/>
+  }
   else
   {
     @:Start: @Model.Dt1.FormatDateTm()
@@ -40,29 +38,33 @@
     @Html.HiddenFor(m => m.Dt2)
   }
   No Zero Meetings: @Html.CheckBox("NoZero")
-  <input type="hidden" name="FromWeekAtAGlance" value="@Model.FromWeekAtAGlance" />
-  <input type="hidden" name="Name" value="@Model.Name" />
-  <input type="hidden" name="StatusId" value="@Model.StatusId" />
-  <input type="hidden" name="ProgramId" value="@Model.ProgramId" />
-  <input type="hidden" name="DivisionId" value="@Model.DivisionId" />
-  <input type="hidden" name="ScheduleId" value="@Model.ScheduleId" />
-  <input type="hidden" name="CampusId" value="@Model.CampusId" />
-  <input type="hidden" name="OnlineReg" value="@Model.OnlineReg" />
-  <input type="hidden" name="TypeId" value="@Model.TypeId" />
+  <input type="hidden" name="FromWeekAtAGlance" value="@Model.FromWeekAtAGlance"/>
+  <input type="hidden" name="Name" value="@Model.Name"/>
+  <input type="hidden" name="StatusId" value="@Model.StatusId"/>
+  <input type="hidden" name="ProgramId" value="@Model.ProgramId"/>
+  <input type="hidden" name="DivisionId" value="@Model.DivisionId"/>
+  <input type="hidden" name="ScheduleId" value="@Model.ScheduleId"/>
+  <input type="hidden" name="CampusId" value="@Model.CampusId"/>
+  <input type="hidden" name="OnlineReg" value="@Model.OnlineReg"/>
+  <input type="hidden" name="TypeId" value="@Model.TypeId"/>
   @Html.HiddenFor(m => m.Pager.Sort)
   @Html.HiddenFor(m => m.Pager.Direction)
 </form>
-<hr />
+<hr/>
 <table class="@ViewExtensions2.GridClass" cellspacing="10">
   <tr>
     <td class="right"> Total Individuals </td>
-    <td class="right"><a class="submit" href="/Reports/MeetingsToQuery/All">@Model.TotalPeople.ToString("N0")</a></td>
+    <td class="right">
+      <a class="submit" href="/Reports/MeetingsToQuery/All">@Model.TotalPeople.ToString("N0")</a>
+    </td>
     <td class="right"> Total Count </td>
     <td class="right">@Model.TotalCount.ToString("N0")</td>
   </tr>
   <tr>
     <td class="right"> Total Guests </td>
-    <td class="right"><a class="submit" href="/Reports/MeetingsToQuery/Guests">@Model.TotalGuests.ToString("N0")</a></td>
+    <td class="right">
+      <a class="submit" href="/Reports/MeetingsToQuery/Guests">@Model.TotalGuests.ToString("N0")</a>
+    </td>
     <td class="right"> Total Attends </td>
     <td class="right">@Model.TotalAttends.ToString("N0")</td>
   </tr>
@@ -73,47 +75,68 @@
     <td class="right">@Model.OtherAttends.ToString("N0")</td>
   </tr>
 </table>
-<hr />
+<hr/>
 <table class="@ViewExtensions2.GridClass" cellspacing="3">
   <thead>
-    <tr>
-      <th>Meeting</th>
-      <th colspan="2" class="center"><a href="#" class="sortable">--Attendance--</a></th>
-      <th colspan="6"></th>
-    </tr>
-    <tr>
-      <th> <a href="#" class="sortable">Time</a> </th>
-      <th> <a href="#" class="sortable">Count</a> </th>
-      <th> <a href="#" class="sortable">Recorded</a> </th>
-      <th> </th>
-      <th> <a href="#" class="sortable">Guests</a> </th>
-      <th> <a href="#" class="sortable">Division</a> </th>
-      <th> <a href="#" class="sortable">Organization</a> </th>
-      <th> <a href="#" class="sortable">Leader</a> </th>
-      <th></th>
-    </tr>
+  <tr>
+    <td></td>
+    <th colspan="4" class="centered" style="border-bottom: 2px solid black">
+      <a href="#" class="sortable">Attendance</a>
+    </th>
+    <td colspan="6"></td>
+  </tr>
+  <tr>
+    <th>
+      <a href="#" class="sortable">Meeting Time</a>
+    </th>
+    <th class="right">
+      <a href="#" class="sortable">Count</a>
+    </th>
+    <th class="right">
+      <a href="#" class="sortable">Recorded</a>
+    </th>
+    <th> </th>
+    <th class="right">
+      <a href="#" class="sortable">Guests</a>
+    </th>
+    <th class="padding-left">
+      <a href="#" class="sortable">Division</a>
+    </th>
+    <th>
+      <a href="#" class="sortable">Organization</a>
+    </th>
+    <th>
+      <a href="#" class="sortable">Leader</a>
+    </th>
+    <th></th>
+  </tr>
   </thead>
   <tbody>
-    @foreach (var m in meetings)
-    {
-      <tr>
-        @if (!m.MeetingId.HasValue)
-        {
-          <td colspan="4">(no meeting)</td>
-        }
-        else
-        {
-          <td><a href="/Meeting/@m.MeetingId">@m.Time.FormatDateTm()</a></td>
-          <td class="right">@m.HeadCount.ToStringNoZero()</td>
-          <td class="right">@m.Attended</td>
-        }
-        <td class="right">@(m.OtherAttends > 0 ? "*" : "")</td>
-        <td class="right">@m.Guests.ToStringNoZero()</td>
-        <td> <span title="@m.Program">@m.Division</span> </td>
-        <td style="color: @(m.Inactive?"#555":"inherit")"> <a title="@m.Tracking" href="/Org/@m.OrganizationId">@m.Organization</a> </td>
-        <td>@m.Leader</td>
-        <td>@m.Description</td>
-      </tr>
-    }
+  @foreach (var m in meetings)
+  {
+    <tr>
+      @if (!m.MeetingId.HasValue)
+      {
+        <td colspan="4">(no meeting)</td>
+      }
+      else
+      {
+        <td>
+          <a href="/Meeting/@m.MeetingId">@m.Time.FormatDateTm()</a>
+        </td>
+        <td class="right">@m.HeadCount.ToStringNoZero()</td>
+        <td class="right">@m.Attended</td>
+      }
+      <td class="right">@(m.OtherAttends > 0 ? "*" : "")</td>
+      <td class="right">@m.Guests.ToStringNoZero()</td>
+      <td class="padding-left">
+        <span title="@m.Program">@m.Division</span> </td>
+      <td style="color: @(m.Inactive ? "#555" : "inherit")">
+        <a title="@m.Tracking" href="/Org/@m.OrganizationId">@m.Organization</a>
+      </td>
+      <td>@m.Leader</td>
+      <td>@m.Description</td>
+    </tr>
+  }
   </tbody>
 </table>
