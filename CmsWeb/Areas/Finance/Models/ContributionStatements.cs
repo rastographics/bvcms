@@ -167,9 +167,18 @@ p { font-size: 11px; }
                 t2.TotalWidth = 72f * 3f;
                 t2.DefaultCell.Border = Rectangle.NO_BORDER;
 
+                var envno = "";
+                if (Db.Setting("PrintEnvelopeNumberOnStatement"))
+                {
+                    var ev = Person.GetExtraValue(Db, ci.PeopleId, "EnvelopeNumber");
+                    var s = Util.PickFirst(ev.Data, ev.IntValue.ToString(), ev.StrValue);
+                    if(s.HasValue())
+                        envno = $" EnvNo: {Util.PickFirst(ev.Data, ev.IntValue.ToString(), ev.StrValue)}";
+                }
+
                 t2.AddCell(Db.Setting("NoPrintDateOnStatement")
-                    ? new Phrase($"\nID:{ci.PeopleId} {ci.CampusId}", font) 
-                    : new Phrase($"\nPrint Date: {DateTime.Now:d}   (id:{ci.PeopleId} {ci.CampusId})", font));
+                    ? new Phrase($"\nID:{ci.PeopleId}{envno} {ci.CampusId}", font) 
+                    : new Phrase($"\nPrint Date: {DateTime.Now:d}   (id:{ci.PeopleId}{envno} {ci.CampusId})", font));
 
                 t2.AddCell("");
                 var mh2 = new MyHandler();
