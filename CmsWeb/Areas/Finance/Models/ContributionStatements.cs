@@ -173,12 +173,12 @@ p { font-size: 11px; }
                     var ev = Person.GetExtraValue(Db, ci.PeopleId, "EnvelopeNumber");
                     var s = Util.PickFirst(ev.Data, ev.IntValue.ToString(), ev.StrValue);
                     if(s.HasValue())
-                        envno = $" EnvNo: {Util.PickFirst(ev.Data, ev.IntValue.ToString(), ev.StrValue)}";
+                        envno = $" env: {Util.PickFirst(ev.Data, ev.IntValue.ToString(), ev.StrValue)}";
                 }
 
                 t2.AddCell(Db.Setting("NoPrintDateOnStatement")
-                    ? new Phrase($"\nID:{ci.PeopleId}{envno} {ci.CampusId}", font) 
-                    : new Phrase($"\nPrint Date: {DateTime.Now:d}   (id:{ci.PeopleId}{envno} {ci.CampusId})", font));
+                    ? new Phrase($"\nid:{ci.PeopleId}{envno} {ci.CampusId}", font) 
+                    : new Phrase($"\nprinted: {DateTime.Now:M/d/yy} id:{ci.PeopleId}{envno} {ci.CampusId}", font));
 
                 t2.AddCell("");
                 var mh2 = new MyHandler();
