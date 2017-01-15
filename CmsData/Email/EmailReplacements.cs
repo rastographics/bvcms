@@ -236,7 +236,7 @@ namespace CmsData
                     dict.Add(texta[i], DoReplaceCode(texta[i], p));
             var doc = DocXDocument.Copy();
             foreach (var d in dict)
-                doc.ReplaceText(d.Key, d.Value);
+                doc.ReplaceText(d.Key, Util.PickFirst(d.Value, "____"));
             return doc;
         }
 

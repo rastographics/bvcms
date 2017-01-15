@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using CmsData.Registration;
+using Elmah;
 using HandlebarsDotNet;
 using UtilityExtensions;
 
@@ -69,6 +70,7 @@ namespace CmsData.OnlineRegSummaryText
             }
             catch (Exception ex)
             {
+                ErrorLog.GetDefault(null).Log(new Error(ex));
                 return ex.Message + "\n" + ex.StackTrace;
             }
         }
