@@ -64,7 +64,8 @@ namespace CmsData.OnlineRegSummaryText
             try
             {
                 var template = Handlebars.Compile(Properties.Resources.Details2);
-                return template(this);
+                var ret = template(this);
+                return ret;
             }
             catch (Exception ex)
             {

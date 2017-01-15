@@ -147,7 +147,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 Feepaid for this registrant: {p.AmountToPay():C}<br/>
 Others in this registration session: {p.GetOthersInTransaction(Transaction)}<br/>
 Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
-<pre>{p.PrepareSummaryText()}</pre>");
+<pre>{details}</pre>");
         }
 
         private Settings GetMasterOrgSettings()
