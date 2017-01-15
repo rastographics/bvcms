@@ -232,7 +232,8 @@ namespace CmsData
             var texta = new List<string>(stringlist);
             var dict = new Dictionary<string, string>();
             for (var i = 1; i < texta.Count; i += 2)
-                dict.Add(texta[i], DoReplaceCode(texta[i], p));
+                if(!dict.ContainsKey(texta[i]))
+                    dict.Add(texta[i], DoReplaceCode(texta[i], p));
             var doc = DocXDocument.Copy();
             foreach (var d in dict)
                 doc.ReplaceText(d.Key, d.Value);
