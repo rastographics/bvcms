@@ -537,10 +537,10 @@ AND a.PeopleId = {2}
             return OrgMemMemTags.Any(omt => omt.MemberTagId == id);
         }
 
-        public Settings RegSetting()
-        {
-            return DbUtil.Db.CreateRegistrationSettings(OrganizationId);
-        }
+//        public Settings RegSetting()
+//        {
+//            return DbUtil.Db.CreateRegistrationSettings(OrganizationId);
+//        }
 
         public string PayLink2(CMSDataContext db)
         {

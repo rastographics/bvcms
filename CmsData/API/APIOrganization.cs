@@ -784,7 +784,7 @@ namespace CmsData.API
             foreach (var om in q)
             {
                 var si = new SummaryInfo(Db, om.PeopleId, om.OrganizationId);
-                var details = si.ToString();
+                var details = si.GetResults(Db);
                 var organizationName = org.OrganizationName;
 
                 subject = Util.PickFirst(setting.ReminderSubject, noSubject);
@@ -825,7 +825,7 @@ namespace CmsData.API
             foreach (var om in currmembers)
             {
                 var si = new SummaryInfo(Db, om.PeopleId, om.OrganizationId);
-                var details = si.ToString();
+                var details = si.GetResults(Db);
                 var organizationName = org.OrganizationName;
 
                 subject = Util.PickFirst(setting.ReminderSubject, noSubject);

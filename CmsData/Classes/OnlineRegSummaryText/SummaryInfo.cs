@@ -11,7 +11,7 @@ namespace CmsData.OnlineRegSummaryText
 {
     public class SummaryInfo
     {
-        private readonly CMSDataContext db;
+        private CMSDataContext db;
 
         public SummaryInfo(CMSDataContext db, int pid, int oid)
         {
@@ -60,10 +60,11 @@ namespace CmsData.OnlineRegSummaryText
             PythonModel.RegisterHelpers(db);
         }
 
-        public override string ToString()
+        public string GetResults(CMSDataContext db2)
         {
             try
             {
+                db = CMSDataContext.Create(db2.ConnectionString, db2.Host);
                 var template = Handlebars.Compile(Properties.Resources.Details2);
                 var ret = template(this);
                 return ret;
