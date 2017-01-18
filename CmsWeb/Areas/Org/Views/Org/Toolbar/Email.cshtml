@@ -10,12 +10,11 @@
     var o = model.Org;
     var edit = User.IsInRole("Edit");
     var qb = DbUtil.Db.QueryIsCurrentUser();
-    var showAdvanced = !(User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-LimitToolbarForOrgLeaders"));
 }
 <ul class="dropdown-menu dropdown-menu-large dropdown-menu-right container bluebar-menu-col-1">
     <li class="col-sm-12">
         <ul>
-            @if (showAdvanced)
+            @if (Model.ShowBlueToolbarFullEmail)
             {
                 <li class="dropdown-header">Email</li>
                 <li><a href='/Email/@ViewBag.queryid' class="qid">Individuals</a></li>
@@ -56,9 +55,18 @@
             else
             {
                 <li class="dropdown-header">Email</li>
-                <li><a href='/Email/@ViewBag.queryid?templateID=0&orgid=@oid' class="qid">Email Members</a></li>
-                <li><a href='/Email/@ViewBag.queryid?templateID=0&orgid=@oid&onlyProspects=true' class="qid">Email Prospects</a></li>
-                <li><a href='/Email/@ViewBag.queryid?templateID=0&orgid=@oid&membersAndProspects=true' class="qid">Email Members & Prospects</a></li>
+                if (Model.ShowBlueToolbarEmailMembers)
+                {
+                    <li><a href='/Email/@ViewBag.queryid?templateID=0&orgid=@oid' class="qid">Email Members</a></li>
+                }
+                if (Model.ShowBlueToolbarEmailProspects)
+                {
+                    <li><a href='/Email/@ViewBag.queryid?templateID=0&orgid=@oid&onlyProspects=true' class="qid">Email Prospects</a></li>
+                }
+                if (Model.ShowBlueToolbarEmailMembersAndProspects)
+                {
+                    <li><a href='/Email/@ViewBag.queryid?templateID=0&orgid=@oid&membersAndProspects=true' class="qid">Email Members & Prospects</a></li>
+                }
             }
         </ul>
     </li>

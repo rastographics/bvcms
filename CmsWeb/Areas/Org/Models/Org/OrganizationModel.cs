@@ -4,12 +4,13 @@ using System.Linq;
 using System.Web;
 using CmsData;
 using System.Web.Mvc;
-using CmsData.Registration;
 using CmsData.View;
 using CmsWeb.Code;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
+using CmsData.Classes.RoleChecker;
 using CmsData.Codes;
+using Settings = CmsData.Registration.Settings;
 
 namespace CmsWeb.Areas.Org.Models
 {
@@ -164,16 +165,19 @@ namespace CmsWeb.Areas.Org.Models
             return _showContactsReceivedTab.Value;
         }
 
-        public bool ShowSettingsTab
-        {
-            get
-            {
-                if (!HttpContext.Current.User.IsInRole("OrgLeadersOnly"))
-                    return true;
-
-                return !DbUtil.Db.Setting("UX-HideSettingsTabForOrgLeaders");
-            }
-        }
+        public bool ShowBlueToolbar => RoleChecker.HasSetting(SettingName.Organization_ShowBlueToolbar, true);
+        public bool ShowBlueToolbarFullEmail => RoleChecker.HasSetting(SettingName.Organization_ShowBlueToolbarFullEmailMenu, true);
+        public bool ShowBlueToolbarEmailMembers => RoleChecker.HasSetting(SettingName.Organization_ShowBlueToolbarEmailMembers, true);
+        public bool ShowBlueToolbarEmailProspects => RoleChecker.HasSetting(SettingName.Organization_ShowBlueToolbarEmailProspects, true);
+        public bool ShowBlueToolbarEmailMembersAndProspects => RoleChecker.HasSetting(SettingName.Organization_ShowBlueToolbarEmailMembersAndProspects, true);
+        public bool ShowBlueToolbarExports => RoleChecker.HasSetting(SettingName.Organization_ShowBlueToolbarExportMenu, true);
+        public bool ShowBlueToolbarCustomReports => RoleChecker.HasSetting(SettingName.Organization_ShowBlueToolbarCustomReportsMenu, true);
+        public bool ShowBlueToolbarAdminGear => RoleChecker.HasSetting(SettingName.Organization_ShowBlueToolbarAdminGearMenu, true);
+        public bool ShowBlueToolbarSubGroupManagement => RoleChecker.HasSetting(SettingName.Organization_ShowBlueToolbarSubGroupManagement, true);
+        public bool ShowBlueToolbarMembersOnlyPage => RoleChecker.HasSetting(SettingName.Organization_ShowBlueToolbarMembersOnlyPage, true);
+        public bool ShowBlueToolbarVolunteerCalendar => RoleChecker.HasSetting(SettingName.Organization_ShowBlueToolbarVolunteerCalendar, true);
+        
+        public bool ShowSettingsTab => RoleChecker.HasSetting(SettingName.Organization_ShowSettingsTab, true);
 
         public bool ShowMeetingsTab
         {
@@ -181,7 +185,7 @@ namespace CmsWeb.Areas.Org.Models
             {
                 if (!HttpContext.Current.User.IsInRole("OrgLeadersOnly"))
                     return true;
-
+ 
                 var typeName = OrgMain.OrganizationType.ToString().Replace(" ", "");
                 return !DbUtil.Db.Setting($"UX-HideMeetingsTabForOrgLeaders-{typeName}");
             }

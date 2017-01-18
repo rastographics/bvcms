@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using CmsData;
+using CmsData.Classes.RoleChecker;
 using CmsData.Codes;
 using CmsData.OnlineRegSummaryText;
 using CmsData.Registration;
@@ -23,7 +24,6 @@ namespace CmsWeb.Areas.Dialog.Models
         private int? orgId;
         private int? peopleId;
 
-        private const string AutoOrgLeaderPromotion = "AutoOrgLeaderPromotion";
         private const string AutoOrgLeaderPromoteCustom = "AutoOrgLeaderPromoteCustom";
         private const int DefaultLeaderMemberTypeId = 140;
         private const string AccessRole = "Access";
@@ -378,7 +378,7 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
 
         private void CheckForAutoPromotion()
         {
-            var autoLeaderOrgPromotionSetting = DbUtil.Db.Setting(AutoOrgLeaderPromotion);
+            var autoLeaderOrgPromotionSetting = RoleChecker.HasSetting(SettingName.AutoOrgLeaderPromotion, false);
             if (!autoLeaderOrgPromotionSetting) return;
 
             var isPromotingToLeader = !LeaderTypeIds.Contains(OrgMember.MemberTypeId.ToString()) &&
@@ -411,7 +411,7 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
 
         private void CheckForAutoDemotion()
         {
-            var autoLeaderOrgPromotionSetting = DbUtil.Db.Setting(AutoOrgLeaderPromotion);
+            var autoLeaderOrgPromotionSetting = RoleChecker.HasSetting(SettingName.AutoOrgLeaderPromotion, false);
             if (!autoLeaderOrgPromotionSetting) return;
 
             var autoPromoteCustom = GetAutoPromoteCustomSetting();

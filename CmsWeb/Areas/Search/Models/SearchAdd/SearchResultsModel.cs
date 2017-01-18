@@ -15,6 +15,7 @@ using CmsData;
 using CmsWeb.Models;
 using MoreLinq;
 using UtilityExtensions;
+using CmsData.Classes.RoleChecker;
 
 namespace CmsWeb.Areas.Search.Models
 {
@@ -45,7 +46,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public bool UsersOnly => usersOnlyContextTypes.Contains(AddContext.ToLower());
 
-        public bool ShowLimitedSearch => (HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-OrgLeaderLimitedSearchPerson"));
+        public bool ShowLimitedSearch => RoleChecker.HasSetting(SettingName.LimitedSearchPerson, false);
 
         public string HelpLink(string page)
         {

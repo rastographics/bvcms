@@ -5,14 +5,14 @@
         <div class="col-sm-12">
             <div id="groupSelector" class="btn-group">
                 @Html.Partial("People/GroupButtons", Model)
-                @if (!Model.HideOptionsButton)
+                @if (Model.ShowOptions)
                 {
                     @Html.Partial("People/GroupOptions", Model)
                 }
             </div>
         </div>
     </div>
-    @if (Model.HideFilterOptions)
+    @if (!Model.ShowSubgroupFilters)
     {
         <div style="display: none">
             @Html.Partial("People/FilterPeople", Model)

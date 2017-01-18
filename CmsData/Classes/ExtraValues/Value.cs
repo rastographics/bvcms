@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web;
 using System.Xml.Serialization;
+using CmsData.Classes.RoleChecker;
 using UtilityExtensions;
 
 namespace CmsData.ExtraValue
@@ -48,7 +49,7 @@ namespace CmsData.ExtraValue
                 if (user.IsInRole("Edit"))
                     return true;
 
-                if (user.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-OrgLeadersOnlyCanEditCGInfoEVs"))
+                if (RoleChecker.HasSetting(SettingName.CanEditCGInfoEVs, false))
                 {
                     if (string.IsNullOrEmpty(EditableRoles))
                         return true;

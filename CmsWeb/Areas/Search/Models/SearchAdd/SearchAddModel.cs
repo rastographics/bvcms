@@ -15,6 +15,7 @@ using CmsData;
 using CmsData.Codes;
 using CmsWeb.Code;
 using UtilityExtensions;
+using CmsData.Classes.RoleChecker;
 
 namespace CmsWeb.Areas.Search.Models
 {
@@ -143,7 +144,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public bool OnlyOne => onlyonetypes.Contains(AddContext.ToLower());
 
-        public new bool ShowLimitedSearch => (HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-OrgLeaderLimitedSearchPerson"));
+        public new bool ShowLimitedSearch => RoleChecker.HasSetting(SettingName.LimitedSearchPerson, false);
 
         public int NewFamilyId { get; set; }
         public int? EntryPointId { get; set; }

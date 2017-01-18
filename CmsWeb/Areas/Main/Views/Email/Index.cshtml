@@ -1,13 +1,14 @@
 ﻿@model CmsWeb.Areas.Main.Models.MassEmailer
 @using System.Configuration
 @using CmsData
+@using CmsData.Classes.RoleChecker
 @using CmsWeb
 @{
   Layout = ViewExtensions2.TouchPointLayout();
   ViewBag.Title = "Email";
   ViewBag.PageHeader = "Email";
 
-  var showAdvanced = !(User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-LimitToolbarForOrgLeaders"));
+  var showAdvanced = !RoleChecker.HasSetting(SettingName.LimitToolbar, true);
 }
 @section head
 {

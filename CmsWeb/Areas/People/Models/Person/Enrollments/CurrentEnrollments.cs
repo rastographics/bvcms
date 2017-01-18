@@ -7,6 +7,7 @@ using CmsData;
 using CmsWeb.Models;
 using MoreLinq;
 using UtilityExtensions;
+using CmsData.Classes.RoleChecker;
 
 namespace CmsWeb.Areas.People.Models
 {
@@ -146,7 +147,7 @@ namespace CmsWeb.Areas.People.Models
                        IsLeaderAttendanceType = (om.MemberType.AttendanceTypeId ?? 0) == 10
                    };
 
-            if (DbUtil.Db.Setting("UX-ShowChildOrgsOnInvolvementTabs"))
+            if (RoleChecker.HasSetting(SettingName.ShowChildOrgsOnInvolvementTabs, false))
             {
                 var viewListAsList = viewList.ToList();
                 var parentIds = viewListAsList.Select(x => x.OrgId).ToList();

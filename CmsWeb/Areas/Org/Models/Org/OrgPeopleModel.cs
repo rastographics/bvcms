@@ -9,6 +9,7 @@ using UtilityExtensions;
 using System.Web.Mvc;
 using CmsData.Codes;
 using CmsData.View;
+using CmsData.Classes.RoleChecker;
 
 namespace CmsWeb.Areas.Org.Models
 {
@@ -277,20 +278,23 @@ namespace CmsWeb.Areas.Org.Models
         public string ShowAddressActive => ShowAddress ? "active" : "";
         public string FilterTagActive => FilterTag ? "active" : "";
         public string FilterIndActive => FilterIndividuals ? "active" : "";
-        public bool ShowPeopleLink => HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-DisablePersonLinksForOrgLeaders");
-        public bool OrgLeaderAddDrop => HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-OrgLeadersOnlyOrgMembersDropAdd");
-        public bool HideInactiveButton => HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-HideInactiveOrgMembersForOrgLeadersOnly");
-        public bool HidePendingButton => HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-HidePendingOrgMembersForOrgLeadersOnly");
-        public bool HideGuestsButton => HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-HideGuestsOrgMembersForOrgLeadersOnly");
-        public bool HideOptionsButton => HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-OrgLeaderLimitedSearchPerson");
-        public bool HideFilterOptions => HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-OrgLeaderLimitedSearchPerson");
+        public bool DisablePeopleLink => RoleChecker.HasSetting(SettingName.DisablePersonLinks, false);
+        public bool OrgLeaderAddDrop => RoleChecker.HasSetting(SettingName.OrgMembersDropAdd, false);
+        public bool HideInactiveButton => RoleChecker.HasSetting(SettingName.HideInactiveOrgMembers, false);
+        public bool HidePendingButton => RoleChecker.HasSetting(SettingName.HidePendingOrgMembers, false);
+        public bool HideGuestsButton => RoleChecker.HasSetting(SettingName.HideGuestsOrgMembers, false);
+
+        public bool ShowOptions => RoleChecker.HasSetting(SettingName.Organization_ShowOptionsMenu, true);
+        public bool ShowSubgroupFilters => RoleChecker.HasSetting(SettingName.Organization_ShowFiltersBar, true);
+        public bool ShowBirthday => RoleChecker.HasSetting(SettingName.Organization_ShowBirthday, true);
+        public bool ShowAddress => RoleChecker.HasSetting(SettingName.Organization_ShowAddress, true);
+        public bool ShowTagButtons => RoleChecker.HasSetting(SettingName.Organization_ShowTagButtons, true);
 
         public int? Id { get; set; }
         public string GroupSelect { get; set; }
         public string NameFilter { get; set; }
         public string SgFilter { get; set; }
         public bool ShowHidden { get; set; }
-        public bool ShowAddress { get; set; }
         public bool FilterTag { get; set; }
         public bool FilterIndividuals { get; set; }
         public bool ClearFilter { get; set; }
@@ -341,9 +345,8 @@ to `Add`, `Drop`, `Update` Members etc.
         public bool Showdrop(string group)
         {
             var u = HttpContext.Current.User;
-            var orgLeader = u.IsInRole("OrgLeadersOnly");
 
-            return (u.IsInRole("Edit") || (orgLeader && DbUtil.Db.Setting("UX-OrgLeadersOnlyOrgMembersDropAdd"))) &&
+            return (u.IsInRole("Edit") || RoleChecker.HasSetting(SettingName.OrgMembersDropAdd, true)) &&
                 (MultiSelect ? "" : GroupSelect) == group;
         }
     }

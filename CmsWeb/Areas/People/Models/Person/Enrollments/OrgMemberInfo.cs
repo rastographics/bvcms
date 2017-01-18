@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CmsData;
+using CmsData.Classes.RoleChecker;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
@@ -44,7 +45,7 @@ namespace CmsWeb.Areas.People.Models
                 case "name":
                 case "organization":
                     if (inAccessRole &&
-                        (IsLeaderAttendanceType || !inOrgLeadersOnlyRole || !DbUtil.Db.Setting("UX-OrgLeadersOtherGroupsContentOnly")))
+                        (IsLeaderAttendanceType || !inOrgLeadersOnlyRole || !RoleChecker.HasSetting(SettingName.OtherGroupsContentOnly, false)))
                     {
                         return $"<a href=\"/Org/{OrgId}\">{Name}</a>";
                     }
@@ -71,7 +72,7 @@ namespace CmsWeb.Areas.People.Models
                 case "schedule":
                     return Schedule;
                 case "leader":
-                    if (inAccessRole && !(inOrgLeadersOnlyRole && DbUtil.Db.Setting("UX-OrgLeadersOtherGroupsContentOnly")))
+                    if (inAccessRole && !RoleChecker.HasSetting(SettingName.OtherGroupsContentOnly, false))
                     {
                         return $"<a href=\" /Person2/{LeaderId}\">{LeaderName}</a>";
                     }

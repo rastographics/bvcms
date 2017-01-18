@@ -5,7 +5,6 @@
 @model CmsWeb.Areas.Org.Models.OrgPeopleModel
 @{
   var target = Util2.TargetLinkPeople ? "target='people'" : "";
-  var hideBirthDate = DbUtil.Db.Setting("HideBirthDateForOrgLeaders") && Util.IsInRole("OrgLeadersOnly");
 }
 <table class="table table-striped">
   <thead>
@@ -25,11 +24,11 @@
       @Model.SortLink("MemberType")
     </th>
     <th>
-      @Model.SortLink("Church")<br/>
-      @if (!hideBirthDate)
-      {
-        <text>@Model.SortLink("Age") - @Model.SortLink("Bday")</text>
-      }
+        @Model.SortLink("Church")<br />
+        @if (Model.ShowBirthday)
+        {
+            <text>@Model.SortLink("Age") - @Model.SortLink("Bday")</text>
+        }
     </th>
     <th>Communication</th>
     <th>@Model.SortLink("% Att.")</th>
@@ -54,7 +53,7 @@
         </ul>
       </div>
     </th>
-    @if (!Model.OrgLeaderAddDrop)
+    @if (!Model.OrgLeaderAddDrop && Model.ShowTagButtons)
     {
       <th>Tag</th>
     }
@@ -80,7 +79,7 @@
         <td>@p.Tab</td>
       }
       <td>
-        @if (Model.ShowPeopleLink)
+        @if (!Model.DisablePeopleLink)
         {
           <text>@p.Name</text>
         }
@@ -108,7 +107,7 @@
       </td>
       <td>
         @p.MemberStatus<br/>
-        @if (!hideBirthDate)
+        @if (Model.ShowBirthday)
         {
           <text>@p.Age - @p.BirthDate</text>
         }
@@ -137,7 +136,7 @@
           @ShowDateLink(p.TaskDelegatedDt, "/Person2", p.PeopleId, "Has Task", "#tab-tasksassigned")
         }
       </td>
-      @if (!Model.OrgLeaderAddDrop)
+      @if (!Model.OrgLeaderAddDrop && Model.ShowTagButtons)
       {
         <td>
           <a href="#" class="taguntag btn btn-sm @(hastag ? "btn-default" : "btn-success")" title="Add to/Remove from Active Tag" pid="@p.PeopleId">
@@ -240,7 +239,7 @@
 {
   if (p.GroupCode == GroupSelectCode.Prospect)
   {
-    if (!Model.HideFilterOptions)
+    if (Model.ShowSubgroupFilters)
     {
       if (p.Hidden == true)
       {

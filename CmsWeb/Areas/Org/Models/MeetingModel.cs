@@ -5,6 +5,7 @@ using CmsData;
 using UtilityExtensions;
 using CmsWeb.Areas.Reports.Models;
 using System.Collections;
+using CmsData.Classes.RoleChecker;
 
 namespace CmsWeb.Areas.Org.Models
 {
@@ -20,6 +21,21 @@ namespace CmsWeb.Areas.Org.Models
         public bool sortbyname { get; set; }
         public bool showlarge { get; set; }
         public bool CommitsOnly { get; set; }
+
+        public bool HyperlinkNames => RoleChecker.HasSetting(SettingName.Meeting_HyperlinkNames, true);
+        public bool ShowAddGuest => RoleChecker.HasSetting(SettingName.Meeting_ShowAddGuest, true);
+        public bool AllowEditDescription => RoleChecker.HasSetting(SettingName.Meeting_AllowEditDescription, true);
+        public bool ShowExtraValuesBox => RoleChecker.HasSetting(SettingName.Meeting_ShowExtraValuesBox, true);
+        public bool ShowWandTargetBox => RoleChecker.HasSetting(SettingName.Meeting_ShowWandTargetBox, true);
+        public bool ShowBlueToolbar => RoleChecker.HasSetting(SettingName.Meeting_ShowBlueToolbar, true);
+        public bool ShowBlueToolbarIpadAttendance => RoleChecker.HasSetting(SettingName.Meeting_ShowBlueToolbarIpadAttendance, true);
+        public bool ShowBlueToolbarRollsheet => RoleChecker.HasSetting(SettingName.Meeting_ShowBlueToolbarRollsheet, true);
+        public bool EnableEditByDefault => RoleChecker.HasSetting(SettingName.Meeting_EnableEditByDefault, false);
+        public bool ShowEnableBox => RoleChecker.HasSetting(SettingName.Meeting_ShowEnableBox, true);
+        public bool ShowShowBox => RoleChecker.HasSetting(SettingName.Meeting_ShowShowBox, true);
+        public bool ShowAttendType => RoleChecker.HasSetting(SettingName.Meeting_ShowAttendType, true);
+        public bool ShowOtherAttend => RoleChecker.HasSetting(SettingName.Meeting_ShowOtherAttend, true);
+        public bool ShowCurrentMemberType => RoleChecker.HasSetting(SettingName.Meeting_ShowCurrentMemberType, true);
 
         public MeetingModel(int id)
         {
