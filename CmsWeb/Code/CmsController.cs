@@ -107,14 +107,21 @@ namespace CmsWeb
             }
 
             var disableHomePageForOrgLeaders = DbUtil.Db.Setting("UX-DisableHomePageForOrgLeaders");
-            if (filterContext.RouteData.Values["Controller"].ToString() == "Home" &&
-                filterContext.RouteData.Values["Action"].ToString() == "Index" &&
-                disableHomePageForOrgLeaders && User.IsInRole("OrgLeadersOnly"))
+            var contr = filterContext.RouteData.Values["Controller"].ToString();
+            var act = filterContext.RouteData.Values["Action"].ToString();
+            var orgleaderonly = User.IsInRole("OrgLeadersOnly");
+            if (contr == "Home" && act == "Index" &&
+                disableHomePageForOrgLeaders && orgleaderonly)
             {
                 Util2.OrgLeadersOnly = true;
                 DbUtil.Db.SetOrgLeadersOnly();
 
                 filterContext.Result = Redirect($"/Person2/{Util.UserPeopleId}");
+            }
+            else if (orgleaderonly && Util2.OrgLeadersOnly == false)
+            {
+                Util2.OrgLeadersOnly = true;
+                DbUtil.Db.SetOrgLeadersOnly();
             }
 
             base.OnActionExecuting(filterContext);
