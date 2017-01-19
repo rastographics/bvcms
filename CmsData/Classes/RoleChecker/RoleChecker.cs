@@ -67,6 +67,7 @@ namespace CmsData.Classes.RoleChecker
 
     public enum SettingName
     {
+        // ReSharper disable InconsistentNaming
         Person_ShowBlueToolbar,
         Organization_ShowSettingsTab,
         Organization_ShowBlueToolbar,
@@ -102,7 +103,6 @@ namespace CmsData.Classes.RoleChecker
         Meeting_ShowAttendType,
         Meeting_ShowOtherAttend,
         Meeting_ShowCurrentMemberType,
-        AutoOrgLeaderPromoteCustom,
         AutoOrgLeaderPromotion,
         DisableHomePage,
         DisablePersonLinks,
@@ -117,12 +117,12 @@ namespace CmsData.Classes.RoleChecker
         LeadersCanAlwaysEditOrgContent,
         LimitToolbar,
         LimitedSearchPerson,
-        CollapseOrgDetails,
         CanEditCGInfoEVs,
         EditMemberData,
         OrgMembersDropAdd,
         OtherGroupsContentOnly,
         ShowChildOrgsOnInvolvementTabs,
         ShowParentOrgInDetails
+        // ReSharper restore InconsistentNaming
     }
 }
