@@ -17,11 +17,12 @@ namespace CmsData.OnlineRegSummaryText
         {
             this.db = db;
             OrgMember = OrganizationMember.Load(db, pid, oid);
+            var org = db.LoadOrganizationById(oid);
             if (!OrgMember.OnlineRegData.HasValue())
                 return;
             // ReSharper disable once UseObjectOrCollectionInitializer
             Person = new OnlineRegPersonModel0(OrgMember.OnlineRegData, db);
-            Person.setting = db.CreateRegistrationSettings(OrgMember.Organization.RegSettingXml, oid);
+            Person.setting = db.CreateRegistrationSettings(org.RegSettingXml, oid);
 
             Handlebars.RegisterHelper("Registrant", Registrant);
             Handlebars.RegisterHelper("IfShowTransaction", IfShowTransaction);

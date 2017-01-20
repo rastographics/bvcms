@@ -8,8 +8,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegPersonModel
     {
+
+        private string summarytext;
         public string PrepareSummaryText()
         {
+            if (summarytext.HasValue())
+                return summarytext;
             if (RecordFamilyAttendance())
                 return SummarizeFamilyAttendance();
 
@@ -17,8 +21,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (om == null)
                 return "";
 
-            var details = SummaryInfo.GetResults(DbUtil.Db, om.PeopleId, om.OrganizationId);
-            return details;
+            summarytext = SummaryInfo.GetResults(DbUtil.Db, om.PeopleId, om.OrganizationId);
+            return summarytext;
         }
 
         private string SummarizeFamilyAttendance()
