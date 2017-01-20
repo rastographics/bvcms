@@ -783,8 +783,7 @@ namespace CmsData.API
 
             foreach (var om in q)
             {
-                var si = new SummaryInfo(Db, om.PeopleId, om.OrganizationId);
-                var details = si.GetResults(Db);
+                var details = SummaryInfo.GetResults(Db, om.PeopleId, om.OrganizationId);
                 var organizationName = org.OrganizationName;
 
                 subject = Util.PickFirst(setting.ReminderSubject, noSubject);
@@ -798,7 +797,6 @@ namespace CmsData.API
 
                 Db.Email(notify.FromEmail, om.Person, subject, message);
             }
-            
         }
         public void SendEventReminders(int id)
         {
@@ -824,8 +822,7 @@ namespace CmsData.API
 
             foreach (var om in currmembers)
             {
-                var si = new SummaryInfo(Db, om.PeopleId, om.OrganizationId);
-                var details = si.GetResults(Db);
+                var details = SummaryInfo.GetResults(Db, om.PeopleId, om.OrganizationId);
                 var organizationName = org.OrganizationName;
 
                 subject = Util.PickFirst(setting.ReminderSubject, noSubject);

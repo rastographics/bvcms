@@ -16,8 +16,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var om = GetOrgMember();
             if (om == null)
                 return "";
-            var si = new SummaryInfo(DbUtil.Db, om.PeopleId, om.OrganizationId);
-            return si.GetResults(DbUtil.Db);
+
+            var details = SummaryInfo.GetResults(DbUtil.Db, om.PeopleId, om.OrganizationId);
+            return details;
         }
 
         private string SummarizeFamilyAttendance()

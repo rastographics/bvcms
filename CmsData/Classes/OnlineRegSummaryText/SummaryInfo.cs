@@ -60,13 +60,13 @@ namespace CmsData.OnlineRegSummaryText
             PythonModel.RegisterHelpers(db);
         }
 
-        public string GetResults(CMSDataContext db2)
+        public static string GetResults(CMSDataContext db, int pid, int oid)
         {
             try
             {
-                db = CMSDataContext.Create(db2.ConnectionString, db2.Host);
+                var si = new SummaryInfo(db, pid, oid);
                 var template = Handlebars.Compile(Properties.Resources.Details2);
-                var ret = template(this);
+                var ret = template(si);
                 return ret;
             }
             catch (Exception ex)
