@@ -15,13 +15,7 @@ using iTextSharp.text.pdf;
 using System.IO;
 using System.Collections;
 using CmsData;
-using UtilityExtensions;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Web.Mvc;
-using System.Diagnostics;
-using iTextSharp.text.html.simpleparser;
-using CmsWeb.Areas.Reports.Models;
 
 namespace CmsWeb.Areas.Finance.Models.Report
 {
@@ -42,7 +36,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
 		public ContributionStatementResult()
 		{
 			useMinAmt = true;
-		    noaddressok = DbUtil.Db.Setting("RequireAddressOnStatement", true);
+		    noaddressok = !DbUtil.Db.Setting("RequireAddressOnStatement", true);
 
 		    showCheckNo = DbUtil.Db.Setting("RequireCheckNoOnStatement");
 		    showNotes = DbUtil.Db.Setting("RequireNotesOnStatement");
@@ -50,9 +44,9 @@ namespace CmsWeb.Areas.Finance.Models.Report
 
         public override void ExecuteResult(ControllerContext context)
         {
-            var Response = context.HttpContext.Response;
-            Response.ContentType = "application/pdf";
-            Response.AddHeader("content-disposition", "filename=foo.pdf");
+            var response = context.HttpContext.Response;
+            response.ContentType = "application/pdf";
+            response.AddHeader("content-disposition", "filename=foo.pdf");
 
             if (showCheckNo || showNotes)
             {
@@ -82,7 +76,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
                         q = APIContribution.contributors(DbUtil.Db, FromDate, ToDate, 0, 0, 0, noaddressok, useMinAmt, singleStatement: singleStatement);
                         break;
                 }
-                c.Run(Response.OutputStream, DbUtil.Db, q);
+                c.Run(response.OutputStream, DbUtil.Db, q);
             }
             else
             {
@@ -110,7 +104,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
                         q = APIContribution.contributors(DbUtil.Db, FromDate, ToDate, 0, 0, 0, noaddressok, useMinAmt, singleStatement: singleStatement);
                         break;
                 }
-                c.Run(Response.OutputStream, DbUtil.Db, q);
+                c.Run(response.OutputStream, DbUtil.Db, q);
             }
         }
     }

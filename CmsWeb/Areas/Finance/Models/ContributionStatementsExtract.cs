@@ -40,7 +40,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
             Db = DbUtil.Create(Host);
             Db.CommandTimeout = 1200;
 
-            var noaddressok = Db.Setting("RequireAddressOnStatement", true);
+            var noaddressok = !Db.Setting("RequireAddressOnStatement", true);
             showCheckNo = Db.Setting("RequireCheckNoOnStatement");
             showNotes = Db.Setting("RequireNotesOnStatement");
             const bool UseMinAmt = true;
