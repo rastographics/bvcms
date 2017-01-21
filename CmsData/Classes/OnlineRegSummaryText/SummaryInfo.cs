@@ -17,12 +17,13 @@ namespace CmsData.OnlineRegSummaryText
         {
             this.db = db;
             OrgMember = OrganizationMember.Load(db, pid, oid);
-            var org = db.LoadOrganizationById(oid);
+            Person = db.LoadPersonById(pid);
+            Organization = db.LoadOrganizationById(oid);
             if (!OrgMember.OnlineRegData.HasValue())
                 return;
             // ReSharper disable once UseObjectOrCollectionInitializer
-            Person = new OnlineRegPersonModel0(OrgMember.OnlineRegData, db);
-            Person.setting = db.CreateRegistrationSettings(org.RegSettingXml, oid);
+            RegPerson = new OnlineRegPersonModel0(OrgMember.OnlineRegData, db);
+            RegPerson.setting = db.CreateRegistrationSettings(Organization.RegSettingXml, oid);
 
             Handlebars.RegisterHelper("Registrant", Registrant);
             Handlebars.RegisterHelper("IfShowTransaction", IfShowTransaction);
@@ -63,6 +64,7 @@ namespace CmsData.OnlineRegSummaryText
 
         public static string GetResults(CMSDataContext db, int pid, int oid)
         {
+            var host = db.Host;
             try
             {
                 var si = new SummaryInfo(db, pid, oid);
@@ -81,17 +83,19 @@ namespace CmsData.OnlineRegSummaryText
         private string TopLabel { get; set; }
 
         private OrganizationMember OrgMember { get; }
-        private OnlineRegPersonModel0 Person { get; set; }
+        private Organization Organization { get; }
+        private Person Person { get; set; }
+        private OnlineRegPersonModel0 RegPerson { get; set; }
         private Ask currentAsk;
 
-        private bool SupportMissionTrip => Person.MissionTripSupportGeneral > 0 || Person.MissionTripGoerId > 0;
+        private bool SupportMissionTrip => RegPerson.MissionTripSupportGeneral > 0 || RegPerson.MissionTripGoerId > 0;
 
         private void Registrant(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
         {
             options.Template(writer, new
             {
-                OrgMember.Person.Name,
-                OrgMember.Organization.OrganizationName,
+                Person.Name,
+                Organization.OrganizationName,
             });
         }
 
@@ -99,7 +103,7 @@ namespace CmsData.OnlineRegSummaryText
         {
             if (SupportMissionTrip)
                 return;
-            var list = Person.setting.AskItems;
+            var list = RegPerson.setting.AskItems;
             if (!list.Any())
                 return;
             foreach (var item in list)
@@ -130,12 +134,12 @@ namespace CmsData.OnlineRegSummaryText
         {
             if (!SupportMissionTrip)
                 return;
-            var Goer = db.LoadPersonById(Person.MissionTripGoerId ?? 0);
+            var goer = db.LoadPersonById(RegPerson.MissionTripGoerId ?? 0);
             options.Template(writer, new
             {
-                Goer,
-                HasGoer = Person.MissionTripGoerId > 0,
-                HasGeneralSupport = Person.MissionTripSupportGeneral > 0,
+                Goer = goer,
+                HasGoer = RegPerson.MissionTripGoerId > 0,
+                HasGeneralSupport = RegPerson.MissionTripSupportGeneral > 0,
             });
         }
 
@@ -176,7 +180,7 @@ namespace CmsData.OnlineRegSummaryText
                 options.Template(writer, new
                 {
                     OptionsLabel = Util.PickFirst(((AskDropdown)currentAsk).Label, "Options"),
-                    SubGroupChoice = ((AskDropdown)currentAsk).SmallGroupChoice(Person.option).Description,
+                    SubGroupChoice = ((AskDropdown)currentAsk).SmallGroupChoice(RegPerson.option).Description,
                 });
         }
         private void IfAskEmContact(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
@@ -188,7 +192,7 @@ namespace CmsData.OnlineRegSummaryText
         {
             if (!currentAsk.IsAskExtraQuestions)
                 return;
-            var list = Person.ExtraQuestion[currentAsk.UniqueId].Where(a => a.Value.HasValue()).ToList();
+            var list = RegPerson.ExtraQuestion[currentAsk.UniqueId].Where(a => a.Value.HasValue()).ToList();
             if (!list.Any())
                 return;
             var lastKey = list.Last().Key;
@@ -205,7 +209,7 @@ namespace CmsData.OnlineRegSummaryText
         private void IfAskGradeOptions(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
         {
             if (currentAsk.IsAskGradeOptions)
-                options.Template(writer, new { GradeOption = Person.GradeOptions(currentAsk)[Person.gradeoption ?? "00"] });
+                options.Template(writer, new { GradeOption = RegPerson.GradeOptions(currentAsk)[RegPerson.gradeoption ?? "00"] });
         }
         private void IfAskHeader(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
         {
@@ -246,7 +250,7 @@ namespace CmsData.OnlineRegSummaryText
         {
             if (!currentAsk.IsAskText)
                 return;
-            var list = Person.Text[((AskText)currentAsk).UniqueId].Where(a => a.Value.HasValue()).ToList();
+            var list = RegPerson.Text[((AskText)currentAsk).UniqueId].Where(a => a.Value.HasValue()).ToList();
             if (!list.Any())
                 return;
             var lastKey = list.Last().Key;
@@ -270,10 +274,10 @@ namespace CmsData.OnlineRegSummaryText
             if (currentAsk.IsAskTylenolEtc)
                 options.Template(writer, new
                 {
-                    Tylenol = Person.tylenol == true ? "Yes" : "No",
-                    Advil = Person.advil == true ? "Yes" : "No",
-                    Maalox = Person.maalox == true ? "Yes" : "No",
-                    Robitussin = Person.robitussin == true ? "Yes" : "No",
+                    Tylenol = RegPerson.tylenol == true ? "Yes" : "No",
+                    Advil = RegPerson.advil == true ? "Yes" : "No",
+                    Maalox = RegPerson.maalox == true ? "Yes" : "No",
+                    Robitussin = RegPerson.robitussin == true ? "Yes" : "No",
                 });
         }
         private void IfAskSize(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
@@ -285,16 +289,16 @@ namespace CmsData.OnlineRegSummaryText
         {
             if (!currentAsk.IsAskSms)
                 return;
-            if (Person.person == null)
-                Person.person = db.LoadPersonById(Person.PeopleId);
-            options.Template(writer, new { Person.person.ReceiveSMS });
+            if (RegPerson.person == null)
+                RegPerson.person = db.LoadPersonById(RegPerson.PeopleId);
+            options.Template(writer, new { RegPerson.person.ReceiveSMS });
         }
         private void IfAskYesNoQuestions(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
         {
             if (!currentAsk.IsAskYesNoQuestions)
                 return;
             var list = ((AskYesNoQuestions)currentAsk).list
-                .Where(a => Person.YesNoQuestion.ContainsKey(a.SmallGroup)).ToList();
+                .Where(a => RegPerson.YesNoQuestion.ContainsKey(a.SmallGroup)).ToList();
             if (!list.Any())
                 return;
             var lastKey = list.Last().Question;
@@ -304,22 +308,22 @@ namespace CmsData.OnlineRegSummaryText
                 options.Template(writer, new
                 {
                     item.Question,
-                    Answer = Person.YesNoQuestion[item.SmallGroup] == true ? "Yes" : "No",
+                    Answer = RegPerson.YesNoQuestion[item.SmallGroup] == true ? "Yes" : "No",
                 });
             }
         }
 
         private void IfHasAgeGroups(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
         {
-            if (Person.setting.AgeGroups.Count == 0)
+            if (RegPerson.setting.AgeGroups.Count == 0)
                 return;
-            options.Template(writer, new { AgeGroup = Person.AgeGroup() });
+            options.Template(writer, new { AgeGroup = RegPerson.AgeGroup() });
         }
         private void Checkboxes(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
         {
             if (!currentAsk.IsAskCheckboxes)
                 return;
-            var list = ((AskCheckboxes)currentAsk).CheckboxItemsChosen(Person.Checkbox).ToList();
+            var list = ((AskCheckboxes)currentAsk).CheckboxItemsChosen(RegPerson.Checkbox).ToList();
             if (!list.Any())
                 return;
             var lastDesc = list.Last().Description;
@@ -336,15 +340,15 @@ namespace CmsData.OnlineRegSummaryText
         }
         private void MenuItems(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
         {
-            if (!currentAsk.IsAskMenu || Person.MenuItem == null)
+            if (!currentAsk.IsAskMenu || RegPerson.MenuItem == null)
                 return;
             var obj = (AskMenu)currentAsk;
-            if (Person.MenuItem.Count <= obj.UniqueId)
+            if (RegPerson.MenuItem.Count <= obj.UniqueId)
                 return;
-            var list = obj.MenuItemsChosen(Person.MenuItem[obj.UniqueId]).ToList();
+            var list = obj.MenuItemsChosen(RegPerson.MenuItem[obj.UniqueId]).ToList();
             if (!list.Any())
                 return;
-            if (Person.MenuItem == null)
+            if (RegPerson.MenuItem == null)
                 return;
             var lastDesc = list.Last().desc;
             var TopLabel = "Choices";

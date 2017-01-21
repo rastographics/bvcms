@@ -10,7 +10,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
     {
 
         private string summarytext;
-        public string PrepareSummaryText()
+        public string PrepareSummaryText(CMSDataContext db)
         {
             if (summarytext.HasValue())
                 return summarytext;
@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (om == null)
                 return "";
 
-            summarytext = SummaryInfo.GetResults(DbUtil.Db, om.PeopleId, om.OrganizationId);
+            summarytext = SummaryInfo.GetResults(db, om.PeopleId, om.OrganizationId);
             return summarytext;
         }
 

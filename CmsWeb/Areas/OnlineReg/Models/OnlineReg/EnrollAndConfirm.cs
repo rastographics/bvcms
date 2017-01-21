@@ -115,7 +115,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var ts = TransactionSummary();
             DbUtil.Db.SetCurrentOrgId(p.orgid);
             var emailSubject = GetSubject(p);
-            var details = p.PrepareSummaryText();
+            var details = p.PrepareSummaryText(DbUtil.Db);
             var message = p.GetMessage(details);
 
             var NotifyIds = DbUtil.Db.StaffPeopleForOrg(p.org.OrganizationId);
@@ -355,7 +355,7 @@ Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
             if (Transaction?.Amt > 0)
                 details.Append(List[0].SummaryTransaction());
             foreach (var p in List)
-                details.Append(p.PrepareSummaryText());
+                details.Append(p.PrepareSummaryText(DbUtil.Db));
             return details.ToString();
         }
 
