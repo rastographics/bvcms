@@ -75,7 +75,12 @@ namespace CmsData.OnlineRegSummaryText
             catch (Exception ex)
             {
                 ErrorLog.GetDefault(null).Log(new Error(ex));
-                return ex.Message + "\n" + ex.StackTrace;
+                return $@"{ex.Message}
+host: {host}
+oid: {oid}
+pid: {pid}
+{ex.StackTrace}
+";
             }
         }
 
