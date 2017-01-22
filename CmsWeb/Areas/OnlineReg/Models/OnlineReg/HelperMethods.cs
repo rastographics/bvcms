@@ -250,6 +250,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool AllowSaveProgress()
         {
+            if (SupportMissionTrip)
+                return false;
             if (UserPeopleId == null)
                 return false;
             return SaveProgressChecked();

@@ -101,6 +101,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         private string RouteExistingRegistration(OnlineRegModel m, int? pid = null)
         {
+            if (m.SupportMissionTrip)
+                return null;
             var existingRegistration = m.GetExistingRegistration(pid ?? Util.UserPeopleId ?? 0);
             if (existingRegistration == null)
                 return null;
