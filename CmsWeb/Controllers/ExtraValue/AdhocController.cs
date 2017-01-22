@@ -14,6 +14,7 @@ namespace CmsWeb.Controllers
         }
 
         [HttpPost, Route("ExtraValue/SaveNewAdhoc")]
+        [ValidateInput(false)]
         public ActionResult SaveNewAdhoc(NewExtraValueModel m)
         {
             try

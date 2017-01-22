@@ -1,5 +1,4 @@
-﻿@using System
-@using CmsData
+﻿@using CmsData
 @using CmsData.Codes
 @using CmsData.View
 @using UtilityExtensions
@@ -88,6 +87,12 @@
         else
         {
           <a href="/Person2/@p.PeopleId" class="target" @target>@p.Name</a>
+        }
+        @if (Model.NameLinks != null && p.PeopleId.HasValue && Model.NameLinks.ContainsKey(p.PeopleId.Value))
+        {
+          <div>
+            @Html.Raw(Model.NameLinks[p.PeopleId.Value])
+          </div>
         }
 
         @if (Model.ShowAddress)

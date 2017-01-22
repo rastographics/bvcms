@@ -28,6 +28,7 @@ namespace CmsWeb.Areas.Org.Models
                     if (Id == null)
                         Id = DbUtil.Db.CurrentOrgId0;
                     org = DbUtil.Db.LoadOrganizationById(Id);
+                    CheckNameLinks();
                 }
                 return org;
             }
@@ -73,6 +74,23 @@ namespace CmsWeb.Areas.Org.Models
         {
             return AllChecked().Intersect(CurrentList()).ToList();
         }
+
+        public Dictionary<int, string> NameLinks;
+        private void CheckNameLinks()
+        {
+            var namelinks = org.GetExtra(DbUtil.Db, "ShowNameLinks");
+            if (namelinks.HasValue())
+            {
+                NameLinks = (from pid in CurrentList()
+                    select new
+                    {
+                        i = pid,
+                        links = namelinks.Replace("{peopleid}", pid.ToString())
+                            .Replace("{orgid}", Id.ToString())
+                    }).ToDictionary(vv => vv.i, vv => vv.links);
+            }
+        }
+
 
         public override IQueryable<OrgPerson> DefineModelSort(IQueryable<OrgPerson> q)
         {

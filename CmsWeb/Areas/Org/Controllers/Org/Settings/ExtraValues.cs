@@ -11,6 +11,7 @@ namespace CmsWeb.Areas.Org.Controllers
     {
         [HttpPost]
         [Authorize(Roles = "Edit")]
+        [ValidateInput(false)]
         public ActionResult NewExtraValue(int id, string field, string value, bool multiline)
         {
             var m = new OrganizationModel();
