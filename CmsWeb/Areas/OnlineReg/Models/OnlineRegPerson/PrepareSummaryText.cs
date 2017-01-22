@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text;
 using UtilityExtensions;
 using CmsData;
@@ -10,6 +11,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
     {
 
         private string summarytext;
+
         public string PrepareSummaryText(CMSDataContext db)
         {
             if (summarytext.HasValue())
@@ -21,8 +23,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (om == null)
                 return "";
 
-            summarytext = SummaryInfo.GetResults(db, om.PeopleId, om.OrganizationId);
-            return summarytext;
+            try
+            {
+                summarytext = SummaryInfo.GetResults(db, om.PeopleId, om.OrganizationId);
+                return summarytext;
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
+                return summarytext = "Error producing {details}\n" + ex.Message;
+            }
         }
 
         private string SummarizeFamilyAttendance()
