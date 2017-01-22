@@ -10,7 +10,8 @@
   <div class="form-group">
     @Html.Label("Choose Participant", new { @class = "control-label col-sm-3 labelsize" })
     <div class="col-sm-9">
-      @Html.DropDownListFor(m => m.MissionTripGoerId, Model.MissionTripGoers())
+      @Html.DropDownListFor(m => m.MissionTripGoerId, Model.MissionTripGoers(), new {@class = "form-control"})
+      @Html.ValidationMessageLabelFor(m => m.MissionTripGoerId, errorClass: "field-validation-error alert alert-block")
     </div>
   </div>
 }

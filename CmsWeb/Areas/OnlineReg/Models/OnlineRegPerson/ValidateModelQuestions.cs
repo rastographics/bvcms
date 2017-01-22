@@ -13,7 +13,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
             Index = i;
             if (Parent.SupportMissionTrip)
             {
-                QuestionsOK = modelState.IsValid;
+                QuestionsOK = true;
+                if(MissionTripGoerId == 0)
+                {
+                    modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripGoerId), "Please select a participant");
+                    QuestionsOK = false;
+                }
                 return;
             }
             if (RecordFamilyAttendance())
