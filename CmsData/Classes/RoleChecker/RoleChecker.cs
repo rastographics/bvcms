@@ -120,9 +120,7 @@ namespace CmsData.Classes.RoleChecker
         CanEditCGInfoEVs,
         EditMemberData,
         OrgMembersDropAdd,
-        OtherGroupsContentOnly,
-        ShowChildOrgsOnInvolvementTabs,
-        ShowParentOrgInDetails
+        OtherGroupsContentOnly
         // ReSharper restore InconsistentNaming
     }
 }
