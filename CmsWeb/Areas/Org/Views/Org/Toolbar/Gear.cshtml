@@ -11,7 +11,7 @@
     var oid = ViewBag.oid;
     var model = (OrganizationModel)ViewBag.model;
     var o = model.Org;
-    var showAdvanced = RoleChecker.HasSetting(SettingName.LimitToolbar, false);
+    var showAdvanced = !RoleChecker.HasSetting(SettingName.LimitToolbar, false);
 }
 
 @if (showAdvanced)
