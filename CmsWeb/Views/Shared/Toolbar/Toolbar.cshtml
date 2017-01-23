@@ -5,16 +5,22 @@
     var showBlueToolbarExports = true;
     var showBlueToolbarCustomReports = true;
     var showBlueToolbarAdminGear = true;
-    if (Model is OrganizationModel)
+    var showAdvanced = true;
+    if (Request?.Url?.AbsolutePath.StartsWith("/Org") == true)
     {
         showBlueToolbarExports = Model.ShowBlueToolbarExports;
         showBlueToolbarCustomReports = Model.ShowBlueToolbarCustomReports;
         showBlueToolbarAdminGear = Model.ShowBlueToolbarAdminGear;
+        showAdvanced = RoleChecker.HasSetting(SettingName.Organization_ShowBlueToolbar, true);
+    }
+    else if (Request?.Url?.AbsolutePath.StartsWith("/Person") == true)
+    {
+        showAdvanced = RoleChecker.HasSetting(SettingName.Person_ShowBlueToolbar, true);
     }
 }
 <div id="bluetoolbarstop">
     <div id="bluebar-menu" class="btn-group pull-right">
-        @if (RoleChecker.HasSetting(SettingName.Person_ShowBlueToolbar, true))
+        @if (showAdvanced)
         {
             <div class="btn-group btn-group-lg dropdown-large">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
