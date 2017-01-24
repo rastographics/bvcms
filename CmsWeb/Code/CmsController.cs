@@ -42,6 +42,8 @@ namespace CmsWeb
                 else
                     filterContext.Result = Redirect(Request.RawUrl);
             }
+            HttpContext.Response.Headers.Add("X-Robots-Tag", "noindex");
+            HttpContext.Response.Headers.Add("X-Robots-Tag", "unavailable after: 1 Jan 2017 01:00:00 CST");
         }
 
         public string AuthenticateDeveloper(bool log = false, string addrole = "", string altrole = "")
@@ -127,6 +129,8 @@ namespace CmsWeb
             base.OnActionExecuting(filterContext);
             Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
             DbUtil.Db.UpdateLastActivity(Util.UserId);
+            HttpContext.Response.Headers.Add("X-Robots-Tag", "noindex");
+            HttpContext.Response.Headers.Add("X-Robots-Tag", "unavailable after: 1 Jan 2017 01:00:00 CST");
         }
 
         public static string ErrorUrl(string message)
