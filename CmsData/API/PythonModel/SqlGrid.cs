@@ -106,7 +106,9 @@ namespace CmsData
                     var nam = rd.GetName(i).ToLower();
                     if (nam == "linkfornext")
                     {
-                        linkfornext = rd.GetString(i);
+                        var x = rd.GetValue(i);
+                        if (x != DBNull.Value)
+                            linkfornext = rd.GetString(i);
                         continue;
                     }
                     string s;
