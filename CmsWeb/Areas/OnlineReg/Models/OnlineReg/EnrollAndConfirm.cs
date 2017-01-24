@@ -29,10 +29,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (masterorgid.HasValue)
                 return EnrollAndConfirmMultipleOrgs();
 
-            var message = DoEnrollments();
-
             if (SupportMissionTrip && TotalAmount() > 0)
                 return DoMissionTripSupporter();
+
+            var message = DoEnrollments();
 
             if (IsMissionTripGoerWithPayment())
                 DoMissionTripGoer();

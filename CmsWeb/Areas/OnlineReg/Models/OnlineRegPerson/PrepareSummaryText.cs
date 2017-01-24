@@ -10,12 +10,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
     public partial class OnlineRegPersonModel
     {
 
-        private string summarytext;
-
         public string PrepareSummaryText(CMSDataContext db)
         {
-            if (summarytext.HasValue())
-                return summarytext;
             if (RecordFamilyAttendance())
                 return SummarizeFamilyAttendance();
 
@@ -25,13 +21,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             try
             {
-                summarytext = SummaryInfo.GetResults(db, om.PeopleId, om.OrganizationId);
-                return summarytext;
+                return SummaryInfo.GetResults(db, om.PeopleId, om.OrganizationId);
             }
             catch (Exception ex)
             {
                 Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
-                return summarytext = "Error producing {details}\n" + ex.Message;
+                return "Error producing {details}\n" + ex.Message;
             }
         }
 
