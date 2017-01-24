@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using CmsData;
 using CmsWeb.Models;
@@ -78,16 +79,21 @@ namespace CmsWeb.Areas.Org.Models
         public Dictionary<int, string> NameLinks;
         private void CheckNameLinks()
         {
-            var namelinks = org.GetExtra(DbUtil.Db, "ShowNameLinks");
-            if (namelinks.HasValue())
+            var ev = org.GetExtra(DbUtil.Db, "ShowNameLinks");
+            if (ev.HasValue())
             {
-                NameLinks = (from pid in CurrentList()
+            	var namelinks = Regex.Replace(ev, 
+                    @"\[(?<text>.*?)\]\((?<url>[^\s]*)\s*(?<attr>.*?)\)", 
+                    "<a href=\"${url}\" ${attr}>${text}</a>");
+                NameLinks = (
+                    from pid in CurrentList()
                     select new
                     {
                         i = pid,
                         links = namelinks.Replace("{peopleid}", pid.ToString())
                             .Replace("{orgid}", Id.ToString())
-                    }).ToDictionary(vv => vv.i, vv => vv.links);
+                    }
+               ).ToDictionary(vv => vv.i, vv => vv.links);
             }
         }
 
