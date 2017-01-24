@@ -99,12 +99,9 @@
                                     <label class="radio-inline">
                                         <input type="radio" id="showall" name="show" value="all"/> All
                                     </label>
-                                    @if (Model.ShowAttendType)
-                                    {
-                                        <label class="radio-inline">
-                                            <input type="radio" id="showattends" name="show" value="attends" checked="checked"/> Attends
-                                        </label>
-                                    }
+                                    <label class="radio-inline">
+                                        <input type="radio" id="showattends" name="show" value="attends" checked="checked"/> Attends
+                                    </label>
                                     <label class="radio-inline">
                                         <input type="radio" id="showabsents" name="show" value="absents"/> Absents
                                     </label>
@@ -129,12 +126,9 @@
                                     <label class="checkbox-inline">
                                         @Html.CheckBox("registering", Model.showregister) Register
                                     </label>
-                                    @if (Model.ShowCurrentMemberType)
-                                    {
-                                        <label class="checkbox-inline">
-                                            @Html.CheckBox("currmembers", Model.currmembers) Current Members
-                                        </label>
-                                    }
+                                    <label class="checkbox-inline">
+                                        @Html.CheckBox("currmembers", Model.currmembers) Current Members
+                                    </label>
                                 </div>
                                 <div class="pull-right">
                                     <a href="/SearchAdd2/Dialog/registered/@Model.meeting.MeetingId" class="btn btn-success hidden searchadd"><i class="fa fa-plus-circle"></i> Add Registered</a>
@@ -165,10 +159,19 @@
                                 <th class="text-center">Attended</th>
                                 <th class="showreg" style="display: none">Commitment</th>
                                 <th><a href="#" id="sortbyname">Name</a></th>
-                                <th>Current Member Type</th>
+                                @if (Model.ShowCurrentMemberType)
+                                {
+                                    <th>Current Member Type</th>
+                                }
                                 <th>Attend Member Type</th>
-                                <th>Attend Type</th>
-                                <th>Other Attend</th>
+                                @if (Model.ShowAttendType)
+                                {
+                                    <th>Attend Type</th>
+                                }
+                                @if (Model.ShowOtherAttend)
+                                {
+                                    <th>Other Attend</th>
+                                }
                             </tr>
                             </thead>
                             <tbody>
@@ -189,10 +192,19 @@
                                     {
                                         <td class="name @(a.Conflict ? "alert-danger" : "")">@a.Name</td>
                                     }
-                                    <td>@a.CurrMemberType</td>
+                                    @if (Model.ShowCurrentMemberType)
+                                    {
+                                        <td>@a.CurrMemberType</td>
+                                    }
                                     <td>@a.MemberType</td>
-                                    <td>@a.AttendType</td>
-                                    <td>@a.OtherAttend</td>
+                                    @if (Model.ShowAttendType)
+                                    {
+                                        <td>@a.AttendType</td>
+                                    }
+                                    @if (Model.ShowOtherAttend)
+                                    {
+                                        <td>@a.OtherAttend</td>
+                                    }
                                 </tr>
                             }
                             </tbody>
