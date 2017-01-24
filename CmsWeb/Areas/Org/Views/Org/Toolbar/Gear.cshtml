@@ -20,7 +20,7 @@
         <li class="col-sm-6">
             <ul id="ultoolbar">
                 <li class="dropdown-header">Administrative</li>
-                @if (admin || manager || model.ShowBlueToolbarSubGroupManagement)
+                @if (admin || manager)
                 {
                     <li><a href="/OrgGroups/@oid"><span class="org-context">Sub-Group Management</span></a></li>
                     <li class="hideAlt"><a href="/RegSettings/@oid"><span class="org-context">View Registration Document</span></a></li>

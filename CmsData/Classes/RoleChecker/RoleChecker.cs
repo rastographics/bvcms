@@ -78,7 +78,6 @@ namespace CmsData.Classes.RoleChecker
         Organization_ShowBlueToolbarExportMenu,
         Organization_ShowBlueToolbarCustomReportsMenu,
         Organization_ShowBlueToolbarAdminGearMenu,
-        Organization_ShowBlueToolbarSubGroupManagement,
         Organization_ShowBlueToolbarMembersOnlyPage,
         Organization_ShowBlueToolbarVolunteerCalendar,
         Organization_ShowOptionsMenu,

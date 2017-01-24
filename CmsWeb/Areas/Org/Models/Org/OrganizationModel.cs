@@ -173,7 +173,6 @@ namespace CmsWeb.Areas.Org.Models
         public bool ShowBlueToolbarExports => RoleChecker.HasSetting(SettingName.Organization_ShowBlueToolbarExportMenu, true);
         public bool ShowBlueToolbarCustomReports => RoleChecker.HasSetting(SettingName.Organization_ShowBlueToolbarCustomReportsMenu, true);
         public bool ShowBlueToolbarAdminGear => RoleChecker.HasSetting(SettingName.Organization_ShowBlueToolbarAdminGearMenu, true);
-        public bool ShowBlueToolbarSubGroupManagement => RoleChecker.HasSetting(SettingName.Organization_ShowBlueToolbarSubGroupManagement, true);
         public bool ShowBlueToolbarMembersOnlyPage => RoleChecker.HasSetting(SettingName.Organization_ShowBlueToolbarMembersOnlyPage, true);
         public bool ShowBlueToolbarVolunteerCalendar => RoleChecker.HasSetting(SettingName.Organization_ShowBlueToolbarVolunteerCalendar, true);
         
