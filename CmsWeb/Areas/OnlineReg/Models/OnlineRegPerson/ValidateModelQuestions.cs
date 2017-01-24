@@ -13,12 +13,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
             Index = i;
             if (Parent.SupportMissionTrip)
             {
-                QuestionsOK = true;
                 if(MissionTripGoerId == 0)
-                {
                     modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripGoerId), "Please select a participant");
-                    QuestionsOK = false;
-                }
+                if ((MissionTripSupportGoer ?? 0) == 0)
+                    modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripSupportGoer), "Please enter your gift amount");
+                QuestionsOK = modelState.IsValid;
                 return;
             }
             if (RecordFamilyAttendance())
