@@ -115,11 +115,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var ts = TransactionSummary();
             DbUtil.Db.SetCurrentOrgId(p.orgid);
             var emailSubject = GetSubject(p);
-            var details = p.PrepareSummaryText(DbUtil.Db);
-            var message = p.GetMessage(details);
-
-            var NotifyIds = DbUtil.Db.StaffPeopleForOrg(p.org.OrganizationId);
-            var notify = NotifyIds[0];
+            var message = p.GetMessage();
+            var details = "";
+            if(message.Contains("{details}"))
+            {
+                details = p.PrepareSummaryText(DbUtil.Db);
+                message = message.Replace("{details}", details);
+            }
+            var notifyIds = DbUtil.Db.StaffPeopleForOrg(p.org.OrganizationId);
+            var notify = notifyIds[0];
 
             var location = p.org.Location;
             if (!location.HasValue())
@@ -142,7 +146,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             // notify the staff
             DbUtil.Db.Email(Util.PickFirst(p.person.FromEmail, notify.FromEmail),
-                NotifyIds, Header,
+                notifyIds, Header,
                 $@"{p.person.Name} has registered for {Header}<br/>
 Feepaid for this registrant: {p.AmountToPay():C}<br/>
 Others in this registration session: {p.GetOthersInTransaction(Transaction)}<br/>
@@ -345,8 +349,13 @@ Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
                     p.CreateAccount();
                 DbUtil.Db.SubmitChanges();
             }
+            var message = List[0].GetMessage();
+            if (!message.Contains("{details}"))
+                return message;
+
             var details = GetDetailsSection();
-            return List[0].GetMessage(details);
+            message = message.Replace("{details}", details);
+            return message;
         }
 
         public string GetDetailsSection()

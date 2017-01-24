@@ -61,7 +61,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 ", ts);
             return summary;
         }
-        public string GetMessage(string details)
+        public string GetMessage()
         {
             var payLink = GetPayLink();
             var body = settings[org.OrganizationId].Body;
@@ -79,10 +79,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var ts = Parent.TransactionSummary();
             message = message.Replace("{phone}", org.PhoneNumber.FmtFone7())
                 .Replace("{tickets}", ntickets.ToString())
-                .Replace("{details}", details)
                 .Replace("{paid}", ts?.TotPaid.ToString("c"))
-                .Replace("{sessiontotal}", ts?.TotPaid.ToString("c"))
-                .Replace("{participants}", details);
+                .Replace("{sessiontotal}", ts?.TotPaid.ToString("c"));
             if (ts?.TotDue > 0)
                 message = message.Replace("{paylink}",
                     $"<a href='{payLink}'>Click this link to make a payment on your balance of {ts.TotDue:C}</a>.");
