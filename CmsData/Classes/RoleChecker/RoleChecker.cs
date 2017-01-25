@@ -1,31 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Web;
 using System.Xml.Linq;
-using System.Xml.Serialization;
-using IronPython.Modules;
 
 namespace CmsData.Classes.RoleChecker
 {
     public static class RoleChecker
     {
-        private static XDocument xdoc
+        private static XDocument Xdoc
         {
             get
             {
+                const string CustomAccessRolesKey = "CustomAccessRoles.xml";
                 try
                 {
-                    return XDocument.Load(new StringReader(DbUtil.Content("CustomAccessRoles.xml", "")));
+                    var doc = HttpContext.Current.Items[CustomAccessRolesKey] as XDocument;
+                    if (doc == null)
+                    {
+                        doc = XDocument.Load(new StringReader(DbUtil.Content(CustomAccessRolesKey, "")));
+                        HttpContext.Current.Items[CustomAccessRolesKey] = doc;
+                    }
+                    return doc;
                 }
                 catch
                 {
-                    return new XDocument();
+                    var doc = new XDocument();
+                    HttpContext.Current.Items[CustomAccessRolesKey] = doc;
+                    return doc;
                 }
             }
         }
-        private static XElement roles => xdoc.Element("roles");
+        private static XElement Roles => Xdoc.Element("roles");
 
         private static XElement Settings(XElement role)
         {
@@ -34,6 +38,8 @@ namespace CmsData.Classes.RoleChecker
 
         public static bool HasSetting(SettingName setting, bool defaultValue)
         {
+            var roles = Roles;
+
             if (roles != null)
             {
                 foreach (var r in roles.Elements("role"))
