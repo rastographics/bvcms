@@ -361,7 +361,7 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
             DbUtil.Db.SubmitChanges();
         }
 
-        public void UpdateQuestion(int n, string answer)
+        public void UpdateQuestion(int n, string type, string answer)
         {
             var q = DbUtil.Db.OrgMemberQuestions(OrgId, PeopleId).ToList();
             var rq = q.SingleOrDefault(vv => vv.Row == n);
@@ -371,7 +371,37 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
             var question = rq.Question;
 
             var r = new OnlineRegPersonModel0(OrgMember.OnlineRegData);
-            r.ExtraQuestion[rq.SetX ?? 0][question] = answer;
+            switch (type)
+            {
+                case "question":
+                    r.ExtraQuestion[rq.SetX ?? 0][question] = answer;
+                    break;
+                case "text":
+                    r.Text[rq.SetX ?? 0][question] = answer;
+                    break;
+            }
+            OrgMember.OnlineRegData = r.WriteXml();
+            DbUtil.Db.SubmitChanges();
+        }
+        public void DeleteQuestion(int n, string type)
+        {
+            var q = DbUtil.Db.OrgMemberQuestions(OrgId, PeopleId).ToList();
+            var rq = q.SingleOrDefault(vv => vv.Row == n);
+            if (rq == null)
+                throw new Exception("question not found");
+
+            var question = rq.Question;
+
+            var r = new OnlineRegPersonModel0(OrgMember.OnlineRegData);
+            switch (type)
+            {
+                case "question":
+                    r.ExtraQuestion[rq.SetX ?? 0].Remove(question);
+                    break;
+                case "text":
+                    r.Text[rq.SetX ?? 0].Remove(question);
+                    break;
+            }
             OrgMember.OnlineRegData = r.WriteXml();
             DbUtil.Db.SubmitChanges();
         }

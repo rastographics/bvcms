@@ -86,12 +86,26 @@ namespace CmsWeb.Areas.Dialog.Controllers
             var oid = a[0].ToInt();
             var pid = a[1].ToInt();
             var n = a[2].ToInt();
+            var typ = a[3];
             var m = new OrgMemberModel(oid, pid);
-            m.UpdateQuestion(n, value);
+            m.UpdateQuestion(n, typ, value);
 
             DbUtil.LogActivity("OrgMem EditQuestion " + n, oid, pid);
             var c = Content(value);
             return c;
+        }
+        [Authorize(Roles = "Developer")]
+        [HttpPost, Route("DeleteQuestion/{id}")]
+        public ActionResult DeleteQuestion(string id)
+        {
+            var a = id.Split(',');
+            var oid = a[0].ToInt();
+            var pid = a[1].ToInt();
+            var n = a[2].ToInt();
+            var typ = a[3];
+            var m = new OrgMemberModel(oid, pid);
+            m.DeleteQuestion(n, typ);
+            return Content("ok");
         }
 
         public string HelpLink()

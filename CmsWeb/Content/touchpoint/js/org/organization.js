@@ -347,6 +347,16 @@
                     return data;
                 }
             });
+            $(".delete", f).click(function () {
+                ev.preventDefault();
+                var dd = $(this).parent();
+                var dt = dd.prev();
+                $.post("/OrgMemberDialog/DeleteQuestion/" + this.id, function() {
+                    dd.remove();
+                    dt.remove();
+                });
+                return false;
+            });
 
 
             $('#empty-dialog').on('hidden', function () {

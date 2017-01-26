@@ -9,10 +9,10 @@
       foreach (var q in Model.RegQuestions())
       {
         hadQuestions = true;
-        var pk = $"{Model.OrgId},{Model.PeopleId},{q.Row}";
+        var pk = $"{Model.OrgId},{Model.PeopleId},{q.Row},{q.Type}";
         <dt>@q.Question</dt>
         <dd class="pre-wrap">
-          <a id="@pk" data-pk="@pk" href="#" data-title="Answer" class="clickEdit editable editable-click">@q.Answer</a>
+          <a id="@pk" data-pk="@pk" href="#" data-title="Answer" class="clickEdit editable editable-click">@q.Answer</a> @if (User.IsInRole("Developer")) { <a id="@pk" href="#" class="delete">X</a> }
         </dd>
       }
     }
