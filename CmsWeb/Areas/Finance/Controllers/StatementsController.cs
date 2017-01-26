@@ -7,7 +7,9 @@ using System.Threading;
 using System.Web.Hosting;
 using System.Web.Mvc;
 using CmsData;
+using CmsData.API;
 using CmsWeb.Areas.Finance.Models.Report;
+using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Controllers
@@ -27,7 +29,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         }
 
         [HttpPost, Route("Start")]
-        public ActionResult ContributionStatements(DateTime? fromDate, DateTime? endDate, string startswith, string sort, int? tagid, bool excludeelectronic)
+        public ActionResult ContributionStatements(DateTime? fromDate, DateTime? endDate, string startswith, string sort, int? tagid, bool excludeelectronic, bool exportcontributors = false)
         {
             if (!fromDate.HasValue || !endDate.HasValue)
                 return Content("<h3>Must have a Startdate and Enddate</h3>");
@@ -39,6 +41,16 @@ namespace CmsWeb.Areas.Finance.Controllers
             };
             if (!startswith.HasValue())
                 startswith = null;
+            if (exportcontributors)
+            {
+                var db = DbUtil.Db;
+                var noaddressok = !db.Setting("RequireAddressOnStatement", true);
+                const bool useMinAmt = true;
+                if (tagid == 0)
+                    tagid = null;
+                var qc = APIContribution.contributors(db, fromDate.Value, endDate.Value, 0, 0, 0, noaddressok, useMinAmt, startswith, sort, tagid: tagid, excludeelectronic: excludeelectronic);
+                return ExcelExportModel.ToDataTable(qc.ToList()).ToExcel("Contributors.xlsx");
+            }
             DbUtil.Db.ContributionsRuns.InsertOnSubmit(runningtotals);
             DbUtil.Db.SubmitChanges();
             var cul = DbUtil.Db.Setting("Culture", "en-US");
