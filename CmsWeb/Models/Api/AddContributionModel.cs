@@ -61,7 +61,6 @@ namespace CmsWeb.Models.Api
             }
 
             var c = person.PostUnattendedContribution(DbUtil.Db, Amount, Fundid, Notes);
-            c.Source
             c.ContributionDate = Date ?? DateTime.Now;
             db.SubmitChanges();
             result.PeopleId = person.PeopleId;
