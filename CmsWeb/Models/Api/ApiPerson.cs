@@ -27,5 +27,6 @@ namespace CmsWeb.Models.Api
         public string CellPhone { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
+        public bool? IsDeceased { get; set; }
     }
 }

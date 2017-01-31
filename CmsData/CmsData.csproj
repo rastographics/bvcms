@@ -609,6 +609,7 @@
     <Compile Include="Generated\Functions\OrgPeopleProspect.cs" />
     <Compile Include="Generated\Functions\OrgPerson.cs" />
     <Compile Include="Generated\Functions\OrgSearch.cs" />
+    <Compile Include="Generated\Functions\PastAttendanceCredit.cs" />
     <Compile Include="Generated\Functions\PeopleIdsFromOrgSearch.cs" />
     <Compile Include="Generated\Functions\PledgeBalance.cs" />
     <Compile Include="Generated\Functions\PotentialSubstitute.cs" />
@@ -652,6 +653,7 @@
     <Compile Include="Generated\ResourceType.cs" />
     <Compile Include="Generated\Views\AccessUserInfo.cs" />
     <Compile Include="Generated\Views\ActiveRegistration.cs" />
+    <Compile Include="Generated\Views\AllLookup.cs" />
     <Compile Include="Generated\Views\AppRegistration.cs" />
     <Compile Include="Generated\Views\AttendCredits2.cs" />
     <Compile Include="Generated\Views\ContributionsBasic.cs" />
