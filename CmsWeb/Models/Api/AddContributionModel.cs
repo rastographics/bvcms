@@ -56,15 +56,18 @@ namespace CmsWeb.Models.Api
 
                 if (count == 0)
                     person.Comments = "Added during api postcontribution because record was not found";
-                else if (count > 1)
-                    person.Comments = "Added during api postcontribution because there was more than 1 match";
+//                else if (count > 1)
+//                    person.Comments = "Added during api postcontribution because there was more than 1 match";
             }
 
             var c = person.PostUnattendedContribution(DbUtil.Db, Amount, Fundid, Notes);
+            c.Source
             c.ContributionDate = Date ?? DateTime.Now;
             db.SubmitChanges();
             result.PeopleId = person.PeopleId;
             result.ContributionId = c.ContributionId;
+            result.Source = Source;
+            DbUtil.LogActivity($"ApiPostContribution {result}", person.PeopleId);
             return result;
         }
 
@@ -74,6 +77,11 @@ namespace CmsWeb.Models.Api
             public int ContributionId { get; set; }
             public bool NewPerson { get; set; }
             public bool MultipleMatches { get; set; }
+            public string Source { get; set; }
+            public override string ToString()
+            {
+                return $"Id:{ContributionId},Source:{Source},NewPerson:{NewPerson},MultipleMatches:{MultipleMatches}";
+            }
         }
     }
 }
