@@ -57,7 +57,7 @@ namespace CmsWeb
 
         private static string GetUserName(HttpRequestMessage request)
         {
-            var auth = request.Headers.Authorization.Parameter;
+            var auth = request.Headers.Authorization?.Parameter;
 
             if (string.IsNullOrWhiteSpace(auth)) return null;
 

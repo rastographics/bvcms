@@ -255,7 +255,7 @@ namespace UtilityExtensions
             get
             {
                 if (HttpContext.Current != null)
-                    return HttpContext.Current.User.IsInRole("EmailTest") || ((bool?) HttpContext.Current.Session["IsInRoleEmailTest"] ?? false);
+                    return HttpContext.Current.User.IsInRole("EmailTest") || ((bool?) HttpContext.Current.Session?["IsInRoleEmailTest"] ?? false);
                 return (bool?) Thread.GetData(Thread.GetNamedDataSlot("IsInRoleEmailTest")) ?? false;
             }
             set
