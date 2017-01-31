@@ -1877,6 +1877,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.AllLookup> ViewAllLookups
+	    {
+		    get { return this.GetTable< View.AllLookup>(); }
+
+	    }
+
 	    public Table< View.AllStatusFlag> ViewAllStatusFlags
 	    {
 		    get { return this.GetTable< View.AllStatusFlag>(); }
@@ -3733,6 +3739,19 @@ namespace CmsData
                 orgid,
                 meetingdt,
                 NoCurrentMembers
+                );
+		}
+
+		[Function(Name="dbo.PastAttendanceCredits", IsComposable = true)]
+		public IQueryable< View.PastAttendanceCredit > PastAttendanceCredits(
+            [Parameter(DbType="int")] int? orgid,
+            [Parameter(DbType="int")] int? pid
+            )
+		{
+			return this.CreateMethodCallQuery< View.PastAttendanceCredit>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                orgid,
+                pid
                 );
 		}
 
