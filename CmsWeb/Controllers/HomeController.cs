@@ -268,9 +268,9 @@ namespace CmsWeb.Controllers
             if (!script.StartsWith("#Roles=") && !script.StartsWith("--Roles"))
                 return true;
             var re = new Regex("(--|#)Roles=(?<roles>.*)", RegexOptions.IgnoreCase);
-            var roles = re.Match(script).Groups["roles"].Value.Split(',').Select(aa => aa.Trim());
-            if (!roles.Any(rr => User.IsInRole(rr)))
-                return false;
+            var roles = re.Match(script).Groups["roles"].Value.Split(',').Select(aa => aa.Trim()).ToArray();
+            if (roles.Length > 0)
+                return roles.Any(rr => User.IsInRole(rr));
             return true;
         }
 
