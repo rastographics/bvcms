@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Web;
 using System.Xml.Linq;
+using UtilityExtensions;
 
 namespace CmsData.Classes.RoleChecker
 {
@@ -14,11 +15,13 @@ namespace CmsData.Classes.RoleChecker
                 try
                 {
                     var doc = HttpContext.Current.Items[CustomAccessRolesKey] as XDocument;
-                    if (doc == null)
-                    {
-                        doc = XDocument.Load(new StringReader(DbUtil.Content(CustomAccessRolesKey, "")));
-                        HttpContext.Current.Items[CustomAccessRolesKey] = doc;
-                    }
+                    if (doc != null)
+                        return doc;
+                    var s = DbUtil.Content(CustomAccessRolesKey, "");
+                    doc = s.HasValue()
+                        ? XDocument.Load(new StringReader(DbUtil.Content(CustomAccessRolesKey, "")))
+                        : new XDocument(); // avoid expensive catch when there there really is no error because document is empty
+                    HttpContext.Current.Items[CustomAccessRolesKey] = doc;
                     return doc;
                 }
                 catch
