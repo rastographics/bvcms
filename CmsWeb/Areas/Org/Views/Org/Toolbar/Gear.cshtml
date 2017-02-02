@@ -1,4 +1,5 @@
 ﻿@using CmsData
+@using CmsData.Classes.RoleChecker
 @using CmsData.Codes
 @using CmsWeb.Areas.Org.Models
 @{
@@ -10,7 +11,7 @@
     var oid = ViewBag.oid;
     var model = (OrganizationModel)ViewBag.model;
     var o = model.Org;
-    var showAdvanced = !(User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-LimitToolbarForOrgLeaders"));
+    var showAdvanced = !RoleChecker.HasSetting(SettingName.LimitToolbar, false);
 }
 
 @if (showAdvanced)
@@ -24,9 +25,12 @@
                     <li><a href="/OrgGroups/@oid"><span class="org-context">Sub-Group Management</span></a></li>
                     <li class="hideAlt"><a href="/RegSettings/@oid"><span class="org-context">View Registration Document</span></a></li>
                 }
-                <li><a href="/OrgContent/@oid" target="_blank"><span class="org-context">Members Only Page</span></a></li>
+                @if (model.ShowBlueToolbarMembersOnlyPage)
+                {
+                    <li><a href="/OrgContent/@oid" target="_blank"><span class="org-context">Members Only Page</span></a></li>
+                }
                 <li><a id="tryreg" href="#TryRegDialog" data-toggle="modal"><span class="org-context">Try Registration</span></a></li>
-                @if (model.IsVolunteerLeader && o.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)
+                @if (model.IsVolunteerLeader && o.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes && model.ShowBlueToolbarVolunteerCalendar)
                 {
                     <li><a id="VolunteerCalendar" href="/Volunteers/Calendar/@oid" target="calendar"><span class="org-context">Volunteer Calendar</span></a></li>
                 }
@@ -69,7 +73,7 @@ else
             <ul>
                 <li class="dropdown-header">Content</li>
                 <li><a href="/OrgContent/@o.OrganizationId" class="qid">Members Only Page</a></li>
-                @if (model.IsVolunteerLeader && o.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)
+                @if (model.IsVolunteerLeader && o.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes && model.ShowBlueToolbarVolunteerCalendar)
                 {
                     <li><a id="VolunteerCalendar" href="/Volunteers/Calendar/@oid" target="calendar"><span class="org-context">Volunteer Calendar</span></a></li>
                 }

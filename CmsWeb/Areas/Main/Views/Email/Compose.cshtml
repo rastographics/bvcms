@@ -1,5 +1,6 @@
 ﻿@using System.Configuration
 @using CmsData
+@using CmsData.Classes.RoleChecker
 @using CmsData.Codes
 @model CmsWeb.Areas.Main.Models.MassEmailer
 @{
@@ -11,7 +12,7 @@
     //c.TypeID == ContentTypeCode.TypeEmailTemplate
     //the above means that it was a template they chose if true and a draft they chose if false
 
-    var showAdvanced = !(User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-LimitToolbarForOrgLeaders"));
+    var showAdvanced = !RoleChecker.HasSetting(SettingName.LimitToolbar, false);
 }
 @section head
 {

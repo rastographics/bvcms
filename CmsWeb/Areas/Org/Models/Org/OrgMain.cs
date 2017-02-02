@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using CmsData;
+using CmsData.Classes.RoleChecker;
 using CmsWeb.Code;
 using CmsWeb.Models;
 using UtilityExtensions;
@@ -53,7 +54,7 @@ namespace CmsWeb.Areas.Org.Models
             }
         }
 
-        public bool CollapsedOrganizationDetails => HttpContext.Current.User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-OrgLeaderLimitedSearchPerson");
+        public bool CollapsedOrganizationDetails => RoleChecker.HasSetting(SettingName.Organization_CollapseOrgDetails, false);
 
         private string _schedule;
         public string Schedule

@@ -1,57 +1,60 @@
 ﻿<ul class="dropdown-menu dropdown-menu-large dropdown-menu-right container bluebar-menu-col-1">
-  <li class="col-sm-12">
-    <ul>
-      <li class="dropdown-header">Reports</li>
-      @if (Model.meeting.MeetingDate >= DateTime.Today)
-      {
-          <li>
-            <a href="/Reports/RollsheetForMeeting/@Model.meeting.MeetingId" target="_blank">
-              <span class="org-context">Rollsheet Report</span>
-            </a>
-          </li>
-      }
-      <li>
-        <a href="/Reports/PastAttendee/@Model.meeting.OrganizationId" target="_blank">
-          <span class="org-context">Recent Attendance Report</span>
-        </a>
-      </li>
-      <li>
-        <a href="/Reports/Attendee/@Model.meeting.MeetingId" target="_blank">
-          <span class="org-context">Attendee Report</span>
-        </a>
-      </li>
-      <li>
-        <a href="/Reports/VisitsAbsents/@Model.meeting.MeetingId" target="_blank">
-          <span class="org-context">Guests/Absentees Report</span>
-        </a>
-      </li>
-      <li>
-        <a href="/Reports/VisitsAbsents2/@Model.meeting.MeetingId" id="contactreport" target="_blank">
-          <span class="org-context">Guests/Absentees Contact Report</span>
-        </a>
-      </li>
-      <li>
-        <a href="/Meeting/AttendanceByGroups/@Model.meeting.MeetingId" target="_blank">
-          <span class="org-context">Attendance By Groups</span>
-        </a>
-      </li>
+    <li class="col-sm-12">
+        <ul>
+            <li class="dropdown-header">Reports</li>
+            @if (Model.meeting.MeetingDate >= DateTime.Today && Model.ShowBlueToolbarRollsheet)
+            {
+                <li>
+                    <a href="/Reports/RollsheetForMeeting/@Model.meeting.MeetingId" target="_blank">
+                        <span class="org-context">Rollsheet Report</span>
+                    </a>
+                </li>
+            }
+            <li>
+                <a href="/Reports/PastAttendee/@Model.meeting.OrganizationId" target="_blank">
+                    <span class="org-context">Recent Attendance Report</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Reports/Attendee/@Model.meeting.MeetingId" target="_blank">
+                    <span class="org-context">Attendee Report</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Reports/VisitsAbsents/@Model.meeting.MeetingId" target="_blank">
+                    <span class="org-context">Guests/Absentees Report</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Reports/VisitsAbsents2/@Model.meeting.MeetingId" id="contactreport" target="_blank">
+                    <span class="org-context">Guests/Absentees Contact Report</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Meeting/AttendanceByGroups/@Model.meeting.MeetingId" target="_blank">
+                    <span class="org-context">Attendance By Groups</span>
+                </a>
+            </li>
 
-      <li class="dropdown-header">Special Pages</li>
-      <li>
-        <a href="/Meeting/iPad/@Model.meeting.MeetingId">
-          <span class="org-context">iPad Attendance</span>
-        </a>
-      </li>
-      <li>
-        <a href="/Meeting/iPad/@Model.meeting.MeetingId?commitsOnly=true">
-          <span class="org-context">iPad Attendance Registered Only</span>
-        </a>
-      </li>
-      <li>
-        <a href="/Meeting/tickets/@Model.meeting.MeetingId">
-          <span class="org-context">Ticketing Attendance</span>
-        </a>
-      </li>
-    </ul>
-  </li>
+            <li class="dropdown-header">Special Pages</li>
+            @if (Model.ShowBlueToolbarIpadAttendance)
+            {
+                <li>
+                    <a href="/Meeting/iPad/@Model.meeting.MeetingId">
+                        <span class="org-context">iPad Attendance</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/Meeting/iPad/@Model.meeting.MeetingId?commitsOnly=true">
+                        <span class="org-context">iPad Attendance Registered Only</span>
+                    </a>
+                </li>
+            }
+            <li>
+                <a href="/Meeting/tickets/@Model.meeting.MeetingId">
+                    <span class="org-context">Ticketing Attendance</span>
+                </a>
+            </li>
+        </ul>
+    </li>
 </ul>

@@ -462,6 +462,7 @@
     <Compile Include="Classes\GoogleCloudMessaging\GCMResponseResult.cs" />
     <Compile Include="Classes\OnlineRegSummaryText\OnlineRegPersonModel0.cs" />
     <Compile Include="Classes\OnlineRegSummaryText\SummaryInfo.cs" />
+    <Compile Include="Classes\RoleChecker\RoleChecker.cs" />
     <Compile Include="Classes\style.cs" />
     <Compile Include="DbUtil\CurrentOrg.cs" />
     <Compile Include="DbUtil\ModelViewModel.cs" />

@@ -41,7 +41,7 @@
                                 <td>@m.Location</td>
                                 <td>@m.Description</td>
                                 <td style="width: 50px;">
-                                    @if (User.IsInRole("Attendance"))
+                                    @if (User.IsInRole("Attendance") && Model.ShowDeleteMeeting)
                                     {
                                         <a href="/DeleteMeeting/@m.MeetingId" class="longrunop btn btn-danger btn-sm"><i class="fa fa-trash"></i> Delete</a>
                                     }
@@ -61,7 +61,7 @@
 </form>
 @helper FormAction(bool xs = false)
 {
-    if (User.IsInRole("Attendance"))
+    if (User.IsInRole("Attendance") && Model.ShowCreateNewMeeting)
     {
         if (xs)
         {

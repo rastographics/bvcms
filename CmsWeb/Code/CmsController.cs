@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using System.Linq;
 using System.Net;
 using CmsData;
+using CmsData.Classes.RoleChecker;
 using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Code;
 using CmsWeb.Models;
@@ -108,7 +109,7 @@ namespace CmsWeb
                     filterContext.Result = Redirect(r);
             }
 
-            var disableHomePageForOrgLeaders = DbUtil.Db.Setting("UX-DisableHomePageForOrgLeaders");
+            var disableHomePageForOrgLeaders = RoleChecker.HasSetting(SettingName.DisableHomePage, false);
             var contr = filterContext.RouteData.Values["Controller"].ToString();
             var act = filterContext.RouteData.Values["Action"].ToString();
             var orgleaderonly = User.IsInRole("OrgLeadersOnly");

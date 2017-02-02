@@ -1,5 +1,6 @@
 ﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
 @using CmsData
+@using CmsData.Classes.RoleChecker
 @using CmsWeb.Models.ExtraValues
 @{
     var evmodel = new ExtraValueModel(Model.Org.OrganizationId, "Organization", "CommunityGroup");
@@ -53,9 +54,8 @@
     @helper ExtraDataFormAction(ExtraValueModel evmodel, bool xs = false)
     {
         var canAddExtraValues = User.IsInRole("Admin") ||
-            (User.IsInRole("OrgLeadersOnly")
-            && DbUtil.Db.Setting("UX-OrgLeadersOnlyCanEditCGInfoEVs")
-            && !DbUtil.Db.Setting("UX-HideExtraValueEditForOrgLeaderOnly"));
+            (RoleChecker.HasSetting(SettingName.CanEditCGInfoEVs, false)
+            && !RoleChecker.HasSetting(SettingName.HideExtraValueEdit, true));
 
         if (xs)
         {

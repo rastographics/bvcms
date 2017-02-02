@@ -7,6 +7,7 @@ using CmsData;
 using UtilityExtensions;
 using DbUtil = CmsData.DbUtil;
 using Image = ImageData.Image;
+using CmsData.Classes.RoleChecker;
 
 namespace CmsWeb.Models
 {
@@ -21,7 +22,7 @@ namespace CmsWeb.Models
         public bool NotAuthenticated { get; set; }
         public OrgContent oc { get; set; }
 
-        public bool CanEdit => ((Util.IsInRole("ContentEdit") || Util.IsInRole("Edit") || DbUtil.Db.Setting("UX-LeadersCanAlwaysEditOrgContent")) && IsLeader) ||  Util.IsInRole("Admin");
+        public bool CanEdit => ((Util.IsInRole("ContentEdit") || Util.IsInRole("Edit") || RoleChecker.HasSetting(SettingName.LeadersCanAlwaysEditOrgContent, false)) && IsLeader) ||  Util.IsInRole("Admin");
 
         private string html;
         public string Html

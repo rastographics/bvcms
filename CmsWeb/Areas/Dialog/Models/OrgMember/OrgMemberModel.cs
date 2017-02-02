@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using CmsData;
+using CmsData.Classes.RoleChecker;
 using CmsData.Codes;
 using CmsData.OnlineRegSummaryText;
 using CmsData.Registration;

@@ -1,5 +1,6 @@
 ﻿@model CmsWeb.Areas.People.Models.EmailModel
 @using CmsData
+@using CmsData.Classes.RoleChecker
 @using CmsWeb.Areas.People.Models
 @using UtilityExtensions
 @{
@@ -7,7 +8,7 @@
     var showEmailDetails = false;
     if (User.IsInRole("OrgLeadersOnly"))
     {
-        showEmailDetails = !DbUtil.Db.Setting("UX-HideEmailDetailsForOrgLeaders", false);
+        showEmailDetails = !RoleChecker.HasSetting(SettingName.HideEmailDetails, false);
     }
     else if (User.IsInRole("Access"))
     {

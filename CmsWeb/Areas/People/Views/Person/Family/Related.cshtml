@@ -1,4 +1,5 @@
 ﻿@using CmsData
+@using CmsData.Classes.RoleChecker
 @using CmsWeb.Areas.People.Models
 @model FamilyModel
 @{
@@ -6,7 +7,7 @@
     var showFamilyQueryLink = false;
     if (User.IsInRole("OrgLeadersOnly"))
     {
-        showFamilyQueryLink = !DbUtil.Db.Setting("UX-HideQueriesForOrgLeaders", false);
+        showFamilyQueryLink = !RoleChecker.HasSetting(SettingName.HideQueries, false);
     }
     else if (User.IsInRole("Access"))
     {

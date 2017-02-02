@@ -29,7 +29,10 @@
     <div class="col-md-9">
         <div class="box box-responsive">
             <div class="box-content">
-                @Html.Partial("Toolbar/Toolbar")
+                @if (Model.ShowBlueToolbar)
+                {
+                    @Html.Partial("Toolbar/Toolbar")
+                }
                 @Html.Hidden("meetingid", Model.meeting.MeetingId)
                 @Html.Hidden("sort", "false")
                 @Html.Hidden("RegularMeetingHeadCount", RegularMeetingHeadCount)
@@ -68,7 +71,14 @@
                                 <dd>
                                     @if (User.IsInRole("Attendance"))
                                     {
-                                        <a id="d-@Model.meeting.MeetingId" class="clickEdit" data-pk="d-@Model.meeting.MeetingId" data-title="Description" style="cursor: pointer">@Model.meeting.Description</a>
+                                        if (Model.AllowEditDescription)
+                                        {
+                                            <a id="d-@Model.meeting.MeetingId" class="clickEdit" data-pk="d-@Model.meeting.MeetingId" data-title="Description" style="cursor: pointer">@Model.meeting.Description</a>
+                                        }
+                                        else
+                                        {
+                                            @Model.meeting.Description
+                                        }
                                     }
                                     else
                                     {
@@ -81,28 +91,35 @@
                 </div>
                 <div class="well">
                     <div class="row">
-                        <div class="col-sm-6">
-                            <label class="control-label">Show</label>
-                            <div class="form-group" id="showbuttons">
-                                <label class="radio-inline">
-                                    <input type="radio" id="showall" name="show" value="all" /> All
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio" id="showattends" name="show" value="attends" checked="checked" /> Attends
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio" id="showabsents" name="show" value="absents" /> Absents
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio" id="showreg" name="show" value="reg" /> Registered
-                                </label>
+                        @if (Model.ShowShowBox)
+                        {
+                            <div class="col-sm-6">
+                                <label class="control-label">Show</label>
+                                <div class="form-group" id="showbuttons">
+                                    <label class="radio-inline">
+                                        <input type="radio" id="showall" name="show" value="all"/> All
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" id="showattends" name="show" value="attends" checked="checked"/> Attends
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" id="showabsents" name="show" value="absents"/> Absents
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" id="showreg" name="show" value="reg"/> Registered
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                        @if (User.IsInRole("Attendance"))
+                        }
+                        @if (User.IsInRole("Attendance") && Model.ShowEnableBox)
                         {
                             <div class="col-sm-6">
                                 <label class="control-label">Enable</label>
                                 <div class="form-group">
+                                    @if (Model.EnableEditByDefault)
+                                    {
+                                        Model.showall = true;
+                                    }
                                     <label class="checkbox-inline">
                                         @Html.CheckBox("editing", Model.showall) Editing
                                     </label>
@@ -115,7 +132,10 @@
                                 </div>
                                 <div class="pull-right">
                                     <a href="/SearchAdd2/Dialog/registered/@Model.meeting.MeetingId" class="btn btn-success hidden searchadd"><i class="fa fa-plus-circle"></i> Add Registered</a>
-                                    <a href="/SearchAdd2/Dialog/visitor/@Model.meeting.MeetingId" class="btn btn-success searchadd" title="Click to Add Guests to Meeting"><i class="fa fa-plus-circle"></i> Add Guests</a>
+                                    @if (Model.ShowAddGuest)
+                                    {
+                                        <a href="/SearchAdd2/Dialog/visitor/@Model.meeting.MeetingId" class="btn btn-success searchadd" title="Click to Add Guests to Meeting"><i class="fa fa-plus-circle"></i> Add Guests</a>
+                                    }
                                 </div>
                             </div>
                         }
@@ -135,33 +155,58 @@
                     <div class="table-responsive">
                         <table id="attends" class="table table-striped">
                             <thead>
-                                <tr>
-                                    <th class="text-center">Attended</th>
-                                    <th class="showreg" style="display: none">Commitment</th>
-                                    <th><a href="#" id="sortbyname">Name</a></th>
+                            <tr>
+                                <th class="text-center">Attended</th>
+                                <th class="showreg" style="display: none">Commitment</th>
+                                <th><a href="#" id="sortbyname">Name</a></th>
+                                @if (Model.ShowCurrentMemberType)
+                                {
                                     <th>Current Member Type</th>
-                                    <th>Attend Member Type</th>
+                                }
+                                <th>Attend Member Type</th>
+                                @if (Model.ShowAttendType)
+                                {
                                     <th>Attend Type</th>
+                                }
+                                @if (Model.ShowOtherAttend)
+                                {
                                     <th>Other Attend</th>
-                                </tr>
+                                }
+                            </tr>
                             </thead>
                             <tbody>
-                                @foreach (var a in Model.Attends())
-                                {
-                                    <tr rowtype="@a.Member" @(!a.Member ? "class=info" : "")>
-                                        <td class="text-center">
-                                            <input type="checkbox" pid="@a.PeopleId" @(a.Attended ? "checked=checked" : "") class="atck" onclick="return false" onkeydown="return false" />
-                                        </td>
-                                        <td class="showreg" style="display: none">
-                                            <span id="c@(Model.meeting.MeetingId)_@(a.PeopleId)" class="clickSelect rgck commitment" data-value="@a.Commitment" data-pk="c@(Model.meeting.MeetingId)_@(a.PeopleId)" data-title="Commitment">@a.Commitment</span>
-                                        </td>
+                            @foreach (var a in Model.Attends())
+                            {
+                                <tr rowtype="@a.Member" @(!a.Member ? "class=info" : "")>
+                                    <td class="text-center">
+                                        <input type="checkbox" pid="@a.PeopleId" @(a.Attended ? "checked=checked" : "") class="atck" onclick="return false" onkeydown="return false"/>
+                                    </td>
+                                    <td class="showreg" style="display: none">
+                                        <span id="c@(Model.meeting.MeetingId)_@(a.PeopleId)" class="clickSelect rgck commitment" data-value="@a.Commitment" data-pk="c@(Model.meeting.MeetingId)_@(a.PeopleId)" data-title="Commitment">@a.Commitment</span>
+                                    </td>
+                                    @if (Model.HyperlinkNames)
+                                    {
                                         <td class="name @(a.Conflict ? "alert-danger" : "")"><a href="/Person2/@a.PeopleId" title="@a.Age">@a.Name</a></td>
+                                    }
+                                    else
+                                    {
+                                        <td class="name @(a.Conflict ? "alert-danger" : "")">@a.Name</td>
+                                    }
+                                    @if (Model.ShowCurrentMemberType)
+                                    {
                                         <td>@a.CurrMemberType</td>
-                                        <td>@a.MemberType</td>
+                                    }
+                                    <td>@a.MemberType</td>
+                                    @if (Model.ShowAttendType)
+                                    {
                                         <td>@a.AttendType</td>
+                                    }
+                                    @if (Model.ShowOtherAttend)
+                                    {
                                         <td>@a.OtherAttend</td>
-                                    </tr>
-                                }
+                                    }
+                                </tr>
+                            }
                             </tbody>
                         </table>
                     </div>
@@ -213,15 +258,23 @@
                             <td class="text-right" id="NumRepeatVst"><span>@Model.meeting.NumRepeatVst</span></td>
                         </tr>
                         <tr>
-                            <td class="text-right">Other Attends:</td>
-                            <td class="text-right" id="NumOtherAttends"><span>@Model.meeting.NumOtherAttends</span></td>
+                            @if (Model.ShowOtherAttend)
+                            {
+                                <td class="text-right">Other Attends:</td>
+                                <td class="text-right" id="NumOtherAttends"><span>@Model.meeting.NumOtherAttends</span></td>
+                            }
+                            else
+                            {
+                                <td></td>
+                                <td></td>
+                            }
                             <td class="text-right">Visiting Members:</td>
                             <td class="text-right" id="NumVstMembers"><span>@Model.meeting.NumVstMembers</span></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            @if (User.IsInRole("Attendance"))
+            @if (User.IsInRole("Attendance") && Model.ShowWandTargetBox)
             {
                 <div class="box-content">
                     <label class="sr-only" for="wandtarget">Wand Target</label>
@@ -229,7 +282,7 @@
                 </div>
             }
         </div>
-        @if (User.IsInRole("Edit"))
+        @if (User.IsInRole("Edit") && Model.ShowExtraValuesBox)
         {
             <div class="box box-primary" style="background-color: #fff;">
                 <div class="box-title">

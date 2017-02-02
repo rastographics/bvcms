@@ -1,9 +1,26 @@
-﻿@{
-    var showAdvanced = !(User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-LimitToolbarForOrgLeaders"));
+﻿@using System.Activities.Expressions
+@using CmsData.Classes.RoleChecker
+@using CmsWeb.Areas.Org.Models
+@{
+    var showBlueToolbarExports = true;
+    var showBlueToolbarCustomReports = true;
+    var showBlueToolbarAdminGear = true;
+    var showAdvanced = true;
+    if (Request?.Url?.AbsolutePath.StartsWith("/Org") == true)
+    {
+        showBlueToolbarExports = Model.ShowBlueToolbarExports;
+        showBlueToolbarCustomReports = Model.ShowBlueToolbarCustomReports;
+        showBlueToolbarAdminGear = Model.ShowBlueToolbarAdminGear;
+        showAdvanced = RoleChecker.HasSetting(SettingName.Organization_ShowBlueToolbar, true);
+    }
+    else if (Request?.Url?.AbsolutePath.StartsWith("/Person") == true)
+    {
+        showAdvanced = RoleChecker.HasSetting(SettingName.Person_ShowBlueToolbar, true);
+    }
 }
 <div id="bluetoolbarstop">
     <div id="bluebar-menu" class="btn-group pull-right">
-        @if (showAdvanced || ViewContext.Controller.GetType().Name == "OrgController")
+        @if (showAdvanced)
         {
             <div class="btn-group btn-group-lg dropdown-large">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -11,30 +28,34 @@
                 </button>
                 @Html.Partial("Toolbar/Email")
             </div>
-        }
-        @if (showAdvanced)
-        {
-            <div class="btn-group btn-group-lg dropdown-large">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                    <span class="fa fa-cloud-download"></span>
-                </button>
-                @Html.Partial("Toolbar/Reports")
-            </div>
-            <div class="btn-group btn-group-lg dropdown-large">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                    <span class="fa fa-code"></span>
-                </button>
-                @Html.Partial("Toolbar/Custom")
-            </div>
-        }
-        @if (showAdvanced || ViewContext.Controller.GetType().Name == "OrgController")
-        {
-            <div class="btn-group btn-group-lg dropdown-large">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                    <span class="fa fa-cog"></span>
-                </button>
-                @Html.Partial("Toolbar/Gear")
-            </div>
+            if (showBlueToolbarExports)
+            {
+                <div class="btn-group btn-group-lg dropdown-large">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                        <span class="fa fa-cloud-download"></span>
+                    </button>
+                    @Html.Partial("Toolbar/Reports")
+                </div>
+            }
+            if (showBlueToolbarCustomReports)
+            {
+                <div class="btn-group btn-group-lg dropdown-large">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                        <span class="fa fa-code"></span>
+                    </button>
+                    @Html.Partial("Toolbar/Custom")
+                </div>
+            }
+            if (showBlueToolbarAdminGear)
+            {
+                <div class="btn-group btn-group-lg dropdown-large">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                        <span class="fa fa-cog"></span>
+                    </button>
+                    @Html.Partial("Toolbar/Gear")
+                </div>
+
+            }
         }
     </div>
 </div>

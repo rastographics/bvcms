@@ -3,6 +3,7 @@ using System.Linq;
 using CmsData;
 using CmsWeb.Models;
 using UtilityExtensions;
+using CmsData.Classes.RoleChecker;
 
 namespace CmsWeb.Areas.Org.Models
 {
@@ -10,6 +11,9 @@ namespace CmsWeb.Areas.Org.Models
     {
         public int Id { get; set; }
         public bool Future { get; set; }
+
+        public bool ShowCreateNewMeeting => RoleChecker.HasSetting(SettingName.Organization_ShowCreateNewMeeting, true);
+        public bool ShowDeleteMeeting => RoleChecker.HasSetting(SettingName.Organization_ShowDeleteMeeting, true);
 
         public MeetingsModel() 
             : base("", "", true) { }

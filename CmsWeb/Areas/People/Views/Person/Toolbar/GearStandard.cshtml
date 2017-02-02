@@ -1,8 +1,9 @@
 ﻿@using CmsData
+@using CmsData.Classes.RoleChecker
 @{
     var edit = User.IsInRole("Edit");
     var developer = User.IsInRole("Developer");
-    var showAdvanced = !(User.IsInRole("OrgLeadersOnly") && DbUtil.Db.Setting("UX-LimitToolbarForOrgLeaders"));
+    var showAdvanced = !RoleChecker.HasSetting(SettingName.LimitToolbar, false);
 }
 <ul>
     @if (showAdvanced)

@@ -1,17 +1,21 @@
-﻿<div id="bluetoolbarstop">
+﻿@using CmsData.Classes.RoleChecker
+<div id="bluetoolbarstop">
     <div id="bluebar-menu" class="btn-group pull-right">
-        <div class="btn-group btn-group-lg" role="group">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i></button>
-            <ul class="dropdown-menu dropdown-menu-right">
-                @Helper.LiAnchorLink("Change Password", "/Account/ChangePassword/")
-                <li class="divider"></li>
-                @Helper.LiAnchorLinkIcon("Log Out", "dropdown-icon fa fa-power-off", "/Account/LogOff/")
-            </ul>
-        </div>
-        <div class="btn-group btn-group-lg">
-            <a href="/Home/MyDataSupport" class="btn btn-primary btn-person-action">
-                <i class="fa fa-question-circle"></i>
-            </a>
-        </div>
+        @if (RoleChecker.HasSetting(SettingName.Person_ShowBlueToolbar, true))
+        {
+            <div class="btn-group btn-group-lg" role="group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i></button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    @Helper.LiAnchorLink("Change Password", "/Account/ChangePassword/")
+                    <li class="divider"></li>
+                    @Helper.LiAnchorLinkIcon("Log Out", "dropdown-icon fa fa-power-off", "/Account/LogOff/")
+                </ul>
+            </div>
+            <div class="btn-group btn-group-lg">
+                <a href="/Home/MyDataSupport" class="btn btn-primary btn-person-action">
+                    <i class="fa fa-question-circle"></i>
+                </a>
+            </div>
+        }
     </div>
 </div>
