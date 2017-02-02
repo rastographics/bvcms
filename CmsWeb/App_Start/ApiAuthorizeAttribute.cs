@@ -12,4 +12,11 @@ namespace CmsWeb
             return AuthHelper.AuthenticateDeveloper(HttpContext.Current, additionalRole: "APIOnly").IsAuthenticated;
         }
     }
+    internal class ApiWriteAuthorizeAttribute : AuthorizeAttribute
+    {
+        protected override bool IsAuthorized(HttpActionContext actionContext)
+        {
+            return AuthHelper.AuthenticateDeveloper(HttpContext.Current, additionalRole: "APIWrite").IsAuthenticated;
+        }
+    }
 }

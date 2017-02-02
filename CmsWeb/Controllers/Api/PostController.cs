@@ -7,6 +7,7 @@ using CmsWeb.Models.Api;
 
 namespace CmsWeb.Controllers.Api
 {
+    [ApiWriteAuthorize]
     public class PostController : ApiController
     {
         [HttpPost, Route("~/API/AddContribution/")]
