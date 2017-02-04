@@ -10,6 +10,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 {
     public partial class OnlineRegController
     {
+        const string Fromcalendar = "fromcalendar";
+
         [HttpGet]
         [Route("VolRequestReport/{mid:int}/{pid:int}/{ticks:long}")]
         public ActionResult VolRequestReport(int mid, int pid, long ticks)
@@ -50,10 +52,15 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [Route("GetVolSub/{aid:int}/{pid:int}")]
         public ActionResult GetVolSub(int aid, int pid)
         {
-            var vs = new VolSubModel(aid, pid);
-            SetHeaders(vs.org.OrganizationId);
-            vs.ComposeMessage();
-            return View("ManageVolunteer/GetVolSub", vs);
+            var token = TempData[Fromcalendar] as bool?;
+            if (token == true)
+            {
+                var vs = new VolSubModel(aid, pid);
+                SetHeaders(vs.org.OrganizationId);
+                vs.ComposeMessage();
+                return View("ManageVolunteer/GetVolSub", vs);
+            }
+            return Message("Must come to GetVolSub from calendar");
         }
 
         [HttpPost]
@@ -154,6 +161,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             SetHeaders(id.ToInt());
             DbUtil.LogActivity($"Pick Slots: {m.Org.OrganizationName} ({m.Person.Name})");
+            TempData[Fromcalendar] = true;
             return View("ManageVolunteer/PickSlots", m);
         }
 
@@ -187,7 +195,10 @@ The following Committments:<br/>
             ViewData["Organization"] = m.Org.OrganizationName;
             SetHeaders(m.OrgId);
             if (m.IsLeader)
+            {
+                TempData[Fromcalendar] = true;
                 return View("ManageVolunteer/PickSlots", m);
+            }
             return View("ManageVolunteer/ConfirmVolunteerSlots", m);
         }
     }

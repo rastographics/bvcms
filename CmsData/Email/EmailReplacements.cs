@@ -1067,7 +1067,8 @@ namespace CmsData
                 ot = new OneTimeLink
                 {
                     Id = Guid.NewGuid(),
-                    Querystring = qs
+                    Querystring = qs,
+                    Expires = DateTime.Now.AddHours(72)
                 };
                 db.OneTimeLinks.InsertOnSubmit(ot);
                 db.SubmitChanges();

@@ -72,8 +72,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var ot = Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == g.Value);
             if (ot == null)
                 error = "invalid link";
-            if (ot.Used)
-                error = "link used";
             if (ot.Expires.HasValue && ot.Expires < DateTime.Now)
                 error = "link expired";
             if (error.HasValue())
