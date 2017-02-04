@@ -63,7 +63,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (pid > 0)
             {
                 UserPeopleId = pid;
-                Util.UserPeopleId = pid;
+//                Util.UserPeopleId = pid;
             }
             return pid;
         }
