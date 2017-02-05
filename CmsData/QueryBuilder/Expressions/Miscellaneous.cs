@@ -6,6 +6,8 @@
  */
 
 using System;
+using System.Data.Linq.SqlClient;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Linq.Expressions;
 using UtilityExtensions;
@@ -223,6 +225,44 @@ namespace CmsData
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
                 expr = Expression.Not(expr);
             return expr;
+        }
+        internal Expression DaysSinceDate()
+        {
+            var days = Util.Now.Date.Subtract(StartDate ?? SqlDateTime.MinValue.Value).Days;
+            var left = Expression.Constant(days, typeof(int?));
+            var right = Expression.Constant(TextValue.ToInt(), typeof(int?));
+            return Compare(left, right);
+        }
+        internal Expression DaysSinceDateField()
+        {
+            var prop2 = CodeIdValue;
+            Expression<Func<Person, int?>> pred = null;
+            switch (prop2)
+            {
+                case "JoinDate":
+                    pred = p => SqlMethods.DateDiffDay(p.JoinDate, Util.Now.Date);
+                    break;
+                case "NewMemberClassDate":
+                    pred = p => SqlMethods.DateDiffDay(p.NewMemberClassDate, Util.Now.Date);
+                    break;
+                case "WeddingDate":
+                    pred = p => SqlMethods.DateDiffDay(p.WeddingDate, Util.Now.Date);
+                    break;
+                case "BaptismDate":
+                    pred = p => SqlMethods.DateDiffDay(p.BaptismDate, Util.Now.Date);
+                    break;
+                case "DecisionDate":
+                    pred = p => SqlMethods.DateDiffDay(p.DecisionDate, Util.Now.Date);
+                    break;
+                case "DropDate":
+                    pred = p => SqlMethods.DateDiffDay(p.DropDate, Util.Now.Date);
+                    break;
+                default:
+                    throw new Exception("unknown property " + prop2);
+            }
+            Expression left = Expression.Invoke(pred, parm);
+            var right = Expression.Constant(Days, typeof(int?));
+            return Compare(left, right);
         }
     }
 }

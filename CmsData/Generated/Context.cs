@@ -3992,6 +3992,19 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.RecentGiverFund", IsComposable = true)]
+		public IQueryable< View.RecentGiverFund > RecentGiverFund(
+            [Parameter(DbType="int")] int? days,
+            [Parameter(DbType="int")] int? fundid
+            )
+		{
+			return this.CreateMethodCallQuery< View.RecentGiverFund>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                days,
+                fundid
+                );
+		}
+
 		[Function(Name="dbo.RecentIncompleteRegistrations", IsComposable = true)]
 		public IQueryable< View.RecentIncompleteRegistration > RecentIncompleteRegistrations(
             [Parameter(DbType="int")] int? prog,

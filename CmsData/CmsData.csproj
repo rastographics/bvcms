@@ -616,6 +616,7 @@
     <Compile Include="Generated\Functions\PotentialSubstitute.cs" />
     <Compile Include="Generated\Functions\RecentAttendInDaysByCountDesc.cs" />
     <Compile Include="Generated\Functions\RecentGiver.cs" />
+    <Compile Include="Generated\Functions\RecentGiverFund.cs" />
     <Compile Include="Generated\Functions\RecentIncompleteRegistration.cs" />
     <Compile Include="Generated\Functions\RecentIncompleteRegistrations2.cs" />
     <Compile Include="Generated\Functions\RegisterLinksFromMaster.cs" />

@@ -186,7 +186,7 @@ RecentHasIndContributions,Bit,,,,Contributions,Recent Has Individual Contributio
 HadIndContributions,Bit,,,,Contributions,Had Individual Contributions,"StartDate,EndDate",Individual Had Contributions during Date Range
 RecentHasFailedRecurringGiving,Bit,,,,Contributions,Recent Has Failed Recurring Giving,Days,Individual Had a failed Recurring Gift within the past number of days
 RecentFirstTimeGiver,Bit,,,Fund Id (or blank for all),Contributions,Recent First Time Giver,"Days,Quarters","Enter a number of days to look back, enter a Fund ID (or leave blank for all funds) and specify True or False."
-IsRecentGiver,Bit,,,,Contributions,Recent Giver,Days,Enter a number of days to look back and specify True or False.
+IsRecentGiver,Bit,,,Fund Id (or blank for all),Contributions,Recent Giver,"Days,Quarters",Enter a number of days to look back and specify True or False.
 IsTopGiver,Bit,,,Top number,Contributions,Recent Top Giver,"Days,Quarters","Enter a number of days to look back, enter the top number (ex. 100 for the top 100 givers) and specify True or False."
 IsTopPledger,Bit,,,Top number,Contributions,Recent Top Pledger,"Days,Quarters","Enter a number of days to look back (must include the date the pledge was made), enter the top number (ex. 100 for the top 100 pledgers) and specify True or False."
 IsFamilyGiver,Bit,,,Fund Id (or blank for all),Contributions,Is in a Giving Family,"Days,Quarters","Enter a number of days to look back (365 default), enter a Fund ID (or leave blank for all funds) and specify True or False."
@@ -227,6 +227,8 @@ CheckInVisits,Integer,,,,Miscellaneous,Number of visits,,Enter a number of visit
 MedicalLength,Integer,,,,Miscellaneous,Length of Medical / Allergies Info,,Enter a number of characters and select a Comparison.
 HasFailedEmails,Bit,,,,Miscellaneous,Has Failed Emails,StartDate,Select a StartDate or Leave blank
 FirstPersonSameEmail,EqualBit,,,,Miscellaneous,First Person of Same Email,,Returns only one person of many who have same email
+DaysSinceDate,Integer,,,,Miscellaneous,Days Since Date,"StartDate",Enter a Date along with a number of Days.
+DaysSinceDateField,DateField,Code,DateFields,,Miscellaneous,Days Since Date Field,"Days",Select the Compared to Field from the list along with a number of Days.
 UserRole,Code,,UserRolesMyData,,Admin,User In Role,,Select User Role from the list.
 IsUser,Bit,,,,Admin,Is System User,,Specify True or False for those with user accounts.
 CreatedBy,String,,,,Admin,Record Created By User,,"Enter a Comparison and all or part of a Last Name (or Last Name, a comma and a First Name)."

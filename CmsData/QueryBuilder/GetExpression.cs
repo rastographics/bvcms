@@ -45,6 +45,8 @@ namespace CmsData
                 { QueryType.ContributionAmount2, ContributionAmount },
                 { QueryType.ContributionChange, ContributionChange },
                 { QueryType.CreatedBy, CreatedBy },
+                { QueryType.DaysSinceDate, DaysSinceDate },
+                { QueryType.DaysSinceDateField, DaysSinceDateField },
                 { QueryType.DaysAfterNthVisitAsOf, DaysAfterNthVisitAsOf },
                 { QueryType.DaysBetween12Attendance, DaysBetween12Attendance },
                 { QueryType.DaysSinceContact, DaysSinceContact },

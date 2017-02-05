@@ -41,6 +41,8 @@ namespace CmsData
         DaysAfterNthVisitAsOf,
         DaysBetween12Attendance,
         DaysSinceContact,
+        DaysSinceDate,
+        DaysSinceDateField,
         DaysTillAnniversary,
         DaysTillBirthday,
         DeceasedDate,
