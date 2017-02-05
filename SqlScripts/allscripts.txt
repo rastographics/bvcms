@@ -242,6 +242,7 @@ Creating_IX_PeopleExtra_dbo_PeopleExtra.sql
 Creating_dbo_ClearExtraValuesForTag.sql
 Creating_dbo_UpdateMainFellowship.sql
 Creating_dbo_PeopleIdsFromOrgSearch.sql
+Creating_dbo_RecentGiverFund.sql
 Creating_dbo_FamilyExtra.sql
 Creating_pk_PK_FamilyExtra_1_dbo_FamilyExtra.sql
 Creating_dbo_ClearFamilyExtraValuesForTag.sql

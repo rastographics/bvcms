@@ -1,3 +1,4 @@
+
 CREATE VIEW [dbo].[PeopleBasicModifed] AS 
 SELECT 
 	PeopleId
@@ -24,6 +25,7 @@ SELECT
 		WHERE PeopleId = p.PeopleId
 		ORDER BY Created DESC
 	)
+	,p.IsDeceased
 FROM dbo.People p
 GO
 IF @@ERROR <> 0 SET NOEXEC ON

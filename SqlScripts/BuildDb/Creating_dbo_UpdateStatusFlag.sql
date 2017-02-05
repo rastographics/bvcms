@@ -1,9 +1,8 @@
-
 CREATE PROC [dbo].[UpdateStatusFlag](@name NVARCHAR(200), @tagid INT)
 AS
 BEGIN
 	DECLARE @sflagid INT
-	SELECT @sflagid = Id FROM Tag WHERE Name = @name
+	SELECT @sflagid = Id FROM Tag WHERE Name = @name AND TypeId = 100
 	
 	IF @sflagid IS NULL
 	BEGIN
@@ -34,6 +33,7 @@ BEGIN
 	DELETE dbo.TagPerson
 	WHERE Id = @tagid
 END
+
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO
