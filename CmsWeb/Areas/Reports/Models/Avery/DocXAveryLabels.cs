@@ -17,6 +17,7 @@ namespace CmsWeb.Models
         public bool? UseMailFlags;
         public bool? SortZip;
         public string Sort => (SortZip ?? false) ? "Zip" : "Name";
+        public bool? UsePhone { get; set; }
 
         private readonly Guid id;
         public DocXAveryLabels(Guid id)
@@ -93,6 +94,11 @@ namespace CmsWeb.Models
                     if (p.Address2.HasValue())
                         pg.InsertText($"\n{p.Address2}");
                     pg.InsertText($"\n{p.CSZ}");
+                }
+                if (UsePhone == true)
+                {
+                    var phone = Util.PickFirst(p.CellPhone.FmtFone("C "), p.HomePhone.FmtFone("H "));
+                    pg.InsertText($"\n{phone}");
                 }
 
                 col+=2;

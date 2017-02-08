@@ -130,6 +130,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                 Skip = skipNum,
                 SortZip = sortzip,
                 UseMailFlags = useMailFlags,
+                UsePhone = usephone,
             };
         }
 
