@@ -80,6 +80,8 @@ namespace CmsWeb.Areas.Org.Models
         public Dictionary<int, string> NameLinks;
         private void CheckNameLinks()
         {
+            if (org == null)
+                return;
             var ev = org.GetExtra(DbUtil.Db, "ShowNameLinks");
             if (ev.HasValue())
             {
