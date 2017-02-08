@@ -99,10 +99,11 @@ namespace CmsWeb.Areas.Reports.Models
         {
             if (list != null)
                 return list;
-            var roles = DbUtil.Db.CurrentUser.Roles;
+            var currentUserRoles = DbUtil.Db.CurrentUser.Roles;
             var li = DbUtil.Db.ViewCustomScriptRoles.ToList();
             var q = from e in li
-                    where e.Role == null || roles.Contains(e.Role)
+                    let roles = (e.Role ?? "").Split(',').ToList()
+                    where e.Role == null || roles.Any(rr => currentUserRoles.Contains(rr))
                     where e.Name != null
                     where e.ShowOnOrgId == null || e.ShowOnOrgId == orgid
                     select new ReportItem(e.Name, e.Type, e.ClassX, e.Url);
