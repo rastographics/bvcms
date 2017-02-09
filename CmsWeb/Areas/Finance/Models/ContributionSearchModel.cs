@@ -291,7 +291,7 @@ namespace CmsWeb.Models
                 return null;
             if (!SearchInfo.Name.HasValue())
                 return null;
-            if (!(SearchInfo.FundId > 0))
+            if (SearchInfo.FundId == 0)
                 return null;
             var re = new Regex(@"move to fundid (\d+)");
             var match = re.Match(SearchInfo.Name);
