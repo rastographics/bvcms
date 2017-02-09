@@ -54,9 +54,9 @@ namespace CmsData
 
         public string CityStateZip5 => Util.FormatCSZ(PrimaryCity, PrimaryState, PrimaryZip);
 
-        public string AddrCityStateZip => PrimaryAddress + " " + CityStateZip;
+        public string AddrCityStateZip => $"{PrimaryAddress}\n{CityStateZip}";
 
-        public string Addr2CityStateZip => $"{PrimaryAddress2} {CityStateZip}";
+        public string Addr2CityStateZip => $"{PrimaryAddress2}\n{CityStateZip}";
 
         public string FullAddress
         {

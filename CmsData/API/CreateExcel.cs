@@ -88,7 +88,7 @@ namespace CmsData
 
                 var colrange = ws.Cells[1, col, count + 2, col];
 
-                if (name.Contains("Info") || name.Contains("Classes") || name == "Questions")
+                if (name.Contains("Info") || name.Contains("Classes") || name == "Questions" || name == "Address")
                 {
                     colrange.Style.WrapText = true;
                     ws.Column(col).Width = 40.0;

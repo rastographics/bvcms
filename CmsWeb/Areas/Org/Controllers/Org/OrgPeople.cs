@@ -21,6 +21,8 @@ namespace CmsWeb.Areas.Org.Controllers
                     m.FilterIndividuals = false;
                 else if (DbUtil.Db.OrgCheckedCount(m.Id, m.GroupSelect, Util.UserPeopleId) == 0)
                     m.FilterIndividuals = false;
+            if (DbUtil.Db.CurrentOrg == null)
+                DbUtil.Db.SetCurrentOrgId(m.Id);
             DbUtil.Db.CurrentOrg.CopyPropertiesFrom(m);
             ViewBag.OrgMemberContext = true;
             ViewBag.orgname = Session["ActiveOrganization"];
