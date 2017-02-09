@@ -270,8 +270,10 @@ namespace CmsWeb.Areas.Dialog.Models
         }
         public static string GetPayLink(int? oid, int? pid)
         {
-            var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == oid && mm.PeopleId == pid);
-            return om.PayLink2(DbUtil.Db);
+            if (!pid.HasValue)
+                return null;
+            var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(mm => mm.OrganizationId == oid && mm.PeopleId == pid);
+            return om?.PayLink2(DbUtil.Db);
         }
         private string supportLink;
         public string SupportLink

@@ -1,9 +1,12 @@
 ﻿@model CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel
+
 @using CmsData
+@using CmsWeb.Areas.Dialog.Models
 @using UtilityExtensions
 @{
   var goer = DbUtil.Db.LoadPersonById(Model.Parent.GoerId ?? 0);
   var name = goer != null ? goer.Name : "selected participant";
+  var paylink = Model.Parent.MissionTripSelfSupportPaylink;
 }
 @if (goer == null)
 {
@@ -16,6 +19,24 @@
   </div>
 }
 @Html.EditorFor(m => m.MissionTripSupportGoer, new { label = "Your gift to support " + name })
+@if (Model.IsGoer())
+{
+  <div class="form-group">
+    <label class="control-label col-sm-3 labelsize">Self Support</label>
+    <div class="col-sm-9">
+        <p class="form-control-static">
+      @if (paylink != null)
+      {
+          <a href="@paylink">Click here to make payment for your trip</a>
+      }
+      else
+      {
+        @:Login or use paylink to make payment for your trip
+      }
+        </p>
+    </div>
+  </div>
+}
 @Html.EditorFor(m => m.MissionTripNoNoticeToGoer,
     new { label = $"If you don't want {name} to be notified of your gift, check this box."})
 @Html.EditorFor(m => m.MissionTripSupportGeneral,

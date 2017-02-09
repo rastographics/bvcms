@@ -73,6 +73,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (EmailRequiredForThisRegistration(foundname)) return;
             if (NoAppropriateOrgFound(selectFromFamily)) return;
             if (MustBeChurchMember(foundname)) return;
+            if (CannotSupportSelf(foundname)) return;
 
             ValidForOrg(selectFromFamily, foundname);
         }
@@ -258,6 +259,17 @@ Please call the church to resolve this before we can complete your information."
             modelState.AddModelError(foundname, "Sorry, must be a member of church");
             Log("MustBeChurchMember");
             RegistrantProblem = @"**Sorry, must be a member of this church**";
+            IsValidForContinue = false;
+            IsValidForExisting = false;
+            return true;
+        }
+        private bool CannotSupportSelf(string foundname)
+        {
+            if (!Parent.SupportMissionTrip || Parent.GoerId != person.PeopleId)
+                return false;
+            modelState.AddModelError(foundname, "Use a paylink to support self");
+            Log("CannotSupportSelf");
+            RegistrantProblem = @"**Sorry, Cannot support self from this page**";
             IsValidForContinue = false;
             IsValidForExisting = false;
             return true;

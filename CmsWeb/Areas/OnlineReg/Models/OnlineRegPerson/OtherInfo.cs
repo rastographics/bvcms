@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Registration;
+using CmsWeb.Areas.Dialog.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -157,6 +158,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var q = from g in DbUtil.Db.OrganizationMembers
                     where g.OrganizationId == orgid
                     where g.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Goer")
+                    where g.PeopleId != (Parent.UserPeopleId ?? person.PeopleId)
                     orderby g.Person.Name2
                     select new SelectListItem
                     {
@@ -166,6 +168,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var list = q.ToList();
             list.Insert(0, new SelectListItem {Value = "0", Text = "(please select)"});
             return list;
+        }
+        public bool IsGoer()
+        {
+            return DbUtil.Db.OrganizationMembers.Any(mm => mm.OrganizationId == orgid && mm.PeopleId == person.PeopleId);
         }
 
         public void FillPriorInfo()

@@ -9,6 +9,8 @@ using CmsData.Registration;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
 using CmsData.Codes;
+using CmsWeb.Areas.Dialog.Models;
+using DocumentFormat.OpenXml.EMMA;
 using Person = CmsData.Person;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -703,6 +705,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return last != null
                        && last.QuestionsOK
                        && last.FinishedFindingOrAddingRegistrant;
+            }
+        }
+
+
+        private string selfsupportpaylink;
+        public string MissionTripSelfSupportPaylink
+        {
+            get
+            {
+                if (org != null && org.IsMissionTrip == true && (GoerId == UserPeopleId || GoerId == 0))
+                    return selfsupportpaylink ?? (selfsupportpaylink = OrgMemberModel.GetPayLink(Orgid, UserPeopleId));
+                return null;
             }
         }
 

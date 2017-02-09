@@ -33,6 +33,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
                 SetHeaders(m);
                 var pid = m.CheckRegisterLink(registertag);
+                if(m.MissionTripSelfSupportPaylink.HasValue() && m.GoerId > 0)
+                    return Redirect(m.MissionTripSelfSupportPaylink);
                 return RouteRegistration(m, pid, showfamily);
             }
             catch (Exception ex)
