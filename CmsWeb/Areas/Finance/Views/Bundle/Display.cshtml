@@ -1,8 +1,10 @@
-﻿@using CmsData.Codes
+﻿@using CmsData
+@using CmsData.Codes
 @using UtilityExtensions
 @model CmsWeb.Areas.Finance.Models.BundleModel
 @{
     var difference = Model.TotalHeader() - Model.TotalItems();
+  var customreport = DbUtil.Db.Setting("CustomBundleReport", "");
 }
 <div class="row">
     <div class="col-sm-12 col-md-12 col-lg-12">
@@ -79,6 +81,13 @@
                             <span class="stat-title">ITEM COUNT</span>
                             <span class="stat-figure">@Model.Count().ToString("N0")</span>
                         </div>
+			@if (customreport.HasValue())
+                  	{
+                  	<div class="stat-panel">
+                    	    <span class="stat-title">&nbsp;</span>
+                    	    <span class="stat-figure"><a href="@customreport.Replace("{bundleid}", Model.BundleId.ToString())" target="bundlerpt" style="color:white">Bundle Report</a></span>
+                  	</div>
+                  	}
                         <div style="clear: both;"></div>
                     </div>
                 </div>
