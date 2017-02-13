@@ -205,6 +205,7 @@
     <column name="RegCoaching" join="rr">rr.coaching</column>
     <column name="ActiveOtherChurch" join="rr">rr.activeinanotherchurch</column>
     <column name="LeaderName">dbo.organizationleadername(p.biblefellowshipclassid)</column>
+    <column name="LeaderId">dbo.organizationleaderid(p.biblefellowshipclassid)</column>
     <column name="UserId">
       ( SELECT TOP 1 userid FROM dbo.users u WHERE u.peopleid = p.peopleid ORDER BY userid )	
     </column>

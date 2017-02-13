@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.IO;
 using System.Net;
+using System.Text.RegularExpressions;
 using Dapper;
 using UtilityExtensions;
 
@@ -49,17 +50,25 @@ namespace CmsData
 
         public string UploadExcelFromSqlToFtp(string sqlscript, string username, string password, string targetpath, string filename)
         {
-            var script = db.Content(sqlscript, "");
-            if (!script.HasValue())
-                throw new Exception("no sql script found");
-            var bytes = db.Connection.ExecuteReader(sqlscript).ToExcelBytes(filename);
+            string script = sqlscript;
+            if (sqlscript.Length <= 75)
+            {
+                script = db.Content(sqlscript, "");
+                if (!script.HasValue())
+                    if (sqlscript.Contains("select", ignoreCase: true))
+                        script = sqlscript;
+                    else
+                        throw new Exception("no sql script found");
+            }
+            script = Regex.Replace(script, "^.*LinkForNext.*$", "", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            var bytes = db.Connection.ExecuteReader(script).ToExcelBytes(filename);
             var url = Util.URLCombine(targetpath, filename);
             using (var webClient = new WebClient())
             {
                 webClient.Credentials = new NetworkCredential(username, password);
                 webClient.UploadData(url, bytes);
             }
-            return url;
+            return url.Replace("ftp://", "http://");
         }
     }
 }
