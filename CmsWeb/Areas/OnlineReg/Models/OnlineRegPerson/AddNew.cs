@@ -81,7 +81,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         NoAppropriateOrgError = "Sorry, cannot find an appropriate age group";
                         modelState.AddModelError(Parent.GetNameFor(mm => mm.List[id].Found), NoAppropriateOrgError);
                     }
-                    else if (org.RegEnd.HasValue && DateTime.Now > org.RegEnd)
+                    else if (org.RegEnd.HasValue && Util.Now > org.RegEnd)
                     {
                         Log("Closed");
                         NoAppropriateOrgError = "Sorry, registration has ended for that group";

@@ -140,7 +140,7 @@ namespace CmsData
             Expression<Func<Person, int>> pred = null;
             var end = EndDate;
             if (end != null) end = end.Value.AddDays(1).AddTicks(-1);
-            else end = DateTime.Now.Date.AddDays(1).AddTicks(-1);
+            else end = Util.Now.Date.AddDays(1).AddTicks(-1);
 
             pred = p => p.CheckInTimes.Count(ct => ct.CheckInTimeX >= StartDate && ct.CheckInTimeX <= end);
 
@@ -162,7 +162,7 @@ namespace CmsData
         {
             var tf = CodeIds == "1";
             int n = Quarters.ToInt2() ?? 1;
-            var dt = DateTime.Now.AddDays(-Days);
+            var dt = Util.Now.AddDays(-Days);
             var cdt = db.Setting("DbConvertedDate", "1/1/1900").ToDate();
             Expression<Func<Person, bool>> pred = p => p.CreatedDate > cdt &&
                 p.Attends.Any(aa => aa.SeqNo == n && aa.MeetingDate > dt);

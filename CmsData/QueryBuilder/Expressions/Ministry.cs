@@ -150,7 +150,7 @@ namespace CmsData
         internal Expression MadeContactTypeAsOf()
         {
             //StartDate, EndDate, Program, CodeIntIds
-            var to = (EndDate ?? StartDate ?? DateTime.Now).AddDays(1);
+            var to = (EndDate ?? StartDate ?? Util.Now).AddDays(1);
 
             Expression<Func<Person, bool>> pred = p => (
                 from c in p.contactsMade

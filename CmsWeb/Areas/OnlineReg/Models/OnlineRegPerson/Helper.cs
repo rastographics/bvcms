@@ -259,7 +259,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     ? "Sorry, cannot find an appropriate age group for the birthday we have on record for you" 
                     : "Sorry, cannot find an appropriate age group";
             }
-            else if (oo.RegEnd.HasValue && DateTime.Now > oo.RegEnd)
+            else if (oo.RegEnd.HasValue && Util.Now > oo.RegEnd)
                 NoAppropriateOrgError = $"Sorry, registration has ended for {oo.OrganizationName}";
             else if (oo.OrganizationStatusId == OrgStatusCode.Inactive)
                 NoAppropriateOrgError = $"Sorry, {oo.OrganizationName} is inactive";
@@ -627,7 +627,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (grouptojoin > 0)
             {
                 OrganizationMember.InsertOrgMembers(DbUtil.Db, grouptojoin, PeopleId.Value, MemberTypeCode.Member,
-                    DateTime.Now, null, false);
+                    Util.Now, null, false);
                 DbUtil.Db.UpdateMainFellowship(grouptojoin);
                 Log("AddedToOrg");
             }

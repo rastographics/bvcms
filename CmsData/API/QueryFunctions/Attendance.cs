@@ -21,7 +21,7 @@ namespace CmsData
                         select m.MeetingDate.Value.Date;
                 var dt = q.FirstOrDefault();
                 if (dt == DateTime.MinValue) //Sunday Date equal/before today
-                    dt = DateTime.Today.AddDays(-(int) DateTime.Today.DayOfWeek);
+                    dt = Util.Today.AddDays(-(int) Util.Today.DayOfWeek);
                 lastSunday = dt;
                 return dt;
             }
@@ -86,7 +86,7 @@ namespace CmsData
 
         public int MeetingCount(int days, int progid, int divid, int orgid)
         {
-            var dt = DateTime.Now.AddDays(-days);
+            var dt = Util.Now.AddDays(-days);
             var q = from m in db.Meetings
                     where m.MeetingDate >= dt
                     where orgid == 0 || m.OrganizationId == orgid
@@ -113,7 +113,7 @@ namespace CmsData
 
         public int NumPresent(int days, int progid, int divid, int orgid)
         {
-            var dt = DateTime.Now.AddDays(-days);
+            var dt = Util.Now.AddDays(-days);
             var q = from m in db.Meetings
                     where m.MeetingDate >= dt
                     where orgid == 0 || m.OrganizationId == orgid

@@ -23,14 +23,14 @@ namespace CmsData
                 {
                     QueryId = Id,
                     Owner = Util.UserName,
-                    Created = DateTime.Now,
+                    Created = Util.Now,
                     Ispublic = IsPublic,
                     Name = Description
                 };
                 Db.Queries.InsertOnSubmit(q);
             }
             if(increment)
-                q.LastRun = DateTime.Now;
+                q.LastRun = Util.Now;
 
             if (Description != q.Name)
             {
@@ -61,7 +61,7 @@ namespace CmsData
                 }
             }
             q.Name = Description;
-            q.LastRun = DateTime.Now;
+            q.LastRun = Util.Now;
             if(owner.HasValue())
                 q.Owner = owner;
             q.Ispublic = IsPublic;

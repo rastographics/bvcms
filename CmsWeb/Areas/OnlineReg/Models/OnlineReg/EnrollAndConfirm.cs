@@ -403,7 +403,7 @@ Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
             }
             Transaction.Emails = listMailAddress.EmailAddressListToString();
             Transaction.Participants = participants;
-            Transaction.TransactionDate = DateTime.Now;
+            Transaction.TransactionDate = Util.Now;
         }
 
         private string GetParticipants(List<MailAddress> elist)

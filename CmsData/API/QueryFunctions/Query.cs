@@ -38,9 +38,9 @@ namespace CmsData
             var qb = db.PeopleQuery2(query);
             if (qb == null)
                 return 0;
-            var start = DateTime.Now;
+            var start = Util.Now;
             var count = qb.Count();
-            ElapsedTime = Math.Round(DateTime.Now.Subtract(start).TotalSeconds).ToInt();
+            ElapsedTime = Math.Round(Util.Now.Subtract(start).TotalSeconds).ToInt();
             return count;
         }
 

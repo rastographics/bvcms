@@ -19,7 +19,7 @@ namespace CmsData
         internal Expression WasMemberAsOf()
         {
             var tf = CodeIds == "1";
-            var now = DateTime.Now;
+            var now = Util.Now;
             EndDate = EndDate?.AddDays(1) ?? StartDate?.AddDays(1);
             Expression<Func<Person, bool>> pred = p => (
                 from et in p.EnrollmentTransactions
@@ -43,7 +43,7 @@ namespace CmsData
         internal Expression WasRecentMemberOf()
         {
             var tf = CodeIds == "1";
-            var now = DateTime.Now;
+            var now = Util.Now;
             var dt = now.AddDays(-Days).Date;
             Expression<Func<Person, bool>> pred = p => (
                 from et in p.EnrollmentTransactions

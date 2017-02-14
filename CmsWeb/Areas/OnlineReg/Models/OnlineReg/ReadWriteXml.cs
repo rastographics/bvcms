@@ -40,7 +40,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public void WriteXml(XmlWriter writer)
         {
             var w = new APIWriter(writer);
-            writer.WriteComment(DateTime.Now.ToString());
+            writer.WriteComment(Util.Now.ToString());
             foreach (var pi in typeof(OnlineRegModel).GetProperties(BindingFlags.Public | BindingFlags.Instance)
                                                           .Where(vv => vv.CanRead && vv.CanWrite))
             {

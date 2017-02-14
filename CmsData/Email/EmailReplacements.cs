@@ -427,7 +427,7 @@ namespace CmsData
                     break;
 
                 case "{today}":
-                    return DateTime.Today.ToShortDateString();
+                    return Util.Today.ToShortDateString();
 
                 case "{title}":
                     if (p.TitleCode.HasValue())
@@ -584,8 +584,8 @@ namespace CmsData
 
             var draft = match.Groups["draft"].Value;
 
-            var s = db.ContentOfTypeSavedDraft(draft);
-            return s;
+            var c = db.ContentOfTypeSavedDraft(draft);
+            return c?.Body ?? "Draft could not gbe found";
         }
 
         const string OrgExtraRe = @"\{orgextra:(?<field>[^\]]*)\}";
@@ -645,7 +645,7 @@ namespace CmsData
             if (user != null)
             {
                 user.ResetPasswordCode = Guid.NewGuid();
-                user.ResetPasswordExpires = DateTime.Now.AddHours(db.Setting("ResetPasswordExpiresHours", "24").ToInt());
+                user.ResetPasswordExpires = Util.Now.AddHours(db.Setting("ResetPasswordExpiresHours", "24").ToInt());
                 string link = db.ServerLink("/Account/SetPassword/" + user.ResetPasswordCode.ToString());
                 db.SubmitChanges();
                 return $@"<a href=""{link}"">Set password for {user.Username}</a>";
@@ -703,7 +703,7 @@ namespace CmsData
                 where aa.OrganizationId == orgid
                 where aa.PeopleId == pid
                 where AttendCommitmentCode.committed.Contains(aa.Commitment ?? 0)
-                where aa.MeetingDate > DateTime.Now
+                where aa.MeetingDate > Util.Now
                 orderby aa.MeetingDate
                 select aa.MeetingDate).FirstOrDefault();
             return mt == DateTime.MinValue ? "none" : mt.ToString("g");
@@ -716,7 +716,7 @@ namespace CmsData
 
             var mt = (from mm in db.Meetings
                          where mm.OrganizationId == orgid
-                         where mm.MeetingDate > DateTime.Now
+                         where mm.MeetingDate > Util.Now
                          orderby mm.MeetingDate
                          select mm.MeetingDate).FirstOrDefault() ?? DateTime.MinValue;
             return mt == DateTime.MinValue ? "none" : mt.ToString("g");
@@ -1068,7 +1068,7 @@ namespace CmsData
                 {
                     Id = Guid.NewGuid(),
                     Querystring = qs,
-                    Expires = DateTime.Now.AddHours(72)
+                    Expires = Util.Now.AddHours(72)
                 };
                 db.OneTimeLinks.InsertOnSubmit(ot);
                 db.SubmitChanges();

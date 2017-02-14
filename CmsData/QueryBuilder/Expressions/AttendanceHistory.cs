@@ -85,7 +85,7 @@ namespace CmsData
                 enddt = EndDate.Value.AddHours(24);
             var pct = double.Parse(TextValue);
             // note: this only works for members because visitors do not have att%
-            var now = DateTime.Now;
+            var now = Util.Now;
 
             var q = from p in db.People
                     let m = from et in p.EnrollmentTransactions
@@ -288,7 +288,7 @@ namespace CmsData
 
             if (!StartDate.HasValue)
                 return AlwaysFalse();
-            var enddt = EndDate?.AddHours(24) ?? DateTime.Today.AddHours(24);
+            var enddt = EndDate?.AddHours(24) ?? Util.Today.AddHours(24);
 
             var q = from fm in db.ViewFamilyFirstTimes
                     where fm.CreatedDate > cdt

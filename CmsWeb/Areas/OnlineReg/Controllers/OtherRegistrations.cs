@@ -87,7 +87,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
                 var omb = OrganizationMember.Load(DbUtil.Db, li.pid.Value, li.oid.Value) ??
                           OrganizationMember.InsertOrgMembers(DbUtil.Db,
-                              li.oid.Value, li.pid.Value, MemberTypeCode.Member, DateTime.Now, null, false);
+                              li.oid.Value, li.pid.Value, MemberTypeCode.Member, Util.Now, null, false);
 
                 if (q.org.AddToSmallGroupScript.HasValue())
                 {

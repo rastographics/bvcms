@@ -69,7 +69,7 @@ namespace CmsData
         {
             var emailqueue = new EmailQueue
             {
-                Queued = DateTime.Now,
+                Queued = Util.Now,
                 FromAddr = fromaddress.Address,
                 FromName = fromaddress.DisplayName,
                 Subject = subject,
@@ -97,7 +97,7 @@ namespace CmsData
         {
             var emailqueue = new EmailQueue
             {
-                Queued = DateTime.Now,
+                Queued = Util.Now,
                 FromAddr = fromAddress.Address,
                 FromName = fromAddress.DisplayName,
                 Subject = subject,
@@ -297,7 +297,7 @@ namespace CmsData
         {
             var emailqueue = new EmailQueue
             {
-                Queued = DateTime.Now,
+                Queued = Util.Now,
                 FromAddr = from.Address,
                 FromName = from.DisplayName,
                 Subject = subject,
@@ -332,7 +332,7 @@ namespace CmsData
             {
                 var emailqueue = new EmailQueue
                 {
-                    Queued = DateTime.Now,
+                    Queued = Util.Now,
                     FromAddr = from.Address,
                     FromName = from.DisplayName,
                     Subject = subject,
@@ -401,7 +401,7 @@ namespace CmsData
         {
             var emailqueue = new EmailQueue
             {
-                Queued = DateTime.Now,
+                Queued = Util.Now,
                 FromAddr = from.Address,
                 FromName = from.DisplayName,
                 Subject = subject,
@@ -463,8 +463,8 @@ namespace CmsData
                             $"<p style='color:red'>You are receiving this because there is no email address for {p.Name}({p.PeopleId}). You should probably contact them since they were probably expecting this information.</p>\n{text}",
                             Util.ToMailAddressList(from),
                             emailqueueto);
-                    emailqueueto.Sent = DateTime.Now;
-                    emailqueue.Sent = DateTime.Now;
+                    emailqueueto.Sent = Util.Now;
+                    emailqueue.Sent = Util.Now;
                     if (emailqueue.Redacted ?? false)
                         emailqueue.Body = "redacted";
                     SubmitChanges();
@@ -510,7 +510,7 @@ namespace CmsData
 
             var body = DoClickTracking(emailqueue);
             var m = new EmailReplacements(this, body, from, queueid);
-            emailqueue.Started = DateTime.Now;
+            emailqueue.Started = Util.Now;
             SubmitChanges();
 
             var cc = Util.ToMailAddressList(emailqueue.CClist);
@@ -560,7 +560,7 @@ namespace CmsData
                     if (Setting("sendemail", "true") != "false")
                     {
                         SendEmail(from, emailqueue.Subject, text, aa, to, cc);
-                        to.Sent = DateTime.Now;
+                        to.Sent = Util.Now;
                         SubmitChanges();
                     }
                 }
@@ -594,7 +594,7 @@ namespace CmsData
                 }
             }
 
-            emailqueue.Sent = DateTime.Now;
+            emailqueue.Sent = Util.Now;
             if (emailqueue.Redacted ?? false)
                 emailqueue.Body = "redacted";
             else if (emailqueue.Transactional == false)
