@@ -22,38 +22,20 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
 
         [HttpPost]
-        public ActionResult Report(DateTime? sdt, DateTime? edt)
+        public ActionResult Report(TransactionsModel m)
         {
-            var m = new TransactionsModel
-            {
-                startdt = sdt,
-                enddt = edt,
-                usebatchdates = true,
-            };
             return View(m);
         }
 
         [HttpPost]
-        public ActionResult ReportByDescription(DateTime? sdt, DateTime? edt)
+        public ActionResult ReportByDescription(TransactionsModel m)
         {
-            var m = new TransactionsModel
-            {
-                startdt = sdt,
-                enddt = edt,
-                usebatchdates = true,
-            };
             return View(m);
         }
 
         [HttpPost]
-        public ActionResult ReportByBatchDescription(DateTime? sdt, DateTime? edt)
+        public ActionResult ReportByBatchDescription(TransactionsModel m)
         {
-            var m = new TransactionsModel
-            {
-                startdt = sdt,
-                enddt = edt,
-                usebatchdates = true,
-            };
             return View(m);
         }
 

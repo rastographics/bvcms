@@ -91,8 +91,8 @@
             return false;
         }
         $.block();
-        var args = "sdt=" + sdt + "&edt=" + edt;
-        $.post($(this).attr("href"), args, function (ret) {
+        var q = $('#results').closest('form').serialize();
+        $.post($(this).attr("href"), q, function (ret) {
             $('#page-header h2').text(header);
             $('#results').html(ret);
             initializePopovers();
