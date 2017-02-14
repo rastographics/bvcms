@@ -155,10 +155,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public List<SelectListItem> MissionTripGoers()
         {
+            var pid = person?.PeopleId;
             var q = from g in DbUtil.Db.OrganizationMembers
                     where g.OrganizationId == orgid
                     where g.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Goer")
-                    where g.PeopleId != (Parent.UserPeopleId ?? person.PeopleId)
+                    where g.PeopleId != (Parent.UserPeopleId ?? pid)
                     orderby g.Person.Name2
                     select new SelectListItem
                     {
