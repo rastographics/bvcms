@@ -11,6 +11,7 @@ namespace CmsData
     public partial class PythonModel
     {
         public bool TestEmail { get; set; }
+        public int MaxEmails { get; set; }
         public bool Transactional { get; set; }
 
         public bool SmtpDebug
@@ -132,8 +133,6 @@ namespace CmsData
             }
         }
 
-
-
         private void Email2(CMSDataContext db2, IQueryable<Person> q, int queuedBy, string fromAddr, string fromName, string subject,
             string body, string cclist = null, DateTime? dateWanted = null)
         {
@@ -143,6 +142,9 @@ namespace CmsData
                 where p.EmailAddress != ""
                 where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
                 select p;
+            if (MaxEmails > 0)
+                q = q.Take(MaxEmails);
+
             var tag = db2.PopulateSpecialTag(q, DbUtil.TagTypeId_Emailer);
 
             Util.IsInRoleEmailTest = TestEmail;

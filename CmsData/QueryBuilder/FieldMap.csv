@@ -171,9 +171,9 @@ ContributionOptionsId,NullCode,,EnvelopeOptionList,,Contributions,Contribution O
 RecentContributionCount,Integer,,,Fund Id (or null for all),Contributions,Recent Contribution Count,"Days,Quarters","Enter a number and select Comparison for the number of Contributions, enter the number of days to look back, enter a Fund ID (or leave blank for all funds)."
 RecentContributionAmount,Number,,,Fund Id (or null for all),Contributions,Recent Contribution Amount,"Days,Quarters","Enter a number and select Comparison for the Contribution Amount, enter the number of days to look back, enter a Fund ID (or leave blank for all funds)."
 RecentContributionAmountBothJoint,Number,,,,Contributions,Recent Contribution Amount With Both Joint,Days,"Enter a number and select Comparison for the Contribution Amount, enter the number of days to look back. This will include both Husband and Wife in results if they give jointly."
-ContributionAmountBothJointHistory,Number,,,,Contributions,"Contribution Amount With Both Joint by Date Range","StartDate,EndDate","Enter dates and select Comparison for the Contribution Amount. This will include both Husband and Wife in results if they give jointly."
+ContributionAmountBothJointHistory,Number,,,,Contributions,Contribution Amount With Both Joint by Date Range,"StartDate,EndDate",Enter dates and select Comparison for the Contribution Amount. This will include both Husband and Wife in results if they give jointly.
 RecentPledgeAmountBothJoint,Number,,,Fund Id (or null for all),Contributions,Recent Pledge Amount With Both Joint,"Days,Quarters","Enter a number and select Comparison for the Pledge Amount, enter the number of days to look back. This will include both Husband and Wife in results if they give jointly."
-PledgeAmountBothJointHistory,Number,,,Fund Id (or null for all),Contributions,"Pledge Amount With Both Joint by Date Range","StartDate,EndDate,Quarters","Enter dates and select Comparison for the Pledge Amount. This will include both Husband and Wife in results if they give jointly."
+PledgeAmountBothJointHistory,Number,,,Fund Id (or null for all),Contributions,Pledge Amount With Both Joint by Date Range,"StartDate,EndDate,Quarters",Enter dates and select Comparison for the Pledge Amount. This will include both Husband and Wife in results if they give jointly.
 RecentNonTaxDedCount,Integer,,,Fund Id (or null for all),Contributions,Recent NonTaxDed Count,"Days,Quarters","Enter a number and select Comparison for the number of NonTaxDeds, enter the number of days to look back, enter a Fund ID (or leave blank for all funds)."
 RecentNonTaxDedAmount,Number,,,Fund Id (or null for all),Contributions,Recent NonTaxDed Amount,"Days,Quarters","Enter a number and select Comparison for the NonTaxDed Amount, enter the number of days to look back, enter a Fund ID (or leave blank for all funds)."
 NonTaxDedAmount,Number,,,Fund Id (or null for all),Contributions,NonTaxDed Contribution Amount History,"StartDate,EndDate,Quarters","Enter a number and select Comparison for the NonTaxDed Amount, enter the date range, enter a Fund ID (or leave blank for all funds)."
@@ -207,6 +207,7 @@ FamilyExtraData,String,,, Name,ExtraValues,FamilyExtra Value Text,Quarters,Enter
 FamilyExtraDate,Date,,, Name,ExtraValues,FamilyExtra Value Date,Quarters,Enter the Field Name and pick a date and a Comparison.
 FamilyExtraInt,NullInteger,,, Name,ExtraValues,FamilyExtra Value Int,Quarters,Enter the Field Name and enter all or part of the value (must be an integer) along with a Comparison.
 HasFamilyExtraField,StringEqual,,,,ExtraValues,Has FamilyExtra Value Field,,Enter the Field Name and a Comparison.
+DaysSinceExtraDate,Integer,,,Field,ExtraValues,Days Since Extra Value Date,Quarters,Enter the Extra Value Field Name and the number of days.
 IncludeDeceased,Bit,,,,Miscellaneous,Included Deceased,,"Specify True or False to include deceased people in your query. (By default, deceased are not included.)"
 ParentsOf,Bit,,,,Miscellaneous,Parents Only,,Specify True or False to include only Primary Adults.
 PlusParentsOf,Bit,,,,Miscellaneous,Add Primary Adults,,Specify True or False to Add Primary Adults.
@@ -227,8 +228,8 @@ CheckInVisits,Integer,,,,Miscellaneous,Number of visits,,Enter a number of visit
 MedicalLength,Integer,,,,Miscellaneous,Length of Medical / Allergies Info,,Enter a number of characters and select a Comparison.
 HasFailedEmails,Bit,,,,Miscellaneous,Has Failed Emails,StartDate,Select a StartDate or Leave blank
 FirstPersonSameEmail,EqualBit,,,,Miscellaneous,First Person of Same Email,,Returns only one person of many who have same email
-DaysSinceDate,Integer,,,,Miscellaneous,Days Since Date,"StartDate",Enter a Date along with a number of Days.
-DaysSinceDateField,DateField,Code,DateFields,,Miscellaneous,Days Since Date Field,"Days",Select the Compared to Field from the list along with a number of Days.
+DaysSinceDate,Integer,,,,Miscellaneous,Days Since Date,StartDate,Enter a Date along with a number of Days.
+DaysSinceDateField,DateField,Code,DateFields,,Miscellaneous,Days Since Date Field,Days,Select the Compared to Field from the list along with a number of Days.
 UserRole,Code,,UserRolesMyData,,Admin,User In Role,,Select User Role from the list.
 IsUser,Bit,,,,Admin,Is System User,,Specify True or False for those with user accounts.
 CreatedBy,String,,,,Admin,Record Created By User,,"Enter a Comparison and all or part of a Last Name (or Last Name, a comma and a First Name)."

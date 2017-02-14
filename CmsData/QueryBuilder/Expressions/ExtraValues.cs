@@ -6,6 +6,7 @@
  */
 
 using System;
+using System.Data.Linq.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using CmsData.ExtraValue;
@@ -231,6 +232,14 @@ namespace CmsData
                 var right = Expression.Convert(Expression.Constant(DateValue), left.Type);
                 return Compare(left, right);
             }
+        }
+        internal Expression DaysSinceExtraDate()
+        {
+            var field = Quarters;
+            Expression<Func<Person, int?>> pred = p => SqlMethods.DateDiffDay(p.PeopleExtras.SingleOrDefault(e => e.Field == field).DateValue.Value, Util.Now.Date);
+            Expression left = Expression.Invoke(pred, parm);
+            var right = Expression.Constant(TextValue.ToInt(), typeof(int?));
+            return Compare(left, right);
         }
     }
 }

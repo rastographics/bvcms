@@ -1345,15 +1345,13 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 return "";
             return content.Body;
         }
-        public string ContentOfTypeSavedDraft(string name)
+        public Content ContentOfTypeSavedDraft(string name)
         {
             var content = (from c in Contents
                            where c.Name == name
                            where c.TypeID == ContentTypeCode.TypeSavedDraft
                            select c).FirstOrDefault();
-            if (content == null)
-                return "Draft content could not be found";
-            return content.Body;
+            return content;
         }
         public string ContentOfTypePythonScript(string name)
         {

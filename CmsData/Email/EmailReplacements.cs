@@ -584,8 +584,8 @@ namespace CmsData
 
             var draft = match.Groups["draft"].Value;
 
-            var s = db.ContentOfTypeSavedDraft(draft);
-            return s;
+            var c = db.ContentOfTypeSavedDraft(draft);
+            return c.Body;
         }
 
         const string OrgExtraRe = @"\{orgextra:(?<field>[^\]]*)\}";

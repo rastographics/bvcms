@@ -47,6 +47,7 @@ namespace CmsData
                 { QueryType.CreatedBy, CreatedBy },
                 { QueryType.DaysSinceDate, DaysSinceDate },
                 { QueryType.DaysSinceDateField, DaysSinceDateField },
+                { QueryType.DaysSinceExtraDate, DaysSinceExtraDate },
                 { QueryType.DaysAfterNthVisitAsOf, DaysAfterNthVisitAsOf },
                 { QueryType.DaysBetween12Attendance, DaysBetween12Attendance },
                 { QueryType.DaysSinceContact, DaysSinceContact },

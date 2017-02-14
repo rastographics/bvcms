@@ -43,6 +43,7 @@ namespace CmsData
         DaysSinceContact,
         DaysSinceDate,
         DaysSinceDateField,
+        DaysSinceExtraDate,
         DaysTillAnniversary,
         DaysTillBirthday,
         DeceasedDate,
