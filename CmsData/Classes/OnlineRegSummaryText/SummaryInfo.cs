@@ -23,6 +23,11 @@ namespace CmsData.OnlineRegSummaryText
                 return;
             // ReSharper disable once UseObjectOrCollectionInitializer
             RegPerson = new OnlineRegPersonModel0(OrgMember.OnlineRegData, db);
+            if (RegPerson.PeopleId == 0)
+            {
+                RegPerson.PeopleId = pid;
+                RegPerson.person = Person;
+            }
             RegPerson.setting = db.CreateRegistrationSettings(Organization.RegSettingXml, oid);
 
             Handlebars.RegisterHelper("Registrant", Registrant);
@@ -181,7 +186,7 @@ pid: {pid}
         }
         private void IfAskDropdown(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
         {
-            if (currentAsk.IsAskDropdown)
+            if (currentAsk.IsAskDropdown && RegPerson.option != null)
                 options.Template(writer, new
                 {
                     OptionsLabel = Util.PickFirst(((AskDropdown)currentAsk).Label, "Options"),

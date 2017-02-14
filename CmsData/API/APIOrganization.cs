@@ -781,9 +781,10 @@ namespace CmsData.API
             if (notify == null)
                 throw new Exception("no notify person");
 
+            var needdetails = message.Contains("{details}");
             foreach (var om in q)
             {
-                var details = SummaryInfo.GetResults(Db, om.PeopleId, om.OrganizationId);
+                var details = needdetails ? SummaryInfo.GetResults(Db, om.PeopleId, om.OrganizationId) : "";
                 var organizationName = org.OrganizationName;
 
                 subject = Util.PickFirst(setting.ReminderSubject, noSubject);
@@ -793,7 +794,8 @@ namespace CmsData.API
                 message = MessageReplacements(Db, om.Person, null, org.OrganizationId, organizationName, location, message);
 
                 message = message.Replace("{phone}", org.PhoneNumber.FmtFone7());
-                message = message.Replace("{details}", details);
+                if(details.HasValue())
+                    message = message.Replace("{details}", details);
 
                 Db.Email(notify.FromEmail, om.Person, subject, message);
             }

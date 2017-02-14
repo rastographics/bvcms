@@ -58,6 +58,8 @@ This will be presented as a dropdown selection.
         }
         public DropdownItem SmallGroupChoice(List<string> choices)
         {
+            if (choices == null)
+                return null;
             var v = list.Where(i => i.SmallGroup != "nocheckbox").SingleOrDefault(i => choices.Contains(i.SmallGroup, StringComparer.OrdinalIgnoreCase));
             return v;
         }

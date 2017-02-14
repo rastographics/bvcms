@@ -79,6 +79,8 @@ For each checkbox, you can specify the following:
         {
             try
             {
+                if(items == null)
+                    return new List<CheckboxItem>();
                 var q = from i in items
                         join c in list on i equals c.SmallGroup
                         select c;
