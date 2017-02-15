@@ -61,6 +61,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
             var me = new MassEmailer(id, parents, ccparents, nodups);
             me.Host = Util.Host;
+            me.OnlyProspects = onlyProspects.GetValueOrDefault();
 
             // Unless UX-AllowMyDataUserEmails is true, CmsController.OnActionExecuting() will filter them
             if (!User.IsInRole("Access"))
@@ -322,6 +323,8 @@ namespace CmsWeb.Areas.Main.Controllers
                 return Json(new { error = ex.Message });
             }
 
+            var onlyProspects = m.OnlyProspects;
+
             HostingEnvironment.QueueBackgroundWorkItem(ct =>
             {
                 try
@@ -334,7 +337,7 @@ namespace CmsWeb.Areas.Main.Controllers
                     Util.UserEmail = userEmail;
                     Util.IsInRoleEmailTest = isInRoleEmailTest;
                     Util.IsMyDataUser = isMyDataUser;
-                    db.SendPeopleEmail(id);
+                    db.SendPeopleEmail(id, onlyProspects);
                 }
                 catch (Exception ex)
                 {

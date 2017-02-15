@@ -29,6 +29,7 @@ namespace CmsWeb.Areas.Main.Models
         public List<string> Recipients { get; set; }
         public List<int> RecipientIds { get; set; }
         public IEnumerable<int> AdditionalRecipients { get; set; }
+        public bool OnlyProspects { get; set; }
 
         public List<MailAddress> CcAddresses = new List<MailAddress>();
         public bool recovery;
