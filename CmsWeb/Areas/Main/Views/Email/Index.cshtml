@@ -78,6 +78,12 @@
                                         }
                                     }
                                 </select>
+
+                                foreach (var rId in Model.RecipientIds)
+                                {
+                                    <input type="hidden" name="RecipientIds" value="@rId" />
+                                }
+
                                 if (Model.Recipients.Count() <= 500)
                                 {
                                     <p class="help-block">@Model.Count @( Model.Count != 1 ? "people" : "person")@(Model.wantParents ? " including parents." : ".")</p>

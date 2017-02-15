@@ -79,7 +79,7 @@ namespace CmsWeb.Areas.Main.Controllers
             else if (orgid.HasValue)
             {
                 var org = DbUtil.Db.LoadOrganizationById(orgid.Value);
-                me.Recipients = GetRecipientsFromOrg(orgid.Value, onlyProspects, membersAndProspects);
+                GetRecipientsFromOrg(me, orgid.Value, onlyProspects, membersAndProspects);
                 me.Count = me.Recipients.Count();
                 ViewBag.ToName = org?.OrganizationName;
             }
@@ -100,18 +100,28 @@ namespace CmsWeb.Areas.Main.Controllers
             return View("Index", me);
         }
 
-        private static IEnumerable<string> GetRecipientsFromOrg(int orgId, bool? onlyProspects, bool? membersAndProspects)
+        private static void GetRecipientsFromOrg(MassEmailer me, int orgId, bool? onlyProspects, bool? membersAndProspects)
         {
-            var members = DbUtil.Db.OrgPeopleCurrent(orgId).Select(x => DbUtil.Db.LoadPersonById(x.PeopleId).ToString());
-            var prospects = DbUtil.Db.OrgPeopleProspects(orgId, false).Select(x => DbUtil.Db.LoadPersonById(x.PeopleId).ToString());
+            var members = DbUtil.Db.OrgPeopleCurrent(orgId).Select(x => DbUtil.Db.LoadPersonById(x.PeopleId));
+            var prospects = DbUtil.Db.OrgPeopleProspects(orgId, false).Select(x => DbUtil.Db.LoadPersonById(x.PeopleId));
+
+            me.Recipients = new List<string>();
+            me.RecipientIds = new List<int>();
+
+            var recipients = new List<Person>();
 
             if (onlyProspects.GetValueOrDefault())
-                return prospects;
+                recipients = prospects.ToList();
+            else if (membersAndProspects.GetValueOrDefault())
+                recipients = members.Union(prospects).ToList();
+            else
+                recipients = members.ToList();
 
-            if (membersAndProspects.GetValueOrDefault())
-                return members.Union(prospects);
-
-            return members;
+            foreach (var r in recipients)
+            {
+                me.Recipients.Add(r.ToString());
+                me.RecipientIds.Add(r.PeopleId);
+            }
         }
 
         public ActionResult EmailBody(string id)
@@ -245,6 +255,29 @@ namespace CmsWeb.Areas.Main.Controllers
                 if (m.AdditionalRecipients != null)
                 {
                     foreach (var pid in m.AdditionalRecipients)
+                    {
+                        // Protect against duplicate PeopleIDs ending up in the queue
+                        var q3 = from eqt in DbUtil.Db.EmailQueueTos
+                                 where eqt.EmailQueue == eq
+                                 where eqt.PeopleId == pid
+                                 select eqt;
+                        if (q3.Any())
+                        {
+                            continue;
+                        }
+                        eq.EmailQueueTos.Add(new EmailQueueTo
+                        {
+                            PeopleId = pid,
+                            OrgId = eq.SendFromOrgId,
+                            Guid = Guid.NewGuid(),
+                        });
+                    }
+                    DbUtil.Db.SubmitChanges();
+                }
+
+                if (m.RecipientIds != null)
+                {
+                    foreach (var pid in m.RecipientIds)
                     {
                         // Protect against duplicate PeopleIDs ending up in the queue
                         var q3 = from eqt in DbUtil.Db.EmailQueueTos
