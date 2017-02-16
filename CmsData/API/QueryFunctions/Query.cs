@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Dapper;
 using UtilityExtensions;
 
@@ -92,6 +93,11 @@ namespace CmsData
                         select u;
                     break;
             }
+            return q;
+        }
+        public IEnumerable<int> QueryPeopleIds(string query)
+        {
+            var q = db.PeopleQuery2(query).Select(vv => vv.PeopleId);
             return q;
         }
 
@@ -230,6 +236,12 @@ namespace CmsData
             var q = db.PeopleQuery2(query).Select(vv => vv.PeopleId);
             var tag = db.PopulateTemporaryTag(q);
             return tag.Id;
+        }
+
+        public string GetWhereClause(string code)
+        {
+            var q = db.PeopleQuery2(code);
+            return db.GetWhereClause(q);
         }
 
         public class NameValuePair
