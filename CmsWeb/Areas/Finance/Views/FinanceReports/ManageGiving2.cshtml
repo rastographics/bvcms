@@ -1,12 +1,13 @@
 ﻿@model CmsWeb.Areas.OnlineReg.Models.ManageGivingModel
 @using CmsData
-@using CmsWeb
 @using CmsData.Finance
+@using Dapper
 @{
-    ViewBag.Title = "Managed Giving";
-    ViewBag.PageHeader = "Managed Giving";
-    Layout = ViewExtensions2.TouchPointLayout();
-    var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
+  ViewBag.Title = "Managed Giving";
+  ViewBag.PageHeader = "Managed Giving";
+  Layout = ViewExtensions2.TouchPointLayout();
+  var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
+  var recurringAmounts = Model.RecurringAmounts();
 }
 <div class="row">
   <div class="col-sm-9">
@@ -18,44 +19,52 @@
       </div>
       <div class="box-content">
         <div class="well">
-          <strong><a href="/Person2/@Model.person.PeopleId" style="font-size: 1.5em;">@Model.person.Name</a></strong><br>
+          <strong>
+            <a href="/Person2/@Model.person.PeopleId" style="font-size: 1.5em;">@Model.person.Name</a>
+          </strong><br>
           <a href="mailto:@Model.person.EmailAddress">@Model.person.EmailAddress</a>
         </div>
         <div class="table-responsive">
-          <table class="table table-striped" id="funds">
+          <table class="table table-striped notwide" id="funds">
             <thead>
-              <tr>
-                <th>Funds</th>
-                <th style="width:100px;">
-                  <div class="pull-right">
-                    Amounts
-                  </div>
-                </th>
-              </tr>
+            <tr>
+              <th>Id</th>
+              <th>Funds</th>
+              <th style="width: 100px;">
+                <div class="pull-right">
+                  Amounts
+                </div>
+              </th>
+            </tr>
             </thead>
             <tbody>
-              @{ var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FullFundList(); }
-              @foreach (var fund in funds)
-              {
-                var amt = Model.FundItemValue(UtilityExtensions.Util.ToInt(fund.Value)) ?? 0;
-                if (amt > 0)
-                {
-                      <tr>
-                        <td>@fund.Text</td>
-                        <td style="width: 100px;">
-                          <div class="pull-right">
-                            @amt.ToString("C2")
-                          </div>
-                        </td>
-                      </tr>
-                }
-              }
+            @foreach (var ra in recurringAmounts)
+            {
+                <tr>
+                  <td>@ra.FundId</td>
+                  <td>@ra.FundName</td>
+                  <td style="width: 100px;" align="right">
+                    @if (ra.OnlineSort == null || ra.FundStatusId == 2)
+                    {
+                      <span style="color: red">@ra.Amt.ToString("C2")</span>
+                    }
+                    else
+                    {
+                      @ra.Amt.ToString("C2")
+                    }
+                  </td>
+                </tr>
+            }
             </tbody>
             <tfoot>
-              <tr>
-                <td><h4 class="pull-right">TOTAL:</h4></td>
-                <td style="width:100px;"><h2 class="pull-right" style="margin: 0;">@Model.total.ToString("C2")</h2></td>
-              </tr>
+            <tr>
+              <td>
+                <h4 class="pull-right">TOTAL:</h4>
+              </td>
+              <td style="width: 100px;" align="right">
+                <h2 class="pull-right" style="margin: 0;">@Model.total.ToString("C2")</h2>
+              </td>
+            </tr>
             </tfoot>
           </table>
         </div>
@@ -64,23 +73,23 @@
           <em>
             @if (Model.SemiEvery == "S")
             {
-                <span>Twice a month on day @Model.Day1 and day @Model.Day2 </span>
+              <span>Twice a month on day @Model.Day1 and day @Model.Day2 </span>
             }
             else
             {
               if (Model.EveryN > 1)
               {
-                    <span>Every @Model.EveryN @(Model.Period == "M" ? "months" : "weeks") </span>
+                <span>Every @Model.EveryN @(Model.Period == "M" ? "months" : "weeks") </span>
               }
               else
               {
-                    <span>Every @Model.EveryN @(Model.Period == "M" ? "month" : "week") </span>
+                <span>Every @Model.EveryN @(Model.Period == "M" ? "month" : "week") </span>
               }
             }
-            <span>starting on or after @UtilityExtensions.Util.FormatDate(Model.StartWhen). </span><br />
+            <span>starting on or after @UtilityExtensions.Util.FormatDate(Model.StartWhen). </span><br/>
             <span>Next payment will be @UtilityExtensions.Util.FormatDate(Model.NextDate).</span>
           </em>
-        </strong><br /><br />
+        </strong><br/><br/>
         <h4>Billing Information</h4>
         <div class="panel panel-default">
           <div class="panel-body">
@@ -94,13 +103,17 @@
               <div class="col-sm-6">
                 @if (Model.Type == PaymentType.CreditCard)
                 {
-                    <span>@debitcredit #:</span> @Model.CreditCard<br />
-                                    <span>Expires:</span> @Model.Expires
+                  <span>@debitcredit #:</span>
+                  @Model.CreditCard<br/>
+                  <span>Expires:</span>
+                  @Model.Expires
                 }
                 else
                 {
-                    <span>Bank Routing #:</span> @Model.Routing<br />
-                                    <span>Bank Account #:</span> @Model.Account
+                  <span>Bank Routing #:</span>
+                  @Model.Routing<br/>
+                  <span>Bank Account #:</span>
+                  @Model.Account
                 }
               </div>
             </div>

@@ -2045,6 +2045,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.ManagedGivingList> ViewManagedGivingLists
+	    {
+		    get { return this.GetTable< View.ManagedGivingList>(); }
+
+	    }
+
 	    public Table< View.MasterOrg> ViewMasterOrgs
 	    {
 		    get { return this.GetTable< View.MasterOrg>(); }

@@ -1,86 +1,96 @@
 ﻿@using UtilityExtensions
-@model System.Linq.IOrderedEnumerable<CmsData.ManagedGiving>
+@model IEnumerable<CmsData.View.ManagedGivingList>
 
 @{
-    ViewBag.Title = "Managed Giving";
-    ViewBag.PageHeader = "Managed Giving";
-    Layout = ViewExtensions2.TouchPointLayout();
+  ViewBag.Title = "Managed Giving";
+  ViewBag.PageHeader = "Managed Giving";
+  Layout = ViewExtensions2.TouchPointLayout();
 }
 <div class="box box-responsive">
-    <div class="box-content">
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th><a href="/FinanceReports/ManagedGiving/?sortBy=name&sortDir=@ViewBag.SortDir">Name</a></th>
-                        <th>Started</th>
-                        <th>Next Date</th>
-                        <th>Repeats</th>
-                        <th>Every</th>
-                        <th>Period</th>
-                        <th>Day 1</th>
-                        <th>Day 2</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var rg in Model)
-                    {
-                        <tr>
-                            <td><a href="/FinanceReports/ManageGiving2/@rg.PeopleId">@rg.Person.Name</a></td>
-                            <td>@rg.StartWhen.FormatDate()</td>
-                            <td>@rg.NextDate.FormatDate()</td>
-                            <td>@(rg.SemiEvery == "S" ? "Twice a Month" : rg.Period == "W" ? "Weekly" : "Monthly")</td>
-                            <td>@rg.EveryN</td>
-                            <td>
-                                @if (rg.SemiEvery == "E")
-                                {
-                                    @(rg.Period == "W" ? "Week" : "Month")@(rg.EveryN > 1 ? "s" : "")
-                                }
-                            </td>
-                            <td>@(rg.SemiEvery == "S" ? rg.Day1.ToString() : "")</td>
-                            <td>@(rg.SemiEvery == "S" ? rg.Day2.ToString() : "")</td>
-                            <td>
-                                <a class="delete btn btn-sm btn-danger" href="/Vault/DeleteVaultData/@rg.PeopleId"><i class="fa fa-trash"></i> Delete</a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+  <div class="box-content">
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th>
+            <a href="/FinanceReports/ManagedGiving/?sortBy=name&sortDir=@ViewBag.SortDir">Name</a>
+          </th>
+          <th>Started</th>
+          <th>Next Date</th>
+          <th>Amount</th>
+          <th>Repeats</th>
+          <th>Every</th>
+          <th>Period</th>
+          <th>Day 1</th>
+          <th>Day 2</th>
+          <th>Inactive</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var rg in Model)
+        {
+          <tr>
+            <td>
+              <a href="/FinanceReports/ManageGiving2/@rg.PeopleId">@rg.Name2</a>
+            </td>
+            <td>@rg.StartWhen.FormatDate()</td>
+            <td>@rg.NextDate.FormatDate()</td>
+            <td>@rg.ActiveAmt.ToString2("c")</td>
+            <td>@(rg.SemiEvery == "S" ? "Twice a Month" : rg.Period == "W" ? "Weekly" : "Monthly")</td>
+            <td>@rg.EveryN</td>
+            <td>
+              @if (rg.SemiEvery == "E")
+              {
+                @(rg.Period == "W" ? "Week" : "Month")@(rg.EveryN > 1 ? "s" : "")
+              }
+            </td>
+            <td>@(rg.SemiEvery == "S" ? rg.Day1.ToString() : "")</td>
+            <td>@(rg.SemiEvery == "S" ? rg.Day2.ToString() : "")</td>
+            <td><span style="color:red">@(rg.InactiveAmt > 0 ? @rg.InactiveAmt.ToString2("c") : "")</span></td>
+            <td>
+              <a class="delete btn btn-sm btn-danger" href="/Vault/DeleteVaultData/@rg.PeopleId"><i class="fa fa-trash"></i> Delete</a>
+            </td>
+          </tr>
+        }
+        </tbody>
+      </table>
     </div>
+  </div>
 </div>
 @section scripts
 {
-    <script type="text/javascript">
-        $(function () {
-            $("a.delete").click(function (e) {
-                e.preventDefault();
-                var href = this.href;
-                swal({
-                    title: "Are you sure?",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonClass: "btn-danger",
-                    confirmButtonText: "Yes, delete it!",
-                    closeOnConfirm: false
-                },
-                function () {
-                    $.post(href, null, function (ret) {
-                        if (ret && ret.error)
-                            swal("Error!", ret.error, "error");
-                        else {
-                            swal({
-                                title: "Deleted!",
-                                type: "success"
-                            },
-                            function () {
-                                window.location = "/FinanceReports/ManagedGiving";
-                            });
-                        }
+  <script type="text/javascript">
+    $(function() {
+      $("a.delete").click(function(e) {
+        e.preventDefault();
+        var href = this.href;
+        swal({
+            title: "Are you sure?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+          },
+          function() {
+            $.post(href,
+              null,
+              function(ret) {
+                if (ret && ret.error)
+                  swal("Error!", ret.error, "error");
+                else {
+                  swal({
+                      title: "Deleted!",
+                      type: "success"
+                    },
+                    function() {
+                      window.location = "/FinanceReports/ManagedGiving";
                     });
-                });
-            });
-        });
-    </script>
+                }
+              });
+          });
+      });
+    });
+  </script>
 }

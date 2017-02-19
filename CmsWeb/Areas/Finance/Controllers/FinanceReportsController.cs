@@ -175,31 +175,28 @@ namespace CmsWeb.Areas.Finance.Controllers
             {
                 if (string.IsNullOrEmpty(sortDir) || sortDir == "desc")
                 {
-                    var q = from rg in DbUtil.Db.ManagedGivings.ToList()
-                        orderby rg.Person.LastName ascending, rg.Person.FirstName ascending
+                    var q2 = from rg in DbUtil.Db.ViewManagedGivingLists.ToList()
+                        orderby rg.Name2 ascending
                         select rg;
 
                     ViewBag.SortDir = "asc";
-                    return View(q);
+                    return View(q2);
                 }
                 else
                 {
-                    var q = from rg in DbUtil.Db.ManagedGivings.ToList()
-                            orderby rg.Person.LastName descending , rg.Person.FirstName descending
+                    var q2 = from rg in DbUtil.Db.ViewManagedGivingLists.ToList()
+                            orderby rg.Name2 descending
                             select rg;
 
                     ViewBag.SortDir = "desc";
-                    return View(q);
+                    return View(q2);
                 }
 
             }
-            else
-            {
-                var q = from rg in DbUtil.Db.ManagedGivings.ToList()
-                        orderby rg.NextDate
-                        select rg;
-                return View(q);
-            }
+            var q = from rg in DbUtil.Db.ViewManagedGivingLists.ToList()
+                    orderby rg.NextDate
+                    select rg;
+            return View(q);
         }
 
         [HttpGet]

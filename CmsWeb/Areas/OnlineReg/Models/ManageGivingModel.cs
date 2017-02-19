@@ -8,6 +8,7 @@ using CmsData;
 using CmsData.Finance;
 using CmsData.Registration;
 using CmsWeb.Code;
+using Dapper;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -579,6 +580,26 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public void Log(string action)
         {
             DbUtil.LogActivity("OnlineReg ManageGiving " + action, orgid, pid);
+        }
+
+        public class RecurringForPerson
+        {
+            public int FundId { get; set; }
+            public decimal Amt { get; set; }
+            public string FundName { get; set; }
+            public int FundStatusId { get; set; }
+            public int? OnlineSort { get; set; }
+        }
+
+        public IEnumerable<RecurringForPerson> RecurringAmounts()
+        {
+        string sql = $@"
+SELECT ra.FundId, ra.Amt, f.FundName, f.FundStatusId , f.OnlineSort 
+FROM dbo.RecurringAmounts ra
+JOIN dbo.ContributionFund f ON f.FundId = ra.FundId
+WHERE ra.PeopleId = @pid
+        ";
+            return DbUtil.Db.Connection.Query<RecurringForPerson>(sql, new { pid});
         }
     }
 }
