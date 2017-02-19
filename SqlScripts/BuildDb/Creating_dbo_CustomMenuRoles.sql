@@ -28,7 +28,7 @@ WITH body AS (
 	SELECT t.Link
           ,t.Name
 		  ,t.Col
-		  ,CASE WHEN t.Role IS NOT NULL THEN t.Role ELSE dbo.RegexMatch(s.Body, '^(--|#)roles=(?<group>[A-Z0-9]*)') END [Role]
+		  ,CASE WHEN t.Role IS NOT NULL THEN t.Role ELSE dbo.RegexMatch(s.Body, '^(--|#)roles=(?<group>[A-Z0-9,]*)') END [Role]
 	FROM withroles t
 	LEFT JOIN dbo.Content s ON s.Name = t.name
 )
@@ -37,11 +37,6 @@ SELECT r.Link
 	  ,r.Name
 	  ,r.Col
 FROM reports r
-
-
-
-
-
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO
