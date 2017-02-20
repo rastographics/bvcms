@@ -289,9 +289,10 @@ namespace CmsWeb.Areas.Org.Models
         public bool ShowOptions => RoleChecker.HasSetting(SettingName.Organization_ShowOptionsMenu, true);
         public bool ShowSubgroupFilters => RoleChecker.HasSetting(SettingName.Organization_ShowFiltersBar, true);
         public bool ShowBirthday => RoleChecker.HasSetting(SettingName.Organization_ShowBirthday, true);
-        public bool ShowAddress => RoleChecker.HasSetting(SettingName.Organization_ShowAddress, true);
         public bool ShowTagButtons => RoleChecker.HasSetting(SettingName.Organization_ShowTagButtons, true);
+        public bool ShowShowAddress => RoleChecker.HasSetting(SettingName.Organization_ShowAddress, true);
 
+        public bool ShowAddress { get; set; }
         public int? Id { get; set; }
         public string GroupSelect { get; set; }
         public string NameFilter { get; set; }

@@ -14,12 +14,15 @@
       </li>
       @if (!Model.DisablePeopleLink)
       {
-          <li class="@Model.ShowMinistryInfoActive">
-              <a id="ministryinfo" href="#" class="grp2 @Model.ShowMinistryInfoActive">Ministry Info</a>
-          </li>
+        <li class="@Model.ShowMinistryInfoActive">
+          <a id="ministryinfo" href="#" class="grp2 @Model.ShowMinistryInfoActive">Ministry Info</a>
+        </li>
+        if (Model.ShowShowAddress)
+        {
           <li class="@Model.ShowAddressActive">
               <a id="showaddress" href="#" class="grp2 @Model.ShowAddressActive">Show Address</a>
           </li>
+        }
       }
   </ul>
 </div>
