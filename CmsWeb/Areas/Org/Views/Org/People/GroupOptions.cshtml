@@ -12,7 +12,7 @@
       <li class="@Model.ShowHiddenActive">
           <a id="showhide" href="#" class="grp2 @Model.ShowHiddenActive">Show Hidden</a>
       </li>
-      @if (Model.DisablePeopleLink)
+      @if (!Model.DisablePeopleLink)
       {
           <li class="@Model.ShowMinistryInfoActive">
               <a id="ministryinfo" href="#" class="grp2 @Model.ShowMinistryInfoActive">Ministry Info</a>
