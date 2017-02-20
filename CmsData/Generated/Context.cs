@@ -2996,6 +2996,29 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.GetContributionsDetails", IsComposable = true)]
+		public IQueryable< View.GetContributionsDetail > GetContributionsDetails(
+            [Parameter(DbType="datetime")] DateTime? fd,
+            [Parameter(DbType="datetime")] DateTime? td,
+            [Parameter(DbType="int")] int? campusid,
+            [Parameter(DbType="bit")] bool? pledges,
+            [Parameter(DbType="bit")] bool? nontaxded,
+            [Parameter(DbType="bit")] bool? includeUnclosed,
+            [Parameter(DbType="int")] int? tagid
+            )
+		{
+			return this.CreateMethodCallQuery< View.GetContributionsDetail>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                fd,
+                td,
+                campusid,
+                pledges,
+                nontaxded,
+                includeUnclosed,
+                tagid
+                );
+		}
+
 		[Function(Name="dbo.GetContributionsRange", IsComposable = true)]
 		public IQueryable< View.GetContributionsRange > GetContributionsRange(
             [Parameter(DbType="datetime")] DateTime? fd,
@@ -3156,6 +3179,27 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.GetTotalContributionsDonor", IsComposable = true)]
+		public IQueryable< View.GetTotalContributionsDonor > GetTotalContributionsDonor(
+            [Parameter(DbType="datetime")] DateTime? fd,
+            [Parameter(DbType="datetime")] DateTime? td,
+            [Parameter(DbType="int")] int? campusid,
+            [Parameter(DbType="bit")] bool? nontaxded,
+            [Parameter(DbType="bit")] bool? includeUnclosed,
+            [Parameter(DbType="int")] int? tagid
+            )
+		{
+			return this.CreateMethodCallQuery< View.GetTotalContributionsDonor>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                fd,
+                td,
+                campusid,
+                nontaxded,
+                includeUnclosed,
+                tagid
+                );
+		}
+
 		[Function(Name="dbo.GetTotalContributionsDonor2", IsComposable = true)]
 		public IQueryable< View.GetTotalContributionsDonor2 > GetTotalContributionsDonor2(
             [Parameter(DbType="datetime")] DateTime? fd,
@@ -3172,6 +3216,27 @@ namespace CmsData
                 campusid,
                 nontaxded,
                 includeUnclosed
+                );
+		}
+
+		[Function(Name="dbo.GetTotalContributionsDonorFund", IsComposable = true)]
+		public IQueryable< View.GetTotalContributionsDonorFund > GetTotalContributionsDonorFund(
+            [Parameter(DbType="datetime")] DateTime? fd,
+            [Parameter(DbType="datetime")] DateTime? td,
+            [Parameter(DbType="int")] int? campusid,
+            [Parameter(DbType="bit")] bool? nontaxded,
+            [Parameter(DbType="bit")] bool? includeUnclosed,
+            [Parameter(DbType="int")] int? tagid
+            )
+		{
+			return this.CreateMethodCallQuery< View.GetTotalContributionsDonorFund>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                fd,
+                td,
+                campusid,
+                nontaxded,
+                includeUnclosed,
+                tagid
                 );
 		}
 

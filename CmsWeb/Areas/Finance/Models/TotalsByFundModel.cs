@@ -25,6 +25,7 @@ namespace CmsWeb.Models
         public bool IncUnclosedBundles { get; set; }
         public bool IncludeBundleType { get; set; }
         public bool NonTaxDeductible { get; set; }
+        public bool FilterByActiveTag { get; set; }
 
         public TotalsByFundModel()
         {
@@ -53,7 +54,8 @@ namespace CmsWeb.Models
                     TaxNonTax = TaxDedNonTax,
                     CampusId = CampusId,
                     Status = ContributionStatusCode.Recorded,
-                    Online = Online
+                    Online = Online,
+                    FilterByActiveTag = FilterByActiveTag,
                 }
             };
 

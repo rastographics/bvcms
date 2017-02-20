@@ -87,9 +87,9 @@ namespace CmsWeb.Models
             return q.Take(maximumRows).ToDataTable();
         }
         public static DataTable DonorDetails(DateTime startdt, DateTime enddt,
-            int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed)
+            int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid)
         {
-            var q = from c in DbUtil.Db.Contributions2(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed)
+            var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid)
                     join p in DbUtil.Db.People on c.CreditGiverId equals p.PeopleId
                     let mainFellowship = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
                     select new
@@ -116,9 +116,9 @@ namespace CmsWeb.Models
             return q.ToDataTable();
         }
         public static DataTable ExcelDonorTotals(DateTime startdt, DateTime enddt,
-            int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed)
+            int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid)
         {
-            var q2 = from r in DbUtil.Db.GetTotalContributionsDonor2(startdt, enddt, campusid, nontaxdeductible, includeUnclosed)
+            var q2 = from r in DbUtil.Db.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid)
                      select new
                      {
                          GiverId = r.CreditGiverId ?? 0,
@@ -139,9 +139,9 @@ namespace CmsWeb.Models
             return q2.ToDataTable();
         }
         public static DataTable ExcelDonorFundTotals(DateTime startdt, DateTime enddt,
-            int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed)
+            int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid)
         {
-            var q2 = from r in DbUtil.Db.GetTotalContributions3(startdt, enddt, campusid, nontaxdeductible, includeUnclosed)
+            var q2 = from r in DbUtil.Db.GetTotalContributionsDonorFund(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid)
                      select new
                      {
                          GiverId = r.CreditGiverId.Value,

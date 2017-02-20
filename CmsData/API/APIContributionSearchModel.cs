@@ -35,6 +35,7 @@ namespace CmsData.API
         public bool IncludeUnclosedBundles { get; set; }
         public bool Mobile { get; set; }
         public int Online { get; set; }
+        public bool FilterByActiveTag { get; set; }
 
         internal string Campus;
         internal string FundName;
@@ -291,6 +292,13 @@ namespace CmsData.API
                                 where c.FundId == model.FundId
                                 select c;
 
+            if (model.FilterByActiveTag)
+            {
+                var tagid = db.TagCurrent().Id;
+                contributions = from c in contributions
+                    where db.TagPeople.Any(vv => vv.PeopleId == c.PeopleId && vv.Id == tagid)
+                    select c;
+            }
             return contributions;
         }
 

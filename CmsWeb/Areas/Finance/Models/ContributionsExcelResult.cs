@@ -20,6 +20,7 @@ namespace CmsWeb.Models
     	public int Online { get; set; }
         public string TaxDedNonTax { get; set; }
         public bool IncUnclosedBundles { get; set; }
+        public bool FilterByActiveTag { get; set; }
 
         public EpplusResult ToExcel(string type)
         {
@@ -33,6 +34,9 @@ namespace CmsWeb.Models
                     nontaxdeductible = true;
                     break;
             }
+
+            var tagid = FilterByActiveTag ? DbUtil.Db.TagCurrent()?.Id : (int?)null;
+
             switch (type)
             {
                 case "ledgerincome":
@@ -46,13 +50,13 @@ namespace CmsWeb.Models
                     }, commandType: CommandType.StoredProcedure);
                     return DbUtil.Db.Connection.ExecuteReader(cd).ToExcel("LedgerIncome.xlsx");
                 case "donorfundtotals":
-    				return ExportPeople.ExcelDonorFundTotals(Dt1, Dt2, fundid, campusid, false, nontaxdeductible, IncUnclosedBundles)
+    				return ExportPeople.ExcelDonorFundTotals(Dt1, Dt2, fundid, campusid, false, nontaxdeductible, IncUnclosedBundles, tagid)
                         .ToExcel("DonorFundTotals.xlsx");
                 case "donortotals":
-                    return ExportPeople.ExcelDonorTotals(Dt1, Dt2, campusid, false, nontaxdeductible, IncUnclosedBundles)
+                    return ExportPeople.ExcelDonorTotals(Dt1, Dt2, campusid, false, nontaxdeductible, IncUnclosedBundles, tagid)
                         .ToExcel("DonorTotals.xlsx");
                 case "donordetails":
-                    return ExportPeople.DonorDetails(Dt1, Dt2, fundid, campusid, false, nontaxdeductible, IncUnclosedBundles)
+                    return ExportPeople.DonorDetails(Dt1, Dt2, fundid, campusid, false, nontaxdeductible, IncUnclosedBundles, tagid)
                         .ToExcel("DonorDetails.xlsx");
             }
             return null;
