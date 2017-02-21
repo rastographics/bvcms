@@ -1910,9 +1910,9 @@ PRINT(N'Operation applied to 12 rows out of 12')
 
 PRINT(N'Add rows to [dbo].[MobileAppActions]')
 SET IDENTITY_INSERT [dbo].[MobileAppActions] ON
-INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api]) VALUES (1, 6, N'People Search', 0, N'', 1, 1, 1, N'Access', 1)
-INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api]) VALUES (2, 7, N'Attendance', 0, N'', 2, 1, 1, N'Access, Attendance', 1)
-INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api]) VALUES (3, 10, N'Tasks', 0, N'', 3, 1, 1, N'Access', 3)
+INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api], [active], [altTitle], [rebranded]) VALUES (1, 6, N'People Search', 0, N'', 1, 1, 1, N'Access', 1, '1970-01-01 12:00:00.000', N'', 0)
+INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api], [active], [altTitle], [rebranded]) VALUES (2, 7, N'Attendance', 0, N'', 2, 1, 1, N'Access, Attendance', 1, '1970-01-01 12:00:00.000', N'', 0)
+INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles], [api], [active], [altTitle], [rebranded]) VALUES (3, 10, N'Tasks', 0, N'', 3, 1, 1, N'Access', 3, '1970-01-01 12:00:00.000', N'', 0)
 SET IDENTITY_INSERT [dbo].[MobileAppActions] OFF
 PRINT(N'Operation applied to 3 rows out of 3')
 

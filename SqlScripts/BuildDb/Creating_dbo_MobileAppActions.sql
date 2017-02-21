@@ -9,7 +9,10 @@ CREATE TABLE [dbo].[MobileAppActions]
 [loginType] [int] NOT NULL CONSTRAINT [DF_MobileAppActions_loginType] DEFAULT ((0)),
 [enabled] [bit] NOT NULL CONSTRAINT [DF_MobileAppActions_enabled] DEFAULT ((1)),
 [roles] [nvarchar] (max) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL CONSTRAINT [DF_MobileAppActions_roles] DEFAULT (''),
-[api] [int] NOT NULL CONSTRAINT [DF_MobileAppActions_api] DEFAULT ((0))
+[api] [int] NOT NULL CONSTRAINT [DF_MobileAppActions_api] DEFAULT ((0)),
+[active] [datetime] NOT NULL CONSTRAINT [DF_MobileAppActions_active] DEFAULT ('1970-01-01 12:00:00'),
+[altTitle] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL CONSTRAINT [DF_MobileAppActions_altTitle] DEFAULT (''),
+[rebranded] [int] NOT NULL CONSTRAINT [DF_MobileAppActions_rebranded] DEFAULT ((0))
 )
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
