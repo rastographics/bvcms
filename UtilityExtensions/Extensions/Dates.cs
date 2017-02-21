@@ -17,7 +17,6 @@ namespace UtilityExtensions
 {
     public static partial class Util
     {
-        private const string STR_NOWOFFSET = "NOWOFFSET";
         public const int SignalNoYear = 1897;
         private static DateTime? GoodDate(DateTime? dt)
         {
@@ -61,25 +60,64 @@ namespace UtilityExtensions
                 age--;
             return age;
         }
-        private const string STR_DateTimeNow = "DateTimeNow";
+        private const string StrDateSimulation = "DateSimulation";
+        public static bool DateSimulation
+        {
+            get
+            {
+                bool? sim = false;
+                if (HttpContext.Current != null)
+                {
+                    if (HttpContext.Current != null)
+                        if (HttpContext.Current.Items[StrDateSimulation] != null)
+                            sim = (bool)HttpContext.Current.Items[StrDateSimulation];
+                }
+                return sim ?? false;
+            }
+            set
+            {
+                if (HttpContext.Current == null)
+                    return;
+                HttpContext.Current.Items[StrDateSimulation] = value;
+            }
+        }
+        private const string StrToday = "StrToday";
         public static DateTime Now
         {
             get
             {
-#if DEBUG2
-                //return DateTime.Now.Add(new TimeSpan(3, 5, 5, 0));
-                var o = HttpRuntime.Cache[STR_DateTimeNow];
-                return o != null ? (DateTime) o : DateTime.Now;
-#else
-                return DateTime.Now;
-#endif
+                var now = DateTime.Now;
+                if (!DateSimulation)
+                    return now;
+                if (HttpContext.Current == null)
+                    return now;
+                if (HttpContext.Current.Session[StrToday] != null)
+                    now = (DateTime)HttpContext.Current.Session[StrToday];
+                return now.Date.Add(DateTime.Now.TimeOfDay);
             }
-#if DEBUG
+        }
+        public static DateTime Today
+        {
+            get
+            {
+                var now = DateTime.Today;
+                if (!DateSimulation)
+                    return now;
+                if (HttpContext.Current == null)
+                    return now;
+                if (HttpContext.Current.Session[StrToday] != null)
+                    now = (DateTime)HttpContext.Current.Session[StrToday];
+                return now.Date;
+            }
             set
             {
-                HttpRuntime.Cache[STR_DateTimeNow] = value;
+                HttpContext.Current.Session[StrToday] = value;
             }
-#endif
+        }
+
+        public static void ResetToday()
+        {
+            HttpContext.Current.Session.Remove(StrToday);
         }
         public static bool DateValid(string dt)
         {
@@ -123,7 +161,7 @@ namespace UtilityExtensions
             if (!DateValid(s, out dt2))
                 return false;
             dt2 = new DateTime(byear ?? SignalNoYear, bmon.Value, bday.Value);
-            if (dt2 > DateTime.Now)
+            if (dt2 > Util.Now)
                 dt2 = dt2.AddYears(-100);
             return true;
         }

@@ -17,7 +17,7 @@ namespace CmsData
             using (var db2 = NewDataContext())
             {
                 var q = db.PeopleQuery2(query);
-                var dt = DateTime.Now;
+                var dt = Util.Now;
                 foreach (var p in q)
                 {
                     OrganizationMember.InsertOrgMembers(db2, orgId.ToInt(), p.PeopleId, MemberTypeCode.Member, dt, null, false);
@@ -202,7 +202,7 @@ namespace CmsData
             db.LogActivity($"PythonModel.JoinOrg({pid},{orgid})");
             if (pid == null)
                 return;
-            OrganizationMember.InsertOrgMembers(db2, orgid, pid.Value, 220, DateTime.Now, null, false);
+            OrganizationMember.InsertOrgMembers(db2, orgid, pid.Value, 220, Util.Now, null, false);
 
             db2.Dispose();
         }

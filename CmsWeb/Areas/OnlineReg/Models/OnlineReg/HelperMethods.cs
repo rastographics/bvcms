@@ -139,7 +139,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             if (SupportMissionTrip)
                 return false;
-            var dt = DateTime.Now;
+            var dt = Util.Now;
             var dt1 = DateTime.Parse("1/1/1900");
             var dt2 = DateTime.Parse("1/1/2200");
             if (masterorgid.HasValue)

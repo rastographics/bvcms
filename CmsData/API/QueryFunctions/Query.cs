@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Dapper;
 using UtilityExtensions;
 
@@ -38,9 +39,9 @@ namespace CmsData
             var qb = db.PeopleQuery2(query);
             if (qb == null)
                 return 0;
-            var start = DateTime.Now;
+            var start = Util.Now;
             var count = qb.Count();
-            ElapsedTime = Math.Round(DateTime.Now.Subtract(start).TotalSeconds).ToInt();
+            ElapsedTime = Math.Round(Util.Now.Subtract(start).TotalSeconds).ToInt();
             return count;
         }
 
@@ -92,6 +93,11 @@ namespace CmsData
                         select u;
                     break;
             }
+            return q;
+        }
+        public IEnumerable<int> QueryPeopleIds(string query)
+        {
+            var q = db.PeopleQuery2(query).Select(vv => vv.PeopleId);
             return q;
         }
 
@@ -230,6 +236,12 @@ namespace CmsData
             var q = db.PeopleQuery2(query).Select(vv => vv.PeopleId);
             var tag = db.PopulateTemporaryTag(q);
             return tag.Id;
+        }
+
+        public string GetWhereClause(string code)
+        {
+            var q = db.PeopleQuery2(code);
+            return db.GetWhereClause(q);
         }
 
         public class NameValuePair

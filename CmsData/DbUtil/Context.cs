@@ -564,7 +564,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
         {
             var tag = FetchOrCreateTag(tagname, Util.UserPeopleId ?? Util.UserId1, tagTypeId);
             TagPeople.DeleteAllOnSubmit(tag.PersonTags);
-            tag.Created = DateTime.Now;
+            tag.Created = Util.Now;
             SubmitChanges();
             TagAll(q, tag);
         }
@@ -692,7 +692,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                     Name = tagname.Replace('!', '*'),
                     PeopleId = ownerId,
                     TypeId = tagtypeid,
-                    Created = DateTime.Now
+                    Created = Util.Now
                 };
                 Tags.InsertOnSubmit(tag);
                 SubmitChanges();

@@ -161,7 +161,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Phone = Phone.Truncate(20),
                 OriginalId = OriginalId,
                 Financeonly = FinanceOnly,
-                TransactionDate = DateTime.Now,
+                TransactionDate = Util.Now,
                 PaymentType = Type,
                 LastFourCC = Type == PaymentType.CreditCard ? CreditCard.Last(4) : null,
                 LastFourACH = Type == PaymentType.Ach ? Account.Last(4) : null
@@ -388,7 +388,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Phone = t.Phone,
                 OriginalId = t.OriginalId ?? t.Id,
                 Financeonly = t.Financeonly,
-                TransactionDate = DateTime.Now,
+                TransactionDate = Util.Now,
                 PaymentType = t.PaymentType,
                 LastFourCC = t.LastFourCC,
                 LastFourACH = t.LastFourACH
@@ -579,7 +579,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             ti.Message = tinfo.Message;
             ti.AuthCode = tinfo.AuthCode;
-            ti.TransactionDate = DateTime.Now;
+            ti.TransactionDate = Util.Now;
 
             DbUtil.Db.SubmitChanges();
             return ti;

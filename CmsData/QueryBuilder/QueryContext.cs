@@ -29,8 +29,8 @@ namespace CmsData
                 {
                     QueryId = c.Id,
                     Owner = Util.UserName,
-                    Created = DateTime.Now,
-                    LastRun = DateTime.Now,
+                    Created = Util.Now,
+                    LastRun = Util.Now,
                     Name = Util.ScratchPad2,
                     Text = c.ToXml()
                 };
@@ -64,8 +64,8 @@ namespace CmsData
                 {
                     QueryId = c.Id,
                     Owner = STR_System,
-                    Created = DateTime.Now,
-                    LastRun = DateTime.Now,
+                    Created = Util.Now,
+                    LastRun = Util.Now,
                     Name = name,
                     Text = c.ToXml()
                 };
@@ -119,8 +119,8 @@ namespace CmsData
                 {
                     QueryId = c.Id,
                     Owner = Util.UserName,
-                    Created = DateTime.Now,
-                    LastRun = DateTime.Now,
+                    Created = Util.Now,
+                    LastRun = Util.Now,
                     Text = c.ToXml()
                 };
                 Queries.InsertOnSubmit(query);
@@ -145,8 +145,8 @@ namespace CmsData
                 {
                     QueryId = c.Id,
                     Owner = Util.UserName,
-                    Created = DateTime.Now,
-                    LastRun = DateTime.Now,
+                    Created = Util.Now,
+                    LastRun = Util.Now,
                     Name = Util.ScratchPad2,
                     Text = c.ToXml()
                 };
@@ -173,7 +173,7 @@ namespace CmsData
                      where existing.QueryId == existingId
                      select existing).First();
             i.RunCount = i.RunCount + 1;
-            i.LastRun = DateTime.Now;
+            i.LastRun = Util.Now;
             if (i.Name == Util.ScratchPad2)
                 return i.ToClause();
             var q = ScratchPadCondition().JustLoadedQuery;

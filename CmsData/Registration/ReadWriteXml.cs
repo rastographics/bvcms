@@ -156,7 +156,7 @@ namespace CmsData.Registration
         {
             var w = new APIWriter(writer);
             w.Attr("id", OrgId);
-            w.AddComment($"{Util.UserPeopleId} {DateTime.Now:g}");
+            w.AddComment($"{Util.UserPeopleId} {Util.Now:g}");
 
             w.StartPending("Confirmation")
                 .Add("Subject", Subject)
@@ -280,7 +280,7 @@ namespace CmsData.Registration
             var w = new APIWriter(writer);
             w.Start("Messages");
             w.Attr("id", OrgId);
-            w.AddComment($"{Util.UserPeopleId} {DateTime.Now:g}");
+            w.AddComment($"{Util.UserPeopleId} {Util.Now:g}");
 
             if(messages.Confirmation)
                 w.Start("Confirmation")

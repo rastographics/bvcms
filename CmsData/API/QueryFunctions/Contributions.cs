@@ -34,8 +34,8 @@ namespace CmsData
         public int ContributionCount(int days1, int days2, object funds)
         {
             var f = new Funds(funds);
-            var dt1 = DateTime.Now.AddDays(-days1);
-            var dt2 = DateTime.Now.AddDays(-days2);
+            var dt1 = Util.Now.AddDays(-days1);
+            var dt2 = Util.Now.AddDays(-days2);
             var typs = new[] { 6, 7 };
 
             var q = from c in db.Contributions
@@ -53,7 +53,7 @@ namespace CmsData
         public int ContributionCount(int days, object funds)
         {
             var f = new Funds(funds);
-            var dt = DateTime.Now.AddDays(-days);
+            var dt = Util.Now.AddDays(-days);
             var typs = new[] { 6, 7 };
             var q = from c in db.Contributions
                     where c.ContributionStatusId == ContributionStatusCode.Recorded
@@ -70,8 +70,8 @@ namespace CmsData
         {
             var f = new Funds(funds);
 
-            var dt1 = DateTime.Today.AddDays(-days1);
-            var dt2 = DateTime.Today.AddDays(-days2);
+            var dt1 = Util.Today.AddDays(-days1);
+            var dt2 = Util.Today.AddDays(-days2);
             var typs = new[] { 6, 7 };
             var q = from c in db.Contributions
                     where c.ContributionStatusId == ContributionStatusCode.Recorded
@@ -88,8 +88,8 @@ namespace CmsData
         }
         public string DateRangeForContributionTotals(int days1, int days2)
         {
-            var dt1 = DateTime.Today.AddDays(-days1);
-            var dt2 = DateTime.Today.AddDays(-days2);
+            var dt1 = Util.Today.AddDays(-days1);
+            var dt2 = Util.Today.AddDays(-days2);
             return $"from {dt1.ToShortDateString()} up to {dt2.ToShortDateString()}";
         }
     }

@@ -211,7 +211,7 @@ namespace CmsData
                          join c in codes0 on f.Flag equals c into j
                          from c in j
                          select c).ToList();
-            var now = DateTime.Now;
+            var now = Util.Now;
             var dt = now.AddDays(-Days).Date;
 
             Expression<Func<Person, bool>> pred = p => (

@@ -20,7 +20,7 @@ namespace CmsData
             if (!db.FromBatch)
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
-            var now = DateTime.Now;
+            var now = Util.Now;
             var dt = now.AddDays(-days);
             IQueryable<int> q = null;
             switch (op)
@@ -111,7 +111,7 @@ namespace CmsData
             if (!db.FromBatch)
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
-            var now = DateTime.Now;
+            var now = Util.Now;
             var dt = now.AddDays(-days);
             IQueryable<int> q = null;
             switch (op)
@@ -249,7 +249,7 @@ namespace CmsData
         }
         internal Expression RecentContributionAmountBothJoint()
         {
-            var now = DateTime.Now;
+            var now = Util.Now;
             var dt = now.AddDays(-Days);
             return ContributionAmountBothJoint(dt, now);
         }
@@ -319,7 +319,7 @@ namespace CmsData
         }
         internal Expression RecentPledgeAmountBothJoint()
         {
-            var now = DateTime.Now;
+            var now = Util.Now;
             var dt = now.AddDays(-Days);
             return PledgeAmountBothJoint(dt, now);
         }
@@ -408,7 +408,7 @@ namespace CmsData
 
             var fund = Quarters.ToInt();
             var cnt = TextValue.ToInt();
-            var now = DateTime.Now;
+            var now = Util.Now;
             var dt = now.AddDays(-Days);
             IQueryable<int> q = null;
             switch (op)
@@ -482,7 +482,7 @@ namespace CmsData
                     return AlwaysFalse();
             var fund = Quarters.ToInt();
             var amt = decimal.Parse(TextValue);
-            var now = DateTime.Now;
+            var now = Util.Now;
             var dt = now.AddDays(-Days);
             IQueryable<int> q = null;
             switch (op)
@@ -574,7 +574,7 @@ namespace CmsData
             if (!db.FromActiveRecords && !db.FromBatch)
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
-            var now = DateTime.Now;
+            var now = Util.Now;
             var dt = now.AddDays(-Days);
             Expression<Func<Person, bool>> pred = p =>
                 p.Contributions.Any(cc => 
@@ -609,7 +609,7 @@ namespace CmsData
             if (!db.FromActiveRecords && !db.FromBatch)
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
-            var now = DateTime.Now;
+            var now = Util.Now;
             var dt = now.AddDays(-Days);
             Expression<Func<Person, bool>> pred = p =>
                 (from f in db.ViewFailedRecurringGivings
@@ -625,7 +625,7 @@ namespace CmsData
             if (!db.FromBatch)
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
-            var now = DateTime.Now;
+            var now = Util.Now;
             var dt = now.AddDays(-Days);
             Expression<Func<Person, bool>> pred = p =>
             (
@@ -676,7 +676,7 @@ namespace CmsData
         {
             var tf = CodeIds == "1";
             var fundid = Quarters.ToInt2();
-            var td = DateTime.Now;
+            var td = Util.Now;
             var fd = td.AddDays(Days == 0 ? -365 : -Days);
             var q = db.FamilyGiver(fd, td, fundid).Where(vv => vv.FamGive == true);
             var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
@@ -692,7 +692,7 @@ namespace CmsData
         {
             var tf = CodeIds == "1";
             var fundid = Quarters.ToInt2();
-            var td = DateTime.Now;
+            var td = Util.Now;
             var fd = td.AddDays(Days == 0 ? -365 : -Days);
             var q = db.FamilyGiver(fd, td, fundid).Where(vv => vv.FamPledge == true);
             var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
@@ -734,7 +734,7 @@ namespace CmsData
                 return CompareConstant(parm, "PeopleId", CompareType.Equal, 0);
 
             var mindt = Util.Now.AddDays(-Days).Date;
-            var r = db.TopGivers(top, mindt, DateTime.Now).ToList();
+            var r = db.TopGivers(top, mindt, Util.Now).ToList();
             var topgivers = r.Select(g => g.PeopleId).ToList();
             Expression<Func<Person, bool>> pred = p =>
                 topgivers.Contains(p.PeopleId);
@@ -752,7 +752,7 @@ namespace CmsData
                 return CompareConstant(parm, "PeopleId", CompareType.Equal, 0);
 
             var mindt = Util.Now.AddDays(-Days).Date;
-            var r = db.TopPledgers(top, mindt, DateTime.Now).ToList();
+            var r = db.TopPledgers(top, mindt, Util.Now).ToList();
             var toppledgers = r.Select(g => g.PeopleId).ToList();
             Expression<Func<Person, bool>> pred = p =>
                 toppledgers.Contains(p.PeopleId);

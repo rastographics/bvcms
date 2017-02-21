@@ -1117,7 +1117,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             var e = PeopleExtras.FirstOrDefault(ee => ee.Field == field);
             if (e == null)
             {
-                e = new PeopleExtra { Field = field, PeopleId = PeopleId, TransactionTime = DateTime.Now };
+                e = new PeopleExtra { Field = field, PeopleId = PeopleId, TransactionTime = Util.Now };
                 this.PeopleExtras.Add(e);
             }
             e.StrValue = value;
@@ -1148,7 +1148,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 ev = new PeopleExtra
                 {
                     Field = field,
-                    TransactionTime = DateTime.Now
+                    TransactionTime = Util.Now
                 };
                 PeopleExtras.Add(ev);
             }
@@ -1177,7 +1177,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 return;
             var ev = GetExtraValue(field);
             ev.StrValue = value.Replace(',', '-');
-            ev.TransactionTime = DateTime.Now;
+            ev.TransactionTime = Util.Now;
         }
         public void AddEditExtraDate(string field, DateTime? value)
         {
@@ -1185,7 +1185,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 return;
             var ev = GetExtraValue(field);
             ev.DateValue = value;
-            ev.TransactionTime = DateTime.Now;
+            ev.TransactionTime = Util.Now;
         }
         public void AddEditExtraText(string field, string value, DateTime? dt = null)
         {
@@ -1193,7 +1193,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 return;
             var ev = GetExtraValue(field);
             ev.Data = value;
-            ev.TransactionTime = dt ?? DateTime.Now;
+            ev.TransactionTime = dt ?? Util.Now;
         }
         public void AddToExtraText(string field, string value)
         {
@@ -1204,13 +1204,13 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 ev.Data = value + "\n" + ev.Data;
             else
                 ev.Data = value;
-            ev.TransactionTime = DateTime.Now;
+            ev.TransactionTime = Util.Now;
         }
         public void AddEditExtraInt(string field, int value)
         {
             var ev = GetExtraValue(field);
             ev.IntValue = value;
-            ev.TransactionTime = DateTime.Now;
+            ev.TransactionTime = Util.Now;
         }
         public void AddEditExtraBool(string field, bool tf)
         {
@@ -1218,14 +1218,14 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 return;
             var ev = GetExtraValue(field);
             ev.BitValue = tf;
-            ev.TransactionTime = DateTime.Now;
+            ev.TransactionTime = Util.Now;
         }
         public void AddEditExtraInts(string field, int value, int value2)
         {
             var ev = GetExtraValue(field);
             ev.IntValue = value;
             ev.IntValue2 = value2;
-            ev.TransactionTime = DateTime.Now;
+            ev.TransactionTime = Util.Now;
         }
         public void AddEditExtraValue(string field, string code, DateTime? date, string text, bool? bit, int? intn, DateTime? dt = null)
         {
@@ -1236,7 +1236,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             ev.IntValue = intn;
             ev.BitValue = bit;
             ev.UseAllValues = true;
-            ev.TransactionTime = dt ?? DateTime.Now;
+            ev.TransactionTime = dt ?? Util.Now;
         }
         public static PeopleExtra GetExtraValue(CMSDataContext db, int id, string field)
         {
@@ -1251,7 +1251,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 {
                     PeopleId = id,
                     Field = field,
-                    TransactionTime = DateTime.Now
+                    TransactionTime = Util.Now
                 };
                 db.PeopleExtras.InsertOnSubmit(ev);
             }
@@ -1283,7 +1283,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 return;
             var ev = GetExtraValue(db, id, field);
             ev.StrValue = value;
-            ev.TransactionTime = DateTime.Now;
+            ev.TransactionTime = Util.Now;
         }
         public static void AddEditExtraData(CMSDataContext db, int id, string field, string value, DateTime? dt = null)
         {
@@ -1291,7 +1291,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 return;
             var ev = GetExtraValue(db, id, field);
             ev.Data = value;
-            ev.TransactionTime = dt ?? DateTime.Now;
+            ev.TransactionTime = dt ?? Util.Now;
         }
         public static void AddEditExtraDate(CMSDataContext db, int id, string field, DateTime? value)
         {
@@ -1299,7 +1299,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 return;
             var ev = GetExtraValue(db, id, field);
             ev.DateValue = value;
-            ev.TransactionTime = DateTime.Now;
+            ev.TransactionTime = Util.Now;
         }
         public static void AddEditExtraInt(CMSDataContext db, int id, string field, int? value)
         {
@@ -1307,7 +1307,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 return;
             var ev = GetExtraValue(db, id, field);
             ev.IntValue = value;
-            ev.TransactionTime = DateTime.Now;
+            ev.TransactionTime = Util.Now;
         }
         public static void AddEditExtraBool(CMSDataContext db, int id, string field, bool? value)
         {
@@ -1315,7 +1315,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 return;
             var ev = GetExtraValue(db, id, field);
             ev.BitValue = value;
-            ev.TransactionTime = DateTime.Now;
+            ev.TransactionTime = Util.Now;
         }
         public ManagedGiving ManagedGiving()
         {

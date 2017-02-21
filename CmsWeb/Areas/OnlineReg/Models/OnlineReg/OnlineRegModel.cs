@@ -111,7 +111,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public void HistoryAdd(string s)
         {
-            History.Add($"{s} {DateTime.Now:g} (c-ip={Util.GetIpAddress()})");
+            History.Add($"{s} {Util.Now:g} (c-ip={Util.GetIpAddress()})");
         }
     }
 }

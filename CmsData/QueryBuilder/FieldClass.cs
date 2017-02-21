@@ -147,7 +147,7 @@ namespace CmsData
                             select f;
                     fields = q.ToDictionary(f => f.Name, StringComparer.OrdinalIgnoreCase);
                     HttpRuntime.Cache.Insert("fields2", fields, null,
-                        DateTime.Now.AddMinutes(10), Cache.NoSlidingExpiration);
+                        Util.Now.AddMinutes(10), Cache.NoSlidingExpiration);
                 }
                 return fields;
             }

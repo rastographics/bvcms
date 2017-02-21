@@ -103,7 +103,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var reg = person.GetRecReg();
             var sb = new StringBuilder();
 
-            sb.AppendFormat("{0:g} ----------------\n", DateTime.Now);
+            sb.AppendFormat("{0:g} ----------------\n", Util.Now);
             if (om.AmountPaid > 0)
             {
                 var others = GetOthersInTransaction(transaction);
@@ -117,7 +117,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             var sbreg = new StringBuilder();
             sbreg.Append($"{org.OrganizationName}\n");
-            sbreg.AppendFormat("{0:g} ----------------\n", DateTime.Now);
+            sbreg.AppendFormat("{0:g} ----------------\n", Util.Now);
             if (om.AmountPaid > 0)
             {
                 sbreg.AppendFormat("{0:c} ({1} id) transaction amount\n", transaction.Amt, transaction.Id);
@@ -347,7 +347,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             var membertype = setting.AddAsProspect ? MemberTypeCode.Prospect : MemberTypeCode.Member;
             var om = OrganizationMember.InsertOrgMembers(DbUtil.Db, org.OrganizationId, person.PeopleId,
-                membertype, DateTime.Now, null, false);
+                membertype, Util.Now, null, false);
             if (om.TranId == null)
                 om.TranId = transaction.OriginalId;
             om.RegisterEmail = EmailAddress;

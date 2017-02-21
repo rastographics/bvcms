@@ -45,7 +45,7 @@ namespace CmsData
         internal Expression RecentCreated()
         {
             var tf = CodeIds == "1";
-            var dt = DateTime.Today.AddDays(-Days);
+            var dt = Util.Today.AddDays(-Days);
             Expression<Func<Person, bool>> pred = p => p.CreatedDate >= dt;
             Expression expr = Expression.Invoke(pred, parm);
             if (!(op == CompareType.Equal && tf))
@@ -140,7 +140,7 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                 (from cc in db.ViewChangeLogDetails
                  where cc.PeopleId == p.PeopleId || cc.FamilyId == p.FamilyId
-                 where cc.Created > DateTime.Now.AddDays(-Days)
+                 where cc.Created > Util.Now.AddDays(-Days)
                  where cc.Field.StartsWith(Quarters)
                  select cc
                 ).Any();

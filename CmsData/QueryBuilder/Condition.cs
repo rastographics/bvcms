@@ -543,7 +543,7 @@ namespace CmsData
             if (JustLoadedQuery == null)
                 return;
             JustLoadedQuery.RunCount++;
-            JustLoadedQuery.LastRun = DateTime.Now;
+            JustLoadedQuery.LastRun = Util.Now;
         }
 
         public Condition AddNewGroupClause()
