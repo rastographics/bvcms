@@ -238,6 +238,13 @@ namespace CmsData
             return tag.Id;
         }
 
+        public int TagSqlPeopleIds(string sql)
+        {
+            var q = db.Connection.Query<int>(sql);
+            var tag = db.PopulateTempTag(q);
+            return tag.Id;
+        }
+
         public string GetWhereClause(string code)
         {
             var q = db.PeopleQuery2(code);

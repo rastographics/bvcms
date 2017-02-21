@@ -550,8 +550,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
         }
         public Tag PopulateTempTag(IEnumerable<int> a)
         {
-            var tag = FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? Util.UserId1, NextTagId);
-            ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
+            var tag = NewTemporaryTag();
             var list = string.Join(",", a);
             PopulateTempTag(tag.Id, list);
             return tag;

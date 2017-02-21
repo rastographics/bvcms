@@ -181,8 +181,9 @@ namespace CmsWeb.Controllers
         [Authorize(Roles = "Developer")]
         public ActionResult TestScript()
         {
-            var text = System.IO.File.ReadAllText(Server.MapPath("ttt.py"));
-            return Content(PythonModel.RunScript(Util.Host, text));
+            var text = System.IO.File.ReadAllText(Server.MapPath("test.py"));
+            ViewBag.Text = PythonModel.RunScript(Util.Host, text);
+            return View("Test");
         }
 
         [HttpPost, Route("~/TestScript")]
