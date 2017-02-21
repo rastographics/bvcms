@@ -585,7 +585,7 @@ namespace CmsData
             var draft = match.Groups["draft"].Value;
 
             var c = db.ContentOfTypeSavedDraft(draft);
-            return c?.Body ?? "Draft could not gbe found";
+            return c?.Body ?? "Draft could not be found";
         }
 
         const string OrgExtraRe = @"\{orgextra:(?<field>[^\]]*)\}";
