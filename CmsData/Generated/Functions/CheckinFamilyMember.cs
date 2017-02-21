@@ -28,6 +28,8 @@ namespace CmsData.View
 		
 		private string _PreferredName;
 		
+		private string _AltName;
+		
 		private string _Last;
 		
 		private int? _BYear;
@@ -152,7 +154,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Name", Storage="_Name", DbType="varchar(150)")]
+		[Column(Name="Name", Storage="_Name", DbType="nvarchar(150)")]
 		public string Name
 		{
 			get
@@ -169,7 +171,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="First", Storage="_First", DbType="varchar(50)")]
+		[Column(Name="First", Storage="_First", DbType="nvarchar(50)")]
 		public string First
 		{
 			get
@@ -186,7 +188,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="PreferredName", Storage="_PreferredName", DbType="varchar(50)")]
+		[Column(Name="PreferredName", Storage="_PreferredName", DbType="nvarchar(50)")]
 		public string PreferredName
 		{
 			get
@@ -203,7 +205,24 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Last", Storage="_Last", DbType="varchar(100)")]
+		[Column(Name="AltName", Storage="_AltName", DbType="nvarchar(50)")]
+		public string AltName
+		{
+			get
+			{
+				return this._AltName;
+			}
+
+			set
+			{
+				if (this._AltName != value)
+					this._AltName = value;
+			}
+
+		}
+
+		
+		[Column(Name="Last", Storage="_Last", DbType="nvarchar(100)")]
 		public string Last
 		{
 			get
@@ -271,7 +290,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Class", Storage="_ClassX", DbType="varchar(100)")]
+		[Column(Name="Class", Storage="_ClassX", DbType="nvarchar(100)")]
 		public string ClassX
 		{
 			get
@@ -288,7 +307,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Leader", Storage="_Leader", DbType="varchar(100)")]
+		[Column(Name="Leader", Storage="_Leader", DbType="nvarchar(100)")]
 		public string Leader
 		{
 			get
@@ -322,7 +341,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Location", Storage="_Location", DbType="varchar(200)")]
+		[Column(Name="Location", Storage="_Location", DbType="nvarchar(200)")]
 		public string Location
 		{
 			get
@@ -356,7 +375,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Gender", Storage="_Gender", DbType="varchar(10)")]
+		[Column(Name="Gender", Storage="_Gender", DbType="nvarchar(10)")]
 		public string Gender
 		{
 			get
@@ -424,7 +443,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="goesby", Storage="_Goesby", DbType="varchar(50)")]
+		[Column(Name="goesby", Storage="_Goesby", DbType="nvarchar(50)")]
 		public string Goesby
 		{
 			get
@@ -441,7 +460,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="email", Storage="_Email", DbType="varchar(150)")]
+		[Column(Name="email", Storage="_Email", DbType="nvarchar(150)")]
 		public string Email
 		{
 			get
@@ -458,7 +477,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="addr", Storage="_Addr", DbType="varchar(100)")]
+		[Column(Name="addr", Storage="_Addr", DbType="nvarchar(100)")]
 		public string Addr
 		{
 			get
@@ -475,7 +494,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="zip", Storage="_Zip", DbType="varchar(15)")]
+		[Column(Name="zip", Storage="_Zip", DbType="nvarchar(15)")]
 		public string Zip
 		{
 			get
@@ -492,7 +511,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="home", Storage="_Home", DbType="varchar(20)")]
+		[Column(Name="home", Storage="_Home", DbType="nvarchar(20)")]
 		public string Home
 		{
 			get
@@ -509,7 +528,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="cell", Storage="_Cell", DbType="varchar(20)")]
+		[Column(Name="cell", Storage="_Cell", DbType="nvarchar(20)")]
 		public string Cell
 		{
 			get
@@ -577,7 +596,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="allergies", Storage="_Allergies", DbType="varchar(1000)")]
+		[Column(Name="allergies", Storage="_Allergies", DbType="nvarchar(1000)")]
 		public string Allergies
 		{
 			get
@@ -594,7 +613,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="emfriend", Storage="_Emfriend", DbType="varchar(100)")]
+		[Column(Name="emfriend", Storage="_Emfriend", DbType="nvarchar(100)")]
 		public string Emfriend
 		{
 			get
@@ -611,7 +630,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="emphone", Storage="_Emphone", DbType="varchar(100)")]
+		[Column(Name="emphone", Storage="_Emphone", DbType="nvarchar(100)")]
 		public string Emphone
 		{
 			get
@@ -645,7 +664,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="parent", Storage="_Parent", DbType="varchar(100)")]
+		[Column(Name="parent", Storage="_Parent", DbType="nvarchar(100)")]
 		public string Parent
 		{
 			get
@@ -747,7 +766,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="church", Storage="_Church", DbType="varchar(130)")]
+		[Column(Name="church", Storage="_Church", DbType="nvarchar(130)")]
 		public string Church
 		{
 			get
