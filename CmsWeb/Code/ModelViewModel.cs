@@ -128,7 +128,7 @@ namespace CmsWeb.Code
                 if (m == null)
                     continue;
 
-                if (vm.HasAttribute<PhoneAttribute>())
+                if (vm.HasAttribute<PhoneNumberAttribute>() || vm.HasAttribute<PhoneAttribute>())
                 {
                     var ph = ((string)viewmodelvalue).GetDigits();
                     if (track)

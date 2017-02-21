@@ -17,7 +17,6 @@ namespace UtilityExtensions
 {
     public static partial class Util
     {
-        private const string STR_NOWOFFSET = "NOWOFFSET";
         public const int SignalNoYear = 1897;
         private static DateTime? GoodDate(DateTime? dt)
         {
@@ -61,12 +60,35 @@ namespace UtilityExtensions
                 age--;
             return age;
         }
+        private const string StrDateSimulation = "DateSimulation";
+        public static bool DateSimulation
+        {
+            get
+            {
+                bool? sim = false;
+                if (HttpContext.Current != null)
+                {
+                    if (HttpContext.Current != null)
+                        if (HttpContext.Current.Items[StrDateSimulation] != null)
+                            sim = (bool)HttpContext.Current.Items[StrDateSimulation];
+                }
+                return sim ?? false;
+            }
+            set
+            {
+                if (HttpContext.Current == null)
+                    return;
+                HttpContext.Current.Items[StrDateSimulation] = value;
+            }
+        }
         private const string StrToday = "StrToday";
         public static DateTime Now
         {
             get
             {
                 var now = DateTime.Now;
+                if (!DateSimulation)
+                    return now;
                 if (HttpContext.Current == null)
                     return now;
                 if (HttpContext.Current.Session[StrToday] != null)
@@ -79,6 +101,8 @@ namespace UtilityExtensions
             get
             {
                 var now = DateTime.Today;
+                if (!DateSimulation)
+                    return now;
                 if (HttpContext.Current == null)
                     return now;
                 if (HttpContext.Current.Session[StrToday] != null)

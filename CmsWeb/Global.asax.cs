@@ -103,6 +103,7 @@ namespace CmsWeb
             try
             {
                 Util.AdminMail = DbUtil.Db.Setting("AdminMail", "");
+                Util.DateSimulation = DbUtil.Db.Setting("UseDateSimulation");
             }
             catch (SqlException)
             {
