@@ -26,8 +26,10 @@ namespace CmsWeb.Areas.Main.Models
         public string Body { get; set; }
         public DateTime? Schedule { get; set; }
         public bool PublicViewable { get; set; }
-        public IEnumerable<string> Recipients { get; set; }
+        public List<string> Recipients { get; set; }
+        public List<int> RecipientIds { get; set; }
         public IEnumerable<int> AdditionalRecipients { get; set; }
+        public bool OnlyProspects { get; set; }
 
         public List<MailAddress> CcAddresses = new List<MailAddress>();
         public bool recovery;

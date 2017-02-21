@@ -61,6 +61,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
             var me = new MassEmailer(id, parents, ccparents, nodups);
             me.Host = Util.Host;
+            me.OnlyProspects = onlyProspects.GetValueOrDefault();
 
             // Unless UX-AllowMyDataUserEmails is true, CmsController.OnActionExecuting() will filter them
             if (!User.IsInRole("Access"))
@@ -79,7 +80,7 @@ namespace CmsWeb.Areas.Main.Controllers
             else if (orgid.HasValue)
             {
                 var org = DbUtil.Db.LoadOrganizationById(orgid.Value);
-                me.Recipients = GetRecipientsFromOrg(orgid.Value, onlyProspects, membersAndProspects);
+                GetRecipientsFromOrg(me, orgid.Value, onlyProspects, membersAndProspects);
                 me.Count = me.Recipients.Count();
                 ViewBag.ToName = org?.OrganizationName;
             }
@@ -100,18 +101,28 @@ namespace CmsWeb.Areas.Main.Controllers
             return View("Index", me);
         }
 
-        private static IEnumerable<string> GetRecipientsFromOrg(int orgId, bool? onlyProspects, bool? membersAndProspects)
+        private static void GetRecipientsFromOrg(MassEmailer me, int orgId, bool? onlyProspects, bool? membersAndProspects)
         {
-            var members = DbUtil.Db.OrgPeopleCurrent(orgId).Select(x => DbUtil.Db.LoadPersonById(x.PeopleId).ToString());
-            var prospects = DbUtil.Db.OrgPeopleProspects(orgId, false).Select(x => DbUtil.Db.LoadPersonById(x.PeopleId).ToString());
+            var members = DbUtil.Db.OrgPeopleCurrent(orgId).Select(x => DbUtil.Db.LoadPersonById(x.PeopleId));
+            var prospects = DbUtil.Db.OrgPeopleProspects(orgId, false).Select(x => DbUtil.Db.LoadPersonById(x.PeopleId));
+
+            me.Recipients = new List<string>();
+            me.RecipientIds = new List<int>();
+
+            var recipients = new List<Person>();
 
             if (onlyProspects.GetValueOrDefault())
-                return prospects;
+                recipients = prospects.ToList();
+            else if (membersAndProspects.GetValueOrDefault())
+                recipients = members.Union(prospects).ToList();
+            else
+                recipients = members.ToList();
 
-            if (membersAndProspects.GetValueOrDefault())
-                return members.Union(prospects);
-
-            return members;
+            foreach (var r in recipients)
+            {
+                me.Recipients.Add(r.ToString());
+                me.RecipientIds.Add(r.PeopleId);
+            }
         }
 
         public ActionResult EmailBody(string id)
@@ -265,6 +276,29 @@ namespace CmsWeb.Areas.Main.Controllers
                     DbUtil.Db.SubmitChanges();
                 }
 
+                if (m.RecipientIds != null)
+                {
+                    foreach (var pid in m.RecipientIds)
+                    {
+                        // Protect against duplicate PeopleIDs ending up in the queue
+                        var q3 = from eqt in DbUtil.Db.EmailQueueTos
+                                 where eqt.EmailQueue == eq
+                                 where eqt.PeopleId == pid
+                                 select eqt;
+                        if (q3.Any())
+                        {
+                            continue;
+                        }
+                        eq.EmailQueueTos.Add(new EmailQueueTo
+                        {
+                            PeopleId = pid,
+                            OrgId = eq.SendFromOrgId,
+                            Guid = Guid.NewGuid(),
+                        });
+                    }
+                    DbUtil.Db.SubmitChanges();
+                }
+
                 if (eq.SendWhen.HasValue)
                     return Json(new { id = 0, content = "Emails queued to be sent." });
             }
@@ -289,6 +323,8 @@ namespace CmsWeb.Areas.Main.Controllers
                 return Json(new { error = ex.Message });
             }
 
+            var onlyProspects = m.OnlyProspects;
+
             HostingEnvironment.QueueBackgroundWorkItem(ct =>
             {
                 try
@@ -301,7 +337,7 @@ namespace CmsWeb.Areas.Main.Controllers
                     Util.UserEmail = userEmail;
                     Util.IsInRoleEmailTest = isInRoleEmailTest;
                     Util.IsMyDataUser = isMyDataUser;
-                    db.SendPeopleEmail(id);
+                    db.SendPeopleEmail(id, onlyProspects);
                 }
                 catch (Exception ex)
                 {

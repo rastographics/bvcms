@@ -495,7 +495,7 @@ namespace CmsData
             return aa;
         }
 
-        public void SendPeopleEmail(int queueid)
+        public void SendPeopleEmail(int queueid, bool onlyProspects = false)
         {
             var emailqueue = EmailQueues.Single(ee => ee.Id == queueid);
             var from = Util.FirstAddress(emailqueue.FromAddr, emailqueue.FromName);
@@ -517,30 +517,33 @@ namespace CmsData
 
             if (emailqueue.SendFromOrgId.HasValue)
             {
-                var q2 = from om in OrganizationMembers
-                         where om.OrganizationId == emailqueue.SendFromOrgId
-                         where om.MemberTypeId != MemberTypeCode.InActive
-                         where om.MemberTypeId != MemberTypeCode.Prospect
-                         where (om.Pending ?? false) == false
-                         let p = om.Person
-                         where p.EmailAddress != null
-                         where p.EmailAddress != ""
-                         where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
-                         where p.EmailOptOuts.All(oo => oo.FromEmail != emailqueue.FromAddr)
-                         select om.PeopleId;
-                foreach (var pid in q2)
+                if (!onlyProspects)
                 {
-                    // Protect against duplicate PeopleIDs ending up in the queue
-                    if (emailqueue.EmailQueueTos.Any(pp => pp.PeopleId == pid))
-                        continue;
-                    emailqueue.EmailQueueTos.Add(new EmailQueueTo
+                    var q2 = from om in OrganizationMembers
+                             where om.OrganizationId == emailqueue.SendFromOrgId
+                             where om.MemberTypeId != MemberTypeCode.InActive
+                             where om.MemberTypeId != MemberTypeCode.Prospect
+                             where (om.Pending ?? false) == false
+                             let p = om.Person
+                             where p.EmailAddress != null
+                             where p.EmailAddress != ""
+                             where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
+                             where p.EmailOptOuts.All(oo => oo.FromEmail != emailqueue.FromAddr)
+                             select om.PeopleId;
+                    foreach (var pid in q2)
                     {
-                        PeopleId = pid,
-                        OrgId = emailqueue.SendFromOrgId,
-                        Guid = Guid.NewGuid(),
-                    });
+                        // Protect against duplicate PeopleIDs ending up in the queue
+                        if (emailqueue.EmailQueueTos.Any(pp => pp.PeopleId == pid))
+                            continue;
+                        emailqueue.EmailQueueTos.Add(new EmailQueueTo
+                        {
+                            PeopleId = pid,
+                            OrgId = emailqueue.SendFromOrgId,
+                            Guid = Guid.NewGuid(),
+                        });
+                    }
+                    SubmitChanges();
                 }
-                SubmitChanges();
             }
 
             var q = from to in EmailQueueTos
