@@ -14,7 +14,9 @@ using System.Data.Linq.Mapping;
 using System.Data.Linq;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Text;
 using CmsData.Codes;
@@ -1685,6 +1687,17 @@ This search uses multiple steps which cannot be duplicated in a single query.
         {
             var result = ExecuteMethodCall(this, (MethodInfo)MethodBase.GetCurrentMethod());
             return (int) (result?.ReturnValue ?? 0);
+        }
+        public DbConnection ReadonlyConnection()
+        {
+            var pw = ConfigurationManager.AppSettings["readonlypassword"];
+            if (!pw.HasValue())
+                return Connection;
+            var cb = new SqlConnectionStringBuilder(ConnectionString) {IntegratedSecurity = false};
+            var finance = CurrentUser?.InRole("Finance") ?? true; 
+            cb.UserID = (finance ? $"ro-{cb.InitialCatalog}-finance" : $"ro-{cb.InitialCatalog}");
+            cb.Password = pw;
+            return new SqlConnection(cb.ConnectionString);
         }
     }
 }

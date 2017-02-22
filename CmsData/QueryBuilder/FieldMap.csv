@@ -221,6 +221,7 @@ OriginId,NullCode,,Origins,,Miscellaneous,Record Origin,,Select Record Origin fr
 InterestPointId,NullCode,,InterestPoints,,Miscellaneous,Interest Point,,Select Interest Point from the list.
 MemberAnyChurch,NullBit,,,,Miscellaneous,Member of Any Church,,Specify True or False for those with this box checked on their Growth tab.
 SavedQuery,Bit,,,,Miscellaneous,Saved Searches,SavedQueryIdDesc,Select a Saved Search from the list and specify True or False.
+InSqlList,Bit,,,Sql Script,Miscellaneous,In Sql List,Quarters,Specify the name of a Sql script file to get PeopleIds from
 RecActiveOtherChurch,Bit,,,,Miscellaneous,Reg Other Church,,Specify True or False for those who indicated during an online registration that they attend another church.
 RecInterestedCoaching,Bit,,,,Miscellaneous,Reg Interested Coaching,,Specify True or False for those who indicated during an online registration that they (or their parents) are interested in coaching.
 InOneOfMyOrgs,Bit,,,,Miscellaneous,In one of my organizations,,Specify True or False for those enrolled in organizations in which you are enrolled.

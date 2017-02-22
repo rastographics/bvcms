@@ -10,6 +10,7 @@ using System.Data.Linq.SqlClient;
 using System.Data.SqlTypes;
 using System.Linq;
 using System.Linq.Expressions;
+using Dapper;
 using UtilityExtensions;
 
 namespace CmsData
@@ -22,18 +23,20 @@ namespace CmsData
             var q = db.ViewStatusFlagLists.ToList();
             if (!db.FromBatch)
                 q = (from f in q
-                     where f.RoleName == null || db.CurrentRoles().Contains(f.RoleName)
-                     select f).ToList();
+                    where f.RoleName == null || db.CurrentRoles().Contains(f.RoleName)
+                    select f).ToList();
             var codes = (from f in q
-                         join c in codes0 on f.Flag equals c into j
-                         from c in j
-                         select c).ToList();
-            Expression<Func<Person, bool>> pred = p => p.Tags.Any(tt => codes.Contains(tt.Tag.Name) && tt.Tag.TypeId == DbUtil.TagTypeId_StatusFlags);
+                join c in codes0 on f.Flag equals c into j
+                from c in j
+                select c).ToList();
+            Expression<Func<Person, bool>> pred =
+                p => p.Tags.Any(tt => codes.Contains(tt.Tag.Name) && tt.Tag.TypeId == DbUtil.TagTypeId_StatusFlags);
             Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
                 expr = Expression.Not(expr);
             return expr;
         }
+
         internal Expression HasCurrentTag()
         {
             var tf = CodeIds == "1";
@@ -44,17 +47,19 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+
         internal Expression HasMyTag()
         {
             var tf = CodeIds == "1";
             var a = (Tags ?? "").Split(';').Select(s => s.Split(',')[0].ToInt()).ToArray();
             Expression<Func<Person, bool>> pred = p =>
-                p.Tags.Any(t => a.Contains(t.Id));
+                    p.Tags.Any(t => a.Contains(t.Id));
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
             return expr;
         }
+
         internal Expression HasMemberDocs()
         {
             var tf = CodeIds == "1";
@@ -65,17 +70,36 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+
         internal Expression SavedQuery2()
         {
             var tf = CodeIds == "1";
             var a = SavedQuery.Split(":".ToCharArray(), 2);
-            Guid QueryId;
-            Guid.TryParse(a[0], out QueryId);
-            var q2 = db.PeopleQuery(QueryId);
+            Guid queryId;
+            Guid.TryParse(a[0], out queryId);
+            var q2 = db.PeopleQuery(queryId);
             if (q2 == null)
                 return AlwaysFalse();
             var tag = db.PopulateTemporaryTag(q2.Select(pp => pp.PeopleId));
 
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            Expression expr = Expression.Invoke(pred, parm);
+            if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
+            return expr;
+        }
+
+        internal Expression InSqlList()
+        {
+            var tf = CodeIds == "1";
+            var s = Quarters;
+            var sql = db.ContentOfTypeSql(s);
+            if (!sql.HasValue())
+                return AlwaysFalse();
+
+            var cn = db.ReadonlyConnection();
+            var list = cn.Query<int>(sql);
+            var tag = db.PopulateTempTag(list);
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
             if (!(op == CompareType.Equal && tf))

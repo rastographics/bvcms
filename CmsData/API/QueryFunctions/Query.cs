@@ -100,7 +100,17 @@ namespace CmsData
             var q = db.PeopleQuery2(query).Select(vv => vv.PeopleId);
             return q;
         }
+        public IEnumerable<int> QuerySqlPeopleIds(string query)
+        {
+            var cn = GetReadonlyConnection();
+            return cn.Query<int>(query);
+        }
 
+        public int QuerySqlInt(string sql)
+        {
+            var cn = GetReadonlyConnection();
+            return cn.ExecuteScalar<int>(sql);
+        }
         public dynamic QuerySqlTop1(string sql)
         {
             return QuerySqlTop1(sql, null);

@@ -34,14 +34,7 @@ namespace CmsData
 
         private DbConnection GetReadonlyConnection()
         {
-            var pw = ConfigurationManager.AppSettings["readonlypassword"];
-            if (!pw.HasValue())
-                return db.Connection;
-            var cb = new SqlConnectionStringBuilder(db.ConnectionString) {IntegratedSecurity = false};
-            var finance = db.CurrentUser?.InRole("Finance") ?? true; 
-            cb.UserID = (finance ? $"ro-{cb.InitialCatalog}-finance" : $"ro-{cb.InitialCatalog}");
-            cb.Password = pw;
-            return new SqlConnection(cb.ConnectionString);
+            return db.ReadonlyConnection();
         }
     }
 }

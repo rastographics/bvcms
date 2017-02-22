@@ -120,6 +120,7 @@ namespace CmsData
         InactiveCurrentOrg,
         InCurrentOrg,
         InOneOfMyOrgs,
+        InSqlList,
         IsCurrentPerson,
         IsCurrentUser,
         IsFamilyGiver,

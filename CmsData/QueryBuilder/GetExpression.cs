@@ -98,6 +98,7 @@ namespace CmsData
                 { QueryType.InBFClass, InBFClass },
                 { QueryType.InCurrentOrg, InCurrentOrg },
                 { QueryType.InOneOfMyOrgs, InOneOfMyOrgs },
+                { QueryType.InSqlList, InSqlList },
                 { QueryType.IsCurrentPerson, IsCurrentPerson },
                 { QueryType.IsCurrentUser, IsCurrentUser },
                 { QueryType.IsFamilyGiver, IsFamilyGiver },
