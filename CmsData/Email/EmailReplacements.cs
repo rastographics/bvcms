@@ -457,6 +457,9 @@ namespace CmsData
                     if (code.StartsWith("{addsmallgroup:", StringComparison.OrdinalIgnoreCase))
                         return AddSmallGroup(code, emailqueueto);
 
+                    if (code.StartsWith("{first|", StringComparison.OrdinalIgnoreCase))
+                        return FirstOrSubstitute(code, p, emailqueueto);
+
                     if (code.StartsWith("{extra", StringComparison.OrdinalIgnoreCase))
                         return ExtraValue(code, emailqueueto);
 
@@ -552,6 +555,20 @@ namespace CmsData
                     oi = orgcount[oid.Value];
             }
             return oi ?? new OrgInfo();
+        }
+
+        const string FirstOrSubstituteRe = @"\{first\|(?<sub>[^}]*)\}";
+        readonly Regex firstOrSubstituteRe = new Regex(FirstOrSubstituteRe, RegexOptions.Singleline);
+
+        private string FirstOrSubstitute(string code, Person p, EmailQueueTo emailqueueto)
+        {
+            var match = firstOrSubstituteRe.Match(code);
+            if (!match.Success || !emailqueueto.OrgId.HasValue)
+                return code;
+
+            var sub = match.Groups["sub"].Value;
+            return !p.PreferredName.HasValue() || p.PreferredName.Contains("?") || p.PreferredName.Contains("unknown", true) 
+                ? sub : p.PreferredName;
         }
 
         const string AddSmallGroupRe = @"\{addsmallgroup:\[(?<group>[^\]]*)\]\}";
