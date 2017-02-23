@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using System.Web;
 using MarkdownDeep;
+using RestSharp.Extensions;
 using UtilityExtensions;
 
 namespace CmsData
@@ -89,6 +90,11 @@ namespace CmsData
                 return "";
             var md = new Markdown();
             return md.Transform(text.Trim());
+        }
+
+        public string UrlEncode(string s)
+        {
+            return HttpUtility.UrlEncode(s);
         }
     }
 }

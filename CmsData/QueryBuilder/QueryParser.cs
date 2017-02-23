@@ -380,6 +380,7 @@ namespace CmsData
                 case "AttendCreditId":
                 case "DaysInPeriod":
                 case "MeetsOnDay0Sun":
+                case "SqlScript":
                     name = "Quarters";
                     break;
             }

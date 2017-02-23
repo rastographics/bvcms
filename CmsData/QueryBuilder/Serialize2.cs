@@ -222,11 +222,11 @@ namespace CmsData
                 return ex.Message;
             }
         }
-        public static Condition Parse(string s)
+        public static Condition Parse(string s, Guid? id = null)
         {
             var p = new Condition
             {
-                Id = Guid.NewGuid(),
+                Id = id ?? Guid.NewGuid(),
                 ConditionName = "Group",
                 AllConditions = new Dictionary<Guid, Condition>()
             };

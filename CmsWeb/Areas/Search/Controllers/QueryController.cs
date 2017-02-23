@@ -49,6 +49,17 @@ namespace CmsWeb.Areas.Search.Controllers
             var m = new QueryModel(id);
             return ViewQuery(m);
         }
+        [HttpGet, Route("~/QueryCode")]
+        public ActionResult QueryCode(string code)
+        {
+            ViewBag.Title = "QueryBuilder";
+            var qb = DbUtil.Db.ScratchPadCondition();
+            qb.Reset();
+            var c = Condition.Parse(code, qb.Id);
+            c.Save(DbUtil.Db);
+            var m = new QueryModel(c.Id);
+            return ViewQuery(m);
+        }
 
         private ActionResult ViewQuery(QueryModel m)
         {
