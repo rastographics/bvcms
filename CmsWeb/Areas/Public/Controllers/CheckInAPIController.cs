@@ -1,7 +1,6 @@
 ﻿using CmsData;
 using CmsData.Codes;
 using CmsWeb.CheckInAPI;
-using CmsWeb.MobileAPI;
 using CmsWeb.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -11,7 +10,10 @@ using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using System.Xml;
+using CmsData.View;
+using ImageData;
 using UtilityExtensions;
+using DbUtil = CmsData.DbUtil;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
@@ -19,22 +21,23 @@ namespace CmsWeb.Areas.Public.Controllers
     {
         public ActionResult Exists()
         {
-            return Content("1");
+            return Content( "1" );
         }
 
         private static bool Auth()
         {
-            return AccountModel.AuthenticateMobile("Checkin").IsValid;
+            return AccountModel.AuthenticateMobile( "Checkin" ).IsValid;
         }
 
-        public ActionResult Authenticate(string data)
+        public ActionResult Authenticate( string data )
         {
-            if (!Auth())
-                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+            if( !Auth() )
+                return CheckInMessage.createErrorReturn( "Authentication failed, please try again", CheckInMessage.API_ERROR_INVALID_CREDENTIALS );
 
-            var br = new BaseMessage();
-            br.error = 0;
-            br.data = JsonConvert.SerializeObject(new CheckInInformation(getSettings(), getCampuses(), getLabelFormats()));
+            CheckInMessage br = new CheckInMessage();
+            br.setNoError();
+            br.data = JsonConvert.SerializeObject( new CheckInInformation( getSettings(), getCampuses(), getLabelFormats() ) );
+
             return br;
         }
 
@@ -51,7 +54,7 @@ namespace CmsWeb.Areas.Public.Controllers
         private List<CheckInCampus> getCampuses()
         {
             return (from c in DbUtil.Db.Campus
-                    where c.Organizations.Any(o => o.CanSelfCheckin == true)
+                    where c.Organizations.Any( o => o.CanSelfCheckin == true )
                     orderby c.Id
                     select new CheckInCampus
                     {
@@ -62,16 +65,15 @@ namespace CmsWeb.Areas.Public.Controllers
 
         private List<CheckInLabelFormat> getLabelFormats()
         {
-            var labels = (from e in DbUtil.Db.LabelFormats
-                          select new CheckInLabelFormat
-                          {
-                              name = e.Name,
-                              size = e.Size,
-                              format = e.Format,
-                          }).ToList();
+            List<CheckInLabelFormat> labels = (from e in DbUtil.Db.LabelFormats
+                                               select new CheckInLabelFormat
+                                               {
+                                                   name = e.Name,
+                                                   size = e.Size,
+                                                   format = e.Format,
+                                               }).ToList();
 
-            foreach (var label in labels)
-            {
+            foreach( CheckInLabelFormat label in labels ) {
                 label.parse();
             }
 
@@ -79,121 +81,118 @@ namespace CmsWeb.Areas.Public.Controllers
         }
 
         [HttpPost]
-        public ActionResult NumberSearch(string data)
+        public ActionResult NumberSearch( string data )
         {
-            if (!Auth())
-                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+            if( !Auth() )
+                return CheckInMessage.createErrorReturn( "Authentication failed, please try again", CheckInMessage.API_ERROR_INVALID_CREDENTIALS );
 
-            BaseMessage dataIn = BaseMessage.createFromString(data);
-            CheckInNumberSearch cns = JsonConvert.DeserializeObject<CheckInNumberSearch>(dataIn.data);
+            CheckInMessage dataIn = CheckInMessage.createFromString( data );
+            CheckInNumberSearch cns = JsonConvert.DeserializeObject<CheckInNumberSearch>( dataIn.data );
 
-            DbUtil.LogActivity("Check-In Number Search: " + cns.search);
+            DbUtil.LogActivity( "Check-In Number Search: " + cns.search );
 
-            var matches = DbUtil.Db.CheckinMatch(cns.search).ToList();
+            List<CheckinMatch> matches = DbUtil.Db.CheckinMatch( cns.search ).ToList();
 
-            BaseMessage br = new BaseMessage();
+            CheckInMessage br = new CheckInMessage();
             br.setNoError();
 
-            int tzOffset = DbUtil.Db.Setting("TZOffset", "0").ToInt();
+            int tzOffset = DbUtil.Db.Setting( "TZOffset", "0" ).ToInt();
 
             List<CheckInFamily> families = new List<CheckInFamily>();
 
-            if (matches.Count > 0)
-            {
-                foreach (var match in matches)
-                {
-                    CheckInFamily family = new CheckInFamily(match.Familyid.Value, match.Name, match.Locked ?? false);
+            if( matches.Count > 0 ) {
+                foreach( CheckinMatch match in matches ) {
+                    if( match.Familyid != null ) {
+                        CheckInFamily family = new CheckInFamily( match.Familyid.Value, match.Name, match.Locked ?? false );
 
-                    var members = (from a in DbUtil.Db.CheckinFamilyMembers(match.Familyid, cns.campus, cns.day).ToList()
-                                   orderby a.Position, a.Position == 10 ? a.Genderid : 10, a.Age descending, a.Hour
-                                   select a).ToList();
+                        List<CheckinFamilyMember> members = (from a in DbUtil.Db.CheckinFamilyMembers( match.Familyid, cns.campus, cns.day ).ToList()
+                                                             orderby a.Position, a.Position == 10 ? a.Genderid : 10, a.Age descending, a.Hour
+                                                             select a).ToList();
 
-                    foreach (var member in members)
-                    {
-                        family.addMember(member, cns.day, tzOffset);
+                        foreach( CheckinFamilyMember member in members ) {
+                            family.addMember( member, cns.day, tzOffset );
+                        }
+
+                        families.Add( family );
+
+                        br.count++;
                     }
-
-                    families.Add(family);
-                    br.count++;
                 }
 
-                br.data = SerializeJSON(families, dataIn.version);
+                br.data = SerializeJSON( families, dataIn.version );
             }
 
             return br;
         }
 
         [HttpPost]
-        public ActionResult Family(string data)
+        public ActionResult Family( string data )
         {
-            if (!Auth())
-                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+            if( !Auth() )
+                return CheckInMessage.createErrorReturn( "Authentication failed, please try again", CheckInMessage.API_ERROR_INVALID_CREDENTIALS );
 
-            BaseMessage dataIn = BaseMessage.createFromString(data);
-            CheckInFamilySearch cfs = JsonConvert.DeserializeObject<CheckInFamilySearch>(dataIn.data);
+            CheckInMessage dataIn = CheckInMessage.createFromString( data );
+            CheckInFamilySearch cfs = JsonConvert.DeserializeObject<CheckInFamilySearch>( dataIn.data );
 
-            DbUtil.LogActivity("Check-In Family: " + cfs.familyID);
+            DbUtil.LogActivity( "Check-In Family: " + cfs.familyID );
 
-            BaseMessage br = new BaseMessage();
+            CheckInMessage br = new CheckInMessage();
             br.setNoError();
 
-            int tzOffset = DbUtil.Db.Setting("TZOffset", "0").ToInt();
+            int tzOffset = DbUtil.Db.Setting( "TZOffset", "0" ).ToInt();
 
             List<CheckInFamily> families = new List<CheckInFamily>();
 
-            FamilyCheckinLock familyLock = DbUtil.Db.FamilyCheckinLocks.SingleOrDefault(f => f.FamilyId == dataIn.argInt);
+            FamilyCheckinLock familyLock = DbUtil.Db.FamilyCheckinLocks.SingleOrDefault( f => f.FamilyId == dataIn.argInt );
 
-            CheckInFamily family = new CheckInFamily(cfs.familyID, "", familyLock == null ? false : familyLock.Locked);
+            CheckInFamily family = new CheckInFamily( cfs.familyID, "", familyLock?.Locked ?? false );
 
-            var members = (from a in DbUtil.Db.CheckinFamilyMembers(cfs.familyID, cfs.campus, cfs.day).ToList()
-                           orderby a.Position, a.Position == 10 ? a.Genderid : 10, a.Age descending, a.Hour
-                           select a).ToList();
+            List<CheckinFamilyMember> members = (from a in DbUtil.Db.CheckinFamilyMembers( cfs.familyID, cfs.campus, cfs.day ).ToList()
+                                                 orderby a.Position, a.Position == 10 ? a.Genderid : 10, a.Age descending, a.Hour
+                                                 select a).ToList();
 
-            foreach (var member in members)
-            {
-                family.addMember(member, cfs.day, tzOffset);
+            foreach( CheckinFamilyMember member in members ) {
+                family.addMember( member, cfs.day, tzOffset );
             }
 
-            families.Add(family);
+            families.Add( family );
             br.count = 1;
 
-            br.data = SerializeJSON(families, dataIn.version);
+            br.data = SerializeJSON( families, dataIn.version );
             return br;
         }
 
         [HttpPost]
-        public ActionResult FamilyInfo(string data)
+        public ActionResult FamilyInfo( string data )
         {
-            if (!Auth())
-                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+            if( !Auth() )
+                return CheckInMessage.createErrorReturn( "Authentication failed, please try again", CheckInMessage.API_ERROR_INVALID_CREDENTIALS );
 
-            BaseMessage dataIn = BaseMessage.createFromString(data);
+            CheckInMessage dataIn = CheckInMessage.createFromString( data );
 
-            Family family = DbUtil.Db.Families.First(fam => fam.FamilyId == dataIn.argInt);
+            Family family = DbUtil.Db.Families.First( fam => fam.FamilyId == dataIn.argInt );
 
-            BaseMessage br = new BaseMessage();
+            CheckInMessage br = new CheckInMessage();
             br.setNoError();
             br.count = 1;
             br.id = family.FamilyId;
-            br.data = SerializeJSON(new CheckInFamilyInfo(family), dataIn.version);
+            br.data = SerializeJSON( new CheckInFamilyInfo( family ), dataIn.version );
             return br;
         }
 
         [HttpPost]
-        public ActionResult LockFamily(string data)
+        public ActionResult LockFamily( string data )
         {
-            if (!Auth())
-                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+            if( !Auth() )
+                return CheckInMessage.createErrorReturn( "Authentication failed, please try again", CheckInMessage.API_ERROR_INVALID_CREDENTIALS );
 
-            BaseMessage dataIn = BaseMessage.createFromString(data);
+            CheckInMessage dataIn = CheckInMessage.createFromString( data );
 
+            FamilyCheckinLock lockf = DbUtil.Db.FamilyCheckinLocks.SingleOrDefault( f => f.FamilyId == dataIn.argInt );
 
-            var lockf = DbUtil.Db.FamilyCheckinLocks.SingleOrDefault(f => f.FamilyId == dataIn.argInt);
-
-            if (lockf == null)
-            {
-                lockf = new FamilyCheckinLock { FamilyId = dataIn.argInt, Created = DateTime.Now };
-                DbUtil.Db.FamilyCheckinLocks.InsertOnSubmit(lockf);
+            if( lockf == null ) {
+                lockf = new FamilyCheckinLock {FamilyId = dataIn.argInt, Created = DateTime.Now};
+                DbUtil.Db.FamilyCheckinLocks.InsertOnSubmit( lockf );
             }
 
             lockf.Locked = true;
@@ -201,50 +200,48 @@ namespace CmsWeb.Areas.Public.Controllers
 
             DbUtil.Db.SubmitChanges();
 
-            BaseMessage br = new BaseMessage();
+            CheckInMessage br = new CheckInMessage();
             br.setNoError();
             br.id = dataIn.argInt;
             return br;
         }
 
         [HttpPost]
-        public ActionResult UnLockFamily(string data)
+        public ActionResult UnLockFamily( string data )
         {
-            if (!Auth())
-                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+            if( !Auth() )
+                return CheckInMessage.createErrorReturn( "Authentication failed, please try again", CheckInMessage.API_ERROR_INVALID_CREDENTIALS );
 
-            BaseMessage dataIn = BaseMessage.createFromString(data);
+            CheckInMessage dataIn = CheckInMessage.createFromString( data );
 
-            var lockf = DbUtil.Db.FamilyCheckinLocks.SingleOrDefault(f => f.FamilyId == dataIn.argInt);
+            FamilyCheckinLock lockf = DbUtil.Db.FamilyCheckinLocks.SingleOrDefault( f => f.FamilyId == dataIn.argInt );
 
-            if (lockf != null)
-            {
+            if( lockf != null ) {
                 lockf.Locked = false;
                 DbUtil.Db.SubmitChanges();
             }
 
-            BaseMessage br = new BaseMessage();
+            CheckInMessage br = new CheckInMessage();
             br.setNoError();
             br.id = dataIn.argInt;
             return br;
         }
 
         [HttpPost]
-        public ActionResult FetchPerson(string data)
+        public ActionResult FetchPerson( string data )
         {
             // Authenticate first
-            if (!Auth())
-                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+            if( !Auth() )
+                return CheckInMessage.createErrorReturn( "Authentication failed, please try again", CheckInMessage.API_ERROR_INVALID_CREDENTIALS );
 
-            BaseMessage dataIn = BaseMessage.createFromString(data);
+            CheckInMessage dataIn = CheckInMessage.createFromString( data );
 
-            BaseMessage br = new BaseMessage();
+            CheckInMessage br = new CheckInMessage();
 
-            var person = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == dataIn.argInt);
+            Person person = DbUtil.Db.People.SingleOrDefault( p => p.PeopleId == dataIn.argInt );
 
-            if (person == null)
-            {
-                br.setError(BaseMessage.API_ERROR_PERSON_NOT_FOUND);
+            if( person == null ) {
+                br.setError( CheckInMessage.API_ERROR_PERSON_NOT_FOUND );
                 br.data = "Person not found.";
                 return br;
             }
@@ -252,120 +249,126 @@ namespace CmsWeb.Areas.Public.Controllers
             br.setNoError();
             br.count = 1;
 
-            if (dataIn.device == BaseMessage.API_DEVICE_ANDROID)
-            {
-                br.data = SerializeJSON(new CheckInPerson().populate(person), dataIn.version);
-            }
-            else
-            {
-                List<CheckInPerson> mp = new List<CheckInPerson>();
-                mp.Add(new CheckInPerson().populate(person));
-                br.data = SerializeJSON(mp, dataIn.version);
+            if( dataIn.device == CheckInMessage.API_DEVICE_ANDROID ) {
+                br.data = SerializeJSON( new CheckInPerson().populate( person ), dataIn.version );
+            } else {
+                List<CheckInPerson> mp = new List<CheckInPerson> {new CheckInPerson().populate( person )};
+                br.data = SerializeJSON( mp, dataIn.version );
             }
 
             return br;
         }
 
         [HttpPost]
-        public ActionResult FetchImage(string data)
+        public ActionResult FetchImage( string data )
         {
             // Authenticate first
-            if (!Auth())
-                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+            if( !Auth() )
+                return CheckInMessage.createErrorReturn( "Authentication failed, please try again", CheckInMessage.API_ERROR_INVALID_CREDENTIALS );
 
-            BaseMessage dataIn = BaseMessage.createFromString(data);
-            CheckInFetchImage cifi = JsonConvert.DeserializeObject<CheckInFetchImage>(dataIn.data);
+            CheckInMessage dataIn = CheckInMessage.createFromString( data );
+            CheckInFetchImage cifi = JsonConvert.DeserializeObject<CheckInFetchImage>( dataIn.data );
 
-            BaseMessage br = new BaseMessage();
-            if (cifi.id == 0) return br.setData("The ID for the person cannot be set to zero");
+            CheckInMessage br = new CheckInMessage();
+
+            if( cifi.id == 0 ) {
+                return br.setData( "The ID for the person cannot be set to zero" );
+            }
 
             br.data = "The picture was not found.";
 
-            var person = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == cifi.id);
+            Person person = DbUtil.Db.People.SingleOrDefault( pp => pp.PeopleId == cifi.id );
 
-            if (person.PictureId != null)
-            {
-                ImageData.Image image = null;
+            if( person == null || person.PictureId == null ) return br;
 
-                switch (cifi.size)
-                {
-                    case 0: // 50 x 50
-                    image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId);
+            Image image = null;
+
+            switch( cifi.size ) {
+                case 0: // 50 x 50
+                    image = ImageData.DbUtil.Db.Images.SingleOrDefault( i => i.Id == person.Picture.ThumbId );
                     break;
 
-                    case 1: // 120 x 120
-                    image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId);
+                case 1: // 120 x 120
+                    image = ImageData.DbUtil.Db.Images.SingleOrDefault( i => i.Id == person.Picture.SmallId );
                     break;
 
-                    case 2: // 320 x 400
-                    image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.MediumId);
+                case 2: // 320 x 400
+                    image = ImageData.DbUtil.Db.Images.SingleOrDefault( i => i.Id == person.Picture.MediumId );
                     break;
 
-                    case 3: // 570 x 800
-                    image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.LargeId);
+                case 3: // 570 x 800
+                    image = ImageData.DbUtil.Db.Images.SingleOrDefault( i => i.Id == person.Picture.LargeId );
                     break;
-
-                }
-
-                if (image != null)
-                {
-                    br.data = Convert.ToBase64String(image.Bits);
-                    br.count = 1;
-                    br.setNoError();
-                }
             }
+
+            if( image == null ) return br;
+
+            br.data = Convert.ToBase64String( image.Bits );
+            br.setNoError();
+            br.count = 1;
 
             return br;
         }
 
         [HttpPost]
-        public ActionResult SaveImage(string data)
+        public ActionResult SaveImage( string data )
         {
             // Authenticate first
-            if (!Auth())
-                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+            if( !Auth() )
+                return CheckInMessage.createErrorReturn( "Authentication failed, please try again", CheckInMessage.API_ERROR_INVALID_CREDENTIALS );
 
-            BaseMessage dataIn = BaseMessage.createFromString(data);
-            CheckInSaveImage cisi = JsonConvert.DeserializeObject<CheckInSaveImage>(dataIn.data);
+            CheckInMessage dataIn = CheckInMessage.createFromString( data );
+            CheckInSaveImage cisi = JsonConvert.DeserializeObject<CheckInSaveImage>( dataIn.data );
 
-            BaseMessage br = new BaseMessage();
+            CheckInMessage br = new CheckInMessage();
 
-            var imageBytes = Convert.FromBase64String(cisi.image);
+            byte[] imageBytes = Convert.FromBase64String( cisi.image );
 
-            var person = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == cisi.id);
+            Person person = DbUtil.Db.People.SingleOrDefault( pp => pp.PeopleId == cisi.id );
 
-            if (person.Picture != null)
-            {
-                if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId) != null)
-                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId));
+            if( person != null && person.Picture != null ) {
+                // Thumb image
+                Image imageDataThumb = ImageData.DbUtil.Db.Images.SingleOrDefault( i => i.Id == person.Picture.ThumbId );
 
-                if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId) != null)
-                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId));
+                if( imageDataThumb != null )
+                    ImageData.DbUtil.Db.Images.DeleteOnSubmit( imageDataThumb );
 
-                if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId) != null)
-                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.MediumId));
+                // Small image
+                Image imageDataSmall = ImageData.DbUtil.Db.Images.SingleOrDefault( i => i.Id == person.Picture.SmallId );
 
-                if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId) != null)
-                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.LargeId));
+                if( imageDataSmall != null )
+                    ImageData.DbUtil.Db.Images.DeleteOnSubmit( imageDataSmall );
 
-                person.Picture.ThumbId = ImageData.Image.NewImageFromBits(imageBytes, 50, 50).Id;
-                person.Picture.SmallId = ImageData.Image.NewImageFromBits(imageBytes, 120, 120).Id;
-                person.Picture.MediumId = ImageData.Image.NewImageFromBits(imageBytes, 320, 400).Id;
-                person.Picture.LargeId = ImageData.Image.NewImageFromBits(imageBytes).Id;
+                // Medium image
+                Image imageDataMedium = ImageData.DbUtil.Db.Images.SingleOrDefault( i => i.Id == person.Picture.MediumId );
+
+                if( imageDataMedium != null )
+                    ImageData.DbUtil.Db.Images.DeleteOnSubmit( imageDataMedium );
+
+                // Large image
+                Image imageDataLarge = ImageData.DbUtil.Db.Images.SingleOrDefault( i => i.Id == person.Picture.LargeId );
+
+                if( imageDataLarge != null )
+                    ImageData.DbUtil.Db.Images.DeleteOnSubmit( imageDataLarge );
+
+                person.Picture.ThumbId = Image.NewImageFromBits( imageBytes, 50, 50 ).Id;
+                person.Picture.SmallId = Image.NewImageFromBits( imageBytes, 120, 120 ).Id;
+                person.Picture.MediumId = Image.NewImageFromBits( imageBytes, 320, 400 ).Id;
+                person.Picture.LargeId = Image.NewImageFromBits( imageBytes ).Id;
+            } else {
+                Picture newPicture = new Picture
+                {
+                    ThumbId = Image.NewImageFromBits( imageBytes, 50, 50 ).Id,
+                    SmallId = Image.NewImageFromBits( imageBytes, 120, 120 ).Id,
+                    MediumId = Image.NewImageFromBits( imageBytes, 320, 400 ).Id,
+                    LargeId = Image.NewImageFromBits( imageBytes ).Id
+                };
+
+                if( person != null ) person.Picture = newPicture;
             }
-            else
-            {
-                var newPicture = new Picture();
 
-                newPicture.ThumbId = ImageData.Image.NewImageFromBits(imageBytes, 50, 50).Id;
-                newPicture.SmallId = ImageData.Image.NewImageFromBits(imageBytes, 120, 120).Id;
-                newPicture.MediumId = ImageData.Image.NewImageFromBits(imageBytes, 320, 400).Id;
-                newPicture.LargeId = ImageData.Image.NewImageFromBits(imageBytes).Id;
+            person?.LogPictureUpload( DbUtil.Db, Util.UserPeopleId ?? 1 );
 
-                person.Picture = newPicture;
-            }
-
-            person.LogPictureUpload(DbUtil.Db, Util.UserPeopleId ?? 1);
             DbUtil.Db.SubmitChanges();
 
             br.setNoError();
@@ -377,50 +380,60 @@ namespace CmsWeb.Areas.Public.Controllers
         }
 
         [HttpPost]
-        public ActionResult SaveFamilyImage(string data)
+        public ActionResult SaveFamilyImage( string data )
         {
             // Authenticate first
-            if (!Auth())
-                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+            if( !Auth() )
+                return CheckInMessage.createErrorReturn( "Authentication failed, please try again", CheckInMessage.API_ERROR_INVALID_CREDENTIALS );
 
-            BaseMessage dataIn = BaseMessage.createFromString(data);
-            CheckInSaveImage cisi = JsonConvert.DeserializeObject<CheckInSaveImage>(dataIn.data);
+            CheckInMessage dataIn = CheckInMessage.createFromString( data );
+            CheckInSaveImage cisi = JsonConvert.DeserializeObject<CheckInSaveImage>( dataIn.data );
 
-            BaseMessage br = new BaseMessage();
+            CheckInMessage br = new CheckInMessage();
 
-            var imageBytes = Convert.FromBase64String(cisi.image);
+            byte[] imageBytes = Convert.FromBase64String( cisi.image );
 
-            var family = DbUtil.Db.Families.SingleOrDefault(pp => pp.FamilyId == cisi.id);
+            Family family = DbUtil.Db.Families.SingleOrDefault( pp => pp.FamilyId == cisi.id );
 
-            if (family.Picture != null)
-            {
-                if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.ThumbId) != null)
-                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.ThumbId));
+            if( family != null && family.Picture != null ) {
+                // Thumb image
+                Image imageDataThumb = ImageData.DbUtil.Db.Images.SingleOrDefault( i => i.Id == family.Picture.ThumbId );
 
-                if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.ThumbId) != null)
-                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.SmallId));
+                if( imageDataThumb != null )
+                    ImageData.DbUtil.Db.Images.DeleteOnSubmit( imageDataThumb );
 
-                if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.ThumbId) != null)
-                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.MediumId));
+                // Small image
+                Image imageDataSmall = ImageData.DbUtil.Db.Images.SingleOrDefault( i => i.Id == family.Picture.SmallId );
 
-                if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.ThumbId) != null)
-                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.LargeId));
+                if( imageDataSmall != null )
+                    ImageData.DbUtil.Db.Images.DeleteOnSubmit( imageDataSmall );
 
-                family.Picture.ThumbId = ImageData.Image.NewImageFromBits(imageBytes, 50, 50).Id;
-                family.Picture.SmallId = ImageData.Image.NewImageFromBits(imageBytes, 120, 120).Id;
-                family.Picture.MediumId = ImageData.Image.NewImageFromBits(imageBytes, 320, 400).Id;
-                family.Picture.LargeId = ImageData.Image.NewImageFromBits(imageBytes).Id;
-            }
-            else
-            {
-                var newPicture = new Picture();
+                // Medium image
+                Image imageDataMedium = ImageData.DbUtil.Db.Images.SingleOrDefault( i => i.Id == family.Picture.MediumId );
 
-                newPicture.ThumbId = ImageData.Image.NewImageFromBits(imageBytes, 50, 50).Id;
-                newPicture.SmallId = ImageData.Image.NewImageFromBits(imageBytes, 120, 120).Id;
-                newPicture.MediumId = ImageData.Image.NewImageFromBits(imageBytes, 320, 400).Id;
-                newPicture.LargeId = ImageData.Image.NewImageFromBits(imageBytes).Id;
+                if( imageDataMedium != null )
+                    ImageData.DbUtil.Db.Images.DeleteOnSubmit( imageDataMedium );
 
-                family.Picture = newPicture;
+                // Large image
+                Image imageDataLarge = ImageData.DbUtil.Db.Images.SingleOrDefault( i => i.Id == family.Picture.LargeId );
+
+                if( imageDataLarge != null )
+                    ImageData.DbUtil.Db.Images.DeleteOnSubmit( imageDataLarge );
+
+                family.Picture.ThumbId = Image.NewImageFromBits( imageBytes, 50, 50 ).Id;
+                family.Picture.SmallId = Image.NewImageFromBits( imageBytes, 120, 120 ).Id;
+                family.Picture.MediumId = Image.NewImageFromBits( imageBytes, 320, 400 ).Id;
+                family.Picture.LargeId = Image.NewImageFromBits( imageBytes ).Id;
+            } else {
+                Picture newPicture = new Picture
+                {
+                    ThumbId = Image.NewImageFromBits( imageBytes, 50, 50 ).Id,
+                    SmallId = Image.NewImageFromBits( imageBytes, 120, 120 ).Id,
+                    MediumId = Image.NewImageFromBits( imageBytes, 320, 400 ).Id,
+                    LargeId = Image.NewImageFromBits( imageBytes ).Id
+                };
+
+                if( family != null ) family.Picture = newPicture;
             }
 
             DbUtil.Db.SubmitChanges();
@@ -434,14 +447,14 @@ namespace CmsWeb.Areas.Public.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddEditPerson(string data)
+        public ActionResult AddEditPerson( string data )
         {
             // Authenticate first
-            if (!Auth())
-                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+            if( !Auth() )
+                return CheckInMessage.createErrorReturn( "Authentication failed, please try again", CheckInMessage.API_ERROR_INVALID_CREDENTIALS );
 
-            BaseMessage dataIn = BaseMessage.createFromString(data);
-            CheckInAddEditPerson aep = JsonConvert.DeserializeObject<CheckInAddEditPerson>(dataIn.data);
+            CheckInMessage dataIn = CheckInMessage.createFromString( data );
+            CheckInAddEditPerson aep = JsonConvert.DeserializeObject<CheckInAddEditPerson>( dataIn.data );
             aep.clean();
 
             CheckInAddEditPersonResults results = new CheckInAddEditPersonResults();
@@ -449,11 +462,10 @@ namespace CmsWeb.Areas.Public.Controllers
             Family f;
             Person p;
 
-            if (aep.edit)
-            {
-                p = DbUtil.Db.LoadPersonById(aep.id);
+            if( aep.edit ) {
+                p = DbUtil.Db.LoadPersonById( aep.id );
 
-                f = DbUtil.Db.Families.First(fam => fam.FamilyId == p.FamilyId);
+                f = DbUtil.Db.Families.First( fam => fam.FamilyId == p.FamilyId );
 
                 f.HomePhone = aep.homePhone;
                 f.AddressLineOne = aep.address;
@@ -462,37 +474,31 @@ namespace CmsWeb.Areas.Public.Controllers
                 f.StateCode = aep.state;
                 f.ZipCode = aep.zipcode;
                 f.CountryName = aep.country;
-            }
-            else
-            {
+            } else {
                 results.newPerson = true;
 
-                p = new Person();
+                p = new Person
+                {
+                    CreatedDate = Util.Now,
+                    CreatedBy = Util.UserId,
+                    MemberStatusId = MemberStatusCode.JustAdded,
+                    AddressTypeId = 10,
+                    OriginId = OriginCode.Visit,
+                    EntryPoint = getCheckInEntryPointID()
+                };
 
-                p.CreatedDate = Util.Now;
-                p.CreatedBy = Util.UserId;
-
-                p.MemberStatusId = MemberStatusCode.JustAdded;
-                p.AddressTypeId = 10;
-
-                p.OriginId = OriginCode.Visit;
-                p.EntryPoint = getCheckInEntryPointID();
-
-                if (aep.campus > 0)
+                if( aep.campus > 0 )
                     p.CampusId = aep.campus;
 
                 p.Name = "";
 
-                if (aep.familyID > 0)
-                {
-                    f = DbUtil.Db.Families.First(fam => fam.FamilyId == aep.familyID);
-                }
-                else
-                {
+                if( aep.familyID > 0 ) {
+                    f = DbUtil.Db.Families.First( fam => fam.FamilyId == aep.familyID );
+                } else {
                     results.newFamily = true;
 
                     f = new Family();
-                    DbUtil.Db.Families.InsertOnSubmit(f);
+                    DbUtil.Db.Families.InsertOnSubmit( f );
                 }
 
                 f.HomePhone = aep.homePhone;
@@ -503,44 +509,41 @@ namespace CmsWeb.Areas.Public.Controllers
                 f.ZipCode = aep.zipcode;
                 f.CountryName = aep.country;
 
-                f.People.Add(p);
+                f.People.Add( p );
 
+                p.PositionInFamilyId = DbUtil.Db.ComputePositionInFamily( aep.getAge(), aep.maritalStatusID == MaritalStatusCode.Married, f.FamilyId ) ?? PositionInFamily.PrimaryAdult;
             }
 
             p.FirstName = aep.firstName;
             p.LastName = aep.lastName;
             p.NickName = aep.goesBy;
+            p.AltName = aep.altName;
+
+            if( dataIn.version >= CheckInMessage.API_V3 ) {
+                p.SetRecReg().Fname = aep.father;
+                p.SetRecReg().Mname = aep.mother;
+            }
 
             // Check-In API Version 2 or greater adds the ability to clear the birthday
-            if (dataIn.version > 1)
-            {
-                if (aep.birthdaySet && aep.birthday != null)
-                {
+            if( dataIn.version >= CheckInMessage.API_V2 ) {
+                if( aep.birthdaySet && aep.birthday != null ) {
                     p.BirthDay = aep.birthday.Value.Day;
                     p.BirthMonth = aep.birthday.Value.Month;
                     p.BirthYear = aep.birthday.Value.Year;
-                }
-                else
-                {
-                    if (aep.birthdayClear)
-                    {
+                } else {
+                    if( aep.birthdayClear ) {
                         p.BirthDay = null;
                         p.BirthMonth = null;
                         p.BirthYear = null;
                     }
                 }
-            }
-            else
-            {
-                if (aep.birthday != null)
-                {
+            } else {
+                if( aep.birthday != null ) {
                     p.BirthDay = aep.birthday.Value.Day;
                     p.BirthMonth = aep.birthday.Value.Month;
                     p.BirthYear = aep.birthday.Value.Year;
                 }
             }
-
-            p.PositionInFamilyId = DbUtil.Db.ComputePositionInFamily(aep.getAge(), aep.maritalStatusID == MaritalStatusCode.Married, f.FamilyId) ?? PositionInFamily.PrimaryAdult;
 
             p.GenderId = aep.genderID;
             p.MaritalStatusId = aep.maritalStatusID;
@@ -554,9 +557,9 @@ namespace CmsWeb.Areas.Public.Controllers
             p.SetRecReg().MedicalDescription = aep.allergies;
 
             p.SetRecReg().Emcontact = aep.emergencyName;
-            p.SetRecReg().Emphone = aep.emergencyPhone.Truncate(50);
+            p.SetRecReg().Emphone = aep.emergencyPhone.Truncate( 50 );
 
-            p.SetRecReg().ActiveInAnotherChurch = aep.church != null && aep.church.Length > 0;
+            p.SetRecReg().ActiveInAnotherChurch = !string.IsNullOrEmpty( aep.church );
             p.OtherPreviousChurch = aep.church;
 
             DbUtil.Db.SubmitChanges();
@@ -565,35 +568,34 @@ namespace CmsWeb.Areas.Public.Controllers
             results.peopleID = p.PeopleId;
             results.position = p.PositionInFamilyId;
 
-            BaseMessage br = new BaseMessage();
+            CheckInMessage br = new CheckInMessage();
             br.setNoError();
             br.count = 1;
-            br.data = SerializeJSON(results, dataIn.version);
+            br.data = SerializeJSON( results, dataIn.version );
 
             return br;
         }
 
         private EntryPoint getCheckInEntryPointID()
         {
-            var checkInEntryPoint = (from e in DbUtil.Db.EntryPoints
-                                     where e.Code == "CHECKIN"
-                                     select e).FirstOrDefault();
+            EntryPoint checkInEntryPoint = (from e in DbUtil.Db.EntryPoints
+                                            where e.Code == "CHECKIN"
+                                            select e).FirstOrDefault();
 
-            if (checkInEntryPoint != null)
-            {
+            if( checkInEntryPoint != null ) {
                 return checkInEntryPoint;
-            }
-            else
-            {
-                int maxEntryPointID = DbUtil.Db.EntryPoints.Max(e => e.Id);
+            } else {
+                int maxEntryPointID = DbUtil.Db.EntryPoints.Max( e => e.Id );
 
-                EntryPoint entry = new EntryPoint();
-                entry.Id = maxEntryPointID + 1;
-                entry.Code = "CHECKIN";
-                entry.Description = "Check-In";
-                entry.Hardwired = true;
+                EntryPoint entry = new EntryPoint
+                {
+                    Id = maxEntryPointID + 1,
+                    Code = "CHECKIN",
+                    Description = "Check-In",
+                    Hardwired = true
+                };
 
-                DbUtil.Db.EntryPoints.InsertOnSubmit(entry);
+                DbUtil.Db.EntryPoints.InsertOnSubmit( entry );
                 DbUtil.Db.SubmitChanges();
 
                 return entry;
@@ -601,39 +603,37 @@ namespace CmsWeb.Areas.Public.Controllers
         }
 
         [HttpPost]
-        public ActionResult RecordAttend(string data)
+        public ActionResult RecordAttend( string data )
         {
             // Authenticate first
-            if (!Auth())
-                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+            if( !Auth() )
+                return CheckInMessage.createErrorReturn( "Authentication failed, please try again", CheckInMessage.API_ERROR_INVALID_CREDENTIALS );
 
-            BaseMessage dataIn = BaseMessage.createFromString(data);
-            CheckInAttend cia = JsonConvert.DeserializeObject<CheckInAttend>(dataIn.data);
+            CheckInMessage dataIn = CheckInMessage.createFromString( data );
+            CheckInAttend cia = JsonConvert.DeserializeObject<CheckInAttend>( dataIn.data );
 
-            var meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.OrganizationId == cia.orgID && m.MeetingDate == cia.datetime);
+            Meeting meeting = DbUtil.Db.Meetings.SingleOrDefault( m => m.OrganizationId == cia.orgID && m.MeetingDate == cia.datetime );
 
-            if (meeting == null)
-            {
-                var meetingID = DbUtil.Db.CreateMeeting(cia.orgID, cia.datetime);
+            if( meeting == null ) {
+                int meetingID = DbUtil.Db.CreateMeeting( cia.orgID, cia.datetime );
 
-                meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.MeetingId == meetingID);
+                meeting = DbUtil.Db.Meetings.SingleOrDefault( m => m.MeetingId == meetingID );
             }
 
-            Attend.RecordAttend(DbUtil.Db, cia.peopleID, cia.orgID, cia.present, cia.datetime);
+            Attend.RecordAttend( DbUtil.Db, cia.peopleID, cia.orgID, cia.present, cia.datetime );
 
-            DbUtil.Db.UpdateMeetingCounters(cia.orgID);
-            DbUtil.LogActivity($"Check-In Record Attend Org ID:{cia.orgID} People ID:{cia.peopleID} User ID:{Util.UserPeopleId} Attended:{cia.present}");
+            DbUtil.Db.UpdateMeetingCounters( cia.orgID );
+            DbUtil.LogActivity( $"Check-In Record Attend Org ID:{cia.orgID} People ID:{cia.peopleID} User ID:{Util.UserPeopleId} Attended:{cia.present}" );
 
             // Check Entry Point and replace if Check-In
-            Person person = DbUtil.Db.People.Where(p => p.PeopleId == cia.peopleID).FirstOrDefault();
+            Person person = DbUtil.Db.People.FirstOrDefault( p => p.PeopleId == cia.peopleID );
 
-            if (person != null && person.EntryPoint != null && person.EntryPoint.Code != null && person.EntryPoint.Code == "CHECKIN" && meeting != null)
-            {
+            if( person != null && person.EntryPoint != null && person.EntryPoint.Code != null && person.EntryPoint.Code == "CHECKIN" && meeting != null ) {
                 person.EntryPoint = meeting.Organization.EntryPoint;
                 DbUtil.Db.SubmitChanges();
             }
 
-            BaseMessage br = new BaseMessage();
+            CheckInMessage br = new CheckInMessage();
             br.setNoError();
             br.count = 1;
 
@@ -641,155 +641,149 @@ namespace CmsWeb.Areas.Public.Controllers
         }
 
         [HttpPost]
-        public ActionResult ClassSearch(string data)
+        public ActionResult ClassSearch( string data )
         {
-            if (!Auth())
-                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+            if( !Auth() )
+                return CheckInMessage.createErrorReturn( "Authentication failed, please try again", CheckInMessage.API_ERROR_INVALID_CREDENTIALS );
 
-            BaseMessage dataIn = BaseMessage.createFromString(data);
-            CheckInClassSearch ccs = JsonConvert.DeserializeObject<CheckInClassSearch>(dataIn.data);
+            CheckInMessage dataIn = CheckInMessage.createFromString( data );
+            CheckInClassSearch ccs = JsonConvert.DeserializeObject<CheckInClassSearch>( dataIn.data );
 
-            DbUtil.LogActivity("Check-In Class Search: " + ccs.peopleID);
+            DbUtil.LogActivity( "Check-In Class Search: " + ccs.peopleID );
 
             var person = (from p in DbUtil.Db.People
                           where p.PeopleId == ccs.peopleID
-                          select new { p.FamilyId, p.BirthDate, p.Grade }).SingleOrDefault();
+                          select new {p.FamilyId, p.BirthDate, p.Grade}).SingleOrDefault();
 
-            if (person == null)
-                return BaseMessage.createErrorReturn("Person not found", BaseMessage.API_ERROR_PERSON_NOT_FOUND);
+            if( person == null )
+                return CheckInMessage.createErrorReturn( "Person not found", CheckInMessage.API_ERROR_PERSON_NOT_FOUND );
 
-            BaseMessage br = new BaseMessage();
+            CheckInMessage br = new CheckInMessage();
             br.setNoError();
 
-            var orgs = (from o in DbUtil.Db.Organizations
-                        let sc = o.OrgSchedules.FirstOrDefault()
-                        let meetingHours = DbUtil.Db.GetTodaysMeetingHours(o.OrganizationId, ccs.day)
-                        let bdaystart = o.BirthDayStart ?? DateTime.MaxValue
-                        where (o.SuspendCheckin ?? false) == false || ccs.noAgeCheck
-                        where person.BirthDate == null || person.BirthDate <= o.BirthDayEnd || o.BirthDayEnd == null || ccs.noAgeCheck
-                        where person.BirthDate == null || person.BirthDate >= o.BirthDayStart || o.BirthDayStart == null || ccs.noAgeCheck
-                        where o.CanSelfCheckin == true
-                        where (o.ClassFilled ?? false) == false
-                        where (o.CampusId == null && o.AllowNonCampusCheckIn == true) || o.CampusId == ccs.campus || ccs.campus == 0
-                        where o.OrganizationStatusId == OrgStatusCode.Active
-                        orderby sc.SchedTime.Value.TimeOfDay, bdaystart, o.OrganizationName
-                        from meeting in meetingHours
-                        select new CheckInOrganization()
-                        {
-                            id = o.OrganizationId,
-                            leader = o.LeaderName,
-                            name = o.OrganizationName,
-                            hour = meeting.Hour.Value,
-                            birthdayStart = o.BirthDayStart,
-                            birthdayEnd = o.BirthDayEnd,
-                            location = o.Location,
-                            allowOverlap = o.AllowAttendOverlap
-                        }).ToList();
+            List<CheckInOrganization> orgs = (from o in DbUtil.Db.Organizations
+                                              let sc = o.OrgSchedules.FirstOrDefault()
+                                              let meetingHours = DbUtil.Db.GetTodaysMeetingHours( o.OrganizationId, ccs.day )
+                                              let bdaystart = o.BirthDayStart ?? DateTime.MaxValue
+                                              where (o.SuspendCheckin ?? false) == false || ccs.noAgeCheck
+                                              where person.BirthDate == null || person.BirthDate <= o.BirthDayEnd || o.BirthDayEnd == null || ccs.noAgeCheck
+                                              where person.BirthDate == null || person.BirthDate >= o.BirthDayStart || o.BirthDayStart == null || ccs.noAgeCheck
+                                              where o.CanSelfCheckin == true
+                                              where (o.ClassFilled ?? false) == false
+                                              where (o.CampusId == null && o.AllowNonCampusCheckIn == true) || o.CampusId == ccs.campus || ccs.campus == 0
+                                              where o.OrganizationStatusId == OrgStatusCode.Active
+                                              orderby sc.SchedTime.Value.TimeOfDay, bdaystart, o.OrganizationName
+                                              from meeting in meetingHours
+                                              select new CheckInOrganization()
+                                              {
+                                                  id = o.OrganizationId,
+                                                  leader = o.LeaderName,
+                                                  name = o.OrganizationName,
+                                                  hour = meeting.Hour.Value,
+                                                  birthdayStart = o.BirthDayStart,
+                                                  birthdayEnd = o.BirthDayEnd,
+                                                  location = o.Location,
+                                                  allowOverlap = o.AllowAttendOverlap
+                                              }).ToList();
 
             // Add lead time adjustment for different timezones here
-            int tzOffset = DbUtil.Db.Setting("TZOffset", "0").ToInt();
+            int tzOffset = DbUtil.Db.Setting( "TZOffset", "0" ).ToInt();
 
-            foreach (var org in orgs)
-            {
-                org.adjustLeadTime(ccs.day, tzOffset);
+            foreach( CheckInOrganization org in orgs ) {
+                org.adjustLeadTime( ccs.day, tzOffset );
             }
 
-            br.data = SerializeJSON(orgs, dataIn.version);
+            br.data = SerializeJSON( orgs, dataIn.version );
 
             return br;
         }
 
         [HttpPost]
-        public ActionResult NameSearch(string data)
+        public ActionResult NameSearch( string data )
         {
-            if (!Auth())
-                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+            if( !Auth() )
+                return CheckInMessage.createErrorReturn( "Authentication failed, please try again", CheckInMessage.API_ERROR_INVALID_CREDENTIALS );
 
-            BaseMessage dataIn = BaseMessage.createFromString(data);
-            CheckInNameSearch cns = JsonConvert.DeserializeObject<CheckInNameSearch>(dataIn.data);
+            CheckInMessage dataIn = CheckInMessage.createFromString( data );
+            CheckInNameSearch cns = JsonConvert.DeserializeObject<CheckInNameSearch>( dataIn.data );
             cns.splitName();
 
-            DbUtil.LogActivity("Check-In Name Search: " + cns.name);
+            DbUtil.LogActivity( "Check-In Name Search: " + cns.name );
 
-            var q = DbUtil.Db.People.Select(p => p);
+            IQueryable<Person> q = DbUtil.Db.People.Select( p => p );
 
-            if (cns.first.HasValue())
-            {
+            if( cns.first.HasValue() ) {
                 q = from p in q
-                    where (p.LastName.StartsWith(cns.last) || p.MaidenName.StartsWith(cns.last))
-                        && (p.FirstName.StartsWith(cns.first) || p.NickName.StartsWith(cns.first) || p.MiddleName.StartsWith(cns.first))
+                    where (p.LastName.StartsWith( cns.last ) || p.MaidenName.StartsWith( cns.last ))
+                          && (p.FirstName.StartsWith( cns.first ) || p.NickName.StartsWith( cns.first ) || p.MiddleName.StartsWith( cns.first ))
                     select p;
-            }
-            else
-            {
+            } else {
                 q = from p in q
-                    where p.LastName.StartsWith(cns.last) || p.FirstName.StartsWith(cns.last) || p.NickName.StartsWith(cns.last) || p.MiddleName.StartsWith(cns.last)
+                    where p.LastName.StartsWith( cns.last ) || p.FirstName.StartsWith( cns.last ) || p.NickName.StartsWith( cns.last ) || p.MiddleName.StartsWith( cns.last )
                     select p;
             }
 
-            var q2 = (from p in q
-                      let recreg = p.RecRegs.FirstOrDefault()
-                      orderby p.Name2, p.PeopleId
-                      where p.DeceasedDate == null
-                      select new CheckInPerson
-                      {
-                          id = p.PeopleId,
-                          familyID = p.FamilyId,
-                          first = p.PreferredName,
-                          last = p.LastName,
-                          goesby = p.NickName,
-                          cell = p.CellPhone,
-                          home = p.HomePhone,
-                          address = p.Family.AddressLineOne,
-                          age = p.Age ?? 0
-                      }).Take(200).ToList();
+            List<CheckInPerson> q2 = (from p in q
+                                      let recreg = p.RecRegs.FirstOrDefault()
+                                      orderby p.Name2, p.PeopleId
+                                      where p.DeceasedDate == null
+                                      select new CheckInPerson
+                                      {
+                                          id = p.PeopleId,
+                                          familyID = p.FamilyId,
+                                          first = p.PreferredName,
+                                          last = p.LastName,
+                                          goesby = p.NickName,
+                                          altName = p.AltName,
+                                          cell = p.CellPhone,
+                                          home = p.HomePhone,
+                                          address = p.Family.AddressLineOne,
+                                          age = p.Age ?? 0
+                                      }).Take( 200 ).ToList();
 
-            foreach (var person in q2)
-            {
+            foreach( CheckInPerson person in q2 ) {
                 person.loadImage();
             }
 
-            BaseMessage br = new BaseMessage();
+            CheckInMessage br = new CheckInMessage();
             br.setNoError();
             br.count = q2.Count();
-            br.data = SerializeJSON(q2, dataIn.version);
+            br.data = SerializeJSON( q2, dataIn.version );
 
             return br;
         }
 
         [HttpPost]
-        public ActionResult JoinOrg(string data)
+        public ActionResult JoinOrg( string data )
         {
-            if (!Auth())
-                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+            if( !Auth() )
+                return CheckInMessage.createErrorReturn( "Authentication failed, please try again", CheckInMessage.API_ERROR_INVALID_CREDENTIALS );
 
-            BaseMessage dataIn = BaseMessage.createFromString(data);
-            CheckInJoinOrg cjo = JsonConvert.DeserializeObject<CheckInJoinOrg>(dataIn.data);
+            CheckInMessage dataIn = CheckInMessage.createFromString( data );
+            CheckInJoinOrg cjo = JsonConvert.DeserializeObject<CheckInJoinOrg>( dataIn.data );
 
-            var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == cjo.peopleID && m.OrganizationId == cjo.orgID);
+            OrganizationMember om = DbUtil.Db.OrganizationMembers.SingleOrDefault( m => m.PeopleId == cjo.peopleID && m.OrganizationId == cjo.orgID );
 
-            if (om == null && cjo.join)
-                om = OrganizationMember.InsertOrgMembers(DbUtil.Db, cjo.orgID, cjo.peopleID, MemberTypeCode.Member, DateTime.Today, null, false);
+            if( om == null && cjo.join )
+                om = OrganizationMember.InsertOrgMembers( DbUtil.Db, cjo.orgID, cjo.peopleID, MemberTypeCode.Member, DateTime.Today );
 
-            if (om != null && !cjo.join)
-            {
-                om.Drop(DbUtil.Db, DateTime.Now);
+            if( om != null && !cjo.join ) {
+                om.Drop( DbUtil.Db, DateTime.Now );
 
-                DbUtil.LogActivity($"Dropped {om.PeopleId} for {om.Organization.OrganizationId} via {dataIn.getSourceOS()} app", peopleid: om.PeopleId, orgid: om.OrganizationId);
+                DbUtil.LogActivity( $"Dropped {om.PeopleId} for {om.Organization.OrganizationId} via {dataIn.getSourceOS()} app", peopleid: om.PeopleId, orgid: om.OrganizationId );
             }
 
             DbUtil.Db.SubmitChanges();
 
             // Check Entry Point and replace if Check-In
-            Person person = DbUtil.Db.People.FirstOrDefault(p => p.PeopleId == cjo.peopleID);
+            Person person = DbUtil.Db.People.FirstOrDefault( p => p.PeopleId == cjo.peopleID );
 
-            if (person?.EntryPoint != null && person.EntryPoint.Code == "CHECKIN" && om != null)
-            {
+            if( person?.EntryPoint != null && person.EntryPoint.Code == "CHECKIN" && om != null ) {
                 person.EntryPoint = om.Organization.EntryPoint;
                 DbUtil.Db.SubmitChanges();
             }
 
-            BaseMessage br = new BaseMessage();
+            CheckInMessage br = new CheckInMessage();
             br.setNoError();
             br.count = 1;
 
@@ -797,29 +791,28 @@ namespace CmsWeb.Areas.Public.Controllers
         }
 
         [HttpPost]
-        public ActionResult PrintLabels(string data)
+        public ActionResult PrintLabels( string data )
         {
-            if (!Auth())
-                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+            if( !Auth() )
+                return CheckInMessage.createErrorReturn( "Authentication failed, please try again", CheckInMessage.API_ERROR_INVALID_CREDENTIALS );
 
-            BaseMessage dataIn = BaseMessage.createFromString(data);
-            List<CheckInPrintLabel> labels = JsonConvert.DeserializeObject<List<CheckInPrintLabel>>(dataIn.data);
+            CheckInMessage dataIn = CheckInMessage.createFromString( data );
+            List<CheckInPrintLabel> labels = JsonConvert.DeserializeObject<List<CheckInPrintLabel>>( dataIn.data );
 
-            string securityCode = DbUtil.Db.NextSecurityCode(DateTime.Today).Select(c => c.Code).Single();
+            string securityCode = DbUtil.Db.NextSecurityCode( DateTime.Today ).Select( c => c.Code ).Single();
 
             StringBuilder builder = new StringBuilder();
 
-            XmlWriter writer = XmlWriter.Create(builder);
+            XmlWriter writer = XmlWriter.Create( builder );
             writer.WriteStartDocument();
-            writer.WriteStartElement("PrintJob");
+            writer.WriteStartElement( "PrintJob" );
 
-            writer.WriteElementString("securitycode", securityCode);
+            writer.WriteElementString( "securitycode", securityCode );
 
-            writer.WriteStartElement("list");
+            writer.WriteStartElement( "list" );
 
-            foreach (CheckInPrintLabel label in labels)
-            {
-                label.writeToXML(writer, securityCode);
+            foreach( CheckInPrintLabel label in labels ) {
+                label.writeToXML( writer, securityCode );
             }
 
             // list
@@ -828,12 +821,12 @@ namespace CmsWeb.Areas.Public.Controllers
             writer.WriteEndElement();
             writer.Close();
 
-            PrintJob job = new PrintJob { Id = dataIn.argString, Data = builder.ToString(), Stamp = DateTime.Now };
+            PrintJob job = new PrintJob {Id = dataIn.argString, Data = builder.ToString(), Stamp = DateTime.Now};
 
-            DbUtil.Db.PrintJobs.InsertOnSubmit(job);
+            DbUtil.Db.PrintJobs.InsertOnSubmit( job );
             DbUtil.Db.SubmitChanges();
 
-            BaseMessage br = new BaseMessage();
+            CheckInMessage br = new CheckInMessage();
             br.setNoError();
             br.count = 1;
 
@@ -841,32 +834,31 @@ namespace CmsWeb.Areas.Public.Controllers
         }
 
         [HttpPost]
-        public ActionResult SaveSettings(string data)
+        public ActionResult SaveSettings( string data )
         {
-            if (!Auth())
-                return BaseMessage.createErrorReturn("Authentication failed, please try again", BaseMessage.API_ERROR_INVALID_CREDENTIALS);
+            if( !Auth() )
+                return CheckInMessage.createErrorReturn( "Authentication failed, please try again", CheckInMessage.API_ERROR_INVALID_CREDENTIALS );
 
-            BaseMessage dataIn = BaseMessage.createFromString(data);
-            CheckInSettingsEntry entry = JsonConvert.DeserializeObject<CheckInSettingsEntry>(dataIn.data);
+            CheckInMessage dataIn = CheckInMessage.createFromString( data );
+            CheckInSettingsEntry entry = JsonConvert.DeserializeObject<CheckInSettingsEntry>( dataIn.data );
 
-            var setting = (from e in DbUtil.Db.CheckInSettings
-                           where e.Name == entry.name
-                           select e).SingleOrDefault();
+            CheckInSetting setting = (from e in DbUtil.Db.CheckInSettings
+                                      where e.Name == entry.name
+                                      select e).SingleOrDefault();
 
-            BaseMessage br = new BaseMessage();
+            CheckInMessage br = new CheckInMessage();
 
-            if (setting == null)
-            {
-                setting = new CheckInSetting();
-                setting.Name = entry.name;
-                setting.Settings = entry.settings;
+            if( setting == null ) {
+                setting = new CheckInSetting
+                {
+                    Name = entry.name,
+                    Settings = entry.settings
+                };
 
-                DbUtil.Db.CheckInSettings.InsertOnSubmit(setting);
+                DbUtil.Db.CheckInSettings.InsertOnSubmit( setting );
 
                 br.data = "Settings saved";
-            }
-            else
-            {
+            } else {
                 setting.Settings = entry.settings;
 
                 br.data = "Settings updated";
@@ -881,9 +873,10 @@ namespace CmsWeb.Areas.Public.Controllers
             return br;
         }
 
-        private static string SerializeJSON(Object item, int version)
+        // ReSharper disable once UnusedParameter.Local
+        private static string SerializeJSON( object item, int version )
         {
-            return JsonConvert.SerializeObject(item, new IsoDateTimeConverter() { DateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss" });
+            return JsonConvert.SerializeObject( item, new IsoDateTimeConverter() {DateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss"} );
         }
     }
 }

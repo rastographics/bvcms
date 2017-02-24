@@ -477,6 +477,7 @@
     <Compile Include="Areas\People\Models\Downline\DownlineLevelsModel.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineSummaryModel.cs" />
     <Compile Include="Areas\People\Models\Task\TaskModel.cs" />
+    <Compile Include="Areas\Public\Models\CheckInAPI\CheckInMessage.cs" />
     <Compile Include="Areas\Reports\Models\Avery\DocXAveryLabels.cs" />
     <Compile Include="Areas\Reports\Models\Export\DocXReplacements.cs" />
     <Compile Include="Areas\Search\Controllers\TaskSearchController.cs" />

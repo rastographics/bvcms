@@ -2,6 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ImageData;
+using DbUtil = CmsData.DbUtil;
+
+// ReSharper disable MemberInitializerValueIgnored
+// ReSharper disable RedundantDefaultMemberInitializer
+// ReSharper disable CheckNamespace
 
 namespace CmsWeb.CheckInAPI
 {
@@ -16,43 +22,36 @@ namespace CmsWeb.CheckInAPI
 
         public List<CheckInFamilyMember> members = new List<CheckInFamilyMember>();
 
-        public CheckInFamily(int id, string name, bool locked)
+        public CheckInFamily( int id, string name, bool locked )
         {
             this.id = id;
             this.name = name;
             this.locked = locked;
 
-            Family family = DbUtil.Db.Families.SingleOrDefault(f => f.FamilyId == id);
+            Family family = DbUtil.Db.Families.SingleOrDefault( f => f.FamilyId == id );
 
-            if (family.Picture != null)
-            {
-                var image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.SmallId);
+            if( family == null || family.Picture == null ) return;
 
-                if (image != null)
-                {
-                    picture = Convert.ToBase64String(image.Bits);
-                }
+            Image image = ImageData.DbUtil.Db.Images.SingleOrDefault( i => i.Id == family.Picture.SmallId );
+
+            if( image != null ) {
+                picture = Convert.ToBase64String( image.Bits );
             }
         }
 
-        public void addMember(CmsData.View.CheckinFamilyMember newMember, int day, int tzOffset)
+        public void addMember( CmsData.View.CheckinFamilyMember newMember, int day, int tzOffset )
         {
-            if (members.Count == 0)
-            {
-                members.Add(new CheckInFamilyMember(newMember, day, tzOffset));
-            }
-            else
-            {
-                foreach (var member in members)
-                {
-                    if (member.id == newMember.Id)
-                    {
-                        member.addOrg(newMember, day, tzOffset);
-                        return;
-                    }
+            if( members.Count == 0 ) {
+                members.Add( new CheckInFamilyMember( newMember, day, tzOffset ) );
+            } else {
+                foreach( CheckInFamilyMember member in members ) {
+                    if( member.id != newMember.Id ) continue;
+
+                    member.addOrg( newMember, day, tzOffset );
+                    return;
                 }
 
-                members.Add(new CheckInFamilyMember(newMember, day, tzOffset));
+                members.Add( new CheckInFamilyMember( newMember, day, tzOffset ) );
             }
         }
     }
