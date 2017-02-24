@@ -172,7 +172,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
         public bool IsGoer()
         {
-            return DbUtil.Db.OrganizationMembers.Any(mm => mm.OrganizationId == orgid && mm.PeopleId == person.PeopleId);
+            var pid = person?.PeopleId ?? 0;
+            return DbUtil.Db.OrganizationMembers.Any(mm => mm.OrganizationId == orgid && mm.PeopleId == pid);
         }
 
         public void FillPriorInfo()
