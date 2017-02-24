@@ -54,6 +54,8 @@ namespace CmsData.View
 		
 		private DateTime? _ModifiedDate;
 		
+		private bool? _IsDeceased;
+		
 		
 		public PeopleBasicModifed()
 		{
@@ -379,6 +381,23 @@ namespace CmsData.View
 			{
 				if (this._ModifiedDate != value)
 					this._ModifiedDate = value;
+			}
+
+		}
+
+		
+		[Column(Name="IsDeceased", Storage="_IsDeceased", DbType="bit")]
+		public bool? IsDeceased
+		{
+			get
+			{
+				return this._IsDeceased;
+			}
+
+			set
+			{
+				if (this._IsDeceased != value)
+					this._IsDeceased = value;
 			}
 
 		}

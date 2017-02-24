@@ -30,6 +30,8 @@ namespace CmsData
 		
 		private bool _Enabled;
 		
+		private int _Rebranded;
+		
    		
     	
 		private EntityRef< Person> _Person;
@@ -58,6 +60,9 @@ namespace CmsData
 		
 		partial void OnEnabledChanging(bool value);
 		partial void OnEnabledChanged();
+		
+		partial void OnRebrandedChanging(int value);
+		partial void OnRebrandedChanged();
 		
     #endregion
 		public MobileAppPushRegistration()
@@ -201,6 +206,28 @@ namespace CmsData
 					this._Enabled = value;
 					this.SendPropertyChanged("Enabled");
 					this.OnEnabledChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="rebranded", UpdateCheck=UpdateCheck.Never, Storage="_Rebranded", DbType="int NOT NULL")]
+		public int Rebranded
+		{
+			get { return this._Rebranded; }
+
+			set
+			{
+				if (this._Rebranded != value)
+				{
+				
+                    this.OnRebrandedChanging(value);
+					this.SendPropertyChanging();
+					this._Rebranded = value;
+					this.SendPropertyChanged("Rebranded");
+					this.OnRebrandedChanged();
 				}
 
 			}

@@ -38,6 +38,12 @@ namespace CmsData
 		
 		private int _Api;
 		
+		private DateTime _Active;
+		
+		private string _AltTitle;
+		
+		private int _Rebranded;
+		
    		
     	
 	#endregion
@@ -76,6 +82,15 @@ namespace CmsData
 		
 		partial void OnApiChanging(int value);
 		partial void OnApiChanged();
+		
+		partial void OnActiveChanging(DateTime value);
+		partial void OnActiveChanged();
+		
+		partial void OnAltTitleChanging(string value);
+		partial void OnAltTitleChanged();
+		
+		partial void OnRebrandedChanging(int value);
+		partial void OnRebrandedChanged();
 		
     #endregion
 		public MobileAppAction()
@@ -301,6 +316,72 @@ namespace CmsData
 					this._Api = value;
 					this.SendPropertyChanged("Api");
 					this.OnApiChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="active", UpdateCheck=UpdateCheck.Never, Storage="_Active", DbType="datetime NOT NULL")]
+		public DateTime Active
+		{
+			get { return this._Active; }
+
+			set
+			{
+				if (this._Active != value)
+				{
+				
+                    this.OnActiveChanging(value);
+					this.SendPropertyChanging();
+					this._Active = value;
+					this.SendPropertyChanged("Active");
+					this.OnActiveChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="altTitle", UpdateCheck=UpdateCheck.Never, Storage="_AltTitle", DbType="nvarchar(50) NOT NULL")]
+		public string AltTitle
+		{
+			get { return this._AltTitle; }
+
+			set
+			{
+				if (this._AltTitle != value)
+				{
+				
+                    this.OnAltTitleChanging(value);
+					this.SendPropertyChanging();
+					this._AltTitle = value;
+					this.SendPropertyChanged("AltTitle");
+					this.OnAltTitleChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="rebranded", UpdateCheck=UpdateCheck.Never, Storage="_Rebranded", DbType="int NOT NULL")]
+		public int Rebranded
+		{
+			get { return this._Rebranded; }
+
+			set
+			{
+				if (this._Rebranded != value)
+				{
+				
+                    this.OnRebrandedChanging(value);
+					this.SendPropertyChanging();
+					this._Rebranded = value;
+					this.SendPropertyChanged("Rebranded");
+					this.OnRebrandedChanged();
 				}
 
 			}
