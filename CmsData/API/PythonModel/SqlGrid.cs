@@ -157,6 +157,11 @@ namespace CmsData
                             s = rd[i].ToString();
                             if (s == "Total")
                                 s = $"<strong>{s}</strong>";
+                            if (nam.StartsWith("att") && nam.EndsWith("str"))
+                            {
+                                s = $"<span style='font-family: monospace'>{s}</span>";
+                                align = HorizontalAlign.Right;
+                            }
                             break;
                     }
                     if (linkfornext.HasValue())
