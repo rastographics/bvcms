@@ -13,6 +13,7 @@ namespace CmsWeb.CheckInAPI
 
         public string firstName = "";
         public string goesBy = "";
+        public string altName = "";
         public string lastName = "";
 
         public int genderID = 0;
@@ -20,6 +21,9 @@ namespace CmsWeb.CheckInAPI
         public DateTime? birthday;
         public bool birthdaySet = false;
         public bool birthdayClear = false;
+
+        public string father = "";
+        public string mother = "";
 
         public string eMail = "";
         public string cellPhone = "";
@@ -66,13 +70,13 @@ namespace CmsWeb.CheckInAPI
 
         public int getAge()
         {
-            if (birthday == null) return -1;
+            if( birthday == null ) return -1;
 
             DateTime today = DateTime.Now;
 
             int age = today.Year - birthday.Value.Year;
 
-            if (today.Month < birthday.Value.Month || (today.Month == birthday.Value.Month && today.Day < birthday.Value.Day))
+            if( today.Month < birthday.Value.Month || (today.Month == birthday.Value.Month && today.Day < birthday.Value.Day) )
                 age--;
 
             return age;
