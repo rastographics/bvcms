@@ -298,6 +298,8 @@ Creating_dbo_OrgPeopleInactive.sql
 Creating_dbo_OrgPeopleCurrent.sql
 Creating_dbo_OrgPeople2.sql
 Creating_dbo_OrgPeople.sql
+Creating_dbo_SundayForDate.sql
+Creating_dbo_VisitAttendStr.sql
 Creating_dbo_GetPledgedTotalsBothIfJoint.sql
 Creating_dbo_OrgFee.sql
 Creating_dbo_OrgsWithFees.sql
@@ -449,7 +451,6 @@ Creating_dbo_StatusFlagList.sql
 Creating_dbo_AgeInMonths.sql
 Creating_dbo_CreateSubRequests.sql
 Creating_dbo_DeleteTagForUser.sql
-Creating_dbo_SundayForDate.sql
 Creating_dbo_MoveSchedule.sql
 Creating_dbo_OrgMemberQuestions.sql
 Creating_dbo_UpdateQuestion.sql
@@ -998,7 +999,9 @@ Altering_permissions_dbo_GetDigits.sql
 Altering_permissions_dbo_GetScheduleDesc.sql
 Altering_permissions_dbo_InSmallGroup.sql
 Altering_permissions_dbo_NextBirthday.sql
+Altering_permissions_dbo_OrganizationLeaderId.sql
 Altering_permissions_dbo_OrganizationLeaderName.sql
 Altering_permissions_dbo_RegexMatch.sql
 Altering_permissions_dbo_SundayForDate.sql
+Altering_permissions_dbo_VisitAttendStr.sql
 Altering_permissions_dbo_Contribution.sql

@@ -3206,7 +3206,9 @@ namespace CmsData
             [Parameter(DbType="datetime")] DateTime? td,
             [Parameter(DbType="int")] int? campusid,
             [Parameter(DbType="bit")] bool? nontaxded,
-            [Parameter(DbType="bit")] bool? includeUnclosed
+            [Parameter(DbType="bit")] bool? includeUnclosed,
+            [Parameter(DbType="int")] int? tagid,
+            [Parameter(DbType="int")] int? fundid
             )
 		{
 			return this.CreateMethodCallQuery< View.GetTotalContributionsDonor2>(this, 
@@ -3215,7 +3217,9 @@ namespace CmsData
                 td,
                 campusid,
                 nontaxded,
-                includeUnclosed
+                includeUnclosed,
+                tagid,
+                fundid
                 );
 		}
 
@@ -4550,6 +4554,24 @@ namespace CmsData
 			return ((bool?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 stringX
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.VisitAttendStr", IsComposable = true)]
+		[return: Parameter(DbType = "varchar")]
+		public string VisitAttendStr(
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "pid", DbType="int")] int? pid,
+            [Parameter(Name = "MeetingDay1", DbType="date")] DateTime? MeetingDay1,
+            [Parameter(Name = "MeetingDay2", DbType="date")] DateTime? MeetingDay2
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                pid,
+                MeetingDay1,
+                MeetingDay2
                 ).ReturnValue));
 		}
 
