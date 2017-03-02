@@ -76,6 +76,7 @@ namespace CmsWeb.Areas.Dialog.Models
                 Id = Id,
                 Operation = Op,
             };
+            db.LogActivity($"OrgDrop {lop.Count} records", Id, uid: UserId);
             db.LongRunningOps.InsertOnSubmit(lop);
             db.SubmitChanges();
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
