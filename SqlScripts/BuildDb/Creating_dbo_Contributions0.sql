@@ -17,7 +17,7 @@ RETURN
 	(
 		SELECT CreditGiverId
 		FROM Contributions2(@fd, @td, @campusid, @pledges, @nontaxded, @includeUnclosed)
-        WHERE (@fundid = 0 OR FundId = @fundid)
+        WHERE (ISNULL(@fundid, 0) = 0 OR FundId = @fundid)
         AND Amount > 0
 		GROUP BY CreditGiverId
 	)
@@ -25,7 +25,7 @@ RETURN
 	(
 		SELECT SpouseId
 		FROM Contributions2(@fd, @td, @campusid, @pledges, @nontaxded, @includeUnclosed)
-        WHERE (@fundid = 0 OR FundId = @fundid)
+        WHERE (ISNULL(@fundid, 0) = 0 OR FundId = @fundid)
         AND Amount > 0
 		AND SpouseId IS NOT NULL
 		GROUP BY CreditGiverId, SpouseId

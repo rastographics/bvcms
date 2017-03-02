@@ -3045,13 +3045,15 @@ namespace CmsData
 		[Function(Name="dbo.GetContributionTotalsBothIfJoint", IsComposable = true)]
 		public IQueryable< View.GetContributionTotalsBothIfJoint > GetContributionTotalsBothIfJoint(
             [Parameter(DbType="datetime")] DateTime? startdt,
-            [Parameter(DbType="datetime")] DateTime? enddt
+            [Parameter(DbType="datetime")] DateTime? enddt,
+            [Parameter(DbType="int")] int? fundid
             )
 		{
 			return this.CreateMethodCallQuery< View.GetContributionTotalsBothIfJoint>(this, 
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 startdt,
-                enddt
+                enddt,
+                fundid
                 );
 		}
 

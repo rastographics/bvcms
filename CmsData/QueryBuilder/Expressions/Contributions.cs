@@ -269,44 +269,45 @@ namespace CmsData
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
             var amt = decimal.Parse(TextValue);
+            var fund = Quarters.ToInt2();
 
             IQueryable<int> q = null;
             switch (op)
             {
                 case CompareType.Greater:
-                    q = from c in db.GetContributionTotalsBothIfJoint(startdt, enddt)
+                    q = from c in db.GetContributionTotalsBothIfJoint(startdt, enddt, fund)
                         where c.Amount > amt
                         select c.PeopleId.Value;
                     break;
                 case CompareType.GreaterEqual:
-                    q = from c in db.GetContributionTotalsBothIfJoint(startdt, enddt)
+                    q = from c in db.GetContributionTotalsBothIfJoint(startdt, enddt, fund)
                         where c.Amount >= amt
                         select c.PeopleId.Value;
                     break;
                 case CompareType.Less:
-                    q = from c in db.GetContributionTotalsBothIfJoint(StartDate, enddt)
+                    q = from c in db.GetContributionTotalsBothIfJoint(StartDate, enddt, fund)
                         where c.Amount > 0
                         where c.Amount <= amt
                         select c.PeopleId.Value;
                     break;
                 case CompareType.LessEqual:
-                    q = from c in db.GetContributionTotalsBothIfJoint(startdt, enddt)
+                    q = from c in db.GetContributionTotalsBothIfJoint(startdt, enddt, fund)
                         where c.Amount > 0
                         where c.Amount <= amt
                         select c.PeopleId.Value;
                     break;
                 case CompareType.Equal:
                     if (amt == 0)
-                        q = from pid in db.Contributions0(startdt, enddt, 0, 0, false, false, true)
+                        q = from pid in db.Contributions0(startdt, enddt, fund, 0, false, false, true)
                             select pid.PeopleId;
                     else
-                        q = from c in db.GetContributionTotalsBothIfJoint(startdt, enddt)
+                        q = from c in db.GetContributionTotalsBothIfJoint(startdt, enddt, fund)
                             where c.Amount > 0
                             where c.Amount == amt
                             select c.PeopleId.Value;
                     break;
                 case CompareType.NotEqual:
-                    q = from c in db.GetContributionTotalsBothIfJoint(startdt, enddt)
+                    q = from c in db.GetContributionTotalsBothIfJoint(startdt, enddt, fund)
                         where c.Amount > 0
                         where c.Amount != amt
                         select c.PeopleId.Value;
