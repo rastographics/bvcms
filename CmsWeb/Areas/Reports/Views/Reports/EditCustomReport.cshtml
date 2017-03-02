@@ -9,6 +9,24 @@
 @section head{
   <style>
     .custom-columns label:hover { background-color: #f5f5f5; }
+body.dragging, body.dragging * {
+  cursor: move !important;
+}
+
+.dragged {
+  position: absolute;
+  opacity: 0.5;
+  z-index: 2000;
+}
+
+ul.sortable li.placeholder {
+  position: relative;
+  /** More li styles **/
+}
+ul.sortable li.placeholder:before {
+  position: absolute;
+  /** Define arrowhead **/
+}
   </style>
 }
 <div class="row">
@@ -85,6 +103,6 @@
 }
 
 @section scripts{
-  @Fingerprint.Script("/Content/touchpoint/lib/html.sortable.min.js")
+  @Fingerprint.Script("/Content/touchpoint/lib/jquery-sortable-min.js")
   @Fingerprint.Script("/Content/touchpoint/js/edit-custom-report.js")
 }

@@ -1008,7 +1008,6 @@
     <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\dialogs\specialLink.js" />
     <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\icons\specialLink.png" />
     <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\plugin.js" />
-    <Content Include="Content\touchpoint\lib\html.sortable.min.js" />
     <Content Include="Content\touchpoint\lib\idleTimer\js\idle-timer.js" />
     <Content Include="Content\touchpoint\lib\idleTimer\js\idle-timer.min.js" />
     <Content Include="Content\touchpoint\lib\ion-sound\js\ion.sound.min.js" />
@@ -1405,6 +1404,7 @@
     <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.cultures.js" />
     <Content Include="Content\touchpoint\lib\jquery-globalize\js\globalize.js" />
     <Content Include="Content\touchpoint\lib\jquery-scrollintoview\js\jquery.scrollintoview.js" />
+    <Content Include="Content\touchpoint\lib\jquery-sortable-min.js" />
     <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-bg_glass_55_fbf9ee_1x400.png" />

@@ -1,5 +1,5 @@
 ﻿(function () {
-    sortable('.sortable', { handle: 'label'});
+    $("ul.sortable").sortable();
     var $form = $('#edit-custom-report-form');
     $form.validate();
 
