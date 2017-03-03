@@ -1,3 +1,4 @@
+
 CREATE VIEW [dbo].[OnlineRegQA]
 AS
 
@@ -7,8 +8,8 @@ questions AS (
 		om.OrganizationId,
 		om.PeopleId,
 		pref.value('(@set)[1]', 'int') AS [set],
-		pref.value('(@question)[1]', 'varchar(500)') AS Question,
-		pref.value('(text())[1]', 'varchar(500)') AS Answer
+		pref.value('(@question)[1]', 'nvarchar(500)') AS Question,
+		pref.value('(text())[1]', 'nvarchar(500)') AS Answer
 	FROM  
 	      dbo.OrganizationMembers om CROSS APPLY
 	      OnlineRegData.nodes('/OnlineRegPersonModel/ExtraQuestion') AS Question(pref)
@@ -19,8 +20,8 @@ questions AS (
 		om.OrganizationId,
 		om.PeopleId,
 		pref.value('(@set)[1]', 'int') AS [set],
-		pref.value('(@question)[1]', 'varchar(500)') AS Question,
-		pref.value('(text())[1]', 'varchar(max)') AS Answer
+		pref.value('(@question)[1]', 'nvarchar(500)') AS Question,
+		pref.value('(text())[1]', 'nvarchar(max)') AS Answer
 	FROM  
 	      dbo.OrganizationMembers om CROSS APPLY
 	      OnlineRegData.nodes('/OnlineRegPersonModel/Text') AS Question(pref)
@@ -31,8 +32,8 @@ questions AS (
 		om.OrganizationId,
 		om.PeopleId,
 		NULL AS [set],
-		pref.value('(@question)[1]', 'varchar(500)') AS Question,
-		pref.value('(text())[1]', 'varchar(500)') AS Answer
+		pref.value('(@question)[1]', 'nvarchar(500)') AS Question,
+		pref.value('(text())[1]', 'nvarchar(500)') AS Answer
 	FROM  
 	      dbo.OrganizationMembers om CROSS APPLY
 	      OnlineRegData.nodes('/OnlineRegPersonModel/YesNoQuestion') AS Question(pref)
@@ -90,6 +91,7 @@ SELECT
 	Answer
 FROM results
 JOIN dbo.People p ON p.PeopleId = results.PeopleId
+
 
 
 

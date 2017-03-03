@@ -484,7 +484,7 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 <p>
 	&nbsp;</p>
 ', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
-EXEC(N'INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (11, N''MemberProfileAutomation'', N''MemberProfileAutomation'', N'' 
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (11, N'MemberProfileAutomation', N'MemberProfileAutomation', N' 
 # this is an IronPython script for MembershipAutomation in BVCMS
 # the variable p has been passed in and is the person that we are saving Member Profile information for
 
@@ -564,8 +564,7 @@ def CheckDecisionStatus(p):
     elif p.DecisionTypeId == DecisionCode.ProfessionNotForMembership:
         p.MemberStatusId = MemberStatusCode.NotMember
         if p.NewMemberClassStatusId != NewMemberClassStatusCode.Attended:
-            NewMemberClassStatusId = New'', ''2013-09-09 23:32:15.190'', 1, 1, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)')
-EXEC(N'UPDATE [dbo].[Content] SET [Body].WRITE(N''MemberClassStatusCode.NotSpecified
+            NewMemberClassStatusId = NewMemberClassStatusCode.NotSpecified
         if p.BaptismStatusId != BaptismStatusCode.Completed:
             p.BaptismTypeId = BaptismTypeCode.NonMember
             p.BaptismStatusId = BaptismStatusCode.NotScheduled
@@ -647,8 +646,7 @@ class MembershipAutomation(object):
             CheckDecisionStatus(p)
 
         if (p.NewMemberClassStatusId == NewMemberClassStatusCode.AdminApproval         or p.NewMemberClassStatusId == NewMemberClassStatusCode.Attended         or p.NewMemberClassStatusId == NewMemberClassStatusCode.GrandFathered         or p.NewMemberClassStatusId == NewMemberClassStatusCode.ExemptedChild)         and p.NewMemberClassDate == None:
-            p.errorR'',NULL,NULL) WHERE [Id] = 11
-UPDATE [dbo].[Content] SET [Body].WRITE(N''eturn = "need a NewMemberClass date"
+            p.errorReturn = "need a NewMemberClass date"
 
         if (p.DecisionTypeId == DecisionCode.Letter         or p.DecisionTypeId == DecisionCode.Statement         or p.DecisionTypeId == DecisionCode.ProfessionForMembership         or p.DecisionTypeId == DecisionCode.ProfessionNotForMembership         or p.DecisionTypeId == DecisionCode.StatementReqBaptism)         and p.DecisionDate == None:
             p.errorReturn = "need a Decision date"
@@ -670,8 +668,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''eturn = "need a NewMemberClass date"
             om = Db.LoadOrgMember(p.PeopleId, "Step 1", False)
             if om != None:
                 om.Drop(True) # drops and records drop in history
-'',NULL,NULL) WHERE [Id] = 11
-')
+', '2013-09-09 23:32:15.190', 1, 1, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (12, N'GivingReceipt', N'Giving Receipt', N'<div style="margin:10px;max-width: 600px">
 	<table cellpadding="0" cellspacing="5" style="width: 100%; font-family:Arial; font-size: 13px; line-height: 15px;">
 		<tbody>
@@ -887,7 +884,7 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 <div bvedit style="max-width:600px;">Click here to edit content</div>
 </body>
 </html>', '2012-06-14 19:18:11.000', 1, 2, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
-EXEC(N'INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (69, N''Basic Newsletter Template'', N''Basic Newsletter Template'', N''<html>
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (69, N'Basic Newsletter Template', N'Basic Newsletter Template', N'<html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         
@@ -1052,8 +1049,7 @@ EXEC(N'INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated]
 				height:auto;
 			}
 			.rightColumnContent{
-				backgrou'', ''2013-09-09 23:32:15.190'', NULL, 2, 4, 18, 0, NULL, NULL, NULL, NULL, NULL)')
-EXEC(N'UPDATE [dbo].[Content] SET [Body].WRITE(N''nd-color:#FFFFFF;
+				background-color:#FFFFFF;
 			}
 			.rightColumnContent div{
 				color:#505050;
@@ -1119,7 +1115,7 @@ EXEC(N'UPDATE [dbo].[Content] SET [Body].WRITE(N''nd-color:#FFFFFF;
                                     	<tr>
                                         	<td valign="top">
                                             	<div bvedit>
-                                                	 Use this area to offer a short teaser of your email''''''''s content. Text here will show in the preview area of some email clients and in Facebook news feed posts.
+                                                	 Use this area to offer a short teaser of your email''''s content. Text here will show in the preview area of some email clients and in Facebook news feed posts.
                                                 </div>
                                             </td>
 											<td valign="top" width="190">
@@ -1150,8 +1146,7 @@ EXEC(N'UPDATE [dbo].[Content] SET [Body].WRITE(N''nd-color:#FFFFFF;
                                 	<table border="0" cellpadding="0" cellspacing="0" width="600" id="templateBody">
                                     	<tr>
                                         	<td valign="top" width="200" id="templateSidebar">
-                                            	<table border="0" cellpadding="0" cel'',NULL,NULL) WHERE [Id] = 69
-UPDATE [dbo].[Content] SET [Body].WRITE(N''lspacing="0" width="200">
+                                            	<table border="0" cellpadding="0" cellspacing="0" width="200">
                                                 	<tr>
                                                     	<td valign="top" class="sidebarContent">
                                                             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="padding-top:10px; padding-left:20px;">
@@ -1190,8 +1185,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''lspacing="0" width="200">
                                                                             <h4>Heading 4</h4>
                                                                             Sections in the side bar are shown here.</div>
                                                                     </td>
-                                                                </t'',NULL,NULL) WHERE [Id] = 69
-UPDATE [dbo].[Content] SET [Body].WRITE(N''r>
+                                                                </tr>
                                                             </table>
                                                         </td>
                                                     </tr>
@@ -1234,8 +1228,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''r>
                                                                             <tr bvrepeat>
                                                                                 <td valign="top">
                                                                                     <img src="http://www.bvcms.com/content/images/placeholder_160.gif" style="max-width:160px;"/>
-          '',NULL,NULL) WHERE [Id] = 69
-UPDATE [dbo].[Content] SET [Body].WRITE(N''                                                                          <div bvedit>
+                                                                                    <div bvedit>
                                                                                         <h4>Heading 4</h4>
                                                                                         <strong>Content blocks:</strong> Put all the great things you want to say here 
                                                                                         and format it like you want it.
@@ -1280,10 +1273,8 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''                                     
                                                             </div>
                                                         </td>
                                                     </tr>
-                           '',NULL,NULL) WHERE [Id] = 69
-UPDATE [dbo].[Content] SET [Body].WRITE(N''                         <tr>
-                     '
-+N'                                   <td valign="top" width="350">
+                                                    <tr>
+                                                        <td valign="top" width="350">
                                                             <br />
                                                             <div>
                                                                 <strong>Our mailing address is:</strong>
@@ -1323,9 +1314,8 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''                         <tr>
         </center>
     </body>
 </html>
-'',NULL,NULL) WHERE [Id] = 69
-')
-EXEC(N'INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (70, N''Basic Template'', N''Basic Template With Header'', N''<html>
+', '2013-09-09 23:32:15.190', NULL, 2, 4, 18, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (70, N'Basic Template', N'Basic Template With Header', N'<html>
 	<head>
 		<title></title>
 		<style type="text/css">
@@ -1497,8 +1487,7 @@ body{margin:0; padding:0;}
 											<table border="0" cellpadding="10" cellspacing="0" width="100%">
 												<tbody>
 													<tr>
-														<td val'', ''2013-09-09 23:32:15.190'', NULL, 2, 5, 0, 0, NULL, NULL, NULL, NULL, NULL)')
-UPDATE [dbo].[Content] SET [Body].WRITE(N'ign="top">
+														<td valign="top">
 															<div bvedit="">
 																Use this area to offer a short teaser of your email&#39;&#39;s content. Text here will show in the preview area of some email clients.</div>
 														</td>
@@ -1588,7 +1577,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N'ign="top">
 		</center>
 	</body>
 </html>
-',NULL,NULL) WHERE [Id] = 70
+', '2013-09-09 23:32:15.190', NULL, 2, 5, 0, 0, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (71, N'ForgotPasswordReset2', N'ForgotPasswordReset2', N'<p>Someone recently requested a new password for {email}.
 To set your password, click your username below:</p>
 <blockquote>{resetlink}</blockquote>
@@ -1887,8 +1876,7 @@ PRINT(N'Operation applied to 8 rows out of 8')
 
 PRINT(N'Add row to [dbo].[ExtraData]')
 SET IDENTITY_INSERT [dbo].[ExtraData] ON
-EXEC(N'INSERT INTO [dbo].[ExtraData] ([Id], [Data], [Stamp], [completed], [OrganizationId], [UserPeopleId], [abandoned]) VALUES (1, N''<OnlineRegModel xmlns="http://schemas.datacontract.org/2004/07/CmsWeb.Models" xmlns:i="http://www.w3.org/2001/XMLSchema-instance"><_Classid i:nil="true"/><_Nologin>true</_Nologin><_Password i:nil="true"/><_TranId>1</_TranId><_UserPeopleId i:nil="true"/><_Username i:nil="true"/><_donation i:nil="true"/><_donor i:nil="true"/><_meeting i:nil="true" xmlns:a="http://schemas.datacontract.org/2004/07/CmsData"/><_x003C_URL_x003E_k__BackingField>https://starterdb.bvcms.com:443/onlinereg/Index/30?testing=true</_x003C_URL_x003E_k__BackingField><_x003C_divid_x003E_k__BackingField i:nil="true"/><_x003C_orgid_x003E_k__BackingField>30</_x003C_orgid_x003E_k__BackingField><_x003C_testing_x003E_k__BackingField>true</_x003C_testing_x003E_k__BackingField><list><OnlineRegPersonModel><CannotCreateAccount>false</CannotCreateAccount><CreatedAccount>false</CreatedAccount><NotFoundText i:nil="true"/><SawExistingAccount>false</SawExistingAccount><_Checkbox i:nil="true" xmlns:a="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/><_ExtraQuestion xmlns:a="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/><_Homephone i:nil="true"/><_IsFamily>false</_IsFamily><_LoggedIn>false</_LoggedIn><_MenuItem xmlns:a="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/><_Middle i:nil="true"/><_Option2 i:nil="true"/><_Whatfamily i:nil="true"/><_YesNoQuestion xmlns:a="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/><_notreq i:nil="true"/><_x003C_CreatingAccount_x003E_k__BackingField i:nil="true"/><_x003C_Found_x003E_k__BackingField>true</_x003C_Found_x003E_k__BackingField><_x003C_IsFilled_x003E_k__BackingField>false</_x003C_IsFilled_x003E_k__BackingField><_x003C_IsNew_x003E_k__BackingField>false</_x003C_IsNew_x003E_k__BackingField><_x003C_IsValidForContinue_x003E_k__BackingField>false</_x003C_IsValidForContinue_x003E_k__BackingField><_x003C_IsValidForExisting_x003E_k__BackingField>true</_x003C_IsValidForExisting_x003E_k__BackingField><_x003C_IsValidForNew_x003E_k__BackingField>false</_x003C_IsValidForNew_x003E_k__BackingField><_x003C_LastItem_x003E_k__BackingField>false</_x003C_LastItem_x003E_k__BackingField><_x003C_OtherOK_x003E_k__BackingField>true</_x003C_OtherOK_x003E_k__BackingField><_x003C_PeopleId_x003E_k__BackingField>64</_x003C_PeopleId_x003E_k__BackingField><_x003C_ShowAddress_x003E_k__BackingField>false</_x003C_ShowAddress_x003E_k__BackingField><_x003C_address_x003E_k__BackingField>9486 Mountain Spring Way</_x003C_address_x003E_k__BackingField><_x003C_advil_x003E_k__BackingField>true</_x003C_advil_x003E_k__BackingField><_x003C_city_x003E_k__BackingField>Germantown</_x003C_city_x003E_k__BackingField><_x003C_classid_x003E_k__BackingField i:nil="true"/><_x003C_coaching_x003E_k__BackingField i:nil="true"/><_x003C_divid_x003E_k__BackingField i:nil="true"/><_x003C_dob_x003E_k__BackingField>10/20/00</_x003C_dob_x003E_k__BackingField><_x003C_docphone_x003E_k__BackingField>901-555-6688</_x003C_docphone_x003E_k__BackingField><_x003C_doctor_x003E_k__BackingField>Dr. Smith</_x003C_doctor_x003E_k__BackingField><_x003C_email_x003E_k__BackingField>karen@bvcms.com</_x003C_email_x003E_k__BackingField><_x003C_emcontact_x003E_k__BackingField>Karen Worrell</_x003C_emcontact_x003E_k__BackingField><_x003C_emphone_x003E_k__BackingField>901-555-7799</_x003C_emphone_x003E_k__BackingField><_x003C_first_x003E_k__BackingField>Sharon </_x003C_first_x003E_k__BackingField><_x003C_fname_x003E_k__BackingField>George Eaton</_x003C_fname_x003E_k__BackingField><_x003C_gender_x003E_k__BackingField>2</_x003C_gender_x003E_k__BackingField><_x003C_grade_x003E_k__BackingField i:nil="true"/><_x003C_gradeoption_x003E_k__BackingField>4</_x003C_gradeoption_x003E_k__BackingField><_x003C_index_x003E_k__BackingField>0</_x003C_index_x003E_k__BackingField><_x003C_insurance_x003E_k__BackingField>Blue Cross</_x003C_insurance_x003E_k__BackingField><_x003C_last_x003E_k__BackingField>Eaton</_x003C_last_x003E_k__BackingField><_x003C_maalox_x003E_k__BackingField>true</_x003C_maal'', ''2011-05-29 20:19:35.977'', NULL, NULL, NULL, NULL)')
-UPDATE [dbo].[ExtraData] SET [Data].WRITE(N'ox_x003E_k__BackingField><_x003C_married_x003E_k__BackingField>1</_x003C_married_x003E_k__BackingField><_x003C_medical_x003E_k__BackingField>peanuts</_x003C_medical_x003E_k__BackingField><_x003C_memberus_x003E_k__BackingField>false</_x003C_memberus_x003E_k__BackingField><_x003C_mname_x003E_k__BackingField>Cheryl Eaton</_x003C_mname_x003E_k__BackingField><_x003C_ntickets_x003E_k__BackingField i:nil="true"/><_x003C_option_x003E_k__BackingField i:nil="true"/><_x003C_orgid_x003E_k__BackingField>30</_x003C_orgid_x003E_k__BackingField><_x003C_otherchurch_x003E_k__BackingField>true</_x003C_otherchurch_x003E_k__BackingField><_x003C_paydeposit_x003E_k__BackingField>true</_x003C_paydeposit_x003E_k__BackingField><_x003C_phone_x003E_k__BackingField>9017565372</_x003C_phone_x003E_k__BackingField><_x003C_policy_x003E_k__BackingField>123</_x003C_policy_x003E_k__BackingField><_x003C_request_x003E_k__BackingField>Betsy Williams, Joan Ralston</_x003C_request_x003E_k__BackingField><_x003C_robitussin_x003E_k__BackingField>true</_x003C_robitussin_x003E_k__BackingField><_x003C_shirtsize_x003E_k__BackingField>Y M</_x003C_shirtsize_x003E_k__BackingField><_x003C_state_x003E_k__BackingField>TN</_x003C_state_x003E_k__BackingField><_x003C_suffix_x003E_k__BackingField i:nil="true"/><_x003C_tylenol_x003E_k__BackingField>true</_x003C_tylenol_x003E_k__BackingField><_x003C_zip_x003E_k__BackingField>38139</_x003C_zip_x003E_k__BackingField><count>1</count></OnlineRegPersonModel></list></OnlineRegModel>',NULL,NULL) WHERE [Id] = 1
+INSERT INTO [dbo].[ExtraData] ([Id], [Data], [Stamp], [completed], [OrganizationId], [UserPeopleId], [abandoned]) VALUES (1, N'<OnlineRegModel xmlns="http://schemas.datacontract.org/2004/07/CmsWeb.Models" xmlns:i="http://www.w3.org/2001/XMLSchema-instance"><_Classid i:nil="true"/><_Nologin>true</_Nologin><_Password i:nil="true"/><_TranId>1</_TranId><_UserPeopleId i:nil="true"/><_Username i:nil="true"/><_donation i:nil="true"/><_donor i:nil="true"/><_meeting i:nil="true" xmlns:a="http://schemas.datacontract.org/2004/07/CmsData"/><_x003C_URL_x003E_k__BackingField>https://starterdb.bvcms.com:443/onlinereg/Index/30?testing=true</_x003C_URL_x003E_k__BackingField><_x003C_divid_x003E_k__BackingField i:nil="true"/><_x003C_orgid_x003E_k__BackingField>30</_x003C_orgid_x003E_k__BackingField><_x003C_testing_x003E_k__BackingField>true</_x003C_testing_x003E_k__BackingField><list><OnlineRegPersonModel><CannotCreateAccount>false</CannotCreateAccount><CreatedAccount>false</CreatedAccount><NotFoundText i:nil="true"/><SawExistingAccount>false</SawExistingAccount><_Checkbox i:nil="true" xmlns:a="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/><_ExtraQuestion xmlns:a="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/><_Homephone i:nil="true"/><_IsFamily>false</_IsFamily><_LoggedIn>false</_LoggedIn><_MenuItem xmlns:a="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/><_Middle i:nil="true"/><_Option2 i:nil="true"/><_Whatfamily i:nil="true"/><_YesNoQuestion xmlns:a="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/><_notreq i:nil="true"/><_x003C_CreatingAccount_x003E_k__BackingField i:nil="true"/><_x003C_Found_x003E_k__BackingField>true</_x003C_Found_x003E_k__BackingField><_x003C_IsFilled_x003E_k__BackingField>false</_x003C_IsFilled_x003E_k__BackingField><_x003C_IsNew_x003E_k__BackingField>false</_x003C_IsNew_x003E_k__BackingField><_x003C_IsValidForContinue_x003E_k__BackingField>false</_x003C_IsValidForContinue_x003E_k__BackingField><_x003C_IsValidForExisting_x003E_k__BackingField>true</_x003C_IsValidForExisting_x003E_k__BackingField><_x003C_IsValidForNew_x003E_k__BackingField>false</_x003C_IsValidForNew_x003E_k__BackingField><_x003C_LastItem_x003E_k__BackingField>false</_x003C_LastItem_x003E_k__BackingField><_x003C_OtherOK_x003E_k__BackingField>true</_x003C_OtherOK_x003E_k__BackingField><_x003C_PeopleId_x003E_k__BackingField>64</_x003C_PeopleId_x003E_k__BackingField><_x003C_ShowAddress_x003E_k__BackingField>false</_x003C_ShowAddress_x003E_k__BackingField><_x003C_address_x003E_k__BackingField>9486 Mountain Spring Way</_x003C_address_x003E_k__BackingField><_x003C_advil_x003E_k__BackingField>true</_x003C_advil_x003E_k__BackingField><_x003C_city_x003E_k__BackingField>Germantown</_x003C_city_x003E_k__BackingField><_x003C_classid_x003E_k__BackingField i:nil="true"/><_x003C_coaching_x003E_k__BackingField i:nil="true"/><_x003C_divid_x003E_k__BackingField i:nil="true"/><_x003C_dob_x003E_k__BackingField>10/20/00</_x003C_dob_x003E_k__BackingField><_x003C_docphone_x003E_k__BackingField>901-555-6688</_x003C_docphone_x003E_k__BackingField><_x003C_doctor_x003E_k__BackingField>Dr. Smith</_x003C_doctor_x003E_k__BackingField><_x003C_email_x003E_k__BackingField>karen@bvcms.com</_x003C_email_x003E_k__BackingField><_x003C_emcontact_x003E_k__BackingField>Karen Worrell</_x003C_emcontact_x003E_k__BackingField><_x003C_emphone_x003E_k__BackingField>901-555-7799</_x003C_emphone_x003E_k__BackingField><_x003C_first_x003E_k__BackingField>Sharon </_x003C_first_x003E_k__BackingField><_x003C_fname_x003E_k__BackingField>George Eaton</_x003C_fname_x003E_k__BackingField><_x003C_gender_x003E_k__BackingField>2</_x003C_gender_x003E_k__BackingField><_x003C_grade_x003E_k__BackingField i:nil="true"/><_x003C_gradeoption_x003E_k__BackingField>4</_x003C_gradeoption_x003E_k__BackingField><_x003C_index_x003E_k__BackingField>0</_x003C_index_x003E_k__BackingField><_x003C_insurance_x003E_k__BackingField>Blue Cross</_x003C_insurance_x003E_k__BackingField><_x003C_last_x003E_k__BackingField>Eaton</_x003C_last_x003E_k__BackingField><_x003C_maalox_x003E_k__BackingField>true</_x003C_maalox_x003E_k__BackingField><_x003C_married_x003E_k__BackingField>1</_x003C_married_x003E_k__BackingField><_x003C_medical_x003E_k__BackingField>peanuts</_x003C_medical_x003E_k__BackingField><_x003C_memberus_x003E_k__BackingField>false</_x003C_memberus_x003E_k__BackingField><_x003C_mname_x003E_k__BackingField>Cheryl Eaton</_x003C_mname_x003E_k__BackingField><_x003C_ntickets_x003E_k__BackingField i:nil="true"/><_x003C_option_x003E_k__BackingField i:nil="true"/><_x003C_orgid_x003E_k__BackingField>30</_x003C_orgid_x003E_k__BackingField><_x003C_otherchurch_x003E_k__BackingField>true</_x003C_otherchurch_x003E_k__BackingField><_x003C_paydeposit_x003E_k__BackingField>true</_x003C_paydeposit_x003E_k__BackingField><_x003C_phone_x003E_k__BackingField>9017565372</_x003C_phone_x003E_k__BackingField><_x003C_policy_x003E_k__BackingField>123</_x003C_policy_x003E_k__BackingField><_x003C_request_x003E_k__BackingField>Betsy Williams, Joan Ralston</_x003C_request_x003E_k__BackingField><_x003C_robitussin_x003E_k__BackingField>true</_x003C_robitussin_x003E_k__BackingField><_x003C_shirtsize_x003E_k__BackingField>Y M</_x003C_shirtsize_x003E_k__BackingField><_x003C_state_x003E_k__BackingField>TN</_x003C_state_x003E_k__BackingField><_x003C_suffix_x003E_k__BackingField i:nil="true"/><_x003C_tylenol_x003E_k__BackingField>true</_x003C_tylenol_x003E_k__BackingField><_x003C_zip_x003E_k__BackingField>38139</_x003C_zip_x003E_k__BackingField><count>1</count></OnlineRegPersonModel></list></OnlineRegModel>', '2011-05-29 20:19:35.977', NULL, NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[ExtraData] OFF
 
 PRINT(N'Add rows to [dbo].[LabelFormats]')
