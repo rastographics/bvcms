@@ -6,7 +6,7 @@ CREATE TABLE [dbo].[OrgContent]
 [PublicView] [bit] NULL,
 [ImageId] [int] NULL,
 [Landing] [bit] NULL
-)
+) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

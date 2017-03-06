@@ -1,4 +1,4 @@
-ALTER TABLE [dbo].[Contactors] ADD CONSTRAINT [PK_Contactors] PRIMARY KEY CLUSTERED  ([ContactId], [PeopleId])
+ALTER TABLE [dbo].[Contactors] ADD CONSTRAINT [PK_Contactors] PRIMARY KEY CLUSTERED  ([ContactId], [PeopleId]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

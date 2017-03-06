@@ -7,7 +7,7 @@ CREATE TABLE [dbo].[EnrollmentTransaction]
 [TransactionDate] [datetime] NOT NULL,
 [TransactionTypeId] [int] NOT NULL,
 [OrganizationId] [int] NOT NULL,
-[OrganizationName] [nvarchar] (100) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+[OrganizationName] [nvarchar] (100) NOT NULL,
 [PeopleId] [int] NOT NULL,
 [MemberTypeId] [int] NOT NULL,
 [EnrollmentDate] [datetime] NULL,
@@ -16,17 +16,17 @@ CREATE TABLE [dbo].[EnrollmentTransaction]
 [EnrollmentTransactionId] [int] NULL,
 [Pending] [bit] NULL,
 [InactiveDate] [datetime] NULL,
-[UserData] [nvarchar] (max) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-[Request] [nvarchar] (140) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-[ShirtSize] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[UserData] [nvarchar] (max) NULL,
+[Request] [nvarchar] (140) NULL,
+[ShirtSize] [nvarchar] (50) NULL,
 [Grade] [int] NULL,
 [Tickets] [int] NULL,
-[RegisterEmail] [nvarchar] (80) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[RegisterEmail] [nvarchar] (80) NULL,
 [TranId] [int] NULL,
 [Score] [int] NOT NULL CONSTRAINT [DF_EnrollmentTransaction_Score] DEFAULT ((0)),
-[SmallGroups] [nvarchar] (2000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[SmallGroups] [nvarchar] (2000) NULL,
 [SkipInsertTriggerProcessing] [bit] NULL
-)
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

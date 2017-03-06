@@ -1,4 +1,4 @@
-ALTER TABLE [dbo].[EmailOptOut] ADD CONSTRAINT [PK_EmailOptOut_1] PRIMARY KEY CLUSTERED  ([ToPeopleId], [FromEmail])
+ALTER TABLE [dbo].[EmailOptOut] ADD CONSTRAINT [PK_EmailOptOut_1] PRIMARY KEY CLUSTERED  ([ToPeopleId], [FromEmail]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

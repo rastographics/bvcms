@@ -1,4 +1,4 @@
-CREATE NONCLUSTERED INDEX [IX_Task] ON [dbo].[Task] ([OwnerId])
+CREATE NONCLUSTERED INDEX [IX_Task] ON [dbo].[Task] ([OwnerId]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

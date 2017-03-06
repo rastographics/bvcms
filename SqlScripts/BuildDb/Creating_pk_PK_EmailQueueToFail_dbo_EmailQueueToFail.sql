@@ -1,4 +1,4 @@
-ALTER TABLE [dbo].[EmailQueueToFail] ADD CONSTRAINT [PK_EmailQueueToFail] PRIMARY KEY CLUSTERED  ([pkey])
+ALTER TABLE [dbo].[EmailQueueToFail] ADD CONSTRAINT [PK_EmailQueueToFail] PRIMARY KEY CLUSTERED  ([pkey]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

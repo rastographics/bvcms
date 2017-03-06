@@ -16,7 +16,7 @@ CREATE TABLE [dbo].[BundleHeader]
 [ModifiedBy] [int] NULL,
 [ModifiedDate] [datetime] NULL,
 [FundId] [int] NULL
-)
+) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

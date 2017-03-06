@@ -1,8 +1,8 @@
 CREATE TABLE [dbo].[words]
 (
-[word] [nvarchar] (20) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+[word] [nvarchar] (20) NOT NULL,
 [n] [int] NULL
-)
+) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

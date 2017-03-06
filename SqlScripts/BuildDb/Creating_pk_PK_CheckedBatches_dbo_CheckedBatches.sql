@@ -1,4 +1,4 @@
-ALTER TABLE [dbo].[CheckedBatches] ADD CONSTRAINT [PK_CheckedBatches] PRIMARY KEY CLUSTERED  ([BatchRef])
+ALTER TABLE [dbo].[CheckedBatches] ADD CONSTRAINT [PK_CheckedBatches] PRIMARY KEY CLUSTERED  ([BatchRef]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

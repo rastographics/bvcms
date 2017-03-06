@@ -8,7 +8,7 @@ CREATE TABLE [dbo].[GoerSenderAmounts]
 [Created] [datetime] NULL,
 [InActive] [bit] NULL,
 [NoNoticeToGoer] [bit] NULL
-)
+) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

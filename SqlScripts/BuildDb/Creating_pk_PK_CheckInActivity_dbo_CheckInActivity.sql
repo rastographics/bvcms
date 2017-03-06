@@ -1,4 +1,4 @@
-ALTER TABLE [dbo].[CheckInActivity] ADD CONSTRAINT [PK_CheckInActivity] PRIMARY KEY CLUSTERED  ([Id], [Activity])
+ALTER TABLE [dbo].[CheckInActivity] ADD CONSTRAINT [PK_CheckInActivity] PRIMARY KEY CLUSTERED  ([Id], [Activity]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

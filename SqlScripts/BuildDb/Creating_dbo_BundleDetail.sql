@@ -8,7 +8,7 @@ CREATE TABLE [dbo].[BundleDetail]
 [BundleSort1] [int] NULL,
 [RefOrgId] [int] NULL,
 [RefPeopleId] [int] NULL
-)
+) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

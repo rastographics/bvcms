@@ -1,4 +1,4 @@
-ALTER TABLE [dbo].[UploadPeopleRun] ADD CONSTRAINT [PK_UploadPeopleRun] PRIMARY KEY CLUSTERED  ([id])
+ALTER TABLE [dbo].[UploadPeopleRun] ADD CONSTRAINT [PK_UploadPeopleRun] PRIMARY KEY CLUSTERED  ([id]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

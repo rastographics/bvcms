@@ -1,4 +1,4 @@
-ALTER TABLE [dbo].[ChurchAttReportIds] ADD CONSTRAINT [PK_ChurchAttReportIds] PRIMARY KEY CLUSTERED  ([Name])
+ALTER TABLE [dbo].[ChurchAttReportIds] ADD CONSTRAINT [PK_ChurchAttReportIds] PRIMARY KEY CLUSTERED  ([Name]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

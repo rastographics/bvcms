@@ -1,4 +1,4 @@
-CREATE NONCLUSTERED INDEX [IX_OrgContent] ON [dbo].[OrgContent] ([OrgId])
+CREATE NONCLUSTERED INDEX [IX_OrgContent] ON [dbo].[OrgContent] ([OrgId]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

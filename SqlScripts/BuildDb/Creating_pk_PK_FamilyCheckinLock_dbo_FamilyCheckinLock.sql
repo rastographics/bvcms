@@ -1,4 +1,4 @@
-ALTER TABLE [dbo].[FamilyCheckinLock] ADD CONSTRAINT [PK_FamilyCheckinLock] PRIMARY KEY CLUSTERED  ([FamilyId])
+ALTER TABLE [dbo].[FamilyCheckinLock] ADD CONSTRAINT [PK_FamilyCheckinLock] PRIMARY KEY CLUSTERED  ([FamilyId]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

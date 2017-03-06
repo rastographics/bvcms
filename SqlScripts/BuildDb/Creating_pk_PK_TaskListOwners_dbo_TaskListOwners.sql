@@ -1,4 +1,4 @@
-ALTER TABLE [dbo].[TaskListOwners] ADD CONSTRAINT [PK_TaskListOwners] PRIMARY KEY CLUSTERED  ([TaskListId], [PeopleId])
+ALTER TABLE [dbo].[TaskListOwners] ADD CONSTRAINT [PK_TaskListOwners] PRIMARY KEY CLUSTERED  ([TaskListId], [PeopleId]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

@@ -14,12 +14,12 @@ CREATE TABLE [dbo].[Contact]
 [PrayerRequest] [bit] NULL,
 [ContactMade] [bit] NULL,
 [GiftBagGiven] [bit] NULL,
-[Comments] [nvarchar] (max) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[Comments] [nvarchar] (max) NULL,
 [ModifiedBy] [int] NULL,
 [ModifiedDate] [datetime] NULL,
-[LimitToRole] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[LimitToRole] [nvarchar] (50) NULL,
 [OrganizationId] [int] NULL
-)
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

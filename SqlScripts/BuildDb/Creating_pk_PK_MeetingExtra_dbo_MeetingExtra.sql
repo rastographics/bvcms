@@ -1,4 +1,4 @@
-ALTER TABLE [dbo].[MeetingExtra] ADD CONSTRAINT [PK_MeetingExtra] PRIMARY KEY CLUSTERED  ([MeetingId], [Field])
+ALTER TABLE [dbo].[MeetingExtra] ADD CONSTRAINT [PK_MeetingExtra] PRIMARY KEY CLUSTERED  ([MeetingId], [Field]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

@@ -1,10 +1,10 @@
 CREATE TABLE [dbo].[RssFeed]
 (
-[Url] [nvarchar] (150) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
-[Data] [nvarchar] (max) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-[ETag] [nvarchar] (150) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[Url] [nvarchar] (150) NOT NULL,
+[Data] [nvarchar] (max) NULL,
+[ETag] [nvarchar] (150) NULL,
 [LastModified] [datetime] NULL
-)
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

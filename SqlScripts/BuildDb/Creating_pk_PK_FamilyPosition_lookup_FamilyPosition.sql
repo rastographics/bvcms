@@ -1,4 +1,4 @@
-ALTER TABLE [lookup].[FamilyPosition] ADD CONSTRAINT [PK_FamilyPosition] PRIMARY KEY CLUSTERED  ([Id])
+ALTER TABLE [lookup].[FamilyPosition] ADD CONSTRAINT [PK_FamilyPosition] PRIMARY KEY CLUSTERED  ([Id]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

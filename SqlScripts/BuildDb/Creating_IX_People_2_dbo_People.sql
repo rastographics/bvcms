@@ -1,4 +1,4 @@
-CREATE NONCLUSTERED INDEX [IX_People_2] ON [dbo].[People] ([CellPhoneLU])
+CREATE NONCLUSTERED INDEX [IX_People_2] ON [dbo].[People] ([CellPhoneLU]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

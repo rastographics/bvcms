@@ -5,7 +5,7 @@ CREATE TABLE [dbo].[TransactionPeople]
 [Amt] [money] NULL,
 [OrgId] [int] NULL,
 [Donor] [bit] NULL
-)
+) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

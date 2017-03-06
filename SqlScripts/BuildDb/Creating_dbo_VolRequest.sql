@@ -6,7 +6,7 @@ CREATE TABLE [dbo].[VolRequest]
 [VolunteerId] [int] NOT NULL,
 [Responded] [datetime] NULL,
 [CanVol] [bit] NULL
-)
+) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

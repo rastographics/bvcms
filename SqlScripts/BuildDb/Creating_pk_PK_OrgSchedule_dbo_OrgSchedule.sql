@@ -1,4 +1,4 @@
-ALTER TABLE [dbo].[OrgSchedule] ADD CONSTRAINT [PK_OrgSchedule] PRIMARY KEY CLUSTERED  ([OrganizationId], [Id])
+ALTER TABLE [dbo].[OrgSchedule] ADD CONSTRAINT [PK_OrgSchedule] PRIMARY KEY CLUSTERED  ([OrganizationId], [Id]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

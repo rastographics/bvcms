@@ -1,4 +1,4 @@
-ALTER TABLE [dbo].[Duplicate] ADD CONSTRAINT [PK_Duplicate] PRIMARY KEY CLUSTERED  ([id1], [id2])
+ALTER TABLE [dbo].[Duplicate] ADD CONSTRAINT [PK_Duplicate] PRIMARY KEY CLUSTERED  ([id1], [id2]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

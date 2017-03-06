@@ -9,20 +9,20 @@ CREATE TABLE [dbo].[OrganizationMembers]
 [ModifiedBy] [int] NULL,
 [ModifiedDate] [datetime] NULL,
 [InactiveDate] [datetime] NULL,
-[AttendStr] [nvarchar] (300) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[AttendStr] [nvarchar] (300) NULL,
 [AttendPct] [real] NULL,
 [LastAttended] [datetime] NULL,
 [Pending] [bit] NULL,
-[UserData] [nvarchar] (max) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[UserData] [nvarchar] (max) NULL,
 [Amount] [money] NULL,
-[Request] [nvarchar] (140) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-[ShirtSize] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[Request] [nvarchar] (140) NULL,
+[ShirtSize] [nvarchar] (50) NULL,
 [Grade] [int] NULL,
 [Tickets] [int] NULL,
 [Moved] [bit] NULL,
-[RegisterEmail] [nvarchar] (80) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[RegisterEmail] [nvarchar] (80) NULL,
 [AmountPaid] [money] NULL,
-[PayLink] [nvarchar] (100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[PayLink] [nvarchar] (100) NULL,
 [TranId] [int] NULL,
 [Score] [int] NOT NULL CONSTRAINT [DF_OrganizationMembers_Score] DEFAULT ((0)),
 [DatumId] [int] NULL,
@@ -30,7 +30,7 @@ CREATE TABLE [dbo].[OrganizationMembers]
 [SkipInsertTriggerProcessing] [bit] NULL,
 [RegistrationDataId] [int] NULL,
 [OnlineRegData] [xml] NULL
-)
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

@@ -8,8 +8,8 @@ CREATE TABLE [dbo].[VolunteerForm]
 [Id] [int] NOT NULL IDENTITY(1, 1),
 [UploaderId] [int] NULL,
 [IsDocument] [bit] NULL,
-[Name] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL
-)
+[Name] [nvarchar] (50) NULL
+) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

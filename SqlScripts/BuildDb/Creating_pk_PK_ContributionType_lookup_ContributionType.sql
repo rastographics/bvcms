@@ -1,4 +1,4 @@
-ALTER TABLE [lookup].[ContributionType] ADD CONSTRAINT [PK_ContributionType] PRIMARY KEY CLUSTERED  ([Id])
+ALTER TABLE [lookup].[ContributionType] ADD CONSTRAINT [PK_ContributionType] PRIMARY KEY CLUSTERED  ([Id]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

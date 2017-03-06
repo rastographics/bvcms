@@ -7,7 +7,7 @@ CREATE TABLE [dbo].[OrgSchedule]
 [SchedDay] [int] NULL,
 [MeetingTime] [datetime] NULL,
 [AttendCreditId] [int] NULL
-)
+) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

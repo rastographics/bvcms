@@ -1,4 +1,4 @@
-CREATE UNIQUE NONCLUSTERED INDEX [IX_SecurityCodes] ON [dbo].[SecurityCodes] ([Id])
+CREATE UNIQUE NONCLUSTERED INDEX [IX_SecurityCodes] ON [dbo].[SecurityCodes] ([Id]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

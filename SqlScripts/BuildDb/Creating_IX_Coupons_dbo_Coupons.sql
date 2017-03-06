@@ -1,4 +1,4 @@
-CREATE NONCLUSTERED INDEX [IX_Coupons] ON [dbo].[Coupons] ([Created] DESC)
+CREATE NONCLUSTERED INDEX [IX_Coupons] ON [dbo].[Coupons] ([Created] DESC) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

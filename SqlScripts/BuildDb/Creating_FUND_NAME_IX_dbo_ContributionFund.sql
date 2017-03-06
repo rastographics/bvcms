@@ -1,4 +1,4 @@
-CREATE NONCLUSTERED INDEX [FUND_NAME_IX] ON [dbo].[ContributionFund] ([FundName])
+CREATE NONCLUSTERED INDEX [FUND_NAME_IX] ON [dbo].[ContributionFund] ([FundName]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

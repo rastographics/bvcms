@@ -1,4 +1,4 @@
-ALTER TABLE [dbo].[BackgroundChecks] ADD CONSTRAINT [PK_BackgroundChecks] PRIMARY KEY CLUSTERED  ([ID])
+ALTER TABLE [dbo].[BackgroundChecks] ADD CONSTRAINT [PK_BackgroundChecks] PRIMARY KEY CLUSTERED  ([ID]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

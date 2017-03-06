@@ -1,9 +1,9 @@
 CREATE TABLE [lookup].[StateLookup]
 (
-[StateCode] [nvarchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
-[StateName] [nvarchar] (30) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[StateCode] [nvarchar] (10) NOT NULL,
+[StateName] [nvarchar] (30) NULL,
 [Hardwired] [bit] NULL
-)
+) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

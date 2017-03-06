@@ -2,11 +2,11 @@ CREATE TABLE [dbo].[Users]
 (
 [UserId] [int] NOT NULL IDENTITY(1, 1),
 [PeopleId] [int] NULL,
-[Username] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
-[Comment] [nvarchar] (255) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-[Password] [nvarchar] (128) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
-[PasswordQuestion] [nvarchar] (255) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-[PasswordAnswer] [nvarchar] (255) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[Username] [nvarchar] (50) NOT NULL,
+[Comment] [nvarchar] (255) NULL,
+[Password] [nvarchar] (128) NOT NULL,
+[PasswordQuestion] [nvarchar] (255) NULL,
+[PasswordAnswer] [nvarchar] (255) NULL,
 [IsApproved] [bit] NOT NULL CONSTRAINT [DF_Users_IsApproved] DEFAULT ((0)),
 [LastActivityDate] [datetime] NULL,
 [LastLoginDate] [datetime] NULL,
@@ -20,16 +20,16 @@ CREATE TABLE [dbo].[Users]
 [FailedPasswordAnswerAttemptWindowStart] [datetime] NULL,
 [EmailAddress] AS ([dbo].[UEmail]([PeopleId])),
 [ItemsInGrid] [int] NULL,
-[CurrentCart] [nvarchar] (100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[CurrentCart] [nvarchar] (100) NULL,
 [MustChangePassword] [bit] NOT NULL CONSTRAINT [DF_Users_MustChangePassword] DEFAULT ((0)),
-[Host] [nvarchar] (100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-[TempPassword] [nvarchar] (128) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-[Name] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-[Name2] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[Host] [nvarchar] (100) NULL,
+[TempPassword] [nvarchar] (128) NULL,
+[Name] [nvarchar] (50) NULL,
+[Name2] [nvarchar] (50) NULL,
 [ResetPasswordCode] [uniqueidentifier] NULL,
-[DefaultGroup] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[DefaultGroup] [nvarchar] (50) NULL,
 [ResetPasswordExpires] [datetime] NULL
-)
+) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

@@ -1,10 +1,10 @@
 CREATE TABLE [lookup].[ContributionType]
 (
 [Id] [int] NOT NULL,
-[Code] [nvarchar] (5) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-[Description] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[Code] [nvarchar] (5) NULL,
+[Description] [nvarchar] (50) NULL,
 [Hardwired] [bit] NULL
-)
+) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

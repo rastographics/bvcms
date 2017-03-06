@@ -9,22 +9,22 @@ CREATE TABLE [dbo].[Task]
 [CreatedOn] [datetime] NOT NULL,
 [SourceContactId] [int] NULL,
 [CompletedContactId] [int] NULL,
-[Notes] [nvarchar] (max) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[Notes] [nvarchar] (max) NULL,
 [ModifiedBy] [int] NULL,
 [ModifiedOn] [datetime] NULL,
-[Project] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[Project] [nvarchar] (50) NULL,
 [Archive] [bit] NOT NULL CONSTRAINT [DF_Task_Archive] DEFAULT ((0)),
 [Priority] [int] NULL,
 [WhoId] [int] NULL,
 [Due] [datetime] NULL,
-[Location] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-[Description] [nvarchar] (100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[Location] [nvarchar] (50) NULL,
+[Description] [nvarchar] (100) NULL,
 [CompletedOn] [datetime] NULL,
 [ForceCompleteWContact] [bit] NULL,
 [OrginatorId] [int] NULL,
-[DeclineReason] [nvarchar] (max) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-[LimitToRole] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL
-)
+[DeclineReason] [nvarchar] (max) NULL,
+[LimitToRole] [nvarchar] (50) NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

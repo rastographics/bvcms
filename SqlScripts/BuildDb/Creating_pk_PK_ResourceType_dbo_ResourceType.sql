@@ -1,4 +1,4 @@
-ALTER TABLE [dbo].[ResourceType] ADD CONSTRAINT [PK_ResourceType] PRIMARY KEY CLUSTERED  ([ResourceTypeId])
+ALTER TABLE [dbo].[ResourceType] ADD CONSTRAINT [PK_ResourceType] PRIMARY KEY CLUSTERED  ([ResourceTypeId]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

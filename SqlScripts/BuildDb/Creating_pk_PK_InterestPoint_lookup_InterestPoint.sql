@@ -1,4 +1,4 @@
-ALTER TABLE [lookup].[InterestPoint] ADD CONSTRAINT [PK_InterestPoint] PRIMARY KEY CLUSTERED  ([Id])
+ALTER TABLE [lookup].[InterestPoint] ADD CONSTRAINT [PK_InterestPoint] PRIMARY KEY CLUSTERED  ([Id]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

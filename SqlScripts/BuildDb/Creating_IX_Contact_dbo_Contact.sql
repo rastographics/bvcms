@@ -1,4 +1,4 @@
-CREATE NONCLUSTERED INDEX [IX_Contact] ON [dbo].[Contact] ([LimitToRole])
+CREATE NONCLUSTERED INDEX [IX_Contact] ON [dbo].[Contact] ([LimitToRole]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

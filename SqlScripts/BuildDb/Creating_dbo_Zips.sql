@@ -1,8 +1,8 @@
 CREATE TABLE [dbo].[Zips]
 (
-[ZipCode] [nvarchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+[ZipCode] [nvarchar] (10) NOT NULL,
 [MetroMarginalCode] [int] NULL
-)
+) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

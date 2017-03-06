@@ -1,4 +1,4 @@
-CREATE NONCLUSTERED INDEX [IX_TagPerson] ON [dbo].[TagPerson] ([PeopleId])
+CREATE NONCLUSTERED INDEX [IX_TagPerson] ON [dbo].[TagPerson] ([PeopleId]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

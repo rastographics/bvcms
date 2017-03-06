@@ -1,10 +1,10 @@
 CREATE TABLE [dbo].[AuditValues]
 (
 [AuditId] [int] NOT NULL,
-[MemberName] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
-[OldValue] [nvarchar] (max) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-[NewValue] [nvarchar] (max) COLLATE SQL_Latin1_General_CP1_CI_AS NULL
-)
+[MemberName] [nvarchar] (50) NOT NULL,
+[OldValue] [nvarchar] (max) NULL,
+[NewValue] [nvarchar] (max) NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

@@ -1,4 +1,4 @@
-ALTER TABLE [dbo].[ContentKeyWords] ADD CONSTRAINT [PK_ContentKeyWords] PRIMARY KEY CLUSTERED  ([Id], [Word])
+ALTER TABLE [dbo].[ContentKeyWords] ADD CONSTRAINT [PK_ContentKeyWords] PRIMARY KEY CLUSTERED  ([Id], [Word]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

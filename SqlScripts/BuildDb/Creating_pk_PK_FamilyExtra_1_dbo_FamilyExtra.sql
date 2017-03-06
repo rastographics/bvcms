@@ -1,4 +1,4 @@
-ALTER TABLE [dbo].[FamilyExtra] ADD CONSTRAINT [PK_FamilyExtra_1] PRIMARY KEY CLUSTERED  ([FamilyId], [Field])
+ALTER TABLE [dbo].[FamilyExtra] ADD CONSTRAINT [PK_FamilyExtra_1] PRIMARY KEY CLUSTERED  ([FamilyId], [Field]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

@@ -1,4 +1,4 @@
-ALTER TABLE [dbo].[CustomColumns] ADD CONSTRAINT [PK_CustomColumns] PRIMARY KEY CLUSTERED  ([Column])
+ALTER TABLE [dbo].[CustomColumns] ADD CONSTRAINT [PK_CustomColumns] PRIMARY KEY CLUSTERED  ([Column]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

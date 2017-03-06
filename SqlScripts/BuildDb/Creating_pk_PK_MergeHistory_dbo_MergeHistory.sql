@@ -1,4 +1,4 @@
-ALTER TABLE [dbo].[MergeHistory] ADD CONSTRAINT [PK_MergeHistory] PRIMARY KEY CLUSTERED  ([FromId], [ToId], [Dt])
+ALTER TABLE [dbo].[MergeHistory] ADD CONSTRAINT [PK_MergeHistory] PRIMARY KEY CLUSTERED  ([FromId], [ToId], [Dt]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

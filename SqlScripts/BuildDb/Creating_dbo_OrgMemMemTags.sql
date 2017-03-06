@@ -5,7 +5,7 @@ CREATE TABLE [dbo].[OrgMemMemTags]
 [MemberTagId] [int] NOT NULL,
 [Number] [int] NULL,
 [IsLeader] [bit] NULL
-)
+) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

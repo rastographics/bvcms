@@ -1,4 +1,4 @@
-CREATE NONCLUSTERED INDEX [IX_CheckInTimes_1] ON [dbo].[CheckInTimes] ([CheckInTime])
+CREATE NONCLUSTERED INDEX [IX_CheckInTimes_1] ON [dbo].[CheckInTimes] ([CheckInTime]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

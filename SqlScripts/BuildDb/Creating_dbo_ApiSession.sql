@@ -5,7 +5,7 @@ CREATE TABLE [dbo].[ApiSession]
 [PIN] [int] NULL,
 [LastAccessedDate] [datetime] NOT NULL,
 [CreatedDate] [datetime] NOT NULL
-)
+) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

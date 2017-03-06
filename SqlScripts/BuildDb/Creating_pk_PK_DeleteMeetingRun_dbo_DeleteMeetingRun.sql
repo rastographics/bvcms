@@ -1,4 +1,4 @@
-ALTER TABLE [dbo].[DeleteMeetingRun] ADD CONSTRAINT [PK_DeleteMeetingRun] PRIMARY KEY CLUSTERED  ([id])
+ALTER TABLE [dbo].[DeleteMeetingRun] ADD CONSTRAINT [PK_DeleteMeetingRun] PRIMARY KEY CLUSTERED  ([id]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

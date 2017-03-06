@@ -7,9 +7,9 @@ CREATE TABLE [dbo].[Downline]
 [LeaderId] [int] NULL,
 [DiscipleId] [int] NULL,
 [StartDt] [datetime] NULL,
-[Trace] [varchar] (400) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[Trace] [varchar] (400) NULL,
 [EndDt] [datetime] NULL
-)
+) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

@@ -4,9 +4,9 @@ CREATE TABLE [dbo].[EmailQueueTo]
 [PeopleId] [int] NOT NULL,
 [OrgId] [int] NULL,
 [Sent] [datetime] NULL,
-[AddEmail] [nvarchar] (max) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[AddEmail] [nvarchar] (max) NULL,
 [guid] [uniqueidentifier] NULL,
-[messageid] [nvarchar] (100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[messageid] [nvarchar] (100) NULL,
 [GoerSupportId] [int] NULL,
 [Parent1] [int] NULL,
 [Parent2] [int] NULL,
@@ -18,8 +18,8 @@ CREATE TABLE [dbo].[EmailQueueTo]
 [Invalid] [bit] NULL,
 [BouncedAddress] [bit] NULL,
 [SpamReporting] [bit] NULL,
-[DomainFrom] [varchar] (30) COLLATE SQL_Latin1_General_CP1_CI_AS NULL
-)
+[DomainFrom] [varchar] (30) NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

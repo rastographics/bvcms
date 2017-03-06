@@ -1,4 +1,4 @@
-ALTER TABLE [dbo].[PeopleCanEmailFor] ADD CONSTRAINT [PK_PeopleCanEmailFor] PRIMARY KEY CLUSTERED  ([CanEmail], [OnBehalfOf])
+ALTER TABLE [dbo].[PeopleCanEmailFor] ADD CONSTRAINT [PK_PeopleCanEmailFor] PRIMARY KEY CLUSTERED  ([CanEmail], [OnBehalfOf]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

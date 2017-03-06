@@ -1,4 +1,4 @@
-ALTER TABLE [dbo].[ContributionsRun] ADD CONSTRAINT [PK_ContributionsRun] PRIMARY KEY CLUSTERED  ([id])
+ALTER TABLE [dbo].[ContributionsRun] ADD CONSTRAINT [PK_ContributionsRun] PRIMARY KEY CLUSTERED  ([id]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

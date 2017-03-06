@@ -1,4 +1,4 @@
-ALTER TABLE [lookup].[MemberLetterStatus] ADD CONSTRAINT [PK_MemberLetterStatus] PRIMARY KEY CLUSTERED  ([Id])
+ALTER TABLE [lookup].[MemberLetterStatus] ADD CONSTRAINT [PK_MemberLetterStatus] PRIMARY KEY CLUSTERED  ([Id]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

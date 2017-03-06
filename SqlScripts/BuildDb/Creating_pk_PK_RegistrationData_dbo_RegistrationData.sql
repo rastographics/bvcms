@@ -1,4 +1,4 @@
-ALTER TABLE [dbo].[RegistrationData] ADD CONSTRAINT [PK_RegistrationData] PRIMARY KEY CLUSTERED  ([Id])
+ALTER TABLE [dbo].[RegistrationData] ADD CONSTRAINT [PK_RegistrationData] PRIMARY KEY CLUSTERED  ([Id]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

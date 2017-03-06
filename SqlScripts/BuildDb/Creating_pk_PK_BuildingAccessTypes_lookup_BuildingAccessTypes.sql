@@ -1,4 +1,4 @@
-ALTER TABLE [lookup].[BuildingAccessTypes] ADD CONSTRAINT [PK_BuildingAccessTypes] PRIMARY KEY CLUSTERED  ([Id])
+ALTER TABLE [lookup].[BuildingAccessTypes] ADD CONSTRAINT [PK_BuildingAccessTypes] PRIMARY KEY CLUSTERED  ([Id]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

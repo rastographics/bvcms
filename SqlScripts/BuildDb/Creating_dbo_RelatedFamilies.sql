@@ -4,10 +4,10 @@ CREATE TABLE [dbo].[RelatedFamilies]
 [RelatedFamilyId] [int] NOT NULL,
 [CreatedBy] [int] NOT NULL,
 [CreatedDate] [datetime] NOT NULL,
-[FamilyRelationshipDesc] [nvarchar] (256) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+[FamilyRelationshipDesc] [nvarchar] (256) NOT NULL,
 [ModifiedBy] [int] NULL,
 [ModifiedDate] [datetime] NULL
-)
+) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

@@ -1,4 +1,4 @@
-ALTER TABLE [lookup].[BundleStatusTypes] ADD CONSTRAINT [PK_BundleStatusTypes] PRIMARY KEY CLUSTERED  ([Id])
+ALTER TABLE [lookup].[BundleStatusTypes] ADD CONSTRAINT [PK_BundleStatusTypes] PRIMARY KEY CLUSTERED  ([Id]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

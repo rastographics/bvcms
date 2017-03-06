@@ -1,4 +1,4 @@
-ALTER TABLE [lookup].[BaptismStatus] ADD CONSTRAINT [PK_BaptismStatus] PRIMARY KEY CLUSTERED  ([Id])
+ALTER TABLE [lookup].[BaptismStatus] ADD CONSTRAINT [PK_BaptismStatus] PRIMARY KEY CLUSTERED  ([Id]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

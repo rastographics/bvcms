@@ -1,4 +1,4 @@
-CREATE NONCLUSTERED INDEX [IX_EmailQueueTo] ON [dbo].[EmailQueueTo] ([guid])
+CREATE NONCLUSTERED INDEX [IX_EmailQueueTo] ON [dbo].[EmailQueueTo] ([guid]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

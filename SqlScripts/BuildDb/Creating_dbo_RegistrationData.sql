@@ -7,7 +7,7 @@ CREATE TABLE [dbo].[RegistrationData]
 [OrganizationId] [int] NULL,
 [UserPeopleId] [int] NULL,
 [abandoned] [bit] NULL
-)
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

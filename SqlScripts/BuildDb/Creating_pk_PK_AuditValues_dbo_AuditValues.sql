@@ -1,4 +1,4 @@
-ALTER TABLE [dbo].[AuditValues] ADD CONSTRAINT [PK_AuditValues] PRIMARY KEY CLUSTERED  ([AuditId], [MemberName])
+ALTER TABLE [dbo].[AuditValues] ADD CONSTRAINT [PK_AuditValues] PRIMARY KEY CLUSTERED  ([AuditId], [MemberName]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

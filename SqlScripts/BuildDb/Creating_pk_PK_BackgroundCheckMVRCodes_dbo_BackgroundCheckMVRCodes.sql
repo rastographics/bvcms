@@ -1,4 +1,4 @@
-ALTER TABLE [dbo].[BackgroundCheckMVRCodes] ADD CONSTRAINT [PK_BackgroundCheckMVRCodes] PRIMARY KEY CLUSTERED  ([ID])
+ALTER TABLE [dbo].[BackgroundCheckMVRCodes] ADD CONSTRAINT [PK_BackgroundCheckMVRCodes] PRIMARY KEY CLUSTERED  ([ID]) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO
