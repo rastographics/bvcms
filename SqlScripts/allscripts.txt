@@ -413,6 +413,7 @@ Creating_dbo_CleanStart.sql
 Creating_dbo_CustomMenuRoles.sql
 Creating_dbo_NoEmailDupsInTag.sql
 Creating_dbo_Nick.sql
+Creating_dbo_AddUserFromOtherData2.sql
 Creating_dbo_RecentRegistrations.sql
 Creating_dbo_FilterOnlineReg.sql
 Creating_dbo_AttendCredits2.sql
