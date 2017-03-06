@@ -159,7 +159,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var q = from g in DbUtil.Db.OrganizationMembers
                     where g.OrganizationId == orgid
                     where g.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Goer")
-                    where g.PeopleId != (Parent.UserPeopleId ?? pid)
+                    where g.PeopleId != (Parent.UserPeopleId ?? pid ?? 0)
                     orderby g.Person.Name2
                     select new SelectListItem
                     {
