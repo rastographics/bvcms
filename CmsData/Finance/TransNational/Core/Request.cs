@@ -1,4 +1,7 @@
-﻿using System.Collections.Specialized;
+﻿using System;
+using System.Collections.Specialized;
+using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Text;
 
@@ -25,6 +28,11 @@ namespace CmsData.Finance.TransNational.Core
         {
             using (var client = new WebClient())
             {
+//#if DEBUG
+//                var values = Data.Cast<string>().Select(e => $"{e}: {Data[e]}"); 
+//                var str = string.Join("\n", values); 
+//                Debug.WriteLine(str);
+//#endif
                 var result = client.UploadValues(Url, Data);
                 return Encoding.ASCII.GetString(result);
             }

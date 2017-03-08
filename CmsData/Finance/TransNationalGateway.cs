@@ -621,7 +621,9 @@ namespace CmsData.Finance
         private static void BuildBatchTransactionsList(IEnumerable<TransNational.Query.Transaction> transactions, ActionType originalActionType, List<BatchTransaction> batchTransactions)
         {
             var transactionList = transactions.Where(t => t.Actions.Any(a => a.ActionType == originalActionType));
-
+//#if DEBUG
+//            transactionList = transactionList.Where(t => t.OrderId == "5661");
+//#endif
             foreach (var transaction in transactionList)
             {
                 var originalAction = transaction.Actions.FirstOrDefault(a => a.ActionType == originalActionType);
