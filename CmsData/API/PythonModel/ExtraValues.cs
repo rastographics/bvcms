@@ -66,6 +66,17 @@ namespace CmsData
                 db2.Dispose();
             }
         }
+        public void AddExtraValueAttributes(object query, string name, string text)
+        {
+            var list = db.PeopleQuery2(query).Select(ii => ii.PeopleId).ToList();
+            foreach (var pid in list)
+            {
+                var db2 = NewDataContext();
+                Person.AddEditExtraAttributes(db2, pid, name, text);
+                db2.SubmitChanges();
+                db2.Dispose();
+            }
+        }
 
         public string ExtraValue(int pid, string name)
         {
@@ -126,6 +137,13 @@ namespace CmsData
             if (ev != null)
                 return ev.Data ?? "";
             return "";
+        }
+        public string ExtraValueAttributes(int pid, string name)
+        {
+            var ev = Person.GetExtraValue(db, pid, name);
+            if (ev?.IsAttributes != true)
+                return "";
+            return ev.Data ?? "";
         }
 
         public void DeleteExtraValue(object query, string name)

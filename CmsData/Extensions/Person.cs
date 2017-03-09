@@ -275,6 +275,7 @@ namespace CmsData
                     DateValue = e.DateValue,
                     IntValue = e.IntValue,
                     IntValue2 = e.IntValue2,
+                    IsAttributes = e.IsAttributes,
                     TransactionTime = e.TransactionTime
                 };
                 db.PeopleExtras.InsertOnSubmit(e2);
@@ -1195,6 +1196,15 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             ev.Data = value;
             ev.TransactionTime = dt ?? Util.Now;
         }
+        public void AddEditExtraAttributes(string field, string value, DateTime? dt = null)
+        {
+            if (!value.HasValue())
+                return;
+            var ev = GetExtraValue(field);
+            ev.Data = value;
+            ev.IsAttributes = true;
+            ev.TransactionTime = dt ?? Util.Now;
+        }
         public void AddToExtraText(string field, string value)
         {
             if (!value.HasValue())
@@ -1291,6 +1301,15 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 return;
             var ev = GetExtraValue(db, id, field);
             ev.Data = value;
+            ev.TransactionTime = dt ?? Util.Now;
+        }
+        public static void AddEditExtraAttributes(CMSDataContext db, int id, string field, string value, DateTime? dt = null)
+        {
+            if (!value.HasValue())
+                return;
+            var ev = GetExtraValue(db, id, field);
+            ev.Data = value;
+            ev.IsAttributes = true;
             ev.TransactionTime = dt ?? Util.Now;
         }
         public static void AddEditExtraDate(CMSDataContext db, int id, string field, DateTime? value)

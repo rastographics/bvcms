@@ -42,6 +42,8 @@ namespace CmsData
 		
 		private int _Instance;
 		
+		private bool? _IsAttributes;
+		
 		private string _Type;
 		
    		
@@ -90,6 +92,9 @@ namespace CmsData
 		
 		partial void OnInstanceChanging(int value);
 		partial void OnInstanceChanged();
+		
+		partial void OnIsAttributesChanging(bool? value);
+		partial void OnIsAttributesChanged();
 		
 		partial void OnTypeChanging(string value);
 		partial void OnTypeChanged();
@@ -368,6 +373,28 @@ namespace CmsData
 					this._Instance = value;
 					this.SendPropertyChanged("Instance");
 					this.OnInstanceChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="IsAttributes", UpdateCheck=UpdateCheck.Never, Storage="_IsAttributes", DbType="bit")]
+		public bool? IsAttributes
+		{
+			get { return this._IsAttributes; }
+
+			set
+			{
+				if (this._IsAttributes != value)
+				{
+				
+                    this.OnIsAttributesChanging(value);
+					this.SendPropertyChanging();
+					this._IsAttributes = value;
+					this.SendPropertyChanged("IsAttributes");
+					this.OnIsAttributesChanged();
 				}
 
 			}
