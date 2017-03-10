@@ -30,8 +30,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return EnrollAndConfirmMultipleOrgs();
 
             if (SupportMissionTrip && TotalAmount() > 0)
+            {
+                List[0].Enroll(Transaction, List[0].GetPayLink());
                 return DoMissionTripSupporter();
-
+            }
             var message = DoEnrollments();
 
             if (IsMissionTripGoerWithPayment())
