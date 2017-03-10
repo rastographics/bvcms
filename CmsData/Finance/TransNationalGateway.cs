@@ -197,6 +197,7 @@ namespace CmsData.Finance
                         $"{paymentInfo.FirstName ?? person.FirstName} {paymentInfo.LastName ?? person.LastName}",
                     AccountNumber = accountNumber,
                     RoutingNumber = routingNumber,
+                    Type = AchType(person.PeopleId),
                     BillingAddress = new BillingAddress
                     {
                         FirstName = paymentInfo.FirstName ?? person.FirstName,
@@ -259,6 +260,7 @@ namespace CmsData.Finance
                         $"{paymentInfo.FirstName ?? person.FirstName} {paymentInfo.LastName ?? person.LastName}",
                     AccountNumber = accountNumber,
                     RoutingNumber = routingNumber,
+                    Type = AchType(person.PeopleId),
                     BillingAddress = new BillingAddress
                     {
                         FirstName = paymentInfo.FirstName ?? person.FirstName,
@@ -465,6 +467,7 @@ namespace CmsData.Finance
                     NameOnAccount = $"{first} {last}",
                     AccountNumber = acct,
                     RoutingNumber = routing,
+                    Type = AchType(peopleId),
                     BillingAddress = new BillingAddress
                     {
                         FirstName = first,
@@ -726,5 +729,19 @@ namespace CmsData.Finance
         public bool CanGetSettlementDates => true;
 
         public bool CanGetBounces => false;
+        private string AchType(int? pid)
+        {
+            var type = "checking";
+            if (pid.HasValue)
+            {
+                var usesaving = db.Setting("UseSavingAccounts");
+                if (usesaving)
+                {
+                    if (Person.GetExtraValue(db, pid.Value, "AchSaving")?.BitValue == true)
+                        type = "saving";
+                }
+            }
+            return type;
+        }
     }
 }
