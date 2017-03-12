@@ -232,6 +232,10 @@ namespace CmsData
         {
             return PeopleQuery2(query.ToString());
         }
+        public List<int> PeopleQueryIds(object query)
+        {
+            return PeopleQuery2(query).Select(ii => ii.PeopleId).ToList();
+        }
 
         public IQueryable<Person> PeopleQuery2(string query, bool fromDirectory = false)
         {

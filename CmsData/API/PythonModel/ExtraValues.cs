@@ -8,63 +8,53 @@ namespace CmsData
     {
         public void AddExtraValueBool(object query, string name, bool b)
         {
-            var list = db.PeopleQuery2(query).Select(ii => ii.PeopleId).ToList();
-            foreach (var pid in list)
-            {
-                var db2 = NewDataContext();
-                Person.AddEditExtraBool(db2, pid, name, b);
-                db2.SubmitChanges();
-                db2.Dispose();
-            }
+            using (var db2 = NewDataContext())
+                foreach (var pid in db2.PeopleQueryIds(query))
+                {
+                    Person.AddEditExtraBool(db2, pid, name, b);
+                    db2.SubmitChanges();
+                }
         }
 
         public void AddExtraValueCode(object query, string name, string text)
         {
-            var list = db.PeopleQuery2(query).Select(ii => ii.PeopleId).ToList();
-            foreach (var pid in list)
-            {
-                var db2 = NewDataContext();
-                Person.AddEditExtraValue(db2, pid, name, text);
-                db2.SubmitChanges();
-                db2.Dispose();
-            }
+            using (var db2 = NewDataContext())
+                foreach (var pid in db2.PeopleQueryIds(query))
+                {
+                    Person.AddEditExtraValue(db2, pid, name, text);
+                    db2.SubmitChanges();
+                }
         }
 
         public void AddExtraValueDate(object query, string name, object dt)
         {
-            var list = db.PeopleQuery2(query).Select(ii => ii.PeopleId).ToList();
             var dt2 = dt.ToDate();
-            foreach (var pid in list)
-            {
-                var db2 = NewDataContext();
-                Person.AddEditExtraDate(db2, pid, name, dt2);
-                db2.SubmitChanges();
-                db2.Dispose();
-            }
+            using (var db2 = NewDataContext())
+                foreach (var pid in db2.PeopleQueryIds(query))
+                {
+                    Person.AddEditExtraDate(db2, pid, name, dt2);
+                    db2.SubmitChanges();
+                }
         }
 
         public void AddExtraValueInt(object query, string name, int n)
         {
-            var list = db.PeopleQuery2(query).Select(ii => ii.PeopleId).ToList();
-            foreach (var pid in list)
-            {
-                var db2 = NewDataContext();
-                Person.AddEditExtraInt(db2, pid, name, n);
-                db2.SubmitChanges();
-                db2.Dispose();
-            }
+            using (var db2 = NewDataContext())
+                foreach (var pid in db2.PeopleQueryIds(query))
+                {
+                    Person.AddEditExtraInt(db2, pid, name, n);
+                    db2.SubmitChanges();
+                }
         }
 
         public void AddExtraValueText(object query, string name, string text)
         {
-            var list = db.PeopleQuery2(query).Select(ii => ii.PeopleId).ToList();
-            foreach (var pid in list)
-            {
-                var db2 = NewDataContext();
-                Person.AddEditExtraData(db2, pid, name, text);
-                db2.SubmitChanges();
-                db2.Dispose();
-            }
+            using (var db2 = NewDataContext())
+                foreach (var pid in db2.PeopleQueryIds(query))
+                {
+                    Person.AddEditExtraData(db2, pid, name, text);
+                    db2.SubmitChanges();
+                }
         }
 
         public string ExtraValue(int pid, string name)
@@ -130,15 +120,13 @@ namespace CmsData
 
         public void DeleteExtraValue(object query, string name)
         {
-            var list = db.PeopleQuery2(query).Select(ii => ii.PeopleId).ToList();
-            foreach (var pid in list)
-            {
-                var db2 = NewDataContext();
-                var ev = Person.GetExtraValue(db2, pid, name);
-                db2.PeopleExtras.DeleteOnSubmit(ev);
-                db2.SubmitChanges();
-                db2.Dispose();
-            }
+            using (var db2 = NewDataContext())
+                foreach (var pid in db2.PeopleQueryIds(query))
+                {
+                    var ev = Person.GetExtraValue(db2, pid, name);
+                    db2.PeopleExtras.DeleteOnSubmit(ev);
+                    db2.SubmitChanges();
+                }
         }
     }
 }

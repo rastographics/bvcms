@@ -16,7 +16,7 @@ namespace CmsData
         {
             using (var db2 = NewDataContext())
             {
-                var q = db.PeopleQuery2(query);
+                var q = db2.PeopleQuery2(query);
                 var dt = Util.Now;
                 foreach (var p in q)
                 {
@@ -50,7 +50,7 @@ namespace CmsData
                 db2.SubmitChanges();
                 neworg.DivOrgs.Add(new DivOrg() {Organization = neworg, DivId = div.Id});
                 db2.SubmitChanges();
-                db.LogActivity($"Python AddOrganization({neworg.OrganizationName}, {program}, {division})");
+                db2.LogActivity($"Python AddOrganization({neworg.OrganizationName}, {program}, {division})");
                 return neworg.OrganizationId;
             }
         }
@@ -94,37 +94,39 @@ namespace CmsData
                     neworg.CopySettings(db2, templateid.Value);
                 }
                 db2.SubmitChanges();
-                db.LogActivity($"Python NewOrganization{neworg.OrganizationName} ({neworg.OrganizationId})");
+                db2.LogActivity($"Python NewOrganization{neworg.OrganizationName} ({neworg.OrganizationId})");
                 return neworg.OrganizationId;
             }
         }
 
         public void AddSubGroup(object pid, object orgId, string group)
         {
-            var om = (from mm in db.OrganizationMembers
-                      where mm.PeopleId == pid.ToInt()
-                      where mm.OrganizationId == orgId.ToInt()
-                      select mm).SingleOrDefault();
-            if (om == null)
-                throw new Exception($"no orgmember {pid}:");
-            var db2 = NewDataContext();
-            om.AddToGroup(db2, group);
-            db2.Dispose();
+            using (var db2 = NewDataContext())
+            {
+                var om = (from mm in db2.OrganizationMembers
+                    where mm.PeopleId == pid.ToInt()
+                    where mm.OrganizationId == orgId.ToInt()
+                    select mm).SingleOrDefault();
+                if (om == null)
+                    throw new Exception($"no orgmember {pid}:");
+                om.AddToGroup(db2, group);
+            }
         }
 
         public void AddSubGroupFromQuery(object query, object orgId, string group)
         {
-            var q = db.PeopleQuery2(query);
             db.LogActivity($"PythonModel.AddSubGroupFromQuery(query,{orgId})");
-            foreach (var p in q)
+            using (var db2 = NewDataContext())
             {
-                var db2 = NewDataContext();
-                var om = (from mm in db.OrganizationMembers
-                          where mm.PeopleId == p.PeopleId
-                          where mm.OrganizationId == orgId.ToInt()
-                          select mm).SingleOrDefault();
-                om?.AddToGroup(db2, group);
-                db2.Dispose();
+                var q = db2.PeopleQuery2(query);
+                foreach (var p in q)
+                {
+                    var om = (from mm in db2.OrganizationMembers
+                        where mm.PeopleId == p.PeopleId
+                        where mm.OrganizationId == orgId.ToInt()
+                        select mm).SingleOrDefault();
+                    om?.AddToGroup(db2, group);
+                }
             }
         }
 
@@ -156,11 +158,13 @@ namespace CmsData
 
         public void DropOrgMember(int pid, int orgId)
         {
-            var db2 = NewDataContext();
             db.LogActivity($"PythonModel.DropOrgMember({pid},{orgId})");
-            var om = db2.OrganizationMembers.Single(m => m.PeopleId == pid && m.OrganizationId == orgId);
-            om.Drop(db2);
-            db2.SubmitChanges();
+            using (var db2 = NewDataContext())
+            {
+                var om = db2.OrganizationMembers.Single(m => m.PeopleId == pid && m.OrganizationId == orgId);
+                om.Drop(db2);
+                db2.SubmitChanges();
+            }
         }
 
         public APIOrganization.Organization GetOrganization(object orgId)
@@ -184,34 +188,28 @@ namespace CmsData
                       where mm.PeopleId == pid.ToInt()
                       where mm.OrganizationId == orgId.ToInt()
                       select mm).SingleOrDefault();
-            if (om == null)
-                return false;
-
-            return om.IsInGroup(group);
+            return om?.IsInGroup(group) ?? false;
         }
 
         public void JoinOrg(int orgid, object person)
         {
-            var db2 = NewDataContext();
-
             int? pid = null;
             if (person is int)
                 pid = person.ToInt2();
             else if (person is Person)
                 pid = ((Person) person).PeopleId;
-            db.LogActivity($"PythonModel.JoinOrg({pid},{orgid})");
             if (pid == null)
                 return;
-            OrganizationMember.InsertOrgMembers(db2, orgid, pid.Value, 220, Util.Now, null, false);
-
-            db2.Dispose();
+            db.LogActivity($"PythonModel.JoinOrg({pid},{orgid})");
+            using (var db2 = NewDataContext())
+                OrganizationMember.InsertOrgMembers(db2, orgid, pid.Value, 220, Util.Now, null, false);
         }
 
         public void MoveToOrg(int pid, int fromOrg, int toOrg, bool? moveregdata = true, int toMemberTypeId = -1)
         {
             db.LogActivity($"PythonModel.MoveToOrg({pid},{fromOrg},{toOrg})");
-            var db2 = NewDataContext();
-            OrganizationMember.MoveToOrg(db2, pid, fromOrg, toOrg, moveregdata, toMemberTypeId);
+            using (var db2 = NewDataContext())
+                OrganizationMember.MoveToOrg(db2, pid, fromOrg, toOrg, moveregdata, toMemberTypeId);
         }
 
         public List<int> OrganizationIds(int progid, int divid, bool includeInactive = false)
@@ -232,25 +230,25 @@ namespace CmsData
                       select mm).SingleOrDefault();
             if (om == null)
                 throw new Exception($"no orgmember {pid}:");
-            var db2 = NewDataContext();
-            om.RemoveFromGroup(db2, group);
-            db2.Dispose();
+            using (var db2 = NewDataContext())
+                om.RemoveFromGroup(db2, group);
         }
 
         public void SetMemberType(object pid, object oid, string type)
         {
             db.LogActivity($"PythonModel.SetMemberType({pid},{oid})");
-            var db2 = NewDataContext();
-            var om = db2.OrganizationMembers.Single(m => m.PeopleId == pid.ToInt() && m.OrganizationId == oid.ToInt());
-            var mt = Organization.FetchOrCreateMemberType(db2, type);
-            om.MemberTypeId = mt.Id;
-            db2.SubmitChanges();
+            using (var db2 = NewDataContext())
+            {
+                var om = db2.OrganizationMembers.Single(m => m.PeopleId == pid.ToInt() && m.OrganizationId == oid.ToInt());
+                var mt = Organization.FetchOrCreateMemberType(db2, type);
+                om.MemberTypeId = mt.Id;
+            }
         }
 
         public void UpdateMainFellowship(int orgId)
         {
-            var db2 = NewDataContext();
-            db2.UpdateMainFellowship(orgId);
+            using (var db2 = NewDataContext())
+                db2.UpdateMainFellowship(orgId);
         }
     }
 }

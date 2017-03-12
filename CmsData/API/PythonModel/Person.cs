@@ -73,12 +73,12 @@ namespace CmsData
         }
         public void AddTag(object query, string tagName, int ownerId)
         {
-            var list = PeopleIds(query);
-            var db2 = NewDataContext();
-            foreach (var pid in list)
-                Person.Tag(db2, pid, tagName, ownerId, DbUtil.TagTypeId_Personal);
-            db2.SubmitChanges();
-            db2.Dispose();
+            using (var db2 = NewDataContext())
+            {
+                foreach (var pid in db2.PeopleQueryIds(query))
+                    Person.Tag(db2, pid, tagName, ownerId, DbUtil.TagTypeId_Personal);
+                db2.SubmitChanges();
+            }
         }
 
         public int? AgeInMonths(DateTime? birthdate, DateTime asof)
@@ -154,8 +154,7 @@ namespace CmsData
 
         public List<int> PeopleIds(object query)
         {
-            var list = db.PeopleQuery2(query).Select(ii => ii.PeopleId).ToList();
-            return list;
+            return db.PeopleQueryIds(query);
         }
 
         public void RemoveRole(object query, string role)
@@ -185,12 +184,12 @@ namespace CmsData
             var str = campus as string;
             using (var db2 = NewDataContext())
             {
-                var q = db2.PeopleQuery2(query);
                 var id = campus is int || str.AllDigits()
                     ? campus.ToInt()
                     : db2.FetchOrCreateCampusId(str);
                 if (id == 0)
                     return;
+                var q = db2.PeopleQuery2(query);
                 foreach (var p in q)
                 {
                     p.UpdateValue("CampusId", id);
@@ -307,40 +306,40 @@ namespace CmsData
 
         public void UpdateContributionOption(object query, int option)
         {
-            var list = db.PeopleQuery2(query).Select(ii => ii.PeopleId).ToList();
-            foreach (var pid in list)
+            using (var db2 = NewDataContext())
             {
-                var db2 = NewDataContext();
-                var p = db2.LoadPersonById(pid);
-                p.UpdateContributionOption(db2, option);
-                db2.SubmitChanges();
-                db2.Dispose();
+                var list = db2.PeopleQuery2(query);
+                foreach (var p in list)
+                {
+                    p.UpdateContributionOption(db2, option);
+                    db2.SubmitChanges();
+                }
             }
         }
 
         public void UpdateEnvelopeOption(object query, int option)
         {
-            var list = db.PeopleQuery2(query).Select(ii => ii.PeopleId).ToList();
-            foreach (var pid in list)
+            using (var db2 = NewDataContext())
             {
-                var db2 = NewDataContext();
-                var p = db2.LoadPersonById(pid);
-                p.UpdateEnvelopeOption(db2, option);
-                db2.SubmitChanges();
-                db2.Dispose();
+                var list = db.PeopleQuery2(query);
+                foreach (var p in list)
+                {
+                    p.UpdateEnvelopeOption(db2, option);
+                    db2.SubmitChanges();
+                }
             }
         }
 
         public void UpdateElectronicStatement(object query, bool tf)
         {
-            var list = db.PeopleQuery2(query).Select(ii => ii.PeopleId).ToList();
-            foreach (var pid in list)
+            using(var db2 = NewDataContext())
             {
-                var db2 = NewDataContext();
-                var p = db2.LoadPersonById(pid);
-                p.UpdateElectronicStatement(db2, tf);
-                db2.SubmitChanges();
-                db2.Dispose();
+                var list = db2.PeopleQuery2(query);
+                foreach (var p in list)
+                {
+                    p.UpdateElectronicStatement(db2, tf);
+                    db2.SubmitChanges();
+                }
             }
         }
     }

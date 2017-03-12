@@ -8,20 +8,22 @@ namespace CmsData
     {
         public void AddExtraValueBoolOrg(int oid, string name, bool b)
         {
-            var db2 = NewDataContext();
-            var o = db2.LoadOrganizationById(oid);
-            o.AddEditExtraBool(name, b);
-            db2.SubmitChanges();
-            db2.Dispose();
+            using (var db2 = NewDataContext())
+            {
+                var o = db2.LoadOrganizationById(oid);
+                o.AddEditExtraBool(name, b);
+                db2.SubmitChanges();
+            }
         }
 
         public void AddExtraValueCodeOrg(int oid, string name, string text)
         {
-            var db2 = NewDataContext();
-            var o = db2.LoadOrganizationById(oid);
-            o.AddEditExtraCode(name, text);
-            db2.SubmitChanges();
-            db2.Dispose();
+            using (var db2 = NewDataContext())
+            {
+                var o = db2.LoadOrganizationById(oid);
+                o.AddEditExtraCode(name, text);
+                db2.SubmitChanges();
+            }
         }
 
         public void AddExtraValueDateOrg(int oid, string name, object dt)
@@ -29,29 +31,32 @@ namespace CmsData
             var dt2 = dt.ToDate();
             if (!dt2.HasValue)
                 return;
-            var db2 = NewDataContext();
-            var o = db2.LoadOrganizationById(oid);
+            using (var db2 = NewDataContext())
+            {
+                var o = db2.LoadOrganizationById(oid);
                 o.AddEditExtraDate(name, dt2.Value);
-            db2.SubmitChanges();
-            db2.Dispose();
+                db2.SubmitChanges();
+            }
         }
 
         public void AddExtraValueIntOrg(int oid, string name, int n)
         {
-            var db2 = NewDataContext();
-            var o = db2.LoadOrganizationById(oid);
-            o.AddEditExtraInt(name, n);
-            db2.SubmitChanges();
-            db2.Dispose();
+            using (var db2 = NewDataContext())
+            {
+                var o = db2.LoadOrganizationById(oid);
+                o.AddEditExtraInt(name, n);
+                db2.SubmitChanges();
+            }
         }
 
         public void AddExtraValueTextOrg(int oid, string name, string text)
         {
-            var db2 = NewDataContext();
-            var o = db2.LoadOrganizationById(oid);
-            o.AddEditExtraText(name, text);
-            db2.SubmitChanges();
-            db2.Dispose();
+            using (var db2 = NewDataContext())
+            {
+                var o = db2.LoadOrganizationById(oid);
+                o.AddEditExtraText(name, text);
+                db2.SubmitChanges();
+            }
         }
         public bool ExtraValueBitOrg(int oid, string name)
         {
