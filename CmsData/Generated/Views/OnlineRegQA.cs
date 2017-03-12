@@ -103,7 +103,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Question", Storage="_Question", DbType="varchar(500)")]
+		[Column(Name="Question", Storage="_Question", DbType="nvarchar(500)")]
 		public string Question
 		{
 			get
@@ -120,7 +120,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Answer", Storage="_Answer", DbType="varchar")]
+		[Column(Name="Answer", Storage="_Answer", DbType="nvarchar")]
 		public string Answer
 		{
 			get
