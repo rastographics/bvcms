@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
+using AuthorizeNet.Util;
 using CmsData.API;
 using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
@@ -87,6 +89,11 @@ namespace CmsData
         private static string ExecutePython(string scriptContent, PythonModel model)
         {
             var engine = Python.CreateEngine();
+            var libs = new []
+            {
+                @"E:\GitHub\bvcms\CmsWeb\Lib"
+            };
+            engine.SetSearchPaths(libs);
 
             using (var ms = new MemoryStream())
             using (var sw = new StreamWriter(ms))

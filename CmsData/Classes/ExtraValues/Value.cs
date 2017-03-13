@@ -39,6 +39,8 @@ namespace CmsData.ExtraValue
 
         public bool UserCanEdit()
         {
+            if (Type == "Attr")
+                return false;
             var user = HttpContext.Current?.User;
             if (user == null)
                 return false;

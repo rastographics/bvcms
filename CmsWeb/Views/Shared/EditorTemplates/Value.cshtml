@@ -30,6 +30,10 @@
              @if (ds.HasValue()) { <text> data-source="@ds" </text>  }>@Html.Raw(Model)</a>
           </td>
       }
+      else if(Model.Type == "Attr")
+      {
+        <td><a href="/Person/Attributes/@Model.DataName/@Model.PrimaryKey" target="Attributes">Attributes</a></td>
+      }
       else
       {
         <td>@Html.Raw(Model)</td>

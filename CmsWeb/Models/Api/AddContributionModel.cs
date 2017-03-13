@@ -56,11 +56,9 @@ namespace CmsWeb.Models.Api
 
                 if (count == 0)
                     person.Comments = "Added during api postcontribution because record was not found";
-//                else if (count > 1)
-//                    person.Comments = "Added during api postcontribution because there was more than 1 match";
             }
 
-            var c = person.PostUnattendedContribution(DbUtil.Db, Amount, Fundid, Notes);
+            var c = person.PostUnattendedContribution(db, Amount, Fundid, Notes);
             c.ContributionDate = Date ?? DateTime.Now;
             db.SubmitChanges();
             result.PeopleId = person.PeopleId;

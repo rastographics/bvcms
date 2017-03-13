@@ -128,6 +128,8 @@ namespace CmsWeb.Models.ExtraValues
                 case "Text2":
                 case "Data":
                     return (ev.Data ?? "").Trim();
+                case "Attr":
+                    return "Attributes";
                 case "Date":
                     return ev.DateValue.FormatDate();
                 case "Bits":

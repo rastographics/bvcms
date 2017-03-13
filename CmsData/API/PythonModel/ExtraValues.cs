@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using UtilityExtensions;
 
 namespace CmsData
@@ -58,14 +57,12 @@ namespace CmsData
         }
         public void AddExtraValueAttributes(object query, string name, string text)
         {
-            var list = db.PeopleQuery2(query).Select(ii => ii.PeopleId).ToList();
-            foreach (var pid in list)
-            {
-                var db2 = NewDataContext();
-                Person.AddEditExtraAttributes(db2, pid, name, text);
-                db2.SubmitChanges();
-                db2.Dispose();
-            }
+            using (var db2 = NewDataContext())
+                foreach (var pid in db2.PeopleQueryIds(query))
+                {
+                    Person.AddEditExtraAttributes(db2, pid, name, text);
+                    db2.SubmitChanges();
+                }
         }
 
         public string ExtraValue(int pid, string name)

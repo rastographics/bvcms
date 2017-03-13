@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using CmsData.API;
 using CmsData.Codes;
 using ImageData;
 using UtilityExtensions;
@@ -118,6 +119,31 @@ namespace CmsData
                             BirthYear = n;
                 }
             }
+        }
+
+        public static string ParseBirthdate(string s)
+        {
+            int? birthDay = null;
+            int? birthMonth = null;
+            int? birthYear = null;
+            DateTime dt;
+            if (DateTime.TryParse(s, out dt))
+            {
+                birthDay = dt.Day;
+                birthMonth = dt.Month;
+                if (Regex.IsMatch(s, @"\d+/\d+/\d+"))
+                    birthYear = dt.Year;
+            }
+            else
+            {
+                int n;
+                if (int.TryParse(s, out n))
+                    if (n >= 1 && n <= 12)
+                        birthMonth = n;
+                    else
+                        birthYear = n;
+            }
+            return Util.FormatBirthday(birthYear, birthMonth, birthDay);
         }
         public DateTime? GetBirthdate()
         {
@@ -1799,5 +1825,39 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             db.SubmitChanges();
         }
 
+        public static Person FindAddPerson(CMSDataContext db, string context, string first, string last, string dob, string email, string phone, string streetaddress = null, string zip = null)
+        {
+            Person person = null;
+            var list = db.FindPerson(first, last, null, email, phone.GetDigits()).ToList();
+            var count = list.Count;
+            if (count > 0)
+                person = db.LoadPersonById(list[0].PeopleId ?? 0);
+
+            dynamic result = new DynamicData();
+            if (count > 1)
+                result.MultipleMatches = true;
+
+            if (person != null)
+                return person;
+
+            result.NewPerson = true;
+            var f = new Family
+            {
+                HomePhone = phone.GetDigits().Truncate(20),
+                AddressLineOne = streetaddress,
+                ZipCode = zip
+            };
+            db.SubmitChanges();
+
+            var position = 10;
+            person = Add(db, true, f, position, null, first.Trim(), null, last.Trim(), "", 0, 0,
+                OriginCode.Contribution, null);
+            person.EmailAddress = email.Trim();
+            person.SendEmailAddress1 = true;
+
+            if (count == 0)
+                person.Comments = $"Added in context of {context} because record was not found";
+            return person;
+        }
     }
 }
