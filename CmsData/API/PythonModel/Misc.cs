@@ -107,19 +107,20 @@ namespace CmsData
         }
         public string RestGet(string url, PythonDictionary headers, string user = null, string password = null)
         {
+#if DEBUG2
             var ttt = System.IO.File.ReadAllText(@"E:\GitHub\bvcms\ttt.json");
             return ttt;
-/*
+#else
             var client = new RestClient(url);
-            if(user?.Length > 0 && password?.Length > 0)
+            if (user?.Length > 0 && password?.Length > 0)
                 client.Authenticator = new HttpBasicAuthenticator(user, password);
 
             var request = new RestRequest(Method.GET);
             foreach (var kv in headers)
-                request.AddHeader((string)kv.Key, (string)kv.Value);
+                request.AddHeader((string) kv.Key, (string) kv.Value);
             var response = client.Execute(request);
             return response.Content;
-*/
+#endif
         }
         public string RestPost(string url, PythonDictionary headers, object body, string user = null, string password = null)
         {
@@ -133,28 +134,20 @@ namespace CmsData
             var response = client.Execute(request);
             return response.Content;
         }
-
         public dynamic JsonDeserialize(string s)
         {
             dynamic d = JObject.Parse(s);
             return d;
         }
 
-        public Person FindAddPerson(string first, string last, string dob, string email, string phone)
+        public string Setting(string name, string def)
         {
-            return Person.FindAddPerson(db, "python", first, last, dob, email, phone);
+            return db.Setting(name, def);
         }
-        public Person FindAddPerson(dynamic first, dynamic last, dynamic dob, dynamic email, dynamic phone)
+        public void SetSetting(string name, object value)
         {
-            return FindAddPerson((string)first, (string)last, (string)dob, (string)email, (string)phone);
-        }
-        public int FindAddPeopleId(dynamic first, dynamic last, dynamic dob, dynamic email, dynamic phone)
-        {
-            return FindAddPerson((string)first, (string)last, (string)dob, (string)email, (string)phone).PeopleId;
+            db.SetSetting(name, value.ToString());
+            db.SubmitChanges();
         }
     }
 }
-/*
- * 
-
- */

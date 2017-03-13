@@ -89,11 +89,11 @@ namespace CmsData
         private static string ExecutePython(string scriptContent, PythonModel model)
         {
             var engine = Python.CreateEngine();
-            var libs = new []
-            {
-                @"E:\GitHub\bvcms\CmsWeb\Lib"
-            };
-            engine.SetSearchPaths(libs);
+//            var libs = new []
+//            {
+//                @"E:\GitHub\bvcms\CmsWeb\Lib"
+//            };
+//            engine.SetSearchPaths(libs);
 
             using (var ms = new MemoryStream())
             using (var sw = new StreamWriter(ms))

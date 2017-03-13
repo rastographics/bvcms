@@ -342,5 +342,17 @@ namespace CmsData
                 }
             }
         }
+        public Person FindAddPerson(string first, string last, string dob, string email, string phone)
+        {
+            return Person.FindAddPerson(db, "python", first, last, dob, email, phone);
+        }
+        public Person FindAddPerson(dynamic first, dynamic last, dynamic dob, dynamic email, dynamic phone)
+        {
+            return FindAddPerson((string)first, (string)last, (string)dob, (string)email, (string)phone);
+        }
+        public int FindAddPeopleId(dynamic first, dynamic last, dynamic dob, dynamic email, dynamic phone)
+        {
+            return FindAddPerson((string)first, (string)last, (string)dob, (string)email, (string)phone).PeopleId;
+        }
     }
 }
