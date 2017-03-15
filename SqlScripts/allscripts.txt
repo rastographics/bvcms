@@ -418,6 +418,7 @@ Creating_dbo_RecentRegistrations.sql
 Creating_dbo_FilterOnlineReg.sql
 Creating_dbo_AttendCredits2.sql
 Creating_dbo_ContributionCountTable.sql
+Creating_dbo_Attributes.sql
 Creating_dbo_ExtraData.sql
 Creating_pk_PK_ExtraData_dbo_ExtraData.sql
 Creating_dbo_Registrations.sql
