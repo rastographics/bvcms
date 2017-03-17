@@ -134,7 +134,7 @@ namespace CmsWeb.Models
             if (!edt.HasValue && startdt.HasValue)
                 edt = startdt;
             edt = edt?.AddHours(24);
-            if (usebatchdates && startdt.HasValue)
+            if (usebatchdates && startdt.HasValue && edt.HasValue)
             {
                 CheckBatchDates(startdt.Value, edt.Value);
                 _transactions = from t in _transactions
@@ -190,7 +190,7 @@ namespace CmsWeb.Models
         public IQueryable<BatchDescriptionGroup> FetchTransactionsByBatchDescription()
         {
             var q = from t in FetchTransactions()
-                    group t by new {t.Batchref, t.Description}
+                    group t by new { t.Batchref, t.Description }
                     into g
                     let f = g.First()
                     orderby f.Batch, f.Description descending
@@ -206,145 +206,23 @@ namespace CmsWeb.Models
             return q;
         }
 
-        private static void CheckBatchDates(DateTime start, DateTime end)
+        private void CheckBatchDates(DateTime start, DateTime end)
         {
             var gateway = DbUtil.Db.Gateway();
             if (!gateway.CanGetSettlementDates)
                 return;
-
-            var response = gateway.GetBatchDetails(start, end);
-
-            // get distinct batches
-            var allBatchReferences = (from batchTran in response.BatchTransactions
-                                      select batchTran.BatchReference).Distinct();
-
-            // first filter out batches that we have already been updated or inserted.
-            // now find unmatched batch references
-            var unmatchedBatchReferences = allBatchReferences.Where(br => !DbUtil.Db.CheckedBatches.Any(tt => tt.BatchRef == br)).ToList();
-
-            // given unmatched batch references, get the matched batch transactions again
-            var unMatchedBatchTransactions =
-                response.BatchTransactions.Where(x => unmatchedBatchReferences.Contains(x.BatchReference)).ToList();
-
-
-            var batchTypes = unMatchedBatchTransactions.Select(x => x.BatchType).Distinct();
-
-            foreach (var batchType in batchTypes)
+            if (gateway.UseIdsForSettlementDates)
             {
-                // key it by transaction reference and payment type.
-                var unMatchedKeyedByReference = unMatchedBatchTransactions.Where(x => x.BatchType == batchType).ToDictionary(x => x.Reference, x => x);
-
-                // next let's get all the approved matching transactions from our transaction table by transaction id (reference).
-                var approvedMatchingTransactions = from transaction in DbUtil.Db.Transactions
-                                                   where unMatchedKeyedByReference.Keys.Contains(transaction.TransactionId)
-                                                   where (transaction.PaymentType == null || transaction.PaymentType == (batchType == BatchType.Ach ? PaymentType.Ach : PaymentType.CreditCard))
-                                                   where transaction.Approved == true
-                                                   select transaction;
-
-                // next key the matching approved transactions that came from our transaction table by the transaction id (reference).
-                var distinctTransactionIds = approvedMatchingTransactions.Select(x => x.TransactionId).Distinct();
-
-                // finally let's get a list of all transactions that need to be inserted, which we don't already have.
-                var transactionsToInsert = from transaction in unMatchedKeyedByReference
-                                           where !distinctTransactionIds.Contains(transaction.Key)
-                                           select transaction.Value;
-
-                var notbefore = DateTime.Parse("6/1/12"); // the date when Sage payments began in BVCMS (?)
-
-                // spin through each transaction and insert them to the transaction table.
-                foreach (var transactionToInsert in transactionsToInsert)
-                {
-                    // get the original transaction.
-                    var originalTransaction = DbUtil.Db.Transactions.SingleOrDefault(t => t.TransactionId == transactionToInsert.Reference && transactionToInsert.TransactionDate >= notbefore && t.PaymentType == (batchType == BatchType.Ach ? PaymentType.Ach : PaymentType.CreditCard));
-
-                    // get the first and last name.
-                    string first, last;
-                    Util.NameSplit(transactionToInsert.Name, out first, out last);
-
-                    // get the settlement date, however we are not exactly sure why we add four hours to the settlement date.
-                    // we think it is to handle all timezones and push to the next day??
-                    var settlementDate = AdjustSettlementDateForAllTimeZones(transactionToInsert.SettledDate);
-
-                    // insert the transaction record.
-                    DbUtil.Db.Transactions.InsertOnSubmit(new Transaction
-                    {
-                        Name = transactionToInsert.Name,
-                        First = first,
-                        Last = last,
-                        TransactionId = transactionToInsert.Reference,
-                        Amt = transactionToInsert.TransactionType == TransactionType.Credit ||
-                              transactionToInsert.TransactionType == TransactionType.Refund
-                            ? -transactionToInsert.Amount
-                            : transactionToInsert.Amount,
-                        Approved = transactionToInsert.Approved,
-                        Message = transactionToInsert.Message,
-                        TransactionDate = transactionToInsert.TransactionDate,
-                        TransactionGateway = gateway.GatewayType,
-                        Settled = settlementDate,
-                        Batch = settlementDate, // this date now will be the same as the settlement date.
-                        Batchref = transactionToInsert.BatchReference,
-                        Batchtyp = transactionToInsert.BatchType == BatchType.Ach ? "eft" : "bankcard",
-                        OriginalId = originalTransaction != null ? (originalTransaction.OriginalId ?? originalTransaction.Id) : (int?) null,
-                        Fromsage = true,
-                        Description = originalTransaction != null ? originalTransaction.Description : $"no description from {gateway.GatewayType}, id={transactionToInsert.TransactionId}",
-                        PaymentType = transactionToInsert.BatchType == BatchType.Ach ? PaymentType.Ach : PaymentType.CreditCard,
-                        LastFourCC = transactionToInsert.BatchType == BatchType.CreditCard ? transactionToInsert.LastDigits : null,
-                        LastFourACH = transactionToInsert.BatchType == BatchType.Ach ? transactionToInsert.LastDigits : null
-                    });
-                }
-
-                // next update Existing transactions with new batch data if there are any.
-                foreach (var existingTransaction in approvedMatchingTransactions)
-                {
-                    if (!unMatchedKeyedByReference.ContainsKey(existingTransaction.TransactionId))
-                        continue;
-
-                    // first get the matching batch transaction.
-                    var batchTransaction = unMatchedKeyedByReference[existingTransaction.TransactionId];
-
-                    // get the adjusted settlement date
-                    var settlementDate = AdjustSettlementDateForAllTimeZones(batchTransaction.SettledDate);
-
-                    existingTransaction.Batch = settlementDate; // this date now will be the same as the settlement date.
-                    existingTransaction.Batchref = batchTransaction.BatchReference;
-                    existingTransaction.Batchtyp = batchTransaction.BatchType == BatchType.Ach ? "eft" : "bankcard";
-                    existingTransaction.Settled = settlementDate;
-                    existingTransaction.PaymentType = batchTransaction.BatchType == BatchType.Ach ? PaymentType.Ach : PaymentType.CreditCard;
-                    existingTransaction.LastFourCC = batchTransaction.BatchType == BatchType.CreditCard ? batchTransaction.LastDigits : null;
-                    existingTransaction.LastFourACH = batchTransaction.BatchType == BatchType.Ach ? batchTransaction.LastDigits : null;
-                }
+                var tranids = (from t in _transactions
+                               where t.TransactionDate >= start
+                               where t.TransactionDate <= end
+                               where t.Settled == null
+                               where t.Moneytran == true
+                               select t.TransactionId).ToList();
+                gateway.CheckBatchSettlements(tranids);
             }
-
-
-            // finally we need to mark these batches as completed if there are any.
-            foreach (var batch in unMatchedBatchTransactions.DistinctBy(x => x.BatchReference))
-            {
-                var checkedBatch = DbUtil.Db.CheckedBatches.SingleOrDefault(bb => bb.BatchRef == batch.BatchReference);
-                if (checkedBatch == null)
-                {
-                    DbUtil.Db.CheckedBatches.InsertOnSubmit(
-                        new CheckedBatch
-                        {
-                            BatchRef = batch.BatchReference,
-                            CheckedX = DateTime.Now
-                        });
-                }
-                else
-                    checkedBatch.CheckedX = DateTime.Now;
-            }
-
-            DbUtil.Db.SubmitChanges();
-        }
-
-        /// <summary>
-        ///     we are not exactly sure why we add four hours to the settlement date
-        ///     we think it is to handle all timezones and push to the next day??
-        /// </summary>
-        /// <param name="settlementDate"></param>
-        /// <returns></returns>
-        private static DateTime AdjustSettlementDateForAllTimeZones(DateTime settlementDate)
-        {
-            return settlementDate.AddHours(4);
+            else
+                gateway.CheckBatchSettlements(start, end);
         }
 
         public IQueryable<TransactionList> ApplySort()

@@ -344,6 +344,9 @@
     <Reference Include="Microsoft.Scripting.Metadata, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <HintPath>..\packages\IronPython.2.7.4\lib\Net45\Microsoft.Scripting.Metadata.dll</HintPath>
     </Reference>
+    <Reference Include="MoreLinq, Version=2.0.20029.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
+      <HintPath>..\packages\morelinq.2.2.0\lib\net35\MoreLinq.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -467,6 +470,7 @@
     <Compile Include="Extensions\RepairTransactionRun.cs" />
     <Compile Include="Finance\BluePayGateway.cs" />
     <Compile Include="Finance\BluePay\BluePayPayment.cs" />
+    <Compile Include="Finance\CheckBatchSettlements.cs" />
     <Compile Include="Finance\ReturnedCheck.cs" />
     <Compile Include="Finance\ReturnedChecksResponse.cs" />
     <Compile Include="Finance\BatchResponse.cs" />

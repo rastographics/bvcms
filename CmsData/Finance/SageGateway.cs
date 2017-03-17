@@ -574,5 +574,15 @@ namespace CmsData.Finance
         public bool CanGetSettlementDates => true;
 
         public bool CanGetBounces => true;
+        public bool UseIdsForSettlementDates => false;
+        public void CheckBatchSettlements(DateTime start, DateTime end)
+        {
+            CheckBatchedTransactions.CheckBatchSettlements(db, this, start, end);
+        }
+
+        public void CheckBatchSettlements(List<string> transactionids)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

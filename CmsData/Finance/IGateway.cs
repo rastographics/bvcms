@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using CmsData.Finance;
 
 namespace CmsData
@@ -9,6 +10,7 @@ namespace CmsData
 
         bool CanVoidRefund { get;}
         bool CanGetSettlementDates { get;}
+        bool UseIdsForSettlementDates { get;}
         bool CanGetBounces { get;}
 
         void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode, string routing, string account, bool giving);
@@ -24,5 +26,7 @@ namespace CmsData
         TransactionResponse PayWithVault(int peopleId, decimal amt, string description, int tranid, string type);
         BatchResponse GetBatchDetails(DateTime start, DateTime end);
         ReturnedChecksResponse GetReturnedChecks(DateTime start, DateTime end);
+        void CheckBatchSettlements(DateTime start, DateTime end);
+        void CheckBatchSettlements(List<string> transactionids);
     }
 }

@@ -108,7 +108,7 @@ namespace CmsData
         public string RestGet(string url, PythonDictionary headers, string user = null, string password = null)
         {
 #if DEBUG2
-            var ttt = System.IO.File.ReadAllText(@"E:\GitHub\bvcms\ttt.json");
+            var ttt = System.IO.File.ReadAllText(@"C:\dev\bvcms\ttt.json");
             return ttt;
 #else
             var client = new RestClient(url);
