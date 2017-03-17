@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
 {
@@ -28,6 +29,7 @@ namespace CmsWeb.Areas.People.Controllers
             var m = DbUtil.Db.PeopleExtras.Single(vv => vv.Field == ev.Field && vv.PeopleId == ev.PeopleId);
             m.Data = ev.Data;
             DbUtil.Db.SubmitChanges();
+            DbUtil.LogActivity("Updated Attributes", peopleid:m.PeopleId);
             return Redirect($"/Person/Attributes/{ev.Field}/{ev.PeopleId}");
         }
     }
