@@ -1,0 +1,16 @@
+﻿@model CmsData.PeopleExtra
+@{
+  Layout = ViewExtensions2.TouchPointLayout();
+  ViewBag.Title = "Edit Attributes";
+  ViewBag.PageHeader = "Edit Attributes";
+}
+<div class="report box box-responsive">
+  <div class="box-content">
+      <form action="/Person/Attributes/Update" method="post">
+          @Html.HiddenFor(vv => vv.Field)
+          @Html.HiddenFor(vv => vv.PeopleId)
+          @Html.TextAreaFor(vv => vv.Data)
+          <input type="submit" class="btn btn-primary" value="Update"/>
+      </form>
+  </div>
+</div>

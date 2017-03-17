@@ -1907,6 +1907,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.Attribute> ViewAttributes
+	    {
+		    get { return this.GetTable< View.Attribute>(); }
+
+	    }
+
 	    public Table< View.BundleList> ViewBundleLists
 	    {
 		    get { return this.GetTable< View.BundleList>(); }
