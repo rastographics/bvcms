@@ -730,7 +730,7 @@ namespace CmsData.Finance
                 if (usesaving)
                 {
                     if (Person.GetExtraValue(db, pid.Value, "AchSaving")?.BitValue == true)
-                        type = "saving";
+                        type = "savings";
                 }
             }
             return type;
