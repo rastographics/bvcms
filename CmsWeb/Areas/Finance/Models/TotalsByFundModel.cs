@@ -66,38 +66,38 @@ namespace CmsWeb.Models
                      group c by new { c.FundId, c.QBSyncID, BundleTypeId, BundleType } into g
                      orderby g.Key.FundId, g.Key.QBSyncID, g.Key.BundleTypeId
                      select new FundTotalInfo
-                                {
-                                    BundleType = g.Key.BundleType,
-                                    BundleTypeId = g.Key.BundleTypeId,
-                                    FundId = g.Key.FundId,
-                                    QBSynced = g.Key.QBSyncID ?? 0,
-                                    FundName = g.First().ContributionFund.FundName,
-                                    GeneralLedgerId = g.First().ContributionFund.FundIncomeAccount,
-                                    Total = g.Sum(t => t.ContributionAmount).Value,
-                                    Count = g.Count(),
-                                    model = this
-                                }).ToList();
+                     {
+                         BundleType = g.Key.BundleType,
+                         BundleTypeId = g.Key.BundleTypeId,
+                         FundId = g.Key.FundId,
+                         QBSynced = g.Key.QBSyncID ?? 0,
+                         FundName = g.First().ContributionFund.FundName,
+                         GeneralLedgerId = g.First().ContributionFund.FundIncomeAccount,
+                         Total = g.Sum(t => t.ContributionAmount).Value,
+                         Count = g.Count(),
+                         model = this
+                     }).ToList();
             else
                 q = (from c in api.FetchContributions()
                      group c by new { c.FundId, c.QBSyncID } into g
                      orderby g.Key.FundId, g.Key.QBSyncID
                      select new FundTotalInfo
-                                {
-                                    FundId = g.Key.FundId,
-                                    QBSynced = g.Key.QBSyncID ?? 0,
-                                    FundName = g.First().ContributionFund.FundName,
-                                    GeneralLedgerId = g.First().ContributionFund.FundIncomeAccount,
-                                    Total = g.Sum(t => t.ContributionAmount).Value,
-                                    Count = g.Count(),
-                                    model = this
-                                }).ToList();
+                     {
+                         FundId = g.Key.FundId,
+                         QBSynced = g.Key.QBSyncID ?? 0,
+                         FundName = g.First().ContributionFund.FundName,
+                         GeneralLedgerId = g.First().ContributionFund.FundIncomeAccount,
+                         Total = g.Sum(t => t.ContributionAmount).Value,
+                         Count = g.Count(),
+                         model = this
+                     }).ToList();
 
             FundTotal = new FundTotalInfo
-                            {
-                                Count = q.Sum(t => t.Count),
-                                Total = q.Sum(t => t.Total),
-                                model = this
-                            };
+            {
+                Count = q.Sum(t => t.Count),
+                Total = q.Sum(t => t.Total),
+                model = this
+            };
             return q;
         }
 
@@ -109,33 +109,36 @@ namespace CmsWeb.Models
                         orderby r.Range
                         select r).ToList();
             RangeTotal = new GetTotalContributionsRange
-                             {
-                                 Count = list.Sum(t => t.Count),
-                                 Total = list.Sum(t => t.Total),
-                             };
+            {
+                Count = list.Sum(t => t.Count),
+                Total = list.Sum(t => t.Total),
+            };
             return list;
         }
 
         public IEnumerable<SelectListItem> Campuses()
         {
-            var list = (from c in DbUtil.Db.Campus
-                        orderby c.Description
+            var qc = DbUtil.Db.Campus.AsQueryable();
+            qc = DbUtil.Db.Setting("SortCampusByCode")
+                ? qc.OrderBy(cc => cc.Code)
+                : qc.OrderBy(cc => cc.Description);
+            var list = (from c in qc
                         select new SelectListItem()
-                                   {
-                                       Value = c.Id.ToString(),
-                                       Text = c.Description,
-                                   }).ToList();
+                        {
+                            Value = c.Id.ToString(),
+                            Text = c.Description,
+                        }).ToList();
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
         public SelectList TaxTypes()
         {
             return new SelectList(
-                new List<CodeValueItem> 
-    			{
-    				new CodeValueItem { Code = "TaxDed", Value = "Tax Deductible" },
-    				new CodeValueItem { Code = "NonTaxDed", Value = "Non-Tax Deductible" },
-    				new CodeValueItem { Code = "Both", Value = "Both" },
+                new List<CodeValueItem>
+                {
+                    new CodeValueItem { Code = "TaxDed", Value = "Tax Deductible" },
+                    new CodeValueItem { Code = "NonTaxDed", Value = "Non-Tax Deductible" },
+                    new CodeValueItem { Code = "Both", Value = "Both" },
                 },
                 "Code", "Value", TaxDedNonTax
             );
@@ -143,11 +146,11 @@ namespace CmsWeb.Models
         public SelectList OnlineOptions()
         {
             return new SelectList(
-                new List<CodeValueItem> 
-    			{
-    				new CodeValueItem { Id = 2, Value = "Both" },
-    				new CodeValueItem { Id = 1, Value = "Online" },
-    				new CodeValueItem { Id = 0, Value = "Not Online" },
+                new List<CodeValueItem>
+                {
+                    new CodeValueItem { Id = 2, Value = "Both" },
+                    new CodeValueItem { Id = 1, Value = "Online" },
+                    new CodeValueItem { Id = 0, Value = "Not Online" },
                 },
                 "Id", "Value", Online
             );
@@ -179,7 +182,7 @@ namespace CmsWeb.Models
                 Append(sb, "dt2=" + Dt2.ToSortableDate());
             if (!IncUnclosedBundles)
                 Append(sb, "includeunclosedbundles=false");
-            if(TaxDedNonTax != "TaxDed")
+            if (TaxDedNonTax != "TaxDed")
                 Append(sb, "taxnontax=" + TaxDedNonTax);
             if (CampusId > 0)
                 Append(sb, "campus=" + CampusId);

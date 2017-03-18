@@ -10,9 +10,16 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpGet]
         public JsonResult Campuses()
         {
-            var q = from c in DbUtil.Db.Campus
-                    select new { value = c.Id, text = c.Description };
-            var list = q.ToList();
+            var qc = DbUtil.Db.Campus.AsQueryable();
+            qc = DbUtil.Db.Setting("SortCampusByCode")
+                ? qc.OrderBy(cc => cc.Code)
+                : qc.OrderBy(cc => cc.Description);
+            var list = (from c in qc
+                        select new
+                        {
+                            value = c.Id,
+                            text = c.Description,
+                        }).ToList();
             list.Insert(0, new { value = 0, text = "(not specified)" });
             if (DbUtil.Db.Setting("CampusRequired")
                 && Util.UserPeopleId == Util2.CurrentPeopleId

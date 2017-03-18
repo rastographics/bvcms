@@ -899,7 +899,6 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Areas\Search\Views\PictureDirectory\PictureDirectory.sql" />
-    <Content Include="test.py" />
     <Content Include="Content\css\bootstrap-datetimepicker.css" />
     <Content Include="Content\css\bootstrap-datetimepicker.min.css">
       <DependentUpon>bootstrap-datetimepicker.css</DependentUpon>

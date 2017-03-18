@@ -453,9 +453,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var campusids = (from cid in DbUtil.Db.Setting("CampusIds", "").Split(',')
                              where cid.HasValue()
                              select cid.ToInt()).ToArray();
-            var q = from c in DbUtil.Db.Campus
-                    where campusids.Length == 0  || campusids.Contains(c.Id)
-                    orderby c.Description
+            var qc = from c in DbUtil.Db.Campus
+                where campusids.Length == 0 || campusids.Contains(c.Id)
+                select c;
+            qc = DbUtil.Db.Setting("SortCampusByCode") 
+                ? qc.OrderBy(cc => cc.Code) 
+                : qc.OrderBy(cc => cc.Description);
+            var q = from c in qc
                     select new SelectListItem
                     {
                         Value = c.Id.ToString(),
