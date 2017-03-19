@@ -162,16 +162,17 @@ namespace CmsWeb.Areas.Reports.Models
                 p.Add("@userid", Util.UserId);
             return cn.ExecuteReader(sql, p).ToExcel(Report + ".xlsx");
         }
-
+        
+        public int? Qtagid { get; set; }
         private DynamicParameters Parameters(string query = null)
         {
             var q = query != null
                 ? db.PeopleQuery2(query)
                 : db.PeopleQuery(queryid);
             var tag = db.PopulateSpecialTag(q, DbUtil.TagTypeId_Query);
-            int? qtagid = tag.Id;
+            Qtagid = tag.Id;
             var p = new DynamicParameters();
-            p.Add("@qtagid", qtagid);
+            p.Add("@qtagid", Qtagid);
             return p;
         }
 

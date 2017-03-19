@@ -200,6 +200,7 @@ PeopleExtra,CodeStr,,ExtraValues,,ExtraValues,Extra Value Code,,Select the Extra
 PeopleExtraData,String,,, Name,ExtraValues,Extra Value Text,Quarters,Enter the Field Name and enter all or part of the value along with a Comparison.
 PeopleExtraDate,Date,,, Name,ExtraValues,Extra Value Date,Quarters,Enter the Field Name and pick a date and a Comparison.
 PeopleExtraInt,NullInteger,,, Name,ExtraValues,Extra Value Int,Quarters,Enter the Field Name and enter all or part of the value (must be an integer) along with a Comparison.
+PeopleExtraAttr,CodeStr,,Attributes,,ExtraValues,Extra Value Code,,Select the Extra Value Attr from the list
 HasPeopleExtraField,StringEqual,,,,ExtraValues,Has Extra Value Field,,Enter the Field Name and a Comparison.
 RecentPeopleExtraFieldChanged,Bit,,, Field,ExtraValues,Recent Extra Value Changed,"Days,Quarters",Select number of days to lookback and enter Field name of Extra value. Shows those whom that Field has been recently updated.
 FamilyExtra,CodeStr,,FamilyExtraValues,,ExtraValues,FamilyExtra Value Code,,Select the Extra Value Code from the list

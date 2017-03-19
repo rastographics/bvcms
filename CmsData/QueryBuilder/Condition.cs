@@ -130,17 +130,9 @@ namespace CmsData
         {
             get
             {
-                try
-                {
-                    if ((_FieldInfo == null || _FieldInfo.Name != ConditionName))
-                        _FieldInfo = FieldClass.Fields[ConditionName];
-                    return _FieldInfo;
-                }
-                catch (Exception)
-                {
-                    //throw new Exception("QB Field not found: " + ConditionName);
-                    return null;
-                }
+                if ((_FieldInfo == null || _FieldInfo.Name != ConditionName))
+                    _FieldInfo = FieldClass.Fields[ConditionName];
+                return _FieldInfo;
             }
         }
         public void SetComparisonType(CompareType value)

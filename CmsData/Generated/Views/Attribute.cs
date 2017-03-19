@@ -24,6 +24,8 @@ namespace CmsData.View
 		
 		private string _ValueX;
 		
+		private string _FieldAttr;
+		
 		
 		public Attribute()
 		{
@@ -94,6 +96,23 @@ namespace CmsData.View
 			{
 				if (this._ValueX != value)
 					this._ValueX = value;
+			}
+
+		}
+
+		
+		[Column(Name="FieldAttr", Storage="_FieldAttr", DbType="nvarchar")]
+		public string FieldAttr
+		{
+			get
+			{
+				return this._FieldAttr;
+			}
+
+			set
+			{
+				if (this._FieldAttr != value)
+					this._FieldAttr = value;
 			}
 
 		}

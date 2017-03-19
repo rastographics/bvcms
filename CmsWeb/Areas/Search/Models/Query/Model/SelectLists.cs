@@ -37,6 +37,8 @@ namespace CmsWeb.Areas.Search.Models
                             return SelectedList(ExtraValueCodes());
                         case "FamilyExtraValues":
                             return SelectedList(FamilyExtraValueCodes());
+                        case "Attributes":
+                            return SelectedList(ExtraValueAttributes());
                         default:
                             return ConvertToSelect(Util.CallMethod(cvctl, fieldMap.DataSource), fieldMap.DataValueField);
                     }
@@ -84,6 +86,23 @@ namespace CmsWeb.Areas.Search.Models
                             {
                                 Text = e.Field + ":" + e.val,
                                 Value = e.Field + ":" + e.val,
+                            };
+            return q2.ToList();
+        }
+        public static List<SelectListItem> ExtraValueAttributes()
+        {
+            var q = from e in DbUtil.Db.ViewAttributes
+                    group e by new { e.Field, e.Name, e.ValueX } 
+                        into g
+                        select g.Key;
+            var list = q.ToList();
+
+            var q2 = from e in list
+                     orderby e.Field, e.Name, e.ValueX
+                     select new SelectListItem()
+                            {
+                                Text = $"{e.Field}:{e.Name}:{e.ValueX}",
+                                Value = $"{e.Field}:{e.Name}:{e.ValueX}",
                             };
             return q2.ToList();
         }

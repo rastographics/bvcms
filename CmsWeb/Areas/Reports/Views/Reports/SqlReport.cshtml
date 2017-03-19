@@ -15,4 +15,8 @@
       <strong>Total Count</strong> <span class="badge"></span>
     </div>
   </div>
+@if (User.IsInRole("developer") && Model.Qtagid.HasValue)
+{
+    <div>@@qtagid: @Model.Qtagid</div>
+}
 </div>
