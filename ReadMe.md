@@ -1,8 +1,8 @@
 <!--- HTML Links --->
 [GHW]: http://windows.github.com/ "GitHub for Windows"
 [DOC]: http://docs.touchpointsoftware.com "TouchPointSoftware User Documentation"
-[IDE]: http://www.visualstudio.com/en-us/downloads/
-[SQL]: https://www.microsoft.com/en-us/download/details.aspx?id=43351
+[IDE]: https://www.visualstudio.com/downloads/
+[SQL]: https://www.microsoft.com/en-us/sql-server/sql-server-downloads
 [WEB]: http://visualstudiogallery.msdn.microsoft.com/56633663-6799-41d7-9df7-0f2a504ca361
 [RWM]: http://www.microsoft.com/en-us/download/details.aspx?id=7435
 [PR]: PullRequestGuidelines.md
@@ -24,8 +24,8 @@ There are sub-tabs for commits, branches, releases and contributors.
 
 ### Install Development Tools and required libraries
 
-1. **[Visual Studio Community or Visual Studio Express 2015][IDE]**
-1. **[SQL Server Express 2012 SP2][SQL]**
+1. **[Visual Studio Community 2017][IDE]**
+1. **[SQL Server Express 2016][SQL]**
 1. **[GitHub for Windows][GHW]**
 1. **[Microsoft URL Rewrite Module 2.0 for IIS 7][RWM]** (if not already installed)
 
@@ -47,7 +47,7 @@ There are sub-tabs for commits, branches, releases and contributors.
 
 ### Open the Project
 
-1. Start **Visual Studio 2015**
+1. Start **Visual Studio**
 
 1. Open **CmsWeb.sln** solution in the root of the repository
 
