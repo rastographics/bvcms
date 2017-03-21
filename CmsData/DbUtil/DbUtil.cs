@@ -62,33 +62,33 @@ namespace CmsData
 
         private static void _logActivity(string host, string activity, int? orgId, int? peopleId, int? datumId, int? userId, string pageUrl = null, string clientIp = null)
         {
-            var db = Create(host);
-
-            if (!userId.HasValue || userId == 0)
-                userId = Util.UserId;
-            if (userId == 0)
-                userId = null;
-            if (orgId.HasValue && !db.PeopleIdOk(peopleId))
-                peopleId = null;
-            if (peopleId.HasValue && !db.OrgIdOk(orgId))
-                orgId = null;
-
-            var a = new ActivityLog
+            using (var db = Create(host))
             {
-                ActivityDate = Util.Now,
-                UserId = userId,
-                Activity = activity.Truncate(200),
-                Machine = Environment.MachineName,
-                OrgId = orgId,
-                PeopleId = peopleId,
-                DatumId = datumId,
-                PageUrl = pageUrl,
-                ClientIp = clientIp
-            };
+                if (!userId.HasValue || userId == 0)
+                    userId = Util.UserId;
+                if (userId == 0)
+                    userId = null;
+                if (orgId.HasValue && !db.PeopleIdOk(peopleId))
+                    peopleId = null;
+                if (peopleId.HasValue && !db.OrgIdOk(orgId))
+                    orgId = null;
 
-            db.ActivityLogs.InsertOnSubmit(a);
-            db.SubmitChanges();
-            db.Dispose();
+                var a = new ActivityLog
+                {
+                    ActivityDate = Util.Now,
+                    UserId = userId,
+                    Activity = activity.Truncate(200),
+                    Machine = Environment.MachineName,
+                    OrgId = orgId,
+                    PeopleId = peopleId,
+                    DatumId = datumId,
+                    PageUrl = pageUrl,
+                    ClientIp = clientIp
+                };
+
+                db.ActivityLogs.InsertOnSubmit(a);
+                db.SubmitChanges();
+            }
 
             // Logging temporarily to monitor some major changes
 
