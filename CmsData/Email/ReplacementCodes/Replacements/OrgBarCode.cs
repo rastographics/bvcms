@@ -1,12 +1,12 @@
-﻿using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using UtilityExtensions;
 
 namespace CmsData
 {
     public partial class EmailReplacements
     {
-        private static readonly Regex OrgBarCodeRe = new Regex(@"{orgbarcode(:\s*(?<id>\d*))?}", RegexOptions.Singleline);
+        private const string MatchOrgBarCodeRe = @"{orgbarcode(:\s*(?<id>\d*))?}";
+        private static readonly Regex OrgBarCodeRe = new Regex(MatchOrgBarCodeRe, RegexOptions.Singleline);
 
         private string OrgBarCodeReplacement(string code, EmailQueueTo emailqueueto)
         {

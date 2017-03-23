@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using UtilityExtensions;
 
@@ -6,7 +7,9 @@ namespace CmsData
 {
     public partial class EmailReplacements
     {
-        private static readonly Regex FundnameRe = new Regex(@"{fundname:\s*(?<fundid>\d+)}", RegexOptions.Singleline);
+        private const string MatchFundnameRe = @"{fundname:\s*(?<fundid>\d+)}";
+        private readonly Dictionary<int, string> fundnames = new Dictionary<int, string>();
+        private static readonly Regex FundnameRe = new Regex(MatchFundnameRe, RegexOptions.Singleline);
 
         private string FundNameReplacement(string code)
         {

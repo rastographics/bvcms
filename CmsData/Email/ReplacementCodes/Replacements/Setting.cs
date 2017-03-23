@@ -6,7 +6,8 @@ namespace CmsData
 {
     public partial class EmailReplacements
     {
-        private static readonly Regex SettingRe = new Regex(@"{setting:\s*(?<name>[^}]*)}", RegexOptions.Singleline);
+        private const string MatchSettingRe = @"{setting:\s*(?<name>[^}]*)}";
+        private static readonly Regex SettingRe = new Regex(MatchSettingRe, RegexOptions.Singleline);
 
         private string SettingReplacement(string code)
         {

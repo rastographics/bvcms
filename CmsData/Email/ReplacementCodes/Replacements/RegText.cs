@@ -6,7 +6,8 @@ namespace CmsData
 {
     public partial class EmailReplacements
     {
-        private static readonly Regex RegTextRe = new Regex(@"{reg(?<type>.*?):(?<field>.*?)}", RegexOptions.Singleline);
+        private const string MatchRegTextRe = @"{reg(?<type>.*?):(?<field>.*?)}";
+        private static readonly Regex RegTextRe = new Regex(MatchRegTextRe, RegexOptions.Singleline);
 
         private string RegTextReplacement(string code, EmailQueueTo emailqueueto)
         {

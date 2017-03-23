@@ -8,7 +8,8 @@ namespace CmsData
 {
     public partial class EmailReplacements
     {
-        private static readonly Regex PledgeRe = new Regex(@"{pledge(?<type>amt|bal):\s*(?<fundid>\d+)}", RegexOptions.Singleline);
+        private const string MatchPledgeRe = @"{pledge(?<type>amt|bal):\s*(?<fundid>\d+)}";
+        private static readonly Regex PledgeRe = new Regex(MatchPledgeRe, RegexOptions.Singleline);
 
         private List<PledgeBalance> pledgeinfos;
         private PledgeBalance GetPledgeInfo(int fundid, EmailQueueTo emailqueueto)

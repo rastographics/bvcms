@@ -6,7 +6,8 @@ namespace CmsData
 {
     public partial class EmailReplacements
     {
-        private static readonly Regex OrgMemberRe = new Regex(@"{orgmember:(?<type>.*?),(?<divid>.*?)}", RegexOptions.Singleline);
+        private const string MatchOrgMemberRe = @"{orgmember:(?<type>.*?),(?<divid>.*?)}";
+        private static readonly Regex OrgMemberRe = new Regex(MatchOrgMemberRe, RegexOptions.Singleline);
 
         private string OrgMemberReplacement(string code, EmailQueueTo emailqueueto)
         {

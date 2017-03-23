@@ -3,34 +3,28 @@ using System.Linq;
 
 namespace CmsData.Email.ReplacementCodes
 {
-    public class OrgInfos
+    public class OrgInfo
     {
         private readonly CMSDataContext db;
-        private class OrgInfo
+        private class NameCount
         {
             public string Name { get; set; }
             public string Count { get; set; }
         }
 
-        public OrgInfos(CMSDataContext db)
+        public OrgInfo(CMSDataContext db)
         {
             this.db = db;
         }
 
-        public string Name(int? id)
-        {
-            return GetOrgInfo(id).Name;
-        }
-        public string Count(int? id)
-        {
-            return GetOrgInfo(id).Count;
-        }
+        public string Name(int? id) => GetOrgInfo(id).Name;
+        public string Count(int? id) => GetOrgInfo(id).Count;
 
-        private readonly Dictionary<int, OrgInfo> orginfos = new Dictionary<int, OrgInfo>();
+        private readonly Dictionary<int, NameCount> orginfos = new Dictionary<int, NameCount>();
 
-        private OrgInfo GetOrgInfo(int? orgid)
+        private NameCount GetOrgInfo(int? orgid)
         {
-            OrgInfo oi = null;
+            NameCount oi = null;
             var oid = orgid ?? db.CurrentOrgId;
 
             if (oid.HasValue)
@@ -39,7 +33,7 @@ namespace CmsData.Email.ReplacementCodes
                 {
                     var q = from i in db.Organizations
                         where i.OrganizationId == oid
-                        select new OrgInfo()
+                        select new NameCount()
                         {
                             Name = i.OrganizationName,
                             Count = i.OrganizationMembers.Count().ToString()
@@ -50,7 +44,7 @@ namespace CmsData.Email.ReplacementCodes
                 else
                     oi = orginfos[oid.Value];
             }
-            return oi ?? new OrgInfo();
+            return oi ?? new NameCount();
         }
     }
 }

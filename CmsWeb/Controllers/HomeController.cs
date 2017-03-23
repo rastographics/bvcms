@@ -49,6 +49,7 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/Test/{id?}")]
         public ActionResult Test(int? id)
         {
+            EmailReplacements.ReCodes();
             return Content("no test");
         }
         [HttpGet, Route("~/Warmup")]

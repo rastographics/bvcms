@@ -6,7 +6,8 @@ namespace CmsData
 {
     public partial class EmailReplacements
     {
-        private static readonly Regex ExtraValueRe = new Regex(@"{extra(?<type>.*?):(?<field>.*?)}", RegexOptions.Singleline);
+        private const string MatchExtraValueRe = @"{extra(?<type>.*?):(?<field>.*?)}";
+        private static readonly Regex ExtraValueRe = new Regex(MatchExtraValueRe, RegexOptions.Singleline);
 
         private string ExtraValueReplacement(string code, EmailQueueTo emailqueueto)
         {

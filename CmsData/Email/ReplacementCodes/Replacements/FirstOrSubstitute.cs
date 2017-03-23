@@ -1,12 +1,12 @@
-﻿using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using UtilityExtensions;
 
 namespace CmsData
 {
     public partial class EmailReplacements
     {
-        private static readonly Regex FirstOrSubstituteRe = new Regex(@"\{first\|(?<sub>[^}]*)\}", RegexOptions.Singleline);
+        private const string MatchFirstOrSubstituteRe = @"\{first\|(?<sub>[^}]*)\}";
+        private static readonly Regex FirstOrSubstituteRe = new Regex(MatchFirstOrSubstituteRe, RegexOptions.Singleline);
 
         private string FirstOrSubstituteReplacement(string code)
         {

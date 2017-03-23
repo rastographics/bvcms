@@ -6,7 +6,8 @@ namespace CmsData
 {
     public partial class EmailReplacements
     {
-        private static readonly Regex OrgExtraRe = new Regex(@"\{orgextra:(?<field>[^\]]*)\}", RegexOptions.Singleline);
+        private const string MatchOrgExtraRe = @"\{orgextra:(?<field>[^\]]*)\}";
+        private static readonly Regex OrgExtraRe = new Regex(MatchOrgExtraRe, RegexOptions.Singleline);
 
         private string OrgExtraReplacement(string code, EmailQueueTo emailqueueto)
         {

@@ -6,7 +6,8 @@ namespace CmsData
 {
     public partial class EmailReplacements
     {
-        private static readonly Regex SmallGroupRe = new Regex(@"\{(smallgroup|subgroup):\[(?<prefix>[^\]]*)\](?:,(?<def>[^}]*)){0,1}\}", RegexOptions.Singleline);
+        private const string MatchSubGroupRe = @"\{(smallgroup|subgroup):\[(?<prefix>[^\]]*)\](?:,(?<def>[^}]*)){0,1}\}";
+        private static readonly Regex SmallGroupRe = new Regex(MatchSubGroupRe, RegexOptions.Singleline);
 
         private string SmallGroupReplacement(string code, EmailQueueTo emailqueueto)
         {
