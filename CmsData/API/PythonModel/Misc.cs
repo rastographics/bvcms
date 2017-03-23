@@ -149,5 +149,12 @@ namespace CmsData
             db.SetSetting(name, value.ToString());
             db.SubmitChanges();
         }
+
+        public string FormatJson(string json)
+        {
+            var d = JsonConvert.DeserializeObject(json);
+            var s = JsonConvert.SerializeObject(d, Formatting.Indented);
+            return s.Replace("\r\n", "\n");
+        }
     }
 }
