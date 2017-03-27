@@ -1,0 +1,34 @@
+﻿@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Upload Excel IPS";
+    ViewBag.PageHeader = "Upload Excel IPS";
+}
+<div class="row">
+    <div class="col-md-8">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <form action="/UploadExcelIps" method="post" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <div class="form-group">
+                                <label for="file" class="control-label">File</label>
+                                <input type="file" id="file" name="file" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label for="noupdate" class="control-label">
+                                @Html.CheckBox("noupdate") Inserts only?
+                            </label>
+                        </div>
+                    </div>
+                    <br />
+                    <p>
+                        <input type="submit" class="btn btn-primary" value="Submit" />
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

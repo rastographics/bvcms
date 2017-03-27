@@ -5,6 +5,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 using CmsData;
+using CmsData.API;
 using OfficeOpenXml;
 using UtilityExtensions;
 
@@ -49,17 +50,33 @@ namespace CmsWeb.Models
         public static IEnumerable<dynamic> AsEnumerable(this ExcelPackage package)
         {
             var ws = package.Workbook.Worksheets.First();
-            var header = ws.Cells[1, 1, 1, ws.Dimension.End.Column];
+            return ws.AsEnumerable();
+        }
+        public static IEnumerable<dynamic> AsEnumerable(this ExcelWorksheet ws)
+        {
+            var header = ws.GetHeaderColumns();
             var r = 2;
             while (r <= ws.Dimension.End.Row)
             {
-                var row = ws.Cells[r, 1, r, ws.Dimension.End.Column];
-                var record = new ExpandoObject() as IDictionary<string, object>;
-                for (var c = 1; c < header.Columns; c++)
-                    record.Add(header[1, c].Text, row[1, c].Value);
+                var dict = new Dictionary<string, object>();
+                foreach(var kv in header)
+                    dict[kv.Key] = ws.Cells[r, kv.Value].Value;
+                var record = new DynamicData(dict);
                 r++;
                 yield return record;
             }
+        }
+        public static Dictionary<string, int> GetHeaderColumns(this ExcelWorksheet sheet)
+        {
+            var names = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            var n = 0;
+            foreach (var c in sheet.Cells[1, 1, 1, sheet.Dimension.End.Column])
+            {
+                n++;
+                if(c.Text.HasValue())
+                    names.Add(c.Text, n);
+            }
+            return names;
         }
 
         public static List<ExcelPic> List(Guid queryid)
