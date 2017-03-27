@@ -22,6 +22,8 @@ namespace CmsData.View
 		
 		private decimal? _PledgeAmt;
 		
+		private decimal? _GivenAmt;
+		
 		private decimal? _Balance;
 		
 		
@@ -77,6 +79,23 @@ namespace CmsData.View
 			{
 				if (this._PledgeAmt != value)
 					this._PledgeAmt = value;
+			}
+
+		}
+
+		
+		[Column(Name="GivenAmt", Storage="_GivenAmt", DbType="Decimal(38,2)")]
+		public decimal? GivenAmt
+		{
+			get
+			{
+				return this._GivenAmt;
+			}
+
+			set
+			{
+				if (this._GivenAmt != value)
+					this._GivenAmt = value;
 			}
 
 		}

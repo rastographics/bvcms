@@ -464,6 +464,8 @@
     <Compile Include="Email\ReplacementCodes\Replacements\Debug.cs" />
     <Compile Include="Email\ReplacementCodes\Links\CreateUserLink.cs" />
     <Compile Include="Email\ReplacementCodes\Links\UnSubscribe.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\RecentGifts.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\DynamicData.cs" />
     <Compile Include="Email\ReplacementCodes\Replacements\StatementType.cs" />
     <Compile Include="Email\ReplacementCodes\Replacements\ExtraValue.cs" />
     <Compile Include="Email\ReplacementCodes\Links\RegisterLink.cs" />
@@ -488,7 +490,7 @@
     <Compile Include="Email\ReplacementCodes\Replacements\SubGroups.cs" />
     <Compile Include="Email\ReplacementCodes\Replacements\FirstOrSubstitute.cs" />
     <Compile Include="Email\ReplacementCodes\Replacements\Setting.cs" />
-    <Compile Include="Email\ReplacementCodes\Replacements\FundName.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\PledgeFund.cs" />
     <Compile Include="Email\ReplacementCodes\Replacements\AddSmallGroup.cs" />
     <Compile Include="Email\ReplacementCodes\Replacements\MapUrlencoded.cs" />
     <Compile Include="Email\ReplacementCodes\Replacements\OrgInfo.cs" />

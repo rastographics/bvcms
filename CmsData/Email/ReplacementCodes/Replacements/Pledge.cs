@@ -32,9 +32,11 @@ namespace CmsData
             switch (type.ToLower())
             {
                 case "bal":
-                    return (i.Balance ?? 0).ToString("c");
+                    return (i.Balance ?? 0).ToString("N");
                 case "amt":
-                    return (i.PledgeAmt ?? 0).ToString("c");
+                    return (i.PledgeAmt ?? 0).ToString("N");
+                case "given":
+                    return (i.GivenAmt ?? 0).ToString("N");
             }
             return code;
         }

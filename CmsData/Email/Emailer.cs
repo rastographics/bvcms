@@ -19,6 +19,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Transactions;
 using System.Web;
+using CmsData.API;
+using Dapper;
 using Elmah;
 using HtmlAgilityPack;
 using SendGrid.Helpers.Mail;
@@ -616,6 +618,71 @@ namespace CmsData
             SubmitChanges();
         }
 
+        public void SendPeopleEmailWithPython(int queueid, IEnumerable<dynamic> recipientData, DynamicData pythonData)
+        {
+            var emailqueue = EmailQueues.Single(ee => ee.Id == queueid);
+            var from = Util.FirstAddress(emailqueue.FromAddr, emailqueue.FromName);
+            if (!emailqueue.Subject.HasValue() || !emailqueue.Body.HasValue())
+            {
+                SendEmail(from,
+                    $"sent emails - error(emailid={emailqueue.Id})", "no subject or body, no emails sent",
+                    Util.ToMailAddressList(from),
+                    emailqueue.Id);
+                return;
+            }
+            var dict = recipientData.ToDictionary(vv => (int)vv.PeopleId, vv => vv);
+
+            var body = DoClickTracking(emailqueue);
+            var m = new EmailReplacements(this, body, from, queueid, pythondata: pythonData);
+            emailqueue.Started = Util.Now;
+            SubmitChanges();
+
+            var cc = Util.ToMailAddressList(emailqueue.CClist);
+
+            var q = from to in EmailQueueTos
+                    where to.Id == emailqueue.Id
+                    where to.Sent == null
+                    orderby to.PeopleId
+                    select to;
+            foreach (var to in q)
+            {
+                try
+                {
+                    if (m.OptOuts != null && m.OptOuts.Any(vv => vv.PeopleId == to.PeopleId && vv.OptOutX == true))
+                        continue;
+
+                    var text = m.DoReplacements(to.PeopleId, to);
+
+                    text = RenderTemplate(text, dict[to.PeopleId]);
+
+                    var aa = m.ListAddresses;
+
+                    if (Setting("sendemail", "true") != "false")
+                    {
+                        SendEmail(from, emailqueue.Subject, text, aa, to, cc);
+                        to.Sent = Util.Now;
+                        SubmitChanges();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    var subject = $"sent emails - error:(emailid={emailqueue.Id}) {CmsHost}";
+                    ErrorLog.GetDefault(null).Log(new Error(new Exception(subject, ex)));
+                    SendEmail(from, subject, ex.Message, Util.ToMailAddressList(from), to);
+                }
+            }
+
+            emailqueue.Sent = Util.Now;
+            var nitems = emailqueue.EmailQueueTos.Count();
+            if (cc.Count > 0)
+            {
+                nitems += cc.Count;
+            }
+            if (nitems > 1)
+                NotifySentEmails(from.Address, from.DisplayName,
+                    emailqueue.Subject, nitems, emailqueue.Id);
+            SubmitChanges();
+        }
         private string DoClickTracking(EmailQueue emailqueue)
         {
             var body = emailqueue.Body;
@@ -636,10 +703,12 @@ namespace CmsData
             string subj = "sent emails: " + subject;
             var link = ServerLink("/Emails/Details/" + id);
             string body = $@"<a href=""{link}"">{count} emails sent</a>";
-
+#if DEBUG
+#else
             if (Util.IsMyDataUser == false)
                 SendEmail(from, subj, body, Util.ToMailAddressList(from), id);
             SendEmail(from, Host + " " + subj, body, Util.SendErrorsTo(), id);
+#endif
         }
 
         private string CreateClickTracking(int emailId, string input)

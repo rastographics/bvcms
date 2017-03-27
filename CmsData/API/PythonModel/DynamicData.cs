@@ -30,5 +30,13 @@ namespace CmsData.API
                 ? d[binder.Name] : "";
             return true;
         }
+        public string this[string key] => d[key] == null ? null : d[key].ToString();
+
+        public object GetValue(string key)
+        {
+            if(d.ContainsKey(key))
+                return d[key];
+            return null;
+        }
     }
 }

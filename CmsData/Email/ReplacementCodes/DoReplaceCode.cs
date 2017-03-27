@@ -177,11 +177,14 @@ namespace CmsData
                     if (PledgeRe.IsMatch(code))
                         return PledgeReplacement(code, eq);
 
-                    if (FundnameRe.IsMatch(code))
-                        return FundNameReplacement(code);
+                    if (PledgeFundRe.IsMatch(code))
+                        return PledgeFundReplacement(code);
 
                     if (SettingRe.IsMatch(code))
                         return SettingReplacement(code);
+
+                    if (PythonDataRe.IsMatch(code))
+                        return PythonDataReplacement(code);
 
                     if (ExtraValueRe.IsMatch(code))
                         return ExtraValueReplacement(code, eq);

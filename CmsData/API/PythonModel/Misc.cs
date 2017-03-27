@@ -140,7 +140,7 @@ namespace CmsData
             return d;
         }
 
-        public string Setting(string name, string def)
+        public string Setting(string name, string def = "")
         {
             return db.Setting(name, def);
         }

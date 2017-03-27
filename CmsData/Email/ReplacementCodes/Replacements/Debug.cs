@@ -57,7 +57,7 @@ namespace CmsData
                 "{unsubscribe}",
                 MatchAddSmallGroupRe,
                 MatchPledgeRe,
-                MatchFundnameRe,
+                MatchPledgeFundRe,
                 MatchSettingRe,
                 MatchExtraValueRe,
                 MatchFirstOrSubstituteRe,

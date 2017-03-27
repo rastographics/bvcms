@@ -178,6 +178,7 @@ namespace CmsWeb.Controllers
             return Redirect("/");
         }
 
+#if DEBUG
         [HttpGet, Route("~/TestScript")]
         [Authorize(Roles = "Developer")]
         public ActionResult TestScript()
@@ -194,6 +195,7 @@ namespace CmsWeb.Controllers
         {
             return Content(PythonModel.RunScript(Util.Host, script));
         }
+#endif
 
         private string RunScriptSql(CMSDataContext db, string parameter, string body, DynamicParameters p)
         {

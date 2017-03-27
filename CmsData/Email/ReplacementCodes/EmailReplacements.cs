@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
+using CmsData.API;
 using CmsData.Email.ReplacementCodes;
 using Novacode;
 using UtilityExtensions;
@@ -23,14 +24,16 @@ namespace CmsData
         private Person person;
         private OrgInfo orgInfos;
         private OrgInfo OrgInfos => orgInfos ?? (orgInfos = new OrgInfo(db));
-        private const string MatchCodeRe = "{[^}]*?}";
+        private const string MatchCodeRe = "(?<!{){(?!{)[^}]*?}";
+        private DynamicData pythonData;
 
-        public EmailReplacements(CMSDataContext callingContext, string text, MailAddress from, int? queueid = null, bool noPremailer = false)
+        public EmailReplacements(CMSDataContext callingContext, string text, MailAddress from, int? queueid = null, bool noPremailer = false, DynamicData pythondata = null)
         {
             currentOrgId = callingContext.CurrentOrgId;
             connStr = callingContext.ConnectionString;
             host = callingContext.Host;
             db = callingContext;
+            pythonData = pythondata;
             this.from = from;
             if (queueid > 0)
                 OptOuts = db.OptOuts(queueid, from.Address).ToList();
