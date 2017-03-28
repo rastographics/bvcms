@@ -77,7 +77,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 		public JsonResult Progress2()
 		{
 			var r = DbUtil.Db.UploadPeopleRuns.OrderByDescending(mm => mm.Id).First();
-			return Json(new {r.Count, r.Error, r.Processed, Completed = r.Completed.ToString(), r.Running});
+			return Json(new {r.Count, r.Error, r.Processed, Completed = r.Completed.ToString(), r.Running, r.Description});
 		}
 
 	}

@@ -447,7 +447,7 @@ namespace UtilityExtensions
             catch (WebException ex)
             {
                 if (ex.Response == null || ex.Status != WebExceptionStatus.ProtocolError)
-                    throw;
+                    return null;
                 return (HttpWebResponse) ex.Response;
             }
         }

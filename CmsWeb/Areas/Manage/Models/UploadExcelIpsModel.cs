@@ -14,7 +14,7 @@ namespace CmsWeb.Models
     public class UploadExcelIpsModel
     {
         public bool Testing;
-
+        public bool InsertPeopleSpreadsheet => true;
         private readonly CMSDataContext db2;
         private readonly string host;
         private readonly bool noupdate;
@@ -30,25 +30,6 @@ namespace CmsWeb.Models
         private List<dynamic> datalist;
         private Dictionary<string, string> evtypes;
         private Dictionary<int, int> peopleids;
-        private readonly List<string> standardnames = new List<string>
-        {
-            "familyid", "title", "first", "last", "goesby", "altname",
-            "gender", "marital", "maidenName", "address", "address2",
-            "city", "state", "zip", "position", "birthday", "deceased",
-            "cellphone", "homephone", "workphone", "email", "email2",
-            "suffix", "middle", "joindate", "dropdate", "baptismdate", "weddingdate",
-            "memberstatus", "employer", "occupation", "CreatedDate", "BackgroundCheck",
-            "individualid", "campus"
-        };
-
-        private readonly List<string> standardrecregnames = new List<string>
-        {
-            "Mother", "Father", "EmContact", "EmPhone", "Allergies",
-            "Grade", "School", "Doctor", "DocPhone", "Insurance", "Policy",
-        };
-
-        public bool InsertPeopleSpreadsheet => true;
-
         public UploadExcelIpsModel(string host, int peopleId, bool noupdate, bool testing = false)
         {
             db2 = DbUtil.Create(host);
@@ -57,27 +38,23 @@ namespace CmsWeb.Models
             Testing = testing;
             this.host = host;
         }
-
         public bool DoUpload(ExcelPackage pkg)
         {
-            var db = DbUtil.Create(host);
-
             var rt = db2.UploadPeopleRuns.OrderByDescending(mm => mm.Id).First();
 
-            peopleids = db.PeopleExtras.Where(vv => vv.Field == "IndividualId" && vv.IntValue != null)
-                .ToDictionary(vv => vv.IntValue ?? 0, vv => vv.PeopleId);
-
-            UploadPeople(db, rt, pkg);
-            UploadPledges(db, rt, pkg);
-            UploadGifts(db, rt, pkg);
+            UploadPeople(rt, pkg);
+            UploadPledges(rt, pkg);
+            UploadGifts(rt, pkg);
 
             rt.Completed = DateTime.Now;
             db2.SubmitChanges();
             return true;
         }
-
-        private void UploadPeople(CMSDataContext db, UploadPeopleRun rt, ExcelPackage pkg)
+        private void UploadPeople(UploadPeopleRun rt, ExcelPackage pkg)
         {
+            var db = DbUtil.Create(host);
+            peopleids = db.PeopleExtras.Where(vv => vv.Field == "IndividualId" && vv.IntValue != null)
+                .ToDictionary(vv => vv.IntValue ?? 0, vv => vv.PeopleId);
             FetchData(pkg.Workbook.Worksheets["Personal Data"]);
 
             extravaluenames = (from name in names
@@ -126,10 +103,8 @@ namespace CmsWeb.Models
             rt.Description = $"Uploading People {(Testing ? "in testing mode" : "for real")}";
             db2.SubmitChanges();
 
-
             foreach (var fam in q)
             {
-                Family f = null;
                 var prevpid = 0;
 
                 foreach (var a in fam)
@@ -141,11 +116,12 @@ namespace CmsWeb.Models
                         db = DbUtil.Create(host);
                     }
 
+                    Family f = null;
                     var potentialdup = false;
-                    var pid = FindRecord(db, a, ref potentialdup);
-                    var p = pid?.PeopleId != null
-                        ? UpdateRecord(db, pid.PeopleId.Value, a)
-                        : NewRecord(db, a, prevpid, potentialdup);
+                    int? pid = FindRecord(db, a, ref potentialdup);
+                    var p = pid.HasValue
+                        ? UpdateRecord(db, pid.Value, a)
+                        : NewRecord(db, ref f, a, prevpid, potentialdup);
                     prevpid = p.PeopleId;
 
                     if (recregnames.Any())
@@ -161,240 +137,9 @@ namespace CmsWeb.Models
                     db.SubmitChanges();
             }
         }
-
-        private int? GetPeopleId(int individualid)
-        {
-            var peopleid = 0;
-            return peopleids.TryGetValue(individualid, out peopleid) ? (int?)peopleid : null;
-        }
-        private int? FindRecord(CMSDataContext db, dynamic a, ref bool potentialdup)
-        {
-            var peopleid = GetPeopleId((int)a.IndividualId);
-            if (peopleid.HasValue)
-                return peopleid;
-
-            string first = a.First as string;
-            string last = a.Last as string;
-            DateTime? dt = GetDate(a.Birthday);
-            string email = GetString(a.Email).trim();
-            string cell = GetDigits(a.CellPhone);
-            string home = GetDigits(a.HomePhone);
-
-            var pid = db.FindPerson3(first, last, dt, email, cell, home, null).FirstOrDefault();
-
-            if (noupdate && pid?.PeopleId != null)
-            {
-                if (!Testing)
-                {
-                    var pd = db.LoadPersonById(pid.PeopleId.Value);
-                    pd.AddEditExtraBool("FoundDup", true);
-                }
-                potentialdup = true;
-                pid = null;
-            }
-            return pid?.PeopleId;
-        }
-
-        private void UploadPledges(CMSDataContext db, UploadPeopleRun rt, ExcelPackage pkg)
-        {
-            var data = FetchPledgeData(pkg.Workbook.Worksheets["Pledges"]).ToList();
-            rt.Count = data.Count;
-            rt.Description = $"Uploading Pledges {(Testing ? "in testing mode" : "for real")}";
-            rt.Processed = 0;
-            db2.SubmitChanges();
-
-            var weeks = (from g in data
-                         group g by g.PledgeDate.Sunday() into weeklypledges
-                         select weeklypledges).ToList();
-            BundleHeader bh = null;
-            foreach (var week in weeks)
-            {
-                FinishBundle(db, bh);
-                bh = new BundleHeader
-                {
-                    BundleHeaderTypeId = BundleTypeCode.Pledge,
-                    BundleStatusId = BundleStatusCode.Closed,
-                    CreatedBy = Util.UserId,
-                    CreatedDate = DateTime.Today,
-                    ContributionDate = week.Key,
-                };
-                foreach (var pledge in week)
-                {
-                    var pid = GetPeopleId(pledge.IndividualId);
-                    if (!pid.HasValue)
-                        throw new Exception($"peopleid not found from individualid {pledge.IndividualId}");
-                    if (!Testing)
-                        db.FetchOrCreateFund(pledge.FundId, pledge.FundDescription);
-                    var bd = new BundleDetail();
-                    bd.CreatedBy = Util.UserId;
-                    bd.CreatedDate = DateTime.Now;
-                    bd.Contribution = new Contribution
-                    {
-                        CreatedBy = Util.UserId,
-                        CreatedDate = DateTime.Now,
-                        ContributionDate = pledge.PledgeDate,
-                        FundId = pledge.FundId,
-                        ContributionStatusId = 0,
-                        ContributionTypeId = ContributionTypeCode.CheckCash,
-                        ContributionAmount = pledge.PledgeAmount,
-                        PeopleId = pid
-                    };
-                    bh.BundleDetails.Add(bd);
-                    rt.Processed++;
-                    db2.SubmitChanges();
-                }
-            }
-            FinishBundle(db, bh);
-        }
-
-        private int GetInt(object o)
-        {
-            return o.ToInt();
-        }
-
-        private decimal GetDecimal(object o)
-        {
-            return o.ToNullableDecimal() ?? 0m;
-        }
-
-        private void UploadGifts(CMSDataContext db, UploadPeopleRun rt, ExcelPackage pkg)
-        {
-            var data = FetchContributionData(pkg.Workbook.Worksheets["Gift Data"]).ToList();
-            rt.Count = data.Count;
-            rt.Description = $"Uploading Gifts {(Testing ? "in testing mode" : "for real")}";
-            rt.Processed = 0;
-            db2.SubmitChanges();
-
-            var weeks = (from g in data
-                         group g by g.Date.Sunday() into weeklygifts
-                         select weeklygifts).ToList();
-            BundleHeader bh = null;
-            foreach (var week in weeks)
-            {
-                FinishBundle(db, bh);
-                bh = new BundleHeader
-                {
-                    BundleHeaderTypeId = BundleTypeCode.ChecksAndCash,
-                    BundleStatusId = BundleStatusCode.Closed,
-                    CreatedBy = Util.UserId,
-                    CreatedDate = DateTime.Today,
-                    ContributionDate = week.Key,
-                };
-                foreach (var gift in week)
-                {
-                    var pid = GetPeopleId(gift.IndividualId);
-                    if (!pid.HasValue)
-                        throw new Exception($"peopleid not found from individualid {gift.IndividualId}");
-                    if (!Testing)
-                        db.FetchOrCreateFund(gift.FundId, gift.FundDescription);
-                    var bd = new BundleDetail();
-                    bd.CreatedBy = Util.UserId;
-                    bd.CreatedDate = DateTime.Now;
-                    bd.Contribution = new Contribution
-                    {
-                        CreatedBy = Util.UserId,
-                        CreatedDate = DateTime.Now,
-                        ContributionDate = gift.Date,
-                        FundId = gift.FundId,
-                        ContributionStatusId = 0,
-                        ContributionTypeId = ContributionTypeCode.CheckCash,
-                        ContributionAmount = gift.Amount,
-                        CheckNo = gift.CheckNo,
-                        PeopleId = pid
-                    };
-                    bh.BundleDetails.Add(bd);
-                    rt.Processed++;
-                    db2.SubmitChanges();
-                }
-            }
-            FinishBundle(db, bh);
-        }
-
-        private void FinishBundle(CMSDataContext db, BundleHeader bh)
-        {
-            if (!Testing)
-            {
-                if (bh != null)
-                {
-                    bh.TotalChecks = bh.BundleDetails.Sum(d => d.Contribution.ContributionAmount);
-                    bh.TotalCash = 0;
-                    bh.TotalEnvelopes = 0;
-                    db.BundleHeaders.InsertOnSubmit(bh);
-                    db.SubmitChanges();
-                }
-            }
-        }
-
-        private Person NewRecord(CMSDataContext db, dynamic a, int prevpid, bool potentialdup)
-        {
-            Family f = null;
-            if (!Testing)
-                if (prevpid > 0)
-                    f = db.LoadFamilyByPersonId(prevpid);
-
-            if (f == null)
-            {
-                f = new Family
-                {
-                    AddressLineOne = a.Address,
-                    AddressLineTwo = a.Address2,
-                    CityName = a.City,
-                    StateCode = a.State,
-                    ZipCode = GetString(a.Zip),
-                    HomePhone = GetDigits(a.HomePhone)
-                };
-                db.Families.InsertOnSubmit(f);
-                if (!Testing)
-                    db.SubmitChanges();
-            }
-
-            string dob = GetDate(a.Birthday)?.FormatDate();
-            var p = Person.Add(db, false, f, 10, null,
-                (string)a.First,
-                (string)a.GoesBy,
-                (string)a.Last,
-                dob,
-                0, 0, 0, null, Testing);
-            p.FixTitle();
-
-            p.AltName = a.AltName;
-            p.SuffixCode = a.Suffix;
-            p.MiddleName = a.Middle;
-            p.MaidenName = a.MaidenName;
-            p.EmployerOther = a.Employer;
-            p.OccupationOther = a.Occupation;
-            p.CellPhone = GetDigits(a.CellPhone);
-            p.WorkPhone = GetDigits(a.WorkPhone);
-            p.EmailAddress = GetString(a.Email).trim();
-            p.EmailAddress2 = GetString(a.Email2).trim();
-            p.GenderId = Gender(a.Gender);
-            p.MaritalStatusId = Marital(a.Marital);
-            p.WeddingDate = GetDate(a.WeddingDate);
-            p.JoinDate = GetDate(a.JoinDate);
-            p.DropDate = GetDate(a.DropDate);
-            p.BaptismDate = GetDate(a.BaptismDate);
-            p.PositionInFamilyId = Position(a.Position);
-            p.TitleCode = Title(a.Title);
-            p.AddEditExtraInt("HouseholdId", (int)a.FamilyId);
-            p.AddEditExtraInt("IndividualId", (int)a.IndividualId);
-
-            SetMemberStatus(db, p, a.MemberStatus);
-            if (!Testing)
-            {
-                p.CampusId = Campus(a.Campus);
-                p.AddEditExtraBool("InsertPeopleAdded", true);
-                if (potentialdup)
-                    p.AddEditExtraBool("FoundDup", true);
-                db.SubmitChanges();
-            }
-            peopleids.Add(a.IndividualId, p.PeopleId);
-            return p;
-        }
-
         private Person UpdateRecord(CMSDataContext db, int pid, dynamic a)
         {
-            Person p;
-            p = db.LoadPersonById(pid);
+            var p = db.LoadPersonById(pid);
             psb = new List<ChangeDetail>();
             fsb = new List<ChangeDetail>();
 
@@ -434,7 +179,70 @@ namespace CmsWeb.Models
             }
             return p;
         }
+        private Person NewRecord(CMSDataContext db, ref Family f, dynamic a, int prevpid, bool potentialdup)
+        {
+            if (!Testing)
+                if (prevpid > 0)
+                    f = db.LoadFamilyByPersonId(prevpid);
 
+            if (f == null)
+            {
+                f = new Family
+                {
+                    AddressLineOne = a.Address,
+                    AddressLineTwo = a.Address2,
+                    CityName = a.City,
+                    StateCode = a.State,
+                    ZipCode = GetString(a.Zip),
+                    HomePhone = GetDigits(a.HomePhone)
+                };
+                db.Families.InsertOnSubmit(f);
+                if (!Testing)
+                    db.SubmitChanges();
+            }
+
+            string dob = GetDate(a.Birthday)?.FormatDate();
+            var p = Person.Add(db, false, f, 10, null,
+                (string)a.First,
+                (string)a.GoesBy,
+                (string)a.Last,
+                dob,
+                0, 0, 0, null, Testing);
+            p.FixTitle();
+
+            p.AltName = a.AltName;
+            p.SuffixCode = a.Suffix;
+            p.MiddleName = a.Middle;
+            p.MaidenName = a.MaidenName;
+            p.EmployerOther = a.Employer;
+            p.OccupationOther = a.Occupation;
+            p.CellPhone = GetDigits(a.CellPhone);
+            p.WorkPhone = GetDigits(a.WorkPhone);
+            p.EmailAddress = GetStringTrimmed(a.Email);
+            p.EmailAddress2 = GetStringTrimmed(a.Email2);
+            p.GenderId = Gender(a.Gender);
+            p.MaritalStatusId = Marital(a.Marital);
+            p.WeddingDate = GetDate(a.WeddingDate);
+            p.JoinDate = GetDate(a.JoinDate);
+            p.DropDate = GetDate(a.DropDate);
+            p.BaptismDate = GetDate(a.BaptismDate);
+            p.PositionInFamilyId = Position(a.Position);
+            p.TitleCode = Title(a.Title);
+            p.AddEditExtraInt("HouseholdId", (int)a.FamilyId);
+            p.AddEditExtraInt("IndividualId", (int)a.IndividualId);
+
+            SetMemberStatus(db, p, a.MemberStatus);
+            if (!Testing)
+            {
+                p.CampusId = Campus(a.Campus);
+                p.AddEditExtraBool("InsertPeopleAdded", true);
+                if (potentialdup)
+                    p.AddEditExtraBool("FoundDup", true);
+                db.SubmitChanges();
+            }
+            peopleids.Add((int)a.IndividualId, p.PeopleId);
+            return p;
+        }
         private void ProcessExtraValues(CMSDataContext db, Person p, dynamic a)
         {
             if (!extravaluenames.Any())
@@ -442,8 +250,8 @@ namespace CmsWeb.Models
 
             foreach (var name in extravaluenames)
             {
-                var v = a.GetValue(name);
-                var vs = v as string;
+                object o = a.GetValue(name);
+                var vs = o as string;
                 string type = null;
                 if (!evtypes.TryGetValue(name, out type))
                 {
@@ -471,8 +279,8 @@ namespace CmsWeb.Models
                         {
                             var prog = Organization.FetchOrCreateProgram(db, "InsertPeople");
                             var div = Organization.FetchOrCreateDivision(db, prog, "InsertPeople");
-                            var o = Organization.FetchOrCreateOrganization(db, div, name.SplitUpperCaseToString());
-                            oid = o.OrganizationId;
+                            var org = Organization.FetchOrCreateOrganization(db, div, name.SplitUpperCaseToString());
+                            oid = org.OrganizationId;
                             orgs.Add(name, oid);
                         }
                         var mtid = 0;
@@ -493,21 +301,20 @@ namespace CmsWeb.Models
                             if (Util.DateValid(vs, out dt))
                                 p.AddEditExtraDate(name, dt);
                         }
-                        else if (v is DateTime)
-                            p.AddEditExtraDate(name, v);
+                        else if (o is DateTime)
+                            p.AddEditExtraDate(name, (DateTime)o);
                         break;
                     case "int":
-                        if (v != null && v is int)
-                            p.AddEditExtraInt(name, v);
+                        if (o is int)
+                            p.AddEditExtraInt(name, (int)o);
                         break;
                     case "bit":
-                        if (v != null && v is int)
-                            p.AddEditExtraBool(name, v == 1);
+                        if (o is int)
+                            p.AddEditExtraBool(name, (int)o == 1);
                         break;
                 }
             }
         }
-
         private void SetRecRegs(Person p, dynamic a)
         {
             var nq = (from name in names.Keys
@@ -516,7 +323,7 @@ namespace CmsWeb.Models
             foreach (var name in nq)
             {
                 var rr = p.SetRecReg();
-                var value = GetString(a.GetValue(name)).trim();
+                string value = GetStringTrimmed(a.GetValue(name));
                 switch (name)
                 {
                     case "Mother":
@@ -555,10 +362,9 @@ namespace CmsWeb.Models
                 }
             }
         }
-
-        private void SetMemberStatus(CMSDataContext db, Person p, dynamic v)
+        private void SetMemberStatus(CMSDataContext db, Person p, object o)
         {
-            var s = v as string;
+            var s = o as string;
             if (!s.HasValue())
                 return;
             var qms = from mm in db.MemberStatuses
@@ -573,10 +379,9 @@ namespace CmsWeb.Models
             }
             p.MemberStatusId = m.Id;
         }
-
-        private void UpdateMemberStatus(CMSDataContext db, Person p, dynamic a)
+        private void UpdateMemberStatus(CMSDataContext db, Person p, object o)
         {
-            var ms = a as string;
+            var ms = o as string;
             if (ms == null)
                 return;
             var qms = from mm in db.MemberStatuses
@@ -591,59 +396,178 @@ namespace CmsWeb.Models
             }
             p.UpdateValue("MemberStatusId", m.Id);
         }
-
-        public class Gift
+        private void UploadPledges(UploadPeopleRun rt, ExcelPackage pkg)
         {
-            public int IndividualId { get; set; }
-            public decimal Amount { get; set; }
-            public DateTime Date { get; set; }
-            public string FundName { get; set; }
-            public int FundId { get; set; }
-            public string FundDescription { get; set; }
-            public string CheckNo { get; set; }
+            var db = DbUtil.Create(host);
+            var data = FetchPledgeData(pkg.Workbook.Worksheets["Pledges"]).ToList();
+            rt.Count = data.Count;
+            rt.Description = $"Uploading Pledges {(Testing ? "in testing mode" : "for real")}";
+            rt.Processed = 0;
+            db2.SubmitChanges();
+
+            var weeks = (from g in data
+                         group g by g.Date.Sunday() into weeklypledges
+                         select weeklypledges).ToList();
+            BundleHeader bh = null;
+            foreach (var week in weeks)
+            {
+                FinishBundle(db, bh);
+                if (!Testing)
+                {
+                    db.Dispose();
+                    db = DbUtil.Create(host);
+                }
+                bh = new BundleHeader
+                {
+                    BundleHeaderTypeId = BundleTypeCode.Pledge,
+                    BundleStatusId = BundleStatusCode.Closed,
+                    CreatedBy = Util.UserId,
+                    CreatedDate = DateTime.Today,
+                    ContributionDate = week.Key,
+                };
+                foreach (var pledge in week)
+                {
+                    var pid = GetPeopleId(pledge.IndividualId);
+                    if (!pid.HasValue)
+                        throw new Exception($"peopleid not found from individualid {pledge.IndividualId}");
+                    if (!Testing)
+                    {
+                        var f = db.FetchOrCreateFund(pledge.FundId, pledge.FundName ?? pledge.FundDescription);
+                        f.FundPledgeFlag = true;
+                    }
+                    var bd = new BundleDetail();
+                    bd.CreatedBy = Util.UserId;
+                    bd.CreatedDate = DateTime.Now;
+                    bd.Contribution = new Contribution
+                    {
+                        CreatedBy = Util.UserId,
+                        CreatedDate = DateTime.Now,
+                        ContributionDate = pledge.Date,
+                        FundId = pledge.FundId,
+                        ContributionStatusId = 0,
+                        ContributionTypeId = ContributionTypeCode.CheckCash,
+                        ContributionAmount = pledge.Amount,
+                        PeopleId = pid
+                    };
+                    bh.BundleDetails.Add(bd);
+                    rt.Processed++;
+                    db2.SubmitChanges();
+                }
+            }
+            FinishBundle(db, bh);
+            if (!Testing)
+                db.Dispose();
         }
-        public IEnumerable<Gift> FetchContributionData(ExcelWorksheet ws)
+        private void UploadGifts(UploadPeopleRun rt, ExcelPackage pkg)
+        {
+            var db = DbUtil.Create(host);
+            var data = FetchContributionData(pkg.Workbook.Worksheets["Gift Data"]).ToList();
+            rt.Count = data.Count;
+            rt.Description = $"Uploading Gifts {(Testing ? "in testing mode" : "for real")}";
+            rt.Processed = 0;
+            db2.SubmitChanges();
+
+            var weeks = (from g in data
+                         group g by g.Date.Sunday() into weeklygifts
+                         select weeklygifts).ToList();
+            BundleHeader bh = null;
+            foreach (var week in weeks)
+            {
+                FinishBundle(db, bh);
+                if (!Testing)
+                {
+                    db.Dispose();
+                    db = DbUtil.Create(host);
+                }
+                bh = new BundleHeader
+                {
+                    BundleHeaderTypeId = BundleTypeCode.ChecksAndCash,
+                    BundleStatusId = BundleStatusCode.Closed,
+                    CreatedBy = Util.UserId,
+                    CreatedDate = DateTime.Today,
+                    ContributionDate = week.Key,
+                };
+                foreach (var gift in week)
+                {
+                    var pid = GetPeopleId(gift.IndividualId);
+                    if(!Testing)
+                        if (!pid.HasValue)
+                            throw new Exception($"peopleid not found from individualid {gift.IndividualId}");
+                    if (!Testing)
+                        db.FetchOrCreateFund(gift.FundId, gift.FundName ?? gift.FundDescription);
+                    var bd = new BundleDetail();
+                    bd.CreatedBy = Util.UserId;
+                    bd.CreatedDate = DateTime.Now;
+                    bd.Contribution = new Contribution
+                    {
+                        CreatedBy = Util.UserId,
+                        CreatedDate = DateTime.Now,
+                        ContributionDate = gift.Date,
+                        FundId = gift.FundId,
+                        ContributionStatusId = 0,
+                        ContributionTypeId = ContributionTypeCode.CheckCash,
+                        ContributionAmount = gift.Amount,
+                        CheckNo = gift.CheckNo,
+                        PeopleId = pid
+                    };
+                    bh.BundleDetails.Add(bd);
+                    rt.Processed++;
+                    db2.SubmitChanges();
+                }
+            }
+            FinishBundle(db, bh);
+            if (!Testing)
+                db.Dispose();
+        }
+        private void FinishBundle(CMSDataContext db, BundleHeader bh)
+        {
+            if (!Testing)
+            {
+                if (bh != null)
+                {
+                    bh.TotalChecks = bh.BundleDetails.Sum(d => d.Contribution.ContributionAmount);
+                    bh.TotalCash = 0;
+                    bh.TotalEnvelopes = 0;
+                    db.BundleHeaders.InsertOnSubmit(bh);
+                    db.SubmitChanges();
+                }
+            }
+        }
+        public IEnumerable<PledgeGift> FetchContributionData(ExcelWorksheet ws)
         {
             FetchHeaderColumns(ws);
             var r = 2;
             while (r <= ws.Dimension.End.Row)
             {
-                var row = new Gift
+                var row = new PledgeGift()
                 {
-                    IndividualId = GetInt(ws.Cells[r, names["IndividualId"]]),
-                    Amount = GetDecimal(ws.Cells[r, names["Amount"]]),
-                    Date = GetDate(ws.Cells[r, names["Date"]]) ?? DateTime.MinValue,
-                    FundId = GetInt(ws.Cells[r, names["FundId"]]),
-                    FundDescription = GetString(ws.Cells[r, names["FundDescription"]]),
+                    IndividualId = GetInt(ws.Cells[r, names["IndividualId"]].Value),
+                    Amount = GetDecimal(ws.Cells[r, names["Amount"]].Value),
+                    Date = GetDate(ws.Cells[r, names["Date"]].Value) ?? DateTime.MinValue,
+                    FundId = GetInt(ws.Cells[r, names["FundId"]].Value),
+                    FundDescription = GetString(ws.Cells[r, names["FundDescription"]].Value),
+                    FundName = GetString(ws.Cells[r, names["FundName"]].Value),
                 };
                 if (names.ContainsKey("CheckNo"))
-                    row.CheckNo = GetString(ws.Cells[r, names["CheckNo"]]);
+                    row.CheckNo = GetString(ws.Cells[r, names["CheckNo"]].Value);
                 r++;
                 yield return row;
             }
         }
-        public class Pledge
-        {
-            public int IndividualId { get; set; }
-            public decimal PledgeAmount { get; set; }
-            public DateTime PledgeDate { get; set; }
-            public string FundName { get; set; }
-            public int FundId { get; set; }
-            public string FundDescription { get; set; }
-        }
-        public IEnumerable<Pledge> FetchPledgeData(ExcelWorksheet ws)
+        public IEnumerable<PledgeGift> FetchPledgeData(ExcelWorksheet ws)
         {
             FetchHeaderColumns(ws);
             var r = 2;
             while (r <= ws.Dimension.End.Row)
             {
-                var row = new Pledge
+                var row = new PledgeGift
                 {
-                    IndividualId = GetInt(ws.Cells[r, names["IndividualId"]]),
-                    PledgeAmount = GetDecimal(ws.Cells[r, names["PledgeAmount"]]),
-                    PledgeDate = GetDate(ws.Cells[r, names["PledgeDate"]]) ?? DateTime.MinValue,
-                    FundId = GetInt(ws.Cells[r, names["FundId"]]),
-                    FundDescription = GetString(ws.Cells[r, names["FundDescription"]])
+                    IndividualId = GetInt(ws.Cells[r, names["IndividualId"]].Value),
+                    Amount = GetDecimal(ws.Cells[r, names["PledgeAmount"]].Value),
+                    Date = GetDate(ws.Cells[r, names["PledgeDate"]].Value) ?? DateTime.MinValue,
+                    FundId = GetInt(ws.Cells[r, names["FundId"]].Value),
+                    FundName = GetString(ws.Cells[r, names["FundName"]].Value),
+                    FundDescription = GetString(ws.Cells[r, names["FundDescription"]].Value),
                 };
                 r++;
                 yield return row;
@@ -680,27 +604,73 @@ namespace CmsWeb.Models
                 }
             }
         }
+        private int? GetPeopleId(int individualid)
+        {
+            if (peopleids.ContainsKey(individualid))
+                return peopleids[individualid];
+            return null;
+        }
+        private int? FindRecord(CMSDataContext db, dynamic a, ref bool potentialdup)
+        {
+            if(a.IndividualId != null)
+            {
+                var peopleid = GetPeopleId((int)a.IndividualId);
+                return peopleid;
+            }
+            // Only use search if there is no IndividualId
+
+            string first = a.First as string;
+            string last = a.Last as string;
+            DateTime? dt = GetDate(a.Birthday);
+            string email = GetStringTrimmed(a.Email);
+            string cell = GetDigits(a.CellPhone);
+            string home = GetDigits(a.HomePhone);
+
+            var pid = db.FindPerson3(first, last, dt, email, cell, home, null).FirstOrDefault();
+
+            if (noupdate && pid?.PeopleId != null)
+            {
+                if (!Testing)
+                {
+                    var pd = db.LoadPersonById(pid.PeopleId.Value);
+                    pd.AddEditExtraBool("FoundDup", true);
+                }
+                potentialdup = true;
+                pid = null;
+            }
+            return pid?.PeopleId;
+        }
         private void UpdateField(Family f, string prop, object o)
         {
             if (o != null)
                 f.UpdateValue(fsb, prop, o);
         }
-
         private void UpdateField(Person p, string prop, object o)
         {
             if (o != null)
                 p.UpdateValue(psb, prop, o);
         }
-
         private string GetDigits(object o)
         {
             var s = o as string;
             return s.HasValue() ? s.GetDigits() : null;
         }
-
         private string GetString(object o)
         {
             return o?.ToString();
+        }
+        private string GetStringTrimmed(object o)
+        {
+            string s = o?.ToString();
+            return s.trim();
+        }
+        private int GetInt(object o)
+        {
+            return o.ToInt();
+        }
+        private decimal GetDecimal(object o)
+        {
+            return o.ToNullableDecimal() ?? 0m;
         }
         private DateTime? GetDate(object o)
         {
@@ -710,7 +680,6 @@ namespace CmsWeb.Models
                     dt = null;
             return dt;
         }
-
         private int Gender(object o)
         {
             var s = o as string;
@@ -726,7 +695,6 @@ namespace CmsWeb.Models
             }
             return 0;
         }
-
         private int Marital(object o)
         {
             var s = o as string;
@@ -750,14 +718,12 @@ namespace CmsWeb.Models
             }
             return 0;
         }
-
         private string Title(object o)
         {
             var s = o as string;
             s = s.trim()?.ToLower();
             return !s.HasValue() ? s : s.Truncate(10).TrimEnd();
         }
-
         private int Position(object o)
         {
             var s = o as string;
@@ -773,7 +739,6 @@ namespace CmsWeb.Models
             }
             return 10;
         }
-
         private int? Campus(object o)
         {
             var s = o as string;
@@ -782,5 +747,26 @@ namespace CmsWeb.Models
             s = s.trim().ToLower();
             return campuses[s];
         }
+        private readonly List<string> standardnames = new List<string>
+        {
+            "familyid", "title", "first", "last", "goesby", "altname", "gender", "marital", "maidenName", "address", "address2",
+            "city", "state", "zip", "position", "birthday", "deceased", "cellphone", "homephone", "workphone", "email", "email2",
+            "suffix", "middle", "joindate", "dropdate", "baptismdate", "weddingdate", "memberstatus", "employer", "occupation",
+            "CreatedDate", "BackgroundCheck", "individualid", "campus"
+        };
+        private readonly List<string> standardrecregnames = new List<string>
+        {
+            "Mother", "Father", "EmContact", "EmPhone", "Allergies", "Grade", "School", "Doctor", "DocPhone", "Insurance", "Policy",
+        };
+    }
+    public class PledgeGift
+    {
+        public int IndividualId { get; set; }
+        public decimal Amount { get; set; }
+        public DateTime Date { get; set; }
+        public string FundName { get; set; }
+        public int FundId { get; set; }
+        public string FundDescription { get; set; }
+        public string CheckNo { get; set; }
     }
 }

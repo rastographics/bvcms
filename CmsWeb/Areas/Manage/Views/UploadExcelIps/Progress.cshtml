@@ -49,7 +49,7 @@
                 var intervalId = window.setInterval(function () {
                     $.post('/UploadExcelIps/Progress2', null, function (json) {
                         $("#count").text(json.Count);
-                        $("#processed").text(json.Description);
+                        $("#description").text(json.Description);
                         $("#processed").text(json.Processed);
                         $("#found").text(json.Found);
                         $("#completed").text(json.Completed);
