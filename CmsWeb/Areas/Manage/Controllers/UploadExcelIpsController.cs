@@ -34,33 +34,33 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             HostingEnvironment.QueueBackgroundWorkItem(ct => 
 			{
-				var Db = DbUtil.Create(host);
+				var db = DbUtil.Create(host);
 				try
 				{
 					var m = new UploadExcelIpsModel(host, pid ?? 0, noupdate, testing: true);
 					m.DoUpload(package);
-					Db.Dispose();
-    				Db = DbUtil.Create(host);
+					db.Dispose();
+    				db = DbUtil.Create(host);
 
         			runningtotals = new UploadPeopleRun { Started = DateTime.Now, Count = 0, Processed = 0 };
-        			Db.UploadPeopleRuns.InsertOnSubmit(runningtotals);
-        			Db.SubmitChanges();
+        			db.UploadPeopleRuns.InsertOnSubmit(runningtotals);
+        			db.SubmitChanges();
 
 					m = new UploadExcelIpsModel(host, pid ?? 0, noupdate);
 					m.DoUpload(package);
 				}
 				catch (Exception ex)
 				{
-					Db.Dispose();
-    				Db = DbUtil.Create(host);
+					db.Dispose();
+    				db = DbUtil.Create(host);
 
-				    var q = from r in Db.UploadPeopleRuns
-				            where r.Id == Db.UploadPeopleRuns.Max(rr => rr.Id)
+				    var q = from r in db.UploadPeopleRuns
+				            where r.Id == db.UploadPeopleRuns.Max(rr => rr.Id)
 				            select r;
                     Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
 				    var rt = q.Single();
 					rt.Error = ex.Message.Truncate(200);
-        			Db.SubmitChanges();
+        			db.SubmitChanges();
 				}
 			});
 			return Redirect("/UploadExcelIps/Progress");

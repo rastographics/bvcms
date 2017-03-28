@@ -4,7 +4,8 @@ using System.Data.SqlTypes;
 using System.Linq;
 using CmsData;
 using CmsData.API;
-using CmsData.View;
+using CmsData.Codes;
+using CmsWeb.Areas.Finance.Models.BatchImport;
 using OfficeOpenXml;
 using UtilityExtensions;
 
@@ -12,125 +13,24 @@ namespace CmsWeb.Models
 {
     public class UploadExcelIpsModel
     {
-        private readonly CMSDataContext Db2;
+        public bool Testing;
+
+        private readonly CMSDataContext db2;
         private readonly string host;
         private readonly bool noupdate;
-        private readonly int PeopleId;
-        private Dictionary<string, int> Campuses;
+        private readonly int peopleId;
+        private Dictionary<string, int> campuses;
         private List<ChangeDetail> fsb;
         private Dictionary<string, int> names;
         private List<ChangeDetail> psb;
-
-        public bool InsertPeopleSpreadsheet => true;
-
-        public UploadExcelIpsModel(string host, int peopleId, bool noupdate, bool testing = false)
-        {
-            Db2 = DbUtil.Create(host);
-            PeopleId = peopleId;
-            this.noupdate = noupdate;
-            this.testing = testing;
-            this.host = host;
-        }
-
-        private void UpdateField(Family f, string prop, dynamic a)
-        {
-            var v = a as object;
-            if(v != null)
-                f.UpdateValue(fsb, prop, v);
-        }
-
-        private void UpdateField(Person p, string prop, dynamic a)
-        {
-            var v = a as object;
-            if(v != null)
-                p.UpdateValue(psb, prop, v);
-        }
-
-        private string GetDigits(dynamic v)
-        {
-            var s = v as string;
-            return s.HasValue() ? s.GetDigits() : null;
-        }
-
-        private string GetString(dynamic v)
-        {
-            var o = v as object;
-            return o?.ToString();
-        }
-
-        private int Gender(dynamic v)
-        {
-            var s = v as string;
-            s = s.trim()?.ToLower();
-            switch (s)
-            {
-                case "male":
-                case "m":
-                    return 1;
-                case "female":
-                case "f":
-                    return 2;
-            }
-            return 0;
-        }
-
-        private int Marital(dynamic v)
-        {
-            var s = v as string;
-            s = s.trim()?.ToLower();
-            switch (s)
-            {
-                case "married":
-                case "m":
-                    return 20;
-                case "single":
-                case "s":
-                    return 10;
-                case "widowed":
-                case "w":
-                    return 50;
-                case "divorced":
-                case "d":
-                    return 40;
-                case "separated":
-                    return 30;
-            }
-            return 0;
-        }
-
-        private string Title(dynamic v)
-        {
-            var s = v as string;
-            s = s.trim()?.ToLower();
-            return !s.HasValue() ? s : s.Truncate(10).TrimEnd();
-        }
-
-        private int Position(dynamic v)
-        {
-            var s = v as string;
-            s = s.trim()?.ToLower();
-            switch (s)
-            {
-                case "primary":
-                    return 10;
-                case "secondary":
-                    return 20;
-                case "child":
-                    return 30;
-            }
-            return 10;
-        }
-
-        private int? Campus(dynamic v)
-        {
-            var s = v as string;
-            if (s == null)
-                return null;
-            s = s.trim().ToLower();
-            return Campuses[s];
-        }
-
-        private List<string> standardnames = new List<string>
+        private readonly Dictionary<string, int> orgs = new Dictionary<string, int>();
+        private readonly Dictionary<string, int> membertypes = new Dictionary<string, int>();
+        private List<string> extravaluenames;
+        private List<string> recregnames;
+        private List<dynamic> datalist;
+        private Dictionary<string, string> evtypes;
+        private Dictionary<int, int> peopleids;
+        private readonly List<string> standardnames = new List<string>
         {
             "familyid", "title", "first", "last", "goesby", "altname",
             "gender", "marital", "maidenName", "address", "address2",
@@ -147,21 +47,38 @@ namespace CmsWeb.Models
             "Grade", "School", "Doctor", "DocPhone", "Insurance", "Policy",
         };
 
-        readonly Dictionary<string, int> orgs = new Dictionary<string, int>();
-        readonly Dictionary<string, int> membertypes = new Dictionary<string, int>();
-        private List<string> extravaluenames;
-        private List<string> recregnames;
-        public bool testing;
+        public bool InsertPeopleSpreadsheet => true;
+
+        public UploadExcelIpsModel(string host, int peopleId, bool noupdate, bool testing = false)
+        {
+            db2 = DbUtil.Create(host);
+            this.peopleId = peopleId;
+            this.noupdate = noupdate;
+            Testing = testing;
+            this.host = host;
+        }
 
         public bool DoUpload(ExcelPackage pkg)
         {
-            var peopleWs = pkg.Workbook.Worksheets["Personal Data"];
-            var giftsWs = pkg.Workbook.Worksheets["Gift Data"];
-            var pledgesWs = pkg.Workbook.Worksheets["Pledges"];
+            var db = DbUtil.Create(host);
 
-            var rt = Db2.UploadPeopleRuns.OrderByDescending(mm => mm.Id).First();
-            FetchData(peopleWs);
-            names = peopleWs.GetHeaderColumns();
+            var rt = db2.UploadPeopleRuns.OrderByDescending(mm => mm.Id).First();
+
+            peopleids = db.PeopleExtras.Where(vv => vv.Field == "IndividualId" && vv.IntValue != null)
+                .ToDictionary(vv => vv.IntValue ?? 0, vv => vv.PeopleId);
+
+            UploadPeople(db, rt, pkg);
+            UploadPledges(db, rt, pkg);
+            UploadGifts(db, rt, pkg);
+
+            rt.Completed = DateTime.Now;
+            db2.SubmitChanges();
+            return true;
+        }
+
+        private void UploadPeople(CMSDataContext db, UploadPeopleRun rt, ExcelPackage pkg)
+        {
+            FetchData(pkg.Workbook.Worksheets["Personal Data"]);
 
             extravaluenames = (from name in names
                                where !standardnames.Contains(name.Key, StringComparer.OrdinalIgnoreCase)
@@ -171,12 +88,11 @@ namespace CmsWeb.Models
                            where standardrecregnames.Contains(name.Key)
                            select name.Key).ToList();
 
-            var db = DbUtil.Create(host);
             if (names.ContainsKey("Campus"))
             {
                 var campuslist = (from li in datalist
                                   group li by ((string)li.Campus)
-                                  into campus
+                    into campus
                                   where campus.Key.HasValue()
                                   select campus.Key).ToList();
                 var dbc = from c in campuslist
@@ -193,33 +109,32 @@ namespace CmsWeb.Models
                         if (i.cp == null)
                         {
                             var cp = new Campu { Description = i.c, Id = ++maxcampusid };
-                            if (!testing)
+                            if (!Testing)
                                 db.Campus.InsertOnSubmit(cp);
                         }
                 }
             }
-            var now = DateTime.Now;
-            if (!testing)
+            if (!Testing)
                 db.SubmitChanges();
-            Campuses = db.Campus.ToDictionary(cp => cp.Description, cp => cp.Id);
+            campuses = db.Campus.ToDictionary(cp => cp.Description, cp => cp.Id);
 
             var q = (from li in datalist
                      group li by li.FamilyId
-                     into fam
+                into fam
                      select fam).ToList();
             rt.Count = q.Sum(ff => ff.Count());
-            Db2.SubmitChanges();
+            rt.Description = $"Uploading People {(Testing ? "in testing mode" : "for real")}";
+            db2.SubmitChanges();
+
 
             foreach (var fam in q)
             {
                 Family f = null;
                 var prevpid = 0;
 
-                FindPerson3 pid;
-                Person p = null;
                 foreach (var a in fam)
                 {
-                    if (!testing)
+                    if (!Testing)
                     {
                         db.SubmitChanges();
                         db.Dispose();
@@ -227,134 +142,11 @@ namespace CmsWeb.Models
                     }
 
                     var potentialdup = false;
-                    var first = a.First as string;
-                    var last = a.Last as string;
-                    DateTime dt;
-                    DateTime? dob = null;
-                    if (DateTime.TryParse((string)a.Birthday, out dt))
-                    {
-                        dob = dt;
-                        if (dob.Value < SqlDateTime.MinValue)
-                            dob = null;
-                    }
-                    var email = ((string)a.Email).trim();
-                    var cell = ((string)a.CellPhone).GetDigits();
-                    var homephone = ((string)a.HomePhone).GetDigits();
-                    pid = db.FindPerson3(first, last, dob, email, cell, homephone, null).FirstOrDefault();
-
-                    if (noupdate && pid != null)
-                    {
-                        if (!testing)
-                        {
-                            var pd = db.LoadPersonById(pid.PeopleId.Value);
-                            pd.AddEditExtraBool("FoundDup", true);
-                        }
-                        potentialdup = true;
-                        pid = null;
-                    }
-                    if (pid != null) // found
-                    {
-                        p = db.LoadPersonById(pid.PeopleId.Value);
-                        prevpid = p.PeopleId;
-                        psb = new List<ChangeDetail>();
-                        fsb = new List<ChangeDetail>();
-
-                        UpdateField(p, "TitleCode", a.Title);
-                        UpdateField(p, "FirstName", a.First);
-                        UpdateField(p, "NickName", a.Goesby);
-                        UpdateField(p, "LastName", a.Last);
-                        UpdateField(p, "EmailAddress", a.Email);
-                        UpdateField(p, "EmailAddress2", a.Email2);
-                        UpdateField(p, "DOB", a.Birthday);
-                        UpdateField(p, "AltName", a.AltName);
-                        UpdateField(p, "SuffixCode", a.Suffix);
-                        UpdateField(p, "MiddleName", a.Middle);
-
-                        UpdateField(p, "CellPhone", GetDigits(a.CellPhone));
-                        UpdateField(p, "WorkPhone", GetDigits(a.WorkPhone));
-                        UpdateField(p, "GenderId", Gender(a.Gender));
-                        UpdateField(p, "MaritalStatusId", Marital(a.Marital));
-                        UpdateField(p, "PositionInFamilyId", Position(a.Position));
-                        if (!testing)
-                            UpdateField(p, "CampusId", Campus(a.Campus));
-
-                        UpdateField(p.Family, "AddressLineOne", a.Address);
-                        UpdateField(p.Family, "AddressLineTwo", a.Address2);
-                        UpdateField(p.Family, "CityName", a.City);
-                        UpdateField(p.Family, "StateCode", a.State);
-                        UpdateField(p.Family, "ZipCode", GetString(a.Zip));
-
-                        if (names.ContainsKey("memberstatus"))
-                            UpdateMemberStatus(db, p, a);
-
-                        if (!testing)
-                        {
-                            p.LogChanges(db, psb, PeopleId);
-                            p.Family.LogChanges(db, fsb, p.PeopleId, PeopleId);
-                            db.SubmitChanges();
-                            p.AddEditExtraBool("InsertPeopleUpdated", true);
-                        }
-                    }
-                    else // new person
-                    {
-                        if (!testing)
-                            if (prevpid > 0)
-                                f = db.LoadFamilyByPersonId(prevpid);
-
-                        if (f == null)
-                        {
-                            f = new Family();
-                            f.AddressLineOne = a.Address;
-                            f.AddressLineTwo = a.Address2;
-                            f.CityName = a.City;
-                            f.StateCode = a.State;
-                            f.ZipCode = GetString(a.Zip);
-                            f.HomePhone = GetDigits(a.HomePhone);
-                            db.Families.InsertOnSubmit(f);
-                            if (!testing)
-                                db.SubmitChanges();
-                        }
-
-                        p = Person.Add(db, false, f, 10, null,
-                            a.First,
-                            a.GoesBy,
-                            a.Last,
-                            dob.FormatDate(),
-                            0, 0, 0, null, testing);
-                        prevpid = p.PeopleId;
-                        p.FixTitle();
-
-                        p.AltName = a.AltName;
-                        p.SuffixCode = a.Suffix;
-                        p.MiddleName = a.Middle;
-                        p.MaidenName = a.MaidenName;
-                        p.EmployerOther = a.Employer;
-                        p.OccupationOther = a.Occupation;
-                        p.CellPhone = cell;
-                        p.WorkPhone = ((string)a.WorkPhone).GetDigits();
-                        p.EmailAddress = email;
-                        p.EmailAddress2 = a.Email2;
-                        p.GenderId = Gender(a.Gender);
-                        p.MaritalStatusId = Marital(a.Marital);
-                        p.WeddingDate = ((string)a.WeddingDate).ToDate();
-                        p.JoinDate = ((string)a.JoinDate).ToDate();
-                        p.DropDate = ((string)a.DropDate).ToDate();
-                        p.BaptismDate = ((string)a.BaptismDate).ToDate();
-                        p.PositionInFamilyId = Position(a.Position);
-                        p.TitleCode = Title(a.Title);
-                        p.AddEditExtraInt("HouseholdId", (int)a.FamilyId);
-                        p.AddEditExtraInt("IndividualId", (int) a.IndividualId);
-
-                        SetMemberStatus(db, p, a.MemberStatus);
-                        if (!testing)
-                        {
-                            p.CampusId = Campus(a.Campus);
-                            p.AddEditExtraBool("InsertPeopleAdded", true);
-                            if (potentialdup)
-                                p.AddEditExtraBool("FoundDup", true);
-                            db.SubmitChanges();
-                        }
-                    }
+                    var pid = FindRecord(db, a, ref potentialdup);
+                    var p = pid?.PeopleId != null
+                        ? UpdateRecord(db, pid.PeopleId.Value, a)
+                        : NewRecord(db, a, prevpid, potentialdup);
+                    prevpid = p.PeopleId;
 
                     if (recregnames.Any())
                         SetRecRegs(p, a);
@@ -363,14 +155,284 @@ namespace CmsWeb.Models
                         ProcessExtraValues(db, p, a);
 
                     rt.Processed++;
-                    Db2.SubmitChanges();
+                    db2.SubmitChanges();
                 }
-                if (!testing)
+                if (!Testing)
                     db.SubmitChanges();
             }
-            rt.Completed = DateTime.Now;
-            Db2.SubmitChanges();
-            return true;
+        }
+
+        private int? GetPeopleId(int individualid)
+        {
+            var peopleid = 0;
+            return peopleids.TryGetValue(individualid, out peopleid) ? (int?)peopleid : null;
+        }
+        private int? FindRecord(CMSDataContext db, dynamic a, ref bool potentialdup)
+        {
+            var peopleid = GetPeopleId((int)a.IndividualId);
+            if (peopleid.HasValue)
+                return peopleid;
+
+            string first = a.First as string;
+            string last = a.Last as string;
+            DateTime? dt = GetDate(a.Birthday);
+            string email = GetString(a.Email).trim();
+            string cell = GetDigits(a.CellPhone);
+            string home = GetDigits(a.HomePhone);
+
+            var pid = db.FindPerson3(first, last, dt, email, cell, home, null).FirstOrDefault();
+
+            if (noupdate && pid?.PeopleId != null)
+            {
+                if (!Testing)
+                {
+                    var pd = db.LoadPersonById(pid.PeopleId.Value);
+                    pd.AddEditExtraBool("FoundDup", true);
+                }
+                potentialdup = true;
+                pid = null;
+            }
+            return pid?.PeopleId;
+        }
+
+        private void UploadPledges(CMSDataContext db, UploadPeopleRun rt, ExcelPackage pkg)
+        {
+            var data = FetchPledgeData(pkg.Workbook.Worksheets["Pledges"]).ToList();
+            rt.Count = data.Count;
+            rt.Description = $"Uploading Pledges {(Testing ? "in testing mode" : "for real")}";
+            rt.Processed = 0;
+            db2.SubmitChanges();
+
+            var weeks = (from g in data
+                         group g by g.PledgeDate.Sunday() into weeklypledges
+                         select weeklypledges).ToList();
+            BundleHeader bh = null;
+            foreach (var week in weeks)
+            {
+                FinishBundle(db, bh);
+                bh = new BundleHeader
+                {
+                    BundleHeaderTypeId = BundleTypeCode.Pledge,
+                    BundleStatusId = BundleStatusCode.Closed,
+                    CreatedBy = Util.UserId,
+                    CreatedDate = DateTime.Today,
+                    ContributionDate = week.Key,
+                };
+                foreach (var pledge in week)
+                {
+                    var pid = GetPeopleId(pledge.IndividualId);
+                    if (!pid.HasValue)
+                        throw new Exception($"peopleid not found from individualid {pledge.IndividualId}");
+                    if (!Testing)
+                        db.FetchOrCreateFund(pledge.FundId, pledge.FundDescription);
+                    var bd = new BundleDetail();
+                    bd.CreatedBy = Util.UserId;
+                    bd.CreatedDate = DateTime.Now;
+                    bd.Contribution = new Contribution
+                    {
+                        CreatedBy = Util.UserId,
+                        CreatedDate = DateTime.Now,
+                        ContributionDate = pledge.PledgeDate,
+                        FundId = pledge.FundId,
+                        ContributionStatusId = 0,
+                        ContributionTypeId = ContributionTypeCode.CheckCash,
+                        ContributionAmount = pledge.PledgeAmount,
+                        PeopleId = pid
+                    };
+                    bh.BundleDetails.Add(bd);
+                    rt.Processed++;
+                    db2.SubmitChanges();
+                }
+            }
+            FinishBundle(db, bh);
+        }
+
+        private int GetInt(object o)
+        {
+            return o.ToInt();
+        }
+
+        private decimal GetDecimal(object o)
+        {
+            return o.ToNullableDecimal() ?? 0m;
+        }
+
+        private void UploadGifts(CMSDataContext db, UploadPeopleRun rt, ExcelPackage pkg)
+        {
+            var data = FetchContributionData(pkg.Workbook.Worksheets["Gift Data"]).ToList();
+            rt.Count = data.Count;
+            rt.Description = $"Uploading Gifts {(Testing ? "in testing mode" : "for real")}";
+            rt.Processed = 0;
+            db2.SubmitChanges();
+
+            var weeks = (from g in data
+                         group g by g.Date.Sunday() into weeklygifts
+                         select weeklygifts).ToList();
+            BundleHeader bh = null;
+            foreach (var week in weeks)
+            {
+                FinishBundle(db, bh);
+                bh = new BundleHeader
+                {
+                    BundleHeaderTypeId = BundleTypeCode.ChecksAndCash,
+                    BundleStatusId = BundleStatusCode.Closed,
+                    CreatedBy = Util.UserId,
+                    CreatedDate = DateTime.Today,
+                    ContributionDate = week.Key,
+                };
+                foreach (var gift in week)
+                {
+                    var pid = GetPeopleId(gift.IndividualId);
+                    if (!pid.HasValue)
+                        throw new Exception($"peopleid not found from individualid {gift.IndividualId}");
+                    if (!Testing)
+                        db.FetchOrCreateFund(gift.FundId, gift.FundDescription);
+                    var bd = new BundleDetail();
+                    bd.CreatedBy = Util.UserId;
+                    bd.CreatedDate = DateTime.Now;
+                    bd.Contribution = new Contribution
+                    {
+                        CreatedBy = Util.UserId,
+                        CreatedDate = DateTime.Now,
+                        ContributionDate = gift.Date,
+                        FundId = gift.FundId,
+                        ContributionStatusId = 0,
+                        ContributionTypeId = ContributionTypeCode.CheckCash,
+                        ContributionAmount = gift.Amount,
+                        CheckNo = gift.CheckNo,
+                        PeopleId = pid
+                    };
+                    bh.BundleDetails.Add(bd);
+                    rt.Processed++;
+                    db2.SubmitChanges();
+                }
+            }
+            FinishBundle(db, bh);
+        }
+
+        private void FinishBundle(CMSDataContext db, BundleHeader bh)
+        {
+            if (!Testing)
+            {
+                if (bh != null)
+                {
+                    bh.TotalChecks = bh.BundleDetails.Sum(d => d.Contribution.ContributionAmount);
+                    bh.TotalCash = 0;
+                    bh.TotalEnvelopes = 0;
+                    db.BundleHeaders.InsertOnSubmit(bh);
+                    db.SubmitChanges();
+                }
+            }
+        }
+
+        private Person NewRecord(CMSDataContext db, dynamic a, int prevpid, bool potentialdup)
+        {
+            Family f = null;
+            if (!Testing)
+                if (prevpid > 0)
+                    f = db.LoadFamilyByPersonId(prevpid);
+
+            if (f == null)
+            {
+                f = new Family
+                {
+                    AddressLineOne = a.Address,
+                    AddressLineTwo = a.Address2,
+                    CityName = a.City,
+                    StateCode = a.State,
+                    ZipCode = GetString(a.Zip),
+                    HomePhone = GetDigits(a.HomePhone)
+                };
+                db.Families.InsertOnSubmit(f);
+                if (!Testing)
+                    db.SubmitChanges();
+            }
+
+            string dob = GetDate(a.Birthday)?.FormatDate();
+            var p = Person.Add(db, false, f, 10, null,
+                (string)a.First,
+                (string)a.GoesBy,
+                (string)a.Last,
+                dob,
+                0, 0, 0, null, Testing);
+            p.FixTitle();
+
+            p.AltName = a.AltName;
+            p.SuffixCode = a.Suffix;
+            p.MiddleName = a.Middle;
+            p.MaidenName = a.MaidenName;
+            p.EmployerOther = a.Employer;
+            p.OccupationOther = a.Occupation;
+            p.CellPhone = GetDigits(a.CellPhone);
+            p.WorkPhone = GetDigits(a.WorkPhone);
+            p.EmailAddress = GetString(a.Email).trim();
+            p.EmailAddress2 = GetString(a.Email2).trim();
+            p.GenderId = Gender(a.Gender);
+            p.MaritalStatusId = Marital(a.Marital);
+            p.WeddingDate = GetDate(a.WeddingDate);
+            p.JoinDate = GetDate(a.JoinDate);
+            p.DropDate = GetDate(a.DropDate);
+            p.BaptismDate = GetDate(a.BaptismDate);
+            p.PositionInFamilyId = Position(a.Position);
+            p.TitleCode = Title(a.Title);
+            p.AddEditExtraInt("HouseholdId", (int)a.FamilyId);
+            p.AddEditExtraInt("IndividualId", (int)a.IndividualId);
+
+            SetMemberStatus(db, p, a.MemberStatus);
+            if (!Testing)
+            {
+                p.CampusId = Campus(a.Campus);
+                p.AddEditExtraBool("InsertPeopleAdded", true);
+                if (potentialdup)
+                    p.AddEditExtraBool("FoundDup", true);
+                db.SubmitChanges();
+            }
+            peopleids.Add(a.IndividualId, p.PeopleId);
+            return p;
+        }
+
+        private Person UpdateRecord(CMSDataContext db, int pid, dynamic a)
+        {
+            Person p;
+            p = db.LoadPersonById(pid);
+            psb = new List<ChangeDetail>();
+            fsb = new List<ChangeDetail>();
+
+            UpdateField(p, "TitleCode", a.Title);
+            UpdateField(p, "FirstName", a.First);
+            UpdateField(p, "NickName", a.Goesby);
+            UpdateField(p, "LastName", a.Last);
+            UpdateField(p, "EmailAddress", a.Email);
+            UpdateField(p, "EmailAddress2", a.Email2);
+            UpdateField(p, "DOB", a.Birthday);
+            UpdateField(p, "AltName", a.AltName);
+            UpdateField(p, "SuffixCode", a.Suffix);
+            UpdateField(p, "MiddleName", a.Middle);
+
+            UpdateField(p, "CellPhone", GetDigits(a.CellPhone));
+            UpdateField(p, "WorkPhone", GetDigits(a.WorkPhone));
+            UpdateField(p, "GenderId", Gender(a.Gender));
+            UpdateField(p, "MaritalStatusId", Marital(a.Marital));
+            UpdateField(p, "PositionInFamilyId", Position(a.Position));
+            if (!Testing)
+                UpdateField(p, "CampusId", Campus(a.Campus));
+
+            UpdateField(p.Family, "AddressLineOne", a.Address);
+            UpdateField(p.Family, "AddressLineTwo", a.Address2);
+            UpdateField(p.Family, "CityName", a.City);
+            UpdateField(p.Family, "StateCode", a.State);
+            UpdateField(p.Family, "ZipCode", GetString(a.Zip));
+
+            UpdateMemberStatus(db, p, a.MemberStatus);
+
+            if (!Testing)
+            {
+                p.LogChanges(db, psb, peopleId);
+                p.Family.LogChanges(db, fsb, p.PeopleId, peopleId);
+                db.SubmitChanges();
+                p.AddEditExtraBool("InsertPeopleUpdated", true);
+            }
+            return p;
         }
 
         private void ProcessExtraValues(CMSDataContext db, Person p, dynamic a)
@@ -395,7 +457,7 @@ namespace CmsWeb.Models
                         break;
                     case "org":
 
-                        if (testing)
+                        if (Testing)
                             continue;
                         var d = a[name].Trim().Trim();
                         if (!d.HasValue())
@@ -446,7 +508,7 @@ namespace CmsWeb.Models
             }
         }
 
-        private void SetRecRegs(Person p, string[] a)
+        private void SetRecRegs(Person p, dynamic a)
         {
             var nq = (from name in names.Keys
                       where standardrecregnames.Contains(name, StringComparer.OrdinalIgnoreCase)
@@ -454,7 +516,7 @@ namespace CmsWeb.Models
             foreach (var name in nq)
             {
                 var rr = p.SetRecReg();
-                var value = a[names[name]].Trim();
+                var value = GetString(a.GetValue(name)).trim();
                 switch (name)
                 {
                     case "Mother":
@@ -530,8 +592,63 @@ namespace CmsWeb.Models
             p.UpdateValue("MemberStatusId", m.Id);
         }
 
-        private List<dynamic> datalist;
-        private Dictionary<string, string> evtypes;
+        public class Gift
+        {
+            public int IndividualId { get; set; }
+            public decimal Amount { get; set; }
+            public DateTime Date { get; set; }
+            public string FundName { get; set; }
+            public int FundId { get; set; }
+            public string FundDescription { get; set; }
+            public string CheckNo { get; set; }
+        }
+        public IEnumerable<Gift> FetchContributionData(ExcelWorksheet ws)
+        {
+            FetchHeaderColumns(ws);
+            var r = 2;
+            while (r <= ws.Dimension.End.Row)
+            {
+                var row = new Gift
+                {
+                    IndividualId = GetInt(ws.Cells[r, names["IndividualId"]]),
+                    Amount = GetDecimal(ws.Cells[r, names["Amount"]]),
+                    Date = GetDate(ws.Cells[r, names["Date"]]) ?? DateTime.MinValue,
+                    FundId = GetInt(ws.Cells[r, names["FundId"]]),
+                    FundDescription = GetString(ws.Cells[r, names["FundDescription"]]),
+                };
+                if (names.ContainsKey("CheckNo"))
+                    row.CheckNo = GetString(ws.Cells[r, names["CheckNo"]]);
+                r++;
+                yield return row;
+            }
+        }
+        public class Pledge
+        {
+            public int IndividualId { get; set; }
+            public decimal PledgeAmount { get; set; }
+            public DateTime PledgeDate { get; set; }
+            public string FundName { get; set; }
+            public int FundId { get; set; }
+            public string FundDescription { get; set; }
+        }
+        public IEnumerable<Pledge> FetchPledgeData(ExcelWorksheet ws)
+        {
+            FetchHeaderColumns(ws);
+            var r = 2;
+            while (r <= ws.Dimension.End.Row)
+            {
+                var row = new Pledge
+                {
+                    IndividualId = GetInt(ws.Cells[r, names["IndividualId"]]),
+                    PledgeAmount = GetDecimal(ws.Cells[r, names["PledgeAmount"]]),
+                    PledgeDate = GetDate(ws.Cells[r, names["PledgeDate"]]) ?? DateTime.MinValue,
+                    FundId = GetInt(ws.Cells[r, names["FundId"]]),
+                    FundDescription = GetString(ws.Cells[r, names["FundDescription"]])
+                };
+                r++;
+                yield return row;
+            }
+        }
         public void FetchData(ExcelWorksheet ws)
         {
             FetchHeaderColumns(ws);
@@ -558,10 +675,112 @@ namespace CmsWeb.Models
                 {
                     var b = c.Text.Split('.');
                     if (b.Length > 1)
-                        evtypes[b[0]] = b[1]; 
+                        evtypes[b[0]] = b[1];
                     names.Add(c.Text, n);
                 }
             }
+        }
+        private void UpdateField(Family f, string prop, object o)
+        {
+            if (o != null)
+                f.UpdateValue(fsb, prop, o);
+        }
+
+        private void UpdateField(Person p, string prop, object o)
+        {
+            if (o != null)
+                p.UpdateValue(psb, prop, o);
+        }
+
+        private string GetDigits(object o)
+        {
+            var s = o as string;
+            return s.HasValue() ? s.GetDigits() : null;
+        }
+
+        private string GetString(object o)
+        {
+            return o?.ToString();
+        }
+        private DateTime? GetDate(object o)
+        {
+            var dt = o.ToDate();
+            if (dt.HasValue)
+                if (dt.Value < SqlDateTime.MinValue)
+                    dt = null;
+            return dt;
+        }
+
+        private int Gender(object o)
+        {
+            var s = o as string;
+            s = s.trim()?.ToLower();
+            switch (s)
+            {
+                case "male":
+                case "m":
+                    return 1;
+                case "female":
+                case "f":
+                    return 2;
+            }
+            return 0;
+        }
+
+        private int Marital(object o)
+        {
+            var s = o as string;
+            s = s.trim()?.ToLower();
+            switch (s)
+            {
+                case "married":
+                case "m":
+                    return 20;
+                case "single":
+                case "s":
+                    return 10;
+                case "widowed":
+                case "w":
+                    return 50;
+                case "divorced":
+                case "d":
+                    return 40;
+                case "separated":
+                    return 30;
+            }
+            return 0;
+        }
+
+        private string Title(object o)
+        {
+            var s = o as string;
+            s = s.trim()?.ToLower();
+            return !s.HasValue() ? s : s.Truncate(10).TrimEnd();
+        }
+
+        private int Position(object o)
+        {
+            var s = o as string;
+            s = s.trim()?.ToLower();
+            switch (s)
+            {
+                case "primary":
+                    return 10;
+                case "secondary":
+                    return 20;
+                case "child":
+                    return 30;
+            }
+            return 10;
+        }
+
+        private int? Campus(object o)
+        {
+            var s = o as string;
+            if (s == null)
+                return null;
+            s = s.trim().ToLower();
+            return campuses[s];
         }
     }
 }
