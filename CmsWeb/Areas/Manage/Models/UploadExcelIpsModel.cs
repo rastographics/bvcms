@@ -43,6 +43,8 @@ namespace CmsWeb.Models
             var rt = db2.UploadPeopleRuns.OrderByDescending(mm => mm.Id).First();
 
             UploadPeople(rt, pkg);
+
+            TryDeleteAllContributions();
             UploadPledges(rt, pkg);
             UploadGifts(rt, pkg);
 
@@ -445,7 +447,7 @@ namespace CmsWeb.Models
                         ContributionDate = pledge.Date,
                         FundId = pledge.FundId,
                         ContributionStatusId = 0,
-                        ContributionTypeId = ContributionTypeCode.CheckCash,
+                        ContributionTypeId = ContributionTypeCode.Pledge,
                         ContributionAmount = pledge.Amount,
                         PeopleId = pid
                     };
@@ -490,7 +492,7 @@ namespace CmsWeb.Models
                 foreach (var gift in week)
                 {
                     var pid = GetPeopleId(gift.IndividualId);
-                    if(!Testing)
+                    if (!Testing)
                         if (!pid.HasValue)
                             throw new Exception($"peopleid not found from individualid {gift.IndividualId}");
                     if (!Testing)
@@ -604,6 +606,26 @@ namespace CmsWeb.Models
                 }
             }
         }
+        private void TryDeleteAllContributions()
+        {
+            if (Testing)
+                return;
+            var db = DbUtil.Create("host");
+            if (!db.Setting("UploadExcelIpsDeleteGifts"))
+                return;
+
+            var deletesql = @"
+DELETE dbo.BundleDetail
+FROM dbo.BundleDetail d
+JOIN dbo.Contribution c ON d.ContributionId = c.ContributionId
+DELETE dbo.Contribution
+DELETE dbo.BundleHeader
+DBCC CHECKIDENT ('[Contribution]', RESEED, 0)
+DBCC CHECKIDENT ('[BundleHeader]', RESEED, 0)
+DBCC CHECKIDENT ('[BundleDetail]', RESEED, 0)
+";
+            db.ExecuteCommand(deletesql);
+        }
         private int? GetPeopleId(int individualid)
         {
             if (peopleids.ContainsKey(individualid))
@@ -612,7 +634,7 @@ namespace CmsWeb.Models
         }
         private int? FindRecord(CMSDataContext db, dynamic a, ref bool potentialdup)
         {
-            if(a.IndividualId != null)
+            if (a.IndividualId != null)
             {
                 var peopleid = GetPeopleId((int)a.IndividualId);
                 return peopleid;

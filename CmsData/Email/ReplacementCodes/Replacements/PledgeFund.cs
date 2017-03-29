@@ -28,13 +28,13 @@ namespace CmsData
                 case "Name":
                     return pledgefunds[fundid].FundName;
                 case "Pledged":
-                    return pledgefunds[fundid].Plg.ToString2("N");
+                    return pledgefunds[fundid].Plg.ToString2("N0");
                 case "ToPledge":
-                    return pledgefunds[fundid].ToPledge.ToString2("N");
+                    return pledgefunds[fundid].ToPledge.ToString2("N0");
                 case "NotToPledge":
-                    return pledgefunds[fundid].NotToPledge.ToString2("N");
+                    return pledgefunds[fundid].NotToPledge.ToString2("N0");
                 case "ToFund":
-                    return pledgefunds[fundid].ToFund.ToString2("N");
+                    return pledgefunds[fundid].ToFund.ToString2("N0");
                 default:
                     return "PledgeFund Value not found";
             }
