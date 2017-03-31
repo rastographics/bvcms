@@ -463,14 +463,11 @@ or contact the church if you need help.</p>
         }
         public ActionResult DropFromOrgLink(string id)
         {
-            var li = new LinkInfo(votelinkSTR, landingSTR, id);
-            if (li.error.HasValue())
-                return Message(li.error);
+            var li = new LinkInfo("dropfromorg", confirmSTR, id);
 
             ViewBag.Id = id;
 
-            var smallgroup = li.a[4];
-            DbUtil.LogActivity($"{votelinkSTR}{landingSTR}: {smallgroup}", li.oid, li.pid);
+            DbUtil.LogActivity($"dropfromorg click: {li.oid}", li.oid, li.pid);
             return View("Other/DropFromOrg");
         }
 
@@ -497,7 +494,7 @@ or contact the church if you need help.</p>
             li.ot.Used = true;
             DbUtil.Db.SubmitChanges();
 
-            DbUtil.LogActivity($"DropFromOrgLink: {id}", li.oid, li.pid);
+            DbUtil.LogActivity($"dropfromorg confirm: {id}", li.oid, li.pid);
             return Message($"You have been successfully removed from {org.Title ?? org.OrganizationName}");
         }
     }
