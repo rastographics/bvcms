@@ -43,7 +43,7 @@ namespace CmsData
 
 
             var pattern =
-                $@"(<style.*?</style>|{MatchCodeRe}|{MatchRegisterLinkRe}|{MatchRegisterTagRe}|{MatchRsvpLinkRe}|{MatchRegisterLinkHrefRe}|
+                $@"(<style.*?</style>|{MatchCodeRe}|{MatchRegisterLinkRe}|{MatchRegisterTagRe}|{MatchRsvpLinkRe}|{MatchRegisterLinkHrefRe}|{MatchDropFromOrgTagRe}|
                     {MatchSendLinkRe}|{MatchSupportLinkRe}|{MatchMasterLinkRe}|{MatchVolReqLinkRe}|{MatchVolReqLinkRe}|{MatchVolSubLinkRe}|{MatchVoteLinkRe})";
 
             // we do the InsertDrafts replacement code here so that it is only inserted once before the replacements

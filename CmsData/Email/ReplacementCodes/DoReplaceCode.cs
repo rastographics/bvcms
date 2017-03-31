@@ -239,6 +239,9 @@ namespace CmsData
 
                     if (VoteLinkRe.IsMatch(code))
                         return VoteLinkReplacement(code, eq);
+
+                    if (DropFromOrgTagRe.IsMatch(code))
+                        return DropFromOrgTagReplacement(code, eq);
                     break;
             }
             return code; // nothing matched
