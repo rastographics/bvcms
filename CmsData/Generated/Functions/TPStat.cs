@@ -52,6 +52,8 @@ namespace CmsData.View
 		
 		private int? _Notam;
 		
+		private int? _Campuses;
+		
 		
 		public TPStat()
 		{
@@ -360,6 +362,23 @@ namespace CmsData.View
 			{
 				if (this._Notam != value)
 					this._Notam = value;
+			}
+
+		}
+
+		
+		[Column(Name="campuses", Storage="_Campuses", DbType="int")]
+		public int? Campuses
+		{
+			get
+			{
+				return this._Campuses;
+			}
+
+			set
+			{
+				if (this._Campuses != value)
+					this._Campuses = value;
 			}
 
 		}
