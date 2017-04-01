@@ -344,6 +344,9 @@
     <Reference Include="Microsoft.Scripting.Metadata, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <HintPath>..\packages\IronPython.2.7.4\lib\Net45\Microsoft.Scripting.Metadata.dll</HintPath>
     </Reference>
+    <Reference Include="MoreLinq, Version=2.0.20029.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
+      <HintPath>..\packages\morelinq.2.2.0\lib\net35\MoreLinq.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -458,6 +461,42 @@
     <Compile Include="Classes\style.cs" />
     <Compile Include="DbUtil\CurrentOrg.cs" />
     <Compile Include="DbUtil\ModelViewModel.cs" />
+    <Compile Include="Email\ReplacementCodes\Links\DropFromOrgTag.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\Debug.cs" />
+    <Compile Include="Email\ReplacementCodes\Links\CreateUserLink.cs" />
+    <Compile Include="Email\ReplacementCodes\Links\UnSubscribe.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\RecentGifts.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\DynamicData.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\StatementType.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\ExtraValue.cs" />
+    <Compile Include="Email\ReplacementCodes\Links\RegisterLink.cs" />
+    <Compile Include="Email\ReplacementCodes\Links\RegisterLinkHref.cs" />
+    <Compile Include="Email\ReplacementCodes\Links\RegisterTag.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\NextMeetingDate.cs" />
+    <Compile Include="Email\ReplacementCodes\Links\VolReqLink.cs" />
+    <Compile Include="Email\ReplacementCodes\Links\VolSubLink.cs" />
+    <Compile Include="Email\ReplacementCodes\Links\MasterLink.cs" />
+    <Compile Include="Email\ReplacementCodes\Links\RsvpLink.cs" />
+    <Compile Include="Email\ReplacementCodes\Links\SendLink.cs" />
+    <Compile Include="Email\ReplacementCodes\Links\SupportLink.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\PayInfo.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\InsertDraft.cs" />
+    <Compile Include="Email\ReplacementCodes\Links\VoteLink.cs" />
+    <Compile Include="Email\ReplacementCodes\DoReplaceCode.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\RegText.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\OrgBarCode.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\OrgMember.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\OrgExtra.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\SubGroup.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\SubGroups.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\FirstOrSubstitute.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\Setting.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\PledgeFund.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\AddSmallGroup.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\MapUrlencoded.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\OrgInfo.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\Pledge.cs" />
+    <Compile Include="Email\ReplacementCodes\Links\IsSpecialLink.cs" />
     <Compile Include="Extensions\ChangeDetail.cs" />
     <Compile Include="AddressVerify.cs" />
     <Compile Include="Extensions\DeleteMeetingRun.cs" />
@@ -467,6 +506,7 @@
     <Compile Include="Extensions\RepairTransactionRun.cs" />
     <Compile Include="Finance\BluePayGateway.cs" />
     <Compile Include="Finance\BluePay\BluePayPayment.cs" />
+    <Compile Include="Finance\CheckBatchSettlements.cs" />
     <Compile Include="Finance\ReturnedCheck.cs" />
     <Compile Include="Finance\ReturnedChecksResponse.cs" />
     <Compile Include="Finance\BatchResponse.cs" />
@@ -653,6 +693,7 @@
     <Compile Include="Generated\Views\AllLookup.cs" />
     <Compile Include="Generated\Views\AppRegistration.cs" />
     <Compile Include="Generated\Views\AttendCredits2.cs" />
+    <Compile Include="Generated\Views\Attribute.cs" />
     <Compile Include="Generated\Views\ContributionsBasic.cs" />
     <Compile Include="Generated\Views\CustomMenuRole.cs" />
     <Compile Include="Generated\Views\CustomScriptRole.cs" />
@@ -708,7 +749,7 @@
     <Compile Include="DbUtil\CheckinFamilyMember.cs" />
     <Compile Include="API\APIContributionSearchModel.cs" />
     <Compile Include="DbUtil\CreateDatabase.cs" />
-    <Compile Include="Email\EmailReplacements.cs" />
+    <Compile Include="Email\ReplacementCodes\EmailReplacements.cs" />
     <Compile Include="Generated\Functions\AttendanceTypeAsOf.cs" />
     <Compile Include="Generated\Functions\AttendCntHistory.cs" />
     <Compile Include="Generated\Functions\AttendDaysAfterNthVisitAsOf.cs" />

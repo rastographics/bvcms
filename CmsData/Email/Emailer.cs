@@ -13,18 +13,17 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Net;
-using System.Net.Http;
 using System.Net.Mime;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
 using System.Transactions;
 using System.Web;
+using CmsData.API;
+using Dapper;
 using Elmah;
 using HtmlAgilityPack;
 using SendGrid.Helpers.Mail;
-using TTask = System.Threading.Tasks.Task;
 using MContent = SendGrid.Helpers.Mail.Content;
 
 namespace CmsData
@@ -328,7 +327,12 @@ namespace CmsData
             if (tag == null)
                 return null;
 
-            using (var tran = new TransactionScope(TransactionScopeOption.Required, TimeSpan.FromSeconds(1200)))
+            var transactionOptions = new TransactionOptions
+            {
+                IsolationLevel = IsolationLevel.ReadCommitted,
+                Timeout = TransactionManager.MaximumTimeout
+            };
+            using (var tran = new TransactionScope(TransactionScopeOption.Required, transactionOptions))
             {
                 var emailqueue = new EmailQueue
                 {
@@ -584,7 +588,7 @@ namespace CmsData
                     {
                         if (Setting("sendemail", "true") != "false")
                         {
-                            List<MailAddress> mal = new List<MailAddress> {ma};
+                            List<MailAddress> mal = new List<MailAddress> { ma };
                             SendEmail(from, emailqueue.Subject, body, mal, emailqueue.Id, cc: cc);
                         }
                     }
@@ -614,6 +618,71 @@ namespace CmsData
             SubmitChanges();
         }
 
+        public void SendPeopleEmailWithPython(int queueid, IEnumerable<dynamic> recipientData, DynamicData pythonData)
+        {
+            var emailqueue = EmailQueues.Single(ee => ee.Id == queueid);
+            var from = Util.FirstAddress(emailqueue.FromAddr, emailqueue.FromName);
+            if (!emailqueue.Subject.HasValue() || !emailqueue.Body.HasValue())
+            {
+                SendEmail(from,
+                    $"sent emails - error(emailid={emailqueue.Id})", "no subject or body, no emails sent",
+                    Util.ToMailAddressList(from),
+                    emailqueue.Id);
+                return;
+            }
+            var dict = recipientData.ToDictionary(vv => (int)vv.PeopleId, vv => vv);
+
+            var body = DoClickTracking(emailqueue);
+            var m = new EmailReplacements(this, body, from, queueid, pythondata: pythonData);
+            emailqueue.Started = Util.Now;
+            SubmitChanges();
+
+            var cc = Util.ToMailAddressList(emailqueue.CClist);
+
+            var q = from to in EmailQueueTos
+                    where to.Id == emailqueue.Id
+                    where to.Sent == null
+                    orderby to.PeopleId
+                    select to;
+            foreach (var to in q)
+            {
+                try
+                {
+                    if (m.OptOuts != null && m.OptOuts.Any(vv => vv.PeopleId == to.PeopleId && vv.OptOutX == true))
+                        continue;
+
+                    var text = m.DoReplacements(to.PeopleId, to);
+
+                    text = RenderTemplate(text, dict[to.PeopleId]);
+
+                    var aa = m.ListAddresses;
+
+                    if (Setting("sendemail", "true") != "false")
+                    {
+                        SendEmail(from, emailqueue.Subject, text, aa, to, cc);
+                        to.Sent = Util.Now;
+                        SubmitChanges();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    var subject = $"sent emails - error:(emailid={emailqueue.Id}) {CmsHost}";
+                    ErrorLog.GetDefault(null).Log(new Error(new Exception(subject, ex)));
+                    SendEmail(from, subject, ex.Message, Util.ToMailAddressList(from), to);
+                }
+            }
+
+            emailqueue.Sent = Util.Now;
+            var nitems = emailqueue.EmailQueueTos.Count();
+            if (cc.Count > 0)
+            {
+                nitems += cc.Count;
+            }
+            if (nitems > 1)
+                NotifySentEmails(from.Address, from.DisplayName,
+                    emailqueue.Subject, nitems, emailqueue.Id);
+            SubmitChanges();
+        }
         private string DoClickTracking(EmailQueue emailqueue)
         {
             var body = emailqueue.Body;
@@ -634,10 +703,12 @@ namespace CmsData
             string subj = "sent emails: " + subject;
             var link = ServerLink("/Emails/Details/" + id);
             string body = $@"<a href=""{link}"">{count} emails sent</a>";
-
-            if(Util.IsMyDataUser == false)
+#if DEBUG
+#else
+            if (Util.IsMyDataUser == false)
                 SendEmail(from, subj, body, Util.ToMailAddressList(from), id);
             SendEmail(from, Host + " " + subj, body, Util.SendErrorsTo(), id);
+#endif
         }
 
         private string CreateClickTracking(int emailId, string input)
@@ -743,21 +814,21 @@ namespace CmsData
 
             var mail = new Mail
             {
-                From = new Email(fromDomain, from.DisplayName),
+                From = new SendGrid.Helpers.Mail.Email(fromDomain, from.DisplayName),
                 Subject = subject,
-                ReplyTo = new Email(from.Address, from.DisplayName)
+                ReplyTo = new SendGrid.Helpers.Mail.Email(from.Address, from.DisplayName)
             };
             var pe = new Personalization();
             foreach (var ma in to)
                 if (ma.Host != "nowhere.name" || Util.IsInRoleEmailTest)
-                    pe.AddTo(new Email(ma.Address, ma.DisplayName));
+                    pe.AddTo(new SendGrid.Helpers.Mail.Email(ma.Address, ma.DisplayName));
 
             if (cc?.Count > 0)
             {
                 string cclist = string.Join(",", cc);
                 if (!cc.Any(vv => vv.Address.Equal(from.Address)))
                     cclist = $"{from.Address},{cclist}";
-                mail.ReplyTo = new Email(cclist);
+                mail.ReplyTo = new SendGrid.Helpers.Mail.Email(cclist);
             }
 
             pe.AddHeader(XSmtpApi, XSmtpApiHeader(id, pid, fromDomain));
@@ -770,8 +841,8 @@ namespace CmsData
             var badEmailLink = "";
             if (pe.Tos.Count == 0)
             {
-                pe.AddTo(new Email(from.Address, from.DisplayName));
-                pe.AddTo(new Email(Util.FirstAddress(senderrorsto).Address));
+                pe.AddTo(new SendGrid.Helpers.Mail.Email(from.Address, from.DisplayName));
+                pe.AddTo(new SendGrid.Helpers.Mail.Email(Util.FirstAddress(senderrorsto).Address));
                 mail.Subject += $"-- bad addr for {CmsHost}({pid})";
                 badEmailLink = $"<p><a href='{CmsHost}/Person2/{pid}'>bad addr for</a></p>\n";
             }
@@ -813,7 +884,7 @@ namespace CmsData
             }
 
             msg.Headers.Add(XSmtpApi, XSmtpApiHeader(id, pid, fromDomain));
-            msg.Headers.Add(XBvcms,  XBvcmsHeader(id, pid));
+            msg.Headers.Add(XBvcms, XBvcmsHeader(id, pid));
 
             foreach (var ma in to)
                 if (ma.Host != "nowhere.name" || Util.IsInRoleEmailTest)

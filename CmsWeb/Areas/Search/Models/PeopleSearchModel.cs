@@ -336,14 +336,16 @@ or just Last or *First*`space` for first name match only.
 
         public IEnumerable<SelectListItem> Campuses()
         {
-            var q = from c in DbUtil.Db.Campus
-                    orderby c.Description
-                    select new SelectListItem
-                    {
-                        Value = c.Id.ToString(),
-                        Text = c.Description
-                    };
-            var list = q.ToList();
+            var qc = DbUtil.Db.Campus.AsQueryable();
+            qc = DbUtil.Db.Setting("SortCampusByCode")
+                ? qc.OrderBy(cc => cc.Code)
+                : qc.OrderBy(cc => cc.Description);
+            var list = (from c in qc
+                        select new SelectListItem()
+                        {
+                            Value = c.Id.ToString(),
+                            Text = c.Description,
+                        }).ToList();
             list.Insert(0, new SelectListItem
             {
                 Value = "-1",

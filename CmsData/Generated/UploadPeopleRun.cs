@@ -34,6 +34,8 @@ namespace CmsData
 		
 		private int _Running;
 		
+		private string _Description;
+		
    		
     	
 	#endregion
@@ -66,6 +68,9 @@ namespace CmsData
 		
 		partial void OnRunningChanging(int value);
 		partial void OnRunningChanged();
+		
+		partial void OnDescriptionChanging(string value);
+		partial void OnDescriptionChanged();
 		
     #endregion
 		public UploadPeopleRun()
@@ -247,6 +252,28 @@ namespace CmsData
 					this._Running = value;
 					this.SendPropertyChanged("Running");
 					this.OnRunningChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="description", UpdateCheck=UpdateCheck.Never, Storage="_Description", DbType="nvarchar(100)")]
+		public string Description
+		{
+			get { return this._Description; }
+
+			set
+			{
+				if (this._Description != value)
+				{
+				
+                    this.OnDescriptionChanging(value);
+					this.SendPropertyChanging();
+					this._Description = value;
+					this.SendPropertyChanged("Description");
+					this.OnDescriptionChanged();
 				}
 
 			}

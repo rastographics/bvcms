@@ -1,0 +1,36 @@
+﻿@using CmsData
+@model PeopleExtra
+@{
+  Layout = ViewExtensions2.TouchPointLayout();
+  ViewBag.Title = "Attributes";
+  ViewBag.PageHeader = "Attributes";
+ViewBag.PageSubHeader = $"<a href=\"/Person2/{Model.PeopleId}\">{Model.Person.Name}</a>";
+  var m = DbUtil.Db.ViewAttributes.Where(vv => vv.Field == Model.Field && vv.PeopleId == Model.PeopleId);
+}
+<div class="report box box-responsive">
+  <div class="box-content">
+      <div class="table-responsive">
+          <table class="table notwide">
+              <thead>
+              <tr><th>Name</th><th>Value</th></tr>
+              </thead>
+              <tbody>
+              @foreach (var r in m)
+              {
+                  <tr><td>@r.Name</td><td>@r.ValueX</td></tr>
+              }
+              </tbody>
+              @if (User.IsInRole("Edit"))
+              {
+              <tfoot>
+              <tr>
+                  <td colspan="2">
+                      <a class="btn btn-default" href="/Person/Attributes/Edit/@Model.Field/@Model.PeopleId">Edit</a>
+                  </td>
+              </tr>
+              </tfoot>
+              }
+          </table>
+      </div>
+  </div>
+</div>

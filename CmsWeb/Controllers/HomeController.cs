@@ -49,6 +49,7 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/Test/{id?}")]
         public ActionResult Test(int? id)
         {
+            EmailReplacements.ReCodes();
             return Content("no test");
         }
         [HttpGet, Route("~/Warmup")]
@@ -177,6 +178,7 @@ namespace CmsWeb.Controllers
             return Redirect("/");
         }
 
+#if DEBUG
         [HttpGet, Route("~/TestScript")]
         [Authorize(Roles = "Developer")]
         public ActionResult TestScript()
@@ -193,6 +195,7 @@ namespace CmsWeb.Controllers
         {
             return Content(PythonModel.RunScript(Util.Host, script));
         }
+#endif
 
         private string RunScriptSql(CMSDataContext db, string parameter, string body, DynamicParameters p)
         {
@@ -306,7 +309,7 @@ namespace CmsWeb.Controllers
 
                 if (!CanRunScript(script))
                     return Message("Not Authorized to run this script");
-                if (script.Contains("model.Form"))
+                if (Regex.IsMatch(script, @"model\.Form\b"))
                     return Redirect("/PyScriptForm/" + name);
                 script = script.Replace("@P1", p1 ?? "NULL")
                     .Replace("@P2", p2 ?? "NULL")

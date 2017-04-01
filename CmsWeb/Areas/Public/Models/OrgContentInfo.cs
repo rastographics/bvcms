@@ -8,6 +8,7 @@ using UtilityExtensions;
 using DbUtil = CmsData.DbUtil;
 using Image = ImageData.Image;
 using CmsData.Classes.RoleChecker;
+using CmsData.Codes;
 
 namespace CmsWeb.Models
 {
@@ -139,17 +140,19 @@ namespace CmsWeb.Models
 
         public IEnumerable<MemberInfo> GetMemberList()
         {
-            var members = DbUtil.Db.OrgPeopleCurrent(OrgId);
-            foreach (var member in members)
-            {
-                var person = DbUtil.Db.LoadPersonById(member.PeopleId);
-                yield return new MemberInfo
-                {
-                    Name = person.Name,
-                    MemberType = member.MemberType,
-                    PeopleId = member.PeopleId
-                };
-            }
+            return (from om in DbUtil.Db.OrganizationMembers
+                    where om.OrganizationId == OrgId
+                    where
+                        om.MemberTypeId != MemberTypeCode.Prospect &&
+                        om.MemberTypeId != MemberTypeCode.InActive
+                    orderby om.Person.Name
+                    select new MemberInfo
+                    {
+                        Name = om.Person.Name,
+                        MemberType = om.MemberType.Description,
+                        PeopleId = om.PeopleId
+                    })
+                    .ToList();
         }
 
         public class MemberInfo

@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "Confirm Response";
+    Layout = "~/Views/Shared/onlinereg2.cshtml";
+}
+<br/>
+<div class="regform">
+    @using (Html.BeginForm("DropFromOrgLink", "OnlineReg", FormMethod.Post))
+    {
+        <input type="hidden" id="id" name="id" value="@ViewBag.Id" />
+        <div class="alert alert-warning">
+            <h4>Confirm Response</h4>
+            <p>Please click the button below to confirm you wish to be removed.</p>
+            <p>
+                <button type="submit" class="btn btn-warning">Confirm</button>
+            </p>
+        </div>
+    }
+</div>

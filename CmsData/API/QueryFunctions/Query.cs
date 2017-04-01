@@ -165,6 +165,12 @@ namespace CmsData
             return cn.Query(sql, parameters, commandTimeout: 300);
         }
 
+        public string QuerySqlScalar(string sql)
+        {
+            var cn = GetReadonlyConnection();
+            return cn.ExecuteScalar(sql).ToString();
+        }
+
         public string SqlNameCountArray(string title, string sql)
         {
             var cn = GetReadonlyConnection();

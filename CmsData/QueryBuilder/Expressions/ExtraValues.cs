@@ -241,5 +241,14 @@ namespace CmsData
             var right = Expression.Constant(TextValue.ToInt(), typeof(int?));
             return Compare(left, right);
         }
+        internal Expression PeopleExtraAttr()
+        {
+            Expression<Func<Person, bool>> pred = p =>
+                db.ViewAttributes.Any(vv => vv.PeopleId == p.PeopleId && CodeStrIds.Contains(vv.FieldAttr));
+            Expression expr = Expression.Invoke(pred, parm);
+            if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
+                expr = Expression.Not(expr);
+            return expr;
+        }
     }
 }

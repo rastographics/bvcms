@@ -17,6 +17,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         public string Name { get; set; }
         public string Name2 { get; set; }
         public Guid Id { get; set; }
+        public int? Qtagid { get; set; }
         public string Results { get; set; }
         public string ExcelUrl => $"/Reports/SqlReportExcel/{Report}/{Id}";
 
@@ -74,6 +75,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             {
                 var tag = DbUtil.Db.PopulateSpecialTag(Id, DbUtil.TagTypeId_Query);
                 p.Add("@qtagid", tag.Id);
+                Qtagid = tag.Id;
             }
             if (hascurrentorg)
             {

@@ -9751,8 +9751,60 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 </body>
 </html>
 ', '2016-12-13 14:09:36.220', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 0)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (91, N'MemberProfileAutomationDeceasedOnly', N'Edit Python Script', N' 
+# this is an IronPython script for MembershipAutomation in BVCMS
+# the variable p has been passed in and is the person that we are saving Member Profile information for
+
+#import useful constants (defined in constants.py)
+from constants import *
+
+
+# cleanup for deceased and for dropped memberships
+def DropMembership(p, Db):
+
+    if p.MemberStatusId == MemberStatusCode.Member:
+        if p.Deceased:
+            p.DropCodeId = DropTypeCode.Deceased
+        p.MemberStatusId = MemberStatusCode.Previous
+        p.DropDate = p.Now().Date
+
+    if p.Deceased:
+        p.EmailAddress = None
+        p.DoNotCallFlag = True
+        p.DoNotMailFlag = True
+        p.DoNotVisitFlag = True
+
+    if p.SpouseId != None:
+        spouse = Db.LoadPersonById(p.SpouseId)
+
+        if p.Deceased:
+            spouse.MaritalStatusId = MaritalStatusCode.Widowed
+            if spouse.EnvelopeOptionsId != None: # not null
+                if spouse.EnvelopeOptionsId != EnvelopeOptionCode.NoEnvelope:
+                    spouse.EnvelopeOptionsId = EnvelopeOptionCode.Individual
+            spouse.ContributionOptionsId = EnvelopeOptionCode.Individual
+
+        if spouse.MemberStatusId == MemberStatusCode.Member:
+            if spouse.EnvelopeOptionsId == EnvelopeOptionCode.Joint:
+                spouse.EnvelopeOptionsId = EnvelopeOptionCode.Individual
+
+    p.EnvelopeOptionsId = EnvelopeOptionCode.NoEnvelope
+    p.DropAllMemberships(Db)
+
+#-------------------------------------
+# Main Function
+class MembershipAutomation(object):
+    def __init__(self):
+	pass
+    def Run(self, Db, p):
+	p.errorReturn = "ok"
+
+	if p.DeceasedDateChanged:
+		if p.DeceasedDate != None:
+			DropMembership(p, Db)
+', '2017-03-22 23:06:11.323', NULL, 5, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Content] OFF
-PRINT(N'Operation applied to 30 rows out of 30')
+PRINT(N'Operation applied to 31 rows out of 31')
 
 PRINT(N'Add rows to [dbo].[ContributionFund]')
 INSERT INTO [dbo].[ContributionFund] ([FundId], [CreatedBy], [CreatedDate], [FundName], [FundDescription], [FundStatusId], [FundTypeId], [FundPledgeFlag], [FundAccountCode], [FundIncomeDept], [FundIncomeAccount], [FundIncomeFund], [FundCashDept], [FundCashAccount], [FundCashFund], [OnlineSort], [NonTaxDeductible], [QBIncomeAccount], [QBAssetAccount]) VALUES (1, 1, '2010-10-30 15:36:12.533', N'General Operation', N'General Operation', 1, 1, 0, NULL, N'0', N'0', N'0', N'0', N'0', N'0', 1, NULL, 0, 0)
@@ -11638,9 +11690,9 @@ PRINT(N'Operation applied to 37 rows out of 37')
 
 PRINT(N'Add rows to [dbo].[Users]')
 SET IDENTITY_INSERT [dbo].[Users] ON
-INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (1, 1, N'Admin', NULL, N'2352354235', NULL, NULL, 1, '2017-03-06 12:52:48.983', NULL, '2017-03-06 12:52:43.307', '2009-05-05 22:46:43.890', 0, '2017-03-06 12:52:43.243', 0, '2016-06-17 09:52:17.480', 0, NULL, NULL, NULL, 0, N'starterdb.tpsdb.com', N'bvcms', N'The Admin', N'Admin, The', NULL, NULL, '2017-03-07 12:51:55.150')
-INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (2, 2, N'david', N'', N'uNVML/ZamnY7YdE1NXvMHPIznic=', NULL, NULL, 1, '2016-10-23 07:44:52.280', '2016-10-23 07:44:05.380', '2013-12-19 00:03:08.440', '2010-10-30 15:23:25.763', 0, '2013-12-19 00:03:08.360', 0, '2013-12-18 22:54:19.783', 0, '2010-10-30 15:23:25.763', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'David Carroll', N'Carroll, David', NULL, NULL, '2013-12-19 22:55:00.120')
-INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (3, 3, N'karenw', N'', N'lpSVokbyDdVaXxNGDjZT4St468A=', NULL, NULL, 1, '2017-03-06 11:09:25.787', '2017-03-06 11:09:15.540', '2013-10-14 10:43:23.743', '2010-10-30 15:29:25.757', 0, '2013-10-14 10:43:23.667', 0, '2013-10-14 10:41:24.547', 0, '2010-10-30 15:29:25.757', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'Karen Worrell', N'Worrell, Karen', NULL, NULL, '2013-10-15 10:42:47.710')
+INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (1, 1, N'Admin', NULL, N'2352354235', NULL, NULL, 1, '2017-03-08 16:13:38.493', NULL, '2017-03-06 12:52:43.307', '2009-05-05 22:46:43.890', 0, '2017-03-06 12:52:43.243', 0, '2016-06-17 09:52:17.480', 0, NULL, NULL, NULL, 1, N'starterdb.tpsdb.com', N'bvcms', N'The Admin', N'Admin, The', NULL, NULL, '2017-03-07 12:51:55.150')
+INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (2, 2, N'david', N'', N'uNVML/ZamnY7YdE1NXvMHPIznic=', NULL, NULL, 1, '2017-03-22 23:11:26.020', '2017-03-22 23:05:47.650', '2013-12-19 00:03:08.440', '2010-10-30 15:23:25.763', 0, '2013-12-19 00:03:08.360', 0, '2013-12-18 22:54:19.783', 0, '2010-10-30 15:23:25.763', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'David Carroll', N'Carroll, David', NULL, NULL, '2013-12-19 22:55:00.120')
+INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (3, 3, N'karenw', N'', N'lpSVokbyDdVaXxNGDjZT4St468A=', NULL, NULL, 1, '2017-03-23 08:26:07.867', '2017-03-23 08:25:43.137', '2013-10-14 10:43:23.743', '2010-10-30 15:29:25.757', 0, '2013-10-14 10:43:23.667', 0, '2013-10-14 10:41:24.547', 0, '2010-10-30 15:29:25.757', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'Karen Worrell', N'Worrell, Karen', NULL, NULL, '2013-10-15 10:42:47.710')
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (5, 101, N'checkin', N'', N'FtPZkua8z2a+Pu/j6WqWYEex3F4=', NULL, NULL, 1, '2016-05-04 15:46:47.893', NULL, '2016-05-04 15:46:47.893', '2016-05-04 15:46:47.893', 0, '2016-05-04 15:46:47.893', 0, '2016-05-04 15:46:47.893', 0, '2016-05-04 15:46:47.893', NULL, NULL, 0, NULL, NULL, N'Checkin Ministry', N'Ministry, Checkin', NULL, NULL, NULL)
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (6, 102, N'atester', N'', N'xurYGXdkthV25voxxUHgKk5PnnU=', NULL, NULL, 1, '2016-10-21 15:45:25.440', '2016-10-21 15:45:46.073', '2016-10-21 15:45:46.090', '2016-10-21 15:45:25.440', 0, '2016-10-21 15:45:46.013', 0, '2016-10-21 15:45:25.440', 0, '2016-10-21 15:45:25.440', NULL, NULL, 0, NULL, N'John3:16', N'App Tester', N'Tester, App', NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Users] OFF

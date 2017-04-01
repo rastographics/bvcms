@@ -66,8 +66,11 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> AllCampuses()
         {
-            return from c in DbUtil.Db.Campus
-                orderby c.Description
+            var qc = DbUtil.Db.Campus.AsQueryable();
+            qc = DbUtil.Db.Setting("SortCampusByCode")
+                ? qc.OrderBy(cc => cc.Code)
+                : qc.OrderBy(cc => cc.Description);
+            return from c in qc
                 select new CodeValueItem
                 {
                     Id = c.Id,

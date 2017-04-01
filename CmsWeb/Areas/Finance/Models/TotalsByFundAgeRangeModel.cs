@@ -42,8 +42,11 @@ namespace CmsWeb.Models
 
         public IEnumerable<SelectListItem> Campuses()
         {
-            var list = (from c in DbUtil.Db.Campus
-                        orderby c.Description
+            var qc = DbUtil.Db.Campus.AsQueryable();
+            qc = DbUtil.Db.Setting("SortCampusByCode") 
+                ? qc.OrderBy(cc => cc.Code) 
+                : qc.OrderBy(cc => cc.Description);
+            var list = (from c in qc
                         select new SelectListItem()
                                    {
                                        Value = c.Id.ToString(),

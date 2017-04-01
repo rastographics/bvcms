@@ -1852,7 +1852,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             var position = 10;
             person = Add(db, true, f, position, null, first.Trim(), null, last.Trim(), "", 0, 0,
                 OriginCode.Contribution, null);
-            person.EmailAddress = email.Trim();
+            person.EmailAddress = email?.Trim();
             person.SendEmailAddress1 = true;
 
             if (count == 0)

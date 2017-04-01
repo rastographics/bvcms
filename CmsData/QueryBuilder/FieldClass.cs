@@ -133,7 +133,10 @@ namespace CmsData
         }
         public static QueryType ConvertQueryType(string type)
         {
-            return (QueryType)Enum.Parse(typeof(QueryType), type);
+            QueryType t;
+            if (Enum.TryParse(type, out t))
+                return t;
+            throw new Exception("Unknown QueryType " + type);
         }
         public static Dictionary<string, FieldClass> Fields
         {

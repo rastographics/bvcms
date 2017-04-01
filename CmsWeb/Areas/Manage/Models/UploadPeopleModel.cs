@@ -22,6 +22,8 @@ namespace CmsWeb.Models
         private Dictionary<string, int> names;
         private List<ChangeDetail> psb;
 
+        public bool InsertPeopleSpreadsheet => true;
+
         public UploadPeopleModel(string host, int PeopleId, bool noupdate, bool testing = false)
         {
             Db2 = DbUtil.Create(host);
@@ -189,7 +191,7 @@ namespace CmsWeb.Models
         {
             "familyid", "title", "first", "last", "goesby", "altname",
             "gender", "marital", "maidenName", "address", "address2",
-            "city", "state", "zip", "position", "birthday",
+            "city", "state", "zip", "position", "birthday", "deceased",
             "cellphone", "homephone", "workphone", "email", "email2",
             "suffix", "middle", "joindate", "dropdate", "baptismdate", "weddingdate",
             "memberstatus", "employer", "occupation", "CreatedDate", "BackgroundCheck"
@@ -410,6 +412,7 @@ namespace CmsWeb.Models
                         SetField(p, a, "BaptismDate", "baptismdate", GetDate(p, a, "baptismdate"));
                         SetField(p, a, "PositionInFamilyId", "position", Position(a));
                         SetField(p, a, "TitleCode", "title", Title(a));
+                        SetField(p, a, "DeceasedDate", "deceased", GetDate(p, a, "deceased"));
                         if (names.ContainsKey("memberstatus"))
                             SetMemberStatus(db, p, a);
                         if (!testing)

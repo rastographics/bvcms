@@ -1,0 +1,48 @@
+﻿@model CmsData.PeopleExtra
+@{
+  Layout = ViewExtensions2.TouchPointLayout();
+  ViewBag.Title = "Edit Attributes";
+  ViewBag.PageHeader = "Edit Attributes";
+}
+<div class="report box box-responsive">
+  <div class="box-content">
+      <form action="/Person/Attributes/Update" method="post">
+          @Html.HiddenFor(vv => vv.Field)
+          @Html.HiddenFor(vv => vv.PeopleId)
+          <div id="editor" style="width: 100%; height: 550px; border: #ccc solid 1px;">@Model.Data</div>
+          <textarea id="mobile-text" name="mobile-text" class="form-control" rows="15" style="display:none; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;">@Model.Data</textarea>
+          @Html.HiddenFor(vv => vv.Data)
+          <br />
+          <a href="/Person/Attributes/@Model.Field/@Model.PeopleId" class="btn btn-default">Back To Attributes</a>
+          <a href="#" id="save" class="btn btn-primary">Save Changes</a>
+      </form>
+  </div>
+</div>
+@section scripts
+{
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
+  <script type="text/javascript">
+        $(function () {
+            var extraSmallDevice = $('.device-xs').is(':visible');
+            var smallDevice = $('.device-sm').is(':visible');
+            if (extraSmallDevice || smallDevice) {
+                $('#editor').hide();
+                $('#mobile-text').show();
+            } else {
+                var editor = ace.edit("editor");
+                editor.getSession().setMode("ace/mode/json");
+                editor.setShowPrintMargin(false);
+            }
+
+            $("#save").click(function (ev) {
+                ev.preventDefault();
+                if (extraSmallDevice || smallDevice) {
+                    $("#Data").val($('#mobile-text').val());
+                } else {
+                    $("#Data").val(editor.getValue());
+                }
+                $("form").submit();
+            });
+        });
+  </script>
+}

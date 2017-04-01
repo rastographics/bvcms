@@ -55,7 +55,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                          where pp.PeopleId == li.pid
                          let org = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == li.oid)
                          let om = DbUtil.Db.OrganizationMembers.SingleOrDefault(oo => oo.OrganizationId == li.oid && oo.PeopleId == li.pid)
-                         select new {p = pp, org, om}).Single();
+                         select new { p = pp, org, om }).Single();
 
                 if (q.org == null && DbUtil.Db.Host == "trialdb")
                 {
@@ -64,7 +64,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                          where pp.PeopleId == li.pid
                          let org = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == oid)
                          let om = DbUtil.Db.OrganizationMembers.SingleOrDefault(oo => oo.OrganizationId == oid && oo.PeopleId == li.pid)
-                         select new {p = pp, org, om}).Single();
+                         select new { p = pp, org, om }).Single();
                 }
 
                 if (q.org == null)
@@ -188,7 +188,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                          where pp.PeopleId == li.pid
                          let meeting = DbUtil.Db.Meetings.SingleOrDefault(mm => mm.MeetingId == meetingid)
                          let org = meeting.Organization
-                         select new {p = pp, org, meeting}).Single();
+                         select new { p = pp, org, meeting }).Single();
 
                 if (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive)
                     throw new Exception("sorry, registration has been closed");
@@ -257,7 +257,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                          where pp.PeopleId == li.pid
                          let org = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == li.oid)
                          let om = DbUtil.Db.OrganizationMembers.SingleOrDefault(oo => oo.OrganizationId == li.oid && oo.PeopleId == li.pid)
-                         select new {p = pp, org, om}).Single();
+                         select new { p = pp, org, om }).Single();
 
                 if (q.org == null && DbUtil.Db.Host == "trialdb")
                 {
@@ -266,7 +266,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                          where pp.PeopleId == li.pid
                          let org = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == oid)
                          let om = DbUtil.Db.OrganizationMembers.SingleOrDefault(oo => oo.OrganizationId == oid && oo.PeopleId == li.pid)
-                         select new {p = pp, org, om}).Single();
+                         select new { p = pp, org, om }).Single();
                 }
 
                 if (q.org == null)
@@ -329,7 +329,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 var q = (from pp in DbUtil.Db.People
                          where pp.PeopleId == li.pid
                          let org = DbUtil.Db.LoadOrganizationById(li.oid)
-                         select new {p = pp, org}).Single();
+                         select new { p = pp, org }).Single();
 
                 if (q.org == null && DbUtil.Db.Host == "trialdb")
                 {
@@ -337,7 +337,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     q = (from pp in DbUtil.Db.People
                          where pp.PeopleId == li.pid
                          let org = DbUtil.Db.LoadOrganizationById(oid)
-                         select new {p = pp, org}).Single();
+                         select new { p = pp, org }).Single();
                 }
 
                 if (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive)
@@ -394,8 +394,8 @@ or contact the church if you need help.</p>
             var GroupTags = (from mt in DbUtil.Db.OrgMemMemTags
                              where mt.OrgId == orgid
                              select mt.MemberTag.Name).ToList();
-            return setting.AskItems.Where(aa => aa.Type == "AskDropdown").Any(aa => ((AskDropdown) aa).IsSmallGroupFilled(GroupTags, sg))
-                   || setting.AskItems.Where(aa => aa.Type == "AskCheckboxes").Any(aa => ((AskCheckboxes) aa).IsSmallGroupFilled(GroupTags, sg));
+            return setting.AskItems.Where(aa => aa.Type == "AskDropdown").Any(aa => ((AskDropdown)aa).IsSmallGroupFilled(GroupTags, sg))
+                   || setting.AskItems.Where(aa => aa.Type == "AskCheckboxes").Any(aa => ((AskCheckboxes)aa).IsSmallGroupFilled(GroupTags, sg));
         }
 
         const string otherRegisterlinkmaster = "Other/RegisterLinkMaster";
@@ -404,7 +404,7 @@ or contact the church if you need help.</p>
             var pid = TempData["PeopleId"] as int?;
             ViewBag.Token = TempData["token"];
 
-            var m = new OnlineRegModel {Orgid = id};
+            var m = new OnlineRegModel { Orgid = id };
             if (User.Identity.IsAuthenticated)
                 return View(otherRegisterlinkmaster, m);
 
@@ -460,6 +460,42 @@ or contact the church if you need help.</p>
                 DbUtil.LogActivity($"{link}{@from}Error: {msg}", oid, pid);
                 return new Exception(msg);
             }
+        }
+        public ActionResult DropFromOrgLink(string id)
+        {
+            var li = new LinkInfo("dropfromorg", confirmSTR, id);
+
+            ViewBag.Id = id;
+
+            DbUtil.LogActivity($"dropfromorg click: {li.oid}", li.oid, li.pid);
+            return View("Other/DropFromOrg");
+        }
+
+        [HttpPost]
+        public ActionResult DropFromOrgLink(string id, FormCollection formCollection)
+        {
+            var li = new LinkInfo("dropfromorg", confirmSTR, id);
+            if (li.error.HasValue())
+                return Message(li.error);
+
+            if (!li.oid.HasValue)
+                throw new Exception("orgid missing");
+
+            if (!li.pid.HasValue)
+                throw new Exception("peopleid missing");
+
+            var org = DbUtil.Db.LoadOrganizationById(li.oid);
+            if(org == null)
+                throw new Exception("no such organization");
+
+            var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(mm => mm.OrganizationId == li.oid && mm.PeopleId == li.pid);
+
+            om?.Drop(DbUtil.Db);
+            li.ot.Used = true;
+            DbUtil.Db.SubmitChanges();
+
+            DbUtil.LogActivity($"dropfromorg confirm: {id}", li.oid, li.pid);
+            return Message($"You have been successfully removed from {org.Title ?? org.OrganizationName}");
         }
     }
 }

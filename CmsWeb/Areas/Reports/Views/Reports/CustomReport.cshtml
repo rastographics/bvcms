@@ -6,24 +6,28 @@
   Layout = ViewExtensions2.TouchPointLayout();
 }
 <div class="report box box-responsive">
-  <div class="box-content">
-    <div id="reportlinks">
-      <a href="@Model.ExcelUrl" target="_blank" class="btn btn-default"><i class="fa fa-file-excel-o"></i> Download as Excel</a>
-      @if (isAdmin)
-      {
-        <span class="pull-right">
-          <a target="_blank" href="/Reports/CustomSql/@Model.Report" class="btn btn-link">SQL</a>
-          <a href="@Model.EditUrl" target="_blank" class="btn btn-default">
-            <i class="fa fa-pencil"></i> Edit Custom Report
-          </a>
-          <a id="delete-report" href="#" data-action="delete" data-action-url="@Model.DeleteUrl" data-report="@Model.Report" class="btn btn-danger">
-            <i class="fa fa-trash-o"></i> Delete Custom Report
-          </a>
-        </span>
-      }
+    <div class="box-content">
+        <div id="reportlinks">
+            <a href="@Model.ExcelUrl" target="_blank" class="btn btn-default"><i class="fa fa-file-excel-o"></i> Download as Excel</a>
+            @if (isAdmin)
+            {
+                <span class="pull-right">
+                    <a target="_blank" href="/Reports/CustomSql/@Model.Report" class="btn btn-link">SQL</a>
+                    <a href="@Model.EditUrl" target="_blank" class="btn btn-default">
+                        <i class="fa fa-pencil"></i> Edit Custom Report
+                    </a>
+                    <a id="delete-report" href="#" data-action="delete" data-action-url="@Model.DeleteUrl" data-report="@Model.Report" class="btn btn-danger">
+                        <i class="fa fa-trash-o"></i> Delete Custom Report
+                    </a>
+                </span>
+            }
+        </div>
+        <div class="table-responsive">
+            @Html.Raw(Model.Table())
+        </div>
     </div>
-    <div class="table-responsive">
-      @Html.Raw(Model.Table())
-    </div>
-  </div>
+@if (User.IsInRole("developer") && Model.Qtagid.HasValue)
+{
+    <div>@@qtagid: @Model.Qtagid</div>
+}
 </div>

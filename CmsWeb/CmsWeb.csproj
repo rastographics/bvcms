@@ -184,9 +184,8 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="MoreLinq, Version=1.4.18916.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
-      <HintPath>..\packages\morelinq.1.4.0\lib\net35\MoreLinq.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="MoreLinq, Version=2.0.20029.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
+      <HintPath>..\packages\morelinq.2.2.0\lib\net35\MoreLinq.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -406,6 +405,7 @@
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadAddressesController.cs" />
     <Compile Include="Areas\Manage\Controllers\ResourceController.cs" />
+    <Compile Include="Areas\Manage\Controllers\UploadExcelIpsController.cs" />
     <Compile Include="Areas\Manage\Models\Activity\ActivityInfo.cs" />
     <Compile Include="Areas\Manage\Models\BatchModel\BatchRegMessages.cs" />
     <Compile Include="Areas\Manage\Models\BatchModel\BatchRegOptions.cs" />
@@ -416,6 +416,7 @@
     <Compile Include="Areas\Manage\Models\ResourceTypeModel.cs" />
     <Compile Include="Areas\Manage\Models\UpdateFieldsLookups.cs" />
     <Compile Include="Areas\Manage\Models\UploadAddressesModel.cs" />
+    <Compile Include="Areas\Manage\Models\UploadExcelIpsModel.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationStatus.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\OnePageGiving.cs" />
@@ -470,6 +471,7 @@
     <Compile Include="Areas\Org\Models\MeetingModel.cs" />
     <Compile Include="Areas\Org\Models\MemberDirectoryModel.cs" />
     <Compile Include="Areas\Org\Models\MissionTripEmailer.cs" />
+    <Compile Include="Areas\People\Controllers\AttributesController.cs" />
     <Compile Include="Areas\People\Controllers\TaskController.cs" />
     <Compile Include="Areas\People\Controllers\DownlineLevelsController.cs" />
     <Compile Include="Areas\People\Controllers\DownlineSummaryController.cs" />
@@ -899,7 +901,6 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Areas\Search\Views\PictureDirectory\PictureDirectory.sql" />
-    <Content Include="test.py" />
     <Content Include="Content\css\bootstrap-datetimepicker.css" />
     <Content Include="Content\css\bootstrap-datetimepicker.min.css">
       <DependentUpon>bootstrap-datetimepicker.css</DependentUpon>
@@ -1575,6 +1576,8 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageSubscriptions\OneTimeLinkPartial.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\UploadAddresses.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\UploadAddressesProgress.cshtml" />
+    <Content Include="Areas\Manage\Views\UploadExcelIps\Index.cshtml" />
+    <Content Include="Areas\Manage\Views\UploadExcelIps\Progress.cshtml" />
     <None Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\Login.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\Index.cshtml" />
@@ -1613,6 +1616,9 @@
     <Content Include="Areas\People\Views\Person\DisplayTemplates\InlineCodeEditCampus.cshtml" />
     <Content Include="Areas\Public\Views\OrgContent\ScriptResults.cshtml" />
     <Content Include="Areas\Reports\Models\Avery\DocxAveryLabel.docx" />
+    <Content Include="Areas\People\Views\Attributes\Index.cshtml" />
+    <Content Include="Areas\People\Views\Attributes\Edit.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\DropFromOrg.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />

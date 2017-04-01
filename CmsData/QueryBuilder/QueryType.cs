@@ -183,6 +183,7 @@ namespace CmsData
         PeopleExtraData,
         PeopleExtraDate,
         PeopleExtraInt,
+        PeopleExtraAttr,
         PeopleId,
         PeopleIds,
         PledgeAmountBothJointHistory,

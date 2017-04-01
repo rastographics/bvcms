@@ -1,0 +1,65 @@
+﻿@model CmsData.UploadPeopleRun
+@{
+    ViewBag.Title = "UploadExcelIps";
+    ViewBag.ReportPageHeader = "UploadExcelIps";
+    Layout = ViewExtensions2.TouchPointLayout();
+}
+<div class="report box box-responsive">
+    <div class="box-content">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <td>Description</td>
+                        <th><span id="description">@Model.Description</span></th>
+                    </tr>
+                    <tr>
+                        <td>Started</td>
+                        <td>@Model.Started</td>
+                    </tr>
+                    <tr>
+                        <td>Total Records</td>
+                        <td><span id="count">@Model.Count</span></td>
+                    </tr>
+                    <tr>
+                        <td>Processed</td>
+                        <td><span id="processed">@Model.Processed</span></td>
+                    </tr>
+                    <tr>
+                        <td>Completed</td>
+                        <td><span id="completed">@Model.Completed</span></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><span id="error" style="color:red">@Model.Error</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>
+                <a href="/PeopleSearch" class="btn btn-default">People Search Page</a>
+            </p>
+        </div>
+    </div>
+</div>
+@section scripts {
+    @if (Model.Running == 1)
+    {
+        <script type="text/javascript">
+            $(function () {
+                var intervalId = window.setInterval(function () {
+                    $.post('/UploadExcelIps/Progress2', null, function (json) {
+                        $("#count").text(json.Count);
+                        $("#description").text(json.Description);
+                        $("#processed").text(json.Processed);
+                        $("#found").text(json.Found);
+                        $("#completed").text(json.Completed);
+                        $("#error").text(json.Error || "");
+                        if (!json.Running) {
+                            window.clearInterval(intervalId);
+                        }
+                    }, "json");
+                }, 2000);
+            });
+        </script>
+    }
+}

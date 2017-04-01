@@ -80,3 +80,6 @@ CmsDataSqlClr_.*.sqlproj
 *.pyc
 .localhistory/
 CmsWeb/LocalConnectionStrings.config
+
+CmsWeb/test.py
+ttt.json

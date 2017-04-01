@@ -24,7 +24,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             return importer.RunImport(text, date, fundid, fromFile);
         }
 
-        internal static BundleHeader GetBundleHeader(DateTime date, DateTime now, int? btid = null)
+        public static BundleHeader GetBundleHeader(DateTime date, DateTime now, int? btid = null)
         {
             var bh = new BundleHeader
             {
@@ -41,7 +41,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             return bh;
         }
 
-        internal static void FinishBundle(BundleHeader bh)
+        public static void FinishBundle(BundleHeader bh)
         {
             bh.TotalChecks = bh.BundleDetails.Sum(d => d.Contribution.ContributionAmount);
             bh.TotalCash = 0;
@@ -49,7 +49,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             DbUtil.Db.SubmitChanges();
         }
 
-        internal static int FirstFundId()
+        public static int FirstFundId()
         {
             var firstfund = (from f in DbUtil.Db.ContributionFunds
                              where f.FundStatusId == 1
@@ -58,7 +58,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             return firstfund;
         }
 
-        internal static BundleDetail AddContributionDetail(DateTime date, int fundid,
+        public static BundleDetail AddContributionDetail(DateTime date, int fundid,
             string amount, string checkno, string routing, string account)
         {
             var bd = NewBundleDetail(date, fundid, amount);
@@ -74,7 +74,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             return bd;
         }
 
-        internal static BundleDetail AddContributionDetail(DateTime date, int fundid,
+        public static BundleDetail AddContributionDetail(DateTime date, int fundid,
             string amount, string checkno, string routing, int peopleid)
         {
             var bd = NewBundleDetail(date, fundid, amount);
@@ -82,14 +82,14 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             bd.Contribution.PeopleId = peopleid;
             return bd;
         }
-        internal static BundleDetail AddContributionDetail(DateTime date, int fundid, string amount, int peopleid)
+        public static BundleDetail AddContributionDetail(DateTime date, int fundid, string amount, int peopleid)
         {
             var bd = NewBundleDetail(date, fundid, amount);
             bd.Contribution.PeopleId = peopleid;
             return bd;
         }
 
-        internal static BundleDetail NewBundleDetail(DateTime date, int fundid, string amount)
+        public static BundleDetail NewBundleDetail(DateTime date, int fundid, string amount)
         {
             var bd = new BundleDetail
             {

@@ -143,6 +143,7 @@ namespace CmsData
                 { QueryType.PeopleExtraData, PeopleExtraData },
                 { QueryType.PeopleExtraDate, PeopleExtraDate },
                 { QueryType.PeopleExtraInt, PeopleExtraInt },
+                { QueryType.PeopleExtraAttr, PeopleExtraAttr },
                 { QueryType.FamilyExtra, FamilyExtra },
                 { QueryType.FamilyExtraData, FamilyExtraData },
                 { QueryType.FamilyExtraDate, FamilyExtraDate },

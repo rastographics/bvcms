@@ -11,11 +11,12 @@ using CmsData.Finance.TransNational.Transaction.Refund;
 using CmsData.Finance.TransNational.Transaction.Sale;
 using CmsData.Finance.TransNational.Transaction.Void;
 using CmsData.Finance.TransNational.Vault;
+using MoreLinq;
 using UtilityExtensions;
 
 namespace CmsData.Finance
 {
-    internal class TransNationalGateway : IGateway
+    public class TransNationalGateway : IGateway
     {
         private readonly string _userName;
         private readonly string _password;
@@ -594,22 +595,16 @@ namespace CmsData.Finance
             };
         }
 
+        public List<string> TransactionIds;
         public BatchResponse GetBatchDetails(DateTime start, DateTime end)
         {
-            // because TransNational doesn't bring back all actions that have happended on any giving transaction we
-            // need to always start 14 days before so that any e-check original actions will come in for us to process.
-            start = start.AddDays(-14);
-
+            throw new NotImplementedException();
+        }
+        public BatchResponse GetBatchDetails()
+        {
             var batchTransactions = new List<BatchTransaction>();
 
-            // settled sale, capture, credit & refund transactions.
-            var queryRequest = new QueryRequest(
-                _userName,
-                _password,
-                start,
-                end,
-                new List<TransNational.Query.Condition> {TransNational.Query.Condition.Complete},
-                new List<ActionType> {ActionType.Settle, ActionType.Sale, ActionType.Capture, ActionType.Credit, ActionType.Refund});
+            var queryRequest = new QueryRequest(_userName, _password, TransactionIds );
 
             var response = queryRequest.Execute();
 
@@ -624,9 +619,6 @@ namespace CmsData.Finance
         private static void BuildBatchTransactionsList(IEnumerable<TransNational.Query.Transaction> transactions, ActionType originalActionType, List<BatchTransaction> batchTransactions)
         {
             var transactionList = transactions.Where(t => t.Actions.Any(a => a.ActionType == originalActionType));
-//#if DEBUG
-//            transactionList = transactionList.Where(t => t.OrderId == "5661");
-//#endif
             foreach (var transaction in transactionList)
             {
                 var originalAction = transaction.Actions.FirstOrDefault(a => a.ActionType == originalActionType);
@@ -738,10 +730,131 @@ namespace CmsData.Finance
                 if (usesaving)
                 {
                     if (Person.GetExtraValue(db, pid.Value, "AchSaving")?.BitValue == true)
-                        type = "saving";
+                        type = "savings";
                 }
             }
             return type;
         }
+
+        public bool UseIdsForSettlementDates => true;
+
+        public void CheckBatchSettlements(DateTime start, DateTime end)
+        {
+            throw new NotImplementedException();
+        }
+        public void CheckBatchSettlements(List<string> transactionids)
+        {
+            TransactionIds = transactionids;
+            var response = GetBatchDetails();
+
+            var batchTransactions = response.BatchTransactions.ToList();
+            var batchTypes = batchTransactions.Select(x => x.BatchType).Distinct();
+
+            foreach (var batchType in batchTypes)
+            {
+                // key it by transaction reference and payment type.
+                var unMatchedKeyedByReference = batchTransactions.Where(x => x.BatchType == batchType).ToDictionary(x => x.Reference, x => x);
+
+                // next let's get all the approved matching transactions from our transaction table by transaction id (reference).
+                var approvedMatchingTransactions = from transaction in db.Transactions
+                                                   where unMatchedKeyedByReference.Keys.Contains(transaction.TransactionId)
+                                                   where transaction.Approved == true
+                                                   select transaction;
+
+                // next key the matching approved transactions that came from our transaction table by the transaction id (reference).
+                var distinctTransactionIds = approvedMatchingTransactions.Select(x => x.TransactionId).Distinct();
+
+                // finally let's get a list of all transactions that need to be inserted, which we don't already have.
+                var transactionsToInsert = from transaction in unMatchedKeyedByReference
+                                           where !distinctTransactionIds.Contains(transaction.Key)
+                                           select transaction.Value;
+
+                var notbefore = DateTime.Parse("6/1/12"); // the date when Sage payments began in BVCMS (?)
+
+                // spin through each transaction and insert them to the transaction table.
+                foreach (var transactionToInsert in transactionsToInsert)
+                {
+                    // get the original transaction.
+                    var originalTransaction = db.Transactions.SingleOrDefault(t => t.TransactionId == transactionToInsert.Reference && transactionToInsert.TransactionDate >= notbefore && t.PaymentType == (batchType == BatchType.Ach ? PaymentType.Ach : PaymentType.CreditCard));
+
+                    // get the first and last name.
+                    string first, last;
+                    Util.NameSplit(transactionToInsert.Name, out first, out last);
+
+                    // get the settlement date, however we are not exactly sure why we add four hours to the settlement date.
+                    // we think it is to handle all timezones and push to the next day??
+                    var settlementDate = transactionToInsert.SettledDate.AddHours(4);
+
+                    // insert the transaction record.
+                    db.Transactions.InsertOnSubmit(new Transaction
+                    {
+                        Name = transactionToInsert.Name,
+                        First = first,
+                        Last = last,
+                        TransactionId = transactionToInsert.Reference,
+                        Amt = transactionToInsert.TransactionType == TransactionType.Credit ||
+                              transactionToInsert.TransactionType == TransactionType.Refund
+                            ? -transactionToInsert.Amount
+                            : transactionToInsert.Amount,
+                        Approved = transactionToInsert.Approved,
+                        Message = transactionToInsert.Message,
+                        TransactionDate = transactionToInsert.TransactionDate,
+                        TransactionGateway = GatewayType,
+                        Settled = settlementDate,
+                        Batch = settlementDate, // this date now will be the same as the settlement date.
+                        Batchref = transactionToInsert.BatchReference,
+                        Batchtyp = transactionToInsert.BatchType == BatchType.Ach ? "eft" : "bankcard",
+                        OriginalId = originalTransaction != null ? (originalTransaction.OriginalId ?? originalTransaction.Id) : (int?) null,
+                        Fromsage = true,
+                        Description = originalTransaction != null ? originalTransaction.Description : $"no description from {GatewayType}, id={transactionToInsert.TransactionId}",
+                        PaymentType = transactionToInsert.BatchType == BatchType.Ach ? PaymentType.Ach : PaymentType.CreditCard,
+                        LastFourCC = transactionToInsert.BatchType == BatchType.CreditCard ? transactionToInsert.LastDigits : null,
+                        LastFourACH = transactionToInsert.BatchType == BatchType.Ach ? transactionToInsert.LastDigits : null
+                    });
+                }
+
+                // next update Existing transactions with new batch data if there are any.
+                foreach (var existingTransaction in approvedMatchingTransactions)
+                {
+                    if (!unMatchedKeyedByReference.ContainsKey(existingTransaction.TransactionId))
+                        continue;
+
+                    // first get the matching batch transaction.
+                    var batchTransaction = unMatchedKeyedByReference[existingTransaction.TransactionId];
+
+                    // get the adjusted settlement date
+                    var settlementDate = batchTransaction.SettledDate.AddHours(4);
+
+                    existingTransaction.Batch = settlementDate; // this date now will be the same as the settlement date.
+                    existingTransaction.Batchref = batchTransaction.BatchReference;
+                    existingTransaction.Batchtyp = batchTransaction.BatchType == BatchType.Ach ? "eft" : "bankcard";
+                    existingTransaction.Settled = settlementDate;
+                    existingTransaction.PaymentType = batchTransaction.BatchType == BatchType.Ach ? PaymentType.Ach : PaymentType.CreditCard;
+                    existingTransaction.LastFourCC = batchTransaction.BatchType == BatchType.CreditCard ? batchTransaction.LastDigits : null;
+                    existingTransaction.LastFourACH = batchTransaction.BatchType == BatchType.Ach ? batchTransaction.LastDigits : null;
+                }
+            }
+
+            // finally we need to mark these batches as completed if there are any.
+            foreach (var batch in batchTransactions.DistinctBy(x => x.BatchReference))
+            {
+                var checkedBatch = db.CheckedBatches.SingleOrDefault(bb => bb.BatchRef == batch.BatchReference);
+                if (checkedBatch == null)
+                {
+                    db.CheckedBatches.InsertOnSubmit(
+                        new CheckedBatch
+                        {
+                            BatchRef = batch.BatchReference,
+                            CheckedX = DateTime.Now
+                        });
+                }
+                else
+                    checkedBatch.CheckedX = DateTime.Now;
+            }
+
+            db.SubmitChanges();
+
+        }
+
     }
 }
