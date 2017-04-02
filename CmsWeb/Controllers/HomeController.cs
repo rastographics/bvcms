@@ -183,7 +183,7 @@ namespace CmsWeb.Controllers
         [Authorize(Roles = "Developer")]
         public ActionResult TestScript()
         {
-            var text = System.IO.File.ReadAllText(Server.MapPath("test.py"));
+            var text = System.IO.File.ReadAllText(@"C:\dev\test.py)");
             ViewBag.Text = PythonModel.RunScript(Util.Host, text);
             return View("Test");
         }

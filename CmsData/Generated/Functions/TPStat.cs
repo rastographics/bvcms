@@ -46,6 +46,8 @@ namespace CmsData.View
 		
 		private int? _Nmydata;
 		
+		private int? _Nadmins;
+		
 		private int? _Reg;
 		
 		private DateTime? _Firstactive;
@@ -311,6 +313,23 @@ namespace CmsData.View
 			{
 				if (this._Nmydata != value)
 					this._Nmydata = value;
+			}
+
+		}
+
+		
+		[Column(Name="nadmins", Storage="_Nadmins", DbType="int")]
+		public int? Nadmins
+		{
+			get
+			{
+				return this._Nadmins;
+			}
+
+			set
+			{
+				if (this._Nadmins != value)
+					this._Nadmins = value;
 			}
 
 		}
