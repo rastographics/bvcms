@@ -82,6 +82,17 @@ RETURN
 							AND r.RoleName = 'Access'
 						)
 				)
+		,nadmins = (SELECT COUNT(*)
+					FROM dbo.Users u
+					WHERE NOT EXISTS(SELECT NULL FROM dbo.Split(@emails, ',') WHERE u.EmailAddress LIKE Value)
+					AND EXISTS(
+							SELECT NULL 
+							FROM dbo.UserRole ur
+							JOIN dbo.Roles r ON r.RoleId = ur.RoleId
+							WHERE ur.UserId = u.UserId
+							AND r.RoleName = 'Admin'
+						)
+				)
 		,reg = CASE WHEN EXISTS(
 					SELECT NULL
 					FROM dbo.OrganizationMembers om
