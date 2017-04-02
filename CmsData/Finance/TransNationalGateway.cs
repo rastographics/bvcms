@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net.Mime;
 using System.Text;
 using AuthorizeNet;
+using CmsData.Codes;
 using CmsData.Finance.TransNational.Core;
 using CmsData.Finance.TransNational.Query;
 using CmsData.Finance.TransNational.Transaction.Auth;
@@ -12,6 +14,7 @@ using CmsData.Finance.TransNational.Transaction.Sale;
 using CmsData.Finance.TransNational.Transaction.Void;
 using CmsData.Finance.TransNational.Vault;
 using MoreLinq;
+using Newtonsoft.Json;
 using UtilityExtensions;
 
 namespace CmsData.Finance
@@ -460,15 +463,12 @@ namespace CmsData.Finance
             string description, int tranid, string email, string first, string middle, string last, string suffix,
             string addr, string addr2, string city, string state, string country, string zip, string phone)
         {
-            var achSaleRequest = new AchSaleRequest(
-                _userName,
-                _password,
-                new Ach
-                {
+            var type = AchType(peopleId);
+            var ach = new Ach {
                     NameOnAccount = $"{first} {last}",
                     AccountNumber = acct,
                     RoutingNumber = routing,
-                    Type = AchType(peopleId),
+                    Type = type,
                     BillingAddress = new BillingAddress
                     {
                         FirstName = first,
@@ -482,13 +482,25 @@ namespace CmsData.Finance
                         Email = email,
                         Phone = phone
                     }
-                },
+                };
+            var achSaleRequest = new AchSaleRequest(
+                _userName,
+                _password,
+                ach,
                 amt,
                 tranid.ToString(CultureInfo.InvariantCulture),
                 description,
                 peopleId.ToString(CultureInfo.InvariantCulture));
 
             var response = achSaleRequest.Execute();
+
+            if (type == "savings")
+            {
+                var s = JsonConvert.SerializeObject(ach, Formatting.Indented).Replace("\r\n", "\n");
+                var c = db.Content("AchSavingsLog","-", ContentTypeCode.TypeText);
+                c.Body = $"--------------------------\n{DateTime.Now:g}\ntranid={response.TransactionId}\n\n{s}\n{c.Body}";
+                db.SubmitChanges();
+            }
 
             return new TransactionResponse
             {
