@@ -47,9 +47,15 @@
                 @Html.EditorFor(m => m.WeddingDate)
             </div>
             <div class="col-md-6 col-lg-3">
-                @(User.IsInRole("Membership") || User.IsInRole("Admin")
-                      ? @Html.EditorFor(m => m.DeceasedDate)
-                      : @Html.DisplayFor(m => m.DeceasedDate))
+                @if (User.IsInRole("Membership") || User.IsInRole("Admin"))
+                {
+                    @Html.EditorFor(m => m.DeceasedDate)
+                }
+                else
+                {
+                    @Html.HiddenFor(m => m.DeceasedDate)
+                    @Html.DisplayFor(m => m.DeceasedDate)
+                }
             </div>
         </div>
     </div>
@@ -110,22 +116,22 @@
     @Html.HiddenFor(m => m.CreatedDate)
     @FormAction()
     @FormAction(true)
-    <br/><br/>
+    <br /><br />
 </form>
 @helper FormAction(bool xs = false)
 {
-    if (xs)
-    {
+if (xs)
+{
         <div class="visible-xs-block">
             <a href="/Person2/PersonalUpdate/@Model.PeopleId" class="btn btn-primary btn-block ajax validate">Save Changes</a>
             <a href="/Person2/PersonalDisplay/@Model.PeopleId" class="btn btn-default btn-block ajax">Cancel</a>
         </div>
-    }
-    else
-    {
+}
+else
+{
         <div class="pull-right hidden-xs">
             <a href="/Person2/PersonalDisplay/@Model.PeopleId" class="btn btn-default ajax">Cancel</a>
             <a href="/Person2/PersonalUpdate/@Model.PeopleId" class="btn btn-primary ajax validate">Save Changes</a>
         </div>
-    }
+}
 }
