@@ -82,7 +82,7 @@ namespace CmsWeb.Areas.Dialog.Models
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
         }
 
-        private void DoWork(OrgDrop model)
+        private static void DoWork(OrgDrop model)
         {
             var db = DbUtil.Create(model.host);
             var cul = db.Setting("Culture", "en-US");
@@ -90,23 +90,23 @@ namespace CmsWeb.Areas.Dialog.Models
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
 
             LongRunningOp lop = null;
-            foreach (var pid in pids)
+            foreach (var pid in model.pids)
             {
                 db.Dispose();
                 db = DbUtil.Create(model.host);
-                var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == Id);
-                if (DropDate.HasValue)
-                    om.Drop(db, DropDate.Value);
+                var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == model.Id);
+                if (model.DropDate.HasValue)
+                    om.Drop(db, model.DropDate.Value);
                 else
                     om.Drop(db);
                 db.SubmitChanges();
-                if (RemoveFromEnrollmentHistory)
-                    db.ExecuteCommand("DELETE dbo.EnrollmentTransaction WHERE PeopleId = {0} AND OrganizationId = {1}", pid, Id);
+                if (model.RemoveFromEnrollmentHistory)
+                    db.ExecuteCommand("DELETE dbo.EnrollmentTransaction WHERE PeopleId = {0} AND OrganizationId = {1}", pid, model.Id);
                 lop = FetchLongRunningOp(db, model.Id, Op);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
                 db.SubmitChanges();
-                db.LogActivity($"Org{Group} Drop{(RemoveFromEnrollmentHistory ? " w/history" : "")}", Id, pid, UserId);
+                db.LogActivity($"Org{model.Group} Drop{(model.RemoveFromEnrollmentHistory ? " w/history" : "")}", model.Id, pid, uid: model.UserId);
             }
             // finished
             lop = FetchLongRunningOp(db, model.Id, Op);
