@@ -4,9 +4,12 @@
   var manageemails = User.IsInRole("ManageEmails");
   var managetrans = User.IsInRole("ManageTransactions");
   var edit = User.IsInRole("Edit");
+  var sendsms = User.IsInRole("SendSms");
   var manageResources = User.IsInRole("ManageResources");
   var design = User.IsInRole("Design");
   var finance = User.IsInRole("Finance") && ((string) Session["testnofinance"]) != "true";
+  const bool financetrue = true;
+  const bool financefalse = false;
 }
 @if (admin || manageemails || managetrans || edit || design || finance || manageResources)
 {
@@ -43,12 +46,12 @@
         </li>
         <li class="col-sm-4">
           <ul>
-            @AdminList2(admin, design, managetrans, edit, manageemails, finance: true, developer: developer, manageResources: manageResources)
+            @AdminList2(admin, design, managetrans, edit, manageemails, financetrue, developer, manageResources, sendsms)
           </ul>
         </li>
         <li class="col-sm-4">
           <ul>
-            @AdminList1(admin, design, managetrans, edit, manageemails: manageemails, finance: true, developer: developer)
+            @AdminList1(admin, design, managetrans, edit, manageemails, financetrue, developer)
           </ul>
         </li>
       </ul>
@@ -61,12 +64,12 @@
       <ul id="admin-menu-col-2" class="dropdown-menu dropdown-menu-large row">
         <li class="col-sm-6">
           <ul>
-            @AdminList2(admin, design, managetrans, edit, manageemails, finance: false, developer: developer, manageResources: manageResources)
+            @AdminList2(admin, design, managetrans, edit, manageemails, financefalse, developer, manageResources, sendsms)
           </ul>
         </li>
         <li class="col-sm-6">
           <ul>
-            @AdminList1(admin, design, managetrans, edit, manageemails, finance: false, developer: developer)
+            @AdminList1(admin, design, managetrans, edit, manageemails, financefalse, developer)
           </ul>
         </li>
       </ul>
@@ -113,7 +116,7 @@
   @Helper.LiAnchorLink("Registration Summary", "/Reports/RegistrationSummary?days=90", admin)
 }
 
-@helper AdminList2(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer, bool manageResources)
+@helper AdminList2(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer, bool manageResources, bool sendsms)
 {
   if (admin)
   {
@@ -122,11 +125,11 @@
     @Helper.LiAnchorLink("Programs", "/Programs/")
     @Helper.LiAnchorLink("Promotion", "/Promotion/")
   }
-  if (admin || manageemails || managetrans || finance)
+  if (admin || manageemails || managetrans || finance || sendsms)
   {
     <li class="dropdown-header dropdown-sub-header">Communication</li>
     @Helper.LiAnchorLink("Emails", "/Emails/", admin || manageemails || finance)
-    @Helper.LiAnchorLink("SMS Messages", "/SMS/List/", admin)
+    @Helper.LiAnchorLink("SMS Messages", "/SMS/List/", admin || sendsms)
     @Helper.LiAnchorLink("Transactions", "/Transactions/", admin || managetrans || finance)
     @Helper.LiAnchorLink("User Email Delegation", "/UsersCanEmailFor/", admin || manageemails)
   }
