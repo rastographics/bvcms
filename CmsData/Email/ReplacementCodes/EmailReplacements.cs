@@ -40,13 +40,9 @@ namespace CmsData
             + MatchVolReqLinkRe + "|"
             + MatchVolSubLinkRe + "|"
             + MatchVolSubLinkRe;
-        private const string Pattern1 = 
-            "(<style.*?</style>|"
-            + MatchCodeRe + "|"
-            + MatchRes + "|"
-            + MatchDropFromOrgTagRe + ")";
 
-        private const string Pattern2 = "({{[^}}]*?}}|" + MatchRes + ")";
+        private const string Pattern1 = "(<style.*?</style>|" + MatchCodeRe + "|" + MatchRes + "|" + MatchDropFromOrgTagRe + ")";
+        private const string Pattern2 = "(" + MatchCodeRe + "|" + MatchRes + ")";
 
         public EmailReplacements(CMSDataContext callingContext, string text, MailAddress from, int? queueid = null, bool noPremailer = false, DynamicData pythondata = null)
         {
@@ -91,7 +87,7 @@ namespace CmsData
 
             var text = doc.Text;
 
-            stringlist = Regex.Split(text, Pattern1, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
+            stringlist = Regex.Split(text, Pattern2, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
         }
 
         public EmailReplacements(CMSDataContext callingContext)
@@ -207,7 +203,7 @@ namespace CmsData
 
         public static List<string> TextReplacementsList(string text)
         {
-            var stringlist = Regex.Split(text, Pattern1, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
+            var stringlist = Regex.Split(text, Pattern2, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
             var codes = new List<string>();
             for (var i = 1; i < stringlist.Length; i += 2)
                 if (!codes.Contains(stringlist[i]))
