@@ -62,7 +62,7 @@ namespace CmsWeb.Areas.Reports.Models
         public static IEnumerable<PersonMemberInfo> FetchOrgMembers(int orgid, int[] groups)
         {
             if (groups == null)
-                groups = new int[] {0};
+                groups = new int[] { 0 };
             var tagownerid = Util2.CurrentTagOwnerId;
             var q = from om in DbUtil.Db.OrganizationMembers
                     where om.OrganizationId == orgid
@@ -213,6 +213,15 @@ namespace CmsWeb.Areas.Reports.Models
                         Age = p.Age.ToString(),
                         LastAttended = p.LastAttended,
                     };
+            return q;
+        }
+        public static IEnumerable<Person> FetchVisitorPeople(int orgid, DateTime meetingDate, bool noCurrentMembers)
+        {
+            var q = from vp in DbUtil.Db.OrgVisitorsAsOfDate(orgid, meetingDate, noCurrentMembers)
+                    join p in DbUtil.Db.People on vp.PeopleId equals p.PeopleId into peeps
+                    from p in peeps
+                    orderby p.LastName, p.FamilyId, p.PreferredName
+                    select p;
             return q;
         }
 

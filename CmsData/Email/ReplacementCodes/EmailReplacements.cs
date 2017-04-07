@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
@@ -7,6 +8,7 @@ using CmsData.Email.ReplacementCodes;
 using Novacode;
 using UtilityExtensions;
 using CmsData.View;
+using Community.CsharpSqlite;
 
 namespace CmsData
 {
@@ -25,7 +27,26 @@ namespace CmsData
         private OrgInfo orgInfos;
         private OrgInfo OrgInfos => orgInfos ?? (orgInfos = new OrgInfo(db));
         private const string MatchCodeRe = "(?<!{){(?!{)[^}]*?}";
-        private DynamicData pythonData;
+        private readonly DynamicData pythonData;
+
+        private const string MatchRes =
+            MatchRegisterLinkRe + "|"
+            + MatchRegisterTagRe + "|"
+            + MatchRsvpLinkRe + "|"
+            + MatchRegisterLinkHrefRe + "|"
+            + MatchSendLinkRe + "|"
+            + MatchSupportLinkRe + "|"
+            + MatchMasterLinkRe + "|"
+            + MatchVolReqLinkRe + "|"
+            + MatchVolSubLinkRe + "|"
+            + MatchVolSubLinkRe;
+        private const string Pattern1 = 
+            "(<style.*?</style>|"
+            + MatchCodeRe + "|"
+            + MatchRes + "|"
+            + MatchDropFromOrgTagRe + ")";
+
+        private const string Pattern2 = "({{[^}}]*?}}|" + MatchRes + ")";
 
         public EmailReplacements(CMSDataContext callingContext, string text, MailAddress from, int? queueid = null, bool noPremailer = false, DynamicData pythondata = null)
         {
@@ -40,11 +61,6 @@ namespace CmsData
 
             if (text == null)
                 text = "(no content)";
-
-
-            var pattern =
-                $@"(<style.*?</style>|{MatchCodeRe}|{MatchRegisterLinkRe}|{MatchRegisterTagRe}|{MatchRsvpLinkRe}|{MatchRegisterLinkHrefRe}|{MatchDropFromOrgTagRe}|
-                    {MatchSendLinkRe}|{MatchSupportLinkRe}|{MatchMasterLinkRe}|{MatchVolReqLinkRe}|{MatchVolReqLinkRe}|{MatchVolSubLinkRe}|{MatchVoteLinkRe})";
 
             // we do the InsertDrafts replacement code here so that it is only inserted once before the replacements
             // and so that there can be replacement codes in the draft itself and they will get replaced.
@@ -62,7 +78,7 @@ namespace CmsData
                     // ignore Premailer exceptions
                 }
 
-            stringlist = Regex.Split(text, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
+            stringlist = Regex.Split(text, Pattern1, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
         }
 
         public EmailReplacements(CMSDataContext callingContext, DocX doc)
@@ -75,11 +91,7 @@ namespace CmsData
 
             var text = doc.Text;
 
-            var pattern =
-                $@"({{[^}}]*?}}|{MatchRegisterLinkRe}|{MatchRegisterTagRe}|{MatchRsvpLinkRe}|{MatchRegisterLinkHrefRe}|
-                    {MatchSendLinkRe}|{MatchSupportLinkRe}|{MatchMasterLinkRe}|{MatchVolReqLinkRe}|{MatchVolReqLinkRe}|{MatchVolSubLinkRe}|{MatchVoteLinkRe})";
-
-            stringlist = Regex.Split(text, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
+            stringlist = Regex.Split(text, Pattern1, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
         }
 
         public EmailReplacements(CMSDataContext callingContext)
@@ -178,18 +190,40 @@ namespace CmsData
 
         private DocX DocXDocument { get; set; }
 
-        public DocX DocXReplacements(Person p)
+        public DocX DocXReplacements(Person p, int? orgId = null)
         {
             person = p;
+            var eqto = new EmailQueueTo() {OrgId = orgId, PeopleId = p.PeopleId};
             var texta = new List<string>(stringlist);
             var dict = new Dictionary<string, string>();
             for (var i = 1; i < texta.Count; i += 2)
                 if (!dict.ContainsKey(texta[i]))
-                    dict.Add(texta[i], DoReplaceCode(texta[i]));
+                    dict.Add(texta[i], DoReplaceCode(texta[i], eqto));
             var doc = DocXDocument.Copy();
             foreach (var d in dict)
                 doc.ReplaceText(d.Key, Util.PickFirst(d.Value, "____"));
             return doc;
+        }
+
+        public static List<string> TextReplacementsList(string text)
+        {
+            var stringlist = Regex.Split(text, Pattern1, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
+            var codes = new List<string>();
+            for (var i = 1; i < stringlist.Length; i += 2)
+                if (!codes.Contains(stringlist[i]))
+                    codes.Add(stringlist[i]);
+            return codes;
+        }
+        public Dictionary<string, string> DocXReplacementsDictionary(Person p, int? orgid = null)
+        {
+            person = p;
+            var eqto = new EmailQueueTo() {OrgId = orgid, PeopleId = p?.PeopleId ?? 0};
+            var texta = new List<string>(stringlist);
+            var dict = new Dictionary<string, string>();
+            for (var i = 1; i < texta.Count; i += 2)
+                if (!dict.ContainsKey(texta[i]))
+                    dict.Add(texta[i], DoReplaceCode(texta[i], eqto));
+            return dict;
         }
         public string RenderCode(string code, Person p, int? orgId = null)
         {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Web.UI.WebControls.WebParts;
 using UtilityExtensions;
 
 namespace CmsData
@@ -82,7 +83,9 @@ namespace CmsData
                     break;
 
                 case "{first}":
-                    return person.PreferredName.Contains("?") || person.PreferredName.Contains("unknown", true) ? "" : person.PreferredName;
+                    if(person != null)
+                        return person.PreferredName.Contains("?") || person.PreferredName.Contains("unknown", true) ? "" : person.PreferredName;
+                    break;
 
                 case "{fromemail}":
                     return from.Address;
@@ -91,7 +94,9 @@ namespace CmsData
                     return person.HomePhone.HasValue() ? person.HomePhone.FmtFone() : "no homephone on record";
 
                 case "{last}":
-                    return person.LastName;
+                    if(person != null)
+                        return person.LastName;
+                    break;
 
                 case "{name}":
                     return person.Name.Contains("?") || person.Name.Contains("unknown", true) ? "" : person.Name;
@@ -110,6 +115,8 @@ namespace CmsData
 
                 case "{orgname}":
                 case "{org}":
+                    return OrgInfos.Name(emailqueueto?.OrgId);
+                case "{orgid}":
                     return OrgInfos.Name(emailqueueto?.OrgId);
 
                 case "{orgmembercount}":
@@ -210,6 +217,9 @@ namespace CmsData
                     if (RegTextRe.IsMatch(code))
                         return RegTextReplacement(code, eq);
 
+                    if (DateFormattedRe.IsMatch(code))
+                        return DateFormattedReplacement(code);
+
                     if (RegisterLinkRe.IsMatch(code))
                         return RegisterLinkReplacement(code, eq);
 
@@ -242,6 +252,7 @@ namespace CmsData
 
                     if (DropFromOrgTagRe.IsMatch(code))
                         return DropFromOrgTagReplacement(code, eq);
+
                     break;
             }
             return code; // nothing matched

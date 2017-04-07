@@ -664,7 +664,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             DateTime? dt2 = dt.ToDate();
             if (!dt2.HasValue)
                 return Message("no date");
-            var mi = new NewMeetingInfo()
+            var mi = new NewMeetingInfo
             {
                 ByGroup = bygroup > 0,
                 GroupFilterPrefix = sgprefix,
@@ -672,37 +672,33 @@ namespace CmsWeb.Areas.Reports.Controllers
                 HighlightGroup = highlight,
                 MeetingDate = dt2.Value
             };
-            return new RollsheetResult
-            {
-                OrgSearchModel = m,
-                NewMeetingInfo = mi
-            };
+            if (DbUtil.Db.Setting("UsePdfRollsheet"))
+                return new RollsheetResult { OrgSearchModel = m, NewMeetingInfo = mi };
+            return new DocXRollsheetResult { OrgSearchModel = m, NewMeetingInfo = mi };
         }
 
         [HttpPost, Route("RollsheetForOrg/{orgid:int?}")]
         public ActionResult RollsheetForOrg(int? orgid, NewMeetingInfo mi)
         {
-            return new RollsheetResult
-            {
-                orgid = orgid,
-                NewMeetingInfo = mi,
-            };
+            if (DbUtil.Db.Setting("UsePdfRollsheet"))
+                return new RollsheetResult { orgid = orgid, NewMeetingInfo = mi };
+            return new DocXRollsheetResult { orgid = orgid, NewMeetingInfo = mi };
         }
 
         [HttpGet, Route("RollsheetForMeeting/{meetingid:int}")]
         public ActionResult RollsheetForMeeting(int meetingid)
         {
-            return new RollsheetResult { meetingid = meetingid };
+            if (DbUtil.Db.Setting("UsePdfRollsheet"))
+                return new RollsheetResult { meetingid = meetingid };
+            return new DocXRollsheetResult { meetingid = meetingid };
         }
 
         [HttpPost]
         public ActionResult Rollsheets(NewMeetingInfo mi, OrgSearchModel m)
         {
-            return new RollsheetResult
-            {
-                OrgSearchModel = m,
-                NewMeetingInfo = mi
-            };
+            if (DbUtil.Db.Setting("UsePdfRollsheet"))
+                return new RollsheetResult { OrgSearchModel = m, NewMeetingInfo = mi };
+            return new DocXRollsheetResult { OrgSearchModel = m, NewMeetingInfo = mi };
         }
 
         [HttpGet]
