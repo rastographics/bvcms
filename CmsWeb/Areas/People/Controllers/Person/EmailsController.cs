@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.People.Models;
+using RestSharp;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
@@ -51,25 +52,6 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult FailedEmails(FailedMailModel m)
         {
             return View("Emails/Failed", m);
-        }
-
-        [HttpPost, Route("EmailUnblock"), Authorize(Roles = "Admin")]
-        public ActionResult Unblock(string email)
-        {
-            var deletebounce = ConfigurationManager.AppSettings["DeleteBounce"] + email;
-            var wc = new WebClient();
-            var ret = wc.DownloadString(deletebounce);
-            return Content(ret);
-        }
-
-        [HttpPost, Route("EmailUnspam"), Authorize(Roles = "Developer")]
-        public ActionResult Unspam(string email)
-        {
-            var deletespam = ConfigurationManager.AppSettings["DeleteSpamReport"] + email;
-            var wc = new WebClient();
-            var ret = wc.DownloadString(deletespam);
-            DbUtil.Db.SpamReporterRemove(email);
-            return Content(ret);
         }
 
         [HttpPost]

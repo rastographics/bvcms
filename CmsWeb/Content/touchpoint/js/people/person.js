@@ -559,7 +559,7 @@
         },
         function () {
             $.post("/Manage/Emails/Unblock", { email: address }, function (ret) {
-                swal({ title: "Email unblocked!", type: "success" });
+                swal({ title: ret, type: "success" });
             });
         });
     });
@@ -576,7 +576,7 @@
         },
         function () {
             $.post("/Manage/Emails/Unspam", { email: address }, function (ret) {
-                swal({ title: "Email unspammed!", type: "success" });
+                swal({ title: ret, type: "success" });
             });
         });
     });

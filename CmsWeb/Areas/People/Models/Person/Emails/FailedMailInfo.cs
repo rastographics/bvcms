@@ -30,10 +30,8 @@ namespace CmsWeb.Areas.People.Models
                     return false;
                 if (eventx == "dropped" && reason.Contains("spam", ignoreCase: true))
                     return false;
-                var deletebounce = ConfigurationManager.AppSettings["DeleteBounce"];
-                if (!deletebounce.HasValue())
-                    return false;
-                return true;
+                var apikey = ConfigurationManager.AppSettings["SendGridApiKey"];
+                return apikey.HasValue();
             }
         }
         public bool canunspam
@@ -46,10 +44,8 @@ namespace CmsWeb.Areas.People.Models
                     return false;
                 if (eventx == "dropped" && !reason.Contains("spam", ignoreCase: true))
                     return false;
-                var deletespam = ConfigurationManager.AppSettings["DeleteSpamReport"];
-                if (!deletespam.HasValue())
-                    return false;
-                return true;
+                var apikey = ConfigurationManager.AppSettings["SendGridApiKey"];
+                return apikey.HasValue();
             }
         }
     }
