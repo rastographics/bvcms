@@ -205,6 +205,8 @@ namespace CmsWeb.Models
             target.UpdateValue(psb, "WorkPhone", pi[UseWorkPhone].WorkPhone.GetDigits());
             target.UpdateValue(psb, "EmailAddress", pi[UseEmailAddress].EmailAddress);
             target.UpdateValue(psb, "EmailAddress2", pi[UseEmailAddress2].EmailAddress2);
+            if(!target.SendEmailAddress2.HasValue && pi[UseEmailAddress2].EmailAddress2.HasValue())
+                target.UpdateValue(psb, "SendEmailAddress2", true);
             target.UpdateValue(psb, "SuffixCode", pi[UseSuffixCode].SuffixCode);
             target.UpdateValue(psb, "MiddleName", pi[UseMiddleName].MiddleName);
 
