@@ -96,7 +96,7 @@ namespace CmsWeb.Areas.Reports.Models
                     return from m in list
                            orderby m.Leader, m.Time, m.Division, m.Organization
                            select m;
-                case "Time":
+                case "Meeting Time":
                     return from m in list
                            orderby m.Time, m.Division, m.Organization
                            select m;
