@@ -434,6 +434,7 @@ Creating_dbo_FirstNick.sql
 Creating_dbo_AddRoleToUser.sql
 Creating_dbo_FirstName2.sql
 Creating_dbo_Age.sql
+Creating_dbo_Contributions0.sql
 Creating_dbo_AddUserFromOtherId.sql
 Creating_dbo_VisitsAbsents.sql
 Creating_dbo_FirstName.sql
@@ -657,7 +658,6 @@ Creating_triggerdbo_updPeople_dbo_People.sql
 Creating_dbo_ComputePositionInFamily.sql
 Creating_dbo_GetPeopleIdFromACS.sql
 Creating_dbo_BundleList.sql
-Creating_dbo_Contributions0.sql
 Creating_dbo_StatusFlagsAll.sql
 Creating_dbo_Pledges0.sql
 Creating_dbo_LastChanged.sql
