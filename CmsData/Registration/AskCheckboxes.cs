@@ -168,7 +168,7 @@ For each checkbox, you can specify the following:
             public bool IsSmallGroupFilled(IEnumerable<string> smallgroups)
             {
                 if (!(Limit > 0)) return false;
-                var cnt = smallgroups.Count(mm => mm.trim() == SmallGroup.trim());
+                var cnt = smallgroups.Count(mm => mm.trim().Equal(SmallGroup.trim()));
                 return cnt >= Limit;
             }
         }
