@@ -10,7 +10,7 @@ using OfficeOpenXml;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
-	[Authorize(Roles = "Admin")]
+	[Authorize(Roles="Developer,UploadPeople")]
     [RouteArea("Manage", AreaPrefix= "UploadPeople"), Route("{action=index}")]
 	public class UploadPeopleController : CmsStaffController
 	{

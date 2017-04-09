@@ -10,7 +10,7 @@ using OfficeOpenXml;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
-	[Authorize(Roles = "Admin")]
+	[Authorize(Roles="Developer,UploadBridgePlus")]
     [RouteArea("Manage", AreaPrefix= "UploadExcelIps"), Route("{action=index}")]
 	public class UploadExcelIpsController : CmsStaffController
 	{
