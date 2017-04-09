@@ -7,8 +7,17 @@
     <div class="col-md-8">
         <div class="box box-responsive">
             <div class="box-content">
-                <form method="POST" action="/UploadPeople">
-                    @Html.TextArea("text", ViewData["text"].ToString(), new { rows = "30", cols = "1000", wrap = "off", @class="form-control" })
+                <form action="/UploadPeople" method="post" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <div class="form-group">
+                                <label for="file" class="control-label">File</label>
+                                <input type="file" id="file" name="file" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    @if (User.IsInRole("Developer"))
+                    {
                     <div class="form-group">
                         <div class="checkbox">
                             <label for="noupdate" class="control-label">
@@ -17,6 +26,11 @@
                         </div>
                     </div>
                     <br />
+                    }
+                    else
+                    {
+                      @Html.Hidden("noupdate", true)
+                    }
                     <p>
                         <input type="submit" class="btn btn-primary" value="Submit" />
                     </p>

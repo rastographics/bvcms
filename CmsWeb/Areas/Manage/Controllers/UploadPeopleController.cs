@@ -1,10 +1,12 @@
 using System;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Hosting;
 using CmsWeb.Models;
 using UtilityExtensions;
 using CmsData;
+using OfficeOpenXml;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
@@ -21,13 +23,15 @@ namespace CmsWeb.Areas.Manage.Controllers
 
 		[HttpPost]
 		[ValidateInput(false)]
-		public ActionResult Index(string text, bool noupdate)
-		{
-			string host = Util.Host;
+        public ActionResult Index(HttpPostedFileBase file, bool noupdate)
+        {
+            string host = Util.Host;
 			var runningtotals = new UploadPeopleRun { Started = DateTime.Now, Count = 0, Processed = 0 };
 			DbUtil.Db.UploadPeopleRuns.InsertOnSubmit(runningtotals);
 			DbUtil.Db.SubmitChanges();
 			var pid = Util.UserPeopleId;
+
+		    var package = new ExcelPackage(file.InputStream);
 
             HostingEnvironment.QueueBackgroundWorkItem(ct => 
 			{
@@ -35,7 +39,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 				try
 				{
 					var m = new UploadPeopleModel(host, pid ?? 0, noupdate, testing: true);
-					m.DoUpload(text);
+					m.DoUpload(package);
 					Db.Dispose();
     				Db = DbUtil.Create(host);
 
@@ -44,7 +48,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         			Db.SubmitChanges();
 
 					m = new UploadPeopleModel(host, pid ?? 0, noupdate);
-					m.DoUpload(text);
+					m.DoUpload(package);
 				}
 				catch (Exception ex)
 				{
