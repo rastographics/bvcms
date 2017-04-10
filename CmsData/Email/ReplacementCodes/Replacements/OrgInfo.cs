@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CmsData.Codes;
 
 namespace CmsData.Email.ReplacementCodes
 {
@@ -9,6 +10,7 @@ namespace CmsData.Email.ReplacementCodes
         private class NameCount
         {
             public string Name { get; set; }
+            public int Id { get; set; }
             public string Count { get; set; }
         }
 
@@ -19,6 +21,7 @@ namespace CmsData.Email.ReplacementCodes
 
         public string Name(int? id) => GetOrgInfo(id).Name;
         public string Count(int? id) => GetOrgInfo(id).Count;
+        public string Id(int? id) => GetOrgInfo(id).Id.ToString();
 
         private readonly Dictionary<int, NameCount> orginfos = new Dictionary<int, NameCount>();
 
@@ -36,7 +39,10 @@ namespace CmsData.Email.ReplacementCodes
                         select new NameCount()
                         {
                             Name = i.OrganizationName,
-                            Count = i.OrganizationMembers.Count().ToString()
+                            Id = i.OrganizationId,
+                            Count = i.OrganizationMembers.Count(mm => 
+                                new []{MemberTypeCode.Prospect, MemberTypeCode.InActive}
+                                .Contains(mm.MemberTypeId) == false).ToString()
                         };
                     oi = q.SingleOrDefault();
                     orginfos.Add(oid.Value, oi);
