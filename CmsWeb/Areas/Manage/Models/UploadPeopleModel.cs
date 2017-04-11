@@ -145,7 +145,10 @@ namespace CmsWeb.Models
             UpdateField(p, "LastName", a.Last);
             UpdateField(p, "EmailAddress", a.Email);
             UpdateField(p, "EmailAddress2", a.Email2);
-            UpdateField(p, "DOB", a.Birthday);
+
+            DateTime? dob = GetDate(a.Birthday);
+            string dobstr = dob.FormatDate();
+            UpdateField(p, "DOB", dobstr);
             UpdateField(p, "AltName", a.AltName);
             UpdateField(p, "SuffixCode", a.Suffix);
             UpdateField(p, "MiddleName", a.Middle);
@@ -197,12 +200,14 @@ namespace CmsWeb.Models
                     db.SubmitChanges();
             }
 
-            string dob = GetDate(a.Birthday)?.FormatDate();
+            DateTime? dob = GetDate(a.Birthday);
+            string dobstr = dob.FormatDate();
+
             var p = Person.Add(db, false, f, 10, null,
                 (string)a.First,
                 (string)a.GoesBy,
                 (string)a.Last,
-                dob,
+                dobstr,
                 0, 0, 0, null, Testing);
             p.FixTitle();
 
@@ -212,21 +217,26 @@ namespace CmsWeb.Models
             p.MaidenName = a.MaidenName;
             p.EmployerOther = a.Employer;
             p.OccupationOther = a.Occupation;
-            p.CellPhone = GetDigits(a.CellPhone);
-            p.WorkPhone = GetDigits(a.WorkPhone);
+
             p.EmailAddress = GetStringTrimmed(a.Email);
             p.EmailAddress2 = GetStringTrimmed(a.Email2);
+
+            p.CellPhone = GetDigits(a.CellPhone);
+            p.WorkPhone = GetDigits(a.WorkPhone);
+
+            p.TitleCode = Title(a.Title);
             p.GenderId = Gender(a.Gender);
             p.MaritalStatusId = Marital(a.Marital);
+            p.PositionInFamilyId = Position(a.Position);
+            SetMemberStatus(db, p, a.MemberStatus);
+
             p.WeddingDate = GetDate(a.WeddingDate);
             p.JoinDate = GetDate(a.JoinDate);
             p.DropDate = GetDate(a.DropDate);
             p.BaptismDate = GetDate(a.BaptismDate);
-            p.PositionInFamilyId = Position(a.Position);
-            p.TitleCode = Title(a.Title);
+
             StoreIds(p, a);
 
-            SetMemberStatus(db, p, a.MemberStatus);
             if (!Testing)
             {
                 p.CampusId = Campus(a.Campus);
