@@ -6,10 +6,10 @@
     ViewBag.Title = "Post Bundle";
     ViewBag.PageHeader = $"Contribution Bundle #{Model.id}";
 }
-@Html.Hidden("fundid", Model.bundle.FundId)
+@Html.Hidden("fundid", Model.Bundle.FundId)
 @Html.Hidden("fundispledge", Model.FundName)
 @{
-    var b = Model.bundle;
+    var b = Model.Bundle;
     var bundleTotal = b.TotalCash.GetValueOrDefault() + b.TotalChecks.GetValueOrDefault() + b.TotalEnvelopes.GetValueOrDefault();
     var difference = bundleTotal - Model.TotalItems;
 }
@@ -35,7 +35,7 @@
                                 <dt>Bundle Type</dt>
                                 <dd>@b.BundleHeaderType.Description</dd>
                                 <dt>Default Fund</dt>
-                                <dd><a target="_blank" href="/PostBundle/FundTotals/@Model.id" style="text-decoration: underline;">@Model.FundName (@Model.bundle.FundId)</a></dd>
+                                <dd><a target="_blank" href="/PostBundle/FundTotals/@Model.id" style="text-decoration: underline;">@Model.FundName (@Model.Bundle.FundId)</a></dd>
                             </dl>
                             <dl class="col-sm-6">
                                 <dt>Contribution Date</dt>

@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using CmsData;
-using CmsWeb.Areas.Finance.Controllers;
 using CmsWeb.Models;
-using UtilityExtensions;
 using CmsData.Codes;
 
 namespace CmsWeb.Areas.Finance.Models
 {
     public class BundlesModel : PagerModel2
     {
-        int? _count;
+        int? count;
         public int Count()
         {
-            if (!_count.HasValue)
-                _count = FetchBundles().Count();
-            return _count.Value;
+            if (!count.HasValue)
+                count = FetchBundles().Count();
+            return count.Value;
         }
 
         public BundlesModel()
@@ -24,13 +23,15 @@ namespace CmsWeb.Areas.Finance.Models
             GetCount = Count;
             Sort = "Status";
         }
-        private IQueryable<CmsData.View.BundleList> _bundles;
+        private IQueryable<CmsData.View.BundleList> bundles;
 
         private IQueryable<CmsData.View.BundleList> FetchBundles()
         {
-            if (_bundles == null)
-                _bundles = from b in DbUtil.Db.ViewBundleLists select b;
-            return _bundles;
+            if (bundles == null)
+                bundles = from b in DbUtil.Db.ViewBundleLists select b;
+            if(HttpContext.Current.User.IsInRole("FinanceDataEntry"))
+                return bundles.Where(vv => vv.BundleStatusId == BundleStatusCode.OpenForDataEntry);
+            return bundles;
         }
 
         public IEnumerable<BundleInfo> Bundles()
@@ -51,7 +52,6 @@ namespace CmsWeb.Areas.Finance.Models
                                     FundId = b.FundId,
                                     Fund = b.Fund,
                                     Status = b.Status,
-                                    open = b.Open == 1 
                                 };
             return q3;
         }
@@ -154,6 +154,5 @@ namespace CmsWeb.Areas.Finance.Models
         public int? FundId { get; set; }
         public string Fund { get; set; }
         public string Status { get; set; }
-        public bool open { get; set; }
     }
 }

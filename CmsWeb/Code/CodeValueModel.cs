@@ -33,13 +33,13 @@ namespace CmsWeb.Code
         public List<CodeValueItem> Activities()
         {
             var q = from a in DbUtil.Db.CheckInActivities
-                group a.Activity by a.Activity
+                    group a.Activity by a.Activity
                 into g
-                select new CodeValueItem
-                {
-                    Code = g.Key,
-                    Value = g.Key
-                };
+                    select new CodeValueItem
+                    {
+                        Code = g.Key,
+                        Value = g.Key
+                    };
             var list = q.ToList();
             return list;
         }
@@ -47,21 +47,21 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> AddressTypeCodes()
         {
             return from at in DbUtil.Db.AddressTypes
-                select new CodeValueItem
-                {
-                    Id = at.Id,
-                    Code = at.Code,
-                    Value = at.Description
-                };
+                   select new CodeValueItem
+                   {
+                       Id = at.Id,
+                       Code = at.Code,
+                       Value = at.Description
+                   };
         }
 
         public IEnumerable<CodeValueItem> AdhocExtraValueTypeCodes()
         {
-            yield return new CodeValueItem {Code = "Text", Value = "Text (multi line)"};
-            yield return new CodeValueItem {Code = "Code", Value = "Code"};
-            yield return new CodeValueItem {Code = "Bit", Value = "Checkbox"};
-            yield return new CodeValueItem {Code = "Int", Value = "Integer"};
-            yield return new CodeValueItem {Code = "Date", Value = "Date"};
+            yield return new CodeValueItem { Code = "Text", Value = "Text (multi line)" };
+            yield return new CodeValueItem { Code = "Code", Value = "Code" };
+            yield return new CodeValueItem { Code = "Bit", Value = "Checkbox" };
+            yield return new CodeValueItem { Code = "Int", Value = "Integer" };
+            yield return new CodeValueItem { Code = "Date", Value = "Date" };
         }
 
         public IEnumerable<CodeValueItem> AllCampuses()
@@ -71,12 +71,12 @@ namespace CmsWeb.Code
                 ? qc.OrderBy(cc => cc.Code)
                 : qc.OrderBy(cc => cc.Description);
             return from c in qc
-                select new CodeValueItem
-                {
-                    Id = c.Id,
-                    Code = c.Code,
-                    Value = c.Description
-                };
+                   select new CodeValueItem
+                   {
+                       Id = c.Id,
+                       Code = c.Code,
+                       Value = c.Description
+                   };
         }
 
         public IEnumerable<CodeValueItem> AllCampuses0()
@@ -92,26 +92,26 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> AllOrgDivTags()
         {
             var q = from program in DbUtil.Db.Programs
-                from div in program.Divisions
-                orderby program.Name, div.Name
-                select new CodeValueItem
-                {
-                    Id = div.Id,
-                    Value = $"{program.Name}: {div.Name}"
-                };
+                    from div in program.Divisions
+                    orderby program.Name, div.Name
+                    select new CodeValueItem
+                    {
+                        Id = div.Id,
+                        Value = $"{program.Name}: {div.Name}"
+                    };
             return top.Union(q);
         }
 
         public IEnumerable<DropDownItem> AllOrgDivTags2()
         {
             var q = from program in DbUtil.Db.Programs
-                from div in program.Divisions
-                orderby program.Name, div.Name
-                select new DropDownItem
-                {
-                    Value = $"{program.Id}:{div.Id}",
-                    Text = $"{program.Name}: {div.Name}"
-                };
+                    from div in program.Divisions
+                    orderby program.Name, div.Name
+                    select new DropDownItem
+                    {
+                        Value = $"{program.Id}:{div.Id}",
+                        Text = $"{program.Name}: {div.Name}"
+                    };
             return new[]
             {
                 new DropDownItem
@@ -125,33 +125,33 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> AttendanceTypeCodes()
         {
             return from c in DbUtil.Db.AttendTypes
-                select new CodeValueItem
-                {
-                    Id = c.Id,
-                    Code = c.Code,
-                    Value = c.Description
-                };
+                   select new CodeValueItem
+                   {
+                       Id = c.Id,
+                       Code = c.Code,
+                       Value = c.Description
+                   };
         }
 
         public static IEnumerable<CodeValueItem> AttendCommitmentCodes()
         {
-            yield return new CodeValueItem {Id = AttendCommitmentCode.Attending, Code = "AT", Value = "Attending"};
-            yield return new CodeValueItem {Id = AttendCommitmentCode.FindSub, Code = "FS", Value = "Find Sub"};
-            yield return new CodeValueItem {Id = AttendCommitmentCode.SubFound, Code = "SF", Value = "Sub Found"};
-            yield return new CodeValueItem {Id = AttendCommitmentCode.Substitute, Code = "SB", Value = "Substitute"};
-            yield return new CodeValueItem {Id = AttendCommitmentCode.Regrets, Code = "RG", Value = "Regrets"};
+            yield return new CodeValueItem { Id = AttendCommitmentCode.Attending, Code = "AT", Value = "Attending" };
+            yield return new CodeValueItem { Id = AttendCommitmentCode.FindSub, Code = "FS", Value = "Find Sub" };
+            yield return new CodeValueItem { Id = AttendCommitmentCode.SubFound, Code = "SF", Value = "Sub Found" };
+            yield return new CodeValueItem { Id = AttendCommitmentCode.Substitute, Code = "SB", Value = "Substitute" };
+            yield return new CodeValueItem { Id = AttendCommitmentCode.Regrets, Code = "RG", Value = "Regrets" };
         }
 
         public static IEnumerable<CodeValueItem> AttendCredits()
         {
             return from ms in DbUtil.Db.AttendCredits
-                orderby ms.Id
-                select new CodeValueItem
-                {
-                    Id = ms.Id,
-                    Code = ms.Code,
-                    Value = ms.Description
-                };
+                   orderby ms.Id
+                   select new CodeValueItem
+                   {
+                       Id = ms.Id,
+                       Code = ms.Code,
+                       Value = ms.Description
+                   };
         }
 
         public List<CodeValueItem> BackgroundStatuses()
@@ -164,7 +164,7 @@ namespace CmsWeb.Code
                     Code = i.ToString(),
                     Value = ProtectMyMinistryHelper.STATUSES[i]
                 });
-            list.Insert(0, new CodeValueItem {Id = 99, Code = "99", Value = "(not specified)"});
+            list.Insert(0, new CodeValueItem { Id = 99, Code = "99", Value = "(not specified)" });
             return list;
         }
 
@@ -182,12 +182,12 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> BundleHeaderTypes()
         {
             return from ms in DbUtil.Db.BundleHeaderTypes
-                select new CodeValueItem
-                {
-                    Id = ms.Id,
-                    Code = ms.Code,
-                    Value = ms.Description
-                };
+                   select new CodeValueItem
+                   {
+                       Id = ms.Id,
+                       Code = ms.Code,
+                       Value = ms.Description
+                   };
         }
 
         public IEnumerable<CodeValueItem> BundleHeaderTypes0()
@@ -195,50 +195,52 @@ namespace CmsWeb.Code
             return BundleHeaderTypes().AddNotSpecified();
         }
 
-        public IEnumerable<CodeValueItem> BundleStatusTypes()
+        public static IEnumerable<CodeValueItem> BundleStatusTypes()
         {
-            return from ms in DbUtil.Db.BundleStatusTypes
-                select new CodeValueItem
-                {
-                    Id = ms.Id,
-                    Code = ms.Code,
-                    Value = ms.Description
-                };
+            return from bs in DbUtil.Db.BundleStatusTypes
+                   let hasDataEntryRole = DbUtil.Db.Roles.Any(rr => rr.RoleName == "FinanceDataEntry")
+                   where bs.Id < 2 || hasDataEntryRole
+                   select new CodeValueItem
+                   {
+                       Id = bs.Id,
+                       Code = bs.Code,
+                       Value = bs.Description
+                   };
         }
 
         public IEnumerable<CodeValueItem> ContactReasonCodes()
         {
             return from c in DbUtil.Db.ContactReasons
-                orderby c.Description.StartsWith("-") ? "Z" + c.Description : c.Description
-                select new CodeValueItem
-                {
-                    Id = c.Id,
-                    Code = c.Code,
-                    Value = c.Description
-                };
+                   orderby c.Description.StartsWith("-") ? "Z" + c.Description : c.Description
+                   select new CodeValueItem
+                   {
+                       Id = c.Id,
+                       Code = c.Code,
+                       Value = c.Description
+                   };
         }
 
         public IEnumerable<CodeValueItem> ContactTypeCodes()
         {
             return from c in DbUtil.Db.ContactTypes
-                orderby c.Description.StartsWith("-") ? "Z" + c.Description : c.Description
-                select new CodeValueItem
-                {
-                    Id = c.Id,
-                    Code = c.Code,
-                    Value = c.Description
-                };
+                   orderby c.Description.StartsWith("-") ? "Z" + c.Description : c.Description
+                   select new CodeValueItem
+                   {
+                       Id = c.Id,
+                       Code = c.Code,
+                       Value = c.Description
+                   };
         }
 
         public IEnumerable<CodeValueItem> ContributionStatuses()
         {
             return from ms in DbUtil.Db.ContributionStatuses
-                select new CodeValueItem
-                {
-                    Id = ms.Id,
-                    Code = ms.Code,
-                    Value = ms.Description
-                };
+                   select new CodeValueItem
+                   {
+                       Id = ms.Id,
+                       Code = ms.Code,
+                       Value = ms.Description
+                   };
         }
 
         public IEnumerable<CodeValueItem> ContributionStatuses99()
@@ -249,12 +251,12 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> ContributionTypes()
         {
             return from ms in DbUtil.Db.ContributionTypes
-                select new CodeValueItem
-                {
-                    Id = ms.Id,
-                    Code = ms.Code,
-                    Value = ms.Description
-                };
+                   select new CodeValueItem
+                   {
+                       Id = ms.Id,
+                       Code = ms.Code,
+                       Value = ms.Description
+                   };
         }
 
         public IEnumerable<CodeValueItem> ContributionTypes0()
@@ -271,16 +273,16 @@ namespace CmsWeb.Code
             switch (valuefield)
             {
                 case "IdCode":
-                    list2 = list.Select(c => new SelectListItem {Text = c.Value, Value = c.IdCode}).ToList();
+                    list2 = list.Select(c => new SelectListItem { Text = c.Value, Value = c.IdCode }).ToList();
                     break;
                 case "Id":
-                    list2 = list.Select(c => new SelectListItem {Text = c.Value, Value = c.Id.ToString()}).ToList();
+                    list2 = list.Select(c => new SelectListItem { Text = c.Value, Value = c.Id.ToString() }).ToList();
                     break;
                 case "Code":
-                    list2 = list.Select(c => new SelectListItem {Text = c.Value, Value = c.Code}).ToList();
+                    list2 = list.Select(c => new SelectListItem { Text = c.Value, Value = c.Code }).ToList();
                     break;
                 default:
-                    list2 = list.Select(c => new SelectListItem {Text = c.Value, Value = c.Value}).ToList();
+                    list2 = list.Select(c => new SelectListItem { Text = c.Value, Value = c.Value }).ToList();
                     break;
             }
             if (list2.Count > 0)
@@ -336,81 +338,81 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> Employers()
         {
             return from p in DbUtil.Db.People
-                group p by p.EmployerOther
+                   group p by p.EmployerOther
                 into g
-                orderby g.Key
-                select new CodeValueItem
-                {
-                    Value = g.Key
-                };
+                   orderby g.Key
+                   select new CodeValueItem
+                   {
+                       Value = g.Key
+                   };
         }
 
         public IEnumerable<CodeValueItem> EntryPoints()
         {
             return from ms in DbUtil.Db.EntryPoints
-                orderby ms.Description
-                select new CodeValueItem
-                {
-                    Id = ms.Id,
-                    Code = ms.Code,
-                    Value = ms.Description
-                };
+                   orderby ms.Description
+                   select new CodeValueItem
+                   {
+                       Id = ms.Id,
+                       Code = ms.Code,
+                       Value = ms.Description
+                   };
         }
 
         public IEnumerable<CodeValueItem> ExtraValueTypeCodes()
         {
-            yield return new CodeValueItem {Code = "Header", Value = "Header"};
-            yield return new CodeValueItem {Code = "Link", Value = "Link"};
-            yield return new CodeValueItem {Code = "Text", Value = "Text (single line)"};
-            yield return new CodeValueItem {Code = "Text2", Value = "Text (multi line)"};
-            yield return new CodeValueItem {Code = "Code", Value = "Dropdown"};
-            yield return new CodeValueItem {Code = "Bit", Value = "Checkbox"};
-            yield return new CodeValueItem {Code = "Bits", Value = "Checkboxes"};
-            yield return new CodeValueItem {Code = "Int", Value = "Integer"};
-            yield return new CodeValueItem {Code = "Date", Value = "Date"};
-            yield return new CodeValueItem {Code = "Data", Value = "Data"};
+            yield return new CodeValueItem { Code = "Header", Value = "Header" };
+            yield return new CodeValueItem { Code = "Link", Value = "Link" };
+            yield return new CodeValueItem { Code = "Text", Value = "Text (single line)" };
+            yield return new CodeValueItem { Code = "Text2", Value = "Text (multi line)" };
+            yield return new CodeValueItem { Code = "Code", Value = "Dropdown" };
+            yield return new CodeValueItem { Code = "Bit", Value = "Checkbox" };
+            yield return new CodeValueItem { Code = "Bits", Value = "Checkboxes" };
+            yield return new CodeValueItem { Code = "Int", Value = "Integer" };
+            yield return new CodeValueItem { Code = "Date", Value = "Date" };
+            yield return new CodeValueItem { Code = "Data", Value = "Data" };
         }
 
         public IEnumerable<CodeValueItem> FamilyPositionCodes()
         {
             return from ms in DbUtil.Db.FamilyPositions
-                select new CodeValueItem
-                {
-                    Id = ms.Id,
-                    Code = ms.Code,
-                    Value = ms.Description
-                };
+                   select new CodeValueItem
+                   {
+                       Id = ms.Id,
+                       Code = ms.Code,
+                       Value = ms.Description
+                   };
         }
 
         public IEnumerable<CodeValueItem> Funds()
         {
             var q = from f in DbUtil.Db.ContributionFunds
-                where f.FundStatusId == 1
-                orderby f.FundId
-                select new CodeValueItem
-                {
-                    Id = f.FundId,
-                    Value = f.FundName
-                };
+                    where f.FundStatusId == 1
+                    orderby f.FundId
+                    select new CodeValueItem
+                    {
+                        Id = f.FundId,
+                        Value = f.FundName
+                    };
             var list = q.ToList();
-            list.Insert(0, new CodeValueItem {Id = 0, Value = "(not specified)"});
+            list.Insert(0, new CodeValueItem { Id = 0, Value = "(not specified)" });
             return list;
         }
 
         public IEnumerable<CodeValueItem> GenderCodes()
         {
             return from ms in DbUtil.Db.Genders
-                select new CodeValueItem
-                {
-                    Id = ms.Id,
-                    Code = ms.Code,
-                    Value = ms.Description
-                };
+                   select new CodeValueItem
+                   {
+                       Id = ms.Id,
+                       Code = ms.Code,
+                       Value = ms.Description
+                   };
         }
 
         public List<CodeValueItem> GenderCodesWithUnspecified()
         {
-            var u = new CodeValueItem {Id = 99, Code = "99", Value = "(not specified)"};
+            var u = new CodeValueItem { Id = 99, Code = "99", Value = "(not specified)" };
             var list = GenderCodes().ToList();
             list.Insert(0, u);
             return list;
@@ -419,11 +421,11 @@ namespace CmsWeb.Code
         public static IEnumerable<CodeValueItem> GetCountryList()
         {
             return from c in DbUtil.Db.Countries
-                select new CodeValueItem
-                {
-                    Code = c.Code,
-                    Value = c.Description
-                };
+                   select new CodeValueItem
+                   {
+                       Code = c.Code,
+                       Value = c.Description
+                   };
         }
 
         //--------------------------------------------------
@@ -432,29 +434,29 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> GetOrganizationList(int DivId)
         {
             return from ot in DbUtil.Db.DivOrgs
-                where (ot.DivId == DivId)
-                      && ((SqlMethods.DateDiffMonth(ot.Organization.OrganizationClosedDate, Util.Now) < 14)
-                          || (ot.Organization.OrganizationStatusId == 30))
-                orderby ot.Organization.OrganizationStatusId, ot.Organization.OrganizationName
-                select new CodeValueItem
-                {
-                    Id = ot.OrgId,
-                    Value = Organization.FormatOrgName(ot.Organization.OrganizationName,
-                        ot.Organization.LeaderName, ot.Organization.Location)
-                };
+                   where (ot.DivId == DivId)
+                         && ((SqlMethods.DateDiffMonth(ot.Organization.OrganizationClosedDate, Util.Now) < 14)
+                             || (ot.Organization.OrganizationStatusId == 30))
+                   orderby ot.Organization.OrganizationStatusId, ot.Organization.OrganizationName
+                   select new CodeValueItem
+                   {
+                       Id = ot.OrgId,
+                       Value = Organization.FormatOrgName(ot.Organization.OrganizationName,
+                           ot.Organization.LeaderName, ot.Organization.Location)
+                   };
         }
 
         public static List<CodeValueItem> GetStateList()
         {
             var q = from s in DbUtil.Db.StateLookups
-                orderby s.StateCode
-                select new CodeValueItem
-                {
-                    Code = s.StateCode,
-                    Value = s.StateCode + " - " + s.StateName
-                };
+                    orderby s.StateCode
+                    select new CodeValueItem
+                    {
+                        Code = s.StateCode,
+                        Value = s.StateCode + " - " + s.StateName
+                    };
             var list = q.ToList();
-            list.Insert(0, new CodeValueItem {Code = "", Value = "(not specified)"});
+            list.Insert(0, new CodeValueItem { Code = "", Value = "(not specified)" });
             return list;
         }
 
@@ -462,43 +464,43 @@ namespace CmsWeb.Code
         public List<CodeValueItem> GetStateListUnknown()
         {
             var list = GetStateList().ToList();
-            list.Insert(1, new CodeValueItem {Code = "na", Value = "(Unknown)"});
+            list.Insert(1, new CodeValueItem { Code = "na", Value = "(Unknown)" });
             return list;
         }
 
         public IEnumerable<CodeValueItem> InterestPoints()
         {
             return from ms in DbUtil.Db.InterestPoints
-                select new CodeValueItem
-                {
-                    Id = ms.Id,
-                    Code = ms.Code,
-                    Value = ms.Description
-                };
+                   select new CodeValueItem
+                   {
+                       Id = ms.Id,
+                       Code = ms.Code,
+                       Value = ms.Description
+                   };
         }
 
         public List<CodeValueItem> LetterStatusCodes()
         {
             var q = from ms in DbUtil.Db.MemberLetterStatuses
-                orderby ms.Description
-                select new CodeValueItem
-                {
-                    Id = ms.Id,
-                    Code = ms.Code,
-                    Value = ms.Description
-                };
+                    orderby ms.Description
+                    select new CodeValueItem
+                    {
+                        Id = ms.Id,
+                        Code = ms.Code,
+                        Value = ms.Description
+                    };
             return q.ToList();
         }
 
         public IEnumerable<CodeValueItem> MaritalStatusCodes()
         {
             return from ms in DbUtil.Db.MaritalStatuses
-                select new CodeValueItem
-                {
-                    Id = ms.Id,
-                    Code = ms.Code,
-                    Value = ms.Description
-                };
+                   select new CodeValueItem
+                   {
+                       Id = ms.Id,
+                       Code = ms.Code,
+                       Value = ms.Description
+                   };
         }
 
         public IEnumerable<CodeValueItem> MaritalStatusCodes99()
@@ -509,12 +511,12 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> MemberStatusCodes()
         {
             return from ms in DbUtil.Db.MemberStatuses
-                select new CodeValueItem
-                {
-                    Id = ms.Id,
-                    Code = ms.Code,
-                    Value = ms.Description
-                };
+                   select new CodeValueItem
+                   {
+                       Id = ms.Id,
+                       Code = ms.Code,
+                       Value = ms.Description
+                   };
         }
 
         public IEnumerable<CodeValueItem> MemberStatusCodes0()
@@ -525,73 +527,73 @@ namespace CmsWeb.Code
         public static IEnumerable<CodeValueItem> MemberTypeCodes()
         {
             var list = MemberTypeCodes2();
-            return list.Select(c => new CodeValueItem {Code = c.Code, Id = c.Id, Value = c.Value});
+            return list.Select(c => new CodeValueItem { Code = c.Code, Id = c.Id, Value = c.Value });
         }
 
         public static List<MemberTypeItem> MemberTypeCodes0()
         {
             var list = MemberTypeCodes2().ToList();
-            list.Insert(0, new MemberTypeItem {Id = 0, Value = "(not specified)"});
+            list.Insert(0, new MemberTypeItem { Id = 0, Value = "(not specified)" });
             return list;
         }
 
         public static IEnumerable<MemberTypeItem> MemberTypeCodes2()
         {
             return from mt in DbUtil.Db.MemberTypes
-                where mt.Id != MemberTypeCode.Visitor
-                where mt.Id != MemberTypeCode.VisitingMember
-                orderby mt.Description
-                select new MemberTypeItem
-                {
-                    Id = mt.Id,
-                    Code = mt.Code,
-                    Value = mt.Description,
-                    AttendanceTypeId = mt.AttendanceTypeId
-                };
+                   where mt.Id != MemberTypeCode.Visitor
+                   where mt.Id != MemberTypeCode.VisitingMember
+                   orderby mt.Description
+                   select new MemberTypeItem
+                   {
+                       Id = mt.Id,
+                       Code = mt.Code,
+                       Value = mt.Description,
+                       AttendanceTypeId = mt.AttendanceTypeId
+                   };
         }
 
         public IEnumerable<CodeValueItem> MemberTypeCodesByFreq()
         {
             var q = from mt in DbUtil.Db.OrganizationMembers
-                group mt by mt.MemberTypeId
+                    group mt by mt.MemberTypeId
                 into g
-                orderby g.Count()
-                select new {g.Key, count = g.Count()};
+                    orderby g.Count()
+                    select new { g.Key, count = g.Count() };
 
             var q2 = from mt in DbUtil.Db.MemberTypes
-                join g in q on mt.Id equals g.Key
-                orderby g.count descending
-                select new CodeValueItem
-                {
-                    Id = mt.Id,
-                    Code = mt.Code,
-                    Value = mt.Description
-                };
+                     join g in q on mt.Id equals g.Key
+                     orderby g.count descending
+                     select new CodeValueItem
+                     {
+                         Id = mt.Id,
+                         Code = mt.Code,
+                         Value = mt.Description
+                     };
             return q2;
         }
 
         public IEnumerable<CodeValueItem> Ministries()
         {
             return from m in DbUtil.Db.Ministries
-                orderby m.MinistryName
-                select new CodeValueItem
-                {
-                    Id = m.MinistryId,
-                    Code = m.MinistryName,
-                    Value = m.MinistryName
-                };
+                   orderby m.MinistryName
+                   select new CodeValueItem
+                   {
+                       Id = m.MinistryId,
+                       Code = m.MinistryName,
+                       Value = m.MinistryName
+                   };
         }
 
         public IEnumerable<CodeValueItem> Occupations()
         {
             return from p in DbUtil.Db.People
-                group p by p.OccupationOther
+                   group p by p.OccupationOther
                 into g
-                orderby g.Key
-                select new CodeValueItem
-                {
-                    Value = g.Key
-                };
+                   orderby g.Key
+                   select new CodeValueItem
+                   {
+                       Value = g.Key
+                   };
         }
 
         public IEnumerable<CodeValueItem> Organizations(int SubDivId)
@@ -602,12 +604,12 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> OrganizationStatusCodes()
         {
             return from c in DbUtil.Db.OrganizationStatuses
-                select new CodeValueItem
-                {
-                    Id = c.Id,
-                    Code = c.Code,
-                    Value = c.Description
-                };
+                   select new CodeValueItem
+                   {
+                       Id = c.Id,
+                       Code = c.Code,
+                       Value = c.Description
+                   };
         }
 
         public IEnumerable<CodeValueItem> OrganizationStatusCodes0()
@@ -618,12 +620,12 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> OrganizationTypes()
         {
             return from ms in DbUtil.Db.OrganizationTypes
-                select new CodeValueItem
-                {
-                    Id = ms.Id,
-                    Code = ms.Code,
-                    Value = ms.Description
-                };
+                   select new CodeValueItem
+                   {
+                       Id = ms.Id,
+                       Code = ms.Code,
+                       Value = ms.Description
+                   };
         }
 
         public IEnumerable<CodeValueItem> OrganizationTypes0()
@@ -634,68 +636,68 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> OrgDivTags()
         {
             return from t in DbUtil.Db.Programs
-                orderby t.Name
-                select new CodeValueItem
-                {
-                    Id = t.Id,
-                    Value = t.Name
-                };
+                   orderby t.Name
+                   select new CodeValueItem
+                   {
+                       Id = t.Id,
+                       Value = t.Name
+                   };
         }
 
         public IEnumerable<CodeValueItem> OrgSubDivTags(int ProgId)
         {
             var q = from div in DbUtil.Db.Divisions
-                where div.ProgId == ProgId
-                orderby div.Name
-                select new CodeValueItem
-                {
-                    Id = div.Id,
-                    Value = div.Name
-                };
+                    where div.ProgId == ProgId
+                    orderby div.Name
+                    select new CodeValueItem
+                    {
+                        Id = div.Id,
+                        Value = div.Name
+                    };
             return top.Union(q);
         }
 
         public IEnumerable<string> OrgSubDivTags2(int ProgId)
         {
             return from program in DbUtil.Db.Programs
-                from div in program.Divisions
-                where (program.Id == ProgId) || (ProgId == 0)
-                orderby program.Name, div.Name
-                select (ProgId > 0 ? program.Name + "." : "") + div.Name;
+                   from div in program.Divisions
+                   where (program.Id == ProgId) || (ProgId == 0)
+                   orderby program.Name, div.Name
+                   select (ProgId > 0 ? program.Name + "." : "") + div.Name;
         }
 
         public static IEnumerable<SelectListItem> OrgTypes()
         {
             var q = from t in DbUtil.Db.OrganizationTypes
-                orderby t.Code
-                select new SelectListItem
-                {
-                    Value = t.Id.ToString(),
-                    Text = t.Description
-                };
+                    orderby t.Code
+                    select new SelectListItem
+                    {
+                        Value = t.Id.ToString(),
+                        Text = t.Description
+                    };
             var list = q.ToList();
-            list.Insert(0, new SelectListItem {Text = "Suspended Checkin", Value = OrgType.SuspendedCheckin.ToString()});
-            list.Insert(0, new SelectListItem {Text = "Main Fellowship", Value = OrgType.MainFellowship.ToString()});
+            list.Insert(0, new SelectListItem { Text = "Suspended Checkin", Value = OrgType.SuspendedCheckin.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Main Fellowship", Value = OrgType.MainFellowship.ToString() });
             list.Insert(0,
-                new SelectListItem {Text = "Not Main Fellowship", Value = OrgType.NotMainFellowship.ToString()});
-            list.Insert(0, new SelectListItem {Text = "Parent Org", Value = OrgType.ParentOrg.ToString()});
-            list.Insert(0, new SelectListItem {Text = "Child Org", Value = OrgType.ChildOrg.ToString()});
-            list.Insert(0, new SelectListItem {Text = "Orgs Without Type", Value = OrgType.NoOrgType.ToString()});
-            list.Insert(0, new SelectListItem {Text = "Orgs With Fees", Value = OrgType.Fees.ToString()});
-            list.Insert(0, new SelectListItem {Text = "Orgs Without Fees", Value = OrgType.NoFees.ToString()});
-            list.Insert(0, new SelectListItem {Text = "(not specified)", Value = "0"});
+                new SelectListItem { Text = "Not Main Fellowship", Value = OrgType.NotMainFellowship.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Parent Org", Value = OrgType.ParentOrg.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Child Org", Value = OrgType.ChildOrg.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Orgs Without Type", Value = OrgType.NoOrgType.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Orgs With Fees", Value = OrgType.Fees.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Orgs Without Fees", Value = OrgType.NoFees.ToString() });
+            list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
 
         public IEnumerable<CodeValueItem> Origins()
         {
             return from ms in DbUtil.Db.Origins
-                select new CodeValueItem
-                {
-                    Id = ms.Id,
-                    Code = ms.Code,
-                    Value = ms.Description
-                };
+                   select new CodeValueItem
+                   {
+                       Id = ms.Id,
+                       Code = ms.Code,
+                       Value = ms.Description
+                   };
         }
 
         public List<CodeValueItem> PeopleToEmailFor()
@@ -703,13 +705,13 @@ namespace CmsWeb.Code
             var p = DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0);
 
             var q = from cf in DbUtil.Db.PeopleCanEmailFors
-                where cf.CanEmail == p.PeopleId
-                select new CodeValueItem
-                {
-                    Id = cf.OnBehalfOf,
-                    Code = cf.OnBehalfOfPerson.EmailAddress,
-                    Value = cf.OnBehalfOfPerson.Name
-                };
+                    where cf.CanEmail == p.PeopleId
+                    select new CodeValueItem
+                    {
+                        Id = cf.OnBehalfOf,
+                        Code = cf.OnBehalfOfPerson.EmailAddress,
+                        Value = cf.OnBehalfOfPerson.Name
+                    };
             var list = q.ToList();
             list.Insert(0, new CodeValueItem
             {
@@ -723,43 +725,43 @@ namespace CmsWeb.Code
         public static List<CodeValueItem> PmmLabels()
         {
             var list = (from lab in DbUtil.Db.BackgroundCheckLabels
-                select new CodeValueItem
-                {
-                    Id = lab.Id,
-                    Code = lab.Code,
-                    Value = lab.Description
-                }).ToList();
-            list.Insert(0, new CodeValueItem {Id = 0, Code = "LB", Value = "(not specified)"});
+                        select new CodeValueItem
+                        {
+                            Id = lab.Id,
+                            Code = lab.Code,
+                            Value = lab.Description
+                        }).ToList();
+            list.Insert(0, new CodeValueItem { Id = 0, Code = "LB", Value = "(not specified)" });
             return list;
         }
 
         public List<string> QueryBuilderCategories()
         {
             return (from f in CategoryClass.Categories
-                select f.Title).ToList();
+                    select f.Title).ToList();
         }
 
         public IEnumerable<CodeValueItem> QueryBuilderFields(string category)
         {
             var n = 1;
             return from f in FieldClass.Fields.Values
-                where f.Category == category
-                select new CodeValueItem
-                {
-                    Id = n++,
-                    Value = f.Title,
-                    Code = f.Name
-                };
+                   where f.Category == category
+                   select new CodeValueItem
+                   {
+                       Id = n++,
+                       Value = f.Title,
+                       Code = f.Name
+                   };
         }
 
         public static IEnumerable<SelectListItem> RegistrationTypeIds()
         {
             var q = from o in RegistrationTypeCode.GetCodePairs()
-                select new SelectListItem
-                {
-                    Value = o.Key.ToString(),
-                    Text = o.Value
-                };
+                    select new SelectListItem
+                    {
+                        Value = o.Key.ToString(),
+                        Text = o.Value
+                    };
             var list = q.ToList();
             list.Insert(0, new SelectListItem
             {
@@ -805,36 +807,36 @@ namespace CmsWeb.Code
             if (!HttpContext.Current.User.IsInRole("Developer"))
                 q = q.Where(pp => pp.Key != RegistrationTypeCode.RegisterLinkMaster);
             return from i in q
-                select new CodeValueItem
-                {
-                    Id = i.Key,
-                    Code = i.Key.ToString(),
-                    Value = i.Value
-                };
+                   select new CodeValueItem
+                   {
+                       Id = i.Key,
+                       Code = i.Key.ToString(),
+                       Value = i.Value
+                   };
         }
 
         public IEnumerable<CodeValueItem> RegistrationTypes99()
         {
             var list = (from i in RegistrationTypeCode.GetCodePairs()
-                select new CodeValueItem
-                {
-                    Id = i.Key,
-                    Code = i.Key.ToString(),
-                    Value = i.Value
-                }).ToList();
-            list.Insert(0, new CodeValueItem {Id = 99, Code = "99", Value = "(not specified)"});
+                        select new CodeValueItem
+                        {
+                            Id = i.Key,
+                            Code = i.Key.ToString(),
+                            Value = i.Value
+                        }).ToList();
+            list.Insert(0, new CodeValueItem { Id = 99, Code = "99", Value = "(not specified)" });
             return list;
         }
 
         public static IEnumerable<CodeValueItem> ResidentCodes()
         {
             return from c in DbUtil.Db.ResidentCodes
-                select new CodeValueItem
-                {
-                    Id = c.Id,
-                    Code = c.Code,
-                    Value = c.Description
-                };
+                   select new CodeValueItem
+                   {
+                       Id = c.Id,
+                       Code = c.Code,
+                       Value = c.Description
+                   };
         }
 
         public static List<CodeValueItem> ResidentCodesWithZero()
@@ -847,19 +849,19 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> Schedules()
         {
             return from o in DbUtil.Db.Organizations
-                let sc = o.OrgSchedules.FirstOrDefault()
-                // SCHED
-                where sc != null
-                group o by new {sc.ScheduleId, sc.MeetingTime}
+                   let sc = o.OrgSchedules.FirstOrDefault()
+                   // SCHED
+                   where sc != null
+                   group o by new { sc.ScheduleId, sc.MeetingTime }
                 into g
-                orderby g.Key.ScheduleId
-                where g.Key.ScheduleId != null
-                select new CodeValueItem
-                {
-                    Id = g.Key.ScheduleId.Value,
-                    Code = g.Key.ScheduleId.ToString(),
-                    Value = DbUtil.Db.GetScheduleDesc(g.Key.MeetingTime)
-                };
+                   orderby g.Key.ScheduleId
+                   where g.Key.ScheduleId != null
+                   select new CodeValueItem
+                   {
+                       Id = g.Key.ScheduleId.Value,
+                       Code = g.Key.ScheduleId.ToString(),
+                       Value = DbUtil.Db.GetScheduleDesc(g.Key.MeetingTime)
+                   };
         }
 
         public IEnumerable<CodeValueItem> Schedules0()
@@ -870,14 +872,14 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> Schools()
         {
             return from p in DbUtil.Db.People
-                group p by p.SchoolOther
+                   group p by p.SchoolOther
                 into g
-                orderby g.Key
-                select new CodeValueItem
-                {
-                    Value = g.Key,
-                    Code = g.Key
-                };
+                   orderby g.Key
+                   select new CodeValueItem
+                   {
+                       Value = g.Key,
+                       Code = g.Key
+                   };
         }
 
         public List<CodeValueItem> SecurityTypeCodes()
@@ -893,25 +895,25 @@ namespace CmsWeb.Code
         public static IEnumerable<CodeValueItem> StatusFlags()
         {
             var sf = from ms in DbUtil.Db.ViewStatusFlagLists.ToList()
-                where (ms.RoleName == null) || HttpContext.Current.User.IsInRole(ms.RoleName)
-                select new CodeValueItem
-                {
-                    Code = ms.Flag,
-                    Value = ms.Name
-                };
+                     where (ms.RoleName == null) || HttpContext.Current.User.IsInRole(ms.RoleName)
+                     select new CodeValueItem
+                     {
+                         Code = ms.Flag,
+                         Value = ms.Name
+                     };
             return sf.OrderBy(ss => ss.Value);
         }
 
         public static IEnumerable<SelectListItem> StatusIds()
         {
             var q = from s in DbUtil.Db.OrganizationStatuses
-                select new SelectListItem
-                {
-                    Value = s.Id.ToString(),
-                    Text = s.Description
-                };
+                    select new SelectListItem
+                    {
+                        Value = s.Id.ToString(),
+                        Text = s.Description
+                    };
             var list = q.ToList();
-            list.Insert(0, new SelectListItem {Value = "0", Text = "(not specified)"});
+            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
             return list;
         }
 
@@ -920,21 +922,21 @@ namespace CmsWeb.Code
             var cv = new CodeValueModel();
             var tg = ConvertToSelect(cv.UserTags(Util.UserPeopleId), "Id").ToList();
             if (HttpContext.Current.User.IsInRole("Edit"))
-                tg.Insert(0, new SelectListItem {Value = "-1", Text = "(last query)"});
-            tg.Insert(0, new SelectListItem {Value = "0", Text = "(not specified)"});
+                tg.Insert(0, new SelectListItem { Value = "-1", Text = "(last query)" });
+            tg.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
             return tg;
         }
 
         public IEnumerable<CodeValueItem> TitleCodes()
         {
             var q = from ms in DbUtil.Db.People.Where(mm => mm.TitleCode.Length > 0).Select(tt => tt.TitleCode).Distinct()
-                select new CodeValueItem
-                {
-                    Code = ms,
-                    Value = ms
-                };
+                    select new CodeValueItem
+                    {
+                        Code = ms,
+                        Value = ms
+                    };
             var list = q.ToList();
-            list.Insert(0, new CodeValueItem {Code = "", Value = "(not specified)"});
+            list.Insert(0, new CodeValueItem { Code = "", Value = "(not specified)" });
             return list;
         }
 
@@ -942,30 +944,30 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> UserRoles()
         {
             var q = from s in DbUtil.Db.Roles
-                orderby s.RoleId
-                select new CodeValueItem
-                {
-                    Id = s.RoleId,
-                    Code = s.RoleName,
-                    Value = s.RoleName
-                };
+                    orderby s.RoleId
+                    select new CodeValueItem
+                    {
+                        Id = s.RoleId,
+                        Code = s.RoleName,
+                        Value = s.RoleName
+                    };
             var list = q.ToList();
-            list.Insert(0, new CodeValueItem {Value = "(not specified)", Id = 0});
+            list.Insert(0, new CodeValueItem { Value = "(not specified)", Id = 0 });
             return list;
         }
 
         public IEnumerable<CodeValueItem> UserRolesMyData()
         {
             var q = from s in DbUtil.Db.Roles
-                orderby s.RoleId
-                select new CodeValueItem
-                {
-                    Id = s.RoleId,
-                    Code = s.RoleName,
-                    Value = s.RoleName
-                };
+                    orderby s.RoleId
+                    select new CodeValueItem
+                    {
+                        Id = s.RoleId,
+                        Code = s.RoleName,
+                        Value = s.RoleName
+                    };
             var list = q.ToList();
-            list.Insert(0, new CodeValueItem {Value = "(mydata, no role)", Id = 0});
+            list.Insert(0, new CodeValueItem { Value = "(mydata, no role)", Id = 0 });
             return list;
         }
 
@@ -981,27 +983,27 @@ namespace CmsWeb.Code
                 DbUtil.Db.TagCurrent(); // make sure the current tag exists
 
             var q1 = from t in DbUtil.Db.Tags
-                where t.PeopleId == UserPeopleId
-                where t.TypeId == DbUtil.TagTypeId_Personal
-                orderby t.Name.StartsWith(".") ? "z" : "", t.Name
-                select new CodeValueItem
-                {
-                    Id = t.Id,
-                    Code = $"{t.Id},{t.PeopleId}!{t.Name}",
-                    Value = t.Name
-                };
+                     where t.PeopleId == UserPeopleId
+                     where t.TypeId == DbUtil.TagTypeId_Personal
+                     orderby t.Name.StartsWith(".") ? "z" : "", t.Name
+                     select new CodeValueItem
+                     {
+                         Id = t.Id,
+                         Code = $"{t.Id},{t.PeopleId}!{t.Name}",
+                         Value = t.Name
+                     };
             var q2 = from t in DbUtil.Db.Tags
-                where t.PeopleId != UserPeopleId
-                where t.TagShares.Any(ts => ts.PeopleId == UserPeopleId)
-                where t.TypeId == DbUtil.TagTypeId_Personal
-                orderby t.PersonOwner.Name2, t.Name.StartsWith(".") ? "z" : "", t.Name
-                let op = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == t.PeopleId)
-                select new CodeValueItem
-                {
-                    Id = t.Id,
-                    Code = $"{t.Id},{t.PeopleId}!{t.Name}",
-                    Value = op.Name + "!" + t.Name
-                };
+                     where t.PeopleId != UserPeopleId
+                     where t.TagShares.Any(ts => ts.PeopleId == UserPeopleId)
+                     where t.TypeId == DbUtil.TagTypeId_Personal
+                     orderby t.PersonOwner.Name2, t.Name.StartsWith(".") ? "z" : "", t.Name
+                     let op = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == t.PeopleId)
+                     select new CodeValueItem
+                     {
+                         Id = t.Id,
+                         Code = $"{t.Id},{t.PeopleId}!{t.Name}",
+                         Value = op.Name + "!" + t.Name
+                     };
             var list = q1.ToList();
             list.AddRange(q2);
             return list;
@@ -1022,34 +1024,34 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> VolApplicationStatusCodes()
         {
             var q = from sc in DbUtil.Db.VolApplicationStatuses
-                orderby sc.Description
-                select new CodeValueItem
-                {
-                    Id = sc.Id,
-                    Code = sc.Code,
-                    Value = sc.Description
-                };
+                    orderby sc.Description
+                    select new CodeValueItem
+                    {
+                        Id = sc.Id,
+                        Code = sc.Code,
+                        Value = sc.Description
+                    };
             return q.AddNotSpecified();
         }
 
         public IEnumerable<CodeValueItem> VolunteerCodes()
         {
             return from vc in DbUtil.Db.VolunteerCodes
-                select new CodeValueItem
-                {
-                    Id = vc.Id,
-                    Code = vc.Code,
-                    Value = vc.Description
-                };
+                   select new CodeValueItem
+                   {
+                       Id = vc.Id,
+                       Code = vc.Code,
+                       Value = vc.Description
+                   };
         }
 
         public static IEnumerable<string> VolunteerOpportunities()
         {
             return from c in DbUtil.Db.Contents
-                where c.Name.StartsWith("Volunteer-")
-                where c.Name.EndsWith(".view")
-                orderby c.Name
-                select c.Name.Substring(10, c.Name.Length - 15);
+                   where c.Name.StartsWith("Volunteer-")
+                   where c.Name.EndsWith(".view")
+                   orderby c.Name
+                   select c.Name.Substring(10, c.Name.Length - 15);
         }
 
         public static IEnumerable<CodeValueItem> YesNoAll()

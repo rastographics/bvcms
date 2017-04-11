@@ -18,7 +18,7 @@ namespace CmsWeb.Models
 {
     public class PostBundleModel
     {
-        private BundleHeader _bundle;
+        private BundleHeader bundle;
 
         public PostBundleModel()
         {
@@ -27,9 +27,9 @@ namespace CmsWeb.Models
         public PostBundleModel(int id)
         {
             this.id = id;
-            PLNT = bundle.BundleHeaderTypeId == BundleTypeCode.Pledge ? "PL" :
-                bundle.BundleHeaderTypeId == BundleTypeCode.GiftsInKind ? "GK" :
-                    bundle.BundleHeaderTypeId == BundleTypeCode.Stock ? "SK" : "CN";
+            PLNT = Bundle.BundleHeaderTypeId == BundleTypeCode.Pledge ? "PL" :
+                Bundle.BundleHeaderTypeId == BundleTypeCode.GiftsInKind ? "GK" :
+                    Bundle.BundleHeaderTypeId == BundleTypeCode.Stock ? "SK" : "CN";
         }
 
         public int id { get; set; }
@@ -45,29 +45,29 @@ namespace CmsWeb.Models
         public string FundName { get; set; }
         public bool DefaultFundIsPledge { get; set; }
 
-        public BundleHeader bundle
+        public BundleHeader Bundle
         {
             get
             {
-                if (_bundle == null)
+                if (bundle == null)
                 {
-                    _bundle = DbUtil.Db.BundleHeaders.SingleOrDefault(bh => bh.BundleHeaderId == id);
-                    if (_bundle?.FundId != null)
+                    bundle = DbUtil.Db.BundleHeaders.SingleOrDefault(bh => bh.BundleHeaderId == id);
+                    if (bundle?.FundId != null)
                     {
-                        FundName = _bundle.Fund.FundName;
-                        DefaultFundIsPledge = _bundle.Fund.FundPledgeFlag;
+                        FundName = bundle.Fund.FundName;
+                        DefaultFundIsPledge = bundle.Fund.FundPledgeFlag;
                     }
                 }
-                return _bundle;
+                return bundle;
             }
         }
 
         public decimal TotalItems
         {
-            get { return bundle.BundleDetails.Sum(dd => dd.Contribution.ContributionAmount) ?? 0; }
+            get { return Bundle.BundleDetails.Sum(dd => dd.Contribution.ContributionAmount) ?? 0; }
         }
 
-        public int TotalCount => bundle.BundleDetails.Count();
+        public int TotalCount => Bundle.BundleDetails.Count();
 
         public IEnumerable<ContributionInfo> FetchContributions(int? cid = null)
         {
@@ -355,14 +355,14 @@ namespace CmsWeb.Models
                     CreatedDate = bd.CreatedDate,
                     FundId = fund,
                     PeopleId = pid.ToInt2(),
-                    ContributionDate = contributiondate ?? bundle.ContributionDate,
+                    ContributionDate = contributiondate ?? Bundle.ContributionDate,
                     ContributionAmount = amt,
                     ContributionStatusId = 0,
                     ContributionTypeId = type,
                     ContributionDesc = notes,
                     CheckNo = (checkno ?? "").Trim().Truncate(20)
                 };
-                bundle.BundleDetails.Add(bd);
+                Bundle.BundleDetails.Add(bd);
                 DbUtil.Db.SubmitChanges();
                 return ContributionRowData(ctl, bd.ContributionId, othersplitamt);
             }
@@ -410,23 +410,23 @@ namespace CmsWeb.Models
 
         public object DeleteContribution()
         {
-            var bd = bundle.BundleDetails.SingleOrDefault(d => d.ContributionId == editid);
+            var bd = Bundle.BundleDetails.SingleOrDefault(d => d.ContributionId == editid);
             if (bd != null)
             {
                 var c = bd.Contribution;
                 DbUtil.Db.BundleDetails.DeleteOnSubmit(bd);
-                bundle.BundleDetails.Remove(bd);
+                Bundle.BundleDetails.Remove(bd);
                 DbUtil.Db.Contributions.DeleteOnSubmit(c);
                 DbUtil.Db.SubmitChanges();
             }
 
-            var totalItems = bundle.BundleDetails.Sum(d => d.Contribution.ContributionAmount);
-            var diff = (bundle.TotalCash.GetValueOrDefault() + bundle.TotalChecks.GetValueOrDefault() + bundle.TotalEnvelopes.GetValueOrDefault()) - totalItems;
+            var totalItems = Bundle.BundleDetails.Sum(d => d.Contribution.ContributionAmount);
+            var diff = (Bundle.TotalCash.GetValueOrDefault() + Bundle.TotalChecks.GetValueOrDefault() + Bundle.TotalEnvelopes.GetValueOrDefault()) - totalItems;
             return new
             {
                 totalitems = totalItems.ToString2("C2"), diff,
                 difference = diff.ToString2("C2"),
-                itemcount = bundle.BundleDetails.Count()
+                itemcount = Bundle.BundleDetails.Count()
             };
         }
 

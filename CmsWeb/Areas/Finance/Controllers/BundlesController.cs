@@ -6,7 +6,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Controllers
 {
-    [Authorize(Roles = "Finance")]
+    [Authorize(Roles = "Finance,FinanceDataEntry")]
     [RouteArea("Finance", AreaPrefix= "Bundles"), Route("{action=index}")]
     public class BundlesController : CmsStaffController
     {
@@ -36,6 +36,8 @@ namespace CmsWeb.Areas.Finance.Controllers
                 RecordStatus = false,
                 FundId = DbUtil.Db.Setting("DefaultFundId", "1").ToInt(), 
             };
+            if (User.IsInRole("FinanceDataEntry"))
+                b.BundleStatusId = BundleStatusCode.OpenForDataEntry;
             DbUtil.Db.BundleHeaders.InsertOnSubmit(b);
             DbUtil.Db.SubmitChanges();
             TempData["createbundle"] = true;

@@ -16,7 +16,7 @@ namespace CmsData.View
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
 		
-		private int _PeopleId;
+		private int? _PeopleId;
 		
 		
 		public Contributions0()
@@ -25,8 +25,8 @@ namespace CmsData.View
 
 		
 		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int NOT NULL")]
-		public int PeopleId
+		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int")]
+		public int? PeopleId
 		{
 			get
 			{

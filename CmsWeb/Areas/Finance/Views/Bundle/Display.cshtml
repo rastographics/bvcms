@@ -17,7 +17,7 @@
                             Actions <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-right">
-                            @if (Model.IsAdmin || Model.IsOpen)
+                            @if (Model.IsAdmin || Model.BundleStatusId != BundleStatusCode.Closed)
                             {
                                 <li><a id="delete" href="/Bundle/Delete/@Model.BundleId"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete</a></li>
                             }
@@ -25,14 +25,11 @@
                             {
                                 <li><a id="editbundle" href="/Bundle/Edit/@Model.BundleId"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit Bundle Header</a></li>
                             }
-                            @if (Model.IsOpen)
+                            @if (Model.BundleStatusId != BundleStatusCode.Closed)
                             {
                                 <li><a href="/PostBundle/@Model.BundleId"><i class="fa fa-pencil-square-o"></i>&nbsp;&nbsp;Post Bundle / Edit</a></li>
                             }
-                            @if (Model.IsOpen || Model.IsAdmin || Model.CanEdit)
-                            {
-                                <li class="divider"></li>
-                            }
+                            <li class="divider"></li>
                             <li><a href="/Bundles/NewBundle/"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Create New Bundle</a></li>
                         </ul>
                     </div>
@@ -100,7 +97,7 @@
                             Actions <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-right btn-block">
-                            @if (Model.IsAdmin || Model.IsOpen)
+                            @if (Model.IsAdmin || Model.BundleStatusId != BundleStatusCode.Closed)
                             {
                                 <li><a id="delete" href="/Bundle/Delete/@Model.BundleId"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete</a></li>
                             }
@@ -108,14 +105,11 @@
                             {
                                 <li><a id="editbundle" href="/Bundle/Edit/@Model.BundleId"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit Bundle Header</a></li>
                             }
-                            @if (Model.IsOpen)
+                            @if (Model.BundleStatusId != BundleStatusCode.Closed)
                             {
                                 <li><a href="/PostBundle/@Model.BundleId"><i class="fa fa-pencil-square-o"></i>&nbsp;&nbsp;Post Bundle / Edit</a></li>
                             }
-                            @if (Model.IsOpen || Model.IsAdmin || Model.CanEdit)
-                            {
-                                <li class="divider"></li>
-                            }
+                            <li class="divider"></li>
                             <li><a href="/Bundles/NewBundle/"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Create New Bundle</a></li>
                         </ul>
                     </div>

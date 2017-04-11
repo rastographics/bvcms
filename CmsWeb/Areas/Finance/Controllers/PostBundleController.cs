@@ -12,7 +12,7 @@ using CmsWeb.Areas.Finance.Models.BatchImport;
 
 namespace CmsWeb.Areas.Finance.Controllers
 {
-    [Authorize(Roles = "Finance")]
+    [Authorize(Roles = "Finance,FinanceDataEntry")]
     [ValidateInput(false)]
     [RouteArea("Finance", AreaPrefix = "PostBundle"), Route("{action}/{id?}")]
     public class PostBundleController : CmsStaffController
@@ -21,11 +21,13 @@ namespace CmsWeb.Areas.Finance.Controllers
         public ActionResult Index(int id)
         {
             var m = new PostBundleModel(id);
-            if (m.bundle == null)
-                return Content("no bundle " + m.id);
-            if (m.bundle.BundleStatusId == BundleStatusCode.Closed)
-                return Content("bundle closed");
-            m.fund = m.bundle.FundId ?? 1;
+            if (m.Bundle == null)
+                return Message("no bundle " + m.id);
+            if (m.Bundle.BundleStatusId == BundleStatusCode.Closed)
+                return Message("Bundle Closed");
+            if (User.IsInRole("FinanceDataEntry") && m.Bundle.BundleStatusId != BundleStatusCode.OpenForDataEntry)
+                return Message("Bundle is no longer open for data entry");
+            m.fund = m.Bundle.FundId ?? 1;
             return View(m);
         }
 

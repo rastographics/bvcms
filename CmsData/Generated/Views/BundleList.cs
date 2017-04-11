@@ -30,8 +30,6 @@ namespace CmsData.View
 		
 		private string _Status;
 		
-		private int? _Open;
-		
 		private DateTime? _PostingDate;
 		
 		private decimal? _TotalItems;
@@ -39,6 +37,8 @@ namespace CmsData.View
 		private int? _ItemCount;
 		
 		private decimal? _TotalNonTaxDed;
+		
+		private int _BundleStatusId;
 		
 		
 		public BundleList()
@@ -166,23 +166,6 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="open", Storage="_Open", DbType="int")]
-		public int? Open
-		{
-			get
-			{
-				return this._Open;
-			}
-
-			set
-			{
-				if (this._Open != value)
-					this._Open = value;
-			}
-
-		}
-
-		
 		[Column(Name="PostingDate", Storage="_PostingDate", DbType="datetime")]
 		public DateTime? PostingDate
 		{
@@ -246,6 +229,23 @@ namespace CmsData.View
 			{
 				if (this._TotalNonTaxDed != value)
 					this._TotalNonTaxDed = value;
+			}
+
+		}
+
+		
+		[Column(Name="BundleStatusId", Storage="_BundleStatusId", DbType="int NOT NULL")]
+		public int BundleStatusId
+		{
+			get
+			{
+				return this._BundleStatusId;
+			}
+
+			set
+			{
+				if (this._BundleStatusId != value)
+					this._BundleStatusId = value;
 			}
 
 		}

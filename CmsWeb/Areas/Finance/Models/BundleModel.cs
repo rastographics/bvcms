@@ -7,6 +7,7 @@ using CmsData;
 using CmsData.API;
 using CmsData.Codes;
 using CmsWeb.Areas.Finance.Controllers;
+using CmsWeb.Code;
 using CmsWeb.Models;
 using UtilityExtensions;
 
@@ -22,42 +23,34 @@ namespace CmsWeb.Areas.Finance.Models
             return _count.Value;
         }
 
-        public bool IsOpen
-        {
-            get { return Bundle != null && Bundle.BundleStatusId == BundleStatusCode.Open; }
-            set { Bundle.BundleStatusId = value ? BundleStatusCode.Open : BundleStatusCode.Closed; }
-        }
+        public int BundleStatusId { get; set; }
 
-        public bool IsAdmin
-        {
-            get 
-            { 
-                return HttpContext.Current.User.IsInRole("Admin") 
-                    || HttpContext.Current.User.IsInRole("FinanceAdmin"); 
-            }
-        }
-        public bool CanEdit { get { return IsOpen || IsAdmin; } } 
+        public bool IsAdmin => HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.User.IsInRole("FinanceAdmin");
+        public bool IsDataEntry => HttpContext.Current.User.IsInRole("FinanceDataEntry");
+        public bool CanEdit => BundleStatusId == BundleStatusCode.Open || IsAdmin;
+
         public bool CanChangeStatus
         {
             get
             {
-                if (!IsOpen)
-                    return IsAdmin;
+                if (BundleStatusId == BundleStatusCode.Closed)
+                    return IsAdmin; // only an Admin with Finance or a FinanceAdmin can reopen
                 return Bundle.BundleDetails.All(bd => bd.Contribution.PeopleId != null)
-                       && TotalItems() == TotalHeader();
+                       && TotalItems() == TotalHeader(); // anybody can close it if they have gotten to this page.
             }
         }
 
         public int BundleId
         {
-            get { return _bundleId; }
+            get { return bundleId; }
             set
             {
-                _bundleId = value;
+                bundleId = value;
                 var q = (from bb in DbUtil.Db.BundleHeaders
                          where bb.BundleHeaderId == BundleId
                          select new
                          {
+                             StatusId = bb.BundleStatusId,
                              Status = bb.BundleStatusType.Description,
                              Type = bb.BundleHeaderType.Description,
                              DefaultFund = bb.Fund.FundName,
@@ -66,6 +59,7 @@ namespace CmsWeb.Areas.Finance.Models
                 if (q == null)
                     return;
                 Status = q.Status;
+                BundleStatusId = q.StatusId;
                 Type = q.Type;
                 DefaultFund = q.DefaultFund;
                 Bundle = q.bundle;
@@ -87,8 +81,8 @@ namespace CmsWeb.Areas.Finance.Models
             
         }
 
-        private IQueryable<Contribution> _bundleItems;
-        private int _bundleId;
+        private IQueryable<Contribution> bundleItems;
+        private int bundleId;
 
         public decimal TotalHeader()
         {
@@ -108,13 +102,13 @@ namespace CmsWeb.Areas.Finance.Models
 
         private IQueryable<Contribution> FetchBundleItems()
         {
-            if (_bundleItems == null)
-                _bundleItems = from d in DbUtil.Db.BundleDetails
+            if (bundleItems == null)
+                bundleItems = from d in DbUtil.Db.BundleDetails
                                where d.BundleHeaderId == BundleId
             				   let sort = d.BundleSort1 > 0 ? d.BundleSort1 : d.BundleDetailId
                                orderby sort, d.ContributionId
                                select d.Contribution;
-            return _bundleItems;
+            return bundleItems;
         }
 
         public IEnumerable<ContributionInfo> Contributions()
@@ -147,6 +141,10 @@ namespace CmsWeb.Areas.Finance.Models
         {
             return new SelectList(DbUtil.Db.ContributionFunds.Where(ff => ff.FundStatusId == 1), "FundId", "FundName",
                 Bundle.FundId);
+        }
+        public IEnumerable<SelectListItem> BundleStatusList()
+        {
+            return CodeValueModel.BundleStatusTypes().ToSelect();
         }
 
 

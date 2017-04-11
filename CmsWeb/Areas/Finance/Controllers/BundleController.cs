@@ -8,7 +8,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Controllers
 {
-    [Authorize(Roles = "Finance")]
+    [Authorize(Roles = "Finance,FinanceDataEntry")]
     [RouteArea("Finance", AreaPrefix= "Bundle"), Route("{action}/{id?}")]
     public class BundleController : CmsStaffController
     {
@@ -16,6 +16,8 @@ namespace CmsWeb.Areas.Finance.Controllers
         public ActionResult Index(int id, bool? create)
         {
             var m = new BundleModel(id);
+            if (User.IsInRole("FinanceDataEntry") && m.BundleStatusId != BundleStatusCode.OpenForDataEntry)
+                return Message("Bundle is no longer open for data entry");
             if (m.Bundle == null)
                 return Content("no bundle");
             return View(m);

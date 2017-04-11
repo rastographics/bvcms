@@ -149,7 +149,7 @@ namespace CmsData
                 case CompareType.Equal:
                     if (amt == 0)
                         q = from pid in db.Contributions0(dt, now, fund, 0, false, taxnontax, true)
-                            select pid.PeopleId;
+                            select pid.PeopleId.Value;
                     else
                         q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true)
                             where fund == 0 || c.FundId == fund
@@ -213,7 +213,7 @@ namespace CmsData
                 case CompareType.Equal:
                     if (amt == 0) // This is a special case, use different approach
                         q = from pid in db.Contributions0(start, end, fund, 0, false, nontaxded, true)
-                            select pid.PeopleId;
+                            select pid.PeopleId.Value;
                     else
                         q = from c in db.Contributions2(start, end, 0, false, nontaxded, true)
                             where fund == 0 || c.FundId == fund
@@ -299,7 +299,7 @@ namespace CmsData
                 case CompareType.Equal:
                     if (amt == 0)
                         q = from pid in db.Contributions0(startdt, enddt, fund, 0, false, false, true)
-                            select pid.PeopleId;
+                            select pid.PeopleId.Value;
                     else
                         q = from c in db.GetContributionTotalsBothIfJoint(startdt, enddt, fund)
                             where c.Amount > 0

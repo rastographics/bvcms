@@ -236,6 +236,7 @@ namespace CmsData.Codes
     {
         public const int Closed = 0;
         public const int Open = 1;
+        public const int OpenForDataEntry = 2;
     }
     public class BundleTypeCode
     {
