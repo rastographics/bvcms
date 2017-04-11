@@ -160,6 +160,14 @@ ALTER TABLE [dbo].[Promotion] NOCHECK CONSTRAINT [ToPromotions__ToDivision]
 PRINT(N'Drop constraint FK_Resource_Division from [dbo].[Resource]')
 ALTER TABLE [dbo].[Resource] NOCHECK CONSTRAINT [FK_Resource_Division]
 
+PRINT(N'Drop constraints from [dbo].[BundleHeader]')
+ALTER TABLE [dbo].[BundleHeader] NOCHECK CONSTRAINT [BundleHeaders__Fund]
+ALTER TABLE [dbo].[BundleHeader] NOCHECK CONSTRAINT [FK_BUNDLE_HEADER_TBL_BundleHeaderTypes]
+ALTER TABLE [dbo].[BundleHeader] NOCHECK CONSTRAINT [FK_BUNDLE_HEADER_TBL_BundleStatusTypes]
+
+PRINT(N'Drop constraint BUNDLE_DETAIL_BUNDLE_FK from [dbo].[BundleDetail]')
+ALTER TABLE [dbo].[BundleDetail] NOCHECK CONSTRAINT [BUNDLE_DETAIL_BUNDLE_FK]
+
 PRINT(N'Drop constraint FK_VoluteerApprovalIds_VolunteerCodes from [dbo].[VoluteerApprovalIds]')
 ALTER TABLE [dbo].[VoluteerApprovalIds] NOCHECK CONSTRAINT [FK_VoluteerApprovalIds_VolunteerCodes]
 
@@ -190,17 +198,8 @@ ALTER TABLE [dbo].[Contact] NOCHECK CONSTRAINT [FK_NewContacts_ContactReasons]
 PRINT(N'Drop constraint FK_Resource_Campus from [dbo].[Resource]')
 ALTER TABLE [dbo].[Resource] NOCHECK CONSTRAINT [FK_Resource_Campus]
 
-PRINT(N'Drop constraint FK_BUNDLE_HEADER_TBL_BundleStatusTypes from [dbo].[BundleHeader]')
-ALTER TABLE [dbo].[BundleHeader] NOCHECK CONSTRAINT [FK_BUNDLE_HEADER_TBL_BundleStatusTypes]
-
-PRINT(N'Drop constraint FK_BUNDLE_HEADER_TBL_BundleHeaderTypes from [dbo].[BundleHeader]')
-ALTER TABLE [dbo].[BundleHeader] NOCHECK CONSTRAINT [FK_BUNDLE_HEADER_TBL_BundleHeaderTypes]
-
 PRINT(N'Drop constraint FK_Contribution_ExtraData from [dbo].[Contribution]')
 ALTER TABLE [dbo].[Contribution] NOCHECK CONSTRAINT [FK_Contribution_ExtraData]
-
-PRINT(N'Drop constraint BundleHeaders__Fund from [dbo].[BundleHeader]')
-ALTER TABLE [dbo].[BundleHeader] NOCHECK CONSTRAINT [BundleHeaders__Fund]
 
 PRINT(N'Drop constraint FK_Contribution_ContributionFund from [dbo].[Contribution]')
 ALTER TABLE [dbo].[Contribution] NOCHECK CONSTRAINT [FK_Contribution_ContributionFund]
@@ -2661,7 +2660,8 @@ PRINT(N'Operation applied to 9 rows out of 9')
 PRINT(N'Add rows to [lookup].[BundleStatusTypes]')
 INSERT INTO [lookup].[BundleStatusTypes] ([Id], [Code], [Description], [Hardwired]) VALUES (0, N'C', N'Closed', 1)
 INSERT INTO [lookup].[BundleStatusTypes] ([Id], [Code], [Description], [Hardwired]) VALUES (1, N'O', N'Open', 1)
-PRINT(N'Operation applied to 2 rows out of 2')
+INSERT INTO [lookup].[BundleStatusTypes] ([Id], [Code], [Description], [Hardwired]) VALUES (2, N'D', N'Open For Data Entry', 1)
+PRINT(N'Operation applied to 3 rows out of 3')
 
 PRINT(N'Add rows to [lookup].[Campus]')
 INSERT INTO [lookup].[Campus] ([Id], [Code], [Description], [Hardwired]) VALUES (1, N'M', N'Main', NULL)
@@ -3234,6 +3234,11 @@ INSERT INTO [lookup].[VolunteerCodes] ([Id], [Code], [Description], [Hardwired])
 INSERT INTO [lookup].[VolunteerCodes] ([Id], [Code], [Description], [Hardwired]) VALUES (10, N'S', N'Standard', NULL)
 INSERT INTO [lookup].[VolunteerCodes] ([Id], [Code], [Description], [Hardwired]) VALUES (30, N'L', N'Leader', NULL)
 PRINT(N'Operation applied to 3 rows out of 3')
+
+PRINT(N'Add row to [dbo].[BundleHeader]')
+SET IDENTITY_INSERT [dbo].[BundleHeader] ON
+INSERT INTO [dbo].[BundleHeader] ([BundleHeaderId], [ChurchId], [CreatedBy], [CreatedDate], [RecordStatus], [BundleStatusId], [ContributionDate], [BundleHeaderTypeId], [DepositDate], [BundleTotal], [TotalCash], [TotalChecks], [TotalEnvelopes], [ModifiedBy], [ModifiedDate], [FundId]) VALUES (1, 1, 2, '2017-04-10 16:44:24.360', 0, 1, '2017-04-09 00:00:00.000', 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1)
+SET IDENTITY_INSERT [dbo].[BundleHeader] OFF
 
 PRINT(N'Add rows to [dbo].[Division]')
 SET IDENTITY_INSERT [dbo].[Division] ON
@@ -4363,7 +4368,7 @@ PRINT(N'Operation applied to 31 rows out of 31')
 PRINT(N'Add rows to [dbo].[Users]')
 SET IDENTITY_INSERT [dbo].[Users] ON
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (1, 1, N'Admin', NULL, N'2352354235', NULL, NULL, 1, '2016-09-30 16:48:10.320', NULL, '2016-04-07 10:09:40.130', '2009-05-05 22:46:43.890', 0, '2016-04-07 10:09:39.990', 1, '2016-09-30 16:47:22.923', 0, NULL, NULL, NULL, 1, N'testdb.bvcms.com', N'bvcms', N'The Admin', N'Admin, The', NULL, NULL, '2016-04-08 10:03:26.053')
-INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (2, 2, N'david', N'', N'uNVML/ZamnY7YdE1NXvMHPIznic=', NULL, NULL, 1, '2017-02-16 07:28:09.013', '2017-02-16 07:27:48.660', '2013-09-20 22:45:26.960', '2010-10-30 15:23:25.763', 0, '2013-09-20 22:45:26.880', 0, '2015-02-28 08:18:17.550', 0, '2010-10-30 15:23:25.763', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'David Carroll', N'Carroll, David', NULL, NULL, '2013-09-21 22:45:01.070')
+INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (2, 2, N'david', N'', N'uNVML/ZamnY7YdE1NXvMHPIznic=', NULL, NULL, 1, '2017-04-10 16:55:18.647', '2017-04-10 16:45:07.520', '2013-09-20 22:45:26.960', '2010-10-30 15:23:25.763', 0, '2013-09-20 22:45:26.880', 0, '2015-02-28 08:18:17.550', 0, '2010-10-30 15:23:25.763', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'David Carroll', N'Carroll, David', NULL, NULL, '2013-09-21 22:45:01.070')
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (3, 3, N'karenw', N'', N'2352354235', NULL, NULL, 1, '2011-09-01 15:29:59.107', NULL, '2010-10-30 15:29:49.930', '2010-10-30 15:29:25.757', 0, '2010-10-30 15:29:49.860', 0, '2010-10-30 15:29:25.757', 0, '2010-10-30 15:29:25.757', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'Karen Worrell', N'Worrell, Karen', NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Users] OFF
 PRINT(N'Operation applied to 3 rows out of 3')
@@ -4487,6 +4492,12 @@ ALTER TABLE [dbo].[Coupons] CHECK CONSTRAINT [FK_Coupons_Division]
 ALTER TABLE [dbo].[Promotion] CHECK CONSTRAINT [FromPromotions__FromDivision]
 ALTER TABLE [dbo].[Promotion] CHECK CONSTRAINT [ToPromotions__ToDivision]
 ALTER TABLE [dbo].[Resource] WITH CHECK CHECK CONSTRAINT [FK_Resource_Division]
+
+PRINT(N'Add constraints to [dbo].[BundleHeader]')
+ALTER TABLE [dbo].[BundleHeader] CHECK CONSTRAINT [BundleHeaders__Fund]
+ALTER TABLE [dbo].[BundleHeader] CHECK CONSTRAINT [FK_BUNDLE_HEADER_TBL_BundleHeaderTypes]
+ALTER TABLE [dbo].[BundleHeader] CHECK CONSTRAINT [FK_BUNDLE_HEADER_TBL_BundleStatusTypes]
+ALTER TABLE [dbo].[BundleDetail] CHECK CONSTRAINT [BUNDLE_DETAIL_BUNDLE_FK]
 ALTER TABLE [dbo].[VoluteerApprovalIds] CHECK CONSTRAINT [FK_VoluteerApprovalIds_VolunteerCodes]
 ALTER TABLE [dbo].[Volunteer] CHECK CONSTRAINT [FK_Volunteer_VolApplicationStatus]
 ALTER TABLE [dbo].[Volunteer] CHECK CONSTRAINT [StatusMvrId__StatusMvr]
@@ -4497,10 +4508,7 @@ ALTER TABLE [dbo].[Contribution] CHECK CONSTRAINT [FK_Contribution_ContributionS
 ALTER TABLE [dbo].[Contact] CHECK CONSTRAINT [FK_Contacts_ContactTypes]
 ALTER TABLE [dbo].[Contact] CHECK CONSTRAINT [FK_NewContacts_ContactReasons]
 ALTER TABLE [dbo].[Resource] WITH CHECK CHECK CONSTRAINT [FK_Resource_Campus]
-ALTER TABLE [dbo].[BundleHeader] CHECK CONSTRAINT [FK_BUNDLE_HEADER_TBL_BundleStatusTypes]
-ALTER TABLE [dbo].[BundleHeader] CHECK CONSTRAINT [FK_BUNDLE_HEADER_TBL_BundleHeaderTypes]
 ALTER TABLE [dbo].[Contribution] CHECK CONSTRAINT [FK_Contribution_ExtraData]
-ALTER TABLE [dbo].[BundleHeader] CHECK CONSTRAINT [BundleHeaders__Fund]
 ALTER TABLE [dbo].[Contribution] CHECK CONSTRAINT [FK_Contribution_ContributionFund]
 ALTER TABLE [dbo].[RecurringAmounts] CHECK CONSTRAINT [FK_RecurringAmounts_ContributionFund]
 ALTER TABLE [dbo].[ContentKeyWords] CHECK CONSTRAINT [FK_ContentKeyWords_Content]
