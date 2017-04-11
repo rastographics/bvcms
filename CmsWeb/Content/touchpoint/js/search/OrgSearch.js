@@ -435,6 +435,8 @@
             args += "&highlight=" + $("#highlightsg").val();
         if ($("#sgprefix").val())
             args += "&sgprefix=" + $("#sgprefix").val();
+        if ($('#usepdf').is(":checked"))
+            args += "&usepdf=1";
 
         if ($('#rallymode').is(":checked"))
             $("#orgsearchform").attr("action", "/Reports/RallyRollsheets" + args);

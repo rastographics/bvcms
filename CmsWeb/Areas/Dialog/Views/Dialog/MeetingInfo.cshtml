@@ -1,5 +1,8 @@
 ﻿@using System.Web.Mvc.Html
 @model CmsWeb.Areas.Dialog.Models.NewMeetingInfo
+    @{
+        var forRollsheet = (bool?)ViewBag.ForRollsheet == true;
+    }
 <div class="modal-dialog">
     <div class="modal-content">
         <form class="validate" action="@ViewBag.Action" method="POST">
@@ -15,6 +18,7 @@
                 @Html.EditorFor(m => m.GroupFilterPrefix)
                 @Html.EditorFor(m => m.HighlightGroup)
                 @Html.EditorFor(m => m.UseAltNames)
+                @Html.EditorForIf(m => m.UsePdf, forRollsheet)
                 @Html.HiddenFor(m => m.OrganizationId)
             </div>
             <div class="modal-footer">

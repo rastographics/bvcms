@@ -26,6 +26,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             };
             ViewBag.Action = "/CreateNewMeeting/";
             ViewBag.Method = "POST";
+            ViewBag.ForRollsheet = false;
             return View("MeetingInfo", m);
         }
 
@@ -41,6 +42,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             };
             ViewBag.Action = "/Reports/RollsheetForOrg/" + orgid;
             ViewBag.Method = "POST";
+            ViewBag.ForRollsheet = true;
             return View("MeetingInfo", m);
         }
 
@@ -56,6 +58,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             };
             ViewBag.Action = "/Reports/RallyRollsheetForOrg/" + orgid;
             ViewBag.Method = "POST";
+            ViewBag.ForRollsheet = false;
             return View("MeetingInfo", m);
         }
 
@@ -68,6 +71,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 Schedule = null,
                 AttendCredit = null
             };
+            ViewBag.ForRollsheet = true;
             return View("MeetingInfo", m);
         }
 
@@ -80,6 +84,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 Schedule = null,
                 AttendCredit = null,
             };
+            ViewBag.ForRollsheet = false;
             return View("MeetingInfo", m);
         }
 
@@ -87,7 +92,10 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult CreateNewMeeting(NewMeetingInfo model)
         {
             if (!ModelState.IsValid)
+            {
+                ViewBag.ForRollsheet = false;
                 return View("MeetingInfo", model);
+            }
             var organization = DbUtil.Db.LoadOrganizationById(Util2.CurrentOrganization.Id);
             if (organization == null)
                 return Content("error: no org");

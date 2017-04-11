@@ -659,7 +659,7 @@ namespace CmsWeb.Areas.Reports.Controllers
 
         [HttpPost]
         public ActionResult Rollsheet(string dt, int? bygroup, string sgprefix,
-            bool? altnames, string highlight, OrgSearchModel m)
+            bool? altnames, string highlight, int? usepdf, OrgSearchModel m)
         {
             DateTime? dt2 = dt.ToDate();
             if (!dt2.HasValue)
@@ -672,7 +672,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                 HighlightGroup = highlight,
                 MeetingDate = dt2.Value
             };
-            if (DbUtil.Db.Setting("UsePdfRollsheet"))
+            if (usepdf == 1)
                 return new RollsheetResult { OrgSearchModel = m, NewMeetingInfo = mi };
             return new DocXRollsheetResult { OrgSearchModel = m, NewMeetingInfo = mi };
         }
@@ -680,7 +680,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpPost, Route("RollsheetForOrg/{orgid:int?}")]
         public ActionResult RollsheetForOrg(int? orgid, NewMeetingInfo mi)
         {
-            if (DbUtil.Db.Setting("UsePdfRollsheet"))
+            if (mi.UsePdf == true)
                 return new RollsheetResult { orgid = orgid, NewMeetingInfo = mi };
             return new DocXRollsheetResult { orgid = orgid, NewMeetingInfo = mi };
         }
@@ -688,15 +688,13 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet, Route("RollsheetForMeeting/{meetingid:int}")]
         public ActionResult RollsheetForMeeting(int meetingid)
         {
-            if (DbUtil.Db.Setting("UsePdfRollsheet"))
-                return new RollsheetResult { meetingid = meetingid };
             return new DocXRollsheetResult { meetingid = meetingid };
         }
 
         [HttpPost]
         public ActionResult Rollsheets(NewMeetingInfo mi, OrgSearchModel m)
         {
-            if (DbUtil.Db.Setting("UsePdfRollsheet"))
+            if (mi.UsePdf == true)
                 return new RollsheetResult { OrgSearchModel = m, NewMeetingInfo = mi };
             return new DocXRollsheetResult { OrgSearchModel = m, NewMeetingInfo = mi };
         }
