@@ -468,6 +468,7 @@
     <Compile Include="Email\ReplacementCodes\Replacements\DateFormatted.cs" />
     <Compile Include="Email\ReplacementCodes\Replacements\RecentGifts.cs" />
     <Compile Include="Email\ReplacementCodes\Replacements\DynamicData.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\Image.cs" />
     <Compile Include="Email\ReplacementCodes\Replacements\StatementType.cs" />
     <Compile Include="Email\ReplacementCodes\Replacements\ExtraValue.cs" />
     <Compile Include="Email\ReplacementCodes\Links\RegisterLink.cs" />
