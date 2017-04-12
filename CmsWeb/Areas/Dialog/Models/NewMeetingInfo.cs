@@ -16,6 +16,6 @@ namespace CmsWeb.Areas.Dialog.Models
         public string HighlightGroup { get; set; }
         public bool UseAltNames { get; set; }
         public int? OrganizationId { get; set; }
-        public bool UsePdf { get; set; }
+        public bool UseWord { get; set; }
     }
 }

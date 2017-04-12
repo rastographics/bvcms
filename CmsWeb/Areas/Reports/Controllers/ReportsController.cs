@@ -659,7 +659,7 @@ namespace CmsWeb.Areas.Reports.Controllers
 
         [HttpPost]
         public ActionResult Rollsheet(string dt, int? bygroup, string sgprefix,
-            bool? altnames, string highlight, int? usepdf, OrgSearchModel m)
+            bool? altnames, string highlight, int? useword, OrgSearchModel m)
         {
             DateTime? dt2 = dt.ToDate();
             if (!dt2.HasValue)
@@ -672,31 +672,31 @@ namespace CmsWeb.Areas.Reports.Controllers
                 HighlightGroup = highlight,
                 MeetingDate = dt2.Value
             };
-            if (usepdf == 1)
-                return new RollsheetResult { OrgSearchModel = m, NewMeetingInfo = mi };
-            return new DocXRollsheetResult { OrgSearchModel = m, NewMeetingInfo = mi };
+            if (useword == 1)
+                return new DocXRollsheetResult { OrgSearchModel = m, NewMeetingInfo = mi };
+            return new RollsheetResult { OrgSearchModel = m, NewMeetingInfo = mi };
         }
 
         [HttpPost, Route("RollsheetForOrg/{orgid:int?}")]
         public ActionResult RollsheetForOrg(int? orgid, NewMeetingInfo mi)
         {
-            if (mi.UsePdf == true)
-                return new RollsheetResult { orgid = orgid, NewMeetingInfo = mi };
-            return new DocXRollsheetResult { orgid = orgid, NewMeetingInfo = mi };
+            if (mi.UseWord == true)
+                return new DocXRollsheetResult { orgid = orgid, NewMeetingInfo = mi };
+            return new RollsheetResult { orgid = orgid, NewMeetingInfo = mi };
         }
 
         [HttpGet, Route("RollsheetForMeeting/{meetingid:int}")]
         public ActionResult RollsheetForMeeting(int meetingid)
         {
-            return new DocXRollsheetResult { meetingid = meetingid };
+            return new RollsheetResult() { meetingid = meetingid };
         }
 
         [HttpPost]
         public ActionResult Rollsheets(NewMeetingInfo mi, OrgSearchModel m)
         {
-            if (mi.UsePdf == true)
-                return new RollsheetResult { OrgSearchModel = m, NewMeetingInfo = mi };
-            return new DocXRollsheetResult { OrgSearchModel = m, NewMeetingInfo = mi };
+            if (mi.UseWord == true)
+                return new DocXRollsheetResult { OrgSearchModel = m, NewMeetingInfo = mi };
+            return new RollsheetResult { OrgSearchModel = m, NewMeetingInfo = mi };
         }
 
         [HttpGet]
