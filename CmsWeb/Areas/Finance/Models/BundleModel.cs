@@ -69,7 +69,7 @@ namespace CmsWeb.Areas.Finance.Models
         public string Type;
         public string DefaultFund;
 
-        public BundleHeader Bundle; 
+        public BundleHeader Bundle;
 
         public BundleModel()
         {
@@ -77,7 +77,7 @@ namespace CmsWeb.Areas.Finance.Models
         public BundleModel(int id)
         {
             BundleId = id;
-            
+
         }
 
         private IQueryable<Contribution> bundleItems;
@@ -103,10 +103,10 @@ namespace CmsWeb.Areas.Finance.Models
         {
             if (bundleItems == null)
                 bundleItems = from d in DbUtil.Db.BundleDetails
-                               where d.BundleHeaderId == BundleId
-            				   let sort = d.BundleSort1 > 0 ? d.BundleSort1 : d.BundleDetailId
-                               orderby sort, d.ContributionId
-                               select d.Contribution;
+                              where d.BundleHeaderId == BundleId
+                              let sort = d.BundleSort1 > 0 ? d.BundleSort1 : d.BundleDetailId
+                              orderby sort, d.ContributionId
+                              select d.Contribution;
             return bundleItems;
         }
 
@@ -142,7 +142,11 @@ namespace CmsWeb.Areas.Finance.Models
         }
         public IEnumerable<SelectListItem> BundleStatusList()
         {
-            return new SelectList(DbUtil.Db.BundleStatusTypes, "Id", "Description", Bundle.BundleStatusId);
+            var q = from bs in DbUtil.Db.BundleStatusTypes
+                    let hasDataEntryRole = DbUtil.Db.Roles.Any(rr => rr.RoleName == "FinanceDataEntry")
+                    where bs.Id < 2 || hasDataEntryRole
+                    select bs;
+            return new SelectList(q, "Id", "Description", Bundle.BundleStatusId);
         }
 
 
