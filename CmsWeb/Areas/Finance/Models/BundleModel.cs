@@ -26,7 +26,7 @@ namespace CmsWeb.Areas.Finance.Models
         public int BundleStatusId { get; set; }
         public bool IsAdmin => HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.User.IsInRole("FinanceAdmin");
         public bool IsDataEntry => HttpContext.Current.User.IsInRole("FinanceDataEntry");
-        public bool CanEdit => BundleStatusId == BundleStatusCode.Open || IsAdmin;
+        public bool CanEdit => BundleStatusId == BundleStatusCode.Open || BundleStatusId == BundleStatusCode.OpenForDataEntry || IsAdmin;
 
         public bool CanChangeStatus
         {

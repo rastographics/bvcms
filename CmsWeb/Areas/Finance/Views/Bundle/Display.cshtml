@@ -19,7 +19,10 @@
                         <ul class="dropdown-menu dropdown-menu-right">
                             @if (Model.IsAdmin || Model.BundleStatusId != BundleStatusCode.Closed)
                             {
+                                if (!User.IsInRole("FinanceDataEntry"))
+                                {
                                 <li><a id="delete" href="/Bundle/Delete/@Model.BundleId"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete</a></li>
+                                }
                             }
                             @if (Model.CanEdit)
                             {
