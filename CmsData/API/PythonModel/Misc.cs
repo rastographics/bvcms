@@ -156,5 +156,15 @@ namespace CmsData
             var s = JsonConvert.SerializeObject(d, Formatting.Indented);
             return s.Replace("\r\n", "\n");
         }
+
+        public string ReplaceCodeStr(string text, string replacements)
+        {
+            foreach (var pair in replacements.SplitStr(","))
+            {
+                var a = pair.SplitStr("=", 2);
+                text = text.Replace(a[0], a[1]);
+            }
+            return text;
+        }
     }
 }
