@@ -24,7 +24,6 @@ namespace CmsWeb.Areas.Finance.Models
         }
 
         public int BundleStatusId { get; set; }
-
         public bool IsAdmin => HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.User.IsInRole("FinanceAdmin");
         public bool IsDataEntry => HttpContext.Current.User.IsInRole("FinanceDataEntry");
         public bool CanEdit => BundleStatusId == BundleStatusCode.Open || IsAdmin;
@@ -139,12 +138,11 @@ namespace CmsWeb.Areas.Finance.Models
         }
         public IEnumerable<SelectListItem> ContributionFundList()
         {
-            return new SelectList(DbUtil.Db.ContributionFunds.Where(ff => ff.FundStatusId == 1), "FundId", "FundName",
-                Bundle.FundId);
+            return new SelectList(DbUtil.Db.ContributionFunds.Where(ff => ff.FundStatusId == 1), "FundId", "FundName", Bundle.FundId);
         }
         public IEnumerable<SelectListItem> BundleStatusList()
         {
-            return CodeValueModel.BundleStatusTypes().ToSelect();
+            return new SelectList(DbUtil.Db.BundleStatusTypes, "Id", "Description", Bundle.BundleStatusId);
         }
 
 

@@ -1,5 +1,12 @@
 ﻿@using System.Globalization
 @model CmsWeb.Areas.Finance.Models.BundleModel
+@{
+    object statusattributes = new {@class = "form-control"};
+    if (!Model.CanChangeStatus)
+    {
+        statusattributes = new {@class = "form-control", disabled = "disabled"};
+    }
+}
 <div class="row">
     <div class="col-sm-12 col-md-12 col-lg-10">
         <div class="box box-responsive">
@@ -63,12 +70,12 @@
                         </div>
                         <div class="col-sm-3">
                             <div class="form-group">
-                                <label for="BundleStatusId" class="control-label">Bundle Type</label>
-                                @Html.DropDownListFor(m => m.Bundle.BundleStatusId, Model.BundleStatusList(), new { @class = "form-control" })
-@*                                @if (Model.CanChangeStatus)*@
-@*                                {*@
-@*                                    @Html.HiddenFor(m => m.IsOpen)*@
-@*                                }*@
+                                <label for="BundleStatusId" class="control-label">Bundle Status</label>
+                                @Html.DropDownListFor(m => m.Bundle.BundleStatusId, Model.BundleStatusList(), statusattributes)
+                                @if (Model.CanChangeStatus)
+                                {
+                                    @Html.Hidden("IsOpen", Model.BundleStatusId > 0)
+                                }
                             </div>
                         </div>
                     </div>
