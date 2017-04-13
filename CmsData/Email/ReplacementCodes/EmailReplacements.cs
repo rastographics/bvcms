@@ -61,6 +61,7 @@ namespace CmsData
             // we do the InsertDrafts replacement code here so that it is only inserted once before the replacements
             // and so that there can be replacement codes in the draft itself and they will get replaced.
             text = DoInsertDrafts(text);
+            text = ColorCodesReplacement(text);
 
             text = MapUrlEncodedReplacementCodes(text, new[] { "emailhref" });
             if (!noPremailer)

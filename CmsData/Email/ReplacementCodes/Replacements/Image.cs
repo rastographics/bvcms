@@ -6,7 +6,7 @@ namespace CmsData
 {
     public partial class EmailReplacements
     {
-        private const string MatchImageRe = @"https://[^\#]+\#\{(image|settingurl)=[^""]*\}";
+        private const string MatchImageRe = @"https://[^\#]+\#\{image=[^""]*\}";
         private static readonly Regex ImageRe = new Regex(MatchImageRe, RegexOptions.Singleline);
 
         private string ImageReplacement(string code)

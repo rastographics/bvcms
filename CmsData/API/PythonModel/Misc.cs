@@ -157,9 +157,11 @@ namespace CmsData
             return s.Replace("\r\n", "\n");
         }
 
-        public string ReplaceCodeStr(string text, string replacements)
+        public string ReplaceCodeStr(string text, string codes)
         {
-            foreach (var pair in replacements.SplitStr(","))
+            codes = Regex.Replace(codes, @"//\w*", ","); // replace comments
+            codes = Regex.Replace(codes, @"\s*", ""); // remove spaces
+            foreach (var pair in codes.SplitStr(","))
             {
                 var a = pair.SplitStr("=", 2);
                 text = text.Replace(a[0], a[1]);

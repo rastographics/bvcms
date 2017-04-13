@@ -466,6 +466,7 @@
     <Compile Include="Email\ReplacementCodes\Links\CreateUserLink.cs" />
     <Compile Include="Email\ReplacementCodes\Links\UnSubscribe.cs" />
     <Compile Include="Email\ReplacementCodes\Replacements\DateFormatted.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\ColorCodesComment.cs" />
     <Compile Include="Email\ReplacementCodes\Replacements\RecentGifts.cs" />
     <Compile Include="Email\ReplacementCodes\Replacements\DynamicData.cs" />
     <Compile Include="Email\ReplacementCodes\Replacements\Image.cs" />
