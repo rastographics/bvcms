@@ -8,21 +8,25 @@ namespace CmsData
 {
     public partial class EmailReplacements
     {
-        private const string MatchPledgeFundRe = @"{pledgefund\[(?<fundid>\d+)\]\.(?<value>[^}]*)}";
+        private const string MatchPledgeFundRe = @"{pledgefund\[(?<fund>[^\]]+)\]\.(?<value>[^}]*)}";
         private Dictionary<int, View.PledgeReport> pledgefunds;
         private static readonly Regex PledgeFundRe = new Regex(MatchPledgeFundRe, RegexOptions.Singleline);
 
         private string PledgeFundReplacement(string code)
         {
             var match = PledgeFundRe.Match(code);
-            var fundid = match.Groups["fundid"].Value.ToInt();
+            var fund = match.Groups["fund"].Value;
+            var fundid = fund.AllDigits() 
+                ? fund.ToInt() 
+                : db.Setting(fund, "-1").ToInt();
+
             var value = match.Groups["value"].Value;
 
             if (pledgefunds == null)
                 pledgefunds = db.PledgeReport(DateTime.Parse("1/1/1900"), DateTime.Parse("1/1/3000"), 0)
                     .ToDictionary(vv => vv.FundId, vv => vv);
             if(!pledgefunds.ContainsKey(fundid))
-                    return "PledgeFund not found";
+                    return $"pledgefund[{fund}] not found";
             switch (value)
             {
                 case "Name":
