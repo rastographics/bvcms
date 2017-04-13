@@ -532,7 +532,10 @@ p { font-size: 11px; }
             if (count == 0)
             {
                 doc.NewPage();
-                doc.Add(new Phrase("no data"));
+                doc.Add(new Paragraph("no data"));
+                var a = new Anchor("see this help document docs.touchpointsoftware.com/Finance/ContributionStatements.html")
+                    { Reference = "http://docs.touchpointsoftware.com/Finance/ContributionStatements.html#troubleshooting" };
+                doc.Add(a);
             }
             doc.Close();
 
