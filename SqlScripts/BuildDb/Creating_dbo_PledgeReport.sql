@@ -14,10 +14,11 @@ RETURN
 		SUM(tt.Amt) AS ToFund
 	FROM
 	(
-	SELECT SUM(ISNULL(Amount,0)) Amt, SUM(ISNULL(PledgeAmount, 0)) Plg, FundId, FundName
-	FROM Contributions2(@fd, @td, @campusid, NULL, NULL, 1)
-	GROUP BY CreditGiverId, SpouseId, FundId, FundName, OpenPledgeFund
-	HAVING  OpenPledgeFund = 1
+	SELECT SUM(ISNULL(Amount,0)) Amt, SUM(ISNULL(PledgeAmount, 0)) Plg, f.FundId, f.FundName
+	FROM dbo.ContributionFund f
+	LEFT JOIN Contributions2(@fd, @td, @campusid, NULL, NULL, 1) c ON c.FundId = f.FundId
+	GROUP BY CreditGiverId, SpouseId, f.FundId, f.FundName, f.FundPledgeFlag
+	HAVING  f.FundPledgeFlag = 1
 	) tt
 	GROUP BY FundId, tt.FundName
 )
