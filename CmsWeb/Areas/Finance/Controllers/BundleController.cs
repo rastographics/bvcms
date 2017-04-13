@@ -17,7 +17,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         {
             var m = new BundleModel(id);
             if (User.IsInRole("FinanceDataEntry") && m.BundleStatusId != BundleStatusCode.OpenForDataEntry)
-                return Message("Bundle is no longer open for data entry");
+                return Redirect("/Bundles");
             if (m.Bundle == null)
                 return Content("no bundle");
             return View(m);
@@ -70,6 +70,8 @@ namespace CmsWeb.Areas.Finance.Controllers
                     d.Contribution.PostingDate = postingdt;
             }
             DbUtil.Db.SubmitChanges();
+            if(User.IsInRole("FinanceDataEntry"))
+                return Redirect("/Bundles");
             m.BundleId = id; // refresh values
             return View("Display", m);
         }
