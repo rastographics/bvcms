@@ -72,11 +72,11 @@ namespace CmsWeb.Models
                 };
                 foreach (var pledge in week)
                 {
-                    var pid = GetPeopleId(pledge.IndividualId);
-                    if (!pid.HasValue)
-                        throw new Exception($"peopleid not found from individualid {pledge.IndividualId}");
+                    var pid = GetPeopleId(pledge);
                     if (!Testing)
                     {
+                        if (!pid.HasValue)
+                            throw new Exception($"peopleid not found from individualid {pledge.IndividualId}");
                         var f = db.FetchOrCreateFund(pledge.FundId, pledge.FundName ?? pledge.FundDescription);
                         f.FundPledgeFlag = true;
                     }
@@ -134,7 +134,7 @@ namespace CmsWeb.Models
                 };
                 foreach (var gift in week)
                 {
-                    var pid = GetPeopleId(gift.IndividualId);
+                    var pid = GetPeopleId(gift);
                     if (!Testing)
                         if (!pid.HasValue)
                             throw new Exception($"peopleid not found from individualid {gift.IndividualId}");
@@ -222,7 +222,7 @@ namespace CmsWeb.Models
         {
             if (Testing)
                 return;
-            var db = DbUtil.Create("host");
+            var db = DbUtil.Create(Host);
             if (!db.Setting("UploadExcelIpsDeleteGifts"))
                 return;
 

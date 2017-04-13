@@ -436,7 +436,7 @@ namespace CmsWeb.Models
             }
         }
 
-        internal virtual int? GetPeopleId(object a)
+        internal virtual int? GetPeopleId(dynamic a)
         {
             return null;
         }
