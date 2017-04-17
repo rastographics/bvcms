@@ -102,13 +102,13 @@ namespace CmsWeb.Areas.Reports.Models
                                     MemberTypeCode = at.MemberType.Code,
                                 };
                         foreach (var m in q)
-                            AddRowWithReplacements(tbl, m, o.OrgId);
+                            AddRowWithReplacements(tbl, m, meeting.OrganizationId);
                     }
                     else
                     {
                         var q = from at in DbUtil.Db.Attends
                                 where at.MeetingId == meeting.MeetingId
-                                join om in DbUtil.Db.OrgMember(Orgid, GroupSelectCode.Member, null, null, groups, false) on at.PeopleId equals om.PeopleId into mm
+                                join om in DbUtil.Db.OrgMember(meeting.OrganizationId, GroupSelectCode.Member, null, null, groups, false) on at.PeopleId equals om.PeopleId into mm
                                 from om in mm.DefaultIfEmpty()
                                 where at.AttendanceFlag || AttendCommitmentCode.committed.Contains(at.Commitment ?? 0)
                                 orderby at.Person.LastName, at.Person.FamilyId, at.Person.Name2
@@ -171,12 +171,12 @@ namespace CmsWeb.Areas.Reports.Models
                 }
                 else
                 {
-                    var q = from m in DbUtil.Db.OrgPeople(Orgid, currentOrg.GroupSelect,
+                    var q = from m in DbUtil.Db.OrgPeople(currentOrg.Id, currentOrg.GroupSelect,
                             currentOrg.First(), currentOrg.Last(), currentOrg.SgFilter, currentOrg.ShowHidden,
                             currentOrg.FilterIndividuals, currentOrg.FilterTag)
                             orderby m.Name2
                             let p = DbUtil.Db.People.Single(pp => pp.PeopleId == m.PeopleId)
-                            let om = p.OrganizationMembers.SingleOrDefault(mm => mm.OrganizationId == Orgid)
+                            let om = p.OrganizationMembers.SingleOrDefault(mm => mm.OrganizationId == currentOrg.Id)
                             let useAltName = NewMeetingInfo.UseAltNames && p.AltName != null && p.AltName.Length > 0
                             select new RollsheetPersonInfo
                             {
@@ -201,7 +201,7 @@ namespace CmsWeb.Areas.Reports.Models
                         && !currentOrg.FilterTag
                         && NewMeetingInfo.ByGroup == false))
                 {
-                    var q = from vp in DbUtil.Db.OrgVisitorsAsOfDate(Orgid, NewMeetingInfo.MeetingDate, NoCurrentMembers: true)
+                    var q = from vp in DbUtil.Db.OrgVisitorsAsOfDate(o.OrgId, NewMeetingInfo.MeetingDate, NoCurrentMembers: true)
                             let p = DbUtil.Db.People.Single(pp => pp.PeopleId == vp.PeopleId)
                             orderby p.LastName, p.FamilyId, p.PreferredName
                             select new RollsheetPersonInfo { Person = p, MemberTypeCode = vp.VisitorType };
@@ -252,8 +252,12 @@ namespace CmsWeb.Areas.Reports.Models
                                     p.Remove(false);
                             else if (d.Key.Equal("{altname}"))
                                 p.ReplaceText(d.Key, m.UseAltName ? m.Person.AltName : "");
-                            else if (d.Key.Equal("{altname|name}"))
-                                p.ReplaceText(d.Key, m.UseAltName ? m.Person.AltName : m.Person.Name2);
+                            else if (d.Key.Equal("{name}"))
+                            {
+                                p.ReplaceText(d.Key, m.Person.Name2);
+                                if (m.MemberTypeCode == "VS")
+                                    row.Cells.Last().Shading = Color.FromArgb(226,239,217); // light green
+                            }
                             else
                                 p.ReplaceText(d.Key, d.Value);
         }
