@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -17,10 +18,12 @@ using BarcodeLib;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.Dialog.Models;
+using CmsWeb.Areas.Public.Models;
 using CmsWeb.Areas.Search.Models;
 using Novacode;
 using OpenXmlPowerTools;
 using UtilityExtensions;
+using Image = Novacode.Image;
 using Paragraph = Novacode.Paragraph;
 using Table = Novacode.Table;
 using Util = UtilityExtensions.Util;
@@ -237,7 +240,7 @@ namespace CmsWeb.Areas.Reports.Models
                         if (p.Text.Contains(d.Key))
                             if (d.Key == "{barcodepeopleid}")
                             {
-                                var s = BarCodeStream(m.Person.PeopleId.ToString(), 30, showtext: false);
+                                var s = BarCodeStream(m.Person.PeopleId.ToString(), 40, showtext: false);
                                 var img = curr.AddImage(s);
                                 p.AppendPicture(img.CreatePicture());
                                 p.ReplaceText(d.Key, "");
@@ -276,7 +279,7 @@ namespace CmsWeb.Areas.Reports.Models
                 else if (code == "{barcodemeeting}")
                 {
                     var text = $"M.{o.OrgId}.{NewMeetingInfo.MeetingDate:MMddyyHHmm}";
-                    var s = BarCodeStream(text, 35, showtext: false);
+                    var s = BarCodeStream(text, 50, showtext: false);
                     var img = curr.AddImage(s);
                     p.AppendPicture(img.CreatePicture());
                     p.ReplaceText(code, "");
@@ -287,15 +290,19 @@ namespace CmsWeb.Areas.Reports.Models
 
         private static MemoryStream BarCodeStream(string text, int height, bool showtext = true)
         {
-            var barcode = new Barcode
+            var bc = new Code39BarCode()
             {
-                IncludeLabel = showtext,
-                BarWidth = 1,
+                ShowBarCodeText = showtext,
+                BarCodePadding = 5,
+                BarCodeText = text,
                 Height = height,
+                ImageFormat = ImageFormat.Png,
+                Weight = Code39BarCode.BarCodeWeight.Small
             };
-            var img = barcode.Encode(TYPE.CODE39, text);
+            var bytes = bc.Generate();
+            var x = (Bitmap)new ImageConverter().ConvertFrom(bytes);
             var ms = new MemoryStream();
-            img.Save(ms, ImageFormat.Png);
+            x.Save(ms, ImageFormat.Png);
             ms.Position = 0;
             return ms;
         }
