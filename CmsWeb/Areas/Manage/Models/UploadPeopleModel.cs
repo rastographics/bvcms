@@ -267,6 +267,9 @@ namespace CmsWeb.Models
                 }
                 switch (type)
                 {
+                    case "fam":
+                        p.Family.AddEditExtraCode(name, Util.trim(a[name]));
+                        break;
                     case "txt":
                         p.AddEditExtraText(name, a[name]);
                         break;
@@ -428,7 +431,7 @@ namespace CmsWeb.Models
                 n++;
                 if (c.Text.HasValue())
                 {
-                    var b = c.Text.Split('.');
+                    var b = c.Text.SplitStr(".",2);
                     if (b.Length > 1)
                         Evtypes[b[0]] = b[1];
                     Names.Add(c.Text, n);
