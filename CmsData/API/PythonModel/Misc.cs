@@ -4,10 +4,8 @@ using System.Text.RegularExpressions;
 using System.Web;
 using MarkdownDeep;
 using RestSharp;
-using RestSharp.Extensions;
 using UtilityExtensions;
-using System.Collections;
-using CmsData.API;
+using System.Linq;
 using IronPython.Runtime;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -117,7 +115,7 @@ namespace CmsData
 
             var request = new RestRequest(Method.GET);
             foreach (var kv in headers)
-                request.AddHeader((string) kv.Key, (string) kv.Value);
+                request.AddHeader((string)kv.Key, (string)kv.Value);
             var response = client.Execute(request);
             return response.Content;
 #endif
@@ -125,7 +123,7 @@ namespace CmsData
         public string RestPost(string url, PythonDictionary headers, object body, string user = null, string password = null)
         {
             var client = new RestClient(url);
-            if(user?.Length > 0 && password?.Length > 0)
+            if (user?.Length > 0 && password?.Length > 0)
                 client.Authenticator = new HttpBasicAuthenticator(user, password);
 
             var request = new RestRequest(Method.POST);
@@ -167,6 +165,85 @@ namespace CmsData
                 text = text.Replace(a[0], a[1]);
             }
             return text;
+        }
+        public void ReplaceQueryFromCode(string encodedguid, string code)
+        {
+            var queryid = encodedguid.ToGuid();
+            var query = db.LoadQueryById2(queryid);
+            var c = Condition.Parse(code, queryid);
+            query.Text = c.ToXml();
+            db.SubmitChanges();
+        }
+
+        public class StatusFlag
+        {
+            public string Id { get; set; }
+            public string Flag { get; set; }
+            public string Desc { get; set; }
+            public string Code { get; set; }
+        }
+
+        public List<StatusFlag> StatusFlagList()
+        {
+            var q = from c in db.Queries
+                    where c.Name.StartsWith("F") && c.Name.Contains(":")
+                    orderby c.Name
+                    select new { c.Name, c.QueryId, c.Text };
+
+            const string findPrefix = @"^F\d+:.*";
+            var re = new Regex(findPrefix, RegexOptions.Singleline | RegexOptions.Multiline);
+            var q2 = from s in q.ToList()
+                     where re.Match(s.Name).Success
+                     let a = s.Name.SplitStr(":", 2)
+                     let c = Condition.Import(s.Text)
+                     orderby a[0]
+                     select new StatusFlag()
+                     {
+                         Flag = a[0],
+                         Id = s.QueryId.ToCode(),
+                         Desc = a[1],
+                         Code = Regex.Replace(c.ToCode(), "^", "\t", RegexOptions.Multiline),
+                     };
+            return q2.ToList();
+        }
+        public Dictionary<string, StatusFlag> StatusFlagDictionary(string flags = null)
+        {
+            var filter = flags?.Split(',');
+
+            var q = from c in db.Queries
+                    where c.Name.StartsWith("F") && c.Name.Contains(":")
+                    orderby c.Name
+                    select new { c.Name, c.QueryId, c.Text };
+
+            const string findPrefix = @"^F\d+:.*";
+            var re = new Regex(findPrefix, RegexOptions.Singleline | RegexOptions.Multiline);
+            var q2 = from s in q.ToList()
+                     where re.Match(s.Name).Success
+                     let a = s.Name.SplitStr(":", 2)
+                     let c = Condition.Import(s.Text)
+                     where (filter == null || filter.Contains(a[0]))
+                     orderby a[0]
+                     select new StatusFlag()
+                     {
+                         Flag = a[0],
+                         Id = s.QueryId.ToCode(),
+                         Desc = a[1],
+                         Code = Regex.Replace(c.ToCode(), "^", "\t", RegexOptions.Multiline),
+                     };
+            return q2.ToDictionary(vv => vv.Flag, vv => vv);
+        }
+
+        public void UpdateStatusFlags()
+        {
+            db.UpdateStatusFlags();
+        }
+        public void UpdateStatusFlag(string flagid, string encodedguid)
+        {
+            var temptag = db.PopulateTempTag(new List<int>());
+            var queryid = encodedguid.ToGuid();
+            var qq = db.PeopleQuery(queryid ?? Guid.Empty);
+            db.TagAll2(qq, temptag);
+            db.ExecuteCommand("dbo.UpdateStatusFlag {0}, {1}", flagid, temptag.Id);
         }
     }
 }

@@ -26,6 +26,16 @@ namespace CmsData
                 throw new Exception("bad date: " + dt);
             return dt2.Value.AddDays(days);
         }
+        public int DateDiffDays(object dt1, object dt2)
+        {
+            var d1 = dt1.ToDate();
+            var d2 = dt2.ToDate();
+            if (!d1.HasValue)
+                throw new Exception("bad date: " + dt1);
+            if (!d2.HasValue)
+                throw new Exception("bad date: " + dt2);
+            return d2.Value.Subtract(d1.Value).Days;
+        }
 
         public DateTime DateAddHours(object dt, int hours)
         {
