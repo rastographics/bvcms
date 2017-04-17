@@ -115,6 +115,8 @@ namespace CmsWeb.Models
                     Family f = null;
                     var potentialdup = false;
                     int? pid = FindRecord(db, a, ref potentialdup);
+                    if (pid == -1) // no data: no first or last name
+                        continue;
                     var p = pid.HasValue
                         ? UpdateRecord(db, pid.Value, a)
                         : NewRecord(db, ref f, a, prevpid, potentialdup);
@@ -451,11 +453,13 @@ namespace CmsWeb.Models
 
             string first = a.First as string;
             string last = a.Last as string;
+            if (!first.HasValue() && !last.HasValue())
+                return -1;
             DateTime? dt = GetDate(a.Birthday);
             string email = GetStringTrimmed(a.Email);
             string cell = GetDigits(a.CellPhone);
             string home = GetDigits(a.HomePhone);
-
+            
             var pid = db.FindPerson3(first, last, dt, email, cell, home, null).FirstOrDefault();
 
             if (Noupdate && pid?.PeopleId != null)

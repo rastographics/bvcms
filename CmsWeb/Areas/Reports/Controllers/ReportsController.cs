@@ -681,7 +681,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         public ActionResult RollsheetForOrg(int? orgid, NewMeetingInfo mi)
         {
             if (mi.UseWord == true)
-                return new DocXRollsheetResult { orgid = orgid, NewMeetingInfo = mi };
+                return new DocXRollsheetResult { Orgid = orgid, NewMeetingInfo = mi };
             return new RollsheetResult { orgid = orgid, NewMeetingInfo = mi };
         }
 
