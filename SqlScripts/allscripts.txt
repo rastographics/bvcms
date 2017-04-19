@@ -439,6 +439,7 @@ Creating_dbo_AddUserFromOtherId.sql
 Creating_dbo_VisitsAbsents.sql
 Creating_dbo_FirstName.sql
 Creating_dbo_GetContributions.sql
+Creating_dbo_Pledges0.sql
 Creating_dbo_Query.sql
 Creating_pk_PK_Query_1_dbo_Query.sql
 Creating_dbo_StatusFlagsPerson.sql
@@ -659,7 +660,6 @@ Creating_dbo_ComputePositionInFamily.sql
 Creating_dbo_GetPeopleIdFromACS.sql
 Creating_dbo_BundleList.sql
 Creating_dbo_StatusFlagsAll.sql
-Creating_dbo_Pledges0.sql
 Creating_dbo_LastChanged.sql
 Creating_dbo_SundayDates.sql
 Creating_dbo_Churches.sql
