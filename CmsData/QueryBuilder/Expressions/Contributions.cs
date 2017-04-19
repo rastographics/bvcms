@@ -389,6 +389,69 @@ namespace CmsData
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
+        internal Expression RecentPledgeBalanceBothJoint()
+        {
+            var now = Util.Now;
+            var dt = now.AddDays(-Days);
+            return PledgeBalanceBothJoint(dt, now);
+        }
+        internal Expression PledgeBalanceBothJointHistory()
+        {
+            DateTime? enddt = null;
+            if (!EndDate.HasValue && StartDate.HasValue)
+                    enddt = StartDate.Value.AddHours(24);
+            if(EndDate.HasValue)
+                enddt = EndDate.Value.AddHours(24);
+            return PledgeBalanceBothJoint(StartDate, enddt);
+
+        }
+        private Expression PledgeBalanceBothJoint(DateTime? startdt, DateTime? enddt)
+        {
+            if (!db.FromBatch)
+                if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
+                    return AlwaysFalse();
+            var amt = decimal.Parse(TextValue);
+            var fund = Quarters.ToInt2();
+
+            IQueryable<int> q = null;
+            switch (op)
+            {
+                case CompareType.Greater:
+                    q = from c in db.GetPledgedTotalsBothIfJoint(startdt, enddt, fund)
+                        where c.Balance > amt
+                        select c.PeopleId.Value;
+                    break;
+                case CompareType.GreaterEqual:
+                    q = from c in db.GetPledgedTotalsBothIfJoint(startdt, enddt, fund)
+                        where c.Balance >= amt
+                        select c.PeopleId.Value;
+                    break;
+                case CompareType.Less:
+                    q = from c in db.GetPledgedTotalsBothIfJoint(startdt, enddt, fund)
+                        where c.Balance <= amt
+                        select c.PeopleId.Value;
+                    break;
+                case CompareType.LessEqual:
+                    q = from c in db.GetPledgedTotalsBothIfJoint(startdt, enddt, fund)
+                        where c.Balance <= amt
+                        select c.PeopleId.Value;
+                    break;
+                case CompareType.Equal:
+                    q = from c in db.GetPledgedTotalsBothIfJoint(startdt, enddt, fund)
+                        where c.Balance == amt
+                        select c.PeopleId.Value;
+                    break;
+                case CompareType.NotEqual:
+                    q = from c in db.GetPledgedTotalsBothIfJoint(startdt, enddt, fund)
+                        where c.Balance != amt
+                        select c.PeopleId.Value;
+                    break;
+            }
+            var tag = db.PopulateTemporaryTag(q);
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            Expression expr = Expression.Invoke(pred, parm);
+            return expr;
+        }
         internal Expression RecentNonTaxDedCount()
         {
             var fund = Quarters.ToInt();

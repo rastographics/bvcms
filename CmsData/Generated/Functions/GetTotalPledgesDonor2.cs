@@ -28,6 +28,10 @@ namespace CmsData.View
 		
 		private decimal? _PledgeAmount;
 		
+		private decimal? _Amount;
+		
+		private decimal? _Balance;
+		
 		private string _MainFellowship;
 		
 		private string _MemberStatus;
@@ -152,6 +156,40 @@ namespace CmsData.View
 			{
 				if (this._PledgeAmount != value)
 					this._PledgeAmount = value;
+			}
+
+		}
+
+		
+		[Column(Name="Amount", Storage="_Amount", DbType="Decimal(38,2)")]
+		public decimal? Amount
+		{
+			get
+			{
+				return this._Amount;
+			}
+
+			set
+			{
+				if (this._Amount != value)
+					this._Amount = value;
+			}
+
+		}
+
+		
+		[Column(Name="Balance", Storage="_Balance", DbType="Decimal(38,2)")]
+		public decimal? Balance
+		{
+			get
+			{
+				return this._Balance;
+			}
+
+			set
+			{
+				if (this._Balance != value)
+					this._Balance = value;
 			}
 
 		}

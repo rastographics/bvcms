@@ -30,6 +30,8 @@ namespace CmsData.View
 		
 		private string _Status;
 		
+		private int? _Open;
+		
 		private DateTime? _PostingDate;
 		
 		private decimal? _TotalItems;
@@ -161,6 +163,23 @@ namespace CmsData.View
 			{
 				if (this._Status != value)
 					this._Status = value;
+			}
+
+		}
+
+		
+		[Column(Name="open", Storage="_Open", DbType="int")]
+		public int? Open
+		{
+			get
+			{
+				return this._Open;
+			}
+
+			set
+			{
+				if (this._Open != value)
+					this._Open = value;
 			}
 
 		}
