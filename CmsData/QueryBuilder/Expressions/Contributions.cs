@@ -245,7 +245,7 @@ namespace CmsData
         internal Expression RecentContributionAmount()
         {
             var fund = Quarters.ToInt();
-            var amt = decimal.Parse(TextValue);
+            var amt = TextValue.ToDecimal() ?? 0;
             return RecentContributionAmount2(Days, fund, amt, false);
         }
         internal Expression RecentContributionAmountBothJoint()
@@ -269,7 +269,7 @@ namespace CmsData
             if (!db.FromBatch)
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
-            var amt = decimal.Parse(TextValue);
+            var amt = TextValue.ToDecimal() ?? 0;
             var fund = Quarters.ToInt2();
 
             IQueryable<int> q = null;
@@ -340,7 +340,7 @@ namespace CmsData
             if (!db.FromBatch)
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
-            var amt = decimal.Parse(TextValue);
+            var amt = TextValue.ToDecimal() ?? 0;
             var fund = Quarters.ToInt2();
 
             IQueryable<int> q = null;
@@ -395,7 +395,7 @@ namespace CmsData
             if (!db.FromBatch)
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
-            var amt = decimal.Parse(TextValue);
+            var amt = TextValue.ToDecimal() ?? 0;
             var fund = Quarters.ToInt();
 
             var startdt = DateTime.Parse("1/1/1900");
@@ -416,7 +416,7 @@ namespace CmsData
                     break;
                 case CompareType.Less:
                     q = from c in db.GetPledgedTotalsBothIfJoint(startdt, enddt, fund)
-                        where c.Balance <= amt
+                        where c.Balance < amt
                         select c.PeopleId.Value;
                     break;
                 case CompareType.LessEqual:
@@ -449,7 +449,7 @@ namespace CmsData
         internal Expression RecentNonTaxDedAmount()
         {
             var fund = Quarters.ToInt();
-            var amt = decimal.Parse(TextValue);
+            var amt = TextValue.ToDecimal() ?? 0;
             return RecentContributionAmount2(Days, fund, amt, true);
         }
         internal Expression RecentPledgeCount()
@@ -533,7 +533,7 @@ namespace CmsData
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
             var fund = Quarters.ToInt();
-            var amt = decimal.Parse(TextValue);
+            var amt = TextValue.ToDecimal() ?? 0;
             var now = Util.Now;
             var dt = now.AddDays(-Days);
             IQueryable<int> q = null;
@@ -594,13 +594,13 @@ namespace CmsData
         internal Expression ContributionAmount()
         {
             var fund = Quarters.ToInt();
-            var amt = decimal.Parse(TextValue);
+            var amt = TextValue.ToDecimal() ?? 0;
             return ContributionAmount2(StartDate, EndDate, fund, amt, false);
         }
         internal Expression NonTaxDedAmount()
         {
             var fund = Quarters.ToInt();
-            var amt = decimal.Parse(TextValue);
+            var amt = TextValue.ToDecimal() ?? 0;
             return ContributionAmount2(StartDate, EndDate, fund, amt, true);
         }
         internal Expression ContributionChange()
@@ -696,7 +696,7 @@ namespace CmsData
         internal Expression GivingChange()
         {
             var days = Quarters.ToInt2() ?? 365;
-            var pct = decimal.Parse(TextValue);
+            var pct = TextValue.ToDecimal() ?? 0;
             var q = db.GivingChange(days);
             switch (op)
             {
