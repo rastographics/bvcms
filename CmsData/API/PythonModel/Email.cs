@@ -205,5 +205,12 @@ namespace CmsData
                 db2.SendPeopleEmailWithPython(emailqueue.Id, recipientData, Data);
             }
         }
+        public void EmailContentWithPythonData(object savedQuery, int queuedBy, string fromAddr, string fromName, string contentName, IEnumerable<dynamic> recipientData)
+        {
+            var c = db.ContentOfTypeHtml(contentName);
+            if (c == null)
+                return;
+            EmailWithPythonData(savedQuery, queuedBy, fromAddr, fromName, c.Title, c.Body, recipientData);
+        }
     }
 }
