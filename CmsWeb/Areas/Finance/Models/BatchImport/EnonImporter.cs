@@ -8,7 +8,7 @@
 using System;
 using System.IO;
 using CmsData;
-using LumenWorks.Framework.IO.Csv;
+using CsvHelper;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
@@ -17,25 +17,24 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
     {
         public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
         {
-            using (var csv = new CsvReader(new StringReader(text), true))
+            using (var csv = new CsvReader(new StringReader(text)))
                 return BatchProcessEnon(csv, date, fundid);
         }
 
         private static int? BatchProcessEnon(CsvReader csv, DateTime date, int? fundid)
         {
-            var cols = csv.GetFieldHeaders();
             BundleHeader bh = null;
             var fid = fundid ?? BatchImportContributions.FirstFundId();
 
-            while (csv.ReadNextRecord())
+            while (csv.Read())
             {
-                var dt = csv[2].ToDate();
-                var amount = csv[7];
+                var dt = csv[1].ToDate();
+                var amount = csv[6];
                 if (!amount.HasValue() || !dt.HasValue)
                     continue;
 
-                var account = csv[5];
-                var checkno = csv[6];
+                var account = csv[4];
+                var checkno = csv[5];
 
                 if (bh == null)
                     bh = BatchImportContributions.GetBundleHeader(dt.Value, DateTime.Now);
