@@ -588,7 +588,6 @@
     <Compile Include="Areas\Reports\Models\Other\CustomColumnsModel.cs" />
     <Compile Include="Areas\Reports\Models\Other\CustomReportsModel.cs" />
     <Compile Include="Areas\Reports\Models\Other\ApplicationReport.cs" />
-    <Compile Include="Areas\Reports\Models\Other\QueryStatsResult.cs" />
     <Compile Include="Areas\Reports\Models\Export\CsvResult.cs" />
     <Compile Include="Areas\Reports\Models\Export\ExcelFamilyMember.cs" />
     <Compile Include="Areas\Reports\Models\Export\ExcelPic.cs" />
@@ -894,7 +893,6 @@
     <Compile Include="Code\PaymentValidator.cs" />
     <Compile Include="Code\SmartBinder.cs" />
     <Compile Include="Code\Image.cs" />
-    <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Areas\Dialog\Views\AddToOrgFromTag\Index.cshtml" />
     <Content Include="Areas\Main\Views\Email\SelectTemplate.cshtml" />
     <Content Include="Areas\Main\Views\Email\Compose.cshtml" />
@@ -2460,7 +2458,6 @@
     <Content Include="Areas\Manage\Views\Account\_ShellLayout.cshtml" />
     <Content Include="Views\ExtraValue\Location.cshtml" />
     <Content Include="Views\Home\Warmup.cshtml" />
-    <None Include="Resources\DocxAveryLabel.docx" />
     <None Include="Web.Impersonate.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

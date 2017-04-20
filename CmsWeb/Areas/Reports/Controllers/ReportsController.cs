@@ -421,12 +421,6 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new ProspectResult(id.Value, Form ?? false, Alpha ?? false);
         }
 
-        [HttpGet]
-        public ActionResult QueryStats()
-        {
-            return new QueryStatsResult();
-        }
-
         [HttpPost, Route("RallyRollsheetForOrg/{orgid:int}")]
         public ActionResult RallyRollsheetForOrg(int orgid, NewMeetingInfo mi)
         {

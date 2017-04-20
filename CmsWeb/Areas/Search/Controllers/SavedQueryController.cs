@@ -69,35 +69,5 @@ namespace CmsWeb.Areas.Search.Controllers
             var guids = list.Split(',').ToList().ConvertAll(vv => new Guid(vv));
             return View(new QueryCodeModel(CodeSql.Queries, guids));
         }
-#if DEBUG
-        [HttpGet]
-        public ActionResult CodeErrors()
-        {
-            return View("Code", new QueryCodeModel(CodeSql.Errors));
-        }
-        [HttpGet]
-        public ActionResult CodeAnalysis()
-        {
-            QueryCodeModel.DoAnalysis();
-            return Redirect("Code");
-        }
-        [HttpGet]
-        public ActionResult CodeAnalysisAll()
-        {
-            var list = QueryCodeModel.DatabaseList();
-            var sb = new StringBuilder();
-            foreach (var db in list)
-                sb.Append(QueryCodeModel.DoAnalysis(db));
-            return Content(sb.ToString(), "text/plain");
-        }
-        [HttpGet]
-        public ActionResult UpdateAll()
-        {
-            var list = QueryCodeModel.DatabaseList();
-            foreach (var db in list)
-                QueryCodeModel.UpdateAll(db);
-            return Content("done");
-        }
-#endif
     }
 }

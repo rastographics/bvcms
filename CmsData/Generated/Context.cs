@@ -538,14 +538,6 @@ namespace CmsData
         partial void UpdateQuery(Query instance);
         partial void DeleteQuery(Query instance);
         
-        partial void InsertQueryAnalysi(QueryAnalysi instance);
-        partial void UpdateQueryAnalysi(QueryAnalysi instance);
-        partial void DeleteQueryAnalysi(QueryAnalysi instance);
-        
-        partial void InsertQueryStat(QueryStat instance);
-        partial void UpdateQueryStat(QueryStat instance);
-        partial void DeleteQueryStat(QueryStat instance);
-        
         partial void InsertRecReg(RecReg instance);
         partial void UpdateRecReg(RecReg instance);
         partial void DeleteRecReg(RecReg instance);
@@ -1553,18 +1545,6 @@ namespace CmsData
 		public Table< Query> Queries
 		{
 			get	{ return this.GetTable< Query>(); }
-
-		}
-
-		public Table< QueryAnalysi> QueryAnalyses
-		{
-			get	{ return this.GetTable< QueryAnalysi>(); }
-
-		}
-
-		public Table< QueryStat> QueryStats
-		{
-			get	{ return this.GetTable< QueryStat>(); }
 
 		}
 
