@@ -6,7 +6,7 @@ CREATE FUNCTION [dbo].[Pledges0]
 	@campusid INT
 )
 RETURNS 
-@t TABLE ( PeopleId INT )
+@t TABLE ( PeopleId INT NOT NULL )
 AS
 BEGIN
 	DECLARE @cc TABLE (PeopleId INT)

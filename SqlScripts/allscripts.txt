@@ -867,10 +867,6 @@ Creating_pk_PK_OrgContent_dbo_OrgContent.sql
 Creating_IX_OrgContent_dbo_OrgContent.sql
 Creating_dbo_PrintJob.sql
 Creating_pk_PK_TempData_dbo_PrintJob.sql
-Creating_dbo_QueryAnalysis.sql
-Creating_dbo_QueryStats.sql
-Creating_pk_PK_QueryStat_dbo_QueryStats.sql
-Creating_IX_QueryStat_dbo_QueryStats.sql
 Creating_dbo_StreetTypes.sql
 Creating_pk_PK_StreetTypes_dbo_StreetTypes.sql
 Creating_dbo_TagType.sql
