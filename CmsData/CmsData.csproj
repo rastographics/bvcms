@@ -632,6 +632,15 @@
     <Compile Include="Generated\Functions\NotAttendedAsOf.cs" />
     <Compile Include="Generated\Functions\OptOut.cs" />
     <Compile Include="Generated\Functions\OrgDayStat.cs" />
+    <Compile Include="Generated\Functions\OrgFilterCurrent.cs" />
+    <Compile Include="Generated\Functions\OrgFilterGuest.cs" />
+    <Compile Include="Generated\Functions\OrgFilterId.cs" />
+    <Compile Include="Generated\Functions\OrgFilterInactive.cs" />
+    <Compile Include="Generated\Functions\OrgFilterPending.cs" />
+    <Compile Include="Generated\Functions\OrgFilterPeople2.cs" />
+    <Compile Include="Generated\Functions\OrgFilterPerson.cs" />
+    <Compile Include="Generated\Functions\OrgFilterPreviou.cs" />
+    <Compile Include="Generated\Functions\OrgFilterProspect.cs" />
     <Compile Include="Generated\Functions\OrgMember.cs" />
     <Compile Include="Generated\Functions\OrgMemberInfo.cs" />
     <Compile Include="Generated\Functions\OrgMemberQuestion.cs" />
@@ -681,6 +690,7 @@
     <Compile Include="Generated\MobileAppPushRegistration.cs" />
     <Compile Include="Generated\MobileAppRoom.cs" />
     <Compile Include="Generated\MobileAppVideoType.cs" />
+    <Compile Include="Generated\OrgFilter.cs" />
     <Compile Include="Generated\OrgMemberExtra.cs" />
     <Compile Include="Generated\PrevOrgMemberExtra.cs" />
     <Compile Include="Generated\QueryAnalysi.cs" />
@@ -787,6 +797,8 @@
     <Compile Include="Generated\Views\TransactionList.cs" />
     <Compile Include="Generated\Views\TransactionSummary.cs" />
     <Compile Include="DbUtil\ITableWithExtraValues.cs" />
+    <Compile Include="Organization\OrgFilter.cs" />
+    <Compile Include="Organization\OrgPerson.cs" />
     <Compile Include="QueryBuilder\QueryParser.cs" />
     <Compile Include="QueryBuilder\Query.cs" />
     <Compile Include="QueryBuilder\CategoryClass.cs" />

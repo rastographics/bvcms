@@ -6,13 +6,13 @@
             <h4>@Model.OrgName</h4>
         </div>
         <div class="modal-body">
-            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.QueryId)
             @Html.HiddenFor(m => m.AdjustFee)
             @Html.EditorFor(m => m.Payment, new { label = "Fee Adjustment", help = "a negative number increases balance" })
             @Html.EditorFor(m => m.Description)
         </div>
         <div class="modal-footer">
-            <a href="/OrgMembersUpdate/@Model.Id" class="btn btn-default ajax">Cancel</a>
+            <a href="/OrgMembersUpdate/@Model.QueryId" class="btn btn-default ajax">Cancel</a>
             <a id="add-mission-support" href="/OrgMembersUpdate/PostTransactions" class="btn ajax btn-primary">Add Transaction</a>
         </div>
     </div>

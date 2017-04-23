@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
@@ -9,11 +8,11 @@ namespace CmsWeb.Areas.Org.Controllers
     public partial class OrgController
     {
         [Authorize(Roles = "Edit")]
-        public ActionResult CopySettings()
+        public ActionResult CopySettings(int id)
         {
-            if (Util.SessionTimedOut() || DbUtil.Db.CurrentOrgId0 == 0)
+            if (Util.SessionTimedOut())
                 return Redirect("/");
-            Session["OrgCopySettings"] = DbUtil.Db.CurrentOrg.Id;
+            Session["OrgCopySettings"] = id;
             return Redirect("/OrgSearch/");
         }
 
@@ -65,28 +64,5 @@ namespace CmsWeb.Areas.Org.Controllers
             c.Content = Task.AddTasks(DbUtil.Db, id).ToString();
             return c;
         }
-        //public ActionResult AddMESEvent(int id, string mesID)
-        //{
-        //    OrganizationExtra ev;
-        //    string[] mesEvent = mesID.Split('|');
-        //    string name = "ministrEspace:" + mesEvent[0];
-        //    ev = (from e in DbUtil.Db.OrganizationExtras
-        //          where e.Field == name
-        //          select e).SingleOrDefault();
-        //    if (ev == null)
-        //    {
-        //        ev = new OrganizationExtra();
-        //        ev.OrganizationId = id;
-        //        ev.Field = name;
-        //        ev.Data = mesEvent[1];
-        //        DbUtil.Db.OrganizationExtras.InsertOnSubmit(ev);
-        //    }
-        //    else
-        //    {
-        //        ev.Data = mesEvent[1];
-        //    }
-        //    DbUtil.Db.SubmitChanges();
-        //    return RedirectToAction("Index", "Org", new { id = id });
-        //}
     }
 }

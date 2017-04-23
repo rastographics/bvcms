@@ -125,7 +125,6 @@ OrgJoinDateDaysAgo,Integer,,,,EnrollmentHistory,Recent Org Join Date,"Program,Di
 OrgInactiveDate,Date,,,,EnrollmentHistory,Org Inactive Date,"Program,Division,Organization",Pick the Inactive Date (in the Member Dialog) and Comparison and select Program/Division/Organization.
 OrgJoinDateCompare,DateField,Code,DateFields,,EnrollmentHistory,Org Join Date Compared to Field,"Program,Division,Organization",Select the Compared to Field from the list along with a Comparison and select Program/Division/Organization.
 HasBalanceInCurrentOrg,Bit,,,,CurrentOrg,"In Current Organization, Has Balance",,Select True or False for Members with a Balance in the last organization you viewed.
-InCurrentOrg,Bit,,,,CurrentOrg,In Current Organization,,Select True or False for Members of the last organization you viewed.
 LeadersUnderCurrentOrg,Bit,,,,CurrentOrg,Leaders under current org,,Select True or False for Leaders of the last organization you viewed and any Leaders in any Child Organization under that org.
 MembersUnderCurrentOrg,Bit,,,,CurrentOrg,Members under current org,,Select True or False for Members of the last organization you viewed and any Members in any Child Organization under that org.
 InactiveCurrentOrg,Bit,,,,CurrentOrg,Inactive in Current Organization,,Select True or False for Inactive Members of the last organization you viewed.
@@ -233,6 +232,7 @@ HasFailedEmails,Bit,,,,Miscellaneous,Has Failed Emails,StartDate,Select a StartD
 FirstPersonSameEmail,EqualBit,,,,Miscellaneous,First Person of Same Email,,Returns only one person of many who have same email
 DaysSinceDate,Integer,,,,Miscellaneous,Days Since Date,StartDate,Enter a Date along with a number of Days.
 DaysSinceDateField,DateField,Code,DateFields,,Miscellaneous,Days Since Date Field,Days,Select the Compared to Field from the list along with a number of Days.
+OrgFilter,Bit,,,,Admin,,,For internal use only
 UserRole,Code,,UserRolesMyData,,Admin,User In Role,,Select User Role from the list.
 IsUser,Bit,,,,Admin,Is System User,,Specify True or False for those with user accounts.
 CreatedBy,String,,,,Admin,Record Created By User,,"Enter a Comparison and all or part of a Last Name (or Last Name, a comma and a First Name)."

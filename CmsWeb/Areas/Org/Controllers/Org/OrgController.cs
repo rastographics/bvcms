@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
-using CmsData.Codes;
 using CmsWeb.Areas.Org.Models;
 using UtilityExtensions;
 
@@ -19,15 +16,12 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpGet, Route("~/Org/{id:int}")]
         public ActionResult Index(int id, int? peopleid = null)
         {
-            var db = DbUtil.Db;
             if (id == 0)
             {
                 var recent = Util2.MostRecentOrgs;
                 id = recent.Any() ? recent[0].Id : 1;
                 return Redirect($"/Org/{id}");
             }
-            db.CurrentOrg = new CurrentOrg {Id = id, GroupSelect = GroupSelectCode.Member};
-
             var m = new OrganizationModel(id);
             if (peopleid.HasValue)
                 m.NameFilter = peopleid.ToString();
@@ -42,10 +36,7 @@ namespace CmsWeb.Areas.Org.Controllers
                     return NotAllowed("You must be a leader of this organization", m.Org.OrganizationName);
                 var sgleader = DbUtil.Db.SmallGroupLeader(id, Util.UserPeopleId);
                 if (sgleader.HasValue())
-                {
-                    db.CurrentOrg.SgFilter = sgleader;
                     m.SgFilter = sgleader;
-                }
             }
             if (m.Org.LimitToRole.HasValue())
                 if (!User.IsInRole(m.Org.LimitToRole))
@@ -57,8 +48,7 @@ namespace CmsWeb.Areas.Org.Controllers
             ViewBag.orgname = m.Org.FullName;
             ViewBag.model = m;
             ViewBag.selectmode = 0;
-            InitExportToolbar(id);
-            m.GroupSelect = "10";
+            InitExportToolbar(m);
             Session["ActiveOrganization"] = m.Org.OrganizationName;
             return View(m);
         }
@@ -88,18 +78,18 @@ namespace CmsWeb.Areas.Org.Controllers
             return Content("ok");
         }
 
-        private void InitExportToolbar(int oid)
+        private void InitExportToolbar(OrganizationModel m)
         {
-            ViewBag.oid = oid;
-            var qid = DbUtil.Db.QueryInCurrentOrg().QueryId;
-            ViewBag.queryid = qid;
-            ViewBag.TagAction = "/Org/TagAll/" + qid;
-            ViewBag.UnTagAction = "/Org/UnTagAll/" + qid;
-            ViewBag.AddContact = "/Org/AddContact/" + qid;
-            ViewBag.AddTasks = "/Org/AddTasks/" + qid;
+            ViewBag.oid = m.Id;
+            ViewBag.queryid = m.QueryId;
+            ViewBag.TagAction = "/Org/TagAll/" + m.QueryId;
+            ViewBag.UnTagAction = "/Org/UnTagAll/" + m.QueryId;
+            ViewBag.AddContact = "/Org/AddContact/" + m.QueryId;
+            ViewBag.AddTasks = "/Org/AddTasks/" + m.QueryId;
             ViewBag.OrganizationContext = true;
-            if (!DbUtil.Db.Organizations.Any(oo => oo.ParentOrgId == oid))
+            if (!DbUtil.Db.Organizations.Any(oo => oo.ParentOrgId == m.Id))
                 return;
+
             ViewBag.ParentOrgContext = true;
             ViewBag.leadersqid = DbUtil.Db.QueryLeadersUnderCurrentOrg().QueryId;
             ViewBag.membersqid = DbUtil.Db.QueryMembersUnderCurrentOrg().QueryId;

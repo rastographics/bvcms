@@ -1,5 +1,4 @@
-﻿@using CmsData
-@using CmsData.Codes
+﻿@using CmsData.Codes
 @model CmsWeb.Areas.Dialog.Models.OrgMembersUpdate
 @{
   var managetransactions = User.IsInRole("ManageTransactions");
@@ -17,7 +16,7 @@
             <div class="alert alert-warning">
                 This will update information on @Model.Count @Model.Group
             </div>
-            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.QueryId)
             @Html.EditorFor(m => m.MemberType)
             @Html.EditorFor(m => m.MakeMemberTypeOriginal)
             <div style="height: .8em;"></div>
@@ -30,7 +29,7 @@
             <div class="pull-left">
                 <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
             </div>
-            @if (DbUtil.Db.CurrentOrg.GroupSelect == GroupSelectCode.Member
+            @if (Model.Group == GroupSelectCode.Member
                  && (managetransactions || admin || missiongiving))
             {
                 <div class="btn-group">
@@ -42,7 +41,7 @@
                     </ul>
                 </div>
             }
-            @if (DbUtil.Db.CurrentOrg.GroupSelect == GroupSelectCode.Member && (admin || manager))
+            @if (Model.Group == GroupSelectCode.Member && (admin || manager))
             {
                 <a href="/OrgMembersUpdate/SmallGroups" class="btn btn-default ajax">
                     Sub-Groups

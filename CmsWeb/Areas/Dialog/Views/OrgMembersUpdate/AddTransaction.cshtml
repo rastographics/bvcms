@@ -7,12 +7,12 @@
             <strong>Adding Transaction for @Model.Count people</strong>
         </div>
         <div class="modal-body">
-            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.QueryId)
             @Html.EditorFor(m => m.Payment, new { help = "a negative number increases balance" })
             @Html.EditorFor(m => m.Description)
         </div>
         <div class="modal-footer">
-            <a href="/OrgMembersUpdate/@Model.Id" class="btn btn-default ajax" data-data="none">Cancel</a>
+            <a href="/OrgMembersUpdate/@Model.QueryId" class="btn btn-default ajax" data-data="none">Cancel</a>
             <a id="add-mission-support" href="/OrgMembersUpdate/PostTransactions" class="btn ajax btn-primary">Add Transaction</a>
         </div>
     </div>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CmsData.Codes;
 using UtilityExtensions;
 
 namespace CmsData
@@ -90,10 +91,6 @@ namespace CmsData
         {
             return StandardQuery("HasCurrentTag", QueryType.HasCurrentTag);
         }
-        public Query QueryInCurrentOrg()
-        {
-            return StandardQuery("InCurrentOrg", QueryType.InCurrentOrg);
-        }
         public Query QueryLeadersUnderCurrentOrg()
         {
             return StandardQuery("LeadersUnderCurrentOrg", QueryType.LeadersUnderCurrentOrg);
@@ -102,6 +99,32 @@ namespace CmsData
         {
             return StandardQuery("MembersUnderCurrentOrg", QueryType.MembersUnderCurrentOrg);
         }
+        public OrgFilter NewOrgFilter(int orgid)
+        {
+            var c = Condition.CreateNewGroupClause();
+            c.AddNewClause(QueryType.OrgFilter, CompareType.Equal, "1,True");
+            var qb = new Query
+            {
+                QueryId = c.Id,
+                Owner = "system",
+                Created = DateTime.Now,
+                LastRun = DateTime.Now,
+                Name = "OrgFilter",
+                Text = c.ToXml()
+            };
+            Queries.InsertOnSubmit(qb);
+            var filter = new OrgFilter
+            {
+                GroupSelect = GroupSelectCode.Member,
+                Id = orgid,
+                QueryId = c.Id,
+                LastUpdated = DateTime.Now,
+            };
+            OrgFilters.InsertOnSubmit(filter);
+            SubmitChanges();
+            return filter;
+        }
+
         public List<Query> FetchLastFiveQueries()
         {
             var q = from cc in Queries

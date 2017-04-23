@@ -759,7 +759,7 @@ namespace CmsData.API
 
         public void SendEventReminders(Guid id)
         {
-            var org = Db.LoadOrganizationById(Db.CurrentOrgId0);
+            var org = Db.LoadOrganizationById(Db.CurrentSessionOrgId);
             var setting = Db.CreateRegistrationSettings(org.OrganizationId);
 
             const string noSubject = "no subject";

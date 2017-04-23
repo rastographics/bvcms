@@ -175,7 +175,7 @@ namespace CmsData
                     var eq = emailqueueto ?? new EmailQueueTo()
                     {
                         PeopleId = person.PeopleId,
-                        OrgId = db.CurrentOrgId0
+                        OrgId = db.CurrentSessionOrgId
                     };
 
                     if (AddSmallGroupRe.IsMatch(code))

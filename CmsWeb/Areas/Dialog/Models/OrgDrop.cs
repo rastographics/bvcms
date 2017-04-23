@@ -7,7 +7,6 @@ using System.Threading;
 using System.Web.Hosting;
 using CmsData;
 using CmsData.Codes;
-using CmsData.View;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
@@ -26,16 +25,20 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             UserId = Util.UserId;
         }
-        public OrgDrop(int id)
+        public OrgDrop(Guid id)
             : this()
         {
-            Id = id;
-            var org = DbUtil.Db.LoadOrganizationById(id);
+            QueryId = id;
+            var filter = DbUtil.Db.OrgFilter(id);
+            var org = DbUtil.Db.LoadOrganizationById(filter.Id);
+            Id = filter.Id;
             OrgName = org.OrganizationName;
-            Count = People(DbUtil.Db.CurrentOrg).Count();
+            pids = DbUtil.Db.OrgFilterIds(id)
+                .Select(vv => vv.PeopleId.Value).ToList();
+            Count = pids.Count;
 
             Group = "People"; // default
-            switch (DbUtil.Db.CurrentOrg.GroupSelect)
+            switch (filter.GroupSelect)
             {
                 case GroupSelectCode.Member:
                     Group = "Members";
@@ -52,21 +55,10 @@ namespace CmsWeb.Areas.Dialog.Models
             }
         }
 
-        public IQueryable<OrgPerson> People(ICurrentOrg co)
-        {
-            var q = from p in DbUtil.Db.OrgPeople(Id, co.GroupSelect,
-                        co.First(), co.Last(), co.SgFilter, co.ShowHidden,
-                        Util2.CurrentTagName, Util2.CurrentTagOwnerId,
-                        co.FilterIndividuals, co.FilterTag, false, Util.UserPeopleId)
-                    select p;
-            return q;
-        }
-
-        private List<int> pids;
+        private readonly List<int> pids;
         public void Process(CMSDataContext db)
         {
             // running has not started yet, start it on a separate thread
-            pids = (from p in People(db.CurrentOrg) select p.PeopleId.Value).ToList();
             Started = DateTime.Now;
             var lop = new LongRunningOp()
             {

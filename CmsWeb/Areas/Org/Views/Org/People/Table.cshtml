@@ -192,7 +192,7 @@
     </div>
   }
 }
-@helper ManageGuestLinks(OrgPerson p)
+@helper ManageGuestLinks(OrgFilterPerson p)
 {
   if (p.GroupCode == GroupSelectCode.Guest)
   {
@@ -235,7 +235,7 @@
   }
 }
 
-@helper ManageProspectLinks(OrgPerson p)
+@helper ManageProspectLinks(OrgFilterPerson p)
 {
   if (p.GroupCode == GroupSelectCode.Prospect)
   {
@@ -271,7 +271,7 @@
     }
   }
 }
-@helper ManageMemberLinks(OrgPerson p)
+@helper ManageMemberLinks(OrgFilterPerson p)
 {
   if (!(new[] {GroupSelectCode.Guest, GroupSelectCode.Previous}).Contains(p.GroupCode))
   {
@@ -280,7 +280,7 @@
     </div>
   }
 }
-@helper ManagePrevMemberLinks(OrgPerson p)
+@helper ManagePrevMemberLinks(OrgFilterPerson p)
 {
   if (p.GroupCode == GroupSelectCode.Previous)
   {

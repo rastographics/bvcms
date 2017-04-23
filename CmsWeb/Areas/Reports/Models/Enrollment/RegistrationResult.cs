@@ -6,6 +6,7 @@
  */
 
 using System;
+using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
@@ -65,7 +66,7 @@ namespace CmsWeb.Areas.Reports.Models
                 pageEvents.StartPageSet($"Registration Report: {dt:d}");
                 var q2 = DbUtil.Db.PeopleQuery(qid.Value);
                 if (!oid.HasValue)
-                    oid = DbUtil.Db.CurrentOrgId;
+                    oid = DbUtil.Db.CurrentSessionOrgId;
                 var q = from p in q2
                         orderby p.Name2
                         select new
@@ -328,6 +329,151 @@ namespace CmsWeb.Areas.Reports.Models
                 dc.ShowText(text);
                 dc.EndText();
             }
+        }
+
+        public static DataTable ExcelData(Guid? queryid, int? orgId)
+        {
+            if (queryid == null)
+                return null;
+            var peopleQuery = DbUtil.Db.PeopleQuery(queryid.Value);
+            var results = (from p in peopleQuery
+                let rr = p.RecRegs.SingleOrDefault() ?? new RecReg()
+                let headOfHousehold = p.Family.HeadOfHousehold
+                let headOfHouseholdSpouse = p.Family.HeadOfHouseholdSpouse
+                orderby p.Name2
+                select new
+                {
+                    Person = p,
+                    RecReg = rr,
+                    HeadOfHousehold = headOfHousehold,
+                    HeadOfHouseholdSpouse = headOfHouseholdSpouse,
+                    OrgMembers = p.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == orgId),
+                    p.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == orgId).Organization,
+                }).ToList();
+
+            if (!results.Any())
+                return null;
+
+            var table = new DataTable();
+
+            foreach (var x in results)
+            {
+                Settings setting = null;
+                if (x.Organization != null)
+                    setting = DbUtil.Db.CreateRegistrationSettings(x.Organization.OrganizationId);
+
+                var row = table.NewRow();
+
+                AddValue(table, row, "Name", x.Person.Name);
+                AddValue(table, row, "PrimaryAddress", x.Person.PrimaryAddress);
+                AddValue(table, row, "PrimaryAddress2", x.Person.PrimaryAddress2);
+                AddValue(table, row, "CityStateZip", x.Person.CityStateZip);
+                AddValue(table, row, "EmailAddress", x.Person.EmailAddress);
+
+                if (x.Person.HomePhone.HasValue())
+                    AddValue(table, row, "HomePhone", x.Person.HomePhone.FmtFone("H"));
+                if (x.Person.CellPhone.HasValue())
+                    AddValue(table, row, "CellPhone", x.Person.CellPhone.FmtFone("C"));
+
+                AddValue(table, row, "DOB", x.Person.DOB);
+                AddValue(table, row, "Grade", x.Person.Grade);
+
+                AddValue(table, row, "HeadOfHouseholdName", x.HeadOfHousehold?.Name);
+                if (!string.IsNullOrEmpty(x.HeadOfHousehold?.CellPhone))
+                    AddValue(table, row, "HeadOfHouseholdCellPhone", x.HeadOfHousehold?.CellPhone.FmtFone("C"));
+                if (!string.IsNullOrEmpty(x.HeadOfHousehold?.HomePhone))
+                    AddValue(table, row, "HeadOfHouseholdHomePhone", x.HeadOfHousehold?.HomePhone.FmtFone("H"));
+
+                AddValue(table, row, "HeadOfHouseholdSpouseName", x.HeadOfHouseholdSpouse?.Name);
+                if (!string.IsNullOrEmpty(x.HeadOfHouseholdSpouse?.CellPhone))
+                    AddValue(table, row, "HeadOfHouseholdSpouseCellPhone", x.HeadOfHouseholdSpouse?.CellPhone.FmtFone("C"));
+                if (!string.IsNullOrEmpty(x.HeadOfHouseholdSpouse?.HomePhone))
+                    AddValue(table, row, "HeadOfHouseholdSpouseHomePhone", x.HeadOfHouseholdSpouse?.HomePhone.FmtFone("H"));
+
+                if (x.Organization == null || SettingVisible(setting, "AskSize"))
+                    AddValue(table, row, "ShirtSize", x.RecReg.ShirtSize);
+
+                if (x.Organization == null || SettingVisible(setting, "AskRequest"))
+                    AddValue(table, row, ((AskRequest) setting.AskItem("AskRequest")).Label, x.OrgMembers?.Request);
+
+
+                AddValue(table, row, "Allergies", x.RecReg.MedicalDescription);
+
+                if (x.Organization == null || SettingVisible(setting, "AskTylenolEtc"))
+                {
+                    AddValue(table, row, "Tylenol", x.RecReg.Tylenol);
+                    AddValue(table, row, "Advil", x.RecReg.Advil);
+                    AddValue(table, row, "Robitussin", x.RecReg.Robitussin);
+                    AddValue(table, row, "Maalox", x.RecReg.Maalox);
+                }
+
+                if (x.Organization == null || SettingVisible(setting, "AskEmContact"))
+                {
+                    AddValue(table, row, "Emcontact", x.RecReg.Emcontact);
+                    AddValue(table, row, "Emphone", x.RecReg.Emphone.FmtFone());
+                }
+
+                if (x.Organization == null || SettingVisible(setting, "AskInsurance"))
+                {
+                    AddValue(table, row, "Insurance", x.RecReg.Insurance);
+                    AddValue(table, row, "Policy", x.RecReg.Policy);
+                }
+
+                if (x.Organization == null || SettingVisible(setting, "AskDoctor"))
+                {
+                    AddValue(table, row, "Doctor", x.RecReg.Doctor);
+                    AddValue(table, row, "Docphone", x.RecReg.Docphone.FmtFone());
+                }
+
+                if (x.Organization == null || SettingVisible(setting, "AskParents"))
+                {
+                    AddValue(table, row, "Mname", x.RecReg.Mname);
+                    AddValue(table, row, "Fname", x.RecReg.Fname);
+                }
+
+                if (x.OrgMembers?.OnlineRegData != null)
+                {
+                    var qlist = from qu in DbUtil.Db.ViewOnlineRegQAs
+                        where qu.OrganizationId == x.OrgMembers.OrganizationId
+                        where qu.Type == "question" || qu.Type == "text"
+                        where qu.PeopleId == x.OrgMembers.PeopleId
+                        select qu;
+                    var counter = 0;
+                    foreach (var qu in qlist)
+                    {
+                        AddValue(table, row, $"Question{counter}", qu.Question);
+                        AddValue(table, row, $"Answer{counter}", qu.Answer);
+                        counter++;
+                    }
+
+                    if (x.OrgMembers?.UserData != null)
+                    {
+                        var a = Regex.Split(x.OrgMembers.UserData, @"\s*--Add comments above this line--\s*",
+                            RegexOptions.Multiline);
+                        if (a.Length > 0)
+                        {
+                            AddValue(table, row, "Comments", a[0]);
+                        }
+                    }
+
+                    if (x.OrgMembers != null)
+                    {
+                        var groups = string.Join(", ", x.OrgMembers.OrgMemMemTags.Select(om => om.MemberTag.Name).ToArray());
+                        AddValue(table, row, "Groups", groups);
+                    }
+                }
+
+                table.Rows.Add(row);
+            }
+            return table;
+
+        }
+        private static void AddValue(DataTable table, DataRow row, string columnName, object value)
+        {
+            if (!table.Columns.Contains(columnName))
+                table.Columns.Add(columnName);
+
+            row[columnName] = value;
         }
     }
 }

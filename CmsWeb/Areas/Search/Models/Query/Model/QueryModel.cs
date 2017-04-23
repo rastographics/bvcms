@@ -143,6 +143,7 @@ namespace CmsWeb.Areas.Search.Models
         {
             var q = from c in CategoryClass.Categories
                     where c.Title != "Grouping"
+                    where c.Name != "OrgFilter"
                     select c;
             return q;
         }

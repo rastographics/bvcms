@@ -79,7 +79,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             }
             if (hascurrentorg)
             {
-                var oid = DbUtil.Db.CurrentOrgId0;
+                var oid = DbUtil.Db.CurrentSessionOrgId;
                 p.Add("@CurrentOrgId", oid);
                 if (oid > 0)
                     Name2 = DbUtil.Db.LoadOrganizationById(oid).FullName2;

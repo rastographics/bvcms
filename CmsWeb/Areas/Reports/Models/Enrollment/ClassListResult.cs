@@ -13,20 +13,13 @@ using CmsData;
 using UtilityExtensions;
 using System.Text;
 using System.Web.Mvc;
-using CmsData.View;
 using CmsWeb.Areas.Search.Models;
 
 namespace CmsWeb.Areas.Reports.Models
 {
     public class ClassListResult : ActionResult
     {
-        public int? orgid;
-        private OrgSearchModel model;
-
-        public ClassListResult()
-        {
-
-        }
+        private readonly OrgSearchModel model;
 
         public ClassListResult(OrgSearchModel m)
         {
@@ -161,9 +154,7 @@ namespace CmsWeb.Areas.Reports.Models
 
         private IEnumerable<OrgInfo> ReportList()
         {
-            var orgs = orgid.HasValue
-                ? OrgSearchModel.FetchOrgs(orgid.Value)
-                : model.FetchOrgs();
+            var orgs = model.FetchOrgs();
             var q = from o in orgs
                     select new OrgInfo
                     {

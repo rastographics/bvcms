@@ -180,15 +180,7 @@ namespace CmsWeb.Areas.Public.Controllers
         public ActionResult EmailReminders(int id)
         {
             var ret = AuthenticateDeveloper();
-            if (ret.StartsWith("!"))
-                return Content($@"<EmailReminders status=""error"">{ret.Substring(1)}</EmailReminders>");
-            DbUtil.LogActivity("APIOrganization EmailReminders");
-            var URL = DbUtil.Db.ServerLink($"/Org/Reminders/{id}");
-            var wc = new WebClient();
-            var content = wc.UploadString(URL, "");
-            if (content == "ok")
-                return Content(content);
-            return Content($@"<EmailReminders status=""error"">{content}</EmailReminders>");
+            return Content($@"<EmailReminders status=""error"">No Longer supported</EmailReminders>");
         }
     }
 }

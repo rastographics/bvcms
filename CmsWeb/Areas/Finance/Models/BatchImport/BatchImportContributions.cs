@@ -143,6 +143,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             if (subtext.Contains("\"Sequence #\",\"Item Date\",\"Status\",\"Customer Name\",\"Routing / Account #\",\"Check #\",\"Amount\",\"Deposit As\",\"Amount Source\",\"Image Quality Pass\",\"Scanned Count\""))
                 return new EnonImporter();
 
+            if (subtext.Contains("Sequence #,Item Date,Status,Customer Name,Routing / Account #,Check #,Amount,Deposit As,Amount Source,Image Quality Pass,Scanned Count"))
+                return new EnonImporter();
+
             if (subtext.Contains("Type,Date,Member ID,Account,Amount,Fund"))
                 return new AnchorBibleQbImporter();
 

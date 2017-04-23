@@ -211,7 +211,7 @@ namespace CmsWeb.Controllers
             }
             else if (body.Contains("@CurrentOrgId", ignoreCase:true))
             {
-                var oid = DbUtil.Db.CurrentOrgId0;
+                var oid = DbUtil.Db.CurrentSessionOrgId;
                 p.Add("@CurrentOrgId", oid);
                 if(oid > 0)
                 {
@@ -222,7 +222,7 @@ namespace CmsWeb.Controllers
             }
             else if (body.Contains("@OrgIds", ignoreCase: true))
             {
-                var oid = DbUtil.Db.CurrentOrgId0;
+                var oid = DbUtil.Db.CurrentSessionOrgId;
                 p.Add("@OrgIds", oid.ToString());
                 ViewBag.Type = "OrgSearchSqlReport";
 

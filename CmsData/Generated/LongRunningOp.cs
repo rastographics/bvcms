@@ -34,6 +34,8 @@ namespace CmsData
 		
 		private string _CustomMessage;
 		
+		private Guid? _QueryId;
+		
    		
     	
 	#endregion
@@ -66,6 +68,9 @@ namespace CmsData
 		
 		partial void OnCustomMessageChanging(string value);
 		partial void OnCustomMessageChanged();
+		
+		partial void OnQueryIdChanging(Guid? value);
+		partial void OnQueryIdChanged();
 		
     #endregion
 		public LongRunningOp()
@@ -247,6 +252,28 @@ namespace CmsData
 					this._CustomMessage = value;
 					this.SendPropertyChanged("CustomMessage");
 					this.OnCustomMessageChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="QueryId", UpdateCheck=UpdateCheck.Never, Storage="_QueryId", DbType="uniqueidentifier")]
+		public Guid? QueryId
+		{
+			get { return this._QueryId; }
+
+			set
+			{
+				if (this._QueryId != value)
+				{
+				
+                    this.OnQueryIdChanging(value);
+					this.SendPropertyChanging();
+					this._QueryId = value;
+					this.SendPropertyChanged("QueryId");
+					this.OnQueryIdChanged();
 				}
 
 			}

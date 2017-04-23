@@ -27,17 +27,13 @@ namespace CmsWeb.Areas.Reports.Models
         private PdfContentByte dc;
         private Document doc;
         private Font medfont = FontFactory.GetFont(FontFactory.HELVETICA, 10);
-        public int? meetingid, orgid;
+        public int? meetingid;
         public string name;
         private Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 7);
 
         public OrgLeadersResult(OrgSearchModel m)
         {
             model = m;
-        }
-
-        public OrgLeadersResult()
-        {
         }
 
         public override void ExecuteResult(ControllerContext context)

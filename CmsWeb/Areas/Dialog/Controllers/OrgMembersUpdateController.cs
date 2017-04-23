@@ -9,12 +9,10 @@ namespace CmsWeb.Areas.Dialog.Controllers
     [RouteArea("Dialog", AreaPrefix = "OrgMembersUpdate"), Route("{action}")]
     public class OrgMembersUpdateController : CmsStaffController
     {
-        [Route("~/OrgMembersUpdate/{oid:int}")]
-        public ActionResult Index(int oid)
+        [Route("~/OrgMembersUpdate/{qid:guid}")]
+        public ActionResult Index(Guid qid)
         {
-            if (oid != DbUtil.Db.CurrentOrgId0)
-                throw new Exception($"Current org has changed from {oid} to {DbUtil.Db.CurrentOrgId0}, aborting");
-            var m = new OrgMembersUpdate { Id = oid };
+            var m = new OrgMembersUpdate(qid);
             return View(m);
         }
         [HttpPost, Route("Update")]

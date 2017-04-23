@@ -16,7 +16,6 @@ namespace CmsWeb.Areas.Org.Models
 {
     public class OrganizationModel : OrgPeopleModel
     {
-
         public bool IsVolunteerLeader { get; set; }
 
         public OrganizationModel()
@@ -25,7 +24,11 @@ namespace CmsWeb.Areas.Org.Models
         public OrganizationModel(int id)
         {
             populate(id);
+            var filter = DbUtil.Db.NewOrgFilter(id);
+            filter.CopyPropertiesTo(this);
+            QueryId = filter.QueryId;
         }
+
         public OrgMain OrgMain { get; set; }
 
         private SettingsGeneralModel settingsGeneralModel;
@@ -60,8 +63,6 @@ namespace CmsWeb.Areas.Org.Models
             IsVolunteerLeader = OrganizationMember.VolunteerLeaderInOrg(DbUtil.Db, Id);
         }
 
-        private CodeValueModel cv = new CodeValueModel();
-
         public IEnumerable<SelectListItem> Groups()
         {
             var q = from g in DbUtil.Db.MemberTags
@@ -83,18 +84,6 @@ namespace CmsWeb.Areas.Org.Models
             return q;
         }
 
-//        public IEnumerable<SelectListItem> CampusList()
-//        {
-//            return CodeValueModel.ConvertToSelect(cv.AllCampuses0(), "Id");
-//        }
-//        public IEnumerable<SelectListItem> EntryPointList()
-//        {
-//            return CodeValueModel.ConvertToSelect(cv.EntryPoints(), "Id");
-//        }
-//        public IEnumerable<SelectListItem> GenderList()
-//        {
-//            return CodeValueModel.ConvertToSelect(cv.GenderCodes(), "Id");
-//        }
         public static string SpaceCamelCase(string s)
         {
             return Regex.Replace(s, "([A-Z])", " $1", RegexOptions.Compiled).Trim();
@@ -122,22 +111,22 @@ namespace CmsWeb.Areas.Org.Models
             return _showRegistrationTab.Value;
         }
 
-        internal bool? _showContactsReceivedTab;
+        private bool? showContactsReceivedTab;
         public bool ShowContactsReceivedTab()
         {
             // Simple caching to avoid repeating all this logic since this is called twice
-            if (_showContactsReceivedTab.HasValue) return _showContactsReceivedTab.Value;
+            if (showContactsReceivedTab.HasValue) return showContactsReceivedTab.Value;
 
             // Check and see if org visits are turned on at all
-            _showContactsReceivedTab = DbUtil.Db.Setting("UseContactVisitedOrgs");
-            if (!_showContactsReceivedTab.Value) return false;
+            showContactsReceivedTab = DbUtil.Db.Setting("UseContactVisitedOrgs");
+            if (!showContactsReceivedTab.Value) return false;
 
             // Check and see if this is the wrong type of org
             var orgType = DbUtil.Db.Setting("UX-ContactedOrgType", string.Empty);
             if (!string.IsNullOrEmpty(orgType))
             {
-                _showContactsReceivedTab = OrgMain.OrganizationType.ToString() == orgType;
-                if (!_showContactsReceivedTab.Value) return false;
+                showContactsReceivedTab = OrgMain.OrganizationType.ToString() == orgType;
+                if (!showContactsReceivedTab.Value) return false;
             }
 
             // Check and see if the user doesn't have access to the tab
@@ -147,22 +136,20 @@ namespace CmsWeb.Areas.Org.Models
                 var user = DbUtil.Db.Users.FirstOrDefault(x => x.Username == HttpContext.Current.User.Identity.Name);
                 if (user?.PeopleId == null)
                 {
-                    _showContactsReceivedTab = false;
+                    showContactsReceivedTab = false;
                     return false;
                 }
 
                 var memberTypes = accessTypeList.Split(',').Select(x => x.Trim()).ToList();
 
-                _showContactsReceivedTab = ShowContactsCheckOrgAndParents(Org, user.PeopleId.Value, memberTypes);
+                showContactsReceivedTab = ShowContactsCheckOrgAndParents(Org, user.PeopleId.Value, memberTypes);
             }
-
             // Finally check to see if user is in CG role
-            if (!_showContactsReceivedTab.Value)
+            if (!showContactsReceivedTab.Value)
             {
-                _showContactsReceivedTab = HttpContext.Current.User.IsInRole("CG");
+                showContactsReceivedTab = HttpContext.Current.User.IsInRole("CG");
             }
-
-            return _showContactsReceivedTab.Value;
+            return showContactsReceivedTab.Value;
         }
 
         public bool ShowBlueToolbar => RoleChecker.HasSetting(SettingName.Organization_ShowBlueToolbar, true);
@@ -209,21 +196,21 @@ namespace CmsWeb.Areas.Org.Models
             return result;
         }
 
-        internal bool? _showCommunityGroupTab;
+        private bool? showCommunityGroupTab;
         public bool ShowCommunityGroupTab()
         {
-            if (_showCommunityGroupTab.HasValue) return _showCommunityGroupTab.Value;
+            if (showCommunityGroupTab.HasValue) return showCommunityGroupTab.Value;
 
-            _showCommunityGroupTab = DbUtil.Db.Setting("ShowCommunityGroupTab");
-            if (!_showCommunityGroupTab.Value) return false;
+            showCommunityGroupTab = DbUtil.Db.Setting("ShowCommunityGroupTab");
+            if (!showCommunityGroupTab.Value) return false;
 
             var orgTypes = DbUtil.Db.Setting("UX-CommunityGroupTabOrgTypes", "");
             if (!string.IsNullOrEmpty(orgTypes))
             {
-                _showCommunityGroupTab = Org.OrganizationType != null && orgTypes.Split(',').Select(x => x.Trim()).Contains(Org.OrganizationType.Description);
+                showCommunityGroupTab = Org.OrganizationType != null && orgTypes.Split(',').Select(x => x.Trim()).Contains(Org.OrganizationType.Description);
             }
 
-            return _showCommunityGroupTab.Value;
+            return showCommunityGroupTab.Value;
         }
     }
 }

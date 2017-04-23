@@ -466,6 +466,10 @@ namespace CmsData
         partial void UpdateOrgContent(OrgContent instance);
         partial void DeleteOrgContent(OrgContent instance);
         
+        partial void InsertOrgFilter(OrgFilter instance);
+        partial void UpdateOrgFilter(OrgFilter instance);
+        partial void DeleteOrgFilter(OrgFilter instance);
+        
         partial void InsertOrgMemberExtra(OrgMemberExtra instance);
         partial void UpdateOrgMemberExtra(OrgMemberExtra instance);
         partial void DeleteOrgMemberExtra(OrgMemberExtra instance);
@@ -1437,6 +1441,12 @@ namespace CmsData
 		public Table< OrgContent> OrgContents
 		{
 			get	{ return this.GetTable< OrgContent>(); }
+
+		}
+
+		public Table< OrgFilter> OrgFilters
+		{
+			get	{ return this.GetTable< OrgFilter>(); }
 
 		}
 
@@ -3487,6 +3497,118 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.OrgFilterCurrent", IsComposable = true)]
+		public IQueryable< View.OrgFilterCurrent > OrgFilterCurrent(
+            [Parameter(DbType="int")] int? oid
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgFilterCurrent>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid
+                );
+		}
+
+		[Function(Name="dbo.OrgFilterGuests", IsComposable = true)]
+		public IQueryable< View.OrgFilterGuest > OrgFilterGuests(
+            [Parameter(DbType="int")] int? oid,
+            [Parameter(DbType="bit")] bool? showhidden
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgFilterGuest>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                showhidden
+                );
+		}
+
+		[Function(Name="dbo.OrgFilterIds", IsComposable = true)]
+		public IQueryable< View.OrgFilterId > OrgFilterIds(
+            [Parameter(DbType="uniqueidentifier")] Guid? queryid
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgFilterId>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                queryid
+                );
+		}
+
+		[Function(Name="dbo.OrgFilterInactive", IsComposable = true)]
+		public IQueryable< View.OrgFilterInactive > OrgFilterInactive(
+            [Parameter(DbType="int")] int? oid
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgFilterInactive>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid
+                );
+		}
+
+		[Function(Name="dbo.OrgFilterPending", IsComposable = true)]
+		public IQueryable< View.OrgFilterPending > OrgFilterPending(
+            [Parameter(DbType="int")] int? oid
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgFilterPending>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid
+                );
+		}
+
+		[Function(Name="dbo.OrgFilterPeople", IsComposable = true)]
+		public IQueryable< View.OrgFilterPerson > OrgFilterPeople(
+            [Parameter(DbType="uniqueidentifier")] Guid? queryid,
+            [Parameter(DbType="bit")] bool? ministryinfo,
+            [Parameter(DbType="int")] int? userpeopleid
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgFilterPerson>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                queryid,
+                ministryinfo,
+                userpeopleid
+                );
+		}
+
+		[Function(Name="dbo.OrgFilterPeople2", IsComposable = true)]
+		public IQueryable< View.OrgFilterPeople2 > OrgFilterPeople2(
+            [Parameter(DbType="uniqueidentifier")] Guid? queryid,
+            [Parameter(DbType="bit")] bool? ministryinfo,
+            [Parameter(DbType="int")] int? userpeopleid
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgFilterPeople2>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                queryid,
+                ministryinfo,
+                userpeopleid
+                );
+		}
+
+		[Function(Name="dbo.OrgFilterPrevious", IsComposable = true)]
+		public IQueryable< View.OrgFilterPreviou > OrgFilterPrevious(
+            [Parameter(DbType="int")] int? oid
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgFilterPreviou>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid
+                );
+		}
+
+		[Function(Name="dbo.OrgFilterProspects", IsComposable = true)]
+		public IQueryable< View.OrgFilterProspect > OrgFilterProspects(
+            [Parameter(DbType="int")] int? oid,
+            [Parameter(DbType="bit")] bool? showhidden
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgFilterProspect>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                showhidden
+                );
+		}
+
+        // todo: CurrentOrgProject delete this SQL function and all OrgPeople* SQL functions
 		[Function(Name="dbo.OrgMember", IsComposable = true)]
 		public IQueryable< View.OrgMember > OrgMember(
             [Parameter(DbType="int")] int? oid,
@@ -4880,6 +5002,18 @@ namespace CmsData
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid,
                 oid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.OrgFilterCheckedCount", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? OrgFilterCheckedCount(
+            [Parameter(Name = "queryid", DbType="uniqueidentifier")] Guid? queryid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                queryid
                 ).ReturnValue));
 		}
 
