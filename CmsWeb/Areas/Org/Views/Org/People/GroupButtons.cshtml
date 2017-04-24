@@ -41,7 +41,7 @@ if (!Model.GroupNeedsMenu(group))
             @if (!Model.OrgLeaderAddDrop)
             {
                 <li><a href="/AddToOrgFromTag/@Model.Id/@GroupSelectCode.Member" class="longrunop" title="Add Members From Tag"><i class="fa fa-tag"></i>&nbsp;&nbsp;Add from Tag</a></li>
-                <li><a href="/OrgMembersUpdate/@Model.Id" title="Update Members" class="members-dialog"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Update Members</a></li>
+                <li><a href="/OrgMembersUpdate/@Model.QueryId" title="Update Members" class="members-dialog"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Update Members</a></li>
                 <li><a href="/OrgDrop/@Model.Id" title="Drop Members" class="longrunop"><i class="fa fa-trash"></i>&nbsp;&nbsp;Drop Members</a></li>
             }
         </ul>
@@ -52,8 +52,8 @@ if (!Model.GroupNeedsMenu(group))
             @if (!Model.OrgLeaderAddDrop)
             {
                 <li><a href="/AddToOrgFromTag/@Model.Id/@GroupSelectCode.Prospect" title="Add Prospects From Tag" class="longrunop"><i class="fa fa-tag"></i>&nbsp;&nbsp;Add From Tag</a></li>
-                <li><a href="/OrgMembersUpdate/@Model.Id" title="Update Prospects" class="members-dialog"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Update Prospects</a></li>
-                <li><a href="/OrgDrop/@Model.Id" title="Drop Prospects" class="longrunop"><i class="fa fa-trash"></i>&nbsp;&nbsp;Drop Prospects</a></li>
+                <li><a href="/OrgMembersUpdate/@Model.QueryId" title="Update Prospects" class="members-dialog"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Update Prospects</a></li>
+                <li><a href="/OrgDrop/@Model.QueryId" title="Drop Prospects" class="longrunop"><i class="fa fa-trash"></i>&nbsp;&nbsp;Drop Prospects</a></li>
             }
         </ul>
         break;
@@ -67,7 +67,7 @@ if (!Model.GroupNeedsMenu(group))
             <li><a href="/SearchAdd2/Dialog/inactive/@Model.Id" class="searchadd"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;@(Model.Org.IsMissionTrip == true ? "Add Sender" : "Add Inactive Members")</a></li>
             @if (!Model.OrgLeaderAddDrop)
             {
-                <li><a href="/OrgMembersUpdate/@Model.Id" title="Update Inactive Members" class="members-dialog"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Update Inactive</a></li>
+                <li><a href="/OrgMembersUpdate/@Model.QueryId" title="Update Inactive Members" class="members-dialog"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Update Inactive</a></li>
                 <li><a href="/OrgDrop/@Model.Id" title="Drop Inactive" class="longrunop"><i class="fa fa-trash"></i>&nbsp;&nbsp;Drop Inactive</a></li>
             }
         </ul>
@@ -78,7 +78,7 @@ if (!Model.GroupNeedsMenu(group))
             @if (!Model.OrgLeaderAddDrop)
             {
                 <li><a href="/AddToOrgFromTag/@Model.Id/@GroupSelectCode.Pending" title="Add Pendings From Tag" class="longrunop"><i class="fa fa-tag"></i>&nbsp;&nbsp;Add From Tag</a></li>
-                <li><a href="/OrgMembersUpdate/@Model.Id" title="Update Pending Members" class="members-dialog"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Update Pending</a></li>
+                <li><a href="/OrgMembersUpdate/@Model.QueryId" title="Update Pending Members" class="members-dialog"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Update Pending</a></li>
                 <li><a href="/OrgDrop/@Model.Id" title="Drop Pending" class="longrunop"><i class="fa fa-trash"></i>&nbsp;&nbsp;Drop Pending</a></li>
             }
         </ul>

@@ -70,9 +70,6 @@ namespace CmsWeb.Areas.Org.Controllers
                 return Content("Cannot delete first org");
             if (!org.PurgeOrg(DbUtil.Db))
                 return Content("error, not deleted");
-            var currorg = Util2.CurrentOrganization;
-            currorg.Id = 0;
-            currorg.SgFilter = null;
             DbUtil.LogActivity($"Delete Org {Session["ActiveOrganization"]}");
             Session.Remove("ActiveOrganization");
             return Content("ok");

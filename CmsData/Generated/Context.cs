@@ -3557,30 +3557,24 @@ namespace CmsData
 		[Function(Name="dbo.OrgFilterPeople", IsComposable = true)]
 		public IQueryable< View.OrgFilterPerson > OrgFilterPeople(
             [Parameter(DbType="uniqueidentifier")] Guid? queryid,
-            [Parameter(DbType="bit")] bool? ministryinfo,
-            [Parameter(DbType="int")] int? userpeopleid
+            [Parameter(DbType="bit")] bool? ministryinfo
             )
 		{
 			return this.CreateMethodCallQuery< View.OrgFilterPerson>(this, 
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 queryid,
-                ministryinfo,
-                userpeopleid
+                ministryinfo
                 );
 		}
 
 		[Function(Name="dbo.OrgFilterPeople2", IsComposable = true)]
 		public IQueryable< View.OrgFilterPeople2 > OrgFilterPeople2(
-            [Parameter(DbType="uniqueidentifier")] Guid? queryid,
-            [Parameter(DbType="bit")] bool? ministryinfo,
-            [Parameter(DbType="int")] int? userpeopleid
+            [Parameter(DbType="uniqueidentifier")] Guid? queryid
             )
 		{
 			return this.CreateMethodCallQuery< View.OrgFilterPeople2>(this, 
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                queryid,
-                ministryinfo,
-                userpeopleid
+                queryid
                 );
 		}
 
@@ -3608,7 +3602,6 @@ namespace CmsData
                 );
 		}
 
-        // todo: CurrentOrgProject delete this SQL function and all OrgPeople* SQL functions
 		[Function(Name="dbo.OrgMember", IsComposable = true)]
 		public IQueryable< View.OrgMember > OrgMember(
             [Parameter(DbType="int")] int? oid,

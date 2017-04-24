@@ -132,7 +132,7 @@ namespace CmsWeb.Areas.Reports.Models
                 {
                     var q = from om in DbUtil.Db.OrganizationMembers
                             where om.OrganizationId == Filter.Id
-                            join m in DbUtil.Db.OrgFilterPeople(QueryId, false, Util.UserPeopleId)
+                            join m in DbUtil.Db.OrgFilterPeople(QueryId, null)
                                 on om.PeopleId equals m.PeopleId
                             where om.EnrollmentDate <= Util.Now
                             orderby om.Person.LastName, om.Person.FamilyId, om.Person.Name2
@@ -160,7 +160,7 @@ namespace CmsWeb.Areas.Reports.Models
                 }
                 else
                 {
-                    var q = from m in DbUtil.Db.OrgFilterPeople(QueryId, false, Util.UserPeopleId)
+                    var q = from m in DbUtil.Db.OrgFilterPeople(QueryId, null)
                             orderby m.Name2
                             let p = DbUtil.Db.People.Single(pp => pp.PeopleId == m.PeopleId)
                             let om = p.OrganizationMembers.SingleOrDefault(mm => mm.OrganizationId == Filter.Id)

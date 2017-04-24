@@ -36,9 +36,7 @@ namespace CmsData
 		
 		private bool? _FilterTag;
 		
-		private string _TagName;
-		
-		private int? _TagOwnerId;
+		private int? _TagId;
 		
 		private DateTime _LastUpdated;
 		
@@ -80,11 +78,8 @@ namespace CmsData
 		partial void OnFilterTagChanging(bool? value);
 		partial void OnFilterTagChanged();
 		
-		partial void OnTagNameChanging(string value);
-		partial void OnTagNameChanged();
-		
-		partial void OnTagOwnerIdChanging(int? value);
-		partial void OnTagOwnerIdChanged();
+		partial void OnTagIdChanging(int? value);
+		partial void OnTagIdChanged();
 		
 		partial void OnLastUpdatedChanging(DateTime value);
 		partial void OnLastUpdatedChanged();
@@ -301,43 +296,21 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="TagName", UpdateCheck=UpdateCheck.Never, Storage="_TagName", DbType="varchar(200)")]
-		public string TagName
+		[Column(Name="TagId", UpdateCheck=UpdateCheck.Never, Storage="_TagId", DbType="int")]
+		public int? TagId
 		{
-			get { return this._TagName; }
+			get { return this._TagId; }
 
 			set
 			{
-				if (this._TagName != value)
+				if (this._TagId != value)
 				{
 				
-                    this.OnTagNameChanging(value);
+                    this.OnTagIdChanging(value);
 					this.SendPropertyChanging();
-					this._TagName = value;
-					this.SendPropertyChanged("TagName");
-					this.OnTagNameChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="TagOwnerId", UpdateCheck=UpdateCheck.Never, Storage="_TagOwnerId", DbType="int")]
-		public int? TagOwnerId
-		{
-			get { return this._TagOwnerId; }
-
-			set
-			{
-				if (this._TagOwnerId != value)
-				{
-				
-                    this.OnTagOwnerIdChanging(value);
-					this.SendPropertyChanging();
-					this._TagOwnerId = value;
-					this.SendPropertyChanged("TagOwnerId");
-					this.OnTagOwnerIdChanged();
+					this._TagId = value;
+					this.SendPropertyChanged("TagId");
+					this.OnTagIdChanged();
 				}
 
 			}

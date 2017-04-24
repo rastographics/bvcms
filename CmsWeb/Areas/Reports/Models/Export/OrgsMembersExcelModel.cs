@@ -21,7 +21,7 @@ namespace CmsWeb.Models
             if (filter.GroupSelect != GroupSelectCode.Member)
                 return new EpplusResult("EmptyResult.xlsx");
 
-            var peeps = DbUtil.Db.OrgFilterPeople(queryid, false, Util.UserPeopleId)
+            var peeps = DbUtil.Db.OrgFilterPeople(queryid, null)
                 .Select(pp => pp.PeopleId).ToList();
             var list = DbUtil.Db.CurrOrgMembers2(filter.Id.ToString(), string.Join(",", peeps));
 

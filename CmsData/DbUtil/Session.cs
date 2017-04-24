@@ -48,13 +48,6 @@ namespace CmsData
             }
         }
 
-        const string STR_CurrentOrganization = "CurrentOrganization";
-        public static CurrentOrg CurrentOrganization
-        {
-            get { return (CurrentOrg)GetSessionObj(STR_CurrentOrganization, null); }
-            set { SetSessionObj(STR_CurrentOrganization, value); }
-        }
-
         const string STR_ActiveGroupId = "ActiveGroup";
         public static int[] CurrentGroups
         {

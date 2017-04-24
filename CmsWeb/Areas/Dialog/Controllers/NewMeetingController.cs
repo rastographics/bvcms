@@ -24,6 +24,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 MeetingDate = oi.PrevMeetingDate,
                 Schedule = new CodeInfo(0, oi.SchedulesPrev()),
                 AttendCredit = new CodeInfo(defaultAttendCreditId, oi.AttendCreditList()),
+                OrganizationId = orgid
             };
             ViewBag.Action = "/CreateNewMeeting/";
             ViewBag.Method = "POST";
@@ -31,7 +32,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             return View("MeetingInfo", m);
         }
 
-        [HttpGet, Route("ForNewRollsheet/{qid}")]
+        [HttpGet, Route("ForNewRollsheet/{id:guid}")]
         public ActionResult ForNewRollsheet(Guid id)
         {
             var filter = DbUtil.Db.OrgFilter(id);
@@ -58,6 +59,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 MeetingDate =  oi.NextMeetingDate,
                 Schedule = new CodeInfo(0, oi.SchedulesNext()),
                 AttendCredit = new CodeInfo(0, oi.AttendCreditList()),
+                OrganizationId = filter.Id
             };
             ViewBag.Action = "/Reports/RallyRollsheetForOrg/" + filter.Id;
             ViewBag.Method = "POST";
@@ -99,7 +101,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 ViewBag.ForRollsheet = false;
                 return View("MeetingInfo", model);
             }
-            var organization = DbUtil.Db.LoadOrganizationById(Util2.CurrentOrganization.Id);
+            var organization = DbUtil.Db.LoadOrganizationById(model.OrganizationId);
             if (organization == null)
                 return Content("error: no org");
             var mt = DbUtil.Db.Meetings.SingleOrDefault(m => m.MeetingDate == model.MeetingDate
