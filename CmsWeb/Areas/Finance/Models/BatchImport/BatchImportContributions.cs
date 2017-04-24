@@ -26,17 +26,19 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
         public static BundleHeader GetBundleHeader(DateTime date, DateTime now, int? btid = null)
         {
+            var opentype = DbUtil.Db.Roles.Any(rr => rr.RoleName == "FinanceDataEntry")
+                ? BundleStatusCode.OpenForDataEntry
+                : BundleStatusCode.Open;
             var bh = new BundleHeader
             {
                 BundleHeaderTypeId = BundleTypeCode.PreprintedEnvelope,
-                BundleStatusId = BundleStatusCode.Open,
+                BundleStatusId = opentype,
                 ContributionDate = date,
                 CreatedBy = Util.UserId,
                 CreatedDate = now,
                 FundId = DbUtil.Db.Setting("DefaultFundId", "1").ToInt()
             };
             DbUtil.Db.BundleHeaders.InsertOnSubmit(bh);
-            bh.BundleStatusId = BundleStatusCode.Open;
             bh.BundleHeaderTypeId = btid ?? BundleTypeCode.ChecksAndCash;
             return bh;
         }
