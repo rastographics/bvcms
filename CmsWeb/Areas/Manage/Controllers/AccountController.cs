@@ -468,7 +468,13 @@ namespace CmsWeb.Areas.Manage.Controllers
         protected void TryLoadAlternateShell()
         {
             var shell = string.Empty;
-            var alternateShellSetting = DbUtil.DbReadOnly.Settings.SingleOrDefault(x => x.Id == LogonPageShellSettingKey);
+            var logonPageShellSettingKey = LogonPageShellSettingKey;
+            var queryString = Request.QueryString["campus"];
+            if (!string.IsNullOrWhiteSpace(queryString))
+            {
+                logonPageShellSettingKey += "-" + queryString.ToUpper();
+            }
+            var alternateShellSetting = DbUtil.DbReadOnly.Settings.SingleOrDefault(x => x.Id == logonPageShellSettingKey);
             if (alternateShellSetting != null)
             {
                 var alternateShell = DbUtil.DbReadOnly.Contents.SingleOrDefault(x => x.Name == alternateShellSetting.SettingX);
