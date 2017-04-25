@@ -29,10 +29,7 @@
     <div class="col-md-9">
         <div class="box box-responsive">
             <div class="box-content">
-                @if (Model.ShowBlueToolbar)
-                {
-                    @Html.Partial("Toolbar/Toolbar")
-                }
+                @Html.Partial("Toolbar/Toolbar")
                 @Html.Hidden("meetingid", Model.meeting.MeetingId)
                 @Html.Hidden("sort", "false")
                 @Html.Hidden("RegularMeetingHeadCount", RegularMeetingHeadCount)
@@ -132,12 +129,12 @@
                                 </div>
                                 <div class="pull-right">
                                     <a href="/SearchAdd2/Dialog/registered/@Model.meeting.MeetingId" class="btn btn-success hidden searchadd"><i class="fa fa-plus-circle"></i> Add Registered</a>
-                                    @if (Model.ShowAddGuest)
-                                    {
-                                        <a href="/SearchAdd2/Dialog/visitor/@Model.meeting.MeetingId" class="btn btn-success searchadd" title="Click to Add Guests to Meeting"><i class="fa fa-plus-circle"></i> Add Guests</a>
-                                    }
                                 </div>
                             </div>
+                        }
+                        @if (User.IsInRole("Attendance") && Model.ShowAddGuest)
+                        {
+                            <a href="/SearchAdd2/Dialog/visitor/@Model.meeting.MeetingId" class="btn btn-success searchadd pull-right" title="Click to Add Guests to Meeting"><i class="fa fa-plus-circle"></i> Add Guests</a>
                         }
                     </div>
                 </div>

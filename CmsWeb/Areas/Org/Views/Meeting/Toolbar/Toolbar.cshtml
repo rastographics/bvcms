@@ -1,22 +1,39 @@
-﻿<div id="bluetoolbarstop">
+﻿@using CmsData.Classes.RoleChecker
+@{
+    var showAdvanced = !RoleChecker.HasSetting(SettingName.LimitToolbar, false);
+    var showRollsheet = Model.meeting.MeetingDate >= DateTime.Today && Model.ShowBlueToolbarRollsheet;
+}
+<div id="bluetoolbarstop">
     <div id="bluebar-menu" class="btn-group pull-right">
-        <div class="btn-group btn-group-lg dropdown-large">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                <span class="fa fa-envelope-o"></span>
-            </button>
-            @Html.Partial("Toolbar/Email")
-        </div>
-        <div class="btn-group btn-group-lg dropdown-large">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                <span class="fa fa-cloud-download"></span>
-            </button>
-            @Html.Partial("Toolbar/Reports")
-        </div>
-        <div class="btn-group btn-group-lg dropdown-large">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                <span class="fa fa-cog"></span>
-            </button>
-            @Html.Partial("Toolbar/Gear")
-        </div>
+        @if (Model.ShowBlueToolbar)
+        {
+            if (showAdvanced)
+            {
+                <div class="btn-group btn-group-lg dropdown-large">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                        <span class="fa fa-envelope-o"></span>
+                    </button>
+                    @Html.Partial("Toolbar/Email")
+                </div>
+            }
+            if (showAdvanced || showRollsheet || Model.ShowBlueToolbarIpadAttendance)
+            {
+                <div class="btn-group btn-group-lg dropdown-large">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                        <span class="fa fa-cloud-download"></span>
+                    </button>
+                    @Html.Partial("Toolbar/Reports")
+                </div>
+            }
+            if (showAdvanced)
+            {
+                <div class="btn-group btn-group-lg dropdown-large">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                        <span class="fa fa-cog"></span>
+                    </button>
+                    @Html.Partial("Toolbar/Gear")
+                </div>
+            }
+        }
     </div>
 </div>
