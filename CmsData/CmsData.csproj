@@ -503,6 +503,7 @@
     <Compile Include="Extensions\ChangeDetail.cs" />
     <Compile Include="AddressVerify.cs" />
     <Compile Include="Extensions\DeleteMeetingRun.cs" />
+    <Compile Include="Extensions\LongRunningOperation.cs" />
     <Compile Include="Extensions\LongRunningOp.cs" />
     <Compile Include="Extensions\OrgPerson.cs" />
     <Compile Include="Extensions\PaymentInfo.cs" />
@@ -679,6 +680,7 @@
     <Compile Include="Generated\Functions\VolunteerCalendar.cs" />
     <Compile Include="Generated\IpWarmup.cs" />
     <Compile Include="Generated\LongRunningOp.cs" />
+    <Compile Include="Generated\LongRunningOperation.cs" />
     <Compile Include="Generated\MergeHistory.cs" />
     <Compile Include="Generated\MobileAppAction.cs" />
     <Compile Include="Generated\MobileAppActionType.cs" />

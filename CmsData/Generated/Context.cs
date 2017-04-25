@@ -342,6 +342,10 @@ namespace CmsData
         partial void UpdateLongRunningOp(LongRunningOp instance);
         partial void DeleteLongRunningOp(LongRunningOp instance);
         
+        partial void InsertLongRunningOperation(LongRunningOperation instance);
+        partial void UpdateLongRunningOperation(LongRunningOperation instance);
+        partial void DeleteLongRunningOperation(LongRunningOperation instance);
+        
         partial void InsertManagedGiving(ManagedGiving instance);
         partial void UpdateManagedGiving(ManagedGiving instance);
         partial void DeleteManagedGiving(ManagedGiving instance);
@@ -1255,6 +1259,12 @@ namespace CmsData
 		public Table< LongRunningOp> LongRunningOps
 		{
 			get	{ return this.GetTable< LongRunningOp>(); }
+
+		}
+
+		public Table< LongRunningOperation> LongRunningOperations
+		{
+			get	{ return this.GetTable< LongRunningOperation>(); }
 
 		}
 
