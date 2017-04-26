@@ -1,5 +1,6 @@
 ﻿@using CmsData
 @using CmsWeb.Areas.People.Models
+@using CsQuery.ExtensionMethods.Internal
 @using UtilityExtensions
 @model CurrentEnrollments
 @{
@@ -12,7 +13,10 @@
     <br/>
     <div class="row">
         <div class="col-sm-12">
-            @Html.Partial("PagerTop", Model)
+            @if (Model.HasDefaultFilterSetting)
+            {
+                @Html.Partial("PagerTop", Model)
+            }
             <div class="table-responsive">
                 <table class="expanding table table-hover">
                     @if(!columnset.HasOrgTypeColumns || Model.Sort != "default")

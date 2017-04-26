@@ -13,7 +13,10 @@
     <br/>
     <div class="row">
         <div class="col-sm-12">
-            @Html.Partial("PagerTop", Model)
+            @if (Model.HasDefaultFilterSetting)
+            {
+                @Html.Partial("PagerTop", Model)
+            }
             <div class="table-responsive">
                 <table class="enrollments expanding table table-hover">
                     <thead>
@@ -36,7 +39,7 @@
                     @foreach (var om in Model.ViewList())
                     {
                         rownum++;
-                        var oddrow = rownum%2 == 0 ? "oddrow" : "";
+                        var oddrow = rownum % 2 == 0 ? "oddrow" : "";
                         if (om.OrgType != pOrgType && Model.Sort == "default")
                         {
                             pOrgType = om.OrgType;

@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.WebPages;
 using CmsData;
 using CmsWeb.Models;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
 {
@@ -22,17 +23,29 @@ namespace CmsWeb.Areas.People.Models
         }
         private Person _person;
 
+        public bool HasDefaultFilterSetting
+        {
+            get
+            {
+                if (IsInAccess && !IsInOrgLeadersOnly)
+                    return !string.IsNullOrWhiteSpace(DbUtil.Db.Setting("UX-DefaultAcccessInvolvementOrgTypeFilter", string.Empty));
+
+                return !string.IsNullOrWhiteSpace(DbUtil.Db.Setting("UX-DefaultInvolvementOrgTypeFilter", string.Empty));
+            }
+
+        }
+
+        private bool IsInAccess => WebPageContext.Current?.Page?.User?.IsInRole("Access") ?? false;
+        private bool IsInOrgLeadersOnly => WebPageContext.Current?.Page?.User?.IsInRole("OrgLeadersOnly") ?? false;
+
         public List<string> OrgTypesFilter
         {
             get
             {
                 if (_orgTypesFilter == null)
                 {
-                    var isInAccess = WebPageContext.Current?.Page?.User?.IsInRole("Access") ?? false;
-                    var isInOrgLeadersOnly = WebPageContext.Current?.Page?.User?.IsInRole("OrgLeadersOnly") ?? false;
-                    string defaultFilter = null;
-
-                    if (isInAccess && !isInOrgLeadersOnly)
+                    string defaultFilter;
+                    if (IsInAccess && !IsInOrgLeadersOnly)
                         defaultFilter = DbUtil.Db.Setting("UX-DefaultAcccessInvolvementOrgTypeFilter", "");
                     else
                         defaultFilter = DbUtil.Db.Setting("UX-DefaultInvolvementOrgTypeFilter", "");
@@ -101,6 +114,10 @@ namespace CmsWeb.Areas.People.Models
                          OrgType = om.Organization.OrganizationType.Description ?? "Other",
                          IsLeaderAttendanceType = false
                      };
+
+            if (OrgTypesFilter.Count > 0)
+                return q2.ToList().OrderBy(om => OrgTypesFilter.IndexOf(om.OrgType));
+
             return q2;
         }
         override public IQueryable<EnrollmentTransaction> DefineModelSort(IQueryable<EnrollmentTransaction> q)

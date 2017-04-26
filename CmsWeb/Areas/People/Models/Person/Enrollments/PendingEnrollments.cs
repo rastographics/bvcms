@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.WebPages;
 using CmsData;
 using CmsWeb.Models;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
 {
@@ -22,17 +23,29 @@ namespace CmsWeb.Areas.People.Models
         }
         private Person _person;
 
+        public bool HasDefaultFilterSetting
+        {
+            get
+            {
+                if (IsInAccess && !IsInOrgLeadersOnly)
+                    return !string.IsNullOrWhiteSpace(DbUtil.Db.Setting("UX-DefaultAcccessInvolvementOrgTypeFilter", string.Empty));
+
+                return !string.IsNullOrWhiteSpace(DbUtil.Db.Setting("UX-DefaultInvolvementOrgTypeFilter", string.Empty));
+            }
+
+        }
+
+        private bool IsInAccess => WebPageContext.Current?.Page?.User?.IsInRole("Access") ?? false;
+        private bool IsInOrgLeadersOnly => WebPageContext.Current?.Page?.User?.IsInRole("OrgLeadersOnly") ?? false;
+
         public List<string> OrgTypesFilter
         {
             get
             {
                 if (_orgTypesFilter == null)
                 {
-                    var isInAccess = WebPageContext.Current?.Page?.User?.IsInRole("Access") ?? false;
-                    var isInOrgLeadersOnly = WebPageContext.Current?.Page?.User?.IsInRole("OrgLeadersOnly") ?? false;
-                    string defaultFilter = null;
-
-                    if (isInAccess && !isInOrgLeadersOnly)
+                    string defaultFilter;
+                    if (IsInAccess && !IsInOrgLeadersOnly)
                         defaultFilter = DbUtil.Db.Setting("UX-DefaultAcccessInvolvementOrgTypeFilter", "");
                     else
                         defaultFilter = DbUtil.Db.Setting("UX-DefaultInvolvementOrgTypeFilter", "");
@@ -89,7 +102,7 @@ namespace CmsWeb.Areas.People.Models
 
         public override IEnumerable<OrgMemberInfo> DefineViewList(IQueryable<OrganizationMember> q)
         {
-            return from om in q
+            var viewListAsList = from om in q
                    let sc = om.Organization.OrgSchedules.FirstOrDefault() // SCHED
                    let o = om.Organization
                    let leader = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == om.Organization.LeaderId)
@@ -107,6 +120,11 @@ namespace CmsWeb.Areas.People.Models
                        DivisionName = om.Organization.Division.Program.Name + "/" + om.Organization.Division.Name,
                        IsLeaderAttendanceType = false
                    };
+
+            if (OrgTypesFilter.Count > 0)
+                return viewListAsList.ToList().OrderBy(om => OrgTypesFilter.IndexOf(om.OrgType));
+
+            return viewListAsList;
         }
     }
 }
