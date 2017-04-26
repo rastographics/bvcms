@@ -11,51 +11,50 @@ using CmsData;
 using CmsData.Codes;
 using CmsWeb.Code;
 using UtilityExtensions;
-using Tasks = System.Threading.Tasks;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
-    public class AddToOrgFromTag : LongRunningOp
+    public class AddToOrgFromTag : LongRunningOperation
     {
         public const string Op = "addtoorgfromtag";
 
         public int UserId { get; set; }
         public string OrgName { get; set; }
         public AddToOrgFromTag() { }
-        public AddToOrgFromTag(int id, string group)
+
+        private OrgFilter filter;
+        public OrgFilter Filter => filter ?? (filter = DbUtil.Db.OrgFilter(QueryId));
+        public int OrgId => Filter.Id;
+        public AddToOrgFromTag(Guid id)
         {
-            Id = id;
-            Group = group;
+            QueryId = id;
             UserId = Util.UserId;
-            if (group == GroupSelectCode.Previous)
+            if (Filter.GroupSelect == GroupSelectCode.Previous)
             {
-                var org = DbUtil.Db.LoadOrganizationById(id);
+                var org = DbUtil.Db.LoadOrganizationById(OrgId);
                 OrgName = org.OrganizationName;
             }
             Tag = new CodeInfo("0", "Tag");
         }
         [DisplayName("Choose A Tag")]
         public CodeInfo Tag { get; set; }
-        public string Group { get; set; }
-
-        public string GroupName
+        public string DisplayGroup
         {
             get
             {
-                switch (Group)
+                switch (Filter.GroupSelect)
                 {
                     case GroupSelectCode.Member:
                         return "Members";
+                    case GroupSelectCode.Inactive:
+                        return "Inactive";
                     case GroupSelectCode.Pending:
                         return "Pending";
                     case GroupSelectCode.Prospect:
                         return "Prospects";
-                    case GroupSelectCode.Inactive:
-                        return "Inactive";
-                    case GroupSelectCode.Previous:
-                        return "Previous";
+                    default:
+                        throw new Exception("Unknown group " + Filter.GroupSelect);
                 }
-                return null;
             }
         }
 
@@ -67,57 +66,57 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             // running has not started yet, start it on a separate thread
             pids = FetchPeopleIds(db, Tag.Value.ToInt()).ToList();
-            var lop = new LongRunningOp()
+            var lop = new LongRunningOperation()
             {
                 Started = DateTime.Now,
                 Count = pids.Count,
                 Processed = 0,
-                Id = Id,
+                QueryId = QueryId,
                 Operation = Op,
             };
-            db.LongRunningOps.InsertOnSubmit(lop);
+            db.LongRunningOperations.InsertOnSubmit(lop);
             db.SubmitChanges();
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
         }
 
         private static void DoWork(AddToOrgFromTag model)
         {
-            var db = DbUtil.Create(model.host);
+            var db = DbUtil.Create(model.Host);
             var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
 
-            LongRunningOp lop = null;
+            LongRunningOperation lop = null;
             foreach (var pid in model.pids)
             {
                 db.Dispose();
-                db = DbUtil.Create(model.host);
-                switch (model.Group)
+                db = DbUtil.Create(model.Host);
+                switch (model.filter.GroupSelect)
                 {
                     case GroupSelectCode.Member:
-                        OrganizationMember.InsertOrgMembers(db, model.Id, pid, MemberTypeCode.Member, DateTime.Now, null, pending: false);
+                        OrganizationMember.InsertOrgMembers(db, model.OrgId, pid, MemberTypeCode.Member, DateTime.Now, null, pending: false);
                         break;
                     case GroupSelectCode.Pending:
-                        OrganizationMember.InsertOrgMembers(db, model.Id, pid, MemberTypeCode.Member, DateTime.Now, null, pending: true);
+                        OrganizationMember.InsertOrgMembers(db, model.OrgId, pid, MemberTypeCode.Member, DateTime.Now, null, pending: true);
                         break;
                     case GroupSelectCode.Prospect:
-                        OrganizationMember.InsertOrgMembers(db, model.Id, pid, MemberTypeCode.Prospect, DateTime.Now, null, pending: false);
+                        OrganizationMember.InsertOrgMembers(db, model.OrgId, pid, MemberTypeCode.Prospect, DateTime.Now, null, pending: false);
                         break;
                     case GroupSelectCode.Inactive:
-                        OrganizationMember.InsertOrgMembers(db, model.Id, pid, MemberTypeCode.InActive, DateTime.Now, DateTime.Now, pending: false);
+                        OrganizationMember.InsertOrgMembers(db, model.OrgId, pid, MemberTypeCode.InActive, DateTime.Now, DateTime.Now, pending: false);
                         break;
                     case GroupSelectCode.Previous:
-                        Organization.AddAsPreviousMember(db, model.Id, pid, model.OrgName, MemberTypeCode.InActive, DateTime.Now, DateTime.Now, model.UserId);
+                        Organization.AddAsPreviousMember(db, model.OrgId, pid, model.OrgName, MemberTypeCode.InActive, DateTime.Now, DateTime.Now, model.UserId);
                         break;
                 }
-                lop = FetchLongRunningOp(db, model.Id, Op);
+                lop = FetchLongRunningOperation(db, Op, model.QueryId);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
                 db.SubmitChanges();
-                db.LogActivity($"Org{model.GroupName} AddFromTag", model.Id, pid);
+                db.LogActivity($"Org{model.DisplayGroup} AddFromTag", model.OrgId, pid);
             }
             // finished
-            lop = FetchLongRunningOp(db, model.Id, Op);
+            lop = FetchLongRunningOperation(db, Op, model.QueryId);
             lop.Completed = DateTime.Now;
             db.SubmitChanges();
         }

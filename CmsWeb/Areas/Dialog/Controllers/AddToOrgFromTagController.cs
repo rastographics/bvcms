@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Dialog.Models;
 
@@ -7,11 +8,11 @@ namespace CmsWeb.Areas.Dialog.Controllers
     [RouteArea("Dialog", AreaPrefix="AddToOrgFromTag"), Route("{action}/{id?}")]
     public class AddToOrgFromTagController : CmsStaffController
     {
-        [HttpPost, Route("~/AddToOrgFromTag/{id:int}/{group}")]
-        public ActionResult Index(int id, string group)
+        [HttpPost, Route("~/AddToOrgFromTag/{qid:guid}")]
+        public ActionResult Index(Guid qid)
         {
-            var model = new AddToOrgFromTag(id, group);
-            model.RemoveExistingLop(DbUtil.Db, id, AddToOrgFromTag.Op);
+            var model = new AddToOrgFromTag(qid);
+            model.RemoveExistingLop(DbUtil.Db, AddToOrgFromTag.Op, qid);
             return View(model);
         }
 

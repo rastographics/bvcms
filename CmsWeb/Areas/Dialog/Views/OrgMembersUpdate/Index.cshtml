@@ -14,7 +14,7 @@
         </div>
         <div class="modal-body">
             <div class="alert alert-warning">
-                This will update information on @Model.Count @Model.Group
+                This will update information on @Model.Count @Model.DisplayGroup
             </div>
             @Html.HiddenFor(m => m.QueryId)
             @Html.EditorFor(m => m.MemberType)
@@ -29,7 +29,7 @@
             <div class="pull-left">
                 <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
             </div>
-            @if (Model.Group == GroupSelectCode.Member
+            @if (Model.GroupSelect == GroupSelectCode.Member
                  && (managetransactions || admin || missiongiving))
             {
                 <div class="btn-group">
@@ -41,14 +41,14 @@
                     </ul>
                 </div>
             }
-            @if (Model.Group == GroupSelectCode.Member && (admin || manager))
+            @if (Model.GroupSelect == GroupSelectCode.Member && (admin || manager))
             {
                 <a href="/OrgMembersUpdate/SmallGroups" class="btn btn-default ajax">
                     Sub-Groups
                 </a>
             }
             <a href="/OrgMembersUpdate/Update" class="btn btn-primary ajax"
-               data-confirm="Are you sure you want to update @Model.Count @Model.Group?">
+               data-confirm="Are you sure you want to update @Model.Count @Model.DisplayGroup?">
                 Update
             </a>
         </div>

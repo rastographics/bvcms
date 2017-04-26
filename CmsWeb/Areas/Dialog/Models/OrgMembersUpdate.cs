@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.Dialog.Models
                 showHidden = filter.ShowHidden;
                 OrgId = filter.Id;
                 Count = DbUtil.Db.OrgFilterIds(queryId).Count();
-                groupSelect = filter.GroupSelect;
+                GroupSelect = filter.GroupSelect;
             }
         }
 
@@ -51,12 +51,12 @@ namespace CmsWeb.Areas.Dialog.Models
         public string Description { get; set; }
 
         private bool? showHidden;
-        private string groupSelect;
-        public string Group
+        public string GroupSelect;
+        public string DisplayGroup
         {
             get
             {
-                switch (groupSelect)
+                switch (GroupSelect)
                 {
                     case GroupSelectCode.Member:
                         return "Current Members";
