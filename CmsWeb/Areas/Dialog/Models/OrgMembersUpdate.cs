@@ -4,68 +4,59 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using CmsData;
 using CmsData.Codes;
-using CmsData.View;
 using CmsWeb.Areas.OnlineReg.Models;
 using CmsWeb.Code;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
-    public class OrgMembersUpdate : IValidatableObject
+    public class OrgMembersUpdate
     {
         public OrgMembersUpdate()
         {
             MemberType = new CodeInfo(0, "MemberType");
         }
-        private int? id;
-        public int? Id
+
+        public Guid QueryId
         {
-            get
-            {
-                if (!id.HasValue)
-                {
-//                    if (DbUtil.Db.CurrentOrg == null)
-//                        throw new Exception("Current org no longer exists, aborting");
-                    id = DbUtil.Db.CurrentOrgId0;
-                }
-                return id;
-            }
+            get { return queryId; }
             set
             {
-                id = value;
-                if (id > 0)
-                {
-                    OrgName = DbUtil.Db.LoadOrganizationById(id).OrganizationName;
-                    if (DbUtil.Db.CurrentOrg.GroupSelect == GroupSelectCode.Pending)
-                        Pending = true;
-                }
+                queryId = value;
+                var filter = DbUtil.Db.OrgFilter(queryId);
+                OrgName = DbUtil.Db.Organizations.Where(vv => vv.OrganizationId == filter.Id).Select(vv => vv.OrganizationName).Single();
+                if (filter.GroupSelect == GroupSelectCode.Pending)
+                    Pending = true;
+                showHidden = filter.ShowHidden;
+                OrgId = filter.Id;
+                Count = DbUtil.Db.OrgFilterIds(queryId).Count();
+                GroupSelect = filter.GroupSelect;
             }
         }
 
-        private int? count;
-
-        public int Count
+        public OrgMembersUpdate(Guid id)
+            : this()
         {
-            get
-            {
-                if (!count.HasValue)
-                    count = People(DbUtil.Db.CurrentOrg).Count();
-                return count.Value;
-            }
+            QueryId = id;
         }
 
-        public string OrgName;
+        public int? Count;
 
+        public string OrgName { get; set; }
+        public int OrgId { get; set; }
         public decimal? Amount { get; set; }
         public decimal? Payment { get; set; }
         public bool AdjustFee { get; set; }
         [StringLength(100)]
         public string Description { get; set; }
-        public string Group
+
+        private bool? showHidden;
+        public string GroupSelect;
+        public string DisplayGroup
         {
             get
             {
-                switch (DbUtil.Db.CurrentOrg.GroupSelect)
+                switch (GroupSelect)
                 {
                     case GroupSelectCode.Member:
                         return "Current Members";
@@ -79,7 +70,6 @@ namespace CmsWeb.Areas.Dialog.Models
                 return "People";
             }
         }
-
         public CodeInfo MemberType { get; set; }
         public DateTime? InactiveDate { get; set; }
         public DateTime? EnrollmentDate { get; set; }
@@ -88,24 +78,17 @@ namespace CmsWeb.Areas.Dialog.Models
         public bool RemoveInactiveDate { get; set; }
         public string NewGroup { get; set; }
 
-        public IQueryable<OrgPerson> People(ICurrentOrg co)
-        {
-            var q = from p in DbUtil.Db.OrgPeople(id, co.GroupSelect,
-                        co.First(), co.Last(), co.SgFilter, co.ShowHidden,
-                        Util2.CurrentTagName, Util2.CurrentTagOwnerId,
-                        co.FilterIndividuals, co.FilterTag, false, Util.UserPeopleId)
-                    select p;
-            return q;
-        }
+        private List<int> pids;
+        private List<int> Pids => pids ?? (pids = (from p in DbUtil.Db.OrgFilterIds(QueryId)
+                                      select p.PeopleId.Value).ToList());
 
         public void Update()
         {
-            var pids = (from p in People(DbUtil.Db.CurrentOrg) select p.PeopleId).ToList();
-            foreach (var pid in pids)
+            foreach (var pid in Pids)
             {
                 DbUtil.DbDispose();
                 DbUtil.Db = DbUtil.Create(Util.Host);
-                var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == Id);
+                var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == OrgId);
 
                 var changes = new List<ChangeDetail>();
                 if (InactiveDate.HasValue)
@@ -125,48 +108,46 @@ namespace CmsWeb.Areas.Dialog.Models
                 {
                     var et = (from e in DbUtil.Db.EnrollmentTransactions
                               where e.PeopleId == om.PeopleId
-                              where e.OrganizationId == Id
+                              where e.OrganizationId == OrgId
                               orderby e.TransactionDate
                               select e).First();
                     et.MemberTypeId = om.MemberTypeId;
                 }
 
                 DbUtil.Db.SubmitChanges();
-                foreach(var g in changes)
+                foreach (var g in changes)
                     DbUtil.LogActivity("OrgMem change " + g.Field, om.OrganizationId, om.PeopleId);
             }
         }
 
         public string AddSmallGroup(int sgtagid)
         {
-            var pids = (from p in People(DbUtil.Db.CurrentOrg) select p.PeopleId).ToList();
-            var name = DbUtil.Db.MemberTags.Single(mm => mm.Id == sgtagid && mm.OrgId == Id).Name;
-            foreach (var pid in pids)
+            var name = DbUtil.Db.MemberTags.Single(mm => mm.Id == sgtagid && mm.OrgId == OrgId).Name;
+            foreach (var pid in Pids)
             {
                 DbUtil.DbDispose();
                 DbUtil.Db = DbUtil.Create(Util.Host);
-                var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == Id);
+                var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == OrgId);
                 var nn = om.AddToGroup(DbUtil.Db, sgtagid);
-                if(nn == 1)
+                if (nn == 1)
                     DbUtil.LogActivity("OrgMem AddSubGroup " + name, om.OrganizationId, om.PeopleId);
             }
-            return $"{pids.Count} added to sub-group {name}";
+            return $"{Pids.Count} added to sub-group {name}";
         }
 
         public void RemoveSmallGroup(int sgtagid)
         {
-            var pids = (from p in People(DbUtil.Db.CurrentOrg) select p.PeopleId).ToList();
-            var name = DbUtil.Db.MemberTags.Single(mm => mm.Id == sgtagid && mm.OrgId == Id).Name;
-            foreach (var pid in pids)
+            var name = DbUtil.Db.MemberTags.Single(mm => mm.Id == sgtagid && mm.OrgId == OrgId).Name;
+            foreach (var pid in Pids)
             {
                 DbUtil.DbDispose();
                 DbUtil.Db = DbUtil.Create(Util.Host);
-                var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == Id);
+                var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == OrgId);
                 var mt = om.OrgMemMemTags.SingleOrDefault(t => t.MemberTagId == sgtagid);
                 if (mt != null)
                     DbUtil.Db.OrgMemMemTags.DeleteOnSubmit(mt);
                 DbUtil.Db.SubmitChanges();
-                if(mt != null)
+                if (mt != null)
                     DbUtil.LogActivity("OrgMem RemoveSubGroup " + name, om.OrganizationId, om.PeopleId);
             }
             DbUtil.Db = DbUtil.Create(Util.Host);
@@ -174,45 +155,35 @@ namespace CmsWeb.Areas.Dialog.Models
 DELETE dbo.MemberTags
 WHERE Id = {1} AND OrgId = {0}
 AND NOT EXISTS(SELECT NULL FROM dbo.OrgMemMemTags WHERE OrgId = {0} AND MemberTagId = {1})
-", Id, sgtagid);
+", OrgId, sgtagid);
         }
 
         public string CurrentOrgError;
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            var results = new List<ValidationResult>();
-            if (id != DbUtil.Db.CurrentOrgId0)
-            {
-                CurrentOrgError = $"Current org has changed from {id} to {DbUtil.Db.CurrentOrgId0}";
-                results.Add(new ValidationResult(CurrentOrgError));
-                throw new Exception(CurrentOrgError);
-            }
-            return results;
-        }
+        private Guid queryId;
+
         internal void PostTransactions()
         {
-            var pids = (from p in People(DbUtil.Db.CurrentOrg) select p.PeopleId).ToList();
-            foreach (var pid in pids)
+            foreach (var pid in Pids)
             {
                 var db = DbUtil.Create(Util.Host);
-                var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == Id);
+                var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == OrgId);
                 var ts = db.ViewTransactionSummaries.SingleOrDefault(
                         tt => tt.RegId == om.TranId && tt.PeopleId == om.PeopleId);
                 var reason = ts == null ? "Initial Tran" : "Adjustment";
-                var descriptionForPayment = OnlineRegModel.GetDescriptionForPayment(Id);
+                var descriptionForPayment = OnlineRegModel.GetDescriptionForPayment(OrgId);
                 om.AddTransaction(db, reason, Payment ?? 0, Description, Amount, AdjustFee, descriptionForPayment);
                 db.SubmitChanges();
-                DbUtil.LogActivity("OrgMem " + reason, Id, pid);
+                DbUtil.LogActivity("OrgMem " + reason, OrgId, pid);
             }
         }
 
         public void AddNewSmallGroup()
         {
-            var o = DbUtil.Db.LoadOrganizationById(Id);
+            var o = DbUtil.Db.LoadOrganizationById(OrgId);
             var mt = new MemberTag { Name = NewGroup };
             o.MemberTags.Add(mt);
             DbUtil.Db.SubmitChanges();
-            DbUtil.LogActivity("OrgMem AddNewSubGroup " + NewGroup, Id);
+            DbUtil.LogActivity("OrgMem AddNewSubGroup " + NewGroup, OrgId);
             AddSmallGroup(mt.Id);
             NewGroup = null;
         }

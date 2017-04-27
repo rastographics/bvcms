@@ -8,21 +8,22 @@ using System.Linq;
 using CmsData;
 using CmsData.Codes;
 using OfficeOpenXml.Style;
+using UtilityExtensions;
 using TableStyles = OfficeOpenXml.Table.TableStyles;
 
 namespace CmsWeb.Models
 {
     public class OrgsMembersExcelModel
     {
-        public static EpplusResult Export()
+        public static EpplusResult Export(Guid queryid)
         {
-            if (DbUtil.Db.CurrentOrg.GroupSelect != GroupSelectCode.Member)
+            var filter = DbUtil.Db.OrgFilter(queryid);
+            if (filter.GroupSelect != GroupSelectCode.Member)
                 return new EpplusResult("EmptyResult.xlsx");
 
-            var co = DbUtil.Db.CurrentOrg;
-            var filter = DbUtil.Db.OrgPeople(co.Id, co.First(), co.Last(), co.SgFilter, co.FilterIndividuals,
-                co.FilterTag).Select(pp => pp.PeopleId).ToList();
-            var list = DbUtil.Db.CurrOrgMembers2(co.Id.ToString(), string.Join(",", filter));
+            var peeps = DbUtil.Db.OrgFilterPeople(queryid, null)
+                .Select(pp => pp.PeopleId).ToList();
+            var list = DbUtil.Db.CurrOrgMembers2(filter.Id.ToString(), string.Join(",", peeps));
 
             var count = list.Count();
             if(count == 0)

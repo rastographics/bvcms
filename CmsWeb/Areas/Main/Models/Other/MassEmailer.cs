@@ -91,8 +91,8 @@ namespace CmsWeb.Areas.Main.Models
             CcParents = ccparents ?? false;
             OrgId = orgid;
             IQueryable<Person> q = null;
-            if (OrgId.HasValue)
-                q = from p in DbUtil.Db.PeopleQuery(DbUtil.Db.QueryInCurrentOrg().QueryId)
+            if (OrgId.HasValue && id != Guid.Empty)
+                q = from p in DbUtil.Db.PeopleQuery(id)
                     where ((p.EmailAddress ?? "") != "" && (p.SendEmailAddress1 ?? true))
                         || ((p.EmailAddress2 ?? "") != "" && (p.SendEmailAddress2 ?? false))
                     select p;

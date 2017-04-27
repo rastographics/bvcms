@@ -7,109 +7,108 @@ using System.Threading;
 using System.Web.Hosting;
 using CmsData;
 using CmsData.Codes;
-using CmsData.View;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
-    public class OrgDrop : LongRunningOp
+    public class OrgDrop : LongRunningOperation
     {
         public const string Op = "orgdrop";
 
-        public string OrgName { get; set; }
+        public string DisplayGroup
+        {
+            get
+            {
+                switch (Filter.GroupSelect)
+                {
+                    case GroupSelectCode.Member:
+                        return "Members";
+                    case GroupSelectCode.Inactive:
+                        return "Inactive";
+                    case GroupSelectCode.Pending:
+                        return "Pending";
+                    case GroupSelectCode.Prospect:
+                        return "Prospects";
+                    default:
+                        throw new Exception("Unknown group " + Filter.GroupSelect);
+                }
+            }
+        }
+
         public DateTime? DropDate { get; set; }
         public bool RemoveFromEnrollmentHistory { get; set; }
-        public string Group { get; set; }
         public int UserId { get; set; }
+
 
         public OrgDrop()
         {
             UserId = Util.UserId;
         }
-        public OrgDrop(int id)
+        public OrgDrop(Guid id)
             : this()
         {
-            Id = id;
-            var org = DbUtil.Db.LoadOrganizationById(id);
-            OrgName = org.OrganizationName;
-            Count = People(DbUtil.Db.CurrentOrg).Count();
-
-            Group = "People"; // default
-            switch (DbUtil.Db.CurrentOrg.GroupSelect)
-            {
-                case GroupSelectCode.Member:
-                    Group = "Members";
-                    break;
-                case GroupSelectCode.Inactive:
-                    Group = "Inactive";
-                    break;
-                case GroupSelectCode.Pending:
-                    Group = "Pending";
-                    break;
-                case GroupSelectCode.Prospect:
-                    Group = "Prospects";
-                    break;
-            }
+            QueryId = id;
         }
 
-        public IQueryable<OrgPerson> People(ICurrentOrg co)
-        {
-            var q = from p in DbUtil.Db.OrgPeople(Id, co.GroupSelect,
-                        co.First(), co.Last(), co.SgFilter, co.ShowHidden,
-                        Util2.CurrentTagName, Util2.CurrentTagOwnerId,
-                        co.FilterIndividuals, co.FilterTag, false, Util.UserPeopleId)
-                    select p;
-            return q;
-        }
+        private OrgFilter filter;
+        public OrgFilter Filter => filter ?? (filter = DbUtil.Db.OrgFilter(QueryId));
+        public int OrgId => Filter.Id;
+
+        public int DisplayCount => Count ?? (Count = DbUtil.Db.OrgFilterIds(QueryId).Count()) ?? 0;
+
+        private string orgname;
+        public string OrgName => orgname ?? (orgname = DbUtil.Db.Organizations.Where(vv => vv.OrganizationId == Filter.Id).Select(vv => vv.OrganizationName).Single());
 
         private List<int> pids;
+        private List<int> Pids => pids ?? (pids = (from p in DbUtil.Db.OrgFilterIds(QueryId)
+                                      select p.PeopleId.Value).ToList());
+
         public void Process(CMSDataContext db)
         {
             // running has not started yet, start it on a separate thread
-            pids = (from p in People(db.CurrentOrg) select p.PeopleId.Value).ToList();
             Started = DateTime.Now;
-            var lop = new LongRunningOp()
+            var lop = new LongRunningOperation()
             {
+                QueryId = QueryId,
                 Started = Started,
-                Count = pids.Count,
+                Count = Pids.Count,
                 Processed = 0,
-                Id = Id,
                 Operation = Op,
             };
-            db.LogActivity($"OrgDrop {lop.Count} records", Id, uid: UserId);
-            db.LongRunningOps.InsertOnSubmit(lop);
+            db.LogActivity($"OrgDrop {lop.Count} records", Filter.Id, uid: UserId);
+            db.LongRunningOperations.InsertOnSubmit(lop);
             db.SubmitChanges();
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
         }
 
         private static void DoWork(OrgDrop model)
         {
-            var db = DbUtil.Create(model.host);
+            var db = DbUtil.Create(model.Host);
             var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
 
-            LongRunningOp lop = null;
-            foreach (var pid in model.pids)
+            LongRunningOperation lop = null;
+            foreach (var pid in model.Pids)
             {
                 db.Dispose();
-                db = DbUtil.Create(model.host);
-                var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == model.Id);
+                db = DbUtil.Create(model.Host);
+                var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == model.filter.Id);
                 if (model.DropDate.HasValue)
                     om.Drop(db, model.DropDate.Value);
                 else
                     om.Drop(db);
                 db.SubmitChanges();
                 if (model.RemoveFromEnrollmentHistory)
-                    db.ExecuteCommand("DELETE dbo.EnrollmentTransaction WHERE PeopleId = {0} AND OrganizationId = {1}", pid, model.Id);
-                lop = FetchLongRunningOp(db, model.Id, Op);
+                    db.ExecuteCommand("DELETE dbo.EnrollmentTransaction WHERE PeopleId = {0} AND OrganizationId = {1}", pid, model.filter.Id);
+                lop = FetchLongRunningOperation(db, Op, model.QueryId);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
                 db.SubmitChanges();
-                db.LogActivity($"Org{model.Group} Drop{(model.RemoveFromEnrollmentHistory ? " w/history" : "")}", model.Id, pid, uid: model.UserId);
+                db.LogActivity($"Org{model.DisplayGroup} Drop{(model.RemoveFromEnrollmentHistory ? " w/history" : "")}", model.filter.Id, pid, uid: model.UserId);
             }
             // finished
-            lop = FetchLongRunningOp(db, model.Id, Op);
+            lop = FetchLongRunningOperation(db, Op, model.QueryId);
             lop.Completed = DateTime.Now;
             db.SubmitChanges();
         }

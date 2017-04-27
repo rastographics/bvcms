@@ -8,13 +8,11 @@ namespace CmsWeb.Areas.Dialog.Controllers
     [RouteArea("Dialog", AreaPrefix="OrgDrop"), Route("{action}/{id?}")]
     public class OrgDropController : CmsStaffController
     {
-        [HttpPost, Route("~/OrgDrop/{id:int}")]
-        public ActionResult Index(int id)
+        [HttpPost, Route("~/OrgDrop/{qid:guid}")]
+        public ActionResult Index(Guid qid)
         {
-            if (id != DbUtil.Db.CurrentOrgId0)
-                throw new Exception($"Current org has changed from {id} to {DbUtil.Db.CurrentOrgId0}, aborting");
-            var model = new OrgDrop(id);
-            model.RemoveExistingLop(DbUtil.Db, id, OrgDrop.Op);
+            var model = new OrgDrop(qid);
+            model.RemoveExistingLop(DbUtil.Db, OrgDrop.Op, model.QueryId);
             return View(model);
         }
 

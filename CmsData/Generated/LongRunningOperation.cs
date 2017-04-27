@@ -11,14 +11,14 @@ using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="dbo.LongRunningOp")]
-	public partial class LongRunningOp : INotifyPropertyChanging, INotifyPropertyChanged
+	[Table(Name="dbo.LongRunningOperation")]
+	public partial class LongRunningOperation : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
 	#region Private Fields
 		
-		private int _Id;
+		private Guid _QueryId;
 		
 		private string _Operation;
 		
@@ -34,8 +34,6 @@ namespace CmsData
 		
 		private string _CustomMessage;
 		
-		private Guid? _QueryId;
-		
    		
     	
 	#endregion
@@ -45,8 +43,8 @@ namespace CmsData
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
 		
-		partial void OnIdChanging(int value);
-		partial void OnIdChanged();
+		partial void OnQueryIdChanging(Guid value);
+		partial void OnQueryIdChanged();
 		
 		partial void OnOperationChanging(string value);
 		partial void OnOperationChanged();
@@ -69,11 +67,8 @@ namespace CmsData
 		partial void OnCustomMessageChanging(string value);
 		partial void OnCustomMessageChanged();
 		
-		partial void OnQueryIdChanging(Guid? value);
-		partial void OnQueryIdChanged();
-		
     #endregion
-		public LongRunningOp()
+		public LongRunningOperation()
 		{
 			
 			
@@ -83,21 +78,21 @@ namespace CmsData
 		
     #region Columns
 		
-		[Column(Name="id", UpdateCheck=UpdateCheck.Never, Storage="_Id", DbType="int NOT NULL", IsPrimaryKey=true)]
-		public int Id
+		[Column(Name="QueryId", UpdateCheck=UpdateCheck.Never, Storage="_QueryId", DbType="uniqueidentifier NOT NULL", IsPrimaryKey=true)]
+		public Guid QueryId
 		{
-			get { return this._Id; }
+			get { return this._QueryId; }
 
 			set
 			{
-				if (this._Id != value)
+				if (this._QueryId != value)
 				{
 				
-                    this.OnIdChanging(value);
+                    this.OnQueryIdChanging(value);
 					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
+					this._QueryId = value;
+					this.SendPropertyChanged("QueryId");
+					this.OnQueryIdChanged();
 				}
 
 			}
@@ -105,7 +100,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="operation", UpdateCheck=UpdateCheck.Never, Storage="_Operation", DbType="nvarchar(25) NOT NULL", IsPrimaryKey=true)]
+		[Column(Name="operation", UpdateCheck=UpdateCheck.Never, Storage="_Operation", DbType="nvarchar(25)")]
 		public string Operation
 		{
 			get { return this._Operation; }
@@ -252,28 +247,6 @@ namespace CmsData
 					this._CustomMessage = value;
 					this.SendPropertyChanged("CustomMessage");
 					this.OnCustomMessageChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="QueryId", UpdateCheck=UpdateCheck.Never, Storage="_QueryId", DbType="uniqueidentifier")]
-		public Guid? QueryId
-		{
-			get { return this._QueryId; }
-
-			set
-			{
-				if (this._QueryId != value)
-				{
-				
-                    this.OnQueryIdChanging(value);
-					this.SendPropertyChanging();
-					this._QueryId = value;
-					this.SendPropertyChanged("QueryId");
-					this.OnQueryIdChanged();
 				}
 
 			}

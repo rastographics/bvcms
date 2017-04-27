@@ -14,32 +14,14 @@ namespace CmsData
 {
     public partial class CMSDataContext
     {
-        private CurrentOrg currentOrg;
-        public CurrentOrg CurrentOrg
-        {
-            get { return currentOrg ?? (currentOrg = Util2.CurrentOrganization); }
-            set
-            {
-                Util2.CurrentOrganization = value;
-                currentOrg = value;
-            }
-        }
-
         public void SetCurrentOrgId(int? id)
         {
-            if(CurrentOrg == null)
-                CurrentOrg = new CurrentOrg() { GroupSelect = Codes.GroupSelectCode.Member };
+            Util2.CurrentOrgId = id;
             CurrentOrgId = id;
-            CurrentOrg.Id = id;
         }
-
         public int? CurrentOrgId { get; set; }
+        public int CurrentSessionOrgId => Util2.CurrentOrgId ?? 0;
 
-        public int CurrentOrgId0 => (CurrentOrg ?? new CurrentOrg()).Id ?? Util2.CurrentOrgId ?? 0;
-
-        public int[] CurrentGroups { get; set; }
-        public string CurrentGroupsPrefix { get; set; }
-        public int CurrentGroupsMode { get; set; }
         public int CurrentPeopleId { get; set; }
         public string CurrentTagName { get; set; }
         public int? CurrentTagOwnerId { get; set; }
@@ -99,9 +81,6 @@ namespace CmsData
         {
             if (HttpContext.Current != null && HttpContext.Current.Session != null)
             {
-                if (CurrentOrg == null)
-                    CurrentOrg = new CurrentOrg() {Id = Util2.CurrentOrgId};
-                CurrentOrgId = CurrentOrg.Id;
                 CurrentPeopleId = Util2.CurrentPeopleId;
                 CurrentTagOwnerId = Util2.CurrentTagOwnerId;
                 CurrentTagName = Util2.CurrentTagName;

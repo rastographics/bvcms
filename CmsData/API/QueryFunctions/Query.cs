@@ -149,7 +149,7 @@ namespace CmsData
             if (sql.Contains("@UserPeopleId"))
                 parameters.Add("@UserPeopleId", data.PeopleId ?? Util.UserPeopleId);
             if (sql.Contains("@CurrentOrgId"))
-                parameters.Add("@CurrentOrgId", data.OrgId ?? db.CurrentOrgId0);
+                parameters.Add("@CurrentOrgId", data.OrgId ?? db.CurrentSessionOrgId);
 
             if (sql.Contains("@BlueToolbarTagId"))
                 if (dictionary.ContainsKey("BlueToolbarGuid"))

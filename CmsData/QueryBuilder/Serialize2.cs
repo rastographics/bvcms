@@ -71,6 +71,16 @@ namespace CmsData
             Db.SubmitChanges();
         }
 
+//        public string Serialize()
+//        {
+//            return this.ToCode();
+//        }
+//        public static Condition DeSerialize(string s)
+//        {
+//            if (s.StartsWith("<?xml"))
+//                return Import(s);
+//            return Parse(s);
+//        }
         public string ToXml(bool newGuids = false, bool noGuids = false)
         {
             var settings = new XmlWriterSettings();

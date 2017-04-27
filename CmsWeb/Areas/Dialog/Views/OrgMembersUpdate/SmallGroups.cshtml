@@ -14,7 +14,7 @@
                     @ViewBag.numberadded
                 </div>
             }
-            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.QueryId)
             <div class="alert alert-warning">
                 Each button will add or remove @Model.Count people for the indicated sub-group.
             </div>
@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 @{
-                    var list = DbUtil.Db.MemberTags.Where(mm => mm.OrgId == Model.Id).OrderBy(t => t.Name).ToList();
+                    var list = DbUtil.Db.MemberTags.Where(mm => mm.OrgId == Model.OrgId).OrderBy(t => t.Name).ToList();
                 }
                 <div class="row">
                     <div class="col-sm-6">
@@ -51,7 +51,7 @@
         </div>
         <div class="modal-footer">
             <a href="#" class="btn btn-default" data-dismiss="modal">Close Dialog</a>
-            <a href="/OrgMembersUpdate/@Model.Id" class="btn btn-default ajax">Return to Org Members Update Dialog</a>
+            <a href="/OrgMembersUpdate/@Model.QueryId" class="btn btn-default ajax">Return to Org Members Update Dialog</a>
         </div>
     </div>
 </div>

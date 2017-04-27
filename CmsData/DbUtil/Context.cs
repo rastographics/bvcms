@@ -167,6 +167,13 @@ namespace CmsData
         {
             return this.Organizations.FirstOrDefault(o => o.OrganizationId == id);
         }
+        public OrgFilter OrgFilter(Guid? id)
+        {
+            var filter = OrgFilters.SingleOrDefault(vv => vv.QueryId == id);
+            if(filter == null)
+                throw new Exception("FilteredOrg is no longer available");
+            return filter;
+        }
         public bool OrgIdOk(int? id)
         {
             var i = (from o in Organizations

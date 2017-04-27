@@ -110,19 +110,29 @@ namespace CmsWeb.Areas.Org.Controllers
         }
 
         [HttpPost]
-        public ActionResult Reminders(int id, bool? emailall)
+        public ActionResult EventReminders(Guid id)
         {
-            var org = DbUtil.Db.LoadOrganizationById(id);
             var m = new APIOrganization(DbUtil.Db);
             try
             {
-                if (org.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)
-                    m.SendVolunteerReminders(id, emailall ?? false);
-                else
-                {
-                    var qid = DbUtil.Db.QueryInCurrentOrg().QueryId;
-                    m.SendEventReminders(qid);
-                }
+                m.SendEventReminders(id);
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
+            return Content("ok");
+        }
+        [HttpPost]
+        public ActionResult VolunteerReminders(int id, bool? emailall)
+        {
+            var org = DbUtil.Db.LoadOrganizationById(id);
+            if(org == null)
+                throw new Exception("Org not found");
+            var m = new APIOrganization(DbUtil.Db);
+            try
+            {
+                m.SendVolunteerReminders(id, emailall ?? false);
             }
             catch (Exception ex)
             {

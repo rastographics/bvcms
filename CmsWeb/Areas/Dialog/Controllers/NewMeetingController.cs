@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Dialog.Models;
@@ -23,6 +24,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 MeetingDate = oi.PrevMeetingDate,
                 Schedule = new CodeInfo(0, oi.SchedulesPrev()),
                 AttendCredit = new CodeInfo(defaultAttendCreditId, oi.AttendCreditList()),
+                OrganizationId = orgid
             };
             ViewBag.Action = "/CreateNewMeeting/";
             ViewBag.Method = "POST";
@@ -30,33 +32,36 @@ namespace CmsWeb.Areas.Dialog.Controllers
             return View("MeetingInfo", m);
         }
 
-        [HttpGet, Route("ForNewRollsheet/{orgid:int}")]
-        public ActionResult ForNewRollsheet(int orgid)
+        [HttpGet, Route("ForNewRollsheet/{id:guid}")]
+        public ActionResult ForNewRollsheet(Guid id)
         {
-            var oi = new SettingsAttendanceModel() { Id = orgid };
+            var filter = DbUtil.Db.OrgFilter(id);
+            var oi = new SettingsAttendanceModel() { Id = filter.Id };
             var m = new NewMeetingInfo()
             {
                 MeetingDate =  oi.NextMeetingDate,
                 Schedule = new CodeInfo(0, oi.SchedulesNext()),
                 AttendCredit = new CodeInfo(0, oi.AttendCreditList()),
             };
-            ViewBag.Action = "/Reports/RollsheetForOrg/" + orgid;
+            ViewBag.Action = "/Reports/RollsheetForOrg/" + id;
             ViewBag.Method = "POST";
             ViewBag.ForRollsheet = true;
             return View("MeetingInfo", m);
         }
 
-        [HttpGet, Route("ForNewRallyRollsheet/{orgid:int}")]
-        public ActionResult ForNewRallyRollsheet(int orgid)
+        [HttpGet, Route("ForNewRallyRollsheet/{id:guid}")]
+        public ActionResult ForNewRallyRollsheet(Guid id)
         {
-            var oi = new SettingsAttendanceModel { Id = orgid };
+            var filter = DbUtil.Db.OrgFilter(id);
+            var oi = new SettingsAttendanceModel { Id = filter.Id };
             var m = new NewMeetingInfo()
             {
                 MeetingDate =  oi.NextMeetingDate,
                 Schedule = new CodeInfo(0, oi.SchedulesNext()),
                 AttendCredit = new CodeInfo(0, oi.AttendCreditList()),
+                OrganizationId = filter.Id
             };
-            ViewBag.Action = "/Reports/RallyRollsheetForOrg/" + orgid;
+            ViewBag.Action = "/Reports/RallyRollsheetForOrg/" + filter.Id;
             ViewBag.Method = "POST";
             ViewBag.ForRollsheet = false;
             return View("MeetingInfo", m);
@@ -96,7 +101,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 ViewBag.ForRollsheet = false;
                 return View("MeetingInfo", model);
             }
-            var organization = DbUtil.Db.LoadOrganizationById(Util2.CurrentOrganization.Id);
+            var organization = DbUtil.Db.LoadOrganizationById(model.OrganizationId);
             if (organization == null)
                 return Content("error: no org");
             var mt = DbUtil.Db.Meetings.SingleOrDefault(m => m.MeetingDate == model.MeetingDate

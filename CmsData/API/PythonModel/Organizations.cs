@@ -149,9 +149,6 @@ namespace CmsData
                 return;
             foreach (var org in q)
                 org.PurgeOrg(db);
-            var currorg = Util2.CurrentOrganization;
-            currorg.Id = 0;
-            currorg.SgFilter = null;
             HttpContext.Current.Session.Remove("ActiveOrganization");
             db.LogActivity($"Python DeleteOrg {name}, {program}, {division}");
         }

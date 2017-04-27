@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Linq;
@@ -10,10 +11,11 @@ using System.Web.Mvc;
 using CmsData.Codes;
 using CmsData.View;
 using CmsData.Classes.RoleChecker;
+using CmsWeb.Code;
 
 namespace CmsWeb.Areas.Org.Models
 {
-    public class OrgPeopleModel : PagedTableModel<OrgPerson, OrgPerson>, ICurrentOrg
+    public class OrgPeopleModel : PagedTableModel<OrgFilterPerson, OrgFilterPerson>
     {
         public OrgPeopleModel()
             : base("Name", "asc", true)
@@ -28,7 +30,7 @@ namespace CmsWeb.Areas.Org.Models
                 if (org == null)
                 {
                     if (Id == null)
-                        Id = DbUtil.Db.CurrentOrgId0;
+                        Id = DbUtil.Db.CurrentSessionOrgId;
                     org = DbUtil.Db.LoadOrganizationById(Id);
                     CheckNameLinks();
                 }
@@ -36,19 +38,21 @@ namespace CmsWeb.Areas.Org.Models
             }
         }
 
-        public override IQueryable<OrgPerson> DefineModelList()
+        public override IQueryable<OrgFilterPerson> DefineModelList()
         {
-            var q = from p in DbUtil.Db.OrgPeople(Id, GroupSelect,
-                        this.First(), this.Last(), SgFilter, ShowHidden,
-                        Util2.CurrentTagName, Util2.CurrentTagOwnerId,
-                        FilterIndividuals, FilterTag, ShowMinistryInfo, Util.UserPeopleId)
+            var filter = DbUtil.Db.OrgFilter(QueryId);
+            filter.CopyPropertiesFrom(this);
+            filter.TagId = FilterTag ? (int?)DbUtil.Db.TagCurrent().Id : null;
+            filter.LastUpdated = DateTime.Now;
+            DbUtil.Db.SubmitChanges();
+            var q = from p in DbUtil.Db.OrgFilterPeople(QueryId, ShowMinistryInfo)
                     select p;
             return q;
         }
 
         private Tag orgTag;
         public Tag OrgTag => orgTag ??
-                             (orgTag = DbUtil.Db.FetchOrCreateTag("Org-" + Id, Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers));
+                             (orgTag = DbUtil.Db.FetchOrCreateTag(QueryId.ToString(), Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers));
 
         private List<int> currentList;
 
@@ -56,12 +60,7 @@ namespace CmsWeb.Areas.Org.Models
         {
             if (currentList != null)
                 return currentList;
-            return currentList = (from p in DbUtil.Db.OrgPeople(Id, GroupSelect,
-                        this.First(), this.Last(), SgFilter, ShowHidden,
-                        filterchecked: false, filtertag: FilterTag,
-                        currtag: Util2.CurrentTagName, currtagowner: Util2.CurrentTagOwnerId,
-                        ministryinfo: false, userpeopleid: Util.UserPeopleId)
-                                  select p.PeopleId.Value).ToList();
+            return currentList = DefineModelList().Select(vv => vv.PeopleId.Value).ToList();
         }
         public List<int> CurrentNotChecked()
         {
@@ -101,7 +100,7 @@ namespace CmsWeb.Areas.Org.Models
         }
 
 
-        public override IQueryable<OrgPerson> DefineModelSort(IQueryable<OrgPerson> q)
+        public override IQueryable<OrgFilterPerson> DefineModelSort(IQueryable<OrgFilterPerson> q)
         {
             if (Direction == "asc")
                 switch (Sort)
@@ -222,7 +221,7 @@ namespace CmsWeb.Areas.Org.Models
             return q;
         }
 
-        public override IEnumerable<OrgPerson> DefineViewList(IQueryable<OrgPerson> q)
+        public override IEnumerable<OrgFilterPerson> DefineViewList(IQueryable<OrgFilterPerson> q)
         {
             return q;
         }
@@ -352,5 +351,7 @@ to `Add`, `Drop`, `Update` Members etc.
             return (u.IsInRole("Edit") || RoleChecker.HasSetting(SettingName.OrgMembersDropAdd, true)) &&
                 (MultiSelect ? "" : GroupSelect) == group;
         }
+
+        public Guid QueryId { get; set; }
     }
 }

@@ -6,11 +6,10 @@
             <h4 class="modal-title">Drop from @Model.OrgName</h4>
         </div>
         <div class="modal-body">
-            @Html.HiddenFor(mm => mm.Id)
-            @Html.HiddenFor(mm => mm.Group)
+            @Html.HiddenFor(mm => mm.QueryId)
             @Html.Hidden("callback", "ReloadPeople")
             <div class="alert alert-danger">
-                This will Drop @Model.Count people in @Model.Group from @Model.OrgName
+                This will Drop @Model.Count people in @Model.DisplayGroup from @Model.OrgName
             </div>
             @Html.EditorFor(m => m.DropDate, new { help = "Leave Blank for Current Date/Time" })
             @Html.EditorFor(m => m.RemoveFromEnrollmentHistory, new { help = "This will erase all history of this person's membership in " + Model.OrgName })
@@ -18,7 +17,7 @@
         <div class="modal-footer">
             <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
             <a href="/OrgDrop/Process" class="btn btn-danger ajaxreloader"
-                data-confirm="Are you sure you want to drop @Model.Count @Model.Group from @Model.OrgName?">
+                data-confirm="Are you sure you want to drop @Model.Count @Model.DisplayGroup from @Model.OrgName?">
                 Drop
             </a>
         </div>

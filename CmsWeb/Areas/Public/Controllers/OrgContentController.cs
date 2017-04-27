@@ -51,9 +51,7 @@ namespace CmsWeb.Areas.Public
                         });
 
                 if (template.Contains("{directory}"))
-                {
-                    ViewBag.qid = DbUtil.Db.QueryInCurrentOrg().QueryId;
-                }
+                    ViewBag.qid = DbUtil.Db.NewOrgFilter(id).QueryId;
 
                 ViewBag.template = template;
                 return View(o);

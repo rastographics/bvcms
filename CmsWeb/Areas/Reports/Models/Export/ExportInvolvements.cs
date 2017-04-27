@@ -168,23 +168,11 @@ namespace CmsWeb.Models
             return q2.Take(maximumRows).ToDataTable().ToExcel("AttendList.xlsx");
         }
 
-        //        public static IEnumerable OrgMemberList2(int qid)
-        //        {
-        //            var q = DbUtil.Db.PeopleQuery(qid);
-        //            var q2 = q.Select(p => new
-        //            {
-        //                om = DbUtil.Db.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == Util2.CurrentOrgId && om.PeopleId == p.PeopleId),
-        //                rr = p.RecRegs.FirstOrDefault(),
-        //                p = p,
-        //                test = p.PeopleExtras.SingleOrDefault(vv => vv.Field == "test")
-        //            });
-        //            var q3 = q2.Select("new(p.PreferredName,p.LastName,om.AttendStr,om.AmountPaid)");
-        //            return q3;
-        //        }
-        public static EpplusResult OrgMemberListGroups()
+        public static EpplusResult OrgMemberListGroups(Guid queryid)
         {
+            var filter = DbUtil.Db.OrgFilter(queryid);
             var cmd = new SqlCommand(
-                $"dbo.OrgMembers {DbUtil.Db.CurrentOrg.Id}, '{DbUtil.Db.CurrentOrg.SgFilter}'");
+                $"dbo.OrgMembers {filter.Id}, '{filter.SgFilter}'");
             cmd.Connection = new SqlConnection(Util.ConnectionString);
             cmd.Connection.Open();
             return cmd.ExecuteReader().ToExcel("OrgMemberGroups.xlsx");
@@ -198,10 +186,11 @@ namespace CmsWeb.Models
 
         public static EpplusResult PromoList(Guid queryid, int maximumRows)
         {
-            var Db = DbUtil.Db;
-            var q = Db.PeopleQuery(queryid);
+            var db = DbUtil.Db;
+            var filter = DbUtil.Db.OrgFilter(queryid);
+            var q = db.PeopleQuery(queryid);
             var q2 = from p in q
-                     let bfm = Db.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == DbUtil.Db.CurrentOrg.Id && om.PeopleId == p.PeopleId)
+                     let bfm = db.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == filter.Id && om.PeopleId == p.PeopleId)
                      let sc = bfm.Organization.OrgSchedules.FirstOrDefault() // SCHED
                      let tm = sc.SchedTime.Value
                      select new

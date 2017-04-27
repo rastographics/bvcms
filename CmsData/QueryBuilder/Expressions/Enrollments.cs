@@ -348,7 +348,6 @@ namespace CmsData
         internal Expression HasBalance()
         {
             var tf = CodeIds == "1";
-            var co = db.CurrentOrg;
             Expression<Func<Person, bool>> pred = p =>
                     p.OrganizationMembers.Any(m =>
                     (OrganizationInt == 0 || m.OrganizationId == OrganizationInt)

@@ -19,11 +19,8 @@ namespace CmsWeb.Areas.Org.Controllers
             if (m.FilterIndividuals)
                 if (m.NameFilter.HasValue())
                     m.FilterIndividuals = false;
-                else if (DbUtil.Db.OrgCheckedCount(m.Id, m.GroupSelect, Util.UserPeopleId) == 0)
+                else if (DbUtil.Db.OrgFilterCheckedCount(m.QueryId) == 0)
                     m.FilterIndividuals = false;
-            if (DbUtil.Db.CurrentOrg == null)
-                DbUtil.Db.SetCurrentOrgId(m.Id);
-            DbUtil.Db.CurrentOrg.CopyPropertiesFrom(m);
             ViewBag.OrgMemberContext = true;
             ViewBag.orgname = Session["ActiveOrganization"];
             return PartialView(m);
@@ -118,25 +115,25 @@ namespace CmsWeb.Areas.Org.Controllers
             return Content("ok");
         }
 
-        [HttpPost, Route("ToggleCheckbox/{oid:int}/{pid:int}")]
-        public ActionResult ToggleCheckbox(int oid, int pid, bool chkd)
+        [HttpPost, Route("ToggleCheckbox/{qid}/{pid:int}")]
+        public ActionResult ToggleCheckbox(Guid qid, int pid, bool chkd)
         {
             if (chkd)
-                Person.Tag(DbUtil.Db, pid, "Org-" + oid, Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+                Person.Tag(DbUtil.Db, pid, qid.ToString(), Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
             else
-                Person.UnTag(DbUtil.Db, pid, "Org-" + oid, Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+                Person.UnTag(DbUtil.Db, pid, qid.ToString(), Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();
         }
 
-        [HttpPost, Route("ToggleCheckboxes/{id:int}")]
-        public ActionResult ToggleCheckboxes(int id, IList<int> pids, bool chkd)
+        [HttpPost, Route("ToggleCheckboxes/{qid}")]
+        public ActionResult ToggleCheckboxes(Guid qid, IList<int> pids, bool chkd)
         {
             foreach (var pid in pids)
                 if (chkd)
-                    Person.Tag(DbUtil.Db, pid, "Org-" + id, Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+                    Person.Tag(DbUtil.Db, pid, qid.ToString(), Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
                 else
-                    Person.UnTag(DbUtil.Db, pid, "Org-" + id, Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+                    Person.UnTag(DbUtil.Db, pid, qid.ToString(), Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();
         }
@@ -144,7 +141,6 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult CheckAll(OrgPeopleModel m)
         {
-            DbUtil.Db.CurrentOrg.CopyPropertiesFrom(m);
             var list = m.CurrentNotChecked();
             DbUtil.Db.TagAll(list, m.OrgTag);
             return PartialView("People", m);
@@ -153,7 +149,6 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult CheckNone(OrgPeopleModel m)
         {
-            DbUtil.Db.CurrentOrg.CopyPropertiesFrom(m);
             var list = m.CurrentChecked();
             DbUtil.Db.UnTagAll(list, m.OrgTag);
             return PartialView("People", m);

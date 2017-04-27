@@ -167,6 +167,7 @@ namespace CmsData
         NumberOfFamilyMembers,
         NumberOfPrimaryAdults,
         OccupationOther,
+        OrgFilter,
         OrgInactiveDate,
         OrgJoinDate,
         OrgJoinDateCompare,

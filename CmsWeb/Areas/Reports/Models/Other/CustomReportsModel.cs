@@ -42,7 +42,7 @@ namespace CmsWeb.Areas.Reports.Models
             if (id != null)
                 queryid = id.Value;
             if(orgid == null)
-                orgid = db.CurrentOrgId0;
+                orgid = db.CurrentSessionOrgId;
         }
 
         public class ReportItem
@@ -305,7 +305,7 @@ namespace CmsWeb.Areas.Reports.Models
                 comma = ",";
             }
             sb.AppendLine("FROM dbo.People p");
-            var coid = DbUtil.Db.CurrentOrgId0;
+            var coid = DbUtil.Db.CurrentSessionOrgId;
             foreach (var j in joins)
             {
                 var join = mc.Joins[j].trim();
