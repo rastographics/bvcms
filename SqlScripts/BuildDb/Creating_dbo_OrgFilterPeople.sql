@@ -39,7 +39,7 @@ RETURN
 		,MemberCode
 		,MemberType
 		,CAST(Hidden AS BIT) Hidden
-		,Groups
+		,Groups = CHAR(10) + Groups
 		,mi.LastContactMadeDt
 		,mi.LastContactMadeId
 		,mi.LastContactReceivedDt
