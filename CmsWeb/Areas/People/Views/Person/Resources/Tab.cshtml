@@ -1,11 +1,11 @@
-﻿@using CmsData
+﻿@using CmsWeb.Areas.Manage.Models
 @model CmsWeb.Areas.People.Models.PersonModel
 
-<ul class="nav nav-pills subnav hidden-sm hidden-xs" data-tabparent="system">
+<ul class="nav nav-pills subnav hidden-sm hidden-xs" data-tabparent="resources">
     @for (var i = 0; i < Model.ResourceTypes.Count; i++)
        {
         <li class="resource-type-tab @(i == 0 ? "active" : null)" data-id="@Model.ResourceTypes[i].ResourceType.ResourceTypeId">
-            <a href = "#resourcetab@(Model.ResourceTypes[i].ResourceType.ResourceTypeId)" data-toggle="tab">
+            <a href = "#@(Model.ResourceTypes[i].ResourceType.Name.ToLower().Replace(" ", ""))" data-toggle="tab">
                 <span>@Model.ResourceTypes[i].ResourceType.Name</span>
             </a>
         </li>
@@ -57,7 +57,7 @@
 
 
         <div class="tab-pane @(i == 0 ? "active" : null)"
-             id="resourcetab@(resourceTypeGroup.ResourceType.ResourceTypeId)">
+             id="@(resourceTypeGroup.ResourceType.Name.ToLower().Replace(" ", ""))">
             <div class="panel-group" id="accordion@(i)" role="tablist">
                 @foreach (var category in resourceTypeGroup.Resources.GroupBy(x => x.ResourceCategory).OrderBy(x => x.Key.DisplayOrder))
                 {
@@ -118,3 +118,21 @@
     </div>
 
         <br />
+
+<script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>
+<script type="text/javascript">
+    $(function () {
+        var tab = window.location.hash;
+        $.cookie('lasttab', tab);
+
+        @foreach (ResourceTypeModel resourceModel in Model.ResourceTypes)
+        {
+            <text>
+                if (tab === '#tab-@resourceModel.ResourceType.Name.ToLower().Replace(" ", "")') {
+                    var id = "#@resourceModel.ResourceType.Name.ToLower().Replace(" ", "")";
+                    $("a[href='" + id + "']").click().tab("show");
+                }
+            </text>
+        }
+    });
+</script>
