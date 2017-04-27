@@ -1,6 +1,7 @@
 ﻿using System.Web.Mvc;
 using CmsWeb.Areas.Dialog.Models;
 using CmsData;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
@@ -11,7 +12,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult Index(int id)
         {
             var model = new DeleteMeeting(id);
-            model.RemoveExistingLop(DbUtil.Db, id, DeleteMeeting.Op);
+            model.RemoveExistingLop(DbUtil.Db, DeleteMeeting.Op, model.QueryId);
             return View(model);
         }
 
@@ -21,7 +22,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             model.UpdateLongRunningOp(DbUtil.Db, DeleteMeeting.Op);
             if (!model.Started.HasValue)
             {
-                DbUtil.LogActivity($"Add to org from tag for {Session["ActiveOrganization"]}");
+                DbUtil.LogActivity($"Delete Meeting {model.MeetingId}", orgid: model.OrgId, userId: Util.UserPeopleId);
                 model.Process(DbUtil.Db);
             }
             return View(model);
