@@ -39,14 +39,6 @@ namespace CmsWeb.Models
 
             var msg = CreateRequest("Support Request", to);
 
-            if (Util.UserPeopleId.HasValue)
-            {
-                var c = Contact.AddContact(DbUtil.Db, Util.UserPeopleId.Value, DateTime.Now, $"<p>{msg.Subject}</p>{body}");
-                c.LimitToRole = "Admin";
-                c.MinistryId = Contact.FetchOrCreateMinistry(DbUtil.Db, "TouchPoint Support").MinistryId;
-                DbUtil.Db.SubmitChanges();
-            }
-
             var smtp = DbUtil.Db.Smtp();
             smtp.Send(msg);
 
@@ -124,13 +116,10 @@ namespace CmsWeb.Models
                          }).SingleOrDefault();
 
                 var roles = (p != null ? p.roles : "");
-                var ccto = !string.IsNullOrEmpty(cc) ? "<b>CC:</b> " + cc + "<br>" : "";
+                var ccto = !string.IsNullOrEmpty(cc) ? $@"<b>CC:</b> {cc}<br>" : "";
                 sb.AppendFormat(@"<b>Roles:</b> {0}<br>
-                                <b>CC:</b> {1}<br>
-                                <b>Last Search:</b> {2}<br>
-                                <b>Claim:</b> <a href='{3}'>Manage Support</a>
-                                {4}
-                                ", roles, ccto, lastsearch, ManageLink, CreateDibs(id));
+                                {1}<a href='{2}'>Manage Support</a>
+                                ", roles, ccto, ManageLink);
             }
             sb.Append(body);
 
@@ -142,7 +131,6 @@ namespace CmsWeb.Models
                 {
                     try
                     {
-                        msg.ReplyToList.Add(addcc);
                         ccAddrs.Add(addcc);
                     }
                     catch (FormatException)
@@ -152,34 +140,10 @@ namespace CmsWeb.Models
             }
             if (prefix.Contains("MyData"))
                 msg.To.Add("support@touchpointsoftware.com");
-            msg.ReplyToList.Add(who);
-            msg.ReplyToList.Add("support@touchpointsoftware.com");
             msg.IsBodyHtml = true;
             msg.Headers.Add("X-BVCMS-SUPPORT", "request");
 
             return msg;
-        }
-
-        private string CreateDibs(int requestID)
-        {
-            var diblink = DibLink;
-            var dibLinks = supportPeople.Select(s =>
-                $"<a href='{string.Format(diblink, requestID, s.id)}'>{s.name}</a>"
-                ).ToList();
-            var sb = new StringBuilder("<br><table cellpadding=5>\n");
-            var closetr = "";
-            for (var i = 0; i < dibLinks.Count; i++)
-            {
-                var a = dibLinks[i];
-                if (i % 4 == 0)
-                {
-                    sb.Append($"{closetr}<tr>");
-                    closetr = "</tr>";
-                }
-                sb.AppendFormat("<td>{0}</td>", a);
-            }
-            sb.Append("</tr></table>");
-            return sb.ToString();
         }
     }
 }
