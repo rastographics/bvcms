@@ -58,12 +58,12 @@ namespace CmsWeb.Models
                 smtp.Send(toAdmin);
             }
 
-            foreach (var ccsend in ccAddrs)
-            {
-                var toCC = new MailMessage(fromsupport, ccsend, msg.Subject, Util.UserFullName + " submitted a support request to TouchPoint and CCed you:<br><br>" + body)
-                { IsBodyHtml = true };
-                smtp.Send(toCC);
-            }
+//            foreach (var ccsend in ccAddrs)
+//            {
+//                var toCC = new MailMessage(fromsupport, ccsend, msg.Subject, Util.UserFullName + " submitted a support request to TouchPoint and CCed you:<br><br>" + body)
+//                { IsBodyHtml = true };
+//                smtp.Send(toCC);
+//            }
         }
 
         public void MyDataSendSupportRequest()
@@ -124,6 +124,7 @@ namespace CmsWeb.Models
             sb.Append(body);
 
             var msg = new MailMessage(fromsupport, toaddress, subject, sb.ToString());
+            msg.ReplyToList.Add(who);
             if (!string.IsNullOrEmpty(cc))
             {
                 var ccs = cc.Split(',');
@@ -132,6 +133,7 @@ namespace CmsWeb.Models
                     try
                     {
                         ccAddrs.Add(addcc);
+                        msg.CC.Add(addcc);
                     }
                     catch (FormatException)
                     {
