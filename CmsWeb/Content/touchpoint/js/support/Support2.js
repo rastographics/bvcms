@@ -50,6 +50,7 @@
         var postdata = {
             body: CKEDITOR.instances["body"].getData(),
             cc: $("#cc").val(),
+            subj: $("#subj").val(),
             urgency: $("#urgency").val(),
             lastsearch: $("#last-search").val()
         };
@@ -57,6 +58,7 @@
             if (data == "OK") {
                 $("#success").show();
                 $("#supportForm").hide();
+                $
             }
             else {
                 swal("Error!", "There was an error submitting your support request, please try again.", "error");

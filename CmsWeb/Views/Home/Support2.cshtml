@@ -3,7 +3,6 @@
     ViewBag.Title = "Support";
     ViewBag.PageHeader = "Need help using this software?";
     Layout = ViewExtensions2.TouchPointLayout();
-    var active = TempData["ActiveRecords"].ToInt();
     var active2 = TempData["ActiveRecords2"].ToInt();
     var googlehelp = @"
         The following uses a Google Custom Search Engine.
@@ -92,10 +91,9 @@
                                     <div>Build Date:<br />@Util.BuildDate()</div>
                                     <br />
                                     <div>
-                                        @if (active > 0)
+                                        @if (active2 > 0)
                                         {
-                                            @:Active Records: @active.ToString("N0")<br />
-                                            @:Active Records V2: @active2.ToString("N0")
+                                            @:Active Records: @active2.ToString("N0")
                                         }
                                         else if (User.IsInRole("Admin"))
                                         {
@@ -116,6 +114,13 @@
                                     <strong>Success!</strong> Your support request has been submitted. Thank you for contacting us. We will get back to you as soon as possible.
                                 </div>
                                 <div class="row" id="supportForm">
+                                    <div class="form-group">
+                                        <label for="cc" class="col-md-2 control-label">Subject:</label>
+                                        <div class="col-md-10">
+                                            <input type="text" id="subj" name="subj" class="form-control" />
+                                            <span class="help-block">Enter a very brief description here</span>
+                                        </div>
+                                    </div>
                                     <div class="form-group">
                                         <label for="cc" class="col-md-2 control-label">CC:</label>
                                         <div class="col-md-10">

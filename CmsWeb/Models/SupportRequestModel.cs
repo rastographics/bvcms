@@ -29,6 +29,7 @@ namespace CmsWeb.Models
         public string body { get; set; }
         public string lastsearch { get; set; }
         public string cc { get; set; }
+        public string subj { get; set; }
 
         public static bool CanSupport => Util.IsHosted;
 
@@ -37,7 +38,7 @@ namespace CmsWeb.Models
             const string fromsupport = "Touchpoint Support <mailer@bvcms.com>";
             const string to = "support@touchpointsoftware.com";
 
-            var msg = CreateRequest("Support Request", to);
+            var msg = CreateRequest(subj, to);
 
             var smtp = DbUtil.Db.Smtp();
             smtp.Send(msg);
@@ -77,8 +78,7 @@ namespace CmsWeb.Models
         {
             var who = Util.UserFullName + " <" + Util.UserEmail + ">";
             var id = 0;
-            var subject = prefix + (urgency.HasValue() ? $" {urgency}: " : ": ")
-                          + $"{Util.UserFullName} @ {DbUtil.Db.Host}";
+            var subject = $"{prefix} --{urgency}: {Util.UserFullName} @ {DbUtil.Db.Host}";
             if (cs != null)
             {
                 var cn = new SqlConnection(cs.ConnectionString);
