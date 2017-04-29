@@ -576,10 +576,13 @@ namespace CmsWeb.Models
         internal int? Campus(object o)
         {
             var s = o as string;
-            if (s == null)
+            if (!s.HasValue())
                 return null;
             s = s.trim().ToLower();
-            return Campuses[s];
+            int i;
+            if (!Campuses.TryGetValue(s, out i))
+                return null;
+            return i;
         }
         internal readonly List<string> Standardnames = new List<string>
         {
