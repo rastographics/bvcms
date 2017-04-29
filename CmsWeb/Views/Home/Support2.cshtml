@@ -133,12 +133,9 @@
                                         <div class="col-md-10">
                                             <select name="urgency" id="urgency" class="form-control">
                                                 <option value="0" selected="">--Select Priority--</option>
-                                                <option value="3">No Rush. This can wait until tomorrow</option>
-                                                @if (DateTime.Now.TimeOfDay.TotalHours < 16.5)
-                                                {
-                                                    <option value="2">I need an answer before the end of the day</option>
-                                                }
-                                                <option value="1">Emergency, I need an answer ASAP</option>
+                                                <option value="3">LOW: Low priority business issue or question</option>
+                                                <option value="2">NORMAL: Important issue, I can wait 24 hours for a response.</option>
+                                                <option value="1">CRITICAL: Urgent issue that is impacting our operation. I need an answer ASAP.</option>
                                             </select>
                                         </div>
                                     </div>
