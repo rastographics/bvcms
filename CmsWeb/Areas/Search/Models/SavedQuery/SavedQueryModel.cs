@@ -29,6 +29,7 @@ namespace CmsWeb.Areas.Search.Models
             var q = from c in DbUtil.Db.Queries
                     where !PublicOnly || c.Ispublic
                     where c.Name.Contains(SearchQuery) || c.Owner == SearchQuery || !SearchQuery.HasValue()
+                    where c.Name != "OrgFilter"
                     select c;
             if (ScratchPadsOnly)
                 q = from c in q
