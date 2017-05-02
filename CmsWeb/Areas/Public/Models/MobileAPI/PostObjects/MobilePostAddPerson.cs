@@ -11,6 +11,7 @@ namespace CmsWeb.MobileAPI
 		public string firstName = "";
 		public string goesBy = "";
 		public string lastName = "";
+		public string altName = "";
 
 		public int genderID = 0;
 		public DateTime? birthday;
