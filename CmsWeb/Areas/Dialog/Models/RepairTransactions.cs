@@ -5,39 +5,41 @@ using CmsData;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
-    public class RepairTransactions : LongRunningOp
+    public class RepairTransactions : LongRunningOperation
     {
         public const string Op = "RepairTransactions";
 
+        public int OrgId { get; set; }
         public RepairTransactions() { }
         public RepairTransactions(int id)
         {
-            Id = id;
-            Count = DbUtil.Db.OrganizationMembers.Count(m => m.OrganizationId == Id);
+            QueryId = Guid.NewGuid();
+            OrgId = id;
+            Count = DbUtil.Db.OrganizationMembers.Count(m => m.OrganizationId == id);
         }
 
         public void Process(CMSDataContext db)
         {
-            var lop = new LongRunningOp
+            var lop = new LongRunningOperation
             {
                 Started = DateTime.Now,
-                Count = db.OrganizationMembers.Count(m => m.OrganizationId == Id),
+                Count = db.OrganizationMembers.Count(m => m.OrganizationId == OrgId),
                 Processed = 0,
-                Id = Id,
+                QueryId = QueryId,
                 Operation = Op
             };
-            db.LongRunningOps.InsertOnSubmit(lop);
+            db.LongRunningOperations.InsertOnSubmit(lop);
             db.SubmitChanges();
 
-            HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(host, Id));
+            HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
         }
 
-        public static void DoWork(string host, int id)
+        public static void DoWork(RepairTransactions model)
         {
-            var db = DbUtil.Create(host);
-            db.RepairTransactions(id);
+            var db = DbUtil.Create(model.Host);
+            db.RepairTransactions(model.OrgId);
             // finished
-            var lop = FetchLongRunningOp(db, id, Op);
+            var lop = FetchLongRunningOperation(db, Op, model.QueryId);
             lop.Completed = DateTime.Now;
             db.SubmitChanges();
 		}

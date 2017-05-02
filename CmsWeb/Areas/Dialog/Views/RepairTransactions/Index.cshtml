@@ -6,7 +6,8 @@
             <h4 class="modal-title">Repair Transactions</h4>
         </div>
         <div class="modal-body">
-            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.QueryId)
+            @Html.HiddenFor(m => m.OrgId)
             @Html.DisplayFor(m => m.Count, new { Label = "Number of Members" })
             Are you sure you want to repair Transactions?
         </div>
