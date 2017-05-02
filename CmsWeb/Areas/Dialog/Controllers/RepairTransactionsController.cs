@@ -11,7 +11,6 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult Index(int id)
         {
             var model = new RepairTransactions(id);
-            model.RemoveExistingLop(DbUtil.Db, RepairTransactions.Op, model.QueryId);
             return View(model);
         }
 

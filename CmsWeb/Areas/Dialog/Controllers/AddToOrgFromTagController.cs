@@ -12,7 +12,6 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult Index(Guid qid)
         {
             var model = new AddToOrgFromTag(qid);
-            model.RemoveExistingLop(DbUtil.Db, AddToOrgFromTag.Op, qid);
             return View(model);
         }
 
