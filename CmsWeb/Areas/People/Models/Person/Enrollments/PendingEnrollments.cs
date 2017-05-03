@@ -23,17 +23,7 @@ namespace CmsWeb.Areas.People.Models
         }
         private Person _person;
 
-        public bool HasDefaultFilterSetting
-        {
-            get
-            {
-                if (IsInAccess && !IsInOrgLeadersOnly)
-                    return !string.IsNullOrWhiteSpace(DbUtil.Db.Setting("UX-DefaultAcccessInvolvementOrgTypeFilter", string.Empty));
-
-                return !string.IsNullOrWhiteSpace(DbUtil.Db.Setting("UX-DefaultInvolvementOrgTypeFilter", string.Empty));
-            }
-
-        }
+        public bool HasDefaultFilterSetting => DbUtil.Db.Setting("UX-ShowInvolvementOrgTypeFilter", true);
 
         private bool IsInAccess => WebPageContext.Current?.Page?.User?.IsInRole("Access") ?? false;
         private bool IsInOrgLeadersOnly => WebPageContext.Current?.Page?.User?.IsInRole("OrgLeadersOnly") ?? false;
