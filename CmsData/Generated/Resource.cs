@@ -46,6 +46,8 @@ namespace CmsData
 		
 		private int? _OrganizationTypeId;
 		
+		private string _StatusFlagIds;
+		
    		
    		private EntitySet< ResourceAttachment> _ResourceAttachments;
 		
@@ -114,6 +116,9 @@ namespace CmsData
 		
 		partial void OnOrganizationTypeIdChanging(int? value);
 		partial void OnOrganizationTypeIdChanged();
+		
+		partial void OnStatusFlagIdsChanging(string value);
+		partial void OnStatusFlagIdsChanged();
 		
     #endregion
 		public Resource()
@@ -469,6 +474,28 @@ namespace CmsData
 					this._OrganizationTypeId = value;
 					this.SendPropertyChanged("OrganizationTypeId");
 					this.OnOrganizationTypeIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="StatusFlagIds", UpdateCheck=UpdateCheck.Never, Storage="_StatusFlagIds", DbType="nvarchar")]
+		public string StatusFlagIds
+		{
+			get { return this._StatusFlagIds; }
+
+			set
+			{
+				if (this._StatusFlagIds != value)
+				{
+				
+                    this.OnStatusFlagIdsChanging(value);
+					this.SendPropertyChanging();
+					this._StatusFlagIds = value;
+					this.SendPropertyChanged("StatusFlagIds");
+					this.OnStatusFlagIdsChanged();
 				}
 
 			}

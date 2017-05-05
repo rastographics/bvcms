@@ -22,6 +22,8 @@ namespace CmsData
 		
 		private string _SettingX;
 		
+		private bool? _System;
+		
    		
     	
 	#endregion
@@ -36,6 +38,9 @@ namespace CmsData
 		
 		partial void OnSettingXChanging(string value);
 		partial void OnSettingXChanged();
+		
+		partial void OnSystemChanging(bool? value);
+		partial void OnSystemChanged();
 		
     #endregion
 		public Setting()
@@ -85,6 +90,28 @@ namespace CmsData
 					this._SettingX = value;
 					this.SendPropertyChanged("SettingX");
 					this.OnSettingXChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="System", UpdateCheck=UpdateCheck.Never, Storage="_System", DbType="bit")]
+		public bool? System
+		{
+			get { return this._System; }
+
+			set
+			{
+				if (this._System != value)
+				{
+				
+                    this.OnSystemChanging(value);
+					this.SendPropertyChanging();
+					this._System = value;
+					this.SendPropertyChanged("System");
+					this.OnSystemChanged();
 				}
 
 			}
