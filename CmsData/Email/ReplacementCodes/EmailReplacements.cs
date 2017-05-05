@@ -46,7 +46,7 @@ namespace CmsData
 
         public EmailReplacements(CMSDataContext callingContext, string text, MailAddress from, int? queueid = null, bool noPremailer = false, DynamicData pythondata = null)
         {
-            currentOrgId = callingContext.CurrentOrgId;
+            currentOrgId = callingContext.CurrentOrgId ?? callingContext.CurrentSessionOrgId;
             connStr = callingContext.ConnectionString;
             host = callingContext.Host;
             db = callingContext;
@@ -82,7 +82,7 @@ namespace CmsData
 
         public EmailReplacements(CMSDataContext callingContext, DocX doc)
         {
-            currentOrgId = callingContext.CurrentOrgId;
+            currentOrgId = callingContext.CurrentOrgId ?? callingContext.CurrentSessionOrgId;
             connStr = callingContext.ConnectionString;
             host = callingContext.Host;
             db = callingContext;
@@ -95,7 +95,7 @@ namespace CmsData
 
         public EmailReplacements(CMSDataContext callingContext)
         {
-            currentOrgId = callingContext.CurrentOrgId;
+            currentOrgId = callingContext.CurrentOrgId ?? callingContext.CurrentSessionOrgId;
             connStr = callingContext.ConnectionString;
             host = callingContext.Host;
             db = callingContext;
@@ -112,7 +112,7 @@ namespace CmsData
                 var p = db.LoadPersonById(pid);
                 person = p;
 
-                pi = GetPayInfo(emailqueueto.OrgId ?? currentOrgId, p.PeopleId);
+                pi = GetPayInfo(emailqueueto.OrgId ?? currentOrgId ?? db.CurrentSessionOrgId, p.PeopleId);
 
                 var aa = db.GetAddressList(p);
 
@@ -176,6 +176,8 @@ namespace CmsData
             person = p;
 
             db = callingContext;
+            pi = GetPayInfo(currentOrgId ?? db.CurrentSessionOrgId, p.PeopleId);
+
             var aa = db.GetAddressList(p);
 
             ListAddresses = aa.DistinctEmails();
