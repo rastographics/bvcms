@@ -13,7 +13,8 @@ CREATE TABLE [dbo].[Resource]
 [DisplayOrder] [int] NULL,
 [ResourceTypeId] [int] NOT NULL,
 [ResourceCategoryId] [int] NOT NULL,
-[OrganizationTypeId] [int] NULL
+[OrganizationTypeId] [int] NULL,
+[StatusFlagIds] [nvarchar] (max) NULL
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
