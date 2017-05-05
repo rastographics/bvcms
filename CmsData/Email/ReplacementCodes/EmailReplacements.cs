@@ -67,8 +67,10 @@ namespace CmsData
             if (!noPremailer)
                 try
                 {
+                    text = text.Replace("{{", "<!--{{").Replace("}}", "}}-->");
                     var result = PreMailer.Net.PreMailer.MoveCssInline(text);
                     text = result.Html;
+                    text = text.Replace("<!--{{", "{{").Replace("}}-->", "}}");
                 }
                 catch
                 {

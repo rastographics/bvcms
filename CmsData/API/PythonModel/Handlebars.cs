@@ -1,7 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.IO;
 using System.Web;
 using CmsData;
+using CmsData.API;
 using HandlebarsDotNet;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
 using UtilityExtensions;
 
 namespace CmsData
@@ -101,6 +108,14 @@ namespace CmsData
                 if (args.Length == 3)
                     oid = args[2].ToInt2();
                 writer.Write(r.RenderCode(code, p, oid));
+            });
+            Handlebars.RegisterHelper("Json", (writer, options, context, args) =>
+            {
+                dynamic a = JsonDeserialize2(args[0].ToString());
+                foreach (var item in a)
+                {
+                    options.Template(writer, item);
+                }
             });
         }
 

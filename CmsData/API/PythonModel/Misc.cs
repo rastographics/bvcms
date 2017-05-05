@@ -1,13 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Text.RegularExpressions;
 using System.Web;
 using MarkdownDeep;
 using RestSharp;
 using UtilityExtensions;
 using System.Linq;
+using System.Web.Helpers;
+using System.Web.Script.Serialization;
+using CmsData.API;
 using IronPython.Runtime;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Method = RestSharp.Method;
 
@@ -132,10 +137,16 @@ namespace CmsData
             var response = client.Execute(request);
             return response.Content;
         }
-        public dynamic JsonDeserialize(string s)
+        public static dynamic JsonDeserialize(string s)
         {
             dynamic d = JObject.Parse(s);
             return d;
+        }
+        public static IEnumerable<dynamic> JsonDeserialize2(string s)
+        {
+            var  list =  JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(s);
+            var list2 = list.Select(vv => new DynamicData(vv));
+            return list2;
         }
 
         public string Setting(string name, string def = "")

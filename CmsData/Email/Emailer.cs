@@ -650,6 +650,8 @@ namespace CmsData
                 {
                     if (m.OptOuts != null && m.OptOuts.Any(vv => vv.PeopleId == to.PeopleId && vv.OptOutX == true))
                         continue;
+                    if (!dict.ContainsKey(to.PeopleId))
+                        continue;
 
                     var text = m.DoReplacements(to.PeopleId, to);
 
