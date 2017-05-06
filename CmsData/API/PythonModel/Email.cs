@@ -209,7 +209,7 @@ namespace CmsData
         {
             var c = db.ContentOfTypeHtml(contentName);
             if (c == null)
-                return;
+                throw new Exception($"Cannot find content named \"{contentName.Truncate(50)}\"");
             EmailWithPythonData(savedQuery, queuedBy, fromAddr, fromName, c.Title, c.Body, recipientData);
         }
     }
