@@ -536,6 +536,7 @@ Creating_dbo_GetAttendedTodaysMeeting.sql
 Creating_dbo_RecentAttendance.sql
 Creating_dbo_Contributors.sql
 Creating_dbo_LastContact.sql
+Creating_triggerdbo_insOrgFilter_dbo_OrgFilter.sql
 Creating_dbo_ContactTypeTotals.sql
 Creating_dbo_DaysBetween12Attend.sql
 Creating_dbo_GetTodaysMeetingHour.sql

@@ -2,11 +2,15 @@
 CREATE PROC [dbo].[CleanOrgFilters]
 AS
     BEGIN
+		-- get today at 4:00 AM
+		DECLARE @lastdt DATETIME = (SELECT DATETIMEFROMPARTS(DATEPART(YEAR, GETDATE()), DATEPART(MONTH, GETDATE()), DATEPART(DAY, GETDATE()), 4, 0, 0, 0))
+		-- This way, the procedure will only run at most once a day when the first org is visited that day
+
         DECLARE @t TABLE ( id UNIQUEIDENTIFIER )
         INSERT  @t ( id )
                 SELECT  QueryId
                 FROM    dbo.OrgFilter
-                WHERE   LastUpdated < DATEADD(HOUR, -24, GETDATE())
+                WHERE   LastUpdated < DATEADD(HOUR, -24, @lastdt)
 
         DELETE  dbo.OrgFilter
 		WHERE EXISTS (SELECT NULL FROM @t WHERE id = QueryId)
@@ -23,17 +27,18 @@ AS
 		WHERE EXISTS (SELECT NULL FROM @t WHERE id = Name)
         AND TypeId = 3
 
+		-- Clean LongRunningOperation records too
         DELETE  dbo.LongRunningOperation
-        WHERE   completed < DATEADD(HOUR, -24, GETDATE())
+        WHERE   completed < DATEADD(HOUR, -24, @lastdt)
 
         BEGIN TRAN;
 	        UPDATE  dbo.Setting WITH ( SERIALIZABLE )
-	        SET     Setting = GETDATE()
+	        SET     Setting = @lastdt
 	        WHERE   Id = 'LastOrgFilterCleanup' AND [System] = 1;
 	        IF @@rowcount = 0
 	            BEGIN
 	                INSERT  INTO dbo.Setting ( Id , Setting , [System] )
-	                VALUES  ( 'LastOrgFilterCleanup' , GETDATE() , 1 )
+	                VALUES  ( 'LastOrgFilterCleanup' , @lastdt , 1 )
 	            END;
         COMMIT TRAN;
     END;
