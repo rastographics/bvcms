@@ -11,7 +11,6 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult Index()
         {
             var model = new ValidateAddress();
-            model.RemoveExistingLop(DbUtil.Db, 0, ValidateAddress.Op);
             return View(model);
         }
         [HttpPost]

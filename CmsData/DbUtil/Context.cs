@@ -171,7 +171,7 @@ namespace CmsData
         {
             var filter = OrgFilters.SingleOrDefault(vv => vv.QueryId == id);
             if(filter == null)
-                throw new Exception("FilteredOrg is no longer available");
+                throw new Exception($"FilteredOrg is no longer available {id}");
             return filter;
         }
         public bool OrgIdOk(int? id)

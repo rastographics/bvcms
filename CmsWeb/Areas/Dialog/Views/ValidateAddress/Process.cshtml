@@ -7,7 +7,7 @@
             <h4 class="modal-title">Validate Address For a Tag/Query</h4>
         </div>
         <div class="modal-body">
-            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.QueryId)
             @Html.EditorFor(m => m.Tag, "HiddenCodeInfo")
             @Html.HiddenFor(m => m.Count)
             @Html.HiddenFor(m => m.Started)

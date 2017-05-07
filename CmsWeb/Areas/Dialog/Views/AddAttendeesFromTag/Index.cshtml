@@ -6,7 +6,8 @@
             <h4 class="modal-title">Add People as Attendees to Meeting for @Model.OrgName From a Tag/Query</h4>
         </div>
         <div class="modal-body">
-            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.QueryId)
+            @Html.HiddenFor(m => m.MeetingId)
             @Html.HiddenFor(m => m.OrgId)
             @Html.HiddenFor(m => m.OrgName)
             @Html.HiddenFor(m => m.UserId)

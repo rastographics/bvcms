@@ -13,7 +13,6 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult Index(OrgSearchModel osm)
         {
             var model = new RepairTransactionsOrgs(osm);
-            model.RemoveExistingLop(DbUtil.Db, model.Id, RepairTransactionsOrgs.Op);
             return View(model);
         }
 

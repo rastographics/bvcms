@@ -12,7 +12,6 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult Index(OrgSearchModel m)
         {
             var model = new OrgSearchDrop(m);
-            model.RemoveExistingLop(DbUtil.Db, model.Id, OrgSearchDrop.Op);
             return View(model);
         }
         [HttpPost]
