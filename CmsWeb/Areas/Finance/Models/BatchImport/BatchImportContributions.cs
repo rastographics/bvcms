@@ -169,6 +169,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             if (subtext.Contains("!TRNS	TRNSID	TRNSTYPE	DATE	ACCNT	NAME	AMOUNT	DOCNUM	MEMO	CLASS	PAYMETH	PONUM	ADDR1	ADDR2	ADDR3	ADDR4	ADDR5	SADDR1	SADDR2	SADDR3	SADDR4	SADDR5	TOPRINT"))
                 return new SimpleGiveImporter();
 
+            if (subtext.Contains("date,transaction_id,transfer_id,transfer_date,transfer_net,first_name,last_name,email,give_amount,net_amount,fee_amount,status,member_id,campus_id,fund,fund_id,cause,cause_id,refund_amount"))
+                return new SubSplashImporter();
+
             switch (DbUtil.Db.Setting("BankDepositFormat", "none").ToLower())
             {
                 case "fcchudson":
