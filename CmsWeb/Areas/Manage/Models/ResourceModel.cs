@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.Manage.Models
             => string.Join(", ", Resource.ResourceOrganizations.Select(ro => ro.Organization.OrganizationName));
 
         [DisplayName("Organization Types")]
-        public string OrganizationTypeNames 
+        public string OrganizationTypeNames
             => string.Join(", ", Resource.ResourceOrganizationTypes.Select(rot => rot.OrganizationType.Description));
 
         [DisplayName("Congregation")]
@@ -45,6 +45,19 @@ namespace CmsWeb.Areas.Manage.Models
 
                 var memberTypeIds = Resource.MemberTypeIds.Split(',').Select(int.Parse) ;
                 return string.Join(", ", DbUtil.Db.MemberTypes.Where(x => memberTypeIds.Contains(x.Id)).Select(x => x.Description));
+            }
+        }
+
+        [DisplayName("Status Flags")]
+        public string StatusFlags
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(Resource.StatusFlagIds))
+                    return string.Empty;
+
+                var statusFlagIds = Resource.StatusFlagIds.Split(',').Select(int.Parse);
+                return string.Join(", ", DbUtil.Db.ViewStatusFlagNamesRoles.Where(x => statusFlagIds.Contains(x.Id.Value)).Select(x => x.Name));
             }
         }
 

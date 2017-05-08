@@ -61,6 +61,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             resource.DivisionId = model.DivisionId;
             resource.CampusId = model.CampusId;
             resource.MemberTypeIds = model.MemberTypeIds != null ? string.Join(",", model.MemberTypeIds) : string.Empty;
+            resource.StatusFlagIds = model.StatusFlagIds != null ? string.Join(",", model.StatusFlagIds) : string.Empty;
             resource.Description = model.Description;
             resource.ResourceTypeId = model.ResourceTypeId;
             resource.ResourceCategoryId = model.ResourceCategoryId;
