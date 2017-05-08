@@ -28,50 +28,50 @@
                     @Html.Partial("System/DuplicateRow", d)
                 }
             }
-            @if (list.Any(d => d.s1 == true))
+            @if (list.Any(d => d.S1 == true))
             {
                 <tr class="info"><td colspan="8"><span style="font-weight:600">First and partial birthday</span></td></tr>
-                foreach (var d in list.Where(d => d.s1 == true))
+                foreach (var d in list.Where(d => d.S1 == true))
                 {
                     @Html.Partial("System/DuplicateRow", d)
                 }
             }
-            @if (list.Any(d => d.s2 == true))
+            @if (list.Any(d => d.S2 == true))
             {
                 <tr class="info"><td colspan="8"><span style="font-weight:600">First and birthday</span></td></tr>
-                foreach (var d in list.Where(d => d.s2 == true))
+                foreach (var d in list.Where(d => d.S2 == true))
                 {
                     @Html.Partial("System/DuplicateRow", d)
                 }
             }
-            @if (list.Any(d => d.s3 == true))
+            @if (list.Any(d => d.S3 == true))
             {
                 <tr class="info"><td colspan="8"><span style="font-weight:600">First and last and no birthday</span></td></tr>
-                foreach (var d in list.Where(d => d.s3 == true))
+                foreach (var d in list.Where(d => d.S3 == true))
                 {
                     @Html.Partial("System/DuplicateRow", d)
                 }
             }
-            @if (list.Any(d => d.s4 == true))
+            @if (list.Any(d => d.S4 == true))
             {
                 <tr class="info"><td colspan="8"><span style="font-weight:600">First and address</span></td></tr>
-                foreach (var d in list.Where(d => d.s4 == true))
+                foreach (var d in list.Where(d => d.S4 == true))
                 {
                     @Html.Partial("System/DuplicateRow", d)
                 }
             }
-            @if (list.Any(d => d.s5 == true))
+            @if (list.Any(d => d.S5 == true))
             {
                 <tr class="info"><td colspan="8"><span style="font-weight:600">First and email</span></td></tr>
-                foreach (var d in list.Where(d => d.s5 == true))
+                foreach (var d in list.Where(d => d.S5 == true))
                 {
                     @Html.Partial("System/DuplicateRow", d)
                 }
             }
-            @if (list.Any(d => d.s6 == true))
+            @if (list.Any(d => d.S6 == true))
             {
                 <tr class="info"><td colspan="8"><span style="font-weight:600">Last and birthday</span></td></tr>
-                foreach (var d in list.Where(d => d.s6 == true))
+                foreach (var d in list.Where(d => d.S6 == true))
                 {
                     @Html.Partial("System/DuplicateRow", d)
                 }

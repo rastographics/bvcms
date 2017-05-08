@@ -193,7 +193,7 @@ namespace CmsData
                 om2.OnlineRegData = om.OnlineRegData;
                 db.SubmitChanges();
                 foreach (var m in om.OrgMemMemTags)
-                    if (!om2.OrgMemMemTags.Any(mm => mm.MemberTagId == m.MemberTagId))
+                    if (om2.OrgMemMemTags.All(mm => mm.MemberTagId != m.MemberTagId))
                         om2.OrgMemMemTags.Add(new OrgMemMemTag { MemberTagId = m.MemberTagId });
                 db.SubmitChanges();
                 db.OrgMemMemTags.DeleteAllOnSubmit(om.OrgMemMemTags);
@@ -454,46 +454,39 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             }
         }
 
-        public bool Deceased
+        public bool Deceased => DeceasedDate.HasValue;
+        public string FromEmail => Util.FullEmail(EmailAddress, Name);
+
+        public string FromEmail2 => Util.FullEmail(EmailAddress2, Name);
+
+        private static void NameSplit(string name, out string first, out string last)
         {
-            get { return DeceasedDate.HasValue; }
-        }
-        public string FromEmail
-        {
-            get { return Util.FullEmail(EmailAddress, Name); }
-        }
-        public string FromEmail2
-        {
-            get { return Util.FullEmail(EmailAddress2, Name); }
-        }
-        private static void NameSplit(string name, out string First, out string Last)
-        {
-            First = "";
-            Last = "";
+            first = "";
+            last = "";
             if (!name.HasValue())
                 return;
             var a = name.Trim().Split(' ');
             if (a.Length > 1)
             {
-                First = a[0];
-                Last = a[1];
+                first = a[0];
+                last = a[1];
             }
             else
-                Last = a[0];
+                last = a[0];
 
         }
-        public static Person Add(Family fam, int position, Tag tag, string name, string dob, bool Married, int gender, int originId, int? EntryPointId)
+        public static Person Add(Family fam, int position, Tag tag, string name, string dob, bool married, int gender, int originId, int? entryPointId)
         {
-            string First, Last;
-            NameSplit(name, out First, out Last);
-            if (!First.HasValue() || Married)
+            string first, last;
+            NameSplit(name, out first, out last);
+            if (!first.HasValue() || married)
                 switch (gender)
                 {
-                    case 0: First = "A"; break;
-                    case 1: if (!First.HasValue()) First = "Husbander"; break;
-                    case 2: First = "Wifey"; break;
+                    case 0: first = "A"; break;
+                    case 1: if (!first.HasValue()) first = "Husbander"; break;
+                    case 2: first = "Wifey"; break;
                 }
-            return Add(fam, position, tag, First, null, Last, dob, Married, gender, originId, EntryPointId);
+            return Add(fam, position, tag, first, null, last, dob, married, gender, originId, entryPointId);
         }
         public static Person Add(Family fam,
             int position,
@@ -502,12 +495,12 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             string nickname,
             string lastname,
             string dob,
-            int MarriedCode,
+            int marriedCode,
             int gender,
             int originId,
-            int? EntryPointId)
+            int? entryPointId)
         {
-            return Add(DbUtil.Db, true, fam, position, tag, firstname, nickname, lastname, dob, MarriedCode, gender, originId, EntryPointId);
+            return Add(DbUtil.Db, true, fam, position, tag, firstname, nickname, lastname, dob, marriedCode, gender, originId, entryPointId);
         }
 
         // Used for Conversions
@@ -515,7 +508,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         {
             return Add(db, false, fam, 20, null, firstname, nickname, lastname, dob.ToString2("M/d/yyyy"), 0, 0, 0, 0);
         }
-        public static Person Add(CMSDataContext db, bool SendNotices, Family fam, int position, Tag tag, string firstname, string nickname, string lastname, string dob, int MarriedCode, int gender, int originId, int? EntryPointId, bool testing = false)
+        public static Person Add(CMSDataContext db, bool sendNotices, Family fam, int position, Tag tag, string firstname, string nickname, string lastname, string dob, int marriedCode, int gender, int originId, int? entryPointId, bool testing = false)
         {
             var p = new Person();
             p.CreatedDate = Util.Now;
@@ -540,7 +533,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             p.GenderId = gender;
             if (p.GenderId == 99)
                 p.GenderId = 0;
-            p.MaritalStatusId = MarriedCode;
+            p.MaritalStatusId = marriedCode;
 
             DateTime dt;
             if (Util.BirthDateValid(dob, out dt))
@@ -561,7 +554,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                     p.BirthMonth = dt.Month;
                     p.BirthYear = dt.Year;
                 }
-                if (p.GetAge() < 18 && MarriedCode == 0)
+                if (p.GetAge() < 18 && marriedCode == 0)
                     p.MaritalStatusId = MaritalStatusCode.Single;
             }
             // I think this else statement is no longer necessary
@@ -574,7 +567,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                     p.BirthYear = dt.Year;
                     while (p.BirthYear < 1900)
                         p.BirthYear += 100;
-                    if (p.GetAge() < 18 && MarriedCode == 0)
+                    if (p.GetAge() < 18 && marriedCode == 0)
                         p.MaritalStatusId = MaritalStatusCode.Single;
                 }
             }
@@ -593,13 +586,13 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 tag.PersonTags.Add(new TagPerson { Person = p });
 
             p.OriginId = originId;
-            p.EntryPointId = EntryPointId;
+            p.EntryPointId = entryPointId;
             p.FixTitle();
             if (db.Setting("ElectronicStatementDefault", "false").Equal("true"))
                 p.ElectronicStatement = true;
             if (!testing)
                 db.SubmitChanges();
-            if (SendNotices)
+            if (sendNotices)
             {
                 if (Util.UserPeopleId.HasValue
                     && Util.UserPeopleId.Value != db.NewPeopleManagerId
@@ -618,9 +611,9 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             }
             return p;
         }
-        public static Person Add(Family fam, int position, Tag tag, string firstname, string nickname, string lastname, string dob, bool Married, int gender, int originId, int? EntryPointId)
+        public static Person Add(Family fam, int position, Tag tag, string firstname, string nickname, string lastname, string dob, bool married, int gender, int originId, int? entryPointId)
         {
-            return Add(fam, position, tag, firstname, nickname, lastname, dob, Married ? 20 : 10, gender, originId, EntryPointId);
+            return Add(fam, position, tag, firstname, nickname, lastname, dob, married ? 20 : 10, gender, originId, entryPointId);
         }
         public List<Duplicate> PossibleDuplicates()
         {
@@ -688,13 +681,13 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
         public class Duplicate
         {
-            public bool s0 { get; set; }
-            public bool s1 { get; set; }
-            public bool s2 { get; set; }
-            public bool s3 { get; set; }
-            public bool s4 { get; set; }
-            public bool s5 { get; set; }
-            public bool s6 { get; set; }
+            public bool S0 { get; set; }
+            public bool S1 { get; set; }
+            public bool S2 { get; set; }
+            public bool S3 { get; set; }
+            public bool S4 { get; set; }
+            public bool S5 { get; set; }
+            public bool S6 { get; set; }
             public int PeopleId { get; set; }
             public string First { get; set; }
             public string Last { get; set; }
@@ -744,12 +737,12 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                         where s1 || s2 || s3 || s4 || s5 || s6
                         select new Duplicate
                         {
-                            s1 = s1,
-                            s2 = s2,
-                            s3 = s3,
-                            s4 = s4,
-                            s5 = s5,
-                            s6 = s6,
+                            S1 = s1,
+                            S2 = s2,
+                            S3 = s3,
+                            S4 = s4,
+                            S5 = s5,
+                            S6 = s6,
                             PeopleId = p.PeopleId,
                             First = p.FirstName,
                             Last = p.LastName,
@@ -768,7 +761,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                     var list = q.ToList();
                     var t = new Duplicate
                     {
-                        s0 = true,
+                        S0 = true,
                         PeopleId = PeopleId,
                         First = FirstName,
                         Last = LastName,
@@ -1092,10 +1085,10 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 LogChanges(db, psbDefault, Util.UserPeopleId ?? 0);
         }
 
-        public void LogChanges(CMSDataContext db, int UserPeopleId)
+        public void LogChanges(CMSDataContext db, int userPeopleId)
         {
             if (psbDefault != null)
-                LogChanges(db, psbDefault, UserPeopleId);
+                LogChanges(db, psbDefault, userPeopleId);
         }
 
         public void LogChanges(CMSDataContext db, List<ChangeDetail> changes)
@@ -1103,13 +1096,13 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             LogChanges(db, changes, Util.UserPeopleId ?? 0);
         }
 
-        public void LogChanges(CMSDataContext db, List<ChangeDetail> changes, int UserPeopleId)
+        public void LogChanges(CMSDataContext db, List<ChangeDetail> changes, int userPeopleId)
         {
             if (changes.Count > 0)
             {
                 var c = new ChangeLog
                 {
-                    UserPeopleId = UserPeopleId,
+                    UserPeopleId = userPeopleId,
                     PeopleId = PeopleId,
                     Field = "Basic Info",
                     Created = Util.Now
@@ -1118,11 +1111,11 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 c.ChangeDetails.AddRange(changes.Where(x => db.ChangeDetails.GetOriginalEntityState(x) == null));
             }
         }
-        public void LogPictureUpload(CMSDataContext db, int UserPeopleId)
+        public void LogPictureUpload(CMSDataContext db, int userPeopleId)
         {
             var c = new ChangeLog
             {
-                UserPeopleId = UserPeopleId,
+                UserPeopleId = userPeopleId,
                 PeopleId = PeopleId,
                 Field = "Basic Info",
                 Created = Util.Now
@@ -1598,19 +1591,19 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             }
             return cam;
         }
-        public Task AddTaskAbout(CMSDataContext db, int AssignTo, string description)
+        public Task AddTaskAbout(CMSDataContext db, int assignTo, string description)
         {
             var t = new Task
             {
-                OwnerId = AssignTo,
+                OwnerId = assignTo,
                 Description = description,
                 ForceCompleteWContact = true,
-                ListId = Task.GetRequiredTaskList(db, "InBox", AssignTo).Id,
+                ListId = Task.GetRequiredTaskList(db, "InBox", assignTo).Id,
                 StatusId = TaskStatusCode.Active,
             };
             TasksAboutPerson.Add(t);
 
-            GCMHelper.sendRefresh(AssignTo, GCMHelper.ACTION_REFRESH);
+            GCMHelper.sendRefresh(assignTo, GCMHelper.ACTION_REFRESH);
 
             return t;
         }
