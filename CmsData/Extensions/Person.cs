@@ -169,7 +169,7 @@ namespace CmsData
             var toperson = db.People.Single(p => p.PeopleId == targetid);
             foreach (var om in this.OrganizationMembers)
             {
-                var om2 = OrganizationMember.InsertOrgMembers(db, om.OrganizationId, targetid, om.MemberTypeId, om.EnrollmentDate.Value, om.InactiveDate, om.Pending ?? false);
+                var om2 = OrganizationMember.InsertOrgMembers(db, om.OrganizationId, targetid, om.MemberTypeId, om.EnrollmentDate ?? DateTime.Now, om.InactiveDate, om.Pending ?? false);
                 db.UpdateMainFellowship(om.OrganizationId);
                 om2.CreatedBy = om.CreatedBy;
                 om2.CreatedDate = om.CreatedDate;
