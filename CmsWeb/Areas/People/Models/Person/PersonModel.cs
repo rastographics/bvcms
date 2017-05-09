@@ -349,9 +349,11 @@ namespace CmsWeb.Areas.People.Models
         {
             var shouldShow = true;
             var statusFlagIds = resource.StatusFlagIds?.Split(',') ?? new string[] { };
-            foreach (var flagId in statusFlagIds)
+            foreach (var flagId in statusFlagIds.Where(x => !string.IsNullOrWhiteSpace(x)))
             {
-                var statusFlag = DbUtil.Db.ViewStatusFlagNamesRoles.Single(x => x.Id.ToString().Equals(flagId));
+                var statusFlag = DbUtil.Db.ViewStatusFlagNamesRoles.SingleOrDefault(x => x.Id.ToString().Equals(flagId));
+                if (statusFlag == null) continue;
+
                 shouldShow = StatusFlags.Contains(statusFlag.Name);
             }
 
