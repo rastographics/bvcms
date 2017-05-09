@@ -258,16 +258,7 @@ namespace CmsWeb.Areas.People.Models
 
                 foreach (var resource in resources)
                 {
-                    var hasStatusFlagAccess = false;
-                    var statusFlags = resource.StatusFlagIds?.Split(',') ?? new string[] {};
-                    foreach (var flag in statusFlags)
-                    {
-                        if (StatusFlags.Contains(flag))
-                            hasStatusFlagAccess = true;
-                    }
-
-                    if(hasStatusFlagAccess)
-                        continue;
+                    if (!ShouldShowResource(resource)) continue;
 
                     var noMemberTypesSet = string.IsNullOrEmpty(resource.MemberTypeIds);
 
@@ -352,6 +343,19 @@ namespace CmsWeb.Areas.People.Models
 
                 return _resourceTypes;
             }
+        }
+
+        private bool ShouldShowResource(Resource resource)
+        {
+            var shouldShow = true;
+            var statusFlagIds = resource.StatusFlagIds?.Split(',') ?? new string[] { };
+            foreach (var flagId in statusFlagIds)
+            {
+                var statusFlag = DbUtil.Db.ViewStatusFlagNamesRoles.Single(x => x.Id.ToString().Equals(flagId));
+                shouldShow = StatusFlags.Contains(statusFlag.Name);
+            }
+
+            return shouldShow;
         }
     }
 }

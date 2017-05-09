@@ -17,7 +17,7 @@
                 <span>Show </span>@Html.DropDownList("PageSize", Model.PageSizeList(), new {onchange = "$.setPageSize(this)", @class = "form-control"})<span> rows</span>
             }
         }
-        @if (showOrgTypeFilter)
+        @if (showOrgTypeFilter && DbUtil.Db.Setting("UX-ShowInvolvementOrgTypeFilter", true))
         {
             <span> of types </span><input name="OrgTypesFilter" value="@(string.Join(" ,", ((dynamic)Model).OrgTypesFilter ?? new List<string>()))" class="form-control org-types-filter" id="org-types-filter-@Model.GetType().Name" style="display: inline-block; min-width:180px" />
             <script>

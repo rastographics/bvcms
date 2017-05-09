@@ -13,10 +13,7 @@
     <br/>
     <div class="row">
         <div class="col-sm-12">
-            @if (Model.HasDefaultFilterSetting)
-            {
-                @Html.Partial("PagerTop", Model)
-            }
+            @Html.Partial("PagerTop", Model)
             <div class="table-responsive">
                 <table class="expanding table table-hover">
                     @if(!columnset.HasOrgTypeColumns || Model.Sort != "default")
