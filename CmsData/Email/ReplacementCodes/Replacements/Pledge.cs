@@ -8,7 +8,7 @@ namespace CmsData
 {
     public partial class EmailReplacements
     {
-        private const string MatchPledgeRe = @"{pledge(?<type>amt|bal):\s*(?<fundid>\d+)}";
+        private const string MatchPledgeRe = @"{pledge(?<type>amt|bal):\s*(?<fund>.*?)}";
         private static readonly Regex PledgeRe = new Regex(MatchPledgeRe, RegexOptions.Singleline);
 
         private List<PledgeBalance> pledgeinfos;
@@ -24,7 +24,10 @@ namespace CmsData
         {
             var match = PledgeRe.Match(code);
             var type = match.Groups["type"].Value;
-            var fundid = match.Groups["fundid"].Value.ToInt();
+            var fund = match.Groups["fund"].Value;
+            var fundid = fund.AllDigits() 
+                ? fund.ToInt() 
+                : db.Setting(fund, "-1").ToInt();
             var i = GetPledgeInfo(fundid, emailqueueto);
             if (i == null)
                 return "";

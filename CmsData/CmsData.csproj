@@ -502,7 +502,6 @@
     <Compile Include="AddressVerify.cs" />
     <Compile Include="Extensions\DeleteMeetingRun.cs" />
     <Compile Include="Extensions\LongRunningOperation.cs" />
-    <Compile Include="Extensions\LongRunningOp.cs" />
     <Compile Include="Extensions\OrgPerson.cs" />
     <Compile Include="Extensions\PaymentInfo.cs" />
     <Compile Include="Extensions\RepairTransactionRun.cs" />

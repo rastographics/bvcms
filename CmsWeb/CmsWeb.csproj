@@ -1592,7 +1592,6 @@
     <Content Include="Areas\Manage\Views\Batch\UploadAddressesProgress.cshtml" />
     <Content Include="Areas\Manage\Views\UploadExcelIps\Index.cshtml" />
     <Content Include="Areas\Manage\Views\UploadExcelIps\Progress.cshtml" />
-    <None Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\Login.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\Index.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\ThankYou.cshtml" />
