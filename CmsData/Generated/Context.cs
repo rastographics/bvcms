@@ -338,10 +338,6 @@ namespace CmsData
         partial void UpdateLabelFormat(LabelFormat instance);
         partial void DeleteLabelFormat(LabelFormat instance);
         
-        partial void InsertLongRunningOp(LongRunningOp instance);
-        partial void UpdateLongRunningOp(LongRunningOp instance);
-        partial void DeleteLongRunningOp(LongRunningOp instance);
-        
         partial void InsertLongRunningOperation(LongRunningOperation instance);
         partial void UpdateLongRunningOperation(LongRunningOperation instance);
         partial void DeleteLongRunningOperation(LongRunningOperation instance);
@@ -1253,12 +1249,6 @@ namespace CmsData
 		public Table< LabelFormat> LabelFormats
 		{
 			get	{ return this.GetTable< LabelFormat>(); }
-
-		}
-
-		public Table< LongRunningOp> LongRunningOps
-		{
-			get	{ return this.GetTable< LongRunningOp>(); }
 
 		}
 
@@ -6325,11 +6315,9 @@ namespace CmsData
 		
 		[Function(Name="dbo.NextSecurityCode")]
 		public ISingleResult< SecurityCode> NextSecurityCode(
-            [Parameter(Name = "dt", DbType="datetime")] DateTime? dt
             )
 		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                dt
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod()))
 			);
 			return ((ISingleResult< SecurityCode>)(result.ReturnValue));
 		}

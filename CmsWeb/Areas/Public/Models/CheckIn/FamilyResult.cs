@@ -80,7 +80,7 @@ namespace CmsWeb.Models
 				x.Attr("maxlabels", DbUtil.Db.Setting("MaxLabels", "6"));
 
 				// TODO: Consider the option to numbers only. Per Braden Kok @ Granite Springs
-				var code = DbUtil.Db.NextSecurityCode(DateTime.Today).Select(c => c.Code).Single();
+				var code = DbUtil.Db.NextSecurityCode().Select(c => c.Code).Single();
 				x.Attr("securitycode", code);
 
 				var accommodateCheckInBug = DbUtil.Db.Setting("AccommodateCheckinBug", "false").ToBool();
