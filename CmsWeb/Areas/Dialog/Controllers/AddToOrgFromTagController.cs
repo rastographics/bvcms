@@ -11,6 +11,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost, Route("~/AddToOrgFromTag/{qid:guid}")]
         public ActionResult Index(Guid qid)
         {
+            LongRunningOperation.RemoveExisting(DbUtil.Db, qid);
             var model = new AddToOrgFromTag(qid);
             return View(model);
         }

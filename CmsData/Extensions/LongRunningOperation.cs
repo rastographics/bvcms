@@ -27,6 +27,15 @@ namespace CmsData
 
         public bool Finished => Completed.HasValue;
 
+        public static void RemoveExisting(CMSDataContext db, Guid id)
+        {
+            var lop = db.LongRunningOperations.SingleOrDefault(m =>  m.QueryId == id);
+            if (lop == null)
+                return;
+            db.LongRunningOperations.DeleteOnSubmit(lop);
+            db.SubmitChanges();
+        }
+
 //        partial void OnQueryIdChanged()
 //        {
 //            QueryIdChanged();

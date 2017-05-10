@@ -11,6 +11,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost, Route("~/OrgDrop/{qid:guid}")]
         public ActionResult Index(Guid qid)
         {
+            LongRunningOperation.RemoveExisting(DbUtil.Db, qid);
             var model = new OrgDrop(qid);
             return View(model);
         }
