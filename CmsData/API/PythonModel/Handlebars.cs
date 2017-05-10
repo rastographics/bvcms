@@ -86,6 +86,21 @@ namespace CmsData
                 writer.Write(a[n].trim());
             });
 
+            Handlebars.RegisterHelper("FmtMDY", (writer, context, args) =>
+            {
+                DateTime dt;
+                var s = args[0].ToString();
+                if(DateTime.TryParse(s, out dt))
+                    writer.Write(dt.ToShortDateString());
+            });
+            Handlebars.RegisterHelper("FmtMoney", (writer, context, args) =>
+            {
+                decimal d;
+                var s = args[0].ToString();
+                if(decimal.TryParse(s, out d))
+                    writer.Write(d.ToString("C"));
+            });
+
             // Format helper in form of:  {{Fmt value "fmt"}}
             // ex. {{Fmt Total "C"}}
             // fmt is required. Uses standard/custom dotnet format strings
