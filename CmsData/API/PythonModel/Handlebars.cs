@@ -76,6 +76,34 @@ namespace CmsData
                 else
                     options.Inverse(writer, (object)context);
             });
+            Handlebars.RegisterHelper("IfGT", (writer, options, context, args) =>
+            {
+                if (Compare2(args) > 0)
+                    options.Template(writer, (object)context);
+                else
+                    options.Inverse(writer, (object)context);
+            });
+            Handlebars.RegisterHelper("IfLT", (writer, options, context, args) =>
+            {
+                if (Compare2(args) < 0)
+                    options.Template(writer, (object)context);
+                else
+                    options.Inverse(writer, (object)context);
+            });
+            Handlebars.RegisterHelper("IfGE", (writer, options, context, args) =>
+            {
+                if (Compare2(args) <= 0)
+                    options.Template(writer, (object)context);
+                else
+                    options.Inverse(writer, (object)context);
+            });
+            Handlebars.RegisterHelper("IfLE", (writer, options, context, args) =>
+            {
+                if (Compare2(args) <= 0)
+                    options.Template(writer, (object)context);
+                else
+                    options.Inverse(writer, (object)context);
+            });
             Handlebars.RegisterHelper("GetToken", (writer, context, args) =>
             {
                 var s = args[0].ToString();
@@ -159,6 +187,21 @@ namespace CmsData
                 a2 = args[2].ToInt();
             if (a1 is decimal)
                 a2 = args[2].ToNullableDecimal() ?? 0m;
+
+            var a1C = a1 as IComparable;
+            var a2C = a2 as IComparable;
+            if (a1C == null || a2C == null)
+                return null;
+            return a1C.CompareTo(a2C);
+        }
+        private static int? Compare2(object[] args)
+        {
+            var a1 = args[0];
+            var a2 = args[1];
+            if (a1 is int)
+                a2 = args[1].ToInt();
+            if (a1 is decimal)
+                a2 = args[1].ToNullableDecimal() ?? 0m;
 
             var a1C = a1 as IComparable;
             var a2C = a2 as IComparable;
