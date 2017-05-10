@@ -65,7 +65,8 @@
                                <label>Transation Id:</label> @t.TransactionId<br/>
                                <label>Approval Code:</label> @(t.ApprovalCode ?? "na")<br />
                                <label>Auth Code:</label> @(t.AuthCode ?? "na")<br/>
-                               <label>Message:</label> @(t.Message ?? "na")
+                               <label>Message:</label> @(t.Message ?? "na")<br/>
+                               <label>Emails:</label>@t.Emails
                                @if (t.OriginalId.HasValue)
                                {
                                    <br />
