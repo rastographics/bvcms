@@ -98,6 +98,16 @@
             </div>
         </div>
     }
+@if(User.IsInRole("Admin") || User.IsInRole("Design"))
+{
+    <div class="well">
+        <div class="row">
+            <div class="col-md-12">
+                @Html.EditorFor(m => m.ConfirmationTrackingCode, "TextArea")
+            </div>
+        </div>
+    </div>
+}
     @FormAction()
     @FormAction(true)
     <br /><br/>
