@@ -121,6 +121,13 @@ namespace CmsData
                 if(DateTime.TryParse(s, out dt))
                     writer.Write(dt.ToShortDateString());
             });
+            Handlebars.RegisterHelper("FmtDate", (writer, context, args) =>
+            {
+                DateTime dt;
+                var s = args[0].ToString();
+                if(DateTime.TryParse(s, out dt))
+                    writer.Write(dt.ToShortDateString());
+            });
             Handlebars.RegisterHelper("FmtMoney", (writer, context, args) =>
             {
                 decimal d;
@@ -159,6 +166,10 @@ namespace CmsData
                 {
                     options.Template(writer, item);
                 }
+            });
+            Handlebars.RegisterHelper("ThrowError", (writer, context, args) =>
+            {
+                throw new Exception("ThrowError called in Handlebars Helper");
             });
         }
 

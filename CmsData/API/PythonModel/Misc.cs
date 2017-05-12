@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Dynamic;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -54,6 +55,11 @@ namespace CmsData
             if (dictionary != null && dictionary.ContainsKey(s))
                 return dictionary[s].ToString();
             return "";
+        }
+
+        public DynamicData DynamicData(PythonDictionary dict)
+        {
+            return new DynamicData(dict);
         }
 
         public void DictionaryAdd(string key, string value)

@@ -5,7 +5,9 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text.RegularExpressions;
+using CmsData.API;
 using Dapper;
+using IronPython.Runtime;
 using UtilityExtensions;
 
 namespace CmsData
@@ -121,9 +123,9 @@ namespace CmsData
             return QuerySqlTop1(sql, p1, null);
         }
 
-        public dynamic QuerySqlTop1(string sql, object p1, Dictionary<string, string> d)
+        public dynamic QuerySqlTop1(string sql, object p1, object declarations)
         {
-            var q = QuerySql(sql, p1, d);
+            var q = QuerySql(sql, p1, declarations);
             return q.FirstOrDefault();
         }
 
@@ -132,20 +134,47 @@ namespace CmsData
             return QuerySql(sql, null);
         }
 
-        public IEnumerable<dynamic> QuerySql(string sql, object p1)
-        {
-            return QuerySql(sql, p1, null);
-        }
-
-        public IEnumerable<dynamic> QuerySql(string sql, object p1, Dictionary<string, string> d)
+        public IEnumerable<dynamic> QuerySql(string sql, object declarations)
         {
             var cn = GetReadonlyConnection();
             var parameters = new DynamicParameters();
-            parameters.Add("@p1", p1 ?? "");
-            if (d != null)
-                foreach (var kv in d)
-                    parameters.Add("@" + kv.Key, kv.Value);
+            if (declarations != null)
+                AddParameters(declarations, parameters);
+            ApplyStandardParameters(sql, parameters);
+            return cn.Query(sql, parameters, commandTimeout: 300);
+        }
 
+        public IEnumerable<dynamic> QuerySql(string sql, object p1, object declarations)
+        {
+            var cn = GetReadonlyConnection();
+            var parameters = new DynamicParameters();
+            if(p1 != null)
+                parameters.Add("@p1", p1 ?? "");
+            if (declarations != null)
+                AddParameters(declarations, parameters);
+            ApplyStandardParameters(sql, parameters);
+
+            return cn.Query(sql, parameters, commandTimeout: 300);
+        }
+
+        private static void AddParameters(object declarations, DynamicParameters parameters)
+        {
+            var pd = declarations as PythonDictionary;
+            var dd = declarations as DynamicData;
+            var ds = declarations as Dictionary<string, string>;
+            if (pd != null)
+                foreach (var kv in pd)
+                    parameters.Add("@" + kv.Key, kv.Value);
+            else if (dd != null)
+                foreach (var kv in dd.dict)
+                    parameters.Add("@" + kv.Key, kv.Value);
+            else if (ds != null)
+                foreach (var kv in ds)
+                    parameters.Add("@" + kv.Key, kv.Value);
+        }
+
+        private void ApplyStandardParameters(string sql, DynamicParameters parameters)
+        {
             if (sql.Contains("@UserPeopleId"))
                 parameters.Add("@UserPeopleId", data.PeopleId ?? Util.UserPeopleId);
             if (sql.Contains("@CurrentOrgId"))
@@ -161,8 +190,6 @@ namespace CmsData
                     var tag = db.PopulateTemporaryTag(j);
                     parameters.Add("@BlueToolbarTagId", tag.Id);
                 }
-
-            return cn.Query(sql, parameters, commandTimeout: 300);
         }
 
         public string QuerySqlScalar(string sql)
