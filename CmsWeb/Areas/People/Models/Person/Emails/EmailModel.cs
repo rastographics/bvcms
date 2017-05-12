@@ -38,6 +38,7 @@ namespace CmsWeb.Areas.People.Models
         internal IQueryable<EmailQueue> FilterForUser(IQueryable<EmailQueue> q)
         {
             var roles = new [] { "Admin", "ManageEmails", "Finance" };
+            var admin = HttpContext.Current.User.IsInRole("Admin");
             if (DbUtil.Db.CurrentUser.Roles.Any(uu => roles.Contains(uu)))
                 return FilterOutFinanceOnly(q);
 
@@ -48,6 +49,13 @@ namespace CmsWeb.Areas.People.Models
                                || (e.FromAddr == p.EmailAddress2 && p.EmailAddress2.Length > 0)
                 let isReceiver = e.EmailQueueTos.Any(ee => ee.PeopleId == Util.UserPeopleId)
                 where isSender || isReceiver
+                select e;
+
+            if (admin)
+                return q;
+
+            q = from e in q
+                where (e.Testing ?? false) == false
                 select e;
             return q;
         }

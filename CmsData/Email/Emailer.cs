@@ -346,7 +346,8 @@ namespace CmsData
                     Transactional = false,
                     PublicX = publicViewable,
                     CCParents = ccParents,
-                    CClist = cclist
+                    CClist = cclist,
+                    Testing = Util.IsInRoleEmailTest
                 };
                 EmailQueues.InsertOnSubmit(emailqueue);
                 SubmitChanges();
