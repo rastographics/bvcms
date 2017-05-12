@@ -18,7 +18,8 @@ CREATE TABLE [dbo].[EmailQueue]
 [NoReplacements] [bit] NULL,
 [SendFromOrgId] [int] NULL,
 [FinanceOnly] [bit] NULL,
-[CClist] [nvarchar] (max) NULL
+[CClist] [nvarchar] (max) NULL,
+[Testing] [bit] NULL
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
