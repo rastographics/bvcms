@@ -2,6 +2,7 @@
 @using CmsData
 @using CmsData.Classes.RoleChecker
 @using CmsData.Codes
+@using UtilityExtensions
 @model CmsWeb.Areas.Main.Models.MassEmailer
 @{
     ViewBag.Title = "Compose";
@@ -209,6 +210,12 @@
               <iframe src="/Email/EmailBody/@tid" height="600" frameborder="0" style="width: 100%; height: 600px;" id="email-body" name="email-body"></iframe>
             </div>
           </div>
+            @if (Util.IsInRoleEmailTest)
+            {
+                <div class="alert alert-danger">
+                    You are in EmailTesting mode. You will receive all recipient's emails at your address.
+                </div>
+            }
           <div class="form-group hidden-xs">
             <div class="col-sm-offset-2 col-sm-10">
               <div class="pull-right">
