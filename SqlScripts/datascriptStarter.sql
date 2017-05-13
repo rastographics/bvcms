@@ -10304,7 +10304,6 @@ INSERT INTO [dbo].[Setting] ([Id], [Setting], [System]) VALUES (N'DisplayNonTaxO
 INSERT INTO [dbo].[Setting] ([Id], [Setting], [System]) VALUES (N'DisplayNotesOnStatement', N'false', NULL)
 INSERT INTO [dbo].[Setting] ([Id], [Setting], [System]) VALUES (N'EnableBackgroundChecks', N'false', NULL)
 INSERT INTO [dbo].[Setting] ([Id], [Setting], [System]) VALUES (N'EnableBackgroundLabels', N'false', NULL)
-INSERT INTO [dbo].[Setting] ([Id], [Setting], [System]) VALUES (N'LastOrgFilterCleanup', N'May  8 2017  4:00AM', 1)
 INSERT INTO [dbo].[Setting] ([Id], [Setting], [System]) VALUES (N'MaxExcelRows', N'10000', NULL)
 INSERT INTO [dbo].[Setting] ([Id], [Setting], [System]) VALUES (N'MinContributionAmount', N'25', NULL)
 INSERT INTO [dbo].[Setting] ([Id], [Setting], [System]) VALUES (N'MinimumUserAge', N'16', NULL)
@@ -10328,7 +10327,7 @@ INSERT INTO [dbo].[Setting] ([Id], [Setting], [System]) VALUES (N'TwilioSID', NU
 INSERT INTO [dbo].[Setting] ([Id], [Setting], [System]) VALUES (N'TwilioToken', NULL, NULL)
 INSERT INTO [dbo].[Setting] ([Id], [Setting], [System]) VALUES (N'TZOffset', N'0', NULL)
 INSERT INTO [dbo].[Setting] ([Id], [Setting], [System]) VALUES (N'UseMemberProfileAutomation', N'true', NULL)
-PRINT(N'Operation applied to 38 rows out of 38')
+PRINT(N'Operation applied to 37 rows out of 37')
 
 PRINT(N'Add rows to [dbo].[StreetTypes]')
 INSERT INTO [dbo].[StreetTypes] ([Type]) VALUES (N'ALLEE')

@@ -1,23 +1,24 @@
 CREATE PROCEDURE [dbo].[CleanStart]
 AS
 
-delete dbo.ActivityLog
-delete RssFeed
-delete ChangeLog
-delete DeleteMeetingRun
-delete EmailToText
-delete Numbers
-delete SecurityCodes
-delete TaskList
-delete TransactionPeople
-delete [Transaction]
-delete Tag
-delete Preferences
-delete FamilyCheckinLock
-delete EmailQueueTo
-delete EmailQueue
-delete VolInterestInterestCodes
-delete VolInterestCodes
+DELETE dbo.ActivityLog;
+DELETE RssFeed;
+DELETE ChangeLog;
+DELETE DeleteMeetingRun
+DELETE EmailToText;
+DELETE Numbers;
+DELETE SecurityCodes;
+DELETE TaskList
+DELETE TransactionPeople
+DELETE [Transaction];
+DELETE Tag;
+DELETE Preferences;
+DELETE FamilyCheckinLock;
+DELETE EmailQueueTo;
+DELETE EmailQueue;
+DELETE VolInterestInterestCodes;
+DELETE VolInterestCodes;
+DELETE dbo.LongRunningOperation
 
 DELETE TagPerson 
 FROM dbo.TagPerson tp 
@@ -28,10 +29,10 @@ UPDATE Users
 SET Password = '2352354235', 
 	TempPassword = 'bvcms', 
 	LastLoginDate = NULL 
-where username = 'admin'
+WHERE username = 'admin'
 
-delete dbo.Setting 
-where id = 'LastBatchRun'
+DELETE dbo.Setting 
+WHERE id IN ('LastBatchRun', 'LastOrgFilterCleanup')
 
 RETURN 0
 GO
