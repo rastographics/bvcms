@@ -42,7 +42,7 @@ namespace CmsWeb.Areas.Org.Models
         {
             var filter = DbUtil.Db.OrgFilter(QueryId);
             filter.CopyPropertiesFrom(this);
-            filter.TagId = FilterTag ? (int?)DbUtil.Db.TagCurrent().Id : null;
+            filter.TagId = (int?) DbUtil.Db.TagCurrent().Id;
             filter.LastUpdated = DateTime.Now;
             DbUtil.Db.SubmitChanges();
             var q = from p in DbUtil.Db.OrgFilterPeople(QueryId, ShowMinistryInfo)
