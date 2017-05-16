@@ -685,6 +685,126 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 		}
 
 		[HttpPost]
+		public ActionResult FetchGivingHistory( string data )
+		{
+			// Authenticate first
+			UserValidationResult result = AuthenticateUser();
+			if( !result.IsValid ) return AuthorizationError( result );
+
+			BaseMessage dataIn = BaseMessage.createFromString( data );
+
+			if( Util.UserPeopleId != dataIn.argInt ) {
+				return BaseMessage.createErrorReturn( "Giving history is not available for other people" );
+			}
+
+			BaseMessage br = new BaseMessage();
+
+			Person person = DbUtil.Db.People.SingleOrDefault( p => p.PeopleId == dataIn.argInt );
+
+			if( person == null ) {
+				br.setError( BaseMessage.API_ERROR_PERSON_NOT_FOUND );
+				br.data = "Person not found.";
+				return br;
+			}
+
+			int lastYear = DateTime.Now.Year - 2;
+			int thisYear = DateTime.Now.Year - 1;
+
+			decimal lastYearTotal = (from c in DbUtil.Db.Contributions
+											where c.PeopleId == person.PeopleId
+													|| (c.PeopleId == person.SpouseId && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint)
+											where !ContributionTypeCode.ReturnedReversedTypes.Contains( c.ContributionTypeId )
+											where c.ContributionStatusId == ContributionStatusCode.Recorded
+											where c.ContributionDate.Value.Year == lastYear
+											orderby c.ContributionDate descending
+											select c).AsEnumerable().Sum( c => c.ContributionAmount ?? 0 );
+
+			List<MobileGivingEntry> entries = (from c in DbUtil.Db.Contributions
+															let online = c.BundleDetails.Single().BundleHeader.BundleHeaderType.Description.Contains( "Online" )
+															where c.PeopleId == person.PeopleId
+																	|| (c.PeopleId == person.SpouseId && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint)
+															where !ContributionTypeCode.ReturnedReversedTypes.Contains( c.ContributionTypeId )
+															where c.ContributionStatusId == ContributionStatusCode.Recorded
+															where c.ContributionDate.Value.Year == thisYear
+															orderby c.ContributionDate descending
+															select new MobileGivingEntry()
+															{
+																id = c.ContributionId,
+																date = c.ContributionDate ?? DateTime.Now,
+																fund = c.ContributionFund.FundName,
+																giver = c.Person.Name,
+																check = c.CheckNo,
+																amount = c.ContributionAmount ?? 0,
+																type = ContributionTypeCode.SpecialTypes.Contains( c.ContributionTypeId )
+																	? c.ContributionType.Description
+																	: !online
+																		? c.ContributionType.Description
+																		: c.ContributionDesc == "Recurring Giving"
+																			? c.ContributionDesc
+																			: "Online"
+															}).ToList();
+
+			MobileGivingHistory history = new MobileGivingHistory();
+			history.updateEntries( thisYear, entries );
+			history.setLastYearTotal( lastYear, lastYearTotal );
+
+			br.data = SerializeJSON( history, dataIn.version );
+			br.setNoError();
+			br.count = 1;
+
+			return br;
+		}
+
+		[HttpPost]
+		public ActionResult FetchInvolvement( string data )
+		{
+			// Authenticate first
+			UserValidationResult result = AuthenticateUser();
+			if( !result.IsValid ) return AuthorizationError( result );
+
+			BaseMessage dataIn = BaseMessage.createFromString( data );
+
+			if( Util.UserPeopleId != dataIn.argInt ) {
+				return BaseMessage.createErrorReturn( "Involvement is not available for other people" );
+			}
+
+			bool limitvisibility = Util2.OrgLeadersOnly || !System.Web.HttpContext.Current.User.IsInRole( "Access" );
+			int[] oids = new int[0];
+
+			if( Util2.OrgLeadersOnly ) {
+				oids = DbUtil.Db.GetLeaderOrgIds( Util.UserPeopleId );
+			}
+
+			string[] roles = DbUtil.Db.CurrentRoles();
+
+			List<MobileInvolvement> orgList = (from om in DbUtil.Db.OrganizationMembers
+															let org = om.Organization
+															where om.PeopleId == Util.UserPeopleId
+															where (om.Pending ?? false) == false
+															where oids.Contains( om.OrganizationId ) || !(limitvisibility && om.Organization.SecurityTypeId == 3)
+															where org.LimitToRole == null || roles.Contains( org.LimitToRole )
+															orderby om.Organization.OrganizationType.Code ?? "z", om.Organization.OrganizationName
+															select new MobileInvolvement
+															{
+																name = om.Organization.OrganizationName,
+																leader = om.Organization.LeaderName,
+																type = om.MemberType.Description,
+																division = om.Organization.Division.Name,
+																program = om.Organization.Division.Program.Name,
+																@group = om.Organization.OrganizationType.Description ?? "Other",
+																enrolledDate = om.EnrollmentDate,
+																attendancePercent = om.AttendPct
+															}).ToList();
+
+			BaseMessage br = new BaseMessage();
+			br.data = SerializeJSON( orgList, dataIn.version );
+			br.setNoError();
+			br.count = 1;
+
+			return br;
+		}
+
+		[HttpPost]
 		public ActionResult FetchImage( string data )
 		{
 			// Authenticate first
