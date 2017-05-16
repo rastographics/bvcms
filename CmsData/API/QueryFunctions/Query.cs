@@ -171,6 +171,8 @@ namespace CmsData
             else if (ds != null)
                 foreach (var kv in ds)
                     parameters.Add("@" + kv.Key, kv.Value);
+            else
+                parameters.Add("@p1", declarations ?? "");
         }
 
         private void ApplyStandardParameters(string sql, DynamicParameters parameters)
