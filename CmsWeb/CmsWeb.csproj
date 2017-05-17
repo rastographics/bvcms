@@ -497,6 +497,7 @@
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostEditField.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\DocXRollsheetResult.cs" />
     <Compile Include="Areas\Reports\Models\Avery\DocXAveryLabels.cs" />
+    <Compile Include="Areas\Reports\Models\Directories\DocXDirectoryResult.cs" />
     <Compile Include="Areas\Reports\Models\Export\DocXReplacements.cs" />
     <Compile Include="Areas\Search\Controllers\TaskSearchController.cs" />
     <Compile Include="Areas\Search\Models\TaskSearch\TaskSearchInfo.cs" />
@@ -1633,6 +1634,7 @@
     <Content Include="Areas\People\Views\Attributes\Edit.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\DropFromOrg.cshtml" />
     <Content Include="Areas\Reports\Models\Attendance\DocxRollsheet.docx" />
+    <Content Include="Areas\Reports\Models\Directories\DocXDirectory.docx" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />

@@ -412,4 +412,7 @@ so that your data will not stay duplicated.&lt;/p&gt;
   <data name="DocxRollsheet" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Areas\Reports\Models\Attendance\DocxRollsheet.docx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="DocXDirectory" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>areas\reports\models\directories\docxdirectory.docx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>
