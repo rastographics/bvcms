@@ -147,9 +147,9 @@ namespace CmsData
 
                 case "{email}":
                 case "{toemail}":
-                    if (ListAddresses.Count > 0)
+                    if (ListAddresses?.Count > 0)
                         return ListAddresses[0].Address;
-                    break;
+                    return person.EmailAddress;
 
                 case "{today}":
                     return Util.Today.ToShortDateString();

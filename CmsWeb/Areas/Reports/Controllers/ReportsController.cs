@@ -185,6 +185,11 @@ namespace CmsWeb.Areas.Reports.Controllers
             var s = DbUtil.Db.ContentText("CompactDirectoryParameters", Resource1.CompactDirectoryParameters);
             return new CompactPictureDir(id, s);
         }
+        [HttpGet]
+        public ActionResult DocXDirectory(Guid id, string filename = null, string template = null)
+        {
+            return new DocXDirectoryResult(id, filename, template);
+        }
 
         [HttpGet]
         public ActionResult CompactPictureDirectory2(Guid id)

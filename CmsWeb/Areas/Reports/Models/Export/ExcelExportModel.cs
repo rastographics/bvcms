@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using CmsData;
 using CmsData.API;
+using CmsWeb.Areas.Reports.Models;
 using OfficeOpenXml;
 using UtilityExtensions;
 
@@ -59,7 +60,7 @@ namespace CmsWeb.Models
             while (r <= ws.Dimension.End.Row)
             {
                 var dict = new Dictionary<string, object>();
-                foreach(var kv in header)
+                foreach (var kv in header)
                     dict[kv.Key] = ws.Cells[r, kv.Value].Value;
                 var record = new DynamicData(dict);
                 r++;
@@ -73,7 +74,7 @@ namespace CmsWeb.Models
             foreach (var c in sheet.Cells[1, 1, 1, sheet.Dimension.End.Column])
             {
                 n++;
-                if(c.Text.HasValue())
+                if (c.Text.HasValue())
                     names.Add(c.Text, n);
             }
             return names;
@@ -129,6 +130,32 @@ namespace CmsWeb.Models
                         Married = p.MaritalStatus.Description,
                         FamilyId = p.FamilyId,
                         ImageId = p.Picture.LargeId,
+                    };
+            return q.Take(10000).ToList();
+        }
+        public static List<DirectoryInfo> DirectoryList(Guid queryid)
+        {
+            var db = DbUtil.Db;
+            var query = db.PeopleQuery(queryid);
+            var q = from p in query
+                    let spouse = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == p.SpouseId)
+                    let familyname = p.Family.People
+                        .Where(pp => pp.PeopleId == pp.Family.HeadOfHouseholdId)
+                        .Select(pp => pp.LastName).SingleOrDefault()
+                    orderby familyname, p.FamilyId, p.Name2
+                    select new DirectoryInfo()
+                    {
+                        Person = p,
+                        SpouseFirst = spouse.PreferredName,
+                        SpouseLast = spouse.LastName,
+                        Children = p.PositionInFamilyId != 10 ? ""
+                            : string.Join(", ", (from cc in p.Family.People
+                                                 where cc.PositionInFamilyId == 30
+                                                 where cc.Age <= 18
+                                                 select cc.LastName == familyname
+                                                         ? cc.PreferredName
+                                                         : cc.Name).ToList()),
+                        ImageId = p.Picture.LargeId
                     };
             return q.Take(10000).ToList();
         }

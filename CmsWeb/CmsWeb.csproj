@@ -497,6 +497,7 @@
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostEditField.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\DocXRollsheetResult.cs" />
     <Compile Include="Areas\Reports\Models\Avery\DocXAveryLabels.cs" />
+    <Compile Include="Areas\Reports\Models\Directories\DirectoryInfo.cs" />
     <Compile Include="Areas\Reports\Models\Directories\DocXDirectoryResult.cs" />
     <Compile Include="Areas\Reports\Models\Export\DocXReplacements.cs" />
     <Compile Include="Areas\Search\Controllers\TaskSearchController.cs" />
