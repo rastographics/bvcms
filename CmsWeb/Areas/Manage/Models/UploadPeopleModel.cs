@@ -265,7 +265,7 @@ namespace CmsWeb.Models
                 if (!Evtypes.TryGetValue(name, out type))
                 {
                     p.AddEditExtraCode(name, Util.trim(a[name]));
-                    return;
+                    continue;
                 }
                 switch (type)
                 {
@@ -321,11 +321,24 @@ namespace CmsWeb.Models
                             p.AddEditExtraInt(name, (int)o);
                         break;
                     case "bit":
-                        if (o is int)
-                            p.AddEditExtraBool(name, (int)o == 1);
+                        p.AddEditExtraBool(name, IsTrue(o));
                         break;
                 }
             }
+        }
+        private static bool IsTrue(object arg)
+        {
+            if (arg == null)
+                return false;
+            if (arg is int && (int)arg != 0)
+                return true;
+            if (arg is double && arg.ToInt() != 0)
+                return true;
+            if (arg.ToString().Equal("true"))
+                return true;
+            if (arg.ToString().Equal("1"))
+                return true;
+            return false;
         }
         internal void SetRecRegs(Person p, dynamic a)
         {
@@ -433,10 +446,14 @@ namespace CmsWeb.Models
                 n++;
                 if (c.Text.HasValue())
                 {
-                    var b = c.Text.SplitStr(".",2);
+                    var colname = c.Text;
+                    var b = colname.SplitStr(".",2);
                     if (b.Length > 1)
+                    {
                         Evtypes[b[0]] = b[1];
-                    Names.Add(c.Text, n);
+                        colname = b[0];
+                    }
+                    Names.Add(colname, n);
                 }
             }
         }
