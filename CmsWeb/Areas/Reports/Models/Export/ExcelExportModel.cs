@@ -142,6 +142,7 @@ namespace CmsWeb.Models
                     let familyname = p.Family.People
                         .Where(pp => pp.PeopleId == pp.Family.HeadOfHouseholdId)
                         .Select(pp => pp.LastName).SingleOrDefault()
+                    let couplename = DbUtil.Db.FamilyExtras.SingleOrDefault(ff => ff.FamilyId == p.FamilyId && ff.Field == "CoupleName").Data
                     orderby familyname, p.FamilyId, p.Name2
                     select new DirectoryInfo()
                     {
@@ -155,7 +156,9 @@ namespace CmsWeb.Models
                                                  select cc.LastName == familyname
                                                          ? cc.PreferredName
                                                          : cc.Name).ToList()),
-                        ImageId = p.Picture.LargeId
+                        ImageId = p.Picture.LargeId,
+                        FamImageId = p.Family.Picture.LargeId,
+                        CoupleName = couplename
                     };
             return q.Take(10000).ToList();
         }

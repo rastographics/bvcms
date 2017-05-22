@@ -183,9 +183,20 @@ namespace CmsWeb.Controllers
         [Authorize(Roles = "Developer")]
         public ActionResult TestScript()
         {
-            var text = System.IO.File.ReadAllText(Server.MapPath("~/test.py"));
-            ViewBag.Text = PythonModel.RunScript(Util.Host, text);
-            return View("Test");
+            var id = DbUtil.Db.ScratchPadQuery(@"
+MemberStatusId = 10[Member]
+AND LastName = 'C*'
+");
+//            var id = DbUtil.Db.ScratchPadQuery(@"
+//HasFamilyPicture = 1[True]
+//AND IsHeadOfHousehold = 1[True]
+//");
+            return new DocXDirectoryResult(id, "picturedir", @"http://i.bvcms.com//picturedir24.docx");
+            //return new DocXDirectoryResult(id, "familypicturedir", @"http://i.bvcms.com/fampicturedir12.docx");
+
+            //var text = System.IO.File.ReadAllText(Server.MapPath("~/test.py"));
+            //ViewBag.Text = PythonModel.RunScript(Util.Host, text);
+            //return View("Test");
         }
 
         [HttpPost, Route("~/TestScript")]

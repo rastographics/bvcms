@@ -223,7 +223,7 @@ namespace CmsData
             var dict = new Dictionary<string, string>();
             for (var i = 1; i < texta.Count; i += 2)
                 if (!dict.ContainsKey(texta[i]))
-                    dict.Add(texta[i], DoReplaceCode(texta[i], eqto));
+                    dict.Add(texta[i], p == null ? "" : DoReplaceCode(texta[i], eqto));
             return dict;
         }
         public string RenderCode(string code, Person p, int? orgId = null)
