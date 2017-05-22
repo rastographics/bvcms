@@ -17,10 +17,8 @@ using System.Net.Mime;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
 using System.Text;
-using System.Transactions;
 using System.Web;
 using CmsData.API;
-using Dapper;
 using Elmah;
 using HtmlAgilityPack;
 using SendGrid.Helpers.Mail;
@@ -327,79 +325,72 @@ namespace CmsData
             if (tag == null)
                 return null;
 
-            var transactionOptions = new TransactionOptions
+            var emailqueue = new EmailQueue
             {
-                IsolationLevel = IsolationLevel.ReadCommitted,
-                Timeout = TransactionManager.MaximumTimeout
+                Queued = Util.Now,
+                FromAddr = from.Address,
+                FromName = from.DisplayName,
+                Subject = subject,
+                Body = body,
+                SendWhen = schedule,
+                QueuedBy = queuedBy,
+                Transactional = false,
+                PublicX = publicViewable,
+                CCParents = ccParents,
+                CClist = cclist,
+                Testing = Util.IsInRoleEmailTest,
+                ReadyToSend = false, // wait until all individual emailqueueto records are created.
             };
-            using (var tran = new TransactionScope(TransactionScopeOption.Required, transactionOptions))
+            EmailQueues.InsertOnSubmit(emailqueue);
+            SubmitChanges();
+
+            if (body.Contains("http://publiclink", ignoreCase: true))
             {
-                var emailqueue = new EmailQueue
-                {
-                    Queued = Util.Now,
-                    FromAddr = from.Address,
-                    FromName = from.DisplayName,
-                    Subject = subject,
-                    Body = body,
-                    SendWhen = schedule,
-                    QueuedBy = queuedBy,
-                    Transactional = false,
-                    PublicX = publicViewable,
-                    CCParents = ccParents,
-                    CClist = cclist,
-                    Testing = Util.IsInRoleEmailTest
-                };
-                EmailQueues.InsertOnSubmit(emailqueue);
-                SubmitChanges();
-
-                if (body.Contains("http://publiclink", ignoreCase: true))
-                {
-                    var link = ServerLink("/EmailView/" + emailqueue.Id);
-                    var re = new Regex("http://publiclink",
-                        RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
-                    emailqueue.Body = re.Replace(body, link);
-                }
-
-                var q = tag.People(this);
-
-                IQueryable<int> q2 = null;
-                if (emailqueue.CCParents == true)
-                    q2 = from p in q.Distinct()
-                         where (p.EmailAddress ?? "") != ""
-                               || (p.Family.HeadOfHousehold.EmailAddress ?? "") != ""
-                               || (p.Family.HeadOfHouseholdSpouse.EmailAddress ?? "") != ""
-                         where (p.SendEmailAddress1 ?? true)
-                               || (p.SendEmailAddress2 ?? false)
-                               || (p.Family.HeadOfHousehold.SendEmailAddress1 ?? false)
-                               || (p.Family.HeadOfHousehold.SendEmailAddress2 ?? false)
-                               || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress1 ?? false)
-                               || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress2 ?? false)
-                         where p.EmailOptOuts.All(oo => oo.FromEmail != emailqueue.FromAddr)
-                         orderby p.PeopleId
-                         select p.PeopleId;
-                else
-                    q2 = from p in q.Distinct()
-                         where p.EmailAddress != null
-                         where p.EmailAddress != ""
-                         where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
-                         where p.EmailOptOuts.All(oo => oo.FromEmail != emailqueue.FromAddr)
-                         orderby p.PeopleId
-                         select p.PeopleId;
-
-                foreach (var pid in q2)
-                {
-                    emailqueue.EmailQueueTos.Add(new EmailQueueTo
-                    {
-                        PeopleId = pid,
-                        OrgId = CurrentOrgId,
-                        Guid = Guid.NewGuid(),
-                        GoerSupportId = goerSupporterId,
-                    });
-                }
-                SubmitChanges();
-                tran.Complete();
-                return emailqueue;
+                var link = ServerLink("/EmailView/" + emailqueue.Id);
+                var re = new Regex("http://publiclink",
+                    RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
+                emailqueue.Body = re.Replace(body, link);
             }
+
+            var q = tag.People(this);
+
+            IQueryable<int> q2 = null;
+            if (emailqueue.CCParents == true)
+                q2 = from p in q.Distinct()
+                     where (p.EmailAddress ?? "") != ""
+                           || (p.Family.HeadOfHousehold.EmailAddress ?? "") != ""
+                           || (p.Family.HeadOfHouseholdSpouse.EmailAddress ?? "") != ""
+                     where (p.SendEmailAddress1 ?? true)
+                           || (p.SendEmailAddress2 ?? false)
+                           || (p.Family.HeadOfHousehold.SendEmailAddress1 ?? false)
+                           || (p.Family.HeadOfHousehold.SendEmailAddress2 ?? false)
+                           || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress1 ?? false)
+                           || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress2 ?? false)
+                     where p.EmailOptOuts.All(oo => oo.FromEmail != emailqueue.FromAddr)
+                     orderby p.PeopleId
+                     select p.PeopleId;
+            else
+                q2 = from p in q.Distinct()
+                     where p.EmailAddress != null
+                     where p.EmailAddress != ""
+                     where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
+                     where p.EmailOptOuts.All(oo => oo.FromEmail != emailqueue.FromAddr)
+                     orderby p.PeopleId
+                     select p.PeopleId;
+
+            foreach (var pid in q2)
+            {
+                emailqueue.EmailQueueTos.Add(new EmailQueueTo
+                {
+                    PeopleId = pid,
+                    OrgId = CurrentOrgId,
+                    Guid = Guid.NewGuid(),
+                    GoerSupportId = goerSupporterId,
+                });
+            }
+            emailqueue.ReadyToSend = true;
+            SubmitChanges();
+            return emailqueue;
         }
 
         public EmailQueue CreateQueueForSupporters(int? queuedBy, MailAddress from, string subject, string body, DateTime? schedule, List<GoerSupporter> list, bool publicViewable)

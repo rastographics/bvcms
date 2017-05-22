@@ -58,6 +58,8 @@ namespace CmsData
 		
 		private bool? _Testing;
 		
+		private bool? _ReadyToSend;
+		
    		
    		private EntitySet< EmailLink> _EmailLinks;
 		
@@ -134,6 +136,9 @@ namespace CmsData
 		
 		partial void OnTestingChanging(bool? value);
 		partial void OnTestingChanged();
+		
+		partial void OnReadyToSendChanging(bool? value);
+		partial void OnReadyToSendChanged();
 		
     #endregion
 		public EmailQueue()
@@ -591,6 +596,28 @@ namespace CmsData
 					this._Testing = value;
 					this.SendPropertyChanged("Testing");
 					this.OnTestingChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="ReadyToSend", UpdateCheck=UpdateCheck.Never, Storage="_ReadyToSend", DbType="bit")]
+		public bool? ReadyToSend
+		{
+			get { return this._ReadyToSend; }
+
+			set
+			{
+				if (this._ReadyToSend != value)
+				{
+				
+                    this.OnReadyToSendChanging(value);
+					this.SendPropertyChanging();
+					this._ReadyToSend = value;
+					this.SendPropertyChanged("ReadyToSend");
+					this.OnReadyToSendChanged();
 				}
 
 			}
