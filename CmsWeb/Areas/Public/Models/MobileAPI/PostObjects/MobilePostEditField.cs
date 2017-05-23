@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using CmsData;
 
 namespace CmsWeb.MobileAPI
@@ -292,20 +293,44 @@ namespace CmsWeb.MobileAPI
 					break;
 				}
 
-				case Type.ELECTRONIC_STATEMENTS: {
-					updateBoolean( person, personChangeList, "ElectronicStatement" );
-					break;
-				}
+				case Type.ELECTRONIC_STATEMENTS:
+					{
+						updateBoolean(person, personChangeList, "ElectronicStatement");
 
-				case Type.STATEMENT_TYPE: {
-					updateInteger( person, personChangeList, "ContributionOptionsId" );
-					break;
-				}
+						if (person.SpouseId.HasValue)
+						{
+							Person spouse = DbUtil.Db.People.FirstOrDefault(p => p.PeopleId == person.SpouseId);
+							updateInteger(spouse, personChangeList, "ElectronicStatement");
+						}
 
-				case Type.ENVELOPE_OPTIONS: {
-					updateInteger( person, personChangeList, "EnvelopeOptionsId" );
-					break;
-				}
+						break;
+					}
+
+				case Type.STATEMENT_TYPE:
+					{
+						updateInteger(person, personChangeList, "ContributionOptionsId");
+
+						if (person.SpouseId.HasValue)
+						{
+							Person spouse = DbUtil.Db.People.FirstOrDefault(p => p.PeopleId == person.SpouseId);
+							updateInteger(spouse, personChangeList, "ContributionOptionsId");
+						}
+
+						break;
+					}
+
+				case Type.ENVELOPE_OPTIONS:
+					{
+						updateInteger(person, personChangeList, "EnvelopeOptionsId");
+
+						if (person.SpouseId.HasValue)
+						{
+							Person spouse = DbUtil.Db.People.FirstOrDefault(p => p.PeopleId == person.SpouseId);
+							updateInteger(spouse, personChangeList, "EnvelopeOptionsId");
+						}
+
+						break;
+					}
 
 				default: {
 					break;
