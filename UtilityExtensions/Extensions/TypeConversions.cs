@@ -228,6 +228,12 @@ namespace UtilityExtensions
                 return null;
             return Convert.ToDouble(o);
         }
+        public static double ToDouble(this object o)
+        {
+            if (o is DBNull)
+                return 0;
+            return Convert.ToDouble(o);
+        }
         public static decimal? ToNullableDecimal(this object o)
         {
             if (o is DBNull)

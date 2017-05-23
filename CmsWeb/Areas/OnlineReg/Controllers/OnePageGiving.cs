@@ -185,7 +185,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return View("OnePageGiving/Login", m);
             }
             Session["OnlineRegLogin"] = true;
-            return Redirect($"/OnlineReg/{id}{(testing == true ? "?testing=true" : "")}");
+            var ev = DbUtil.Db.OrganizationExtras.SingleOrDefault(vv => vv.OrganizationId == id && vv.Field == "LoggedInOrgId");
+            id = ev?.IntValue ?? id;
+            var url = $"/OnlineReg/{id}{(testing == true ? "?testing=true" : "")}";
+            return Redirect(url);
         }
 
         private bool CheckAddress(PaymentForm pf)

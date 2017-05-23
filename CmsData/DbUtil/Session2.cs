@@ -17,9 +17,9 @@ namespace CmsData
         public void SetCurrentOrgId(int? id)
         {
             Util2.CurrentOrgId = id;
-            CurrentOrgId = id;
+//            CurrentOrgId = id;
         }
-        public int? CurrentOrgId { get; set; }
+//        public int? CurrentOrgId { get; set; }
         public int CurrentSessionOrgId => Util2.CurrentOrgId ?? 0;
 
         public int CurrentPeopleId { get; set; }
