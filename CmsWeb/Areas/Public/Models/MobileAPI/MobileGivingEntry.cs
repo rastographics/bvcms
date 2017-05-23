@@ -13,6 +13,6 @@ namespace CmsWeb.MobileAPI
 		public string giver = "";
 		public string check = "";
 
-		public decimal amount = 0;
+		public int amount = 0;
 	}
 }

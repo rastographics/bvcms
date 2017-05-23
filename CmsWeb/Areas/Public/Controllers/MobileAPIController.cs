@@ -734,7 +734,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 																fund = c.ContributionFund.FundName,
 																giver = c.Person.Name,
 																check = c.CheckNo,
-																amount = c.ContributionAmount ?? 0,
+																amount = (int) (c.ContributionAmount == null ? 0 : c.ContributionAmount * 100),
 																type = ContributionTypeCode.SpecialTypes.Contains( c.ContributionTypeId )
 																	? c.ContributionType.Description
 																	: !online
@@ -746,7 +746,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
 			MobileGivingHistory history = new MobileGivingHistory();
 			history.updateEntries( thisYear, entries );
-			history.setLastYearTotal( lastYear, lastYearTotal );
+			history.setLastYearTotal( lastYear, (int) (lastYearTotal * 100) );
 
 			br.data = SerializeJSON( history, dataIn.version );
 			br.setNoError();
@@ -787,13 +787,13 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 															select new MobileInvolvement
 															{
 																name = om.Organization.OrganizationName,
-																leader = om.Organization.LeaderName,
+																leader = om.Organization.LeaderName ?? "",
 																type = om.MemberType.Description,
 																division = om.Organization.Division.Name,
 																program = om.Organization.Division.Program.Name,
 																@group = om.Organization.OrganizationType.Description ?? "Other",
 																enrolledDate = om.EnrollmentDate,
-																attendancePercent = om.AttendPct
+																attendancePercent = (int) (om.AttendPct == null ? 0 : om.AttendPct * 100)
 															}).ToList();
 
 			BaseMessage br = new BaseMessage();

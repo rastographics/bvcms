@@ -14,6 +14,6 @@ namespace CmsWeb.MobileAPI
 
 		public DateTime? enrolledDate;
 
-		public decimal? attendancePercent = 0;
+		public int attendancePercent = 0;
 	}
 }
