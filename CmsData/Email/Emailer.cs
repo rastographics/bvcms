@@ -82,7 +82,7 @@ namespace CmsData
             emailqueue.EmailQueueTos.Add(new EmailQueueTo
             {
                 PeopleId = p.PeopleId,
-                OrgId = CurrentOrgId,
+                OrgId = Util2.CurrentOrgId,
                 AddEmail = addmailstr,
                 Guid = Guid.NewGuid(),
             });
@@ -110,7 +110,7 @@ namespace CmsData
             emailqueue.EmailQueueTos.Add(new EmailQueueTo
             {
                 PeopleId = p.PeopleId,
-                OrgId = CurrentOrgId,
+                OrgId = Util2.CurrentOrgId,
                 AddEmail = addmailstr,
                 Guid = Guid.NewGuid(),
             });
@@ -383,7 +383,7 @@ namespace CmsData
                 emailqueue.EmailQueueTos.Add(new EmailQueueTo
                 {
                     PeopleId = pid,
-                    OrgId = CurrentOrgId,
+                    OrgId = Util2.CurrentOrgId,
                     Guid = Guid.NewGuid(),
                     GoerSupportId = goerSupporterId,
                 });
@@ -424,7 +424,7 @@ namespace CmsData
                 emailqueue.EmailQueueTos.Add(new EmailQueueTo
                 {
                     PeopleId = g.SupporterId ?? 0,
-                    OrgId = CurrentOrgId,
+                    OrgId = Util2.CurrentOrgId,
                     Guid = Guid.NewGuid(),
                     GoerSupportId = g.Id,
                 });

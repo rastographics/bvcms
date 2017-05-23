@@ -46,7 +46,7 @@ namespace CmsData
 
         public EmailReplacements(CMSDataContext callingContext, string text, MailAddress from, int? queueid = null, bool noPremailer = false, DynamicData pythondata = null)
         {
-            currentOrgId = callingContext.CurrentOrgId ?? callingContext.CurrentSessionOrgId;
+            currentOrgId = Util2.CurrentOrgId;
             connStr = callingContext.ConnectionString;
             host = callingContext.Host;
             db = callingContext;
@@ -82,7 +82,7 @@ namespace CmsData
 
         public EmailReplacements(CMSDataContext callingContext, DocX doc)
         {
-            currentOrgId = callingContext.CurrentOrgId ?? callingContext.CurrentSessionOrgId;
+            currentOrgId = Util2.CurrentOrgId;
             connStr = callingContext.ConnectionString;
             host = callingContext.Host;
             db = callingContext;
@@ -95,7 +95,7 @@ namespace CmsData
 
         public EmailReplacements(CMSDataContext callingContext)
         {
-            currentOrgId = callingContext.CurrentOrgId ?? callingContext.CurrentSessionOrgId;
+            currentOrgId = Util2.CurrentOrgId;
             connStr = callingContext.ConnectionString;
             host = callingContext.Host;
             db = callingContext;
