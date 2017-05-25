@@ -180,14 +180,17 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpGet]
-        public ActionResult DocXDirectory(Guid id, string filename=null, string template=null)
+        public ActionResult DocXDirectory(Guid id, string filename, string template)
         {
             return new DocXDirectoryResult(id, filename, template);
+            //return new DocXDirectoryResult(id, "picturedir", @"http://i.bvcms.com//picturedir24.docx");
+            //return new DocXDirectoryResult(id, "familypicturedir", @"http://i.bvcms.com/fampicturedir12.docx");
         }
         [HttpGet]
-        public ActionResult DocXDirectory4(Guid id)
+        public ActionResult PictureDir(Guid id)
         {
-            return new DocXDirectoryResult(id, "picturedir", "DocXDirectory4");
+            return new DocXDirectoryResult(id, "picturedir", @"/Content/touchpoint/templates/picturedir24.docx");
+            //return new DocXDirectoryResult(id, "familypicturedir", @"http://i.bvcms.com/fampicturedir12.docx");
         }
 
         [HttpGet]
@@ -302,9 +305,9 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpGet]
-        public ActionResult FamilyDirectoryCompact(Guid id)
+        public ActionResult CompactDirectory(Guid id)
         {
-            return new CompactDir(id);
+            return new DocXDirectoryResult(id, "compactdir", "/WordTemplates/compactdir.docx");
         }
 
         [HttpGet]

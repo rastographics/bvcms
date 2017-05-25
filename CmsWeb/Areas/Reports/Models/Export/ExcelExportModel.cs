@@ -139,7 +139,11 @@ namespace CmsWeb.Models
             var query = db.PeopleQuery(queryid);
             var q = from p in query
                     let spouse = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == p.SpouseId)
-                    let familyname = p.Family.People
+                    let familytitle =
+                        p.Family.FamilyExtras.Where(mm => mm.Field == "FamilyName" && mm.Data != null)
+                            .Select(mm => mm.Data)
+                            .SingleOrDefault()
+                    let familyname = familytitle ?? p.Family.People
                         .Where(pp => pp.PeopleId == pp.Family.HeadOfHouseholdId)
                         .Select(pp => pp.LastName).SingleOrDefault()
                     let couplename = DbUtil.Db.FamilyExtras.SingleOrDefault(ff => ff.FamilyId == p.FamilyId && ff.Field == "CoupleName").Data
@@ -149,6 +153,9 @@ namespace CmsWeb.Models
                         Person = p,
                         SpouseFirst = spouse.PreferredName,
                         SpouseLast = spouse.LastName,
+                        SpouseEmail = spouse.EmailAddress,
+                        SpouseCellPhone = spouse.CellPhone,
+                        SpouseDoNotPublishPhone = spouse.DoNotPublishPhones,
                         Children = p.PositionInFamilyId != 10 ? ""
                             : string.Join(", ", (from cc in p.Family.People
                                                  where cc.PositionInFamilyId == 30
@@ -156,9 +163,17 @@ namespace CmsWeb.Models
                                                  select cc.LastName == familyname
                                                          ? cc.PreferredName
                                                          : cc.Name).ToList()),
+                        FamilyTitle = familytitle ?? ("The " + p.Name + " Family"),
                         ImageId = p.Picture.LargeId,
                         FamImageId = p.Family.Picture.LargeId,
-                        CoupleName = couplename
+                        CoupleName = couplename,
+                        ChildrenAges = p.PositionInFamilyId != 10
+                            ? ""
+                            : string.Join("~", p.Family.People
+                                .Where(cc => cc.PositionInFamilyId > 10)
+                                .Select(cc =>
+                                    $"{(cc.LastName == familyname ? cc.PreferredName : cc.Name)}|{cc.Age}|{cc.BirthMonth}|{cc.BirthDay}"
+                                )),
                     };
             return q.Take(10000).ToList();
         }

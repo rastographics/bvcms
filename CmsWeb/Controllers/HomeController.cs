@@ -184,14 +184,19 @@ namespace CmsWeb.Controllers
         public ActionResult TestScript()
         {
             var id = DbUtil.Db.ScratchPadQuery(@"
-MemberStatusId = 10[Member]
-AND LastName = 'C*'
+IsMemberOf( Org=81460[Couples - Earnheart] ) = 1[True]
+AND IsHeadOfHousehold = 1[True]
 ");
+//            var id = DbUtil.Db.ScratchPadQuery(@"
+//MemberStatusId = 10[Member]
+//AND LastName = 'C*'
+//");
 //            var id = DbUtil.Db.ScratchPadQuery(@"
 //HasFamilyPicture = 1[True]
 //AND IsHeadOfHousehold = 1[True]
 //");
-            return new DocXDirectoryResult(id, "picturedir", @"http://i.bvcms.com//picturedir24.docx");
+            return new DocXDirectoryResult(id, "compactdir", @"file://d:/downloads/compactdir.docx");
+            //return new DocXDirectoryResult(id, "picturedir", @"http://i.bvcms.com//picturedir24.docx");
             //return new DocXDirectoryResult(id, "familypicturedir", @"http://i.bvcms.com/fampicturedir12.docx");
 
             //var text = System.IO.File.ReadAllText(Server.MapPath("~/test.py"));
