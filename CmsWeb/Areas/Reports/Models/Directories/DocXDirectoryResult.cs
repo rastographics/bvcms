@@ -62,10 +62,15 @@ namespace CmsWeb.Areas.Reports.Models
             else
                 BuildDocument(list);
 
+            response.Clear();
             response.ContentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
             response.AddHeader("content-disposition", $"attachment;filename={filename}-{DateTime.Now.ToSortableDateTime()}.docx");
-            response.AddHeader("content-length", ms.Length.ToString());
-            docx.SaveAs(response.OutputStream);
+
+            ms = new MemoryStream();
+            docx.SaveAs(ms);
+            ms.WriteTo(response.OutputStream);
+            response.End();
+
         }
 
         private void BuildDocument(List<DirectoryInfo> list)

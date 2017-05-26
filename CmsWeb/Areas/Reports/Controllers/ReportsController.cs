@@ -10,7 +10,6 @@ using CmsWeb.Areas.Dialog.Models;
 using CmsData;
 using CmsData.Registration;
 using CmsWeb.Areas.Main.Models.Avery;
-using CmsWeb.Areas.Main.Models.Directories;
 using CmsWeb.Areas.Reports.Models;
 using CmsWeb.Areas.Search.Models;
 using CmsWeb.Models;
@@ -180,27 +179,6 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpGet]
-        public ActionResult DocXDirectory(Guid id, string filename, string template)
-        {
-            return new DocXDirectoryResult(id, filename, template);
-            //return new DocXDirectoryResult(id, "picturedir", @"http://i.bvcms.com//picturedir24.docx");
-            //return new DocXDirectoryResult(id, "familypicturedir", @"http://i.bvcms.com/fampicturedir12.docx");
-        }
-        [HttpGet]
-        public ActionResult PictureDir(Guid id)
-        {
-            return new DocXDirectoryResult(id, "picturedir", @"/Content/touchpoint/templates/picturedir24.docx");
-            //return new DocXDirectoryResult(id, "familypicturedir", @"http://i.bvcms.com/fampicturedir12.docx");
-        }
-
-        [HttpGet]
-        public ActionResult FamilyPictureDirectory(Guid id)
-        {
-            var s = DbUtil.Db.ContentText("CompactDirectoryParameters2", Resource1.CompactDirectoryParameters2);
-            return new FamilyPictureDir(id);
-        }
-
-        [HttpGet]
         public ActionResult Contacts(Guid? id, bool? sortAddress, string orgname)
         {
             if (!id.HasValue)
@@ -299,18 +277,6 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpGet]
-        public ActionResult FamilyDirectory(Guid id)
-        {
-            return new FamilyDir(id);
-        }
-
-        [HttpGet]
-        public ActionResult CompactDirectory(Guid id)
-        {
-            return new DocXDirectoryResult(id, "compactdir", "/WordTemplates/compactdir.docx");
-        }
-
-        [HttpGet]
         public ActionResult Meetings(string dt1, string dt2, int? programid, int? divisionid)
         {
             var d1 = dt1.ToDate();
@@ -405,12 +371,6 @@ namespace CmsWeb.Areas.Reports.Controllers
             if (!id.HasValue)
                 return Content("no orgid");
             return new PastAttendeeResult(id);
-        }
-
-        [HttpGet]
-        public ActionResult PictureDirectory(Guid id)
-        {
-            return new PictureDir(id);
         }
 
         [HttpGet]
