@@ -498,8 +498,11 @@
     <Compile Include="Areas\Public\Models\MobileAPI\MobileInvolvement.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobilePersonExtended.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostEditField.cs" />
+    <Compile Include="Areas\Reports\Controllers\DirectoryController.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\DocXRollsheetResult.cs" />
     <Compile Include="Areas\Reports\Models\Avery\DocXAveryLabels.cs" />
+    <Compile Include="Areas\Reports\Models\Directories\DirectoryInfo.cs" />
+    <Compile Include="Areas\Reports\Models\Directories\DocXDirectoryResult.cs" />
     <Compile Include="Areas\Reports\Models\Export\DocXReplacements.cs" />
     <Compile Include="Areas\Search\Controllers\TaskSearchController.cs" />
     <Compile Include="Areas\Search\Models\TaskSearch\TaskSearchInfo.cs" />
@@ -556,8 +559,6 @@
     <Compile Include="Areas\Reports\Models\Avery\EmployerAddressRow.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\Reports\Models\Directories\FamilyPictureDir.cs" />
-    <Compile Include="Areas\Reports\Models\Directories\CompactPictureDir.cs" />
     <Compile Include="Areas\Reports\Models\Export\ExcelExportModel.cs" />
     <Compile Include="Areas\Reports\Models\Export\ExcelResult.cs" />
     <Compile Include="Areas\Reports\Models\Export\MissionTripSendersModel.cs" />
@@ -623,12 +624,6 @@
     <Compile Include="Areas\Search\Controllers\PeopleSearchController.cs" />
     <Compile Include="Areas\Main\Controllers\SMSController.cs" />
     <Compile Include="Areas\People\Controllers\VolunteeringController.cs" />
-    <Compile Include="Areas\Reports\Models\Directories\CompactDir.cs" />
-    <Compile Include="Areas\Reports\Models\Directories\CompactRow.cs" />
-    <Compile Include="Areas\Reports\Models\Directories\PictureDir.cs" />
-    <Compile Include="Areas\Reports\Models\Directories\PictureRow.cs" />
-    <Compile Include="Areas\Reports\Models\Directories\FamilyDir.cs" />
-    <Compile Include="Areas\Reports\Models\Directories\FamilyRow.cs" />
     <Compile Include="Areas\Main\Models\Email\EmailTemplatesModel.cs" />
     <Compile Include="Areas\People\Models\VolunteerModel.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundModel.cs" />
@@ -1636,6 +1631,9 @@
     <Content Include="Areas\People\Views\Attributes\Edit.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\DropFromOrg.cshtml" />
     <Content Include="Areas\Reports\Models\Attendance\DocxRollsheet.docx" />
+    <Content Include="Content\touchpoint\templates\compactdir.docx" />
+    <Content Include="Content\touchpoint\templates\picturedir24.docx" />
+    <Content Include="Content\touchpoint\templates\fampicturedir12.docx" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />

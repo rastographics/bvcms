@@ -183,6 +183,8 @@ namespace CmsWeb.Controllers
         [Authorize(Roles = "Developer")]
         public ActionResult TestScript()
         {
+            //var id = DbUtil.Db.ScratchPadQuery(@"MemberStatusId = 10[Member] AND LastName = 'C*'");
+
             var text = System.IO.File.ReadAllText(Server.MapPath("~/test.py"));
             ViewBag.Text = PythonModel.RunScript(Util.Host, text);
             return View("Test");
