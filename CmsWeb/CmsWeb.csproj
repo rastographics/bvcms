@@ -501,8 +501,11 @@
     <Compile Include="Areas\Reports\Controllers\DirectoryController.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\DocXRollsheetResult.cs" />
     <Compile Include="Areas\Reports\Models\Avery\DocXAveryLabels.cs" />
+    <Compile Include="Areas\Reports\Models\Directories\CompactDir.cs" />
+    <Compile Include="Areas\Reports\Models\Directories\CompactRow.cs" />
     <Compile Include="Areas\Reports\Models\Directories\DirectoryInfo.cs" />
     <Compile Include="Areas\Reports\Models\Directories\DocXDirectoryResult.cs" />
+    <Compile Include="Areas\Reports\Models\Directories\FamilyRow.cs" />
     <Compile Include="Areas\Reports\Models\Export\DocXReplacements.cs" />
     <Compile Include="Areas\Search\Controllers\TaskSearchController.cs" />
     <Compile Include="Areas\Search\Models\TaskSearch\TaskSearchInfo.cs" />

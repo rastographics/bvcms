@@ -1,5 +1,6 @@
 using System;
 using System.Web.Mvc;
+using CmsWeb.Areas.Main.Models.Directories;
 using CmsWeb.Areas.Reports.Models;
 
 namespace CmsWeb.Areas.Reports.Controllers
@@ -14,8 +15,9 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet]
         public ActionResult CompactDir(Guid id)
         {
-            return new DocXDirectoryResult(id, "compactdir", 
-                Server.MapPath("/content/touchpoint/templates/compactdir.docx"));
+            return new CompactDir(id);
+//            return new DocXDirectoryResult(id, "compactdir", 
+//                Server.MapPath("/content/touchpoint/templates/compactdir.docx"));
         }
 
         [HttpGet]
