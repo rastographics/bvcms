@@ -279,8 +279,10 @@ namespace CmsWeb.Areas.Org.Models
         public string ShowAddressActive => ShowAddress ? "active" : "";
         public string FilterTagActive => FilterTag ? "active" : "";
         public string FilterIndActive => FilterIndividuals ? "active" : "";
+
+        private bool? orgLeaderAddDrop;
+        public bool OrgLeaderAddDrop => orgLeaderAddDrop ?? (bool)(orgLeaderAddDrop = RoleChecker.HasSetting(SettingName.OrgMembersDropAdd, false));
         public bool DisablePeopleLink => RoleChecker.HasSetting(SettingName.DisablePersonLinks, false);
-        public bool OrgLeaderAddDrop => RoleChecker.HasSetting(SettingName.OrgMembersDropAdd, false);
         public bool HideInactiveButton => RoleChecker.HasSetting(SettingName.HideInactiveOrgMembers, false);
         public bool HidePendingButton => RoleChecker.HasSetting(SettingName.HidePendingOrgMembers, false);
         public bool HideGuestsButton => RoleChecker.HasSetting(SettingName.HideGuestsOrgMembers, false);
@@ -346,10 +348,11 @@ to `Add`, `Drop`, `Update` Members etc.
 
         public bool Showdrop(string group)
         {
+            if ((MultiSelect ? "" : GroupSelect) != group)
+                return false;
             var u = HttpContext.Current.User;
-
-            return (u.IsInRole("Edit") || RoleChecker.HasSetting(SettingName.OrgMembersDropAdd, true)) &&
-                (MultiSelect ? "" : GroupSelect) == group;
+            return u.IsInRole("Edit") 
+                || RoleChecker.HasSetting(SettingName.OrgMembersDropAdd, false);
         }
 
         public Guid QueryId { get; set; }
