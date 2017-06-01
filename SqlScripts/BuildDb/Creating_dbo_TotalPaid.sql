@@ -21,7 +21,7 @@ BEGIN
 			FROM dbo.GoerSenderAmounts
 			WHERE GoerId = @pid
 			AND OrgId = @oid
-			AND ISNULL(InActive, 0) = 0
+			--AND ISNULL(InActive, 0) = 0
 			AND SupporterId <> @pid),0)
 
 	RETURN @c

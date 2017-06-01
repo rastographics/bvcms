@@ -541,6 +541,7 @@ Creating_dbo_ContactTypeTotals.sql
 Creating_dbo_DaysBetween12Attend.sql
 Creating_dbo_GetTodaysMeetingHour.sql
 Creating_dbo_GetTodaysMeetingHours.sql
+Creating_dbo_GivingChangeFund.sql
 Creating_dbo_PurgeOrganization.sql
 Creating_dbo_PersonAttendCountOrg.sql
 Creating_dbo_DeletePeopleExtras.sql
