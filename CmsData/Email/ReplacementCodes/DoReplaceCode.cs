@@ -86,7 +86,8 @@ namespace CmsData
                     if(person != null)
                         return person.PreferredName.Contains("?") || person.PreferredName.Contains("unknown", true) ? "" : person.PreferredName;
                     break;
-
+                case "{firstorjoint}":
+                    return FirstOrJoint();
                 case "{fromemail}":
                     return from.Address;
 
@@ -261,5 +262,14 @@ namespace CmsData
             return code; // nothing matched
         }
 
+        private string FirstOrJoint()
+        {
+            var spousename = person.SpouseId.HasValue
+                ? db.People.Where(p => p.PeopleId == person.SpouseId).Select(p => p.PreferredName).SingleOrDefault()
+                : null;
+            if (person.ContributionOptionsId == Codes.StatementOptionCode.Joint && spousename.HasValue())
+                return $"{person.PreferredName} & {spousename}";
+            return person.PreferredName;
+        }
     }
 }
