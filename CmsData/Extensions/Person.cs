@@ -718,8 +718,8 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 var byr = BirthYear ?? -1;
                 var q = from p in ctx.People
                         where p.PeopleId != PeopleId
-                        let firstmatch = p.FirstName == FirstName || (p.NickName ?? "") == FirstName || (p.MiddleName ?? "") == FirstName
-                                    || p.FirstName == nick || (p.NickName ?? "") == nick || (p.MiddleName ?? "") == nick
+                        let firstmatch = (p.FirstName ?? "") == FirstName || (p.NickName ?? "") == FirstName || (p.MiddleName ?? "") == FirstName
+                                    || (p.FirstName ?? "") == nick || (p.NickName ?? "") == nick || (p.MiddleName ?? "") == nick
                         let lastmatch = p.LastName == LastName || (p.MaidenName ?? "") == LastName
                                     || (p.MaidenName ?? "") == maid || p.LastName == maid
                         let nobday = (p.BirthMonth == null && p.BirthYear == null && p.BirthDay == null)
