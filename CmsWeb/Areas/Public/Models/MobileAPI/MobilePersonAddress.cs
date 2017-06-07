@@ -2,11 +2,13 @@
 {
 	public class MobilePersonAddress
 	{
-		public string address1 { get; set; }
-		public string address2 { get; set; }
-		public string city { get; set; }
-		public string state { get; set; }
-		public string zip { get; set; }
-		public string country { get; set; }
+		public int primary = 0;
+
+		public string address1 = "";
+		public string address2 = "";
+		public string city = "";
+		public string state = "";
+		public string zip = "";
+		public string country = "";
 	}
 }

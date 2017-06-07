@@ -44,7 +44,10 @@ namespace CmsWeb.MobileAPI
 		public string statusText = "";
 
 		public string primaryEmail = "";
+		public int primaryEmailActive = 0;
+
 		public string altEmail = "";
+		public int altEmailActive = 0;
 
 		public string homePhone = "";
 		public string workPhone = "";
@@ -138,7 +141,10 @@ namespace CmsWeb.MobileAPI
 			}
 
 			primaryEmail = p.EmailAddress ?? "";
+			primaryEmailActive = p.SendEmailAddress1 ?? false ? 1 : 0;
+
 			altEmail = p.EmailAddress2 ?? "";
+			altEmailActive = p.SendEmailAddress2 ?? false ? 1 : 0;
 
 			homePhone = p.HomePhone ?? "";
 			workPhone = p.WorkPhone ?? "";
@@ -149,6 +155,7 @@ namespace CmsWeb.MobileAPI
 			doNotVisit = p.DoNotVisitFlag ? 1 : 0;
 			doNotPublishPhones = p.DoNotPublishPhones ?? false ? 1 : 0;
 
+			familyAddress.primary = p.AddressTypeId == 10 ? 1 : 0;
 			familyAddress.address1 = p.Family.AddressLineOne ?? "";
 			familyAddress.address2 = p.Family.AddressLineTwo ?? "";
 			familyAddress.city = p.Family.CityName ?? "";
@@ -156,6 +163,7 @@ namespace CmsWeb.MobileAPI
 			familyAddress.zip = p.Family.ZipCode.FmtZip() ?? "";
 			familyAddress.country = p.Family.CountryName ?? "";
 
+			personalAddress.primary = p.AddressTypeId == 30 ? 1 : 0;
 			personalAddress.address1 = p.AddressLineOne ?? "";
 			personalAddress.address2 = p.AddressLineTwo ?? "";
 			personalAddress.city = p.CityName ?? "";
