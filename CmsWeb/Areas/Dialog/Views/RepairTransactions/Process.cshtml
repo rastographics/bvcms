@@ -6,7 +6,8 @@
             <h4 class="modal-title">Repair Transactions Progress</h4>
         </div>
         <div class="modal-body">
-            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.QueryId)
+            @Html.HiddenFor(m => m.OrgId)
             @Html.DisplayFor(m => m.Count, new { Label = "Number of Members" })
             @Html.DisplayFor(m => m.Started, "DateAndTime")
             @Html.DisplayFor(m => m.Processed)

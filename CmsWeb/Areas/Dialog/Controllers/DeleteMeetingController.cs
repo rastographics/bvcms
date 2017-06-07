@@ -12,7 +12,6 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult Index(int id)
         {
             var model = new DeleteMeeting(id);
-            model.RemoveExistingLop(DbUtil.Db, DeleteMeeting.Op, model.QueryId);
             return View(model);
         }
 

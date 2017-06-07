@@ -28,7 +28,7 @@ namespace CmsData.Email.ReplacementCodes
         private NameCount GetOrgInfo(int? orgid)
         {
             NameCount oi = null;
-            var oid = orgid ?? db.CurrentOrgId;
+            var oid = orgid ?? Util2.CurrentOrgId;
 
             if (oid.HasValue)
             {

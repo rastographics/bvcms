@@ -60,7 +60,7 @@ namespace CmsWeb.Models
         {
             var who = Util.UserFullName + " <" + Util.UserEmail + ">";
             var id = 0;
-            var subject = $"{Subj}: {Util.UserFullName} @ {DbUtil.Db.Host}";
+            var subject = $"{Urgency} {Subj}: {Util.UserFullName} @ {DbUtil.Db.Host}";
             if (cs != null)
             {
                 var cn = new SqlConnection(cs.ConnectionString);

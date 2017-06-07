@@ -13,6 +13,15 @@ namespace CmsData
             var q = Queries.SingleOrDefault(cc => cc.QueryId == id);
             return q;
         }
+        public Guid ScratchPadQuery(string code)
+        {
+            var c = ScratchPadCondition();
+            var cc = Condition.Parse(code, c.Id);
+            cc.ConditionName = c.ConditionName;
+            cc.Save(this);
+            return cc.Id;
+        }
+
         public Condition ScratchPadCondition()
         {
             Condition c;

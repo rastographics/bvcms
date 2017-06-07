@@ -14,7 +14,10 @@ namespace CmsWeb.Areas.Setup.Controllers
         [Route("~/Settings")]
         public ActionResult Index()
         {
-            var m = DbUtil.Db.Settings.AsEnumerable();
+            var m = DbUtil.Db.Settings.AsQueryable();
+            if (!User.IsInRole("Developer"))
+                m = m.Where(vv => (vv.System ?? false) == false);
+
             return View(m);
         }
 

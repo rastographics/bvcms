@@ -12,7 +12,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
-    public class OrgSearchDrop : LongRunningOp
+    public class OrgSearchDrop : LongRunningOperation
     {
         private class OrgInfo
         {
@@ -29,7 +29,7 @@ namespace CmsWeb.Areas.Dialog.Models
         public OrgSearchDrop() { }
         public OrgSearchDrop(OrgSearchModel m)
         {
-            Id = Util.UserPeopleId ?? 0;
+            //Id = Util.UserPeopleId ?? 0;
             var q = (from o in m.FetchOrgs()
                      select new OrgInfo
                      {
@@ -47,27 +47,27 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             // running has not started yet, start it on a separate thread
             orginfos = JsonConvert.DeserializeObject<List<OrgInfo>>(Orgs);
-            var lop = new LongRunningOp()
+            var lop = new LongRunningOperation()
             {
                 Started = DateTime.Now,
                 Count = orginfos.Count,
                 Processed = 0,
-                Id = Id,
+                QueryId = QueryId,
                 Operation = Op,
             };
-            db.LongRunningOps.InsertOnSubmit(lop);
+            db.LongRunningOperations.InsertOnSubmit(lop);
             db.SubmitChanges();
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
         }
 
         private void DoWork(OrgSearchDrop model)
         {
-            var db = DbUtil.Create(model.host);
+            var db = DbUtil.Create(model.Host);
             var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
 
-            LongRunningOp lop = null;
+            LongRunningOperation lop = null;
             foreach (var orginfo in model.orginfos)
             {
                 var pids = (from m in db.OrganizationMembers
@@ -79,13 +79,13 @@ namespace CmsWeb.Areas.Dialog.Models
                 {
                     n++;
                     db.Dispose();
-                    db = DbUtil.Create(model.host);
+                    db = DbUtil.Create(model.Host);
                     var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == orginfo.Id);
                     if (DropDate.HasValue)
                         om.Drop(db, DropDate.Value);
                     else
                         om.Drop(db);
-                    lop = FetchLongRunningOp(db, model.Id, Op);
+                    lop = FetchLongRunningOperation(db, Op, model.QueryId);
                     Debug.Assert(lop != null, "r != null");
                     lop.Processed++;
                     lop.CustomMessage = $"Working on {orginfo.Name}, {n}/{pids.Count}";
@@ -96,7 +96,7 @@ namespace CmsWeb.Areas.Dialog.Models
                 db.SubmitChanges();
             }
             // finished
-            lop = FetchLongRunningOp(db, model.Id, Op);
+            lop = FetchLongRunningOperation(db, Op, model.QueryId);
             lop.Completed = DateTime.Now;
             db.SubmitChanges();
         }

@@ -6,7 +6,7 @@
             <h4 class="modal-title">Drop total of @Model.Count Members from @Model.OrgCount Organizations</h4>
         </div>
         <div class="modal-body">
-            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.QueryId)
             @Html.HiddenFor(m => m.OrgCount)
             @Html.HiddenFor(m => m.Count)
             @Html.HiddenFor(m => m.Started)

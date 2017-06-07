@@ -11,16 +11,16 @@ using CmsData;
 using CmsData.Codes;
 using CmsWeb.Code;
 using UtilityExtensions;
-using Tasks = System.Threading.Tasks;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
-    public class AddAttendeesFromTag : LongRunningOp
+    public class AddAttendeesFromTag : LongRunningOperation
     {
         public const string Op = "addattendeesfromtag";
 
         public int UserId { get; set; }
         public string OrgName { get; set; }
+        public int MeetingId { get; set; }
         public int OrgId { get; set; }
         public bool AddAsMembers { get; set; }
         public DateTime JoinDate { get; set; }
@@ -28,7 +28,8 @@ namespace CmsWeb.Areas.Dialog.Models
         public AddAttendeesFromTag() { }
         public AddAttendeesFromTag(int id)
         {
-            Id = id;
+            QueryId = Guid.NewGuid();
+            MeetingId = id;
             UserId = Util.UserId;
             var i = (from m in DbUtil.Db.Meetings
                      where m.MeetingId == id
@@ -54,42 +55,42 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             // running has not started yet, start it on a separate thread
             pids = FetchPeopleIds(db, Tag.Value.ToInt()).ToList();
-            var lop = new LongRunningOp()
+            var lop = new LongRunningOperation()
             {
                 Started = DateTime.Now,
                 Count = pids.Count,
                 Processed = 0,
-                Id = Id,
+                QueryId = QueryId,
                 Operation = Op,
             };
-            db.LongRunningOps.InsertOnSubmit(lop);
+            db.LongRunningOperations.InsertOnSubmit(lop);
             db.SubmitChanges();
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
         }
 
         private static void DoWork(AddAttendeesFromTag model)
         {
-            var db = DbUtil.Create(model.host);
+            var db = DbUtil.Create(model.Host);
             var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
 
-            LongRunningOp lop = null;
+            LongRunningOperation lop = null;
             foreach (var pid in model.pids)
             {
                 db.Dispose();
-                db = DbUtil.Create(model.host);
+                db = DbUtil.Create(model.Host);
 				if (model.AddAsMembers)
 					OrganizationMember.InsertOrgMembers(db, model.OrgId, pid, 
                         MemberTypeCode.Member, model.JoinDate, null, false);
-				db.RecordAttendance(model.Id, pid, true);
-                lop = FetchLongRunningOp(db, model.Id, Op);
+				db.RecordAttendance(model.MeetingId, pid, true);
+                lop = FetchLongRunningOperation(db, Op, model.QueryId);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
                 db.SubmitChanges();
             }
             // finished
-            lop = FetchLongRunningOp(db, model.Id, Op);
+            lop = FetchLongRunningOperation(db, Op, model.QueryId);
             lop.Completed = DateTime.Now;
             db.SubmitChanges();
         }

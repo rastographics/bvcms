@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Threading;
 using System.Web;
 using MarkdownDeep;
 using UtilityExtensions;
@@ -39,12 +40,26 @@ namespace CmsData
         {
             get
             {
-                return GetSessionObj(STR_ActiveOrganizationId, null).ToInt2();
+                int? orgid = null;
+                if (HttpContext.Current != null)
+                {
+                    if (HttpContext.Current.Session != null)
+                        if (HttpContext.Current.Session[STR_ActiveOrganizationId] != null)
+                            orgid = HttpContext.Current.Session[STR_ActiveOrganizationId] as int?;
+                }
+                else
+                    orgid = (int?) Thread.GetData(Thread.GetNamedDataSlot(STR_ActiveOrganizationId));
+                return orgid;
             }
             set
             {
                 if (HttpContext.Current != null)
-                    HttpContext.Current.Session[STR_ActiveOrganizationId] = value;
+                {
+                    if (HttpContext.Current.Session != null)
+                        HttpContext.Current.Session[STR_ActiveOrganizationId] = value;
+                }
+                else
+                    Thread.SetData(Thread.GetNamedDataSlot(STR_ActiveOrganizationId), value);
             }
         }
 

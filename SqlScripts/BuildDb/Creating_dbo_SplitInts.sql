@@ -23,7 +23,7 @@ AS
     RETURN
     (
         SELECT DISTINCT
-            [Value] = CONVERT(INT, LTRIM(RTRIM(CONVERT(
+            [Value] = TRY_CONVERT(INT, LTRIM(RTRIM(CONVERT(
                 VARCHAR(12),
                 SUBSTRING(@List, Number,
                 CHARINDEX(',', @List + ',', Number) - Number)))))
@@ -33,6 +33,7 @@ AS
             Number <= CONVERT(INT, LEN(@List))
             AND SUBSTRING(',' + @List, Number, 1) = ','
     );
+
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

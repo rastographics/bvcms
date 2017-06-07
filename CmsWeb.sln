@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.10
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMSWeb", "CmsWeb\CMSWeb.csproj", "{FC942D51-94B5-456B-9683-0BA000A1EAF4}"
 EndProject
@@ -18,7 +18,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3A0B0841-CE00-4EA1-AEB8-7595CAF9E349}"
 	ProjectSection(SolutionItems) = preProject
 		ReadMe.md = ReadMe.md
-		Scripts\Tag-Release.ps1 = Scripts\Tag-Release.ps1
 		WE-Markdown.css = WE-Markdown.css
 		WE-settings.xml = WE-settings.xml
 	EndProjectSection

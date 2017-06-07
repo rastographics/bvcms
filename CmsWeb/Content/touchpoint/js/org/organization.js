@@ -264,7 +264,11 @@
         function () {
             $.block();
             $.post(href, null, function (ret) {
-                if (ret != "ok") {
+                if (ret.startsWith("error")) {
+                    $.unblock();
+                    swal("Error!", ret, "error");
+                }
+                else if (ret !== "ok") {
                     $.unblock();
                     window.location = ret;
                 }

@@ -1,4 +1,3 @@
-
 CREATE FUNCTION [dbo].[OrgFilterPeople](
 	 @queryid UNIQUEIDENTIFIER
 	,@ministryinfo BIT
@@ -39,7 +38,7 @@ RETURN
 		,MemberCode
 		,MemberType
 		,CAST(Hidden AS BIT) Hidden
-		,Groups = CHAR(10) + Groups
+		,Groups = CHAR(10) + Groups + CHAR(10)
 		,mi.LastContactMadeDt
 		,mi.LastContactMadeId
 		,mi.LastContactReceivedDt
@@ -109,11 +108,6 @@ RETURN
 				) tabt)
 	)
 )
-
-
-
-
-
 
 GO
 IF @@ERROR <> 0 SET NOEXEC ON

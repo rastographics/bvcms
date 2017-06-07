@@ -199,8 +199,7 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="RestSharp, Version=105.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Bin\RestSharp.dll</HintPath>
+      <HintPath>..\packages\RestSharp.105.0.1\lib\net4\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="SimpleRESTServices, Version=1.3.0.0, Culture=neutral, PublicKeyToken=8965cea5c205d3a3, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -338,6 +337,7 @@
     <Compile Include="Areas\Dialog\Models\SearchUsersModel.cs" />
     <Compile Include="Areas\Dialog\Models\TransactionHistoryModel.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\AchImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\SubSplashImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\SimpleGiveImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\CapitalCityImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\DepositRecord.cs" />
@@ -498,8 +498,14 @@
     <Compile Include="Areas\Public\Models\MobileAPI\MobileInvolvement.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobilePersonExtended.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostEditField.cs" />
+    <Compile Include="Areas\Reports\Controllers\DirectoryController.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\DocXRollsheetResult.cs" />
     <Compile Include="Areas\Reports\Models\Avery\DocXAveryLabels.cs" />
+    <Compile Include="Areas\Reports\Models\Directories\CompactDir.cs" />
+    <Compile Include="Areas\Reports\Models\Directories\CompactRow.cs" />
+    <Compile Include="Areas\Reports\Models\Directories\DirectoryInfo.cs" />
+    <Compile Include="Areas\Reports\Models\Directories\DocXDirectoryResult.cs" />
+    <Compile Include="Areas\Reports\Models\Directories\FamilyRow.cs" />
     <Compile Include="Areas\Reports\Models\Export\DocXReplacements.cs" />
     <Compile Include="Areas\Search\Controllers\TaskSearchController.cs" />
     <Compile Include="Areas\Search\Models\TaskSearch\TaskSearchInfo.cs" />
@@ -556,8 +562,6 @@
     <Compile Include="Areas\Reports\Models\Avery\EmployerAddressRow.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\Reports\Models\Directories\FamilyPictureDir.cs" />
-    <Compile Include="Areas\Reports\Models\Directories\CompactPictureDir.cs" />
     <Compile Include="Areas\Reports\Models\Export\ExcelExportModel.cs" />
     <Compile Include="Areas\Reports\Models\Export\ExcelResult.cs" />
     <Compile Include="Areas\Reports\Models\Export\MissionTripSendersModel.cs" />
@@ -623,12 +627,6 @@
     <Compile Include="Areas\Search\Controllers\PeopleSearchController.cs" />
     <Compile Include="Areas\Main\Controllers\SMSController.cs" />
     <Compile Include="Areas\People\Controllers\VolunteeringController.cs" />
-    <Compile Include="Areas\Reports\Models\Directories\CompactDir.cs" />
-    <Compile Include="Areas\Reports\Models\Directories\CompactRow.cs" />
-    <Compile Include="Areas\Reports\Models\Directories\PictureDir.cs" />
-    <Compile Include="Areas\Reports\Models\Directories\PictureRow.cs" />
-    <Compile Include="Areas\Reports\Models\Directories\FamilyDir.cs" />
-    <Compile Include="Areas\Reports\Models\Directories\FamilyRow.cs" />
     <Compile Include="Areas\Main\Models\Email\EmailTemplatesModel.cs" />
     <Compile Include="Areas\People\Models\VolunteerModel.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundModel.cs" />
@@ -1595,7 +1593,6 @@
     <Content Include="Areas\Manage\Views\Batch\UploadAddressesProgress.cshtml" />
     <Content Include="Areas\Manage\Views\UploadExcelIps\Index.cshtml" />
     <Content Include="Areas\Manage\Views\UploadExcelIps\Progress.cshtml" />
-    <None Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\Login.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\Index.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\ThankYou.cshtml" />
@@ -1637,6 +1634,9 @@
     <Content Include="Areas\People\Views\Attributes\Edit.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\DropFromOrg.cshtml" />
     <Content Include="Areas\Reports\Models\Attendance\DocxRollsheet.docx" />
+    <Content Include="Content\touchpoint\templates\compactdir.docx" />
+    <Content Include="Content\touchpoint\templates\picturedir24.docx" />
+    <Content Include="Content\touchpoint\templates\fampicturedir12.docx" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />

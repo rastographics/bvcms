@@ -140,6 +140,9 @@ namespace CmsWeb.Areas.Org.Models
         [Reg]
         public string SenderBody { get; set; }
 
+        [Reg, Display(Description = SenderDescription)]
+        public string ConfirmationTrackingCode { get; set; }
+
 
         #region Descriptions
 
@@ -209,6 +212,9 @@ This is the email that is sent to solicit supporters.
 ";
         private const string SenderDescription = @"
 This is the email that is sent to notify senders.
+";
+        private const string ConfirmationTrackingDescription = @"
+You put the name of the special content that contains the javascript code here.
 ";
 
         #endregion

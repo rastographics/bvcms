@@ -56,6 +56,10 @@ namespace CmsData
 		
 		private string _CClist;
 		
+		private bool? _Testing;
+		
+		private bool? _ReadyToSend;
+		
    		
    		private EntitySet< EmailLink> _EmailLinks;
 		
@@ -129,6 +133,12 @@ namespace CmsData
 		
 		partial void OnCClistChanging(string value);
 		partial void OnCClistChanged();
+		
+		partial void OnTestingChanging(bool? value);
+		partial void OnTestingChanged();
+		
+		partial void OnReadyToSendChanging(bool? value);
+		partial void OnReadyToSendChanged();
 		
     #endregion
 		public EmailQueue()
@@ -564,6 +574,50 @@ namespace CmsData
 					this._CClist = value;
 					this.SendPropertyChanged("CClist");
 					this.OnCClistChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Testing", UpdateCheck=UpdateCheck.Never, Storage="_Testing", DbType="bit")]
+		public bool? Testing
+		{
+			get { return this._Testing; }
+
+			set
+			{
+				if (this._Testing != value)
+				{
+				
+                    this.OnTestingChanging(value);
+					this.SendPropertyChanging();
+					this._Testing = value;
+					this.SendPropertyChanged("Testing");
+					this.OnTestingChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="ReadyToSend", UpdateCheck=UpdateCheck.Never, Storage="_ReadyToSend", DbType="bit")]
+		public bool? ReadyToSend
+		{
+			get { return this._ReadyToSend; }
+
+			set
+			{
+				if (this._ReadyToSend != value)
+				{
+				
+                    this.OnReadyToSendChanging(value);
+					this.SendPropertyChanging();
+					this._ReadyToSend = value;
+					this.SendPropertyChanged("ReadyToSend");
+					this.OnReadyToSendChanged();
 				}
 
 			}

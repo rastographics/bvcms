@@ -12,7 +12,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
-    public class RepairTransactionsOrgs : LongRunningOp
+    public class RepairTransactionsOrgs : LongRunningOperation
     {
         private class OrgInfo
         {
@@ -26,7 +26,7 @@ namespace CmsWeb.Areas.Dialog.Models
         public RepairTransactionsOrgs() { }
         public RepairTransactionsOrgs(OrgSearchModel m)
         {
-            Id = Util.UserPeopleId ?? 0;
+            QueryId = Guid.NewGuid();
             var q = (from o in m.FetchOrgs()
                      select new OrgInfo
                      {
@@ -43,37 +43,37 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             // running has not started yet, start it on a separate thread
             orginfos = JsonConvert.DeserializeObject<List<OrgInfo>>(Orgs);
-            var lop = new LongRunningOp()
+            var lop = new LongRunningOperation()
             {
                 Started = DateTime.Now,
                 Count = orginfos.Count,
                 Processed = 0,
-                Id = Id,
+                QueryId = QueryId,
                 Operation = Op,
             };
-            db.LongRunningOps.InsertOnSubmit(lop);
+            db.LongRunningOperations.InsertOnSubmit(lop);
             db.SubmitChanges();
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
 		}
         public static void DoWork(RepairTransactionsOrgs model)
         {
-			var db = DbUtil.Create(model.host);
+			var db = DbUtil.Create(model.Host);
             db.CommandTimeout = 2200;
 		    var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
-            LongRunningOp lop = null;
+            LongRunningOperation lop = null;
             foreach (var orginfo in model.orginfos)
 		    {
 	            db.RepairTransactionsOrgs(orginfo.Id);
-                lop = FetchLongRunningOp(db, model.Id, Op);
+                lop = FetchLongRunningOperation(db, Op, model.QueryId);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
                 lop.CustomMessage = $"Working on {orginfo.Name} ({orginfo.Id})";
                 db.SubmitChanges();
 		    }
             // finished
-            lop = FetchLongRunningOp(db, model.Id, Op);
+            lop = FetchLongRunningOperation(db, Op, model.QueryId);
             lop.Completed = DateTime.Now;
             db.SubmitChanges();
 		}

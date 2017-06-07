@@ -1,7 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.IO;
 using System.Web;
 using CmsData;
+using CmsData.API;
 using HandlebarsDotNet;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
 using UtilityExtensions;
 
 namespace CmsData
@@ -69,6 +76,34 @@ namespace CmsData
                 else
                     options.Inverse(writer, (object)context);
             });
+            Handlebars.RegisterHelper("IfGT", (writer, options, context, args) =>
+            {
+                if (Compare2(args) > 0)
+                    options.Template(writer, (object)context);
+                else
+                    options.Inverse(writer, (object)context);
+            });
+            Handlebars.RegisterHelper("IfLT", (writer, options, context, args) =>
+            {
+                if (Compare2(args) < 0)
+                    options.Template(writer, (object)context);
+                else
+                    options.Inverse(writer, (object)context);
+            });
+            Handlebars.RegisterHelper("IfGE", (writer, options, context, args) =>
+            {
+                if (Compare2(args) <= 0)
+                    options.Template(writer, (object)context);
+                else
+                    options.Inverse(writer, (object)context);
+            });
+            Handlebars.RegisterHelper("IfLE", (writer, options, context, args) =>
+            {
+                if (Compare2(args) <= 0)
+                    options.Template(writer, (object)context);
+                else
+                    options.Inverse(writer, (object)context);
+            });
             Handlebars.RegisterHelper("GetToken", (writer, context, args) =>
             {
                 var s = args[0].ToString();
@@ -77,6 +112,28 @@ namespace CmsData
                 var sep = args.Length > 3 ? args[3].ToString() : " ";
                 var a = s.SplitStr(sep, ntoks);
                 writer.Write(a[n].trim());
+            });
+
+            Handlebars.RegisterHelper("FmtMDY", (writer, context, args) =>
+            {
+                DateTime dt;
+                var s = args[0].ToString();
+                if(DateTime.TryParse(s, out dt))
+                    writer.Write(dt.ToShortDateString());
+            });
+            Handlebars.RegisterHelper("FmtDate", (writer, context, args) =>
+            {
+                DateTime dt;
+                var s = args[0].ToString();
+                if(DateTime.TryParse(s, out dt))
+                    writer.Write(dt.ToShortDateString());
+            });
+            Handlebars.RegisterHelper("FmtMoney", (writer, context, args) =>
+            {
+                decimal d;
+                var s = args[0].ToString();
+                if(decimal.TryParse(s, out d))
+                    writer.Write(d.ToString("C"));
             });
 
             // Format helper in form of:  {{Fmt value "fmt"}}
@@ -101,6 +158,18 @@ namespace CmsData
                 if (args.Length == 3)
                     oid = args[2].ToInt2();
                 writer.Write(r.RenderCode(code, p, oid));
+            });
+            Handlebars.RegisterHelper("Json", (writer, options, context, args) =>
+            {
+                dynamic a = JsonDeserialize2(args[0].ToString());
+                foreach (var item in a)
+                {
+                    options.Template(writer, item);
+                }
+            });
+            Handlebars.RegisterHelper("ThrowError", (writer, context, args) =>
+            {
+                throw new Exception("ThrowError called in Handlebars Helper");
             });
         }
 
@@ -129,6 +198,21 @@ namespace CmsData
                 a2 = args[2].ToInt();
             if (a1 is decimal)
                 a2 = args[2].ToNullableDecimal() ?? 0m;
+
+            var a1C = a1 as IComparable;
+            var a2C = a2 as IComparable;
+            if (a1C == null || a2C == null)
+                return null;
+            return a1C.CompareTo(a2C);
+        }
+        private static int? Compare2(object[] args)
+        {
+            var a1 = args[0];
+            var a2 = args[1];
+            if (a1 is int)
+                a2 = args[1].ToInt();
+            if (a1 is decimal)
+                a2 = args[1].ToNullableDecimal() ?? 0m;
 
             var a1C = a1 as IComparable;
             var a2C = a2 as IComparable;

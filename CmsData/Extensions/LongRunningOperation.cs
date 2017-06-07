@@ -23,16 +23,18 @@ namespace CmsData
                 lop.Host = db.Host;
             return lop;
         }
-        public void RemoveExistingLop(CMSDataContext db, string op, Guid queryid)
-        {
-            var exlop = FetchLongRunningOperation(db, op, queryid);
-            if (exlop != null)
-                db.LongRunningOperations.DeleteOnSubmit(exlop);
-            db.SubmitChanges();
-        }
         public string Host { get; private set; }
 
         public bool Finished => Completed.HasValue;
+
+        public static void RemoveExisting(CMSDataContext db, Guid id)
+        {
+            var lop = db.LongRunningOperations.SingleOrDefault(m =>  m.QueryId == id);
+            if (lop == null)
+                return;
+            db.LongRunningOperations.DeleteOnSubmit(lop);
+            db.SubmitChanges();
+        }
 
 //        partial void OnQueryIdChanged()
 //        {

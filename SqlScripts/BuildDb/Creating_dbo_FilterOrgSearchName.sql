@@ -4,16 +4,12 @@ RETURNS
 AS
 BEGIN
 
-	DECLARE @oid INT = TRY_CONVERT(INT, @name)
-	IF (@oid IS NOT NULL 
-		AND EXISTS(
-			SELECT NULL 
-			FROM dbo.Organizations 
-			WHERE OrganizationId = @oid
-		)
-	)
+	DECLARE @oids TABLE (oid INT)
+	INSERT @oids ( oid ) SELECT Value FROM dbo.SplitInts(@name)
+	IF LEN(ISNULL(@name,'')) > 0 AND EXISTS(SELECT NULL FROM @oids) AND NOT EXISTS(SELECT NULL FROM @oids WHERE oid IS NULL)
 	BEGIN
-		INSERT @t SELECT @oid
+		INSERT @t SELECT oid FROM @oids oo
+		JOIN dbo.Organizations o ON o.OrganizationId = oo.oid
 		RETURN
 	END
         
@@ -92,6 +88,8 @@ BEGIN
 	INSERT @t SELECT oid FROM filterName
 	RETURN 
 END
+
+
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

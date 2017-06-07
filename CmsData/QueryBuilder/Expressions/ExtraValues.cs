@@ -236,7 +236,7 @@ namespace CmsData
         internal Expression DaysSinceExtraDate()
         {
             var field = Quarters;
-            Expression<Func<Person, int?>> pred = p => SqlMethods.DateDiffDay(p.PeopleExtras.SingleOrDefault(e => e.Field == field).DateValue.Value, Util.Now.Date);
+            Expression<Func<Person, int?>> pred = p => SqlMethods.DateDiffDay(p.PeopleExtras.SingleOrDefault(e => e.Field == field).DateValue, Util.Now.Date);
             Expression left = Expression.Invoke(pred, parm);
             var right = Expression.Constant(TextValue.ToInt(), typeof(int?));
             return Compare(left, right);

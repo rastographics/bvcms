@@ -1,6 +1,6 @@
 CREATE TABLE [dbo].[SecurityCodes]
 (
-[Id] [int] NOT NULL IDENTITY(1, 1),
+[Id] [int] NOT NULL,
 [Code] [char] (4) NOT NULL,
 [DateUsed] [datetime] NULL
 ) ON [PRIMARY]

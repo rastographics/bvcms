@@ -183,7 +183,9 @@ namespace CmsWeb.Controllers
         [Authorize(Roles = "Developer")]
         public ActionResult TestScript()
         {
-            var text = System.IO.File.ReadAllText(Server.MapPath("~/t.py"));
+            //var id = DbUtil.Db.ScratchPadQuery(@"MemberStatusId = 10[Member] AND LastName = 'C*'");
+
+            var text = System.IO.File.ReadAllText(Server.MapPath("~/test.py"));
             ViewBag.Text = PythonModel.RunScript(Util.Host, text);
             return View("Test");
         }
@@ -234,6 +236,10 @@ namespace CmsWeb.Controllers
             }
             else
                 ViewBag.Type = "SqlReport";
+            if(body.Contains("@StartDt"))
+                p.Add("@StartDt", new DateTime(DateTime.Now.Year, 1, 1));
+            if (body.Contains("@EndDt"))
+                p.Add("@EndDt", DateTime.Today);
             if (body.Contains("@userid", ignoreCase:true))
                 p.Add("@userid", Util.UserId);
             p.Add("@p1", parameter ?? "");

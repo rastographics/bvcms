@@ -12,6 +12,7 @@
 
     var showResourcesTab = false;
     var resourcesEnabled = DbUtil.Db.Setting("Resources-Enabled");
+    var canviewmemberstatus = User.IsInRole("Access") || !DbUtil.Db.Setting("HideMemberStatusFromMyData");
     if (resourcesEnabled)
     {
         showResourcesTab = Model.PeopleId == Util.UserPeopleId || User.IsInRole("ViewResources");
@@ -29,148 +30,148 @@
 }
 @section head
 {
-  @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
-  @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
-  @Fingerprint.Css("/Content/touchpoint/lib/jcrop/css/jcrop.min.css")
-  @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
-  @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2-bootstrap.css")
-  <style>
-    dt {
-      font-weight: normal;
-      color: #808080;
-    }
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/jcrop/css/jcrop.min.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2-bootstrap.css")
+    <style>
+        dt {
+            font-weight: normal;
+            color: #808080;
+        }
 
-    dd {
-      font-weight: 600;
-      padding: 5px;
-      border: solid 1px #eee;
-      min-height: 32px;
-    }
+        dd {
+            font-weight: 600;
+            padding: 5px;
+            border: solid 1px #eee;
+            min-height: 32px;
+        }
 
-    .badaddress { text-decoration: line-through; }
+        .badaddress { text-decoration: line-through; }
 
-    #toolbar-container {
-      margin-left: 24px;
-      margin-right: 20px;
-    }
+        #toolbar-container {
+            margin-left: 24px;
+            margin-right: 20px;
+        }
 
-    .profile-block {
-      margin-bottom: 18px;
-      text-align: center;
-    }
+        .profile-block {
+            margin-bottom: 18px;
+            text-align: center;
+        }
 
-    .profile-photo {
-      display: inline-block;
-      margin-bottom: 10px;
-      border-radius: 999999px;
-      background-color: #fff;
-      border: 1px solid #e6e6e6;
-      padding-top: 5px;
-      padding-left: 5px;
-      padding-right: 5px;
-    }
+        .profile-photo {
+            display: inline-block;
+            margin-bottom: 10px;
+            border-radius: 999999px;
+            background-color: #fff;
+            border: 1px solid #e6e6e6;
+            padding-top: 5px;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
 
-    #profile-portrait {
-      background-image: url(@portraitUrl);
-      height: 180px;
-      width: 180px;
-      display: inline-block;
-      background-repeat: no-repeat;
-      background-size: cover;
-      background-position: @portraitBgPos;
-    }
+        #profile-portrait {
+            background-image: url(@portraitUrl);
+            height: 180px;
+            width: 180px;
+            display: inline-block;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: @portraitBgPos;
+        }
 
-    .family-block {
-      text-align: center;
-      width: 100%;
-    }
+        .family-block {
+            text-align: center;
+            width: 100%;
+        }
 
-    .family-photo {
-      display: inline-block;
-      background-color: #fff;
-      border: 1px solid #e6e6e6;
-      padding-top: 5px;
-      padding-left: 5px;
-      padding-right: 5px;
-      width: 100%;
-    }
+        .family-photo {
+            display: inline-block;
+            background-color: #fff;
+            border: 1px solid #e6e6e6;
+            padding-top: 5px;
+            padding-left: 5px;
+            padding-right: 5px;
+            width: 100%;
+        }
 
-    #family-portrait {
-      background-image: url(@Model.FamilyPicture.MediumUrl);
-      height: 230px;
-      width: 100%;
-      display: inline-block;
-      background-repeat: no-repeat;
-      background-size: cover;
-      background-position: top;
-    }
+        #family-portrait {
+            background-image: url(@Model.FamilyPicture.MediumUrl);
+            height: 230px;
+            width: 100%;
+            display: inline-block;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: top;
+        }
 
-    @@media (max-width: 768px) {
-      .family-photo { width: 180px !important; }
+        @@media (max-width: 768px) {
+            .family-photo { width: 180px !important; }
 
-      #toolbar-container {
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-      }
-    }
+            #toolbar-container {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+            }
+        }
 
-    .headshot {
-      border-radius: 999999px;
-      height: 35px;
-      width: 35px;
-      display: inline-block;
-      background-repeat: no-repeat;
-      background-size: cover;
-      float: left;
-      margin-right: 10px;
-    }
+        .headshot {
+            border-radius: 999999px;
+            height: 35px;
+            width: 35px;
+            display: inline-block;
+            background-repeat: no-repeat;
+            background-size: cover;
+            float: left;
+            margin-right: 10px;
+        }
 
-    .edit-inline-label:after {
-      display: inline-block;
-      margin-left: 5px;
-      content: "\f040";
-      font-family: FontAwesome;
-    }
+        .edit-inline-label:after {
+            display: inline-block;
+            margin-left: 5px;
+            content: "\f040";
+            font-family: FontAwesome;
+        }
 
-    a.click-pencil:after {
-      content: "\f040";
-      font-family: FontAwesome;
-      text-decoration: none;
-      padding-left: 0.5em;
-    }
+        a.click-pencil:after {
+            content: "\f040";
+            font-family: FontAwesome;
+            text-decoration: none;
+            padding-left: 0.5em;
+        }
 
-    .jcrop-box {
-      position: absolute;
-      top: 0px;
-      left: 0px;
-      width: 100%;
-      height: 100%;
-      border: 1px rgba(255, 255, 255, 0.4) solid;
-      border-radius: 50%;
-      -webkit-box-shadow: 1px 1px 26px #000000;
-      -moz-box-shadow: 1px 1px 26px #000000;
-      box-shadow: 1px 1px 26px #000000;
-      overflow: hidden;
-    }
+        .jcrop-box {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            border: 1px rgba(255, 255, 255, 0.4) solid;
+            border-radius: 50%;
+            -webkit-box-shadow: 1px 1px 26px #000000;
+            -moz-box-shadow: 1px 1px 26px #000000;
+            box-shadow: 1px 1px 26px #000000;
+            overflow: hidden;
+        }
 
-    .jcrop-active { margin: 0 auto; }
+        .jcrop-active { margin: 0 auto; }
 
-    .jcrop-box:focus { outline: none; }
+        .jcrop-box:focus { outline: none; }
 
-    .icon-arrow-left,
-    .icon-arrow-right {
-      display: inline-block;
-      font: normal normal normal 14px/1 FontAwesome;
-      font-size: inherit;
-      text-rendering: auto;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      transform: translate(0, 0);
-    }
+        .icon-arrow-left,
+        .icon-arrow-right {
+            display: inline-block;
+            font: normal normal normal 14px/1 FontAwesome;
+            font-size: inherit;
+            text-rendering: auto;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transform: translate(0, 0);
+        }
 
-    .icon-arrow-left:before { content: "\f053"; }
+        .icon-arrow-left:before { content: "\f053"; }
 
-    .icon-arrow-right:before { content: "\f054"; }
+        .icon-arrow-right:before { content: "\f054"; }
 
   table.evnotes th, table.evnotes td {
        border-top: none !important;
@@ -178,145 +179,151 @@
   table.evnotes tr:nth-child(4n-1), table.evnotes tr:nth-child(4n)  {
       background: #eee;
 }
-  </style>
+    </style>
 }
 <br/>
 <div class="row">
-  <div class="col-sm-4 col-md-3 col-lg-2 hidden-print">
-    <div class="profile-block">
-      <div class="profile-photo">
-        @if (Model.Person.CanUserEditBasic)
-        {
-          <a class="personal-picture" href="/Person2/PictureDialog/@Model.PeopleId" title="Click to see larger version or upload new">
-            <div id="profile-portrait" class="img-circle"></div>
-          </a>
-        }
-        else
-        {
-          <a href="@Model.Picture.LargeUrl" title="Click to see larger version" target="_blank">
-            <div id="profile-portrait" class="img-circle"></div>
-          </a>
-        }
-      </div>
-      @if (Model.Person.CanUserEditBasic)
-      {
-        <div>
-          <a class="personal-picture btn btn-default" href="/Person2/PictureDialog/@Model.PeopleId"><i class="fa fa-pencil"></i> Edit Picture</a>
+    <div class="col-sm-4 col-md-3 col-lg-2 hidden-print">
+        <div class="profile-block">
+            <div class="profile-photo">
+                @if (Model.Person.CanUserEditBasic)
+                {
+                    <a class="personal-picture" href="/Person2/PictureDialog/@Model.PeopleId" title="Click to see larger version or upload new">
+                        <div id="profile-portrait" class="img-circle"></div>
+                    </a>
+                }
+                else
+                {
+                    <a href="@Model.Picture.LargeUrl" title="Click to see larger version" target="_blank">
+                        <div id="profile-portrait" class="img-circle"></div>
+                    </a>
+                }
+            </div>
+            @if (Model.Person.CanUserEditBasic)
+            {
+                <div>
+                    <a class="personal-picture btn btn-default" href="/Person2/PictureDialog/@Model.PeopleId"><i class="fa fa-pencil"></i> Edit Picture</a>
+                </div>
+            }
         </div>
-      }
+        <div id="sidebar">
+            @Html.Partial("Family/Members", Model.FamilyModel)
+            @Html.Partial("Family/Related", Model.FamilyModel)
+            @Html.Partial("Family/Photo", Model)
+        </div>
     </div>
-    <div id="sidebar">
-      @Html.Partial("Family/Members", Model.FamilyModel)
-      @Html.Partial("Family/Related", Model.FamilyModel)
-      @Html.Partial("Family/Photo", Model)
+    <div class="col-sm-8 col-md-9 col-lg-10">
+        <div id="toolbar-container" class="hidden-print">
+            @(User.IsInRole("Access") ? Html.Partial("Toolbar/Toolbar", Model.Users) : Html.Partial("Toolbar/ToolbarMyData", Model.Users))
+        </div>
+        <div id="profile-header">@Html.Partial("Personal/Header", Model)</div>
+        <br/>
+        <ul class="nav nav-tabs" id="person-tabs">
+            <li class="active">
+                <a href="#personal" aria-controls="personal" data-toggle="tab">Personal</a>
+            </li>
+            <li id="involvementstop">
+                <a href="#enrollment" aria-controls="enrollment" data-toggle="tab">Involvement</a>
+            </li>
+            @if (canviewmemberstatus)
+            {
+                <li>
+                    <a href="#profile" aria-controls="profile" data-toggle="tab">Profile</a>
+                </li>
+            }
+            @if (showMinistryTab)
+            {
+                <li>
+                    <a href="#ministry" aria-controls="ministry" data-toggle="tab">Ministry</a>
+                </li>
+            }
+            @if (!User.IsInRole("Access") && Model.Person.CanUserSeeGiving)
+            {
+                <li id="givingstop">
+                    <a href="#giving" aria-controls="giving" data-toggle="tab">Giving</a>
+                </li>
+            }
+            else if (Model.Person.CanUserSeeGiving)
+            {
+                <li>
+                    <a href="#giving" aria-controls="giving" data-toggle="tab">Giving</a>
+                </li>
+            }
+            @if (Model.Person.CanUserSeeEmails)
+            {
+                <li>
+                    <a href="#emails" aria-controls="emails" data-toggle="tab">Emails</a>
+                </li>
+            }
+            @if (showResourcesTab)
+            {
+                <li>
+                    <a href="#resources" aria-controls="resources" data-toggle="tab">Resources</a>
+                </li>
+            }
+            @if (User.IsInRole("Edit") || User.IsInRole("Admin"))
+            {
+                <li>
+                    <a href="#system" aria-controls="system" data-toggle="tab">System</a>
+                </li>
+            }
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade in active" id="personal">
+                @Html.Partial("Personal/Display", Model.basic)
+            </div>
+            <div class="tab-pane fade" id="enrollment">
+                @Html.Partial("Enrollment/Tab", Model)
+            </div>
+            @if (canviewmemberstatus)
+            {
+                <div class="tab-pane fade" id="profile">
+                    @Html.Partial("Profile/Tab", Model)
+                </div>
+            }
+            @if (User.IsInRole("Access"))
+            {
+                <div class="tab-pane fade" id="ministry">
+                    @Html.Partial("Ministry/Tab", Model)
+                </div>
+            }
+            @if (Model.Person.CanUserSeeGiving)
+            {
+                <div class="tab-pane fade" id="giving">
+                    @Html.Partial("Giving/Tab", Model)
+                </div>
+            }
+            @if (Model.Person.CanUserSeeEmails)
+            {
+                <div class="tab-pane fade" id="emails">
+                    @Html.Partial("Emails/Tab", Model)
+                </div>
+            }
+            @if (resourcesEnabled)
+            {
+                <div class="tab-pane fade" id="resources">
+                    @Html.Partial("Resources/Tab", Model)
+                </div>
+            }
+            @if (User.IsInRole("Edit") || User.IsInRole("Admin"))
+            {
+                <div class="tab-pane fade" id="system">
+                    @Html.Partial("System/Tab", Model)
+                </div>
+            }
+        </div>
     </div>
-  </div>
-  <div class="col-sm-8 col-md-9 col-lg-10">
-    <div id="toolbar-container" class="hidden-print">
-      @(User.IsInRole("Access") ? Html.Partial("Toolbar/Toolbar", Model.Users) : Html.Partial("Toolbar/ToolbarMyData", Model.Users))
-    </div>
-    <div id="profile-header">@Html.Partial("Personal/Header", Model)</div>
-    <br/>
-      <ul class="nav nav-tabs" id="person-tabs">
-          <li class="active">
-              <a href="#personal" aria-controls="personal" data-toggle="tab">Personal</a>
-          </li>
-          <li id="involvementstop">
-              <a href="#enrollment" aria-controls="enrollment" data-toggle="tab">Involvement</a>
-          </li>
-          <li>
-              <a href="#profile" aria-controls="profile" data-toggle="tab">Profile</a>
-          </li>
-          @if (showMinistryTab)
-          {
-              <li>
-                  <a href="#ministry" aria-controls="ministry" data-toggle="tab">Ministry</a>
-              </li>
-          }
-          @if (!User.IsInRole("Access") && Model.Person.CanUserSeeGiving)
-          {
-              <li id="givingstop">
-                  <a href="#giving" aria-controls="giving" data-toggle="tab">Giving</a>
-              </li>
-          }
-          else if (Model.Person.CanUserSeeGiving)
-          {
-              <li>
-                  <a href="#giving" aria-controls="giving" data-toggle="tab">Giving</a>
-              </li>
-          }
-          @if (Model.Person.CanUserSeeEmails)
-          {
-              <li>
-                  <a href="#emails" aria-controls="emails" data-toggle="tab">Emails</a>
-              </li>
-          }
-          @if (showResourcesTab)
-          {
-              <li>
-                  <a href="#resources" aria-controls="resources" data-toggle="tab">Resources</a>
-              </li>
-          }
-          @if (User.IsInRole("Edit") || User.IsInRole("Admin"))
-          {
-              <li>
-                  <a href="#system" aria-controls="system" data-toggle="tab">System</a>
-              </li>
-          }
-      </ul>
-    <div class="tab-content">
-      <div class="tab-pane fade in active" id="personal">
-        @Html.Partial("Personal/Display", Model.basic)
-      </div>
-      <div class="tab-pane fade" id="enrollment">
-        @Html.Partial("Enrollment/Tab", Model)
-      </div>
-      <div class="tab-pane fade" id="profile">
-        @Html.Partial("Profile/Tab", Model)
-      </div>
-      @if (User.IsInRole("Access"))
-      {
-        <div class="tab-pane fade" id="ministry">
-          @Html.Partial("Ministry/Tab", Model)
-        </div>
-      }
-      @if (Model.Person.CanUserSeeGiving)
-      {
-        <div class="tab-pane fade" id="giving">
-          @Html.Partial("Giving/Tab", Model)
-        </div>
-      }
-      @if (Model.Person.CanUserSeeEmails)
-      {
-        <div class="tab-pane fade" id="emails">
-          @Html.Partial("Emails/Tab", Model)
-        </div>
-      }
-      @if (resourcesEnabled)
-      {
-        <div class="tab-pane fade" id="resources">
-            @Html.Partial("Resources/Tab", Model)
-        </div>
-      }
-      @if (User.IsInRole("Edit") || User.IsInRole("Admin"))
-      {
-        <div class="tab-pane fade" id="system">
-          @Html.Partial("System/Tab", Model)
-        </div>
-      }
-    </div>
-  </div>
 </div>
 @Html.Hidden("PeopleId", Model.PeopleId)
 @section scripts
 {
-  @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
-  @Fingerprint.Script("/Content/touchpoint/lib/jquery-cookie/js/jquery.cookie.js")
-  @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
-  @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
-  @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-typeahead/js/bootstrap3-typeahead.min.js")
-  @Fingerprint.Script("/Content/touchpoint/lib/jcrop/js/jcrop.min.js")
-  @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
-  @Fingerprint.Script("/Content/touchpoint/js/org/org-member-dialog.js")
-  @Fingerprint.Script("/Content/touchpoint/js/people/person.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/jquery-cookie/js/jquery.cookie.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-typeahead/js/bootstrap3-typeahead.min.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/jcrop/js/jcrop.min.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
+    @Fingerprint.Script("/Content/touchpoint/js/org/org-member-dialog.js")
+    @Fingerprint.Script("/Content/touchpoint/js/people/person.js")
 }

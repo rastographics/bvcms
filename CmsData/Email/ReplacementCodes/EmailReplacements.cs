@@ -46,7 +46,7 @@ namespace CmsData
 
         public EmailReplacements(CMSDataContext callingContext, string text, MailAddress from, int? queueid = null, bool noPremailer = false, DynamicData pythondata = null)
         {
-            currentOrgId = callingContext.CurrentOrgId;
+            currentOrgId = Util2.CurrentOrgId;
             connStr = callingContext.ConnectionString;
             host = callingContext.Host;
             db = callingContext;
@@ -67,8 +67,10 @@ namespace CmsData
             if (!noPremailer)
                 try
                 {
+                    text = text.Replace("{{", "<!--{{").Replace("}}", "}}-->");
                     var result = PreMailer.Net.PreMailer.MoveCssInline(text);
                     text = result.Html;
+                    text = text.Replace("<!--{{", "{{").Replace("}}-->", "}}");
                 }
                 catch
                 {
@@ -80,7 +82,7 @@ namespace CmsData
 
         public EmailReplacements(CMSDataContext callingContext, DocX doc)
         {
-            currentOrgId = callingContext.CurrentOrgId;
+            currentOrgId = Util2.CurrentOrgId;
             connStr = callingContext.ConnectionString;
             host = callingContext.Host;
             db = callingContext;
@@ -93,7 +95,7 @@ namespace CmsData
 
         public EmailReplacements(CMSDataContext callingContext)
         {
-            currentOrgId = callingContext.CurrentOrgId;
+            currentOrgId = Util2.CurrentOrgId;
             connStr = callingContext.ConnectionString;
             host = callingContext.Host;
             db = callingContext;
@@ -110,7 +112,7 @@ namespace CmsData
                 var p = db.LoadPersonById(pid);
                 person = p;
 
-                pi = GetPayInfo(emailqueueto.OrgId ?? currentOrgId, p.PeopleId);
+                pi = GetPayInfo(emailqueueto.OrgId ?? currentOrgId ?? db.CurrentSessionOrgId, p.PeopleId);
 
                 var aa = db.GetAddressList(p);
 
@@ -174,6 +176,8 @@ namespace CmsData
             person = p;
 
             db = callingContext;
+            pi = GetPayInfo(currentOrgId ?? db.CurrentSessionOrgId, p.PeopleId);
+
             var aa = db.GetAddressList(p);
 
             ListAddresses = aa.DistinctEmails();
@@ -219,7 +223,7 @@ namespace CmsData
             var dict = new Dictionary<string, string>();
             for (var i = 1; i < texta.Count; i += 2)
                 if (!dict.ContainsKey(texta[i]))
-                    dict.Add(texta[i], DoReplaceCode(texta[i], eqto));
+                    dict.Add(texta[i], p == null ? "" : DoReplaceCode(texta[i], eqto));
             return dict;
         }
         public string RenderCode(string code, Person p, int? orgId = null)

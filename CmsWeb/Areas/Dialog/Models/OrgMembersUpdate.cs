@@ -22,6 +22,7 @@ namespace CmsWeb.Areas.Dialog.Models
             get { return queryId; }
             set
             {
+                // this one does not use LongRunningOp, but it probably should
                 queryId = value;
                 var filter = DbUtil.Db.OrgFilter(queryId);
                 OrgName = DbUtil.Db.Organizations.Where(vv => vv.OrganizationId == filter.Id).Select(vv => vv.OrganizationName).Single();

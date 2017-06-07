@@ -799,7 +799,7 @@ namespace CmsWeb.Areas.Public.Controllers
             CheckInMessage dataIn = CheckInMessage.createFromString( data );
             List<CheckInPrintLabel> labels = JsonConvert.DeserializeObject<List<CheckInPrintLabel>>( dataIn.data );
 
-            string securityCode = DbUtil.Db.NextSecurityCode( DateTime.Today ).Select( c => c.Code ).Single();
+            string securityCode = DbUtil.Db.NextSecurityCode( ).Select( c => c.Code ).Single();
 
             StringBuilder builder = new StringBuilder();
 

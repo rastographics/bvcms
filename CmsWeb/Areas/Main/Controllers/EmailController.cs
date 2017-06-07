@@ -309,6 +309,7 @@ namespace CmsWeb.Areas.Main.Controllers
             }
 
             var host = Util.Host;
+            var currorgid = DbUtil.Db.CurrentSessionOrgId;
             // save these from HttpContext to set again inside thread local storage
             var userEmail = Util.UserEmail;
             var isInRoleEmailTest = User.IsInRole("EmailTest");
@@ -334,6 +335,7 @@ namespace CmsWeb.Areas.Main.Controllers
                     Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
                     Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
                     // set these again inside thread local storage
+                    db.SetCurrentOrgId(currorgid);
                     Util.UserEmail = userEmail;
                     Util.IsInRoleEmailTest = isInRoleEmailTest;
                     Util.IsMyDataUser = isMyDataUser;

@@ -135,7 +135,7 @@ namespace CmsWeb.Areas.Reports.Models
                             join m in DbUtil.Db.OrgFilterPeople(QueryId, null)
                                 on om.PeopleId equals m.PeopleId
                             where om.EnrollmentDate <= Util.Now
-                            where NewMeetingInfo.ByGroup == false || m.Groups.Contains((char)10 + o.Groups)
+                            where NewMeetingInfo.ByGroup == false || m.Groups.Contains((char)10 + o.Groups + (char)10)
                             orderby om.Person.LastName, om.Person.FamilyId, om.Person.Name2
                             let p = om.Person
                             let ch = NewMeetingInfo.UseAltNames && p.AltName != null && p.AltName.Length > 0

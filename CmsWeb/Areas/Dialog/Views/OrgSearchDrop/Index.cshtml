@@ -3,10 +3,10 @@
     <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Drop Multiple Organizations</h4>
+            <h4 class="modal-title">Drop Members Multiple Organizations</h4>
         </div>
         <div class="modal-body">
-            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.QueryId)
             @Html.HiddenFor(m => m.Orgs)
             @Html.HiddenFor(m => m.OrgCount)
             @Html.HiddenFor(m => m.Count)

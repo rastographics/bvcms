@@ -11,7 +11,6 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult Index(int id)
         {
             var model = new AddAttendeesFromTag(id);
-            model.RemoveExistingLop(DbUtil.Db, id, AddAttendeesFromTag.Op);
             return View(model);
         }
         [HttpPost]

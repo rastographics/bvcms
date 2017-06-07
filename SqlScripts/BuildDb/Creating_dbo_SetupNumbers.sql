@@ -7,8 +7,8 @@ CREATE PROCEDURE [dbo].[SetupNumbers]
 AS
 BEGIN
 	SET NOCOUNT ON;
-	DECLARE @UpperLimit INT = 10000;
-	IF(SELECT COUNT(*) FROM dbo.Numbers) = 0
+	DECLARE @UpperLimit INT = 50000;
+	IF NOT EXISTS(SELECT NULL FROM dbo.Numbers)
 	BEGIN
 		WITH n AS
 		(
