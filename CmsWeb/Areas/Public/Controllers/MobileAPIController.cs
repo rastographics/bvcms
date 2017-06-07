@@ -724,6 +724,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 															where c.PeopleId == person.PeopleId
 																	|| (c.PeopleId == person.SpouseId && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint)
 															where !ContributionTypeCode.ReturnedReversedTypes.Contains( c.ContributionTypeId )
+															where c.ContributionTypeId != ContributionTypeCode.Pledge
 															where c.ContributionStatusId == ContributionStatusCode.Recorded
 															where c.ContributionDate.Value.Year == thisYear
 															orderby c.ContributionDate descending

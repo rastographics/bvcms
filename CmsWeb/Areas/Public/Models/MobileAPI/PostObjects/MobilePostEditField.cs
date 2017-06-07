@@ -23,7 +23,9 @@ namespace CmsWeb.MobileAPI
 
 		public void updatePerson( Person person, List<ChangeDetail> personChangeList, List<ChangeDetail> familyChangeList )
 		{
-			switch( type ) {
+			Type enumType = (Type) type;
+
+			switch( enumType ) {
 				case Type.TITLE: {
 					updateString( person, personChangeList, "TitleCode" );
 					break;
@@ -89,6 +91,13 @@ namespace CmsWeb.MobileAPI
 					break;
 				}
 
+				case Type.FAMILY_PRIMARY: {
+					value = "10"; // Damily Address Type
+
+					updateInteger( person, personChangeList, "AddressTypeId" );
+					break;
+				}
+
 				case Type.FAMILY_ADDRESS1: {
 					updateFamilyString( person.Family, familyChangeList, "AddressLineOne" );
 					break;
@@ -116,6 +125,13 @@ namespace CmsWeb.MobileAPI
 
 				case Type.FAMILY_COUNTRY: {
 					updateFamilyString( person.Family, familyChangeList, "CountryName" );
+					break;
+				}
+
+				case Type.PERSONAL_PRIMARY: {
+					value = "30"; // Personal Address Type
+
+					updateInteger( person, personChangeList, "AddressTypeId" );
 					break;
 				}
 
@@ -155,8 +171,20 @@ namespace CmsWeb.MobileAPI
 					break;
 				}
 
+				case Type.PRIMARY_EMAIL_ACTIVE: {
+					updateBoolean( person, personChangeList, "SendEmailAddress1" );
+
+					break;
+				}
+
 				case Type.ALT_EMAIL: {
 					updateString( person, personChangeList, "EmailAddress2" );
+
+					break;
+				}
+
+				case Type.ALT_EMAIL_ACTIVE: {
+					updateBoolean( person, personChangeList, "SendEmailAddress2" );
 
 					break;
 				}
@@ -293,44 +321,38 @@ namespace CmsWeb.MobileAPI
 					break;
 				}
 
-				case Type.ELECTRONIC_STATEMENTS:
-					{
-						updateBoolean(person, personChangeList, "ElectronicStatement");
+				case Type.ELECTRONIC_STATEMENTS: {
+					updateBoolean( person, personChangeList, "ElectronicStatement" );
 
-						if (person.SpouseId.HasValue)
-						{
-							Person spouse = DbUtil.Db.People.FirstOrDefault(p => p.PeopleId == person.SpouseId);
-							updateInteger(spouse, personChangeList, "ElectronicStatement");
-						}
-
-						break;
+					if( person.SpouseId.HasValue ) {
+						Person spouse = DbUtil.Db.People.FirstOrDefault( p => p.PeopleId == person.SpouseId );
+						updateInteger( spouse, personChangeList, "ElectronicStatement" );
 					}
 
-				case Type.STATEMENT_TYPE:
-					{
-						updateInteger(person, personChangeList, "ContributionOptionsId");
+					break;
+				}
 
-						if (person.SpouseId.HasValue)
-						{
-							Person spouse = DbUtil.Db.People.FirstOrDefault(p => p.PeopleId == person.SpouseId);
-							updateInteger(spouse, personChangeList, "ContributionOptionsId");
-						}
+				case Type.STATEMENT_TYPE: {
+					updateInteger( person, personChangeList, "ContributionOptionsId" );
 
-						break;
+					if( person.SpouseId.HasValue ) {
+						Person spouse = DbUtil.Db.People.FirstOrDefault( p => p.PeopleId == person.SpouseId );
+						updateInteger( spouse, personChangeList, "ContributionOptionsId" );
 					}
 
-				case Type.ENVELOPE_OPTIONS:
-					{
-						updateInteger(person, personChangeList, "EnvelopeOptionsId");
+					break;
+				}
 
-						if (person.SpouseId.HasValue)
-						{
-							Person spouse = DbUtil.Db.People.FirstOrDefault(p => p.PeopleId == person.SpouseId);
-							updateInteger(spouse, personChangeList, "EnvelopeOptionsId");
-						}
+				case Type.ENVELOPE_OPTIONS: {
+					updateInteger( person, personChangeList, "EnvelopeOptionsId" );
 
-						break;
+					if( person.SpouseId.HasValue ) {
+						Person spouse = DbUtil.Db.People.FirstOrDefault( p => p.PeopleId == person.SpouseId );
+						updateInteger( spouse, personChangeList, "EnvelopeOptionsId" );
 					}
+
+					break;
+				}
 
 				default: {
 					break;
@@ -375,83 +397,87 @@ namespace CmsWeb.MobileAPI
 			}
 		}
 
-		private abstract class Type
+		private enum Type
 		{
-			public const int TITLE = 1;
-			public const int FIRST = 2;
-			public const int MIDDLE = 3;
-			public const int LAST = 4;
-			public const int SUFFIX = 5;
+			TITLE = 1,
+			FIRST,
+			MIDDLE,
+			LAST,
+			SUFFIX,
 
-			public const int GOESBY = 6;
-			public const int ALT_NAME = 7;
-			public const int FORMER = 8;
+			GOESBY,
+			ALT_NAME,
+			FORMER,
 
-			public const int GENDER = 9;
-			public const int MARITAL_STATUS = 10;
+			GENDER,
+			MARITAL_STATUS,
 
-			public const int BIRTH_DATE = 11;
-			public const int WEDDING_DATE = 12;
-			public const int DECEASED_DATE = 13;
+			BIRTH_DATE,
+			WEDDING_DATE,
+			DECEASED_DATE,
 
-			public const int FAMILY_ADDRESS1 = 14;
-			public const int FAMILY_ADDRESS2 = 15;
-			public const int FAMILY_CITY = 16;
-			public const int FAMILY_STATE = 17;
-			public const int FAMILY_ZIP = 18;
-			public const int FAMILY_COUNTRY = 19;
+			FAMILY_PRIMARY,
+			FAMILY_ADDRESS1,
+			FAMILY_ADDRESS2,
+			FAMILY_CITY,
+			FAMILY_STATE,
+			FAMILY_ZIP,
+			FAMILY_COUNTRY,
 
-			public const int PERSONAL_ADDRESS1 = 20;
-			public const int PERSONAL_ADDRESS2 = 21;
-			public const int PERSONAL_CITY = 22;
-			public const int PERSONAL_STATE = 23;
-			public const int PERSONAL_ZIP = 24;
-			public const int PERSONAL_COUNTRY = 25;
+			PERSONAL_PRIMARY,
+			PERSONAL_ADDRESS1,
+			PERSONAL_ADDRESS2,
+			PERSONAL_CITY,
+			PERSONAL_STATE,
+			PERSONAL_ZIP,
+			PERSONAL_COUNTRY,
 
-			public const int PRIMARY_EMAIL = 26;
-			public const int ALT_EMAIL = 27;
-			public const int HOME_PHONE = 28;
-			public const int WORK_PHONE = 29;
-			public const int MOBILE_PHONE = 30;
+			PRIMARY_EMAIL,
+			PRIMARY_EMAIL_ACTIVE,
+			ALT_EMAIL,
+			ALT_EMAIL_ACTIVE,
+			HOME_PHONE,
+			WORK_PHONE,
+			MOBILE_PHONE,
 
-			public const int DO_NOT_CALL = 31;
-			public const int DO_NOT_MAIL = 32;
-			public const int DO_NOT_VISIT = 33;
-			public const int DO_NOT_PUBLISH_PHONE = 34;
+			DO_NOT_CALL,
+			DO_NOT_MAIL,
+			DO_NOT_VISIT,
+			DO_NOT_PUBLISH_PHONE,
 
-			public const int FATHER_NAME = 35;
-			public const int MOTHER_NAME = 36;
-			public const int SHIRT_SIZE = 37;
+			FATHER_NAME,
+			MOTHER_NAME,
+			SHIRT_SIZE,
 
-			public const int EMERGENCY_NAME = 38;
-			public const int EMERGENCY_PHONE = 39;
+			EMERGENCY_NAME,
+			EMERGENCY_PHONE,
 
-			public const int INTEREST_COACHING = 40;
+			INTEREST_COACHING,
 
-			public const int CUSTODY_ISSUE = 41;
-			public const int TRANSPORT = 42;
-			public const int MEMBER_HERE = 43;
-			public const int ACTIVE_ANOHTER_CHURCH = 44;
+			CUSTODY_ISSUE,
+			TRANSPORT,
+			MEMBER_HERE,
+			ACTIVE_ANOHTER_CHURCH,
 
-			public const int DOCTOR_NAME = 45;
-			public const int DOCTOR_PHONE = 46;
-			public const int INSURANCE_NAME = 47;
-			public const int INSURANCE_POLICY_NUMBER = 48;
-			public const int ALLERGIES = 49;
+			DOCTOR_NAME,
+			DOCTOR_PHONE,
+			INSURANCE_NAME,
+			INSURANCE_POLICY_NUMBER,
+			ALLERGIES,
 
-			public const int CAN_GIVE_TYLENOL = 50;
-			public const int CAN_GIVE_ADVIL = 51;
-			public const int CAN_GIVE_ROBITUSSIN = 52;
-			public const int CAN_GIVE_MAALOX = 53;
+			CAN_GIVE_TYLENOL,
+			CAN_GIVE_ADVIL,
+			CAN_GIVE_ROBITUSSIN,
+			CAN_GIVE_MAALOX,
 
-			public const int EMPLOYER = 54;
-			public const int OCCUPATION = 55;
-			public const int SCHOOL = 56;
-			public const int GRADE = 57;
+			EMPLOYER,
+			OCCUPATION,
+			SCHOOL,
+			GRADE,
 
-			public const int ELECTRONIC_STATEMENTS = 58;
-			public const int STATEMENT_TYPE = 59;
-			public const int ENVELOPE_OPTIONS = 60;
+			ELECTRONIC_STATEMENTS,
+			STATEMENT_TYPE,
+			ENVELOPE_OPTIONS
 		}
 	}
 }
