@@ -7,6 +7,7 @@ BEGIN
 		BEGIN TRANSACTION  
 		DECLARE @fid INT, @pic INT 
 		DELETE dbo.OrgMemMemTags WHERE PeopleId = @pid 
+		DELETE dbo.OrgMemberExtra WHERE PeopleId = @pid 
 		DELETE dbo.OrganizationMembers WHERE PeopleId = @pid 
 		DELETE dbo.EnrollmentTransaction WHERE PeopleId = @pid 
 		DELETE dbo.CardIdentifiers WHERE PeopleId = @pid 
@@ -157,6 +158,8 @@ BEGIN
 END 
  
  
+
+
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

@@ -43,12 +43,13 @@ BEGIN
 	)
 	AND
 	(
-		BirthDay IS NULL
+		BirthDay IS NULL OR BirthMonth IS NULL
 		OR (BirthDay = @d AND BirthMonth = @m AND (ABS(BirthYear - @y) <= 1 OR @y IS NULL OR BirthYear IS NULL))
 	)
 		
 	RETURN
 END
+
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

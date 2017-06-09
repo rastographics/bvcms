@@ -64,6 +64,9 @@ BEGIN
 	DELETE dbo.OrgMemMemTags 
 	WHERE PeopleId = @pid AND OrgId = @oid
 
+	DELETE dbo.OrgMemberExtra
+	WHERE PeopleId = @pid AND OrganizationId = @oid
+
 	DELETE dbo.OrganizationMembers 
 	WHERE PeopleId = @pid AND OrganizationId = @oid
 
@@ -82,6 +85,7 @@ BEGIN
 
 	RETURN @tranid
 END
+
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO
