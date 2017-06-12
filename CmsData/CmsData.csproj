@@ -622,9 +622,12 @@
     <Compile Include="Generated\Functions\GetTotalContributionsDonorFund.cs" />
     <Compile Include="Generated\Functions\GetTotalPledgesDonor2.cs" />
     <Compile Include="Generated\Functions\GivingChange.cs" />
+    <Compile Include="Generated\Functions\GivingChangeFund.cs" />
     <Compile Include="Generated\Functions\GuestList.cs" />
     <Compile Include="Generated\Functions\GuestList2.cs" />
     <Compile Include="Generated\Functions\HasIncompleteRegistration.cs" />
+    <Compile Include="Generated\Functions\InvolvementCurrent.cs" />
+    <Compile Include="Generated\Functions\InvolvementPreviou.cs" />
     <Compile Include="Generated\Functions\LastAddrElement.cs" />
     <Compile Include="Generated\Functions\LastAttendOrg.cs" />
     <Compile Include="Generated\Functions\NotAttendedAsOf.cs" />

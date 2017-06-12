@@ -3289,6 +3289,19 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.GivingChangeFund", IsComposable = true)]
+		public IQueryable< View.GivingChangeFund > GivingChangeFund(
+            [Parameter(DbType="int")] int? days,
+            [Parameter(DbType="int")] int? fundid
+            )
+		{
+			return this.CreateMethodCallQuery< View.GivingChangeFund>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                days,
+                fundid
+                );
+		}
+
 		[Function(Name="dbo.GivingCurrentPercentOfFormer", IsComposable = true)]
 		public IQueryable< View.GivingCurrentPercentOfFormer > GivingCurrentPercentOfFormer(
             [Parameter(DbType="datetime")] DateTime? dt1,
@@ -3356,6 +3369,32 @@ namespace CmsData
                 org,
                 begdt,
                 enddt
+                );
+		}
+
+		[Function(Name="dbo.InvolvementCurrent", IsComposable = true)]
+		public IQueryable< View.InvolvementCurrent > InvolvementCurrent(
+            [Parameter(DbType="int")] int? pid,
+            [Parameter(DbType="int")] int? currentUserId
+            )
+		{
+			return this.CreateMethodCallQuery< View.InvolvementCurrent>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid,
+                currentUserId
+                );
+		}
+
+		[Function(Name="dbo.InvolvementPrevious", IsComposable = true)]
+		public IQueryable< View.InvolvementPreviou > InvolvementPrevious(
+            [Parameter(DbType="int")] int? pid,
+            [Parameter(DbType="int")] int? currentUserId
+            )
+		{
+			return this.CreateMethodCallQuery< View.InvolvementPreviou>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid,
+                currentUserId
                 );
 		}
 
