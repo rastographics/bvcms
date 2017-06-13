@@ -1,15 +1,15 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.WebPages;
 using CmsData;
+using CmsData.View;
 using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
 {
-    public class PreviousEnrollments : PagedTableModel<EnrollmentTransaction, OrgMemberInfo>
+    public class PreviousEnrollments : PagedTableModel<InvolvementPreviou, OrgMemberInfo>
     {
         public int? PeopleId { get; set; }
         public Person Person
@@ -22,9 +22,6 @@ namespace CmsWeb.Areas.People.Models
             }
         }
         private Person _person;
-        
-        private bool IsInAccess => WebPageContext.Current?.Page?.User?.IsInRole("Access") ?? false;
-        private bool IsInOrgLeadersOnly => WebPageContext.Current?.Page?.User?.IsInRole("OrgLeadersOnly") ?? false;
 
         public List<string> OrgTypesFilter
         {
@@ -32,9 +29,12 @@ namespace CmsWeb.Areas.People.Models
             {
                 if (_orgTypesFilter == null)
                 {
-                    string defaultFilter;
-                    if (IsInAccess && !IsInOrgLeadersOnly)
-                        defaultFilter = DbUtil.Db.Setting("UX-DefaultAcccessInvolvementOrgTypeFilter", "");
+                    var isInAccess = WebPageContext.Current?.Page?.User?.IsInRole("Access") ?? false;
+                    var isInOrgLeadersOnly = WebPageContext.Current?.Page?.User?.IsInRole("OrgLeadersOnly") ?? false;
+                    string defaultFilter = null;
+
+                    if (isInAccess && !isInOrgLeadersOnly)
+                        defaultFilter = DbUtil.Db.Setting("UX-DefaultAccessInvolvementOrgTypeFilter", "");
                     else
                         defaultFilter = DbUtil.Db.Setting("UX-DefaultInvolvementOrgTypeFilter", "");
 
@@ -59,7 +59,7 @@ namespace CmsWeb.Areas.People.Models
             {
                var excludedTypes =
                     DbUtil.Db.Setting("UX-ExcludeFromInvolvementOrgTypeFilter", "").Split(',').Select(x => x.Trim());
-                return DefineModelList(false).Select(x => x.Organization.OrganizationType.Description).Distinct().Where(x => !excludedTypes.Contains(x));
+                return DefineModelList(false).Select(x => x.OrgType).Distinct().Where(x => !excludedTypes.Contains(x));
             }
         }
 
@@ -67,58 +67,54 @@ namespace CmsWeb.Areas.People.Models
             : base("default", "asc", true)
         {}
 
-        public IQueryable<EnrollmentTransaction> DefineModelList(bool useOrgFilter)
+        public IQueryable<InvolvementPreviou> DefineModelList(bool useOrgFilter)
         {
             var limitvisibility = Util2.OrgLeadersOnly || !HttpContext.Current.User.IsInRole("Access");
             var roles = DbUtil.Db.CurrentRoles();
-            return from etd in DbUtil.Db.EnrollmentTransactions
-                   let org = etd.Organization
+            return from etd in DbUtil.Db.InvolvementPrevious(PeopleId, Util.UserId)
                    where etd.TransactionStatus == false
                    where etd.PeopleId == PeopleId
                    where etd.TransactionTypeId >= 4
-                   where !(limitvisibility && etd.Organization.SecurityTypeId == 3)
-                   where org.LimitToRole == null || roles.Contains(org.LimitToRole)
-                   where (!useOrgFilter || !OrgTypesFilter.Any() || OrgTypesFilter.Contains(org.OrganizationType.Description))
+                   where !(limitvisibility && etd.SecurityTypeId == 3)
+                   where etd.LimitToRole == null || roles.Contains(etd.LimitToRole)
+                   where (!useOrgFilter || !OrgTypesFilter.Any() || OrgTypesFilter.Contains(etd.OrgType))
                    select etd;
         }
 
-        override public IQueryable<EnrollmentTransaction> DefineModelList()
+        override public IQueryable<InvolvementPreviou> DefineModelList()
         {
             return DefineModelList(true);
         }
-        public override IEnumerable<OrgMemberInfo> DefineViewList(IQueryable<EnrollmentTransaction> q)
+
+        public override IEnumerable<OrgMemberInfo> DefineViewList(IQueryable<InvolvementPreviou> q)
         {
             var q2 = from om in q
                      select new OrgMemberInfo
                      {
                          OrgId = om.OrganizationId,
                          PeopleId = om.PeopleId,
-                         Name = om.OrganizationName,
-                         MemberType = om.MemberType.Description,
-                         EnrollDate = om.FirstTransaction.TransactionDate,
+                         Name = om.Name,
+                         MemberType = om.MemberType,
+                         EnrollDate = om.EnrollDate,
                          DropDate = om.TransactionDate,
                          AttendPct = om.AttendancePercentage,
-                         DivisionName = om.Organization.Division.Program.Name + "/" + om.Organization.Division.Name,
-                         OrgType = om.Organization.OrganizationType.Description ?? "Other",
+                         DivisionName = om.ProgramName + "/" + om.DivisionName,
+                         OrgType = om.OrgType,
                          IsLeaderAttendanceType = false
                      };
-
-            if (OrgTypesFilter.Count > 0)
-                return q2.ToList().OrderBy(om => OrgTypesFilter.IndexOf(om.OrgType));
-
             return q2;
         }
-        override public IQueryable<EnrollmentTransaction> DefineModelSort(IQueryable<EnrollmentTransaction> q)
+        override public IQueryable<InvolvementPreviou> DefineModelSort(IQueryable<InvolvementPreviou> q)
         {
             switch (SortExpression)
             {
                 case "Enroll Date desc":
                     return from om in q
-                           orderby om.FirstTransaction.TransactionDate
+                           orderby om.FirstTransactionDate
                            select om;
                 case "Enroll Date":
                     return from om in q
-                           orderby om.FirstTransaction.TransactionDate descending 
+                           orderby om.FirstTransactionDate descending
                            select om;
                 case "Drop Date desc":
                     return from om in q
@@ -126,24 +122,24 @@ namespace CmsWeb.Areas.People.Models
                            select om;
                 case "Drop Date":
                     return from om in q
-                           orderby om.TransactionDate descending 
+                           orderby om.TransactionDate descending
                            select om;
                 case "Organization":
                     return from om in q
-                           orderby om.Organization.OrganizationName
+                           orderby om.Name
                            select om;
                 case "Organization desc":
                     return from om in q
-                           orderby om.Organization.OrganizationName descending 
+                           orderby om.Name descending
                            select om;
 
                 case "default desc":
                     return from om in q
-                        orderby om.Organization.OrganizationType.Code ?? "z" descending, om.Organization.OrganizationName descending 
+                        orderby om.OrgCode ?? "z" descending, om.Name descending
                         select om;
                 default:
                     return from om in q
-                        orderby om.Organization.OrganizationType.Code ?? "z", om.Organization.OrganizationName
+                        orderby om.OrgTypeSort, om.OrgCode ?? "z", om.Name
                         select om;
             }
         }

@@ -347,14 +347,14 @@ namespace CmsWeb.Areas.People.Models
 
         private bool ShouldShowResource(Resource resource)
         {
-            var shouldShow = true;
-            var statusFlagIds = resource.StatusFlagIds?.Split(',') ?? new string[] { };
-            foreach (var flagId in statusFlagIds.Where(x => !string.IsNullOrWhiteSpace(x)))
-            {
-                var statusFlag = DbUtil.Db.ViewStatusFlagNamesRoles.SingleOrDefault(x => x.Id.ToString().Equals(flagId));
-                if (statusFlag == null) continue;
+            var resourceStatusFlags = resource.StatusFlagIds?.Split(',') ?? new string[] { };
+            var personStatusFlags = DbUtil.Db.ViewAllStatusFlags.Where(sf => sf.PeopleId == PeopleId).Select(x => x.Flag).ToList();
 
-                shouldShow = StatusFlags.Contains(statusFlag.Name);
+            var shouldShow = true;
+            foreach (var flag in resourceStatusFlags.Where(x => !string.IsNullOrWhiteSpace(x)))
+            {
+                if (!personStatusFlags.Contains(flag))
+                    shouldShow = false;
             }
 
             return shouldShow;

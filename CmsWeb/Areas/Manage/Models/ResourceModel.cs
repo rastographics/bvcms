@@ -56,8 +56,8 @@ namespace CmsWeb.Areas.Manage.Models
                 if (string.IsNullOrWhiteSpace(Resource.StatusFlagIds))
                     return string.Empty;
 
-                var statusFlagIds = Resource.StatusFlagIds.Split(',').Select(int.Parse);
-                return string.Join(", ", DbUtil.Db.ViewStatusFlagNamesRoles.Where(x => statusFlagIds.Contains(x.Id.Value)).Select(x => x.Name));
+                var statusFlagIds = Resource.StatusFlagIds.Split(',');
+                return string.Join(", ", DbUtil.Db.ViewStatusFlagLists.Where(x => statusFlagIds.Contains(x.Flag)).Select(x => x.Name));
             }
         }
 
