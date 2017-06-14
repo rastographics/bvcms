@@ -21,6 +21,7 @@ namespace CmsWeb.Areas.Dialog.Models
         public IEnumerable<int> OrganizationTypeIds { get; set; } = new List<int>();
         public int? CampusId { get; set; }
         public IEnumerable<int> MemberTypeIds { get; set; }
+        public IEnumerable<string> StatusFlagIds { get; set; }
         public string Description { get; set; }
         public int DisplayOrder { get; set; }
         public IEnumerable<FileUpload> Files { get; set; }
@@ -114,6 +115,21 @@ namespace CmsWeb.Areas.Dialog.Models
                 return list;
             }
         }
+
+        public IEnumerable<SelectListItem> StatusFlags
+        {
+            get
+            {
+                var list = DbUtil.Db.ViewStatusFlagLists.Select(x => new SelectListItem
+                {
+                    Text = x.Name,
+                    Value = x.Flag
+                }).ToList();
+
+                list.Insert(0, new SelectListItem { Value = "0", Text = "(none)", Selected = true });
+                return list;
+            }
+        }
     }
 
     public class EditResourceModel
@@ -127,6 +143,7 @@ namespace CmsWeb.Areas.Dialog.Models
         public IEnumerable<int> OrganizationTypeIds { get; set; } = new List<int>();
         public int? CampusId { get; set; }
         public IEnumerable<int> MemberTypeIds { get; set; }
+        public IEnumerable<string> StatusFlagIds { get; set; }
         public string Description { get; set; }
         public int DisplayOrder { get; set; }
 
@@ -145,6 +162,7 @@ namespace CmsWeb.Areas.Dialog.Models
             OrganizationTypeIds = r.ResourceOrganizationTypes.Select(x => x.OrganizationTypeId);
             CampusId = r.CampusId;
             MemberTypeIds = string.IsNullOrWhiteSpace(r.MemberTypeIds) ? new List<int>() : r.MemberTypeIds.Split(',').Select(int.Parse).ToList();
+            StatusFlagIds = string.IsNullOrWhiteSpace(r.StatusFlagIds) ? new List<string>() : r.StatusFlagIds.Split(',').ToList();
             Description = r.Description;
             DisplayOrder = r.DisplayOrder ?? 0;
         }
@@ -235,6 +253,21 @@ namespace CmsWeb.Areas.Dialog.Models
                     Value = x.Id.ToString()
                 }).ToList();
 
+                return list;
+            }
+        }
+
+        public IEnumerable<SelectListItem> StatusFlags
+        {
+            get
+            {
+                var list = DbUtil.Db.ViewStatusFlagLists.Select(x => new SelectListItem
+                {
+                    Text = x.Name,
+                    Value = x.Flag
+                }).ToList();
+
+                list.Insert(0, new SelectListItem { Value = "0", Text = "(none)", Selected = true });
                 return list;
             }
         }

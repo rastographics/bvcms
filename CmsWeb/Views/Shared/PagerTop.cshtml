@@ -2,7 +2,7 @@
 @model CmsWeb.Models.PagerModel2
 @{
     var showOrgTypeFilter = Model.GetType() == typeof (CurrentEnrollments) || Model.GetType() == typeof (PreviousEnrollments) || Model.GetType() == typeof (PendingEnrollments);
-    var colClasses = showOrgTypeFilter ? "col-lg-8 col-md-8 col-sm-8" : "col-lg-4 col-md-4 col-sm-4";
+    var colClasses = showOrgTypeFilter ? "col-lg-12 col-md-12 col-sm-12" : "col-lg-4 col-md-4 col-sm-4";
 }
 <div class="row hidden-print">
     <div class="@colClasses form-inline">
@@ -16,8 +16,9 @@
             {
                 <span>Show </span>@Html.DropDownList("PageSize", Model.PageSizeList(), new {onchange = "$.setPageSize(this)", @class = "form-control"})<span> rows</span>
             }
+            @Html.Partial("Pagination", Model)
         }
-        @if (showOrgTypeFilter)
+        @if (showOrgTypeFilter && DbUtil.Db.Setting("UX-ShowInvolvementOrgTypeFilter", true))
         {
             <span> of types </span><input name="OrgTypesFilter" value="@(string.Join(" ,", ((dynamic)Model).OrgTypesFilter ?? new List<string>()))" class="form-control org-types-filter" id="org-types-filter-@Model.GetType().Name" style="display: inline-block; min-width:180px" />
             <script>
@@ -34,5 +35,4 @@
             </script>
         }
     </div>
-    @Html.Partial("Pagination", Model)
 </div>

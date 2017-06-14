@@ -291,8 +291,8 @@ namespace CmsWeb.Areas.Search.Models
                     orgIds = DbUtil.Db.OrganizationExtras
                         .Where(x => orgIds.Contains(x.OrganizationId) && x.Field == ev.Key &&
                             (
-                             x.StrValue.ToLower().Contains(ev.Value) ||
-                             x.Data.ToLower().Contains(ev.Value)) ||
+                             x.Type.Equals("Code") ? x.StrValue.ToLower().Equals(ev.Value) : x.StrValue.ToLower().Contains(ev.Value) ||
+                             x.Type.Equals("Code") ? x.Data.ToLower().Equals(ev.Value) : x.Data.ToLower().Contains(ev.Value)) ||
                              x.DateValue != null && x.DateValue.ToString().Contains(ev.Value) ||
                              x.IntValue != null && x.IntValue.ToString().Contains(ev.Value) ||
                              x.BitValue != null && x.BitValue.ToString().Contains(ev.Value)

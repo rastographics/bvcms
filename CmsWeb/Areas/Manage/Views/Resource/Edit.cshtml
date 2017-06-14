@@ -50,7 +50,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">                
+            <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="resource_CampusId" class="control-label">Congregation</label>
@@ -60,9 +60,18 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="resource_Roles" class="control-label">Limit to Member Types</label>
-                        @Html.ListBoxFor(x => x.MemberTypeIds, Model.MemberTypes, new { @class = "form-control select2" })                        
+                        @Html.ListBoxFor(x => x.MemberTypeIds, Model.MemberTypes, new { @class = "form-control select2" })
                     </div>
-                </div>                
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="resource_StatusFlagIds" class="control-label">Limit to Status Flags</label>
+                        @Html.ListBoxFor(x => x.StatusFlagIds, Model.StatusFlags, new { @class = "form-control select2" })
+                    </div>
+                </div>
+                <div class="col-sm-6"></div>
             </div>
             <div class="row">
                 <div class="col-sm-12">

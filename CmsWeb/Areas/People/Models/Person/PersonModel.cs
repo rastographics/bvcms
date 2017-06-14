@@ -258,6 +258,8 @@ namespace CmsWeb.Areas.People.Models
 
                 foreach (var resource in resources)
                 {
+                    if (!ShouldShowResource(resource)) continue;
+
                     var noMemberTypesSet = string.IsNullOrEmpty(resource.MemberTypeIds);
 
                     var noOrgRestrictionsSet = !resource.ResourceOrganizations.Any();
@@ -341,6 +343,21 @@ namespace CmsWeb.Areas.People.Models
 
                 return _resourceTypes;
             }
+        }
+
+        private bool ShouldShowResource(Resource resource)
+        {
+            var resourceStatusFlags = resource.StatusFlagIds?.Split(',') ?? new string[] { };
+            var personStatusFlags = DbUtil.Db.ViewAllStatusFlags.Where(sf => sf.PeopleId == PeopleId).Select(x => x.Flag).ToList();
+
+            var shouldShow = true;
+            foreach (var flag in resourceStatusFlags.Where(x => !string.IsNullOrWhiteSpace(x)))
+            {
+                if (!personStatusFlags.Contains(flag))
+                    shouldShow = false;
+            }
+
+            return shouldShow;
         }
     }
 }

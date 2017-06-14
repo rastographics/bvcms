@@ -1,5 +1,6 @@
 ﻿@using CmsData
 @using CmsWeb.Areas.People.Models
+@using CsQuery.ExtensionMethods.Internal
 @using UtilityExtensions
 @model CurrentEnrollments
 @{
@@ -9,7 +10,6 @@
 }
 <form class="non-modal ajax">
     @FormAction()
-    <br/>
     <div class="row">
         <div class="col-sm-12">
             @Html.Partial("PagerTop", Model)
