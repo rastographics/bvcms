@@ -96,6 +96,7 @@ Creating_dbo_SpouseId.sql
 Creating_dbo_HeadOfHouseHoldSpouseId.sql
 Creating_triggerdbo_insContribution_dbo_Contribution.sql
 Creating_dbo_MaxMeetingDate.sql
+Creating_dbo_SearchNoDiacritics.sql
 Creating_dbo_GetDigits.sql
 Creating_dbo_FindPerson.sql
 Creating_dbo_BundleHeader.sql

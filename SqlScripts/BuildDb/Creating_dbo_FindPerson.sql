@@ -8,8 +8,12 @@ BEGIN
 --		@dob DATETIME = '1/29/2013', 
 --		@email nvarchar(60) = 'b@b.com', 
 --		@phone nvarchar(15) = '9017581862'
+
+--SELECT CONVERT(VARCHAR, N'àéêöhello!') COLLATE SQL_Latin1_General_CP1253_CI_AI
 		
-	DECLARE @fname nvarchar(50) = REPLACE(@first,' ', '')
+	DECLARE @fname nvarchar(50) = (SELECT CONVERT(VARCHAR, REPLACE(@first,' ', '')) COLLATE SQL_Latin1_General_CP1253_CI_AI)
+	DECLARE @lname nvarchar(50) = (SELECT CONVERT(VARCHAR, REPLACE(@last,' ', '')) COLLATE SQL_Latin1_General_CP1253_CI_AI)
+
 	SET @dob = CASE WHEN @dob = '' THEN NULL ELSE @dob END
 	
 	DECLARE @m INT = DATEPART(m, @dob)
@@ -35,7 +39,7 @@ BEGIN
 		OR (BirthDay = @d AND BirthMonth = @m AND BirthYear IS NULL)
 		THEN 1 ELSE 0 END
 	) matches -- col 2
-	FROM dbo.People p
+	FROM dbo.SearchNoDiacritics p
 	JOIN dbo.Families f ON p.FamilyId = f.FamilyId
 	WHERE
 	(
@@ -44,7 +48,9 @@ BEGIN
 		OR FirstName2 LIKE (@fname + '%')
 		OR @fname LIKE (FirstName + '%')
 	)
-	AND (@last = LastName OR @last = MaidenName OR @last = MiddleName)
+	AND (@lname = LastName 
+		OR @lname = MaidenName 
+		OR @lname = MiddleName)
 	
 	
 	--SELECT p.PeopleId, Matches, Name, BirthMonth, BirthDay, BirthYear, EmailAddress, CellPhone FROM @mm
