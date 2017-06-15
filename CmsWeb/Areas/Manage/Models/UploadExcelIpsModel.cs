@@ -11,6 +11,7 @@ namespace CmsWeb.Models
     public class UploadExcelIpsModel : UploadPeopleModel
     {
         private Dictionary<int, int> peopleids;
+        private Dictionary<string, int> peopleidsa;
         public UploadExcelIpsModel(string host, int peopleId, bool noupdate, bool testing = false)
             : base(host, peopleId, noupdate, testing)
         {
@@ -20,10 +21,19 @@ namespace CmsWeb.Models
         {
             var rt = Db2.UploadPeopleRuns.OrderByDescending(mm => mm.Id).First();
 
-            peopleids = Db2.PeopleExtras.Where(vv => vv.Field == "IndividualId" && vv.IntValue != null)
-                .ToDictionary(vv => vv.IntValue ?? 0, vv => vv.PeopleId);
+            var ws = pkg.Workbook.Worksheets[PeopleSheetName];
+            FetchHeaderColumns(ws);
+            if (Names.ContainsKey("IndividualIdA"))
+                AlphaNumericIds = true;
 
-            UploadPeople(rt, pkg);
+            if(AlphaNumericIds)
+                peopleidsa = Db2.PeopleExtras.Where(vv => vv.Field == "IndividualIdA" && vv.Data.HasValue())
+                    .ToDictionary(vv => vv.Data, vv => vv.PeopleId);
+            else
+                peopleids = Db2.PeopleExtras.Where(vv => vv.Field == "IndividualId" && vv.IntValue != null)
+                    .ToDictionary(vv => vv.IntValue ?? 0, vv => vv.PeopleId);
+
+            UploadPeople(rt, ws);
 
             TryDeleteAllContributions();
             UploadPledges(rt, pkg);
@@ -35,8 +45,16 @@ namespace CmsWeb.Models
         }
         internal override void StoreIds(Person p, dynamic a)
         {
-            p.AddEditExtraInt("HouseholdId", (int)a.FamilyId);
-            p.AddEditExtraInt("IndividualId", (int)a.IndividualId);
+            if (AlphaNumericIds)
+            {
+                p.AddEditExtraText("HouseholdId", (string)a.FamilyId);
+                p.AddEditExtraText("IndividualId", (string)a.IndividualIdA);
+            }
+            else
+            {
+                p.AddEditExtraInt("HouseholdId", (int)a.FamilyId);
+                p.AddEditExtraInt("IndividualId", (int)a.IndividualId);
+            }
             if(!Testing)
                 peopleids.Add((int)a.IndividualId, p.PeopleId);
         }

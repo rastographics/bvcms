@@ -27,6 +27,7 @@ namespace CmsWeb.Models
         internal List<string> Recregnames;
         internal List<dynamic> Datalist;
         internal Dictionary<string, string> Evtypes;
+        internal bool AlphaNumericIds = false;
         internal string PeopleSheetName { get; set; }
 
         public UploadPeopleModel(string host, int peopleId, bool noupdate, bool testing = false)
@@ -41,17 +42,18 @@ namespace CmsWeb.Models
         public virtual bool DoUpload(ExcelPackage pkg)
         {
             var rt = Db2.UploadPeopleRuns.OrderByDescending(mm => mm.Id).First();
+            var ws = pkg.Workbook.Worksheets[PeopleSheetName];
+            FetchHeaderColumns(ws);
 
-            UploadPeople(rt, pkg);
+            UploadPeople(rt, ws);
 
             rt.Completed = DateTime.Now;
             Db2.SubmitChanges();
             return true;
         }
-        internal void UploadPeople(UploadPeopleRun rt, ExcelPackage pkg)
+        internal void UploadPeople(UploadPeopleRun rt, ExcelWorksheet ws)
         {
             var db = DbUtil.Create(Host);
-            FetchData(pkg.Workbook.Worksheets[PeopleSheetName]);
 
             Extravaluenames = (from name in Names
                                where !Standardnames.Contains(name.Key, StringComparer.OrdinalIgnoreCase)
@@ -424,7 +426,6 @@ namespace CmsWeb.Models
         
         public void FetchData(ExcelWorksheet ws)
         {
-            FetchHeaderColumns(ws);
             var r = 2;
             Datalist = new List<dynamic>();
             while (r <= ws.Dimension.End.Row)
@@ -436,6 +437,7 @@ namespace CmsWeb.Models
                 r++;
             }
         }
+
         public void FetchHeaderColumns(ExcelWorksheet sheet)
         {
             Names = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
