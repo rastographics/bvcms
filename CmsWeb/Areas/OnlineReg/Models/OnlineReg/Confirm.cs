@@ -8,6 +8,7 @@ using System.Web.Security;
 using CmsData;
 using CmsData.API;
 using CmsData.Codes;
+using CmsData.Finance;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -153,52 +154,10 @@ Thank you.
             if (p.IsNew)
                 p.AddPerson(null, p.org.EntryPointId ?? 0);
 
-            var staff = DbUtil.Db.StaffPeopleForOrg(p.org.OrganizationId)[0];
-            var text = p.setting.Body ?? "No Body";
-            text = text.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"), ignoreCase: true);
-            text = text.Replace("{amt}", (Transaction.Amt ?? 0).ToString("N2"));
-            text = text.Replace("{date}", DateTime.Today.ToShortDateString());
-            text = text.Replace("{tranid}", Transaction.Id.ToString());
-            text = text.Replace("{account}", "");
-            text = text.Replace("{email}", p.person.EmailAddress);
-            text = text.Replace("{phone}", p.person.HomePhone.FmtFone());
-            text = text.Replace("{contact}", staff.Name);
-            text = text.Replace("{contactemail}", staff.EmailAddress);
-            text = text.Replace("{contactphone}", p.org.PhoneNumber.FmtFone());
-            var re = new Regex(@"(?<b>.*?)<!--ITEM\sROW\sSTART-->(?<row>.*?)\s*<!--ITEM\sROW\sEND-->(?<e>.*)",
-                RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
-            var match = re.Match(text);
-            var b = match.Groups["b"].Value;
-            var row = match.Groups["row"].Value.Replace("{funditem}", "{0}").Replace("{itemamt}", "{1:N2}");
-            var e = match.Groups["e"].Value;
-            var sb = new StringBuilder(b);
-
             var desc = $"{p.person.Name}; {p.person.PrimaryAddress}; {p.person.PrimaryZip}";
-            foreach (var g in p.FundItemsChosen())
-            {
-                if (g.amt > 0)
-                {
-                    sb.AppendFormat(row, g.desc, g.amt);
-                    p.person.PostUnattendedContribution(DbUtil.Db, g.amt, g.fundid, desc, tranid: Transaction.Id);
-                }
-            }
-            Transaction.TransactionPeople.Add(new TransactionPerson
-            {
-                PeopleId = p.person.PeopleId,
-                Amt = Transaction.Amt,
-                OrgId = Orgid,
-            });
-            Transaction.Financeonly = true;
-            if (Transaction.Donate > 0)
-            {
-                var fundname = DbUtil.Db.ContributionFunds.Single(ff => ff.FundId == p.setting.DonationFundId).FundName;
-                sb.AppendFormat(row, fundname, Transaction.Donate);
-                Transaction.Fund = p.setting.DonationFund();
-                p.person.PostUnattendedContribution(DbUtil.Db, Transaction.Donate ?? 0, p.setting.DonationFundId, desc,
-                    tranid: Transaction.Id);
-                Log("PostedContribution");
-            }
-            sb.Append(e);
+            var body = GivingConfirmation.PostAndBuild(DbUtil.Db, p.person, p.setting.Body, p.org.OrganizationId, p.FundItemsChosen(), Transaction, desc,
+                p.setting.DonationFundId);
+
             if (!Transaction.TransactionId.HasValue())
             {
                 Transaction.TransactionId = transactionReturn;
@@ -216,8 +175,9 @@ Thank you.
             else
                 contributionemail = p.person.FromEmail;
 
-            var body = sb.ToString();
             var from = Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(p.org.OrganizationId));
+            var m = new EmailReplacements(DbUtil.Db, body, from);
+            body = m.DoReplacements(DbUtil.Db, p.person);
 
             DbUtil.Db.EmailFinanceInformation(from, p.person, p.setting.Subject, body);
             DbUtil.Db.EmailFinanceInformation(contributionemail, DbUtil.Db.StaffPeopleForOrg(p.org.OrganizationId),

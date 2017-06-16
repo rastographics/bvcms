@@ -45,13 +45,20 @@ namespace CmsData
         }
         public int DoGiving(CMSDataContext db)
         {
-            var total = (from a in db.RecurringAmounts
-                         where a.PeopleId == PeopleId
-                         where a.ContributionFund.FundStatusId == 1
-                         where a.ContributionFund.OnlineSort != null
-                         select a.Amt).Sum();
+            var q = (from a in db.RecurringAmounts
+                    where a.PeopleId == PeopleId
+                    where a.ContributionFund.FundStatusId == 1
+                    where a.ContributionFund.OnlineSort != null
+                    where a.Amt > 0
+                    select new GivingConfirmation.FundItem()
+                    {
+                        Amt = a.Amt.Value,
+                        Desc = a.ContributionFund.FundName,
+                        Fundid = a.FundId
+                    }).ToList();
+            var total = q.Sum(vv => vv.Amt);
 
-            if (!total.HasValue || total == 0)
+            if (total == 0)
                 return 0;
 
             var paymentInfo = db.PaymentInfos.Single(x => x.PeopleId == PeopleId);
@@ -60,8 +67,8 @@ namespace CmsData
             var gw = GetGateway(db, paymentInfo);
 
             var orgid = (from o in db.Organizations
-                             where o.RegistrationTypeId == RegistrationTypeCode.ManageGiving
-                             select o.OrganizationId).FirstOrDefault();
+                         where o.RegistrationTypeId == RegistrationTypeCode.ManageGiving
+                         select o.OrganizationId).FirstOrDefault();
 
             var t = new Transaction
             {
@@ -85,7 +92,7 @@ namespace CmsData
             db.Transactions.InsertOnSubmit(t);
             db.SubmitChanges();
 
-            var ret = gw.PayWithVault(PeopleId, total ?? 0, "Recurring Giving", t.Id, preferredType);
+            var ret = gw.PayWithVault(PeopleId, total, "Recurring Giving", t.Id, preferredType);
 
             t.Message = ret.Message;
             t.AuthCode = ret.AuthCode;
@@ -94,49 +101,35 @@ namespace CmsData
 
             var gift = db.Setting("NameForPayment", "gift");
             var church = db.Setting("NameOfChurch", db.CmsHost);
-            var q = from a in db.RecurringAmounts
-                    where a.PeopleId == PeopleId
-                    select a;
-            var tot = q.Where(aa => aa.ContributionFund.FundStatusId == 1).Sum(aa => aa.Amt);
-            t.TransactionPeople.Add(new TransactionPerson
-            {
-                PeopleId = Person.PeopleId,
-                Amt = tot,
-            });
             var notify = db.RecurringGivingNotifyPersons();
             var from = Util.TryGetMailAddress(notify[0].EmailAddress);
             if (ret.Approved)
             {
-                foreach (var a in q)
-                {
-                    if (a.ContributionFund.FundStatusId == 1 && a.ContributionFund.OnlineSort != null && a.Amt > 0)
-                        Person.PostUnattendedContribution(db, a.Amt ?? 0, a.FundId, "Recurring Giving", tranid: t.Id);
-                }
-
                 NextDate = FindNextDate(Util.Now.Date.AddDays(1));
                 db.SubmitChanges();
-                if (tot > 0)
+                var msg = db.Content("RecurringGiftNotice") ?? new Content
                 {
-                    var msg = db.Content("RecurringGiftNotice") ?? new Content
-                              { Title = $"Recurring {gift} for {{church}}",
-                                Body = "Your gift of {total} was processed this morning." };
-                    var subject = msg.Title.Replace("{church}", church);
-                    var body = msg.Body.Replace("{total}", $"${tot:N2}");
-                    var m = new EmailReplacements(db, body, from);
-                    body = m.DoReplacements(db, Person);
-                    db.EmailFinanceInformation(from, Person, null, subject, body);
-                }
+                    Title = $"Recurring {gift} for {{church}}",
+                    Body = "Your gift of {total} was processed this morning."
+                };
+                var body = GivingConfirmation.PostAndBuild(DbUtil.Db, Person, msg.Body, orgid, q, t, "Recurring Giving");
+                var subject = msg.Title.Replace("{church}", church);
+                var m = new EmailReplacements(db, body, from);
+                body = m.DoReplacements(db, Person);
+                db.EmailFinanceInformation(from, Person, null, subject, body);
             }
             else
             {
                 db.SubmitChanges();
                 var msg = db.Content("RecurringGiftFailedNotice") ?? new Content
-                          { Title = $"Recurring {gift} for {{church}} did not succeed",
-                            Body = @"Your payment of {total} failed to process this morning.<br>
+                {
+                    Title = $"Recurring {gift} for {{church}} did not succeed",
+                    Body = @"Your payment of {total} failed to process this morning.<br>
 The message was '{message}'.
-Please contact the Finance office at the church." };
+Please contact the Finance office at the church."
+                };
                 var subject = msg.Title.Replace("{church}", church);
-                var body = msg.Body.Replace("{total}", $"${tot:N2}")
+                var body = msg.Body.Replace("{total}", $"${total:N2}")
                     .Replace("{message}", ret.Message);
                 var m = new EmailReplacements(db, body, from);
                 body = m.DoReplacements(db, Person);

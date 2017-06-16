@@ -27,8 +27,8 @@
     var fn = 0;
     foreach (var i in Model.FundItemsChosen())
     {
-        <input type="hidden" name="@(funame)[@fn].Key" value="@i.fundid" />
-        <input type="hidden" name="@(funame)[@(fn++)].Value" value="@i.amt" />
+        <input type="hidden" name="@(funame)[@fn].Key" value="@i.Fundid" />
+        <input type="hidden" name="@(funame)[@(fn++)].Value" value="@i.Amt" />
         @Html.HiddenFor2(m => m.CreatingAccount)
     }
     return;

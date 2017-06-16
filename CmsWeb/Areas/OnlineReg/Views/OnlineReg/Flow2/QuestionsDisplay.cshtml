@@ -232,8 +232,8 @@
     @foreach (var i in Model.FundItemsChosen())
     {
         <tr>
-            <td>@i.desc</td>
-            <td> @i.amt.ToString("N2")</td>
+            <td>@i.Desc</td>
+            <td> @i.Amt.ToString("N2")</td>
         </tr>
     }
     @if (Model.setting.Deposit > 0)

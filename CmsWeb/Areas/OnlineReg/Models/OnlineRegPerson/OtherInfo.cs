@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
+using CmsData.Finance;
 using CmsData.Registration;
 using CmsWeb.Areas.Dialog.Models;
 using UtilityExtensions;
@@ -101,15 +102,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return list;
         }
 
-        public IEnumerable<FundItemChosen> FundItemsChosen()
+        public IEnumerable<GivingConfirmation.FundItem> FundItemsChosen()
         {
             if (FundItem == null)
-                return new List<FundItemChosen>();
+                return new List<GivingConfirmation.FundItem>();
             var items = AllFunds();
             var q = from i in FundItem
                     join m in items on i.Key equals m.Value.ToInt()
                     where i.Value.HasValue
-                    select new FundItemChosen {fundid = m.Value.ToInt(), desc = m.Text, amt = i.Value ?? 0};
+                    select new GivingConfirmation.FundItem() {Fundid = m.Value.ToInt(), Desc = m.Text, Amt = i.Value ?? 0};
             return q;
         }
 

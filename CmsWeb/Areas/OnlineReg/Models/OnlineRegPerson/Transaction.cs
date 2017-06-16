@@ -116,7 +116,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     if (Util.Now > org.LastDayBeforeExtra.Value.AddHours(24))
                         amt += setting.ExtraFee.Value;
                 if (FundItem.Count > 0)
-                    amt += FundItemsChosen().Sum(f => f.amt);
+                    amt += FundItemsChosen().Sum(f => f.Amt);
                 var askSize = setting.AskItems.FirstOrDefault(aa => aa is AskSize) as AskSize;
                 if (askSize != null && shirtsize != "lastyear" && askSize.Fee.HasValue)
                     amt += askSize.Fee.Value;
