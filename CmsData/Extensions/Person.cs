@@ -526,7 +526,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 p.NickName = nickname.Trim().ToProper().Truncate(15);
 
             if (lastname.HasValue())
-                p.LastName = lastname.Trim().ToProper().Truncate(30);
+                p.LastName = lastname.Trim().ToProper().Truncate(100);
             else
                 p.LastName = "?";
 
