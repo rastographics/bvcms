@@ -82,11 +82,12 @@ WHERE 1 = 1
 	-- @nontaxded = 1 = only nontax, @nontaxded = 0 = only taxded, @nontaxded = null = either
 	AND ((CASE WHEN c.ContributionTypeId = 9 THEN 1 ELSE ISNULL(f.NonTaxDeductible, 0) END) = @nontaxded OR @nontaxded IS NULL)
     AND c.ContributionStatusId = 0 -- recorded
-    --AND ((CASE WHEN c.ContributionTypeId = 8 THEN 1 ELSE 0 END) = @pledges OR @pledges IS NULL)
+	AND (c.ContributionTypeId <> 8 OR @pledges = 1)
     AND c.ContributionDate >= @fd AND c.ContributionDate < DATEADD(hh, 24, ISNULL(@td, CONVERT(DATE,GETDATE())))
 	AND (ISNULL(h.BundleStatusId, 0) = 0 OR @includeUnclosed = 1)
     AND (@campusid = 0 OR c.CampusId = @campusid) -- campusid = 0 = all
 )
+
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO
