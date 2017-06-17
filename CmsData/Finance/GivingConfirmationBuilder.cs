@@ -18,7 +18,7 @@ namespace CmsData.Finance
         public static string PostAndBuild(CMSDataContext db, Person person, string body, int orgId, IEnumerable<FundItem> fundItems, Transaction tran, string desc, int? donationFundId = null)
         {
             var org = db.LoadOrganizationById(orgId);
-            var staff = DbUtil.Db.StaffPeopleForOrg(org.OrganizationId)[0];
+            var staff = db.StaffPeopleForOrg(org.OrganizationId)[0];
             var text = body ?? "No Body";
             text = text.Replace("{church}", db.Setting("NameOfChurch", "church"), ignoreCase: true);
             text = text.Replace("{amt}", tran.Amt.ToString2("N2"));
@@ -43,7 +43,7 @@ namespace CmsData.Finance
                 if (g.Amt <= 0)
                     continue;
                 sb.AppendFormat(row, g.Desc, g.Amt);
-                person.PostUnattendedContribution(DbUtil.Db, g.Amt, g.Fundid, desc, tranid: tran.Id);
+                person.PostUnattendedContribution(db, g.Amt, g.Fundid, desc, tranid: tran.Id);
             }
             tran.TransactionPeople.Add(new TransactionPerson
             {

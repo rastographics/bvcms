@@ -112,7 +112,7 @@ namespace CmsData
                     Title = $"Recurring {gift} for {{church}}",
                     Body = "Your gift of {total} was processed this morning."
                 };
-                var body = GivingConfirmation.PostAndBuild(DbUtil.Db, Person, msg.Body, orgid, q, t, "Recurring Giving");
+                var body = GivingConfirmation.PostAndBuild(db, Person, msg.Body, orgid, q, t, "Recurring Giving");
                 var subject = msg.Title.Replace("{church}", church);
                 var m = new EmailReplacements(db, body, from);
                 body = m.DoReplacements(db, Person);
