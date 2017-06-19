@@ -12,6 +12,7 @@ namespace CmsWeb.Models
     {
         private Dictionary<int, int> peopleids;
         private Dictionary<string, int> peopleidsa;
+        internal bool AlphaNumericIds = false;
         public UploadExcelIpsModel(string host, int peopleId, bool noupdate, bool testing = false)
             : base(host, peopleId, noupdate, testing)
         {
@@ -22,12 +23,14 @@ namespace CmsWeb.Models
             var rt = Db2.UploadPeopleRuns.OrderByDescending(mm => mm.Id).First();
 
             var ws = pkg.Workbook.Worksheets[PeopleSheetName];
-            FetchHeaderColumns(ws);
-            if (Names.ContainsKey("IndividualIdA"))
+            FetchData(pkg.Workbook.Worksheets[PeopleSheetName]);
+
+            string sid = ((object) Datalist[0].IndividualId).ToString();
+            if (sid.ToCharArray().Any(char.IsLetter))
                 AlphaNumericIds = true;
 
             if(AlphaNumericIds)
-                peopleidsa = Db2.PeopleExtras.Where(vv => vv.Field == "IndividualIdA" && vv.Data.HasValue())
+                peopleidsa = Db2.PeopleExtras.Where(vv => vv.Field == "IndividualId" && vv.Data.Length > 0)
                     .ToDictionary(vv => vv.Data, vv => vv.PeopleId);
             else
                 peopleids = Db2.PeopleExtras.Where(vv => vv.Field == "IndividualId" && vv.IntValue != null)
@@ -46,15 +49,9 @@ namespace CmsWeb.Models
         internal override void StoreIds(Person p, dynamic a)
         {
             if (AlphaNumericIds)
-            {
-                p.AddEditExtraText("HouseholdId", (string)a.FamilyId);
-                p.AddEditExtraText("IndividualId", (string)a.IndividualIdA);
-            }
+                p.AddEditExtraText("IndividualId", (string)a.IndividualId);
             else
-            {
-                p.AddEditExtraInt("HouseholdId", (int)a.FamilyId);
                 p.AddEditExtraInt("IndividualId", (int)a.IndividualId);
-            }
             if(!Testing)
                 peopleids.Add((int)a.IndividualId, p.PeopleId);
         }
@@ -260,9 +257,18 @@ DBCC CHECKIDENT ('[BundleDetail]', RESEED, 0)
         {
             if (a.IndividualId == null)
                 return null;
-            var id = (int)a.IndividualId;
-            if (peopleids.ContainsKey(id))
-                return peopleids[id];
+            if (AlphaNumericIds)
+            {
+                var id = (string)a.IndividualId;
+                if (peopleidsa.ContainsKey(id))
+                    return peopleidsa[id];
+            }
+            else
+            {
+                var id = (int)a.IndividualId;
+                if (peopleids.ContainsKey(id))
+                    return peopleids[id];
+            }
             return null;
         }
     }

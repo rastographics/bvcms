@@ -27,7 +27,6 @@ namespace CmsWeb.Models
         internal List<string> Recregnames;
         internal List<dynamic> Datalist;
         internal Dictionary<string, string> Evtypes;
-        internal bool AlphaNumericIds = false;
         internal string PeopleSheetName { get; set; }
 
         public UploadPeopleModel(string host, int peopleId, bool noupdate, bool testing = false)
@@ -43,7 +42,7 @@ namespace CmsWeb.Models
         {
             var rt = Db2.UploadPeopleRuns.OrderByDescending(mm => mm.Id).First();
             var ws = pkg.Workbook.Worksheets[PeopleSheetName];
-            FetchHeaderColumns(ws);
+            FetchData(pkg.Workbook.Worksheets[PeopleSheetName]);
 
             UploadPeople(rt, ws);
 
@@ -426,6 +425,7 @@ namespace CmsWeb.Models
         
         public void FetchData(ExcelWorksheet ws)
         {
+            FetchHeaderColumns(ws);
             var r = 2;
             Datalist = new List<dynamic>();
             while (r <= ws.Dimension.End.Row)
