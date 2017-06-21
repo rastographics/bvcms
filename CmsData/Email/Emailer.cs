@@ -720,17 +720,22 @@ namespace CmsData
                 foreach (HtmlNode link in linkList)
                 {
                     var att = link.Attributes["href"];
-                    if (EmailReplacements.IsSpecialLink(att.Value))
+                    var url = att.Value;
+                    if (EmailReplacements.IsSpecialLink(url))
+                        continue;
+                    if (url.StartsWith("mailto:"))
                         continue;
 
-                    var hash = HashMd5Base64(md5Hash, att.Value + DateTime.Now.ToString("o") + linkIndex);
+                    if (EmailReplacements.ImageRe.IsMatch(url))
+                        url = EmailReplacements.ImageReplacement(this, url);
+                    var hash = HashMd5Base64(md5Hash, url + DateTime.Now.ToString("o") + linkIndex);
 
                     var emailLink = new EmailLink
                     {
                         Created = DateTime.Now,
                         EmailID = emailId,
                         Hash = hash,
-                        Link = att.Value
+                        Link = url
                     };
                     EmailLinks.InsertOnSubmit(emailLink);
                     SubmitChanges();
@@ -738,10 +743,6 @@ namespace CmsData
                     att.Value = ServerLink($"/ExternalServices/ct?l={HttpUtility.UrlEncode(hash)}");
 
                     linkIndex++;
-
-                    //System.Diagnostics.Debug.WriteLine(att.Value);
-                    //System.Diagnostics.Debug.WriteLine("Unhashed: " + att.Value + DateTime.Now.ToString("o"));
-                    //System.Diagnostics.Debug.WriteLine("Hashed: " + hashMD5Base64( md5Hash, att.Value + DateTime.Now.ToString("o") ) );
                 }
             }
 

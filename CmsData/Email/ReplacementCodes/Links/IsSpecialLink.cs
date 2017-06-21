@@ -34,7 +34,6 @@ namespace CmsData
                 "http://sendlink2",
                 "https://sendlink2",
                 "{emailhref}",
-                "mailto"
             }.Contains(link.ToLower());
         }
 

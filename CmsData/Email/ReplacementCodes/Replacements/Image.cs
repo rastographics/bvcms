@@ -6,10 +6,10 @@ namespace CmsData
 {
     public partial class EmailReplacements
     {
-        private const string MatchImageRe = @"https://[^\#]+\#\{image=[^""]*\}";
-        private static readonly Regex ImageRe = new Regex(MatchImageRe, RegexOptions.Singleline);
+        private const string MatchImageRe = @"https{0,1}://[^\#]+\#\{image=[^""]*\}";
+        public static readonly Regex ImageRe = new Regex(MatchImageRe, RegexOptions.Singleline);
 
-        private string ImageReplacement(string code)
+        public static string ImageReplacement(CMSDataContext db, string code)
         {
             var a = code.SplitStr("#", 2);
             var b = a[1].SplitStr("=", 2);

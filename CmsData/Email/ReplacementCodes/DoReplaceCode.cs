@@ -192,7 +192,7 @@ namespace CmsData
                         return SettingReplacement(code);
 
                     if (ImageRe.IsMatch(code))
-                        return ImageReplacement(code);
+                        return ImageReplacement(db, code);
 
                     if (PythonDataRe.IsMatch(code))
                         return PythonDataReplacement(code);
