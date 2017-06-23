@@ -2,14 +2,16 @@ CREATE FUNCTION [dbo].[TotalPaid](@oid int, @pid int)
 RETURNS MONEY
 AS
 BEGIN
-	DECLARE @c MONEY, @mt BIT, @tranid INT
+	DECLARE @c MONEY, @mt BIT, @tranid INT, @joindt DATETIME
 
 	SELECT
 		@tranid = TranId,
-		@mt = IsMissionTrip 
+		@mt = IsMissionTrip,
+		@joindt = om.EnrollmentDate
 	FROM dbo.OrganizationMembers om
 	JOIN dbo.Organizations o on o.OrganizationId = om.OrganizationId
 	where om.OrganizationId = @oid AND om.PeopleId = @pid 
+
 
 	-- get amount paid by person
 	SET @c = ISNULL((SELECT IndPaid FROM dbo.TransactionSummary WHERE RegId = @tranid AND PeopleId = @pid), 0)
@@ -21,7 +23,8 @@ BEGIN
 			FROM dbo.GoerSenderAmounts
 			WHERE GoerId = @pid
 			AND OrgId = @oid
-			--AND ISNULL(InActive, 0) = 0
+			AND Created > @joindt
+		 	--AND ISNULL(InActive, 0) = 0
 			AND SupporterId <> @pid),0)
 
 	RETURN @c
