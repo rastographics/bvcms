@@ -30,7 +30,7 @@ namespace CmsData.Finance
             text = text.Replace("{contact}", staff.Name);
             text = text.Replace("{contactemail}", staff.EmailAddress);
             text = text.Replace("{contactphone}", org.PhoneNumber.FmtFone());
-            var re = new Regex(@"(?<b>.*?)<!--ITEM\sROW\sSTART-->(?<row>.*?)\s*<!--ITEM\sROW\sEND-->(?<e>.*)",
+            var re = new Regex(@"(?<b>.*?)(<!--ITEM\sROW\sSTART-->(?<row>.*?)\s*<!--ITEM\sROW\sEND-->){0,1}(?<e>.*)",
                 RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
             var match = re.Match(text);
             var b = match.Groups["b"].Value;
@@ -42,7 +42,8 @@ namespace CmsData.Finance
             {
                 if (g.Amt <= 0)
                     continue;
-                sb.AppendFormat(row, g.Desc, g.Amt);
+                if(row.HasValue())
+                    sb.AppendFormat(row, g.Desc, g.Amt);
                 person.PostUnattendedContribution(db, g.Amt, g.Fundid, desc, tranid: tran.Id);
             }
             tran.TransactionPeople.Add(new TransactionPerson
@@ -55,7 +56,8 @@ namespace CmsData.Finance
             if (tran.Donate > 0 && donationFundId > 0)
             {
                 var fundname = db.ContributionFunds.Single(ff => ff.FundId == donationFundId).FundName;
-                sb.AppendFormat(row, fundname, tran.Donate);
+                if(row.HasValue())
+                    sb.AppendFormat(row, fundname, tran.Donate);
                 tran.Fund = (from f in db.ContributionFunds where f.FundId == donationFundId select f.FundName).SingleOrDefault();
                 person.PostUnattendedContribution(db, tran.Donate ?? 0, donationFundId, desc, tranid: tran.Id);
             }

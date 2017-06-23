@@ -110,7 +110,7 @@ namespace CmsData
                 var msg = db.Content("RecurringGiftNotice") ?? new Content
                 {
                     Title = $"Recurring {gift} for {{church}}",
-                    Body = "Your gift of {total} was processed this morning."
+                    Body = $"Your gift of {total:C} was processed this morning."
                 };
                 var body = GivingConfirmation.PostAndBuild(db, Person, msg.Body, orgid, q, t, "Recurring Giving");
                 var subject = msg.Title.Replace("{church}", church);
