@@ -194,6 +194,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult AddAnotherPerson(OnlineRegModel m)
         {
+//            var ed = DbUtil.Db.RegistrationDatas.SingleOrDefault(e => e.Id == m.DatumId);
+//            if (ed?.Completed == true)
+//            {
+//                m.Log("AddAnotherPersonError already completed");
+//                return Content("<p style='color:red'>error: It appears this registration is already completed.</p>");
+//            }
             fromMethod = "AddAnotherPerson";
             m.HistoryAdd("AddAnotherPerson");
             m.ParseSettings();

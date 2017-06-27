@@ -159,7 +159,7 @@ namespace CmsWeb.Models
                         Children = p.PositionInFamilyId != 10 ? ""
                             : string.Join(", ", (from cc in p.Family.People
                                                  where cc.PositionInFamilyId == 30
-                                                 where cc.Age <= 18
+                                                 //where cc.Age <= 18
                                                  select cc.LastName == familyname
                                                          ? cc.PreferredName
                                                          : cc.Name).ToList()),
