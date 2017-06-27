@@ -353,7 +353,6 @@
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         e.preventDefault();
         var tab = $(e.target).attr('href').replace("#", "#tab-");
-        if (tab === "#tab-resources") return false;
         window.location.hash = tab;
         $.cookie('lasttab', tab);
 
