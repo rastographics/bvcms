@@ -22,6 +22,7 @@ namespace CmsData.Finance
             var text = body ?? "No Body";
             text = text.Replace("{church}", db.Setting("NameOfChurch", "church"), ignoreCase: true);
             text = text.Replace("{amt}", tran.Amt.ToString2("N2"));
+            text = text.Replace("{total}", tran.Amt.ToString2("N2"));
             text = text.Replace("{date}", DateTime.Today.ToShortDateString());
             text = text.Replace("{tranid}", tran.Id.ToString());
             text = text.Replace("{account}", "");
@@ -30,13 +31,15 @@ namespace CmsData.Finance
             text = text.Replace("{contact}", staff.Name);
             text = text.Replace("{contactemail}", staff.EmailAddress);
             text = text.Replace("{contactphone}", org.PhoneNumber.FmtFone());
-            var re = new Regex(@"(?<b>.*?)(<!--ITEM\sROW\sSTART-->(?<row>.*?)\s*<!--ITEM\sROW\sEND-->){0,1}(?<e>.*)",
+            var re = new Regex(@"(?<b>.*?)<!--ITEM\sROW\sSTART-->(?<row>.*?)\s*<!--ITEM\sROW\sEND-->(?<e>.*)",
                 RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
             var match = re.Match(text);
             var b = match.Groups["b"].Value;
             var row = match.Groups["row"].Value.Replace("{funditem}", "{0}").Replace("{itemamt}", "{1:N2}");
+            var sb = new StringBuilder();
             var e = match.Groups["e"].Value;
-            var sb = new StringBuilder(b);
+            if(b.HasValue())
+                sb.Append(b);
 
             foreach (var g in fundItems)
             {
@@ -61,7 +64,10 @@ namespace CmsData.Finance
                 tran.Fund = (from f in db.ContributionFunds where f.FundId == donationFundId select f.FundName).SingleOrDefault();
                 person.PostUnattendedContribution(db, tran.Donate ?? 0, donationFundId, desc, tranid: tran.Id);
             }
-            sb.Append(e);
+            if(e.HasValue())
+                sb.Append(e);
+            if (sb.Length == 0)
+                return text;
             return sb.ToString();
         }
     }
