@@ -29,7 +29,8 @@ namespace CmsWeb.Areas.Dialog.Models
         public OrgSearchDrop() { }
         public OrgSearchDrop(OrgSearchModel m)
         {
-            //Id = Util.UserPeopleId ?? 0;
+
+            QueryId = Guid.NewGuid();
             var q = (from o in m.FetchOrgs()
                      select new OrgInfo
                      {

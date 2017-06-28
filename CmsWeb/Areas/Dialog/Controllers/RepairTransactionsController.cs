@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 
             if (!model.Started.HasValue)
             {
-                DbUtil.LogActivity($"Add to org from tag for {Session["ActiveOrganization"]}");
+                DbUtil.LogActivity($"Repair Transactions for {Session["ActiveOrganization"]}");
                 model.Process(DbUtil.Db);
             }
             return View(model);
