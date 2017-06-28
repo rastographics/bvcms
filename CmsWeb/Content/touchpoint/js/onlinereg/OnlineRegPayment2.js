@@ -27,7 +27,7 @@ $(function () {
             if (ret.error) {
                 $("#formerror").show();
                 $('#errormessage').text(ret.error);
-            } else if (ret.amt && ret.amt > 0) {
+            } else if (ret.amtdue && ret.amtdue > 0) {
                 $("#formerror").hide();
                 $('#amt').text(ret.amt);
                 $('#AmtToPay').val(ret.tiamt);
