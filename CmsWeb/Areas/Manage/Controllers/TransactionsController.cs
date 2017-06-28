@@ -104,7 +104,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 if (t.PaymentType == PaymentType.Ach)
                     resp = gw.RefundCheck(re, amt ?? 0);
                 else if (t.PaymentType == PaymentType.CreditCard)
-                    resp = gw.RefundCreditCard(re, amt ?? 0);
+                    resp = gw.RefundCreditCard(re, amt ?? 0, t.LastFourCC);
 
                 t.Credited = resp.Approved;
             }
