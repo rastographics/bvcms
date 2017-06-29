@@ -11,7 +11,6 @@ using CmsData.Classes.RoleChecker;
 using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Code;
 using CmsWeb.Models;
-using Elmah;
 using OfficeOpenXml;
 using UtilityExtensions;
 
@@ -55,6 +54,12 @@ namespace CmsWeb
         public ViewResult Message(string text)
         {
             return View("Message", model: text);
+        }
+        public ViewResult PageMessage(string text, string title = "Error", string alert = "danger")
+        {
+            ViewBag.Alert = alert;
+            ViewBag.Message = text;
+            return View("PageMessage");
         }
 
         protected override JsonResult Json(object data, string contentType, Encoding contentEncoding, JsonRequestBehavior behavior)

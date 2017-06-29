@@ -739,5 +739,16 @@ WHERE ISNULL(abandoned, 0) = 0
 AND UserPeopleid = {0}
 AND OrganizationId = {1}", Datum.UserPeopleId, Datum.OrganizationId);
         }
+
+        internal string CheckAlreadyCompleted()
+        {
+            var ed = DbUtil.Db.RegistrationDatas.SingleOrDefault(e => e.Id == DatumId);
+            if (ed?.Completed == true)
+            {
+                Log("AddAnotherPersonError already completed");
+                return "It appears this registration is already completed.";
+            }
+            return null;
+        }
     }
 }

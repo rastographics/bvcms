@@ -100,6 +100,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult RegisterFamilyMember(int id, OnlineRegModel m)
         {
             // got here by clicking on a link in the Family list
+            var msg = m.CheckAlreadyCompleted();
+            if (msg.HasValue())
+                return PageMessage(msg);
             fromMethod = "Register";
 
             m.StartRegistrationForFamilyMember(id, ModelState);
@@ -121,6 +124,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult FindRecord(int id, OnlineRegModel m)
         {
             // Anonymous person clicks submit to find their record
+            var msg = m.CheckAlreadyCompleted();
+            if (msg.HasValue())
+                return PageMessage(msg);
             fromMethod = "FindRecord";
             m.HistoryAdd("FindRecord id=" + id);
             if (id >= m.List.Count)
@@ -194,12 +200,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult AddAnotherPerson(OnlineRegModel m)
         {
-//            var ed = DbUtil.Db.RegistrationDatas.SingleOrDefault(e => e.Id == m.DatumId);
-//            if (ed?.Completed == true)
-//            {
-//                m.Log("AddAnotherPersonError already completed");
-//                return Content("<p style='color:red'>error: It appears this registration is already completed.</p>");
-//            }
             fromMethod = "AddAnotherPerson";
             m.HistoryAdd("AddAnotherPerson");
             m.ParseSettings();

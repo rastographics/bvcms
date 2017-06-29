@@ -444,10 +444,13 @@ or contact the church if you need help.</p>
                     if (hasorg)
                         oid = a[0].ToInt();
                     pid = a[1].ToInt();
+#if DEBUG
+#else
                     if (ot.Used)
                         throw LinkException("link used");
                     if (ot.Expires.HasValue && ot.Expires < DateTime.Now)
                         throw LinkException("link expired");
+#endif
                 }
                 catch (Exception ex)
                 {
