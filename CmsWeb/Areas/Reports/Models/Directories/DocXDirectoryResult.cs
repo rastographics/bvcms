@@ -303,7 +303,9 @@ namespace CmsWeb.Areas.Reports.Models
         {
             if (!phonere.IsMatch(code))
                 return false;
-            if (di.HomePhone.HasValue())
+            if (!di.HomePhone.HasValue() || di.SpouseDoNotPublishPhone == true)
+                pg.ReplaceText(code, "");
+            else
             {
                 var m = phonere.Match(code);
                 var txt = m.Groups["text"].Value;
@@ -311,8 +313,6 @@ namespace CmsWeb.Areas.Reports.Models
                     ? txt.Replace("_number_", di.HomePhone)
                     : di.HomePhone);
             }
-            else
-                pg.ReplaceText(code, "");
             return true;
         }
 
@@ -372,19 +372,16 @@ namespace CmsWeb.Areas.Reports.Models
             {
                 var m = bdayre.Match(code);
                 var txt = m.Groups["text"].Value;
-                m = dtfmtre.Match(txt);
-                var repl = m.Value;
-                var mfmt = m.Groups["fmt"].Value;
-                pg.ReplaceText(code, txt.HasValue()
-                    ? txt.Replace(repl, di.Person.BirthDate.ToString2(Util.PickFirst(mfmt, "MMM d")))
-                    : di.Person.BirthDate.ToString2("MMM d"));
 
                 if (!txt.HasValue())
                     pg.ReplaceText(code, di.Person.BirthDate.ToString2("MMM d"));
                 else
                 {
-                    txt = txt.Replace("_addr_", di.SpouseEmail)
-                        .Replace("_first_", di.SpouseFirst);
+                    txt = txt.Replace("_first_", di.Person.PreferredName);
+                    m = dtfmtre.Match(txt);
+                    var repl = m.Value;
+                    var mfmt = m.Groups["fmt"].Value;
+                    txt = txt.Replace(repl, di.Person.BirthDate.ToString2(Util.PickFirst(mfmt, "MMM d")));
                     pg.ReplaceText(code, txt);
                 }
             }
