@@ -226,6 +226,7 @@ namespace CmsData
         RecentFirstTimeGiver,
         RecentFlagAdded,
         RecentJoinChurch,
+        RecentManagedGiving,
         RecentNonTaxDedAmount,
         RecentNonTaxDedCount,
         RecentPeopleExtraFieldChanged,

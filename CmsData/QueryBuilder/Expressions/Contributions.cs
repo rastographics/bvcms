@@ -867,6 +867,25 @@ namespace CmsData
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
+        internal Expression RecentManagedGiving()
+        {
+            if (!db.FromBatch)
+                if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
+                    return AlwaysFalse();
+
+            var dt = DateTime.Today.AddDays(-Days);
+            var tf = CodeIds == "1";
+
+            Expression<Func<Person, bool>> pred = p => (from a in db.ActivityLogs
+                                                        where a.PeopleId == p.PeopleId
+                                                        where a.Activity == "OnlineReg ManageGiving Confirm"
+                                                        where a.ActivityDate >= dt
+                                                        select a).Any();
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
+            return expr;
+        }
         internal Expression WantsElectronicStatement()
         {
             Expression<Func<Person, bool>> pred = p => p.ElectronicStatement == true;

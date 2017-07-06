@@ -172,7 +172,7 @@ RecentContributionAmount,Number,,,Fund Id (or null for all),Contributions,Recent
 RecentContributionAmountBothJoint,Number,,,Fund Id (or null for all),Contributions,Recent Contribution Amount With Both Joint,"Days,Quarters","Enter a number and select Comparison for the Contribution Amount, enter the number of days to look back. This will include both Husband and Wife in results if they give jointly."
 ContributionAmountBothJointHistory,Number,,,Fund Id (or null for all),Contributions,Contribution Amount With Both Joint by Date Range,"StartDate,EndDate,Quarters",Enter dates and select Comparison for the Contribution Amount. This will include both Husband and Wife in results if they give jointly.
 RecentPledgeAmountBothJoint,Number,,,Fund Id (or null for all),Contributions,Recent Pledge Amount With Both Joint,"Days,Quarters","Enter a number and select Comparison for the Pledge Amount, enter the number of days to look back. This will include both Husband and Wife in results if they give jointly."
-PledgeBalance,Number,,,Fund Id,Contributions,Pledge Balance,"Quarters","Enter the FundId and a balance and select Comparison for the Pledge Balance. This will include both Husband and Wife in results if they give jointly."
+PledgeBalance,Number,,,Fund Id,Contributions,Pledge Balance,Quarters,Enter the FundId and a balance and select Comparison for the Pledge Balance. This will include both Husband and Wife in results if they give jointly.
 PledgeAmountBothJointHistory,Number,,,Fund Id (or null for all),Contributions,Pledge Amount With Both Joint by Date Range,"StartDate,EndDate,Quarters",Enter dates and select Comparison for the Pledge Amount. This will include both Husband and Wife in results if they give jointly.
 RecentNonTaxDedCount,Integer,,,Fund Id (or null for all),Contributions,Recent NonTaxDed Count,"Days,Quarters","Enter a number and select Comparison for the number of NonTaxDeds, enter the number of days to look back, enter a Fund ID (or leave blank for all funds)."
 RecentNonTaxDedAmount,Number,,,Fund Id (or null for all),Contributions,Recent NonTaxDed Amount,"Days,Quarters","Enter a number and select Comparison for the NonTaxDed Amount, enter the number of days to look back, enter a Fund ID (or leave blank for all funds)."
@@ -196,6 +196,7 @@ ManagedGivingCreditCard,Bit,,,,Contributions,Managed Giving With Credit Card,,Sp
 CcExpiration,Bit,,,,Contributions,Credit Card Expire Days,Days,Specify True or False for those with Managed Giving.
 WantsElectronicStatement,Bit,,,,Contributions,Wants Electronic Statement,,Specify True or False for those wanting Electronic Statements
 RecentBundleType,Code,,BundleHeaderTypes,,Contributions,Recent Contributions In BundleType,Days,Must have Finance role for this to work.
+RecentManagedGiving,Bit,,,,Contributions,Recent Managed Giving,Days,Specify True or False for those with Recent Managed Giving within past days.
 PeopleExtra,CodeStr,,ExtraValues,,ExtraValues,Extra Value Code,,Select the Extra Value Code from the list
 PeopleExtraData,String,,, Name,ExtraValues,Extra Value Text,Quarters,Enter the Field Name and enter all or part of the value along with a Comparison.
 PeopleExtraDate,Date,,, Name,ExtraValues,Extra Value Date,Quarters,Enter the Field Name and pick a date and a Comparison.
