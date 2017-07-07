@@ -164,6 +164,7 @@ WHERE eqt.Id = @emailQueueId
 		,e.Name
 		,e.Name2
 		,e.EmailAddress
+		,FailedEmail = ef.email
 		,COUNT(r.Id) AS NumberOpened
 		,p1.Name AS Parent1
 		,p2.Name AS Parent2
@@ -186,6 +187,7 @@ WHERE eqt.Id = @emailQueueId
 		,e.Name
 		,e.Name2
 		,e.EmailAddress
+		,ef.email
 		,p1.Name
 		,p2.Name
 		,ef.Id
@@ -193,7 +195,7 @@ WHERE eqt.Id = @emailQueueId
 SELECT
 	PeopleId
 	,Name
-	,EmailAddress
+	,EmailAddress = IIF(@filter = 'failed', FailedEmail, EmailAddress)
 	,NumberOpened
 	,Parent1
 	,Parent2
