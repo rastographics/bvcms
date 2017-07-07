@@ -40,7 +40,7 @@ namespace CmsData
             return roles.OrderBy(rr => rr.RoleName == "NEW" ? 1 : 0).ThenBy(rr => rr.RoleName).ToList();
         }
 
-        public void SetRoles(CMSDataContext db, string[] value)
+        public void SetRoles(CMSDataContext db, string[] value, bool log = true)
         {
             if (value == null)
             {
@@ -48,18 +48,20 @@ namespace CmsData
                 db.SubmitChanges();
                 return;
             }
-            var qdelete = from r in UserRoles
+            var deletes = (from r in db.UserRoles
+                where r.UserId == UserId
                 where !value.Contains(r.Role.RoleName)
-                select r;
-            db.UserRoles.DeleteAllOnSubmit(qdelete);
+                select new {r, r.Role.RoleName}).ToList();
 
-            var q = from s in value
-                join r in UserRoles on s equals r.Role.RoleName into g
-                from t in g.DefaultIfEmpty()
-                where t == null
-                select s;
+            db.UserRoles.DeleteAllOnSubmit(deletes.Select(rr => rr.r));
 
-            foreach (var s in q)
+            var addlist = (from s in value
+                     join r in UserRoles on s equals r.Role.RoleName into g
+                     from t in g.DefaultIfEmpty()
+                     where t == null
+                     select s).ToList();
+
+            foreach (var s in addlist)
             {
                 var role = db.Roles.SingleOrDefault(r => r.RoleName == s);
                 var roleid = role?.RoleId;
@@ -68,6 +70,12 @@ namespace CmsData
                 UserRoles.Add(new UserRole { RoleId = roleid.Value, UserId = UserId });
             }
             db.SubmitChanges();
+            if (!log)
+                return;
+            if (deletes.Count > 0)
+                db.LogActivity($"Remove Roles {string.Join(",", deletes.Select(rr => rr.RoleName))} from user {Username}", pid: PeopleId, uid: Util.UserPeopleId);
+            if (addlist.Count > 0)
+                db.LogActivity($"Add Roles {string.Join(",", addlist)} to user {Username}", pid: PeopleId, uid: Util.UserPeopleId);
         }
 
         public void AddRoles(CMSDataContext db, params string[] value)

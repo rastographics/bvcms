@@ -172,7 +172,7 @@ namespace CmsData
                         var newroles = oldroles.Where(rr => !rr.Equal(role)).ToArray();
                         if (newroles.Length == oldroles.Length)
                             continue;
-                        user.SetRoles(db2, newroles);
+                        user.SetRoles(db2, newroles, log: false);
                         db2.SubmitChanges();
                     }
                 }
