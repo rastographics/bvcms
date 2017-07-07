@@ -102,7 +102,8 @@ namespace CmsData
             var gift = db.Setting("NameForPayment", "gift");
             var church = db.Setting("NameOfChurch", db.CmsHost);
             var notify = db.RecurringGivingNotifyPersons();
-            var from = Util.TryGetMailAddress(notify[0].EmailAddress);
+            var staff = notify[0];
+            var from = Util.TryGetMailAddress(staff.EmailAddress);
             if (ret.Approved)
             {
                 NextDate = FindNextDate(Util.Now.Date.AddDays(1));
@@ -112,7 +113,7 @@ namespace CmsData
                     Title = $"Recurring {gift} for {{church}}",
                     Body = $"Your gift of {total:C} was processed this morning."
                 };
-                var body = GivingConfirmation.PostAndBuild(db, Person, msg.Body, orgid, q, t, "Recurring Giving");
+                var body = GivingConfirmation.PostAndBuild(db, staff, Person, msg.Body, orgid, q, t, "Recurring Giving");
                 var subject = msg.Title.Replace("{church}", church);
                 var m = new EmailReplacements(db, body, from);
                 body = m.DoReplacements(db, Person);

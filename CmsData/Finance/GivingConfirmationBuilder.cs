@@ -15,10 +15,9 @@ namespace CmsData.Finance
             public int Fundid { get; set; }
             public decimal Amt { get; set; }
         }
-        public static string PostAndBuild(CMSDataContext db, Person person, string body, int orgId, IEnumerable<FundItem> fundItems, Transaction tran, string desc, int? donationFundId = null)
+        public static string PostAndBuild(CMSDataContext db, Person staff, Person person, string body, int orgId, IEnumerable<FundItem> fundItems, Transaction tran, string desc, int? donationFundId = null)
         {
             var org = db.LoadOrganizationById(orgId);
-            var staff = db.StaffPeopleForOrg(org.OrganizationId)[0];
             var text = body ?? "No Body";
             text = text.Replace("{church}", db.Setting("NameOfChurch", "church"), ignoreCase: true);
             text = text.Replace("{amt}", tran.Amt.ToString2("N2"));

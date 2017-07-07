@@ -155,7 +155,8 @@ Thank you.
                 p.AddPerson(null, p.org.EntryPointId ?? 0);
 
             var desc = $"{p.person.Name}; {p.person.PrimaryAddress}; {p.person.PrimaryZip}";
-            var body = GivingConfirmation.PostAndBuild(DbUtil.Db, p.person, p.setting.Body, p.org.OrganizationId, p.FundItemsChosen(), Transaction, desc,
+            var staff = DbUtil.Db.StaffPeopleForOrg(org.OrganizationId)[0];
+            var body = GivingConfirmation.PostAndBuild(DbUtil.Db, staff, p.person, p.setting.Body, p.org.OrganizationId, p.FundItemsChosen(), Transaction, desc,
                 p.setting.DonationFundId);
 
             if (!Transaction.TransactionId.HasValue())
