@@ -89,6 +89,8 @@ namespace CmsWeb.Areas.People.Models
         [DisplayName("Prev Church"), StringLength(60)]
         public string OtherPreviousChurch { get; set; }
 
+        public string AutomationError;
+
         #endregion
         #region Letter Status
 

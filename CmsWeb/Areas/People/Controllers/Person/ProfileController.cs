@@ -42,7 +42,7 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var ret = m.UpdateMember();
             if (ret != "ok")
-                ViewBag.AutomationError = $"<div class='alert'>{ret}</div>";
+                m.AutomationError = ret;
             if (!ModelState.IsValid || ret != "ok")
                 return View("Profile/Membership/Edit", m);
 

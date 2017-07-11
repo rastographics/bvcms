@@ -1,4 +1,5 @@
 ﻿@using CmsData
+@using UtilityExtensions
 @model CmsWeb.Areas.People.Models.MemberInfo
 @{
     var editable = new
@@ -11,7 +12,12 @@
 <form class="ajax validate" method="post" data-init="Editable">
     @Html.HiddenFor(m => m.PeopleId)
     @Html.ValidationMessage("automation")
-    @Html.Raw(ViewBag.AutomationError)
+    @if (Model.AutomationError.HasValue())
+    {
+        <div class="alert alert-danger">
+            @Model.AutomationError
+        </div>
+    }
     <h3>Member Profile</h3>
     <div class="row">
         <div class="col-lg-8">
