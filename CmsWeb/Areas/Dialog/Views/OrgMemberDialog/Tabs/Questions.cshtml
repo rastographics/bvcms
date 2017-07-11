@@ -1,6 +1,9 @@
 ﻿@model CmsWeb.Areas.Dialog.Models.OrgMemberModel
 @{
   var hadQuestions = false;
+  var admin = User.IsInRole("Admin");
+  var manager = User.IsInRole("ManageGroups");
+  var edit = User.IsInRole("Edit");
 }
 <div id="regquestions" class="tab-pane">
   <dl>
@@ -25,7 +28,7 @@
       }
     }
   </dl>
-  @if (hadQuestions == false)
+  @if (hadQuestions == false && admin || edit || manager)
   {
     <a id="addQuestions" class="btn btn-success">Add Missing Questions</a>
   }

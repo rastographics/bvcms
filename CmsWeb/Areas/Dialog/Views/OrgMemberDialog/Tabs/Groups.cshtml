@@ -3,6 +3,7 @@
 @{
   var admin = User.IsInRole("Admin");
   var manager = User.IsInRole("ManageGroups");
+  var edit = User.IsInRole("Edit");
 }
   <div class="row">
     <div class="col-sm-12">
@@ -11,11 +12,13 @@
       }
       @foreach (var item in list)
       {
-        @SmallGroup(item, manager || admin)
+        @SmallGroup(item, manager || admin || edit)
       }
     </div>
   </div>
-  <br/>
+<br/>
+@if (manager || admin || edit)
+{
   <div class="well">
       <label for="NewGroup" class="control-label">New Sub-Group</label>
       <div class="row">
@@ -29,6 +32,7 @@
           </div>
       </div>
   </div>
+}
 @helper SmallGroup(MemberTag mt, bool canedit)
 {
   <label class="checkbox-inline control-label">
