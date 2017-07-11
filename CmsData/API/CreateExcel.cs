@@ -126,7 +126,14 @@ namespace CmsData
                     colrange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
                 }
                 else
-                    colrange.AutoFitColumns();
+                    try
+                    {
+                        colrange.AutoFitColumns();
+                    }
+                    catch (Exception)
+                    {
+                        ws.Column(col).Width = 50;
+                    }
             }
             return ws;
         }
