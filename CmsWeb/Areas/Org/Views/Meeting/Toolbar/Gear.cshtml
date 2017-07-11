@@ -1,25 +1,40 @@
-﻿<ul class="dropdown-menu dropdown-menu-large container row dropdown-menu-right bluebar-menu-col-1" role="menu">
-  <li class="col-sm-12">
-    <ul>
-      <li class="dropdown-header">Operations</li>
-      <li><a href="/AddAttendeesFromTag/@Model.meeting.MeetingId" class="longrunop"><span class="org-context">Add Attendees From Tag</span></a></li>
-      <li><a id="addallguests" href="#"><span class="org-context">Add All Guests to Org</span></a></li>
-      @if (User.IsInRole("Admin"))
-      {
-          <li><a href="/Meeting/AddAbsentsToMeeting/@Model.meeting.MeetingId"><span class="org-context" confirm="are you sure?">Add Absents to Meeting</span></a></li>
-      }
+﻿@{
+    var edit = User.IsInRole("Edit");
+    var attendance = User.IsInRole("Attendance");
+}
+<ul class="dropdown-menu dropdown-menu-large container row dropdown-menu-right bluebar-menu-col-1" role="menu">
+    <li class="col-sm-12">
+        <ul>
+            @if (edit && attendance)
+            {
+                <li class="dropdown-header">Operations</li>
+                <li>
+                    <a href="/AddAttendeesFromTag/@Model.meeting.MeetingId" class="longrunop">
+                        <span class="org-context">Add Attendees From Tag</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="addallguests" href="#">
+                        <span class="org-context">Add All Guests to Org</span>
+                    </a>
+                </li>
+            }
+            @if (User.IsInRole("Admin"))
+            {
+                <li><a href="/Meeting/AddAbsentsToMeeting/@Model.meeting.MeetingId"><span class="org-context" confirm="are you sure?">Add Absents to Meeting</span></a></li>
+            }
 
-      <li class="dropdown-header">Convert to Search</li>
-      <li><a href="/Meeting/QueryAttendees/@Model.meeting.MeetingId"><span class="org-context">Attendees</span></a></li>
-      <li><a href="/Meeting/QueryVisitors/@Model.meeting.MeetingId"><span class="org-context">Guests</span></a></li>
-      <li><a href="/Meeting/QueryAbsents/@Model.meeting.MeetingId"><span class="org-context">Absentees</span></a></li>
-      <li><a href="/Meeting/QueryRegistered/@Model.meeting.MeetingId?type=Attending"><span class="org-context">Registered Attending</span></a></li>
-      <li><a href="/Meeting/QueryRegistered/@Model.meeting.MeetingId?type=Regrets"><span class="org-context">Registered Regrets</span></a></li>
-      <li><a href="/Meeting/QueryRegistered/@Model.meeting.MeetingId?type=NotRegistered"><span class="org-context">Not Registered</span></a></li>
-      <li><a href="/Meeting/QueryRegistered/@Model.meeting.MeetingId?type=Attends"><span class="org-context">Registered Attendances</span></a></li>
-      <li><a href="/Meeting/QueryRegistered/@Model.meeting.MeetingId?type=Absents"><span class="org-context">Registered Absentees</span></a></li>
-      <li><a href="/Meeting/QueryRegistered/@Model.meeting.MeetingId?type=UnregisteredAttends"><span class="org-context">UnRegistered Attendances</span></a></li>
-      <li><a href="/Meeting/QueryRegistered/@Model.meeting.MeetingId?type=UnregisteredAbsents"><span class="org-context">UnRegistered Absents</span></a></li>
-    </ul>
-  </li>
+            <li class="dropdown-header">Convert to Search</li>
+            <li><a href="/Meeting/QueryAttendees/@Model.meeting.MeetingId"><span class="org-context">Attendees</span></a></li>
+            <li><a href="/Meeting/QueryVisitors/@Model.meeting.MeetingId"><span class="org-context">Guests</span></a></li>
+            <li><a href="/Meeting/QueryAbsents/@Model.meeting.MeetingId"><span class="org-context">Absentees</span></a></li>
+            <li><a href="/Meeting/QueryRegistered/@Model.meeting.MeetingId?type=Attending"><span class="org-context">Registered Attending</span></a></li>
+            <li><a href="/Meeting/QueryRegistered/@Model.meeting.MeetingId?type=Regrets"><span class="org-context">Registered Regrets</span></a></li>
+            <li><a href="/Meeting/QueryRegistered/@Model.meeting.MeetingId?type=NotRegistered"><span class="org-context">Not Registered</span></a></li>
+            <li><a href="/Meeting/QueryRegistered/@Model.meeting.MeetingId?type=Attends"><span class="org-context">Registered Attendances</span></a></li>
+            <li><a href="/Meeting/QueryRegistered/@Model.meeting.MeetingId?type=Absents"><span class="org-context">Registered Absentees</span></a></li>
+            <li><a href="/Meeting/QueryRegistered/@Model.meeting.MeetingId?type=UnregisteredAttends"><span class="org-context">UnRegistered Attendances</span></a></li>
+            <li><a href="/Meeting/QueryRegistered/@Model.meeting.MeetingId?type=UnregisteredAbsents"><span class="org-context">UnRegistered Absents</span></a></li>
+        </ul>
+    </li>
 </ul>
