@@ -57,8 +57,10 @@ namespace UtilityExtensions
             {
                 if (prefix != null)
                     prefix = prefix + " ";
-                var s = dt.Value.ToString("d");
-                return new HtmlString($"{prefix}{s.Substring(0, s.Length - 4) + s.Substring(s.Length - 2, 2)}{suffix}");
+                string dateFormat = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern.Replace("yyyy", "yy");
+                var s = dt.Value.ToString(dateFormat);
+                var d = new HtmlString($"{prefix}{s}{suffix}");
+                return d;
             }
             return new HtmlString("");
         }
