@@ -551,6 +551,7 @@ Creating_dbo_InvolvementPrevious.sql
 Creating_dbo_GetTodaysMeetingHours2.sql
 Creating_dbo_LastAttend.sql
 Creating_dbo_DeleteQueryBitTags.sql
+Creating_dbo_RecurringGivingDueForToday.sql
 Creating_dbo_RecentAbsents.sql
 Creating_dbo_DaysSinceAttend.sql
 Creating_dbo_GetTotalContributionsRange.sql

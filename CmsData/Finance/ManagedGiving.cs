@@ -46,16 +46,16 @@ namespace CmsData
         public int DoGiving(CMSDataContext db)
         {
             var q = (from a in db.RecurringAmounts
-                    where a.PeopleId == PeopleId
-                    where a.ContributionFund.FundStatusId == 1
-                    where a.ContributionFund.OnlineSort != null
-                    where a.Amt > 0
-                    select new GivingConfirmation.FundItem()
-                    {
-                        Amt = a.Amt.Value,
-                        Desc = a.ContributionFund.FundName,
-                        Fundid = a.FundId
-                    }).ToList();
+                     where a.PeopleId == PeopleId
+                     where a.ContributionFund.FundStatusId == 1
+                     where a.ContributionFund.OnlineSort != null
+                     where a.Amt > 0
+                     select new GivingConfirmation.FundItem()
+                     {
+                         Amt = a.Amt.Value,
+                         Desc = a.ContributionFund.FundName,
+                         Fundid = a.FundId
+                     }).ToList();
             var total = q.Sum(vv => vv.Amt);
 
             if (total == 0)
@@ -87,6 +87,7 @@ namespace CmsData
                 LastFourCC = preferredType == PaymentType.CreditCard ? paymentInfo.MaskedCard.Last(4) : null,
                 LastFourACH = preferredType == PaymentType.Ach ? paymentInfo.MaskedAccount.Last(4) : null,
                 OrgId = orgid,
+                LoginPeopleId = Person.PeopleId,
             };
 
             db.Transactions.InsertOnSubmit(t);
