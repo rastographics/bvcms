@@ -132,6 +132,12 @@ namespace CmsData.Codes
         public const int InServiceMember = 500;
         public const int VIP = 700;
         public const int Drop = -1;
+
+        public static int[] ProspectInactive =
+        {
+            Prospect,
+            InActive,
+        };
     }
     public static class ReturnFamilyMemberTypeCode
     {

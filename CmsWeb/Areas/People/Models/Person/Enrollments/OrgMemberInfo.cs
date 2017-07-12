@@ -26,6 +26,7 @@ namespace CmsWeb.Areas.People.Models
         public string OrgType { get; set; }
         public bool HasDirectory { get; set; }
         public bool IsLeaderAttendanceType { get; set; }
+        public bool IsProspect { get; set; }
 
         public List<OrgMemberInfo> ChildOrgs { get; set; }
 
@@ -60,7 +61,9 @@ namespace CmsWeb.Areas.People.Models
                         return $"<a title=\"{DivisionName}\" href=\"/MemberDirectory/{OrgId}\">{Name}</a>";
                     }
 
-                    return $"<a title=\"{DivisionName}\" href=\"/OrgContent/{OrgId}\">{Name}</a>";
+                    return IsProspect 
+                        ? Name 
+                        : $"<a title=\"{DivisionName}\" href=\"/OrgContent/{OrgId}\">{Name}</a>";
                 case "enroll date":
                 case "enrolldate":
                     return EnrollDate.FormatDate();

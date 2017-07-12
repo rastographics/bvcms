@@ -46,6 +46,8 @@ namespace CmsData.View
 		
 		private bool? _IsLeaderAttendanceType;
 		
+		private bool? _IsProspect;
+		
 		private int _PeopleId;
 		
 		private int? _LeaderId;
@@ -313,6 +315,23 @@ namespace CmsData.View
 			{
 				if (this._IsLeaderAttendanceType != value)
 					this._IsLeaderAttendanceType = value;
+			}
+
+		}
+
+		
+		[Column(Name="IsProspect", Storage="_IsProspect", DbType="bit")]
+		public bool? IsProspect
+		{
+			get
+			{
+				return this._IsProspect;
+			}
+
+			set
+			{
+				if (this._IsProspect != value)
+					this._IsProspect = value;
 			}
 
 		}

@@ -89,9 +89,9 @@ namespace CmsWeb.Models
                     {
                         OrgId = oo.OrganizationId,
                         OrgName = oo.OrganizationName,
-                        Inactive = oo.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Inactive,
-                        IsMember = om != null && om.MemberTypeId != CmsData.Codes.MemberTypeCode.InActive,
-                        IsLeader = (memberLeaderType ?? 0) == CmsData.Codes.AttendTypeCode.Leader,
+                        Inactive = oo.OrganizationStatusId == OrgStatusCode.Inactive,
+                        IsMember = om != null && !MemberTypeCode.ProspectInactive.Contains(om.MemberTypeId),
+                        IsLeader = (memberLeaderType ?? 0) == AttendTypeCode.Leader,
                         oc = oc,
                         NotAuthenticated = !Util.UserPeopleId.HasValue
                     };
@@ -120,7 +120,7 @@ namespace CmsWeb.Models
                         OrgId = oo.OrganizationId,
                         OrgName = oo.OrganizationName,
                         Inactive = oo.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Inactive,
-                        IsMember = om != null && om.MemberTypeId != CmsData.Codes.MemberTypeCode.InActive,
+                        IsMember = om != null && om.MemberTypeId != MemberTypeCode.InActive,
                         IsLeader = (memberLeaderType ?? 0) == CmsData.Codes.AttendTypeCode.Leader,
                         oc = oc,
                         NotAuthenticated = !Util.UserPeopleId.HasValue

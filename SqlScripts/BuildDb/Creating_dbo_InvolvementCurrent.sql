@@ -47,7 +47,8 @@ RETURN
 		,EnrollDate = om.EnrollmentDate
 		,om.AttendPct
 		,HasDirectory = CAST(IIF(o.PublishDirectory = 1, 1, 0) AS BIT)
-		,IsLeaderAttendanceType = CAST(IIF(mt.AttendanceTypeId = 10, 1, 0) AS BIT)
+		,IsLeaderAttendanceType = CAST(IIF(mt.AttendanceTypeId = 10, 1, 0) AS BIT)		
+		,IsProspect = CAST(IIF(om.MemberTypeId = 311, 1, 0) AS BIT)
 		,om.PeopleId
 		,o.LeaderId
 		,om.Pending

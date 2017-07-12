@@ -2197,6 +2197,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.SearchNoDiacritic> ViewSearchNoDiacritics
+	    {
+		    get { return this.GetTable< View.SearchNoDiacritic>(); }
+
+	    }
+
 	    public Table< View.SpouseOrHeadWithEmail> ViewSpouseOrHeadWithEmails
 	    {
 		    get { return this.GetTable< View.SpouseOrHeadWithEmail>(); }

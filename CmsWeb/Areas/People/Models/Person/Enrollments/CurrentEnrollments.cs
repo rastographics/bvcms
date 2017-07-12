@@ -138,7 +138,8 @@ namespace CmsWeb.Areas.People.Models
                        ProgramName = om.ProgramName,
                        OrgType = om.OrgType,
                        HasDirectory = om.HasDirectory.GetValueOrDefault(),
-                       IsLeaderAttendanceType = om.IsLeaderAttendanceType.GetValueOrDefault()
+                       IsLeaderAttendanceType = om.IsLeaderAttendanceType.GetValueOrDefault(),
+                       IsProspect = om.IsProspect == true
                    };
 
             if (DbUtil.Db.Setting("UX-ShowChildOrgsOnInvolvementTabs"))
