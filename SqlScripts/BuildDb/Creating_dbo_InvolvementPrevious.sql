@@ -35,7 +35,7 @@ RETURN
 		,OrgType = ISNULL(ot.[Description], 'Other')
 		,OrgCode = ot.Code
 		,OrgTypeSort = ISNULL(ots.TokenID, 9999)
-		,[Name] = o.OrganizationName
+		,[Name] = et.OrganizationName
 		,DivisionName = di.Name
 		,ProgramName = pr.Name
 		,o.LeaderName
@@ -60,8 +60,8 @@ RETURN
 	FROM dbo.EnrollmentTransaction et
 	JOIN dbo.Organizations o ON o.OrganizationId = et.OrganizationId
 	JOIN lookup.MemberType mt ON mt.Id = et.MemberTypeId
-	JOIN dbo.Division di ON di.Id = o.DivisionId
-	JOIN dbo.Program pr ON pr.Id = di.ProgId
+	LEFT JOIN dbo.Division di ON di.Id = o.DivisionId
+	LEFT JOIN dbo.Program pr ON pr.Id = di.ProgId
 	LEFT JOIN dbo.EnrollmentTransaction firstEt ON firstEt.TransactionId = et.EnrollmentTransactionId
 	LEFT JOIN lookup.OrganizationType ot ON ot.Id = o.OrganizationTypeId
 	LEFT JOIN OrgTypes ots ON ots.Value = ISNULL(ot.[Description], 'Other')

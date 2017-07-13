@@ -57,12 +57,14 @@ RETURN
 	FROM dbo.OrganizationMembers om
 	JOIN dbo.Organizations o ON o.OrganizationId = om.OrganizationId
 	JOIN lookup.MemberType mt ON mt.Id = om.MemberTypeId
-	JOIN dbo.Division di ON di.Id = o.DivisionId
-	JOIN dbo.Program pr ON pr.Id = di.ProgId
+	LEFT JOIN dbo.Division di ON di.Id = o.DivisionId
+	LEFT JOIN dbo.Program pr ON pr.Id = di.ProgId
 	LEFT JOIN lookup.OrganizationType ot ON ot.Id = o.OrganizationTypeId
 	LEFT JOIN OrgTypes ots ON ots.Value = ISNULL(ot.[Description], 'Other')
 	WHERE om.PeopleId = @pid
 )
+
+
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO
