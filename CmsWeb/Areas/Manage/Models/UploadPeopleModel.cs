@@ -449,6 +449,10 @@ namespace CmsWeb.Models
                 if (c.Text.HasValue())
                 {
                     var colname = c.Text;
+                    if(colname.Equal("IndividualId") && colname != "IndividualId")
+                        throw(new Exception($"Must Use IndividualId, not {colname}, case sensitive"));
+                    if(colname.Equal("FamilyId") && colname != "FamilyId")
+                        throw(new Exception($"Must Use FamilyId, not {colname}, case sensitive"));
                     var b = colname.SplitStr(".",2);
                     if (b.Length > 1)
                     {
