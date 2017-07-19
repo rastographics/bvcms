@@ -6,6 +6,7 @@ WITH amt AS (
 	FROM dbo.RecurringAmounts ra 
 	JOIN dbo.ContributionFund f ON f.FundId = ra.FundId
 	WHERE f.FundStatusId = 1
+	AND f.OnlineSort IS NOT NULL
 	GROUP BY ra.PeopleId
 )
 SELECT 

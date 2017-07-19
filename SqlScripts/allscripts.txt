@@ -554,6 +554,7 @@ Creating_dbo_DeleteQueryBitTags.sql
 Creating_dbo_RecurringGivingDueForToday.sql
 Creating_dbo_RecentAbsents.sql
 Creating_dbo_DaysSinceAttend.sql
+Creating_dbo_RecentAbsents1.sql
 Creating_dbo_GetTotalContributionsRange.sql
 Creating_dbo_UpdateAllPhoneHOH.sql
 Creating_dbo_LastMeetings.sql
