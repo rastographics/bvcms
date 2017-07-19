@@ -1,10 +1,17 @@
 ﻿@model CmsWeb.Areas.Reports.Models.RecentAbsentsViewModel
-@using CmsData
-@using CmsWeb
 @using UtilityExtensions
+@using StringExtensions = RestSharp.Extensions.StringExtensions
 @{
     ViewBag.Title = "Recent Absents";
-    ViewBag.ReportPageHeader = "Recent Absents";
+    var smallgroup = (string) ViewBag.SmallGroup;
+    ViewBag.ReportPageHeader = smallgroup.HasValue()
+        ? $"Recent Absents for {smallgroup}"
+        : "Recent Absents";
+    var worshipreport = Model.DefaultWorshipId.HasValue 
+        ? (smallgroup.HasValue() 
+            ? $"/Reports/RecentAbsentsSg/{Model.DefaultWorshipId}/{Model.OrgId}/{StringExtensions.UrlEncode(smallgroup)}" 
+            : $"/Reports/RecentAbsents1/{Model.DefaultWorshipId}/{Model.QueryId}")
+        : "";
     Layout = ViewExtensions2.TouchPointLayout();
 }
 <div class="report box box-responsive">
@@ -16,15 +23,15 @@
                     {
                         <tr>
                             <td colspan="6">
-                                <h2>View <a href="/Reports/RecentAbsents1/@Model.DefaultWorshipId/@Model.OrgId">@Model.DefaultWorshipName</a> recent absents.</h2>
+                                <h4>View <a href="@worshipreport">@Model.DefaultWorshipName</a> Recent Absents.</h4>
                             </td>
                         </tr>
                     }
                     <tr>
                         <th colspan="6" class="text-center">
-                            @if (Model.OrgFilterId > 0)
+                            @if (Model.OtherOrgFilterId > 0)
                             {
-                                <h3>Members of the <a href="/Org/@Model.OrgFilterId">@Model.OrgFilterName</a> @(string.IsNullOrEmpty(Model.OrgFilterLeaderName) ? "" : $"({Model.OrgFilterLeaderName})") Class</h3>
+                                <h3>Members of the <a href="/Org/@Model.OtherOrgFilterId">@Model.OrgFilterName</a> @(string.IsNullOrEmpty(Model.OrgFilterLeaderName) ? "" : $"({Model.OrgFilterLeaderName})") Class</h3>
                                 <em>With @Model.ConsecutiveAbsentsThreshold or more consecutive absents on and before @Model.LastMeeting.FormatDate() in <a href="/Org/@Model.OrgId">@Model.OrganizationName</a></em>
                             }
                             else

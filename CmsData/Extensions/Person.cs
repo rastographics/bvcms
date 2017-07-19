@@ -1322,6 +1322,17 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             ev.Data = value;
             ev.TransactionTime = dt ?? Util.Now;
         }
+        public static void AddToExtraText(CMSDataContext db, int id, string field, string value, DateTime? dt = null)
+        {
+            if (!value.HasValue())
+                return;
+            var ev = GetExtraValue(db, id, field);
+            if (ev.Data.HasValue())
+                ev.Data = value + "\n" + ev.Data;
+            else
+                ev.Data = value;
+            ev.TransactionTime = Util.Now;
+        }
         public static void AddEditExtraAttributes(CMSDataContext db, int id, string field, string value, DateTime? dt = null)
         {
             if (!value.HasValue())

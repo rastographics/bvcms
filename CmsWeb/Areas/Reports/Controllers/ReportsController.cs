@@ -413,11 +413,23 @@ namespace CmsWeb.Areas.Reports.Controllers
             return View(q);
         }
 
-        [HttpGet, Route("RecentAbsents1/{id}/{idfilter?}")]
-        public ActionResult RecentAbsents1(int id, int? idfilter)
+        [HttpGet, Route("RecentAbsents1/{oid}/{qid}/{otherorgidfilter?}")]
+        public ActionResult RecentAbsents1(int oid, Guid qid, int? otherorgidfilter)
         {
-            var m = new RecentAbsentsViewModel(id, idfilter);
+            var filter = DbUtil.Db.OrgFilters.SingleOrDefault(vv => vv.QueryId == qid);
+            if(filter == null)
+                return Message("Expired OrgFilter");
+            var m = new RecentAbsentsViewModel(oid, qid, otherorgidfilter);
             return View(m);
+        }
+        [HttpGet, Route("RecentAbsentsSg/{oid}/{otherorgidfilter?}/{smallgroup?}")]
+        public ActionResult RecentAbsentsSg(int oid, int? otherorgidfilter, string smallgroup)
+        {
+            var filter = DbUtil.Db.NewOrgFilter(oid);
+            filter.GroupSelect = Util.PickFirst(smallgroup, "NONE");
+            ViewBag.SmallGroup = filter.GroupSelect;
+            var m = new RecentAbsentsViewModel(oid, filter.QueryId, otherorgidfilter);
+            return View("RecentAbsents1", m);
         }
 
         [HttpGet]
