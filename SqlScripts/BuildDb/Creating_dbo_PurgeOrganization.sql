@@ -13,6 +13,7 @@ BEGIN
 		DELETE FROM dbo.MemberTags WHERE OrgId = @oid
 		DELETE FROM dbo.Coupons WHERE OrgId = @oid
 		DELETE FROM dbo.OrgSchedule WHERE OrganizationId = @oid
+		DELETE FROM dbo.ResourceOrganization WHERE OrganizationId = @oid
 		DELETE FROM dbo.OrganizationExtra WHERE OrganizationId = @oid
 		UPDATE dbo.Organizations SET ParentOrgId = NULL WHERE ParentOrgId = @oid
 		UPDATE dbo.ActivityLog

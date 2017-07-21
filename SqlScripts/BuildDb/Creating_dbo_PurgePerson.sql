@@ -32,11 +32,12 @@ BEGIN
 		DELETE dbo.EmailResponses WHERE PeopleId = @pid 
 		DELETE dbo.EmailQueueTo WHERE PeopleId = @pid; 
 		 
-		DELETE dbo.EmailQueueTo FROM dbo.EmailQueueTo et  
-		JOIN EmailQueue e ON e.Id = et.Id 
-		WHERE QueuedBy = @pid 
- 
-		DELETE dbo.EmailQueue WHERE QueuedBy = @pid; 
+		--DELETE dbo.EmailQueueTo FROM dbo.EmailQueueTo et  
+		--JOIN EmailQueue e ON e.Id = et.Id 
+		--WHERE QueuedBy = @pid 
+
+		UPDATE dbo.EmailQueue SET QueuedBy = NULL WHERE QueuedBy = @pid
+		--DELETE dbo.EmailQueue WHERE QueuedBy = @pid; 
  
 		DELETE dbo.GoerSupporter WHERE SupporterId = @pid OR GoerId = @pid 
 		DELETE dbo.GoerSenderAmounts WHERE SupporterId = @pid OR GoerId = @pid 
