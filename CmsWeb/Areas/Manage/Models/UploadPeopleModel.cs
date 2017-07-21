@@ -191,10 +191,10 @@ namespace CmsWeb.Models
             {
                 f = new Family
                 {
-                    AddressLineOne = a.Address,
-                    AddressLineTwo = a.Address2,
-                    CityName = a.City,
-                    StateCode = a.State,
+                    AddressLineOne = GetString(a.Address),
+                    AddressLineTwo = GetString(a.Address2),
+                    CityName = GetString(a.City),
+                    StateCode = GetString(a.State),
                     ZipCode = GetString(a.Zip),
                     HomePhone = GetDigits(a.HomePhone)
                 };
@@ -214,12 +214,12 @@ namespace CmsWeb.Models
                 0, 0, 0, null, Testing);
             p.FixTitle();
 
-            p.AltName = a.AltName;
-            p.SuffixCode = a.Suffix;
-            p.MiddleName = a.Middle;
-            p.MaidenName = a.MaidenName;
-            p.EmployerOther = a.Employer;
-            p.OccupationOther = a.Occupation;
+            p.AltName = GetString(a.AltName);
+            p.SuffixCode = GetString(a.Suffix);
+            p.MiddleName = GetString(a.Middle);
+            p.MaidenName = GetString(a.MaidenName);
+            p.EmployerOther = GetString(a.Employer);
+            p.OccupationOther = GetString(a.Occupation);
 
             p.EmailAddress = GetStringTrimmed(a.Email);
             p.EmailAddress2 = GetStringTrimmed(a.Email2);

@@ -49,11 +49,17 @@ namespace CmsWeb.Models
         internal override void StoreIds(Person p, dynamic a)
         {
             if (AlphaNumericIds)
+            {
                 p.AddEditExtraText("IndividualId", (string)a.IndividualId);
+                if(!Testing)
+                    peopleidsa.Add(a.IndividualId, p.PeopleId);
+            }
             else
+            {
                 p.AddEditExtraInt("IndividualId", (int)a.IndividualId);
-            if(!Testing)
-                peopleids.Add((int)a.IndividualId, p.PeopleId);
+                if(!Testing)
+                    peopleids.Add((int)a.IndividualId, p.PeopleId);
+            }
         }
 
         private void UploadPledges(UploadPeopleRun rt, ExcelPackage pkg)
@@ -201,7 +207,7 @@ namespace CmsWeb.Models
             {
                 var row = new PledgeGift()
                 {
-                    IndividualId = GetInt(ws.Cells[r, Names["IndividualId"]].Value),
+                    IndividualId = ws.Cells[r, Names["IndividualId"]].Value,
                     Amount = GetDecimal(ws.Cells[r, Names["Amount"]].Value),
                     Date = GetDate(ws.Cells[r, Names["Date"]].Value) ?? DateTime.MinValue,
                     FundId = GetInt(ws.Cells[r, Names["FundId"]].Value),
@@ -222,7 +228,7 @@ namespace CmsWeb.Models
             {
                 var row = new PledgeGift
                 {
-                    IndividualId = GetInt(ws.Cells[r, Names["IndividualId"]].Value),
+                    IndividualId = ws.Cells[r, Names["IndividualId"]].Value,
                     Amount = GetDecimal(ws.Cells[r, Names["PledgeAmount"]].Value),
                     Date = GetDate(ws.Cells[r, Names["PledgeDate"]].Value) ?? DateTime.MinValue,
                     FundId = GetInt(ws.Cells[r, Names["FundId"]].Value),
@@ -274,7 +280,7 @@ DBCC CHECKIDENT ('[BundleDetail]', RESEED, 0)
     }
     public class PledgeGift
     {
-        public int IndividualId { get; set; }
+        public object IndividualId { get; set; }
         public decimal Amount { get; set; }
         public DateTime Date { get; set; }
         public string FundName { get; set; }
