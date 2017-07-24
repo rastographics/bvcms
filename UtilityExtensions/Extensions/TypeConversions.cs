@@ -105,7 +105,7 @@ namespace UtilityExtensions
         {
             if (o is bool)
                 return (bool)o;
-            return false;
+            return o.ToString().ToBool();
         }
         public static int ToInt(this double d)
         {

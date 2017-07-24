@@ -217,6 +217,7 @@ namespace CmsData
         //        }
         public static bool TargetLinkPeople => DbUtil.Db.UserPreference("TargetLinkPeople", true);
         public static bool TargetLinkOrg => DbUtil.Db.UserPreference("TargetLinkOrg", true);
+        public static bool OnlineRegTypeSearchAdd => GetSessionObj("OnlineRegTypeSearchAdd", false).ToBool();
 
         //        const string STR_ActiveOrganizationId = "ActiveOrganizationId";
         //        public static int? CurrentOrgId

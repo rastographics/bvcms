@@ -1,65 +1,87 @@
 ﻿@{
     var finance = User.IsInRole("Finance");
+    var edituser = User.IsInRole("Edit");
     var targetperson = Util2.TargetLinkPeople;
     var targetorg = Util2.TargetLinkOrg;
-    var testnofinance = (string)HttpContext.Current.Session["testnofinance"] == "true";
+    var onlineregtypesearchadd = Util2.OnlineRegTypeSearchAdd;
+    var testnofinance = (string) HttpContext.Current.Session["testnofinance"] == "true";
 }
 <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="me" title="@Util.UserName">
-  @if (!string.IsNullOrEmpty(Util.UserThumbPictureUrl))
-  {
-      <div id="thumbnail-picture" class="img-circle hidden-xs"></div>
-  }
-  else
-  {
-      <i class="fa fa-user hidden-xs"></i>
-  }
-  <i class="fa fa-user visible-xs-inline"></i>&nbsp;&nbsp;<span class="visible-lg-inline-block visible-xs-inline">@(Util.UserName == "Admin" ? "Admin" : Util.UserFirstName)</span> <span class="caret"></span>
+    @if (!string.IsNullOrEmpty(Util.UserThumbPictureUrl))
+    {
+        <div id="thumbnail-picture" class="img-circle hidden-xs"></div>
+    }
+    else
+    {
+        <i class="fa fa-user hidden-xs"></i>
+    }
+    <i class="fa fa-user visible-xs-inline"></i>&nbsp;&nbsp;<span class="visible-lg-inline-block visible-xs-inline">@(Util.UserName == "Admin" ? "Admin" : Util.UserFirstName)</span> <span class="caret"></span>
 </a>
 <ul class="dropdown-menu">
-  @Helper.LiAnchorLink("Profile", "/Person2/" + Util.UserPeopleId)
-  @Helper.LiAnchorLink("Change Password", "/Account/ChangePassword/")
-  <li class="divider"></li>
-  <li>
-    <a href="/Home/TargetPerson/@Html.Raw(targetperson)">
-      @if (targetperson)
-      {
-          <i class="dropdown-icon fa fa-toggle-on" style="color: #5cb85c"></i>
-      }
-      else
-      {
-          <i class="dropdown-icon fa fa-toggle-off"></i>
-      }
-      <span>&nbsp;&nbsp;Open Person In New Tab</span>
-    </a>
-  </li>
-  <li>
-    <a href="/Home/TargetOrg/@Html.Raw(targetorg)">
-      @if (targetorg)
-      {
-          <i class="dropdown-icon fa fa-toggle-on" style="color: #5cb85c"></i>
-      }
-      else
-      {
-          <i class="dropdown-icon fa fa-toggle-off"></i>
-      }
-      <span>&nbsp;&nbsp;Open Org In New Tab</span>
-    </a>
-  </li>
-  @if (finance)
-  {
-      <li>
-        @if (!testnofinance)
-        {
-            <a href="/Home2/TurnFinanceOff"><i class="dropdown-icon fa fa-toggle-on" style="color: #5cb85c"></i> 
-            <span>&nbsp;&nbsp;Finance Role</span></a>
-        }
-        else
-        {
-            <a href="/Home2/TurnFinanceOn"><i class="dropdown-icon fa fa-toggle-off"></i> 
-            <span>&nbsp;&nbsp;Finance Role</span></a>
-        }
-      </li>
-  }
-  <li class="divider"></li>
-  @Helper.LiAnchorLinkIcon("Log Out", "dropdown-icon fa fa-power-off", "/Account/LogOff/")
+    @Helper.LiAnchorLink("Profile", "/Person2/" + Util.UserPeopleId)
+    @Helper.LiAnchorLink("Change Password", "/Account/ChangePassword/")
+    <li class="divider"></li>
+    <li>
+        <a href="/Home/TargetPerson/@Html.Raw(targetperson)">
+            @if (targetperson)
+            {
+                <i class="dropdown-icon fa fa-toggle-on" style="color: #5cb85c"></i>
+            }
+            else
+            {
+                <i class="dropdown-icon fa fa-toggle-off"></i>
+            }
+            <span>&nbsp;&nbsp;Open Person In New Tab</span>
+        </a>
+    </li>
+    <li>
+        <a href="/Home/TargetOrg/@Html.Raw(targetorg)">
+            @if (targetorg)
+            {
+                <i class="dropdown-icon fa fa-toggle-on" style="color: #5cb85c"></i>
+            }
+            else
+            {
+                <i class="dropdown-icon fa fa-toggle-off"></i>
+            }
+            <span>&nbsp;&nbsp;Open Org In New Tab</span>
+        </a>
+    </li>
+    @if (edituser)
+    {
+        <li>
+            <a href="/Home/OnlineRegTypeSearchAdd/@Html.Raw(onlineregtypesearchadd)">
+                @if (onlineregtypesearchadd)
+                {
+                    <i class="dropdown-icon fa fa-toggle-on" style="color: #5cb85c"></i>
+                }
+                else
+                {
+                    <i class="dropdown-icon fa fa-toggle-off"></i>
+                }
+                <span>&nbsp;&nbsp;Use OnlineRegFind for SearchAdd</span>
+            </a>
+        </li>
+    }
+    @if (finance)
+    {
+        <li>
+            @if (!testnofinance)
+            {
+                <a href="/Home2/TurnFinanceOff">
+                    <i class="dropdown-icon fa fa-toggle-on" style="color: #5cb85c"></i>
+                    <span>&nbsp;&nbsp;Finance Role</span>
+                </a>
+            }
+            else
+            {
+                <a href="/Home2/TurnFinanceOn">
+                    <i class="dropdown-icon fa fa-toggle-off"></i>
+                    <span>&nbsp;&nbsp;Finance Role</span>
+                </a>
+            }
+        </li>
+    }
+    <li class="divider"></li>
+    @Helper.LiAnchorLinkIcon("Log Out", "dropdown-icon fa fa-power-off", "/Account/LogOff/")
 </ul>

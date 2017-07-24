@@ -35,9 +35,10 @@ namespace CmsWeb.Areas.Search.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
+        public string Phone { get; set; }
 
         [DisplayName("Communication")]
-        public string Phone { get; set; }
+        public string Communication { get; set; }
 
         public string Address { get; set; }
 
@@ -47,6 +48,7 @@ namespace CmsWeb.Areas.Search.Models
         public bool UsersOnly => usersOnlyContextTypes.Contains(AddContext.ToLower());
 
         public bool ShowLimitedSearch => RoleChecker.HasSetting(SettingName.LimitedSearchPerson, false);
+        public bool OnlineRegTypeSearch { get; set; }
 
         public string HelpLink(string page)
         {
@@ -55,6 +57,9 @@ namespace CmsWeb.Areas.Search.Models
 
         public override IQueryable<Person> DefineModelList()
         {
+            if (ShowLimitedSearch)
+                return RunLimitedSearch();
+
             var db = DbUtil.Db;
             var q = Util2.OrgLeadersOnly
                 ? db.OrgLeadersOnlyTag2().People(db)
@@ -63,8 +68,10 @@ namespace CmsWeb.Areas.Search.Models
             if (UsersOnly)
                 q = q.Where(p => p.Users.Any(uu => uu.UserRoles.Any(ur => ur.Role.RoleName == "Access")));
 
-            if (ShowLimitedSearch)
-                return RunLimitedSearch();
+            if (OnlineRegTypeSearch)
+                return from pid in db.FindPerson(FirstName, LastName, dob.ToDate(), Email, Phone)
+                    join p in q on pid.PeopleId equals p.PeopleId
+                    select p;
 
             if (Name.HasValue())
             {
@@ -101,14 +108,14 @@ namespace CmsWeb.Areas.Search.Models
                               || p.Family.ZipCode.Contains(Address)
                         select p;
             }
-            if (Phone.IsNotNull())
+            if (Communication.IsNotNull())
             {
-                Phone = Phone.Trim();
-                if (Phone.HasValue())
+                Communication = Communication.Trim();
+                if (Communication.HasValue())
                     q = from p in q
-                        where p.CellPhone.Contains(Phone) || p.EmailAddress.Contains(Phone)
-                              || p.Family.HomePhone.Contains(Phone)
-                              || p.WorkPhone.Contains(Phone)
+                        where p.CellPhone.Contains(Communication) || p.EmailAddress.Contains(Communication)
+                              || p.Family.HomePhone.Contains(Communication)
+                              || p.WorkPhone.Contains(Communication)
                         select p;
             }
             if (dob.HasValue())

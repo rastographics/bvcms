@@ -23,6 +23,7 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             DbUtil.Db.SetNoLock();
             ModelState.Clear();
+            m.OnlineRegTypeSearch = Util2.OnlineRegTypeSearchAdd;
 
             if (m.ShowLimitedSearch)
             {
@@ -76,6 +77,7 @@ namespace CmsWeb.Areas.Search.Controllers
             Util.NameSplit(m.Name, out first, out last);
             m.Name = last;
             ModelState.Clear();
+            m.OnlineRegTypeSearch = false;
             return View(m);
         }
 

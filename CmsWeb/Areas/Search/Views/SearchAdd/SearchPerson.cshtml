@@ -1,52 +1,6 @@
-﻿@model CmsWeb.Areas.Search.Models.SearchAddModel
-@if (!Model.ShowLimitedSearch)
-{
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Search for Person to @Model.DialogTitle</h4>
-            </div>
-            <div id="search-person-form" class="modal-body">
-                <div class="row">
-                    <div class="col-sm-6">
-                        @Html.EditorFor(m => m.Name, new { help = "Starting letters of First &amp; Last or just Last, e.g. <u>Pe Smi</u>" })
-                    </div>
-                    <div class="col-sm-6">
-                        @Html.EditorFor(m => m.Phone, new { help = "Any part of any Phone or Email" })
-                    </div>
-                    <div class="clearfix"></div>
-                    <div class="col-sm-6">
-                        @Html.EditorFor(m => m.Address, new { help = "Any part of the Street Address, City or Zip" })
-                    </div>
-                    <div class="col-sm-6">
-                        @Html.EditorFor(m => m.dob, new { help = "YYYY or MM or MM/DD or MM/DD/YY" })
-                    </div>
-                    @Html.EditorFor(m => m, "HiddenMeta")
-                    @Html.EditorFor(m => m, "HiddenPeople")
-                    <div class="col-sm-12">
-                        <div class="pull-right">
-                            <a href="#" class="btn btn-default clear">Clear</a>
-                            <a id="searchperson" href="/SearchAdd2/Results" class="btn btn-primary ajax" title="add new">Search</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <div class="pull-left">
-                    <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
-                </div>
-                @Html.HiddenFor(m => m.DisplaySkipSearch)
-                @if (Model.DisplaySkipSearch && Model.CanAdd)
-                {
-                    <a href="/SearchAdd2/NewPerson/0" class="btn btn-warning ajax" title="add new">Skip Search <i class="fa fa-arrow-circle-right"></i></a>
-                }
-
-            </div>
-        </div>
-    </div>
-}
-else
+﻿@using CmsData
+@model CmsWeb.Areas.Search.Models.SearchAddModel
+@if (Model.ShowLimitedSearch)
 {
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -88,5 +42,102 @@ else
             </div>
         </div>
     </div>
+}
+else if (Util2.OnlineRegTypeSearchAdd)
+{
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Search for Person to @Model.DialogTitle</h4>
+            </div>
+            <div id="search-person-form" class="modal-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        @Html.EditorFor(m => m.FirstName)
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.EditorFor(m => m.LastName)
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.EditorFor(m => m.dob)
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="col-sm-6">
+                        @Html.EditorFor(m => m.Phone)
+                    </div>
+                    <div class="col-sm-6">
+                        @Html.EditorFor(m => m.Email)
+                    </div>
+                    <div class="clearfix"></div>
+                    @Html.EditorFor(m => m, "HiddenMeta")
+                    @Html.EditorFor(m => m, "HiddenPeople")
+                    <div class="col-sm-12">
+                        <div class="pull-right">
+                            <a href="#" class="btn btn-default clear">Clear</a>
+                            <a id="searchperson" href="/SearchAdd2/Results" class="btn btn-primary ajax" title="add new">Search</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="pull-left">
+                    <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+                </div>
+                @Html.HiddenFor(m => m.DisplaySkipSearch)
+                @if (Model.DisplaySkipSearch && Model.CanAdd)
+                {
+                    <a href="/SearchAdd2/NewPerson/0" class="btn btn-warning ajax" title="add new">Skip Search <i class="fa fa-arrow-circle-right"></i></a>
+                }
 
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Search for Person to @Model.DialogTitle</h4>
+            </div>
+            <div id="search-person-form" class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        @Html.EditorFor(m => m.Name, new { help = "Starting letters of First &amp; Last or just Last, e.g. <u>Pe Smi</u>" })
+                    </div>
+                    <div class="col-sm-6">
+                        @Html.EditorFor(m => m.Communication, new { help = "Any part of any Phone or Email" })
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="col-sm-6">
+                        @Html.EditorFor(m => m.Address, new { help = "Any part of the Street Address, City or Zip" })
+                    </div>
+                    <div class="col-sm-6">
+                        @Html.EditorFor(m => m.dob, new { help = "YYYY or MM or MM/DD or MM/DD/YY" })
+                    </div>
+                    @Html.EditorFor(m => m, "HiddenMeta")
+                    @Html.EditorFor(m => m, "HiddenPeople")
+                    <div class="col-sm-12">
+                        <div class="pull-right">
+                            <a href="#" class="btn btn-default clear">Clear</a>
+                            <a id="searchperson" href="/SearchAdd2/Results" class="btn btn-primary ajax" title="add new">Search</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="pull-left">
+                    <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+                </div>
+                @Html.HiddenFor(m => m.DisplaySkipSearch)
+                @if (Model.DisplaySkipSearch && Model.CanAdd)
+                {
+                    <a href="/SearchAdd2/NewPerson/0" class="btn btn-warning ajax" title="add new">Skip Search <i class="fa fa-arrow-circle-right"></i></a>
+                }
+
+            </div>
+        </div>
+    </div>
 }
