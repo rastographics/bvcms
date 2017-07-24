@@ -13,10 +13,12 @@ namespace CmsWeb.Models
         private Dictionary<int, int> peopleids;
         private Dictionary<string, int> peopleidsa;
         internal bool AlphaNumericIds = false;
-        public UploadExcelIpsModel(string host, int peopleId, bool noupdate, bool testing = false)
+        internal bool IgnoreMissingGifts = false;
+        public UploadExcelIpsModel(string host, int peopleId, bool noupdate, bool ignoremissinggifts, bool testing = false)
             : base(host, peopleId, noupdate, testing)
         {
             PeopleSheetName = "Personal Data";
+            IgnoreMissingGifts = ignoremissinggifts;
         }
         public override bool DoUpload(ExcelPackage pkg)
         {
@@ -75,6 +77,9 @@ namespace CmsWeb.Models
                          group g by g.Date.Sunday() into weeklypledges
                          select weeklypledges).ToList();
             BundleHeader bh = null;
+            var c = db.Content("OrphanedPledges", "---", ContentTypeCode.TypeText);
+            c.Body = "";
+            db.SubmitChanges();
             foreach (var week in weeks)
             {
                 FinishBundle(db, bh);
@@ -97,7 +102,15 @@ namespace CmsWeb.Models
                     if (!Testing)
                     {
                         if (!pid.HasValue)
-                            throw new Exception($"peopleid not found from individualid {pledge.IndividualId}");
+                            if (IgnoreMissingGifts)
+                            {
+                                c = db.Content("OrphanedPledges");
+                                c.Body += $"{pledge.IndividualId} {pledge.Date:d} {pledge.Amount:C}\n";
+                                db.SubmitChanges();
+                                continue;
+                            }
+                            else
+                                throw new Exception($"peopleid not found from individualid {pledge.IndividualId}");
                         var f = db.FetchOrCreateFund(pledge.FundId, pledge.FundName ?? pledge.FundDescription);
                         f.FundPledgeFlag = true;
                     }
@@ -137,6 +150,9 @@ namespace CmsWeb.Models
                          group g by g.Date.Sunday() into weeklygifts
                          select weeklygifts).ToList();
             BundleHeader bh = null;
+            var c = db.Content("OrphanedGifts", "---", ContentTypeCode.TypeText);
+            c.Body = "";
+            db.SubmitChanges();
             foreach (var week in weeks)
             {
                 FinishBundle(db, bh);
@@ -158,7 +174,15 @@ namespace CmsWeb.Models
                     var pid = GetPeopleId(gift);
                     if (!Testing)
                         if (!pid.HasValue)
-                            throw new Exception($"peopleid not found from individualid {gift.IndividualId}");
+                            if (IgnoreMissingGifts)
+                            {
+                                c = db.Content("OrphanedGifts");
+                                c.Body += $"{gift.IndividualId} {gift.Date:d} {gift.Amount:C}\n";
+                                db.SubmitChanges();
+                                continue;
+                            }
+                            else
+                                throw new Exception($"peopleid not found from individualid {gift.IndividualId}");
                     if (!Testing)
                         db.FetchOrCreateFund(gift.FundId, gift.FundName ?? gift.FundDescription);
                     var bd = new BundleDetail();

@@ -152,9 +152,9 @@ namespace CmsWeb.Models
             DateTime? dob = GetDate(a.Birthday);
             string dobstr = dob.FormatDate();
             UpdateField(p, "DOB", dobstr);
-            UpdateField(p, "AltName", a.AltName);
-            UpdateField(p, "SuffixCode", a.Suffix);
-            UpdateField(p, "MiddleName", a.Middle);
+            UpdateField(p, "AltName", GetString(a.AltName));
+            UpdateField(p, "SuffixCode", GetString(a.Suffix));
+            UpdateField(p, "MiddleName", GetString(a.Middle));
 
             UpdateField(p, "CellPhone", GetDigits(a.CellPhone));
             UpdateField(p, "WorkPhone", GetDigits(a.WorkPhone));
@@ -164,10 +164,10 @@ namespace CmsWeb.Models
             if (!Testing)
                 UpdateField(p, "CampusId", Campus(a.Campus));
 
-            UpdateField(p.Family, "AddressLineOne", a.Address);
-            UpdateField(p.Family, "AddressLineTwo", a.Address2);
-            UpdateField(p.Family, "CityName", a.City);
-            UpdateField(p.Family, "StateCode", a.State);
+            UpdateField(p.Family, "AddressLineOne", GetString(a.Address));
+            UpdateField(p.Family, "AddressLineTwo", GetString(a.Address2));
+            UpdateField(p.Family, "CityName", GetString(a.City));
+            UpdateField(p.Family, "StateCode", GetString(a.State));
             UpdateField(p.Family, "ZipCode", GetString(a.Zip));
 
             UpdateMemberStatus(db, p, a.MemberStatus);

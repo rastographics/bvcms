@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
 		[HttpPost]
 		[ValidateInput(false)]
-		public ActionResult Index(HttpPostedFileBase file, bool noupdate)
+		public ActionResult Index(HttpPostedFileBase file, bool noupdate, bool ignoremissinggifts)
 		{
 			string host = Util.Host;
 			var runningtotals = new UploadPeopleRun { Started = DateTime.Now, Count = 0, Processed = 0 };
@@ -37,7 +37,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 				var db = DbUtil.Create(host);
 				try
 				{
-					var m = new UploadExcelIpsModel(host, pid ?? 0, noupdate, testing: true);
+					var m = new UploadExcelIpsModel(host, pid ?? 0, noupdate, ignoremissinggifts, testing: true);
 					m.DoUpload(package);
 					db.Dispose();
     				db = DbUtil.Create(host);
@@ -46,7 +46,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         			db.UploadPeopleRuns.InsertOnSubmit(runningtotals);
         			db.SubmitChanges();
 
-					m = new UploadExcelIpsModel(host, pid ?? 0, noupdate);
+					m = new UploadExcelIpsModel(host, pid ?? 0, noupdate, ignoremissinggifts);
 					m.DoUpload(package);
 				}
 				catch (Exception ex)
