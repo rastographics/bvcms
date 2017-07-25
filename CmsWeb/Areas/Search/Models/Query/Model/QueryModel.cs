@@ -160,7 +160,9 @@ namespace CmsWeb.Areas.Search.Models
         {
             Db.SetNoLock();
             var q = Db.People.Where(TopClause.Predicate(Db));
-            if (TopClause.ParentsOf)
+            if (TopClause.PlusParentsOf)
+                q = Db.PersonQueryPlusParents(q);
+            else if (TopClause.ParentsOf)
                 q = Db.PersonQueryParents(q);
             if(TopClause.FirstPersonSameEmail)
                 q = Db.PersonQueryFirstPersonSameEmail(q);
