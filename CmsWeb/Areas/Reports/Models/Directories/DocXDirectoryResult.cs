@@ -179,6 +179,8 @@ namespace CmsWeb.Areas.Reports.Models
                 pg.ReplaceText(code, di.Person.AltName);
             else if (code.Equal("{name}"))
                 pg.ReplaceText(code, di.Person.Name);
+            else if (code.Equal("{name2}"))
+                pg.ReplaceText(code, di.Person.Name2);
             else if (code.Equal("{familyname}"))
                 pg.ReplaceText(code, di.FamilyName);
             else if (code.Equal("{familytitle}"))
