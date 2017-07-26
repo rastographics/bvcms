@@ -59,9 +59,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 if (p.IsCreateAccount())
                     p.CreateAccount();
                 DbUtil.Db.SubmitChanges();
-
-                SendSingleConfirmationForOrg(p);
             }
+            foreach(var p in List)
+                SendSingleConfirmationForOrg(p);
             return true;
         }
 
