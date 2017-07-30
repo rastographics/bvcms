@@ -65,14 +65,18 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
         {
             var bd = NewBundleDetail(date, fundid, amount);
             bd.Contribution.CheckNo = checkno;
-            var eac = Util.Encrypt(routing + "|" + account);
-            var q = from kc in DbUtil.Db.CardIdentifiers
-                    where kc.Id == eac
-                    select kc.PeopleId;
-            var pid = q.SingleOrDefault();
-            if (pid != null)
+            int? pid = null;
+            if (account.HasValue() && !account.Contains("E+"))
+            {
+                var eac = Util.Encrypt(routing + "|" + account);
+                var q = from kc in DbUtil.Db.CardIdentifiers
+                        where kc.Id == eac
+                        select kc.PeopleId;
+                pid = q.SingleOrDefault();
+                bd.Contribution.BankAccount = eac;
+            }
+            if (pid > 0)
                 bd.Contribution.PeopleId = pid;
-            bd.Contribution.BankAccount = eac;
             return bd;
         }
 
@@ -171,6 +175,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
             if (subtext.Contains("date,transaction_id,transfer_id,transfer_date,transfer_net,first_name,last_name,email,give_amount,net_amount,fee_amount,status,member_id,campus_id,fund,fund_id,cause,cause_id,refund_amount"))
                 return new SubSplashImporter();
+
+            if (subtext.Contains("Posting Date,Account #,Deposit Ticket Sequence #,Deposit Amount,Debit Account,Item Serial #,Item Sequence #,Item Amount"))
+                return new LongViewHeightsImporter();
 
             switch (DbUtil.Db.Setting("BankDepositFormat", "none").ToLower())
             {
