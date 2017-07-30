@@ -23,6 +23,7 @@ BEGIN
 		DELETE dbo.EmailOptOut WHERE ToPeopleId = @pid 
 		DELETE dbo.OrgMemberExtra WHERE PeopleId = @pid 
 		DELETE dbo.PrevOrgMemberExtra WHERE PeopleId = @pid 
+		UPDATE dbo.[Transaction] SET LoginPeopleId = NULL WHERE LoginPeopleId = @pid
  
 		DELETE dbo.EmailResponses  
 		FROM dbo.EmailResponses r 

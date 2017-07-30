@@ -29,10 +29,16 @@ BEGIN
 		CASE WHEN (ISNULL(@email, '') = '' AND ISNULL(@phone, '') = '' AND @dob IS NULL)
 		OR (p.EmailAddress = @email AND LEN(@email) > 0)
 		OR (p.EmailAddress2 = @email AND LEN(@email) > 0) 
+		OR EXISTS(SELECT NULL FROM dbo.People m 
+			WHERE m.FamilyId = p.FamilyId AND m.PeopleId <> p.PeopleId 
+			AND m.EmailAddress = @email AND LEN(@email) > 0) 
 		THEN 1 ELSE 0 END 
 		+
 		CASE WHEN (f.HomePhone = @phone AND LEN(@phone) > 0)
-		OR (CellPhone = @phone AND LEN(@phone) > 0)
+		OR (p.CellPhone = @phone AND LEN(@phone) > 0)
+		OR EXISTS(SELECT NULL FROM dbo.People m 
+			WHERE m.FamilyId = p.FamilyId AND m.PeopleId <> p.PeopleId 
+			AND m.CellPhone = @phone) 
 		THEN 1 ELSE 0 END 
 		+
 		CASE WHEN (BirthDay = @d AND BirthMonth = @m AND ABS(BirthYear - @y) <= 1)
@@ -52,9 +58,6 @@ BEGIN
 		OR @lname = MaidenName 
 		OR @lname = MiddleName)
 	
-	
-	--SELECT p.PeopleId, Matches, Name, BirthMonth, BirthDay, BirthYear, EmailAddress, CellPhone FROM @mm
-	--JOIN dbo.People p ON [@mm].PeopleId = p.PeopleId
 	
 	INSERT INTO @t
 	SELECT PeopleId FROM @mm m1
