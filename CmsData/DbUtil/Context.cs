@@ -1710,5 +1710,17 @@ This search uses multiple steps which cannot be duplicated in a single query.
             cb.Password = pw;
             return new SqlConnection(cb.ConnectionString);
         }
+        public void Log2Content(string file, string data)
+        {
+            var c = Content(file, ContentTypeCode.TypeText);
+            if (c == null)
+            {
+                c = new Content() {Name = file, TypeID = ContentTypeCode.TypeText, Body = ""};
+                Contents.InsertOnSubmit(c);
+                SubmitChanges();
+            }
+            c.Body += $"{Util.Now:M/d/yy HH:mm:ss tt zz}{data}\n";
+            SubmitChanges();
+        }
     }
 }
