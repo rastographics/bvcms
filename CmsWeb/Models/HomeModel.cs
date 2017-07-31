@@ -135,7 +135,7 @@ namespace CmsWeb.Models
         }
         public IEnumerable<NewsInfo> BvcmsNews()
         {
-            return CachedNewsInfo("BvcmsNews", "http://blog.touchpointsoftware.com/feed/", 10);
+            return CachedNewsInfo("BvcmsNews", "http://www.touchpointsoftware.com/feed/", 10);
         }
 
         public IEnumerable<NewsInfo> ChurchNews()
