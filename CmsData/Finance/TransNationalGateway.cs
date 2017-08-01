@@ -868,5 +868,12 @@ namespace CmsData.Finance
 
         }
 
+        public string VaultId(int peopleId)
+        {
+            var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId);
+            if (paymentInfo?.PreferredGivingType == "c")
+                return paymentInfo.TbnCardVaultId.ToString();
+            return paymentInfo?.TbnBankVaultId.ToString();
+        }
     }
 }

@@ -345,5 +345,11 @@ namespace CmsData.Finance
         {
             throw new NotImplementedException();
         }
+
+        public string VaultId(int peopleId)
+        {
+            var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId);
+            return paymentInfo?.BluePayCardVaultId;
+        }
     }
 }

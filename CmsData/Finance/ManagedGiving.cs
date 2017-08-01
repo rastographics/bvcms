@@ -90,8 +90,16 @@ namespace CmsData
                 LoginPeopleId = Person.PeopleId,
             };
 
+            var vaultid = gw.VaultId(PeopleId);
+            if (!vaultid.HasValue())
+            {
+                t.Message = "Missing VaultId";
+                t.Approved = false;
+            }
             db.Transactions.InsertOnSubmit(t);
             db.SubmitChanges();
+            if (!vaultid.HasValue())
+                return 0;
 
             var ret = gw.PayWithVault(PeopleId, total, "Recurring Giving", t.Id, preferredType);
 
