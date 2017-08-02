@@ -80,7 +80,9 @@
         <p>
           @if (admin || managetransactions)
           {
-            <a href="@Model.TransactionsLink" target="transactions">View Transactions</a>
+              <a href="@Model.TransactionsLink" target="transactions">
+                  @(Model.TransactionsLink.Contains("goerid=") ? "View Goer Transactions" : "View Transactions")
+              </a>
           }
           @if (Model.AmtDue > 0)
           {
