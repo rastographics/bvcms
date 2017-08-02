@@ -22,6 +22,7 @@ using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Web;
+using CmsWeb.Code;
 using Elmah;
 using Encoder = System.Drawing.Imaging.Encoder;
 
@@ -112,7 +113,31 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
             DbUtil.Db.SubmitChanges();
 
-            if (string.Compare(content.Name, "StandardExtraValues2", StringComparison.OrdinalIgnoreCase) == 0)
+            if (string.Compare(content.Name, "CustomReportsMenu", StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                try
+                {
+                    var list = ReportsMenuModel.CustomItems1;
+                }
+                catch (Exception ex)
+                {
+                    if (ex is System.Xml.XmlException)
+                        return Content(Util.EndShowMessage(ex.Message, "javascript: history.go(-1)", "There is invalid XML in this document. Go Back to Repair"));
+                }
+            }
+            else if (string.Compare(content.Name, "CustomReports", StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                try
+                {
+                    var list = DbUtil.Db.ViewCustomScriptRoles.ToList();   
+                }
+                catch (Exception ex)
+                {
+                    if (ex.Message.Contains("XML parsing", ignoreCase: true))
+                        return Content(Util.EndShowMessage(ex.InnerException?.Message, "javascript: history.go(-1)", "There is invalid XML in this document. Go Back to Repair"));
+                }
+            }
+            else if (string.Compare(content.Name, "StandardExtraValues2", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 try
                 {
@@ -121,7 +146,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 catch (InvalidOperationException ex)
                 {
                     if (ex.InnerException is System.Xml.XmlException)
-                        return Content(Util.EndShowMessage(ex.InnerException.Message, "javascript: history.go(-1)", "Go Back to Repair"));
+                        return Content(Util.EndShowMessage(ex.InnerException.Message, "javascript: history.go(-1)", "There is invalid XML in this document. Go Back to Repair"));
                 }
             }
 
