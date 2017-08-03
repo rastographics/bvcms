@@ -7,6 +7,7 @@ using System.Web.Http;
 using System.Web.OData.Builder;
 using System.Web.OData.Extensions;
 using System.Web.OData.Formatter;
+using CmsData.View;
 using CmsWeb.Models.Api;
 using CmsWeb.Models.Api.Lookup;
 using Microsoft.OData.Edm.Library;
@@ -27,6 +28,8 @@ namespace CmsWeb
             builder.EntitySet<ApiContributionFund>("Funds");
             builder.EntitySet<ApiOrganization>("Organizations");
             builder.EntitySet<ApiOrganizationMember>("OrganizationMembers");
+            builder.EntitySet<ApiChAiPerson>("ChAiPeople");
+            builder.EntitySet<ApiChAiGift>("ChAiGifts");
 
             config.MapODataServiceRoute(
                 routeName: "ODataApiRoot",

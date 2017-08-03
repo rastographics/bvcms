@@ -681,6 +681,8 @@
     <Compile Include="Code\ReportsMenu.cs" />
     <Compile Include="Code\UserInputException.cs" />
     <Compile Include="Controllers\Api\ApiOptions.cs" />
+    <Compile Include="Controllers\Api\ChAiPeopleController.cs" />
+    <Compile Include="Controllers\Api\ChAiGiftsController.cs" />
     <Compile Include="Controllers\Api\PostController.cs" />
     <Compile Include="Controllers\Api\CustomController.cs" />
     <Compile Include="Controllers\Api\Lookup\BundleHeaderTypesController.cs" />
@@ -699,10 +701,12 @@
     <Compile Include="Controllers\ExtraValue\AdhocController.cs" />
     <Compile Include="Controllers\ExtraValue\ReportsController.cs" />
     <Compile Include="Controllers\MobileAppMenuController.cs" />
+    <Compile Include="Models\Api\ApiChAiGift.cs" />
     <Compile Include="Models\Api\ApiOrganization.cs" />
     <Compile Include="Models\Api\ApiLookup.cs" />
     <Compile Include="Models\Api\ApiContribution.cs" />
     <Compile Include="Models\Api\ApiContributionFund.cs" />
+    <Compile Include="Models\Api\ApiChAiPerson.cs" />
     <Compile Include="Models\Api\ApiPerson.cs" />
     <Compile Include="Models\Api\ApiOrganizationMember.cs" />
     <Compile Include="Models\Api\AddContributionModel.cs" />

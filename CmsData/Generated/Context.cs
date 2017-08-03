@@ -338,6 +338,10 @@ namespace CmsData
         partial void UpdateLabelFormat(LabelFormat instance);
         partial void DeleteLabelFormat(LabelFormat instance);
         
+        partial void InsertLongRunningOp(LongRunningOp instance);
+        partial void UpdateLongRunningOp(LongRunningOp instance);
+        partial void DeleteLongRunningOp(LongRunningOp instance);
+        
         partial void InsertLongRunningOperation(LongRunningOperation instance);
         partial void UpdateLongRunningOperation(LongRunningOperation instance);
         partial void DeleteLongRunningOperation(LongRunningOperation instance);
@@ -1252,6 +1256,12 @@ namespace CmsData
 
 		}
 
+		public Table< LongRunningOp> LongRunningOps
+		{
+			get	{ return this.GetTable< LongRunningOp>(); }
+
+		}
+
 		public Table< LongRunningOperation> LongRunningOperations
 		{
 			get	{ return this.GetTable< LongRunningOperation>(); }
@@ -1909,6 +1919,18 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.ChAiGiftDatum> ViewChAiGiftDatas
+	    {
+		    get { return this.GetTable< View.ChAiGiftDatum>(); }
+
+	    }
+
+	    public Table< View.ChAiIndividualDatum> ViewChAiIndividualDatas
+	    {
+		    get { return this.GetTable< View.ChAiIndividualDatum>(); }
+
+	    }
+
 	    public Table< View.ChangeLogDetail> ViewChangeLogDetails
 	    {
 		    get { return this.GetTable< View.ChangeLogDetail>(); }
@@ -2164,6 +2186,12 @@ namespace CmsData
 	    public Table< View.RandNumber> ViewRandNumbers
 	    {
 		    get { return this.GetTable< View.RandNumber>(); }
+
+	    }
+
+	    public Table< View.RecurringGivingDueForToday> ViewRecurringGivingDueForTodays
+	    {
+		    get { return this.GetTable< View.RecurringGivingDueForToday>(); }
 
 	    }
 
@@ -4705,24 +4733,6 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.VisitAttendStr", IsComposable = true)]
-		[return: Parameter(DbType = "varchar")]
-		public string VisitAttendStr(
-            [Parameter(Name = "oid", DbType="int")] int? oid,
-            [Parameter(Name = "pid", DbType="int")] int? pid,
-            [Parameter(Name = "MeetingDay1", DbType="date")] DateTime? MeetingDay1,
-            [Parameter(Name = "MeetingDay2", DbType="date")] DateTime? MeetingDay2
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                oid,
-                pid,
-                MeetingDay1,
-                MeetingDay2
-                ).ReturnValue));
-		}
-
 		[Function(Name="dbo.FamilyMakeup", IsComposable = true)]
 		[return: Parameter(DbType = "varchar")]
 		public string FamilyMakeup(
@@ -4832,6 +4842,18 @@ namespace CmsData
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid,
                 asof
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.OrgFilterCheckedCount", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? OrgFilterCheckedCount(
+            [Parameter(Name = "queryid", DbType="uniqueidentifier")] Guid? queryid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                queryid
                 ).ReturnValue));
 		}
 
@@ -5040,18 +5062,6 @@ namespace CmsData
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid,
                 oid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.OrgFilterCheckedCount", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? OrgFilterCheckedCount(
-            [Parameter(Name = "queryid", DbType="uniqueidentifier")] Guid? queryid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                queryid
                 ).ReturnValue));
 		}
 
@@ -6160,6 +6170,24 @@ namespace CmsData
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.VisitAttendStr", IsComposable = true)]
+		[return: Parameter(DbType = "varchar")]
+		public string VisitAttendStr(
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "pid", DbType="int")] int? pid,
+            [Parameter(Name = "MeetingDay1", DbType="date")] DateTime? MeetingDay1,
+            [Parameter(Name = "MeetingDay2", DbType="date")] DateTime? MeetingDay2
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                pid,
+                MeetingDay1,
+                MeetingDay2
                 ).ReturnValue));
 		}
 
