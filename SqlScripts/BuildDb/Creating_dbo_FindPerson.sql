@@ -38,7 +38,7 @@ BEGIN
 		OR (p.CellPhone = @phone AND LEN(@phone) > 0)
 		OR EXISTS(SELECT NULL FROM dbo.People m 
 			WHERE m.FamilyId = p.FamilyId AND m.PeopleId <> p.PeopleId 
-			AND m.CellPhone = @phone) 
+			AND m.CellPhone = @phone AND LEN(@phone) > 0) 
 		THEN 1 ELSE 0 END 
 		+
 		CASE WHEN (BirthDay = @d AND BirthMonth = @m AND ABS(BirthYear - @y) <= 1)
