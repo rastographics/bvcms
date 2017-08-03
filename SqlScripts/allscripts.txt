@@ -558,8 +558,11 @@ Creating_dbo_RecentAbsents.sql
 Creating_dbo_DaysSinceAttend.sql
 Creating_dbo_RecentAbsents1.sql
 Creating_dbo_GetTotalContributionsRange.sql
+Creating_dbo_ChAiGiftData.sql
 Creating_dbo_UpdateAllPhoneHOH.sql
 Creating_dbo_LastMeetings.sql
+Creating_dbo_DOB.sql
+Creating_dbo_ChAiIndividualData.sql
 Creating_dbo_AddAbsents.sql
 Creating_dbo_Downline.sql
 Creating_IX_Downline_dbo_Downline.sql
@@ -859,7 +862,6 @@ Creating_dbo_AllRegexMatchs.sql
 Creating_dbo_BaptismAgeRange.sql
 Creating_dbo_ComputeAge.sql
 Creating_dbo_CreateForeignKeys.sql
-Creating_dbo_DOB.sql
 Creating_dbo_DayAndTime.sql
 Creating_dbo_DollarRange.sql
 Creating_dbo_DropForeignKeys.sql
