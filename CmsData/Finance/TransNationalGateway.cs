@@ -867,13 +867,19 @@ namespace CmsData.Finance
             db.SubmitChanges();
 
         }
-
         public string VaultId(int peopleId)
         {
             var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId);
-            if (paymentInfo?.PreferredGivingType == "c")
-                return paymentInfo.TbnCardVaultId.ToString();
-            return paymentInfo?.TbnBankVaultId.ToString();
+            switch (Util.PickFirst(paymentInfo.PreferredGivingType, "").ToLower())
+            {
+                case "c":
+                    return paymentInfo.TbnCardVaultId.ToString();
+                case "b":
+                    return paymentInfo.TbnBankVaultId.ToString();
+                default:
+                    return (paymentInfo.TbnCardVaultId ?? paymentInfo.TbnBankVaultId).ToString();
+            }
+                
         }
     }
 }
