@@ -43,6 +43,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool CreatingAccount { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string Suffix { get; set; }
 
         // used for both cell and home phone (when a new family is created), otherwise just cell
         public string Phone
