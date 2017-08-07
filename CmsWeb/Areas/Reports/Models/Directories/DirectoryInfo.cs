@@ -40,7 +40,7 @@ namespace CmsWeb.Areas.Reports.Models
         }
         public string HomePhone => Person.DoNotPublishPhones == true ? "" : Person.HomePhone.FmtFone();
         public string CellPhone => Person.DoNotPublishPhones == true ? "" : Person.CellPhone.FmtFone();
-        public string SpouseCell => SpouseDoNotPublishPhone == true ? "" : Person.CellPhone.FmtFone();
+        public string SpouseCell => SpouseDoNotPublishPhone == true ? "" : SpouseCellPhone.FmtFone();
         public string Address
         {
             get
