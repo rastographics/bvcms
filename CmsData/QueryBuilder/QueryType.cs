@@ -222,6 +222,7 @@ namespace CmsData
         RecentDecisionType,
         RecentEmailCount,
         RecentEmailSentCount,
+        RecentFamilyAdultLastAttend,
         RecentFirstFamilyVisit,
         RecentFirstTimeGiver,
         RecentFlagAdded,

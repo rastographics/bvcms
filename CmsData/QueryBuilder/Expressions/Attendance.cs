@@ -259,5 +259,19 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+        internal Expression RecentFamilyAdultLastAttend()
+        {
+            var mindt = Util.Now.AddDays(-Days).Date;
+            var tf = CodeIds == "1";
+            var q = from m in db.LastFamilyOrgAttends(ProgramInt, DivisionInt, OrganizationInt, Codes.PositionInFamily.PrimaryAdult)
+                where m.Lastattend > mindt
+                select m.PeopleId;
+            var tag = db.PopulateTemporaryTag(q);
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            Expression expr = Expression.Invoke(pred, parm);
+            if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
+            return expr;
+        }
     }
 }

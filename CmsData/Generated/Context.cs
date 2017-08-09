@@ -3454,6 +3454,23 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.LastFamilyOrgAttends", IsComposable = true)]
+		public IQueryable< View.LastFamilyOrgAttend > LastFamilyOrgAttends(
+            [Parameter(DbType="int")] int? progid,
+            [Parameter(DbType="int")] int? divid,
+            [Parameter(DbType="int")] int? orgid,
+            [Parameter(DbType="int")] int? position
+            )
+		{
+			return this.CreateMethodCallQuery< View.LastFamilyOrgAttend>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                progid,
+                divid,
+                orgid,
+                position
+                );
+		}
+
 		[Function(Name="dbo.LastMeetings", IsComposable = true)]
 		public IQueryable< View.LastMeeting > LastMeetings(
             [Parameter(DbType="varchar")] string orgs

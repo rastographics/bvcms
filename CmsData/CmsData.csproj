@@ -632,6 +632,7 @@
     <Compile Include="Generated\Functions\InvolvementPreviou.cs" />
     <Compile Include="Generated\Functions\LastAddrElement.cs" />
     <Compile Include="Generated\Functions\LastAttendOrg.cs" />
+    <Compile Include="Generated\Functions\LastFamilyOrgAttend.cs" />
     <Compile Include="Generated\Functions\NotAttendedAsOf.cs" />
     <Compile Include="Generated\Functions\OptOut.cs" />
     <Compile Include="Generated\Functions\OrgDayStat.cs" />
