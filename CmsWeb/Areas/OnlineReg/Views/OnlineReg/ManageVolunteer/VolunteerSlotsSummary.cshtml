@@ -4,12 +4,14 @@
         <tr>
             <td> Week </td>
             <td> Day and Time </td>
+            <td> Description </td>
         </tr>
         @foreach (var s in Model)
         {
             <tr>
                 <td>@s.Sunday.ToString("MMM d, yyyy")</td>
                 <td>@s.Time.ToString("ddd h:mm tt")</td>
+                <td>@s.Description</td>
             </tr>	
         }
     </table>

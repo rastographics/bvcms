@@ -142,6 +142,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                             let count = meeting?.count ?? 0
                             select new Slot
                             {
+                                Description = ts.Description,
                                 AttendId = meeting != null ? (meeting.attend?.AttendId ?? 0) : 0,
                                 Checked = meeting != null && meeting.iscommitted,
                                 Time = time,
@@ -220,6 +221,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public class Slot
         {
             public int AttendId { get; set; }
+            public string Description { get; set; }
             public DateTime Time { get; set; }
             public DateTime Sunday { get; set; }
             public int Year { get; set; }
