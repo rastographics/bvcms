@@ -564,6 +564,7 @@ Creating_dbo_LastMeetings.sql
 Creating_dbo_DOB.sql
 Creating_dbo_ChAiIndividualData.sql
 Creating_dbo_AddAbsents.sql
+Creating_dbo_LastFamilyOrgAttends.sql
 Creating_dbo_Downline.sql
 Creating_IX_Downline_dbo_Downline.sql
 Creating_IXDownlineCatLeaderDisc_dbo_Downline.sql
