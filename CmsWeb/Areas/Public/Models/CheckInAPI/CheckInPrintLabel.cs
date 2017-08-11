@@ -73,7 +73,7 @@ namespace CmsWeb.CheckInAPI
                 {
                     labelCount = org.NumCheckInLabels ?? 1;
 
-                    if (!org.NoSecurityLabel ?? false)
+                    if (!(org.NoSecurityLabel ?? false))
                     {
                         requiresecuritylabel = true;
                     }
