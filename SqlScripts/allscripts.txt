@@ -571,6 +571,8 @@ Creating_IXDownlineCatLeaderDisc_dbo_Downline.sql
 Creating_dbo_DownlineAddLeader.sql
 Creating_dbo_UName2.sql
 Creating_dbo_DownlineAddLeaders.sql
+Creating_dbo_GetStreet.sql
+Creating_dbo_PotentialDups.sql
 Creating_dbo_WeekNumber.sql
 Creating_dbo_SundayForWeekNumber.sql
 Creating_dbo_WorshipAttendance.sql
@@ -859,6 +861,7 @@ Creating_pk_PK_VolunteerCodes_lookup_VolunteerCodes.sql
 Creating_dbo_Promotion.sql
 Creating_pk_PK_Promotion_dbo_Promotion.sql
 Creating_triggerdbo_delMeeting_dbo_Meetings.sql
+Creating_dbo_AllDigits.sql
 Creating_dbo_AllRegexMatchs.sql
 Creating_dbo_BaptismAgeRange.sql
 Creating_dbo_ComputeAge.sql

@@ -2,10 +2,10 @@ SET QUOTED_IDENTIFIER OFF
 GO
 SET ANSI_NULLS OFF
 GO
-CREATE FUNCTION [dbo].[IsValidEmail] (@string [nvarchar] (100))
+CREATE FUNCTION [dbo].[IsValidEmail] (@addr [nvarchar] (max))
 RETURNS [bit]
 WITH EXECUTE AS CALLER
-EXTERNAL NAME [CmsDataSqlClr].[CmsDataSqlClr.UserDefinedFunctions].[IsValidEmail]
+EXTERNAL NAME [CmsSqlClr].[UserDefinedFunctions].[IsValidEmail]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO
