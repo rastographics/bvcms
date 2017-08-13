@@ -1642,6 +1642,7 @@
     <Content Include="Content\touchpoint\templates\compactdir.docx" />
     <Content Include="Content\touchpoint\templates\picturedir24.docx" />
     <Content Include="Content\touchpoint\templates\fampicturedir12.docx" />
+    <Content Include="Areas\People\Views\Person\System\FindMatch.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />
@@ -1765,7 +1766,7 @@
     <Content Include="Areas\People\Views\Person\System\Changes.cshtml" />
     <Content Include="Areas\People\Views\Person\System\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\System\Duplicates.cshtml" />
-    <Content Include="Areas\People\Views\Person\System\DuplicateRow.cshtml" />
+    <Content Include="Areas\People\Views\Person\System\PotentialDup.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Edit.cshtml" />
     <Content Include="Areas\Search\Views\Query\Conditions.cshtml" />
     <Content Include="Areas\People\Views\Person\Ministry\Tab.cshtml" />

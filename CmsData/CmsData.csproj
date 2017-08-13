@@ -634,6 +634,7 @@
     <Compile Include="Generated\Functions\LastAttendOrg.cs" />
     <Compile Include="Generated\Functions\LastFamilyOrgAttend.cs" />
     <Compile Include="Generated\Functions\NotAttendedAsOf.cs" />
+    <Compile Include="Generated\Functions\OnlineRegMatch.cs" />
     <Compile Include="Generated\Functions\OptOut.cs" />
     <Compile Include="Generated\Functions\OrgDayStat.cs" />
     <Compile Include="Generated\Functions\OrgFilterCurrent.cs" />
@@ -664,6 +665,7 @@
     <Compile Include="Generated\Functions\PastAttendanceCredit.cs" />
     <Compile Include="Generated\Functions\PeopleIdsFromOrgSearch.cs" />
     <Compile Include="Generated\Functions\PledgeBalance.cs" />
+    <Compile Include="Generated\Functions\PotentialDup.cs" />
     <Compile Include="Generated\Functions\PotentialSubstitute.cs" />
     <Compile Include="Generated\Functions\RecentAttendInDaysByCountDesc.cs" />
     <Compile Include="Generated\Functions\RecentGiver.cs" />

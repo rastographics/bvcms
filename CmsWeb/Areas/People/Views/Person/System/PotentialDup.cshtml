@@ -1,0 +1,13 @@
+﻿@using UtilityExtensions
+@model CmsData.View.PotentialDup
+<tr>
+    <td><a href="/Person2/@Model.PeopleId">@Util.PickFirst(Model.First, "(empty)")</a></td>
+    <td>@Model.Nick</td>
+    <td>@Model.Middle</td>
+    <td>@Model.Last</td>
+    <td>@Model.Maiden</td>
+    <td>@Util.FormatBirthday(Model.BYear, Model.BMon, Model.BDay)</td>
+    <td>@Model.Email<br/>@Model.Member</td>
+    <td>@Model.FamAddr<br />@Model.PerAddr</td>
+</tr>
+
