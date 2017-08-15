@@ -48,7 +48,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public static List<ClassInfo> Classes(Organization masterorg, int id)
         {
             var q = from o in OrderedClasses(masterorg)
-                    let hasroom = (o.ClassFilled ?? false) == false && ((o.Limit ?? 0) == 0 || o.Limit > o.RegLimitCount(DbUtil.Db))
+                    let hasroom = (o.ClassFilled ?? false) == false 
+                        && ((o.Limit ?? 0) == 0 || o.Limit > o.RegLimitCount(DbUtil.Db)) 
+                        && (o.RegistrationClosed ?? false) == false 
+                        && (o.RegEnd ?? DateTime.MaxValue) > Util.Now
                     where o.RegistrationTypeId > 0
                     select new ClassInfo
                     {
