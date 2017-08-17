@@ -20,16 +20,16 @@ namespace CmsData
     {
         private const string STR_MeetingsToUpdate = "MeetingsToUpdate";
 
-        public EnrollmentTransaction Drop(CMSDataContext db)
+        public EnrollmentTransaction Drop(CMSDataContext db, bool skipTriggerProcessing = false)
         {
-            return Drop(db, DateTime.Now);
+            return Drop(db, DateTime.Now, skipTriggerProcessing);
         }
 
-        public EnrollmentTransaction Drop(CMSDataContext db, DateTime dropdate)
+        public EnrollmentTransaction Drop(CMSDataContext db, DateTime dropdate, bool skipTriggerProcessing = false)
         {
-            return Drop(db, dropdate, Organization.OrganizationName);
+            return Drop(db, dropdate, Organization.OrganizationName, skipTriggerProcessing);
         }
-        public EnrollmentTransaction Drop(CMSDataContext db, DateTime dropdate, string orgname)
+        public EnrollmentTransaction Drop(CMSDataContext db, DateTime dropdate, string orgname, bool skipTriggerProcessing = false)
         {
             db.SubmitChanges();
             while (true)
@@ -61,7 +61,8 @@ namespace CmsData
                     Tickets = Tickets,
                     RegisterEmail = RegisterEmail,
                     Score = Score,
-                    SmallGroups = string.Join("\n", sglist)
+                    SmallGroups = string.Join("\n", sglist),
+                    SkipInsertTriggerProcessing = skipTriggerProcessing
                 };
 
                 db.EnrollmentTransactions.InsertOnSubmit(droptrans);
@@ -724,12 +725,14 @@ AND a.PeopleId = {2}
         {
             if (fromOrg == toOrg)
                 return;
-            var om = db.OrganizationMembers.Single(m => m.PeopleId == pid && m.OrganizationId == fromOrg);
+            var om = db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == pid && m.OrganizationId == fromOrg);
+            if (om == null)
+                return;
             var tom = db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == pid && m.OrganizationId == toOrg);
             if (tom == null)
             {
                 tom = InsertOrgMembers(db,
-                    toOrg, pid, MemberTypeCode.Member, DateTime.Now, null, om.Pending ?? false);
+                    toOrg, pid, MemberTypeCode.Member, DateTime.Now, null, om.Pending ?? false, skipTriggerProcessing:true);
                 if (tom == null)
                     return;
             }
@@ -767,8 +770,10 @@ AND a.PeopleId = {2}
 
             if (om.OrganizationId != tom.OrganizationId)
                 tom.Moved = true;
-            om.Drop(db);
+            om.Drop(db, skipTriggerProcessing: true);
             db.SubmitChanges();
+//            db.RepairEnrollmentTransaction(toOrg, pid);
+//            db.RepairEnrollmentTransaction(fromOrg, pid);
         }
     }
 }
