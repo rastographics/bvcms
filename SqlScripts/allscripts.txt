@@ -579,6 +579,7 @@ Creating_dbo_WorshipAttendance.sql
 Creating_dbo_DownlineCategories.sql
 Creating_dbo_AttendDaysAfterNthVisitAsOf.sql
 Creating_dbo_NextAnniversary.sql
+Creating_dbo_OnlineRegMatches.sql
 Creating_dbo_DownlineBuildCategoryHistory.sql
 Creating_dbo_IsSmallGroupLeaderOnly.sql
 Creating_dbo_DownlineCreateCategoryConfigContent.sql
@@ -835,6 +836,8 @@ Creating_dbo_Audits.sql
 Creating_pk_PK_Audits_dbo_Audits.sql
 Creating_dbo_AuditValues.sql
 Creating_pk_PK_AuditValues_dbo_AuditValues.sql
+Creating_dbo_ContactExtra.sql
+Creating_pk_PK_ContactExtra_dbo_ContactExtra.sql
 Creating_dbo_ContentKeyWords.sql
 Creating_pk_PK_ContentKeyWords_dbo_ContentKeyWords.sql
 Creating_IX_ContentKeyWords_dbo_ContentKeyWords.sql
@@ -953,6 +956,7 @@ Adding_foreignkeystodbo_BackgroundChecks.sql
 Adding_foreignkeystodbo_CardIdentifiers.sql
 Adding_foreignkeystodbo_CheckInActivity.sql
 Adding_foreignkeystodbo_CheckInTimes.sql
+Adding_foreignkeystodbo_ContactExtra.sql
 Adding_foreignkeystodbo_Contactees.sql
 Adding_foreignkeystodbo_Contactors.sql
 Adding_foreignkeystodbo_Task(1).sql

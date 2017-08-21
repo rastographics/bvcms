@@ -593,6 +593,7 @@
     <Compile Include="Finance\TransNational\Vault\VaultResponse.cs" />
     <Compile Include="Generated\ApiSession.cs" />
     <Compile Include="Generated\CheckInSetting.cs" />
+    <Compile Include="Generated\ContactExtra.cs" />
     <Compile Include="Generated\CustomColumn.cs" />
     <Compile Include="Generated\Downline.cs" />
     <Compile Include="Generated\DownlineLeader.cs" />
