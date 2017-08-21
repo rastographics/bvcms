@@ -34,6 +34,9 @@ WHERE username = 'admin'
 DELETE dbo.Setting 
 WHERE id IN ('LastBatchRun', 'LastOrgFilterCleanup')
 
+UPDATE dbo.Content
+SET ThumbID = 0
+
 RETURN 0
 GO
 IF @@ERROR <> 0 SET NOEXEC ON

@@ -1313,7 +1313,7 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
         </center>
     </body>
 </html>
-', '2013-09-09 23:32:15.190', NULL, 2, 4, 18, 0, NULL, NULL, NULL, NULL, NULL)
+', '2013-09-09 23:32:15.190', NULL, 2, 0, 18, 0, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (70, N'Basic Template', N'Basic Template With Header', N'<html>
 	<head>
 		<title></title>
@@ -1576,7 +1576,7 @@ body{margin:0; padding:0;}
 		</center>
 	</body>
 </html>
-', '2013-09-09 23:32:15.190', NULL, 2, 5, 0, 0, NULL, NULL, NULL, NULL, NULL)
+', '2013-09-09 23:32:15.190', NULL, 2, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (71, N'ForgotPasswordReset2', N'ForgotPasswordReset2', N'<p>Someone recently requested a new password for {email}.
 To set your password, click your username below:</p>
 <blockquote>{resetlink}</blockquote>
