@@ -142,6 +142,10 @@ namespace CmsData
         partial void UpdateContactee(Contactee instance);
         partial void DeleteContactee(Contactee instance);
         
+        partial void InsertContactExtra(ContactExtra instance);
+        partial void UpdateContactExtra(ContactExtra instance);
+        partial void DeleteContactExtra(ContactExtra instance);
+        
         partial void InsertContactor(Contactor instance);
         partial void UpdateContactor(Contactor instance);
         partial void DeleteContactor(Contactor instance);
@@ -959,6 +963,12 @@ namespace CmsData
 		public Table< Contactee> Contactees
 		{
 			get	{ return this.GetTable< Contactee>(); }
+
+		}
+
+		public Table< ContactExtra> ContactExtras
+		{
+			get	{ return this.GetTable< ContactExtra>(); }
 
 		}
 
