@@ -6,6 +6,7 @@
             @(Model.PeopleId == null ? "Select" : Model.PeopleId.ToString())
         </a>
         <input type="hidden" class="date" value="@Model.Date.FormatDate()" />
+        <input type="hidden" class="campusid" value="@Model.campusid" />
     </td>
     <td class="name">
         @if (Model.PeopleId != null)

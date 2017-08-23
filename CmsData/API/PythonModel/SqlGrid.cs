@@ -17,6 +17,7 @@ namespace CmsData
         public string SqlGrid(string sql)
         {
             var p = new DynamicParameters();
+            int? tagid = null;
 
             if (sql.Contains("@BlueToolbarTagId"))
                 if (dictionary.ContainsKey("BlueToolbarGuid"))
@@ -26,6 +27,7 @@ namespace CmsData
                         throw new Exception("missing BlueToolbar Information");
                     var j = DbUtil.Db.PeopleQuery(guid.Value).Select(vv => vv.PeopleId).Take(1000);
                     var tag = DbUtil.Db.PopulateTemporaryTag(j);
+                    tagid = tag.Id;
                     p.Add("@BlueToolbarTagId", tag.Id);
                 }
             var cs = db.CurrentUser.InRole("Finance")
@@ -37,7 +39,8 @@ namespace CmsData
                 using (var rd = db.Connection.ExecuteReader(sql, p, commandTimeout: 300))
                 {
                     var table = Table(rd);
-                    return $@"
+                   return $@"
+<!-- TagId={tagid} -->
 <div class=""report box box-responsive"">
   <div class=""box-content"">
     <div class=""table-responsive"">

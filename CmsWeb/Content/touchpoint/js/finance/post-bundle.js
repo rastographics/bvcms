@@ -196,6 +196,7 @@
         $('#pid').val(personId);
         $('#name').val($("td.name a", tr).text());
         $('#contributiondate').val($(".date", tr).val());
+        $('#campusid').val($(".campusid", tr).val());
         $("#gear").show();
         $('#fund').val($("td.fund", tr).attr('val'));
 
@@ -466,6 +467,23 @@
         $("#contributiondate").val($("#newcontributiondate").val());
         $('#edit-date-modal').modal('hide');
     });
+
+    $("#showcampus").click(function (ev) {
+        ev.preventDefault();
+        $('#edit-campus-modal').modal('show');
+    });
+
+    $('#edit-campus-modal').on('shown.bs.modal', function () {
+        $("#newcampus").val($("#campusid").val()).focus();
+        $.InitializeDateElements();
+    });
+
+    $("#editcampusdone").click(function (ev) {
+        ev.preventDefault();
+        $("#campusid").val($("#newcampus").val());
+        $('#edit-campus-modal').modal('hide');
+    });
+
 });
 
 function AddSelected(ret) {

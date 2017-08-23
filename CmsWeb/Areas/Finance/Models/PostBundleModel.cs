@@ -44,6 +44,7 @@ namespace CmsWeb.Models
         public DateTime? contributiondate { get; set; }
         public string FundName { get; set; }
         public bool DefaultFundIsPledge { get; set; }
+        public int? campusid { get; set; }
 
         public BundleHeader Bundle
         {
@@ -97,7 +98,8 @@ namespace CmsWeb.Models
                         extra = d.Contribution.ExtraDatum.Data,
                         Date = d.Contribution.ContributionDate,
                         PLNT = ContributionTypeCode.SpecialTypes.Contains(d.Contribution.ContributionTypeId) ? d.Contribution.ContributionType.Code : "",
-                        memstatus = d.Contribution.Person.MemberStatus.Description
+                        memstatus = d.Contribution.Person.MemberStatus.Description,
+                        campusid = d.Contribution.CampusId,
                     };
             var list = q.ToList();
             foreach (var c in list)
@@ -398,6 +400,7 @@ namespace CmsWeb.Models
                     break;
             }
             c.FundId = fund;
+            c.CampusId = campusid;
             c.PeopleId = pid.ToInt2();
             c.ContributionAmount = amt;
             c.ContributionTypeId = type;
@@ -495,6 +498,7 @@ namespace CmsWeb.Models
             public DateTime? Date { get; set; }
             public string PLNT { get; set; }
             public string memstatus { get; set; }
+            public int? campusid { get; set; }
 
             public string CityStateZip => Util.FormatCSZ(City, State, Zip);
 
