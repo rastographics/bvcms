@@ -692,6 +692,7 @@
     <Compile Include="Generated\MobileAppActionType.cs" />
     <Compile Include="Generated\MobileAppAudioType.cs" />
     <Compile Include="Generated\MobileAppBuilding.cs" />
+    <Compile Include="Generated\MobileAppDevice.cs" />
     <Compile Include="Generated\MobileAppFloor.cs" />
     <Compile Include="Generated\MobileAppIcon.cs" />
     <Compile Include="Generated\MobileAppIconSet.cs" />
