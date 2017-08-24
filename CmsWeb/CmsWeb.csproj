@@ -493,7 +493,10 @@
     <Compile Include="Areas\People\Models\Downline\DownlineLevelsModel.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineSummaryModel.cs" />
     <Compile Include="Areas\People\Models\Task\TaskModel.cs" />
+    <Compile Include="Areas\Public\Controllers\MobileAPIv2Controller.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInMessage.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPIv2\MobileMessage.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPIv2\MobileAuthentication.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileGivingEntry.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileGivingHistory.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileInvolvement.cs" />

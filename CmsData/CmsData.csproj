@@ -687,6 +687,7 @@
     <Compile Include="Generated\MobileAppActionType.cs" />
     <Compile Include="Generated\MobileAppAudioType.cs" />
     <Compile Include="Generated\MobileAppBuilding.cs" />
+    <Compile Include="Generated\MobileAppDevice.cs" />
     <Compile Include="Generated\MobileAppFloor.cs" />
     <Compile Include="Generated\MobileAppIcon.cs" />
     <Compile Include="Generated\MobileAppIconSet.cs" />
@@ -734,6 +735,7 @@
     <Compile Include="Generated\Views\PeopleBasicModifed.cs" />
     <Compile Include="Generated\Views\PrevAddress.cs" />
     <Compile Include="Generated\Views\ProspectCount.cs" />
+    <Compile Include="Generated\Views\RecurringGivingDueForToday.cs" />
     <Compile Include="Generated\Views\RegistrationList.cs" />
     <Compile Include="Generated\Views\RegsettingCount.cs" />
     <Compile Include="Generated\Views\RegsettingMessage.cs" />
