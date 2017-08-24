@@ -79,6 +79,8 @@ namespace CmsData
    		
    		private EntitySet< Coupon> _Coupons;
 		
+   		private EntitySet< MobileAppDevice> _MobileAppDevices;
+		
    		private EntitySet< SMSGroupMember> _SMSGroupMembers;
 		
    		private EntitySet< Preference> _Preferences;
@@ -191,6 +193,8 @@ namespace CmsData
 		{
 			
 			this._Coupons = new EntitySet< Coupon>(new Action< Coupon>(this.attach_Coupons), new Action< Coupon>(this.detach_Coupons)); 
+			
+			this._MobileAppDevices = new EntitySet< MobileAppDevice>(new Action< MobileAppDevice>(this.attach_MobileAppDevices), new Action< MobileAppDevice>(this.detach_MobileAppDevices)); 
 			
 			this._SMSGroupMembers = new EntitySet< SMSGroupMember>(new Action< SMSGroupMember>(this.attach_SMSGroupMembers), new Action< SMSGroupMember>(this.detach_SMSGroupMembers)); 
 			
@@ -867,6 +871,16 @@ namespace CmsData
    		}
 
 		
+   		[Association(Name="FK_MobileAppDevices_Users", Storage="_MobileAppDevices", OtherKey="UserID")]
+   		public EntitySet< MobileAppDevice> MobileAppDevices
+   		{
+   		    get { return this._MobileAppDevices; }
+
+			set	{ this._MobileAppDevices.Assign(value); }
+
+   		}
+
+		
    		[Association(Name="FK_SMSGroupMembers_Users", Storage="_SMSGroupMembers", OtherKey="UserID")]
    		public EntitySet< SMSGroupMember> SMSGroupMembers
    		{
@@ -987,6 +1001,19 @@ namespace CmsData
 		}
 
 		private void detach_Coupons(Coupon entity)
+		{
+			this.SendPropertyChanging();
+			entity.User = null;
+		}
+
+		
+		private void attach_MobileAppDevices(MobileAppDevice entity)
+		{
+			this.SendPropertyChanging();
+			entity.User = this;
+		}
+
+		private void detach_MobileAppDevices(MobileAppDevice entity)
 		{
 			this.SendPropertyChanging();
 			entity.User = null;

@@ -414,6 +414,10 @@ namespace CmsData
         partial void UpdateMobileAppBuilding(MobileAppBuilding instance);
         partial void DeleteMobileAppBuilding(MobileAppBuilding instance);
         
+        partial void InsertMobileAppDevice(MobileAppDevice instance);
+        partial void UpdateMobileAppDevice(MobileAppDevice instance);
+        partial void DeleteMobileAppDevice(MobileAppDevice instance);
+        
         partial void InsertMobileAppFloor(MobileAppFloor instance);
         partial void UpdateMobileAppFloor(MobileAppFloor instance);
         partial void DeleteMobileAppFloor(MobileAppFloor instance);
@@ -1371,6 +1375,12 @@ namespace CmsData
 		public Table< MobileAppBuilding> MobileAppBuildings
 		{
 			get	{ return this.GetTable< MobileAppBuilding>(); }
+
+		}
+
+		public Table< MobileAppDevice> MobileAppDevices
+		{
+			get	{ return this.GetTable< MobileAppDevice>(); }
 
 		}
 
