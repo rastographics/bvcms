@@ -91,6 +91,10 @@ $(function () {
         return false;
     });
 
+    $.InitFunctions.Editable = function () {
+        $.InitFunctions.ExtraEditable();
+    };
+
 });
 
 function AddSelected(ret) {

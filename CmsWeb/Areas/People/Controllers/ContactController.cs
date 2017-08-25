@@ -1,5 +1,6 @@
 using System.Web.Mvc;
 using CmsWeb.Areas.People.Models;
+using CmsWeb.Models.ExtraValues;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
@@ -117,6 +118,14 @@ namespace CmsWeb.Areas.People.Controllers
             var m = new ContacteesModel(cid);
             var tid = m.AddTask(pid);
             return Redirect("/Task/" + tid);
+        }
+        [HttpPost]
+        public ActionResult ExtraValues(int cid, int ministry, int contactType, int contactReason)
+        {
+            var m = new ContactModel(cid);
+            m.SetLocationOnContact(ministry, contactType, contactReason);
+            var evmodel = new ExtraValueModel(cid, "Contact", m.Location);
+            return View("/Views/ExtraValue/Location.cshtml", evmodel);
         }
     }
 }

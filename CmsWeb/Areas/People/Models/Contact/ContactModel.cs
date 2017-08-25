@@ -44,6 +44,8 @@ namespace CmsWeb.Areas.People.Models
 
         public int? OrganizationId { get; set; }
 
+        public string Location { get; set; }
+
         public IEnumerable<SelectListItem> Roles()
         {
             var roles = DbUtil.Db.Setting("LimitToRolesForContacts", "").SplitStr(",").Where(rr => rr.HasValue()).ToArray();
@@ -119,6 +121,8 @@ namespace CmsWeb.Areas.People.Models
             LoadContact(id);
             if(contact != null)
                 this.CopyPropertiesFrom(contact);
+
+            SetLocationOnContact();
         }
 
         public bool CanView;
@@ -135,6 +139,7 @@ namespace CmsWeb.Areas.People.Models
 
             LoadContact(ContactId);
             this.CopyPropertiesTo(contact);
+            SetLocationOnContact();
             DbUtil.Db.SubmitChanges();
         }
         public static void DeleteContact(int cid)
@@ -213,6 +218,40 @@ namespace CmsWeb.Areas.People.Models
 
             return results;
         }
+
+        public void SetLocationOnContact()
+        {
+            var list = new List<int?>
+            {
+                Ministry.IntVal,
+                ContactType.IntVal,
+                ContactReason.IntVal,
+            };
+
+            Location = ComputeLocationString(list);
+        }
+
+        public void SetLocationOnContact(int? ministry, int? contactType, int? contactReason)
+        {
+            var list = new List<int?>
+            {
+                ministry,
+                contactType,
+                contactReason,
+            };
+
+            Location = ComputeLocationString(list);
+        }
+
+        private string ComputeLocationString(IEnumerable<int?> list)
+        {
+            list = list.Where(x => x != null && x != 0);
+            var location = string.Join("-", list);
+            if (location != string.Empty) return location;
+
+            return OrganizationId.HasValue ? "Organization" : "Person";
+        }
+
         private static ValidationResult ModelError(string message, string field)
         {
             return new ValidationResult(message, new[] { field });

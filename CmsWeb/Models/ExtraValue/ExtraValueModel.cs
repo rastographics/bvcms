@@ -107,6 +107,11 @@ namespace CmsWeb.Models.ExtraValues
                         where ee.PeopleId == Id2
                         select new ExtraValue(ee, this);
                     break;
+                case "Contact":
+                    q = from ee in DbUtil.Db.ContactExtras
+                        where ee.ContactId == Id
+                        select new ExtraValue(ee, this);
+                    break;
                 default:
                     q = new List<ExtraValue>();
                     break;
@@ -131,6 +136,8 @@ namespace CmsWeb.Models.ExtraValues
                     return DbUtil.Db.Families.SingleOrDefault(f => f.FamilyId == id);
                 case "OrgMember":
                     return DbUtil.Db.OrganizationMembers.SingleOrDefault(f => f.OrganizationId == id && f.PeopleId == id2);
+                case "Contact":
+                    return DbUtil.Db.LoadContactById(id);
                 default:
                     return null;
             }

@@ -6,11 +6,12 @@
 }
 @section head
 {
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
     @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
     @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2-bootstrap.css")
 }
 @Html.Hidden("Id")
-<div class="row">
+<div class="row tab-pane" data-action="GET">
     <div class="col-sm-12 col-md-9 col-lg-7">
         @(ViewBag.edit ? Html.Partial("ContactEdit", Model) : Html.Partial("ContactDisplay", Model))
         <ul class="nav nav-tabs" id="special-content-tabs">
@@ -63,13 +64,22 @@
 </div>
 @section scripts
 {
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
     @Fingerprint.Script("/Content/touchpoint/js/people/contact.js")
     @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
     @if (ViewBag.edit)
     {
         <script>
-            $(function () {
-                $("#OrganizationId").select2();
+            $(function() {
+                $("select #OrganizationId").select2();
+            });
+        </script>
+    }
+    else
+    {
+        <script>
+            $(function() {
+                $.InitFunctions.ExtraEditable();
             });
         </script>
     }

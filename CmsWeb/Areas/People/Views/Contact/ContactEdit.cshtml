@@ -1,8 +1,12 @@
-﻿@using CmsData
+﻿@using System.Web.Mvc.Html
+@using CmsData
+@using CmsWeb.Models.ExtraValues
 @using UtilityExtensions
 @model CmsWeb.Areas.People.Models.ContactModel
-
-<form id="edit-contact" class="form ajax" method="post">
+@{
+    var evmodel = new ExtraValueModel(Model.ContactId, "Contact", Model.Location);
+}
+<form id="edit-contact" class="form ajax" method="post" data-init="Editable" data-init2="ExtraEditable">
     @if (Model.Incomplete.HasValue())
     {
         <div class="alert alert-danger scrollToTop">
@@ -39,7 +43,6 @@
                     </div>
                 </div>
                 <div class="col-sm-6">
-
                     @Html.EditorFor(m => m.NotAtHome)
                     @Html.EditorFor(m => m.LeftDoorHanger)
                     @Html.EditorFor(m => m.LeftMessage)
@@ -48,6 +51,13 @@
                     @Html.EditorFor(m => m.PrayerRequest)
                     @Html.EditorFor(m => m.GiftBagGiven)
                 </div>
+            </div>
+            <div class="row">
+                <div id="contact-extra-values" class="col-sm-12">
+                    @Html.Partial("/Views/ExtraValue/Location.cshtml", evmodel)
+                </div>
+            </div>
+            <div class="row">
                 @if (Model.CanViewComments)
                 {
                     <div class="col-sm-12">
@@ -71,7 +81,34 @@
         // This only runs when the view is loaded over AJAX, otherwise jQuery won't be loaded
         // Index.cshtml will run this when it is being directly loaded into the DOM
         $(function () {
-            $("#OrganizationId").select2();
+            $("select #OrganizationId").select2();
+
+            $('.code-dropdown select').each(function () {
+                var $this = $(this);
+                $this.on('change', function () {
+                    var data = {
+                        ministry: $('#Ministry_Value').val(),
+                        contactType: $('#ContactType_Value').val(),
+                        contactReason: $('#ContactReason_Value').val()
+                    };
+                    $.ajax({
+                        type: 'POST',
+                        url: '/Contact2/ExtraValues/@Model.ContactId',
+                        data: data,
+                        success: function (ret, status) {
+                            $.unblock();
+                            $('#contact-extra-values').empty();
+                            $('#contact-extra-values').append(ret);
+                            $.InitFunctions.ExtraEditable();
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            $.unblock();
+                            swal({title: "Error!", text: thrownError, type: "error", html: true});
+                        }
+                    });
+                });
+            });
         });
+
     </script>
 }
