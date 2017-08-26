@@ -377,7 +377,7 @@ namespace CmsWeb.Areas.Search.Models
                                select o;
                         break;
                     case "Members":
-                    case "Curr":
+                    case "Current":
                         list = from o in query
                                orderby o.MemberCount, o.OrganizationName
                                select o;
@@ -468,7 +468,7 @@ namespace CmsWeb.Areas.Search.Models
                                select o;
                         break;
                     case "Members":
-                    case "Curr":
+                    case "Current":
                         list = from o in query
                                orderby o.MemberCount descending,
                                    o.OrganizationName descending
