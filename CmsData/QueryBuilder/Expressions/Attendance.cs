@@ -205,6 +205,7 @@ namespace CmsData
                 where OrganizationInt == 0 || om.OrganizationId == OrganizationInt
                 where DivisionInt == 0 || om.Organization.DivOrgs.Any(dg => dg.DivId == DivisionInt)
                 where ProgramInt == 0 || om.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == ProgramInt))
+                where om.AttendPct > 0
                 select om
                 ).Average(om => om.AttendPct).Value;
             Expression left = Expression.Invoke(pred, parm);
