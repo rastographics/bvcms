@@ -137,7 +137,7 @@ namespace CmsWeb.Models.ExtraValues
                     var q = from e in Model.ListExtraValues()
                             where e.BitValue == true
                             where e.Id == Id
-                            where Codes.Contains(e.Field)
+                            where Codes.Select(x => x.Text).Contains(e.Field)
                             select NoPrefix(e.Field);
                     return string.Join("\n", q);
                 }

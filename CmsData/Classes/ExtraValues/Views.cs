@@ -58,7 +58,7 @@ namespace CmsData.ExtraValue
                          from v in vv.Codes
                          select new StandardValueNameType()
                          { 
-                             Name = v, 
+                             Name = v.Text, 
                              Type = vv.Type,
                              CanView = vv.UserCanView(db)
                          }).ToList();

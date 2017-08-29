@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web;
 using System.Xml.Serialization;
+using CmsData.Classes.ExtraValues;
 using CmsData.Classes.RoleChecker;
 using UtilityExtensions;
 
@@ -17,7 +18,7 @@ namespace CmsData.ExtraValue
         [XmlAttribute] public string Link { get; set; }
 
         [XmlElement("Code")]
-        public List<string> Codes { get; set; }
+        public List<Code> Codes { get; set; }
 
 
         [XmlIgnore] public int Order;

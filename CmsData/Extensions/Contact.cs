@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CmsData.Codes;
+using CmsData.ExtraValue;
 using UtilityExtensions;
 
 namespace CmsData
@@ -109,6 +110,7 @@ namespace CmsData
             var ev = GetExtraValue(field);
             ev.StrValue = value;
             ev.TransactionTime = DateTime.Now;
+            ev.Metadata = RetrieveMetadata(field, value);
         }
 
         public void AddEditExtraText(string field, string value, DateTime? dt = null)
@@ -198,6 +200,14 @@ namespace CmsData
                 ContactExtras.Add(ev);
             }
             return ev;
+        }
+
+        private static string RetrieveMetadata(string name, string value)
+        {
+            var extraValues = Views.GetStandardExtraValues(DbUtil.Db, "Contact");
+            var ev = extraValues.SingleOrDefault(x => x.Name == name);
+
+            return ev?.Codes.SingleOrDefault(x => x.Text == value)?.Metadata;
         }
     }
 }
