@@ -1618,8 +1618,31 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
   </Column2>
 </ReportsMenu>
 ', NULL, NULL, 1, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (77, N'OrgSearchFields', N'OrgSearchFields', N'<?xml version="1.0" encoding="utf-8"?>
+<OrgSearch>
+  <Fields>
+	<Field>Name</Field>
+	<Field dropdown="true" label="Organization Type">TypeId</Field>
+	<Field dropdown="true" label="Program">ProgramId</Field>
+	<Field dropdown="true" label="Division">DivisionId</Field>
+	<Field dropdown="true" label="Status">StatusId</Field>
+	<Field dropdown="true" label="Campus">CampusId</Field>
+	<Field dropdown="true" label="Schedule">ScheduleId</Field>
+	<Field dropdown="true" label="Online Registration">OnlineReg</Field>
+  </Fields>
+</OrgSearch>', NULL, NULL, 1, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (78, N'InvolvementTableCurrent', N'InvolvementTableCurrent', N'<?xml version="1.0" encoding="utf-8"?>
+<InvolvementTable>
+  <Columns>
+	<Column field="Organization" sortable="true" />
+	<Column field="Leader" />
+	<Column field="Enroll Date" sortable="true"  />
+	<Column field="MemberType" />
+	<Column field="AttendPct" />
+  </Columns>
+</InvolvementTable>', NULL, NULL, 1, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Content] OFF
-PRINT(N'Operation applied to 31 rows out of 31')
+PRINT(N'Operation applied to 33 rows out of 33')
 
 PRINT(N'Add row to [dbo].[ContributionFund]')
 INSERT INTO [dbo].[ContributionFund] ([FundId], [CreatedBy], [CreatedDate], [FundName], [FundDescription], [FundStatusId], [FundTypeId], [FundPledgeFlag], [FundAccountCode], [FundIncomeDept], [FundIncomeAccount], [FundIncomeFund], [FundCashDept], [FundCashAccount], [FundCashFund], [OnlineSort], [NonTaxDeductible], [QBIncomeAccount], [QBAssetAccount]) VALUES (1, 1, '2010-10-30 15:36:12.533', N'General Tithe', N'General Tithe', 1, 1, 0, NULL, N'0', N'0', N'0', N'0', N'0', N'0', NULL, NULL, 0, 0)
@@ -1943,6 +1966,12 @@ INSERT INTO [dbo].[MobileAppVideoTypes] ([id], [name]) VALUES (2, N'Vimeo')
 SET IDENTITY_INSERT [dbo].[MobileAppVideoTypes] OFF
 PRINT(N'Operation applied to 2 rows out of 2')
 
+PRINT(N'Add rows to [dbo].[OrgFilter]')
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('367b6815-5177-40df-950e-4372bf2da24a', 5, '10', '', '', NULL, 0, 0, 0, 348, '2017-08-29 10:32:01.570', NULL)
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('6d83d1e4-52e5-4cfc-a827-5039e1d232b0', 5, '10', '', '', NULL, 0, 0, 0, 348, '2017-08-29 11:34:34.293', NULL)
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('4f2dae1b-68ef-47f8-98c2-b6475066fc17', 5, '10', '', '', NULL, 0, 0, 0, 348, '2017-08-29 11:29:21.360', NULL)
+PRINT(N'Operation applied to 3 rows out of 3')
+
 PRINT(N'Add rows to [dbo].[Program]')
 SET IDENTITY_INSERT [dbo].[Program] ON
 INSERT INTO [dbo].[Program] ([Id], [Name], [RptGroup], [StartHoursOffset], [EndHoursOffset]) VALUES (1, N'Worship', N'1', 1, 24)
@@ -1957,6 +1986,14 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
 <Condition Id="e0bf6a55-2c1f-44c7-be34-176c6a55771c" Order="0" Field="Group" Comparison="AllTrue">
   <Condition Id="3b640586-b5b7-4041-ad48-0acc41e1144f" Order="2" Field="IsCurrentPerson" Comparison="Equal" CodeIdValue="1,T" />
 </Condition>', N'System', '2014-08-22 21:15:01.573', '2014-08-22 21:15:01.573', N'IsCurrentPerson', 0, 0, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('367b6815-5177-40df-950e-4372bf2da24a', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="367b6815-5177-40df-950e-4372bf2da24a" Order="0" Field="Group">
+  <Condition Id="3f257f45-d0e3-4a33-9769-f4a6d0f5236a" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2017-08-29 10:32:01.350', '2017-08-29 10:32:01.350', N'OrgFilter', 0, 0, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('6d83d1e4-52e5-4cfc-a827-5039e1d232b0', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="6d83d1e4-52e5-4cfc-a827-5039e1d232b0" Order="0" Field="Group">
+  <Condition Id="fbbd0518-a332-4d73-be90-92262d6de5e2" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2017-08-29 11:34:34.170', '2017-08-29 11:34:34.170', N'OrgFilter', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('f1d571cf-d712-4c6d-b774-61dfc0403606', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="f1d571cf-d712-4c6d-b774-61dfc0403606" Order="0" Field="Group" Comparison="AllTrue">
   <Condition Id="5294d7e4-0aee-4634-9c2a-3ccd8a473e98" Order="2" Field="VisitedCurrentOrg" Comparison="Equal" CodeIdValue="1,T" />
@@ -1977,11 +2014,19 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
 <Condition Id="1cb171ac-1a51-404a-84e1-98ec0689fdb5" Order="0" Field="Group" Comparison="AllTrue">
   <Condition Id="a2c1551f-68f2-4a52-8756-80fed759db22" Order="2" Field="InactiveCurrentOrg" Comparison="Equal" CodeIdValue="1,T" />
 </Condition>', N'System', '2014-12-14 20:57:11.500', '2014-12-14 20:57:11.500', N'InactiveCurrentOrg', 0, 0, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('4f2dae1b-68ef-47f8-98c2-b6475066fc17', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="4f2dae1b-68ef-47f8-98c2-b6475066fc17" Order="0" Field="Group">
+  <Condition Id="4adfcb06-f4f1-46b8-9594-6fdb630499aa" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2017-08-29 11:29:21.220', '2017-08-29 11:29:21.220', N'OrgFilter', 0, 0, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('8d9c37ac-25d9-472f-ad87-d3fd8f0593fa', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="8d9c37ac-25d9-472f-ad87-d3fd8f0593fa" Order="0" Field="Group">
+  <Condition Id="9fb7a4c2-fa93-484b-b12c-9681da79eeab" Order="2" Field="IsCurrentUser" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'System', '2017-08-29 10:32:01.443', '2017-08-29 10:32:01.443', N'IsCurrentUser', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('a235ae8b-f893-40e2-bf57-d9e4252d5048', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="a235ae8b-f893-40e2-bf57-d9e4252d5048" Order="0" Field="Group" Comparison="AllTrue">
   <Condition Id="ef295216-34b0-496e-87f4-9db022ae713b" Order="2" Field="ProspectCurrentOrg" Comparison="Equal" CodeIdValue="1,T" />
 </Condition>', N'System', '2014-12-14 20:57:11.517', '2014-12-14 20:57:11.517', N'ProspectCurrentOrg', 0, 0, NULL)
-PRINT(N'Operation applied to 7 rows out of 7')
+PRINT(N'Operation applied to 11 rows out of 11')
 
 PRINT(N'Add rows to [dbo].[Roles]')
 SET IDENTITY_INSERT [dbo].[Roles] ON
@@ -4290,25 +4335,25 @@ SET IDENTITY_INSERT [dbo].[People] OFF
 PRINT(N'Operation applied to 148 rows out of 148')
 
 PRINT(N'Add rows to [dbo].[PeopleExtra]')
-INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes]) VALUES (2, N'SG:giving', 1, '2012-08-20 14:13:23.260', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL)
-INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes]) VALUES (2, N'SG:helps', 1, '2012-08-20 14:13:23.260', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL)
-INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes]) VALUES (2, N'SG:knowledge', 1, '2012-08-20 14:13:23.260', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL)
-INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes]) VALUES (2, N'SG:leadership', 1, '2012-05-20 16:16:58.297', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL)
-INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes]) VALUES (3, N'SG:administration', 1, '2012-05-21 05:35:41.360', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL)
-INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes]) VALUES (3, N'SG:leadership', 1, '2012-05-21 05:35:41.347', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL)
-INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes]) VALUES (4, N'IC:InterestedInJoining', 1, '2014-01-12 22:31:52.273', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL)
-INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes]) VALUES (5, N'IC:InfoBecomeAChristian', 1, '2014-01-12 22:31:52.273', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL)
-INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes]) VALUES (5, N'IC:InterestedInJoining', 1, '2014-01-12 22:31:52.273', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL)
-INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes]) VALUES (5, N'IC:PleaseVisit', 1, '2014-01-12 22:31:52.273', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL)
-INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes]) VALUES (7, N'IC:ChristAsSavior', 1, '2014-01-12 22:31:52.260', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL)
-INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes]) VALUES (7, N'IC:InterestedInJoining', 1, '2014-01-12 22:31:52.273', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL)
-INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes]) VALUES (11, N'IC:InfoBecomeAChristian', 1, '2014-01-12 22:31:52.273', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL)
-INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes]) VALUES (11, N'IC:PleaseVisit', 1, '2014-01-12 22:31:52.273', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL)
-INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes]) VALUES (15, N'SG:prophecy', 1, '2012-05-21 05:36:58.957', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL)
-INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes]) VALUES (15, N'SG:teaching', 1, '2012-05-21 05:36:58.957', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL)
-INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes]) VALUES (18, N'SG:discernment', 1, '2012-05-21 05:37:36.210', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL)
-INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes]) VALUES (138, N'SG:giving', 1, '2012-05-21 05:36:17.693', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL)
-INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes]) VALUES (138, N'SG:mercy', 1, '2012-05-21 05:36:17.693', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL)
+INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes], [Metadata]) VALUES (2, N'SG:giving', 1, '2012-08-20 14:13:23.260', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL)
+INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes], [Metadata]) VALUES (2, N'SG:helps', 1, '2012-08-20 14:13:23.260', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL)
+INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes], [Metadata]) VALUES (2, N'SG:knowledge', 1, '2012-08-20 14:13:23.260', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL)
+INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes], [Metadata]) VALUES (2, N'SG:leadership', 1, '2012-05-20 16:16:58.297', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL)
+INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes], [Metadata]) VALUES (3, N'SG:administration', 1, '2012-05-21 05:35:41.360', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL)
+INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes], [Metadata]) VALUES (3, N'SG:leadership', 1, '2012-05-21 05:35:41.347', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL)
+INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes], [Metadata]) VALUES (4, N'IC:InterestedInJoining', 1, '2014-01-12 22:31:52.273', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL)
+INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes], [Metadata]) VALUES (5, N'IC:InfoBecomeAChristian', 1, '2014-01-12 22:31:52.273', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL)
+INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes], [Metadata]) VALUES (5, N'IC:InterestedInJoining', 1, '2014-01-12 22:31:52.273', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL)
+INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes], [Metadata]) VALUES (5, N'IC:PleaseVisit', 1, '2014-01-12 22:31:52.273', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL)
+INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes], [Metadata]) VALUES (7, N'IC:ChristAsSavior', 1, '2014-01-12 22:31:52.260', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL)
+INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes], [Metadata]) VALUES (7, N'IC:InterestedInJoining', 1, '2014-01-12 22:31:52.273', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL)
+INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes], [Metadata]) VALUES (11, N'IC:InfoBecomeAChristian', 1, '2014-01-12 22:31:52.273', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL)
+INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes], [Metadata]) VALUES (11, N'IC:PleaseVisit', 1, '2014-01-12 22:31:52.273', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL)
+INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes], [Metadata]) VALUES (15, N'SG:prophecy', 1, '2012-05-21 05:36:58.957', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL)
+INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes], [Metadata]) VALUES (15, N'SG:teaching', 1, '2012-05-21 05:36:58.957', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL)
+INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes], [Metadata]) VALUES (18, N'SG:discernment', 1, '2012-05-21 05:37:36.210', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL)
+INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes], [Metadata]) VALUES (138, N'SG:giving', 1, '2012-05-21 05:36:17.693', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL)
+INSERT INTO [dbo].[PeopleExtra] ([PeopleId], [Field], [Instance], [TransactionTime], [StrValue], [DateValue], [Data], [IntValue], [IntValue2], [BitValue], [UseAllValues], [IsAttributes], [Metadata]) VALUES (138, N'SG:mercy', 1, '2012-05-21 05:36:17.693', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL)
 PRINT(N'Operation applied to 19 rows out of 19')
 
 PRINT(N'Add row to [dbo].[RecReg]')
@@ -4363,15 +4408,17 @@ INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 9)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 11)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 12)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 25)
-PRINT(N'Operation applied to 31 rows out of 31')
+INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (5, 2)
+PRINT(N'Operation applied to 32 rows out of 32')
 
 PRINT(N'Add rows to [dbo].[Users]')
 SET IDENTITY_INSERT [dbo].[Users] ON
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (1, 1, N'Admin', NULL, N'2352354235', NULL, NULL, 1, '2016-09-30 16:48:10.320', NULL, '2016-04-07 10:09:40.130', '2009-05-05 22:46:43.890', 0, '2016-04-07 10:09:39.990', 1, '2016-09-30 16:47:22.923', 0, NULL, NULL, NULL, 1, N'testdb.bvcms.com', N'bvcms', N'The Admin', N'Admin, The', NULL, NULL, '2016-04-08 10:03:26.053')
-INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (2, 2, N'david', N'', N'Sc4O3+HSUocN7Nev1vrYufJSxGY=', NULL, NULL, 1, '2017-04-15 12:57:56.330', '2017-04-15 12:57:14.100', '2013-09-20 22:45:26.960', '2010-10-30 15:23:25.763', 0, '2013-09-20 22:45:26.880', 0, '2015-02-28 08:18:17.550', 0, '2010-10-30 15:23:25.763', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'David Carroll', N'Carroll, David', NULL, NULL, '2013-09-21 22:45:01.070')
+INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (2, 2, N'david', N'', N'Sc4O3+HSUocN7Nev1vrYufJSxGY=', NULL, NULL, 1, '2017-08-29 11:34:01.723', '2017-08-29 11:28:27.527', '2013-09-20 22:45:26.960', '2010-10-30 15:23:25.763', 0, '2013-09-20 22:45:26.880', 0, '2015-02-28 08:18:17.550', 0, '2010-10-30 15:23:25.763', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'David Carroll', N'Carroll, David', NULL, NULL, '2013-09-21 22:45:01.070')
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (3, 3, N'karenw', N'', N'2352354235', NULL, NULL, 1, '2011-09-01 15:29:59.107', NULL, '2010-10-30 15:29:49.930', '2010-10-30 15:29:25.757', 0, '2010-10-30 15:29:49.860', 0, '2010-10-30 15:29:25.757', 0, '2010-10-30 15:29:25.757', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'Karen Worrell', N'Worrell, Karen', NULL, NULL, NULL)
+INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (5, 2, N'dcarroll', N'', N'4pXEq37UhwTXKKRSFWvH7FTu8II=', NULL, NULL, 1, '2017-08-29 11:34:58.430', NULL, '2017-08-29 11:32:36.320', '2017-08-29 11:32:36.320', 0, '2017-08-29 11:32:36.320', 0, '2017-08-29 11:32:36.320', 0, '2017-08-29 11:32:36.320', NULL, NULL, 0, NULL, NULL, N'David Carroll', N'Carroll, David', NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Users] OFF
-PRINT(N'Operation applied to 3 rows out of 3')
+PRINT(N'Operation applied to 4 rows out of 4')
 
 PRINT(N'Add constraints to [dbo].[Users]')
 ALTER TABLE [dbo].[Users] WITH CHECK CHECK CONSTRAINT [FK_Users_People]
