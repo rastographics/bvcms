@@ -40,12 +40,12 @@
     <TargetCulture>en</TargetCulture>
     <ProductName>TouchPoint Check-In</ProductName>
     <PublisherName>TouchPoint Software</PublisherName>
-    <MinimumRequiredVersion>1.0.0.28</MinimumRequiredVersion>
+    <MinimumRequiredVersion>1.0.0.33</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>index.html</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <TrustUrlParameters>true</TrustUrlParameters>
-    <ApplicationRevision>29</ApplicationRevision>
+    <ApplicationRevision>34</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -183,12 +183,15 @@
     <Compile Include="Classes\CheckInCampus.cs" />
     <Compile Include="Classes\CheckInInformation.cs" />
     <Compile Include="Classes\CheckInSettingsEntry.cs" />
+    <Compile Include="Classes\DoPrinting.cs" />
+    <Compile Include="Classes\Print.cs" />
     <Compile Include="Classes\Printing\LabelEntryBase.cs" />
     <Compile Include="Classes\Printing\LabelEntryFormat.cs" />
     <Compile Include="Classes\Printing\LabelPage.cs" />
     <Compile Include="Classes\Printing\LabelEntry.cs" />
     <Compile Include="Classes\Printing\LabelSet.cs" />
     <Compile Include="Classes\Printing\PrinterHelper.cs" />
+    <Compile Include="Classes\PrintRawHelper.cs" />
     <Compile Include="Classes\Settings.cs" />
     <Compile Include="Classes\WeekDay.cs" />
     <Compile Include="CommonKeyboard.cs">
