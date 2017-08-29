@@ -455,6 +455,7 @@
     <Compile Include="Classes\GoogleCloudMessaging\GCMPayload.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMResponse.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMResponseResult.cs" />
+    <Compile Include="Classes\HealthChecker\HealthChecker.cs" />
     <Compile Include="Classes\OnlineRegSummaryText\OnlineRegPersonModel0.cs" />
     <Compile Include="Classes\OnlineRegSummaryText\SummaryInfo.cs" />
     <Compile Include="Classes\RoleChecker\RoleChecker.cs" />

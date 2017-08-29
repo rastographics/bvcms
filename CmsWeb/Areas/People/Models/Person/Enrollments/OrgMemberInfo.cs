@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CmsData;
+using CmsData.Classes.HealthChecker;
 using CmsData.Classes.RoleChecker;
 using UtilityExtensions;
 
@@ -101,6 +102,25 @@ namespace CmsWeb.Areas.People.Models
                         return $"<button class=\"leave-org\" data-personid=\"{PeopleId}\" data-orgid=\"{OrgId}\">{column.Label}</button>";
                     else
                         return "";
+                case "health":
+                    var groupHealth = HealthChecker.GetHealthMetric(OrgId);
+                    string spanColor;
+                    switch (groupHealth)
+                    {
+                        case MetricName.RED:
+                            spanColor = "alert-danger";
+                            break;
+                        case MetricName.YELLOW:
+                            spanColor = "alert-warning";
+                            break;
+                        case MetricName.GREEN:
+                            spanColor = "alert-success";
+                            break;
+                        default:
+                            spanColor = "alert-info";
+                            break;
+                    }
+                    return $"<span class=\"text-center btn-block {spanColor}\">{groupHealth.ToString()}</span>";
                 default:
                     if(_extraFields == null)
                         _extraFields = DbUtil.Db.LoadOrganizationById(OrgId)?.GetOrganizationExtras();
