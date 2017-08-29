@@ -22,6 +22,12 @@
                             @Html.TextBox("date", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
                             @Html.Hidden("dateIso", "", new { disabled = "disabled" })
                         </div>
+                        @if (!Html.ViewData.ModelState.IsValid)
+                        {
+                            <div class="alert alert-danger">
+                                @Html.ValidationMessage("date")
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

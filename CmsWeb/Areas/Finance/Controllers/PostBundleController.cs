@@ -117,8 +117,13 @@ namespace CmsWeb.Areas.Finance.Controllers
         }
 
         [HttpPost]
-        public ActionResult BatchUpload(DateTime date, HttpPostedFileBase file, int? fundid, string text)
+        public ActionResult BatchUpload(DateTime? date, HttpPostedFileBase file, int? fundid, string text)
         {
+            if(!date.HasValue)
+            {
+                ModelState.AddModelError("date", "Date is required");
+                return View("Batch");
+            }
             var fromFile = false;
             string s;
 
@@ -145,7 +150,7 @@ namespace CmsWeb.Areas.Finance.Controllers
 
             try
             {
-                var id = BatchImportContributions.BatchProcess(s, date, fundid, fromFile);
+                var id = BatchImportContributions.BatchProcess(s, date.Value, fundid, fromFile);
                 if (id.HasValue)
                     return Redirect("/PostBundle/" + id);
                 return RedirectToAction("Batch");

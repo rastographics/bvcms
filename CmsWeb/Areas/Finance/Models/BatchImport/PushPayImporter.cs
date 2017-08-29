@@ -30,11 +30,16 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
                 var paymentMethod = csv[7];
                 var payerName = csv[8];
+                var fundText = csv[16];
+
+                ContributionFund f = null;
+                if(fundText.HasValue())
+                    f = DbUtil.Db.FetchOrCreateFund(fundText);
 
                 if (bundleHeader == null)
-                    bundleHeader = BatchImportContributions.GetBundleHeader(batchDate.Value, DateTime.Now);
+                    bundleHeader = BatchImportContributions.GetBundleHeader(batchDate ?? DateTime.Today, DateTime.Now);
 
-                var bd = BatchImportContributions.NewBundleDetail(date, fid, amount);
+                var bd = BatchImportContributions.NewBundleDetail(date, f?.FundId ?? fid, amount);
 
                 var eac = Util.Encrypt(paymentMethod);
                 var q = from kc in DbUtil.Db.CardIdentifiers
