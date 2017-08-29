@@ -9,7 +9,7 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CmsCheckin</RootNamespace>
-    <AssemblyName>CmsCheckinBeta</AssemblyName>
+    <AssemblyName>CmsCheckin</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>true</IsWebBootstrapper>
@@ -24,7 +24,7 @@
     <UpgradeBackupLocation />
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <PublishUrl>C:\Users\Steven\Documents\CmsCheckin-ClickOnce-Beta\</PublishUrl>
+    <PublishUrl>C:\Users\Steven\Documents\CmsCheckin-ClickOnce\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -34,18 +34,18 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://www.touchpointsoftware.com/checkininstallbeta/</InstallUrl>
+    <InstallUrl>http://www.touchpointsoftware.com/checkininstall/</InstallUrl>
     <SupportUrl>http://docs.touchpointsoftware.com/Checkin</SupportUrl>
     <ErrorReportUrl>http://docs.touchpointsoftware.com/Checkin</ErrorReportUrl>
     <TargetCulture>en</TargetCulture>
-    <ProductName>TouchPoint Check-In Beta</ProductName>
+    <ProductName>TouchPoint Check-In</ProductName>
     <PublisherName>TouchPoint Software</PublisherName>
-    <MinimumRequiredVersion>1.0.0.54</MinimumRequiredVersion>
+    <MinimumRequiredVersion>1.0.0.33</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>index.html</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <TrustUrlParameters>true</TrustUrlParameters>
-    <ApplicationRevision>55</ApplicationRevision>
+    <ApplicationRevision>34</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>

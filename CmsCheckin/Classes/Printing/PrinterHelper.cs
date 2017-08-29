@@ -74,7 +74,7 @@ namespace CmsCheckin.Classes
 			} else {
 				var extras = from e in q
 								 where e.n > 1
-								 where e.requiressecuritylabel == true
+//								 where e.requiressecuritylabel == true
 								 orderby e.first ascending, e.hour ascending
 								 group e by new { e.pid, e.org } into eg
 								 select from e in eg
