@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CmsData;
-using LumenWorks.Framework.IO.Csv;
 using UtilityExtensions;
+using CsvHelper;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
 {
@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
     {
         public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
         {
-            using (var csv = new CsvReader(new StringReader(text), true))
+            using (var csv = new CsvReader(new StringReader(text)))
                 return Import(csv, date, fundid);
         }
 
@@ -23,14 +23,14 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
             var details = new List<BundleDetail>();
 
-            while (csv.ReadNextRecord())
+            while (csv.Read())
             {
-                var batchDate = csv[2].ToDate();
-                var amount = csv[5];
+                var batchDate = csv["Date"].ToDate();
+                var amount = csv["Amount"];
 
-                var paymentMethod = csv[7];
-                var payerName = csv[8];
-                var fundText = csv[16];
+                var paymentMethod = csv["Payment Method"];
+                var payerName = csv["Payer Name"];
+                var fundText = csv["Giving Type Label"];
 
                 ContributionFund f = null;
                 if(fundText.HasValue())
