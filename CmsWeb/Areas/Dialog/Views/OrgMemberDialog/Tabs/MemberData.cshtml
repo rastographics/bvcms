@@ -16,8 +16,6 @@
     var sender = Model.Group == "Inactive" && Model.Organization.IsMissionTrip == true;
 }
 <div class="tab-pane active" id="memberdata">
-    @* It would be preferrable to add the roles admin and managetransactions along with edit role to have access to the link. @if (managetransactions || admin || editonly).
-        did not want to assume that leaders can edit hence created new var for editonly, not recommendable.*@
 @if (editonly)
 {
   <a href="/TransactionHistory/@Model.PeopleId/@Model.OrgId" target="_blank"
