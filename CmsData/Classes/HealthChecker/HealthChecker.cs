@@ -26,6 +26,13 @@ namespace CmsData.Classes.HealthChecker
 
             return groupHealth;
         }
+
+        public static DateTime? GetLastVisit(int orgId)
+        {
+            var organization = DbUtil.Db.Organizations.SingleOrDefault(x => x.OrganizationId == orgId);
+
+            return organization?.contactsHad?.Max(x => x.ContactDate);
+        }
     }
 
     public enum MetricName

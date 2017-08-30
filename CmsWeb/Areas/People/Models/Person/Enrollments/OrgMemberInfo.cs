@@ -102,6 +102,9 @@ namespace CmsWeb.Areas.People.Models
                         return $"<button class=\"leave-org\" data-personid=\"{PeopleId}\" data-orgid=\"{OrgId}\">{column.Label}</button>";
                     else
                         return "";
+                case "lastvisit":
+                case "last visit":
+                    return HealthChecker.GetLastVisit(OrgId)?.ToShortDateString();
                 case "health":
                     var groupHealth = HealthChecker.GetHealthMetric(OrgId);
                     string spanColor;
