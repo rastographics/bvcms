@@ -1,14 +1,21 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.Dialog.Models.OrgPrevMemberModel
 @{
-  var admin = User.IsInRole("Admin");
-  var managetransactions = User.IsInRole("ManageTransactions");
+    var admin = User.IsInRole("Admin");
+    var managetransactions = User.IsInRole("ManageTransactions");
+    var editonly = User.IsInRole("Edit");
 }
 <div class="tab-pane active" id="memberdata">
+@if (editonly)
+{ 
   <a href="/TransactionHistory/@Model.PeopleId/@Model.OrgId" target="_blank"
      style="font-family: Courier New">
     Attendance
-  </a>: @Model.AttendStr
+  </a>}
+else
+{
+    <lable style="font-family: Courier New">Attendance </lable>
+}: @Model.AttendStr
   @Html.DisplayFor(m => m.MemberType)
   @Html.DisplayFor(m => m.InactiveDate)
   @Html.DisplayFor(m => m.EnrollmentDate, "DateAndTime")

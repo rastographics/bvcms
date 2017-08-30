@@ -4,21 +4,32 @@
 @using UtilityExtensions
 @model CmsWeb.Areas.Dialog.Models.OrgMemberModel
 @{
-  var admin = User.IsInRole("Admin");
-  var peopleId = DbUtil.Db.People.FirstOrDefault(x => x.Users.Any(y => y.Username == User.Identity.Name))?.PeopleId;
-  var leader = peopleId.HasValue && DbUtil.Db.OrganizationMembers.Any(x => x.PeopleId == peopleId.Value && x.MemberType.AttendanceTypeId == AttendTypeCode.Leader);
+    var admin = User.IsInRole("Admin");
+    var peopleId = DbUtil.Db.People.FirstOrDefault(x => x.Users.Any(y => y.Username == User.Identity.Name))?.PeopleId;
+    var leader = peopleId.HasValue && DbUtil.Db.OrganizationMembers.Any(x => x.PeopleId == peopleId.Value && x.MemberType.AttendanceTypeId == AttendTypeCode.Leader);
 
-  var managetransactions = User.IsInRole("ManageTransactions");
-  var edit = User.IsInRole("Edit") || (leader && RoleChecker.HasSetting(SettingName.EditMemberData, false));
-  var missiongiving = User.IsInRole("MissionGiving") || User.IsInRole("Developer");
-  var member = Model.Group == "Member";
-  var sender = Model.Group == "Inactive" && Model.Organization.IsMissionTrip == true;
+    var managetransactions = User.IsInRole("ManageTransactions");
+    var edit = User.IsInRole("Edit") || (leader && RoleChecker.HasSetting(SettingName.EditMemberData, false));
+    var editonly = User.IsInRole("Edit");
+    var missiongiving = User.IsInRole("MissionGiving") || User.IsInRole("Developer");
+    var member = Model.Group == "Member";
+    var sender = Model.Group == "Inactive" && Model.Organization.IsMissionTrip == true;
 }
 <div class="tab-pane active" id="memberdata">
+    @* It would be preferrable to add the roles admin and managetransactions along with edit role to have access to the link. @if (managetransactions || admin || editonly).
+        did not want to assume that leaders can edit hence created new var for editonly, not recommendable.*@
+@if (editonly)
+{
   <a href="/TransactionHistory/@Model.PeopleId/@Model.OrgId" target="_blank"
      style="font-family: Courier New">
-    Attendance
-  </a>: @Model.AttendStr
+    Attendance :
+  </a>
+}
+else
+{
+<lable style="font-family: Courier New">Attendance :</lable>
+ 
+} @Model.AttendStr
   @Html.DisplayFor(m => m.MemberType)
   @Html.DisplayFor(m => m.InactiveDate)
   @Html.DisplayFor(m => m.EnrollmentDate, "DateAndTime")
