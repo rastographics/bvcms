@@ -1,5 +1,6 @@
 ﻿@using System.Web.Mvc.Html
 @using CmsData
+@using CmsData.Classes.RoleChecker
 @using CmsWeb.Models.ExtraValues
 @using UtilityExtensions
 @model CmsWeb.Areas.People.Models.ContactModel
@@ -42,15 +43,18 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6">
-                    @Html.EditorFor(m => m.NotAtHome)
-                    @Html.EditorFor(m => m.LeftDoorHanger)
-                    @Html.EditorFor(m => m.LeftMessage)
-                    @Html.EditorFor(m => m.ContactMade)
-                    @Html.EditorFor(m => m.GospelShared)
-                    @Html.EditorFor(m => m.PrayerRequest)
-                    @Html.EditorFor(m => m.GiftBagGiven)
-                </div>
+                @if (!RoleChecker.HasSetting(SettingName.Contact_HideDefaultCheckboxes, false))
+                {
+                    <div class="col-sm-6">
+                        @Html.EditorFor(m => m.NotAtHome)
+                        @Html.EditorFor(m => m.LeftDoorHanger)
+                        @Html.EditorFor(m => m.LeftMessage)
+                        @Html.EditorFor(m => m.ContactMade)
+                        @Html.EditorFor(m => m.GospelShared)
+                        @Html.EditorFor(m => m.PrayerRequest)
+                        @Html.EditorFor(m => m.GiftBagGiven)
+                    </div>
+                }
             </div>
             <div class="row">
                 <div id="contact-extra-values" class="col-sm-12">

@@ -128,7 +128,8 @@ namespace CmsData.Classes.RoleChecker
         CanEditCGInfoEVs,
         EditMemberData,
         OrgMembersDropAdd,
-        OtherGroupsContentOnly
+        OtherGroupsContentOnly,
+        Contact_HideDefaultCheckboxes
         // ReSharper restore InconsistentNaming
     }
 }

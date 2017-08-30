@@ -307,7 +307,7 @@ Option 2
         public string AddAsNewStandard()
         {
             ExtraValueName = ExtraValueName.Replace('/', '-');
-            var fields = Views.GetStandardExtraValues(DbUtil.Db, ExtraValueTable);
+            var fields = Views.GetStandardExtraValues(DbUtil.Db, ExtraValueTable, false, ExtraValueLocation);
             var existing = fields.SingleOrDefault(ff => ff.Name == ExtraValueName);
             if (existing != null)
                 throw new Exception($"{ExtraValueName} already exists");

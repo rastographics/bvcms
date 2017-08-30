@@ -27,12 +27,21 @@ namespace CmsData.ExtraValue
                 return new Views();
             return f;
         }
-        public static List<Value> GetStandardExtraValues(CMSDataContext db, string table, bool nocache = false)
+        public static List<Value> GetStandardExtraValues(CMSDataContext db, string table, bool nocache = false, string location = null)
         {
+            if (location != null)
+            {
+                return (from vv in GetViews(db, nocache).List
+                        where vv.Table == table
+                        where vv.Location == location
+                        from v in vv.Values
+                        select v).ToList();
+            }
+
             return (from vv in GetViews(db, nocache).List
-                    where vv.Table == table
-                    from v in vv.Values
-                    select v).ToList();
+                where vv.Table == table
+                from v in vv.Values
+                select v).ToList();
         }
 
         public class StandardValueNameType
