@@ -83,31 +83,7 @@
         $(function () {
             $("select #OrganizationId").select2();
 
-            $('.code-dropdown select').each(function () {
-                var $this = $(this);
-                $this.on('change', function () {
-                    var data = {
-                        ministry: $('#Ministry_Value').val(),
-                        contactType: $('#ContactType_Value').val(),
-                        contactReason: $('#ContactReason_Value').val()
-                    };
-                    $.ajax({
-                        type: 'POST',
-                        url: '/Contact2/ExtraValues/@Model.ContactId',
-                        data: data,
-                        success: function (ret, status) {
-                            $.unblock();
-                            $('#contact-extra-values').empty();
-                            $('#contact-extra-values').append(ret);
-                            $.InitFunctions.ExtraEditable();
-                        },
-                        error: function (xhr, ajaxOptions, thrownError) {
-                            $.unblock();
-                            swal({title: "Error!", text: thrownError, type: "error", html: true});
-                        }
-                    });
-                });
-            });
+            WireUpExtraValues(@Model.ContactId);
         });
 
     </script>

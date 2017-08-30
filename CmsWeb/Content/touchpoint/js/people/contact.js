@@ -107,3 +107,31 @@ function AddSelected(ret) {
             break;
     }
 }
+
+function WireUpExtraValues(cid) {
+    $('.code-dropdown select').on('change', function () {
+        var data = {
+            ministry: $('#Ministry_Value').val(),
+            contactType: $('#ContactType_Value').val(),
+            contactReason: $('#ContactReason_Value').val()
+        };
+        $.ajax({
+            type: 'POST',
+            url: '/Contact2/ExtraValues/' + cid,
+            data: data,
+            beforeSend: function () {
+                $.block();
+            },
+            success: function (ret, status) {
+                $.unblock();
+                $('#contact-extra-values').empty();
+                $('#contact-extra-values').append(ret);
+                $.InitFunctions.ExtraEditable();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $.unblock();
+                swal({ title: "Error!", text: thrownError, type: "error", html: true });
+            }
+        });
+    });
+}

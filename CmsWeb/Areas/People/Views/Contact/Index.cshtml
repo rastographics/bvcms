@@ -75,12 +75,11 @@
             });
         </script>
     }
-    else
-    {
-        <script>
-            $(function() {
-                $.InitFunctions.ExtraEditable();
-            });
-        </script>
-    }
+   <script>
+        $(function() {
+            $.InitFunctions.ExtraEditable();
+
+            WireUpExtraValues(@Model.ContactId);
+        });
+    </script>
 }

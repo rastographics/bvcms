@@ -8,7 +8,7 @@ namespace CmsData.Classes.HealthChecker
         public static MetricName GetHealthMetric(int orgId)
         {
             var organization = DbUtil.Db.Organizations.SingleOrDefault(x => x.OrganizationId == orgId);
-            if (organization?.contactsHad == null) return MetricName.UNKNOWN;
+            if (organization == null || organization.contactsHad.Count == 0) return MetricName.UNKNOWN;
 
             var groupHealth = MetricName.GREEN;
             foreach (var contact in organization.contactsHad)
@@ -30,8 +30,9 @@ namespace CmsData.Classes.HealthChecker
         public static DateTime? GetLastVisit(int orgId)
         {
             var organization = DbUtil.Db.Organizations.SingleOrDefault(x => x.OrganizationId == orgId);
+            if (organization?.contactsHad.Count == 0) return null;
 
-            return organization?.contactsHad?.Max(x => x.ContactDate);
+            return organization?.contactsHad.Max(x => x.ContactDate);
         }
     }
 
