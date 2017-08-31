@@ -111,9 +111,9 @@ function AddSelected(ret) {
 function WireUpExtraValues(cid) {
     $('.code-dropdown select').on('change', function () {
         var data = {
-            ministry: $('#Ministry_Value').val(),
-            contactType: $('#ContactType_Value').val(),
-            contactReason: $('#ContactReason_Value').val()
+            ministry: $('#Ministry_Value option:selected').text(),
+            contactType: $('#ContactType_Value option:selected').text(),
+            contactReason: $('#ContactReason_Value option:selected').text()
         };
         $.ajax({
             type: 'POST',

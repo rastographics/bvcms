@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
@@ -222,35 +223,46 @@ namespace CmsWeb.Areas.People.Models
 
         public void SetLocationOnContact()
         {
-            var list = new List<int?>
+            var list = new List<string>
             {
-                Ministry.IntVal,
-                ContactType.IntVal,
-                ContactReason.IntVal,
+                Ministry.ToString(),
+                ContactType.ToString(),
+                ContactReason.ToString()
             };
 
             Location = ComputeLocationString(list);
         }
 
-        public void SetLocationOnContact(int? ministry, int? contactType, int? contactReason)
+        public void SetLocationOnContact(string ministry, string contactType, string contactReason)
         {
-            var list = new List<int?>
+            var list = new List<string>
             {
                 ministry,
                 contactType,
-                contactReason,
+                contactReason
             };
 
             Location = ComputeLocationString(list);
         }
 
-        private string ComputeLocationString(IEnumerable<int?> list)
+        private string ComputeLocationString(IEnumerable<string> list)
         {
-            list = list.Where(x => x != null && x != 0);
+            list = list.Where(x => x != null)
+                       .Select(SlugifyString);
             var location = string.Join("-", list);
             if (location != string.Empty) return location;
 
             return OrganizationId.HasValue ? "Organization" : "Person";
+        }
+
+        private string SlugifyString(string original)
+        {
+            // Replace all non-alphanumeric
+            var rgx = new Regex("[^a-zA-Z0-9]");
+            var slug = rgx.Replace(original, "");
+            var lowercaseSlug = slug.ToLower();
+
+            return lowercaseSlug;
         }
 
         private static ValidationResult ModelError(string message, string field)

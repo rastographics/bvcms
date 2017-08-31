@@ -120,7 +120,7 @@ namespace CmsWeb.Areas.People.Controllers
             return Redirect("/Task/" + tid);
         }
         [HttpPost]
-        public ActionResult ExtraValues(int cid, int ministry, int contactType, int contactReason)
+        public ActionResult ExtraValues(int cid, string ministry, string contactType, string contactReason)
         {
             var m = new ContactModel(cid);
             m.SetLocationOnContact(ministry, contactType, contactReason);
