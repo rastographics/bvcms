@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Areas.Search.Models.ContactSearchModel
+﻿@using CmsData
+@model CmsWeb.Areas.Search.Models.ContactSearchModel
 <div id="results">
     @Html.Partial("PagerTop", Model)
     <div class="table-responsive">
@@ -11,7 +12,10 @@
                     <th>Contactors</th>
                     <th>Contactees</th>
                     <th>Ministry</th>
-                    <th>Results</th>
+                    @if (!DbUtil.Db.Setting("UX-HideContactCheckboxes"))
+                    {
+                        <th>Results</th>
+                    }
                 </tr>
             </thead>
             <tbody>
@@ -24,7 +28,10 @@
                         <td>@c.ContactorList</td>
                         <td>@c.ContacteeList</td>
                         <td>@c.Ministry</td>
-                        <td>@c.Results</td>
+                        @if (!DbUtil.Db.Setting("UX-HideContactCheckboxes"))
+                        {
+                            <td>@c.Results</td>
+                        }
                     </tr>
                 }
             </tbody>

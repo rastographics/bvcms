@@ -43,7 +43,7 @@
                         </div>
                     </div>
                 </div>
-                @if (!RoleChecker.HasSetting(SettingName.Contact_HideDefaultCheckboxes, false))
+                @if (Model.ShowDefaultCheckboxes)
                 {
                     <div class="col-sm-6">
                         @Html.EditorFor(m => m.NotAtHome)

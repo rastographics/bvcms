@@ -106,24 +106,20 @@ namespace CmsWeb.Areas.People.Models
                 case "last visit":
                     return HealthChecker.GetLastVisit(OrgId)?.ToShortDateString();
                 case "health":
-                    var groupHealth = HealthChecker.GetHealthMetric(OrgId);
-                    string spanColor;
-                    switch (groupHealth)
+                    var healthLabel = HealthChecker.GetHealthLabel(OrgId);
+                    switch (healthLabel.ToUpper())
                     {
-                        case MetricName.RED:
-                            spanColor = "alert-danger";
-                            break;
-                        case MetricName.YELLOW:
-                            spanColor = "alert-warning";
-                            break;
-                        case MetricName.GREEN:
-                            spanColor = "alert-success";
-                            break;
+                        case "RED":
+                            return $"<span class=\"text-center btn-block alert-danger\">{healthLabel}</span>";
+                        case "YELLOW":
+                            return $"<span class=\"text-center btn-block alert-warning\">{healthLabel}</span>";
+                        case "GREEN":
+                            return $"<span class=\"text-center btn-block alert-success\">{healthLabel}</span>";
+                        case "BRIGHT":
+                            return $"<span class=\"text-center btn-block\" style=\"background-color:LawnGreen \">{healthLabel}</span>";
                         default:
-                            spanColor = "alert-info";
-                            break;
+                            return string.Empty;
                     }
-                    return $"<span class=\"text-center btn-block {spanColor}\">{groupHealth.ToString()}</span>";
                 default:
                     if(_extraFields == null)
                         _extraFields = DbUtil.Db.LoadOrganizationById(OrgId)?.GetOrganizationExtras();

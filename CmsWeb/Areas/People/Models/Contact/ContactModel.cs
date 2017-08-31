@@ -268,6 +268,8 @@ namespace CmsWeb.Areas.People.Models
             }
         }
 
+        public bool ShowDefaultCheckboxes => !DbUtil.Db.Setting("UX-HideContactCheckboxes");
+
         private string GetIncomplete()
         {
             if(contact == null)

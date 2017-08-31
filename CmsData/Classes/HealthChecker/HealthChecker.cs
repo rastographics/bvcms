@@ -5,26 +5,35 @@ namespace CmsData.Classes.HealthChecker
 {
     public static class HealthChecker
     {
-        public static MetricName GetHealthMetric(int orgId)
+        public static string GetHealthLabel(int orgId)
         {
             var organization = DbUtil.Db.Organizations.SingleOrDefault(x => x.OrganizationId == orgId);
-            if (organization == null || organization.contactsHad.Count == 0) return MetricName.UNKNOWN;
+            if (organization == null || organization.contactsHad.Count == 0) return string.Empty;
 
-            var groupHealth = MetricName.GREEN;
+            var healthLabel = string.Empty;
+            var healthValue = 1;
             foreach (var contact in organization.contactsHad)
             {
-                if (contact.ContactExtras == null) return MetricName.UNKNOWN;
+                if (contact.ContactExtras == null) return string.Empty;
 
                 foreach (var contactExtra in contact.ContactExtras)
                 {
                     if (contactExtra.Metadata == null) continue;
 
-                    Enum.TryParse(contactExtra.Metadata.ToUpper(), out MetricName contactHealth);
-                    if (contactHealth > groupHealth) groupHealth = contactHealth;
+                    var groupHealth = contactExtra.Metadata.Split(',');
+                    if (groupHealth.Length < 2) continue;
+
+                    var contactLabel = groupHealth[0];
+                    var contactValue = int.Parse(groupHealth[1]);
+                    if (contactValue >= healthValue)
+                    {
+                        healthLabel = contactLabel;
+                        healthValue = contactValue;
+                    }
                 }
             }
 
-            return groupHealth;
+            return healthLabel;
         }
 
         public static DateTime? GetLastVisit(int orgId)
@@ -34,13 +43,5 @@ namespace CmsData.Classes.HealthChecker
 
             return organization?.contactsHad.Max(x => x.ContactDate);
         }
-    }
-
-    public enum MetricName
-    {
-        UNKNOWN = 0,
-        RED = 3,
-        YELLOW = 2,
-        GREEN = 1
     }
 }
