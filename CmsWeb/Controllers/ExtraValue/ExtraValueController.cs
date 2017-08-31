@@ -32,17 +32,17 @@ namespace CmsWeb.Controllers
             return new EmptyResult();
         }
 
-        [HttpGet, Route("ExtraValue/Codes/{table}")]
-        public ActionResult Codes(string table, string name)
+        [HttpGet, Route("ExtraValue/Codes/{table}/{location}")]
+        public ActionResult Codes(string table, string name, string location)
         {
-            var m = new ExtraValueModel(table);
+            var m = new ExtraValueModel(table, location);
             return Content(m.CodesJson(HttpUtility.UrlDecode(name)));
         }
 
-        [HttpGet, Route("ExtraValue/Bits/{table}/{id:int}")]
-        public ActionResult Bits(string table, int id, string name)
+        [HttpGet, Route("ExtraValue/Bits/{table}/{location}/{id:int}")]
+        public ActionResult Bits(string table, int id, string name, string location)
         {
-            var m = new ExtraValueModel(id, table);
+            var m = new ExtraValueModel(id, table, location);
             return Content(m.DropdownBitsJson(HttpUtility.UrlDecode(name)));
         }
    }

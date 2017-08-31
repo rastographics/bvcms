@@ -186,13 +186,13 @@ namespace CmsWeb.Models.ExtraValues
 
         public Dictionary<string, string> Codes(string name)
         {
-            var f = Views.GetStandardExtraValues(DbUtil.Db, Table).Single(ee => ee.Name == name);
+            var f = Views.GetStandardExtraValues(DbUtil.Db, Table, false, Location).Single(ee => ee.Name == name);
             return f.Codes.ToDictionary(ee => ee.Text, ee => ee.Text);
         }
 
         public string CodesJson(string name)
         {
-            var f = Views.GetStandardExtraValues(DbUtil.Db, Table).Single(ee => ee.Name == name);
+            var f = Views.GetStandardExtraValues(DbUtil.Db, Table, false, Location).Single(ee => ee.Name == name);
             var q = from c in f.Codes
                     select new {value = c.Text, text = c.Text};
             return JsonConvert.SerializeObject(q.ToArray());
@@ -206,7 +206,7 @@ namespace CmsWeb.Models.ExtraValues
 
         private IEnumerable<AllBitsCheckedOrNot> ExtraValueBits(string name)
         {
-            var f = Views.GetStandardExtraValues(DbUtil.Db, Table).Single(ee => ee.Name == name);
+            var f = Views.GetStandardExtraValues(DbUtil.Db, Table, false, Location).Single(ee => ee.Name == name);
             var list = ListExtraValues().Where(pp => f.Codes.Select(x => x.Text).Contains(pp.Field)).ToList();
             var q = from c in f.Codes
                     join e in list on c.Text equals e.Field into j
@@ -221,7 +221,7 @@ namespace CmsWeb.Models.ExtraValues
 
         public string DropdownBitsJson(string name)
         {
-            var f = Views.GetStandardExtraValues(DbUtil.Db, Table).Single(ee => ee.Name == name);
+            var f = Views.GetStandardExtraValues(DbUtil.Db, Table, false, Location).Single(ee => ee.Name == name);
             var list = ListExtraValues().Where(pp => f.Codes.Select(x => x.Text).Contains(pp.Field)).ToList();
             var q = from c in f.Codes
                     join e in list on c.Text equals e.Field into j
@@ -236,7 +236,7 @@ namespace CmsWeb.Models.ExtraValues
 
         public string ListBitsJson(string name)
         {
-            var f = Views.GetStandardExtraValues(DbUtil.Db, Table).Single(ee => ee.Name == name);
+            var f = Views.GetStandardExtraValues(DbUtil.Db, Table, false, Location).Single(ee => ee.Name == name);
             var list = ListExtraValues().Where(pp => f.Codes.Select(x => x.Text).Contains(pp.Field)).ToList();
             var q = from c in f.Codes
                     join e in list on c.Text equals e.Field into j

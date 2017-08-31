@@ -21,9 +21,9 @@ namespace CmsWeb.Models.ExtraValues
                 var n = HttpUtility.UrlEncode(Name);
                 var source = "";
                 if (Type == "Code" && Standard)
-                    source = $"/ExtraValue/Codes/{Model.Table}?name={n}";
+                    source = $"/ExtraValue/Codes/{Model.Table}/{Model.Location}?name={n}";
                 else if (Type == "Bits")
-                    source = $"/ExtraValue/Bits/{Model.Table}/{Id}?name={n}";
+                    source = $"/ExtraValue/Bits/{Model.Table}/{Model.Location}/{Id}?name={n}";
                 return source.HasValue() ? source : "";
             }
         }
