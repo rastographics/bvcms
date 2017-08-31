@@ -542,7 +542,7 @@ namespace CmsData.Finance
         public string VaultId(int peopleId)
         {
             var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId);
-            return paymentInfo?.AuNetCustPayId.ToString();
+            return paymentInfo?.AuNetCustId.ToString();
         }
     }
 }
