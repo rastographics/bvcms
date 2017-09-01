@@ -13,6 +13,12 @@
             @Model.HyperLink()
         </div>
     }
+    else if (Model.Type == "HTML")
+    {
+        <div class="col-sm-6">
+            @Html.Raw(Model.DisplayName)
+        </div>
+    }
     else
     {
         <div class="col-sm-6">

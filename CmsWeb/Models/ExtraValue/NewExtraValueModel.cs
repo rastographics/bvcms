@@ -306,7 +306,8 @@ Option 2
 
         public string AddAsNewStandard()
         {
-            ExtraValueName = ExtraValueName.Replace('/', '-');
+            if (ExtraValueType.Value != "HTML")
+                ExtraValueName = ExtraValueName.Replace('/', '-');
             var fields = Views.GetStandardExtraValues(DbUtil.Db, ExtraValueTable, false, ExtraValueLocation);
             var existing = fields.SingleOrDefault(ff => ff.Name == ExtraValueName);
             if (existing != null)
