@@ -1,7 +1,7 @@
 CREATE TABLE [dbo].[ContactExtra]
 (
 [ContactId] [int] NOT NULL,
-[Field] [nvarchar] (50) NOT NULL,
+[Field] [nvarchar] (max) NULL,
 [Data] [nvarchar] (max) NULL,
 [DataType] [nvarchar] (5) NULL,
 [StrValue] [nvarchar] (200) NULL,
