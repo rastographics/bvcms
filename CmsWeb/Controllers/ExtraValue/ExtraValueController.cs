@@ -6,19 +6,19 @@ using UtilityExtensions;
 
 namespace CmsWeb.Controllers
 {
-    public partial class ExtraValueController 
+    public partial class ExtraValueController
     {
         [HttpPost, Route("ExtraValue/Display/{table}/{location}/{id}/{id2?}")]
         public ActionResult Display(string table, string location, int id, int? id2)
         {
             var m = table == "OrgMember"
-                ? new ExtraValueModel(id, id2 ?? 0, table, location) 
+                ? new ExtraValueModel(id, id2 ?? 0, table, location)
                 : new ExtraValueModel(id, table, location);
             return View(location, m);
         }
 
         [HttpPost, Route("ExtraValue/Edit/{table}/{location}/{type}")]
-        public ActionResult Edit(string table, string location, string type, string pk, string name, string value)
+        public ActionResult Edit(string table, string location, string type, string pk, string name, string[] value)
         {
             ExtraValueModel m;
             if(table == "OrgMember")

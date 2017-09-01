@@ -262,8 +262,10 @@ namespace CmsWeb.Models.ExtraValues
             Log(record, "remove", name);
         }
 
-        public void EditExtra(string type, string name, string value)
+        public void EditExtra(string type, string name, string[] values)
         {
+            var value = values.First();
+
             var record = TableObject();
             if (record == null)
                 return;
@@ -301,8 +303,7 @@ namespace CmsWeb.Models.ExtraValues
                 case "Bits":
                 {
                     var existingBits = ExtraValueBits(name);
-                    value = HttpContext.Current.Request.Form["value[]"] ?? "";
-                    var newCheckedBits = value.Split(',');
+                    var newCheckedBits = values;
                     foreach (var currentBit in existingBits)
                     {
                         if (newCheckedBits.Contains(currentBit.Name))
