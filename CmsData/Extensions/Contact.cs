@@ -101,7 +101,7 @@ namespace CmsData
             return r;
         }
 
-        public void AddEditExtraCode(string field, string value)
+        public void AddEditExtraCode(string field, string value, string location = null)
         {
             if (!field.HasValue())
                 return;
@@ -110,7 +110,7 @@ namespace CmsData
             var ev = GetExtraValue(field);
             ev.StrValue = value;
             ev.TransactionTime = DateTime.Now;
-            ev.Metadata = RetrieveMetadata(field, value);
+            ev.Metadata = RetrieveMetadata(field, value, location);
         }
 
         public void AddEditExtraText(string field, string value, DateTime? dt = null)
@@ -202,9 +202,9 @@ namespace CmsData
             return ev;
         }
 
-        private static string RetrieveMetadata(string name, string value)
+        private static string RetrieveMetadata(string name, string value, string location)
         {
-            var extraValues = Views.GetStandardExtraValues(DbUtil.Db, "Contact");
+            var extraValues = Views.GetStandardExtraValues(DbUtil.Db, "Contact", false, location);
             var ev = extraValues.SingleOrDefault(x => x.Name == name);
 
             return ev?.Codes.SingleOrDefault(x => x.Text == value)?.Metadata;

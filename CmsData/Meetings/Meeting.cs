@@ -97,7 +97,7 @@ namespace CmsData
             return meeting;
         }
 
-        public void AddEditExtraCode(string field, string value)
+        public void AddEditExtraCode(string field, string value, string location = null)
         {
             if (!field.HasValue())
                 return;

@@ -18,16 +18,15 @@ namespace CmsWeb.Controllers
         [HttpPost, Route("ExtraValue/EditStandard/{table}")]
         public ActionResult EditStandard(string table, int id, string location, string name)
         {
-            var m = new NewExtraValueModel(table, name);
-            m.Id = id;
-            m.ExtraValueLocation = location;
+            var m = new NewExtraValueModel(id, table, location);
+            m.ExtraValueName = name;
             return View(m);
         }
         [ValidateInput(false)]
         [HttpPost, Route("ExtraValue/SaveEditedStandard")]
         public ActionResult SaveEditedStandard(NewExtraValueModel m)
         {
-            var i = Views.GetViewsViewValue(DbUtil.Db, m.ExtraValueTable, m.ExtraValueName);
+            var i = Views.GetViewsViewValue(DbUtil.Db, m.ExtraValueTable, m.ExtraValueName, m.ExtraValueLocation);
             i.value.VisibilityRoles = m.VisibilityRoles;
             i.value.EditableRoles = m.EditableRoles;
             i.value.Codes = m.ConvertToCodes();
@@ -50,10 +49,10 @@ namespace CmsWeb.Controllers
             m.DeleteStandard(name, removedata);
             return Content("ok");
         }
-        [HttpPost, Route("ExtraValue/Delete/{table}/{id:int}")]
-        public ActionResult Delete(string table, int id, string name)
+        [HttpPost, Route("ExtraValue/Delete/{table}/{location}/{id:int}")]
+        public ActionResult Delete(string table, string location, int id, string name)
         {
-            var m = new ExtraValueModel(id, table, "Standard");
+            var m = new ExtraValueModel(id, table, location);
             m.Delete(name);
             return View("Standard", m);
         }

@@ -17,8 +17,8 @@ namespace CmsWeb.Controllers
             return View(location, m);
         }
 
-        [HttpPost, Route("ExtraValue/Edit/{table}/{type}")]
-        public ActionResult Edit(string table, string type, string pk, string name, string value)
+        [HttpPost, Route("ExtraValue/Edit/{table}/{location}/{type}")]
+        public ActionResult Edit(string table, string location, string type, string pk, string name, string value)
         {
             ExtraValueModel m;
             if(table == "OrgMember")
@@ -27,7 +27,7 @@ namespace CmsWeb.Controllers
                 m = new ExtraValueModel(a[0].ToInt(), a[1].ToInt(), table, "Adhoc");
             }
             else
-                m = new ExtraValueModel(pk.ToInt(), table);
+                m = new ExtraValueModel(pk.ToInt(), table, location);
             m.EditExtra(type, HttpUtility.UrlDecode(name), value);
             return new EmptyResult();
         }

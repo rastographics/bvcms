@@ -93,11 +93,12 @@ namespace CmsData.ExtraValue
             public View view;
             public Value value;
         }
-        public static ViewValue GetViewsViewValue(CMSDataContext db, string table, string name)
+        public static ViewValue GetViewsViewValue(CMSDataContext db, string table, string name, string location)
         {
             var views = GetViews(db, nocache: true);
             var i = from view in views.List
                     where view.Table == table
+                    where view.Location == location
                     from value in view.Values
                     where value.Name == name
                     select new ViewValue

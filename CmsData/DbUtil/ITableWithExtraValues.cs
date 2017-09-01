@@ -4,7 +4,7 @@ namespace CmsData
 {
     public interface ITableWithExtraValues
     {
-        void AddEditExtraCode(string field, string value);
+        void AddEditExtraCode(string field, string value, string location = null);
         void AddEditExtraText(string field, string value, DateTime? dt = null);
         void AddEditExtraDate(string field, DateTime? value);
         void AddToExtraText(string field, string value);

@@ -270,7 +270,7 @@ namespace CmsWeb.Models.ExtraValues
             switch (type)
             {
                 case "Code":
-                    record.AddEditExtraCode(name, value);
+                    record.AddEditExtraCode(name, value, Location);
                     break;
                 case "Data":
                 case "Text":
@@ -346,7 +346,7 @@ namespace CmsWeb.Models.ExtraValues
 
         public void DeleteStandard(string name, bool removedata)
         {
-            var i = Views.GetViewsViewValue(DbUtil.Db, Table, name);
+            var i = Views.GetViewsViewValue(DbUtil.Db, Table, name, Location);
             i.view.Values.Remove(i.value);
             i.views.Save(DbUtil.Db);
 
@@ -383,7 +383,7 @@ namespace CmsWeb.Models.ExtraValues
 
         public void SwitchMultiline(string name)
         {
-            var i = Views.GetViewsViewValue(DbUtil.Db, Table, name);
+            var i = Views.GetViewsViewValue(DbUtil.Db, Table, name, Location);
             i.value.Type = i.value.Type == "Text" ? "Text2" : "Text";
             i.views.Save(DbUtil.Db);
         }

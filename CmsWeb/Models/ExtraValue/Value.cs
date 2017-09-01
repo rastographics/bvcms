@@ -28,7 +28,7 @@ namespace CmsWeb.Models.ExtraValues
             }
         }
 
-        public string EditUrl => $"/ExtraValue/Edit/{Model.Table}/{Type}";
+        public string EditUrl => $"/ExtraValue/Edit/{Model.Table}/{Model.Location}/{Type}";
 
         public string DeleteUrl
         {
@@ -36,7 +36,7 @@ namespace CmsWeb.Models.ExtraValues
             {
                 var n = HttpUtility.UrlEncode(Name);
                 if (Model.Location != "Adhoc")
-                    return $"/ExtraValue/Delete/{Model.Table}/{Id}?name={n}";
+                    return $"/ExtraValue/Delete/{Model.Table}/{Model.Location}/{Id}?name={n}";
                 return $"/ExtraValue/DeleteAdhoc/{Model.Table}/{Id}?name={n}";
             }
         }

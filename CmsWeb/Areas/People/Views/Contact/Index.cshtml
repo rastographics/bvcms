@@ -9,6 +9,14 @@
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
     @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
     @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2-bootstrap.css")
+    <style type="text/css">
+        .editable-checklist label {
+            white-space: normal !important;
+        }
+        .editableform .control-group {
+            white-space: normal !important;
+        }
+    </style>
 }
 @Html.Hidden("Id")
 <div class="row tab-pane" data-action="GET">
