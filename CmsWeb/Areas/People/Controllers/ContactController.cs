@@ -119,13 +119,5 @@ namespace CmsWeb.Areas.People.Controllers
             var tid = m.AddTask(pid);
             return Redirect("/Task/" + tid);
         }
-        [HttpPost]
-        public ActionResult ExtraValues(int cid, string ministry, string contactType, string contactReason)
-        {
-            var m = new ContactModel(cid);
-            m.SetLocationOnContact(ministry, contactType, contactReason);
-            var evmodel = new ExtraValueModel(cid, "Contact", m.Location);
-            return View("/Views/ExtraValue/Location.cshtml", evmodel);
-        }
     }
 }

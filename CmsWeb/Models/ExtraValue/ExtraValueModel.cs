@@ -264,7 +264,7 @@ namespace CmsWeb.Models.ExtraValues
 
         public void EditExtra(string type, string name, string[] values)
         {
-            var value = values.First();
+            var value = values?.First();
 
             var record = TableObject();
             if (record == null)
@@ -303,7 +303,7 @@ namespace CmsWeb.Models.ExtraValues
                 case "Bits":
                 {
                     var existingBits = ExtraValueBits(name);
-                    var newCheckedBits = values;
+                    var newCheckedBits = values ?? new string[] {};
                     foreach (var currentBit in existingBits)
                     {
                         if (newCheckedBits.Contains(currentBit.Name))
