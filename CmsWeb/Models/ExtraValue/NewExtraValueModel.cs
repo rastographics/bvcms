@@ -168,6 +168,28 @@ namespace CmsWeb.Models.ExtraValues
             ExtraValueTable = table;
             ExtraValueLocation = location;
         }
+        public NewExtraValueModel(int id, string table, string name, string location)
+        {
+            var f = Views.GetStandardExtraValues(DbUtil.Db, table, false, location).Single(ee => ee.Name == name);
+            ExtraValueType = new CodeInfo(f.Type, "ExtraValueType");
+            Id = id;
+            ExtraValueName = name;
+            ExtraValueTable = table;
+            ExtraValueLocation = location;
+            VisibilityRoles = f.VisibilityRoles;
+            EditableRoles = f.EditableRoles;
+            ExtraValueLink = HttpUtility.HtmlDecode(f.Link);
+            var codes = string.Join("\n", f.Codes.Select(x => x.Text));
+            switch (ExtraValueType.Value)
+            {
+                case "Bits":
+                    ExtraValueCheckboxes = codes;
+                    break;
+                case "Code":
+                    ExtraValueCodes = codes;
+                    break;
+            }
+        }
         public NewExtraValueModel(int id, int id2, string table, string location)
         {
             ExtraValueType = new CodeInfo("Text", "ExtraValueType");

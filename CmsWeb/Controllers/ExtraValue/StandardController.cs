@@ -19,8 +19,7 @@ namespace CmsWeb.Controllers
         [HttpPost, Route("ExtraValue/EditStandard/{table}")]
         public ActionResult EditStandard(string table, int id, string location, string name)
         {
-            var m = new NewExtraValueModel(id, table, location);
-            m.ExtraValueName = name;
+            var m = new NewExtraValueModel(id, table, name, location);
             return View(m);
         }
         [ValidateInput(false)]
