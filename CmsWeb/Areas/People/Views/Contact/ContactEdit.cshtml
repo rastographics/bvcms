@@ -1,12 +1,8 @@
 ﻿@using System.Web.Mvc.Html
 @using CmsData
-@using CmsData.Classes.RoleChecker
-@using CmsWeb.Models.ExtraValues
 @using UtilityExtensions
 @model CmsWeb.Areas.People.Models.ContactModel
-@{
-    var evmodel = new ExtraValueModel(Model.ContactId, "Contact", Model.Location);
-}
+
 <form id="edit-contact" class="form ajax" method="post" data-init="Editable" data-init2="ExtraEditable">
     @if (Model.Incomplete.HasValue())
     {
@@ -57,11 +53,6 @@
                 }
             </div>
             <div class="row">
-                <div id="contact-extra-values" class="col-sm-12">
-                    @Html.Partial("/Views/ExtraValue/Location.cshtml", evmodel)
-                </div>
-            </div>
-            <div class="row">
                 @if (Model.CanViewComments)
                 {
                     <div class="col-sm-12">
@@ -86,8 +77,6 @@
         // Index.cshtml will run this when it is being directly loaded into the DOM
         $(function () {
             $("select #OrganizationId").select2();
-
-            WireUpExtraValues(@Model.ContactId);
         });
 
     </script>

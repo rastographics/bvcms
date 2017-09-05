@@ -139,7 +139,7 @@ namespace CmsWeb.Models.ExtraValues
                             where e.Id == Id
                             where Codes.Select(x => x.Text).Contains(e.Field)
                             select NoPrefix(e.Field);
-                    return string.Join("\n", q);
+                    return string.Join("<br /><br />", q);
                 }
                 case "Int":
                     return ev.IntValue.ToString2("d");

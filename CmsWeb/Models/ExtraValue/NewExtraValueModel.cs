@@ -24,7 +24,7 @@ namespace CmsWeb.Models.ExtraValues
         public string ExtraValueLocation { get; set; }
         public bool ClearOldValuesFirst { get; set; }
 
-        [DisplayName("Name"), StringLength(50), Required]
+        [DisplayName("Name"), Required]
         public string ExtraValueName { get; set; }
 
         [DisplayName("Type")]
