@@ -1,8 +1,11 @@
 ﻿@using System.Web.Mvc.Html
 @using CmsData
+@using CmsWeb.Models.ExtraValues
 @using UtilityExtensions
 @model CmsWeb.Areas.People.Models.ContactModel
-
+@{
+    var evmodel = new ExtraValueModel(Model.ContactId, "Contact", Model.Location);
+}
 <form id="edit-contact" class="form ajax" method="post" data-init="Editable" data-init2="ExtraEditable">
     @if (Model.Incomplete.HasValue())
     {
@@ -52,15 +55,20 @@
                     </div>
                 }
             </div>
-            <div class="row">
-                @if (Model.CanViewComments)
-                {
-                    <div class="col-sm-12">
-                        @Html.EditorFor(m => m.Comments, "TextArea")
-                        @Html.ValidationMessage("Comments")
-                    </div>
-                }
-            </div>
+           <div class="row">
+               <div id="contact-extra-values" class="col-sm-12">
+                     @Html.Partial("/Views/ExtraValue/Location.cshtml", evmodel)
+                 </div>
+             </div>
+             <div class="row">
+               @if (Model.CanViewComments)
+               {
+                   <div class="col-sm-12">
+                       @Html.EditorFor(m => m.Comments, "TextArea")
+                       @Html.ValidationMessage("Comments")
+                   </div>
+               }
+           </div>
             <br/>
             <a id="cancel" class="btn btn-default ajax" href="/Contact2/ContactDisplay/@Model.ContactId">Cancel</a>
             <a id="update" class="btn btn-primary ajax validate" href="/Contact2/ContactUpdate/@Model.ContactId">Update</a>
@@ -77,6 +85,8 @@
         // Index.cshtml will run this when it is being directly loaded into the DOM
         $(function () {
             $("select #OrganizationId").select2();
+
+            WireUpExtraValues(@Model.ContactId);
         });
 
     </script>

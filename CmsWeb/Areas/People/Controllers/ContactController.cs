@@ -15,10 +15,10 @@ namespace CmsWeb.Areas.People.Controllers
             if (m.contact == null)
                 return Content("contact is private or does not exist");
 
-            if( edit )
+            if (edit)
             {
                 TempData["ContactEdit"] = true;
-                return Redirect($"/Contact2/{cid}");                
+                return Redirect($"/Contact2/{cid}");
             }
             else
             {
@@ -118,6 +118,14 @@ namespace CmsWeb.Areas.People.Controllers
             var m = new ContacteesModel(cid);
             var tid = m.AddTask(pid);
             return Redirect("/Task/" + tid);
+        }
+        [HttpPost]
+        public ActionResult ExtraValues(int cid, string ministry, string contactType, string contactReason)
+        {
+            var m = new ContactModel(cid);
+            m.SetLocationOnContact(ministry, contactType, contactReason);
+            var evmodel = new ExtraValueModel(cid, "Contact", m.Location);
+            return View("/Views/ExtraValue/Location.cshtml", evmodel);
         }
     }
 }
