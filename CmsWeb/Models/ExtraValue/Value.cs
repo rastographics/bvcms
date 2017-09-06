@@ -139,7 +139,9 @@ namespace CmsWeb.Models.ExtraValues
                             where e.Id == Id
                             where Codes.Select(x => x.Text).Contains(e.Field)
                             select NoPrefix(e.Field);
-                    
+
+                    if (q.ToList().Count == 0) return string.Empty;
+
                     var bullets = string.Join("</li><li>", q);
                     return "<ul><li>" + bullets + "</li></ul>";
                 }
