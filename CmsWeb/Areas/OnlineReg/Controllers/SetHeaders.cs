@@ -23,6 +23,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public void SetHeaders(OnlineRegModel m2)
         {
             Session["gobackurl"] = m2.URL;
+            ViewBag.Title = m2.Header;
             SetHeaders2(m2.Orgid ?? m2.masterorgid ?? 0);
         }
         private void SetHeaders2(int id)
@@ -46,6 +47,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if (shell != null && shell.HasValue())
             {
+                shell = shell.Replace("{title}", ViewBag.Title);
                 var re = new Regex(@"(.*<!--FORM START-->\s*).*(<!--FORM END-->.*)", RegexOptions.Singleline);
                 var t = re.Match(shell).Groups[1].Value.Replace("<!--FORM CSS-->", ViewExtensions2.Bootstrap3Css());
                 ViewBag.hasshell = true;
@@ -82,11 +84,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (s.HasValue())
             {
                 var re = new Regex(@"(.*<!--FORM START-->\s*).*(<!--FORM END-->.*)", RegexOptions.Singleline);
-                var t = re.Match(s).Groups[1].Value.Replace("<!--FORM CSS-->", 
+                var t = re.Match(s).Groups[1].Value.Replace("<!--FORM CSS-->",
                 ViewExtensions2.jQueryUICss() +
                 "\r\n<link href=\"/Content/styles/onlinereg.css?v=8\" rel=\"stylesheet\" type=\"text/css\" />\r\n"); 
                 ViewBag.hasshell = true;
-                ViewBag.top = t;
                 var b = re.Match(s).Groups[2].Value;
                 ViewBag.bottom = b;
             }
