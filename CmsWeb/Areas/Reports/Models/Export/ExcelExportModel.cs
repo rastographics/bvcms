@@ -2,18 +2,25 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Dynamic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using CmsData;
 using CmsData.API;
-using CmsWeb.Areas.Reports.Models;
 using OfficeOpenXml;
 using UtilityExtensions;
+using DirectoryInfo = CmsWeb.Areas.Reports.Models.DirectoryInfo;
 
 namespace CmsWeb.Models
 {
     public static class ExcelExportModel
     {
+        public static void SaveAs(this DataTable dt, string filename = "People.xlsx", bool useTable = false)
+        {
+            var ep = new ExcelPackage();
+            ep.AddSheet(dt, filename, useTable);
+            ep.SaveAs(new FileInfo(filename));
+        }
         public static EpplusResult ToExcel(this DataTable dt, string filename = "People.xlsx", bool useTable = false)
         {
             var ep = new ExcelPackage();

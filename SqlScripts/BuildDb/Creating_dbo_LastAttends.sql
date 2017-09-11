@@ -8,6 +8,7 @@ CREATE VIEW [dbo].[LastAttends] AS
 		FROM dbo.Attend a
 		JOIN dbo.People p ON p.PeopleId = a.PeopleId
 		WHERE a.AttendanceFlag = 1
+		AND a.MeetingDate < DATEADD(DAY, 1, GETDATE())
 		GROUP BY a.PeopleId, p.Name2
 	)
 	SELECT lm.PeopleId,

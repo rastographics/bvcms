@@ -105,9 +105,15 @@
                   <li>
                     <a href="#" id="ledgerincome">Export Ledger Income</a>
                   </li>
-                  <li id="gl-extract" style="display: none;">
-                    <a href="#" id="glextract">GL Extract</a>
-                  </li>
+                    <li id="gl-extract" style="display: none;">
+                        <a href="#" id="glextract">GL Extract</a>
+                    </li>
+                    @if (User.IsInRole("Developer"))
+                    {
+                      <li>
+                        <a href="#" id="reconcile">Reconcile</a>
+                      </li>
+                    }
                 </ul>
               </div>
               <button type="submit" class="btn btn-primary" id="run">Run</button>
@@ -133,7 +139,7 @@
       <strong>Include unclosed bundles?:</strong> <span id="includeUnClosedBundles">@Model.IncUnclosedBundles</span><br/>
       <strong>Include bundle type:</strong> <span id="includeBundleType">@Model.IncludeBundleType</span>
     </div>
-    <div id="results" style="margin-top: 25px;"></div>
+      <div id="results" style="margin-top: 25px;"></div>
   </div>
 </div>
 @section scripts

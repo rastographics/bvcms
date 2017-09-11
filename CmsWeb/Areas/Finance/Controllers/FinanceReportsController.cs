@@ -105,6 +105,12 @@ namespace CmsWeb.Areas.Finance.Controllers
             var m = new TotalsByFundModel();
             return View(m);
         }
+        [HttpPost]
+        public ActionResult TotalsByFundExport(TotalsByFundModel m)
+        {
+            m.SaveAsExcel();
+            return Content("done");
+        }
 
         [HttpPost]
         public ActionResult TotalsByFundResults(TotalsByFundModel m)
