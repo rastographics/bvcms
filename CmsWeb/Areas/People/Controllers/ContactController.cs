@@ -94,6 +94,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult ContactUpdate(int cid, ContactModel c)
         {
+            c.SetLocationOnContact();
             if (!ModelState.IsValid)
                 return View("ContactEdit", c);
             c.UpdateContact();
