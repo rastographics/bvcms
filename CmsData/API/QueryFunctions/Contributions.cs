@@ -82,8 +82,6 @@ namespace CmsData
                     where f.ExFundIds.Count == 0 || !f.ExFundIds.Contains(c.FundId)
                     where !typs.Contains(c.ContributionTypeId)
                     select c;
-            foreach(var c in q)
-                Debug.WriteLine(c.ContributionId);
             return Convert.ToDouble(q.Sum(c => c.ContributionAmount) ?? 0);
         }
         public string DateRangeForContributionTotals(int days1, int days2)

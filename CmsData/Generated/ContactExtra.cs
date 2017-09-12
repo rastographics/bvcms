@@ -102,7 +102,7 @@ namespace CmsData
 		
     #region Columns
 		
-		[Column(Name="ContactId", UpdateCheck=UpdateCheck.Never, Storage="_ContactId", DbType="int NOT NULL")]
+		[Column(Name="ContactId", UpdateCheck=UpdateCheck.Never, Storage="_ContactId", DbType="int NOT NULL", IsPrimaryKey=true)]
 		[IsForeignKey]
 		public int ContactId
 		{
@@ -128,7 +128,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="Field", UpdateCheck=UpdateCheck.Never, Storage="_Field", DbType="nvarchar")]
+		[Column(Name="Field", UpdateCheck=UpdateCheck.Never, Storage="_Field", DbType="nvarchar(200) NOT NULL", IsPrimaryKey=true)]
 		public string Field
 		{
 			get { return this._Field; }
