@@ -59,7 +59,7 @@ namespace CmsWeb.Areas.People.Models
                 Selected = !string.IsNullOrWhiteSpace(LimitToRole) && LimitToRole == rolename
             }).ToList();
 
-            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)", Selected = true});
+            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)", Selected = true });
             return list;
         }
 
@@ -81,11 +81,11 @@ namespace CmsWeb.Areas.People.Models
             var list = DbUtil.Db.Organizations
                 .Where(x => string.IsNullOrEmpty(orgType) || orgType == x.OrganizationType.Description)
                 .OrderBy(r => r.OrganizationName).ToList().Select(x => new SelectListItem
-            {
-                Value = x.OrganizationId.ToString(),
-                Text = x.OrganizationName,
-                Selected = x.OrganizationId == OrganizationId
-            }).ToList();
+                {
+                    Value = x.OrganizationId.ToString(),
+                    Text = x.OrganizationName,
+                    Selected = x.OrganizationId == OrganizationId
+                }).ToList();
 
             list.Insert(0, new SelectListItem { Value = "0", Text = "(none)", Selected = true });
             return list;
@@ -98,9 +98,9 @@ namespace CmsWeb.Areas.People.Models
             var roles = u.UserRoles.Select(uu => uu.Role.RoleName.ToLower()).ToArray();
             var ManagePrivateContacts = HttpContext.Current.User.IsInRole("ManagePrivateContacts");
             var q = from c in DbUtil.Db.Contacts
-                   where (c.LimitToRole ?? "") == "" || roles.Contains(c.LimitToRole) || ManagePrivateContacts
-                   where c.ContactId == id
-                   select c;
+                    where (c.LimitToRole ?? "") == "" || roles.Contains(c.LimitToRole) || ManagePrivateContacts
+                    where c.ContactId == id
+                    select c;
             contact = q.SingleOrDefault();
             if (contact == null)
                 return;
@@ -120,7 +120,7 @@ namespace CmsWeb.Areas.People.Models
             : this()
         {
             LoadContact(id);
-            if(contact != null)
+            if (contact != null)
                 this.CopyPropertiesFrom(contact);
 
             SetLocationOnContact();
@@ -282,9 +282,11 @@ namespace CmsWeb.Areas.People.Models
 
         public bool ShowDefaultCheckboxes => !DbUtil.Db.Setting("UX-HideContactCheckboxes");
 
+        public bool ShowContactExtraFeature => DbUtil.Db.Setting("Feature-ContactExtra");
+
         private string GetIncomplete()
         {
-            if(contact == null)
+            if (contact == null)
                 LoadContact(ContactId);
             var sb = new StringBuilder();
             Append(Ministry.Value == "0", sb, "no ministry");

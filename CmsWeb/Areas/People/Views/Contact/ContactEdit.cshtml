@@ -17,7 +17,7 @@
     @Html.HiddenFor(m => m.ContactId)
     @Html.HiddenFor(m => m.OrganizationId)
     <div class="box box-responsive">
-       <div class="box-content">
+        <div class="box-content">
             <div class="row">
                 <div class="col-sm-6">
                     @Html.EditorFor(m => m.ContactDate)
@@ -55,26 +55,29 @@
                     </div>
                 }
             </div>
-           <div class="row">
-               <div id="contact-extra-values" class="col-sm-12">
-                     @Html.Partial("/Views/ExtraValue/Location.cshtml", evmodel)
-                 </div>
-             </div>
-             <div class="row">
-               @if (Model.CanViewComments)
-               {
-                   <div class="col-sm-12">
-                       @Html.EditorFor(m => m.Comments, "TextArea")
-                       @Html.ValidationMessage("Comments")
-                   </div>
-               }
-           </div>
-            <br/>
+            @if (Model.ShowContactExtraFeature)
+            {
+                <div class="row">
+                    <div id="contact-extra-values" class="col-sm-12">
+                        @Html.Partial("/Views/ExtraValue/Location.cshtml", evmodel)
+                    </div>
+                </div>
+            }
+            <div class="row">
+                @if (Model.CanViewComments)
+                {
+                    <div class="col-sm-12">
+                        @Html.EditorFor(m => m.Comments, "TextArea")
+                        @Html.ValidationMessage("Comments")
+                    </div>
+                }
+            </div>
+            <br />
             <a id="cancel" class="btn btn-default ajax" href="/Contact2/ContactDisplay/@Model.ContactId">Cancel</a>
             <a id="update" class="btn btn-primary ajax validate" href="/Contact2/ContactUpdate/@Model.ContactId">Update</a>
             @Html.ValidationMessage("contactors")
             @Html.ValidationMessage("contactees")
-            <br/><br/>
+            <br /><br />
         </div>
     </div>
 </form>
@@ -86,7 +89,10 @@
         $(function () {
             $("select #OrganizationId").select2();
 
-            WireUpExtraValues(@Model.ContactId);
+            @if (Model.ShowContactExtraFeature)
+            {
+                @:WireUpExtraValues(@Model.ContactId);
+            }
         });
 
     </script>

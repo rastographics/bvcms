@@ -1,28 +1,35 @@
 ﻿@model CmsWeb.Areas.People.Models.ContactModel
 @{
-  ViewBag.Title = "Contact";
-  ViewBag.PageHeader = "Contact";
-  Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Contact";
+    ViewBag.PageHeader = "Contact";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
 @section head
 {
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
     @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
     @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2-bootstrap.css")
-    <style type="text/css">
-        .editable-checklist label {
-            white-space: normal !important;
-        }
-        .editableform .control-group {
-            white-space: normal !important;
-        }
-        label {
-            font-weight: normal !important;
-        }
-        label.control-label {
-            font-weight: bold !important;
-        }
-    </style>
+
+    @if (Model.ShowContactExtraFeature)
+    {
+        <style type="text/css">
+            .editable-checklist label {
+                white-space: normal !important;
+            }
+
+            .editableform .control-group {
+                white-space: normal !important;
+            }
+
+            label {
+                font-weight: normal !important;
+            }
+
+                label.control-label {
+                    font-weight: bold !important;
+                }
+        </style>
+    }
 }
 @Html.Hidden("Id")
 <div class="row tab-pane" data-action="GET">
@@ -84,16 +91,19 @@
     @if (ViewBag.edit)
     {
         <script>
-            $(function() {
+            $(function () {
                 $("select #OrganizationId").select2();
             });
         </script>
     }
-   <script>
+    <script>
         $(function() {
             $.InitFunctions.ExtraEditable();
 
-            WireUpExtraValues(@Model.ContactId);
+            @if (Model.ShowContactExtraFeature)
+            {
+                @:WireUpExtraValues(@Model.ContactId);
+            }
         });
     </script>
 }
