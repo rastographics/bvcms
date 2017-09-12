@@ -179,6 +179,7 @@ Creating_pk_PK_MemberType_lookup_MemberType.sql
 Creating_dbo_HomePage.sql
 Creating_triggerdbo_updOrganizationMember_dbo_OrganizationMembers.sql
 Creating_dbo_ContributionSearch.sql
+Creating_dbo_ContributionSearch0.sql
 Creating_dbo_GetContributionsRange.sql
 Creating_dbo_LastDrop.sql
 Creating_lookup_ResidentCode.sql
