@@ -4,10 +4,12 @@ using System.Dynamic;
 using System.Reflection;
 using HandlebarsDotNet;
 using IronPython.Runtime;
+using System.Runtime.Serialization;
 
 namespace CmsData.API
 {
-    public class DynamicData : DynamicObject
+    [Serializable]
+    public class DynamicData : DynamicObject, ISerializable
     {
         // ReSharper disable once InconsistentNaming
         internal Dictionary<string, object> dict { get; }
@@ -48,7 +50,6 @@ namespace CmsData.API
             }
             throw new Exception("data is not a dictionary");
         }
-
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
             dict[binder.Name] = value;
@@ -68,6 +69,12 @@ namespace CmsData.API
             if(dict.ContainsKey(key))
                 return dict[key];
             return null;
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            foreach (var kv in dict)
+                info.AddValue(kv.Key, kv.Value);
         }
     }
 }

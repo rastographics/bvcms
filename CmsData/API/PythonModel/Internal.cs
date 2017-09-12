@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
-using AuthorizeNet.Util;
+using System.Web.Hosting;
 using CmsData.API;
 using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
@@ -52,6 +52,13 @@ namespace CmsData
             instance = Event();
         }
 
+        QueryFunctions QueryFunctions()
+        {
+            return new QueryFunctions(db, dictionary);
+        }
+
+        public string DatabaseName => db.Host;
+
         private CMSDataContext NewDataContext()
         {
             return DbUtil.Create(db.Host);
@@ -79,7 +86,6 @@ namespace CmsData
         {
             return ExecutePython(script, new PythonModel(dbname));
         }
-
         public static string RunScript(string dbname, string script, DateTime time)
         {
             var pe = new PythonModel(dbname) {ScheduledTime = time.ToString("HHmm")};
@@ -89,11 +95,6 @@ namespace CmsData
         private static string ExecutePython(string scriptContent, PythonModel model)
         {
             var engine = Python.CreateEngine();
-//            var libs = new []
-//            {
-//                @"E:\GitHub\bvcms\CmsWeb\Lib"
-//            };
-//            engine.SetSearchPaths(libs);
 
             using (var ms = new MemoryStream())
             using (var sw = new StreamWriter(ms))
@@ -104,6 +105,50 @@ namespace CmsData
                 try
                 {
                     var sc = engine.CreateScriptSourceFromString(scriptContent);
+                    var code = sc.Compile();
+
+                    var scope = engine.CreateScope();
+                    scope.SetVariable("model", model);
+                    scope.SetVariable("Data", model.Data);
+
+                    var qf = new QueryFunctions(model.db, model.dictionary);
+                    scope.SetVariable("q", qf);
+                    code.Execute(scope);
+
+                    ms.Position = 0;
+
+                    using (var sr = new StreamReader(ms))
+                    {
+                        var s = sr.ReadToEnd();
+                        return s;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    var err = engine.GetService<ExceptionOperations>().FormatException(ex);
+                    throw new Exception(err);
+                }
+            }
+        }
+
+        public static string ExecutePythonFile(string dbname, string file)
+        {
+            var model = new PythonModel(dbname);
+            var engine = Python.CreateEngine(new Dictionary<string, object> { ["Debug"] = true });
+            var loc = HostingEnvironment.ApplicationPhysicalPath;
+            var searchPaths = engine.GetSearchPaths();
+            searchPaths.Add(loc + "/Lib");
+            engine.SetSearchPaths(searchPaths);
+
+            using (var ms = new MemoryStream())
+            using (var sw = new StreamWriter(ms))
+            {
+                engine.Runtime.IO.SetOutput(ms, sw);
+                engine.Runtime.IO.SetErrorOutput(ms, sw);
+
+                try
+                {
+                    var sc = engine.CreateScriptSourceFromFile(file);
                     var code = sc.Compile();
 
                     var scope = engine.CreateScope();

@@ -15,12 +15,12 @@ namespace CmsData
                 }
         }
 
-        public void AddExtraValueCode(object query, string name, string text)
+        public void AddExtraValueCode(object query, string name, object text)
         {
             using (var db2 = NewDataContext())
                 foreach (var pid in db2.PeopleQueryIds(query))
                 {
-                    Person.AddEditExtraValue(db2, pid, name, text);
+                    Person.AddEditExtraValue(db2, pid, name, text.ToString());
                     db2.SubmitChanges();
                 }
         }
@@ -46,12 +46,12 @@ namespace CmsData
                 }
         }
 
-        public void AddExtraValueText(object query, string name, string text)
+        public void AddExtraValueText(object query, string name, object text)
         {
             using (var db2 = NewDataContext())
                 foreach (var pid in db2.PeopleQueryIds(query))
                 {
-                    Person.AddEditExtraData(db2, pid, name, text);
+                    Person.AddEditExtraData(db2, pid, name, text.ToString());
                     db2.SubmitChanges();
                 }
         }

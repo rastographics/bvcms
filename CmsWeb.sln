@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMSWeb", "CmsWeb\CMSWeb.csproj", "{FC942D51-94B5-456B-9683-0BA000A1EAF4}"
 EndProject
@@ -302,5 +302,8 @@ Global
 		{98AEE43C-4226-49E7-BD46-C1A85467ECED} = {2F5AFEE8-D44F-4D81-BC89-4E17A3180C58}
 		{C504E3D2-5498-451B-BF82-309623706F11} = {2F5AFEE8-D44F-4D81-BC89-4E17A3180C58}
 		{512DA381-E81B-4121-B978-FC850EC88353} = {2F5AFEE8-D44F-4D81-BC89-4E17A3180C58}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {52519C8A-8D4A-40D1-997F-1CCC2E131A39}
 	EndGlobalSection
 EndGlobal

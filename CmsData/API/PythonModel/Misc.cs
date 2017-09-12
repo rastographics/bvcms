@@ -57,6 +57,10 @@ namespace CmsData
             return "";
         }
 
+        public DynamicData DynamicData()
+        {
+            return new DynamicData();
+        }
         public DynamicData DynamicData(PythonDictionary dict)
         {
             return new DynamicData(dict);
@@ -110,6 +114,10 @@ namespace CmsData
             return md.Transform(text.Trim());
         }
 
+        public string RegexMatch(string s, string regex)
+        {
+            return Regex.Match(s, regex, RegexOptions.IgnoreCase | RegexOptions.Singleline).Value;
+        }
         public string UrlEncode(string s)
         {
             return HttpUtility.UrlEncode(s);
@@ -140,6 +148,20 @@ namespace CmsData
             var request = new RestRequest(Method.POST);
             foreach (var kv in headers)
                 request.AddHeader((string)kv.Key, (string)kv.Value);
+            request.AddBody(body);
+            var response = client.Execute(request);
+            return response.Content;
+        }
+        public string RestPostJson(string url, PythonDictionary headers, object obj, string user = null, string password = null)
+        {
+            var client = new RestClient(url);
+            if (user?.Length > 0 && password?.Length > 0)
+                client.Authenticator = new HttpBasicAuthenticator(user, password);
+            var request = new RestRequest(Method.POST);
+            request.JsonSerializer = new RestSharp.Serializers.Shared.JsonSerializer();
+            foreach (var kv in headers)
+                request.AddHeader((string)kv.Key, (string)kv.Value);
+            request.AddJsonBody(obj);
             var response = client.Execute(request);
             return response.Content;
         }
@@ -153,6 +175,10 @@ namespace CmsData
             var  list =  JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(s);
             var list2 = list.Select(vv => new DynamicData(vv));
             return list2;
+        }
+        public string JsonSerialize(object o)
+        {
+            return JsonConvert.SerializeObject(o);
         }
 
         public string Setting(string name, string def = "")
@@ -170,6 +196,11 @@ namespace CmsData
             var d = JsonConvert.DeserializeObject(json);
             var s = JsonConvert.SerializeObject(d, Formatting.Indented);
             return s.Replace("\r\n", "\n");
+        }
+
+        public string Md5Hash(string s)
+        {
+            return s.Md5Hash();
         }
 
         public string ReplaceCodeStr(string text, string codes)

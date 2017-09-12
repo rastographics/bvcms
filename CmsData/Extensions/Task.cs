@@ -45,6 +45,21 @@ namespace CmsData
             Db.Tasks.InsertOnSubmit(task);
             Db.SubmitChanges();
         }
+        public static int AddTask(CMSDataContext Db, int pid)
+        {
+            var p = Db.LoadPersonById(pid);
+            var t = new Task
+            {
+                ListId = GetRequiredTaskList(Db, "InBox", Util.UserPeopleId.Value).Id,
+                OwnerId = Util.UserPeopleId.Value,
+                Description = "Please Contact",
+                ForceCompleteWContact = true,
+                StatusId = TaskStatusCode.Active,
+            };
+            p.TasksAboutPerson.Add(t);
+            DbUtil.Db.SubmitChanges();
+            return t.Id;
+        }
         public static int AddTasks(CMSDataContext Db, Guid qid)
         {
             var q = Db.PeopleQuery(qid);

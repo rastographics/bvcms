@@ -13,10 +13,10 @@ namespace UtilityExtensions
         public static string[] SplitUpperCase(this string source)
         {
             if (source == null)
-                return new string[] {}; //Return empty array.
+                return new string[] { }; //Return empty array.
 
             if (source.Length == 0)
-                return new[] {""};
+                return new[] { "" };
 
             var words = new StringCollection();
             var wordStartIndex = 0;
@@ -105,7 +105,7 @@ namespace UtilityExtensions
             var option = noblanks
                 ? StringSplitOptions.RemoveEmptyEntries
                 : StringSplitOptions.None;
-            return source.Split(new[] {"\r\n", "\n", "\r"}, option);
+            return source.Split(new[] { "\r\n", "\n", "\r" }, option);
         }
 
         public static string GetAttr(this XElement e, string n, string def = null)
@@ -196,7 +196,7 @@ namespace UtilityExtensions
 
             for (var i = 0; i < password.Length; i++)
             {
-                var r = i%4;
+                var r = i % 4;
                 if (r == 1 || r == 2)
                     password[i] = pdigits[random.Next(pdigits.Length - 1)];
                 else
@@ -293,15 +293,25 @@ namespace UtilityExtensions
             sb.Append(" " + s);
         }
 
-        public static string GetCsvToken(this string s, int n = 1, int ntokens=1000, string sep = ",")
+        public static string GetCsvToken(this string s, int n = 1, int ntokens = 1000, string sep = ",")
         {
             var a = s.SplitStr(sep, ntokens);
-            return a.Length >= n ? a[n-1] : "";
+            return a.Length >= n ? a[n - 1] : "";
         }
         public static string RemoveGrammarly(this string s)
         {
             s = Regex.Replace(s, "<style type=\"text/css\">._44eb54-hoverMenu.*?</style>", "", RegexOptions.Singleline);
             return Regex.Replace(s, @"\sdata-gramm\w*?="".*?""", "", RegexOptions.Singleline);
+        }
+        public static string Md5Hash(this string s)
+        {
+            var md5 = MD5.Create();
+            var bytes = Encoding.ASCII.GetBytes(s);
+            var hash = md5.ComputeHash(bytes);
+            var sb = new StringBuilder();
+            foreach (var t in hash)
+                sb.Append(t.ToString("x2"));
+            return sb.ToString();
         }
     }
 }
