@@ -69,6 +69,15 @@ namespace CmsWeb.Models
             dt.SaveAs("D:\\cids.xlsx");
         }
 
+        public IEnumerable<string> CustomReports()
+        {
+            var q = from c in DbUtil.Db.Contents
+                where c.TypeID == ContentTypeCode.TypeSqlScript
+                where c.Body.Contains("--class=TotalsByFund")
+                select c.Name;
+            return q;
+        }
+
         public IEnumerable<FundTotalInfo> TotalsByFund()
         {
             List<FundTotalInfo> q = null;

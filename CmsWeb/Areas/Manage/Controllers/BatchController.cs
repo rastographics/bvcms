@@ -286,16 +286,16 @@ namespace CmsWeb.Areas.Manage.Controllers
             ManagedGiving.DoAllGiving(DbUtil.Db);
             return Content("done");
         }
-//        [HttpGet]
-//        [Authorize(Roles = "Developer")]
-//        public ActionResult DoGiving1(int id)
-//        {
-//            var rg = (from r in DbUtil.Db.ManagedGivings
-//                where r.PeopleId == id
-//                select r).Single();
-//            rg.DoGiving(DbUtil.Db);
-//            return Content($"done with {id}");
-//        }
+        [HttpGet]
+        [Authorize(Roles = "Developer")]
+        public ActionResult DoGiving1(int id)
+        {
+            var rg = (from r in DbUtil.Db.ManagedGivings
+                where r.PeopleId == id
+                select r).Single();
+            rg.DoGiving(DbUtil.Db);
+            return Content($"done with {id}");
+        }
 
 //        [HttpGet]
 //        [Authorize(Roles = "Admin")]

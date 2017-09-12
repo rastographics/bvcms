@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -193,8 +194,8 @@ namespace CmsWeb.Controllers
         {
             //var id = DbUtil.Db.ScratchPadQuery(@"MemberStatusId = 10[Member] AND LastName = 'C*'");
 
-            var text = System.IO.File.ReadAllText(Server.MapPath("~/test.py"));
-            ViewBag.Text = PythonModel.RunScript(Util.Host, text);
+            var file = Server.MapPath("~/test.py");
+            ViewBag.Text = PythonModel.ExecutePythonFile(Util.Host, file);
             return View("Test");
         }
 
@@ -235,12 +236,22 @@ namespace CmsWeb.Controllers
                 var oid = DbUtil.Db.CurrentSessionOrgId;
                 p.Add("@OrgIds", oid.ToString());
                 ViewBag.Type = "OrgSearchSqlReport";
-
                 if (body.Contains("--class=StartEndReport"))
                 {
                     p.Add("@MeetingDate1", DateTime.Now.AddDays(-90));
                     p.Add("@MeetingDate2", DateTime.Now);
                 }
+            }
+            else if (body.Contains("--class=TotalsByFund"))
+            {
+                ViewBag.Type = "TotalsByFundSqlReport";
+                p.Add("@StartDate", DateTime.Now.AddDays(-90));
+                p.Add("@EndDate", DateTime.Now);
+                p.Add("@CampusId", dbType: DbType.Int32);
+                p.Add("@Online", dbType: DbType.Boolean);
+                p.Add("@TaxNonTax", dbType: DbType.Boolean);
+                p.Add("@IncludeUnclosedBundles", dbType: DbType.Boolean);
+                p.Add("@ActiveTagFilter", dbType: DbType.Int64);
             }
             else
                 ViewBag.Type = "SqlReport";

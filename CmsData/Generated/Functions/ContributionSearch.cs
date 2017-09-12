@@ -16,7 +16,7 @@ namespace CmsData.View
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
 		
-		private int? _ContributionId;
+		private int _ContributionId;
 		
 		
 		public ContributionSearch()
@@ -25,8 +25,8 @@ namespace CmsData.View
 
 		
 		
-		[Column(Name="ContributionId", Storage="_ContributionId", DbType="int")]
-		public int? ContributionId
+		[Column(Name="ContributionId", Storage="_ContributionId", DbType="int NOT NULL")]
+		public int ContributionId
 		{
 			get
 			{

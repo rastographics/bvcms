@@ -52,7 +52,7 @@ namespace CmsData.View
 		
 		private string _BundleStatus;
 		
-		private int? _QBSyncID;
+		private int _ContributionId;
 		
 		
 		public GetContributionsDetail()
@@ -367,18 +367,18 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="QBSyncID", Storage="_QBSyncID", DbType="int")]
-		public int? QBSyncID
+		[Column(Name="ContributionId", Storage="_ContributionId", DbType="int NOT NULL")]
+		public int ContributionId
 		{
 			get
 			{
-				return this._QBSyncID;
+				return this._ContributionId;
 			}
 
 			set
 			{
-				if (this._QBSyncID != value)
-					this._QBSyncID = value;
+				if (this._ContributionId != value)
+					this._ContributionId = value;
 			}
 
 		}

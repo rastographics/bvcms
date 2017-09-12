@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web.Mvc;
 using CmsWeb.Areas.Finance.Models.Report;
 using CmsData;
+using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Code;
 using Dapper;
 using OfficeOpenXml;
@@ -110,6 +111,34 @@ namespace CmsWeb.Areas.Finance.Controllers
         {
             m.SaveAsExcel();
             return Content("done");
+        }
+        [HttpPost, Route("~/TotalsByFundCustomReport/{id}")]
+        public ActionResult TotalsByFundCustomReport(string id, TotalsByFundModel m)
+        {
+            var content = DbUtil.Db.ContentOfTypeSql(id);
+            if (content == null)
+                return Content("no content");
+            var cs = Util.ConnectionStringReadOnlyFinance;
+            var cn = new SqlConnection(cs);
+            cn.Open();
+            var p = new DynamicParameters();
+            p.Add("@StartDate", m.Dt1);
+            p.Add("@EndDate", m.Dt2);
+            p.Add("@CampusId", m.CampusId);
+            p.Add("@Online", m.Online);
+            p.Add("@TaxNonTax", m.TaxDedNonTax);
+            p.Add("@IncludeUnclosedBundles", m.IncUnclosedBundles);
+            if (m.FilterByActiveTag)
+            {
+                var tagid = DbUtil.Db.TagCurrent().Id;
+                p.Add("@ActiveTagFilter", tagid);
+            }
+            else
+                p.Add("@ActiveTagFilter");
+
+            ViewBag.Name = id.SpaceCamelCase();
+            var rd = cn.ExecuteReader(content, p, commandTimeout: 1200);
+            return Content(GridResult.Table(rd, id.SpaceCamelCase()));
         }
 
         [HttpPost]
