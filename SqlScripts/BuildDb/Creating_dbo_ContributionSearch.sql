@@ -8,7 +8,7 @@ CREATE FUNCTION [dbo].[ContributionSearch]
 	,@EndDate DATETIME
 	,@CampusId INT
 	,@FundId INT
-	,@Online BIT
+	,@Online INT
 	,@Status INT
 	,@TaxNonTax VARCHAR(50)
 	,@Year INT
@@ -73,15 +73,16 @@ RETURN
 								WHERE ContributionId = c.ContributionId
 								AND h.BundleHeaderTypeId = @BundleType), 1, 0)
 		ELSE 1 END = 1
-	AND  (ISNULL(@IncludeUnclosedBundles, 0) = 0 OR EXISTS (
-			SELECT NULL 
-			FROM dbo.BundleDetail d
-            JOIN dbo.BundleHeader h ON h.BundleHeaderId = d.BundleHeaderId
-            WHERE  c.ContributionId = d.ContributionId AND h.BundleStatusId = 0 ))
+	AND CASE ISNULL(@IncludeUnclosedBundles, 0)
+		WHEN 0 THEN IIF(EXISTS(SELECT null FROM dbo.BundleDetail d
+					JOIN dbo.BundleHeader h ON h.BundleHeaderId = d.BundleHeaderId
+					WHERE c.ContributionId = d.ContributionId AND h.BundleStatusId = 0), 1, 0)
+		ELSE 1 END = 1
 	AND (ISNULL(@Mobile, 0) <> 1 OR c.Source > 0)
 	AND (@PeopleId IS NULL OR c.PeopleId = @PeopleId)
 	AND (@ActiveTagFilter IS NULL OR EXISTS(SELECT NULL FROM dbo.TagPerson tp WHERE tp.PeopleId = c.PeopleId AND tp.Id = @ActiveTagFilter))
 )
+
 
 
 GO
