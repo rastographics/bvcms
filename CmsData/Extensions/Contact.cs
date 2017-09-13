@@ -150,13 +150,14 @@ namespace CmsData
             ev.TransactionTime = DateTime.Now;
         }
 
-        public void AddEditExtraBool(string field, bool tf)
+        public void AddEditExtraBool(string field, bool tf, string name = null, string location = null)
         {
             if (!field.HasValue())
                 return;
             var ev = GetExtraValue(field);
             ev.BitValue = tf;
             ev.TransactionTime = DateTime.Now;
+            ev.Metadata = RetrieveMetadata(name, field, location);
         }
 
         public void AddEditExtraValue(string field, string code, DateTime? date, string text, bool? bit, int? intn, DateTime? dt = null)

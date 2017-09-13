@@ -308,7 +308,7 @@ namespace CmsWeb.Models.ExtraValues
                     {
                         if (newCheckedBits.Contains(currentBit.Name))
                             if (!currentBit.Checked)
-                                record.AddEditExtraBool(currentBit.Name, true);
+                                record.AddEditExtraBool(currentBit.Name, true, name, Location);
                         if (!newCheckedBits.Contains(currentBit.Name))
                             if (currentBit.Checked)
                                 RemoveExtraValue(record, currentBit.Name);

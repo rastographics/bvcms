@@ -1037,7 +1037,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             ev.IntValue = value;
             ev.TransactionTime = Util.Now;
         }
-        public void AddEditExtraBool(string field, bool tf)
+        public void AddEditExtraBool(string field, bool tf, string name = null, string location = null)
         {
             if (!field.HasValue())
                 return;
