@@ -42,6 +42,7 @@ namespace CmsWeb.Controllers
             return View(m);
         }
 
+        [ValidateInput(false)]
         [HttpPost, Route("ExtraValue/DeleteStandard/{table}/{location}")]
         public ActionResult DeleteStandard(string table, string location, string name, bool removedata)
         {
@@ -49,6 +50,7 @@ namespace CmsWeb.Controllers
             m.DeleteStandard(name, removedata);
             return Content("ok");
         }
+        [ValidateInput(false)]
         [HttpPost, Route("ExtraValue/Delete/{table}/{location}/{id:int}")]
         public ActionResult Delete(string table, string location, int id, string name)
         {
