@@ -10,26 +10,29 @@ namespace CmsData.Classes.HealthChecker
             var organization = DbUtil.Db.Organizations.SingleOrDefault(x => x.OrganizationId == orgId);
             if (organization == null || organization.contactsHad.Count == 0) return string.Empty;
 
+            // Only want to look at the most recent Contact
+            var latestContact = organization.contactsHad
+                .OrderByDescending(x => x.ContactDate)
+                .ThenByDescending(x => x.CreatedDate)
+                .First();
+            if (latestContact.ContactExtras == null) return string.Empty;
+
+            // Calculate and return the lowest health grade from the contact as Org health
             var healthLabel = string.Empty;
             var healthValue = 1;
-            foreach (var contact in organization.contactsHad)
+            foreach (var contactExtra in latestContact.ContactExtras)
             {
-                if (contact.ContactExtras == null) return string.Empty;
+                if (contactExtra.Metadata == null) continue;
 
-                foreach (var contactExtra in contact.ContactExtras)
+                var groupHealth = contactExtra.Metadata.Split(',');
+                if (groupHealth.Length < 2) continue;
+
+                var contactLabel = groupHealth[0];
+                var contactValue = int.Parse(groupHealth[1]);
+                if (contactValue >= healthValue)
                 {
-                    if (contactExtra.Metadata == null) continue;
-
-                    var groupHealth = contactExtra.Metadata.Split(',');
-                    if (groupHealth.Length < 2) continue;
-
-                    var contactLabel = groupHealth[0];
-                    var contactValue = int.Parse(groupHealth[1]);
-                    if (contactValue >= healthValue)
-                    {
-                        healthLabel = contactLabel;
-                        healthValue = contactValue;
-                    }
+                    healthLabel = contactLabel;
+                    healthValue = contactValue;
                 }
             }
 
