@@ -248,21 +248,11 @@ namespace CmsWeb.Areas.People.Models
         private string ComputeLocationString(IEnumerable<string> list)
         {
             list = list.Where(x => x != null)
-                       .Select(SlugifyString);
+                       .Select(x => x.SlugifyString());
             var location = string.Join("-", list);
             if (location != string.Empty) return location;
 
             return OrganizationId.HasValue ? "Organization" : "Person";
-        }
-
-        private string SlugifyString(string original)
-        {
-            // Replace all non-alphanumeric
-            var rgx = new Regex("[^a-zA-Z0-9]");
-            var slug = rgx.Replace(original, "");
-            var lowercaseSlug = slug.ToLower();
-
-            return lowercaseSlug;
         }
 
         private static ValidationResult ModelError(string message, string field)
