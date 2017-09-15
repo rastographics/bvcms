@@ -135,9 +135,8 @@ namespace CmsData
         {
             var model = new PythonModel(dbname);
             var engine = Python.CreateEngine(new Dictionary<string, object> { ["Debug"] = true });
-            var loc = HostingEnvironment.ApplicationPhysicalPath;
             var searchPaths = engine.GetSearchPaths();
-            searchPaths.Add(loc + "/Lib");
+            searchPaths.Add(ConfigurationManager.AppSettings["PythonLibPath"]);
             engine.SetSearchPaths(searchPaths);
 
             using (var ms = new MemoryStream())

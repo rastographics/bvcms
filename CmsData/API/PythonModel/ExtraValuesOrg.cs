@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.SqlTypes;
 using System.Linq;
 using UtilityExtensions;
 
@@ -77,6 +78,11 @@ namespace CmsData
             if (ev != null)
                 return ev.DateValue ?? DateTime.MinValue;
             return DateTime.MinValue;
+        }
+        public DateTime? ExtraValueDateOrgNull(int oid, string name)
+        {
+            var ev = Organization.GetExtraValue(db, oid, name);
+            return ev?.DateValue;
         }
 
         public int ExtraValueIntOrg(int oid, string name)

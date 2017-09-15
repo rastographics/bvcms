@@ -112,10 +112,11 @@
                                            <a href="/TotalsByFundCustomReport/@c" class="CustomReport">@c.SpaceCamelCase()</a> 
                                         </li>
                                     }
-                                    @if (User.IsInRole("Developer"))
+                                    @if (User.IsInRole("Developer") && Util.UserName == "David")
                                     {
+                                        <li class="divider"></li>
                                         <li>
-                                            <a href="#" id="reconcile">Reconcile</a>
+                                            <a href="#" id="reconcile">Reconcile (Developer only)</a>
                                         </li>
                                     }
                                 </ul>

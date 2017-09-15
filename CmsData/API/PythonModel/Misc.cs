@@ -165,6 +165,17 @@ namespace CmsData
             var response = client.Execute(request);
             return response.Content;
         }
+        public string RestDelete(string url, PythonDictionary headers, string user = null, string password = null)
+        {
+            var client = new RestClient(url);
+            if (user?.Length > 0 && password?.Length > 0)
+                client.Authenticator = new HttpBasicAuthenticator(user, password);
+            var request = new RestRequest(Method.DELETE);
+            foreach (var kv in headers)
+                request.AddHeader((string)kv.Key, (string)kv.Value);
+            var response = client.Execute(request);
+            return response.Content;
+        }
         public static dynamic JsonDeserialize(string s)
         {
             dynamic d = JObject.Parse(s);
@@ -293,5 +304,6 @@ namespace CmsData
             db.TagAll2(qq, temptag);
             db.ExecuteCommand("dbo.UpdateStatusFlag {0}, {1}", flagid, temptag.Id);
         }
+
     }
 }
