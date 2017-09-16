@@ -651,7 +651,7 @@ AND a.PeopleId = {2}
                 return oev.IntValue.ToString();
             return oev.BitValue.ToString();
         }
-        public void AddEditExtraCode(string field, string value)
+        public void AddEditExtraCode(string field, string value, string location = null)
         {
             if (!field.HasValue())
                 return;
@@ -687,7 +687,7 @@ AND a.PeopleId = {2}
             ev.TransactionTime = DateTime.Now;
         }
 
-        public void AddEditExtraBool(string field, bool tf)
+        public void AddEditExtraBool(string field, bool tf, string name = null, string location = null)
         {
             if (!field.HasValue())
                 return;

@@ -447,6 +447,7 @@
     <Compile Include="API\QueryFunctions\Attendance.cs" />
     <Compile Include="API\QueryFunctions\Contributions.cs" />
     <Compile Include="API\QueryFunctions\Query.cs" />
+    <Compile Include="Classes\ExtraValues\Code.cs" />
     <Compile Include="Classes\ExtraValues\NewStandard.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMData.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMHelper.cs" />
@@ -454,6 +455,7 @@
     <Compile Include="Classes\GoogleCloudMessaging\GCMPayload.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMResponse.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMResponseResult.cs" />
+    <Compile Include="Classes\HealthChecker\HealthChecker.cs" />
     <Compile Include="Classes\OnlineRegSummaryText\OnlineRegPersonModel0.cs" />
     <Compile Include="Classes\OnlineRegSummaryText\SummaryInfo.cs" />
     <Compile Include="Classes\RoleChecker\RoleChecker.cs" />

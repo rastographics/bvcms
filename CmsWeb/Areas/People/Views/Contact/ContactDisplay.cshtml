@@ -1,10 +1,12 @@
 ﻿@using CmsData
+@using CmsWeb.Models.ExtraValues
 @using UtilityExtensions
 @model CmsWeb.Areas.People.Models.ContactModel
 @{
     var prewrap = Model.Ministry.ToString() == "TouchPoint Support" ? "" : "pre-wrap";
+    var evmodel = new ExtraValueModel(Model.ContactId, "Contact", Model.Location);
 }
-<form class="form ajax" method="post">
+<form class="form ajax" method="post" data-init="Editable" data-init2="ExtraEditable">
     @if (Model.Incomplete.HasValue())
     {
         <div class="alert alert-danger scrollToTop">
@@ -32,8 +34,8 @@
                     @Html.DisplayFor(m => m.ContactType)
                     @Html.DisplayFor(m => m.ContactReason)
                     @if (DbUtil.Db.Setting("UseContactVisitedOrgs") &&
-                        !DbUtil.Db.Setting("UX-ShowVisitedOrgInContactees") &&
-                        !string.IsNullOrWhiteSpace(Model.OrganizationName))
+                 !DbUtil.Db.Setting("UX-ShowVisitedOrgInContactees") &&
+                 !string.IsNullOrWhiteSpace(Model.OrganizationName))
                     {
                         <dl>
                             <dt>@DbUtil.Db.Setting("UX-VisitedOrgLabel", "Visited Organization")</dt>
@@ -41,6 +43,16 @@
                         </dl>
                     }
                 </div>
+            </div>
+            @if (Model.ShowContactExtraFeature)
+            {
+                <div class="row">
+                    <div id="contact-extra-values" class="col-sm-12">
+                        @Html.Partial("/Views/ExtraValue/Location.cshtml", evmodel)
+                    </div>
+                </div>
+            }
+            <div class="row">
                 <div class="col-sm-12">
                     @if (Model.NotAtHome)
                     {

@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Areas.Search.Models.ContactSearchModel
+﻿@using CmsData
+@model CmsWeb.Areas.Search.Models.ContactSearchModel
 @{
     ViewBag.Title = "Contact Search";
     ViewBag.PageHeader = "Contact Search";
@@ -36,7 +37,10 @@
                         @Html.EditorFor(m => m.SearchParameters.Ministry)
                     </div>
                     <div class="col-lg-4 col-md-5 col-sm-6">
-                        @Html.EditorFor(m => m.SearchParameters.ContactResult)
+                        @if (!DbUtil.Db.Setting("UX-HideContactCheckboxes"))
+                        {
+                            @Html.EditorFor(m => m.SearchParameters.ContactResult)
+                        }
                         <div class="form-group">
                             <label class="checkbox-inline control-label">
                                 @Html.CheckBoxFor(m => m.SearchParameters.Incomplete) Incomplete?

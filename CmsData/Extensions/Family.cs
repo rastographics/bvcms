@@ -217,7 +217,7 @@ namespace CmsData
             DbUtil.LogActivity($"EVFamily {op}:{field}");
         }
 
-        public void AddEditExtraCode(string field, string value)
+        public void AddEditExtraCode(string field, string value, string location = null)
         {
             if (!field.HasValue())
                 return;
@@ -260,7 +260,7 @@ namespace CmsData
             ev.IntValue = value;
             ev.TransactionTime = DateTime.Now;
         }
-        public void AddEditExtraBool(string field, bool tf)
+        public void AddEditExtraBool(string field, bool tf, string name = null, string location = null)
         {
             if (!field.HasValue())
                 return;

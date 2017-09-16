@@ -23,7 +23,7 @@
                     <tbody>
                         @foreach (var f in Model.GetStandardExtraValuesWithDataType(Model.Table, Model.Location))
                         {
-                            <tr id="ev-name-@f.Name.Replace(' ', '_')">
+                            <tr id="ev-name-@f.Name.SlugifyString()">
                                 <td style="width: 85px;"><input type="number" name="orders[@f.Name]" value="@f.Order" class="form-control" /></td>
                                 <td>@f.Name</td>
                                 <td>
@@ -39,7 +39,7 @@
                                     <a href="/ExtraValue/EditStandard/@Model.Table?location=@Model.Location&name=@Server.UrlEncode(f.Name)" class="ajax btn btn-default btn-sm"><i class="fa fa-pencil"></i> Edit</a>
                                 </td>
                                 <td style="width: 50px;">
-                                    <a href="/ExtraValue/DeleteStandard/@Model.Table/@Model.Location?name=@Server.UrlEncode(f.Name)" data-rowid="#ev-name-@f.Name.Replace(' ','_')" class="btn btn-danger btn-sm delete-extra-value" title="Delete Standard Extra Value: @f.Name"><i class="fa fa-trash"></i> Delete</a> 
+                                    <a href="/ExtraValue/DeleteStandard/@Model.Table/@Model.Location?name=@Server.UrlEncode(f.Name)" data-rowid="#ev-name-@f.Name.SlugifyString()" class="btn btn-danger btn-sm delete-extra-value" title="Delete Standard Extra Value: @f.Name"><i class="fa fa-trash"></i> Delete</a> 
                                 </td>
                             </tr>
                         }

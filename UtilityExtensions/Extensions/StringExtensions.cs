@@ -303,6 +303,7 @@ namespace UtilityExtensions
             s = Regex.Replace(s, "<style type=\"text/css\">._44eb54-hoverMenu.*?</style>", "", RegexOptions.Singleline);
             return Regex.Replace(s, @"\sdata-gramm\w*?="".*?""", "", RegexOptions.Singleline);
         }
+
         public static string Md5Hash(this string s)
         {
             var md5 = MD5.Create();
@@ -312,6 +313,16 @@ namespace UtilityExtensions
             foreach (var t in hash)
                 sb.Append(t.ToString("x2"));
             return sb.ToString();
+		}
+		
+        public static string SlugifyString(this string original)
+        {
+            // Replace all non-alphanumeric
+            var rgx = new Regex("[^a-zA-Z0-9]");
+            var slug = rgx.Replace(original, "");
+            var lowercaseSlug = slug.ToLower();
+
+            return lowercaseSlug;
         }
     }
 }

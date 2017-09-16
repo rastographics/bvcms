@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CmsData.Codes;
+using CmsData.ExtraValue;
 using UtilityExtensions;
 
 namespace CmsData
 {
-    public partial class Contact
+    public partial class Contact : ITableWithExtraValues
     {
         public static int AddContact(Guid qid, int? MakerId = null)
         {
@@ -98,6 +99,116 @@ namespace CmsData
                 db.SubmitChanges();
             }
             return r;
+        }
+
+        public void AddEditExtraCode(string field, string value, string location = null)
+        {
+            if (!field.HasValue())
+                return;
+            if (!value.HasValue())
+                return;
+            var ev = GetExtraValue(field);
+            ev.StrValue = value;
+            ev.TransactionTime = DateTime.Now;
+            ev.Metadata = RetrieveMetadata(field, value, location);
+        }
+
+        public void AddEditExtraText(string field, string value, DateTime? dt = null)
+        {
+            if (!value.HasValue())
+                return;
+            var ev = GetExtraValue(field);
+            ev.Data = value;
+            ev.TransactionTime = dt ?? DateTime.Now;
+        }
+
+        public void AddEditExtraDate(string field, DateTime? value)
+        {
+            if (!value.HasValue)
+                return;
+            var ev = GetExtraValue(field);
+            ev.DateValue = value;
+            ev.TransactionTime = DateTime.Now;
+        }
+
+        public void AddToExtraText(string field, string value)
+        {
+            if (!value.HasValue())
+                return;
+            var ev = GetExtraValue(field);
+            ev.DataType = "text";
+            if (ev.Data.HasValue())
+                ev.Data = value + "\n" + ev.Data;
+            else
+                ev.Data = value;
+        }
+
+        public void AddEditExtraInt(string field, int value)
+        {
+            var ev = GetExtraValue(field);
+            ev.IntValue = value;
+            ev.TransactionTime = DateTime.Now;
+        }
+
+        public void AddEditExtraBool(string field, bool tf, string name = null, string location = null)
+        {
+            if (!field.HasValue())
+                return;
+            var ev = GetExtraValue(field);
+            ev.BitValue = tf;
+            ev.TransactionTime = DateTime.Now;
+            ev.Metadata = RetrieveMetadata(name, field, location);
+        }
+
+        public void AddEditExtraValue(string field, string code, DateTime? date, string text, bool? bit, int? intn, DateTime? dt = null)
+        {
+            var ev = GetExtraValue(field);
+            ev.StrValue = code;
+            ev.Data = text;
+            ev.DateValue = date;
+            ev.IntValue = intn;
+            ev.BitValue = bit;
+            ev.UseAllValues = true;
+            ev.TransactionTime = dt ?? DateTime.Now;
+        }
+
+        public void RemoveExtraValue(CMSDataContext db, string field)
+        {
+            var ev = ContactExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase: true) == 0);
+            if (ev != null)
+            {
+                db.ContactExtras.DeleteOnSubmit(ev);
+                ev.TransactionTime = DateTime.Now;
+            }
+        }
+
+        public void LogExtraValue(string op, string field)
+        {
+            DbUtil.LogActivity($"EVContact {op}:{field}", ContactId);
+        }
+
+        public ContactExtra GetExtraValue(string field)
+        {
+            var ev = ContactExtras.AsEnumerable().FirstOrDefault(ee => ee.Field.Equal(field));
+            if (ev == null)
+            {
+                ev = new ContactExtra()
+                {
+                    ContactId = ContactId,
+                    Field = field,
+
+                };
+                ContactExtras.Add(ev);
+            }
+            return ev;
+        }
+
+        private static string RetrieveMetadata(string name, string value, string location)
+        {
+            var extraValues = Views.GetStandardExtraValues(DbUtil.Db, "Contact", false, location);
+            var ev = extraValues.SingleOrDefault(x => x.Name == name);
+
+            return ev?.Codes.SingleOrDefault(x => x.Text == value)?.Metadata;
         }
     }
 }

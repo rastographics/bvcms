@@ -21,14 +21,14 @@ namespace CmsWeb.Models.ExtraValues
                 var n = HttpUtility.UrlEncode(Name);
                 var source = "";
                 if (Type == "Code" && Standard)
-                    source = $"/ExtraValue/Codes/{Model.Table}?name={n}";
+                    source = $"/ExtraValue/Codes/{Model.Table}/{Model.Location}?name={n}";
                 else if (Type == "Bits")
-                    source = $"/ExtraValue/Bits/{Model.Table}/{Id}?name={n}";
+                    source = $"/ExtraValue/Bits/{Model.Table}/{Model.Location}/{Id}?name={n}";
                 return source.HasValue() ? source : "";
             }
         }
 
-        public string EditUrl => $"/ExtraValue/Edit/{Model.Table}/{Type}";
+        public string EditUrl => $"/ExtraValue/Edit/{Model.Table}/{Model.Location}/{Type}";
 
         public string DeleteUrl
         {
@@ -36,7 +36,7 @@ namespace CmsWeb.Models.ExtraValues
             {
                 var n = HttpUtility.UrlEncode(Name);
                 if (Model.Location != "Adhoc")
-                    return $"/ExtraValue/Delete/{Model.Table}/{Id}?name={n}";
+                    return $"/ExtraValue/Delete/{Model.Table}/{Model.Location}/{Id}?name={n}";
                 return $"/ExtraValue/DeleteAdhoc/{Model.Table}/{Id}?name={n}";
             }
         }
@@ -137,9 +137,13 @@ namespace CmsWeb.Models.ExtraValues
                     var q = from e in Model.ListExtraValues()
                             where e.BitValue == true
                             where e.Id == Id
-                            where Codes.Contains(e.Field)
+                            where Codes.Select(x => x.Text).Contains(e.Field)
                             select NoPrefix(e.Field);
-                    return string.Join("\n", q);
+
+                    if (q.ToList().Count == 0) return string.Empty;
+
+                    var bullets = string.Join("</li><li>", q);
+                    return "<ul><li>" + bullets + "</li></ul>";
                 }
                 case "Int":
                     return ev.IntValue.ToString2("d");
