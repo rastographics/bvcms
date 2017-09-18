@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Web;
+using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.ExtraValues
@@ -140,10 +141,15 @@ namespace CmsWeb.Models.ExtraValues
                             where Codes.Select(x => x.Text).Contains(e.Field)
                             select NoPrefix(e.Field);
 
-                    if (q.ToList().Count == 0) return string.Empty;
+                    if (DbUtil.Db.Setting("UX-RenderCheckboxBullets"))
+                    {
+                        if (q.ToList().Count == 0) return string.Empty;
 
-                    var bullets = string.Join("</li><li>", q);
-                    return "<ul><li>" + bullets + "</li></ul>";
+                        var bullets = string.Join("</li><li>", q);
+                        return "<ul><li>" + bullets + "</li></ul>";
+                    }
+
+                    return string.Join("\n", q);
                 }
                 case "Int":
                     return ev.IntValue.ToString2("d");
