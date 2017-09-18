@@ -29,6 +29,26 @@ namespace CmsData
             DbUtil.Db.SubmitChanges();
             return c.ContactId;
         }
+        public static Contact AddFamilyContact(CMSDataContext db, int familyId, int? makerId = null)
+        {
+            var c = new Contact 
+			{ 
+				ContactDate = DateTime.Now.Date, 
+				CreatedBy = Util.UserId1,
+	            CreatedDate = DateTime.Now,
+			};
+            var fmembers = (from p in db.People
+                            where p.FamilyId == familyId
+                            select p.PeopleId).ToList();
+
+            foreach (var pid in fmembers)
+                c.contactees.Add(new Contactee { PeopleId = pid });
+            if (makerId.HasValue)
+                c.contactsMakers.Add(new Contactor {PeopleId = makerId.Value});
+            db.Contacts.InsertOnSubmit(c);
+            db.SubmitChanges();
+            return c;
+        }
         public static Contact AddContact(CMSDataContext Db, int contacteeid, DateTime? date, string comments, int? contactmakerid = null)
         {
             var c = new Contact 
