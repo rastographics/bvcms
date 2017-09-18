@@ -641,7 +641,7 @@ and PeopleId in (select PeopleId from TagPerson where Id = @id)
                     return;
             }
             v.Type = ev.Type;
-            v.Codes = codes.Select(x => new CmsData.Classes.ExtraValues.Code { Text = x }).ToList();
+            v.Codes = codes?.Select(x => new CmsData.Classes.ExtraValues.Code { Text = x }).ToList();
             var i = Views.GetViewsView(DbUtil.Db, ExtraValueTable, ExtraValueLocation);
             i.view.Values.Add(v);
             i.views.Save(DbUtil.Db);

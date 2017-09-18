@@ -2071,7 +2071,6 @@
     <Content Include="Areas\Manage\Views\Batch\UpdateRegOptions.cshtml" />
     <Content Include="Content\VitalStats.py" />
     <Content Include="Scripts\ReadMe.txt" />
-    <Content Include="test.py" />
     <Content Include="Views\Shared\EditorTemplates\DateAndTime.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\SqlReport.cshtml" />
     <Content Include="Areas\Org\Views\OrgSearch\Modals\Rollsheet.cshtml" />
