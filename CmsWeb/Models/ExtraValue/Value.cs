@@ -135,21 +135,21 @@ namespace CmsWeb.Models.ExtraValues
                     return ev.DateValue.FormatDate();
                 case "Bits":
                 {
-                    var q = from e in Model.ListExtraValues()
-                            where e.BitValue == true
-                            where e.Id == Id
-                            where Codes.Select(x => x.Text).Contains(e.Field)
-                            select NoPrefix(e.Field);
+                    var q = (from e in Model.ListExtraValues()
+                             where e.BitValue == true
+                             where e.Id == Id
+                             where Codes.Select(x => x.Text).Contains(e.Field)
+                             select NoPrefix(e.Field)).ToList();
 
                     if (DbUtil.Db.Setting("UX-RenderCheckboxBullets"))
                     {
                         if (q.ToList().Count == 0) return string.Empty;
 
-                        var bullets = string.Join("</li><li>", q);
-                        return "<ul><li>" + bullets + "</li></ul>";
+                        var bullets = string.Join("</span></li><li><span>", q);
+                        return "<ul class=\"extra-value-list\"><li><span>" + bullets + "</span></li></ul>";
                     }
 
-                    return string.Join("\n", q);
+                    return string.Join("<br/>", q);
                 }
                 case "Int":
                     return ev.IntValue.ToString2("d");
