@@ -40,6 +40,9 @@ namespace CmsData
             : this(dbname)
         {
             var engine = Python.CreateEngine();
+            var searchPaths = engine.GetSearchPaths();
+            searchPaths.Add(ConfigurationManager.AppSettings["PythonLibPath"]);
+            engine.SetSearchPaths(searchPaths);
             var sc = engine.CreateScriptSourceFromString(script);
 
             var code = sc.Compile();
@@ -69,11 +72,28 @@ namespace CmsData
             Debug.WriteLine(o);
         }
 
+        public void LogToContent(string file, string text)
+        {
+            db.Log2Content(file, text);
+        }
+
         public string RunScript(string script)
         {
             try
             {
                 Output = ExecutePython(script, this);
+            }
+            catch (Exception ex)
+            {
+                Output = ex.Message;
+            }
+            return Output;
+        }
+        public string RunScriptFile(string script)
+        {
+            try
+            {
+                Output = ExecutePythonFile(script, this);
             }
             catch (Exception ex)
             {
@@ -95,6 +115,9 @@ namespace CmsData
         private static string ExecutePython(string scriptContent, PythonModel model)
         {
             var engine = Python.CreateEngine();
+            var searchPaths = engine.GetSearchPaths();
+            searchPaths.Add(ConfigurationManager.AppSettings["PythonLibPath"]);
+            engine.SetSearchPaths(searchPaths);
 
             using (var ms = new MemoryStream())
             using (var sw = new StreamWriter(ms))
@@ -131,9 +154,8 @@ namespace CmsData
             }
         }
 
-        public static string ExecutePythonFile(string dbname, string file)
+        public static string ExecutePythonFile(string file, PythonModel model)
         {
-            var model = new PythonModel(dbname);
             var engine = Python.CreateEngine(new Dictionary<string, object> { ["Debug"] = true });
             var searchPaths = engine.GetSearchPaths();
             searchPaths.Add(ConfigurationManager.AppSettings["PythonLibPath"]);
@@ -172,6 +194,11 @@ namespace CmsData
                     throw new Exception(err);
                 }
             }
+        }
+        public static string ExecutePythonFile(string dbname, string file)
+        {
+            var model = new PythonModel(dbname);
+            return ExecutePythonFile(file, model);
         }
     }
 }

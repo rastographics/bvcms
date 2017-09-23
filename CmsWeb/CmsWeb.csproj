@@ -429,6 +429,7 @@
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
+    <Compile Include="Areas\Manage\Controllers\RunPythonScriptInBackground.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadAddressesController.cs" />
     <Compile Include="Areas\Manage\Controllers\ResourceController.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadExcelIpsController.cs" />
@@ -2173,6 +2174,7 @@
     <Content Include="Content\touchpoint\templates\picturedir4.docx" />
     <Content Include="Lib\ensurepip\_bundled\setuptools-20.10.1-py2.py3-none-any.whl" />
     <Content Include="Lib\ensurepip\_bundled\pip-8.1.1-py2.py3-none-any.whl" />
+    <Content Include="Areas\Manage\Views\Batch\RunningPythonScript.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />
