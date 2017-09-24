@@ -335,11 +335,11 @@ namespace CmsWeb.Controllers
             return cn.ExecuteReader(script, p).ToExcel("RunScript.xlsx", fromSql: true);
         }
 
-        [HttpGet, Route("~/PyScriptBackground/{name}")]
-        public ActionResult PyScriptBackground(string name)
-        {
-           return new BatchController.Run 
-        }
+//        [HttpGet, Route("~/PyScriptBackground/{name}")]
+//        public ActionResult PyScriptBackground(string name)
+//        {
+//           return new BatchController.Run 
+//        }
         [HttpGet, Route("~/PyScript/{name}")]
         public ActionResult PyScript(string name, string p1, string p2, string v1, string v2)
         {
