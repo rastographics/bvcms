@@ -21,16 +21,19 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             BundleHeader bundleHeader = null;
             var fid = fundid ?? BatchImportContributions.FirstFundId();
 
-            var details = new List<BundleDetail>();
-
             while (csv.Read())
             {
                 var batchDate = csv["Date"].ToDate();
                 var amount = csv["Amount"];
 
-                var paymentMethod = csv["Payment Method"];
-                var payerName = csv["Payer Name"];
-                var fundText = csv["Giving Type Label"];
+                //var paymentMethod = csv["Payment Method"];
+                var method = csv["Method"];
+                //var payerName = csv["Payer Name"];
+                var email = csv["Email address"];
+                var phone = csv["Mobile Number"];
+                var fundText = "";
+                if(csv.FieldHeaders.Contains("Giving Type Label"))
+                    fundText = csv["Giving Type Label"];
 
                 ContributionFund f = null;
                 if(fundText.HasValue())
@@ -39,31 +42,11 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 if (bundleHeader == null)
                     bundleHeader = BatchImportContributions.GetBundleHeader(batchDate ?? DateTime.Today, DateTime.Now);
 
-                var bd = BatchImportContributions.NewBundleDetail(date, f?.FundId ?? fid, amount);
-
-                var eac = Util.Encrypt(paymentMethod);
-                var q = from kc in DbUtil.Db.CardIdentifiers
-                        where kc.Id == eac
-                        select kc.PeopleId;
-
-                var pid = q.SingleOrDefault();
-                if (pid != null)
-                    bd.Contribution.PeopleId = pid;
-
-                bd.Contribution.BankAccount = paymentMethod;
-                bd.Contribution.ContributionDesc = payerName;
-
-                details.Add(bd);
-            }
-
-            details.Reverse();
-            foreach (var bd in details)
-            {
+                var bd = BatchImportContributions.AddContributionDetail(date, f?.FundId ?? fid, amount, method, null, $"{email}|{phone}");
                 bundleHeader.BundleDetails.Add(bd);
             }
 
             BatchImportContributions.FinishBundle(bundleHeader);
-
             return bundleHeader.BundleHeaderId;
         }
     }
