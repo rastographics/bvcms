@@ -195,7 +195,19 @@ namespace CmsWeb.Controllers
             //var id = DbUtil.Db.ScratchPadQuery(@"MemberStatusId = 10[Member] AND LastName = 'C*'");
 
             var file = Server.MapPath("~/test.py");
-            ViewBag.Text = PythonModel.ExecutePythonFile(Util.Host, file);
+            var pe = new PythonModel(Util.Host);
+            pe.DictionaryAdd("OrgId", "");
+            ViewBag.Text = PythonModel.ExecutePythonFile(file, pe);
+            return View("Test");
+        }
+        [HttpGet, Route("~/TestScriptBackground")]
+        [Authorize(Roles = "Developer")]
+        public ActionResult TestScriptBackground()
+        {
+            var file = Server.MapPath("~/test.py");
+            var pe = new PythonModel(Util.Host);
+            pe.DictionaryAdd("OrgId", "");
+            ViewBag.Text = PythonModel.ExecutePythonFile(file, pe);
             return View("Test");
         }
 
@@ -323,6 +335,11 @@ namespace CmsWeb.Controllers
             return cn.ExecuteReader(script, p).ToExcel("RunScript.xlsx", fromSql: true);
         }
 
+//        [HttpGet, Route("~/PyScriptBackground/{name}")]
+//        public ActionResult PyScriptBackground(string name)
+//        {
+//           return new BatchController.Run 
+//        }
         [HttpGet, Route("~/PyScript/{name}")]
         public ActionResult PyScript(string name, string p1, string p2, string v1, string v2)
         {

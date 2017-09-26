@@ -1,89 +1,106 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.MeetingModel
+@{
+    //var addcolumn = true;
+}
 <!DOCTYPE html>
 <html>
 <head>
-  <title>@Model.org.OrganizationName</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  @ViewExtensions2.jQueryMobileCss()
-  @ViewExtensions2.jQuery()
-  @ViewExtensions2.jQueryMobile()
-  @Fingerprint.Script("/Content/touchpoint/js/meeting/meeting-ipad.js")
+    <title>@Model.org.OrganizationName</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    @ViewExtensions2.jQueryMobileCss()
+    @ViewExtensions2.jQuery()
+    @ViewExtensions2.jQueryMobile()
+    @Fingerprint.Script("/Content/touchpoint/js/meeting/meeting-ipad.js")
 </head>
 <body>
-  @Html.Hidden("meetingid", Model.meeting.MeetingId)
-  <div data-role="page" id="head">
-    <div data-role="header" data-position="fixed" class="ui-bar ui-grid-b">
-      <div class="ui-bar" style="width:90%">
-        <fieldset data-role="controlgroup" data-type="horizontal">
-          <input type="radio" name="abcs2" id="all" checked="checked" value="all" />
-          <label for="all">all</label>
-          @for (var i = 0; i < 26; i++)
-          {
-            var let = (char)((int)'A' + i);
-              <input type="radio" name="abcs2" id="r.@let" value="@let" />
-              <label for="r.@let">@let</label>
-          }
-          <input type="radio" name="abcs2" id="back" value="back" />
-          <label for="back">back</label>
-          <input type="radio" name="abcs2" id="refresh" value="refresh" />
-          <label for="refresh">refresh</label>
-        </fieldset>
-      </div>
-    </div>
-    <div data-role="content">
-      @{var inAttendanceRole = User.IsInRole("Attendance");}
-      @foreach (var a in Model.Attends(true, "iPadAttendanceHighlight"))
-            {
-          <div class="@(inAttendanceRole ? "ckline" : "na") @a.Name[0]">
-            <div class="ui-grid-a">
-              <div class="ui-block-a">
-                <input type="checkbox" id="a.@a.PeopleId" @(a.Attended ? "checked=checked" : "") />
-                <label for="a.@a.PeopleId">
-                  @if (a.Highlight)
-                  {
-                      <span style="color: green">@a.Name</span>
-                  }
-                  else
-                  {
-                      @a.Name
-                  }
-                </label>
-              </div>
-              <div class="ui-block-b">
-                <div class="ui-bar ui-bar-c">
-                  <small>@a.ChurchMemberStatus</small><br/>
-                  <small style="color: gray">
-                    @if (a.Email.HasValue())
+    @Html.Hidden("meetingid", Model.meeting.MeetingId)
+    <div data-role="page" id="head">
+        <div data-role="header" data-position="fixed" class="ui-bar ui-grid-b">
+            <div class="ui-bar" style="width:90%">
+                <fieldset data-role="controlgroup" data-type="horizontal">
+                    <input type="radio" name="abcs2" id="all" checked="checked" value="all" />
+                    <label for="all">all</label>
+                    @for (var i = 0; i < 26; i++)
                     {
-                      @a.Email
+                        var let = (char)((int)'A' + i);
+                        <input type="radio" name="abcs2" id="r.@let" value="@let" />
+                        <label for="r.@let">@let</label>
                     }
-                    else
-                    {
-                      <em style="visibility: hidden">No Email</em>
-                    }
-                  </small>
-                </div>
-              </div>
+                    <input type="radio" name="abcs2" id="back" value="back" />
+                    <label for="back">back</label>
+                    <input type="radio" name="abcs2" id="refresh" value="refresh" />
+                    <label for="refresh">refresh</label>
+                </fieldset>
             </div>
-          </div>
-      }
-    </div>
-  </div>
-  <div data-role="page" id="abcsdialog" data-theme="b" data-content-theme="a">
-    <div class="ui-grid-d">
-      <div class="ui-block-a">
-        <div class="ui-bar">
-          <a href="#" data-roll="button" style="width:90%">All</a>
         </div>
-      </div>
-      @for (var i = 0; i < 26; i++)
-      {
-        var let = (char)((int)'A' + i);
-        var cell = (char)((int)'a' + i % 5);
-          <div class="ui-block-@cell"><div class="ui-bar"><a href="#" data-roll="button" style="width:90%">@let</a></div></div>
-      }
+        <div data-role="content">
+            @{var inAttendanceRole = User.IsInRole("Attendance");}
+            @foreach (var a in Model.Attends(true, "iPadAttendanceHighlight"))
+            {
+                <div class="@(inAttendanceRole ? "ckline" : "na") @a.Name[0]">
+                    <div class="ui-grid-a">
+                        <div class="ui-block-a">
+                            <input type="checkbox" id="a.@a.PeopleId" @(a.Attended ? "checked=checked" : "") />
+                            <label for="a.@a.PeopleId">
+                                @if (a.Highlight)
+                                {
+                                    <span style="color: green">@a.Name</span>
+                                }
+                                else
+                                {
+                                    @a.Name
+                                }
+                            </label>
+                        </div>
+                        @*
+                        @if(addcolumn)
+                        {
+                            <div class="ui-block-b">
+                                <div class="ui-bar ui-bar-c">
+                                    <small style="color: black">
+                                        @if (ev.Data.HasValue())
+                                        {
+                                            @ev.Data
+                                        }
+                                    </small>
+                                </div>
+                            </div>
+                        }*@
+                        <div class="ui-block-b">
+                            <div class="ui-bar ui-bar-c">
+                                <small>@a.ChurchMemberStatus</small><br />
+                                <small style="color: gray">
+                                    @if (a.Email.HasValue())
+                                    {
+                                        @a.Email
+                                    }
+                                    else
+                                    {
+                                        <em style="visibility: hidden">No Email</em>
+                                    }
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
     </div>
-  </div>
+    <div data-role="page" id="abcsdialog" data-theme="b" data-content-theme="a">
+        <div class="ui-grid-d">
+            <div class="ui-block-a">
+                <div class="ui-bar">
+                    <a href="#" data-roll="button" style="width:90%">All</a>
+                </div>
+            </div>
+            @for (var i = 0; i < 26; i++)
+            {
+                var let = (char)((int)'A' + i);
+                var cell = (char)((int)'a' + i % 5);
+                <div class="ui-block-@cell"><div class="ui-bar"><a href="#" data-roll="button" style="width:90%">@let</a></div></div>
+            }
+        </div>
+    </div>
 </body>
 </html>

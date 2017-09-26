@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using UtilityExtensions;
@@ -50,9 +51,9 @@ namespace CmsData
             var sc = engine.CreateScriptSourceFromFile(HttpContext.Current.Server.MapPath("/Content/MembershipAutomation2.py"));
 #else
             var engine = Python.CreateEngine();
-            var paths = engine.GetSearchPaths();
-            paths.Add(path);
-            engine.SetSearchPaths(paths);
+            var searchPaths = engine.GetSearchPaths();
+            searchPaths.Add(ConfigurationManager.AppSettings["PythonLibPath"]);
+            engine.SetSearchPaths(searchPaths);
             var sc = engine.CreateScriptSourceFromString(script.Body);
 #endif
 
