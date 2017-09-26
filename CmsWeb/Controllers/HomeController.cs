@@ -204,11 +204,11 @@ namespace CmsWeb.Controllers
                 HostingEnvironment.QueueBackgroundWorkItem(ct =>
                 {
                     var pe = new PythonModel(host);
-                    //                pe.DictionaryAdd("OrgId", "89658");
+                    //pe.DictionaryAdd("OrgId", "89658");
                     pe.DictionaryAdd("LogFile", logFile);
                     PythonModel.ExecutePythonFile(file, pe);
                 });
-                return Redirect($"/Batch/RunPythonScriptProgress?logfile={logFile}");
+                return View("RunPythonScriptProgress");
             }
             else
             {
