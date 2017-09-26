@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.People.Models;
@@ -195,22 +196,28 @@ namespace CmsWeb.Controllers
             //var id = DbUtil.Db.ScratchPadQuery(@"MemberStatusId = 10[Member] AND LastName = 'C*'");
 
             var file = Server.MapPath("~/test.py");
-            var pe = new PythonModel(Util.Host);
-            pe.DictionaryAdd("OrgId", "");
-            ViewBag.Text = PythonModel.ExecutePythonFile(file, pe);
-            return View("Test");
+            var logFile = $"RunPythonScriptInBackground.{DateTime.Now:yyyyMMddHHmmss}";
+            string host = Util.Host;
+            var background = true;
+            if (background)
+            {
+                HostingEnvironment.QueueBackgroundWorkItem(ct =>
+                {
+                    var pe = new PythonModel(host);
+                    //                pe.DictionaryAdd("OrgId", "89658");
+                    pe.DictionaryAdd("LogFile", logFile);
+                    PythonModel.ExecutePythonFile(file, pe);
+                });
+                return Redirect($"/Batch/RunPythonScriptProgress?logfile={logFile}");
+            }
+            else
+            {
+                var pe = new PythonModel(host);
+                pe.DictionaryAdd("LogFile", logFile);
+                ViewBag.Text = PythonModel.ExecutePythonFile(file, pe);
+                return View("Test");
+            }
         }
-        [HttpGet, Route("~/TestScriptBackground")]
-        [Authorize(Roles = "Developer")]
-        public ActionResult TestScriptBackground()
-        {
-            var file = Server.MapPath("~/test.py");
-            var pe = new PythonModel(Util.Host);
-            pe.DictionaryAdd("OrgId", "");
-            ViewBag.Text = PythonModel.ExecutePythonFile(file, pe);
-            return View("Test");
-        }
-
         [HttpPost, Route("~/TestScript")]
         [ValidateInput(false)]
         [Authorize(Roles = "Developer")]
@@ -224,7 +231,7 @@ namespace CmsWeb.Controllers
         {
             if (!CanRunScript(body))
                 return "Not Authorized to run this script";
-            if (body.Contains("@qtagid", ignoreCase:true))
+            if (body.Contains("@qtagid", ignoreCase: true))
             {
                 var id = db.FetchLastQuery().Id;
                 var tag = db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
@@ -232,11 +239,11 @@ namespace CmsWeb.Controllers
                 p.Add("@qtagid", qtagid);
                 ViewBag.Type = "SqlReport";
             }
-            else if (body.Contains("@CurrentOrgId", ignoreCase:true))
+            else if (body.Contains("@CurrentOrgId", ignoreCase: true))
             {
                 var oid = DbUtil.Db.CurrentSessionOrgId;
                 p.Add("@CurrentOrgId", oid);
-                if(oid > 0)
+                if (oid > 0)
                 {
                     var name = DbUtil.Db.LoadOrganizationById(oid).FullName2;
                     ViewBag.Name2 = name;
@@ -267,11 +274,11 @@ namespace CmsWeb.Controllers
             }
             else
                 ViewBag.Type = "SqlReport";
-            if(body.Contains("@StartDt"))
+            if (body.Contains("@StartDt"))
                 p.Add("@StartDt", new DateTime(DateTime.Now.Year, 1, 1));
             if (body.Contains("@EndDt"))
                 p.Add("@EndDt", DateTime.Today);
-            if (body.Contains("@userid", ignoreCase:true))
+            if (body.Contains("@userid", ignoreCase: true))
                 p.Add("@userid", Util.UserId);
             p.Add("@p1", parameter ?? "");
             return body;
@@ -335,11 +342,6 @@ namespace CmsWeb.Controllers
             return cn.ExecuteReader(script, p).ToExcel("RunScript.xlsx", fromSql: true);
         }
 
-//        [HttpGet, Route("~/PyScriptBackground/{name}")]
-//        public ActionResult PyScriptBackground(string name)
-//        {
-//           return new BatchController.Run 
-//        }
         [HttpGet, Route("~/PyScript/{name}")]
         public ActionResult PyScript(string name, string p1, string p2, string v1, string v2)
         {
@@ -363,6 +365,26 @@ namespace CmsWeb.Controllers
                     var tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
                     script = script.Replace("@qtagid", tag.Id.ToString());
                 }
+
+                ViewBag.report = name;
+                ViewBag.url = Request.Url?.PathAndQuery;
+                if (script.Contains("Background Process Completed"))
+                {
+                    var logFile = $"RunPythonScriptInBackground.{DateTime.Now:yyyyMMddHHmmss}";
+                    ViewBag.LogFile = logFile;
+                    var qs = Request.Url?.Query;
+                    var host = Util.Host;
+                    HostingEnvironment.QueueBackgroundWorkItem(ct =>
+                    {
+                        var qsa = HttpUtility.ParseQueryString(qs ?? "");
+                        var pm = new PythonModel(host);
+                        pm.DictionaryAdd("LogFile", logFile);
+                        foreach (string key in qsa)
+                            pm.DictionaryAdd(key, qsa[key]);
+                        pm.RunScript(script);
+                    });
+                    return View("RunPythonScriptProgress");
+                }
                 var pe = new PythonModel(Util.Host);
                 if (script.Contains("@BlueToolbarTagId"))
                 {
@@ -375,8 +397,6 @@ namespace CmsWeb.Controllers
 
                 pe.RunScript(script);
 
-                ViewBag.report = name;
-                ViewBag.url = Request.Url?.PathAndQuery;
                 return View(pe);
             }
             catch (Exception ex)
@@ -384,6 +404,12 @@ namespace CmsWeb.Controllers
                 return RedirectShowError(ex.Message);
             }
         }
+		[HttpPost, Route("~/RunPythonScriptProgress2")]
+		public ActionResult RunPythonScriptProgress2(string logfile)
+		{
+            var txt = DbUtil.Db.ContentOfTypeText(logfile);
+            return Content(txt);
+		}
         private string FetchPyScriptForm(string name)
         {
 #if DEBUG

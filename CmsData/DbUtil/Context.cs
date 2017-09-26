@@ -1723,7 +1723,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 Contents.InsertOnSubmit(c);
                 SubmitChanges();
             }
-            c.Body += $"{Util.Now:M/d/yy HH:mm:ss tt zz}{data}\n";
+            c.Body += $"{Util.Now:M/d/yy HH:mm:ss tt} {data}\n";
             SubmitChanges();
         }
     }

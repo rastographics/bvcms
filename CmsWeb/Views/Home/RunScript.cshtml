@@ -16,7 +16,7 @@
       @if (User.IsInRole("Admin") && ViewBag.Type != "TotalsByFundSqlReport")
       {
       <p>
-        <a href="/Reports/AddReport?report=@Url.Encode(ViewBag.Report)&url=@Url.Encode(ViewBag.Url)&type=@ViewBag.Type">Add Report to Menu</a>
+        <a href="/Reports/AddReport?report=@Url.Encode(ViewBag.Report)&url=@Url.Encode(ViewBag.Url)&type=@ViewBag.Type" target="_blank">Add Report to Menu</a>
       </p>
       }
     </div>
