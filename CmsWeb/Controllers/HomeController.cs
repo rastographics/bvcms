@@ -196,7 +196,7 @@ namespace CmsWeb.Controllers
 
             var file = Server.MapPath("~/test.py");
             var pe = new PythonModel(Util.Host);
-            pe.DictionaryAdd("OrgId", "");
+            //pe.DictionaryAdd("OrgId", "");
             ViewBag.Text = PythonModel.ExecutePythonFile(file, pe);
             return View("Test");
         }
