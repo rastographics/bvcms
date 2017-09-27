@@ -2177,7 +2177,6 @@
     <Content Include="Lib\ensurepip\_bundled\setuptools-20.10.1-py2.py3-none-any.whl" />
     <Content Include="Lib\ensurepip\_bundled\pip-8.1.1-py2.py3-none-any.whl" />
     <Content Include="Areas\Manage\Views\Batch\RunningPythonScript.cshtml" />
-    <Content Include="Areas\Manage\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Manage\Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\RunPythonScriptProgress.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
