@@ -11,6 +11,8 @@ using IronPython.Hosting;
 using System.IO;
 using CmsData.Codes;
 using System.Web;
+using IronPython.Runtime;
+using Microsoft.Scripting.Hosting.Providers;
 
 namespace CmsData
 {
@@ -51,6 +53,9 @@ namespace CmsData
             var sc = engine.CreateScriptSourceFromFile(HttpContext.Current.Server.MapPath("/Content/MembershipAutomation2.py"));
 #else
             var engine = Python.CreateEngine();
+            var pc = HostingHelpers.GetLanguageContext(engine) as PythonContext;
+            var hooks = pc?.SystemState.Get__dict__()["path_hooks"] as List;
+            hooks?.Clear();
             var searchPaths = engine.GetSearchPaths();
             searchPaths.Add(ConfigurationManager.AppSettings["PythonLibPath"]);
             engine.SetSearchPaths(searchPaths);
