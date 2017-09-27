@@ -2177,7 +2177,6 @@
     <Content Include="Lib\ensurepip\_bundled\setuptools-20.10.1-py2.py3-none-any.whl" />
     <Content Include="Lib\ensurepip\_bundled\pip-8.1.1-py2.py3-none-any.whl" />
     <Content Include="Areas\Manage\Views\Batch\RunningPythonScript.cshtml" />
-    <Content Include="Areas\Manage\Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\RunPythonScriptProgress.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
@@ -3602,6 +3601,7 @@
     <Folder Include="Areas\Dialog\Views\Shared\" />
     <Folder Include="Areas\Finance\Views\Shared\" />
     <Folder Include="Areas\Main\Views\Shared\" />
+    <Folder Include="Areas\Manage\Views\Shared\" />
     <Folder Include="Areas\OnlineReg\Views\Shared\" />
     <Folder Include="Areas\Public\Views\Shared\" />
     <Folder Include="Areas\Public\Views\TestMobile\" />
