@@ -1537,6 +1537,7 @@
     <Content Include="Lib\commands.py" />
     <Content Include="Lib\compileall.py" />
     <Content Include="Lib\ConfigParser.py" />
+    <Content Include="Lib\constants.py" />
     <Content Include="Lib\contextlib.py" />
     <Content Include="Lib\Cookie.py" />
     <Content Include="Lib\cookielib.py" />
