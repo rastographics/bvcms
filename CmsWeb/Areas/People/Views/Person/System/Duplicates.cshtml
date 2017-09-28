@@ -1,4 +1,24 @@
-﻿@model CmsWeb.Areas.People.Models.DuplicatesModel
+﻿@using CmsData
+@using CmsData.View
+@model CmsWeb.Areas.People.Models.DuplicatesModel
+@{
+    var list = DbUtil.Db.PotentialDups(Model.person.PeopleId).ToList();
+}
+@helper Section(List<PotentialDup> list, string description)
+{
+    if (list.Any())
+    {
+        <tr class="info">
+            <td colspan="8">
+                <span style="font-weight: 600">@description</span>
+            </td>
+        </tr>
+        foreach (var d in list)
+        {
+            @Html.Partial("System/PotentialDup", d)
+        }
+    }
+}
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
@@ -14,68 +34,14 @@
             </tr>
         </thead>
         <tbody>
-            @{
-                var dups = Model.person.PossibleDuplicates().ToList();
-                var list = Model.person.PossibleDuplicates2().ToList();
-            }
-            <tr class="info"><td colspan="8"><span style="font-weight:600">This person</span></td></tr>
-            @Html.Partial("System/DuplicateRow", list[0])
-            @if (dups.Any())
-            {
-                <tr class="info"><td colspan="8"><span style="font-weight:600">Last and 3 of (first, email, birthday, phone, address)</span></td></tr>
-                foreach (var d in Model.person.PossibleDuplicates())
-                {
-                    @Html.Partial("System/DuplicateRow", d)
-                }
-            }
-            @if (list.Any(d => d.S1 == true))
-            {
-                <tr class="info"><td colspan="8"><span style="font-weight:600">First and partial birthday</span></td></tr>
-                foreach (var d in list.Where(d => d.S1 == true))
-                {
-                    @Html.Partial("System/DuplicateRow", d)
-                }
-            }
-            @if (list.Any(d => d.S2 == true))
-            {
-                <tr class="info"><td colspan="8"><span style="font-weight:600">First and birthday</span></td></tr>
-                foreach (var d in list.Where(d => d.S2 == true))
-                {
-                    @Html.Partial("System/DuplicateRow", d)
-                }
-            }
-            @if (list.Any(d => d.S3 == true))
-            {
-                <tr class="info"><td colspan="8"><span style="font-weight:600">First and last and no birthday</span></td></tr>
-                foreach (var d in list.Where(d => d.S3 == true))
-                {
-                    @Html.Partial("System/DuplicateRow", d)
-                }
-            }
-            @if (list.Any(d => d.S4 == true))
-            {
-                <tr class="info"><td colspan="8"><span style="font-weight:600">First and address</span></td></tr>
-                foreach (var d in list.Where(d => d.S4 == true))
-                {
-                    @Html.Partial("System/DuplicateRow", d)
-                }
-            }
-            @if (list.Any(d => d.S5 == true))
-            {
-                <tr class="info"><td colspan="8"><span style="font-weight:600">First and email</span></td></tr>
-                foreach (var d in list.Where(d => d.S5 == true))
-                {
-                    @Html.Partial("System/DuplicateRow", d)
-                }
-            }
-            @if (list.Any(d => d.S6 == true))
-            {
-                <tr class="info"><td colspan="8"><span style="font-weight:600">Last and birthday</span></td></tr>
-                foreach (var d in list.Where(d => d.S6 == true))
-                {
-                    @Html.Partial("System/DuplicateRow", d)
-                }
-            }
+            @Section(Model.MatchThis, "This person")
+            @Section(list.Where(d => d.S0 == true).ToList(), "Last and 3 of (first, email, birthday, phone, address)")
+            @Section(list.Where(d => d.S1 == true).ToList(), "First and partial birthday")
+            @Section(list.Where(d => d.S2 == true).ToList(), "First and birthday")
+            @Section(list.Where(d => d.S3 == true).ToList(), "First and last and no birthday")
+            @Section(list.Where(d => d.S4 == true).ToList(), "First and street name")
+            @Section(list.Where(d => d.S5 == true).ToList(), "First and email")
+            @Section(list.Where(d => d.S6 == true).ToList(), "Last and birthday")
         </tbody>
     </table>
 </div>

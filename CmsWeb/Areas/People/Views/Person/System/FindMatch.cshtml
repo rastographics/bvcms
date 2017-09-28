@@ -1,5 +1,5 @@
 ﻿@using UtilityExtensions
-@model CmsData.Person.Duplicate
+@model CmsData.View.OnlineRegMatch
 <tr>
     <td><a href="/Person2/@Model.PeopleId">@Model.First</a></td>
     <td>@Model.Nick</td>
@@ -8,6 +8,6 @@
     <td>@Model.Maiden</td>
     <td>@Util.FormatBirthday(Model.BYear, Model.BMon, Model.BDay)</td>
     <td>@Model.Email<br/>@Model.Member</td>
-    <td>@Model.FamAddr<br />@Model.PerAddr</td>
+    <td>--</td>
 </tr>
 

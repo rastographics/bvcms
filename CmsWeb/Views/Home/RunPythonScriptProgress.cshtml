@@ -1,0 +1,30 @@
+﻿@model dynamic
+@{
+    ViewBag.Title = "Run Python Background";
+    ViewBag.ReportPageHeader = "Run Python Background";
+    Layout = ViewExtensions2.TouchPointLayout();
+}
+<pre id="pre">
+
+</pre>
+@if (User.IsInRole("Admin"))
+{
+<p id="AddToMenu" style="display:none">
+    <a href="/Reports/AddReport?report=@Url.Encode(ViewBag.Report)&url=@Url.Encode(ViewBag.Url)&type=PyScript" target="_blank">Add Report to Menu</a>
+</p>
+}
+@section scripts {
+    <script type="text/javascript">
+        $(function () {
+            var intervalId = window.setInterval(function () {
+                $.post('/RunPythonScriptProgress2?logfile=' + '@ViewBag.LogFile', null, function (ret) {
+                    $("#pre").text(ret);
+                    if (ret.includes("Background Process Completed")) {
+                        window.clearInterval(intervalId);
+                        $("#AddToMenu").show();
+                    }
+                });
+            }, 3000);
+        });
+    </script>
+}

@@ -1,167 +1,216 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Windows.Forms;
 
 namespace CmsCheckin
 {
-	public partial class Login : Form, KeyboardInterface
-	{
-		private Form keyboard;
-		private TextBox current = null;
+    public partial class Login : Form, KeyboardInterface
+    {
+        private Form keyboard;
+        private TextBox current = null;
 
-		public Login()
-		{
-			InitializeComponent();
+        public Login()
+        {
+            InitializeComponent();
 
-			username.Enter += onTextboxEnter;
-			password.Enter += onTextboxEnter;
-			URL.Enter += onTextboxEnter;
-		}
+            username.Enter += onTextboxEnter;
+            password.Enter += onTextboxEnter;
+            URL.Enter += onTextboxEnter;
 
-		private void onLoginLoad(object sender, EventArgs e)
-		{
-			this.CenterToScreen();
-			this.Location = new Point(this.Location.X, this.Location.Y / 2);
+            keyboard = new CommonKeyboard(this);
+        }
 
-			updateViews();
+        private void onLoginLoad(object sender, EventArgs e)
+        {
+            this.CenterToScreen();
+            this.Location = new Point(this.Location.X, this.Location.Y / 2);
 
-			//if (Program.settings.popupForVersion < 1) {
-			//	MessageBox.Show("The Check-In program has been updated,\nplease verify the following settings:\n\n" +
-			//		"Login Page\n\n- Server name (e.g. <yourchurch>.tpsdb.com)\n- Username\n- Password\n- Printer\n- Advanced Page Size (Optional)\n\n" +
-			//		"Settings Page\n\n- Campus\n- Early Checkin Hours\n- Late Checkin Minutes\n- Checkboxes at the bottom", "New Version", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            updateViews();
 
-			//	Program.settings.setPopupForVersion(1);
-			//}
+            //if (Program.settings.popupForVersion < 1) {
+            //	MessageBox.Show("The Check-In program has been updated,\nplease verify the following settings:\n\n" +
+            //		"Login Page\n\n- Server name (e.g. <yourchurch>.tpsdb.com)\n- Username\n- Password\n- Printer\n- Advanced Page Size (Optional)\n\n" +
+            //		"Settings Page\n\n- Campus\n- Early Checkin Hours\n- Late Checkin Minutes\n- Checkboxes at the bottom", "New Version", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
-			keyboard = new CommonKeyboard(this);
-			keyboard.Show();
-			attachKeyboard();
+            //	Program.settings.setPopupForVersion(1);
+            //}
 
-			URL.Text = Program.settings.subdomain;
-			username.Text = Program.settings.user;
+            keyboard.Show();
+            attachKeyboard();
 
-			if (username.Text.Length > 0) {
-				current = password;
-				this.ActiveControl = password;
-			} else {
-				current = URL;
-				this.ActiveControl = URL;
-			}
-		}
+            this.Focus();
 
-		private void onFormMove(object sender, EventArgs e)
-		{
-			attachKeyboard();
-		}
+            URL.Text = Program.settings.subdomain.Replace(".tpsdb.com", "").Replace(".bvcms.com", "");
+            username.Text = Program.settings.user;
 
-		private void attachKeyboard()
-		{
-			keyboard.Location = new Point(this.Location.X + (this.Width / 2) - (keyboard.Width / 2), this.Location.Y + this.Height + 5);
-		}
+            if (username.Text.Length > 0)
+            {
+                current = password;
+                this.ActiveControl = password;
+            }
+            else
+            {
+                current = URL;
+                this.ActiveControl = URL;
+            }
+        }
 
-		private void onLoginClosing(object sender, FormClosingEventArgs e)
-		{
-			keyboard.Close();
-			keyboard.Dispose();
-		}
+        private void onFormMove(object sender, EventArgs e)
+        {
+            attachKeyboard();
+        }
 
-		public void onKeyboardKeyPress(string key)
-		{
-			if (current == null) return;
+        private void attachKeyboard()
+        {
+            keyboard.Location = new Point(this.Location.X + (this.Width / 2) - (keyboard.Width / 2), this.Location.Y + this.Height + 5);
+        }
 
-			current.Text += key;
-			current.Focus();
-			current.Select(current.Text.Length, 0);
-		}
+        private void onLoginClosing(object sender, FormClosingEventArgs e)
+        {
+            keyboard.Close();
+            keyboard.Dispose();
+        }
 
-		public void onBackspaceKeyPress()
-		{
-			if (current == null) return;
+        public void onKeyboardKeyPress(string key)
+        {
+            if (current == null) return;
 
-			var t = current.Text;
-			var len = t.Length - 1;
+            current.Text += key;
+            current.Focus();
+            current.Select(current.Text.Length, 0);
+        }
 
-			if (len < 0) len = 0;
+        public void onBackspaceKeyPress()
+        {
+            if (current == null) return;
 
-			current.Text = t.Substring(0, len);
-			current.Focus();
-			current.Select(current.Text.Length, 0);
-		}
+            var t = current.Text;
+            var len = t.Length - 1;
 
-		private void onTextboxEnter(object sender, EventArgs e)
-		{
-			current = (TextBox)sender;
-		}
+            if (len < 0) len = 0;
 
-		private void onLoginClick(object sender, EventArgs e)
-		{
-			Program.settings.subdomain = URL.Text;
-			Program.settings.user = username.Text;
-			Program.settings.pass = password.Text;
-			Program.settings.save();
+            current.Text = t.Substring(0, len);
+            current.Focus();
+            current.Select(current.Text.Length, 0);
+        }
 
-			try {
-				var wc = Util.CreateWebClient();
+        private void onTextboxEnter(object sender, EventArgs e)
+        {
+            current = (TextBox)sender;
+        }
 
-				var exists = Program.settings.createURI("CheckInAPI/Exists");
-				var existsResults = wc.DownloadString(exists);
+        private void onLoginClick(object sender, EventArgs e)
+        {
+            Program.settings.subdomain = URL.Text;
+            Program.settings.user = username.Text;
+            Program.settings.pass = password.Text;
+            Program.settings.save();
 
-				if (existsResults != "1") {
-					MessageBox.Show("The server you enter is not valid, please try again.\n\n" + Program.settings.createURL(), "Connection Error");
-				} else {
-					var auth = Program.settings.createURI("CheckInAPI/Authenticate");
-					var authResults = wc.DownloadString(auth);
+            try
+            {
+                var wc = Util.CreateWebClient();
 
-					BaseMessage bm = JsonConvert.DeserializeObject<BaseMessage>(authResults);
+                var exists = Program.settings.createURI("CheckInAPI/Exists");
+                var existsResults = wc.DownloadString(exists);
 
-					if (bm.error == 0) {
-						CheckInInformation info = JsonConvert.DeserializeObject<CheckInInformation>(bm.data);
+                if (existsResults != "1")
+                {
+                    MessageBox.Show("The server you enter is not valid, please try again.\n\n" + Program.settings.createURL(), "Connection Error");
+                }
+                else
+                {
+                    var auth = Program.settings.createURI("CheckInAPI/Authenticate");
+                    var authResults = wc.DownloadString(auth);
 
-						if (info != null) {
-							Program.settingsList = info.settings;
-							Program.campusList = info.campuses;
+                    BaseMessage bm = JsonConvert.DeserializeObject<BaseMessage>(authResults);
 
-							Program.settingsList.Insert(0, new CheckInSettingsEntry() { name = "<Current>", settings = "" });
+                    if (bm.error == 0)
+                    {
+                        CheckInInformation info = JsonConvert.DeserializeObject<CheckInInformation>(bm.data);
 
-							DialogResult = DialogResult.OK;
-							this.Hide();
-						}
+                        if (info != null)
+                        {
+                            Program.settingsList = info.settings;
+                            Program.campusList = info.campuses;
 
-					} else {
-						MessageBox.Show("Error: " + bm.error, "Server Error");
-					}
-				}
-			} catch (WebException) {
-				MessageBox.Show("Could not connect to: " + Program.settings.createURL(), "Connection Error");
-			}
-		}
+                            Program.settingsList.Insert(0, new CheckInSettingsEntry() { name = "<Current>", settings = "" });
 
-		private void onProtocolClick(object sender, EventArgs e)
-		{
-			if (ModifierKeys.HasFlag(Keys.Control) && ModifierKeys.HasFlag(Keys.Alt) && ModifierKeys.HasFlag(Keys.Shift)) {
-				Program.settings.ssl = !Program.settings.ssl;
-				updateViews();
-			}
-		}
+                            DialogResult = DialogResult.OK;
+                            this.Hide();
+                        }
 
-		private void updateViews()
-		{
-			if (Program.settings.ssl) {
-				protocolLabel.Text = "https://";
-				domainLabel.Visible = true;
-				URL.Width = 260;
-			} else {
-				protocolLabel.Text = "http://";
-				domainLabel.Visible = false;
-				URL.Width = 330;
-			}
-		}
-	}
+                    }
+                    else
+                    {
+                        if (bm.error == -6)
+                        {
+                            MessageBox.Show("Your username or password was incorrect, please try again.", "Server Error");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Error: " + bm.error, "Server Error");
+                        }
+                    }
+                }
+            }
+            catch (WebException)
+            {
+                MessageBox.Show("Could not connect to: " + Program.settings.createURL(), "Connection Error");
+            }
+        }
+
+        private void onProtocolClick(object sender, EventArgs e)
+        {
+            if (ModifierKeys.HasFlag(Keys.Control) && ModifierKeys.HasFlag(Keys.Alt) && ModifierKeys.HasFlag(Keys.Shift))
+            {
+                Program.settings.ssl = !Program.settings.ssl;
+
+                Program.settings.useTPSDB = Program.settings.ssl;
+
+                updateViews();
+            }
+        }
+
+        private void updateViews()
+        {
+            if (Program.settings.ssl)
+            {
+                protocolLabel.Text = "https://";
+            }
+            else
+            {
+                protocolLabel.Text = "http://";
+            }
+
+            if (Program.settings.useTPSDB)
+            {
+                domainLabel.Visible = true;
+                URL.Width = 260;
+            }
+            else
+            {
+                domainLabel.Visible = false;
+                URL.Width = 330;
+            }
+        }
+
+        private void onPasswordKeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Return)
+            {
+                onLoginClick(null, null);
+            }
+        }
+
+        private void onDomainLabelClick(object sender, EventArgs e)
+        {
+            if (ModifierKeys.HasFlag(Keys.Control) && ModifierKeys.HasFlag(Keys.Alt) && ModifierKeys.HasFlag(Keys.Shift))
+            {
+                Program.settings.useTPSDB = !Program.settings.useTPSDB;
+                updateViews();
+            }
+        }
+    }
 }

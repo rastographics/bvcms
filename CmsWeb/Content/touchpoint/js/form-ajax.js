@@ -87,7 +87,7 @@
     $("div.tab-pane").on("click", "a.ajax-refresh", function (event) {
         event.preventDefault();
         var d = $(this).closest("div.tab-pane");
-        $.formAjaxClick($(this), d.data("link"));
+        $.formAjaxClick($(this), d.data("link"), d.data("action"));
         return false;
     });
     $("body").on("click", "form.ajax a.ajax-refresh", function (event) {
@@ -165,7 +165,7 @@
         return false;
     });
 
-    $.formAjaxClick = function (a, link) {
+    $.formAjaxClick = function (a, link, action) {
         var $form = a.closest("form.ajax");
         var $load = $form;
         var $tabinit = $form.closest("div.tab-pane[data-init]");
@@ -187,6 +187,9 @@
             || $form[0].action
             || '#';
 
+        var type = action
+            || 'POST';
+
         if (a.data("size"))
             $("input[name='PageSize']", $form).val(a.data("size"));
         if (a.data("page"))
@@ -202,7 +205,7 @@
         if (!a.hasClass("validate") || $form.valid()) {
             var isModal = $load.hasClass("modal-form");
             $.ajax({
-                type: 'POST',
+                type: type,
                 url: url,
                 data: data,
                 beforeSend: function () {
@@ -213,6 +216,10 @@
                     $.unblock();
                 },
                 success: function (ret, status) {
+                    if (type === 'GET') {
+                        location.reload();
+                        return true;
+                    }
                     $.unblock();
                     if (a.data("redirect"))
                         window.location = ret;

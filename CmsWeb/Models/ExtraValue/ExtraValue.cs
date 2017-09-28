@@ -55,6 +55,18 @@ namespace CmsWeb.Models.ExtraValues
             Id = v.OrganizationId;
             Model = model;
         }
+        public ExtraValue(ContactExtra v, ExtraValueModel model)
+        {
+            Type = v.Type;
+            Field = v.Field;
+            StrValue = v.StrValue;
+            DateValue = v.DateValue;
+            Data = v.Data;
+            IntValue = v.IntValue;
+            BitValue = v.BitValue;
+            Id = v.ContactId;
+            Model = model;
+        }
         public ExtraValue(MeetingExtra v, ExtraValueModel model)
         {
             Type = v.Type;

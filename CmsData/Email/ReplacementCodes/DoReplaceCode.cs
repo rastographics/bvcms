@@ -257,6 +257,9 @@ namespace CmsData
                     if (DropFromOrgTagRe.IsMatch(code))
                         return DropFromOrgTagReplacement(code, eq);
 
+                    if (SqlLookupRe.IsMatch(code))
+                        return SqlLookupReplacement(code, eq);
+
                     break;
             }
             return code; // nothing matched

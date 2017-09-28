@@ -4,7 +4,7 @@
 <div class="modal-dialog">
     <div class="modal-content">
         <div class="modal-header">
-            <a class="ajax close" href="/ExtraValue/ListStandard/@Model.ExtraValueTable/Standard/@Model.Id"><span aria-hidden="true">&times;</span></a>
+            <a class="ajax close" href="/ExtraValue/ListStandard/@Model.ExtraValueTable/@Model.ExtraValueLocation/@Model.Id"><span aria-hidden="true">&times;</span></a>
             <h4 class="modal-title">Edit Standard Extra Value</h4>
         </div>
         <div class="modal-body">
@@ -52,7 +52,7 @@
             }
         </div>
         <div class="modal-footer">
-            <a href="/ExtraValue/ListStandard/@Model.ExtraValueTable/Standard/@Model.Id" class="ajax btn btn-default">Cancel</a>
+            <a href="/ExtraValue/ListStandard/@Model.ExtraValueTable/@Model.ExtraValueLocation/@Model.Id" class="ajax btn btn-default">Cancel</a>
             <a href="/ExtraValue/SaveEditedStandard" class="save btn btn-primary ajax validate" data-callback="EditStandardExtraValueDialogCallback">Save</a>
         </div>
     </div>

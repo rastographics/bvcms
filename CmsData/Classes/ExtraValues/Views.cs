@@ -27,12 +27,21 @@ namespace CmsData.ExtraValue
                 return new Views();
             return f;
         }
-        public static List<Value> GetStandardExtraValues(CMSDataContext db, string table, bool nocache = false)
+        public static List<Value> GetStandardExtraValues(CMSDataContext db, string table, bool nocache = false, string location = null)
         {
+            if (location != null)
+            {
+                return (from vv in GetViews(db, nocache).List
+                        where vv.Table == table
+                        where vv.Location == location
+                        from v in vv.Values
+                        select v).ToList();
+            }
+
             return (from vv in GetViews(db, nocache).List
-                    where vv.Table == table
-                    from v in vv.Values
-                    select v).ToList();
+                where vv.Table == table
+                from v in vv.Values
+                select v).ToList();
         }
 
         public class StandardValueNameType
@@ -58,7 +67,7 @@ namespace CmsData.ExtraValue
                          from v in vv.Codes
                          select new StandardValueNameType()
                          { 
-                             Name = v, 
+                             Name = v.Text, 
                              Type = vv.Type,
                              CanView = vv.UserCanView(db)
                          }).ToList();
@@ -84,11 +93,12 @@ namespace CmsData.ExtraValue
             public View view;
             public Value value;
         }
-        public static ViewValue GetViewsViewValue(CMSDataContext db, string table, string name)
+        public static ViewValue GetViewsViewValue(CMSDataContext db, string table, string name, string location = null)
         {
             var views = GetViews(db, nocache: true);
             var i = from view in views.List
                     where view.Table == table
+                    where location == null || view.Location == location
                     from value in view.Values
                     where value.Name == name
                     select new ViewValue

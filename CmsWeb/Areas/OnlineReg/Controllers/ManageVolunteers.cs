@@ -189,7 +189,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 DbUtil.Db.Email(staff.FromEmail, m.Person, m.Setting.Subject, text);
 
                 DbUtil.Db.Email(m.Person.FromEmail, Staff, "Volunteer Commitments managed", $@"{m.Person.Name} managed volunteer commitments to {m.Org.OrganizationName}<br/>
-The following Committments:<br/>
+The following Commitments:<br/>
 {summary}");
             }
             ViewData["Organization"] = m.Org.OrganizationName;

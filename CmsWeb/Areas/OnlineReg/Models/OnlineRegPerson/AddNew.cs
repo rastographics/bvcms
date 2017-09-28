@@ -152,6 +152,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             person.CampusId = DbUtil.Db.Setting("DefaultCampusId", "").ToInt2();
             if (Campus.ToInt() > 0)
                 person.CampusId = Campus.ToInt();
+            else if (org.CampusId > 0)
+                person.CampusId = org.CampusId;
             person.CellPhone = Phone.GetDigits().Truncate(20);
 
             if (count == 0)

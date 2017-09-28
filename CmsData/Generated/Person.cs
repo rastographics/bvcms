@@ -291,6 +291,8 @@ namespace CmsData
 		
    		private EntitySet< MemberDocForm> _MemberDocForms;
 		
+   		private EntitySet< MobileAppDevice> _MobileAppDevices;
+		
    		private EntitySet< MobileAppPushRegistration> _MobileAppPushRegistrations;
 		
    		private EntitySet< OrgMemberExtra> _OrgMemberExtras;
@@ -802,6 +804,8 @@ namespace CmsData
 			this._ManagedGivings = new EntitySet< ManagedGiving>(new Action< ManagedGiving>(this.attach_ManagedGivings), new Action< ManagedGiving>(this.detach_ManagedGivings)); 
 			
 			this._MemberDocForms = new EntitySet< MemberDocForm>(new Action< MemberDocForm>(this.attach_MemberDocForms), new Action< MemberDocForm>(this.detach_MemberDocForms)); 
+			
+			this._MobileAppDevices = new EntitySet< MobileAppDevice>(new Action< MobileAppDevice>(this.attach_MobileAppDevices), new Action< MobileAppDevice>(this.detach_MobileAppDevices)); 
 			
 			this._MobileAppPushRegistrations = new EntitySet< MobileAppPushRegistration>(new Action< MobileAppPushRegistration>(this.attach_MobileAppPushRegistrations), new Action< MobileAppPushRegistration>(this.detach_MobileAppPushRegistrations)); 
 			
@@ -3784,6 +3788,16 @@ namespace CmsData
    		}
 
 		
+   		[Association(Name="FK_MobileAppDevices_People", Storage="_MobileAppDevices", OtherKey="PeopleID")]
+   		public EntitySet< MobileAppDevice> MobileAppDevices
+   		{
+   		    get { return this._MobileAppDevices; }
+
+			set	{ this._MobileAppDevices.Assign(value); }
+
+   		}
+
+		
    		[Association(Name="FK_MobileAppPushRegistrations_People", Storage="_MobileAppPushRegistrations", OtherKey="PeopleId")]
    		public EntitySet< MobileAppPushRegistration> MobileAppPushRegistrations
    		{
@@ -5255,6 +5269,19 @@ namespace CmsData
 		}
 
 		private void detach_MemberDocForms(MemberDocForm entity)
+		{
+			this.SendPropertyChanging();
+			entity.Person = null;
+		}
+
+		
+		private void attach_MobileAppDevices(MobileAppDevice entity)
+		{
+			this.SendPropertyChanging();
+			entity.Person = this;
+		}
+
+		private void detach_MobileAppDevices(MobileAppDevice entity)
 		{
 			this.SendPropertyChanging();
 			entity.Person = null;

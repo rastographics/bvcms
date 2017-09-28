@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Http.Formatting;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Web.Http;
 using System.Web.OData.Builder;
 using System.Web.OData.Extensions;
 using System.Web.OData.Formatter;
+using CmsData.View;
 using CmsWeb.Models.Api;
 using CmsWeb.Models.Api.Lookup;
 using Microsoft.OData.Edm.Library;
+using Newtonsoft.Json.Serialization;
 
 namespace CmsWeb
 {
@@ -24,6 +28,8 @@ namespace CmsWeb
             builder.EntitySet<ApiContributionFund>("Funds");
             builder.EntitySet<ApiOrganization>("Organizations");
             builder.EntitySet<ApiOrganizationMember>("OrganizationMembers");
+            builder.EntitySet<ApiChAiPerson>("ChAiPeople");
+            builder.EntitySet<ApiChAiGift>("ChAiGifts");
 
             config.MapODataServiceRoute(
                 routeName: "ODataApiRoot",
@@ -42,13 +48,15 @@ namespace CmsWeb
                 routeName: "ODataApiLookupRoute",
                 routePrefix: "api/lookup",
                 model: builderlookup.GetEdmModel());
-
             config.Filters.Add(new ApiAuthorizeAttribute());
             config.MessageHandlers.Add(new ApiMessageLoggingHandler());
 
             // fix for XML support (use Accept: application/xml)
             var formatters = ODataMediaTypeFormatters.Create();
             config.Formatters.InsertRange(0, formatters);
+            var jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>().First();
+            jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            jsonFormatter.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
         }
     }
 }

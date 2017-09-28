@@ -34,5 +34,12 @@ namespace CmsWeb.Areas.Reports.Controllers
                 Server.MapPath("/content/touchpoint/templates/fampicturedir12.docx"));
         }
 
+        [HttpGet]
+        public ActionResult PictureDir4(Guid id)
+        {
+            return new DocXDirectoryResult(id, "picturedir4", 
+                Server.MapPath("/content/touchpoint/templates/picturedir4.docx"));
+        }
+
     }
 }

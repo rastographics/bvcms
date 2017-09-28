@@ -61,6 +61,8 @@ namespace CmsData
 		
    		private EntitySet< Contactor> _contactsMakers;
 		
+   		private EntitySet< ContactExtra> _ContactExtras;
+		
    		private EntitySet< Task> _TasksAssigned;
 		
    		private EntitySet< Task> _TasksCompleted;
@@ -145,6 +147,8 @@ namespace CmsData
 			this._contactees = new EntitySet< Contactee>(new Action< Contactee>(this.attach_contactees), new Action< Contactee>(this.detach_contactees)); 
 			
 			this._contactsMakers = new EntitySet< Contactor>(new Action< Contactor>(this.attach_contactsMakers), new Action< Contactor>(this.detach_contactsMakers)); 
+			
+			this._ContactExtras = new EntitySet< ContactExtra>(new Action< ContactExtra>(this.attach_ContactExtras), new Action< ContactExtra>(this.detach_ContactExtras)); 
 			
 			this._TasksAssigned = new EntitySet< Task>(new Action< Task>(this.attach_TasksAssigned), new Action< Task>(this.detach_TasksAssigned)); 
 			
@@ -623,6 +627,16 @@ namespace CmsData
    		}
 
 		
+   		[Association(Name="FK_ContactExtra_Contact", Storage="_ContactExtras", OtherKey="ContactId")]
+   		public EntitySet< ContactExtra> ContactExtras
+   		{
+   		    get { return this._ContactExtras; }
+
+			set	{ this._ContactExtras.Assign(value); }
+
+   		}
+
+		
    		[Association(Name="TasksAssigned__SourceContact", Storage="_TasksAssigned", OtherKey="SourceContactId")]
    		public EntitySet< Task> TasksAssigned
    		{
@@ -855,6 +869,19 @@ namespace CmsData
 		{
 			this.SendPropertyChanging();
 			entity.contact = null;
+		}
+
+		
+		private void attach_ContactExtras(ContactExtra entity)
+		{
+			this.SendPropertyChanging();
+			entity.Contact = this;
+		}
+
+		private void detach_ContactExtras(ContactExtra entity)
+		{
+			this.SendPropertyChanging();
+			entity.Contact = null;
 		}
 
 		

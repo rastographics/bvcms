@@ -28,5 +28,6 @@ namespace CmsData
         ReturnedChecksResponse GetReturnedChecks(DateTime start, DateTime end);
         void CheckBatchSettlements(DateTime start, DateTime end);
         void CheckBatchSettlements(List<string> transactionids);
+        string VaultId(int peopleId);
     }
 }

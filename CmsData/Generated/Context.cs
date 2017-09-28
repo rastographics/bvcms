@@ -142,6 +142,10 @@ namespace CmsData
         partial void UpdateContactee(Contactee instance);
         partial void DeleteContactee(Contactee instance);
         
+        partial void InsertContactExtra(ContactExtra instance);
+        partial void UpdateContactExtra(ContactExtra instance);
+        partial void DeleteContactExtra(ContactExtra instance);
+        
         partial void InsertContactor(Contactor instance);
         partial void UpdateContactor(Contactor instance);
         partial void DeleteContactor(Contactor instance);
@@ -338,6 +342,10 @@ namespace CmsData
         partial void UpdateLabelFormat(LabelFormat instance);
         partial void DeleteLabelFormat(LabelFormat instance);
         
+        partial void InsertLongRunningOp(LongRunningOp instance);
+        partial void UpdateLongRunningOp(LongRunningOp instance);
+        partial void DeleteLongRunningOp(LongRunningOp instance);
+        
         partial void InsertLongRunningOperation(LongRunningOperation instance);
         partial void UpdateLongRunningOperation(LongRunningOperation instance);
         partial void DeleteLongRunningOperation(LongRunningOperation instance);
@@ -405,6 +413,10 @@ namespace CmsData
         partial void InsertMobileAppBuilding(MobileAppBuilding instance);
         partial void UpdateMobileAppBuilding(MobileAppBuilding instance);
         partial void DeleteMobileAppBuilding(MobileAppBuilding instance);
+        
+        partial void InsertMobileAppDevice(MobileAppDevice instance);
+        partial void UpdateMobileAppDevice(MobileAppDevice instance);
+        partial void DeleteMobileAppDevice(MobileAppDevice instance);
         
         partial void InsertMobileAppFloor(MobileAppFloor instance);
         partial void UpdateMobileAppFloor(MobileAppFloor instance);
@@ -958,6 +970,12 @@ namespace CmsData
 
 		}
 
+		public Table< ContactExtra> ContactExtras
+		{
+			get	{ return this.GetTable< ContactExtra>(); }
+
+		}
+
 		public Table< Contactor> Contactors
 		{
 			get	{ return this.GetTable< Contactor>(); }
@@ -1252,6 +1270,12 @@ namespace CmsData
 
 		}
 
+		public Table< LongRunningOp> LongRunningOps
+		{
+			get	{ return this.GetTable< LongRunningOp>(); }
+
+		}
+
 		public Table< LongRunningOperation> LongRunningOperations
 		{
 			get	{ return this.GetTable< LongRunningOperation>(); }
@@ -1351,6 +1375,12 @@ namespace CmsData
 		public Table< MobileAppBuilding> MobileAppBuildings
 		{
 			get	{ return this.GetTable< MobileAppBuilding>(); }
+
+		}
+
+		public Table< MobileAppDevice> MobileAppDevices
+		{
+			get	{ return this.GetTable< MobileAppDevice>(); }
 
 		}
 
@@ -1909,6 +1939,18 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.ChAiGiftDatum> ViewChAiGiftDatas
+	    {
+		    get { return this.GetTable< View.ChAiGiftDatum>(); }
+
+	    }
+
+	    public Table< View.ChAiIndividualDatum> ViewChAiIndividualDatas
+	    {
+		    get { return this.GetTable< View.ChAiIndividualDatum>(); }
+
+	    }
+
 	    public Table< View.ChangeLogDetail> ViewChangeLogDetails
 	    {
 		    get { return this.GetTable< View.ChangeLogDetail>(); }
@@ -2164,6 +2206,12 @@ namespace CmsData
 	    public Table< View.RandNumber> ViewRandNumbers
 	    {
 		    get { return this.GetTable< View.RandNumber>(); }
+
+	    }
+
+	    public Table< View.RecurringGivingDueForToday> ViewRecurringGivingDueForTodays
+	    {
+		    get { return this.GetTable< View.RecurringGivingDueForToday>(); }
 
 	    }
 
@@ -2642,42 +2690,46 @@ namespace CmsData
 
 		[Function(Name="dbo.ContributionSearch", IsComposable = true)]
 		public IQueryable< View.ContributionSearch > ContributionSearch(
-            [Parameter(DbType="nvarchar")] string name,
-            [Parameter(DbType="nvarchar")] string comments,
-            [Parameter(DbType="int")] int? bundletype,
-            [Parameter(DbType="int")] int? type,
-            [Parameter(DbType="int")] int? status,
-            [Parameter(DbType="money")] decimal? minamt,
-            [Parameter(DbType="money")] decimal? maxamt,
-            [Parameter(DbType="datetime")] DateTime? startdate,
-            [Parameter(DbType="datetime")] DateTime? enddate,
-            [Parameter(DbType="varchar")] string taxnontax,
-            [Parameter(DbType="int")] int? fundid,
-            [Parameter(DbType="int")] int? campusid,
-            [Parameter(DbType="int")] int? year,
-            [Parameter(DbType="bit")] bool? includeunclosedbundles,
-            [Parameter(DbType="bit")] bool? mobile,
-            [Parameter(DbType="int")] int? online
+            [Parameter(DbType="varchar")] string Name,
+            [Parameter(DbType="varchar")] string Comments,
+            [Parameter(DbType="money")] decimal? MinAmt,
+            [Parameter(DbType="money")] decimal? MaxAmt,
+            [Parameter(DbType="datetime")] DateTime? StartDate,
+            [Parameter(DbType="datetime")] DateTime? EndDate,
+            [Parameter(DbType="int")] int? CampusId,
+            [Parameter(DbType="int")] int? FundId,
+            [Parameter(DbType="int")] int? Online,
+            [Parameter(DbType="int")] int? Status,
+            [Parameter(DbType="varchar")] string TaxNonTax,
+            [Parameter(DbType="int")] int? Year,
+            [Parameter(DbType="int")] int? Type,
+            [Parameter(DbType="int")] int? BundleType,
+            [Parameter(DbType="bit")] bool? IncludeUnclosedBundles,
+            [Parameter(DbType="bit")] bool? Mobile,
+            [Parameter(DbType="int")] int? PeopleId,
+            [Parameter(DbType="int")] int? ActiveTagFilter
             )
 		{
 			return this.CreateMethodCallQuery< View.ContributionSearch>(this, 
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                name,
-                comments,
-                bundletype,
-                type,
-                status,
-                minamt,
-                maxamt,
-                startdate,
-                enddate,
-                taxnontax,
-                fundid,
-                campusid,
-                year,
-                includeunclosedbundles,
-                mobile,
-                online
+                Name,
+                Comments,
+                MinAmt,
+                MaxAmt,
+                StartDate,
+                EndDate,
+                CampusId,
+                FundId,
+                Online,
+                Status,
+                TaxNonTax,
+                Year,
+                Type,
+                BundleType,
+                IncludeUnclosedBundles,
+                Mobile,
+                PeopleId,
+                ActiveTagFilter
                 );
 		}
 
@@ -3426,6 +3478,23 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.LastFamilyOrgAttends", IsComposable = true)]
+		public IQueryable< View.LastFamilyOrgAttend > LastFamilyOrgAttends(
+            [Parameter(DbType="int")] int? progid,
+            [Parameter(DbType="int")] int? divid,
+            [Parameter(DbType="int")] int? orgid,
+            [Parameter(DbType="int")] int? position
+            )
+		{
+			return this.CreateMethodCallQuery< View.LastFamilyOrgAttend>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                progid,
+                divid,
+                orgid,
+                position
+                );
+		}
+
 		[Function(Name="dbo.LastMeetings", IsComposable = true)]
 		public IQueryable< View.LastMeeting > LastMeetings(
             [Parameter(DbType="varchar")] string orgs
@@ -3513,6 +3582,17 @@ namespace CmsData
                 dt1,
                 dt2,
                 guestonly
+                );
+		}
+
+		[Function(Name="dbo.OnlineRegMatches", IsComposable = true)]
+		public IQueryable< View.OnlineRegMatch > OnlineRegMatches(
+            [Parameter(DbType="int")] int? pid
+            )
+		{
+			return this.CreateMethodCallQuery< View.OnlineRegMatch>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid
                 );
 		}
 
@@ -4069,6 +4149,17 @@ namespace CmsData
                 td,
                 fundid,
                 campusid
+                );
+		}
+
+		[Function(Name="dbo.PotentialDups", IsComposable = true)]
+		public IQueryable< View.PotentialDup > PotentialDups(
+            [Parameter(DbType="int")] int? pid
+            )
+		{
+			return this.CreateMethodCallQuery< View.PotentialDup>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid
                 );
 		}
 
@@ -4696,30 +4787,12 @@ namespace CmsData
 		[Function(Name="dbo.IsValidEmail", IsComposable = true)]
 		[return: Parameter(DbType = "bit")]
 		public bool? IsValidEmail(
-            [Parameter(Name = "stringX", DbType="nvarchar")] string stringX
+            [Parameter(Name = "addr", DbType="nvarchar")] string addr
             )
 		{
 			return ((bool?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                stringX
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.VisitAttendStr", IsComposable = true)]
-		[return: Parameter(DbType = "varchar")]
-		public string VisitAttendStr(
-            [Parameter(Name = "oid", DbType="int")] int? oid,
-            [Parameter(Name = "pid", DbType="int")] int? pid,
-            [Parameter(Name = "MeetingDay1", DbType="date")] DateTime? MeetingDay1,
-            [Parameter(Name = "MeetingDay2", DbType="date")] DateTime? MeetingDay2
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                oid,
-                pid,
-                MeetingDay1,
-                MeetingDay2
+                addr
                 ).ReturnValue));
 		}
 
@@ -4832,6 +4905,18 @@ namespace CmsData
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid,
                 asof
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.OrgFilterCheckedCount", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? OrgFilterCheckedCount(
+            [Parameter(Name = "queryid", DbType="uniqueidentifier")] Guid? queryid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                queryid
                 ).ReturnValue));
 		}
 
@@ -5040,18 +5125,6 @@ namespace CmsData
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid,
                 oid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.OrgFilterCheckedCount", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? OrgFilterCheckedCount(
-            [Parameter(Name = "queryid", DbType="uniqueidentifier")] Guid? queryid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                queryid
                 ).ReturnValue));
 		}
 
@@ -5503,6 +5576,18 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.AllDigits", IsComposable = true)]
+		[return: Parameter(DbType = "bit")]
+		public bool? AllDigits(
+            [Parameter(Name = "s", DbType="nvarchar")] string s
+            )
+		{
+			return ((bool?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                s
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.DayAndTime", IsComposable = true)]
 		[return: Parameter(DbType = "nvarchar")]
 		public string DayAndTime(
@@ -5524,6 +5609,18 @@ namespace CmsData
 			return ((int?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 dt
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.GetStreet", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string GetStreet(
+            [Parameter(Name = "address", DbType="nvarchar")] string address
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                address
                 ).ReturnValue));
 		}
 
@@ -6160,6 +6257,24 @@ namespace CmsData
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.VisitAttendStr", IsComposable = true)]
+		[return: Parameter(DbType = "varchar")]
+		public string VisitAttendStr(
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "pid", DbType="int")] int? pid,
+            [Parameter(Name = "MeetingDay1", DbType="date")] DateTime? MeetingDay1,
+            [Parameter(Name = "MeetingDay2", DbType="date")] DateTime? MeetingDay2
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                pid,
+                MeetingDay1,
+                MeetingDay2
                 ).ReturnValue));
 		}
 

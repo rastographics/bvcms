@@ -1,76 +1,88 @@
 CREATE FUNCTION [dbo].[ContributionSearch]
-(
-	@name NVARCHAR (100)
-	,@comments NVARCHAR(100)
-	,@bundletype INT
-    ,@type INT
-	,@status INT
-	,@minamt MONEY
-	,@maxamt MONEY 
-	,@startdate DATETIME
-	,@enddate DATETIME
-	,@taxnontax VARCHAR(20)
-	,@fundid INT
-	,@campusid INT
-	,@year INT
-	,@includeunclosedbundles BIT
-    ,@mobile BIT
-	,@online INT
+(	
+	@Name VARCHAR(100)
+	,@Comments VARCHAR(100)
+	,@MinAmt MONEY
+	,@MaxAmt MONEY
+	,@StartDate DATETIME
+	,@EndDate DATETIME
+	,@CampusId INT
+	,@FundId INT
+	,@Online INT
+	,@Status INT
+	,@TaxNonTax VARCHAR(50)
+	,@Year INT
+	,@Type INT
+	,@BundleType INT
+	,@IncludeUnclosedBundles BIT
+	,@Mobile BIT
+	,@PeopleId INT
+	,@ActiveTagFilter INT
 )
-RETURNS 
-@t TABLE (ContributionId INT)
+RETURNS TABLE 
 AS
-BEGIN
-	DECLARE @pid INT = TRY_CONVERT(INT, @name)
-	IF @pid > 0
-		SET @name = NULL
+RETURN 
+(
+	SELECT c.ContributionId
+	FROM   dbo.Contribution c
+	WHERE CASE
+			WHEN @Name IS NULL THEN 1
+			WHEN TRY_PARSE(@Name AS INT) > 0 THEN IIF(c.PeopleId = TRY_PARSE(@Name AS INT), 1, 0)
+			ELSE IIF(EXISTS(SELECT NULL FROM dbo.People p 
+							WHERE p.PeopleId = c.PeopleId 
+							AND p.NAME LIKE '%' + @Name + '%'), 1, 0)
+			END = 1
+	AND (@Comments IS NULL 
+			OR c.ContributionDesc LIKE '%' + @Comments + '%'
+			OR c.CheckNo = @Comments
+			OR c.ContributionId = TRY_PARSE(@Comments AS INT))
+	AND (@MinAmt IS NULL OR c.ContributionAmount >= @MinAmt)
+	AND (@MaxAmt IS NULL OR c.ContributionAmount <= @MaxAmt)
+	AND (@StartDate IS NULL OR c.ContributionDate >= @StartDate)
+	AND (@EndDate IS NULL OR c.ContributionDate < DATEADD(DAY, 1, @EndDate))
+	AND (ISNULL(@CampusId, 0) = 0 OR c.CampusId = @CampusId)
+	AND (@FundId IS NULL OR c.FundId = @FundId)
+	AND CASE @Online
+			WHEN 1 THEN IIF(EXISTS(SELECT NULL FROM dbo.BundleDetail d
+									JOIN dbo.BundleHeader h ON h.BundleHeaderId = d.BundleHeaderId
+									WHERE d.ContributionId = c.ContributionId
+									AND h.BundleHeaderTypeId = 4), 1, 0)
+			WHEN 0 THEN IIF(NOT EXISTS(SELECT NULL FROM dbo.BundleDetail d
+									JOIN dbo.BundleHeader h ON h.BundleHeaderId = d.BundleHeaderId
+									WHERE d.ContributionId = c.ContributionId
+									AND h.BundleHeaderTypeId = 4), 1, 0)
+			ELSE 1 END = 1
+	AND CASE ISNULL(@Status, 0)
+		   WHEN 0 THEN IIF(@PeopleId IS NULL AND c.ContributionStatusId = 0 AND c.ContributionTypeId NOT IN (6,7), 1, 0)
+		   WHEN 2 THEN IIF(c.ContributionStatusId = 2 OR c.ContributionTypeId = 6, 1, 0)
+		   WHEN 1 THEN IIF(c.ContributionStatusId = 1 OR c.ContributionTypeId = 7, 1, 0)
+		   ELSE 1 END = 1
+	AND CASE ISNULL(@TaxNonTax, 'TaxDed')
+		   WHEN 'TaxDed' THEN IIF(c.ContributionTypeId NOT IN (9, 8), 1, 0)
+		   WHEN 'NonTaxDed' THEN IIF(c.ContributionTypeId <> 9, 1, 0)
+		   WHEN 'Both' THEN IIF(c.ContributionTypeId <> 8, 1, 0)
+		   WHEN 'Pledge' THEN IIF(c.ContributionTypeId = 8, 1, 0)
+		   ELSE 1 END = 1
+	AND (ISNULL(@Year, 0) = 0 OR DATEPART(YEAR, c.ContributionDate) = @Year)
+	AND (ISNULL(@Type, 0) = 0 OR c.ContributionTypeId = @Type)
+	AND CASE WHEN @BundleType = 9999
+				THEN IIF(NOT EXISTS(SELECT NULL FROM dbo.BundleDetail WHERE ContributionId = c.ContributionId), 1, 0)
+			WHEN ISNULL(@BundleType, 0) <> 0 
+				THEN IIF(EXISTS(SELECT NULL FROM dbo.BundleDetail d 
+								JOIN dbo.BundleHeader h ON h.BundleHeaderId = d.BundleHeaderId 
+								WHERE ContributionId = c.ContributionId
+								AND h.BundleHeaderTypeId = @BundleType), 1, 0)
+		ELSE 1 END = 1
+	AND CASE ISNULL(@IncludeUnclosedBundles, 0)
+		WHEN 0 THEN IIF(EXISTS(SELECT null FROM dbo.BundleDetail d
+					JOIN dbo.BundleHeader h ON h.BundleHeaderId = d.BundleHeaderId
+					WHERE c.ContributionId = d.ContributionId AND h.BundleStatusId = 0), 1, 0)
+		ELSE 1 END = 1
+	AND (ISNULL(@Mobile, 0) <> 1 OR c.Source > 0)
+	AND (@PeopleId IS NULL OR c.PeopleId = @PeopleId)
+	AND (@ActiveTagFilter IS NULL OR EXISTS(SELECT NULL FROM dbo.TagPerson tp WHERE tp.PeopleId = c.PeopleId AND tp.Id = @ActiveTagFilter))
+)
 
-	DECLARE @cid INT = TRY_CONVERT(INT, @comments)
-	IF @cid > 0
-		SET @comments = NULL
-
-	INSERT @t (ContributionId)
-		SELECT c.ContributionId
-		FROM dbo.Contribution c
-		JOIN dbo.BundleDetail d ON d.ContributionId = c.ContributionId
-		JOIN dbo.BundleHeader h ON h.BundleHeaderId = d.BundleHeaderId
-		LEFT JOIN dbo.People p ON p.PeopleId = c.PeopleId
-		WHERE 1=1
-		AND (ISNULL(@includeunclosedbundles, 0) = 1 OR h.BundleStatusId = 0)
-		AND (ISNULL(@mobile, 0) = 0 OR c.SOURCE > 0)
-		AND CASE ISNULL(@taxnontax, 'na')
-			WHEN 'na' THEN 1
-			WHEN 'taxded' THEN CASE WHEN c.ContributionTypeId NOT IN (8,9) THEN 1 ELSE 0 END
-			WHEN 'nontaxded' THEN CASE WHEN c.ContributionTypeId = 9 THEN 1 ELSE 0 END 
-			WHEN 'both' THEN CASE WHEN c.ContributionTypeId <> 8 THEN 1 ELSE 0 END 
-			WHEN 'pledge' THEN CASE WHEN c.ContributionTypeId = 8 THEN 1 ELSE 0 END 
-			END = 1
-		AND CASE ISNULL(@online, 2)
-			WHEN 2 THEN 1
-			WHEN 1 THEN CASE WHEN h.BundleHeaderTypeId = 4 THEN 1 ELSE 0 END
-            WHEN 0 THEN CASE WHEN h.BundleHeaderTypeId <> 4 THEN 1 ELSE 0 END
-			END = 1
-		AND CASE ISNULL(@status, 0)
-			WHEN 0 THEN CASE WHEN c.ContributionStatusId = 0 AND c.ContributionTypeId NOT IN (6,7) THEN 1 ELSE 0 END
-			WHEN 1 THEN CASE WHEN c.ContributionStatusId = 1 OR c.ContributionTypeId = 6 THEN 1 ELSE 0 END
-			WHEN 2 THEN CASE WHEN c.ContributionStatusId = 2 OR c.ContributionTypeId = 7 THEN 1 ELSE 0 END
-			END = 1
-		AND (@minamt IS NULL OR c.ContributionAmount >= @minamt)
-		AND (@maxamt IS NULL OR c.ContributionAmount <= @maxamt)
-		AND (@pid IS NULL OR c.PeopleId = @pid)
-		AND (@cid IS NULL OR c.ContributionId = @cid)
-		AND (@name IS NULL OR p.NAME LIKE '%' + @name + '%')
-		AND (@comments IS NULL OR c.ContributionDesc LIKE '%' + @comments + '%' OR c.CheckNo = @comments)
-		AND (@type IS NULL OR c.ContributionTypeId = @type)
-		AND (ISNULL(@campusid, 0) = 0 OR c.CampusId = @campusid)
-		AND (@bundletype IS NULL OR h.BundleHeaderTypeId = @bundletype)
-		AND (@year IS NULL OR DATEPART(YEAR, c.ContributionDate) = @year)
-		AND (@fundid IS NULL OR c.FundId = @fundid)
-		AND (@startdate IS NULL OR c.ContributionDate >= @startdate)
-		AND (@enddate IS NULL OR c.ContributionDate < DATEADD(DAY, 1, @enddate))
-    
-	RETURN 
-END
 
 
 GO

@@ -205,6 +205,7 @@ namespace CmsData
                 where OrganizationInt == 0 || om.OrganizationId == OrganizationInt
                 where DivisionInt == 0 || om.Organization.DivOrgs.Any(dg => dg.DivId == DivisionInt)
                 where ProgramInt == 0 || om.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == ProgramInt))
+                where om.AttendPct > 0
                 select om
                 ).Average(om => om.AttendPct).Value;
             Expression left = Expression.Invoke(pred, parm);
@@ -256,6 +257,20 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p => q.Contains(p.FamilyId);
             Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
+                expr = Expression.Not(expr);
+            return expr;
+        }
+        internal Expression RecentFamilyAdultLastAttend()
+        {
+            var mindt = Util.Now.AddDays(-Days).Date;
+            var tf = CodeIds == "1";
+            var q = from m in db.LastFamilyOrgAttends(ProgramInt, DivisionInt, OrganizationInt, Codes.PositionInFamily.PrimaryAdult)
+                where m.Lastattend > mindt
+                select m.PeopleId;
+            var tag = db.PopulateTemporaryTag(q);
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            Expression expr = Expression.Invoke(pred, parm);
+            if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
             return expr;
         }

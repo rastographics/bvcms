@@ -1,8 +1,12 @@
-﻿@using CmsData
+﻿@using System.Web.Mvc.Html
+@using CmsData
+@using CmsWeb.Models.ExtraValues
 @using UtilityExtensions
 @model CmsWeb.Areas.People.Models.ContactModel
-
-<form id="edit-contact" class="form ajax" method="post">
+@{
+    var evmodel = new ExtraValueModel(Model.ContactId, "Contact", Model.Location);
+}
+<form id="edit-contact" class="form ajax" method="post" data-init="Editable" data-init2="ExtraEditable">
     @if (Model.Incomplete.HasValue())
     {
         <div class="alert alert-danger scrollToTop">
@@ -13,7 +17,7 @@
     @Html.HiddenFor(m => m.ContactId)
     @Html.HiddenFor(m => m.OrganizationId)
     <div class="box box-responsive">
-       <div class="box-content">
+        <div class="box-content">
             <div class="row">
                 <div class="col-sm-6">
                     @Html.EditorFor(m => m.ContactDate)
@@ -38,16 +42,28 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6">
-
-                    @Html.EditorFor(m => m.NotAtHome)
-                    @Html.EditorFor(m => m.LeftDoorHanger)
-                    @Html.EditorFor(m => m.LeftMessage)
-                    @Html.EditorFor(m => m.ContactMade)
-                    @Html.EditorFor(m => m.GospelShared)
-                    @Html.EditorFor(m => m.PrayerRequest)
-                    @Html.EditorFor(m => m.GiftBagGiven)
+                @if (Model.ShowDefaultCheckboxes)
+                {
+                    <div class="col-sm-6">
+                        @Html.EditorFor(m => m.NotAtHome)
+                        @Html.EditorFor(m => m.LeftDoorHanger)
+                        @Html.EditorFor(m => m.LeftMessage)
+                        @Html.EditorFor(m => m.ContactMade)
+                        @Html.EditorFor(m => m.GospelShared)
+                        @Html.EditorFor(m => m.PrayerRequest)
+                        @Html.EditorFor(m => m.GiftBagGiven)
+                    </div>
+                }
+            </div>
+            @if (Model.ShowContactExtraFeature)
+            {
+                <div class="row">
+                    <div id="contact-extra-values" class="col-sm-12">
+                        @Html.Partial("/Views/ExtraValue/Location.cshtml", evmodel)
+                    </div>
                 </div>
+            }
+            <div class="row">
                 @if (Model.CanViewComments)
                 {
                     <div class="col-sm-12">
@@ -56,12 +72,12 @@
                     </div>
                 }
             </div>
-            <br/>
+            <br />
             <a id="cancel" class="btn btn-default ajax" href="/Contact2/ContactDisplay/@Model.ContactId">Cancel</a>
             <a id="update" class="btn btn-primary ajax validate" href="/Contact2/ContactUpdate/@Model.ContactId">Update</a>
             @Html.ValidationMessage("contactors")
             @Html.ValidationMessage("contactees")
-            <br/><br/>
+            <br /><br />
         </div>
     </div>
 </form>
@@ -71,7 +87,13 @@
         // This only runs when the view is loaded over AJAX, otherwise jQuery won't be loaded
         // Index.cshtml will run this when it is being directly loaded into the DOM
         $(function () {
-            $("#OrganizationId").select2();
+            $("select #OrganizationId").select2();
+
+            @if (Model.ShowContactExtraFeature)
+            {
+                @:WireUpExtraValues(@Model.ContactId);
+            }
         });
+
     </script>
 }

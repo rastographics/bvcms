@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.SqlTypes;
 using System.Linq;
 using UtilityExtensions;
 
@@ -16,12 +17,12 @@ namespace CmsData
             }
         }
 
-        public void AddExtraValueCodeOrg(int oid, string name, string text)
+        public void AddExtraValueCodeOrg(int oid, string name, object text)
         {
             using (var db2 = NewDataContext())
             {
                 var o = db2.LoadOrganizationById(oid);
-                o.AddEditExtraCode(name, text);
+                o.AddEditExtraCode(name, text.ToString());
                 db2.SubmitChanges();
             }
         }
@@ -49,12 +50,12 @@ namespace CmsData
             }
         }
 
-        public void AddExtraValueTextOrg(int oid, string name, string text)
+        public void AddExtraValueTextOrg(int oid, string name, object text)
         {
             using (var db2 = NewDataContext())
             {
                 var o = db2.LoadOrganizationById(oid);
-                o.AddEditExtraText(name, text);
+                o.AddEditExtraText(name, text.ToString());
                 db2.SubmitChanges();
             }
         }
@@ -77,6 +78,11 @@ namespace CmsData
             if (ev != null)
                 return ev.DateValue ?? DateTime.MinValue;
             return DateTime.MinValue;
+        }
+        public DateTime? ExtraValueDateOrgNull(int oid, string name)
+        {
+            var ev = Organization.GetExtraValue(db, oid, name);
+            return ev?.DateValue;
         }
 
         public int ExtraValueIntOrg(int oid, string name)

@@ -584,5 +584,20 @@ namespace CmsData.Finance
         {
             throw new NotImplementedException();
         }
+
+        public string VaultId(int peopleId)
+        {
+            var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId);
+            switch (Util.PickFirst(paymentInfo.PreferredGivingType, "").ToLower())
+            {
+                case "c":
+                    return paymentInfo.SageCardGuid.ToString();
+                case "b":
+                    return paymentInfo.SageBankGuid.ToString();
+                default:
+                    return (paymentInfo.SageCardGuid ?? paymentInfo.SageBankGuid).ToString();
+            }
+                
+        }
     }
 }

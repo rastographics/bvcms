@@ -65,6 +65,7 @@ There are sub-tabs for commits, branches, releases and contributors.
 
 	- In the appSettings section, configure the **dbserver** and **host** values to point to your server and the name of your database (without the CMS_). These two values will become part of your connection string.
 	- In the mailSettings, configure the pickupDirectoryLocation to a directory on your development machine (for testing purposes).
+    - If you want to create a database with 150 records in it, just use **testdb** for the host value
 
 1. Right-click on **CMSWeb** and select **Set as StartUp Project**
 

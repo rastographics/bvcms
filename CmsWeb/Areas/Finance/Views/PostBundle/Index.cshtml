@@ -88,6 +88,7 @@
                                     <td>
                                         <input id="pid" name="pid" type="text" style="width: 67px; font-size: 14px; padding: 5px;" class="form-control input-sm" />
                                         <input type="hidden" id="contributiondate" name="contributiondate" />
+                                        <input type="hidden" id="campusid" name="campusid" />
                                     </td>
                                     <td>
                                         <input id="name" name="name" type="text" autocomplete="off" style="width: 14em; font-size: 14px; padding: 5px;" class="form-control input-sm" />
@@ -126,6 +127,7 @@
                                             <ul class="dropdown-menu dropdown-menu-right" role="menu">
                                                 <li><a id="showmove" href="#"><i class="fa fa-arrows"></i>&nbsp;&nbsp;Move to Another Bundle</a></li>
                                                 <li><a id="showdate" href="#"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit Contribution Date</a></li>
+                                                <li><a id="showcampus" href="#"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit Campus</a></li>
                                             </ul>
                                         </div>
                                     </td>
@@ -218,6 +220,26 @@
             <div class="modal-footer">
                 <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
                 <a href="#" id="editdatedone" name="editdatedone" class="btn btn-primary">Done</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="edit-campus-modal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Edit Campus</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="newcampus" class="control-label">Campus Id</label>
+                    <input type="number" id="newcampus" name="newcampus" class="form-control" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                <a href="#" id="editcampusdone" name="editcampusdone" class="btn btn-primary">Done</a>
             </div>
         </div>
     </div>

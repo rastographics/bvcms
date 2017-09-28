@@ -603,7 +603,7 @@ namespace CmsWeb.Areas.Public.Controllers
             // Size -30 and +30 is because some labels are a few tenths of inches different in the driver
             var label = (from e in DbUtil.Db.LabelFormats
                          where e.Name == sName
-                         where e.Size > (iSize - 30) && e.Size < (iSize + 30)
+                         where e.Size >= (iSize - 49) && e.Size <= (iSize + 50)
                          select e).FirstOrDefault();
 
             if (label == null)

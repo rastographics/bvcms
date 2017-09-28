@@ -32,8 +32,11 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content("not authorized");
             Response.NoCache();
 
-            var m = new SearchModel(name, comm, addr);
-            return new SearchResult0(m.PeopleList(), m.Count());
+            var m = new PeopleSearchModel();
+            m.m.name = name;
+            m.m.communication = comm;
+            m.m.address = addr;
+            return new SearchResult0(m.FetchPeople());
         }
 
         public ActionResult SearchResults(string name, string comm, string addr)
@@ -45,8 +48,11 @@ namespace CmsWeb.Areas.Public.Controllers
             Response.NoCache();
 
             DbUtil.LogActivity($"iphone search '{name}'");
-            var m = new SearchModel(name, comm, addr);
-            return new SearchResult(m.PeopleList(), m.Count());
+            var m = new PeopleSearchModel();
+            m.m.name = name;
+            m.m.communication = comm;
+            m.m.address = addr;
+            return new SearchResult(m.FetchPeople());
         }
 
         public ActionResult DetailResults(int id)

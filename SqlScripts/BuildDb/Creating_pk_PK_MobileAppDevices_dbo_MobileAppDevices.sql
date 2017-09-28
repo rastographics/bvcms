@@ -1,0 +1,4 @@
+ALTER TABLE [dbo].[MobileAppDevices] ADD CONSTRAINT [PK_MobileAppDevices] PRIMARY KEY CLUSTERED  ([id]) ON [PRIMARY]
+GO
+IF @@ERROR <> 0 SET NOEXEC ON
+GO

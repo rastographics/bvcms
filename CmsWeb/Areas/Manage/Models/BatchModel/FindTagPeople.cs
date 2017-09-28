@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using CmsData;
 using CmsWeb.Code;
-using LumenWorks.Framework.IO.Csv;
+using CsvHelper;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Models.BatchModel
@@ -15,12 +15,14 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
         {
             if (!tagname.HasValue())
                 throw new UserInputException("No Tag");
-
-            var csv = new CsvReader(new StringReader(text), true, '\t');
-            if (!csv.Any())
+            if (!text.HasValue())
                 throw new UserInputException("No Data");
 
-            var cols = csv.GetFieldHeaders();
+            var csv = new CsvReader(new StringReader(text));
+            csv.Configuration.Delimiter = "\t";
+            csv.ReadHeader();
+
+            var cols = csv.FieldHeaders;
             if (!cols.Contains("First") || !cols.Contains("Last"))
                 throw new UserInputException("Both First and Last are required");
 
@@ -29,17 +31,35 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
             
             var list = new List<FindInfo>();
 
-            while (csv.ReadNextRecord())
+            while (csv.Read())
             {
-                var row = new FindInfo
+                var row = new FindInfo();
+                foreach(var c in cols)
                 {
-                    First = FindColumn(csv, "First"),
-                    Last = FindColumn(csv, "Last"),
-                    Birthday = FindColumnDate(csv, "Birthday"),
-                    Email = FindColumn(csv, "Email"),
-                    Phone = FindColumnDigits(csv, "Phone"),
-                    Phone2 = FindColumnDigits(csv, "Phone2"),
-                    Phone3 = FindColumnDigits(csv, "Phone3")
+                    switch (c)
+                    {
+                        case "First":
+                            row.First = csv["First"];
+                            break;
+                        case "Last":
+                            row.Last = csv["Last"];
+                            break;
+                        case "Birthday":
+                            row.Birthday = csv["Birthday"].ToDate();
+                            break;
+                        case "Email":
+                            row.Email = csv["Email"];
+                            break;
+                        case "Phone":
+                            row.Phone = csv["Phone"].GetDigits();
+                            break;
+                        case "Phone2":
+                            row.Phone2 = csv["Phone2"].GetDigits();
+                            break;
+                        case "Phone3":
+                            row.Phone3 = csv["Phone3"].GetDigits();
+                            break;
+                    }
                 };
 
                 var pids = DbUtil.Db.FindPerson3(row.First, row.Last, row.Birthday, row.Email, 
@@ -56,29 +76,6 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                 Person.Tag(DbUtil.Db, pid ?? 0, tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
             DbUtil.Db.SubmitChanges();
             return list;
-        }
-        private static string FindColumn(CsvReader csv, string col)
-        {
-            var i = csv.GetFieldIndex(col);
-            if (i >= 0)
-                return csv[i];
-            return null;
-        }
-        private static string FindColumnDigits(CsvReader csv, string col)
-        {
-            var s = FindColumn(csv, col);
-            if (s.HasValue())
-                return s.GetDigits();
-            return s;
-        }
-        private static DateTime? FindColumnDate(CsvReader csv, string col)
-        {
-            var s = FindColumn(csv, col);
-            DateTime dt;
-            if (s != null)
-                if (DateTime.TryParse(s, out dt))
-                    return dt;
-            return null;
         }
         public class FindInfo
         {
