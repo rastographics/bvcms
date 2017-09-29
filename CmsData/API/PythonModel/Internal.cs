@@ -6,7 +6,9 @@ using System.IO;
 using System.Web.Hosting;
 using CmsData.API;
 using IronPython.Hosting;
+using IronPython.Runtime;
 using Microsoft.Scripting.Hosting;
+using Microsoft.Scripting.Hosting.Providers;
 
 namespace CmsData
 {
@@ -40,6 +42,9 @@ namespace CmsData
             : this(dbname)
         {
             var engine = Python.CreateEngine();
+            var pc = HostingHelpers.GetLanguageContext(engine) as PythonContext;
+            var hooks = pc?.SystemState.Get__dict__()["path_hooks"] as List;
+            hooks?.Clear();
             var searchPaths = engine.GetSearchPaths();
             searchPaths.Add(ConfigurationManager.AppSettings["PythonLibPath"]);
             engine.SetSearchPaths(searchPaths);
@@ -115,6 +120,9 @@ namespace CmsData
         private static string ExecutePython(string scriptContent, PythonModel model)
         {
             var engine = Python.CreateEngine();
+            var pc = HostingHelpers.GetLanguageContext(engine) as PythonContext;
+            var hooks = pc?.SystemState.Get__dict__()["path_hooks"] as List;
+            hooks?.Clear();
             var searchPaths = engine.GetSearchPaths();
             searchPaths.Add(ConfigurationManager.AppSettings["PythonLibPath"]);
             engine.SetSearchPaths(searchPaths);
@@ -157,6 +165,9 @@ namespace CmsData
         public static string ExecutePythonFile(string file, PythonModel model)
         {
             var engine = Python.CreateEngine(new Dictionary<string, object> { ["Debug"] = true });
+            var pc = HostingHelpers.GetLanguageContext(engine) as PythonContext;
+            var hooks = pc?.SystemState.Get__dict__()["path_hooks"] as List;
+            hooks?.Clear();
             var searchPaths = engine.GetSearchPaths();
             searchPaths.Add(ConfigurationManager.AppSettings["PythonLibPath"]);
             engine.SetSearchPaths(searchPaths);
