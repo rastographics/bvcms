@@ -37,8 +37,10 @@ namespace CmsData
 				CreatedBy = Util.UserId1,
 	            CreatedDate = DateTime.Now,
 			};
+            var primaryorchild = new[] {PositionInFamily.PrimaryAdult, PositionInFamily.Child};
             var fmembers = (from p in db.People
                             where p.FamilyId == familyId
+                            where primaryorchild.Contains(p.PositionInFamilyId)
                             select p.PeopleId).ToList();
 
             foreach (var pid in fmembers)
