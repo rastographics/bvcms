@@ -72,6 +72,8 @@ namespace CmsWeb.Areas.Public.Controllers
 				peopleID = user.PeopleId ?? 0,
 				userID = user.UserId,
 				userName = user.Person.Name,
+				campusID = user.Person.CampusId ?? 0,
+				campusName = user.Person.Campu?.Description ?? "",
 				roles = roles.ToList()
 			};
 
