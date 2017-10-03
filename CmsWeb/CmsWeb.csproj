@@ -179,6 +179,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Dynamic, Version=1.1.2.22, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicLanguageRuntime.1.1.2\lib\Net45\Microsoft.Dynamic.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.OData.Core, Version=6.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.OData.Core.6.11.0\lib\portable-net40+sl5+wp8+win8+wpa\Microsoft.OData.Core.dll</HintPath>
       <Private>True</Private>
@@ -186,6 +189,15 @@
     <Reference Include="Microsoft.OData.Edm, Version=6.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.OData.Edm.6.11.0\lib\portable-net40+sl5+wp8+win8+wpa\Microsoft.OData.Edm.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Scripting, Version=1.1.2.22, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicLanguageRuntime.1.1.2\lib\Net45\Microsoft.Scripting.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting.AspNet, Version=1.1.1.21, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicLanguageRuntime.1.1.2\lib\Net45\Microsoft.Scripting.AspNet.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting.Metadata, Version=1.1.2.22, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicLanguageRuntime.1.1.2\lib\Net45\Microsoft.Scripting.Metadata.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Spatial, Version=6.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Spatial.6.11.0\lib\portable-net40+sl5+wp8+win8+wpa\Microsoft.Spatial.dll</HintPath>
@@ -2071,6 +2083,8 @@
     <Content Include="Areas\Manage\Views\Batch\BatchUpdate.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\UpdateRegOptions.cshtml" />
     <Content Include="Content\VitalStats.py" />
+    <Content Include="Lib\ensurepip\_bundled\setuptools-20.10.1-py2.py3-none-any.whl" />
+    <Content Include="Lib\ensurepip\_bundled\pip-8.1.1-py2.py3-none-any.whl" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -2175,8 +2189,6 @@
     <Content Include="Content\touchpoint\templates\fampicturedir12.docx" />
     <Content Include="Areas\People\Views\Person\System\FindMatch.cshtml" />
     <Content Include="Content\touchpoint\templates\picturedir4.docx" />
-    <Content Include="Lib\ensurepip\_bundled\setuptools-20.10.1-py2.py3-none-any.whl" />
-    <Content Include="Lib\ensurepip\_bundled\pip-8.1.1-py2.py3-none-any.whl" />
     <Content Include="Areas\Manage\Views\Batch\RunningPythonScript.cshtml" />
     <Content Include="Views\Home\RunPythonScriptProgress.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
