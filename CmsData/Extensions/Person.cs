@@ -1389,6 +1389,18 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             }
             return i.Id;
         }
+        public static int FetchOrCreateVolunteerApplicationStatus(CMSDataContext db, string status)
+        {
+            var i = db.VolApplicationStatuses.SingleOrDefault(m => m.Description == status);
+            if (i == null)
+            {
+                var max = db.VolApplicationStatuses.Max(mm => mm.Id) + 10;
+                i = new VolApplicationStatus() { Id = max, Code = "VS" + max, Description = status };
+                db.VolApplicationStatuses.InsertOnSubmit(i);
+                db.SubmitChanges();
+            }
+            return i.Id;
+        }
         public static Campu FetchOrCreateCampus(CMSDataContext db, string campus)
         {
             if (!campus.HasValue())
