@@ -2,14 +2,15 @@
 <input type="hidden" id="personedit"/>
 @Html.EditorFor(m => m.FirstName)
 @Html.EditorFor(m => m.LastName)
-@Html.EditorFor(m => m.Suffix)
 @if (Model.NoPhoneEmailOnFind())
 {
+    @Html.HiddenFor(m => m.Suffix)
     @Html.HiddenFor(m => m.DateOfBirth)
     @Html.HiddenFor(m => m.Phone)
 }
 else
 {
+  @Html.EditorFor(m => m.Suffix)
   @Html.EditorFor(m => m.DateOfBirth, new {placeholder = "M/D/YY"})
   @Html.EditorFor(m => m.Phone)
 }
