@@ -49,10 +49,11 @@ or just Last or *First*`space` for first name match only.
         private int TagTypeId { get; set; }
         private string TagName { get; set; }
         private int? TagOwner { get; set; }
+        private bool MobileAddGuest { get; set; }
 
         public PeopleSearchInfo m;
 
-        public PeopleSearchModel()
+        public PeopleSearchModel( bool fromAddGuest = false )
         {
             Db = DbUtil.Db;
             Direction = "asc";
@@ -60,6 +61,7 @@ or just Last or *First*`space` for first name match only.
             TagTypeId = DbUtil.TagTypeId_Personal;
             TagName = Util2.CurrentTagName;
             TagOwner = Util2.CurrentTagOwnerId;
+				MobileAddGuest = fromAddGuest;
             m = new PeopleSearchInfo();
             GetCount = Count;
         }
@@ -75,7 +77,7 @@ or just Last or *First*`space` for first name match only.
 
             DbUtil.Db.SetNoLock();
 
-            people = Util2.OrgLeadersOnly
+            people = Util2.OrgLeadersOnly && !MobileAddGuest
                 ? DbUtil.Db.OrgLeadersOnlyTag2().People(DbUtil.Db)
                 : DbUtil.Db.People.AsQueryable();
 
