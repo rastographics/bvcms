@@ -424,7 +424,10 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
 			BaseMessage br = new BaseMessage();
 
-			var m = new SearchModel( mps.name, mps.comm, mps.addr );
+			var m = new PeopleSearchModel( mps.guest );
+			m.m.name = mps.name;
+			m.m.communication = mps.comm;
+			m.m.address = mps.addr;
 
 			br.setNoError();
 
@@ -434,7 +437,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
 					MobilePerson mp;
 
-					foreach( var item in m.ApplySearch( mps.guest ).OrderBy( p => p.Name2 ).Take( 100 ) ) {
+					foreach( var item in m.FetchPeople().OrderBy( p => p.Name2 ).Take( 100 ) ) {
 						mp = new MobilePerson().populate( item );
 						mpl.Add( mp.id, mp );
 					}
@@ -446,7 +449,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 				case BaseMessage.API_DEVICE_IOS: {
 					List<MobilePerson> mp = new List<MobilePerson>();
 
-					foreach( var item in m.ApplySearch( mps.guest ).OrderBy( p => p.Name2 ).Take( 100 ) ) {
+					foreach( var item in m.FetchPeople().OrderBy( p => p.Name2 ).Take( 100 ) ) {
 						mp.Add( new MobilePerson().populate( item ) );
 					}
 
@@ -454,7 +457,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 					break;
 				}
 			}
-			br.count = m.Count( mps.guest );
+			br.count = m.Count();
 			return br;
 		}
 
