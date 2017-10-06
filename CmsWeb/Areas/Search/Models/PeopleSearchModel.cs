@@ -53,7 +53,7 @@ or just Last or *First*`space` for first name match only.
 
         public PeopleSearchInfo m;
 
-        public PeopleSearchModel( bool fromAddGuest = false )
+        public PeopleSearchModel()
         {
             Db = DbUtil.Db;
             Direction = "asc";
@@ -61,9 +61,14 @@ or just Last or *First*`space` for first name match only.
             TagTypeId = DbUtil.TagTypeId_Personal;
             TagName = Util2.CurrentTagName;
             TagOwner = Util2.CurrentTagOwnerId;
-				MobileAddGuest = fromAddGuest;
             m = new PeopleSearchInfo();
             GetCount = Count;
+        }
+
+        public PeopleSearchModel( bool fromAddGuest = false )
+            : this()
+        {
+		    MobileAddGuest = fromAddGuest;
         }
 
         public bool usersonly { get; set; }
