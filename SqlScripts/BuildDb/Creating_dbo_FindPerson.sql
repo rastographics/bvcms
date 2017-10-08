@@ -49,12 +49,12 @@ BEGIN
 	JOIN dbo.Families f ON p.FamilyId = f.FamilyId
 	WHERE
 	(
-		   @fname = FirstName
-		OR @fname = NickName
+		   @fname = REPLACE(FirstName, ' ', '')
+		OR @fname = REPLACE(NickName, ' ', '')
 		OR FirstName2 LIKE (@fname + '%')
 		OR @fname LIKE (FirstName + '%')
 	)
-	AND (@lname = LastName 
+	AND (@lname = REPLACE(LastName, ' ', '')
 		OR @lname = MaidenName 
 		OR @lname = MiddleName)
 	
@@ -68,6 +68,7 @@ BEGIN
 	
 	RETURN
 END
+
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

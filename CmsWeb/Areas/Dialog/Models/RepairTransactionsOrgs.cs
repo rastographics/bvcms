@@ -69,7 +69,7 @@ namespace CmsWeb.Areas.Dialog.Models
                 lop = FetchLongRunningOperation(db, Op, model.QueryId);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
-                lop.CustomMessage = $"Working on {orginfo.Name} ({orginfo.Id})";
+                lop.CustomMessage = $"Working on {orginfo.Name.Truncate(170)} ({orginfo.Id})";
                 db.SubmitChanges();
 		    }
             // finished
