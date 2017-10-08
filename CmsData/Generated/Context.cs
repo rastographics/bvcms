@@ -2733,6 +2733,47 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.ContributionSearch0", IsComposable = true)]
+		public IQueryable< View.ContributionSearch0 > ContributionSearch0(
+            [Parameter(DbType="nvarchar")] string name,
+            [Parameter(DbType="nvarchar")] string comments,
+            [Parameter(DbType="int")] int? bundletype,
+            [Parameter(DbType="int")] int? type,
+            [Parameter(DbType="int")] int? status,
+            [Parameter(DbType="money")] decimal? minamt,
+            [Parameter(DbType="money")] decimal? maxamt,
+            [Parameter(DbType="datetime")] DateTime? startdate,
+            [Parameter(DbType="datetime")] DateTime? enddate,
+            [Parameter(DbType="varchar")] string taxnontax,
+            [Parameter(DbType="int")] int? fundid,
+            [Parameter(DbType="int")] int? campusid,
+            [Parameter(DbType="int")] int? year,
+            [Parameter(DbType="bit")] bool? includeunclosedbundles,
+            [Parameter(DbType="bit")] bool? mobile,
+            [Parameter(DbType="int")] int? online
+            )
+		{
+			return this.CreateMethodCallQuery< View.ContributionSearch0>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                name,
+                comments,
+                bundletype,
+                type,
+                status,
+                minamt,
+                maxamt,
+                startdate,
+                enddate,
+                taxnontax,
+                fundid,
+                campusid,
+                year,
+                includeunclosedbundles,
+                mobile,
+                online
+                );
+		}
+
 		[Function(Name="dbo.Contributors", IsComposable = true)]
 		public IQueryable< View.Contributor > Contributors(
             [Parameter(DbType="datetime")] DateTime? fd,
