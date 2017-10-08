@@ -7,7 +7,7 @@ CREATE TABLE [dbo].[LongRunningOperation]
 [processed] [int] NULL,
 [completed] [datetime] NULL,
 [ElapsedTime] AS (substring(CONVERT([varchar],[completed]-[started],(121)),(12),(20))),
-[CustomMessage] [nvarchar] (80) NULL
+[CustomMessage] [nvarchar] (200) NULL
 ) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
