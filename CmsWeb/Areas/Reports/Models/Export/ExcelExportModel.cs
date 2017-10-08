@@ -110,7 +110,7 @@ namespace CmsWeb.Models
                         State = p.PrimaryState,
                         Zip = p.PrimaryZip.FmtZip(),
                         Email = p.EmailAddress,
-                        BirthDate = p.BirthMonth + "/" + p.BirthDay + "/" + p.BirthYear,
+                        BirthDate = p.BirthMonth + "/" + p.BirthDay + "/" + p.BirthYr,
                         BirthDay = " " + p.BirthMonth + "/" + p.BirthDay,
                         Anniversary = " " + p.WeddingDate.Value.Month + "/" + p.WeddingDate.Value.Day,
                         JoinDate = p.JoinDate.FormatDate(),

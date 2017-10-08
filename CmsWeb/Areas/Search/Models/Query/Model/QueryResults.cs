@@ -141,7 +141,7 @@ namespace CmsWeb.Areas.Search.Models
                         PeopleId = p.PeopleId,
                         Name = p.Name,
                         AltName = p.AltName,
-                        BirthDate = Util.FormatBirthday(p.BirthYear, p.BirthMonth, p.BirthDay),
+                        BirthDate = Util.FormatBirthday(p.BirthYr, p.BirthMonth, p.BirthDay),
                         Address = p.PrimaryAddress,
                         Address2 = p.PrimaryAddress2,
                         CityStateZip = Util.FormatCSZ(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),

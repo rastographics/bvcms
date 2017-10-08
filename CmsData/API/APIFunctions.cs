@@ -326,7 +326,7 @@ class LoginInfo(object):
                         dob = u.Person.DOB,
                         bday = u.Person.BirthDay,
                         bmon = u.Person.BirthMonth,
-                        byear = u.Person.BirthYear,
+                        byear = u.Person.BirthYr,
                         company = u.Person.EmployerOther,
                         email = u.EmailAddress,
                         email2 = u.Person.EmailAddress2,

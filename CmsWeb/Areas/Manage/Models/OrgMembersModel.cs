@@ -318,7 +318,7 @@ namespace CmsWeb.Models
                      {
                          PeopleId = om.PeopleId,
                          Age = om.Person.Age,
-                         DOB = Util.FormatBirthday(om.Person.BirthYear, om.Person.BirthMonth, om.Person.BirthDay),
+                         DOB = Util.FormatBirthday(om.Person.BirthYr, om.Person.BirthMonth, om.Person.BirthDay),
                          Gender = om.Person.Gender.Code,
                          Grade = om.Person.Grade,
                          OrgId = om.OrganizationId,

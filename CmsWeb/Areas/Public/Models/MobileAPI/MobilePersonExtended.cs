@@ -130,7 +130,7 @@ namespace CmsWeb.MobileAPI
 
 			if( p.DOB.Length > 0 ) {
 				hasBirthday = 1;
-				birthdayDate = new DateTime( p.BirthYear ?? 1800, p.BirthMonth ?? 0, p.BirthDay ?? 0 );
+				birthdayDate = new DateTime( p.BirthYr ?? 1800, p.BirthMonth ?? 0, p.BirthDay ?? 0 );
 			}
 
 			if( p.WeddingDate.HasValue ) {

@@ -113,7 +113,7 @@ namespace CmsWeb.Areas.Reports.Models
                                 p.PeopleId,
                                 Name2 = ch ? p.AltName : p.Name2,
                                 BirthDate = Util.FormatBirthday(
-                                    p.BirthYear,
+                                    p.BirthYr,
                                     p.BirthMonth,
                                     p.BirthDay),
                                 MemberTypeCode = om.MemberType.Code,
@@ -144,7 +144,7 @@ namespace CmsWeb.Areas.Reports.Models
                                 p.PeopleId,
                                 Name2 = ch ? p.AltName : p.Name2,
                                 BirthDate = Util.FormatBirthday(
-                                    p.BirthYear,
+                                    p.BirthYr,
                                     p.BirthMonth,
                                     p.BirthDay),
                                 MemberTypeCode = om.MemberType.Code,
@@ -171,7 +171,7 @@ namespace CmsWeb.Areas.Reports.Models
                                 p.PeopleId,
                                 Name2 = ch ? p.AltName : p.Name2,
                                 BirthDate = Util.FormatBirthday(
-                                    p.BirthYear,
+                                    p.BirthYr,
                                     p.BirthMonth,
                                     p.BirthDay),
                                 MemberTypeCode = om == null ? "Guest" : om.MemberType.Code,

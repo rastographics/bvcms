@@ -94,7 +94,7 @@ namespace CmsData
         public string DOB
         {
             get
-            { return Util.FormatBirthday(BirthYear, BirthMonth, BirthDay); }
+            { return Util.FormatBirthday(BirthYr, BirthMonth, BirthDay); }
             set
             {
                 // reset all values before replacing b/c replacement may be partial
@@ -164,6 +164,21 @@ namespace CmsData
                 years--;
             return years;
         }
+
+        public int? BirthYr
+        {
+            get
+            {
+                if (Util.UserPeopleId == PeopleId)
+                    return BirthYear;
+                if(Age <= DbUtil.Db.Setting("NoBirthYearOverAge", "18").ToInt())
+                    return BirthYear;
+                if(HttpContext.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
+                    return null;
+                return BirthYear;
+            }
+        }
+
         public void MovePersonStuff(CMSDataContext db, int targetid)
         {
             var toperson = db.People.Single(p => p.PeopleId == targetid);
@@ -565,7 +580,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 if (Regex.IsMatch(dob, @"\d+[-/]\d+[-/]\d+"))
                 {
                     p.BirthYear = dt.Year;
-                    while (p.BirthYear < 1900)
+                    while (p.BirthYr < 1900)
                         p.BirthYear += 100;
                     if (p.GetAge() < 18 && marriedCode == 0)
                         p.MaritalStatusId = MaritalStatusCode.Single;

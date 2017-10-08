@@ -161,7 +161,7 @@ namespace CmsWeb.Areas.Search.Models
                        CityStateZip = p.PrimaryCity + ", " + p.PrimaryState + " " + (p.PrimaryZip != null && p.PrimaryZip.Length >= 5 ? p.PrimaryZip.Substring(0, 5) : p.PrimaryZip),
                        Age = p.Age,
                        JoinDate = p.JoinDate,
-                       BirthDate = p.BirthMonth + "/" + p.BirthDay + "/" + p.BirthYear,
+                       BirthDate = p.BirthMonth + "/" + p.BirthDay + "/" + p.BirthYr,
                        HomePhone = p.HomePhone,
                        CellPhone = p.CellPhone,
                        WorkPhone = p.WorkPhone,

@@ -81,7 +81,7 @@ namespace CmsWeb.Areas.Reports.Models
                         Name = p.Name,
                         Name2 = p.Name2,
                         BirthDate = Util.FormatBirthday(
-                            p.BirthYear,
+                            p.BirthYr,
                             p.BirthMonth,
                             p.BirthDay),
                         Address = p.PrimaryAddress,
@@ -128,7 +128,7 @@ namespace CmsWeb.Areas.Reports.Models
                         Name = p.Name,
                         Name2 = p.Name2,
                         BirthDate = Util.FormatBirthday(
-                            p.BirthYear,
+                            p.BirthYr,
                             p.BirthMonth,
                             p.BirthDay),
                         Address = p.PrimaryAddress,

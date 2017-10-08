@@ -58,7 +58,7 @@ namespace CmsWeb.Models.iPhone
                         CityStateZip = p.PrimaryCity + ", " + p.PrimaryState + " " + p.PrimaryZip.Substring(0, 5),
                         Zip = p.PrimaryZip.Substring(0, 5),
                         Age = p.Age,
-                        BirthDate = p.BirthMonth + "/" + p.BirthDay + "/" + p.BirthYear,
+                        BirthDate = p.BirthMonth + "/" + p.BirthDay + "/" + p.BirthYr,
                         HomePhone = p.HomePhone,
                         CellPhone = p.CellPhone,
                         WorkPhone = p.WorkPhone,
