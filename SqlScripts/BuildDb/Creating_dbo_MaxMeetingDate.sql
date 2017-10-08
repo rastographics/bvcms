@@ -7,8 +7,10 @@ BEGIN
 		FROM dbo.Meetings
 		WHERE ISNULL(NumPresent, HeadCount) > 0
 		AND MeetingDate <= dbo.MaxPastMeeting()
+		AND OrganizationId = @oid
 	RETURN @dt
 END
+
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

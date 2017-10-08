@@ -9,13 +9,14 @@ RETURNS @t TABLE (
 AS
 BEGIN
     DECLARE @yearago DATETIME,
+			@firstmeet DATETIME,
 			@lastmeet DATETIME,
 			@earlycheckinhours INT = 10 -- to include future meetings
 			
 		
     SELECT @lastmeet = dbo.MaxMeetingDate(@orgid)
-    
     SELECT @yearago = DATEADD(ww, -52, @lastmeet)
+    SELECT @firstmeet = dbo.MinMeetingDate(@orgid, @pid, @yearago)
 			
 	INSERT INTO @t
 	SELECT
@@ -41,7 +42,7 @@ BEGIN
 			AND s.ScheduleId = dbo.ScheduleId(NULL, a.MeetingDate)
 		WHERE m.OrganizationId = @orgid
 			AND PeopleId = @pid
-			AND m.MeetingDate >= @yearago
+			AND m.MeetingDate >= @firstmeet
 			AND m.MeetingDate <= @lastmeet
 	) AS InlineView
 	GROUP BY [Year], [Week], AttendCredit
@@ -49,6 +50,8 @@ BEGIN
 	
 	RETURN
 END
+
+
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

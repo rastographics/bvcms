@@ -392,6 +392,7 @@ Creating_dbo_WasDeaconActive2008.sql
 Creating_dbo_PickListOrgs.sql
 Creating_dbo_AttendCntHistory.sql
 Creating_dbo_CustomScriptRoles.sql
+Creating_dbo_MinMeetingDate.sql
 Creating_dbo_AttendanceCredits.sql
 Creating_dbo_UpdateAttendStr.sql
 Creating_dbo_UpdateAllAttendStr.sql
