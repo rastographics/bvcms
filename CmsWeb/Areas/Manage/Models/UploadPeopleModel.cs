@@ -280,7 +280,7 @@ namespace CmsWeb.Models
 
                         if (Testing)
                             continue;
-                        var d = ((string)a[name]).Trim().Trim();
+                        var d = ((string)a[name])?.Trim()?.Trim();
                         if (!d.HasValue())
                             continue;
                         if (d.Equal("true"))
