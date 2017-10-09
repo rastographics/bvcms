@@ -1,4 +1,5 @@
 ﻿@model CmsWeb.Areas.Org.Models.OrgGroupsModel
+@using CmsData
 @using UtilityExtensions
 @foreach(var om in Model.FetchOrgMemberList())
 {
@@ -36,7 +37,7 @@
     *@
     </td>
     <td>@om.Gender</td>
-    <td>@om.Age</td>
+    <td>@Person.AgeDisplay(om.Age, om.PeopleId)</td>
     <td>@om.Request</td>
     <td>@om.GroupsDisplay</td>
     @if (Model.isRecreationTeam)

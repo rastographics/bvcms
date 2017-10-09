@@ -215,7 +215,7 @@ or just Last or *First*`space` for first name match only.
                         PeopleId = p.PeopleId,
                         Name = p.Name,
                         AltName = p.AltName,
-                        BirthDate = Util.FormatBirthday(p.BirthYr, p.BirthMonth, p.BirthDay),
+                        BirthDate = Person.FormatBirthday(p.BirthYr, p.BirthMonth, p.BirthDay, p.PeopleId),
                         Address = p.PrimaryAddress,
                         Address2 = p.PrimaryAddress2,
                         CityStateZip = Util.FormatCSZ(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
@@ -227,7 +227,7 @@ or just Last or *First*`space` for first name match only.
                         Email = p.EmailAddress,
                         BFTeacher = p.BFClass.LeaderName,
                         BFTeacherId = p.BFClass.LeaderId,
-                        Age = p.Age.ToString(),
+                        Age = Person.AgeDisplay(p.Age, p.PeopleId).ToString(),
                         Deceased = p.DeceasedDate.HasValue,
                         HasTag = p.Tags.Any(t => t.Tag.Name == TagName && t.Tag.PeopleId == TagOwner && t.Tag.TypeId == TagTypeId),
                     };

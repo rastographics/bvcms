@@ -183,7 +183,7 @@
                                     </td>
                                     @if (Model.HyperlinkNames)
                                     {
-                                        <td class="name @(a.Conflict ? "alert-danger" : "")"><a href="/Person2/@a.PeopleId" title="@a.Age">@a.Name</a></td>
+                                        <td class="name @(a.Conflict ? "alert-danger" : "")"><a href="/Person2/@a.PeopleId" title="@Person.AgeDisplay(a.Age, a.PeopleId)">@a.Name</a></td>
                                     }
                                     else
                                     {

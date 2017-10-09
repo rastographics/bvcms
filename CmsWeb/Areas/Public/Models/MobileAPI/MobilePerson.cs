@@ -104,7 +104,7 @@ namespace CmsWeb.MobileAPI
 				var familyMember = new MobileFamilyMember();
 				familyMember.id = m.PeopleId.ToString();
 				familyMember.name = m.Name;
-				familyMember.age = m.Age.ToString();
+				familyMember.age = Person.AgeDisplay(m.Age, m.PeopleId).ToString();
 				familyMember.gender = m.Gender.Description;
 				familyMember.position = m.FamilyPosition.Description;
 				familyMember.deceased = m.Deceased;

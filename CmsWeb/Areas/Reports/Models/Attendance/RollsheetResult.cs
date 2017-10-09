@@ -112,10 +112,10 @@ namespace CmsWeb.Areas.Reports.Models
                             {
                                 p.PeopleId,
                                 Name2 = ch ? p.AltName : p.Name2,
-                                BirthDate = Util.FormatBirthday(
+                                BirthDate = Person.FormatBirthday(
                                     p.BirthYr,
                                     p.BirthMonth,
-                                    p.BirthDay),
+                                    p.BirthDay, p.PeopleId),
                                 MemberTypeCode = om.MemberType.Code,
                                 ch,
                                 highlight =
@@ -143,10 +143,11 @@ namespace CmsWeb.Areas.Reports.Models
                             {
                                 p.PeopleId,
                                 Name2 = ch ? p.AltName : p.Name2,
-                                BirthDate = Util.FormatBirthday(
+                                BirthDate = Person.FormatBirthday(
                                     p.BirthYr,
                                     p.BirthMonth,
-                                    p.BirthDay),
+                                    p.BirthDay,
+                                    p.PeopleId),
                                 MemberTypeCode = om.MemberType.Code,
                                 ch,
                                 highlight =
@@ -170,10 +171,11 @@ namespace CmsWeb.Areas.Reports.Models
                             {
                                 p.PeopleId,
                                 Name2 = ch ? p.AltName : p.Name2,
-                                BirthDate = Util.FormatBirthday(
+                                BirthDate = Person.FormatBirthday(
                                     p.BirthYr,
                                     p.BirthMonth,
-                                    p.BirthDay),
+                                    p.BirthDay,
+                                    p.PeopleId),
                                 MemberTypeCode = om == null ? "Guest" : om.MemberType.Code,
                                 ch,
                                 highlight = om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == NewMeetingInfo.HighlightGroup) ? NewMeetingInfo.HighlightGroup : ""

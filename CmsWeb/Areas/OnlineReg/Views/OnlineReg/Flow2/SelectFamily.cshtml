@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Areas.OnlineReg.Models.OnlineRegModel
+﻿@using CmsData
+@model CmsWeb.Areas.OnlineReg.Models.OnlineRegModel
 @Helper.OnlineRegHeaderFullRow("Select Family Member")
 <div id="selectfamily" class="box">
     <table class="table">
@@ -6,7 +7,7 @@
         {
             <tr>
                 <td nowrap>
-                    Choose <a id="fm-@fm.PeopleId" href="/OnlineReg/RegisterFamilyMember/@fm.PeopleId" class="submitlink">@fm.Name</a> (@fm.Age)
+                    Choose <a id="fm-@fm.PeopleId" href="/OnlineReg/RegisterFamilyMember/@fm.PeopleId" class="submitlink">@fm.Name</a> (@Person.AgeDisplay(fm.Age, fm.PeopleId))
                 </td>
                 <td>
                     @Html.ValidationMessage2("fammember-" + fm.PeopleId)

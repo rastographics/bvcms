@@ -209,7 +209,7 @@ namespace CmsWeb.Areas.Reports.Models
                         t3.Add("Origin:", font);
                         t3.Add(p.Origin, font);
                         t3.Add("Age:", font);
-                        t3.Add(p.Age, font);
+                        t3.Add(Person.AgeDisplay(p.Age, p.PeopleId), font);
                         t3.Add("Comments:", 2, font);
                         t3.Add(p.Comment, 2, font);
 
@@ -229,7 +229,7 @@ namespace CmsWeb.Areas.Reports.Models
                             foreach (var fm in p.Family)
                             {
                                 t.Add(fm.Name, font);
-                                t.Add(fm.Age.ToString(), font);
+                                t.Add(Person.AgeDisplay(fm.Age, fm.PeopleId).ToString(), font);
                                 t.Add(fm.CellPhone.FmtFone(), font);
                                 t.Add(fm.PositionInFamily, font);
                                 t.Add(fm.MemberStatus, font);
@@ -342,7 +342,7 @@ namespace CmsWeb.Areas.Reports.Models
                             Name = p.Name,
                             Address = p.PrimaryAddress,
                             Address2 = p.PrimaryAddress2,
-                            Age = p.Age != null ? p.Age.ToString() : "",
+                            Age = Person.AgeDisplay(p.Age, p.PeopleId).ToString(),
                             MemberStatusID = p.MemberStatusId,
                             MemberStatus = p.MemberStatus.Description,
                             CityStateZip = Util.FormatCSZ4(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
@@ -369,7 +369,7 @@ namespace CmsWeb.Areas.Reports.Models
                                         {
                                             Id = m.PeopleId,
                                             Name = m.Name,
-                                            Age = m.Age,
+                                            Age = Person.AgeDisplay(m.Age, m.PeopleId),
                                             Deceased = m.DeceasedDate != null,
                                             PositionInFamily = m.FamilyPosition.Description,
                                             MemberStatus = m.MemberStatus.Description,

@@ -1,11 +1,12 @@
-﻿@model CmsWeb.Areas.Search.Models.PendingPersonModel
+﻿@using CmsData
+@model CmsWeb.Areas.Search.Models.PendingPersonModel
 <tr>
     <td>@Model.FirstName @Model.LastName</td>
     @if (ViewBag.limitedSearch == null || !ViewBag.limitedSearch)
     {
         <td class="addrcol">@Model.AddressInfo.AddressLineOne</td>
         <td>@Model.CityStateZip</td>
-        <td>@Model.Age</td>
+        <td>@Person.AgeDisplay(Model.Age, Model.PeopleId)</td>
     }
     <td class="text-right"><a href="/SearchAdd2/CancelPerson/@ViewBag.index" class="ajax btn btn-warning" title="remove this person from the list"><i class="fa fa-times-circle"></i> Remove</a></td>
 </tr>

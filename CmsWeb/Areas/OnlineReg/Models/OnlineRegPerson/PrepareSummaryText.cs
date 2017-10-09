@@ -40,10 +40,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var sb = sb1;
             foreach (var m in FamilyAttend.Where(m => m.Attend))
                 if (m.PeopleId != null)
-                    sb.Append($"<tr><td colspan=\"2\">{m.Name}{(m.Age.HasValue ? $" ({m.Age})" : "")}</td></tr>\n");
+                    sb.Append($"<tr><td colspan=\"2\">{m.Name}{(m.Age.HasValue ? $" ({Person.AgeDisplay(m.Age, m.PeopleId)})" : "")}</td></tr>\n");
                 else
                 {
-                    sb.Append($"<tr><td colspan=\"2\">{m.Name}{(m.Age.HasValue ? $" ({m.Age})" : "")}");
+                    sb.Append($"<tr><td colspan=\"2\">{m.Name}{(m.Age.HasValue ? $" ({Person.AgeDisplay(m.Age, m.PeopleId)})" : "")}");
                     if (m.Email.HasValue())
                         sb.Append($", {m.Email}");
                     if (m.Birthday.HasValue())

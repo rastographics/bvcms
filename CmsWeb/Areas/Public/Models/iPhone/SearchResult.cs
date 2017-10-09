@@ -39,7 +39,7 @@ namespace CmsWeb.Models.iPhone
                     w.WriteAttributeString("citystatezip", p.CityStateZip);
                     w.WriteAttributeString("zip", p.Zip);
                     w.WriteAttributeString("homephone", p.HomePhone);
-                    w.WriteAttributeString("age", p.Age.ToString());
+                    w.WriteAttributeString("age", Person.AgeDisplay(p.Age, p.PeopleId).ToString());
                     w.WriteEndElement();
                 }
                 w.WriteEndElement();

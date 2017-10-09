@@ -183,7 +183,6 @@ namespace CmsWeb.Models
             var qp = FindNames(q);
 
             var rp = from p in qp
-                     let age = p.Age.HasValue ? " (" + p.Age + ")" : ""
                      let spouse = DbUtil.Db.People.SingleOrDefault(ss =>
                          ss.PeopleId == p.SpouseId
                          && ss.ContributionOptionsId == StatementOptionCode.Joint
@@ -192,7 +191,7 @@ namespace CmsWeb.Models
                      select new NamesInfo
                      {
                          Pid = p.PeopleId,
-                         Name = p.Name2 + age,
+                         Name = p.Name2 + (p.Age.HasValue ? $" ({Person.AgeDisplay(p.Age, p.PeopleId)})" : ""),
                          spouse = spouse.Name,
                          addr = p.PrimaryAddress ?? ""
                      };
@@ -204,7 +203,6 @@ namespace CmsWeb.Models
             var qp = FindNames(q);
 
             var rp = from p in qp
-                     let age = p.Age.HasValue ? " (" + p.Age + ")" : ""
                      let spouse = DbUtil.Db.People.SingleOrDefault(ss =>
                          ss.PeopleId == p.SpouseId
                          && ss.ContributionOptionsId == StatementOptionCode.Joint
@@ -213,7 +211,7 @@ namespace CmsWeb.Models
                      select new NamesInfo
                      {
                          Pid = p.PeopleId,
-                         Name = p.Name2 + age,
+                         Name = p.Name2 + (p.Age.HasValue ? $" ({Person.AgeDisplay(p.Age, p.PeopleId)})" : ""),
                          email = p.EmailAddress,
                          spouse = spouse.Name,
                          addr = p.PrimaryAddress ?? "",

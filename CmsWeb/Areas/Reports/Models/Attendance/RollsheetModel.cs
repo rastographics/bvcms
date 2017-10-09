@@ -80,10 +80,10 @@ namespace CmsWeb.Areas.Reports.Models
                         PeopleId = p.PeopleId,
                         Name = p.Name,
                         Name2 = p.Name2,
-                        BirthDate = Util.FormatBirthday(
+                        BirthDate = Person.FormatBirthday(
                             p.BirthYr,
                             p.BirthMonth,
-                            p.BirthDay),
+                            p.BirthDay, p.PeopleId),
                         Address = p.PrimaryAddress,
                         Address2 = p.PrimaryAddress2,
                         CityStateZip = Util.FormatCSZ(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
@@ -95,7 +95,7 @@ namespace CmsWeb.Areas.Reports.Models
                         Email = p.EmailAddress,
                         BFTeacher = p.BFClass.LeaderName,
                         BFTeacherId = p.BFClass.LeaderId,
-                        Age = p.Age.ToString(),
+                        Age = Person.AgeDisplay(p.Age, p.PeopleId).ToString(),
                         MemberTypeCode = om.MemberType.Code,
                         MemberType = om.MemberType.Description,
                         MemberTypeId = om.MemberTypeId,
@@ -127,10 +127,10 @@ namespace CmsWeb.Areas.Reports.Models
                         PeopleId = p.PeopleId,
                         Name = p.Name,
                         Name2 = p.Name2,
-                        BirthDate = Util.FormatBirthday(
+                        BirthDate = Person.FormatBirthday(
                             p.BirthYr,
                             p.BirthMonth,
-                            p.BirthDay),
+                            p.BirthDay, p.PeopleId),
                         Address = p.PrimaryAddress,
                         Address2 = p.PrimaryAddress2,
                         CityStateZip = Util.FormatCSZ(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
@@ -142,7 +142,7 @@ namespace CmsWeb.Areas.Reports.Models
                         Email = p.EmailAddress,
                         BFTeacher = p.BFClass.LeaderName,
                         BFTeacherId = p.BFClass.LeaderId,
-                        Age = p.Age.ToString(),
+                        Age = Person.AgeDisplay(p.Age, p.PeopleId).ToString(),
                         MemberTypeCode = m.MemberType.Code,
                         MemberType = m.MemberType.Description,
                         MemberTypeId = m.MemberTypeId,
@@ -156,10 +156,10 @@ namespace CmsWeb.Areas.Reports.Models
                         PeopleId = m.PeopleId,
                         Name = m.PreferredName + " " + m.LastName,
                         Name2 = m.LastName + ", " + m.PreferredName,
-                        BirthDate = Util.FormatBirthday(
+                        BirthDate = Person.FormatBirthday(
                             m.BirthYear,
                             m.BirthMonth,
-                            m.BirthDay),
+                            m.BirthDay, m.PeopleId),
                         Address = m.PrimaryAddress,
                         Address2 = m.PrimaryAddress2,
                         CityStateZip = Util.FormatCSZ(m.PrimaryCity, m.PrimaryState, m.PrimaryZip),
@@ -170,7 +170,7 @@ namespace CmsWeb.Areas.Reports.Models
                         Email = m.EmailAddress,
                         BFTeacher = m.BFTeacher,
                         BFTeacherId = m.BFTeacherId,
-                        Age = m.Age.ToString(),
+                        Age = Person.AgeDisplay(m.Age, m.PeopleId).ToString(),
                         MemberType = m.MemberType,
                         MemberTypeId = m.MemberTypeId,
                         Joined = m.Joined
@@ -196,10 +196,10 @@ namespace CmsWeb.Areas.Reports.Models
                         PeopleId = p.PeopleId,
                         Name = p.PreferredName + " " + p.LastName,
                         Name2 = p.LastName + ", " + p.PreferredName,
-                        BirthDate = Util.FormatBirthday(
+                        BirthDate = Person.FormatBirthday(
                             p.BirthYear,
                             p.BirthMonth,
-                            p.BirthDay),
+                            p.BirthDay,p.PeopleId),
                         Address = p.PrimaryAddress,
                         Address2 = p.PrimaryAddress2,
                         CityStateZip = Util.FormatCSZ(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
@@ -210,7 +210,7 @@ namespace CmsWeb.Areas.Reports.Models
                         Email = p.Email,
                         BFTeacher = p.BFTeacher,
                         BFTeacherId = p.BFTeacherId,
-                        Age = p.Age.ToString(),
+                        Age = Person.AgeDisplay(p.Age, p.PeopleId).ToString(),
                         LastAttended = p.LastAttended,
                     };
             return q;

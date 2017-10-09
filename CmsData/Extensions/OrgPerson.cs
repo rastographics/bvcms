@@ -56,7 +56,7 @@ namespace CmsData.View
             }
         }
 
-        public string BirthDate => Util.FormatBirthday(BirthYear, BirthMonth, BirthDay);
+        public string BirthDate => Person.FormatBirthday(BirthYear, BirthMonth, BirthDay, PeopleId);
 
         public IEnumerable<string> Phones
         {

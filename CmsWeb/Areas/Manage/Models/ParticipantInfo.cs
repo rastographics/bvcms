@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -26,10 +27,7 @@ namespace CmsWeb.Models
         public int? BDay { get; set; }
         public int? BMon { get; set; }
         public int? BYear { get; set; }
-        public string Birthday 
-        { 
-            get { return Util.FormatBirthday(BYear, BMon, BDay); } 
-        }
+        public string Birthday => Person.FormatBirthday(BYear, BMon, BDay, PeopleId);
         public int? Hash { get; set; }
         public DateTime? Uploaded { get; set; }
     }

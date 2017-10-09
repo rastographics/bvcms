@@ -1,4 +1,6 @@
-﻿@model IEnumerable<CmsWeb.Models.ExcelPic>
+﻿@using CmsData
+@using UtilityExtensions
+@model IEnumerable<CmsWeb.Models.ExcelPic>
 <html xmlns:x="urn:schemas-microsoft-com:office:excel">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -64,7 +66,7 @@
                     <td>@r.MemberStatus</td>
                     <td>@r.FellowshipLeader</td>
                     <td>@r.Spouse</td>
-                    <td>@r.Age</td>
+                    <td>@Person.AgeDisplay(r.Age, r.PeopleId)</td>
                     <td>@r.School</td>
                     <td>@r.Grade</td>
                     <td>@r.AttendPctBF</td>

@@ -275,12 +275,11 @@ namespace CmsWeb.Models
             }
 
             var rp = from p in qp
-                     let age = p.Age.HasValue ? " (" + p.Age + ")" : ""
                      orderby p.Name2
                      select new SearchInfo()
                      {
                          id = p.PeopleId,
-                         line1 = p.Name2 + age,
+                         line1 = p.Name2 + (p.Age.HasValue ? $" ({Person.AgeDisplay(p.Age, p.PeopleId)})" : ""),
                          line2 = p.PrimaryAddress ?? "",
                          isOrg = false,
                      };
@@ -387,12 +386,11 @@ namespace CmsWeb.Models
                          select o;
                 }
                 rp = (from p in qp
-                      let age = p.Age.HasValue ? " (" + p.Age + ")" : ""
                       orderby p.Name2
                       select new SearchInfo22()
                       {
                           url = "/Person2/" + p.PeopleId,
-                          line1 = p.Name2 + age,
+                          line1 = p.Name2 + (p.Age.HasValue ? $" ({Person.AgeDisplay(p.Age, p.PeopleId)})" : ""),
                           line2 = p.PrimaryAddress ?? "",
                       }).Take(6);
             }
@@ -408,12 +406,11 @@ namespace CmsWeb.Models
                              || p.LastName.StartsWith(text) || p.MaidenName.StartsWith(text) // gets Bob St Clair
                          select p;
                     rp = (from p in qp
-                          let age = p.Age.HasValue ? " (" + p.Age + ")" : ""
                           orderby p.Name2
                           select new SearchInfo22()
                           {
                               url = "/Person2/" + p.PeopleId,
-                              line1 = p.Name2 + age,
+                              line1 = p.Name2 + (p.Age.HasValue ? $" ({Person.AgeDisplay(p.Age, p.PeopleId)})" : ""),
                               line2 = p.PrimaryAddress ?? "",
                           }).Take(6);
                 }
@@ -431,21 +428,19 @@ namespace CmsWeb.Models
                               where p.FirstName.StartsWith(text) || p.NickName.StartsWith(text) || p.MiddleName.StartsWith(text)
                               select p;
                     var rp2 = (from p in qp2
-                               let age = p.Age.HasValue ? " (" + p.Age + ")" : ""
                                orderby p.Name2
                                select new SearchInfo22()
                                {
                                    url = "/Person2/" + p.PeopleId,
-                                   line1 = p.Name2 + age,
+                                   line1 = p.Name2 + (p.Age.HasValue ? $" ({Person.AgeDisplay(p.Age, p.PeopleId)})" : ""),
                                    line2 = p.PrimaryAddress ?? "",
                                }).Take(6).ToList();
                     var rp1 = (from p in qp1
-                               let age = p.Age.HasValue ? " (" + p.Age + ")" : ""
                                orderby p.Name2
                                select new SearchInfo22()
                                {
                                    url = "/Person2/" + p.PeopleId,
-                                   line1 = p.Name2 + age,
+                                   line1 = p.Name2 + (p.Age.HasValue ? $" ({Person.AgeDisplay(p.Age, p.PeopleId)})" : ""),
                                    line2 = p.PrimaryAddress ?? "",
                                }).Take(6).ToList();
                     rp = rp2.Union(rp1).Take(6);

@@ -56,12 +56,11 @@ namespace CmsWeb.Areas.Org.Models
             var rp = from p in qp
                      where (p.EmailAddress.Length > 0 && (p.SendEmailAddress1 ?? true))
                            || (p.EmailAddress2.Length > 0 && p.SendEmailAddress2 == true)
-                     let age = p.Age != null ? " (" + p.Age + ")" : ""
                      orderby p.Name2
                      select new SearchInfo
                      {
                          url = string.Format(addsupport, pid, p.PeopleId),
-                         line1 = p.Name2 + age,
+                         line1 = p.Name2 + (p.Age != null ? $" ({Person.AgeDisplay(p.Age, p.PeopleId)})" : ""),
                          line2 = p.PrimaryAddress ?? ""
                      };
             var list = rp.Take(8).ToList();

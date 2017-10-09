@@ -17,33 +17,6 @@ namespace UtilityExtensions
 {
     public static partial class Util
     {
-        public static string FormatBirthday(int? y, int? m, int? d)
-        {
-            return FormatBirthday(y, m, d, "");
-        }
-
-        public static string FormatBirthday(int? y, int? m, int? d, string def)
-        {
-            try
-            {
-                if (m.HasValue && d.HasValue)
-                    if (!y.HasValue)
-                        return new DateTime(2000, m.Value, d.Value).ToString("m");
-                    else
-                        return new DateTime(y.Value, m.Value, d.Value).ToString("d");
-                if (y.HasValue)
-                    if (m.HasValue && !d.HasValue)
-                        return new DateTime(y.Value, m.Value, 1).ToString("y");
-                    else
-                        return y.ToString();
-            }
-            catch (Exception)
-            {
-                return $"bad date {m ?? 0}/{d ?? 0}/{y ?? 0}";
-            }
-            return def;
-        }
-
         public static string FormatDate(this DateTime? dt)
         {
             if (dt.HasValue)
@@ -71,6 +44,27 @@ namespace UtilityExtensions
             if (dt.HasValue)
                 return dt.Value.ToString("d");
             return "";
+        }
+        public static string FmtBirthday(int? y, int? m, int? d, string def = "")
+        {
+            try
+            {
+                if (m.HasValue && d.HasValue)
+                    if (!y.HasValue)
+                        return new DateTime(2000, m.Value, d.Value).ToString("m");
+                    else
+                        return new DateTime(y.Value, m.Value, d.Value).ToString("d");
+                if (y.HasValue)
+                    if (m.HasValue)
+                        return new DateTime(y.Value, m.Value, 1).ToString("y");
+                    else
+                        return y.ToString();
+            }
+            catch (Exception)
+            {
+                return $"bad date {m ?? 0}/{d ?? 0}/{y ?? 0}";
+            }
+            return def;
         }
 
         public static string ToSortableDateTime(this DateTime dt)

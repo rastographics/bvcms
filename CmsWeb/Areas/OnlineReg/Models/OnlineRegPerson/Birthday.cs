@@ -39,7 +39,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             get
             {
-                return Util.FormatBirthday(byear, bmon, bday);
+                return Person.FormatBirthday(byear, bmon, bday, PeopleId);
             }
             set
             {

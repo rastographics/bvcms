@@ -130,7 +130,7 @@ namespace CmsWeb.Models
                                         ? cc.PreferredName
                                         : cc.Name
                                     )),
-                        Age = p.Age.ToString(),
+                        Age = Person.AgeDisplay(p.Age, p.PeopleId).ToString(),
                         School = p.SchoolOther,
                         Grade = p.Grade.ToString(),
                         AttendPctBF = (om == null ? 0 : om.AttendPct == null ? 0 : om.AttendPct.Value),
@@ -179,7 +179,7 @@ namespace CmsWeb.Models
                             : string.Join("~", p.Family.People
                                 .Where(cc => cc.PositionInFamilyId > 10)
                                 .Select(cc =>
-                                    $"{(cc.LastName == familyname ? cc.PreferredName : cc.Name)}|{cc.Age}|{cc.BirthMonth}|{cc.BirthDay}"
+                                    $"{(cc.LastName == familyname ? cc.PreferredName : cc.Name)}|{Person.AgeDisplay(cc.Age, cc.PeopleId)}|{cc.BirthMonth}|{cc.BirthDay}"
                                 )),
                     };
             return q.Take(10000).ToList();
@@ -243,7 +243,7 @@ namespace CmsWeb.Models
                 ws.Cells[r, c++].Value = ep.MemberStatus;
                 ws.Cells[r, c++].Value = ep.FellowshipLeader;
                 ws.Cells[r, c++].Value = ep.Spouse;
-                ws.Cells[r, c++].Value = ep.Age;
+                ws.Cells[r, c++].Value = Person.AgeDisplay(ep.Age, ep.PeopleId);
                 ws.Cells[r, c++].Value = ep.Grade;
                 ws.Cells[r, c++].Value = ep.AttendPctBF;
                 ws.Cells[r, c++].Value = ep.Married;

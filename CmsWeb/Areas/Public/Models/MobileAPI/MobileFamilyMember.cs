@@ -27,7 +27,7 @@ namespace CmsWeb.MobileAPI
 		{
 			id = person.PeopleId.ToString();
 			name = person.Name ?? "";
-			age = person.Age.ToString();
+			age = Person.AgeDisplay(person.Age, person.PeopleId).ToString();
 			gender = person.Gender.Description ?? "";
 			position = person.FamilyPosition.Description ?? "";
 			memberStatus = person.MemberStatus.Description;

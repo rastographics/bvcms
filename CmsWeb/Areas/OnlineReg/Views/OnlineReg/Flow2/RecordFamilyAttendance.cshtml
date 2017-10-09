@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel
+﻿@using CmsData
+@model CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel
 @{
     var name = Html.NameFor2(m => m.FamilyAttend);
     Model.PopulateFamilyMemberAttends();
@@ -16,7 +17,7 @@
                     <label>
                         <input type="checkbox" name="@(name)[@i].Attend" value="true" @(m.Attend ? "checked='checked'" : "")
                                @(m.PeopleId == Model.PeopleId || Model.IsNew ? "disabled='disabled'" : "") />
-                        <strong>@m.Name @(m.Age.HasValue ? $"({m.Age})" : "")</strong>
+                        <strong>@m.Name @(m.Age.HasValue ? $"({Person.AgeDisplay(m.Age, m.PeopleId)})" : "")</strong>
                     </label>
                 </div>
                 @if (m.PeopleId == Model.PeopleId || Model.IsNew)
@@ -29,7 +30,7 @@
                 }
                 <input type="hidden" name="@(name)[@i].PeopleId" value="@m.PeopleId" />
                 <input type="hidden" name="@(name)[@i].Name" value="@m.Name" />
-                <input type="hidden" name="@(name)[@i].Age" value="@m.Age" />
+                <input type="hidden" name="@(name)[@i].Age" value="@Person.AgeDisplay(m.Age, m.PeopleId)" />
             </div>
         }
         @Html.ValidationMessageFor(m => m.otherchurch)
