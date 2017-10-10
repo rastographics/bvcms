@@ -5,7 +5,7 @@ namespace CmsData.View
 {
     public partial class CheckinFamilyMember
     {
-        public string BirthDay => Person.FormatBirthday(BYear, BMon, BDay);
+        public string BirthDay => Person.FormatBirthday(BYear, BMon, BDay, null);
 
         public string DisplayName
         {

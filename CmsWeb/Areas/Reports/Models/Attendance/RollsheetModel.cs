@@ -23,7 +23,10 @@ namespace CmsWeb.Areas.Reports.Models
             public int PeopleId { get; set; }
             public string Name { get; set; }
             public string Name2 { get; set; }
-            public string BirthDate { get; set; }
+            public string BirthDate => Person.FormatBirthday(BirthYear, BirthMon, BirthDay, PeopleId);
+            public int? BirthYear { get; set; }
+            public int? BirthMon { get; set; }
+            public int? BirthDay { get; set; }
             public string Age { get; set; }
             public string Address { get; set; }
             public string Address2 { get; set; }
@@ -80,10 +83,9 @@ namespace CmsWeb.Areas.Reports.Models
                         PeopleId = p.PeopleId,
                         Name = p.Name,
                         Name2 = p.Name2,
-                        BirthDate = Person.FormatBirthday(
-                            p.BirthYr,
-                            p.BirthMonth,
-                            p.BirthDay, p.PeopleId),
+                        BirthYear = p.BirthYear,
+                        BirthMon = p.BirthMonth,
+                        BirthDay = p.BirthDay,
                         Address = p.PrimaryAddress,
                         Address2 = p.PrimaryAddress2,
                         CityStateZip = Util.FormatCSZ(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
@@ -127,10 +129,9 @@ namespace CmsWeb.Areas.Reports.Models
                         PeopleId = p.PeopleId,
                         Name = p.Name,
                         Name2 = p.Name2,
-                        BirthDate = Person.FormatBirthday(
-                            p.BirthYr,
-                            p.BirthMonth,
-                            p.BirthDay, p.PeopleId),
+                        BirthYear = p.BirthYear,
+                        BirthMon = p.BirthMonth,
+                        BirthDay = p.BirthDay,
                         Address = p.PrimaryAddress,
                         Address2 = p.PrimaryAddress2,
                         CityStateZip = Util.FormatCSZ(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
@@ -156,10 +157,9 @@ namespace CmsWeb.Areas.Reports.Models
                         PeopleId = m.PeopleId,
                         Name = m.PreferredName + " " + m.LastName,
                         Name2 = m.LastName + ", " + m.PreferredName,
-                        BirthDate = Person.FormatBirthday(
-                            m.BirthYear,
-                            m.BirthMonth,
-                            m.BirthDay, m.PeopleId),
+                        BirthYear = m.BirthYear,
+                        BirthMon = m.BirthMonth,
+                        BirthDay = m.BirthDay,
                         Address = m.PrimaryAddress,
                         Address2 = m.PrimaryAddress2,
                         CityStateZip = Util.FormatCSZ(m.PrimaryCity, m.PrimaryState, m.PrimaryZip),
@@ -196,10 +196,9 @@ namespace CmsWeb.Areas.Reports.Models
                         PeopleId = p.PeopleId,
                         Name = p.PreferredName + " " + p.LastName,
                         Name2 = p.LastName + ", " + p.PreferredName,
-                        BirthDate = Person.FormatBirthday(
-                            p.BirthYear,
-                            p.BirthMonth,
-                            p.BirthDay,p.PeopleId),
+                        BirthYear = p.BirthYear,
+                        BirthMon = p.BirthMonth,
+                        BirthDay = p.BirthDay,
                         Address = p.PrimaryAddress,
                         Address2 = p.PrimaryAddress2,
                         CityStateZip = Util.FormatCSZ(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),

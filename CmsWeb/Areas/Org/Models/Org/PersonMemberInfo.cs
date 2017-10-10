@@ -13,7 +13,10 @@ namespace CmsWeb.Areas.Org.Models
         public int PeopleId { get; set; }
         public string Name { get; set; }
         public string Name2 { get; set; }
-        public string BirthDate { get; set; }
+        public string BirthDate => Person.FormatBirthday(BirthYear, BirthMon, BirthDay, PeopleId);
+        public int? BirthYear { get; set; }
+        public int? BirthMon { get; set; }
+        public int? BirthDay { get; set; }
         public string Address { get; set; }
         public string Address2 { get; set; }
         public string CityStateZip { get; set; }

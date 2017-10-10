@@ -91,7 +91,9 @@ namespace CmsWeb.Models
                     {
                         PeopleId = p.PeopleId,
                         Name = p.Name,
-                        BirthDate = Person.FormatBirthday(p.BirthYr, p.BirthMonth, p.BirthDay, p.PeopleId),
+                        BirthYear = p.BirthYear,
+                        BirthMon = p.BirthMonth,
+                        BirthDay = p.BirthDay,
                         Address = p.PrimaryAddress,
                         Address2 = p.PrimaryAddress2,
                         CityStateZip = Util.FormatCSZ(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),

@@ -94,7 +94,7 @@ namespace CmsData
         public string DOB
         {
             get
-            { return FormatBirthday(BirthYr, BirthMonth, BirthDay); }
+            { return FormatBirthday(BirthYr, BirthMonth, BirthDay, PeopleId ); }
             set
             {
                 // reset all values before replacing b/c replacement may be partial
@@ -143,7 +143,7 @@ namespace CmsData
                     else
                         birthYear = n;
             }
-            return FormatBirthday(birthYear, birthMonth, birthDay);
+            return FormatBirthday(birthYear, birthMonth, birthDay, null);
         }
         public DateTime? GetBirthdate()
         {
@@ -220,7 +220,7 @@ namespace CmsData
                     return null;
                 return y;
         }
-        public static string FormatBirthday(int? y, int? m, int? d, int? peopleid = null)
+        public static string FormatBirthday(int? y, int? m, int? d, int? peopleid)
         {
             return FormatBirthday(y, m, d, "");
         }

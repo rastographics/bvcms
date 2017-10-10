@@ -99,7 +99,10 @@ namespace CmsWeb.Areas.Dialog.Models
             public DateTime? InactiveDt { get; set; }
             public string MemberType { get; set; }
             public string Email { get; set; }
-            public string BirthDate { get; set; }
+            public string BirthDate => Person.FormatBirthday(BirthYear, BirthMon, BirthDay, PeopleId);
+            public int? BirthYear { get; set; }
+            public int? BirthMon { get; set; }
+            public int? BirthDay { get; set; }
             public string Address { get; set; }
             public string CityStateZip { get; set; }
             public string HomePhone { get; set; }
