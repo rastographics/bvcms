@@ -77,7 +77,7 @@ namespace CmsWeb.MobileAPI
 			}
 
 			gender = p.Gender.Description;
-			age = p.Age ?? 0;
+			age = Person.AgeDisplay(p.Age, p.PeopleId) ?? 0;
 			birthday = p.DOB.Length > 0 ? p.DOB : "No Birthday Set";
 
 			if( !string.IsNullOrEmpty( p.CellPhone ) )
