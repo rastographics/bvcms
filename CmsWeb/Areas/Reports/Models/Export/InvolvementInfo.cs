@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text;
+using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -68,7 +69,8 @@ namespace CmsWeb.Models
 
 
         public string Spouse { get; set; }
-        public int Age { get; set; }
+        internal int? AgeDb;
+        public int Age => Person.AgeDisplay(AgeDb, PeopleId) ?? 0;
         public string JoinInfo { get; set; }
 
         // ReSharper disable once InconsistentNaming

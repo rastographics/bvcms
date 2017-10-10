@@ -33,18 +33,19 @@ namespace CmsWeb.Models
             var tag = DbUtil.Db.PopulateSpecialTag(qid, DbUtil.TagTypeId_Query);
             var cn = new SqlConnection(Util.ConnectionString);
             cn.Open();
-            var cmd = new SqlCommand(@"
+            var noBirthYearRole = HttpContext.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", ""));
+            var cmd = new SqlCommand($@"
 SELECT
     md.PeopleId,
     md.[First],
     md.[Last],
-    md.Age,
+    {(noBirthYearRole ? "" : "md.Age,")}
     md.Marital,
     md.Decision,
     md.DecisionDt,
     md.JoinDt,
     md.Baptism,
-" + cols + @"
+    {cols}
 FROM StatusFlagColumns ss
 JOIN MemberData md ON md.PeopleId = ss.PeopleId
 JOIN dbo.TagPerson tp ON tp.PeopleId = md.PeopleId
