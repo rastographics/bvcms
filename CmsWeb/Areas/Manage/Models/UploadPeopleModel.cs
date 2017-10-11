@@ -426,6 +426,7 @@ namespace CmsWeb.Models
         public void FetchData(ExcelWorksheet ws)
         {
             FetchHeaderColumns(ws);
+
             var r = 2;
             Datalist = new List<dynamic>();
             while (r <= ws.Dimension.End.Row)
@@ -463,6 +464,13 @@ namespace CmsWeb.Models
                 }
             }
         }
+
+        internal void CheckColumn(string name, string sheet)
+        {
+            if (!Names.ContainsKey(name))
+                throw new Exception($"Missing {name} column on {sheet} sheet");
+        }
+
 
         internal virtual int? GetPeopleId(dynamic a)
         {
