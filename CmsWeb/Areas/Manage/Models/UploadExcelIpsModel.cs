@@ -26,6 +26,11 @@ namespace CmsWeb.Models
 
             var ws = pkg.Workbook.Worksheets[PeopleSheetName];
             FetchData(pkg.Workbook.Worksheets[PeopleSheetName]);
+            const string sheet = "Personal Data";
+            CheckColumn("IndividualId", sheet);
+            CheckColumn("FamilyId", sheet);
+            CheckColumn("First", sheet);
+            CheckColumn("Last", sheet);
 
             string sid = ((object) Datalist[0].IndividualId).ToString();
             if (sid.ToCharArray().Any(char.IsLetter))
@@ -226,6 +231,13 @@ namespace CmsWeb.Models
         public IEnumerable<PledgeGift> FetchContributionData(ExcelWorksheet ws)
         {
             FetchHeaderColumns(ws);
+            const string sheet = "Gift Data";
+            CheckColumn("IndividualId", sheet);
+            CheckColumn("Amount", sheet);
+            CheckColumn("Date", sheet);
+            CheckColumn("FundId", sheet);
+            CheckColumn("FundName", sheet);
+            CheckColumn("FundDescription", sheet);
             var r = 2;
             while (r <= ws.Dimension.End.Row)
             {
@@ -247,6 +259,14 @@ namespace CmsWeb.Models
         public IEnumerable<PledgeGift> FetchPledgeData(ExcelWorksheet ws)
         {
             FetchHeaderColumns(ws);
+            const string sheet = "Pledges";
+            CheckColumn("IndividualId", sheet);
+            CheckColumn("PledgeAmount", sheet);
+            CheckColumn("PledgeDate", sheet);
+            CheckColumn("FundId", sheet);
+            CheckColumn("FundName", sheet);
+            CheckColumn("FundDescription", sheet);
+
             var r = 2;
             while (r <= ws.Dimension.End.Row)
             {
@@ -263,6 +283,7 @@ namespace CmsWeb.Models
                 yield return row;
             }
         }
+
         private void TryDeleteAllContributions()
         {
             if (Testing)

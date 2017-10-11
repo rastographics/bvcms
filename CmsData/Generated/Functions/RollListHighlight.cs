@@ -48,6 +48,8 @@ namespace CmsData.View
 		
 		private string _ChurchMemberStatus;
 		
+		private string _IPadAttendanceExtra;
+		
 		
 		public RollListHighlight()
 		{
@@ -322,6 +324,23 @@ namespace CmsData.View
 			{
 				if (this._ChurchMemberStatus != value)
 					this._ChurchMemberStatus = value;
+			}
+
+		}
+
+		
+		[Column(Name="iPadAttendanceExtra", Storage="_IPadAttendanceExtra", DbType="nvarchar(500)")]
+		public string IPadAttendanceExtra
+		{
+			get
+			{
+				return this._IPadAttendanceExtra;
+			}
+
+			set
+			{
+				if (this._IPadAttendanceExtra != value)
+					this._IPadAttendanceExtra = value;
 			}
 
 		}

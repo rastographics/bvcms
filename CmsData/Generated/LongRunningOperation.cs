@@ -232,7 +232,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="CustomMessage", UpdateCheck=UpdateCheck.Never, Storage="_CustomMessage", DbType="nvarchar(80)")]
+		[Column(Name="CustomMessage", UpdateCheck=UpdateCheck.Never, Storage="_CustomMessage", DbType="nvarchar(200)")]
 		public string CustomMessage
 		{
 			get { return this._CustomMessage; }

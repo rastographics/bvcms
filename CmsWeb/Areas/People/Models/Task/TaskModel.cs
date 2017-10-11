@@ -124,6 +124,51 @@ namespace CmsWeb.Areas.People.Models.Task
             return task.Id;
         }
 
+		public static int AddCompletedContact( int taskID, User user )
+		{
+			var task = DbUtil.Db.Tasks.Single( t => t.Id == taskID );
+
+			var c = new Contact {CreatedDate = DateTime.Now, ContactDate = DateTime.Now};
+
+			var min = DbUtil.Db.Ministries.SingleOrDefault( m => m.MinistryName == task.Project );
+
+			if( min != null )
+				c.MinistryId = min.MinistryId;
+			if( task.WhoId.HasValue )
+				c.contactees.Add( new Contactee {PeopleId = task.WhoId.Value} );
+			if( user.PeopleId.HasValue )
+				c.contactsMakers.Add( new Contactor {PeopleId = user.PeopleId.Value} );
+
+			c.Comments = task.Notes;
+			task.CompletedContact = c;
+			task.StatusId = TaskStatusCode.Complete;
+
+			if( task.CoOwnerId == user.PeopleId )
+				DbUtil.Db.Email( task.CoOwner.EmailAddress, task.Owner,
+										$"Task completed with a Contact by {user.Name}", CreateEmailBody( task ) );
+			else if( task.CoOwnerId != null )
+				DbUtil.Db.Email( task.Owner.EmailAddress, task.CoOwner,
+										$"Task completed with a Contact by {user.Name}", CreateEmailBody( task ) );
+
+			task.CompletedOn = c.ContactDate;
+
+			DbUtil.Db.SubmitChanges();
+
+			if( task.Owner.PeopleId == user.PeopleId ) {
+				if( task.CoOwner != null )
+					GCMHelper.sendNotification( task.CoOwner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Task Complete",
+														$"{user.Name} completed a task they delegated to you" );
+			} else {
+				GCMHelper.sendNotification( task.Owner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Task Complete",
+													$"{user.Name} completed a task you delegated them" );
+			}
+
+			if( user.PeopleId.HasValue )
+				GCMHelper.sendRefresh( user.PeopleId.Value, GCMHelper.TYPE_TASK );
+
+			return c.ContactId;
+		}
+
         public static int AddCompletedContact(int id)
         {
             var task = DbUtil.Db.Tasks.Single(t => t.Id == id);

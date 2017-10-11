@@ -354,6 +354,31 @@ namespace CmsWeb.MobileAPI
 					break;
 				}
 
+				case Type.CAMPUS: {
+					updateInteger( person, personChangeList, "CampusId" );
+					break;
+				}
+
+				case Type.CUSTODY_ISSUE: {
+					// Disabled in app
+					break;
+				}
+
+				case Type.TRANSPORT: {
+					// Disabled in app
+					break;
+				}
+
+				case Type.MEMBER_HERE: {
+					// Disabled in app
+					break;
+				}
+
+				case Type.ACTIVE_ANOHTER_CHURCH: {
+					// Disabled in app
+					break;
+				}
+
 				default: {
 					break;
 				}
@@ -400,84 +425,86 @@ namespace CmsWeb.MobileAPI
 		private enum Type
 		{
 			TITLE = 1,
-			FIRST,
-			MIDDLE,
-			LAST,
-			SUFFIX,
+			FIRST, // 2
+			MIDDLE, // 3
+			LAST, // 4
+			SUFFIX, // 5
 
-			GOESBY,
-			ALT_NAME,
-			FORMER,
+			GOESBY, // 6
+			ALT_NAME, // 7
+			FORMER, // 8
 
-			GENDER,
-			MARITAL_STATUS,
+			GENDER, // 9
+			MARITAL_STATUS, // 10
 
-			BIRTH_DATE,
-			WEDDING_DATE,
-			DECEASED_DATE,
+			BIRTH_DATE, // 11
+			WEDDING_DATE, // 12
+			DECEASED_DATE, // 13
 
-			FAMILY_PRIMARY,
-			FAMILY_ADDRESS1,
-			FAMILY_ADDRESS2,
-			FAMILY_CITY,
-			FAMILY_STATE,
-			FAMILY_ZIP,
-			FAMILY_COUNTRY,
+			FAMILY_PRIMARY, // 14
+			FAMILY_ADDRESS1, // 15
+			FAMILY_ADDRESS2, // 16
+			FAMILY_CITY, // 17
+			FAMILY_STATE, // 18
+			FAMILY_ZIP, // 19
+			FAMILY_COUNTRY, // 20
 
-			PERSONAL_PRIMARY,
-			PERSONAL_ADDRESS1,
-			PERSONAL_ADDRESS2,
-			PERSONAL_CITY,
-			PERSONAL_STATE,
-			PERSONAL_ZIP,
-			PERSONAL_COUNTRY,
+			PERSONAL_PRIMARY, // 21
+			PERSONAL_ADDRESS1, // 22
+			PERSONAL_ADDRESS2, // 23
+			PERSONAL_CITY, // 24
+			PERSONAL_STATE, // 25
+			PERSONAL_ZIP, // 26
+			PERSONAL_COUNTRY, // 27
 
-			PRIMARY_EMAIL,
-			PRIMARY_EMAIL_ACTIVE,
-			ALT_EMAIL,
-			ALT_EMAIL_ACTIVE,
-			HOME_PHONE,
-			WORK_PHONE,
-			MOBILE_PHONE,
+			PRIMARY_EMAIL, // 28
+			PRIMARY_EMAIL_ACTIVE, // 29
+			ALT_EMAIL, // 30
+			ALT_EMAIL_ACTIVE, // 31
+			HOME_PHONE, // 32
+			WORK_PHONE, // 33
+			MOBILE_PHONE, // 34
 
-			DO_NOT_CALL,
-			DO_NOT_MAIL,
-			DO_NOT_VISIT,
-			DO_NOT_PUBLISH_PHONE,
+			DO_NOT_CALL, // 35
+			DO_NOT_MAIL, // 36
+			DO_NOT_VISIT, // 37
+			DO_NOT_PUBLISH_PHONE, // 38
 
-			FATHER_NAME,
-			MOTHER_NAME,
-			SHIRT_SIZE,
+			FATHER_NAME, // 39
+			MOTHER_NAME, // 40
+			SHIRT_SIZE, // 41
 
-			EMERGENCY_NAME,
-			EMERGENCY_PHONE,
+			EMERGENCY_NAME, // 42
+			EMERGENCY_PHONE, // 43
 
-			INTEREST_COACHING,
+			INTEREST_COACHING, // 44
 
-			CUSTODY_ISSUE,
-			TRANSPORT,
-			MEMBER_HERE,
-			ACTIVE_ANOHTER_CHURCH,
+			CUSTODY_ISSUE, // 45
+			TRANSPORT, // 46
+			MEMBER_HERE, // 47
+			ACTIVE_ANOHTER_CHURCH, // 48
 
-			DOCTOR_NAME,
-			DOCTOR_PHONE,
-			INSURANCE_NAME,
-			INSURANCE_POLICY_NUMBER,
-			ALLERGIES,
+			DOCTOR_NAME, // 49
+			DOCTOR_PHONE, // 50
+			INSURANCE_NAME, // 51
+			INSURANCE_POLICY_NUMBER, // 52
+			ALLERGIES, // 53
 
-			CAN_GIVE_TYLENOL,
-			CAN_GIVE_ADVIL,
-			CAN_GIVE_ROBITUSSIN,
-			CAN_GIVE_MAALOX,
+			CAN_GIVE_TYLENOL, // 54
+			CAN_GIVE_ADVIL, // 55
+			CAN_GIVE_ROBITUSSIN, // 56
+			CAN_GIVE_MAALOX, // 57
 
-			EMPLOYER,
-			OCCUPATION,
-			SCHOOL,
-			GRADE,
+			EMPLOYER, // 58
+			OCCUPATION, // 59
+			SCHOOL, // 60
+			GRADE, // 61
 
-			ELECTRONIC_STATEMENTS,
-			STATEMENT_TYPE,
-			ENVELOPE_OPTIONS
+			ELECTRONIC_STATEMENTS, // 62
+			STATEMENT_TYPE, // 63
+			ENVELOPE_OPTIONS, // 64
+
+			CAMPUS // 65
 		}
 	}
 }

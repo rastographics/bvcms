@@ -26,6 +26,7 @@ namespace CmsWeb.Models
         public bool IncludeBundleType { get; set; }
         public bool NonTaxDeductible { get; set; }
         public bool FilterByActiveTag { get; set; }
+        public EpplusResult epr;
 
         public TotalsByFundModel()
         {
@@ -39,6 +40,43 @@ namespace CmsWeb.Models
         }
 
         public FundTotalInfo FundTotal;
+
+        class ContributionIdItem
+        {
+            public int ContributionId { get; set; }
+        }
+
+        public void SaveAsExcel()
+        {
+            var api = new APIContributionSearchModel(DbUtil.Db)
+            {
+                model =
+                {
+                    StartDate = Dt1,
+                    EndDate = Dt2,
+                    IncludeUnclosedBundles = IncUnclosedBundles,
+                    TaxNonTax = TaxDedNonTax,
+                    CampusId = CampusId,
+                    Status = ContributionStatusCode.Recorded,
+                    Online = Online,
+                    FilterByActiveTag = FilterByActiveTag,
+                }
+            };
+
+            var x = api.FetchContributions();
+            var list = x.Select(xx => new ContributionIdItem{ContributionId = xx.ContributionId}).ToList();
+            var dt = ExcelExportModel.ToDataTable(list);
+            dt.SaveAs("D:\\cids.xlsx");
+        }
+
+        public IEnumerable<string> CustomReports()
+        {
+            var q = from c in DbUtil.Db.Contents
+                where c.TypeID == ContentTypeCode.TypeSqlScript
+                where c.Body.Contains("--class=TotalsByFund")
+                select c.Name;
+            return q;
+        }
 
         public IEnumerable<FundTotalInfo> TotalsByFund()
         {

@@ -10,8 +10,12 @@ BEGIN
 	  , EnrollmentTransactionId = (SELECT TOP 1 id FROM @t WHERE typ <= 2 AND pid = e.PeopleId AND dt < e.TransactionDate AND e.TransactionTypeId >= 3 ORDER BY dt DESC) 
 	FROM dbo.EnrollmentTransaction e
 	WHERE OrganizationId = @oid AND e.TransactionId = TransactionId
-END
 
+	UPDATE dbo.Organizations
+	SET MemberCount = dbo.OrganizationMemberCount(OrganizationId),
+		ProspectCount = dbo.OrganizationProspectCount(OrganizationId)
+	WHERE OrganizationId = @oid
+END
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

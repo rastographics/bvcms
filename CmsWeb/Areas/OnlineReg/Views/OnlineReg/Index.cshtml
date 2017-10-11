@@ -2,7 +2,7 @@
 @model CmsWeb.Areas.OnlineReg.Models.OnlineRegModel
 @{
     Layout = "~/Views/Shared/onlinereg2.cshtml";
-    ViewBag.Title = "Online Registration";
+    ViewBag.Title = Model.Header; //"Online Registration";
     var filled = Model.Filled();
     var complete = Model.AskDonation() ? "AskDonation" : "CompleteRegistration";
     var action = $"/OnlineReg/{complete}/{Model.qtesting}";

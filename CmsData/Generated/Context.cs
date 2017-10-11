@@ -2690,6 +2690,51 @@ namespace CmsData
 
 		[Function(Name="dbo.ContributionSearch", IsComposable = true)]
 		public IQueryable< View.ContributionSearch > ContributionSearch(
+            [Parameter(DbType="varchar")] string Name,
+            [Parameter(DbType="varchar")] string Comments,
+            [Parameter(DbType="money")] decimal? MinAmt,
+            [Parameter(DbType="money")] decimal? MaxAmt,
+            [Parameter(DbType="datetime")] DateTime? StartDate,
+            [Parameter(DbType="datetime")] DateTime? EndDate,
+            [Parameter(DbType="int")] int? CampusId,
+            [Parameter(DbType="int")] int? FundId,
+            [Parameter(DbType="int")] int? Online,
+            [Parameter(DbType="int")] int? Status,
+            [Parameter(DbType="varchar")] string TaxNonTax,
+            [Parameter(DbType="int")] int? Year,
+            [Parameter(DbType="int")] int? Type,
+            [Parameter(DbType="int")] int? BundleType,
+            [Parameter(DbType="bit")] bool? IncludeUnclosedBundles,
+            [Parameter(DbType="bit")] bool? Mobile,
+            [Parameter(DbType="int")] int? PeopleId,
+            [Parameter(DbType="int")] int? ActiveTagFilter
+            )
+		{
+			return this.CreateMethodCallQuery< View.ContributionSearch>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                Name,
+                Comments,
+                MinAmt,
+                MaxAmt,
+                StartDate,
+                EndDate,
+                CampusId,
+                FundId,
+                Online,
+                Status,
+                TaxNonTax,
+                Year,
+                Type,
+                BundleType,
+                IncludeUnclosedBundles,
+                Mobile,
+                PeopleId,
+                ActiveTagFilter
+                );
+		}
+
+		[Function(Name="dbo.ContributionSearch0", IsComposable = true)]
+		public IQueryable< View.ContributionSearch0 > ContributionSearch0(
             [Parameter(DbType="nvarchar")] string name,
             [Parameter(DbType="nvarchar")] string comments,
             [Parameter(DbType="int")] int? bundletype,
@@ -2708,7 +2753,7 @@ namespace CmsData
             [Parameter(DbType="int")] int? online
             )
 		{
-			return this.CreateMethodCallQuery< View.ContributionSearch>(this, 
+			return this.CreateMethodCallQuery< View.ContributionSearch0>(this, 
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 name,
                 comments,

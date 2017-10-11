@@ -72,6 +72,8 @@ namespace CmsWeb.Areas.Public.Controllers
 				peopleID = user.PeopleId ?? 0,
 				userID = user.UserId,
 				userName = user.Person.Name,
+				campusID = user.Person.CampusId ?? 0,
+				campusName = user.Person.Campu?.Description ?? "",
 				roles = roles.ToList()
 			};
 
@@ -550,8 +552,8 @@ namespace CmsWeb.Areas.Public.Controllers
 				return br;
 			}
 
-			int lastYear = DateTime.Now.Year - 2;
-			int thisYear = DateTime.Now.Year - 1;
+			int thisYear = DateTime.Now.Year;
+			int lastYear = DateTime.Now.Year - 1;
 
 			decimal lastYearTotal = (from c in DbUtil.Db.Contributions
 											where c.PeopleId == person.PeopleId
@@ -720,7 +722,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			MobileMessage br = new MobileMessage();
 
-			byte[] imageBytes = Convert.FromBase64String( message.data );
+			byte[] imageBytes = Convert.FromBase64String( message.argString );
 
 			Person person = DbUtil.Db.People.SingleOrDefault( pp => pp.PeopleId == message.argInt );
 
@@ -993,7 +995,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			User user = authentication.getUser();
 
-			int contactid = TaskModel.AddCompletedContact( message.argInt );
+			int contactid = TaskModel.AddCompletedContact( message.argInt, user );
 
 			MobileMessage br = new MobileMessage();
 			br.setNoError();
@@ -1410,6 +1412,14 @@ namespace CmsWeb.Areas.Public.Controllers
 			MobileMessage message = MobileMessage.createFromString( data );
 
 			MobilePersonCreateLists allLists = new MobilePersonCreateLists();
+
+			allLists.campuses = (from e in DbUtil.Db.Campus
+										orderby e.Description
+										select new MobileCampus
+										{
+											id = e.Id,
+											name = e.Description
+										}).ToList();
 
 			allLists.countries = (from e in DbUtil.Db.Countries
 										orderby e.Id

@@ -1,0 +1,23 @@
+﻿@model string
+@{
+    ViewBag.Title = "Run Python Background";
+    ViewBag.ReportPageHeader = "Run Python Background";
+    Layout = ViewExtensions2.TouchPointLayout();
+}
+<pre id="pre">
+
+</pre>
+@section scripts {
+    <script type="text/javascript">
+        $(function () {
+            var intervalId = window.setInterval(function () {
+                $.post('/Batch/RunPythonScriptProgress2?logfile=' + '@Model', null, function (ret) {
+                    $("#pre").text(ret);
+                    if (ret.contains("Background Process Completed")) {
+                        window.clearInterval(intervalId);
+                    }
+                });
+            }, 3000);
+        });
+    </script>
+}

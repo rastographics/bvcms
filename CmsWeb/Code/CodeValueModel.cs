@@ -362,6 +362,7 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> ExtraValueTypeCodes()
         {
             yield return new CodeValueItem { Code = "Header", Value = "Header" };
+            yield return new CodeValueItem { Code = "HTML", Value = "HTML" };
             yield return new CodeValueItem { Code = "Link", Value = "Link" };
             yield return new CodeValueItem { Code = "Text", Value = "Text (single line)" };
             yield return new CodeValueItem { Code = "Text2", Value = "Text (multi line)" };

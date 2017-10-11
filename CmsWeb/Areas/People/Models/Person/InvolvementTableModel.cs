@@ -18,6 +18,7 @@ namespace CmsWeb.Areas.People.Models
         public string Field { get; set; }
         public string Label { get; set; }
         public bool Sortable { get; set; }
+        public List<string> Roles { get; set; }
     }
 
     public class InvolvementTableColumnSet
@@ -38,14 +39,15 @@ namespace CmsWeb.Areas.People.Models
 
         public List<InvolvementTableColumn> GetColumnsForOrgType(string orgtype, string sort)
         {
-            if (OrgTypeColumns.ContainsKey(orgtype) && sort == "default")
-            {
-                return OrgTypeColumns[orgtype];
-            }
-            else
-            {
-                return DefaultColumns;
-            }
+            if (!OrgTypeColumns.ContainsKey(orgtype) || sort != "default") return DefaultColumns;
+
+            var columnsToRemove = (from column in OrgTypeColumns[orgtype]
+                                   where column.Roles != null
+                                      from role in column.Roles
+                                      where !HttpContext.Current.User.IsInRole(role)
+                                   select column).ToList();
+
+            return OrgTypeColumns[orgtype].Where(x => !columnsToRemove.Contains(x)).ToList();
         }
     }
 
@@ -122,6 +124,7 @@ namespace CmsWeb.Areas.People.Models
                             bool sortable;
                             bool.TryParse(e.Attribute("sortable")?.Value ?? "false", out sortable);
                             column.Sortable = sortable;
+                            column.Roles = e.Attribute("role")?.Value.Split(',').ToList();
 
                             list.Add(column);
                         }

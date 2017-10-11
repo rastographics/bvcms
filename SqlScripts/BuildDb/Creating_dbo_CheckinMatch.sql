@@ -26,6 +26,7 @@ BEGIN
 	INSERT @cells SELECT p.FamilyId
 	FROM dbo.People p 
 	WHERE p.CellPhoneLU LIKE @p7
+	AND (@ac = '000' OR @ac = p.CellPhoneAC)
 	
 	DECLARE @locks TABLE ( fid INT )
 	INSERT @locks
@@ -40,12 +41,9 @@ BEGIN
 	FROM dbo.Families f
 	JOIN dbo.People hh ON f.HeadOfHouseholdId = hh.PeopleId AND hh.DeceasedDate IS NULL
 	LEFT JOIN @locks lo ON fid = f.FamilyId
-	WHERE f.HomePhoneLU LIKE @p7
+	WHERE (f.HomePhoneLU LIKE @p7 AND (@ac = '000' OR @ac = f.HomePhoneAC))
 			OR EXISTS(SELECT NULL FROM @cells WHERE fid = f.FamilyId)
 			OR EXISTS(SELECT NULL FROM @tpins WHERE fid = f.FamilyId)
-			
-	--IF @ac <> '000' AND (select count(*) FROM @t) > 1
-	--	DELETE @t WHERE areacode <> @ac
 		
 	RETURN
 END

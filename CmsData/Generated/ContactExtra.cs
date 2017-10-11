@@ -128,7 +128,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="Field", UpdateCheck=UpdateCheck.Never, Storage="_Field", DbType="nvarchar(50) NOT NULL", IsPrimaryKey=true)]
+		[Column(Name="Field", UpdateCheck=UpdateCheck.Never, Storage="_Field", DbType="nvarchar(200) NOT NULL", IsPrimaryKey=true)]
 		public string Field
 		{
 			get { return this._Field; }

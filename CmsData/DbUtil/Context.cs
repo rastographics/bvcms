@@ -167,6 +167,10 @@ namespace CmsData
         {
             return this.Organizations.FirstOrDefault(o => o.OrganizationId == id);
         }
+        public Contact LoadContactById(int? id)
+        {
+            return this.Contacts.FirstOrDefault(o => o.ContactId == id);
+        }
         public OrgFilter OrgFilter(Guid? id)
         {
             var filter = OrgFilters.SingleOrDefault(vv => vv.QueryId == id);
@@ -1719,7 +1723,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 Contents.InsertOnSubmit(c);
                 SubmitChanges();
             }
-            c.Body += $"{Util.Now:M/d/yy HH:mm:ss tt zz}{data}\n";
+            c.Body += $"{Util.Now:M/d/yy HH:mm:ss tt} {data}\n";
             SubmitChanges();
         }
     }

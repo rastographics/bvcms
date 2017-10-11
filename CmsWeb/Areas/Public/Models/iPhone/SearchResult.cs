@@ -11,12 +11,12 @@ namespace CmsWeb.Models.iPhone
 {
     public class SearchResult : ActionResult
     {
-        private List<PeopleInfo> items;
-        private int count;
-        public SearchResult(IEnumerable<PeopleInfo> items, int count)
+        private readonly List<PeopleInfo> items;
+        private readonly int count;
+        public SearchResult(IQueryable<Person> items)
         {
-            this.items = items.ToList();
-            this.count = count;
+            this.items = PeopleList(items).ToList();
+            count = this.items.Count;
         }
         public override void ExecuteResult(ControllerContext context)
         {
@@ -44,6 +44,29 @@ namespace CmsWeb.Models.iPhone
                 }
                 w.WriteEndElement();
             }
+        }
+        public static IEnumerable<PeopleInfo> PeopleList(IQueryable<Person> query)
+        {
+            var q = from p in query
+                    select new PeopleInfo
+                    {
+                        PeopleId = p.PeopleId,
+                        Name = p.Name,
+                        First = p.FirstName,
+                        Last = p.LastName,
+                        Address = p.PrimaryAddress,
+                        CityStateZip = p.PrimaryCity + ", " + p.PrimaryState + " " + p.PrimaryZip.Substring(0, 5),
+                        Zip = p.PrimaryZip.Substring(0, 5),
+                        Age = p.Age,
+                        BirthDate = p.BirthMonth + "/" + p.BirthDay + "/" + p.BirthYear,
+                        HomePhone = p.HomePhone,
+                        CellPhone = p.CellPhone,
+                        WorkPhone = p.WorkPhone,
+                        MemberStatus = p.MemberStatus.Description,
+                        Email = p.EmailAddress,
+                        HasPicture = p.PictureId != null,
+                    };
+            return q;
         }
     }
 }

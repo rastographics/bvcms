@@ -130,6 +130,12 @@ namespace CmsData
             }
             else
             {
+                t.TransactionPeople.Add(new TransactionPerson
+                {
+                    PeopleId = Person.PeopleId,
+                    Amt = t.Amt,
+                    OrgId = orgid,
+                });
                 db.SubmitChanges();
                 var msg = db.Content("RecurringGiftFailedNotice") ?? new Content
                 {

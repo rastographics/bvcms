@@ -51,7 +51,7 @@ BEGIN
 			ON m.OrganizationId = s.OrganizationId 
 			AND s.ScheduleId = dbo.ScheduleId(NULL, a.MeetingDate)
 		WHERE m.OrganizationId = @orgid
-			AND m.MeetingDate >= @yearago
+			AND m.MeetingDate >= dbo.MinMeetingDate(m.OrganizationId, a.PeopleId, @yearago)
 			AND m.MeetingDate <= @maxfuturemeeting
 	) AS InlineView
 	GROUP BY PeopleId, [Year], [Week], AttendCredit

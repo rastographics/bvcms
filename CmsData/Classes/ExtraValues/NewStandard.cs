@@ -1,4 +1,5 @@
 using System.Linq;
+using CmsData.Classes.ExtraValues;
 using UtilityExtensions;
 
 namespace CmsData.ExtraValue
@@ -26,7 +27,7 @@ Option 2
                 : Type == "Code"
                     ? Codes ?? defaultCodes
                     : null;
-            var a = codes.SplitLines(noblanks: true).Select(ss => BitPrefix + ss).ToList();
+            var a = codes.SplitLines(noblanks: true).Select(ss => new Code { Text = BitPrefix + ss }).ToList();
             var v = new Value
             {
                 Type = Type,

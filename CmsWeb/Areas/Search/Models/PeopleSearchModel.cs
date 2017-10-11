@@ -49,6 +49,7 @@ or just Last or *First*`space` for first name match only.
         private int TagTypeId { get; set; }
         private string TagName { get; set; }
         private int? TagOwner { get; set; }
+        private bool MobileAddGuest { get; set; }
 
         public PeopleSearchInfo m;
 
@@ -64,6 +65,12 @@ or just Last or *First*`space` for first name match only.
             GetCount = Count;
         }
 
+        public PeopleSearchModel( bool fromAddGuest = false )
+            : this()
+        {
+		    MobileAddGuest = fromAddGuest;
+        }
+
         public bool usersonly { get; set; }
 
         private IQueryable<Person> people;
@@ -75,7 +82,7 @@ or just Last or *First*`space` for first name match only.
 
             DbUtil.Db.SetNoLock();
 
-            people = Util2.OrgLeadersOnly
+            people = Util2.OrgLeadersOnly && !MobileAddGuest
                 ? DbUtil.Db.OrgLeadersOnlyTag2().People(DbUtil.Db)
                 : DbUtil.Db.People.AsQueryable();
 

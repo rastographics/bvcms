@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
@@ -44,6 +45,8 @@ namespace CmsWeb.Areas.People.Models
 
         public int? OrganizationId { get; set; }
 
+        public string Location { get; set; }
+
         public IEnumerable<SelectListItem> Roles()
         {
             var roles = DbUtil.Db.Setting("LimitToRolesForContacts", "").SplitStr(",").Where(rr => rr.HasValue()).ToArray();
@@ -56,7 +59,7 @@ namespace CmsWeb.Areas.People.Models
                 Selected = !string.IsNullOrWhiteSpace(LimitToRole) && LimitToRole == rolename
             }).ToList();
 
-            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)", Selected = true});
+            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)", Selected = true });
             return list;
         }
 
@@ -78,11 +81,11 @@ namespace CmsWeb.Areas.People.Models
             var list = DbUtil.Db.Organizations
                 .Where(x => string.IsNullOrEmpty(orgType) || orgType == x.OrganizationType.Description)
                 .OrderBy(r => r.OrganizationName).ToList().Select(x => new SelectListItem
-            {
-                Value = x.OrganizationId.ToString(),
-                Text = x.OrganizationName,
-                Selected = x.OrganizationId == OrganizationId
-            }).ToList();
+                {
+                    Value = x.OrganizationId.ToString(),
+                    Text = x.OrganizationName,
+                    Selected = x.OrganizationId == OrganizationId
+                }).ToList();
 
             list.Insert(0, new SelectListItem { Value = "0", Text = "(none)", Selected = true });
             return list;
@@ -95,9 +98,9 @@ namespace CmsWeb.Areas.People.Models
             var roles = u.UserRoles.Select(uu => uu.Role.RoleName.ToLower()).ToArray();
             var ManagePrivateContacts = HttpContext.Current.User.IsInRole("ManagePrivateContacts");
             var q = from c in DbUtil.Db.Contacts
-                   where (c.LimitToRole ?? "") == "" || roles.Contains(c.LimitToRole) || ManagePrivateContacts
-                   where c.ContactId == id
-                   select c;
+                    where (c.LimitToRole ?? "") == "" || roles.Contains(c.LimitToRole) || ManagePrivateContacts
+                    where c.ContactId == id
+                    select c;
             contact = q.SingleOrDefault();
             if (contact == null)
                 return;
@@ -117,8 +120,10 @@ namespace CmsWeb.Areas.People.Models
             : this()
         {
             LoadContact(id);
-            if(contact != null)
+            if (contact != null)
                 this.CopyPropertiesFrom(contact);
+
+            SetLocationOnContact();
         }
 
         public bool CanView;
@@ -135,6 +140,7 @@ namespace CmsWeb.Areas.People.Models
 
             LoadContact(ContactId);
             this.CopyPropertiesTo(contact);
+            SetLocationOnContact();
             DbUtil.Db.SubmitChanges();
         }
         public static void DeleteContact(int cid)
@@ -144,6 +150,7 @@ namespace CmsWeb.Areas.People.Models
             cn.Execute(@"
                 delete contactees where ContactId = @cid;
                 delete contactors where ContactId = @cid;
+                delete contactextra where ContactId = @cid;
                 update task set CompletedContactId = NULL WHERE CompletedContactId = @cid;
                 update task set SourceContactId = NULL WHERE SourceContactId = @cid;
                 delete contact where ContactId = @cid;
@@ -213,6 +220,41 @@ namespace CmsWeb.Areas.People.Models
 
             return results;
         }
+
+        public void SetLocationOnContact()
+        {
+            var list = new List<string>
+            {
+                Ministry.ToString(),
+                ContactType.ToString(),
+                ContactReason.ToString()
+            };
+
+            Location = ComputeLocationString(list);
+        }
+
+        public void SetLocationOnContact(string ministry, string contactType, string contactReason)
+        {
+            var list = new List<string>
+            {
+                ministry,
+                contactType,
+                contactReason
+            };
+
+            Location = ComputeLocationString(list);
+        }
+
+        private string ComputeLocationString(IEnumerable<string> list)
+        {
+            list = list.Where(x => x != null)
+                       .Select(x => x.SlugifyString());
+            var location = string.Join("-", list);
+            if (location != string.Empty) return location;
+
+            return OrganizationId.HasValue ? "Organization" : "Person";
+        }
+
         private static ValidationResult ModelError(string message, string field)
         {
             return new ValidationResult(message, new[] { field });
@@ -228,9 +270,13 @@ namespace CmsWeb.Areas.People.Models
             }
         }
 
+        public bool ShowDefaultCheckboxes => !DbUtil.Db.Setting("UX-HideContactCheckboxes");
+
+        public bool ShowContactExtraFeature => DbUtil.Db.Setting("Feature-ContactExtra");
+
         private string GetIncomplete()
         {
-            if(contact == null)
+            if (contact == null)
                 LoadContact(ContactId);
             var sb = new StringBuilder();
             Append(Ministry.Value == "0", sb, "no ministry");

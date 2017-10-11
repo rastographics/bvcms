@@ -4,7 +4,6 @@ using System.Linq;
 using CmsData;
 using ImageData;
 using UtilityExtensions;
-using DbUtil = CmsData.DbUtil;
 
 namespace CmsWeb.MobileAPI
 {
@@ -12,6 +11,8 @@ namespace CmsWeb.MobileAPI
 	{
 		public int id = 0;
 		public int familyID = 0;
+
+		public int campusID = 0;
 
 		public string title = "";
 		public string first = "";
@@ -107,6 +108,8 @@ namespace CmsWeb.MobileAPI
 			id = p.PeopleId;
 			familyID = p.FamilyId;
 
+			campusID = p.CampusId ?? 0;
+
 			title = p.TitleCode ?? "";
 			first = p.FirstName ?? "";
 			middle = p.MiddleName ?? "";
@@ -127,7 +130,7 @@ namespace CmsWeb.MobileAPI
 
 			if( p.DOB.Length > 0 ) {
 				hasBirthday = 1;
-				birthdayDate = new DateTime( p.BirthYear ?? 0, p.BirthMonth ?? 0, p.BirthDay ?? 0 );
+				birthdayDate = new DateTime( p.BirthYear ?? 1800, p.BirthMonth ?? 0, p.BirthDay ?? 0 );
 			}
 
 			if( p.WeddingDate.HasValue ) {

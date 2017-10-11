@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CmsData;
+using CmsData.Classes.HealthChecker;
 using CmsData.Classes.RoleChecker;
 using UtilityExtensions;
 
@@ -101,6 +102,24 @@ namespace CmsWeb.Areas.People.Models
                         return $"<button class=\"leave-org\" data-personid=\"{PeopleId}\" data-orgid=\"{OrgId}\">{column.Label}</button>";
                     else
                         return "";
+                case "lastvisit":
+                case "last visit":
+                    return HealthChecker.GetLastVisit(OrgId)?.ToShortDateString();
+                case "health":
+                    var healthLabel = HealthChecker.GetHealthLabel(OrgId);
+                    switch (healthLabel.ToUpper())
+                    {
+                        case "RED":
+                            return $"<span class=\"text-center btn-block alert-danger\">{healthLabel}</span>";
+                        case "YELLOW":
+                            return $"<span class=\"text-center btn-block alert-warning\">{healthLabel}</span>";
+                        case "GREEN":
+                            return $"<span class=\"text-center btn-block alert-success\">{healthLabel}</span>";
+                        case "BRIGHT":
+                            return $"<span class=\"text-center btn-block\" style=\"background-color:LawnGreen \">{healthLabel}</span>";
+                        default:
+                            return string.Empty;
+                    }
                 default:
                     if(_extraFields == null)
                         _extraFields = DbUtil.Db.LoadOrganizationById(OrgId)?.GetOrganizationExtras();

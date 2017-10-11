@@ -16,7 +16,7 @@
 @if (admin || manageemails || managetrans || edit || design || finance || manageResources || financedataentry || financeviewonly)
 {
   <li class="dropdown dropdown-large">
-    @if (finance || financeviewonly)
+    @if (finance)
     {
       <a href="#" class="dropdown-toggle" data-toggle="dropdown">
         <span class="visible-xs-inline"><i class="fa fa-cogs"></i>&nbsp;&nbsp;</span><span class="hidden-lg hidden-xs">Admin</span><span class="visible-lg-inline visible-xs-inline">Administration</span> <b class="caret"></b>
@@ -25,13 +25,13 @@
         <li class="col-sm-4">
           <ul>
             <li class="dropdown-header dropdown-sub-header">Contributions</li>
-            @Helper.LiAnchorLink("Bundles", "/Bundles/", finance)
-            @Helper.LiAnchorLink("Search", "/Contributions/", finance)
-            @Helper.LiAnchorLink("Statements (Create All)", "/Statements/", finance)
+            @Helper.LiAnchorLink("Bundles", "/Bundles/")
+            @Helper.LiAnchorLink("Search", "/Contributions/")
+            @Helper.LiAnchorLink("Statements (Create All)", "/Statements/", true)
             @Helper.LiAnchorLink("Deposits Totals", "/FinanceReports/DepositTotalsForDates/")
             @Helper.LiAnchorLink("Totals by Fund", "/FinanceReports/TotalsByFund/")
             <li class="dropdown-header dropdown-sub-header">Manage</li>
-            @Helper.LiAnchorLink("Batch Upload Contributions", "/PostBundle/Batch/", finance)
+            @Helper.LiAnchorLink("Batch Upload Contributions", "/PostBundle/Batch/")
             @Helper.LiAnchorLink("Fund Management", "/Funds/")
             @Helper.LiAnchorLink("Managed Giving", "/FinanceReports/ManagedGiving/")
             <li class="dropdown-header dropdown-sub-header">Reports</li>

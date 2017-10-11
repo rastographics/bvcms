@@ -985,7 +985,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             DbUtil.LogActivity($"EV {op}:{field}", peopleid: PeopleId);
         }
 
-        public void AddEditExtraCode(string field, string value)
+        public void AddEditExtraCode(string field, string value, string location = null)
         {
             if (!field.HasValue())
                 return;
@@ -1037,7 +1037,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             ev.IntValue = value;
             ev.TransactionTime = Util.Now;
         }
-        public void AddEditExtraBool(string field, bool tf)
+        public void AddEditExtraBool(string field, bool tf, string name = null, string location = null)
         {
             if (!field.HasValue())
                 return;
@@ -1385,6 +1385,18 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 var max = db.NewMemberClassStatuses.Max(mm => mm.Id) + 10;
                 i = new NewMemberClassStatus() { Id = max, Code = "NM" + max, Description = type };
                 db.NewMemberClassStatuses.InsertOnSubmit(i);
+                db.SubmitChanges();
+            }
+            return i.Id;
+        }
+        public static int FetchOrCreateVolunteerApplicationStatus(CMSDataContext db, string status)
+        {
+            var i = db.VolApplicationStatuses.SingleOrDefault(m => m.Description == status);
+            if (i == null)
+            {
+                var max = db.VolApplicationStatuses.Max(mm => mm.Id) + 10;
+                i = new VolApplicationStatus() { Id = max, Code = "VS" + max, Description = status };
+                db.VolApplicationStatuses.InsertOnSubmit(i);
                 db.SubmitChanges();
             }
             return i.Id;
