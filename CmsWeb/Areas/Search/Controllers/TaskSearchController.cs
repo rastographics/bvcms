@@ -80,5 +80,12 @@ namespace CmsWeb.Areas.Search.Controllers
             m.Search.SavePreference();
             return Redirect("/TaskSearch");
         }
+        [HttpPost]
+        public ActionResult Complete(TaskSearchModel m)
+        {
+            m.Complete();
+            m.Search.SavePreference();
+            return Redirect("/TaskSearch");
+        }
     }
 }

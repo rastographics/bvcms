@@ -69,6 +69,11 @@
         var url = $(this)[0].href;
         return archivetasks(url, "delete");
     });
+    $("#complete").click(function(ev) {
+        ev.preventDefault();
+        var url = $(this)[0].href;
+        return archivetasks(url, "complete");
+    });
     function archivetasks (url, dowhat) {
         var cnt = $("#results").find('input[name="SelectedItem"]:checked').length;
         if (cnt === 0)

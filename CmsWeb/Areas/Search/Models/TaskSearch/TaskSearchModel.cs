@@ -263,5 +263,10 @@ namespace CmsWeb.Areas.Search.Models
         {
             return Search.Icon(which);
         }
+
+        public void Complete()
+        {
+            DbUtil.Db.Connection.Execute("UPDATE dbo.Task SET StatusId = 40, CompletedOn = GETDATE() WHERE Id IN @ids", new {ids = SelectedItem});
+        }
     }
 }
