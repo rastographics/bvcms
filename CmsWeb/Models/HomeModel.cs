@@ -309,12 +309,20 @@ namespace CmsWeb.Models
             });
             return list;
         }
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         public class SearchInfo22
         {
-            public string line1 { get; set; }
+            public string line1 => nonPersonName.HasValue()
+                ? nonPersonName
+                : name2 + (age.HasValue ? $" ({Person.AgeDisplay(age, peopleid)})" : "");
             public string line2 { get; set; }
             public string url { get; set; }
             public bool addmargin { get; set; }
+
+            internal int peopleid;
+            internal int? age;
+            internal string name2;
+            internal string nonPersonName;
         }
 
         public static IEnumerable<SearchInfo22> PrefetchSearch()
@@ -326,22 +334,22 @@ namespace CmsWeb.Models
                         select new SearchInfo22()
                         {
                             url = "/Query/" + c.QueryId,
-                            line1 = c.Name,
+                            nonPersonName = c.Name,
                         }).Take(3).ToList();
             list.InsertRange(0, new List<SearchInfo22>()
             {
-                new SearchInfo22() { url = "/PeopleSearch", line1 = "Find Person"  },
-                new SearchInfo22() { url = "/OrgSearch", line1 = "Organization Search" },
-                new SearchInfo22() { url = "/NewQuery", line1 = "New Search", addmargin = true },
-                new SearchInfo22() { url = "/Query", line1 = "Last Search" },
-                new SearchInfo22() { url = "/SavedQueryList", line1 = "Saved Searches" },
+                new SearchInfo22() { url = "/PeopleSearch", nonPersonName = "Find Person"  },
+                new SearchInfo22() { url = "/OrgSearch", nonPersonName = "Organization Search" },
+                new SearchInfo22() { url = "/NewQuery", nonPersonName = "New Search", addmargin = true },
+                new SearchInfo22() { url = "/Query", nonPersonName = "Last Search" },
+                new SearchInfo22() { url = "/SavedQueryList", nonPersonName = "Saved Searches" },
             });
             return list;
         }
 
         public static IEnumerable<SearchInfo22> FastSearch(string text)
         {
-            string First, Last;
+            string first, last;
             var qp = DbUtil.Db.People.AsQueryable();
             var qo = from o in DbUtil.Db.Organizations
                      where o.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
@@ -353,7 +361,7 @@ namespace CmsWeb.Models
                  where p.DeceasedDate == null
                  select p;
 
-            Util.NameSplit(text, out First, out Last);
+            Util.NameSplit(text, out first, out last);
             IEnumerable<SearchInfo22> rp = null;
 
             if (text.AllDigits())
@@ -363,7 +371,7 @@ namespace CmsWeb.Models
                     phone = text;
                 if (phone.HasValue())
                 {
-                    var id = Last.ToInt();
+                    var id = last.ToInt();
                     qp = from p in qp
                          where
                              p.PeopleId == id
@@ -377,7 +385,7 @@ namespace CmsWeb.Models
                 }
                 else
                 {
-                    var id = Last.ToInt();
+                    var id = last.ToInt();
                     qp = from p in qp
                          where p.PeopleId == id
                          select p;
@@ -390,19 +398,22 @@ namespace CmsWeb.Models
                       select new SearchInfo22()
                       {
                           url = "/Person2/" + p.PeopleId,
-                          line1 = p.Name2 + (p.Age.HasValue ? $" ({Person.AgeDisplay(p.Age, p.PeopleId)})" : ""),
                           line2 = p.PrimaryAddress ?? "",
+
+                          peopleid = p.PeopleId,
+                          age = p.Age,
+                          name2 = p.Name2
                       }).Take(6);
             }
             else
             {
-                if (First.HasValue())
+                if (first.HasValue())
                 {
                     qp = from p in qp
-                         where p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
+                         where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last)
                              || p.LastName.StartsWith(text) || p.MaidenName.StartsWith(text) // gets Bob St Clair
                          where
-                             p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) || p.MiddleName.StartsWith(First)
+                             p.FirstName.StartsWith(first) || p.NickName.StartsWith(first) || p.MiddleName.StartsWith(first)
                              || p.LastName.StartsWith(text) || p.MaidenName.StartsWith(text) // gets Bob St Clair
                          select p;
                     rp = (from p in qp
@@ -410,8 +421,11 @@ namespace CmsWeb.Models
                           select new SearchInfo22()
                           {
                               url = "/Person2/" + p.PeopleId,
-                              line1 = p.Name2 + (p.Age.HasValue ? $" ({Person.AgeDisplay(p.Age, p.PeopleId)})" : ""),
                               line2 = p.PrimaryAddress ?? "",
+
+                              peopleid = p.PeopleId,
+                              age = p.Age,
+                              name2 = p.Name2
                           }).Take(6);
                 }
                 else
@@ -432,16 +446,21 @@ namespace CmsWeb.Models
                                select new SearchInfo22()
                                {
                                    url = "/Person2/" + p.PeopleId,
-                                   line1 = p.Name2 + (p.Age.HasValue ? $" ({Person.AgeDisplay(p.Age, p.PeopleId)})" : ""),
                                    line2 = p.PrimaryAddress ?? "",
+
+                                   peopleid = p.PeopleId,
+                                   age = p.Age,
+                                   name2 = p.Name2
                                }).Take(6).ToList();
                     var rp1 = (from p in qp1
                                orderby p.Name2
                                select new SearchInfo22()
                                {
                                    url = "/Person2/" + p.PeopleId,
-                                   line1 = p.Name2 + (p.Age.HasValue ? $" ({Person.AgeDisplay(p.Age, p.PeopleId)})" : ""),
                                    line2 = p.PrimaryAddress ?? "",
+                                   peopleid = p.PeopleId,
+                                   age = p.Age,
+                                   name2 = p.Name2,
                                }).Take(6).ToList();
                     rp = rp2.Union(rp1).Take(6);
                 }
@@ -456,8 +475,8 @@ namespace CmsWeb.Models
                      select new SearchInfo22()
                      {
                          url = $"/Org/{o.OrganizationId}",
-                         line1 = o.OrganizationName,
                          line2 = o.Division.Name,
+                         nonPersonName = o.OrganizationName,
                      };
 
             var list = new List<SearchInfo22>();
@@ -470,11 +489,11 @@ namespace CmsWeb.Models
                 list[list.Count - 1].addmargin = true;
             list.AddRange(new List<SearchInfo22>()
             {
-                new SearchInfo22() { url = "/PeopleSearch", line1 = "Find Person"  },
-                new SearchInfo22() { url = "/OrgSearch", line1 = "Organization Search" },
-                new SearchInfo22() { url = "/NewQuery", line1 = "New Search", addmargin = true },
-                new SearchInfo22() { url = "/Query", line1 = "Last Search" },
-                new SearchInfo22() { url = "/SavedQueryList", line1 = "Saved Searches" },
+                new SearchInfo22() { url = "/PeopleSearch", nonPersonName = "Find Person"  },
+                new SearchInfo22() { url = "/OrgSearch", nonPersonName = "Organization Search" },
+                new SearchInfo22() { url = "/NewQuery", nonPersonName = "New Search", addmargin = true },
+                new SearchInfo22() { url = "/Query", nonPersonName = "Last Search" },
+                new SearchInfo22() { url = "/SavedQueryList", nonPersonName = "Saved Searches" },
             });
             return list;
         }
@@ -522,7 +541,7 @@ namespace CmsWeb.Models
                     DbUtil.Db.SubmitChanges();
                 }
             }
-            catch 
+            catch
             {
                 return new List<NewsInfo>();
             }
