@@ -20,6 +20,8 @@ namespace CmsData.Classes.GoogleCloudMessaging
 
         private static void send(GCMMessage message)
         {
+            if (!Util.Host.HasValue())
+                return ;
             string gcmkey = DbUtil.Db.Setting("GCMKey", ConfigurationManager.AppSettings["GCMKey"]);
 
             if (message.registration_ids.Count == 0 || gcmkey.Length == 0) return;

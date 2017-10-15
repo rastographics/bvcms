@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UtilityExtensions;
 
 namespace CmsData.Classes.GoogleCloudMessaging
 {
@@ -26,6 +27,8 @@ namespace CmsData.Classes.GoogleCloudMessaging
 
         public GCMMessage(List<int> peopleIDs, string exclude, GCMData data, GCMPayload notification)
         {
+            if (!Util.Host.HasValue())
+                return ;
             this.data = data;
             this.notification = notification;
 
@@ -41,6 +44,8 @@ namespace CmsData.Classes.GoogleCloudMessaging
 
         public GCMMessage(int peopleID, string exclude, GCMData data, GCMPayload notification)
         {
+            if (!Util.Host.HasValue())
+                return ;
             this.data = data;
             this.notification = notification;
 

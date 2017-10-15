@@ -4,6 +4,9 @@ using System.Linq;
 using ImageData;
 using UtilityExtensions;
 using System.Text;
+using CmsData.Classes.GoogleCloudMessaging;
+using CmsData.Codes;
+using Community.CsharpSqlite;
 
 namespace CmsData
 {
@@ -368,6 +371,30 @@ namespace CmsData
             var ev = GetExtraValue(db, pid, field);
             ev.BitValue = value;
             ev.TransactionTime = DateTime.Now;
+        }
+        public static Task AddTaskAbout(CMSDataContext db, int familyId, int assignTo, string description)
+        {
+            var f = db.Families.Single(ff => ff.People.Any(mm => mm.PeopleId == familyId));
+            var primaryorchild = new[] {PositionInFamily.PrimaryAdult, PositionInFamily.Child};
+            var fmembers = (from p in db.People
+                            where p.FamilyId == familyId
+                            where primaryorchild.Contains(p.PositionInFamilyId)
+                            select p.Name).ToList();
+            var hh = db.LoadPersonById(f.HeadOfHouseholdId ?? 0);
+            var t = new Task
+            {
+                OwnerId = assignTo,
+                Description = description,
+                Notes = "Family: " + string.Join(", ", fmembers),
+                ForceCompleteWContact = true,
+                ListId = Task.GetRequiredTaskList(db, "InBox", assignTo).Id,
+                StatusId = TaskStatusCode.Active,
+            };
+            hh.TasksAboutPerson.Add(t);
+            if (Util.Host.HasValue())
+                GCMHelper.sendRefresh(assignTo, GCMHelper.ACTION_REFRESH);
+            return t;
+
         }
     }
 }
