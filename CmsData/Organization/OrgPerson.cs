@@ -43,7 +43,7 @@ namespace CmsData.View
             : GroupCode == GroupSelectCode.Inactive ? "Inactive"
                 : "NonMember";
 
-        public string BirthDate => Util.FormatBirthday(BirthYear, BirthMonth, BirthDay);
+        public string BirthDate => Person.FormatBirthday(BirthYear, BirthMonth, BirthDay, PeopleId);
 
         public IEnumerable<string> Phones
         {

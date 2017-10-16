@@ -141,7 +141,9 @@ namespace CmsWeb.Areas.Search.Models
                         PeopleId = p.PeopleId,
                         Name = p.Name,
                         AltName = p.AltName,
-                        BirthDate = Util.FormatBirthday(p.BirthYear, p.BirthMonth, p.BirthDay),
+                        BirthYear = p.BirthYear,
+                        BirthMon = p.BirthMonth,
+                        BirthDay = p.BirthDay,
                         Address = p.PrimaryAddress,
                         Address2 = p.PrimaryAddress2,
                         CityStateZip = Util.FormatCSZ(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
@@ -154,7 +156,7 @@ namespace CmsWeb.Areas.Search.Models
                         BFTeacher = p.BFClass.LeaderName,
                         BFTeacherId = p.BFClass.LeaderId,
                         Employer = p.EmployerOther,
-                        Age = p.Age.ToString(),
+                        Age = Person.AgeDisplay(p.Age, p.PeopleId).ToString(),
                         HasTag = p.Tags.Any(t => t.Tag.Name == Util2.CurrentTagName
                             && t.Tag.PeopleId == Util2.CurrentTagOwnerId
                             && t.Tag.TypeId == DbUtil.TagTypeId_Personal),

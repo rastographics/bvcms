@@ -109,7 +109,7 @@
         @p.MemberStatus<br/>
         @if (Model.ShowBirthday)
         {
-          <text>@p.Age - @p.BirthDate</text>
+          <text>@Person.AgeDisplay(p.Age, p.PeopleId) - @p.BirthDate</text>
         }
       </td>
       <td>

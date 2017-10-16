@@ -137,7 +137,7 @@ namespace CmsWeb.Models
 					x.Attr("loc", c.Location);
 					x.Attr("gender", c.Genderid);
 					x.Attr("leadtime", hoursBeforeClassStarts.ToString());
-					x.Attr("age", c.Age.ToString());
+					x.Attr("age", Person.AgeDisplay(c.Age, c.Id).ToString());
 					x.Attr("numlabels", c.NumLabels.ToString());
 					x.Attr("checkedin", c.CheckedIn.ToString());
 					x.Attr("custody", c.Custody.ToString());

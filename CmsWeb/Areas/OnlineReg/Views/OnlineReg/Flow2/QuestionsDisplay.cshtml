@@ -1,4 +1,5 @@
 ﻿@using System.Linq
+@using CmsData
 @using CmsData.Registration
 @using UtilityExtensions
 @model CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel
@@ -17,7 +18,7 @@
             <tr>
                 @if (m.PeopleId != null)
                 {
-                    <td colspan="5">@m.Name @(m.Age.HasValue ? $"({m.Age})" : "")</td>
+                    <td colspan="5">@m.Name @(m.Age.HasValue ? $"({Person.AgeDisplay(m.Age, m.PeopleId)})" : "")</td>
                 }
                 else
                 {

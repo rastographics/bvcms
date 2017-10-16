@@ -77,7 +77,7 @@ namespace CmsWeb.MobileAPI
 			}
 
 			gender = p.Gender.Description;
-			age = p.Age ?? 0;
+			age = Person.AgeDisplay(p.Age, p.PeopleId) ?? 0;
 			birthday = p.DOB.Length > 0 ? p.DOB : "No Birthday Set";
 
 			if( !string.IsNullOrEmpty( p.CellPhone ) )
@@ -104,7 +104,7 @@ namespace CmsWeb.MobileAPI
 				var familyMember = new MobileFamilyMember();
 				familyMember.id = m.PeopleId.ToString();
 				familyMember.name = m.Name;
-				familyMember.age = m.Age.ToString();
+				familyMember.age = Person.AgeDisplay(m.Age, m.PeopleId).ToString();
 				familyMember.gender = m.Gender.Description;
 				familyMember.position = m.FamilyPosition.Description;
 				familyMember.deceased = m.Deceased;

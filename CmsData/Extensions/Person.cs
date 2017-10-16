@@ -94,7 +94,7 @@ namespace CmsData
         public string DOB
         {
             get
-            { return Util.FormatBirthday(BirthYear, BirthMonth, BirthDay); }
+            { return FormatBirthday(BirthYr, BirthMonth, BirthDay, PeopleId ); }
             set
             {
                 // reset all values before replacing b/c replacement may be partial
@@ -143,7 +143,7 @@ namespace CmsData
                     else
                         birthYear = n;
             }
-            return Util.FormatBirthday(birthYear, birthMonth, birthDay);
+            return FormatBirthday(birthYear, birthMonth, birthDay, null);
         }
         public DateTime? GetBirthdate()
         {
@@ -164,6 +164,91 @@ namespace CmsData
                 years--;
             return years;
         }
+        public static int? GetAge(int? y, int? m, int? d)
+        {
+            DateTime dt;
+            var s = $"{y:yyyy}-{m:MM}-{d:dd}";
+            if (!DateTime.TryParse(s, out dt))
+                return null;
+            var today = DateTime.Today;
+            var age = today.Year - dt.Year;
+            if (dt > today.AddYears(-age))
+                age--;
+            return age;
+        }
+
+        public int? BirthYr
+        {
+            get
+            {
+                if (Util.UserPeopleId == PeopleId)
+                    return BirthYear;
+                if(Age <= DbUtil.Db.Setting("NoBirthYearOverAge", "18").ToInt())
+                    return BirthYear;
+                if(HttpContext.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
+                    return null;
+                return BirthYear;
+            }
+        }
+        public static int? AgeDisplay(int? age, int? peopleid)
+        {
+                if (Util.UserPeopleId == peopleid)
+                    return age;
+                if(age <= DbUtil.Db.Setting("NoBirthYearOverAge", "18").ToInt())
+                    return age;
+                if(HttpContext.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
+                    return null;
+                return age;
+        }
+        public static string AgeDisplay(string age, int? peopleid)
+        {
+                if (Util.UserPeopleId == peopleid)
+                    return age;
+                if(age.ToInt2() <= DbUtil.Db.Setting("NoBirthYearOverAge", "18").ToInt())
+                    return age;
+                if(HttpContext.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
+                    return null;
+                return age;
+        }
+        private static int? Birthyear(int? y, int? age, int? peopleid)
+        {
+                if (Util.UserPeopleId == peopleid)
+                    return y;
+                if(age <= DbUtil.Db.Setting("NoBirthYearOverAge", "18").ToInt())
+                    return y;
+                if(HttpContext.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
+                    return null;
+                return y;
+        }
+        public static string FormatBirthday(int? y, int? m, int? d, int? peopleid)
+        {
+            return FormatBirthday(y, m, d, "");
+        }
+
+        public static string FormatBirthday(int? y, int? m, int? d, string def, int? peopleid = null)
+        {
+            try
+            {
+                var yr = Birthyear(y, GetAge(y, m, d), peopleid);
+                if (m.HasValue && d.HasValue)
+                    if (!yr.HasValue)
+                        return new DateTime(2000, m.Value, d.Value).ToString("m");
+                    else
+                        return new DateTime(yr.Value, m.Value, d.Value).ToString("d");
+                if (yr.HasValue)
+                    if (m.HasValue)
+                        return new DateTime(yr.Value, m.Value, 1).ToString("y");
+                    else
+                        return y.ToString();
+            }
+            catch (Exception)
+            {
+                return $"bad date {m ?? 0}/{d ?? 0}/{y ?? 0}";
+            }
+            return def;
+        }
+
+
         public void MovePersonStuff(CMSDataContext db, int targetid)
         {
             var toperson = db.People.Single(p => p.PeopleId == targetid);
@@ -565,7 +650,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 if (Regex.IsMatch(dob, @"\d+[-/]\d+[-/]\d+"))
                 {
                     p.BirthYear = dt.Year;
-                    while (p.BirthYear < 1900)
+                    while (p.BirthYr < 1900)
                         p.BirthYear += 100;
                     if (p.GetAge() < 18 && marriedCode == 0)
                         p.MaritalStatusId = MaritalStatusCode.Single;

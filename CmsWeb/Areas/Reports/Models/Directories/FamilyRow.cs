@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CmsData;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
 using UtilityExtensions;
@@ -198,7 +199,7 @@ namespace CmsWeb.Areas.Main.Models.Directories
                     ? m.First
                     : m.First + " " + m.Last;
                 fname = m.Age.HasValue && m.Age < 22
-                    ? $"{fname} ({m.Age})"
+                    ? $"{fname} ({Person.AgeDisplay(m.Age, null)})"
                     : fname;
 
                 first.Append(new Text(fname));

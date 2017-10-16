@@ -74,7 +74,7 @@ namespace CmsWeb.Models
 					w.WriteAttributeString("first", c.First);
 					w.WriteAttributeString("last", c.Last);
 					w.WriteAttributeString("gender", c.gender.ToString());
-					w.WriteAttributeString("age", c.Age.ToString());
+					w.WriteAttributeString("age", Person.AgeDisplay(c.Age, c.Id).ToString());
 
 					w.WriteAttributeString("email", c.email);
 					w.WriteAttributeString("dob", c.dob);

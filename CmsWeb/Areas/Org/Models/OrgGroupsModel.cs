@@ -182,7 +182,9 @@ namespace CmsWeb.Areas.Org.Models
                          Name = p.Name,
                          LastName = p.LastName,
                          JoinDate = p.JoinDate,
-                         BirthDate = p.DOB,
+                         BirthYear = p.BirthYear,
+                         BirthMon = p.BirthMonth,
+                         BirthDay = p.BirthDay,
                          Address = p.PrimaryAddress,
                          Address2 = p.PrimaryAddress2,
                          CityStateZip = p.CityStateZip5,
@@ -360,7 +362,10 @@ namespace CmsWeb.Areas.Org.Models
             public string LastName { get; set; }
             public DateTime? JoinDate { get; set; }
             public string Email { get; set; }
-            public string BirthDate { get; set; }
+            public string BirthDate => Person.FormatBirthday(BirthYear, BirthMon, BirthDay, PeopleId);
+            public int? BirthYear { get; set; }
+            public int? BirthMon { get; set; }
+            public int? BirthDay { get; set; }
             public string Address { get; set; }
             public string Address2 { get; set; }
             public string CityStateZip { get; set; }

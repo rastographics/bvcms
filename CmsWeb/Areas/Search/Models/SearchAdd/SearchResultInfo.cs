@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using System.Web;
+using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
@@ -22,7 +23,10 @@ namespace CmsWeb.Areas.Search.Models
         public string WorkPhone { get; set; }
         public string MemberStatus { get; set; }
         public DateTime? JoinDate { get; set; }
-        public string BirthDate { get; set; }
+        public int? BirthDay { get; set; }
+        public int? BirthMon { get; set; }
+        public int? BirthYear { get; set; }
+        public string BirthDate => Person.FormatBirthday(BirthYear, BirthMon, BirthDay, PeopleId);
         public string Email { get; set; }
 
         public HtmlString ToolTip

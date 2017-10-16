@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Areas.Search.Models.SearchAddModel
+﻿@using CmsData
+@model CmsWeb.Areas.Search.Models.SearchAddModel
 @{ var rownum = 0; }
 <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -41,7 +42,7 @@
                                     <td><a rel="reveal" href="#" class="reveal"><i class="fa fa-info-circle"></i></a></td>
                                     <td><a href="/SearchAdd2/NewPerson/@c.FamilyId" class="ajax">@c.Name</a></td>
                                     <td class="addrcol" title="click for more info">@c.Address</td>
-                                    <td>@c.Age</td>
+                                    <td>@Person.AgeDisplay(c.Age, c.PeopleId)</td>
                                 </tr>
                                 <tr class="details @oddrow">
                                     <td colspan="4">

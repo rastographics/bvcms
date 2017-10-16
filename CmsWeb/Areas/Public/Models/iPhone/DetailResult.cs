@@ -33,7 +33,7 @@ namespace CmsWeb.Models.iPhone
                 w.WriteAttributeString("address", p.PrimaryAddress);
                 w.WriteAttributeString("citystatezip", p.CityStateZip);
                 w.WriteAttributeString("zip", p.PrimaryZip);
-                w.WriteAttributeString("age", p.Age.ToString());
+                w.WriteAttributeString("age", Person.AgeDisplay(p.Age, p.PeopleId).ToString());
                 w.WriteAttributeString("birthdate", p.BirthDate.FormatDate());
                 w.WriteAttributeString("homephone", p.HomePhone);
                 w.WriteAttributeString("cellphone", p.CellPhone);
@@ -49,7 +49,7 @@ namespace CmsWeb.Models.iPhone
                     w.WriteAttributeString("name", m.Name);
                     w.WriteAttributeString("address", m.PrimaryAddress);
                     w.WriteAttributeString("citystatezip", m.CityStateZip);
-                    w.WriteAttributeString("age", m.Age.ToString());
+                    w.WriteAttributeString("age", Person.AgeDisplay(m.Age, m.PeopleId).ToString());
                     w.WriteEndElement();
                 }
                 var q = from re in DbUtil.Db.RelatedFamilies

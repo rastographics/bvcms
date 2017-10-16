@@ -150,12 +150,11 @@ namespace CmsWeb.Areas.Org.Models
             }
 
             var r = from p in qp
-                    let age = p.Age.HasValue ? " (" + p.Age + ")" : ""
                     orderby p.Name2
                     select new NamesInfo()
                                {
                                    Pid = p.PeopleId,
-                                   Name = p.Name2 + age,
+                                   Name = p.Name2 + (p.Age.HasValue ? $" ({Person.AgeDisplay(p.Age, p.PeopleId)})" : ""),
                                    Addr = p.PrimaryAddress ?? "",
                                };
             return r.Take(limit);

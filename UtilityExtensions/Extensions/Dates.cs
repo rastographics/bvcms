@@ -157,7 +157,7 @@ namespace UtilityExtensions
             dt2 = DateTime.MinValue;
             if (!bmon.HasValue || !bday.HasValue) // year is not required
                 return false;
-            var s = FormatBirthday(byear, bmon, bday);
+            var s = FmtBirthday(byear, bmon, bday);
             if (!DateValid(s, out dt2))
                 return false;
             dt2 = new DateTime(byear ?? SignalNoYear, bmon.Value, bday.Value);

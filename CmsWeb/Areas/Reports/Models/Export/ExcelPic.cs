@@ -1,5 +1,7 @@
 using System.Linq;
+using CmsData;
 using ImageData;
+using DbUtil = ImageData.DbUtil;
 
 namespace CmsWeb.Models
 {
@@ -15,7 +17,10 @@ namespace CmsWeb.Models
         public string State { get; set; }
         public string Zip { get; set; }
         public string Email { get; set; }
-        public string BirthDate { get; set; }
+        public string BirthDate => Person.FormatBirthday(BYear, BMon, BDay, PeopleId);
+        public int? BMon;
+        public int? BYear;
+        public int? BDay;
         public string BirthDay { get; set; }
         public string Anniversary { get; set; }
         public string JoinDate { get; set; }

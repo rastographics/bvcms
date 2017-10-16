@@ -39,7 +39,7 @@
                         </td>
                         <td>
                             @p.MemberStatus<br />
-                            @p.Age - @p.BirthDate
+                            @Person.AgeDisplay(p.Age, p.PeopleId) - @p.BirthDate
                         </td>
                         <td>
                             <a href='http://www.google.com/maps?q=@p.Address,+@p.CityStateZip'>@p.Address</a>

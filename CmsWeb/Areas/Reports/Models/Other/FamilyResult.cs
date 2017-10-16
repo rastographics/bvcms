@@ -147,7 +147,7 @@ namespace CmsWeb.Areas.Reports.Models
             c1.Add(new Chunk(contact.ToString(), font));
             t.AddCell(c1);
 
-            var c2 = new Phrase($"{p.DOB} ({p.Age}, {(p.GenderId == 1 ? "M" : p.GenderId == 2 ? "F" : "U")})\n", font);
+            var c2 = new Phrase($"{p.DOB} ({Person.AgeDisplay(p.Age, p.PeopleId)}, {(p.GenderId == 1 ? "M" : p.GenderId == 2 ? "F" : "U")})\n", font);
             c2.Add(new Chunk(cv.MemberStatusCodes().ItemValue(p.MemberStatusId), font));
             t.AddCell(c2);
 

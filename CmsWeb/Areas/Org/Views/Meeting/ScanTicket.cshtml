@@ -1,4 +1,5 @@
-﻿@using CmsWeb
+﻿@using CmsData
+@using CmsWeb
 @using CmsWeb.Areas.Org.Controllers
 @using UtilityExtensions
 @model MeetingController.ScanTicketInfo
@@ -48,7 +49,7 @@
                 <td class="text-center">
                     <input type="checkbox" pid="@Model.person.PeopleId" checked="checked" class="atck" />
                 </td>
-                <td>@Model.person.Name (@Model.person.Age)</td>
+                <td>@Model.person.Name (@Person.AgeDisplay(Model.person.Age, Model.person.PeopleId))</td>
                 <td>@(Model.orgmember != null ? "Group Member" : "Group Visitor")</td>
             </tr>
             <tr>
@@ -69,7 +70,7 @@
                 <td class="text-center">
                     <input type="checkbox" pid="@m.PeopleId" @(m.attended ? "checked=checked" : "") class="atck" />
                 </td>
-                <td class="name">@m.person.Name (@m.person.Age)</td>
+                <td class="name">@m.person.Name (@Person.AgeDisplay(m.person.Age, m.person.PeopleId))</td>
                 <td>@(m.orgmember ? "Group Member" : "Group Visitor")</td>
             </tr>
             }

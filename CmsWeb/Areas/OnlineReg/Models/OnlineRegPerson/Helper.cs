@@ -482,7 +482,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             sb.AppendFormat("Org: {0}<br/>\n", org.OrganizationName);
             if (PeopleId.HasValue)
             {
-                sb.Append($"{person.Name}({person.PeopleId},{person.Gender.Code},{person.MaritalStatus.Code}), Birthday: {person.DOB}({person.Age}), Phone: {Phone.FmtFone()}, {person.EmailAddress}, {EmailAddress}<br />\n");
+                sb.Append($"{person.Name}({person.PeopleId},{person.Gender.Code},{person.MaritalStatus.Code}), Birthday: {person.DOB}({Person.AgeDisplay(person.Age, person.PeopleId)}), Phone: {Phone.FmtFone()}, {person.EmailAddress}, {EmailAddress}<br />\n");
                 if (ShowAddress)
                     sb.AppendFormat("&nbsp;&nbsp;{0}; {1}<br />\n", person.PrimaryAddress, person.CityStateZip);
             }

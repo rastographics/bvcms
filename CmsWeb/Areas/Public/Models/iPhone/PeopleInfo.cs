@@ -23,7 +23,10 @@ namespace CmsWeb.Models.iPhone
         public string First { get; set; }
         public string Last { get; set; }
         public string Zip { get; set; }
-        public string BirthDate { get; set; }
+        public string BirthDate => Person.FormatBirthday(BirthYear, BirthMon, BirthDay, PeopleId);
+        public int? BirthYear { get; set; }
+        public int? BirthMon { get; set; }
+        public int? BirthDay { get; set; }
         public string Address { get; set; }
         public string Address2 { get; set; }
         public string CityStateZip { get; set; }
