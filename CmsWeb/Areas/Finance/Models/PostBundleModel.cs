@@ -191,7 +191,8 @@ namespace CmsWeb.Models
                      select new NamesInfo
                      {
                          Pid = p.PeopleId,
-                         Name = p.Name2 + (p.Age.HasValue ? $" ({Person.AgeDisplay(p.Age, p.PeopleId)})" : ""),
+                         name = p.Name2,
+                         age = p.Age,
                          spouse = spouse.Name,
                          addr = p.PrimaryAddress ?? ""
                      };
@@ -211,7 +212,8 @@ namespace CmsWeb.Models
                      select new NamesInfo
                      {
                          Pid = p.PeopleId,
-                         Name = p.Name2 + (p.Age.HasValue ? $" ({Person.AgeDisplay(p.Age, p.PeopleId)})" : ""),
+                         name = p.Name2,
+                         age = p.Age,
                          email = p.EmailAddress,
                          spouse = spouse.Name,
                          addr = p.PrimaryAddress ?? "",
@@ -452,7 +454,11 @@ namespace CmsWeb.Models
 
         public class NamesInfo
         {
-            public string Name { get; set; }
+            public string Name => name + (age.HasValue ? $" ({Person.AgeDisplay(age, Pid)})" : "");
+
+            internal string name;
+            internal int? age;
+
             public int Pid { get; set; }
             internal List<RecentContribution> recent { get; set; }
 

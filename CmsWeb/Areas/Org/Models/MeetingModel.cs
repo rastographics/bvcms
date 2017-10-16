@@ -88,7 +88,9 @@ namespace CmsWeb.Areas.Org.Models
         }
         public class NamesInfo
         {
-            public string Name { get; set; }
+            public string Name => name + (age.HasValue ? $" ({Person.AgeDisplay(age, Pid)})" : "");
+            internal string name;
+            internal int? age;
             public string Addr { get; set; }
             public int Pid { get; set; }
         }
@@ -154,7 +156,8 @@ namespace CmsWeb.Areas.Org.Models
                     select new NamesInfo()
                                {
                                    Pid = p.PeopleId,
-                                   Name = p.Name2 + (p.Age.HasValue ? $" ({Person.AgeDisplay(p.Age, p.PeopleId)})" : ""),
+                                   name = p.Name2,
+                                   age = p.Age,
                                    Addr = p.PrimaryAddress ?? "",
                                };
             return r.Take(limit);
