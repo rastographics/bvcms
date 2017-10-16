@@ -181,9 +181,13 @@ namespace CmsData
         {
             get
             {
+                if (Util.Host == null || HttpContext.Current == null)
+                    return BirthYear;
                 if (Util.UserPeopleId == PeopleId)
                     return BirthYear;
                 if(Age <= DbUtil.Db.Setting("NoBirthYearOverAge", "18").ToInt())
+                    return BirthYear;
+                if (HttpContext.Current == null)
                     return BirthYear;
                 if(HttpContext.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
                     return null;
@@ -192,6 +196,8 @@ namespace CmsData
         }
         public static int? AgeDisplay(int? age, int? peopleid)
         {
+                if (Util.Host == null || HttpContext.Current == null)
+                    return age;
                 if (Util.UserPeopleId == peopleid)
                     return age;
                 if(age <= DbUtil.Db.Setting("NoBirthYearOverAge", "18").ToInt())
@@ -202,6 +208,8 @@ namespace CmsData
         }
         public static string AgeDisplay(string age, int? peopleid)
         {
+                if (Util.Host == null || HttpContext.Current == null)
+                    return age;
                 if (Util.UserPeopleId == peopleid)
                     return age;
                 if(age.ToInt2() <= DbUtil.Db.Setting("NoBirthYearOverAge", "18").ToInt())
@@ -212,6 +220,8 @@ namespace CmsData
         }
         private static int? Birthyear(int? y, int? age, int? peopleid)
         {
+                if (Util.Host == null || HttpContext.Current == null)
+                    return age;
                 if (Util.UserPeopleId == peopleid)
                     return y;
                 if(age <= DbUtil.Db.Setting("NoBirthYearOverAge", "18").ToInt())
