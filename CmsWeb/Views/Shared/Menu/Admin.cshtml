@@ -12,6 +12,7 @@
   var financeviewonly = User.IsInRole("FinanceViewOnly");
   const bool financetrue = true;
   const bool financefalse = false;
+  var dropdownclass = "col-sm-12";
 }
 @if (admin || manageemails || managetrans || edit || design || finance || manageResources || financedataentry || financeviewonly)
 {
@@ -63,24 +64,58 @@
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             <span class="visible-xs-inline"><i class="fa fa-cogs"></i>&nbsp;&nbsp;</span><span class="hidden-lg hidden-xs">Admin</span><span class="visible-lg-inline visible-xs-inline">Administration</span> <b class="caret"></b>
         </a>
-        <ul id="admin-menu-col-1" class="dropdown-menu dropdown-menu-large menu-1col row">
-            <li class="col-sm-12">
-                <ul>
-                    <li class="dropdown-header dropdown-sub-header">Contributions</li>
-                    @Helper.LiAnchorLink("Deposits Totals", "/FinanceReports/DepositTotalsForDates/")
-                    <li class="dropdown-header dropdown-sub-header">Reports</li>
-                    <li>
-                        <a href='/FinanceReports/DonorTotalSummary' class="dialog-options" data-target="/FinanceReports/DonorTotalSummaryOptions">Donor Total Summary Export</a>
-                    </li>
-                    @Helper.LiAnchorLink("Pledge Report", "/FinanceReports/PledgeReport/")
-                    <li class="dropdown-header dropdown-sub-header">Range Reports</li>
-                    @Helper.LiAnchorLink("Donor Totals by Range", "/FinanceReports/DonorTotalsByRange/")
-                    @Helper.LiAnchorLink("Totals by Age Range", "/FinanceReports/TotalsByFundAgeRange/")
-                    @Helper.LiAnchorLink("Totals by Fund Range", "/FinanceReports/TotalsByFundRange/")
-                    @Helper.LiAnchorLink("Pledge Totals by Fund Range", "/FinanceReports/TotalsByFundRange/?pledged=true")
-                </ul>
-            </li>
-        </ul>
+        if (admin || manageemails || managetrans || edit || design || manageResources || financedataentry)
+        {
+            <ul id="admin-menu-col-1" class="dropdown-menu dropdown-menu-large row">
+                <li class="col-sm-4">
+                    <ul>
+                        <li class="dropdown-header dropdown-sub-header">Contributions</li>
+                        @Helper.LiAnchorLink("Deposits Totals", "/FinanceReports/DepositTotalsForDates/")
+                        <li class="dropdown-header dropdown-sub-header">Reports</li>
+                        <li>
+                            <a href='/FinanceReports/DonorTotalSummary' class="dialog-options" data-target="/FinanceReports/DonorTotalSummaryOptions">Donor Total Summary Export</a>
+                        </li>
+                        @Helper.LiAnchorLink("Pledge Report", "/FinanceReports/PledgeReport/")
+                        <li class="dropdown-header dropdown-sub-header">Range Reports</li>
+                        @Helper.LiAnchorLink("Donor Totals by Range", "/FinanceReports/DonorTotalsByRange/")
+                        @Helper.LiAnchorLink("Totals by Age Range", "/FinanceReports/TotalsByFundAgeRange/")
+                        @Helper.LiAnchorLink("Totals by Fund Range", "/FinanceReports/TotalsByFundRange/")
+                        @Helper.LiAnchorLink("Pledge Totals by Fund Range", "/FinanceReports/TotalsByFundRange/?pledged=true")
+                    </ul>
+                </li>
+                <li class="col-sm-4">
+                    <ul>
+                        @AdminList2(admin, design, managetrans, edit, manageemails, financefalse, developer, manageResources, sendsms, financedataentry)
+                    </ul>
+                </li>
+                <li class="col-sm-4">
+                    <ul>
+                        @AdminList1(admin, design, managetrans, edit, manageemails, financefalse, developer)
+                    </ul>
+                </li>
+            </ul>
+        }
+        else
+        {
+            <ul id="admin-menu-col-1" class="dropdown-menu dropdown-menu-large menu-1col row">
+                <li class="col-sm-12">
+                    <ul>
+                        <li class="dropdown-header dropdown-sub-header">Contributions</li>
+                        @Helper.LiAnchorLink("Deposits Totals", "/FinanceReports/DepositTotalsForDates/")
+                        <li class="dropdown-header dropdown-sub-header">Reports</li>
+                        <li>
+                            <a href='/FinanceReports/DonorTotalSummary' class="dialog-options" data-target="/FinanceReports/DonorTotalSummaryOptions">Donor Total Summary Export</a>
+                        </li>
+                        @Helper.LiAnchorLink("Pledge Report", "/FinanceReports/PledgeReport/")
+                        <li class="dropdown-header dropdown-sub-header">Range Reports</li>
+                        @Helper.LiAnchorLink("Donor Totals by Range", "/FinanceReports/DonorTotalsByRange/")
+                        @Helper.LiAnchorLink("Totals by Age Range", "/FinanceReports/TotalsByFundAgeRange/")
+                        @Helper.LiAnchorLink("Totals by Fund Range", "/FinanceReports/TotalsByFundRange/")
+                        @Helper.LiAnchorLink("Pledge Totals by Fund Range", "/FinanceReports/TotalsByFundRange/?pledged=true")
+                    </ul>
+                </li>
+            </ul>
+        }
     }
     else
     {
