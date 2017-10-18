@@ -374,7 +374,7 @@ namespace CmsData
         }
         public static Task AddTaskAbout(CMSDataContext db, int familyId, int assignTo, string description)
         {
-            var f = db.Families.Single(ff => ff.People.Any(mm => mm.PeopleId == familyId));
+            var f = db.Families.Single(ff => ff.People.Any(mm => mm.FamilyId == familyId));
             var primaryorchild = new[] {PositionInFamily.PrimaryAdult, PositionInFamily.Child};
             var fmembers = (from p in db.People
                             where p.FamilyId == familyId

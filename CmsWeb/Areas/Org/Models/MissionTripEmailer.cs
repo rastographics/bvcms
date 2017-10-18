@@ -60,7 +60,9 @@ namespace CmsWeb.Areas.Org.Models
                      select new SearchInfo
                      {
                          url = string.Format(addsupport, pid, p.PeopleId),
-                         line1 = p.Name2 + (p.Age != null ? $" ({Person.AgeDisplay(p.Age, p.PeopleId)})" : ""),
+                         age = p.Age,
+                         name = p.Name2,
+                         peopleid = p.PeopleId,
                          line2 = p.PrimaryAddress ?? ""
                      };
             var list = rp.Take(8).ToList();
@@ -68,7 +70,7 @@ namespace CmsWeb.Areas.Org.Models
                 list.Add(new SearchInfo
                 {
                     url = string.Format(addsupport, pid, text),
-                    line1 = text
+                    name = text,
                 });
             return list;
         }
@@ -274,8 +276,11 @@ namespace CmsWeb.Areas.Org.Models
         public class SearchInfo
         {
             public string url { get; set; }
-            public string line1 { get; set; }
+            public string line1 => name + (age != null ? $"({Person.AgeDisplay(age, peopleid)})" : "");
             public string line2 { get; set; }
+            internal int peopleid;
+            internal int? age;
+            internal string name;
         }
 
         public class RecipientItem
