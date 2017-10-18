@@ -77,6 +77,8 @@ namespace UtilityExtensions
         {
             if (o == null)
                 return null;
+            if(o is double)
+                return DateTime.FromOADate((double)o);
             return o.ToString().ToDate();
         }
         public static int? ToInt2(this string s)

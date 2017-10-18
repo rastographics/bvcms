@@ -246,7 +246,7 @@ namespace CmsWeb.Models
                     IndividualId = ws.Cells[r, Names["IndividualId"]].Value,
                     Amount = GetDecimal(ws.Cells[r, Names["Amount"]].Value),
                     Date = GetDate(ws.Cells[r, Names["Date"]].Value) ?? DateTime.MinValue,
-                    FundId = GetInt(ws.Cells[r, Names["FundId"]].Value),
+                    FundId = GetInt(ws.Cells[r, Names["FundId"]].Value) ?? 1,
                     FundDescription = GetString(ws.Cells[r, Names["FundDescription"]].Value),
                     FundName = GetString(ws.Cells[r, Names["FundName"]].Value),
                 };
@@ -275,7 +275,7 @@ namespace CmsWeb.Models
                     IndividualId = ws.Cells[r, Names["IndividualId"]].Value,
                     Amount = GetDecimal(ws.Cells[r, Names["PledgeAmount"]].Value),
                     Date = GetDate(ws.Cells[r, Names["PledgeDate"]].Value) ?? DateTime.MinValue,
-                    FundId = GetInt(ws.Cells[r, Names["FundId"]].Value),
+                    FundId = GetInt(ws.Cells[r, Names["FundId"]].Value) ?? 1,
                     FundName = GetString(ws.Cells[r, Names["FundName"]].Value),
                     FundDescription = GetString(ws.Cells[r, Names["FundDescription"]].Value),
                 };

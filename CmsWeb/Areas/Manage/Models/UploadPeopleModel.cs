@@ -308,18 +308,17 @@ namespace CmsWeb.Models
                         OrganizationMember.InsertOrgMembers(db, oid, p.PeopleId, mtid, DateTime.Today, null, false);
                         break;
                     case "dt":
-                        if (vs != null)
-                        {
-                            DateTime dt;
-                            if (Util.DateValid(vs, out dt))
-                                p.AddEditExtraDate(name, dt);
-                        }
-                        else if (o is DateTime)
+                        if (o is DateTime)
                             p.AddEditExtraDate(name, (DateTime)o);
+                        var dt = o.ToDate();
+                        if (dt == null)
+                            continue;
+                        p.AddEditExtraDate(name, dt);
                         break;
                     case "int":
-                        if (o is int)
-                            p.AddEditExtraInt(name, (int)o);
+                        var i = GetInt(o);
+                        if(i.HasValue)
+                            p.AddEditExtraInt(name, i.Value);
                         break;
                     case "bit":
                         p.AddEditExtraBool(name, IsTrue(o));
@@ -529,9 +528,9 @@ namespace CmsWeb.Models
             string s = o?.ToString();
             return s.trim();
         }
-        internal int GetInt(object o)
+        internal int? GetInt(object o)
         {
-            return o.ToInt();
+            return o.ToInt2();
         }
         internal decimal GetDecimal(object o)
         {
@@ -539,6 +538,7 @@ namespace CmsWeb.Models
         }
         internal DateTime? GetDate(object o)
         {
+            //DateTime dt = DateTime.FromOADate(39938);
             var dt = o.ToDate();
             if (dt.HasValue)
                 if (dt.Value < SqlDateTime.MinValue)
