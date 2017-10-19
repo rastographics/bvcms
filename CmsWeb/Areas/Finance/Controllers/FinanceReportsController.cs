@@ -17,7 +17,7 @@ using TableStyles = OfficeOpenXml.Table.TableStyles;
 
 namespace CmsWeb.Areas.Finance.Controllers
 {
-    [Authorize(Roles = "Finance")]
+    [Authorize(Roles = "Finance,FinanceViewOnly")]
     [RouteArea("Finance", AreaPrefix = "FinanceReports"), Route("{action}/{id?}")]
     public class FinanceReportsController : CmsStaffController
     {

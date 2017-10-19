@@ -7,7 +7,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Controllers
 {
-    [Authorize(Roles = "Admin,Finance")]
+    [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
     [RouteArea("Finance", AreaPrefix= "Fund"), Route("{action}/{id?}")]
     public class FundController : CmsStaffController
     {
