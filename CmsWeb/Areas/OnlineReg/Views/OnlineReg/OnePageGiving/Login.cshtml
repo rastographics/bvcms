@@ -1,7 +1,4 @@
-﻿@using UtilityExtensions
-@using CmsData
-@using CmsData.Finance
-@using CmsWeb.Areas.OnlineReg.Models
+﻿@using CmsWeb.Areas.OnlineReg.Models
 @model OnlineRegModel
 @{
   Layout = "~/Views/Shared/onlinereg2.cshtml";
@@ -10,27 +7,34 @@
   Model.ShowLoginInstructions = true;
 }
 <div class="regform">
-  <form id="completeReg" class="DisplayEdit form-horizontal" action="@action" method="post">
-    <h4>@Model.Header</h4>
-    <div class="well">
-      @Html.EditorFor(m => m.username, new {placeholder = "Enter username or email address on record"})
-      @Html.EditorFor(m => m.password, "password")
-      @Html.DivValidationMessage("authentication")
-      <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-9">
-          <div class="text-right">
-            <div class="form-actions">
-              <a href="/OnePageGiving/@Model.Orgid" style="margin-right: 1em;">Give without logging in</a>
-              <input type="submit" id="submitit" value="Login" class="btn btn-primary">
-            </div>
-            @Html.ValidationMessage("loginerror")
-          </div>
+    <form id="completeReg" class="DisplayEdit form-horizontal" action="@action" method="post">
+        <h4>@Model.Header</h4>
+        <div class="login-error">
+            @Html.DivValidationMessage("loginerror")
         </div>
-        <p class="text-center">
-          Need an account, or forgot your password?<br/>
-          <a href="/Account/ForgotPassword/">Request a password</a>
-        </p>
-      </div>
-    </div>
-  </form>
+        <div class="login-panel">
+            <div class="form-group">
+                @Html.TextBoxFor(m => m.username, new {@class = "form-control input-lg", placeholder = "username or email"})
+            </div>
+            <div class="form-group signin-password">
+                @Html.PasswordFor(m => m.password, new {@class = "form-control input-lg", placeholder = "password"})
+                <a href="/Account/ForgotPassword/" class="forgot">Forgot?</a>
+            </div>
+            <div class="form-group">
+                <input type="submit" id="submitit" value="Sign In" class="btn btn-primary btn-block btn-lg">
+            </div>
+        </div>
+        <div class="signin-with">
+            <div class="header">don't want to login? <a href="/OnePageGiving/@Model.Orgid">continue as guest</a></div>
+        </div>
+    </form>
 </div>
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $('input:text').first().focus();
+        });
+    </script>
+
+}

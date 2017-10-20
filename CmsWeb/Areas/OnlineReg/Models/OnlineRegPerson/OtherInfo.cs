@@ -102,11 +102,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return list;
         }
 
+        public bool RetrieveEntireFundList { get; set; }
+
         public IEnumerable<GivingConfirmation.FundItem> FundItemsChosen()
         {
             if (FundItem == null)
                 return new List<GivingConfirmation.FundItem>();
-            var items = AllFunds();
+            var items = RetrieveEntireFundList ? EntireFundList() : AllFunds();
             var q = from i in FundItem
                     join m in items on i.Key equals m.Value.ToInt()
                     where i.Value.HasValue

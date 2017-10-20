@@ -519,6 +519,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return SpecialFundList();
         }
 
+        public SelectListItem[] DesignatedDonationFund()
+        {
+            if (ShouldPullSpecificFund())
+                return ReturnContributionForSetting();
+
+            return new SelectListItem[0];
+        }
+
         private SelectListItem[] ReturnContributionForSetting()
         {
             var fund = DbUtil.Db.ContributionFunds.SingleOrDefault(f => f.FundId == setting.DonationFundId);
@@ -536,9 +544,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool ShouldPullSpecificFund()
         {
-            return Parent.OnlineGiving()
+           return Parent.OnlineGiving()
                    && !Parent.AskDonation()
                    && setting.DonationFundId.HasValue;
+        }
+
+        public static SelectListItem[] EntireFundList()
+        {
+            return (from f in GetAllOnlineFunds()
+                select new SelectListItem
+                {
+                    Text = $"{f.FundName}",
+                    Value = f.FundId.ToString()
+                }).ToArray();
         }
 
         public static SelectListItem[] FullFundList()

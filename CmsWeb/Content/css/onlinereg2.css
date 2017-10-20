@@ -31,460 +31,66 @@ body > div.container {
     margin: 0 auto;
     max-width: 700px;
 }
-/*hody, html {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    background-image: none;
-    font-size: 12px;
-    color: #222;
-}
 
-table, tbody, tfoot, thead, tr, th, td {
-    font: inherit;
-}
-
-div.regform {
-    color: #333;
-    font-family: Verdana,Helvetica,Sans-Serif;
-    margin: 0;
-    padding: 20px;
-    font-size: 15px;
-    width: 500px;
-}
-
-    div.regform table {
-        font-family: Verdana;
-        font-size: 15px;
-    }
-
-    div.regform fieldset {
-        font-family: Verdana;
-        font-size: 15px;
-    }
-
-a:link {
-    color: #333;
-    text-decoration: underline;
-}
-
-a:visited {
-    color: #333;
-}
-
-a:hover {
-    color: #333;
-}
-
-a:active {
-    color: #333;
-}
-
-h1, h2, h3, h4, h5, h6 {
-    color: #000000;
-}
-
-h1 {
-    font-size: 2em;
-    margin-bottom: 0;
-    padding-bottom: 0;
-}
-
-h2 {
-    padding: 0 0 5px;
-}
-
-h3 {
-    font-size: 1.2em;
-}
-
-h4 {
-    font-size: 1.1em;
-}
-
-h5, h6 {
-    font-size: 1em;
-}
-
-fieldset {
-    margin: 1em 0;
-    padding: 1em;
-}
-
-    fieldset p {
-        margin: 2px 12px 10px 10px;
-    }
-
-    fieldset label {
-        display: block;
-    }
-
-        fieldset label.inline {
-            display: inline;
-        }
-
-legend {
-    font-size: 1.1em;
-    font-weight: 600;
-    padding: 2px 4px 8px;
-}
-
-#login {
-    border: 2px solid #808183;
-    background: #f2f3f5;
-    -moz-border-radius: 15px;
-    border-radius: 20px;
-    width: 318px;
-    margin: 15px auto;
-}
-
-    #login h2 {
-        color: #303032;
-        margin: 18px 24px;
-        font-family: Verdana,Helvetica,Sans-Serif;
-    }
-
-    #login h4 {
-        color: #A2A3A4;
-        text-align: right;
-        margin: 30px 24px 10px;
-        border-bottom: 4px solid #A2A3A4;
-        padding-bottom: 4px;
-        font-family: Verdana,Helvetica,Sans-Serif;
-    }
-
-        #login h4 img {
-            margin-bottom: -5px;
-        }
-
-    #login div.source {
-        margin: 30px 12px 10px;
-        font-size: 80%;
-        text-align: center;
-        color: #4A4A49;
-    }
-
-        #login div.source a {
-            color: #4A4A49;
-        }
-
-    #login fieldset {
-        margin: 12px 24px;
-        border: 1px solid #808183;
-        background: #e6e7e9;
-        padding: 0;
-    }
-
-div.login {
-    width: 350px;
-}
-
-    div.login div div {
-        margin: 5px;
-    }
-
-.login input[type="text"], .login input[type="password"] {
-    border: 1px solid #CCCCCC;
-    width: 100%;
-}
-
-textarea {
-    height: 3em;
-    width: 200px;
-}
-
-table#slots {
-    border: 1px solid #E8EEF4;
-}
-
-    table#slots td {
-        border: 1px solid #E8EEF4;
-        padding: 5px;
-    }
-
-    table#slots th {
-        background-color: #E8EEF4;
-        border: 1px solid #E8EEF4;
-        padding: 6px 5px;
-        text-align: center;
-    }
-
-.clear {
-    clear: both;
-}
-
-.error {
-    color: Red;
-}
-
-div#title {
-    display: block;
-    float: left;
-    text-align: left;
-}
-
-#logindisplay {
-    color: White;
-    display: block;
-    font-size: 1.1em;
-    margin: 10px;
-    text-align: right;
-}
-
-    #logindisplay a:link {
-        color: white;
-        text-decoration: underline;
-    }
-
-    #logindisplay a:visited {
-        color: white;
-        text-decoration: underline;
-    }
-
-    #logindisplay a:hover {
-        color: white;
-        text-decoration: none;
-    }
-
-
-table#slots {
-    border: 2px solid black;
-}
-
-th.slot, td.slot {
-    border-left: 2px solid black;
-    border-right: 2px solid black;
-    text-align: center;
-    width: 4em;
-}
-
-td.we {
-    background-color: #EEEEEE;
-}
-
-td.o3 {
-    background-color: #FF6666;
-}
-
-td.o2 {
-    background-color: #FF9999;
-}
-
-td.o1 {
-    background-color: #FFCCCC;
-}
-
-td.m3 {
-    background-color: #006600;
-}
-
-td.m2 {
-    background-color: #00CC00;
-}
-
-td.m1 {
-    background-color: #00FF00;
-}
-
-div.growlUI {
-    background: transparent url(/Content/images/check48.png) no-repeat scroll 10px 10px;
-}
-
-div.growlUI2 {
-    background: transparent url(/images/attention48.png) no-repeat scroll 10px 10px;
-}
-
-    div.growlUI h1, div.growlUI h2, div.growlUI2 h1, div.growlUI2 h2 {
-        color: white;
-        padding: 5px 5px 5px 75px;
-        text-align: left;
-    }
-
-table#leg {
-    margin-left: 2em;
-    margin-top: 4em;
-}
-
-    table#leg td {
-        border: 1px solid #DDDDDD;
-        padding: 5px;
-    }
-
-.DisplayEdit {
-    position: relative;
-}
-
-    .DisplayEdit a.displayedit {
-        font-size: 9px;
-        height: 18px;
-        line-height: 18px;
-        padding-right: 22px;
-        position: absolute;
-        right: 0;
-        text-align: right;
-        top: 0;
-    }
-
-input.wide {
-    border: 1px solid #CCCCCC;
-    width: 100%;
-}
-
-input.short {
-    border: 1px solid #CCCCCC;
-    width: 6em;
-}
-
-input.shorter {
-    border: 1px solid #CCCCCC;
-    width: 2em;
-}
-
-input.wide70 {
-    border: 1px solid #CCCCCC;
-    width: 70%;
-}
-
-#dob {
-    width: 8em;
-}
-
-td.alt0 {
-    background-color: #ddc;
-    width: 100%;
-}
-
-td.alt1 {
-    background-color: #ddd;
-    width: 100%;
-}
-
-.blue {
-    color: blue;
-}
-
-.instruct {
-    color: #808080;
-    font-size: 120%;
-}
-
-h4 {
-    color: #908080;
-    font-size: 90%;
-    padding-left: 11px;
-}
-
-.box {
-    border-width: 1px;
-    border-color: #808080;
-    border-style: solid;
-    padding-left: 10px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-}
-
-a.close {
-    float: right;
-}
-
-div.instructions.find, div.instructions.options {
-    display: none;
-}
-
-.submitbutton {
-    font-size: 90%;
-}
-
-.asterisk {
-    color: Red;
-    font-weight: bold;
-    font-family: monospace;
-}
-
-.red {
-    color: Red;
-}
-
-#username, #password {
-    width: 20em;
-}
-
-table.grid {
-    border-collapse: collapse;
-    text-align: left;
-}
-
-    table.grid thead {
-        border-bottom: 2px solid #555;
-        font-weight: bold;
-        color: #555;
-    }
-
-        table.grid thead th, table.grid thead td {
-            padding-left: 5px;
-            padding-right: 5px;
-        }
-
-    table.grid td {
-        padding: 5px;
-    }
-
-        table.grid td.center {
-            text-align: center;
-            padding: 5px;
-        }
-
-.table-striped tbody > tr:nth-child(odd) > td,
-.table-striped tbody > tr:nth-child(odd) > th {
-    background-color: #eee;
-}
-
-.alt {
-    background-color: #EEE;
-}
-
-.text-label {
-    color: #cdcdcd;
-}
-
-select.options {
-    max-width: 300px;
-}
-
-table.checkboxes {
-    border: 1px solid #ddd;
-    white-space: nowrap;
-}
-
-    table.checkboxes > tbody > tr > td {
-        text-align: center;
-    }
-
-td.right, th.right {
-    text-align: right;
-}
-td.left, th.left {
-    text-align: left;
-}
-td.center, th.center {
-    text-align: center;
-}
-td.nowrap, th.nowrap
-{
-    white-space: nowrap;
-}
-td.top, th.top
-{
-    vertical-align: top;
-}
-td.middle, th.middle
-{
-    vertical-align: middle;
-}
-td.bottom, th.bottom
-{
-    vertical-align: bottom;
-}*/
 div.newattend {
     border: 1px solid lightgrey;
     margin: 10px;
     padding: 10px;
+}
+
+div.login-panel {
+    max-width: 360px;
+    margin: 0 auto;
+    padding: 27px;
+    border: 1px solid #e2e2e2;
+    border-radius: 4px;
+    margin-top: 25px;
+}
+
+div.login-panel .form-group {
+    margin-right: inherit !important;
+    margin-left: inherit !important;
+}
+
+div.signin-password {
+    position: relative;
+}
+
+div.signin-password .forgot {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    color: #555;
+    background: #f1f1f1;
+    border-radius: 2px;
+    line-height: 25px;
+    padding: 0 7px;
+    font-size: 12px;
+}
+
+div.login-error {
+    width: 360px;
+    margin: 0 auto;
+}
+
+div.login-error .field-validation-error {
+    color: inherit !important;
+}
+
+div.signin-with {
+    max-width: 360px;
+    padding: 20px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+div.signin-with .header {
+    font-size: 16px;
+    font-weight: 300;
+    text-align: center;
+    margin: 0 0 20px;
+}
+
+div.signin-with .header a {
+    text-decoration: underline;
 }
