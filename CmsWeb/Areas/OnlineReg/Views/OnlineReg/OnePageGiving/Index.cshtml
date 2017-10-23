@@ -21,10 +21,6 @@
     <script type="text/javascript">
         $.dtoptions = { format: '@Util.jQueryDateFormat2' };
         $("form").validate();
-        @if (designatedFund != null)
-        {
-           <text>$("#AmtToPay").rules("add", { number: true });</text>
-        }
     </script>
     @Fingerprint.Script("/Content/touchpoint/js/onlinereg/OnlineReg2.js")
     @Fingerprint.Script("/Content/touchpoint/js/onlinereg/onlineregpayment2.js")
@@ -150,7 +146,7 @@
             tot = Model.PaymentForm.AmtToPay.GetValueOrDefault();
             <div class="form-group text-right">
                 <h4 class="inline-block">@Model.PaymentForm.Description&nbsp;&nbsp;$ </h4>
-                <input type="text" id="AmtToPay" name="AmtToPay" class="form-control input-lg narrow sum @Html.ErrorClass("AmtToPay")" style="display: inline" placeholder="Amount" required="required" value="@Model.PaymentForm.AmtToPay"/>
+                <input type="text" id="AmtToPay" name="AmtToPay" class="form-control input-lg narrow sum @Html.ErrorClass("AmtToPay")" style="display: inline" placeholder="Amount" value="@Model.PaymentForm.AmtToPay"/>
                 @Html.ValidationMessageLabelFor(m => m.PaymentForm.AmtToPay, "field-validation-error")
             </div>
         }
@@ -201,7 +197,10 @@
                                     <option></option>
                                     @foreach (var fund in funds)
                                     {
-                                        <option value="@fund.Value">@fund.Text</option>
+                                        if (designatedFund == null || (fund.Value != designatedFund.Value))
+                                        {
+                                            <option value="@fund.Value">@fund.Text</option>
+                                        }
                                     }
                                 </select>
                             </td>

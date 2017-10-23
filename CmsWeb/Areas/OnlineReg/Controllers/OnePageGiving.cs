@@ -211,8 +211,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 case RouteType.ModelAction:
                     if (ti.Approved == true)
                     {
-                        TempData["onlineregmodel"] = Util.Serialize(m);
-                        return Redirect("/OnePageGiving/ThankYou");
+                        var url = $"/OnePageGiving/ThankYou/{id}{(pf.testing ? $"?testing=true&source={pf.source}" : $"?source={pf.source}")}";
+                        return Redirect(url);
                     }
                     ErrorSignal.FromCurrentContext().Raise(new Exception(ti.Message));
                     ModelState.AddModelError("TranId", ti.Message);
@@ -234,17 +234,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
         }
 
-        [HttpGet, Route("~/OnePageGiving/ThankYou")]
-        public ActionResult OnePageGivingThankYou()
+        [HttpGet, Route("~/OnePageGiving/ThankYou/{id:int}")]
+        public ActionResult OnePageGivingThankYou(int id, bool? testing, string source)
         {
             Response.NoCache();
-            var s = (string) TempData["onlineregmodel"];
-            if (s == null)
-            {
-                DbUtil.LogActivity("OnlineReg Error PageRefreshNotAllowed");
-                return Message("Registration cannot be completed after a page refresh.");
-            }
-            var m = Util.DeSerialize<OnlineRegModel>(s);
+            var m = new OnlineRegModel(Request, id, testing, null, null, source)
+            { URL = "/OnePageGiving/" + id };
             return View("OnePageGiving/ThankYou", m);
         }
 
