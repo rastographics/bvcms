@@ -208,7 +208,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             var access = DbUtil.Db.Setting("LimitAccess", "");
             if (access.HasValue())
                 if (!user.InRole("Developer"))
-                    return Message($"Site is {access}, contact {DbUtil.AdminMail} for help");
+                    return Message(access);
 
             var newleadertag = DbUtil.Db.FetchTag("NewOrgLeadersOnly", user.PeopleId, DbUtil.TagTypeId_System);
             if (newleadertag != null)

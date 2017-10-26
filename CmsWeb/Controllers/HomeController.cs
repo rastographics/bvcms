@@ -303,8 +303,13 @@ namespace CmsWeb.Controllers
 
             if (script.StartsWith("Not Authorized"))
                 return Message(script);
-            ViewBag.Name = title ?? $"{name.SpaceCamelCase()} {parameter}";
             ViewBag.Report = name;
+            ViewBag.Name = title ?? $"{name.SpaceCamelCase()} {parameter}";
+            if (script.Contains("pagebreak"))
+            {
+                ViewBag.report = PythonModel.PageBreakTables(DbUtil.Db, script, p);
+                return View("RunScriptPageBreaks");
+            }
             ViewBag.Url = Request.Url?.PathAndQuery;
             var rd = cn.ExecuteReader(script, p, commandTimeout: 1200);
             ViewBag.ExcelUrl = Request.Url?.AbsoluteUri.Replace("RunScript/", "RunScriptExcel/");

@@ -1,0 +1,19 @@
+﻿@model string
+@{
+    ViewBag.Title = "SQL Report";
+    ViewBag.ReportPageHeader = ViewBag.Name;
+    Layout = ViewExtensions2.TouchPointLayout();
+}
+@section head{
+    <style>
+        @@media print { div.page-break  { display: block; page-break-before: always; } }   
+    </style>
+}
+<div class="report box box-responsive">
+  <div class="box-content">
+    <div class="table-responsive">
+      @Html.Raw(ViewBag.Report)
+    </div>
+  </div>
+</div>
+

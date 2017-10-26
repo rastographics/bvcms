@@ -3019,6 +3019,7 @@
     <Content Include="Views\Home\Warmup.cshtml" />
     <Content Include="Views\Home\TestBackground.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+    <Content Include="Views\Home\RunScriptPageBreaks.cshtml" />
     <None Include="Web.Impersonate.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

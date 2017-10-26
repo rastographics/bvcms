@@ -792,6 +792,18 @@ namespace CmsWeb.Areas.Search.Models
             if (!content.Contains("@OrgIds", ignoreCase: true))
                 throw new Exception("missing @OrgIds");
 
+            var p = GetSqlParameters(oids, meetingDate1, meetingDate2, content);
+            var cs = HttpContext.Current.User.IsInRole("Finance")
+                ? Util.ConnectionStringReadOnlyFinance
+                : Util.ConnectionStringReadOnly;
+            var cn = new SqlConnection(cs);
+            cn.Open();
+            return cn.ExecuteReader(content, p, commandTimeout: 1200);
+        }
+
+        public DynamicParameters GetSqlParameters(string oids, DateTime? meetingDate1, DateTime? meetingDate2,
+                                                          string content)
+        {
             var p = new DynamicParameters();
             p.Add("@OrgIds", oids);
             if (content.Contains("@MeetingDate1", ignoreCase: true))
@@ -799,14 +811,9 @@ namespace CmsWeb.Areas.Search.Models
                 p.Add("@MeetingDate1", meetingDate1);
                 p.Add("@MeetingDate2", meetingDate2);
             }
-            if(content.Contains("@userid", ignoreCase:true))
+            if (content.Contains("@userid", ignoreCase: true))
                 p.Add("@userid", Util.UserId);
-            var cs = HttpContext.Current.User.IsInRole("Finance")
-                ? Util.ConnectionStringReadOnlyFinance
-                : Util.ConnectionStringReadOnly;
-            var cn = new SqlConnection(cs);
-            cn.Open();
-            return cn.ExecuteReader(content, p, commandTimeout: 1200);
+            return p;
         }
 
         public static OrgSearchModel DecodedJson(string parameter)

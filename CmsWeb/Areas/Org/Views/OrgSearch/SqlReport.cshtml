@@ -3,6 +3,11 @@
     ViewBag.ReportPageHeader = ViewBag.DisplayName;
     Layout = ViewExtensions2.TouchPointLayout();
 }
+@section head{
+    <style>
+        @@media print { div.page-break  { display: block; page-break-before: always; } }   
+    </style>
+}
 <div class="report box box-responsive">
   <div class="box-content">
     <form action="@ViewBag.ExcelUrl" target="_blank" method="POST">
