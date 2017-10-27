@@ -24,6 +24,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             eqset = 0;
             txset = 0;
             menuset = 0;
+            InitializeOptionIfNeeded();
+            var optionN = 0;
 
             foreach (var e in x.Root.Elements())
             {
@@ -46,7 +48,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         ReadYesNoChoices(e);
                         break;
                     case "option":
-                        ReadDropdownOption(e);
+                        ReadDropdownOption(e, optionN++);
                         break;
                     case "Checkbox":
                         ReadCheckboxChoice(e);
@@ -85,11 +87,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return a?.Value ?? string.Empty;
         }
 
-        private void ReadDropdownOption(XElement e)
+        private void ReadDropdownOption(XElement e, int n)
         {
-            if (option == null)
-                option = new List<string>();
-            option.Add(e.Value);
+            option[n] = e.Value;
         }
 
         private void ReadMenuItemChoice(XElement e)

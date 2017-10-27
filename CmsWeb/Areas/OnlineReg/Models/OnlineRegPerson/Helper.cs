@@ -640,9 +640,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             if (_setting == null)
                 return;
-            var ndd = setting.AskItems.Count(aa => aa.Type == "AskDropdown");
-            if (ndd > 0 && option == null)
-                option = new string[ndd].ToList();
+            InitializeOptionIfNeeded();
 
             var neqsets = setting.AskItems.Count(aa => aa.Type == "AskExtraQuestions");
             if (neqsets > 0 && ExtraQuestion == null)
@@ -673,6 +671,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (!Suggestedfee.HasValue && setting.AskVisible("AskSuggestedFee"))
                 Suggestedfee = setting.Fee;
         }
+
+        private void InitializeOptionIfNeeded()
+        {
+            if (option != null)
+                return;
+            var ndd = setting.AskItems.Count(aa => aa.Type == "AskDropdown");
+            if (ndd > 0)
+                option = new string[ndd].ToList();
+        }
+
         public void Log(string action)
         {
             DbUtil.LogActivity("OnlineReg " + action, masterorgid ?? orgid, PeopleId ?? Parent.UserPeopleId, Parent.DatumId);
