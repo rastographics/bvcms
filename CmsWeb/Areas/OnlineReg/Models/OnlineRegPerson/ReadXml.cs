@@ -24,7 +24,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
             eqset = 0;
             txset = 0;
             menuset = 0;
-            InitializeOptionIfNeeded();
             var optionN = 0;
 
             foreach (var e in x.Root.Elements())
@@ -89,6 +88,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void ReadDropdownOption(XElement e, int n)
         {
+            InitializeOptionIfNeeded();
             option[n] = e.Value;
         }
 
