@@ -29,6 +29,9 @@
 
                 @foreach (var p in Model.PeopleList())
                 {
+                    var age = Person.AgeDisplay(p.Age, p.PeopleId);
+                    var bday = p.BirthDate;
+                    var dash = age.HasValue() && bday.HasValue() ? "-" : "";
                     <tr>
                         <td>
                           <a href='/Person2/@p.PeopleId' class="target" @target>@p.Name</a>
@@ -39,7 +42,7 @@
                         </td>
                         <td>
                             @p.MemberStatus<br />
-                            @Person.AgeDisplay(p.Age, p.PeopleId) - @p.BirthDate
+                            @age @dash @bday
                         </td>
                         <td>
                             <a href='http://www.google.com/maps?q=@p.Address,+@p.CityStateZip' target="_blank">@p.Address</a>

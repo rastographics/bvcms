@@ -166,10 +166,13 @@ namespace CmsData
         }
         public static int? GetAge(int? y, int? m, int? d)
         {
-            DateTime dt;
-            var s = $"{y:yyyy}-{m:MM}-{d:dd}";
-            if (!DateTime.TryParse(s, out dt))
+            if (y == null)
                 return null;
+            //DateTime dt;
+            //var s = $"{y:yyyy}-{m:MM}-{d:dd}";
+            var dt = new DateTime(y.Value, m ?? 1, d ?? 1);
+//            if (!DateTime.TryParse(s, out dt))
+//                return null;
             var today = DateTime.Today;
             var age = today.Year - dt.Year;
             if (dt > today.AddYears(-age))
