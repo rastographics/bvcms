@@ -139,7 +139,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			MobileMessage br = new MobileMessage();
 			br.setNoError();
-			br.data = $"{DbUtil.Db.ServerLink( $"Logon?ReturnUrl={HttpUtility.UrlEncode( message.argString )}&otltoken={ot.Id.ToCode()}" )}";
+			br.data = $"{DbUtil.Db.ServerLink( $"Logon?ReturnUrl={HttpUtility.UrlEncode( $"{message.argString}?{message.getSourceQueryString()}" )}&otltoken={ot.Id.ToCode()}" )}";
 
 			return br;
 		}
