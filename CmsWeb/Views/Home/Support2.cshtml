@@ -4,109 +4,95 @@
     ViewBag.PageHeader = "Need help using this software?";
     Layout = ViewExtensions2.TouchPointLayout();
     var active2 = TempData["ActiveRecords2"].ToInt();
-    var googlehelp = @"
-        The following uses a Google Custom Search Engine.
-        Enter a word or two relating to the process you need help with and click the Search button.
-        The results page will have 3 tabs: All, Documentation, & TouchPoint News Blog.
-    ";
 }
 @section head{
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
     <style>
-        div.google-cse-container *,
-        div.google-cse-container *:before,
-        div.google-cse-container *:after {
-          -webkit-box-sizing: initial !important;
-          -moz-box-sizing: initial !important;
-          box-sizing: initial !important;
-        }
-
-        div.gsc-tabsArea {
-            font-size: 1.1em !important;
-        }
-        #body {
-            font-family: Arial,Helvetica;
-        }
+        #body { font-family: Arial, Helvetica; }
     </style>
 }
-<form id="requestform">
-    <div class="row">
-        <div class="col-sm-12">
-            <ul class="nav nav-tabs" id="support-tabs">
-                <li class="active"><a href="#documentation" aria-controls="documentation" data-toggle="tab"><i class="fa fa-search"></i>&nbsp;&nbsp;Search Documentation</a></li>
-                @if (Util.IsHosted)
-                {
-                    <li><a id="supportRequestTab" href="#supportRequest" aria-controls="supportRequest" data-toggle="tab"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Contact Support</a></li>
-                }
-            </ul>
-            <div class="tab-content">
-                <div class="tab-pane fade in active" id="documentation">
-                    <div class="row">
-                        <div class="col-lg-9">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="alert alert-info">
-                                        <p>@googlehelp</p>
-                                        <p><a href="http://docs.touchpointsoftware.com" target="_blank" class="btn btn-info">Documentation Website</a></p>
-                                    </div>
+<div class="row">
+    <div class="col-sm-12">
+        <ul class="nav nav-tabs" id="support-tabs">
+            <li class="active">
+                <a href="#documentation" aria-controls="documentation" data-toggle="tab"><i class="fa fa-search"></i>&nbsp;&nbsp;Search Documentation</a>
+            </li>
+            @if (Util.IsHosted)
+            {
+                <li>
+                    <a id="supportRequestTab" href="#supportRequest" aria-controls="supportRequest" data-toggle="tab"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Contact Support</a>
+                </li>
+            }
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade in active" id="documentation">
+                <div class="row">
+                    <div class="col-lg-9">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="alert alert-info">
+                                    <p>
+                                        <a href="http://docs.touchpointsoftware.com" target="_blank" class="btn btn-info">Documentation Website</a>
+                                    </p>
+                                </div>
+                                <form action="http://docs.touchpointsoftware.com/search.html" method="get" target="_blank">
                                     <div class="input-group input-group-lg">
-                                        <input type="text" id="cse-search-input-box-id" autocomplete="off" class="form-control" placeholder="Begin search here...">
+                                        <input type="text" name="q" autocomplete="off" class="form-control" placeholder="Begin search here...">
                                         <span class="input-group-btn">
-                                            <button class="btn btn-primary" id="csearch" type="submit"><i class="fa fa-search"></i> Search</button>
+                                            <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Search</button>
                                         </span>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row google-cse-container">
-                                <gcse:searchresults-only></gcse:searchresults-only>
+                                </form>
                             </div>
                         </div>
-                        <div class="col-lg-3">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h4 class="panel-title">
-                                        Hosting & Support @(Util.IsHosted ? "Provided by" : "Available at")
-                                    </h4>
-                                </div>
-                                <div class="panel-body text-center">
-                                    <a href="http://touchpointsoftware.com" target="_blank">
-                                        <img src="/Content/images/tps_full_logo.png" width="225" /><br />
-                                        http://touchpointsoftware.com
-                                    </a>
-                                </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    Hosting & Support @(Util.IsHosted ? "Provided by" : "Available at")
+                                </h4>
                             </div>
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h4 class="panel-title">
-                                        Built with the Open Source Project
-                                    </h4>
-                                </div>
-                                <div class="panel-body text-center">
-                                    <a href="https://github.com/bvcms/bvcms" target="_blank">
-                                        <img src="/Content/images/bvcms150.png" /><br />
-                                        https://github.com/bvcms/bvcms
-                                    </a>
-                                    <br /><br />
-                                    <div>Current Server Date:<br />@Util.Now</div>
-                                    <div>Build Date:<br />@Util.BuildDate()</div>
-                                    <br />
-                                    <div>
-                                        @if (active2 > 0)
-                                        {
-                                            @:Active Records: @active2.ToString("N0")
-                                        }
-                                        else if (User.IsInRole("Admin"))
-                                        {
-                                            @Helper.AnchorLink("See Active Records", "javascript:$.block();window.location='/Home/ActiveRecords';")
-                                        }
-                                    </div>
+                            <div class="panel-body text-center">
+                                <a href="http://touchpointsoftware.com" target="_blank">
+                                    <img src="/Content/images/tps_full_logo.png" width="225"/><br/>
+                                    http://touchpointsoftware.com
+                                </a>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    Built with the Open Source Project
+                                </h4>
+                            </div>
+                            <div class="panel-body text-center">
+                                <a href="https://github.com/bvcms/bvcms" target="_blank">
+                                    <img src="/Content/images/bvcms150.png"/><br/>
+                                    https://github.com/bvcms/bvcms
+                                </a>
+                                <br/><br/>
+                                <div>Current Server Date:<br/>@Util.Now</div>
+                                <div>Build Date:<br/>@Util.BuildDate()</div>
+                                <br/>
+                                <div>
+                                    @if (active2 > 0)
+                                    {
+                                        @:Active Records: @active2.ToString("N0")
+                                    }
+                                    else if (User.IsInRole("Admin"))
+                                    {
+                                        @Helper.AnchorLink("See Active Records", "javascript:$.block();window.location='/Home/ActiveRecords';")
+                                    }
                                 </div>
                             </div>
                         </div>
-                    </div>               
+                    </div>
                 </div>
-                @if (Util.IsHosted)
-                {
+            </div>
+            @if (Util.IsHosted)
+            {
+                <form id="requestform">
                     <div class="tab-pane fade" id="supportRequest">
                         <div class="row">
                             <div class="col-md-8">
@@ -117,14 +103,14 @@
                                     <div class="form-group">
                                         <label for="cc" class="col-md-2 control-label">Subject:</label>
                                         <div class="col-md-10">
-                                            <input type="text" id="subj" name="subj" class="form-control" />
+                                            <input type="text" id="subj" name="subj" class="form-control"/>
                                             <span class="help-block">Enter a very brief description here</span>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="cc" class="col-md-2 control-label">CC:</label>
                                         <div class="col-md-10">
-                                            <input type="text" id="cc" name="cc" class="form-control" />
+                                            <input type="text" id="cc" name="cc" class="form-control"/>
                                             <span class="help-block">Enter comma separated e-mail addresses to copy the request.</span>
                                         </div>
                                     </div>
@@ -141,9 +127,9 @@
                                     </div>
                                     <div class="form-group">
                                         <div class="col-md-offset-2 col-md-10">
-                                            <br />
+                                            <br/>
                                             <textarea name="body" id="body" class="form-control"></textarea>
-                                            <br />
+                                            <br/>
                                             <p class="pull-right">
                                                 <input id="sendSupport" type="button" class="btn btn-primary btn-lg" value="Submit Request">
                                             </p>
@@ -161,12 +147,12 @@
                                     <div class="panel-body">
                                         <p>Hello!</p>
                                         <p>
-                                            I am looking at John Doe’s record (people ID # 1015).  He is a member of the Adult
+                                            I am looking at John Doe’s record (people ID # 1015). He is a member of the Adult
                                             Choir (Org ID # 27), but I can’t mark him present for a choir meeting several weeks
-                                            ago (6/23/13 at 9:30 AM).  Can you please look into this issue for me?
+                                            ago (6/23/13 at 9:30 AM). Can you please look into this issue for me?
                                         </p>
                                         <p>
-                                            Thank you!<br />
+                                            Thank you!<br/>
                                             Mary Smith
                                         </p>
                                     </div>
@@ -180,12 +166,12 @@
                                     <div class="panel-body">
                                         <p>Hello!</p>
                                         <p>
-                                            I am on John Doe’s record (people ID # 1015).  I was trying to look at his enrollments
+                                            I am on John Doe’s record (people ID # 1015). I was trying to look at his enrollments
                                             tab, but as soon as I click on “Enrollment”, I get an error message, that says
-                                            “Object not set to an instance of an object”. Can you please look into this for me?<br />
+                                            “Object not set to an instance of an object”. Can you please look into this for me?<br/>
                                         </p>
                                         <p>
-                                            Thank you!<br />
+                                            Thank you!<br/>
                                             Mary Smith
                                         </p>
                                     </div>
@@ -193,16 +179,15 @@
                             </div>
                         </div>
                     </div>
-                }
-            </div>
+                </form>
+            }
         </div>
     </div>
-    <input type="hidden" name="last-search" id="last-search"/>
-</form>
+</div>
 @section scripts
 {
-  @ViewExtensions2.CkEditor()
-  @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
-  @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
-  @Fingerprint.Script("/Content/touchpoint/js/support/Support2.js")
+    @ViewExtensions2.CkEditor()
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
+    @Fingerprint.Script("/Content/touchpoint/js/support/Support2.js")
 }

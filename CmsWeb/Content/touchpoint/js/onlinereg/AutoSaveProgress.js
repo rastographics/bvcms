@@ -4,10 +4,12 @@
         if ($("#SavedProgress").length > 0)
             $.AutoSaveEnabled = false;
         if ($.AutoSaveEnabled) {
-            var q = $("#completeReg").serialize();
-            $.post("/OnlineReg/AutoSaveProgress", q, function(ret) {
-                $("#DatumId").val(ret);
-            });
+            if ($("#completeReg").valid()) {
+                var q = $("#completeReg").serialize();
+                $.post("/OnlineReg/AutoSaveProgress", q, function(ret) {
+                    $("#DatumId").val(ret);
+                });
+            }
             setTimeout(AutoSaveProgress, 30000);
         }
     }
