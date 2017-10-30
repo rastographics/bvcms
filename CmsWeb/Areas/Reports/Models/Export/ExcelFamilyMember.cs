@@ -22,6 +22,7 @@ namespace CmsWeb.Models
         public string Age { get; set; }
         public string School { get; set; }
         public string Married { get; set; }
+        public string Gender { get; set; }
         public string FamilyName { get; set; }
         public int FamilyId { get; set; }
         public string FamilyPosition { get; set; }

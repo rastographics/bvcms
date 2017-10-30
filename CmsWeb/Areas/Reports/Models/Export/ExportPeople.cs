@@ -192,6 +192,7 @@ namespace CmsWeb.Models
                          Age = Person.AgeDisplay(p.Age, p.PeopleId).ToString(),
                          School = p.SchoolOther,
                          Married = p.MaritalStatus.Description,
+                         Gender = p.Gender.Description,
                          FamilyName = famname,
                          FamilyId = p.FamilyId,
                          FamilyPosition = pos.ToString(),
