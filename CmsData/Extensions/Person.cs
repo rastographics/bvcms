@@ -224,7 +224,7 @@ namespace CmsData
         private static int? Birthyear(int? y, int? age, int? peopleid)
         {
                 if (Util.Host == null || HttpContext.Current == null)
-                    return age;
+                    return y;
                 if (Util.UserPeopleId == peopleid)
                     return y;
                 if(age <= DbUtil.Db.Setting("NoBirthYearOverAge", "18").ToInt())
