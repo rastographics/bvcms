@@ -801,6 +801,14 @@ namespace CmsWeb
             return new HtmlString("<link href=\"//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,600,300,700\" rel=\"stylesheet\">\n");
         }
 
+        public static HtmlString GoogleAnalytics()
+        {
+            var s = ConfigurationManager.AppSettings["GoogleAnalytics"];
+            if(s.HasValue())
+                return new HtmlString($"<script>{s}</script>");
+            return null;
+        }
+
         public static HtmlString OldStyles()
         {
             return Fingerprint.Css("/content/styles/bundle.stylecss.css");
