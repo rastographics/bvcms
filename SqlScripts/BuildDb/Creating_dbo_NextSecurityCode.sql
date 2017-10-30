@@ -1,8 +1,3 @@
--- =============================================
--- Author:		<Author,,Name>
--- Create date: <Create Date,,>
--- Description:	<Description,,>
--- =============================================
 CREATE PROCEDURE [dbo].[NextSecurityCode]
 AS
 BEGIN
@@ -20,6 +15,7 @@ BEGIN
 								   ELSE 0 END)
 	IF (@needcodes = 1)
 	BEGIN
+		EXEC dbo.SetupNumbers
 		DELETE dbo.SecurityCodes WHERE Id IS NOT NULL
 		IF(@4code = 1)
 			INSERT dbo.SecurityCodes ( Id, Code, DateUsed )
@@ -47,7 +43,6 @@ BEGIN
 	COMMIT
 	SELECT TOP 1 * FROM dbo.SecurityCodes WHERE id = @id
 END
-
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

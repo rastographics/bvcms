@@ -10038,12 +10038,28 @@ SET IDENTITY_INSERT [dbo].[MobileAppVideoTypes] OFF
 PRINT(N'Operation applied to 2 rows out of 2')
 
 PRINT(N'Add rows to [dbo].[OrgFilter]')
-INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('4425c27b-e900-48cd-81cf-11447870221b', 33, '10', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2017-10-03 12:07:29.067', NULL)
-INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('c061a36a-82dd-46ef-8e38-9eee4d8d2cdd', 34, '10', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2017-10-03 11:52:25.443', NULL)
-INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('69432f69-0902-4f90-883d-a3c213d86c8f', 34, '10', '', '', NULL, 0, 0, 0, 611, '2017-10-03 11:52:01.613', NULL)
-INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('4fcde665-e8d4-47f2-aa66-a7d4ebacde12', 34, '10', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2017-10-03 11:52:15.583', NULL)
-INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('7e20be6d-6b58-4b61-beaa-df4d61d8a595', 33, '10', '', '', NULL, 0, 0, 0, 611, '2017-10-03 12:07:28.223', NULL)
-PRINT(N'Operation applied to 5 rows out of 5')
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('d9129026-eeae-4066-8b79-03dbdcd27e5d', 34, '10', '', '', NULL, 0, 0, 0, 613, '2017-10-16 15:31:48.367', NULL)
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('23161725-95a2-40f6-9ca6-0734b9e6c2a0', 33, '10', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2017-10-17 14:48:55.780', NULL)
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('bfbdc25b-3c6b-49b5-a4ed-108946b6c80f', 34, '10', '', '', NULL, 0, 0, 0, 615, '2017-10-16 15:34:17.960', NULL)
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('876762c6-dbc1-4367-a52c-26a862ed7391', 33, '10', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2017-10-16 14:41:05.897', NULL)
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('b7c5e362-56bc-41c7-93f0-308b4a14a7d7', 33, '10', '', '', NULL, 0, 0, 0, 613, '2017-10-16 14:40:06.077', NULL)
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('b97c70c8-f57f-4af5-b7b6-52933e2d4ef7', 34, '10', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2017-10-16 15:34:18.677', NULL)
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('74475f07-06f5-4379-9450-54b7f65919a4', 34, '10', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2017-10-16 15:31:49.233', NULL)
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('1bb75024-2148-45e4-99bd-710ba676f166', 34, '10', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2017-10-16 14:29:15.500', NULL)
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('5acb4548-5d55-481e-a12e-8dfdf076960d', 34, '10', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2017-10-16 13:51:44.593', NULL)
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('65e4def0-cc90-4a8e-9ec8-8f31699e4c97', 34, '10', '', '', NULL, 0, 0, 0, 613, '2017-10-16 13:20:09.377', NULL)
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('b0451da0-5184-4c7a-bfa8-9952bcbf35e7', 34, '10', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2017-10-16 13:17:34.330', NULL)
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('48a4fc5d-c8bd-43c3-b4a0-9fbbfb455470', 34, '10', '', '', NULL, 0, 0, 0, 613, '2017-10-16 13:23:24.940', NULL)
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('0ca553ae-a02e-4618-bbd0-a044721a28d3', 34, '10', '', '', NULL, 0, 0, 0, 613, '2017-10-16 13:16:32.157', NULL)
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('6dae3245-6c90-4e90-9422-b90ea42bfc81', 34, '10', '', '', NULL, 0, 0, 0, 615, '2017-10-16 13:51:40.970', NULL)
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('3b002dbe-38d5-47e1-86ab-c8a9e891d7dc', 34, '10', '', '', NULL, 0, 0, 0, 613, '2017-10-16 14:29:14.507', NULL)
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('968074d5-6ceb-4aec-b0bb-c925863d89c2', 2189360, '10', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2017-10-16 15:30:37.673', NULL)
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('54dc4ffc-028a-44f7-8546-d93dd0e813a9', 34, '10', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2017-10-17 14:46:07.733', NULL)
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('e016dd9d-3f05-42fb-a10d-dd25631de705', 34, '10', '', '', NULL, 0, 0, 0, 615, '2017-10-17 14:45:31.500', NULL)
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('76d85eee-09cb-4745-83ab-ddc626f9a1f4', 34, '10', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2017-10-16 13:23:25.693', NULL)
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('53d3f43e-dc9c-4077-b453-eb618fd4509c', 34, '10', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2017-10-16 13:20:14.000', NULL)
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('acfb160b-02ea-4e5a-b8b7-f5a87c8dc547', 33, '10', '', '', NULL, 0, 0, 0, 615, '2017-10-17 14:48:52.940', NULL)
+PRINT(N'Operation applied to 21 rows out of 21')
 
 PRINT(N'Add row to [dbo].[Picture]')
 SET IDENTITY_INSERT [dbo].[Picture] ON
@@ -10056,6 +10072,14 @@ INSERT INTO [dbo].[Program] ([Id], [Name], [RptGroup], [StartHoursOffset], [EndH
 SET IDENTITY_INSERT [dbo].[Program] OFF
 
 PRINT(N'Add rows to [dbo].[Query]')
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('d9129026-eeae-4066-8b79-03dbdcd27e5d', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="d9129026-eeae-4066-8b79-03dbdcd27e5d" Order="0" Field="Group">
+  <Condition Id="1d255032-e735-4c39-bfa4-35f926a1589b" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2017-10-16 15:31:47.333', '2017-10-16 15:31:47.333', N'OrgFilter', 0, 0, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('23161725-95a2-40f6-9ca6-0734b9e6c2a0', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="23161725-95a2-40f6-9ca6-0734b9e6c2a0" Order="0" Field="Group">
+  <Condition Id="53e77738-480a-4ea0-af24-a1ce67cab767" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2017-10-17 14:48:55.780', '2017-10-17 14:48:55.780', N'OrgFilter', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('83369c20-ae88-40c2-a00d-0c1e218fdefe', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="83369c20-ae88-40c2-a00d-0c1e218fdefe" Order="0" Field="Group" OnlineReg="0" OrgStatus="0">
   <Condition Id="be1888db-1795-4e34-bf7c-bf77e51fc2a6" Order="2" Field="MemberStatusId" Comparison="Equal" CodeIdValue="10,Member" />
@@ -10065,10 +10089,10 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
 <Condition Id="7f56d1d0-c576-41d1-b907-0d1bb68f43a8" Order="0" Field="Group" Comparison="AllTrue">
   <Condition Id="37da2282-e59c-4f17-aa7b-b400f99633a9" Order="2" Field="IsCurrentPerson" Comparison="Equal" CodeIdValue="1,T" />
 </Condition>', N'System', '2014-05-05 00:45:25.073', '2014-05-05 00:45:25.073', N'IsCurrentPerson', 0, 0, NULL)
-INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('4425c27b-e900-48cd-81cf-11447870221b', N'<?xml version="1.0" encoding="utf-16"?>
-<Condition Id="4425c27b-e900-48cd-81cf-11447870221b" Order="0" Field="Group">
-  <Condition Id="81b2ea00-88b7-4066-a6f7-c1c8eb2841f9" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
-</Condition>', N'system', '2017-10-03 12:07:29.067', '2017-10-03 12:07:29.067', N'OrgFilter', 0, 0, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('bfbdc25b-3c6b-49b5-a4ed-108946b6c80f', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="bfbdc25b-3c6b-49b5-a4ed-108946b6c80f" Order="0" Field="Group">
+  <Condition Id="5d0ebd20-9252-467e-84bf-4af3e1320099" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2017-10-16 15:34:17.820', '2017-10-16 15:34:17.820', N'OrgFilter', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('eee06dd1-35d2-40e3-9c77-15e9d0113edd', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="977d8eb1-4fd1-4fdd-b953-9534fbf28ff5" Order="0" Field="Group">
   <Condition Id="d13ea092-cca0-49db-83e8-9caddf1885ff" Order="2" Field="RecentContactType" Comparison="OneOf" CodeIdValue="4,Card Sent;5,EMail Sent;6,Info Pack Sent;3,Letter Sent;7,Other;1,Personal Visit;2,Phone Call;99,Unknown" Days="7" />
@@ -10081,10 +10105,18 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
 <Condition Id="efd9c925-7798-47cc-9f38-2141af6d615f" Order="0" Field="Group">
   <Condition Id="195a8ab5-8eae-41b9-ac3c-8308e8bf1715" Order="2" Field="RecentRegistrationType" Comparison="OneOf" CodeIdValue="1,Join Organization;10,User Selects Organization;11,Compute Org By Birthday;15,Manage Subscriptions;14,Manage Recurring Giving;8,Online Giving;9,Online Pledge;16,Special Script" Program="0" Division="0" Organization="0" OrgType="0" Days="7" />
 </Condition>', N'david', '2016-01-07 13:51:16.347', '2016-01-07 13:52:17.503', N'scratchpad', 0, 2, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('876762c6-dbc1-4367-a52c-26a862ed7391', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="876762c6-dbc1-4367-a52c-26a862ed7391" Order="0" Field="Group">
+  <Condition Id="8a6c87ec-5ffe-49fe-9d61-8d8dc34618d6" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2017-10-16 14:41:05.897', '2017-10-16 14:41:05.897', N'OrgFilter', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('8f397843-b99b-491c-b0a4-2ba16098f8ee', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="8f397843-b99b-491c-b0a4-2ba16098f8ee" Order="0" Field="Group">
   <Condition Id="2574fc31-439d-47db-9da3-86a05c408aa5" Order="2" Field="RecentRegistrationType" Comparison="OneOf" CodeIdValue="1,Join Organization;10,User Selects Organization;11,Compute Org By Birthday;15,Manage Subscriptions;14,Manage Recurring Giving;8,Online Giving;9,Online Pledge;16,Special Script" Program="0" Division="0" Organization="0" OrgType="0" Days="7" />
 </Condition>', N'david', '2016-01-07 13:51:22.603', '2016-01-07 13:53:05.870', N'scratchpad', 0, 2, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('b7c5e362-56bc-41c7-93f0-308b4a14a7d7', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="b7c5e362-56bc-41c7-93f0-308b4a14a7d7" Order="0" Field="Group">
+  <Condition Id="86e1fb8b-2b49-4397-b6b2-0c4aabb5c4a9" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2017-10-16 14:40:05.937', '2017-10-16 14:40:05.937', N'OrgFilter', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('61dadb45-326b-4d6e-b364-34568b1b1453', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="61dadb45-326b-4d6e-b364-34568b1b1453" Order="0" Field="Group">
   <Condition Id="1ae9160e-7fb3-458d-b3f9-16ddb29c8a07" Order="2" Field="RecentDecisionType" Comparison="OneOf" CodeIdValue="0,Unknown;10,POF for Membership;20,POF NOT for Membership;30,Letter;40,Statement;50,Stmt requiring Baptism" Days="7" />
@@ -10111,6 +10143,14 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
     <Condition Id="ebfd3da6-b356-4ebb-b922-cb4df83a8e60" Order="6" Field="RecentContributionCount" Comparison="Greater" TextValue="0" Days="30" />
   </Condition>
 </Condition>', N'karenw', '2017-05-12 14:36:49.703', '2017-05-12 15:05:32.803', N'scratchpad', 0, 14, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('b97c70c8-f57f-4af5-b7b6-52933e2d4ef7', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="b97c70c8-f57f-4af5-b7b6-52933e2d4ef7" Order="0" Field="Group">
+  <Condition Id="1954fe0f-dc4a-431b-af5e-56933d9721a1" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2017-10-16 15:34:18.677', '2017-10-16 15:34:18.677', N'OrgFilter', 0, 0, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('74475f07-06f5-4379-9450-54b7f65919a4', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="74475f07-06f5-4379-9450-54b7f65919a4" Order="0" Field="Group">
+  <Condition Id="d858fdf9-e19c-43dc-8963-e1df1e55e913" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2017-10-16 15:31:49.233', '2017-10-16 15:31:49.233', N'OrgFilter', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('4898a84d-bda0-4420-99c7-57294d4bbb1e', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="4898a84d-bda0-4420-99c7-57294d4bbb1e" Order="0" Field="Group" Comparison="AllTrue">
   <Condition Id="e2fe4fed-2f8f-47e1-9d74-f66496c90a4f" Order="2" Field="InactiveCurrentOrg" Comparison="Equal" CodeIdValue="1,T" />
@@ -10127,6 +10167,10 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
 <Condition Id="48e6b5ac-7fa8-46a0-a87f-709732590a6e" Order="0" Field="Group" Comparison="AllTrue" Description="scratchpad">
   <Condition Id="1b4f808b-3245-4cb7-bc0e-8667693f94fc" Order="2" Field="MemberStatusId" Comparison="Equal" CodeIdValue="10,Member" />
 </Condition>', N'Admin', '2014-05-18 08:43:53.543', '2016-01-07 13:55:29.917', N'Stats:Members', 0, 6, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('1bb75024-2148-45e4-99bd-710ba676f166', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="1bb75024-2148-45e4-99bd-710ba676f166" Order="0" Field="Group">
+  <Condition Id="4fea7f08-5e9c-418f-9391-37eabf7a2453" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2017-10-16 14:29:15.500', '2017-10-16 14:29:15.500', N'OrgFilter', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('822c0c06-2283-481b-be16-78677fdf87f8', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="822c0c06-2283-481b-be16-78677fdf87f8" Order="0" Field="Group" Comparison="AllTrue" Description="scratchpad" PreviousName="scratchpad" OnlineReg="0" OrgStatus="0" OrgType2="0">
   <Condition Id="3617ed70-9a41-4ea2-bdab-faac3831c114" Order="2" Field="RecentAttendCount" Comparison="Greater" TextValue="0" Days="7" OnlineReg="0" OrgStatus="0" OrgType2="0" />
@@ -10139,6 +10183,14 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
 <Condition Id="877300b6-bb34-4898-bd00-bb31f1019a6d" Order="0" Field="Group" OnlineReg="0" OrgStatus="0">
   <Condition Id="53ca4dd7-e733-4d67-b652-df2406d7a372" Order="2" Field="RecentContributionCount" Comparison="Greater" TextValue="0" Days="30" />
 </Condition>', N'admin', '2014-05-18 09:02:11.793', NULL, N'0002-SAMPLE: Donor, given at least 1 X in 30 days', 1, 0, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('5acb4548-5d55-481e-a12e-8dfdf076960d', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="5acb4548-5d55-481e-a12e-8dfdf076960d" Order="0" Field="Group">
+  <Condition Id="63d1a8eb-ae8a-4e62-aa53-62248bf815fb" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2017-10-16 13:51:44.593', '2017-10-16 13:51:44.593', N'OrgFilter', 0, 0, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('65e4def0-cc90-4a8e-9ec8-8f31699e4c97', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="65e4def0-cc90-4a8e-9ec8-8f31699e4c97" Order="0" Field="Group">
+  <Condition Id="4e3e3315-425a-47b2-953d-11749a61b34a" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2017-10-16 13:20:09.233', '2017-10-16 13:20:09.233', N'OrgFilter', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('977d8eb1-4fd1-4fdd-b953-9534fbf28ff5', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="977d8eb1-4fd1-4fdd-b953-9534fbf28ff5" Order="0" Field="Group">
   <Condition Id="d13ea092-cca0-49db-83e8-9caddf1885ff" Order="2" Field="RecentContactType" Comparison="OneOf" CodeIdValue="4,Card Sent;5,EMail Sent;6,Info Pack Sent;3,Letter Sent;7,Other;1,Personal Visit;2,Phone Call;99,Unknown" Days="7" />
@@ -10149,6 +10201,10 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
   <Condition Id="105257b8-9572-4081-a4b6-3f98757ee54d" Order="4" Field="IsMemberOf" Comparison="Equal" CodeIdValue="0,False" Program="0" Division="0" Organization="0" />
   <Condition Id="674f4229-be60-4e61-b89d-2e97ef2c35f1" Order="6" Field="RecentAttendCount" Comparison="Greater" TextValue="0" Program="0" Division="0" Organization="0" OrgType="0" Days="14" />
 </Condition>', N'karenw', '2017-05-12 14:41:34.740', '2017-05-12 15:02:42.617', N'scratchpad', 0, 0, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('b0451da0-5184-4c7a-bfa8-9952bcbf35e7', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="b0451da0-5184-4c7a-bfa8-9952bcbf35e7" Order="0" Field="Group">
+  <Condition Id="3f0fd504-b19d-4edb-8cac-08c75ece3fb3" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2017-10-16 13:17:34.330', '2017-10-16 13:17:34.330', N'OrgFilter', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('3d5d007f-47b8-4c4a-a918-9cc4b79a2d79', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="3d5d007f-47b8-4c4a-a918-9cc4b79a2d79" Order="0" Field="Group" OnlineReg="0" OrgStatus="0">
   <Condition Id="552a6181-06db-4baa-9bf6-15f2ceb72301" Order="2" Field="DaysTillBirthday" Comparison="LessEqual" TextValue="7" />
@@ -10159,18 +10215,14 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
   <Condition Id="d6e36c2a-0c0a-493b-a31e-fdfb23a0b8ae" Order="2" Field="FirstName" Comparison="Equal" TextValue="App" />
   <Condition Id="1009619d-b41f-416d-925c-cfeab642f683" Order="4" Field="LastName" Comparison="Equal" TextValue="Tester" />
 </Condition>', N'david', '2016-01-07 13:51:37.963', '2016-10-23 07:44:44.807', N'scratchpad', 0, 11, NULL)
-INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('c061a36a-82dd-46ef-8e38-9eee4d8d2cdd', N'<?xml version="1.0" encoding="utf-16"?>
-<Condition Id="c061a36a-82dd-46ef-8e38-9eee4d8d2cdd" Order="0" Field="Group">
-  <Condition Id="b42c9def-6f48-4b82-b702-390fb9e5662d" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
-</Condition>', N'system', '2017-10-03 11:52:25.443', '2017-10-03 11:52:25.443', N'OrgFilter', 0, 0, NULL)
-INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('69432f69-0902-4f90-883d-a3c213d86c8f', N'<?xml version="1.0" encoding="utf-16"?>
-<Condition Id="69432f69-0902-4f90-883d-a3c213d86c8f" Order="0" Field="Group">
-  <Condition Id="26044b97-b7f2-48b7-b0ef-6ddf2794b114" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
-</Condition>', N'system', '2017-10-03 11:52:01.287', '2017-10-03 11:52:01.287', N'OrgFilter', 0, 0, NULL)
-INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('4fcde665-e8d4-47f2-aa66-a7d4ebacde12', N'<?xml version="1.0" encoding="utf-16"?>
-<Condition Id="4fcde665-e8d4-47f2-aa66-a7d4ebacde12" Order="0" Field="Group">
-  <Condition Id="2ab2bc5f-c805-446b-abec-be2aa2ebbc1e" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
-</Condition>', N'system', '2017-10-03 11:52:15.583', '2017-10-03 11:52:15.583', N'OrgFilter', 0, 0, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('48a4fc5d-c8bd-43c3-b4a0-9fbbfb455470', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="48a4fc5d-c8bd-43c3-b4a0-9fbbfb455470" Order="0" Field="Group">
+  <Condition Id="6e3855b5-e5ed-4526-97ae-f149fe3c04b6" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2017-10-16 13:23:24.753', '2017-10-16 13:23:24.753', N'OrgFilter', 0, 0, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('0ca553ae-a02e-4618-bbd0-a044721a28d3', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="0ca553ae-a02e-4618-bbd0-a044721a28d3" Order="0" Field="Group">
+  <Condition Id="81ff697c-8dc3-4140-a654-cbf616d5547a" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2017-10-16 13:16:31.890', '2017-10-16 13:16:31.890', N'OrgFilter', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('7394ce83-47a2-4464-a847-aa848b25abd9', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="7394ce83-47a2-4464-a847-aa848b25abd9" Order="0" Field="Group" OnlineReg="0" OrgStatus="0">
   <Condition Id="ee652c4d-ab84-4310-8278-133d76f5a6f5" Order="2" Field="MemberStatusId" Comparison="NotEqual" CodeIdValue="10,Member" />
@@ -10200,6 +10252,10 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
 <Condition Id="c0101992-b77f-4336-b3c0-b4b02df348bc" Order="0" Field="Group" OnlineReg="0" OrgStatus="0">
   <Condition Id="abbace1b-98e9-4a05-878e-8aaa5bf374ee" Order="2" Field="RecentContributionCount" Comparison="Greater" TextValue="0" Days="30" />
 </Condition>', N'Admin', '2017-05-15 15:28:55.337', '2017-05-15 15:28:56.650', N'scratchpad', 0, 1, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('6dae3245-6c90-4e90-9422-b90ea42bfc81', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="6dae3245-6c90-4e90-9422-b90ea42bfc81" Order="0" Field="Group">
+  <Condition Id="61bb6149-caf9-43b6-a6cf-7d83e5b2d43d" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2017-10-16 13:51:40.780', '2017-10-16 13:51:40.780', N'OrgFilter', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('877300b6-bb34-4898-bd00-bb31f1019a6d', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="877300b6-bb34-4898-bd00-bb31f1019a6d" Order="0" Field="Group" OnlineReg="0" OrgStatus="0">
   <Condition Id="b4983469-afed-4f51-b606-19ee9e9e3f66" Order="2" Field="DaysTillBirthday" Comparison="LessEqual" TextValue="7" />
@@ -10215,6 +10271,10 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
   <Condition Id="65816188-a5b8-49d4-8ea1-93eee11867c0" Order="4" Field="IsMemberOf" Comparison="Equal" CodeIdValue="0,False" Program="0" Division="0" Organization="0" />
   <Condition Id="d089f21d-e376-48f1-87ba-71374ebd05d3" Order="6" Field="RecentAttendCount" Comparison="Greater" TextValue="0" Program="0" Division="0" Organization="0" OrgType="0" Days="14" />
 </Condition>', N'Admin', '2014-12-16 16:30:28.673', '2017-05-15 15:30:39.133', N'scratchpad', 0, 1, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('3b002dbe-38d5-47e1-86ab-c8a9e891d7dc', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="3b002dbe-38d5-47e1-86ab-c8a9e891d7dc" Order="0" Field="Group">
+  <Condition Id="b66c940b-9f9e-4089-a861-8ae4080eade8" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2017-10-16 14:29:14.380', '2017-10-16 14:29:14.380', N'OrgFilter', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('4db89ecb-bea1-4e6f-b53f-c8bbc9cdd8e7', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="4db89ecb-bea1-4e6f-b53f-c8bbc9cdd8e7" Order="0" Field="Group">
   <Condition Id="7dd4a62c-210a-4cc6-9400-5008f39c6bfc" Order="2" Field="MemberStatusId" Comparison="Equal" CodeIdValue="10,Member" />
@@ -10225,19 +10285,31 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
     <Condition Id="b0a431bf-c6e3-4b6e-941f-f8e3acfbd8ee" Order="6" Field="RecentContributionCount" Comparison="Greater" TextValue="0" Days="30" />
   </Condition>
 </Condition>', N'Admin', '2014-12-16 16:27:57.220', '2017-05-15 15:28:54.163', N'scratchpad', 0, 3, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('968074d5-6ceb-4aec-b0bb-c925863d89c2', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="968074d5-6ceb-4aec-b0bb-c925863d89c2" Order="0" Field="Group">
+  <Condition Id="c102b285-d2d8-4608-a834-83b72479272e" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2017-10-16 15:30:37.673', '2017-10-16 15:30:37.673', N'OrgFilter', 0, 0, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('54dc4ffc-028a-44f7-8546-d93dd0e813a9', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="54dc4ffc-028a-44f7-8546-d93dd0e813a9" Order="0" Field="Group">
+  <Condition Id="92585e99-3c5e-492e-b9d8-5b0b7fa26b2c" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2017-10-17 14:46:07.733', '2017-10-17 14:46:07.733', N'OrgFilter', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('acdfcf75-6ca0-4e54-87ca-daf9acac5714', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="acdfcf75-6ca0-4e54-87ca-daf9acac5714" Order="0" Field="Group" Comparison="AllTrue">
   <Condition Id="8e6eb857-28f3-49e1-95cd-98aa60a14146" Order="2" Field="VisitedCurrentOrg" Comparison="Equal" CodeIdValue="1,T" />
 </Condition>', N'System', '2014-08-20 09:23:21.677', '2014-08-20 09:23:21.677', N'VisitedCurrentOrg', 0, 0, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('e016dd9d-3f05-42fb-a10d-dd25631de705', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="e016dd9d-3f05-42fb-a10d-dd25631de705" Order="0" Field="Group">
+  <Condition Id="4bff8e22-c8cb-4096-8fb7-0e284fda2db8" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2017-10-17 14:45:31.297', '2017-10-17 14:45:31.297', N'OrgFilter', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('3facca1e-a661-4bbd-92b0-dd3b8c1f3cda', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="3facca1e-a661-4bbd-92b0-dd3b8c1f3cda" Order="0" Field="Group" OnlineReg="0" OrgStatus="0">
   <Condition Id="aaecd61e-a686-41bb-afcb-8ba641a1dcb1" Order="2" Field="MemberStatusId" Comparison="Equal" CodeIdValue="10,Member" />
   <Condition Id="7397c2f6-8815-4697-b3e9-aa32ffd4235d" Order="4" Field="RecentAttendCount" Comparison="Equal" TextValue="0" Program="1,First Program" Division="0" Organization="0" OrgType="0" Days="14" />
 </Condition>', N'admin', '2014-05-18 09:01:03.390', NULL, N'0003-SAMPLE:Church Members, no Att for 14 Days in First Program', 1, 0, NULL)
-INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('7e20be6d-6b58-4b61-beaa-df4d61d8a595', N'<?xml version="1.0" encoding="utf-16"?>
-<Condition Id="7e20be6d-6b58-4b61-beaa-df4d61d8a595" Order="0" Field="Group">
-  <Condition Id="9f8dd544-0d9d-4116-8cc2-203775048af2" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
-</Condition>', N'system', '2017-10-03 12:07:28.067', '2017-10-03 12:07:28.067', N'OrgFilter', 0, 0, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('76d85eee-09cb-4745-83ab-ddc626f9a1f4', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="76d85eee-09cb-4745-83ab-ddc626f9a1f4" Order="0" Field="Group">
+  <Condition Id="3f415a88-8fe3-421b-a74a-f2d15261bf4c" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2017-10-16 13:23:25.693', '2017-10-16 13:23:25.693', N'OrgFilter', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('4ae2791c-c52f-41fb-b762-dfd74efda9ac', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="4ae2791c-c52f-41fb-b762-dfd74efda9ac" Order="0" Field="Group" Comparison="AllTrue" Description="scratchpad" PreviousName="scratchpad">
   <Condition Id="5f9da255-70b1-4a63-b522-2b115080bc09" Order="2" Field="RecentVisitNumber" Comparison="Equal" CodeIdValue="1,T" Days="30" Quarters="1" />
@@ -10250,6 +10322,10 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
 <Condition Id="be81fde4-c38c-4c1c-9a3f-eafc30bc35ac" Order="0" Field="Group" Comparison="AllTrue">
   <Condition Id="e1ee23cd-c36a-4019-9d7f-9b4119693b4e" Order="2" Field="IsCurrentUser" Comparison="Equal" CodeIdValue="1,T" />
 </Condition>', N'System', '2015-06-03 10:37:49.797', '2015-06-03 10:37:49.797', N'IsCurrentUser', 0, 0, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('53d3f43e-dc9c-4077-b453-eb618fd4509c', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="53d3f43e-dc9c-4077-b453-eb618fd4509c" Order="0" Field="Group">
+  <Condition Id="12e58025-bf62-4d55-afdd-11e1dc97c7b3" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2017-10-16 13:20:14.000', '2017-10-16 13:20:14.000', N'OrgFilter', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('fc17d28b-b338-4bcd-9004-ec7cbf1a30e0', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="fc17d28b-b338-4bcd-9004-ec7cbf1a30e0" Order="0" Field="Group" OnlineReg="0" OrgStatus="0">
   <Condition Id="962deab1-692f-4f31-b141-096ce0e9b66b" Order="2" Field="MemberStatusId" Comparison="Equal" CodeIdValue="10,Member" />
@@ -10259,7 +10335,11 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
 <Condition Id="06a58409-b98f-468a-a7d0-ecbcceb8ec77" Order="0" Field="Group" Comparison="AllTrue">
   <Condition Id="c2d01577-d6f1-4442-bc3f-a549c326d8c9" Order="2" Field="InCurrentOrg" Comparison="Equal" CodeIdValue="1,T" />
 </Condition>', N'System', '2014-05-05 00:44:39.297', '2014-05-05 00:44:39.297', N'InCurrentOrg', 0, 0, NULL)
-PRINT(N'Operation applied to 43 rows out of 43')
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('acfb160b-02ea-4e5a-b8b7-f5a87c8dc547', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="acfb160b-02ea-4e5a-b8b7-f5a87c8dc547" Order="0" Field="Group">
+  <Condition Id="7c2e8b4e-bf60-4d86-aada-b285b244cd67" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2017-10-17 14:48:52.800', '2017-10-17 14:48:52.800', N'OrgFilter', 0, 0, NULL)
+PRINT(N'Operation applied to 59 rows out of 59')
 
 PRINT(N'Add rows to [dbo].[RegistrationData]')
 SET IDENTITY_INSERT [dbo].[RegistrationData] ON
@@ -11601,7 +11681,66 @@ Instructions:
 	Find: <p>Please enter the information in the required fields* below and press&nbsp;<strong>Find Profile</strong>&nbsp;in order to find your record in the database. Once you complete this process, a&nbsp;<strong>one-use link&nbsp;will be sent to the email address on your record</strong>. Use that link to finish setting up your recurring giving.</p><p>If you have a TouchPoint Username and Password, you can&nbsp;<strong>Login with an Account</strong>.</p><p>If you have any problems or questions, please call the church and ask to speak to someone in our Finance Office.</p>
 	Special: <p>Enter the dollar amounts beside each fund to which you want to contribute. Then select the frequency of your contributions and the date on which you want the donations to begin (it must be after today&#39;s date).</p><p>Enter your payment information, and press Submit to complete the process.</p>
 AllowOnlyOne: True
-', NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, CONVERT(xml,N'<Settings id="33"><!--3 5/8/2017 4:09 PM--><Options><AllowOnlyOne>True</AllowOnlyOne></Options></Settings>',1), NULL)
+', NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, CONVERT(xml,N'<Settings id="33"><!--3 10/17/2017 2:49 PM--><Confirmation><Body>
+&lt;title&gt;&lt;/title&gt;
+&lt;div style="margin: 10px; max-width: 600px"&gt;
+&lt;p&gt;{name}&lt;/p&gt;
+
+&lt;p&gt;You could put your thank you message here.&lt;/p&gt;
+
+&lt;table cellpadding="0" cellspacing="5" style="line-height: 15px; width: 100%; font-family: Arial; font-size: 13px"&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td&gt;
+			&lt;h1 style="color: #444; font-size: 24px; font-weight: bold"&gt;{church}&lt;/h1&gt;
+			&lt;/td&gt;
+			&lt;td align="right"&gt;
+			&lt;p&gt;Online Recurring Giving Setup&lt;br /&gt;
+			{date}&lt;/p&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p style="font-family: arial; color: #555555; font-size: 16pt; font-weight: bold"&gt;Online Recurring Giving Setup&lt;/p&gt;
+
+&lt;table cellpadding="10" style="border-bottom-color: #ddd; border-right-width: 1px; background-color: #e6efc2; border-top-color: #ddd; border-top-width: 1px; border-bottom-width: 1px; border-right-color: #ddd; border-left-color: #ddd; border-left-width: 1px" width="100%"&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td style="font-family: arial; color: #222; font-size: 10pt; font-weight: bold"&gt;This is your confirmation for setting up your recurring giving. Please keep this e-mail for your records.&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;div&gt;
+&lt;p style="font-style: italic; font-family: arial; font-size: 9pt"&gt;&lt;br /&gt;
+&lt;span style="color: rgb(102, 102, 102); font-size: 13pt; font-weight: bold; "&gt;Summary&lt;/span&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p style="font-style: italic; font-family: arial; font-size: 9pt"&gt;{details}&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div style="border-bottom: #cccccc 1px solid; border-left: #cccccc 1px solid; color: #333333; border-top: #cccccc 1px solid; border-right: #cccccc 1px solid"&gt;
+&lt;table style="margin: 5px; border-collapse: collapse; font-family: arial; font-size: 9pt" width="100%"&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;b&gt;Account&lt;/b&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;b&gt;Contact Information&lt;/b&gt;&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;{name}&lt;br /&gt;
+			{email}&lt;br /&gt;
+			{phone}&lt;/td&gt;
+			&lt;td&gt;{contact}&lt;br /&gt;
+			{contactphone}&lt;br /&gt;
+			&lt;a href="mailto:{contactemail}"&gt;Email contact&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</Body></Confirmation><Options><AllowOnlyOne>True</AllowOnlyOne></Options></Settings>',1), NULL)
 INSERT INTO [dbo].[Organizations] ([OrganizationId], [CreatedBy], [CreatedDate], [OrganizationStatusId], [DivisionId], [LeaderMemberTypeId], [GradeAgeStart], [GradeAgeEnd], [RollSheetVisitorWks], [SecurityTypeId], [FirstMeetingDate], [LastMeetingDate], [OrganizationClosedDate], [Location], [OrganizationName], [ModifiedBy], [ModifiedDate], [EntryPointId], [ParentOrgId], [AllowAttendOverlap], [MemberCount], [LeaderId], [LeaderName], [ClassFilled], [OnLineCatalogSort], [PendingLoc], [CanSelfCheckin], [NumCheckInLabels], [CampusId], [AllowNonCampusCheckIn], [NumWorkerCheckInLabels], [ShowOnlyRegisteredAtCheckIn], [Limit], [GenderId], [Description], [BirthDayStart], [BirthDayEnd], [LastDayBeforeExtra], [RegistrationTypeId], [ValidateOrgs], [PhoneNumber], [RegistrationClosed], [AllowKioskRegister], [WorshipGroupCodes], [IsBibleFellowshipOrg], [NoSecurityLabel], [AlwaysSecurityLabel], [DaysToIgnoreHistory], [NotifyIds], [lat], [long], [RegSetting], [OrgPickList], [Offsite], [RegStart], [RegEnd], [LimitToRole], [OrganizationTypeId], [MemberJoinScript], [AddToSmallGroupScript], [RemoveFromSmallGroupScript], [SuspendCheckin], [NoAutoAbsents], [PublishDirectory], [ConsecutiveAbsentsThreshold], [IsRecreationTeam], [NotWeekly], [IsMissionTrip], [NoCreditCards], [GiftNotifyIds], [UseBootstrap], [PublicSortOrder], [UseRegisterLink2], [AppCategory], [RegistrationTitle], [PrevMemberCount], [ProspectCount], [RegSettingXml], [AttendanceBySubGroups]) VALUES (34, 1, '2012-07-27 11:15:41.310', 30, 1, 0, 0, NULL, NULL, 0, NULL, NULL, NULL, NULL, N'Online Giving', NULL, NULL, 0, NULL, 0, NULL, NULL, NULL, 0, NULL, NULL, 0, 0, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 8, NULL, NULL, 0, NULL, NULL, 0, 0, NULL, NULL, '3', NULL, NULL, N'Confirmation: 
 	Subject: Confirmation for Online Giving
 	Body: <<
@@ -11623,14 +11762,91 @@ SenderEmail:
 
 
 Instructions: 
-', NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, CONVERT(xml,N'<Settings id="34"><!--3 5/8/2017 4:10 PM--><Confirmation><Subject>Confirmation for Online Giving</Subject><Body>
-&lt;p&gt;Hi {first}&lt;/p&gt;
+', NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, CONVERT(xml,N'<Settings id="34"><!--3 10/17/2017 2:48 PM--><Confirmation><Subject>Confirmation for Online Giving</Subject><Body>
+&lt;title&gt;&lt;/title&gt;
+&lt;p&gt;{name}&lt;/p&gt;
 
-&lt;p&gt;Here is your confirmation for {org}.&lt;/p&gt;
+&lt;p&gt;You could put your thank you message here.&lt;/p&gt;
 
-&lt;p&gt;DETAILS: {details}&lt;/p&gt;
+&lt;div style="margin: 10px; max-width: 600px"&gt;
+&lt;table cellpadding="0" cellspacing="5" style="line-height: 15px; width: 100%; font-family: Arial; font-size: 13px"&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td&gt;
+			&lt;h1 style="color: #444; font-size: 24px; font-weight: bold"&gt;{church}&lt;/h1&gt;
+			&lt;/td&gt;
+			&lt;td align="right"&gt;
+			&lt;p&gt;Online Giving Receipt&lt;br /&gt;
+			{date}&lt;/p&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
 
-&lt;p&gt;Your Ministry Team for {org}&lt;/p&gt;
+&lt;p style="font-family: arial; color: #555555; font-size: 16pt; font-weight: bold"&gt;Online Giving&lt;/p&gt;
+
+&lt;table cellpadding="10" style="border-bottom-color: #ddd; border-right-width: 1px; background-color: #e6efc2; border-top-color: #ddd; border-top-width: 1px; border-bottom-width: 1px; border-right-color: #ddd; border-left-color: #ddd; border-left-width: 1px" width="100%"&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td style="font-family: arial; color: #222; font-size: 10pt; font-weight: bold"&gt;This is your confirmation. Please keep this e-mail for your records.&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;div&gt;
+&lt;p style="padding-top: 15px"&gt;&lt;font style="font-family: arial; color: #666; font-size: 13pt; font-weight: bold"&gt;Confirmation #: {tranid}&lt;/font&gt;&lt;/p&gt;
+
+&lt;p style="font-family: arial; color: #666; font-size: 13pt; font-weight: bold"&gt;Amount of Gift: ${amt}&lt;/p&gt;
+
+&lt;p style="font-style: italic; font-family: arial; font-size: 9pt"&gt;The charge will appear on your statement as &amp;quot;{church}&amp;quot;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;table style="border-bottom: #ccc 1px solid; border-left: #ccc 1px solid; border-collapse: collapse; font-family: arial; color: #333333; font-size: 9pt; border-top: #ccc 1px solid; border-right: #ccc 1px solid"&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;td style="padding-bottom: 5px; background-color: #eee; padding-left: 10px; padding-right: 10px; color: #222; padding-top: 5px"&gt;&lt;b&gt;Items&lt;/b&gt;&lt;/td&gt;
+			&lt;td align="right" style="padding-bottom: 5px; background-color: #eee; padding-left: 10px; padding-right: 10px; color: #222; padding-top: 5px"&gt;&lt;b&gt;Amount&lt;/b&gt;&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tfoot&gt;
+		&lt;tr&gt;
+			&lt;td align="right" style="padding-bottom: 5px; padding-left: 10px; padding-right: 10px; vertical-align: top; border-top: #bbb 1px solid; font-weight: bold; padding-top: 5px"&gt;Total&lt;/td&gt;
+			&lt;td align="right" style="padding-bottom: 5px; padding-left: 10px; padding-right: 10px; vertical-align: top; border-top: #bbb 1px solid; font-weight: bold; padding-top: 5px"&gt;${amt}&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tfoot&gt;
+	&lt;tbody&gt;&lt;!--ITEM ROW START--&gt;
+		&lt;tr&gt;
+			&lt;td style="padding-bottom: 5px; padding-left: 10px; padding-right: 10px; padding-top: 5px"&gt;{funditem}&lt;/td&gt;
+			&lt;td align="right" style="padding-bottom: 5px; padding-left: 10px; padding-right: 10px; padding-top: 5px"&gt;${itemamt}&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;!--ITEM ROW END--&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/blockquote&gt;
+
+&lt;p style="font-family: arial; color: #666; font-size: 13pt; font-weight: bold"&gt;Billing Summary&lt;/p&gt;
+
+&lt;div style="border-bottom: #cccccc 1px solid; border-left: #cccccc 1px solid; color: #333333; border-top: #cccccc 1px solid; border-right: #cccccc 1px solid"&gt;
+&lt;table style="margin: 5px; border-collapse: collapse; font-family: arial; font-size: 9pt" width="100%"&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;b&gt;Account&lt;/b&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;b&gt;Contact Information&lt;/b&gt;&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;{name}&lt;br /&gt;
+			{account}&lt;br /&gt;
+			{email}&lt;br /&gt;
+			{phone}&lt;/td&gt;
+			&lt;td&gt;{contact}&lt;br /&gt;
+			{contactphone}&lt;br /&gt;
+			&lt;a href="mailto:{contactemail}"&gt;Email contact&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
 </Body></Confirmation><Options><AllowOnlyOne>True</AllowOnlyOne></Options></Settings>',1), NULL)
 INSERT INTO [dbo].[Organizations] ([OrganizationId], [CreatedBy], [CreatedDate], [OrganizationStatusId], [DivisionId], [LeaderMemberTypeId], [GradeAgeStart], [GradeAgeEnd], [RollSheetVisitorWks], [SecurityTypeId], [FirstMeetingDate], [LastMeetingDate], [OrganizationClosedDate], [Location], [OrganizationName], [ModifiedBy], [ModifiedDate], [EntryPointId], [ParentOrgId], [AllowAttendOverlap], [MemberCount], [LeaderId], [LeaderName], [ClassFilled], [OnLineCatalogSort], [PendingLoc], [CanSelfCheckin], [NumCheckInLabels], [CampusId], [AllowNonCampusCheckIn], [NumWorkerCheckInLabels], [ShowOnlyRegisteredAtCheckIn], [Limit], [GenderId], [Description], [BirthDayStart], [BirthDayEnd], [LastDayBeforeExtra], [RegistrationTypeId], [ValidateOrgs], [PhoneNumber], [RegistrationClosed], [AllowKioskRegister], [WorshipGroupCodes], [IsBibleFellowshipOrg], [NoSecurityLabel], [AlwaysSecurityLabel], [DaysToIgnoreHistory], [NotifyIds], [lat], [long], [RegSetting], [OrgPickList], [Offsite], [RegStart], [RegEnd], [LimitToRole], [OrganizationTypeId], [MemberJoinScript], [AddToSmallGroupScript], [RemoveFromSmallGroupScript], [SuspendCheckin], [NoAutoAbsents], [PublishDirectory], [ConsecutiveAbsentsThreshold], [IsRecreationTeam], [NotWeekly], [IsMissionTrip], [NoCreditCards], [GiftNotifyIds], [UseBootstrap], [PublicSortOrder], [UseRegisterLink2], [AppCategory], [RegistrationTitle], [PrevMemberCount], [ProspectCount], [RegSettingXml], [AttendanceBySubGroups]) VALUES (35, 3, '2015-06-19 13:07:54.470', 30, 1, 140, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, N'Sample Mission Trip', NULL, NULL, 17, NULL, 0, NULL, NULL, NULL, 0, NULL, NULL, 0, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, 0, NULL, NULL, 0, 0, NULL, NULL, '3', NULL, NULL, N'Confirmation: 
 	Subject: Confirmation: Mission Project
@@ -11780,9 +11996,9 @@ PRINT(N'Operation applied to 38 rows out of 38')
 
 PRINT(N'Add rows to [dbo].[Users]')
 SET IDENTITY_INSERT [dbo].[Users] ON
-INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (1, 1, N'Admin', NULL, N'2352354235', NULL, NULL, 1, '2017-10-03 12:10:56.830', NULL, '2017-04-10 17:19:06.097', '2009-05-05 22:46:43.890', 0, '2017-04-10 17:19:06.033', 0, '2017-08-28 09:27:02.063', 0, NULL, NULL, NULL, 1, N'starterdb.tpsdb.com', N'bvcms', N'The Admin', N'Admin, The', 'da06a633-5f49-46ed-99f6-c974949925a9', NULL, '2017-08-02 10:00:30.767')
+INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (1, 1, N'Admin', NULL, N'2352354235', NULL, NULL, 1, '2017-10-18 16:15:38.197', NULL, '2017-04-10 17:19:06.097', '2009-05-05 22:46:43.890', 0, '2017-04-10 17:19:06.033', 0, '2017-10-16 13:13:23.233', 0, NULL, NULL, NULL, 1, N'starterdb.tpsdb.com', N'bvcms', N'The Admin', N'Admin, The', 'da06a633-5f49-46ed-99f6-c974949925a9', NULL, '2017-08-02 10:00:30.767')
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (2, 2, N'david', N'', N'Sc4O3+HSUocN7Nev1vrYufJSxGY=', NULL, NULL, 1, '2017-08-25 10:28:21.830', '2017-08-25 10:25:43.690', '2013-12-19 00:03:08.440', '2010-10-30 15:23:25.763', 0, '2013-12-19 00:03:08.360', 0, '2013-12-18 22:54:19.783', 0, '2010-10-30 15:23:25.763', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'David Carroll', N'Carroll, David', NULL, NULL, '2013-12-19 22:55:00.120')
-INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (3, 3, N'karenw', N'', N'lpSVokbyDdVaXxNGDjZT4St468A=', NULL, NULL, 1, '2017-09-30 15:31:35.480', '2017-09-30 15:31:02.510', '2013-10-14 10:43:23.743', '2010-10-30 15:29:25.757', 0, '2013-10-14 10:43:23.667', 0, '2013-10-14 10:41:24.547', 0, '2010-10-30 15:29:25.757', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'Karen Worrell', N'Worrell, Karen', NULL, NULL, '2013-10-15 10:42:47.710')
+INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (3, 3, N'karenw', N'', N'lpSVokbyDdVaXxNGDjZT4St468A=', NULL, NULL, 1, '2017-10-19 09:14:44.813', '2017-10-19 09:14:19.127', '2013-10-14 10:43:23.743', '2010-10-30 15:29:25.757', 0, '2013-10-14 10:43:23.667', 0, '2013-10-14 10:41:24.547', 0, '2010-10-30 15:29:25.757', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'Karen Worrell', N'Worrell, Karen', NULL, NULL, '2013-10-15 10:42:47.710')
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (5, 101, N'checkin', N'', N'FtPZkua8z2a+Pu/j6WqWYEex3F4=', NULL, NULL, 1, '2016-05-04 15:46:47.893', NULL, '2016-05-04 15:46:47.893', '2016-05-04 15:46:47.893', 0, '2016-05-04 15:46:47.893', 0, '2016-05-04 15:46:47.893', 0, '2016-05-04 15:46:47.893', NULL, NULL, 0, NULL, NULL, N'Checkin Ministry', N'Ministry, Checkin', NULL, NULL, NULL)
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (6, 102, N'atester', N'', N'xurYGXdkthV25voxxUHgKk5PnnU=', NULL, NULL, 1, '2016-10-21 15:45:25.440', '2016-10-21 15:45:46.073', '2016-10-21 15:45:46.090', '2016-10-21 15:45:25.440', 0, '2016-10-21 15:45:46.013', 0, '2016-10-21 15:45:25.440', 0, '2016-10-21 15:45:25.440', NULL, NULL, 0, NULL, N'John3:16', N'App Tester', N'Tester, App', NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Users] OFF
