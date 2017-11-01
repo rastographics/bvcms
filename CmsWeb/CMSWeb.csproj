@@ -471,6 +471,7 @@
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\ValidateModelForFind.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\CompleteRegistration.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\Confirm.cs" />
+    <Compile Include="Areas\OnlineReg\Models\OnlineReg\OnePageGivingModel.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\Organization.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\Initialize.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\Constructor.cs" />
