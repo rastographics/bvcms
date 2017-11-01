@@ -627,12 +627,12 @@ namespace CmsData
             db.SubmitChanges();
         }
 
-        public bool IsSingleFundOnlineGiving(CMSDataContext db)
+        public bool IsOnePageOnlineGiving(CMSDataContext db)
         {
             if (RegistrationTypeId != RegistrationTypeCode.OnlineGiving)
                 return false;
             var settings = Registration.Settings.CreateSettings(RegSettingXml, db, this);
-            return !settings.AskDonation && settings.DonationFundId.HasValue;
+            return !settings.AskDonation;
         }
 
         public void AddMemberTag(string sg)
