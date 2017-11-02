@@ -4811,6 +4811,22 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.MinMeetingDate", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? MinMeetingDate(
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "pid", DbType="int")] int? pid,
+            [Parameter(Name = "yearago", DbType="datetime")] DateTime? yearago
+            )
+		{
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                pid,
+                yearago
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.AllRegexMatchs", IsComposable = true)]
 		[return: Parameter(DbType = "nvarchar")]
 		public string AllRegexMatchs(

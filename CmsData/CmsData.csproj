@@ -506,6 +506,7 @@
     <Compile Include="Extensions\ChangeDetail.cs" />
     <Compile Include="AddressVerify.cs" />
     <Compile Include="Extensions\DeleteMeetingRun.cs" />
+    <Compile Include="Extensions\FamilyMember.cs" />
     <Compile Include="Extensions\LongRunningOperation.cs" />
     <Compile Include="Extensions\OrgPerson.cs" />
     <Compile Include="Extensions\PaymentInfo.cs" />
