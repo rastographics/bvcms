@@ -23,10 +23,10 @@ namespace CmsWeb.Areas.Org.Models
         }
         public OrganizationModel(int id)
         {
-            populate(id);
             var filter = DbUtil.Db.NewOrgFilter(id);
             filter.CopyPropertiesTo(this);
             QueryId = filter.QueryId;
+            populate(id);
         }
 
         public OrgMain OrgMain { get; set; }
