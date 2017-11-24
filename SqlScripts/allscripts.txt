@@ -834,6 +834,8 @@ Creating_pk_PK_QBConnections_dbo_QBConnections.sql
 Creating_dbo_MergeHistory.sql
 Creating_pk_PK_MergeHistory_dbo_MergeHistory.sql
 Creating_IX_MergeHistory_dbo_MergeHistory.sql
+Creating_dbo_Other.sql
+Creating_pk_PK_Extra_dbo_Other.sql
 Creating_dbo_LabelFormats.sql
 Creating_pk_PK_LabelFormats_dbo_LabelFormats.sql
 Creating_dbo_Audits.sql

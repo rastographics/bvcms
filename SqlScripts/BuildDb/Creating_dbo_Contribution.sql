@@ -20,7 +20,8 @@ CREATE TABLE [dbo].[Contribution]
 [QBSyncID] [int] NULL,
 [TranId] [int] NULL,
 [Source] [int] NULL,
-[CampusId] [int] NULL
+[CampusId] [int] NULL,
+[ImageID] [int] NOT NULL CONSTRAINT [DF_Contribution_ImageID] DEFAULT ((0))
 ) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
