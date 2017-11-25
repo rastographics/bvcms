@@ -125,6 +125,7 @@
     <Compile Include="DbUtil.cs" />
     <Compile Include="Generated\Context.cs" />
     <Compile Include="Generated\Image.cs" />
+    <Compile Include="Generated\Other.cs" />
     <Compile Include="Image.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
