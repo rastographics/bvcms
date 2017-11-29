@@ -330,6 +330,10 @@ namespace CmsData
         partial void UpdateInterestPoint(InterestPoint instance);
         partial void DeleteInterestPoint(InterestPoint instance);
         
+        partial void InsertIpLog(IpLog instance);
+        partial void UpdateIpLog(IpLog instance);
+        partial void DeleteIpLog(IpLog instance);
+        
         partial void InsertIpWarmup(IpWarmup instance);
         partial void UpdateIpWarmup(IpWarmup instance);
         partial void DeleteIpWarmup(IpWarmup instance);
@@ -1249,6 +1253,12 @@ namespace CmsData
 		public Table< InterestPoint> InterestPoints
 		{
 			get	{ return this.GetTable< InterestPoint>(); }
+
+		}
+
+		public Table< IpLog> IpLogs
+		{
+			get	{ return this.GetTable< IpLog>(); }
 
 		}
 
@@ -2242,6 +2252,12 @@ namespace CmsData
 	    public Table< View.RegsettingUsage> ViewRegsettingUsages
 	    {
 		    get { return this.GetTable< View.RegsettingUsage>(); }
+
+	    }
+
+	    public Table< View.RogueIp> ViewRogueIps
+	    {
+		    get { return this.GetTable< View.RogueIp>(); }
 
 	    }
 
@@ -5145,6 +5161,18 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.CheckIpActivity", IsComposable = true)]
+		[return: Parameter(DbType = "bit")]
+		public bool? CheckIpActivity(
+            [Parameter(Name = "ip", DbType="varchar")] string ip
+            )
+		{
+			return ((bool?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                ip
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.GetScheduleTime", IsComposable = true)]
 		[return: Parameter(DbType = "datetime")]
 		public DateTime? GetScheduleTime(
@@ -5194,6 +5222,18 @@ namespace CmsData
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.IsCardTester", IsComposable = true)]
+		[return: Parameter(DbType = "bit")]
+		public bool? IsCardTester(
+            [Parameter(Name = "ip", DbType="varchar")] string ip
+            )
+		{
+			return ((bool?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                ip
                 ).ReturnValue));
 		}
 

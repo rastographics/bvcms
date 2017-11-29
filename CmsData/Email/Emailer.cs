@@ -168,6 +168,17 @@ namespace CmsData
                         select p).ToList();
             return list;
         }
+        public List<Person> AdminPeople2()
+        {
+            var list = (from p in CMSRoleProvider.provider.GetAdmins()
+                        where p.EmailAddress.HasValue()
+                        select p).ToList();
+            if (list.Count == 0)
+                list = (from p in CMSRoleProvider.provider.GetAdmins()
+                        where p.EmailAddress.HasValue()
+                        select p).ToList();
+            return list;
+        }
 
         public List<Person> FinancePeople()
         {

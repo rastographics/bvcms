@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -651,6 +652,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
             // prevents testing gateway from giving a duplicate tran error
             var random = new Random();
             AmtToPay += (decimal) random.Next(100, 199)/100;
+        }
+
+        public bool IsProblemUser()
+        {
+            var a = ConfigurationManager.AppSettings["problemUser"]?.Split(',');
+            if (a == null || a.Length != 3)
+                return false;
+            return Util.Host == a[0] && First.Equal(a[1]) && Last.Equal(a[2]);
         }
     }
 }

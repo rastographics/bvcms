@@ -1726,5 +1726,17 @@ This search uses multiple steps which cannot be duplicated in a single query.
             c.Body += $"{Util.Now:M/d/yy HH:mm:ss tt} {data}\n";
             SubmitChanges();
         }
+        [Function(Name = "dbo.InsertRogueIp")]
+        public int? InsertRogueIp([Parameter(DbType = "varchar(50)")] string ip, [Parameter(DbType = "varchar(50)")] string db )
+        {
+            var result = ExecuteMethodCall(this, (MethodInfo)MethodBase.GetCurrentMethod(), ip, db);
+            return ((int?)(result?.ReturnValue));
+        }
+        [Function(Name = "dbo.InsertIpLog")]
+        public int? InsertIpLog([Parameter(DbType = "varchar(50)")] string ip, [Parameter(DbType = "varchar(50)")] string id  )
+        {
+            var result = ExecuteMethodCall(this, (MethodInfo)MethodBase.GetCurrentMethod(), ip, id);
+            return ((int?)(result?.ReturnValue));
+        }
     }
 }

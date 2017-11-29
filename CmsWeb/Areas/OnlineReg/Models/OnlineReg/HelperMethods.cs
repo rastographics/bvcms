@@ -103,12 +103,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return false;
         }
 
-        public bool AllowAnonymous
+        public bool AllowReregister
         {
-            get { return allowAnonymous(masterorgid) && allowAnonymous(Orgid); }
+            get
+            {
+                if (!Orgid.HasValue)
+                    return false;
+                return settings.ContainsKey(Orgid.Value) && settings[Orgid.Value].AllowReRegister;
+            }
         }
 
-        private bool allowAnonymous(int? id)
+        public bool AllowAnonymous => _allowAnonymous(masterorgid) && _allowAnonymous(Orgid);
+
+        private bool _allowAnonymous(int? id)
         {
             if (RegisterLinkMaster())
                 return false;

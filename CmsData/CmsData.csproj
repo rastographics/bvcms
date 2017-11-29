@@ -690,6 +690,7 @@
     <Compile Include="Generated\Functions\TPStat.cs" />
     <Compile Include="Generated\Functions\VisitsAbsent.cs" />
     <Compile Include="Generated\Functions\VolunteerCalendar.cs" />
+    <Compile Include="Generated\IpLog.cs" />
     <Compile Include="Generated\IpWarmup.cs" />
     <Compile Include="Generated\LongRunningOp.cs" />
     <Compile Include="Generated\LongRunningOperation.cs" />
@@ -754,6 +755,7 @@
     <Compile Include="Generated\Views\RegsettingMessage.cs" />
     <Compile Include="Generated\Views\RegsettingOption.cs" />
     <Compile Include="Generated\Views\RegsettingUsage.cs" />
+    <Compile Include="Generated\Views\RogueIp.cs" />
     <Compile Include="Generated\Views\SearchNoDiacritic.cs" />
     <Compile Include="Generated\Views\TaskSearch.cs" />
     <Compile Include="Generated\Views\UserLeader.cs" />

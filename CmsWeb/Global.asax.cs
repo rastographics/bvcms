@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Threading;
 using System.Web;
@@ -115,6 +116,10 @@ namespace CmsWeb
             Util.Culture = cul;
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
+
+            if(Util.IsHosted)
+                if (1 == DbUtil.Db.Connection.ExecuteScalar<int>("select count(*) from dbo.RogueIps where ip = @ip", new {ip = Request.UserHostAddress}))
+                    Response.Redirect("/Errors/AccessDenied.htm");
         }
 
 

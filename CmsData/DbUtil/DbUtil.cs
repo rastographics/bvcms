@@ -62,6 +62,7 @@ namespace CmsData
 
         private static void _logActivity(string host, string activity, int? orgId, int? peopleId, int? datumId, int? userId, string pageUrl = null, string clientIp = null)
         {
+            var ip = HttpContext.Current?.Request.UserHostAddress;
             using (var db = Create(host))
             {
                 if (!userId.HasValue || userId == 0)
@@ -83,7 +84,7 @@ namespace CmsData
                     PeopleId = peopleId,
                     DatumId = datumId,
                     PageUrl = pageUrl,
-                    ClientIp = clientIp
+                    ClientIp = clientIp ?? ip
                 };
 
                 db.ActivityLogs.InsertOnSubmit(a);

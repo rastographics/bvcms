@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.Security;
@@ -239,6 +241,18 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             return Redirect("/OnlineReg/CompleteRegistration");
         }
 
+#if DEBUG
+        // For testing only
+        [HttpGet]
+        [Route("~/OnlineReg/CompleteRegistration/{id:int}")]
+        public ActionResult CompleteRegistration(int id)
+        {
+            var ed = DbUtil.Db.RegistrationDatas.SingleOrDefault(e => e.Id == id);
+            var m = Util.DeSerialize<OnlineRegModel>(ed?.Data);
+            TempData["onlineregmodel"] = Util.Serialize(m);
+            return Redirect("/OnlineReg/CompleteRegistration");
+        }
+#endif
         [HttpPost]
         public ActionResult CompleteRegistration(OnlineRegModel m)
         {
@@ -259,6 +273,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Message("Registration cannot be completed after a page refresh.");
             }
             var m = Util.DeSerialize<OnlineRegModel>(s);
+            if (m.Completed && m.Orgid.HasValue && !settings[m.Orgid.Value].AllowReRegister) 
+                return Message("Registration Already Completed");
+
+            if (!m.AllowReregister && !m.AllowSaveProgress())
+            {
+                // Don't allow a submit to CompleteRegistration on an old form
+                var re = new Regex("index (?<dt>[0-9/]* [0-9:]* [AP]M)", RegexOptions.IgnoreCase);
+            	var result = re.Match(m.History[0]).Groups["dt"].Value.ToDate();
+                if (result.HasValue && DateTime.Now.Subtract(result.Value).TotalMinutes > 120)
+                    return Message("Registration Page has expired after 2 hours");
+            }
 
             var ret = m.CompleteRegistration(this);
             switch (ret.Route)

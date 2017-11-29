@@ -1,6 +1,8 @@
 using System;
+using System.Configuration;
 using System.Linq;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 using CmsData;
 using CmsWeb.Areas.OnlineReg.Models;
 using Elmah;
@@ -41,6 +43,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (msg.HasValue())
                     return Message(msg);
             }
+            if(IsCardTester(pf))
+                return Message("Found Card Tester");
 
             SetHeaders(pf.OrgId ?? 0);
             var ret = pf.ProcessPayment(ModelState, m);
@@ -65,6 +69,29 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     }
                     return View(ret.View ?? "Payment/Process", pf);
             }
+        }
+
+        private bool IsCardTester(PaymentForm pf)
+        {
+            if (!Util.IsHosted || !pf.CreditCard.HasValue())
+                return false;
+            DbUtil.Db.InsertIpLog(Request.UserHostAddress, pf.CreditCard.Md5Hash());
+
+            if(pf.IsProblemUser())
+                return LogRogueUser(pf);
+            if (DbUtil.Db.IsCardTester(Request.UserHostAddress) != true)
+                return false;
+
+            return LogRogueUser(pf);
+        }
+
+        private bool LogRogueUser(PaymentForm pf)
+        {
+            DbUtil.Db.InsertRogueIp(Request.UserHostAddress, Util.Host);
+            DbUtil.Db.SendEmail(Util.FirstAddress("david@touchpointsoftware.com"),
+                "CardTester", $"See Activity Log for {DbUtil.Db.ServerLink()} datum={pf.DatumId} ip={Request.UserHostAddress}",
+                Util.EmailAddressListFromString("david@touchpointsoftware.com"));
+            return true;
         }
 
         public ActionResult Confirm(int? id, string transactionId, decimal? amount)
