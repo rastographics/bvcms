@@ -689,9 +689,13 @@ Creating_dbo_UpdateAttendStrProc.sql
 Creating_dbo_FamilyMakeup.sql
 Creating_dbo_UpdateResCodes.sql
 Creating_triggerdbo_updPeople_dbo_People.sql
+Creating_dbo_IpLog.sql
+Creating_pk_PK_IpLog_dbo_IpLog.sql
+Creating_dbo_InsertIpLog.sql
 Creating_dbo_ComputePositionInFamily.sql
 Creating_dbo_GetPeopleIdFromACS.sql
 Creating_dbo_BundleList.sql
+Creating_dbo_IsCardTester.sql
 Creating_dbo_StatusFlagsAll.sql
 Creating_dbo_LastChanged.sql
 Creating_dbo_SundayDates.sql
@@ -925,9 +929,11 @@ Creating_lookup_StateLookup.sql
 Creating_pk_PK_STATE_LOOKUP_TBL_lookup_StateLookup.sql
 Creating_STATE_LOOKUP_CODE_IX_lookup_StateLookup.sql
 Creating_dbo_RandNumber.sql
+Creating_dbo_RogueIps.sql
 Creating_dbo_Sprocs.sql
 Creating_dbo_Triggers.sql
 Creating_dbo_DisableForeignKeys.sql
+Creating_dbo_InsertRogueIp.sql
 Creating_dbo_ShowTableSizes.sql
 Creating_dbo_sp_who3.sql
 Adding_foreignkeystodbo_Attend.sql
