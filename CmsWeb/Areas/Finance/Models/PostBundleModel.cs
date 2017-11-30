@@ -100,6 +100,7 @@ namespace CmsWeb.Models
                         PLNT = ContributionTypeCode.SpecialTypes.Contains(d.Contribution.ContributionTypeId) ? d.Contribution.ContributionType.Code : "",
                         memstatus = d.Contribution.Person.MemberStatus.Description,
                         campusid = d.Contribution.CampusId,
+                        ImageId = d.Contribution.ImageID
                     };
             var list = q.ToList();
             foreach (var c in list)
@@ -520,6 +521,8 @@ namespace CmsWeb.Models
             public string CheckNo { get; set; }
 
             public string tip => Tip(PeopleId, Age, memstatus, Address, City, State, Zip);
+
+            public int ImageId { get; set; }
         }
     }
 }

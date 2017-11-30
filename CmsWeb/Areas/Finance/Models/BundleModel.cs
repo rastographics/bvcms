@@ -116,6 +116,7 @@ namespace CmsWeb.Areas.Finance.Models
             var q3 = from c in q
                      select new ContributionInfo
                      {
+                         ContributionId = c.ContributionId,
                          PeopleId = c.PeopleId,
                          Fund = c.ContributionFund.FundName,
                          Type = c.ContributionType.Description,
@@ -127,7 +128,8 @@ namespace CmsWeb.Areas.Finance.Models
                          Check = c.CheckNo,
                          Notes = c.ContributionDesc,
                          ReversedReturned = c.ContributionStatusId > 0,
-                         PostingDate = c.PostingDate
+                         PostingDate = c.PostingDate,
+                         ImageId = c.ImageID
                      };
             return q3;
         }
@@ -152,6 +154,7 @@ namespace CmsWeb.Areas.Finance.Models
 
         public class ContributionInfo
         {
+            public int ContributionId { get; set; }
             public string Fund { get; set; }
             public string Type { get; set; }
             public int? PeopleId { get; set; }
@@ -163,6 +166,7 @@ namespace CmsWeb.Areas.Finance.Models
             public string Check { get; set; }
             public string Notes { get; set; }
             public bool ReversedReturned { get; set; }
+            public int ImageId { get; set; }
         }
     }
 }
