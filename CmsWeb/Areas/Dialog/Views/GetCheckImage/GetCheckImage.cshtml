@@ -1,0 +1,19 @@
+﻿@model CmsWeb.Areas.Dialog.Models.CheckImageModel
+@{
+    Layout = null;
+    var imgSrc= String.Format("");
+    var imgId = Model.ImageId;
+}
+
+@if (Model.checkImageBytes != null)
+{
+    var base64 = Convert.ToBase64String(Model.checkImageBytes);
+    imgSrc = String.Format("data:image/png;base64,{0}", base64);
+    <div class="modal-dialog" style="width: 600px !important; margin-top: 0 !important; text-align: center">
+        <button type="button" class="close" style="color: #FFFFFF !important; opacity: 1!important" data-dismiss="modal" aria-label="Close"><span>&times;</span></button><br/>        
+        <div class="modal-content">
+            <img width="600" id='@Model.ImageId' src='@imgSrc' />
+        </div>
+    </div>
+}
+      

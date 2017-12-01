@@ -1,5 +1,7 @@
 ﻿@using CmsData
 @model CmsWeb.Areas.Search.Models.SearchAddModel
+@*@ViewExtensions2.jQuery()
+@ViewExtensions2.jQueryUI()*@
 @if (Model.ShowLimitedSearch)
 {
     <div class="modal-dialog modal-lg">
@@ -95,27 +97,28 @@ else if (Util2.OnlineRegTypeSearchAdd)
     </div>
 }
 else
-{
+{    
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Search for Person to @Model.DialogTitle</h4>
             </div>
-            <div id="search-person-form" class="modal-body">
+               @Html.Action("GetCheckImage", "GetCheckImage", new {Area = "Dialog", id = Model.PrimaryKeyForContextType})              
+            <div id="search-person-form" class="modal-body">              
                 <div class="row">
                     <div class="col-sm-6">
-                        @Html.EditorFor(m => m.Name, new { help = "Starting letters of First &amp; Last or just Last, e.g. <u>Pe Smi</u>" })
+                        @Html.EditorFor(m => m.Name, new {help = "Starting letters of First &amp; Last or just Last, e.g. <u>Pe Smi</u>"})
                     </div>
                     <div class="col-sm-6">
-                        @Html.EditorFor(m => m.Communication, new { help = "Any part of any Phone or Email" })
+                        @Html.EditorFor(m => m.Communication, new {help = "Any part of any Phone or Email"})
                     </div>
                     <div class="clearfix"></div>
                     <div class="col-sm-6">
-                        @Html.EditorFor(m => m.Address, new { help = "Any part of the Street Address, City or Zip" })
+                        @Html.EditorFor(m => m.Address, new {help = "Any part of the Street Address, City or Zip"})
                     </div>
                     <div class="col-sm-6">
-                        @Html.EditorFor(m => m.dob, new { help = "YYYY or MM or MM/DD or MM/DD/YY" })
+                        @Html.EditorFor(m => m.dob, new {help = "YYYY or MM or MM/DD or MM/DD/YY"})
                     </div>
                     @Html.EditorFor(m => m, "HiddenMeta")
                     @Html.EditorFor(m => m, "HiddenPeople")

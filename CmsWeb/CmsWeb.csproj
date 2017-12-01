@@ -319,6 +319,7 @@
     <Compile Include="Areas\Dialog\Controllers\AddResourceController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddOrganizationController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddAttendeesFromTagController.cs" />
+    <Compile Include="Areas\Dialog\Controllers\GetCheckImageController.cs" />
     <Compile Include="Areas\Dialog\Controllers\OrgPrevMemberDialogController.cs" />
     <Compile Include="Areas\Dialog\Controllers\OrgMemberDialogController.cs" />
     <Compile Include="Areas\Dialog\Controllers\OrgSearchDropController.cs" />
@@ -337,6 +338,7 @@
     <Compile Include="Areas\Dialog\Controllers\TransactionHistoryController.cs" />
     <Compile Include="Areas\Dialog\Models\AddAttendeesFromTag.cs" />
     <Compile Include="Areas\Dialog\Models\AddToOrgFromTag.cs" />
+    <Compile Include="Areas\Dialog\Models\CheckImageModel.cs" />
     <Compile Include="Areas\Dialog\Models\DeleteMeeting.cs" />
     <Compile Include="Areas\Dialog\Models\NewMeetingInfo.cs" />
     <Compile Include="Areas\Dialog\Models\OrganizationModel.cs" />
@@ -2090,6 +2092,10 @@
     <Content Include="Content\VitalStats.py" />
     <Content Include="Lib\ensurepip\_bundled\setuptools-20.10.1-py2.py3-none-any.whl" />
     <Content Include="Lib\ensurepip\_bundled\pip-8.1.1-py2.py3-none-any.whl" />
+    <Content Include="Areas\Dialog\Views\GetCheckImage\GetCheckImage.cshtml" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\TeamCity.pubxml" />
+    <None Include="Properties\PublishProfiles\work.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
