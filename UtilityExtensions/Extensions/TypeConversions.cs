@@ -62,7 +62,15 @@ namespace UtilityExtensions
         }
         public static DateTime? ToDate(this string s)
         {
-            if (s != null && s.AllDigits() && s.Length == 8)
+            if (s == null)
+                return null;
+            if (s.AllDigits() && s.Length == 8)
+            {
+                var d = ParseMMddyy(s);
+                if (d.HasValue)
+                    return GoodDate(d);
+            }
+            if (s.AllDigits() && s.Length == 10)
             {
                 var d = ParseMMddyy(s);
                 if (d.HasValue)

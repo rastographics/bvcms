@@ -747,15 +747,22 @@ AND UserPeopleid = {0}
 AND OrganizationId = {1}", Datum.UserPeopleId, Datum.OrganizationId);
         }
 
-        internal string CheckAlreadyCompleted()
+        internal string CheckExpiredOrCompleted()
         {
             var ed = DbUtil.Db.RegistrationDatas.SingleOrDefault(e => e.Id == DatumId);
-            if (ed?.Completed == true)
+            if (ed?.Completed == true && Orgid.HasValue && !settings[Orgid.Value].AllowReRegister)
+                return "Registration Already Completed";
+
+            if (!AllowReregister && !AllowSaveProgress())
             {
-                Log("AddAnotherPersonError already completed");
-                return "It appears this registration is already completed.";
+                // Don't allow a submit to SubmitQuestions on an old form
+                var re = new Regex("index (?<dt>[0-9/]* [0-9:]* [AP]M)", RegexOptions.IgnoreCase);
+                var result = re.Match(History[0]).Groups["dt"].Value.ToDate();
+                if (result.HasValue && DateTime.Now.Subtract(result.Value).TotalMinutes > 120)
+                    return "Registration Page has expired after 2 hours";
             }
             return null;
         }
+
     }
 }

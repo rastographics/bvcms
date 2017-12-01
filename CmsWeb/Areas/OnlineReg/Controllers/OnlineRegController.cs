@@ -102,7 +102,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult RegisterFamilyMember(int id, OnlineRegModel m)
         {
             // got here by clicking on a link in the Family list
-            var msg = m.CheckAlreadyCompleted();
+            var msg = m.CheckExpiredOrCompleted();
             if (msg.HasValue())
                 return PageMessage(msg);
             fromMethod = "Register";
@@ -126,7 +126,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult FindRecord(int id, OnlineRegModel m)
         {
             // Anonymous person clicks submit to find their record
-            var msg = m.CheckAlreadyCompleted();
+            var msg = m.CheckExpiredOrCompleted();
             if (msg.HasValue())
                 return PageMessage(msg);
             fromMethod = "FindRecord";
@@ -173,6 +173,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult SubmitNew(int id, OnlineRegModel m)
         {
             // Submit from AddressMaritalGenderForm
+            var msg = m.CheckExpiredOrCompleted();
+            if (msg.HasValue())
+                return PageMessage(msg);
             fromMethod = "SubmitNew";
             ModelState.Clear();
             m.HistoryAdd("SubmitNew id=" + id);
@@ -191,6 +194,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult SubmitQuestions(int id, OnlineRegModel m)
         {
+            var ret = m.CheckExpiredOrCompleted();
+            if(ret.HasValue())
+                return PageMessage(ret);
+
             fromMethod = "SubmitQuestions";
             m.HistoryAdd("SubmitQuestions id=" + id);
             if (m.List.Count <= id)
@@ -202,6 +209,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult AddAnotherPerson(OnlineRegModel m)
         {
+            var ret = m.CheckExpiredOrCompleted();
+            if(ret.HasValue())
+                return PageMessage(ret);
             fromMethod = "AddAnotherPerson";
             m.HistoryAdd("AddAnotherPerson");
             m.ParseSettings();
@@ -273,17 +283,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Message("Registration cannot be completed after a page refresh.");
             }
             var m = Util.DeSerialize<OnlineRegModel>(s);
-            if (m.Completed && m.Orgid.HasValue && !settings[m.Orgid.Value].AllowReRegister) 
-                return Message("Registration Already Completed");
-
-            if (!m.AllowReregister && !m.AllowSaveProgress())
-            {
-                // Don't allow a submit to CompleteRegistration on an old form
-                var re = new Regex("index (?<dt>[0-9/]* [0-9:]* [AP]M)", RegexOptions.IgnoreCase);
-            	var result = re.Match(m.History[0]).Groups["dt"].Value.ToDate();
-                if (result.HasValue && DateTime.Now.Subtract(result.Value).TotalMinutes > 120)
-                    return Message("Registration Page has expired after 2 hours");
-            }
+            var msg = m.CheckExpiredOrCompleted();
+            if(msg.HasValue())
+                return Message(msg);
 
             var ret = m.CompleteRegistration(this);
             switch (ret.Route)

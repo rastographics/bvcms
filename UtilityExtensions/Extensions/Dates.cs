@@ -246,6 +246,17 @@ namespace UtilityExtensions
 
             return null;
         }
+        public static DateTime? ParseyyyyMMdd(string s)
+        {
+            if (s == null || s.Length != 10)
+                return null;
+            DateTime dt;
+            if (DateTime.TryParseExact(s, "yyyyMMdd",
+                    CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal,
+                    out dt))
+                return dt;
+            return null;
+        }
         public static string BuildDate()
         {
             return GetBuildDate().FormatDateTm();
