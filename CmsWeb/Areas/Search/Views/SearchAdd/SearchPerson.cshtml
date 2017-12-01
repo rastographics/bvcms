@@ -104,7 +104,10 @@ else
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Search for Person to @Model.DialogTitle</h4>
             </div>
-               @Html.Action("GetCheckImage", "GetCheckImage", new {Area = "Dialog", id = Model.PrimaryKeyForContextType})              
+            @if(Model.AddContext=="contributor")
+            {
+              @Html.Action("GetCheckImage", "GetCheckImage", new {Area = "Dialog", id = Model.PrimaryKeyForContextType})
+            }
             <div id="search-person-form" class="modal-body">              
                 <div class="row">
                     <div class="col-sm-6">
