@@ -124,6 +124,8 @@ BEGIN
 		DELETE dbo.VolInterestInterestCodes 
 		FROM dbo.VolInterestInterestCodes vc 
 		WHERE vc.PeopleId = @pid 
+
+		DELETE dbo.MobileAppDevices WHERE peopleID = @pid
 		 
 		SELECT @fid = FamilyId, @pic = PictureId FROM dbo.People WHERE PeopleId = @pid 
 		DELETE dbo.FamilyExtra WHERE FamilyId = @fid 
@@ -158,10 +160,6 @@ BEGIN
 		RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState); 
 	END CATCH  
 END 
- 
- 
-
-
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO
