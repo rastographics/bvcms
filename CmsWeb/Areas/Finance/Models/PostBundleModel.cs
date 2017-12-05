@@ -407,7 +407,7 @@ namespace CmsWeb.Models
             c.ContributionTypeId = type;
             c.ContributionDesc = notes;
             c.ContributionDate = contributiondate;
-            c.CheckNo = checkno;
+            c.CheckNo = checkno.Trim();
             DbUtil.Db.SubmitChanges();
             return ContributionRowData(ctl, c.ContributionId);
         }
