@@ -1526,6 +1526,18 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             }
             return ms.Id;
         }
+        public static int FetchOrCreatePositionInFamilyId(CMSDataContext db, string position)
+        {
+            var fp = db.FamilyPositions.SingleOrDefault(m => m.Description == position);
+            if (fp == null)
+            {
+                var max = db.FamilyPositions.Max(mm => mm.Id) + 1;
+                fp = new FamilyPosition() {Id = max, Code = "M" + max, Description = position};
+                db.FamilyPositions.InsertOnSubmit(fp);
+                db.SubmitChanges();
+            }
+            return fp.Id;
+        }
 
         public static int FetchOrCreateBaptismType(CMSDataContext db, string type)
         {
