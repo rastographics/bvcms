@@ -248,7 +248,7 @@ namespace UtilityExtensions
         }
         public static DateTime? ParseyyyyMMdd(string s)
         {
-            if (s == null || s.Length != 10)
+            if (s == null || s.Length != 8)
                 return null;
             DateTime dt;
             if (DateTime.TryParseExact(s, "yyyyMMdd",

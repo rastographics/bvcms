@@ -125,6 +125,7 @@ namespace CmsData.Codes
     {
         public const int Teacher = 160;
         public const int Member = 220;
+        public const int Leader = 140;
         public const int InActive = 230;
         public const int VisitingMember = 300;
         public const int Visitor = 310;

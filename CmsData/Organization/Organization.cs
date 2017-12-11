@@ -7,6 +7,7 @@ using CmsData.Codes;
 using UtilityExtensions;
 using System.Text;
 using System.Text.RegularExpressions;
+using UtilityExtensions;
 
 namespace CmsData
 {
@@ -354,7 +355,7 @@ namespace CmsData
         {
             var o = new Organization
             {
-                OrganizationName = organization,
+                OrganizationName = organization.Truncate(100),
                 SecurityTypeId = 0,
                 CreatedDate = Util.Now,
                 CreatedBy = Util.UserId1,

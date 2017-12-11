@@ -1217,6 +1217,12 @@ This search uses multiple steps which cannot be duplicated in a single query.
             var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid, pid);
             return ((int)(result.ReturnValue));
         }
+        [Function(Name = "dbo.FastDrop")]
+        public int FastDrop([Parameter(DbType = "Int")] int oid, [Parameter(DbType = "Int")] int pid, [Parameter(DbType = "DateTime")] DateTime dropdate, [Parameter(DbType = "NVARCHAR(150)")] string orgname)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid, pid, dropdate, orgname);
+            return ((int)(result.ReturnValue));
+        }
         [Function(Name = "dbo.DeleteEnrollmentTransaction")]
         public int DeleteEnrollmentTransaction([Parameter(DbType = "Int")] int id)
         {
