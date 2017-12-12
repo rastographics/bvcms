@@ -203,15 +203,28 @@
         var rowId = '#special-funds tbody tr#' + id;
         if ($(rowId).length) {
             // only set focus to Existing row.
+            showAddfund();
             setDelayedFocus($(rowId).find('input:text'));
         } else {
             var i = $('#funds tbody tr').length + $('#special-funds tbody tr').length;
             var fundIndexer = getFundPrefix() + 'FundItem[' + i + ']';
             var inputKey = fundIndexer + '.Key';
             var inputValue = fundIndexer + '.Value';
-            $('#special-funds > tbody:last').append('<tr id="' + id + '"><td style="width: 10px;"><a href="#" tabindex="-1" class="remove-fund"><span class="fa fa-trash-o"></span></a></td><td>' + text + '</td><td><div class="pull-right"><input type="hidden" name="' + inputKey + '" value="' + id + '"><input name="' + inputValue + '" type="text" class="form-control narrow sum money"/></div></td></tr>');
-
+            $('#special-funds > tbody:last').append('<tr id="' + id + '"><td style="width: 10px;border-width: 0px !important"><a href="#" tabindex="-1" class="remove-fund"><span class="fa fa-trash-o" style="line-height: 20px !important; padding: 8px 0;"></span></a></td><td class="pull-right" style="border-width: 0px !important"><h4>' + text + '</h4></td><td style="width: 140px !important; border-width: 0px !important;vertical-align: middle!important"><h4 style="margin: 0;display:inline-block; line-height: 20px !important; padding: 8px 0;">$ </h4><input type="hidden" name="' + inputKey + '" value="' + id + '"><input name="' + inputValue + '" type="text" class="form-control narrow sum pull-right" style="width:100px!important"/></td></tr>');
+            showAddfund();
             setDelayedFocus($('input[name="' + inputValue + '"]'));
+
+        }
+    }
+
+    $('#myAddFundLink').click(function () { showAddfund(); return false; });
+
+    function showAddfund() {
+        var x = document.getElementById("addFund");
+        if (x.hidden === true) {
+            x.hidden = false;
+        } else {
+            x.hidden = true;
         }
     }
 
@@ -229,7 +242,7 @@
             $('input:text').first().focus();
 
             $('#special-funds-list').select2({
-                placeholder: 'Select a Fund'
+                placeholder: 'Select a Fund to Proceed'
             });
 
             $('#special-funds-list').on('change', function (e) {
