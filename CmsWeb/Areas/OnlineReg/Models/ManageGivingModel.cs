@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Finance;
@@ -119,7 +120,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public string SpecialGivingFundsHeader => DbUtil.Db.Setting("SpecialGivingFundsHeader", "Special Giving Funds");
 
-        public bool HasManagedGiving => person.ManagedGiving() != null;
+        public bool HasManagedGiving => person?.ManagedGiving() != null;
 
         public ManageGivingModel()
         {
@@ -137,6 +138,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             this.pid = pid;
             this.orgid = orgid;
+            if (person == null)
+                return;
             var rg = person.ManagedGiving();
             if (rg != null)
                 PopulateSetup(rg);
@@ -404,9 +407,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         transactionResponse = gateway.AuthCreditCardVault(pid, dollarAmt, "Recurring Giving Auth", 0);
                     }
                     else
+                    {
+                        var pf = new PaymentForm()
+                        {
+                            CreditCard = CreditCard,
+                            First = FirstName,
+                            Last = LastName
+                        };
+                        if(IsCardTester(pf))
+                            throw new Exception("Found Card Tester");
                         transactionResponse = gateway.AuthCreditCard(pid, dollarAmt, CreditCard, Expires,
                             "Recurring Giving Auth", 0, CVV, string.Empty,
                             FirstName, LastName, Address, Address2, City, State, Country, Zip, Phone);
+                    }
 
                     if (!transactionResponse.Approved)
                         throw new Exception(transactionResponse.Message);
@@ -441,6 +454,29 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             person.RecurringAmounts.AddRange(chosenFunds.Select(c => new RecurringAmount { FundId = c.fundid, Amt = c.amt }));
             DbUtil.Db.SubmitChanges();
+        }
+
+        private bool IsCardTester(PaymentForm pf)
+        {
+            if (!Util.IsHosted || !pf.CreditCard.HasValue())
+                return false;
+            DbUtil.Db.InsertIpLog(HttpContext.Current.Request.UserHostAddress, pf.CreditCard.Md5Hash());
+
+            if(pf.IsProblemUser())
+                return LogRogueUser(pf);
+            if (DbUtil.Db.IsCardTester(HttpContext.Current.Request.UserHostAddress) != true)
+                return false;
+
+            return LogRogueUser(pf);
+        }
+
+        private bool LogRogueUser(PaymentForm pf)
+        {
+            DbUtil.Db.InsertRogueIp(HttpContext.Current.Request.UserHostAddress, Util.Host);
+            DbUtil.Db.SendEmail(Util.FirstAddress("david@touchpointsoftware.com"),
+                "CardTester", $"See Activity Log for {DbUtil.Db.ServerLink()} datum={pf.DatumId} ip={HttpContext.Current.Request.UserHostAddress}",
+                Util.EmailAddressListFromString("david@touchpointsoftware.com"));
+            return true;
         }
 
         public class FundItemChosen

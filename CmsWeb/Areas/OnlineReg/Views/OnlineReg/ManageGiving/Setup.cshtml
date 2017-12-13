@@ -33,7 +33,7 @@
 <div class="regform">
   <h2>@Model.Organization.OrganizationName</h2>
   <div>@Html.Raw(Model.Instructions)</div>
-  <h4>for @Model.person.Name &lt;@Model.person.EmailAddress&gt;</h4>
+  <h4>for @(Model.person?.Name) &lt;@(Model.person?.EmailAddress)&gt;</h4>
   @Html.ValidationSummary()
   <form id="managegivingform" method="post" class="form-horizontal" action="/OnlineReg/ManageGiving">
     @Html.Hidden("specialedit", 0)
