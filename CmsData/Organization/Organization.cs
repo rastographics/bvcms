@@ -459,7 +459,7 @@ namespace CmsData
                 ev.Data = value;
         }
 
-        public static string GetExtra(CMSDataContext db, int id, string field)
+        public static string GetExtra(CMSDataContext db, int? id, string field)
         {
             var oev = db.OrganizationExtras.SingleOrDefault(oe => oe.OrganizationId == id && oe.Field == field);
             if (oev == null)

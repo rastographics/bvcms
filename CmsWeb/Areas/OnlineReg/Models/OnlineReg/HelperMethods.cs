@@ -415,6 +415,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return text;
         }
 
+        public static string YouMustAgreeStatement(int? orgid) => Util.PickFirst(
+            Organization.GetExtra(DbUtil.Db, orgid, "YouMustAgreeStatement"),
+            "<p>You must agree to the terms above for you or your minor child before you can continue with confirmation.</p>");
+
         public string Terms
         {
             get

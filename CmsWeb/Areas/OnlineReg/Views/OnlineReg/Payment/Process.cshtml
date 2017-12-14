@@ -1,6 +1,7 @@
 ﻿@using UtilityExtensions
 @using CmsData
 @using CmsData.Finance
+@using CmsWeb.Areas.OnlineReg.Models
 @model CmsWeb.Areas.OnlineReg.Models.PaymentForm
 @{
     ViewBag.Title = "Online Registration";
@@ -26,9 +27,7 @@
         <small class="showform">Uncheck the agreement box to display the terms again.</small>
       </p>
       <div id="Terms" title="Terms of Agreement">
-        <p>
-          You must agree to the terms below for you or your minor child before you can complete your registration.
-        </p>
+        @Html.Raw(OnlineRegModel.YouMustAgreeStatement(Model.OrgId))
         @Html.Raw(Model.Terms)
       </div>
   }
