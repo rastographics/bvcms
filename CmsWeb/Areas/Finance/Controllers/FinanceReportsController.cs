@@ -138,7 +138,36 @@ namespace CmsWeb.Areas.Finance.Controllers
 
             ViewBag.Name = id.SpaceCamelCase();
             var rd = cn.ExecuteReader(content, p, commandTimeout: 1200);
-            return Content(GridResult.Table(rd, id.SpaceCamelCase()));
+            var excelink = Request.Url?.AbsoluteUri.Replace("TotalsByFundCustomReport/", "TotalsByFundCustomExport/");
+            var link = $"<a href='{excelink}' class='CustomExport btn btn-default' target='_blank'><i class='fa fa-file-excel-o'></i> Download as Excel</a>";
+            return Content(GridResult.Table(rd, id.SpaceCamelCase(), excellink: link));
+        }
+        [HttpPost, Route("~/TotalsByFundCustomExport/{id}")]
+        public ActionResult TotalsByFundCustomExport(string id, TotalsByFundModel m)
+        {
+            var content = DbUtil.Db.ContentOfTypeSql(id);
+            if (content == null)
+                return Content("no content");
+            var cs = Util.ConnectionStringReadOnlyFinance;
+            var cn = new SqlConnection(cs);
+            cn.Open();
+            var p = new DynamicParameters();
+            p.Add("@StartDate", m.Dt1);
+            p.Add("@EndDate", m.Dt2);
+            p.Add("@CampusId", m.CampusId);
+            p.Add("@Online", m.Online);
+            p.Add("@TaxNonTax", m.TaxDedNonTax);
+            p.Add("@IncludeUnclosedBundles", m.IncUnclosedBundles);
+            if (m.FilterByActiveTag)
+            {
+                var tagid = DbUtil.Db.TagCurrent().Id;
+                p.Add("@ActiveTagFilter", tagid);
+            }
+            else
+                p.Add("@ActiveTagFilter");
+
+            var s = id.SpaceCamelCase();
+            return cn.ExecuteReader(content, p, commandTimeout: 1200).ToExcel(s + ".xlsx", fromSql: true);
         }
 
         [HttpPost]

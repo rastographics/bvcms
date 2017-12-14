@@ -22,9 +22,12 @@ using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Web;
+using System.Web.UI.WebControls;
 using CmsWeb.Code;
 using Elmah;
+using Content = CmsData.Content;
 using Encoder = System.Drawing.Imaging.Encoder;
+using Image = System.Drawing.Image;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
@@ -129,7 +132,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 try
                 {
-                    var list = DbUtil.Db.ViewCustomScriptRoles.ToList();   
+                    var list = DbUtil.Db.ViewCustomScriptRoles.ToList();
                 }
                 catch (Exception ex)
                 {
@@ -151,7 +154,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
 
             if (stayaftersave == "true")
-                return RedirectToAction("ContentEdit", new {id, snippet});
+                return RedirectToAction("ContentEdit", new { id, snippet });
 
             var url = GetIndexTabUrl(content);
             return Redirect(url);
@@ -210,16 +213,16 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View(content);
         }
 
-//        [HttpPost]
-//        public ActionResult RunSqlScript(string body, string parameter)
-//        {
-//            var cn = new SqlConnection(Util.ConnectionStringReadOnly);
-//            cn.Open();
-//            var script = $"DECLARE @p1 VARCHAR(100) = '{parameter}'\n{body}\n";
-//            var cmd = new SqlCommand(script);
-//            var rd = cmd.ExecuteReader();
-//            return new GridResult(rd);
-//        }
+        //        [HttpPost]
+        //        public ActionResult RunSqlScript(string body, string parameter)
+        //        {
+        //            var cn = new SqlConnection(Util.ConnectionStringReadOnly);
+        //            cn.Open();
+        //            var script = $"DECLARE @p1 VARCHAR(100) = '{parameter}'\n{body}\n";
+        //            var cmd = new SqlCommand(script);
+        //            var rd = cmd.ExecuteReader();
+        //            return new GridResult(rd);
+        //        }
         [HttpPost]
         public ActionResult SavePythonScript(string name, string body)
         {
@@ -237,7 +240,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             DateTime endDate = DateTime.Now;
 
             //sta thread to allow intiate WebBrowser
-            var staThread = new Thread(delegate()
+            var staThread = new Thread(delegate ()
             {
                 data = CaptureWebPageBytesP(body, width, height);
                 bDone = true;
@@ -384,10 +387,22 @@ namespace CmsWeb.Areas.Manage.Controllers
             var t = PythonModel.HtmlTable(rd);
             t.RenderControl(new HtmlTextWriter(context.HttpContext.Response.Output));
         }
-        public static string Table(IDataReader rd, string title = null, int? maxrows = null)
+        public static string Table(IDataReader rd, string title = null, int? maxrows = null, string excellink = null)
         {
             var t = PythonModel.HtmlTable(rd, title, maxrows);
             var sb = new StringBuilder();
+
+            if (excellink.HasValue())
+            {
+                var tc = new TableCell()
+                {
+                    ColumnSpan = rd.FieldCount,
+                    Text = excellink,
+                };
+                var tr = new TableFooterRow();
+                tr.Cells.Add(tc);
+                t.Rows.Add(tr);
+            }
             t.RenderControl(new HtmlTextWriter(new StringWriter(sb)));
             return sb.ToString();
         }
