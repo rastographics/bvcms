@@ -5,6 +5,8 @@
 @model CmsWeb.Areas.People.Models.ContactModel
 @{
     var evmodel = new ExtraValueModel(Model.ContactId, "Contact", Model.Location);
+    var showExtraValues = Model.Ministry.Value != "0" && Model.ContactType.Value != "0" && Model.ContactReason.Value != "0";
+    var extraValueDisplay = showExtraValues ? "" : "display: none";
 }
 <form id="edit-contact" class="form ajax" method="post" data-init="Editable" data-init2="ExtraEditable">
     @if (Model.Incomplete.HasValue())
@@ -58,7 +60,7 @@
             @if (Model.ShowContactExtraFeature)
             {
                 <div class="row">
-                    <div id="contact-extra-values" class="col-sm-12">
+                    <div id="contact-extra-values" class="col-sm-12" style="@extraValueDisplay">
                         @Html.Partial("/Views/ExtraValue/Location.cshtml", evmodel)
                     </div>
                 </div>
@@ -91,7 +93,7 @@
 
             @if (Model.ShowContactExtraFeature)
             {
-                @:WireUpExtraValues(@Model.ContactId);
+                @:WireUpExtraValues(@Model.ContactId, @Html.Raw(Json.Encode(Model.Locations)));
             }
         });
 
