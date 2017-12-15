@@ -306,17 +306,22 @@ namespace UtilityExtensions
 
         public static string Md5Hash(this string s)
         {
-            var md5 = MD5.Create();
-            var bytes = Encoding.ASCII.GetBytes(s);
-            var hash = md5.ComputeHash(bytes);
-            var sb = new StringBuilder();
-            foreach (var t in hash)
-                sb.Append(t.ToString("x2"));
-            return sb.ToString();
-		}
-		
+            using (var md5 = MD5.Create())
+            {
+                var bytes = Encoding.ASCII.GetBytes(s);
+                var hash = md5.ComputeHash(bytes);
+                var sb = new StringBuilder();
+                foreach (var t in hash)
+                    sb.Append(t.ToString("x2"));
+                return sb.ToString();
+            }
+        }
+
         public static string SlugifyString(this string original)
         {
+            if (original == null)
+                return string.Empty;
+
             // Replace all non-alphanumeric
             var rgx = new Regex("[^a-zA-Z0-9]");
             var slug = rgx.Replace(original, "");
