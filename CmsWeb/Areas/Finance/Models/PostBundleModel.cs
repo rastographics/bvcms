@@ -122,7 +122,7 @@ namespace CmsWeb.Models
         {
             var q = from d in DbUtil.Db.BundleDetails
                     where d.BundleHeaderId == id
-                    group d by new {d.Contribution.ContributionFund.FundName, d.Contribution.ContributionFund.FundId}
+                    group d by new { d.Contribution.ContributionFund.FundName, d.Contribution.ContributionFund.FundId }
                     into g
                     orderby g.Key.FundName
                     select new FundTotal
@@ -175,7 +175,7 @@ namespace CmsWeb.Models
             }
             var o = q.FirstOrDefault();
             if (o == null)
-                return new {error = "not found"};
+                return new { error = "not found" };
             return o;
         }
 
@@ -268,17 +268,27 @@ namespace CmsWeb.Models
             }
             else
             {
-                qp = from p in qp
-                     where
-                         (
-                             (p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
-                              || p.LastName.StartsWith(q) || p.MaidenName.StartsWith(q))
-                             &&
-                             (!hasfirst || p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) ||
-                              p.MiddleName.StartsWith(First)
-                              || p.LastName.StartsWith(q) || p.MaidenName.StartsWith(q))
-                             )
-                     select p;
+                if (DbUtil.Db.Setting("UseAltnameContains"))
+                    qp = from p in qp
+                         where
+                         (p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last) || p.AltName.Contains(Last)
+                          || p.LastName.StartsWith(q) || p.MaidenName.StartsWith(q))
+                         &&
+                         (!hasfirst || p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) ||
+                          p.MiddleName.StartsWith(First)
+                          || p.LastName.StartsWith(q) || p.MaidenName.StartsWith(q))
+                         select p;
+
+                else
+                    qp = from p in qp
+                         where
+                         (p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
+                          || p.LastName.StartsWith(q) || p.MaidenName.StartsWith(q))
+                         &&
+                         (!hasfirst || p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) ||
+                          p.MiddleName.StartsWith(First)
+                          || p.LastName.StartsWith(q) || p.MaidenName.StartsWith(q))
+                         select p;
             }
             return qp;
         }
@@ -371,7 +381,7 @@ namespace CmsWeb.Models
             }
             catch (Exception ex)
             {
-                return new {error = ex.Message};
+                return new { error = ex.Message };
             }
         }
 
@@ -428,7 +438,8 @@ namespace CmsWeb.Models
             var diff = (Bundle.TotalCash.GetValueOrDefault() + Bundle.TotalChecks.GetValueOrDefault() + Bundle.TotalEnvelopes.GetValueOrDefault()) - totalItems;
             return new
             {
-                totalitems = totalItems.ToString2("C2"), diff,
+                totalitems = totalItems.ToString2("C2"),
+                diff,
                 difference = diff.ToString2("C2"),
                 itemcount = Bundle.BundleDetails.Count()
             };

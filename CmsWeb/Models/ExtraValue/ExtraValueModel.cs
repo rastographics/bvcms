@@ -236,7 +236,7 @@ namespace CmsWeb.Models.ExtraValues
 
         public string ListBitsJson(string name)
         {
-            var f = Views.GetStandardExtraValues(DbUtil.Db, Table, false, Location).Single(ee => ee.Name == name);
+            var f = Views.GetStandardExtraValues(DbUtil.Db, Table, false, Location).First(ee => ee.Name == name);
             var list = ListExtraValues().Where(pp => f.Codes.Select(x => x.Text).Contains(pp.Field)).ToList();
             var q = from c in f.Codes
                     join e in list on c.Text equals e.Field into j

@@ -67,7 +67,7 @@
     $("#name").autocomplete({
         appendTo: "#SearchResults2",
         autoFocus: true,
-        minLength: 3,
+        minLength: 1,
         source: function (request, response) {
             if ($("#moreresults").is(":checked")) {
                 $.post("/PostBundle/Names2", request, function (ret) {
