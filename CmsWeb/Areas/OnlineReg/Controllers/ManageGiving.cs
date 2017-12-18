@@ -92,7 +92,16 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     return View("ManageGiving/Setup", m);
                 }
 		    }
-            
+		    if (DbUtil.Db.Setting("UseRecaptcha", true))
+		    {
+		        if (!Program.IsValidCaptcha(HttpContext.Request.Form["g-recaptcha-response"],
+		            HttpContext.Request.UserHostAddress))
+		        {
+		            ModelState.AddModelError("TranId", "RaCaptcha validation failed.");
+		            return View("ManageGiving/Setup", m);
+                }
+		    }
+
             try
 			{
 				m.Update();

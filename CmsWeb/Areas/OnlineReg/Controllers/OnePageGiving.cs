@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
@@ -99,7 +100,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     ModelState.AddModelError("CampusId", "Campus is Required");
 
             var m = new OnlineRegModel(Request, pf.OrgId, pf.testing, null, null, pf.source)
-            { URL = "/OnePageGiving/" + pf.OrgId };
+                { URL = "/OnePageGiving/" + pf.OrgId };
 
             var pid = Util.UserPeopleId;
             if (pid.HasValue)
@@ -110,7 +111,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             // first re-build list of fund items with only ones that contain a value (amt).
             var fundItems = fundItem.Where(f => f.Value.GetValueOrDefault() > 0).ToDictionary(f => f.Key, f=> f.Value);
-            
+
             var designatedFund = m.settings[id.Value].DonationFundId ?? 0;
             if (designatedFund != 0)
                 fundItems.Add(designatedFund, pf.AmtToPay);
@@ -121,13 +122,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 m.List[0].FundItem = fundItems;
                 pf.AmtToPay = m.List[0].FundItemsChosen().Sum(f => f.Amt);
             }
-            
+
             if (pf.AmtToPay.GetValueOrDefault() == 0)
                 ModelState.AddModelError("AmtToPay", "Invalid Amount");
 
             SetHeaders(m);
             SetInstructions(m);
-            
+
             var p = m.List[0];
             if (pf.ShowCampusOnePageGiving)
                 pf.Campuses = p.Campuses().ToList();
@@ -153,7 +154,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 pf.AmtToPay = amtToPay;
                 return View("OnePageGiving/Index", new OnePageGivingModel() { OnlineRegPersonModel = m.List[0], PaymentForm = pf });
             }
-                
+
             p.orgid = m.Orgid;
             p.FirstName = pf.First;
             p.LastName = pf.Last;
@@ -182,7 +183,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 pf.AmtToPay = amtToPay;
                 return View("OnePageGiving/Index", new OnePageGivingModel() { OnlineRegPersonModel = m.List[0], PaymentForm = pf });
             }
-                
+
 
             if (m?.UserPeopleId != null && m.UserPeopleId > 0)
                 pf.CheckStoreInVault(ModelState, m.UserPeopleId.Value);
@@ -191,6 +192,19 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 m.List[0].FundItem = fundItem;
                 pf.AmtToPay = amtToPay;
                 return View("OnePageGiving/Index", new OnePageGivingModel() { OnlineRegPersonModel = m.List[0], PaymentForm = pf });
+            }
+
+            if (DbUtil.Db.Setting("UseRecaptcha", true))
+            {
+                if (!Program.IsValidCaptcha(HttpContext.Request.Form["g-recaptcha-response"],
+                    HttpContext.Request.UserHostAddress))
+                {
+                    m.List[0].FundItem = fundItem;
+                    pf.AmtToPay = amtToPay;
+                    ModelState.AddModelError("TranId", "RaCaptcha validation failed.");
+                    return View("OnePageGiving/Index",
+                        new OnePageGivingModel() {OnlineRegPersonModel = m.List[0], PaymentForm = pf});
+                }
             }
 
             var ti = pf.ProcessPaymentTransaction(m);
@@ -239,7 +253,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             Response.NoCache();
             var m = new OnlineRegModel(Request, id, testing, null, null, source)
-            { URL = "/OnePageGiving/" + id };
+                { URL = "/OnePageGiving/" + id };
             return View("OnePageGiving/ThankYou", m);
         }
 
@@ -283,9 +297,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (r.Line1 == "error" || r.found == false)
             {
                 if (pf.City.HasValue()
-                        && pf.State.HasValue()
-                        && pf.Zip.HasValue()
-                        && pf.Address.HasValue())
+                    && pf.State.HasValue()
+                    && pf.Zip.HasValue()
+                    && pf.Address.HasValue())
                     return true; // not found but complete
                 pf.NeedsCityState = true;
                 return false;

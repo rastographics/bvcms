@@ -10,6 +10,8 @@
     var vaultDisabled = DbUtil.Db.Setting("VaultDisabled");
     var processorerror = Html.ErrorMessage("TranId");
     var designatedFund = Model.OnlineRegPersonModel.DesignatedDonationFund().FirstOrDefault();
+    var greSiteKey = System.Web.Configuration.WebConfigurationManager.AppSettings["googleReCaptchaSiteKey"];
+    var useRecaptcha = DbUtil.Db.Setting("UseRecaptcha",true);
 }
 @section head{
     @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
@@ -21,10 +23,16 @@
     <script type="text/javascript">
         $.dtoptions = { format: '@Util.jQueryDateFormat2' };
         $("form").validate();
+
+        function recaptcha_callback(token) {
+            document.getElementById("OnePageGiving").submit();
+        }
+
     </script>
     @Fingerprint.Script("/Content/touchpoint/js/onlinereg/OnlineReg2.js")
     @Fingerprint.Script("/Content/touchpoint/js/onlinereg/onlineregpayment2.js")
     @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
+    @ViewExtensions2.GoogleReCaptcha()
 }
 <style>
     input.form-control.error {
@@ -51,7 +59,7 @@
 </style>
 <div class="regform pad-top">
     @Html.Raw(ViewBag.Instructions)
-    <form action="/OnePageGiving" method="post">
+<form id="OnePageGiving" action="/OnePageGiving" method="post">
         @if (Html.HasErrors())
         {
             <div>
@@ -264,19 +272,27 @@
                 </div>
             </div>
         }
-        <div class="form-actions text-right">
-            @if (Model.OnlineRegPersonModel.LoggedIn && !vaultDisabled)
-            {
-                <span style="margin-right: 2em;">@Html.CheckBox("SavePayInfo", Model.PaymentForm.SavePayInfo) Save Payment Information</span>
-            }
-            <input type="submit" id="submitit" value="Make Gift" class="btn btn-primary btn-lg">
-            @if (processorerror.HasValue())
-            {
-                <div class="field-validation-error">
-                    <b>Message from Payment Processor: @processorerror</b>
-                </div>
-            }
+<div class="form-actions text-right">
+    @if (Model.OnlineRegPersonModel.LoggedIn && !vaultDisabled)
+    {
+        <span style="margin-right: 2em;">@Html.CheckBox("SavePayInfo", Model.PaymentForm.SavePayInfo) Save Payment Information</span>
+    }
+    <input type="submit" id="submitit" value="Make Gift" class="btn btn-primary btn-lg">
+    @if (processorerror.HasValue())
+    {
+        <div class="field-validation-error">
+            <b>Message from Payment Processor: @processorerror</b>
         </div>
+    }
+</div>
+    @if (useRecaptcha){
+        <div class="g-recaptcha"
+             data-sitekey= @greSiteKey
+             data-callback ="recaptcha_callback"
+             data-size="invisible">
+        </div>
+    }
+        <input type="hidden" id="useRecaptcha" value="@useRecaptcha" />
         @Html.Hidden("source", Model.PaymentForm.source)
         @Html.Hidden("OrgId", Model.PaymentForm.OrgId)
         @Html.Hidden("testing", Model.PaymentForm.testing)

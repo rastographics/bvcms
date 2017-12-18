@@ -146,7 +146,7 @@
         var ret = /^(\d+(\.\d{0,2})?)?$/.test(value);
         return ret;
     }, 'no $ or commas');
-    $('form.DisplayEdit,#managegivingform').validate({
+    $('form.DisplayEdit').validate({
         errorClass: "alert-danger",
         highlight: function (element, errorClass, validClass) {
             $(element).addClass(errorClass).removeClass(validClass);
@@ -159,6 +159,22 @@
                 return false;
             $("#submitit").attr("disabled", "true");
             form.submit();
+            return false;
+        }
+    });
+    $('#managegivingform').validate({
+        errorClass: "alert-danger",
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass(errorClass).removeClass(validClass);
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass(errorClass).addClass(validClass);
+        },
+        submitHandler: function (form) {
+            if (!$("#submitit").val())
+                return false;
+            $("#submitit").attr("disabled", "true");
+            // form.submit();
             return false;
         }
     });

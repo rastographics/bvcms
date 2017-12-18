@@ -809,6 +809,11 @@ namespace CmsWeb
             return null;
         }
 
+        public static HtmlString GoogleReCaptcha()
+        {
+            return new HtmlString("<script src='//www.google.com/recaptcha/api.js' async defer></script>\n");
+        }
+
         public static HtmlString OldStyles()
         {
             return Fingerprint.Css("/content/styles/bundle.stylecss.css");

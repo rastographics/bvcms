@@ -7,14 +7,20 @@
     Layout = "~/Views/Shared/onlinereg2.cshtml";
     var VaultDisabled = DbUtil.Db.Setting("VaultDisabled");
     var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
+    var greSiteKey = System.Web.Configuration.WebConfigurationManager.AppSettings["googleReCaptchaSiteKey"];
+    var useRecaptcha = DbUtil.Db.Setting("UseRecaptcha", true);        
 }
 @section scripts
 {
   @Fingerprint.Script("/Content/touchpoint/js/onlinereg/bootstrap-datepicker.js")
   <script type="text/javascript">
-    $.dtoptions = { format: '@Util.jQueryDateFormat2' };
+      $.dtoptions = { format: '@Util.jQueryDateFormat2' };
+      function recaptcha_callback(token) {
+          document.getElementById("OnlineRegProcessPayment").submit();
+      }
   </script>
   @Fingerprint.Script("/Content/touchpoint/js/onlinereg/onlineregpayment2.js")
+  @ViewExtensions2.GoogleReCaptcha()
 }
 <div class="regform">
   <h2>Payment Processing</h2>
@@ -32,7 +38,7 @@
         @Html.Raw(Model.Terms)
       </div>
   }
-  <form class="showform form-horizontal" action="/OnlineReg/ProcessPayment" method="post">
+  <form class="showform form-horizontal" id="OnlineRegProcessPayment" action="/OnlineReg/ProcessPayment" method="post">
     @Html.ValidationSummary()
     <div class="form-group" style="font-size: 1.5em;">
       @Html.LabelFor(m => m.AmtToPay, new { @class = "control-label col-sm-3" })
@@ -108,6 +114,14 @@
             @Html.EditorFor(m => m.CVV, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
           </div>
       }
+        @if (useRecaptcha){
+            <div class="g-recaptcha"
+                 data-sitekey= @greSiteKey
+                 data-callback ="recaptcha_callback"
+                 data-size="invisible">
+            </div>
+        }
+        <input type="hidden" id="useRecaptcha" value="@useRecaptcha" />
       @if (Model.NoEChecksAllowed == false)
       {
           <div class="Bank">

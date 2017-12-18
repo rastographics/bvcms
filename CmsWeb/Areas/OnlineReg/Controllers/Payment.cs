@@ -46,6 +46,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if(IsCardTester(pf))
                 return Message("Found Card Tester");
 
+            if (DbUtil.Db.Setting("UseRecaptcha", true))
+            {
+                if (!Program.IsValidCaptcha(HttpContext.Request.Form["g-recaptcha-response"],
+                    HttpContext.Request.UserHostAddress))
+                {
+                    DbUtil.Db.LogActivity("OnlineReg Error RaCaptcha validation failed.", pf.OrgId, did: datumid);
+                     ModelState.AddModelError("form", "RaCaptcha validation failed.");
+                    return View("Payment/Process", pf);
+                }
+            }
+
             SetHeaders(pf.OrgId ?? 0);
             var ret = pf.ProcessPayment(ModelState, m);
             switch (ret.Route)

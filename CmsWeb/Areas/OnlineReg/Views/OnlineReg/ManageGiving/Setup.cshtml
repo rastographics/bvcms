@@ -4,13 +4,15 @@
 @using CmsWeb
 @using UtilityExtensions
 @{
-  ViewBag.Title = "Online Registration";
-  Layout = "~/Views/Shared/onlinereg2.cshtml";
-  var funame = Html.NameFor2(m => m.FundItem);
-  decimal? tot = 0;
-  var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FundList();
-  var specialFunds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.SpecialFundList();
-  var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
+    ViewBag.Title = "Online Registration";
+    Layout = "~/Views/Shared/onlinereg2.cshtml";
+    var funame = Html.NameFor2(m => m.FundItem);
+    decimal? tot = 0;
+    var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FundList();
+    var specialFunds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.SpecialFundList();
+    var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
+    var greSiteKey = System.Web.Configuration.WebConfigurationManager.AppSettings["googleReCaptchaSiteKey"];
+    var useRecaptcha = DbUtil.Db.Setting("UseRecaptcha", true);
 }
 @section head
 {
@@ -22,12 +24,16 @@
 {
   @Fingerprint.Script("/Content/touchpoint/js/onlinereg/bootstrap-datepicker.js")
   <script type="text/javascript">
-    $.dtoptions = { format: '@Util.jQueryDateFormat2' };
+      $.dtoptions = { format: '@Util.jQueryDateFormat2' };
+      function recaptcha_callback(token) {
+          document.getElementById("managegivingform").submit();
+      }
   </script>
   @Fingerprint.Script("/Content")
   @Fingerprint.Script("/Content/touchpoint/js/onlinereg/OnlineReg2.js")
   @Fingerprint.Script("/Content/touchpoint/js/onlinereg/onlineregpayment2.js")
   @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
+  @ViewExtensions2.GoogleReCaptcha()
 }
 
 <div class="regform">
@@ -221,6 +227,14 @@
           @Html.EditorFor(m => m.CVV, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
         </div>
       }
+        @if (useRecaptcha){
+            <div class="g-recaptcha"
+                 data-sitekey= @greSiteKey
+                 data-callback ="recaptcha_callback"
+                 data-size="invisible">
+            </div>
+        }
+        <input type="hidden" id="useRecaptcha" value="@useRecaptcha" />
       @if (Model.NoEChecksAllowed == false)
       {
         <div class="Bank paymentinfo">
