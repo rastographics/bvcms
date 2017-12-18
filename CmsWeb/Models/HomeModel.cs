@@ -43,10 +43,11 @@ namespace CmsWeb.Models
                 if (tagq != null)
                 {
                     var q0 = from p in tagq.People(DbUtil.Db)
-                             let bd = p.BirthDay ?? 1
-                             let bm = p.BirthMonth ?? 1
+                             let bd = p.BirthDay
+                             let bm = p.BirthMonth
+                             where bd != null && bm != null
                              let bd2 = bd == 29 && bm == 2 ? bd - 1 : bd
-                             let bdate = new DateTime(DateTime.Now.Year, bm, bd2)
+                             let bdate = new DateTime(DateTime.Now.Year, bm.Value, bd2.Value)
                              let nextbd = bdate < DateTime.Today ? bdate.AddYears(1) : bdate
                              orderby nextbd
                              select new BirthdayInfo
@@ -72,10 +73,11 @@ namespace CmsWeb.Models
                     select p;
 
             var q2 = from p in q
-                     let bd = p.BirthDay ?? 1
-                     let bm = p.BirthMonth ?? 1
+                     let bd = p.BirthDay
+                     let bm = p.BirthMonth
+                     where bd != null && bm != null
                      let bd2 = bd == 29 && bm == 2 ? bd - 1 : bd
-                     let bdate = new DateTime(DateTime.Now.Year, bm, bd2)
+                     let bdate = new DateTime(DateTime.Now.Year, bm.Value, bd2.Value)
                      let nextbd = bdate < DateTime.Today ? bdate.AddYears(1) : bdate
                      where SqlMethods.DateDiffDay(Util.Now, nextbd) <= 15
                      where p.DeceasedDate == null
