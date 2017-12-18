@@ -113,7 +113,7 @@ function WireUpExtraValues(cid, locations) {
         return;
 
     function sameStr(left, right) {
-        return left.localeCompare(right, undefined, { sensitivity: 'case' }) === 0;
+        return left.localeCompare(right, undefined, { sensitivity: 'base' }) === 0;
     }
 
     function valueMatches(left, right) {
