@@ -118,6 +118,7 @@ namespace UtilityExtensions
             }
             catch (Exception)
             {
+                throw new Exception($"bad email address <{address}>");
             }
             return null;
         }
@@ -164,6 +165,8 @@ namespace UtilityExtensions
             }
             catch (Exception)
             {
+                if(!ValidEmail(AdminMail))
+                    throw new Exception($"bad AdminMail address <{AdminMail}>");
                 if (name.HasValue())
                     return new MailAddress(AdminMail, name);
                 return new MailAddress(AdminMail);
@@ -181,6 +184,8 @@ namespace UtilityExtensions
             }
             catch (Exception)
             {
+                if(!ValidEmail(AdminMail))
+                    throw new Exception($"bad AdminMail address <{AdminMail}>");
                 if (name.HasValue())
                     return new MailAddress(AdminMail, name);
                 return new MailAddress(AdminMail);
