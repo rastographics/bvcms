@@ -95,24 +95,15 @@ namespace CmsData
                 foreach (var ins in insertsUpdates)
                     foreach (var mm in ins.Members)
                     {
-                        //if (mm.DbType == "datetime NOT NULL")
-                        //{
-                        //    var dt = mm.MemberAccessor.GetBoxedValue(ins.Entity).ToDate();
-                        //    if (dt < DateTime.Parse("1/1/1753"))
-                        //    {
-                        //        var iex = new InvalidOperationException(mm.Name + " in " + mm.DeclaringType.Name + " has a value that will not fit into " + mm.DbType + " " + dt.FormatDate());
-                        //        throw iex;
-                        //    }
-                        //}
-                        //else
                         {
                             var maxLength = GetMaxLength(mm.DbType);
                             if (mm.MemberAccessor.HasValue(ins.Entity))
                             {
-                                var memberValueLength = GetMemberValueLength(mm.MemberAccessor.GetBoxedValue(ins.Entity));
+                                var v = mm.MemberAccessor.GetBoxedValue(ins.Entity);
+                                var memberValueLength = GetMemberValueLength(v);
                                 if (maxLength > 0 && memberValueLength > maxLength)
                                 {
-                                    var iex = new InvalidOperationException(mm.Name + " in " + mm.DeclaringType.Name + " has a value that will not fit into " + mm.DbType);
+                                    var iex = new InvalidOperationException($"{mm.Name} in {mm.DeclaringType.Name} has a value \"{v}\" that will not fit into {mm.DbType}");
                                     throw iex;
                                 }
                             }

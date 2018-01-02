@@ -401,9 +401,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     TransactionResponse transactionResponse;
                     if (CreditCard.StartsWith("X"))
                     {
-                        // store payment method in the gateway vault first before doing the auth.
-                        gateway.StoreInVault(pid, Type, CreditCard, Expires, CVV, Routing, Account, giving: true);
-                        vaultSaved = true;
+//                        // store payment method in the gateway vault first before doing the auth.
+//                          If it starts with X, we should not be storing it in the vault.
+//                        gateway.StoreInVault(pid, Type, CreditCard, Expires, CVV, Routing, Account, giving: true);
+                        vaultSaved = true; // prevent it from saving later
                         transactionResponse = gateway.AuthCreditCardVault(pid, dollarAmt, "Recurring Giving Auth", 0);
                     }
                     else
