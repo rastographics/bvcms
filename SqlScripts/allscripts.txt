@@ -74,6 +74,7 @@ Creating_IX_ContributionTypeId_dbo_Contribution.sql
 Creating_CONTRIBUTION_FUND_FK_IX_dbo_Contribution.sql
 Creating_CONTRIBUTION_PEOPLE_FK_IX_dbo_Contribution.sql
 Creating_IX_INDIVIDUAL_CONTRIBUTION_TBL_2_dbo_Contribution.sql
+Creating_TranIdIndex_dbo_Contribution.sql
 Creating_dbo_DonorProfileList.sql
 Creating_dbo_Split.sql
 Creating_dbo_AddressMatch.sql
@@ -691,12 +692,15 @@ Creating_dbo_UpdateAttendStrProc.sql
 Creating_dbo_FamilyMakeup.sql
 Creating_dbo_UpdateResCodes.sql
 Creating_triggerdbo_updPeople_dbo_People.sql
+Creating_dbo_IpLog2.sql
+Creating_IX_IpLog2_dbo_IpLog2.sql
 Creating_dbo_IpLog.sql
 Creating_pk_PK_IpLog_dbo_IpLog.sql
 Creating_dbo_InsertIpLog.sql
 Creating_dbo_ComputePositionInFamily.sql
 Creating_dbo_GetPeopleIdFromACS.sql
 Creating_dbo_BundleList.sql
+Creating_dbo_IpVelocity.sql
 Creating_dbo_IsCardTester.sql
 Creating_dbo_StatusFlagsAll.sql
 Creating_dbo_LastChanged.sql
@@ -796,6 +800,8 @@ Creating_export_BackgroundCheck.sql
 Creating_dbo_DropOrgMemberAndET.sql
 Creating_dbo_GetTodaysMeetingHours3.sql
 Creating_dbo_FetchCreateFund.sql
+Creating_dbo_FirstLast.sql
+Creating_dbo_TransactionSearch.sql
 Creating_dbo_CheckinFamilyMembers.sql
 Creating_dbo_UpdateAllMeetingCounters.sql
 Creating_dbo_TransactionBalances.sql

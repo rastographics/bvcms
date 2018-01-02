@@ -12,6 +12,10 @@ BEGIN
 				AND tm > @lookback
 	IF(@cnt >= 5)
 		SET @result = 1
+	ELSE
+		IF dbo.IpVelocity(@ip, GETDATE()) < 2500
+			SET @result = 1
+    
 	RETURN @result
 END
 GO
