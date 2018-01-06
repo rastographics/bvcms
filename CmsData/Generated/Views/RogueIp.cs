@@ -16,15 +16,11 @@ namespace CmsData.View
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
 		
-		private string _ClientIp;
+		private string _Ip;
 		
-		private int? _Cnt;
+		private string _Db;
 		
-		private long? _Mdf;
-		
-		private DateTime? _St;
-		
-		private DateTime? _En;
+		private DateTime? _Tm;
 		
 		
 		public RogueIp()
@@ -33,86 +29,52 @@ namespace CmsData.View
 
 		
 		
-		[Column(Name="ClientIp", Storage="_ClientIp", DbType="nvarchar(50)")]
-		public string ClientIp
+		[Column(Name="ip", Storage="_Ip", DbType="varchar(50) NOT NULL")]
+		public string Ip
 		{
 			get
 			{
-				return this._ClientIp;
+				return this._Ip;
 			}
 
 			set
 			{
-				if (this._ClientIp != value)
-					this._ClientIp = value;
+				if (this._Ip != value)
+					this._Ip = value;
 			}
 
 		}
 
 		
-		[Column(Name="cnt", Storage="_Cnt", DbType="int")]
-		public int? Cnt
+		[Column(Name="db", Storage="_Db", DbType="varchar(50)")]
+		public string Db
 		{
 			get
 			{
-				return this._Cnt;
+				return this._Db;
 			}
 
 			set
 			{
-				if (this._Cnt != value)
-					this._Cnt = value;
+				if (this._Db != value)
+					this._Db = value;
 			}
 
 		}
 
 		
-		[Column(Name="mdf", Storage="_Mdf", DbType="bigint")]
-		public long? Mdf
+		[Column(Name="tm", Storage="_Tm", DbType="datetime")]
+		public DateTime? Tm
 		{
 			get
 			{
-				return this._Mdf;
+				return this._Tm;
 			}
 
 			set
 			{
-				if (this._Mdf != value)
-					this._Mdf = value;
-			}
-
-		}
-
-		
-		[Column(Name="st", Storage="_St", DbType="datetime")]
-		public DateTime? St
-		{
-			get
-			{
-				return this._St;
-			}
-
-			set
-			{
-				if (this._St != value)
-					this._St = value;
-			}
-
-		}
-
-		
-		[Column(Name="en", Storage="_En", DbType="datetime")]
-		public DateTime? En
-		{
-			get
-			{
-				return this._En;
-			}
-
-			set
-			{
-				if (this._En != value)
-					this._En = value;
+				if (this._Tm != value)
+					this._Tm = value;
 			}
 
 		}

@@ -29,7 +29,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         }
 
         [HttpPost, Route("Start")]
-        public ActionResult ContributionStatements(DateTime? fromDate, DateTime? endDate, string startswith, string sort, int? tagid, bool excludeelectronic, bool exportcontributors = false)
+        public ActionResult ContributionStatements(DateTime? fromDate, DateTime? endDate, string startswith, string sort, int? tagid, bool excludeelectronic, string customstatement = null, bool exportcontributors = false)
         {
             if (!fromDate.HasValue || !endDate.HasValue)
                 return Content("<h3>Must have a Startdate and Enddate</h3>");
@@ -39,6 +39,8 @@ namespace CmsWeb.Areas.Finance.Controllers
                 Count = 0,
                 Processed = 0
             };
+            var cs = Models.Report.ContributionStatements.GetStatementSpecification(customstatement);
+
             if (!startswith.HasValue())
                 startswith = null;
             if (exportcontributors)
@@ -48,7 +50,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                 const bool useMinAmt = true;
                 if (tagid == 0)
                     tagid = null;
-                var qc = APIContribution.contributors(db, fromDate.Value, endDate.Value, 0, 0, 0, noaddressok, useMinAmt, startswith, sort, tagid: tagid, excludeelectronic: excludeelectronic);
+                var qc = APIContribution.Contributors(db, fromDate.Value, endDate.Value, 0, 0, 0, cs.Funds, noaddressok, useMinAmt, startswith, sort, tagid: tagid, excludeelectronic: excludeelectronic);
                 return ExcelExportModel.ToDataTable(qc.ToList()).ToExcel("Contributors.xlsx");
             }
             DbUtil.Db.ContributionsRuns.InsertOnSubmit(runningtotals);
@@ -65,7 +67,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                 Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
                 Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
                 var m = new ContributionStatementsExtract(host, fromDate.Value, endDate.Value, output, startswith, sort, tagid, excludeelectronic);
-                m.DoWork();
+                m.DoWork(cs);
             });
             return Redirect("/Statements/Progress");
         }

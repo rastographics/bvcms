@@ -10,6 +10,7 @@ using CmsData.Finance;
 using CmsData.Registration;
 using CmsWeb.Code;
 using Dapper;
+using RestSharp.Extensions;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -143,7 +144,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var rg = person.ManagedGiving();
             if (rg != null)
                 PopulateSetup(rg);
-            else if (Setting.ExtraValueFeeName.HasValue())
+            else if (Util.HasValue(Setting.ExtraValueFeeName))
                 PopulateReasonableDefaults();
 
             var pi = PopulatePaymentInfo();
@@ -302,9 +303,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public void ValidateModel(ModelStateDictionary modelState)
         {
             var dorouting = false;
-            var doaccount = Account.HasValue() && !Account.StartsWith("X");
+            var doaccount = Util.HasValue(Account) && !Account.StartsWith("X");
 
-            if (Routing.HasValue() && !Routing.StartsWith("X"))
+            if (Util.HasValue(Routing) && !Routing.StartsWith("X"))
                 dorouting = true;
 
             if (doaccount || dorouting)
@@ -353,21 +354,21 @@ namespace CmsWeb.Areas.OnlineReg.Models
             //            else if (StopWhen.HasValue && StopWhen <= StartWhen)
             //                modelState.AddModelError("StopWhen", "StopDate must occur after StartDate");
 
-            if (!FirstName.HasValue())
+            if (!Util.HasValue(FirstName))
                 modelState.AddModelError("FirstName", "Needs first name");
-            if (!LastName.HasValue())
+            if (!Util.HasValue(LastName))
                 modelState.AddModelError("LastName", "Needs last name");
-            if (!Address.HasValue())
+            if (!Util.HasValue(Address))
                 modelState.AddModelError("Address", "Needs address");
-            if (!City.HasValue())
+            if (!Util.HasValue(City))
                 modelState.AddModelError("City", "Needs city");
-            if (!State.HasValue())
+            if (!Util.HasValue(State))
                 modelState.AddModelError("State", "Needs state");
-            if (!Country.HasValue())
+            if (!Util.HasValue(Country))
                 modelState.AddModelError("Country", "Needs country");
-            if (!Zip.HasValue())
+            if (!Util.HasValue(Zip))
                 modelState.AddModelError("Zip", "Needs zip");
-            if (!Phone.HasValue())
+            if (!Util.HasValue(Phone))
                 modelState.AddModelError("Phone", "Needs phone");
         }
 
@@ -415,7 +416,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                             First = FirstName,
                             Last = LastName
                         };
-                        if(IsCardTester(pf))
+                        if(IsCardTester(pf, "ManagedGiving"))
                             throw new Exception("Found Card Tester");
                         transactionResponse = gateway.AuthCreditCard(pid, dollarAmt, CreditCard, Expires,
                             "Recurring Giving Auth", 0, CVV, string.Empty,
@@ -457,25 +458,27 @@ namespace CmsWeb.Areas.OnlineReg.Models
             DbUtil.Db.SubmitChanges();
         }
 
-        private bool IsCardTester(PaymentForm pf)
+        private bool IsCardTester(PaymentForm pf, string from)
         {
-            if (!Util.IsHosted || !pf.CreditCard.HasValue())
+            if (!Util.IsHosted || !Util.HasValue(pf.CreditCard))
                 return false;
             DbUtil.Db.InsertIpLog(HttpContext.Current.Request.UserHostAddress, pf.CreditCard.Md5Hash());
 
             if(pf.IsProblemUser())
-                return LogRogueUser(pf);
-            if (DbUtil.Db.IsCardTester(HttpContext.Current.Request.UserHostAddress) != true)
+                return LogRogueUser("Problem User", from);
+            var result = DbUtil.Db.IsCardTester(HttpContext.Current.Request.UserHostAddress);
+            if(result.Equal("OK"))
                 return false;
-
-            return LogRogueUser(pf);
+            return LogRogueUser(result, from);
         }
 
-        private bool LogRogueUser(PaymentForm pf)
+        private bool LogRogueUser(string why, string from)
         {
-            DbUtil.Db.InsertRogueIp(HttpContext.Current.Request.UserHostAddress, Util.Host);
+            var request = HttpContext.Current.Request;
+            DbUtil.Db.InsertRogueIp(request.UserHostAddress, Util.Host);
+            var form = Encoding.Default.GetString(request.BinaryRead(request.TotalBytes));
             DbUtil.Db.SendEmail(Util.FirstAddress("david@touchpointsoftware.com"),
-                "CardTester", $"See Activity Log for {DbUtil.Db.ServerLink()} datum={pf.DatumId} ip={HttpContext.Current.Request.UserHostAddress}",
+                "CardTester", $"why={why} from={from} ip={request.UserHostAddress}<br>{form.HtmlEncode()}",
                 Util.EmailAddressListFromString("david@touchpointsoftware.com"));
             return true;
         }

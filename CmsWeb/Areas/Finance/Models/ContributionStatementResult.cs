@@ -32,6 +32,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
         public bool singleStatement { get; set; }
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
+        public string statementType { get; set; }
 
 		public ContributionStatementResult()
 		{
@@ -47,6 +48,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
             var response = context.HttpContext.Response;
             response.ContentType = "application/pdf";
             response.AddHeader("content-disposition", "filename=foo.pdf");
+            var cs = ContributionStatements.GetStatementSpecification(statementType ?? "all");
 
             if (showCheckNo || showNotes)
             {
@@ -66,17 +68,17 @@ namespace CmsWeb.Areas.Finance.Models.Report
                 switch (typ)
                 {
                     case 1:
-                        q = APIContribution.contributors(DbUtil.Db, FromDate, ToDate, PeopleId, SpouseId, 0, noaddressok, useMinAmt, singleStatement: singleStatement);
+                        q = APIContribution.Contributors(DbUtil.Db, FromDate, ToDate, PeopleId, SpouseId, 0, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
                         break;
                     case 2:
                         FamilyId = DbUtil.Db.People.Single(p => p.PeopleId == PeopleId).FamilyId;
-                        q = APIContribution.contributors(DbUtil.Db, FromDate, ToDate, 0, 0, FamilyId, noaddressok, useMinAmt, singleStatement: singleStatement);
+                        q = APIContribution.Contributors(DbUtil.Db, FromDate, ToDate, 0, 0, FamilyId, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
                         break;
                     case 3:
-                        q = APIContribution.contributors(DbUtil.Db, FromDate, ToDate, 0, 0, 0, noaddressok, useMinAmt, singleStatement: singleStatement);
+                        q = APIContribution.Contributors(DbUtil.Db, FromDate, ToDate, 0, 0, 0, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
                         break;
                 }
-                c.Run(response.OutputStream, DbUtil.Db, q);
+                c.Run(response.OutputStream, DbUtil.Db, q, cs);
             }
             else
             {
@@ -94,17 +96,17 @@ namespace CmsWeb.Areas.Finance.Models.Report
                 switch (typ)
                 {
                     case 1:
-                        q = APIContribution.contributors(DbUtil.Db, FromDate, ToDate, PeopleId, SpouseId, 0, noaddressok, useMinAmt, singleStatement: singleStatement);
+                        q = APIContribution.Contributors(DbUtil.Db, FromDate, ToDate, PeopleId, SpouseId, 0, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
                         break;
                     case 2:
                         FamilyId = DbUtil.Db.People.Single(p => p.PeopleId == PeopleId).FamilyId;
-                        q = APIContribution.contributors(DbUtil.Db, FromDate, ToDate, 0, 0, FamilyId, noaddressok, useMinAmt, singleStatement: singleStatement);
+                        q = APIContribution.Contributors(DbUtil.Db, FromDate, ToDate, 0, 0, FamilyId, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
                         break;
                     case 3:
-                        q = APIContribution.contributors(DbUtil.Db, FromDate, ToDate, 0, 0, 0, noaddressok, useMinAmt, singleStatement: singleStatement);
+                        q = APIContribution.Contributors(DbUtil.Db, FromDate, ToDate, 0, 0, 0, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
                         break;
                 }
-                c.Run(response.OutputStream, DbUtil.Db, q);
+                c.Run(response.OutputStream, DbUtil.Db, q, cs);
             }
         }
     }

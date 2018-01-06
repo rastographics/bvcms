@@ -7,10 +7,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Web.Mvc;
+using System.Xml;
+using System.Xml.Linq;
 using CmsData;
 using CmsData.API;
+using CmsData.View;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
@@ -55,7 +61,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
             return m;
         }
 
-        public void Run(Stream stream, CMSDataContext Db, IEnumerable<ContributorInfo> q, int set = 0)
+        public void Run(Stream stream, CMSDataContext db, IEnumerable<ContributorInfo> q, StatementSpecification cs, int set = 0)
         {
             pageEvents.set = set;
             pageEvents.PeopleId = 0;
@@ -74,27 +80,27 @@ namespace CmsWeb.Areas.Finance.Models.Report
             dc = w.DirectContent;
 
             var prevfid = 0;
-            var runningtotals = Db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
+            var runningtotals = db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
             runningtotals.Processed = 0;
-            Db.SubmitChanges();
+            db.SubmitChanges();
             var count = 0;
             foreach (var ci in contributors)
             {
                 if (set > 0 && pageEvents.FamilySet[ci.PeopleId] != set)
                     continue;
 
-                var contributions = APIContribution.contributions(Db, ci, FromDate, toDate).ToList();
-                var pledges = APIContribution.pledges(Db, ci, toDate).ToList();
-                var giftsinkind = APIContribution.GiftsInKind(Db, ci, FromDate, toDate).ToList();
-                var nontaxitems = Db.Setting("DisplayNonTaxOnStatement", "false").ToBool()
-                    ? APIContribution.NonTaxItems(Db, ci, FromDate, toDate).ToList()
-                    : new List<ContributionInfo>();
+                var contributions = APIContribution.Contributions(db, ci, FromDate, toDate, cs.Funds).ToList();
+                var pledges = APIContribution.Pledges(db, ci, toDate, cs.Funds).ToList();
+                var giftsinkind = APIContribution.GiftsInKind(db, ci, FromDate, toDate, cs.Funds).ToList();
+                var nontaxitems = db.Setting("DisplayNonTaxOnStatement", "false").ToBool()
+                    ? APIContribution.NonTaxItems(db, ci, FromDate, toDate, cs.Funds).ToList()
+                    : new List<NonTaxContribution>();
 
                 if ((contributions.Count + pledges.Count + giftsinkind.Count + nontaxitems.Count) == 0)
                 {
                     runningtotals.Processed += 1;
                     runningtotals.CurrSet = set;
-                    Db.SubmitChanges();
+                    db.SubmitChanges();
                     if (set == 0)
                         pageEvents.FamilySet[ci.PeopleId] = 0;
                     continue;
@@ -124,8 +130,8 @@ p { font-size: 11px; }
                 var t1 = new PdfPTable(1);
                 t1.TotalWidth = 72f * 5f;
                 t1.DefaultCell.Border = Rectangle.NO_BORDER;
-                string html1 = Db.ContentHtml("StatementHeader", Resource1.ContributionStatementHeader);
-                string html2 = Db.ContentHtml("StatementNotice", Resource1.ContributionStatementNotice);
+                string html1 = db.ContentHtml("StatementHeader", Resource1.ContributionStatementHeader);
+                string html2 = db.ContentHtml("StatementNotice", Resource1.ContributionStatementNotice);
 
                 var mh = new MyHandler();
                 using (var sr = new StringReader(css + html1))
@@ -168,15 +174,15 @@ p { font-size: 11px; }
                 t2.DefaultCell.Border = Rectangle.NO_BORDER;
 
                 var envno = "";
-                if (Db.Setting("PrintEnvelopeNumberOnStatement"))
+                if (db.Setting("PrintEnvelopeNumberOnStatement"))
                 {
-                    var ev = Person.GetExtraValue(Db, ci.PeopleId, "EnvelopeNumber");
+                    var ev = Person.GetExtraValue(db, ci.PeopleId, "EnvelopeNumber");
                     var s = Util.PickFirst(ev.Data, ev.IntValue.ToString(), ev.StrValue);
                     if(s.HasValue())
                         envno = $" env: {Util.PickFirst(ev.Data, ev.IntValue.ToString(), ev.StrValue)}";
                 }
 
-                t2.AddCell(Db.Setting("NoPrintDateOnStatement")
+                t2.AddCell(db.Setting("NoPrintDateOnStatement")
                     ? new Phrase($"\nid:{ci.PeopleId}{envno} {ci.CampusId}", font) 
                     : new Phrase($"\nprinted: {DateTime.Now:M/d/yy} id:{ci.PeopleId}{envno} {ci.CampusId}", font));
 
@@ -194,12 +200,12 @@ p { font-size: 11px; }
                 //----Header
 
                 var yp = doc.BottomMargin +
-                    Db.Setting("StatementRetAddrPos", "10.125").ToFloat() * 72f;
+                    db.Setting("StatementRetAddrPos", "10.125").ToFloat() * 72f;
                 t1.WriteSelectedRows(0, -1,
                     doc.LeftMargin - 0.1875f * 72f, yp, dc);
 
                 yp = doc.BottomMargin +
-                    Db.Setting("StatementAddrPos", "8.3375").ToFloat() * 72f;
+                    db.Setting("StatementAddrPos", "8.3375").ToFloat() * 72f;
                 t1a.WriteSelectedRows(0, -1, doc.LeftMargin, yp, dc);
 
                 yp = doc.BottomMargin + 10.125f * 72f;
@@ -241,13 +247,13 @@ p { font-size: 11px; }
                 var total = 0m;
                 foreach (var c in contributions)
                 {
-                    t.AddCell(new Phrase(c.ContributionDate.ToShortDateString(), font));
-                    t.AddCell(new Phrase(c.Fund, font));
+                    t.AddCell(new Phrase(c.ContributionDate.ToString2("d"), font));
+                    t.AddCell(new Phrase(c.FundName, font));
                     cell = new PdfPCell(t.DefaultCell);
                     cell.HorizontalAlignment = Element.ALIGN_RIGHT;
-                    cell.Phrase = new Phrase(c.ContributionAmount.ToString("N2"), font);
+                    cell.Phrase = new Phrase(c.ContributionAmount.ToString2("N2"), font);
                     t.AddCell(cell);
-                    total += (c.ContributionAmount);
+                    total += (c.ContributionAmount ?? 0);
                 }
                 t.DefaultCell.Border = Rectangle.TOP_BORDER;
                 cell = new PdfPCell(t.DefaultCell);
@@ -290,14 +296,14 @@ p { font-size: 11px; }
 
                     foreach (var c in pledges)
                     {
-                        t.AddCell(new Phrase(c.Fund, font));
+                        t.AddCell(new Phrase(c.FundName, font));
                         cell = new PdfPCell(t.DefaultCell);
                         cell.HorizontalAlignment = Element.ALIGN_RIGHT;
-                        cell.Phrase = new Phrase(c.PledgeAmount.ToString2("N2"), font);
+                        cell.Phrase = new Phrase(c.Pledged.ToString2("N2"), font);
                         t.AddCell(cell);
                         cell = new PdfPCell(t.DefaultCell);
                         cell.HorizontalAlignment = Element.ALIGN_RIGHT;
-                        cell.Phrase = new Phrase(c.ContributionAmount.ToString2("N2"), font);
+                        cell.Phrase = new Phrase(c.Given.ToString2("N2"), font);
                         t.AddCell(cell);
                     }
                     ct.AddElement(t);
@@ -330,9 +336,9 @@ p { font-size: 11px; }
 
                     foreach (var c in giftsinkind)
                     {
-                        t.AddCell(new Phrase(c.ContributionDate.ToShortDateString(), font));
+                        t.AddCell(new Phrase(c.ContributionDate.ToString2("d"), font));
                         cell = new PdfPCell(t.DefaultCell);
-                        cell.Phrase = new Phrase(c.Fund, font);
+                        cell.Phrase = new Phrase(c.FundName, font);
                         t.AddCell(cell);
                         cell = new PdfPCell(t.DefaultCell);
                         cell.Phrase = new Phrase(c.Description, font);
@@ -361,12 +367,12 @@ p { font-size: 11px; }
                 t.AddCell(cell);
 
                 t.DefaultCell.Border = Rectangle.NO_BORDER;
-                foreach (var c in APIContribution.quarterlySummary(Db, ci, FromDate, toDate))
+                foreach (var c in APIContribution.GiftSummary(db, ci, FromDate, toDate, cs.Funds))
                 {
-                    t.AddCell(new Phrase(c.Fund, font));
+                    t.AddCell(new Phrase(c.FundName, font));
                     cell = new PdfPCell(t.DefaultCell);
                     cell.HorizontalAlignment = Element.ALIGN_RIGHT;
-                    cell.Phrase = new Phrase(c.ContributionAmount.ToString("N2"), font);
+                    cell.Phrase = new Phrase(c.Total.ToString2("N2"), font);
                     t.AddCell(cell);
                 }
                 t.DefaultCell.Border = Rectangle.TOP_BORDER;
@@ -404,13 +410,13 @@ p { font-size: 11px; }
                     var ntotal = 0m;
                     foreach (var c in nontaxitems)
                     {
-                        t.AddCell(new Phrase(c.ContributionDate.ToShortDateString(), font));
-                        t.AddCell(new Phrase(c.Fund, font));
+                        t.AddCell(new Phrase(c.ContributionDate.ToString2("d"), font));
+                        t.AddCell(new Phrase(c.FundName, font));
                         cell = new PdfPCell(t.DefaultCell);
                         cell.HorizontalAlignment = Element.ALIGN_RIGHT;
-                        cell.Phrase = new Phrase(c.ContributionAmount.ToString("N2"), font);
+                        cell.Phrase = new Phrase(c.ContributionAmount.ToString2("N2"), font);
                         t.AddCell(cell);
-                        ntotal += (c.ContributionAmount);
+                        ntotal += (c.ContributionAmount ?? 0);
                     }
                     t.DefaultCell.Border = Rectangle.TOP_BORDER;
                     cell = new PdfPCell(t.DefaultCell);
@@ -445,7 +451,7 @@ p { font-size: 11px; }
 
                 runningtotals.Processed += 1;
                 runningtotals.CurrSet = set;
-                Db.SubmitChanges();
+                db.SubmitChanges();
             }
 
             if (count == 0)
@@ -460,7 +466,81 @@ p { font-size: 11px; }
 
             if (set == LastSet())
                 runningtotals.Completed = DateTime.Now;
-            Db.SubmitChanges();
+            db.SubmitChanges();
+        }
+
+        public class StatementSpecification
+        {
+            public string Description { get; set; }
+            public string Header { get; set; }
+            public string Notice { get; set; }
+            public List<int> Funds { get; set; }
+        }
+
+        public static StatementSpecification GetStatementSpecification(string name)
+        {
+            var xd = XDocument.Parse(Util.PickFirst(DbUtil.Db.ContentOfTypeText("CustomStatements"),"<CustomStatement/>"));
+            var list = new List<StatementSpecification>();
+            var standardheader = DbUtil.Db.ContentHtml("StatementHeader", Resource1.ContributionStatementHeader);
+            var standardnotice = DbUtil.Db.ContentHtml("StatementNotice", Resource1.ContributionStatementNotice);
+            var allfunds = DbUtil.Db.ContributionFunds.Select(cc => cc.FundId).ToList();
+            foreach (var ele in xd.Descendants("Statement"))
+            {
+                var desc = ele.Attribute("description")?.Value;
+                var cs = new StatementSpecification();
+                cs.Description = desc;
+                var headerele = ele.Element("Header");
+                cs.Header = headerele != null
+                    ? string.Concat(headerele.Nodes().Select(x => x.ToString()).ToArray())
+                    : standardheader;
+                var noticeele = ele.Element("Notice");
+                cs.Notice = noticeele != null
+                    ? string.Concat(noticeele.Nodes().Select(x => x.ToString()).ToArray())
+                    : standardnotice;
+                var funds = ele.Element("Funds")?.Value ?? "";
+                cs.Funds = new List<int>();
+
+            	var re = new Regex(@"(?<range>\d*-\d*)|(?<id>\d[^,]*)");
+                var matchResult = re.Match(funds);
+            	while (matchResult.Success)
+                {
+            		var range = matchResult.Groups["range"].Value;
+	                if (range.HasValue())
+	                {
+	                    var a = range.Split('-');
+                        for(var i = a[0].ToInt();i<a[1].ToInt();i++)
+                            if(allfunds.Contains(i))
+                                cs.Funds.Add(i);
+	                }
+            		var id = matchResult.Groups["id"].Value;
+                    if(id.HasValue())
+                        cs.Funds.Add(id.ToInt());
+            		matchResult = matchResult.NextMatch();
+            	} 
+                allfunds.RemoveAll(vv => cs.Funds.Contains(vv));
+                list.Add(cs);
+            }
+            var found = list.FirstOrDefault(vv => vv.Description == name);
+            if (found != null)
+                return found;
+            return new StatementSpecification()
+            {
+                Description = "Standard Statements",
+                Notice = standardnotice,
+                Header = standardheader,
+                Funds = name == "all" ? null : allfunds
+            };
+        }
+        public static SelectList CustomStatementsList()
+        {
+            var xd = XDocument.Parse(Util.PickFirst(DbUtil.Db.ContentOfTypeText("CustomStatements"),"<CustomStatement/>"));
+            var list = new List<string>();
+            foreach (var ele in xd.Descendants().Elements("Statement"))
+                list.Add(ele.Attribute("description")?.Value);
+            if (list.Count == 0)
+                return null;
+            list.Insert(0, "Standard Statements");
+            return new SelectList(list);
         }
         class PageEvent : PdfPageEventHelper
         {

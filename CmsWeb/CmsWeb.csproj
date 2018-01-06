@@ -443,6 +443,7 @@
     <Compile Include="Areas\Finance\Models\ContributionStatementsExtra.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\BatchImportContributions.cs" />
     <Compile Include="Areas\Finance\Models\ContributionStatementsExtract.cs" />
+    <Compile Include="Areas\Finance\Models\CustomStatements.cs" />
     <Compile Include="Areas\Finance\Models\DonorTotalsOptions.cs" />
     <Compile Include="Areas\Finance\Models\FundTotalInfo.cs" />
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />

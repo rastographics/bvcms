@@ -1,11 +1,13 @@
 using System;
 using System.Configuration;
 using System.Linq;
+using System.Text;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using CmsData;
 using CmsWeb.Areas.OnlineReg.Models;
 using Elmah;
+using RestSharp.Extensions;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
@@ -40,10 +42,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 datumid = m.DatumId;
                 var msg = m.CheckDuplicateGift(pf.AmtToPay);
-                if (msg.HasValue())
+                if (Util.HasValue(msg))
                     return Message(msg);
             }
-            if(IsCardTester(pf))
+            if(IsCardTester(pf, "Payment Page"))
                 return Message("Found Card Tester");
 
             SetHeaders(pf.OrgId ?? 0);
@@ -71,25 +73,26 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
         }
 
-        private bool IsCardTester(PaymentForm pf)
+        private bool IsCardTester(PaymentForm pf, string from)
         {
-            if (!Util.IsHosted || !pf.CreditCard.HasValue())
+            if (!Util.IsHosted || !Util.HasValue(pf.CreditCard))
                 return false;
             DbUtil.Db.InsertIpLog(Request.UserHostAddress, pf.CreditCard.Md5Hash());
 
             if(pf.IsProblemUser())
-                return LogRogueUser(pf);
-            if (DbUtil.Db.IsCardTester(Request.UserHostAddress) != true)
+                return LogRogueUser("Problem User", from);
+            var result = DbUtil.Db.IsCardTester(Request.UserHostAddress);
+            if(result.Equal("OK"))
                 return false;
-
-            return LogRogueUser(pf);
+            return LogRogueUser(result, from);
         }
 
-        private bool LogRogueUser(PaymentForm pf)
+        private bool LogRogueUser(string why, string from)
         {
             DbUtil.Db.InsertRogueIp(Request.UserHostAddress, Util.Host);
+            var form = Encoding.Default.GetString(Request.BinaryRead(Request.TotalBytes));
             DbUtil.Db.SendEmail(Util.FirstAddress("david@touchpointsoftware.com"),
-                "CardTester", $"See Activity Log for {DbUtil.Db.ServerLink()} datum={pf.DatumId} ip={Request.UserHostAddress}",
+                "CardTester", $"why={why} from={from} ip={Request.UserHostAddress}<br>{form.HtmlEncode()}",
                 Util.EmailAddressListFromString("david@touchpointsoftware.com"));
             return true;
         }
@@ -108,7 +111,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     m.Log("NoPendingConfirmation");
                 return Content("no pending confirmation found");
             }
-            if (!transactionId.HasValue())
+            if (!Util.HasValue(transactionId))
             {
                 m.Log("NoTransactionId");
                 return Content("error no transaction");
@@ -148,7 +151,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             // which is produced in EnrollAndConfirm
             Response.NoCache();
 
-            if (!q.HasValue())
+            if (!Util.HasValue(q))
                 return Message("unknown");
             var id = Util.Decrypt(q).ToInt2();
             var qq = from t in DbUtil.Db.Transactions
@@ -167,7 +170,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
 #if DEBUG
             ti.Testing = true;
-            if (!ti.Address.HasValue())
+            if (!Util.HasValue(ti.Address))
             {
                 ti.Address = "235 Riveredge";
                 ti.City = "Cordova";
@@ -187,7 +190,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             if (!id.HasValue)
                 return View("Other/Unknown");
-            if (!transactionId.HasValue())
+            if (!Util.HasValue(transactionId))
             {
                 DbUtil.LogActivity("OnlineReg PayDueNoTransactionId");
                 return Message("error no transactionid");
@@ -211,7 +214,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpGet]
         public ActionResult PayDueTest(string q)
         {
-            if (!q.HasValue())
+            if (!Util.HasValue(q))
                 return Message("unknown");
             var id = Util.Decrypt(q);
             var ed = DbUtil.Db.ExtraDatas.SingleOrDefault(e => e.Id == id.ToInt());

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Security.Cryptography;
 using System.Text;
@@ -52,6 +53,13 @@ namespace UtilityExtensions
             var re = new Regex(@"\B\p{Lu}\p{Ll}", RegexOptions.Compiled);
             name = re.Replace(name, " $0");
             return name;
+        }
+
+        public static string JoinInts(this IEnumerable<int> ints, string sep)
+        {
+            if (ints == null)
+                return null;
+            return string.Join(sep, ints);
         }
 
         public static string Replace(this string str, string oldValue, string newValue, bool ignoreCase = false)
