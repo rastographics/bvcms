@@ -1,4 +1,4 @@
-CREATE VIEW [export].[ProgDiv] AS 
+CREATE VIEW [export].[XpProgDiv] AS 
 SELECT 
 	ProgId ,
     DivId

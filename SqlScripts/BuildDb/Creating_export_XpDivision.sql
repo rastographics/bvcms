@@ -1,4 +1,4 @@
-CREATE VIEW [export].[Division] AS 
+CREATE VIEW [export].[XpDivision] AS 
 SELECT 
 	Id ,
 	[Name] ,

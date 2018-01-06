@@ -1,4 +1,4 @@
-CREATE VIEW [export].[BackgroundCheck] AS 
+CREATE VIEW [export].[XpBackgroundCheck] AS 
 SELECT
 	PeopleId ,
     [Status] = s.[Description] ,

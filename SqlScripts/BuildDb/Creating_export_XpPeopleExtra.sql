@@ -1,4 +1,4 @@
-CREATE VIEW [export].[PeopleExtra] AS 
+CREATE VIEW [export].[XpPeopleExtra] AS 
 SELECT
 	PeopleId ,
     Field ,

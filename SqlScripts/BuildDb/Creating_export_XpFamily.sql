@@ -1,4 +1,4 @@
-CREATE VIEW [export].[Family] AS 
+CREATE VIEW [export].[XpFamily] AS 
 SELECT FamilyId ,
        AddressFromDate ,
        AddressToDate ,

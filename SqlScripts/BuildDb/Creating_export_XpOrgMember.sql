@@ -1,4 +1,4 @@
-CREATE VIEW [export].[OrgMember] AS 
+CREATE VIEW [export].[XpOrgMember] AS 
 SELECT OrganizationId ,
        PeopleId ,
        MemberTypeId ,

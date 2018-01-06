@@ -1,4 +1,4 @@
-CREATE VIEW [export].[OrgSchedule] AS 
+CREATE VIEW [export].[XpOrgSchedule] AS 
 SELECT 
 	Id,
 	OrganizationId ,

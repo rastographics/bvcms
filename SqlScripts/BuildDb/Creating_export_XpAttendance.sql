@@ -1,4 +1,4 @@
-CREATE VIEW [export].[Attendance] AS 
+CREATE VIEW [export].[XpAttendance] AS 
 SELECT PeopleId ,
        MeetingId ,
        OrganizationId ,

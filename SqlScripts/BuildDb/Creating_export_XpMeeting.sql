@@ -1,4 +1,4 @@
-CREATE VIEW [export].[Meeting] AS 
+CREATE VIEW [export].[XpMeeting] AS 
 SELECT 
 	MeetingId ,
     OrganizationId ,

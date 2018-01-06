@@ -1,4 +1,4 @@
-CREATE VIEW [export].[Contact] AS 
+CREATE VIEW [export].[XpContact] AS 
 SELECT 
 	c.ContactId ,
     ContactType = ct.[Description] ,

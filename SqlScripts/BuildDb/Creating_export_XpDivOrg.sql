@@ -1,4 +1,4 @@
-CREATE VIEW [export].[DivOrg] AS 
+CREATE VIEW [export].[XpDivOrg] AS 
 SELECT 
 	DivId ,
     OrgId 

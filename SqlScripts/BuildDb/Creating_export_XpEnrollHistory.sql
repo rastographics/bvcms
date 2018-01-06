@@ -1,4 +1,4 @@
-CREATE VIEW [export].[EnrollHistory] AS 
+CREATE VIEW [export].[XpEnrollHistory] AS 
 SELECT 
 	TransactionId ,
     OrganizationId ,

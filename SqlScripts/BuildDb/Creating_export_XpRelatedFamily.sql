@@ -1,4 +1,4 @@
-CREATE VIEW [export].[RelatedFamily] AS
+CREATE VIEW [export].[XpRelatedFamily] AS
 SELECT
 	FamilyId ,
     RelatedFamilyId ,

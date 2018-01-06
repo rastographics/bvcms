@@ -1,4 +1,4 @@
-CREATE VIEW [export].[Organization] AS 
+CREATE VIEW [export].[XpOrganization] AS 
 SELECT OrganizationId ,
        OrganizationName ,
        [Location] ,

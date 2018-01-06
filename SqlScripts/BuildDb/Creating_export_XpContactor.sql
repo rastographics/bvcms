@@ -1,4 +1,4 @@
-CREATE VIEW [export].[Contactor] AS 
+CREATE VIEW [export].[XpContactor] AS 
 SELECT 
 	ContactId ,
     PeopleId 

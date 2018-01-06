@@ -1,4 +1,4 @@
-CREATE VIEW [export].[Contribution] AS 
+CREATE VIEW [export].[XpContribution] AS 
 SELECT c.ContributionId ,
        PeopleId ,
        BundleType = bt.[Description],

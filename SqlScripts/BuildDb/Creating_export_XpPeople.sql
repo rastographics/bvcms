@@ -1,4 +1,4 @@
-CREATE VIEW [export].[People] AS 
+CREATE VIEW [export].[XpPeople] AS 
 SELECT PeopleId ,
        FamilyId ,
        TitleCode ,

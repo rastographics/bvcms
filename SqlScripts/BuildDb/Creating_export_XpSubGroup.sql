@@ -1,4 +1,4 @@
-CREATE VIEW [export].[SubGroup] AS 
+CREATE VIEW [export].[XpSubGroup] AS 
 SELECT 
 	omm.OrgId ,
     PeopleId ,

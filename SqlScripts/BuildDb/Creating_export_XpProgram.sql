@@ -1,4 +1,4 @@
-CREATE VIEW [export].[Program] AS 
+CREATE VIEW [export].[XpProgram] AS 
 SELECT 
 	Id ,
     [Name]
