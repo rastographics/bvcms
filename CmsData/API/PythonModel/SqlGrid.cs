@@ -209,7 +209,7 @@ namespace CmsData
                             break;
                         default:
                             s = rd[i].ToString();
-                            if (s == "Total")
+                            if (s == "Total" || s.StartsWith("Total:") || s == "Grand Total")
                                 s = $"<strong>{s}</strong>";
                             if (nam.StartsWith("att") && nam.EndsWith("str"))
                             {

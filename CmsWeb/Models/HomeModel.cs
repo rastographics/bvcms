@@ -315,17 +315,27 @@ namespace CmsWeb.Models
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         public class SearchInfo22
         {
+            public SearchInfo22()
+            {
+              showaltname = DbUtil.Db.Setting("ShowAltNameOnSearchResults");
+            }
+
             public string line1 => nonPersonName.HasValue()
                 ? nonPersonName
-                : name2 + (age.HasValue ? $" ({Person.AgeDisplay(age, peopleid)})" : "");
+                : displayname + (age.HasValue ? $" ({Person.AgeDisplay(age, peopleid)})" : "");
+
             public string line2 { get; set; }
             public string url { get; set; }
             public bool addmargin { get; set; }
 
             internal int peopleid;
             internal int? age;
+
+            internal string displayname => (showaltname ? $"{name2} {altname}" : name2);
             internal string name2;
             internal string nonPersonName;
+            internal string altname;
+            internal bool showaltname;
         }
 
         public static IEnumerable<SearchInfo22> PrefetchSearch()
@@ -405,7 +415,8 @@ namespace CmsWeb.Models
 
                           peopleid = p.PeopleId,
                           age = p.Age,
-                          name2 = p.Name2
+                          name2 = p.Name2,
+                          altname = p.AltName
                       }).Take(6);
             }
             else
@@ -428,7 +439,8 @@ namespace CmsWeb.Models
 
                               peopleid = p.PeopleId,
                               age = p.Age,
-                              name2 = p.Name2
+                              name2 = p.Name2,
+                              altname = p.AltName,
                           }).Take(6);
                 }
                 else
@@ -453,7 +465,8 @@ namespace CmsWeb.Models
 
                                    peopleid = p.PeopleId,
                                    age = p.Age,
-                                   name2 = p.Name2
+                                   name2 = p.Name2,
+                                   altname = p.AltName
                                }).Take(6).ToList();
                     var rp1 = (from p in qp1
                                orderby p.Name2
@@ -464,6 +477,7 @@ namespace CmsWeb.Models
                                    peopleid = p.PeopleId,
                                    age = p.Age,
                                    name2 = p.Name2,
+                                   altname = p.AltName
                                }).Take(6).ToList();
                     rp = rp2.Union(rp1).Take(6);
                 }

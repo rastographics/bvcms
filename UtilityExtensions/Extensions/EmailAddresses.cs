@@ -118,7 +118,7 @@ namespace UtilityExtensions
             }
             catch (Exception)
             {
-                throw new Exception($"bad email address <{address}>");
+                throw new Exception($"bad email address: {address}");
             }
             return null;
         }

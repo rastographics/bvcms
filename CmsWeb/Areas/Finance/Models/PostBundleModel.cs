@@ -195,7 +195,8 @@ namespace CmsWeb.Models
                          name = p.Name2,
                          age = p.Age,
                          spouse = spouse.Name,
-                         addr = p.PrimaryAddress ?? ""
+                         addr = p.PrimaryAddress ?? "",
+                         altname = p.AltName,
                      };
             return rp.Take(limit);
         }
@@ -218,6 +219,7 @@ namespace CmsWeb.Models
                          email = p.EmailAddress,
                          spouse = spouse.Name,
                          addr = p.PrimaryAddress ?? "",
+                         altname = p.AltName,
                          recent = (from c in p.Contributions
                                    where c.ContributionStatusId == 0
                                    orderby c.ContributionDate descending
@@ -466,9 +468,15 @@ namespace CmsWeb.Models
 
         public class NamesInfo
         {
-            public string Name => name + (age.HasValue ? $" ({Person.AgeDisplay(age, Pid)})" : "");
+            public NamesInfo()
+            {
+              showaltname = DbUtil.Db.Setting("ShowAltNameOnSearchResults");
+            }
+            public string Name => displayname + (age.HasValue ? $" ({Person.AgeDisplay(age, Pid)})" : "");
 
+            internal bool showaltname;
             internal string name;
+            internal string altname;
             internal int? age;
 
             public int Pid { get; set; }
@@ -482,6 +490,7 @@ namespace CmsWeb.Models
 
             internal string email { get; set; }
             public string Email => email.HasValue() ? $"<br>{email}" : "";
+            internal string displayname => (showaltname ? $"{name} {altname}" : name);
 
             public string RecentGifts
             {
