@@ -20,8 +20,8 @@ BVCMS is maintained by TouchPointSoftware, LLC.
 ### Install Development Tools and required libraries
 
 1. **[Visual Studio Community 2017][IDE]**
-    Be sure to install the ASP.NET and web development Workload option.
-    And the Python development if you want to debug python scripts.
+    - Be sure to install the ASP.NET and web development Workload option.
+    - Install the Python development option if you want to debug Python scripts.
     
 1. **[SQL Server Express 2016][SQL]**
 
@@ -43,15 +43,15 @@ BVCMS is maintained by TouchPointSoftware, LLC.
 
 1. Paste the URL you copied in above (should be https://github.com/bvcms/bvcms.git), then click *Clone*
 
-1. Back under the *Solution Explorer* tab, double click the CmsWeb.sln item.
+1. Back under the *Solution Explorer* tab, double click the CmsWeb.sln item
 
 1. Find and edit the web.config file in the **CMSWeb** folder
 
-    - In the appSettings section, configure the **dbserver** and **host** values to point to your server and the name you would like to call your database (without the CMS_). These two values will become part of your connection string.
-    - for **dbserver** if you installed a full version of SQL Server (not Express) use *(local)* with the parentheses. 
-      If you installked SqlExpress use *.\SQLEXPRESS*
-    - In the mailSettings, configure the pickupDirectoryLocation to a directory on your development machine (for testing purposes).
-    - If you want to create a database with 150 test records in it, just use **testdb** for the host value
+    - In the `appSettings` section, configure the `dbserver` and `host` values to point to your server and the name you would like to call your database (without the CMS_). These two values will become part of your connection string.
+    - for `dbserver` if you installed a full version of SQL Server (not Express) use `(local)` with the parentheses. 
+      If you installed SQL Server Express, use `.\SQLEXPRESS`
+    - In the `mailSettings` section, configure the pickupDirectoryLocation to a directory on your development machine (for testing purposes).
+    - If you want to create a database with 150 test records in it, just use ``testdb`` for the host value
 
 1. The SQL Server database should be running
 
@@ -74,5 +74,3 @@ For additional information on how to use BVCMS, please see the **[TouchPointSoft
 ## Pull Requests
 
 See [Pull Request Guidelines][PR]
-
-
