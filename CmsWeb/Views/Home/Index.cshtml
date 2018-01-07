@@ -37,7 +37,7 @@
         }
     </style>
 }
-@if (Util.IsDebug())
+@if (Util.IsDebug() && User.Identity.Name.Equal("david"))
 {
     <div><a href="/TestScript">TestScript</a></div>
 }
