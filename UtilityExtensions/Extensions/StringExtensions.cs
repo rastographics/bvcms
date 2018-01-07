@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Xml.Linq;
 
 namespace UtilityExtensions
@@ -336,6 +337,11 @@ namespace UtilityExtensions
             var lowercaseSlug = slug.ToLower();
 
             return lowercaseSlug;
+        }
+
+        public static string HtmlEncode(this string s)
+        {
+            return HttpUtility.HtmlEncode(s);
         }
     }
 }
