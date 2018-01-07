@@ -117,8 +117,9 @@ namespace CmsWeb
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
 
-            if(Util.IsHosted)
-                if (1 == DbUtil.Db.Connection.ExecuteScalar<int>("select count(*) from dbo.RogueIps where ip = @ip", new {ip = Request.UserHostAddress}))
+            var checkip = ConfigurationManager.AppSettings["CheckIp"];
+            if(Util.IsHosted && checkip.HasValue())
+                if (1 == DbUtil.Db.Connection.ExecuteScalar<int>(checkip, new {ip = Request.UserHostAddress}))
                     Response.Redirect("/Errors/AccessDenied.htm");
         }
 

@@ -5534,18 +5534,6 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.IsCardTester", IsComposable = true)]
-		[return: Parameter(DbType = "varchar")]
-		public string IsCardTester(
-            [Parameter(Name = "ip", DbType="varchar")] string ip
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                ip
-                ).ReturnValue));
-		}
-
 		[Function(Name="dbo.GetEldestFamilyMember", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? GetEldestFamilyMember(

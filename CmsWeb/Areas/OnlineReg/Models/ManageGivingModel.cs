@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -10,7 +11,6 @@ using CmsData.Finance;
 using CmsData.Registration;
 using CmsWeb.Code;
 using Dapper;
-using RestSharp.Extensions;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -466,7 +466,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             if(pf.IsProblemUser())
                 return LogRogueUser("Problem User", from);
-            var result = DbUtil.Db.IsCardTester(HttpContext.Current.Request.UserHostAddress);
+            var iscardtester = ConfigurationManager.AppSettings["IsCardTester"];
+            var result = DbUtil.Db.Connection.ExecuteScalar<string>(iscardtester, new {ip = HttpContext.Current.Request.UserHostAddress});
             if(result.Equal("OK"))
                 return false;
             return LogRogueUser(result, from);
@@ -475,7 +476,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private bool LogRogueUser(string why, string from)
         {
             var request = HttpContext.Current.Request;
-            DbUtil.Db.InsertRogueIp(request.UserHostAddress, Util.Host);
+            var logrogueuser = ConfigurationManager.AppSettings["LogRogueUser"];
+            if (logrogueuser.HasValue())
+                DbUtil.Db.Connection.Execute(logrogueuser, new {ip=request.UserHostAddress, db=Util.Host});
             var form = Encoding.Default.GetString(request.BinaryRead(request.TotalBytes));
             DbUtil.Db.SendEmail(Util.FirstAddress("david@touchpointsoftware.com"),
                 "CardTester", $"why={why} from={from} ip={request.UserHostAddress}<br>{form.HtmlEncode()}",

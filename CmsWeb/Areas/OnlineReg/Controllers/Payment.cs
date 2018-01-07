@@ -6,8 +6,8 @@ using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using CmsData;
 using CmsWeb.Areas.OnlineReg.Models;
+using Dapper;
 using Elmah;
-using RestSharp.Extensions;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
@@ -75,13 +75,14 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         private bool IsCardTester(PaymentForm pf, string from)
         {
-            if (!Util.IsHosted || !Util.HasValue(pf.CreditCard))
+            if (!Util.IsHosted || !pf.CreditCard.HasValue())
                 return false;
             DbUtil.Db.InsertIpLog(Request.UserHostAddress, pf.CreditCard.Md5Hash());
 
             if(pf.IsProblemUser())
                 return LogRogueUser("Problem User", from);
-            var result = DbUtil.Db.IsCardTester(Request.UserHostAddress);
+            var iscardtester = ConfigurationManager.AppSettings["IsCardTester"];
+            var result = DbUtil.Db.Connection.ExecuteScalar<string>(iscardtester, new {ip = Request.UserHostAddress});
             if(result.Equal("OK"))
                 return false;
             return LogRogueUser(result, from);
@@ -89,7 +90,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         private bool LogRogueUser(string why, string from)
         {
-            DbUtil.Db.InsertRogueIp(Request.UserHostAddress, Util.Host);
+            var logrogueuser = ConfigurationManager.AppSettings["LogRogueUser"];
+            if (logrogueuser.HasValue())
+                DbUtil.Db.Connection.Execute(logrogueuser, new {ip=Request.UserHostAddress, db=Util.Host});
             var form = Encoding.Default.GetString(Request.BinaryRead(Request.TotalBytes));
             DbUtil.Db.SendEmail(Util.FirstAddress("david@touchpointsoftware.com"),
                 "CardTester", $"why={why} from={from} ip={Request.UserHostAddress}<br>{form.HtmlEncode()}",
