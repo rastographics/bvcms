@@ -531,7 +531,7 @@ p { font-size: 11px; }
                 Funds = name == "all" ? null : allfunds
             };
         }
-        public static SelectList CustomStatementsList()
+        public static List<string> CustomStatementsList()
         {
             var xd = XDocument.Parse(Util.PickFirst(DbUtil.Db.ContentOfTypeText("CustomStatements"),"<CustomStatement/>"));
             var list = new List<string>();
@@ -540,7 +540,14 @@ p { font-size: 11px; }
             if (list.Count == 0)
                 return null;
             list.Insert(0, "Standard Statements");
-            return new SelectList(list);
+            return list;
+        }
+        public static SelectList CustomStatementsSelectList()
+        {
+            var cslist = CustomStatementsList();
+            if (cslist == null)
+                return null;
+            return new SelectList(cslist);
         }
         class PageEvent : PdfPageEventHelper
         {

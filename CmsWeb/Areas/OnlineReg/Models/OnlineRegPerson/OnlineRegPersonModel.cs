@@ -174,7 +174,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string EmailAddress { get; set; }
         public string fromemail
         {
-            get { return FirstName + " " + LastName + " <" + EmailAddress + ">"; }
+            get
+            {
+                if (!IsNew && !EmailAddress.HasValue())
+                    return $"{FirstName} {LastName} <{person.EmailAddress}>";
+                return $"{FirstName} {LastName} <{EmailAddress}>";
+            }
         }
 
         public int? MenuItemValue(int i, string s)

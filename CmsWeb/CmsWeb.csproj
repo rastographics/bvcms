@@ -2104,6 +2104,7 @@
     <Content Include="Lib\ensurepip\_bundled\setuptools-20.10.1-py2.py3-none-any.whl" />
     <Content Include="Lib\ensurepip\_bundled\pip-8.1.1-py2.py3-none-any.whl" />
     <Content Include="Areas\Dialog\Views\GetCheckImage\GetCheckImage.cshtml" />
+    <Content Include="Areas\People\Views\Person\Giving\CustomStatments.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\staging.pubxml" />
     <None Include="Properties\PublishProfiles\TeamCity.pubxml" />
