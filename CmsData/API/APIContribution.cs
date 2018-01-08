@@ -265,6 +265,7 @@ namespace CmsData.API
         {
             var q = from c in
                 db.NormalContributions(ci.PeopleId, ci.SpouseID, ci.Joint, fromDate, toDate, funds.JoinInts(","))
+                orderby c.ContributionDate
                 select c;
             return q;
         }
@@ -273,6 +274,7 @@ namespace CmsData.API
         {
             var q = from c in
                 db.NonTaxContributions(ci.PeopleId, ci.SpouseID, ci.Joint, fromDate, toDate, funds.JoinInts(","))
+                orderby c.ContributionDate
                 select c;
             return q;
         }
@@ -281,6 +283,7 @@ namespace CmsData.API
         {
             var q = from c in
                 db.StockGifts(ci.PeopleId, ci.SpouseID, ci.Joint, fromDate, toDate, funds.JoinInts(","))
+                orderby c.ContributionDate
                 select c;
             return q;
         }
@@ -289,6 +292,7 @@ namespace CmsData.API
         {
             var q = from c in
                 db.UnitPledgeSummary(ci.PeopleId, ci.SpouseID, ci.Joint, toDate, funds.JoinInts(","))
+                orderby c.FundName
                 select c;
             return q;
         }
@@ -297,6 +301,7 @@ namespace CmsData.API
         {
             var q = from c in
                 db.GiftSummary(ci.PeopleId, ci.SpouseID, ci.Joint, fromDate, toDate, funds.JoinInts(","))
+                orderby c.FundName
                 select c;
             return q;
         }
@@ -305,6 +310,7 @@ namespace CmsData.API
         {
             var q = from c in
                 db.GiftsInKind(ci.PeopleId, ci.SpouseID, ci.Joint, fromDate, toDate, funds.JoinInts(","))
+                orderby c.ContributionDate
                 select c;
             return q;
         }
