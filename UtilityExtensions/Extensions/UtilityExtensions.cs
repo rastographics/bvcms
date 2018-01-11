@@ -442,6 +442,8 @@ namespace UtilityExtensions
         {
             try
             {
+                if(IsDebug())
+                    return null;
                 return (HttpWebResponse) request.GetResponse();
             }
             catch (WebException ex)

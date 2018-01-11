@@ -492,13 +492,14 @@ namespace CmsData
             var aa = new List<MailAddress>();
             if (p == null)
                 return aa;
-            if (p.SendEmailAddress1 ?? true)
+            if ((p.SendEmailAddress1 ?? true) && Util.ValidEmail(p.EmailAddress))
                 Util.AddGoodAddress(aa, p.FromEmail);
-            if (p.SendEmailAddress2 ?? false)
+            if ((p.SendEmailAddress2 ?? false) && Util.ValidEmail(p.EmailAddress2))
                 Util.AddGoodAddress(aa, p.FromEmail2);
             if (regemail.HasValue())
                 foreach (var ad in regemail.SplitStr(",;"))
-                    Util.AddGoodAddress(aa, ad);
+                    if(Util.ValidEmail(ad))
+                        Util.AddGoodAddress(aa, ad);
             return aa;
         }
 

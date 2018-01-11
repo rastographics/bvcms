@@ -136,6 +136,8 @@ namespace UtilityExtensions
         {
             if (!email.HasValue())
                 return false;
+            if (email.Contains(" "))
+                return false;
             var re1 = new Regex(@"^(.*\b(?=\w))\b[A-Z0-9._%+-]+(?<=[^.])@[A-Z0-9.-]+(?<!\.)\.[A-Z]{2,}\b\b(?!\w)$", RegexOptions.IgnoreCase);
             var re2 = new Regex(@"^[A-Z0-9._%+-]+(?<=[^.])@[A-Z0-9.-]+(?<!\.)\.[A-Z]{2,}$", RegexOptions.IgnoreCase);
             var a = email.SplitStr(",;");

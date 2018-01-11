@@ -37,11 +37,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
             Index = i;
             var foundname = Parent.GetNameFor(mm => mm.List[Index].Found);
 
-            if (PeopleId > 0 && Parent.UserPeopleId.HasValue) 
+            if (PeopleId > 0 && Parent.UserPeopleId.HasValue)
             {
                 // from a register link or logged in, don't validate basic stuff
                 Found = true;
                 ValidateAgeRequirement();
+                ValidateEmail();
             }
             else // validate basic stuff
             {
@@ -147,12 +148,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void ValidateEmail()
         {
-            if (!IsFamily && (!EmailAddress.HasValue() || !Util.ValidEmail(EmailAddress)))
-                if (!Util.ValidEmail(person.EmailAddress))
+            if (!EmailAddress.HasValue() || !Util.ValidEmail(EmailAddress))
+                if (person == null)
                 {
                     modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].EmailAddress),
                         "Please specify a valid email address.");
                     Log("InvalidEmail");
+                }
+                else if (!Util.ValidEmail(person.EmailAddress))
+                {
+                    modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].EmailAddress),
+                        "No valid email address needed for confirmation on record");
+                    Log("InvalidEmailOnRecord");
                 }
         }
 
@@ -215,13 +222,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private bool EmailRequiredForThisRegistration(string foundname)
         {
-            var needemail = (!person.EmailAddress.HasValue() &&
+            var needemail = !person.EmailAddress.HasValue() &&
                              (ManageSubscriptions()
                               || orgid == Util.CreateAccountCode
                               || OnlineGiving()
                               || ManageGiving()
                               || OnlinePledge()
-                                 ));
+                              || !EmailAddress.HasValue() // register emai
+                                 );
             if (!needemail)
                 return false;
             modelState.AddModelError(foundname, "No Email Address on record");
