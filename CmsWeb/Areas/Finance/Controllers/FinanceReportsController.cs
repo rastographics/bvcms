@@ -138,7 +138,7 @@ namespace CmsWeb.Areas.Finance.Controllers
 
             ViewBag.Name = id.SpaceCamelCase();
             var rd = cn.ExecuteReader(content, p, commandTimeout: 1200);
-            var excelink = Request.Url?.AbsoluteUri.Replace("TotalsByFundCustomReport/", "TotalsByFundCustomExport/");
+            var excelink = DbUtil.Db.ServerLink($"/TotalsByFundCustomExport/{id}");
             var link = $"<a href='{excelink}' class='CustomExport btn btn-default' target='_blank'><i class='fa fa-file-excel-o'></i> Download as Excel</a>";
             return Content(GridResult.Table(rd, id.SpaceCamelCase(), excellink: link));
         }

@@ -1293,6 +1293,18 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             ev.StrValue = value;
             ev.TransactionTime = Util.Now;
         }
+        public static void AddEditExtraValues(CMSDataContext db, int id, string field, string code, DateTime? date, string text, bool? bit, int? intn,
+                                      DateTime? dt = null)
+        {
+            var ev = GetExtraValue(db, id, field);
+            ev.StrValue = code;
+            ev.Data = text;
+            ev.DateValue = date;
+            ev.IntValue = intn;
+            ev.BitValue = bit;
+            ev.UseAllValues = true;
+            ev.TransactionTime = dt ?? Util.Now;
+        }
 
         public static void AddEditExtraData(CMSDataContext db, int id, string field, string value, DateTime? dt = null)
         {

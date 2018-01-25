@@ -36,12 +36,16 @@ namespace CmsWeb.Areas.Setup.Controllers
             {
                 case "AddressType":
                 case "EnvelopeOption":
-                case "Gender":
                 case "OrganizationStatus":
                 case "BundleStatusTypes":
                 case "ContributionStatus":
                     ViewData["HideAdd"] = true;
-                break;
+                    break;
+                case "Gender":
+                    if(!DbUtil.Db.Setting("AllowNewGenders"))
+                        ViewData["HideAdd"] = true;
+                    break;
+
             }
 
             return View(q);

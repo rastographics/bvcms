@@ -90,9 +90,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         private bool LogRogueUser(string why, string from)
         {
-            var logrogueuser = ConfigurationManager.AppSettings["LogRogueUser"];
-            if (logrogueuser.HasValue())
-                DbUtil.Db.Connection.Execute(logrogueuser, new {ip=Request.UserHostAddress, db=Util.Host});
+            var insertRogueIp = ConfigurationManager.AppSettings["InsertRogueIp"];
+            if (insertRogueIp.HasValue())
+                DbUtil.Db.Connection.Execute(insertRogueIp, new {ip=Request.UserHostAddress, db=Util.Host});
             var form = Encoding.Default.GetString(Request.BinaryRead(Request.TotalBytes));
             DbUtil.Db.SendEmail(Util.FirstAddress("david@touchpointsoftware.com"),
                 "CardTester", $"why={why} from={from} ip={Request.UserHostAddress}<br>{form.HtmlEncode()}",
