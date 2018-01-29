@@ -181,6 +181,8 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
             switch (DbUtil.Db.Setting("BankDepositFormat", "none").ToLower())
             {
+                case "stonyrunfriends":
+                    return new StonyRunFriendsImporter();
                 case "fcchudson":
                     return new FcchudsonImporter();
                 case "fbcfayetteville":
