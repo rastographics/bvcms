@@ -45,7 +45,8 @@ namespace CmsWeb.Models
         public string FundName { get; set; }
         public bool DefaultFundIsPledge { get; set; }
         public int? campusid { get; set; }
-
+        public int imageid { get; set; }
+    
         public BundleHeader Bundle
         {
             get
@@ -312,7 +313,7 @@ namespace CmsWeb.Models
                         diff = ((bh.TotalCash.GetValueOrDefault() + bh.TotalChecks.GetValueOrDefault() + bh.TotalEnvelopes.GetValueOrDefault()) - bh.BundleDetails.Sum(d => d.Contribution.ContributionAmount.GetValueOrDefault())),
                         difference = ((bh.TotalCash.GetValueOrDefault() + bh.TotalChecks.GetValueOrDefault() + bh.TotalEnvelopes.GetValueOrDefault()) - bh.BundleDetails.Sum(d => d.Contribution.ContributionAmount)).ToString2("C2"),
                         itemcount = bh.BundleDetails.Count(),
-                        othersplitamt = othersplitamt.ToString2("N2")
+                        othersplitamt = othersplitamt.ToString2("N2")         
                     };
             return q.First();
         }
@@ -360,6 +361,7 @@ namespace CmsWeb.Models
                     var i = q.Single();
                     othersplitamt = i.c.ContributionAmount - amt;
                     i.c.ContributionAmount = othersplitamt;
+                    imageid = i.c.ImageID;
                     DbUtil.Db.SubmitChanges();
                     bd.BundleSort1 = i.bd.BundleDetailId;
                 }
@@ -375,7 +377,8 @@ namespace CmsWeb.Models
                     ContributionStatusId = 0,
                     ContributionTypeId = type,
                     ContributionDesc = notes,
-                    CheckNo = (checkno ?? "").Trim().Truncate(20)
+                    CheckNo = (checkno ?? "").Trim().Truncate(20),
+                    ImageID = imageid
                 };
                 Bundle.BundleDetails.Add(bd);
                 DbUtil.Db.SubmitChanges();

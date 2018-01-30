@@ -114,6 +114,8 @@ namespace CmsWeb.Areas.People.Models
                      {
                          Amount = c.ContributionAmount ?? 0,
                          CheckNo = c.CheckNo,
+                         ImageId = c.ImageID,
+                         ContributionId = c.ContributionId,
                          Date = c.ContributionDate.Value,
                          Fund = c.ContributionFund.FundDescription,
                          Name = c.Person.PeopleId == PeopleId ? c.Person.PreferredName : c.Person.Name,
