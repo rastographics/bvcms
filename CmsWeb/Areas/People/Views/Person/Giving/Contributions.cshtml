@@ -34,7 +34,14 @@
                                 <td class="text-right">@c.Amount.ToString("N2")</td>
                                 <td><span class="pad-left">@c.Fund</span></td>
                                 <td>@c.Type</td>
-                                <td>@c.CheckNo</td>
+                                <td>@c.CheckNo
+                                    @if (c.ImageId != 0)
+                                    {
+                                        <a href="@Url.Action("GetCheckImage", "GetCheckImage", new {Area = "Dialog", id = c.ContributionId})" class="searchadd pid">
+                                            <i class="fa fa-info-circle"></i>
+                                        </a>
+                                    }
+                                </td>
                                 @if (Model.ShowNames)
                                 {
                                     <td>@c.Name</td>
