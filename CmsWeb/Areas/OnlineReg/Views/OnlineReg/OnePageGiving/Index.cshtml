@@ -145,82 +145,81 @@
         @if (designatedFund != null)
         {
             tot = Model.PaymentForm.AmtToPay.GetValueOrDefault();
-            <div class="form-group text-right">
-                <h4 class="inline-block">@Model.PaymentForm.Description&nbsp;&nbsp;$ </h4>
+            <div class="form-group text-right" style="padding-right: 6px !important">
+                <h4 class="inline-block">@Model.PaymentForm.Description&nbsp;&nbsp;$&nbsp;</h4>
                 <input type="text" id="AmtToPay" name="AmtToPay" class="form-control input-lg narrow sum @Html.ErrorClass("AmtToPay")" style="display: inline" placeholder="Amount" value="@Model.PaymentForm.AmtToPay"/>
                 @Html.ValidationMessageLabelFor(m => m.PaymentForm.AmtToPay, "field-validation-error")
             </div>
         }
+    <div class="row">
+        <div class="form-group col-lg-8 pull-right">
         @if (funds.Any())
         {
-                <div class="col-lg-8 text-right pull-right" style="border-width: 0px !important;padding-right : 0px !important">
-                    <table class="table text-right" style="margin-bottom :0px!important"  id="special-funds">
-                        <tbody>
-                        @{
-                            var sn = 0;
-                        }
-                        @for (var n = 0; n < funds.Length; n++)
-                        {
-                            var i = funds[n];
-                            var amt = Model.OnlineRegPersonModel.FundItemValue(i.Value.ToInt());
-                            if (amt.HasValue)
-                            {
-                                tot = (tot ?? 0) + amt;
-                                <tr id="@i.Value">
-                                    <td style="width: 10px;border-width: 0px!important"><a href="#" tabindex="-1" class="remove-fund"><span class="fa fa-trash-o" style="line-height: 20px !important; padding: 8px 0;"></span></a></td>
-                                    <td class="pull-right" style="width: 0px;border-width: 0px!important">@i.Text</td>
-                                    <td style="width: 140px !important; border-width: 0px !important; padding: 0px !important">
-                                        <h4 style="margin: 0;display:inline-block; line-height: 20px !important; padding: 8px 0;">$&nbsp;</h4>                                                           
-                                        <input type="hidden" name="@(funame)[@sn].Key" value="@i.Value"/>
-                                        <input type="text" name="@(funame)[@sn].Value" value="@amt.ToString2("f2")" class="form-control input-lg narrow sum pull-right" style="width:100px!important"/>
-                                    </td>
-                                </tr>
-                                sn++;
-                            }
-                        }
-                        </tbody>
-                        <tfoot>
-                        <tr id="addFund" hidden>
-                            <td style="width: 10px; border-width: 0px !important"><span class="fa fa-trash-o"></span></td>
-                            <td style="width: 200px; border-width: 0px !important">
-                                <select class="form-control pull-right" style="" id="special-funds-list">
-                                    <option></option>
-                                    @foreach (var fund in funds)
-                                    {
-                                        if (designatedFund == null || (fund.Value != designatedFund.Value))
-                                        {
-                                            <option value="@fund.Value">@fund.Text</option>
-                                        }
-                                    }
-                                </select>
-                            </td>
-                            <td style="width: 125px !important; border-width: 0px !important;vertical-align: text-bottom!important">
-                                <h4 style="margin: 0; display: inline-block; line-height: 20px !important; padding: 8px 0;">$&nbsp;</h4>
-                                <input type="text" name="" value="0.00" disabled class="form-control narrow sum pull-right" style="width:100px!important" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="width: 10px; border-width: 0px !important"></td>
-                            <td colspan="" style="width: 0px; border-width: 0px !important"><h4 class="pull-right">TOTAL:</h4></td>
-                            <td style="width: 125px; border-width: 0px !important;">
-                                <h2 class="pull-right" style="margin: 0">
-                                    $<span id="total">@tot.ToString2("N2")</span>
-                                </h2>
-                            </td>
-                        </tr>
-                        </tfoot>
-                    </table>
-                    @if (!disableAdditionalFunds)
-                    {
-                        <div class="form-group text-right">
-                            <a id="myAddFundLink" href="#" tabindex="-1" class="pull-right" style="text-decoration: underline">
-                                + Additional Fund
-                            </a>
-                        </div>
+                <table class="table" style="margin-bottom :0px!important"  id="special-funds">
+                    <tbody>
+                    @{
+                        var sn = 0;
                     }
-
-                </div>
+                    @for (var n = 0; n < funds.Length; n++)
+                    {
+                        var i = funds[n];
+                        var amt = Model.OnlineRegPersonModel.FundItemValue(i.Value.ToInt());
+                        if (amt.HasValue)
+                        {
+                            tot = (tot ?? 0) + amt;
+                            <tr id="@i.Value">
+                                <td style="border-width: 0px!important"><a href="#" tabindex="-1" class="remove-fund"><span class="fa fa-trash-o" style="line-height: 20px !important; padding: 8px 0;"></span></a></td>
+                                <td class="pull-right" style="border-width: 0px!important"><h4 class="inline-block">@i.Text</h4></td>
+                                <td style="border-width: 0px !important;">
+                                    <h4 class="inline-block" style="margin: 0;padding: 12px 0;">$</h4><!--                                                        
+                                    --><input type="hidden" name="@(funame)[@sn].Key" value="@i.Value"/>
+                                    <input type="text" name="@(funame)[@sn].Value" value="@amt.ToString2("f2")" class="form-control input-lg narrow sum pull-right"/>
+                                </td>
+                            </tr>
+                            sn++;
+                        }
+                    }
+                    </tbody>
+                    <tfoot>
+                    <tr id="addFund" hidden>
+                        <td style="border-width: 0px !important;padding-top:15px!important"><a href="#" tabindex="-1" id="removeAddFund"><span class="fa fa-trash-o"></span></a></td>
+                        <td style="border-width: 0px !important;padding-top:12px!important">
+                            <select class="form-control" placeholder="Select Fund" id="special-funds-list">
+                                <option></option>
+                                @foreach (var fund in funds)
+                                {
+                                    if (designatedFund == null || (fund.Value != designatedFund.Value))
+                                    {
+                                        <option value="@fund.Value">@fund.Text</option>
+                                    }
+                                }
+                            </select>                            
+                        </td>
+                        <td style="border-width: 0px !important;">
+                            <h4 class="inline-block" style="margin: 0; padding: 12px 0;">$</h4><!--
+                            --><input type="text" name="" placeholder="Amount" disabled class="form-control input-lg narrow sum pull-right" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="border-width: 0px !important"></td>
+                        <td style="border-width: 0px !important" width="56%!important"><h4 class="pull-right">TOTAL:</h4></td>
+                        <td style="border-width: 0px !important;" width="35%!important">
+                            <h2 class="pull-right" style="margin: 0">$<span id="total">@tot.ToString2("N2")</span></h2>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+                if (!disableAdditionalFunds)
+                {
+                    <div class="form-group text-right">
+                        <a id="myAddFundLink" href="#" tabindex="-1" class="pull-right" style="text-decoration: underline">
+                            + Additional Fund
+                        </a>
+                    </div>
+                }
         }
+    </div>
+    </div>
 
                 @if (Model.PaymentForm.NoCreditCardsAllowed || Model.PaymentForm.NoEChecksAllowed)
                 {
