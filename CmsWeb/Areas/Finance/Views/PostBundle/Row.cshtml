@@ -32,7 +32,7 @@
         <a id="k@(Model.ContributionId)" data-pk="k@(Model.ContributionId)" class="clickEdit">@Model.CheckNo</a>
         @if (Model.ImageId != 0)
         {
-            <a href="@Url.Action("GetCheckImage", "GetCheckImage", new {Area = "Dialog", id = Model.ContributionId})" class="searchadd pid">
+            <a href="@Url.Action("GetCheckImage", "GetCheckImage", new {Area = "Dialog", id = Model.ContributionId})" class="searchadd">
                 <i class="fa fa-info-circle"></i>
             </a>
         }
