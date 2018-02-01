@@ -112,6 +112,7 @@ namespace CmsWeb.Models
                         BundleHeaderId = c.BundleHeaderId ?? 0,
                         c.BundleType,
                         c.BundleStatus,
+                        p.FullAddress
                     };
             return q.ToDataTable();
         }
