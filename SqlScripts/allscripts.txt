@@ -403,6 +403,7 @@ Creating_dbo_MasterOrgs.sql
 Creating_dbo_ActiveRegistrations.sql
 Creating_dbo_AppRegistrations.sql
 Creating_dbo_PurgeAllPeople.sql
+Creating_export_XpFamilyExtra.sql
 Creating_dbo_RecentAttendType.sql
 Creating_dbo_AddExtraValueData.sql
 Creating_dbo_PrimaryAdult3.sql
