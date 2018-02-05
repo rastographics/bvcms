@@ -660,12 +660,14 @@ namespace CmsData
                     var text = m.DoReplacements(to.PeopleId, to);
 
                     text = RenderTemplate(text, dict[to.PeopleId]);
+                    var re = new Regex("<!--SUBJECT:(?<subj>.*)-->");
+                	var subj = re.Match(text).Groups["subj"].Value;
 
                     var aa = m.ListAddresses;
 
                     if (Setting("sendemail", "true") != "false")
                     {
-                        SendEmail(from, emailqueue.Subject, text, aa, to, cc);
+                        SendEmail(from, Util.PickFirst(subj, emailqueue.Subject), text, aa, to, cc);
                         to.Sent = Util.Now;
                         SubmitChanges();
                     }
