@@ -176,7 +176,8 @@ namespace CmsData
             "Manager2",
             "OrgTagger",
             "ManagePrivateContacts",
-            "ManageTasks"
+            "ManageTasks",
+            "ManageOrgMembers"
         };
 
         public static List<string> Hardwired()

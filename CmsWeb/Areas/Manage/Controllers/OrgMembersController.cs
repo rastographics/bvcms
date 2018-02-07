@@ -4,7 +4,7 @@ using CmsWeb.Models;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
-    [Authorize(Roles="Edit")]
+    [Authorize(Roles="ManageOrgMembers")]
     [RouteArea("Manage", AreaPrefix= "OrgMembers"), Route("{action=index}/{id?}")]
     public class OrgMembersController : CmsStaffController
     {

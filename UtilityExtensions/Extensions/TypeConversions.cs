@@ -173,7 +173,7 @@ namespace UtilityExtensions
         }
         public static string ToSuitableId(this string s)
         {
-            var v = Regex.Replace(s.Replace('/','-'), @"\[|\]|\s|\(|\)|,|=|/|'|#", "_").Replace("__", "_").TrimEnd('_');
+            var v = Regex.Replace(s.Replace('/','-'), @"\[|\]|\s|\(|\)|,|=|/|'|#|:", "_").Replace("__", "_").TrimEnd('_');
             var chars = v.ToCharArray();
             var sb = new StringBuilder();
             for (var i = 0; i < chars.Length; i++)

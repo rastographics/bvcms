@@ -296,6 +296,27 @@ namespace CmsData
             }
             return ev;
         }
+        public static FamilyExtra GetExtraValueFamilyId(CMSDataContext db, int fid, string field)
+        {
+            if (fid == 0)
+                return null;
+            var q = from v in db.FamilyExtras
+                    where v.Field == field
+                    where v.FamilyId == fid
+                    select v;
+            var ev = q.SingleOrDefault();
+            if (ev == null)
+            {
+                ev = new FamilyExtra
+                {
+                    FamilyId = fid,
+                    Field = field,
+                    TransactionTime = DateTime.Now
+                };
+                db.FamilyExtras.InsertOnSubmit(ev);
+            }
+            return ev;
+        }
         public static bool ExtraValueExists(CMSDataContext db, int pid, string field)
         {
             var fid = (from v in db.People
@@ -340,6 +361,14 @@ namespace CmsData
             if (!Util.HasValue(value))
                 return;
             var ev = GetExtraValue(db, pid, field);
+            ev.Data = value;
+            ev.TransactionTime = DateTime.Now;
+        }
+        public static void AddEditExtraDataWithFamilyId(CMSDataContext db, int fid, string field, string value)
+        {
+            if (!Util.HasValue(value))
+                return;
+            var ev = GetExtraValueFamilyId(db, fid, field);
             ev.Data = value;
             ev.TransactionTime = DateTime.Now;
         }
