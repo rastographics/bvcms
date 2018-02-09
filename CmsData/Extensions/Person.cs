@@ -1489,7 +1489,8 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 ContributionTypeId = typid,
                 ContributionDesc = description,
                 TranId = tranid,
-                Source = Util2.FromMobile.HasValue() ? 1 : (int?) null
+                Source = Util2.FromMobile.HasValue() ? 1 : (int?) null,
+                CampusId = CampusId
             };
             bundle.BundleDetails.Add(bd);
             db.SubmitChanges();

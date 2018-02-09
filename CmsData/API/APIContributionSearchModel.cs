@@ -270,7 +270,7 @@ namespace CmsData.API
 
             if ((model.CampusId ?? 0) != 0)
                 contributions = from c in contributions
-                                where c.CampusId == model.CampusId
+                                where (c.CampusId ?? c.Person.CampusId) == model.CampusId
                                 select c;
 
             if (model.BundleType == 9999)
