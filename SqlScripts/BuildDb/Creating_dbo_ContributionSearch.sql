@@ -25,6 +25,7 @@ RETURN
 (
 	SELECT c.ContributionId
 	FROM   dbo.Contribution c
+	LEFT JOIN dbo.People p ON p.PeopleId = c.PeopleId
 	WHERE CASE
 			WHEN @Name IS NULL THEN 1
 			WHEN TRY_PARSE(@Name AS INT) > 0 THEN IIF(c.PeopleId = TRY_PARSE(@Name AS INT), 1, 0)
@@ -40,7 +41,7 @@ RETURN
 	AND (@MaxAmt IS NULL OR c.ContributionAmount <= @MaxAmt)
 	AND (@StartDate IS NULL OR c.ContributionDate >= @StartDate)
 	AND (@EndDate IS NULL OR c.ContributionDate < DATEADD(DAY, 1, @EndDate))
-	AND (ISNULL(@CampusId, 0) = 0 OR c.CampusId = @CampusId)
+	AND (ISNULL(@CampusId, 0) = 0 OR ISNULL(c.CampusId, p.CampusId) = @CampusId)
 	AND (@FundId IS NULL OR c.FundId = @FundId)
 	AND CASE @Online
 			WHEN 1 THEN IIF(EXISTS(SELECT NULL FROM dbo.BundleDetail d
