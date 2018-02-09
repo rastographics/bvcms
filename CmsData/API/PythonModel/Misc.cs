@@ -8,9 +8,11 @@ using MarkdownDeep;
 using RestSharp;
 using UtilityExtensions;
 using System.Linq;
+using System.Net.Mime;
 using System.Web.Helpers;
 using System.Web.Script.Serialization;
 using CmsData.API;
+using CmsData.Codes;
 using IronPython.Runtime;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -305,5 +307,20 @@ namespace CmsData
             db.ExecuteCommand("dbo.UpdateStatusFlag {0}, {1}", flagid, temptag.Id);
         }
 
+        public void WriteContentSql(string name, string sql)
+        {
+            var c = db.Content(name, ContentTypeCode.TypeSqlScript);
+            if (c == null)
+            {
+                c = new Content()
+                {
+                    Name = name,
+                    TypeID = Codes.ContentTypeCode.TypeSqlScript
+                };
+                db.Contents.InsertOnSubmit(c);
+            }
+            c.Body = sql;
+            db.SubmitChanges();
+        }
     }
 }

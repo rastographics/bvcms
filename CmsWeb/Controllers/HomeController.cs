@@ -239,6 +239,14 @@ namespace CmsWeb.Controllers
                 p.Add("@qtagid", qtagid);
                 ViewBag.Type = "SqlReport";
             }
+            if (body.Contains("@BlueToolbarTagId", ignoreCase: true))
+            {
+                var id = db.FetchLastQuery().Id;
+                var tag = db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
+                int? qtagid = tag.Id;
+                p.Add("@BlueToolbarTagId", qtagid);
+                ViewBag.Type = "SqlReport";
+            }
             else if (body.Contains("@CurrentOrgId", ignoreCase: true))
             {
                 var oid = DbUtil.Db.CurrentSessionOrgId;
@@ -401,6 +409,11 @@ namespace CmsWeb.Controllers
                     pe.DictionaryAdd(key, Request.QueryString[key]);
 
                 pe.RunScript(script);
+                if (pe.Output.StartsWith("REDIRECT="))
+                {
+                    var a = pe.Output.SplitStr("=", 2);
+                    return Redirect(a[1].TrimEnd());
+                }
 
                 return View(pe);
             }

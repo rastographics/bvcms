@@ -66,15 +66,22 @@ namespace CmsWeb.Areas.Reports.Controllers
                 throw new Exception("Not Authorized to run this script");
 
             var hasqtag = content.Contains("@qtagid");
+            var hasbtbtag = content.Contains("@BlueToolbarTagId");
             var hascurrentorg = content.Contains("@CurrentOrgId");
-            if (!hasqtag && !hascurrentorg)
-                throw new Exception("missing @qtagid or @CurrentOrgId");
+            if (!hasqtag && !hascurrentorg && !hasbtbtag)
+                throw new Exception("missing @qtagid or @CurrentOrgId or @BlueToolbarTagId");
 
             p = new DynamicParameters();
             if (hasqtag)
             {
                 var tag = DbUtil.Db.PopulateSpecialTag(Id, DbUtil.TagTypeId_Query);
                 p.Add("@qtagid", tag.Id);
+                Qtagid = tag.Id;
+            }
+            if (hasbtbtag)
+            {
+                var tag = DbUtil.Db.PopulateSpecialTag(Id, DbUtil.TagTypeId_Query);
+                p.Add("@BlueToolbarTagId", tag.Id);
                 Qtagid = tag.Id;
             }
             if (hascurrentorg)

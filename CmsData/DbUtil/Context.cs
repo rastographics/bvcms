@@ -1406,7 +1406,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
         }
         public Content Content(string name, int contentTypeId)
         {
-            return Contents.FirstOrDefault(cc => cc.Name == name);
+            return Contents.FirstOrDefault(cc => cc.Name == name && cc.TypeID == contentTypeId);
         }
         public string Content2(string name, string defaultValue, int contentTypeId)
         {

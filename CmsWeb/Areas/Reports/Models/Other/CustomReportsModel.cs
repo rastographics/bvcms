@@ -472,7 +472,7 @@ namespace CmsWeb.Areas.Reports.Models
                     break;
                 case "SqlReport":
                     typeid = ContentTypeCode.TypeSqlScript;
-                    lookfor = new[] {"@qtagid"};
+                    lookfor = new[] {"@qtagid", "@bluetoolbartagid"};
                     break;
                 case "OrgSearchSqlReport":
                     typeid = ContentTypeCode.TypeSqlScript;
