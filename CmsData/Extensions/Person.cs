@@ -1490,7 +1490,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 ContributionDesc = description,
                 TranId = tranid,
                 Source = Util2.FromMobile.HasValue() ? 1 : (int?) null,
-                CampusId = CampusId
+                //CampusId is set with an update Trigger when peopleid is changed or when a new contribution is created that has a peopleId
             };
             bundle.BundleDetails.Add(bd);
             db.SubmitChanges();
@@ -1519,8 +1519,8 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             var ms = db.JoinTypes.SingleOrDefault(m => m.Description == status);
             if (ms == null)
             {
-                var max = db.JoinTypes.Max(mm => mm.Id) + 1;
-                ms = new JoinType() {Id = max, Code = "J" + max, Description = status};
+                var id = db.JoinTypes.Max(mm => mm.Id) + 10;
+                ms = new JoinType() {Id = id, Code = "J" + id, Description = status};
                 db.JoinTypes.InsertOnSubmit(ms);
                 db.SubmitChanges();
             }
