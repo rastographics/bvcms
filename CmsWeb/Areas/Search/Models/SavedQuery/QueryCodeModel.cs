@@ -16,6 +16,7 @@ namespace CmsWeb.Areas.Search.Models
         public List<dynamic> List;
         public int Count;
         public string Code;
+        public string Sql;
 
         public QueryCodeModel(string queries, List<Guid> guids = null)
         {
@@ -41,6 +42,7 @@ namespace CmsWeb.Areas.Search.Models
                 return;
             var c = DbUtil.Db.LoadExistingQuery(Existing.Value);
             Code = c.ToCode();
+            Sql = c.ToSql();
         }
     }
 }
