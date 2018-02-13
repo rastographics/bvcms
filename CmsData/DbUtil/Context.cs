@@ -1666,6 +1666,20 @@ This search uses multiple steps which cannot be duplicated in a single query.
             // The following will clean out any tags that no longer have a corresponding F99:name in the queries
             ExecuteCommand("dbo.DeleteOldQueryBitTags");
         }
+//        public void UpdateQueryTags(string prefix)
+//        {
+//            var temptag = PopulateTempTag(new List<int>());
+//            var qbits = (from c in Queries
+//                     where c.Name.StartsWith(prefix)
+//                     orderby c.Name
+//                     select c.Name).ToList();
+//            foreach (var name in qbits)
+//            {
+//                var qq = PeopleQuery2(name);
+//                TagAll2(qq, temptag);
+//                ExecuteCommand("dbo.UpdateQueryTag {0}, {1}", name, temptag.Id);
+//            }
+//        }
         [Function(Name = "dbo.TagRecentStartAttend")]
         public int TagRecentStartAttend(
             [Parameter(DbType = "Int")] int progid, 

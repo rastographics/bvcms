@@ -338,6 +338,7 @@ namespace CmsData
         public const int TagTypeId_ExtraValues = 6;
         public const int TagTypeId_Query = 7;
         public const int TagTypeId_Emailer = 8;
+        public const int TagTypeId_QueryTags = 99;
         public const int TagTypeId_StatusFlags = 100;
         // ReSharper restore InconsistentNaming
 

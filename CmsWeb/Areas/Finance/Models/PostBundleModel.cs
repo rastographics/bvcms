@@ -416,7 +416,7 @@ namespace CmsWeb.Models
                     break;
             }
             c.FundId = fund;
-            c.CampusId = campusid;
+//            c.CampusId = campusid;
             c.PeopleId = pid.ToInt2();
             c.ContributionAmount = amt;
             c.ContributionTypeId = type;

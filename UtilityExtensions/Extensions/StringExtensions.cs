@@ -325,6 +325,18 @@ namespace UtilityExtensions
                 return sb.ToString();
             }
         }
+        public static string Sha256Hash(this string s)
+        {
+            using (var sha = SHA256.Create())
+            {
+                var bytes = Encoding.UTF8.GetBytes(s);
+                var hash = sha.ComputeHash(bytes);
+                var sb = new StringBuilder();
+                foreach (var t in hash)
+                    sb.Append(t.ToString("x2"));
+                return sb.ToString();
+            }
+        }
 
         public static string SlugifyString(this string original)
         {
