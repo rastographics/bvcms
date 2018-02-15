@@ -73,6 +73,8 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             DbUtil.Db.SetCurrentOrgId(meeting.OrganizationId);
             var subject = $"{meeting.Organization.OrganizationName} Reminder";
+            VolunteerCommitmentsModel.FindDescription(meeting.OrganizationId, meeting.MeetingDate);
+            var desc = meeting.GetExtra("Description");
             var body =
                 $@"<blockquote><table>
 <tr><td>Time:</td><td>{meeting.MeetingDate:f}</td></tr>

@@ -68,6 +68,13 @@ namespace CmsWeb.Areas.Manage.Models
 
 			IsLeader = OrganizationMember.VolunteerLeaderInOrg(DbUtil.Db, id);
 		}
+
+	    public static string FindDescription(int id, DateTime? meetingdt)
+	    {
+	        var m = new VolunteerCommitmentsModel(id);
+	        var slot = m.TimeSlots.SingleOrDefault(vv => (DayOfWeek)vv.DayOfWeek == meetingdt?.DayOfWeek && vv.Time?.TimeOfDay == meetingdt?.TimeOfDay);
+	        return slot?.Description;
+	    }
 		public class Slot
 		{
 			public DateTime Time { get; set; }

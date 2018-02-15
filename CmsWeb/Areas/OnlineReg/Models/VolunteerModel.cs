@@ -181,10 +181,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
                           where currcommit == DateTime.MinValue
                           select newcommit;
 
+            int? mid = null;
             foreach (var currcommit in decommits)
-                Attend.MarkRegistered(DbUtil.Db, OrgId, PeopleId, currcommit, AttendCommitmentCode.Regrets);
+                mid = Attend.MarkRegistered(DbUtil.Db, OrgId, PeopleId, currcommit, AttendCommitmentCode.Regrets);
             foreach (var newcommit in commits)
-                Attend.MarkRegistered(DbUtil.Db, OrgId, PeopleId, newcommit, AttendCommitmentCode.Attending);
+                mid = Attend.MarkRegistered(DbUtil.Db, OrgId, PeopleId, newcommit, AttendCommitmentCode.Attending);
+            if (mid.HasValue)
+            {
+                var slots = FetchSlots();
+                Meeting.AddEditExtraData(DbUtil.Db, mid.Value, "Description", slots.First().Description);
+            }
             var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == PeopleId && mm.OrganizationId == OrgId);
             if(om == null)
                 OrganizationMember.InsertOrgMembers(DbUtil.Db,
