@@ -17,10 +17,12 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 		private User user;
 		private Error error = Error.UNKNOWN;
 
+		private string instance = "";
+
 		private string username = "";
 		private string password = "";
 
-		public void authenticate( string instanceID )
+		public void authenticate( string instanceID, string previousID = "" )
 		{
 			if( string.IsNullOrEmpty( HttpContext.Current.Request.Headers["Authorization"] ) ) {
 				error = Error.NO_HEADER;
@@ -45,7 +47,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 				}
 
 				case "pin": {
-					error = validatePIN( headerParts[1], instanceID );
+					error = validatePIN( headerParts[1], instanceID, previousID );
 
 					break;
 				}
@@ -105,20 +107,11 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			return checkUser( userFound, impersonating );
 		}
 
-		public void setPIN( int device, string instance, string key, string pin )
+		public void setPIN( int device, string instanceID, string key, string pin )
 		{
-			byte[] bytes = Encoding.UTF8.GetBytes( $"{instance}:{getUsername()}:{pin}" );
+			string hashString = createHash( instanceID, getUsername(), pin );
 
-			SHA256Managed hashstring = new SHA256Managed();
-			byte[] hash = hashstring.ComputeHash( bytes );
-
-			string hashString = "";
-
-			foreach( byte x in hash ) {
-				hashString += String.Format( "{0:x2}", x );
-			}
-
-			MobileAppDevice appDevice = DbUtil.Db.MobileAppDevices.FirstOrDefault( d => d.InstanceID == instance );
+			MobileAppDevice appDevice = DbUtil.Db.MobileAppDevices.FirstOrDefault( d => d.InstanceID == instanceID );
 
 			if( appDevice != null ) {
 				appDevice.Authentication = hashString;
@@ -128,7 +121,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 					Created = DateTime.Now,
 					LastSeen = DateTime.Now,
 					DeviceTypeID = device,
-					InstanceID = instance,
+					InstanceID = instanceID,
 					NotificationID = key,
 					UserID = user.UserId,
 					PeopleID = user.PeopleId,
@@ -141,7 +134,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			DbUtil.Db.SubmitChanges();
 		}
 
-		private Error validatePIN( string value, string instance )
+		private Error validatePIN( string value, string instanceID, string previousID )
 		{
 			string credentials;
 
@@ -161,26 +154,49 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 				return Error.MISSING_CREDENTIALS;
 			}
 
-			byte[] bytes = Encoding.UTF8.GetBytes( $"{instance}:{userAndPassword[0]}:{userAndPassword[1]}" );
+			string hashString = createHash( instanceID, userAndPassword[0], userAndPassword[1] );
 
-			SHA256Managed hashstring = new SHA256Managed();
-			byte[] hash = hashstring.ComputeHash( bytes );
-
-			string hashString = "";
-
-			foreach( byte x in hash ) {
-				hashString += String.Format( "{0:x2}", x );
-			}
-
-			MobileAppDevice appDevice = DbUtil.Db.MobileAppDevices.FirstOrDefault( d => d.InstanceID == instance && d.Authentication == hashString );
+			MobileAppDevice appDevice = DbUtil.Db.MobileAppDevices.FirstOrDefault( d => d.InstanceID == instanceID && d.Authentication == hashString );
 
 			if( appDevice == null ) {
-				return Error.INVALID_PASSWORD;
+				if( previousID.Length > 0 ) {
+					hashString = createHash( previousID, userAndPassword[0], userAndPassword[1] );
+
+					appDevice = DbUtil.Db.MobileAppDevices.FirstOrDefault( d => d.InstanceID == previousID && d.Authentication == hashString );
+
+					if( appDevice == null ) {
+						return Error.INVALID_PASSWORD;
+					}
+
+					appDevice.InstanceID = instanceID;
+					appDevice.Authentication = createHash( instanceID, userAndPassword[0], userAndPassword[1] );
+
+					DbUtil.Db.SubmitChanges();
+				} else {
+					return Error.INVALID_PASSWORD;
+				}
 			}
 
 			user = appDevice.User;
+			instance = appDevice.InstanceID;
 
 			return checkUser( true, false );
+		}
+
+		private static string createHash( string instanceID, string username, string password )
+		{
+			byte[] bytes = Encoding.UTF8.GetBytes( $"{instanceID}:{username}:{password}" );
+
+			SHA256Managed sha256Managed = new SHA256Managed();
+			byte[] hash = sha256Managed.ComputeHash( bytes );
+
+			StringBuilder hashString = new StringBuilder( 64 );
+
+			foreach( byte x in hash ) {
+				hashString.Append( x.ToString( "x2" ) );
+			}
+
+			return hashString.ToString();
 		}
 
 		private Error checkUser( bool userFound, bool impersonating )
@@ -245,6 +261,11 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 		public string getUsername()
 		{
 			return username;
+		}
+
+		public string getInstanceID()
+		{
+			return instance;
 		}
 
 		public enum Error : int
