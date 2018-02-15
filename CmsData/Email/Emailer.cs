@@ -715,7 +715,6 @@ namespace CmsData
 #else
             if (Util.IsMyDataUser == false)
                 SendEmail(from, subj, body, Util.ToMailAddressList(from), id);
-            SendEmail(from, Host + " " + subj, body, Util.SendErrorsTo(), id);
 #endif
         }
 

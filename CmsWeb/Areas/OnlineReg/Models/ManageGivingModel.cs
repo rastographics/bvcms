@@ -460,9 +460,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private bool IsCardTester(PaymentForm pf, string from)
         {
-            if (!Util.IsHosted || !Util.HasValue(pf.CreditCard))
+            if (!Util.IsHosted || !pf.CreditCard.HasValue())
                 return false;
-            DbUtil.Db.InsertIpLog(HttpContext.Current.Request.UserHostAddress, pf.CreditCard.Md5Hash());
+            DbUtil.Db.InsertIpLog(HttpContext.Current.Request.UserHostAddress, pf.CreditCard.Sha256Hash());
 
             if(pf.IsProblemUser())
                 return LogRogueUser("Problem User", from);

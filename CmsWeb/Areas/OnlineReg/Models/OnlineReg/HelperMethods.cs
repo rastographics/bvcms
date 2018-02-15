@@ -605,11 +605,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return null;
             if (ed.Completed == true || ed.Abandoned == true)
                 return null;
-            var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
-            m.Datum = ed;
-            m.DatumId = id;
-            m.Completed = ed.Completed ?? false;
-            return m;
+            try
+            {
+                var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
+                m.Datum = ed;
+                m.DatumId = id;
+                m.Completed = ed.Completed ?? false;
+                return m;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
 
         public OnlineRegModel GetExistingRegistration(int pid)

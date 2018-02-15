@@ -77,7 +77,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             if (!Util.IsHosted || !pf.CreditCard.HasValue())
                 return false;
-            DbUtil.Db.InsertIpLog(Request.UserHostAddress, pf.CreditCard.Md5Hash());
+            DbUtil.Db.InsertIpLog(Request.UserHostAddress, pf.CreditCard.Sha256Hash());
 
             if(pf.IsProblemUser())
                 return LogRogueUser("Problem User", from);
