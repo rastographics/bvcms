@@ -179,6 +179,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             if (subtext.Contains("Posting Date,Account #,Deposit Ticket Sequence #,Deposit Amount,Debit Account,Item Serial #,Item Sequence #,Item Amount"))
                 return new LongViewHeightsImporter();
 
+            if (subtext.Contains("Site ID,Customer Name,Deposit ID,Processing Date,Deposit Account,Deposit Report,Batch ID,Transaction IDs,Type,AUX/Serial,RIC,RT,WAUX/FLD4,Account,Check,Amount,Item Type"))
+                return new ForestvilleImporter();
+
             switch (DbUtil.Db.Setting("BankDepositFormat", "none").ToLower())
             {
                 case "stonyrunfriends":

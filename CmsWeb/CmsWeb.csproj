@@ -372,6 +372,7 @@
     <Compile Include="Areas\Dialog\Models\SearchUsersModel.cs" />
     <Compile Include="Areas\Dialog\Models\TransactionHistoryModel.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\AchImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\ForestvilleImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\LongViewHeightsImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\StonyRunFriendsImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\SubSplashImporter.cs" />
