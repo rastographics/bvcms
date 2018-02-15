@@ -119,6 +119,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 		public enum Version
 		{
 			NONE = 0,
+
 			// ONE = 1, // Initial release version
 			// TWO = 2, // Version 2 had issues with time zones being sent
 			// THREE = 3, // Version 3 has time zone corrections
@@ -140,6 +141,9 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 
 			// People Errors
 			PERSON_NOT_FOUND = 100,
+
+			// Tasks Errors
+			TASK_UPDATE_FAILED = 201
 		}
 	}
 }
