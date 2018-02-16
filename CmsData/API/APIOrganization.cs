@@ -654,6 +654,14 @@ namespace CmsData.API
             message = message.Replace("{orgbarcode}", $"{{orgbarcode:{orgId}}}");
             return message;
         }
+
+        public class Committment
+        {
+            public DateTime MeetingDate { get; set; }
+            public string Description { get; set; }
+            public string Date => MeetingDate.ToLongDateString();
+            public string Time => MeetingDate.ToLongTimeString();
+        }
         public void SendVolunteerReminders(int id, bool sendall)
         {
             var org = Db.LoadOrganizationById(id);
@@ -679,10 +687,10 @@ namespace CmsData.API
                          where AttendCommitmentCode.committed.Contains(a.Commitment ?? 0)
                          where a.MeetingDate >= DateTime.Today
                          orderby a.MeetingDate
-                         select new
+                         select new Committment()
                          {
-                             date = a.MeetingDate.ToLongDateString(),
-                             time = a.MeetingDate.ToLongTimeString()
+                             MeetingDate = a.MeetingDate,
+                             Description = setting.TimeSlots.FindDescription(a.MeetingDate)
                          }).ToList();
                 if (!q.Any())
                     continue;
@@ -692,11 +700,13 @@ namespace CmsData.API
         <tr>
             <td> Date </td>
             <td> Time </td>
+            <td> Description </td>
         </tr>
 {{#each this}}
             <tr>
-                <td>{{date}}</td>
-                <td>{{time}}</td>
+                <td>{{Date}}</td>
+                <td>{{Time}}</td>
+                <td>{{Description}}</td>
             </tr>
 {{/each}}
     </table>

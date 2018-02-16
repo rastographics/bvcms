@@ -62,29 +62,6 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View("ManageArea", m);
         }
 
-        public ActionResult EmailReminders(int id)
-        {
-            var qb = DbUtil.Db.ScratchPadCondition();
-            qb.Reset();
-            qb.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.Equal, id.ToString());
-            qb.Save(DbUtil.Db);
-
-            var meeting = DbUtil.Db.Meetings.Single(m => m.MeetingId == id);
-
-            DbUtil.Db.SetCurrentOrgId(meeting.OrganizationId);
-            var subject = $"{meeting.Organization.OrganizationName} Reminder";
-            VolunteerCommitmentsModel.FindDescription(meeting.OrganizationId, meeting.MeetingDate);
-            var desc = meeting.GetExtra("Description");
-            var body =
-                $@"<blockquote><table>
-<tr><td>Time:</td><td>{meeting.MeetingDate:f}</td></tr>
-<tr><td>Location:</td><td>{meeting.Organization.Location}</td></tr>
-</table></blockquote><p>{meeting.Organization.LeaderName}</p>";
-
-            TempData["body"] = body;
-            return Redirect($"/Email/{qb.Id}?subj={Server.UrlEncode(subject)}&ishtml=true");
-        }
-
         [HttpGet, Route("Request/{mid:int}/{limit:int}")]
         public new ActionResult Request(int mid, int limit)
         {
