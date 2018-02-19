@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CmsData</RootNamespace>
     <AssemblyName>CmsData</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -347,6 +347,12 @@
       <HintPath>..\packages\MarkdownDeep.NET.1.5\lib\.NetFramework 3.5\MarkdownDeep.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.AspNetCore.Cryptography.Internal, Version=2.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Cryptography.Internal.2.0.1\lib\netstandard2.0\Microsoft.AspNetCore.Cryptography.Internal.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation, Version=2.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Cryptography.KeyDerivation.2.0.1\lib\netstandard2.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Dynamic, Version=1.1.2.22, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <HintPath>..\packages\DynamicLanguageRuntime.1.1.2\lib\Net45\Microsoft.Dynamic.dll</HintPath>
@@ -476,6 +482,7 @@
     <Compile Include="Classes\HealthChecker\HealthChecker.cs" />
     <Compile Include="Classes\OnlineRegSummaryText\OnlineRegPersonModel0.cs" />
     <Compile Include="Classes\OnlineRegSummaryText\SummaryInfo.cs" />
+    <Compile Include="Classes\Pbkdf2Hasher.cs" />
     <Compile Include="Classes\RoleChecker\RoleChecker.cs" />
     <Compile Include="Classes\style.cs" />
     <Compile Include="DbUtil\CurrentOrg.cs" />
@@ -521,7 +528,7 @@
     <Compile Include="Email\ReplacementCodes\Replacements\Pledge.cs" />
     <Compile Include="Email\ReplacementCodes\Links\IsSpecialLink.cs" />
     <Compile Include="Extensions\ChangeDetail.cs" />
-    <Compile Include="AddressVerify.cs" />
+    <Compile Include="Classes\AddressVerify.cs" />
     <Compile Include="Extensions\DeleteMeetingRun.cs" />
     <Compile Include="Extensions\FamilyMember.cs" />
     <Compile Include="Extensions\LongRunningOperation.cs" />
@@ -816,8 +823,8 @@
     <Compile Include="Classes\ExtraValues\View.cs" />
     <Compile Include="Classes\ExtraValues\Views.cs" />
     <Compile Include="Classes\SmallGroupFinder\SmallGroupFinder.cs" />
-    <Compile Include="CMSMembershipProvider.cs" />
-    <Compile Include="CMSRoleProvider.cs" />
+    <Compile Include="Classes\CMSMembershipProvider.cs" />
+    <Compile Include="Classes\CMSRoleProvider.cs" />
     <Compile Include="DbUtil\Codes.cs" />
     <Compile Include="Extensions\Contact.cs" />
     <Compile Include="Extensions\ActivityLog.cs" />
@@ -1206,7 +1213,7 @@
     <Compile Include="QueryBuilder\QueryType.cs" />
     <Compile Include="Extensions\Tag.cs" />
     <Compile Include="API\APIWriter.cs" />
-    <Compile Include="Resources\ResourceAttachmentType.cs" />
+    <Compile Include="Classes\ResourceAttachmentType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -1270,6 +1277,9 @@
       <Project>{c504e3d2-5498-451b-bf82-309623706f11}</Project>
       <Name>UtilityExtensions</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

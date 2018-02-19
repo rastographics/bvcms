@@ -69,5 +69,24 @@ namespace CmsWeb.Areas.Search.Controllers
             var guids = list.Split(',').ToList().ConvertAll(vv => new Guid(vv));
             return View(new QueryCodeModel(CodeSql.Queries, guids));
         }
+        [HttpPost]
+        public ActionResult PythonCode(SavedQueryModel m)
+        {
+            var qlist = from q in m.DefineModelList()
+                       select q.QueryId;
+            var list = string.Join(",", qlist);
+            TempData["codelist"] = list;
+            return Content("ok");
+        }
+        [HttpGet]
+        public ActionResult PythonCode()
+        {
+            var list = TempData["codelist"] as string;
+            if (list == null)
+                return Content("no data");
+            var guids = list.Split(',').ToList().ConvertAll(vv => new Guid(vv));
+            Response.ContentType = "text/plain";
+            return View(new QueryCodeModel(CodeSql.Queries, guids));
+        }
     }
 }

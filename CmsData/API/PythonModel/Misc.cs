@@ -306,6 +306,11 @@ namespace CmsData
             db.TagAll2(qq, temptag);
             db.ExecuteCommand("dbo.UpdateStatusFlag {0}, {1}", flagid, temptag.Id);
         }
+        public void CreateQueryTag(string name, string code)
+        {
+            var qq = db.PeopleQuery2(code);
+            db.PopulateSpecialTag(qq, name, DbUtil.TagTypeId_QueryTags);
+        }
 
         public void WriteContentSql(string name, string sql)
         {

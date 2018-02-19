@@ -19,7 +19,7 @@ namespace CmsWeb {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resource1 {
@@ -265,7 +265,7 @@ namespace CmsWeb {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+        ///   Looks up a localized string similar to 
         ///&lt;CustomColumns&gt;
         ///  &lt;Joins&gt;
         ///    &lt;join name=&quot;g&quot;&gt;
@@ -281,7 +281,7 @@ namespace CmsWeb {
         ///      LEFT JOIN dbo.recreg rr ON rr.peopleid = p.peopleid
         ///    &lt;/join&gt;
         ///    &lt;join name=&quot;mo&quot;&gt;
-        ///      LEFT JOIN dbo [rest of string was truncated]&quot;;.
+        ///      LEFT JOIN dbo.people mo ON mo.familyid = p.familyid  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CustomColumns {
             get {

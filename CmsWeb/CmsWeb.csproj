@@ -26,7 +26,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CmsWeb</RootNamespace>
     <AssemblyName>CmsWeb</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>4.0</OldToolsVersion>
@@ -2107,6 +2107,7 @@
     <Content Include="Lib\ensurepip\_bundled\pip-8.1.1-py2.py3-none-any.whl" />
     <Content Include="Areas\Dialog\Views\GetCheckImage\GetCheckImage.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\CustomStatments.cshtml" />
+    <Content Include="Areas\Search\Views\SavedQuery\PythonCode.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\staging.pubxml" />
     <None Include="Properties\PublishProfiles\TeamCity.pubxml" />

@@ -171,6 +171,12 @@ namespace CmsData
             {
                 throw new Exception("ThrowError called in Handlebars Helper");
             });
+            Handlebars.RegisterHelper("DoSomething", (writer, context, args) =>
+            {
+                //inspect context here
+                PythonModel c = context;
+                c.Data.Testing123 = args[0];
+            });
         }
 
         private static bool IsEqual(object[] args)
