@@ -15,7 +15,7 @@ namespace CmsData
 {
     public partial class PythonModel
     {
-        public static void RegisterHelpers(CMSDataContext db)
+        public static void RegisterHelpers(CMSDataContext db, PythonModel pm = null)
         {
             Handlebars.RegisterHelper("BottomBorder", (writer, context, args) => { writer.Write(CssStyle.BottomBorder); });
             Handlebars.RegisterHelper("AlignTop", (writer, context, args) => { writer.Write(CssStyle.AlignTop); });
@@ -26,6 +26,14 @@ namespace CmsData
 
             Handlebars.RegisterHelper("ServerLink", (writer, context, args) => { writer.Write(db.ServerLink().TrimEnd('/')); });
             Handlebars.RegisterHelper("FmtZip", (writer, context, args) => { writer.Write(args[0].ToString().FmtZip()); });
+            Handlebars.RegisterHelper("HtmlComment", (writer, context, args) =>
+            {
+#if DEBUG
+                writer.Write($"<h6>{args[0].ToString()} {args[1].ToString()}</h6>");
+#else
+                writer.Write($"<!--{args[0].ToString()} {args[1].ToString()}-->");
+#endif
+            });
             Handlebars.RegisterHelper("IfEqual", (writer, options, context, args) =>
             {
                 if (IsEqual(args))
@@ -170,12 +178,6 @@ namespace CmsData
             Handlebars.RegisterHelper("ThrowError", (writer, context, args) =>
             {
                 throw new Exception("ThrowError called in Handlebars Helper");
-            });
-            Handlebars.RegisterHelper("DoSomething", (writer, context, args) =>
-            {
-                //inspect context here
-                PythonModel c = context;
-                c.Data.Testing123 = args[0];
             });
         }
 

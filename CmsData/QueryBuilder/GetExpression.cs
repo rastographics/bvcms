@@ -156,6 +156,7 @@ namespace CmsData
                 { QueryType.VisitedCurrentOrg, VisitedCurrentOrg },
                 { QueryType.ProspectCurrentOrg, ProspectCurrentOrg },
                 { QueryType.PmmBackgroundCheckStatus, BackgroundCheckStatus },
+                { QueryType.QueryTag, QueryTag },
                 { QueryType.RecActiveOtherChurch, RecActiveOtherChurch },
                 { QueryType.RecentAttendCount, RecentAttendCount },
                 { QueryType.RecentAttendCountAttCred, RecentAttendCountAttCred },

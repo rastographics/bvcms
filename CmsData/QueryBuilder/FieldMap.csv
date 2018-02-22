@@ -215,6 +215,7 @@ IncludeDeceased,Bit,,,,Miscellaneous,Included Deceased,,"Specify True or False t
 ParentsOf,Bit,,,,Miscellaneous,Parents Only,,Specify True or False to include only Primary Adults.
 PlusParentsOf,Bit,,,,Miscellaneous,Add Primary Adults,,Specify True or False to Add Primary Adults.
 StatusFlag,CodeStr,CodeValue,StatusFlags,,Miscellaneous,Status Flag,,Select Status Flags from the list (computed in nightly batch from saved searches).
+QueryTag,CodeStr,CodeValue,QueryTags,,Miscellaneous,Query Tag,,Select Query Tags from the list
 RecentFlagAdded,CodeStr,CodeValue,StatusFlags,,Miscellaneous,Recent Flag Added,Days,Select Status Flags from the list (computed in nightly batch from saved searches) and enter days to look back.
 HasCurrentTag,Bit,,,,Miscellaneous,Active Tag,,Specify True or False for those who are in your Active Tag.
 HasMyTag,Bit,,,,Miscellaneous,Tagged with,Tags,Select Tag from the list.

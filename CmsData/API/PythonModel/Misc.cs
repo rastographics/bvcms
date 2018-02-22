@@ -25,6 +25,7 @@ namespace CmsData
     {
         public string CmsHost => db.ServerLink().TrimEnd('/');
         public bool FromMorningBatch { get; set; }
+        public int? QueryTagLimit { get; set; }
         public string UserName => Util.UserName;
         public dynamic Data { get; }
 
@@ -87,6 +88,14 @@ namespace CmsData
         {
             var c = db.ContentOfTypeHtml(name);
             return c.Body;
+        }
+        public string SqlContent(string name)
+        {
+            return db.ContentOfTypeSql(name);
+        }
+        public string TextContent(string name)
+        {
+            return db.ContentOfTypeText(name);
         }
         public string TitleContent(string name)
         {
@@ -306,10 +315,14 @@ namespace CmsData
             db.TagAll2(qq, temptag);
             db.ExecuteCommand("dbo.UpdateStatusFlag {0}, {1}", flagid, temptag.Id);
         }
-        public void CreateQueryTag(string name, string code)
+
+        public int CreateQueryTag(string name, string code)
         {
             var qq = db.PeopleQuery2(code);
-            db.PopulateSpecialTag(qq, name, DbUtil.TagTypeId_QueryTags);
+            if (QueryTagLimit > 0)
+                qq = qq.Take(QueryTagLimit.Value);
+            int tid = db.PopulateSpecialTag(qq, name, DbUtil.TagTypeId_QueryTags);
+            return db.TagPeople.Count(v => v.Id == tid);
         }
 
         public void WriteContentSql(string name, string sql)
@@ -320,12 +333,27 @@ namespace CmsData
                 c = new Content()
                 {
                     Name = name,
-                    TypeID = Codes.ContentTypeCode.TypeSqlScript
+                    TypeID = ContentTypeCode.TypeSqlScript
                 };
                 db.Contents.InsertOnSubmit(c);
             }
             c.Body = sql;
             db.SubmitChanges();
+        }
+        public int TagLastQuery(string defaultcode)
+        {
+            Tag tag = null;
+            if (FromMorningBatch)
+            {
+                var qq = db.PeopleQuery2(defaultcode);
+                tag = db.PopulateSpecialTag(qq, DbUtil.TagTypeId_Query);
+            }
+            else
+            {
+                var guid = db.FetchLastQuery().Id;
+                tag = db.PopulateSpecialTag(guid, DbUtil.TagTypeId_Query);
+            }
+            return tag.Id;
         }
     }
 }

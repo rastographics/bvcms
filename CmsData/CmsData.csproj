@@ -804,6 +804,7 @@
     <Compile Include="Generated\Views\XpDivOrg.cs" />
     <Compile Include="Generated\Views\XpEnrollHistory.cs" />
     <Compile Include="Generated\Views\XpFamily.cs" />
+    <Compile Include="Generated\Views\XpFamilyExtra.cs" />
     <Compile Include="Generated\Views\XpMeeting.cs" />
     <Compile Include="Generated\Views\XpOrganization.cs" />
     <Compile Include="Generated\Views\XpOrgMember.cs" />

@@ -8,7 +8,6 @@ using CmsData.Email.ReplacementCodes;
 using Novacode;
 using UtilityExtensions;
 using CmsData.View;
-using Community.CsharpSqlite;
 
 namespace CmsData
 {

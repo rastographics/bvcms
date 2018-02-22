@@ -730,13 +730,18 @@ namespace CmsData
             var fundid = Quarters.ToInt2();
             var td = Util.Now;
             var fd = td.AddDays(Days == 0 ? -365 : -Days);
-            var q = db.FamilyGiver(fd, td, fundid).Where(vv => vv.FamGive == true);
-            var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
-
-            Expression<Func<Person, bool>> pred = p => op == CompareType.Equal && tf
-                ? db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId)
-                : !db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId);
-
+            Tag tag = null;
+            if (op == CompareType.Equal && tf)
+            {
+                var q = db.FamilyGiver(fd, td, fundid).Where(vv => vv.FamGive == true);
+                tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
+            }
+            else
+            {
+                var q = db.FamilyGiver(fd, td, fundid).Where(vv => vv.FamGive == false);
+                tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
+            }
+            Expression<Func<Person, bool>> pred = pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }

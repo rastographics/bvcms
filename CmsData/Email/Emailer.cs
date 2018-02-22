@@ -660,6 +660,8 @@ namespace CmsData
                     var text = m.DoReplacements(to.PeopleId, to);
 
                     text = RenderTemplate(text, dict[to.PeopleId]);
+                    if(text.Contains("<!--SKIP-->"))
+                        continue;
                     var re = new Regex("<!--SUBJECT:(?<subj>.*)-->");
                 	var subj = re.Match(text).Groups["subj"].Value;
 

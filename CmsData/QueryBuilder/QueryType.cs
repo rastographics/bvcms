@@ -202,6 +202,7 @@ namespace CmsData
         PendingCurrentOrg,
         PreviousCurrentOrg,
         ProspectCurrentOrg,
+        QueryTag,
         ReceiveSms,
         RecentAttendCount,
         RecentAttendCountAttCred,
