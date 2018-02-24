@@ -131,10 +131,6 @@
     <Reference Include="DocumentFormat.OpenXml, Version=2.6.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenXMLSDK-MOT.2.6.0.0\lib\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
-    <Reference Include="DocX, Version=1.0.0.22, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DocX.1.0.0.22\lib\net40\DocX.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Elmah, Version=1.2.14706.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
@@ -230,6 +226,7 @@
       <HintPath>..\packages\OpenXmlPowerTools.4.5.3.0\lib\OpenXmlPowerTools.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="RestSharp, Version=105.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.105.0.1\lib\net4\RestSharp.dll</HintPath>
     </Reference>
@@ -304,6 +301,7 @@
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Xml.Linq" />
@@ -312,6 +310,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="WindowsBase" />
+    <Reference Include="Xceed.Words.NET, Version=1.1.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocX.1.1.0\lib\Xceed.Words.NET.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\ApiMessageLoggingHandler.cs" />

@@ -311,10 +311,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\DDay.iCal.1.0.2.575\lib\DDay.iCal.dll</HintPath>
     </Reference>
-    <Reference Include="DocX, Version=1.0.0.22, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DocX.1.0.0.22\lib\net40\DocX.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Elmah, Version=1.2.14706.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
       <Private>True</Private>
@@ -376,6 +372,8 @@
     <Reference Include="PreMailer.Net, Version=1.5.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\PreMailer.Net.1.5.5\lib\net45\PreMailer.Net.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="RestSharp, Version=105.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.105.0.1\lib\net4\RestSharp.dll</HintPath>
       <Private>True</Private>
@@ -437,6 +435,7 @@
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -445,6 +444,10 @@
     <Reference Include="Twilio.Api, Version=3.4.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Twilio.4.0.4\lib\3.5\Twilio.Api.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="Xceed.Words.NET, Version=1.1.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocX.1.1.0\lib\Xceed.Words.NET.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
