@@ -549,26 +549,6 @@ namespace CmsWeb {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-        ///&lt;ReportsMenu&gt;
-        ///  &lt;Column1&gt;
-        ///&lt;!--
-        ///    &lt;Header&gt;Statistics&lt;/Header&gt;
-        ///    &lt;Report link=&quot;/Reports/VitalStats&quot;&gt;Vital Stats&lt;/Report&gt;
-        ///--&gt;
-        ///  &lt;/Column1&gt;
-        ///  &lt;Column2&gt;
-        ///  &lt;/Column2&gt;
-        ///&lt;/ReportsMenu&gt;
-        ///.
-        /// </summary>
-        internal static string ReportsMenuCustom {
-            get {
-                return ResourceManager.GetString("ReportsMenuCustom", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Hi {first}
         ///&lt;p&gt;Here is your confirmation for {org}.&lt;/p&gt;
         ///DETAILS: &lt;br/&gt;
