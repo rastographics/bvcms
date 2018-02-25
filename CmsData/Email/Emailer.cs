@@ -21,6 +21,7 @@ using System.Web;
 using CmsData.API;
 using Elmah;
 using HtmlAgilityPack;
+using SendGrid;
 using SendGrid.Helpers.Mail;
 using MContent = SendGrid.Helpers.Mail.Content;
 
@@ -818,60 +819,53 @@ namespace CmsData
                 fromDomain = DefaultFromDomain;
                 apiKey = DefaultSendGridApiKey;
             }
+            var client = new SendGridClient(apiKey);
 
             if (from == null)
                 from = Util.FirstAddress(senderrorsto);
 
-            var mail = new Mail
+            var mail = new SendGridMessage()
             {
-                From = new SendGrid.Helpers.Mail.Email(fromDomain, from.DisplayName),
+                From = new EmailAddress(fromDomain, from.DisplayName),
                 Subject = subject,
-                ReplyTo = new SendGrid.Helpers.Mail.Email(from.Address, from.DisplayName)
+                ReplyTo = new EmailAddress(from.Address, from.DisplayName),
+                PlainTextContent = "Hello, Email from the helper [SendSingleEmailAsync]!",
+                HtmlContent = "<strong>Hello, Email from the helper! [SendSingleEmailAsync]</strong>"
             };
             var pe = new Personalization();
             foreach (var ma in to)
                 if (ma.Host != "nowhere.name" || Util.IsInRoleEmailTest)
-                    pe.AddTo(new SendGrid.Helpers.Mail.Email(ma.Address, ma.DisplayName));
+                    mail.AddTo(new EmailAddress(ma.Address, ma.DisplayName));
 
             if (cc?.Count > 0)
             {
                 string cclist = string.Join(",", cc);
                 if (!cc.Any(vv => vv.Address.Equal(from.Address)))
                     cclist = $"{from.Address},{cclist}";
-                mail.ReplyTo = new SendGrid.Helpers.Mail.Email(cclist);
+                mail.ReplyTo = new EmailAddress(cclist);
             }
 
-            pe.AddHeader(XSmtpApi, XSmtpApiHeader(id, pid, fromDomain));
-            pe.AddHeader(XBvcms, XBvcmsHeader(id, pid));
+            pe.Headers.Add(XSmtpApi, XSmtpApiHeader(id, pid, fromDomain));
+            pe.Headers.Add(XBvcms, XBvcmsHeader(id, pid));
 
-            mail.AddPersonalization(pe);
+            mail.Personalizations.Add(pe);
 
-            if (pe.Tos.Count == 0 && pe.Tos.Any(tt => tt.Address.EndsWith("@nowhere.name")))
+            if (pe.Tos.Count == 0 && pe.Tos.Any(tt => tt.Email.EndsWith("@nowhere.name")))
                 return null;
             var badEmailLink = "";
             if (pe.Tos.Count == 0)
             {
-                pe.AddTo(new SendGrid.Helpers.Mail.Email(from.Address, from.DisplayName));
-                pe.AddTo(new SendGrid.Helpers.Mail.Email(Util.FirstAddress(senderrorsto).Address));
+                pe.Tos.Add(new EmailAddress(from.Address, from.DisplayName));
+                pe.Tos.Add(new EmailAddress(Util.FirstAddress(senderrorsto).Address));
                 mail.Subject += $"-- bad addr for {CmsHost}({pid})";
                 badEmailLink = $"<p><a href='{CmsHost}/Person2/{pid}'>bad addr for</a></p>\n";
             }
 
             var regex = new Regex("</?([^>]*)>", RegexOptions.IgnoreCase | RegexOptions.Multiline);
-            var text = regex.Replace(message, string.Empty);
-            var html = badEmailLink + message + CcMessage(cc);
+            mail.PlainTextContent = regex.Replace(message, string.Empty);
+            mail.HtmlContent = badEmailLink + message + CcMessage(cc);
 
-            mail.AddContent(new MContent("text/plain", text));
-            mail.AddContent(new MContent("text/html", html));
-
-            var reqBody = mail.Get();
-
-            using (var wc = new WebClient())
-            {
-                wc.Headers.Add("Authorization", $"Bearer {apiKey}");
-                wc.Headers.Add("Content-Type", "application/json");
-                wc.UploadString("https://api.sendgrid.com/v3/mail/send", reqBody);
-            }
+            var response = client.SendEmailAsync(mail);
             return fromDomain;
         }
 

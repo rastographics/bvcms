@@ -17,6 +17,7 @@ using IronPython.Runtime;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
+using RestSharp.Authenticators;
 using RestSharp.Extensions;
 using Method = RestSharp.Method;
 

@@ -32,7 +32,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 var email = csv["Email address"];
                 var phone = csv["Mobile Number"];
                 var fundText = "";
-                if(csv.FieldHeaders.Contains("Giving Type Label"))
+                if(csv.Context.HeaderRecord.Contains("Giving Type Label"))
                     fundText = csv["Giving Type Label"];
 
                 ContributionFund f = null;
