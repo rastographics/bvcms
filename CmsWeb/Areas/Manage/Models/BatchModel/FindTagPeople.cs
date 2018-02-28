@@ -31,6 +31,8 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
             
             var list = new List<FindInfo>();
 
+            csv.Read();
+            csv.ReadHeader();
             while (csv.Read())
             {
                 var row = new FindInfo();

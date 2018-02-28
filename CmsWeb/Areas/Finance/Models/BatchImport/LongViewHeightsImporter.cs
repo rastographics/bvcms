@@ -29,6 +29,8 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             var fid = fundid ?? BatchImportContributions.FirstFundId();
 
             var list = new List<DepositRecord>();
+            csv.Read();
+            csv.ReadHeader();
             while (csv.Read())
                 list.Add(new DepositRecord()
                 {

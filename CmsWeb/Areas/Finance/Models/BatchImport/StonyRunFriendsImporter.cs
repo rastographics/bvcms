@@ -24,6 +24,8 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
             var list = new List<DepositRecord>();
             var n = 0;
+            csv.Read();
+            csv.ReadHeader();
             while (csv.Read())
             {
                 var r = new DepositRecord() { Row = ++n, Valid = true};

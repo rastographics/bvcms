@@ -22,6 +22,8 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             var now = DateTime.Now;
             var list = new List<Record>();
 
+            csv.Read();
+            csv.ReadHeader();
             while (csv.Read())
             {
                 if (csv[0] != "Deposit") // Type

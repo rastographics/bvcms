@@ -14,6 +14,8 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
             var csv = new CsvReader(new StringReader(text));
             csv.Configuration.Delimiter = "\t";
 
+            csv.Read();
+            csv.ReadHeader();
             while (csv.Read())
             {
                 var oid = csv.GetField<int>(0);

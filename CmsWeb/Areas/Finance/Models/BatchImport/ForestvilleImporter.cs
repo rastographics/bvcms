@@ -30,6 +30,8 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             var list = new List<DepositRecord>();
 
             bh = BatchImportContributions.GetBundleHeader(date, now);
+            csv.Read();
+            csv.ReadHeader();
             while (csv.Read())
             {
                 var Amount = csv["Amount"];

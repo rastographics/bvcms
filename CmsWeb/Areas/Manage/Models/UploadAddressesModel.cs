@@ -31,6 +31,8 @@ namespace CmsWeb.Models
             var csv = new CsvReader(new StringReader(text));
             csv.Configuration.Delimiter = "\t";
 
+            csv.Read();
+            csv.ReadHeader();
             while (csv.Read())
             {
                 var pid = csv[NcoaCols["PeopleId"]].ToInt();

@@ -23,6 +23,8 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
             var details = new List<BundleDetail>();
 
+            csv.Read();
+            csv.ReadHeader();
             while (csv.Read())
             {
                 var amount = csv[8];
