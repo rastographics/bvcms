@@ -418,6 +418,7 @@
     <Compile Include="Areas\Finance\Models\BatchImport\AchImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\ForestvilleImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\LongViewHeightsImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\CrossroadsBaptistImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\StonyRunFriendsImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\SubSplashImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\SimpleGiveImporter.cs" />
