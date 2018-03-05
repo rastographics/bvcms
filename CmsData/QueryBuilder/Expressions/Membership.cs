@@ -6,6 +6,7 @@
  */
 
 using System;
+using System.Data.Linq.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using UtilityExtensions;
@@ -53,6 +54,17 @@ namespace CmsData
             Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
 
             return expr;
+        }
+
+        private Expression JoinDateMonthsAgo()
+        {
+            var dt = DateTime.Parse("1/1/1900");
+            var months = TextValue.ToInt();
+            Expression<Func<Person, int?>> pred = p =>
+                SqlMethods.DateDiffMonth(p.JoinDate ?? dt, Util.Now);
+            Expression left = Expression.Invoke(pred, parm);
+            var right = Expression.Constant(months, typeof(int?));
+            return Compare(parm, left, op, right);
         }
     }
 }

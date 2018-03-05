@@ -139,6 +139,7 @@ namespace CmsData
         InterestPointId,
         JoinDate,
         JoinCodeId,
+        JoinDateMonthsAgo,
         KidsRecentAttendCount,
         LastName,
         LeadersUnderCurrentOrg,

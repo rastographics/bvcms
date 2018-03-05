@@ -97,6 +97,7 @@ OtherPreviousChurch,String,,,,Membership,Former Church,,Select a Comparison and 
 OtherNewChurch,String,,,,Membership,New Church,,Select a Comparison and enter all or part of a New Church name.
 LetterDateRequested,Date,,,,Membership,Letter Requested Date,,Pick the date and the Comparison. Leave date blank for those without a Letter Requested Date.
 LetterStatusId,NullCode,,LetterStatusCodes,,Membership,Letter Status,,Select Letter Status from the list.
+JoinDateMonthsAgo,Integer,,,,Membership,Join Date Months Ago,,Select those who joined a number of months ago during that month.
 InBFClass,Bit,,,,Enrollments,In Main Fellowship,,Select True or False for those currently enrolled in a Main Fellowship class.
 IsMemberOf,Bit,,,,Enrollments,Is Member Of,"Program,Division,Organization",Select Program/Division/Organization from the list for current members.
 OrgSearchMember,Bit,,,,Enrollments,OrgSearch Member,"OrgName,OrgStatus,OnlineReg,OrgType2,Schedule,Campus,Program,Division",Select Program/Division/Organization from the list for current members.
