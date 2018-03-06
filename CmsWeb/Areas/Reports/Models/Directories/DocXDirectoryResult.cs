@@ -15,9 +15,9 @@ using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Models;
-using Novacode;
 using UtilityExtensions;
-using Paragraph = Novacode.Paragraph;
+using Xceed.Words.NET;
+
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -127,7 +127,7 @@ namespace CmsWeb.Areas.Reports.Models
                 {
                     tbl?.RemoveRow(0);
                     var pg = docx.InsertParagraph(alphaParagraph);
-                    pg.KeepWithNext();
+                    pg.KeepWithNextParagraph();
                     alphaindex = m.Person.LastName.Substring(0, 1);
                     pg.ReplaceText("{lastnamestartswith}", alphaindex);
                     tbl = docx.InsertTable(templatetbl);

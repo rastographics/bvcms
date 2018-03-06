@@ -91,8 +91,12 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 
 			try {
 				userFound = userQuery.Any();
-			} catch( Exception ex ) {
-				return Error.DATABASE_ERROR;
+#pragma warning disable CS0168 // Variable is declared but never used
+            }
+            catch ( Exception ex )
+            {
+#pragma warning restore CS0168 // Variable is declared but never used
+                return Error.DATABASE_ERROR;
 			}
 
 			foreach( var foundUser in userQuery.ToList() ) {

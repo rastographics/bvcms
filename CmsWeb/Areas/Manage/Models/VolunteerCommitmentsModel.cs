@@ -68,6 +68,7 @@ namespace CmsWeb.Areas.Manage.Models
 
 			IsLeader = OrganizationMember.VolunteerLeaderInOrg(DbUtil.Db, id);
 		}
+
 		public class Slot
 		{
 			public DateTime Time { get; set; }

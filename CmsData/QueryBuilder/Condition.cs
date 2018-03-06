@@ -373,6 +373,21 @@ namespace CmsData
                 return a.Length > 1 ? $"{a[0]}[{a[1]}]" : CodeIdValue;
             }
         }
+        internal string CodeText
+        {
+            get
+            {
+                if (!IsCode)
+                    return "";
+                if (HasMultipleCodes)
+                    return string.Join(",", (from s in CodeIdValue.SplitStr(";")
+                                              let aa = s.Split(':')
+                                              select aa.Length > 1 ? aa[1] : aa[0]
+                        ).ToArray());
+                var a = CodeIdValue.Split(':');
+                return a.Length > 1 ? a[1] : a[0];
+            }
+        }
         internal string CodeValues
         {
             get
@@ -414,6 +429,22 @@ namespace CmsData
                     cid = "1"; 
 
                return cid;
+            }
+        }
+        internal int[] CodeInts
+        {
+            get
+            {
+                if (!IsCode)
+                    return null;
+                if (HasMultipleCodes)
+                {
+                    var q = from s in CodeIdValue.SplitStr(";")
+                            where s != "multiselect-all"
+                            select s.SplitStr(":", 2)[0].ToInt();
+                    return q.ToArray();
+                }
+                return new[] { GetCodeIdValuePart(CodeIdValue, Part.Id).ToInt() };
             }
         }
         internal int[] CodeIntIds

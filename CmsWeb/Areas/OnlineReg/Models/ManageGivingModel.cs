@@ -7,6 +7,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
+using CmsData.Classes;
 using CmsData.Finance;
 using CmsData.Registration;
 using CmsWeb.Code;
@@ -462,7 +463,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             if (!Util.IsHosted || !pf.CreditCard.HasValue())
                 return false;
-            DbUtil.Db.InsertIpLog(HttpContext.Current.Request.UserHostAddress, pf.CreditCard.Sha256Hash());
+            var hash = Pbkdf2Hasher.HashString(pf.CreditCard);
+            DbUtil.Db.InsertIpLog(HttpContext.Current.Request.UserHostAddress, hash);
 
             if(pf.IsProblemUser())
                 return LogRogueUser("Problem User", from);

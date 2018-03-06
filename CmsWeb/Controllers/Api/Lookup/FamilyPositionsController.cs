@@ -10,14 +10,12 @@ namespace CmsWeb.Controllers.Api.Lookup
 {
     public class FamilyPositionsController : ODataController
     {
-        public FamilyPositionsController()
-        {
-            Mapper.CreateMap<FamilyPosition, ApiLookup>();
-        }
-
         public IHttpActionResult Get()
         {
-            return Ok(DbUtil.Db.FamilyPositions.Project().To<ApiLookup>().AsQueryable());
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<FamilyPosition, ApiLookup>();
+            });
+            return Ok(DbUtil.Db.FamilyPositions.ProjectTo<ApiLookup>(config));
         }
     }
 }

@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
             csv.Configuration.Delimiter = "\t";
             csv.ReadHeader();
 
-            var cols = csv.FieldHeaders;
+            var cols = csv.Context.HeaderRecord;
             if (!cols.Contains("First") || !cols.Contains("Last"))
                 throw new UserInputException("Both First and Last are required");
 
@@ -31,6 +31,8 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
             
             var list = new List<FindInfo>();
 
+            csv.Read();
+            csv.ReadHeader();
             while (csv.Read())
             {
                 var row = new FindInfo();

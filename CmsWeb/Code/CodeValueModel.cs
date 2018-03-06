@@ -14,6 +14,7 @@ using System.Web.Mvc;
 using CmsData;
 using CmsData.Classes.ProtectMyMinistry;
 using CmsData.Codes;
+using Dapper;
 using UtilityExtensions;
 
 namespace CmsWeb.Code
@@ -901,6 +902,18 @@ namespace CmsWeb.Code
                      {
                          Code = ms.Flag,
                          Value = ms.Name
+                     };
+            return sf.OrderBy(ss => ss.Value);
+        }
+        public static IEnumerable<CodeValueItem> QueryTags()
+        {
+            var sf = from t in DbUtil.Db.Tags
+                     where t.TypeId == DbUtil.TagTypeId_QueryTags
+                     select new CodeValueItem
+                     {
+                         Id = t.Id,
+                         Code = t.Id.ToString(),
+                         Value = t.Name
                      };
             return sf.OrderBy(ss => ss.Value);
         }

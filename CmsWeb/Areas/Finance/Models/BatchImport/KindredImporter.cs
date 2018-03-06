@@ -30,6 +30,8 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             var fund = fundid ?? firstfund;
 
             var list = new List<DepositRecord>();
+            csv.Read();
+            csv.ReadHeader();
             while (csv.Read())
                 if(csv[14] == "Completed")
                 {

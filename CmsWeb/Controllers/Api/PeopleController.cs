@@ -10,15 +10,13 @@ namespace CmsWeb.Controllers.Api
 {
     public class PeopleController : ODataController
     {
-        public PeopleController()
-        {
-            Mapper.CreateMap<CmsData.View.PeopleBasicModifed, ApiPerson>();
-        }
-
         [EnableQuery(PageSize = ApiOptions.DefaultPageSize)]
         public IHttpActionResult Get()
         {
-            return Ok(DbUtil.Db.ViewPeopleBasicModifeds.Project().To<ApiPerson>().AsQueryable());
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<CmsData.View.PeopleBasicModifed, ApiPerson>();
+            });
+            return Ok(DbUtil.Db.ViewPeopleBasicModifeds.ProjectTo<ApiPerson>(config));
         }
     }
 }

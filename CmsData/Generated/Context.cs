@@ -2421,6 +2421,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.XpFamilyExtra> ViewXpFamilyExtras
+	    {
+		    get { return this.GetTable< View.XpFamilyExtra>(); }
+
+	    }
+
 	    public Table< View.XpMeeting> ViewXpMeetings
 	    {
 		    get { return this.GetTable< View.XpMeeting>(); }
@@ -5148,22 +5154,6 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.MinMeetingDate", IsComposable = true)]
-		[return: Parameter(DbType = "datetime")]
-		public DateTime? MinMeetingDate(
-            [Parameter(Name = "oid", DbType="int")] int? oid,
-            [Parameter(Name = "pid", DbType="int")] int? pid,
-            [Parameter(Name = "yearago", DbType="datetime")] DateTime? yearago
-            )
-		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                oid,
-                pid,
-                yearago
-                ).ReturnValue));
-		}
-
 		[Function(Name="dbo.AllRegexMatchs", IsComposable = true)]
 		[return: Parameter(DbType = "nvarchar")]
 		public string AllRegexMatchs(
@@ -5522,6 +5512,18 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.GetStreet", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string GetStreet(
+            [Parameter(Name = "address", DbType="nvarchar")] string address
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                address
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.PrimaryAddress2", IsComposable = true)]
 		[return: Parameter(DbType = "nvarchar")]
 		public string PrimaryAddress2(
@@ -5543,6 +5545,18 @@ namespace CmsData
 			return ((int?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 fid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.AllDigits", IsComposable = true)]
+		[return: Parameter(DbType = "bit")]
+		public bool? AllDigits(
+            [Parameter(Name = "s", DbType="nvarchar")] string s
+            )
+		{
+			return ((bool?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                s
                 ).ReturnValue));
 		}
 
@@ -5970,18 +5984,6 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.AllDigits", IsComposable = true)]
-		[return: Parameter(DbType = "bit")]
-		public bool? AllDigits(
-            [Parameter(Name = "s", DbType="nvarchar")] string s
-            )
-		{
-			return ((bool?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                s
-                ).ReturnValue));
-		}
-
 		[Function(Name="dbo.DayAndTime", IsComposable = true)]
 		[return: Parameter(DbType = "nvarchar")]
 		public string DayAndTime(
@@ -6006,15 +6008,19 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.GetStreet", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string GetStreet(
-            [Parameter(Name = "address", DbType="nvarchar")] string address
+		[Function(Name="dbo.MinMeetingDate", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? MinMeetingDate(
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "pid", DbType="int")] int? pid,
+            [Parameter(Name = "yearago", DbType="datetime")] DateTime? yearago
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                address
+                oid,
+                pid,
+                yearago
                 ).ReturnValue));
 		}
 
@@ -6186,6 +6192,18 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.IsCardTester", IsComposable = true)]
+		[return: Parameter(DbType = "bit")]
+		public bool? IsCardTester(
+            [Parameter(Name = "ip", DbType="varchar")] string ip
+            )
+		{
+			return ((bool?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                ip
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.OrganizationMemberCount2", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? OrganizationMemberCount2(
@@ -6316,20 +6334,6 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.IpVelocity", IsComposable = true)]
-		[return: Parameter(DbType = "float")]
-		public double? IpVelocity(
-            [Parameter(Name = "ip", DbType="varchar")] string ip,
-            [Parameter(Name = "start", DbType="datetime")] DateTime? start
-            )
-		{
-			return ((double?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                ip,
-                start
-                ).ReturnValue));
-		}
-
 		[Function(Name="dbo.FirstActivity", IsComposable = true)]
 		[return: Parameter(DbType = "datetime")]
 		public DateTime? FirstActivity(
@@ -6383,6 +6387,20 @@ namespace CmsData
 		{
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod()))
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.IpVelocity", IsComposable = true)]
+		[return: Parameter(DbType = "float")]
+		public double? IpVelocity(
+            [Parameter(Name = "ip", DbType="varchar")] string ip,
+            [Parameter(Name = "start", DbType="datetime")] DateTime? start
+            )
+		{
+			return ((double?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                ip,
+                start
                 ).ReturnValue));
 		}
 

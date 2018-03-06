@@ -13,17 +13,17 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
             text = text.trim();
             var csv = new CsvReader(new StringReader(text));
             csv.Configuration.Delimiter = "\t";
-            csv.Configuration.TrimHeaders = true;
-            csv.Configuration.TrimFields = true;
 
+            csv.Read();
+            csv.ReadHeader();
             while (csv.Read())
             {
                 var oid = csv.GetField<int>(0);
                 var o = DbUtil.Db.LoadOrganizationById(oid);
-                for (var c = 1; c < csv.CurrentRecord.Length; c++)
+                for (var c = 1; c < csv.Context.ColumnCount; c++)
                 {
                     var val = csv.GetField<string>(c);
-                    var name = csv.FieldHeaders[c];
+                    var name = csv.Context.HeaderRecord[c];
                     switch (name)
                     {
                         case "Campus":

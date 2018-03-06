@@ -5,6 +5,7 @@ using System.Text;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using CmsData;
+using CmsData.Classes;
 using CmsWeb.Areas.OnlineReg.Models;
 using Dapper;
 using Elmah;
@@ -77,7 +78,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             if (!Util.IsHosted || !pf.CreditCard.HasValue())
                 return false;
-            DbUtil.Db.InsertIpLog(Request.UserHostAddress, pf.CreditCard.Sha256Hash());
+            var hash = Pbkdf2Hasher.HashString(pf.CreditCard);
+            DbUtil.Db.InsertIpLog(Request.UserHostAddress, hash);
 
             if(pf.IsProblemUser())
                 return LogRogueUser("Problem User", from);

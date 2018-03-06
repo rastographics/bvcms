@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using CmsData;
 using Dapper;
@@ -44,5 +45,32 @@ namespace CmsWeb.Areas.Search.Models
             Code = c.ToCode();
             Sql = c.ToSql();
         }
+
+        public string GetPythonCode(dynamic q)
+        {
+            Existing = q.QueryId as Guid?;
+            if (Existing == null)
+                return string.Empty;
+            var c = DbUtil.Db.LoadExistingQuery(Existing.Value);
+            var s = c.ToCode();
+            var lines = s.SplitLines();
+            string ret = null;
+            string name = Regex.Replace(q.name, @"^F\d\d:", "", RegexOptions.IgnoreCase);
+            string nameid = name.ToSuitableId();
+            ret = lines.Length == 1
+                ? $"model.CreateQueryTag(\"{nameid}\", \"{s}\")\n\n"
+                : $"model.CreateQueryTag(\"{nameid}\", '''\t{string.Join("\n\t", lines)}\n''')\n\n";
+            return ret;
+        }
+        public string GetSqlCode(dynamic q)
+        {
+            Existing = q.QueryId as Guid?;
+            if (Existing == null)
+                return string.Empty;
+            string name = Regex.Replace(q.name, @"^F\d\d:", "", RegexOptions.IgnoreCase);
+            string nameid = name.ToSuitableId();
+            return $"\t\t,{nameid} = IIF(EXISTS(SELECT NULL FROM dbo.TagPerson tp JOIN dbo.Tag t ON t.Name = '{name}' AND t.TypeId = 99 AND t.Id = tp.Id WHERE tp.PeopleId = p.PeopleId), 1, 0)\n";
+        }
     }
 }
+

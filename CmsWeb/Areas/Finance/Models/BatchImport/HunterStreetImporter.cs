@@ -27,6 +27,8 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             var fid = fundid ?? BatchImportContributions.FirstFundId();
             var now = DateTime.Now;
 
+            csv.Read();
+            csv.ReadHeader();
             csv.Read(); // skip first row which is the total row
 
             while (csv.Read())

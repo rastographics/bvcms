@@ -89,9 +89,66 @@ namespace CmsWeb.Models
         public static DataTable DonorDetails(DateTime startdt, DateTime enddt,
             int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid)
         {
-            var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid)
+            var UseTitles = true;
+            if (DbUtil.Db.Setting("UseLabelNameForDonorDetails"))
+            {
+                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid)
                     join p in DbUtil.Db.People on c.CreditGiverId equals p.PeopleId
                     let mainFellowship = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
+                    let spouse = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
+                    let altcouple = p.Family.FamilyExtras.SingleOrDefault( ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data
+                    select new
+                    {
+                        c.FamilyId,
+                        Date = c.DateX.Value.ToShortDateString(),
+                        GiverId = c.PeopleId,
+                        CreditGiverId = c.CreditGiverId.Value,
+                        c.HeadName,
+                        c.SpouseName,
+                        MainFellowship = mainFellowship,
+                        MemberStatus = p.MemberStatus.Description,
+                        p.JoinDate,
+                        Amount = c.Amount ?? 0m,
+                        Pledge = c.PledgeAmount ?? 0m,
+                        c.CheckNo,
+                        c.ContributionDesc,
+                        c.FundId,
+                        c.FundName,
+                        BundleHeaderId = c.BundleHeaderId ?? 0,
+                        c.BundleType,
+                        c.BundleStatus,
+                        Addr = p.PrimaryAddress,
+                        Addr2 = p.PrimaryAddress2,
+                        City = p.PrimaryCity,
+                        ST = p.PrimaryState,
+                        Zip = p.PrimaryZip,
+                        LabelName =
+                        (spouse == null
+                            ? (UseTitles ? (p.TitleCode != null ? p.TitleCode + " " + p.Name : p.Name) : p.Name)
+                            : (p.Family.HeadOfHouseholdId == p.PeopleId
+                                ? (UseTitles
+                                    ? (p.TitleCode != null
+                                        ? p.TitleCode + " and Mrs. " + p.Name
+                                        : "Mr. and Mrs. " + p.Name)
+                                    : (p.PreferredName + " and " + spouse.PreferredName + " " + p.LastName +
+                                       (p.SuffixCode.Length > 0 ? ", " + p.SuffixCode : "")))
+                                : (UseTitles
+                                    ? (spouse.TitleCode != null
+                                        ? spouse.TitleCode + " and Mrs. " + spouse.Name
+                                        : "Mr. and Mrs. " + spouse.Name)
+                                    : (spouse.PreferredName + " and " + p.PreferredName + " " + spouse.LastName +
+                                       (spouse.SuffixCode.Length > 0 ? ", " + spouse.SuffixCode : ""))))),
+                    };
+                return q.ToDataTable();
+
+            }
+            else
+            {
+                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid)
+                    join p in DbUtil.Db.People on c.CreditGiverId equals p.PeopleId
+                    let mainFellowship = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
+                    let spouse = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
+                    let altcouple = p.Family.FamilyExtras.SingleOrDefault( ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data
                     select new
                     {
                         c.FamilyId,
@@ -114,7 +171,8 @@ namespace CmsWeb.Models
                         c.BundleStatus,
                         p.FullAddress
                     };
-            return q.ToDataTable();
+                return q.ToDataTable();
+            }
         }
         public static DataTable ExcelDonorTotals(DateTime startdt, DateTime enddt,
             int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid)

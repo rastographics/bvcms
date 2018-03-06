@@ -11,16 +11,13 @@ namespace CmsWeb.Controllers.Api
 {
     public class ContributionsController : ODataController
     {
-        public ContributionsController()
-        {
-            Mapper.CreateMap<ContributionsBasic, ApiContribution>();
-            //.ForMember(d => d.FamilyId, opt => opt.MapFrom(c => c.Person.FamilyId));
-        }
-
         [EnableQuery(PageSize = ApiOptions.DefaultPageSize)]
         public IHttpActionResult Get()
         {
-            return Ok(DbUtil.Db.ViewContributionsBasics.Project().To<ApiContribution>().AsQueryable());
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<ContributionsBasic, ApiContribution>();
+            });
+            return Ok(DbUtil.Db.ViewContributionsBasics.ProjectTo<ApiContribution>(config));
         }
     }
 }

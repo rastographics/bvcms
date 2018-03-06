@@ -198,25 +198,22 @@ namespace CmsWeb.Controllers
             var file = Server.MapPath("~/test.py");
             var logFile = $"RunPythonScriptInBackground.{DateTime.Now:yyyyMMddHHmmss}";
             string host = Util.Host;
-            var background = true;
-            if (background)
-            {
-                HostingEnvironment.QueueBackgroundWorkItem(ct =>
-                {
-                    var pe = new PythonModel(host);
-                    //pe.DictionaryAdd("OrgId", "89658");
-                    pe.DictionaryAdd("LogFile", logFile);
-                    PythonModel.ExecutePythonFile(file, pe);
-                });
-                return View("RunPythonScriptProgress");
-            }
-            else
+
+#if false
+            HostingEnvironment.QueueBackgroundWorkItem(ct =>
             {
                 var pe = new PythonModel(host);
+                //pe.DictionaryAdd("OrgId", "89658");
                 pe.DictionaryAdd("LogFile", logFile);
-                ViewBag.Text = PythonModel.ExecutePythonFile(file, pe);
-                return View("Test");
-            }
+                PythonModel.ExecutePythonFile(file, pe);
+            });
+            return View("RunPythonScriptProgress");
+#else
+            var pe = new PythonModel(host);
+            pe.DictionaryAdd("LogFile", logFile);
+            ViewBag.Text = PythonModel.ExecutePythonFile(file, pe);
+            return View("Test");
+#endif
         }
         [HttpPost, Route("~/TestScript")]
         [ValidateInput(false)]
@@ -422,12 +419,12 @@ namespace CmsWeb.Controllers
                 return RedirectShowError(ex.Message);
             }
         }
-		[HttpPost, Route("~/RunPythonScriptProgress2")]
-		public ActionResult RunPythonScriptProgress2(string logfile)
-		{
+        [HttpPost, Route("~/RunPythonScriptProgress2")]
+        public ActionResult RunPythonScriptProgress2(string logfile)
+        {
             var txt = DbUtil.Db.ContentOfTypeText(logfile);
             return Content(txt);
-		}
+        }
         private string FetchPyScriptForm(string name)
         {
 #if DEBUG
