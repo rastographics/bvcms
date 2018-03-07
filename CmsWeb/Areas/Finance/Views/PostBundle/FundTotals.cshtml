@@ -3,7 +3,7 @@
 @{
   Layout = ViewExtensions2.TouchPointLayout();
   ViewBag.Title = $"Fund Totals For Bundle Id {Model.Bundle.BundleHeaderId} {Model.Bundle.ContributionDate.ToShortDateString()}";
-  ViewBag.ReportPageHeader = $"Fund Totals For Bundle Id {Model.Bundle.BundleHeaderId} {Model.Bundle.ContributionDate.ToShortDateString()}";
+  ViewBag.ReportPageHeader = $"Fund Totals For Bundle Id {Model.Bundle.BundleHeaderId} {Model.Bundle.ContributionDate.ToShortDateString()} {Model.FundName}";
 }
 <div class="report box box-responsive">
   <div class="box-content">

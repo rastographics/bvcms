@@ -2265,12 +2265,6 @@ namespace CmsData
 
 	    }
 
-	    public Table< View.RogueIp> ViewRogueIps
-	    {
-		    get { return this.GetTable< View.RogueIp>(); }
-
-	    }
-
 	    public Table< View.SearchNoDiacritic> ViewSearchNoDiacritics
 	    {
 		    get { return this.GetTable< View.SearchNoDiacritic>(); }
@@ -6189,18 +6183,6 @@ namespace CmsData
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.IsCardTester", IsComposable = true)]
-		[return: Parameter(DbType = "bit")]
-		public bool? IsCardTester(
-            [Parameter(Name = "ip", DbType="varchar")] string ip
-            )
-		{
-			return ((bool?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                ip
                 ).ReturnValue));
 		}
 
