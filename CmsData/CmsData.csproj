@@ -300,11 +300,15 @@
     <Reference Include="AuthorizeNet, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AuthorizeNet.1.9.4\lib\AuthorizeNet.dll</HintPath>
     </Reference>
-    <Reference Include="CsvHelper, Version=7.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
-      <HintPath>..\packages\CsvHelper.7.0.1\lib\net45\CsvHelper.dll</HintPath>
-    </Reference>
     <Reference Include="Dapper, Version=1.50.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dapper.1.50.4\lib\net451\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="DDay.iCal, Version=1.0.2.575, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\DDay.iCal.1.0.2.575\lib\DDay.iCal.dll</HintPath>
+    </Reference>
+    <Reference Include="CsvHelper, Version=7.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <HintPath>..\packages\CsvHelper.7.0.1\lib\net45\CsvHelper.dll</HintPath>
     </Reference>
     <Reference Include="Elmah, Version=1.2.14706.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
@@ -312,6 +316,7 @@
     </Reference>
     <Reference Include="EPPlus, Version=4.1.1.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
       <HintPath>..\packages\EPPlus.4.1.1\lib\net40\EPPlus.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Handlebars, Version=1.8.1.0, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
       <HintPath>..\packages\Handlebars.Net.1.9.0\lib\net40\Handlebars.dll</HintPath>
