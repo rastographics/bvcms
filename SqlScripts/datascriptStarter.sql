@@ -10277,8 +10277,10 @@ INSERT INTO [dbo].[MobileAppVideoTypes] ([id], [name]) VALUES (2, N'Vimeo')
 SET IDENTITY_INSERT [dbo].[MobileAppVideoTypes] OFF
 PRINT(N'Operation applied to 2 rows out of 2')
 
-PRINT(N'Add row to [dbo].[OrgFilter]')
-INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('cd2a82c4-5ccf-4d2e-90cb-194a39f138dc', 36, '10', '', '', NULL, 0, 0, 0, 643, '2018-01-02 08:41:48.767', NULL)
+PRINT(N'Add rows to [dbo].[OrgFilter]')
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('29b36e1a-ef43-4387-a76c-76e3f299c3e5', 33, '10', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2018-02-26 08:36:12.190', NULL)
+INSERT INTO [dbo].[OrgFilter] ([QueryId], [Id], [GroupSelect], [FirstName], [LastName], [SgFilter], [ShowHidden], [FilterIndividuals], [FilterTag], [TagId], [LastUpdated], [UserId]) VALUES ('f4fe3adf-d64e-4039-920b-a35083fa56ec', 33, '10', '', '', NULL, 0, 0, 0, 646, '2018-02-26 08:35:56.043', NULL)
+PRINT(N'Operation applied to 2 rows out of 2')
 
 PRINT(N'Add row to [dbo].[Picture]')
 SET IDENTITY_INSERT [dbo].[Picture] ON
@@ -10304,10 +10306,6 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
 <Condition Id="977d8eb1-4fd1-4fdd-b953-9534fbf28ff5" Order="0" Field="Group">
   <Condition Id="d13ea092-cca0-49db-83e8-9caddf1885ff" Order="2" Field="RecentContactType" Comparison="OneOf" CodeIdValue="4,Card Sent;5,EMail Sent;6,Info Pack Sent;3,Letter Sent;7,Other;1,Personal Visit;2,Phone Call;99,Unknown" Days="7" />
 </Condition>', N'Admin', '2014-05-18 08:51:03.250', '2017-10-31 13:40:24.160', N'Stats:Contacts', 0, 3, NULL)
-INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('cd2a82c4-5ccf-4d2e-90cb-194a39f138dc', N'<?xml version="1.0" encoding="utf-16"?>
-<Condition Id="cd2a82c4-5ccf-4d2e-90cb-194a39f138dc" Order="0" Field="Group">
-  <Condition Id="5469ee6f-5c14-4da6-9977-b686a0cc26f9" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
-</Condition>', N'system', '2018-01-02 08:41:48.487', '2018-01-02 08:41:48.487', N'OrgFilter', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('5a94d729-3613-48ad-a74b-1fd19d0ee2bc', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="5a94d729-3613-48ad-a74b-1fd19d0ee2bc" Order="0" Field="Group">
   <Condition Id="48d53598-f57b-4dd1-afbe-82bd0177f609" Order="2" Field="RecentDecisionType" Comparison="OneOf" CodeIdValue="0,Unknown;10,POF for Membership;20,POF NOT for Membership;30,Letter;40,Statement;50,Stmt requiring Baptism" Days="7" />
@@ -10356,6 +10354,10 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
 <Condition Id="48e6b5ac-7fa8-46a0-a87f-709732590a6e" Order="0" Field="Group" Comparison="AllTrue" Description="scratchpad">
   <Condition Id="1b4f808b-3245-4cb7-bc0e-8667693f94fc" Order="2" Field="MemberStatusId" Comparison="Equal" CodeIdValue="10,Member" />
 </Condition>', N'Admin', '2014-05-18 08:43:53.543', '2017-10-31 13:38:33.220', N'Stats:Members', 0, 7, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('29b36e1a-ef43-4387-a76c-76e3f299c3e5', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="29b36e1a-ef43-4387-a76c-76e3f299c3e5" Order="0" Field="Group">
+  <Condition Id="e81faa2a-aff0-4f35-9377-94c146799176" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2018-02-26 08:36:12.190', '2018-02-26 08:36:12.190', N'OrgFilter', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('822c0c06-2283-481b-be16-78677fdf87f8', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="822c0c06-2283-481b-be16-78677fdf87f8" Order="0" Field="Group" Comparison="AllTrue" Description="scratchpad" PreviousName="scratchpad" OnlineReg="0" OrgStatus="0" OrgType2="0">
   <Condition Id="3617ed70-9a41-4ea2-bdab-faac3831c114" Order="2" Field="RecentAttendCount" Comparison="Greater" TextValue="0" Days="7" OnlineReg="0" OrgStatus="0" OrgType2="0" />
@@ -10385,6 +10387,10 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
   <Condition Id="d6e36c2a-0c0a-493b-a31e-fdfb23a0b8ae" Order="2" Field="FirstName" Comparison="Equal" TextValue="App" />
   <Condition Id="1009619d-b41f-416d-925c-cfeab642f683" Order="4" Field="LastName" Comparison="Equal" TextValue="Tester" />
 </Condition>', N'david', '2016-01-07 13:51:37.963', '2016-10-23 07:44:44.807', N'scratchpad', 0, 11, NULL)
+INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('f4fe3adf-d64e-4039-920b-a35083fa56ec', N'<?xml version="1.0" encoding="utf-16"?>
+<Condition Id="f4fe3adf-d64e-4039-920b-a35083fa56ec" Order="0" Field="Group">
+  <Condition Id="11348def-05e1-4d0d-98b7-5bdbc23cd4ae" Order="2" Field="OrgFilter" Comparison="Equal" CodeIdValue="1,True" />
+</Condition>', N'system', '2018-02-26 08:35:55.810', '2018-02-26 08:35:55.810', N'OrgFilter', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('7394ce83-47a2-4464-a847-aa848b25abd9', N'<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="7394ce83-47a2-4464-a847-aa848b25abd9" Order="0" Field="Group" OnlineReg="0" OrgStatus="0">
   <Condition Id="ee652c4d-ab84-4310-8278-133d76f5a6f5" Order="2" Field="MemberStatusId" Comparison="NotEqual" CodeIdValue="10,Member" />
@@ -10468,7 +10474,7 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
 <Condition Id="06a58409-b98f-468a-a7d0-ecbcceb8ec77" Order="0" Field="Group" Comparison="AllTrue">
   <Condition Id="c2d01577-d6f1-4442-bc3f-a549c326d8c9" Order="2" Field="InCurrentOrg" Comparison="Equal" CodeIdValue="1,T" />
 </Condition>', N'System', '2014-05-05 00:44:39.297', '2014-05-05 00:44:39.297', N'InCurrentOrg', 0, 0, NULL)
-PRINT(N'Operation applied to 39 rows out of 39')
+PRINT(N'Operation applied to 40 rows out of 40')
 
 PRINT(N'Add rows to [dbo].[RegistrationData]')
 SET IDENTITY_INSERT [dbo].[RegistrationData] ON
@@ -10517,6 +10523,7 @@ INSERT INTO [dbo].[Setting] ([Id], [Setting], [System]) VALUES (N'AdminCoupon', 
 INSERT INTO [dbo].[Setting] ([Id], [Setting], [System]) VALUES (N'AdminMail', N'info@touchpointsoftware.com', NULL)
 INSERT INTO [dbo].[Setting] ([Id], [Setting], [System]) VALUES (N'BlogAppUrl', N'http://blog.touchpointsoftware.com', NULL)
 INSERT INTO [dbo].[Setting] ([Id], [Setting], [System]) VALUES (N'BlogFeedUrl', N'http://feeds.feedburner.com/BvcmsBlog', NULL)
+INSERT INTO [dbo].[Setting] ([Id], [Setting], [System]) VALUES (N'ChurchName', N'Starter Database', NULL)
 INSERT INTO [dbo].[Setting] ([Id], [Setting], [System]) VALUES (N'ChurchPhone', N'', NULL)
 INSERT INTO [dbo].[Setting] ([Id], [Setting], [System]) VALUES (N'ChurchWebSite', NULL, NULL)
 INSERT INTO [dbo].[Setting] ([Id], [Setting], [System]) VALUES (N'DbConvertedDate', N'5/5/2009', NULL)
@@ -10551,7 +10558,7 @@ INSERT INTO [dbo].[Setting] ([Id], [Setting], [System]) VALUES (N'TwilioSID', NU
 INSERT INTO [dbo].[Setting] ([Id], [Setting], [System]) VALUES (N'TwilioToken', NULL, NULL)
 INSERT INTO [dbo].[Setting] ([Id], [Setting], [System]) VALUES (N'TZOffset', N'0', NULL)
 INSERT INTO [dbo].[Setting] ([Id], [Setting], [System]) VALUES (N'UseMemberProfileAutomation', N'true', NULL)
-PRINT(N'Operation applied to 38 rows out of 38')
+PRINT(N'Operation applied to 39 rows out of 39')
 
 PRINT(N'Add rows to [dbo].[StreetTypes]')
 INSERT INTO [dbo].[StreetTypes] ([Type]) VALUES (N'ALLEE')
@@ -12142,9 +12149,9 @@ PRINT(N'Operation applied to 38 rows out of 38')
 
 PRINT(N'Add rows to [dbo].[Users]')
 SET IDENTITY_INSERT [dbo].[Users] ON
-INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (1, 1, N'Admin', NULL, N'2352354235', NULL, NULL, 1, '2018-02-05 09:34:07.080', NULL, '2017-12-04 14:53:23.807', '2009-05-05 22:46:43.890', 0, '2017-04-10 17:19:06.033', 1, '2018-02-05 09:33:15.837', 0, NULL, NULL, NULL, 1, N'starterdb.tpsdb.com', N'bvcms', N'The Admin', N'Admin, The', 'da06a633-5f49-46ed-99f6-c974949925a9', NULL, '2017-08-02 10:00:30.767')
+INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (1, 1, N'Admin', NULL, N'2352354235', NULL, NULL, 1, '2018-02-26 08:39:50.520', NULL, '2017-12-04 14:53:23.807', '2009-05-05 22:46:43.890', 0, '2017-04-10 17:19:06.033', 2, '2018-03-01 17:10:50.753', 0, NULL, NULL, NULL, 1, N'starterdb.tpsdb.com', N'bvcms', N'The Admin', N'Admin, The', 'da06a633-5f49-46ed-99f6-c974949925a9', NULL, '2017-08-02 10:00:30.767')
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (2, 2, N'david', N'', N'Sc4O3+HSUocN7Nev1vrYufJSxGY=', NULL, NULL, 1, '2017-08-25 10:28:21.830', '2017-08-25 10:25:43.690', '2013-12-19 00:03:08.440', '2010-10-30 15:23:25.763', 0, '2013-12-19 00:03:08.360', 0, '2013-12-18 22:54:19.783', 0, '2010-10-30 15:23:25.763', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'David Carroll', N'Carroll, David', NULL, NULL, '2013-12-19 22:55:00.120')
-INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (3, 3, N'karenw', N'', N'lpSVokbyDdVaXxNGDjZT4St468A=', NULL, NULL, 1, '2018-01-31 14:40:31.027', '2018-01-31 14:40:13.167', '2013-10-14 10:43:23.743', '2010-10-30 15:29:25.757', 0, '2013-10-14 10:43:23.667', 0, '2013-10-14 10:41:24.547', 0, '2010-10-30 15:29:25.757', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'Karen Worrell', N'Worrell, Karen', NULL, NULL, '2013-10-15 10:42:47.710')
+INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (3, 3, N'karenw', N'', N'lpSVokbyDdVaXxNGDjZT4St468A=', NULL, NULL, 1, '2018-02-16 14:06:48.473', '2018-02-16 14:03:06.827', '2013-10-14 10:43:23.743', '2010-10-30 15:29:25.757', 0, '2013-10-14 10:43:23.667', 0, '2013-10-14 10:41:24.547', 0, '2010-10-30 15:29:25.757', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'Karen Worrell', N'Worrell, Karen', NULL, NULL, '2013-10-15 10:42:47.710')
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (5, 101, N'checkin', N'', N'FtPZkua8z2a+Pu/j6WqWYEex3F4=', NULL, NULL, 1, '2016-05-04 15:46:47.893', NULL, '2016-05-04 15:46:47.893', '2016-05-04 15:46:47.893', 0, '2016-05-04 15:46:47.893', 0, '2016-05-04 15:46:47.893', 0, '2016-05-04 15:46:47.893', NULL, NULL, 0, NULL, NULL, N'Checkin Ministry', N'Ministry, Checkin', NULL, NULL, NULL)
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (6, 102, N'atester', N'', N'xurYGXdkthV25voxxUHgKk5PnnU=', NULL, NULL, 1, '2016-10-21 15:45:25.440', '2016-10-21 15:45:46.073', '2016-10-21 15:45:46.090', '2016-10-21 15:45:25.440', 0, '2016-10-21 15:45:46.013', 0, '2016-10-21 15:45:25.440', 0, '2016-10-21 15:45:25.440', NULL, NULL, 0, NULL, N'John3:16', N'App Tester', N'Tester, App', NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Users] OFF

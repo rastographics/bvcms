@@ -12,7 +12,7 @@ RETURN
 	, CAST(NULL AS DATETIME) Dropped
 	, om.InactiveDate
 	, mt.Code MemberCode
-	, mt.Description MemberType
+	, IIF(o.IsMissionTrip = 1 AND mt.Description = 'Inactive', 'Sender', mt.Description) MemberType
 	, ISNULL(om.Hidden, 0) Hidden
 	, (SELECT STUFF((
 			SELECT CHAR(10) + mt.Name 
@@ -24,6 +24,7 @@ RETURN
 	  )) Groups
 
 	FROM dbo.OrganizationMembers om
+	JOIN dbo.Organizations o ON o.OrganizationId = om.OrganizationId
 	LEFT JOIN dbo.Attend a ON a.OrganizationId = om.OrganizationId 
 			AND a.PeopleId = om.PeopleId AND a.AttendanceFlag = 1
 			AND a.MeetingDate = (SELECT MAX(la.MeetingDate)
@@ -35,6 +36,7 @@ RETURN
 	WHERE om.OrganizationId = @oid
 	AND om.MemberTypeId = 230 -- inactive
 )
+
 
 GO
 IF @@ERROR <> 0 SET NOEXEC ON

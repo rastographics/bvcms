@@ -6,6 +6,7 @@ BEGIN
 		DECLARE @fid INT, @pic INT
 		DELETE FROM dbo.OrgMemMemTags WHERE OrgId = @oid
 		DELETE FROM dbo.OrganizationMembers WHERE OrganizationId = @oid
+		DELETE FROM dbo.PrevOrgMemberExtra WHERE OrganizationId = @oid
 		DELETE FROM dbo.EnrollmentTransaction WHERE OrganizationId = @oid
 		DELETE FROM dbo.Attend WHERE OrganizationId = @oid
 		DELETE FROM dbo.DivOrg WHERE OrgId = @oid
