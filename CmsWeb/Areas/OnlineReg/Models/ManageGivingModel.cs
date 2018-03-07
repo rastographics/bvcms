@@ -10,6 +10,7 @@ using CmsData;
 using CmsData.Classes;
 using CmsData.Finance;
 using CmsData.Registration;
+using CmsWeb.Areas.OnlineReg.Controllers;
 using CmsWeb.Code;
 using Dapper;
 using UtilityExtensions;
@@ -466,26 +467,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var hash = Pbkdf2Hasher.HashString(pf.CreditCard);
             DbUtil.Db.InsertIpLog(HttpContext.Current.Request.UserHostAddress, hash);
 
-            if(pf.IsProblemUser())
-                return LogRogueUser("Problem User", from);
+            if (pf.IsProblemUser())
+                return OnlineRegController.LogRogueUser("Problem User", from);
             var iscardtester = ConfigurationManager.AppSettings["IsCardTester"];
             var result = DbUtil.Db.Connection.ExecuteScalar<string>(iscardtester, new {ip = HttpContext.Current.Request.UserHostAddress});
             if(result.Equal("OK"))
                 return false;
-            return LogRogueUser(result, from);
-        }
-
-        private bool LogRogueUser(string why, string from)
-        {
-            var request = HttpContext.Current.Request;
-            var logrogueuser = ConfigurationManager.AppSettings["LogRogueUser"];
-            if (logrogueuser.HasValue())
-                DbUtil.Db.Connection.Execute(logrogueuser, new {ip=request.UserHostAddress, db=Util.Host});
-            var form = Encoding.Default.GetString(request.BinaryRead(request.TotalBytes));
-            DbUtil.Db.SendEmail(Util.FirstAddress("david@touchpointsoftware.com"),
-                "CardTester", $"why={why} from={from} ip={request.UserHostAddress}<br>{form.HtmlEncode()}",
-                Util.EmailAddressListFromString("david@touchpointsoftware.com"));
-            return true;
+            return OnlineRegController.LogRogueUser(result, from);
         }
 
         public class FundItemChosen

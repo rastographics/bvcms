@@ -2,6 +2,7 @@ using System;
 using System.Configuration;
 using System.Linq;
 using System.Text;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using CmsData;
@@ -90,14 +91,15 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             return LogRogueUser(result, from);
         }
 
-        private bool LogRogueUser(string why, string from)
+        public static bool LogRogueUser(string why, string from)
         {
+            var request = System.Web.HttpContext.Current.Request;
             var insertRogueIp = ConfigurationManager.AppSettings["InsertRogueIp"];
             if (insertRogueIp.HasValue())
-                DbUtil.Db.Connection.Execute(insertRogueIp, new {ip=Request.UserHostAddress, db=Util.Host});
-            var form = Encoding.Default.GetString(Request.BinaryRead(Request.TotalBytes));
+                DbUtil.Db.Connection.Execute(insertRogueIp, new {ip=request.UserHostAddress, db=Util.Host});
+            var form = Encoding.Default.GetString(request.BinaryRead(request.TotalBytes));
             DbUtil.Db.SendEmail(Util.FirstAddress("david@touchpointsoftware.com"),
-                "CardTester", $"why={why} from={from} ip={Request.UserHostAddress}<br>{form.HtmlEncode()}",
+                $"CardTester on {Util.Host}", $"why={why} from={from} ip={request.UserHostAddress}<br>{form.HtmlEncode()}",
                 Util.EmailAddressListFromString("david@touchpointsoftware.com"));
             return true;
         }
