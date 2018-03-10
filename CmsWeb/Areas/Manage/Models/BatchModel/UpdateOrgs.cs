@@ -20,7 +20,7 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
             {
                 var oid = csv.GetField<int>(0);
                 var o = DbUtil.Db.LoadOrganizationById(oid);
-                for (var c = 1; c < csv.Context.ColumnCount; c++)
+                for (var c = 1; c < csv.Context.HeaderRecord.Length; c++)
                 {
                     var val = csv.GetField<string>(c);
                     var name = csv.Context.HeaderRecord[c];
