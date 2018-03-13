@@ -30,7 +30,7 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                     p.Users.Any();
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -48,7 +48,7 @@ namespace CmsData
             var dt = Util.Today.AddDays(-Days);
             Expression<Func<Person, bool>> pred = p => p.CreatedDate >= dt;
             Expression expr = Expression.Invoke(pred, parm);
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -58,7 +58,7 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                     p.PeopleId == db.CurrentPeopleId;
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -68,7 +68,7 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                 p.PeopleId == Util.UserPeopleId;
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -79,7 +79,7 @@ namespace CmsData
                     p.EmailAddress != null && p.EmailAddress != ""
                     && db.People.Any(pp => pp.PeopleId != p.PeopleId && pp.EmailAddress == p.EmailAddress);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -89,7 +89,7 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                     db.People.Any(pp => pp.PeopleId != p.PeopleId && pp.FirstName == p.FirstName && pp.LastName == p.LastName);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -100,7 +100,7 @@ namespace CmsData
                     db.StartsLower(p.FirstName).Value
                     || db.StartsLower(p.LastName).Value;
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -109,7 +109,7 @@ namespace CmsData
             var ids = (TextValue ?? "").Split(',').Select(aa => aa.ToInt()).ToArray();
             Expression<Func<Person, bool>> pred = p => ids.Contains(p.PeopleId);
             Expression expr = Expression.Invoke(pred, parm);
-            if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
+            if (op == CompareType.NotEqual)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -137,6 +137,7 @@ namespace CmsData
 
         internal Expression RecentChanged()
         {
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                 (from cc in db.ViewChangeLogDetails
                  where cc.PeopleId == p.PeopleId || cc.FamilyId == p.FamilyId
@@ -145,7 +146,7 @@ namespace CmsData
                  select cc
                 ).Any();
             Expression expr = Expression.Invoke(pred, parm);
-            if (op == CompareType.NotEqual)
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -181,6 +182,7 @@ namespace CmsData
         }
         internal Expression HasSpamBlock()
         {
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                 (from pp in db.People
                  where pp.PeopleId == p.PeopleId
@@ -194,7 +196,7 @@ namespace CmsData
                  select pp.PeopleId
                 ).Any();
             Expression expr = Expression.Invoke(pred, parm);
-            if (op == CompareType.NotEqual)
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }

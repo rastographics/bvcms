@@ -101,9 +101,18 @@ namespace CmsData
                 ? db.RecentGiverFund(Days, fundid).Select(v => v.PeopleId.Value)
                 : db.RecentGiver(Days).Select(v => v.PeopleId.Value);
             var tag = db.PopulateTemporaryTag(q);
-            Expression<Func<Person, bool>> pred = p => op == CompareType.Equal && tf
-                ? db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId)
-                : !db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId);
+            Expression<Func<Person, bool>> pred = null;
+
+            /*
+             * if (op == CompareType.Equal ^ tf)
+             * IS EQUIVALENT TO AND JUST A SIMPLER WAY TO SAY
+             * if ((op == CompareType.NotEqual && tf == true) || (op == CompareType.Equal && tf == false))
+             * IN OTHER WORDS (not equal true) IS THE SAME AS (equal false)
+             */
+            if (op == CompareType.Equal ^ tf)
+                pred = p => !db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId);
+            else
+                pred = p => db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId);
 
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
@@ -649,7 +658,7 @@ namespace CmsData
                             && cc.ContributionStatusId == ContributionStatusCode.Recorded
                             && !ContributionTypeCode.ReturnedReversedTypes.Contains(cc.ContributionTypeId));
             Expression expr = Expression.Invoke(pred, parm);
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -665,7 +674,7 @@ namespace CmsData
                                && cc.ContributionAmount > 0 
                                && !ContributionTypeCode.ReturnedReversedTypes.Contains(cc.ContributionTypeId));
             Expression expr = Expression.Invoke(pred, parm);
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -682,7 +691,7 @@ namespace CmsData
                  where f.Dt >= dt
                  select f.PeopleId).Contains(p.PeopleId);
             Expression expr = Expression.Invoke(pred, parm);
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -745,7 +754,7 @@ namespace CmsData
             var td = Util.Now;
             var fd = td.AddDays(Days == 0 ? -365 : -Days);
             Tag tag = null;
-            if (op == CompareType.Equal && tf)
+            if (op == CompareType.Equal ^ tf)
             {
                 var q = db.FamilyGiver(fd, td, fundid).Where(vv => vv.FamGive == true);
                 tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
@@ -811,7 +820,7 @@ namespace CmsData
                 topgivers.Contains(p.PeopleId);
 
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -829,7 +838,7 @@ namespace CmsData
                 toppledgers.Contains(p.PeopleId);
 
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -846,7 +855,7 @@ namespace CmsData
                                                         select e).Any();
 
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -862,7 +871,7 @@ namespace CmsData
                                                         where pi.PreferredGivingType == "C"
                                                         select e).Any();
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -901,7 +910,8 @@ namespace CmsData
                                                         where a.ActivityDate >= dt
                                                         select a).Any();
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }

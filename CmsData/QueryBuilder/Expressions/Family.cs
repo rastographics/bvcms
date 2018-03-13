@@ -37,7 +37,7 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                 p.Family.People.Any(m => m.PositionInFamilyId == PositionInFamily.PrimaryAdult && p.PositionInFamilyId == PositionInFamily.Child);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -47,7 +47,7 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                 p.Family.People.Any(m => (m.Age ?? 0) <= 12 && m.PositionInFamilyId == PositionInFamily.Child);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -57,7 +57,7 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                 p.Family.People.Any(m => (m.Age ?? 0) <= (Age ?? 0) && m.PositionInFamilyId == PositionInFamily.Child);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -68,7 +68,7 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                 p.Family.People.Any(m => (m.Age ?? 0) >= range[0].ToInt() && (m.Age ?? 0) <= range[1].ToInt() && m.PositionInFamilyId == PositionInFamily.Child);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -96,7 +96,7 @@ namespace CmsData
                 p.Family.RelatedFamilies1.Any()
                 || p.Family.RelatedFamilies2.Any();
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -117,7 +117,7 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                 p.Family.HeadOfHouseholdId == p.PeopleId;
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -128,11 +128,11 @@ namespace CmsData
                 p.Family.People.Any(m =>
                     m.PositionInFamilyId == PositionInFamily.PrimaryAdult
                     && m.MemberStatusId == 10 // church member
-                    //&& m.PeopleId != p.PeopleId // someone else in family
                     );
-            Expression left = Expression.Invoke(pred, parm);
-            var right = Expression.Convert(Expression.Constant(tf), left.Type);
-            return Compare(left, right);
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            if (op == CompareType.Equal ^ tf)
+                expr = Expression.Not(expr);
+            return expr;
         }
         internal Expression FamHasStatusFlag()
         {
@@ -158,7 +158,7 @@ namespace CmsData
             var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p => p.Family.PictureId != null;
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }

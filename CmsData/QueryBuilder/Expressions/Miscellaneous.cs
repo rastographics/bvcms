@@ -59,7 +59,7 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                     p.Tags.Any(t => t.Tag.Name == db.CurrentTagName && t.Tag.PeopleId == db.CurrentTagOwnerId);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -71,7 +71,7 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                     p.Tags.Any(t => a.Contains(t.Id));
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -82,7 +82,7 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                     p.MemberDocForms.Any();
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -100,7 +100,7 @@ namespace CmsData
 
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -118,7 +118,7 @@ namespace CmsData
             var tag = db.PopulateTempTag(list);
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -131,7 +131,7 @@ namespace CmsData
                     && p.RecRegs.Any();
             Expression expr1 = Expression.Convert(Expression.Invoke(hasapp, parm), typeof(bool));
             Expression expr2 = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr2 = Expression.Not(expr2);
             return Expression.And(expr1, expr2);
         }
@@ -144,7 +144,7 @@ namespace CmsData
                     && p.RecRegs.Any();
             Expression expr1 = Expression.Convert(Expression.Invoke(hasapp, parm), typeof(bool));
             Expression expr2 = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr2 = Expression.Not(expr2);
             return Expression.And(expr1, expr2);
         }
@@ -157,9 +157,10 @@ namespace CmsData
                     db.OrganizationMembers.Any(um =>
                         um.OrganizationId == m.OrganizationId && um.PeopleId == uid)
                 );
-            Expression left = Expression.Invoke(pred, parm);
-            var right = Expression.Convert(Expression.Constant(tf), left.Type);
-            return Compare(left, right);
+            Expression expr = Expression.Invoke(pred, parm);
+            if (op == CompareType.Equal ^ tf)
+                expr = Expression.Not(expr);
+            return expr;
         }
         internal Expression CheckInVisits()
         {
@@ -235,7 +236,7 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                 db.EmailQueueToFails.Any(f => f.PeopleId == p.PeopleId && (f.Time >= StartDate || StartDate == null));
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
