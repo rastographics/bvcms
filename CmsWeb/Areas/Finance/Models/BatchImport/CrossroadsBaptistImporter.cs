@@ -29,27 +29,22 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             var n = 0;
 
             // this is a peculiar file, no headers and all rows are included twice.
-            // C is my marker to stop before the duplicated rows.
-            // C is the cumulative deposit record.
-            // Here I am skiping the first row
-            csv.Read(); // skip C record
 
             while (csv.Read())
             {
-                if (csv[3] == "C") // start of repeated rows, we are done
-                    break;
+                if (csv[3] == "C") // C is the marker beginning each section
+                    continue; // skip over C records
 
-                var r = new DepositRecord() { Row = ++n, Valid = true};
-
+                var r = new DepositRecord() { Row = n++, Valid = true};
                 r.Account = csv[5];
                 r.Amount = (csv[7].ToDecimal() / 100).ToString();
                 r.CheckNo = csv[8];
                 r.Routing = csv[9];
-
                 list.Add(r);
             }
-            foreach(var r in list)
+            for(var i = 0; i < n/2; i++)
             {
+                var r = list[i];
                 var bd = BatchImportContributions.AddContributionDetail(date, fid, r.Amount, r.CheckNo, r.Routing, r.Account);
                 bundleHeader.BundleDetails.Add(bd);
             }
