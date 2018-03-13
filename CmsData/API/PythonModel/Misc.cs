@@ -13,6 +13,7 @@ using System.Web.Helpers;
 using System.Web.Script.Serialization;
 using CmsData.API;
 using CmsData.Codes;
+using Dapper;
 using IronPython.Runtime;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -325,6 +326,13 @@ namespace CmsData
                 qq = qq.Take(QueryTagLimit.Value);
             int tid = db.PopulateSpecialTag(qq, name, DbUtil.TagTypeId_QueryTags);
             return db.TagPeople.Count(v => v.Id == tid);
+        }
+        public void DeleteQueryTags(string namelike)
+        {
+            db.Connection.Execute(@"
+DELETE dbo.TagPerson FROM dbo.TagPerson tp JOIN dbo.Tag t ON t.Id = tp.Id WHERE t.TypeId = 101 AND t.Name LIKE @namelike
+DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
+", new {namelike});
         }
 
         public void WriteContentSql(string name, string sql)
