@@ -9,6 +9,7 @@ using System;
 using System.Data.SqlTypes;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 using CmsData.Codes;
 using UtilityExtensions;
 
@@ -264,13 +265,26 @@ namespace CmsData
             return ContributionAmountBothJoint(StartDate, enddt);
 
         }
-        private Expression ContributionAmountBothJoint(DateTime? startdt, DateTime? enddt)
+        internal Expression ContributionAmountSinceSetting()
+        {
+        	var re = new Regex(@"(?<name>[^,]*)(,\s*(?<fundid>\d+))?");
+        	var m = re.Match(Quarters);
+    		var name = m.Groups["name"].Value;
+    		var fundid = m.Groups["fundid"].Value;
+
+            var startdt = DbUtil.Db.Setting(name, "").ToDate();
+            var enddt = DateTime.Today.AddDays(1);
+            var fund = fundid.ToInt2();
+
+            return ContributionAmountBothJoint(startdt, enddt, fund);
+        }
+        private Expression ContributionAmountBothJoint(DateTime? startdt, DateTime? enddt, int? fundid = null)
         {
             if (!db.FromBatch)
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
             var amt = TextValue.ToDecimal() ?? 0;
-            var fund = Quarters.ToInt2();
+            var fund = fundid ?? Quarters.ToInt2();
 
             IQueryable<int> q = null;
             switch (op)
@@ -741,7 +755,7 @@ namespace CmsData
                 var q = db.FamilyGiver(fd, td, fundid).Where(vv => vv.FamGive == false);
                 tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
             }
-            Expression<Func<Person, bool>> pred = pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
