@@ -756,12 +756,12 @@ namespace CmsData
             Tag tag = null;
             if (op == CompareType.Equal ^ tf)
             {
-                var q = db.FamilyGiver(fd, td, fundid).Where(vv => vv.FamGive == true);
+                var q = db.FamilyGiver(fd, td, fundid).Where(vv => vv.FamGive == false);
                 tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
             }
             else
             {
-                var q = db.FamilyGiver(fd, td, fundid).Where(vv => vv.FamGive == false);
+                var q = db.FamilyGiver(fd, td, fundid).Where(vv => vv.FamGive == true);
                 tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
             }
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
@@ -774,11 +774,18 @@ namespace CmsData
             var fundid = Quarters.ToInt2();
             var td = Util.Now;
             var fd = td.AddDays(Days == 0 ? -365 : -Days);
-            var q = db.FamilyGiver(fd, td, fundid).Where(vv => vv.FamPledge == true);
-            var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
-            Expression<Func<Person, bool>> pred = p => op == CompareType.Equal && tf
-                ? db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId)
-                : !db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId);
+            Tag tag = null;
+            if (op == CompareType.Equal ^ tf)
+            {
+                var q = db.FamilyGiver(fd, td, fundid).Where(vv => vv.FamPledge == false);
+                tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
+            }
+            else
+            {
+                var q = db.FamilyGiver(fd, td, fundid).Where(vv => vv.FamPledge == true);
+                tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
+            }
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
@@ -792,11 +799,6 @@ namespace CmsData
                     return AlwaysFalse();
 
             var q = db.FirstTimeGivers(Days, fund).Select(p => p.PeopleId);
-
-            //var tag = Db.PopulateTemporaryTag(q);
-            //            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
-            //            Expression expr = Expression.Invoke(pred, parm);
-            //            return expr;
 
             Expression<Func<Person, bool>> pred;
             if (op == CompareType.Equal ^ tf)
