@@ -11,6 +11,7 @@ using CmsWeb.Areas.People.Models.Task;
 using CmsWeb.Areas.Public.Models.MobileAPIv2;
 using CmsWeb.Areas.Reports.Models;
 using CmsWeb.MobileAPI;
+using CmsWeb.Models;
 using CmsWeb.Models.iPhone;
 using Dapper;
 using ImageData;
@@ -18,6 +19,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using UtilityExtensions;
 using DbUtil = CmsData.DbUtil;
+using MobileAccount = CmsWeb.Areas.Public.Models.MobileAPIv2.MobileAccount;
+using MobileAccountV1 = CmsWeb.MobileAPI.MobileAccount;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
@@ -31,21 +34,33 @@ namespace CmsWeb.Areas.Public.Controllers
 		[HttpPost]
 		public ActionResult CreateUser( string data )
 		{
-			MobileMessage dataIn = MobileMessage.createFromString( data );
-			MobilePostCreate mpc = JsonConvert.DeserializeObject<MobilePostCreate>( dataIn.data );
+			MobileMessage message = MobileMessage.createFromString( data );
 
-			MobileAccount account = MobileAccount.Create( mpc.first, mpc.last, mpc.email, mpc.phone, mpc.dob );
+			MobilePostCreate mpc = JsonConvert.DeserializeObject<MobilePostCreate>( message.data );
+			mpc.lowerEmail();
 
-			MobileMessage response = new MobileMessage();
+			if( message.version < (int) MobileMessage.Version.EIGHT ) {
+				MobileAccountV1 account = MobileAccountV1.Create( mpc.first, mpc.last, mpc.email, mpc.phone, mpc.dob );
 
-			if( account.Result == MobileAccount.ResultCode.BadEmailAddress || account.Result == MobileAccount.ResultCode.FoundMultipleMatches ) {
-				response.setError( (int) MobileMessage.Error.CREATE_FAILED );
+				MobileMessage response = new MobileMessage();
+
+				if( account.Result == MobileAccountV1.ResultCode.BadEmailAddress || account.Result == MobileAccountV1.ResultCode.FoundMultipleMatches ) {
+					response.setError( (int) MobileMessage.Error.CREATE_FAILED );
+				} else {
+					response.setNoError();
+					response.data = account.User.Username;
+				}
+
+				return response;
 			} else {
-				response.setNoError();
-				response.data = account.User.Username;
-			}
+				bool useMobileMesages = DbUtil.Db.Setting( "UseMobileMessages", "false" ) == "true";
 
-			return response;
+				MobileAccount account = new MobileAccount( DbUtil.Db );
+				account.setCreateFields( mpc.first, mpc.last, mpc.email, mpc.phone, mpc.dob, message.device, message.instance, message.key );
+				account.create();
+
+				return account.getMobileResponse( useMobileMesages );
+			}
 		}
 
 		[HttpPost]
@@ -86,12 +101,104 @@ namespace CmsWeb.Areas.Public.Controllers
 		}
 
 		[HttpPost]
+		public ActionResult QuickSignIn( string data )
+		{
+			MobileMessage message = MobileMessage.createFromString( data );
+			message.lowerArgString();
+
+			if( message.instance.Length == 0 ) {
+				return MobileMessage.createErrorReturn( "Invalid instance ID", (int) MobileMessage.Error.INVALID_INSTANCE_ID );
+			}
+
+			if( message.argString.Length == 0 ) {
+				return MobileMessage.createErrorReturn( "Invalid email address", (int) MobileMessage.Error.INVALID_EMAIL );
+			}
+
+			bool useMobileMesages = DbUtil.Db.Setting( "UseMobileMessages", "false" ) == "true";
+
+			MobileAccount account = new MobileAccount( DbUtil.Db );
+			account.setDeepLinkFields( message.device, message.instance, message.key, message.argString );
+			account.sendDeepLink();
+
+			return account.getMobileResponse( useMobileMesages );
+		}
+
+		[HttpPost]
+		public ActionResult QuickSignInUsers( string data )
+		{
+			MobileMessage message = MobileMessage.createFromString( data );
+
+			MobileAuthentication authentication = new MobileAuthentication();
+			authentication.authenticate( message.instance, allowQuick: true );
+
+			if( authentication.hasError() ) {
+				return MobileMessage.createLoginErrorReturn( authentication );
+			}
+
+			MobileAppDevice device = authentication.getDevice();
+			MobileMessage response = new MobileMessage();
+
+			if( device != null ) {
+				List<Person> people = (from p in DbUtil.Db.People
+												where p.EmailAddress == device.CodeEmail || p.EmailAddress2 == device.CodeEmail
+												orderby p.FirstName, p.LastName
+												select p).ToList();
+
+				if( people.Count > 0 ) {
+					List<MobileQuickSignInUser> users = new List<MobileQuickSignInUser>();
+
+					foreach( Person person in people ) {
+						if( person.Users.Count == 0 ) {
+							users.Add( new MobileQuickSignInUser( person, null ) );
+						} else {
+							foreach( User user in person.Users ) {
+								users.Add( new MobileQuickSignInUser( person, user ) );
+							}
+						}
+					}
+
+					response.setNoError();
+					response.count = users.Count;
+					response.setData( SerializeJSON( users, message.version ) );
+				}
+			}
+
+			return response;
+		}
+
+		[HttpPost]
+		public ActionResult QuickSignInCreateUser( string data )
+		{
+			MobileMessage message = MobileMessage.createFromString( data );
+
+			MobileAuthentication authentication = new MobileAuthentication();
+			authentication.authenticate( message.instance, allowQuick: true );
+
+			if( authentication.hasError() ) {
+				return MobileMessage.createLoginErrorReturn( authentication );
+			}
+
+			MobileMessage response = new MobileMessage();
+			MobileAppDevice device = authentication.getDevice();
+
+			if( DbUtil.Db.People.Any( p => (p.EmailAddress == device.CodeEmail || p.EmailAddress2 == device.CodeEmail) && p.PeopleId == message.argInt ) ) {
+				User user = AccountModel.AddUser( message.argInt );
+
+				response.id = user.UserId;
+				response.data = user.Username;
+				response.setNoError();
+			}
+
+			return response;
+		}
+
+		[HttpPost]
 		public ActionResult SetDevicePIN( string data )
 		{
 			MobileMessage message = MobileMessage.createFromString( data );
 
 			MobileAuthentication authentication = new MobileAuthentication();
-			authentication.authenticate( message.instance );
+			authentication.authenticate( message.instance, allowQuick: true, userID: message.argInt );
 
 			if( authentication.hasError() ) {
 				return MobileMessage.createLoginErrorReturn( authentication );
@@ -105,10 +212,35 @@ namespace CmsWeb.Areas.Public.Controllers
 				return MobileMessage.createErrorReturn( "Invalid PIN", (int) MobileMessage.Error.INVALID_PIN );
 			}
 
-			authentication.setPIN( message.device, message.instance, message.key, message.argString );
+			if( !authentication.setPIN( message.device, message.instance, message.key, message.argString ) ) {
+				return MobileMessage.createErrorReturn( "PIN was not set", (int) MobileMessage.Error.PIN_NOT_SET );
+			}
+
+			if( message.argInt > 0 && authentication.getType() == MobileAuthentication.Type.QUICK ) {
+				authentication.setDeviceUser();
+			}
+
+			User user = authentication.getUser();
+
+			IQueryable<string> roles = from r in DbUtil.Db.UserRoles
+												where r.UserId == user.UserId
+												orderby r.Role.RoleName
+												select r.Role.RoleName;
+
+			MobileSettings ms = new MobileSettings
+			{
+				peopleID = user.PeopleId ?? 0,
+				userID = user.UserId,
+				userName = user.Person.Name,
+				campusID = user.Person.CampusId ?? 0,
+				campusName = user.Person.Campu?.Description ?? "",
+				roles = roles.ToList()
+			};
 
 			MobileMessage response = new MobileMessage();
 			response.setNoError();
+			response.instance = authentication.getInstanceID();
+			response.data = SerializeJSON( ms, message.version );
 
 			return response;
 		}
