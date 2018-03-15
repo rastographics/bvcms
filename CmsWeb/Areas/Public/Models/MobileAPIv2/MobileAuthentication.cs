@@ -15,14 +15,17 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 	public class MobileAuthentication
 	{
 		private User user;
+		private MobileAppDevice device;
+
 		private Error error = Error.UNKNOWN;
+		private Type type = Type.NONE;
 
 		private string instance = "";
 
 		private string username = "";
 		private string password = "";
 
-		public void authenticate( string instanceID, string previousID = "" )
+		public void authenticate( string instanceID, string previousID = "", bool allowQuick = false, int userID = 0 )
 		{
 			if( string.IsNullOrEmpty( HttpContext.Current.Request.Headers["Authorization"] ) ) {
 				error = Error.NO_HEADER;
@@ -41,13 +44,26 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 
 			switch( headerParts[0].ToLower() ) {
 				case "basic": {
+					type = Type.BASIC;
 					error = validateBasic( headerParts[1] );
 
 					break;
 				}
 
 				case "pin": {
+					type = Type.PIN;
 					error = validatePIN( headerParts[1], instanceID, previousID );
+
+					break;
+				}
+
+				case "quick": {
+					if( allowQuick ) {
+						type = Type.QUICK;
+						error = validateQuickLogin( headerParts[1], instanceID, userID );
+					} else {
+						error = Error.INVALID_HEADER_TYPE;
+					}
 
 					break;
 				}
@@ -91,12 +107,8 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 
 			try {
 				userFound = userQuery.Any();
-#pragma warning disable CS0168 // Variable is declared but never used
-            }
-            catch ( Exception ex )
-            {
-#pragma warning restore CS0168 // Variable is declared but never used
-                return Error.DATABASE_ERROR;
+			} catch( Exception ex ) {
+				return Error.DATABASE_ERROR;
 			}
 
 			foreach( var foundUser in userQuery.ToList() ) {
@@ -109,33 +121,6 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			}
 
 			return checkUser( userFound, impersonating );
-		}
-
-		public void setPIN( int device, string instanceID, string key, string pin )
-		{
-			string hashString = createHash( instanceID, getUsername(), pin );
-
-			MobileAppDevice appDevice = DbUtil.Db.MobileAppDevices.FirstOrDefault( d => d.InstanceID == instanceID );
-
-			if( appDevice != null ) {
-				appDevice.Authentication = hashString;
-			} else {
-				appDevice = new MobileAppDevice()
-				{
-					Created = DateTime.Now,
-					LastSeen = DateTime.Now,
-					DeviceTypeID = device,
-					InstanceID = instanceID,
-					NotificationID = key,
-					UserID = user.UserId,
-					PeopleID = user.PeopleId,
-					Authentication = hashString
-				};
-
-				DbUtil.Db.MobileAppDevices.InsertOnSubmit( appDevice );
-			}
-
-			DbUtil.Db.SubmitChanges();
 		}
 
 		private Error validatePIN( string value, string instanceID, string previousID )
@@ -185,6 +170,85 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			instance = appDevice.InstanceID;
 
 			return checkUser( true, false );
+		}
+
+		private Error validateQuickLogin( string code, string instanceID, int userID )
+		{
+			if( string.IsNullOrEmpty( code ) || string.IsNullOrEmpty( instanceID ) ) {
+				return Error.MISSING_CREDENTIALS;
+			}
+
+			device = DbUtil.Db.MobileAppDevices.FirstOrDefault( d => d.InstanceID == instanceID && d.Code == code );
+
+			if( device == null ) {
+				return Error.INVALID_PASSWORD;
+			}
+
+			if( userID > 0 ) {
+				user = DbUtil.Db.Users.FirstOrDefault( u => u.UserId == userID );
+
+				if( user == null ) {
+					return Error.USER_NOT_FOUND;
+				}
+
+				if( user.Person.EmailAddress != device.CodeEmail && user.Person.EmailAddress2 != device.CodeEmail ) {
+					user = null;
+
+					return Error.USER_MISMATCH;
+				}
+
+				username = user.Username;
+			}
+
+			return Error.AUTHENTICATED;
+		}
+
+		public bool setPIN( int deviceTypeID, string instanceID, string key, string pin )
+		{
+			if( string.IsNullOrEmpty( username ) ) {
+				return false;
+			}
+
+			string hashString = createHash( instanceID, username, pin );
+
+			MobileAppDevice appDevice = DbUtil.Db.MobileAppDevices.FirstOrDefault( d => d.InstanceID == instanceID );
+
+			if( appDevice != null ) {
+				appDevice.Authentication = hashString;
+			} else {
+				appDevice = new MobileAppDevice
+				{
+					Created = DateTime.Now,
+					LastSeen = DateTime.Now,
+					DeviceTypeID = deviceTypeID,
+					InstanceID = instanceID,
+					NotificationID = key,
+					UserID = user.UserId,
+					PeopleID = user.PeopleId,
+					Authentication = hashString
+				};
+
+				DbUtil.Db.MobileAppDevices.InsertOnSubmit( appDevice );
+			}
+
+			DbUtil.Db.SubmitChanges();
+
+			return true;
+		}
+
+		public void setDeviceUser()
+		{
+			if( device == null || user == null ) {
+				return;
+			}
+
+			device.UserID = user.UserId;
+			device.PeopleID = user.Person.PeopleId;
+			device.Code = "";
+			device.CodeExpires = new DateTime( 1970, 01, 01 );
+			device.CodeEmail = "";
+
+			DbUtil.Db.SubmitChanges();
 		}
 
 		private static string createHash( string instanceID, string username, string password )
@@ -247,6 +311,11 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			return error != Error.AUTHENTICATED;
 		}
 
+		public MobileAppDevice getDevice()
+		{
+			return device;
+		}
+
 		public int getError()
 		{
 			return (int) error;
@@ -257,14 +326,14 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			return ERROR_MESSAGES[Math.Abs( (int) error )];
 		}
 
+		public Type getType()
+		{
+			return type;
+		}
+
 		public User getUser()
 		{
 			return user;
-		}
-
-		public string getUsername()
-		{
-			return username;
 		}
 
 		public string getInstanceID()
@@ -272,7 +341,15 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			return instance;
 		}
 
-		public enum Error : int
+		public enum Type
+		{
+			NONE = 0,
+			BASIC = 1,
+			PIN = 2,
+			QUICK = 3
+		}
+
+		private enum Error
 		{
 			AUTHENTICATED = 0,
 			UNKNOWN = -1,
@@ -285,10 +362,11 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			USER_NOT_FOUND = -8,
 			USER_LOCKED_OUT = -9,
 			USER_NOT_APPROVED = -10,
-			INVALID_PASSWORD = -11,
-			CANNOT_IMPERSONATE_FINANCE = -12,
-			CANNOT_USE_API_ONLY = -13
-		};
+			USER_MISMATCH = -11,
+			INVALID_PASSWORD = -12,
+			CANNOT_IMPERSONATE_FINANCE = -13,
+			CANNOT_USE_API_ONLY = -14
+		}
 
 		private static readonly string[] ERROR_MESSAGES =
 		{
@@ -303,9 +381,10 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			"User not found", // -8
 			"User locked out", // -9
 			"User not approved", // -10
-			"Invalid password", // -11
-			"Cannot impersonate finance user", // -12
-			"Cannot access with API only user" // -13
+			"User did not match", // -11
+			"Invalid password", // -12
+			"Cannot impersonate finance user", // -13
+			"Cannot access with API only user" // -14
 		};
 	}
 }
