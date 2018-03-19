@@ -50,7 +50,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                 const bool useMinAmt = true;
                 if (tagid == 0)
                     tagid = null;
-                var qc = APIContribution.Contributors(db, fromDate.Value, endDate.Value, 0, 0, 0, cs.Funds, noaddressok, useMinAmt, startswith, sort, tagid: tagid, excludeelectronic: excludeelectronic);
+                var qc = APIContribution.Contributors(db, fromDate.Value, endDate.Value, 0, 0, 0, cs?.Funds, noaddressok, useMinAmt, startswith, sort, tagid: tagid, excludeelectronic: excludeelectronic);
                 return ExcelExportModel.ToDataTable(qc.ToList()).ToExcel("Contributors.xlsx");
             }
             DbUtil.Db.ContributionsRuns.InsertOnSubmit(runningtotals);

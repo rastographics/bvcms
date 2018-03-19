@@ -267,7 +267,7 @@ namespace CmsData.API
         public static IEnumerable<NormalContribution> Contributions(CMSDataContext db, ContributorInfo ci, DateTime fromDate, DateTime toDate, List<int> funds)
         {
             var q = from c in
-                db.NormalContributions(ci.PeopleId, ci.SpouseID, ci.Joint, fromDate, toDate, funds.JoinInts(","))
+                db.NormalContributions(ci.PeopleId, ci.SpouseID, ci.Joint, fromDate, toDate, funds?.JoinInts(","))
                 orderby c.ContributionDate
                 select c;
             return q;

@@ -98,11 +98,11 @@ namespace CmsWeb.Areas.Finance.Models.Report
                 if (set > 0 && pageEvents.FamilySet[ci.PeopleId] != set)
                     continue;
 
-                var contributions = APIContribution.Contributions(db, ci, FromDate, toDate, cs.Funds).ToList();
-                var pledges = APIContribution.Pledges(db, ci, toDate, cs.Funds).ToList();
-                var giftsinkind = APIContribution.GiftsInKind(db, ci, FromDate, toDate, cs.Funds).ToList();
+                var contributions = APIContribution.Contributions(db, ci, FromDate, toDate, cs?.Funds).ToList();
+                var pledges = APIContribution.Pledges(db, ci, toDate, cs?.Funds).ToList();
+                var giftsinkind = APIContribution.GiftsInKind(db, ci, FromDate, toDate, cs?.Funds).ToList();
                 var nontaxitems = db.Setting("DisplayNonTaxOnStatement", "false").ToBool()
-                    ? APIContribution.NonTaxItems(db, ci, FromDate, toDate, cs.Funds).ToList()
+                    ? APIContribution.NonTaxItems(db, ci, FromDate, toDate, cs?.Funds).ToList()
                     : new List<NonTaxContribution>();
 
                 if ((contributions.Count + pledges.Count + giftsinkind.Count + nontaxitems.Count) == 0)
@@ -376,7 +376,7 @@ p { font-size: 11px; }
                 t.AddCell(cell);
 
                 t.DefaultCell.Border = Rectangle.NO_BORDER;
-                foreach (var c in APIContribution.GiftSummary(db, ci, FromDate, toDate, cs.Funds))
+                foreach (var c in APIContribution.GiftSummary(db, ci, FromDate, toDate, cs?.Funds))
                 {
                     t.AddCell(new Phrase(c.FundName, font));
                     cell = new PdfPCell(t.DefaultCell);
