@@ -20,6 +20,7 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
 
             var csv = new CsvReader(new StringReader(text));
             csv.Configuration.Delimiter = "\t";
+            csv.Read();
             csv.ReadHeader();
 
             var cols = csv.Context.HeaderRecord;
@@ -31,8 +32,6 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
             
             var list = new List<FindInfo>();
 
-            csv.Read();
-            csv.ReadHeader();
             while (csv.Read())
             {
                 var row = new FindInfo();
