@@ -2853,7 +2853,8 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? IncludeUnclosedBundles,
             [Parameter(DbType="bit")] bool? Mobile,
             [Parameter(DbType="int")] int? PeopleId,
-            [Parameter(DbType="int")] int? ActiveTagFilter
+            [Parameter(DbType="int")] int? ActiveTagFilter,
+            [Parameter(DbType="varchar")] string fundids
             )
 		{
 			return this.CreateMethodCallQuery< View.ContributionSearch>(this, 
@@ -2875,48 +2876,8 @@ namespace CmsData
                 IncludeUnclosedBundles,
                 Mobile,
                 PeopleId,
-                ActiveTagFilter
-                );
-		}
-
-		[Function(Name="dbo.ContributionSearch0", IsComposable = true)]
-		public IQueryable< View.ContributionSearch0 > ContributionSearch0(
-            [Parameter(DbType="nvarchar")] string name,
-            [Parameter(DbType="nvarchar")] string comments,
-            [Parameter(DbType="int")] int? bundletype,
-            [Parameter(DbType="int")] int? type,
-            [Parameter(DbType="int")] int? status,
-            [Parameter(DbType="money")] decimal? minamt,
-            [Parameter(DbType="money")] decimal? maxamt,
-            [Parameter(DbType="datetime")] DateTime? startdate,
-            [Parameter(DbType="datetime")] DateTime? enddate,
-            [Parameter(DbType="varchar")] string taxnontax,
-            [Parameter(DbType="int")] int? fundid,
-            [Parameter(DbType="int")] int? campusid,
-            [Parameter(DbType="int")] int? year,
-            [Parameter(DbType="bit")] bool? includeunclosedbundles,
-            [Parameter(DbType="bit")] bool? mobile,
-            [Parameter(DbType="int")] int? online
-            )
-		{
-			return this.CreateMethodCallQuery< View.ContributionSearch0>(this, 
-			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                name,
-                comments,
-                bundletype,
-                type,
-                status,
-                minamt,
-                maxamt,
-                startdate,
-                enddate,
-                taxnontax,
-                fundid,
-                campusid,
-                year,
-                includeunclosedbundles,
-                mobile,
-                online
+                ActiveTagFilter,
+                fundids
                 );
 		}
 
@@ -3281,7 +3242,8 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? pledges,
             [Parameter(DbType="bit")] bool? nontaxded,
             [Parameter(DbType="bit")] bool? includeUnclosed,
-            [Parameter(DbType="int")] int? tagid
+            [Parameter(DbType="int")] int? tagid,
+            [Parameter(DbType="varchar")] string fundids
             )
 		{
 			return this.CreateMethodCallQuery< View.GetContributionsDetail>(this, 
@@ -3292,7 +3254,8 @@ namespace CmsData
                 pledges,
                 nontaxded,
                 includeUnclosed,
-                tagid
+                tagid,
+                fundids
                 );
 		}
 
@@ -3304,7 +3267,8 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? nontaxded,
             [Parameter(DbType="bit")] bool? includeUnclosed,
             [Parameter(DbType="bit")] bool? pledge,
-            [Parameter(DbType="int")] int? fundid
+            [Parameter(DbType="int")] int? fundid,
+            [Parameter(DbType="varchar")] string fundids
             )
 		{
 			return this.CreateMethodCallQuery< View.GetContributionsRange>(this, 
@@ -3315,7 +3279,8 @@ namespace CmsData
                 nontaxded,
                 includeUnclosed,
                 pledge,
-                fundid
+                fundid,
+                fundids
                 );
 		}
 
@@ -3445,7 +3410,8 @@ namespace CmsData
             [Parameter(DbType="datetime")] DateTime? td,
             [Parameter(DbType="int")] int? campusid,
             [Parameter(DbType="bit")] bool? nontaxded,
-            [Parameter(DbType="bit")] bool? includeUnclosed
+            [Parameter(DbType="bit")] bool? includeUnclosed,
+            [Parameter(DbType="varchar")] string fundids
             )
 		{
 			return this.CreateMethodCallQuery< View.GetTotalContributionsAgeRange>(this, 
@@ -3454,7 +3420,8 @@ namespace CmsData
                 td,
                 campusid,
                 nontaxded,
-                includeUnclosed
+                includeUnclosed,
+                fundids
                 );
 		}
 
@@ -3465,7 +3432,8 @@ namespace CmsData
             [Parameter(DbType="int")] int? campusid,
             [Parameter(DbType="bit")] bool? nontaxded,
             [Parameter(DbType="bit")] bool? includeUnclosed,
-            [Parameter(DbType="int")] int? tagid
+            [Parameter(DbType="int")] int? tagid,
+            [Parameter(DbType="varchar")] string fundids
             )
 		{
 			return this.CreateMethodCallQuery< View.GetTotalContributionsDonor>(this, 
@@ -3475,7 +3443,8 @@ namespace CmsData
                 campusid,
                 nontaxded,
                 includeUnclosed,
-                tagid
+                tagid,
+                fundids
                 );
 		}
 
@@ -3509,7 +3478,8 @@ namespace CmsData
             [Parameter(DbType="int")] int? campusid,
             [Parameter(DbType="bit")] bool? nontaxded,
             [Parameter(DbType="bit")] bool? includeUnclosed,
-            [Parameter(DbType="int")] int? tagid
+            [Parameter(DbType="int")] int? tagid,
+            [Parameter(DbType="varchar")] string fundids
             )
 		{
 			return this.CreateMethodCallQuery< View.GetTotalContributionsDonorFund>(this, 
@@ -3519,7 +3489,8 @@ namespace CmsData
                 campusid,
                 nontaxded,
                 includeUnclosed,
-                tagid
+                tagid,
+                fundids
                 );
 		}
 
@@ -3529,7 +3500,8 @@ namespace CmsData
             [Parameter(DbType="datetime")] DateTime? td,
             [Parameter(DbType="int")] int? campusid,
             [Parameter(DbType="bit")] bool? nontaxded,
-            [Parameter(DbType="bit")] bool? includeUnclosed
+            [Parameter(DbType="bit")] bool? includeUnclosed,
+            [Parameter(DbType="varchar")] string fundids
             )
 		{
 			return this.CreateMethodCallQuery< View.GetTotalContributionsRange>(this, 
@@ -3538,7 +3510,8 @@ namespace CmsData
                 td,
                 campusid,
                 nontaxded,
-                includeUnclosed
+                includeUnclosed,
+                fundids
                 );
 		}
 

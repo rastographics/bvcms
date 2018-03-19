@@ -14,6 +14,7 @@ using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using System.Xml;
 using System.Xml.Linq;
+using System.Xml.XPath;
 using CmsData;
 using CmsData.API;
 using CmsData.View;
@@ -59,6 +60,14 @@ namespace CmsWeb.Areas.Finance.Models.Report
                 return new List<int>();
             var m = pageEvents.FamilySet.Values.Distinct().ToList();
             return m;
+        }
+
+        public class StatementSpecification
+        {
+            public string Description { get; set; }
+            public string Header { get; set; }
+            public string Notice { get; set; }
+            public List<int> Funds { get; set; }
         }
 
         public void Run(Stream stream, CMSDataContext db, IEnumerable<ContributorInfo> q, StatementSpecification cs, int set = 0)
@@ -469,67 +478,49 @@ p { font-size: 11px; }
             db.SubmitChanges();
         }
 
-        public class StatementSpecification
-        {
-            public string Description { get; set; }
-            public string Header { get; set; }
-            public string Notice { get; set; }
-            public List<int> Funds { get; set; }
-        }
-
         public static StatementSpecification GetStatementSpecification(string name)
         {
-            var xd = XDocument.Parse(Util.PickFirst(DbUtil.Db.ContentOfTypeText("CustomStatements"),"<CustomStatement/>"));
-            var list = new List<StatementSpecification>();
             var standardheader = DbUtil.Db.ContentHtml("StatementHeader", Resource1.ContributionStatementHeader);
             var standardnotice = DbUtil.Db.ContentHtml("StatementNotice", Resource1.ContributionStatementNotice);
-            var allfunds = DbUtil.Db.ContributionFunds.Select(cc => cc.FundId).ToList();
-            foreach (var ele in xd.Descendants("Statement"))
-            {
-                var desc = ele.Attribute("description")?.Value;
-                var cs = new StatementSpecification();
-                cs.Description = desc;
-                var headerele = ele.Element("Header");
-                cs.Header = headerele != null
-                    ? string.Concat(headerele.Nodes().Select(x => x.ToString()).ToArray())
-                    : standardheader;
-                var noticeele = ele.Element("Notice");
-                cs.Notice = noticeele != null
-                    ? string.Concat(noticeele.Nodes().Select(x => x.ToString()).ToArray())
-                    : standardnotice;
-                var funds = ele.Element("Funds")?.Value ?? "";
-                cs.Funds = new List<int>();
 
-            	var re = new Regex(@"(?<range>\d*-\d*)|(?<id>\d[^,]*)");
-                var matchResult = re.Match(funds);
-            	while (matchResult.Success)
-                {
-            		var range = matchResult.Groups["range"].Value;
-	                if (range.HasValue())
-	                {
-	                    var a = range.Split('-');
-                        for(var i = a[0].ToInt();i<a[1].ToInt();i++)
-                            if(allfunds.Contains(i))
-                                cs.Funds.Add(i);
-	                }
-            		var id = matchResult.Groups["id"].Value;
-                    if(id.HasValue())
-                        cs.Funds.Add(id.ToInt());
-            		matchResult = matchResult.NextMatch();
-            	} 
-                allfunds.RemoveAll(vv => cs.Funds.Contains(vv));
-                list.Add(cs);
-            }
-            var found = list.FirstOrDefault(vv => vv.Description == name);
-            if (found != null)
-                return found;
-            return new StatementSpecification()
+            if (name == null)
             {
-                Description = "Standard Statements",
-                Notice = standardnotice,
-                Header = standardheader,
-                Funds = name == "all" ? null : allfunds
-            };
+                return new StatementSpecification()
+                {
+                    Description = "All Statements",
+                    Notice = standardnotice,
+                    Header = standardheader,
+                    Funds = null
+                };
+            }
+            if (name == "Standard Statements")
+            {
+                var funds = APIContributionSearchModel.GetCustomFundSetList(name);
+                return new StatementSpecification()
+                {
+                    Description = "Standard Statements",
+                    Notice = standardnotice,
+                    Header = standardheader,
+                    Funds = funds
+                };
+            }
+            var xd = XDocument.Parse(Util.PickFirst(DbUtil.Db.ContentOfTypeText("CustomStatements"),"<CustomStatement/>"));
+            var ele = xd.XPathSelectElement($"//Statement[@description='{name}']");
+            if (ele == null)
+                return null;
+            var desc = ele.Attribute("description")?.Value;
+            var cs = new StatementSpecification();
+            cs.Description = desc;
+            var headerele = ele.Element("Header");
+            cs.Header = headerele != null
+                ? string.Concat(headerele.Nodes().Select(x => x.ToString()).ToArray())
+                : standardheader;
+            var noticeele = ele.Element("Notice");
+            cs.Notice = noticeele != null
+                ? string.Concat(noticeele.Nodes().Select(x => x.ToString()).ToArray())
+                : standardnotice;
+            cs.Funds = APIContributionSearchModel.GetCustomFundSetList(desc);
+            return cs;
         }
         public static List<string> CustomStatementsList()
         {
@@ -547,6 +538,14 @@ p { font-size: 11px; }
             var cslist = CustomStatementsList();
             if (cslist == null)
                 return null;
+            return new SelectList(cslist);
+        }
+        public static SelectList CustomFundSetSelectList()
+        {
+            var cslist = CustomStatementsList();
+            if (cslist == null)
+                return null;
+            cslist.Insert(0, "(not specified)");
             return new SelectList(cslist);
         }
         class PageEvent : PdfPageEventHelper

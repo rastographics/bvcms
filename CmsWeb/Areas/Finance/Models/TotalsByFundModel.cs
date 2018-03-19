@@ -9,6 +9,7 @@ using CmsData.View;
 using CmsWeb.Code;
 using UtilityExtensions;
 using System.Text;
+using Dapper;
 
 namespace CmsWeb.Models
 {
@@ -20,6 +21,7 @@ namespace CmsWeb.Models
         public string Sort { get; set; }
         public string Dir { get; set; }
         public string TaxDedNonTax { get; set; }
+        public string FundSet { get; set; }
         public int Online { get; set; }
         public bool Pledges { get; set; }
         public bool IncUnclosedBundles { get; set; }
@@ -94,6 +96,7 @@ namespace CmsWeb.Models
                     Status = ContributionStatusCode.Recorded,
                     Online = Online,
                     FilterByActiveTag = FilterByActiveTag,
+                    FundSet = FundSet,
                 }
             };
 
@@ -143,7 +146,8 @@ namespace CmsWeb.Models
 
         public IEnumerable<GetTotalContributionsRange> TotalsByRange()
         {
-            var list = (from r in DbUtil.Db.GetTotalContributionsRange(Dt1, Dt2, CampusId, NonTaxDeductible ? (bool?)null : false, IncUnclosedBundles)
+            var fundids = APIContributionSearchModel.GetCustomFundSetList(FundSet).JoinInts(",");
+            var list = (from r in DbUtil.Db.GetTotalContributionsRange(Dt1, Dt2, CampusId, NonTaxDeductible ? (bool?)null : false, IncUnclosedBundles, fundids)
                         orderby r.Range
                         select r).ToList();
             RangeTotal = new GetTotalContributionsRange
@@ -234,6 +238,28 @@ namespace CmsWeb.Models
             sb.Append(connector);
             sb.Append(val);
             connector = "&";
+        }
+
+        public DynamicParameters GetDynamicParameters()
+        {
+            var p = new DynamicParameters();
+            p.Add("@StartDate", Dt1);
+            p.Add("@EndDate", Dt2);
+            p.Add("@CampusId", CampusId);
+            p.Add("@Online", Online);
+            p.Add("@TaxNonTax", TaxDedNonTax);
+            p.Add("@IncludeUnclosedBundles", IncUnclosedBundles);
+            var fundset = APIContributionSearchModel.GetCustomFundSetList(FundSet).JoinInts(",");
+            p.Add("@FundSet", fundset);
+
+            if (FilterByActiveTag)
+            {
+                var tagid = DbUtil.Db.TagCurrent().Id;
+                p.Add("@ActiveTagFilter", tagid);
+            }
+            else
+                p.Add("@ActiveTagFilter");
+            return p;
         }
     }
 }

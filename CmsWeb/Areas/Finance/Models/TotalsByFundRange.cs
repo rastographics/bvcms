@@ -15,14 +15,11 @@ namespace CmsWeb.Models
     public class TotalsByFundRangeModel
     {
         public bool Pledged { get; set; }
-
         public DateTime? Dt1 { get; set; }
-
         public DateTime? Dt2 { get; set; }
-
         public int CampusId { get; set; }
-
         public int FundId { get; set; }
+        public string FundSet { get; set; }
 
         public RangeInfo RangeTotal { get; set; }
 
@@ -38,7 +35,8 @@ namespace CmsWeb.Models
 
         public IEnumerable<RangeInfo> GetTotalsByFundRange()
         {
-            var list = (from r in DbUtil.Db.GetContributionsRange(Dt1, Dt2, CampusId, false, true, Pledged, FundId)
+            var fundids = APIContributionSearchModel.GetCustomFundSetList(FundSet).JoinInts(",");
+            var list = (from r in DbUtil.Db.GetContributionsRange(Dt1, Dt2, CampusId, false, true, Pledged, FundId, fundids)
                         orderby r.Range
                         select r).ToList();
             RangeTotal = new RangeInfo

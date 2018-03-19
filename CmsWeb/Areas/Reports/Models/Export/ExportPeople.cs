@@ -87,12 +87,12 @@ namespace CmsWeb.Models
             return q.Take(maximumRows).ToDataTable();
         }
         public static DataTable DonorDetails(DateTime startdt, DateTime enddt,
-            int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid)
+            int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
         {
             var UseTitles = true;
             if (DbUtil.Db.Setting("UseLabelNameForDonorDetails"))
             {
-                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid)
+                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
                     join p in DbUtil.Db.People on c.CreditGiverId equals p.PeopleId
                     let mainFellowship = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
                     let spouse = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
@@ -144,7 +144,7 @@ namespace CmsWeb.Models
             }
             else
             {
-                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid)
+                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
                     join p in DbUtil.Db.People on c.CreditGiverId equals p.PeopleId
                     let mainFellowship = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
                     let spouse = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
@@ -175,9 +175,9 @@ namespace CmsWeb.Models
             }
         }
         public static DataTable ExcelDonorTotals(DateTime startdt, DateTime enddt,
-            int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid)
+            int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
         {
-            var q2 = from r in DbUtil.Db.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid)
+            var q2 = from r in DbUtil.Db.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid, fundids)
                      select new
                      {
                          GiverId = r.CreditGiverId ?? 0,
@@ -198,9 +198,9 @@ namespace CmsWeb.Models
             return q2.ToDataTable();
         }
         public static DataTable ExcelDonorFundTotals(DateTime startdt, DateTime enddt,
-            int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid)
+            int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
         {
-            var q2 = from r in DbUtil.Db.GetTotalContributionsDonorFund(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid)
+            var q2 = from r in DbUtil.Db.GetTotalContributionsDonorFund(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid, fundids)
                      select new
                      {
                          GiverId = r.CreditGiverId.Value,

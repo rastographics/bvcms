@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web.Mvc;
 using CmsWeb.Areas.Finance.Models.Report;
 using CmsData;
+using CmsData.API;
 using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Code;
 using Dapper;
@@ -42,6 +43,11 @@ namespace CmsWeb.Areas.Finance.Controllers
                 p.Add("@medianMin", m.MinimumMedianTotal);
             p.Add("@fund", m.Fund.Value.ToInt());
             p.Add("@campus", m.Campus.Value.ToInt());
+            if (m?.FundSet != null)
+            {
+                var fundset = APIContributionSearchModel.GetCustomFundSetList(m.FundSet.Value).JoinInts(",");
+                p.Add("@fundids", fundset);
+            }
             return p;
         }
         [HttpGet]
@@ -50,13 +56,15 @@ namespace CmsWeb.Areas.Finance.Controllers
             var ep = new ExcelPackage();
             var cn = new SqlConnection(Util.ConnectionString);
 
-            var rd = cn.ExecuteReader("dbo.DonorTotalSummary", DonorTotalSummaryParameters(m, useMedianMin: true), commandType: CommandType.StoredProcedure, commandTimeout: 1200);
+            var p = DonorTotalSummaryParameters(m, useMedianMin: true);
+            var rd = cn.ExecuteReader("dbo.DonorTotalSummary", p, commandType: CommandType.StoredProcedure, commandTimeout: 1200);
             ep.AddSheet(rd, "MemberNon");
 
-            rd = cn.ExecuteReader("dbo.DonorTotalSummaryBySize", DonorTotalSummaryParameters(m), commandType: CommandType.StoredProcedure, commandTimeout: 1200);
+            p = DonorTotalSummaryParameters(m);
+            rd = cn.ExecuteReader("dbo.DonorTotalSummaryBySize", p, commandType: CommandType.StoredProcedure, commandTimeout: 1200);
             ep.AddSheet(rd, "BySize");
 
-            rd = cn.ExecuteReader("dbo.DonorTotalSummaryByAge", DonorTotalSummaryParameters(m), commandType: CommandType.StoredProcedure, commandTimeout: 1200);
+            rd = cn.ExecuteReader("dbo.DonorTotalSummaryByAge", p, commandType: CommandType.StoredProcedure, commandTimeout: 1200);
             ep.AddSheet(rd, "ByAge");
 
             return new EpplusResult(ep, "DonorTotalSummary.xlsx");
@@ -85,6 +93,9 @@ namespace CmsWeb.Areas.Finance.Controllers
                 Campus = new CodeInfo("Campus0"),
                 Fund = new CodeInfo("Fund"),
             };
+            var customfunds = ContributionStatements.CustomFundSetSelectList();
+            if(customfunds != null)
+                m.FundSet = new CodeInfo(null, customfunds);
             return View(m);
         }
         [HttpGet]
@@ -121,20 +132,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             var cs = Util.ConnectionStringReadOnlyFinance;
             var cn = new SqlConnection(cs);
             cn.Open();
-            var p = new DynamicParameters();
-            p.Add("@StartDate", m.Dt1);
-            p.Add("@EndDate", m.Dt2);
-            p.Add("@CampusId", m.CampusId);
-            p.Add("@Online", m.Online);
-            p.Add("@TaxNonTax", m.TaxDedNonTax);
-            p.Add("@IncludeUnclosedBundles", m.IncUnclosedBundles);
-            if (m.FilterByActiveTag)
-            {
-                var tagid = DbUtil.Db.TagCurrent().Id;
-                p.Add("@ActiveTagFilter", tagid);
-            }
-            else
-                p.Add("@ActiveTagFilter");
+            var p = m.GetDynamicParameters();
 
             ViewBag.Name = id.SpaceCamelCase();
             var rd = cn.ExecuteReader(content, p, commandTimeout: 1200);
@@ -151,20 +149,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             var cs = Util.ConnectionStringReadOnlyFinance;
             var cn = new SqlConnection(cs);
             cn.Open();
-            var p = new DynamicParameters();
-            p.Add("@StartDate", m.Dt1);
-            p.Add("@EndDate", m.Dt2);
-            p.Add("@CampusId", m.CampusId);
-            p.Add("@Online", m.Online);
-            p.Add("@TaxNonTax", m.TaxDedNonTax);
-            p.Add("@IncludeUnclosedBundles", m.IncUnclosedBundles);
-            if (m.FilterByActiveTag)
-            {
-                var tagid = DbUtil.Db.TagCurrent().Id;
-                p.Add("@ActiveTagFilter", tagid);
-            }
-            else
-                p.Add("@ActiveTagFilter");
+            var p = m.GetDynamicParameters();
 
             var s = id.SpaceCamelCase();
             return cn.ExecuteReader(content, p, commandTimeout: 1200).ToExcel(s + ".xlsx", fromSql: true);
