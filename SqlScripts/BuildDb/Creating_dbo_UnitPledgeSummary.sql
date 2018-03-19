@@ -25,7 +25,7 @@ RETURN
 		AND f.FundPledgeFlag = 1
 		AND CONVERT(DATE, c.ContributionDate) <= @toDate
 		AND (c.PeopleId = @pid OR (@joint = 1 AND c.PeopleId = @spid))
-		AND (@fundids IS NULL OR c.FundId IN (SELECT Value FROM dbo.SplitInts(@fundids)))
+		AND (@fundids IS NULL OR EXISTS(SELECT NULL FROM dbo.SplitInts(@fundids) WHERE Value = c.FundId))
 		GROUP BY c.FundId, f.FundName
 	),
 	gifttotals AS (
@@ -44,7 +44,7 @@ RETURN
 		AND f.FundPledgeFlag = 1
 		AND CONVERT(DATE, c.ContributionDate) <= @toDate
 		AND (c.PeopleId = @pid OR (@joint = 1 AND c.PeopleId = @spid))
-		AND (@fundids IS NULL OR c.FundId IN (SELECT Value FROM dbo.SplitInts(@fundids)))
+		AND (@fundids IS NULL OR EXISTS(SELECT NULL FROM dbo.SplitInts(@fundids) WHERE Value = c.FundId))
 		GROUP BY c.FundId, f.FundName
 	)
 	SELECT 

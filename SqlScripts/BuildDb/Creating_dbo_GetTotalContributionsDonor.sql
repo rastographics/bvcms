@@ -5,7 +5,8 @@ CREATE FUNCTION [dbo].[GetTotalContributionsDonor]
 	@campusid INT,
 	@nontaxded BIT,
 	@includeUnclosed BIT,
-	@tagid INT
+	@tagid INT,
+	@fundids VARCHAR(MAX)
 )
 RETURNS TABLE
 AS
@@ -20,7 +21,7 @@ RETURN
 			COUNT(*) AS [Count], 
 			SUM(Amount) AS Amount, 
 			SUM(PledgeAmount) AS PledgeAmount
-		FROM dbo.GetContributionsDetails(@fd, @td, @campusid, NULL, @nontaxded, @includeUnclosed, @tagid)
+		FROM dbo.GetContributionsDetails(@fd, @td, @campusid, NULL, @nontaxded, @includeUnclosed, @tagid, @fundids)
 		GROUP BY CreditGiverId, CreditGiverId2, HeadName, SpouseName
 	)
 	SELECT 

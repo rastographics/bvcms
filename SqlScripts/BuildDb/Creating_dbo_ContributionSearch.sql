@@ -18,11 +18,17 @@ CREATE FUNCTION [dbo].[ContributionSearch]
 	,@Mobile BIT
 	,@PeopleId INT
 	,@ActiveTagFilter INT
+	,@fundids VARCHAR(MAX)
+
 )
-RETURNS TABLE 
+RETURNS 
+@t TABLE ( ContributionId INT PRIMARY KEY )
 AS
-RETURN 
-(
+BEGIN
+	DECLARE @funds TABLE ( FundId INT )
+	INSERT @funds (FundId) SELECT Value FROM dbo.SplitInts(@fundids)
+
+	INSERT INTO @t (ContributionId)
 	SELECT c.ContributionId
 	FROM   dbo.Contribution c
 	LEFT JOIN dbo.People p ON p.PeopleId = c.PeopleId
@@ -42,7 +48,7 @@ RETURN
 	AND (@StartDate IS NULL OR c.ContributionDate >= @StartDate)
 	AND (@EndDate IS NULL OR c.ContributionDate < DATEADD(DAY, 1, @EndDate))
 	AND (ISNULL(@CampusId, 0) = 0 OR ISNULL(c.CampusId, p.CampusId) = @CampusId)
-	AND (@FundId IS NULL OR c.FundId = @FundId)
+	AND (ISNULL(@FundId, 0) = 0 OR c.FundId = @FundId)
 	AND CASE @Online
 			WHEN 1 THEN IIF(EXISTS(SELECT NULL FROM dbo.BundleDetail d
 									JOIN dbo.BundleHeader h ON h.BundleHeaderId = d.BundleHeaderId
@@ -60,7 +66,7 @@ RETURN
 		   ELSE 1 END = 1
 	AND CASE ISNULL(@TaxNonTax, 'TaxDed')
 		   WHEN 'TaxDed' THEN IIF(c.ContributionTypeId NOT IN (9, 8), 1, 0)
-		   WHEN 'NonTaxDed' THEN IIF(c.ContributionTypeId <> 9, 1, 0)
+		   WHEN 'NonTaxDed' THEN IIF(c.ContributionTypeId = 9, 1, 0)
 		   WHEN 'Both' THEN IIF(c.ContributionTypeId <> 8, 1, 0)
 		   WHEN 'Pledge' THEN IIF(c.ContributionTypeId = 8, 1, 0)
 		   ELSE 1 END = 1
@@ -75,17 +81,19 @@ RETURN
 								AND h.BundleHeaderTypeId = @BundleType), 1, 0)
 		ELSE 1 END = 1
 	AND CASE ISNULL(@IncludeUnclosedBundles, 0)
-		WHEN 0 THEN IIF(EXISTS(SELECT null FROM dbo.BundleDetail d
+		WHEN 0 THEN IIF(EXISTS(SELECT NULL FROM dbo.BundleDetail d
 					JOIN dbo.BundleHeader h ON h.BundleHeaderId = d.BundleHeaderId
 					WHERE c.ContributionId = d.ContributionId AND h.BundleStatusId = 0), 1, 0)
 		ELSE 1 END = 1
 	AND (ISNULL(@Mobile, 0) <> 1 OR c.Source > 0)
 	AND (@PeopleId IS NULL OR c.PeopleId = @PeopleId)
 	AND (@ActiveTagFilter IS NULL OR EXISTS(SELECT NULL FROM dbo.TagPerson tp WHERE tp.PeopleId = c.PeopleId AND tp.Id = @ActiveTagFilter))
-)
+	AND (@fundids IS NULL OR EXISTS(SELECT NULL FROM @funds f WHERE f.FundId = c.FundId))
+	RETURN
 
-
-
+	
+	RETURN 
+END
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO
