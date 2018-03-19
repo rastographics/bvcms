@@ -182,9 +182,9 @@ namespace CmsData
             db.TagRecentStartAttend(ProgramInt ?? 0, DivisionInt ?? 0, OrganizationInt, OrgTypeInt ?? 0, days0 ?? 365, Days, tag.Id);
             Expression<Func<Person, bool>> pred = null;
             if (op == CompareType.Equal ^ tf)
-                pred = p => p.Tags.Any(t => t.Id != tag.Id);
+                pred = p => p.Tags.All(t => t.Id != tag.Id);
             else
-                pred = p => p.Tags.All(t => t.Id == tag.Id);
+                pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
