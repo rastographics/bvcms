@@ -45,7 +45,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
             showNotes = Db.Setting("RequireNotesOnStatement");
             const bool UseMinAmt = true;
 
-            var qc = APIContribution.Contributors(Db, fd, td, 0, 0, 0, cs?.Funds, noaddressok, UseMinAmt, StartsWith, Sort, tagid: TagId, excludeelectronic: ExcludeElectronic);
+            var qc = APIContribution.Contributors(Db, fd, td, 0, 0, 0, cs.Funds, noaddressok, UseMinAmt, StartsWith, Sort, tagid: TagId, excludeelectronic: ExcludeElectronic);
             var runningtotals = Db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
             runningtotals.Count = qc.Count();
             Db.SubmitChanges();
