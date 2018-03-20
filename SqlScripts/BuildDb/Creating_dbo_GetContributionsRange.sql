@@ -33,9 +33,9 @@ RETURN
 					WHEN c.ContributionAmount < 100001 THEN 15
 					ELSE 16
 				END
-		FROM dbo.ContributionSearch(NULL, NULL, NULL, NULL, @fd, @td, @campusid, 0, 2, 0, 
+		FROM dbo.ContributionSearch(NULL, NULL, NULL, NULL, @fd, @td, @campusid, @fundid, 2, 0, 
 				CASE WHEN ISNULL(@nontaxded, 0) = 1 THEN 'nontaxded' WHEN @pledge = 1 THEN 'pledge' ELSE 'taxded' END, 
-				NULLIF(@fundid, 0), @campusid, NULL, @includeUnclosed, NULL, NULL, NULL, @fundids) cs
+				0, 0, NULL, @includeUnclosed, NULL, NULL, NULL, @fundids) cs
 		JOIN dbo.Contribution c ON c.ContributionId = cs.ContributionId
 	),
 	sumpeoplerange AS (
