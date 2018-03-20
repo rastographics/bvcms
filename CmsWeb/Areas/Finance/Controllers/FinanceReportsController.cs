@@ -48,6 +48,8 @@ namespace CmsWeb.Areas.Finance.Controllers
                 var fundset = APIContributionSearchModel.GetCustomFundSetList(m.FundSet.Value).JoinInts(",");
                 p.Add("@fundids", fundset);
             }
+            else
+                p.Add("@fundids", null);
             return p;
         }
         [HttpGet]
