@@ -21,7 +21,7 @@ RETURN
 			COUNT(*) AS [Count], 
 			SUM(Amount) AS Amount, 
 			SUM(PledgeAmount) AS PledgeAmount
-		FROM dbo.GetContributionsDetails(@fd, @td, @campusid, NULL, @nontaxded, @includeUnclosed, @tagid)
+		FROM dbo.GetContributionsDetails(@fd, @td, @campusid, NULL, @nontaxded, @includeUnclosed, @tagid, null)
 		WHERE ISNULL(@fundid, 0) = 0 OR FundId = @fundid
 		GROUP BY CreditGiverId, CreditGiverId2, HeadName, SpouseName
 	)
@@ -49,6 +49,7 @@ RETURN
 	LEFT JOIN lookup.EnvelopeOption op ON op.Id = p.ContributionOptionsId
 	LEFT OUTER JOIN dbo.Organizations o ON o.OrganizationId = p.BibleFellowshipClassId
 )
+
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO
