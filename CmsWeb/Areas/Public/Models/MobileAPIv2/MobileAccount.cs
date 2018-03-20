@@ -152,7 +152,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 				string body = db.ContentHtml( "NewMobileUserDeepLink", message );
 				body = body.Replace( "{link}", link );
 
-				db.SendEmail( new MailAddress( DbUtil.AdminMail ), "Quick Sign In Link", body, mailAddresses );
+				db.SendEmail( new MailAddress( DbUtil.AdminMail, DbUtil.AdminMailName ), db.Setting( "MobileQuickSignInSubject", "Quick Sign In Link" ), body, mailAddresses );
 
 				results = Results.CommonEmailSent;
 			} else {
@@ -293,6 +293,12 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			person.PositionInFamilyId = CmsData.Codes.PositionInFamily.PrimaryAdult;
 			person.EmailAddress = email;
 			person.HomePhone = phone;
+			
+			EntryPoint appEntryPoint = db.EntryPoints.FirstOrDefault( ep => ep.Code == "APP" );
+
+			if( appEntryPoint != null ) {
+				person.EntryPointId = appEntryPoint.Id;
+			}
 
 			db.SubmitChanges();
 
@@ -351,7 +357,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			body = body.Replace( "{username}", user.Username );
 			body = body.Replace( "{link}", $"{deepLink}/signin/quick/{code}" );
 
-			db.EmailRedacted( DbUtil.AdminMail, user.Person, "New Mobile User Welcome", body );
+			db.Email( new MailAddress( DbUtil.AdminMail, DbUtil.AdminMailName ), user.Person, null, "New Mobile User Welcome", body );
 
 			results = Results.CommonEmailSent;
 		}
@@ -361,7 +367,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			string message = db.ContentHtml( "ExistingUserConfirmation", Resource1.CreateAccount_ExistingUser );
 			message = message.Replace( "{name}", person.Name ).Replace( "{host}", db.CmsHost );
 
-			db.Email( DbUtil.AdminMail, person, "Account Information for " + db.Host, message );
+			db.Email( new MailAddress( DbUtil.AdminMail, DbUtil.AdminMailName ), person, null, "Account Information for " + db.Host, message );
 		}
 
 		private void notifyAboutDuplicate()
@@ -369,7 +375,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			string message = db.ContentHtml( "NotifyDuplicateUserOnMobile", Resource1.NotifyDuplicateUserOnMobile );
 			message = message.Replace( "{otheremail}", email );
 
-			db.Email( DbUtil.AdminMail, person, "New User Account on " + db.Host, message );
+			db.Email( new MailAddress( DbUtil.AdminMail, DbUtil.AdminMailName ), person, null, "New User Account on " + db.Host, message );
 		}
 
 		private string createQuickSignInCode( int device, string instanceID, string key, string email )
