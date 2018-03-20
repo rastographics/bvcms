@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Web.Hosting;
@@ -44,20 +45,25 @@ namespace CmsData.Classes.Twilio
 
             // Load all people but tell why they can or can't be sent to
 
-            foreach (var i in q) {
+            foreach (var i in q)
+            {
                 var item = new SMSItem();
 
                 item.ListID = list.Id;
                 item.PeopleID = i.PeopleId;
 
-                if (!string.IsNullOrEmpty(i.CellPhone)) {
+                if (!string.IsNullOrEmpty(i.CellPhone))
+                {
                     item.Number = i.CellPhone;
-                } else {
+                }
+                else
+                {
                     item.Number = "";
                     item.NoNumber = true;
                 }
 
-                if (!i.ReceiveSMS) {
+                if (!i.ReceiveSMS)
+                {
                     item.NoOptIn = true;
                 }
 
@@ -80,7 +86,20 @@ namespace CmsData.Classes.Twilio
 
             DbUtil.Db.SubmitChanges();
 
-            ProcessQueue(list.Id);
+            ExecuteCmsTwilio(list.Id);
+        }
+
+        private static void ExecuteCmsTwilio(int listID)
+        {
+            string cmstwilio = System.Web.HttpContext.Current.Server.MapPath("~/bin/cmstwilio.exe");
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = cmstwilio,
+                Arguments = $"{listID} --host {Util.Host}",
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                WorkingDirectory = Path.GetDirectoryName(cmstwilio)
+            });
         }
 
         public static void ProcessQueue(int iNewListID)
@@ -94,52 +113,49 @@ namespace CmsData.Classes.Twilio
 
             var ElmahContext = Elmah.ErrorLog.GetDefault(System.Web.HttpContext.Current);
 
-            HostingEnvironment.QueueBackgroundWorkItem(ct =>
-           {
-               var stSID = sSID;
-               var stToken = sToken;
-               var itListID = iListID;
+            var stSID = sSID;
+            var stToken = sToken;
+            var itListID = iListID;
 
-               try
-               {
-                   var db = DbUtil.Create(sHost);
+            try
+            {
+                var db = DbUtil.Create(sHost);
 
-                   var smsList = (from e in db.SMSLists
-                                  where e.Id == itListID
-                                  select e).Single();
+                var smsList = (from e in db.SMSLists
+                               where e.Id == itListID
+                               select e).Single();
 
-                   var smsItems = from e in db.SMSItems
-                                  where e.ListID == itListID
-                                  select e;
+                var smsItems = from e in db.SMSItems
+                               where e.ListID == itListID
+                               select e;
 
-                   var smsGroup = (from e in db.SMSNumbers
-                                   where e.GroupID == smsList.SendGroupID
-                                   select e).ToList();
+                var smsGroup = (from e in db.SMSNumbers
+                                where e.GroupID == smsList.SendGroupID
+                                select e).ToList();
 
-                   var iCount = 0;
+                var iCount = 0;
 
-                   foreach (var item in smsItems)
-                   {
-                       if (item.NoNumber || item.NoOptIn) continue;
+                foreach (var item in smsItems)
+                {
+                    if (item.NoNumber || item.NoOptIn) continue;
 
-                       var btSent = SendSms(stSID, stToken, smsGroup[iCount].Number, item.Number, smsList.Message);
+                    var btSent = SendSms(stSID, stToken, smsGroup[iCount].Number, item.Number, smsList.Message);
 
-                       if (btSent)
-                       {
-                           item.Sent = true;
-                           db.SubmitChanges();
-                       }
+                    if (btSent)
+                    {
+                        item.Sent = true;
+                        db.SubmitChanges();
+                    }
 
-                       iCount++;
-                       if (iCount >= smsGroup.Count()) iCount = 0;
-                   }
-               }
-               catch (Exception ex)
-               {
-                   Debug.WriteLine(ex);
-                   ElmahContext.Log(new Elmah.Error(ex));
-               }
-           });
+                    iCount++;
+                    if (iCount >= smsGroup.Count()) iCount = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                ElmahContext.Log(new Elmah.Error(ex));
+            }
         }
 
         private static bool SendSms(string sSID, string sToken, string sFrom, string sTo, string sBody)
@@ -181,127 +197,130 @@ namespace CmsData.Classes.Twilio
             //            return false;
         }
 
-		//		public static List<IncomingPhoneNumber> GetNumberList()
-		//		{
-		//			TwilioClient.Init( GetSid(), GetToken() );
-		//			
-		//			ResourceSet<IncomingPhoneNumberResource> number = IncomingPhoneNumberResource.Read();
-		//			string text = number.First().PhoneNumber.ToString();
-		//			
-		//			var twilio = new TwilioRestClient( GetSid(), GetToken() );
-		//			var numbers = twilio.ListIncomingPhoneNumbers();
-		//
-		//			return numbers.IncomingPhoneNumbers;
-		//		}
+        //		public static List<IncomingPhoneNumber> GetNumberList()
+        //		{
+        //			TwilioClient.Init( GetSid(), GetToken() );
+        //			
+        //			ResourceSet<IncomingPhoneNumberResource> number = IncomingPhoneNumberResource.Read();
+        //			string text = number.First().PhoneNumber.ToString();
+        //			
+        //			var twilio = new TwilioRestClient( GetSid(), GetToken() );
+        //			var numbers = twilio.ListIncomingPhoneNumbers();
+        //
+        //			return numbers.IncomingPhoneNumbers;
+        //		}
 
-		public static List<TwilioNumber> GetUnusedNumberList()
-		{
-			List<TwilioNumber> available = new List<TwilioNumber>();
+        public static List<TwilioNumber> GetUnusedNumberList()
+        {
+            List<TwilioNumber> available = new List<TwilioNumber>();
 
-			TwilioClient.Init( GetSid(), GetToken() );
-			var numbers = IncomingPhoneNumberResource.Read().ToList();
+            TwilioClient.Init(GetSid(), GetToken());
+            var numbers = IncomingPhoneNumberResource.Read().ToList();
 
-			var used = (from e in DbUtil.Db.SMSNumbers
-							select e).ToList();
+            var used = (from e in DbUtil.Db.SMSNumbers
+                        select e).ToList();
 
-			for( var iX = numbers.Count - 1; iX > -1; iX-- ) {
-				if( used.Any( n => n.Number == numbers[iX].PhoneNumber.ToString() ) )
-					numbers.RemoveAt( iX );
-			}
+            for (var iX = numbers.Count - 1; iX > -1; iX--)
+            {
+                if (used.Any(n => n.Number == numbers[iX].PhoneNumber.ToString()))
+                    numbers.RemoveAt(iX);
+            }
 
-			foreach( var item in numbers ) {
-				var newNum = new TwilioNumber();
-				newNum.Name = item.FriendlyName;
-				newNum.Number = item.PhoneNumber.ToString();
+            foreach (var item in numbers)
+            {
+                var newNum = new TwilioNumber();
+                newNum.Name = item.FriendlyName;
+                newNum.Number = item.PhoneNumber.ToString();
 
-				available.Add( newNum );
-			}
+                available.Add(newNum);
+            }
 
-			return available;
-		}
+            return available;
+        }
 
-		public static List<UserRole> GetUnassignedPeople( int id )
-		{
-			var role = (from e in DbUtil.Db.Roles
-							where e.RoleName == "SendSMS"
-							select e).SingleOrDefault();
+        public static List<UserRole> GetUnassignedPeople(int id)
+        {
+            var role = (from e in DbUtil.Db.Roles
+                        where e.RoleName == "SendSMS"
+                        select e).SingleOrDefault();
 
-			// If no results on the role, send back empty list
-			if( role == null ) return new List<UserRole>();
+            // If no results on the role, send back empty list
+            if (role == null) return new List<UserRole>();
 
-			var assigned = (from e in DbUtil.Db.SMSGroupMembers
-								where e.GroupID == id
-								select e).ToList();
+            var assigned = (from e in DbUtil.Db.SMSGroupMembers
+                            where e.GroupID == id
+                            select e).ToList();
 
-			var people = (from e in DbUtil.Db.UserRoles
-								where e.RoleId == role.RoleId
-								select e).ToList();
+            var people = (from e in DbUtil.Db.UserRoles
+                          where e.RoleId == role.RoleId
+                          select e).ToList();
 
-			for( var iX = people.Count() - 1; iX > -1; iX-- ) {
-				if( assigned.Any( n => n.UserID == people[iX].UserId ) )
-					people.RemoveAt( iX );
-			}
+            for (var iX = people.Count() - 1; iX > -1; iX--)
+            {
+                if (assigned.Any(n => n.UserID == people[iX].UserId))
+                    people.RemoveAt(iX);
+            }
 
-			return people;
-		}
+            return people;
+        }
 
-		public static List<SMSGroup> GetAvailableLists( int iUserID )
-		{
-			var groups = (from e in DbUtil.Db.SMSGroups
-								where e.SMSGroupMembers.Any( f => f.UserID == iUserID )
-								select e).ToList();
+        public static List<SMSGroup> GetAvailableLists(int iUserID)
+        {
+            var groups = (from e in DbUtil.Db.SMSGroups
+                          where e.SMSGroupMembers.Any(f => f.UserID == iUserID)
+                          select e).ToList();
 
-			return groups;
-		}
+            return groups;
+        }
 
-		public static int GetSendCount( Guid iQBID )
-		{
-			var q = DbUtil.Db.PeopleQuery( iQBID );
+        public static int GetSendCount(Guid iQBID)
+        {
+            var q = DbUtil.Db.PeopleQuery(iQBID);
 
-			return (from p in q
-						where p.CellPhone != null
-						where p.ReceiveSMS
-						select p).Count();
-		}
+            return (from p in q
+                    where p.CellPhone != null
+                    where p.ReceiveSMS
+                    select p).Count();
+        }
 
-		public static bool userSendSMS( int iUserID )
-		{
-			var role = (from e in DbUtil.Db.Roles
-							where e.RoleName == "SendSMS"
-							select e).SingleOrDefault();
+        public static bool userSendSMS(int iUserID)
+        {
+            var role = (from e in DbUtil.Db.Roles
+                        where e.RoleName == "SendSMS"
+                        select e).SingleOrDefault();
 
-			if( role == null ) return false;
+            if (role == null) return false;
 
-			var person = from e in DbUtil.Db.UserRoles
-							where e.RoleId == role.RoleId
-							where e.UserId == iUserID
-							select e;
+            var person = from e in DbUtil.Db.UserRoles
+                         where e.RoleId == role.RoleId
+                         where e.UserId == iUserID
+                         select e;
 
-			if( !person.Any() ) return false;
+            if (!person.Any()) return false;
 
-			var groups = from e in DbUtil.Db.SMSGroupMembers
-							where e.UserID == iUserID
-							select e;
+            var groups = from e in DbUtil.Db.SMSGroupMembers
+                         where e.UserID == iUserID
+                         select e;
 
-			return groups.Any();
-		}
+            return groups.Any();
+        }
 
-		private static string GetSid()
-		{
-			return DbUtil.Db.Setting( "TwilioSID", "" );
-		}
+        private static string GetSid()
+        {
+            return DbUtil.Db.Setting("TwilioSID", "");
+        }
 
-		private static string GetToken()
-		{
-			return DbUtil.Db.Setting( "TwilioToken", "" );
-		}
+        private static string GetToken()
+        {
+            return DbUtil.Db.Setting("TwilioToken", "");
+        }
 
-		public class TwilioNumber
-		{
-			public string Number { get; set; }
-			public string Name { get; set; }
+        public class TwilioNumber
+        {
+            public string Number { get; set; }
+            public string Name { get; set; }
 
-			public string Description => $"{Name} ({Number})";
-		}
-	}
+            public string Description => $"{Name} ({Number})";
+        }
+    }
 }
