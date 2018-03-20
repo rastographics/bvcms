@@ -9,8 +9,6 @@ GO
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
 GO
 BEGIN TRANSACTION
--- Pointer used for text / image updates. This might not be needed, but is declared here just in case
-DECLARE @pv binary(16)
 
 PRINT(N'Drop constraints from [dbo].[Users]')
 ALTER TABLE [dbo].[Users] NOCHECK CONSTRAINT [FK_Users_People]

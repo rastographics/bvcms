@@ -370,6 +370,20 @@ namespace CmsWeb.Models
                        TripName = o.OrganizationName
                    };
         }
+        public List<MissionTripBalanceInfo> MissionTripBalances()
+        {
+            var q = from gs in DbUtil.Db.GoerSenderAmounts
+                   where gs.GoerId == GoerId
+                   group gs by new {gs.GoerId, gs.OrgId, gs.Organization.OrganizationName} into g
+                   select new MissionTripBalanceInfo
+                   {
+                       GoerId = g.Key.GoerId ?? 0,
+                       OrgId = g.Key.OrgId,
+                       TripName = g.Key.OrganizationName,
+                       Balance = OrganizationMember.AmountDue(DbUtil.Db, g.Key.OrgId, g.Key.GoerId ?? 0)
+                   };
+            return q.ToList().Where(vv => vv.Balance > 0).ToList();
+        }
 
         public IQueryable<SupporterInfo> SelfSupports()
         {
@@ -458,6 +472,13 @@ namespace CmsWeb.Models
             public int? GoerId { get; set; }
             public int? SupporterId { get; set; }
             public string TripName { get; set; }
+        }
+        public class MissionTripBalanceInfo
+        {
+            public int GoerId { get; set; }
+            public int OrgId { get; set; }
+            public string TripName { get; set; }
+            public decimal Balance { get; set; }
         }
     }
 }

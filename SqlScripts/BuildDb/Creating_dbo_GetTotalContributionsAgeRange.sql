@@ -18,7 +18,7 @@ RETURN
 			[Range] = CASE WHEN ISNULL(p.Age, 0) = 0 THEN 0 ELSE p.Age / 10 + 1 END
 		FROM dbo.ContributionSearch(NULL, NULL, NULL, NULL, @fd, @td, @campusid, 0, 2, 0, 
 				CASE WHEN ISNULL(@nontaxded, 0) = 1 THEN 'nontaxded' ELSE 'taxded' END,
-				NULL, @campusid, NULL, @includeUnclosed, NULL, NULL, NULL, @fundids) cs
+				NULL, 0, NULL, @includeUnclosed, NULL, NULL, NULL, @fundids) cs
 		JOIN dbo.Contribution c ON c.ContributionId = cs.ContributionId
 		JOIN dbo.People p ON p.PeopleId = c.PeopleId
 		GROUP BY c.PeopleId, p.Age

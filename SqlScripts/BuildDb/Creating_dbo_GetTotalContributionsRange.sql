@@ -15,7 +15,7 @@ RETURN
 	    SELECT Amount = c.ContributionAmount, c.PeopleId 
 		FROM dbo.ContributionSearch(NULL, NULL, NULL, NULL, @fd, @td, @campusid, 0, 2, 0, 
 				CASE WHEN ISNULL(@nontaxded, 0) = 1 THEN 'nontaxded' ELSE 'taxded' END,
-				NULL, @campusid, NULL, @includeUnclosed, NULL, NULL, NULL, @fundids) cs
+				NULL, 0, NULL, @includeUnclosed, NULL, NULL, NULL, @fundids) cs
 		JOIN dbo.Contribution c ON c.ContributionId = cs.ContributionId
 	),
 	sums AS (
