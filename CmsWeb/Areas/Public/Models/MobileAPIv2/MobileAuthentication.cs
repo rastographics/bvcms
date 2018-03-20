@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.Linq;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
@@ -7,7 +8,6 @@ using System.Text;
 using System.Web;
 using System.Web.Security;
 using CmsData;
-using net.openstack.Providers.Rackspace.Objects.Databases;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Public.Models.MobileAPIv2
@@ -225,7 +225,10 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 					NotificationID = key,
 					UserID = user.UserId,
 					PeopleID = user.PeopleId,
-					Authentication = hashString
+					Authentication = hashString,
+					Code = "",
+					CodeExpires = SqlDateTime.MinValue.Value,
+					CodeEmail = ""
 				};
 
 				DbUtil.Db.MobileAppDevices.InsertOnSubmit( appDevice );
