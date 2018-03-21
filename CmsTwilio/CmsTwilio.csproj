@@ -78,7 +78,7 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>copy /y $(TargetPath) $(SolutionDir)CmsWeb\bin</PostBuildEvent>
-  </PropertyGroup>
+<!--  <PropertyGroup>-->
+<!--    <PostBuildEvent>copy /y $(TargetPath) $(SolutionDir)CmsWeb\bin</PostBuildEvent>-->
+<!--  </PropertyGroup>-->
 </Project>
