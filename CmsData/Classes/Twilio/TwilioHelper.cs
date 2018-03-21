@@ -112,86 +112,83 @@ namespace CmsData.Classes.Twilio
 
             var ElmahContext = Elmah.ErrorLog.GetDefault(System.Web.HttpContext.Current);
 
-            try
+            var smsList = (from e in db.SMSLists
+                           where e.Id == iListID
+                           select e).Single();
+
+            var smsItems = from e in db.SMSItems
+                           where e.ListID == iListID
+                           select e;
+
+            var smsGroup = (from e in db.SMSNumbers
+                            where e.GroupID == smsList.SendGroupID
+                            select e).ToList();
+
+            var iCount = 0;
+
+            var hostUrl = db.Setting("DefaultHost", "");
+
+            foreach (var item in smsItems)
             {
-
-                var smsList = (from e in db.SMSLists
-                               where e.Id == iListID
-                               select e).Single();
-
-                var smsItems = from e in db.SMSItems
-                               where e.ListID == iListID
-                               select e;
-
-                var smsGroup = (from e in db.SMSNumbers
-                                where e.GroupID == smsList.SendGroupID
-                                select e).ToList();
-
-                var iCount = 0;
-
-                foreach (var item in smsItems)
+                try
                 {
                     if (item.NoNumber || item.NoOptIn) continue;
 
-                    var btSent = SendSms(sSID, sToken, smsGroup[iCount].Number, item.Number, smsList.Message);
+                    var callbackUrl = hostUrl.HasValue() ? $"{hostUrl}/WebHook/Twilio/{item.Id}" : null;
+                    var response = SendSms(sSID, sToken, smsGroup[iCount].Number, item.Number, smsList.Message, callbackUrl);
 
-                    if (btSent.Item1)
+                    if (IsSmsFailed(response))
                     {
-                        item.Sent = true;
+                        item.ErrorMessage = $"({response.ErrorCode}) {response.ErrorMessage}";
                     }
-                    else
-                    {
-                        item.ErrorMessage = $"({btSent.Item2.ErrorCode}) {btSent.Item2.ErrorMessage}";
-                    }
-                    item.ResultStatus = $"{btSent.Item2.Status}";
+                    item.Sent = true;
+                    item.ResultStatus = $"{response.Status}";
+
                     db.SubmitChanges();
 
                     iCount++;
                     if (iCount >= smsGroup.Count()) iCount = 0;
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                ElmahContext.Log(new Elmah.Error(ex));
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    ElmahContext.Log(new Elmah.Error(ex));
+                }
             }
         }
 
-        private static Tuple<bool, MessageResource> SendSms(string sSID, string sToken, string sFrom, string sTo, string sBody)
+        private static MessageResource SendSms(string sSID, string sToken, string sFrom, string sTo, string sBody, string callbackUrl)
         {
             // Needs API keys. Removed to keep private
 
             TwilioClient.Init(sSID, sToken);
+            Uri callbackUri = callbackUrl.HasValue() ? new Uri(callbackUrl) : null;
+            MessageResource response = MessageResource.Create(new PhoneNumber(sTo), from: new PhoneNumber(sFrom), body: sBody, statusCallback: callbackUri);
 
-            int retries = 0;
-
-            MessageResource response = MessageResource.Create(new PhoneNumber(sTo), from: new PhoneNumber(sFrom), body: sBody);
-
-            while (retries < 3)
+            if (IsSmsSent(response))
             {
-                if (response.Status == MessageResource.StatusEnum.Sent ||
-                    response.Status == MessageResource.StatusEnum.Delivered)
-                {
-                    Console.WriteLine($"Message to {sTo} succeeded with status {response.Status}");
-                    return new Tuple<bool, MessageResource>(true, response);
-                }
-                else if (response.Status == MessageResource.StatusEnum.Undelivered ||
-                    response.Status == MessageResource.StatusEnum.Failed)
-                {
-                    Console.WriteLine($"Message to {sTo} failed with status {response.Status} Err:({response.ErrorCode}) {response.ErrorMessage}");
-                    Thread.Sleep(500); // wait for Twilio throttling
-                    return new Tuple<bool, MessageResource>(false, response);
-                }
-                else // Accepted || Queued || Sending
-                {
-                    Console.WriteLine($"Message to {sTo} is queued with status {response.Status}");
-                    Thread.Sleep(100); // wait for Twilio throttling
-                    retries++;
-                    response = MessageResource.Fetch(new FetchMessageOptions(response.Sid), TwilioClient.GetRestClient());
-                }
+                Console.WriteLine($"Message to {sTo} succeeded with status {response.Status}");
+            }
+            else if (IsSmsFailed(response))
+            {
+                Console.WriteLine($"Message to {sTo} failed with status {response.Status} Err:({response.ErrorCode}) {response.ErrorMessage}");
+            }
+            else // Accepted || Queued || Sending
+            {
+                Console.WriteLine($"Message to {sTo} is queued with status {response.Status}");
             }
 
-            return new Tuple<bool, MessageResource>(false, response);
+            return response;
+        }
+
+        public static bool IsSmsFailed(MessageResource response)
+        {
+            return response.Status == MessageResource.StatusEnum.Undelivered || response.Status == MessageResource.StatusEnum.Failed;
+        }
+
+        public static bool IsSmsSent(MessageResource response)
+        {
+            return response.Status == MessageResource.StatusEnum.Sent || response.Status == MessageResource.StatusEnum.Delivered;
         }
 
         public static List<TwilioNumber> GetUnusedNumberList()
