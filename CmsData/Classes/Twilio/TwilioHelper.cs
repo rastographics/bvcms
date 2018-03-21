@@ -102,31 +102,25 @@ namespace CmsData.Classes.Twilio
             });
         }
 
-        public static void ProcessQueue(int iNewListID)
+        public static void ProcessQueue(int iListID, string sHost)
         {
-            var sHost = Util.Host;
-            var sSID = GetSid();
-            var sToken = GetToken();
-            var iListID = iNewListID;
+            var db = DbUtil.Create(sHost);
+            var sSID = GetSid(db);
+            var sToken = GetToken(db);
 
             if (sSID.Length == 0 || sToken.Length == 0) return;
 
             var ElmahContext = Elmah.ErrorLog.GetDefault(System.Web.HttpContext.Current);
 
-            var stSID = sSID;
-            var stToken = sToken;
-            var itListID = iListID;
-
             try
             {
-                var db = DbUtil.Create(sHost);
 
                 var smsList = (from e in db.SMSLists
-                               where e.Id == itListID
+                               where e.Id == iListID
                                select e).Single();
 
                 var smsItems = from e in db.SMSItems
-                               where e.ListID == itListID
+                               where e.ListID == iListID
                                select e;
 
                 var smsGroup = (from e in db.SMSNumbers
@@ -139,13 +133,18 @@ namespace CmsData.Classes.Twilio
                 {
                     if (item.NoNumber || item.NoOptIn) continue;
 
-                    var btSent = SendSms(stSID, stToken, smsGroup[iCount].Number, item.Number, smsList.Message);
+                    var btSent = SendSms(sSID, sToken, smsGroup[iCount].Number, item.Number, smsList.Message);
 
-                    if (btSent)
+                    if (btSent.Item1)
                     {
                         item.Sent = true;
-                        db.SubmitChanges();
                     }
+                    else
+                    {
+                        item.ErrorMessage = $"({btSent.Item2.ErrorCode}) {btSent.Item2.ErrorMessage}";
+                    }
+                    item.ResultStatus = $"{btSent.Item2.Status}";
+                    db.SubmitChanges();
 
                     iCount++;
                     if (iCount >= smsGroup.Count()) iCount = 0;
@@ -153,12 +152,12 @@ namespace CmsData.Classes.Twilio
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                Console.WriteLine(ex);
                 ElmahContext.Log(new Elmah.Error(ex));
             }
         }
 
-        private static bool SendSms(string sSID, string sToken, string sFrom, string sTo, string sBody)
+        private static Tuple<bool, MessageResource> SendSms(string sSID, string sToken, string sFrom, string sTo, string sBody)
         {
             // Needs API keys. Removed to keep private
 
@@ -173,48 +172,33 @@ namespace CmsData.Classes.Twilio
                 if (response.Status == MessageResource.StatusEnum.Sent ||
                     response.Status == MessageResource.StatusEnum.Delivered)
                 {
-                    return true;
+                    Console.WriteLine($"Message to {sTo} succeeded with status {response.Status}");
+                    return new Tuple<bool, MessageResource>(true, response);
                 }
                 else if (response.Status == MessageResource.StatusEnum.Undelivered ||
                     response.Status == MessageResource.StatusEnum.Failed)
                 {
+                    Console.WriteLine($"Message to {sTo} failed with status {response.Status} Err:({response.ErrorCode}) {response.ErrorMessage}");
                     Thread.Sleep(500); // wait for Twilio throttling
-                    return false;
+                    return new Tuple<bool, MessageResource>(false, response);
                 }
                 else // Accepted || Queued || Sending
                 {
+                    Console.WriteLine($"Message to {sTo} is queued with status {response.Status}");
                     Thread.Sleep(100); // wait for Twilio throttling
                     retries++;
                     response = MessageResource.Fetch(new FetchMessageOptions(response.Sid), TwilioClient.GetRestClient());
                 }
             }
 
-            return false;
-
-            //            var twilio = new TwilioRestClient(sSID, sToken);
-            //            var msg = twilio.SendMessage(sFrom, sTo, sBody);
-            //            if (msg.Status != "failed") return true;
-            //            return false;
+            return new Tuple<bool, MessageResource>(false, response);
         }
-
-        //		public static List<IncomingPhoneNumber> GetNumberList()
-        //		{
-        //			TwilioClient.Init( GetSid(), GetToken() );
-        //			
-        //			ResourceSet<IncomingPhoneNumberResource> number = IncomingPhoneNumberResource.Read();
-        //			string text = number.First().PhoneNumber.ToString();
-        //			
-        //			var twilio = new TwilioRestClient( GetSid(), GetToken() );
-        //			var numbers = twilio.ListIncomingPhoneNumbers();
-        //
-        //			return numbers.IncomingPhoneNumbers;
-        //		}
 
         public static List<TwilioNumber> GetUnusedNumberList()
         {
             List<TwilioNumber> available = new List<TwilioNumber>();
 
-            TwilioClient.Init(GetSid(), GetToken());
+            TwilioClient.Init(GetSid(DbUtil.Db), GetToken(DbUtil.Db));
             var numbers = IncomingPhoneNumberResource.Read().ToList();
 
             var used = (from e in DbUtil.Db.SMSNumbers
@@ -305,14 +289,14 @@ namespace CmsData.Classes.Twilio
             return groups.Any();
         }
 
-        private static string GetSid()
+        private static string GetSid(CMSDataContext db)
         {
-            return DbUtil.Db.Setting("TwilioSID", "");
+            return db.Setting("TwilioSID", "");
         }
 
-        private static string GetToken()
+        private static string GetToken(CMSDataContext db)
         {
-            return DbUtil.Db.Setting("TwilioToken", "");
+            return db.Setting("TwilioToken", "");
         }
 
         public class TwilioNumber

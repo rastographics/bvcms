@@ -1,5 +1,4 @@
-﻿using CmsData;
-using CmsData.Classes.Twilio;
+﻿using CmsData.Classes.Twilio;
 using System;
 using System.IO;
 using System.Reflection;
@@ -9,7 +8,7 @@ namespace CmsTwilio
     class CmsTwilio
     {
         static int listID;
-        static bool hostSet;
+        static string host;
 
         static void Main(string[] args)
         {
@@ -36,9 +35,9 @@ namespace CmsTwilio
             {
                 ParseArguments(args);
 
-                if (hostSet && listID != 0)
+                if (!string.IsNullOrEmpty(host) && listID != 0)
                 {
-                    TwilioHelper.ProcessQueue(listID);
+                    TwilioHelper.ProcessQueue(listID, host);
                 }
                 else
                 {
@@ -68,8 +67,8 @@ namespace CmsTwilio
                     i++;
                     if (args.Length > i)
                     {
-                        DbUtil.Db.Host = args[i];
-                        hostSet = true;
+                        host = args[i];
+                        Console.WriteLine($"Using host {host}");
                     }
                     else
                     {
