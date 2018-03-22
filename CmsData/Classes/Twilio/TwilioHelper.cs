@@ -1,6 +1,7 @@
 ﻿using Elmah;
 using System;
 using System.Collections.Generic;
+using System.Data.Linq;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
@@ -140,14 +141,7 @@ namespace CmsData.Classes.Twilio
                     var callbackUrl = hostUrl.HasValue() ? $"{hostUrl}/WebHook/Twilio/{item.Id}" : null;
                     var response = SendSms(sSID, sToken, smsGroup[iCount].Number, item.Number, smsList.Message, callbackUrl);
 
-                    if (IsSmsFailed(response))
-                    {
-                        item.ErrorMessage = $"({response.ErrorCode}) {response.ErrorMessage}";
-                    }
-                    item.Sent = true;
-                    item.ResultStatus = $"{response.Status}";
-
-                    db.SubmitChanges();
+                    UpdateSMSItemStatus(db, item, response);
 
                     iCount++;
                     if (iCount >= smsGroup.Count()) iCount = 0;
@@ -158,10 +152,38 @@ namespace CmsData.Classes.Twilio
                     ErrorLog.Log(new Error(ex));
 
                     item.ResultStatus = $"error";
-                    item.ErrorMessage = $"{ex.Message}";
+                    item.ErrorMessage = $"{ex.Message}".MaxString(150);
                     db.SubmitChanges();
                 }
             }
+        }
+
+        /// <summary>
+        /// This checks that the Twilio web hook didn't already update the status
+        /// If so, we update just the Sent flag
+        /// </summary>
+        public static void UpdateSMSItemStatus(CMSDataContext db, SMSItem item, MessageResource response)
+        {
+            if (IsSmsFailed(response))
+            {
+                item.ErrorMessage = $"({response.ErrorCode}) {response.ErrorMessage}".MaxString(150);
+            }
+
+            bool failed = true;
+            item.ResultStatus = $"{response.Status}";
+            do
+            {
+                try
+                {
+                    item.Sent = true;
+                    db.SubmitChanges(ConflictMode.FailOnFirstConflict);
+                    failed = false;
+                }
+                catch (ChangeConflictException)
+                {
+                    db.Refresh(RefreshMode.OverwriteCurrentValues, item);
+                }
+            } while (failed);
         }
 
         private static MessageResource SendSms(string sSID, string sToken, string sFrom, string sTo, string sBody, string callbackUrl)
@@ -190,12 +212,12 @@ namespace CmsData.Classes.Twilio
 
         public static bool IsSmsFailed(MessageResource response)
         {
-            return response.Status == MessageResource.StatusEnum.Undelivered || response.Status == MessageResource.StatusEnum.Failed;
+            return MessageResource.StatusEnum.Undelivered.Equals(response.Status) || MessageResource.StatusEnum.Failed.Equals(response.Status);
         }
 
         public static bool IsSmsSent(MessageResource response)
         {
-            return response.Status == MessageResource.StatusEnum.Sent || response.Status == MessageResource.StatusEnum.Delivered;
+            return MessageResource.StatusEnum.Sent.Equals(response.Status) || MessageResource.StatusEnum.Delivered.Equals(response.Status);
         }
 
         public static List<TwilioNumber> GetUnusedNumberList()

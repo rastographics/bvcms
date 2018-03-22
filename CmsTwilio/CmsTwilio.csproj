@@ -48,6 +48,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.IdentityModel.Tokens.Jwt, Version=5.1.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.5.1.2\lib\net451\System.IdentityModel.Tokens.Jwt.dll</HintPath>
     </Reference>
@@ -78,7 +79,7 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-<!--  <PropertyGroup>-->
-<!--    <PostBuildEvent>copy /y $(TargetPath) $(SolutionDir)CmsWeb\bin</PostBuildEvent>-->
-<!--  </PropertyGroup>-->
+  <PropertyGroup>
+    <PostBuildEvent>if $(ConfigurationName) == Debug copy /y $(TargetPath) $(SolutionDir)CmsWeb\bin</PostBuildEvent>
+  </PropertyGroup>
 </Project>

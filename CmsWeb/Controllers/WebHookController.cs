@@ -1,4 +1,5 @@
 ﻿using CmsData;
+using System;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
@@ -34,7 +35,7 @@ namespace CmsWeb.Controllers
             {
                 if (errorMessage.IsNotNull() || errorCode.IsNotNull())
                 {
-                    smsItem.ErrorMessage = $"({errorCode}) {errorMessage}";
+                    smsItem.ErrorMessage = $"({errorCode}) {errorMessage}".MaxString(150);
                 }
                 smsItem.ResultStatus = SmsStatus;
                 db.SubmitChanges();

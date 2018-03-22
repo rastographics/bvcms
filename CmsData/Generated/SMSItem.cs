@@ -253,7 +253,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="ResultStatus", UpdateCheck=UpdateCheck.Never, Storage="_ResultStatus", DbType="varchar(50)")]
+		[Column(Name="ResultStatus", UpdateCheck=UpdateCheck.WhenChanged, Storage="_ResultStatus", DbType="varchar(50)")]
 		public string ResultStatus
 		{
 			get { return this._ResultStatus; }
@@ -275,7 +275,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="ErrorMessage", UpdateCheck=UpdateCheck.Never, Storage="_ErrorMessage", DbType="varchar(300)")]
+		[Column(Name="ErrorMessage", UpdateCheck=UpdateCheck.WhenChanged, Storage="_ErrorMessage", DbType="varchar(300)")]
 		public string ErrorMessage
 		{
 			get { return this._ErrorMessage; }

@@ -588,6 +588,13 @@ namespace DbmlBuilder.TableSchema
             }
         }
 
+        private string updateCheck;
+        public string UpdateCheck
+        {
+            get { return updateCheck ?? "Never"; }
+            set { updateCheck = value; }
+        }
+
         public static string TransformPropertyName(string name, string table)
         {
             if (String.IsNullOrEmpty(name))

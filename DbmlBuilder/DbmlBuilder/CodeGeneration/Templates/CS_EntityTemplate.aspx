@@ -62,7 +62,7 @@ namespace <%=Db.Service.GeneratedNamespace %>
             foreach (TableColumn col in tbl.Columns)
 			{
         %>
-		[Column(Name="<%=col.ColumnName%>", UpdateCheck=UpdateCheck.Never, Storage="_<%=col.Name%>"<%=col.FullDbType%>)]<% if (col.IsForeignKey) { %>
+		[Column(Name="<%=col.ColumnName%>", UpdateCheck=UpdateCheck.<%=col.UpdateCheck%>, Storage="_<%=col.Name%>"<%=col.FullDbType%>)]<% if (col.IsForeignKey) { %>
 		[IsForeignKey]<% } %>
 		public <%=col.VarType%> <%=col.Name%>
 		{

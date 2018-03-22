@@ -189,7 +189,7 @@ namespace UtilityExtensions
         public static string MaxString(this string s, int length)
         {
             if (s?.Length > length)
-                s = s.Substring(0, length);
+                return s.Substring(0, length);
             return s;
         }
 
