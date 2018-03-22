@@ -10,6 +10,7 @@ using System.Threading;
 using System.Web.Hosting;
 using Twilio;
 using Twilio.Base;
+using Twilio.Exceptions;
 using Twilio.Rest.Api.V2010;
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Types;
@@ -145,6 +146,24 @@ namespace CmsData.Classes.Twilio
 
                     iCount++;
                     if (iCount >= smsGroup.Count()) iCount = 0;
+                }
+                catch (ApiException ae)
+                {
+                    if (ae.Code == 21610) // https://www.twilio.com/docs/api/errors/21610
+                    {
+                        var person = db.People.FirstOrDefault(p => p.PeopleId == item.PeopleID);
+                        person.ReceiveSMS = false;
+                        item.ErrorMessage = "User opt-out";
+                    }
+                    else
+                    {
+                        Console.WriteLine(ae);
+                        ErrorLog.Log(new Error(ae));
+                        item.ErrorMessage = $"({ae.Code}) {ae.Message}".MaxString(150);
+                    }
+
+                    item.ResultStatus = $"error";
+                    db.SubmitChanges();
                 }
                 catch (Exception ex)
                 {
