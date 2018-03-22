@@ -28,7 +28,7 @@ namespace CmsWeb.Controllers
 
             var db = DbUtil.Db;
 
-            var smsItem = db.SMSItems.Where(m => m.Id == Id).FirstOrDefault();
+            var smsItem = db.SMSItems.FirstOrDefault(m => m.Id == Id);
 
             if (smsItem != null)
             {

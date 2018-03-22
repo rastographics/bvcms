@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Elmah;
+using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -110,8 +112,9 @@ namespace CmsData.Classes.Twilio
 
             if (sSID.Length == 0 || sToken.Length == 0) return;
 
-            var ElmahContext = Elmah.ErrorLog.GetDefault(System.Web.HttpContext.Current);
-
+            var cb = new SqlConnectionStringBuilder(db.ConnectionString) { InitialCatalog = "ELMAH" };
+            var ErrorLog = new SqlErrorLog(cb.ConnectionString) { ApplicationName = "BVCMS" };
+            
             var smsList = (from e in db.SMSLists
                            where e.Id == iListID
                            select e).Single();
@@ -132,6 +135,8 @@ namespace CmsData.Classes.Twilio
             {
                 try
                 {
+                    var x = 0;
+                    var y = 12 / x;
                     if (item.NoNumber || item.NoOptIn) continue;
 
                     var callbackUrl = hostUrl.HasValue() ? $"{hostUrl}/WebHook/Twilio/{item.Id}" : null;
@@ -152,7 +157,11 @@ namespace CmsData.Classes.Twilio
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex);
-                    ElmahContext.Log(new Elmah.Error(ex));
+                    ErrorLog.Log(new Error(ex));
+
+                    item.ResultStatus = $"error";
+                    item.ErrorMessage = $"{ex.Message}";
+                    db.SubmitChanges();
                 }
             }
         }
