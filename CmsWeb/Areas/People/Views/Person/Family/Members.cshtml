@@ -47,7 +47,10 @@
                             <span class="name">@m.Name @Html.Raw(m.SpouseIndicator)</span><br />
                             <span class="meta">
                                 <span class="age">@m.AgeDisplay</span>
-                                &bull; <span class="status">@m.MemberStatus</span>
+                                @if (User.IsInRole("Access") || !DbUtil.Db.Setting("HideMyDataMemberBadge"))
+                                {
+                                    <text>&bull; <span class="status">@m.MemberStatus</span></text>
+                                }
                                 &bull; <span class="role">@m.PositionInFamily</span>
                             </span>
                             <div class="email email_display truncate">@m.Email</div>
