@@ -48,7 +48,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             <td style='{{LabelStyle}}'>Amount</br>Charged</td>
             <td style='{{LabelStyle}}'>Coupon</td>
         {{/if}}
-        <td style='{{LabelStyle}}'>Total</td>
+        <td style='{{LabelStyle}}'>Total Paid</td>
         <td style='{{LabelStyle}}'>Total Due</td>
     </tr>
     <tr>
