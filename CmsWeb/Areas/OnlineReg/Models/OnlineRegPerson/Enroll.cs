@@ -44,17 +44,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var summary = DbUtil.Db.RenderTemplate(@"
 <table>
     <tr>
-        <td style='{{LabelStyle}}'>Total Paid</td>
         {{#if TotCoupon}}
+            <td style='{{LabelStyle}}'>Amount</br>Charged</td>
             <td style='{{LabelStyle}}'>Coupon</td>
         {{/if}}
+        <td style='{{LabelStyle}}'>Total Paid</td>
         <td style='{{LabelStyle}}'>Total Due</td>
     </tr>
     <tr>
-        <td style='{{DataStyle}}{{AlignRight}}'>{{Fmt TotPaid 'c'}}</td>
         {{#if TotCoupon}}
+            <td style='{{DataStyle}}{{AlignRight}}'>{{Calc TotPaid TotCoupon}}</td>
             <td style='{{DataStyle}}{{AlignRight}}'>{{Fmt TotCoupon 'c'}}</td>
         {{/if}}
+        <td style='{{DataStyle}}{{AlignRight}}'>{{Fmt TotPaid 'c'}}</td>
         <td style='{{DataStyle}}{{AlignRight}}'>{{Fmt TotDue 'c'}}</td>
     </tr>
 </table>
