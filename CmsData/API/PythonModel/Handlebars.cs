@@ -167,6 +167,14 @@ namespace CmsData
                     options.Template(writer, item);
                 }
             });
+
+            Handlebars.RegisterHelper("Calc", (writer, context, args) =>
+            {
+                var calcAmt = args[0].ToDouble() - args[1].ToDouble();
+                var calcAmtfmt = $"{{0:{'c'}}}";
+                writer.Write(calcAmtfmt, calcAmt);
+            });
+
             Handlebars.RegisterHelper("ThrowError", (writer, context, args) =>
             {
                 throw new Exception("ThrowError called in Handlebars Helper");
