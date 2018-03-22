@@ -135,8 +135,6 @@ namespace CmsData.Classes.Twilio
             {
                 try
                 {
-                    var x = 0;
-                    var y = 12 / x;
                     if (item.NoNumber || item.NoOptIn) continue;
 
                     var callbackUrl = hostUrl.HasValue() ? $"{hostUrl}/WebHook/Twilio/{item.Id}" : null;
