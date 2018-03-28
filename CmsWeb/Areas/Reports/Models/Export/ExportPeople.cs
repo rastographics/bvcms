@@ -122,6 +122,8 @@ namespace CmsWeb.Models
                         City = p.PrimaryCity,
                         ST = p.PrimaryState,
                         Zip = p.PrimaryZip,
+                        FirstName = p.PreferredName,
+                        p.LastName,
                         LabelName =
                         (spouse == null
                             ? (UseTitles ? (p.TitleCode != null ? p.TitleCode + " " + p.Name : p.Name) : p.Name)
