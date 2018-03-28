@@ -20,7 +20,6 @@
             <td style='{{LabelStyle}}'>Donation</td>
           {{/if}}
           <td style='{{LabelStyle}}'>Amount Paid</td>
-          <td style='{{LabelStyle}}'>Amount Due</td>
         </tr>
         <tr>
           <td align='right' style='{{DataStyle}}'>{{AmtFee}}</td>
@@ -28,7 +27,6 @@
             <td align='right' style='{{DataStyle}}'>{{AmtDonation}}</td>
           {{/if}}
           <td align='right' style='{{DataStyle}}'>{{AmtPaid}}</td>
-          <td align='right' style='{{DataStyle}}'>{{AmtDue}}</td>
         </tr>
       </table>
     </td>
