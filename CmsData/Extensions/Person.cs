@@ -1212,10 +1212,28 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             ev.IntValue = value;
             ev.TransactionTime = Util.Now;
         }
+        public void AddEditExtraInt(string field, int? value)
+        {
+            if (!value.HasValue)
+                return;
+            var ev = GetExtraValue(field);
+            ev.IntValue = value;
+            ev.TransactionTime = Util.Now;
+        }
 
         public void AddEditExtraBool(string field, bool tf, string name = null, string location = null)
         {
             if (!field.HasValue())
+                return;
+            var ev = GetExtraValue(field);
+            ev.BitValue = tf;
+            ev.TransactionTime = Util.Now;
+        }
+        public void AddEditExtraBoolIfTrue(string field, bool? tf)
+        {
+            if (!field.HasValue())
+                return;
+            if (!tf.HasValue)
                 return;
             var ev = GetExtraValue(field);
             ev.BitValue = tf;

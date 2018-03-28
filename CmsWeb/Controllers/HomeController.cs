@@ -269,11 +269,12 @@ namespace CmsWeb.Controllers
             else if (body.Contains("--class=TotalsByFund"))
             {
                 ViewBag.Type = "TotalsByFundSqlReport";
-                p.Add("@StartDate", DateTime.Now.AddDays(-90));
-                p.Add("@EndDate", DateTime.Now);
+                p.Add("@StartDate", dbType: DbType.DateTime);
+                p.Add("@EndDate", dbType: DbType.DateTime);
                 p.Add("@CampusId", dbType: DbType.Int32);
                 p.Add("@Online", dbType: DbType.Boolean);
                 p.Add("@TaxNonTax", dbType: DbType.Boolean);
+                p.Add("@FundSet", dbType: DbType.String);
                 p.Add("@IncludeUnclosedBundles", dbType: DbType.Boolean);
                 p.Add("@ActiveTagFilter", dbType: DbType.Int64);
             }
