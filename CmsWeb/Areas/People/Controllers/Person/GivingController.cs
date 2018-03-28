@@ -104,14 +104,11 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpGet]
         public ActionResult OneTimeGift()
         {
-            var sql = @"
-SELECT OrganizationId FROM dbo.Organizations
-WHERE RegistrationTypeId = 8
-AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
-            var oid = DbUtil.Db.Connection.ExecuteScalar(sql) as int?;
+            var oid = CmsData.API.APIContribution.OneTimeGiftOrgId(DbUtil.Db);
             if (oid > 0)
                 return Redirect("/OnlineReg/" + oid);
             return new EmptyResult();
         }
+
     }
 }

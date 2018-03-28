@@ -13,6 +13,7 @@ using System.Xml.Linq;
 using System.Xml.Serialization;
 using CmsData.Codes;
 using CmsData.View;
+using Dapper;
 using UtilityExtensions;
 
 namespace CmsData.API
@@ -316,6 +317,15 @@ namespace CmsData.API
                 orderby c.ContributionDate
                 select c;
             return q;
+        }
+        public static int? OneTimeGiftOrgId(CMSDataContext db)
+        {
+            var sql = @"
+SELECT OrganizationId FROM dbo.Organizations
+WHERE RegistrationTypeId = 8
+AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
+            var oid = db.Connection.ExecuteScalar(sql) as int?;
+            return oid;
         }
 
         [Serializable]
