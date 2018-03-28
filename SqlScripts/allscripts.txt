@@ -516,6 +516,7 @@ Creating_dbo_OrgFilterProspects.sql
 Creating_dbo_LastAttendOrg.sql
 Creating_dbo_RepairTransactionsOrgs.sql
 Creating_dbo_ShowOddTransactions.sql
+Creating_dbo_GivingChangeFundQuarters.sql
 Creating_dbo_HomePhone.sql
 Creating_dbo_SenderGifts.sql
 Creating_dbo_RepairTransactionsRun.sql
