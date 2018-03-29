@@ -58,7 +58,8 @@ WITH period1 AS (
 			ELSE 'No Change'
 		END
 	FROM getpercent pc
-	WHERE @tagid IS NULL OR EXISTS(SELECT NULL FROM dbo.TagPerson tp WHERE tp.Id = @tagid AND tp.PeopleId = pc.PeopleId)
+	JOIN dbo.People p ON p.PeopleId = pc.PeopleId
+	WHERE (@tagid IS NULL OR EXISTS(SELECT NULL FROM dbo.TagPerson tp WHERE tp.Id = @tagid AND tp.PeopleId = pc.PeopleId))
 )
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
