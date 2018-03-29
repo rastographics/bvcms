@@ -45,7 +45,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             p.Add("@campus", m.Campus.Value.ToInt());
             if (m?.FundSet != null)
             {
-                var fundset = APIContributionSearchModel.GetCustomFundSetList(m.FundSet.Value).JoinInts(",");
+                var fundset = APIContributionSearchModel.GetCustomStatementsList(m.FundSet.Value).JoinInts(",");
                 p.Add("@fundids", fundset);
             }
             else

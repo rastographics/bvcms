@@ -495,7 +495,7 @@ p { font-size: 11px; }
             }
             if (name == "Standard Statements")
             {
-                var funds = APIContributionSearchModel.GetCustomFundSetList(name);
+                var funds = APIContributionSearchModel.GetCustomStatementsList(name);
                 return new StatementSpecification()
                 {
                     Description = "Standard Statements",
@@ -519,7 +519,7 @@ p { font-size: 11px; }
             cs.Notice = noticeele != null
                 ? string.Concat(noticeele.Nodes().Select(x => x.ToString()).ToArray())
                 : standardnotice;
-            cs.Funds = APIContributionSearchModel.GetCustomFundSetList(desc);
+            cs.Funds = APIContributionSearchModel.GetCustomStatementsList(desc);
             return cs;
         }
         public static List<string> CustomStatementsList()
@@ -533,6 +533,23 @@ p { font-size: 11px; }
             list.Insert(0, "Standard Statements");
             return list;
         }
+        public static List<string> CustomFundSetList()
+        {
+            var xd = XDocument.Parse(Util.PickFirst(DbUtil.Db.ContentOfTypeText("CustomFundSets"),"<CustomFundSets/>"));
+            var list = new List<string>();
+            foreach (var ele in xd.Descendants().Elements("FundSet"))
+                list.Add(ele.Attribute("description")?.Value);
+            var xd2 = XDocument.Parse(Util.PickFirst(DbUtil.Db.ContentOfTypeText("CustomStatements"),"<CustomStatements/>"));
+            if (xd2.Descendants().Elements("Statement").Any())
+            {
+                list.Add("Standard Statements");
+                foreach (var ele in xd2.Descendants().Elements("Statement"))
+                    list.Add(ele.Attribute("description")?.Value);
+            }
+            if (list.Count == 0)
+                return null;
+            return list;
+        }
         public static SelectList CustomStatementsSelectList()
         {
             var cslist = CustomStatementsList();
@@ -542,7 +559,7 @@ p { font-size: 11px; }
         }
         public static SelectList CustomFundSetSelectList()
         {
-            var cslist = CustomStatementsList();
+            var cslist = CustomFundSetList();
             if (cslist == null)
                 return null;
             cslist.Insert(0, "(not specified)");

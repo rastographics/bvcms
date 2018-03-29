@@ -337,7 +337,7 @@ namespace CmsData.API
                 return null;
             return ret;
         }
-        public static List<int> GetCustomFundSetList(string name)
+        public static List<int> GetCustomStatementsList(string name)
         {
             if (name == "all")
                 return null;
@@ -356,6 +356,27 @@ namespace CmsData.API
                 return standardFunds;
             }
             var funds = xd.XPathSelectElement($"//Statement[@description='{name}']/Funds")?.Value ?? "";
+            return GetFundSet(funds, allfunds);
+        }
+        public static List<int> GetCustomFundSetList(string name)
+        {
+            if (name == "all")
+                return null;
+            var xd = XDocument.Parse(Util.PickFirst(DbUtil.Db.ContentOfTypeText("CustomFundSets"), "<CustomFundSets/>"));
+
+            var allfunds = DbUtil.Db.ContributionFunds.Select(cc => cc.FundId).ToList();
+            if (name == "Standard Statements")
+            {
+                var standardFunds = allfunds.Select(vv => vv).ToList();
+                foreach (var ele in xd.Descendants("Statement"))
+                {
+                    var f = ele.Element("Funds")?.Value ?? "";
+                    var list = GetFundSet(f, allfunds);
+                    standardFunds.RemoveAll(vv => list.Contains(vv));
+                }
+                return standardFunds;
+            }
+            var funds = xd.XPathSelectElement($"//FundSet[@description='{name}']/Funds")?.Value ?? "";
             return GetFundSet(funds, allfunds);
         }
 
