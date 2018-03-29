@@ -45,7 +45,7 @@ namespace CmsWeb.Controllers.Api
                 r.ContributionDesc = "Reversed Contribution from API: Id = " + c.ContributionId;
                 DbUtil.Db.Contributions.InsertOnSubmit(r);
                 DbUtil.Db.SubmitChanges();
-                var result = new AddContributionModel.Result();
+                var result = new ReverseReturn();
                 result.ContributionId = r.ContributionId;
                 if(r.PeopleId.HasValue)
                     result.PeopleId = r.PeopleId.Value;
@@ -60,12 +60,23 @@ namespace CmsWeb.Controllers.Api
 <tr><td>Amount</td><td>{c.ContributionAmount:N2}</td></tr>
 <tr><td>Date</td><td>{DateTime.Now.FormatDateTm()}</td></tr>
 </table>", Util.EmailAddressListFromString(DbUtil.Db.StaffEmailForOrg(oid ?? 0)));
-            DbUtil.LogActivity("API Reversal for " + c.ContributionId);
+                DbUtil.LogActivity("API Reversal for " + c.ContributionId);
                 return Request.CreateResponse(HttpStatusCode.OK, result);
             }
             catch (Exception ex)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, new { Error = ex.Message });
+            }
+        }
+        public class ReverseReturn
+        {
+            public string Operation => "Reversal";
+            public int PeopleId { get; set; }
+            public int ContributionId { get; set; }
+            public string Source { get; set; }
+            public override string ToString()
+            {
+                return $"Id:{ContributionId},PeopleId:{PeopleId},Source:{Source}";
             }
         }
     }
