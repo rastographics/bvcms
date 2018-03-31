@@ -7,6 +7,7 @@ using CmsData;
 using MoreLinq;
 using UtilityExtensions;
 using System.Data.SqlClient;
+using System.IO;
 
 namespace CmsWeb.Models
 {
@@ -179,6 +180,17 @@ namespace CmsWeb.Models
         public static DataTable ExcelDonorTotals(DateTime startdt, DateTime enddt,
             int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
         {
+#if DEBUG2
+            // for reconciliation by developer
+            var v = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
+                orderby c.ContributionId
+                select c.ContributionId;
+            using(var tw = new StreamWriter("D:\\exportdonors.txt"))
+               foreach (var s in v)
+                  tw.WriteLine(s);
+#endif
+            
+
             var q2 = from r in DbUtil.Db.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid, fundids)
                      select new
                      {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
@@ -10,6 +11,7 @@ using CmsWeb.Code;
 using UtilityExtensions;
 using System.Text;
 using Dapper;
+using MoreLinq;
 
 namespace CmsWeb.Models
 {
@@ -99,12 +101,23 @@ namespace CmsWeb.Models
                     FundSet = FundSet,
                 }
             };
+#if DEBUG2
+            // for reconciliation by developer
+            var v =  from c in api.FetchContributions()
+                     orderby c.ContributionId
+                     select c.ContributionId;
+            using(var tw = new StreamWriter("D:\\totalsbyfund.txt"))
+               foreach (var s in v)
+                  tw.WriteLine(s);
+#endif
+            
 
             if (IncludeBundleType)
                 q = (from c in api.FetchContributions()
                      let BundleType = c.BundleDetails.First().BundleHeader.BundleHeaderType.Description
                      let BundleTypeId = c.BundleDetails.First().BundleHeader.BundleHeaderTypeId
-                     group c by new { c.FundId, c.QBSyncID, BundleTypeId, BundleType } into g
+                     group c by new {c.FundId, c.QBSyncID, BundleTypeId, BundleType}
+                     into g
                      orderby g.Key.FundId, g.Key.QBSyncID, g.Key.BundleTypeId
                      select new FundTotalInfo
                      {

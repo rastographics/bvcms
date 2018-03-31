@@ -255,6 +255,13 @@ namespace CmsData.API
                 contributions = from c in contributions
                                 where c.Person.PeopleId == i
                                 select c;
+            else if (model.Name.AllDigitsCommas())
+            {
+                var ids = model.Name.Split(',').Select(vv => vv.ToInt()).ToList();
+                contributions = from c in contributions
+                                where ids.Contains(c.ContributionId)
+                                select c;
+            }
             else if (model.Name.HasValue())
                 contributions = from c in contributions
                                 where c.Person.Name.Contains(model.Name)
