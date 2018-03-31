@@ -76,8 +76,8 @@ FROM dbo.Contribution c
 	LEFT JOIN dbo.BundleHeader h ON d.BundleHeaderId = h.BundleHeaderId
 	LEFT JOIN lookup.BundleHeaderTypes bht ON h.BundleHeaderTypeId = bht.Id
 	LEFT JOIN lookup.BundleStatusTypes bst ON h.BundleStatusId = bst.Id
-	JOIN dbo.People p ON c.PeopleId = p.PeopleId
-	JOIN dbo.Families fa ON p.FamilyId = fa.FamilyId
+	LEFT JOIN dbo.People p ON c.PeopleId = p.PeopleId
+	LEFT JOIN dbo.Families fa ON p.FamilyId = fa.FamilyId
 	LEFT JOIN dbo.People sp ON sp.PeopleId = p.SpouseId
 WHERE 1 = 1
 	AND c.ContributionTypeId NOT IN (6,7) -- no reversed or returned
@@ -95,6 +95,7 @@ WHERE 1 = 1
 	AND (@tagid IS NULL OR EXISTS(SELECT NULL FROM dbo.TagPerson WHERE PeopleId = c.PeopleId AND Id = @tagid))
 	AND (@fundids IS NULL OR EXISTS(SELECT NULL FROM dbo.SplitInts(@fundids) WHERE Value = c.FundId))
 )
+
 
 GO
 IF @@ERROR <> 0 SET NOEXEC ON

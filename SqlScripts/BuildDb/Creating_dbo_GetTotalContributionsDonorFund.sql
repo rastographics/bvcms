@@ -30,7 +30,7 @@ RETURN
 	FROM dbo.GetContributionsDetails(@fd, @td, @campusid, NULL, @nontaxded, @includeUnclosed, @tagid, @fundids) c2
 	GROUP BY CreditGiverId, HeadName, SpouseId, SpouseName, SpouseId, c2.FundId, FundName
 	) tt 
-	JOIN dbo.People p ON p.PeopleId = tt.CreditGiverId
+	LEFT JOIN dbo.People p ON p.PeopleId = tt.CreditGiverId
 )
 GO
 IF @@ERROR <> 0 SET NOEXEC ON

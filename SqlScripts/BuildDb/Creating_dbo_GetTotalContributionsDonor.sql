@@ -43,11 +43,12 @@ RETURN
 		ST = p.PrimaryState,
 		Zip = p.PrimaryZip
 	FROM contributions c
-	JOIN dbo.People p ON p.PeopleId = c.CreditGiverId
-	JOIN lookup.MemberStatus ms ON p.MemberStatusId = ms.Id
+	LEFT JOIN dbo.People p ON p.PeopleId = c.CreditGiverId
+	LEFT JOIN lookup.MemberStatus ms ON p.MemberStatusId = ms.Id
 	LEFT JOIN lookup.EnvelopeOption op ON op.Id = p.ContributionOptionsId
 	LEFT OUTER JOIN dbo.Organizations o ON o.OrganizationId = p.BibleFellowshipClassId
 )
+
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO
