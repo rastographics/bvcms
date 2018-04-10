@@ -210,7 +210,7 @@
             var fundIndexer = getFundPrefix() + 'FundItem[' + i + ']';
             var inputKey = fundIndexer + '.Key';
             var inputValue = fundIndexer + '.Value';
-            $('#special-funds > tbody:last').append('<tr id="' + id + '"><td style="border-width: 0px !important"><a href="#" tabindex="-1" class="remove-fund"><span class="fa fa-trash-o" style="line-height: 20px !important; padding: 8px 0;"></span></a></td><td class="pull-right" style="border-width: 0px !important"><h4 class="inline-block">' + text + '</h4></td><td style="border-width: 0px !important"><h4 class="inline-block" style="margin: 0;padding: 12px 0;">$</h4><!----><input name="' + inputValue + '" type="text" class="form-control input-lg narrow sum pull-right"/><input type="hidden" name="' + inputKey + '" value="' + id + '"></td></tr>');
+            $('#special-funds > tbody:last').append('<tr id="' + id + '"><td style="border-width: 0px !important"><a href="#" tabindex="-1" class="remove-fund"><span class="fa fa-trash-o" style="line-height: 20px !important; padding: 8px 0;"></span></a></td><td class="pull-right" style="border-width: 0px !important"><h4 class="inline-block">' + text + '</h4></td><td style="border-width: 0px !important"><!--<h4 class="inline-block" style="margin: 0;padding: 12px 0;">$</h4>--><input name="' + inputValue + '" placeholder="$ 0.00" type="text" class="form-control input-lg narrow sum pull-right"/><input type="hidden" name="' + inputKey + '" value="' + id + '"></td></tr>');
             showAddfund();
             setDelayedFocus($('input[name="' + inputValue + '"]'));
 
@@ -242,13 +242,15 @@
 
             $('input:text').first().focus();
 
-            $('#special-funds-list').select2({
-                placeholder: 'Select Fund'
-            });
+            //$('#special-funds-list').select2({
+            //    placeholder: 'Select Fund'
+            //});
 
-            $('#special-funds-list').on('change', function (e) {
-                addFundRow(e.added.id, e.added.text);
-                $('#special-funds-list').select2('val', '');
+            $('#special-funds-list').on('change', function () {
+                var selectedText = $('#special-funds-list option:selected').text();
+                var selectedVal = $('#special-funds-list option:selected').val();
+                addFundRow(selectedVal, selectedText);
+                $('#special-funds-list').val("0");;
             });
 
             $(document).on("click", "a.remove-fund", function (e) {
