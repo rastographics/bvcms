@@ -22,7 +22,7 @@ WITH trans AS (
 				WHERE OriginalId = t.OriginalId 
 				AND TransactionDate <= t.TransactionDate 
 				AND amt IS NOT NULL
-				AND (Approved = 1 OR TransactionId LIKE 'Coupon%') OR (TransactionId LIKE 'zero due%' AND amtdue > 0)), 0)
+				AND ((Approved = 1 or TransactionId like 'Coupon%') or (TransactionId like 'zero due%' and amtdue > 0))), 0)
 			TotDue
 		,(SELECT COUNT(*) 
 			FROM dbo.TransactionPeople
@@ -76,6 +76,7 @@ SELECT BalancesId
 			THEN 1 ELSE 0 END) CanCredit
 		,IsAdjustment
 FROM trans
+
 
 
 
