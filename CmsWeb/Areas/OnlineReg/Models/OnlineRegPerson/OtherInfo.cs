@@ -147,7 +147,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 list.InsertRange(1, q.ToList());
             }
             if (askSize?.AllowLastYear ?? false)
-                list.Add(new SelectListItem {Value = "lastyear", Text = "Use shirt from last year"});
+            {
+                var text = Organization.GetExtra(DbUtil.Db, setting.OrgId, "AllowLastYearShirtText")
+                    ?? "Use shirt from last year"; 
+                list.Add(new SelectListItem {Value = "lastyear", Text = text});
+            }
             return list;
         }
 
