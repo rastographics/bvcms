@@ -489,6 +489,7 @@
     <Compile Include="API\CreateExcel.cs" />
     <Compile Include="API\PythonModel\DynamicData.cs" />
     <Compile Include="API\PythonModel\Deprecated.cs" />
+    <Compile Include="API\PythonModel\Contributions.cs" />
     <Compile Include="API\PythonModel\ExtraValuesOrg.cs" />
     <Compile Include="API\PythonModel\Forms.cs" />
     <Compile Include="API\PythonModel\JsonSerializer.cs" />
@@ -564,6 +565,7 @@
     <Compile Include="Email\ReplacementCodes\Links\IsSpecialLink.cs" />
     <Compile Include="Extensions\ChangeDetail.cs" />
     <Compile Include="Classes\AddressVerify.cs" />
+    <Compile Include="Extensions\Contribution.cs" />
     <Compile Include="Extensions\DeleteMeetingRun.cs" />
     <Compile Include="Extensions\FamilyMember.cs" />
     <Compile Include="Extensions\LongRunningOperation.cs" />
