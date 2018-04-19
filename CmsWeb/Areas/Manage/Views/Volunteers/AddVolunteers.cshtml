@@ -16,11 +16,11 @@
 }
 <div class="modal-dialog" id="detailsModal">
     <div class="modal-content">
-        <div class="modal-header">          
-            <h4 style="display:inline-block"><strong>All Volunteers</strong></h4> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-            <div float="right" style="display: inline-block;width: 60%;text-align: right"><input type="button" id="addVolunteer" class="btn btn-primary" value="Add">&nbsp;&nbsp;<a href="#" class="btn btn-default" data-dismiss="modal">Close</a></div>
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>            
+            <h4 style="display:inline-block"><strong>All Volunteers</strong></h4> 
         </div>
-        <div class="modal-body" style="display: inline-block; width: 100%;">
+        <div class="modal-body" style="display: inline-block; width: 100%;overflow-y: auto; max-height: 400px">
             <div align="center">
                 <input type="radio" name="target" @isCheckedWeek value="week"> Week @TempData["selectedWeek"] &nbsp; <input type="radio" name="target" @isChecked value="meeting"> Meeting - @TempData["selectedTime"] &nbsp;<br/>
             </div>
@@ -66,7 +66,7 @@
             }
         </div>
         <div class="modal-footer">
-            <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+            <div float="right" style="display: inline-block;width: 60%;text-align: right"><input type="button" id="addVolunteer" class="btn btn-primary" value="Add">&nbsp;&nbsp;<a href="#" class="btn btn-default" data-dismiss="modal">Close</a></div>
         </div>
     </div>
 </div>
@@ -77,12 +77,17 @@
 
         $("#sg1, #sg2").change(function() {
             //$.block();
+            var isWeek = false;
+            if ($("input[type='radio'][name='target']:checked").val() === "week") {
+                isWeek = true;
+            };
             $.post("/Volunteers/AddVolunteers/" + $("#OrgId").val(),
                     {
                         week: $("#Week").val(),
                         time: $("#Time").val(),
                         sg1: $("#sg1").val(),
-                        sg2: $("#sg2").val()
+                        sg2: $("#sg2").val(),
+                        isWeek : isWeek
                     })
                 .done(function(result) {
                     $('#detailsModal').html(result);

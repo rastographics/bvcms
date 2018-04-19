@@ -147,8 +147,8 @@ namespace CmsWeb.Areas.Manage.Controllers
         //[Route("AddVolunteers/{id:int}/{week:int}/{time:string}/{isWeek:bool}")]
         public ActionResult AddVolunteers(int id, int? week, DateTime? time, string sg1, string sg2, bool? isWeek = false)
         {
-            TempData["selectedWeek"] = week.ToInt();
-            TempData["selectedTime"] = time;
+            TempData["selectedWeek"] = week?.ToInt();
+            TempData["selectedTime"] = time?.ToString("g");
             TempData["isWeek"] = isWeek;
             var m = new VolunteerCommitmentsModel(id);
             m.SmallGroup1 = sg1;

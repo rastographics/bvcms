@@ -135,7 +135,7 @@
                     var month = wk[0].Sunday.Month;
                     if (month == curMonth || Model.SortByWeek)
                     {
-                        <th class="center" style="background-color: lightgray"><h5 style="font-weight: bold !important">@wk[0].Sunday.ToString("MMM dd") (Week @wk[0].Week)</h5></th>
+                        <th class="center" style="vertical-align: middle; text-align: center;background-color: lightgray"><h5 style="font-weight: bold !important;color: #003f72">@wk[0].Sunday.ToString("MMM dd")<br/>(Week @wk[0].Week)</h5></th>
                     }
                     curMonth = wk[0].Sunday.Month;
                     weekTimeSlotCount = wk.Count;

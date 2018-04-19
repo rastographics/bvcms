@@ -86,7 +86,7 @@
             url: "/Volunteers/ManageArea/",
             data: JSON.stringify($info),
             success: function (ret) {
-                alert("success");
+                //alert("success");
                 $.unblock();
                 window.location.reload(true);
             },
