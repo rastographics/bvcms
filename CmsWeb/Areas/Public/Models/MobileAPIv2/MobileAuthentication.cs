@@ -145,20 +145,20 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 
 			string hashString = createHash( instanceID, userAndPassword[0], userAndPassword[1] );
 
-			MobileAppDevice appDevice = DbUtil.Db.MobileAppDevices.FirstOrDefault( d => d.InstanceID == instanceID && d.Authentication == hashString );
+			device = DbUtil.Db.MobileAppDevices.FirstOrDefault( d => d.InstanceID == instanceID && d.Authentication == hashString );
 
-			if( appDevice == null ) {
+			if( device == null ) {
 				if( previousID.Length > 0 ) {
 					hashString = createHash( previousID, userAndPassword[0], userAndPassword[1] );
 
-					appDevice = DbUtil.Db.MobileAppDevices.FirstOrDefault( d => d.InstanceID == previousID && d.Authentication == hashString );
+					device = DbUtil.Db.MobileAppDevices.FirstOrDefault( d => d.InstanceID == previousID && d.Authentication == hashString );
 
-					if( appDevice == null ) {
+					if( device == null ) {
 						return Error.INVALID_PASSWORD;
 					}
 
-					appDevice.InstanceID = instanceID;
-					appDevice.Authentication = createHash( instanceID, userAndPassword[0], userAndPassword[1] );
+					device.InstanceID = instanceID;
+					device.Authentication = createHash( instanceID, userAndPassword[0], userAndPassword[1] );
 
 					DbUtil.Db.SubmitChanges();
 				} else {
@@ -166,8 +166,11 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 				}
 			}
 
-			user = appDevice.User;
-			instance = appDevice.InstanceID;
+			device.LastSeen = DateTime.Now;
+			DbUtil.Db.SubmitChanges();
+
+			user = device.User;
+			instance = device.InstanceID;
 
 			return checkUser( true, false );
 		}
@@ -183,6 +186,9 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			if( device == null ) {
 				return Error.INVALID_PASSWORD;
 			}
+
+			device.LastSeen = DateTime.Now;
+			DbUtil.Db.SubmitChanges();
 
 			if( userID > 0 ) {
 				user = DbUtil.Db.Users.FirstOrDefault( u => u.UserId == userID );
@@ -214,6 +220,8 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			MobileAppDevice appDevice = DbUtil.Db.MobileAppDevices.FirstOrDefault( d => d.InstanceID == instanceID );
 
 			if( appDevice != null ) {
+				appDevice.UserID = user.UserId;
+				appDevice.PeopleID = user.PeopleId;
 				appDevice.Authentication = hashString;
 			} else {
 				appDevice = new MobileAppDevice
