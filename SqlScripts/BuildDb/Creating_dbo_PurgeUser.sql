@@ -41,6 +41,10 @@ BEGIN
 	
 	DELETE dbo.Users
 	WHERE UserId = @uid
+
+	DELETE
+	FROM dbo.MobileAppDevices
+	WHERE userID = @uid
 	
 END
 GO
