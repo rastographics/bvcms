@@ -326,11 +326,12 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             if (!Authenticate())
                 return Content("not authorized");
-            DbUtil.LogActivity($"checkin {PeopleId}, {OrgId}, {(Present ? "attend" : "unattend")}");
             
+            DbUtil.LogActivity($"checkin {PeopleId}, {OrgId}, {(Present ? "attend" : "unattend")}");
             DateTime dt;
-            if(!DateTime.TryParse(hour, CultureInfo.GetCultureInfo("en-US"), DateTimeStyles.None, out dt))
+            if (!DateTime.TryParse(hour, CultureInfo.GetCultureInfo("en-US"), DateTimeStyles.None, out dt))
                 return Content("date not parsed");
+
             Attend.RecordAttend(DbUtil.Db, PeopleId, OrgId, Present, dt);
             var r = new ContentResult();
             r.Content = "success";

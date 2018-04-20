@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Web;
 using System.Xml;
 using System.Web.Mvc;
@@ -142,7 +143,7 @@ namespace CmsWeb.Models
 					x.Attr("checkedin", c.CheckedIn.ToString());
 					x.Attr("custody", c.Custody.ToString());
 					x.Attr("transport", c.Transport.ToString());
-					x.Attr("hour", c.Hour.FormatDateTm());
+				    x.Attr("hour", c.Hour?.ToString("g", CultureInfo.CreateSpecificCulture("en-US")));
 					x.Attr("requiressecuritylabel", c.RequiresSecurityLabel.ToString());
 					x.Attr("church", c.Church);
 

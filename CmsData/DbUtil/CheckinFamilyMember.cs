@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using UtilityExtensions;
 
 namespace CmsData.View
@@ -49,7 +50,7 @@ namespace CmsData.View
                 DateTime? bd = null;
                 if (DateTime.TryParse(BirthDay, out dt))
                     bd = dt;
-                return bd.FormatDate();
+                return bd?.ToString("g", CultureInfo.CreateSpecificCulture("en-US"));
             }
         }
     }
