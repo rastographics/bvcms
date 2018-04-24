@@ -90,13 +90,15 @@ namespace CmsWeb.Models
         public static DataTable DonorDetails(DateTime startdt, DateTime enddt,
             int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
         {
-            var UseTitles = true;
+            var UseTitles = !DbUtil.Db.Setting("NoTitlesOnStatements");
+
             if (DbUtil.Db.Setting("UseLabelNameForDonorDetails"))
             {
                 var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
                     join p in DbUtil.Db.People on c.CreditGiverId equals p.PeopleId
                     let mainFellowship = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
-                    let spouse = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
+                    let head1 = DbUtil.Db.People.Single(hh => hh.PeopleId == p.Family.HeadOfHouseholdId)
+                    let head2 = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == p.Family.HeadOfHouseholdSpouseId)
                     let altcouple = p.Family.FamilyExtras.SingleOrDefault( ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data
                     select new
                     {
@@ -125,22 +127,14 @@ namespace CmsWeb.Models
                         Zip = p.PrimaryZip,
                         FirstName = p.PreferredName,
                         p.LastName,
-                        LabelName =
-                        (spouse == null
-                            ? (UseTitles ? (p.TitleCode != null ? p.TitleCode + " " + p.Name : p.Name) : p.Name)
-                            : (p.Family.HeadOfHouseholdId == p.PeopleId
-                                ? (UseTitles
-                                    ? (p.TitleCode != null
-                                        ? p.TitleCode + " and Mrs. " + p.Name
-                                        : "Mr. and Mrs. " + p.Name)
-                                    : (p.PreferredName + " and " + spouse.PreferredName + " " + p.LastName +
-                                       (p.SuffixCode.Length > 0 ? ", " + p.SuffixCode : "")))
-                                : (UseTitles
-                                    ? (spouse.TitleCode != null
-                                        ? spouse.TitleCode + " and Mrs. " + spouse.Name
-                                        : "Mr. and Mrs. " + spouse.Name)
-                                    : (spouse.PreferredName + " and " + p.PreferredName + " " + spouse.LastName +
-                                       (spouse.SuffixCode.Length > 0 ? ", " + spouse.SuffixCode : ""))))),
+                        FamilyName = altcouple.Length > 0 ? altcouple : head2 == null
+                            ? (UseTitles ? (head1.TitleCode != null ? head1.TitleCode + " " + head1.Name : head1.Name) : head1.Name)
+                            : (UseTitles
+                                    ? (head1.TitleCode != null
+                                        ? head1.TitleCode + " and Mrs. " + head1.Name
+                                        : "Mr. and Mrs. " + head1.Name)
+                                    : head1.PreferredName + " and " + head2.PreferredName + " " + head1.LastName +
+                                       (head1.SuffixCode.Length > 0 ? ", " + head1.SuffixCode : "")),
                     };
                 return q.ToDataTable();
 
