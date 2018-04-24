@@ -580,7 +580,7 @@ namespace CmsData
                 {
                     var subject = $"sent emails - error:(emailid={emailqueue.Id}) {CmsHost}";
                     ErrorLog.GetDefault(null).Log(new Error(new Exception(subject, ex)));
-                    SendEmail(from, subject, ex.Message, Util.ToMailAddressList(from), to);
+                    SendEmail(from, subject, $"{ex.Message}\n{ex.StackTrace}", Util.ToMailAddressList(from), to);
                 }
             }
 
@@ -679,7 +679,7 @@ namespace CmsData
                 {
                     var subject = $"sent emails - error:(emailid={emailqueue.Id}) {CmsHost}";
                     ErrorLog.GetDefault(null).Log(new Error(new Exception(subject, ex)));
-                    SendEmail(from, subject, ex.Message, Util.ToMailAddressList(from), to);
+                    SendEmail(from, subject, $"{ex.Message}\n{ex.StackTrace}", Util.ToMailAddressList(from), to);
                 }
             }
 

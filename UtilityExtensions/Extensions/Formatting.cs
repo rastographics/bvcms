@@ -23,6 +23,12 @@ namespace UtilityExtensions
                 return dt.Value.ToString("d");
             return "";
         }
+        public static string FormatDateUS(this DateTime? dt)
+        {
+            if (dt.HasValue)
+                return dt.Value.ToString("d", CultureInfo.CreateSpecificCulture("en-US"));
+            return "";
+        }
 
         public static HtmlString FormatDate2(this DateTime? dt, string prefix = null, string suffix = null)
         {
@@ -120,6 +126,12 @@ namespace UtilityExtensions
         public static string FormatDateTm(this DateTime? dt)
         {
             return dt.FormatDateTm(null);
+        }
+        public static string FormatDateTmUS(this DateTime? dt, string def = null)
+        {
+            if (dt.HasValue)
+                return dt.Value.ToString("g", CultureInfo.CreateSpecificCulture("en-US"));
+            return def;
         }
 
         public static string FormatDateTm(this DateTime? dt, string def)

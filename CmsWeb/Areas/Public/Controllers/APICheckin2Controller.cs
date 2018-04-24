@@ -123,9 +123,9 @@ namespace CmsWeb.Areas.Public.Controllers
                 ? DbUtil.Db.Families.Single(fam => fam.FamilyId == id)
                 : new Family();
 
-            var position = DbUtil.Db.ComputePositionInFamily(m.dob.Age0(), m.marital == 20, id) ?? 10;
+            var position = DbUtil.Db.ComputePositionInFamily(m.Birthdate.Age0(), m.marital == 20, id) ?? 10;
             var p = Person.Add(f, position,
-                null, m.first, m.goesby, m.last, m.dob, false, m.gender,
+                null, m.first, m.goesby, m.last, m.Birthdate.ToString2("d"), false, m.gender,
                 OriginCode.Visit, null);
 
             UpdatePerson(p, m, true);
@@ -190,11 +190,9 @@ namespace CmsWeb.Areas.Public.Controllers
                 UpdateField(psb, p, "FirstName", Trim(m.first));
             if (keys.Contains("last"))
                 UpdateField(psb, p, "LastName", Trim(m.last));
-            if (keys.Contains("dob"))
+            if (keys.Contains("dob") && m.Birthdate.HasValue)
             {
-                DateTime dt;
-                DateTime.TryParse(m.dob, out dt);
-                if (p.BirthDate != dt)
+                if (p.BirthDate != m.Birthdate)
                     UpdateField(psb, p, "DOB", m.dob);
             }
             if (keys.Contains("email"))
@@ -329,9 +327,16 @@ namespace CmsWeb.Areas.Public.Controllers
             
             DbUtil.LogActivity($"checkin {PeopleId}, {OrgId}, {(Present ? "attend" : "unattend")}");
             DateTime dt;
-            if (!DateTime.TryParse(hour, CultureInfo.GetCultureInfo("en-US"), DateTimeStyles.None, out dt))
-                return Content("date not parsed");
-
+            if(Util.IsCultureUS())
+            {
+                if(!hour.DateTryParse(out dt))
+                    return Content("date not parsed");
+            }
+            else
+            {
+                if (!hour.DateTryParseUS(out dt))
+                    return Content("date not parsed");
+            }
             Attend.RecordAttend(DbUtil.Db, PeopleId, OrgId, Present, dt);
             var r = new ContentResult();
             r.Content = "success";
