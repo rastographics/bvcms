@@ -171,23 +171,13 @@
                         var w = myWeekList[l];
                         var tsl = w[y];
                         var myPopOverContent = "";
-                        if (tsl.MeetingId > 0)
-                        {
-                            myPopOverContent = "<a href='/Reports/RollsheetForMeeting/" + tsl.MeetingId + "' target='_blank'>Rollsheet(" + tsl.Count + "/" + tsl.Limit + ")</a><br/>";
-                            myPopOverContent = myPopOverContent + "<a href='/Volunteers/EmailSlot/" + tsl.MeetingId + "' target='_blank'>Email</a><br/>";
-                            myPopOverContent = myPopOverContent + "<a href='/Meeting/" + tsl.MeetingId + "' target='_blank'>Meeting</a><br/>";
-                            myPopOverContent = myPopOverContent + "<a href='/Volunteers/Request/" + tsl.MeetingId + "/" + tsl.Limit + "' target='_blank'>Request Volunteers</a><br/>";
-                        }
-                        else
-                        {
-                            myPopOverContent = myPopOverContent + "<a href='/Volunteers/Request0/" + tsl.ticks + "/" + Model.OrgId + "/" + tsl.Limit + "' target='_blank'>Request Volunteers</a><br/>";
-                        }
-                        var tTest = "";
+                        var pastTimeSlots = "";
+                        var hasVolunteers = false;
                         if (tsl.Time < DateTime.Now)
                         {
-                            tTest = "background-color: lightgrey;opacity: 0.5;filter: Alpha(opacity=50)";
+                            pastTimeSlots = "background-color: lightgrey;opacity: 0.5;filter: Alpha(opacity=50)";
                         }
-                        <td style="position: relative;@tTest">                           
+                        <td style="position: relative;@pastTimeSlots">                           
                             <div style="position: absolute; right: 0; padding-right: 2px;">
                                 <a class="membertype" id="linkId" href="@Url.Action("AddVolunteers", "Volunteers", new {id = Model.OrgId, week = tsl.Week, time = tsl.Time})"> <i class="glyphicon glyphicon-plus-sign"></i> </a>                          
                             </div>
@@ -195,7 +185,7 @@
                             <br/>
                             @foreach (var p in tsl.OrderedPersons())
                             {
-
+                                hasVolunteers = true;
                                 if (Model.IsLeader)
                                 {
                                     var myPersonPopContent = "";
@@ -229,6 +219,17 @@
                                     <div>@Helper.AnchorLink(p.Name, "/Person2/" + p.PeopleId)</div>
                                 }
                             }
+                            @if (tsl.MeetingId > 0 && hasVolunteers)
+                            {
+                                myPopOverContent = "<a href='/Reports/RollsheetForMeeting/" + tsl.MeetingId + "' target='_blank'>Rollsheet(" + tsl.Count + "/" + tsl.Limit + ")</a><br/>";
+                                myPopOverContent = myPopOverContent + "<a href='/Volunteers/EmailSlot/" + tsl.MeetingId + "' target='_blank'>Email</a><br/>";
+                                myPopOverContent = myPopOverContent + "<a href='/Meeting/" + tsl.MeetingId + "' target='_blank'>Meeting</a><br/>";
+                                myPopOverContent = myPopOverContent + "<a href='/Volunteers/Request/" + tsl.MeetingId + "/" + tsl.Limit + "' target='_blank'>Request Volunteers</a><br/>";
+                            }
+                            else
+                            {
+                                myPopOverContent = myPopOverContent + "<a href='/Volunteers/Request0/" + tsl.ticks + "/" + Model.OrgId + "/" + tsl.Limit + "' target='_blank'>Request Volunteers</a><br/>";
+                            }
                             <br />
                             <div style="position: absolute; right: 0; padding-right: 2px; bottom: 0;" data-toggle="popover" data-placement="auto right" data-container="body" data-trigger="manual" data-content="@myPopOverContent">
                                 <a tabindex="0" href="#"><span class="glyphicon glyphicon-menu-hamburger"></span></a>
@@ -242,51 +243,3 @@
     </div>    
 </form>
 
-@*@foreach (var w in Model.FetchSlotWeeksByMonth(null))
-{
-    //weekCount = w.Count;
-    var month = w[0].Sunday.Month;
-    if (month == curMonth)
-    {
-        <th class="center">@w[0].Sunday.ToString("MMM dd") (Week @w[0].Week)</th>
-    }
-    curMonth = w[0].Sunday.Month;
-    curMonthWeekcount++;
-    weekTimeSlotCount = 1;
-    foreach (var t in w)
-    {
-        lstPeople = "";
-        foreach (var p in t.OrderedPersons())
-        {
-            lstPeople = lstPeople + "<div>" + p.Name + "</div>";
-        }
-        weekslots.Add(curMonthWeekcount + "-" + weekTimeSlotCount, lstPeople);
-        weekTimeSlotCount++;
-    }
-}*@
-
-@*@foreach (var t in Model.TimeSlots)
-{
-    lstPeople = "";
-    <tr>
-        <td> @t.Datetime().ToString("h:mm tt")</td>
-        @for (int i = 1; i <= curMonthWeekcount && j < weekTimeSlotCount; i++)
-        {
-            string myKey = i + "-" + j;
-            string test = "";
-            weekslots.TryGetValue(myKey, out test);                            
-            <td style="position: relative;">
-                <div style="position: absolute; right: 0;" data-toggle="popover" data-placement="auto right" data-container="body" data-trigger="focus" data-content="test">
-                    <a tabindex="0" href="#" ><i class="fa fa-info-circle"></i> </a>
-                </div>
-                @(new HtmlString(test))
-                <br/>
-                <br/>
-                <div style="position: absolute; bottom: 0; font-weight: bold">
-                    <a class="membertype" id="linkId" href="@Url.Action("AddVolunteers", "Volunteers", new {@id = Model.OrgId, @week = i, @time = t.Datetime()})"> Add Volunteer </a>
-                </div>
-            </td>
-        }
-    </tr>
-    j++;
-}*@
