@@ -70,42 +70,36 @@
         </div>
     </div>
 </div>
-@*@ViewExtensions2.jQuery()
-@ViewExtensions2.jQueryUI()*@
-<script type="text/javascript">
-    //$(document).ready(function() {
 
-        $("#sg1, #sg2").change(function() {
-            //$.block();
+<script type="text/javascript">    
+        $('#sg1, #sg2').change(function() {         
             var isWeek = false;
-            if ($("input[type='radio'][name='target']:checked").val() === "week") {
+            if ($('input[type="radio"][name="target"]:checked').val() === 'week') {
                 isWeek = true;
             };
-            $.post("/Volunteers/AddVolunteers/" + $("#OrgId").val(),
+            $.post('/Volunteers/AddVolunteers/' + $('#OrgId').val(),
                     {
-                        week: $("#Week").val(),
-                        time: $("#Time").val(),
-                        sg1: $("#sg1").val(),
-                        sg2: $("#sg2").val(),
+                        week: $('#Week').val(),
+                        time: $('#Time').val(),
+                        sg1: $('#sg1').val(),
+                        sg2: $('#sg2').val(),
                         isWeek : isWeek
                     })
                 .done(function(result) {
-                    $('#detailsModal').html(result);
-                    $('#detailsModal').modal('show');
-
+                    $('#detailsModal').html(result).modal('show');
                 });
         });
 
 
-        $("#addVolunteer").on("click",
+        $('#addVolunteer').on('click',
             function() {
                 var list = [];
                 $('input:checked').each(function() {
-                    if (typeof $(this).attr("pid") != "undefined") {
+                    if (typeof $(this).attr('pid') != 'undefined') {
                         list.push({
-                            "source": $(this).attr("source"),
-                            "pid": $(this).attr("pid"),
-                            "mid": $(this).attr("mid")
+                            source: $(this).attr('source'),
+                            pid: $(this).attr('pid'),
+                            mid: $(this).attr('mid')
                         });
                     }
                 });
@@ -113,26 +107,25 @@
                 if (list.length === 0)
                     return;
                 var $info = {
-                    "id": $("#OrgId").val(),
-                    "sg1": $("#sg1").val(),
-                    "sg2": $("#sg2").val(),
-                    "target": $("input[type='radio'][name='target']:checked").val(),
-                    "week": $("#Week").val(),
-                    "time": $("#Time").val(),
-                    "SortByWeek": $("#SortByWeek").val(),
-                    "list": list
+                    id: $('#OrgId').val(),
+                    sg1: $('#sg1').val(),
+                    sg2: $('#sg2').val(),
+                    target: $('input[type="radio"][name="target"]:checked').val(),
+                    week: $('#Week').val(),
+                    time: $('#Time').val(),
+                    SortByWeek: $('#SortByWeek').val(),
+                    list: list
                 };
-                //alert($("input[type='radio'][name='target']:checked").val());
+
                 $.ajax({
-                    url: "/Volunteers/ManageArea/",
+                    url: '/Volunteers/ManageArea/',
                     data: JSON.stringify($info),
                     success: function(ret) {
-                        //alert("success");
                         $('#detailsModal').modal('hide');
                         window.location.reload(true);
                     },
                     error: function(ret) {
-                        swal("Error!", ret, "error");
+                        swal('Error!', ret, 'error');
                     },
                     type: 'POST',
                     contentType: 'application/json, charset=utf-8',
@@ -140,63 +133,62 @@
                 });
             });
 
-        $("#checkedAllCommits").change(function() {
+        $('#checkedAllCommits').change(function() {
             if (this.checked) {
-                $(".checkSingleCommits").each(function() {
+                $('.checkSingleCommits').each(function() {
                     this.checked = true;
                 });
             } else {
-                $(".checkSingleCommits").each(function() {
+                $('.checkSingleCommits').each(function() {
                     this.checked = false;
                 });
             }
         });
 
-        $(".checkSingleCommits").click(function() {
-            if ($(this).is(":checked")) {
+        $('.checkSingleCommits').click(function() {
+            if ($(this).is(':checked')) {
                 var isAllChecked = 0;
 
-                $(".checkSingleCommits").each(function() {
+                $('.checkSingleCommits').each(function() {
                     if (!this.checked)
                         isAllChecked = 1;
                 });
 
                 if (isAllChecked === 0) {
-                    $("#checkedAllCommits").prop("checked", true);
+                    $('#checkedAllCommits').prop('checked', true);
                 }
             } else {
-                $("#checkedAllCommits").prop("checked", false);
+                $('#checkedAllCommits').prop('checked', false);
             }
         });
 
-        $("#checkedAllNoCommits").change(function() {
+        $('#checkedAllNoCommits').change(function() {
             if (this.checked) {
-                $(".checkSingleNoCommits").each(function() {
+                $('.checkSingleNoCommits').each(function() {
                     this.checked = true;
                 });
             } else {
-                $(".checkSingleNoCommits").each(function() {
+                $('.checkSingleNoCommits').each(function() {
                     this.checked = false;
                 });
             }
         });
 
-        $(".checkSingleNoCommits").click(function() {
-            if ($(this).is(":checked")) {
+        $('.checkSingleNoCommits').click(function() {
+            if ($(this).is(':checked')) {
                 var isAllChecked = 0;
 
-                $(".checkSingleNoCommits").each(function() {
+                $('.checkSingleNoCommits').each(function() {
                     if (!this.checked)
                         isAllChecked = 1;
                 });
 
                 if (isAllChecked === 0) {
-                    $("#checkedAllNoCommits").prop("checked", true);
+                    $('#checkedAllNoCommits').prop('checked', true);
                 }
             } else {
-                $("#checkedAllNoCommits").prop("checked", false);
+                $('#checkedAllNoCommits').prop('checked', false);
             }
         });
-    //});
 </script>
 

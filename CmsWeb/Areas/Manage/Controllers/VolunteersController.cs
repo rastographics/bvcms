@@ -196,10 +196,10 @@ namespace CmsWeb.Areas.Manage.Controllers
             return Redirect($"/Email/{qb.Id}?TemplateId=0&body={m.Organization.OrganizationName} {m.MeetingDate.FormatDateTm()}&subj={m.Organization.OrganizationName} {m.MeetingDate.FormatDateTm()}");
         }
 
-        [Route("EmailPersonInSlot/{id:int}/{pId:int}")]
-        public ActionResult EmailPersonInSlot(int id, int pId)
+        [Route("EmailPersonInSlot/{meetingId:int}/{pId:int}")]
+        public ActionResult EmailPersonInSlot(int meetingId, int pId)
         {
-            var m = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == id);
+            var m = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == meetingId);
             var qb = DbUtil.Db.ScratchPadCondition();
             qb.Reset();
             qb.AddNewClause(QueryType.PeopleId, CompareType.Equal, pId);
