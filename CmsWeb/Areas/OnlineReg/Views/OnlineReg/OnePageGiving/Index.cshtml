@@ -146,7 +146,7 @@
         {
             tot = Model.PaymentForm.AmtToPay.GetValueOrDefault();
             <div class="form-group text-right" style="padding-right: 6px !important">
-                <h4 class="inline-block">@Model.PaymentForm.Description&nbsp;&nbsp;@*$&nbsp;*@</h4>
+                <h4 class="inline-block">@Model.PaymentForm.Description&nbsp;&nbsp;</h4>
                 <input type="text" id="AmtToPay" name="AmtToPay" class="form-control input-lg narrow sum @Html.ErrorClass("AmtToPay")" style="display: inline" placeholder="$ 0.00" value="@Model.PaymentForm.AmtToPay"/>
                 @Html.ValidationMessageLabelFor(m => m.PaymentForm.AmtToPay, "field-validation-error")
             </div>
