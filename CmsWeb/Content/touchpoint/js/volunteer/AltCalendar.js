@@ -9,9 +9,9 @@
 
     function toggleIcons(ele, expand) {
         if (expand) {
-            $(ele).removeClass("fa-chevron-circle-right").addClass('fa-chevron-circle-up');
+            $(ele).removeClass('fa-chevron-circle-right').addClass('fa-chevron-circle-up');
         } else {
-            $(ele).removeClass("fa-chevron-circle-up").addClass('fa-chevron-circle-right');
+            $(ele).removeClass('fa-chevron-circle-up').addClass('fa-chevron-circle-right');
         }
     }
 
@@ -46,10 +46,10 @@
             $('[data-toggle="popover"]').popover('hide');
         }
         var $a = $(this);
-        $("<form class='modal-form ajax' />").load(this.href, {}, function () {
+        $('<form class="modal-form ajax" />').load(this.href, {}, function () {
             var f = $(this);
             $('#empty-dialog').html(f);
-            $('#empty-dialog').modal("show");
+            $('#empty-dialog').modal('show');
         });
 
         $('#empty-dialog').on('hidden', function () {
@@ -62,36 +62,35 @@
         e.preventDefault();
         $.block();
         var list = [];
-        if (typeof $(this).attr("pid") != "undefined") {
+        if (typeof $(this).attr('pid') != 'undefined') {
             list.push({
-                "source": $(this).attr("source"),
-                "pid": $(this).attr("pid"),
-                "mid": $(this).attr("mid")
+                source: $(this).attr("source"),
+                pid: $(this).attr("pid"),
+                mid: $(this).attr("mid")
             });
         }
 
         if (list.length === 0)
             return;
         var $info = {
-            "id": $("#OrgId").val(),
-            "sg1": $("#sg1").val(),
-            "sg2": $("#sg2").val(),
-            "target": $(this).attr("target"),
-            "week": '0',
-            "time": '1/1/1000 12:00:00 AM',
-            "SortByWeek": $("#SortByWeek").val(),
-            "list": list
+            id: $('#OrgId').val(),
+            sg1: $('#sg1').val(),
+            sg2: $('#sg2').val(),
+            target: $(this).attr('target'),
+            week: '0',
+            time: '1/1/1000 12:00:00 AM',
+            SortByWeek: $('#SortByWeek').val(),
+            list: list
         };
         $.ajax({
-            url: "/Volunteers/ManageArea/",
+            url: '/Volunteers/ManageArea/',
             data: JSON.stringify($info),
             success: function (ret) {
-                //alert("success");
                 $.unblock();
                 window.location.reload(true);
             },
             error: function (ret) {
-                swal("Error!", ret, "error");
+                swal('Error!', ret, 'error');
             },
             type: 'POST',
             contentType: 'application/json, charset=utf-8',
