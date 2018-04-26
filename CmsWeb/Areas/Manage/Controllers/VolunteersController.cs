@@ -84,31 +84,6 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             return View(m);
         }
-        // public ActionResult AltCalendar(int id, bool? sortByWeek, int? curMonth, int? curYear, int? weekNum, int? pageNumber)
-        //{
-        //     var m = new VolunteerCommitmentsModel(id);
-        //     m.SortByWeek = sortByWeek ?? false;
-        //     m.WeekNumber = weekNum ?? 0;
-        //     m.PageNumber = pageNumber ?? 1;
-        //    int prevMonth = m.CurMonth?? 0;
-        //    if (curYear.IsNotNull())
-        //    {
-        //        m.CurYear = curYear;
-        //    }
-        //    else if (prevMonth == 12 && curMonth == 1)
-        //    {
-        //        m.CurYear = m.CurYear + 1;
-        //    }
-        //    else if (prevMonth == 1&& curMonth == 12)
-        //    {
-        //        m.CurYear = m.CurYear - 1;
-        //     }
-        //     if (curMonth.IsNotNull())
-        //     {
-        //         m.CurMonth = curMonth;
-        //     }
-        //     return View(m);
-        // }
 
         [HttpPost]
         public ActionResult ManageArea(PostTargetInfo i)
@@ -144,7 +119,6 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View("ManageArea", m);
         }
 
-        //[Route("AddVolunteers/{id:int}/{week:int}/{time:string}/{isWeek:bool}")]
         public ActionResult AddVolunteers(int id, int? week, DateTime? time, string sg1, string sg2, bool? isWeek = false)
         {
             TempData["selectedWeek"] = week?.ToInt();
