@@ -130,7 +130,7 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                 rs.GroupToJoin = s;
 
                 s = FindColumn("TimeOut");
-                rs.TimeOut = s.ToInt();
+                rs.TimeOut = s.ToInt2();
 
                 s = FindColumn("Fee");
                 rs.Fee = s.ToDecimal();
