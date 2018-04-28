@@ -301,8 +301,8 @@ Sorry, I cannot be there.</a>";
 <p>Thank you so much.</p>
 <p>You are now assigned to volunteer on {meeting.MeetingDate:MMM d, yyyy} at {meeting.MeetingDate:t}.
 in {org.OrganizationName}<br />
-<p><a id=""{org.OrganizationId}"" href=""http://registerlink"">Click here</a> to manage your commitments.</p>
-<p>See you there!</p>";
+<p><a href=""http://registerlink"" lang=""{org.OrganizationId}"">Click here</a> to manage your commitments.</p>
+< p>See you there!</p>";
             Db.Email(person.FromEmail, i.volunteer, "Thank you for responding and serving", body);
 
             // on screen message
