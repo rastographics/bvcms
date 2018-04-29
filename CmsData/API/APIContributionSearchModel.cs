@@ -384,7 +384,9 @@ namespace CmsData.API
                 return standardFunds;
             }
             var funds = xd.XPathSelectElement($"//FundSet[@description='{name}']/Funds")?.Value ?? "";
-            return GetFundSet(funds, allfunds);
+            return funds.HasValue()
+                ? GetFundSet(funds, allfunds)
+                : GetCustomStatementsList(name);
         }
 
 
