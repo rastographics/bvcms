@@ -290,7 +290,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 DbUtil.Db.EmailFinanceInformation(from.FromEmail, person, Setting.Subject, text);
             }
 
-            DbUtil.Db.EmailFinanceInformation(from.FromEmail, staff, "Managed giving", $"Managed giving for {person.Name} ({pid})");
+            DbUtil.Db.EmailFinanceInformation(from.FromEmail, staff, "Managed giving", $"Managed giving for {person.Name} ({pid}) {Util.Host}");
 
             var msg = GetThankYouMessage(@"<p>Thank you {first}, for managing your recurring giving</p>
 <p>You should receive a confirmation email shortly.</p>");

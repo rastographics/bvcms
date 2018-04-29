@@ -183,7 +183,7 @@ Thank you.
             DbUtil.Db.EmailFinanceInformation(from, p.person, p.setting.Subject, body);
             DbUtil.Db.EmailFinanceInformation(contributionemail, DbUtil.Db.StaffPeopleForOrg(p.org.OrganizationId),
                 "online giving contribution received",
-                $"see contribution records for {p.person.Name} ({p.PeopleId})");
+                $"see contribution records for {p.person.Name} ({p.PeopleId}) {Util.Host}");
             if (p.CreatingAccount)
                 p.CreateAccount();
             return ConfirmEnum.Confirm;
