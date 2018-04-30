@@ -76,7 +76,6 @@ namespace CmsWeb.Areas.Finance.Controllers
         public EpplusResult ChaiDonorsReportDownload(DonorTotalSummaryOptionsModel m)
         {
             var p = new DynamicParameters();
-            p.Add("@years", m.NumberOfYears);
             p.Add("@fund", m.Fund.Value.ToInt());
             var ep = new ExcelPackage();
             var cn = new SqlConnection(Util.ConnectionString);
@@ -90,6 +89,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         [HttpGet]
         public ActionResult ChaiDonorsReport()
         {
+            //Re-using a model, projected that this report will use most fields in this model, in next rollout.
             var m = new DonorTotalSummaryOptionsModel
             {
                 StartDate = DateTime.Today,
