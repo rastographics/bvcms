@@ -37,7 +37,11 @@ namespace CmsData
         partial void InsertApiSession(ApiSession instance);
         partial void UpdateApiSession(ApiSession instance);
         partial void DeleteApiSession(ApiSession instance);
-        
+
+	    partial void InsertApiUserInfo(ApiUserInfo instance);
+	    partial void UpdateApiUserInfo(ApiUserInfo instance);
+	    partial void DeleteApiUserInfo(ApiUserInfo instance);
+
         partial void InsertAttend(Attend instance);
         partial void UpdateAttend(Attend instance);
         partial void DeleteAttend(Attend instance);
@@ -822,7 +826,13 @@ namespace CmsData
 
 		}
 
-		public Table< Attend> Attends
+	    public Table<ApiUserInfo> ApiUserInfos
+	    {
+	        get { return this.GetTable<ApiUserInfo>(); }
+
+	    }
+
+        public Table< Attend> Attends
 		{
 			get	{ return this.GetTable< Attend>(); }
 

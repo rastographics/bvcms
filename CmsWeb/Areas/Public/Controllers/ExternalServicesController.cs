@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Linq;
+using System.Web;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Xml.Linq;
 using CmsData;
 using UtilityExtensions;
+using CmsWeb.Models;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
@@ -68,5 +71,40 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Redirect( Server.HtmlDecode(link) );
             return Redirect("/");
         }
+
+        public ActionResult ApiUserInfo(string apiKey, string userName, string password)
+        {
+            //check if Key and Ip are valid
+            var check = (from e in DbUtil.Db.ApiUserInfos
+                where e.ApiKey == apiKey 
+                select e).FirstOrDefault();
+            if (check != null)
+            {
+                var getIp = HttpContext.Request.ServerVariables["REMOTE_ADDR"];
+                var ipCheck = check.IpAddress.Split(',').Contains(getIp);
+                if (ipCheck)
+                {
+                    //authenticate user
+                    var retUser = AccountModel.AuthenticateLogon(userName, password, "");
+                    if (retUser.IsValid)
+                    {
+                        return Json(new
+                        {
+                            PeopleId = retUser.User.PeopleId,
+                            Name = retUser.User.Name,
+                            EmailAddress = retUser.User.EmailAddress,
+                            AltEmail = retUser.User.Person.EmailAddress2,
+                            roles = retUser.User.Roles,
+                            error = 0
+                        }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+            }
+            return Json(new
+            {
+                error = 1
+            }, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }
