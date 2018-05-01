@@ -148,8 +148,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             if (askSize?.AllowLastYear ?? false)
             {
-                var text = Organization.GetExtra(DbUtil.Db, setting.OrgId, "AllowLastYearShirtText")
-                    ?? "Use shirt from last year"; 
+                var text = Util.PickFirst(Organization.GetExtra(DbUtil.Db, setting.OrgId, "AllowLastYearShirtText"),
+                    "Use shirt from last year");
                 list.Add(new SelectListItem {Value = "lastyear", Text = text});
             }
             return list;
