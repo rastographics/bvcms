@@ -370,20 +370,11 @@ namespace CmsData.API
             if (name == "all")
                 return null;
             var xd = XDocument.Parse(Util.PickFirst(DbUtil.Db.ContentOfTypeText("CustomFundSets"), "<CustomFundSets/>"));
+            var funds = xd.XPathSelectElement($"//FundSet[@description='{name}']/Funds")?.Value ?? "";
+            if (!funds.HasValue())
+                return GetCustomStatementsList(name);
 
             var allfunds = DbUtil.Db.ContributionFunds.Select(cc => cc.FundId).ToList();
-            if (name == "Standard Statements")
-            {
-                var standardFunds = allfunds.Select(vv => vv).ToList();
-                foreach (var ele in xd.Descendants("Statement"))
-                {
-                    var f = ele.Element("Funds")?.Value ?? "";
-                    var list = GetFundSet(f, allfunds);
-                    standardFunds.RemoveAll(vv => list.Contains(vv));
-                }
-                return standardFunds;
-            }
-            var funds = xd.XPathSelectElement($"//FundSet[@description='{name}']/Funds")?.Value ?? "";
             return funds.HasValue()
                 ? GetFundSet(funds, allfunds)
                 : GetCustomStatementsList(name);
