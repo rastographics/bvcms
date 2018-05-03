@@ -534,6 +534,7 @@
     <Compile Include="Areas\OnlineReg\Controllers\SaveAndContinue.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\Routing.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\Birthday.cs" />
+    <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\DynamicData.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\FindPerson.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\WriteXml.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\ReadXml.cs" />

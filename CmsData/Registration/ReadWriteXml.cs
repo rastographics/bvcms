@@ -113,6 +113,7 @@ namespace CmsData.Registration
                         ShellBs = e.Element("ShellBs")?.Value;
                         FinishRegistrationButton = e.Element("FinishRegistrationButton")?.Value;
                         SpecialScript = e.Element("SpecialScript")?.Value;
+                        OnEnrollScript = e.Element("OnEnrollScript")?.Value;
                         GroupToJoin = e.Element("GroupToJoin")?.Value;
                         TimeOut = e.Element("TimeOut")?.Value.ToInt2();
                         AllowOnlyOne = e.Element("AllowOnlyOne")?.Value.ToBool2() ?? false;
@@ -232,6 +233,7 @@ namespace CmsData.Registration
                 .Add("ShellBs", ShellBs)
                 .Add("FinishRegistrationButton", FinishRegistrationButton)
                 .Add("SpecialScript", SpecialScript)
+                .Add("OnEnrollScript", OnEnrollScript)
                 .Add("GroupToJoin", GroupToJoin)
                 .Add("TimeOut", TimeOut)
                 .AddIfTrue("AllowOnlyOne", AllowOnlyOne)

@@ -76,6 +76,10 @@ namespace CmsData
         {
             dictionary.Add(key, value);
         }
+        public void DictionaryAdd(string key, object value)
+        {
+            dictionary.Add(key, value);
+        }
 
         public string FmtPhone(string s, string prefix = null)
         {
@@ -221,6 +225,11 @@ namespace CmsData
             var d = JsonConvert.DeserializeObject(json);
             var s = JsonConvert.SerializeObject(d, Formatting.Indented);
             return s.Replace("\r\n", "\n");
+        }
+        public string FormatJson(DynamicData data)
+        {
+            var json = data.ToString();
+            return FormatJson(json);
         }
 
         public string Md5Hash(string s)
@@ -380,6 +389,11 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
             if(s1.HasValue())
                 return s1;
             return s2;
+        }
+        public DynamicData FromJson(string json)
+        {
+            var dd =  JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+            return new DynamicData(dd);
         }
     }
 }

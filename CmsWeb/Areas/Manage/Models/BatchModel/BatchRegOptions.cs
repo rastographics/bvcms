@@ -149,6 +149,9 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                 if (FindColumnString("SpecialScript", out s))
                     rs.SpecialScript = s;
 
+                if (FindColumnString("OnEnrollScript", out s))
+                    rs.OnEnrollScript = s;
+
                 if (FindColumnString("GroupToJoin", out s))
                     rs.GroupToJoin = s;
 

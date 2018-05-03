@@ -6,7 +6,6 @@ using UtilityExtensions;
 using System.Text;
 using System.Web;
 using CmsData.Codes;
-using CmsData.View;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -29,11 +28,32 @@ namespace CmsWeb.Areas.OnlineReg.Models
             DoLinkGroupsFromOrgs(om);
             LogRegistrationOnOrgMember(transaction, om, payLink);
 
+            OnEnroll(om);
             DbUtil.Db.SubmitChanges();
             return om;
         }
 
-        private static string DefaultMessage => DbUtil.Db.ContentHtml("DefaultConfirmation", 
+        public string ScriptResults { get; set; }
+
+        public void OnEnroll(OrganizationMember om)
+        {
+            if (!setting.OnEnrollScript.HasValue())
+                return;
+            var pe = new PythonModel(Util.Host);
+            BuildDynamicData(pe, om);
+#if DEBUG
+            if (setting.OnEnrollScript == "debug")
+            {
+                ScriptResults =
+                    PythonModel.ExecutePython(@"c:\dev\onregister.py", pe, fromFile: true);
+                return;
+            }
+#endif
+            var script = DbUtil.Db.ContentOfTypePythonScript(setting.OnEnrollScript);
+            ScriptResults = PythonModel.ExecutePython(script, pe);
+        }
+
+        private static string DefaultMessage => DbUtil.Db.ContentHtml("DefaultConfirmation",
                 Resource1.SettingsRegistrationModel_DefaulConfirmation);
 
         public string SummaryTransaction()
@@ -146,9 +166,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (setting.LinkGroupsFromOrgs.Count > 0)
             {
                 var q = from omt in DbUtil.Db.OrgMemMemTags
-                    where setting.LinkGroupsFromOrgs.Contains(omt.OrgId)
-                    where omt.PeopleId == om.PeopleId
-                    select omt.MemberTag.Name;
+                        where setting.LinkGroupsFromOrgs.Contains(omt.OrgId)
+                        where omt.PeopleId == om.PeopleId
+                        select omt.MemberTag.Name;
                 foreach (var name in q)
                     om.AddToGroup(DbUtil.Db, name);
             }
@@ -280,15 +300,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             if (setting.TargetExtraValues)
             {
-                foreach (var op in ((AskDropdown) ask).list)
+                foreach (var op in ((AskDropdown)ask).list)
                     person.RemoveExtraValue(DbUtil.Db, op.SmallGroup);
-                person.AddEditExtraCode(((AskDropdown) ask).SmallGroupChoice(option).SmallGroup, "true");
+                person.AddEditExtraCode(((AskDropdown)ask).SmallGroupChoice(option).SmallGroup, "true");
             }
             else
             {
-                foreach (var op in ((AskDropdown) ask).list)
+                foreach (var op in ((AskDropdown)ask).list)
                     op.RemoveFromSmallGroup(DbUtil.Db, om);
-                ((AskDropdown) ask).SmallGroupChoice(option).AddToSmallGroup(DbUtil.Db, om, PythonModel);
+                ((AskDropdown)ask).SmallGroupChoice(option).AddToSmallGroup(DbUtil.Db, om, PythonModel);
             }
         }
 
@@ -297,12 +317,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
             foreach (var i in MenuItem[ask.UniqueId])
                 om.AddToGroup(DbUtil.Db, i.Key, i.Value);
             {
-                var menulabel = ((AskMenu) ask).Label;
-                foreach (var i in ((AskMenu) ask).MenuItemsChosen(MenuItem[ask.UniqueId]))
+                var menulabel = ((AskMenu)ask).Label;
+                foreach (var i in ((AskMenu)ask).MenuItemsChosen(MenuItem[ask.UniqueId]))
                 {
                     om.AddToMemberDataBelowComments(menulabel);
-                    var desc = i.amt > 0 
-                        ? $"{i.number} {i.desc} (at {i.amt:N2})" 
+                    var desc = i.amt > 0
+                        ? $"{i.number} {i.desc} (at {i.amt:N2})"
                         : $"{i.number} {i.desc}";
                     om.AddToMemberDataBelowComments(desc);
                     menulabel = string.Empty;
@@ -314,16 +334,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             if (setting.TargetExtraValues)
             {
-                foreach (var ck in ((AskCheckboxes) ask).list)
+                foreach (var ck in ((AskCheckboxes)ask).list)
                     person.RemoveExtraValue(DbUtil.Db, ck.SmallGroup);
-                foreach (var g in ((AskCheckboxes) ask).CheckboxItemsChosen(Checkbox))
+                foreach (var g in ((AskCheckboxes)ask).CheckboxItemsChosen(Checkbox))
                     person.AddEditExtraBool(g.SmallGroup, true);
             }
             else
             {
-                foreach (var ck in ((AskCheckboxes) ask).list)
+                foreach (var ck in ((AskCheckboxes)ask).list)
                     ck.RemoveFromSmallGroup(DbUtil.Db, om);
-                foreach (var i in ((AskCheckboxes) ask).CheckboxItemsChosen(Checkbox))
+                foreach (var i in ((AskCheckboxes)ask).CheckboxItemsChosen(Checkbox))
                     i.AddToSmallGroup(DbUtil.Db, om, PythonModel);
             }
         }
@@ -332,7 +352,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             if (setting.TargetExtraValues == false)
             {
-                foreach (var yn in ((AskYesNoQuestions) ask).list)
+                foreach (var yn in ((AskYesNoQuestions)ask).list)
                 {
                     om.RemoveFromGroup(DbUtil.Db, "Yes:" + yn.SmallGroup);
                     om.RemoveFromGroup(DbUtil.Db, "No:" + yn.SmallGroup);

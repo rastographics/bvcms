@@ -174,7 +174,7 @@ namespace CmsWeb.Models
 
 #if DEBUG
             if (runfromPath.HasValue())
-                return PythonModel.ExecutePythonFile(runfromPath, pe);
+                return PythonModel.ExecutePython(runfromPath, pe, fromFile: true);
 #endif
             return pe.RunScript(script);
         }
