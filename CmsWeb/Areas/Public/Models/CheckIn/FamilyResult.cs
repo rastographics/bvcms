@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Web;
 using System.Xml;
 using System.Web.Mvc;
@@ -123,7 +124,9 @@ namespace CmsWeb.Models
 						// now we need to make sure we are within 24 hours (ignore the date change)
 						hoursBeforeClassStarts %= 24;
 					}
-					x.Start("attendee");
+				    string hour = Util.IsCultureUS() ? c.Hour.FormatDateTm() : c.Hour.FormatDateTmUS();
+
+				    x.Start("attendee");
 					x.Attr("id", c.Id.ToString());
 					x.Attr("mv", c.MemberVisitor);
 					x.Attr("name", c.DisplayName);
@@ -142,7 +145,7 @@ namespace CmsWeb.Models
 					x.Attr("checkedin", c.CheckedIn.ToString());
 					x.Attr("custody", c.Custody.ToString());
 					x.Attr("transport", c.Transport.ToString());
-					x.Attr("hour", c.Hour.FormatDateTm());
+				    x.Attr("hour", hour);
 					x.Attr("requiressecuritylabel", c.RequiresSecurityLabel.ToString());
 					x.Attr("church", c.Church);
 

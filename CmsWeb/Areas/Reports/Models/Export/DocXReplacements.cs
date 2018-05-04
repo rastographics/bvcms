@@ -6,9 +6,9 @@ using System.Linq;
 using System.Net;
 using System.ServiceModel.Channels;
 using System.Web.Mvc;
-using Novacode;
 using CmsData;
 using UtilityExtensions;
+using Xceed.Words.NET;
 
 namespace CmsWeb.Models
 {
@@ -49,10 +49,15 @@ namespace CmsWeb.Models
                 var doc = replacements.DocXReplacements(p);
                 finaldoc.InsertDocument(doc);
             }
-            context.HttpContext.Response.Clear();
-            context.HttpContext.Response.ContentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-            context.HttpContext.Response.AddHeader("Content-Disposition", $"attachment;filename={filename}-{DateTime.Now.ToSortableDateTime()}.docx");
-            finaldoc.SaveAs(context.HttpContext.Response.OutputStream);
+            var response = context.HttpContext.Response;
+            response.Clear();
+            response.ContentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            response.AddHeader("content-disposition", $"attachment;filename={filename}-{DateTime.Now.ToSortableDateTime()}.docx");
+
+            ms = new MemoryStream();
+            finaldoc.SaveAs(ms);
+            ms.WriteTo(response.OutputStream);
+            response.End();
         }
     }
 }

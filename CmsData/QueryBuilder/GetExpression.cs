@@ -1,4 +1,4 @@
-/* Author: David Carroll
+/* Author: David /Baarroll
  * Copyright (c) 2008, 2009 Bellevue Baptist Church 
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
@@ -42,6 +42,7 @@ namespace CmsData
                 { QueryType.ContactRecipient, ContactRecipient },
                 { QueryType.ContactMaker, ContactMaker },
                 { QueryType.ContributionAmountBothJointHistory, ContributionAmountBothJointHistory },
+                { QueryType.ContributionAmountSinceSetting, ContributionAmountSinceSetting },
                 { QueryType.PledgeAmountBothJointHistory, PledgeAmountBothJointHistory },
                 { QueryType.ContributionAmount2, ContributionAmount },
                 { QueryType.ContributionChange, ContributionChange },
@@ -114,6 +115,7 @@ namespace CmsData
                 { QueryType.IsTopGiver, IsTopGiver },
                 { QueryType.IsTopPledger, IsTopPledger },
                 { QueryType.IsUser, IsUser },
+                { QueryType.JoinDateMonthsAgo, JoinDateMonthsAgo },
                 { QueryType.KidsRecentAttendCount, KidsRecentAttendCount },
                 { QueryType.LeadersUnderCurrentOrg, LeadersUnderCurrentOrg },
                 { QueryType.MadeContactTypeAsOf, MadeContactTypeAsOf },
@@ -156,6 +158,7 @@ namespace CmsData
                 { QueryType.VisitedCurrentOrg, VisitedCurrentOrg },
                 { QueryType.ProspectCurrentOrg, ProspectCurrentOrg },
                 { QueryType.PmmBackgroundCheckStatus, BackgroundCheckStatus },
+                { QueryType.QueryTag, QueryTag },
                 { QueryType.RecActiveOtherChurch, RecActiveOtherChurch },
                 { QueryType.RecentAttendCount, RecentAttendCount },
                 { QueryType.RecentAttendCountAttCred, RecentAttendCountAttCred },
@@ -181,6 +184,7 @@ namespace CmsData
                 { QueryType.RecentHasFailedRecurringGiving, RecentHasFailedRecurringGiving },
                 { QueryType.RecentIncompleteRegistrations, RecentIncompleteRegistrations },
                 { QueryType.RecentJoinChurch, RecentJoinChurch },
+                { QueryType.RecentJoinChurchDaysRange, RecentJoinChurchDaysRange },
                 { QueryType.RecentNonTaxDedAmount, RecentNonTaxDedAmount },
                 { QueryType.RecentNonTaxDedCount, RecentNonTaxDedCount },
                 { QueryType.RecentPeopleExtraFieldChanged, RecentPeopleExtraFieldChanged },

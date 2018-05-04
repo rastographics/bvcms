@@ -28,6 +28,7 @@ namespace CmsWeb.Areas.People.Models
         public bool HasDirectory { get; set; }
         public bool IsLeaderAttendanceType { get; set; }
         public bool IsProspect { get; set; }
+        public bool IsMissionTripOrg { get; set; }
 
         public List<OrgMemberInfo> ChildOrgs { get; set; }
 
@@ -90,6 +91,8 @@ namespace CmsWeb.Areas.People.Models
                 case "orgtype":
                     return OrgType;
                 case "membertype":
+                    if (MemberType.Equal("Inactive") && IsMissionTripOrg)
+                        MemberType = "Sender";
                     if(column.Page == "Previous" && inAccessRole)
                         return $"<a class=\"membertype\" href=\"/OrgPrevMemberDialog/{OrgId}/{PeopleId}\">{MemberType}</a>";
                     if(inAccessRole)

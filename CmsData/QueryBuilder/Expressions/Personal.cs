@@ -104,7 +104,7 @@ namespace CmsData
             var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p => p.PictureId != null;
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }

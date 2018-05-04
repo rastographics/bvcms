@@ -30,7 +30,7 @@ namespace CmsData
                     select t.IndDue).FirstOrDefault() > 0;
 
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -66,7 +66,7 @@ namespace CmsData
                     m.OrganizationId == db.CurrentSessionOrgId
                     && m.MemberTypeId == MemberTypeCode.InActive);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -79,7 +79,7 @@ namespace CmsData
                     m.OrganizationId == db.CurrentSessionOrgId
                     && m.MemberTypeId == MemberTypeCode.Prospect);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -91,7 +91,7 @@ namespace CmsData
                     m.OrganizationId == db.CurrentSessionOrgId
                     && (m.Pending ?? false));
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -109,7 +109,7 @@ namespace CmsData
                     m.OrganizationId == db.CurrentSessionOrgId
                     && (m.Pending ?? false) == false);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -141,7 +141,7 @@ namespace CmsData
                     select m
                     ).Any();
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -153,7 +153,7 @@ namespace CmsData
 
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
 
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }

@@ -72,6 +72,9 @@ namespace CmsData
                 case "{dob}":
                     return person.DOB;
 
+                case "{employer}":
+                    return person.EmployerOther;
+
                 case "{estatement}":
                     if (person.ElectronicStatement == true)
                         return "Online Electronic Statement Only";

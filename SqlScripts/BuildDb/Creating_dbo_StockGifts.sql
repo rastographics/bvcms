@@ -28,7 +28,7 @@ RETURN
 	AND c.ContributionDate >= @fromDate
 	AND CONVERT(DATE, c.ContributionDate) <= @toDate
 	AND (c.PeopleId = @pid OR (@joint = 1 AND c.PeopleId = @spid))
-	AND (@fundids IS NULL OR c.FundId IN (SELECT Value FROM dbo.SplitInts(@fundids)))
+	AND (@fundids IS NULL OR EXISTS(SELECT NULL FROM dbo.SplitInts(@fundids) WHERE Value = c.FundId))
 )
 GO
 IF @@ERROR <> 0 SET NOEXEC ON

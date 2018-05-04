@@ -255,7 +255,7 @@ namespace CmsWeb.Models
             DbUtil.Db.SubmitChanges();
         }
 
-        private static Contribution CreateContributionRecord(Contribution c)
+        public static Contribution CreateContributionRecord(Contribution c)
         {
             var now = Util.Now;
             var r = new Contribution

@@ -53,7 +53,7 @@ namespace CmsData
                 if (!defaultHost.HasValue())
                     defaultHost = Util.URLCombine(ConfigurationManager.AppSettings["cmshost"], "");
 
-                if (defaultHost.HasValue())
+                if (Host.HasValue())
                     return defaultHost.Replace("{church}", Host, ignoreCase: true);
 
                 throw (new Exception("No URL for Server in CmsHost"));

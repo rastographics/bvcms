@@ -7,9 +7,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Web.Mvc;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 using CmsData.Codes;
 using CmsData.View;
+using Dapper;
 using UtilityExtensions;
 
 namespace CmsData.API
@@ -264,7 +268,7 @@ namespace CmsData.API
         public static IEnumerable<NormalContribution> Contributions(CMSDataContext db, ContributorInfo ci, DateTime fromDate, DateTime toDate, List<int> funds)
         {
             var q = from c in
-                db.NormalContributions(ci.PeopleId, ci.SpouseID, ci.Joint, fromDate, toDate, funds.JoinInts(","))
+                db.NormalContributions(ci.PeopleId, ci.SpouseID, ci.Joint, fromDate, toDate, funds?.JoinInts(","))
                 orderby c.ContributionDate
                 select c;
             return q;
@@ -313,6 +317,15 @@ namespace CmsData.API
                 orderby c.ContributionDate
                 select c;
             return q;
+        }
+        public static int? OneTimeGiftOrgId(CMSDataContext db)
+        {
+            var sql = @"
+SELECT OrganizationId FROM dbo.Organizations
+WHERE RegistrationTypeId = 8
+AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
+            var oid = db.Connection.ExecuteScalar(sql) as int?;
+            return oid;
         }
 
         [Serializable]

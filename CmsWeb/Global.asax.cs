@@ -121,6 +121,7 @@ namespace CmsWeb
             if(Util.IsHosted && checkip.HasValue())
                 if (1 == DbUtil.Db.Connection.ExecuteScalar<int>(checkip, new {ip = Request.UserHostAddress}))
                     Response.Redirect("/Errors/AccessDenied.htm");
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
         }
 
 

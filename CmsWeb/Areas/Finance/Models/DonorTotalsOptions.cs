@@ -16,5 +16,7 @@ namespace CmsWeb.Models
 
         [DisplayName("Fund")]
         public CodeInfo Fund { get; set; }
+
+        public CodeInfo FundSet { get; set; }
     }
 }

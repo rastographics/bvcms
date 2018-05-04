@@ -4,7 +4,8 @@ CREATE PROC [dbo].[DonorTotalSummaryByAge]
 	@enddt DATETIME,
 	@years INT,
 	@fund INT,
-	@campus INT
+	@campus INT,
+	@fundids VARCHAR(MAX)
 )
 AS
 BEGIN
@@ -24,6 +25,12 @@ BEGIN
 		[Total=0] MONEY,
 		[Units=0] INT
 	)
+	DROP TABLE IF EXISTS #ff
+	CREATE TABLE #ff ( FundId INT PRIMARY KEY )
+	IF @fundids IS NOT NULL 
+		INSERT #ff (FundId) SELECT Value FROM dbo.SplitInts(@fundids)
+	ELSE
+		INSERT #ff (FundId) SELECT FundId FROM dbo.ContributionFund
 
 	DECLARE @t DonorTotalsTable
 	DECLARE @n INT = 0
@@ -47,6 +54,7 @@ BEGIN
 					 ELSE 100 
 				END age
 			FROM dbo.Contributions2(@fd, @td, @campus, 0, NULL, 1) c
+			JOIN #ff ON #ff.FundId = c.FundId
 			JOIN dbo.Families f ON f.FamilyId = c.FamilyId
 			JOIN dbo.People p ON p.PeopleId = f.HeadOfHouseholdId
 			WHERE Amount > 0

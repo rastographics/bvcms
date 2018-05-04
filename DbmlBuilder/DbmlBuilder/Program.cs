@@ -58,7 +58,7 @@ namespace DbmlBuilder
             string configPath = Path.Combine(directory, "Web.config");
             if (File.Exists(configPath))
                 return configPath;
-            configPath = Path.Combine(directory, "App.config");
+            configPath = Path.Combine(directory, "DbmlBuilder.exe.config");
             if (File.Exists(configPath))
                 return configPath;
             return null;

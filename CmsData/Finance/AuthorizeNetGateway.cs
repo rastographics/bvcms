@@ -263,12 +263,10 @@ namespace CmsData.Finance
         {
             var request = new AuthorizationRequest(cardnumber, expires, amt, description, includeCapture: false);
 
-            request.AddCustomer(peopleId.ToString(), first, last, addr, state, zip);
-            request.City = city; // hopefully will be resolved with https://github.com/AuthorizeNet/sdk-dotnet/pull/41
+            request.AddCustomer(peopleId.ToString(), email, first, last, addr, city, state, zip);
             request.Country = country;
             request.CardCode = cardcode;
             request.Phone = phone;
-            request.Email = email;
             request.InvoiceNum = tranid.ToString();
 
             var response = Gateway.Send(request);
@@ -286,12 +284,10 @@ namespace CmsData.Finance
         {
             var request = new AuthorizationRequest(cardnumber, expires, amt, description, includeCapture: true);
 
-            request.AddCustomer(peopleId.ToString(), first, last, addr, state, zip);
-            request.City = city; // hopefully will be resolved with https://github.com/AuthorizeNet/sdk-dotnet/pull/41
+            request.AddCustomer(peopleId.ToString(),email, first, last, addr, city, state, zip);
             request.Country = country;
             request.CardCode = cardcode;
             request.Phone = phone;
-            request.Email = email;
             request.InvoiceNum = tranid.ToString();
 
             var response = Gateway.Send(request);
@@ -309,11 +305,9 @@ namespace CmsData.Finance
         {
             var request = new EcheckRequest(EcheckType.WEB, amt, routing, acct, BankAccountType.Checking, null, first + " " + last, null);
 
-            request.AddCustomer(peopleId.ToString(), first, last, addr, state, zip);
-            request.City = city;  // hopefully will be resolved with https://github.com/AuthorizeNet/sdk-dotnet/pull/41
+            request.AddCustomer(peopleId.ToString(), email, first, last, addr, city, state, zip);
             request.Country = country;
             request.Phone = phone;
-            request.Email = email;
             request.InvoiceNum = tranid.ToString();
 
             var response = Gateway.Send(request);

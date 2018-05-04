@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Dynamic;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Web;
 using MarkdownDeep;
@@ -13,10 +14,12 @@ using System.Web.Helpers;
 using System.Web.Script.Serialization;
 using CmsData.API;
 using CmsData.Codes;
+using Dapper;
 using IronPython.Runtime;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
+using RestSharp.Authenticators;
 using Method = RestSharp.Method;
 
 namespace CmsData
@@ -25,6 +28,7 @@ namespace CmsData
     {
         public string CmsHost => db.ServerLink().TrimEnd('/');
         public bool FromMorningBatch { get; set; }
+        public int? QueryTagLimit { get; set; }
         public string UserName => Util.UserName;
         public dynamic Data { get; }
 
@@ -87,6 +91,14 @@ namespace CmsData
         {
             var c = db.ContentOfTypeHtml(name);
             return c.Body;
+        }
+        public string SqlContent(string name)
+        {
+            return db.ContentOfTypeSql(name);
+        }
+        public string TextContent(string name)
+        {
+            return db.ContentOfTypeText(name);
         }
         public string TitleContent(string name)
         {
@@ -307,6 +319,22 @@ namespace CmsData
             db.ExecuteCommand("dbo.UpdateStatusFlag {0}, {1}", flagid, temptag.Id);
         }
 
+        public int CreateQueryTag(string name, string code)
+        {
+            var qq = db.PeopleQuery2(code);
+            if (QueryTagLimit > 0)
+                qq = qq.Take(QueryTagLimit.Value);
+            int tid = db.PopulateSpecialTag(qq, name, DbUtil.TagTypeId_QueryTags);
+            return db.TagPeople.Count(v => v.Id == tid);
+        }
+        public void DeleteQueryTags(string namelike)
+        {
+            db.Connection.Execute(@"
+DELETE dbo.TagPerson FROM dbo.TagPerson tp JOIN dbo.Tag t ON t.Id = tp.Id WHERE t.TypeId = 101 AND t.Name LIKE @namelike
+DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
+", new {namelike});
+        }
+
         public void WriteContentSql(string name, string sql)
         {
             var c = db.Content(name, ContentTypeCode.TypeSqlScript);
@@ -315,12 +343,43 @@ namespace CmsData
                 c = new Content()
                 {
                     Name = name,
-                    TypeID = Codes.ContentTypeCode.TypeSqlScript
+                    TypeID = ContentTypeCode.TypeSqlScript
                 };
                 db.Contents.InsertOnSubmit(c);
             }
             c.Body = sql;
             db.SubmitChanges();
+        }
+        public int TagLastQuery(string defaultcode)
+        {
+            Tag tag = null;
+            if (FromMorningBatch)
+            {
+                var qq = db.PeopleQuery2(defaultcode);
+                tag = db.PopulateSpecialTag(qq, DbUtil.TagTypeId_Query);
+            }
+            else
+            {
+                var guid = db.FetchLastQuery().Id;
+                tag = db.PopulateSpecialTag(guid, DbUtil.TagTypeId_Query);
+            }
+            return tag.Id;
+        }
+        public CsvHelper.CsvReader CsvReader(string text)
+        {
+            var csv = new CsvHelper.CsvReader(new StringReader(text));
+            csv.Read();
+            csv.ReadHeader();
+            return csv;
+        }
+
+        public string AppendIfBoth(string s1, string join, string s2)
+        {
+            if (s1.HasValue() && s2.HasValue())
+                return s1 + join + s2;
+            if(s1.HasValue())
+                return s1;
+            return s2;
         }
     }
 }

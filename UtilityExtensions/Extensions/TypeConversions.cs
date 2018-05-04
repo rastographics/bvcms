@@ -160,6 +160,10 @@ namespace UtilityExtensions
         {
             return DateTime.TryParse(date, out dt);
         }
+        public static bool DateTryParseUS(this string date, out DateTime dt)
+        {
+            return DateTime.TryParse(date, CultureInfo.GetCultureInfo("en-US"), DateTimeStyles.None, out dt);
+        }
         public static decimal? GetAmount(this string s)
         {
             if (!s.HasValue())

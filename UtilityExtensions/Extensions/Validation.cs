@@ -79,6 +79,13 @@ namespace UtilityExtensions
             var patt = new Regex("[^0-9]");
             return !(patt.IsMatch(str));
         }
+		public static bool AllDigitsCommas(this string str)
+		{
+            if (!str.HasValue())
+                return false;
+			var patt = new Regex("[^0-9,]");
+			return !patt.IsMatch(str);
+		}
 
         private const string STR_Culture = "Culture";
         public static string Culture

@@ -3,151 +3,176 @@
 @model CmsWeb.Models.TransactionsModel
 
 @helper GoerSenderEditMenu(string noadmin, TransactionsModel.SupporterInfo ss)
-{
-  <div class="btn-group">
-    <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-      <i class="fa fa-pencil"></i> Edit <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu dropdown-menu-right" role="menu">
-      <li>
-        <a class="deletegsa @noadmin" href='/Transactions/DeleteGoerSenderAmount/@ss.gs.Id'><i class="fa fa-undo"></i>&nbsp;&nbsp;Delete GoerSender Amount</a>
-      </li>
-      <li>
-        <a class="assigngoer @noadmin" href='/Transactions/AssignGoer/@ss.gs.Id'><i class="fa fa-undo"></i>&nbsp;&nbsp;Assign GoerId</a>
-      </li>
-    </ul>
-  </div>
+    {
+        <div class="btn-group">
+            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-pencil"></i> Edit <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                <li>
+                    <a class="deletegsa @noadmin" href='/Transactions/DeleteGoerSenderAmount/@ss.gs.Id'><i class="fa fa-undo"></i>&nbsp;&nbsp;Delete GoerSender Amount</a>
+                </li>
+                <li>
+                    <a class="assigngoer @noadmin" href='/Transactions/AssignGoer/@ss.gs.Id'><i class="fa fa-undo"></i>&nbsp;&nbsp;Assign GoerId</a>
+                </li>
+            </ul>
+        </div>
 }
 @{
-  var qsg = Model.Supporters();
-  var qss = Model.SelfSupports();
-  var qso = Model.SupportOthers();
-  var noadmin = Model.admin ? "" : "noadmin";
+    var qsg = Model.Supporters();
+    var qss = Model.SelfSupports();
+    var qso = Model.SupportOthers();
+    var bal = Model.MissionTripBalances();
+    var noadmin = Model.admin ? "" : "noadmin";
 }
 
 @if (qsg.Any())
 {
-  <h4>Supporters</h4>
-  <div class="table-responsive">
-    <table id="Supporters" class="table table-striped">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Supporter</th>
-          <th>Goer</th>
-          <th class="text-right">Amount</th>
-          <th>Notice</th>
-          <th>Trip</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        @foreach (var ss in qsg)
-        {
-          <tr>
-            <td>@ss.gs.Created.FormatDate()</td>
-            <td><a href="/Person2/@ss.SupporterId">@ss.SupporterName</a></td>
-            <td><a href="/Person2/@ss.GoerId">@ss.GoerName</a></td>
-            <td class="text-right">@ss.gs.Amount.ToString2("N2")</td>
-            <td>
-              @(ss.gs.NoNoticeToGoer == true
-                            ? "no notice"
-                            : ss.gs.NoNoticeToGoer == false
-                              ? "sent"
-                              : "")
-          </td>
-          <td>@ss.TripName</td>
-          <td class="action">
-            @GoerSenderEditMenu(noadmin, ss)
-          </td>
-        </tr>
-        }
-      </tbody>
-    </table>
-    <br/> <br/>
-  </div>
+    <h4>Supporters</h4>
+    <div class="table-responsive">
+        <table id="Supporters" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Supporter</th>
+                    <th>Goer</th>
+                    <th class="text-right">Amount</th>
+                    <th>Notice</th>
+                    <th>Trip</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ss in qsg)
+                {
+                    <tr>
+                        <td>@ss.gs.Created.FormatDate()</td>
+                        <td><a href="/Person2/@ss.SupporterId">@ss.SupporterName</a></td>
+                        <td><a href="/Person2/@ss.GoerId">@ss.GoerName</a></td>
+                        <td class="text-right">@ss.gs.Amount.ToString2("N2")</td>
+                        <td>
+                            @(ss.gs.NoNoticeToGoer == true
+                                                  ? "no notice"
+                                                  : ss.gs.NoNoticeToGoer == false
+                                                    ? "sent"
+                                                    : "")
+                        </td>
+                        <td>@ss.TripName</td>
+                        <td class="action">
+                            @GoerSenderEditMenu(noadmin, ss)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br /> <br />
+    </div>
 }
 
 @if (qss.Any())
 {
-  <h4>Self Support</h4>
-  <div class="table-responsive">
-    <table id="GoerIsSupporter" class="table table-striped">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Supporter</th>
-          <th>Goer</th>
-          <th class="text-right">Amount</th>
-          <th>Notice</th>
-          <th>Trip</th>
-        </tr>
-      </thead>
-      <tbody>
-        @foreach (var gg in qss)
-        {
-          <tr>
-            <td>@gg.gs.Created.FormatDate()</td>
-            <td><a href="/Person2/@gg.SupporterId">@gg.SupporterName</a></td>
-            <td><a href="/Person2/@gg.GoerId">@gg.GoerName</a></td>
-            <td class="text-right">@gg.gs.Amount.ToString2("N2")</td>
-            <td>
-              @(gg.gs.NoNoticeToGoer == true
-                            ? "no notice"
-                            : gg.gs.NoNoticeToGoer == false
-                              ? "sent"
-                              : "")
-          </td>
-          <td>@gg.TripName</td>
-          <td class="action">
-            @GoerSenderEditMenu(noadmin, gg)
-          </td>
-        </tr>
-        }
-      </tbody>
-    </table>
-    <br/> <br/>
-  </div>
+    <h4>Self Support</h4>
+    <div class="table-responsive">
+        <table id="GoerIsSupporter" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Supporter</th>
+                    <th>Goer</th>
+                    <th class="text-right">Amount</th>
+                    <th>Notice</th>
+                    <th>Trip</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var gg in qss)
+                {
+                    <tr>
+                        <td>@gg.gs.Created.FormatDate()</td>
+                        <td><a href="/Person2/@gg.SupporterId">@gg.SupporterName</a></td>
+                        <td><a href="/Person2/@gg.GoerId">@gg.GoerName</a></td>
+                        <td class="text-right">@gg.gs.Amount.ToString2("N2")</td>
+                        <td>
+                            @(gg.gs.NoNoticeToGoer == true
+                                                  ? "no notice"
+                                                  : gg.gs.NoNoticeToGoer == false
+                                                    ? "sent"
+                                                    : "")
+                        </td>
+                        <td>@gg.TripName</td>
+                        <td class="action">
+                            @GoerSenderEditMenu(noadmin, gg)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br /> <br />
+    </div>
+}
+@if (bal.Any())
+{
+    <h4>Trip Balances</h4>
+    <div class="table-responsive">
+        <table class="table table-striped notwide">
+            <thead>
+                <tr>
+                    <th>Trip</th>
+                    <th class="text-right">Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var gg in bal)
+                {
+                    <tr>
+                        <td>@gg.TripName</td>
+                        <td class="text-right">@gg.Balance.ToString("N2")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br /> <br />
+    </div>
 }
 
 @if (qso.Any())
 {
-  <h4>Supporting Others</h4>
-  <div class="table-responsive">
-    <table id="SupporterOfOthers" class="table table-responsive">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Supporter</th>
-          <th>Goer</th>
-          <th class="text-right">Amount</th>
-          <th>Notice</th>
-          <th>Trip</th>
-        </tr>
-      </thead>
-      <tbody>
-        @foreach (var gg in qso)
-        {
-          <tr>
-            <td>@gg.gs.Created.FormatDate()</td>
-            <td><a href="/Person2/@gg.SupporterId">@gg.SupporterName</a></td>
-            <td><a href="/Person2/@gg.GoerId">@gg.GoerName</a></td>
-            <td class="text-right">@gg.gs.Amount.ToString2("N2")</td>
-            <td>
-              @(gg.gs.NoNoticeToGoer == true
-                            ? "no notice"
-                            : gg.gs.NoNoticeToGoer == false
-                              ? "sent"
-                              : "")
-          </td>
-          <td>@gg.TripName</td>
-          <td class="action">
-            @GoerSenderEditMenu(noadmin, gg)
-          </td>
-        </tr>
-        }
-      </tbody>
-    </table>
-    <br/> <br/>
-  </div>
+    <h4>Supporting Others</h4>
+    <div class="table-responsive">
+        <table id="SupporterOfOthers" class="table table-responsive">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Supporter</th>
+                    <th>Goer</th>
+                    <th class="text-right">Amount</th>
+                    <th>Notice</th>
+                    <th>Trip</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var gg in qso)
+                {
+                    <tr>
+                        <td>@gg.gs.Created.FormatDate()</td>
+                        <td><a href="/Person2/@gg.SupporterId">@gg.SupporterName</a></td>
+                        <td><a href="/Person2/@gg.GoerId">@gg.GoerName</a></td>
+                        <td class="text-right">@gg.gs.Amount.ToString2("N2")</td>
+                        <td>
+                            @(gg.gs.NoNoticeToGoer == true
+                                                  ? "no notice"
+                                                  : gg.gs.NoNoticeToGoer == false
+                                                    ? "sent"
+                                                    : "")
+                        </td>
+                        <td>@gg.TripName</td>
+                        <td class="action">
+                            @GoerSenderEditMenu(noadmin, gg)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br /> <br />
+    </div>
 }

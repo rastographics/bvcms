@@ -484,6 +484,14 @@ AND a.PeopleId = {2}
                 return 0;
             return (ts.IndAmt ?? 0) - TotalPaid(db);
         }
+        public static decimal AmountDue(CMSDataContext db, int orgid, int pid)
+        {
+            var om = db.OrganizationMembers.SingleOrDefault(
+                    vv => vv.OrganizationId == orgid && vv.PeopleId == pid);
+            if (om == null)
+                return 0;
+            return om.AmountDue(db);
+        }
 
         public decimal? AmountPaidTransactions(CMSDataContext db)
         {

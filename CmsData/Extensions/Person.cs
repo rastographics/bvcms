@@ -1099,7 +1099,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             var e = PeopleExtras.FirstOrDefault(ee => ee.Field == field);
             if (e == null)
             {
-                e = new PeopleExtra {Field = field, PeopleId = PeopleId, TransactionTime = Util.Now};
+                e = new PeopleExtra {Field = field.Trim(), PeopleId = PeopleId, TransactionTime = Util.Now};
                 this.PeopleExtras.Add(e);
             }
             e.StrValue = value;
@@ -1132,7 +1132,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             {
                 ev = new PeopleExtra
                 {
-                    Field = field,
+                    Field = field.Trim(),
                     TransactionTime = Util.Now
                 };
                 PeopleExtras.Add(ev);
@@ -1212,10 +1212,28 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             ev.IntValue = value;
             ev.TransactionTime = Util.Now;
         }
+        public void AddEditExtraInt(string field, int? value)
+        {
+            if (!value.HasValue)
+                return;
+            var ev = GetExtraValue(field);
+            ev.IntValue = value;
+            ev.TransactionTime = Util.Now;
+        }
 
         public void AddEditExtraBool(string field, bool tf, string name = null, string location = null)
         {
             if (!field.HasValue())
+                return;
+            var ev = GetExtraValue(field);
+            ev.BitValue = tf;
+            ev.TransactionTime = Util.Now;
+        }
+        public void AddEditExtraBoolIfTrue(string field, bool? tf)
+        {
+            if (!field.HasValue())
+                return;
+            if (!tf.HasValue)
                 return;
             var ev = GetExtraValue(field);
             ev.BitValue = tf;
@@ -1255,7 +1273,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 ev = new PeopleExtra
                 {
                     PeopleId = id,
-                    Field = field,
+                    Field = field.Trim(),
                     TransactionTime = Util.Now
                 };
                 db.PeopleExtras.InsertOnSubmit(ev);

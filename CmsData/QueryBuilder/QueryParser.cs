@@ -381,6 +381,7 @@ namespace CmsData
                 case "DaysInPeriod":
                 case "MeetsOnDay0Sun":
                 case "SqlScript":
+                case "SettingNameWithStartDate":
                     name = "Quarters";
                     break;
             }

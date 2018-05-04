@@ -1,10 +1,12 @@
 ﻿@using CmsData
+@using CmsWeb.Areas.Finance.Models.Report
 @using UtilityExtensions
 @model CmsWeb.Models.TotalsByFundModel
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Totals By Fund";
     ViewBag.ReportPageHeader = "Totals By Fund";
+    var customFundsList = ContributionStatements.CustomFundSetSelectList();
 }
 @*
     @section head
@@ -56,6 +58,16 @@
                                 @Html.DropDownList("TaxDedNonTax", Model.TaxTypes(), new { @class = "form-control" })
                             </div>
                         </div>
+                        @if (customFundsList != null)
+                        {
+                            <div class="form-group">
+                                <label for="FundSet" class="control-label">Custom Fund Set</label>
+                                <div class="input-group">
+                                    @Html.DropDownList("FundSet", customFundsList, new { @class = "form-control" })
+                                </div>
+                            </div>
+
+                        }
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
@@ -109,7 +121,7 @@
                                     @foreach (var c in Model.CustomReports())
                                     {
                                         <li>
-                                           <a href="/TotalsByFundCustomReport/@c" class="CustomReport">@c.SpaceCamelCase()</a> 
+                                            <a href="/TotalsByFundCustomReport/@c" class="CustomReport">@c.SpaceCamelCase()</a>
                                         </li>
                                     }
                                     @if (User.IsInRole("Developer") && Util.UserName == "David")

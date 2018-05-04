@@ -5,10 +5,9 @@ using System.Net.Mail;
 using System.Text.RegularExpressions;
 using CmsData.API;
 using CmsData.Email.ReplacementCodes;
-using Novacode;
 using UtilityExtensions;
 using CmsData.View;
-using Community.CsharpSqlite;
+using Xceed.Words.NET;
 
 namespace CmsData
 {

@@ -21,7 +21,7 @@ namespace CmsData
                 || db.IsValidEmail(p.EmailAddress2 ?? "") == false);
 
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -31,7 +31,7 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                 p.Family.People.Any(pp => pp.PeopleId == p.SpouseId && pp.EmailAddress.Contains("@"));
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -58,7 +58,7 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                 p.Family.People.Any(pp => pp.PrimaryZip.Length >= 9);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }

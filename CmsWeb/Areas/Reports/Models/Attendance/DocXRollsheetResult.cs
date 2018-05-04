@@ -19,11 +19,10 @@ using CmsData.Codes;
 using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Areas.Public.Models;
 using CmsWeb.Areas.Search.Models;
-using Novacode;
 using OpenXmlPowerTools;
 using UtilityExtensions;
-using Paragraph = Novacode.Paragraph;
-using Table = Novacode.Table;
+using Xceed.Words.NET;
+using Table = OpenXmlPowerTools.Table;
 using Util = UtilityExtensions.Util;
 
 namespace CmsWeb.Areas.Reports.Models
@@ -76,9 +75,9 @@ namespace CmsWeb.Areas.Reports.Models
             {
                 curr = docx.Copy();
 
-                foreach (var p in curr.Headers.odd.Paragraphs)
+                foreach (var p in curr.Headers.Odd.Paragraphs)
                     DoHeaderFooterParagraphReplacments(p, o);
-                foreach (var p in curr.Footers.odd.Paragraphs)
+                foreach (var p in curr.Footers.Odd.Paragraphs)
                     DoHeaderFooterParagraphReplacments(p, o);
 
                 var tbl = curr.Tables[0];
@@ -200,7 +199,7 @@ namespace CmsWeb.Areas.Reports.Models
             context.HttpContext.Response.OutputStream.Write(finaldoc.DocumentByteArray, 0, finaldoc.DocumentByteArray.Length);
         }
 
-        private void AddRowWithReplacements(Table tbl, RollsheetPersonInfo m, int orgId)
+        private void AddRowWithReplacements(Xceed.Words.NET.Table tbl, RollsheetPersonInfo m, int orgId)
         {
             var row = tbl.InsertRow(docx.Tables[0].Rows[0]);
             tbl.Rows.Add(row);
