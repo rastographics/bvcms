@@ -15,8 +15,13 @@ namespace CmsWeb.Areas.Manage.Models
 		public string SmallGroup1 { get; set; }
 		public string SmallGroup2 { get; set; }
 		public bool SortByWeek { get; set; }
+	    public int WeekNumber { get; set; }
+	    public int PageNumber  { get; set; }
+	    public int? CurMonth { get; set; }
+	    public int? CurYear { get; set; }
+        public int? PrevYear { get; set; }
 
-		public class NameId
+        public class NameId
 		{
 			public string Name { get; set; }
 			public int PeopleId { get; set; }
@@ -98,7 +103,7 @@ namespace CmsWeb.Areas.Manage.Models
             var exweeks = evexweeks.Split(',').Select(ww => ww.ToInt()).ToArray();
 			if (SortByWeek)
 				return from slot in FetchSlots()
-                       where !exweeks.Contains(slot.Week)
+                       where !exweeks.Contains(slot.Week) && slot.Week == WeekNumber
 					   group slot by slot.Sunday into g
 					   where g.Any(gg => gg.Time > DateTime.Today)
 					   orderby g.Key.WeekOfMonth(), g.Key
@@ -110,7 +115,97 @@ namespace CmsWeb.Areas.Manage.Models
 				   orderby g.Key
 				   select g.OrderBy(gg => gg.Time).ToList();
 		}
-		public IEnumerable<Slot> FetchSlots()
+
+	    public List<List<Slot>> FetchSlotWeeksByMonth(int? curMonth)
+        {
+	        var evexweeks = Org.GetExtra(DbUtil.Db, "ExcludeWeeks") ?? "";
+	        var exweeks = evexweeks.Split(',').Select(ww => ww.ToInt()).ToArray();
+            if (SortByWeek)
+            { 
+              var  weekSorted = from slot in FetchSlots()
+                    where !exweeks.Contains(slot.Week) && slot.Week == WeekNumber
+                    group slot by slot.Sunday into g
+                    where g.Any(gg => gg.Time >= DateTime.Today)
+                    orderby g.Key.WeekOfMonth(), g.Key
+                    select g.OrderBy(gg => gg.Time).ToList();
+                return weekSorted.ToList();
+            }
+                var monthWeeks = from slot in FetchSlotsByMonth(CurMonth)
+                    where !exweeks.Contains(slot.Week)
+                    group slot by slot.Sunday into g
+                    where g.Any(gg => gg.Time >= DateTime.Today)
+                    orderby g.Key.WeekOfMonth(), g.Key
+                    select g.OrderBy(gg => gg.Time).ToList();
+                return monthWeeks.ToList();
+        }
+
+	    public IEnumerable<Slot> FetchSlotsByMonth(int? curMonth)
+	    {
+	        var mlist = (from m in DbUtil.Db.Meetings
+	            where m.MeetingDate > Util.Now.Date
+                where m.OrganizationId == OrgId
+	            orderby m.MeetingDate
+	            select m).ToList();
+	        if (curMonth.IsNull() && mlist.Count >0)
+	        {
+	            curMonth = mlist[0].MeetingDate.Value.Month;
+	        }
+
+	        //var mfinallist = mlist.Where(k => k.MeetingDate.Value.Month == curMonth).ToList();
+
+            var alist = (from a in DbUtil.Db.AttendCommitments(OrgId)
+	            orderby a.MeetingDate
+	            select a).ToList();
+
+	        var list = new List<Slot>();
+
+	        DateTime calcSunday = Sunday;
+
+            if (curMonth != Sunday.Month)
+	        {
+	            DateTime firstDayOfMonth = new DateTime(CurYear.ToInt(), CurMonth.ToInt(), 1);
+	            calcSunday = firstDayOfMonth.AddDays(7-(int)firstDayOfMonth.DayOfWeek);
+            }
+
+            for (var sd = calcSunday; sd <= EndDt && sd.Month == curMonth; sd = sd.AddDays(7))
+	        {
+	            var dt = sd;
+                {
+	                var u = from ts in Regsettings.TimeSlots.list
+	                    orderby ts.Datetime()
+	                    let time = ts.Datetime(dt)
+	                    let meeting = mlist.SingleOrDefault(mm => mm.MeetingDate == time)
+	                    let needed = meeting != null ?
+	                        (from e in meeting.MeetingExtras
+	                            where e.Field == "TotalVolunteersNeeded"
+	                            select e.Data).SingleOrDefault().ToInt2() : null
+	                    let meetingid = meeting?.MeetingId ?? 0
+	                    select new Slot()
+	                    {
+	                        Time = time,
+	                        Sunday = dt,
+	                        Week = dt.WeekOfMonth(),
+	                        Disabled = time < DateTime.Now,
+	                        Limit = needed.ToInt2() ?? ts.Limit ?? 0,
+	                        Persons = (from a in alist
+	                            where a.MeetingDate == time
+	                            orderby a.Name2
+	                            select new NameId
+	                            {
+	                                Name = a.Name2,
+	                                PeopleId = a.PeopleId,
+	                                Commitment = a.Commitment,
+	                                OtherCommitments = a.Conflicts == true
+	                            }).ToList(),
+	                        MeetingId = meetingid
+	                    };
+	                list.AddRange(u);
+	            }
+            }
+	        return list;
+	    }
+
+        public IEnumerable<Slot> FetchSlots()
 		{
 			var mlist = (from m in DbUtil.Db.Meetings
 			             where m.MeetingDate > Util.Now.Date

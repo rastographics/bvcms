@@ -1,0 +1,89 @@
+﻿@using CmsData
+@using CmsWeb
+@model CmsWeb.Areas.Manage.Models.VolunteerCommitmentsModel
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Alternate Volunteer Calendar";
+    ViewBag.PageHeader = "Volunteer Calendar";
+    ViewBag.PageSubHeader = $"<a href=\"/Org/{Model.OrgId}\">{Model.OrgName}</a>";
+}
+@section head
+{
+@Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+@Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
+@Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
+@Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2-bootstrap.css")
+    <style type="text/css">
+        #container {margin: 3em auto 0 3em;padding-bottom: 3em;background-color: #fff; }
+        #monthsall {border-collapse: collapse;margin-left: 2em; }
+        #monthsall th, #monthsall td { border: 1px solid #000; }
+        #monthsall thead { background-color: #fff; }
+        #monthsall td {min-width: 7em;padding: .2em;vertical-align: top;overflow: auto; }
+        #monthsall td .day {min-width: 7em;min-height: 1em;  }
+        #monthsall thead th {font: 150% bold Arial, Helvetica, sans-serif;padding: .2em; }
+        #months {border-collapse: collapse;margin-left: 2em; }
+        #months th, #months td { border: 1px solid #000; }
+        #months thead { background-color: #fff; }
+        #months td {min-width: 7em;padding: .2em;vertical-align: top;overflow: auto; }
+        #months td .day {min-width: 7em;min-height: 1em;  }
+        #months thead th {font: 150% bold Arial, Helvetica, sans-serif;padding: .2em; }
+        div.drop {border: 1px dashed gray;background-color: lightgray;color: gray;cursor: pointer;padding: 3px; }
+        #month {border-collapse: collapse;margin-left: 2em; }
+        #month th, #month td { border: 1px solid #000; }
+        #month thead { background-color: #fff; }
+        #month td {min-width: 7em;padding: .2em;vertical-align: top;overflow: auto; }
+        #month td .day {min-width: 7em;min-height: 1em;  }
+        #month thead th {font: 120% bold Arial, Helvetica, sans-serif;padding: .2em; }
+        .wk-1 { background-color: #C5ECC5; }
+        .wk-2 { background-color: #E2E2FF; }
+        .wk-3 { background-color: #FFE5E5; }
+        .wk-4 { background-color: #FFFFE2; }
+        .wk-5 { background-color: #EAEAEA; }
+        #months {border-collapse: collapse;margin-left: 2em; }
+        #months th, #months td { border: 1px solid #000; }
+        #months thead { background-color: #fff; }
+        #months td {min-width: 7em;padding: .2em;vertical-align: top;overflow: auto; }
+        #months td .day {min-width: 7em;min-height: 1em;  }
+        #months thead th {font: 150% bold Arial, Helvetica, sans-serif;padding: .2em; }
+        div.drop {border: 1px dashed gray;background-color: lightgray;color: gray;cursor: pointer;padding: 3px; }
+        .selected {background: #F39814 !important;color: white !important; }
+        .pidHighlight { background: #F3CB92 !important; }
+        .pidHighlight2 { background: #F3BEA9; }
+        div.selectable {cursor: cell;padding: 3px;border: 1px solid transparent }
+        div.conflict { color: red; font-weight: bold }
+        div.selectable:hover { border: 1px dotted gray; }
+        div.selectable h3 { color: blue; }
+        /* Coming */
+        .commit-1 { color: black; }
+        /* Regrets */
+        .commit-0 {text-decoration: line-through;color: gray;font-size: 90%; }
+        /* Finding Sub */
+        .commit-2 {font-weight: bold;color: blue;font-size: 90%;font-style: italic;border: 1px dashed red !important;  }
+        /* Sub Found */
+        .commit-3 {text-decoration: line-through;color: blue;font-size: 90%; }
+        /* Substitute */
+        .commit-4 { color: #008000; }
+        td.top, th.top {
+            vertical-align: top;
+        }
+    </style>
+}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-responsive">
+                <div class="box-content">
+                    <div id="managearea">
+                        @Html.Partial("AltManageArea", Model)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    @section scripts
+{
+        @Fingerprint.Script("/Content/touchpoint/js/volunteer/AltCalendar.js")
+    }
+
+
