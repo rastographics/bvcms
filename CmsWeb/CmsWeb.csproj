@@ -1657,6 +1657,9 @@
     <Content Include="Areas\Dialog\Views\GetCheckImage\GetCheckImage.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\CustomStatments.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\PythonCode.cshtml" />
+    <Content Include="Areas\Manage\Views\Volunteers\AddVolunteers.cshtml" />
+    <Content Include="Areas\Manage\Views\Volunteers\AltCalendar.cshtml" />
+    <Content Include="Areas\Manage\Views\Volunteers\AltManageArea.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\staging.pubxml" />
     <None Include="Properties\PublishProfiles\TeamCity.pubxml" />
