@@ -146,8 +146,8 @@
         {
             tot = Model.PaymentForm.AmtToPay.GetValueOrDefault();
             <div class="form-group text-right" style="padding-right: 6px !important">
-                <h4 class="inline-block">@Model.PaymentForm.Description&nbsp;&nbsp;$&nbsp;</h4>
-                <input type="text" id="AmtToPay" name="AmtToPay" class="form-control input-lg narrow sum @Html.ErrorClass("AmtToPay")" style="display: inline" placeholder="Amount" value="@Model.PaymentForm.AmtToPay"/>
+                <h4 class="inline-block">@Model.PaymentForm.Description&nbsp;&nbsp;</h4>
+                <input type="text" id="AmtToPay" name="AmtToPay" class="form-control input-lg narrow sum @Html.ErrorClass("AmtToPay")" style="display: inline" placeholder="$ 0.00" value="@Model.PaymentForm.AmtToPay"/>
                 @Html.ValidationMessageLabelFor(m => m.PaymentForm.AmtToPay, "field-validation-error")
             </div>
         }
@@ -171,8 +171,7 @@
                                 <td style="border-width: 0px!important"><a href="#" tabindex="-1" class="remove-fund"><span class="fa fa-trash-o" style="line-height: 20px !important; padding: 8px 0;"></span></a></td>
                                 <td class="pull-right" style="border-width: 0px!important"><h4 class="inline-block">@i.Text</h4></td>
                                 <td style="border-width: 0px !important;">
-                                    <h4 class="inline-block" style="margin: 0;padding: 12px 0;">$</h4><!--                                                        
-                                    --><input type="hidden" name="@(funame)[@sn].Key" value="@i.Value"/>
+                                    <input type="hidden" name="@(funame)[@sn].Key" value="@i.Value"/>
                                     <input type="text" name="@(funame)[@sn].Value" value="@amt.ToString2("f2")" class="form-control input-lg narrow sum pull-right"/>
                                 </td>
                             </tr>
@@ -184,8 +183,8 @@
                     <tr id="addFund" hidden>
                         <td style="border-width: 0px !important;padding-top:15px!important"><a href="#" tabindex="-1" id="removeAddFund"><span class="fa fa-trash-o"></span></a></td>
                         <td style="border-width: 0px !important;padding-top:12px!important">
-                            <select class="form-control" placeholder="Select Fund" id="special-funds-list">
-                                <option></option>
+                            <select class="form-control" id="special-funds-list">
+                                <option value="0">Select Fund</option>
                                 @foreach (var fund in funds)
                                 {
                                     if (designatedFund == null || (fund.Value != designatedFund.Value))
@@ -196,14 +195,13 @@
                             </select>                            
                         </td>
                         <td style="border-width: 0px !important;">
-                            <h4 class="inline-block" style="margin: 0; padding: 12px 0;">$</h4><!--
-                            --><input type="text" name="" placeholder="Amount" disabled class="form-control input-lg narrow sum pull-right" />
+                            <input type="text" name="" placeholder="$ 0.00" disabled class="form-control input-lg narrow sum pull-right" />
                         </td>
                     </tr>
                     <tr>
                         <td style="border-width: 0px !important"></td>
                         <td style="border-width: 0px !important" width="56%!important"><h4 class="pull-right">TOTAL:</h4></td>
-                        <td style="border-width: 0px !important;" width="35%!important">
+                        <td style="border-width: 0px !important;" width="30%!important">
                             <h2 class="pull-right" style="margin: 0">$<span id="total">@tot.ToString2("N2")</span></h2>
                         </td>
                     </tr>
