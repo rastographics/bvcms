@@ -37,6 +37,16 @@ namespace UtilityExtensions
                 age--;
             return age.ToString();
         }
+        public static int Age0(this DateTime? bd)
+        {
+            if (bd == null)
+                return -1;
+            DateTime td = Now;
+            int age = td.Year - bd.Value.Year;
+            if (td.Month < bd.Value.Month || (td.Month == bd.Value.Month && td.Day < bd.Value.Day))
+                age--;
+            return age;
+        }
         public static int Age0(this string birthday)
         {
             DateTime bd;

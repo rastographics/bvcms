@@ -23,17 +23,18 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
             var details = new List<BundleDetail>();
 
+            csv.Read();
+            csv.ReadHeader();
             while (csv.Read())
             {
-                var amount = csv[8];
-                var dt = csv[0].ToDate();
+                var amount = csv["give_amount"];
+                var dt = csv["date"].ToDate();
                 if (!amount.HasValue())
                     continue;
 
-                var fund = csv[14];
+                var fund = csv["fund"];
                 var ffid = DbUtil.Db.ContributionFunds.FirstOrDefault(f => f.FundName == fund && f.FundStatusId == 1)?.FundId ?? fid;
-
-                var desc = $"{csv[5]} {csv[6]};{csv[7]}";
+                var desc = $"{csv["first_name"]} {csv["last_name"]};{csv["email"]}";
 
                 if (bundleHeader == null)
                     bundleHeader = BatchImportContributions.GetBundleHeader(date, DateTime.Now);

@@ -26,6 +26,8 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             BundleHeader bh = null;
             var fid = fundid ?? BatchImportContributions.FirstFundId();
 
+            csv.Read();
+            csv.ReadHeader();
             while (csv.Read())
             {
                 var dt = csv[1].ToDate();

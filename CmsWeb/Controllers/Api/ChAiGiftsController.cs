@@ -11,15 +11,13 @@ namespace CmsWeb.Controllers.Api
 {
     public class ChAiGiftsController : ODataController
     {
-        public ChAiGiftsController()
-        {
-            Mapper.CreateMap<CmsData.View.ChAiGiftDatum, ApiChAiGift>();
-        }
-
         [EnableQuery(PageSize = ApiOptions.DefaultPageSize)]
         public IHttpActionResult Get()
         {
-            return Ok(DbUtil.Db.ViewChAiGiftDatas.Project().To<ApiChAiGift>().AsQueryable());
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<ChAiGiftDatum, ApiChAiGift>();
+            });
+            return Ok(DbUtil.Db.ViewChAiGiftDatas.ProjectTo<ApiChAiGift>(config));
         }
     }
 }

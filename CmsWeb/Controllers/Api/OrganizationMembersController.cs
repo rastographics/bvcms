@@ -10,15 +10,13 @@ namespace CmsWeb.Controllers.Api
 {
     public class OrganizationMembersController : ODataController
     {
-        public OrganizationMembersController()
-        {
-            Mapper.CreateMap<OrganizationMember, ApiOrganizationMember>();
-        }
-
         [EnableQuery(PageSize = ApiOptions.DefaultPageSize)]
         public IHttpActionResult Get()
         {
-            return Ok(DbUtil.Db.OrganizationMembers.Project().To<ApiOrganizationMember>().AsQueryable());
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<OrganizationMember, ApiOrganizationMember>();
+            });
+            return Ok(DbUtil.Db.OrganizationMembers.ProjectTo<ApiOrganizationMember>(config));
         }
     }
 }

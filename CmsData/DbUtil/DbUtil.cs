@@ -324,6 +324,7 @@ namespace CmsData
         }
 
         public static string AdminMail => Db.Setting("AdminMail", "support@touchpointsoftware.com");
+        public static string AdminMailName => Db.Setting("AdminMailName", "TouchPoint Software");
         public static string StartAddress => Db.Setting("StartAddress", "2000+Appling+Rd,+Cordova,+Tennessee+38016");
         public static bool CheckRemoteAccessRole => Db.Setting("CheckRemoteAccessRole");
 
@@ -338,8 +339,8 @@ namespace CmsData
         public const int TagTypeId_ExtraValues = 6;
         public const int TagTypeId_Query = 7;
         public const int TagTypeId_Emailer = 8;
-        public const int TagTypeId_QueryTags = 99;
         public const int TagTypeId_StatusFlags = 100;
+        public const int TagTypeId_QueryTags = 101;
         // ReSharper restore InconsistentNaming
 
         public static void UpdateValue(this object obj, List<ChangeDetail> psb, string field, object value)

@@ -8,6 +8,7 @@ using System.Xml.Linq;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using CmsData.API;
+using IronPython.Modules;
 using UtilityExtensions;
 
 namespace CmsData.Registration
@@ -21,6 +22,9 @@ This is help for TimeSlots
         [Display(Name = "Lock Days")]
         public int? TimeSlotLockDays { get; set; }
         public bool HasValue { get { return list.Count > 0; } }
+
+        public string FindDescription(DateTime dt) =>
+                list.SingleOrDefault(vv => (DayOfWeek) vv.DayOfWeek == dt.DayOfWeek && vv.Time?.TimeOfDay == dt.TimeOfDay)?.Description;
 
         public TimeSlots()
         {

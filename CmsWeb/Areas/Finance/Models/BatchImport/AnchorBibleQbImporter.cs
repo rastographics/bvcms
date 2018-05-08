@@ -41,6 +41,8 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             var rows = new List<Row>();
 
             var n = 0;
+            csv.Read();
+            csv.ReadHeader();
             while (csv.Read())
             {
                 n += 1;

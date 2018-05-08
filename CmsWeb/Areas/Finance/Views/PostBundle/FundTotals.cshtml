@@ -3,7 +3,8 @@
 @{
   Layout = ViewExtensions2.TouchPointLayout();
   ViewBag.Title = $"Fund Totals For Bundle Id {Model.Bundle.BundleHeaderId} {Model.Bundle.ContributionDate.ToShortDateString()}";
-  ViewBag.ReportPageHeader = $"Fund Totals For Bundle Id {Model.Bundle.BundleHeaderId} {Model.Bundle.ContributionDate.ToShortDateString()}";
+  ViewBag.ReportPageHeader = $"Fund Totals For Bundle Id {Model.Bundle.BundleHeaderId} - {Model.Bundle.ContributionDate.ToShortDateString()}";
+  ViewBag.ReportPageSubHeader = Model.Bundle.BundleHeaderType.Description;
 }
 <div class="report box box-responsive">
   <div class="box-content">
@@ -23,6 +24,10 @@
               <td class="text-right">@f.Total.ToString2("N2")</td>
             </tr>
           }
+            <tr>
+              <td>Total</td>
+              <td class="text-right">@Model.TotalItems.ToString("N2")<td>
+            </tr>
         </tbody>
       </table>
     </div>

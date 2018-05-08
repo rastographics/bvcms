@@ -17,6 +17,7 @@ namespace CmsData
 {
     public class CategoryClass
     {
+        private const string CategoryClassListKey = "CategoryClassList";
         public string Title => Name.SpaceCamelCase();
         public string Name { get; set; }
         public List<FieldClass> Fields { get; set; }
@@ -30,7 +31,7 @@ namespace CmsData
         {
             get
             {
-                var categories = HttpRuntime.Cache["CategoryClassList"] as List<CategoryClass>;
+                var categories = HttpRuntime.Cache[CategoryClassListKey] as List<CategoryClass>;
                 if (categories != null)
                     return categories;
 
@@ -49,8 +50,8 @@ namespace CmsData
                 foreach (var cf in csv.GetRecords<ConditionConfig>())
                     FieldClass.AddFieldClass(cf, categories);
 
-                HttpRuntime.Cache.Insert("CategoryClass2List", categories, null,
-                    DateTime.Now.AddMinutes(10), Cache.NoSlidingExpiration);
+                HttpRuntime.Cache.Insert(CategoryClassListKey, categories, null,
+                    Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0));
                 return categories;
             }
         }

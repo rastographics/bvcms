@@ -23,7 +23,8 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             var fid = fundid ?? BatchImportContributions.FirstFundId();
             var now = DateTime.Now;
             var list = new List<Record>();
-
+            csv.Read();
+            csv.ReadHeader();
             while (csv.Read())
             {
                 var rec = new Record

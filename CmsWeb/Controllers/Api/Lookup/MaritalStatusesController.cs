@@ -10,14 +10,12 @@ namespace CmsWeb.Controllers.Api.Lookup
 {
     public class MaritalStatusesController : ODataController
     {
-        public MaritalStatusesController()
-        {
-            Mapper.CreateMap<MaritalStatus, ApiLookup>();
-        }
-
         public IHttpActionResult Get()
         {
-            return Ok(DbUtil.Db.MaritalStatuses.Project().To<ApiLookup>().AsQueryable());
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<MaritalStatus, ApiLookup>();
+            });
+            return Ok(DbUtil.Db.MaritalStatuses.ProjectTo<ApiLookup>(config));
         }
     }
 }

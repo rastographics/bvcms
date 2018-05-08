@@ -51,6 +51,16 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			return br;
 		}
 
+		public static MobileMessage createSuccessReturn()
+		{
+			MobileMessage br = new MobileMessage
+			{
+				error = (int) Error.NONE
+			};
+
+			return br;
+		}
+
 		public static MobileMessage createFromString( string json )
 		{
 			if( !string.IsNullOrEmpty( json ) ) {
@@ -109,6 +119,11 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			}
 		}
 
+		public void lowerArgString()
+		{
+			argString = argString.ToLower();
+		}
+
 		public enum Device
 		{
 			UNKNOW = 0,
@@ -126,21 +141,34 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			// FOUR = 4, // Version 4 added rebrand flag
 			// FIVE = 5, // Version 5 added Google Calendar integration
 			// SIX = 6, // Version 6 added My Profile section
-			SEVEN = 7, // Version 7 is the UX project
+			// SEVEN = 7, // Version 7 is the UX project
+			EIGHT = 8, // Version 8 is the Quick Sign In project
 		}
 
 		public enum Error
 		{
 			// Common Errors
+			UNKNOWN = -1,
+			
+			// No error
 			NONE = 0,
+			
+			// Invalid Errors
 			INVALID_INSTANCE_ID = 1,
 			INVALID_PIN = 2,
+			INVALID_EMAIL = 3,
+			INVALID_DEEP_LINK = 4,
+			
+			// Failure Errors
+			EMAIL_NOT_SENT = 21,
+			PIN_NOT_SET = 22,
 
 			// Create Errors	
-			CREATE_FAILED = 50,
+			CREATE_FAILED = 51,
+			CREATE_CODE_FAILED = 52,
 
 			// People Errors
-			PERSON_NOT_FOUND = 100,
+			PERSON_NOT_FOUND = 101,
 
 			// Tasks Errors
 			TASK_UPDATE_FAILED = 201

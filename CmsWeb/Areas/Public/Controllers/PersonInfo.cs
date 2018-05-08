@@ -1,3 +1,6 @@
+using System;
+using UtilityExtensions;
+
 namespace CmsWeb.Areas.Public.Controllers
 {
     public class PersonInfo
@@ -8,6 +11,20 @@ namespace CmsWeb.Areas.Public.Controllers
         public string last { get; set; }
         public string goesby { get; set; }
         public string dob { get; set; } // Date of Birth m/d/yyyy
+        public DateTime? Birthdate
+        {
+            get
+            {
+                if(Util.IsCultureUS())
+                    return dob.ToDate();
+
+                DateTime dt;
+                if(dob.DateTryParseUS(out dt))
+                    return dt;
+                return null;
+            }
+        }
+
         public string email { get; set; }
         public string cell { get; set; }
         public string home { get; set; } // home phone

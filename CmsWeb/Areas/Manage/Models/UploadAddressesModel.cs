@@ -31,6 +31,8 @@ namespace CmsWeb.Models
             var csv = new CsvReader(new StringReader(text));
             csv.Configuration.Delimiter = "\t";
 
+            csv.Read();
+            csv.ReadHeader();
             while (csv.Read())
             {
                 var pid = csv[NcoaCols["PeopleId"]].ToInt();
@@ -46,7 +48,7 @@ namespace CmsWeb.Models
 
                 p.Family.LogChanges(db, fsb, p.PeopleId, userpeopleid);
                 if(NcoaCols.ContainsKey("MoveDate"))
-                    if(csv.FieldHeaders.Contains("MoveEffectiveDate", StringComparer.OrdinalIgnoreCase))
+                    if(csv.Context.HeaderRecord.Contains("MoveEffectiveDate", StringComparer.OrdinalIgnoreCase))
                         p.AddEditExtraDate("MoveEffectiveDate", 
                             csv[NcoaCols["MoveDate"]].ToDate() ?? DateTime.Today);
                 rt.Processed++;

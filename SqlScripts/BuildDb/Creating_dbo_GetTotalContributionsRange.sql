@@ -4,7 +4,8 @@ CREATE FUNCTION [dbo].[GetTotalContributionsRange]
 	@td DATETIME,
 	@campusid INT,
 	@nontaxded BIT,
-	@includeUnclosed BIT
+	@includeUnclosed BIT,
+	@fundids VARCHAR(MAX)
 )
 RETURNS TABLE 
 AS
@@ -12,9 +13,9 @@ RETURN
 (
 	WITH contributions AS (
 	    SELECT Amount = c.ContributionAmount, c.PeopleId 
-		FROM dbo.ContributionSearch0(NULL, NULL, NULL, NULL, 0, NULL, NULL, @fd, @td, 
-				CASE WHEN ISNULL(@nontaxded, 0) = 1 THEN 'nontaxded' ELSE 'taxded' END, 
-				NULL, @campusid, NULL, @includeUnclosed, NULL, 2) cs
+		FROM dbo.ContributionSearch(NULL, NULL, NULL, NULL, @fd, @td, @campusid, 0, 2, 0, 
+				CASE WHEN ISNULL(@nontaxded, 0) = 1 THEN 'nontaxded' ELSE 'taxded' END,
+				NULL, 0, NULL, @includeUnclosed, NULL, NULL, NULL, @fundids) cs
 		JOIN dbo.Contribution c ON c.ContributionId = cs.ContributionId
 	),
 	sums AS (

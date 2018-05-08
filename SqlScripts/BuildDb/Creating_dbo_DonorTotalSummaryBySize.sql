@@ -1,10 +1,10 @@
-
 CREATE PROC [dbo].[DonorTotalSummaryBySize]
 (
 	@enddt DATETIME,
 	@years INT,
 	@fund INT,
-	@campus INT
+	@campus INT,
+	@fundids VARCHAR(MAX)
 )
 AS
 BEGIN
@@ -27,6 +27,12 @@ BEGIN
 		[Total>100K] MONEY,
 		[Units>100K] INT
 	)
+	DROP TABLE IF EXISTS #ff
+	CREATE TABLE #ff ( FundId INT PRIMARY KEY )
+	IF @fundids IS NOT NULL 
+		INSERT #ff (FundId) SELECT Value FROM dbo.SplitInts(@fundids)
+	ELSE
+		INSERT #ff (FundId) SELECT FundId FROM dbo.ContributionFund
 
 	DECLARE @t DonorTotalsTable
 	DECLARE @n INT = 0
@@ -39,6 +45,7 @@ BEGIN
 		INSERT INTO @t
 		SELECT SUM(Amount), COUNT(*), 1
 		FROM dbo.Contributions2(@fd, @td, @campus, 0, NULL, 1) c
+		JOIN #ff ON #ff.FundId = c.FundId
 		WHERE (@fund = 0 OR @fund = c.FundId)
 		AND Amount > 0
 		GROUP BY FamilyId

@@ -11,7 +11,7 @@
         source = "/Person2/InlineCodes/"
     };
     var finance = User.IsInRole("Finance") && ((string)Session["testnofinance"]) != "true";
-    string statements = null; //ContributionStatements.CustomStatementsList();
+    string statements = null; ContributionStatements.CustomStatementsList();
 }
 <form class="ajax" method="post" data-init="Editable" data-init2="ExtraEditable">
     <h4>Statements</h4>

@@ -35,7 +35,7 @@ namespace CmsData
             get { return nextTagId++; }
         }
 
-#if DEBUG
+#if DEBUG2
         class DebugTextWriter : System.IO.TextWriter {
            public override void Write(char[] buffer, int index, int count) {
                Debug.Write(new string(buffer, index, count));
@@ -55,7 +55,7 @@ namespace CmsData
             {
                 ConnectionString = connStr,
                 Host = host,
-#if DEBUG
+#if DEBUG2
                 Log = new DebugTextWriter()
 #endif
             };
@@ -269,6 +269,9 @@ namespace CmsData
                 qB = MatchNothing();
             }
             var c = qB.ToClause();
+#if DEBUG2
+            var sql = c.ToSql();
+#endif
             var q = People.Where(c.Predicate(this));
             if (c.PlusParentsOf)
                 q = PersonQueryPlusParents(q);
@@ -281,6 +284,9 @@ namespace CmsData
         public IQueryable<Person> PeopleQueryCode(string code, bool fromDirectory = false)
         {
             var c = Condition.Parse(code);
+#if DEBUG2
+            var sql = c.ToSql();
+#endif
             if (fromDirectory)
                 c.FromDirectory = true;
             var q = People.Where(c.Predicate(this));
@@ -567,13 +573,14 @@ This search uses multiple steps which cannot be duplicated in a single query.
         {
             ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
         }
-        public void PopulateSpecialTag(IQueryable<Person> q, string tagname, int tagTypeId)
+        public int PopulateSpecialTag(IQueryable<Person> q, string tagname, int tagTypeId)
         {
             var tag = FetchOrCreateTag(tagname, Util.UserPeopleId ?? Util.UserId1, tagTypeId);
             TagPeople.DeleteAllOnSubmit(tag.PersonTags);
             tag.Created = Util.Now;
             SubmitChanges();
             TagAll(q, tag);
+            return tag.Id;
         }
         public void DePopulateSpecialTag(IQueryable<Person> q, int TagTypeId)
         {
@@ -1666,20 +1673,6 @@ This search uses multiple steps which cannot be duplicated in a single query.
             // The following will clean out any tags that no longer have a corresponding F99:name in the queries
             ExecuteCommand("dbo.DeleteOldQueryBitTags");
         }
-//        public void UpdateQueryTags(string prefix)
-//        {
-//            var temptag = PopulateTempTag(new List<int>());
-//            var qbits = (from c in Queries
-//                     where c.Name.StartsWith(prefix)
-//                     orderby c.Name
-//                     select c.Name).ToList();
-//            foreach (var name in qbits)
-//            {
-//                var qq = PeopleQuery2(name);
-//                TagAll2(qq, temptag);
-//                ExecuteCommand("dbo.UpdateQueryTag {0}, {1}", name, temptag.Id);
-//            }
-//        }
         [Function(Name = "dbo.TagRecentStartAttend")]
         public int TagRecentStartAttend(
             [Parameter(DbType = "Int")] int progid, 

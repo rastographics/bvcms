@@ -32,6 +32,10 @@ namespace CmsData
 		
 		private bool _NoOptIn;
 		
+		private string _ResultStatus;
+		
+		private string _ErrorMessage;
+		
    		
     	
 		private EntityRef< Person> _Person;
@@ -65,6 +69,12 @@ namespace CmsData
 		
 		partial void OnNoOptInChanging(bool value);
 		partial void OnNoOptInChanged();
+		
+		partial void OnResultStatusChanging(string value);
+		partial void OnResultStatusChanged();
+		
+		partial void OnErrorMessageChanging(string value);
+		partial void OnErrorMessageChanged();
 		
     #endregion
 		public SMSItem()
@@ -236,6 +246,50 @@ namespace CmsData
 					this._NoOptIn = value;
 					this.SendPropertyChanged("NoOptIn");
 					this.OnNoOptInChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="ResultStatus", UpdateCheck=UpdateCheck.WhenChanged, Storage="_ResultStatus", DbType="varchar(50)")]
+		public string ResultStatus
+		{
+			get { return this._ResultStatus; }
+
+			set
+			{
+				if (this._ResultStatus != value)
+				{
+				
+                    this.OnResultStatusChanging(value);
+					this.SendPropertyChanging();
+					this._ResultStatus = value;
+					this.SendPropertyChanged("ResultStatus");
+					this.OnResultStatusChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="ErrorMessage", UpdateCheck=UpdateCheck.WhenChanged, Storage="_ErrorMessage", DbType="varchar(300)")]
+		public string ErrorMessage
+		{
+			get { return this._ErrorMessage; }
+
+			set
+			{
+				if (this._ErrorMessage != value)
+				{
+				
+                    this.OnErrorMessageChanging(value);
+					this.SendPropertyChanging();
+					this._ErrorMessage = value;
+					this.SendPropertyChanged("ErrorMessage");
+					this.OnErrorMessageChanged();
 				}
 
 			}
