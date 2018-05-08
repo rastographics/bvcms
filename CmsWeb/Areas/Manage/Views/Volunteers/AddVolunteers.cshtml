@@ -66,7 +66,7 @@
             }
         </div>
         <div class="modal-footer">
-            <div float="right" style="display: inline-block;width: 60%;text-align: right"><input type="button" id="addVolunteer" class="btn btn-primary" value="Add">&nbsp;&nbsp;<a href="#" class="btn btn-default" data-dismiss="modal">Close</a></div>
+            <div float="right" style="display: inline-block;width: 60%;text-align: right"><a href="#" class="btn btn-default" data-dismiss="modal">Close</a>&nbsp;&nbsp;<input type="button" id="addVolunteer" class="btn btn-primary" value="Add"></div>
         </div>
     </div>
 </div>
@@ -133,16 +133,12 @@
                 });
             });
 
-        $('#checkedAllCommits').change(function() {
-            if (this.checked) {
-                $('.checkSingleCommits').each(function() {
-                    this.checked = true;
-                });
-            } else {
-                $('.checkSingleCommits').each(function() {
-                    this.checked = false;
-                });
-            }
+        $('#checkedAllCommits').change(function () {
+            var checked = this.checked;            
+            $('.checkSingleCommits').each(function() {
+                    this.checked = checked;
+            });
+            
         });
 
         $('.checkSingleCommits').click(function() {
@@ -162,16 +158,11 @@
             }
         });
 
-        $('#checkedAllNoCommits').change(function() {
-            if (this.checked) {
-                $('.checkSingleNoCommits').each(function() {
-                    this.checked = true;
-                });
-            } else {
-                $('.checkSingleNoCommits').each(function() {
-                    this.checked = false;
-                });
-            }
+        $('#checkedAllNoCommits').change(function () {
+            var checked = this.checked;
+            $('.checkSingleNoCommits').each(function() {
+                this.checked = checked;
+            });
         });
 
         $('.checkSingleNoCommits').click(function() {
