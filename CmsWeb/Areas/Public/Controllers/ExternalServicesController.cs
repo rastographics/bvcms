@@ -75,7 +75,7 @@ namespace CmsWeb.Areas.Public.Controllers
             return Redirect("/");
         }
 
-        enum errorMessage
+        enum ErrorMessage
         {
             NoErrors = 0,
             ApiKeyHeaderMissing = 1,
@@ -84,18 +84,20 @@ namespace CmsWeb.Areas.Public.Controllers
             AuthorizationValueNull = 4,
             MalformedBase64 = 5,
             InvalidCredentials = 6,
-            FailedAuthentication = 7
+            InvalidSetting = 7,
+            FailedAuthentication = 8
         }
 
         public ActionResult ApiUserInfo()
         {
             var header = Request.Headers;
+            //Check incoming values are valid
             var apiKeyValue = header.GetValues("ApiKey");
             if (apiKeyValue == null)
             {
                 return Json(new
                 {
-                    error = errorMessage.ApiKeyHeaderMissing
+                    error = ErrorMessage.ApiKeyHeaderMissing
                 }, JsonRequestBehavior.AllowGet);                
             }
             string apiKey = apiKeyValue.First();
@@ -103,7 +105,7 @@ namespace CmsWeb.Areas.Public.Controllers
             {
                 return Json(new
                 {
-                    error = errorMessage.ApiKeyValueNull
+                    error = ErrorMessage.ApiKeyValueNull
                 }, JsonRequestBehavior.AllowGet);
             }
 
@@ -112,7 +114,7 @@ namespace CmsWeb.Areas.Public.Controllers
             {
                 return Json(new
                 {
-                    error = errorMessage.AuthHeaderMissing
+                    error = ErrorMessage.AuthHeaderMissing
                 }, JsonRequestBehavior.AllowGet);
             }
             string getAuthInfo;
@@ -124,7 +126,7 @@ namespace CmsWeb.Areas.Public.Controllers
             {
                 return Json(new
                 {
-                    error = errorMessage.MalformedBase64
+                    error = ErrorMessage.MalformedBase64
                 }, JsonRequestBehavior.AllowGet);
             }
             var authorization = getAuthInfo.Split(':');
@@ -132,7 +134,7 @@ namespace CmsWeb.Areas.Public.Controllers
             {
                 return Json(new
                 {
-                    error = errorMessage.AuthorizationValueNull
+                    error = ErrorMessage.AuthorizationValueNull
                 }, JsonRequestBehavior.AllowGet);
             }
 
@@ -143,20 +145,35 @@ namespace CmsWeb.Areas.Public.Controllers
             {
                 return Json(new
                 {
-                    error = errorMessage.InvalidCredentials
+                    error = ErrorMessage.InvalidCredentials
                 }, JsonRequestBehavior.AllowGet);
             }
-            //Check if Key and Ip are valid
-            var check = (from e in DbUtil.Db.ApiUserInfos
-                where e.ApiKey == apiKey 
-                select e).FirstOrDefault();
-            if (check != null)
+
+            //Check Key is valid 
+            var getApiUserInfoKey = DbUtil.Db.Setting("ApiUserInfoKey", "");
+            if (getApiUserInfoKey == "")
+            {
+                return Json(new
+                {
+                    error = ErrorMessage.InvalidSetting
+                }, JsonRequestBehavior.AllowGet);
+            }
+            if (getApiUserInfoKey.trim() == apiKey)
             {
                 var getIp = HttpContext.Request.ServerVariables["REMOTE_ADDR"];
-                var ipCheck = check.IpAddress.Split(',').Contains(getIp);
+                //Check Ip is valid
+                var getIpWhiteList = DbUtil.Db.Setting("ApiUserInfoIPList", "");
+                if (getIpWhiteList == "")
+                {
+                    return Json(new
+                    {
+                        error = ErrorMessage.InvalidSetting
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                var ipCheck = getIpWhiteList.Split(',').Contains(getIp);
                 if (ipCheck)
                 {
-                    //authenticate user
+                    //Authenticate user
                     var retUser = AccountModel.AuthenticateLogon(userName, password, "");
                     if (retUser.IsValid)
                     {
@@ -167,14 +184,14 @@ namespace CmsWeb.Areas.Public.Controllers
                             emailAddress = retUser.User.EmailAddress,
                             altEmail = retUser.User.Person.EmailAddress2,
                             roles = retUser.User.Roles,
-                            error = errorMessage.NoErrors
+                            error = ErrorMessage.NoErrors
                         }, JsonRequestBehavior.AllowGet);
                     }
-                }
+                }                
             }
             return Json(new
             {
-                error = errorMessage.FailedAuthentication
+                error = ErrorMessage.FailedAuthentication
             }, JsonRequestBehavior.AllowGet);
         }
 
