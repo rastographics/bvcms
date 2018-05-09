@@ -105,7 +105,7 @@ namespace CmsWeb.Areas.People.Models
                     select new GoerItem
                     {
                         Id = m.OrganizationId,
-                        Trip = m.Organization.OrganizationName,
+                        Trip = m.Organization?.OrganizationName,
                         Cost = ts.TripCost ?? 0,
                         Paid = ts.Raised ?? 0
                     }).ToList();
