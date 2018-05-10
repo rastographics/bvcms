@@ -12,6 +12,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             pe.DictionaryAdd("PeopleId", PeopleId ?? 0);
             pe.DictionaryAdd("OrganizationId", om.OrganizationId);
+            var notifyIds = DbUtil.Db.StaffPeopleForOrg(om.OrganizationId);
+            pe.DictionaryAdd("OnlineNotifyId", notifyIds[0].PeopleId);
+            pe.DictionaryAdd("OnlineNotifyEmail", notifyIds[0].EmailAddress);
+            pe.DictionaryAdd("OnlineNotifyName", notifyIds[0].Name);
             var props = typeof(OnlineRegPersonModel).GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (var pi in props.Where(vv => vv.CanRead && vv.CanWrite))
             {
