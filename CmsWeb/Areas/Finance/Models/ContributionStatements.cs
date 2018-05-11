@@ -493,12 +493,13 @@ p { font-size: 11px; }
                     Funds = null
                 };
             }
-            if (name == "Standard Statements")
+            var standardsetlabel = DbUtil.Db.Setting("StandardFundSetName", "Standard Statements");
+            if (name == standardsetlabel)
             {
-                var funds = APIContributionSearchModel.GetCustomStatementsList(name);
+                var funds = APIContributionSearchModel.GetCustomStatementsList(DbUtil.Db, name);
                 return new StatementSpecification()
                 {
-                    Description = "Standard Statements",
+                    Description = standardsetlabel,
                     Notice = standardnotice,
                     Header = standardheader,
                     Funds = funds
@@ -519,7 +520,7 @@ p { font-size: 11px; }
             cs.Notice = noticeele != null
                 ? string.Concat(noticeele.Nodes().Select(x => x.ToString()).ToArray())
                 : standardnotice;
-            cs.Funds = APIContributionSearchModel.GetCustomStatementsList(desc);
+            cs.Funds = APIContributionSearchModel.GetCustomStatementsList(DbUtil.Db, desc);
             return cs;
         }
         public static List<string> CustomStatementsList()
@@ -530,7 +531,8 @@ p { font-size: 11px; }
                 list.Add(ele.Attribute("description")?.Value);
             if (list.Count == 0)
                 return null;
-            list.Insert(0, "Standard Statements");
+            var standardsetlabel = DbUtil.Db.Setting("StandardFundSetName", "Standard Statements");
+            list.Insert(0, standardsetlabel);
             return list;
         }
         public static List<string> CustomFundSetList()
@@ -542,7 +544,8 @@ p { font-size: 11px; }
             var xd2 = XDocument.Parse(Util.PickFirst(DbUtil.Db.ContentOfTypeText("CustomStatements"),"<CustomStatements/>"));
             if (xd2.Descendants().Elements("Statement").Any())
             {
-                list.Add("Standard Statements");
+                var standardsetlabel = DbUtil.Db.Setting("StandardFundSetName", "Standard Statements");
+                list.Add(standardsetlabel);
                 foreach (var ele in xd2.Descendants().Elements("Statement"))
                     list.Add(ele.Attribute("description")?.Value);
             }

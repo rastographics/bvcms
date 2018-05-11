@@ -35,7 +35,7 @@ namespace CmsWeb.Models
 
         public IEnumerable<RangeInfo> GetTotalsByFundRange()
         {
-            var fundids = APIContributionSearchModel.GetCustomFundSetList(FundSet).JoinInts(",");
+            var fundids = APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db, FundSet).JoinInts(",");
             var list = (from r in DbUtil.Db.GetContributionsRange(Dt1, Dt2, CampusId, false, true, Pledged, FundId, fundids)
                         orderby r.Range
                         select r).ToList();

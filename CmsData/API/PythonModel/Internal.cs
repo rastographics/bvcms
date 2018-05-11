@@ -98,7 +98,7 @@ namespace CmsData
         {
             try
             {
-                Output = ExecutePythonFile(script, this);
+                Output = ExecutePython(script, this, fromFile: true);
             }
             catch (Exception ex)
             {
@@ -117,9 +117,11 @@ namespace CmsData
             return ExecutePython(script, pe);
         }
 
-        private static string ExecutePython(string scriptContent, PythonModel model)
+        public static string ExecutePython(string script, PythonModel model, bool fromFile = false)
         {
-            var engine = Python.CreateEngine();
+            var engine = fromFile
+                ? Python.CreateEngine(new Dictionary<string, object> { ["Debug"] = true })
+                : Python.CreateEngine();
             var pc = HostingHelpers.GetLanguageContext(engine) as PythonContext;
             var hooks = pc?.SystemState.Get__dict__()["path_hooks"] as List;
             hooks?.Clear();
@@ -135,7 +137,9 @@ namespace CmsData
 
                 try
                 {
-                    var sc = engine.CreateScriptSourceFromString(scriptContent);
+                    var sc = fromFile
+                        ? engine.CreateScriptSourceFromFile(script)
+                        : engine.CreateScriptSourceFromString(script);
                     var code = sc.Compile();
 
                     var scope = engine.CreateScope();
@@ -151,7 +155,7 @@ namespace CmsData
                     using (var sr = new StreamReader(ms))
                     {
                         var s = sr.ReadToEnd();
-                        return s;
+                        return s.Replace("\r\r\n", "\n");
                     }
                 }
                 catch (Exception ex)
@@ -162,54 +166,10 @@ namespace CmsData
             }
         }
 
-        public static string ExecutePythonFile(string file, PythonModel model)
-        {
-            var engine = Python.CreateEngine(new Dictionary<string, object> { ["Debug"] = true });
-            var pc = HostingHelpers.GetLanguageContext(engine) as PythonContext;
-            var hooks = pc?.SystemState.Get__dict__()["path_hooks"] as List;
-            hooks?.Clear();
-            var searchPaths = engine.GetSearchPaths();
-            searchPaths.Add(ConfigurationManager.AppSettings["PythonLibPath"]);
-            engine.SetSearchPaths(searchPaths);
-
-            using (var ms = new MemoryStream())
-            using (var sw = new StreamWriter(ms))
-            {
-                engine.Runtime.IO.SetOutput(ms, sw);
-                engine.Runtime.IO.SetErrorOutput(ms, sw);
-
-                try
-                {
-                    var sc = engine.CreateScriptSourceFromFile(file);
-                    var code = sc.Compile();
-
-                    var scope = engine.CreateScope();
-                    scope.SetVariable("model", model);
-                    scope.SetVariable("Data", model.Data);
-
-                    var qf = new QueryFunctions(model.db, model.dictionary);
-                    scope.SetVariable("q", qf);
-                    code.Execute(scope);
-
-                    ms.Position = 0;
-
-                    using (var sr = new StreamReader(ms))
-                    {
-                        var s = sr.ReadToEnd();
-                        return s;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    var err = engine.GetService<ExceptionOperations>().FormatException(ex);
-                    throw new Exception(err);
-                }
-            }
-        }
-        public static string ExecutePythonFile(string dbname, string file)
+        public static string ExecutePythonFilex(string dbname, string file)
         {
             var model = new PythonModel(dbname);
-            return ExecutePythonFile(file, model);
+            return ExecutePython(file, model, fromFile: true);
         }
     }
 }

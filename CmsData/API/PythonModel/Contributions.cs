@@ -41,7 +41,7 @@ namespace CmsData
             };
             return bd;
         }
-        public static int FirstFundId(CMSDataContext db)
+        public int FirstFundId()
         {
             var firstfund = (from f in db.ContributionFunds
                              where f.FundStatusId == 1

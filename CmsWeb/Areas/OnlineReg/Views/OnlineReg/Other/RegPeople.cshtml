@@ -5,340 +5,436 @@
 @model CmsWeb.Areas.OnlineReg.Models.OnlineRegModel
 
 @{
-  ViewBag.Title = "RegPeople";
-  Layout = "~/Views/Shared/_Layout.cshtml";
-  var n = 1;
+    ViewBag.Title = "RegPeople";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var n = 1;
 }
 
 <h2>Registration</h2>
 <table class="table" style="width: auto">
-  <tr>
-    <td>DateTime</td>
-    <td>
-      @if (User.IsInRole("Admin"))
-      {
-        <a href="@(DbUtil.Db.ServerLink("/OnlineReg/ConfirmTestXml"))/@Model.DatumId">@Model.Datum.Stamp.FormatDateTm()</a>
-      }
-      else
-      {
-        @Model.Datum.Stamp.FormatDateTm()
-      }
-    </td>
-  </tr>
-  <tr>
-    <td>Status</td><td>@(Model.Datum.Completed == true ? "completed" : "incomplete")</td>
-  </tr>
-  <tr>
-    <td>Org</td>
-    <td>
-      @if (Model.Orgid > 0 && Model.org != null)
-      {
-        <a href="/Org/@Model.Orgid">@Model.org.OrganizationName</a>
-      }
-      else if (Model.masterorgid > 0)
-      {
-        <a href="/Org/@Model.masterorgid">@Model.masterorg.OrganizationName</a>
-      }
-      else
-      {
-        <span>n/a</span>
-      }
-    </td>
-  </tr>
-  <tr>
-    <td>User</td><td>@Model.LoginName</td>
-  </tr>
-  @if (Model.FromMobile.HasValue())
-  {
     <tr>
-      <td>MobileApp</td><td>@Model.FromMobile</td>
+        <td>DateTime</td>
+        <td>
+            @if (User.IsInRole("Admin"))
+            {
+                <a href="@(DbUtil.Db.ServerLink("/OnlineReg/ConfirmTestXml"))/@Model.DatumId">@Model.Datum.Stamp.FormatDateTm()</a>
+            }
+            else
+            {
+                @Model.Datum.Stamp.FormatDateTm()
+            }
+        </td>
     </tr>
-  }
-  @if (Model.SupportMissionTrip)
-  {
-    if (Model.SupportMissionTrip && Model.List.Count > 0)
+    <tr>
+        <td>Status</td>
+        <td>@(Model.Datum.Completed == true ? "completed" : "incomplete")</td>
+    </tr>
+    <tr>
+        <td>Org</td>
+        <td>
+            @if (Model.Orgid > 0 && Model.org != null)
+            {
+                <a href="/Org/@Model.Orgid">@Model.org.OrganizationName</a>
+            }
+            else if (Model.masterorgid > 0)
+            {
+                <a href="/Org/@Model.masterorgid">@Model.masterorg.OrganizationName</a>
+            }
+            else
+            {
+                <span>n/a</span>
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>User</td>
+        <td>@Model.LoginName</td>
+    </tr>
+    @if (Model.FromMobile.HasValue())
     {
-      <tr>
-        <td></td><td>Support GoerId</td><td>@Model.List[0].MissionTripGoerId</td>
-      </tr>
-      <tr>
-        <td></td><td>GoerNotice</td><td>@Model.List[0].MissionTripNoNoticeToGoer</td>
-      </tr>
+        <tr>
+            <td>MobileApp</td>
+            <td>@Model.FromMobile</td>
+        </tr>
     }
-  }
+    @if (Model.SupportMissionTrip)
+    {
+        if (Model.SupportMissionTrip && Model.List.Count > 0)
+        {
+            <tr>
+                <td></td>
+                <td>Support GoerId</td>
+                <td>@Model.List[0].MissionTripGoerId</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>GoerNotice</td>
+                <td>@Model.List[0].MissionTripNoNoticeToGoer</td>
+            </tr>
+        }
+    }
 </table>
 <table class="table" style="width: auto">
-@foreach (var p in Model.List)
-{
-  var om = p.GetOrgMember() ?? new OrganizationMember();
-  var rr = (p.person ?? new Person()).GetRecReg();
-
-  <tr>
-    <td colspan="3">
-      <h3>Registrant #@(n++)</h3>
-    </td>
-  </tr>
-  <tr>
-    <td></td><td>IsNew</td><td>@p.IsNew</td>
-  </tr>
-  <tr>
-    <td></td><td>Name</td><td>@p.FirstName @(p.LastName.HasValue() ? p.LastName : "(empty)")</td>
-  </tr>
-  <tr>
-    <td></td><td>Organization</td><td>@(p.org?.OrganizationName)</td>
-  </tr>
-  <tr>
-    <td></td><td>Birthday</td><td>@p.DateOfBirth @(p.age.ToString2("({0})"))</td>
-  </tr>
-  <tr>
-    <td></td><td>QuestionsOK</td><td>@p.QuestionsOK</td>
-  </tr>
-  <tr>
-    <td></td><td>Phone</td><td>@p.Phone</td>
-  </tr>
-  <tr>
-    <td></td><td>Gender</td><td>@p.gender</td>
-  </tr>
-  <tr>
-    <td></td><td>Marital</td><td>@p.married</td>
-  </tr>
-  if (p.paydeposit.HasValue)
-  {
-    <tr>
-      <td></td><td>PayDeposit</td><td>@p.paydeposit</td>
-    </tr>
-  }
-  if (p.Suggestedfee.HasValue)
-  {
-    <tr>
-      <td></td><td>SugestedFee</td><td>@p.Suggestedfee</td>
-    </tr>
-  }
-  if (p.FundItem.Count > 0)
-  {
-    var funds = p.Funds();
-    var br = "";
-    <tr>
-      <td></td><td>Funds</td><td>
-        @foreach (var i in p.FundItem)
-        {
-          var f = funds.SingleOrDefault(vv => vv.Value == i.Key.ToString());
-          @Html.Raw(br)
-          @(f?.Text ?? $"Missing: {i.Key}")
-          br = "<br>";
-        }
-      </td>
-    </tr>
-  }
-  <tr>
-    <td></td><td>Address</td><td>@Html.Raw(p.Address().Replace("\n", "<br>\n"))</td>
-  </tr>
-  if (p.org != null)
-  {
-    foreach (var ask in p.setting.AskItems)
+    @foreach (var p in Model.List)
     {
-      switch (ask.Type)
-      {
-        case "AskTickets":
-          <tr>
-            <td></td><td>Tickets</td><td>@om.Tickets</td>
-          </tr>
-          break;
-        case "AskSize":
-          <tr>
-            <td></td><td>Shirt</td><td>@om.ShirtSize</td>
-          </tr>
-          break;
-        case "AskEmContact":
-          <tr>
-            <td></td><td>Emerg Contact</td><td>@rr.Emcontact</td>
-          </tr>
-          <tr>
-            <td></td><td>Emerg Phone</td><td>@rr.Emphone</td>
-          </tr>
-          break;
-        case "AskDoctor":
-          <tr>
-            <td></td><td>Physician Name</td><td>@rr.Doctor</td>
-          </tr>
-          <tr>
-            <td></td><td>Physician Phone</td><td>@rr.Docphone</td>
-          </tr>
-          break;
-        case "AskInsurance":
-          <tr>
-            <td></td><td>Insurance Carrier</td><td>@rr.Insurance</td>
-          </tr>
-          <tr>
-            <td></td><td>Insurance Policy</td><td>@rr.Policy</td>
-          </tr>
-          break;
-        case "AskRequest":
-          <tr>
-            <td></td><td>@(((AskRequest) ask).Label):</td><td>@om.Request</td>
-          </tr>
-          break;
-        case "AskHeader":
-          <tr>
-            <td></td><td>
-              <strong>Header</strong>
-            </td><td>@Html.Raw(((AskHeader) ask).Label)</td>
-          </tr>
-          break;
-        case "AskInstruction":
-          <tr>
-            <td></td><td>
-              <strong>
-                <em>Instruction</em>
-              </strong>
-            </td><td>@Html.Raw(((AskInstruction) ask).Label)</td>
-          </tr>
-          break;
-        case "AskAllergies":
-          <tr>
-            <td></td><td>Allergies</td><td>@rr.MedicalDescription</td>
-          </tr>
-          break;
-        case "AskTylenolEtc":
-          <tr>
-            <td></td>
-            <td>
-              Tylenol? @(p.tylenol == true ? "Yes" : p.tylenol == false ? "No" : "")
-              Advil? @(p.advil == true ? "Yes" : p.advil == false ? "No" : "")
-              Robitussin? @(p.robitussin == true ? "Yes" : p.robitussin == false ? "No" : "")
-              Maalox? @(p.maalox == true ? "Yes" : p.maalox == false ? "No" : "")
+        var om = p.GetOrgMember() ?? new OrganizationMember();
+        var rr = (p.person ?? new Person()).GetRecReg();
+
+        <tr>
+            <td colspan="3">
+                <h3>Registrant #@(n++)</h3>
             </td>
-          </tr>
-          break;
-        case "AskChurch":
-          <tr>
-            <td></td><td>Member</td><td>@rr.Member</td>
-          </tr>
-          <tr>
-            <td></td><td>OtherChurch</td><td>@rr.ActiveInAnotherChurch</td>
-          </tr>
-          break;
-        case "AskParents":
-          <tr>
-            <td></td><td>Mother's name</td><td>@rr.Mname</td>
-          </tr>
-          <tr>
-            <td></td><td>Father's name</td><td>@rr.Fname</td>
-          </tr>
-          break;
-        case "AskCoaching":
-          <tr>
-            <td></td><td>Coaching</td><td>@rr.Coaching</td>
-          </tr>
-          break;
-        case "AskSMS":
-          <tr>
-            <td></td><td>Receive Texts</td><td>@((p.person ?? new Person()).ReceiveSMS)</td>
-          </tr>
-          break;
-        case "AskDropdown":
-          <tr>
+        </tr>
+        <tr>
             <td></td>
-            <td>@(Util.PickFirst(((AskDropdown) ask).Label, "Options")))</td>
-            <td>@(((AskDropdown) ask).SmallGroupDescription(p.option))</td>
-          </tr>
-          break;
-        case "AskMenu":
-          var menulabel = ((AskMenu) ask).Label;
-          foreach (var i in ((AskMenu) ask).MenuItemsChosen(p.MenuItem[ask.UniqueId]))
-          {
+            <td>IsNew</td>
+            <td>@p.IsNew</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>Name</td>
+            <td>@p.FirstName @(p.LastName.HasValue() ? p.LastName : "(empty)")</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>Organization</td>
+            <td>@(p.org?.OrganizationName)</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>Birthday</td>
+            <td>@p.DateOfBirth @(p.age.ToString2("({0})"))</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>QuestionsOK</td>
+            <td>@p.QuestionsOK</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>Phone</td>
+            <td>@p.Phone</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>Gender</td>
+            <td>@p.gender</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>Marital</td>
+            <td>@p.married</td>
+        </tr>
+        if (p.paydeposit.HasValue)
+        {
             <tr>
-              <td></td>
-              <td>@menulabel</td>
-              <td>
-                @i.number @i.desc
-                @if (i.amt > 0)
-                {
-                  <text>(at @i.amt.ToString("c"))</text>
-                }
-              </td>
+                <td></td>
+                <td>PayDeposit</td>
+                <td>@p.paydeposit</td>
             </tr>
-            menulabel = string.Empty;
-          }
-          break;
-        case "AskCheckboxes":
-          var askcb = (AskCheckboxes) ask;
-          var cbmenulabel = askcb.Label;
-          var checkboxes = askcb.CheckboxItemsChosen(p.Checkbox).ToList();
-          foreach (var i in checkboxes)
-          {
-            if (cbmenulabel.HasValue())
+        }
+        if (p.Suggestedfee.HasValue)
+        {
+            <tr>
+                <td></td>
+                <td>SugestedFee</td>
+                <td>@p.Suggestedfee</td>
+            </tr>
+        }
+        if (p.FundItem.Count > 0)
+        {
+            var funds = p.Funds();
+            var br = "";
+            <tr>
+                <td></td>
+                <td>Funds</td>
+                <td>
+                    @foreach (var i in p.FundItem)
+                    {
+                        var f = funds.SingleOrDefault(vv => vv.Value == i.Key.ToString());
+                        @Html.Raw(br)
+                        @(f?.Text ?? $"Missing: {i.Key}")
+                        br = "<br>";
+                    }
+                </td>
+            </tr>
+        }
+        <tr>
+            <td></td>
+            <td>Address</td>
+            <td>@Html.Raw(p.Address().Replace("\n", "<br>\n"))</td>
+        </tr>
+        if (p.org != null)
+        {
+            foreach (var ask in p.setting.AskItems)
             {
-              <tr>
-                <td></td><td colspan='2'>
-                  <br>@cbmenulabel</td>
-              </tr>
+                switch (ask.Type)
+                {
+                    case "AskTickets":
+                        <tr>
+                            <td></td>
+                            <td>Tickets</td>
+                            <td>@om.Tickets</td>
+                        </tr>
+                        break;
+                    case "AskSize":
+                        <tr>
+                            <td></td>
+                            <td>Shirt</td>
+                            <td>@om.ShirtSize</td>
+                        </tr>
+                        break;
+                    case "AskEmContact":
+                        <tr>
+                            <td></td>
+                            <td>Emerg Contact</td>
+                            <td>@rr.Emcontact</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Emerg Phone</td>
+                            <td>@rr.Emphone</td>
+                        </tr>
+                        break;
+                    case "AskDoctor":
+                        <tr>
+                            <td></td>
+                            <td>Physician Name</td>
+                            <td>@rr.Doctor</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Physician Phone</td>
+                            <td>@rr.Docphone</td>
+                        </tr>
+                        break;
+                    case "AskInsurance":
+                        <tr>
+                            <td></td>
+                            <td>Insurance Carrier</td>
+                            <td>@rr.Insurance</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Insurance Policy</td>
+                            <td>@rr.Policy</td>
+                        </tr>
+                        break;
+                    case "AskRequest":
+                        <tr>
+                            <td></td>
+                            <td>@(((AskRequest)ask).Label):</td>
+                            <td>@om.Request</td>
+                        </tr>
+                        break;
+                    case "AskHeader":
+                        <tr>
+                            <td></td>
+                            <td>
+                                <strong>Header</strong>
+                            </td>
+                            <td>@Html.Raw(((AskHeader)ask).Label)</td>
+                        </tr>
+                        break;
+                    case "AskInstruction":
+                        <tr>
+                            <td></td>
+                            <td>
+                                <strong>
+                                    <em>Instruction</em>
+                                </strong>
+                            </td>
+                            <td>@Html.Raw(((AskInstruction)ask).Label)</td>
+                        </tr>
+                        break;
+                    case "AskAllergies":
+                        <tr>
+                            <td></td>
+                            <td>Allergies</td>
+                            <td>@rr.MedicalDescription</td>
+                        </tr>
+                        break;
+                    case "AskTylenolEtc":
+                        <tr>
+                            <td></td>
+                            <td>
+                                Tylenol? @(p.tylenol == true ? "Yes" : p.tylenol == false ? "No" : "")
+                                Advil? @(p.advil == true ? "Yes" : p.advil == false ? "No" : "")
+                                Robitussin? @(p.robitussin == true ? "Yes" : p.robitussin == false ? "No" : "")
+                                Maalox? @(p.maalox == true ? "Yes" : p.maalox == false ? "No" : "")
+                            </td>
+                        </tr>
+                        break;
+                    case "AskChurch":
+                        <tr>
+                            <td></td>
+                            <td>Member</td>
+                            <td>@rr.Member</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>OtherChurch</td>
+                            <td>@rr.ActiveInAnotherChurch</td>
+                        </tr>
+                        break;
+                    case "AskParents":
+                        <tr>
+                            <td></td>
+                            <td>Mother's name</td>
+                            <td>@rr.Mname</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Father's name</td>
+                            <td>@rr.Fname</td>
+                        </tr>
+                        break;
+                    case "AskCoaching":
+                        <tr>
+                            <td></td>
+                            <td>Coaching</td>
+                            <td>@rr.Coaching</td>
+                        </tr>
+                        break;
+                    case "AskSMS":
+                        <tr>
+                            <td></td>
+                            <td>Receive Texts</td>
+                            <td>@((p.person ?? new Person()).ReceiveSMS)</td>
+                        </tr>
+                        break;
+                    case "AskDropdown":
+                        <tr>
+                            <td></td>
+                            <td>@(Util.PickFirst(((AskDropdown)ask).Label, "Options")))</td>
+                            <td>@(((AskDropdown)ask).SmallGroupDescription(p.option))</td>
+                        </tr>
+                        break;
+                    case "AskMenu":
+                        var menulabel = ((AskMenu)ask).Label;
+                        foreach (var i in ((AskMenu)ask).MenuItemsChosen(p.MenuItem[ask.UniqueId]))
+                        {
+                            <tr>
+                                <td></td>
+                                <td>@menulabel</td>
+                                <td>
+                                    @i.number @i.desc
+                                    @if (i.amt > 0)
+                                    {
+                                        <text>(at @i.amt.ToString("c"))</text>
+                                    }
+                                </td>
+                            </tr>
+                            menulabel = string.Empty;
+                        }
+                        break;
+                    case "AskCheckboxes":
+                        var askcb = (AskCheckboxes)ask;
+                        var cbmenulabel = askcb.Label;
+                        var checkboxes = askcb.CheckboxItemsChosen(p.Checkbox).ToList();
+                        foreach (var i in checkboxes)
+                        {
+                            if (cbmenulabel.HasValue())
+                            {
+                                <tr>
+                                    <td></td>
+                                    <td colspan='2'>
+                                        <br>@cbmenulabel
+                                    </td>
+                                </tr>
+                            }
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>@i.Description @(i.Fee > 0 ? $"({i.Fee:C})" : "")<br>(@i.SmallGroup)</td>
+                            </tr>
+                            cbmenulabel = string.Empty;
+                        }
+                        if (checkboxes.Count == 0)
+                        {
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>(none chosen)</td>
+                            </tr>
+                        }
+                        break;
+                    case "AskYesNoQuestions":
+                        foreach (var a in ((AskYesNoQuestions)ask).list.Where(aa => p.YesNoQuestion.ContainsKey(aa.SmallGroup)))
+                        {
+                            <tr>
+                                <td></td>
+                                <td>@a.Question</td>
+                                <td>@(p.YesNoQuestion[a.SmallGroup] == true ? "Yes" : "No")</td>
+                            </tr>
+                        }
+                        break;
+                    case "AskExtraQuestions":
+                        foreach (var a in p.ExtraQuestion[ask.UniqueId].Where(aa => aa.Value.HasValue()))
+                        {
+                            <tr>
+                                <td></td>
+                                <td>@a.Key:</td>
+                                <td>@a.Value</td>
+                            </tr>
+                        }
+                        break;
+                    case "AskText":
+                        foreach (var a in p.Text[ask.UniqueId].Where(aa => aa.Value.HasValue()))
+                        {
+                            <tr>
+                                <td></td>
+                                <td>@a.Key</td>
+                                <td>@a.Value</td>
+                            </tr>
+                        }
+                        break;
+                    case "AskGradeOptions":
+                        <tr>
+                            <td></td>
+                            <td>GradeOption</td>
+                            <td>@p.GradeOptions(ask).SingleOrDefault(s => s.Value == (p.gradeoption ?? "00")).Text</td>
+                        </tr>
+                        break;
+                }
+                if (p.setting.AgeGroups.Count <= 0)
+                {
+                    continue;
+                }
+                <tr>
+                    <td></td>
+                    <td>Settings.AgeGroup:</td>
+                    <td>@p.AgeGroup()</td>
+                </tr>
             }
-            <tr>
-              <td></td><td></td>
-              <td>@i.Description @(i.Fee > 0 ? $"({i.Fee:C})" : "")<br>(@i.SmallGroup)</td>
-            </tr>
-            cbmenulabel = string.Empty;
-          }
-          if (checkboxes.Count == 0)
-          {
-            <tr>
-              <td></td><td></td><td>(none chosen)</td>
-            </tr>
-          }
-          break;
-        case "AskYesNoQuestions":
-          foreach (var a in ((AskYesNoQuestions) ask).list.Where(aa => p.YesNoQuestion.ContainsKey(aa.SmallGroup)))
-          {
-            <tr>
-              <td></td><td>@a.Question</td>
-              <td>@(p.YesNoQuestion[a.SmallGroup] == true ? "Yes" : "No")</td>
-            </tr>
-          }
-          break;
-        case "AskExtraQuestions":
-          foreach (var a in p.ExtraQuestion[ask.UniqueId].Where(aa => aa.Value.HasValue()))
-          {
-            <tr>
-              <td></td><td>@a.Key:</td><td>@a.Value</td>
-            </tr>
-          }
-          break;
-        case "AskText":
-          foreach (var a in p.Text[ask.UniqueId].Where(aa => aa.Value.HasValue()))
-          {
-            <tr>
-              <td></td><td>@a.Key</td><td>@a.Value</td>
-            </tr>
-          }
-          break;
-        case "AskGradeOptions":
-          <tr>
-            <td></td><td>GradeOption</td>
-            <td>@p.GradeOptions(ask).SingleOrDefault(s => s.Value == (p.gradeoption ?? "00")).Text</td>
-          </tr>
-          break;
-      }
-      if (p.setting.AgeGroups.Count <= 0)
-      {
-        continue;
-      }
-      <tr>
-        <td></td><td>Settings.AgeGroup:</td><td>@p.AgeGroup()</td>
-      </tr>
+        }
     }
-  }
-}
-<tr>
-  <td colspan="3">
-    <h3>Actions</h3>
-  </td>
-</tr>
-@foreach (var h in Model.History)
-{
-  <tr>
-    <td></td><td colspan="2">@h</td>
-  </tr>
-}
+    <tr>
+        <td colspan="3">
+            <h3>Actions</h3>
+        </td>
+    </tr>
+    @foreach (var h in Model.History)
+    {
+        <tr>
+            <td></td>
+            <td colspan="2">@h</td>
+        </tr>
+    }
+    @{
+        var srlist = Model.List.Where(vv => vv.ScriptResults.HasValue()).ToList();
+        if (srlist.Any())
+        {
+            <tr>
+                <td colspan="3">
+                    <h3>OnEnroll Script Results</h3>
+                </td>
+            </tr>
+            foreach (var p in srlist)
+            {
+                <tr><td colspan="3"><pre>@p.ScriptResults</pre></td></tr>
+            }
+        }
+    }
 
 </table>

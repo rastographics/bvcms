@@ -159,7 +159,7 @@ namespace CmsWeb.Models
 
         public IEnumerable<GetTotalContributionsRange> TotalsByRange()
         {
-            var fundids = APIContributionSearchModel.GetCustomFundSetList(FundSet).JoinInts(",");
+            var fundids = APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db, FundSet).JoinInts(",");
             var list = (from r in DbUtil.Db.GetTotalContributionsRange(Dt1, Dt2, CampusId, NonTaxDeductible ? (bool?)null : false, IncUnclosedBundles, fundids)
                         orderby r.Range
                         select r).ToList();
@@ -262,7 +262,7 @@ namespace CmsWeb.Models
             p.Add("@Online", Online);
             p.Add("@TaxNonTax", TaxDedNonTax);
             p.Add("@IncludeUnclosedBundles", IncUnclosedBundles);
-            var fundset = APIContributionSearchModel.GetCustomFundSetList(FundSet).JoinInts(",");
+            var fundset = APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db, FundSet).JoinInts(",");
             p.Add("@FundSet", fundset);
 
             if (FilterByActiveTag)

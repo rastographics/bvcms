@@ -545,6 +545,8 @@ Creating_dbo_MembersWhoAttendedOrgs.sql
 Creating_dbo_GetMostRecentIncompleteRegistration.sql
 Creating_dbo_RollList.sql
 Creating_dbo_NextChangeTransactionId.sql
+Creating_dbo_TotalPaid.sql
+Creating_dbo_MissionTripTotals.sql
 Creating_dbo_GetPeopleIdFromIndividualNumber.sql
 Creating_dbo_OrgFilterPeople.sql
 Creating_dbo_ChangeDetails.sql
@@ -634,9 +636,7 @@ Creating_dbo_DownlineDetails.sql
 Creating_dbo_PledgeReport.sql
 Creating_dbo_PurgeAllPeopleInCampus.sql
 Creating_dbo_DownlineSummary.sql
-Creating_dbo_TotalPaid.sql
 Creating_dbo_VisitNumberSinceDate.sql
-Creating_dbo_MissionTripTotals.sql
 Creating_dbo_GivingCurrentPercentOfFormer.sql
 Creating_dbo_DownlineLevels.sql
 Creating_dbo_RegisterLinksFromMaster.sql

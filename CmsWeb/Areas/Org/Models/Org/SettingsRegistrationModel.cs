@@ -135,8 +135,11 @@ namespace CmsWeb.Areas.Org.Models
         [Org, Display(Name = "Max Limit", Description = LimitDescription)]
         public int? Limit { get; set; }
 
-        [Org, Display(Name = "OnRegister Script Name", Description = AddToSmallGroupScriptDescription)]
+        [Org, Display(Name = "AddToSmallGroup Script Name", Description = AddToSmallGroupScriptDescription)]
         public string AddToSmallGroupScript { get; set; }
+
+        [Reg, Display(Name = "OnEnroll Script Name", Description = OnEnrollScriptDescription)]
+        public string OnEnrollScript { get; set; }
 
         [Org, Display(Description = TitleDescription)]
         public string RegistrationTitle { get; set; }
@@ -244,7 +247,10 @@ This is used on the master organization and will become the dropdown for 'User C
 This will cause the class to go into a 'class filled' state when the number of members reaches this point.
 ";
         private const string AddToSmallGroupScriptDescription = @"
-This is the name of a script in *Special Content > Python Scripts* that will be run when someone registers.
+This is the name of a script in *Special Content > Python Scripts* that will be run when someone is added to a sub-group during a registration.
+";
+        private const string OnEnrollScriptDescription = @"
+This is the name of a script in *Special Content > Python Scripts* that will be run when someone is enrolled during a registration.
 ";
         private const string TitleDescription = @"Leave blank to use the name of the organization.";
         private const string ValidateOrgsDescription = @"
