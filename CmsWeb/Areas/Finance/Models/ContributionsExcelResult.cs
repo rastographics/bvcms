@@ -38,7 +38,7 @@ namespace CmsWeb.Models
             }
 
             var tagid = FilterByActiveTag ? DbUtil.Db.TagCurrent()?.Id : (int?)null;
-            var fundids = APIContributionSearchModel.GetCustomFundSetList(FundSet);
+            var fundids = APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db, FundSet);
             var funds = fundids.JoinInts(",");
 
             switch (type)

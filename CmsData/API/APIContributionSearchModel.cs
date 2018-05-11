@@ -312,7 +312,7 @@ namespace CmsData.API
             }
             if (model.FundSet.HasValue())
             {
-                var funds = GetCustomFundSetList(model.FundSet);
+                var funds = GetCustomFundSetList(db, model.FundSet);
                 if(funds != null)
                     contributions = from c in contributions
                                     where funds.Contains(c.FundId)
@@ -344,14 +344,16 @@ namespace CmsData.API
                 return null;
             return ret;
         }
-        public static List<int> GetCustomStatementsList(string name)
+        public static List<int> GetCustomStatementsList(CMSDataContext db, string name)
         {
             if (name == "all")
                 return null;
-            var xd = XDocument.Parse(Util.PickFirst(DbUtil.Db.ContentOfTypeText("CustomStatements"), "<CustomStatement/>"));
+            var xd = XDocument.Parse(Util.PickFirst(db.ContentOfTypeText("CustomStatements"), "<CustomStatement/>"));
 
-            var allfunds = DbUtil.Db.ContributionFunds.Select(cc => cc.FundId).ToList();
-            if (name == "Standard Statements")
+            var standardsetlabel = db.Setting("StandardFundSetName", "Standard Statements");
+
+            var allfunds = db.ContributionFunds.Select(cc => cc.FundId).ToList();
+            if (name == standardsetlabel)
             {
                 var standardFunds = allfunds.Select(vv => vv).ToList();
                 foreach (var ele in xd.Descendants("Statement"))
@@ -365,19 +367,19 @@ namespace CmsData.API
             var funds = xd.XPathSelectElement($"//Statement[@description='{name}']/Funds")?.Value ?? "";
             return GetFundSet(funds, allfunds);
         }
-        public static List<int> GetCustomFundSetList(string name)
+        public static List<int> GetCustomFundSetList(CMSDataContext db, string name)
         {
             if (name == "all")
                 return null;
-            var xd = XDocument.Parse(Util.PickFirst(DbUtil.Db.ContentOfTypeText("CustomFundSets"), "<CustomFundSets/>"));
+            var xd = XDocument.Parse(Util.PickFirst(db.ContentOfTypeText("CustomFundSets"), "<CustomFundSets/>"));
             var funds = xd.XPathSelectElement($"//FundSet[@description='{name}']/Funds")?.Value ?? "";
             if (!funds.HasValue())
-                return GetCustomStatementsList(name);
+                return GetCustomStatementsList(db, name);
 
-            var allfunds = DbUtil.Db.ContributionFunds.Select(cc => cc.FundId).ToList();
+            var allfunds = db.ContributionFunds.Select(cc => cc.FundId).ToList();
             return funds.HasValue()
                 ? GetFundSet(funds, allfunds)
-                : GetCustomStatementsList(name);
+                : GetCustomStatementsList(db, name);
         }
 
 
