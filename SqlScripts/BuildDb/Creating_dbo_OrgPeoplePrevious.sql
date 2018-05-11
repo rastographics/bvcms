@@ -15,6 +15,7 @@ RETURN
 	, mt.Description MemberType
 	, 0 Hidden
 	, etd.SmallGroups Groups
+	,etd.Grade
 
 	FROM dbo.EnrollmentTransaction etd
 	LEFT JOIN dbo.Attend a ON a.OrganizationId = etd.OrganizationId 
@@ -44,6 +45,8 @@ RETURN
 		AND om.OrganizationId = @oid
 	)
 )
+
+
 
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
