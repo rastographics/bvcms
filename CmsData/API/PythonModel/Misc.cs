@@ -382,6 +382,13 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
             return csv;
         }
 
+        public CsvHelper.CsvReader CsvReaderNoHeader(string text)
+        {
+            var csv = new CsvHelper.CsvReader(new StringReader(text));
+            csv.Configuration.HasHeaderRecord = false;
+            return csv;
+        }
+
         public string AppendIfBoth(string s1, string join, string s2)
         {
             if (s1.HasValue() && s2.HasValue())
