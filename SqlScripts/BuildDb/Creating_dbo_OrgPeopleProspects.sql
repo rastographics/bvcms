@@ -17,10 +17,11 @@ RETURN
 			SELECT CHAR(10) + mt.Name 
 			FROM dbo.OrgMemMemTags omt 
 			JOIN dbo.MemberTags mt ON mt.Id = omt.MemberTagId 
-			WHERE omt.OrgId = om.OrganizationId AND omt.PeopleId = om.PeopleId
-			FOR XML PATH(''),TYPE
+			where omt.OrgId = om.OrganizationId and omt.PeopleId = om.PeopleId
+			for xml path(''),type
 			).value('text()[1]','nvarchar(max)'),1,1,N''
 	  )) Groups
+	,om.Grade
 
 	FROM dbo.OrganizationMembers om
 	LEFT JOIN dbo.Attend a ON a.OrganizationId = om.OrganizationId 
@@ -35,6 +36,8 @@ RETURN
 	AND om.MemberTypeId = 311 -- prospect
 	AND (@showhidden = 1 OR ISNULL(om.Hidden, 0) = 0)
 )
+
+
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

@@ -62,7 +62,7 @@ namespace CmsWeb.Controllers
 #else
             var pe = new PythonModel(host);
             pe.DictionaryAdd("LogFile", logFile);
-            ViewBag.Text = PythonModel.ExecutePythonFile(file, pe);
+            ViewBag.Text = PythonModel.ExecutePython(file, pe, fromFile: true);
             return View("Test");
 #endif
         }
