@@ -70,6 +70,8 @@ namespace CmsData
                     var result = PreMailer.Net.PreMailer.MoveCssInline(text);
                     text = result.Html;
                     text = text.Replace("<!--{{", "{{").Replace("}}-->", "}}");
+                    // prevent gmail from not rendering when an empty title is autoclosed.
+                    text = text.Replace("<title />", "<title></title>");
                 }
                 catch
                 {
