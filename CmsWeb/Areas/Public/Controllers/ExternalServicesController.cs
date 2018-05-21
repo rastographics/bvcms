@@ -79,20 +79,27 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             NoErrors = 0,
             ApiKeyHeaderMissing = 1,
-            ApiKeyValueNull = 2,
+            ApiKeyHeaderValueNull = 2,
             AuthHeaderMissing = 3,
-            AuthorizationValueNull = 4,
-            MalformedBase64 = 5,
-            InvalidCredentials = 6,
-            InvalidSetting = 7,
-            FailedAuthentication = 8
+            AuthHeaderValueInvalid = 4,
+            AuthorizationHeaderValueInvalid = 5,
+            MalformedBase64 = 6,
+            InvalidCredentials = 7,
+            ApiKeySettingNotFound = 8,
+            ApiKeyNotValid = 9,
+            IpSettingNotFound = 10,
+            IpNotFoundInKey = 11,
+            FailedAuthentication = 12
         }
 
         public ActionResult ApiUserInfo()
         {
             var header = Request.Headers;
-            //Check incoming values are valid
+
+            //Check incoming values are valid        
             var apiKeyValue = header.GetValues("ApiKey");
+
+            // ApiKey header is missing
             if (apiKeyValue == null)
             {
                 return Json(new
@@ -100,15 +107,18 @@ namespace CmsWeb.Areas.Public.Controllers
                     error = ErrorMessage.ApiKeyHeaderMissing
                 }, JsonRequestBehavior.AllowGet);                
             }
+
+            // ApiKey header has no values 
             string apiKey = apiKeyValue.First();
             if (apiKey.IsNull())
             {
                 return Json(new
                 {
-                    error = ErrorMessage.ApiKeyValueNull
+                    error = ErrorMessage.ApiKeyHeaderValueNull
                 }, JsonRequestBehavior.AllowGet);
             }
 
+            // Authorization header is missing
             var authorizationValue = header.GetValues("Authorization");
             if (authorizationValue == null)
             {
@@ -117,10 +127,19 @@ namespace CmsWeb.Areas.Public.Controllers
                     error = ErrorMessage.AuthHeaderMissing
                 }, JsonRequestBehavior.AllowGet);
             }
+
+            // Authorization header has no values/bad data
             string getAuthInfo;
             try
             {
-                getAuthInfo=Encoding.ASCII.GetString(Convert.FromBase64String(authorizationValue.First()));
+                if (!authorizationValue.First().Substring(0,6).Trim().Equals("Basic"))
+                {
+                    return Json(new
+                    {
+                        error = ErrorMessage.AuthHeaderValueInvalid
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                getAuthInfo=Encoding.ASCII.GetString(Convert.FromBase64String(authorizationValue.First().Substring(6)));
             }
             catch (Exception)
             {
@@ -129,12 +148,13 @@ namespace CmsWeb.Areas.Public.Controllers
                     error = ErrorMessage.MalformedBase64
                 }, JsonRequestBehavior.AllowGet);
             }
+
             var authorization = getAuthInfo.Split(':');
             if (authorization.Count() != 2)
             {
                 return Json(new
                 {
-                    error = ErrorMessage.AuthorizationValueNull
+                    error = ErrorMessage.AuthorizationHeaderValueInvalid
                 }, JsonRequestBehavior.AllowGet);
             }
 
@@ -149,49 +169,62 @@ namespace CmsWeb.Areas.Public.Controllers
                 }, JsonRequestBehavior.AllowGet);
             }
 
-            //Check Key is valid 
+            //Check Api Key setting exists 
             var getApiUserInfoKey = DbUtil.Db.Setting("ApiUserInfoKey", "");
             if (getApiUserInfoKey == "")
             {
                 return Json(new
                 {
-                    error = ErrorMessage.InvalidSetting
+                    error = ErrorMessage.ApiKeySettingNotFound
                 }, JsonRequestBehavior.AllowGet);
             }
+
+            // Check Api Key is valid
             if (getApiUserInfoKey.trim() == apiKey)
             {
                 var getIp = HttpContext.Request.ServerVariables["REMOTE_ADDR"];
-                //Check Ip is valid
+                //Check Ip setting is valid
                 var getIpWhiteList = DbUtil.Db.Setting("ApiUserInfoIPList", "");
                 if (getIpWhiteList == "")
                 {
                     return Json(new
                     {
-                        error = ErrorMessage.InvalidSetting
+                        error = ErrorMessage.IpSettingNotFound
                     }, JsonRequestBehavior.AllowGet);
                 }
+
+                //Check Ip is valid
                 var ipCheck = getIpWhiteList.Split(',').Contains(getIp);
-                if (ipCheck)
+                if (!ipCheck)
                 {
-                    //Authenticate user
-                    var retUser = AccountModel.AuthenticateLogon(userName, password, "");
-                    if (retUser.IsValid)
+                    return Json(new
                     {
-                        return Json(new
-                        {
-                            id = retUser.User.PeopleId,
-                            name = retUser.User.Name,
-                            emailAddress = retUser.User.EmailAddress,
-                            altEmail = retUser.User.Person.EmailAddress2,
-                            roles = retUser.User.Roles,
-                            error = ErrorMessage.NoErrors
-                        }, JsonRequestBehavior.AllowGet);
-                    }
-                }                
+                        error = ErrorMessage.IpNotFoundInKey
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                
+                //Authenticate user
+                var retUser = AccountModel.AuthenticateLogon(userName, password, "");
+                if (retUser.IsValid)
+                {
+                    return Json(new
+                    {
+                        id = retUser.User.PeopleId,
+                        name = retUser.User.Name,
+                        emailAddress = retUser.User.EmailAddress,
+                        altEmail = retUser.User.Person.EmailAddress2,
+                        roles = retUser.User.Roles,
+                        error = ErrorMessage.NoErrors
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                return Json(new
+                {
+                    error = ErrorMessage.FailedAuthentication
+                }, JsonRequestBehavior.AllowGet);
             }
             return Json(new
             {
-                error = ErrorMessage.FailedAuthentication
+                error = ErrorMessage.ApiKeyNotValid
             }, JsonRequestBehavior.AllowGet);
         }
 
