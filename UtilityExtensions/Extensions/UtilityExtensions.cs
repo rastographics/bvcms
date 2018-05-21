@@ -207,6 +207,9 @@ namespace UtilityExtensions
         {
             get
             {
+                var text = ConfigurationManager.AppSettings["NotamText"];
+                if (text.HasValue())
+                    return text;
                 var path = ConfigurationManager.AppSettings["NotamTextFile"].Replace("%USERPROFILE%",
                     Environment.GetEnvironmentVariable("USERPROFILE"));
                 if (!path.HasValue())

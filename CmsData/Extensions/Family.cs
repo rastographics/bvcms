@@ -425,5 +425,6 @@ namespace CmsData
             return t;
 
         }
+        public bool IsHeadOfHouseold(int? pid) => pid != null && (pid == HeadOfHouseholdId || pid == HeadOfHouseholdSpouseId);
     }
 }

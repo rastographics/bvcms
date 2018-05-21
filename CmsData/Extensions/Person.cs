@@ -98,6 +98,11 @@ namespace CmsData
             }
         }
 
+        public void SetFamilyFromPersonPage(Family f)
+        {
+            family = f;
+        }
+
         public string DOB
         {
             get { return FormatBirthday(BirthYr, BirthMonth, BirthDay, PeopleId); }
@@ -197,6 +202,9 @@ namespace CmsData
                     return BirthYear;
                 if (Util.UserPeopleId == PeopleId)
                     return BirthYear;
+                var fam = HttpContext.Current?.Items["FamilyFromMyDataPage"] as Family;
+                if (fam?.IsHeadOfHouseold(Util.UserPeopleId) == true)
+                    return BirthYear;
                 if (Age <= DbUtil.Db.Setting("NoBirthYearOverAge", "18").ToInt())
                     return BirthYear;
                 if (HttpContext.Current == null)
@@ -239,6 +247,9 @@ namespace CmsData
                 return y;
             if (Util.UserPeopleId == peopleid)
                 return y;
+            var family = HttpContext.Current?.Items["FamilyFromMyDataPage"] as Family;
+            if (family?.IsHeadOfHouseold(Util.UserPeopleId) == true)
+                return y;
             if (age <= DbUtil.Db.Setting("NoBirthYearOverAge", "18").ToInt())
                 return y;
             if (HttpContext.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
@@ -248,7 +259,7 @@ namespace CmsData
 
         public static string FormatBirthday(int? y, int? m, int? d, int? peopleid)
         {
-            return FormatBirthday(y, m, d, "");
+            return FormatBirthday(y, m, d, "", peopleid);
         }
 
         public static string FormatBirthday(int? y, int? m, int? d, string def, int? peopleid = null)
@@ -999,6 +1010,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
 
         private List<ChangeDetail> psbDefault;
+        private Family family;
 
         public void UpdateValue(string field, object value)
         {
