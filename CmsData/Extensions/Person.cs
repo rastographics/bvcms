@@ -185,8 +185,8 @@ namespace CmsData
             //DateTime dt;
             //var s = $"{y:yyyy}-{m:MM}-{d:dd}";
             var dt = new DateTime(y.Value, m ?? 1, d ?? 1);
-//            if (!DateTime.TryParse(s, out dt))
-//                return null;
+            //            if (!DateTime.TryParse(s, out dt))
+            //                return null;
             var today = DateTime.Today;
             var age = today.Year - dt.Year;
             if (dt > today.AddYears(-age))
@@ -202,8 +202,7 @@ namespace CmsData
                     return BirthYear;
                 if (Util.UserPeopleId == PeopleId)
                     return BirthYear;
-                var fam = HttpContext.Current?.Items["FamilyFromMyDataPage"] as Family;
-                if (fam?.IsHeadOfHouseold(Util.UserPeopleId) == true)
+                if (IsHeadOfHouseholdFromMyDataPage)
                     return BirthYear;
                 if (Age <= DbUtil.Db.Setting("NoBirthYearOverAge", "18").ToInt())
                     return BirthYear;
@@ -221,6 +220,8 @@ namespace CmsData
                 return age;
             if (Util.UserPeopleId == peopleid)
                 return age;
+            if (IsHeadOfHouseholdFromMyDataPage)
+                return age;
             if (age <= DbUtil.Db.Setting("NoBirthYearOverAge", "18").ToInt())
                 return age;
             if (HttpContext.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
@@ -233,6 +234,8 @@ namespace CmsData
             if (Util.Host == null || HttpContext.Current == null)
                 return age;
             if (Util.UserPeopleId == peopleid)
+                return age;
+            if (IsHeadOfHouseholdFromMyDataPage)
                 return age;
             if (age.ToInt2() <= DbUtil.Db.Setting("NoBirthYearOverAge", "18").ToInt())
                 return age;
@@ -247,8 +250,7 @@ namespace CmsData
                 return y;
             if (Util.UserPeopleId == peopleid)
                 return y;
-            var family = HttpContext.Current?.Items["FamilyFromMyDataPage"] as Family;
-            if (family?.IsHeadOfHouseold(Util.UserPeopleId) == true)
+            if(IsHeadOfHouseholdFromMyDataPage)
                 return y;
             if (age <= DbUtil.Db.Setting("NoBirthYearOverAge", "18").ToInt())
                 return y;
@@ -317,7 +319,7 @@ namespace CmsData
                 db.SubmitChanges();
                 foreach (var m in om.OrgMemMemTags)
                     if (om2.OrgMemMemTags.All(mm => mm.MemberTagId != m.MemberTagId))
-                        om2.OrgMemMemTags.Add(new OrgMemMemTag {MemberTagId = m.MemberTagId});
+                        om2.OrgMemMemTags.Add(new OrgMemMemTag { MemberTagId = m.MemberTagId });
                 db.SubmitChanges();
                 db.OrgMemMemTags.DeleteAllOnSubmit(om.OrgMemMemTags);
                 foreach (var m in om.OrgMemberExtras)
@@ -393,7 +395,7 @@ namespace CmsData
             {
                 var cp = db.Contactors.SingleOrDefault(c2 => c2.PeopleId == targetid && c.ContactId == c2.ContactId);
                 if (cp == null)
-                    c.contact.contactsMakers.Add(new Contactor {PeopleId = targetid});
+                    c.contact.contactsMakers.Add(new Contactor { PeopleId = targetid });
                 db.Contactors.DeleteOnSubmit(c);
             }
             TrySubmit(db, "ContactsMade");
@@ -402,7 +404,7 @@ namespace CmsData
             {
                 var cp = db.Contactees.SingleOrDefault(c2 => c2.PeopleId == targetid && c.ContactId == c2.ContactId);
                 if (cp == null)
-                    c.contact.contactees.Add(new Contactee {PeopleId = targetid});
+                    c.contact.contactees.Add(new Contactee { PeopleId = targetid });
                 db.Contactees.DeleteOnSubmit(c);
             }
             TrySubmit(db, "ContactsHad");
@@ -721,7 +723,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 fam.People.Add(p);
 
             if (tag != null)
-                tag.PersonTags.Add(new TagPerson {Person = p});
+                tag.PersonTags.Add(new TagPerson { Person = p });
 
             p.OriginId = originId;
             p.EntryPointId = entryPointId;
@@ -790,7 +792,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             var tp = db.TagPeople.SingleOrDefault(t => t.Id == tag.Id && t.PeopleId == peopleId);
             if (tp == null)
             {
-                tag.PersonTags.Add(new TagPerson {PeopleId = peopleId});
+                tag.PersonTags.Add(new TagPerson { PeopleId = peopleId });
                 return true;
             }
             db.TagPeople.DeleteOnSubmit(tp);
@@ -803,7 +805,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             var tp = db.TagPeople.SingleOrDefault(t => t.Id == tag.Id && t.PeopleId == peopleId);
             var isperson = db.People.Count(p => p.PeopleId == peopleId) > 0;
             if (tp == null && isperson)
-                tag.PersonTags.Add(new TagPerson {PeopleId = peopleId});
+                tag.PersonTags.Add(new TagPerson { PeopleId = peopleId });
         }
 
         public static void UnTag(CMSDataContext db, int peopleId, string tagName, int? ownerId, int tagTypeId)
@@ -947,7 +949,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 {
                     var sameperson = Util.UserPeopleId == PeopleId;
                     var infinance = HttpContext.Current.User.IsInRole("Finance")
-                                    && ((string) HttpContext.Current.Session["testnofinance"]) != "true";
+                                    && ((string)HttpContext.Current.Session["testnofinance"]) != "true";
                     var ishead = (new int?[]
                         {
                             Family.HeadOfHouseholdId,
@@ -1041,9 +1043,9 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                     return;
             if (o != null && o.Equals(value))
                 return;
-            if (o == null && value is string && !((string) value).HasValue())
+            if (o == null && value is string && !((string)value).HasValue())
                 return;
-            if (value == null && o is string && !((string) o).HasValue())
+            if (value == null && o is string && !((string)o).HasValue())
                 return;
             //psb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", field, o, value ?? "(null)");
             psb.Add(new ChangeDetail(field, o, value));
@@ -1111,7 +1113,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             var e = PeopleExtras.FirstOrDefault(ee => ee.Field == field);
             if (e == null)
             {
-                e = new PeopleExtra {Field = field.Trim(), PeopleId = PeopleId, TransactionTime = Util.Now};
+                e = new PeopleExtra { Field = field.Trim(), PeopleId = PeopleId, TransactionTime = Util.Now };
                 this.PeopleExtras.Add(e);
             }
             e.StrValue = value;
@@ -1519,7 +1521,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 ContributionTypeId = typid,
                 ContributionDesc = description,
                 TranId = tranid,
-                Source = Util2.FromMobile.HasValue() ? 1 : (int?) null,
+                Source = Util2.FromMobile.HasValue() ? 1 : (int?)null,
                 //CampusId is set with an update Trigger when peopleid is changed or when a new contribution is created that has a peopleId
             };
             bundle.BundleDetails.Add(bd);
@@ -1537,7 +1539,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             if (ms == null)
             {
                 var max = db.MemberStatuses.Max(mm => mm.Id) + 1;
-                ms = new MemberStatus() {Id = max, Code = "M" + max, Description = type};
+                ms = new MemberStatus() { Id = max, Code = "M" + max, Description = type };
                 db.MemberStatuses.InsertOnSubmit(ms);
                 db.SubmitChanges();
             }
@@ -1550,7 +1552,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             if (ms == null)
             {
                 var id = db.JoinTypes.Max(mm => mm.Id) + 10;
-                ms = new JoinType() {Id = id, Code = "J" + id, Description = status};
+                ms = new JoinType() { Id = id, Code = "J" + id, Description = status };
                 db.JoinTypes.InsertOnSubmit(ms);
                 db.SubmitChanges();
             }
@@ -1563,7 +1565,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             if (ms == null)
             {
                 var max = db.MaritalStatuses.Max(mm => mm.Id) + 1;
-                ms = new MaritalStatus() {Id = max, Code = "M" + max, Description = status};
+                ms = new MaritalStatus() { Id = max, Code = "M" + max, Description = status };
                 db.MaritalStatuses.InsertOnSubmit(ms);
                 db.SubmitChanges();
             }
@@ -1575,7 +1577,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             if (fp == null)
             {
                 var max = db.FamilyPositions.Max(mm => mm.Id) + 1;
-                fp = new FamilyPosition() {Id = max, Code = "M" + max, Description = position};
+                fp = new FamilyPosition() { Id = max, Code = "M" + max, Description = position };
                 db.FamilyPositions.InsertOnSubmit(fp);
                 db.SubmitChanges();
             }
@@ -1588,7 +1590,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             if (bt == null)
             {
                 var max = db.BaptismTypes.Max(mm => mm.Id) + 10;
-                bt = new BaptismType() {Id = max, Code = "b" + max, Description = type};
+                bt = new BaptismType() { Id = max, Code = "b" + max, Description = type };
                 db.BaptismTypes.InsertOnSubmit(bt);
                 db.SubmitChanges();
             }
@@ -1601,7 +1603,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             if (dr == null)
             {
                 var max = db.DropTypes.Max(mm => mm.Id) + 10;
-                dr = new DropType() {Id = max, Code = "dr" + max, Description = type};
+                dr = new DropType() { Id = max, Code = "dr" + max, Description = type };
                 db.DropTypes.InsertOnSubmit(dr);
                 db.SubmitChanges();
             }
@@ -1614,7 +1616,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             if (ms == null)
             {
                 var max = db.BaptismTypes.Max(mm => mm.Id) + 10;
-                ms = new MaritalStatus() {Id = max, Code = "ms" + max, Description = type};
+                ms = new MaritalStatus() { Id = max, Code = "ms" + max, Description = type };
                 db.MaritalStatuses.InsertOnSubmit(ms);
                 db.SubmitChanges();
             }
@@ -1627,7 +1629,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             if (dt == null)
             {
                 var max = db.DecisionTypes.Max(mm => mm.Id) + 10;
-                dt = new DecisionType() {Id = max, Code = "d" + max, Description = type};
+                dt = new DecisionType() { Id = max, Code = "d" + max, Description = type };
                 db.DecisionTypes.InsertOnSubmit(dt);
                 db.SubmitChanges();
             }
@@ -1640,7 +1642,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             if (i == null)
             {
                 var max = db.NewMemberClassStatuses.Max(mm => mm.Id) + 10;
-                i = new NewMemberClassStatus() {Id = max, Code = "NM" + max, Description = type};
+                i = new NewMemberClassStatus() { Id = max, Code = "NM" + max, Description = type };
                 db.NewMemberClassStatuses.InsertOnSubmit(i);
                 db.SubmitChanges();
             }
@@ -1653,7 +1655,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             if (i == null)
             {
                 var max = db.VolApplicationStatuses.Max(mm => mm.Id) + 10;
-                i = new VolApplicationStatus() {Id = max, Code = "VS" + max, Description = status};
+                i = new VolApplicationStatus() { Id = max, Code = "VS" + max, Description = status };
                 db.VolApplicationStatuses.InsertOnSubmit(i);
                 db.SubmitChanges();
             }
@@ -1670,7 +1672,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 int max = 10;
                 if (db.Campus.Any())
                     max = db.Campus.Max(mm => mm.Id) + 10;
-                cam = new Campu() {Id = max, Description = campus, Code = campus.Truncate(20)};
+                cam = new Campu() { Id = max, Description = campus, Code = campus.Truncate(20) };
                 db.Campus.InsertOnSubmit(cam);
                 db.SubmitChanges();
             }
@@ -1950,6 +1952,15 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             if (count == 0)
                 person.Comments = $"Added in context of {context} because record was not found";
             return person;
+        }
+
+        private static bool IsHeadOfHouseholdFromMyDataPage
+        {
+            get
+            {
+                var fam = HttpContext.Current?.Items["FamilyFromMyDataPage"] as Family;
+                return fam?.IsHeadOfHouseold(Util.UserPeopleId) == true;
+            }
         }
     }
 }
