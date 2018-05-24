@@ -2599,7 +2599,7 @@
     <Content Include="Views\Shared\PageMessage.cshtml" />
     <Content Include="Areas\Manage\Views\Account\_ShellLayout.cshtml" />
     <Content Include="Views\ExtraValue\Location.cshtml" />
-    <Content Include="Views\Home\Warmup.cshtml" />
+    <Content Include="Views\Script\Warmup.cshtml" />
     <Content Include="Views\Script\TestBackground.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Script\RunScriptPageBreaks.cshtml" />

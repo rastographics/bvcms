@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "Home";
     Layout = ViewExtensions2.TouchPointLayout();
+    var target = Util2.TargetLinkPeople ? "target='people'" : "";
 }
 @section head
 {
@@ -69,7 +70,9 @@
                     <ul class="list-group">
                         @foreach (var birthday in birthdays)
                         {
-                            <li class="list-group-item"><a href="@birthday.Url">@birthday.Name (@birthday.Birthday.ToString("m", new System.Globalization.CultureInfo("en-US")))</a></li>
+                            <li class="list-group-item"><a href="@birthday.Url" class="target" @target>
+                                @birthday.Name (@birthday.Birthday.ToString("m", new System.Globalization.CultureInfo("en-US")))
+                            </a></li>
                         }
                     </ul>
                 }
