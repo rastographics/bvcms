@@ -396,7 +396,14 @@ namespace CmsWeb.Models
             if (c == null)
                 return null;
 
+				var identifier = DbUtil.Db.CardIdentifiers.SingleOrDefault( ci => ci.Id == c.BankAccount );
+
+				if( identifier != null ) {
+					identifier.PeopleId = pid.ToInt2();
+				}
+				
             var type = c.ContributionTypeId;
+				 
             switch (PLNT)
             {
                 case "PL":
@@ -423,7 +430,9 @@ namespace CmsWeb.Models
             c.ContributionDesc = notes;
             c.ContributionDate = contributiondate;
             c.CheckNo = checkno?.Trim();
+				
             DbUtil.Db.SubmitChanges();
+				
             return ContributionRowData(ctl, c.ContributionId);
         }
 
