@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -176,7 +177,12 @@ Thank you.
             else
                 contributionemail = p.person.FromEmail;
 
-            var from = Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(p.org.OrganizationId));
+            MailAddress from = null;
+            if (!Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(p.org.OrganizationId), out from))
+            {
+                from = GetAdminMailAddress();
+            }
+
             var m = new EmailReplacements(DbUtil.Db, body, from);
             body = m.DoReplacements(DbUtil.Db, p.person);
 
@@ -187,6 +193,11 @@ Thank you.
             if (p.CreatingAccount)
                 p.CreateAccount();
             return ConfirmEnum.Confirm;
+        }
+
+        private static MailAddress GetAdminMailAddress()
+        {
+            return new MailAddress(DbUtil.Db.Setting("AdminMail", "info@touchpointsoftware.com"));
         }
 
         private void CreateTransactionIfNeeded()
@@ -289,12 +300,17 @@ Thank you.
             // question: should we be sending to all TransactionPeople?
             if (sendmail)
             {
+                MailAddress staffEmail;
+                if (!Util.TryGetMailAddress(db.StaffEmailForOrg(org.OrganizationId), out staffEmail))
+                {
+                    staffEmail = GetAdminMailAddress();
+                }
                 if (p0 == null)
-                    db.SendEmail(Util.TryGetMailAddress(db.StaffEmailForOrg(org.OrganizationId)),
+                    db.SendEmail(staffEmail,
                         "Payment confirmation", msg, Util.ToMailAddressList(Util.FirstAddress(ti.Emails)), pid: pid).Wait();
                 else
                 {
-                    db.Email(db.StaffEmailForOrg(org.OrganizationId), p0, Util.ToMailAddressList(ti.Emails),
+                    db.Email(staffEmail, p0, Util.ToMailAddressList(ti.Emails),
                         "Payment confirmation", msg, false);
                     db.Email(p0.FromEmail, db.PeopleFromPidString(org.NotifyIds),
                         "payment received for " + ti.Description, msgstaff);
