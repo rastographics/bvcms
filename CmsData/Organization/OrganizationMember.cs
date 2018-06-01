@@ -780,8 +780,6 @@ AND a.PeopleId = {2}
                 tom.Moved = true;
             om.Drop(db, skipTriggerProcessing: true);
             db.SubmitChanges();
-//            db.RepairEnrollmentTransaction(toOrg, pid);
-//            db.RepairEnrollmentTransaction(fromOrg, pid);
         }
     }
 }

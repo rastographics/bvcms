@@ -390,6 +390,7 @@
     <Compile Include="Areas\Dialog\Controllers\OrgMemberDialogController.cs" />
     <Compile Include="Areas\Dialog\Controllers\OrgSearchDropController.cs" />
     <Compile Include="Areas\Dialog\Controllers\OrgDropController.cs" />
+    <Compile Include="Areas\Dialog\Controllers\MoveOrgMembersController.cs" />
     <Compile Include="Areas\Dialog\Controllers\ValidateAddressController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddToOrgFromTagController.cs" />
     <Compile Include="Areas\Dialog\Controllers\DeleteMeetingController.cs" />
@@ -418,6 +419,7 @@
     <Compile Include="Areas\Dialog\Models\OrgMember\OrgMemberMoveModel.cs" />
     <Compile Include="Areas\Dialog\Models\OrgMember\OrgMemberTransactionModel.cs" />
     <Compile Include="Areas\Dialog\Models\OrgMember\OrgMoveInfo.cs" />
+    <Compile Include="Areas\Dialog\Models\MoveOrgMembersModel.cs" />
     <Compile Include="Areas\Dialog\Models\ResourceModel.cs" />
     <Compile Include="Areas\Dialog\Models\ValidateAddress.cs" />
     <Compile Include="Areas\Dialog\Models\RepairTransactions.cs" />
@@ -1662,6 +1664,8 @@
     <Content Include="Areas\Manage\Views\Volunteers\AddVolunteers.cshtml" />
     <Content Include="Areas\Manage\Views\Volunteers\AltCalendar.cshtml" />
     <Content Include="Areas\Manage\Views\Volunteers\AltManageArea.cshtml" />
+    <Content Include="Areas\Dialog\Views\MoveOrgMembers\Index.cshtml" />
+    <Content Include="Areas\Dialog\Views\MoveOrgMembers\Process.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\staging.pubxml" />
     <None Include="Properties\PublishProfiles\TeamCity.pubxml" />
