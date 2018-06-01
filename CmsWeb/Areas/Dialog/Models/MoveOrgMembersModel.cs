@@ -64,6 +64,7 @@ namespace CmsWeb.Areas.Dialog.Models
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
             LongRunningOperation lop = null;
+
             foreach (var i in model.List)
             {
                 var a = i.Split('.');
@@ -71,9 +72,10 @@ namespace CmsWeb.Areas.Dialog.Models
                     continue;
                 var pid = a[0].ToInt();
                 var oid = a[1].ToInt();
+
                 if (oid == model.TargetId)
                     continue;
-                OrganizationMember.MoveToOrg(DbUtil.Db, pid, oid, model.TargetId, model.MoveRegistrationData, model.ChangeMemberType == true ? model.MoveToMemberTypeId : -1);
+                OrganizationMember.MoveToOrg(db, pid, oid, model.TargetId, model.MoveRegistrationData, model.ChangeMemberType == true ? model.MoveToMemberTypeId : -1);
                 lop = FetchLongRunningOperation(db, Op, model.QueryId);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
@@ -84,7 +86,7 @@ namespace CmsWeb.Areas.Dialog.Models
             lop = FetchLongRunningOperation(db, Op, model.QueryId);
             lop.Completed = DateTime.Now;
             db.SubmitChanges();
-            DbUtil.Db.UpdateMainFellowship(model.TargetId);
+            db.UpdateMainFellowship(model.TargetId);
 		}
     }
 }
