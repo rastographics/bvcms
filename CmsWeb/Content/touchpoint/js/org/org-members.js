@@ -12,6 +12,9 @@
             });
         });
     };
+     $.InitFunctions.ReloadPeople = function () {
+        $.RefreshPage();
+    };
 
     $(document).on('keyup keypress', 'form input[type="text"]', function (e) {
         if (e.keyCode == 13) {
