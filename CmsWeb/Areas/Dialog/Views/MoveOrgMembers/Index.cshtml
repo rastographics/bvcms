@@ -7,6 +7,7 @@
         </div>
         <div class="modal-body">
             @Html.HiddenFor(m => m.QueryId)
+            @Html.Hidden("callback", "ReloadPeople")
             @Html.HiddenFor(m => m.SerializedList)
             @Html.HiddenFor(m => m.TargetId)
             @Html.HiddenFor(m => m.ChangeMemberType)
