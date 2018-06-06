@@ -603,13 +603,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public RouteModel ProcessPayment(ModelStateDictionary modelState, OnlineRegModel m)
         {
-            PreventNegatives();
-            PreventZero(modelState);
-            if (!modelState.IsValid)
-                return RouteModel.ProcessPayment();
-
             try
             {
+                PreventNegatives();
+                PreventZero(modelState);
+                if (!modelState.IsValid)
+                    return RouteModel.ProcessPayment();
+
                 ValidatePaymentForm(modelState);
                 if (!modelState.IsValid)
                     return RouteModel.ProcessPayment();
