@@ -360,6 +360,7 @@ namespace CmsWeb.Models
                             };
                     var i = q.Single();
                     othersplitamt = i.c.ContributionAmount - amt;
+                    contributiondate = i.c.ContributionDate;
                     i.c.ContributionAmount = othersplitamt;
                     imageid = i.c.ImageID;
                     DbUtil.Db.SubmitChanges();
