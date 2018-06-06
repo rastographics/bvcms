@@ -615,6 +615,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             try
             {
+                PreventNegatives();
+                PreventZero(modelState);
+                if (!modelState.IsValid)
+                    return RouteModel.ProcessPayment();
+
                 ValidatePaymentForm(modelState);
                 if (!modelState.IsValid)
                     return RouteModel.ProcessPayment();
