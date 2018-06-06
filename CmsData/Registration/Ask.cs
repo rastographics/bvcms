@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
+﻿using System.Collections.Generic;
 using System.Xml.Linq;
-using System.Xml.Schema;
-using System.Xml.Serialization;
 using CmsData.API;
-using UtilityExtensions;
 
 namespace CmsData.Registration
 {
@@ -15,6 +9,7 @@ namespace CmsData.Registration
         public string Type { get; set; }
         public string Name { get; set; }
         public int UniqueId { get; set; }
+        public bool? TargetExtraValue { get; set; }
 
         public Ask(string type)
         {

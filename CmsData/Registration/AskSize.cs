@@ -29,6 +29,7 @@ Display a dropdown of custom sizes. With each size you can:
 			if (list.Count == 0)
 				return;
 	        w.Start(Type)
+                .Attr("TargetExtraValue", TargetExtraValue)
 	            .Attr("Fee", Fee)
 	            .Attr("AllowLastYear", AllowLastYear)
 	            .Add("Label", Label ?? "Size");
@@ -40,6 +41,7 @@ Display a dropdown of custom sizes. With each size you can:
 		{
 		    var r = new AskSize
 		    {
+                TargetExtraValue = e.Attribute("TargetExtraValue")?.ToBool(),
 		        Label = e.Element("Label")?.Value,
 		        Fee = e.Attribute("Fee")?.Value.ToDecimal(),
 		        AllowLastYear = e.Attribute("AllowLastYear")?.Value.ToBool2() ?? false,

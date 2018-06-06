@@ -37,14 +37,19 @@ This will be presented as a dropdown selection.
             if (list.Count == 0)
                 return;
             w.Start(Type)
-                .Add("Label", Label);
+                .Add("Label", Label)
+                .Attr("TargetExtraValue", TargetExtraValue);
             foreach (var i in list)
                 i.WriteXml(w);
             w.End();
         }
 		public new static AskDropdown ReadXml(XElement ele)
 		{
-		    var dd = new AskDropdown {Label = ele.Element("Label")?.Value};
+		    var dd = new AskDropdown
+		    {
+                TargetExtraValue = ele.Attribute("TargetExtraValue")?.Value.ToBool(),
+		        Label = ele.Element("Label")?.Value,
+		    };
 		    foreach (var ee in ele.Elements("DropdownItem"))
                 if(ee.Element("Description")?.Value != null)
     		        dd.list.Add(DropdownItem.ReadXml(ee));

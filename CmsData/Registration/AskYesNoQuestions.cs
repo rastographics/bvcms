@@ -25,14 +25,17 @@ If you need a longer explanation, use InstructionalText above the question so yo
 	    {
 			if (list.Count == 0)
 				return;
-	        w.Start(Type);
+	        w.Start(Type)
+	            .Attr("TargetExtraValue", TargetExtraValue);
 	        foreach (var q in list)
                 q.WriteXml(w);
 	        w.End();
 	    }
 	    public new static AskYesNoQuestions ReadXml(XElement e)
 	    {
-	        var yn = new AskYesNoQuestions();
+	        var yn = new AskYesNoQuestions {
+                TargetExtraValue = e.Attribute("TargetExtraValue")?.Value.ToBool(),
+	        };
             foreach(var ee in e.Elements("YesNoQuestion"))
                 yn.list.Add(YesNoQuestion.ReadXml(ee));
 	        return yn;

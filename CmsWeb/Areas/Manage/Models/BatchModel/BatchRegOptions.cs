@@ -97,9 +97,9 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                     if (b.HasValue)
                         rs.AddAsProspect = b.Value;
 
-                if (FindColumnBool("TargetExtraValues", out b))
-                    if (b.HasValue)
-                        rs.TargetExtraValues = b.Value;
+//                if (FindColumnBool("TargetExtraValues", out b))
+//                    if (b.HasValue)
+//                        rs.TargetExtraValues = b.Value;
 
                 if (FindColumnBool("AllowReRegister", out b))
                     if (b.HasValue)

@@ -42,6 +42,7 @@ For each checkbox, you can specify the following:
         {
             var cb = new AskCheckboxes
             {
+                TargetExtraValue = ele.Attribute("TargetExtraValue")?.Value.ToBool(),
                 Minimum = ele.Attribute("Minimum")?.Value.ToInt2(),
                 Maximum = ele.Attribute("Maximum")?.Value.ToInt2(),
                 Columns = ele.Attribute("Columns")?.Value.ToInt2(),
@@ -58,6 +59,7 @@ For each checkbox, you can specify the following:
             if (list.Count == 0)
                 return;
             w.Start(Type)
+                .Attr("TargetExtraValue", TargetExtraValue)
                 .Attr("Minimum", Minimum)
                 .Attr("Maximum", Maximum)
                 .Attr("Columns", Columns == 1 ? null : Columns)
