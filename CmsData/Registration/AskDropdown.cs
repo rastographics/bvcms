@@ -23,6 +23,7 @@ This will be presented as a dropdown selection.
 * **DateTime** (optional) which registers them in a meeting.
 ";
 
+        public bool? TargetExtraValue { get; set; }
         public string Label { get; set; }
 
         public List<DropdownItem> list { get; set; }

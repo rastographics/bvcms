@@ -16,6 +16,7 @@ Display a dropdown of custom sizes. With each size you can:
 * Put in a Sub-Group
 * Adds an extra item to the sizes to indicate they will use last year's shirt.
 ";
+        public bool? TargetExtraValue { get; set; }
 	    public decimal? Fee { get; set; }
 		public string Label { get; set; }
 		public bool AllowLastYear { get; set; }

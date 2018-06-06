@@ -26,6 +26,7 @@ For each checkbox, you can specify the following:
 * **DateTime** (optional) which registers them in a meeting.
 ";
 
+        public bool? TargetExtraValue { get; set; }
         public string Label { get; set; }
         public bool HasLabel => Label.HasValue();
         public int? Minimum { get; set; }

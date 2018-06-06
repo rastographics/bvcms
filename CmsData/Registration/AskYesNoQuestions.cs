@@ -14,6 +14,7 @@ The results will be in sub-groups with a Yes- or No- prepended to the name, so m
 
 If you need a longer explanation, use InstructionalText above the question so you can keep it short
 ";
+        public bool? TargetExtraValue { get; set; }
 	    public List<YesNoQuestion> list { get; private set; }
 
 		public AskYesNoQuestions()

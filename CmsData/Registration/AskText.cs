@@ -16,6 +16,7 @@ Note, this will be used as a column header on an Excel spreadsheet.
 
 If you need a long explanation assoicated with your question, put that in as an Instruction above the question.
 ";
+        public bool? TargetExtraValue { get; set; }
 	    public List<AskExtraQuestions.ExtraQuestion> list { get; private set; }
 
 		public AskText()
