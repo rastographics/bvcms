@@ -326,10 +326,12 @@ namespace CmsData.API
                    from dbo.Setting
                    where Id = 'OneTimeGiftOrgId'
                ) , (
-                   select OrganizationId
+                   select top 1 OrganizationId
                    from dbo.Organizations
                    where RegistrationTypeId = 8
-                         and RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') is null))";
+                         and RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') is null
+				   order by OrganizationId))
+";
             var oid = db.Connection.ExecuteScalar(sql) as int?;
             return oid;
         }
