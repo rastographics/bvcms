@@ -68,6 +68,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
             };
         }
 
+        public static RouteModel Invalid(string where, string message)
+        {
+            return new RouteModel()
+            {
+                Route = RouteType.ValidationError,
+                View = @where,
+                Message = message
+            };
+        }
+
         public static RouteModel ProcessPayment()
         {
             return new RouteModel()
