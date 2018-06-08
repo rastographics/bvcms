@@ -303,6 +303,7 @@ namespace CmsWeb.Models
                         SpouseCell = spouse.CellPhone.FmtFone(),
                         MailingAddress = altaddr,
                         CoupleName = altcouple,
+                        AltNames = (spouse == null ? p.AltName : p.AltName + " & " + spouse.AltName),
                     };
             return q.ToDataTable().ToExcel("FamilyList.xlsx");
         }
@@ -343,6 +344,7 @@ namespace CmsWeb.Models
                         School = p.SchoolOther,
                         Grade = p.Grade.ToString(),
                         AttendPctBF = (om == null ? 0 : om.AttendPct == null ? 0 : om.AttendPct.Value),
+                        p.AltName,
                     };
             return q.ToDataTable().ToExcel("ListFamily2.xlsx");
         }
