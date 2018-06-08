@@ -105,7 +105,7 @@ namespace CmsWeb.Models
                         c.FamilyId,
                         Date = c.DateX.Value.ToShortDateString(),
                         GiverId = c.PeopleId,
-                        CreditGiverId = c.CreditGiverId.Value,
+                        c.CreditGiverId,
                         c.HeadName,
                         c.SpouseName,
                         MainFellowship = mainFellowship,
@@ -188,7 +188,7 @@ namespace CmsWeb.Models
             var q2 = from r in DbUtil.Db.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid, fundids)
                      select new
                      {
-                         GiverId = r.CreditGiverId ?? 0,
+                         GiverId = r.CreditGiverId,
                          Count = r.Count ?? 0,
                          Amount = r.Amount ?? 0m,
                          Pledged = r.PledgeAmount ?? 0m,
@@ -211,7 +211,7 @@ namespace CmsWeb.Models
             var q2 = from r in DbUtil.Db.GetTotalContributionsDonorFund(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid, fundids)
                      select new
                      {
-                         GiverId = r.CreditGiverId.Value,
+                         GiverId = r.CreditGiverId,
                          Count = r.Count ?? 0,
                          Amount = r.Amount ?? 0m,
                          Pledged = r.PledgeAmount ?? 0m,
