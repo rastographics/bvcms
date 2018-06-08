@@ -12,7 +12,10 @@
     }
     @FormAction()
     <br/>
-    @Html.EditorFor(m => Model.TargetExtraValues)
+    @if (Model.TargetExtraValues)
+    {
+        @Html.EditorFor(m => Model.TargetExtraValues)
+    }
     <div class="movable-list enablesort sort edit" id="QuestionList" style="list-style: none; margin-left: 5px;">
         @foreach (var ask in Model.AskItems)
         {

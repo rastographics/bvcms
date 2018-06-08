@@ -81,6 +81,11 @@ namespace UtilityExtensions
                 return GoodDate(dt);
             return null;
         }
+
+        public static DateTime? ToDate(this XAttribute a)
+        {
+            return a?.Value.ToDate();
+        }
         public static DateTime? ToDate(this object o)
         {
             if (o == null)
@@ -97,6 +102,26 @@ namespace UtilityExtensions
                 r = i;
             return r;
         }
+        public static int? ToInt2(this XAttribute a)
+        {
+            if (a == null)
+                return null;
+            int? r = null;
+            int i;
+            if (int.TryParse(a.Value, out i))
+                r = i;
+            return r;
+        }
+        public static int? ToInt2(this XElement e)
+        {
+            if (e == null)
+                return null;
+            int? r = null;
+            int i;
+            if (int.TryParse(e.Value, out i))
+                r = i;
+            return r;
+        }
         public static bool? ToBool2(this string s)
         {
             bool b;
@@ -110,6 +135,20 @@ namespace UtilityExtensions
             bool b;
             bool.TryParse(s, out b);
             return b;
+        }
+        public static bool ToBool(this XAttribute a)
+        {
+            if (a == null)
+                return false;
+            if (a.Value.IsNullOrEmpty())
+                return false;
+            bool b;
+            bool.TryParse(a.Value, out b);
+            return b;
+        }
+        public static bool ToBool(this XElement e)
+        {
+            return e != null && e.Value.ToBool();
         }
         public static bool ToBool(this object o)
         {
@@ -147,6 +186,14 @@ namespace UtilityExtensions
             if (decimal.TryParse(s, out i))
                 r = i;
             return r;
+        }
+        public static decimal? ToDecimal(this XAttribute a)
+        {
+            return a?.Value.ToDecimal();
+        }
+        public static decimal? ToDecimal(this XElement e)
+        {
+            return e?.Value.ToDecimal();
         }
         public static float ToFloat(this string s)
         {

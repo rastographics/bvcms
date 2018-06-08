@@ -105,9 +105,9 @@ You can optionally associate a fee with one or more items.
 		        var mi = new MenuItem
 		        {
 		            Description = e.Element("Description")?.Value,
-		            Fee = e.Attribute("Fee")?.Value.ToDecimal(),
-		            Limit = e.Attribute("Limit")?.Value.ToInt2(),
-		            MeetingTime = e.Attribute("Time")?.Value.ToDate()
+		            Fee = e.Attribute("Fee").ToDecimal(),
+		            Limit = e.Attribute("Limit").ToInt2(),
+		            MeetingTime = e.Attribute("Time").ToDate()
 		        };
 		        mi.SmallGroup = (e.Element("SmallGroup")?.Value ?? mi.Description)?.TrimEnd();
 		        return mi;

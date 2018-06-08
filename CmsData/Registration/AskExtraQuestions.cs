@@ -16,7 +16,7 @@ Note, this will be used as a column header on an Excel spreadsheet.
 
 If you need a long explanation assoicated with your question, put that in as an Instruction above the question.
 ";
-        public bool? TargetExtraValue { get; set; }
+        public bool TargetExtraValue { get; set; }
 	    public List<ExtraQuestion> list { get; private set; }
 
 		public AskExtraQuestions()
@@ -29,7 +29,7 @@ If you need a long explanation assoicated with your question, put that in as an 
 			if (list.Count == 0)
 				return;
 	        w.Start(Type)
-                .Attr("TargetExtraValue", TargetExtraValue);
+                .AttrIfTrue("TargetExtraValue", TargetExtraValue);
 	        foreach (var q in list)
                 w.Add("Question", q.Question);
 	        w.End();
@@ -37,7 +37,7 @@ If you need a long explanation assoicated with your question, put that in as an 
 	    public new static AskExtraQuestions ReadXml(XElement e)
 	    {
 	        var eq = new AskExtraQuestions {
-                TargetExtraValue = e.Attribute("TargetExtraValue")?.Value.ToBool()
+                TargetExtraValue = e.Attribute("TargetExtraValue").ToBool(),
             };
 	        foreach (var ee in e.Elements("Question"))
                 eq.list.Add(ExtraQuestion.ReadXml(ee));

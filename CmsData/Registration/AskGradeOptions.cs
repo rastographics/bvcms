@@ -55,7 +55,7 @@ namespace CmsData.Registration
 		        var option = new GradeOption
 		        {
 		            Description = e.Value,
-		            Code = e.Attribute("Code")?.Value.ToInt2() ?? 0
+		            Code = e.Attribute("Code").ToInt2() ?? 0
 		        };
 		        return option;
 		    }

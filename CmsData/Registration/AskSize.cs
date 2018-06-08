@@ -16,7 +16,7 @@ Display a dropdown of custom sizes. With each size you can:
 * Put in a Sub-Group
 * Adds an extra item to the sizes to indicate they will use last year's shirt.
 ";
-        public bool? TargetExtraValue { get; set; }
+        public bool TargetExtraValue { get; set; }
 	    public decimal? Fee { get; set; }
 		public string Label { get; set; }
 		public bool AllowLastYear { get; set; }
@@ -30,7 +30,7 @@ Display a dropdown of custom sizes. With each size you can:
 			if (list.Count == 0)
 				return;
 	        w.Start(Type)
-                .Attr("TargetExtraValue", TargetExtraValue)
+                .AttrIfTrue("TargetExtraValue", TargetExtraValue)
 	            .Attr("Fee", Fee)
 	            .Attr("AllowLastYear", AllowLastYear)
 	            .Add("Label", Label ?? "Size");
@@ -42,10 +42,10 @@ Display a dropdown of custom sizes. With each size you can:
 		{
 		    var r = new AskSize
 		    {
-                TargetExtraValue = e.Attribute("TargetExtraValue")?.ToBool(),
+                TargetExtraValue = e.Attribute("TargetExtraValue").ToBool(),
 		        Label = e.Element("Label")?.Value,
-		        Fee = e.Attribute("Fee")?.Value.ToDecimal(),
-		        AllowLastYear = e.Attribute("AllowLastYear")?.Value.ToBool2() ?? false,
+		        Fee = e.Attribute("Fee").ToDecimal(),
+		        AllowLastYear = e.Attribute("AllowLastYear").ToBool(),
 		        list = new List<Size>()
 		    };
 		    foreach (var ee in e.Elements("Size"))
