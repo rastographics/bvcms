@@ -254,13 +254,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     case "AskExtraQuestions":
                         foreach (var g in ExtraQuestion[ask.UniqueId])
                             if (g.Value.HasValue())
-                                if (setting.TargetExtraValues)
+                                if (setting.TargetExtraValues || ((AskExtraQuestions)ask).TargetExtraValue == true)
                                     person.AddEditExtraText(g.Key, g.Value);
                         break;
                     case "AskText":
                         foreach (var g in Text[ask.UniqueId])
                             if (g.Value.HasValue())
-                                if (setting.TargetExtraValues)
+                                if (setting.TargetExtraValues || ((AskText)ask).TargetExtraValue == true)
                                     person.AddEditExtraText(g.Key, g.Value);
                         break;
                     case "AskMenu":
@@ -298,27 +298,33 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void SaveDropdownChoice(OrganizationMember om, Ask ask)
         {
-            if (setting.TargetExtraValues)
+            var askdd = ask as AskDropdown;
+            if (askdd == null)
+                return;
+            if (setting.TargetExtraValues || askdd.TargetExtraValue == true)
             {
-                foreach (var op in ((AskDropdown)ask).list)
+                foreach (var op in askdd.list)
                     person.RemoveExtraValue(DbUtil.Db, op.SmallGroup);
-                person.AddEditExtraCode(((AskDropdown)ask).SmallGroupChoice(option).SmallGroup, "true");
+                person.AddEditExtraCode(askdd.SmallGroupChoice(option).SmallGroup, "true");
             }
             else
             {
-                foreach (var op in ((AskDropdown)ask).list)
+                foreach (var op in askdd.list)
                     op.RemoveFromSmallGroup(DbUtil.Db, om);
-                ((AskDropdown)ask).SmallGroupChoice(option).AddToSmallGroup(DbUtil.Db, om, PythonModel);
+                askdd.SmallGroupChoice(option).AddToSmallGroup(DbUtil.Db, om, PythonModel);
             }
         }
 
         private void SaveMenuChoices(OrganizationMember om, Ask ask)
         {
+            var askmn = ask as AskMenu;
+            if (askmn == null)
+                return;
             foreach (var i in MenuItem[ask.UniqueId])
                 om.AddToGroup(DbUtil.Db, i.Key, i.Value);
             {
-                var menulabel = ((AskMenu)ask).Label;
-                foreach (var i in ((AskMenu)ask).MenuItemsChosen(MenuItem[ask.UniqueId]))
+                var menulabel = askmn.Label;
+                foreach (var i in askmn.MenuItemsChosen(MenuItem[ask.UniqueId]))
                 {
                     om.AddToMemberDataBelowComments(menulabel);
                     var desc = i.amt > 0
@@ -332,27 +338,38 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void SaveCheckboxChoices(OrganizationMember om, Ask ask)
         {
-            if (setting.TargetExtraValues)
+            var askcb = ask as AskCheckboxes;
+            if (askcb == null)
+                return;
+            if (setting.TargetExtraValues || askcb.TargetExtraValue == true)
             {
-                foreach (var ck in ((AskCheckboxes)ask).list)
+                foreach (var ck in askcb.list)
                     person.RemoveExtraValue(DbUtil.Db, ck.SmallGroup);
-                foreach (var g in ((AskCheckboxes)ask).CheckboxItemsChosen(Checkbox))
+                foreach (var g in askcb.CheckboxItemsChosen(Checkbox))
                     person.AddEditExtraBool(g.SmallGroup, true);
             }
             else
             {
-                foreach (var ck in ((AskCheckboxes)ask).list)
+                foreach (var ck in askcb.list)
                     ck.RemoveFromSmallGroup(DbUtil.Db, om);
-                foreach (var i in ((AskCheckboxes)ask).CheckboxItemsChosen(Checkbox))
+                foreach (var i in askcb.CheckboxItemsChosen(Checkbox))
                     i.AddToSmallGroup(DbUtil.Db, om, PythonModel);
             }
         }
 
         private void SaveYesNoChoices(OrganizationMember om, Ask ask)
         {
-            if (setting.TargetExtraValues == false)
+            var askyn = ask as AskYesNoQuestions;
+            if (askyn == null)
+                return;
+            if (setting.TargetExtraValues || askyn.TargetExtraValue == true)
             {
-                foreach (var yn in ((AskYesNoQuestions)ask).list)
+                foreach (var g in YesNoQuestion)
+                    person.AddEditExtraCode(g.Key, g.Value == true ? "Yes" : "No");
+            }
+            else
+            {
+                foreach (var yn in askyn.list)
                 {
                     om.RemoveFromGroup(DbUtil.Db, "Yes:" + yn.SmallGroup);
                     om.RemoveFromGroup(DbUtil.Db, "No:" + yn.SmallGroup);
@@ -360,9 +377,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 foreach (var g in YesNoQuestion)
                     om.AddToGroup(DbUtil.Db, (g.Value == true ? "Yes:" : "No:") + g.Key);
             }
-            else
-                foreach (var g in YesNoQuestion)
-                    person.AddEditExtraCode(g.Key, g.Value == true ? "Yes" : "No");
         }
 
         private OrganizationMember GetOrganizationMember(Transaction transaction)

@@ -23,6 +23,7 @@ This will be presented as a dropdown selection.
 * **DateTime** (optional) which registers them in a meeting.
 ";
 
+        public bool TargetExtraValue { get; set; }
         public string Label { get; set; }
 
         public List<DropdownItem> list { get; set; }
@@ -37,14 +38,19 @@ This will be presented as a dropdown selection.
             if (list.Count == 0)
                 return;
             w.Start(Type)
-                .Add("Label", Label);
+                .Add("Label", Label)
+                .AttrIfTrue("TargetExtraValue", TargetExtraValue);
             foreach (var i in list)
                 i.WriteXml(w);
             w.End();
         }
 		public new static AskDropdown ReadXml(XElement ele)
 		{
-		    var dd = new AskDropdown {Label = ele.Element("Label")?.Value};
+		    var dd = new AskDropdown
+		    {
+                TargetExtraValue = ele.Attribute("TargetExtraValue").ToBool(),
+		        Label = ele.Element("Label")?.Value,
+		    };
 		    foreach (var ee in ele.Elements("DropdownItem"))
                 if(ee.Element("Description")?.Value != null)
     		        dd.list.Add(DropdownItem.ReadXml(ee));
@@ -149,9 +155,9 @@ This will be presented as a dropdown selection.
 		        var i = new DropdownItem
 		        {
 		            Description = ele.Element("Description")?.Value,
-		            Fee = ele.Attribute("Fee")?.Value?.ToDecimal(),
-		            Limit = ele.Attribute("Limit")?.Value?.ToInt2(),
-		            MeetingTime = ele.Attribute("Time")?.Value?.ToDate()
+		            Fee = ele.Attribute("Fee").ToDecimal(),
+		            Limit = ele.Attribute("Limit").ToInt2(),
+		            MeetingTime = ele.Attribute("Time").ToDate()
 		        };
 		        i.SmallGroup = (ele.Element("SmallGroup")?.Value ?? i.Description)?.TrimEnd();
 				return i;

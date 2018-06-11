@@ -71,18 +71,18 @@ namespace CmsData.Registration
                         Terms = e.Element("Terms")?.Value;
                         break;
                     case "Fees":
-                        Fee = e.Element("Fee")?.Value.ToDecimal();
-                        Deposit = e.Element("Deposit")?.Value.ToDecimal();
-                        ExtraFee = e.Element("ExtraFee")?.Value.ToDecimal();
-                        MaximumFee = e.Element("MaximumFee")?.Value.ToDecimal();
-                        ApplyMaxToOtherFees = e.Element("ApplyMaxToOtherFees")?.Value.ToBool2() ?? false;
+                        Fee = e.Element("Fee").ToDecimal();
+                        Deposit = e.Element("Deposit").ToDecimal();
+                        ExtraFee = e.Element("ExtraFee").ToDecimal();
+                        MaximumFee = e.Element("MaximumFee").ToDecimal();
+                        ApplyMaxToOtherFees = e.Element("ApplyMaxToOtherFees").ToBool();
                         ExtraValueFeeName = e.Element("ExtraValueFeeName")?.Value;
                         AccountingCode = e.Element("AccountingCode")?.Value;
-                        IncludeOtherFeesWithDeposit = e.Element("IncludeOtherFeesWithDeposit")?.Value.ToBool2() ?? false;
-                        OtherFeesAddedToOrgFee = e.Element("OtherFeesAddedToOrgFee")?.Value.ToBool2() ?? false;
-                        AskDonation = e.Element("AskDonation")?.Value.ToBool2() ?? false;
+                        IncludeOtherFeesWithDeposit = e.Element("IncludeOtherFeesWithDeposit").ToBool();
+                        OtherFeesAddedToOrgFee = e.Element("OtherFeesAddedToOrgFee").ToBool();
+                        AskDonation = e.Element("AskDonation").ToBool();
                         DonationLabel = e.Element("DonationLabel")?.Value;
-                        DonationFundId = e.Element("DonationFundId")?.Value.ToInt2();
+                        DonationFundId = e.Element("DonationFundId").ToInt2();
                         break;
                     case "AgeGroups":
                         if (AgeGroups == null)
@@ -90,9 +90,9 @@ namespace CmsData.Registration
                         foreach (var ee in e.Elements("Group"))
                             AgeGroups.Add(new AgeGroup
                             {
-                                StartAge = ee.Attribute("StartAge")?.Value.ToInt2() ?? 0,
-                                EndAge = ee.Attribute("EndAge")?.Value.ToInt2() ?? 0,
-                                Fee = ee.Attribute("Fee")?.Value.ToDecimal(),
+                                StartAge = ee.Attribute("StartAge").ToInt2() ?? 0,
+                                EndAge = ee.Attribute("EndAge").ToInt2() ?? 0,
+                                Fee = ee.Attribute("Fee").ToDecimal(),
                                 SmallGroup = ee.Value
                             });
                         break;
@@ -102,8 +102,8 @@ namespace CmsData.Registration
                         foreach (var ee in e.Elements("Fee"))
                             OrgFees.Add(new OrgFee
                             {
-                                OrgId = ee.Attribute("OrgId")?.Value.ToInt(),
-                                Fee = ee.Attribute("Fee")?.Value.ToDecimal()
+                                OrgId = ee.Attribute("OrgId").ToInt2(),
+                                Fee = ee.Attribute("Fee").ToDecimal()
                             });
                         break;
                     case "Options":
@@ -115,24 +115,24 @@ namespace CmsData.Registration
                         SpecialScript = e.Element("SpecialScript")?.Value;
                         OnEnrollScript = e.Element("OnEnrollScript")?.Value;
                         GroupToJoin = e.Element("GroupToJoin")?.Value;
-                        TimeOut = e.Element("TimeOut")?.Value.ToInt2();
-                        AllowOnlyOne = e.Element("AllowOnlyOne")?.Value.ToBool2() ?? false;
-                        TargetExtraValues = e.Element("TargetExtraValues")?.Value.ToBool2() ?? false;
-                        AllowReRegister = e.Element("AllowReRegister")?.Value.ToBool2() ?? false;
-                        AllowSaveProgress = e.Element("AllowSaveProgress")?.Value.ToBool2() ?? false;
-                        MemberOnly = e.Element("MemberOnly")?.Value.ToBool2() ?? false;
-                        AddAsProspect = e.Element("AddAsProspect")?.Value.ToBool2() ?? false;
-                        DisallowAnonymous = e.Element("DisallowAnonymous")?.Value.ToBool2() ?? false;
+                        TimeOut = e.Element("TimeOut").ToInt2();
+                        AllowOnlyOne = e.Element("AllowOnlyOne").ToBool();
+                        TargetExtraValues = e.Element("TargetExtraValues").ToBool();
+                        AllowReRegister = e.Element("AllowReRegister").ToBool();
+                        AllowSaveProgress = e.Element("AllowSaveProgress").ToBool();
+                        MemberOnly = e.Element("MemberOnly").ToBool();
+                        AddAsProspect = e.Element("AddAsProspect").ToBool();
+                        DisallowAnonymous = e.Element("DisallowAnonymous").ToBool();
                         break;
                     case "NotRequired":
-                        NoReqBirthYear = e.Element("NoReqBirthYear")?.Value.ToBool2() ?? false;
-                        NotReqDOB = e.Element("NotReqDOB")?.Value.ToBool2() ?? false;
-                        NotReqAddr = e.Element("NotReqAddr")?.Value.ToBool2() ?? false;
-                        NotReqZip = e.Element("NotReqZip")?.Value.ToBool2() ?? false;
-                        NotReqPhone = e.Element("NotReqPhone")?.Value.ToBool2() ?? false;
-                        NotReqGender = e.Element("NotReqGender")?.Value.ToBool2() ?? false;
-                        NotReqMarital = e.Element("NotReqMarital")?.Value.ToBool2() ?? false;
-                        NotReqCampus = e.Element("NotReqCampus")?.Value.ToBool2() ?? false;
+                        NoReqBirthYear = e.Element("NoReqBirthYear").ToBool();
+                        NotReqDOB = e.Element("NotReqDOB").ToBool();
+                        NotReqAddr = e.Element("NotReqAddr").ToBool();
+                        NotReqZip = e.Element("NotReqZip").ToBool();
+                        NotReqPhone = e.Element("NotReqPhone").ToBool();
+                        NotReqGender = e.Element("NotReqGender").ToBool();
+                        NotReqMarital = e.Element("NotReqMarital").ToBool();
+                        NotReqCampus = e.Element("NotReqCampus").ToBool();
                         break;
                     case "TimeSlots":
                         TimeSlots = TimeSlots.ReadXml(e);

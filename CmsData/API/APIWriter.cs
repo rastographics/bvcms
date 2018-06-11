@@ -103,6 +103,14 @@ namespace CmsData.API
             }
             return this;
         }
+        public APIWriter AttrIfTrue(string attr, bool i)
+        {
+            if (i == false)
+                return this;
+            CheckPendingStart();
+            writer.WriteAttributeString(attr, i.ToString());
+            return this;
+        }
         private string tostr(object i)
         {
             string s;

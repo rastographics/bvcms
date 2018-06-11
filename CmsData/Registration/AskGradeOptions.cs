@@ -22,16 +22,17 @@ namespace CmsData.Registration
 	    {
 			if (list.Count == 0)
 				return;
-	        w.Start(Type);
-            w.Add("Label", Label);
+	        w.Start(Type)
+	            .Add("Label", Label);
 			foreach (var g in list)
                 g.WriteXml(w);
 	        w.End();
 	    }
 	    public new static AskGradeOptions ReadXml(XElement e)
 	    {
-			var go = new AskGradeOptions();
-	        go.Label = e.Element("Label")?.Value;
+			var go = new AskGradeOptions {
+	            Label = e.Element("Label")?.Value
+            };
 	        foreach (var ele in e.Elements("GradeOption"))
 	            go.list.Add(GradeOption.ReadXml(ele));
 	        return go;
@@ -54,7 +55,7 @@ namespace CmsData.Registration
 		        var option = new GradeOption
 		        {
 		            Description = e.Value,
-		            Code = e.Attribute("Code")?.Value.ToInt2() ?? 0
+		            Code = e.Attribute("Code").ToInt2() ?? 0
 		        };
 		        return option;
 		    }
