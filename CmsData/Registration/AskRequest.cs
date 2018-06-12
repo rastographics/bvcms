@@ -16,8 +16,7 @@ You can put a label on this text box to clarify what you are asking.
 	    {
 	        if (!Label.HasValue())
 	            Label = "Request";
-            w.Start(Type)
-                .Add("AskRequest", Label);
+            w.Add("AskRequest", Label);
 	    }
         public new static AskRequest ReadXml(XElement e)
         {
