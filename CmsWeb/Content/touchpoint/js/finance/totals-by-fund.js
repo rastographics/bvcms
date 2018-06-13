@@ -150,26 +150,5 @@
         }
     });
 
-	$("#toquickbooks").click(function (ev) {
-		ev.preventDefault();
-
-		$.block({
-			theme: true,
-			title: 'QuickBooks Export',
-			message: '<p>Pushing data to QuickBooks, please wait...</p>'
-		});
-
-		var f = $(this).closest('form');
-		var q = f.serialize();
-		$.post("/FinanceReports/ToQuickBooks", q, function (ret) { $.unblock(); });
-	});
-
-	$("#IncUnclosedBundles").click(function (ev) {
-	    if (this.checked)
-	        $("#export-quickbooks").css("display", "none");
-	    else
-	        $("#export-quickbooks").css("display", "inline");
-	});
-
 	initializePopovers();
 });

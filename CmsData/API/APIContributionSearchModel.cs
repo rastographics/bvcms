@@ -152,6 +152,9 @@ namespace CmsData.API
 
         public IQueryable<Contribution> FetchContributions()
         {
+            // There is a SQL version of this search that should work the same way.
+            // it is called ContributionSearch
+
             if (contributions != null)
                 return contributions;
 

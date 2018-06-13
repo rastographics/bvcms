@@ -116,15 +116,14 @@ namespace CmsWeb.Models
                 q = (from c in api.FetchContributions()
                      let BundleType = c.BundleDetails.First().BundleHeader.BundleHeaderType.Description
                      let BundleTypeId = c.BundleDetails.First().BundleHeader.BundleHeaderTypeId
-                     group c by new {c.FundId, c.QBSyncID, BundleTypeId, BundleType}
+                     group c by new {c.FundId, BundleTypeId, BundleType}
                      into g
-                     orderby g.Key.FundId, g.Key.QBSyncID, g.Key.BundleTypeId
+                     orderby g.Key.FundId, g.Key.BundleTypeId
                      select new FundTotalInfo
                      {
                          BundleType = g.Key.BundleType,
                          BundleTypeId = g.Key.BundleTypeId,
                          FundId = g.Key.FundId,
-                         QBSynced = g.Key.QBSyncID ?? 0,
                          FundName = g.First().ContributionFund.FundName,
                          GeneralLedgerId = g.First().ContributionFund.FundIncomeAccount,
                          Total = g.Sum(t => t.ContributionAmount).Value,
@@ -133,12 +132,11 @@ namespace CmsWeb.Models
                      }).ToList();
             else
                 q = (from c in api.FetchContributions()
-                     group c by new { c.FundId, c.QBSyncID } into g
-                     orderby g.Key.FundId, g.Key.QBSyncID
+                     group c by c.FundId into g
+                     orderby g.Key
                      select new FundTotalInfo
                      {
-                         FundId = g.Key.FundId,
-                         QBSynced = g.Key.QBSyncID ?? 0,
+                         FundId = g.Key,
                          FundName = g.First().ContributionFund.FundName,
                          GeneralLedgerId = g.First().ContributionFund.FundIncomeAccount,
                          Total = g.Sum(t => t.ContributionAmount).Value,

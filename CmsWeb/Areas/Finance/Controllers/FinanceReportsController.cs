@@ -259,66 +259,6 @@ namespace CmsWeb.Areas.Finance.Controllers
             return Content(body);
         }
 
-        [HttpPost]
-        public ActionResult ToQuickBooks(TotalsByFundModel m)
-        {
-//            List<int> lFunds = new List<int>();
-//            List<QBJournalEntryLine> qbjel = new List<QBJournalEntryLine>();
-//
-//            var entries = m.TotalsByFund();
-//
-//            QuickBooksHelper qbh = new QuickBooksHelper();
-//
-//            foreach (var item in entries)
-//            {
-//                if (item.QBSynced > 0) continue;
-//
-//                var accts = (from e in DbUtil.Db.ContributionFunds
-//                             where e.FundId == item.FundId
-//                             select e).Single();
-//
-//                if (accts.QBAssetAccount > 0 && accts.QBIncomeAccount > 0)
-//                {
-//                    QBJournalEntryLine jelCredit = new QBJournalEntryLine();
-//
-//                    jelCredit.sDescrition = item.FundName;
-//                    jelCredit.dAmount = item.Total ?? 0;
-//                    jelCredit.sAccountID = accts.QBIncomeAccount.ToString();
-//                    jelCredit.bCredit = true;
-//
-//                    QBJournalEntryLine jelDebit = new QBJournalEntryLine(jelCredit);
-//
-//                    jelDebit.sAccountID = accts.QBAssetAccount.ToString();
-//                    jelDebit.bCredit = false;
-//
-//                    qbjel.Add(jelCredit);
-//                    qbjel.Add(jelDebit);
-//
-//                    lFunds.Add(item.FundId ?? 0);
-//                }
-//            }
-//
-//            int iJournalID = qbh.CommitJournalEntries("Bundle from BVCMS", qbjel);
-//
-//            if (iJournalID > 0)
-//            {
-//                string sStart = m.Dt1.Value.ToString("u");
-//                string sEnd = m.Dt2.Value.AddHours(23).AddMinutes(59).AddSeconds(59).ToString("u");
-//
-//                sStart = sStart.Substring(0, sStart.Length - 1);
-//                sEnd = sEnd.Substring(0, sEnd.Length - 1);
-//
-//                string sFundList = string.Join(",", lFunds.ToArray());
-//                string sUpdate = "UPDATE dbo.Contribution SET QBSyncID = " + iJournalID + " WHERE FundId IN (" +
-//                                 sFundList + ") AND ContributionDate BETWEEN '" + sStart + "' and '" + sEnd + "'";
-//
-//                DbUtil.Db.ExecuteCommand(sUpdate);
-//            }
-//
-//            return View("TotalsByFund", m);
-            return new EmptyResult();
-        }
-
         public ActionResult PledgeFulfillments(int id)
         {
             var q = DbUtil.Db.PledgeFulfillment(id)
