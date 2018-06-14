@@ -15,6 +15,7 @@ using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Linq;
 using System.Configuration;
+using System.Data;
 using System.Net.Mail;
 using System.IO;
 using System.Security.Cryptography;
@@ -312,6 +313,11 @@ namespace UtilityExtensions
             if (o is DBNull)
                 return null;
             return o.ToInt();
+        }
+        public static IEnumerable<T> Select<T>(this IDataReader reader, Func<IDataReader, T> projection)
+        {
+            while (reader.Read())
+                yield return projection(reader);
         }
     }
 }

@@ -6,12 +6,15 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Data.Linq.SqlClient;
+using System.Data.SqlClient;
 using System.Data.SqlTypes;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text.RegularExpressions;
+using CmsData.API;
 using Dapper;
-using IronPython.Modules;
 using UtilityExtensions;
 
 namespace CmsData
@@ -108,13 +111,40 @@ namespace CmsData
         internal Expression InSqlList()
         {
             var tf = CodeIds == "1";
-            var s = Quarters;
-            var sql = db.ContentOfTypeSql(s);
+            var scriptname = Quarters;
+            DynamicParameters dp = null;
+            var cn = db.ReadonlyConnection();
+
+            var re = new Regex(@"(?<scriptname>.*),\s*(?<parameter>.*)=(?<value>.*)");
+            if (re.IsMatch(Quarters))
+            {
+                var match = re.Match(Quarters);
+                scriptname = match.Groups["scriptname"].Value;
+                var parameter = match.Groups["parameter"].Value;
+                var value = match.Groups["value"].Value;
+                if (parameter.Equal("fundset"))
+                {
+                    var fundlist = string.Join(",", APIContributionSearchModel.GetCustomFundSetList(db, value));
+                    dp = new DynamicParameters();
+                    dp.Add(parameter, fundlist);
+                }
+                else if (parameter.HasValue())
+                {
+                    dp = new DynamicParameters();
+                    dp.Add(parameter, value);
+                }
+
+            }
+            var sql = db.ContentOfTypeSql(scriptname);
             if (!sql.HasValue())
                 return AlwaysFalse();
 
-            var cn = db.ReadonlyConnection();
-            var list = cn.Query<int>(sql);
+
+            var list = dp != null ? cn.Query<int>(sql, dp) : cn.Query<int>(sql);
+
+            if (list == null)
+                return AlwaysFalse();
+
             var tag = db.PopulateTempTag(list);
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);

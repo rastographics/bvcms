@@ -156,6 +156,15 @@ namespace CmsWeb.Areas.Finance.Controllers
             var s = id.SpaceCamelCase();
             return cn.ExecuteReader(content, p, commandTimeout: 1200).ToExcel(s + ".xlsx", fromSql: true);
         }
+        [HttpPost, Route("~/FundList")]
+        public ActionResult FundList(TotalsByFundModel m)
+        {
+            return Content($@"
+<pre>
+    {string.Join(",", APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db, m.FundSet))}
+</pre>
+");
+        }
 
         [HttpPost]
         public ActionResult TotalsByFundResults(TotalsByFundModel m)
