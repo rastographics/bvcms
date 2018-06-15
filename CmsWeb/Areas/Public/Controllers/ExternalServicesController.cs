@@ -98,13 +98,15 @@ namespace CmsWeb.Areas.Public.Controllers
 
             //Check incoming values are valid        
             var apiKeyValue = header.GetValues("ApiKey");
+            var getIp = HttpContext.Request.ServerVariables["REMOTE_ADDR"];
 
             // ApiKey header is missing
             if (apiKeyValue == null)
             {
                 return Json(new
                 {
-                    error = ErrorMessage.ApiKeyHeaderMissing
+                    error = ErrorMessage.ApiKeyHeaderMissing,
+                    ip = getIp
                 }, JsonRequestBehavior.AllowGet);                
             }
 
@@ -114,7 +116,8 @@ namespace CmsWeb.Areas.Public.Controllers
             {
                 return Json(new
                 {
-                    error = ErrorMessage.ApiKeyHeaderValueNull
+                    error = ErrorMessage.ApiKeyHeaderValueNull,
+                    ip = getIp
                 }, JsonRequestBehavior.AllowGet);
             }
 
@@ -124,7 +127,8 @@ namespace CmsWeb.Areas.Public.Controllers
             {
                 return Json(new
                 {
-                    error = ErrorMessage.AuthHeaderMissing
+                    error = ErrorMessage.AuthHeaderMissing,                    
+                    ip = getIp
                 }, JsonRequestBehavior.AllowGet);
             }
 
@@ -136,7 +140,8 @@ namespace CmsWeb.Areas.Public.Controllers
                 {
                     return Json(new
                     {
-                        error = ErrorMessage.AuthHeaderValueInvalid
+                        error = ErrorMessage.AuthHeaderValueInvalid,
+                        ip = getIp
                     }, JsonRequestBehavior.AllowGet);
                 }
                 getAuthInfo=Encoding.ASCII.GetString(Convert.FromBase64String(authorizationValue.First().Substring(6)));
@@ -145,7 +150,8 @@ namespace CmsWeb.Areas.Public.Controllers
             {
                 return Json(new
                 {
-                    error = ErrorMessage.MalformedBase64
+                    error = ErrorMessage.MalformedBase64,
+                    ip = getIp
                 }, JsonRequestBehavior.AllowGet);
             }
 
@@ -154,7 +160,8 @@ namespace CmsWeb.Areas.Public.Controllers
             {
                 return Json(new
                 {
-                    error = ErrorMessage.AuthorizationHeaderValueInvalid
+                    error = ErrorMessage.AuthorizationHeaderValueInvalid,
+                    ip = getIp
                 }, JsonRequestBehavior.AllowGet);
             }
 
@@ -165,7 +172,8 @@ namespace CmsWeb.Areas.Public.Controllers
             {
                 return Json(new
                 {
-                    error = ErrorMessage.InvalidCredentials
+                    error = ErrorMessage.InvalidCredentials,
+                    ip = getIp
                 }, JsonRequestBehavior.AllowGet);
             }
 
@@ -175,21 +183,22 @@ namespace CmsWeb.Areas.Public.Controllers
             {
                 return Json(new
                 {
-                    error = ErrorMessage.ApiKeySettingNotFound
+                    error = ErrorMessage.ApiKeySettingNotFound,
+                    ip = getIp
                 }, JsonRequestBehavior.AllowGet);
             }
 
             // Check Api Key is valid
             if (getApiUserInfoKey.trim() == apiKey)
             {
-                var getIp = HttpContext.Request.ServerVariables["REMOTE_ADDR"];
                 //Check Ip setting is valid
                 var getIpWhiteList = DbUtil.Db.Setting("ApiUserInfoIPList", "");
                 if (getIpWhiteList == "")
                 {
                     return Json(new
                     {
-                        error = ErrorMessage.IpSettingNotFound
+                        error = ErrorMessage.IpSettingNotFound,
+                        ip = getIp
                     }, JsonRequestBehavior.AllowGet);
                 }
 
@@ -199,7 +208,8 @@ namespace CmsWeb.Areas.Public.Controllers
                 {
                     return Json(new
                     {
-                        error = ErrorMessage.IpNotFoundInKey
+                        error = ErrorMessage.IpNotFoundInKey,
+                        ip = getIp
                     }, JsonRequestBehavior.AllowGet);
                 }
                 
@@ -219,12 +229,14 @@ namespace CmsWeb.Areas.Public.Controllers
                 }
                 return Json(new
                 {
-                    error = ErrorMessage.FailedAuthentication
+                    error = ErrorMessage.FailedAuthentication,
+                    ip = getIp
                 }, JsonRequestBehavior.AllowGet);
             }
             return Json(new
             {
-                error = ErrorMessage.ApiKeyNotValid
+                error = ErrorMessage.ApiKeyNotValid,
+                ip = getIp
             }, JsonRequestBehavior.AllowGet);
         }
 
