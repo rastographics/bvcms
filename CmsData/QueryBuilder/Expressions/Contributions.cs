@@ -11,6 +11,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using CmsData.Codes;
+using Community.CsharpSqlite;
 using UtilityExtensions;
 
 namespace CmsData
@@ -96,7 +97,7 @@ namespace CmsData
                     return AlwaysFalse();
 
             var tf = CodeIds == "1";
-            var fundid = Quarters.ToInt();
+            var fundid = Quarters.AllDigits() ? Quarters.ToInt2() : db.Setting(Quarters, "").ToInt2();
             var q = fundid > 0
                 ? db.RecentGiverFund(Days, fundid).Select(v => v.PeopleId.Value)
                 : db.RecentGiver(Days).Select(v => v.PeopleId.Value);
@@ -248,13 +249,13 @@ namespace CmsData
         }
         internal Expression RecentContributionCount()
         {
-            var fund = Quarters.ToInt();
+            var fund = Quarters.AllDigits() ? Quarters.ToInt() : db.Setting(Quarters, "").ToInt();
             var cnt = TextValue.ToInt();
             return RecentContributionCount2(Days, fund, cnt, false);
         }
         internal Expression RecentContributionAmount()
         {
-            var fund = Quarters.ToInt();
+            var fund = Quarters.AllDigits() ? Quarters.ToInt() : db.Setting(Quarters, "").ToInt();
             var amt = TextValue.ToDecimal() ?? 0;
             return RecentContributionAmount2(Days, fund, amt, false);
         }
@@ -280,10 +281,10 @@ namespace CmsData
         	var m = re.Match(Quarters);
     		var name = m.Groups["name"].Value;
     		var fundid = m.Groups["fundid"].Value;
+            var fund = fundid.AllDigits() ? fundid.ToInt2() : db.Setting(fundid, "").ToInt2();
 
             var startdt = DbUtil.Db.Setting(name, "").ToDate();
             var enddt = DateTime.Today.AddDays(1);
-            var fund = fundid.ToInt2();
 
             return ContributionAmountBothJoint(startdt, enddt, fund);
         }
@@ -293,7 +294,7 @@ namespace CmsData
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
             var amt = TextValue.ToDecimal() ?? 0;
-            var fund = fundid ?? Quarters.ToInt2();
+            var fund = fundid ?? (Quarters.AllDigits() ? Quarters.ToInt2() : db.Setting(Quarters, "").ToInt2());
 
             IQueryable<int> q = null;
             switch (op)
@@ -364,7 +365,7 @@ namespace CmsData
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
             var amt = TextValue.ToDecimal() ?? 0;
-            var fund = Quarters.ToInt2();
+            var fund = Quarters.AllDigits() ? Quarters.ToInt() : db.Setting(Quarters, "").ToInt();
 
             IQueryable<int> q = null;
             switch (op)
@@ -419,7 +420,7 @@ namespace CmsData
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
             var amt = TextValue.ToDecimal() ?? 0;
-            var fund = Quarters.ToInt();
+            var fund = Quarters.AllDigits() ? Quarters.ToInt() : db.Setting(Quarters, "").ToInt();
 
             var startdt = DateTime.Parse("1/1/1900");
             var enddt = DateTime.Parse("1/1/2500");
@@ -471,7 +472,7 @@ namespace CmsData
         }
         internal Expression RecentNonTaxDedAmount()
         {
-            var fund = Quarters.ToInt();
+            var fund = Quarters.AllDigits() ? Quarters.ToInt() : db.Setting(Quarters, "").ToInt();
             var amt = TextValue.ToDecimal() ?? 0;
             return RecentContributionAmount2(Days, fund, amt, true);
         }
@@ -481,7 +482,7 @@ namespace CmsData
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
 
-            var fund = Quarters.ToInt();
+            var fund = Quarters.AllDigits() ? Quarters.ToInt2() : db.Setting(Quarters, "").ToInt2();
             var cnt = TextValue.ToInt();
             var now = Util.Now;
             var dt = now.AddDays(-Days);
@@ -555,7 +556,7 @@ namespace CmsData
             if (!db.FromBatch)
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
-            var fund = Quarters.ToInt();
+            var fund = Quarters.AllDigits() ? Quarters.ToInt2() : db.Setting(Quarters, "").ToInt2();
             var amt = TextValue.ToDecimal() ?? 0;
             var now = Util.Now;
             var dt = now.AddDays(-Days);
@@ -616,13 +617,13 @@ namespace CmsData
         }
         internal Expression ContributionAmount()
         {
-            var fund = Quarters.ToInt();
+            var fund = Quarters.AllDigits() ? Quarters.ToInt() : db.Setting(Quarters, "").ToInt();
             var amt = TextValue.ToDecimal() ?? 0;
             return ContributionAmount2(StartDate, EndDate, fund, amt, false);
         }
         internal Expression NonTaxDedAmount()
         {
-            var fund = Quarters.ToInt();
+            var fund = Quarters.AllDigits() ? Quarters.ToInt() : db.Setting(Quarters, "").ToInt();
             var amt = TextValue.ToDecimal() ?? 0;
             return ContributionAmount2(StartDate, EndDate, fund, amt, true);
         }
@@ -750,7 +751,8 @@ namespace CmsData
         internal Expression IsFamilyGiver()
         {
             var tf = CodeIds == "1";
-            var fundid = Quarters.ToInt2();
+            var fundid = Quarters.AllDigits() ? Quarters.ToInt2() : db.Setting(Quarters, "").ToInt2();
+
             var td = Util.Now;
             var fd = td.AddDays(Days == 0 ? -365 : -Days);
             Tag tag = null;
@@ -771,7 +773,7 @@ namespace CmsData
         internal Expression IsFamilyPledger()
         {
             var tf = CodeIds == "1";
-            var fundid = Quarters.ToInt2();
+            var fundid = Quarters.AllDigits() ? Quarters.ToInt2() : db.Setting(Quarters, "").ToInt2();
             var td = Util.Now;
             var fd = td.AddDays(Days == 0 ? -365 : -Days);
             Tag tag = null;
@@ -850,7 +852,7 @@ namespace CmsData
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
             var tf = CodeIds == "1";
-            var fundid = Quarters.ToInt2();
+            var fundid = Quarters.AllDigits() ? Quarters.ToInt2() : db.Setting(Quarters, "").ToInt2();
             Expression<Func<Person, bool>> pred = p => (from e in p.RecurringAmounts
                                                         where e.Amt > 0
                                                         where fundid == null || fundid == e.FundId

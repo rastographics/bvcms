@@ -83,7 +83,7 @@ DecisionDate,Date,,,,Membership,Decision Date,,Select Comparison and pick the da
 DecisionTypeId,NullCode,,DecisionTypeList,,Membership,Decision Type,,Select Decision Type from the list.
 RecentDecisionType,Code,,DecisionTypeList,,Membership,Recent Decision Type,Days,Select Decision Type from the list and enter the number of days to look back.
 RecentJoinChurch,Bit,,,,Membership,Recent Join Church,Days,Select True or False and enter the number of days to look back.
-RecentJoinChurchDaysRange,StringEqual,,,,Membership,Recent Join Church Days Range,,Select True or False and enter a range of days like 7-14.
+RecentJoinChurchDaysRange,StringEqual,,,,Membership,Recent Join Church Days Range,,Select Equal or Not Equal and enter a range of days like 7-14.
 JoinDate,Date,,,,Membership,Join Date,,Pick the date and the Comparison. Leave date blank for those without a Join Date.
 JoinCodeId,Code,,JoinTypeList,,Membership,Join Type,,Select Join Type from the list.
 DropDate,Date,,,,Membership,Drop Date,,Pick the date and the Comparison. Leave date blank for those without a Drop Date.

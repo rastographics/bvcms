@@ -40,7 +40,7 @@ namespace CmsData
             + MatchVolSubLinkRe + "|"
             + MatchVoteLinkRe;
 
-        private const string Pattern1 = "(<style.*?</style>|" + MatchImageRe + "|" + MatchCodeRe + "|" + MatchRes + "|" + MatchDropFromOrgTagRe + ")";
+        private const string Pattern1 = "(<style.*?</style>|" + MatchSettingUrlRe + "|" + MatchCodeRe + "|" + MatchRes + "|" + MatchDropFromOrgTagRe + ")";
         private const string Pattern2 = "(" + MatchCodeRe + "|" + MatchRes + ")";
 
         public EmailReplacements(CMSDataContext callingContext, string text, MailAddress from, int? queueid = null, bool noPremailer = false, DynamicData pythondata = null)

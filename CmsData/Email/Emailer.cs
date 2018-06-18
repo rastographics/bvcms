@@ -742,8 +742,8 @@ namespace CmsData
                     if (url.StartsWith("mailto:"))
                         continue;
 
-                    if (EmailReplacements.ImageRe.IsMatch(url))
-                        url = EmailReplacements.ImageReplacement(this, url);
+                    if (EmailReplacements.SettingUrlRe.IsMatch(url))
+                        url = EmailReplacements.SettingUrlReplacement(this, url);
                     var hash = HashMd5Base64(md5Hash, url + DateTime.Now.ToString("o") + linkIndex);
 
                     var emailLink = new EmailLink
