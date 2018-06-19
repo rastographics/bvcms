@@ -10,6 +10,7 @@ using System.Data.SqlTypes;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+using CmsData.API;
 using CmsData.Codes;
 using Community.CsharpSqlite;
 using UtilityExtensions;
@@ -110,6 +111,26 @@ namespace CmsData
              * if ((op == CompareType.NotEqual && tf == true) || (op == CompareType.Equal && tf == false))
              * IN OTHER WORDS (not equal true) IS THE SAME AS (equal false)
              */
+            if (op == CompareType.Equal ^ tf)
+                pred = p => !db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId);
+            else
+                pred = p => db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId);
+
+            Expression expr = Expression.Invoke(pred, parm);
+            return expr;
+        }
+        public Expression IsRecentGiverFunds()
+        {
+            if (!db.FromBatch)
+                if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
+                    return AlwaysFalse();
+
+            var tf = CodeIds == "1";
+            var fundlist = string.Join(",", APIContributionSearchModel.GetCustomFundSetList(db, Quarters));
+            var q = db.RecentGiverFunds(Days, fundlist).Select(v => v.PeopleId.Value);
+            var tag = db.PopulateTemporaryTag(q);
+            Expression<Func<Person, bool>> pred = null;
+
             if (op == CompareType.Equal ^ tf)
                 pred = p => !db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId);
             else

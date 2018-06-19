@@ -697,6 +697,9 @@
     <Compile Include="Generated\Functions\GiftSummary.cs" />
     <Compile Include="Generated\Functions\GivingChange.cs" />
     <Compile Include="Generated\Functions\GivingChangeFund.cs" />
+    <Compile Include="Generated\Functions\GivingChangeFundQuarter.cs" />
+    <Compile Include="Generated\Functions\GivingChangeQuartersFund.cs" />
+    <Compile Include="Generated\Functions\GivingChangeQuartersFund2.cs" />
     <Compile Include="Generated\Functions\GuestList.cs" />
     <Compile Include="Generated\Functions\GuestList2.cs" />
     <Compile Include="Generated\Functions\HasIncompleteRegistration.cs" />

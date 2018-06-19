@@ -190,6 +190,7 @@ HadIndContributions,Bit,,,,Contributions,Had Individual Contributions,"StartDate
 RecentHasFailedRecurringGiving,Bit,,,,Contributions,Recent Has Failed Recurring Giving,Days,Individual Had a failed Recurring Gift within the past number of days
 RecentFirstTimeGiver,Bit,,,Fund Id (or blank for all),Contributions,Recent First Time Giver,"Days,Quarters","Enter a number of days to look back, enter a Fund ID (or leave blank for all funds) and specify True or False."
 IsRecentGiver,Bit,,,Fund Id (or blank for all),Contributions,Recent Giver,"Days,Quarters",Enter a number of days to look back and specify True or False.
+IsRecentGiverFunds,Bit,,,FundSet,Contributions,Recent Giver to Funds,"Days,Quarters",Enter a number of days to look back and a FundSet name and specify True or False.
 IsTopGiver,Bit,,,Top number,Contributions,Recent Top Giver,"Days,Quarters","Enter a number of days to look back, enter the top number (ex. 100 for the top 100 givers) and specify True or False."
 IsTopPledger,Bit,,,Top number,Contributions,Recent Top Pledger,"Days,Quarters","Enter a number of days to look back (must include the date the pledge was made), enter the top number (ex. 100 for the top 100 pledgers) and specify True or False."
 IsFamilyGiver,Bit,,,Fund Id (or blank for all),Contributions,Is in a Giving Family,"Days,Quarters","Enter a number of days to look back (365 default), enter a Fund ID (or leave blank for all funds) and specify True or False."

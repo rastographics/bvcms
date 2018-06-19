@@ -37,11 +37,7 @@ namespace CmsData
         partial void InsertApiSession(ApiSession instance);
         partial void UpdateApiSession(ApiSession instance);
         partial void DeleteApiSession(ApiSession instance);
-
-	    partial void InsertApiUserInfo(ApiUserInfo instance);
-	    partial void UpdateApiUserInfo(ApiUserInfo instance);
-	    partial void DeleteApiUserInfo(ApiUserInfo instance);
-
+        
         partial void InsertAttend(Attend instance);
         partial void UpdateAttend(Attend instance);
         partial void DeleteAttend(Attend instance);
@@ -826,13 +822,7 @@ namespace CmsData
 
 		}
 
-	    public Table<ApiUserInfo> ApiUserInfos
-	    {
-	        get { return this.GetTable<ApiUserInfo>(); }
-
-	    }
-
-        public Table< Attend> Attends
+		public Table< Attend> Attends
 		{
 			get	{ return this.GetTable< Attend>(); }
 
@@ -3608,6 +3598,65 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.GivingChangeFundQuarters", IsComposable = true)]
+		public IQueryable< View.GivingChangeFundQuarter > GivingChangeFundQuarters(
+            [Parameter(DbType="datetime")] DateTime? fd,
+            [Parameter(DbType="datetime")] DateTime? td,
+            [Parameter(DbType="varchar")] string fundids,
+            [Parameter(DbType="int")] int? tagid
+            )
+		{
+			return this.CreateMethodCallQuery< View.GivingChangeFundQuarter>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                fd,
+                td,
+                fundids,
+                tagid
+                );
+		}
+
+		[Function(Name="dbo.GivingChangeQuartersFund", IsComposable = true)]
+		public IQueryable< View.GivingChangeQuartersFund > GivingChangeQuartersFund(
+            [Parameter(DbType="datetime")] DateTime? fd,
+            [Parameter(DbType="datetime")] DateTime? td,
+            [Parameter(DbType="varchar")] string taxnontax,
+            [Parameter(DbType="varchar")] string fundids,
+            [Parameter(DbType="int")] int? tagid
+            )
+		{
+			return this.CreateMethodCallQuery< View.GivingChangeQuartersFund>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                fd,
+                td,
+                taxnontax,
+                fundids,
+                tagid
+                );
+		}
+
+		[Function(Name="dbo.GivingChangeQuartersFund2", IsComposable = true)]
+		public IQueryable< View.GivingChangeQuartersFund2 > GivingChangeQuartersFund2(
+            [Parameter(DbType="datetime")] DateTime? fd1,
+            [Parameter(DbType="datetime")] DateTime? td1,
+            [Parameter(DbType="datetime")] DateTime? fd2,
+            [Parameter(DbType="datetime")] DateTime? td2,
+            [Parameter(DbType="varchar")] string taxnontax,
+            [Parameter(DbType="varchar")] string fundids,
+            [Parameter(DbType="int")] int? tagid
+            )
+		{
+			return this.CreateMethodCallQuery< View.GivingChangeQuartersFund2>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                fd1,
+                td1,
+                fd2,
+                td2,
+                taxnontax,
+                fundids,
+                tagid
+                );
+		}
+
 		[Function(Name="dbo.GivingCurrentPercentOfFormer", IsComposable = true)]
 		public IQueryable< View.GivingCurrentPercentOfFormer > GivingCurrentPercentOfFormer(
             [Parameter(DbType="datetime")] DateTime? dt1,
@@ -4606,6 +4655,19 @@ namespace CmsData
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 days,
                 fundid
+                );
+		}
+
+		[Function(Name="dbo.RecentGiverFunds", IsComposable = true)]
+		public IQueryable< View.RecentGiverFund > RecentGiverFunds(
+            [Parameter(DbType="int")] int? days,
+            [Parameter(DbType="varchar")] string funds
+            )
+		{
+			return this.CreateMethodCallQuery< View.RecentGiverFund>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                days,
+                funds
                 );
 		}
 
