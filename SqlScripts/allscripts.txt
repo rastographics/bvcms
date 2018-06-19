@@ -556,6 +556,7 @@ Creating_dbo_LastAddrElement.sql
 Creating_dbo_TrackOpen.sql
 Creating_dbo_LinkEnrollmentTransaction.sql
 Creating_dbo_LinkEnrollmentTransactions.sql
+Creating_dbo_GivingChangeQuartersFund2.sql
 Creating_dbo_OrgFilterIds.sql
 Creating_dbo_PrevAddress.sql
 Creating_dbo_EmailLinks.sql
@@ -563,6 +564,7 @@ Creating_pk_PK_EmailLinks_dbo_EmailLinks.sql
 Creating_dbo_TrackClick.sql
 Creating_triggerdbo_insEnrollmentTransaction_dbo_EnrollmentTransaction.sql
 Creating_dbo_AttendUpdateN.sql
+Creating_dbo_RecentGiverFunds.sql
 Creating_dbo_UserPeopleIdFromEmail.sql
 Creating_dbo_OrgFilterCheckedCount.sql
 Creating_dbo_OrgMembersGroupFiltered.sql
