@@ -270,7 +270,11 @@ namespace CmsData.API
                                 where c.Person.Name.Contains(model.Name)
                                 select c;
 
-            if (model.Comments.HasValue())
+            if(model.Comments?.StartsWith("Meta:") == true)
+                contributions = from c in contributions
+                                where c.MetaInfo.StartsWith(model.Comments.Substring(5))
+                                select c;
+            else if (model.Comments.HasValue())
                 contributions = from c in contributions
                                 where c.ContributionDesc.Contains(model.Comments)
                                       || c.CheckNo == model.Comments
