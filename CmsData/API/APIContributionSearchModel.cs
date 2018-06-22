@@ -367,7 +367,7 @@ namespace CmsData.API
                 }
                 return standardFunds;
             }
-            var funds = xd.XPathSelectElement($"//Statement[@description='{name}']/Funds")?.Value ?? "";
+            var funds = xd.XPathSelectElement($"//Statement[@description=\"{name}\"]/Funds")?.Value ?? "";
             return GetFundSet(funds, allfunds);
         }
         public static List<int> GetCustomFundSetList(CMSDataContext db, string name)
@@ -375,7 +375,7 @@ namespace CmsData.API
             if (name == "all")
                 return null;
             var xd = XDocument.Parse(Util.PickFirst(db.ContentOfTypeText("CustomFundSets"), "<CustomFundSets/>"));
-            var funds = xd.XPathSelectElement($"//FundSet[@description='{name}']/Funds")?.Value ?? "";
+            var funds = xd.XPathSelectElement($"//FundSet[@description=\"{name}\"]/Funds")?.Value ?? "";
             if (!funds.HasValue())
                 return GetCustomStatementsList(db, name);
 
