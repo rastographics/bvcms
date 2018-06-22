@@ -62,6 +62,8 @@ namespace CmsData
 		
 		private int _ImageID;
 		
+		private string _MetaInfo;
+		
    		
    		private EntitySet< BundleDetail> _BundleDetails;
 		
@@ -148,6 +150,9 @@ namespace CmsData
 		
 		partial void OnImageIDChanging(int value);
 		partial void OnImageIDChanged();
+		
+		partial void OnMetaInfoChanging(string value);
+		partial void OnMetaInfoChanged();
 		
     #endregion
 		public Contribution()
@@ -669,6 +674,28 @@ namespace CmsData
 					this._ImageID = value;
 					this.SendPropertyChanged("ImageID");
 					this.OnImageIDChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="MetaInfo", UpdateCheck=UpdateCheck.Never, Storage="_MetaInfo", DbType="varchar(100)")]
+		public string MetaInfo
+		{
+			get { return this._MetaInfo; }
+
+			set
+			{
+				if (this._MetaInfo != value)
+				{
+				
+                    this.OnMetaInfoChanging(value);
+					this.SendPropertyChanging();
+					this._MetaInfo = value;
+					this.SendPropertyChanged("MetaInfo");
+					this.OnMetaInfoChanged();
 				}
 
 			}

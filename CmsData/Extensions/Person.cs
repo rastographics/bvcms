@@ -1410,7 +1410,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
 
         public Contribution PostUnattendedContribution(CMSDataContext db, decimal amt, int? fund, string description,
-                                                       bool pledge = false, int? typecode = null, int? tranid = null)
+                                                       bool pledge = false, int? typecode = null, int? tranid = null, string meta = null)
         {
             if (!typecode.HasValue)
             {
@@ -1522,6 +1522,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 ContributionDesc = description,
                 TranId = tranid,
                 Source = Util2.FromMobile.HasValue() ? 1 : (int?)null,
+                MetaInfo = meta,
                 //CampusId is set with an update Trigger when peopleid is changed or when a new contribution is created that has a peopleId
             };
             bundle.BundleDetails.Add(bd);
