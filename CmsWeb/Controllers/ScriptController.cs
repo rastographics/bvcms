@@ -125,7 +125,7 @@ namespace CmsWeb.Controllers
             string script = ScriptModel.RunScriptSql(parameter, content, p, ViewBag);
             if (script.StartsWith("Not Authorized"))
                 return Message(script);
-            return cn.ExecuteReader(script, p).ToExcel("RunScript.xlsx", fromSql: true);
+            return cn.ExecuteReader(script, p, commandTimeout: 1200).ToExcel("RunScript.xlsx", fromSql: true);
         }
 
         [HttpGet, Route("~/PyScript/{name}")]
