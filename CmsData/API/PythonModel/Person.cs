@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using CmsData.API;
@@ -114,7 +115,7 @@ namespace CmsData
                 db2.SubmitChanges();
                 var taskLink = Task.TaskLink(db2, description, t.Id);
                 db2.Email(
-                    db2.Setting("AdminMail", "support@touchpointsoftware.com"), // from email
+                    db2.Setting("AdminMail",ConfigurationManager.AppSettings["supportemail"]), // from email
                     minister, // to person
                     "TASK: " + description, // subject
                     $@"{taskLink}<br/>\n{about.Name}\n<p>{notes}</p>"); // body

@@ -1,4 +1,5 @@
 using System;
+using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Mail;
@@ -197,7 +198,7 @@ Thank you.
 
         private static MailAddress GetAdminMailAddress()
         {
-            return new MailAddress(DbUtil.Db.Setting("AdminMail", "info@touchpointsoftware.com"));
+            return new MailAddress(DbUtil.Db.Setting("AdminMail", ConfigurationManager.AppSettings["supportemail"]));
         }
 
         private void CreateTransactionIfNeeded()

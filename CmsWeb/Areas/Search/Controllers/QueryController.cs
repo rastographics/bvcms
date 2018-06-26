@@ -6,6 +6,7 @@
  */
 
 using System;
+using System.Configuration;
 using System.Net;
 using System.Linq;
 using System.Text;
@@ -314,7 +315,7 @@ namespace CmsWeb.Areas.Search.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new {error = ex.Message + ". Please report this to support@touchpointsoftware.com"});
+                return Json(new {error = ex.Message + $". Please report this to {ConfigurationManager.AppSettings["supportemail"]}"});
             }
         }
 

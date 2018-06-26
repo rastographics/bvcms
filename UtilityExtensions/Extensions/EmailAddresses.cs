@@ -100,7 +100,7 @@ namespace UtilityExtensions
         public static List<MailAddress> SendErrorsTo()
         {
             var a = ConfigurationManager.AppSettings["senderrorsto"];
-            return EmailAddressListFromString(a.HasValue() ? a : "david@touchpointsoftware.com");
+            return EmailAddressListFromString(a.HasValue() ? a : AdminMail);
         }
         public static List<MailAddress> EmailAddressListFromString(string addresses)
         {

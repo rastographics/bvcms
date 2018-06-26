@@ -713,7 +713,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     FirstName = "Another",
                     LastName = "Person",
                     DateOfBirth = "12/1/1955",
-                    EmailAddress = "karen@touchpointsoftware.com",
+                    EmailAddress = "sombody@nowhere.com",
 #endif
                 });
         }

@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -323,7 +324,7 @@ namespace CmsData
             return def;
         }
 
-        public static string AdminMail => Db.Setting("AdminMail", "support@touchpointsoftware.com");
+        public static string AdminMail => Db.Setting("AdminMail", ConfigurationManager.AppSettings["supportemail"]);
         public static string AdminMailName => Db.Setting("AdminMailName", "TouchPoint Software");
         public static string StartAddress => Db.Setting("StartAddress", "2000+Appling+Rd,+Cordova,+Tennessee+38016");
         public static bool CheckRemoteAccessRole => Db.Setting("CheckRemoteAccessRole");

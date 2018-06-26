@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
@@ -1098,7 +1099,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             c.ChangeDetails.Add(new ChangeDetail("Picture", null, "(new upload)"));
             var np = db.GetNewPeopleManagers();
             if (np != null)
-                db.EmailRedacted(db.Setting("AdminMail", "support@touchpointsoftware.com"), np,
+                db.EmailRedacted(db.Setting("AdminMail", ConfigurationManager.AppSettings["supportemail"]), np,
                     "Picture Uploaded on " + Util.Host,
                     $"{Util.UserName} Uploaded a picture for <a href=\"{db.ServerLink($"/Person2/{PeopleId}")}\">{Name}</a><br />\n");
         }
