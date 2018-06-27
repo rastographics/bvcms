@@ -1666,6 +1666,7 @@
     <Content Include="Areas\Manage\Views\Volunteers\AltManageArea.cshtml" />
     <Content Include="Areas\Dialog\Views\MoveOrgMembers\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\MoveOrgMembers\Process.cshtml" />
+    <Content Include="Areas\Finance\Views\FinanceReports\ChaiDonorsReport.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\staging.pubxml" />
     <None Include="Properties\PublishProfiles\TeamCity.pubxml" />
