@@ -122,7 +122,7 @@ namespace CmsData
 
         public string Replace(string text, string pattern, string replacement)
         {
-            return Regex.Replace(text, pattern, replacement);
+            return Regex.Replace(text, pattern, replacement, RegexOptions.Singleline);
         }
         public static string Markdown(string text)
         {
