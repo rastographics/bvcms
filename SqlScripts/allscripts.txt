@@ -571,6 +571,7 @@ Creating_dbo_OrgMembersGroupFiltered.sql
 Creating_dbo_UpdateAllAttendN.sql
 Creating_dbo_FirstActivity.sql
 Creating_dbo_City.sql
+Creating_dbo_CHAIDonationsReport.sql
 Creating_dbo_CleanOrgFilters.sql
 Creating_dbo_GetTodaysMeetingId.sql
 Creating_dbo_GetAttendedTodaysMeeting.sql
