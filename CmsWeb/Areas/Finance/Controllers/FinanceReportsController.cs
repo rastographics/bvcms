@@ -71,6 +71,36 @@ namespace CmsWeb.Areas.Finance.Controllers
 
             return new EpplusResult(ep, "DonorTotalSummary.xlsx");
         }
+
+        [HttpGet]
+        public EpplusResult ChaiDonorsReportDownload(DonorTotalSummaryOptionsModel m)
+        {
+            var p = new DynamicParameters();
+            p.Add("@fund", m.Fund.Value.ToInt());
+            var ep = new ExcelPackage();
+            var cn = new SqlConnection(Util.ConnectionString);
+
+            var rd = cn.ExecuteReader("dbo.CHAIDonationsReport", p, commandType: CommandType.StoredProcedure, commandTimeout: 1200);
+            ep.AddSheet(rd, "CHAIDonations");
+
+            return new EpplusResult(ep, "CHAIDonationsReport.xlsx");
+        }
+
+        [HttpGet]
+        public ActionResult ChaiDonorsReport()
+        {
+            //Re-using a model, projected that this report will use most fields in this model, in next rollout.
+            var m = new DonorTotalSummaryOptionsModel
+            {
+                StartDate = DateTime.Today,
+                NumberOfYears = 5,
+                MinimumMedianTotal = 100,
+                Campus = new CodeInfo("Campus0"),
+                Fund = new CodeInfo("Fund"),
+            };
+            return View(m);
+        }
+
         [HttpGet, Route("~/PledgeFulfillment2/{fundid1:int}/{fundid2:int}")]
         public EpplusResult PledgeFulfillment2(int fundid1, int fundid2)
         {
