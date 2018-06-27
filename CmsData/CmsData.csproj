@@ -474,8 +474,8 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Twilio, Version=5.9.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Twilio.5.9.7\lib\net451\Twilio.dll</HintPath>
+    <Reference Include="Twilio, Version=5.9.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Twilio.5.9.8\lib\net451\Twilio.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="Xceed.Words.NET, Version=1.1.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
@@ -489,6 +489,7 @@
     <Compile Include="API\CreateExcel.cs" />
     <Compile Include="API\PythonModel\DynamicData.cs" />
     <Compile Include="API\PythonModel\Deprecated.cs" />
+    <Compile Include="API\PythonModel\Contributions.cs" />
     <Compile Include="API\PythonModel\ExtraValuesOrg.cs" />
     <Compile Include="API\PythonModel\Forms.cs" />
     <Compile Include="API\PythonModel\JsonSerializer.cs" />
@@ -531,7 +532,7 @@
     <Compile Include="Email\ReplacementCodes\Replacements\SqlLookup.cs" />
     <Compile Include="Email\ReplacementCodes\Replacements\RecentGifts.cs" />
     <Compile Include="Email\ReplacementCodes\Replacements\DynamicData.cs" />
-    <Compile Include="Email\ReplacementCodes\Replacements\Image.cs" />
+    <Compile Include="Email\ReplacementCodes\Replacements\SettingUrl.cs" />
     <Compile Include="Email\ReplacementCodes\Replacements\StatementType.cs" />
     <Compile Include="Email\ReplacementCodes\Replacements\ExtraValue.cs" />
     <Compile Include="Email\ReplacementCodes\Links\RegisterLink.cs" />
@@ -564,6 +565,7 @@
     <Compile Include="Email\ReplacementCodes\Links\IsSpecialLink.cs" />
     <Compile Include="Extensions\ChangeDetail.cs" />
     <Compile Include="Classes\AddressVerify.cs" />
+    <Compile Include="Extensions\Contribution.cs" />
     <Compile Include="Extensions\DeleteMeetingRun.cs" />
     <Compile Include="Extensions\FamilyMember.cs" />
     <Compile Include="Extensions\LongRunningOperation.cs" />
@@ -656,6 +658,7 @@
     <Compile Include="Finance\TransNational\Vault\VaultRequest.cs" />
     <Compile Include="Finance\TransNational\Vault\VaultResponse.cs" />
     <Compile Include="Generated\ApiSession.cs" />
+    <Compile Include="Generated\ApiUserInfo.cs" />
     <Compile Include="Generated\CheckInSetting.cs" />
     <Compile Include="Generated\ContactExtra.cs" />
     <Compile Include="Generated\CustomColumn.cs" />
@@ -694,6 +697,9 @@
     <Compile Include="Generated\Functions\GiftSummary.cs" />
     <Compile Include="Generated\Functions\GivingChange.cs" />
     <Compile Include="Generated\Functions\GivingChangeFund.cs" />
+    <Compile Include="Generated\Functions\GivingChangeFundQuarter.cs" />
+    <Compile Include="Generated\Functions\GivingChangeQuartersFund.cs" />
+    <Compile Include="Generated\Functions\GivingChangeQuartersFund2.cs" />
     <Compile Include="Generated\Functions\GuestList.cs" />
     <Compile Include="Generated\Functions\GuestList2.cs" />
     <Compile Include="Generated\Functions\HasIncompleteRegistration.cs" />

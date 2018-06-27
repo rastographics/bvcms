@@ -16,9 +16,9 @@ namespace CmsData.View
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
 		
-		private int _FamilyId;
+		private int? _FamilyId;
 		
-		private int _PeopleId;
+		private int? _PeopleId;
 		
 		private DateTime? _DateX;
 		
@@ -61,8 +61,8 @@ namespace CmsData.View
 
 		
 		
-		[Column(Name="FamilyId", Storage="_FamilyId", DbType="int NOT NULL")]
-		public int FamilyId
+		[Column(Name="FamilyId", Storage="_FamilyId", DbType="int")]
+		public int? FamilyId
 		{
 			get
 			{
@@ -78,8 +78,8 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int NOT NULL")]
-		public int PeopleId
+		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int")]
+		public int? PeopleId
 		{
 			get
 			{

@@ -8,6 +8,7 @@
   {
     <div class="alert alert-info">@Html.Markdown(Model.Help)</div>
   }
+  @Html.DisplayFor(m => m.TargetExtraValue)
   @foreach (var i in Model.list)
   {
     <div class="well">

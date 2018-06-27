@@ -223,7 +223,7 @@ namespace CmsData
                      where p.PeopleId == a[0]
                      select p.FromEmail;
             if (!q2.Any())
-                return Setting("AdminMail", "info@touchpointsoftware.com");
+                return Setting("AdminMail", ConfigurationManager.AppSettings["supportemail"]);
             return q2.SingleOrDefault();
         }
 
@@ -239,7 +239,7 @@ namespace CmsData
                      where p.PeopleId == a[0]
                      select Util.TryGetMailAddress(p.FromEmail);
             if (!q2.Any())
-                return Util.ToMailAddressList(Setting("AdminMail", "info@touchpointsoftware.com"));
+                return Util.ToMailAddressList(Setting("AdminMail", ConfigurationManager.AppSettings["supportemail"]));
             return q2.ToList();
         }
 
@@ -580,7 +580,7 @@ namespace CmsData
                 {
                     var subject = $"sent emails - error:(emailid={emailqueue.Id}) {CmsHost}";
                     ErrorLog.GetDefault(null).Log(new Error(new Exception(subject, ex)));
-                    SendEmail(from, subject, ex.Message, Util.ToMailAddressList(from), to);
+                    SendEmail(from, subject, $"{ex.Message}\n{ex.StackTrace}", Util.ToMailAddressList(from), to);
                 }
             }
 
@@ -679,7 +679,7 @@ namespace CmsData
                 {
                     var subject = $"sent emails - error:(emailid={emailqueue.Id}) {CmsHost}";
                     ErrorLog.GetDefault(null).Log(new Error(new Exception(subject, ex)));
-                    SendEmail(from, subject, ex.Message, Util.ToMailAddressList(from), to);
+                    SendEmail(from, subject, $"{ex.Message}\n{ex.StackTrace}", Util.ToMailAddressList(from), to);
                 }
             }
 
@@ -742,8 +742,8 @@ namespace CmsData
                     if (url.StartsWith("mailto:"))
                         continue;
 
-                    if (EmailReplacements.ImageRe.IsMatch(url))
-                        url = EmailReplacements.ImageReplacement(this, url);
+                    if (EmailReplacements.SettingUrlRe.IsMatch(url))
+                        url = EmailReplacements.SettingUrlReplacement(this, url);
                     var hash = HashMd5Base64(md5Hash, url + DateTime.Now.ToString("o") + linkIndex);
 
                     var emailLink = new EmailLink
@@ -775,11 +775,11 @@ namespace CmsData
         public string CustomSendGridApiKey => Setting("SendGridAPIKey", "");
         public bool UseSendGridApi => Setting("UseSendGridApi");
         public bool UseIpWarmup => Setting("UseIpWarmup");
-        public string CustomFromDomain => Setting("SysFromEmail", "");
+        public string CustomFromDomain => Setting("sysfromemail", ConfigurationManager.AppSettings["sysfromemail"]);
 
         // Configuration for SendGrid
         public string DefaultSendGridApiKey => ConfigurationManager.AppSettings["SendGridAPIKey"];
-        public string DefaultFromDomain => Util.PickFirst(ConfigurationManager.AppSettings["sysfromemail"], "mailer@bvcms.com");
+        public string DefaultFromDomain => ConfigurationManager.AppSettings["sysfromemail"];
 
         public bool CanUseSendGrid => CustomSendGridApiKey.HasValue() && DefaultSendGridApiKey.HasValue();
         public bool UseCustomEmailDomain => CustomSendGridApiKey.HasValue() && CustomFromDomain.HasValue();

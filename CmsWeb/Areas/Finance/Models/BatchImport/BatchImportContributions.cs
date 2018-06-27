@@ -184,6 +184,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             if (subtext.Contains("Site ID,Customer Name,Deposit ID,Processing Date,Deposit Account,Deposit Report,Batch ID,Transaction IDs,Type,AUX/Serial,RIC,RT,WAUX/FLD4,Account,Check,Amount,Item Type"))
                 return new ForestvilleImporter();
 
+            if (subtext.Contains("paymentID,orderID,userID,terminalID,terminalType,transType,transDate,settleDate,transID,batchNum,apiResponse,paymentType,paymentTotal,splitPayment,cash,credit,lastfour,nameonCard,echeck,checknum,giftcard,amountpaid,balance,cartid,status,firstName,lastName"))
+                return new ClearGiveImporter();
+
             switch (DbUtil.Db.Setting("BankDepositFormat", "none").ToLower())
             {
                 case "crossroadsbaptist":

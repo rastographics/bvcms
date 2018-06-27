@@ -203,7 +203,7 @@ namespace CmsData
         private static DateTime? AttributeDate(XElement r, string attr)
         {
             var a = r.Attributes(attr).FirstOrDefault();
-            return a?.Value.ToDate();
+            return a.ToDate();
         }
         private static int AttributeInt(XElement r, string attr)
         {

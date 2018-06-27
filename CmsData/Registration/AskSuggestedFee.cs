@@ -10,13 +10,15 @@ namespace CmsData.Registration
 		public AskSuggestedFee() : base("AskSuggestedFee") { }
 	    public override void WriteXml(APIWriter w)
 	    {
-	        w.Start(Type);
-            w.AddText(Label ?? "Suggested Amount");
+	        w.Start(Type)
+                .AddText(Label ?? "Suggested Amount");
 	        w.End();
 	    }
         public new static AskSuggestedFee ReadXml(XElement e)
         {
-            return new AskSuggestedFee() { Label = e.Value };
+            return new AskSuggestedFee {
+                Label = e.Value
+            };
         }
 	}
 }

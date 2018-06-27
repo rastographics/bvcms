@@ -14,6 +14,7 @@ The results will be in sub-groups with a Yes- or No- prepended to the name, so m
 
 If you need a longer explanation, use InstructionalText above the question so you can keep it short
 ";
+        public bool TargetExtraValue { get; set; }
 	    public List<YesNoQuestion> list { get; private set; }
 
 		public AskYesNoQuestions()
@@ -25,14 +26,17 @@ If you need a longer explanation, use InstructionalText above the question so yo
 	    {
 			if (list.Count == 0)
 				return;
-	        w.Start(Type);
+	        w.Start(Type)
+	            .AttrIfTrue("TargetExtraValue", TargetExtraValue);
 	        foreach (var q in list)
                 q.WriteXml(w);
 	        w.End();
 	    }
 	    public new static AskYesNoQuestions ReadXml(XElement e)
 	    {
-	        var yn = new AskYesNoQuestions();
+	        var yn = new AskYesNoQuestions {
+                TargetExtraValue = e.Attribute("TargetExtraValue").ToBool(),
+	        };
             foreach(var ee in e.Elements("YesNoQuestion"))
                 yn.list.Add(YesNoQuestion.ReadXml(ee));
 	        return yn;

@@ -77,7 +77,7 @@
       @Html.EditorFor(m => m.Country, "Dropdown", new { items = Model.Countries })
       @Html.EditorFor(m => m.Zip)
       @Html.EditorFor(m => m.Phone)
-      @Html.EditorFor(m => m.Email)
+      @Html.EditorFor(m => m.Email, "EmailAddress")
     </div>
     <div class="well">
       @if (Model.NoCreditCardsAllowed || Model.NoEChecksAllowed)

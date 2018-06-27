@@ -112,6 +112,7 @@ namespace CmsData
                 { QueryType.IsPreviousMemberOf, IsPreviousMemberOf },
                 { QueryType.IsProspectOf, IsProspectOf },
                 { QueryType.IsRecentGiver, IsRecentGiver },
+                { QueryType.IsRecentGiverFunds, IsRecentGiverFunds },
                 { QueryType.IsTopGiver, IsTopGiver },
                 { QueryType.IsTopPledger, IsTopPledger },
                 { QueryType.IsUser, IsUser },

@@ -317,5 +317,8 @@
     <column name="OrgMemberLastAttDt" join="op" context="org"> 
       op.LastAttended
     </column>
+    <column name="OrgMemberGrade" join="op" context="org"> 
+      op.Grade 
+    </column>
   </SpecialColumns>
 </CustomColumns>

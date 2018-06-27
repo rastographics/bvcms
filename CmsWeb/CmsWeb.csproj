@@ -390,6 +390,7 @@
     <Compile Include="Areas\Dialog\Controllers\OrgMemberDialogController.cs" />
     <Compile Include="Areas\Dialog\Controllers\OrgSearchDropController.cs" />
     <Compile Include="Areas\Dialog\Controllers\OrgDropController.cs" />
+    <Compile Include="Areas\Dialog\Controllers\MoveOrgMembersController.cs" />
     <Compile Include="Areas\Dialog\Controllers\ValidateAddressController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddToOrgFromTagController.cs" />
     <Compile Include="Areas\Dialog\Controllers\DeleteMeetingController.cs" />
@@ -418,6 +419,7 @@
     <Compile Include="Areas\Dialog\Models\OrgMember\OrgMemberMoveModel.cs" />
     <Compile Include="Areas\Dialog\Models\OrgMember\OrgMemberTransactionModel.cs" />
     <Compile Include="Areas\Dialog\Models\OrgMember\OrgMoveInfo.cs" />
+    <Compile Include="Areas\Dialog\Models\MoveOrgMembersModel.cs" />
     <Compile Include="Areas\Dialog\Models\ResourceModel.cs" />
     <Compile Include="Areas\Dialog\Models\ValidateAddress.cs" />
     <Compile Include="Areas\Dialog\Models\RepairTransactions.cs" />
@@ -432,6 +434,7 @@
     <Compile Include="Areas\Finance\Models\BatchImport\ForestvilleImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\LongViewHeightsImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\CrossroadsBaptistImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\ClearGiveImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\StonyRunFriendsImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\SubSplashImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\SimpleGiveImporter.cs" />
@@ -533,6 +536,7 @@
     <Compile Include="Areas\OnlineReg\Controllers\SaveAndContinue.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\Routing.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\Birthday.cs" />
+    <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\DynamicData.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\FindPerson.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\WriteXml.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\ReadXml.cs" />
@@ -808,6 +812,7 @@
     <Compile Include="Controllers\ExtraValue\StandardController.cs" />
     <Compile Include="Controllers\ExtraValue\AdhocController.cs" />
     <Compile Include="Controllers\ExtraValue\ReportsController.cs" />
+    <Compile Include="Controllers\ScriptController.cs" />
     <Compile Include="Controllers\MobileAppMenuController.cs" />
     <Compile Include="Controllers\WebHookController.cs" />
     <Compile Include="Models\Api\ApiChAiGift.cs" />
@@ -1133,6 +1138,7 @@
     <Content Include="Content\touchpoint\js\search\export-query.js" />
     <Content Include="Content\touchpoint\js\search\TaskSearch.js" />
     <Content Include="Content\touchpoint\js\tranhistory.js" />
+    <Content Include="Content\touchpoint\js\volunteer\AltCalendar.js" />
     <Content Include="Content\touchpoint\js\volunteer\calendar.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-sweetalert\js\sweetalert.min.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-sweetalert\css\sweetalert.css" />
@@ -1655,6 +1661,11 @@
     <Content Include="Areas\Dialog\Views\GetCheckImage\GetCheckImage.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\CustomStatments.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\PythonCode.cshtml" />
+    <Content Include="Areas\Manage\Views\Volunteers\AddVolunteers.cshtml" />
+    <Content Include="Areas\Manage\Views\Volunteers\AltCalendar.cshtml" />
+    <Content Include="Areas\Manage\Views\Volunteers\AltManageArea.cshtml" />
+    <Content Include="Areas\Dialog\Views\MoveOrgMembers\Index.cshtml" />
+    <Content Include="Areas\Dialog\Views\MoveOrgMembers\Process.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\staging.pubxml" />
     <None Include="Properties\PublishProfiles\TeamCity.pubxml" />
@@ -1765,7 +1776,7 @@
     <Content Include="Areas\People\Views\Person\System\FindMatch.cshtml" />
     <Content Include="Content\touchpoint\templates\picturedir4.docx" />
     <Content Include="Areas\Manage\Views\Batch\RunningPythonScript.cshtml" />
-    <Content Include="Views\Home\RunPythonScriptProgress.cshtml" />
+    <Content Include="Views\Script\RunPythonScriptProgress.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />
@@ -1925,7 +1936,7 @@
     <Content Include="Areas\People\Views\Person\Profile\Comments\Display.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Comments\Edit.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Membership\UploadDocument.cshtml" />
-    <Content Include="Views\Home\RunScript.cshtml" />
+    <Content Include="Views\Script\RunScript.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Value.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\Statements.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\DeceasedDate.cshtml" />
@@ -2319,6 +2330,7 @@
     <Content Include="Areas\Manage\Views\Transactions\ReportByBatchDescription.cshtml" />
     <Compile Include="Code\UnallowedCodeAttribute.cs" />
     <Compile Include="Controllers\SupportController.cs" />
+    <Compile Include="Models\ScriptModel.cs" />
     <Compile Include="Models\SupportRequestModel.cs" />
     <Compile Include="Models\HomeModel.cs" />
     <Compile Include="Areas\Manage\Models\EmailModel.cs" />
@@ -2475,13 +2487,13 @@
     <Content Include="Views\Home\UserPreferences.cshtml" />
     <Content Include="Views\ExtraValue\EditStandard.cshtml" />
     <Content Include="Views\Home\MyDataSupport.cshtml" />
-    <Content Include="Views\Home\TestScript.cshtml" />
+    <Content Include="Views\Script\TestScript.cshtml" />
     <Content Include="Views\Shared\OnlineReg2.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Hyperlink.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\InlineBoolean.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalSummaryOptions.cshtml" />
     <Content Include="Views\Shared\Message.cshtml" />
-    <Content Include="Views\Home\PyScript.cshtml" />
+    <Content Include="Views\Script\PyScript.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Shared\NavBar.cshtml" />
     <Content Include="Views\Shared\PagerTop.cshtml" />
@@ -2583,18 +2595,18 @@
     <Content Include="Views\Shared\DisplayTemplates\Time.cshtml" />
     <Content Include="Views\MobileAppMenu\Index.cshtml" />
     <Content Include="Views\Shared\Message2.cshtml" />
-    <Content Include="Views\Home\PyScriptForm.cshtml" />
+    <Content Include="Views\Script\PyScriptForm.cshtml" />
     <Content Include="Views\Shared\Menu\User.cshtml" />
     <Content Include="Views\Shared\PageError.cshtml" />
-    <Content Include="Views\Home\Test.cshtml" />
+    <Content Include="Views\Script\Test.cshtml" />
     <Content Include="Views\Shared\Toolbar\Custom.cshtml" />
     <Content Include="Views\Shared\PageMessage.cshtml" />
     <Content Include="Areas\Manage\Views\Account\_ShellLayout.cshtml" />
     <Content Include="Views\ExtraValue\Location.cshtml" />
-    <Content Include="Views\Home\Warmup.cshtml" />
-    <Content Include="Views\Home\TestBackground.cshtml" />
+    <Content Include="Views\Script\Warmup.cshtml" />
+    <Content Include="Views\Script\TestBackground.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
-    <Content Include="Views\Home\RunScriptPageBreaks.cshtml" />
+    <Content Include="Views\Script\RunScriptPageBreaks.cshtml" />
     <None Include="Web.Impersonate.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

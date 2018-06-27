@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
-using System.Reflection;
-using HandlebarsDotNet;
 using IronPython.Runtime;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace CmsData.API
 {
@@ -71,10 +70,19 @@ namespace CmsData.API
             return null;
         }
 
+        public void AddValue(string name, object value)
+        {
+            dict[name] = value;
+        }
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             foreach (var kv in dict)
                 info.AddValue(kv.Key, kv.Value);
+        }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(dict, Formatting.Indented);
         }
     }
 }

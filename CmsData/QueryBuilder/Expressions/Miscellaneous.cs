@@ -6,12 +6,15 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Data.Linq.SqlClient;
+using System.Data.SqlClient;
 using System.Data.SqlTypes;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text.RegularExpressions;
+using CmsData.API;
 using Dapper;
-using IronPython.Modules;
 using UtilityExtensions;
 
 namespace CmsData
@@ -108,13 +111,16 @@ namespace CmsData
         internal Expression InSqlList()
         {
             var tf = CodeIds == "1";
-            var s = Quarters;
-            var sql = db.ContentOfTypeSql(s);
+            var scriptname = Quarters;
+            var cn = db.ReadonlyConnection();
+
+            var sql = db.ContentOfTypeSql(scriptname);
             if (!sql.HasValue())
                 return AlwaysFalse();
 
-            var cn = db.ReadonlyConnection();
-            var list = cn.Query<int>(sql);
+
+            var list = cn.Query<int>(sql).ToList();
+
             var tag = db.PopulateTempTag(list);
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);

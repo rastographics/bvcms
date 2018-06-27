@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Configuration;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Web.Configuration;
@@ -206,6 +207,9 @@ namespace UtilityExtensions
         {
             get
             {
+                var text = ConfigurationManager.AppSettings["NotamText"];
+                if (text.HasValue())
+                    return text;
                 var path = ConfigurationManager.AppSettings["NotamTextFile"].Replace("%USERPROFILE%",
                     Environment.GetEnvironmentVariable("USERPROFILE"));
                 if (!path.HasValue())
@@ -478,5 +482,9 @@ namespace UtilityExtensions
             return dict.TryGetValue(key, out value) ? value : defValSelector();
         }
 
+        public static bool IsCultureUS()
+        {
+            return CultureInfo.CurrentUICulture.Name.Equal("en-US");
+        }
     }
 }

@@ -104,6 +104,10 @@ namespace CmsData
         }
         public IEnumerable<int> QuerySqlPeopleIds(string query)
         {
+            return QuerySqlInts(query);
+        }
+        public IEnumerable<int> QuerySqlInts(string query)
+        {
             var cn = GetReadonlyConnection();
             return cn.Query<int>(query);
         }

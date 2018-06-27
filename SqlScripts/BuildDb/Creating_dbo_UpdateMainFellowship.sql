@@ -1,8 +1,3 @@
--- =============================================
--- Author:		<Author,,Name>
--- Create date: <Create Date,,>
--- Description:	<Description,,>
--- =============================================
 CREATE PROCEDURE [dbo].[UpdateMainFellowship] (@orgid INT)
 AS
 BEGIN
@@ -15,8 +10,12 @@ BEGIN
 	FROM dbo.People p
 	JOIN dbo.OrganizationMembers om ON p.PeopleId = om.PeopleId
 	WHERE om.OrganizationId = @orgid
-END
 
+	update dbo.Organizations
+	set MemberCount = dbo.OrganizationMemberCount(OrganizationId),
+		ProspectCount = dbo.OrganizationProspectCount(OrganizationId)
+	WHERE OrganizationId = @orgid
+END
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

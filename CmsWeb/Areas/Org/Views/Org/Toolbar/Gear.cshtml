@@ -33,6 +33,7 @@
                 @if (model.IsVolunteerLeader && o.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes && model.ShowBlueToolbarVolunteerCalendar)
                 {
                     <li><a id="VolunteerCalendar" href="/Volunteers/Calendar/@oid" target="calendar"><span class="org-context">Volunteer Calendar</span></a></li>
+                    <li><a id="AltVolunteerCalendar" href="/Volunteers/AltCalendar/@oid" target="calendar"><span class="org-context">Simple Volunteer Calendar</span></a></li>
                 }
                 @if (edit)
                 {

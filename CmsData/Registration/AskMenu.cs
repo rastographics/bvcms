@@ -28,17 +28,18 @@ You can optionally associate a fee with one or more items.
 	    {
 			if (list.Count == 0)
 				return;
-	        w.Start(Type);
-            w.Add("Label", Label);
+	        w.Start(Type)
+                .Add("Label", Label);
 			foreach (var g in list)
                 g.WriteXml(w);
 	        w.End();
 	    }
 	    public new static AskMenu ReadXml(XElement ele)
 	    {
-			var m = new AskMenu();
-	        m.Label = ele.Element("Label")?.Value;
-			m.list = new List<MenuItem>();
+	        var m = new AskMenu {
+                Label = ele.Element("Label")?.Value,
+			    list = new List<MenuItem>(),
+	        };
             foreach(var ee in ele.Elements("MenuItem"))
                 if(ee.Element("Description")?.Value != null)
                     m.list.Add(MenuItem.ReadXml(ee));
@@ -104,9 +105,9 @@ You can optionally associate a fee with one or more items.
 		        var mi = new MenuItem
 		        {
 		            Description = e.Element("Description")?.Value,
-		            Fee = e.Attribute("Fee")?.Value.ToDecimal(),
-		            Limit = e.Attribute("Limit")?.Value.ToInt2(),
-		            MeetingTime = e.Attribute("Time")?.Value.ToDate()
+		            Fee = e.Attribute("Fee").ToDecimal(),
+		            Limit = e.Attribute("Limit").ToInt2(),
+		            MeetingTime = e.Attribute("Time").ToDate()
 		        };
 		        mi.SmallGroup = (e.Element("SmallGroup")?.Value ?? mi.Description)?.TrimEnd();
 		        return mi;

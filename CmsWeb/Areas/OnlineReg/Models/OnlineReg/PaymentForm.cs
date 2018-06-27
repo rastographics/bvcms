@@ -603,6 +603,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public RouteModel ProcessPayment(ModelStateDictionary modelState, OnlineRegModel m)
         {
+            if (m != null && m.email.HasValue() && !Util.ValidEmail(m.email))
+            {
+                modelState.AddModelError("form", "Invalid email address");
+                return RouteModel.Invalid("Payment/Process", "Invalid email address");
+            }
             PreventNegatives();
             PreventZero(modelState);
             if (!modelState.IsValid)
@@ -610,6 +615,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             try
             {
+                PreventNegatives();
+                PreventZero(modelState);
+                if (!modelState.IsValid)
+                    return RouteModel.ProcessPayment();
+
                 ValidatePaymentForm(modelState);
                 if (!modelState.IsValid)
                     return RouteModel.ProcessPayment();

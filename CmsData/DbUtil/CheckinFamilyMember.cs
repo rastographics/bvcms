@@ -1,11 +1,12 @@
 using System;
+using System.Globalization;
 using UtilityExtensions;
 
 namespace CmsData.View
 {
     public partial class CheckinFamilyMember
     {
-        public string BirthDay => Person.FormatBirthday(BYear, BMon, BDay, null);
+        public string BirthDay => Person.FormatBirthday(BYear, BMon, BDay, null, null);
 
         public string DisplayName
         {
@@ -45,11 +46,16 @@ namespace CmsData.View
         {
             get
             {
-                var dt = DateTime.MinValue;
+                DateTime dt;
                 DateTime? bd = null;
-                if (DateTime.TryParse(BirthDay, out dt))
+                var parsed = Util.IsCultureUS()
+                    ? BirthDay.DateTryParse(out dt)
+                    : BirthDay.DateTryParseUS(out dt);
+                if(parsed)
                     bd = dt;
-                return bd.FormatDate();
+                return Util.IsCultureUS()
+                    ? bd.FormatDate()
+                    : bd.FormatDateUS();
             }
         }
     }

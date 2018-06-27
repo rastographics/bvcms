@@ -114,7 +114,9 @@ namespace CmsWeb
                     filterContext.Result = Redirect(r);
             }
 
-            var disableHomePageForOrgLeaders = RoleChecker.HasSetting(SettingName.DisableHomePage, false);
+            var disableHomePageForOrgLeaders = DbUtil.Db.Setting("UX-DisableHomePageForOrgLeaders");
+            if(!disableHomePageForOrgLeaders)
+                disableHomePageForOrgLeaders = RoleChecker.HasSetting(SettingName.DisableHomePage, false);
             var contr = filterContext.RouteData.Values["Controller"].ToString();
             var act = filterContext.RouteData.Values["Action"].ToString();
             var orgleaderonly = User.IsInRole("OrgLeadersOnly");

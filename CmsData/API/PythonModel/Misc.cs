@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Dynamic;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Web;
 using MarkdownDeep;
@@ -19,7 +20,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using RestSharp.Authenticators;
-using RestSharp.Extensions;
 using Method = RestSharp.Method;
 
 namespace CmsData
@@ -73,6 +73,10 @@ namespace CmsData
         }
 
         public void DictionaryAdd(string key, string value)
+        {
+            dictionary.Add(key, value);
+        }
+        public void DictionaryAdd(string key, object value)
         {
             dictionary.Add(key, value);
         }
@@ -222,6 +226,11 @@ namespace CmsData
             var s = JsonConvert.SerializeObject(d, Formatting.Indented);
             return s.Replace("\r\n", "\n");
         }
+        public string FormatJson(DynamicData data)
+        {
+            var json = data.ToString();
+            return FormatJson(json);
+        }
 
         public string Md5Hash(string s)
         {
@@ -364,6 +373,34 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
                 tag = db.PopulateSpecialTag(guid, DbUtil.TagTypeId_Query);
             }
             return tag.Id;
+        }
+        public CsvHelper.CsvReader CsvReader(string text)
+        {
+            var csv = new CsvHelper.CsvReader(new StringReader(text));
+            csv.Read();
+            csv.ReadHeader();
+            return csv;
+        }
+
+        public CsvHelper.CsvReader CsvReaderNoHeader(string text)
+        {
+            var csv = new CsvHelper.CsvReader(new StringReader(text));
+            csv.Configuration.HasHeaderRecord = false;
+            return csv;
+        }
+
+        public string AppendIfBoth(string s1, string join, string s2)
+        {
+            if (s1.HasValue() && s2.HasValue())
+                return s1 + join + s2;
+            if(s1.HasValue())
+                return s1;
+            return s2;
+        }
+        public DynamicData FromJson(string json)
+        {
+            var dd =  JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+            return new DynamicData(dd);
         }
     }
 }

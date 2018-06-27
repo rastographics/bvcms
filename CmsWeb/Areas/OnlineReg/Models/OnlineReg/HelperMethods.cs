@@ -643,13 +643,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
 #if DEBUG
         public void DebugCleanUp()
         {
-//            var q = from om in DbUtil.Db.OrganizationMembers
-//                    where new[] {828612, Util.UserPeopleId}.Contains(om.PeopleId)
-//                    where om.OrganizationId == Orgid
-//                    select om;
             var q = from om in DbUtil.Db.OrganizationMembers
-                    where new[] {2192117,2192118}.Contains(om.OrganizationId)
+                    where new[] {828612, Util.UserPeopleId}.Contains(om.PeopleId)
+                    where om.OrganizationId == Orgid
                     select om;
+//            var q = from om in DbUtil.Db.OrganizationMembers
+//                    where new[] {2192117,2192118}.Contains(om.OrganizationId)
+//                    select om;
             foreach (var om in q)
             {
                 om.Drop(DbUtil.Db, DateTime.Now);
@@ -713,7 +713,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     FirstName = "Another",
                     LastName = "Person",
                     DateOfBirth = "12/1/1955",
-                    EmailAddress = "karen@touchpointsoftware.com",
+                    EmailAddress = "sombody@nowhere.com",
 #endif
                 });
         }

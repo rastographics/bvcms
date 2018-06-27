@@ -135,6 +135,8 @@ Creating_dbo_SMSGroupMembers.sql
 Creating_pk_PK_SMSGroupMembers_dbo_SMSGroupMembers.sql
 Creating_dbo_Preferences.sql
 Creating_pk_PK_UserPreferences_dbo_Preferences.sql
+Creating_dbo_MobileAppDevices.sql
+Creating_pk_PK_MobileAppDevices_dbo_MobileAppDevices.sql
 Creating_dbo_Coupons.sql
 Creating_pk_PK_Coupons_dbo_Coupons.sql
 Creating_IX_Coupons_dbo_Coupons.sql
@@ -366,8 +368,6 @@ Creating_dbo_OrgMemberExtra.sql
 Creating_pk_PK_OrgMemberExtra_dbo_OrgMemberExtra.sql
 Creating_dbo_MobileAppPushRegistrations.sql
 Creating_pk_PK_MobileAppPushRegistrations_dbo_MobileAppPushRegistrations.sql
-Creating_dbo_MobileAppDevices.sql
-Creating_pk_PK_MobileAppDevices_dbo_MobileAppDevices.sql
 Creating_dbo_MemberDocForm.sql
 Creating_pk_PK_MemberDocForm_dbo_MemberDocForm.sql
 Creating_dbo_GoerSupporter.sql
@@ -522,6 +522,7 @@ Creating_dbo_SenderGifts.sql
 Creating_dbo_RepairTransactionsRun.sql
 Creating_pk_PK_RepairTransactionsRun_dbo_RepairTransactionsRun.sql
 Creating_dbo_PopulateComputedEnrollmentTransactions.sql
+Creating_dbo_DeleteBundle.sql
 Creating_dbo_WeeklyAttendsForOrgs.sql
 Creating_dbo_PrimaryZip.sql
 Creating_dbo_PrimaryState.sql
@@ -536,6 +537,7 @@ Creating_dbo_FindResCode.sql
 Creating_triggerdbo_updFamily_dbo_Families.sql
 Creating_dbo_ActivityLogSearch.sql
 Creating_dbo_NextChangeTransactionId2.sql
+Creating_dbo_GivingChangeQuartersFund.sql
 Creating_dbo_OrgFilter.sql
 Creating_pk_PK_OrgFilter_dbo_OrgFilter.sql
 Creating_dbo_OrgFilterPeople2.sql
@@ -543,6 +545,8 @@ Creating_dbo_MembersWhoAttendedOrgs.sql
 Creating_dbo_GetMostRecentIncompleteRegistration.sql
 Creating_dbo_RollList.sql
 Creating_dbo_NextChangeTransactionId.sql
+Creating_dbo_TotalPaid.sql
+Creating_dbo_MissionTripTotals.sql
 Creating_dbo_GetPeopleIdFromIndividualNumber.sql
 Creating_dbo_OrgFilterPeople.sql
 Creating_dbo_ChangeDetails.sql
@@ -552,6 +556,7 @@ Creating_dbo_LastAddrElement.sql
 Creating_dbo_TrackOpen.sql
 Creating_dbo_LinkEnrollmentTransaction.sql
 Creating_dbo_LinkEnrollmentTransactions.sql
+Creating_dbo_GivingChangeQuartersFund2.sql
 Creating_dbo_OrgFilterIds.sql
 Creating_dbo_PrevAddress.sql
 Creating_dbo_EmailLinks.sql
@@ -559,6 +564,7 @@ Creating_pk_PK_EmailLinks_dbo_EmailLinks.sql
 Creating_dbo_TrackClick.sql
 Creating_triggerdbo_insEnrollmentTransaction_dbo_EnrollmentTransaction.sql
 Creating_dbo_AttendUpdateN.sql
+Creating_dbo_RecentGiverFunds.sql
 Creating_dbo_UserPeopleIdFromEmail.sql
 Creating_dbo_OrgFilterCheckedCount.sql
 Creating_dbo_OrgMembersGroupFiltered.sql
@@ -632,9 +638,7 @@ Creating_dbo_DownlineDetails.sql
 Creating_dbo_PledgeReport.sql
 Creating_dbo_PurgeAllPeopleInCampus.sql
 Creating_dbo_DownlineSummary.sql
-Creating_dbo_TotalPaid.sql
 Creating_dbo_VisitNumberSinceDate.sql
-Creating_dbo_MissionTripTotals.sql
 Creating_dbo_GivingCurrentPercentOfFormer.sql
 Creating_dbo_DownlineLevels.sql
 Creating_dbo_RegisterLinksFromMaster.sql

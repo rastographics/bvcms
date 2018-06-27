@@ -26,6 +26,7 @@ For each checkbox, you can specify the following:
 * **DateTime** (optional) which registers them in a meeting.
 ";
 
+        public bool TargetExtraValue { get; set; }
         public string Label { get; set; }
         public bool HasLabel => Label.HasValue();
         public int? Minimum { get; set; }
@@ -42,9 +43,10 @@ For each checkbox, you can specify the following:
         {
             var cb = new AskCheckboxes
             {
-                Minimum = ele.Attribute("Minimum")?.Value.ToInt2(),
-                Maximum = ele.Attribute("Maximum")?.Value.ToInt2(),
-                Columns = ele.Attribute("Columns")?.Value.ToInt2(),
+                TargetExtraValue = ele.Attribute("TargetExtraValue").ToBool(),
+                Minimum = ele.Attribute("Minimum").ToInt2(),
+                Maximum = ele.Attribute("Maximum").ToInt2(),
+                Columns = ele.Attribute("Columns").ToInt2(),
                 Label = ele.Element("Label")?.Value,
             };
             foreach (var ee in ele.Elements("CheckboxItem"))
@@ -58,6 +60,7 @@ For each checkbox, you can specify the following:
             if (list.Count == 0)
                 return;
             w.Start(Type)
+                .AttrIfTrue("TargetExtraValue", TargetExtraValue)
                 .Attr("Minimum", Minimum)
                 .Attr("Maximum", Maximum)
                 .Attr("Columns", Columns == 1 ? null : Columns)
@@ -131,9 +134,9 @@ For each checkbox, you can specify the following:
                 var i = new CheckboxItem
                 {
                     Description = ele.Element("Description")?.Value,
-                    Fee = ele.Attribute("Fee")?.Value.ToDecimal(),
-                    Limit = ele.Attribute("Limit")?.Value.ToInt2(),
-                    MeetingTime = ele.Attribute("Time")?.Value.ToDate()
+                    Fee = ele.Attribute("Fee").ToDecimal(),
+                    Limit = ele.Attribute("Limit").ToInt2(),
+                    MeetingTime = ele.Attribute("Time").ToDate()
                 };
                 i.SmallGroup = (ele.Element("SmallGroup")?.Value ?? i.Description)?.TrimEnd();
                 return i;

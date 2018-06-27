@@ -98,9 +98,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (insertRogueIp.HasValue())
                 DbUtil.Db.Connection.Execute(insertRogueIp, new {ip=request.UserHostAddress, db=Util.Host});
             var form = Encoding.Default.GetString(request.BinaryRead(request.TotalBytes));
-            DbUtil.Db.SendEmail(Util.FirstAddress("david@touchpointsoftware.com"),
+            var sendto = Util.PickFirst(ConfigurationManager.AppSettings["CardTesterEmail"], Util.AdminMail);
+            DbUtil.Db.SendEmail(Util.FirstAddress(sendto),
                 $"CardTester on {Util.Host}", $"why={why} from={from} ip={request.UserHostAddress}<br>{form.HtmlEncode()}",
-                Util.EmailAddressListFromString("david@touchpointsoftware.com"));
+                Util.EmailAddressListFromString(sendto));
             return true;
         }
 

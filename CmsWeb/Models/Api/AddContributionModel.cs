@@ -46,6 +46,13 @@ namespace CmsWeb.Models.Api
                     ZipCode = Zip,
                     HomePhone = Phone.GetDigits().Truncate(20),
                 };
+                var amsresult = AddressVerify.LookupAddress(Address, null, null, null, Zip);
+                if (amsresult.found != false && !amsresult.error.HasValue() && amsresult.Line1 != "error")
+                {
+                    f.CityName = amsresult.City;
+                    f.StateCode = amsresult.State;
+                    f.ZipCode = amsresult.Zip.GetDigits().Truncate(10);
+                }
                 DbUtil.Db.SubmitChanges();
 
                 var position = 10;
@@ -60,6 +67,7 @@ namespace CmsWeb.Models.Api
 
             var c = person.PostUnattendedContribution(db, Amount, Fundid, Notes);
             c.ContributionDate = Date ?? DateTime.Now;
+            c.MetaInfo = Source;
             db.SubmitChanges();
             result.PeopleId = person.PeopleId;
             result.ContributionId = c.ContributionId;

@@ -321,9 +321,17 @@ namespace CmsData.API
         public static int? OneTimeGiftOrgId(CMSDataContext db)
         {
             var sql = @"
-SELECT OrganizationId FROM dbo.Organizations
-WHERE RegistrationTypeId = 8
-AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
+               select coalesce((
+                   select convert(int, Setting)
+                   from dbo.Setting
+                   where Id = 'OneTimeGiftOrgId'
+               ) , (
+                   select top 1 OrganizationId
+                   from dbo.Organizations
+                   where RegistrationTypeId = 8
+                         and RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') is null
+				   order by OrganizationId))
+";
             var oid = db.Connection.ExecuteScalar(sql) as int?;
             return oid;
         }

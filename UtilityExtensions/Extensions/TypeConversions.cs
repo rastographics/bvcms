@@ -15,6 +15,7 @@ using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Linq;
 using System.Configuration;
+using System.Data;
 using System.Net.Mail;
 using System.IO;
 using System.Security.Cryptography;
@@ -81,6 +82,11 @@ namespace UtilityExtensions
                 return GoodDate(dt);
             return null;
         }
+
+        public static DateTime? ToDate(this XAttribute a)
+        {
+            return a?.Value.ToDate();
+        }
         public static DateTime? ToDate(this object o)
         {
             if (o == null)
@@ -97,6 +103,26 @@ namespace UtilityExtensions
                 r = i;
             return r;
         }
+        public static int? ToInt2(this XAttribute a)
+        {
+            if (a == null)
+                return null;
+            int? r = null;
+            int i;
+            if (int.TryParse(a.Value, out i))
+                r = i;
+            return r;
+        }
+        public static int? ToInt2(this XElement e)
+        {
+            if (e == null)
+                return null;
+            int? r = null;
+            int i;
+            if (int.TryParse(e.Value, out i))
+                r = i;
+            return r;
+        }
         public static bool? ToBool2(this string s)
         {
             bool b;
@@ -110,6 +136,20 @@ namespace UtilityExtensions
             bool b;
             bool.TryParse(s, out b);
             return b;
+        }
+        public static bool ToBool(this XAttribute a)
+        {
+            if (a == null)
+                return false;
+            if (a.Value.IsNullOrEmpty())
+                return false;
+            bool b;
+            bool.TryParse(a.Value, out b);
+            return b;
+        }
+        public static bool ToBool(this XElement e)
+        {
+            return e != null && e.Value.ToBool();
         }
         public static bool ToBool(this object o)
         {
@@ -148,6 +188,14 @@ namespace UtilityExtensions
                 r = i;
             return r;
         }
+        public static decimal? ToDecimal(this XAttribute a)
+        {
+            return a?.Value.ToDecimal();
+        }
+        public static decimal? ToDecimal(this XElement e)
+        {
+            return e?.Value.ToDecimal();
+        }
         public static float ToFloat(this string s)
         {
             var r = 0f;
@@ -159,6 +207,10 @@ namespace UtilityExtensions
         public static bool DateTryParse(this string date, out DateTime dt)
         {
             return DateTime.TryParse(date, out dt);
+        }
+        public static bool DateTryParseUS(this string date, out DateTime dt)
+        {
+            return DateTime.TryParse(date, CultureInfo.GetCultureInfo("en-US"), DateTimeStyles.None, out dt);
         }
         public static decimal? GetAmount(this string s)
         {
@@ -261,6 +313,11 @@ namespace UtilityExtensions
             if (o is DBNull)
                 return null;
             return o.ToInt();
+        }
+        public static IEnumerable<T> Select<T>(this IDataReader reader, Func<IDataReader, T> projection)
+        {
+            while (reader.Read())
+                yield return projection(reader);
         }
     }
 }

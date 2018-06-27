@@ -231,7 +231,7 @@ GO
 
         private static void RunScripts(SqlConnection cn, string script)
         {
-            using (var cmd = new SqlCommand {Connection = cn})
+            using (var cmd = new SqlCommand { Connection = cn, CommandTimeout = 0 })
             {
                 var scripts = Regex.Split(script, "^GO.*$", RegexOptions.Multiline);
                 foreach (var s in scripts)

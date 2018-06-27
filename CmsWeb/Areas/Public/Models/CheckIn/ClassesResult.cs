@@ -160,7 +160,7 @@ namespace CmsWeb.Models
                     else
                         w.WriteAttributeString("display", $"{o.Hour:t} {o.OrganizationName}{leader}{loc}{bdays}");
                     w.WriteAttributeString("nlabels", o.NumCheckInLabels.ToString());
-                    w.WriteAttributeString("hour", o.Hour.ToString2("g"));
+                    w.WriteAttributeString("hour", Util.IsCultureUS() ? o.Hour.FormatDateTm() : o.Hour.FormatDateTmUS());
                     w.WriteAttributeString("leadtime", leadtime.ToString());
                     w.WriteEndElement();
                 }

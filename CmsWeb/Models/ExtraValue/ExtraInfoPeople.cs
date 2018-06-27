@@ -133,7 +133,7 @@ SET Field = {0}
 FROM dbo.PeopleExtra e
 WHERE e.Field = {1}
 AND NOT EXISTS(SELECT NULL FROM dbo.PeopleExtra ee WHERE ee.Field = {0} AND ee.PeopleId = e.PeopleId)
-", newname, field);
+", newname.Trim(), field);
             DbUtil.LogActivity($"EV RenameAll {Field}>{newname}");
         }
     }

@@ -15,7 +15,8 @@ RETURN
 	, at.Code MemberCode 
 	, at.Description MemberType 
 	, ISNULL(a.NoShow, 0) Hidden 
-	, CAST(NULL AS NVARCHAR(MAX)) Groups 
+	, cast(null as nvarchar(max)) Groups 
+	, cast(null as int) Grade
  
 	FROM dbo.Attend a 
 	JOIN dbo.People p ON p.PeopleId = a.PeopleId 
@@ -51,6 +52,8 @@ RETURN
 	) 
 	AND (@showhidden = 1 OR ISNULL(a.NoShow, 0) = 0) 
 ) 
+
+
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

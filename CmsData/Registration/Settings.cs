@@ -75,6 +75,7 @@ namespace CmsData.Registration
         public bool MemberOnly { get; set; }
         public bool AskDonation { get; set; }
         public string SpecialScript { get; set; }
+        public string OnEnrollScript { get; set; }
         public string DonationLabel { get; set; }
         public string ExtraValueFeeName { get; set; }
         public bool NoReqBirthYear { get; set; }

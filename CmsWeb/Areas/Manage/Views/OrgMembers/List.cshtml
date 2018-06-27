@@ -20,7 +20,7 @@
                     </ul>
                 }
             </div>
-            <input type="submit" class="btn btn-primary" id="move" name="move" value="Move Members" />
+            <a href="/MoveOrgMembers" class="move longrunop btn btn-primary" data-post="true">Move Members</a>
         </div>
     </div>
     <div class="box-content">
@@ -241,7 +241,7 @@
             </div>
         </div>
         <div class="visible-xs-block">
-            <input type="submit" class="btn btn-primary btn-block" id="move" name="move" value="Move Members" />
+            <a href="/MoveOrgMembers" class="move longrunop btn btn-primary btn-block" data-post="true">Move Members</a>
             <a href="#" class="btn btn-default btn-block EmailNotices"><i class="fa fa-envelope-o"></i> Email Org Assignment Notices(@Model.MovedCount())</a>
             <hr/>
             @if (User.IsInRole("Admin"))

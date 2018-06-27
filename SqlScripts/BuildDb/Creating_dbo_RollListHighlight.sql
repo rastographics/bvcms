@@ -148,7 +148,7 @@ BEGIN
 		   ,p.FamilyId
 		   ,p.PreferredName
 		   ,p.EmailAddress
-		   ,1
+		   ,a.Attended
 		   ,a.CommitmentId
 		   ,NULL
 		   ,mt.Description MemberType
@@ -172,11 +172,6 @@ BEGIN
 	RETURN
 
 END
-
-
-
-
-
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

@@ -70,7 +70,10 @@ SELECT
     bht.Description AS BundleType,
     bst.Description AS BundleStatus,
     c.ContributionId
-FROM dbo.Contribution c
+from dbo.ContributionSearch(null, null, null, null, @fd, @td, @campusid, null, null, 0, 
+	case when @nontaxded = 1 then 'NonTaxDed' when @nontaxded = 0 then 'TaxDed' else 'Both' end, 
+	null, null, null, @includeUnclosed, null, null, @tagid, @fundids) cs
+join dbo.Contribution c on c.ContributionId = cs.ContributionId
 	JOIN dbo.ContributionFund f ON c.FundId = f.FundId
 	LEFT JOIN dbo.BundleDetail d ON c.ContributionId = d.ContributionId
 	LEFT JOIN dbo.BundleHeader h ON d.BundleHeaderId = h.BundleHeaderId
@@ -79,21 +82,7 @@ FROM dbo.Contribution c
 	LEFT JOIN dbo.People p ON c.PeopleId = p.PeopleId
 	LEFT JOIN dbo.Families fa ON p.FamilyId = fa.FamilyId
 	LEFT JOIN dbo.People sp ON sp.PeopleId = p.SpouseId
-WHERE 1 = 1
-	AND c.ContributionTypeId NOT IN (6,7) -- no reversed or returned
-	-- @nontaxded = 1 = only nontax, @nontaxded = 0 = only taxded, @nontaxded = null = either
-	--AND (@nontaxded IS NULL OR (CASE WHEN c.ContributionTypeId = 9 THEN 1 ELSE ISNULL(f.NonTaxDeductible, 0) END) = @nontaxded)
-	AND CASE WHEN ISNULL(@nontaxded, 0) = 0 THEN IIF(c.ContributionTypeId NOT IN (9, 8), 1, 0)
-		     WHEN ISNULL(@nontaxded, 0) = 1 THEN IIF(c.ContributionTypeId <> 9, 1, 0)
-		     ELSE IIF(c.ContributionTypeId <> 8, 1, 0)
-		END = 1
-    AND c.ContributionStatusId = 0 -- recorded
-    --AND ((CASE WHEN c.ContributionTypeId = 8 THEN 1 ELSE 0 END) = @pledges OR @pledges IS NULL)
-    AND c.ContributionDate >= @fd AND c.ContributionDate < DATEADD(hh, 24, @td)
-	AND (ISNULL(h.BundleStatusId, 0) = 0 OR @includeUnclosed = 1)
-    AND (@campusid IS NULL OR @campusid = 0 OR c.CampusId = @campusid) -- campusid = 0 = all
-	AND (@tagid IS NULL OR EXISTS(SELECT NULL FROM dbo.TagPerson WHERE PeopleId = c.PeopleId AND Id = @tagid))
-	AND (@fundids IS NULL OR EXISTS(SELECT NULL FROM dbo.SplitInts(@fundids) WHERE Value = c.FundId))
+WHERE c.ContributionTypeId <> 8 -- NO PLEDGES
 )
 
 

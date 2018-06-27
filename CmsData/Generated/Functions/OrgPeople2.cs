@@ -40,6 +40,8 @@ namespace CmsData.View
 		
 		private string _Groups;
 		
+		private int? _Grade;
+		
 		
 		public OrgPeople2()
 		{
@@ -246,6 +248,23 @@ namespace CmsData.View
 			{
 				if (this._Groups != value)
 					this._Groups = value;
+			}
+
+		}
+
+		
+		[Column(Name="Grade", Storage="_Grade", DbType="int")]
+		public int? Grade
+		{
+			get
+			{
+				return this._Grade;
+			}
+
+			set
+			{
+				if (this._Grade != value)
+					this._Grade = value;
 			}
 
 		}

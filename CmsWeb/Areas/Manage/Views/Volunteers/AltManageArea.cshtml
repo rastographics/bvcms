@@ -1,0 +1,245 @@
+﻿@model CmsWeb.Areas.Manage.Models.VolunteerCommitmentsModel
+@using System.Diagnostics.Eventing.Reader
+@using System.Linq
+@using UtilityExtensions
+@{
+    const string DayHourFmt = "ddd h:mm tt";
+
+    var curMonth = Model.CurMonth;
+    if (curMonth.IsNull())
+    {
+        curMonth = Model.Sunday.Month;
+    }
+
+    var curYear = Model.CurYear;
+    if (curYear.IsNull())
+    {
+        curYear = Model.Sunday.Year;
+    }
+
+    var styleString = "";
+    var weekTimeSlotCount = 1;
+    var myWeekList = Model.FetchSlotWeeksByMonth(curMonth);
+    int weekCount = myWeekList.Count;
+    int startWeekCount = 0;
+    int endWeekCount = weekCount;
+    if (Model.SortByWeek)
+    {
+        startWeekCount = (Model.PageNumber-1) * 5;
+        endWeekCount = startWeekCount + 5;
+    }
+}
+@Html.Hidden("OrgId", Model.OrgId)
+@Html.Hidden("SortByWeek", Model.SortByWeek)
+<form class="ajax">
+
+    <div class="collapse well hidden-xs" id="org-main-section" align="center">
+                <table id="month">
+                    <thead style="vertical-align: middle; text-align: center;">
+                    <tr>
+                        <th style="background-color: lightgray"></th>
+                        <th class="center" style="background-color: lightgray;vertical-align: middle; text-align: center;"><h5 style="font-weight: bold !important">All Weeks</h5></th>
+                        @for (var wk = 1; wk <= 5; wk++)
+                        {
+                            <th class="center" style="background-color: lightgray;vertical-align: middle; text-align: center;"><h5 style="font-weight: bold !important">Week @wk</h5></th>
+                        }
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var t in Model.TimeSlots)
+                    {
+                        <tr>
+                            <td style="vertical-align: middle; text-align: center; font-weight: bold;background-color: lightgray">@t.Datetime().ToString(DayHourFmt)</td>
+                            <td style="vertical-align: middle; text-align: center;">
+                                <div>
+                                    <a class="membertype" id="linkId" href="@Url.Action("AddVolunteers", "Volunteers", new {@id = Model.OrgId, @week = 0, @time = t.Datetime(), @isWeek = true})"> <strong>Add</strong> </a>
+                                </div>
+                            </td>
+                            @for (var wk = 1; wk <= 5; wk++)
+                            {
+                                <td style="vertical-align: middle; text-align: center;">
+                                    <div>
+                                        <a class="membertype" id="linkId" href="@Url.Action("AddVolunteers", "Volunteers", new {@id = Model.OrgId, @week = wk, @time = t.Datetime(), @isWeek = true })"> <strong>Add</strong> </a>
+                                    </div>
+                                </td>
+                            }
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+    <div align="center">
+        <table>
+            <thead>
+            <tr>               
+                @if (!Model.SortByWeek)
+                {
+                    styleString = "active";
+                }
+                <th class="center" style="border-color: #003f72">
+                    <ul class="nav nav-pills subnav">
+                        <li class="@styleString"><a href="@Url.Action("AltCalendar", "Volunteers", new {id = Model.OrgId}, null)">All Weeks</a></li>
+                    </ul>
+                </th>
+                @for (var wk = 1; wk <= 5; wk++)
+                {
+                    styleString = "ajax";
+                    if (Model.SortByWeek && wk == Model.WeekNumber)
+                    {
+                        styleString = "active";
+                    }
+                    <th class="center" style="border-color: #003f72">
+                        <ul class="nav nav-pills subnav">
+                            <li class="@styleString"><a href="@Url.Action("AltCalendar", "Volunteers", new {id = Model.OrgId, SortByWeek = true, weekNum = wk}, null)">Week @wk</a></li>
+                        </ul>                        
+                    </th>
+                }
+                <th class="center" style="border-color: #003f72">
+                    <ul class="nav nav-pills subnav">
+                        <li>
+                            <a class="hidden-xs" id="org-main-collapse" data-toggle="collapse" href="#org-main-section" aria-expanded="false" aria-controls="org-main-section" style="text-decoration: none;">
+                                <i class="fa fa-chevron-circle-right"></i>&nbsp;Details
+                            </a>
+                        </li>
+                    </ul>
+                </th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    <br/>
+    <br/>
+    <div align="center">
+        <table id="months">
+            <thead>
+            <tr>
+                <th style="text-align: right; border-top: none; border-left: none; border-bottom: none; width: 90px;">
+                @if (Model.SortByWeek == false)
+                {
+                    if (curMonth > DateTime.Today.Month || curYear > DateTime.Today.Year)
+                     {
+                         <a href="@Url.Action("AltCalendar", "Volunteers", new {id = Model.OrgId, curMonth = curMonth - 1, curYear})"><span class="badge" style="background-color: darkorange; line-height: 2; min-width: 25px;"><i class="fa fa-angle-double-left" style="font-size: 24px"></i></span></a>
+                     }
+                }
+                else
+                {
+                    if (Model.PageNumber != 1)
+                    {
+                        <a href="@Url.Action("AltCalendar", "Volunteers", new {id = Model.OrgId, SortByWeek = true, weekNum = Model.WeekNumber, pageNumber = Model.PageNumber - 1})"><span class="badge" style="background-color: darkorange; line-height: 2; min-width: 25px;"><i class="fa fa-angle-double-left" style="font-size: 24px"></i></span></a>
+                    }
+                }
+                </th>
+                @for (int k = startWeekCount; k < endWeekCount && k < weekCount; k++)
+                {
+                    var wk = myWeekList[k];
+                    var month = wk[0].Sunday.Month;
+                    if (month == curMonth || Model.SortByWeek)
+                    {
+                        <th class="center" style="vertical-align: middle; text-align: center;background-color: lightgray"><h5 style="font-weight: bold !important;color: #003f72">@wk[0].Sunday.ToString("MMM dd")<br/>(Week @wk[0].Week)</h5></th>
+                    }
+                    curMonth = wk[0].Sunday.Month;
+                    weekTimeSlotCount = wk.Count;
+                }
+                <th style="text-align: left; border-top: none; border-right: none; border-bottom: none; width: 90px;">
+                    @if (Model.SortByWeek == false)
+                    {
+                        if (!(curYear == Model.EndDt.Year && curMonth == Model.EndDt.Month))
+                        {
+                            <a href="@Url.Action("AltCalendar", "Volunteers", new {id = Model.OrgId, curMonth = curMonth + 1, curYear})"><span class="badge" style="background-color: darkorange; line-height: 2; min-width: 25px;"><i class="fa fa-angle-double-right" style="font-size: 24px"></i></span></a>
+                        }
+                    }
+                    else
+                    {
+                        if (weekCount > endWeekCount)
+                        {
+                            <a href="@Url.Action("AltCalendar", "Volunteers", new {id = Model.OrgId, SortByWeek = true, weekNum = Model.WeekNumber, pageNumber = Model.PageNumber + 1})"><span class="badge" style="background-color: darkorange; line-height: 2; min-width: 25px;"><i class="fa fa-angle-double-right" style="font-size:24px"></i></span></a>
+                        }
+                    }
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            @for (int y = 0; y < weekTimeSlotCount; y++)
+            {
+                <tr  style="height: 175px">
+                    <td style="vertical-align: middle; text-align: center; font-weight: bold;background-color: lightgray">
+                        @Model.TimeSlots[y].Datetime().ToString("ddd")<br/>
+                        @Model.TimeSlots[y].Datetime().ToString("h:mm tt")
+                    </td>
+                    @for (int l = startWeekCount; l< endWeekCount && l < weekCount; l++)
+                    {
+                        var w = myWeekList[l];
+                        var tsl = w[y];
+                        var myPopOverContent = "";
+                        var pastTimeSlots = "";
+                        var hasVolunteers = false;
+                        if (tsl.Time < DateTime.Now)
+                        {
+                            pastTimeSlots = "background-color: lightgrey;opacity: 0.5;filter: Alpha(opacity=50)";
+                        }
+                        <td style="position: relative;@pastTimeSlots">                           
+                            <div style="position: absolute; right: 0; padding-right: 2px;">
+                                <a class="membertype" id="linkId" href="@Url.Action("AddVolunteers", "Volunteers", new {id = Model.OrgId, week = tsl.Week, time = tsl.Time})"> <i class="glyphicon glyphicon-plus-sign"></i> </a>                          
+                            </div>
+                            <br/>
+                            <br/>
+                            @foreach (var p in tsl.OrderedPersons())
+                            {
+                                hasVolunteers = true;
+                                if (Model.IsLeader)
+                                {
+                                    var myPersonPopContent = "";
+                                    myPersonPopContent = "<a href='#' class='removeVolunteer' target='clear' pid='" + p.PeopleId + "' mid='"+ tsl.MeetingId + "' source='registered'>Remove from Meeting</a><br/>";
+                                    myPersonPopContent = myPersonPopContent + "<a href='#' target='clear' class='removeVolunteer' pid='" + p.PeopleId + "' source='person' target='_blank'>Remove from All</a><br/>";
+                                    myPersonPopContent = myPersonPopContent + "<a href='/Volunteers/EmailPersonInSlot/" + tsl.MeetingId + "/" + p.PeopleId + "' target='_blank'>Email</a><br/>";
+                                    myPersonPopContent = myPersonPopContent + "<a href='/OnlineReg/ManageVolunteer/" + Model.OrgId + "/" + p.PeopleId + "' target='_blank'>Registration Page</a><br/>";
+                                    var myCommitment = "";
+                                    switch (p.Commitment)
+                                    {
+                                        case 2:
+                                            myCommitment = "(SR)";
+                                            break;
+                                        case 3:
+                                            myCommitment = "(SF)";
+                                            break;
+                                        case 4:
+                                            myCommitment = "(S)";
+                                            break;
+                                    }
+
+                                    <div align="right" data-toggle="popover" data-placement="auto right" data-container="body" data-trigger="manual" data-content="@myPersonPopContent">                                       
+                                        <a class="commit-@p.Commitment @(p.OtherCommitments ? "conflict" : "")" tabindex="0" href="#" pid="@p.PeopleId" mid="@tsl.MeetingId" source="registered" title="@p.CommitmentText">
+                                            @p.Name @myCommitment
+                                        </a>
+                                        <br/>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div>@Helper.AnchorLink(p.Name, "/Person2/" + p.PeopleId)</div>
+                                }
+                            }
+                            @if (tsl.MeetingId > 0 && hasVolunteers)
+                            {
+                                myPopOverContent = "<a href='/Reports/RollsheetForMeeting/" + tsl.MeetingId + "' target='_blank'>Rollsheet(" + tsl.Count + "/" + tsl.Limit + ")</a><br/>";
+                                myPopOverContent = myPopOverContent + "<a href='/Volunteers/EmailSlot/" + tsl.MeetingId + "' target='_blank'>Email</a><br/>";
+                                myPopOverContent = myPopOverContent + "<a href='/Meeting/" + tsl.MeetingId + "' target='_blank'>Meeting</a><br/>";
+                                myPopOverContent = myPopOverContent + "<a href='/Volunteers/Request/" + tsl.MeetingId + "/" + tsl.Limit + "' target='_blank'>Request Volunteers</a><br/>";
+                            }
+                            else
+                            {
+                                myPopOverContent = myPopOverContent + "<a href='/Volunteers/Request0/" + tsl.ticks + "/" + Model.OrgId + "/" + tsl.Limit + "' target='_blank'>Request Volunteers</a><br/>";
+                            }
+                            <br />
+                            <div style="position: absolute; right: 0; padding-right: 2px; bottom: 0;" data-toggle="popover" data-placement="auto right" data-container="body" data-trigger="manual" data-content="@myPopOverContent">
+                                <a tabindex="0" href="#"><span class="glyphicon glyphicon-menu-hamburger"></span></a>
+                            </div>
+                        </td>
+                    }
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>    
+</form>
+
