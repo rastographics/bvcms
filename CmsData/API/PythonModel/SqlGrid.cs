@@ -28,8 +28,8 @@ namespace CmsData
                     var guid = (dictionary["BlueToolbarGuid"] as string).ToGuid();
                     if (!guid.HasValue)
                         throw new Exception("missing BlueToolbar Information");
-                    var j = DbUtil.Db.PeopleQuery(guid.Value).Select(vv => vv.PeopleId).Take(1000);
-                    var tag = DbUtil.Db.PopulateTemporaryTag(j);
+                    var j = db.PeopleQuery(guid.Value).Select(vv => vv.PeopleId).Take(1000);
+                    var tag = db.PopulateTemporaryTag(j);
                     tagid = tag.Id;
                     p.Add("@BlueToolbarTagId", tag.Id);
                 }

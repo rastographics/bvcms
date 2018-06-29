@@ -308,7 +308,7 @@ namespace CmsData
     		var fundid = m.Groups["fundid"].Value;
             var fund = fundid.AllDigits() ? fundid.ToInt2() : db.Setting(fundid, "").ToInt2();
 
-            var startdt = DbUtil.Db.Setting(name, "").ToDate();
+            var startdt = db.Setting(name, "").ToDate();
             var enddt = DateTime.Today.AddDays(1);
 
             return ContributionAmountBothJoint(startdt, enddt, fund);

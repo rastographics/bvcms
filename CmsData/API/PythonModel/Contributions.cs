@@ -67,22 +67,22 @@ namespace CmsData
 
         public void MoveFundIdToExistingFundId(int fromid, int toid, string name = null)
         {
-            var oldfund = DbUtil.Db.ContributionFunds.Single(ff => ff.FundId == fromid);
-            var tofund = DbUtil.Db.ContributionFunds.Single(ff => ff.FundId == toid);
+            var oldfund = db.ContributionFunds.Single(ff => ff.FundId == fromid);
+            var tofund = db.ContributionFunds.Single(ff => ff.FundId == toid);
 
             var sql = $"update dbo.contribution set fundid = {toid} where fundid = {fromid}";
-            DbUtil.Db.ExecuteCommand(sql);
+            db.ExecuteCommand(sql);
         }
         public void MoveFundIdToNewFundId(int fromid, int toid, string name = null)
         {
-            var oldfund = DbUtil.Db.ContributionFunds.Single(ff => ff.FundId == fromid);
-            var newfund = DbUtil.Db.ContributionFunds.SingleOrDefault(ff => ff.FundId == toid);
+            var oldfund = db.ContributionFunds.Single(ff => ff.FundId == fromid);
+            var newfund = db.ContributionFunds.SingleOrDefault(ff => ff.FundId == toid);
             if(newfund != null)
                 throw new Exception("Fund must not exist for MoveFundIdToNewFundId");
 
-            DbUtil.Db.FetchOrCreateFund(toid, name ?? oldfund.FundDescription);
+            db.FetchOrCreateFund(toid, name ?? oldfund.FundDescription);
             var sql = $"update dbo.contribution set fundid = {toid} where fundid = {fromid}";
-            DbUtil.Db.ExecuteCommand(sql);
+            db.ExecuteCommand(sql);
         }
     }
 }
