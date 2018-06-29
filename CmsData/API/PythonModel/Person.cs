@@ -118,7 +118,7 @@ namespace CmsData
                     db2.Setting("AdminMail",ConfigurationManager.AppSettings["supportemail"]), // from email
                     minister, // to person
                     "TASK: " + description, // subject
-                    $@"{taskLink}<br/>\n{about.Name}\n<p>{notes}</p>"); // body
+                    $@"{taskLink}<br/>{about.Name}<p>{notes}</p>"); // body
                 db2.SubmitChanges();
             }
         }
