@@ -13,7 +13,7 @@ RETURN
 			
 			p.PeopleId, 
 			p.LastName,
-			p.FirstName + ' ' + p.LastName AS Name, 
+			ISNULL(p.FirstName, '') + ' ' + ISNULL(p.LastName, '') AS Name, 
 			p.TitleCode AS Title, 
 			p.SuffixCode AS Suffix,
 			CASE 
