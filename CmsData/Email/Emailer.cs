@@ -160,7 +160,6 @@ namespace CmsData
         {
             var list = (from p in CMSRoleProvider.provider.GetAdmins()
                         where p.EmailAddress.HasValue()
-                              && !p.EmailAddress.Contains("bvcms.com")
                               && !p.EmailAddress.Contains("touchpointsoftware.com")
                         select p).ToList();
             if (list.Count == 0)
