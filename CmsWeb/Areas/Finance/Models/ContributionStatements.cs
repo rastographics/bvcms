@@ -139,8 +139,8 @@ p { font-size: 11px; }
                 var t1 = new PdfPTable(1);
                 t1.TotalWidth = 72f * 5f;
                 t1.DefaultCell.Border = Rectangle.NO_BORDER;
-                string html1 = db.ContentHtml("StatementHeader", Resource1.ContributionStatementHeader);
-                string html2 = db.ContentHtml("StatementNotice", Resource1.ContributionStatementNotice);
+                string html1 = cs.Header ?? db.ContentHtml("StatementHeader", Resource1.ContributionStatementHeader);
+                string html2 = cs.Notice ?? db.ContentHtml("StatementNotice", Resource1.ContributionStatementNotice);
 
                 var mh = new MyHandler();
                 using (var sr = new StringReader(css + html1))
