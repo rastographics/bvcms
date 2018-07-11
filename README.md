@@ -15,7 +15,7 @@ Licensed under the GNU General Public License (GPL v2)
 you may not use this code except in compliance with the License.
 see LICENSE file in this repository master branch
 
-BVCMS is maintained by TouchPointSoftware, LLC.
+BVCMS is maintained by TouchPoint Software, Inc.
 
 ### Install Development Tools and required libraries
 
