@@ -360,6 +360,14 @@
     <Compile Include="Areas\Dialog\Models\SearchOrgsModel.cs" />
     <Compile Include="Areas\Dialog\Models\SearchUsersModel.cs" />
     <Compile Include="Areas\Dialog\Models\TransactionHistoryModel.cs" />
+    <Compile Include="Areas\Figures\Controllers\FiguresController.cs" />
+    <Compile Include="Areas\Figures\FiguresAreaRegistration.cs" />
+    <Compile Include="Areas\Figures\Models\DivViewModel.cs" />
+    <Compile Include="Areas\Figures\Models\FundViewModel.cs" />
+    <Compile Include="Areas\Figures\Models\GoogleChartsDataTable.cs" />
+    <Compile Include="Areas\Figures\Models\OrgViewModel.cs" />
+    <Compile Include="Areas\Figures\Models\ProgDivOrgModel.cs" />
+    <Compile Include="Areas\Figures\Models\ProgViewModel.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\AchImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\LongViewHeightsImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\SubSplashImporter.cs" />
@@ -1452,6 +1460,7 @@
     <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.culture.zu.js" />
     <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.cultures.js" />
     <Content Include="Content\touchpoint\lib\jquery-globalize\js\globalize.js" />
+    <Content Include="Content\touchpoint\lib\jquery-multi-select\css\multi-select.css" />
     <Content Include="Content\touchpoint\lib\jquery-scrollintoview\js\jquery.scrollintoview.js" />
     <Content Include="Content\touchpoint\lib\jquery-sortable-min.js" />
     <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-bg_flat_0_aaaaaa_40x100.png" />
@@ -2085,6 +2094,19 @@
     <Content Include="Content\VitalStats.py" />
     <Content Include="Lib\ensurepip\_bundled\setuptools-20.10.1-py2.py3-none-any.whl" />
     <Content Include="Lib\ensurepip\_bundled\pip-8.1.1-py2.py3-none-any.whl" />
+    <Content Include="Areas\Figures\Views\web.config" />
+    <Content Include="Areas\Figures\Views\Figures\Index.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\ProgramView.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\DivisionView.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\OrganizationView.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\ChartDisplayView.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\AttendanceChartDisplayView.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\RefineAttendanceView.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\RefineFundView.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\FundView.cshtml" />
+    <Content Include="Content\touchpoint\lib\jquery-multi-select\js\jquery.multi-select.js" />
+    <Content Include="Content\touchpoint\lib\jquery-multi-select\css\multi-select.dev.css" />
+    <Content Include="Content\touchpoint\lib\jquery-multi-select\css\multi-select.dist.css" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -2847,7 +2869,9 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Content Include="Views\Shared\Menu\ReportsMenuCustom.xml" />
-    <Content Include="Views\Shared\Menu\ReportsMenu.xml" />
+    <Content Include="Views\Shared\Menu\ReportsMenu.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Views\Shared\Pager3.cshtml" />
     <Content Include="Views\Shared\NotFound.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Boolean.cshtml" />
@@ -3612,6 +3636,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Dialog\Views\Shared\" />
+    <Folder Include="Areas\Figures\Views\Shared\" />
     <Folder Include="Areas\Finance\Views\Shared\" />
     <Folder Include="Areas\Main\Views\Shared\" />
     <Folder Include="Areas\Manage\Views\Shared\" />
