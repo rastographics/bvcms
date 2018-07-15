@@ -87,6 +87,5 @@ namespace CmsWeb.Models
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
-
     }
 }

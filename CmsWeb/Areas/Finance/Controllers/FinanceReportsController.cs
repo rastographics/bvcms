@@ -15,6 +15,8 @@ using UtilityExtensions;
 using CmsWeb.Models;
 using CmsWeb.Areas.OnlineReg.Models;
 using TableStyles = OfficeOpenXml.Table.TableStyles;
+using System.Web.Security;
+using System.Collections.Generic;
 
 namespace CmsWeb.Areas.Finance.Controllers
 {
@@ -22,6 +24,18 @@ namespace CmsWeb.Areas.Finance.Controllers
     [RouteArea("Finance", AreaPrefix = "FinanceReports"), Route("{action}/{id?}")]
     public class FinanceReportsController : CmsStaffController
     {
+        private readonly List<ContributionFund> _authorizedFundsForUser;
+
+        public FinanceReportsController()
+        {
+            _authorizedFundsForUser = RetrieveAuthorizedFundsForCurrentUser();
+        }
+
+        private List<ContributionFund> RetrieveAuthorizedFundsForCurrentUser()
+        {
+            return null;
+        }
+
         public ActionResult ContributionStatement(int id, DateTime fromDate, DateTime toDate, int typ)
         {
             DbUtil.LogActivity($"Contribution Statement for ({id})");
@@ -52,6 +66,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                 p.Add("@fundids", null);
             return p;
         }
+
         [HttpGet]
         public EpplusResult DonorTotalSummary(DonorTotalSummaryOptionsModel m)
         {
@@ -123,13 +138,15 @@ namespace CmsWeb.Areas.Finance.Controllers
                 NumberOfYears = 5,
                 MinimumMedianTotal = 100,
                 Campus = new CodeInfo("Campus0"),
-                Fund = new CodeInfo("Fund"),
+                Fund = new UserScopedByRoleCodeInfo("Fund")
             };
+
             var customfunds = ContributionStatements.CustomFundSetSelectList();
             if(customfunds != null)
                 m.FundSet = new CodeInfo(null, customfunds);
             return View(m);
         }
+
         [HttpGet]
         public ActionResult DonorTotalsByRange()
         {
@@ -149,12 +166,14 @@ namespace CmsWeb.Areas.Finance.Controllers
             var m = new TotalsByFundModel();
             return View(m);
         }
+
         [HttpPost]
         public ActionResult TotalsByFundExport(TotalsByFundModel m)
         {
             m.SaveAsExcel();
             return Content("done");
         }
+
         [HttpPost, Route("~/TotalsByFundCustomReport/{id}")]
         public ActionResult TotalsByFundCustomReport(string id, TotalsByFundModel m)
         {
@@ -172,6 +191,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             var link = $"<a href='{excelink}' class='CustomExport btn btn-default' target='_blank'><i class='fa fa-file-excel-o'></i> Download as Excel</a>";
             return Content(GridResult.Table(rd, id.SpaceCamelCase(), excellink: link));
         }
+
         [HttpPost, Route("~/TotalsByFundCustomExport/{id}")]
         public ActionResult TotalsByFundCustomExport(string id, TotalsByFundModel m)
         {
@@ -186,6 +206,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             var s = id.SpaceCamelCase();
             return cn.ExecuteReader(content, p, commandTimeout: 1200).ToExcel(s + ".xlsx", fromSql: true);
         }
+
         [HttpPost, Route("~/FundList")]
         public ActionResult FundList(TotalsByFundModel m)
         {
@@ -236,6 +257,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             var m = new DepositsModel(dt);
             return View(m);
         }
+
         [HttpGet]
         public ActionResult DepositTotalsForDates()
         {

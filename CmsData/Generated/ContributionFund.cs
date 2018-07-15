@@ -55,6 +55,8 @@ namespace CmsData
 		private int _QBIncomeAccount;
 		
 		private int _QBAssetAccount;
+
+        private int _FundManagerRoleId;
 		
    		
    		private EntitySet< BundleHeader> _BundleHeaders;
@@ -127,6 +129,9 @@ namespace CmsData
 		
 		partial void OnQBAssetAccountChanging(int value);
 		partial void OnQBAssetAccountChanged();
+
+        partial void OnFundManagerRoleIdChanging(int value);
+        partial void OnFundManagerRoleIdChanged();
 		
     #endregion
 		public ContributionFund()
@@ -561,6 +566,26 @@ namespace CmsData
 			}
 
 		}
+
+        [Column(Name = "FundManagerRoleId", UpdateCheck = UpdateCheck.Never, Storage = "_FundManagerRoleId", DbType = "int")]
+        public int FundManagerRoleId
+        {
+            get
+            {
+                return this._FundManagerRoleId;
+            }
+            set
+            {
+                if(this._FundManagerRoleId != value)
+                {
+                    this.OnFundManagerRoleIdChanging(value);
+                    this.SendPropertyChanging();
+                    this._FundManagerRoleId = value;
+                    this.SendPropertyChanged("FundManagerRoleId");
+                    this.OnFundManagerRoleIdChanged();
+                }
+            }
+        }
 
 		
     #endregion
