@@ -20,22 +20,70 @@ using System.Collections.Generic;
 
 namespace CmsWeb.Areas.Finance.Controllers
 {
+
+    //[Authorize(Roles = "Finance,FinanceViewOnly")]
+    //[RouteArea("Finance", AreaPrefix = "FinanceReports")]
+    //[Route("{action}/{id?}")]
+    //public class FinanceReportsController2 : CmsStaffController
+    //{
+    //    private readonly IFinanceReportsService _financeReportsService;
+
+    //    public FinanceReportsController2() : this(new FinanceReportsService())
+    //    {
+
+    //    }
+    //    public FinanceReportsController2(IFinanceReportsService financeReportsService)
+    //    {
+
+    //    }
+
+    //    [HttpGet]
+    //    public ActionResult ChaiDonorsReport()
+    //    {
+    //        var m = new DonorTotalSummaryOptionsModel
+    //        {
+    //            StartDate = DateTime.Today,
+    //            NumberOfYears = 5,
+    //            MinimumMedianTotal = 100,
+    //            Campus = new CodeInfo("Campus0"),
+    //            Fund = new CodeInfo("Fund"),
+    //        };
+
+    //        return View(m);
+    //    }
+
+    //    [HttpGet]
+    //    public EpplusResult ChaiDonorsReportDownload(DonorTotalSummaryOptionsModel m)
+    //    {
+    //        var p = new DynamicParameters();
+    //        p.Add("@fund", m.Fund.Value.ToInt());
+
+    //        var ep = new ExcelPackage();
+    //        var cn = new SqlConnection(Util.ConnectionString);
+
+    //        var rd = cn.ExecuteReader("dbo.CHAIDonationsReport", p, commandType: CommandType.StoredProcedure, commandTimeout: 1200);
+    //        ep.AddSheet(rd, "CHAIDonations");
+
+    //        return new EpplusResult(ep, "CHAIDonationsReport.xlsx");
+    //    }
+
+    //}
+
+    //public interface IFinanceReportsService
+    //{
+
+    //}
+
+    //public class FinanceReportsService : IFinanceReportsService
+    //{
+
+    //}
+
+
     [Authorize(Roles = "Finance,FinanceViewOnly")]
     [RouteArea("Finance", AreaPrefix = "FinanceReports"), Route("{action}/{id?}")]
     public class FinanceReportsController : CmsStaffController
     {
-        private readonly List<ContributionFund> _authorizedFundsForUser;
-
-        public FinanceReportsController()
-        {
-            _authorizedFundsForUser = RetrieveAuthorizedFundsForCurrentUser();
-        }
-
-        private List<ContributionFund> RetrieveAuthorizedFundsForCurrentUser()
-        {
-            return null;
-        }
-
         public ActionResult ContributionStatement(int id, DateTime fromDate, DateTime toDate, int typ)
         {
             DbUtil.LogActivity($"Contribution Statement for ({id})");
@@ -92,6 +140,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         {
             var p = new DynamicParameters();
             p.Add("@fund", m.Fund.Value.ToInt());
+
             var ep = new ExcelPackage();
             var cn = new SqlConnection(Util.ConnectionString);
 
@@ -123,8 +172,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             var cn = new SqlConnection(Util.ConnectionString);
             cn.Open();
 
-            var rd = cn.ExecuteReader("dbo.PledgeFulfillment2", new { fundid1, fundid2, },
-                commandTimeout: 1200, commandType: CommandType.StoredProcedure);
+            var rd = cn.ExecuteReader("dbo.PledgeFulfillment2", new { fundid1, fundid2, }, commandTimeout: 1200, commandType: CommandType.StoredProcedure);
             ep.AddSheet(rd, "Pledges");
             return new EpplusResult(ep, "PledgeFulfillment2.xlsx");
         }
@@ -138,7 +186,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                 NumberOfYears = 5,
                 MinimumMedianTotal = 100,
                 Campus = new CodeInfo("Campus0"),
-                Fund = new UserScopedByRoleCodeInfo("Fund")
+                Fund = new CodeInfo("Fund")
             };
 
             var customfunds = ContributionStatements.CustomFundSetSelectList();

@@ -69,9 +69,10 @@ namespace CmsData
 	#endregion
 	
     #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
+
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 		
 		partial void OnFundIdChanging(int value);
 		partial void OnFundIdChanged();
@@ -132,18 +133,17 @@ namespace CmsData
 
         partial void OnFundManagerRoleIdChanging(int value);
         partial void OnFundManagerRoleIdChanged();
-		
-    #endregion
-		public ContributionFund()
-		{
-			
+
+        #endregion
+
+        public ContributionFund()
+		{			
 			this._BundleHeaders = new EntitySet< BundleHeader>(new Action< BundleHeader>(this.attach_BundleHeaders), new Action< BundleHeader>(this.detach_BundleHeaders)); 
 			
 			this._Contributions = new EntitySet< Contribution>(new Action< Contribution>(this.attach_Contributions), new Action< Contribution>(this.detach_Contributions)); 
 			
 			this._RecurringAmounts = new EntitySet< RecurringAmount>(new Action< RecurringAmount>(this.attach_RecurringAmounts), new Action< RecurringAmount>(this.detach_RecurringAmounts)); 
-			
-			
+						
 			OnCreated();
 		}
 
@@ -629,19 +629,20 @@ namespace CmsData
 	#endregion
 	
 		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
+
+        protected virtual void SendPropertyChanging()
 		{
 			if ((this.PropertyChanging != null))
 				this.PropertyChanging(this, emptyChangingEventArgs);
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
+
+        protected virtual void SendPropertyChanged(String propertyName)
 		{
 			if ((this.PropertyChanged != null))
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 		}
-
    		
 		private void attach_BundleHeaders(BundleHeader entity)
 		{
@@ -654,7 +655,6 @@ namespace CmsData
 			this.SendPropertyChanging();
 			entity.Fund = null;
 		}
-
 		
 		private void attach_Contributions(Contribution entity)
 		{
@@ -667,7 +667,6 @@ namespace CmsData
 			this.SendPropertyChanging();
 			entity.ContributionFund = null;
 		}
-
 		
 		private void attach_RecurringAmounts(RecurringAmount entity)
 		{
@@ -679,10 +678,6 @@ namespace CmsData
 		{
 			this.SendPropertyChanging();
 			entity.ContributionFund = null;
-		}
-
-		
+		}		
 	}
-
 }
-

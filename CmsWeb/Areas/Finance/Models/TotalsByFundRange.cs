@@ -9,6 +9,7 @@ using CmsData.View;
 using CmsWeb.Code;
 using UtilityExtensions;
 using System.Text;
+using System.Web.Security;
 
 namespace CmsWeb.Models
 {
@@ -76,7 +77,7 @@ namespace CmsWeb.Models
 
         public IEnumerable<SelectListItem> Funds()
         {
-            var list = (from c in DbUtil.Db.ContributionFunds
+            var list = (from c in DbUtil.Db.ContributionFunds.ScopedByRoleMembership()
                         where c.FundStatusId == 1
                         orderby c.FundName
                         select new SelectListItem()

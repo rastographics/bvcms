@@ -184,6 +184,7 @@ namespace CmsWeb.Models
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
+
         public SelectList TaxTypes()
         {
             return new SelectList(
@@ -196,6 +197,7 @@ namespace CmsWeb.Models
                 "Code", "Value", TaxDedNonTax
             );
         }
+
         public SelectList OnlineOptions()
         {
             return new SelectList(
@@ -218,7 +220,9 @@ namespace CmsWeb.Models
         {
             return BuildUrl("/Contributions", fundid, bundletypeid);
         }
+
         private string connector;
+
         private string BuildUrl(string baseurl, int? fundid, int? bundletypeid)
         {
             connector = "?";
@@ -244,6 +248,7 @@ namespace CmsWeb.Models
 
             return sb.ToString();
         }
+
         private void Append(StringBuilder sb, string val)
         {
             sb.Append(connector);

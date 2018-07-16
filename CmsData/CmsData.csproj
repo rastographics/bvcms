@@ -566,6 +566,7 @@
     <Compile Include="Extensions\ChangeDetail.cs" />
     <Compile Include="Classes\AddressVerify.cs" />
     <Compile Include="Extensions\Contribution.cs" />
+    <Compile Include="Extensions\ContributionFundExtensions.cs" />
     <Compile Include="Extensions\DeleteMeetingRun.cs" />
     <Compile Include="Extensions\FamilyMember.cs" />
     <Compile Include="Extensions\LongRunningOperation.cs" />

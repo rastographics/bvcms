@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Security.Principal;
 using System.Web.Mvc;
-using System.Web.Security;
 using CmsData;
 using UtilityExtensions;
 
@@ -178,42 +177,6 @@ namespace CmsWeb.Code
         {
             info.AddValue("Name", Name);
             info.AddValue("Value", Value);
-        }
-    }
-
-    public class UserScopedByRoleCodeInfo : CodeInfo
-    {
-        public UserScopedByRoleCodeInfo(string name) : base(name)
-        {
-            RemoveUnauthorizedItemsForUser();
-        }
-
-        protected virtual void RemoveUnauthorizedItemsForUser()
-        {
-            const int OpenFundStatusId = 1;
-
-            var currentUser = Membership.GetUser();
-            var currentRoles = Roles.GetRolesForUser().ToList();
-
-            if(string.Equals(Name, "Fund", StringComparison.Ordinal))
-            {
-                if (currentRoles.Contains("Admin") || currentRoles.Contains("Finance"))
-                {
-                    return;
-                }
-
-                if (currentRoles.Contains("FinanceViewOnly"))
-                {
-                    var authorizedRoleIds = DbUtil.Db.Roles.Where(x => currentRoles.Contains(x.RoleName)).Select(x => x.RoleId).ToList();
-                    var authorizedFunds = DbUtil.Db.ContributionFunds.Where(x => x.FundStatusId == OpenFundStatusId && authorizedRoleIds.Contains(x.FundManagerRoleId)).ToList();
-
-                    Items = new SelectList(authorizedFunds, "FundId", "FundName");
-
-                    return;
-                }
-
-                Items = new SelectList(null);
-            }
         }
     }
 }
