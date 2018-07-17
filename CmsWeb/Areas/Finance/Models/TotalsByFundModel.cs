@@ -157,15 +157,30 @@ namespace CmsWeb.Models
 
         public IEnumerable<GetTotalContributionsRange> TotalsByRange()
         {
-            var fundids = APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db, FundSet).JoinInts(",");
-            var list = (from r in DbUtil.Db.GetTotalContributionsRange(Dt1, Dt2, CampusId, NonTaxDeductible ? (bool?)null : false, IncUnclosedBundles, fundids)
+            var customFundIds = APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db, FundSet);
+            var authorizedFundIds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership().Select(f => f.FundId).ToList();
+
+            string fundIds = string.Empty;
+
+            if(customFundIds?.Count > 0)
+            {
+                fundIds = authorizedFundIds.Where(f => customFundIds.Contains(f)).JoinInts(",");
+            }
+            else
+            {
+                fundIds = authorizedFundIds.JoinInts(",");
+            }
+
+            var list = (from r in DbUtil.Db.GetTotalContributionsRange(Dt1, Dt2, CampusId, NonTaxDeductible ? (bool?)null : false, IncUnclosedBundles, fundIds)
                         orderby r.Range
                         select r).ToList();
+
             RangeTotal = new GetTotalContributionsRange
             {
                 Count = list.Sum(t => t.Count),
                 Total = list.Sum(t => t.Total),
             };
+
             return list;
         }
 
