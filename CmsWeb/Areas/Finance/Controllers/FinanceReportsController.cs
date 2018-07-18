@@ -36,8 +36,6 @@ namespace CmsWeb.Areas.Finance.Controllers
             };
         }
 
-
-
         private DynamicParameters DonorTotalSummaryParameters(DonorTotalSummaryOptionsModel m, bool useMedianMin = false)
         {
             var p = new DynamicParameters();
@@ -109,8 +107,6 @@ namespace CmsWeb.Areas.Finance.Controllers
             return View(m);
         }
 
-
-
         [HttpGet]
         public EpplusResult ChaiDonorsReportDownload(DonorTotalSummaryOptionsModel m)
         {
@@ -145,8 +141,6 @@ namespace CmsWeb.Areas.Finance.Controllers
             return View(m);
         }
 
-
-
         public ActionResult PledgeReport()
         {
             var fd = DateTime.Parse("1/1/1900");
@@ -157,8 +151,6 @@ namespace CmsWeb.Areas.Finance.Controllers
                     select r;
             return View(q);
         }
-
-
 
         [HttpGet, Route("~/PledgeFulfillment2/{fundid1:int}/{fundid2:int}")]
         public EpplusResult PledgeFulfillment2(int fundid1, int fundid2)
@@ -171,8 +163,6 @@ namespace CmsWeb.Areas.Finance.Controllers
             ep.AddSheet(rd, "Pledges");
             return new EpplusResult(ep, "PledgeFulfillment2.xlsx");
         }
-
-
 
         [HttpGet]
         public ActionResult DonorTotalsByRange()
@@ -187,8 +177,6 @@ namespace CmsWeb.Areas.Finance.Controllers
             return View(m);
         }
 
-
-
         [HttpGet]
         public ActionResult TotalsByFund()
         {
@@ -202,8 +190,6 @@ namespace CmsWeb.Areas.Finance.Controllers
             m.SaveAsExcel();
             return Content("done");
         }
-
-
 
         [HttpPost, Route("~/TotalsByFundCustomReport/{id}")]
         public ActionResult TotalsByFundCustomReport(string id, TotalsByFundModel m)
@@ -238,8 +224,6 @@ namespace CmsWeb.Areas.Finance.Controllers
             return cn.ExecuteReader(content, p, commandTimeout: 1200).ToExcel(s + ".xlsx", fromSql: true);
         }
 
-
-
         [HttpPost, Route("~/FundList")]
         public ActionResult FundList(TotalsByFundModel m)
         {
@@ -249,8 +233,6 @@ namespace CmsWeb.Areas.Finance.Controllers
 </pre>
 ");
         }
-
-
 
         [HttpPost]
         public ActionResult TotalsByFundResults(TotalsByFundModel m)
@@ -273,8 +255,6 @@ namespace CmsWeb.Areas.Finance.Controllers
             return View(m);
         }
 
-
-
         [HttpGet]
         public ActionResult TotalsByFundAgeRange()
         {
@@ -288,16 +268,12 @@ namespace CmsWeb.Areas.Finance.Controllers
             return View(m);
         }
 
-
-
         [HttpGet]
         public ActionResult Deposits(DateTime dt)
         {
             var m = new DepositsModel(dt);
             return View(m);
         }
-
-
 
         [HttpGet]
         public ActionResult DepositTotalsForDates()
@@ -311,8 +287,6 @@ namespace CmsWeb.Areas.Finance.Controllers
         {
             return View(m);
         }
-
-
 
         public ActionResult ManagedGiving(string sortBy, string sortDir)
         {

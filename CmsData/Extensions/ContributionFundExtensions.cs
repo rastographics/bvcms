@@ -18,7 +18,7 @@ namespace CmsData
                 return GetEmptyList();
             }
 
-            if (allowedRoles.Contains("Admin") || allowedRoles.Contains("Finance"))
+            if (allowedRoles.Contains("Finance"))
             {
                 return contributionFunds;
             }
