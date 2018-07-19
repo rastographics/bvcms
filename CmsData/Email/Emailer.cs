@@ -790,6 +790,11 @@ namespace CmsData
             eqto.DomainFrom = domain;
         }
 
+        public string SendEmail(MailAddress fromAddress, string subject, string message, MailAddress to, int? id = null, int? pid = null, List<MailAddress> cc = null)
+        {
+            return SendEmail(fromAddress, subject, message, new[] { to }.ToList(), id, pid, cc);
+        }
+
         public string SendEmail(MailAddress fromAddress, string subject, string message, List<MailAddress> to, int? id = null, int? pid = null, List<MailAddress> cc = null)
         {
             if (ConfigurationManager.AppSettings["sendemail"] == "false")

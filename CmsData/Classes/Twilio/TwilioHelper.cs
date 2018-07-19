@@ -93,6 +93,28 @@ namespace CmsData.Classes.Twilio
             ExecuteCmsTwilio(list.Id);
         }
 
+        public static bool SendSMS(CMSDataContext db, string toNumber, string message)
+        {
+            bool success = false;
+            string sSID = GetSid(db);
+            string sToken = GetToken(db);
+
+            if (sSID.HasValue() && sToken.HasValue())
+            {
+                SMSNumber smsNumber = db.SMSNumbers.FirstOrDefault();
+                if (smsNumber != null)
+                {
+                    var response = SendSmsInternal(sSID, sToken, smsNumber.Number, toNumber, message);
+                    success = new[] {
+                        MessageResource.StatusEnum.Accepted,
+                        MessageResource.StatusEnum.Queued,
+                        MessageResource.StatusEnum.Sending
+                    }.Contains(response.Status);
+                }
+            }
+            return success;
+        }
+
         private static void ExecuteCmsTwilio(int listID)
         {
             string cmstwilio = System.Web.HttpContext.Current.Server.MapPath("~/bin/cmstwilio.exe");
@@ -140,7 +162,7 @@ namespace CmsData.Classes.Twilio
                     if (item.NoNumber || item.NoOptIn) continue;
 
                     var callbackUrl = hostUrl.HasValue() ? $"{hostUrl}/WebHook/Twilio/{item.Id}" : null;
-                    var response = SendSms(sSID, sToken, smsGroup[iCount].Number, item.Number, smsList.Message, callbackUrl);
+                    var response = SendSmsInternal(sSID, sToken, smsGroup[iCount].Number, item.Number, smsList.Message, callbackUrl);
 
                     UpdateSMSItemStatus(db, item, response);
 
@@ -205,7 +227,7 @@ namespace CmsData.Classes.Twilio
             } while (failed);
         }
 
-        private static MessageResource SendSms(string sSID, string sToken, string sFrom, string sTo, string sBody, string callbackUrl)
+        private static MessageResource SendSmsInternal(string sSID, string sToken, string sFrom, string sTo, string sBody, string callbackUrl = null)
         {
             // Needs API keys. Removed to keep private
 
