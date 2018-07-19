@@ -38,6 +38,7 @@ namespace CmsWeb.Models
                 "Campus",
                 "Deceased Date",
                 "Decision Type",
+                "Do Not Call",
                 "Do Not Mail",
                 "Drop Type",
                 "Drop All Enrollments",
@@ -173,6 +174,9 @@ namespace CmsWeb.Models
                         break;
                     case "Decision Type":
                         p.DecisionTypeId = NewValue.ToInt2();
+                        break;
+                    case "Do Not Call":
+                        p.DoNotCallFlag = NewValue.ToBool();
                         break;
                     case "Do Not Mail":
                         p.DoNotMailFlag = NewValue.ToBool();
@@ -382,6 +386,15 @@ namespace CmsWeb.Models
             {
                 new CodeValueItem {Code = "true", Value = "Yes, Address is Bad"},
                 new CodeValueItem {Code = "false", Value = "No, Address is Good"}
+            };
+        }
+
+        public static List<CodeValueItem> DoNotCall()
+        {
+            return new List<CodeValueItem>
+            {
+                new CodeValueItem {Code = "true", Value = "Yes, no calls" },
+                new CodeValueItem {Code = "false", Value = "No, calls are ok" }
             };
         }
 
