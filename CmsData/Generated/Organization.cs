@@ -78,6 +78,8 @@ namespace CmsData
 		
 		private bool? _AllowNonCampusCheckIn;
 		
+		private bool? _SendAttendanceLink;
+		
 		private int? _NumWorkerCheckInLabels;
 		
 		private bool? _ShowOnlyRegisteredAtCheckIn;
@@ -324,6 +326,9 @@ namespace CmsData
 		
 		partial void OnAllowNonCampusCheckInChanging(bool? value);
 		partial void OnAllowNonCampusCheckInChanged();
+		
+		partial void OnSendAttendanceLinkChanging(bool? value);
+		partial void OnSendAttendanceLinkChanged();
 		
 		partial void OnNumWorkerCheckInLabelsChanging(int? value);
 		partial void OnNumWorkerCheckInLabelsChanged();
@@ -1207,6 +1212,28 @@ namespace CmsData
 					this._AllowNonCampusCheckIn = value;
 					this.SendPropertyChanged("AllowNonCampusCheckIn");
 					this.OnAllowNonCampusCheckInChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="SendAttendanceLink", UpdateCheck=UpdateCheck.Never, Storage="_SendAttendanceLink", DbType="bit")]
+		public bool? SendAttendanceLink
+		{
+			get { return this._SendAttendanceLink; }
+
+			set
+			{
+				if (this._SendAttendanceLink != value)
+				{
+				
+                    this.OnSendAttendanceLinkChanging(value);
+					this.SendPropertyChanging();
+					this._SendAttendanceLink = value;
+					this.SendPropertyChanged("SendAttendanceLink");
+					this.OnSendAttendanceLinkChanged();
 				}
 
 			}
