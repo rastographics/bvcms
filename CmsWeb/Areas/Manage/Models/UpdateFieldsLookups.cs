@@ -41,6 +41,10 @@ namespace CmsWeb.Areas.Manage.Models
                 case "Decision Type":
                     m = lookups.DecisionTypeList();
                     break;
+                case "Do Not Call":
+                    m = UpdateFieldsModel.DoNotCall();
+                    useCode = true;
+                    break;
                 case "Do Not Mail":
                     m = UpdateFieldsModel.DoNotMail();
                     useCode = true;
