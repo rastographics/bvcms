@@ -1,22 +1,20 @@
+using CmsData;
+using CmsData.API;
+using CmsWeb.Areas.Finance.Models.Report;
+using CmsWeb.Areas.Manage.Controllers;
+using CmsWeb.Areas.OnlineReg.Models;
+using CmsWeb.Code;
+using CmsWeb.Models;
+using Dapper;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
-using CmsWeb.Areas.Finance.Models.Report;
-using CmsData;
-using CmsData.API;
-using CmsWeb.Areas.Manage.Controllers;
-using CmsWeb.Code;
-using Dapper;
-using OfficeOpenXml;
-using OfficeOpenXml.Style;
 using UtilityExtensions;
-using CmsWeb.Models;
-using CmsWeb.Areas.OnlineReg.Models;
 using TableStyles = OfficeOpenXml.Table.TableStyles;
-using System.Web.Security;
-using System.Collections.Generic;
 
 namespace CmsWeb.Areas.Finance.Controllers
 {
@@ -36,295 +34,328 @@ namespace CmsWeb.Areas.Finance.Controllers
             };
         }
 
-        private DynamicParameters DonorTotalSummaryParameters(DonorTotalSummaryOptionsModel m, bool useMedianMin = false)
+        private DynamicParameters DonorTotalSummaryParameters(DonorTotalSummaryOptionsModel model, bool useMedianMin = false)
         {
-            var p = new DynamicParameters();
-            p.Add("@enddt", m.StartDate);
-            p.Add("@years", m.NumberOfYears);
-            p.Add("@fund", m.Fund.Value.ToInt());
-            p.Add("@campus", m.Campus.Value.ToInt());
+            var queryParameters = new DynamicParameters();
+            queryParameters.Add("@enddt", model.StartDate);
+            queryParameters.Add("@years", model.NumberOfYears);
+            queryParameters.Add("@fund", model.Fund.Value.ToInt());
+            queryParameters.Add("@campus", model.Campus.Value.ToInt());
 
             if (useMedianMin)
             {
-                p.Add("@medianMin", m.MinimumMedianTotal);
+                queryParameters.Add("@medianMin", model.MinimumMedianTotal);
             }
 
-            if (m?.FundSet != null)
+            if (model?.FundSet != null) // TODO: seems like a redundant null check, if model was null, it would have errored well before this point
             {
-                var fundset = APIContributionSearchModel.GetCustomStatementsList(DbUtil.Db, m.FundSet.Value).JoinInts(",");
-                p.Add("@fundids", fundset);
+                var fundset = APIContributionSearchModel.GetCustomStatementsList(DbUtil.Db, model.FundSet.Value).JoinInts(",");
+                queryParameters.Add("@fundids", fundset);
             }
             else
             {
                 var authorizedFunds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership().Select(f => f.FundId).ToList();
                 var authorizedFundsCsv = string.Join(",", authorizedFunds);
 
-                p.Add("@fundids", authorizedFundsCsv);
+                queryParameters.Add("@fundids", authorizedFundsCsv);
             }
 
-            return p;
+            return queryParameters;
         }
 
         [HttpGet]
-        public EpplusResult DonorTotalSummary(DonorTotalSummaryOptionsModel m)
+        public EpplusResult DonorTotalSummary(DonorTotalSummaryOptionsModel model)
         {
-            var ep = new ExcelPackage();
-            var cn = new SqlConnection(Util.ConnectionString);
+            var excel = new ExcelPackage();
+            var connection = new SqlConnection(Util.ConnectionString);
 
-            var p1 = DonorTotalSummaryParameters(m, useMedianMin: true);
-            var totalSummary = cn.ExecuteReader("dbo.DonorTotalSummary", p1, commandType: CommandType.StoredProcedure, commandTimeout: 1200);
-            ep.AddSheet(totalSummary, "MemberNon");
+            var totalSummaryParameters = DonorTotalSummaryParameters(model, useMedianMin: true);
+            var totalSummary = connection.ExecuteReader("dbo.DonorTotalSummary", totalSummaryParameters, commandType: CommandType.StoredProcedure, commandTimeout: 1200);
+            excel.AddSheet(totalSummary, "MemberNon");
             totalSummary.Close();
 
-            var p2 = DonorTotalSummaryParameters(m);
-            var totalSummaryBySize = cn.ExecuteReader("dbo.DonorTotalSummaryBySize", p2, commandType: CommandType.StoredProcedure, commandTimeout: 1200);
-            ep.AddSheet(totalSummaryBySize, "BySize");
+            var totalSummaryBySizeParameters = DonorTotalSummaryParameters(model);
+            var totalSummaryBySize = connection.ExecuteReader("dbo.DonorTotalSummaryBySize", totalSummaryBySizeParameters, commandType: CommandType.StoredProcedure, commandTimeout: 1200);
+            excel.AddSheet(totalSummaryBySize, "BySize");
             totalSummaryBySize.Close();
 
-            var p3 = DonorTotalSummaryParameters(m);
-            var totalSummaryByAge = cn.ExecuteReader("dbo.DonorTotalSummaryByAge", p3, commandType: CommandType.StoredProcedure, commandTimeout: 1200);
-            ep.AddSheet(totalSummaryByAge, "ByAge");
+            var totalSummaryByAgeParameters = DonorTotalSummaryParameters(model);
+            var totalSummaryByAge = connection.ExecuteReader("dbo.DonorTotalSummaryByAge", totalSummaryByAgeParameters, commandType: CommandType.StoredProcedure, commandTimeout: 1200);
+            excel.AddSheet(totalSummaryByAge, "ByAge");
             totalSummaryByAge.Close();
 
-            return new EpplusResult(ep, "DonorTotalSummary.xlsx");
+            return CreateExcelResult(excel, "DonorTotalSummary.xlsx");
+        }
+
+        private static EpplusResult CreateExcelResult(ExcelPackage excelPackage, string fileName)
+        {
+            return new EpplusResult(excelPackage, fileName);
         }
 
         [HttpGet]
         public ActionResult DonorTotalSummaryOptions()
         {
-            var m = new DonorTotalSummaryOptionsModel
+            var model = new DonorTotalSummaryOptionsModel
             {
                 StartDate = DateTime.Today,
                 NumberOfYears = 5,
                 MinimumMedianTotal = 100,
-                Campus = new CodeInfo("Campus0"),
-                Fund = new CodeInfo("Fund")
+                Campus = CreateCodeInfoForField("Campus0"),
+                Fund = CreateCodeInfoForField("Fund")
             };
 
-            var customfunds = ContributionStatements.CustomFundSetSelectList();
-            if (customfunds != null)
-                m.FundSet = new CodeInfo(null, customfunds);
-            return View(m);
+            var customFundsList = ContributionStatements.CustomFundSetSelectList();
+
+            if (customFundsList != null)
+            {
+                model.FundSet = new CodeInfo(null, customFundsList);
+            }
+
+            return View(model);
         }
 
         [HttpGet]
-        public EpplusResult ChaiDonorsReportDownload(DonorTotalSummaryOptionsModel m)
+        public EpplusResult ChaiDonorsReportDownload(DonorTotalSummaryOptionsModel model)
         {
-            var p = new DynamicParameters();
-            p.Add("@fund", m.Fund.Value.ToInt());
+            var queryParameters = new DynamicParameters();
+            queryParameters.Add("@fund", model.Fund.Value.ToInt());
 
             var authorizedFunds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership().Select(f => f.FundId).ToList();
             var authorizedFundsCsv = string.Join(",", authorizedFunds);
-            p.Add("@authorizedFundIds", authorizedFundsCsv);
+            queryParameters.Add("@authorizedFundIds", authorizedFundsCsv);
 
-            var ep = new ExcelPackage();
-            var cn = new SqlConnection(Util.ConnectionString);
+            var excel = new ExcelPackage();
+            var connection = new SqlConnection(Util.ConnectionString);
 
-            var rd = cn.ExecuteReader("dbo.CHAIDonationsReport2", p, commandType: CommandType.StoredProcedure, commandTimeout: 1200);
-            ep.AddSheet(rd, "CHAIDonations");
+            var reader = connection.ExecuteReader("dbo.CHAIDonationsReport2", queryParameters, commandType: CommandType.StoredProcedure, commandTimeout: 1200);
+            excel.AddSheet(reader, "CHAIDonations");
+            reader.Close();
 
-            return new EpplusResult(ep, "CHAIDonationsReport.xlsx");
+            return CreateExcelResult(excel, "CHAIDonationsReport.xslx");
         }
 
         [HttpGet]
         public ActionResult ChaiDonorsReport()
         {
             //Re-using a model, projected that this report will use most fields in this model, in next rollout.
-            var m = new DonorTotalSummaryOptionsModel
+            var model = new DonorTotalSummaryOptionsModel
             {
                 StartDate = DateTime.Today,
                 NumberOfYears = 5,
                 MinimumMedianTotal = 100,
-                Campus = new CodeInfo("Campus0"),
-                Fund = new CodeInfo("Fund"),
+                Campus = CreateCodeInfoForField("Campus0"),
+                Fund = CreateCodeInfoForField("Fund"),
             };
-            return View(m);
+
+            return View(model);
+        }
+
+        private static CodeInfo CreateCodeInfoForField(string fieldName)
+        {
+            return new CodeInfo(fieldName);
         }
 
         public ActionResult PledgeReport()
         {
-            var fd = DateTime.Parse("1/1/1900");
-            var td = DateTime.Parse("1/1/2099");
-            var q = from r in DbUtil.Db.PledgeReport(fd, td, 0)
-                    join af in DbUtil.Db.ContributionFunds.ScopedByRoleMembership() on r.FundId equals af.FundId
-                    orderby r.FundId descending
-                    select r;
-            return View(q);
+            var fromDate = DateTime.Parse("1/1/1900");
+            var toDate = DateTime.Parse("1/1/2099");
+            var queryResult = from pledgeReports in DbUtil.Db.PledgeReport(fromDate, toDate, 0)
+                    join allowedFunds in DbUtil.Db.ContributionFunds.ScopedByRoleMembership() on pledgeReports.FundId equals allowedFunds.FundId
+                    orderby pledgeReports.FundId descending
+                    select pledgeReports;
+
+            return View(queryResult);
         }
 
         [HttpGet, Route("~/PledgeFulfillment2/{fundid1:int}/{fundid2:int}")]
         public EpplusResult PledgeFulfillment2(int fundid1, int fundid2)
         {
-            var ep = new ExcelPackage();
-            var cn = new SqlConnection(Util.ConnectionString);
-            cn.Open();
+            var excel = new ExcelPackage();
+            var connection = new SqlConnection(Util.ConnectionString);
+            connection.Open();
 
-            var rd = cn.ExecuteReader("dbo.PledgeFulfillment2", new { fundid1, fundid2, }, commandTimeout: 1200, commandType: CommandType.StoredProcedure);
-            ep.AddSheet(rd, "Pledges");
-            return new EpplusResult(ep, "PledgeFulfillment2.xlsx");
+            var reader = connection.ExecuteReader("dbo.PledgeFulfillment2", new { fundid1, fundid2, }, commandTimeout: 1200, commandType: CommandType.StoredProcedure);
+            excel.AddSheet(reader, "Pledges");
+            reader.Close();
+
+            return CreateExcelResult(excel, "PledgeFulfillment2.xlsx");
         }
 
         [HttpGet]
         public ActionResult DonorTotalsByRange()
         {
-            var m = new TotalsByFundModel();
-            return View(m);
+            var model = new TotalsByFundModel();
+            return View(model);
         }
 
         [HttpPost]
-        public ActionResult DonorTotalsByRangeResults(TotalsByFundModel m)
+        public ActionResult DonorTotalsByRangeResults(TotalsByFundModel model)
         {
-            return View(m);
+            return View(model);
         }
 
         [HttpGet]
         public ActionResult TotalsByFund()
         {
-            var m = new TotalsByFundModel();
-            return View(m);
+            var model = new TotalsByFundModel();
+            return View(model);
         }
 
         [HttpPost]
-        public ActionResult TotalsByFundExport(TotalsByFundModel m)
+        public ActionResult TotalsByFundExport(TotalsByFundModel model)
         {
-            m.SaveAsExcel();
-            return Content("done");
+            model.SaveAsExcel();
+            return SimpleContent("done");
+        }
+
+        private ContentResult SimpleContent(string message)
+        {
+            return Content(message);
         }
 
         [HttpPost, Route("~/TotalsByFundCustomReport/{id}")]
-        public ActionResult TotalsByFundCustomReport(string id, TotalsByFundModel m)
+        public ActionResult TotalsByFundCustomReport(string id, TotalsByFundModel model)
         {
             var content = DbUtil.Db.ContentOfTypeSql(id);
             if (content == null)
-                return Content("no content");
-            var cs = Util.ConnectionStringReadOnlyFinance;
-            var cn = new SqlConnection(cs);
-            cn.Open();
-            var p = m.GetDynamicParameters();
+            {
+                return SimpleContent("no content");
+            }
 
+            var p = model.GetDynamicParameters();
             ViewBag.Name = id.SpaceCamelCase();
-            var rd = cn.ExecuteReader(content, p, commandTimeout: 1200);
-            var excelink = DbUtil.Db.ServerLink($"/TotalsByFundCustomExport/{id}");
-            var link = $"<a href='{excelink}' class='CustomExport btn btn-default' target='_blank'><i class='fa fa-file-excel-o'></i> Download as Excel</a>";
-            return Content(GridResult.Table(rd, id.SpaceCamelCase(), excellink: link));
+
+            var linkUrl = DbUtil.Db.ServerLink($"/TotalsByFundCustomExport/{id}");
+            var linkHtml = $"<a href='{linkUrl}' class='CustomExport btn btn-default' target='_blank'><i class='fa fa-file-excel-o'></i> Download as Excel</a>";
+
+            var connection = new SqlConnection(Util.ConnectionStringReadOnlyFinance);
+            connection.Open();
+
+            var reader = connection.ExecuteReader(content, p, commandTimeout: 1200);
+            var contentTable = GridResult.Table(reader, id.SpaceCamelCase(), excellink: linkHtml);
+
+            return SimpleContent(contentTable);
         }
 
         [HttpPost, Route("~/TotalsByFundCustomExport/{id}")]
-        public ActionResult TotalsByFundCustomExport(string id, TotalsByFundModel m)
+        public ActionResult TotalsByFundCustomExport(string id, TotalsByFundModel model)
         {
             var content = DbUtil.Db.ContentOfTypeSql(id);
             if (content == null)
-                return Content("no content");
-            var cs = Util.ConnectionStringReadOnlyFinance;
-            var cn = new SqlConnection(cs);
-            cn.Open();
-            var p = m.GetDynamicParameters();
+            {
+                return SimpleContent("no content");
+            }
+
+            var connection = new SqlConnection(Util.ConnectionStringReadOnlyFinance);
+            connection.Open();
+            var queryParameters = model.GetDynamicParameters();
 
             var s = id.SpaceCamelCase();
-            return cn.ExecuteReader(content, p, commandTimeout: 1200).ToExcel(s + ".xlsx", fromSql: true);
+            return connection.ExecuteReader(content, queryParameters, commandTimeout: 1200).ToExcel(s + ".xlsx", fromSql: true);
         }
 
         [HttpPost, Route("~/FundList")]
-        public ActionResult FundList(TotalsByFundModel m)
+        public ActionResult FundList(TotalsByFundModel model)
         {
-            return Content($@"
-<pre>
-    {string.Join(",", APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db, m.FundSet))}
-</pre>
-");
+            return SimpleContent($@"<pre>{string.Join(",", APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db, model.FundSet))}</pre>");
         }
 
         [HttpPost]
-        public ActionResult TotalsByFundResults(TotalsByFundModel m)
+        public ActionResult TotalsByFundResults(TotalsByFundModel model)
         {
-            if (m.IncludeBundleType)
-                return View("TotalsByFundResults2", m);
-            return View(m);
+            if (model.IncludeBundleType)
+            {
+                return View("TotalsByFundResults2", model);
+            }
+
+            return View(model);
         }
 
         [HttpGet]
         public ActionResult TotalsByFundRange(bool? pledged)
         {
-            var m = new TotalsByFundRangeModel{ Pledged = pledged ?? false };
-            return View(m);
+            var model = new TotalsByFundRangeModel{ Pledged = pledged ?? false };
+            return View(model);
         }
 
         [HttpPost]
-        public ActionResult TotalsByFundRangeResults(TotalsByFundRangeModel m)
+        public ActionResult TotalsByFundRangeResults(TotalsByFundRangeModel model)
         {
-            return View(m);
+            return View(model);
         }
 
         [HttpGet]
         public ActionResult TotalsByFundAgeRange()
         {
-            var m = new TotalsByFundAgeRangeModel();
-            return View(m);
+            var model = new TotalsByFundAgeRangeModel();
+            return View(model);
         }
 
         [HttpPost]
-        public ActionResult TotalsByFundAgeRangeResults(TotalsByFundAgeRangeModel m)
+        public ActionResult TotalsByFundAgeRangeResults(TotalsByFundAgeRangeModel model)
         {
-            return View(m);
+            return View(model);
         }
 
         [HttpGet]
-        public ActionResult Deposits(DateTime dt)
+        public ActionResult Deposits(DateTime date)
         {
-            var m = new DepositsModel(dt);
-            return View(m);
+            var model = new DepositsModel(date);
+            return View(model);
         }
 
         [HttpGet]
         public ActionResult DepositTotalsForDates()
         {
-            var m = new DepositTotalsModel();
-            return View(m);
+            var model = new DepositTotalsModel();
+            return View(model);
         }
 
         [HttpPost]
-        public ActionResult DepositTotalsForDatesResults(DepositTotalsModel m)
+        public ActionResult DepositTotalsForDatesResults(DepositTotalsModel model)
         {
-            return View(m);
+            return View(model);
         }
 
         public ActionResult ManagedGiving(string sortBy, string sortDir)
         {
-            if (sortBy == "name")
-            {
-                if (string.IsNullOrEmpty(sortDir) || sortDir == "desc")
-                {
-                    var q2 = from rg in DbUtil.Db.ViewManagedGivingLists.ToList()
-                        orderby rg.Name2 ascending
-                        select rg;
+            var query = DbUtil.Db.ViewManagedGivingLists.AsQueryable();
 
-                    ViewBag.SortDir = "asc";
-                    return View(q2);
+            if(sortBy == "name")
+            {
+                if(string.IsNullOrEmpty(sortDir) || sortDir == "asc")
+                {
+                    query.OrderBy(mgl => mgl.Name2);
                 }
                 else
                 {
-                    var q2 = from rg in DbUtil.Db.ViewManagedGivingLists.ToList()
-                            orderby rg.Name2 descending
-                            select rg;
-
-                    ViewBag.SortDir = "desc";
-                    return View(q2);
+                    query.OrderByDescending(mgl => mgl.Name2);
                 }
-
             }
-            var q = from rg in DbUtil.Db.ViewManagedGivingLists.ToList()
-                    orderby rg.NextDate
-                    select rg;
-            return View(q);
+            else
+            {
+                if(string.IsNullOrEmpty(sortDir) || sortDir == "asc")
+                {
+                    query.OrderBy(mgl => mgl.NextDate);
+                }
+                else
+                {
+                    query.OrderByDescending(mgl => mgl.NextDate);
+                }
+            }
+
+            ViewBag.SortDir = sortDir == "asc" ? "desc" : "asc";
+
+            return View(query.ToList());
         }
 
         [HttpGet]
         public ActionResult ManageGiving2(int id)
         {
-            var m = new ManageGivingModel(id);
-            m.testing = true;
-            var body = ViewExtensions2.RenderPartialViewToString(this, "ManageGiving2", m);
-            return Content(body);
+            var model = new ManageGivingModel(id);
+            model.testing = true;
+            var body = ViewExtensions2.RenderPartialViewToString(this, "ManageGiving2", model);
+            return SimpleContent(body);
         }
 
         public ActionResult PledgeFulfillments(int id)

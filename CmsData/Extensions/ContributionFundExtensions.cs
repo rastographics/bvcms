@@ -13,22 +13,20 @@ namespace CmsData
 
         public static IQueryable<ContributionFund> ScopedByRoleMembership(this IQueryable<ContributionFund> contributionFunds, string[] allowedRoles)
         {
-            if(allowedRoles == null)
+            if (allowedRoles != null)
             {
-                return GetEmptyList();
-            }
+                if (allowedRoles.Contains("Finance"))
+                {
+                    return contributionFunds;
+                }
 
-            if (allowedRoles.Contains("Finance"))
-            {
-                return contributionFunds;
-            }
-
-            if (allowedRoles.Contains("FinanceViewOnly"))
-            {
-                return contributionFunds.Where(f => f.FundManagerRoleId != 0)
-                    .Join(DbUtil.Db.Roles, f => f.FundManagerRoleId, r => r.RoleId, (f, r) => new { role = r, fund = f })
-                    .Where(r => allowedRoles.Contains(r.role.RoleName))
-                    .Select(r => r.fund);
+                if (allowedRoles.Contains("FinanceViewOnly"))
+                {
+                    return contributionFunds.Where(f => f.FundManagerRoleId != 0)
+                        .Join(DbUtil.Db.Roles, f => f.FundManagerRoleId, r => r.RoleId, (f, r) => new { role = r, fund = f })
+                        .Where(r => allowedRoles.Contains(r.role.RoleName))
+                        .Select(r => r.fund);
+                }
             }
 
             return GetEmptyList();
