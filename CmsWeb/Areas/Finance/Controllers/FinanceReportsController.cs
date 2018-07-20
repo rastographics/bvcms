@@ -131,7 +131,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             excel.AddSheet(reader, "CHAIDonations");
             reader.Close();
 
-            return CreateExcelResult(excel, "CHAIDonationsReport.xslx");
+            return CreateExcelResult(excel, "CHAIDonationsReport.xlsx");
         }
 
         [HttpGet]
