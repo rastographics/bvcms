@@ -1276,6 +1276,7 @@
       <SubType>Designer</SubType>
     </Resource>
     <Content Include="App_Readme\Elmah.txt" />
+    <Content Include="Migrations\20180720_StoredProcedure_CHAIDonationsReport2.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
