@@ -298,9 +298,9 @@ namespace CmsWeb.Areas.Finance.Controllers
         }
 
         [HttpGet]
-        public ActionResult Deposits(DateTime date)
+        public ActionResult Deposits(DateTime dt)
         {
-            var model = new DepositsModel(date);
+            var model = new DepositsModel(dt);
             return View(model);
         }
 
