@@ -144,11 +144,11 @@ namespace CmsWeb.Areas.Finance.Models
 
             if (sortByName)
             {
-                query.OrderBy(cf => cf.FundName).ThenBy(cf => cf.FundId);
+                query = query.OrderBy(cf => cf.FundName).ThenBy(cf => cf.FundId);
             }
             else
             {
-                query.OrderBy(cf => cf.FundId);
+                query = query.OrderBy(cf => cf.FundId);
             }
 
             return new SelectList(query.ToList(), "FundId", "FundName", Bundle.FundId);
