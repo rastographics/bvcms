@@ -138,9 +138,20 @@ namespace CmsWeb.Areas.Finance.Models
         {
             return new SelectList(DbUtil.Db.BundleHeaderTypes, "Id", "Description", Bundle.BundleHeaderTypeId);
         }
-        public IEnumerable<SelectListItem> ContributionFundList()
+        public IEnumerable<SelectListItem> ContributionFundList(bool sortByName = true)
         {
-            return new SelectList(DbUtil.Db.ContributionFunds.Where(ff => ff.FundStatusId == 1), "FundId", "FundName", Bundle.FundId);
+            var query = DbUtil.Db.ContributionFunds.Where(cf => cf.FundStatusId == 1);
+
+            if (sortByName)
+            {
+                query.OrderBy(cf => cf.FundName).ThenBy(cf => cf.FundId);
+            }
+            else
+            {
+                query.OrderBy(cf => cf.FundId);
+            }
+
+            return new SelectList(query.ToList(), "FundId", "FundName", Bundle.FundId);
         }
         public IEnumerable<SelectListItem> BundleStatusList()
         {
