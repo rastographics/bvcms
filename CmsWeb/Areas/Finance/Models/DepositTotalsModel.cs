@@ -30,10 +30,12 @@ namespace CmsWeb.Models
 
         public IEnumerable<DepositDateTotal> FetchData()
         {
-            var authorizedFundIds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership().Select(f => f.FundId).JoinInts(",");
+            var authorizedFunds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership().Select(f => f.FundId).ToList();
+            var authorizedFundsCsv = string.Join(",", authorizedFunds);
+
             var connection = new SqlConnection(Util.ConnectionString);
             var parameters = new DynamicParameters();
-            parameters.Add("authorizedFunds", authorizedFundIds);
+            parameters.Add("authorizedFunds", authorizedFundsCsv);
             parameters.Add("startDate", Dt1 ?? DateTime.MinValue);
             parameters.Add("endDate", Dt2 ?? DateTime.MaxValue);
 
@@ -44,33 +46,21 @@ namespace CmsWeb.Models
             {
                 items.Add(new DepositDateTotal
                 {
-                    Count = reader.GetInt32(reader.GetOrdinal("Count")),
-                    TotalContributions = reader.GetDecimal(reader.GetOrdinal("TotalContributions")),
-                    TotalHeader = reader.GetDecimal(reader.GetOrdinal("TotalHeader"))
+                    DepositDate = reader["DepositDate"].ToNullableDate(),
+                    Count = reader["Count"].ToNullableInt(),
+                    TotalContributions = reader["TotalContributions"].ToNullableDecimal(),
+                    TotalHeader = reader["TotalHeader"].ToNullableDecimal()
                 });
             }
 
             Total = new DepositDateTotal
             {
-                TotalHeader = items.Sum(x => x.TotalHeader),
-                TotalContributions = items.Sum(x => x.TotalContributions),
-                Count = items.Sum(x => x.Count)
+                TotalHeader = items.Sum(x => x.TotalHeader ?? 0.00m),
+                TotalContributions = items.Sum(x => x.TotalContributions ?? 0.00m),
+                Count = items.Sum(x => x.Count ?? 0)
             };
 
             return items.OrderBy(x => x.DepositDate);
-
-            //var list = (from r in DbUtil.Db.ViewDepositDateTotals
-            //            where Dt1 == null || r.DepositDate >= Dt1 
-            //            where Dt2 == null || r.DepositDate <= Dt2
-            //            orderby r.DepositDate
-            //            select r).ToList();
-            //Total = new DepositDateTotal()
-            //{
-            //    TotalHeader = list.Sum(vv => vv.TotalHeader),
-            //    TotalContributions = list.Sum(vv => vv.TotalContributions),
-            //    Count = list.Sum(vv => vv.Count ?? 0),
-            //};
-            //return list;
         }
     }
 }
