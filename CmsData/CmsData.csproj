@@ -1277,6 +1277,8 @@
     </Resource>
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Migrations\20180720_StoredProcedure_CHAIDonationsReport2.sql" />
+    <Content Include="Migrations\20180720_StoredProcedure_GetDepositDateTotalsUsingAuthorizedFunds.sql" />
+    <Content Include="Migrations\20180720_Table_ContributionFunds.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
