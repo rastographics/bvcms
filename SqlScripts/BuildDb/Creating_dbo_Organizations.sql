@@ -79,7 +79,8 @@ CREATE TABLE [dbo].[Organizations]
 [PrevMemberCount] [int] NULL,
 [ProspectCount] [int] NULL,
 [RegSettingXml] [xml] NULL,
-[AttendanceBySubGroups] [bit] NULL
+[AttendanceBySubGroups] [bit] NULL,
+SendAttendanceLink bit NOT NULL CONSTRAINT [DF_Organizations_SendAttendanceLink] DEFAULT (0)
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON

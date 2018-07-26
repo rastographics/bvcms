@@ -78,7 +78,7 @@ namespace CmsData
 		
 		private bool? _AllowNonCampusCheckIn;
 		
-		private bool? _SendAttendanceLink;
+		private bool _SendAttendanceLink;
 		
 		private int? _NumWorkerCheckInLabels;
 		
@@ -1220,7 +1220,7 @@ namespace CmsData
 
 		
 		[Column(Name="SendAttendanceLink", UpdateCheck=UpdateCheck.Never, Storage="_SendAttendanceLink", DbType="bit")]
-		public bool? SendAttendanceLink
+		public bool SendAttendanceLink
 		{
 			get { return this._SendAttendanceLink; }
 
