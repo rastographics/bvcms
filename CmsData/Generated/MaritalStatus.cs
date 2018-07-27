@@ -26,8 +26,12 @@ namespace CmsData
 		
 		private bool? _Hardwired;
 		
+		private int _Single;
+		
+		private int _Married;
+		
    		
-   		private EntitySet< Person> _People;
+   		private EntitySet<Person> _People;
 		
     	
 	#endregion
@@ -49,11 +53,17 @@ namespace CmsData
 		partial void OnHardwiredChanging(bool? value);
 		partial void OnHardwiredChanged();
 		
+		partial void OnSingleChanging(int value);
+		partial void OnSingleChanged();
+		
+		partial void OnMarriedChanging(int value);
+		partial void OnMarriedChanged();
+		
     #endregion
 		public MaritalStatus()
 		{
 			
-			this._People = new EntitySet< Person>(new Action< Person>(this.attach_People), new Action< Person>(this.detach_People)); 
+			this._People = new EntitySet<Person>(new Action< Person>(this.attach_People), new Action< Person>(this.detach_People)); 
 			
 			
 			OnCreated();
@@ -150,12 +160,56 @@ namespace CmsData
 		}
 
 		
+		[Column(Name="Single", UpdateCheck=UpdateCheck.Never, Storage="_Single", DbType="int NOT NULL")]
+		public int Single
+		{
+			get { return this._Single; }
+
+			set
+			{
+				if (this._Single != value)
+				{
+				
+                    this.OnSingleChanging(value);
+					this.SendPropertyChanging();
+					this._Single = value;
+					this.SendPropertyChanged("Single");
+					this.OnSingleChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Married", UpdateCheck=UpdateCheck.Never, Storage="_Married", DbType="int NOT NULL")]
+		public int Married
+		{
+			get { return this._Married; }
+
+			set
+			{
+				if (this._Married != value)
+				{
+				
+                    this.OnMarriedChanging(value);
+					this.SendPropertyChanging();
+					this._Married = value;
+					this.SendPropertyChanged("Married");
+					this.OnMarriedChanged();
+				}
+
+			}
+
+		}
+
+		
     #endregion
         
     #region Foreign Key Tables
    		
    		[Association(Name="FK_People_MaritalStatus", Storage="_People", OtherKey="MaritalStatusId")]
-   		public EntitySet< Person> People
+   		public EntitySet<Person> People
    		{
    		    get { return this._People; }
 
