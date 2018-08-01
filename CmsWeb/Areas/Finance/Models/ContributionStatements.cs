@@ -637,7 +637,7 @@ p { font-size: 11px; }
                 string text;
                 float len;
 
-                text = $"id: {PeopleId}   Page {pg} of ";
+                text = $"Page {pg} of ";
                 PeopleId = NextPeopleId;
                 len = font.GetWidthPoint(text, 8);
                 dc.BeginText();
