@@ -562,6 +562,7 @@
     <Compile Include="Extensions\ChangeDetail.cs" />
     <Compile Include="Classes\AddressVerify.cs" />
     <Compile Include="Extensions\Contribution.cs" />
+    <Compile Include="Extensions\ContributionFundExtensions.cs" />
     <Compile Include="Extensions\DeleteMeetingRun.cs" />
     <Compile Include="Extensions\FamilyMember.cs" />
     <Compile Include="Extensions\LongRunningOperation.cs" />
@@ -1272,6 +1273,9 @@
     </Resource>
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Migrations\20180719_send-attendance-link.sql" />
+    <Content Include="Migrations\20180720_StoredProcedure_CHAIDonationsReport2.sql" />
+    <Content Include="Migrations\20180720_StoredProcedure_GetDepositDateTotalsUsingAuthorizedFunds.sql" />
+    <Content Include="Migrations\20180720_Table_ContributionFunds.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
