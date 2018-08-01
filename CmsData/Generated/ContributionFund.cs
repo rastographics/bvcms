@@ -55,6 +55,8 @@ namespace CmsData
 		private int _QBIncomeAccount;
 		
 		private int _QBAssetAccount;
+
+        private int _FundManagerRoleId;
 		
    		
    		private EntitySet< BundleHeader> _BundleHeaders;
@@ -67,9 +69,10 @@ namespace CmsData
 	#endregion
 	
     #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
+
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 		
 		partial void OnFundIdChanging(int value);
 		partial void OnFundIdChanged();
@@ -127,18 +130,20 @@ namespace CmsData
 		
 		partial void OnQBAssetAccountChanging(int value);
 		partial void OnQBAssetAccountChanged();
-		
-    #endregion
-		public ContributionFund()
-		{
-			
+
+        partial void OnFundManagerRoleIdChanging(int value);
+        partial void OnFundManagerRoleIdChanged();
+
+        #endregion
+
+        public ContributionFund()
+		{			
 			this._BundleHeaders = new EntitySet< BundleHeader>(new Action< BundleHeader>(this.attach_BundleHeaders), new Action< BundleHeader>(this.detach_BundleHeaders)); 
 			
 			this._Contributions = new EntitySet< Contribution>(new Action< Contribution>(this.attach_Contributions), new Action< Contribution>(this.detach_Contributions)); 
 			
 			this._RecurringAmounts = new EntitySet< RecurringAmount>(new Action< RecurringAmount>(this.attach_RecurringAmounts), new Action< RecurringAmount>(this.detach_RecurringAmounts)); 
-			
-			
+						
 			OnCreated();
 		}
 
@@ -562,6 +567,26 @@ namespace CmsData
 
 		}
 
+        [Column(Name = "FundManagerRoleId", UpdateCheck = UpdateCheck.Never, Storage = "_FundManagerRoleId", DbType = "int")]
+        public int FundManagerRoleId
+        {
+            get
+            {
+                return this._FundManagerRoleId;
+            }
+            set
+            {
+                if(this._FundManagerRoleId != value)
+                {
+                    this.OnFundManagerRoleIdChanging(value);
+                    this.SendPropertyChanging();
+                    this._FundManagerRoleId = value;
+                    this.SendPropertyChanged("FundManagerRoleId");
+                    this.OnFundManagerRoleIdChanged();
+                }
+            }
+        }
+
 		
     #endregion
         
@@ -604,19 +629,20 @@ namespace CmsData
 	#endregion
 	
 		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
+
+        protected virtual void SendPropertyChanging()
 		{
 			if ((this.PropertyChanging != null))
 				this.PropertyChanging(this, emptyChangingEventArgs);
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
+
+        protected virtual void SendPropertyChanged(String propertyName)
 		{
 			if ((this.PropertyChanged != null))
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 		}
-
    		
 		private void attach_BundleHeaders(BundleHeader entity)
 		{
@@ -629,7 +655,6 @@ namespace CmsData
 			this.SendPropertyChanging();
 			entity.Fund = null;
 		}
-
 		
 		private void attach_Contributions(Contribution entity)
 		{
@@ -642,7 +667,6 @@ namespace CmsData
 			this.SendPropertyChanging();
 			entity.ContributionFund = null;
 		}
-
 		
 		private void attach_RecurringAmounts(RecurringAmount entity)
 		{
@@ -654,10 +678,6 @@ namespace CmsData
 		{
 			this.SendPropertyChanging();
 			entity.ContributionFund = null;
-		}
-
-		
+		}		
 	}
-
 }
-
