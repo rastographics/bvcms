@@ -1272,6 +1272,7 @@
     </Resource>
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Migrations\20180719_send-attendance-link.sql" />
+    <Content Include="Migrations\20180727_attendance-enhancements-to-lookups.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
