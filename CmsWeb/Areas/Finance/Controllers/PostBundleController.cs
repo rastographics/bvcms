@@ -165,7 +165,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         {
             var q = from f in DbUtil.Db.ContributionFunds
                     where f.FundStatusId == 1
-                    orderby f.FundId
+                    orderby f.FundName
                     select new
                     {
                         value = f.FundId,
