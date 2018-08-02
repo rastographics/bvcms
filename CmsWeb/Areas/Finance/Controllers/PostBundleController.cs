@@ -169,7 +169,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                     select new
                     {
                         value = f.FundId,
-                        text = $"{f.FundId} - {f.FundName}",
+                        text = $"{f.FundName} ({f.FundId})",
                     };
 
             return Json(q.ToList(), JsonRequestBehavior.AllowGet);

@@ -548,7 +548,7 @@ namespace CmsWeb.Models
             public string Fund { get; set; }
             public int FundId { get; set; }
 
-            public string FundDisplay => $"{FundId} - {Fund}";
+            public string FundDisplay => $"{Fund} ({Fund})";
 
             public string Notes { get; set; }
             public string CheckNo { get; set; }
