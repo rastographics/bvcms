@@ -142,7 +142,7 @@ namespace CmsWeb.Models
                     orderby f.FundName
                     select new SelectListItem
                     {
-                        Text = $"{f.FundId} - {f.FundName}",
+                        Text = $"{f.FundName} ({f.FundId})",
                         Value = f.FundId.ToString()
                     };
             return q;
