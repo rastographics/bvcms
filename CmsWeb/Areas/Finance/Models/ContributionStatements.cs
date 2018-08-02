@@ -191,9 +191,10 @@ p { font-size: 11px; }
                         envno = $" env: {Util.PickFirst(ev.Data, ev.IntValue.ToString(), ev.StrValue)}";
                 }
 
-                t2.AddCell(db.Setting("NoPrintDateOnStatement")
-                    ? new Phrase($"\nid:{ci.PeopleId}{envno} {ci.CampusId}", font) 
-                    : new Phrase($"\nprinted: {DateTime.Now:M/d/yy} id:{ci.PeopleId}{envno} {ci.CampusId}", font));
+                if (!db.Setting("NoPrintDateOnStatement"))
+                {
+                    t2.AddCell(new Phrase($"\nprinted: {DateTime.Now:M/d/yy}", font));
+                }
 
                 t2.AddCell("");
                 var mh2 = new MyHandler();
