@@ -139,7 +139,7 @@ namespace CmsWeb.Models
         {
             var q = from f in DbUtil.Db.ContributionFunds
                     where f.FundStatusId == 1
-                    orderby f.FundId
+                    orderby f.FundName
                     select new SelectListItem
                     {
                         Text = $"{f.FundId} - {f.FundName}",
