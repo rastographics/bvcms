@@ -118,7 +118,7 @@ namespace CmsWeb.Areas.Finance.Models
                      {
                          ContributionId = c.ContributionId,
                          PeopleId = c.PeopleId,
-                         Fund = c.ContributionFund.FundName,
+                         Fund = $"{c.ContributionFund.FundName} ({c.ContributionFund.FundId})",
                          Type = c.ContributionType.Description,
                          Name = c.Person.Name2
                               + (c.Person.DeceasedDate.HasValue ? " [DECEASED]" : ""),
@@ -138,9 +138,22 @@ namespace CmsWeb.Areas.Finance.Models
         {
             return new SelectList(DbUtil.Db.BundleHeaderTypes, "Id", "Description", Bundle.BundleHeaderTypeId);
         }
-        public IEnumerable<SelectListItem> ContributionFundList()
+        public IEnumerable<SelectListItem> ContributionFundList(bool sortByName = true)
         {
-            return new SelectList(DbUtil.Db.ContributionFunds.Where(ff => ff.FundStatusId == 1), "FundId", "FundName", Bundle.FundId);
+            var query = DbUtil.Db.ContributionFunds.Where(cf => cf.FundStatusId == 1);
+
+            if (sortByName)
+            {
+                query = query.OrderBy(cf => cf.FundName).ThenBy(cf => cf.FundId);
+            }
+            else
+            {
+                query = query.OrderBy(cf => cf.FundId);
+            }
+
+            var items = query.ToList().Select(x => new { x.FundId, x.FundName, FundDisplay = $"{x.FundName} ({x.FundId})" });
+
+            return new SelectList(items, "FundId", "FundDisplay", Bundle.FundId);
         }
         public IEnumerable<SelectListItem> BundleStatusList()
         {

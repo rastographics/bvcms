@@ -117,7 +117,7 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> FundList()
         {
-            return Funds();
+            return FundsScopedByRoleMembershipWithUnspecified();
         }
 
         public IEnumerable<CodeValueItem> Campus0List()

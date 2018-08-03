@@ -93,6 +93,13 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-sm-4 col-lg-3">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Fund Management Role" data-content="You may use this to assign a custom role to this fund. Members of the chosen role will be able to view contribution reports for data associated with this fund. If unspecified, the finance role is required."><i class="fa fa-info-circle"></i></a>&nbsp;
+                            <label for="@Html.IdFor(m => m.FundManagerRoleId)" class="control-label">Fund Management Role</label>
+                            @Html.DropDownList("FundManagerRoleId", CmsWeb.Areas.Finance.Controllers.FundController.GetRolesList(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-sm-12">
                             <div class="checkbox">
                                 <label class="control-label">
