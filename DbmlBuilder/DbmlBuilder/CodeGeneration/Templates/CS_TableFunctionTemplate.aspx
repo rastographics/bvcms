@@ -18,7 +18,7 @@ namespace <%=Db.Service.GeneratedNamespace %>
           {
 %>
 		[Function(Name="<%=sp.Name%>", IComposable = true)]
-		public IQueryable< <%=sp.DisplayName%> > <%=sp.DisplayName%>(
+		public IQueryable<<%=sp.DisplayName%> > <%=sp.DisplayName%>(
 		<%
             bool isFirst = true;
             foreach (StoredProcedure.Parameter p in sp.Parameters)
@@ -31,7 +31,7 @@ namespace <%=Db.Service.GeneratedNamespace %>
         %>
             )
 		{
-			return this.CreateMethodCallQuery< <%= sp.DisplayName %>>(this, 
+			return this.CreateMethodCallQuery<<%= sp.DisplayName %>>(this, 
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())), 
         <%
             bool isFirst = true;

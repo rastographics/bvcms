@@ -422,10 +422,6 @@
       <HintPath>..\packages\System.Reflection.TypeExtensions.4.4.0\lib\net461\System.Reflection.TypeExtensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Runtime.Serialization.Primitives, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.Serialization.Primitives.4.3.0\lib\net46\System.Runtime.Serialization.Primitives.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Security.Cryptography.Algorithms, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.1\lib\net461\System.Security.Cryptography.Algorithms.dll</HintPath>
       <Private>True</Private>
@@ -1276,6 +1272,7 @@
       <SubType>Designer</SubType>
     </Resource>
     <Content Include="App_Readme\Elmah.txt" />
+    <Content Include="Migrations\20180719_send-attendance-link.sql" />
     <Content Include="Migrations\20180720_StoredProcedure_CHAIDonationsReport2.sql" />
     <Content Include="Migrations\20180720_StoredProcedure_GetDepositDateTotalsUsingAuthorizedFunds.sql" />
     <Content Include="Migrations\20180720_Table_ContributionFunds.sql" />
