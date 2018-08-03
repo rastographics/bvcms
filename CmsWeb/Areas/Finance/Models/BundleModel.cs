@@ -118,7 +118,7 @@ namespace CmsWeb.Areas.Finance.Models
                      {
                          ContributionId = c.ContributionId,
                          PeopleId = c.PeopleId,
-                         Fund = c.ContributionFund.FundName,
+                         Fund = $"{c.ContributionFund.FundName} ({c.ContributionFund.FundId})",
                          Type = c.ContributionType.Description,
                          Name = c.Person.Name2
                               + (c.Person.DeceasedDate.HasValue ? " [DECEASED]" : ""),
@@ -151,7 +151,9 @@ namespace CmsWeb.Areas.Finance.Models
                 query = query.OrderBy(cf => cf.FundId);
             }
 
-            return new SelectList(query.ToList(), "FundId", "FundName", Bundle.FundId);
+            var items = query.ToList().Select(x => new { x.FundId, x.FundName, FundDisplay = $"{x.FundName} ({x.FundId})" });
+
+            return new SelectList(items, "FundId", "FundDisplay", Bundle.FundId);
         }
         public IEnumerable<SelectListItem> BundleStatusList()
         {

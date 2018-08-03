@@ -178,55 +178,57 @@ namespace CmsData
 		
 		private bool? _AttendanceBySubGroups;
 		
+		private bool _SendAttendanceLink;
+		
    		
-   		private EntitySet< Person> _BFMembers;
+   		private EntitySet<Person> _BFMembers;
 		
-   		private EntitySet< Organization> _ChildOrgs;
+   		private EntitySet<Organization> _ChildOrgs;
 		
-   		private EntitySet< Contact> _contactsHad;
+   		private EntitySet<Contact> _contactsHad;
 		
-   		private EntitySet< EnrollmentTransaction> _EnrollmentTransactions;
+   		private EntitySet<EnrollmentTransaction> _EnrollmentTransactions;
 		
-   		private EntitySet< Attend> _Attends;
+   		private EntitySet<Attend> _Attends;
 		
-   		private EntitySet< Coupon> _Coupons;
+   		private EntitySet<Coupon> _Coupons;
 		
-   		private EntitySet< DivOrg> _DivOrgs;
+   		private EntitySet<DivOrg> _DivOrgs;
 		
-   		private EntitySet< GoerSenderAmount> _GoerSenderAmounts;
+   		private EntitySet<GoerSenderAmount> _GoerSenderAmounts;
 		
-   		private EntitySet< Meeting> _Meetings;
+   		private EntitySet<Meeting> _Meetings;
 		
-   		private EntitySet< MemberTag> _MemberTags;
+   		private EntitySet<MemberTag> _MemberTags;
 		
-   		private EntitySet< OrganizationExtra> _OrganizationExtras;
+   		private EntitySet<OrganizationExtra> _OrganizationExtras;
 		
-   		private EntitySet< OrgMemberExtra> _OrgMemberExtras;
+   		private EntitySet<OrgMemberExtra> _OrgMemberExtras;
 		
-   		private EntitySet< OrgSchedule> _OrgSchedules;
+   		private EntitySet<OrgSchedule> _OrgSchedules;
 		
-   		private EntitySet< PrevOrgMemberExtra> _PrevOrgMemberExtras;
+   		private EntitySet<PrevOrgMemberExtra> _PrevOrgMemberExtras;
 		
-   		private EntitySet< Resource> _Resources;
+   		private EntitySet<Resource> _Resources;
 		
-   		private EntitySet< ResourceOrganization> _ResourceOrganizations;
+   		private EntitySet<ResourceOrganization> _ResourceOrganizations;
 		
-   		private EntitySet< OrganizationMember> _OrganizationMembers;
+   		private EntitySet<OrganizationMember> _OrganizationMembers;
 		
     	
-		private EntityRef< Organization> _ParentOrg;
+		private EntityRef<Organization> _ParentOrg;
 		
-		private EntityRef< Campu> _Campu;
+		private EntityRef<Campu> _Campu;
 		
-		private EntityRef< Division> _Division;
+		private EntityRef<Division> _Division;
 		
-		private EntityRef< Gender> _Gender;
+		private EntityRef<Gender> _Gender;
 		
-		private EntityRef< OrganizationType> _OrganizationType;
+		private EntityRef<OrganizationType> _OrganizationType;
 		
-		private EntityRef< EntryPoint> _EntryPoint;
+		private EntityRef<EntryPoint> _EntryPoint;
 		
-		private EntityRef< OrganizationStatus> _OrganizationStatus;
+		private EntityRef<OrganizationStatus> _OrganizationStatus;
 		
 	#endregion
 	
@@ -475,58 +477,61 @@ namespace CmsData
 		partial void OnAttendanceBySubGroupsChanging(bool? value);
 		partial void OnAttendanceBySubGroupsChanged();
 		
+		partial void OnSendAttendanceLinkChanging(bool value);
+		partial void OnSendAttendanceLinkChanged();
+		
     #endregion
 		public Organization()
 		{
 			
-			this._BFMembers = new EntitySet< Person>(new Action< Person>(this.attach_BFMembers), new Action< Person>(this.detach_BFMembers)); 
+			this._BFMembers = new EntitySet<Person>(new Action< Person>(this.attach_BFMembers), new Action< Person>(this.detach_BFMembers)); 
 			
-			this._ChildOrgs = new EntitySet< Organization>(new Action< Organization>(this.attach_ChildOrgs), new Action< Organization>(this.detach_ChildOrgs)); 
+			this._ChildOrgs = new EntitySet<Organization>(new Action< Organization>(this.attach_ChildOrgs), new Action< Organization>(this.detach_ChildOrgs)); 
 			
-			this._contactsHad = new EntitySet< Contact>(new Action< Contact>(this.attach_contactsHad), new Action< Contact>(this.detach_contactsHad)); 
+			this._contactsHad = new EntitySet<Contact>(new Action< Contact>(this.attach_contactsHad), new Action< Contact>(this.detach_contactsHad)); 
 			
-			this._EnrollmentTransactions = new EntitySet< EnrollmentTransaction>(new Action< EnrollmentTransaction>(this.attach_EnrollmentTransactions), new Action< EnrollmentTransaction>(this.detach_EnrollmentTransactions)); 
+			this._EnrollmentTransactions = new EntitySet<EnrollmentTransaction>(new Action< EnrollmentTransaction>(this.attach_EnrollmentTransactions), new Action< EnrollmentTransaction>(this.detach_EnrollmentTransactions)); 
 			
-			this._Attends = new EntitySet< Attend>(new Action< Attend>(this.attach_Attends), new Action< Attend>(this.detach_Attends)); 
+			this._Attends = new EntitySet<Attend>(new Action< Attend>(this.attach_Attends), new Action< Attend>(this.detach_Attends)); 
 			
-			this._Coupons = new EntitySet< Coupon>(new Action< Coupon>(this.attach_Coupons), new Action< Coupon>(this.detach_Coupons)); 
+			this._Coupons = new EntitySet<Coupon>(new Action< Coupon>(this.attach_Coupons), new Action< Coupon>(this.detach_Coupons)); 
 			
-			this._DivOrgs = new EntitySet< DivOrg>(new Action< DivOrg>(this.attach_DivOrgs), new Action< DivOrg>(this.detach_DivOrgs)); 
+			this._DivOrgs = new EntitySet<DivOrg>(new Action< DivOrg>(this.attach_DivOrgs), new Action< DivOrg>(this.detach_DivOrgs)); 
 			
-			this._GoerSenderAmounts = new EntitySet< GoerSenderAmount>(new Action< GoerSenderAmount>(this.attach_GoerSenderAmounts), new Action< GoerSenderAmount>(this.detach_GoerSenderAmounts)); 
+			this._GoerSenderAmounts = new EntitySet<GoerSenderAmount>(new Action< GoerSenderAmount>(this.attach_GoerSenderAmounts), new Action< GoerSenderAmount>(this.detach_GoerSenderAmounts)); 
 			
-			this._Meetings = new EntitySet< Meeting>(new Action< Meeting>(this.attach_Meetings), new Action< Meeting>(this.detach_Meetings)); 
+			this._Meetings = new EntitySet<Meeting>(new Action< Meeting>(this.attach_Meetings), new Action< Meeting>(this.detach_Meetings)); 
 			
-			this._MemberTags = new EntitySet< MemberTag>(new Action< MemberTag>(this.attach_MemberTags), new Action< MemberTag>(this.detach_MemberTags)); 
+			this._MemberTags = new EntitySet<MemberTag>(new Action< MemberTag>(this.attach_MemberTags), new Action< MemberTag>(this.detach_MemberTags)); 
 			
-			this._OrganizationExtras = new EntitySet< OrganizationExtra>(new Action< OrganizationExtra>(this.attach_OrganizationExtras), new Action< OrganizationExtra>(this.detach_OrganizationExtras)); 
+			this._OrganizationExtras = new EntitySet<OrganizationExtra>(new Action< OrganizationExtra>(this.attach_OrganizationExtras), new Action< OrganizationExtra>(this.detach_OrganizationExtras)); 
 			
-			this._OrgMemberExtras = new EntitySet< OrgMemberExtra>(new Action< OrgMemberExtra>(this.attach_OrgMemberExtras), new Action< OrgMemberExtra>(this.detach_OrgMemberExtras)); 
+			this._OrgMemberExtras = new EntitySet<OrgMemberExtra>(new Action< OrgMemberExtra>(this.attach_OrgMemberExtras), new Action< OrgMemberExtra>(this.detach_OrgMemberExtras)); 
 			
-			this._OrgSchedules = new EntitySet< OrgSchedule>(new Action< OrgSchedule>(this.attach_OrgSchedules), new Action< OrgSchedule>(this.detach_OrgSchedules)); 
+			this._OrgSchedules = new EntitySet<OrgSchedule>(new Action< OrgSchedule>(this.attach_OrgSchedules), new Action< OrgSchedule>(this.detach_OrgSchedules)); 
 			
-			this._PrevOrgMemberExtras = new EntitySet< PrevOrgMemberExtra>(new Action< PrevOrgMemberExtra>(this.attach_PrevOrgMemberExtras), new Action< PrevOrgMemberExtra>(this.detach_PrevOrgMemberExtras)); 
+			this._PrevOrgMemberExtras = new EntitySet<PrevOrgMemberExtra>(new Action< PrevOrgMemberExtra>(this.attach_PrevOrgMemberExtras), new Action< PrevOrgMemberExtra>(this.detach_PrevOrgMemberExtras)); 
 			
-			this._Resources = new EntitySet< Resource>(new Action< Resource>(this.attach_Resources), new Action< Resource>(this.detach_Resources)); 
+			this._Resources = new EntitySet<Resource>(new Action< Resource>(this.attach_Resources), new Action< Resource>(this.detach_Resources)); 
 			
-			this._ResourceOrganizations = new EntitySet< ResourceOrganization>(new Action< ResourceOrganization>(this.attach_ResourceOrganizations), new Action< ResourceOrganization>(this.detach_ResourceOrganizations)); 
+			this._ResourceOrganizations = new EntitySet<ResourceOrganization>(new Action< ResourceOrganization>(this.attach_ResourceOrganizations), new Action< ResourceOrganization>(this.detach_ResourceOrganizations)); 
 			
-			this._OrganizationMembers = new EntitySet< OrganizationMember>(new Action< OrganizationMember>(this.attach_OrganizationMembers), new Action< OrganizationMember>(this.detach_OrganizationMembers)); 
+			this._OrganizationMembers = new EntitySet<OrganizationMember>(new Action< OrganizationMember>(this.attach_OrganizationMembers), new Action< OrganizationMember>(this.detach_OrganizationMembers)); 
 			
 			
-			this._ParentOrg = default(EntityRef< Organization>); 
+			this._ParentOrg = default(EntityRef<Organization>); 
 			
-			this._Campu = default(EntityRef< Campu>); 
+			this._Campu = default(EntityRef<Campu>); 
 			
-			this._Division = default(EntityRef< Division>); 
+			this._Division = default(EntityRef<Division>); 
 			
-			this._Gender = default(EntityRef< Gender>); 
+			this._Gender = default(EntityRef<Gender>); 
 			
-			this._OrganizationType = default(EntityRef< OrganizationType>); 
+			this._OrganizationType = default(EntityRef<OrganizationType>); 
 			
-			this._EntryPoint = default(EntityRef< EntryPoint>); 
+			this._EntryPoint = default(EntityRef<EntryPoint>); 
 			
-			this._OrganizationStatus = default(EntityRef< OrganizationStatus>); 
+			this._OrganizationStatus = default(EntityRef<OrganizationStatus>); 
 			
 			OnCreated();
 		}
@@ -2322,12 +2327,34 @@ namespace CmsData
 		}
 
 		
+		[Column(Name="SendAttendanceLink", UpdateCheck=UpdateCheck.Never, Storage="_SendAttendanceLink", DbType="bit NOT NULL")]
+		public bool SendAttendanceLink
+		{
+			get { return this._SendAttendanceLink; }
+
+			set
+			{
+				if (this._SendAttendanceLink != value)
+				{
+				
+                    this.OnSendAttendanceLinkChanging(value);
+					this.SendPropertyChanging();
+					this._SendAttendanceLink = value;
+					this.SendPropertyChanged("SendAttendanceLink");
+					this.OnSendAttendanceLinkChanged();
+				}
+
+			}
+
+		}
+
+		
     #endregion
         
     #region Foreign Key Tables
    		
    		[Association(Name="BFMembers__BFClass", Storage="_BFMembers", OtherKey="BibleFellowshipClassId")]
-   		public EntitySet< Person> BFMembers
+   		public EntitySet<Person> BFMembers
    		{
    		    get { return this._BFMembers; }
 
@@ -2337,7 +2364,7 @@ namespace CmsData
 
 		
    		[Association(Name="ChildOrgs__ParentOrg", Storage="_ChildOrgs", OtherKey="ParentOrgId")]
-   		public EntitySet< Organization> ChildOrgs
+   		public EntitySet<Organization> ChildOrgs
    		{
    		    get { return this._ChildOrgs; }
 
@@ -2347,7 +2374,7 @@ namespace CmsData
 
 		
    		[Association(Name="contactsHad__organization", Storage="_contactsHad", OtherKey="OrganizationId")]
-   		public EntitySet< Contact> contactsHad
+   		public EntitySet<Contact> contactsHad
    		{
    		    get { return this._contactsHad; }
 
@@ -2357,7 +2384,7 @@ namespace CmsData
 
 		
    		[Association(Name="ENROLLMENT_TRANSACTION_ORG_FK", Storage="_EnrollmentTransactions", OtherKey="OrganizationId")]
-   		public EntitySet< EnrollmentTransaction> EnrollmentTransactions
+   		public EntitySet<EnrollmentTransaction> EnrollmentTransactions
    		{
    		    get { return this._EnrollmentTransactions; }
 
@@ -2367,7 +2394,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_AttendWithAbsents_TBL_ORGANIZATIONS_TBL", Storage="_Attends", OtherKey="OrganizationId")]
-   		public EntitySet< Attend> Attends
+   		public EntitySet<Attend> Attends
    		{
    		    get { return this._Attends; }
 
@@ -2377,7 +2404,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_Coupons_Organizations", Storage="_Coupons", OtherKey="OrgId")]
-   		public EntitySet< Coupon> Coupons
+   		public EntitySet<Coupon> Coupons
    		{
    		    get { return this._Coupons; }
 
@@ -2387,7 +2414,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_DivOrg_Organizations", Storage="_DivOrgs", OtherKey="OrgId")]
-   		public EntitySet< DivOrg> DivOrgs
+   		public EntitySet<DivOrg> DivOrgs
    		{
    		    get { return this._DivOrgs; }
 
@@ -2397,7 +2424,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_GoerSenderAmounts_Organizations", Storage="_GoerSenderAmounts", OtherKey="OrgId")]
-   		public EntitySet< GoerSenderAmount> GoerSenderAmounts
+   		public EntitySet<GoerSenderAmount> GoerSenderAmounts
    		{
    		    get { return this._GoerSenderAmounts; }
 
@@ -2407,7 +2434,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_MEETINGS_TBL_ORGANIZATIONS_TBL", Storage="_Meetings", OtherKey="OrganizationId")]
-   		public EntitySet< Meeting> Meetings
+   		public EntitySet<Meeting> Meetings
    		{
    		    get { return this._Meetings; }
 
@@ -2417,7 +2444,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_MemberTags_Organizations", Storage="_MemberTags", OtherKey="OrgId")]
-   		public EntitySet< MemberTag> MemberTags
+   		public EntitySet<MemberTag> MemberTags
    		{
    		    get { return this._MemberTags; }
 
@@ -2427,7 +2454,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_OrganizationExtra_Organizations", Storage="_OrganizationExtras", OtherKey="OrganizationId")]
-   		public EntitySet< OrganizationExtra> OrganizationExtras
+   		public EntitySet<OrganizationExtra> OrganizationExtras
    		{
    		    get { return this._OrganizationExtras; }
 
@@ -2437,7 +2464,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_OrgMemberExtra_Organizations", Storage="_OrgMemberExtras", OtherKey="OrganizationId")]
-   		public EntitySet< OrgMemberExtra> OrgMemberExtras
+   		public EntitySet<OrgMemberExtra> OrgMemberExtras
    		{
    		    get { return this._OrgMemberExtras; }
 
@@ -2447,7 +2474,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_OrgSchedule_Organizations", Storage="_OrgSchedules", OtherKey="OrganizationId")]
-   		public EntitySet< OrgSchedule> OrgSchedules
+   		public EntitySet<OrgSchedule> OrgSchedules
    		{
    		    get { return this._OrgSchedules; }
 
@@ -2457,7 +2484,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_PrevOrgMemberExtra_Organization", Storage="_PrevOrgMemberExtras", OtherKey="OrganizationId")]
-   		public EntitySet< PrevOrgMemberExtra> PrevOrgMemberExtras
+   		public EntitySet<PrevOrgMemberExtra> PrevOrgMemberExtras
    		{
    		    get { return this._PrevOrgMemberExtras; }
 
@@ -2467,7 +2494,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_Resource_Organization", Storage="_Resources", OtherKey="OrganizationId")]
-   		public EntitySet< Resource> Resources
+   		public EntitySet<Resource> Resources
    		{
    		    get { return this._Resources; }
 
@@ -2477,7 +2504,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_ResourceOrganization_Organizations", Storage="_ResourceOrganizations", OtherKey="OrganizationId")]
-   		public EntitySet< ResourceOrganization> ResourceOrganizations
+   		public EntitySet<ResourceOrganization> ResourceOrganizations
    		{
    		    get { return this._ResourceOrganizations; }
 
@@ -2487,7 +2514,7 @@ namespace CmsData
 
 		
    		[Association(Name="ORGANIZATION_MEMBERS_ORG_FK", Storage="_OrganizationMembers", OtherKey="OrganizationId")]
-   		public EntitySet< OrganizationMember> OrganizationMembers
+   		public EntitySet<OrganizationMember> OrganizationMembers
    		{
    		    get { return this._OrganizationMembers; }
 
