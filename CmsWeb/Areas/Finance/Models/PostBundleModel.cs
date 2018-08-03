@@ -139,10 +139,10 @@ namespace CmsWeb.Models
         {
             var q = from f in DbUtil.Db.ContributionFunds
                     where f.FundStatusId == 1
-                    orderby f.FundId
+                    orderby f.FundName
                     select new SelectListItem
                     {
-                        Text = $"{f.FundId} - {f.FundName}",
+                        Text = $"{f.FundName} ({f.FundId})",
                         Value = f.FundId.ToString()
                     };
             return q;
@@ -548,7 +548,7 @@ namespace CmsWeb.Models
             public string Fund { get; set; }
             public int FundId { get; set; }
 
-            public string FundDisplay => $"{FundId} - {Fund}";
+            public string FundDisplay => $"{Fund} ({FundId})";
 
             public string Notes { get; set; }
             public string CheckNo { get; set; }

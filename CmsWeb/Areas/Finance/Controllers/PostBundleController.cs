@@ -165,11 +165,11 @@ namespace CmsWeb.Areas.Finance.Controllers
         {
             var q = from f in DbUtil.Db.ContributionFunds
                     where f.FundStatusId == 1
-                    orderby f.FundId
+                    orderby f.FundName
                     select new
                     {
                         value = f.FundId,
-                        text = $"{f.FundId} - {f.FundName}",
+                        text = $"{f.FundName} ({f.FundId})",
                     };
 
             return Json(q.ToList(), JsonRequestBehavior.AllowGet);
