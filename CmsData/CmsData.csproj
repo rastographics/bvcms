@@ -1276,6 +1276,7 @@
     <Content Include="Migrations\20180720_StoredProcedure_CHAIDonationsReport2.sql" />
     <Content Include="Migrations\20180720_StoredProcedure_GetDepositDateTotalsUsingAuthorizedFunds.sql" />
     <Content Include="Migrations\20180720_Table_ContributionFunds.sql" />
+    <Content Include="Migrations\20180727_attendance-enhancements-to-lookups.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

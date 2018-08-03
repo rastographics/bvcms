@@ -26,8 +26,14 @@ namespace CmsData
 		
 		private bool? _Hardwired;
 		
+		private bool _Member;
+		
+		private bool _Previous;
+		
+		private bool _Pending;
+		
    		
-   		private EntitySet< Person> _People;
+   		private EntitySet<Person> _People;
 		
     	
 	#endregion
@@ -49,11 +55,20 @@ namespace CmsData
 		partial void OnHardwiredChanging(bool? value);
 		partial void OnHardwiredChanged();
 		
+		partial void OnMemberChanging(bool value);
+		partial void OnMemberChanged();
+		
+		partial void OnPreviousChanging(bool value);
+		partial void OnPreviousChanged();
+		
+		partial void OnPendingChanging(bool value);
+		partial void OnPendingChanged();
+		
     #endregion
 		public MemberStatus()
 		{
 			
-			this._People = new EntitySet< Person>(new Action< Person>(this.attach_People), new Action< Person>(this.detach_People)); 
+			this._People = new EntitySet<Person>(new Action< Person>(this.attach_People), new Action< Person>(this.detach_People)); 
 			
 			
 			OnCreated();
@@ -150,12 +165,78 @@ namespace CmsData
 		}
 
 		
+		[Column(Name="Member", UpdateCheck=UpdateCheck.Never, Storage="_Member", DbType="bit NOT NULL")]
+		public bool Member
+		{
+			get { return this._Member; }
+
+			set
+			{
+				if (this._Member != value)
+				{
+				
+                    this.OnMemberChanging(value);
+					this.SendPropertyChanging();
+					this._Member = value;
+					this.SendPropertyChanged("Member");
+					this.OnMemberChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Previous", UpdateCheck=UpdateCheck.Never, Storage="_Previous", DbType="bit NOT NULL")]
+		public bool Previous
+		{
+			get { return this._Previous; }
+
+			set
+			{
+				if (this._Previous != value)
+				{
+				
+                    this.OnPreviousChanging(value);
+					this.SendPropertyChanging();
+					this._Previous = value;
+					this.SendPropertyChanged("Previous");
+					this.OnPreviousChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Pending", UpdateCheck=UpdateCheck.Never, Storage="_Pending", DbType="bit NOT NULL")]
+		public bool Pending
+		{
+			get { return this._Pending; }
+
+			set
+			{
+				if (this._Pending != value)
+				{
+				
+                    this.OnPendingChanging(value);
+					this.SendPropertyChanging();
+					this._Pending = value;
+					this.SendPropertyChanged("Pending");
+					this.OnPendingChanged();
+				}
+
+			}
+
+		}
+
+		
     #endregion
         
     #region Foreign Key Tables
    		
    		[Association(Name="FK_People_MemberStatus", Storage="_People", OtherKey="MemberStatusId")]
-   		public EntitySet< Person> People
+   		public EntitySet<Person> People
    		{
    		    get { return this._People; }
 

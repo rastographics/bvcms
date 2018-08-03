@@ -229,7 +229,8 @@ GO
 
         public static void RunMigrations(SqlConnection connection, string migrationsFolder)
         {
-            foreach (var f in new DirectoryInfo(migrationsFolder).EnumerateFiles())
+            var files = new DirectoryInfo(migrationsFolder).EnumerateFiles();
+            foreach (var f in files)
             {
                 var script = File.ReadAllText(f.FullName);
                 RunScripts(connection, script);
