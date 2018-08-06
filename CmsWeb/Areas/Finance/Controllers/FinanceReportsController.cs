@@ -325,27 +325,26 @@ namespace CmsWeb.Areas.Finance.Controllers
             {
                 if(string.IsNullOrEmpty(sortDir) || sortDir == "asc")
                 {
-                    query.OrderBy(mgl => mgl.Name2);
+                    query = query.OrderBy(mgl => mgl.Name2);
                 }
                 else
                 {
-                    query.OrderByDescending(mgl => mgl.Name2);
+                    query = query.OrderByDescending(mgl => mgl.Name2);
                 }
             }
             else
             {
                 if(string.IsNullOrEmpty(sortDir) || sortDir == "asc")
                 {
-                    query.OrderBy(mgl => mgl.NextDate);
+                    query = query.OrderBy(mgl => mgl.NextDate);
                 }
                 else
                 {
-                    query.OrderByDescending(mgl => mgl.NextDate);
+                    query = query.OrderByDescending(mgl => mgl.NextDate);
                 }
             }
 
             ViewBag.SortDir = sortDir == "asc" ? "desc" : "asc";
-
             return View(query.ToList());
         }
 
