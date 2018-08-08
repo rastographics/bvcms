@@ -302,7 +302,7 @@ namespace CmsData
         }
         internal Expression ContributionAmountSinceSetting()
         {
-        	var re = new Regex(@"(?<name>[^,]*)(,\s*(?<fundid>\d+))?");
+        	var re = new Regex(@"(?<name>[^,]*)(,\s*(?<fundid>.+))?");
         	var m = re.Match(Quarters);
     		var name = m.Groups["name"].Value;
     		var fundid = m.Groups["fundid"].Value;
