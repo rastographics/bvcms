@@ -30,9 +30,9 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< MemberTag> _MemberTag;
+		private EntityRef<MemberTag> _MemberTag;
 		
-		private EntityRef< OrganizationMember> _OrganizationMember;
+		private EntityRef<OrganizationMember> _OrganizationMember;
 		
 	#endregion
 	
@@ -61,9 +61,9 @@ namespace CmsData
 		{
 			
 			
-			this._MemberTag = default(EntityRef< MemberTag>); 
+			this._MemberTag = default(EntityRef<MemberTag>); 
 			
-			this._OrganizationMember = default(EntityRef< OrganizationMember>); 
+			this._OrganizationMember = default(EntityRef<OrganizationMember>); 
 			
 			OnCreated();
 		}

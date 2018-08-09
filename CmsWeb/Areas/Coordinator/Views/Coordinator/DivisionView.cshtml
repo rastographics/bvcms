@@ -1,0 +1,31 @@
+﻿@model CmsWeb.Areas.Coordinator.Models.DivViewModel
+@{
+    Layout = null;
+    if (ViewData["SelectedDivId"] != null)
+    {
+        Model.SelectedDivId = (int) ViewData["SelectedDivId"];
+    }
+}
+
+@Html.DropDownListFor(p => p.SelectedDivId,
+    Model.DivIEnum,
+    "Select a Division",
+    new
+    {
+        @id = "Division-DropDownID",
+        @class = "form-control"
+    })
+
+<script type="text/javascript">
+    $(function () {
+        // Populate Org
+        $('#Division-DropDownID').change(function () {
+            var selectedTimeslotId = $('#Timeslot-DropdownID option:selected').val();
+            var selectedProgramId = $('#Program-DropdownID option:selected').val();
+            var selectedDivisionId = this.value;
+
+            $('#OrganizationContainer').load('@Url.Action("OrganizationView")?timeslotId=' + selectedTimeslotId + '&progId=' + selectedProgramId + '&divId=' + selectedDivisionId);
+            $("#DetailsContainer").empty();
+        });
+    });
+</script>

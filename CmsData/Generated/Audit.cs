@@ -31,7 +31,7 @@ namespace CmsData
 		private DateTime _AuditDate;
 		
    		
-   		private EntitySet< AuditValue> _AuditValues;
+   		private EntitySet<AuditValue> _AuditValues;
 		
     	
 	#endregion
@@ -63,7 +63,7 @@ namespace CmsData
 		public Audit()
 		{
 			
-			this._AuditValues = new EntitySet< AuditValue>(new Action< AuditValue>(this.attach_AuditValues), new Action< AuditValue>(this.detach_AuditValues)); 
+			this._AuditValues = new EntitySet<AuditValue>(new Action< AuditValue>(this.attach_AuditValues), new Action< AuditValue>(this.detach_AuditValues)); 
 			
 			
 			OnCreated();
@@ -209,7 +209,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_AuditValues_Audits", Storage="_AuditValues", OtherKey="AuditId")]
-   		public EntitySet< AuditValue> AuditValues
+   		public EntitySet<AuditValue> AuditValues
    		{
    		    get { return this._AuditValues; }
 

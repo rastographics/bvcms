@@ -71,18 +71,18 @@ namespace CmsData
 		private bool? _SkipInsertTriggerProcessing;
 		
    		
-   		private EntitySet< EnrollmentTransaction> _DescTransactions;
+   		private EntitySet<EnrollmentTransaction> _DescTransactions;
 		
-   		private EntitySet< PrevOrgMemberExtra> _PrevOrgMemberExtras;
+   		private EntitySet<PrevOrgMemberExtra> _PrevOrgMemberExtras;
 		
     	
-		private EntityRef< EnrollmentTransaction> _FirstTransaction;
+		private EntityRef<EnrollmentTransaction> _FirstTransaction;
 		
-		private EntityRef< Organization> _Organization;
+		private EntityRef<Organization> _Organization;
 		
-		private EntityRef< Person> _Person;
+		private EntityRef<Person> _Person;
 		
-		private EntityRef< MemberType> _MemberType;
+		private EntityRef<MemberType> _MemberType;
 		
 	#endregion
 	
@@ -173,18 +173,18 @@ namespace CmsData
 		public EnrollmentTransaction()
 		{
 			
-			this._DescTransactions = new EntitySet< EnrollmentTransaction>(new Action< EnrollmentTransaction>(this.attach_DescTransactions), new Action< EnrollmentTransaction>(this.detach_DescTransactions)); 
+			this._DescTransactions = new EntitySet<EnrollmentTransaction>(new Action< EnrollmentTransaction>(this.attach_DescTransactions), new Action< EnrollmentTransaction>(this.detach_DescTransactions)); 
 			
-			this._PrevOrgMemberExtras = new EntitySet< PrevOrgMemberExtra>(new Action< PrevOrgMemberExtra>(this.attach_PrevOrgMemberExtras), new Action< PrevOrgMemberExtra>(this.detach_PrevOrgMemberExtras)); 
+			this._PrevOrgMemberExtras = new EntitySet<PrevOrgMemberExtra>(new Action< PrevOrgMemberExtra>(this.attach_PrevOrgMemberExtras), new Action< PrevOrgMemberExtra>(this.detach_PrevOrgMemberExtras)); 
 			
 			
-			this._FirstTransaction = default(EntityRef< EnrollmentTransaction>); 
+			this._FirstTransaction = default(EntityRef<EnrollmentTransaction>); 
 			
-			this._Organization = default(EntityRef< Organization>); 
+			this._Organization = default(EntityRef<Organization>); 
 			
-			this._Person = default(EntityRef< Person>); 
+			this._Person = default(EntityRef<Person>); 
 			
-			this._MemberType = default(EntityRef< MemberType>); 
+			this._MemberType = default(EntityRef<MemberType>); 
 			
 			OnCreated();
 		}
@@ -785,7 +785,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="DescTransactions__FirstTransaction", Storage="_DescTransactions", OtherKey="EnrollmentTransactionId")]
-   		public EntitySet< EnrollmentTransaction> DescTransactions
+   		public EntitySet<EnrollmentTransaction> DescTransactions
    		{
    		    get { return this._DescTransactions; }
 
@@ -795,7 +795,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_PrevOrgMemberExtra_EnrollmentTransaction", Storage="_PrevOrgMemberExtras", OtherKey="EnrollmentTranId")]
-   		public EntitySet< PrevOrgMemberExtra> PrevOrgMemberExtras
+   		public EntitySet<PrevOrgMemberExtra> PrevOrgMemberExtras
    		{
    		    get { return this._PrevOrgMemberExtras; }
 

@@ -46,9 +46,9 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< Person> _Person;
+		private EntityRef<Person> _Person;
 		
-		private EntityRef< Person> _User;
+		private EntityRef<Person> _User;
 		
 	#endregion
 	
@@ -101,9 +101,9 @@ namespace CmsData
 		{
 			
 			
-			this._Person = default(EntityRef< Person>); 
+			this._Person = default(EntityRef<Person>); 
 			
-			this._User = default(EntityRef< Person>); 
+			this._User = default(EntityRef<Person>); 
 			
 			OnCreated();
 		}

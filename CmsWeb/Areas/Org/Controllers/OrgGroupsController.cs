@@ -5,6 +5,7 @@ using UtilityExtensions;
 using System.IO;
 using CmsWeb.Areas.Org.Models;
 using LumenWorks.Framework.IO.Csv;
+using System;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
@@ -35,6 +36,29 @@ namespace CmsWeb.Areas.Org.Controllers
                 om.AddToGroup(DbUtil.Db, sgname);
             DbUtil.Db.SubmitChanges();
             return View("Rows", m);
+        }
+
+        [HttpPost]
+        [Route("{orgId:int}/SubGroups/{groupId:int}/ToggleCheckin")]
+        public ActionResult ToggleCheckin(int orgId, int groupId)
+        {
+            if(orgId == 0 || groupId == 0)
+            {
+                return Content("error: no matching group found");
+            }
+
+            try
+            {
+                var group = DbUtil.Db.MemberTags.SingleOrDefault(g => g.Id == groupId && g.OrgId == orgId);
+                group.CheckIn = !group.CheckIn;
+                DbUtil.Db.SubmitChanges();
+
+                return Redirect("/OrgGroups/Management/" + orgId);
+            }
+            catch(Exception ex)
+            {
+                return Content("error: no matching group found");
+            }
         }
 
         [HttpPost]
@@ -101,7 +125,8 @@ namespace CmsWeb.Areas.Org.Controllers
                 group = new MemberTag
                 {
                     Name = m.GroupName,
-                    OrgId = m.orgid
+                    OrgId = m.orgid,
+                    CheckIn = m.AllowCheckin.Equals("true", System.StringComparison.OrdinalIgnoreCase)
                 };
                 Db.MemberTags.InsertOnSubmit(group);
                 Db.SubmitChanges();

@@ -25,9 +25,9 @@ namespace CmsData
 		private string _Description;
 		
    		
-   		private EntitySet< SMSGroupMember> _SMSGroupMembers;
+   		private EntitySet<SMSGroupMember> _SMSGroupMembers;
 		
-   		private EntitySet< SMSList> _SMSLists;
+   		private EntitySet<SMSList> _SMSLists;
 		
     	
 	#endregion
@@ -50,9 +50,9 @@ namespace CmsData
 		public SMSGroup()
 		{
 			
-			this._SMSGroupMembers = new EntitySet< SMSGroupMember>(new Action< SMSGroupMember>(this.attach_SMSGroupMembers), new Action< SMSGroupMember>(this.detach_SMSGroupMembers)); 
+			this._SMSGroupMembers = new EntitySet<SMSGroupMember>(new Action< SMSGroupMember>(this.attach_SMSGroupMembers), new Action< SMSGroupMember>(this.detach_SMSGroupMembers)); 
 			
-			this._SMSLists = new EntitySet< SMSList>(new Action< SMSList>(this.attach_SMSLists), new Action< SMSList>(this.detach_SMSLists)); 
+			this._SMSLists = new EntitySet<SMSList>(new Action< SMSList>(this.attach_SMSLists), new Action< SMSList>(this.detach_SMSLists)); 
 			
 			
 			OnCreated();
@@ -132,7 +132,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_SMSGroupMembers_SMSGroups", Storage="_SMSGroupMembers", OtherKey="GroupID")]
-   		public EntitySet< SMSGroupMember> SMSGroupMembers
+   		public EntitySet<SMSGroupMember> SMSGroupMembers
    		{
    		    get { return this._SMSGroupMembers; }
 
@@ -142,7 +142,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_SMSList_SMSGroups", Storage="_SMSLists", OtherKey="SendGroupID")]
-   		public EntitySet< SMSList> SMSLists
+   		public EntitySet<SMSList> SMSLists
    		{
    		    get { return this._SMSLists; }
 

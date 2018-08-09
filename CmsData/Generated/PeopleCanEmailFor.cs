@@ -24,9 +24,9 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< Person> _PersonCanEmail;
+		private EntityRef<Person> _PersonCanEmail;
 		
-		private EntityRef< Person> _OnBehalfOfPerson;
+		private EntityRef<Person> _OnBehalfOfPerson;
 		
 	#endregion
 	
@@ -46,9 +46,9 @@ namespace CmsData
 		{
 			
 			
-			this._PersonCanEmail = default(EntityRef< Person>); 
+			this._PersonCanEmail = default(EntityRef<Person>); 
 			
-			this._OnBehalfOfPerson = default(EntityRef< Person>); 
+			this._OnBehalfOfPerson = default(EntityRef<Person>); 
 			
 			OnCreated();
 		}

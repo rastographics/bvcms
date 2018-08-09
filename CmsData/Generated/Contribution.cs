@@ -65,18 +65,18 @@ namespace CmsData
 		private string _MetaInfo;
 		
    		
-   		private EntitySet< BundleDetail> _BundleDetails;
+   		private EntitySet<BundleDetail> _BundleDetails;
 		
     	
-		private EntityRef< ContributionFund> _ContributionFund;
+		private EntityRef<ContributionFund> _ContributionFund;
 		
-		private EntityRef< ContributionStatus> _ContributionStatus;
+		private EntityRef<ContributionStatus> _ContributionStatus;
 		
-		private EntityRef< ContributionType> _ContributionType;
+		private EntityRef<ContributionType> _ContributionType;
 		
-		private EntityRef< ExtraDatum> _ExtraDatum;
+		private EntityRef<ExtraDatum> _ExtraDatum;
 		
-		private EntityRef< Person> _Person;
+		private EntityRef<Person> _Person;
 		
 	#endregion
 	
@@ -158,18 +158,18 @@ namespace CmsData
 		public Contribution()
 		{
 			
-			this._BundleDetails = new EntitySet< BundleDetail>(new Action< BundleDetail>(this.attach_BundleDetails), new Action< BundleDetail>(this.detach_BundleDetails)); 
+			this._BundleDetails = new EntitySet<BundleDetail>(new Action< BundleDetail>(this.attach_BundleDetails), new Action< BundleDetail>(this.detach_BundleDetails)); 
 			
 			
-			this._ContributionFund = default(EntityRef< ContributionFund>); 
+			this._ContributionFund = default(EntityRef<ContributionFund>); 
 			
-			this._ContributionStatus = default(EntityRef< ContributionStatus>); 
+			this._ContributionStatus = default(EntityRef<ContributionStatus>); 
 			
-			this._ContributionType = default(EntityRef< ContributionType>); 
+			this._ContributionType = default(EntityRef<ContributionType>); 
 			
-			this._ExtraDatum = default(EntityRef< ExtraDatum>); 
+			this._ExtraDatum = default(EntityRef<ExtraDatum>); 
 			
-			this._Person = default(EntityRef< Person>); 
+			this._Person = default(EntityRef<Person>); 
 			
 			OnCreated();
 		}
@@ -708,7 +708,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="BUNDLE_DETAIL_CONTR_FK", Storage="_BundleDetails", OtherKey="ContributionId")]
-   		public EntitySet< BundleDetail> BundleDetails
+   		public EntitySet<BundleDetail> BundleDetails
    		{
    		    get { return this._BundleDetails; }
 

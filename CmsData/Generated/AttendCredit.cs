@@ -27,7 +27,7 @@ namespace CmsData
 		private bool? _Hardwired;
 		
    		
-   		private EntitySet< Meeting> _Meetings;
+   		private EntitySet<Meeting> _Meetings;
 		
     	
 	#endregion
@@ -53,7 +53,7 @@ namespace CmsData
 		public AttendCredit()
 		{
 			
-			this._Meetings = new EntitySet< Meeting>(new Action< Meeting>(this.attach_Meetings), new Action< Meeting>(this.detach_Meetings)); 
+			this._Meetings = new EntitySet<Meeting>(new Action< Meeting>(this.attach_Meetings), new Action< Meeting>(this.detach_Meetings)); 
 			
 			
 			OnCreated();
@@ -155,7 +155,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_Meetings_AttendCredit", Storage="_Meetings", OtherKey="AttendCreditId")]
-   		public EntitySet< Meeting> Meetings
+   		public EntitySet<Meeting> Meetings
    		{
    		    get { return this._Meetings; }
 

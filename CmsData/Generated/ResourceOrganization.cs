@@ -24,9 +24,9 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< Organization> _Organization;
+		private EntityRef<Organization> _Organization;
 		
-		private EntityRef< Resource> _Resource;
+		private EntityRef<Resource> _Resource;
 		
 	#endregion
 	
@@ -46,9 +46,9 @@ namespace CmsData
 		{
 			
 			
-			this._Organization = default(EntityRef< Organization>); 
+			this._Organization = default(EntityRef<Organization>); 
 			
-			this._Resource = default(EntityRef< Resource>); 
+			this._Resource = default(EntityRef<Resource>); 
 			
 			OnCreated();
 		}

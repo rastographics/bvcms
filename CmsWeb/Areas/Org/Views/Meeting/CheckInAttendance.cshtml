@@ -1,0 +1,92 @@
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.Org.Models.MeetingModel
+@{
+//var addcolumn = true;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@Model.org.OrganizationName</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    @ViewExtensions2.jQueryMobileCss()
+    @ViewExtensions2.jQuery()
+    @ViewExtensions2.jQueryMobile()
+</head>
+<body>
+    @Html.Hidden("meetingid", Model.meeting.MeetingId)
+<div data-role="page" id="head">
+    <div data-role="header" data-position="fixed" class="ui-bar ui-grid-b">
+        <div class="ui-bar" style="width: 90%; height: 40px">
+            @Model.org.OrganizationName - @Model.meeting.MeetingDate
+        </div>
+    </div>    
+    <div data-role="content">
+        @{var inAttendanceRole = User.IsInRole("Attendance");}
+        @foreach (var a in Model.Attends(true, "iPadAttendanceHighlight"))
+        {
+            <div class="@(inAttendanceRole ? "ckline" : "na") @a.Name[0]">
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+                        <input type="checkbox" id="a.@a.PeopleId" @(a.Attended ? "checked=checked" : "")/>
+                        <label for="a.@a.PeopleId">
+                            @if (a.Highlight)
+                            {
+                                <span style="color: green">@a.Name</span>
+                            }
+                            else
+                            {
+                                @a.Name
+                            }
+                        </label>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    @*<div class="ckline T">
+        <div class="ui-grid-a">
+            <div class="ui-block-a">
+                <div class="ui-checkbox">
+                    <label class="ui-btn" style="text-align: center; background: #003f72; color: #fff">Update</label>
+                </div>
+            </div>
+        </div>
+    </div>*@
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    $(function () {
+        $("input[type='radio']").bind("change", function (event, ui) {
+            var v = $(this).val();
+            $("div.ckline").hide();
+            if (v === "back")
+                location = "/Meeting/" + $("#meetingid").val();
+            else if (v === "refresh")
+                location.reload();
+            else if (v === "all")
+                $("div.ckline").show();
+            else
+                $("." + v).show();
+            $('html, body').animate({ scrollTop: 0 }, 'fast');
+        });
+        $("div.na").bind("click", function (ev) {
+            ev.preventDefault();
+            return false;
+        });
+        $("div.ckline input:checkbox").change(function (ev) {
+            var ck = $(this);
+            $.post("/Meeting/MarkAttendance/", {
+                MeetingId: $("#meetingid").val(),
+                PeopleId: ck.attr("id").substr(2),
+                Present: ck.is(':checked')
+            }, function (ret) {
+                if (ret.error) {
+                    ck.attr("checked", !ck.is(':checked'));
+                    alert(ret.error);
+                }
+            });
+        });
+    });
+
+</script>

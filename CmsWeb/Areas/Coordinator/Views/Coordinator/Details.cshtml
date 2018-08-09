@@ -1,0 +1,254 @@
+﻿@model CmsWeb.Areas.Coordinator.Models.SubgroupModel
+@using CmsData
+@using CsQuery.ExtensionMethods
+@using CsQuery.Utility
+@using Flurl.Util
+@using UtilityExtensions
+@{
+    var workers = Model.WorkerOrgMembers();
+    var guests = Model.GuestOrgMembers();
+    var grpid = Model.groupid??0;
+    var capacity = Model.GetGroupDetails(grpid);
+}
+
+<div class="form-group">
+    <div id="SubgroupDataContainer">
+        <div class="box box-primary">
+            <div class="box-title">
+                <p>..Organization Name.. | .. Subgroup Name .. | .. NextMeetingDate ..</p>
+            </div>
+            <div class="box-content">
+
+                @Html.Hidden("GrpId", grpid)
+                @Html.Hidden("OrgId", Model.orgid)
+
+                
+
+                <div style="display: grid; justify-items: center; align-items: center; grid-template-columns: 25% 25% 25% 25%;">
+@*                    <div class="col-xs-3">*@
+                    <div class="metric">
+                        <h3 class="metric-title">Members</h3>
+
+                        <div class="metric-value circle">@Model.guestcount</div>
+                    </div>
+                    @*</div>*@
+                    @*<div class="col-xs-3">*@
+                        <div class="metric">
+                            <h3 class="metric-title">Volunteers</h3>
+                            <div class="metric-value circle">@Model.workercount</div>
+                        </div>
+                    @*</div>*@
+                    @*<div class="col-xs-3">*@
+                        <div class="metric">
+                            <div class="metric-value">
+                                <h3 class="metric-title">Capacity</h3>
+                                <div class="circle">@capacity.Capacity</div>
+
+                                <div>
+                                    <a id="remove" class="btn" href=""><i class="fa fa-minus-circle fa-2x"></i></a>
+                                    <a id="add" class="btn" href="#"><i class="fa fa-plus-circle fa-2x"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    @*</div>*@
+                    @*<div class="col-xs-3">*@
+                        <div class="metric">
+                            <h3 class="metric-title">Open</h3>
+                            <div class="metric-value">
+                                @if (capacity.CheckInOpen)
+                                {
+                                    <i class="fa fa-toggle-on fa-3x active" id="on"></i>
+                                    <i class="fa fa-toggle-on fa-3x fa-rotate-180 inactive" id="off" style="display: none;"></i>
+                                }
+                                else
+                                {
+                                    <i class="fa fa-toggle-on fa-3x active" id="on" style="display: none;"></i>
+                                    <i class="fa fa-toggle-on fa-3x fa-rotate-180 inactive" id="off"></i>
+                                }
+                            </div>
+                        </div>
+                    @*</div>*@
+                </div>
+
+
+
+
+
+                <div class="table-responsive">
+
+                    <table id="volunteers" class="table">
+                        <thead>
+                            <tr style="background: gainsboro;">
+                                <th style="text-align: center">Volunteers</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var om in workers)
+                            {
+                                <tr>
+                                    <td style="padding: 0 !important;border: 0 !important; min-width: 225px; line-height: 5">
+                                        <label class="labelnothighlighted"><input style="width: 20px; height: 15px" class="checkSingle" type="checkbox" value="@om.PeopleId">&nbsp;&nbsp;@om.Name</label>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <table id="members" class="table">
+                        <thead>
+                            <tr style="background: gainsboro;">
+                                <th style="text-align: center">Attendees</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var om in guests)
+                            {
+                                <tr>
+                                    <td style="padding:0;border-bottom: 1px !important; min-width: 225px; line-height: 3">
+                                        <label class="labelnothighlighted"><input style="width: 20px; height: 15px" class="checkSingle" type="checkbox" value="@om.PeopleId">&nbsp;&nbsp;@om.Name</label>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <div class="form-group">
+                        <input style="width: 100%; height: 50px; background: #003f72; color: white; font-weight: bolder; text-align: center; line-height: 3" type="button" id="movebtn" class="btn btn-primary" value="NEXT">
+                    </div>
+                    <input type="hidden" id="hiddenlist" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $('.middle').click(function() {
+        $('.inactive, .active').toggle();
+    });
+
+    $('#on').on('click',
+        function(e) {
+            e.preventDefault();
+
+            var $info = {
+                id: $('#OrgId').val(),
+                grpid : $('#GrpId').val(),
+                addremove: 0
+            };
+            $.ajax({
+                url: '/Coordinator/Coordinator/UpdateCheckInOpen/',
+                data: JSON.stringify($info),
+                success: function (ret) {
+                    $('#SubgroupDataContainer').html(ret);
+                },
+                error: function (ret) {
+                    swal('Error!', ret, 'error');
+                },
+                type: 'POST',
+                contentType: 'application/json, charset=utf-8',
+                dataType: 'html'
+            });
+        });
+
+    $('#off').on('click',
+        function(e) {
+            e.preventDefault();
+
+            var $info = {
+                id: $('#OrgId').val(),
+                grpid: $('#GrpId').val(),
+                addremove: 1
+            };
+            $.ajax({
+                url: '/Coordinator/Coordinator/UpdateCheckInOpen/',
+                data: JSON.stringify($info),
+                success: function (ret) {
+                    $('#SubgroupDataContainer').html(ret);
+                },
+                error: function (ret) {
+                    swal('Error!', ret, 'error');
+                },
+                type: 'POST',
+                contentType: 'application/json, charset=utf-8',
+                dataType: 'html'
+            });
+        });
+
+    $('.checkSingle').on('click', function () {
+        if ($(this).is(':checked')) {
+            $(this).parent().removeClass('labelnothighlighted');
+            $(this).parent().addClass('labelhighlighted');
+        } else {
+            $(this).parent().removeClass('labelhighlighted');
+            $(this).parent().addClass('labelnothighlighted');
+        }
+    });
+
+    $('#add').on('click',
+        function (e) {
+            e.preventDefault();
+
+            var $info = {
+                id: $('#OrgId').val(),
+                grpid : $('#GrpId').val(),
+                addremove: 1
+            };
+            $.ajax({
+                url: '/Coordinator/Coordinator/UpdateCapacity/',
+                data: JSON.stringify($info),
+                success: function (ret) {
+                    $('#SubgroupDataContainer').html(ret);
+                },
+                error: function (ret) {
+                    swal('Error!', ret, 'error');
+                },
+                type: 'POST',
+                contentType: 'application/json, charset=utf-8',
+                dataType: 'html'
+            });
+        });
+
+    $('#remove').on('click',
+        function (e) {
+            e.preventDefault();
+
+            var $info = {
+                id: $('#OrgId').val(),
+                grpid: $('#GrpId').val(),
+                addremove: 2
+            };
+            $.ajax({
+                url: '/Coordinator/Coordinator/UpdateCapacity/',
+                data: JSON.stringify($info),
+                success: function (ret) {
+                    $('#SubgroupDataContainer').html(ret);
+                },
+                error: function (ret) {
+                    swal('Error!', ret, 'error');
+                },
+                type: 'POST',
+                contentType: 'application/json, charset=utf-8',
+                dataType: 'html'
+            });
+        });
+
+    $('#movebtn').on('click',
+        function () {
+            var list = [];
+            $('input:checked').each(function () {
+                if (typeof $(this).val() != 'undefined') {
+                    list.push($(this).val());
+                }
+            });
+            if (list.length === 0)
+                return;
+
+            var temp = list.toString();
+            var url = '@Html.Raw(Url.Action("MoveSubgroupView", "Coordinator", new {id="-1", grpid ="-2", list="-3" }))';
+            url = url.replace("-1", $('#OrgId').val());
+            url = url.replace("-2", $('#GrpId').val());
+            url = url.replace("-3", temp);
+            window.location.replace(url);
+        });
+</script>
+

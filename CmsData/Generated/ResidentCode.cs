@@ -27,11 +27,11 @@ namespace CmsData
 		private bool? _Hardwired;
 		
    		
-   		private EntitySet< Zip> _Zips;
+   		private EntitySet<Zip> _Zips;
 		
-   		private EntitySet< Family> _ResCodeFamilies;
+   		private EntitySet<Family> _ResCodeFamilies;
 		
-   		private EntitySet< Person> _ResCodePeople;
+   		private EntitySet<Person> _ResCodePeople;
 		
     	
 	#endregion
@@ -57,11 +57,11 @@ namespace CmsData
 		public ResidentCode()
 		{
 			
-			this._Zips = new EntitySet< Zip>(new Action< Zip>(this.attach_Zips), new Action< Zip>(this.detach_Zips)); 
+			this._Zips = new EntitySet<Zip>(new Action< Zip>(this.attach_Zips), new Action< Zip>(this.detach_Zips)); 
 			
-			this._ResCodeFamilies = new EntitySet< Family>(new Action< Family>(this.attach_ResCodeFamilies), new Action< Family>(this.detach_ResCodeFamilies)); 
+			this._ResCodeFamilies = new EntitySet<Family>(new Action< Family>(this.attach_ResCodeFamilies), new Action< Family>(this.detach_ResCodeFamilies)); 
 			
-			this._ResCodePeople = new EntitySet< Person>(new Action< Person>(this.attach_ResCodePeople), new Action< Person>(this.detach_ResCodePeople)); 
+			this._ResCodePeople = new EntitySet<Person>(new Action< Person>(this.attach_ResCodePeople), new Action< Person>(this.detach_ResCodePeople)); 
 			
 			
 			OnCreated();
@@ -163,7 +163,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_Zips_ResidentCode", Storage="_Zips", OtherKey="MetroMarginalCode")]
-   		public EntitySet< Zip> Zips
+   		public EntitySet<Zip> Zips
    		{
    		    get { return this._Zips; }
 
@@ -173,7 +173,7 @@ namespace CmsData
 
 		
    		[Association(Name="ResCodeFamilies__ResidentCode", Storage="_ResCodeFamilies", OtherKey="ResCodeId")]
-   		public EntitySet< Family> ResCodeFamilies
+   		public EntitySet<Family> ResCodeFamilies
    		{
    		    get { return this._ResCodeFamilies; }
 
@@ -183,7 +183,7 @@ namespace CmsData
 
 		
    		[Association(Name="ResCodePeople__ResidentCode", Storage="_ResCodePeople", OtherKey="ResCodeId")]
-   		public EntitySet< Person> ResCodePeople
+   		public EntitySet<Person> ResCodePeople
    		{
    		    get { return this._ResCodePeople; }
 

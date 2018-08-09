@@ -40,6 +40,7 @@ namespace CmsWeb.Areas.Org.Models
         public string OrgName => DbUtil.Db.LoadOrganizationById(orgid).OrganizationName;
         public int memtype { get; set; }
         public IList<int> List { get; set; } = new List<int>();
+        public string AllowCheckin { get; set; }
 
         public GroupDetails GetGroupDetails(int id)
         {

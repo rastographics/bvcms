@@ -1,0 +1,143 @@
+﻿@model CmsWeb.Areas.Coordinator.Controllers.CheckinCoordinatorViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutCheckIn.cshtml";
+    ViewBag.Title = "Check-In Coordinator";
+    ViewBag.PageHeader = "Check-In Coordinator";
+}
+
+@ViewExtensions2.jQuery()
+
+<style>
+    .block {
+        border: 1px solid lightskyblue;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .smcircle {
+        background: lightskyblue;
+        border-radius: 20px;
+        color: white;
+        height: 20px;
+        font-weight: bold;
+        width: 20px;
+        display: table;
+        margin: 0px 0px;
+    }
+
+    .circle {
+        height: 100px;
+        width: 100px;
+        border-radius: 100px;
+        background: #003f72;
+        color: white;
+        font-size: 40px;
+        text-align: center;
+        display: table-cell;
+        overflow: hidden;
+        vertical-align: middle !important;
+    }
+
+        .circle p {
+            vertical-align: middle;
+            display: table-cell;
+        }
+
+    .highlighted {
+        background: lightgrey;
+    }
+
+    .middle {
+        text-align: center;
+        margin: 0 auto;
+        padding: 0;
+    }
+
+    .labelhighlighted {
+        min-height: 20px;
+        min-width: 100%;
+        background: lightsteelblue;
+        border-style: outset;
+        border: 2px;
+        vertical-align: middle;
+        line-height: 3;
+        padding: 0;
+        margin: 0;
+    }
+
+    .labelnothighlighted {
+        min-height: 20px;
+        min-width: 100%;
+        background: none;
+        border-style: outset;
+        border: 2px;
+        vertical-align: middle;
+        line-height: 3;
+        padding: 0;
+        margin: 0;
+    }
+
+    .active {
+        color: green;
+    }
+
+    .inactive {
+        color: darkred;
+    }
+
+    .metric {
+        height: 220px;
+    }
+
+    .list-group {
+    }
+    .list-group-item-heading {
+        font-size:1.2em;
+        line-height:1.8em;
+    }
+
+    .list-group-item {
+        border: 0;
+    }
+
+    .list-group-item:hover {
+        cursor:pointer;
+    }
+</style>
+
+
+<div class="row">
+    <div class="col-lg-3">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <h5>Timeslot</h5>
+                <div id="TimeslotContainer">
+                    @Html.Action("TimeslotSelector")
+                </div>
+                <h5>Program</h5>
+                <div id="ProgramContainer">
+                    @Html.Action("ProgramSelector")
+                </div>
+                <h5>Division</h5>
+                <div id="DivisionContainer">
+                    @Html.Action("DivisionSelector")
+                </div>
+            </div>
+        </div>
+        <div class="box box-responsive">
+            <div class="box-title">
+                <p>Matching Schedules</p>
+            </div>
+            <div class="box-content">
+                <div id="OrganizationContainer">
+                    @Html.Action("OrganizationSelector")
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-9">
+        <div id="DetailsContainer">
+
+        </div>
+    </div>
+</div>

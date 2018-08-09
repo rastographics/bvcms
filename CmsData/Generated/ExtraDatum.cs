@@ -33,7 +33,7 @@ namespace CmsData
 		private bool? _Abandoned;
 		
    		
-   		private EntitySet< Contribution> _Contributions;
+   		private EntitySet<Contribution> _Contributions;
 		
     	
 	#endregion
@@ -68,7 +68,7 @@ namespace CmsData
 		public ExtraDatum()
 		{
 			
-			this._Contributions = new EntitySet< Contribution>(new Action< Contribution>(this.attach_Contributions), new Action< Contribution>(this.detach_Contributions)); 
+			this._Contributions = new EntitySet<Contribution>(new Action< Contribution>(this.attach_Contributions), new Action< Contribution>(this.detach_Contributions)); 
 			
 			
 			OnCreated();
@@ -236,7 +236,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_Contribution_ExtraData", Storage="_Contributions", OtherKey="ExtraDataId")]
-   		public EntitySet< Contribution> Contributions
+   		public EntitySet<Contribution> Contributions
    		{
    		    get { return this._Contributions; }
 

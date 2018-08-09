@@ -32,11 +32,17 @@ namespace CmsData
 		
 		private int? _NoCancelWeeks;
 		
+		private bool _CheckIn;
+		
+		private bool _CheckInOpen;
+		
+		private int _CheckInCapacity;
+		
    		
-   		private EntitySet< OrgMemMemTag> _OrgMemMemTags;
+   		private EntitySet<OrgMemMemTag> _OrgMemMemTags;
 		
     	
-		private EntityRef< Organization> _Organization;
+		private EntityRef<Organization> _Organization;
 		
 	#endregion
 	
@@ -66,14 +72,23 @@ namespace CmsData
 		partial void OnNoCancelWeeksChanging(int? value);
 		partial void OnNoCancelWeeksChanged();
 		
+		partial void OnCheckInChanging(bool value);
+		partial void OnCheckInChanged();
+		
+		partial void OnCheckInOpenChanging(bool value);
+		partial void OnCheckInOpenChanged();
+		
+		partial void OnCheckInCapacityChanging(int value);
+		partial void OnCheckInCapacityChanged();
+		
     #endregion
 		public MemberTag()
 		{
 			
-			this._OrgMemMemTags = new EntitySet< OrgMemMemTag>(new Action< OrgMemMemTag>(this.attach_OrgMemMemTags), new Action< OrgMemMemTag>(this.detach_OrgMemMemTags)); 
+			this._OrgMemMemTags = new EntitySet<OrgMemMemTag>(new Action< OrgMemMemTag>(this.attach_OrgMemMemTags), new Action< OrgMemMemTag>(this.detach_OrgMemMemTags)); 
 			
 			
-			this._Organization = default(EntityRef< Organization>); 
+			this._Organization = default(EntityRef<Organization>); 
 			
 			OnCreated();
 		}
@@ -239,12 +254,78 @@ namespace CmsData
 		}
 
 		
+		[Column(Name="CheckIn", UpdateCheck=UpdateCheck.Never, Storage="_CheckIn", DbType="bit NOT NULL")]
+		public bool CheckIn
+		{
+			get { return this._CheckIn; }
+
+			set
+			{
+				if (this._CheckIn != value)
+				{
+				
+                    this.OnCheckInChanging(value);
+					this.SendPropertyChanging();
+					this._CheckIn = value;
+					this.SendPropertyChanged("CheckIn");
+					this.OnCheckInChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="CheckInOpen", UpdateCheck=UpdateCheck.Never, Storage="_CheckInOpen", DbType="bit NOT NULL")]
+		public bool CheckInOpen
+		{
+			get { return this._CheckInOpen; }
+
+			set
+			{
+				if (this._CheckInOpen != value)
+				{
+				
+                    this.OnCheckInOpenChanging(value);
+					this.SendPropertyChanging();
+					this._CheckInOpen = value;
+					this.SendPropertyChanged("CheckInOpen");
+					this.OnCheckInOpenChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="CheckInCapacity", UpdateCheck=UpdateCheck.Never, Storage="_CheckInCapacity", DbType="int NOT NULL")]
+		public int CheckInCapacity
+		{
+			get { return this._CheckInCapacity; }
+
+			set
+			{
+				if (this._CheckInCapacity != value)
+				{
+				
+                    this.OnCheckInCapacityChanging(value);
+					this.SendPropertyChanging();
+					this._CheckInCapacity = value;
+					this.SendPropertyChanged("CheckInCapacity");
+					this.OnCheckInCapacityChanged();
+				}
+
+			}
+
+		}
+
+		
     #endregion
         
     #region Foreign Key Tables
    		
    		[Association(Name="FK_OrgMemMemTags_MemberTags", Storage="_OrgMemMemTags", OtherKey="MemberTagId")]
-   		public EntitySet< OrgMemMemTag> OrgMemMemTags
+   		public EntitySet<OrgMemMemTag> OrgMemMemTags
    		{
    		    get { return this._OrgMemMemTags; }
 

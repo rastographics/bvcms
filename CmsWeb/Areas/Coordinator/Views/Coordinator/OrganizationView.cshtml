@@ -1,0 +1,32 @@
+﻿@model CmsWeb.Areas.Coordinator.Models.OrgViewModel
+
+@{
+    Layout = null;
+
+    if (ViewData["SelectedOrgId"] != null)
+    {
+        Model.SelectedOrgId = (int)ViewData["SelectedOrgId"];
+    }
+}
+
+<div class="list-group">
+    @foreach (var schedule in Model.CheckIn.DailySchedules)
+    {
+    <div class="list-group-item">
+        <a class="navbar-link" style="text-decoration: none" href="#" myval="@schedule.OrganizationId">@schedule.NextMeetingDate.Value.ToString("yyyy-MM-dd hh:mm tt") @schedule.OrganizationName @schedule.SubgroupName</a> <span class="badge">@schedule.CheckInCapacity</span>
+    </div>
+    }
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('.navbar-link').on('click',function (e) {
+            e.preventDefault();
+            $('.highlighted').removeClass('highlighted');
+            $(this).children('div').addClass('highlighted');
+            var selectedValues = $(this).attr('myval');
+            $("#DetailsContainer").load('/Coordinator/Coordinator/Index', { id: selectedValues }); 
+        });
+    });
+</script>
+

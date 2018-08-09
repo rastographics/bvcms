@@ -115,16 +115,16 @@ namespace CmsData
 		private string _Country;
 		
    		
-   		private EntitySet< OrganizationMember> _OrganizationMembers;
+   		private EntitySet<OrganizationMember> _OrganizationMembers;
 		
-   		private EntitySet< TransactionPerson> _TransactionPeople;
+   		private EntitySet<TransactionPerson> _TransactionPeople;
 		
-   		private EntitySet< Transaction> _Transactions;
+   		private EntitySet<Transaction> _Transactions;
 		
     	
-		private EntityRef< Person> _Person;
+		private EntityRef<Person> _Person;
 		
-		private EntityRef< Transaction> _OriginalTransaction;
+		private EntityRef<Transaction> _OriginalTransaction;
 		
 	#endregion
 	
@@ -281,16 +281,16 @@ namespace CmsData
 		public Transaction()
 		{
 			
-			this._OrganizationMembers = new EntitySet< OrganizationMember>(new Action< OrganizationMember>(this.attach_OrganizationMembers), new Action< OrganizationMember>(this.detach_OrganizationMembers)); 
+			this._OrganizationMembers = new EntitySet<OrganizationMember>(new Action< OrganizationMember>(this.attach_OrganizationMembers), new Action< OrganizationMember>(this.detach_OrganizationMembers)); 
 			
-			this._TransactionPeople = new EntitySet< TransactionPerson>(new Action< TransactionPerson>(this.attach_TransactionPeople), new Action< TransactionPerson>(this.detach_TransactionPeople)); 
+			this._TransactionPeople = new EntitySet<TransactionPerson>(new Action< TransactionPerson>(this.attach_TransactionPeople), new Action< TransactionPerson>(this.detach_TransactionPeople)); 
 			
-			this._Transactions = new EntitySet< Transaction>(new Action< Transaction>(this.attach_Transactions), new Action< Transaction>(this.detach_Transactions)); 
+			this._Transactions = new EntitySet<Transaction>(new Action< Transaction>(this.attach_Transactions), new Action< Transaction>(this.detach_Transactions)); 
 			
 			
-			this._Person = default(EntityRef< Person>); 
+			this._Person = default(EntityRef<Person>); 
 			
-			this._OriginalTransaction = default(EntityRef< Transaction>); 
+			this._OriginalTransaction = default(EntityRef<Transaction>); 
 			
 			OnCreated();
 		}
@@ -1367,7 +1367,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_OrganizationMembers_Transaction", Storage="_OrganizationMembers", OtherKey="TranId")]
-   		public EntitySet< OrganizationMember> OrganizationMembers
+   		public EntitySet<OrganizationMember> OrganizationMembers
    		{
    		    get { return this._OrganizationMembers; }
 
@@ -1377,7 +1377,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_TransactionPeople_Transaction", Storage="_TransactionPeople", OtherKey="Id")]
-   		public EntitySet< TransactionPerson> TransactionPeople
+   		public EntitySet<TransactionPerson> TransactionPeople
    		{
    		    get { return this._TransactionPeople; }
 
@@ -1387,7 +1387,7 @@ namespace CmsData
 
 		
    		[Association(Name="Transactions__OriginalTransaction", Storage="_Transactions", OtherKey="OriginalId")]
-   		public EntitySet< Transaction> Transactions
+   		public EntitySet<Transaction> Transactions
    		{
    		    get { return this._Transactions; }
 

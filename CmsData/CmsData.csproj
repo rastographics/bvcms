@@ -324,8 +324,8 @@
     <Reference Include="HtmlAgilityPack, Version=1.7.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.7.0\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
-    <Reference Include="Ical.Net, Version=4.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ical.Net.4.0.6\lib\netstandard1.3\Ical.Net.dll</HintPath>
+    <Reference Include="Ical.Net, Version=4.1.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ical.Net.4.1.8\lib\net46\Ical.Net.dll</HintPath>
     </Reference>
     <Reference Include="IronPython, Version=2.7.8.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <HintPath>..\packages\IronPython.2.7.8\lib\net45\IronPython.dll</HintPath>
@@ -503,6 +503,7 @@
     <Compile Include="API\QueryFunctions\Attendance.cs" />
     <Compile Include="API\QueryFunctions\Contributions.cs" />
     <Compile Include="API\QueryFunctions\Query.cs" />
+    <Compile Include="Classes\DataMapper\DataMapper.cs" />
     <Compile Include="Classes\ExtraValues\Code.cs" />
     <Compile Include="Classes\ExtraValues\NewStandard.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMData.cs" />
@@ -656,6 +657,10 @@
     <Compile Include="Finance\TransNational\Vault\VaultResponse.cs" />
     <Compile Include="Generated\ApiSession.cs" />
     <Compile Include="Generated\ApiUserInfo.cs" />
+    <Compile Include="Generated\CheckInLabel.cs" />
+    <Compile Include="Generated\CheckInLabelEntry.cs" />
+    <Compile Include="Generated\CheckInLabelEntryAlignment.cs" />
+    <Compile Include="Generated\CheckInLabelType.cs" />
     <Compile Include="Generated\CheckInSetting.cs" />
     <Compile Include="Generated\ContactExtra.cs" />
     <Compile Include="Generated\CustomColumn.cs" />
@@ -1273,10 +1278,12 @@
     </Resource>
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Migrations\20180719_send-attendance-link.sql" />
+    <Content Include="Migrations\20180801_CheckInUpdates.sql" />
     <Content Include="Migrations\20180720_StoredProcedure_CHAIDonationsReport2.sql" />
     <Content Include="Migrations\20180720_StoredProcedure_GetDepositDateTotalsUsingAuthorizedFunds.sql" />
     <Content Include="Migrations\20180720_Table_ContributionFunds.sql" />
     <Content Include="Migrations\20180727_attendance-enhancements-to-lookups.sql" />
+    <Content Include="Migrations\20180713_OrgSchedule-NextMeetingDate.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

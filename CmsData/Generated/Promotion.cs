@@ -30,9 +30,9 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< Division> _FromDivision;
+		private EntityRef<Division> _FromDivision;
 		
-		private EntityRef< Division> _ToDivision;
+		private EntityRef<Division> _ToDivision;
 		
 	#endregion
 	
@@ -61,9 +61,9 @@ namespace CmsData
 		{
 			
 			
-			this._FromDivision = default(EntityRef< Division>); 
+			this._FromDivision = default(EntityRef<Division>); 
 			
-			this._ToDivision = default(EntityRef< Division>); 
+			this._ToDivision = default(EntityRef<Division>); 
 			
 			OnCreated();
 		}

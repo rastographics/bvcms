@@ -1,0 +1,30 @@
+﻿@using CmsWeb.Areas.Coordinator.Models
+@model CmsWeb.Areas.Coordinator.Models.TimeslotViewModel
+@{
+    Layout = null;
+    if (ViewData["SelectedTimeslotId"] != null)
+    {
+        Model.SelectedTimeslotId = (int)ViewData["SelectedTimeslotId"];
+    }
+}
+@Html.DropDownListFor(p => p.SelectedTimeslotId,
+    Model.TimeslotId,
+    "Select a time",
+    new
+    {
+        @id = "Timeslot-DropdownID",
+        @class = "form-control"
+    })
+
+<script type="text/javascript">
+    $(function () {
+        // Populate Divisions draw chart
+        $('#Timeslot-DropdownID').change(function () {
+            var selectedTimeslotId = this.value;
+            $('#ProgramContainer').load('@Url.Action("ProgramView")?timeslotId=' + selectedTimeslotId);
+            $('#DivisionContainer').load('@Url.Action("DivisionView")?timeslotId=' + selectedTimeslotId);
+            $('#OrganizationContainer').load('@Url.Action("OrganizationView")?timeslotId=' + selectedTimeslotId);
+            $("#DetailsContainer").empty();
+        });
+    });
+</script>

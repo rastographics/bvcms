@@ -73,24 +73,24 @@ namespace CmsData
 		private int? _PictureId;
 		
    		
-   		private EntitySet< FamilyCheckinLock> _FamilyCheckinLocks;
+   		private EntitySet<FamilyCheckinLock> _FamilyCheckinLocks;
 		
-   		private EntitySet< FamilyExtra> _FamilyExtras;
+   		private EntitySet<FamilyExtra> _FamilyExtras;
 		
-   		private EntitySet< Person> _People;
+   		private EntitySet<Person> _People;
 		
-   		private EntitySet< RelatedFamily> _RelatedFamilies1;
+   		private EntitySet<RelatedFamily> _RelatedFamilies1;
 		
-   		private EntitySet< RelatedFamily> _RelatedFamilies2;
+   		private EntitySet<RelatedFamily> _RelatedFamilies2;
 		
     	
-		private EntityRef< Person> _HeadOfHousehold;
+		private EntityRef<Person> _HeadOfHousehold;
 		
-		private EntityRef< Person> _HeadOfHouseholdSpouse;
+		private EntityRef<Person> _HeadOfHouseholdSpouse;
 		
-		private EntityRef< Picture> _Picture;
+		private EntityRef<Picture> _Picture;
 		
-		private EntityRef< ResidentCode> _ResidentCode;
+		private EntityRef<ResidentCode> _ResidentCode;
 		
 	#endregion
 	
@@ -184,24 +184,24 @@ namespace CmsData
 		public Family()
 		{
 			
-			this._FamilyCheckinLocks = new EntitySet< FamilyCheckinLock>(new Action< FamilyCheckinLock>(this.attach_FamilyCheckinLocks), new Action< FamilyCheckinLock>(this.detach_FamilyCheckinLocks)); 
+			this._FamilyCheckinLocks = new EntitySet<FamilyCheckinLock>(new Action< FamilyCheckinLock>(this.attach_FamilyCheckinLocks), new Action< FamilyCheckinLock>(this.detach_FamilyCheckinLocks)); 
 			
-			this._FamilyExtras = new EntitySet< FamilyExtra>(new Action< FamilyExtra>(this.attach_FamilyExtras), new Action< FamilyExtra>(this.detach_FamilyExtras)); 
+			this._FamilyExtras = new EntitySet<FamilyExtra>(new Action< FamilyExtra>(this.attach_FamilyExtras), new Action< FamilyExtra>(this.detach_FamilyExtras)); 
 			
-			this._People = new EntitySet< Person>(new Action< Person>(this.attach_People), new Action< Person>(this.detach_People)); 
+			this._People = new EntitySet<Person>(new Action< Person>(this.attach_People), new Action< Person>(this.detach_People)); 
 			
-			this._RelatedFamilies1 = new EntitySet< RelatedFamily>(new Action< RelatedFamily>(this.attach_RelatedFamilies1), new Action< RelatedFamily>(this.detach_RelatedFamilies1)); 
+			this._RelatedFamilies1 = new EntitySet<RelatedFamily>(new Action< RelatedFamily>(this.attach_RelatedFamilies1), new Action< RelatedFamily>(this.detach_RelatedFamilies1)); 
 			
-			this._RelatedFamilies2 = new EntitySet< RelatedFamily>(new Action< RelatedFamily>(this.attach_RelatedFamilies2), new Action< RelatedFamily>(this.detach_RelatedFamilies2)); 
+			this._RelatedFamilies2 = new EntitySet<RelatedFamily>(new Action< RelatedFamily>(this.attach_RelatedFamilies2), new Action< RelatedFamily>(this.detach_RelatedFamilies2)); 
 			
 			
-			this._HeadOfHousehold = default(EntityRef< Person>); 
+			this._HeadOfHousehold = default(EntityRef<Person>); 
 			
-			this._HeadOfHouseholdSpouse = default(EntityRef< Person>); 
+			this._HeadOfHouseholdSpouse = default(EntityRef<Person>); 
 			
-			this._Picture = default(EntityRef< Picture>); 
+			this._Picture = default(EntityRef<Picture>); 
 			
-			this._ResidentCode = default(EntityRef< ResidentCode>); 
+			this._ResidentCode = default(EntityRef<ResidentCode>); 
 			
 			OnCreated();
 		}
@@ -824,7 +824,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_FamilyCheckinLock_FamilyCheckinLock1", Storage="_FamilyCheckinLocks", OtherKey="FamilyId")]
-   		public EntitySet< FamilyCheckinLock> FamilyCheckinLocks
+   		public EntitySet<FamilyCheckinLock> FamilyCheckinLocks
    		{
    		    get { return this._FamilyCheckinLocks; }
 
@@ -834,7 +834,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_FamilyExtra_Family", Storage="_FamilyExtras", OtherKey="FamilyId")]
-   		public EntitySet< FamilyExtra> FamilyExtras
+   		public EntitySet<FamilyExtra> FamilyExtras
    		{
    		    get { return this._FamilyExtras; }
 
@@ -844,7 +844,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_People_Families", Storage="_People", OtherKey="FamilyId")]
-   		public EntitySet< Person> People
+   		public EntitySet<Person> People
    		{
    		    get { return this._People; }
 
@@ -854,7 +854,7 @@ namespace CmsData
 
 		
    		[Association(Name="RelatedFamilies1__RelatedFamily1", Storage="_RelatedFamilies1", OtherKey="FamilyId")]
-   		public EntitySet< RelatedFamily> RelatedFamilies1
+   		public EntitySet<RelatedFamily> RelatedFamilies1
    		{
    		    get { return this._RelatedFamilies1; }
 
@@ -864,7 +864,7 @@ namespace CmsData
 
 		
    		[Association(Name="RelatedFamilies2__RelatedFamily2", Storage="_RelatedFamilies2", OtherKey="RelatedFamilyId")]
-   		public EntitySet< RelatedFamily> RelatedFamilies2
+   		public EntitySet<RelatedFamily> RelatedFamilies2
    		{
    		    get { return this._RelatedFamilies2; }
 
