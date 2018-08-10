@@ -4,126 +4,18 @@ using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Coordinator.Models;
+using CmsWeb.Areas.Coordinator.Services;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Coordinator.Controllers
 {
-    public static class LinqExtensions
-    {
-        public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
-        {
-            HashSet<TKey> seenKeys = new HashSet<TKey>();
-            foreach (TSource element in source)
-            {
-                if (seenKeys.Add(keySelector(element)))
-                {
-                    yield return element;
-                }
-            }
-        }
-    }
-    public class CheckinCoordinatorViewModel
-    {
-        public IEnumerable<CheckinScheduleDto> Schedules;
-
-        public CheckinCoordinatorViewModel(IEnumerable<CheckinScheduleDto> scheduleCollection)
-        {
-            Schedules = scheduleCollection;
-        }
-
-        public IEnumerable<CheckinTimeslotDto> GetFilteredTimeslots()
-        {
-            return Schedules
-                .AsQueryable()
-                .DistinctBy(s => s.NextMeetingDate.Value)
-                .Select(s => new CheckinTimeslotDto
-                {
-                    NextMeetingDate = s.NextMeetingDate.Value
-                })
-                .OrderBy(s => s.NextMeetingDate)
-                .ToList();
-        }
-
-        public IEnumerable<CheckinProgramDto> GetFilteredPrograms(string selectedTimeslot = "")
-        {
-            DateTime date = ConvertToDate(selectedTimeslot);
-
-            return Schedules
-                .AsQueryable()
-                .Where(s => (s.NextMeetingDate == date || date == DateTime.MinValue))
-                .DistinctBy(s => s.ProgramId)
-                .Select(s => new CheckinProgramDto
-                {
-                    ProgramId = s.ProgramId,
-                    ProgramName = s.ProgramName
-                })
-                .Distinct()
-                .ToList();
-        }
-
-        public IEnumerable<CheckinDivisionDto> GetFilteredDivisions(string selectedTimeslot = "", int programId = 0)
-        {
-            var date = ConvertToDate(selectedTimeslot);
-            return Schedules
-                .AsQueryable()
-                .Where(s => (s.NextMeetingDate == date || string.IsNullOrWhiteSpace(selectedTimeslot)) && (s.ProgramId == programId || programId == 0))
-                .DistinctBy(s => s.DivisionId)
-                .Select(s => new CheckinDivisionDto
-                {
-                    DivisionId = s.DivisionId,
-                    DivisionName = s.DivisionName
-                })
-                .ToList();
-        }
-
-        public IEnumerable<CheckinScheduleDto> GetFilteredSchedules(string selectedTimeslot = "", int programId = 0, int divisionId = 0)
-        {
-            var date = ConvertToDate(selectedTimeslot);
-
-            return Schedules
-                .AsQueryable()
-                .Where(s => (s.NextMeetingDate == date || string.IsNullOrWhiteSpace(selectedTimeslot)) && (s.ProgramId == programId || programId == 0) && (s.DivisionId == divisionId || divisionId == 0))
-                .ToList();
-        }
-
-        private static DateTime ConvertToDate(string selectedTimeslot)
-        {
-            DateTime date;
-
-            if (!string.IsNullOrWhiteSpace(selectedTimeslot))
-            {
-                date = DateTime.Parse(selectedTimeslot);
-            }
-            else
-            {
-                date = DateTime.MinValue;
-            }
-
-            return date;
-        }
-    }
-    public class CheckinTimeslotDto
-    {
-        public DateTime NextMeetingDate { get; set; }
-    }
-    public class CheckinProgramDto
-    {
-        public int ProgramId { get; set; }
-        public string ProgramName { get; set; }
-    }
-    public class CheckinDivisionDto
-    {
-        public int DivisionId { get; set; }
-        public string DivisionName { get; set; }
-    }
-
     public class CoordinatorController : Controller
     {
-        private readonly CheckinCoordinatorViewModel _checkinCoordinator;
+        private readonly CheckinCoordinator _checkinCoordinator;
 
         public CoordinatorController()
         {
-            _checkinCoordinator = new CheckinCoordinatorViewModel(GetDailySchedules());
+            _checkinCoordinator = new CheckinCoordinator(GetDailySchedules());
         }
 
         private IEnumerable<CheckinScheduleDto> GetDailySchedules(int timeslotId = 0, int programId = 0, int divisionId = 0, int organizationId = 0)
@@ -216,15 +108,18 @@ namespace CmsWeb.Areas.Coordinator.Controllers
 
             if (smgroup != null)
             {
-                int oldcapacity = smgroup.CheckInCapacity; 
-                if (i.addremove == 1)
-                    smgroup.CheckInCapacity = oldcapacity + 1;
-                else
-                    smgroup.CheckInCapacity = smgroup.CheckInCapacity - 1;
+                int oldcapacity = smgroup.CheckInCapacity;
 
-                if (oldcapacity <= smgroup.CheckInCapacity)
-                    smgroup.CheckInOpen = false;//todo:check
+                if (i.addremove == 1)
+                {
+                    smgroup.CheckInCapacity = oldcapacity + 1;
+                }
+                else
+                {
+                    smgroup.CheckInCapacity = smgroup.CheckInCapacity - 1;
+                }
             }
+
             DbUtil.Db.SubmitChanges();
             var m = new SubgroupModel(i.id);
             m.groupid = i.grpid;
@@ -236,23 +131,15 @@ namespace CmsWeb.Areas.Coordinator.Controllers
         [HttpPost]
         public ActionResult UpdateCheckInOpen(PostTargetInfo i)
         {
-            var smgroup = (from e in DbUtil.Db.MemberTags
-                where e.OrgId == i.id
-                where e.Id == i.grpid
-                select e).SingleOrDefault();
+            var item = DbUtil.Db.MemberTags.SingleOrDefault(mt => mt.OrgId == i.id && mt.Id == i.grpid);
+            item.CheckInOpen = !item.CheckInOpen;
 
-            if (smgroup != null)
-            {
-                if (i.addremove == 1)
-                    smgroup.CheckInOpen = true;
-                else
-                    smgroup.CheckInOpen = false;
-
-            }
             DbUtil.Db.SubmitChanges();
+
             var m = new SubgroupModel(i.id);
             m.groupid = i.grpid;
             m.ingroup = m.GetGroupDetails(i.grpid).Name;
+
             return Details(i.id, m.groupid.Value, m.ingroup);
         }
 
@@ -281,13 +168,5 @@ namespace CmsWeb.Areas.Coordinator.Controllers
             m.ingroup = m.GetGroupDetails(targrpid).Name;
             return RedirectToAction("SubgroupView", m);
         }
-    }
-
-    public class PostTargetInfo
-    {
-        public int id { get; set; }
-        public int grpid { get; set; }
-        public int addremove { get; set; }
-
     }
 }

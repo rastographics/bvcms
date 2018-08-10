@@ -286,6 +286,17 @@
         $('#new-group-modal').modal('hide');
     });
 
+    $("body").on('click', 'a.toggle-checkin', function (ev) {
+        ev.preventDefault();
+        var url = $(this).attr("href");
+
+        $.post(url, null, function (ret) {
+            if (ret.substring(0, 5) != "error") {
+                $('#groupForm').html(ret);
+            }
+        });
+    });
+
     $("body").on('click', 'a.rename-group', function (ev) {
         ev.preventDefault();
         var groupId = $(this).attr('groupId');
