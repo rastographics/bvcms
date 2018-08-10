@@ -25,49 +25,41 @@
                 
 
                 <div style="display: grid; justify-items: center; align-items: center; grid-template-columns: 25% 25% 25% 25%;">
-@*                    <div class="col-xs-3">*@
                     <div class="metric">
                         <h3 class="metric-title">Members</h3>
 
                         <div class="metric-value circle">@Model.guestcount</div>
                     </div>
-                    @*</div>*@
-                    @*<div class="col-xs-3">*@
-                        <div class="metric">
-                            <h3 class="metric-title">Volunteers</h3>
-                            <div class="metric-value circle">@Model.workercount</div>
-                        </div>
-                    @*</div>*@
-                    @*<div class="col-xs-3">*@
-                        <div class="metric">
-                            <div class="metric-value">
-                                <h3 class="metric-title">Capacity</h3>
-                                <div class="circle">@capacity.Capacity</div>
+                    <div class="metric">
+                        <h3 class="metric-title">Volunteers</h3>
+                        <div class="metric-value circle">@Model.workercount</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">
+                            <h3 class="metric-title">Capacity</h3>
+                            <div class="circle">@capacity.Capacity</div>
 
-                                <div>
-                                    <a id="remove" class="btn" href=""><i class="fa fa-minus-circle fa-2x"></i></a>
-                                    <a id="add" class="btn" href="#"><i class="fa fa-plus-circle fa-2x"></i></a>
-                                </div>
+                            <div>
+                                <a id="remove" class="btn" href=""><i class="fa fa-minus-circle fa-2x"></i></a>
+                                <a id="add" class="btn" href="#"><i class="fa fa-plus-circle fa-2x"></i></a>
                             </div>
                         </div>
-                    @*</div>*@
-                    @*<div class="col-xs-3">*@
-                        <div class="metric">
-                            <h3 class="metric-title">Open</h3>
-                            <div class="metric-value">
-                                @if (capacity.CheckInOpen)
-                                {
-                                    <i class="fa fa-toggle-on fa-3x active" id="on"></i>
-                                    <i class="fa fa-toggle-on fa-3x fa-rotate-180 inactive" id="off" style="display: none;"></i>
-                                }
-                                else
-                                {
-                                    <i class="fa fa-toggle-on fa-3x active" id="on" style="display: none;"></i>
-                                    <i class="fa fa-toggle-on fa-3x fa-rotate-180 inactive" id="off"></i>
-                                }
-                            </div>
+                    </div>
+                    <div class="metric">
+                        <h3 class="metric-title">Open</h3>
+                        <div class="metric-value">
+                            @if (capacity.CheckInOpen)
+                            {
+                                <i class="fa fa-toggle-on fa-3x active" id="on"></i>
+                                <i class="fa fa-toggle-on fa-3x fa-rotate-180 inactive" id="off" style="display: none;"></i>
+                            }
+                            else
+                            {
+                                <i class="fa fa-toggle-on fa-3x active" id="on" style="display: none;"></i>
+                                <i class="fa fa-toggle-on fa-3x fa-rotate-180 inactive" id="off"></i>
+                            }
                         </div>
-                    @*</div>*@
+                    </div>
                 </div>
 
 
