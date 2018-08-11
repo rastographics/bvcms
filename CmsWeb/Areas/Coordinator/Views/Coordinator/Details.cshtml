@@ -98,7 +98,7 @@
     function apiExecuteAction(params) {
         $.ajax({
             url: '/Coordinator/Coordinator/ExecuteAction',
-            data: JSON.stringify($params),
+            data: JSON.stringify(params),
             success: function (ret) {
                 $('#SubgroupDataContainer').html(ret);
             },

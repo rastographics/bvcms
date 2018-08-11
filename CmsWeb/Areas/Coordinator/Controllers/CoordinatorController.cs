@@ -69,8 +69,8 @@ namespace CmsWeb.Areas.Coordinator.Controllers
                                      });
 
                 schedule.Attendees = attendeeQuery.ToList();
-                schedule.AttendeeMemberCount = schedule.Attendees.Count(x => x.IsWorker);
-                schedule.AttendeeWorkerCount = schedule.Attendees.Count(x => !x.IsWorker);
+                schedule.AttendeeMemberCount = schedule.Attendees.Count(x => !x.IsWorker);
+                schedule.AttendeeWorkerCount = schedule.Attendees.Count(x => x.IsWorker);
             }
 
             return schedules;

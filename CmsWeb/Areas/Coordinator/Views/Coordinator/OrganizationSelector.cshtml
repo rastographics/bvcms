@@ -17,12 +17,12 @@
 
             <div class="list-group-item">
                 <a class="navbar-link text-lg" organizationId="@item.OrganizationId" subgroupId="@item.SubgroupId" subgroupName="@item.SubgroupName" selectedTimeslot="@item.NextMeetingDate.Value.ToString("s")">
-                    @item.OrganizationName @item.SubgroupName
+                    @item.OrganizationName - @item.SubgroupName
                 </a>
                 <div class="row">
-                    <div class="col-xs-4">999</div>
-                    <div class="col-xs-4">999</div>
-                    <div class="col-xs-4">999</div>
+                    <div class="col-xs-4">@item.AttendeeMemberCount</div>
+                    <div class="col-xs-4">@item.AttendeeWorkerCount</div>
+                    <div class="col-xs-4">@item.CheckInCapacity</div>
                 </div>
             </div>
         }
