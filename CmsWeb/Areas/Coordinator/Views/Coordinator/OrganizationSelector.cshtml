@@ -16,7 +16,7 @@
             }
 
             <div class="list-group-item">
-                <a class="navbar-link text-lg" organizationId="@item.OrganizationId" subgroupId="@item.SubgroupId" subgroupName="@item.SubgroupName">
+                <a class="navbar-link text-lg" organizationId="@item.OrganizationId" subgroupId="@item.SubgroupId" subgroupName="@item.SubgroupName" nextMeetingDate="@item.NextMeetingDate.Value.ToString("s")">
                     @item.OrganizationName @item.SubgroupName
                 </a>
                 <div class="row">
@@ -42,8 +42,9 @@
             var selectedOranization = $(this).attr('organizationId');
             var selectedSubgroupId = $(this).attr('subgroupId');
             var selectedSubgroupName = $(this).attr('subgroupName');
+            var selectedNextMeetingDate = $(this).attr('nextMeetingDate');
 
-            $("#DetailsContainer").load('@Url.Action("Details")' + '?organizationId=' + selectedOranization + '&subgroupId=' + selectedSubgroupId + '&subgroupName=' + selectedSubgroupName);
+            $("#DetailsContainer").load('@Url.Action("Details")' + '?organizationId=' + selectedOranization + '&subgroupId=' + selectedSubgroupId + '&subgroupName=' + selectedSubgroupName + '&nextMeetingDate=' + selectedNextMeetingDate);
         });
     });
 </script>

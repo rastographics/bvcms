@@ -105,10 +105,10 @@ namespace CmsWeb.Areas.Coordinator.Controllers
             return PartialView(model);
         }
 
-        public ActionResult Details(int organizationId, int subgroupId, string subgroupName)
+        public ActionResult Details(DateTime nextMeetingDate, int organizationId, int subgroupId, string subgroupName)
         {
-            var test = new SubgroupModel(organizationId) { ingroup = subgroupName, groupid = subgroupId };
-            return PartialView("Details", test);
+            var schedule = _checkinCoordinator.GetScheduleDetail(nextMeetingDate, organizationId, subgroupId, subgroupName);
+            return PartialView("Details", schedule);
         }
 
 

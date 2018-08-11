@@ -72,6 +72,11 @@ namespace CmsWeb.Areas.Coordinator.Services
                 .ToList();
         }
 
+        public CheckinScheduleDto GetScheduleDetail(DateTime nextMeetingDate, int organizationId, int subgroupId, string subgroupName)
+        {
+            return Schedules.AsQueryable().SingleOrDefault(s => s.NextMeetingDate == nextMeetingDate && s.OrganizationId == organizationId && s.SubgroupId == subgroupId && s.SubgroupName == subgroupName);
+        }
+
         private static DateTime ConvertToDate(string selectedTimeslot)
         {
             DateTime date;
