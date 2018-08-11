@@ -54,7 +54,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var attendee in Model.Attendees.Where(a => a.AttendeeType == "Worker"))
+                            @foreach (var attendee in Model.Attendees.Where(a => a.IsWorker))
                             {
                                 <tr>
                                     <td style="padding: 0 !important;border: 0 !important; min-width: 225px; line-height: 5">
@@ -71,7 +71,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var attendee in Model.Attendees.Where(a => a.AttendeeType == "Member"))
+                            @foreach (var attendee in Model.Attendees.Where(a => !a.IsWorker))
                             {
                                 <tr>
                                     <td style="padding: 0 !important;border: 0 !important; min-width: 225px; line-height: 5">
@@ -102,8 +102,8 @@
             e.preventDefault();
 
             var $info = {
-                id: $('#OrgId').val(),
-                grpid : $('#GrpId').val(),
+                id: $('#OrganizationId').val(),
+                grpid : $('#SubgroupId').val(),
                 addremove: 0
             };
             $.ajax({
@@ -126,8 +126,8 @@
             e.preventDefault();
 
             var $info = {
-                id: $('#OrgId').val(),
-                grpid: $('#GrpId').val(),
+                id: $('#OrganizationId').val(),
+                grpid: $('#SubgroupId').val(),
                 addremove: 1
             };
             $.ajax({
@@ -160,8 +160,8 @@
             e.preventDefault();
 
             var $info = {
-                id: $('#OrgId').val(),
-                grpid : $('#GrpId').val(),
+                id: $('#OrganizationId').val(),
+                grpid : $('#SubgroupId').val(),
                 addremove: 1
             };
             $.ajax({
@@ -184,8 +184,8 @@
             e.preventDefault();
 
             var $info = {
-                id: $('#OrgId').val(),
-                grpid: $('#GrpId').val(),
+                id: $('#OrganizationId').val(),
+                grpid: $('#SubgroupId').val(),
                 addremove: 2
             };
             $.ajax({
@@ -216,8 +216,8 @@
 
             var temp = list.toString();
             var url = '@Html.Raw(Url.Action("MoveSubgroupView", "Coordinator", new {id="-1", grpid ="-2", list="-3" }))';
-            url = url.replace("-1", $('#OrgId').val());
-            url = url.replace("-2", $('#GrpId').val());
+            url = url.replace("-1", $('#OrganizationId').val());
+            url = url.replace("-2", $('#SubgroupId').val());
             url = url.replace("-3", temp);
             window.location.replace(url);
         });

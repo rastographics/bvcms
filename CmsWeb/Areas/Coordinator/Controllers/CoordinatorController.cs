@@ -11,16 +11,16 @@ namespace CmsWeb.Areas.Coordinator.Controllers
 {
     public class CoordinatorController : Controller
     {
-        private readonly CheckinCoordinator _checkinCoordinator;
+        private readonly CheckinCoordinatorService _checkinCoordinator;
 
         public CoordinatorController()
         {
-            _checkinCoordinator = new CheckinCoordinator(GetDailySchedules());
+            _checkinCoordinator = new CheckinCoordinatorService(GetDailySchedules());
         }
 
         private IEnumerable<CheckinScheduleDto> GetDailySchedules(int timeslotId = 0, int programId = 0, int divisionId = 0, int organizationId = 0)
         {
-            var query = (from os in DbUtil.Db.OrgSchedules
+            var scheduleQuery = (from os in DbUtil.Db.OrgSchedules
                          join o in DbUtil.Db.Organizations on os.OrganizationId equals o.OrganizationId
                          join mt in DbUtil.Db.MemberTags on o.OrganizationId equals mt.OrgId
                          join d in DbUtil.Db.Divisions on o.DivisionId equals d.Id
@@ -49,12 +49,36 @@ namespace CmsWeb.Areas.Coordinator.Controllers
                              SubgroupName = mt.Name
                          });
 
-            return query.ToList();
+            var schedules = scheduleQuery.ToList();
+
+            // TODO: add this to top query and get all in one pass?
+            foreach (var schedule in schedules)
+            {
+                var attendeeQuery = (from a in DbUtil.Db.Attends
+                                     join at in DbUtil.Db.AttendTypes on a.AttendanceTypeId.Value equals at.Id
+                                     join p in DbUtil.Db.People on a.PeopleId equals p.PeopleId
+                                     where a.MeetingDate == schedule.NextMeetingDate
+                                     && a.OrganizationId == schedule.OrganizationId
+                                     && a.SubGroupID == schedule.SubgroupId
+                                     && a.SubGroupName == schedule.SubgroupName
+                                     select new CheckinAttendeeDto
+                                     {
+                                         IsWorker = at.Worker,
+                                         Name = p.Name2,
+                                         PeopleId = p.PeopleId
+                                     });
+
+                schedule.Attendees = attendeeQuery.ToList();
+                schedule.AttendeeMemberCount = schedule.Attendees.Count(x => x.IsWorker);
+                schedule.AttendeeWorkerCount = schedule.Attendees.Count(x => !x.IsWorker);
+            }
+
+            return schedules;
         }
 
         public ActionResult Dashboard()
         {            
-            return View(_checkinCoordinator);
+            return View();
         }
 
         public ActionResult TimeslotSelector()

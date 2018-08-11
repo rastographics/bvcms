@@ -9,6 +9,6 @@ namespace CmsWeb.Areas.Coordinator.Models
     {
         public int PeopleId { get; set; }
         public string Name { get; set; }
-        public string AttendeeType { get; set; }
+        public bool IsWorker { get; set; }
     }
 }
