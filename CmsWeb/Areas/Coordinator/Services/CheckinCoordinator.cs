@@ -7,15 +7,16 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Coordinator.Services
 {
-    public class CheckinCoordinator
+    public class CheckinCoordinatorService
     {
         public IEnumerable<CheckinScheduleDto> Schedules;
 
-        public CheckinCoordinator(IEnumerable<CheckinScheduleDto> scheduleCollection)
+        public CheckinCoordinatorService(IEnumerable<CheckinScheduleDto> scheduleCollection)
         {
             Schedules = scheduleCollection;
         }
 
+        #region Schedule queries
         public IEnumerable<CheckinTimeslotDto> GetFilteredTimeslots()
         {
             return Schedules
@@ -86,5 +87,8 @@ namespace CmsWeb.Areas.Coordinator.Services
 
             return date;
         }
+        #endregion
+
+
     }
 }

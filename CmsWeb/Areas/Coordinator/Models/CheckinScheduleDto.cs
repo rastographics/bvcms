@@ -1,32 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace CmsWeb.Areas.Coordinator.Models
 {
-    public class CheckinViewModel
-    {
-        public IEnumerable<CheckinScheduleDto> DailySchedules { get; set; }
-        public IEnumerable<int> UniqueScheduleIds { get; set; }
-        public IEnumerable<int> UniqueOrganizationIds { get; set; }
-
-
-        public IEnumerable<int> GetUniqueTimeslotsFromSchedules()
-        {
-            return DailySchedules.AsQueryable()
-                .OrderBy(s => s.NextMeetingDate)
-                .Select(s => s.OrgScheduleId)
-                .Distinct()
-                .ToList();
-        }
-
-        public object GetUniqueOrganizationsFromTimeslot(int timeslotId)
-        {
-            return null;
-        }
-    }
-
     public class CheckinScheduleDto
     {
         public int OrgScheduleId { get; set; }
@@ -41,5 +17,8 @@ namespace CmsWeb.Areas.Coordinator.Models
         public string DivisionName { get; set; }
         public int ProgramId { get; set; }
         public string ProgramName { get; set; }
+        public int AttendeeWorkerCount { get; set; }
+        public int AttendeeMemberCount { get; set; }
+        public List<CheckinAttendeeDto> Attendees { get; set; }
     }
 }
