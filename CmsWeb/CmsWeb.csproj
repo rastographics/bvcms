@@ -382,6 +382,8 @@
     <Compile Include="App_Start\ApiAuthorizeAttribute.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\Coordinator\Models\CheckinAttendeeDto.cs" />
+    <Compile Include="Areas\Coordinator\Models\CheckinScheduleDto.cs" />
     <Compile Include="Areas\Coordinator\Services\CheckinCoordinator.cs" />
     <Compile Include="Areas\Coordinator\Models\CheckinDivisionDto.cs" />
     <Compile Include="Areas\Coordinator\Models\CheckinProgramDto.cs" />
@@ -390,7 +392,6 @@
     <Compile Include="Areas\Coordinator\Models\LinqExtensions.cs" />
     <Compile Include="Areas\Coordinator\Models\PostTargetInfo.cs" />
     <Compile Include="Areas\Coordinator\CoordinatorAreaRegistration.cs" />
-    <Compile Include="Areas\Coordinator\Models\CheckinViewModel.cs" />
     <Compile Include="Areas\Coordinator\Models\SubgroupModel.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddResourceController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddOrganizationController.cs" />
