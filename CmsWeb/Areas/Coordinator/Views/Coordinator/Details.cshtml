@@ -113,10 +113,10 @@
 
     function buildParameters(item, action) {
         return {
-            organizationId: $("#OrganizationId").val,
-            subgroupId: $("#SubgroupId").val,
-            subgroupName: $("SubgroupName").val,
-            selectedTimeslot: $("SelectedTimeslot").val,
+            organizationId: $("#OrganizationId").val(),
+            subgroupId: $("#SubgroupId").val(),
+            subgroupName: $("SubgroupName").val(),
+            selectedTimeslot: $("SelectedTimeslot").val(),
             action: action
         };
     }
