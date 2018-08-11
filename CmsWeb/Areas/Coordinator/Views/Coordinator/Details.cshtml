@@ -9,6 +9,8 @@
             <div class="box-content">
                 @Html.HiddenFor(m => m.SubgroupId)
                 @Html.HiddenFor(m => m.OrganizationId)
+                @Html.HiddenFor(m => m.SubgroupName)
+                @Html.HiddenFor(m => m.NextMeetingDate)
               
                 <div style="display: grid; justify-items: center; align-items: center; grid-template-columns: 25% 25% 25% 25%;">
                     <div class="metric">
@@ -93,6 +95,32 @@
 
 
 <script type="text/javascript">
+    function apiExecuteAction(params) {
+        $.ajax({
+            url: '/Coordinator/Coordinator/ExecuteAction',
+            data: JSON.stringify($params),
+            success: function (ret) {
+                $('#SubgroupDataContainer').html(ret);
+            },
+            error: function (ret) {
+                swal('Error!', ret, 'error');
+            },
+            type: 'POST',
+            contentType: 'application/json, charset=utf-8',
+            dataType: 'html'
+        });
+    }
+
+    function buildParameters(item, action) {
+        return {
+            organizationId: $("#OrganizationId").val,
+            subgroupId: $("#SubgroupId").val,
+            subgroupName: $("SubgroupName").val,
+            selectedTimeslot: $("SelectedTimeslot").val,
+            action: action
+        };
+    }
+
     $('.middle').click(function() {
         $('.inactive, .active').toggle();
     });
@@ -101,48 +129,16 @@
         function(e) {
             e.preventDefault();
 
-            var $info = {
-                id: $('#OrganizationId').val(),
-                grpid : $('#SubgroupId').val(),
-                addremove: 0
-            };
-            $.ajax({
-                url: '/Coordinator/Coordinator/UpdateCheckInOpen/',
-                data: JSON.stringify($info),
-                success: function (ret) {
-                    $('#SubgroupDataContainer').html(ret);
-                },
-                error: function (ret) {
-                    swal('Error!', ret, 'error');
-                },
-                type: 'POST',
-                contentType: 'application/json, charset=utf-8',
-                dataType: 'html'
-            });
+            var params = buildParameters($(this), "ToggleCheckinOpen");
+            apiExecuteAction(params);
         });
 
     $('#off').on('click',
         function(e) {
             e.preventDefault();
 
-            var $info = {
-                id: $('#OrganizationId').val(),
-                grpid: $('#SubgroupId').val(),
-                addremove: 1
-            };
-            $.ajax({
-                url: '/Coordinator/Coordinator/UpdateCheckInOpen/',
-                data: JSON.stringify($info),
-                success: function (ret) {
-                    $('#SubgroupDataContainer').html(ret);
-                },
-                error: function (ret) {
-                    swal('Error!', ret, 'error');
-                },
-                type: 'POST',
-                contentType: 'application/json, charset=utf-8',
-                dataType: 'html'
-            });
+            var params = buildParameters($(this), "ToggleCheckinOpen");
+            apiExecuteAction(params);
         });
 
     $('.checkSingle').on('click', function () {
@@ -159,48 +155,16 @@
         function (e) {
             e.preventDefault();
 
-            var $info = {
-                id: $('#OrganizationId').val(),
-                grpid : $('#SubgroupId').val(),
-                addremove: 1
-            };
-            $.ajax({
-                url: '/Coordinator/Coordinator/UpdateCapacity/',
-                data: JSON.stringify($info),
-                success: function (ret) {
-                    $('#SubgroupDataContainer').html(ret);
-                },
-                error: function (ret) {
-                    swal('Error!', ret, 'error');
-                },
-                type: 'POST',
-                contentType: 'application/json, charset=utf-8',
-                dataType: 'html'
-            });
+            var params = buildParameters($(this), "IncrementCapacity");
+            apiExecuteAction(params);
         });
 
     $('#remove').on('click',
         function (e) {
             e.preventDefault();
 
-            var $info = {
-                id: $('#OrganizationId').val(),
-                grpid: $('#SubgroupId').val(),
-                addremove: 2
-            };
-            $.ajax({
-                url: '/Coordinator/Coordinator/UpdateCapacity/',
-                data: JSON.stringify($info),
-                success: function (ret) {
-                    $('#SubgroupDataContainer').html(ret);
-                },
-                error: function (ret) {
-                    swal('Error!', ret, 'error');
-                },
-                type: 'POST',
-                contentType: 'application/json, charset=utf-8',
-                dataType: 'html'
-            });
+            var params = buildParameters($(this), "DecrementCapacity");
+            apiExecuteAction(params);
         });
 
     $('#movebtn').on('click',

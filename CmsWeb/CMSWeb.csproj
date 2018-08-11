@@ -382,6 +382,7 @@
     <Compile Include="App_Start\ApiAuthorizeAttribute.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\Coordinator\Models\CheckinActionDto.cs" />
     <Compile Include="Areas\Coordinator\Models\CheckinAttendeeDto.cs" />
     <Compile Include="Areas\Coordinator\Models\CheckinScheduleDto.cs" />
     <Compile Include="Areas\Coordinator\Services\CheckinCoordinator.cs" />

@@ -9,7 +9,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Coordinator.Controllers
 {
-    public class CoordinatorController : Controller
+    public partial class CoordinatorController : Controller
     {
         private readonly CheckinCoordinatorService _checkinCoordinator;
 
@@ -105,9 +105,9 @@ namespace CmsWeb.Areas.Coordinator.Controllers
             return PartialView(model);
         }
 
-        public ActionResult Details(DateTime nextMeetingDate, int organizationId, int subgroupId, string subgroupName)
+        public ActionResult Details(string selectedTimeslot, int organizationId, int subgroupId, string subgroupName)
         {
-            var schedule = _checkinCoordinator.GetScheduleDetail(nextMeetingDate, organizationId, subgroupId, subgroupName);
+            var schedule = _checkinCoordinator.GetScheduleDetail(selectedTimeslot, organizationId, subgroupId, subgroupName);
             return PartialView("Details", schedule);
         }
 
@@ -120,51 +120,29 @@ namespace CmsWeb.Areas.Coordinator.Controllers
             int[] selectedIds = Array.ConvertAll(arr, int.Parse);           
             m.SelectedPeopleIds = selectedIds;
             return View(m);
-        }
+        }        
 
         [HttpPost]
-        public ActionResult UpdateCapacity(PostTargetInfo i)
+        public ActionResult ExecuteAction(CheckinActionDto checkinActionDto)
         {
-            var smgroup = (from e in DbUtil.Db.MemberTags
-                           where e.OrgId == i.id
-                           where e.Id == i.grpid
-                           select e).SingleOrDefault();
+            var schedule = _checkinCoordinator.GetScheduleDetail(checkinActionDto.SelectedTimeslot, checkinActionDto.OrganizationId, checkinActionDto.SubgroupId, checkinActionDto.SubgroupName);
 
-            if (smgroup != null)
+            if (checkinActionDto.Action.Equals(CheckinActionDto.IncrementCapacity))
             {
-                int oldcapacity = smgroup.CheckInCapacity;
-
-                if (i.addremove == 1)
-                {
-                    smgroup.CheckInCapacity = oldcapacity + 1;
-                }
-                else
-                {
-                    smgroup.CheckInCapacity = smgroup.CheckInCapacity - 1;
-                }
+                _checkinCoordinator.IncrementCapacity(schedule);
             }
 
-            DbUtil.Db.SubmitChanges();
-            var m = new SubgroupModel(i.id);
-            m.groupid = i.grpid;
-            m.ingroup = m.GetGroupDetails(i.grpid).Name;
-            //return View("SubgroupDataView", m);
-            return Details(i.id, m.groupid.Value, m.ingroup);
-        }
+            if(checkinActionDto.Action.Equals(CheckinActionDto.DecrementCapacity))
+            {
+                _checkinCoordinator.DecrementCapacity(schedule);
+            }
 
-        [HttpPost]
-        public ActionResult UpdateCheckInOpen(PostTargetInfo i)
-        {
-            var item = DbUtil.Db.MemberTags.SingleOrDefault(mt => mt.OrgId == i.id && mt.Id == i.grpid);
-            item.CheckInOpen = !item.CheckInOpen;
+            if (checkinActionDto.Action.Equals(CheckinActionDto.ToggleCheckinOpen))
+            {
+                _checkinCoordinator.ToggleCheckinOpen(schedule);
+            }
 
-            DbUtil.Db.SubmitChanges();
-
-            var m = new SubgroupModel(i.id);
-            m.groupid = i.grpid;
-            m.ingroup = m.GetGroupDetails(i.grpid).Name;
-
-            return Details(i.id, m.groupid.Value, m.ingroup);
+            return Details(checkinActionDto.SelectedTimeslot, checkinActionDto.OrganizationId, checkinActionDto.SubgroupId, checkinActionDto.SubgroupName);
         }
 
         public ActionResult UpdateSmallGroup(int id, int curgrpid, int targrpid, string list)
