@@ -98,13 +98,13 @@ namespace CmsWeb.Areas.Coordinator.Services
         #region Schedule checkin methods
         public void IncrementCapacity(CheckinScheduleDto checkinScheduleDto)
         {
-            checkinScheduleDto.CheckInCapacity++;
+            checkinScheduleDto.CheckInCapacity = checkinScheduleDto.CheckInCapacity++;
             CommitChanges(checkinScheduleDto);
         }
 
         public void DecrementCapacity(CheckinScheduleDto checkinScheduleDto)
         {
-            checkinScheduleDto.CheckInCapacity--;
+            checkinScheduleDto.CheckInCapacity = checkinScheduleDto.CheckInCapacity--;
             CommitChanges(checkinScheduleDto);
         }
 
