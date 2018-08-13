@@ -9,20 +9,20 @@
             if (!printedHeaders.Contains(item.NextMeetingDate.Value))
             {
                 <div class="list-group-item-heading">
-                    <p>@item.NextMeetingDate.Value.ToString("yyyy-MM-dd hh:mm tt")</p>
+                    <p><i class="fa fa-calendar"></i> @item.NextMeetingDate.Value.ToString("s")</p>
                 </div>
 
                 printedHeaders.Add(item.NextMeetingDate.Value);
             }
 
             <div class="list-group-item">
-                <a class="navbar-link text-lg" organizationId="@item.OrganizationId" subgroupId="@item.SubgroupId" subgroupName="@item.SubgroupName" selectedTimeslot="@item.NextMeetingDate.Value.ToString("s")">
+                <a class="navbar-link" organizationId="@item.OrganizationId" subgroupId="@item.SubgroupId" subgroupName="@item.SubgroupName" selectedTimeslot="@item.NextMeetingDate.Value.ToString("s")">
                     @item.OrganizationName - @item.SubgroupName
                 </a>
                 <div class="row">
-                    <div class="col-xs-4">@item.AttendeeMemberCount</div>
-                    <div class="col-xs-4">@item.AttendeeWorkerCount</div>
-                    <div class="col-xs-4">@item.CheckInCapacity</div>
+                    <div class="col-xs-4"><i class="fa fa-user"></i> @item.AttendeeMemberCount</div>
+                    <div class="col-xs-4"><i class="fa fa-support"></i> @item.AttendeeWorkerCount</div>
+                    <div class="col-xs-4"><i class="fa fa-group"></i> @item.CheckInCapacity</div>
                 </div>
             </div>
         }

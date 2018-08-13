@@ -4,7 +4,7 @@
     <div id="SubgroupDataContainer">
         <div class="box box-primary">
             <div class="box-title">
-                <p class="title">@Model.NextMeetingDate | @Model.OrganizationName - @Model.SubgroupName</p>
+                <p class="title">@Model.NextMeetingDate.Value.ToString("s") | @Model.OrganizationName - @Model.SubgroupName</p>
             </div>
             <div class="box-content">
                 @Html.HiddenFor(m => m.SubgroupId)
@@ -14,16 +14,16 @@
               
                 <div style="display: grid; justify-items: center; align-items: center; grid-template-columns: 25% 25% 25% 25%;">
                     <div class="metric">
-                        <h3 class="metric-title">Members</h3>
+                        <h3 class="metric-title"><i class="fa fa-user"></i> Members</h3>
                         <div class="metric-value circle">@Model.AttendeeMemberCount</div>
                     </div>
                     <div class="metric">
-                        <h3 class="metric-title">Volunteers</h3>
+                        <h3 class="metric-title"><i class="fa fa-support"></i> Volunteers</h3>
                         <div class="metric-value circle">@Model.AttendeeWorkerCount</div>
                     </div>
                     <div class="metric">
                         <div class="metric-value">
-                            <h3 class="metric-title">Capacity</h3>
+                            <h3 class="metric-title"><i class="fa fa-group"></i> Capacity</h3>
                             <div class="circle">@Model.CheckInCapacity</div>
 
                             <div>

@@ -111,16 +111,6 @@ namespace CmsWeb.Areas.Coordinator.Controllers
             return PartialView("Details", schedule);
         }
 
-        public ActionResult MoveSubgroupView(int id, int grpid, string list)
-        {
-            var m = new SubgroupModel(id);
-            m.groupid = grpid;
-            string[] arr = list.Split(',');
-            int[] selectedIds = Array.ConvertAll(arr, int.Parse);           
-            m.SelectedPeopleIds = selectedIds;
-            return View(m);
-        }        
-
         [HttpPost]
         public ActionResult ExecuteAction(CheckinActionDto checkinActionDto)
         {
@@ -168,6 +158,16 @@ namespace CmsWeb.Areas.Coordinator.Controllers
             m.groupid = targrpid;
             m.ingroup = m.GetGroupDetails(targrpid).Name;
             return RedirectToAction("SubgroupView", m);
+        }
+
+        public ActionResult MoveSubgroupView(int id, int grpid, string list)
+        {
+            var m = new SubgroupModel(id);
+            m.groupid = grpid;
+            string[] arr = list.Split(',');
+            int[] selectedIds = Array.ConvertAll(arr, int.Parse);
+            m.SelectedPeopleIds = selectedIds;
+            return View(m);
         }
     }
 }
