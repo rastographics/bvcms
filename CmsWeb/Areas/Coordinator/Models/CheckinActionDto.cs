@@ -10,6 +10,6 @@
         public int OrganizationId { get; set; }
         public int SubgroupId { get; set; }
         public string SubgroupName { get; set; }
-        public string Action { get; set; }
+        public string Service { get; set; }
     }
 }

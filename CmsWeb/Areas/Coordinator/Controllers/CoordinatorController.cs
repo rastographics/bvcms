@@ -127,17 +127,17 @@ namespace CmsWeb.Areas.Coordinator.Controllers
         {
             var schedule = _checkinCoordinator.GetScheduleDetail(checkinActionDto.SelectedTimeslot, checkinActionDto.OrganizationId, checkinActionDto.SubgroupId, checkinActionDto.SubgroupName);
 
-            if (checkinActionDto.Action.Equals(CheckinActionDto.IncrementCapacity))
+            if (checkinActionDto.Service.Equals(CheckinActionDto.IncrementCapacity))
             {
                 _checkinCoordinator.IncrementCapacity(schedule);
             }
 
-            if(checkinActionDto.Action.Equals(CheckinActionDto.DecrementCapacity))
+            if(checkinActionDto.Service.Equals(CheckinActionDto.DecrementCapacity))
             {
                 _checkinCoordinator.DecrementCapacity(schedule);
             }
 
-            if (checkinActionDto.Action.Equals(CheckinActionDto.ToggleCheckinOpen))
+            if (checkinActionDto.Service.Equals(CheckinActionDto.ToggleCheckinOpen))
             {
                 _checkinCoordinator.ToggleCheckinOpen(schedule);
             }

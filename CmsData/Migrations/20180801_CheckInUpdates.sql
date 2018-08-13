@@ -1,20 +1,3 @@
--- @formatter:off
--- SELECT *
--- FROM OrgSchedule
---
--- ALTER TABLE OrgSchedule
--- 	ADD MeetingTimeOnly AS (CAST(CAST( MeetingTime AS TIME )AS DATETIME ))
---
--- ALTER TABLE OrgSchedule
--- 	ADD SchedDayOffset AS (CASE WHEN SchedDay - (DATEPART( dw, GETDATE( ) ) - 1) < 0 THEN 7 + SchedDay - (DATEPART( dw, GETDATE( ) ) - 1)
--- 									WHEN SchedDay - (DATEPART( dw, GETDATE( ) ) - 1) = 0 THEN 0
--- 								  ELSE SchedDay - (DATEPART( dw, GETDATE( ) ))
--- 								  END)
---
--- ALTER TABLE OrgSchedule DROP COLUMN MeetingTimeOnly
--- ALTER TABLE OrgSchedule DROP COLUMN SchedDayOffset
--- ALTER TABLE OrgSchedule DROP COLUMN NextMeetingDate
-
 ALTER TABLE OrgSchedule
 	ADD NextMeetingDate AS (CAST( DATEADD( dd, CASE WHEN SchedDay - (DATEPART( dw, GETDATE( ) ) - 1) < 0 THEN 7 + SchedDay - (DATEPART( dw, GETDATE( ) ) - 1)
 									WHEN SchedDay - (DATEPART( dw, GETDATE( ) ) - 1) = 0 THEN 0
