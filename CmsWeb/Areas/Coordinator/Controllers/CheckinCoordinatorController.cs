@@ -9,11 +9,11 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Coordinator.Controllers
 {
-    public partial class CoordinatorController : Controller
+    public partial class CheckinCoordinatorController : Controller
     {
         private readonly CheckinCoordinatorService _checkinCoordinator;
 
-        public CoordinatorController()
+        public CheckinCoordinatorController()
         {
             _checkinCoordinator = new CheckinCoordinatorService(GetDailySchedules());
         }
@@ -110,7 +110,6 @@ namespace CmsWeb.Areas.Coordinator.Controllers
             var schedule = _checkinCoordinator.GetScheduleDetail(selectedTimeslot, organizationId, subgroupId, subgroupName);
             return PartialView("Details", schedule);
         }
-
 
         public ActionResult MoveSubgroupView(int id, int grpid, string list)
         {

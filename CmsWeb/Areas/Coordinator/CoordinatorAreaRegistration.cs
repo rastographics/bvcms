@@ -16,8 +16,8 @@ namespace CmsWeb.Areas.Coordinator
         {
             context.MapRoute(
                 "Coordinator_default",
-                "Coordinator/{controller}/{action}/{id}",
-                new { action = "Index", id = UrlParameter.Optional }
+                "CheckinCoordinator/{controller}/{action}/{id}",
+                new { controller = "CheckinCoordinator", action = "Dashboard", id = UrlParameter.Optional }
             );
         }
     }

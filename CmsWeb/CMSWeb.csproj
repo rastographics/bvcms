@@ -389,7 +389,7 @@
     <Compile Include="Areas\Coordinator\Models\CheckinDivisionDto.cs" />
     <Compile Include="Areas\Coordinator\Models\CheckinProgramDto.cs" />
     <Compile Include="Areas\Coordinator\Models\CheckinTimeslotDto.cs" />
-    <Compile Include="Areas\Coordinator\Controllers\CoordinatorController.cs" />
+    <Compile Include="Areas\Coordinator\Controllers\CheckinCoordinatorController.cs" />
     <Compile Include="Areas\Coordinator\Models\LinqExtensions.cs" />
     <Compile Include="Areas\Coordinator\Models\PostTargetInfo.cs" />
     <Compile Include="Areas\Coordinator\CoordinatorAreaRegistration.cs" />
