@@ -4,7 +4,7 @@
     <div id="SubgroupDataContainer">
         <div class="box box-primary">
             <div class="box-title">
-                <p class="title">@Model.NextMeetingDate.Value.ToString("s") | @Model.OrganizationName - @Model.SubgroupName</p>
+                <p class="title">@Model.NextMeetingDate.Value.ToString("g") | @Model.OrganizationName - @Model.SubgroupName</p>
             </div>
             <div class="box-content">
                 @Html.HiddenFor(m => m.SubgroupId)

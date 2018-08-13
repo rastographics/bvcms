@@ -6,7 +6,7 @@
 
         @foreach (var item in Model)
         {
-            <option value="@item.NextMeetingDate.ToString("s")">@item.NextMeetingDate.ToString("s")</option>
+            <option value="@item.NextMeetingDate.ToString("s")">@item.NextMeetingDate.ToString("g")</option>
         }
     </select>
 </div>

@@ -9,7 +9,7 @@
             if (!printedHeaders.Contains(item.NextMeetingDate.Value))
             {
                 <div class="list-group-item-heading">
-                    <p><i class="fa fa-calendar"></i> @item.NextMeetingDate.Value.ToString("s")</p>
+                    <p><i class="fa fa-calendar"></i> @item.NextMeetingDate.Value.ToString("g")</p>
                 </div>
 
                 printedHeaders.Add(item.NextMeetingDate.Value);
