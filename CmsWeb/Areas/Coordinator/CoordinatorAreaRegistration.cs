@@ -14,9 +14,7 @@ namespace CmsWeb.Areas.Coordinator
 
         public override void RegisterArea(AreaRegistrationContext context) 
         {
-            context.MapRoute(
-                "Coordinator_default",
-                "CheckinCoordinator/{controller}/{action}/{id}",
+            context.MapRoute("Coordinator_default", "CheckinCoordinator/{controller}/{action}/{id}",
                 new { controller = "CheckinCoordinator", action = "Dashboard", id = UrlParameter.Optional }
             );
         }
