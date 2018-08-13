@@ -10,6 +10,10 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 	[SuppressMessage( "ReSharper", "FieldCanBeMadeReadOnly.Global" )]
 	public class Information
 	{
+		public int userID = 0;
+		public string userName = "";
+		public List<string> userRoles;
+		
 		public List<SettingsEntry> settings;
 		public List<State> states;
 		public List<Country> countries;

@@ -99,6 +99,8 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			Information information = new Information
 			{
+				userID = Util.UserId,
+				userName = Util.UserFullName,
 				settings = settings,
 				states = states,
 				countries = countries,
@@ -411,7 +413,7 @@ namespace CmsWeb.Areas.Public.Controllers
 										where (o.SuspendCheckin ?? false) == false || search.showAll
 										where person.BirthDate == null || person.BirthDate <= o.BirthDayEnd || o.BirthDayEnd == null || search.showAll
 										where person.BirthDate == null || person.BirthDate >= o.BirthDayStart || o.BirthDayStart == null || search.showAll
-										where o.CanSelfCheckin.Value == true
+										where o.CanSelfCheckin.Value
 										where (o.ClassFilled ?? false) == false
 										where (o.CampusId == null && o.AllowNonCampusCheckIn == true) || o.CampusId == search.campusID || search.campusID == 0
 										where o.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
