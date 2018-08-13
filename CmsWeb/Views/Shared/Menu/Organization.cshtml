@@ -19,7 +19,7 @@
         }
         @if (User.IsInRole("Checkin"))
         {
-            <li>@Helper.LiAnchorLink("Check-in Coordinator", "/CheckinCoordinator")</li>
+            <li>@Helper.LiAnchorLink("Check-In Coordinator", "/CheckInCoordinator")</li>
         }
         @Helper.LiAnchorLink("Coupons", "/Coupon/List", User.IsInRole("Coupon"))
         @Helper.LiAnchorLink("Org Members", "/OrgMembers/", display: User.IsInRole("ManageOrgMembers"))
