@@ -97,7 +97,7 @@
 <script type="text/javascript">
     function apiExecuteAction(params) {
         $.ajax({
-            url: '/Coordinator/Coordinator/ExecuteAction',
+            url: '@Url.Action("ExecuteAction")',
             data: JSON.stringify(params),
             success: function (ret) {
                 $('#SubgroupDataContainer').html(ret);
