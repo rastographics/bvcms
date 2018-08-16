@@ -43,7 +43,6 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
             while (csv.ReadNextRecord())
             {
-                
                 if (!csv[12].Contains("Check"))
                     continue;
                 var bd = new CmsData.BundleDetail
@@ -72,6 +71,10 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                     {
                         case "deposit number":
                             curbundle = csv[c].ToInt();
+                            if (prevbundle == -1)
+                            {
+                                prevbundle = curbundle;
+                            }
                             if (curbundle != prevbundle)
                             {
                                 if (curbundle == 3143)
@@ -91,7 +94,6 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                         case "post amount":
                             bd.Contribution.ContributionAmount = csv[c].GetAmount();
                             break;
-                        //    break;
                         case "micr":
                             var m = re.Match(csv[c]);
                             rt = m.Groups["rt"].Value;
