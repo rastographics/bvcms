@@ -1,4 +1,4 @@
-IF NOT EXISTS(SELECT 1 FROM sys.columns 
+﻿IF NOT EXISTS(SELECT 1 FROM sys.columns 
           WHERE Name = N'Active'
           AND Object_ID = Object_ID(N'lookup.OrganizationStatus'))
 BEGIN
