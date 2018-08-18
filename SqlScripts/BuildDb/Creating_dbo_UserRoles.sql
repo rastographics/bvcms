@@ -11,7 +11,7 @@ FROM (SELECT DISTINCT Name, EmailAddress,
 		WHERE ur.UserId = u.UserId
 		FOR XML PATH ('')) Roles
 FROM dbo.Users u
-WHERE EmailAddress NOT IN ('david@bvcms.com','karen@bvcms.com', 'support@bvcms.com')
+WHERE EmailAddress NOT LIKE '%@touchpointsoftware.com'
 ) tt
 
 GO
