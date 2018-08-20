@@ -216,6 +216,9 @@ GO
                     {
                         currentFile = migrationsFolder;
                         RunMigrations(cn, migrationsFolder);
+                    } else
+                    {
+                        throw new DirectoryNotFoundException(migrationsFolder + " was not found");
                     }
                 }
             }

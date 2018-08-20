@@ -93,6 +93,24 @@ namespace CmsData.Classes.Twilio
             ExecuteCmsTwilio(list.Id);
         }
 
+        public static bool IsConfigured(CMSDataContext db)
+        {
+            bool isConfigured = false;
+            string sSID = GetSid(db);
+            string sToken = GetToken(db);
+
+            if (sSID.HasValue() && sToken.HasValue())
+            {
+                SMSNumber smsNumber = db.SMSNumbers.FirstOrDefault();
+                if (smsNumber != null)
+                {
+                    isConfigured = true;
+                }
+            }
+
+            return isConfigured;
+        }
+
         public static bool SendSMS(CMSDataContext db, string toNumber, string message)
         {
             bool success = false;
