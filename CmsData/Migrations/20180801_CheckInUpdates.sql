@@ -1,71 +1,82 @@
 ALTER TABLE OrgSchedule
-	ADD NextMeetingDate AS (CAST( DATEADD( dd, CASE WHEN SchedDay - (DATEPART( dw, GETDATE( ) ) - 1) < 0 THEN 7 + SchedDay - (DATEPART( dw, GETDATE( ) ) - 1)
-									WHEN SchedDay - (DATEPART( dw, GETDATE( ) ) - 1) = 0 THEN 0
-								  ELSE SchedDay - (DATEPART( dw, GETDATE( ) ) - 1)
-								  END, CAST( GETDATE( ) AS DATE )) AS DATETIME) + CAST(CAST( MeetingTime AS TIME )AS DATETIME ))
+ADD NextMeetingDate AS (CAST( DATEADD( dd, CASE WHEN SchedDay - (DATEPART( dw, GETDATE( ) ) - 1) < 0 THEN 7 + SchedDay - (DATEPART( dw, GETDATE( ) ) - 1)
+								WHEN SchedDay - (DATEPART( dw, GETDATE( ) ) - 1) = 0 THEN 0
+								ELSE SchedDay - (DATEPART( dw, GETDATE( ) ) - 1)
+								END, CAST( GETDATE( ) AS DATE )) AS DATETIME) + CAST(CAST( MeetingTime AS TIME )AS DATETIME ))
+GO
 
 -- Misc
 ALTER TABLE lookup.OrganizationStatus ADD Active BIT NOT NULL DEFAULT 0
+GO
 UPDATE lookup.OrganizationStatus SET Active = 1 WHERE Id = 30
-
+GO
 ALTER TABLE lookup.MemberType ADD Pending BIT NOT NULL DEFAULT 0
+GO
 UPDATE lookup.MemberType SET Pending = 1 WHERE Id = 311
-
+GO
 ALTER TABLE lookup.MemberType ADD Inactive bit not null default 0
+GO
 UPDATE lookup.MemberType SET Inactive = 1 WHERE Id = 230
-
+GO
 ALTER TABLE lookup.AttendType ADD Worker BIT NOT NULL DEFAULT 0
+GO
 UPDATE lookup.AttendType SET Worker = 1 WHERE Id IN( 10, 20 )
-
+GO
 ALTER TABLE lookup.AttendType ADD Guest BIT NOT NULL DEFAULT 0
+GO
 UPDATE lookup.AttendType SET Guest = 1 WHERE Id IN( 40, 50, 60 )
-
+GO
 ALTER TABLE lookup.MemberStatus ADD Member BIT DEFAULT 0 NOT NULL
+GO
 UPDATE lookup.MemberStatus SET Member = 1 WHERE Id IN( 10, 40 )
-
+GO
 ALTER TABLE lookup.MemberStatus ADD Previous BIT DEFAULT 0 NOT NULL
+GO
 UPDATE lookup.MemberStatus SET Previous = 1 WHERE Id IN( 40 )
-
+GO
 ALTER TABLE lookup.MemberStatus ADD Pending BIT DEFAULT 0 NOT NULL
+GO
 UPDATE lookup.MemberStatus SET Pending = 1 WHERE Id IN( 30 )
+GO
 
--- CheckInAPIv2Controller: Authenticate
 ALTER TABLE CheckInSettings ADD version INT NOT NULL DEFAULT 1
-
--- CheckInAPIv2Controller: UpdateAttend
 ALTER TABLE Attend ADD SubGroupID INT NOT NULL DEFAULT 0
 ALTER TABLE Attend ADD SubGroupName NVARCHAR(200) NOT NULL DEFAULT ''
 ALTER TABLE Attend ADD Pager NVARCHAR(20) NOT NULL DEFAULT ''
-
--- Subgroup: forGroupID
 ALTER TABLE MemberTags ADD CheckIn BIT NOT NULL DEFAULT 0
 ALTER TABLE MemberTags ADD CheckInOpen BIT NOT NULL DEFAULT 1
 ALTER TABLE MemberTags ADD CheckInCapacity INT NOT NULL DEFAULT 0
+GO
 
 -- Person: computePositionInFamily
 ALTER TABLE lookup.FamilyPosition ADD PrimaryAdult INT DEFAULT 0 NOT NULL
+GO
 UPDATE lookup.FamilyPosition SET PrimaryAdult = 1 WHERE Id IN( 10 )
-
+GO
 ALTER TABLE lookup.FamilyPosition ADD SecondaryAdult INT DEFAULT 0 NOT NULL
+GO
 UPDATE lookup.FamilyPosition SET SecondaryAdult = 1 WHERE Id IN( 20 )
-
+GO
 ALTER TABLE lookup.FamilyPosition ADD Child INT DEFAULT 0 NOT NULL
+GO
 UPDATE lookup.FamilyPosition SET Child = 1 WHERE Id IN( 30 )
-
+GO
 ALTER TABLE lookup.MaritalStatus ADD Single INT DEFAULT 0 NOT NULL
+GO
 UPDATE lookup.MaritalStatus SET Single = 1 WHERE Id IN( 10, 40, 50 )
-
+GO
 ALTER TABLE lookup.MaritalStatus ADD Married INT DEFAULT 0 NOT NULL
+GO
 UPDATE lookup.MaritalStatus SET Married = 1 WHERE Id IN( 20, 30 )
--- @formatter:on
+GO
 
--- LabelFormat
 CREATE TABLE CheckInLabelType
 (
 	id        INT IDENTITY             NOT NULL PRIMARY KEY,
 	name      NVARCHAR(20) DEFAULT ''  NOT NULL,
 	canRepeat BIT DEFAULT 0            NOT NULL
 )
+GO
 
 SET IDENTITY_INSERT CheckInLabelType ON;
 INSERT INTO CheckInLabelType (id, name, canRepeat) VALUES (1, 'Main', 1);
@@ -84,6 +95,7 @@ CREATE TABLE CheckInLabel
 	minimum INT DEFAULT 0           NOT NULL,
 	maximum INT DEFAULT 0           NOT NULL
 )
+GO
 
 SET IDENTITY_INSERT CheckInLabel ON;
 INSERT INTO CheckInLabel (id, typeID, name, minimum, maximum) VALUES (1, 1, '1 Inch - Main', 50, 149);
@@ -106,6 +118,7 @@ CREATE TABLE CheckInLabelEntryAlignment
 	nameX NVARCHAR(10) DEFAULT '' NOT NULL,
 	nameY NVARCHAR(10) DEFAULT '' NOT NULL
 )
+GO
 
 SET IDENTITY_INSERT CheckInLabelEntryAlignment ON;
 INSERT INTO CheckInLabelEntryAlignment (id, nameX, nameY) VALUES (1, 'Top', 'Left');
