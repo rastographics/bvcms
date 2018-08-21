@@ -37,7 +37,9 @@ $(function () {
                 $('#coupon-msg').html(ret.msg);
                 $('#ApplyCoupon').hide();
             } else {
-                window.location = ret.confirm;
+                var form = $('#success_form');
+                form.attr("action", ret.confirm);
+                form.submit();
             }
         });
         return false;
