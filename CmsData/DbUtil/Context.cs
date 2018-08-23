@@ -1516,6 +1516,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             }
             return ep;
         }
+
         public ContributionFund FetchOrCreateFund(int FundId, string Description, bool? NonTax = null)
         {
             ContributionFund fund;
@@ -1527,9 +1528,14 @@ This search uses multiple steps which cannot be duplicated in a single query.
             {
                 int nextfundid;
                 if (FundId > 0)
+                { 
                     nextfundid = FundId;
+                }
                 else
-                    nextfundid = ContributionFunds.Max(ff => ff.FundId) + 1;
+                {
+                    int maxFundId = ContributionFunds.OrderByDescending(ff => ff.FundId).FirstOrDefault()?.FundId ?? 0;
+                    nextfundid = maxFundId + 1;
+                }
                 fund = new ContributionFund
                 {
                     FundName = Description,
@@ -1547,6 +1553,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             }
             return fund;
         }
+
         public int ActiveRecords()
         {
             const string name = "ActiveRecords";
