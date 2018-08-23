@@ -1,25 +1,24 @@
-﻿using System;
+﻿using CmsData;
+using CmsData.Codes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.API;
-using CmsData.Codes;
-using CmsWeb.Areas.Finance.Controllers;
-using CmsWeb.Code;
-using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models
 {
     public class BundleModel
     {
-        int? _count;
+        private int? _count;
         public int Count()
         {
             if (!_count.HasValue)
+            {
                 _count = FetchBundleItems().Count();
+            }
+
             return _count.Value;
         }
 
@@ -33,7 +32,10 @@ namespace CmsWeb.Areas.Finance.Models
             get
             {
                 if (BundleStatusId == BundleStatusCode.Closed)
+                {
                     return IsAdmin; // only an Admin with Finance or a FinanceAdmin can reopen
+                }
+
                 return Bundle.BundleDetails.All(bd => bd.Contribution.PeopleId != null)
                        && TotalItems() == TotalHeader(); // anybody can close it if they have gotten to this page.
             }
@@ -56,7 +58,10 @@ namespace CmsWeb.Areas.Finance.Models
                              bundle = bb
                          }).SingleOrDefault();
                 if (q == null)
+                {
                     return;
+                }
+
                 Status = q.Status;
                 BundleStatusId = q.StatusId;
                 Type = q.Type;
@@ -102,11 +107,14 @@ namespace CmsWeb.Areas.Finance.Models
         private IQueryable<Contribution> FetchBundleItems()
         {
             if (bundleItems == null)
+            {
                 bundleItems = from d in DbUtil.Db.BundleDetails
                               where d.BundleHeaderId == BundleId
                               let sort = d.BundleSort1 > 0 ? d.BundleSort1 : d.BundleDetailId
                               orderby sort, d.ContributionId
                               select d.Contribution;
+            }
+
             return bundleItems;
         }
 
@@ -140,9 +148,11 @@ namespace CmsWeb.Areas.Finance.Models
         }
         public IEnumerable<SelectListItem> ContributionFundList(bool sortByName = true)
         {
+            var fundSortSetting = DbUtil.Db.Setting("SortContributionFundsByFieldName", "FundId");
+
             var query = DbUtil.Db.ContributionFunds.Where(cf => cf.FundStatusId == 1);
 
-            if (sortByName)
+            if (fundSortSetting == "FundName")
             {
                 query = query.OrderBy(cf => cf.FundName).ThenBy(cf => cf.FundId);
             }
@@ -155,6 +165,7 @@ namespace CmsWeb.Areas.Finance.Models
 
             return new SelectList(items, "FundId", "FundDisplay", Bundle.FundId);
         }
+
         public IEnumerable<SelectListItem> BundleStatusList()
         {
             var q = from bs in DbUtil.Db.BundleStatusTypes
