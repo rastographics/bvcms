@@ -2,5 +2,5 @@
 @model DateTime?
 <dl>
     <dt>@Html.DisplayNameFor(m => m)</dt>
-    <dd class="@(Model.HasValue ? "alert alert-danger" : "" )">@Model.FormatDate()</dd>
+    <dd class="@(Model.HasValue ? "alert-danger" : "" )">@Model.FormatDate()</dd>
 </dl>
