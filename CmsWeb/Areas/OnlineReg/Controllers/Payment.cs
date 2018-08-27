@@ -105,8 +105,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             return true;
         }
 
-        [HttpPost]
-        [HttpGet]
         public ActionResult Confirm(int? id, string transactionId, decimal? amount)
         {
             if (!id.HasValue)

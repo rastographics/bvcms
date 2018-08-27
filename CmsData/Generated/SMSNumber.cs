@@ -25,13 +25,15 @@ namespace CmsData
 		private string _Number;
 		
 		private DateTime _LastUpdated;
-		
-   		
-    	
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
+
+        private bool _SystemFlag;
+
+
+
+        #endregion
+
+        #region Extensibility Method Definitions
+        partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
 		
@@ -46,9 +48,12 @@ namespace CmsData
 		
 		partial void OnLastUpdatedChanging(DateTime value);
 		partial void OnLastUpdatedChanged();
-		
-    #endregion
-		public SMSNumber()
+
+        partial void OnSystemFlagChanging(bool value);
+        partial void OnSystemFlagChanged();
+
+        #endregion
+        public SMSNumber()
 		{
 			
 			
@@ -143,20 +148,42 @@ namespace CmsData
 
 			}
 
-		}
+        }
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
+
+        [Column(Name = "SystemFlag", UpdateCheck = UpdateCheck.Never, Storage = "_SystemFlag", DbType = "bit")]
+        public bool SystemFlag
+        {
+            get { return this._SystemFlag; }
+
+            set
+            {
+                if (this._SystemFlag != value)
+                {
+
+                    this.OnSystemFlagChanging(value);
+                    this.SendPropertyChanging();
+                    this._SystemFlag = value;
+                    this.SendPropertyChanged("SystemFlag");
+                    this.OnSystemFlagChanged();
+                }
+
+            }
+
+        }
+
+
+        #endregion
+
+        #region Foreign Key Tables
+
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
 		protected virtual void SendPropertyChanging()
 		{
 			if ((this.PropertyChanging != null))
