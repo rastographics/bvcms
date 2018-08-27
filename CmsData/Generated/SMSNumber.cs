@@ -26,8 +26,6 @@ namespace CmsData
 		
 		private DateTime _LastUpdated;
 
-        private bool _SystemFlag;
-
 
 
         #endregion
@@ -48,9 +46,6 @@ namespace CmsData
 		
 		partial void OnLastUpdatedChanging(DateTime value);
 		partial void OnLastUpdatedChanged();
-
-        partial void OnSystemFlagChanging(bool value);
-        partial void OnSystemFlagChanged();
 
         #endregion
         public SMSNumber()
@@ -147,28 +142,6 @@ namespace CmsData
 				}
 
 			}
-
-        }
-
-
-        [Column(Name = "SystemFlag", UpdateCheck = UpdateCheck.Never, Storage = "_SystemFlag", DbType = "bit")]
-        public bool SystemFlag
-        {
-            get { return this._SystemFlag; }
-
-            set
-            {
-                if (this._SystemFlag != value)
-                {
-
-                    this.OnSystemFlagChanging(value);
-                    this.SendPropertyChanging();
-                    this._SystemFlag = value;
-                    this.SendPropertyChanged("SystemFlag");
-                    this.OnSystemFlagChanged();
-                }
-
-            }
 
         }
 

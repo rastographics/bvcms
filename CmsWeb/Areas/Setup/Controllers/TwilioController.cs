@@ -15,12 +15,13 @@ namespace CmsWeb.Areas.Setup.Controllers
             return View();
         }
 
-        public ActionResult GroupCreate( string name, string description )
+        public ActionResult GroupCreate( string name, string description, bool systemFlag )
         {
             var n = new SMSGroup();
 
             n.Name = name;
             n.Description = description;
+            n.SystemFlag = systemFlag;
 
             DbUtil.Db.SMSGroups.InsertOnSubmit(n);
             DbUtil.Db.SubmitChanges();
@@ -28,7 +29,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             return RedirectToAction( "Index" );
         }
 
-        public ActionResult GroupUpdate( int id, string name, string description)
+        public ActionResult GroupUpdate( int id, string name, string description, bool systemFlag)
         {
             var g = (from e in DbUtil.Db.SMSGroups
                      where e.Id == id
@@ -36,6 +37,7 @@ namespace CmsWeb.Areas.Setup.Controllers
 
             g.Name = name;
             g.Description = description;
+            g.SystemFlag = systemFlag;
 
             DbUtil.Db.SubmitChanges();
 

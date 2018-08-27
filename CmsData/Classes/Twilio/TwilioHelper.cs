@@ -113,7 +113,8 @@ namespace CmsData.Classes.Twilio
 
         public static List<SMSNumber> GetSystemSMSGroup(CMSDataContext db)
         {
-            return db.SMSNumbers.Where(m => m.SystemFlag == true).ToList();
+            var groups = db.SMSGroups.Where(g => g.SystemFlag == true).Select(g => g.Id).Take(1);
+            return db.SMSNumbers.Where(m => groups.Contains(m.GroupID)).ToList();
         }
 
         public static bool SendSMS(CMSDataContext db, string toNumber, SMSNumber fromNumber, string message)
