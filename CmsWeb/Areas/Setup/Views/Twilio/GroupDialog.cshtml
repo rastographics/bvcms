@@ -42,10 +42,8 @@
             @Html.TextBox("description", groupDescription, new { @class = "form-control" })
         </div>
         <div class="form-group">
+            @Html.CheckBoxFor(m => systemFlag)
             @Html.Label("SystemFlag", "Use for system SMS", new { @class = "control-label" })
-            <label class="checkbox-inline">
-                @Html.CheckBoxFor(m => systemFlag)
-            </label>
         </div>
     </div>
     <div class="modal-footer">
