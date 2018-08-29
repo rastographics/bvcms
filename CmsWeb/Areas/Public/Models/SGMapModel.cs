@@ -238,16 +238,24 @@ Meeting Time: [SGF:Day] at [SGF:Time]<br />
 
         private GeoCode GetGeocode(string address)
         {
-            var wc = new WebClient();
-            var uaddress = HttpUtility.UrlEncode(address);
-            var uri = new Uri($"https://maps.googleapis.com/maps/api/geocode/xml?address={uaddress}&sensor=false&key="+DbUtil.Db.Setting("GoogleGeocodeAPIKey",""));
-            var xml = wc.DownloadString(uri);
-            var xdoc = XDocument.Parse(xml);
-            var status = xdoc.Descendants("status").Single().Value;
-            if (status == "ZERO_RESULTS")
-                return new GeoCode {Address = address};
+            string status = "";
             try
             {
+                string ApiKey = DbUtil.Db.GetSetting("GoogleGeocodeAPIKey", "");
+                if (ApiKey == "")
+                {
+                    throw new Exception("No Geocode API Key provided");
+                }
+                var wc = new WebClient();
+                var uaddress = HttpUtility.UrlEncode(address);
+                var uri = new Uri($"https://maps.googleapis.com/maps/api/geocode/xml?address={uaddress}&sensor=false&key="+ApiKey);
+                var xml = wc.DownloadString(uri);
+                var xdoc = XDocument.Parse(xml);
+                status = xdoc.Descendants("status").Single().Value;
+                if (status == "ZERO_RESULTS")
+                {
+                    return new GeoCode { Address = address };
+                }
                 var loc = xdoc.Document.Descendants("location");
                 var lat = Convert.ToDouble(loc.Descendants("lat").First().Value);
                 var lng = Convert.ToDouble(loc.Descendants("lng").First().Value);
