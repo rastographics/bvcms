@@ -240,7 +240,7 @@ Meeting Time: [SGF:Day] at [SGF:Time]<br />
         {
             var wc = new WebClient();
             var uaddress = HttpUtility.UrlEncode(address);
-            var uri = new Uri($"https://maps.googleapis.com/maps/api/geocode/xml?address={uaddress}&sensor=false&key="+DbUtil.Db.Setting("GoogleMapsAPIKey",""));
+            var uri = new Uri($"https://maps.googleapis.com/maps/api/geocode/xml?address={uaddress}&sensor=false&key="+DbUtil.Db.Setting("GoogleGeocodeAPIKey",""));
             var xml = wc.DownloadString(uri);
             var xdoc = XDocument.Parse(xml);
             var status = xdoc.Descendants("status").Single().Value;
