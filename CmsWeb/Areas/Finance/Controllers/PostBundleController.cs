@@ -193,9 +193,15 @@ namespace CmsWeb.Areas.Finance.Controllers
                 query = query.OrderBy(cf => cf.FundId);
             }
 
-            var items = query.ToList().Select(x => new { text = $"{x.FundName} ({x.FundId})", value = x.FundId.ToString() });
-
-            return Json(items, JsonRequestBehavior.AllowGet);
+            // HACK: Change text based on sorting option for funds. If sorting by name, make it show first otherwise leave the id first to enable selecting by keystroke until ui adjusted
+            if (fundSortSetting == "FundId")
+            {
+                return Json(query.ToList().Select(x => new { text = $"{x.FundId} . {x.FundName}", value = x.FundId.ToString() }), JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(query.ToList().Select(x => new { text = $"{x.FundName} ({x.FundId})", value = x.FundId.ToString() }), JsonRequestBehavior.AllowGet);
+            }
         }
 
         [HttpPost]

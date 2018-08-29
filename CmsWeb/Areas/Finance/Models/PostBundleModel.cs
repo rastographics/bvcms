@@ -155,8 +155,17 @@ namespace CmsWeb.Models
                 query = query.OrderBy(cf => cf.FundId);
             }
 
-            var items = query.ToList().Select(x => new SelectListItem { Text = $"{x.FundName} ({x.FundId})", Value = x.FundId.ToString() });
-            return items;
+            // HACK: Change text based on sorting option for funds. If sorting by name, make it show first otherwise leave the id first to enable selecting by keystroke until ui adjusted
+            if (fundSortSetting == "FundId")
+            {
+                var items = query.ToList().Select(x => new { x.FundId, x.FundName, FundDisplay = $"{x.FundId} . {x.FundName}" });
+                return new SelectList(items, "FundId", "FundDisplay", Bundle.FundId);
+            }
+            else
+            {
+                var items = query.ToList().Select(x => new { x.FundId, x.FundName, FundDisplay = $"{x.FundName} ({x.FundId})" });
+                return new SelectList(items, "FundId", "FundDisplay", Bundle.FundId);
+            }
         }
 
         public object GetNamePidFromId()
