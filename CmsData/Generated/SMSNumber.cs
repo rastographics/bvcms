@@ -25,13 +25,13 @@ namespace CmsData
 		private string _Number;
 		
 		private DateTime _LastUpdated;
-		
-   		
-    	
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
+
+
+
+        #endregion
+
+        #region Extensibility Method Definitions
+        partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
 		
@@ -46,9 +46,9 @@ namespace CmsData
 		
 		partial void OnLastUpdatedChanging(DateTime value);
 		partial void OnLastUpdatedChanged();
-		
-    #endregion
-		public SMSNumber()
+
+        #endregion
+        public SMSNumber()
 		{
 			
 			
@@ -143,20 +143,20 @@ namespace CmsData
 
 			}
 
-		}
+        }
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
+
+        #endregion
+
+        #region Foreign Key Tables
+
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
 		protected virtual void SendPropertyChanging()
 		{
 			if ((this.PropertyChanging != null))

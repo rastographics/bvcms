@@ -111,7 +111,13 @@ namespace CmsData.Classes.Twilio
             return isConfigured;
         }
 
-        public static bool SendSMS(CMSDataContext db, string toNumber, string message)
+        public static List<SMSNumber> GetSystemSMSGroup(CMSDataContext db)
+        {
+            var groups = db.SMSGroups.Where(g => g.SystemFlag == true).Select(g => g.Id).Take(1);
+            return db.SMSNumbers.Where(m => groups.Contains(m.GroupID)).ToList();
+        }
+
+        public static bool SendSMS(CMSDataContext db, string toNumber, SMSNumber fromNumber, string message)
         {
             bool success = false;
             string sSID = GetSid(db);
@@ -119,7 +125,7 @@ namespace CmsData.Classes.Twilio
 
             if (sSID.HasValue() && sToken.HasValue())
             {
-                SMSNumber smsNumber = db.SMSNumbers.FirstOrDefault();
+                SMSNumber smsNumber = fromNumber ?? db.SMSNumbers.FirstOrDefault();
                 if (smsNumber != null)
                 {
                     var response = SendSmsInternal(sSID, sToken, smsNumber.Number, toNumber, message);
