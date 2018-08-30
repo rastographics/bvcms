@@ -1,8 +1,9 @@
 ﻿@model SmallGroupFinderModel
 @using CmsWeb.Areas.Public.Models
-@using CmsWeb.Models
+@using CmsData
+
 @{
-    var isPartial = (bool) ViewData["AsPartial"];
+    var isPartial = (bool)ViewData["AsPartial"];
 
     if (isPartial)
     {
@@ -20,6 +21,10 @@
 @if (Request.IsLocal)
 {
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&key=AIzaSyAbzQ307GkTAzchqaHZVyT4X6nI40x3Ahg"></script>
+}
+else if (DbUtil.Db.GetSetting("GoogleMapsAPIKey","") != "")
+{
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&key=@DbUtil.Db.GetSetting("GoogleMapsAPIKey","")"></script>
 }
 else
 {

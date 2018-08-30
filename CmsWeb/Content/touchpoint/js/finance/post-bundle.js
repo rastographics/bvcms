@@ -194,7 +194,7 @@
         }
 
         $('#pid').val(personId);
-        $('#name').val($("td.name a", tr).text());
+        $('#name').val($(".name", tr).text());
         $('#contributiondate').val($(".date", tr).val());
         $('#campusid').val($(".campusid", tr).val());
         $("#gear").show();
@@ -488,7 +488,8 @@
 
 function AddSelected(ret) {
     var tr = $('tr[cid=' + ret.cid + ']');
-    $('a.pid', tr).text(ret.pid);
-    $('td.name a', tr).text(ret.name);
-    $('a.edit', tr).click();
+    $('.pid', tr).text(ret.pid);
+    $('.name', tr).text(ret.name);
+
+    $('.edit', tr).click();
 }

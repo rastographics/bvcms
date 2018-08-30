@@ -66,6 +66,7 @@ namespace CmsData
                 };
 
                 db.EnrollmentTransactions.InsertOnSubmit(droptrans);
+                db.OrgMemberExtras.DeleteAllOnSubmit(this.OrgMemberExtras);
                 db.OrgMemMemTags.DeleteAllOnSubmit(this.OrgMemMemTags);
                 db.SubmitChanges();
                 foreach (var ev in this.OrgMemberExtras)

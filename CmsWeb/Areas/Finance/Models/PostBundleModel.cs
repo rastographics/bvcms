@@ -5,13 +5,13 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
+using CmsData;
+using CmsData.Codes;
+using CmsWeb.Areas.Finance.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.Codes;
-using CmsWeb.Areas.Finance.Controllers;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -46,7 +46,7 @@ namespace CmsWeb.Models
         public bool DefaultFundIsPledge { get; set; }
         public int? campusid { get; set; }
         public int imageid { get; set; }
-    
+
         public BundleHeader Bundle
         {
             get
@@ -111,9 +111,14 @@ namespace CmsWeb.Models
                 {
                     s = c.extra ?? "";
                     if (c.eac.HasValue())
+                    {
                         s += " not associated";
+                    }
+
                     if (s.HasValue())
+                    {
                         c.Name = s;
+                    }
                 }
             }
             return list;
@@ -137,15 +142,30 @@ namespace CmsWeb.Models
 
         public IEnumerable<SelectListItem> Funds()
         {
-            var q = from f in DbUtil.Db.ContributionFunds
-                    where f.FundStatusId == 1
-                    orderby f.FundName
-                    select new SelectListItem
-                    {
-                        Text = $"{f.FundName} ({f.FundId})",
-                        Value = f.FundId.ToString()
-                    };
-            return q;
+            var fundSortSetting = DbUtil.Db.Setting("SortContributionFundsByFieldName", "FundId");
+
+            var query = DbUtil.Db.ContributionFunds.Where(cf => cf.FundStatusId == 1);
+
+            if (fundSortSetting == "FundName")
+            {
+                query = query.OrderBy(cf => cf.FundName).ThenBy(cf => cf.FundId);
+            }
+            else
+            {
+                query = query.OrderBy(cf => cf.FundId);
+            }
+
+            // HACK: Change text based on sorting option for funds. If sorting by name, make it show first otherwise leave the id first to enable selecting by keystroke until ui adjusted
+            if (fundSortSetting == "FundId")
+            {
+                var items = query.ToList().Select(x => new { x.FundId, x.FundName, FundDisplay = $"{x.FundId} . {x.FundName}" });
+                return new SelectList(items, "FundId", "FundDisplay", Bundle.FundId);
+            }
+            else
+            {
+                var items = query.ToList().Select(x => new { x.FundId, x.FundName, FundDisplay = $"{x.FundName} ({x.FundId})" });
+                return new SelectList(items, "FundId", "FundDisplay", Bundle.FundId);
+            }
         }
 
         public object GetNamePidFromId()
@@ -176,7 +196,10 @@ namespace CmsWeb.Models
             }
             var o = q.FirstOrDefault();
             if (o == null)
+            {
                 return new { error = "not found" };
+            }
+
             return o;
         }
 
@@ -249,7 +272,10 @@ namespace CmsWeb.Models
             {
                 string phone = null;
                 if (q.HasValue() && q.AllDigits() && q.Length == 7)
+                {
                     phone = q;
+                }
+
                 if (phone.HasValue())
                 {
                     var id = Last.ToInt();
@@ -272,6 +298,7 @@ namespace CmsWeb.Models
             else
             {
                 if (DbUtil.Db.Setting("UseAltnameContains"))
+                {
                     qp = from p in qp
                          where
                          (p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last) || p.AltName.Contains(Last)
@@ -281,8 +308,9 @@ namespace CmsWeb.Models
                           p.MiddleName.StartsWith(First)
                           || p.LastName.StartsWith(q) || p.MaidenName.StartsWith(q))
                          select p;
-
+                }
                 else
+                {
                     qp = from p in qp
                          where
                          (p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
@@ -292,6 +320,7 @@ namespace CmsWeb.Models
                           p.MiddleName.StartsWith(First)
                           || p.LastName.StartsWith(q) || p.MaidenName.StartsWith(q))
                          select p;
+                }
             }
             return qp;
         }
@@ -313,7 +342,7 @@ namespace CmsWeb.Models
                         diff = ((bh.TotalCash.GetValueOrDefault() + bh.TotalChecks.GetValueOrDefault() + bh.TotalEnvelopes.GetValueOrDefault()) - bh.BundleDetails.Sum(d => d.Contribution.ContributionAmount.GetValueOrDefault())),
                         difference = ((bh.TotalCash.GetValueOrDefault() + bh.TotalChecks.GetValueOrDefault() + bh.TotalEnvelopes.GetValueOrDefault()) - bh.BundleDetails.Sum(d => d.Contribution.ContributionAmount)).ToString2("C2"),
                         itemcount = bh.BundleDetails.Count(),
-                        othersplitamt = othersplitamt.ToString2("N2")         
+                        othersplitamt = othersplitamt.ToString2("N2")
                     };
             return q.First();
         }
@@ -395,16 +424,19 @@ namespace CmsWeb.Models
         {
             var c = DbUtil.Db.Contributions.SingleOrDefault(cc => cc.ContributionId == editid);
             if (c == null)
+            {
                 return null;
+            }
 
-				var identifier = DbUtil.Db.CardIdentifiers.SingleOrDefault( ci => ci.Id == c.BankAccount );
+            var identifier = DbUtil.Db.CardIdentifiers.SingleOrDefault(ci => ci.Id == c.BankAccount);
 
-				if( identifier != null ) {
-					identifier.PeopleId = pid.ToInt2();
-				}
-				
+            if (identifier != null)
+            {
+                identifier.PeopleId = pid.ToInt2();
+            }
+
             var type = c.ContributionTypeId;
-				 
+
             switch (PLNT)
             {
                 case "PL":
@@ -424,16 +456,16 @@ namespace CmsWeb.Models
                     break;
             }
             c.FundId = fund;
-//            c.CampusId = campusid;
+            //            c.CampusId = campusid;
             c.PeopleId = pid.ToInt2();
             c.ContributionAmount = amt;
             c.ContributionTypeId = type;
             c.ContributionDesc = notes;
             c.ContributionDate = contributiondate;
             c.CheckNo = checkno?.Trim();
-				
+
             DbUtil.Db.SubmitChanges();
-				
+
             return ContributionRowData(ctl, c.ContributionId);
         }
 
@@ -483,7 +515,7 @@ namespace CmsWeb.Models
         {
             public NamesInfo()
             {
-              showaltname = DbUtil.Db.Setting("ShowAltNameOnSearchResults");
+                showaltname = DbUtil.Db.Setting("ShowAltNameOnSearchResults");
             }
             public string Name => displayname + (age.HasValue ? $" ({Person.AgeDisplay(age, Pid)})" : "");
 
@@ -510,7 +542,10 @@ namespace CmsWeb.Models
                 get
                 {
                     if (recent == null)
+                    {
                         return "";
+                    }
+
                     const string row =
                         "<tr><td class='right'>{0}</td><td class='center nowrap'>&nbsp;{1}</td><td>&nbsp;{2}</td></tr>";
                     var list = from rr in recent

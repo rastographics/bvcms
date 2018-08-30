@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using CmsData;
+﻿using CmsData;
 using CmsData.Codes;
 using CmsWeb.Code;
 using CmsWeb.Models;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 
 namespace CmsWeb.Areas.People.Models
 {
@@ -37,19 +37,34 @@ namespace CmsWeb.Areas.People.Models
 
         public ContributionsModel()
             : base("Date", "desc", true)
-        {}
+        { }
 
         public override IQueryable<Contribution> DefineModelList()
         {
-            var q = from c in DbUtil.Db.Contributions
-                    where c.PeopleId == Person.PeopleId
-                        || (c.PeopleId == Person.SpouseId && (Person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint)
-                    where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
-                    where c.ContributionStatusId == ContributionStatusCode.Recorded
-                    select c;
-            ShowNames = q.Any(c => c.PeopleId != Person.PeopleId);
-            ShowTypes = q.Any(c => ContributionTypeCode.SpecialTypes.Contains(c.ContributionTypeId));
-            return q;
+            var contributions = from c in DbUtil.Db.Contributions
+                                where (c.PeopleId == Person.PeopleId || (c.PeopleId == Person.SpouseId && (Person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint))
+                                && c.ContributionStatusId == ContributionStatusCode.Recorded
+                                && !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+                                select c;
+
+            var currentUser = DbUtil.Db.CurrentUserPerson;
+
+            if (currentUser.PeopleId != Person.PeopleId)
+            {
+                var authorizedFunds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership();
+                var authorizedContributions = from c in contributions
+                                              join f in authorizedFunds on c.FundId equals f.FundId
+                                              select c;
+
+                contributions = authorizedContributions;
+            }
+
+            ShowNames = contributions.Any(c => c.PeopleId != Person.PeopleId);
+            ShowTypes = contributions.Any(c => ContributionTypeCode.SpecialTypes.Contains(c.ContributionTypeId));
+
+
+
+            return contributions;
         }
 
         public override IQueryable<Contribution> DefineModelSort(IQueryable<Contribution> q)
@@ -133,11 +148,31 @@ namespace CmsWeb.Areas.People.Models
         public static IEnumerable<StatementInfo> Statements(int? id)
         {
             if (!id.HasValue)
+            {
                 throw new ArgumentException("Missing id");
+            }
+
             var person = DbUtil.Db.LoadPersonById(id.Value);
-            return from c in DbUtil.Db.Contributions2(new DateTime(1900, 1, 1), new DateTime(3000, 12, 31), 0, false, null, true)
-                   where c.PeopleId == person.PeopleId
-                        || (c.PeopleId == person.SpouseId && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint)
+
+
+            var contributions = from c in DbUtil.Db.Contributions2(new DateTime(1900, 1, 1), new DateTime(3000, 12, 31), 0, false, null, true)
+                                where (c.PeopleId == person.PeopleId || (c.PeopleId == person.SpouseId && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint))
+                                select c;
+
+            var currentUser = DbUtil.Db.CurrentUserPerson;
+
+            if (currentUser.PeopleId != person.PeopleId)
+            {
+                var authorizedFunds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership();
+                var authorizedContributions = from c in contributions
+                                              join f in authorizedFunds on c.FundId equals f.FundId
+                                              select c;
+
+                contributions = authorizedContributions;
+            }
+
+
+            return from c in contributions
                    group c by c.DateX.Value.Year into g
                    orderby g.Key descending
                    select new StatementInfo()
