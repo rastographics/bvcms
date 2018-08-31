@@ -101,24 +101,5 @@ namespace CmsWeb.Models.ExtraValues
             var rdr = cmd.ExecuteReader();
             return rdr;
         }
-
-        public static SqlDataReader Grid2Reader(Guid id, string sort)
-        {
-            var roles = CMSRoleProvider.provider.GetRolesForUser(Util.UserName);
-            var values = from value in Views.GetStandardExtraValues(DbUtil.Db, "People")
-                         where value.VisibilityRoles != null && (value.VisibilityRoles.Split(',').All(rr => !roles.Contains(rr)))
-                         select value.Name;
-            var nodisplaycols = string.Join("|", values);
-
-            var tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_ExtraValues);
-            var cmd = new SqlCommand("dbo.ExtraValues @p1, @p2, @p3");
-            cmd.Parameters.AddWithValue("@p1", tag.Id);
-            cmd.Parameters.AddWithValue("@p2", sort ?? "");
-            cmd.Parameters.AddWithValue("@p3", nodisplaycols);
-            cmd.Connection = new SqlConnection(Util.ConnectionString);
-            cmd.Connection.Open();
-            var rdr = cmd.ExecuteReader();
-            return rdr;
-        }
     }
 }

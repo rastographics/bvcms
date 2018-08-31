@@ -13,14 +13,14 @@ namespace UtilityExtensions
 {
     public static partial class Util
     {
-        private static string _Host;
+        private static string _host;
         public static string Host
         {
             get
             {
-                if (_Host.HasValue())
+                if (_host.HasValue())
                 {
-                    return _Host;
+                    return _host;
                 }
 #if DEBUG
                 var testhost = HttpRuntime.Cache["testhost"] as string;
@@ -37,7 +37,7 @@ namespace UtilityExtensions
 
             set
             {
-                _Host = value;
+                _host = value;
             }
         }
         public static string DbServer
@@ -75,7 +75,7 @@ namespace UtilityExtensions
         public static string GetConnectionString(string host)
         {
             var cs = ConnectionStringSettings(host) ?? ConfigurationManager.ConnectionStrings["CMS"];
-            var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
+            var cb = new SqlConnectionStringBuilder(cs?.ConnectionString ?? "Data Source=(local);Integrated Security=True");
             if (string.IsNullOrEmpty(cb.DataSource))
                 cb.DataSource = DbServer;
             var a = host.SplitStr(".:");

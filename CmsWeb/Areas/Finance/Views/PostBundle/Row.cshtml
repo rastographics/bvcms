@@ -9,15 +9,8 @@
         <input type="hidden" class="campusid" value="@Model.campusid" />
     </td>
     <td class="name">
-        @if (Model.PeopleId != null)
-        {
-          <a tabindex="0" href="#" data-toggle="popover" data-trigger="focus" data-title="@Model.Name" data-content="@Model.tip"><i class="fa fa-info-circle"></i></a>
-          <a href="/Person2/@Model.PeopleId" target="person">@Model.Name</a>
-        }
-        else
-        {
-            @Model.Name
-        }
+        <a tabindex="0" href="#" data-toggle="popover" data-trigger="focus" data-title="@Model.Name" data-content="@Model.tip" class="namepopover"><i class="fa fa-info-circle"></i></a>
+        <a href="/Person2/@Model.PeopleId" target="person" class="nameselector">@Model.Name</a>
     </td>
     <td class="amt text-right" val="@Model.Amt">
         <a id="a@(Model.ContributionId)" data-pk="a@(Model.ContributionId)" class="clickEdit">@Model.AmtDisplay</a>            
