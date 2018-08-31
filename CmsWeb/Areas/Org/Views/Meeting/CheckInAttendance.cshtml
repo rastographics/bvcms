@@ -9,8 +9,6 @@
     <title>@Model.org.OrganizationName</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     @ViewExtensions2.jQueryMobileCss()
-    @ViewExtensions2.jQuery()
-    @ViewExtensions2.jQueryMobile()
 </head>
 <body>
     @Html.Hidden("meetingid", Model.meeting.MeetingId)
@@ -44,6 +42,8 @@
             }
         </div>
     </div>
+    @ViewExtensions2.jQuery()
+    @ViewExtensions2.jQueryMobile()
     <script type="text/javascript">
         $(function () {
             $("input[type='radio']").bind("change", function (event, ui) {

@@ -29,6 +29,9 @@ namespace CmsWeb.Areas.Org.Models
 
         public int orgid { get; set; }
         public int? groupid { get; set; }
+        public int? ScheduleId { get; set; }
+        public bool CheckInOpenDefault { get; set; }
+        public int CheckInCapacityDefault { get; set; }
         public string GroupName { get; set; }
         public string ingroup { get; set; }
         public string notgroup { get; set; }
@@ -59,6 +62,14 @@ namespace CmsWeb.Areas.Org.Models
                     };
 
             return d.SingleOrDefault();
+        }
+
+        public IEnumerable<OrgSchedule> GetOrgSchedules()
+        {
+            return from schedule in DbUtil.Db.OrgSchedules
+                   where schedule.OrganizationId == orgid
+                   orderby schedule.SchedDay, schedule.SchedTime
+                   select schedule;
         }
 
         public IEnumerable<MemberTag> GroupsList()

@@ -818,6 +818,7 @@
     <Compile Include="Areas\Setup\Controllers\ResourceCategoryController.cs" />
     <Compile Include="Areas\Setup\Controllers\ResourceTypeController.cs" />
     <Compile Include="Code\AuthHelper.cs" />
+    <Compile Include="Code\CMSWebViewPage.cs" />
     <Compile Include="Code\CodeValueList.cs" />
     <Compile Include="Code\JsonNetResult.cs" />
     <Compile Include="Code\CustomHeader.cs" />
@@ -1713,6 +1714,7 @@
     <Content Include="Areas\Coordinator\Views\CheckinCoordinator\DivisionSelector.cshtml" />
     <Content Include="Areas\Coordinator\Views\CheckinCoordinator\OrganizationSelector.cshtml" />
     <Content Include="Areas\Coordinator\Views\CheckinCoordinator\Details.cshtml" />
+    <Content Include="Areas\Org\Views\OrgGroups\_OrgScheduleSelect.cshtml" />
     <None Include="Properties\PublishProfiles\staging.pubxml" />
     <None Include="Properties\PublishProfiles\TeamCity.pubxml" />
     <None Include="Properties\PublishProfiles\work.pubxml" />

@@ -1,0 +1,9 @@
+﻿@using CmsData;
+@model IEnumerable<OrgSchedule>
+<select class="form-control" name="ScheduleId" id="ScheduleId">
+    <option selected value="">None</option>
+    @foreach (var item in Model)
+    {
+        <option value="@item.Id">@item.ToString()</option>
+    }
+</select>

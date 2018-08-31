@@ -126,7 +126,10 @@ namespace CmsWeb.Areas.Org.Controllers
                 {
                     Name = m.GroupName,
                     OrgId = m.orgid,
-                    CheckIn = m.AllowCheckin.Equals("true", System.StringComparison.OrdinalIgnoreCase)
+                    CheckIn = m.AllowCheckin.Equals("true", System.StringComparison.OrdinalIgnoreCase),
+                    ScheduleId = m.ScheduleId,
+                    CheckInOpenDefault = m.CheckInOpenDefault,
+                    CheckInCapacityDefault = m.CheckInCapacityDefault,
                 };
                 Db.MemberTags.InsertOnSubmit(group);
                 Db.SubmitChanges();

@@ -917,6 +917,7 @@
     <Compile Include="DbUtil\ITableWithExtraValues.cs" />
     <Compile Include="Organization\OrgFilter.cs" />
     <Compile Include="Organization\OrgPerson.cs" />
+    <Compile Include="Organization\OrgSchedule.cs" />
     <Compile Include="QueryBuilder\QueryParser.cs" />
     <Compile Include="QueryBuilder\Query.cs" />
     <Compile Include="QueryBuilder\CategoryClass.cs" />
