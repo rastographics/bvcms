@@ -13,6 +13,8 @@ namespace CmsWeb.Areas.Coordinator.Models
         public string SubgroupName { get; set; }
         public int CheckInCapacity { get; set; }
         public bool CheckInOpen { get; set; }
+        public int CheckInCapacityDefault { get; set; }
+        public bool CheckInOpenDefault { get; set; }
         public int DivisionId { get; set; }
         public string DivisionName { get; set; }
         public int ProgramId { get; set; }

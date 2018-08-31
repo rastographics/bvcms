@@ -33,16 +33,25 @@ namespace CmsData
 		private int? _NoCancelWeeks;
 		
 		private bool _CheckIn;
+
+        private bool _CheckInOpen;
+
+        private int _CheckInCapacity;
+
+        private bool _CheckInOpenDefault;
+
+        private int _CheckInCapacityDefault;
 		
-		private bool _CheckInOpen;
-		
-		private int _CheckInCapacity;
-		
-   		
-   		private EntitySet<OrgMemMemTag> _OrgMemMemTags;
+		private int? _ScheduleId;
+
+
+        private EntitySet<OrgMemMemTag> _OrgMemMemTags;
 		
     	
 		private EntityRef<Organization> _Organization;
+		
+    	
+		private EntityRef<OrgSchedule> _Schedule;
 		
 	#endregion
 	
@@ -74,15 +83,24 @@ namespace CmsData
 		
 		partial void OnCheckInChanging(bool value);
 		partial void OnCheckInChanged();
-		
-		partial void OnCheckInOpenChanging(bool value);
-		partial void OnCheckInOpenChanged();
-		
-		partial void OnCheckInCapacityChanging(int value);
-		partial void OnCheckInCapacityChanged();
-		
-    #endregion
-		public MemberTag()
+
+        partial void OnCheckInOpenChanging(bool value);
+        partial void OnCheckInOpenChanged();
+
+        partial void OnCheckInCapacityChanging(int value);
+        partial void OnCheckInCapacityChanged();
+
+        partial void OnCheckInOpenDefaultChanging(bool value);
+        partial void OnCheckInOpenDefaultChanged();
+
+        partial void OnCheckInCapacityDefaultChanging(int value);
+        partial void OnCheckInCapacityDefaultChanged();
+
+        partial void OnScheduleIdChanging(int? value);
+        partial void OnScheduleIdChanged();
+
+        #endregion
+        public MemberTag()
 		{
 			
 			this._OrgMemMemTags = new EntitySet<OrgMemMemTag>(new Action< OrgMemMemTag>(this.attach_OrgMemMemTags), new Action< OrgMemMemTag>(this.detach_OrgMemMemTags)); 
@@ -319,12 +337,83 @@ namespace CmsData
 
 		}
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-   		[Association(Name="FK_OrgMemMemTags_MemberTags", Storage="_OrgMemMemTags", OtherKey="MemberTagId")]
+
+
+        [Column(Name = "CheckInOpenDefault", UpdateCheck = UpdateCheck.Never, Storage = "_CheckInOpenDefault", DbType = "bit NOT NULL")]
+        public bool CheckInOpenDefault
+        {
+            get { return this._CheckInOpenDefault; }
+
+            set
+            {
+                if (this._CheckInOpenDefault != value)
+                {
+
+                    this.OnCheckInOpenDefaultChanging(value);
+                    this.SendPropertyChanging();
+                    this._CheckInOpenDefault = value;
+                    this.SendPropertyChanged("CheckInOpenDefault");
+                    this.OnCheckInOpenDefaultChanged();
+                }
+
+            }
+
+        }
+
+
+        [Column(Name = "CheckInCapacityDefault", UpdateCheck = UpdateCheck.Never, Storage = "_CheckInCapacityDefault", DbType = "int NOT NULL")]
+        public int CheckInCapacityDefault
+        {
+            get { return this._CheckInCapacityDefault; }
+
+            set
+            {
+                if (this._CheckInCapacityDefault != value)
+                {
+
+                    this.OnCheckInCapacityDefaultChanging(value);
+                    this.SendPropertyChanging();
+                    this._CheckInCapacityDefault = value;
+                    this.SendPropertyChanged("CheckInCapacityDefault");
+                    this.OnCheckInCapacityDefaultChanged();
+                }
+
+            }
+
+        }
+
+
+        [Column(Name = "ScheduleId", UpdateCheck = UpdateCheck.Never, Storage = "_ScheduleId", DbType = "int")]
+        [IsForeignKey]
+        public int? ScheduleId
+        {
+            get { return this._ScheduleId; }
+
+            set
+            {
+                if (this._ScheduleId != value)
+                {
+
+                    if (this._Organization.HasLoadedOrAssignedValue)
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+
+                    this.OnScheduleIdChanging(value);
+                    this.SendPropertyChanging();
+                    this._ScheduleId = value;
+                    this.SendPropertyChanged("ScheduleId");
+                    this.OnScheduleIdChanged();
+                }
+
+            }
+
+        }
+
+
+        #endregion
+
+        #region Foreign Key Tables
+
+        [Association(Name="FK_OrgMemMemTags_MemberTags", Storage="_OrgMemMemTags", OtherKey="MemberTagId")]
    		public EntitySet<OrgMemMemTag> OrgMemMemTags
    		{
    		    get { return this._OrgMemMemTags; }
@@ -377,12 +466,45 @@ namespace CmsData
 
 			}
 
-		}
+        }
 
-		
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
+        [Association(Name = "FK_MemberTags_OrgSchedule", Storage = "_Schedule", ThisKey = "OrgId,ScheduleId", IsForeignKey = true)]
+        public OrgSchedule Schedule
+        {
+            get { return this._Schedule.Entity; }
+
+            set
+            {
+                OrgSchedule previousValue = this._Schedule.Entity;
+                if (((previousValue != value)
+                            || (this._Schedule.HasLoadedOrAssignedValue == false)))
+                {
+                    this.SendPropertyChanging();
+
+                    this._Schedule.Entity = value;
+                    if (value != null)
+                    {
+                        this._ScheduleId = value.ScheduleId;
+                    }
+
+                    else
+                    {
+
+                        this._ScheduleId = default(int?);
+
+                    }
+
+                    this.SendPropertyChanged("Schedule");
+                }
+
+            }
+
+        }
+
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
 		protected virtual void SendPropertyChanging()
 		{
 			if ((this.PropertyChanging != null))

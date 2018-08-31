@@ -37,6 +37,8 @@ namespace CmsWeb.Areas.Coordinator.Controllers
                          {
                              CheckInCapacity = mt.CheckInCapacity,
                              CheckInOpen = mt.CheckInOpen,
+                             CheckInCapacityDefault = mt.CheckInCapacityDefault,
+                             CheckInOpenDefault = mt.CheckInOpenDefault,
                              DivisionId = d.Id,
                              DivisionName = d.Name,
                              NextMeetingDate = os.NextMeetingDate,

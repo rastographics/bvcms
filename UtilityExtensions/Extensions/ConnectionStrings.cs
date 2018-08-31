@@ -13,10 +13,15 @@ namespace UtilityExtensions
 {
     public static partial class Util
     {
+        private static string _Host;
         public static string Host
         {
             get
             {
+                if (_Host.HasValue())
+                {
+                    return _Host;
+                }
 #if DEBUG
                 var testhost = HttpRuntime.Cache["testhost"] as string;
                 if (testhost.HasValue())
@@ -28,6 +33,11 @@ namespace UtilityExtensions
                 if (HttpContext.Current != null)
                     return HttpContext.Current.Request.Url.Authority.SplitStr(".:")[0];
                 return null;
+            }
+
+            set
+            {
+                _Host = value;
             }
         }
         public static string DbServer
