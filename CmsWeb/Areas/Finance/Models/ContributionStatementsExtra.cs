@@ -291,7 +291,7 @@ p { font-size: 11px; }
                 foreach (var c in contributions)
                 {
                     t.AddCell(new Phrase(c.ContributionDate.ToString2("d"), font));
-                    t.AddCell(new Phrase(GetFundDisplayText<NormalContribution>(() => c.FundName, () => c.FundDescription), font));
+                    t.AddCell(new Phrase(GetFundDisplayText(() => c.FundName, () => c.FundDescription), font));
 
                     cell = new PdfPCell(t.DefaultCell);
                     cell.HorizontalAlignment = Element.ALIGN_RIGHT;
@@ -374,7 +374,7 @@ p { font-size: 11px; }
 
                     foreach (var c in pledges)
                     {
-                        t.AddCell(new Phrase(GetFundDisplayText<UnitPledgeSummary>(() => c.FundName, () => c.FundDescription), font));
+                        t.AddCell(new Phrase(GetFundDisplayText(() => c.FundName, () => c.FundDescription), font));
 
                         cell = new PdfPCell(t.DefaultCell);
                         cell.HorizontalAlignment = Element.ALIGN_RIGHT;
@@ -426,7 +426,7 @@ p { font-size: 11px; }
                         t.AddCell(new Phrase(c.ContributionDate.ToString2("d"), font));
                         cell = new PdfPCell(t.DefaultCell);
 
-                        cell.Phrase = new Phrase(GetFundDisplayText<GiftsInKind>(() => c.FundName, () => c.FundDescription), font);
+                        cell.Phrase = new Phrase(GetFundDisplayText(() => c.FundName, () => c.FundDescription), font);
                         t.AddCell(cell);
 
                         cell = new PdfPCell(t.DefaultCell);
@@ -462,7 +462,7 @@ p { font-size: 11px; }
 
                 foreach (var c in APIContribution.GiftSummary(db, ci, FromDate, ToDate, cs.Funds))
                 {
-                    t.AddCell(new Phrase(GetFundDisplayText<GiftSummary>(() => c.FundName, () => c.FundDescription), font));
+                    t.AddCell(new Phrase(GetFundDisplayText(() => c.FundName, () => c.FundDescription), font));
 
                     cell = new PdfPCell(t.DefaultCell);
                     cell.HorizontalAlignment = Element.ALIGN_RIGHT;
@@ -522,7 +522,7 @@ p { font-size: 11px; }
                     foreach (var c in nontaxitems)
                     {
                         t.AddCell(new Phrase(c.ContributionDate.ToString2("d"), font));
-                        t.AddCell(new Phrase(GetFundDisplayText<NonTaxContribution>(() => c.FundName, () => c.FundDescription), font));
+                        t.AddCell(new Phrase(GetFundDisplayText(() => c.FundName, () => c.FundDescription), font));
                         cell = new PdfPCell(t.DefaultCell);
                         cell.HorizontalAlignment = Element.ALIGN_RIGHT;
                         cell.Phrase = new Phrase(c.ContributionAmount.ToString2("N2"), font);
@@ -589,7 +589,7 @@ p { font-size: 11px; }
         }
 
 
-        private string GetFundDisplayText<T>(Func<string> defaultSelector, Func<string> overridenSelector)
+        private string GetFundDisplayText(Func<string> defaultSelector, Func<string> overridenSelector)
         {
             if (string.IsNullOrEmpty(_fundDisplaySetting))
             {
