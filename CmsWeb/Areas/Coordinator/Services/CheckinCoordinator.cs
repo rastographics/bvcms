@@ -96,6 +96,14 @@ namespace CmsWeb.Areas.Coordinator.Services
         #endregion
 
         #region Schedule checkin methods
+
+        public void SetDefaults(CheckinScheduleDto checkinScheduleDto)
+        {
+            checkinScheduleDto.CheckInCapacity = checkinScheduleDto.CheckInCapacityDefault;
+            checkinScheduleDto.CheckInOpen = checkinScheduleDto.CheckInOpenDefault;
+            CommitChanges(checkinScheduleDto);
+        }
+
         public void IncrementCapacity(CheckinScheduleDto checkinScheduleDto)
         {
             checkinScheduleDto.CheckInCapacity += 1;
