@@ -514,6 +514,9 @@
     <Compile Include="Areas\Finance\Models\DepositTotalsModel.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundRange.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
+    <Compile Include="Areas\FundReporting\Controllers\FundReporting.cs" />
+    <Compile Include="Areas\FundReporting\FundManagerAreaRegistration.cs" />
+    <Compile Include="Areas\FundReporting\Models\ReportParameters.cs" />
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadAddressesController.cs" />
@@ -1015,6 +1018,7 @@
     <Compile Include="Code\PaymentValidator.cs" />
     <Compile Include="Code\SmartBinder.cs" />
     <Compile Include="Code\Image.cs" />
+    <Compile Include="Areas\FundReporting\Services\FundReportingService.cs" />
     <Content Include="Areas\Dialog\Views\AddToOrgFromTag\Index.cshtml" />
     <Content Include="Areas\Main\Views\Email\SelectTemplate.cshtml" />
     <Content Include="Areas\Main\Views\Email\Compose.cshtml" />
@@ -1667,6 +1671,10 @@
     <Content Include="Areas\Dialog\Views\MoveOrgMembers\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\MoveOrgMembers\Process.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\ChaiDonorsReport.cshtml" />
+    <Content Include="Areas\FundReporting\Views\web.config" />
+    <Content Include="Areas\FundReporting\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\FundReporting\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\FundReporting\Views\FundManager\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\staging.pubxml" />
     <None Include="Properties\PublishProfiles\TeamCity.pubxml" />
@@ -3205,6 +3213,7 @@
   <ItemGroup>
     <Folder Include="Areas\Dialog\Views\Shared\" />
     <Folder Include="Areas\Finance\Views\Shared\" />
+    <Folder Include="Areas\FundReporting\Commands\" />
     <Folder Include="Areas\Main\Views\Shared\" />
     <Folder Include="Areas\Manage\Views\Shared\" />
     <Folder Include="Areas\OnlineReg\Views\Shared\" />
