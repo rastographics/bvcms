@@ -18,11 +18,13 @@ namespace CmsWeb.Areas.Org.Controllers
             var m = new OrgGroupsModel( id );
             return View(m);
         }
+
         [HttpPost]
         public ActionResult Filter(OrgGroupsModel m)
         {
             return View("Rows", m);
         }
+
         [HttpPost]
         public ActionResult AssignSelectedToTargetGroup(OrgGroupsModel m)
         {
@@ -112,6 +114,7 @@ namespace CmsWeb.Areas.Org.Controllers
             DbUtil.Db.SubmitChanges();
             return View("Rows", m);
         }
+
         [HttpPost]
         public ActionResult MakeNewGroup(OrgGroupsModel m)
         {
@@ -138,6 +141,7 @@ namespace CmsWeb.Areas.Org.Controllers
             ViewData["newgid"] = group.Id;
             return Redirect("/OrgGroups/Management/" + m.orgid);
         }
+
         [HttpPost]
         public ActionResult RenameGroup(OrgGroupsModel m)
         {
@@ -150,6 +154,25 @@ namespace CmsWeb.Areas.Org.Controllers
             m.GroupName = null;
             return Redirect("/OrgGroups/Management/" + m.orgid);
         }
+
+        [HttpPost]
+        public ActionResult EditGroup(OrgGroupsModel m)
+        {
+            if (!m.GroupName.HasValue() || m.groupid == 0)
+                return Content("error: no group name");
+            var group = DbUtil.Db.MemberTags.SingleOrDefault(d => d.Id == m.groupid);
+            if (group != null)
+            {
+                group.Name = m.GroupName;
+                group.CheckIn = m.AllowCheckin == "true";
+                group.CheckInCapacityDefault = m.CheckInCapacityDefault;
+                group.CheckInOpenDefault = m.CheckInOpenDefault;
+                group.ScheduleId = m.ScheduleId;
+            }
+            DbUtil.Db.SubmitChanges();
+            return Redirect("/OrgGroups/Management/" + m.orgid);
+        }
+
         [HttpPost]
         public ActionResult DeleteGroup(OrgGroupsModel m)
         {

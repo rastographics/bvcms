@@ -62,7 +62,7 @@
                 <td>@(g.CheckInOpenDefault ? "Yes" : "No")</td>
                 <td>@g.CheckInCapacityDefault</td>
             }
-            <td style="width: 50px;"><a class="rename-group btn btn-default btn-sm" href="/OrgGroups/RenameGroup/@Model.orgid" groupId="@g.Id" groupName="@g.Name"><i class="fa fa-pencil"></i> Rename</a></td>
+            <td style="width: 50px;"><a class="edit-group btn btn-default btn-sm" href="/OrgGroups/EditGroup/@Model.orgid" groupId="@g.Id" groupName="@g.Name" checkinOpenDefault="@g.CheckInOpenDefault" checkinCapacityDefault="@g.CheckInCapacityDefault" scheduleId="@g.ScheduleId"><i class="fa fa-pencil"></i> Edit</a></td>
             <td style="width: 50px;"><a class="delete-group btn btn-danger btn-sm" href="/OrgGroups/DeleteGroup/@Model.orgid" groupId="@g.Id"><i class="fa fa-trash"></i> Delete</a></td>
         </tr>
         }

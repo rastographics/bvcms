@@ -266,24 +266,12 @@
 
     $("body").on('click', 'a.create-group', function (ev) {
         ev.preventDefault();
+        $('#new-group-modal input').not('[type=hidden],[type=button],[type=submit]').val('');
         $('#new-group-modal').modal('show');
     });
 
     $('#new-group-modal').on('shown.bs.modal', function (e) {
-        $("input.new-group-name").val("").focus();
-    });
-
-    $("#new-group-modal form").submit(function (ev) {
-        ev.preventDefault();
-        var f = $(this);
-        var q = f.serialize();
-        var url = f.attr('action');
-        $.post(url, q, function (ret) {
-            if (ret.substring(0, 5) != "error") {
-                $('#groupForm').html(ret);
-            }
-        });
-        $('#new-group-modal').modal('hide');
+        $("input[name=GroupName]", this).val("").focus();
     });
 
     $("body").on('click', 'a.toggle-checkin', function (ev) {
@@ -297,21 +285,31 @@
         });
     });
 
-    $("body").on('click', 'a.rename-group', function (ev) {
+    $("body").on('click', 'a.edit-group', function (ev) {
         ev.preventDefault();
-        var groupId = $(this).attr('groupId');
-        var groupName = $(this).attr('groupName');
-
-        $("input.rename-group-id").val(groupId);
-        $("input.rename-group-name").val(groupName);
-        $('#rename-group-modal').modal('show');        
+        var $this = $(this);
+        var groupId = $this.attr('groupId');
+        var groupName = $this.attr('groupName');
+        var allowCheckin = $this.closest('tr').find('.toggle-checkin').is('.btn-success');
+        var checkinOpenDefault = $this.attr('checkinOpenDefault');
+        var checkinCapacityDefault = $this.attr('checkinCapacityDefault');
+        var scheduleId = $this.attr('scheduleId');
+        $modal = $('#edit-group-modal');
+        $modal.find('input[name=groupid]').val(groupId);
+        $modal.find('input[name=GroupName]').val(groupName);
+        //$modal.find('input[name=AllowCheckin]').find()
+        $modal.find('select[name=AllowCheckin]').val('' + allowCheckin);
+        $modal.find('input[name=CheckInCapacityDefault]').val(checkinCapacityDefault);
+        $modal.find('select[name=CheckInOpenDefault]').val('' + !!checkinOpenDefault);
+        $modal.find('select[name=ScheduleId]').val(scheduleId || '');
+        $modal.modal('show');
     });
     
-    $('#rename-group-modal').on('shown.bs.modal', function (e) {
-        $('input.rename-group-name').focus();
+    $('#edit-group-modal').on('shown.bs.modal', function (e) {
+        $(this).find('input[name=GroupName]').focus();
     });
     
-    $("#rename-group-modal form").submit(function (ev) {
+    $("#edit-group-modal form, #new-group-modal form").submit(function (ev) {
         ev.preventDefault();
         var f = $(this);
         var q = f.serialize();
@@ -321,7 +319,7 @@
                 $('#groupForm').html(ret);
             }
         });
-        $('#rename-group-modal').modal('hide');
+        f.closest('.modal').modal('hide');
     });
 
     $("body").on('click', 'a.delete-group', function (ev) {
