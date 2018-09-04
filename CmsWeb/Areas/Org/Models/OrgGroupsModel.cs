@@ -64,12 +64,14 @@ namespace CmsWeb.Areas.Org.Models
             return d.SingleOrDefault();
         }
 
+        private IEnumerable<OrgSchedule> _orgSchedules;
         public IEnumerable<OrgSchedule> GetOrgSchedules()
         {
-            return from schedule in DbUtil.Db.OrgSchedules
+            return _orgSchedules ?? (_orgSchedules =
+                (from schedule in DbUtil.Db.OrgSchedules
                    where schedule.OrganizationId == orgid
                    orderby schedule.SchedDay, schedule.SchedTime
-                   select schedule;
+                   select schedule).ToList());
         }
 
         public IEnumerable<MemberTag> GroupsList()
