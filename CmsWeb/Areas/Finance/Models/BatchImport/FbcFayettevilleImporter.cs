@@ -5,10 +5,10 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 
-using System;
-using System.IO;
 using CmsData;
 using LumenWorks.Framework.IO.Csv;
+using System;
+using System.IO;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
 {
@@ -17,7 +17,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
         public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
         {
             using (var csv = new CsvReader(new StringReader(text), true))
+            {
                 return BatchProcessFbcFayetteville(csv, date, fundid);
+            }
         }
 
         private static int? BatchProcessFbcFayetteville(CsvReader csv, DateTime date, int? fundid)
@@ -36,22 +38,22 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                     continue;
                 }
 
-                var contributionDate = csv[1];
-                var memberNumber = csv[2];
-                var memberName = csv[3];
-                var amount = csv[4];
-                var checkNumber = csv[5];
+                var contributionDate = csv[0].Trim();
+                var memberNumber = csv[1].Trim();
+                var memberName = csv[2].Trim();
+                var amount = csv[3].Trim();
+                var checkNumber = csv[4].Trim();
 
-                if(bundleHeader == null)
+                if (bundleHeader == null)
                 {
                     bundleHeader = BatchImportContributions.GetBundleHeader(date, DateTime.Now);
                 }
 
-                var bundleDetails = BatchImportContributions.AddContributionDetail(date, fund, amount, checkNumber, "", "");
+                var bundleDetails = BatchImportContributions.AddContributionDetail(date, fund, amount, checkNumber, "", int.Parse(memberNumber));
                 bundleHeader.BundleDetails.Add(bundleDetails);
             }
 
-            if(bundleHeader == null)
+            if (bundleHeader == null)
             {
                 return null;
             }
