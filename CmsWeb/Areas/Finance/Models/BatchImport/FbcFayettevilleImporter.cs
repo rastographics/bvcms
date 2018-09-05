@@ -23,29 +23,41 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
         private static int? BatchProcessFbcFayetteville(CsvReader csv, DateTime date, int? fundid)
         {
             var cols = csv.GetFieldHeaders();
-            BundleHeader bh = null;
-            var firstfund = BatchImportContributions.FirstFundId();
+            BundleHeader bundleHeader = null;
+            var firstfund = BatchImportContributions.FirstFundId(); //TODO: use default fund id based on DBSetting w/ default to 1 if not set
             var fund = fundid ?? firstfund;
 
             while (csv.ReadNextRecord())
             {
-                if (csv[6].StartsWith("Total Checks"))
+                var isHeaderRow = csv[0].StartsWith("Date");
+
+                if (isHeaderRow)
+                {
                     continue;
-                var routing = csv[4];
-                var account = csv[5];
-                var checkno = csv[6];
-                var amount = csv[7];
+                }
 
-                if (bh == null)
-                    bh = BatchImportContributions.GetBundleHeader(date, DateTime.Now);
+                var contributionDate = csv[1];
+                var memberNumber = csv[2];
+                var memberName = csv[3];
+                var amount = csv[4];
+                var checkNumber = csv[5];
 
-                var bd = BatchImportContributions.AddContributionDetail(date, fund, amount, checkno, routing, account);
-                bh.BundleDetails.Add(bd);
+                if(bundleHeader == null)
+                {
+                    bundleHeader = BatchImportContributions.GetBundleHeader(date, DateTime.Now);
+                }
+
+                var bundleDetails = BatchImportContributions.AddContributionDetail(date, fund, amount, checkNumber, "", "");
+                bundleHeader.BundleDetails.Add(bundleDetails);
             }
-            if (bh == null)
+
+            if(bundleHeader == null)
+            {
                 return null;
-            BatchImportContributions.FinishBundle(bh);
-            return bh.BundleHeaderId;
+            }
+
+            BatchImportContributions.FinishBundle(bundleHeader);
+            return bundleHeader.BundleHeaderId;
         }
     }
 }
