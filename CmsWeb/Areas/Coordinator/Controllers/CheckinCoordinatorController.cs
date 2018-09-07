@@ -123,6 +123,12 @@ namespace CmsWeb.Areas.Coordinator.Controllers
                 _checkinCoordinator.SetDefaults(schedule);
             }
 
+            if (checkinActionDto.Service.Equals(CheckinActionDto.SetAllDefaults))
+            {
+                _checkinCoordinator.SetAllDefaults();
+                return Json(new { status = "OK" });
+            }
+
             if (checkinActionDto.Service.Equals(CheckinActionDto.IncrementCapacity))
             {
                 _checkinCoordinator.IncrementCapacity(schedule);

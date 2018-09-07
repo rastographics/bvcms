@@ -89,21 +89,21 @@
     }
 
     .list-group {
-
     }
 
     .list-group-item-heading {
-        font-size:1.2em;
-        line-height:1.8em;
+        font-size: 1.2em;
+        line-height: 1.8em;
     }
 
     .list-group-item {
         border: 0;
     }
 
-    .list-group-item:hover {
-        cursor:pointer;
-    }
+        .list-group-item:hover {
+            cursor: pointer;
+        }
+
     #setdefaults {
         position: relative;
         top: -8px;
@@ -146,3 +146,24 @@
         </div>
     </div>
 </div>
+@section scripts
+{
+<script>
+    $('#setalldefaults').on('click', function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: '@Url.Action("ExecuteAction")',
+            data: JSON.stringify({service: 'SetAllDefaults'}),
+            success: function (ret) {
+                $('#setdefaults').click();
+            },
+            error: function (ret) {
+                swal('Error!', ret, 'error');
+            },
+            type: 'POST',
+            contentType: 'application/json, charset=utf-8',
+            dataType: 'html'
+        });
+    });
+</script>
+}

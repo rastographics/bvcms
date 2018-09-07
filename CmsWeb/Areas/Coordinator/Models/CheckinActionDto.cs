@@ -6,6 +6,7 @@
         public const string DecrementCapacity = "DecrementCapacity";
         public const string ToggleCheckinOpen = "ToggleCheckinOpen";
         public const string SetDefaults = "SetDefaults";
+        public const string SetAllDefaults = "SetAllDefaults";
 
         public string SelectedTimeslot { get; set; }
         public int OrganizationId { get; set; }

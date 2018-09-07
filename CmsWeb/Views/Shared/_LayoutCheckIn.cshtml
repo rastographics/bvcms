@@ -26,7 +26,10 @@
 {
     <div id="page-header" class="text-center" style="padding-bottom: 0 !important;margin-bottom: 5px !important">
         <div class="container-fluid" style="padding-bottom: 0 !important">
-            <h2>@ViewBag.PageHeader</h2>
+            <h2>
+                <a href="#" id="setalldefaults" class="btn btn-default" style="position: absolute;left: 176px;">Set All Defaults</a>
+                @ViewBag.PageHeader
+            </h2>
             @if (!string.IsNullOrWhiteSpace(ViewBag.PageSubHeader))
             {
                 <h4>@Html.Raw(ViewBag.PageSubHeader)</h4>

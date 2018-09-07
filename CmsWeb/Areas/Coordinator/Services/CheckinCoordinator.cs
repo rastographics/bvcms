@@ -104,6 +104,11 @@ namespace CmsWeb.Areas.Coordinator.Services
             CommitChanges(checkinScheduleDto);
         }
 
+        public void SetAllDefaults()
+        {
+            DbUtil.Db.ExecuteCommand("UPDATE dbo.MemberTags SET CheckInOpen = CheckInOpenDefault, CheckInCapacity = CheckInCapacityDefault");
+        }
+
         public void IncrementCapacity(CheckinScheduleDto checkinScheduleDto)
         {
             checkinScheduleDto.CheckInCapacity += 1;
