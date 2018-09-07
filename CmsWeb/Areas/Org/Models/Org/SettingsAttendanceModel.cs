@@ -73,18 +73,33 @@ namespace CmsWeb.Areas.Org.Models
         }
         public void UpdateSchedules()
         {
-            DbUtil.Db.OrgSchedules.DeleteAllOnSubmit(Org.OrgSchedules);
-            Org.OrgSchedules.Clear();
-            DbUtil.Db.SubmitChanges();
+            var orgSchedules = Org.OrgSchedules.ToList();
             foreach (var s in Schedules.OrderBy(ss => ss.Id))
-                Org.OrgSchedules.Add(new OrgSchedule
+            {
+                var schedule = orgSchedules.FirstOrDefault(ss => ss.Id == s.Id);
+                if (schedule == null)
                 {
-                    OrganizationId = Id,
-                    Id = s.Id,
-                    SchedDay = s.SchedDay.Value.ToInt(),
-                    SchedTime = s.Time.ToDate(),
-                    AttendCreditId = s.AttendCredit.Value.ToInt()
-                });
+                    Org.OrgSchedules.Add(new OrgSchedule
+                    {
+                        OrganizationId = Id,
+                        Id = s.Id,
+                        SchedDay = s.SchedDay.Value.ToInt(),
+                        SchedTime = s.Time.ToDate(),
+                        AttendCreditId = s.AttendCredit.Value.ToInt()
+                    });
+                }
+                else
+                {
+                    schedule.Update(s.ToOrgSchedule());
+                }
+            }
+            foreach(var s in orgSchedules)
+            {
+                if (!Schedules.Any(ss => ss.Id == s.Id))
+                {
+                    Org.OrgSchedules.Remove(s);
+                }
+            }
             DbUtil.Db.SubmitChanges();
         }
         public SelectList SchedulesPrev()
