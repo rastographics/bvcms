@@ -41,30 +41,38 @@ namespace CmsWeb.Areas.People.Models
 
         public override IQueryable<Contribution> DefineModelList()
         {
-            var contributions = from c in DbUtil.Db.Contributions
-                                where (c.PeopleId == Person.PeopleId || (c.PeopleId == Person.SpouseId && (Person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint))
-                                && c.ContributionStatusId == ContributionStatusCode.Recorded
-                                && !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
-                                select c;
+            IQueryable<Contribution> contributionRecords;
 
             var currentUser = DbUtil.Db.CurrentUserPerson;
 
-            if (currentUser.PeopleId != Person.PeopleId)
-            {
-                var authorizedFunds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership();
-                var authorizedContributions = from c in contributions
-                                              join f in authorizedFunds on c.FundId equals f.FundId
-                                              select c;
+            var isCurrentUser = currentUser.PeopleId == Person.PeopleId;
+            var isSpouse = currentUser.PeopleId == Person.SpouseId;
+            var isFamilyMember = currentUser.FamilyId == Person.FamilyId;
 
-                contributions = authorizedContributions;
+            if (isCurrentUser || (isSpouse && (Person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint) || isFamilyMember)
+            {
+                contributionRecords = from c in DbUtil.Db.Contributions
+                                      where (c.PeopleId == Person.PeopleId || (c.PeopleId == Person.SpouseId && (Person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint))
+                                      && c.ContributionStatusId == ContributionStatusCode.Recorded
+                                      && !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+                                      select c;
+            }
+            else
+            {
+                contributionRecords = from c in DbUtil.Db.Contributions
+                                      join f in DbUtil.Db.ContributionFunds.ScopedByRoleMembership() on c.FundId equals f.FundId
+                                      where c.PeopleId == Person.PeopleId
+                                      && c.ContributionStatusId == ContributionStatusCode.Recorded
+                                      && !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+                                      select c;
             }
 
-            ShowNames = contributions.Any(c => c.PeopleId != Person.PeopleId);
-            ShowTypes = contributions.Any(c => ContributionTypeCode.SpecialTypes.Contains(c.ContributionTypeId));
+            var items = contributionRecords.ToList();
 
+            ShowNames = items.Any(c => c.PeopleId != Person.PeopleId);
+            ShowTypes = items.Any(c => ContributionTypeCode.SpecialTypes.Contains(c.ContributionTypeId));
 
-
-            return contributions;
+            return contributionRecords;
         }
 
         public override IQueryable<Contribution> DefineModelSort(IQueryable<Contribution> q)
