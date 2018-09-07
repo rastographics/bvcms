@@ -121,22 +121,17 @@ namespace CmsWeb.Areas.Org.Controllers
             if (!m.GroupName.HasValue())
                 return Content("error: no group name");
             var Db = DbUtil.Db;
-            var group = Db.MemberTags.SingleOrDefault(g =>
-                g.Name == m.GroupName && g.OrgId == m.orgid);
-            if (group == null)
-            {
-                group = new MemberTag
-                {
-                    Name = m.GroupName,
-                    OrgId = m.orgid,
-                    CheckIn = m.AllowCheckin.Equals("true", System.StringComparison.OrdinalIgnoreCase),
-                    ScheduleId = m.ScheduleId,
-                    CheckInOpenDefault = m.CheckInOpenDefault,
-                    CheckInCapacityDefault = m.CheckInCapacityDefault,
-                };
-                Db.MemberTags.InsertOnSubmit(group);
-                Db.SubmitChanges();
-            }
+            var group = new MemberTag {
+                Name = m.GroupName,
+                OrgId = m.orgid,
+                CheckIn = m.AllowCheckin.ToBool(),
+                ScheduleId = m.ScheduleId,
+                CheckInOpenDefault = m.CheckInOpenDefault,
+                CheckInCapacityDefault = m.CheckInCapacityDefault,
+            };
+            Db.MemberTags.InsertOnSubmit(group);
+            Db.SubmitChanges();
+            
             m.groupid = group.Id;
             ViewData["newgid"] = group.Id;
             return Redirect("/OrgGroups/Management/" + m.orgid);
