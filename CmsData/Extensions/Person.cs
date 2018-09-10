@@ -1278,6 +1278,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
 
         public static PeopleExtra GetExtraValue(CMSDataContext db, int id, string field)
         {
+            field = field.Trim();
             var q = from v in db.PeopleExtras
                     where v.Field == field
                     where v.PeopleId == id
@@ -1308,6 +1309,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
 
         public static PeopleExtra GetExtraValue(CMSDataContext db, int id, string field, string value)
         {
+            field = field.Trim();
             var novalue = !value.HasValue();
             var q = from v in db.PeopleExtras
                     where v.PeopleId == id

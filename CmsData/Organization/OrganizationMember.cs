@@ -581,7 +581,8 @@ AND a.PeopleId = {2}
         }
         public OrgMemberExtra GetExtraValue(string field)
         {
-            var ev = OrgMemberExtras.AsEnumerable().FirstOrDefault(ee => ee.Field.Equal(field));
+            field = field.Trim();
+            var ev = OrgMemberExtras.AsEnumerable().FirstOrDefault(ee => ee.Field == field);
             if (ev == null)
             {
                 ev = new OrgMemberExtra()
@@ -596,7 +597,7 @@ AND a.PeopleId = {2}
         }
         public static OrgMemberExtra GetExtraValue(CMSDataContext db, int oid, int pid, string field)
         {
-            //field = field.Replace('/', '-');
+            field = field.Trim();
             var q = from v in db.OrgMemberExtras
                     where v.Field == field
                     where v.OrganizationId == oid
