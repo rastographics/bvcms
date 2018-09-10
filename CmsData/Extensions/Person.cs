@@ -1140,9 +1140,9 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         {
             if (!field.HasValue())
                 field = "blank";
-            //field = field.Replace(",", "_");
+            field = field.Trim();
             var ev =
-                PeopleExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase: true) == 0);
+                PeopleExtras.AsEnumerable().FirstOrDefault(ee => ee.Field == field);
             if (ev == null)
             {
                 ev = new PeopleExtra
