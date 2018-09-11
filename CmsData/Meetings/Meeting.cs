@@ -13,6 +13,7 @@ namespace CmsData
         }
         public static MeetingExtra GetExtraValue(CMSDataContext db, int id, string field)
         {
+            field = field.Trim();
             var q = from v in db.MeetingExtras
                     where v.Field == field
                     where v.MeetingId == id
@@ -32,7 +33,8 @@ namespace CmsData
         }
         public MeetingExtra GetExtraValue(string field)
         {
-            var ev = MeetingExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase: true) == 0);
+            field = field.Trim();
+            var ev = MeetingExtras.AsEnumerable().FirstOrDefault(ee => ee.Field == field);
             if (ev == null)
             {
                 ev = new MeetingExtra()
