@@ -151,18 +151,20 @@
 <script>
     $('#setalldefaults').on('click', function (e) {
         e.preventDefault();
-        $.ajax({
-            url: '@Url.Action("ExecuteAction")',
-            data: JSON.stringify({service: 'SetAllDefaults'}),
-            success: function (ret) {
-                $('#setdefaults').click();
-            },
-            error: function (ret) {
-                swal('Error!', ret, 'error');
-            },
-            type: 'POST',
-            contentType: 'application/json, charset=utf-8',
-            dataType: 'html'
+        bootbox.confirm('Are you sure you want to reset all defaults?', function (result) {
+            result && $.ajax({
+                url: '@Url.Action("ExecuteAction")',
+                data: JSON.stringify({ service: 'SetAllDefaults' }),
+                success: function (ret) {
+                    $('#setdefaults').click();
+                },
+                error: function (ret) {
+                    swal('Error!', ret, 'error');
+                },
+                type: 'POST',
+                contentType: 'application/json, charset=utf-8',
+                dataType: 'html'
+            });
         });
     });
 </script>

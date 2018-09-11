@@ -165,6 +165,8 @@ namespace CmsData
 				PeopleId = PeopleId,
 				OrganizationId = OrgId,
 				CreatedDate = DateTime.Now,
+                SubGroupName = "",
+                Pager = ""
 			};
 			Db.Attends.InsertOnSubmit(a);
 		}
