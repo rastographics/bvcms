@@ -211,7 +211,8 @@ namespace CmsData
 
         public ContactExtra GetExtraValue(string field)
         {
-            var ev = ContactExtras.AsEnumerable().FirstOrDefault(ee => ee.Field.Equal(field));
+            field = field.Trim();
+            var ev = ContactExtras.AsEnumerable().FirstOrDefault(ee => ee.Field == field);
             if (ev == null)
             {
                 ev = new ContactExtra()

@@ -395,7 +395,8 @@ namespace CmsData
 
         public OrganizationExtra GetExtraValue(string field)
         {
-            var ev = OrganizationExtras.AsEnumerable().FirstOrDefault(ee => ee.Field.Equal(field));
+            field = field.Trim();
+            var ev = OrganizationExtras.AsEnumerable().FirstOrDefault(ee => ee.Field == field);
             if (ev == null)
             {
                 ev = new OrganizationExtra()
@@ -410,7 +411,7 @@ namespace CmsData
         }
         public static OrganizationExtra GetExtraValue(CMSDataContext db, int id, string field)
         {
-            //field = field.Replace('/', '-');
+            field = field.Trim();
             var q = from v in db.OrganizationExtras
                     where v.Field == field
                     where v.OrganizationId == id
