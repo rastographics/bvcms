@@ -194,8 +194,8 @@ $(function () {
 
     if ($('#CreditCard').length) {
         if ($('#CreditCard').val().startsWith('X')) {
-            $('#CVV').parents('.form-group').hide()
-            $('#CancelUpdateText').parents('.form-group').hide()
+            $('#CVV').parents('.form-group').hide();
+            $('#CancelUpdateText').parents('.form-group').hide();
         }
         $('#CreditCard').change(function () {
             $('#CVV').parents('.form-group').show();
@@ -225,7 +225,7 @@ $(function () {
         //Setting CVV to empty and hiding CVV and Cancel Update btn.
         $('#CVV').val('');
         $('#CVV').parents('.form-group').hide();
-        $('#CancelUpdateText').parents('.form-group').hide()
+        $('#CancelUpdateText').parents('.form-group').hide();
         $('#Expires').focus();
         //Removes validation summary
         $('.validation-summary-errors').empty();
