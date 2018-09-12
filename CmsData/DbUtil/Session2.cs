@@ -105,7 +105,7 @@ namespace CmsData
             {
                 try
                 {
-                    list = Settings.ToDictionary(c => c.Id.Trim(), c => c.SettingX,
+                    list = Settings.ToList().ToDictionary(c => c.Id.Trim(), c => c.SettingX,
                         StringComparer.OrdinalIgnoreCase);
                     HttpRuntime.Cache.Insert(Host + "Setting", list, null,
                         DateTime.Now.AddSeconds(15), Cache.NoSlidingExpiration);

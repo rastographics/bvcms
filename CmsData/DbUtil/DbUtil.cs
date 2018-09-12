@@ -19,20 +19,16 @@ namespace CmsData
     public static partial class DbUtil
     {
         private const string CMSDbKEY = "CMSDbKey";
-        private static CMSDataContext _InternalDb = null;
+
         private static CMSDataContext InternalDb
         {
             get
             {
-                return _InternalDb ?? (CMSDataContext)HttpContext.Current.Items[CMSDbKEY];
+                return (CMSDataContext)HttpContext.Current.Items[CMSDbKEY];
             }
             set
             {
-                if (HttpContext.Current == null)
-                {
-                    _InternalDb = value;
-                }
-                else
+                if (HttpContext.Current != null)
                 {
                     HttpContext.Current.Items[CMSDbKEY] = value;
                 }
@@ -54,7 +50,7 @@ namespace CmsData
 
         public static CMSDataContext Create(string host)
         {
-            return CMSDataContext.Create(Util.GetConnectionString(host), host);
+            return (InternalDb = CMSDataContext.Create(Util.GetConnectionString(host), host));
         }
 
         public static CMSDataContext Create(string connstr, string host)

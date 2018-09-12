@@ -291,7 +291,7 @@ p { font-size: 11px; }
                 foreach (var c in contributions)
                 {
                     t.AddCell(new Phrase(c.ContributionDate.ToString2("d"), font));
-                    t.AddCell(new Phrase(GetFundDisplayText(() => c.FundName, () => c.FundDescription), font));
+                    t.AddCell(new Phrase(GetFundDisplayText(db, () => c.FundName, () => c.FundDescription), font));
                     cell = new PdfPCell(t.DefaultCell);
                     cell.HorizontalAlignment = Element.ALIGN_RIGHT;
                     cell.Phrase = new Phrase(c.ContributionAmount.ToString2("N2"), font);
@@ -339,7 +339,7 @@ p { font-size: 11px; }
 
                     foreach (var c in pledges)
                     {
-                        t.AddCell(new Phrase(GetFundDisplayText(() => c.FundName, () => c.FundDescription), font));
+                        t.AddCell(new Phrase(GetFundDisplayText(db, () => c.FundName, () => c.FundDescription), font));
                         cell = new PdfPCell(t.DefaultCell);
                         cell.HorizontalAlignment = Element.ALIGN_RIGHT;
                         cell.Phrase = new Phrase(c.Pledged.ToString2("N2"), font);
@@ -381,7 +381,7 @@ p { font-size: 11px; }
                     {
                         t.AddCell(new Phrase(c.ContributionDate.ToString2("d"), font));
                         cell = new PdfPCell(t.DefaultCell);
-                        cell.Phrase = new Phrase(GetFundDisplayText(() => c.FundName, () => c.FundDescription), font);
+                        cell.Phrase = new Phrase(GetFundDisplayText(db, () => c.FundName, () => c.FundDescription), font);
                         t.AddCell(cell);
                         cell = new PdfPCell(t.DefaultCell);
                         cell.Phrase = new Phrase(c.Description, font);
@@ -412,7 +412,7 @@ p { font-size: 11px; }
                 t.DefaultCell.Border = Rectangle.NO_BORDER;
                 foreach (var c in APIContribution.GiftSummary(db, ci, FromDate, toDate, cs.Funds))
                 {
-                    t.AddCell(new Phrase(GetFundDisplayText(() => c.FundName, () => c.FundDescription), font));
+                    t.AddCell(new Phrase(GetFundDisplayText(db, () => c.FundName, () => c.FundDescription), font));
                     cell = new PdfPCell(t.DefaultCell);
                     cell.HorizontalAlignment = Element.ALIGN_RIGHT;
                     cell.Phrase = new Phrase(c.Total.ToString2("N2"), font);
@@ -454,7 +454,7 @@ p { font-size: 11px; }
                     foreach (var c in nontaxitems)
                     {
                         t.AddCell(new Phrase(c.ContributionDate.ToString2("d"), font));
-                        t.AddCell(new Phrase(GetFundDisplayText(() => c.FundName, () => c.FundDescription), font));
+                        t.AddCell(new Phrase(GetFundDisplayText(db, () => c.FundName, () => c.FundDescription), font));
                         cell = new PdfPCell(t.DefaultCell);
                         cell.HorizontalAlignment = Element.ALIGN_RIGHT;
                         cell.Phrase = new Phrase(c.ContributionAmount.ToString2("N2"), font);
@@ -520,11 +520,11 @@ p { font-size: 11px; }
             db.SubmitChanges();
         }
 
-        private string GetFundDisplayText(Func<string> defaultSelector, Func<string> overridenSelector)
+        private string GetFundDisplayText(CMSDataContext db, Func<string> defaultSelector, Func<string> overridenSelector)
         {
             if (string.IsNullOrEmpty(_fundDisplaySetting))
             {
-                _fundDisplaySetting = DbUtil.Db.GetSetting("ContributionStatementFundDisplayFieldName", "FundName");
+                _fundDisplaySetting = db.GetSetting("ContributionStatementFundDisplayFieldName", "FundName");
             }
 
             if (_fundDisplaySetting.Equals("FundName", StringComparison.OrdinalIgnoreCase))
@@ -537,10 +537,10 @@ p { font-size: 11px; }
             }
         }
 
-        public static StatementSpecification GetStatementSpecification(string name)
+        public static StatementSpecification GetStatementSpecification(CMSDataContext db, string name)
         {
-            var standardheader = DbUtil.Db.ContentHtml("StatementHeader", Resource1.ContributionStatementHeader);
-            var standardnotice = DbUtil.Db.ContentHtml("StatementNotice", Resource1.ContributionStatementNotice);
+            var standardheader = db.ContentHtml("StatementHeader", Resource1.ContributionStatementHeader);
+            var standardnotice = db.ContentHtml("StatementNotice", Resource1.ContributionStatementNotice);
 
             if (name == null || name == "all")
             {
@@ -552,10 +552,10 @@ p { font-size: 11px; }
                     Funds = null
                 };
             }
-            var standardsetlabel = DbUtil.Db.Setting("StandardFundSetName", "Standard Statements");
+            var standardsetlabel = db.Setting("StandardFundSetName", "Standard Statements");
             if (name == standardsetlabel)
             {
-                var funds = APIContributionSearchModel.GetCustomStatementsList(DbUtil.Db, name);
+                var funds = APIContributionSearchModel.GetCustomStatementsList(db, name);
                 return new StatementSpecification()
                 {
                     Description = standardsetlabel,
@@ -564,7 +564,7 @@ p { font-size: 11px; }
                     Funds = funds
                 };
             }
-            var xd = XDocument.Parse(Util.PickFirst(DbUtil.Db.ContentOfTypeText("CustomStatements"), "<CustomStatement/>"));
+            var xd = XDocument.Parse(Util.PickFirst(db.ContentOfTypeText("CustomStatements"), "<CustomStatement/>"));
             var ele = xd.XPathSelectElement($"//Statement[@description='{name}']");
             if (ele == null)
             {
@@ -582,12 +582,12 @@ p { font-size: 11px; }
             cs.Notice = noticeele != null
                 ? string.Concat(noticeele.Nodes().Select(x => x.ToString()).ToArray())
                 : standardnotice;
-            cs.Funds = APIContributionSearchModel.GetCustomStatementsList(DbUtil.Db, desc);
+            cs.Funds = APIContributionSearchModel.GetCustomStatementsList(db, desc);
             return cs;
         }
-        public static List<string> CustomStatementsList()
+        public static List<string> CustomStatementsList(CMSDataContext db)
         {
-            var xd = XDocument.Parse(Util.PickFirst(DbUtil.Db.ContentOfTypeText("CustomStatements"), "<CustomStatement/>"));
+            var xd = XDocument.Parse(Util.PickFirst(db.ContentOfTypeText("CustomStatements"), "<CustomStatement/>"));
             var list = new List<string>();
             foreach (var ele in xd.Descendants().Elements("Statement"))
             {
@@ -599,23 +599,23 @@ p { font-size: 11px; }
                 return null;
             }
 
-            var standardsetlabel = DbUtil.Db.Setting("StandardFundSetName", "Standard Statements");
+            var standardsetlabel = db.Setting("StandardFundSetName", "Standard Statements");
             list.Insert(0, standardsetlabel);
             return list;
         }
-        public static List<string> CustomFundSetList()
+        public static List<string> CustomFundSetList(CMSDataContext db)
         {
-            var xd = XDocument.Parse(Util.PickFirst(DbUtil.Db.ContentOfTypeText("CustomFundSets"), "<CustomFundSets/>"));
+            var xd = XDocument.Parse(Util.PickFirst(db.ContentOfTypeText("CustomFundSets"), "<CustomFundSets/>"));
             var list = new List<string>();
             foreach (var ele in xd.Descendants().Elements("FundSet"))
             {
                 list.Add(ele.Attribute("description")?.Value);
             }
 
-            var xd2 = XDocument.Parse(Util.PickFirst(DbUtil.Db.ContentOfTypeText("CustomStatements"), "<CustomStatements/>"));
+            var xd2 = XDocument.Parse(Util.PickFirst(db.ContentOfTypeText("CustomStatements"), "<CustomStatements/>"));
             if (xd2.Descendants().Elements("Statement").Any())
             {
-                var standardsetlabel = DbUtil.Db.Setting("StandardFundSetName", "Standard Statements");
+                var standardsetlabel = db.Setting("StandardFundSetName", "Standard Statements");
                 list.Add(standardsetlabel);
                 foreach (var ele in xd2.Descendants().Elements("Statement"))
                 {
@@ -631,7 +631,7 @@ p { font-size: 11px; }
         }
         public static SelectList CustomStatementsSelectList()
         {
-            var cslist = CustomStatementsList();
+            var cslist = CustomStatementsList(DbUtil.Db);
             if (cslist == null)
             {
                 return null;
@@ -641,7 +641,7 @@ p { font-size: 11px; }
         }
         public static SelectList CustomFundSetSelectList()
         {
-            var cslist = CustomFundSetList();
+            var cslist = CustomFundSetList(DbUtil.Db);
             if (cslist == null)
             {
                 return null;
