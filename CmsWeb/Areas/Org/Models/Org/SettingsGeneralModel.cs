@@ -21,15 +21,26 @@ namespace CmsWeb.Areas.Org.Models
                     Org = DbUtil.Db.LoadOrganizationById(value);
             }
         }
-        public void Update()
+        public void Update(bool userIsAdmin)
         {
-            if(LimitToRole == null)
+            if (LimitToRole == null)
+            {
                 LimitToRole = new CodeInfo("0", new SelectList(Roles(), "Value", "Text"));
+            }
             if (LimitToRole.Value == "0")
+            {
                 LimitToRole.Value = null;
+            }
             if (Gender.Value == "99")
+            {
                 Gender.Value = null;
-            this.CopyPropertiesTo(Org);
+            }
+            string exclusions = null;
+            if (!userIsAdmin)
+            {
+                exclusions = "LimitToRole";
+            }
+            this.CopyPropertiesTo(Org, excludefields: exclusions);
             DbUtil.Db.SubmitChanges();
         }
 
