@@ -20,17 +20,22 @@ namespace CmsData
     {
         private const string CMSDbKEY = "CMSDbKey";
 
+        private static CMSDataContext _InternalDb;
         private static CMSDataContext InternalDb
         {
             get
             {
-                return (CMSDataContext)HttpContext.Current.Items[CMSDbKEY];
+                return _InternalDb ?? (CMSDataContext)HttpContext.Current.Items[CMSDbKEY];
             }
             set
             {
                 if (HttpContext.Current != null)
                 {
                     HttpContext.Current.Items[CMSDbKEY] = value;
+                }
+                else
+                {
+                    _InternalDb = value;
                 }
             }
         }
