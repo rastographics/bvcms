@@ -19,24 +19,15 @@ namespace CmsData
     public static partial class DbUtil
     {
         private const string CMSDbKEY = "CMSDbKey";
-
-        private static CMSDataContext _InternalDb;
         private static CMSDataContext InternalDb
         {
             get
             {
-                return _InternalDb ?? (CMSDataContext)HttpContext.Current.Items[CMSDbKEY];
+                return (CMSDataContext)HttpContext.Current.Items[CMSDbKEY];
             }
             set
             {
-                if (HttpContext.Current != null)
-                {
-                    HttpContext.Current.Items[CMSDbKEY] = value;
-                }
-                else
-                {
-                    _InternalDb = value;
-                }
+                HttpContext.Current.Items[CMSDbKEY] = value;
             }
         }
 
@@ -44,7 +35,14 @@ namespace CmsData
         {
             get
             {
-                return InternalDb ?? (InternalDb = CMSDataContext.Create(Util.ConnectionString, Util.Host));
+                if (HttpContext.Current == null)
+                    return CMSDataContext.Create(Util.ConnectionString, Util.Host);
+                if (InternalDb == null)
+                {
+                    InternalDb = CMSDataContext.Create(Util.ConnectionString, Util.Host);
+                    InternalDb.CommandTimeout = 1200;
+                }
+                return InternalDb;
             }
             set
             {
@@ -55,12 +53,12 @@ namespace CmsData
 
         public static CMSDataContext Create(string host)
         {
-            return (InternalDb = CMSDataContext.Create(Util.GetConnectionString(host), host));
+            return CMSDataContext.Create(Util.GetConnectionString(host), host);
         }
 
         public static CMSDataContext Create(string connstr, string host)
         {
-            return (InternalDb = CMSDataContext.Create(connstr, host));
+            return CMSDataContext.Create(connstr, host);
         }
 
         private static void _logActivity(string host, string activity, int? orgId, int? peopleId, int? datumId, int? userId, string pageUrl = null, string clientIp = null)
@@ -96,28 +94,28 @@ namespace CmsData
 
             // Logging temporarily to monitor some major changes
 
-//            if (!a.Activity.StartsWith("OnlineReg"))
-//                return;
-//
-//            var cs = ConfigurationManager.ConnectionStrings["CmsLogging"];
-//            if (cs != null)
-//            {
-//                using (var cn = new SqlConnection(cs.ConnectionString))
-//                {
-//                    cn.Open();
-//                    cn.Execute(
-//                        "INSERT dbo.RegActivity (db, dt, activity, oid, pid, did) VALUES(@db, @dt, @ac, @oid, @pid, @did)",
-//                        new
-//                        {
-//                            db = host,
-//                            ac = activity,
-//                            dt = a.ActivityDate,
-//                            oid = a.OrgId,
-//                            pid = a.PeopleId,
-//                            did = a.DatumId,
-//                        });
-//                }
-//            }
+            //            if (!a.Activity.StartsWith("OnlineReg"))
+            //                return;
+            //
+            //            var cs = ConfigurationManager.ConnectionStrings["CmsLogging"];
+            //            if (cs != null)
+            //            {
+            //                using (var cn = new SqlConnection(cs.ConnectionString))
+            //                {
+            //                    cn.Open();
+            //                    cn.Execute(
+            //                        "INSERT dbo.RegActivity (db, dt, activity, oid, pid, did) VALUES(@db, @dt, @ac, @oid, @pid, @did)",
+            //                        new
+            //                        {
+            //                            db = host,
+            //                            ac = activity,
+            //                            dt = a.ActivityDate,
+            //                            oid = a.OrgId,
+            //                            pid = a.PeopleId,
+            //                            did = a.DatumId,
+            //                        });
+            //                }
+            //            }
         }
 
         public static void LogActivity(string activity, int? orgid = null, int? peopleid = null, int? datumId = null, int? userId = null, string pageUrl = null, string clientIp = null)
@@ -367,7 +365,7 @@ namespace CmsData
             {
                 if (o.Equals(value.ToDate()))
                     return;
-                if(!o.SameMinute(value.ToDate()))
+                if (!o.SameMinute(value.ToDate()))
                     psb.Add(new ChangeDetail(field, o, value));
             }
             else
