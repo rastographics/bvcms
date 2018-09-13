@@ -194,7 +194,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             return View("Payment/Process", pf);
         }
 
-        [HttpPost]
         public ActionResult ConfirmDuePaid(int? id, string transactionId, decimal amount)
         {
             Response.NoCache();
