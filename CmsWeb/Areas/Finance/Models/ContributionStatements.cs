@@ -214,8 +214,8 @@ p { font-size: 11px; }
                     {
                         envno = $" env: {Util.PickFirst(ev.Data, ev.IntValue.ToString(), ev.StrValue)}";
                     }
+                    t2.AddCell(new Phrase($"{envno}", font));
                 }
-
                 if (!db.Setting("NoPrintDateOnStatement"))
                 {
                     t2.AddCell(new Phrase($"\nprinted: {DateTime.Now:M/d/yy}", font));
