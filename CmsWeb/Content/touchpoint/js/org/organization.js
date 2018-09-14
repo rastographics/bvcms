@@ -663,6 +663,7 @@
             $.post(href, null, function (ret) {
                 $("#schedules").append(ret).ready(function () {
                     $.InitFunctions.timepicker();
+                    $.renumberListItems();
                     $('#schedules').children().last().children().first().effect("highlight", { color: '#eaab00' }, 2000);
                 });
             });
@@ -673,7 +674,16 @@
     $('body').on('click', 'a.delete-well', function (ev) {
         ev.preventDefault();
         $(this).closest("div.well").parent().remove();
+        $.renumberListItems();
     });
+
+    $.renumberListItems = function () {
+        var i = 1;
+        $(".renumberMe").each(function () {
+            $(this).val(i);
+            i++;
+        });
+    };
 
     $("#ScheduleListPrev").change(function () {
         var a = $(this).val().split(",");

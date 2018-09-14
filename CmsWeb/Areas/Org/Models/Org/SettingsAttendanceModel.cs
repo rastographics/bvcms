@@ -34,6 +34,10 @@ namespace CmsWeb.Areas.Org.Models
         }
         public void Update()
         {
+            if (!HasSchedules())
+            {
+                schedules = new List<ScheduleInfo>();
+            }
             this.CopyPropertiesTo(Org);
             DbUtil.Db.SubmitChanges();
         }
@@ -73,9 +77,29 @@ namespace CmsWeb.Areas.Org.Models
         }
         public void UpdateSchedules()
         {
+            var db = DbUtil.Db;
             var orgSchedules = Org.OrgSchedules.ToList();
-            foreach (var s in Schedules.OrderBy(ss => ss.Id))
+            for(int i = orgSchedules.Count - 1; i>=0; i--)
             {
+                var s = orgSchedules[i];
+                if (!schedules.Any(ss => ss.Id == s.Id))
+                {
+                    foreach (var memtag in Org.MemberTags.Where(m => m.ScheduleId == s.Id))
+                    {
+                        memtag.ScheduleId = null;
+                        db.SubmitChanges();
+                    }
+                    db.OrgSchedules.DeleteOnSubmit(s);
+                    orgSchedules.Remove(s);
+                }
+            }
+            db.SubmitChanges();
+            foreach (var s in schedules.OrderBy(ss => ss.Id))
+            {
+                if (s.Id == 0)
+                {
+                    s.Id = (orgSchedules.Count > 0) ? orgSchedules.Max(ss => ss.Id) + 1 : 1;
+                }
                 var schedule = orgSchedules.FirstOrDefault(ss => ss.Id == s.Id);
                 if (schedule == null)
                 {
@@ -93,14 +117,7 @@ namespace CmsWeb.Areas.Org.Models
                     schedule.Update(s.ToOrgSchedule());
                 }
             }
-            foreach(var s in orgSchedules)
-            {
-                if (!Schedules.Any(ss => ss.Id == s.Id))
-                {
-                    Org.OrgSchedules.Remove(s);
-                }
-            }
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
         }
         public SelectList SchedulesPrev()
         {
@@ -136,9 +153,17 @@ Schedules can be 'Every Meeting' for 100% credit or they can be 'One a Week' for
                     throw new Exception("missing schedules");
                 return schedules;
             }
+            set
+            {
+                schedules = value ?? new List<ScheduleInfo>();
+            }
         }
         private List<ScheduleInfo> schedules;
 
+        public bool HasSchedules()
+        {
+            return schedules != null;
+        }
 
         [Display(Name="Does NOT meet weekly", 
             Description = @"

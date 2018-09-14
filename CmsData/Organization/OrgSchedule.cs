@@ -7,7 +7,7 @@ namespace CmsData
         public override string ToString()
         {
             var dayOfWeek = Enum.GetName(typeof(DayOfWeek), SchedDay.Value);
-            var name = $"{dayOfWeek} {SchedTime.Value:H:mm tt}";
+            var name = $"{dayOfWeek} {SchedTime.Value:h:mm tt}";
 
             return name;
         }
