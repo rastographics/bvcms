@@ -1,4 +1,5 @@
 ﻿@model ContributionsModel
+@using CmsData
 @using CmsWeb.Areas.Finance.Models.Report
 @using CmsWeb.Areas.People.Models
 @using UtilityExtensions
@@ -11,7 +12,7 @@
         source = "/Person2/InlineCodes/"
     };
     var finance = User.IsInRole("Finance") && ((string)Session["testnofinance"]) != "true";
-    string statements = null; ContributionStatements.CustomStatementsList();
+    string statements = null; ContributionStatements.CustomStatementsList(DbUtil.Db);
 }
 <form class="ajax" method="post" data-init="Editable" data-init2="ExtraEditable">
     <h4>Statements</h4>
