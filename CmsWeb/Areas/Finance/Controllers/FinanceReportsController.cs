@@ -18,20 +18,293 @@ using TableStyles = OfficeOpenXml.Table.TableStyles;
 
 namespace CmsWeb.Areas.Finance.Controllers
 {
+    //public class PdfResult : PartialViewResult
+    //{
+    //    public string FileDownloadName { get; set; }
+
+    //    public override void ExecuteResult(ControllerContext context)
+    //    {
+    //        if (context == null)
+    //        {
+    //            throw new ArgumentNullException("context");
+    //        }
+
+    //        context.Controller.ViewData.Model = Model;
+    //        ViewData = context.Controller.ViewData;
+    //        TempData = context.Controller.TempData;
+
+
+    //        if (string.IsNullOrEmpty(ViewName))
+    //        {
+    //            ViewName = context.RouteData.GetRequiredString("action");
+    //        }
+
+    //        ViewEngineResult viewEngineResult = null;
+    //        if (View == null)
+    //        {
+    //            viewEngineResult = FindView(context);
+    //            View = viewEngineResult.View;
+    //        }
+
+    //        StringBuilder sb = new StringBuilder();
+    //        using (TextWriter tr = new StringWriter(sb))
+    //        {
+    //            ViewContext viewContext = new ViewContext(context, View, ViewData, TempData, tr);
+    //            View.Render(viewContext, tr);
+    //        }
+
+    //        if (viewEngineResult != null)
+    //        {
+    //            viewEngineResult.ViewEngine.ReleaseView(context, View);
+    //        }
+
+    //        using (var workStream = new MemoryStream())
+    //        using (var document = new Document())
+    //        {
+    //            var writer = PdfWriter.GetInstance(document, workStream);
+    //            writer.CloseStream = false;
+    //            document.Open();
+
+    //            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(sb.ToString())))
+    //            {
+    //                XMLWorkerHelper.GetInstance().ParseXHtml(writer, document, stream, Encoding.UTF8);
+    //                document.Close();
+    //            }
+
+    //            FileContentResult result = new FileContentResult(workStream.ToArray(), "application/pdf")
+    //            {
+    //                FileDownloadName = FileDownloadName
+    //            };
+
+    //            result.ExecuteResult(context);
+    //        }
+    //    }
+    //}
+
+
+
+    //public class ReportResult<TItem>
+    //    where TItem : class, new()
+    //{
+    //    public IEnumerable<TItem> Data { get; set; }
+
+    //    public ReportResult()
+    //    {
+    //        Data = new List<TItem>();
+    //    }
+
+    //    protected string ProcessRazorTemplate()
+    //    {
+    //        return string.Empty;
+    //    }
+
+    //    /// <summary>
+    //    /// Render a PDF from the <see cref="Data">Data</see> for this result
+    //    /// </summary>
+    //    /// <returns>A stream object populated with the bytes for a PDF</returns>
+    //    public Stream ToPdf()
+    //    {
+    //        return null;
+    //    }
+
+    //    public Stream ToExcel()
+    //    {
+    //        return null;
+    //    }
+
+    //    public Stream ToHtml()
+    //    {
+    //        return null;
+    //    }
+
+    //    public Stream ToFormattedText()
+    //    {
+    //        return null;
+    //    }
+
+    //    public Stream ToXml()
+    //    {
+    //        return null;
+    //    }
+
+    //    public Stream ToJson()
+    //    {
+    //        return null;
+    //    }
+    //}
+
+    //public class ReportQuery<TInput>
+    //    where TInput : class, new()
+    //{
+    //    public string CommandText { get; set; }
+    //    public TInput QueryParameters { get; set; }
+    //    public CommandType CommandType { get; set; }
+    //    public int CommandTimeout { get; set; } = 300;
+    //}
+
+    //public abstract class ReportDefinition
+    //{
+    //    private readonly LoggingService _loggingService;
+
+    //    public ReportDefinition()
+    //    {
+    //        _loggingService = new DatabaseLoggingService();
+    //    }
+    //}
+
+    //public abstract class ReportDefinition<TInput, TOutput> : ReportDefinition
+    //    where TInput : class, new()
+    //    where TOutput : class, new()
+    //{
+    //    public ReportQuery<TInput> Query { get; set; }
+
+    //    public virtual ReportResult<TOutput> GenerateReport()
+    //    {
+    //        return GenerateReport()
+    //    }
+
+    //    public virtual ReportResult<TOutput> GenerateReport(ReportQuery reportQuery)
+    //    {
+
+    //    }
+
+    //    protected virtual IEnumerable<TOutput> ExecuteQuery(string query, TInput parameters, CommandType commandType = CommandType.Text, int commandTimeout = 300)
+    //    {
+    //        using (var connection = new SqlConnection(Util.ConnectionString))
+    //        {
+    //            using (var reader = connection.ExecuteReader(sql: query, param: MapParameters(parameters), transaction: null, commandTimeout: commandTimeout, commandType: commandType))
+    //            {
+    //                var results = reader.Select((rdr) => MapResult(rdr));
+    //                return results;
+    //            }
+    //        }
+    //    }
+
+    //    protected abstract TOutput MapResult(IDataReader reader);
+    //    protected abstract DynamicParameters MapParameters(TInput parameters);
+    //}
+
+
+
+
+    //public class DonorTotalSummaryReportLineItem
+    //{
+
+    //}
+
+    //public class DonorTotalSummaryReportParameterModel
+    //{
+
+    //}
+
+    //public class DonorTotalSummaryReportDefinition : ReportDefinition<DonorTotalSummaryReportParameterModel, DonorTotalSummaryReportLineItem>
+    //{
+    //    public DonorTotalSummaryReportDefinition()
+    //    {
+    //        Query = new ReportQuery<DonorTotalSummaryReportParameterModel>()
+    //        {
+    //            CommandTimeout = 300,
+    //            CommandType = CommandType.StoredProcedure,
+    //            CommandText = "",
+    //            QueryParameters = null
+    //        };
+    //    }
+
+    //    protected override DynamicParameters MapParameters(DonorTotalSummaryReportParameterModel parameters)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+
+    //    protected override DonorTotalSummaryReportLineItem MapResult(IDataReader reader)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+    //}
+
+
+
+    //public abstract class LoggingService
+    //{
+    //    public abstract void AddLogEntry(string message);
+    //}
+    //public class DatabaseLoggingService : LoggingService
+    //{
+    //    public override void AddLogEntry(string message)
+    //    {
+    //        DbUtil.LogActivity(message);
+    //    }
+    //}
+
+    //public class FinancialReportingService
+    //{
+    //    private readonly LoggingService _loggingService;
+
+    //    public FinancialReportingService(LoggingService loggingService)
+    //    {
+    //        _loggingService = loggingService;
+    //    }
+
+    //    public TReportOutput Execute<TParameterModel, TReportDefinition, TReportOutput>()
+    //    {
+
+    //    }
+
+    //    public ContributionStatementResult GetContributionStatement(int id, DateTime fromDate, DateTime toDate, int type)
+    //    {
+    //        _loggingService.AddLogEntry($"Fetching contribution statement for ({id}).");
+
+    //        return new ContributionStatementResult
+    //        {
+    //            PeopleId = id,
+    //            FromDate = fromDate,
+    //            ToDate = toDate,
+    //            typ = type
+    //        };
+    //    }
+
+    //    public DynamicParameters MapToParameters<TParameterModel>(TParameterModel parameterModel)
+    //        where TParameterModel : FinancialReportParameterModel
+    //    {
+    //        return parameterModel.ToDynamicParameters();
+    //    }
+    //}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     [Authorize(Roles = "Finance,FinanceViewOnly")]
     [RouteArea("Finance", AreaPrefix = "FinanceReports"), Route("{action}/{id?}")]
     public class FinanceReportsController : CmsStaffController
     {
+        //private readonly FinancialReportingService _financialReportingService;
+
+        //public FinanceReportsController()
+        //{
+        //    _financialReportingService = new FinancialReportingService(new DatabaseLoggingService()); // TODO: Implement dependency injection into the pipeline
+        //}
+
         public ActionResult ContributionStatement(int id, DateTime fromDate, DateTime toDate, int typ)
         {
-            DbUtil.LogActivity($"Contribution Statement for ({id})");
-            return new ContributionStatementResult
-            {
-                PeopleId = id,
-                FromDate = fromDate,
-                ToDate = toDate,
-                typ = typ
-            };
+            return _financialReportingService.GetContributionStatement(id, fromDate, toDate, typ);
         }
 
         private DynamicParameters DonorTotalSummaryParameters(DonorTotalSummaryOptionsModel model, bool useMedianMin = false)
@@ -160,9 +433,9 @@ namespace CmsWeb.Areas.Finance.Controllers
             var fromDate = DateTime.Parse("1/1/1900");
             var toDate = DateTime.Parse("1/1/2099");
             var queryResult = from pledgeReports in DbUtil.Db.PledgeReport(fromDate, toDate, 0)
-                    join allowedFunds in DbUtil.Db.ContributionFunds.ScopedByRoleMembership() on pledgeReports.FundId equals allowedFunds.FundId
-                    orderby pledgeReports.FundId descending
-                    select pledgeReports;
+                              join allowedFunds in DbUtil.Db.ContributionFunds.ScopedByRoleMembership() on pledgeReports.FundId equals allowedFunds.FundId
+                              orderby pledgeReports.FundId descending
+                              select pledgeReports;
 
             return View(queryResult);
         }
@@ -274,7 +547,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         [HttpGet]
         public ActionResult TotalsByFundRange(bool? pledged)
         {
-            var model = new TotalsByFundRangeModel{ Pledged = pledged ?? false };
+            var model = new TotalsByFundRangeModel { Pledged = pledged ?? false };
             return View(model);
         }
 
@@ -321,9 +594,9 @@ namespace CmsWeb.Areas.Finance.Controllers
         {
             var query = DbUtil.Db.ViewManagedGivingLists.AsQueryable();
 
-            if(sortBy == "name")
+            if (sortBy == "name")
             {
-                if(string.IsNullOrEmpty(sortDir) || sortDir == "asc")
+                if (string.IsNullOrEmpty(sortDir) || sortDir == "asc")
                 {
                     query = query.OrderBy(mgl => mgl.Name2);
                 }
@@ -334,7 +607,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             }
             else
             {
-                if(string.IsNullOrEmpty(sortDir) || sortDir == "asc")
+                if (string.IsNullOrEmpty(sortDir) || sortDir == "asc")
                 {
                     query = query.OrderBy(mgl => mgl.NextDate);
                 }
@@ -364,8 +637,10 @@ namespace CmsWeb.Areas.Finance.Controllers
                 .ThenByDescending(vv => vv.TotalGiven).ToList();
             var count = q.Count;
 
-            if(count == 0)
+            if (count == 0)
+            {
                 return Message("No Pledges to Report");
+            }
 
             var cols = DbUtil.Db.Mapping.MappingSource.GetModel(typeof(CMSDataContext))
                 .GetMetaType(typeof(CmsData.View.PledgeFulfillment)).DataMembers;
