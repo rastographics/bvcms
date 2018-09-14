@@ -39,12 +39,18 @@
             var selectedTimeslot = $('#checkin-timeslot option:selected').val();
             var selectedProgram = $('#checkin-program option:selected').val();
             var selectedDivision = $('#checkin-division option:selected').val();
-            var selectedOranization = $(this).attr('organizationId');
+            var selectedOrganization = $(this).attr('organizationId');
             var selectedSubgroupId = $(this).attr('subgroupId');
             var selectedSubgroupName = $(this).attr('subgroupName');
-            var selectedTimeslot = $(this).attr('selectedTimeslot');
+            selectedTimeslot = $(this).attr('selectedTimeslot') || selectedTimeslot;
 
-            $("#DetailsContainer").load('@Url.Action("Details")' + '?organizationId=' + selectedOranization + '&subgroupId=' + selectedSubgroupId + '&subgroupName=' + selectedSubgroupName + '&selectedTimeslot=' + selectedTimeslot);
+            var query = '?' + $.param({
+                organizationId: selectedOrganization,
+                subgroupId: selectedSubgroupId,
+                subgroupName: selectedSubgroupName,
+                selectedTimeslot: selectedTimeslot
+            });
+            $("#DetailsContainer").load('@Url.Action("Details")' + query);
         });
     });
 </script>

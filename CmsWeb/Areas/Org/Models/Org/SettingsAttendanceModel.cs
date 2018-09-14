@@ -103,14 +103,16 @@ namespace CmsWeb.Areas.Org.Models
                 var schedule = orgSchedules.FirstOrDefault(ss => ss.Id == s.Id);
                 if (schedule == null)
                 {
-                    Org.OrgSchedules.Add(new OrgSchedule
+                    schedule = new OrgSchedule
                     {
                         OrganizationId = Id,
                         Id = s.Id,
                         SchedDay = s.SchedDay.Value.ToInt(),
                         SchedTime = s.Time.ToDate(),
                         AttendCreditId = s.AttendCredit.Value.ToInt()
-                    });
+                    };
+                    Org.OrgSchedules.Add(schedule);
+                    orgSchedules.Add(schedule);
                 }
                 else
                 {
