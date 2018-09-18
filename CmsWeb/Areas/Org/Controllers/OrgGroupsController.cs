@@ -26,18 +26,25 @@ namespace CmsWeb.Areas.Org.Controllers
         }
 
         [HttpPost]
-        public ActionResult AssignSelectedToTargetGroup(OrgGroupsModel m)
+        public ActionResult AssignSelectedToTargetGroup(OrgGroupsModel model)
         {
-            var a = m.List.ToArray();
-            var sgname = DbUtil.Db.MemberTags.Single(mt => mt.Id == m.groupid).Name;
-            var q2 = from om in m.OrgMembers()
-                     where om.OrgMemMemTags.All(mt => mt.MemberTag.Name != sgname)
-                     where a.Contains(om.PeopleId)
-                     select om;
-            foreach (var om in q2)
-                om.AddToGroup(DbUtil.Db, sgname);
-            DbUtil.Db.SubmitChanges();
-            return View("Rows", m);
+            var db = DbUtil.Db;
+            var people = model.List.ToArray();
+            var memberTag = db.MemberTags.Single(t => t.Id == model.groupid && t.OrgId == model.orgid);
+            var orgmembersToAdd = from om in model.OrgMembers()
+                                  where om.OrgMemMemTags.All(m => m.MemberTag.Id != model.groupid)
+                                  where people.Contains(om.PeopleId)
+                                  select om;
+            foreach (var orgmember in orgmembersToAdd)
+            {
+                memberTag.OrgMemMemTags.Add(new OrgMemMemTag
+                {
+                    PeopleId = orgmember.PeopleId,
+                    OrgId = orgmember.OrganizationId
+                });
+            }
+            db.SubmitChanges();
+            return View("Rows", model);
         }
 
         [HttpPost]
