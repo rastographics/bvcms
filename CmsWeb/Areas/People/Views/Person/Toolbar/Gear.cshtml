@@ -3,6 +3,7 @@
     var edit = User.IsInRole("Edit");
     var manager2 = User.IsInRole("Manager2");
     var manager = User.IsInRole("Manager");
+    var canOverrideHeadOfHousehold = CmsWeb.Code.ViewUtilities.CanOverrideHeadOfHousehold(ViewBag.PeopleId);
 }
 @if (admin)
 {
@@ -11,6 +12,10 @@
             <ul id="ultoolbar">
                 <li class="dropdown-header">Administrative</li>
                 <li><a id="split" href="/Person2/Split/@ViewBag.PeopleId"><span class="org-context">Put in New Family</span></a></li>
+                @if (canOverrideHeadOfHousehold)
+                {
+                    <li><a id="promoteToHeadOfHousehold" href="/Person2/PromoteToHeadOfHousehold?peopleId=@ViewBag.PeopleId"><span class="org-context">Promote to head of household</span></a></li>
+                }
                 <li><a class="searchadd" href="/SearchAdd2/Dialog/MergeTo/@ViewBag.PeopleId?displaySkipSearch=false"><span class="org-context">Merge this duplicate</span></a></li>
                 @if (User.IsInRole("Delete"))
                 {
@@ -34,6 +39,7 @@ else if (manager || manager2)
             <ul id="ultoolbar">
                 <li class="dropdown-header">Administrative</li>
                 <li><a id="split" href="/Person2/Split/@ViewBag.PeopleId"><span class="org-context">Put in New Family</span></a></li>
+                <li><a id="promote" href="/Person2/PromoteToHeadOfHousehold?peopleId=@ViewBag.PeopleId">Promote to head of household</a></li>
                 <li><a class="searchadd" href="/SearchAdd2/Dialog/MergeTo/@ViewBag.PeopleId"><span class="org-context">Merge this duplicate</span></a></li>
             </ul>
         </li>
@@ -49,6 +55,7 @@ else if (edit)
             <ul id="ultoolbar">
                 <li class="dropdown-header">Administrative</li>
                 <li><a id="split" href="/Person2/Split/@ViewBag.PeopleId"><span class="org-context">Put in New Family</span></a></li>
+                <li><a id="promote" href="/Person2/PromoteToHeadOfHousehold?peopleId=@ViewBag.PeopleId">Promote to head of household</a></li>
             </ul>
         </li>
         <li class="col-sm-6">
