@@ -24,7 +24,14 @@ namespace CmsWeb.Areas.Finance.Controllers
     {
         public ActionResult ContributionStatement(int id, DateTime fromDate, DateTime toDate, int typ)
         {
-            return _financialReportingService.GetContributionStatement(id, fromDate, toDate, typ);
+            DbUtil.LogActivity($"Contribution Statement for ({id})");
+            return new ContributionStatementResult
+            {
+                PeopleId = id,
+                FromDate = fromDate,
+                ToDate = toDate,
+                typ = typ
+            };
         }
 
         private DynamicParameters DonorTotalSummaryParameters(DonorTotalSummaryOptionsModel model, bool useMedianMin = false)
