@@ -223,11 +223,13 @@ AND a.PeopleId = {2}
             }
         }
 
+        [Obsolete]
         public void AddToGroup(CMSDataContext Db, string name)
         {
             int? n = null;
             AddToGroup(Db, name, n);
         }
+
         public int AddToGroup(CMSDataContext Db, int n)
         {
             var omt = Db.OrgMemMemTags.SingleOrDefault(t =>
@@ -248,6 +250,7 @@ AND a.PeopleId = {2}
             return 0;
         }
 
+        [Obsolete]
         public void AddToGroup(CMSDataContext Db, string name, int? n)
         {
             if (!name.HasValue())
@@ -316,7 +319,8 @@ AND a.PeopleId = {2}
                     if (m != null)
                     {
                         m.Pending = pending;
-                        m.MemberTypeId = memberTypeId;
+                        // don't overwrite the member type unless it is already just a lowly member
+                        m.MemberTypeId = (m.MemberTypeId == 0 || m.MemberTypeId == MemberTypeCode.Member) ? memberTypeId : m.MemberTypeId;
                         db.SubmitChanges();
                         return m;
                     }

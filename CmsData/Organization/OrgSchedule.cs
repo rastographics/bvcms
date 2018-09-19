@@ -12,6 +12,11 @@ namespace CmsData
             return name;
         }
 
+        public string ToString(string format)
+        {
+            return string.Format(format, this.ToString());
+        }
+
         public void Update(OrgSchedule schedule)
         {
             AttendCreditId = schedule.AttendCreditId;

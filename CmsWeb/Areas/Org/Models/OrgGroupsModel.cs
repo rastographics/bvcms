@@ -87,13 +87,14 @@ namespace CmsWeb.Areas.Org.Models
             var q = from g in DbUtil.Db.MemberTags
                     where g.OrgId == orgid
                     orderby g.Name
-                    select new
+                    select new GroupListItem
                     {
                         value = g.Id,
-                        text = g.Name
+                        name = g.Name,
+                        schedule = g.Schedule
                     };
             var list = q.ToList();
-            list.Insert(0, new {value = 0, text = "(not specified)"});
+            list.Insert(0, new GroupListItem {value = 0, name = "(not specified)"});
             return new SelectList(list, "value", "text", groupid.ToString());
         }
 

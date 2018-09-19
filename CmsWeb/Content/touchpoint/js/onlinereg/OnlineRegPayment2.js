@@ -133,13 +133,16 @@ $(function () {
             summary += " starting on or after " + startOn;
         $("#SummaryText").text(summary);
     };
+   
     $.ShowPaymentInfo = function (v) {
         $(".Card").hide();
         $(".Bank").hide();
         if (v === 'C')
             $(".Card").show();
-        else if (v === 'B')
+        else if (v === 'B') {
             $(".Bank").show();
+            CancelCreditCardInfoUpdate();
+        }
     };
     $.SetRepeatPatternText = function(v) {
         if (v === 'M') {
@@ -192,11 +195,49 @@ $(function () {
     if ($('#CreditCard').length) {
         if ($('#CreditCard').val().startsWith('X')) {
             $('#CVV').parents('.form-group').hide();
+            $('#CancelUpdateText').parents('.form-group').hide();
         }
-
-        $('#CreditCard').change(function() {
+        $('#CreditCard').change(function () {
             $('#CVV').parents('.form-group').show();
+            if ($('#CreditCard').val().startsWith('X')) {
+                $('#CreditCard').val($('#CreditCard').val().replace('X', 'Y'));
+            }
+            $('#CancelUpdateText').parents('.form-group').show();
         });
+        $('#Expires').change(function () {
+            if ($('#CreditCard').val().startsWith('X')) {
+                $('#CreditCard').val($('#CreditCard').val().replace('X', 'Y'));
+            }
+            $('#CVV').parents('.form-group').show();
+            $('#CancelUpdateText').parents('.form-group').show();
+        });
+        $('#CancelUpdateText').click(function () {
+            CancelCreditCardInfoUpdate();
+        });
+    }
+
+    function CancelCreditCardInfoUpdate() {
+        //Getting CC number and Expire date from what is saved in DB
+        var sessionCConFile = $("#hdnCreditCardOnFile").data('value');
+        var sessionExiresonFile = $("#hdnExpiresOnFile").data('value');
+        $('#CreditCard').val(sessionCConFile);
+        $('#Expires').val(sessionExiresonFile);
+        //Setting CVV to empty and hiding CVV and Cancel Update btn.
+        $('#CVV').val('');
+        $('#CVV').parents('.form-group').hide();
+        $('#CancelUpdateText').parents('.form-group').hide();
+        $('#Expires').focus();
+        //Removes validation summary
+        $('.validation-summary-errors').empty();
+        $('.validation-summary-errors').addClass('validation-summary-valid');
+        $('.validation-summary-errors').removeClass('validation-summary-errors');
+        //Removes validation message after input-fields
+        $(".field-validation-error").empty();
+        $(".input-validation-error").removeClass("input-validation-error");
+
+        $(".state-error").removeClass("state-error");
+        $(".state-success").removeClass("state-success");
+        $(this).trigger('reset.unobtrusiveValidation');
     }
     
     if ($("#allowcc").val()) {

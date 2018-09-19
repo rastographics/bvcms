@@ -585,6 +585,7 @@
     <Compile Include="Areas\Org\Controllers\OrgChildrenController.cs" />
     <Compile Include="Areas\Org\Controllers\OrgGroupsController.cs" />
     <Compile Include="Areas\Org\Controllers\RegSettingController.cs" />
+    <Compile Include="Areas\Org\Models\GroupListItem.cs" />
     <Compile Include="Areas\Org\Models\Org\Contacts\ContactsModel.cs" />
     <Compile Include="Areas\Org\Models\Org\Contacts\ContactsReceivedModel.cs" />
     <Compile Include="Areas\Org\Models\Org\OrgSearchFieldsModel.cs" />
