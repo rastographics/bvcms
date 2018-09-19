@@ -17,6 +17,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		public string name = "";
 		public string leader = "";
 		public DateTime? date = DateTime.MinValue;
+		public int scheduleID = 0;
 
 		public DateTime? birthdayStart = DateTime.MinValue;
 		public DateTime? birthdayEnd = DateTime.MinValue;
@@ -27,6 +28,9 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
 		public bool member = false;
 		public bool checkedIn = false;
+
+		public int roomID = 0;
+		public string roomName = "";
 
 		public int subGroupID = 0;
 		public string subGroupName = "";
@@ -52,12 +56,17 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 											org.LeaderName AS leader,
 											org.Location AS location,
 											CAST( 1 AS BIT ) AS member,
+											room.Id AS roomID,
+											room.Name AS roomName,
 											schedule.NextMeetingDate AS date,
+											schedule.Id AS scheduleID,
 											ISNULL( attend.AttendanceFlag, 0 ) AS checkedIn,
 											attend.SubGroupID AS subGroupID,
 											attend.SubGroupName AS subGroupName
 										FROM dbo.OrganizationMembers AS member
 											LEFT JOIN dbo.Organizations AS org ON member.OrganizationId = org.OrganizationId
+											LEFT JOIN (dbo.OrgMemMemTags AS tags INNER JOIN dbo.MemberTags AS room ON tags.MemberTagId = room.Id AND
+																																	room.CheckIn = 1) ON member.PeopleId = tags.PeopleId AND org.OrganizationId = tags.OrgId
 											LEFT JOIN dbo.OrgSchedule AS schedule ON schedule.OrganizationId = org.OrganizationId
 											LEFT JOIN dbo.Meetings AS meeting ON meeting.MeetingDate = schedule.NextMeetingDate AND meeting.OrganizationId = org.OrganizationId
 											LEFT JOIN dbo.Attend AS attend ON attend.MeetingId = meeting.MeetingId AND attend.PeopleId = member.PeopleId
@@ -109,6 +118,8 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 										org.LeaderName AS leader,
 										org.Location AS location,
 										CAST( 0 AS BIT ) AS member,
+										room.Id AS roomID,
+										room.Name AS roomName,
 										schedule.NextMeetingDate AS date,
 										attend.AttendanceFlag AS checkedIn,
 										attend.SubGroupID AS subGroupID,
@@ -128,6 +139,8 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 													AND attendType.Guest = 1
 											GROUP BY org.OrganizationId) AS visit
 										INNER JOIN Organizations AS org ON org.OrganizationId = visit.OrganizationId
+										LEFT JOIN (dbo.OrgMemMemTags AS tags INNER JOIN dbo.MemberTags AS room ON tags.MemberTagId = room.Id AND
+																																room.CheckIn = 1) ON tags.PeopleId = @personID AND org.OrganizationId = tags.OrgId
 										LEFT JOIN dbo.OrgSchedule AS schedule ON schedule.OrganizationId = org.OrganizationId
 										LEFT JOIN (SELECT
 															meeting.OrganizationId,

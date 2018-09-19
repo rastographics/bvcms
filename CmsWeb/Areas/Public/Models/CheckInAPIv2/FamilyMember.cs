@@ -16,11 +16,14 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 	{
 		public int id = 0;
 		public int age = 0;
+		public DateTime birthday = DateTime.MinValue;
 		public int position = 0;
 		public int genderID = 0;
 
 		public string name = "";
 		public string altName = "";
+		public string email = "";
+		public string mobile = "";
 		public string picture = "";
 
 		public int pictureX = 0;
@@ -38,8 +41,10 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 													person.PeopleId AS id,
 													person.Name AS name,
 													ISNULL( person.Age, 0 ) AS age,
-													ISNULL( person.PictureId, 0 ) AS pictureID,
-													gender.Id AS genderID
+													person.BDate AS birthday,
+													gender.Id AS genderID,
+													EmailAddress AS email,
+													CellPhone AS mobile
 												FROM dbo.People AS person
 													LEFT JOIN lookup.Gender AS gender ON person.GenderId = gender.Id
 												WHERE person.FamilyId = @familyID
@@ -48,8 +53,10 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 													person.PeopleId AS id,
 													person.Name AS name,
 													ISNULL( person.Age, 0 ) AS age,
-													ISNULL( person.PictureId, 0 ) AS pictureID,
-													gender.Id AS genderID
+													person.BDate AS birthday,
+													gender.Id AS genderID,
+													EmailAddress AS email,
+													CellPhone AS mobile
 												FROM dbo.PeopleExtra AS extra
 													INNER JOIN People AS person on person.PeopleId = extra.PeopleId
 													LEFT JOIN lookup.Gender AS gender ON person.GenderId = gender.Id

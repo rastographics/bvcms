@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			this.name = name;
 		}
 
-		public static List<Subgroup> forGroupID( SqlConnection db, int groupID, int peopleID, DateTime meetingDate )
+		public static List<Subgroup> forGroupID( SqlConnection db, int groupID, int peopleID, int scheduleID, DateTime meetingDate )
 		{
 			List<Subgroup> subGroups = new List<Subgroup>();
 			DataTable table = new DataTable();
@@ -55,16 +55,19 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 																		AND MeetingDate = @meetingDate
 																	GROUP BY SubGroupID) AS attendCount ON attendCount.SubGroupID = tags.Id
 												WHERE OrgId = @groupID
+													AND ScheduleId = @scheduleID
 													AND CheckIn = 1
 												GROUP BY Id";
 
 			using( SqlCommand cmd = new SqlCommand( qSubGroups, db ) ) {
 				SqlParameter groupParameter = new SqlParameter( "groupID", groupID );
 				SqlParameter peopleParameter = new SqlParameter( "peopleID", peopleID );
+				SqlParameter scheduleParameter = new SqlParameter( "scheduleID", scheduleID );
 				SqlParameter dateParameter = new SqlParameter( "meetingDate", meetingDate );
 
 				cmd.Parameters.Add( groupParameter );
 				cmd.Parameters.Add( peopleParameter );
+				cmd.Parameters.Add( scheduleParameter );
 				cmd.Parameters.Add( dateParameter );
 
 				SqlDataAdapter adapter = new SqlDataAdapter( cmd );

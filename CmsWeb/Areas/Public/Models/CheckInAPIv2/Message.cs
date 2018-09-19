@@ -22,6 +22,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
 		public int argInt = 0;
 		public string argString = "";
+		public bool argBool = false;
 
 		public string data = "";
 		public string token = "";

@@ -99,13 +99,13 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		{
 			List<Label> labels = new List<Label>();
 
-			if( groups.Count > 0 ) {
+			if( groups.Count > 0 && hasAttends() ) {
 				// TODO: Client size option for age cutoff for Name Tag.  Server will override and will send it to the client and disable field
 				if( (person.Age ?? 0) < nameTagAge ) {
 					labels.Add( new Label( db, labelSize, Label.Type.MAIN, this, groups ) );
 
 					foreach( AttendanceGroup group in groups ) {
-						if( group.org.NumCheckInLabels > 1 ) {
+						if( group.org.NumCheckInLabels > 1 && group.present ) {
 							for( int iX = 0; iX < group.org.NumCheckInLabels - 1; iX++ ) {
 								labels.Add( new Label( db, labelSize, Label.Type.EXTRA, this, group ) );
 							}
@@ -139,6 +139,15 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		{
 			foreach( AttendanceGroup group in groups ) {
 				if( !group.isGroupMember() ) return true;
+			}
+
+			return false;
+		}
+
+		private bool hasAttends()
+		{
+			foreach( AttendanceGroup group in groups ) {
+				if( group.present ) return true;
 			}
 
 			return false;

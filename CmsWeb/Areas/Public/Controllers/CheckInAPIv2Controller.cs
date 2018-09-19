@@ -152,7 +152,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			response.setNoError();
 
 			using( var db = new SqlConnection( Util.ConnectionString ) ) {
-				List<Subgroup> subgroups = Subgroup.forGroupID( db, sgl.groupID, sgl.peopleID, sgl.meetingDate );
+				List<Subgroup> subgroups = Subgroup.forGroupID( db, sgl.groupID, sgl.peopleID, sgl.scheduleID, sgl.meetingDate );
 
 				response.data = SerializeJSON( subgroups, message.version );
 			}
@@ -302,6 +302,39 @@ namespace CmsWeb.Areas.Public.Controllers
 		}
 
 		[HttpPost]
+		public ActionResult Barcode( string data )
+		{
+			// Authenticate first
+			if( !Auth() )
+				return Message.createErrorReturn( "Authentication failed, please try again", Message.API_ERROR_INVALID_CREDENTIALS );
+
+			Message message = Message.createFromString( data );
+
+			CmsData.Person p = CmsData.DbUtil.Db.LoadPersonById( message.id );
+
+			if( p == null ) return Message.createErrorReturn( "Person not found", Message.API_ERROR_PERSON_NOT_FOUND );
+
+			Message response = new Message();
+
+			// argBool: True = set, False = get
+			if( message.argBool ) {
+				CmsData.PeopleExtra extra = p.GetExtraValue( "PIN" );
+				extra.Data = message.data;
+
+				CmsData.DbUtil.Db.SubmitChanges();
+
+				response.setNoError();
+				response.count = 1;
+			} else {
+				response.setNoError();
+				response.count = 1;
+				response.data = p.GetExtra( "PIN" );
+			}
+
+			return response;
+		}
+
+		[HttpPost]
 		public ActionResult UpdateAttend( string data )
 		{
 			// Authenticate first
@@ -342,20 +375,22 @@ namespace CmsWeb.Areas.Public.Controllers
 			string securityCode = CmsData.DbUtil.Db.NextSecurityCode().Select( c => c.Code ).Single().Trim();
 
 			using( var db = new SqlConnection( Util.ConnectionString ) ) {
-				try {
-					foreach( Attendance attendance in attendances ) {
-						attendance.load();
-						attendance.labelSecurityCode = securityCode;
+				// try {
 
-						labels.AddRange( attendance.getLabels( db ) );
-					}
+				foreach( Attendance attendance in attendances ) {
+					attendance.load();
+					attendance.labelSecurityCode = securityCode;
 
-					if( attendances.Count > 0 && !attendances[0].securityLabels ) {
-						labels.Add( attendances[0].getSecurityLabel( db ) );
-					}
-				} catch( Exception ex ) {
-					string error = ex.Message;
+					labels.AddRange( attendance.getLabels( db ) );
 				}
+
+				if( labels.Count > 0 && attendances.Count > 0 && !attendances[0].securityLabels ) {
+					labels.Add( attendances[0].getSecurityLabel( db ) );
+				}
+
+				// } catch( Exception ex ) {
+				// 	string error = ex.Message;
+				// }
 			}
 
 			Message response = new Message();
