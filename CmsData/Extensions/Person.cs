@@ -1503,9 +1503,11 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             {
                 field = "blank";
             }
-            //field = field.Replace(",", "_");
-            var ev =
-                PeopleExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase: true) == 0);
+
+field = field.Trim();
+
+var ev =
+                PeopleExtras.AsEnumerable().FirstOrDefault(ee => ee.Field == field);
             if (ev == null)
             {
                 ev = new PeopleExtra
@@ -1678,6 +1680,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
 
         public static PeopleExtra GetExtraValue(CMSDataContext db, int id, string field)
         {
+            field = field.Trim();
             var q = from v in db.PeopleExtras
                     where v.Field == field
                     where v.PeopleId == id
@@ -1708,6 +1711,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
 
         public static PeopleExtra GetExtraValue(CMSDataContext db, int id, string field, string value)
         {
+            field = field.Trim();
             var novalue = !value.HasValue();
             var q = from v in db.PeopleExtras
                     where v.PeopleId == id

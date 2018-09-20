@@ -1,5 +1,7 @@
 ﻿@model CmsWeb.Areas.People.Models.ContributionsModel
 @using CmsWeb.Areas.Finance.Models.Report
+@using CmsData
+
 <div class="modal fade" id="customstatements-modal">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
@@ -11,7 +13,7 @@
                 <input type="hidden" id="" />
                 <div>
                     <ul>
-                        @foreach (var cs in ContributionStatements.CustomStatementsList())
+                        @foreach (var cs in ContributionStatements.CustomStatementsList(DbUtil.Db))
                         {
                             <li><a href="url?custom=@cs" data-customstatement="@cs">@cs</a></li>
                         }
