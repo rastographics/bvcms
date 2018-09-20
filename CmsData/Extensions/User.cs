@@ -193,7 +193,7 @@ namespace CmsData
 
         public static string[] Financial =
         {
-            "Finance", "FinanceAdmin", "ManageTransactions", "FinanceViewOnly", "FinanceDataEntry"
+            "Finance", "FinanceAdmin", "ManageTransactions", "FinanceViewOnly", "FinanceDataEntry", "FundManager"
         };
 
         public static string[] Advanced =
