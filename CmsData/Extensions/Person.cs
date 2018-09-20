@@ -2287,6 +2287,13 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
 
         public void PromoteToHeadOfHousehold(CMSDataContext db)
         {
+            var churchHasEnabledFeature = DbUtil.Db.GetSetting("CanOverrideHeadOfHousehold", "false");
+
+            if (!string.Equals(churchHasEnabledFeature, "true", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
             Family.HeadOfHousehold = this;
             Family.HeadOfHouseholdSpouse = db.LoadPersonById(SpouseId ?? 0);
 
