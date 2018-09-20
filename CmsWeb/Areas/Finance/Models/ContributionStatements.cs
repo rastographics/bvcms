@@ -212,10 +212,10 @@ p { font-size: 11px; }
                     var s = Util.PickFirst(ev.Data, ev.IntValue.ToString(), ev.StrValue);
                     if (s.HasValue())
                     {
-                        envno = $" env: {Util.PickFirst(ev.Data, ev.IntValue.ToString(), ev.StrValue)}";
+                        envno = $"env: {s}";
                     }
+                    t2.AddCell(new Phrase($"{envno}", font));
                 }
-
                 if (!db.Setting("NoPrintDateOnStatement"))
                 {
                     t2.AddCell(new Phrase($"\nprinted: {DateTime.Now:M/d/yy}", font));

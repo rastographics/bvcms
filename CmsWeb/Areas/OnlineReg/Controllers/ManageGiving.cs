@@ -74,7 +74,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 				ot.Used = true;
 				DbUtil.Db.SubmitChanges();
 			}
-			if (!m.testing)
+            Session["CreditCardOnFile"] = m.CreditCard;
+            Session["ExpiresOnFile"] = m.Expires;
+            if (!m.testing)
 				m.testing = testing ?? false;
 			SetHeaders(m.orgid);
             m.Log("Start");
