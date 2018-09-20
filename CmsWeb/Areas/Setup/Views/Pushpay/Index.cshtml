@@ -1,0 +1,15 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    if ((bool?)ViewData["hasshell"] == true)
+    {
+        Layout = "_ShellLayout.cshtml";
+    }
+    else
+    {
+        Layout = "_Layout.cshtml";
+    }
+}
+
+<h2>Index</h2>
+
