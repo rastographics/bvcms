@@ -17,13 +17,14 @@ namespace CmsWeb.Areas.Setup.Controllers
 
         public ActionResult GroupCreate( string name, string description, bool systemFlag )
         {
-            var n = new SMSGroup();
+            var group = new SMSGroup();
 
-            n.Name = name;
-            n.Description = description;
-            n.SystemFlag = systemFlag;
+            group.Name = name;
+            group.Description = description;
+            group.SystemFlag = systemFlag;
+            group.IsDeleted = false;
 
-            DbUtil.Db.SMSGroups.InsertOnSubmit(n);
+            DbUtil.Db.SMSGroups.InsertOnSubmit(group);
             DbUtil.Db.SubmitChanges();
 
             return RedirectToAction( "Index" );
@@ -39,6 +40,17 @@ namespace CmsWeb.Areas.Setup.Controllers
             g.Description = description;
             g.SystemFlag = systemFlag;
 
+            DbUtil.Db.SubmitChanges();
+
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult GroupHide(int groupId)
+        {
+            var group = (from e in DbUtil.Db.SMSGroups
+                     where e.Id == groupId
+                     select e).Single();
+            group.IsDeleted = true;
             DbUtil.Db.SubmitChanges();
 
             return RedirectToAction("Index");

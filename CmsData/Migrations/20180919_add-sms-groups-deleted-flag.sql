@@ -1,0 +1,4 @@
+﻿BEGIN
+    ALTER TABLE dbo.SMSGroups ADD is_deleted BIT NOT NULL DEFAULT 0
+END
+GO
