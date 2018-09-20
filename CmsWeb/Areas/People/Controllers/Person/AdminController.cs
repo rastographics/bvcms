@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.People.Controllers
             return Content("/Person2/" + id);
         }
 
-        [HttpPost, Authorize(Roles = "Edit")]
+        [HttpPost, Authorize(Roles = "Admin")]
         public ActionResult PromoteToHeadOfHousehold(int peopleId)
         {
             var person = DbUtil.Db.LoadPersonById(peopleId);
