@@ -51,7 +51,6 @@ namespace CmsWeb.Areas.Setup.Controllers
                      where e.Id == groupId
                      select e).Single();
             group.IsDeleted = true;
-            group.SystemFlag = false;
             DbUtil.Db.SubmitChanges();
 
             return RedirectToAction("Index");
