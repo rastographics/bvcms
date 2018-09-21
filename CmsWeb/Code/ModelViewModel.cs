@@ -95,13 +95,13 @@ namespace CmsWeb.Code
             var viewmodelProps = viewmodel.GetType().GetProperties().Where(pp => pp.CanWrite).ToArray();
             var changes = new List<ChangeDetail>();
             var only = onlyfields.Split(',');
-            var exclude = excludefields.Split(',');
+            var exclude = excludefields?.Split(',');
 
             foreach (var vm in viewmodelProps)
             {
                 if (onlyfields.HasValue() && !only.Contains(vm.Name))
                     continue;
-                if (excludefields.HasValue() && exclude.Contains(vm.Name))
+                if (exclude != null && exclude.Contains(vm.Name))
                     continue;
                 if (vm.HasAttribute<NoUpdate>())
                     continue;
