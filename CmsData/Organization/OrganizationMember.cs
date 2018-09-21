@@ -66,6 +66,7 @@ namespace CmsData
                 };
 
                 db.EnrollmentTransactions.InsertOnSubmit(droptrans);
+                db.OrgMemberExtras.DeleteAllOnSubmit(this.OrgMemberExtras);
                 db.OrgMemMemTags.DeleteAllOnSubmit(this.OrgMemMemTags);
                 db.SubmitChanges();
                 foreach (var ev in this.OrgMemberExtras)
@@ -484,6 +485,14 @@ AND a.PeopleId = {2}
                 return 0;
             return (ts.IndAmt ?? 0) - TotalPaid(db);
         }
+        public static decimal AmountDue(CMSDataContext db, int orgid, int pid)
+        {
+            var om = db.OrganizationMembers.SingleOrDefault(
+                    vv => vv.OrganizationId == orgid && vv.PeopleId == pid);
+            if (om == null)
+                return 0;
+            return om.AmountDue(db);
+        }
 
         public decimal? AmountPaidTransactions(CMSDataContext db)
         {
@@ -572,7 +581,8 @@ AND a.PeopleId = {2}
         }
         public OrgMemberExtra GetExtraValue(string field)
         {
-            var ev = OrgMemberExtras.AsEnumerable().FirstOrDefault(ee => ee.Field.Equal(field));
+            field = field.Trim();
+            var ev = OrgMemberExtras.AsEnumerable().FirstOrDefault(ee => ee.Field == field);
             if (ev == null)
             {
                 ev = new OrgMemberExtra()
@@ -587,7 +597,7 @@ AND a.PeopleId = {2}
         }
         public static OrgMemberExtra GetExtraValue(CMSDataContext db, int oid, int pid, string field)
         {
-            //field = field.Replace('/', '-');
+            field = field.Trim();
             var q = from v in db.OrgMemberExtras
                     where v.Field == field
                     where v.OrganizationId == oid
@@ -772,8 +782,6 @@ AND a.PeopleId = {2}
                 tom.Moved = true;
             om.Drop(db, skipTriggerProcessing: true);
             db.SubmitChanges();
-//            db.RepairEnrollmentTransaction(toOrg, pid);
-//            db.RepairEnrollmentTransaction(fromOrg, pid);
         }
     }
 }

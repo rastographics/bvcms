@@ -21,6 +21,7 @@ using System.Web;
 using CmsData.API;
 using Elmah;
 using HtmlAgilityPack;
+using SendGrid;
 using SendGrid.Helpers.Mail;
 using MContent = SendGrid.Helpers.Mail.Content;
 
@@ -159,8 +160,18 @@ namespace CmsData
         {
             var list = (from p in CMSRoleProvider.provider.GetAdmins()
                         where p.EmailAddress.HasValue()
-                              && !p.EmailAddress.Contains("bvcms.com")
                               && !p.EmailAddress.Contains("touchpointsoftware.com")
+                        select p).ToList();
+            if (list.Count == 0)
+                list = (from p in CMSRoleProvider.provider.GetAdmins()
+                        where p.EmailAddress.HasValue()
+                        select p).ToList();
+            return list;
+        }
+        public List<Person> AdminPeople2()
+        {
+            var list = (from p in CMSRoleProvider.provider.GetAdmins()
+                        where p.EmailAddress.HasValue()
                         select p).ToList();
             if (list.Count == 0)
                 list = (from p in CMSRoleProvider.provider.GetAdmins()
@@ -211,7 +222,7 @@ namespace CmsData
                      where p.PeopleId == a[0]
                      select p.FromEmail;
             if (!q2.Any())
-                return Setting("AdminMail", "info@touchpointsoftware.com");
+                return Setting("AdminMail", ConfigurationManager.AppSettings["supportemail"]);
             return q2.SingleOrDefault();
         }
 
@@ -227,7 +238,7 @@ namespace CmsData
                      where p.PeopleId == a[0]
                      select Util.TryGetMailAddress(p.FromEmail);
             if (!q2.Any())
-                return Util.ToMailAddressList(Setting("AdminMail", "info@touchpointsoftware.com"));
+                return Util.ToMailAddressList(Setting("AdminMail", ConfigurationManager.AppSettings["supportemail"]));
             return q2.ToList();
         }
 
@@ -481,13 +492,14 @@ namespace CmsData
             var aa = new List<MailAddress>();
             if (p == null)
                 return aa;
-            if (p.SendEmailAddress1 ?? true)
+            if ((p.SendEmailAddress1 ?? true) && Util.ValidEmail(p.EmailAddress))
                 Util.AddGoodAddress(aa, p.FromEmail);
-            if (p.SendEmailAddress2 ?? false)
+            if ((p.SendEmailAddress2 ?? false) && Util.ValidEmail(p.EmailAddress2))
                 Util.AddGoodAddress(aa, p.FromEmail2);
             if (regemail.HasValue())
                 foreach (var ad in regemail.SplitStr(",;"))
-                    Util.AddGoodAddress(aa, ad);
+                    if(Util.ValidEmail(ad))
+                        Util.AddGoodAddress(aa, ad);
             return aa;
         }
 
@@ -567,7 +579,7 @@ namespace CmsData
                 {
                     var subject = $"sent emails - error:(emailid={emailqueue.Id}) {CmsHost}";
                     ErrorLog.GetDefault(null).Log(new Error(new Exception(subject, ex)));
-                    SendEmail(from, subject, ex.Message, Util.ToMailAddressList(from), to);
+                    SendEmail(from, subject, $"{ex.Message}\n{ex.StackTrace}", Util.ToMailAddressList(from), to);
                 }
             }
 
@@ -648,12 +660,16 @@ namespace CmsData
                     var text = m.DoReplacements(to.PeopleId, to);
 
                     text = RenderTemplate(text, dict[to.PeopleId]);
+                    if(text.Contains("<!--SKIP-->"))
+                        continue;
+                    var re = new Regex("<!--SUBJECT:(?<subj>.*)-->");
+                	var subj = re.Match(text).Groups["subj"].Value;
 
                     var aa = m.ListAddresses;
 
                     if (Setting("sendemail", "true") != "false")
                     {
-                        SendEmail(from, emailqueue.Subject, text, aa, to, cc);
+                        SendEmail(from, Util.PickFirst(subj, emailqueue.Subject), text, aa, to, cc);
                         to.Sent = Util.Now;
                         SubmitChanges();
                     }
@@ -662,7 +678,7 @@ namespace CmsData
                 {
                     var subject = $"sent emails - error:(emailid={emailqueue.Id}) {CmsHost}";
                     ErrorLog.GetDefault(null).Log(new Error(new Exception(subject, ex)));
-                    SendEmail(from, subject, ex.Message, Util.ToMailAddressList(from), to);
+                    SendEmail(from, subject, $"{ex.Message}\n{ex.StackTrace}", Util.ToMailAddressList(from), to);
                 }
             }
 
@@ -701,7 +717,6 @@ namespace CmsData
 #else
             if (Util.IsMyDataUser == false)
                 SendEmail(from, subj, body, Util.ToMailAddressList(from), id);
-            SendEmail(from, Host + " " + subj, body, Util.SendErrorsTo(), id);
 #endif
         }
 
@@ -726,8 +741,8 @@ namespace CmsData
                     if (url.StartsWith("mailto:"))
                         continue;
 
-                    if (EmailReplacements.ImageRe.IsMatch(url))
-                        url = EmailReplacements.ImageReplacement(this, url);
+                    if (EmailReplacements.SettingUrlRe.IsMatch(url))
+                        url = EmailReplacements.SettingUrlReplacement(this, url);
                     var hash = HashMd5Base64(md5Hash, url + DateTime.Now.ToString("o") + linkIndex);
 
                     var emailLink = new EmailLink
@@ -759,11 +774,11 @@ namespace CmsData
         public string CustomSendGridApiKey => Setting("SendGridAPIKey", "");
         public bool UseSendGridApi => Setting("UseSendGridApi");
         public bool UseIpWarmup => Setting("UseIpWarmup");
-        public string CustomFromDomain => Setting("SysFromEmail", "");
+        public string CustomFromDomain => Setting("sysfromemail", ConfigurationManager.AppSettings["sysfromemail"]);
 
         // Configuration for SendGrid
         public string DefaultSendGridApiKey => ConfigurationManager.AppSettings["SendGridAPIKey"];
-        public string DefaultFromDomain => Util.PickFirst(ConfigurationManager.AppSettings["sysfromemail"], "mailer@bvcms.com");
+        public string DefaultFromDomain => ConfigurationManager.AppSettings["sysfromemail"];
 
         public bool CanUseSendGrid => CustomSendGridApiKey.HasValue() && DefaultSendGridApiKey.HasValue();
         public bool UseCustomEmailDomain => CustomSendGridApiKey.HasValue() && CustomFromDomain.HasValue();
@@ -773,6 +788,11 @@ namespace CmsData
         {
             var domain = SendEmail(fromAddress, subject, message, to, eqto.Id, eqto.PeopleId, cc);
             eqto.DomainFrom = domain;
+        }
+
+        public string SendEmail(MailAddress fromAddress, string subject, string message, MailAddress to, int? id = null, int? pid = null, List<MailAddress> cc = null)
+        {
+            return SendEmail(fromAddress, subject, message, new[] { to }.ToList(), id, pid, cc);
         }
 
         public string SendEmail(MailAddress fromAddress, string subject, string message, List<MailAddress> to, int? id = null, int? pid = null, List<MailAddress> cc = null)
@@ -803,60 +823,53 @@ namespace CmsData
                 fromDomain = DefaultFromDomain;
                 apiKey = DefaultSendGridApiKey;
             }
+            var client = new SendGridClient(apiKey);
 
             if (from == null)
                 from = Util.FirstAddress(senderrorsto);
 
-            var mail = new Mail
+            var mail = new SendGridMessage()
             {
-                From = new SendGrid.Helpers.Mail.Email(fromDomain, from.DisplayName),
+                From = new EmailAddress(fromDomain, from.DisplayName),
                 Subject = subject,
-                ReplyTo = new SendGrid.Helpers.Mail.Email(from.Address, from.DisplayName)
+                ReplyTo = new EmailAddress(from.Address, from.DisplayName),
+                PlainTextContent = "Hello, Email from the helper [SendSingleEmailAsync]!",
+                HtmlContent = "<strong>Hello, Email from the helper! [SendSingleEmailAsync]</strong>"
             };
             var pe = new Personalization();
             foreach (var ma in to)
                 if (ma.Host != "nowhere.name" || Util.IsInRoleEmailTest)
-                    pe.AddTo(new SendGrid.Helpers.Mail.Email(ma.Address, ma.DisplayName));
+                    mail.AddTo(new EmailAddress(ma.Address, ma.DisplayName));
 
             if (cc?.Count > 0)
             {
                 string cclist = string.Join(",", cc);
                 if (!cc.Any(vv => vv.Address.Equal(from.Address)))
                     cclist = $"{from.Address},{cclist}";
-                mail.ReplyTo = new SendGrid.Helpers.Mail.Email(cclist);
+                mail.ReplyTo = new EmailAddress(cclist);
             }
 
-            pe.AddHeader(XSmtpApi, XSmtpApiHeader(id, pid, fromDomain));
-            pe.AddHeader(XBvcms, XBvcmsHeader(id, pid));
+            pe.Headers.Add(XSmtpApi, XSmtpApiHeader(id, pid, fromDomain));
+            pe.Headers.Add(XBvcms, XBvcmsHeader(id, pid));
 
-            mail.AddPersonalization(pe);
+            mail.Personalizations.Add(pe);
 
-            if (pe.Tos.Count == 0 && pe.Tos.Any(tt => tt.Address.EndsWith("@nowhere.name")))
+            if (pe.Tos.Count == 0 && pe.Tos.Any(tt => tt.Email.EndsWith("@nowhere.name")))
                 return null;
             var badEmailLink = "";
             if (pe.Tos.Count == 0)
             {
-                pe.AddTo(new SendGrid.Helpers.Mail.Email(from.Address, from.DisplayName));
-                pe.AddTo(new SendGrid.Helpers.Mail.Email(Util.FirstAddress(senderrorsto).Address));
+                pe.Tos.Add(new EmailAddress(from.Address, from.DisplayName));
+                pe.Tos.Add(new EmailAddress(Util.FirstAddress(senderrorsto).Address));
                 mail.Subject += $"-- bad addr for {CmsHost}({pid})";
                 badEmailLink = $"<p><a href='{CmsHost}/Person2/{pid}'>bad addr for</a></p>\n";
             }
 
             var regex = new Regex("</?([^>]*)>", RegexOptions.IgnoreCase | RegexOptions.Multiline);
-            var text = regex.Replace(message, string.Empty);
-            var html = badEmailLink + message + CcMessage(cc);
+            mail.PlainTextContent = regex.Replace(message, string.Empty);
+            mail.HtmlContent = badEmailLink + message + CcMessage(cc);
 
-            mail.AddContent(new MContent("text/plain", text));
-            mail.AddContent(new MContent("text/html", html));
-
-            var reqBody = mail.Get();
-
-            using (var wc = new WebClient())
-            {
-                wc.Headers.Add("Authorization", $"Bearer {apiKey}");
-                wc.Headers.Add("Content-Type", "application/json");
-                wc.UploadString("https://api.sendgrid.com/v3/mail/send", reqBody);
-            }
+            var response = client.SendEmailAsync(mail);
             return fromDomain;
         }
 

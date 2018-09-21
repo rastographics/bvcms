@@ -68,8 +68,9 @@ namespace CmsWeb.Areas.Org.Controllers
                 return Content("error, bad orgid");
             if (id == 1)
                 return Content("Cannot delete first org");
-            if (!org.PurgeOrg(DbUtil.Db))
-                return Content("error, not deleted");
+            var err = org.PurgeOrg(DbUtil.Db);
+            if(err.HasValue())
+                return Content($"error, {err}");
             DbUtil.LogActivity($"Delete Org {Session["ActiveOrganization"]}");
             Session.Remove("ActiveOrganization");
             return Content("ok");

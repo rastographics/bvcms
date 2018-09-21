@@ -1,8 +1,14 @@
 using System;
+using System.Configuration;
 using System.Linq;
+using System.Text;
+using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 using CmsData;
+using CmsData.Classes;
 using CmsWeb.Areas.OnlineReg.Models;
+using Dapper;
 using Elmah;
 using UtilityExtensions;
 
@@ -38,9 +44,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 datumid = m.DatumId;
                 var msg = m.CheckDuplicateGift(pf.AmtToPay);
-                if (msg.HasValue())
+                if (Util.HasValue(msg))
                     return Message(msg);
             }
+            if (IsCardTester(pf, "Payment Page"))
+                return Message("Found Card Tester");
 
             SetHeaders(pf.OrgId ?? 0);
             var ret = pf.ProcessPayment(ModelState, m);
@@ -67,6 +75,36 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
         }
 
+        private bool IsCardTester(PaymentForm pf, string from)
+        {
+            if (!Util.IsHosted || !pf.CreditCard.HasValue())
+                return false;
+            var hash = Pbkdf2Hasher.HashString(pf.CreditCard);
+            DbUtil.Db.InsertIpLog(Request.UserHostAddress, hash);
+
+            if (pf.IsProblemUser())
+                return LogRogueUser("Problem User", from);
+            var iscardtester = ConfigurationManager.AppSettings["IsCardTester"];
+            var result = DbUtil.Db.Connection.ExecuteScalar<string>(iscardtester, new { ip = Request.UserHostAddress });
+            if (result.Equal("OK"))
+                return false;
+            return LogRogueUser(result, from);
+        }
+
+        public static bool LogRogueUser(string why, string from)
+        {
+            var request = System.Web.HttpContext.Current.Request;
+            var insertRogueIp = ConfigurationManager.AppSettings["InsertRogueIp"];
+            if (insertRogueIp.HasValue())
+                DbUtil.Db.Connection.Execute(insertRogueIp, new { ip = request.UserHostAddress, db = Util.Host });
+            var form = Encoding.Default.GetString(request.BinaryRead(request.TotalBytes));
+            var sendto = Util.PickFirst(ConfigurationManager.AppSettings["CardTesterEmail"], Util.AdminMail);
+            DbUtil.Db.SendEmail(Util.FirstAddress(sendto),
+                $"CardTester on {Util.Host}", $"why={why} from={from} ip={request.UserHostAddress}<br>{form.HtmlEncode()}",
+                Util.EmailAddressListFromString(sendto));
+            return true;
+        }
+
         public ActionResult Confirm(int? id, string transactionId, decimal? amount)
         {
             if (!id.HasValue)
@@ -81,7 +119,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     m.Log("NoPendingConfirmation");
                 return Content("no pending confirmation found");
             }
-            if (!transactionId.HasValue())
+            if (!Util.HasValue(transactionId))
             {
                 m.Log("NoTransactionId");
                 return Content("error no transaction");
@@ -121,15 +159,15 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             // which is produced in EnrollAndConfirm
             Response.NoCache();
 
-            if (!q.HasValue())
+            if (!Util.HasValue(q))
                 return Message("unknown");
             var id = Util.Decrypt(q).ToInt2();
             var qq = from t in DbUtil.Db.Transactions
                      where t.OriginalId == id || t.Id == id
                      orderby t.Id descending
-                     select new {t, email = t.TransactionPeople.FirstOrDefault().Person.EmailAddress };
+                     select new { t, email = t.TransactionPeople.FirstOrDefault().Person.EmailAddress };
             var i = qq.FirstOrDefault();
-            if(i == null)
+            if (i == null)
                 return Message("no outstanding transaction");
 
             var ti = i.t;
@@ -140,7 +178,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
 #if DEBUG
             ti.Testing = true;
-            if (!ti.Address.HasValue())
+            if (!Util.HasValue(ti.Address))
             {
                 ti.Address = "235 Riveredge";
                 ti.City = "Cordova";
@@ -158,9 +196,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         public ActionResult ConfirmDuePaid(int? id, string transactionId, decimal amount)
         {
+            Response.NoCache();
             if (!id.HasValue)
                 return View("Other/Unknown");
-            if (!transactionId.HasValue())
+            if (!Util.HasValue(transactionId))
             {
                 DbUtil.LogActivity("OnlineReg PayDueNoTransactionId");
                 return Message("error no transactionid");
@@ -184,7 +223,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpGet]
         public ActionResult PayDueTest(string q)
         {
-            if (!q.HasValue())
+            if (!Util.HasValue(q))
                 return Message("unknown");
             var id = Util.Decrypt(q);
             var ed = DbUtil.Db.ExtraDatas.SingleOrDefault(e => e.Id == id.ToInt());

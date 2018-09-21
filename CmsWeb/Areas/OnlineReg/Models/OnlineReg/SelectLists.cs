@@ -52,6 +52,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         && ((o.Limit ?? 0) == 0 || o.Limit > o.RegLimitCount(DbUtil.Db)) 
                         && (o.RegistrationClosed ?? false) == false 
                         && (o.RegEnd ?? DateTime.MaxValue) > Util.Now
+                        && (o.RegStart ?? DateTime.MinValue) <= Util.Now
                     where o.RegistrationTypeId > 0
                     select new ClassInfo
                     {

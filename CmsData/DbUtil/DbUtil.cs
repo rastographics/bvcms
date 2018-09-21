@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -62,6 +63,7 @@ namespace CmsData
 
         private static void _logActivity(string host, string activity, int? orgId, int? peopleId, int? datumId, int? userId, string pageUrl = null, string clientIp = null)
         {
+            var ip = HttpContext.Current?.Request.UserHostAddress;
             using (var db = Create(host))
             {
                 if (!userId.HasValue || userId == 0)
@@ -83,37 +85,12 @@ namespace CmsData
                     PeopleId = peopleId,
                     DatumId = datumId,
                     PageUrl = pageUrl,
-                    ClientIp = clientIp
+                    ClientIp = clientIp ?? ip
                 };
 
                 db.ActivityLogs.InsertOnSubmit(a);
                 db.SubmitChanges();
             }
-
-            // Logging temporarily to monitor some major changes
-
-//            if (!a.Activity.StartsWith("OnlineReg"))
-//                return;
-//
-//            var cs = ConfigurationManager.ConnectionStrings["CmsLogging"];
-//            if (cs != null)
-//            {
-//                using (var cn = new SqlConnection(cs.ConnectionString))
-//                {
-//                    cn.Open();
-//                    cn.Execute(
-//                        "INSERT dbo.RegActivity (db, dt, activity, oid, pid, did) VALUES(@db, @dt, @ac, @oid, @pid, @did)",
-//                        new
-//                        {
-//                            db = host,
-//                            ac = activity,
-//                            dt = a.ActivityDate,
-//                            oid = a.OrgId,
-//                            pid = a.PeopleId,
-//                            did = a.DatumId,
-//                        });
-//                }
-//            }
         }
 
         public static void LogActivity(string activity, int? orgid = null, int? peopleid = null, int? datumId = null, int? userId = null, string pageUrl = null, string clientIp = null)
@@ -322,7 +299,8 @@ namespace CmsData
             return def;
         }
 
-        public static string AdminMail => Db.Setting("AdminMail", "support@touchpointsoftware.com");
+        public static string AdminMail => Db.Setting("AdminMail", ConfigurationManager.AppSettings["supportemail"]);
+        public static string AdminMailName => Db.Setting("AdminMailName", "TouchPoint Software");
         public static string StartAddress => Db.Setting("StartAddress", "2000+Appling+Rd,+Cordova,+Tennessee+38016");
         public static bool CheckRemoteAccessRole => Db.Setting("CheckRemoteAccessRole");
 
@@ -338,6 +316,7 @@ namespace CmsData
         public const int TagTypeId_Query = 7;
         public const int TagTypeId_Emailer = 8;
         public const int TagTypeId_StatusFlags = 100;
+        public const int TagTypeId_QueryTags = 101;
         // ReSharper restore InconsistentNaming
 
         public static void UpdateValue(this object obj, List<ChangeDetail> psb, string field, object value)
@@ -361,7 +340,7 @@ namespace CmsData
             {
                 if (o.Equals(value.ToDate()))
                     return;
-                if(!o.SameMinute(value.ToDate()))
+                if (!o.SameMinute(value.ToDate()))
                     psb.Add(new ChangeDetail(field, o, value));
             }
             else

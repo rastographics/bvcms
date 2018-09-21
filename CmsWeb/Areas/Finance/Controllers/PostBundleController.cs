@@ -1,14 +1,14 @@
+using CmsData;
+using CmsData.Codes;
+using CmsWeb.Areas.Finance.Models.BatchImport;
+using CmsWeb.Models;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using System;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CmsData;
-using OfficeOpenXml;
-using OfficeOpenXml.Style;
 using UtilityExtensions;
-using CmsWeb.Models;
-using CmsData.Codes;
-using CmsWeb.Areas.Finance.Models.BatchImport;
 
 namespace CmsWeb.Areas.Finance.Controllers
 {
@@ -22,11 +22,20 @@ namespace CmsWeb.Areas.Finance.Controllers
         {
             var m = new PostBundleModel(id);
             if (m.Bundle == null)
+            {
                 return Message("no bundle " + m.id);
+            }
+
             if (m.Bundle.BundleStatusId == BundleStatusCode.Closed)
+            {
                 return Message("Bundle Closed");
+            }
+
             if (User.IsInRole("FinanceDataEntry") && m.Bundle.BundleStatusId != BundleStatusCode.OpenForDataEntry)
+            {
                 return Message("Bundle is no longer open for data entry");
+            }
+
             m.fund = m.Bundle.FundId ?? 1;
             return View(m);
         }
@@ -64,7 +73,10 @@ namespace CmsWeb.Areas.Finance.Controllers
                      where h.BundleHeaderId == moveto
                      select h).SingleOrDefault();
             if (b == null)
+            {
                 return Content("cannot find bundle, or not open");
+            }
+
             var bd = DbUtil.Db.BundleDetails.Single(dd => dd.ContributionId == id);
             var pbid = bd.BundleHeaderId;
             bd.BundleHeaderId = b.BundleHeaderId;
@@ -119,7 +131,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         [HttpPost]
         public ActionResult BatchUpload(DateTime? date, HttpPostedFileBase file, int? fundid, string text)
         {
-            if(!date.HasValue)
+            if (!date.HasValue)
             {
                 ModelState.AddModelError("date", "Date is required");
                 return View("Batch");
@@ -146,13 +158,18 @@ namespace CmsWeb.Areas.Finance.Controllers
                 fromFile = true;
             }
             else
+            {
                 s = text;
+            }
 
             try
             {
                 var id = BatchImportContributions.BatchProcess(s, date.Value, fundid, fromFile);
                 if (id.HasValue)
+                {
                     return Redirect("/PostBundle/" + id);
+                }
+
                 return RedirectToAction("Batch");
             }
             catch (Exception ex)
@@ -163,16 +180,28 @@ namespace CmsWeb.Areas.Finance.Controllers
 
         public JsonResult Funds()
         {
-            var q = from f in DbUtil.Db.ContributionFunds
-                    where f.FundStatusId == 1
-                    orderby f.FundId
-                    select new
-                    {
-                        value = f.FundId,
-                        text = $"{f.FundId} - {f.FundName}",
-                    };
+            var fundSortSetting = DbUtil.Db.Setting("SortContributionFundsByFieldName", "FundId");
 
-            return Json(q.ToList(), JsonRequestBehavior.AllowGet);
+            var query = DbUtil.Db.ContributionFunds.Where(cf => cf.FundStatusId == 1);
+
+            if (fundSortSetting == "FundName")
+            {
+                query = query.OrderBy(cf => cf.FundName).ThenBy(cf => cf.FundId);
+            }
+            else
+            {
+                query = query.OrderBy(cf => cf.FundId);
+            }
+
+            // HACK: Change text based on sorting option for funds. If sorting by name, make it show first otherwise leave the id first to enable selecting by keystroke until ui adjusted
+            if (fundSortSetting == "FundId")
+            {
+                return Json(query.ToList().Select(x => new { text = $"{x.FundId} . {x.FundName}", value = x.FundId.ToString() }), JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(query.ToList().Select(x => new { text = $"{x.FundName} ({x.FundId})", value = x.FundId.ToString() }), JsonRequestBehavior.AllowGet);
+            }
         }
 
         [HttpPost]

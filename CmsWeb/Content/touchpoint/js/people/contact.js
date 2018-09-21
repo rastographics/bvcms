@@ -41,7 +41,7 @@ $(function () {
         }
         var f = $(this).closest("form");
         var url = this.href;
-        
+
         swal({
             title: "Are you sure?",
             type: "warning",
@@ -108,13 +108,45 @@ function AddSelected(ret) {
     }
 }
 
-function WireUpExtraValues(cid) {
+function WireUpExtraValues(cid, locations) {
+    if ($.isEmptyObject(locations))
+        return;
+
+    function sameStr(left, right) {
+        return left.localeCompare(right, undefined, { sensitivity: 'base' }) === 0;
+    }
+
+    function valueMatches(left, right) {
+        return typeof left === 'undefined' ||
+            sameStr(left, right) ||
+            sameStr(left, right.replace(/[^a-zA-Z0-9]/g, ''));
+    }
+
+    function isSet(val) {
+        return val !== '(not specified)';
+    }
+
     $('.code-dropdown select').on('change', function () {
         var data = {
             ministry: $('#Ministry_Value option:selected').text(),
             contactType: $('#ContactType_Value option:selected').text(),
             contactReason: $('#ContactReason_Value option:selected').text()
         };
+
+        if (isSet(data.ministry) && isSet(data.contactType) && isSet(data.contactReason)) {
+            $('#contact-extra-values').show();
+        } else {
+            $('#contact-extra-values').hide();
+        }
+
+        var match = _.find(locations, function(x) {
+            return (valueMatches(x.Ministry, data.ministry)) &&
+                (valueMatches(x.ContactType, data.contactType)) &&
+                (valueMatches(x.ContactReason, data.contactReason));
+        });
+
+        if (typeof match === 'undefined') return;
+
         $.ajax({
             type: 'POST',
             url: '/Contact2/ExtraValues/' + cid,

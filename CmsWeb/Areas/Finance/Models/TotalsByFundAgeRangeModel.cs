@@ -15,10 +15,9 @@ namespace CmsWeb.Models
     public class TotalsByFundAgeRangeModel
     {
         public DateTime? Dt1 { get; set; }
-
         public DateTime? Dt2 { get; set; }
-
         public int CampusId { get; set; }
+        public string FundSet { get; set; }
 
         public RangeInfo RangeTotal { get; set; }
 
@@ -35,7 +34,21 @@ namespace CmsWeb.Models
         public IEnumerable<AgeRangeInfo> GetTotalsByFundAgeRange()
         {
             var model = new BundleModel();
-            var ageRangeInfos = model.TotalsByFundAgeRange(0, Dt1.GetValueOrDefault(), Dt2.GetValueOrDefault(), string.Empty, CampusId);
+            var customFundIds = APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db, FundSet);
+            var authorizedFundIds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership().Select(f => f.FundId).ToList();
+
+            string fundIds = string.Empty;
+
+            if (customFundIds?.Count > 0)
+            {
+                fundIds = authorizedFundIds.Where(f => customFundIds.Contains(f)).JoinInts(",");
+            }
+            else
+            {
+                fundIds = authorizedFundIds.JoinInts(",");
+            }
+
+            var ageRangeInfos = model.TotalsByFundAgeRange(0, Dt1.GetValueOrDefault(), Dt2.GetValueOrDefault(), string.Empty, CampusId, fundIds);
             RangeTotal = model.RangeTotal;
             return ageRangeInfos;
         }

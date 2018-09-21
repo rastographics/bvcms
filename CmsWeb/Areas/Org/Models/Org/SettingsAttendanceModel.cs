@@ -132,6 +132,13 @@ Leave **unchecked** for weekly meetings.
 ")]
         public bool NotWeekly { get; set; }
 
+        [Display(Name = "Send an attendance link to leaders at the start of each meeting",
+            Description = @"
+Allows Sub-Group leaders to receive a text message or email with
+a link to the attendance roster page for the group.
+")]
+        public bool SendAttendanceLink { get; set; }
+
         [Display(Name = "Filter Attendance Roster By Subgroup",
             Description = @"
 Allows Sub-Group leaders to be specified on the Sub-Group Members page. 

@@ -91,7 +91,8 @@ BEGIN
 		DELETE dbo.ManagedGiving WHERE PeopleId = @pid 
 		DELETE dbo.PaymentInfo WHERE PeopleId = @pid 
 		DELETE dbo.MemberDocForm WHERE PeopleId = @pid 
-		DELETE dbo.MobileAppPushRegistrations WHERE PeopleId = @pid 
+		DELETE dbo.MobileAppPushRegistrations WHERE PeopleId = @pid
+		DELETE dbo.MobileAppDevices WHERE peopleID = @pid
 		 
 		DELETE dbo.Preferences WHERE UserId IN (SELECT UserId FROM dbo.Users WHERE PeopleId = @pid) 
 		DELETE dbo.ActivityLog WHERE UserId IN (SELECT UserId FROM dbo.Users WHERE PeopleId = @pid) 
@@ -124,6 +125,8 @@ BEGIN
 		DELETE dbo.VolInterestInterestCodes 
 		FROM dbo.VolInterestInterestCodes vc 
 		WHERE vc.PeopleId = @pid 
+
+		DELETE dbo.MobileAppDevices WHERE peopleID = @pid
 		 
 		SELECT @fid = FamilyId, @pic = PictureId FROM dbo.People WHERE PeopleId = @pid 
 		DELETE dbo.FamilyExtra WHERE FamilyId = @fid 
@@ -158,10 +161,6 @@ BEGIN
 		RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState); 
 	END CATCH  
 END 
- 
- 
-
-
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

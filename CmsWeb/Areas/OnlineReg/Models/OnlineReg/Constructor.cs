@@ -79,7 +79,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                             FirstName = "David",
                             LastName = "Carroll" + DateTime.Now.Millisecond,
                             DateOfBirth = "5/30/52",
-                            EmailAddress = "david@bvcms.com",
+                            EmailAddress = "sombody@nowhere.com",
 #endif
                         }
                 };

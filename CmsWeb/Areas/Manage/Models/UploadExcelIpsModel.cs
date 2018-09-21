@@ -104,6 +104,7 @@ namespace CmsWeb.Models
                 foreach (var pledge in week)
                 {
                     var pid = GetPeopleId(pledge);
+                    var f = new ContributionFund{FundId = 0};
                     if (!Testing)
                     {
                         if (!pid.HasValue)
@@ -116,7 +117,7 @@ namespace CmsWeb.Models
                             }
                             else
                                 throw new Exception($"peopleid not found from individualid {pledge.IndividualId}");
-                        var f = db.FetchOrCreateFund(pledge.FundId, pledge.FundName ?? pledge.FundDescription);
+                        f = db.FetchOrCreateFund(pledge.FundId, pledge.FundName ?? pledge.FundDescription);
                         f.FundPledgeFlag = true;
                     }
                     var bd = new BundleDetail();
@@ -127,7 +128,7 @@ namespace CmsWeb.Models
                         CreatedBy = Util.UserId,
                         CreatedDate = DateTime.Now,
                         ContributionDate = pledge.Date,
-                        FundId = pledge.FundId,
+                        FundId = f.FundId,
                         ContributionStatusId = 0,
                         ContributionTypeId = ContributionTypeCode.Pledge,
                         ContributionAmount = pledge.Amount,
@@ -189,7 +190,11 @@ namespace CmsWeb.Models
                             else
                                 throw new Exception($"peopleid not found from individualid {gift.IndividualId}");
                     if (!Testing)
-                        db.FetchOrCreateFund(gift.FundId, gift.FundName ?? gift.FundDescription);
+                    {
+                        var f = db.FetchOrCreateFund(gift.FundId, gift.FundName ?? gift.FundDescription);
+                        if (gift.FundId == 0)
+                            gift.FundId = f.FundId;
+                    }
                     var bd = new BundleDetail();
                     bd.CreatedBy = Util.UserId;
                     bd.CreatedDate = DateTime.Now;
@@ -246,7 +251,7 @@ namespace CmsWeb.Models
                     IndividualId = ws.Cells[r, Names["IndividualId"]].Value,
                     Amount = GetDecimal(ws.Cells[r, Names["Amount"]].Value),
                     Date = GetDate(ws.Cells[r, Names["Date"]].Value) ?? DateTime.MinValue,
-                    FundId = GetInt(ws.Cells[r, Names["FundId"]].Value) ?? 1,
+                    FundId = GetInt(ws.Cells[r, Names["FundId"]].Value) ?? 0,
                     FundDescription = GetString(ws.Cells[r, Names["FundDescription"]].Value),
                     FundName = GetString(ws.Cells[r, Names["FundName"]].Value),
                 };
@@ -275,7 +280,7 @@ namespace CmsWeb.Models
                     IndividualId = ws.Cells[r, Names["IndividualId"]].Value,
                     Amount = GetDecimal(ws.Cells[r, Names["PledgeAmount"]].Value),
                     Date = GetDate(ws.Cells[r, Names["PledgeDate"]].Value) ?? DateTime.MinValue,
-                    FundId = GetInt(ws.Cells[r, Names["FundId"]].Value) ?? 1,
+                    FundId = GetInt(ws.Cells[r, Names["FundId"]].Value) ?? 0,
                     FundName = GetString(ws.Cells[r, Names["FundName"]].Value),
                     FundDescription = GetString(ws.Cells[r, Names["FundDescription"]].Value),
                 };

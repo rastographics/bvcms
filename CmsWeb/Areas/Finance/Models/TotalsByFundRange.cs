@@ -9,20 +9,18 @@ using CmsData.View;
 using CmsWeb.Code;
 using UtilityExtensions;
 using System.Text;
+using System.Web.Security;
 
 namespace CmsWeb.Models
 {
     public class TotalsByFundRangeModel
     {
         public bool Pledged { get; set; }
-
         public DateTime? Dt1 { get; set; }
-
         public DateTime? Dt2 { get; set; }
-
         public int CampusId { get; set; }
-
         public int FundId { get; set; }
+        public string FundSet { get; set; }
 
         public RangeInfo RangeTotal { get; set; }
 
@@ -38,7 +36,21 @@ namespace CmsWeb.Models
 
         public IEnumerable<RangeInfo> GetTotalsByFundRange()
         {
-            var list = (from r in DbUtil.Db.GetContributionsRange(Dt1, Dt2, CampusId, false, true, Pledged, FundId)
+            var customFundIds = APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db, FundSet);
+            var authorizedFundIds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership().Select(f => f.FundId).ToList();
+
+            string fundIds = string.Empty;
+
+            if (customFundIds?.Count > 0)
+            {
+                fundIds = authorizedFundIds.Where(f => customFundIds.Contains(f)).JoinInts(",");
+            }
+            else
+            {
+                fundIds = authorizedFundIds.JoinInts(",");
+            }
+
+            var list = (from r in DbUtil.Db.GetContributionsRange(Dt1, Dt2, CampusId, false, true, Pledged, FundId, fundIds)
                         orderby r.Range
                         select r).ToList();
             RangeTotal = new RangeInfo
@@ -78,7 +90,7 @@ namespace CmsWeb.Models
 
         public IEnumerable<SelectListItem> Funds()
         {
-            var list = (from c in DbUtil.Db.ContributionFunds
+            var list = (from c in DbUtil.Db.ContributionFunds.ScopedByRoleMembership()
                         where c.FundStatusId == 1
                         orderby c.FundName
                         select new SelectListItem()
@@ -89,6 +101,5 @@ namespace CmsWeb.Models
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
-
     }
 }

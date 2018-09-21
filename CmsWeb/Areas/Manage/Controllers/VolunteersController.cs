@@ -40,8 +40,65 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View(m);
         }
 
+        [Route("AltCalendar/{id:int}/{curMonth:int?}/{curYear:int?}")]
+        [Route("AltCalendar/{id:int}/{SortByWeek:bool?}/{weekNum:int?}/{pageNumber:int?}")]
+        public ActionResult AltCalendar(int id, bool? sortByWeek, int? curMonth, int? curYear, int? weekNum, int? pageNumber)
+        {
+            var m = new VolunteerCommitmentsModel(id);
+            m.SortByWeek = sortByWeek ?? false;
+            m.WeekNumber = weekNum ?? 0;
+            m.PageNumber = pageNumber ?? 1;
+
+            if (curMonth.IsNotNull())
+            {
+                if (curYear.IsNotNull())
+                {
+                    m.CurYear = curYear;
+                }
+
+                if (curMonth == 13)
+                {
+                    m.CurYear = m.CurYear + 1;
+                    m.CurMonth = 1;
+                }
+                else if (curMonth == 0)
+                {
+                    m.CurYear = m.CurYear - 1;
+                    m.CurMonth = 12;
+                }
+                else
+                {
+                    m.CurMonth = curMonth.ToInt();
+                }
+            }
+            if (m.CurMonth.IsNull() && curMonth.IsNull())
+            {
+                m.CurMonth = m.Sunday.Month;
+                m.CurYear = m.Sunday.Year;
+            }
+
+            if (m.CurYear.IsNull() && curYear.IsNull())
+            {
+                m.CurYear = m.Sunday.Year;
+            }            
+
+            return View(m);
+        }
+
         [HttpPost]
         public ActionResult ManageArea(PostTargetInfo i)
+        {
+            var m = new VolunteerCommitmentsModel(i.id);
+            m.SmallGroup1 = i.sg1;
+            m.SmallGroup2 = i.sg2;
+            m.SortByWeek = i.SortByWeek;
+            foreach (var s in i.list)
+                m.ApplyDragDrop(i.target, i.week, i.time, s);            
+            return View(m);
+        }
+
+        [HttpPost]
+        public ActionResult AltManageArea(PostTargetInfo i)
         {
             var m = new VolunteerCommitmentsModel(i.id);
             m.SmallGroup1 = i.sg1;
@@ -60,6 +117,17 @@ namespace CmsWeb.Areas.Manage.Controllers
             m.SmallGroup2 = sg2;
             m.SortByWeek = SortByWeek ?? false;
             return View("ManageArea", m);
+        }
+
+        public ActionResult AddVolunteers(int id, int? week, DateTime? time, string sg1, string sg2, bool? isWeek = false)
+        {
+            TempData["selectedWeek"] = week?.ToInt();
+            TempData["selectedTime"] = time?.ToString("g");
+            TempData["isWeek"] = isWeek;
+            var m = new VolunteerCommitmentsModel(id);
+            m.SmallGroup1 = sg1;
+            m.SmallGroup2 = sg2;
+            return View("AddVolunteers", m);
         }
 
         public ActionResult EmailReminders(int id)
@@ -124,6 +192,17 @@ namespace CmsWeb.Areas.Manage.Controllers
             var qb = DbUtil.Db.ScratchPadCondition();
             qb.Reset();
             qb.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.Equal, m.MeetingId);
+            qb.Save(DbUtil.Db);
+            return Redirect($"/Email/{qb.Id}?TemplateId=0&body={m.Organization.OrganizationName} {m.MeetingDate.FormatDateTm()}&subj={m.Organization.OrganizationName} {m.MeetingDate.FormatDateTm()}");
+        }
+
+        [Route("EmailPersonInSlot/{meetingId:int}/{pId:int}")]
+        public ActionResult EmailPersonInSlot(int meetingId, int pId)
+        {
+            var m = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == meetingId);
+            var qb = DbUtil.Db.ScratchPadCondition();
+            qb.Reset();
+            qb.AddNewClause(QueryType.PeopleId, CompareType.Equal, pId);
             qb.Save(DbUtil.Db);
             return Redirect($"/Email/{qb.Id}?TemplateId=0&body={m.Organization.OrganizationName} {m.MeetingDate.FormatDateTm()}&subj={m.Organization.OrganizationName} {m.MeetingDate.FormatDateTm()}");
         }

@@ -20,7 +20,9 @@ You can put a label on this text box to clarify what you are asking.
 	    }
         public new static AskRequest ReadXml(XElement e)
         {
-            return new AskRequest() { Label = e.Value };
+            return new AskRequest {
+                Label = e.Value,
+            };
         }
 	}
 }

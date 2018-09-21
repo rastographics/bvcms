@@ -79,13 +79,19 @@ namespace UtilityExtensions
         {
             return new List<MailAddress> { ma };
         }
-        public static void AddGoodAddress(List<MailAddress> list, string a)
+
+        public static void AddGoodAddress(List<MailAddress> list, string emailAddress)
         {
-            var ma = Util.TryGetMailAddress(a);
-            if (ma != null)
-                if (!list.Any(mm => mm.Address == a))
-                    list.Add(ma);
+            MailAddress mailAddress;
+            if (Util.TryGetMailAddress(emailAddress, out mailAddress))
+            {
+                if (!list.Any(mm => mm.Address == emailAddress))
+                {
+                    list.Add(mailAddress);
+                }
+            }
         }
+
         public static string EmailAddressListToString(this List<MailAddress> list)
         {
             var addrs = string.Join(", ", list.Select(tt => tt.ToString()));
@@ -94,7 +100,7 @@ namespace UtilityExtensions
         public static List<MailAddress> SendErrorsTo()
         {
             var a = ConfigurationManager.AppSettings["senderrorsto"];
-            return EmailAddressListFromString(a.HasValue() ? a : "david@touchpointsoftware.com");
+            return EmailAddressListFromString(a.HasValue() ? a : AdminMail);
         }
         public static List<MailAddress> EmailAddressListFromString(string addresses)
         {
@@ -104,6 +110,23 @@ namespace UtilityExtensions
                 AddGoodAddress(list, ad);
             return list;
         }
+
+        public static bool TryGetMailAddress(string address, out MailAddress mailAddress)
+        {
+            var valid = true;
+            mailAddress = null;
+            try
+            {
+                mailAddress = TryGetMailAddress(address);
+                valid = mailAddress != null;
+            }
+            catch
+            {
+                valid = false;
+            }
+            return valid;
+        }
+
         public static MailAddress TryGetMailAddress(string address)
         {
             if (address.HasValue())
@@ -118,6 +141,7 @@ namespace UtilityExtensions
             }
             catch (Exception)
             {
+                throw new Exception($"bad email address: {address}");
             }
             return null;
         }
@@ -134,6 +158,8 @@ namespace UtilityExtensions
         public static bool ValidEmail(string email)
         {
             if (!email.HasValue())
+                return false;
+            if (email.Contains(" "))
                 return false;
             var re1 = new Regex(@"^(.*\b(?=\w))\b[A-Z0-9._%+-]+(?<=[^.])@[A-Z0-9.-]+(?<!\.)\.[A-Z]{2,}\b\b(?!\w)$", RegexOptions.IgnoreCase);
             var re2 = new Regex(@"^[A-Z0-9._%+-]+(?<=[^.])@[A-Z0-9.-]+(?<!\.)\.[A-Z]{2,}$", RegexOptions.IgnoreCase);
@@ -164,6 +190,8 @@ namespace UtilityExtensions
             }
             catch (Exception)
             {
+                if(!ValidEmail(AdminMail))
+                    throw new Exception($"bad AdminMail address <{AdminMail}>");
                 if (name.HasValue())
                     return new MailAddress(AdminMail, name);
                 return new MailAddress(AdminMail);
@@ -181,6 +209,8 @@ namespace UtilityExtensions
             }
             catch (Exception)
             {
+                if(!ValidEmail(AdminMail))
+                    throw new Exception($"bad AdminMail address <{AdminMail}>");
                 if (name.HasValue())
                     return new MailAddress(AdminMail, name);
                 return new MailAddress(AdminMail);

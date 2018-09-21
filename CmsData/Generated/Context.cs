@@ -330,6 +330,14 @@ namespace CmsData
         partial void UpdateInterestPoint(InterestPoint instance);
         partial void DeleteInterestPoint(InterestPoint instance);
         
+        partial void InsertIpLog(IpLog instance);
+        partial void UpdateIpLog(IpLog instance);
+        partial void DeleteIpLog(IpLog instance);
+        
+        partial void InsertIpLog2(IpLog2 instance);
+        partial void UpdateIpLog2(IpLog2 instance);
+        partial void DeleteIpLog2(IpLog2 instance);
+        
         partial void InsertIpWarmup(IpWarmup instance);
         partial void UpdateIpWarmup(IpWarmup instance);
         partial void DeleteIpWarmup(IpWarmup instance);
@@ -1249,6 +1257,18 @@ namespace CmsData
 		public Table< InterestPoint> InterestPoints
 		{
 			get	{ return this.GetTable< InterestPoint>(); }
+
+		}
+
+		public Table< IpLog> IpLogs
+		{
+			get	{ return this.GetTable< IpLog>(); }
+
+		}
+
+		public Table< IpLog2> IpLog2s
+		{
+			get	{ return this.GetTable< IpLog2>(); }
 
 		}
 
@@ -2335,6 +2355,132 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.XpAttendance> ViewXpAttendances
+	    {
+		    get { return this.GetTable< View.XpAttendance>(); }
+
+	    }
+
+	    public Table< View.XpBackgroundCheck> ViewXpBackgroundChecks
+	    {
+		    get { return this.GetTable< View.XpBackgroundCheck>(); }
+
+	    }
+
+	    public Table< View.XpContact> ViewXpContacts
+	    {
+		    get { return this.GetTable< View.XpContact>(); }
+
+	    }
+
+	    public Table< View.XpContactee> ViewXpContactees
+	    {
+		    get { return this.GetTable< View.XpContactee>(); }
+
+	    }
+
+	    public Table< View.XpContactor> ViewXpContactors
+	    {
+		    get { return this.GetTable< View.XpContactor>(); }
+
+	    }
+
+	    public Table< View.XpContribution> ViewXpContributions
+	    {
+		    get { return this.GetTable< View.XpContribution>(); }
+
+	    }
+
+	    public Table< View.XpDivision> ViewXpDivisions
+	    {
+		    get { return this.GetTable< View.XpDivision>(); }
+
+	    }
+
+	    public Table< View.XpDivOrg> ViewXpDivOrgs
+	    {
+		    get { return this.GetTable< View.XpDivOrg>(); }
+
+	    }
+
+	    public Table< View.XpEnrollHistory> ViewXpEnrollHistories
+	    {
+		    get { return this.GetTable< View.XpEnrollHistory>(); }
+
+	    }
+
+	    public Table< View.XpFamily> ViewXpFamilies
+	    {
+		    get { return this.GetTable< View.XpFamily>(); }
+
+	    }
+
+	    public Table< View.XpFamilyExtra> ViewXpFamilyExtras
+	    {
+		    get { return this.GetTable< View.XpFamilyExtra>(); }
+
+	    }
+
+	    public Table< View.XpMeeting> ViewXpMeetings
+	    {
+		    get { return this.GetTable< View.XpMeeting>(); }
+
+	    }
+
+	    public Table< View.XpOrganization> ViewXpOrganizations
+	    {
+		    get { return this.GetTable< View.XpOrganization>(); }
+
+	    }
+
+	    public Table< View.XpOrgMember> ViewXpOrgMembers
+	    {
+		    get { return this.GetTable< View.XpOrgMember>(); }
+
+	    }
+
+	    public Table< View.XpOrgSchedule> ViewXpOrgSchedules
+	    {
+		    get { return this.GetTable< View.XpOrgSchedule>(); }
+
+	    }
+
+	    public Table< View.XpPerson> ViewXpPeople
+	    {
+		    get { return this.GetTable< View.XpPerson>(); }
+
+	    }
+
+	    public Table< View.XpPeopleExtra> ViewXpPeopleExtras
+	    {
+		    get { return this.GetTable< View.XpPeopleExtra>(); }
+
+	    }
+
+	    public Table< View.XpProgDiv> ViewXpProgDivs
+	    {
+		    get { return this.GetTable< View.XpProgDiv>(); }
+
+	    }
+
+	    public Table< View.XpProgram> ViewXpPrograms
+	    {
+		    get { return this.GetTable< View.XpProgram>(); }
+
+	    }
+
+	    public Table< View.XpRelatedFamily> ViewXpRelatedFamilies
+	    {
+		    get { return this.GetTable< View.XpRelatedFamily>(); }
+
+	    }
+
+	    public Table< View.XpSubGroup> ViewXpSubGroups
+	    {
+		    get { return this.GetTable< View.XpSubGroup>(); }
+
+	    }
+
     #endregion
 	#region Table Functions
 		
@@ -2707,7 +2853,8 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? IncludeUnclosedBundles,
             [Parameter(DbType="bit")] bool? Mobile,
             [Parameter(DbType="int")] int? PeopleId,
-            [Parameter(DbType="int")] int? ActiveTagFilter
+            [Parameter(DbType="int")] int? ActiveTagFilter,
+            [Parameter(DbType="varchar")] string fundids
             )
 		{
 			return this.CreateMethodCallQuery< View.ContributionSearch>(this, 
@@ -2729,48 +2876,8 @@ namespace CmsData
                 IncludeUnclosedBundles,
                 Mobile,
                 PeopleId,
-                ActiveTagFilter
-                );
-		}
-
-		[Function(Name="dbo.ContributionSearch0", IsComposable = true)]
-		public IQueryable< View.ContributionSearch0 > ContributionSearch0(
-            [Parameter(DbType="nvarchar")] string name,
-            [Parameter(DbType="nvarchar")] string comments,
-            [Parameter(DbType="int")] int? bundletype,
-            [Parameter(DbType="int")] int? type,
-            [Parameter(DbType="int")] int? status,
-            [Parameter(DbType="money")] decimal? minamt,
-            [Parameter(DbType="money")] decimal? maxamt,
-            [Parameter(DbType="datetime")] DateTime? startdate,
-            [Parameter(DbType="datetime")] DateTime? enddate,
-            [Parameter(DbType="varchar")] string taxnontax,
-            [Parameter(DbType="int")] int? fundid,
-            [Parameter(DbType="int")] int? campusid,
-            [Parameter(DbType="int")] int? year,
-            [Parameter(DbType="bit")] bool? includeunclosedbundles,
-            [Parameter(DbType="bit")] bool? mobile,
-            [Parameter(DbType="int")] int? online
-            )
-		{
-			return this.CreateMethodCallQuery< View.ContributionSearch0>(this, 
-			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                name,
-                comments,
-                bundletype,
-                type,
-                status,
-                minamt,
-                maxamt,
-                startdate,
-                enddate,
-                taxnontax,
-                fundid,
-                campusid,
-                year,
-                includeunclosedbundles,
-                mobile,
-                online
+                ActiveTagFilter,
+                fundids
                 );
 		}
 
@@ -2829,6 +2936,31 @@ namespace CmsData
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgs,
                 pids
+                );
+		}
+
+		[Function(Name="dbo.Donors", IsComposable = true)]
+		public IQueryable< View.Donor > Donors(
+            [Parameter(DbType="datetime")] DateTime? fd,
+            [Parameter(DbType="datetime")] DateTime? td,
+            [Parameter(DbType="int")] int? pid,
+            [Parameter(DbType="int")] int? spid,
+            [Parameter(DbType="int")] int? fid,
+            [Parameter(DbType="bit")] bool? noaddrok,
+            [Parameter(DbType="int")] int? tagid,
+            [Parameter(DbType="varchar")] string funds
+            )
+		{
+			return this.CreateMethodCallQuery< View.Donor>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                fd,
+                td,
+                pid,
+                spid,
+                fid,
+                noaddrok,
+                tagid,
+                funds
                 );
 		}
 
@@ -3054,6 +3186,17 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.FirstLast", IsComposable = true)]
+		public IQueryable< View.FirstLast > FirstLast(
+            [Parameter(DbType="nvarchar")] string name
+            )
+		{
+			return this.CreateMethodCallQuery< View.FirstLast>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                name
+                );
+		}
+
 		[Function(Name="dbo.FirstTimeGivers", IsComposable = true)]
 		public IQueryable< View.FirstTimeGiver > FirstTimeGivers(
             [Parameter(DbType="int")] int? days,
@@ -3099,7 +3242,8 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? pledges,
             [Parameter(DbType="bit")] bool? nontaxded,
             [Parameter(DbType="bit")] bool? includeUnclosed,
-            [Parameter(DbType="int")] int? tagid
+            [Parameter(DbType="int")] int? tagid,
+            [Parameter(DbType="varchar")] string fundids
             )
 		{
 			return this.CreateMethodCallQuery< View.GetContributionsDetail>(this, 
@@ -3110,7 +3254,8 @@ namespace CmsData
                 pledges,
                 nontaxded,
                 includeUnclosed,
-                tagid
+                tagid,
+                fundids
                 );
 		}
 
@@ -3122,7 +3267,8 @@ namespace CmsData
             [Parameter(DbType="bit")] bool? nontaxded,
             [Parameter(DbType="bit")] bool? includeUnclosed,
             [Parameter(DbType="bit")] bool? pledge,
-            [Parameter(DbType="int")] int? fundid
+            [Parameter(DbType="int")] int? fundid,
+            [Parameter(DbType="varchar")] string fundids
             )
 		{
 			return this.CreateMethodCallQuery< View.GetContributionsRange>(this, 
@@ -3133,7 +3279,8 @@ namespace CmsData
                 nontaxded,
                 includeUnclosed,
                 pledge,
-                fundid
+                fundid,
+                fundids
                 );
 		}
 
@@ -3263,7 +3410,8 @@ namespace CmsData
             [Parameter(DbType="datetime")] DateTime? td,
             [Parameter(DbType="int")] int? campusid,
             [Parameter(DbType="bit")] bool? nontaxded,
-            [Parameter(DbType="bit")] bool? includeUnclosed
+            [Parameter(DbType="bit")] bool? includeUnclosed,
+            [Parameter(DbType="varchar")] string fundids
             )
 		{
 			return this.CreateMethodCallQuery< View.GetTotalContributionsAgeRange>(this, 
@@ -3272,7 +3420,8 @@ namespace CmsData
                 td,
                 campusid,
                 nontaxded,
-                includeUnclosed
+                includeUnclosed,
+                fundids
                 );
 		}
 
@@ -3283,7 +3432,8 @@ namespace CmsData
             [Parameter(DbType="int")] int? campusid,
             [Parameter(DbType="bit")] bool? nontaxded,
             [Parameter(DbType="bit")] bool? includeUnclosed,
-            [Parameter(DbType="int")] int? tagid
+            [Parameter(DbType="int")] int? tagid,
+            [Parameter(DbType="varchar")] string fundids
             )
 		{
 			return this.CreateMethodCallQuery< View.GetTotalContributionsDonor>(this, 
@@ -3293,7 +3443,8 @@ namespace CmsData
                 campusid,
                 nontaxded,
                 includeUnclosed,
-                tagid
+                tagid,
+                fundids
                 );
 		}
 
@@ -3327,7 +3478,8 @@ namespace CmsData
             [Parameter(DbType="int")] int? campusid,
             [Parameter(DbType="bit")] bool? nontaxded,
             [Parameter(DbType="bit")] bool? includeUnclosed,
-            [Parameter(DbType="int")] int? tagid
+            [Parameter(DbType="int")] int? tagid,
+            [Parameter(DbType="varchar")] string fundids
             )
 		{
 			return this.CreateMethodCallQuery< View.GetTotalContributionsDonorFund>(this, 
@@ -3337,7 +3489,8 @@ namespace CmsData
                 campusid,
                 nontaxded,
                 includeUnclosed,
-                tagid
+                tagid,
+                fundids
                 );
 		}
 
@@ -3347,7 +3500,8 @@ namespace CmsData
             [Parameter(DbType="datetime")] DateTime? td,
             [Parameter(DbType="int")] int? campusid,
             [Parameter(DbType="bit")] bool? nontaxded,
-            [Parameter(DbType="bit")] bool? includeUnclosed
+            [Parameter(DbType="bit")] bool? includeUnclosed,
+            [Parameter(DbType="varchar")] string fundids
             )
 		{
 			return this.CreateMethodCallQuery< View.GetTotalContributionsRange>(this, 
@@ -3356,7 +3510,8 @@ namespace CmsData
                 td,
                 campusid,
                 nontaxded,
-                includeUnclosed
+                includeUnclosed,
+                fundids
                 );
 		}
 
@@ -3374,6 +3529,48 @@ namespace CmsData
                 td,
                 campusid,
                 pledgefund
+                );
+		}
+
+		[Function(Name="dbo.GiftsInKind", IsComposable = true)]
+		public IQueryable< View.GiftsInKind > GiftsInKind(
+            [Parameter(DbType="int")] int? pid,
+            [Parameter(DbType="int")] int? spid,
+            [Parameter(DbType="bit")] bool? joint,
+            [Parameter(DbType="date")] DateTime? fromDate,
+            [Parameter(DbType="date")] DateTime? toDate,
+            [Parameter(DbType="varchar")] string fundids
+            )
+		{
+			return this.CreateMethodCallQuery< View.GiftsInKind>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid,
+                spid,
+                joint,
+                fromDate,
+                toDate,
+                fundids
+                );
+		}
+
+		[Function(Name="dbo.GiftSummary", IsComposable = true)]
+		public IQueryable< View.GiftSummary > GiftSummary(
+            [Parameter(DbType="int")] int? pid,
+            [Parameter(DbType="int")] int? spid,
+            [Parameter(DbType="bit")] bool? joint,
+            [Parameter(DbType="date")] DateTime? fromDate,
+            [Parameter(DbType="date")] DateTime? toDate,
+            [Parameter(DbType="varchar")] string fundids
+            )
+		{
+			return this.CreateMethodCallQuery< View.GiftSummary>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid,
+                spid,
+                joint,
+                fromDate,
+                toDate,
+                fundids
                 );
 		}
 
@@ -3398,6 +3595,65 @@ namespace CmsData
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 days,
                 fundid
+                );
+		}
+
+		[Function(Name="dbo.GivingChangeFundQuarters", IsComposable = true)]
+		public IQueryable< View.GivingChangeFundQuarter > GivingChangeFundQuarters(
+            [Parameter(DbType="datetime")] DateTime? fd,
+            [Parameter(DbType="datetime")] DateTime? td,
+            [Parameter(DbType="varchar")] string fundids,
+            [Parameter(DbType="int")] int? tagid
+            )
+		{
+			return this.CreateMethodCallQuery< View.GivingChangeFundQuarter>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                fd,
+                td,
+                fundids,
+                tagid
+                );
+		}
+
+		[Function(Name="dbo.GivingChangeQuartersFund", IsComposable = true)]
+		public IQueryable< View.GivingChangeQuartersFund > GivingChangeQuartersFund(
+            [Parameter(DbType="datetime")] DateTime? fd,
+            [Parameter(DbType="datetime")] DateTime? td,
+            [Parameter(DbType="varchar")] string taxnontax,
+            [Parameter(DbType="varchar")] string fundids,
+            [Parameter(DbType="int")] int? tagid
+            )
+		{
+			return this.CreateMethodCallQuery< View.GivingChangeQuartersFund>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                fd,
+                td,
+                taxnontax,
+                fundids,
+                tagid
+                );
+		}
+
+		[Function(Name="dbo.GivingChangeQuartersFund2", IsComposable = true)]
+		public IQueryable< View.GivingChangeQuartersFund2 > GivingChangeQuartersFund2(
+            [Parameter(DbType="datetime")] DateTime? fd1,
+            [Parameter(DbType="datetime")] DateTime? td1,
+            [Parameter(DbType="datetime")] DateTime? fd2,
+            [Parameter(DbType="datetime")] DateTime? td2,
+            [Parameter(DbType="varchar")] string taxnontax,
+            [Parameter(DbType="varchar")] string fundids,
+            [Parameter(DbType="int")] int? tagid
+            )
+		{
+			return this.CreateMethodCallQuery< View.GivingChangeQuartersFund2>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                fd1,
+                td1,
+                fd2,
+                td2,
+                taxnontax,
+                fundids,
+                tagid
                 );
 		}
 
@@ -3602,6 +3858,48 @@ namespace CmsData
 			return this.CreateMethodCallQuery< View.MostRecentItem>(this, 
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 uid
+                );
+		}
+
+		[Function(Name="dbo.NonTaxContributions", IsComposable = true)]
+		public IQueryable< View.NonTaxContribution > NonTaxContributions(
+            [Parameter(DbType="int")] int? pid,
+            [Parameter(DbType="int")] int? spid,
+            [Parameter(DbType="bit")] bool? joint,
+            [Parameter(DbType="date")] DateTime? fromDate,
+            [Parameter(DbType="date")] DateTime? toDate,
+            [Parameter(DbType="varchar")] string fundids
+            )
+		{
+			return this.CreateMethodCallQuery< View.NonTaxContribution>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid,
+                spid,
+                joint,
+                fromDate,
+                toDate,
+                fundids
+                );
+		}
+
+		[Function(Name="dbo.NormalContributions", IsComposable = true)]
+		public IQueryable< View.NormalContribution > NormalContributions(
+            [Parameter(DbType="int")] int? pid,
+            [Parameter(DbType="int")] int? spid,
+            [Parameter(DbType="bit")] bool? joint,
+            [Parameter(DbType="date")] DateTime? fromDate,
+            [Parameter(DbType="date")] DateTime? toDate,
+            [Parameter(DbType="varchar")] string fundids
+            )
+		{
+			return this.CreateMethodCallQuery< View.NormalContribution>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid,
+                spid,
+                joint,
+                fromDate,
+                toDate,
+                fundids
                 );
 		}
 
@@ -4360,6 +4658,19 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.RecentGiverFunds", IsComposable = true)]
+		public IQueryable< View.RecentGiverFund > RecentGiverFunds(
+            [Parameter(DbType="int")] int? days,
+            [Parameter(DbType="varchar")] string funds
+            )
+		{
+			return this.CreateMethodCallQuery< View.RecentGiverFund>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                days,
+                funds
+                );
+		}
+
 		[Function(Name="dbo.RecentIncompleteRegistrations", IsComposable = true)]
 		public IQueryable< View.RecentIncompleteRegistration > RecentIncompleteRegistrations(
             [Parameter(DbType="int")] int? prog,
@@ -4599,6 +4910,27 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.StockGifts", IsComposable = true)]
+		public IQueryable< View.StockGift > StockGifts(
+            [Parameter(DbType="int")] int? pid,
+            [Parameter(DbType="int")] int? spid,
+            [Parameter(DbType="bit")] bool? joint,
+            [Parameter(DbType="date")] DateTime? fromDate,
+            [Parameter(DbType="date")] DateTime? toDate,
+            [Parameter(DbType="varchar")] string fundids
+            )
+		{
+			return this.CreateMethodCallQuery< View.StockGift>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid,
+                spid,
+                joint,
+                fromDate,
+                toDate,
+                fundids
+                );
+		}
+
 		[Function(Name="dbo.SundayDates", IsComposable = true)]
 		public IQueryable< View.SundayDate > SundayDates(
             [Parameter(DbType="datetime")] DateTime? dt1,
@@ -4631,6 +4963,56 @@ namespace CmsData
 			return this.CreateMethodCallQuery< View.TPStat>(this, 
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 emails
+                );
+		}
+
+		[Function(Name="dbo.TransactionSearch", IsComposable = true)]
+		public IQueryable< View.TransactionSearch > TransactionSearch(
+            [Parameter(DbType="nvarchar")] string name,
+            [Parameter(DbType="decimal")] decimal? minamt,
+            [Parameter(DbType="decimal")] decimal? maxamt,
+            [Parameter(DbType="datetime")] DateTime? mindt,
+            [Parameter(DbType="datetime")] DateTime? maxdt,
+            [Parameter(DbType="nvarchar")] string description,
+            [Parameter(DbType="bit")] bool? testtransactions,
+            [Parameter(DbType="bit")] bool? approvedtransactions,
+            [Parameter(DbType="bit")] bool? nocoupons,
+            [Parameter(DbType="bit")] bool? finance,
+            [Parameter(DbType="bit")] bool? usebatchdates
+            )
+		{
+			return this.CreateMethodCallQuery< View.TransactionSearch>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                name,
+                minamt,
+                maxamt,
+                mindt,
+                maxdt,
+                description,
+                testtransactions,
+                approvedtransactions,
+                nocoupons,
+                finance,
+                usebatchdates
+                );
+		}
+
+		[Function(Name="dbo.UnitPledgeSummary", IsComposable = true)]
+		public IQueryable< View.UnitPledgeSummary > UnitPledgeSummary(
+            [Parameter(DbType="int")] int? pid,
+            [Parameter(DbType="int")] int? spid,
+            [Parameter(DbType="bit")] bool? joint,
+            [Parameter(DbType="date")] DateTime? toDate,
+            [Parameter(DbType="varchar")] string fundids
+            )
+		{
+			return this.CreateMethodCallQuery< View.UnitPledgeSummary>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid,
+                spid,
+                joint,
+                toDate,
+                fundids
                 );
 		}
 
@@ -5169,6 +5551,18 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.GetStreet", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string GetStreet(
+            [Parameter(Name = "address", DbType="nvarchar")] string address
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                address
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.PrimaryAddress2", IsComposable = true)]
 		[return: Parameter(DbType = "nvarchar")]
 		public string PrimaryAddress2(
@@ -5190,6 +5584,18 @@ namespace CmsData
 			return ((int?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 fid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.AllDigits", IsComposable = true)]
+		[return: Parameter(DbType = "bit")]
+		public bool? AllDigits(
+            [Parameter(Name = "s", DbType="nvarchar")] string s
+            )
+		{
+			return ((bool?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                s
                 ).ReturnValue));
 		}
 
@@ -5617,18 +6023,6 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.AllDigits", IsComposable = true)]
-		[return: Parameter(DbType = "bit")]
-		public bool? AllDigits(
-            [Parameter(Name = "s", DbType="nvarchar")] string s
-            )
-		{
-			return ((bool?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                s
-                ).ReturnValue));
-		}
-
 		[Function(Name="dbo.DayAndTime", IsComposable = true)]
 		[return: Parameter(DbType = "nvarchar")]
 		public string DayAndTime(
@@ -5653,15 +6047,19 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.GetStreet", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string GetStreet(
-            [Parameter(Name = "address", DbType="nvarchar")] string address
+		[Function(Name="dbo.MinMeetingDate", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? MinMeetingDate(
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "pid", DbType="int")] int? pid,
+            [Parameter(Name = "yearago", DbType="datetime")] DateTime? yearago
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                address
+                oid,
+                pid,
+                yearago
                 ).ReturnValue));
 		}
 
@@ -6016,6 +6414,20 @@ namespace CmsData
 		{
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod()))
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.IpVelocity", IsComposable = true)]
+		[return: Parameter(DbType = "float")]
+		public double? IpVelocity(
+            [Parameter(Name = "ip", DbType="varchar")] string ip,
+            [Parameter(Name = "start", DbType="datetime")] DateTime? start
+            )
+		{
+			return ((double?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                ip,
+                start
                 ).ReturnValue));
 		}
 

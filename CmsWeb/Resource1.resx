@@ -313,9 +313,6 @@ FontSizeEmail: 9
   <data name="ReportsMenu" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>views\shared\menu\reportsmenu.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="ReportsMenuCustom" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>views\shared\menu\reportsmenucustom.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
   <data name="SettingsRegistrationModel_DefaulConfirmation" xml:space="preserve">
     <value>Hi {first}
 &lt;p&gt;Here is your confirmation for {org}.&lt;/p&gt;
@@ -411,5 +408,8 @@ so that your data will not stay duplicated.&lt;/p&gt;
   </data>
   <data name="DocxRollsheet" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Areas\Reports\Models\Attendance\DocxRollsheet.docx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="CompanyName" xml:space="preserve">
+    <value>TouchPoint Software, Inc.</value>
   </data>
 </root>

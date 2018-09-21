@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -602,6 +603,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public RouteModel ProcessPayment(ModelStateDictionary modelState, OnlineRegModel m)
         {
+            if (m != null && m.email.HasValue() && !Util.ValidEmail(m.email))
+            {
+                modelState.AddModelError("form", "Invalid email address");
+                return RouteModel.Invalid("Payment/Process", "Invalid email address");
+            }
             PreventNegatives();
             PreventZero(modelState);
             if (!modelState.IsValid)
@@ -609,6 +615,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             try
             {
+                PreventNegatives();
+                PreventZero(modelState);
+                if (!modelState.IsValid)
+                    return RouteModel.ProcessPayment();
+
                 ValidatePaymentForm(modelState);
                 if (!modelState.IsValid)
                     return RouteModel.ProcessPayment();
@@ -651,6 +662,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
             // prevents testing gateway from giving a duplicate tran error
             var random = new Random();
             AmtToPay += (decimal) random.Next(100, 199)/100;
+        }
+
+        public bool IsProblemUser()
+        {
+            var a = ConfigurationManager.AppSettings["problemUser"]?.Split(',');
+            if (a == null || a.Length != 3)
+                return false;
+            return Util.Host == a[0] && First.Equal(a[1]) && Last.Equal(a[2]);
         }
     }
 }

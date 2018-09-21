@@ -35,7 +35,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
         }
 
         public CMSDataContext Db { get; set; }
-        public void DoWork()
+        public void DoWork(ContributionStatements.StatementSpecification cs)
         {
             Db = DbUtil.Create(Host);
             Db.CommandTimeout = 1200;
@@ -45,7 +45,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
             showNotes = Db.Setting("RequireNotesOnStatement");
             const bool UseMinAmt = true;
 
-            var qc = APIContribution.contributors(Db, fd, td, 0, 0, 0, noaddressok, UseMinAmt, StartsWith, Sort, tagid: TagId, excludeelectronic: ExcludeElectronic);
+            var qc = APIContribution.Contributors(Db, fd, td, 0, 0, 0, cs.Funds, noaddressok, UseMinAmt, StartsWith, Sort, tagid: TagId, excludeelectronic: ExcludeElectronic);
             var runningtotals = Db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
             runningtotals.Count = qc.Count();
             Db.SubmitChanges();
@@ -60,12 +60,12 @@ namespace CmsWeb.Areas.Finance.Models.Report
                     ShowNotes = showNotes
                 };
                 using (var stream = new FileStream(OutputFile, FileMode.Create))
-                    c.Run(stream, Db, qc);
+                    c.Run(stream, Db, qc, cs);
                 LastSet = c.LastSet();
                 var sets = c.Sets();
                 foreach (var set in sets)
                     using (var stream = new FileStream(Output(OutputFile, set), FileMode.Create))
-                        c.Run(stream, Db, qc, set);
+                        c.Run(stream, Db, qc, cs, set);
                 runningtotals = Db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
                 runningtotals.LastSet = LastSet;
                 runningtotals.Sets = string.Join(",", sets);
@@ -81,12 +81,12 @@ namespace CmsWeb.Areas.Finance.Models.Report
                     typ = 3
                 };
                 using (var stream = new FileStream(OutputFile, FileMode.Create))
-                    c.Run(stream, Db, qc);
+                    c.Run(stream, Db, qc, cs);
                 LastSet = c.LastSet();
                 var sets = c.Sets();
                 foreach (var set in sets)
                     using (var stream = new FileStream(Output(OutputFile, set), FileMode.Create))
-                        c.Run(stream, Db, qc, set);
+                        c.Run(stream, Db, qc, cs, set);
                 runningtotals = Db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
                 runningtotals.LastSet = LastSet;
                 runningtotals.Sets = string.Join(",", sets);

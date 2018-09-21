@@ -103,12 +103,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return false;
         }
 
-        public bool AllowAnonymous
+        public bool AllowReregister
         {
-            get { return allowAnonymous(masterorgid) && allowAnonymous(Orgid); }
+            get
+            {
+                if (!Orgid.HasValue)
+                    return false;
+                return settings.ContainsKey(Orgid.Value) && settings[Orgid.Value].AllowReRegister;
+            }
         }
 
-        private bool allowAnonymous(int? id)
+        public bool AllowAnonymous => _allowAnonymous(masterorgid) && _allowAnonymous(Orgid);
+
+        private bool _allowAnonymous(int? id)
         {
             if (RegisterLinkMaster())
                 return false;
@@ -408,6 +415,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return text;
         }
 
+        public static string YouMustAgreeStatement(int? orgid) => Util.PickFirst(
+            Organization.GetExtra(DbUtil.Db, orgid, "YouMustAgreeStatement"),
+            "<p>You must agree to the terms above for you or your minor child before you can continue with confirmation.</p>");
+
         public string Terms
         {
             get
@@ -594,11 +605,20 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return null;
             if (ed.Completed == true || ed.Abandoned == true)
                 return null;
-            var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
-            m.Datum = ed;
-            m.DatumId = id;
-            m.Completed = ed.Completed ?? false;
-            return m;
+            try
+            {
+                var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
+                m.Datum = ed;
+                m.DatumId = id;
+                m.Completed = ed.Completed ?? false;
+                return m;
+            }
+#pragma warning disable CS0168 // Variable is declared but never used
+            catch (Exception e)
+#pragma warning restore CS0168 // Variable is declared but never used
+            {
+                return null;
+            }
         }
 
         public OnlineRegModel GetExistingRegistration(int pid)
@@ -623,13 +643,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
 #if DEBUG
         public void DebugCleanUp()
         {
-//            var q = from om in DbUtil.Db.OrganizationMembers
-//                    where new[] {828612, Util.UserPeopleId}.Contains(om.PeopleId)
-//                    where om.OrganizationId == Orgid
-//                    select om;
             var q = from om in DbUtil.Db.OrganizationMembers
-                    where new[] {2192117,2192118}.Contains(om.OrganizationId)
+                    where new[] {828612, Util.UserPeopleId}.Contains(om.PeopleId)
+                    where om.OrganizationId == Orgid
                     select om;
+//            var q = from om in DbUtil.Db.OrganizationMembers
+//                    where new[] {2192117,2192118}.Contains(om.OrganizationId)
+//                    select om;
             foreach (var om in q)
             {
                 om.Drop(DbUtil.Db, DateTime.Now);
@@ -693,7 +713,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     FirstName = "Another",
                     LastName = "Person",
                     DateOfBirth = "12/1/1955",
-                    EmailAddress = "karen@touchpointsoftware.com",
+                    EmailAddress = "sombody@nowhere.com",
 #endif
                 });
         }
@@ -740,15 +760,22 @@ AND UserPeopleid = {0}
 AND OrganizationId = {1}", Datum.UserPeopleId, Datum.OrganizationId);
         }
 
-        internal string CheckAlreadyCompleted()
+        internal string CheckExpiredOrCompleted()
         {
             var ed = DbUtil.Db.RegistrationDatas.SingleOrDefault(e => e.Id == DatumId);
-            if (ed?.Completed == true)
+            if (ed?.Completed == true && Orgid.HasValue && !settings[Orgid.Value].AllowReRegister)
+                return "Registration Already Completed";
+
+            if (!AllowReregister && !AllowSaveProgress())
             {
-                Log("AddAnotherPersonError already completed");
-                return "It appears this registration is already completed.";
+                // Don't allow a submit to SubmitQuestions on an old form
+                var re = new Regex("index (?<dt>[0-9/]* [0-9:]* [AP]M)", RegexOptions.IgnoreCase);
+                var result = re.Match(History[0]).Groups["dt"].Value.ToDate();
+                if (result.HasValue && DateTime.Now.Subtract(result.Value).TotalMinutes > 120)
+                    return "Registration Page has expired after 2 hours";
             }
             return null;
         }
+
     }
 }

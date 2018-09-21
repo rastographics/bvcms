@@ -9,7 +9,10 @@ using System;
 using System.Data.SqlTypes;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text.RegularExpressions;
+using CmsData.API;
 using CmsData.Codes;
+using Community.CsharpSqlite;
 using UtilityExtensions;
 
 namespace CmsData
@@ -95,14 +98,47 @@ namespace CmsData
                     return AlwaysFalse();
 
             var tf = CodeIds == "1";
-            var fundid = Quarters.ToInt();
+            var fundid = Quarters.AllDigits() ? Quarters.ToInt2() : db.Setting(Quarters, "").ToInt2();
             var q = fundid > 0
                 ? db.RecentGiverFund(Days, fundid).Select(v => v.PeopleId.Value)
                 : db.RecentGiver(Days).Select(v => v.PeopleId.Value);
             var tag = db.PopulateTemporaryTag(q);
-            Expression<Func<Person, bool>> pred = p => op == CompareType.Equal && tf
-                ? db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId)
-                : !db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId);
+            Expression<Func<Person, bool>> pred = null;
+
+            /*
+             * if (op == CompareType.Equal ^ tf)
+             * IS EQUIVALENT TO AND JUST A SIMPLER WAY TO SAY
+             * if ((op == CompareType.NotEqual && tf == true) || (op == CompareType.Equal && tf == false))
+             * IN OTHER WORDS (not equal true) IS THE SAME AS (equal false)
+             */
+            if (op == CompareType.Equal ^ tf)
+                pred = p => !db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId);
+            else
+                pred = p => db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId);
+
+            Expression expr = Expression.Invoke(pred, parm);
+            return expr;
+        }
+        public Expression IsRecentGiverFunds()
+        {
+            if (!db.FromBatch)
+                if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
+                    return AlwaysFalse();
+
+            var tf = CodeIds == "1";
+            var fundcsv = APIContributionSearchModel.GetCustomFundSetList(db, Quarters);
+            if (fundcsv == null)
+                return AlwaysFalse();
+                //throw new Exception($"fundset '{Quarters}' was not found");
+            var fundlist = string.Join(",", fundcsv);
+            var q = db.RecentGiverFunds(Days, fundlist).Select(v => v.PeopleId.Value);
+            var tag = db.PopulateTemporaryTag(q);
+            Expression<Func<Person, bool>> pred = null;
+
+            if (op == CompareType.Equal ^ tf)
+                pred = p => !db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId);
+            else
+                pred = p => db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId);
 
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
@@ -238,13 +274,13 @@ namespace CmsData
         }
         internal Expression RecentContributionCount()
         {
-            var fund = Quarters.ToInt();
+            var fund = Quarters.AllDigits() ? Quarters.ToInt() : db.Setting(Quarters, "").ToInt();
             var cnt = TextValue.ToInt();
             return RecentContributionCount2(Days, fund, cnt, false);
         }
         internal Expression RecentContributionAmount()
         {
-            var fund = Quarters.ToInt();
+            var fund = Quarters.AllDigits() ? Quarters.ToInt() : db.Setting(Quarters, "").ToInt();
             var amt = TextValue.ToDecimal() ?? 0;
             return RecentContributionAmount2(Days, fund, amt, false);
         }
@@ -264,13 +300,26 @@ namespace CmsData
             return ContributionAmountBothJoint(StartDate, enddt);
 
         }
-        private Expression ContributionAmountBothJoint(DateTime? startdt, DateTime? enddt)
+        internal Expression ContributionAmountSinceSetting()
+        {
+        	var re = new Regex(@"(?<name>[^,]*)(,\s*(?<fundid>.+))?");
+        	var m = re.Match(Quarters);
+    		var name = m.Groups["name"].Value;
+    		var fundid = m.Groups["fundid"].Value;
+            var fund = fundid.AllDigits() ? fundid.ToInt2() : db.Setting(fundid, "").ToInt2();
+
+            var startdt = db.Setting(name, "").ToDate();
+            var enddt = DateTime.Today.AddDays(1);
+
+            return ContributionAmountBothJoint(startdt, enddt, fund);
+        }
+        private Expression ContributionAmountBothJoint(DateTime? startdt, DateTime? enddt, int? fundid = null)
         {
             if (!db.FromBatch)
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
             var amt = TextValue.ToDecimal() ?? 0;
-            var fund = Quarters.ToInt2();
+            var fund = fundid ?? (Quarters.AllDigits() ? Quarters.ToInt2() : db.Setting(Quarters, "").ToInt2());
 
             IQueryable<int> q = null;
             switch (op)
@@ -341,7 +390,7 @@ namespace CmsData
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
             var amt = TextValue.ToDecimal() ?? 0;
-            var fund = Quarters.ToInt2();
+            var fund = Quarters.AllDigits() ? Quarters.ToInt() : db.Setting(Quarters, "").ToInt();
 
             IQueryable<int> q = null;
             switch (op)
@@ -396,7 +445,7 @@ namespace CmsData
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
             var amt = TextValue.ToDecimal() ?? 0;
-            var fund = Quarters.ToInt();
+            var fund = Quarters.AllDigits() ? Quarters.ToInt() : db.Setting(Quarters, "").ToInt();
 
             var startdt = DateTime.Parse("1/1/1900");
             var enddt = DateTime.Parse("1/1/2500");
@@ -448,7 +497,7 @@ namespace CmsData
         }
         internal Expression RecentNonTaxDedAmount()
         {
-            var fund = Quarters.ToInt();
+            var fund = Quarters.AllDigits() ? Quarters.ToInt() : db.Setting(Quarters, "").ToInt();
             var amt = TextValue.ToDecimal() ?? 0;
             return RecentContributionAmount2(Days, fund, amt, true);
         }
@@ -458,7 +507,7 @@ namespace CmsData
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
 
-            var fund = Quarters.ToInt();
+            var fund = Quarters.AllDigits() ? Quarters.ToInt2() : db.Setting(Quarters, "").ToInt2();
             var cnt = TextValue.ToInt();
             var now = Util.Now;
             var dt = now.AddDays(-Days);
@@ -532,7 +581,7 @@ namespace CmsData
             if (!db.FromBatch)
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
-            var fund = Quarters.ToInt();
+            var fund = Quarters.AllDigits() ? Quarters.ToInt2() : db.Setting(Quarters, "").ToInt2();
             var amt = TextValue.ToDecimal() ?? 0;
             var now = Util.Now;
             var dt = now.AddDays(-Days);
@@ -593,13 +642,13 @@ namespace CmsData
         }
         internal Expression ContributionAmount()
         {
-            var fund = Quarters.ToInt();
+            var fund = Quarters.AllDigits() ? Quarters.ToInt() : db.Setting(Quarters, "").ToInt();
             var amt = TextValue.ToDecimal() ?? 0;
             return ContributionAmount2(StartDate, EndDate, fund, amt, false);
         }
         internal Expression NonTaxDedAmount()
         {
-            var fund = Quarters.ToInt();
+            var fund = Quarters.AllDigits() ? Quarters.ToInt() : db.Setting(Quarters, "").ToInt();
             var amt = TextValue.ToDecimal() ?? 0;
             return ContributionAmount2(StartDate, EndDate, fund, amt, true);
         }
@@ -635,7 +684,7 @@ namespace CmsData
                             && cc.ContributionStatusId == ContributionStatusCode.Recorded
                             && !ContributionTypeCode.ReturnedReversedTypes.Contains(cc.ContributionTypeId));
             Expression expr = Expression.Invoke(pred, parm);
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -651,7 +700,7 @@ namespace CmsData
                                && cc.ContributionAmount > 0 
                                && !ContributionTypeCode.ReturnedReversedTypes.Contains(cc.ContributionTypeId));
             Expression expr = Expression.Invoke(pred, parm);
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -668,7 +717,7 @@ namespace CmsData
                  where f.Dt >= dt
                  select f.PeopleId).Contains(p.PeopleId);
             Expression expr = Expression.Invoke(pred, parm);
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -727,30 +776,43 @@ namespace CmsData
         internal Expression IsFamilyGiver()
         {
             var tf = CodeIds == "1";
-            var fundid = Quarters.ToInt2();
+            var fundid = Quarters.AllDigits() ? Quarters.ToInt2() : db.Setting(Quarters, "").ToInt2();
+
             var td = Util.Now;
             var fd = td.AddDays(Days == 0 ? -365 : -Days);
-            var q = db.FamilyGiver(fd, td, fundid).Where(vv => vv.FamGive == true);
-            var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
-
-            Expression<Func<Person, bool>> pred = p => op == CompareType.Equal && tf
-                ? db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId)
-                : !db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId);
-
+            Tag tag = null;
+            if (op == CompareType.Equal ^ tf)
+            {
+                var q = db.FamilyGiver(fd, td, fundid).Where(vv => vv.FamGive == false);
+                tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
+            }
+            else
+            {
+                var q = db.FamilyGiver(fd, td, fundid).Where(vv => vv.FamGive == true);
+                tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
+            }
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
         internal Expression IsFamilyPledger()
         {
             var tf = CodeIds == "1";
-            var fundid = Quarters.ToInt2();
+            var fundid = Quarters.AllDigits() ? Quarters.ToInt2() : db.Setting(Quarters, "").ToInt2();
             var td = Util.Now;
             var fd = td.AddDays(Days == 0 ? -365 : -Days);
-            var q = db.FamilyGiver(fd, td, fundid).Where(vv => vv.FamPledge == true);
-            var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
-            Expression<Func<Person, bool>> pred = p => op == CompareType.Equal && tf
-                ? db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId)
-                : !db.TagPeople.Where(vv => vv.Id == tag.Id).Select(vv => vv.PeopleId).Contains(p.PeopleId);
+            Tag tag = null;
+            if (op == CompareType.Equal ^ tf)
+            {
+                var q = db.FamilyGiver(fd, td, fundid).Where(vv => vv.FamPledge == false);
+                tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
+            }
+            else
+            {
+                var q = db.FamilyGiver(fd, td, fundid).Where(vv => vv.FamPledge == true);
+                tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
+            }
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
@@ -764,11 +826,6 @@ namespace CmsData
                     return AlwaysFalse();
 
             var q = db.FirstTimeGivers(Days, fund).Select(p => p.PeopleId);
-
-            //var tag = Db.PopulateTemporaryTag(q);
-            //            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
-            //            Expression expr = Expression.Invoke(pred, parm);
-            //            return expr;
 
             Expression<Func<Person, bool>> pred;
             if (op == CompareType.Equal ^ tf)
@@ -792,7 +849,7 @@ namespace CmsData
                 topgivers.Contains(p.PeopleId);
 
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -810,7 +867,7 @@ namespace CmsData
                 toppledgers.Contains(p.PeopleId);
 
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -820,14 +877,14 @@ namespace CmsData
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
             var tf = CodeIds == "1";
-            var fundid = Quarters.ToInt2();
+            var fundid = Quarters.AllDigits() ? Quarters.ToInt2() : db.Setting(Quarters, "").ToInt2();
             Expression<Func<Person, bool>> pred = p => (from e in p.RecurringAmounts
                                                         where e.Amt > 0
                                                         where fundid == null || fundid == e.FundId
                                                         select e).Any();
 
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -843,7 +900,7 @@ namespace CmsData
                                                         where pi.PreferredGivingType == "C"
                                                         select e).Any();
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -882,7 +939,8 @@ namespace CmsData
                                                         where a.ActivityDate >= dt
                                                         select a).Any();
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }

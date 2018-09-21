@@ -345,6 +345,7 @@ namespace CmsData.View
 
 		}
 
-	    public int? AgeDisplay => Person.AgeDisplay(Age, Id);
-	}
+		
+    }
+
 }

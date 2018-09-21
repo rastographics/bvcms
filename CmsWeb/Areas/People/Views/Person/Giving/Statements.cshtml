@@ -1,4 +1,6 @@
 ﻿@model ContributionsModel
+@using CmsData
+@using CmsWeb.Areas.Finance.Models.Report
 @using CmsWeb.Areas.People.Models
 @using UtilityExtensions
 @{
@@ -10,6 +12,7 @@
         source = "/Person2/InlineCodes/"
     };
     var finance = User.IsInRole("Finance") && ((string)Session["testnofinance"]) != "true";
+    string statements = null; ContributionStatements.CustomStatementsList(DbUtil.Db);
 }
 <form class="ajax" method="post" data-init="Editable" data-init2="ExtraEditable">
     <h4>Statements</h4>
@@ -29,7 +32,10 @@
                         TotalAmount += year.Amount;
                         TotalCount += year.Count;
                         <tr>
-                            <td><a href="/Person2/ContributionStatement/@Model.PeopleId/@year.StartDate.ToSortableDate()/@year.EndDate.ToSortableDate()">@year.StartDate.Year</a></td>
+                            <td>
+                                <a href="/Person2/ContributionStatement/@Model.PeopleId/@year.StartDate.ToSortableDate()/@year.EndDate.ToSortableDate()"
+                                   @(statements == null ? "" : "class=customstatements")>@year.StartDate.Year</a>
+                            </td>
                             <td class="text-right">@year.Count.ToString("N0")</td>
                             <td class="text-right">
                                 @if (finance)

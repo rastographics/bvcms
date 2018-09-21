@@ -182,6 +182,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost, MyRequireHttps]
         public ActionResult LogOn(AccountInfo m)
         {
+            var db = DbUtil.Db;
             Session.Remove("IsNonFinanceImpersonator");
             TryLoadAlternateShell();
             if (m.ReturnUrl.HasValue())
@@ -205,22 +206,22 @@ namespace CmsWeb.Areas.Manage.Controllers
             if (user.MustChangePassword)
                 return Redirect("/Account/ChangePassword");
 
-            var access = DbUtil.Db.Setting("LimitAccess", "");
+            var access = db.Setting("LimitAccess", "");
             if (access.HasValue())
                 if (!user.InRole("Developer"))
-                    return Message($"Site is {access}, contact {DbUtil.AdminMail} for help");
+                    return Message(access);
 
-            var newleadertag = DbUtil.Db.FetchTag("NewOrgLeadersOnly", user.PeopleId, DbUtil.TagTypeId_System);
+            var newleadertag = db.FetchTag("NewOrgLeadersOnly", user.PeopleId, DbUtil.TagTypeId_System);
             if (newleadertag != null)
             {
                 if(!user.InRole("Access")) // if they already have Access role, then don't limit them with OrgLeadersOnly
-                    user.AddRoles(DbUtil.Db, "Access,OrgLeadersOnly".Split(','));
-                DbUtil.Db.Tags.DeleteOnSubmit(newleadertag);
-                DbUtil.Db.SubmitChanges();
+                    user.AddRoles(db, "Access,OrgLeadersOnly".Split(','));
+                db.Tags.DeleteOnSubmit(newleadertag);
+                db.SubmitChanges();
             }
 
             if (!m.ReturnUrl.HasValue())
-                if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access"))
+                if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access", db))
                     return Redirect("/Person2/" + Util.UserPeopleId);
             if (m.ReturnUrl.HasValue() && Url.IsLocalUrl(m.ReturnUrl))
                 return Redirect(m.ReturnUrl);

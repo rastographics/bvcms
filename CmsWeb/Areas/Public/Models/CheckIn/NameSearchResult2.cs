@@ -59,7 +59,7 @@ namespace CmsWeb.Models
                              goesby = p.NickName,
                              gender = p.GenderId,
                              marital = p.MaritalStatusId,
-                             dob = p.BirthDate.FormatDate(),
+                             dob = Util.IsCultureUS() ? p.BirthDate.FormatDate() : p.BirthDate.FormatDateUS(),
                              fid = p.FamilyId,
                              pid = p.PeopleId,
                              zip = p.Family.ZipCode,

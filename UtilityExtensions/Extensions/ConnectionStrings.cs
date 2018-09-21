@@ -13,10 +13,15 @@ namespace UtilityExtensions
 {
     public static partial class Util
     {
+        private static string _host;
         public static string Host
         {
             get
             {
+                if (_host.HasValue())
+                {
+                    return _host;
+                }
 #if DEBUG
                 var testhost = HttpRuntime.Cache["testhost"] as string;
                 if (testhost.HasValue())
@@ -28,6 +33,11 @@ namespace UtilityExtensions
                 if (HttpContext.Current != null)
                     return HttpContext.Current.Request.Url.Authority.SplitStr(".:")[0];
                 return null;
+            }
+
+            set
+            {
+                _host = value;
             }
         }
         public static string DbServer
@@ -58,14 +68,14 @@ namespace UtilityExtensions
             get
             {
                 if (IsDebug())
-                    return true;
+                    return false;
                 return ConfigurationManager.AppSettings["INSERT_X-FORWARDED-PROTO"] == "true";
             }
         }
         public static string GetConnectionString(string host)
         {
             var cs = ConnectionStringSettings(host) ?? ConfigurationManager.ConnectionStrings["CMS"];
-            var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
+            var cb = new SqlConnectionStringBuilder(cs?.ConnectionString ?? "Data Source=(local);Integrated Security=True");
             if (string.IsNullOrEmpty(cb.DataSource))
                 cb.DataSource = DbServer;
             var a = host.SplitStr(".:");

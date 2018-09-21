@@ -6,7 +6,8 @@ CREATE FUNCTION [dbo].[GetContributionsRange]
 	@nontaxded BIT,
 	@includeUnclosed BIT,
 	@pledge BIT,
-	@fundid INT
+	@fundid INT,
+	@fundids VARCHAR(MAX)
 )
 RETURNS TABLE 
 AS
@@ -32,9 +33,9 @@ RETURN
 					WHEN c.ContributionAmount < 100001 THEN 15
 					ELSE 16
 				END
-		FROM dbo.ContributionSearch0(NULL, NULL, NULL, NULL, 0, NULL, NULL, @fd, @td, 
+		FROM dbo.ContributionSearch(NULL, NULL, NULL, NULL, @fd, @td, @campusid, @fundid, 2, 0, 
 				CASE WHEN ISNULL(@nontaxded, 0) = 1 THEN 'nontaxded' WHEN @pledge = 1 THEN 'pledge' ELSE 'taxded' END, 
-				NULLIF(@fundid, 0), @campusid, NULL, @includeUnclosed, NULL, 2) cs
+				0, 0, NULL, @includeUnclosed, NULL, NULL, NULL, @fundids) cs
 		JOIN dbo.Contribution c ON c.ContributionId = cs.ContributionId
 	),
 	sumpeoplerange AS (

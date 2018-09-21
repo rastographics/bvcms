@@ -4,8 +4,8 @@ using System.IO;
 using System.Net;
 using System.Web.Mvc;
 using CmsData;
-using Novacode;
 using UtilityExtensions;
+using Xceed.Words.NET;
 
 namespace CmsWeb.Models
 {
@@ -125,12 +125,14 @@ namespace CmsWeb.Models
             else if(currpage != null)
                 finaldoc.InsertDocument(currpage);
 
-            context.HttpContext.Response.Clear();
-            context.HttpContext.Response.ContentType =
-                "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-            context.HttpContext.Response.AddHeader("Content-Disposition",
-                $"attachment;filename=AveryLabels-{DateTime.Now.ToSortableDateTime()}.docx");
-            finaldoc.SaveAs(context.HttpContext.Response.OutputStream);
+            response.Clear();
+            response.ContentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            response.AddHeader("content-disposition", $"attachment;filename=AveryLabels-{DateTime.Now.ToSortableDateTime()}.docx");
+
+            ms = new MemoryStream();
+            finaldoc.SaveAs(ms);
+            ms.WriteTo(response.OutputStream);
+            response.End();
         }
 
         private static byte[] AveryLabelTemplate()

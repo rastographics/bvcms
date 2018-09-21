@@ -23,9 +23,11 @@ namespace CmsData
 		private string _Name;
 		
 		private string _Description;
-		
-   		
-   		private EntitySet< SMSGroupMember> _SMSGroupMembers;
+
+        private bool _SystemFlag;
+
+
+        private EntitySet< SMSGroupMember> _SMSGroupMembers;
 		
    		private EntitySet< SMSList> _SMSLists;
 		
@@ -45,9 +47,12 @@ namespace CmsData
 		
 		partial void OnDescriptionChanging(string value);
 		partial void OnDescriptionChanged();
-		
-    #endregion
-		public SMSGroup()
+
+        partial void OnSystemFlagChanging(bool value);
+        partial void OnSystemFlagChanged();
+
+        #endregion
+        public SMSGroup()
 		{
 			
 			this._SMSGroupMembers = new EntitySet< SMSGroupMember>(new Action< SMSGroupMember>(this.attach_SMSGroupMembers), new Action< SMSGroupMember>(this.detach_SMSGroupMembers)); 
@@ -124,14 +129,36 @@ namespace CmsData
 
 			}
 
-		}
+        }
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-   		[Association(Name="FK_SMSGroupMembers_SMSGroups", Storage="_SMSGroupMembers", OtherKey="GroupID")]
+
+        [Column(Name = "SystemFlag", UpdateCheck = UpdateCheck.Never, Storage = "_SystemFlag", DbType = "bit")]
+        public bool SystemFlag
+        {
+            get { return this._SystemFlag; }
+
+            set
+            {
+                if (this._SystemFlag != value)
+                {
+
+                    this.OnSystemFlagChanging(value);
+                    this.SendPropertyChanging();
+                    this._SystemFlag = value;
+                    this.SendPropertyChanged("SystemFlag");
+                    this.OnSystemFlagChanged();
+                }
+
+            }
+
+        }
+
+
+        #endregion
+
+        #region Foreign Key Tables
+
+        [Association(Name="FK_SMSGroupMembers_SMSGroups", Storage="_SMSGroupMembers", OtherKey="GroupID")]
    		public EntitySet< SMSGroupMember> SMSGroupMembers
    		{
    		    get { return this._SMSGroupMembers; }

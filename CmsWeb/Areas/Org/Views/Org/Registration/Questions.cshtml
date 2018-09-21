@@ -7,8 +7,11 @@
   @Html.Raw(ViewBag.Duplicates)
   @Html.Raw(ViewBag.Duplicates2)
   @FormAction()
-  <br/>
-  @Html.DisplayFor(m => Model.TargetExtraValues)
+    <br/>
+    @if (Model.TargetExtraValues)
+    {
+      @Html.DisplayFor(m => Model.TargetExtraValues)
+    }
   <div id="QuestionList" class="movable-list noedit">
     @foreach (var ask in Model.AskItems)
     {

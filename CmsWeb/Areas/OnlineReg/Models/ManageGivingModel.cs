@@ -1,12 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Linq;
 using System.Text;
+using System.Web;
 using System.Web.Mvc;
 using CmsData;
+using CmsData.Classes;
 using CmsData.Finance;
 using CmsData.Registration;
+using CmsWeb.Areas.OnlineReg.Controllers;
 using CmsWeb.Code;
 using Dapper;
 using UtilityExtensions;
@@ -119,7 +123,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public string SpecialGivingFundsHeader => DbUtil.Db.Setting("SpecialGivingFundsHeader", "Special Giving Funds");
 
-        public bool HasManagedGiving => person.ManagedGiving() != null;
+        public bool HasManagedGiving => person?.ManagedGiving() != null;
 
         public ManageGivingModel()
         {
@@ -137,10 +141,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             this.pid = pid;
             this.orgid = orgid;
+            if (person == null)
+                return;
             var rg = person.ManagedGiving();
             if (rg != null)
                 PopulateSetup(rg);
-            else if (Setting.ExtraValueFeeName.HasValue())
+            else if (Util.HasValue(Setting.ExtraValueFeeName))
                 PopulateReasonableDefaults();
 
             var pi = PopulatePaymentInfo();
@@ -284,7 +290,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 DbUtil.Db.EmailFinanceInformation(from.FromEmail, person, Setting.Subject, text);
             }
 
-            DbUtil.Db.EmailFinanceInformation(from.FromEmail, staff, "Managed giving", $"Managed giving for {person.Name} ({pid})");
+            DbUtil.Db.EmailFinanceInformation(from.FromEmail, staff, "Managed giving", $"Managed giving for {person.Name} ({pid}) {Util.Host}");
 
             var msg = GetThankYouMessage(@"<p>Thank you {first}, for managing your recurring giving</p>
 <p>You should receive a confirmation email shortly.</p>");
@@ -299,9 +305,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public void ValidateModel(ModelStateDictionary modelState)
         {
             var dorouting = false;
-            var doaccount = Account.HasValue() && !Account.StartsWith("X");
+            var doaccount = Util.HasValue(Account) && !Account.StartsWith("X");
 
-            if (Routing.HasValue() && !Routing.StartsWith("X"))
+            if (Util.HasValue(Routing) && !Routing.StartsWith("X"))
                 dorouting = true;
 
             if (doaccount || dorouting)
@@ -350,21 +356,21 @@ namespace CmsWeb.Areas.OnlineReg.Models
             //            else if (StopWhen.HasValue && StopWhen <= StartWhen)
             //                modelState.AddModelError("StopWhen", "StopDate must occur after StartDate");
 
-            if (!FirstName.HasValue())
+            if (!Util.HasValue(FirstName))
                 modelState.AddModelError("FirstName", "Needs first name");
-            if (!LastName.HasValue())
+            if (!Util.HasValue(LastName))
                 modelState.AddModelError("LastName", "Needs last name");
-            if (!Address.HasValue())
+            if (!Util.HasValue(Address))
                 modelState.AddModelError("Address", "Needs address");
-            if (!City.HasValue())
+            if (!Util.HasValue(City))
                 modelState.AddModelError("City", "Needs city");
-            if (!State.HasValue())
+            if (!Util.HasValue(State))
                 modelState.AddModelError("State", "Needs state");
-            if (!Country.HasValue())
+            if (!Util.HasValue(Country))
                 modelState.AddModelError("Country", "Needs country");
-            if (!Zip.HasValue())
+            if (!Util.HasValue(Zip))
                 modelState.AddModelError("Zip", "Needs zip");
-            if (!Phone.HasValue())
+            if (!Util.HasValue(Phone))
                 modelState.AddModelError("Phone", "Needs phone");
         }
 
@@ -398,15 +404,26 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     TransactionResponse transactionResponse;
                     if (CreditCard.StartsWith("X"))
                     {
-                        // store payment method in the gateway vault first before doing the auth.
-                        gateway.StoreInVault(pid, Type, CreditCard, Expires, CVV, Routing, Account, giving: true);
-                        vaultSaved = true;
+//                        // store payment method in the gateway vault first before doing the auth.
+//                          If it starts with X, we should not be storing it in the vault.
+//                        gateway.StoreInVault(pid, Type, CreditCard, Expires, CVV, Routing, Account, giving: true);
+                        vaultSaved = true; // prevent it from saving later
                         transactionResponse = gateway.AuthCreditCardVault(pid, dollarAmt, "Recurring Giving Auth", 0);
                     }
                     else
+                    {
+                        var pf = new PaymentForm()
+                        {
+                            CreditCard = CreditCard,
+                            First = FirstName,
+                            Last = LastName
+                        };
+                        if(IsCardTester(pf, "ManagedGiving"))
+                            throw new Exception("Found Card Tester");
                         transactionResponse = gateway.AuthCreditCard(pid, dollarAmt, CreditCard, Expires,
                             "Recurring Giving Auth", 0, CVV, string.Empty,
                             FirstName, LastName, Address, Address2, City, State, Country, Zip, Phone);
+                    }
 
                     if (!transactionResponse.Approved)
                         throw new Exception(transactionResponse.Message);
@@ -441,6 +458,22 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             person.RecurringAmounts.AddRange(chosenFunds.Select(c => new RecurringAmount { FundId = c.fundid, Amt = c.amt }));
             DbUtil.Db.SubmitChanges();
+        }
+
+        private bool IsCardTester(PaymentForm pf, string from)
+        {
+            if (!Util.IsHosted || !pf.CreditCard.HasValue())
+                return false;
+            var hash = Pbkdf2Hasher.HashString(pf.CreditCard);
+            DbUtil.Db.InsertIpLog(HttpContext.Current.Request.UserHostAddress, hash);
+
+            if (pf.IsProblemUser())
+                return OnlineRegController.LogRogueUser("Problem User", from);
+            var iscardtester = ConfigurationManager.AppSettings["IsCardTester"];
+            var result = DbUtil.Db.Connection.ExecuteScalar<string>(iscardtester, new {ip = HttpContext.Current.Request.UserHostAddress});
+            if(result.Equal("OK"))
+                return false;
+            return OnlineRegController.LogRogueUser(result, from);
         }
 
         public class FundItemChosen

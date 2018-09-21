@@ -146,6 +146,8 @@ namespace CmsWeb.Areas.Reports.Models
             var sql = Sql();
             if(sql.Contains("@userid"))
                 p.Add("@userid", Util.UserId);
+            if (sql.Contains("pagebreak"))
+                 return PythonModel.PageBreakTables(DbUtil.Db, sql, p);
             var rd = cn.ExecuteReader(sql, p);
             return GridResult.Table(rd, Name2, 2000);
         }
@@ -470,7 +472,7 @@ namespace CmsWeb.Areas.Reports.Models
                     break;
                 case "SqlReport":
                     typeid = ContentTypeCode.TypeSqlScript;
-                    lookfor = new[] {"@qtagid"};
+                    lookfor = new[] {"@qtagid", "@bluetoolbartagid"};
                     break;
                 case "OrgSearchSqlReport":
                     typeid = ContentTypeCode.TypeSqlScript;

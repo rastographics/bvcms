@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -9,10 +11,13 @@ using CmsData.Codes;
 using MoreLinq;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Web.Hosting;
+using Newtonsoft.Json;
 
 namespace CmsWeb.Models
 {
-    public class OrgMembersModel
+    public class OrgMembersModel : LongRunningOperation
     {
         private IQueryable<OrganizationMember> members;
 
@@ -448,24 +453,6 @@ namespace CmsWeb.Models
                         break;
                 }
             return q;
-        }
-
-        public void Move()
-        {
-            foreach (var i in List)
-            {
-                if (!i.HasValue())
-                    continue;
-                var a = i.Split('.');
-                if (a.Length != 2)
-                    continue;
-                var pid = a[0].ToInt();
-                var oid = a[1].ToInt();
-                if (oid == TargetId)
-                    continue;
-                OrganizationMember.MoveToOrg(DbUtil.Db, pid, oid, TargetId, MoveRegistrationData, ChangeMemberType == true ? MoveToMemberTypeId : -1);
-            }
-            DbUtil.Db.UpdateMainFellowship(TargetId);
         }
 
         public int MovedCount()

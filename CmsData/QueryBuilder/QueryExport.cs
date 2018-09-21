@@ -71,6 +71,11 @@ namespace CmsData
             var m = new ExportQueryModel();
             return m.ToString(c);
         }
+        public static string ToSql(this Condition c)
+        {
+            var qq = DbUtil.Db.PeopleQueryCondition(c);
+            return DbUtil.Db.GetWhereClause(qq);
+        }
 
         public static bool HasCode(this string s)
         {

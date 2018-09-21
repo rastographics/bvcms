@@ -1,4 +1,5 @@
 ﻿using System;
+using Dapper;
 using UtilityExtensions;
 
 namespace CmsData
@@ -142,6 +143,11 @@ namespace CmsData
                     db2.PeopleExtras.DeleteOnSubmit(ev);
                     db2.SubmitChanges();
                 }
+        }
+        public void DeleteAllExtraValueLike(string value)
+        {
+            DbUtil.LogActivity(db.Host, $"Delete PeopleExtra where Field like '{value}'");
+            db.Connection.Execute("delete dbo.PeopleExtra where Field like @value", new {value});
         }
     }
 }

@@ -4,294 +4,297 @@
 @using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.OrgPeopleModel
 @{
-  var target = Util2.TargetLinkPeople ? "target='people'" : "";
+    var target = Util2.TargetLinkPeople ? "target='people'" : "";
 }
 <table class="table table-striped">
-  <thead>
-  <tr>
-    @if (!Model.OrgLeaderAddDrop)
-    {
-      <th style="width: 20px;">@Model.SortLink("Ck")</th>
-    }
-    @if (Model.MultiSelect)
-    {
-      <th>@Model.SortLink("Tab")</th>
-    }
-    <th>
-      @Model.SortLink("Name")
-    </th>
-    <th>
-      @Model.SortLink("MemberType")
-    </th>
-    <th>
-        @Model.SortLink("Church")<br />
-        @if (Model.ShowBirthday)
+    <thead>
+    <tr>
+        @if (!Model.OrgLeaderAddDrop)
         {
-            <text>@Model.SortLink("Age") - @Model.SortLink("Bday")</text>
+            <th style="width: 20px;">@Model.SortLink("Ck")</th>
         }
-    </th>
-    <th>Communication</th>
-    <th>@Model.SortLink("% Att.")</th>
-    <th>
-      <div class="btn-group">
-        <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
-          Dates <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu">
-          <li class="dropdown-header">Sort By Date</li>
-          <li>@Model.SortLink("Last Attended")</li>
-          <li>@Model.SortLink("Join Date")</li>
-          <li>@Model.SortLink("Drop Date")</li>
-          <li>@Model.SortLink("Inactive Date")</li>
-          @if (Model.ShowMinistryInfo)
-          {
-            <li>@Model.SortLink("Contact Received")</li>
-            <li>@Model.SortLink("Contact Made")</li>
-            <li>@Model.SortLink("Task About")</li>
-            <li>@Model.SortLink("Task Assigned")</li>
-          }
-        </ul>
-      </div>
-    </th>
-    @if (!Model.OrgLeaderAddDrop && Model.ShowTagButtons)
-    {
-      <th>Tag</th>
-    }
-    else if (Model.GroupSelect == GroupSelectCode.Member || Model.GroupSelect == GroupSelectCode.Prospect)
-    {
-      <th>Actions</th>
-    }
-  </tr>
-  </thead>
-  <tbody>
-  @foreach (var p in Model.ViewList())
-  {
-    var hastag = p.HasTag ?? false;
-    <tr class="@(p.IsDeceased == true ? "danger" : "")">
-      @if (!Model.OrgLeaderAddDrop)
-      {
-        <td style="width: 20px;">
-          <input type="checkbox" class="omck" value="@p.PeopleId" @(p.IsChecked == true ? "checked=checked" : "")/>
-        </td>
-      }
-      @if (Model.MultiSelect)
-      {
-        <td>@p.Tab</td>
-      }
-      <td>
-        @if (Model.DisablePeopleLink)
+        @if (Model.MultiSelect)
         {
-          <text>@p.Name</text>
+            <th>@Model.SortLink("Tab")</th>
         }
-        else
+        <th>
+            @Model.SortLink("Name")
+        </th>
+        <th>
+            @Model.SortLink("MemberType")
+        </th>
+        <th>
+            @Model.SortLink("Church")<br/>
+            @if (Model.ShowBirthday)
+            {
+                <text>@Model.SortLink("Age") - @Model.SortLink("Bday")</text>
+            }
+        </th>
+        <th>Communication</th>
+        <th>@Model.SortLink("% Att.")</th>
+        <th>
+            <div class="btn-group">
+                <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
+                    Dates <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li class="dropdown-header">Sort By Date</li>
+                    <li>@Model.SortLink("Last Attended")</li>
+                    <li>@Model.SortLink("Join Date")</li>
+                    <li>@Model.SortLink("Drop Date")</li>
+                    <li>@Model.SortLink("Inactive Date")</li>
+                    @if (Model.ShowMinistryInfo)
+                    {
+                        <li>@Model.SortLink("Contact Received")</li>
+                        <li>@Model.SortLink("Contact Made")</li>
+                        <li>@Model.SortLink("Task About")</li>
+                        <li>@Model.SortLink("Task Assigned")</li>
+                    }
+                </ul>
+            </div>
+        </th>
+        @if (!Model.OrgLeaderAddDrop && Model.ShowTagButtons)
         {
-          <a href="/Person2/@p.PeopleId" class="target" @target>@p.Name</a>
+            <th>Tag</th>
         }
-        @if (Model.NameLinks != null && p.PeopleId.HasValue && Model.NameLinks.ContainsKey(p.PeopleId.Value))
+        else if (Model.GroupSelect == GroupSelectCode.Member || Model.GroupSelect == GroupSelectCode.Prospect)
         {
-          <div>
-            @Html.Raw(Model.NameLinks[p.PeopleId.Value])
-          </div>
+            <th>Actions</th>
         }
-
-        @if (Model.ShowAddress)
-        {
-          @p.AddressBlock
-        }
-      </td>
-      <td>
-        @ManageMemberLinks(p)
-        @ManagePrevMemberLinks(p)
-        @ManageGuestLinks(p)
-        @ManageProspectLinks(p)
-      </td>
-      <td>
-        @p.MemberStatus<br/>
-        @if (Model.ShowBirthday)
-        {
-          <text>@Person.AgeDisplay(p.Age, p.PeopleId) - @p.BirthDate</text>
-        }
-      </td>
-      <td>
-        @foreach (var ph in p.Phones)
-        {
-          @ph
-          <br/>
-        }
-        <a href="mailto:@p.EmailAddress">@p.EmailAddress</a>
-      </td>
-      <td>
-        @(!string.IsNullOrWhiteSpace(p.AttPct.ToString2("N1")) ? $"{p.AttPct.ToString2("N1")}%" : "")
-      </td>
-      <td>
-        @ShowDateLink(p.LastAttended, $"/Org/GotoMeetingForDate/{Model.Id}/{p.LastAttendedTicks}", "Last")
-        @ShowDate(p.Joined, "Joined")
-        @ShowDate(p.Dropped, "Dropped")
-        @ShowDate(p.InactiveDate, "Inactive")
-        @if (Model.ShowMinistryInfo)
-        {
-          @ShowDateLink(p.LastContactReceivedDt, "/Contact2", p.LastContactReceivedId, "Contactee")
-          @ShowDateLink(p.LastContactMadeDt, "/Contact2", p.LastContactMadeId, "Minister")
-          @ShowDateLink(p.TaskAboutDt, "/Person2", p.PeopleId, "Needs Touch", "#tab-tasksabout")
-          @ShowDateLink(p.TaskDelegatedDt, "/Person2", p.PeopleId, "Has Task", "#tab-tasksassigned")
-        }
-      </td>
-      @if (!Model.OrgLeaderAddDrop && Model.ShowTagButtons)
-      {
-        <td>
-          <a href="#" class="taguntag btn btn-sm @(hastag ? "btn-default" : "btn-success")" title="Add to/Remove from Active Tag" pid="@p.PeopleId">
-            <i class="fa fa-tag"></i> @(hastag ? "Remove" : "Add")
-          </a>
-        </td>
-      }
-      else if (Model.GroupSelect == GroupSelectCode.Member || Model.GroupSelect == GroupSelectCode.Prospect)
-      {
-        <td>
-          <a href="#" class="btn btn-sm btn-danger dropMember" title="Drop Member" data-people-id="@p.PeopleId"><i class="fa fa-trash"></i> Drop</a>
-        </td>
-      }
     </tr>
-  }
-  </tbody>
+    </thead>
+    <tbody>
+    @foreach (var p in Model.ViewList())
+    {
+        var hastag = p.HasTag ?? false;
+        <tr class="@(p.IsDeceased == true ? "danger" : "")">
+            @if (!Model.OrgLeaderAddDrop)
+            {
+                <td style="width: 20px;">
+                    <input type="checkbox" class="omck" value="@p.PeopleId" @(p.IsChecked == true ? "checked=checked" : "")/>
+                </td>
+            }
+            @if (Model.MultiSelect)
+            {
+                <td>@p.Tab</td>
+            }
+            <td>
+                @if (Model.DisablePeopleLink)
+                {
+                    <text>@p.Name</text>
+                }
+                else
+                {
+                    <a href="/Person2/@p.PeopleId" class="target" @target>@p.Name</a>
+                }
+                @if (Model.NameLinks != null && p.PeopleId.HasValue && Model.NameLinks.ContainsKey(p.PeopleId.Value))
+                {
+                    <div>
+                        @Html.Raw(Model.NameLinks[p.PeopleId.Value])
+                    </div>
+                }
+
+                @if (Model.ShowAddress)
+                {
+                    @p.AddressBlock
+                }
+            </td>
+            <td>
+                @ManageMemberLinks(p)
+                @ManagePrevMemberLinks(p)
+                @ManageGuestLinks(p)
+                @ManageProspectLinks(p)
+            </td>
+            <td>
+                @p.MemberStatus<br/>
+                @if (Model.ShowBirthday)
+                {
+                    var age = Person.AgeDisplay(p.Age, p.PeopleId).ToString();
+                    var bday = p.BirthDate;
+                    var dash = age.HasValue() && bday.HasValue() ? "-" : "";
+                    <text>@age @dash @bday</text>
+                }
+            </td>
+            <td>
+                @foreach (var ph in p.Phones)
+                {
+                    @ph
+                    <br/>
+                }
+                <a href="mailto:@p.EmailAddress">@p.EmailAddress</a>
+            </td>
+            <td>
+                @(!string.IsNullOrWhiteSpace(p.AttPct.ToString2("N1")) ? $"{p.AttPct.ToString2("N1")}%" : "")
+            </td>
+            <td>
+                @ShowDateLink(p.LastAttended, $"/Org/GotoMeetingForDate/{Model.Id}/{p.LastAttendedTicks}", "Last")
+                @ShowDate(p.Joined, "Joined")
+                @ShowDate(p.Dropped, "Dropped")
+                @ShowDate(p.InactiveDate, "Inactive")
+                @if (Model.ShowMinistryInfo)
+                {
+                    @ShowDateLink(p.LastContactReceivedDt, "/Contact2", p.LastContactReceivedId, "Contactee")
+                    @ShowDateLink(p.LastContactMadeDt, "/Contact2", p.LastContactMadeId, "Minister")
+                    @ShowDateLink(p.TaskAboutDt, "/Person2", p.PeopleId, "Needs Touch", "#tab-tasksabout")
+                    @ShowDateLink(p.TaskDelegatedDt, "/Person2", p.PeopleId, "Has Task", "#tab-tasksassigned")
+                }
+            </td>
+            @if (!Model.OrgLeaderAddDrop && Model.ShowTagButtons)
+            {
+                <td>
+                    <a href="#" class="taguntag btn btn-sm @(hastag ? "btn-default" : "btn-success")" title="Add to/Remove from Active Tag" pid="@p.PeopleId">
+                        <i class="fa fa-tag"></i> @(hastag ? "Remove" : "Add")
+                    </a>
+                </td>
+            }
+            else if (Model.GroupSelect == GroupSelectCode.Member || Model.GroupSelect == GroupSelectCode.Prospect)
+            {
+                <td>
+                    <a href="#" class="btn btn-sm btn-danger dropMember" title="Drop Member" data-people-id="@p.PeopleId"><i class="fa fa-trash"></i> Drop</a>
+                </td>
+            }
+        </tr>
+    }
+    </tbody>
 </table>
 @helper DaysAgo(DateTime dt)
 {
-  if (dt > DateTime.Today)
-  {
-    return;
-  }
-  <span class="smallfont">@DateTime.Today.Subtract(dt).TotalDays.ToInt()</span>
+    if (dt > DateTime.Today)
+    {
+        return;
+    }
+    <span class="smallfont">@DateTime.Today.Subtract(dt).TotalDays.ToInt()</span>
 }
 @helper ShowDateLink(DateTime? dt, string url, int? id, string type, string extra = "")
 {
-  if (dt.HasValue)
-  {
-    <div>
-      <a href="@url/@id@extra" target="contact">@dt.FormatDate2(type)</a>
-      @DaysAgo(dt.Value)
-    </div>
-  }
+    if (dt.HasValue)
+    {
+        <div>
+            <a href="@url/@id@extra" target="contact">@dt.FormatDate2(type)</a>
+            @DaysAgo(dt.Value)
+        </div>
+    }
 }
 @helper ShowDateLink(DateTime? dt, string url, string type)
 {
-  if (dt.HasValue)
-  {
-    <div>
-      <a href="@url" target="contact">@dt.FormatDate2(type)</a>
-      @DaysAgo(dt.Value)
-    </div>
-  }
+    if (dt.HasValue)
+    {
+        <div>
+            <a href="@url" target="contact">@dt.FormatDate2(type)</a>
+            @DaysAgo(dt.Value)
+        </div>
+    }
 }
 @helper ShowDate(DateTime? dt, string type)
 {
-  if (dt.HasValue)
-  {
-    <div>
-      <span>@dt.FormatDate2(type)</span>
-      @DaysAgo(dt.Value)
-    </div>
-  }
+    if (dt.HasValue)
+    {
+        <div>
+            <span>@dt.FormatDate2(type)</span>
+            @DaysAgo(dt.Value)
+        </div>
+    }
 }
 @helper ManageGuestLinks(OrgFilterPerson p)
 {
-  if (p.GroupCode == GroupSelectCode.Guest)
-  {
-    <div>
-      <a href="/Org/Join/@Model.Id/@p.PeopleId" class="joinlink"
-         confirm="Make @p.Name a Member of this Org?">
-        Join Org
-      </a>
-    </div>
-    if (p.MemberType != "Prospect")
+    if (p.GroupCode == GroupSelectCode.Guest)
     {
-      <div>
-        <a href="/Org/AddProspect/@Model.Id/@p.PeopleId" class="joinlink"
-           confirm="Make @p.Name a Prospect of this Org?">
-          Add as Prospect
-        </a>
-      </div>
-    }
-    if (p.LastAttended.HasValue)
-    {
-      if (p.Hidden == true)
-      {
         <div>
-          <a href="/Org/ShowVisitor/@Model.Id/@p.PeopleId/@p.LastAttended.Value.Ticks/Show" class="joinlink"
-             confirm="Show @p.Name as a Guest for this Org?">
-            Show
-          </a>
+            <a href="/Org/Join/@Model.Id/@p.PeopleId" class="joinlink"
+               confirm="Make @p.Name a Member of this Org?">
+                Join Org
+            </a>
         </div>
-      }
-      else
-      {
-        <div>
-          <a href="/Org/ShowVisitor/@Model.Id/@p.PeopleId/@p.LastAttended.Value.Ticks/Hide" class="joinlink"
-             confirm="Hide @p.Name as a Guest for this Org until next visit?">
-            Hide
-          </a>
-        </div>
-      }
+        if (p.MemberType != "Prospect")
+        {
+            <div>
+                <a href="/Org/AddProspect/@Model.Id/@p.PeopleId" class="joinlink"
+                   confirm="Make @p.Name a Prospect of this Org?">
+                    Add as Prospect
+                </a>
+            </div>
+        }
+        if (p.LastAttended.HasValue)
+        {
+            if (p.Hidden == true)
+            {
+                <div>
+                    <a href="/Org/ShowVisitor/@Model.Id/@p.PeopleId/@p.LastAttended.Value.Ticks/Show" class="joinlink"
+                       confirm="Show @p.Name as a Guest for this Org?">
+                        Show
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div>
+                    <a href="/Org/ShowVisitor/@Model.Id/@p.PeopleId/@p.LastAttended.Value.Ticks/Hide" class="joinlink"
+                       confirm="Hide @p.Name as a Guest for this Org until next visit?">
+                        Hide
+                    </a>
+                </div>
+            }
+        }
     }
-  }
 }
 
 @helper ManageProspectLinks(OrgFilterPerson p)
 {
-  if (p.GroupCode == GroupSelectCode.Prospect)
-  {
-    if (Model.ShowSubgroupFilters)
+    if (p.GroupCode == GroupSelectCode.Prospect)
     {
-      if (p.Hidden == true)
-      {
-        <div>
-          <a href="/Org/ShowProspect/@Model.Id/@p.PeopleId/Show" class="joinlink"
-             confirm="Show @p.Name in Prospect List for this Org?">
-            Show
-          </a>
-        </div>
-      }
-      else
-      {
-        <div>
-          <a href="/Org/ShowProspect/@Model.Id/@p.PeopleId/Hide" class="joinlink"
-             confirm="Hide @p.Name on Prospect List for this Org?">
-            Hide
-          </a>
-        </div>
-      }
+        if (Model.ShowSubgroupFilters)
+        {
+            if (p.Hidden == true)
+            {
+                <div>
+                    <a href="/Org/ShowProspect/@Model.Id/@p.PeopleId/Show" class="joinlink"
+                       confirm="Show @p.Name in Prospect List for this Org?">
+                        Show
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div>
+                    <a href="/Org/ShowProspect/@Model.Id/@p.PeopleId/Hide" class="joinlink"
+                       confirm="Hide @p.Name on Prospect List for this Org?">
+                        Hide
+                    </a>
+                </div>
+            }
+        }
+        else
+        {
+            <div>
+                <a href="/Org/Join/@Model.Id/@p.PeopleId" class="joinlink"
+                   confirm="Join @p.Name to this Org?">
+                    Join
+                </a>
+            </div>
+        }
     }
-    else
-    {
-      <div>
-        <a href="/Org/Join/@Model.Id/@p.PeopleId" class="joinlink"
-           confirm="Join @p.Name to this Org?">
-          Join
-        </a>
-      </div>
-    }
-  }
 }
 @helper ManageMemberLinks(OrgFilterPerson p)
 {
-  if (!(new[] {GroupSelectCode.Guest, GroupSelectCode.Previous}).Contains(p.GroupCode))
-  {
-    <div>
-      <a class="membertype" href="/OrgMemberDialog/@p.Group/@Model.Id/@p.PeopleId"> @p.MemberType </a>
-    </div>
-  }
+    if (!(new[] {GroupSelectCode.Guest, GroupSelectCode.Previous}).Contains(p.GroupCode))
+    {
+        <div>
+            <a class="membertype" href="/OrgMemberDialog/@p.Group/@Model.Id/@p.PeopleId"> @p.MemberType </a>
+        </div>
+    }
 }
 @helper ManagePrevMemberLinks(OrgFilterPerson p)
 {
-  if (p.GroupCode == GroupSelectCode.Previous)
-  {
-    <div>
-      <a class="membertype" href="/OrgPrevMemberDialog/@Model.Id/@p.PeopleId">Prev @p.MemberType </a>
-    </div>
-    <div class="pad-top">
-      <a href="/Org/Join/@Model.Id/@p.PeopleId" class="joinlink"
-         confirm="Re-Join @p.Name to this Org?">
-        Re-Join Org
-      </a>
-    </div>
-  }
+    if (p.GroupCode == GroupSelectCode.Previous)
+    {
+        <div>
+            <a class="membertype" href="/OrgPrevMemberDialog/@Model.Id/@p.PeopleId">Prev @p.MemberType </a>
+        </div>
+        <div class="pad-top">
+            <a href="/Org/Join/@Model.Id/@p.PeopleId" class="joinlink"
+               confirm="Re-Join @p.Name to this Org?">
+                Re-Join Org
+            </a>
+        </div>
+    }
 }

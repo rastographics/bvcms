@@ -22,6 +22,10 @@ namespace ImageData
         partial void UpdateImage(Image instance);
         partial void DeleteImage(Image instance);
         
+        partial void InsertOther(Other instance);
+        partial void UpdateOther(Other instance);
+        partial void DeleteOther(Other instance);
+        
 #endregion
 		
 		public CMSImageDataContext() : 
@@ -63,6 +67,12 @@ namespace ImageData
 		public Table< Image> Images
 		{
 			get	{ return this.GetTable< Image>(); }
+
+		}
+
+		public Table< Other> Others
+		{
+			get	{ return this.GetTable< Other>(); }
 
 		}
 

@@ -1,9 +1,11 @@
 ﻿@using CmsWeb.Code
+@using CmsWeb.Areas.Finance.Models.Report
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Contribution Statements";
     ViewBag.ReportPageHeader = "Contribution Statements";
     var cv = new CodeValueModel();
+    var customstatementslist = ContributionStatements.CustomStatementsSelectList();
 }
 <div class="report box box-responsive">
     <div class="box-content">
@@ -77,13 +79,25 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-12">
+                    <div class="col-sm-4">
+                    @if (customstatementslist != null)
+                    {
+                        <div class="form-group">
+                            <label for="CustomSet" class="control-label">Custom Statements</label>
+                            <div class="input-group">
+                                @Html.DropDownList("CustomStatement", customstatementslist, new {@class = "form-control"})
+                            </div>
+                        </div>
+                        
+                    }
+                    </div>
+                    <div class="col-sm-8">
                         <div class="pull-right">
-                          <button type="submit" class="btn btn-primary">Run</button>
-                          @if ((bool) ViewBag.Previous)
-                          {
-                            <a href="/Statements/Progress"class="btn btn-default">Previously Run Sets</a>
-                          }
+                            <button type="submit" class="btn btn-primary">Run</button>
+                            @if ((bool) ViewBag.Previous)
+                            {
+                                <a href="/Statements/Progress"class="btn btn-default">Previously Run Sets</a>
+                            }
                         </div>
                     </div>
                 </div>

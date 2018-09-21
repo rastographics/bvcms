@@ -60,6 +60,10 @@ namespace CmsData
 		
 		private int? _CampusId;
 		
+		private int _ImageID;
+		
+		private string _MetaInfo;
+		
    		
    		private EntitySet< BundleDetail> _BundleDetails;
 		
@@ -143,6 +147,12 @@ namespace CmsData
 		
 		partial void OnCampusIdChanging(int? value);
 		partial void OnCampusIdChanged();
+		
+		partial void OnImageIDChanging(int value);
+		partial void OnImageIDChanged();
+		
+		partial void OnMetaInfoChanging(string value);
+		partial void OnMetaInfoChanged();
 		
     #endregion
 		public Contribution()
@@ -642,6 +652,50 @@ namespace CmsData
 					this._CampusId = value;
 					this.SendPropertyChanged("CampusId");
 					this.OnCampusIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="ImageID", UpdateCheck=UpdateCheck.Never, Storage="_ImageID", DbType="int NOT NULL")]
+		public int ImageID
+		{
+			get { return this._ImageID; }
+
+			set
+			{
+				if (this._ImageID != value)
+				{
+				
+                    this.OnImageIDChanging(value);
+					this.SendPropertyChanging();
+					this._ImageID = value;
+					this.SendPropertyChanged("ImageID");
+					this.OnImageIDChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="MetaInfo", UpdateCheck=UpdateCheck.Never, Storage="_MetaInfo", DbType="varchar(100)")]
+		public string MetaInfo
+		{
+			get { return this._MetaInfo; }
+
+			set
+			{
+				if (this._MetaInfo != value)
+				{
+				
+                    this.OnMetaInfoChanging(value);
+					this.SendPropertyChanging();
+					this._MetaInfo = value;
+					this.SendPropertyChanged("MetaInfo");
+					this.OnMetaInfoChanged();
 				}
 
 			}

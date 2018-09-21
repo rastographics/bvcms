@@ -1,0 +1,11 @@
+﻿@model CmsWeb.Areas.Search.Models.QueryCodeModel
+@foreach (var q in Model.List)
+{
+@Html.Raw(Model.GetPythonCode(q))
+}
+
+
+@foreach (var q in Model.List)
+{
+@Html.Raw(Model.GetSqlCode(q))
+}

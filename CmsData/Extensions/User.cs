@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UtilityExtensions;
 using System.Web.Security;
-using Dapper;
+using UtilityExtensions;
 
 namespace CmsData
 {
@@ -49,55 +48,69 @@ namespace CmsData
                 return;
             }
             var deletes = (from r in db.UserRoles
-                where r.UserId == UserId
-                where !value.Contains(r.Role.RoleName)
-                select new {r, r.Role.RoleName}).ToList();
+                           where r.UserId == UserId
+                           where !value.Contains(r.Role.RoleName)
+                           select new { r, r.Role.RoleName }).ToList();
 
             db.UserRoles.DeleteAllOnSubmit(deletes.Select(rr => rr.r));
 
             var addlist = (from s in value
-                     join r in UserRoles on s equals r.Role.RoleName into g
-                     from t in g.DefaultIfEmpty()
-                     where t == null
-                     select s).ToList();
+                           join r in UserRoles on s equals r.Role.RoleName into g
+                           from t in g.DefaultIfEmpty()
+                           where t == null
+                           select s).ToList();
 
             foreach (var s in addlist)
             {
                 var role = db.Roles.SingleOrDefault(r => r.RoleName == s);
                 var roleid = role?.RoleId;
                 if (role == null)
+                {
                     roleid = CreateRole(db, s);
+                }
+
                 UserRoles.Add(new UserRole { RoleId = roleid.Value, UserId = UserId });
             }
             db.SubmitChanges();
             if (!log)
+            {
                 return;
+            }
+
             if (deletes.Count > 0)
+            {
                 db.LogActivity($"Remove Roles {string.Join(",", deletes.Select(rr => rr.RoleName))} from user {Username}", pid: PeopleId, uid: Util.UserPeopleId);
+            }
+
             if (addlist.Count > 0)
+            {
                 db.LogActivity($"Add Roles {string.Join(",", addlist)} to user {Username}", pid: PeopleId, uid: Util.UserPeopleId);
+            }
         }
 
         public void AddRoles(CMSDataContext db, params string[] value)
         {
             var q = from s in value
-                join r in UserRoles on s equals r.Role.RoleName into g
-                from t in g.DefaultIfEmpty()
-                where t == null
-                select s;
+                    join r in UserRoles on s equals r.Role.RoleName into g
+                    from t in g.DefaultIfEmpty()
+                    where t == null
+                    select s;
 
             foreach (var s in q)
             {
                 var role = db.Roles.SingleOrDefault(r => r.RoleName == s);
                 if (role == null)
+                {
                     throw new Exception($"Role {s} does not exist");
-                UserRoles.Add(new UserRole {Role = role});
+                }
+
+                UserRoles.Add(new UserRole { Role = role });
             }
         }
 
         public void AddRole(CMSDataContext db, string value)
         {
-            var a = new[] {value};
+            var a = new[] { value };
             AddRoles(db, a);
         }
 
@@ -106,7 +119,11 @@ namespace CmsData
             foreach (var s in values)
             {
                 var role = Db.Roles.SingleOrDefault(r => r.RoleName == s);
-                if (role == null) continue;
+                if (role == null)
+                {
+                    continue;
+                }
+
                 Db.UserRoles.DeleteOnSubmit(UserRoles.Single(x => x.Role.RoleName == role.RoleName));
             }
             Db.SubmitChanges();
@@ -117,7 +134,10 @@ namespace CmsData
             CMSMembershipProvider.provider.AdminOverride = true;
             var mu = CMSMembershipProvider.provider.GetUser(Username, false);
             if (mu == null)
+            {
                 return;
+            }
+
             mu.UnlockUser();
             mu.ChangePassword(mu.ResetPassword(), newpassword);
             TempPassword = newpassword;
@@ -129,11 +149,20 @@ namespace CmsData
         public bool CanAssign(CMSDataContext db, string role)
         {
             if (role == "Finance" || role == "FinanceAdmin")
+            {
                 return db.CurrentUser.InRole("Finance") && db.CurrentUser.InRole("Admin");
+            }
+
             if (role == "Developer")
+            {
                 return db.CurrentUser.InRole("Developer");
+            }
+
             if (role == "Delete")
+            {
                 return db.CurrentUser.InRole("Developer");
+            }
+
             return db.CurrentUser.InRole("Admin");
         }
 
@@ -164,7 +193,7 @@ namespace CmsData
 
         public static string[] Financial =
         {
-            "Finance", "FinanceAdmin", "ManageTransactions", "FinanceViewOnly"
+            "Finance", "FinanceAdmin", "ManageTransactions", "FinanceViewOnly", "FinanceDataEntry", "FundManager"
         };
 
         public static string[] Advanced =
@@ -176,7 +205,8 @@ namespace CmsData
             "Manager2",
             "OrgTagger",
             "ManagePrivateContacts",
-            "ManageTasks"
+            "ManageTasks",
+            "ManageOrgMembers"
         };
 
         public static List<string> Hardwired()
@@ -195,8 +225,8 @@ namespace CmsData
             var allroles = AllRoles(db);
             var hardwired = Hardwired();
             var q = from r in allroles
-                where !hardwired.Contains(r.RoleName)
-                select r.RoleName;
+                    where !hardwired.Contains(r.RoleName)
+                    select r.RoleName;
             return q.ToArray();
         }
 
@@ -204,8 +234,11 @@ namespace CmsData
         {
             bool? hardwired = null;
             if (Hardwired().Contains(name))
+            {
                 hardwired = true;
-            var role = new Role {Hardwired = hardwired, RoleName = name};
+            }
+
+            var role = new Role { Hardwired = hardwired, RoleName = name };
             db.Roles.InsertOnSubmit(role);
             db.SubmitChanges();
             return role.RoleId;

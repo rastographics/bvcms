@@ -5,7 +5,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
@@ -89,6 +88,11 @@ namespace CmsWeb.Areas.People.Models
 
             list.Insert(0, new SelectListItem { Value = "0", Text = "(none)", Selected = true });
             return list;
+        }
+
+        public IEnumerable<ContactExtraLocation> Locations
+        {
+            get { return ContactExtraConfig.Locations; }
         }
 
         internal Contact contact;
@@ -223,36 +227,14 @@ namespace CmsWeb.Areas.People.Models
 
         public void SetLocationOnContact()
         {
-            var list = new List<string>
-            {
-                Ministry.ToString(),
-                ContactType.ToString(),
-                ContactReason.ToString()
-            };
-
-            Location = ComputeLocationString(list);
+            Location = ContactExtraConfig
+                .GetLocationFor(OrganizationId, Ministry.ToString(), ContactType.ToString(), ContactReason.ToString());
         }
 
         public void SetLocationOnContact(string ministry, string contactType, string contactReason)
         {
-            var list = new List<string>
-            {
-                ministry,
-                contactType,
-                contactReason
-            };
-
-            Location = ComputeLocationString(list);
-        }
-
-        private string ComputeLocationString(IEnumerable<string> list)
-        {
-            list = list.Where(x => x != null)
-                       .Select(x => x.SlugifyString());
-            var location = string.Join("-", list);
-            if (location != string.Empty) return location;
-
-            return OrganizationId.HasValue ? "Organization" : "Person";
+            Location = ContactExtraConfig
+                .GetLocationFor(OrganizationId, ministry, contactType, contactReason);
         }
 
         private static ValidationResult ModelError(string message, string field)
@@ -273,6 +255,8 @@ namespace CmsWeb.Areas.People.Models
         public bool ShowDefaultCheckboxes => !DbUtil.Db.Setting("UX-HideContactCheckboxes");
 
         public bool ShowContactExtraFeature => DbUtil.Db.Setting("Feature-ContactExtra");
+
+        private ContactExtraLocationConfig ContactExtraConfig => new ContactExtraLocationConfig();
 
         private string GetIncomplete()
         {

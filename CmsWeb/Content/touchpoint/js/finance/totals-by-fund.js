@@ -59,6 +59,28 @@
 		    initializePopovers();
 		});
     });
+    $("#results").on('click', 'a.CustomExport', function (ev) {
+        ev.preventDefault();
+	    if (!$.DateValid($("#Dt1").val(), true))
+	        return;
+	    if (!$.DateValid($("#Dt2").val(), true))
+            return;
+
+        var href = this.href;
+        // set hidden print form elements
+	    $('#campusName').text($("#CampusId option:selected").text());
+	    $('#fromDate').text($("#Dt1").val());
+	    $('#toDate').text($("#Dt2").val());
+	    $('#taxStatus').text($("#TaxDedNonTax option:selected").text());
+	    $('#sourceName').text($("#Online option:selected").text());
+	    $('#includeUnClosedBundles').text($("#IncUnclosedBundles").prop('checked'));
+	    $('#includeBundleType').text($("#IncludeBundleType").prop('checked'));
+
+        var f = $("#totals");
+        f.attr("action", href);
+        f.submit();
+        return false;
+    });
 
     $("#reconcile").click(function (ev) {
         ev.preventDefault();
@@ -127,27 +149,6 @@
 	        $('#gl-extract').toggle();
         }
     });
-
-	$("#toquickbooks").click(function (ev) {
-		ev.preventDefault();
-
-		$.block({
-			theme: true,
-			title: 'QuickBooks Export',
-			message: '<p>Pushing data to QuickBooks, please wait...</p>'
-		});
-
-		var f = $(this).closest('form');
-		var q = f.serialize();
-		$.post("/FinanceReports/ToQuickBooks", q, function (ret) { $.unblock(); });
-	});
-
-	$("#IncUnclosedBundles").click(function (ev) {
-	    if (this.checked)
-	        $("#export-quickbooks").css("display", "none");
-	    else
-	        $("#export-quickbooks").css("display", "inline");
-	});
 
 	initializePopovers();
 });

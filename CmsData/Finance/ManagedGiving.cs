@@ -62,7 +62,7 @@ namespace CmsData
                 return 0;
 
             var paymentInfo = db.PaymentInfos.Single(x => x.PeopleId == PeopleId);
-            var preferredType = paymentInfo.PreferredGivingType;
+            var preferredType = paymentInfo.PreferredGivingType ?? paymentInfo.PreferredPaymentType;
 
             var gw = GetGateway(db, paymentInfo);
 

@@ -35,7 +35,7 @@ namespace CmsData
             get { return nextTagId++; }
         }
 
-#if DEBUG
+#if DEBUG2
         class DebugTextWriter : System.IO.TextWriter {
            public override void Write(char[] buffer, int index, int count) {
                Debug.Write(new string(buffer, index, count));
@@ -55,7 +55,7 @@ namespace CmsData
             {
                 ConnectionString = connStr,
                 Host = host,
-#if DEBUG
+#if DEBUG2
                 Log = new DebugTextWriter()
 #endif
             };
@@ -95,24 +95,15 @@ namespace CmsData
                 foreach (var ins in insertsUpdates)
                     foreach (var mm in ins.Members)
                     {
-                        //if (mm.DbType == "datetime NOT NULL")
-                        //{
-                        //    var dt = mm.MemberAccessor.GetBoxedValue(ins.Entity).ToDate();
-                        //    if (dt < DateTime.Parse("1/1/1753"))
-                        //    {
-                        //        var iex = new InvalidOperationException(mm.Name + " in " + mm.DeclaringType.Name + " has a value that will not fit into " + mm.DbType + " " + dt.FormatDate());
-                        //        throw iex;
-                        //    }
-                        //}
-                        //else
                         {
                             var maxLength = GetMaxLength(mm.DbType);
                             if (mm.MemberAccessor.HasValue(ins.Entity))
                             {
-                                var memberValueLength = GetMemberValueLength(mm.MemberAccessor.GetBoxedValue(ins.Entity));
+                                var v = mm.MemberAccessor.GetBoxedValue(ins.Entity);
+                                var memberValueLength = GetMemberValueLength(v);
                                 if (maxLength > 0 && memberValueLength > maxLength)
                                 {
-                                    var iex = new InvalidOperationException(mm.Name + " in " + mm.DeclaringType.Name + " has a value that will not fit into " + mm.DbType);
+                                    var iex = new InvalidOperationException($"{mm.Name} in {mm.DeclaringType.Name} has a value \"{v}\" that will not fit into {mm.DbType}");
                                     throw iex;
                                 }
                             }
@@ -278,6 +269,9 @@ namespace CmsData
                 qB = MatchNothing();
             }
             var c = qB.ToClause();
+#if DEBUG2
+            var sql = c.ToSql();
+#endif
             var q = People.Where(c.Predicate(this));
             if (c.PlusParentsOf)
                 q = PersonQueryPlusParents(q);
@@ -290,6 +284,9 @@ namespace CmsData
         public IQueryable<Person> PeopleQueryCode(string code, bool fromDirectory = false)
         {
             var c = Condition.Parse(code);
+#if DEBUG2
+            var sql = c.ToSql();
+#endif
             if (fromDirectory)
                 c.FromDirectory = true;
             var q = People.Where(c.Predicate(this));
@@ -576,13 +573,14 @@ This search uses multiple steps which cannot be duplicated in a single query.
         {
             ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
         }
-        public void PopulateSpecialTag(IQueryable<Person> q, string tagname, int tagTypeId)
+        public int PopulateSpecialTag(IQueryable<Person> q, string tagname, int tagTypeId)
         {
             var tag = FetchOrCreateTag(tagname, Util.UserPeopleId ?? Util.UserId1, tagTypeId);
             TagPeople.DeleteAllOnSubmit(tag.PersonTags);
             tag.Created = Util.Now;
             SubmitChanges();
             TagAll(q, tag);
+            return tag.Id;
         }
         public void DePopulateSpecialTag(IQueryable<Person> q, int TagTypeId)
         {
@@ -1217,6 +1215,12 @@ This search uses multiple steps which cannot be duplicated in a single query.
             var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid, pid);
             return ((int)(result.ReturnValue));
         }
+        [Function(Name = "dbo.FastDrop")]
+        public int FastDrop([Parameter(DbType = "Int")] int oid, [Parameter(DbType = "Int")] int pid, [Parameter(DbType = "DateTime")] DateTime dropdate, [Parameter(DbType = "NVARCHAR(150)")] string orgname)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid, pid, dropdate, orgname);
+            return ((int)(result.ReturnValue));
+        }
         [Function(Name = "dbo.DeleteEnrollmentTransaction")]
         public int DeleteEnrollmentTransaction([Parameter(DbType = "Int")] int id)
         {
@@ -1409,7 +1413,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
         }
         public Content Content(string name, int contentTypeId)
         {
-            return Contents.FirstOrDefault(cc => cc.Name == name);
+            return Contents.FirstOrDefault(cc => cc.Name == name && cc.TypeID == contentTypeId);
         }
         public string Content2(string name, string defaultValue, int contentTypeId)
         {
@@ -1512,6 +1516,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             }
             return ep;
         }
+
         public ContributionFund FetchOrCreateFund(int FundId, string Description, bool? NonTax = null)
         {
             ContributionFund fund;
@@ -1523,9 +1528,14 @@ This search uses multiple steps which cannot be duplicated in a single query.
             {
                 int nextfundid;
                 if (FundId > 0)
+                { 
                     nextfundid = FundId;
+                }
                 else
-                    nextfundid = ContributionFunds.Max(ff => ff.FundId) + 1;
+                {
+                    int maxFundId = ContributionFunds.OrderByDescending(ff => ff.FundId).FirstOrDefault()?.FundId ?? 0;
+                    nextfundid = maxFundId + 1;
+                }
                 fund = new ContributionFund
                 {
                     FundName = Description,
@@ -1543,6 +1553,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             }
             return fund;
         }
+
         public int ActiveRecords()
         {
             const string name = "ActiveRecords";
@@ -1725,6 +1736,12 @@ This search uses multiple steps which cannot be duplicated in a single query.
             }
             c.Body += $"{Util.Now:M/d/yy HH:mm:ss tt} {data}\n";
             SubmitChanges();
+        }
+        [Function(Name = "dbo.InsertIpLog")]
+        public int? InsertIpLog([Parameter(DbType = "varchar(50)")] string ip, [Parameter(DbType = "varchar(50)")] string id  )
+        {
+            var result = ExecuteMethodCall(this, (MethodInfo)MethodBase.GetCurrentMethod(), ip, id);
+            return ((int?)(result?.ReturnValue));
         }
     }
 }

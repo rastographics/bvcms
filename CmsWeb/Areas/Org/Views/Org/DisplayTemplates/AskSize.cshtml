@@ -13,10 +13,13 @@
             @Html.DisplayFor(m => m.Label)
         </div>
         <div class="col-sm-4">
+            @Html.DisplayFor(m => m.Fee)
+        </div>
+        <div class="col-sm-4">
             @Html.DisplayFor(m => m.AllowLastYear)
         </div>
         <div class="col-sm-4">
-            @Html.DisplayFor(m => m.Fee)
+            @Html.DisplayFor(m => m.TargetExtraValue)
         </div>
     </div>
   @foreach (var i in Model.list)

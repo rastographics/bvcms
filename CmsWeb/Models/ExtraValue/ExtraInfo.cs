@@ -28,7 +28,7 @@ namespace CmsWeb.Models.ExtraValues
         }
         public static void RenameAll(string table, string field, string newname)
         {
-            GetExtraInfo(table).RenameAll(field, newname);
+            GetExtraInfo(table).RenameAll(field, newname.Trim());
         }
         public static string DeleteAll(string table, string type, string field, string value)
         {

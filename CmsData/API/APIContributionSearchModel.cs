@@ -10,7 +10,10 @@ using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
 using System.Xml.Serialization;
+using System.Xml.XPath;
 using CmsData.Codes;
 using UtilityExtensions;
 
@@ -36,6 +39,7 @@ namespace CmsData.API
         public bool Mobile { get; set; }
         public int Online { get; set; }
         public bool FilterByActiveTag { get; set; }
+        public string FundSet { get; set; }
 
         internal string Campus;
         internal string FundName;
@@ -82,7 +86,7 @@ namespace CmsData.API
             var cc = contributions.OrderByDescending(m => m.ContributionDate).Skip(startRow).Take(pageSize);
             var a = new ContributionElements
             {
-                NumberOfPages = (int) Math.Ceiling((model.Count ?? 0)/100.0),
+                NumberOfPages = (int)Math.Ceiling((model.Count ?? 0) / 100.0),
                 NumberOfItems = model.Count ?? 0,
                 TotalAmount = model.Total ?? 0,
                 List = (from c in cc
@@ -148,13 +152,16 @@ namespace CmsData.API
 
         public IQueryable<Contribution> FetchContributions()
         {
+            // There is a SQL version of this search that should work the same way.
+            // it is called ContributionSearch
+
             if (contributions != null)
                 return contributions;
 
             if (!model.TaxNonTax.HasValue())
                 model.TaxNonTax = "TaxDed";
 
-            contributions = db.Contributions.AsQueryable();
+            contributions = db.Contributions.Join(db.ContributionFunds.ScopedByRoleMembership(), c => c.FundId, cf => cf.FundId, (c, cf) => c);
 
             if (!model.IncludeUnclosedBundles)
                 contributions = from c in contributions
@@ -192,7 +199,7 @@ namespace CmsData.API
             switch (model.Status)
             {
                 case ContributionStatusCode.Recorded:
-                    if(!model.PeopleId.HasValue)
+                    if (!model.PeopleId.HasValue)
                         contributions = from c in contributions
                                         where c.ContributionStatusId == ContributionStatusCode.Recorded
                                         where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
@@ -251,12 +258,23 @@ namespace CmsData.API
                 contributions = from c in contributions
                                 where c.Person.PeopleId == i
                                 select c;
+            else if (model.Name.AllDigitsCommas())
+            {
+                var ids = model.Name.Split(',').Select(vv => vv.ToInt()).ToList();
+                contributions = from c in contributions
+                                where ids.Contains(c.ContributionId)
+                                select c;
+            }
             else if (model.Name.HasValue())
                 contributions = from c in contributions
                                 where c.Person.Name.Contains(model.Name)
                                 select c;
 
-            if (model.Comments.HasValue())
+            if(model.Comments?.StartsWith("Meta:") == true)
+                contributions = from c in contributions
+                                where c.MetaInfo.StartsWith(model.Comments.Substring(5))
+                                select c;
+            else if (model.Comments.HasValue())
                 contributions = from c in contributions
                                 where c.ContributionDesc.Contains(model.Comments)
                                       || c.CheckNo == model.Comments
@@ -270,7 +288,7 @@ namespace CmsData.API
 
             if ((model.CampusId ?? 0) != 0)
                 contributions = from c in contributions
-                                where c.CampusId == model.CampusId
+                                where (c.CampusId ?? c.Person.CampusId) == model.CampusId
                                 select c;
 
             if (model.BundleType == 9999)
@@ -296,11 +314,81 @@ namespace CmsData.API
             {
                 var tagid = db.TagCurrent().Id;
                 contributions = from c in contributions
-                    where db.TagPeople.Any(vv => vv.PeopleId == c.PeopleId && vv.Id == tagid)
-                    select c;
+                                where db.TagPeople.Any(vv => vv.PeopleId == c.PeopleId && vv.Id == tagid)
+                                select c;
+            }
+            if (model.FundSet.HasValue())
+            {
+                var funds = GetCustomFundSetList(db, model.FundSet);
+                if(funds != null)
+                    contributions = from c in contributions
+                                    where funds.Contains(c.FundId)
+                                    select c;
             }
             return contributions;
         }
+        private static List<int> GetFundSet(string funds, List<int> allfunds)
+        {
+            var ret = new List<int>();
+            var re = new Regex(@"(?<range>\d*-\d*)|(?<id>\d[^,]*)");
+            var matchResult = re.Match(funds);
+            while (matchResult.Success)
+            {
+                var range = matchResult.Groups["range"].Value;
+                if (range.HasValue())
+                {
+                    var a = range.Split('-');
+                    for (var i = a[0].ToInt(); i < a[1].ToInt(); i++)
+                        if (allfunds.Contains(i))
+                            ret.Add(i);
+                }
+                var id = matchResult.Groups["id"].Value;
+                if (id.HasValue())
+                    ret.Add(id.ToInt());
+                matchResult = matchResult.NextMatch();
+            }
+            if (ret.Count == 0)
+                return null;
+            return ret;
+        }
+        public static List<int> GetCustomStatementsList(CMSDataContext db, string name)
+        {
+            if (name == "all")
+                return null;
+            var xd = XDocument.Parse(Util.PickFirst(db.ContentOfTypeText("CustomStatements"), "<CustomStatement/>"));
+
+            var standardsetlabel = db.Setting("StandardFundSetName", "Standard Statements");
+
+            var allfunds = db.ContributionFunds.Select(cc => cc.FundId).ToList();
+            if (name == standardsetlabel)
+            {
+                var standardFunds = allfunds.Select(vv => vv).ToList();
+                foreach (var ele in xd.Descendants("Statement"))
+                {
+                    var f = ele.Element("Funds")?.Value ?? "";
+                    var list = GetFundSet(f, allfunds);
+                    standardFunds.RemoveAll(vv => list.Contains(vv));
+                }
+                return standardFunds;
+            }
+            var funds = xd.XPathSelectElement($"//Statement[@description=\"{name}\"]/Funds")?.Value ?? "";
+            return GetFundSet(funds, allfunds);
+        }
+        public static List<int> GetCustomFundSetList(CMSDataContext db, string name)
+        {
+            if (name == "all")
+                return null;
+            var xd = XDocument.Parse(Util.PickFirst(db.ContentOfTypeText("CustomFundSets"), "<CustomFundSets/>"));
+            var funds = xd.XPathSelectElement($"//FundSet[@description=\"{name}\"]/Funds")?.Value ?? "";
+            if (!funds.HasValue())
+                return GetCustomStatementsList(db, name);
+
+            var allfunds = db.ContributionFunds.Select(cc => cc.FundId).ToList();
+            return funds.HasValue()
+                ? GetFundSet(funds, allfunds)
+                : GetCustomStatementsList(db, name);
+        }
+
 
         private void PopulateTotals()
         {

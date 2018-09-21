@@ -66,9 +66,9 @@ namespace <%=Db.Service.GeneratedNamespace %>
 			foreach (Table t in tables)
 			{
 %>
-		public Table< <%=t.ClassName%>> <%=t.ClassNamePlural%>
+		public Table<<%=t.ClassName%>> <%=t.ClassNamePlural%>
 		{
-			get	{ return this.GetTable< <%=t.ClassName%>>(); }
+			get	{ return this.GetTable<<%=t.ClassName%>>(); }
 		}<%
 			} %>
 	#endregion
@@ -77,9 +77,9 @@ namespace <%=Db.Service.GeneratedNamespace %>
 			foreach (Table t in views)
 			{
 %>
-	    public Table< View.<%=t.ClassName%>> View<%=t.ClassNamePlural%>
+	    public Table<View.<%=t.ClassName%>> View<%=t.ClassNamePlural%>
 	    {
-		    get { return this.GetTable< View.<%=t.ClassName%>>(); }
+		    get { return this.GetTable<View.<%=t.ClassName%>>(); }
 	    }<%
 			}
 %>
@@ -90,7 +90,7 @@ namespace <%=Db.Service.GeneratedNamespace %>
 			{
 %>
 		[Function(Name="<%=fn.SchemaName%>.<%=fn.Name%>", IsComposable = true)]
-		public IQueryable< View.<%=fn.ClassName%> > <%=fn.DisplayName%>(<%
+		public IQueryable<View.<%=fn.ClassName%> > <%=fn.DisplayName%>(<%
             int n = fn.Parameters.Count;
             for (int i = 0; i < n; i++)
             {
@@ -102,7 +102,7 @@ namespace <%=Db.Service.GeneratedNamespace %>
         %>
             )
 		{
-			return this.CreateMethodCallQuery< View.<%=fn.ClassName%>>(this, 
+			return this.CreateMethodCallQuery<View.<%=fn.ClassName%>>(this, 
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),<%
             for (int i = 0; i < n; i++)
             {
@@ -161,7 +161,7 @@ namespace <%=Db.Service.GeneratedNamespace %>
                 string comma;
 %>
 		[Function(Name="<%=sp.SchemaName%>.<%=sp.Name%>")]
-		public ISingleResult< <%=sp.ReturnType%>> <%=sp.DisplayName%>(<%
+		public ISingleResult<<%=sp.ReturnType%>> <%=sp.DisplayName%>(<%
             int n = sp.Parameters.Count;
             for (int i = 0; i < n; i++)
             {
@@ -183,7 +183,7 @@ namespace <%=Db.Service.GeneratedNamespace %>
             }
                 %>
 			);
-			return ((ISingleResult< <%=sp.ReturnType%>>)(result.ReturnValue));
+			return ((ISingleResult<<%=sp.ReturnType%>>)(result.ReturnValue));
 		}<%
 			}
 %>

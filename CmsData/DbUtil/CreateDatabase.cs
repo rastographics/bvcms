@@ -210,6 +210,16 @@ GO
 
                     var datazips = File.ReadAllText(sqlScriptsPath + "datazips.sql");
                     RunScripts(cn, datazips);
+
+                    var migrationsFolder = Path.GetFullPath(Path.Combine(sqlScriptsPath, @"..\CmsData\Migrations"));
+                    if (Directory.Exists(migrationsFolder))
+                    {
+                        currentFile = migrationsFolder;
+                        RunMigrations(cn, migrationsFolder);
+                    } else
+                    {
+                        throw new DirectoryNotFoundException(migrationsFolder + " was not found");
+                    }
                 }
             }
             catch (Exception ex)
@@ -218,6 +228,16 @@ GO
             }
 
             return null;
+        }
+
+        public static void RunMigrations(SqlConnection connection, string migrationsFolder)
+        {
+            var files = new DirectoryInfo(migrationsFolder).EnumerateFiles();
+            foreach (var f in files)
+            {
+                var script = File.ReadAllText(f.FullName);
+                RunScripts(connection, script);
+            }
         }
 
         private static void RunScripts(string cs, string script)
@@ -231,7 +251,7 @@ GO
 
         private static void RunScripts(SqlConnection cn, string script)
         {
-            using (var cmd = new SqlCommand {Connection = cn})
+            using (var cmd = new SqlCommand { Connection = cn, CommandTimeout = 0 })
             {
                 var scripts = Regex.Split(script, "^GO.*$", RegexOptions.Multiline);
                 foreach (var s in scripts)

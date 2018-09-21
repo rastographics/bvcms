@@ -655,6 +655,27 @@
             $('#myDataUserRole').prop('checked', true);
         }
     });
+    
+    $(".customstatements").click(function (ev) {
+        ev.preventDefault();
+        $('#statement-href').val(this.href);
+        $('#customstatements-modal').modal('show');
+        return true;
+    });
+    $('#customstatements-modal').on('hidden.bs.modal', function () {
+        $("#attdetail2").off("click");
+    });
+
+    $('#customstatements-modal').on('shown.bs.modal', function () {
+        $('#attdetail2').on("click", function (ev2) {
+            ev2.preventDefault();
+            $('#customstatements-modal').modal('hide');
+            var args = "?dt1=" + $('#MeetingDate1').val() + "&dt2=" + $('#MeetingDate2').val();
+            $("#orgsearchform").attr("action", $('#meetings-daterange-action').val() + args);
+            $("#orgsearchform").submit();
+            return false;
+        });
+    });
 
 });
 

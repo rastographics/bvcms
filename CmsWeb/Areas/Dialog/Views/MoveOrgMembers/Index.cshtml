@@ -1,0 +1,25 @@
+﻿@model CmsWeb.Areas.Dialog.Models.MoveOrgMembersModel
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Move Org Members</h4>
+        </div>
+        <div class="modal-body">
+            @Html.HiddenFor(m => m.QueryId)
+            @Html.Hidden("callback", "ReloadPeople")
+            @Html.HiddenFor(m => m.SerializedList)
+            @Html.HiddenFor(m => m.TargetId)
+            @Html.HiddenFor(m => m.ChangeMemberType)
+            @Html.HiddenFor(m => m.MoveToMemberTypeId)
+            @Html.HiddenFor(m => m.MoveRegistrationData)
+            @Html.HiddenFor(m => m.Count)
+            @Html.DisplayFor(m => m.ListCount, new { Label = "Number of OrgMembers" })
+            Are you sure you want to Move these OrgMembers?
+        </div>
+        <div class="modal-footer">
+            <a class="btn btn-default" data-dismiss="modal">Close Dialog</a>
+            <a href="/MoveOrgMembers/Process" class="btn btn-primary ajaxreloader">OK</a>
+        </div>
+    </div>
+</div>

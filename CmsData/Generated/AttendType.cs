@@ -26,10 +26,14 @@ namespace CmsData
 		
 		private bool? _Hardwired;
 		
-   		
-   		private EntitySet< Attend> _Attends;
+		private bool _Worker;
 		
-   		private EntitySet< MemberType> _MemberTypes;
+		private bool _Guest;
+		
+   		
+   		private EntitySet<Attend> _Attends;
+		
+   		private EntitySet<MemberType> _MemberTypes;
 		
     	
 	#endregion
@@ -51,13 +55,19 @@ namespace CmsData
 		partial void OnHardwiredChanging(bool? value);
 		partial void OnHardwiredChanged();
 		
+		partial void OnWorkerChanging(bool value);
+		partial void OnWorkerChanged();
+		
+		partial void OnGuestChanging(bool value);
+		partial void OnGuestChanged();
+		
     #endregion
 		public AttendType()
 		{
 			
-			this._Attends = new EntitySet< Attend>(new Action< Attend>(this.attach_Attends), new Action< Attend>(this.detach_Attends)); 
+			this._Attends = new EntitySet<Attend>(new Action< Attend>(this.attach_Attends), new Action< Attend>(this.detach_Attends)); 
 			
-			this._MemberTypes = new EntitySet< MemberType>(new Action< MemberType>(this.attach_MemberTypes), new Action< MemberType>(this.detach_MemberTypes)); 
+			this._MemberTypes = new EntitySet<MemberType>(new Action< MemberType>(this.attach_MemberTypes), new Action< MemberType>(this.detach_MemberTypes)); 
 			
 			
 			OnCreated();
@@ -154,12 +164,56 @@ namespace CmsData
 		}
 
 		
+		[Column(Name="Worker", UpdateCheck=UpdateCheck.Never, Storage="_Worker", DbType="bit NOT NULL")]
+		public bool Worker
+		{
+			get { return this._Worker; }
+
+			set
+			{
+				if (this._Worker != value)
+				{
+				
+                    this.OnWorkerChanging(value);
+					this.SendPropertyChanging();
+					this._Worker = value;
+					this.SendPropertyChanged("Worker");
+					this.OnWorkerChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Guest", UpdateCheck=UpdateCheck.Never, Storage="_Guest", DbType="bit NOT NULL")]
+		public bool Guest
+		{
+			get { return this._Guest; }
+
+			set
+			{
+				if (this._Guest != value)
+				{
+				
+                    this.OnGuestChanging(value);
+					this.SendPropertyChanging();
+					this._Guest = value;
+					this.SendPropertyChanged("Guest");
+					this.OnGuestChanged();
+				}
+
+			}
+
+		}
+
+		
     #endregion
         
     #region Foreign Key Tables
    		
    		[Association(Name="FK_AttendWithAbsents_TBL_AttendType", Storage="_Attends", OtherKey="AttendanceTypeId")]
-   		public EntitySet< Attend> Attends
+   		public EntitySet<Attend> Attends
    		{
    		    get { return this._Attends; }
 
@@ -169,7 +223,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_MemberType_AttendType", Storage="_MemberTypes", OtherKey="AttendanceTypeId")]
-   		public EntitySet< MemberType> MemberTypes
+   		public EntitySet<MemberType> MemberTypes
    		{
    		    get { return this._MemberTypes; }
 

@@ -2,202 +2,307 @@
 @using CmsData
 @using CmsData.Finance
 @using CmsWeb.Areas.OnlineReg.Models
-@model PaymentForm
+@model OnePageGivingModel
 @{
-  Layout = "~/Views/Shared/onlinereg2.cshtml";
-  ViewBag.Title = "OnePageGiving";
-  var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
-  var processorerror = Html.ErrorMessage("TranId");
+    Layout = "~/Views/Shared/onlinereg2.cshtml";
+    ViewBag.Title = "OnePageGiving";
+    var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
+    var vaultDisabled = DbUtil.Db.Setting("VaultDisabled");
+    var processorerror = Html.ErrorMessage("TranId");
+    var designatedFund = Model.OnlineRegPersonModel.DesignatedDonationFund().FirstOrDefault();
+    var disableAdditionalFunds = Model.OnlineRegPersonModel.org.GetExtra(DbUtil.Db, "DisableFundsDropdown")=="true";
+}
+@section head{
+    @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2-bootstrap.css")
 }
 @section scripts
 {
-  @Fingerprint.Script("/Content/touchpoint/js/onlinereg/bootstrap-datepicker.js")
-  <script type="text/javascript">
-    $.dtoptions = { format: '@Util.jQueryDateFormat2' };
-    $("form").validate();
-    $("#AmtToPay").rules("add", { number: true });
-  </script>
-  @Fingerprint.Script("/Content/touchpoint/js/onlinereg/onlineregpayment2.js")
+    @Fingerprint.Script("/Content/touchpoint/js/onlinereg/bootstrap-datepicker.js")
+    <script type="text/javascript">
+        $.dtoptions = { format: '@Util.jQueryDateFormat2' };
+        $("form").validate();
+    </script>
+    @Fingerprint.Script("/Content/touchpoint/js/onlinereg/OnlineReg2.js")
+    @Fingerprint.Script("/Content/touchpoint/js/onlinereg/onlineregpayment2.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
 }
 <style>
-  
-  input.form-control.error {
-    border-color: #b94a48;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-    background-color: #FFEEEE
-  }
+    input.form-control.error {
+        border-color: #b94a48;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        background-color: #FFEEEE
+    }
 
-  .field-validation-error, .error { color: #b94a48; }
+    .field-validation-error, .error {
+        color: #b94a48;
+    }
 
-  #AmtToPay-error {
-    display: block;
-    text-align: right;
-    color: #b94a48;
-  }
+    #AmtToPay-error {
+        display: block;
+        text-align: right;
+        color: #b94a48;
+    }
 
-  .form-control::-webkit-input-placeholder { color: #999 !important; }
+    .form-control::-webkit-input-placeholder {
+        color: #999 !important;
+    }
 </style>
 <div class="regform pad-top">
-  @Html.Raw(ViewBag.Instructions)
-  <form action="/OnePageGiving" method="post">
-    @if (Html.HasErrors())
-    {
-      <div>
-        <b style="color: #943A38;">See Errors Below</b>
-      </div>
-    }
-    <div class="form-group text-right">
-      <h4 class="inline-block">Already have an account?</h4>
-      <a id="login-here" href="/OnePageGiving/Login/@Model.OrgId" class="btn btn-success btn-mini">
-        Login Here
-      </a>
-    </div>
-    <div class="row">
-      <div class="col-lg-6 form-group">
-        <input type="text" id="First" name="First" class="form-control" placeholder="First Name" required="required" value="@Model.First">
-      </div>
-      <div class="col-lg-6 form-group">
-        <input type="text" id="Last" name="Last" class="form-control" placeholder="Last Name" required="required" value="@Model.Last">
-      </div>
-    </div>
-    <div class="form-group">
-      <input type="text" id="Email" name="Email" class="form-control @Html.ErrorClass("Email")" placeholder="Email" required="required" value="@Model.Email">
-      @Html.ValidationMessageLabelFor(m => m.Email, "field-validation-error")
-    </div>
-    @if (Model.ShowCampusOnePageGiving)
-    {
-      <div class="row">
-        <div class="form-group col-lg-6">
-          <input type="text" id="Phone" name="Phone" class="form-control" placeholder="Phone Number" value="@Model.Phone">
-        </div>
-        <div class="form-group col-lg-6">
-          <div>
-            @Html.DropDownListFor(m => m.CampusId, Model.Campuses, new {@class = $"form-control {Html.ErrorClass("CampusId")}" })
-            @Html.ValidationMessageLabelFor(m => m.CampusId, "field-validation-error")
-          </div>
-        </div>
-      </div>
-    }
-    else
-    {
-      <div class="form-group">
-        <input type="text" id="Phone" name="Phone" class="form-control" placeholder="Phone Number" value="@Model.Phone">
-      </div>
-    }
-    <div class="form-group">
-      <input type="text" id="Address" name="Address" class="form-control" placeholder="Street Address" required="required" value="@Model.Address">
-    </div>
-    @if (Model.NeedsCityState)
-    {
-      <div>
-        <b style="color: #943a38">Need a city and state too for this address</b>
-      </div>
-      <div class="row">
-        <div class="form-group col-lg-6">
-          <input type="text" id="City" name="City" class="form-control" placeholder="City" required="required" value="@Model.City">
-        </div>
-        <div class="form-group col-lg-6">
-          <input type="text" id="State" name="State" class="form-control" placeholder="State/Province/Region" required="required" value="@Model.State">
-        </div>
-      </div>
-    }
-    <div class="row">
-      <div class="form-group col-lg-6">
-        <input type="text" id="Zip" name="Zip" class="form-control @Html.ErrorClass("Zip")" placeholder="Zip" value="@Model.Zip">
-        @Html.ValidationMessageLabelFor(m => m.Zip, "field-validation-error")
-      </div>
-      <div class="form-group col-lg-6">
-        <div>
-          @Html.DropDownListFor(m => m.Country, Model.Countries, new {@class = "form-control"})
-        </div>
-      </div>
-    </div>
-    <div class="form-group text-right">
-      <h4 class="inline-block">@Model.Description&nbsp;&nbsp;$ </h4>
-      <input type="text" id="AmtToPay" name="AmtToPay" class="form-control input-lg narrow @Html.ErrorClass("AmtToPay")" style="display: inline" placeholder="Amount" required="required" value="@Model.AmtToPay"/>
-      @Html.ValidationMessageLabelFor(m => m.AmtToPay, "field-validation-error")
-    </div>
-    @if (Model.NoCreditCardsAllowed || Model.NoEChecksAllowed)
-    {
-      @Html.Hidden("Type", Model.Type)
-    }
-    else
-    {
-      <div class="form-group" style="text-align: center; margin-bottom: 1em;">
-        <div class="btn-group" data-toggle="buttons">
-          @TypeRadio(PaymentType.CreditCard, debitcredit, "left")
-          @TypeRadio(PaymentType.Ach, "Bank Account", "right")
-          @Html.Hidden("allowcc", "true")
-        </div>
-      </div>
-    }
-    @if (Model.NoCreditCardsAllowed == false)
-    {
-      <div class="Card">
-        <div class="form-group">
-          <input type="text" id="CreditCard" name="CreditCard" class="form-control @Html.ErrorClass("CreditCard")" placeholder="Card Number" required="required" value="@Model.CreditCard" autocomplete="off">
-          @Html.ValidationMessageLabelFor(m => m.CreditCard, "field-validation-error")
-        </div>
+    @Html.Raw(ViewBag.Instructions)
+    <form action="/OnePageGiving" method="post">
+        @if (Html.HasErrors())
+        {
+            <div>
+                <b style="color: #943A38;">See Errors Below</b>
+            </div>
+        }
+        @if (Model.OnlineRegPersonModel.ShowLogin)
+        {
+            <div class="form-group text-right">
+                <h4 class="inline-block">Already have an account?</h4>
+                <a id="login-here" href="/OnePageGiving/Login/@Model.PaymentForm.OrgId" class="btn btn-success btn-mini">
+                    Login Here
+                </a>
+            </div>
+        }
         <div class="row">
-          <div class="col-lg-6 form-group">
-            <input type="text" id="Expires" name="Expires" class="form-control @Html.ErrorClass("Expires")" placeholder="Card Expiration (MM/YY)" required="required" value="@Model.Expires">
-            @Html.ValidationMessageLabelFor(m => m.Expires, "field-validation-error")
-          </div>
-          <div class="col-lg-6 form-group">
-            <input type="text" id="CVV" name="CVV" class="form-control @Html.ErrorClass("CVV")" placeholder="CCV Code" required="required" value="@Model.CVV" autocomplete="off">
-            @Html.ValidationMessageLabelFor(m => m.CVV, "field-validation-error")
-          </div>
-        </div>
-      </div>
-    }
-    @if (Model.NoEChecksAllowed == false)
-    {
-      <div class="Bank">
-        <div class="form-group">
-          <input type="text" id="Routing" name="Routing" class="form-control @Html.ErrorClass("Routing")" placeholder="Bank Routing Number" required="required" value="@Model.Routing" autocomplete="off">
-          @Html.ValidationMessageLabelFor(m => m.Routing, "field-validation-error")
+            <div class="col-lg-6 form-group">
+                <input type="text" id="First" name="First" class="form-control" placeholder="First Name" required="required" value="@Model.PaymentForm.First">
+            </div>
+            <div class="col-lg-6 form-group">
+                <input type="text" id="Last" name="Last" class="form-control" placeholder="Last Name" required="required" value="@Model.PaymentForm.Last">
+            </div>
         </div>
         <div class="form-group">
-          <input type="text" id="Account" name="Account" class="form-control @Html.ErrorClass("Account")" placeholder="Bank Account Number" required="required" value="@Model.Account" autocomplete="off">
-          @Html.ValidationMessageLabelFor(m => m.Account, "field-validation-error")
+            <input type="text" id="Email" name="Email" class="form-control @Html.ErrorClass("Email")" placeholder="Email" required="required" value="@Model.PaymentForm.Email">
+            @Html.ValidationMessageLabelFor(m => m.PaymentForm.Email, "field-validation-error")
         </div>
-      </div>
-    }
-    <div class="form-actions text-right">
-      <input type="submit" id="submitit" value="Make Gift" class="btn btn-primary btn-lg">
-      @if (processorerror.HasValue())
-      {
-        <div class="field-validation-error">
-          <b>Message from Payment Processor: @processorerror</b>
+        @if (Model.PaymentForm.ShowCampusOnePageGiving)
+        {
+            <div class="row">
+                <div class="form-group col-lg-6">
+                    <input type="text" id="Phone" name="Phone" class="form-control" placeholder="Phone Number" value="@Model.PaymentForm.Phone">
+                </div>
+                <div class="form-group col-lg-6">
+                    <div>
+                        @Html.DropDownList("CampusId", Model.PaymentForm.Campuses, new { @class = $"form-control {Html.ErrorClass("CampusId")}" })
+                        @Html.ValidationMessageLabelFor(m => m.PaymentForm.CampusId, "field-validation-error")
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="form-group">
+                <input type="text" id="Phone" name="Phone" class="form-control" placeholder="Phone Number" value="@Model.PaymentForm.Phone">
+            </div>
+        }
+        <div class="form-group">
+            <input type="text" id="Address" name="Address" class="form-control" placeholder="Street Address" required="required" value="@Model.PaymentForm.Address">
         </div>
-      }
+        @if (Model.PaymentForm.NeedsCityState)
+        {
+            <div>
+                <b style="color: #943a38">Need a city and state too for this address</b>
+            </div>
+            <div class="row">
+                <div class="form-group col-lg-6">
+                    <input type="text" id="City" name="City" class="form-control" placeholder="City" required="required" value="@Model.PaymentForm.City">
+                </div>
+                <div class="form-group col-lg-6">
+                    <input type="text" id="State" name="State" class="form-control" placeholder="State/Province/Region" required="required" value="@Model.PaymentForm.State">
+                </div>
+            </div>
+        }
+        <div class="row">
+            <div class="form-group col-lg-6">
+                <input type="text" id="Zip" name="Zip" class="form-control @Html.ErrorClass("Zip")" placeholder="Zip" value="@Model.PaymentForm.Zip">
+                @Html.ValidationMessageLabelFor(m => m.PaymentForm.Zip, "field-validation-error")
+            </div>
+            <div class="form-group col-lg-6">
+                <div>
+                    @Html.DropDownList("Country", Model.PaymentForm.Countries, new { @class = $"form-control" })
+                </div>
+            </div>
+        </div>
+        @{
+            var amtError = Html.ErrorMessage("AmtToPay");
+            var funds = OnlineRegPersonModel.FullFundList();
+            var funame = "FundItem";
+            decimal? tot = 0;
+        }
+        @if (!string.IsNullOrWhiteSpace(amtError))
+        {
+            <div class="text-right">
+                <b style="color: #943A38;">@amtError</b>
+            </div>
+        }
+        <input type="hidden" name="@(funame)[-1].Key" value="0" />
+        <input type="hidden" name="@(funame)[-1].Value" value="0" class="form-control narrow sum" />
+        @if (designatedFund != null)
+        {
+            tot = Model.PaymentForm.AmtToPay.GetValueOrDefault();
+            <div class="form-group text-right" style="padding-right: 6px !important">
+                <h4 class="inline-block">@Model.PaymentForm.Description&nbsp;&nbsp;</h4>
+                <input type="text" id="AmtToPay" name="AmtToPay" class="form-control input-lg narrow sum @Html.ErrorClass("AmtToPay")" style="display: inline" placeholder="$ 0.00" value="@Model.PaymentForm.AmtToPay"/>
+                @Html.ValidationMessageLabelFor(m => m.PaymentForm.AmtToPay, "field-validation-error")
+            </div>
+        }
+    <div class="row">
+        <div class="form-group col-lg-8 pull-right">
+        @if (funds.Any())
+        {
+                <table class="table" style="margin-bottom :0px!important"  id="special-funds">
+                    <tbody>
+                    @{
+                        var sn = 0;
+                    }
+                    @for (var n = 0; n < funds.Length; n++)
+                    {
+                        var i = funds[n];
+                        var amt = Model.OnlineRegPersonModel.FundItemValue(i.Value.ToInt());
+                        if (amt.HasValue)
+                        {
+                            tot = (tot ?? 0) + amt;
+                            <tr id="@i.Value">
+                                <td style="border-width: 0px!important"><a href="#" tabindex="-1" class="remove-fund"><span class="fa fa-trash-o" style="line-height: 20px !important; padding: 8px 0;"></span></a></td>
+                                <td class="pull-right" style="border-width: 0px!important"><h4 class="inline-block">@i.Text</h4></td>
+                                <td style="border-width: 0px !important;">
+                                    <input type="hidden" name="@(funame)[@sn].Key" value="@i.Value"/>
+                                    <input type="text" name="@(funame)[@sn].Value" value="@amt.ToString2("f2")" class="form-control input-lg narrow sum pull-right"/>
+                                </td>
+                            </tr>
+                            sn++;
+                        }
+                    }
+                    </tbody>
+                    <tfoot>
+                    <tr id="addFund" hidden>
+                        <td style="border-width: 0px !important;padding-top:15px!important"><a href="#" tabindex="-1" id="removeAddFund"><span class="fa fa-trash-o"></span></a></td>
+                        <td style="border-width: 0px !important;padding-top:12px!important">
+                            <select class="form-control" id="special-funds-list">
+                                <option value="0">Select Fund</option>
+                                @foreach (var fund in funds)
+                                {
+                                    if (designatedFund == null || (fund.Value != designatedFund.Value))
+                                    {
+                                        <option value="@fund.Value">@fund.Text</option>
+                                    }
+                                }
+                            </select>                            
+                        </td>
+                        <td style="border-width: 0px !important;">
+                            <input type="text" name="" placeholder="$ 0.00" disabled class="form-control input-lg narrow sum pull-right" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="border-width: 0px !important"></td>
+                        <td style="border-width: 0px !important" width="56%!important"><h4 class="pull-right">TOTAL:</h4></td>
+                        <td style="border-width: 0px !important;" width="30%!important">
+                            <h2 class="pull-right" style="margin: 0">$<span id="total">@tot.ToString2("N2")</span></h2>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+                if (!disableAdditionalFunds)
+                {
+                    <div class="form-group text-right">
+                        <a id="myAddFundLink" href="#" tabindex="-1" class="pull-right" style="text-decoration: underline">
+                            + Additional Fund
+                        </a>
+                    </div>
+                }
+        }
     </div>
-    @Html.HiddenFor2(m => m.source)
-    @Html.HiddenFor2(m => m.OrgId)
-    @Html.HiddenFor2(m => m.testing)
-    @Html.HiddenFor2(m => m.NeedsCityState)
-    @Html.HiddenFor2(m => m.URL)
-    @Html.HiddenFor2(m => m.Description)
-    @Html.HiddenFor2(m => m.NoCreditCardsAllowed)
-  </form>
+    </div>
+
+                @if (Model.PaymentForm.NoCreditCardsAllowed || Model.PaymentForm.NoEChecksAllowed)
+                {
+                    @Html.Hidden("Type", Model.PaymentForm.Type)
+                }
+                else
+                {
+                    <div class="form-group" style="text-align: center; margin-bottom: 1em;">
+                        <div class="btn-group" data-toggle="buttons">
+                            @TypeRadio(PaymentType.CreditCard, debitcredit, "left")
+                            @TypeRadio(PaymentType.Ach, "Bank Account", "right")
+                            @Html.Hidden("allowcc", "true")
+                        </div>
+                    </div>
+                }
+                @if (Model.PaymentForm.NoCreditCardsAllowed == false)
+                {
+                    <div class="Card">
+                        <div class="form-group">
+                            <input type="text" id="CreditCard" name="CreditCard" class="form-control @Html.ErrorClass("CreditCard")" placeholder="Card Number" required="required" value="@Model.PaymentForm.CreditCard" autocomplete="off">
+                            @Html.ValidationMessageLabelFor(m => m.PaymentForm.CreditCard, "field-validation-error")
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 form-group">
+                                <input type="text" id="Expires" name="Expires" class="form-control @Html.ErrorClass("Expires")" placeholder="Card Expiration (MM/YY)" required="required" value="@Model.PaymentForm.Expires">
+                                @Html.ValidationMessageLabelFor(m => m.PaymentForm.Expires, "field-validation-error")
+                            </div>
+                            <div class="col-lg-6 form-group">
+                                <input type="text" id="CVV" name="CVV" class="form-control @Html.ErrorClass("CVV")" placeholder="CCV Code" required="required" value="@Model.PaymentForm.CVV" autocomplete="off">
+                                @Html.ValidationMessageLabelFor(m => m.PaymentForm.CVV, "field-validation-error")
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if (Model.PaymentForm.NoEChecksAllowed == false)
+                {
+                    <div class="Bank">
+                        <div class="form-group">
+                            <input type="text" id="Routing" name="Routing" class="form-control @Html.ErrorClass("Routing")" placeholder="Bank Routing Number" required="required" value="@Model.PaymentForm.Routing" autocomplete="off">
+                            @Html.ValidationMessageLabelFor(m => m.PaymentForm.Routing, "field-validation-error")
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="Account" name="Account" class="form-control @Html.ErrorClass("Account")" placeholder="Bank Account Number" required="required" value="@Model.PaymentForm.Account" autocomplete="off">
+                            @Html.ValidationMessageLabelFor(m => m.PaymentForm.Account, "field-validation-error")
+                        </div>
+                    </div>
+                }
+                <div class="form-actions text-right">
+                    @if (Model.OnlineRegPersonModel.LoggedIn && !vaultDisabled)
+                    {
+                        <span style="margin-right: 2em;">@Html.CheckBox("SavePayInfo", Model.PaymentForm.SavePayInfo) Save Payment Information</span>
+                    }
+                    <input type="submit" id="submitit" value="Make Gift" class="btn btn-primary btn-lg">
+                    @if (processorerror.HasValue())
+                    {
+                        <div class="field-validation-error">
+                            <b>Message from Payment Processor: @processorerror</b>
+                        </div>
+                    }
+                </div>
+                @Html.Hidden("source", Model.PaymentForm.source)
+                @Html.Hidden("OrgId", Model.PaymentForm.OrgId)
+                @Html.Hidden("testing", Model.PaymentForm.testing)
+                @Html.Hidden("NeedsCityState", Model.PaymentForm.NeedsCityState)
+                @Html.Hidden("URL", Model.PaymentForm.URL)
+                @Html.Hidden("Description", Model.PaymentForm.Description)
+                @Html.Hidden("NoCreditCardsAllowed", Model.PaymentForm.NoCreditCardsAllowed)
+                @Html.Hidden("IsLoggedIn", Model.PaymentForm.IsLoggedIn)
+</form>
 </div>
 @helper TypeRadio(string type, string label, string side)
 {
-  const string radius = "17px";
-  if (Model.Type == type)
-  {
-    <label class="btn btn-primary active"
-           style="border-top-@side-radius: @radius; border-bottom-@side-radius: @radius">
-      <input type="radio" name="Type" value="@type" checked="checked"/> @label
-    </label>
-  }
-  else
-  {
-    <label class="btn btn-primary"
-           style="border-top-@side-radius: @radius; border-bottom-@side-radius: @radius">
-      <input type="radio" name="Type" value="@type"/> @label
-    </label>
-  }
+const string radius = "17px";
+if (Model.PaymentForm.Type == type)
+{
+        <label class="btn btn-primary active"
+               style="border-top-@side-radius: @radius; border-bottom-@side-radius: @radius">
+            <input type="radio" name="Type" value="@type" checked="checked" /> @label
+        </label>
+}
+else
+{
+        <label class="btn btn-primary"
+               style="border-top-@side-radius: @radius; border-bottom-@side-radius: @radius">
+            <input type="radio" name="Type" value="@type" /> @label
+        </label>
+}
 }

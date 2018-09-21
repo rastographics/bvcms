@@ -55,7 +55,7 @@ namespace CmsWeb.Areas.People.Controllers
 
         // the datetime arguments come across as sortable dates to make them universal for all cultures
         [HttpGet, Route("ContributionStatement/{id:int}/{fr:datetime}/{to:datetime}")]
-        public ActionResult ContributionStatement(int id, DateTime fr, DateTime to)
+        public ActionResult ContributionStatement(int id, DateTime fr, DateTime to, string custom = null)
         {
             if (!DbUtil.Db.CurrentUserPerson.CanViewStatementFor(DbUtil.Db, id))
                 return Content("No permission to view statement");
@@ -85,7 +85,8 @@ namespace CmsWeb.Areas.People.Controllers
                       == StatementOptionCode.Joint ? 2 : 1,
                 noaddressok = true,
                 useMinAmt = false,
-                singleStatement = true
+                singleStatement = true,
+                statementType = custom
             };
         }
 
@@ -103,14 +104,11 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpGet]
         public ActionResult OneTimeGift()
         {
-            var sql = @"
-SELECT OrganizationId FROM dbo.Organizations
-WHERE RegistrationTypeId = 8
-AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
-            var oid = DbUtil.Db.Connection.ExecuteScalar(sql) as int?;
+            var oid = CmsData.API.APIContribution.OneTimeGiftOrgId(DbUtil.Db);
             if (oid > 0)
                 return Redirect("/OnlineReg/" + oid);
             return new EmptyResult();
         }
+
     }
 }

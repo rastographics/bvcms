@@ -801,6 +801,14 @@ namespace CmsWeb
             return new HtmlString("<link href=\"//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,600,300,700\" rel=\"stylesheet\">\n");
         }
 
+        public static HtmlString GoogleAnalytics()
+        {
+            var s = ConfigurationManager.AppSettings["GoogleAnalytics"];
+            if(s.HasValue())
+                return new HtmlString($"<script>{s}</script>");
+            return null;
+        }
+
         public static HtmlString OldStyles()
         {
             return Fingerprint.Css("/content/styles/bundle.stylecss.css");
@@ -821,7 +829,7 @@ namespace CmsWeb
 //<link rel=""stylesheet"" href=""//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"" integrity=""sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"" crossorigin=""anonymous"">
             return @"
 <link rel=""stylesheet"" href=""//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"">
-<link rel=""stylesheet"" href=""/Content/css/OnlineReg2.css"">
+<link rel=""stylesheet"" href=""/Content/css/OnlineReg2.css?v=2"">
 <link rel=""stylesheet"" href=""/Content/css/fixups3.css"">
 ";
         }

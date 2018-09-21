@@ -72,6 +72,9 @@ namespace CmsData
                 case "{dob}":
                     return person.DOB;
 
+                case "{employer}":
+                    return person.EmployerOther;
+
                 case "{estatement}":
                     if (person.ElectronicStatement == true)
                         return "Online Electronic Statement Only";
@@ -191,8 +194,8 @@ namespace CmsData
                     if (SettingRe.IsMatch(code))
                         return SettingReplacement(code);
 
-                    if (ImageRe.IsMatch(code))
-                        return ImageReplacement(db, code);
+                    if (SettingUrlRe.IsMatch(code))
+                        return SettingUrlReplacement(db, code);
 
                     if (PythonDataRe.IsMatch(code))
                         return PythonDataReplacement(code);

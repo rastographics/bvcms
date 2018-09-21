@@ -5,10 +5,10 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 
-using System;
-using System.IO;
 using CmsData;
 using LumenWorks.Framework.IO.Csv;
+using System;
+using System.IO;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
 {
@@ -17,35 +17,49 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
         public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
         {
             using (var csv = new CsvReader(new StringReader(text), true))
+            {
                 return BatchProcessFbcFayetteville(csv, date, fundid);
+            }
         }
 
         private static int? BatchProcessFbcFayetteville(CsvReader csv, DateTime date, int? fundid)
         {
             var cols = csv.GetFieldHeaders();
-            BundleHeader bh = null;
-            var firstfund = BatchImportContributions.FirstFundId();
+            BundleHeader bundleHeader = null;
+            var firstfund = BatchImportContributions.FirstFundId(); //TODO: use default fund id based on DBSetting w/ default to 1 if not set
             var fund = fundid ?? firstfund;
 
             while (csv.ReadNextRecord())
             {
-                if (csv[6].StartsWith("Total Checks"))
+                var isHeaderRow = csv[0].StartsWith("Date");
+
+                if (isHeaderRow)
+                {
                     continue;
-                var routing = csv[4];
-                var account = csv[5];
-                var checkno = csv[6];
-                var amount = csv[7];
+                }
 
-                if (bh == null)
-                    bh = BatchImportContributions.GetBundleHeader(date, DateTime.Now);
+                var contributionDate = csv[0].Trim();
+                var memberNumber = csv[1].Trim();
+                var memberName = csv[2].Trim();
+                var amount = csv[3].Trim();
+                var checkNumber = csv[4].Trim();
 
-                var bd = BatchImportContributions.AddContributionDetail(date, fund, amount, checkno, routing, account);
-                bh.BundleDetails.Add(bd);
+                if (bundleHeader == null)
+                {
+                    bundleHeader = BatchImportContributions.GetBundleHeader(date, DateTime.Now);
+                }
+
+                var bundleDetails = BatchImportContributions.AddContributionDetail(date, fund, amount, checkNumber, "", int.Parse(memberNumber));
+                bundleHeader.BundleDetails.Add(bundleDetails);
             }
-            if (bh == null)
+
+            if (bundleHeader == null)
+            {
                 return null;
-            BatchImportContributions.FinishBundle(bh);
-            return bh.BundleHeaderId;
+            }
+
+            BatchImportContributions.FinishBundle(bundleHeader);
+            return bundleHeader.BundleHeaderId;
         }
     }
 }

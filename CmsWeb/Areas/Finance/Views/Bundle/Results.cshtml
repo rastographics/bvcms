@@ -39,7 +39,14 @@
                     <td class="right">@c.Amount.ToString2("N2")</td>
                     <td>@c.Type</td>
                     <td>@c.Fund</td>
-                    <td>@c.Check</td>
+                    <td>@c.Check
+                        @if (c.ImageId != 0)
+                        {
+                            <a href="@Url.Action("GetCheckImage", "GetCheckImage", new {Area = "Dialog", id = c.ContributionId})" class="searchadd pid">
+                                <i class="fa fa-info-circle"></i>
+                            </a>
+                        }
+                    </td>
                     <td class="notes">@c.Notes</td>
                     <td>@c.PostingDate.FormatDate()</td>
                 </tr>

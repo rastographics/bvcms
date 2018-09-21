@@ -53,6 +53,7 @@ namespace CmsWeb.Areas.People.Models
             Person = i.pp;
             var p = Person;
             var fam = i.f;
+            HttpContext.Current.Items["FamilyFromMyDataPage"] = fam; // for when Family is needed deep down in the call stack from this page
 
             MemberStatus = i.memberStatus;
             PeopleId = p.PeopleId;

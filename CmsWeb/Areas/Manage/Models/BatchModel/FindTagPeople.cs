@@ -20,9 +20,10 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
 
             var csv = new CsvReader(new StringReader(text));
             csv.Configuration.Delimiter = "\t";
+            csv.Read();
             csv.ReadHeader();
 
-            var cols = csv.FieldHeaders;
+            var cols = csv.Context.HeaderRecord;
             if (!cols.Contains("First") || !cols.Contains("Last"))
                 throw new UserInputException("Both First and Last are required");
 

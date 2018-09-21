@@ -69,7 +69,7 @@ namespace CmsData
         }
         public static void ResolvePrevDaysVirtualCheckRejects(CMSDataContext db, DateTime start, DateTime end)
         {
-            var gateway = DbUtil.Db.Gateway();
+            var gateway = db.Gateway();
             var response = gateway.GetReturnedChecks(start, end);
 
 

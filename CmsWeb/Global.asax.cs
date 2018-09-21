@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Threading;
 using System.Web;
@@ -115,6 +116,12 @@ namespace CmsWeb
             Util.Culture = cul;
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
+
+            var checkip = ConfigurationManager.AppSettings["CheckIp"];
+            if(Util.IsHosted && checkip.HasValue())
+                if (1 == DbUtil.Db.Connection.ExecuteScalar<int>(checkip, new {ip = Request.UserHostAddress}))
+                    Response.Redirect("/Errors/AccessDenied.htm");
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
         }
 
 

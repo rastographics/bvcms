@@ -259,7 +259,7 @@ namespace CmsWeb.Areas.Main.Controllers
                     {
                         // Protect against duplicate PeopleIDs ending up in the queue
                         var q3 = from eqt in DbUtil.Db.EmailQueueTos
-                                 where eqt.EmailQueue == eq
+                                 where eqt.Id == eq.Id
                                  where eqt.PeopleId == pid
                                  select eqt;
                         if (q3.Any())
@@ -282,7 +282,7 @@ namespace CmsWeb.Areas.Main.Controllers
                     {
                         // Protect against duplicate PeopleIDs ending up in the queue
                         var q3 = from eqt in DbUtil.Db.EmailQueueTos
-                                 where eqt.EmailQueue == eq
+                                 where eqt.Id == eq.Id
                                  where eqt.PeopleId == pid
                                  select eqt;
                         if (q3.Any())
@@ -388,7 +388,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
             m.FromName = m.EmailFroms().First(ef => ef.Value == m.FromAddress).Text;
             var from = Util.FirstAddress(m.FromAddress, m.FromName);
-            var p = DbUtil.Db.LoadPersonById(Util.UserPeopleId.Value);
+            var p = DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0);
 
             try
             {
@@ -498,7 +498,7 @@ namespace CmsWeb.Areas.Main.Controllers
         private static void ValidateEmailReplacementCodes(CMSDataContext db, string emailText, MailAddress fromAddress)
         {
             var er = new EmailReplacements(db, emailText, fromAddress);
-            er.DoReplacements(db, DbUtil.Db.LoadPersonById(Util.UserPeopleId.Value));
+            er.DoReplacements(db, DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0));
         }
     }
 }

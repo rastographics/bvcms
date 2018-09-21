@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
+﻿using System.Collections.Generic;
 using System.Xml.Linq;
-using System.Xml.Schema;
-using System.Xml.Serialization;
 using CmsData.API;
-using UtilityExtensions;
 
 namespace CmsData.Registration
 {

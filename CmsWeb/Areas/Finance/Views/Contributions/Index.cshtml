@@ -1,10 +1,12 @@
 ﻿@using System.Globalization
 @using CmsData
+@using CmsWeb.Areas.Finance.Models.Report
 @model CmsWeb.Models.ContributionSearchModel
 @{
     ViewBag.Title = "Contributions";
     ViewBag.PageHeader = "Contributions";
     Layout = ViewExtensions2.TouchPointLayout();
+    var customFundsList = ContributionStatements.CustomFundSetSelectList();
 }
 <div class="box box-responsive">
     <div class="box-content">
@@ -29,7 +31,8 @@
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
-                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Notes" data-content="Check # or phrase or contribution id."><i class="fa fa-info-circle"></i></a>&nbsp;
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Notes"
+                               data-content="Check # or phrase or contribution id.<br>Or Meta:searchphrase"><i class="fa fa-info-circle"></i></a>&nbsp;
                             <label for="SearchInfo_Comments" class="control-label">Notes</label>
                             @Html.TextBoxFor(vv => vv.SearchInfo.Comments, new { @class = "form-control" })
                         </div>
@@ -79,10 +82,27 @@
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-4">
                         <div class="form-group">
-                            <label for="SearchInfo_Type" class="control-label">Fund</label>
+                            <label for="SearchInfo_Status" class="control-label">Status</label>
+                            @Html.DropDownListFor(vv => vv.SearchInfo.Status, Model.ContributionStatuses(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-4">
+                        <div class="form-group">
+                            <label for="SearchInfo_FundId" class="control-label">Fund</label>
                             @Html.DropDownListFor(vv => vv.SearchInfo.FundId, Model.Funds(), new { @class = "form-control" })
                         </div>
                     </div>
+                    @if (customFundsList != null)
+                    {
+                        <div class="col-lg-3 col-md-3 col-sm-4">
+                            <div class="form-group">
+                                <label for="SearchInfo_FundSet" class="control-label">Fund Set</label>
+                                @Html.DropDownListFor(vv => vv.SearchInfo.FundSet, customFundsList, new { @class = "form-control" })
+                            </div>
+                        </div>
+                    }
                     <div class="col-lg-3 col-md-3 col-sm-4">
                         <div class="form-group">
                             <label for="SearchInfo_Online" class="control-label">Source</label>
@@ -91,16 +111,12 @@
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-4">
                         <div class="form-group">
-                            <label for="SearchInfo_Status" class="control-label">Status</label>
-                            @Html.DropDownListFor(vv => vv.SearchInfo.Status, Model.ContributionStatuses(), new { @class = "form-control" })
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-4">
-                        <div class="form-group">
                             <label for="SearchInfo_TaxNonTax" class="control-label">Tax Status</label>
                             @Html.DropDownListFor(vv => vv.SearchInfo.TaxNonTax, Model.TaxTypes(), new { @class = "form-control" })
                         </div>
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-4">
                         <div class="form-group">
                             <label for="SearchInfo_Year" class="control-label">Year</label>
@@ -236,11 +252,11 @@
                     confirmButtonText: "Yes, return it!",
                     closeOnConfirm: false
                 },
-                function () {
-                    var f = $("#form");
-                    f.attr("action", url);
-                    f.submit();
-                });
+                    function () {
+                        var f = $("#form");
+                        f.attr("action", url);
+                        f.submit();
+                    });
                 return false;
             });
 
@@ -255,11 +271,11 @@
                     confirmButtonText: "Yes, reverse it!",
                     closeOnConfirm: false
                 },
-                function () {
-                    var f = $("#form");
-                    f.attr("action", url);
-                    f.submit();
-                });
+                    function () {
+                        var f = $("#form");
+                        f.attr("action", url);
+                        f.submit();
+                    });
                 return false;
             });
 

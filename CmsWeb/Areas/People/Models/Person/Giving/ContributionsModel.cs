@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using CmsData;
+﻿using CmsData;
 using CmsData.Codes;
 using CmsWeb.Code;
 using CmsWeb.Models;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 
 namespace CmsWeb.Areas.People.Models
 {
@@ -37,19 +37,42 @@ namespace CmsWeb.Areas.People.Models
 
         public ContributionsModel()
             : base("Date", "desc", true)
-        {}
+        { }
 
         public override IQueryable<Contribution> DefineModelList()
         {
-            var q = from c in DbUtil.Db.Contributions
-                    where c.PeopleId == Person.PeopleId
-                        || (c.PeopleId == Person.SpouseId && (Person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint)
-                    where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
-                    where c.ContributionStatusId == ContributionStatusCode.Recorded
-                    select c;
-            ShowNames = q.Any(c => c.PeopleId != Person.PeopleId);
-            ShowTypes = q.Any(c => ContributionTypeCode.SpecialTypes.Contains(c.ContributionTypeId));
-            return q;
+            IQueryable<Contribution> contributionRecords;
+
+            var currentUser = DbUtil.Db.CurrentUserPerson;
+
+            var isCurrentUser = currentUser.PeopleId == Person.PeopleId;
+            var isSpouse = currentUser.PeopleId == Person.SpouseId;
+            var isFamilyMember = currentUser.FamilyId == Person.FamilyId;
+
+            if (isCurrentUser || (isSpouse && (Person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint) || isFamilyMember)
+            {
+                contributionRecords = from c in DbUtil.Db.Contributions
+                                      where (c.PeopleId == Person.PeopleId || (c.PeopleId == Person.SpouseId && (Person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint))
+                                      && c.ContributionStatusId == ContributionStatusCode.Recorded
+                                      && !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+                                      select c;
+            }
+            else
+            {
+                contributionRecords = from c in DbUtil.Db.Contributions
+                                      join f in DbUtil.Db.ContributionFunds.ScopedByRoleMembership() on c.FundId equals f.FundId
+                                      where c.PeopleId == Person.PeopleId
+                                      && c.ContributionStatusId == ContributionStatusCode.Recorded
+                                      && !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+                                      select c;
+            }
+
+            var items = contributionRecords.ToList();
+
+            ShowNames = items.Any(c => c.PeopleId != Person.PeopleId);
+            ShowTypes = items.Any(c => ContributionTypeCode.SpecialTypes.Contains(c.ContributionTypeId));
+
+            return contributionRecords;
         }
 
         public override IQueryable<Contribution> DefineModelSort(IQueryable<Contribution> q)
@@ -114,6 +137,8 @@ namespace CmsWeb.Areas.People.Models
                      {
                          Amount = c.ContributionAmount ?? 0,
                          CheckNo = c.CheckNo,
+                         ImageId = c.ImageID,
+                         ContributionId = c.ContributionId,
                          Date = c.ContributionDate.Value,
                          Fund = c.ContributionFund.FundDescription,
                          Name = c.Person.PeopleId == PeopleId ? c.Person.PreferredName : c.Person.Name,
@@ -131,11 +156,31 @@ namespace CmsWeb.Areas.People.Models
         public static IEnumerable<StatementInfo> Statements(int? id)
         {
             if (!id.HasValue)
+            {
                 throw new ArgumentException("Missing id");
+            }
+
             var person = DbUtil.Db.LoadPersonById(id.Value);
-            return from c in DbUtil.Db.Contributions2(new DateTime(1900, 1, 1), new DateTime(3000, 12, 31), 0, false, null, true)
-                   where c.PeopleId == person.PeopleId
-                        || (c.PeopleId == person.SpouseId && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint)
+
+
+            var contributions = (from c in DbUtil.Db.Contributions2(new DateTime(1900, 1, 1), new DateTime(3000, 12, 31), 0, false, null, true)
+                                where (c.PeopleId == person.PeopleId || (c.PeopleId == person.SpouseId && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint))
+                                select c).ToList();
+
+            var currentUser = DbUtil.Db.CurrentUserPerson;
+
+            if (currentUser.PeopleId != person.PeopleId)
+            {
+                var authorizedFunds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership();
+                var authorizedContributions = from c in contributions
+                                              join f in authorizedFunds on c.FundId equals f.FundId
+                                              select c;
+
+                contributions = authorizedContributions.ToList();
+            }
+
+
+            var result = from c in contributions
                    group c by c.DateX.Value.Year into g
                    orderby g.Key descending
                    select new StatementInfo()
@@ -145,6 +190,8 @@ namespace CmsWeb.Areas.People.Models
                        StartDate = new DateTime(g.Key, 1, 1),
                        EndDate = new DateTime(g.Key, 12, 31)
                    };
+
+            return result;
         }
     }
 }

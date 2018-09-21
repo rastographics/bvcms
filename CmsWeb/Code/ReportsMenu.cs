@@ -26,7 +26,7 @@ namespace CmsWeb.Code
                 var s = HttpRuntime.Cache[DbUtil.Db.Host + "CustomReportsMenu"] as string;
                 if (s == null)
                 {
-                    s = db.ContentText("CustomReportsMenu", Resource1.ReportsMenuCustom);
+                    s = db.ContentText("CustomReportsMenu", defaultValue:"<ReportsMenu><Column1/><Column2/></ReportsMenu>");
                     HttpRuntime.Cache.Insert(db.Host + "CustomReportsMenu", s, null,
                         DateTime.Now.AddMinutes(Util.IsDebug() ? 0 : 1), Cache.NoSlidingExpiration);
                 }

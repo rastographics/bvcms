@@ -24,39 +24,42 @@ RETURNS
 	, Joined DATETIME
 	, Dropped DATETIME
 	, InactiveDate DATETIME
-	, MemberCode NVARCHAR(20)
-	, MemberType NVARCHAR(100)
-	, Hidden BIT
-	, Groups NVARCHAR(MAX)
+	, MemberCode nvarchar(20)
+	, MemberType nvarchar(100)
+	, Hidden bit
+	, Groups nvarchar(max)
+	, Grade INT  
 )
 AS
 BEGIN
 	IF @grouptype LIKE '%10%'
-		INSERT INTO @t (PeopleId, TAB, GroupCode, AttPct, LastAttended, Joined, Dropped, InactiveDate, MemberCode, MemberType, Hidden, Groups)
+		insert into @t (PeopleId, TAB, GroupCode, AttPct, LastAttended, Joined, Dropped, InactiveDate, MemberCode, MemberType, Hidden, Groups, Grade)
 		SELECT * FROM dbo.OrgPeopleCurrent(@oid) 
 
 	IF @grouptype LIKE '%20%'
-		INSERT INTO @t (PeopleId, TAB, GroupCode, AttPct, LastAttended, Joined, Dropped, InactiveDate, MemberCode, MemberType, Hidden, Groups)
+		INSERT INTO @t (PeopleId, TAB, GroupCode, AttPct, LastAttended, Joined, Dropped, InactiveDate, MemberCode, MemberType, Hidden, Groups, Grade)
 		SELECT * FROM dbo.OrgPeopleInactive(@oid) 
 
 	IF @grouptype LIKE '%30%'
-		INSERT INTO @t (PeopleId, TAB, GroupCode, AttPct, LastAttended, Joined, Dropped, InactiveDate, MemberCode, MemberType, Hidden, Groups)
+		insert into @t (PeopleId, TAB, GroupCode, AttPct, LastAttended, Joined, Dropped, InactiveDate, MemberCode, MemberType, Hidden, Groups, Grade)
 		SELECT * FROM dbo.OrgPeoplePending(@oid) 
 
 	IF @grouptype LIKE '%40%'
-		INSERT INTO @t (PeopleId, TAB, GroupCode, AttPct, LastAttended, Joined, Dropped, InactiveDate, MemberCode, MemberType, Hidden, Groups)
+		INSERT INTO @t (PeopleId, TAB, GroupCode, AttPct, LastAttended, Joined, Dropped, InactiveDate, MemberCode, MemberType, Hidden, Groups, Grade)
 		SELECT * FROM dbo.OrgPeopleProspects(@oid, @showhidden) 
 
 	IF @grouptype LIKE '%50%'
-		INSERT INTO @t (PeopleId, TAB, GroupCode, AttPct, LastAttended, Joined, Dropped, InactiveDate, MemberCode, MemberType, Hidden, Groups)
+		INSERT INTO @t (PeopleId, TAB, GroupCode, AttPct, LastAttended, Joined, Dropped, InactiveDate, MemberCode, MemberType, Hidden, Groups, Grade)
 		SELECT * FROM dbo.OrgPeoplePrevious(@oid)
 
 	IF @grouptype LIKE '%60%'
-		INSERT INTO @t (PeopleId, TAB, GroupCode, AttPct, LastAttended, Joined, Dropped, InactiveDate, MemberCode, MemberType, Hidden, Groups)
+		INSERT INTO @t (PeopleId, TAB, GroupCode, AttPct, LastAttended, Joined, Dropped, InactiveDate, MemberCode, MemberType, Hidden, Groups, Grade)
 		SELECT * FROM dbo.OrgPeopleGuests(@oid, @showhidden) 
 
 	RETURN
 END
+
+
 
 
 

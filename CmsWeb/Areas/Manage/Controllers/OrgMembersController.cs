@@ -1,10 +1,19 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.Threading;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using CmsData;
+using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Models;
+using Newtonsoft.Json;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
-    [Authorize(Roles="Edit")]
+    [Authorize(Roles="ManageOrgMembers")]
     [RouteArea("Manage", AreaPrefix= "OrgMembers"), Route("{action=index}/{id?}")]
     public class OrgMembersController : CmsStaffController
     {
@@ -16,14 +25,10 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View(m);
         }
 
-        [HttpPost]
-        public ActionResult Move(OrgMembersModel m)
-        {
-            if (m.TargetId == 0)
-                return Content("!Target required");
-            m.Move();
-            return View("List", m);
-        }
+//        [HttpPost]
+//        public ActionResult ProcessMove(OrgMembersModel model)
+//        {
+//		}
         [HttpPost]
         public ActionResult EmailNotices(OrgMembersModel m)
         {

@@ -6,6 +6,7 @@
  */
 
 using System;
+using System.Data.Linq.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using UtilityExtensions;
@@ -19,13 +20,27 @@ namespace CmsData
             var tf = CodeIds == "1";
             var mindt = Util.Now.AddDays(-Days).Date;
             Expression<Func<Person, bool>> pred = p =>
-                p.JoinDate > mindt;
+                p.JoinDate >= mindt;
             Expression expr = Expression.Invoke(pred, parm);
-            if (op == CompareType.NotEqual
-                || op == CompareType.NotOneOf)
+
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
+        }
+        internal Expression RecentJoinChurchDaysRange()
+        {
+            var a = TextValue.SplitStr("-", 2);
+            var maxdt = Util.Today.AddDays(-a[0].ToInt()).Date;
+            var mindt = maxdt;
+            if(a.Length > 1)
+                mindt = Util.Now.AddDays(-a[1].ToInt()).Date;
+            Expression<Func<Person, bool>> pred = p =>
+                p.JoinDate >= mindt && p.JoinDate < maxdt;
+            Expression expr = Expression.Invoke(pred, parm);
 
+            if (op == CompareType.NotEqual)
+                expr = Expression.Not(expr);
+            return expr;
         }
         internal Expression RecentDecisionType()
         {
@@ -53,6 +68,17 @@ namespace CmsData
             Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
 
             return expr;
+        }
+
+        private Expression JoinDateMonthsAgo()
+        {
+            var dt = DateTime.Parse("1/1/1900");
+            var months = TextValue.ToInt();
+            Expression<Func<Person, int?>> pred = p =>
+                SqlMethods.DateDiffMonth(p.JoinDate ?? dt, Util.Now);
+            Expression left = Expression.Invoke(pred, parm);
+            var right = Expression.Constant(months, typeof(int?));
+            return Compare(parm, left, op, right);
         }
     }
 }

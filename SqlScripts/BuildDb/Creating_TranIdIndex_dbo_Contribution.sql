@@ -1,0 +1,4 @@
+CREATE NONCLUSTERED INDEX [TranIdIndex] ON [dbo].[Contribution] ([TranId]) ON [PRIMARY]
+GO
+IF @@ERROR <> 0 SET NOEXEC ON
+GO

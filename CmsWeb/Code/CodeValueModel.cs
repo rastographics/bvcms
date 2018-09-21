@@ -14,6 +14,7 @@ using System.Web.Mvc;
 using CmsData;
 using CmsData.Classes.ProtectMyMinistry;
 using CmsData.Codes;
+using Dapper;
 using UtilityExtensions;
 
 namespace CmsWeb.Code
@@ -398,6 +399,25 @@ namespace CmsWeb.Code
             var list = q.ToList();
             list.Insert(0, new CodeValueItem { Id = 0, Value = "(not specified)" });
             return list;
+        }
+
+        public IEnumerable<CodeValueItem> FundsScopedByRoleMembership()
+        {
+            const int openFundStatusId = 1;
+
+            return DbUtil.Db.ContributionFunds.ScopedByRoleMembership()
+                .Where(fund => fund.FundStatusId == openFundStatusId)
+                .OrderBy(fund => fund.FundId)
+                .Select(fund => new CodeValueItem { Id = fund.FundId, Value = fund.FundName })
+                .ToList();
+        }
+
+        public IEnumerable<CodeValueItem> FundsScopedByRoleMembershipWithUnspecified()
+        {
+            var funds = new List<CodeValueItem>(FundsScopedByRoleMembership());
+            funds.Insert(0, new CodeValueItem { Id = 0, Value = "(not specified)" });
+
+            return funds;
         }
 
         public IEnumerable<CodeValueItem> GenderCodes()
@@ -901,6 +921,18 @@ namespace CmsWeb.Code
                      {
                          Code = ms.Flag,
                          Value = ms.Name
+                     };
+            return sf.OrderBy(ss => ss.Value);
+        }
+        public static IEnumerable<CodeValueItem> QueryTags()
+        {
+            var sf = from t in DbUtil.Db.Tags
+                     where t.TypeId == DbUtil.TagTypeId_QueryTags
+                     select new CodeValueItem
+                     {
+                         Id = t.Id,
+                         Code = t.Id.ToString(),
+                         Value = t.Name
                      };
             return sf.OrderBy(ss => ss.Value);
         }

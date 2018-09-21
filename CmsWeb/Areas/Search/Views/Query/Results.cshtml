@@ -3,97 +3,101 @@
 @using CmsWeb
 @using UtilityExtensions
 @{
-  var useemployer = DbUtil.Db.Setting("UseEmployerNotTeacher");
-  var target = Util2.TargetLinkPeople ? "target='people'" : "";
-  var showAltName = DbUtil.Db.Setting("ShowAltNameOnSearchResults");
+    var useemployer = DbUtil.Db.Setting("UseEmployerNotTeacher");
+    var target = Util2.TargetLinkPeople ? "target='people'" : "";
+    var showAltName = DbUtil.Db.Setting("ShowAltNameOnSearchResults");
 }
 <!--@Html.Raw(ViewBag.xml)-->
 <div class="box box-responsive">
-  <div class="box-title">
-    <h5>@Model.Count().ToString("N0") Result@(Model.Count() == 1 ? "" : "s")&nbsp;&nbsp;<small>generated @DateTime.Now.FormatDateTm()</small></h5>
-  </div>
-  <div class="box-content">
-    @Html.Partial("Toolbar/Toolbar")
-    <h4 class="visible-xs-block">@Model.Count().ToString("N0") Result@(Model.Count() == 1 ? "" : "s")&nbsp;&nbsp;<small>generated @DateTime.Now.FormatDateTm()</small></h4>
-    @Html.Partial("PagerTop", Model)
-    <div class="table-responsive">
-      <table class="table table-striped" id="resultsTable">
-        <thead>
-        <tr>
-          <th>
-            <a href="#" class="sortable">Name</a>
-          </th>
-          <th><a href="#" class="sortable">Status</a>/Age<br/> - <a href="#" class="sortable">DOB</a></th>
-          <th>
-            <a href="#" class="sortable">Address</a>
-          </th>
-          <th>
-            <a href="#" class="sortable">Communication</a>
-          </th>
-          <th>
-            <a href="#" class="sortable">@(useemployer ? "Employer" : "Fellowship Leader")</a>
-          </th>
-          <th>Tag</th>
-        </tr>
-        </thead>
-        <tbody>
-        @if (Model.Count() == 0)
-        {
-          <tr>
-            <td colspan="6">No matching records.</td>
-          </tr>
-        }
-        @foreach (var p in Model.ViewList())
-        {
-          <tr>
-            <td>
-              <a href='/Person2/@p.PeopleId' class="target" @target>@p.Name</a>
-              @if (showAltName)
-              {
-                  <br/><text>@p.AltName</text>
-              }
-            </td>
-            <td>
-              @p.MemberStatus<br/>
-              @p.Age - @p.BirthDate
-            </td>
-            <td>
-              <a href='http://www.google.com/maps?q=@p.Address,+@p.CityStateZip' target="_blank">
-                <div class="truncate" style="width: 200px;">@p.Address</div>
-              </a>
-              @p.CityStateZip
-            </td>
-            <td>
-              @foreach (var ph in p.Phones)
-              {
-                @ph<br/>
-              }
-              <a href='mailto:@p.Email'>@p.Email</a>
-            </td>
-            <td>
-              @if (useemployer)
-              {
-                @p.Employer
-              }
-              else
-              {
-                <a href='/Person2/@p.BFTeacherId'>@p.BFTeacher</a>
-              }
-            </td>
-            <td>
-              <a href="#" class="taguntag btn btn-sm @(p.HasTag ? "btn-default" : "btn-success")" title="Add to/Remove from Active Tag" value='@p.PeopleId'>
-                <i class="fa fa-tag"></i> @(p.HasTag ? "Remove" : "Add")
-              </a>
-            </td>
-          </tr>
-        }
-        </tbody>
-      </table>
+    <div class="box-title">
+        <h5>@Model.Count().ToString("N0") Result@(Model.Count() == 1 ? "" : "s")&nbsp;&nbsp;<small>generated @DateTime.Now.FormatDateTm()</small></h5>
     </div>
-    @Html.Partial("PagerBottom", Model)
-    @Html.Hidden("totcnt", Model.Count().ToString("N0"))
-    @Html.Hidden("Page", Model.Page)
-    @Html.Hidden("Sort", Model.Sort)
-    @Html.Hidden("Dir", Model.Direction)
-  </div>
+    <div class="box-content">
+        @Html.Partial("Toolbar/Toolbar")
+        <h4 class="visible-xs-block">@Model.Count().ToString("N0") Result@(Model.Count() == 1 ? "" : "s")&nbsp;&nbsp;<small>generated @DateTime.Now.FormatDateTm()</small></h4>
+        @Html.Partial("PagerTop", Model)
+        <div class="table-responsive">
+            <table class="table table-striped" id="resultsTable">
+                <thead>
+                <tr>
+                    <th>
+                        <a href="#" class="sortable">Name</a>
+                    </th>
+                    <th><a href="#" class="sortable">Status</a>/Age<br/> - <a href="#" class="sortable">DOB</a></th>
+                    <th>
+                        <a href="#" class="sortable">Address</a>
+                    </th>
+                    <th>
+                        <a href="#" class="sortable">Communication</a>
+                    </th>
+                    <th>
+                        <a href="#" class="sortable">@(useemployer ? "Employer" : "Fellowship Leader")</a>
+                    </th>
+                    <th>Tag</th>
+                </tr>
+                </thead>
+                <tbody>
+                @if (Model.Count() == 0)
+                {
+                    <tr>
+                        <td colspan="6">No matching records.</td>
+                    </tr>
+                }
+                @foreach (var p in Model.ViewList())
+                {
+                    var age = Person.AgeDisplay(p.Age, p.PeopleId);
+                    var bday = p.BirthDate;
+                    var dash = age.HasValue() && bday.HasValue() ? "-" : "";
+                    <tr>
+                        <td>
+                            <a href='/Person2/@p.PeopleId' class="target" @target>@p.Name</a>
+                            @if (showAltName)
+                            {
+                                <br/>
+                                <text>@p.AltName</text>
+                            }
+                        </td>
+                        <td>
+                            @p.MemberStatus<br/>
+                            @age @dash @bday
+                        </td>
+                        <td>
+                            <a href='http://www.google.com/maps?q=@p.Address,+@p.CityStateZip' target="_blank">
+                                <div class="truncate" style="width: 200px;">@p.Address</div>
+                            </a>
+                            @p.CityStateZip
+                        </td>
+                        <td>
+                            @foreach (var ph in p.Phones)
+                            {
+                                @ph<br/>
+                            }
+                            <a href='mailto:@p.Email'>@p.Email</a>
+                        </td>
+                        <td>
+                            @if (useemployer)
+                            {
+                                @p.Employer
+                            }
+                            else
+                            {
+                                <a href='/Person2/@p.BFTeacherId'>@p.BFTeacher</a>
+                            }
+                        </td>
+                        <td>
+                            <a href="#" class="taguntag btn btn-sm @(p.HasTag ? "btn-default" : "btn-success")" title="Add to/Remove from Active Tag" value='@p.PeopleId'>
+                                <i class="fa fa-tag"></i> @(p.HasTag ? "Remove" : "Add")
+                            </a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+        @Html.Partial("PagerBottom", Model)
+        @Html.Hidden("totcnt", Model.Count().ToString("N0"))
+        @Html.Hidden("Page", Model.Page)
+        @Html.Hidden("Sort", Model.Sort)
+        @Html.Hidden("Dir", Model.Direction)
+    </div>
 </div>

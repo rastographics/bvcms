@@ -42,6 +42,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         {
             DbUtil.Db.SetSetting(pk, value);
             DbUtil.Db.SubmitChanges();
+            DbUtil.LogActivity($"Edit Setting {pk} to {value}", userId: Util.UserId);
             var c = new ContentResult();
             c.Content = value;
             return c;
@@ -54,6 +55,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             var set = DbUtil.Db.Settings.SingleOrDefault(m => m.Id == id);
             if (set == null)
                 return new EmptyResult();
+            DbUtil.LogActivity($"Delete Setting {id}", userId: Util.UserId);
             DbUtil.Db.Settings.DeleteOnSubmit(set);
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();

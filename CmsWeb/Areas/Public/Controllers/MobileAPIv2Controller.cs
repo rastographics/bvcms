@@ -11,6 +11,7 @@ using CmsWeb.Areas.People.Models.Task;
 using CmsWeb.Areas.Public.Models.MobileAPIv2;
 using CmsWeb.Areas.Reports.Models;
 using CmsWeb.MobileAPI;
+using CmsWeb.Models;
 using CmsWeb.Models.iPhone;
 using Dapper;
 using ImageData;
@@ -18,6 +19,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using UtilityExtensions;
 using DbUtil = CmsData.DbUtil;
+using MobileAccount = CmsWeb.Areas.Public.Models.MobileAPIv2.MobileAccount;
+using MobileAccountV1 = CmsWeb.MobileAPI.MobileAccount;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
@@ -31,21 +34,33 @@ namespace CmsWeb.Areas.Public.Controllers
 		[HttpPost]
 		public ActionResult CreateUser( string data )
 		{
-			MobileMessage dataIn = MobileMessage.createFromString( data );
-			MobilePostCreate mpc = JsonConvert.DeserializeObject<MobilePostCreate>( dataIn.data );
+			MobileMessage message = MobileMessage.createFromString( data );
 
-			MobileAccount account = MobileAccount.Create( mpc.first, mpc.last, mpc.email, mpc.phone, mpc.dob );
+			MobilePostCreate mpc = JsonConvert.DeserializeObject<MobilePostCreate>( message.data );
+			mpc.lowerEmail();
 
-			MobileMessage br = new MobileMessage();
+			if( message.version < (int) MobileMessage.Version.EIGHT ) {
+				MobileAccountV1 account = MobileAccountV1.Create( mpc.first, mpc.last, mpc.email, mpc.phone, mpc.dob );
 
-			if( account.Result == MobileAccount.ResultCode.BadEmailAddress || account.Result == MobileAccount.ResultCode.FoundMultipleMatches ) {
-				br.setError( (int) MobileMessage.Error.CREATE_FAILED );
+				MobileMessage response = new MobileMessage();
+
+				if( account.Result == MobileAccountV1.ResultCode.BadEmailAddress || account.Result == MobileAccountV1.ResultCode.FoundMultipleMatches ) {
+					response.setError( (int) MobileMessage.Error.CREATE_FAILED );
+				} else {
+					response.setNoError();
+					response.data = account.User.Username;
+				}
+
+				return response;
 			} else {
-				br.setNoError();
-				br.data = account.User.Username;
-			}
+				bool useMobileMesages = DbUtil.Db.Setting( "UseMobileMessages", "false" ) == "true";
 
-			return br;
+				MobileAccount account = new MobileAccount( DbUtil.Db );
+				account.setCreateFields( mpc.first, mpc.last, mpc.email, mpc.phone, mpc.dob, message.device, message.instance, message.key );
+				account.create();
+
+				return account.getMobileResponse( useMobileMesages );
+			}
 		}
 
 		[HttpPost]
@@ -54,7 +69,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			MobileMessage message = MobileMessage.createFromString( data );
 
 			MobileAuthentication authentication = new MobileAuthentication();
-			authentication.authenticate( message.instance );
+			authentication.authenticate( message.instance, message.data );
 
 			if( authentication.hasError() ) {
 				return MobileMessage.createLoginErrorReturn( authentication );
@@ -77,11 +92,104 @@ namespace CmsWeb.Areas.Public.Controllers
 				roles = roles.ToList()
 			};
 
-			MobileMessage br = new MobileMessage();
-			br.setNoError();
-			br.data = SerializeJSON( ms, message.version );
+			MobileMessage response = new MobileMessage();
+			response.setNoError();
+			response.instance = authentication.getInstanceID();
+			response.data = SerializeJSON( ms, message.version );
 
-			return br;
+			return response;
+		}
+
+		[HttpPost]
+		public ActionResult QuickSignIn( string data )
+		{
+			MobileMessage message = MobileMessage.createFromString( data );
+			message.lowerArgString();
+
+			if( message.instance.Length == 0 ) {
+				return MobileMessage.createErrorReturn( "Invalid instance ID", (int) MobileMessage.Error.INVALID_INSTANCE_ID );
+			}
+
+			if( message.argString.Length == 0 ) {
+				return MobileMessage.createErrorReturn( "Invalid email address", (int) MobileMessage.Error.INVALID_EMAIL );
+			}
+
+			bool useMobileMesages = DbUtil.Db.Setting( "UseMobileMessages", "false" ) == "true";
+
+			MobileAccount account = new MobileAccount( DbUtil.Db );
+			account.setDeepLinkFields( message.device, message.instance, message.key, message.argString );
+			account.sendDeepLink();
+
+			return account.getMobileResponse( useMobileMesages );
+		}
+
+		[HttpPost]
+		public ActionResult QuickSignInUsers( string data )
+		{
+			MobileMessage message = MobileMessage.createFromString( data );
+
+			MobileAuthentication authentication = new MobileAuthentication();
+			authentication.authenticate( message.instance, allowQuick: true );
+
+			if( authentication.hasError() ) {
+				return MobileMessage.createLoginErrorReturn( authentication );
+			}
+
+			MobileAppDevice device = authentication.getDevice();
+			MobileMessage response = new MobileMessage();
+
+			if( device != null ) {
+				List<Person> people = (from p in DbUtil.Db.People
+												where p.EmailAddress == device.CodeEmail || p.EmailAddress2 == device.CodeEmail
+												orderby p.FirstName, p.LastName
+												select p).ToList();
+
+				if( people.Count > 0 ) {
+					List<MobileQuickSignInUser> users = new List<MobileQuickSignInUser>();
+
+					foreach( Person person in people ) {
+						if( person.Users.Count == 0 ) {
+							users.Add( new MobileQuickSignInUser( person, null ) );
+						} else {
+							foreach( User user in person.Users ) {
+								users.Add( new MobileQuickSignInUser( person, user ) );
+							}
+						}
+					}
+
+					response.setNoError();
+					response.count = users.Count;
+					response.setData( SerializeJSON( users, message.version ) );
+				}
+			}
+
+			return response;
+		}
+
+		[HttpPost]
+		public ActionResult QuickSignInCreateUser( string data )
+		{
+			MobileMessage message = MobileMessage.createFromString( data );
+
+			MobileAuthentication authentication = new MobileAuthentication();
+			authentication.authenticate( message.instance, allowQuick: true );
+
+			if( authentication.hasError() ) {
+				return MobileMessage.createLoginErrorReturn( authentication );
+			}
+
+			MobileMessage response = new MobileMessage();
+			MobileAppDevice device = authentication.getDevice();
+
+			if( DbUtil.Db.People.Any( p => (p.EmailAddress == device.CodeEmail || p.EmailAddress2 == device.CodeEmail) && p.PeopleId == message.argInt ) ) {
+				User user = AccountModel.AddUser( message.argInt );
+
+				response.id = user.UserId;
+				response.data = user.Username;
+				response.setNoError();
+			}
+
+			return response;
 		}
 
 		[HttpPost]
@@ -90,7 +198,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			MobileMessage message = MobileMessage.createFromString( data );
 
 			MobileAuthentication authentication = new MobileAuthentication();
-			authentication.authenticate( message.instance );
+			authentication.authenticate( message.instance, allowQuick: true, userID: message.argInt );
 
 			if( authentication.hasError() ) {
 				return MobileMessage.createLoginErrorReturn( authentication );
@@ -104,12 +212,37 @@ namespace CmsWeb.Areas.Public.Controllers
 				return MobileMessage.createErrorReturn( "Invalid PIN", (int) MobileMessage.Error.INVALID_PIN );
 			}
 
-			authentication.setPIN( message.device, message.instance, message.key, message.argString );
+			if( !authentication.setPIN( message.device, message.instance, message.key, message.argString ) ) {
+				return MobileMessage.createErrorReturn( "PIN was not set", (int) MobileMessage.Error.PIN_NOT_SET );
+			}
 
-			MobileMessage br = new MobileMessage();
-			br.setNoError();
+			if( message.argInt > 0 && authentication.getType() == MobileAuthentication.Type.QUICK ) {
+				authentication.setDeviceUser();
+			}
 
-			return br;
+			User user = authentication.getUser();
+
+			IQueryable<string> roles = from r in DbUtil.Db.UserRoles
+												where r.UserId == user.UserId
+												orderby r.Role.RoleName
+												select r.Role.RoleName;
+
+			MobileSettings ms = new MobileSettings
+			{
+				peopleID = user.PeopleId ?? 0,
+				userID = user.UserId,
+				userName = user.Person.Name,
+				campusID = user.Person.CampusId ?? 0,
+				campusName = user.Person.Campu?.Description ?? "",
+				roles = roles.ToList()
+			};
+
+			MobileMessage response = new MobileMessage();
+			response.setNoError();
+			response.instance = authentication.getInstanceID();
+			response.data = SerializeJSON( ms, message.version );
+
+			return response;
 		}
 
 		[HttpPost]
@@ -137,11 +270,11 @@ namespace CmsWeb.Areas.Public.Controllers
 			DbUtil.Db.OneTimeLinks.InsertOnSubmit( ot );
 			DbUtil.Db.SubmitChanges();
 
-			MobileMessage br = new MobileMessage();
-			br.setNoError();
-			br.data = $"{DbUtil.Db.ServerLink( $"Logon?ReturnUrl={HttpUtility.UrlEncode( message.argString )}&otltoken={ot.Id.ToCode()}" )}";
+			MobileMessage response = new MobileMessage();
+			response.setNoError();
+			response.data = $"{DbUtil.Db.ServerLink( $"Logon?ReturnUrl={HttpUtility.UrlEncode( $"{message.argString}?{message.getSourceQueryString()}" )}&otltoken={ot.Id.ToCode()}" )}";
 
-			return br;
+			return response;
 		}
 
 		[HttpPost]
@@ -153,11 +286,11 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			int? givingOrgId = DbUtil.Db.Connection.ExecuteScalar( sql ) as int?;
 
-			MobileMessage br = new MobileMessage();
-			br.setNoError();
-			br.data = DbUtil.Db.ServerLink( $"OnlineReg/{givingOrgId}?{message.getSourceQueryString()}" );
+			MobileMessage response = new MobileMessage();
+			response.setNoError();
+			response.data = DbUtil.Db.ServerLink( $"OnlineReg/{givingOrgId}?{message.getSourceQueryString()}" );
 
-			return br;
+			return response;
 		}
 
 		[HttpPost]
@@ -193,11 +326,11 @@ namespace CmsWeb.Areas.Public.Controllers
 			DbUtil.Db.OneTimeLinks.InsertOnSubmit( ot );
 			DbUtil.Db.SubmitChanges();
 
-			MobileMessage br = new MobileMessage();
-			br.setNoError();
-			br.data = DbUtil.Db.ServerLink( $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{message.getSourceQueryString()}" );
+			MobileMessage response = new MobileMessage();
+			response.setNoError();
+			response.data = DbUtil.Db.ServerLink( $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{message.getSourceQueryString()}" );
 
-			return br;
+			return response;
 		}
 
 		[HttpPost]
@@ -220,16 +353,16 @@ namespace CmsWeb.Areas.Public.Controllers
 			DbUtil.Db.OneTimeLinks.InsertOnSubmit( ot );
 			DbUtil.Db.SubmitChanges();
 
-			MobileMessage br = new MobileMessage();
-			br.setNoError();
+			MobileMessage response = new MobileMessage();
+			response.setNoError();
 
 			if( message.argBool ) {
-				br.data = DbUtil.Db.ServerLink( $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?showfamily=true&{message.getSourceQueryString()}" );
+				response.data = DbUtil.Db.ServerLink( $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?showfamily=true&{message.getSourceQueryString()}" );
 			} else {
-				br.data = DbUtil.Db.ServerLink( $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{message.getSourceQueryString()}" );
+				response.data = DbUtil.Db.ServerLink( $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{message.getSourceQueryString()}" );
 			}
 
-			return br;
+			return response;
 		}
 
 		[HttpPost]
@@ -248,7 +381,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			SearchModel m = new SearchModel( mps.name, mps.comm, mps.addr );
 
-			MobileMessage br = new MobileMessage();
+			MobileMessage response = new MobileMessage();
 
 			switch( (MobileMessage.Device) message.device ) {
 				case MobileMessage.Device.ANDROID: {
@@ -260,7 +393,7 @@ namespace CmsWeb.Areas.Public.Controllers
 						mpl.Add( mp.id, mp );
 					}
 
-					br.data = SerializeJSON( mpl, message.version );
+					response.data = SerializeJSON( mpl, message.version );
 					break;
 				}
 
@@ -271,15 +404,15 @@ namespace CmsWeb.Areas.Public.Controllers
 						mp.Add( new MobilePerson().populate( item ) );
 					}
 
-					br.data = SerializeJSON( mp, message.version );
+					response.data = SerializeJSON( mp, message.version );
 					break;
 				}
 			}
 
-			br.setNoError();
-			br.count = m.Count( mps.guest );
+			response.setNoError();
+			response.count = m.Count( mps.guest );
 
-			return br;
+			return response;
 		}
 
 		[AcceptVerbs( HttpVerbs.Post )]
@@ -292,6 +425,7 @@ namespace CmsWeb.Areas.Public.Controllers
 				if( org != null )
 					val = org.AppCategory ?? "Other";
 			}
+
 			Dictionary<string, string> categories = new Dictionary<string, string>();
 			string lines = DbUtil.Db.Content( "AppRegistrations", "Other\tRegistrations" ).TrimEnd();
 			Regex re = new Regex( @"^(\S*)\s+(.*)$", RegexOptions.Multiline | RegexOptions.IgnoreCase );
@@ -302,6 +436,7 @@ namespace CmsWeb.Areas.Public.Controllers
 				categories.Add( code, text );
 				line = line.NextMatch();
 			}
+
 			if( !categories.ContainsKey( "Other" ) )
 				categories.Add( "Other", "Registrations" );
 			if( val.HasValue() )
@@ -380,10 +515,10 @@ namespace CmsWeb.Areas.Public.Controllers
 		{
 			MobileMessage message = MobileMessage.createFromString( data );
 
-			MobileMessage br = new MobileMessage();
-			br.setNoError();
-			br.data = SerializeJSON( GetRegistrations(), message.version );
-			return br;
+			MobileMessage response = new MobileMessage();
+			response.setNoError();
+			response.data = SerializeJSON( GetRegistrations(), message.version );
+			return response;
 		}
 
 		[HttpPost]
@@ -398,27 +533,27 @@ namespace CmsWeb.Areas.Public.Controllers
 				return MobileMessage.createLoginErrorReturn( authentication );
 			}
 
-			MobileMessage br = new MobileMessage();
+			MobileMessage response = new MobileMessage();
 
 			Person person = DbUtil.Db.People.SingleOrDefault( p => p.PeopleId == message.argInt );
 
 			if( person == null ) {
-				br.setError( (int) MobileMessage.Error.PERSON_NOT_FOUND );
-				br.data = "Person not found.";
-				return br;
+				response.setError( (int) MobileMessage.Error.PERSON_NOT_FOUND );
+				response.data = "Person not found.";
+				return response;
 			}
 
-			br.setNoError();
-			br.count = 1;
+			response.setNoError();
+			response.count = 1;
 
 			if( message.device == (int) MobileMessage.Device.ANDROID ) {
-				br.data = SerializeJSON( new MobilePerson().populate( person ), message.version );
+				response.data = SerializeJSON( new MobilePerson().populate( person ), message.version );
 			} else {
 				List<MobilePerson> mp = new List<MobilePerson> {new MobilePerson().populate( person )};
-				br.data = SerializeJSON( mp, message.version );
+				response.data = SerializeJSON( mp, message.version );
 			}
 
-			return br;
+			return response;
 		}
 
 		[HttpPost]
@@ -433,27 +568,27 @@ namespace CmsWeb.Areas.Public.Controllers
 				return MobileMessage.createLoginErrorReturn( authentication );
 			}
 
-			MobileMessage br = new MobileMessage();
+			MobileMessage response = new MobileMessage();
 
 			Person person = DbUtil.Db.People.SingleOrDefault( p => p.PeopleId == message.argInt );
 
 			if( person == null ) {
-				br.setError( (int) MobileMessage.Error.PERSON_NOT_FOUND );
-				br.data = "Person not found.";
-				return br;
+				response.setError( (int) MobileMessage.Error.PERSON_NOT_FOUND );
+				response.data = "Person not found.";
+				return response;
 			}
 
-			br.setNoError();
-			br.count = 1;
+			response.setNoError();
+			response.count = 1;
 
 			if( message.device == (int) MobileMessage.Device.ANDROID ) {
-				br.data = SerializeJSON( new MobilePersonExtended().populate( person, message.argBool ), message.version );
+				response.data = SerializeJSON( new MobilePersonExtended().populate( person, message.argBool ), message.version );
 			} else {
 				List<MobilePersonExtended> mp = new List<MobilePersonExtended> {new MobilePersonExtended().populate( person, message.argBool )};
-				br.data = SerializeJSON( mp, message.version );
+				response.data = SerializeJSON( mp, message.version );
 			}
 
-			return br;
+			return response;
 		}
 
 		[HttpPost]
@@ -488,14 +623,14 @@ namespace CmsWeb.Areas.Public.Controllers
 				return MobileMessage.createErrorReturn( "Person must be in the same family" );
 			}
 
-			MobileMessage br = new MobileMessage();
+			MobileMessage response = new MobileMessage();
 
 			Person person = DbUtil.Db.People.SingleOrDefault( p => p.PeopleId == message.argInt );
 
 			if( person == null ) {
-				br.setError( (int) MobileMessage.Error.PERSON_NOT_FOUND );
-				br.data = "Person not found.";
-				return br;
+				response.setError( (int) MobileMessage.Error.PERSON_NOT_FOUND );
+				response.data = "Person not found.";
+				return response;
 			}
 
 			List<MobilePostEditField> fields = JsonConvert.DeserializeObject<List<MobilePostEditField>>( message.data );
@@ -517,10 +652,10 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			DbUtil.Db.SubmitChanges();
 
-			br.setNoError();
-			br.count = 1;
+			response.setNoError();
+			response.count = 1;
 
-			return br;
+			return response;
 		}
 
 		[HttpPost]
@@ -542,14 +677,14 @@ namespace CmsWeb.Areas.Public.Controllers
 				return BaseMessage.createErrorReturn( "Giving history is not available for other people" );
 			}
 
-			BaseMessage br = new BaseMessage();
+			BaseMessage response = new BaseMessage();
 
 			Person person = DbUtil.Db.People.SingleOrDefault( p => p.PeopleId == message.argInt );
 
 			if( person == null ) {
-				br.setError( BaseMessage.API_ERROR_PERSON_NOT_FOUND );
-				br.data = "Person not found.";
-				return br;
+				response.setError( BaseMessage.API_ERROR_PERSON_NOT_FOUND );
+				response.data = "Person not found.";
+				return response;
 			}
 
 			int thisYear = DateTime.Now.Year;
@@ -594,11 +729,11 @@ namespace CmsWeb.Areas.Public.Controllers
 			history.updateEntries( thisYear, entries );
 			history.setLastYearTotal( lastYear, (int) (lastYearTotal * 100) );
 
-			br.data = SerializeJSON( history, message.version );
-			br.setNoError();
-			br.count = 1;
+			response.data = SerializeJSON( history, message.version );
+			response.setNoError();
+			response.count = 1;
 
-			return br;
+			return response;
 		}
 
 		[HttpPost]
@@ -646,12 +781,12 @@ namespace CmsWeb.Areas.Public.Controllers
 																attendancePercent = (int) (om.AttendPct == null ? 0 : om.AttendPct * 100)
 															}).ToList();
 
-			MobileMessage br = new MobileMessage();
-			br.setNoError();
-			br.data = SerializeJSON( orgList, message.version );
-			br.count = 1;
+			MobileMessage response = new MobileMessage();
+			response.setNoError();
+			response.data = SerializeJSON( orgList, message.version );
+			response.count = 1;
 
-			return br;
+			return response;
 		}
 
 		[HttpPost]
@@ -668,14 +803,14 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			MobilePostFetchImage mpfi = JsonConvert.DeserializeObject<MobilePostFetchImage>( message.data );
 
-			MobileMessage br = new MobileMessage();
-			if( mpfi.id == 0 ) return br.setData( "The ID for the person cannot be set to zero" );
+			MobileMessage response = new MobileMessage();
+			if( mpfi.id == 0 ) return response.setData( "The ID for the person cannot be set to zero" );
 
-			br.data = "The picture was not found.";
+			response.data = "The picture was not found.";
 
 			Person person = DbUtil.Db.People.SingleOrDefault( pp => pp.PeopleId == mpfi.id );
 
-			if( person == null || person.PictureId == null ) return br;
+			if( person == null || person.PictureId == null ) return response;
 
 			Image image = null;
 
@@ -697,13 +832,13 @@ namespace CmsWeb.Areas.Public.Controllers
 					break;
 			}
 
-			if( image == null ) return br;
+			if( image == null ) return response;
 
-			br.data = Convert.ToBase64String( image.Bits );
-			br.count = 1;
-			br.setNoError();
+			response.data = Convert.ToBase64String( image.Bits );
+			response.count = 1;
+			response.setNoError();
 
-			return br;
+			return response;
 		}
 
 		[HttpPost]
@@ -720,7 +855,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			User user = authentication.getUser();
 
-			MobileMessage br = new MobileMessage();
+			MobileMessage response = new MobileMessage();
 
 			byte[] imageBytes = Convert.FromBase64String( message.argString );
 
@@ -771,12 +906,12 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			person?.LogPictureUpload( DbUtil.Db, user.PeopleId ?? 1 );
 
-			br.setNoError();
-			br.data = "Image updated.";
-			br.id = message.argInt;
-			br.count = 1;
+			response.setNoError();
+			response.data = "Image updated.";
+			response.id = message.argInt;
+			response.count = 1;
 
-			return br;
+			return response;
 		}
 
 		[HttpPost]
@@ -793,7 +928,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			MobilePostSaveImage mpsi = JsonConvert.DeserializeObject<MobilePostSaveImage>( message.data );
 
-			MobileMessage br = new MobileMessage();
+			MobileMessage response = new MobileMessage();
 
 			byte[] imageBytes = Convert.FromBase64String( mpsi.image );
 
@@ -842,12 +977,12 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			DbUtil.Db.SubmitChanges();
 
-			br.setNoError();
-			br.data = "Image updated.";
-			br.id = mpsi.id;
-			br.count = 1;
+			response.setNoError();
+			response.data = "Image updated.";
+			response.id = mpsi.id;
+			response.count = 1;
 
-			return br;
+			return response;
 		}
 
 		[HttpPost]
@@ -875,7 +1010,7 @@ namespace CmsWeb.Areas.Public.Controllers
 													orderby c.CreatedOn descending
 													select c).Take( 20 );
 
-			MobileMessage br = new MobileMessage();
+			MobileMessage response = new MobileMessage();
 
 			switch( (MobileMessage.Device) message.device ) {
 				case MobileMessage.Device.ANDROID: {
@@ -891,7 +1026,7 @@ namespace CmsWeb.Areas.Public.Controllers
 						taskList.Add( task.id, task );
 					}
 
-					br.data = SerializeJSON( taskList, message.version );
+					response.data = SerializeJSON( taskList, message.version );
 					break;
 				}
 
@@ -908,14 +1043,14 @@ namespace CmsWeb.Areas.Public.Controllers
 						taskList.Add( task );
 					}
 
-					br.data = SerializeJSON( taskList, message.version );
+					response.data = SerializeJSON( taskList, message.version );
 					break;
 				}
 			}
 
-			br.count = tasks.Count();
-			br.setNoError();
-			return br;
+			response.count = tasks.Count();
+			response.setNoError();
+			return response;
 		}
 
 		[HttpPost]
@@ -930,13 +1065,19 @@ namespace CmsWeb.Areas.Public.Controllers
 				return MobileMessage.createLoginErrorReturn( authentication );
 			}
 
-			TaskModel.AcceptTask( message.argInt );
+			User user = authentication.getUser();
 
-			MobileMessage br = new MobileMessage();
-			br.setNoError();
-			br.count = 1;
+			MobileMessage response = new MobileMessage();
 
-			return br;
+			if( TaskModel.AcceptTask( user, message.argInt ) ) {
+				response.setNoError();
+			} else {
+				response.setError( (int) MobileMessage.Error.TASK_UPDATE_FAILED );
+			}
+
+			response.count = 1;
+
+			return response;
 		}
 
 		[HttpPost]
@@ -951,13 +1092,19 @@ namespace CmsWeb.Areas.Public.Controllers
 				return MobileMessage.createLoginErrorReturn( authentication );
 			}
 
-			TaskModel.DeclineTask( message.argInt, message.argString );
+			User user = authentication.getUser();
 
-			MobileMessage br = new MobileMessage();
-			br.setNoError();
-			br.count = 1;
+			MobileMessage response = new MobileMessage();
 
-			return br;
+			if( TaskModel.DeclineTask( user, message.argInt, message.argString ) ) {
+				response.setNoError();
+			} else {
+				response.setError( (int) MobileMessage.Error.TASK_UPDATE_FAILED );
+			}
+
+			response.count = 1;
+
+			return response;
 		}
 
 		[HttpPost]
@@ -972,13 +1119,19 @@ namespace CmsWeb.Areas.Public.Controllers
 				return MobileMessage.createLoginErrorReturn( authentication );
 			}
 
-			TaskModel.CompleteTask( message.argInt );
+			User user = authentication.getUser();
 
-			MobileMessage br = new MobileMessage();
-			br.setNoError();
-			br.count = 1;
+			MobileMessage response = new MobileMessage();
 
-			return br;
+			if( TaskModel.CompleteTask( user, message.argInt ) ) {
+				response.setNoError();
+			} else {
+				response.setError( (int) MobileMessage.Error.TASK_UPDATE_FAILED );
+			}
+
+			response.count = 1;
+
+			return response;
 		}
 
 		[HttpPost]
@@ -997,11 +1150,11 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			int contactid = TaskModel.AddCompletedContact( message.argInt, user );
 
-			MobileMessage br = new MobileMessage();
-			br.setNoError();
-			br.data = GetOneTimeLoginLink( $"/Contact2/{contactid}?edit=true&{message.getSourceQueryString()}", user.Username );
-			br.count = 1;
-			return br;
+			MobileMessage response = new MobileMessage();
+			response.setNoError();
+			response.data = GetOneTimeLoginLink( $"/Contact2/{contactid}?edit=true&{message.getSourceQueryString()}", user.Username );
+			response.count = 1;
+			return response;
 		}
 
 		[HttpPost]
@@ -1022,15 +1175,15 @@ namespace CmsWeb.Areas.Public.Controllers
 							where t.Id == message.argInt
 							select t).SingleOrDefault();
 
-			MobileMessage br = new MobileMessage();
+			MobileMessage response = new MobileMessage();
 
-			if( task == null || task.CompletedContactId == null ) return br;
+			if( task == null || task.CompletedContactId == null ) return response;
 
-			br.setNoError();
-			br.data = GetOneTimeLoginLink( $"/Contact2/{task.CompletedContactId}?{message.getSourceQueryString()}", user.Username );
-			br.count = 1;
+			response.setNoError();
+			response.data = GetOneTimeLoginLink( $"/Contact2/{task.CompletedContactId}?{message.getSourceQueryString()}", user.Username );
+			response.count = 1;
 
-			return br;
+			return response;
 		}
 
 		[HttpPost]
@@ -1089,11 +1242,11 @@ namespace CmsWeb.Areas.Public.Controllers
 								lastMeetting = mtg.MeetingDate
 							};
 
-			MobileMessage br = new MobileMessage();
+			MobileMessage response = new MobileMessage();
 			List<MobileOrganization> mo = new List<MobileOrganization>();
 
-			br.setNoError();
-			br.count = orgs.Count();
+			response.setNoError();
+			response.count = orgs.Count();
 
 			foreach( OrganizationInfo item in orgs ) {
 				MobileOrganization org = new MobileOrganization().populate( item );
@@ -1101,9 +1254,9 @@ namespace CmsWeb.Areas.Public.Controllers
 				mo.Add( org );
 			}
 
-			br.data = SerializeJSON( mo, message.version );
+			response.data = SerializeJSON( mo, message.version );
 
-			return br;
+			return response;
 		}
 
 		[HttpPost]
@@ -1145,16 +1298,16 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			if( meeting != null ) mrl.headcount = meeting.HeadCount ?? 0;
 
-			MobileMessage br = new MobileMessage();
-			br.setNoError();
-			br.id = meetingId;
-			br.count = people.Count;
+			MobileMessage response = new MobileMessage();
+			response.setNoError();
+			response.id = meetingId;
+			response.count = people.Count;
 
 			foreach( RollsheetModel.AttendInfo person in people )
 				mrl.attendees.Add( new MobileAttendee().populate( person ) );
 
-			br.data = SerializeJSON( mrl, message.version );
-			return br;
+			response.data = SerializeJSON( mrl, message.version );
+			return response;
 		}
 
 		[HttpPost]
@@ -1190,11 +1343,11 @@ namespace CmsWeb.Areas.Public.Controllers
 			DbUtil.Db.UpdateMeetingCounters( mpa.orgID );
 			DbUtil.LogActivity( $"Mobile RecAtt o:{mpa.orgID} p:{mpa.peopleID} u:{user.PeopleId} a:{mpa.present}" );
 
-			MobileMessage br = new MobileMessage();
-			br.setNoError();
-			br.count = 1;
+			MobileMessage response = new MobileMessage();
+			response.setNoError();
+			response.count = 1;
 
-			return br;
+			return response;
 		}
 
 		[HttpPost]
@@ -1221,21 +1374,21 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			MobilePostHeadcount mph = JsonConvert.DeserializeObject<MobilePostHeadcount>( message.data );
 
-			MobileMessage br = new MobileMessage();
+			MobileMessage response = new MobileMessage();
 
 			Meeting meeting = DbUtil.Db.Meetings.SingleOrDefault( m => m.OrganizationId == mph.orgID && m.MeetingDate == mph.datetime );
 
-			if( meeting == null ) return br;
+			if( meeting == null ) return response;
 
 			meeting.HeadCount = mph.headcount;
 
 			DbUtil.Db.SubmitChanges();
 			DbUtil.LogActivity( $"Mobile Headcount o:{meeting.OrganizationId} m:{meeting.MeetingId} h:{mph.headcount}" );
 
-			br.setNoError();
-			br.count = 1;
+			response.setNoError();
+			response.count = 1;
 
-			return br;
+			return response;
 		}
 
 		[HttpPost]
@@ -1358,12 +1511,12 @@ namespace CmsWeb.Areas.Public.Controllers
 				}
 			}
 
-			MobileMessage br = new MobileMessage();
-			br.setNoError();
-			br.id = p.PeopleId;
-			br.count = 1;
+			MobileMessage response = new MobileMessage();
+			response.setNoError();
+			response.id = p.PeopleId;
+			response.count = 1;
 
-			return br;
+			return response;
 		}
 
 		[HttpPost]
@@ -1400,11 +1553,11 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			DbUtil.Db.SubmitChanges();
 
-			MobileMessage br = new MobileMessage();
-			br.setNoError();
-			br.count = 1;
+			MobileMessage response = new MobileMessage();
+			response.setNoError();
+			response.count = 1;
 
-			return br;
+			return response;
 		}
 
 		public ActionResult SystemLists( string data )
@@ -1447,12 +1600,12 @@ namespace CmsWeb.Areas.Public.Controllers
 													description = e.Description
 												}).ToList();
 
-			BaseMessage br = new BaseMessage();
-			br.error = 0;
-			br.count = 3;
-			br.data = JsonConvert.SerializeObject( allLists );
+			BaseMessage response = new BaseMessage();
+			response.error = 0;
+			response.count = 3;
+			response.data = JsonConvert.SerializeObject( allLists );
 
-			return br;
+			return response;
 		}
 
 		public ActionResult MapInfo( string data )
@@ -1503,12 +1656,12 @@ namespace CmsWeb.Areas.Public.Controllers
 				campus.floors = floorList;
 			}
 
-			BaseMessage br = new BaseMessage();
-			br.error = 0;
-			br.count = campusList.Count();
-			br.data = JsonConvert.SerializeObject( campusList );
+			BaseMessage response = new BaseMessage();
+			response.error = 0;
+			response.count = campusList.Count();
+			response.data = JsonConvert.SerializeObject( campusList );
 
-			return br;
+			return response;
 		}
 
 		private static OneTimeLink GetOneTimeLink( int orgId, int peopleId )

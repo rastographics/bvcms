@@ -1,6 +1,8 @@
 using System;
+using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -176,17 +178,27 @@ Thank you.
             else
                 contributionemail = p.person.FromEmail;
 
-            var from = Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(p.org.OrganizationId));
+            MailAddress from = null;
+            if (!Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(p.org.OrganizationId), out from))
+            {
+                from = GetAdminMailAddress();
+            }
+
             var m = new EmailReplacements(DbUtil.Db, body, from);
             body = m.DoReplacements(DbUtil.Db, p.person);
 
             DbUtil.Db.EmailFinanceInformation(from, p.person, p.setting.Subject, body);
             DbUtil.Db.EmailFinanceInformation(contributionemail, DbUtil.Db.StaffPeopleForOrg(p.org.OrganizationId),
                 "online giving contribution received",
-                $"see contribution records for {p.person.Name} ({p.PeopleId})");
+                $"see contribution records for {p.person.Name} ({p.PeopleId}) {Util.Host}");
             if (p.CreatingAccount)
                 p.CreateAccount();
             return ConfirmEnum.Confirm;
+        }
+
+        private static MailAddress GetAdminMailAddress()
+        {
+            return new MailAddress(DbUtil.Db.Setting("AdminMail", ConfigurationManager.AppSettings["supportemail"]));
         }
 
         private void CreateTransactionIfNeeded()
@@ -289,12 +301,17 @@ Thank you.
             // question: should we be sending to all TransactionPeople?
             if (sendmail)
             {
+                MailAddress staffEmail;
+                if (!Util.TryGetMailAddress(db.StaffEmailForOrg(org.OrganizationId), out staffEmail))
+                {
+                    staffEmail = GetAdminMailAddress();
+                }
                 if (p0 == null)
-                    db.SendEmail(Util.TryGetMailAddress(db.StaffEmailForOrg(org.OrganizationId)),
+                    db.SendEmail(staffEmail,
                         "Payment confirmation", msg, Util.ToMailAddressList(Util.FirstAddress(ti.Emails)), pid: pid).Wait();
                 else
                 {
-                    db.Email(db.StaffEmailForOrg(org.OrganizationId), p0, Util.ToMailAddressList(ti.Emails),
+                    db.Email(staffEmail, p0, Util.ToMailAddressList(ti.Emails),
                         "Payment confirmation", msg, false);
                     db.Email(p0.FromEmail, db.PeopleFromPidString(org.NotifyIds),
                         "payment received for " + ti.Description, msgstaff);

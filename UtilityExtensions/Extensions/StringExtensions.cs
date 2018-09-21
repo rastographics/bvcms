@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Xml.Linq;
 
 namespace UtilityExtensions
@@ -52,6 +54,13 @@ namespace UtilityExtensions
             var re = new Regex(@"\B\p{Lu}\p{Ll}", RegexOptions.Compiled);
             name = re.Replace(name, " $0");
             return name;
+        }
+
+        public static string JoinInts(this IEnumerable<int> ints, string sep)
+        {
+            if (ints == null)
+                return null;
+            return string.Join(sep, ints);
         }
 
         public static string Replace(this string str, string oldValue, string newValue, bool ignoreCase = false)
@@ -180,7 +189,7 @@ namespace UtilityExtensions
         public static string MaxString(this string s, int length)
         {
             if (s?.Length > length)
-                s = s.Substring(0, length);
+                return s.Substring(0, length);
             return s;
         }
 
@@ -306,23 +315,45 @@ namespace UtilityExtensions
 
         public static string Md5Hash(this string s)
         {
-            var md5 = MD5.Create();
-            var bytes = Encoding.ASCII.GetBytes(s);
-            var hash = md5.ComputeHash(bytes);
-            var sb = new StringBuilder();
-            foreach (var t in hash)
-                sb.Append(t.ToString("x2"));
-            return sb.ToString();
-		}
-		
+            using (var md5 = MD5.Create())
+            {
+                var bytes = Encoding.ASCII.GetBytes(s);
+                var hash = md5.ComputeHash(bytes);
+                var sb = new StringBuilder();
+                foreach (var t in hash)
+                    sb.Append(t.ToString("x2"));
+                return sb.ToString();
+            }
+        }
+        public static string Sha256Hash(this string s)
+        {
+            using (var sha = SHA256.Create())
+            {
+                var bytes = Encoding.UTF8.GetBytes(s);
+                var hash = sha.ComputeHash(bytes);
+                var sb = new StringBuilder();
+                foreach (var t in hash)
+                    sb.Append(t.ToString("x2"));
+                return sb.ToString();
+            }
+        }
+
         public static string SlugifyString(this string original)
         {
+            if (original == null)
+                return string.Empty;
+
             // Replace all non-alphanumeric
             var rgx = new Regex("[^a-zA-Z0-9]");
             var slug = rgx.Replace(original, "");
             var lowercaseSlug = slug.ToLower();
 
             return lowercaseSlug;
+        }
+
+        public static string HtmlEncode(this string s)
+        {
+            return HttpUtility.HtmlEncode(s);
         }
     }
 }

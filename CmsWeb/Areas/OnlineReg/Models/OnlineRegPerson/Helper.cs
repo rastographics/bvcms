@@ -519,6 +519,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return SpecialFundList();
         }
 
+        public SelectListItem[] DesignatedDonationFund()
+        {
+            if (ShouldPullSpecificFund())
+                return ReturnContributionForSetting();
+
+            return new SelectListItem[0];
+        }
+
         private SelectListItem[] ReturnContributionForSetting()
         {
             var fund = DbUtil.Db.ContributionFunds.SingleOrDefault(f => f.FundId == setting.DonationFundId);
@@ -536,9 +544,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool ShouldPullSpecificFund()
         {
-            return Parent.OnlineGiving()
+           return Parent.OnlineGiving()
                    && !Parent.AskDonation()
                    && setting.DonationFundId.HasValue;
+        }
+
+        public static SelectListItem[] EntireFundList()
+        {
+            return (from f in GetAllOnlineFunds()
+                select new SelectListItem
+                {
+                    Text = $"{f.FundName}",
+                    Value = f.FundId.ToString()
+                }).ToArray();
         }
 
         public static SelectListItem[] FullFundList()
@@ -640,9 +658,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             if (_setting == null)
                 return;
-            var ndd = setting.AskItems.Count(aa => aa.Type == "AskDropdown");
-            if (ndd > 0 && option == null)
-                option = new string[ndd].ToList();
+            InitializeOptionIfNeeded();
 
             var neqsets = setting.AskItems.Count(aa => aa.Type == "AskExtraQuestions");
             if (neqsets > 0 && ExtraQuestion == null)
@@ -673,6 +689,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (!Suggestedfee.HasValue && setting.AskVisible("AskSuggestedFee"))
                 Suggestedfee = setting.Fee;
         }
+
+        private void InitializeOptionIfNeeded()
+        {
+            if (option != null)
+                return;
+            var ndd = setting.AskItems.Count(aa => aa.Type == "AskDropdown");
+            if (ndd > 0)
+                option = new string[ndd].ToList();
+        }
+
         public void Log(string action)
         {
             DbUtil.LogActivity("OnlineReg " + action, masterorgid ?? orgid, PeopleId ?? Parent.UserPeopleId, Parent.DatumId);

@@ -2,8 +2,13 @@
 @using CmsData
 @using UtilityExtensions
 @{
-  var giving = Util.UserPeopleId == Util2.CurrentPeopleId && ViewExtensions2.DbSetting("TransactionGateway", "").HasValue() && DbUtil.Db.Setting("OnlineGiving", true);
-  var vaultDisabled = DbUtil.Db.Setting("VaultDisabled");
+    var giving = Util.UserPeopleId == Util2.CurrentPeopleId && ViewExtensions2.DbSetting("TransactionGateway", "").HasValue() && DbUtil.Db.Setting("OnlineGiving", true);
+    var vaultDisabled = DbUtil.Db.Setting("VaultDisabled");
+    var checkImageUserView = true;
+    if (DbUtil.Db.Setting("CheckImagesDisabledForUser"))
+    {
+        checkImageUserView = User.IsInRole("Finance");
+    }
 }
 <form class="non-modal ajax">
     @FormAction(giving, vaultDisabled)
@@ -34,7 +39,14 @@
                                 <td class="text-right">@c.Amount.ToString("N2")</td>
                                 <td><span class="pad-left">@c.Fund</span></td>
                                 <td>@c.Type</td>
-                                <td>@c.CheckNo</td>
+                                <td>@c.CheckNo
+                                    @if (c.ImageId != 0 && checkImageUserView)
+                                    {
+                                        <a href="@Url.Action("GetCheckImage", "GetCheckImage", new {Area = "Dialog", id = c.ContributionId})" class="searchadd pid">
+                                            <i class="fa fa-info-circle"></i>
+                                        </a>
+                                    }
+                                </td>
                                 @if (Model.ShowNames)
                                 {
                                     <td>@c.Name</td>

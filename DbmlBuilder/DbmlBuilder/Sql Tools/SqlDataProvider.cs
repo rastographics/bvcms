@@ -8,6 +8,7 @@ using System.Configuration.Provider;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Collections.Specialized;
+using DbmlBuilder.CodeGeneration;
 
 namespace DbmlBuilder
 {
@@ -113,6 +114,7 @@ namespace DbmlBuilder
                 column.IsNullable = drColumns[i][SqlSchemaVariable.IS_NULLABLE].ToString() == "YES";
                 bool isComputed = (drColumns[i][SqlSchemaVariable.IS_COMPUTED].ToString() == "1");
                 column.IsReadOnly = (column.NativeDataType == "timestamp" || isComputed);
+                column.UpdateCheck = ColumnAttributes.GetConcurrencyUpdateCheckRule(column);
                 columns.Add(column);
                 tbl.SchemaName = drColumns[i]["Owner"].ToString();
             }

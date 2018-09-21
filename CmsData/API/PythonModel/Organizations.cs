@@ -153,12 +153,12 @@ namespace CmsData
             db.LogActivity($"Python DeleteOrg {name}, {program}, {division}");
         }
 
-        public void DropOrgMember(int pid, int orgId)
+        public void DropOrgMember(object pid, object orgId)
         {
             db.LogActivity($"PythonModel.DropOrgMember({pid},{orgId})");
             using (var db2 = NewDataContext())
             {
-                var om = db2.OrganizationMembers.Single(m => m.PeopleId == pid && m.OrganizationId == orgId);
+                var om = db2.OrganizationMembers.Single(m => m.PeopleId == pid.ToInt() && m.OrganizationId == orgId.ToInt());
                 om.Drop(db2);
                 db2.SubmitChanges();
             }
@@ -188,7 +188,7 @@ namespace CmsData
             return om?.IsInGroup(group) ?? false;
         }
 
-        public void JoinOrg(int orgid, object person)
+        public void JoinOrg(object orgid, object person)
         {
             int? pid = null;
             if (person is int)
@@ -199,14 +199,14 @@ namespace CmsData
                 return;
             db.LogActivity($"PythonModel.JoinOrg({pid},{orgid})");
             using (var db2 = NewDataContext())
-                OrganizationMember.InsertOrgMembers(db2, orgid, pid.Value, 220, Util.Now, null, false);
+                OrganizationMember.InsertOrgMembers(db2, orgid.ToInt(), pid.Value, 220, Util.Now, null, false);
         }
 
-        public void MoveToOrg(int pid, int fromOrg, int toOrg, bool? moveregdata = true, int toMemberTypeId = -1)
+        public void MoveToOrg(object pid, object fromOrg, object toOrg, bool? moveregdata = true, int toMemberTypeId = -1)
         {
             db.LogActivity($"PythonModel.MoveToOrg({pid},{fromOrg},{toOrg})");
             using (var db2 = NewDataContext())
-                OrganizationMember.MoveToOrg(db2, pid, fromOrg, toOrg, moveregdata, toMemberTypeId);
+                OrganizationMember.MoveToOrg(db2, pid.ToInt(), fromOrg.ToInt(), toOrg.ToInt(), moveregdata, toMemberTypeId);
         }
 
         public List<int> OrganizationIds(int progid, int divid, bool includeInactive = false)

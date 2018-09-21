@@ -2,19 +2,24 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Dynamic;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Web;
 using MarkdownDeep;
 using RestSharp;
 using UtilityExtensions;
 using System.Linq;
+using System.Net.Mime;
 using System.Web.Helpers;
 using System.Web.Script.Serialization;
 using CmsData.API;
+using CmsData.Codes;
+using Dapper;
 using IronPython.Runtime;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
+using RestSharp.Authenticators;
 using Method = RestSharp.Method;
 
 namespace CmsData
@@ -23,13 +28,16 @@ namespace CmsData
     {
         public string CmsHost => db.ServerLink().TrimEnd('/');
         public bool FromMorningBatch { get; set; }
+        public int? QueryTagLimit { get; set; }
         public string UserName => Util.UserName;
         public dynamic Data { get; }
 
         public string CallScript(string scriptname)
         {
             var script = db.ContentOfTypePythonScript(scriptname);
-            return ExecutePython(script, new PythonModel(db.Host, dictionary));
+            var model = new PythonModel(db.Host, dictionary);
+            model.FromMorningBatch = FromMorningBatch;
+            return ExecutePython(script, model);
         }
 
         public string Content(string name)
@@ -70,6 +78,10 @@ namespace CmsData
         {
             dictionary.Add(key, value);
         }
+        public void DictionaryAdd(string key, object value)
+        {
+            dictionary.Add(key, value);
+        }
 
         public string FmtPhone(string s, string prefix = null)
         {
@@ -85,6 +97,14 @@ namespace CmsData
         {
             var c = db.ContentOfTypeHtml(name);
             return c.Body;
+        }
+        public string SqlContent(string name)
+        {
+            return db.ContentOfTypeSql(name);
+        }
+        public string TextContent(string name)
+        {
+            return db.ContentOfTypeText(name);
         }
         public string TitleContent(string name)
         {
@@ -104,7 +124,7 @@ namespace CmsData
 
         public string Replace(string text, string pattern, string replacement)
         {
-            return Regex.Replace(text, pattern, replacement);
+            return Regex.Replace(text, pattern, replacement, RegexOptions.Singleline);
         }
         public static string Markdown(string text)
         {
@@ -208,6 +228,11 @@ namespace CmsData
             var s = JsonConvert.SerializeObject(d, Formatting.Indented);
             return s.Replace("\r\n", "\n");
         }
+        public string FormatJson(DynamicData data)
+        {
+            var json = data.ToString();
+            return FormatJson(json);
+        }
 
         public string Md5Hash(string s)
         {
@@ -305,5 +330,79 @@ namespace CmsData
             db.ExecuteCommand("dbo.UpdateStatusFlag {0}, {1}", flagid, temptag.Id);
         }
 
+        public int CreateQueryTag(string name, string code)
+        {
+            var qq = db.PeopleQuery2(code);
+            if (QueryTagLimit > 0)
+                qq = qq.Take(QueryTagLimit.Value);
+            int tid = db.PopulateSpecialTag(qq, name, DbUtil.TagTypeId_QueryTags);
+            return db.TagPeople.Count(v => v.Id == tid);
+        }
+        public void DeleteQueryTags(string namelike)
+        {
+            db.Connection.Execute(@"
+DELETE dbo.TagPerson FROM dbo.TagPerson tp JOIN dbo.Tag t ON t.Id = tp.Id WHERE t.TypeId = 101 AND t.Name LIKE @namelike
+DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
+", new {namelike});
+        }
+
+        public void WriteContentSql(string name, string sql)
+        {
+            var c = db.Content(name, ContentTypeCode.TypeSqlScript);
+            if (c == null)
+            {
+                c = new Content()
+                {
+                    Name = name,
+                    TypeID = ContentTypeCode.TypeSqlScript
+                };
+                db.Contents.InsertOnSubmit(c);
+            }
+            c.Body = sql;
+            db.SubmitChanges();
+        }
+        public int TagLastQuery(string defaultcode)
+        {
+            Tag tag = null;
+            if (FromMorningBatch)
+            {
+                var qq = db.PeopleQuery2(defaultcode);
+                tag = db.PopulateSpecialTag(qq, DbUtil.TagTypeId_Query);
+            }
+            else
+            {
+                var guid = db.FetchLastQuery().Id;
+                tag = db.PopulateSpecialTag(guid, DbUtil.TagTypeId_Query);
+            }
+            return tag.Id;
+        }
+        public CsvHelper.CsvReader CsvReader(string text)
+        {
+            var csv = new CsvHelper.CsvReader(new StringReader(text));
+            csv.Read();
+            csv.ReadHeader();
+            return csv;
+        }
+
+        public CsvHelper.CsvReader CsvReaderNoHeader(string text)
+        {
+            var csv = new CsvHelper.CsvReader(new StringReader(text));
+            csv.Configuration.HasHeaderRecord = false;
+            return csv;
+        }
+
+        public string AppendIfBoth(string s1, string join, string s2)
+        {
+            if (s1.HasValue() && s2.HasValue())
+                return s1 + join + s2;
+            if(s1.HasValue())
+                return s1;
+            return s2;
+        }
+        public DynamicData FromJson(string json)
+        {
+            var dd =  JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+            return new DynamicData(dd);
+        }
     }
 }

@@ -38,6 +38,8 @@ matchnothinghere
             // for parsing account and checkno
             var regex = new Regex(Patterns, RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
 
+            csv.Read();
+            csv.ReadHeader();
             csv.Read(); // read header;
             var newBundle = true;
             while (csv.Read())

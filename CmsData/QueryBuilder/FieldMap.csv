@@ -83,6 +83,7 @@ DecisionDate,Date,,,,Membership,Decision Date,,Select Comparison and pick the da
 DecisionTypeId,NullCode,,DecisionTypeList,,Membership,Decision Type,,Select Decision Type from the list.
 RecentDecisionType,Code,,DecisionTypeList,,Membership,Recent Decision Type,Days,Select Decision Type from the list and enter the number of days to look back.
 RecentJoinChurch,Bit,,,,Membership,Recent Join Church,Days,Select True or False and enter the number of days to look back.
+RecentJoinChurchDaysRange,StringEqual,,,,Membership,Recent Join Church Days Range,,Select Equal or Not Equal and enter a range of days like 7-14.
 JoinDate,Date,,,,Membership,Join Date,,Pick the date and the Comparison. Leave date blank for those without a Join Date.
 JoinCodeId,Code,,JoinTypeList,,Membership,Join Type,,Select Join Type from the list.
 DropDate,Date,,,,Membership,Drop Date,,Pick the date and the Comparison. Leave date blank for those without a Drop Date.
@@ -97,6 +98,7 @@ OtherPreviousChurch,String,,,,Membership,Former Church,,Select a Comparison and 
 OtherNewChurch,String,,,,Membership,New Church,,Select a Comparison and enter all or part of a New Church name.
 LetterDateRequested,Date,,,,Membership,Letter Requested Date,,Pick the date and the Comparison. Leave date blank for those without a Letter Requested Date.
 LetterStatusId,NullCode,,LetterStatusCodes,,Membership,Letter Status,,Select Letter Status from the list.
+JoinDateMonthsAgo,Integer,,,,Membership,Join Date Months Ago,,Select those who joined a number of months ago during that month.
 InBFClass,Bit,,,,Enrollments,In Main Fellowship,,Select True or False for those currently enrolled in a Main Fellowship class.
 IsMemberOf,Bit,,,,Enrollments,Is Member Of,"Program,Division,Organization",Select Program/Division/Organization from the list for current members.
 OrgSearchMember,Bit,,,,Enrollments,OrgSearch Member,"OrgName,OrgStatus,OnlineReg,OrgType2,Schedule,Campus,Program,Division",Select Program/Division/Organization from the list for current members.
@@ -188,6 +190,7 @@ HadIndContributions,Bit,,,,Contributions,Had Individual Contributions,"StartDate
 RecentHasFailedRecurringGiving,Bit,,,,Contributions,Recent Has Failed Recurring Giving,Days,Individual Had a failed Recurring Gift within the past number of days
 RecentFirstTimeGiver,Bit,,,Fund Id (or blank for all),Contributions,Recent First Time Giver,"Days,Quarters","Enter a number of days to look back, enter a Fund ID (or leave blank for all funds) and specify True or False."
 IsRecentGiver,Bit,,,Fund Id (or blank for all),Contributions,Recent Giver,"Days,Quarters",Enter a number of days to look back and specify True or False.
+IsRecentGiverFunds,Bit,,,FundSet,Contributions,Recent Giver to Funds,"Days,Quarters",Enter a number of days to look back and a FundSet name and specify True or False.
 IsTopGiver,Bit,,,Top number,Contributions,Recent Top Giver,"Days,Quarters","Enter a number of days to look back, enter the top number (ex. 100 for the top 100 givers) and specify True or False."
 IsTopPledger,Bit,,,Top number,Contributions,Recent Top Pledger,"Days,Quarters","Enter a number of days to look back (must include the date the pledge was made), enter the top number (ex. 100 for the top 100 pledgers) and specify True or False."
 IsFamilyGiver,Bit,,,Fund Id (or blank for all),Contributions,Is in a Giving Family,"Days,Quarters","Enter a number of days to look back (365 default), enter a Fund ID (or leave blank for all funds) and specify True or False."
@@ -198,6 +201,7 @@ CcExpiration,Bit,,,,Contributions,Credit Card Expire Days,Days,Specify True or F
 WantsElectronicStatement,Bit,,,,Contributions,Wants Electronic Statement,,Specify True or False for those wanting Electronic Statements
 RecentBundleType,Code,,BundleHeaderTypes,,Contributions,Recent Contributions In BundleType,Days,Must have Finance role for this to work.
 RecentManagedGiving,Bit,,,,Contributions,Recent Managed Giving,Days,Specify True or False for those with Recent Managed Giving within past days.
+ContributionAmountSinceSetting,Number,,,Setting Name (with start date),Contributions,Contribution Amount With Both Joint Since Setting,Quarters,"Enter a Setting Name which has the start date, optionally followed by a comma and a fund id. Select Comparison for the Contribution Amount. "
 PeopleExtra,CodeStr,,ExtraValues,,ExtraValues,Extra Value Code,,Select the Extra Value Code from the list
 PeopleExtraData,String,,, Name,ExtraValues,Extra Value Text,Quarters,Enter the Field Name and enter all or part of the value along with a Comparison.
 PeopleExtraDate,Date,,, Name,ExtraValues,Extra Value Date,Quarters,Enter the Field Name and pick a date and a Comparison.
@@ -215,6 +219,7 @@ IncludeDeceased,Bit,,,,Miscellaneous,Included Deceased,,"Specify True or False t
 ParentsOf,Bit,,,,Miscellaneous,Parents Only,,Specify True or False to include only Primary Adults.
 PlusParentsOf,Bit,,,,Miscellaneous,Add Primary Adults,,Specify True or False to Add Primary Adults.
 StatusFlag,CodeStr,CodeValue,StatusFlags,,Miscellaneous,Status Flag,,Select Status Flags from the list (computed in nightly batch from saved searches).
+QueryTag,CodeStr,CodeValue,QueryTags,,Miscellaneous,Query Tag,,Select Query Tags from the list
 RecentFlagAdded,CodeStr,CodeValue,StatusFlags,,Miscellaneous,Recent Flag Added,Days,Select Status Flags from the list (computed in nightly batch from saved searches) and enter days to look back.
 HasCurrentTag,Bit,,,,Miscellaneous,Active Tag,,Specify True or False for those who are in your Active Tag.
 HasMyTag,Bit,,,,Miscellaneous,Tagged with,Tags,Select Tag from the list.

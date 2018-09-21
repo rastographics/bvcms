@@ -43,10 +43,11 @@ namespace CmsWeb.Models
                 if (tagq != null)
                 {
                     var q0 = from p in tagq.People(DbUtil.Db)
-                             let bd = p.BirthDay ?? 1
-                             let bm = p.BirthMonth ?? 1
+                             let bd = p.BirthDay
+                             let bm = p.BirthMonth
+                             where bd != null && bm != null
                              let bd2 = bd == 29 && bm == 2 ? bd - 1 : bd
-                             let bdate = new DateTime(DateTime.Now.Year, bm, bd2)
+                             let bdate = new DateTime(DateTime.Now.Year, bm.Value, bd2.Value)
                              let nextbd = bdate < DateTime.Today ? bdate.AddYears(1) : bdate
                              orderby nextbd
                              select new BirthdayInfo
@@ -72,10 +73,11 @@ namespace CmsWeb.Models
                     select p;
 
             var q2 = from p in q
-                     let bd = p.BirthDay ?? 1
-                     let bm = p.BirthMonth ?? 1
+                     let bd = p.BirthDay
+                     let bm = p.BirthMonth
+                     where bd != null && bm != null
                      let bd2 = bd == 29 && bm == 2 ? bd - 1 : bd
-                     let bdate = new DateTime(DateTime.Now.Year, bm, bd2)
+                     let bdate = new DateTime(DateTime.Now.Year, bm.Value, bd2.Value)
                      let nextbd = bdate < DateTime.Today ? bdate.AddYears(1) : bdate
                      where SqlMethods.DateDiffDay(Util.Now, nextbd) <= 15
                      where p.DeceasedDate == null
@@ -313,17 +315,27 @@ namespace CmsWeb.Models
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         public class SearchInfo22
         {
+            public SearchInfo22()
+            {
+              showaltname = DbUtil.Db.Setting("ShowAltNameOnSearchResults");
+            }
+
             public string line1 => nonPersonName.HasValue()
                 ? nonPersonName
-                : name2 + (age.HasValue ? $" ({Person.AgeDisplay(age, peopleid)})" : "");
+                : displayname + (age.HasValue ? $" ({Person.AgeDisplay(age, peopleid)})" : "");
+
             public string line2 { get; set; }
             public string url { get; set; }
             public bool addmargin { get; set; }
 
             internal int peopleid;
             internal int? age;
+
+            internal string displayname => (showaltname ? $"{name2} {altname}" : name2);
             internal string name2;
             internal string nonPersonName;
+            internal string altname;
+            internal bool showaltname;
         }
 
         public static IEnumerable<SearchInfo22> PrefetchSearch()
@@ -403,7 +415,8 @@ namespace CmsWeb.Models
 
                           peopleid = p.PeopleId,
                           age = p.Age,
-                          name2 = p.Name2
+                          name2 = p.Name2,
+                          altname = p.AltName
                       }).Take(6);
             }
             else
@@ -426,7 +439,8 @@ namespace CmsWeb.Models
 
                               peopleid = p.PeopleId,
                               age = p.Age,
-                              name2 = p.Name2
+                              name2 = p.Name2,
+                              altname = p.AltName,
                           }).Take(6);
                 }
                 else
@@ -451,7 +465,8 @@ namespace CmsWeb.Models
 
                                    peopleid = p.PeopleId,
                                    age = p.Age,
-                                   name2 = p.Name2
+                                   name2 = p.Name2,
+                                   altname = p.AltName
                                }).Take(6).ToList();
                     var rp1 = (from p in qp1
                                orderby p.Name2
@@ -462,6 +477,7 @@ namespace CmsWeb.Models
                                    peopleid = p.PeopleId,
                                    age = p.Age,
                                    name2 = p.Name2,
+                                   altname = p.AltName
                                }).Take(6).ToList();
                     rp = rp2.Union(rp1).Take(6);
                 }

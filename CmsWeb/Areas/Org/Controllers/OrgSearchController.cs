@@ -253,10 +253,17 @@ namespace CmsWeb.Areas.Search.Controllers
                 var oids = string.Join(",", orgs.Select(oo => oo.OrganizationId));
                 ViewBag.ExcelUrl = $"/OrgSearch/SqlReportExcel/{report}";
                 ViewBag.DisplayName = report.SpaceCamelCase();
-                ViewBag.Results = m.SqlTable(report, oids, dt1, dt2);
                 ViewBag.OrgIds = oids;
                 ViewBag.dt1 = dt1;
                 ViewBag.dt2 = dt2;
+                var content = DbUtil.Db.ContentOfTypeSql(report);
+                if (content.Contains("pagebreak", ignoreCase: true))
+                {
+                    var p = m.GetSqlParameters(oids, dt1, dt2, content);
+                    ViewBag.Results = PythonModel.PageBreakTables(DbUtil.Db, content, p);
+                    return View();
+                }
+                ViewBag.Results = m.SqlTable(report, oids, dt1, dt2);
                 return View();
             }
             catch (Exception ex)

@@ -60,7 +60,7 @@
       }
       else
       {
-        @Html.HiddenFor(m => m.LimitToRole)
+        @Html.Hidden("LimitToRole.Value", Model.LimitToRole?.Value)
       }
       <div class="col-sm-12 col-md-12">
         <label class="checkbox-inline control-label">

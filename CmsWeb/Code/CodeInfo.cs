@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Security.Principal;
 using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
@@ -50,6 +51,7 @@ namespace CmsWeb.Code
             get { return value; }
             set { this.value = value; }
         }
+
         public int? IntVal => value.ToInt();
 
         public SelectList Items

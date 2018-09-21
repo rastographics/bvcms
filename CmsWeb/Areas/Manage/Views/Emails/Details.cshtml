@@ -231,7 +231,11 @@
         <div class="row">
           <div class="col-sm-8">
             <strong>
-              <a href="/Person2/@Model.queue.QueuedBy" style="font-size: 1.5em;">@Model.queue.FromName</a>
+                <a href="/Person2/@Model.queue.QueuedBy" style="font-size: 1.5em;">@Model.queue.FromName</a>
+                @if (Model.queue.NoReplacements == true)
+                {
+                    <br/><text>Emailed using no duplicates option</text>
+                }
             </strong><br>
             <a href="mailto:@Model.queue.FromAddr">@Model.queue.FromAddr</a>
             @if (!string.IsNullOrWhiteSpace(Model.queue.CClist))

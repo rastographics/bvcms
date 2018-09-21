@@ -15,7 +15,7 @@ namespace CmsData
 {
     public partial class PythonModel
     {
-        public static void RegisterHelpers(CMSDataContext db)
+        public static void RegisterHelpers(CMSDataContext db, PythonModel pm = null)
         {
             Handlebars.RegisterHelper("BottomBorder", (writer, context, args) => { writer.Write(CssStyle.BottomBorder); });
             Handlebars.RegisterHelper("AlignTop", (writer, context, args) => { writer.Write(CssStyle.AlignTop); });
@@ -26,6 +26,14 @@ namespace CmsData
 
             Handlebars.RegisterHelper("ServerLink", (writer, context, args) => { writer.Write(db.ServerLink().TrimEnd('/')); });
             Handlebars.RegisterHelper("FmtZip", (writer, context, args) => { writer.Write(args[0].ToString().FmtZip()); });
+            Handlebars.RegisterHelper("HtmlComment", (writer, context, args) =>
+            {
+#if DEBUG
+                writer.Write($"<h6>{args[0].ToString()} {args[1].ToString()}</h6>");
+#else
+                writer.Write($"<!--{args[0].ToString()} {args[1].ToString()}-->");
+#endif
+            });
             Handlebars.RegisterHelper("IfEqual", (writer, options, context, args) =>
             {
                 if (IsEqual(args))
@@ -167,6 +175,14 @@ namespace CmsData
                     options.Template(writer, item);
                 }
             });
+
+            Handlebars.RegisterHelper("Calc", (writer, context, args) =>
+            {
+                var calcAmt = args[0].ToDouble() - args[1].ToDouble();
+                var calcAmtfmt = $"{{0:{'c'}}}";
+                writer.Write(calcAmtfmt, calcAmt);
+            });
+
             Handlebars.RegisterHelper("ThrowError", (writer, context, args) =>
             {
                 throw new Exception("ThrowError called in Handlebars Helper");

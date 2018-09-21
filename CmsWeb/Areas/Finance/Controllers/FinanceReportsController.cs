@@ -1,18 +1,19 @@
+using CmsData;
+using CmsData.API;
+using CmsWeb.Areas.Finance.Models.Report;
+using CmsWeb.Areas.Manage.Controllers;
+using CmsWeb.Areas.OnlineReg.Models;
+using CmsWeb.Code;
+using CmsWeb.Models;
+using Dapper;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
-using CmsWeb.Areas.Finance.Models.Report;
-using CmsData;
-using CmsWeb.Areas.Manage.Controllers;
-using CmsWeb.Code;
-using Dapper;
-using OfficeOpenXml;
-using OfficeOpenXml.Style;
 using UtilityExtensions;
-using CmsWeb.Models;
-using CmsWeb.Areas.OnlineReg.Models;
 using TableStyles = OfficeOpenXml.Table.TableStyles;
 
 namespace CmsWeb.Areas.Finance.Controllers
@@ -33,274 +34,327 @@ namespace CmsWeb.Areas.Finance.Controllers
             };
         }
 
-        private DynamicParameters DonorTotalSummaryParameters(DonorTotalSummaryOptionsModel m, bool useMedianMin = false)
+        private DynamicParameters DonorTotalSummaryParameters(DonorTotalSummaryOptionsModel model, bool useMedianMin = false)
         {
-            var p = new DynamicParameters();
-            p.Add("@enddt", m.StartDate);
-            p.Add("@years", m.NumberOfYears);
-            if(useMedianMin)
-                p.Add("@medianMin", m.MinimumMedianTotal);
-            p.Add("@fund", m.Fund.Value.ToInt());
-            p.Add("@campus", m.Campus.Value.ToInt());
-            return p;
+            var queryParameters = new DynamicParameters();
+            queryParameters.Add("@enddt", model.StartDate);
+            queryParameters.Add("@years", model.NumberOfYears);
+            queryParameters.Add("@fund", model.Fund.Value.ToInt());
+            queryParameters.Add("@campus", model.Campus.Value.ToInt());
+
+            if (useMedianMin)
+            {
+                queryParameters.Add("@medianMin", model.MinimumMedianTotal);
+            }
+
+            if (model?.FundSet != null) // TODO: seems like a redundant null check, if model was null, it would have errored well before this point
+            {
+                var fundset = APIContributionSearchModel.GetCustomStatementsList(DbUtil.Db, model.FundSet.Value).JoinInts(",");
+                queryParameters.Add("@fundids", fundset);
+            }
+            else
+            {
+                var authorizedFunds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership().Select(f => f.FundId).ToList();
+                var authorizedFundsCsv = string.Join(",", authorizedFunds);
+
+                queryParameters.Add("@fundids", authorizedFundsCsv);
+            }
+
+            return queryParameters;
         }
+
         [HttpGet]
-        public EpplusResult DonorTotalSummary(DonorTotalSummaryOptionsModel m)
+        public EpplusResult DonorTotalSummary(DonorTotalSummaryOptionsModel model)
         {
-            var ep = new ExcelPackage();
-            var cn = new SqlConnection(Util.ConnectionString);
+            var excel = new ExcelPackage();
+            var connection = new SqlConnection(Util.ConnectionString);
 
-            var rd = cn.ExecuteReader("dbo.DonorTotalSummary", DonorTotalSummaryParameters(m, useMedianMin: true), commandType: CommandType.StoredProcedure, commandTimeout: 1200);
-            ep.AddSheet(rd, "MemberNon");
+            var totalSummaryParameters = DonorTotalSummaryParameters(model, useMedianMin: true);
+            var totalSummary = connection.ExecuteReader("dbo.DonorTotalSummary", totalSummaryParameters, commandType: CommandType.StoredProcedure, commandTimeout: 1200);
+            excel.AddSheet(totalSummary, "MemberNon");
+            totalSummary.Close();
 
-            rd = cn.ExecuteReader("dbo.DonorTotalSummaryBySize", DonorTotalSummaryParameters(m), commandType: CommandType.StoredProcedure, commandTimeout: 1200);
-            ep.AddSheet(rd, "BySize");
+            var totalSummaryBySizeParameters = DonorTotalSummaryParameters(model);
+            var totalSummaryBySize = connection.ExecuteReader("dbo.DonorTotalSummaryBySize", totalSummaryBySizeParameters, commandType: CommandType.StoredProcedure, commandTimeout: 1200);
+            excel.AddSheet(totalSummaryBySize, "BySize");
+            totalSummaryBySize.Close();
 
-            rd = cn.ExecuteReader("dbo.DonorTotalSummaryByAge", DonorTotalSummaryParameters(m), commandType: CommandType.StoredProcedure, commandTimeout: 1200);
-            ep.AddSheet(rd, "ByAge");
+            var totalSummaryByAgeParameters = DonorTotalSummaryParameters(model);
+            var totalSummaryByAge = connection.ExecuteReader("dbo.DonorTotalSummaryByAge", totalSummaryByAgeParameters, commandType: CommandType.StoredProcedure, commandTimeout: 1200);
+            excel.AddSheet(totalSummaryByAge, "ByAge");
+            totalSummaryByAge.Close();
 
-            return new EpplusResult(ep, "DonorTotalSummary.xlsx");
+            return CreateExcelResult(excel, "DonorTotalSummary.xlsx");
         }
-        [HttpGet, Route("~/PledgeFulfillment2/{fundid1:int}/{fundid2:int}")]
-        public EpplusResult PledgeFulfillment2(int fundid1, int fundid2)
-        {
-            var ep = new ExcelPackage();
-            var cn = new SqlConnection(Util.ConnectionString);
-            cn.Open();
 
-            var rd = cn.ExecuteReader("dbo.PledgeFulfillment2", new { fundid1, fundid2, },
-                commandTimeout: 1200, commandType: CommandType.StoredProcedure);
-            ep.AddSheet(rd, "Pledges");
-            return new EpplusResult(ep, "PledgeFulfillment2.xlsx");
+        private static EpplusResult CreateExcelResult(ExcelPackage excelPackage, string fileName)
+        {
+            return new EpplusResult(excelPackage, fileName);
         }
 
         [HttpGet]
         public ActionResult DonorTotalSummaryOptions()
         {
-            var m = new DonorTotalSummaryOptionsModel
+            var model = new DonorTotalSummaryOptionsModel
             {
                 StartDate = DateTime.Today,
                 NumberOfYears = 5,
                 MinimumMedianTotal = 100,
-                Campus = new CodeInfo("Campus0"),
-                Fund = new CodeInfo("Fund"),
+                Campus = CreateCodeInfoForField("Campus0"),
+                Fund = CreateCodeInfoForField("Fund")
             };
-            return View(m);
+
+            var customFundsList = ContributionStatements.CustomFundSetSelectList();
+
+            if (customFundsList != null)
+            {
+                model.FundSet = new CodeInfo(null, customFundsList);
+            }
+
+            return View(model);
         }
+
+        [HttpGet]
+        public EpplusResult ChaiDonorsReportDownload(DonorTotalSummaryOptionsModel model)
+        {
+            var queryParameters = new DynamicParameters();
+            queryParameters.Add("@fund", model.Fund.Value.ToInt());
+
+            var authorizedFunds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership().Select(f => f.FundId).ToList();
+            var authorizedFundsCsv = string.Join(",", authorizedFunds);
+            queryParameters.Add("@authorizedFundIds", authorizedFundsCsv);
+
+            var excel = new ExcelPackage();
+            var connection = new SqlConnection(Util.ConnectionString);
+
+            var reader = connection.ExecuteReader("dbo.CHAIDonationsReport2", queryParameters, commandType: CommandType.StoredProcedure, commandTimeout: 1200);
+            excel.AddSheet(reader, "CHAIDonations");
+            reader.Close();
+
+            return CreateExcelResult(excel, "CHAIDonationsReport.xlsx");
+        }
+
+        [HttpGet]
+        public ActionResult ChaiDonorsReport()
+        {
+            //Re-using a model, projected that this report will use most fields in this model, in next rollout.
+            var model = new DonorTotalSummaryOptionsModel
+            {
+                StartDate = DateTime.Today,
+                NumberOfYears = 5,
+                MinimumMedianTotal = 100,
+                Campus = CreateCodeInfoForField("Campus0"),
+                Fund = CreateCodeInfoForField("Fund"),
+            };
+
+            return View(model);
+        }
+
+        private static CodeInfo CreateCodeInfoForField(string fieldName)
+        {
+            return new CodeInfo(fieldName);
+        }
+
+        public ActionResult PledgeReport()
+        {
+            var fromDate = DateTime.Parse("1/1/1900");
+            var toDate = DateTime.Parse("1/1/2099");
+            var queryResult = from pledgeReports in DbUtil.Db.PledgeReport(fromDate, toDate, 0)
+                              join allowedFunds in DbUtil.Db.ContributionFunds.ScopedByRoleMembership() on pledgeReports.FundId equals allowedFunds.FundId
+                              orderby pledgeReports.FundId descending
+                              select pledgeReports;
+
+            return View(queryResult);
+        }
+
+        [HttpGet, Route("~/PledgeFulfillment2/{fundid1:int}/{fundid2:int}")]
+        public EpplusResult PledgeFulfillment2(int fundid1, int fundid2)
+        {
+            var excel = new ExcelPackage();
+            var connection = new SqlConnection(Util.ConnectionString);
+            connection.Open();
+
+            var reader = connection.ExecuteReader("dbo.PledgeFulfillment2", new { fundid1, fundid2, }, commandTimeout: 1200, commandType: CommandType.StoredProcedure);
+            excel.AddSheet(reader, "Pledges");
+            reader.Close();
+
+            return CreateExcelResult(excel, "PledgeFulfillment2.xlsx");
+        }
+
         [HttpGet]
         public ActionResult DonorTotalsByRange()
         {
-            var m = new TotalsByFundModel();
-            return View(m);
+            var model = new TotalsByFundModel();
+            return View(model);
         }
 
         [HttpPost]
-        public ActionResult DonorTotalsByRangeResults(TotalsByFundModel m)
+        public ActionResult DonorTotalsByRangeResults(TotalsByFundModel model)
         {
-            return View(m);
+            return View(model);
         }
 
         [HttpGet]
         public ActionResult TotalsByFund()
         {
-            var m = new TotalsByFundModel();
-            return View(m);
+            var model = new TotalsByFundModel();
+            return View(model);
         }
+
         [HttpPost]
-        public ActionResult TotalsByFundExport(TotalsByFundModel m)
+        public ActionResult TotalsByFundExport(TotalsByFundModel model)
         {
-            m.SaveAsExcel();
-            return Content("done");
+            model.SaveAsExcel();
+            return SimpleContent("done");
         }
+
+        private ContentResult SimpleContent(string message)
+        {
+            return Content(message);
+        }
+
         [HttpPost, Route("~/TotalsByFundCustomReport/{id}")]
-        public ActionResult TotalsByFundCustomReport(string id, TotalsByFundModel m)
+        public ActionResult TotalsByFundCustomReport(string id, TotalsByFundModel model)
         {
             var content = DbUtil.Db.ContentOfTypeSql(id);
             if (content == null)
-                return Content("no content");
-            var cs = Util.ConnectionStringReadOnlyFinance;
-            var cn = new SqlConnection(cs);
-            cn.Open();
-            var p = new DynamicParameters();
-            p.Add("@StartDate", m.Dt1);
-            p.Add("@EndDate", m.Dt2);
-            p.Add("@CampusId", m.CampusId);
-            p.Add("@Online", m.Online);
-            p.Add("@TaxNonTax", m.TaxDedNonTax);
-            p.Add("@IncludeUnclosedBundles", m.IncUnclosedBundles);
-            if (m.FilterByActiveTag)
             {
-                var tagid = DbUtil.Db.TagCurrent().Id;
-                p.Add("@ActiveTagFilter", tagid);
+                return SimpleContent("no content");
             }
-            else
-                p.Add("@ActiveTagFilter");
 
+            var p = model.GetDynamicParameters();
             ViewBag.Name = id.SpaceCamelCase();
-            var rd = cn.ExecuteReader(content, p, commandTimeout: 1200);
-            return Content(GridResult.Table(rd, id.SpaceCamelCase()));
+
+            var linkUrl = DbUtil.Db.ServerLink($"/TotalsByFundCustomExport/{id}");
+            var linkHtml = $"<a href='{linkUrl}' class='CustomExport btn btn-default' target='_blank'><i class='fa fa-file-excel-o'></i> Download as Excel</a>";
+
+            var connection = new SqlConnection(Util.ConnectionStringReadOnlyFinance);
+            connection.Open();
+
+            var reader = connection.ExecuteReader(content, p, commandTimeout: 1200);
+            var contentTable = GridResult.Table(reader, id.SpaceCamelCase(), excellink: linkHtml);
+
+            return SimpleContent(contentTable);
+        }
+
+        [HttpPost, Route("~/TotalsByFundCustomExport/{id}")]
+        public ActionResult TotalsByFundCustomExport(string id, TotalsByFundModel model)
+        {
+            var content = DbUtil.Db.ContentOfTypeSql(id);
+            if (content == null)
+            {
+                return SimpleContent("no content");
+            }
+
+            var connection = new SqlConnection(Util.ConnectionStringReadOnlyFinance);
+            connection.Open();
+            var queryParameters = model.GetDynamicParameters();
+
+            var s = id.SpaceCamelCase();
+            return connection.ExecuteReader(content, queryParameters, commandTimeout: 1200).ToExcel(s + ".xlsx", fromSql: true);
+        }
+
+        [HttpPost, Route("~/FundList")]
+        public ActionResult FundList(TotalsByFundModel model)
+        {
+            return SimpleContent($@"<pre>{string.Join(",", APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db, model.FundSet))}</pre>");
         }
 
         [HttpPost]
-        public ActionResult TotalsByFundResults(TotalsByFundModel m)
+        public ActionResult TotalsByFundResults(TotalsByFundModel model)
         {
-            if (m.IncludeBundleType)
-                return View("TotalsByFundResults2", m);
-            return View(m);
+            if (model.IncludeBundleType)
+            {
+                return View("TotalsByFundResults2", model);
+            }
+
+            return View(model);
         }
 
         [HttpGet]
         public ActionResult TotalsByFundRange(bool? pledged)
         {
-            var m = new TotalsByFundRangeModel{ Pledged = pledged ?? false };
-            return View(m);
+            var model = new TotalsByFundRangeModel { Pledged = pledged ?? false };
+            return View(model);
         }
 
         [HttpPost]
-        public ActionResult TotalsByFundRangeResults(TotalsByFundRangeModel m)
+        public ActionResult TotalsByFundRangeResults(TotalsByFundRangeModel model)
         {
-            return View(m);
+            return View(model);
         }
 
         [HttpGet]
         public ActionResult TotalsByFundAgeRange()
         {
-            var m = new TotalsByFundAgeRangeModel();
-            return View(m);
+            var model = new TotalsByFundAgeRangeModel();
+            return View(model);
         }
 
         [HttpPost]
-        public ActionResult TotalsByFundAgeRangeResults(TotalsByFundAgeRangeModel m)
+        public ActionResult TotalsByFundAgeRangeResults(TotalsByFundAgeRangeModel model)
         {
-            return View(m);
+            return View(model);
         }
 
         [HttpGet]
         public ActionResult Deposits(DateTime dt)
         {
-            var m = new DepositsModel(dt);
-            return View(m);
+            var model = new DepositsModel(dt);
+            return View(model);
         }
+
         [HttpGet]
         public ActionResult DepositTotalsForDates()
         {
-            var m = new DepositTotalsModel();
-            return View(m);
+            var model = new DepositTotalsModel();
+            return View(model);
         }
 
         [HttpPost]
-        public ActionResult DepositTotalsForDatesResults(DepositTotalsModel m)
+        public ActionResult DepositTotalsForDatesResults(DepositTotalsModel model)
         {
-            return View(m);
-        }
-
-        public ActionResult PledgeReport()
-        {
-            var fd = DateTime.Parse("1/1/1900");
-            var td = DateTime.Parse("1/1/2099");
-            var q = from r in DbUtil.Db.PledgeReport(fd, td, 0)
-                    orderby r.FundId descending
-                    select r;
-            return View(q);
+            return View(model);
         }
 
         public ActionResult ManagedGiving(string sortBy, string sortDir)
         {
+            var query = DbUtil.Db.ViewManagedGivingLists.AsQueryable();
+
             if (sortBy == "name")
             {
-                if (string.IsNullOrEmpty(sortDir) || sortDir == "desc")
+                if (string.IsNullOrEmpty(sortDir) || sortDir == "asc")
                 {
-                    var q2 = from rg in DbUtil.Db.ViewManagedGivingLists.ToList()
-                        orderby rg.Name2 ascending
-                        select rg;
-
-                    ViewBag.SortDir = "asc";
-                    return View(q2);
+                    query = query.OrderBy(mgl => mgl.Name2);
                 }
                 else
                 {
-                    var q2 = from rg in DbUtil.Db.ViewManagedGivingLists.ToList()
-                            orderby rg.Name2 descending
-                            select rg;
-
-                    ViewBag.SortDir = "desc";
-                    return View(q2);
+                    query = query.OrderByDescending(mgl => mgl.Name2);
                 }
-
             }
-            var q = from rg in DbUtil.Db.ViewManagedGivingLists.ToList()
-                    orderby rg.NextDate
-                    select rg;
-            return View(q);
+            else
+            {
+                if (string.IsNullOrEmpty(sortDir) || sortDir == "asc")
+                {
+                    query = query.OrderBy(mgl => mgl.NextDate);
+                }
+                else
+                {
+                    query = query.OrderByDescending(mgl => mgl.NextDate);
+                }
+            }
+
+            ViewBag.SortDir = sortDir == "asc" ? "desc" : "asc";
+            return View(query.ToList());
         }
 
         [HttpGet]
         public ActionResult ManageGiving2(int id)
         {
-            var m = new ManageGivingModel(id);
-            m.testing = true;
-            var body = ViewExtensions2.RenderPartialViewToString(this, "ManageGiving2", m);
-            return Content(body);
-        }
-
-        [HttpPost]
-        public ActionResult ToQuickBooks(TotalsByFundModel m)
-        {
-//            List<int> lFunds = new List<int>();
-//            List<QBJournalEntryLine> qbjel = new List<QBJournalEntryLine>();
-//
-//            var entries = m.TotalsByFund();
-//
-//            QuickBooksHelper qbh = new QuickBooksHelper();
-//
-//            foreach (var item in entries)
-//            {
-//                if (item.QBSynced > 0) continue;
-//
-//                var accts = (from e in DbUtil.Db.ContributionFunds
-//                             where e.FundId == item.FundId
-//                             select e).Single();
-//
-//                if (accts.QBAssetAccount > 0 && accts.QBIncomeAccount > 0)
-//                {
-//                    QBJournalEntryLine jelCredit = new QBJournalEntryLine();
-//
-//                    jelCredit.sDescrition = item.FundName;
-//                    jelCredit.dAmount = item.Total ?? 0;
-//                    jelCredit.sAccountID = accts.QBIncomeAccount.ToString();
-//                    jelCredit.bCredit = true;
-//
-//                    QBJournalEntryLine jelDebit = new QBJournalEntryLine(jelCredit);
-//
-//                    jelDebit.sAccountID = accts.QBAssetAccount.ToString();
-//                    jelDebit.bCredit = false;
-//
-//                    qbjel.Add(jelCredit);
-//                    qbjel.Add(jelDebit);
-//
-//                    lFunds.Add(item.FundId ?? 0);
-//                }
-//            }
-//
-//            int iJournalID = qbh.CommitJournalEntries("Bundle from BVCMS", qbjel);
-//
-//            if (iJournalID > 0)
-//            {
-//                string sStart = m.Dt1.Value.ToString("u");
-//                string sEnd = m.Dt2.Value.AddHours(23).AddMinutes(59).AddSeconds(59).ToString("u");
-//
-//                sStart = sStart.Substring(0, sStart.Length - 1);
-//                sEnd = sEnd.Substring(0, sEnd.Length - 1);
-//
-//                string sFundList = string.Join(",", lFunds.ToArray());
-//                string sUpdate = "UPDATE dbo.Contribution SET QBSyncID = " + iJournalID + " WHERE FundId IN (" +
-//                                 sFundList + ") AND ContributionDate BETWEEN '" + sStart + "' and '" + sEnd + "'";
-//
-//                DbUtil.Db.ExecuteCommand(sUpdate);
-//            }
-//
-//            return View("TotalsByFund", m);
-            return new EmptyResult();
+            var model = new ManageGivingModel(id);
+            model.testing = true;
+            var body = ViewExtensions2.RenderPartialViewToString(this, "ManageGiving2", model);
+            return SimpleContent(body);
         }
 
         public ActionResult PledgeFulfillments(int id)
@@ -310,8 +364,10 @@ namespace CmsWeb.Areas.Finance.Controllers
                 .ThenByDescending(vv => vv.TotalGiven).ToList();
             var count = q.Count;
 
-            if(count == 0)
+            if (count == 0)
+            {
                 return Message("No Pledges to Report");
+            }
 
             var cols = DbUtil.Db.Mapping.MappingSource.GetModel(typeof(CMSDataContext))
                 .GetMetaType(typeof(CmsData.View.PledgeFulfillment)).DataMembers;

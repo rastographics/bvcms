@@ -22,12 +22,11 @@
       <h3>
         <a href="@link" target="query">@q.owner &mdash; @q.name</a> @(q.ispublic ? "public" : "private")
       </h3>
-      <div style="color: red">Counts: Original=@q.OriginalCount  Parsed=@q.ParsedCount  Seconds=@q.Seconds</div>
       <pre>
 @Model.Code
 </pre>
       <pre>
-@q.Message
+@Model.Sql
 </pre>
     }
 

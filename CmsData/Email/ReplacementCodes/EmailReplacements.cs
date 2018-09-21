@@ -5,10 +5,9 @@ using System.Net.Mail;
 using System.Text.RegularExpressions;
 using CmsData.API;
 using CmsData.Email.ReplacementCodes;
-using Novacode;
 using UtilityExtensions;
 using CmsData.View;
-using Community.CsharpSqlite;
+using Xceed.Words.NET;
 
 namespace CmsData
 {
@@ -41,7 +40,7 @@ namespace CmsData
             + MatchVolSubLinkRe + "|"
             + MatchVoteLinkRe;
 
-        private const string Pattern1 = "(<style.*?</style>|" + MatchImageRe + "|" + MatchCodeRe + "|" + MatchRes + "|" + MatchDropFromOrgTagRe + ")";
+        private const string Pattern1 = "(<style.*?</style>|" + MatchSettingUrlRe + "|" + MatchCodeRe + "|" + MatchRes + "|" + MatchDropFromOrgTagRe + ")";
         private const string Pattern2 = "(" + MatchCodeRe + "|" + MatchRes + ")";
 
         public EmailReplacements(CMSDataContext callingContext, string text, MailAddress from, int? queueid = null, bool noPremailer = false, DynamicData pythondata = null)
@@ -71,6 +70,8 @@ namespace CmsData
                     var result = PreMailer.Net.PreMailer.MoveCssInline(text);
                     text = result.Html;
                     text = text.Replace("<!--{{", "{{").Replace("}}-->", "}}");
+                    // prevent gmail from not rendering when an empty title is autoclosed.
+                    text = text.Replace("<title />", "<title></title>");
                 }
                 catch
                 {

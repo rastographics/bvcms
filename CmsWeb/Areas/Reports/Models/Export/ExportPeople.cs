@@ -7,6 +7,7 @@ using CmsData;
 using MoreLinq;
 using UtilityExtensions;
 using System.Data.SqlClient;
+using System.IO;
 
 namespace CmsWeb.Models
 {
@@ -87,11 +88,64 @@ namespace CmsWeb.Models
             return q.Take(maximumRows).ToDataTable();
         }
         public static DataTable DonorDetails(DateTime startdt, DateTime enddt,
-            int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid)
+            int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
         {
-            var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid)
+            var UseTitles = !DbUtil.Db.Setting("NoTitlesOnStatements");
+
+            if (DbUtil.Db.Setting("UseLabelNameForDonorDetails"))
+            {
+                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
                     join p in DbUtil.Db.People on c.CreditGiverId equals p.PeopleId
                     let mainFellowship = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
+                    let head1 = DbUtil.Db.People.Single(hh => hh.PeopleId == p.Family.HeadOfHouseholdId)
+                    let head2 = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == p.Family.HeadOfHouseholdSpouseId)
+                    let altcouple = p.Family.FamilyExtras.SingleOrDefault( ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data
+                    select new
+                    {
+                        c.FamilyId,
+                        Date = c.DateX.Value.ToShortDateString(),
+                        GiverId = c.PeopleId,
+                        c.CreditGiverId,
+                        c.HeadName,
+                        c.SpouseName,
+                        MainFellowship = mainFellowship,
+                        MemberStatus = p.MemberStatus.Description,
+                        p.JoinDate,
+                        Amount = c.Amount ?? 0m,
+                        Pledge = c.PledgeAmount ?? 0m,
+                        c.CheckNo,
+                        c.ContributionDesc,
+                        c.FundId,
+                        c.FundName,
+                        BundleHeaderId = c.BundleHeaderId ?? 0,
+                        c.BundleType,
+                        c.BundleStatus,
+                        Addr = p.PrimaryAddress,
+                        Addr2 = p.PrimaryAddress2,
+                        City = p.PrimaryCity,
+                        ST = p.PrimaryState,
+                        Zip = p.PrimaryZip,
+                        FirstName = p.PreferredName,
+                        p.LastName,
+                        FamilyName = altcouple.Length > 0 ? altcouple : head2 == null
+                            ? (UseTitles ? (head1.TitleCode != null ? head1.TitleCode + " " + head1.Name : head1.Name) : head1.Name)
+                            : (UseTitles
+                                    ? (head1.TitleCode != null
+                                        ? head1.TitleCode + " and Mrs. " + head1.Name
+                                        : "Mr. and Mrs. " + head1.Name)
+                                    : head1.PreferredName + " and " + head2.PreferredName + " " + head1.LastName +
+                                       (head1.SuffixCode.Length > 0 ? ", " + head1.SuffixCode : "")),
+                    };
+                return q.ToDataTable();
+
+            }
+            else
+            {
+                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
+                    join p in DbUtil.Db.People on c.CreditGiverId equals p.PeopleId
+                    let mainFellowship = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
+                    let spouse = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
+                    let altcouple = p.Family.FamilyExtras.SingleOrDefault( ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data
                     select new
                     {
                         c.FamilyId,
@@ -112,16 +166,29 @@ namespace CmsWeb.Models
                         BundleHeaderId = c.BundleHeaderId ?? 0,
                         c.BundleType,
                         c.BundleStatus,
+                        p.FullAddress
                     };
-            return q.ToDataTable();
+                return q.ToDataTable();
+            }
         }
         public static DataTable ExcelDonorTotals(DateTime startdt, DateTime enddt,
-            int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid)
+            int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
         {
-            var q2 = from r in DbUtil.Db.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid)
+#if DEBUG2
+            // for reconciliation by developer
+            var v = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
+                orderby c.ContributionId
+                select c.ContributionId;
+            using(var tw = new StreamWriter("D:\\exportdonors.txt"))
+               foreach (var s in v)
+                  tw.WriteLine(s);
+#endif
+            
+
+            var q2 = from r in DbUtil.Db.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid, fundids)
                      select new
                      {
-                         GiverId = r.CreditGiverId ?? 0,
+                         GiverId = r.CreditGiverId,
                          Count = r.Count ?? 0,
                          Amount = r.Amount ?? 0m,
                          Pledged = r.PledgeAmount ?? 0m,
@@ -139,12 +206,12 @@ namespace CmsWeb.Models
             return q2.ToDataTable();
         }
         public static DataTable ExcelDonorFundTotals(DateTime startdt, DateTime enddt,
-            int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid)
+            int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
         {
-            var q2 = from r in DbUtil.Db.GetTotalContributionsDonorFund(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid)
+            var q2 = from r in DbUtil.Db.GetTotalContributionsDonorFund(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid, fundids)
                      select new
                      {
-                         GiverId = r.CreditGiverId.Value,
+                         GiverId = r.CreditGiverId,
                          Count = r.Count ?? 0,
                          Amount = r.Amount ?? 0m,
                          Pledged = r.PledgeAmount ?? 0m,
@@ -192,6 +259,7 @@ namespace CmsWeb.Models
                          Age = Person.AgeDisplay(p.Age, p.PeopleId).ToString(),
                          School = p.SchoolOther,
                          Married = p.MaritalStatus.Description,
+                         Gender = p.Gender.Description,
                          FamilyName = famname,
                          FamilyId = p.FamilyId,
                          FamilyPosition = pos.ToString(),
@@ -235,6 +303,7 @@ namespace CmsWeb.Models
                         SpouseCell = spouse.CellPhone.FmtFone(),
                         MailingAddress = altaddr,
                         CoupleName = altcouple,
+                        AltNames = (spouse == null ? p.AltName : p.AltName + " & " + spouse.AltName),
                     };
             return q.ToDataTable().ToExcel("FamilyList.xlsx");
         }
@@ -275,6 +344,7 @@ namespace CmsWeb.Models
                         School = p.SchoolOther,
                         Grade = p.Grade.ToString(),
                         AttendPctBF = (om == null ? 0 : om.AttendPct == null ? 0 : om.AttendPct.Value),
+                        p.AltName,
                     };
             return q.ToDataTable().ToExcel("ListFamily2.xlsx");
         }

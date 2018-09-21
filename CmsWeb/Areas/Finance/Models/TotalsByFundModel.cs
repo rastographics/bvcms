@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
@@ -9,6 +10,8 @@ using CmsData.View;
 using CmsWeb.Code;
 using UtilityExtensions;
 using System.Text;
+using Dapper;
+using MoreLinq;
 
 namespace CmsWeb.Models
 {
@@ -20,6 +23,7 @@ namespace CmsWeb.Models
         public string Sort { get; set; }
         public string Dir { get; set; }
         public string TaxDedNonTax { get; set; }
+        public string FundSet { get; set; }
         public int Online { get; set; }
         public bool Pledges { get; set; }
         public bool IncUnclosedBundles { get; set; }
@@ -94,21 +98,32 @@ namespace CmsWeb.Models
                     Status = ContributionStatusCode.Recorded,
                     Online = Online,
                     FilterByActiveTag = FilterByActiveTag,
+                    FundSet = FundSet,
                 }
             };
+#if DEBUG2
+            // for reconciliation by developer
+            var v =  from c in api.FetchContributions()
+                     orderby c.ContributionId
+                     select c.ContributionId;
+            using(var tw = new StreamWriter("D:\\totalsbyfund.txt"))
+               foreach (var s in v)
+                  tw.WriteLine(s);
+#endif
+            
 
             if (IncludeBundleType)
                 q = (from c in api.FetchContributions()
                      let BundleType = c.BundleDetails.First().BundleHeader.BundleHeaderType.Description
                      let BundleTypeId = c.BundleDetails.First().BundleHeader.BundleHeaderTypeId
-                     group c by new { c.FundId, c.QBSyncID, BundleTypeId, BundleType } into g
-                     orderby g.Key.FundId, g.Key.QBSyncID, g.Key.BundleTypeId
+                     group c by new {c.FundId, BundleTypeId, BundleType}
+                     into g
+                     orderby g.Key.FundId, g.Key.BundleTypeId
                      select new FundTotalInfo
                      {
                          BundleType = g.Key.BundleType,
                          BundleTypeId = g.Key.BundleTypeId,
                          FundId = g.Key.FundId,
-                         QBSynced = g.Key.QBSyncID ?? 0,
                          FundName = g.First().ContributionFund.FundName,
                          GeneralLedgerId = g.First().ContributionFund.FundIncomeAccount,
                          Total = g.Sum(t => t.ContributionAmount).Value,
@@ -117,12 +132,11 @@ namespace CmsWeb.Models
                      }).ToList();
             else
                 q = (from c in api.FetchContributions()
-                     group c by new { c.FundId, c.QBSyncID } into g
-                     orderby g.Key.FundId, g.Key.QBSyncID
+                     group c by c.FundId into g
+                     orderby g.Key
                      select new FundTotalInfo
                      {
-                         FundId = g.Key.FundId,
-                         QBSynced = g.Key.QBSyncID ?? 0,
+                         FundId = g.Key,
                          FundName = g.First().ContributionFund.FundName,
                          GeneralLedgerId = g.First().ContributionFund.FundIncomeAccount,
                          Total = g.Sum(t => t.ContributionAmount).Value,
@@ -143,14 +157,30 @@ namespace CmsWeb.Models
 
         public IEnumerable<GetTotalContributionsRange> TotalsByRange()
         {
-            var list = (from r in DbUtil.Db.GetTotalContributionsRange(Dt1, Dt2, CampusId, NonTaxDeductible ? (bool?)null : false, IncUnclosedBundles)
+            var customFundIds = APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db, FundSet);
+            var authorizedFundIds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership().Select(f => f.FundId).ToList();
+
+            string fundIds = string.Empty;
+
+            if(customFundIds?.Count > 0)
+            {
+                fundIds = authorizedFundIds.Where(f => customFundIds.Contains(f)).JoinInts(",");
+            }
+            else
+            {
+                fundIds = authorizedFundIds.JoinInts(",");
+            }
+
+            var list = (from r in DbUtil.Db.GetTotalContributionsRange(Dt1, Dt2, CampusId, NonTaxDeductible ? (bool?)null : false, IncUnclosedBundles, fundIds)
                         orderby r.Range
                         select r).ToList();
+
             RangeTotal = new GetTotalContributionsRange
             {
                 Count = list.Sum(t => t.Count),
                 Total = list.Sum(t => t.Total),
             };
+
             return list;
         }
 
@@ -169,6 +199,7 @@ namespace CmsWeb.Models
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
+
         public SelectList TaxTypes()
         {
             return new SelectList(
@@ -181,6 +212,7 @@ namespace CmsWeb.Models
                 "Code", "Value", TaxDedNonTax
             );
         }
+
         public SelectList OnlineOptions()
         {
             return new SelectList(
@@ -203,7 +235,9 @@ namespace CmsWeb.Models
         {
             return BuildUrl("/Contributions", fundid, bundletypeid);
         }
+
         private string connector;
+
         private string BuildUrl(string baseurl, int? fundid, int? bundletypeid)
         {
             connector = "?";
@@ -229,11 +263,34 @@ namespace CmsWeb.Models
 
             return sb.ToString();
         }
+
         private void Append(StringBuilder sb, string val)
         {
             sb.Append(connector);
             sb.Append(val);
             connector = "&";
+        }
+
+        public DynamicParameters GetDynamicParameters()
+        {
+            var p = new DynamicParameters();
+            p.Add("@StartDate", Dt1);
+            p.Add("@EndDate", Dt2);
+            p.Add("@CampusId", CampusId);
+            p.Add("@Online", Online);
+            p.Add("@TaxNonTax", TaxDedNonTax);
+            p.Add("@IncludeUnclosedBundles", IncUnclosedBundles);
+            var fundset = APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db, FundSet).JoinInts(",");
+            p.Add("@FundSet", fundset);
+
+            if (FilterByActiveTag)
+            {
+                var tagid = DbUtil.Db.TagCurrent().Id;
+                p.Add("@ActiveTagFilter", tagid);
+            }
+            else
+                p.Add("@ActiveTagFilter");
+            return p;
         }
     }
 }
