@@ -10,14 +10,20 @@
         <div class="col-md-9">
             <div class="box box-responsive">
                 <div class="box-content">
-            <div class="row">
-              <div class="col-sm-4">
-                <div class="form-group">
-                  <label for="name" class="control-label">Name</label>
-                  @Html.TextBox("name", Model.Name, new { @class = "form-control" })
-                </div>
-              </div>
-            </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="name" class="control-label">Name</label>
+                                @Html.TextBox("name", Model.Name, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="ContentKeyWords" class="control-label">Content KeyWords</label>
+                                @Html.TextBox("ContentKeyWords", ViewBag.ContentKeyWords as string, new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <nav class="navbar navbar-inverse hidden-xs" style="margin-bottom: 0;">
                             <div class="container-fluid">
@@ -49,7 +55,9 @@
                         <textarea id="mobile-body" name="mobile-body" class="form-control" rows="15" style="display:none; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;">@Model.Body</textarea>
                         @Html.HiddenFor(m => m.Body)
                     </div>
-                    <a href="/Display/#tab_textContent" class="btn btn-default">Cancel</a> <a href="/Display/ContentDelete/@Model.Id" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a> <a href="#" class="btn btn-primary save">Save Content</a>
+                    <a href="/Display/#tab_textContent" class="btn btn-default">Back to List</a>
+                    <a href="/Display/ContentDelete/@Model.Id" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a>
+                    <a href="#" class="btn btn-primary save">Save Content</a>
                 </div>
             </div>
         </div>
@@ -80,7 +88,7 @@
                 $(ele).prop("checked", true);
                 $(ele).closest('label').addClass('active');
             }
-            
+
             $("input[name='editor-mode']").change(function () {
                 var mode = $(this).val();
                 editor.getSession().setMode("ace/mode/" + mode);
