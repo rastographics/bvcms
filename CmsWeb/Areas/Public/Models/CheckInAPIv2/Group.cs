@@ -153,7 +153,8 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 													  WHERE attend.PeopleId = @personID
 															  AND attend.AttendanceFlag = 1) AS attend
 											ON attend.OrganizationId = org.OrganizationId AND attend.MeetingDate = schedule.NextMeetingDate
-									WHERE CAST( schedule.NextMeetingDate AS DATE ) = CAST( @date AS DATE )";
+									WHERE CAST( schedule.NextMeetingDate AS DATE ) = CAST( @date AS DATE )
+									ORDER BY date, name";
 
 			using( SqlCommand cmd = new SqlCommand( qVisits, db ) ) {
 				SqlParameter personParameter = new SqlParameter( "personID", peopleID );
