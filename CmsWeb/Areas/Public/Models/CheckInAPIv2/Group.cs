@@ -65,9 +65,9 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 											attend.SubGroupName AS subGroupName
 										FROM dbo.OrganizationMembers AS member
 											LEFT JOIN dbo.Organizations AS org ON member.OrganizationId = org.OrganizationId
-											LEFT JOIN (dbo.OrgMemMemTags AS tags INNER JOIN dbo.MemberTags AS room ON tags.MemberTagId = room.Id AND
-																																	room.CheckIn = 1) ON member.PeopleId = tags.PeopleId AND org.OrganizationId = tags.OrgId
 											LEFT JOIN dbo.OrgSchedule AS schedule ON schedule.OrganizationId = org.OrganizationId
+											LEFT JOIN (dbo.MemberTags AS room LEFT JOIN dbo.OrgMemMemTags AS tags ON room.id = tags.MemberTagId)
+																	ON schedule.Id = room.ScheduleId AND room.CheckIn = 1 AND org.OrganizationId = tags.OrgId AND member.PeopleId = tags.PeopleId
 											LEFT JOIN dbo.Meetings AS meeting ON meeting.MeetingDate = schedule.NextMeetingDate AND meeting.OrganizationId = org.OrganizationId
 											LEFT JOIN dbo.Attend AS attend ON attend.MeetingId = meeting.MeetingId AND attend.PeopleId = member.PeopleId
 											LEFT JOIN dbo.Setting AS setting on setting.Id = 'DisallowInactiveCheckin' AND Setting = 'true'
