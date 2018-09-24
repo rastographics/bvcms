@@ -3,7 +3,7 @@ DECLARE @RoleName VARCHAR(100)
 SET @RoleName = 'Task'
 IF EXISTS(SELECT 1 FROM [Roles] WHERE RoleName like @RoleName )
 BEGIN
-	IF (SELECT COUNT(roleid) FROM [CMS_bellevue].[dbo].[Roles] WHERE RoleName like @RoleName) < 2
+	IF (SELECT COUNT(roleid) FROM [dbo].[Roles] WHERE RoleName like @RoleName) < 2
 	BEGIN 	
 		SET @RoleID = (select roleId from [Roles] WHERE RoleName like @RoleName)
 		DELETE FROM [UserRole] WHERE RoleId = @RoleID
