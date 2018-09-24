@@ -57,7 +57,8 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 												WHERE OrgId = @groupID
 													AND ScheduleId = @scheduleID
 													AND CheckIn = 1
-												GROUP BY Id";
+												GROUP BY Id
+												ORDER BY name";
 
 			using( SqlCommand cmd = new SqlCommand( qSubGroups, db ) ) {
 				SqlParameter groupParameter = new SqlParameter( "groupID", groupID );

@@ -55,7 +55,8 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 											OR REPLACE( members.CellPhone, '-', '' ) LIKE @search
 											OR REPLACE( members.WorkPhone, '-', '' ) LIKE @search
 											OR REPLACE( extras.Data, '-', '' ) LIKE @search
-									GROUP BY family.FamilyId";
+									GROUP BY family.FamilyId
+									ORDER BY name";
 
 				using( SqlCommand cmd = new SqlCommand( qFamilies, db ) ) {
 					SqlParameter parameter = new SqlParameter( "search", $"%{search}" );
