@@ -185,8 +185,8 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult ContentDelete(int id)
         {
             var content = DbUtil.ContentFromID(id);
-            DbUtil.Db.Contents.DeleteOnSubmit(content);
-            DbUtil.Db.SubmitChanges();
+            DbUtil.Db.ExecuteCommand("DELETE FROM dbo.ContentKeywords WHERE Id = {0}", id);
+            DbUtil.Db.ExecuteCommand("DELETE FROM dbo.Content WHERE Id = {0}", id);
             var url = GetIndexTabUrl(content);
             return Redirect(url);
         }
