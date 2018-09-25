@@ -1,81 +1,79 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Caching;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Coordinator.Models;
 using CmsWeb.Areas.Coordinator.Services;
+using Dapper;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Coordinator.Controllers
 {
     public partial class CheckinCoordinatorController : Controller
     {
-        private readonly CheckinCoordinatorService _checkinCoordinator;
+        private readonly CMSDataContext db;
+        private CheckinCoordinatorService _checkinCoordinator;
+        private CheckinCoordinatorService CheckinCoordinator => _checkinCoordinator ?? (_checkinCoordinator = new CheckinCoordinatorService(GetDailySchedules(), db));
 
         public CheckinCoordinatorController()
         {
-            _checkinCoordinator = new CheckinCoordinatorService(GetDailySchedules());
+            this.db = DbUtil.Db;
         }
 
-        private IEnumerable<CheckinScheduleDto> GetDailySchedules(int timeslotId = 0, int programId = 0, int divisionId = 0, int organizationId = 0)
+        private IEnumerable<CheckinScheduleDto> GetDailySchedules()
         {
-            var scheduleQuery = (from os in DbUtil.Db.OrgSchedules
-                         join o in DbUtil.Db.Organizations on os.OrganizationId equals o.OrganizationId
-                         join mt in DbUtil.Db.MemberTags on o.OrganizationId equals mt.OrgId
-                         join d in DbUtil.Db.Divisions on o.DivisionId equals d.Id
-                         join p in DbUtil.Db.Programs on d.ProgId equals p.Id
-                         where mt.CheckIn
-                         && (o.CanSelfCheckin ?? false)
-                         && os.NextMeetingDate >= DateTime.Now.Date
-                         && os.NextMeetingDate < DateTime.Now.AddDays(7).Date
-                         && (os.Id == timeslotId || timeslotId == 0)
-                         && (d.Id == divisionId || divisionId == 0)
-                         && (p.Id == programId || programId == 0)
-                         && (o.OrganizationId == organizationId || organizationId == 0)
-                         select new CheckinScheduleDto
-                         {
-                             CheckInCapacity = mt.CheckInCapacity,
-                             CheckInOpen = mt.CheckInOpen,
-                             CheckInCapacityDefault = mt.CheckInCapacityDefault,
-                             CheckInOpenDefault = mt.CheckInOpenDefault,
-                             DivisionId = d.Id,
-                             DivisionName = d.Name,
-                             NextMeetingDate = os.NextMeetingDate,
-                             OrganizationId = o.OrganizationId,
-                             OrganizationName = o.OrganizationName,
-                             OrgScheduleId = os.Id,
-                             ProgramId = p.Id,
-                             ProgramName = p.Name,
-                             SubgroupId = mt.Id,
-                             SubgroupName = mt.Name
-                         });
-
-            var schedules = scheduleQuery.ToList();
-
-            // TODO: add this to top query and get all in one pass?
-            foreach (var schedule in schedules)
+            var dailySchedulesKey = $"{db.Host}.dailyschedules";
+            List<CheckinScheduleDto> list = (List<CheckinScheduleDto>)HttpContext.Cache.Get(dailySchedulesKey);
+            if (list == null)
             {
-                var attendeeQuery = (from a in DbUtil.Db.Attends
-                                     join at in DbUtil.Db.AttendTypes on a.AttendanceTypeId.Value equals at.Id
-                                     join p in DbUtil.Db.People on a.PeopleId equals p.PeopleId
-                                     where a.MeetingDate == schedule.NextMeetingDate
-                                     && a.OrganizationId == schedule.OrganizationId
-                                     && a.SubGroupID == schedule.SubgroupId
-                                     && a.SubGroupName == schedule.SubgroupName
-                                     select new CheckinAttendeeDto
-                                     {
-                                         IsWorker = at.Worker,
-                                         Name = p.Name2,
-                                         PeopleId = p.PeopleId
-                                     });
+                list = db.ExecuteQuery<CheckinScheduleDto>(@"
+SELECT t0.Id AS OrgScheduleId, 
+	t0.NextMeetingDate,
+	MAX(t1.OrganizationId) OrganizationId, 
+	MAX(t1.OrganizationName) OrganizationName, 
+	t2.Id AS SubgroupId, 
+	MAX(t2.Name) AS SubgroupName, 
+	MAX(t2.CheckInCapacity) CheckInCapacity, 
+	t2.CheckInOpen, 
+	MAX(t2.CheckInCapacityDefault) CheckInCapacityDefault, 
+	t2.CheckInOpenDefault, 
+	MAX(t3.Id) AS DivisionId, 
+	MAX(t3.Name) AS DivisionName, 
+	MAX(t4.Id) AS ProgramId, 
+	MAX(t4.Name) AS ProgramName
+FROM dbo.MemberTags AS t2 
+INNER JOIN dbo.OrgSchedule AS t0 ON t0.Id = t2.ScheduleId
+INNER JOIN dbo.Organizations AS t1 ON t2.OrgId = t1.OrganizationId
+INNER JOIN dbo.Division AS t3 ON t1.DivisionId = (t3.Id)
+INNER JOIN dbo.Program AS t4 ON t3.ProgId = (t4.Id)
+WHERE (t2.CheckIn = 1) AND ((COALESCE(t1.CanSelfCheckin, 0)) = 1) AND (t0.NextMeetingDate >= @p0) AND (t0.NextMeetingDate < @p1)
+GROUP BY t2.Id, t2.CheckInOpen, t2.CheckInOpenDefault, t0.Id, t0.NextMeetingDate
+ORDER BY t0.NextMeetingDate, OrganizationName, SubgroupName", DateTime.Now.Date, DateTime.Now.AddDays(7).Date).ToList();
 
-                schedule.Attendees = attendeeQuery.ToList();
-                schedule.AttendeeMemberCount = schedule.Attendees.Count(x => !x.IsWorker);
-                schedule.AttendeeWorkerCount = schedule.Attendees.Count(x => x.IsWorker);
+                // TODO: add this to top query and get all in one pass?
+                foreach (var schedule in list)
+                {
+                    var attendeeQuery = (from a in db.Attends
+                                         join at in db.AttendTypes on a.AttendanceTypeId.Value equals at.Id
+                                         join p in db.People on a.PeopleId equals p.PeopleId
+                                         where a.MeetingDate == schedule.NextMeetingDate
+                                         && a.OrganizationId == schedule.OrganizationId
+                                         && a.SubGroupID == schedule.SubgroupId
+                                         && a.SubGroupName == schedule.SubgroupName
+                                         select new CheckinAttendeeDto
+                                         {
+                                             IsWorker = at.Worker,
+                                             Name = p.Name2,
+                                             PeopleId = p.PeopleId
+                                         });
+
+                    schedule.Attendees = attendeeQuery.ToList();
+                }
+                HttpContext.Cache.Add(dailySchedulesKey, list, null, DateTime.Now.AddHours(1), Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
             }
-
-            return schedules;
+            return list;
         }
 
         public ActionResult Dashboard()
@@ -85,63 +83,63 @@ namespace CmsWeb.Areas.Coordinator.Controllers
 
         public ActionResult TimeslotSelector()
         {
-            var model = _checkinCoordinator.GetFilteredTimeslots();
+            var model = CheckinCoordinator.GetFilteredTimeslots();
             return PartialView(model);
         }
 
         public ActionResult ProgramSelector(string selectedTimeslot = "")
         {
-            var model = _checkinCoordinator.GetFilteredPrograms(selectedTimeslot);
+            var model = CheckinCoordinator.GetFilteredPrograms(selectedTimeslot);
             return PartialView(model);
         }
 
         public ActionResult DivisionSelector(string selectedTimeslot = "", int programId = 0)
         {
-            var model = _checkinCoordinator.GetFilteredDivisions(selectedTimeslot, programId);
+            var model = CheckinCoordinator.GetFilteredDivisions(selectedTimeslot, programId);
             return PartialView(model);
         }
 
         public ActionResult OrganizationSelector(string selectedTimeslot = "", int programId = 0, int divisionId = 0)
         {
-            var model = _checkinCoordinator.GetFilteredSchedules(selectedTimeslot, programId, divisionId);
+            var model = CheckinCoordinator.GetFilteredSchedules(selectedTimeslot, programId, divisionId);
             return PartialView(model);
         }
 
         public ActionResult Details(string selectedTimeslot, int organizationId, int subgroupId, string subgroupName)
         {
-            var schedule = _checkinCoordinator.GetScheduleDetail(selectedTimeslot, organizationId, subgroupId, subgroupName);
+            var schedule = CheckinCoordinator.GetScheduleDetail(selectedTimeslot, organizationId, subgroupId, subgroupName);
             return PartialView("Details", schedule);
         }
 
         [HttpPost]
         public ActionResult ExecuteAction(CheckinActionDto checkinActionDto)
         {
-            var schedule = _checkinCoordinator.GetScheduleDetail(checkinActionDto.SelectedTimeslot, checkinActionDto.OrganizationId, checkinActionDto.SubgroupId, checkinActionDto.SubgroupName);
+            var schedule = CheckinCoordinator.GetScheduleDetail(checkinActionDto.SelectedTimeslot, checkinActionDto.OrganizationId, checkinActionDto.SubgroupId, checkinActionDto.SubgroupName);
 
             if (checkinActionDto.Service.Equals(CheckinActionDto.SetDefaults))
             {
-                _checkinCoordinator.SetDefaults(schedule);
+                CheckinCoordinator.SetDefaults(schedule);
             }
 
             if (checkinActionDto.Service.Equals(CheckinActionDto.SetAllDefaults))
             {
-                _checkinCoordinator.SetAllDefaults();
+                CheckinCoordinator.SetAllDefaults();
                 return Json(new { status = "OK" });
             }
 
             if (checkinActionDto.Service.Equals(CheckinActionDto.IncrementCapacity))
             {
-                _checkinCoordinator.IncrementCapacity(schedule);
+                CheckinCoordinator.IncrementCapacity(schedule);
             }
 
             if (checkinActionDto.Service.Equals(CheckinActionDto.DecrementCapacity))
             {
-                _checkinCoordinator.DecrementCapacity(schedule);
+                CheckinCoordinator.DecrementCapacity(schedule);
             }
 
             if (checkinActionDto.Service.Equals(CheckinActionDto.ToggleCheckinOpen))
             {
-                _checkinCoordinator.ToggleCheckinOpen(schedule);
+                CheckinCoordinator.ToggleCheckinOpen(schedule);
             }
 
             return Details(checkinActionDto.SelectedTimeslot, checkinActionDto.OrganizationId, checkinActionDto.SubgroupId, checkinActionDto.SubgroupName);
@@ -155,18 +153,18 @@ namespace CmsWeb.Areas.Coordinator.Controllers
             var a = selectedIds;
 
             //Add members to subgroup
-            var tarsgname = DbUtil.Db.MemberTags.Single(mt => mt.Id == targrpid).Name;
-            var cursgname = DbUtil.Db.MemberTags.Single(mt => mt.Id == curgrpid).Name;
+            var tarsgname = db.MemberTags.Single(mt => mt.Id == targrpid).Name;
+            var cursgname = db.MemberTags.Single(mt => mt.Id == curgrpid).Name;
             var q2 = from om in m.OrgMembers()
                 where om.OrgMemMemTags.All(mt => mt.MemberTag.Id == curgrpid)
                 where a.Contains(om.PeopleId)
                 select om;
             foreach (var om in q2)
             {                
-                om.AddToGroup(DbUtil.Db, tarsgname);
-                om.RemoveFromGroup(DbUtil.Db, cursgname);
+                om.AddToGroup(db, tarsgname);
+                om.RemoveFromGroup(db, cursgname);
             }
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
 
             m.groupid = targrpid;
             m.ingroup = m.GetGroupDetails(targrpid).Name;

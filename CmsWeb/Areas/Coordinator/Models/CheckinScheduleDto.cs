@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CmsWeb.Areas.Coordinator.Models
 {
@@ -19,8 +20,24 @@ namespace CmsWeb.Areas.Coordinator.Models
         public string DivisionName { get; set; }
         public int ProgramId { get; set; }
         public string ProgramName { get; set; }
-        public int AttendeeWorkerCount { get; set; }
-        public int AttendeeMemberCount { get; set; }
+        public int AttendeeWorkerCount
+        {
+            get
+            {
+                return Attendees == null ? 0 : Attendees.Count(x => x.IsWorker);
+            }
+            set { }
+        }
+
+        public int AttendeeMemberCount
+        {
+            get
+            {
+                return Attendees == null ? 0 : Attendees.Count(x => !x.IsWorker);
+            }
+            set { }
+        }
+
         public List<CheckinAttendeeDto> Attendees { get; set; }
     }
 }

@@ -11,10 +11,12 @@ namespace CmsWeb.Areas.Coordinator.Services
     public class CheckinCoordinatorService
     {
         public IEnumerable<CheckinScheduleDto> Schedules;
+        private CMSDataContext db;
 
-        public CheckinCoordinatorService(IEnumerable<CheckinScheduleDto> scheduleCollection)
+        public CheckinCoordinatorService(IEnumerable<CheckinScheduleDto> scheduleCollection, CMSDataContext dbContext)
         {
             Schedules = scheduleCollection;
+            db = dbContext; 
         }
 
         #region Schedule queries
@@ -75,7 +77,9 @@ namespace CmsWeb.Areas.Coordinator.Services
 
         public CheckinScheduleDto GetScheduleDetail(string selectedTimeslot, int organizationId, int subgroupId, string subgroupName)
         {
-            return Schedules.AsQueryable().SingleOrDefault(s => s.NextMeetingDate == ConvertToDate(selectedTimeslot) && s.OrganizationId == organizationId && s.SubgroupId == subgroupId && s.SubgroupName == subgroupName);
+            var date = ConvertToDate(selectedTimeslot);
+
+            return Schedules.AsQueryable().SingleOrDefault(s => s.NextMeetingDate == date && s.OrganizationId == organizationId && s.SubgroupId == subgroupId && s.SubgroupName == subgroupName);
         }
 
         private static DateTime ConvertToDate(string selectedTimeslot)
@@ -106,7 +110,7 @@ namespace CmsWeb.Areas.Coordinator.Services
 
         public void SetAllDefaults()
         {
-            DbUtil.Db.ExecuteCommand("UPDATE dbo.MemberTags SET CheckInOpen = CheckInOpenDefault, CheckInCapacity = CheckInCapacityDefault");
+            db.ExecuteCommand("UPDATE dbo.MemberTags SET CheckInOpen = CheckInOpenDefault, CheckInCapacity = CheckInCapacityDefault");
         }
 
         public void IncrementCapacity(CheckinScheduleDto checkinScheduleDto)
@@ -129,10 +133,10 @@ namespace CmsWeb.Areas.Coordinator.Services
 
         private void CommitChanges(CheckinScheduleDto checkinScheduleDto)
         {
-            var dbRecord = DbUtil.Db.MemberTags.SingleOrDefault(mt => mt.OrgId == checkinScheduleDto.OrganizationId && mt.Id == checkinScheduleDto.SubgroupId && mt.Name == checkinScheduleDto.SubgroupName);
+            var dbRecord = db.MemberTags.SingleOrDefault(mt => mt.OrgId == checkinScheduleDto.OrganizationId && mt.Id == checkinScheduleDto.SubgroupId && mt.Name == checkinScheduleDto.SubgroupName);
             dbRecord.CheckInOpen = checkinScheduleDto.CheckInOpen;
             dbRecord.CheckInCapacity = checkinScheduleDto.CheckInCapacity;
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
         }
         #endregion
     }
