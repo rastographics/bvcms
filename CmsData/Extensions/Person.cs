@@ -1257,7 +1257,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 if (!canUserSeeGiving.HasValue)
                 {
                     var sameperson = Util.UserPeopleId == PeopleId;
-                    var infinance = HttpContext.Current.User.IsInRole("Finance")
+                    var infinance = (HttpContext.Current.User.IsInRole("Finance") && !HttpContext.Current.User.IsInRole("FundManager"))
                                     && ((string)HttpContext.Current.Session["testnofinance"]) != "true";
                     var ishead = (new int?[]
                         {
@@ -1505,8 +1505,9 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             }
 
             field = field.Trim();
-            var ev =
-                PeopleExtras.AsEnumerable().FirstOrDefault(ee => ee.Field == field);
+
+            var ev = PeopleExtras.AsEnumerable().FirstOrDefault(ee => ee.Field == field);
+            
             if (ev == null)
             {
                 ev = new PeopleExtra
@@ -2326,7 +2327,8 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         public bool CanViewStatementFor(CMSDataContext db, int id)
         {
             // todo: improve performance
-            bool canview = Util.UserPeopleId == id || HttpContext.Current.User.IsInRole("Finance");
+            bool canview = Util.UserPeopleId == id || (HttpContext.Current.User.IsInRole("Finance") && !HttpContext.Current.User.IsInRole("FundManager"));
+
             if (!canview)
             {
                 var p = db.CurrentUserPerson;

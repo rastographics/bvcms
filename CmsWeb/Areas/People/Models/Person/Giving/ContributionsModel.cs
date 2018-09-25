@@ -163,9 +163,9 @@ namespace CmsWeb.Areas.People.Models
             var person = DbUtil.Db.LoadPersonById(id.Value);
 
 
-            var contributions = from c in DbUtil.Db.Contributions2(new DateTime(1900, 1, 1), new DateTime(3000, 12, 31), 0, false, null, true)
+            var contributions = (from c in DbUtil.Db.Contributions2(new DateTime(1900, 1, 1), new DateTime(3000, 12, 31), 0, false, null, true)
                                 where (c.PeopleId == person.PeopleId || (c.PeopleId == person.SpouseId && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint))
-                                select c;
+                                select c).ToList();
 
             var currentUser = DbUtil.Db.CurrentUserPerson;
 
@@ -176,11 +176,11 @@ namespace CmsWeb.Areas.People.Models
                                               join f in authorizedFunds on c.FundId equals f.FundId
                                               select c;
 
-                contributions = authorizedContributions;
+                contributions = authorizedContributions.ToList();
             }
 
 
-            return from c in contributions
+            var result = from c in contributions
                    group c by c.DateX.Value.Year into g
                    orderby g.Key descending
                    select new StatementInfo()
@@ -190,6 +190,8 @@ namespace CmsWeb.Areas.People.Models
                        StartDate = new DateTime(g.Key, 1, 1),
                        EndDate = new DateTime(g.Key, 12, 31)
                    };
+
+            return result;
         }
     }
 }
