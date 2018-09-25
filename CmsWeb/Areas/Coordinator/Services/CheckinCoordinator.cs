@@ -23,7 +23,6 @@ namespace CmsWeb.Areas.Coordinator.Services
         public IEnumerable<CheckinTimeslotDto> GetFilteredTimeslots()
         {
             return Schedules
-                .AsQueryable()
                 .DistinctBy(s => s.NextMeetingDate.Value)
                 .Select(s => new CheckinTimeslotDto
                 {
@@ -35,11 +34,11 @@ namespace CmsWeb.Areas.Coordinator.Services
 
         public IEnumerable<CheckinProgramDto> GetFilteredPrograms(string selectedTimeslot = "")
         {
+            var emptyTime = string.IsNullOrWhiteSpace(selectedTimeslot);
             DateTime date = ConvertToDate(selectedTimeslot);
 
             return Schedules
-                .AsQueryable()
-                .Where(s => (s.NextMeetingDate == date || date == DateTime.MinValue))
+                .Where(s => (emptyTime || s.NextMeetingDate == date))
                 .DistinctBy(s => s.ProgramId)
                 .Select(s => new CheckinProgramDto
                 {
@@ -52,10 +51,10 @@ namespace CmsWeb.Areas.Coordinator.Services
 
         public IEnumerable<CheckinDivisionDto> GetFilteredDivisions(string selectedTimeslot = "", int programId = 0)
         {
+            var emptyTime = string.IsNullOrWhiteSpace(selectedTimeslot);
             var date = ConvertToDate(selectedTimeslot);
             return Schedules
-                .AsQueryable()
-                .Where(s => (s.NextMeetingDate == date || string.IsNullOrWhiteSpace(selectedTimeslot)) && (s.ProgramId == programId || programId == 0))
+                .Where(s => (emptyTime || s.NextMeetingDate == date) && (programId == 0 || s.ProgramId == programId))
                 .DistinctBy(s => s.DivisionId)
                 .Select(s => new CheckinDivisionDto
                 {
@@ -67,11 +66,11 @@ namespace CmsWeb.Areas.Coordinator.Services
 
         public IEnumerable<CheckinScheduleDto> GetFilteredSchedules(string selectedTimeslot = "", int programId = 0, int divisionId = 0)
         {
+            var emptyTime = string.IsNullOrWhiteSpace(selectedTimeslot);
             var date = ConvertToDate(selectedTimeslot);
 
             return Schedules
-                .AsQueryable()
-                .Where(s => (s.NextMeetingDate == date || string.IsNullOrWhiteSpace(selectedTimeslot)) && (s.ProgramId == programId || programId == 0) && (s.DivisionId == divisionId || divisionId == 0))
+                .Where(s => (emptyTime || s.NextMeetingDate == date) && (programId == 0 || s.ProgramId == programId) && (divisionId == 0 || s.DivisionId == divisionId))
                 .ToList();
         }
 
@@ -79,7 +78,7 @@ namespace CmsWeb.Areas.Coordinator.Services
         {
             var date = ConvertToDate(selectedTimeslot);
 
-            return Schedules.AsQueryable().SingleOrDefault(s => s.NextMeetingDate == date && s.OrganizationId == organizationId && s.SubgroupId == subgroupId && s.SubgroupName == subgroupName);
+            return Schedules.SingleOrDefault(s => s.NextMeetingDate == date && s.OrganizationId == organizationId && s.SubgroupId == subgroupId && s.SubgroupName == subgroupName);
         }
 
         private static DateTime ConvertToDate(string selectedTimeslot)

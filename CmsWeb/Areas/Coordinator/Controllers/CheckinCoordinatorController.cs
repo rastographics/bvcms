@@ -53,31 +53,37 @@ GROUP BY t2.Id, t2.CheckInOpen, t2.CheckInOpenDefault, t0.Id, t0.NextMeetingDate
 ORDER BY t0.NextMeetingDate, OrganizationName, SubgroupName", DateTime.Now.Date, DateTime.Now.AddDays(7).Date).ToList();
 
                 // TODO: add this to top query and get all in one pass?
+                var attendeeQuery = (from a in db.Attends
+                                     join at in db.AttendTypes on a.AttendanceTypeId.Value equals at.Id
+                                     join p in db.People on a.PeopleId equals p.PeopleId
+                                     where a.MeetingDate >= DateTime.Now.Date
+                                        && a.MeetingDate < DateTime.Now.AddDays(7).Date
+                                     select new CheckinAttendeeDto
+                                     {
+                                         MeetingDate = a.MeetingDate,
+                                         OrganizationId = a.OrganizationId,
+                                         SubGroupId = a.SubGroupID,
+                                         SubGroupName = a.SubGroupName,
+                                         IsWorker = at.Worker,
+                                         Name = p.Name2,
+                                         PeopleId = p.PeopleId
+                                     });
+
+                var Attendees = attendeeQuery.ToList();
                 foreach (var schedule in list)
                 {
-                    var attendeeQuery = (from a in db.Attends
-                                         join at in db.AttendTypes on a.AttendanceTypeId.Value equals at.Id
-                                         join p in db.People on a.PeopleId equals p.PeopleId
-                                         where a.MeetingDate == schedule.NextMeetingDate
-                                         && a.OrganizationId == schedule.OrganizationId
-                                         && a.SubGroupID == schedule.SubgroupId
-                                         && a.SubGroupName == schedule.SubgroupName
-                                         select new CheckinAttendeeDto
-                                         {
-                                             IsWorker = at.Worker,
-                                             Name = p.Name2,
-                                             PeopleId = p.PeopleId
-                                         });
-
-                    schedule.Attendees = attendeeQuery.ToList();
+                    schedule.Attendees = Attendees.Where(a => a.MeetingDate == schedule.NextMeetingDate
+                                                        && a.OrganizationId == schedule.OrganizationId
+                                                        && a.SubGroupId == schedule.SubgroupId
+                                                        && a.SubGroupName == schedule.SubgroupName).ToList();
                 }
-                HttpContext.Cache.Add(dailySchedulesKey, list, null, DateTime.Now.AddHours(1), Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
+                HttpContext.Cache.Add(dailySchedulesKey, list, null, DateTime.Now.AddMinutes(1), Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
             }
             return list;
         }
 
         public ActionResult Dashboard()
-        {            
+        {
             return View();
         }
 
@@ -156,11 +162,11 @@ ORDER BY t0.NextMeetingDate, OrganizationName, SubgroupName", DateTime.Now.Date,
             var tarsgname = db.MemberTags.Single(mt => mt.Id == targrpid).Name;
             var cursgname = db.MemberTags.Single(mt => mt.Id == curgrpid).Name;
             var q2 = from om in m.OrgMembers()
-                where om.OrgMemMemTags.All(mt => mt.MemberTag.Id == curgrpid)
-                where a.Contains(om.PeopleId)
-                select om;
+                     where om.OrgMemMemTags.All(mt => mt.MemberTag.Id == curgrpid)
+                     where a.Contains(om.PeopleId)
+                     select om;
             foreach (var om in q2)
-            {                
+            {
                 om.AddToGroup(db, tarsgname);
                 om.RemoveFromGroup(db, cursgname);
             }
