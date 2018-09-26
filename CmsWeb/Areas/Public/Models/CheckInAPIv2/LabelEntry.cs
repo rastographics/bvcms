@@ -157,7 +157,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 					return string.Format( format, group.org.Location );
 
 				case LabelField.GROUP_SUBGROUPS:
-					return "";
+					return group.subgroupName;
 
 				case LabelField.ATTENDANCE_DATE_TIME:
 					return string.Format( format, group.meeting.MeetingDate );

@@ -457,7 +457,7 @@ namespace CmsWeb.Areas.Public.Controllers
 										select new Group
 										{
 											id = o.OrganizationId,
-											leader = o.LeaderName,
+											leaderName = o.LeaderName,
 											name = o.OrganizationName,
 											date = meeting.Hour,
 											birthdayStart = o.BirthDayStart,

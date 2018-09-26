@@ -15,7 +15,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 	{
 		public int id = 0;
 		public string name = "";
-		public string leader = "";
+		public string leaderName = "";
 		public DateTime? date = DateTime.MinValue;
 		public int scheduleID = 0;
 
@@ -27,6 +27,10 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		public string location = "";
 
 		public bool member = false;
+		public string memberType = "";
+		public bool leader = false;
+		public bool guest = false;
+
 		public bool checkedIn = false;
 
 		public int roomID = 0;
@@ -53,9 +57,12 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			string qMembers = @"SELECT
 											org.OrganizationId AS id,
 											org.OrganizationName AS name,
-											org.LeaderName AS leader,
+											org.LeaderName AS leaderName,
 											org.Location AS location,
 											CAST( 1 AS BIT ) AS member,
+											memberType.Description AS memberType,
+											attendType.Worker AS leader,
+											attendType.Guest AS guest,
 											room.Id AS roomID,
 											room.Name AS roomName,
 											schedule.NextMeetingDate AS date,
@@ -64,7 +71,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 											attend.SubGroupID AS subGroupID,
 											attend.SubGroupName AS subGroupName
 										FROM dbo.OrganizationMembers AS member
-											LEFT JOIN dbo.Organizations AS org ON member.OrganizationId = org.OrganizationId
+											LEFT JOIN dbo.Organizations AS org ON org.OrganizationId = member.OrganizationId
 											LEFT JOIN dbo.OrgSchedule AS schedule ON schedule.OrganizationId = org.OrganizationId
 											LEFT JOIN (dbo.MemberTags AS room LEFT JOIN dbo.OrgMemMemTags AS tags ON room.id = tags.MemberTagId)
 																	ON schedule.Id = room.ScheduleId AND room.CheckIn = 1 AND org.OrganizationId = tags.OrgId AND member.PeopleId = tags.PeopleId
@@ -72,6 +79,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 											LEFT JOIN dbo.Attend AS attend ON attend.MeetingId = meeting.MeetingId AND attend.PeopleId = member.PeopleId
 											LEFT JOIN dbo.Setting AS setting on setting.Id = 'DisallowInactiveCheckin' AND Setting = 'true'
 											LEFT JOIN lookup.MemberType AS memberType ON memberType.Id = member.MemberTypeId
+											LEFT JOIN lookup.AttendType AS attendType ON attendType.Id = memberType.AttendanceTypeId
 											LEFT JOIN lookup.OrganizationStatus AS orgStatus ON orgStatus.Id = org.OrganizationStatusId
 										WHERE member.PeopleId = @personID
 												AND org.CanSelfCheckin = 1

@@ -24,8 +24,6 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		public int minimum = 0;
 		public int maximum = 0;
 
-		public bool canRepeat = false;
-
 		public List<LabelFormatEntry> entries = new List<LabelFormatEntry>();
 
 		public static Dictionary<int, LabelFormat> forSize( SqlConnection db, int size )
@@ -80,6 +78,15 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		{
 			entries.Clear();
 			entries.AddRange( LabelFormatEntry.forLabelID( db, id ) );
+		}
+
+		public bool canRepeat()
+		{
+			foreach( LabelFormatEntry entry in entries ) {
+				if( entry.repeat > 1 ) return true;
+			}
+
+			return false;
 		}
 	}
 }
