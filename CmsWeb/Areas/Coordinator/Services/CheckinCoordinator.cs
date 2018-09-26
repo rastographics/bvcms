@@ -11,17 +11,18 @@ namespace CmsWeb.Areas.Coordinator.Services
     public class CheckinCoordinatorService
     {
         public IEnumerable<CheckinScheduleDto> Schedules;
+        private CMSDataContext db;
 
-        public CheckinCoordinatorService(IEnumerable<CheckinScheduleDto> scheduleCollection)
+        public CheckinCoordinatorService(IEnumerable<CheckinScheduleDto> scheduleCollection, CMSDataContext dbContext)
         {
             Schedules = scheduleCollection;
+            db = dbContext; 
         }
 
         #region Schedule queries
         public IEnumerable<CheckinTimeslotDto> GetFilteredTimeslots()
         {
             return Schedules
-                .AsQueryable()
                 .DistinctBy(s => s.NextMeetingDate.Value)
                 .Select(s => new CheckinTimeslotDto
                 {
@@ -33,11 +34,11 @@ namespace CmsWeb.Areas.Coordinator.Services
 
         public IEnumerable<CheckinProgramDto> GetFilteredPrograms(string selectedTimeslot = "")
         {
+            var emptyTime = string.IsNullOrWhiteSpace(selectedTimeslot);
             DateTime date = ConvertToDate(selectedTimeslot);
 
             return Schedules
-                .AsQueryable()
-                .Where(s => (s.NextMeetingDate == date || date == DateTime.MinValue))
+                .Where(s => (emptyTime || s.NextMeetingDate == date))
                 .DistinctBy(s => s.ProgramId)
                 .Select(s => new CheckinProgramDto
                 {
@@ -50,10 +51,10 @@ namespace CmsWeb.Areas.Coordinator.Services
 
         public IEnumerable<CheckinDivisionDto> GetFilteredDivisions(string selectedTimeslot = "", int programId = 0)
         {
+            var emptyTime = string.IsNullOrWhiteSpace(selectedTimeslot);
             var date = ConvertToDate(selectedTimeslot);
             return Schedules
-                .AsQueryable()
-                .Where(s => (s.NextMeetingDate == date || string.IsNullOrWhiteSpace(selectedTimeslot)) && (s.ProgramId == programId || programId == 0))
+                .Where(s => (emptyTime || s.NextMeetingDate == date) && (programId == 0 || s.ProgramId == programId))
                 .DistinctBy(s => s.DivisionId)
                 .Select(s => new CheckinDivisionDto
                 {
@@ -65,17 +66,19 @@ namespace CmsWeb.Areas.Coordinator.Services
 
         public IEnumerable<CheckinScheduleDto> GetFilteredSchedules(string selectedTimeslot = "", int programId = 0, int divisionId = 0)
         {
+            var emptyTime = string.IsNullOrWhiteSpace(selectedTimeslot);
             var date = ConvertToDate(selectedTimeslot);
 
             return Schedules
-                .AsQueryable()
-                .Where(s => (s.NextMeetingDate == date || string.IsNullOrWhiteSpace(selectedTimeslot)) && (s.ProgramId == programId || programId == 0) && (s.DivisionId == divisionId || divisionId == 0))
+                .Where(s => (emptyTime || s.NextMeetingDate == date) && (programId == 0 || s.ProgramId == programId) && (divisionId == 0 || s.DivisionId == divisionId))
                 .ToList();
         }
 
         public CheckinScheduleDto GetScheduleDetail(string selectedTimeslot, int organizationId, int subgroupId, string subgroupName)
         {
-            return Schedules.AsQueryable().SingleOrDefault(s => s.NextMeetingDate == ConvertToDate(selectedTimeslot) && s.OrganizationId == organizationId && s.SubgroupId == subgroupId && s.SubgroupName == subgroupName);
+            var date = ConvertToDate(selectedTimeslot);
+
+            return Schedules.SingleOrDefault(s => s.NextMeetingDate == date && s.OrganizationId == organizationId && s.SubgroupId == subgroupId && s.SubgroupName == subgroupName);
         }
 
         private static DateTime ConvertToDate(string selectedTimeslot)
@@ -106,7 +109,7 @@ namespace CmsWeb.Areas.Coordinator.Services
 
         public void SetAllDefaults()
         {
-            DbUtil.Db.ExecuteCommand("UPDATE dbo.MemberTags SET CheckInOpen = CheckInOpenDefault, CheckInCapacity = CheckInCapacityDefault");
+            db.ExecuteCommand("UPDATE dbo.MemberTags SET CheckInOpen = CheckInOpenDefault, CheckInCapacity = CheckInCapacityDefault");
         }
 
         public void IncrementCapacity(CheckinScheduleDto checkinScheduleDto)
@@ -129,10 +132,10 @@ namespace CmsWeb.Areas.Coordinator.Services
 
         private void CommitChanges(CheckinScheduleDto checkinScheduleDto)
         {
-            var dbRecord = DbUtil.Db.MemberTags.SingleOrDefault(mt => mt.OrgId == checkinScheduleDto.OrganizationId && mt.Id == checkinScheduleDto.SubgroupId && mt.Name == checkinScheduleDto.SubgroupName);
+            var dbRecord = db.MemberTags.SingleOrDefault(mt => mt.OrgId == checkinScheduleDto.OrganizationId && mt.Id == checkinScheduleDto.SubgroupId && mt.Name == checkinScheduleDto.SubgroupName);
             dbRecord.CheckInOpen = checkinScheduleDto.CheckInOpen;
             dbRecord.CheckInCapacity = checkinScheduleDto.CheckInCapacity;
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
         }
         #endregion
     }
