@@ -94,7 +94,8 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 												AND Locked = 1
 									WHERE (person.LastName LIKE @last OR person.MaidenName LIKE @last OR @last = '')
 										AND (person.FirstName LIKE @first OR person.NickName LIKE @first OR person.MiddleName LIKE @first OR @first = '')
-									GROUP BY family.FamilyId";
+									GROUP BY family.FamilyId
+									ORDER BY name";
 
 				using( SqlCommand cmd = new SqlCommand( qFamilies, db ) ) {
 					SqlParameter firstParameter = new SqlParameter( "first", $"{first}%" );
