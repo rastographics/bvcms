@@ -12,6 +12,7 @@ $(function () {
         return false;
     });
     $("#formerror").hide();
+    $("#savePayArea").hide();
     $("a.submitbutton, a.submitlink").click(function (ev) {
         ev.preventDefault();
         if (!agreeterms) {
@@ -201,12 +202,16 @@ $(function () {
             $('#CVV').parents('.form-group').show();
             if ($('#CreditCard').val().startsWith('X')) {
                 $('#CreditCard').val($('#CreditCard').val().replace('X', 'Y'));
+                $('#savePayArea').show();
+                $('#SavePayInfo').prop('checked', false);
             }
             $('#CancelUpdateText').parents('.form-group').show();
         });
         $('#Expires').change(function () {
             if ($('#CreditCard').val().startsWith('X')) {
                 $('#CreditCard').val($('#CreditCard').val().replace('X', 'Y'));
+                $('#savePayArea').show();
+                $('#SavePayInfo').prop('checked',false);               
             }
             $('#CVV').parents('.form-group').show();
             $('#CancelUpdateText').parents('.form-group').show();

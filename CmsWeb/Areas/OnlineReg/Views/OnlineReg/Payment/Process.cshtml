@@ -120,7 +120,7 @@
         <div>
           @if (Model.IsLoggedIn == true && !VaultDisabled)
           {
-              <span style="margin-right: 2em;">@Html.CheckBoxFor(m => m.SavePayInfo) Save Payment Information</span>
+              <span id="savePayArea" style="margin-right: 2em;">@Html.CheckBoxFor(m => m.SavePayInfo) Save Payment Information</span>
           }
           @Helper.OnlineRegSubmitButton("Make Payment", onlyoneallowed: true, style: "btn-primary min-width15em")
         </div>
