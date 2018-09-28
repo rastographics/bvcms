@@ -102,9 +102,11 @@
       @if (Model.NoCreditCardsAllowed == false)
       {
           <div class="Card">
-            @Html.EditorFor(m => m.CreditCard, new { autocomplete = Model.AutocompleteOnOff, Label = debitcredit })
-            @Html.EditorFor(m => m.Expires, new { classes = "narrow" })
-            @Html.EditorFor(m => m.CVV, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
+              @Html.EditorFor(m => m.CreditCard, new { autocomplete = Model.AutocompleteOnOff, Label = debitcredit })
+              @Html.EditorFor(m => m.Expires, new { classes = "narrow" })
+              @Html.EditorFor(m => m.CVV, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
+              <input type="hidden" id="hdnCreditCardOnFile" data-value="@Model.CreditCard" />
+              <input type="hidden" id="hdnExpiresOnFile" data-value="@Model.Expires" />
           </div>
       }
       @if (Model.NoEChecksAllowed == false)
