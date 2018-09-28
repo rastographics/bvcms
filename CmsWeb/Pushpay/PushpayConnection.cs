@@ -5,6 +5,8 @@ using Thinktecture.IdentityModel.Client;
 using CmsWeb.Common;
 using CmsWeb.Pushpay.ApiModels;
 using CmsWeb.Pushpay.Enums;
+using CmsWeb.Pushpay.Entities;
+using CmsWeb.Areas.Setup.Models;
 
 namespace CmsWeb.Pushpay    
 {
@@ -32,7 +34,7 @@ namespace CmsWeb.Pushpay
             if (_client == null)
             {
                 string baseUrl = Configuration.Current.PushpayAPIBaseUrl;
-                string OrgBaseRedirect = Configuration.Current.OrgBaseRedirect;
+                string OrgBaseDomain = Configuration.Current.OrgBaseDomain;
 
                 if (string.IsNullOrWhiteSpace(baseUrl)) RaiseError(new Exception("Please provide a PushpayAPIBaseUrl in your configuration AppSettings"));
                 _client = new ApiClient(baseUrl);
@@ -48,6 +50,12 @@ namespace CmsWeb.Pushpay
             }
             return _client;
         }
+
+
+
+        
+
+        
 
         /// <summary>
         ///     Centralized error handling

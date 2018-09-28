@@ -42,6 +42,16 @@ namespace CmsWeb.Common
             get { return GetString("OAuth2AuthorizeEndpoint"); }
         }
 
+        public string CMSBaseRedirect
+        {
+            get { return GetString("CMSBaseRedirect"); }
+        }
+
+        public string OrgBaseDomain
+        {
+            get { return GetString("OrgBaseDomain"); }
+        }
+
         public string OrgBaseRedirect
         {
             get { return GetString("OrgBaseRedirect"); }
