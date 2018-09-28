@@ -75,10 +75,20 @@ namespace CmsWeb.Models
 
         public IEnumerable<string> CustomReports()
         {
+            // if a user is a member of the fundmanager role, we do not want to enable custom reports as this could bypass the fund restrictions at present
+            var fundmanagerRoleName = "FundManager";
+            var currentUserIsFundManager = DbUtil.Db.CurrentUser.Roles.Contains(fundmanagerRoleName, StringComparer.OrdinalIgnoreCase);
+
+            if (currentUserIsFundManager)
+            {
+                return new string[];
+            }
+
             var q = from c in DbUtil.Db.Contents
                 where c.TypeID == ContentTypeCode.TypeSqlScript
                 where c.Body.Contains("--class=TotalsByFund")
                 select c.Name;
+
             return q;
         }
 
