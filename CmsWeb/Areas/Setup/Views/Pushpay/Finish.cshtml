@@ -22,14 +22,4 @@ else
         </div>
     </div>
 </div>
-<div class="modal fade" id="new-modal">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            @using (Html.BeginForm("CreateTokenSetting", "Pushpay", FormMethod.Post))
-            {
-                @Html.Hidden("type", ViewData["type"])
 
-            }
-        </div>
-    </div>
-</div>

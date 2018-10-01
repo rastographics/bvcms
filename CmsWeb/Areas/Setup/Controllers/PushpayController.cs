@@ -65,23 +65,24 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult Save(string _at, string _rt, string tenantRedirect)
         {
             string idAccessToken = "PushpayAccessToken", idRefreshToken= "PushpayRefreshToken";
-            var m = DbUtil.Db.Settings.AsQueryable();
+            var dbContext = DbUtil.Db;
+            var m = dbContext.Settings.AsQueryable();
             if (!Regex.IsMatch(idAccessToken, @"\A[A-z0-9-]*\z"))
                 return Message("Invalid characters in setting id");
 
-            if (!DbUtil.Db.Settings.Any(s => s.Id == idAccessToken))
+            if (!dbContext.Settings.Any(s => s.Id == idAccessToken))
             {
                 var s = new Setting { Id = idAccessToken, SettingX = _at};
-                DbUtil.Db.Settings.InsertOnSubmit(s);
-                DbUtil.Db.SubmitChanges();
-                DbUtil.Db.SetSetting(idAccessToken, _at);
+                dbContext.Settings.InsertOnSubmit(s);
+                dbContext.SubmitChanges();
+                dbContext.SetSetting(idAccessToken, _at);
             }
-            if (!DbUtil.Db.Settings.Any(s => s.Id == idRefreshToken))
+            if (!dbContext.Settings.Any(s => s.Id == idRefreshToken))
             {
                 var s = new Setting { Id = idRefreshToken, SettingX = _rt };
-                DbUtil.Db.Settings.InsertOnSubmit(s);
-                DbUtil.Db.SubmitChanges();
-                DbUtil.Db.SetSetting(idRefreshToken, _rt);
+                dbContext.Settings.InsertOnSubmit(s);
+                dbContext.SubmitChanges();
+                dbContext.SetSetting(idRefreshToken, _rt);
             }
             //redirect back to the view which required authentication
             string decodedUrl = "";
@@ -98,13 +99,8 @@ namespace CmsWeb.Areas.Setup.Controllers
         {
             AccessToken _accessToken;
             // received authorization code from authorization server
-            string[] codes = Request.Params.GetValues("code");
-            var authorizationCode = "";
-            if (codes.Length > 0)
-                authorizationCode = codes[0];
-
-            
-
+            var authorizationCode = Request["code"];
+                       
             // exchange authorization code at authorization server for an access and refresh token
             Dictionary<string, string> post = null;
             post = new Dictionary<string, string>
