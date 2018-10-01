@@ -97,13 +97,13 @@ namespace CmsWeb.Areas.Manage.Controllers
             content.Title = newName;
             content.Body = "";
             content.DateCreated = DateTime.Now;
-            var ContentKeywordFitler = Session["ContentKeywordFilter"] as string;
-            if(ContentKeywordFitler.HasValue())
-                content.SetKeyWords(DbUtil.Db, new []{ContentKeywordFitler});
+            var ContentKeywordFilter = Session["ContentKeywordFilter"] as string;
+            if(ContentKeywordFilter.HasValue())
+                content.SetKeyWords(DbUtil.Db, new []{ContentKeywordFilter});
 
             DbUtil.Db.Contents.InsertOnSubmit(content);
             DbUtil.Db.SubmitChanges();
-            ViewBag.ContentKeywords = ContentKeywordFitler ?? "";
+            ViewBag.ContentKeywords = ContentKeywordFilter ?? "";
 
             return RedirectEdit(content);
         }
