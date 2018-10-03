@@ -24,9 +24,9 @@ namespace CmsData
 		
 		private string _Description;
 		
-		private bool _IsDeleted;
-		
 		private bool _SystemFlag;
+		
+		private bool _IsDeleted;
 		
    		
    		private EntitySet<SMSGroupMember> _SMSGroupMembers;
@@ -50,11 +50,11 @@ namespace CmsData
 		partial void OnDescriptionChanging(string value);
 		partial void OnDescriptionChanged();
 		
-		partial void OnIsDeletedChanging(bool value);
-		partial void OnIsDeletedChanged();
-		
 		partial void OnSystemFlagChanging(bool value);
 		partial void OnSystemFlagChanged();
+		
+		partial void OnIsDeletedChanging(bool value);
+		partial void OnIsDeletedChanged();
 		
     #endregion
 		public SMSGroup()
@@ -137,28 +137,6 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="is_deleted", UpdateCheck=UpdateCheck.Never, Storage="_IsDeleted", DbType="bit NOT NULL")]
-		public bool IsDeleted
-		{
-			get { return this._IsDeleted; }
-
-			set
-			{
-				if (this._IsDeleted != value)
-				{
-				
-                    this.OnIsDeletedChanging(value);
-					this.SendPropertyChanging();
-					this._IsDeleted = value;
-					this.SendPropertyChanged("IsDeleted");
-					this.OnIsDeletedChanged();
-				}
-
-			}
-
-		}
-
-		
 		[Column(Name="SystemFlag", UpdateCheck=UpdateCheck.Never, Storage="_SystemFlag", DbType="bit NOT NULL")]
 		public bool SystemFlag
 		{
@@ -174,6 +152,28 @@ namespace CmsData
 					this._SystemFlag = value;
 					this.SendPropertyChanged("SystemFlag");
 					this.OnSystemFlagChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="IsDeleted", UpdateCheck=UpdateCheck.Never, Storage="_IsDeleted", DbType="bit NOT NULL")]
+		public bool IsDeleted
+		{
+			get { return this._IsDeleted; }
+
+			set
+			{
+				if (this._IsDeleted != value)
+				{
+				
+                    this.OnIsDeletedChanging(value);
+					this.SendPropertyChanging();
+					this._IsDeleted = value;
+					this.SendPropertyChanged("IsDeleted");
+					this.OnIsDeletedChanged();
 				}
 
 			}

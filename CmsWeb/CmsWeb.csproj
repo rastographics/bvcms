@@ -1667,7 +1667,7 @@
     <Content Include="Areas\Dialog\Views\MoveOrgMembers\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\MoveOrgMembers\Process.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\ChaiDonorsReport.cshtml" />
-    <Content Include="Areas\Setup\Views\Twilio\DeleteDialog.cshtml" />
+    <Content Include="Areas\Setup\Views\Twilio\DeleteGroupDialog.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\staging.pubxml" />
     <None Include="Properties\PublishProfiles\TeamCity.pubxml" />

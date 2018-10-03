@@ -17,12 +17,12 @@ namespace CmsWeb.Areas.Setup.Controllers
 
         public ActionResult GroupCreate( string name, string description, bool systemFlag )
         {
-            var group = new SMSGroup();
-
-            group.Name = name;
-            group.Description = description;
-            group.SystemFlag = systemFlag;
-            group.IsDeleted = false;
+            var group = new SMSGroup {
+                Name = name,
+                Description = description,
+                SystemFlag = systemFlag,
+                IsDeleted = false
+            };
 
             DbUtil.Db.SMSGroups.InsertOnSubmit(group);
             DbUtil.Db.SubmitChanges();
