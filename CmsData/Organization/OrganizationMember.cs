@@ -316,7 +316,10 @@ AND a.PeopleId = {2}
                     if (m != null)
                     {
                         m.Pending = pending;
-                        m.MemberTypeId = memberTypeId;
+                        if (m.MemberTypeId == MemberTypeCode.Member || m.MemberTypeId == 0)
+                        {
+                            m.MemberTypeId = memberTypeId;
+                        }
                         db.SubmitChanges();
                         return m;
                     }
