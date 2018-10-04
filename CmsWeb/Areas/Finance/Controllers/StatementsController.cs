@@ -39,13 +39,13 @@ namespace CmsWeb.Areas.Finance.Controllers
                 Count = 0,
                 Processed = 0
             };
-            var cs = Models.Report.ContributionStatements.GetStatementSpecification(customstatement);
+            var db = DbUtil.Db;
+            var cs = Models.Report.ContributionStatements.GetStatementSpecification(db, customstatement);
 
             if (!startswith.HasValue())
                 startswith = null;
             if (exportcontributors)
             {
-                var db = DbUtil.Db;
                 var noaddressok = !db.Setting("RequireAddressOnStatement", true);
                 const bool useMinAmt = true;
                 if (tagid == 0)
@@ -62,12 +62,19 @@ namespace CmsWeb.Areas.Finance.Controllers
             if (tagid == 0)
                 tagid = null;
 
+            var elmah = Elmah.ErrorLog.Default;
             HostingEnvironment.QueueBackgroundWorkItem(ct =>
             {
                 Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
                 Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
-                var m = new ContributionStatementsExtract(host, fromDate.Value, endDate.Value, output, startswith, sort, tagid, excludeelectronic);
-                m.DoWork(cs);
+                try
+                {
+                    var m = new ContributionStatementsExtract(host, fromDate.Value, endDate.Value, output, startswith, sort, tagid, excludeelectronic);
+                    m.DoWork(cs);
+                }catch(Exception e)
+                {
+                    elmah.Log(new Elmah.Error(e));
+                }
             });
             return Redirect("/Statements/Progress");
         }

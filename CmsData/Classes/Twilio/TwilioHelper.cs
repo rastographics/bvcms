@@ -292,8 +292,10 @@ namespace CmsData.Classes.Twilio
             TwilioClient.Init(GetSid(DbUtil.Db), GetToken(DbUtil.Db));
             var numbers = IncomingPhoneNumberResource.Read().ToList();
 
-            var used = (from e in DbUtil.Db.SMSNumbers
-                        select e).ToList();
+            var used = (from number in DbUtil.Db.SMSNumbers
+                        join g in DbUtil.Db.SMSGroups on number.GroupID equals g.Id
+                        where g.IsDeleted == false
+                        select number).ToList();
 
             for (var iX = numbers.Count - 1; iX > -1; iX--)
             {
@@ -342,7 +344,7 @@ namespace CmsData.Classes.Twilio
         public static List<SMSGroup> GetAvailableLists(int iUserID)
         {
             var groups = (from e in DbUtil.Db.SMSGroups
-                          where e.SMSGroupMembers.Any(f => f.UserID == iUserID)
+                          where e.IsDeleted == false && e.SMSGroupMembers.Any(f => f.UserID == iUserID)
                           select e).ToList();
 
             return groups;

@@ -48,7 +48,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
             var response = context.HttpContext.Response;
             response.ContentType = "application/pdf";
             response.AddHeader("content-disposition", "filename=foo.pdf");
-            var cs = ContributionStatements.GetStatementSpecification(statementType ?? "all");
+            var cs = ContributionStatements.GetStatementSpecification(DbUtil.Db, statementType ?? "all");
 
             if (showCheckNo || showNotes)
             {
