@@ -268,7 +268,7 @@
                 <div class="form-actions text-right">
                     @if (Model.OnlineRegPersonModel.LoggedIn && !vaultDisabled)
                     {
-                        <span style="margin-right: 2em;">@Html.CheckBox("SavePayInfo", Model.PaymentForm.SavePayInfo) Save Payment Information</span>
+                        <span id="savePayArea" style="margin-right: 2em;">@Html.CheckBox("SavePayInfo", Model.PaymentForm.SavePayInfo) Save Payment Information</span>
                     }
                     <input type="submit" id="submitit" value="Make Gift" class="btn btn-primary btn-lg">
                     @if (processorerror.HasValue())
