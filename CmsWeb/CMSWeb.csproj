@@ -792,6 +792,7 @@
     <Compile Include="Code\JsonNetValueProviderFactory.cs" />
     <Compile Include="Code\ReportsMenu.cs" />
     <Compile Include="Code\UserInputException.cs" />
+    <Compile Include="Code\ViewUtilities.cs" />
     <Compile Include="Controllers\Api\ApiOptions.cs" />
     <Compile Include="Controllers\Api\ChAiPeopleController.cs" />
     <Compile Include="Controllers\Api\ChAiGiftsController.cs" />
@@ -1668,6 +1669,7 @@
     <Content Include="Areas\Dialog\Views\MoveOrgMembers\Process.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\ChaiDonorsReport.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\DeleteGroupDialog.cshtml" />
+    <Content Include="Content\touchpoint\js\polyfills.urlSearchParams.js" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\staging.pubxml" />
     <None Include="Properties\PublishProfiles\TeamCity.pubxml" />
