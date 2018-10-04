@@ -612,6 +612,7 @@
     <Compile Include="Areas\Public\Controllers\CheckScanAPIController.cs" />
     <Compile Include="Areas\Public\Controllers\MobileAPIv2Controller.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Attendance.cs" />
+    <Compile Include="Areas\Public\Models\CheckInAPIv2\AttendanceBundle.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\AttendanceGroup.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Campus.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Country.cs" />

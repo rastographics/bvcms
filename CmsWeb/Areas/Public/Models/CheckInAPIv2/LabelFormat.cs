@@ -14,8 +14,6 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 	[SuppressMessage( "ReSharper", "ConvertToConstant.Global" )]
 	public class LabelFormat : DataMapper
 	{
-		// private static readonly Dictionary<int, Dictionary<int, LabelFormat>> formatSizes = new Dictionary<int, Dictionary<int, LabelFormat>>();
-
 		public int id = 0;
 		public int typeID = 0;
 
@@ -24,14 +22,12 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		public int minimum = 0;
 		public int maximum = 0;
 
+		public bool canRepeat = false;
+
 		public List<LabelFormatEntry> entries = new List<LabelFormatEntry>();
 
 		public static Dictionary<int, LabelFormat> forSize( SqlConnection db, int size )
 		{
-			// if( formatSizes.ContainsKey( size ) ) {
-			// 	return formatSizes[size];
-			// }
-
 			Dictionary<int, LabelFormat> formats = new Dictionary<int, LabelFormat>();
 			DataTable table = new DataTable();
 
@@ -42,7 +38,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 													type.name AS type,
 													minimum,
 													maximum,
-													type.canRepeat
+													type.canRepeat AS canRepeat
 												FROM CheckInLabel AS label
 													LEFT JOIN CheckInLabelType AS type ON type.id = label.typeID
 												WHERE @size BETWEEN minimum AND maximum";
@@ -64,15 +60,8 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 				formats.Add( format.typeID, format );
 			}
 
-			// formatSizes.Add( size, formats );
-
 			return formats;
 		}
-
-		// public static void reset()
-		// {
-		// 	formatSizes.Clear();
-		// }
 
 		public void loadEntries( SqlConnection db )
 		{
@@ -80,13 +69,15 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			entries.AddRange( LabelFormatEntry.forLabelID( db, id ) );
 		}
 
-		public bool canRepeat()
+		public int maxRepeat()
 		{
+			int count = 0;
+
 			foreach( LabelFormatEntry entry in entries ) {
-				if( entry.repeat > 1 ) return true;
+				if( entry.repeat > count ) count = entry.repeat;
 			}
 
-			return false;
+			return count;
 		}
 	}
 }

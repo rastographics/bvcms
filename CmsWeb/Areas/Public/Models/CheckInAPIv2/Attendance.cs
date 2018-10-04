@@ -13,16 +13,15 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 	[SuppressMessage( "ReSharper", "FieldCanBeMadeReadOnly.Global" )]
 	public class Attendance
 	{
+		public const int SECURITY_LABELS_NONE = 0;
+		public const int SECURITY_LABELS_PER_MEETING = 1;
+		public const int SECURITY_LABELS_PER_CHILD = 2;
+		public const int SECURITY_LABELS_PER_FAMILY = 3;
+
 		public int peopleID;
 
 		// Label options
 		public string labelSecurityCode;
-		public int labelSize = 200;
-
-		public int nameTagAge = 13;
-		public bool securityLabels = false;
-		public bool guestLabels = true;
-		public bool locationLabels = true;
 
 		public CmsData.Person person;
 
@@ -30,52 +29,6 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		public CmsData.Person spouse;
 
 		public List<AttendanceGroup> groups = new List<AttendanceGroup>();
-
-		public static List<Attendance> dummyData()
-		{
-			List<Attendance> attendances = new List<Attendance>();
-
-			Attendance attendance1 = new Attendance
-			{
-				peopleID = 1061061,
-				labelSize = 200,
-				groups =
-				{
-					new AttendanceGroup
-					{
-						groupID = 86788,
-						datetime = new DateTime( 2018, 06, 17, 9, 20, 0 ),
-						present = true
-					},
-					new AttendanceGroup
-					{
-						groupID = 89731,
-						datetime = new DateTime( 2018, 06, 17, 18, 0, 0 ),
-						present = true
-					}
-				}
-			};
-
-			Attendance attendance2 = new Attendance
-			{
-				peopleID = 1090115,
-				labelSize = 200,
-				groups =
-				{
-					new AttendanceGroup
-					{
-						groupID = 86788,
-						datetime = new DateTime( 2018, 06, 17, 9, 20, 0 ),
-						present = true
-					},
-				}
-			};
-
-			attendances.Add( attendance1 );
-			attendances.Add( attendance2 );
-
-			return attendances;
-		}
 
 		public void load()
 		{
@@ -90,45 +43,69 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			}
 		}
 
-		public Label getSecurityLabel( SqlConnection db )
+		public List<Label> getSecurityLabel( Dictionary<int, LabelFormat> formats )
 		{
-			return new Label( db, labelSize, Label.Type.SECURITY, this, groups[0] );
+			return Label.generate( formats, Label.Type.SECURITY, this, groups );
 		}
 
-		public List<Label> getLabels( SqlConnection db )
+		public List<Label> getLabels( Dictionary<int, LabelFormat> formats, int securityLabels, bool guestLabels, bool locationLabels, int nameTagAge )
 		{
+			List<Label.Type> labelTypes = new List<Label.Type>();
 			List<Label> labels = new List<Label>();
 
+			// Create label type list
 			if( groups.Count > 0 && hasAttends() ) {
 				// TODO: Client size option for age cutoff for Name Tag.  Server will override and will send it to the client and disable field
 				if( (person.Age ?? 0) < nameTagAge ) {
-					labels.Add( new Label( db, labelSize, Label.Type.MAIN, this, groups ) );
+					labelTypes.Add( Label.Type.MAIN );
 
 					foreach( AttendanceGroup group in groups ) {
-						if( group.org.NumCheckInLabels > 1 && group.present ) {
+						if( group.org != null && group.org.NumCheckInLabels > 1 && group.present ) {
 							for( int iX = 0; iX < group.org.NumCheckInLabels - 1; iX++ ) {
-								labels.Add( new Label( db, labelSize, Label.Type.EXTRA, this, group ) );
+								labelTypes.Add( Label.Type.EXTRA );
 							}
 						}
 					}
 
 					if( hasVisits() ) {
 						if( guestLabels ) {
-							foreach( AttendanceGroup group in getVisitGroups() ) {
-								labels.Add( new Label( db, labelSize, Label.Type.GUEST, this, group ) );
+							foreach( AttendanceGroup _ in getVisitGroups() ) {
+								labelTypes.Add( Label.Type.GUEST );
 							}
 						}
 
-						if( locationLabels ) labels.Add( new Label( db, labelSize, Label.Type.LOCATION, this, getVisitGroups().ToList() ) );
+						if( locationLabels ) labelTypes.Add( Label.Type.LOCATION );
 					}
 
-					if( securityLabels ) {
-						for( int iX = 0; iX < groups.Count; iX++ ) {
-							labels.Add( new Label( db, labelSize, Label.Type.SECURITY, this, groups[0] ) );
+					switch( securityLabels ) {
+						// case SECURITY_LABELS_NONE: 0 = No Security Labels
+						// case SECURITY_LABELS_PER_FAMILY: Security Label Per Family (Handled outside this routine)
+
+						case SECURITY_LABELS_PER_MEETING: {
+							for( int iX = 0; iX < groups.Count; iX++ ) {
+								labelTypes.Add( Label.Type.SECURITY );
+							}
+
+							break;
+						}
+
+						case SECURITY_LABELS_PER_CHILD: {
+							labelTypes.Add( Label.Type.SECURITY );
+
+							break;
 						}
 					}
 				} else {
-					labels.Add( new Label( db, labelSize, Label.Type.NAME_TAG, this, groups[0] ) );
+					labelTypes.Add( Label.Type.NAME_TAG );
+				}
+			}
+
+			// Generate labels from type list
+			foreach( Label.Type labelType in labelTypes ) {
+				if( labelType == Label.Type.GUEST ) {
+					labels.AddRange( Label.generate( formats, labelType, this, getVisitGroups().ToList() ) );
+				} else {
+					labels.AddRange( Label.generate( formats, labelType, this, groups ) );
 				}
 			}
 

@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 {
@@ -11,50 +12,56 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 	[SuppressMessage( "ReSharper", "MemberCanBePrivate.Global" )]
 	public class Label
 	{
-		private readonly Dictionary<int, LabelFormat> formats;
 		public readonly List<LabelEntry> entries = new List<LabelEntry>();
 
-		public bool hasMoreEntries;
-
-		public Label( SqlConnection db, int size, Type type, Attendance attendance, List<AttendanceGroup> groups )
+		public static List<Label> generate( Dictionary<int, LabelFormat> formats, Type type, Attendance attendance, List<AttendanceGroup> groups )
 		{
-			formats = LabelFormat.forSize( db, size );
-			hasMoreEntries = process( type, attendance, groups );
-		}
-
-		public Label( SqlConnection db, int size, Type type, Attendance attendance, AttendanceGroup group )
-		{
-			List<AttendanceGroup> groups = new List<AttendanceGroup> {group};
-
-			formats = LabelFormat.forSize( db, size );
-			hasMoreEntries = process( type, attendance, groups );
-		}
-
-		private bool process( Type type, Attendance attendance, List<AttendanceGroup> groups )
-		{
+			List<Label> labels = new List<Label>();
 			LabelFormat format = formats[(int) type];
 
-			// TODO: Use group count to figure out how many labels to print by getting the max repeats from the label format
+			List<AttendanceGroup> groupsCopy = new List<AttendanceGroup>( groups );
+
+			if( format.canRepeat ) {
+				do {
+					labels.Add( getLabel( format, attendance, nextGroups( groupsCopy, format.maxRepeat() ) ) );
+				} while( groupsCopy.Any() );
+			} else {
+				labels.Add( getLabel( format, attendance, nextGroups( groupsCopy, 1 ) ) );
+			}
+
+			return labels;
+		}
+
+		private static List<AttendanceGroup> nextGroups( List<AttendanceGroup> groups, int count )
+		{
+			int adjustedCount = count <= groups.Count ? count : groups.Count;
+
+			List<AttendanceGroup> groupsCopy = new List<AttendanceGroup>( groups.GetRange( 0, adjustedCount ) );
+
+			groups.RemoveRange( 0, adjustedCount );
+
+			return groupsCopy;
+		}
+
+		private static Label getLabel( LabelFormat format, Attendance attendance, List<AttendanceGroup> groups )
+		{
+			Label label = new Label();
 
 			foreach( LabelFormatEntry formatEntry in format.entries ) {
-				if( formatEntry.repeat > 1 && groups != null && groups.Count > 0 ) {
+				if( formatEntry.repeat > 1 ) {
 					for( int iX = 0; iX < formatEntry.repeat; iX++ ) {
 						if( groups.Count <= iX ) break;
 
 						LabelEntry entry = new LabelEntry( formatEntry, attendance, groups[iX], iX );
 
-						entries.Add( entry );
+						label.entries.Add( entry );
 					}
 				} else {
-					if( groups == null || groups.Count == 0 ) {
-						entries.Add( new LabelEntry( formatEntry, attendance ) );
-					} else {
-						entries.Add( new LabelEntry( formatEntry, attendance, groups[0] ) );
-					}
+					label.entries.Add( new LabelEntry( formatEntry, attendance, groups[0] ) );
 				}
 			}
 
-			return false;
+			return label;
 		}
 
 		public enum Type

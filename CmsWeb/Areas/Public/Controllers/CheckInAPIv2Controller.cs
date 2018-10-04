@@ -4,10 +4,12 @@ using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Web.Mvc;
+using CmsWeb.Areas.Org.Models;
 using CmsWeb.Areas.Public.Models.CheckInAPIv2;
 using CmsWeb.Areas.Public.Models.CheckInAPIv2.Results;
 using CmsWeb.Areas.Public.Models.CheckInAPIv2.Searches;
 using CmsWeb.Models;
+using Microsoft.Scripting.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using UtilityExtensions;
@@ -342,12 +344,9 @@ namespace CmsWeb.Areas.Public.Controllers
 				return Message.createErrorReturn( "Authentication failed, please try again", Message.API_ERROR_INVALID_CREDENTIALS );
 
 			Message message = Message.createFromString( data );
-			List<Attendance> attendances = JsonConvert.DeserializeObject<List<Attendance>>( message.data );
-			// List<Attendance> attendances = Attendance.dummyData();
+			AttendanceBundle bundle = JsonConvert.DeserializeObject<AttendanceBundle>( message.data );
 
-			// LabelFormat.reset();
-
-			foreach( Attendance attendance in attendances ) {
+			foreach( Attendance attendance in bundle.attendances ) {
 				foreach( AttendanceGroup group in attendance.groups ) {
 					CmsData.Attend.RecordAttend( CmsData.DbUtil.Db, attendance.peopleID, group.groupID, group.present, group.datetime );
 
@@ -375,22 +374,18 @@ namespace CmsWeb.Areas.Public.Controllers
 			string securityCode = CmsData.DbUtil.Db.NextSecurityCode().Select( c => c.Code ).Single().Trim();
 
 			using( var db = new SqlConnection( Util.ConnectionString ) ) {
-				// try {
+				Dictionary<int, LabelFormat> formats = LabelFormat.forSize( db, bundle.labelSize );
 
-				foreach( Attendance attendance in attendances ) {
+				foreach( Attendance attendance in bundle.attendances ) {
 					attendance.load();
 					attendance.labelSecurityCode = securityCode;
 
-					labels.AddRange( attendance.getLabels( db ) );
+					labels.AddRange( attendance.getLabels( formats, bundle.securityLabels, bundle.guestLabels, bundle.locationLabels, bundle.nameTagAge ) );
 				}
 
-				if( labels.Count > 0 && attendances.Count > 0 && !attendances[0].securityLabels ) {
-					labels.Add( attendances[0].getSecurityLabel( db ) );
+				if( labels.Count > 0 && bundle.attendances.Count > 0 && bundle.securityLabels == Attendance.SECURITY_LABELS_PER_FAMILY ) {
+					labels.AddRange( bundle.attendances[0].getSecurityLabel( formats ) );
 				}
-
-				// } catch( Exception ex ) {
-				// 	string error = ex.Message;
-				// }
 			}
 
 			Message response = new Message();
@@ -441,30 +436,35 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			CmsData.DbUtil.LogActivity( $"Check-In Group Search: {person.PeopleId}: {person.Name}" );
 
-			List<Group> groups = (from o in CmsData.DbUtil.Db.Organizations
-										let sc = o.OrgSchedules.FirstOrDefault()
-										let meetingHours = CmsData.DbUtil.Db.GetTodaysMeetingHours( o.OrganizationId, search.dayID )
-										let birthdayStart = o.BirthDayStart ?? DateTime.MaxValue
-										where (o.SuspendCheckin ?? false) == false || search.showAll
-										where person.BirthDate == null || person.BirthDate <= o.BirthDayEnd || o.BirthDayEnd == null || search.showAll
-										where person.BirthDate == null || person.BirthDate >= o.BirthDayStart || o.BirthDayStart == null || search.showAll
-										where o.CanSelfCheckin.Value
-										where (o.ClassFilled ?? false) == false
-										where (o.CampusId == null && o.AllowNonCampusCheckIn == true) || o.CampusId == search.campusID || search.campusID == 0
-										where o.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
-										orderby sc.SchedTime.Value.TimeOfDay, birthdayStart, o.OrganizationName
-										from meeting in meetingHours
-										select new Group
-										{
-											id = o.OrganizationId,
-											leaderName = o.LeaderName,
-											name = o.OrganizationName,
-											date = meeting.Hour,
-											birthdayStart = o.BirthDayStart,
-											birthdayEnd = o.BirthDayEnd,
-											location = o.Location,
-											allowOverlap = o.AllowAttendOverlap
-										}).ToList();
+			List<Group> groups;
+
+			using( var db = new SqlConnection( Util.ConnectionString ) ) {
+				groups = Group.forGroupFinder( db, person.BirthDate, search.campusID, search.dayID, search.showAll ? 1 : 0 );
+			}
+
+			// List<Group> groups = (from org in CmsData.DbUtil.Db.Organizations
+			// 							from schedule in CmsData.DbUtil.Db.OrgSchedules.Where( sc => sc.OrganizationId == org.OrganizationId ).DefaultIfEmpty()
+			// 							let birthdayStart = org.BirthDayStart ?? DateTime.MaxValue
+			// 							where (org.SuspendCheckin ?? false) == false || search.showAll
+			// 							where person.BirthDate == null || person.BirthDate <= org.BirthDayEnd || org.BirthDayEnd == null || search.showAll
+			// 							where person.BirthDate == null || person.BirthDate >= org.BirthDayStart || org.BirthDayStart == null || search.showAll
+			// 							where org.CanSelfCheckin != null && org.CanSelfCheckin == true
+			// 							where (org.ClassFilled ?? false) == false
+			// 							where (org.CampusId == null && org.AllowNonCampusCheckIn == true) || org.CampusId == search.campusID || search.campusID == 0
+			// 							where org.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
+			// 							orderby schedule.SchedTime.Value.TimeOfDay, birthdayStart, org.OrganizationName
+			// 							select new Group
+			// 							{
+			// 								id = org.OrganizationId,
+			// 								leaderName = org.LeaderName ?? "",
+			// 								name = org.OrganizationName ?? "",
+			// 								date = schedule.SchedTime,
+			// 								scheduleID = schedule.Id,
+			// 								birthdayStart = org.BirthDayStart,
+			// 								birthdayEnd = org.BirthDayEnd,
+			// 								location = org.Location ?? "",
+			// 								allowOverlap = org.AllowAttendOverlap
+			// 							}).ToList();
 
 			Message response = new Message();
 			response.setNoError();

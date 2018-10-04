@@ -49,6 +49,57 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			return groups;
 		}
 
+		public static List<Group> forGroupFinder( SqlConnection db, DateTime? birthday, int campus, int day, int showAll )
+		{
+			List<Group> groups = new List<Group>();
+			DataTable table = new DataTable();
+
+			string qGroups = @"SELECT org.OrganizationId AS id,
+											 org.OrganizationName AS name,
+											 org.LeaderName AS leaderName,
+											 schedule.Id AS scheduleID,
+											 schedule.SchedTime AS date,
+											 org.BirthDayStart,
+											 org.BirthDayEnd,
+											 org.Location,
+											 org.AllowAttendOverlap
+									FROM dbo.Organizations AS org
+											  LEFT JOIN dbo.OrgSchedule AS schedule ON schedule.OrganizationId = org.OrganizationId
+									WHERE schedule.SchedDay = @day
+										AND (org.SuspendCheckin IS NULL OR org.SuspendCheckin = 0)
+										AND org.CanSelfCheckin = 1
+										AND (org.ClassFilled IS NULL OR org.ClassFilled = 0)
+										AND ((org.CampusId IS NULL AND org.AllowNonCampusCheckIn = 1) OR org.CampusId = @campus OR @campus = 0)
+										AND org.OrganizationStatusId = 30
+										AND (@birthday IS NULL OR CAST(org.BirthDayStart AS DATE) <= @birthday OR org.BirthDayStart IS NULL)
+										AND (@birthday IS NULL OR CAST(org.BirthDayEnd AS DATE) >= @birthday OR org.BirthDayEnd IS NULL)
+									ORDER BY org.OrganizationName, schedule.SchedTime";
+
+			using( SqlCommand cmd = new SqlCommand( qGroups, db ) ) {
+				SqlParameter personParameter = new SqlParameter( "birthday", birthday );
+				SqlParameter campusParameter = new SqlParameter( "campus", campus );
+				SqlParameter dateParameter = new SqlParameter( "day", day );
+				SqlParameter showAllParameter = new SqlParameter( "showAll", showAll );
+
+				cmd.Parameters.Add( personParameter );
+				cmd.Parameters.Add( campusParameter );
+				cmd.Parameters.Add( dateParameter );
+				cmd.Parameters.Add( showAllParameter );
+
+				SqlDataAdapter adapter = new SqlDataAdapter( cmd );
+				adapter.Fill( table );
+			}
+
+			foreach( DataRow row in table.Rows ) {
+				Group group = new Group();
+				group.populate( row );
+
+				groups.Add( group );
+			}
+
+			return groups;
+		}
+
 		private static List<Group> loadMemberGroups( SqlConnection db, int peopleID, int campus, DateTime date )
 		{
 			List<Group> groups = new List<Group>();
@@ -81,7 +132,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 											LEFT JOIN lookup.MemberType AS memberType ON memberType.Id = member.MemberTypeId
 											LEFT JOIN lookup.AttendType AS attendType ON attendType.Id = memberType.AttendanceTypeId
 											LEFT JOIN lookup.OrganizationStatus AS orgStatus ON orgStatus.Id = org.OrganizationStatusId
-										WHERE member.PeopleId = @personID
+										WHERE member.PeopleId = @peopleID
 												AND org.CanSelfCheckin = 1
 												AND CAST( schedule.NextMeetingDate AS DATE ) = CAST( @date AS DATE )
 												AND member.Pending = 0
@@ -93,7 +144,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 										ORDER BY schedule.NextMeetingDate, org.OrganizationName";
 
 			using( SqlCommand cmd = new SqlCommand( qMembers, db ) ) {
-				SqlParameter personParameter = new SqlParameter( "personID", peopleID );
+				SqlParameter personParameter = new SqlParameter( "peopleID", peopleID );
 				SqlParameter campusParameter = new SqlParameter( "campus", campus );
 				SqlParameter dateParameter = new SqlParameter( "date", date );
 
@@ -137,7 +188,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 												INNER JOIN Organizations AS org ON org.OrganizationId = attend.OrganizationId
 												INNER JOIN lookup.OrganizationStatus AS orgStatus ON orgStatus.Id = org.OrganizationStatusId
 												INNER JOIN lookup.AttendType AS attendType ON attendType.Id = attend.AttendanceTypeId
-											WHERE attend.PeopleId = @personID
+											WHERE attend.PeopleId = @peopleID
 													AND org.CanSelfCheckin = 1
 													AND (org.AllowNonCampusCheckIn = 1 OR org.CampusId = @campus OR @campus IS NULL OR @campus = 0)
 													AND orgStatus.Active = 1
@@ -148,7 +199,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 											GROUP BY org.OrganizationId) AS visit
 										INNER JOIN Organizations AS org ON org.OrganizationId = visit.OrganizationId
 										LEFT JOIN (dbo.OrgMemMemTags AS tags INNER JOIN dbo.MemberTags AS room ON tags.MemberTagId = room.Id AND
-																																room.CheckIn = 1) ON tags.PeopleId = @personID AND org.OrganizationId = tags.OrgId
+																																room.CheckIn = 1) ON tags.PeopleId = @peopleID AND org.OrganizationId = tags.OrgId
 										LEFT JOIN dbo.OrgSchedule AS schedule ON schedule.OrganizationId = org.OrganizationId
 										LEFT JOIN (SELECT
 															meeting.OrganizationId,
@@ -158,14 +209,14 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 															attend.SubGroupName
 													  FROM dbo.Attend AS attend
 														  JOIN dbo.Meetings AS meeting ON meeting.MeetingId = attend.MeetingId
-													  WHERE attend.PeopleId = @personID
+													  WHERE attend.PeopleId = @peopleID
 															  AND attend.AttendanceFlag = 1) AS attend
 											ON attend.OrganizationId = org.OrganizationId AND attend.MeetingDate = schedule.NextMeetingDate
 									WHERE CAST( schedule.NextMeetingDate AS DATE ) = CAST( @date AS DATE )
 									ORDER BY date, name";
 
 			using( SqlCommand cmd = new SqlCommand( qVisits, db ) ) {
-				SqlParameter personParameter = new SqlParameter( "personID", peopleID );
+				SqlParameter personParameter = new SqlParameter( "peopleID", peopleID );
 				SqlParameter campusParameter = new SqlParameter( "campus", campus );
 				SqlParameter dateParameter = new SqlParameter( "date", date );
 
