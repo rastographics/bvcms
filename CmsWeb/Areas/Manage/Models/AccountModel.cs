@@ -106,11 +106,12 @@ namespace CmsWeb.Models
 
             if (checkOrgLeadersOnly && !Util2.OrgLeadersOnlyChecked)
             {
+                var db = DbUtil.Db;
                 DbUtil.LogActivity("iphone leadersonly check " + user.Username);
-                if (!Util2.OrgLeadersOnly && roleProvider.IsUserInRole(user.Username, "OrgLeadersOnly"))
+                if (!Util2.OrgLeadersOnly && roleProvider.IsUserInRole(user.Username, "OrgLeadersOnly", db))
                 {
                     Util2.OrgLeadersOnly = true;
-                    DbUtil.Db.SetOrgLeadersOnly();
+                    db.SetOrgLeadersOnly();
                     DbUtil.LogActivity("SetOrgLeadersOnly");
                 }
                 Util2.OrgLeadersOnlyChecked = true;
@@ -144,11 +145,12 @@ namespace CmsWeb.Models
 
             if (checkOrgLeadersOnly && !Util2.OrgLeadersOnlyChecked)
             {
+                var db = DbUtil.Db;
                 DbUtil.LogActivity("iphone leadersonly check " + user.Username);
-                if (!Util2.OrgLeadersOnly && roleProvider.IsUserInRole(user.Username, "OrgLeadersOnly"))
+                if (!Util2.OrgLeadersOnly && roleProvider.IsUserInRole(user.Username, "OrgLeadersOnly", db))
                 {
                     Util2.OrgLeadersOnly = true;
-                    DbUtil.Db.SetOrgLeadersOnly();
+                    db.SetOrgLeadersOnly();
                     DbUtil.LogActivity("SetOrgLeadersOnly");
                 }
                 Util2.OrgLeadersOnlyChecked = true;
@@ -249,7 +251,8 @@ namespace CmsWeb.Models
 
         public static UserValidationResult AuthenticateLogon(string userName, string password, string url)
         {
-            var userQuery = DbUtil.Db.Users.Where(uu =>
+            var db = DbUtil.Db;
+            var userQuery = db.Users.Where(uu =>
                 uu.Username == userName ||
                 uu.Person.EmailAddress == userName ||
                 uu.Person.EmailAddress2 == userName
@@ -288,12 +291,12 @@ namespace CmsWeb.Models
                         u.MustChangePassword = true;
                     }
                     u.IsLockedOut = false;
-                    DbUtil.Db.SubmitChanges();
+                    db.SubmitChanges();
                     user = u;
                     break;
                 }
 
-                if (password == DbUtil.Db.Setting("ImpersonatePassword", Guid.NewGuid().ToString()))
+                if (password == db.Setting("ImpersonatePassword", Guid.NewGuid().ToString()))
                 {
                     user = u;
                     impersonating = true;
@@ -303,7 +306,7 @@ namespace CmsWeb.Models
 
                 if (Membership.Provider.ValidateUser(u.Username, password))
                 {
-                    DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, u);
+                    db.Refresh(RefreshMode.OverwriteCurrentValues, u);
                     user = u;
                     break;
                 }

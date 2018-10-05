@@ -160,9 +160,9 @@ namespace CmsWeb.Areas.Finance.Controllers
             var fromDate = DateTime.Parse("1/1/1900");
             var toDate = DateTime.Parse("1/1/2099");
             var queryResult = from pledgeReports in DbUtil.Db.PledgeReport(fromDate, toDate, 0)
-                    join allowedFunds in DbUtil.Db.ContributionFunds.ScopedByRoleMembership() on pledgeReports.FundId equals allowedFunds.FundId
-                    orderby pledgeReports.FundId descending
-                    select pledgeReports;
+                              join allowedFunds in DbUtil.Db.ContributionFunds.ScopedByRoleMembership() on pledgeReports.FundId equals allowedFunds.FundId
+                              orderby pledgeReports.FundId descending
+                              select pledgeReports;
 
             return View(queryResult);
         }
@@ -274,7 +274,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         [HttpGet]
         public ActionResult TotalsByFundRange(bool? pledged)
         {
-            var model = new TotalsByFundRangeModel{ Pledged = pledged ?? false };
+            var model = new TotalsByFundRangeModel { Pledged = pledged ?? false };
             return View(model);
         }
 
@@ -321,9 +321,9 @@ namespace CmsWeb.Areas.Finance.Controllers
         {
             var query = DbUtil.Db.ViewManagedGivingLists.AsQueryable();
 
-            if(sortBy == "name")
+            if (sortBy == "name")
             {
-                if(string.IsNullOrEmpty(sortDir) || sortDir == "asc")
+                if (string.IsNullOrEmpty(sortDir) || sortDir == "asc")
                 {
                     query = query.OrderBy(mgl => mgl.Name2);
                 }
@@ -334,7 +334,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             }
             else
             {
-                if(string.IsNullOrEmpty(sortDir) || sortDir == "asc")
+                if (string.IsNullOrEmpty(sortDir) || sortDir == "asc")
                 {
                     query = query.OrderBy(mgl => mgl.NextDate);
                 }
@@ -364,8 +364,10 @@ namespace CmsWeb.Areas.Finance.Controllers
                 .ThenByDescending(vv => vv.TotalGiven).ToList();
             var count = q.Count;
 
-            if(count == 0)
+            if (count == 0)
+            {
                 return Message("No Pledges to Report");
+            }
 
             var cols = DbUtil.Db.Mapping.MappingSource.GetModel(typeof(CMSDataContext))
                 .GetMetaType(typeof(CmsData.View.PledgeFulfillment)).DataMembers;

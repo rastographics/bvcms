@@ -102,17 +102,22 @@ namespace CmsData
 		public IEnumerable<Person> GetDevelopers()
 		{
 			return GetRoleUsers("Developer").Select(u => u.Person);
-		}
+        }
 
-		public override bool IsUserInRole(string username, string rolename)
-		{
+        public bool IsUserInRole(string username, string rolename, CMSDataContext db)
+        {
 			username = Util.GetUserName(username);
-			var q = from ur in DbUtil.Db.UserRoles
+			var q = from ur in db.UserRoles
 					where rolename == ur.Role.RoleName
 					where username == ur.User.Username
 					select ur;
 			return q.Count() > 0;
-		}
+        }
+
+        public override bool IsUserInRole(string username, string rolename)
+        {
+            return IsUserInRole(username, rolename, DbUtil.Db);
+        }
 
 		public override void RemoveUsersFromRoles(string[] usernames, string[] rolenames)
 		{
