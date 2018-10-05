@@ -1,6 +1,6 @@
 ﻿DECLARE @RoleID INT
 DECLARE @RoleName VARCHAR(100)
-SET @RoleName = 'Task'
+SET @RoleName = 'Tasks'
 IF EXISTS(SELECT 1 FROM [Roles] WHERE RoleName like @RoleName )
 BEGIN
 	IF (SELECT COUNT(roleid) FROM [dbo].[Roles] WHERE RoleName like @RoleName) < 2
