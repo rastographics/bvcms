@@ -2437,22 +2437,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Pushpay\ApiClient.cs" />
-    <Compile Include="Pushpay\ApiModels\ErrorResponse.cs" />
-    <Compile Include="Pushpay\ApiModels\ErrorResultCode.cs" />
-    <Compile Include="Pushpay\ApiModels\Link.cs" />
-    <Compile Include="Pushpay\ApiModels\BaseResponse.cs" />
     <Compile Include="Pushpay\Entities\AccessToken.cs" />
-    <Compile Include="Pushpay\Entities\RequestDetails.cs" />
-    <Compile Include="Pushpay\Entities\ResponseDetails.cs" />
-    <Compile Include="Pushpay\Enums\MessageBroadcasterGroupTypes.cs" />
-    <Compile Include="Pushpay\Enums\RequestMethodTypes.cs" />
-    <Compile Include="Pushpay\Enums\ReturnTypes.cs" />
-    <Compile Include="Pushpay\Exceptions\ApiResponseException.cs" />
-    <Compile Include="Pushpay\Exceptions\PermissionDeniedException.cs" />
-    <Compile Include="Pushpay\Exceptions\UserException.cs" />
-    <Compile Include="Pushpay\Exceptions\UserExceptionCollection.cs" />
-    <Compile Include="Pushpay\PushpayConnection.cs" />
     <Compile Include="Resource1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -3241,6 +3226,8 @@
     <Folder Include="Areas\Public\Views\TestMobile\" />
     <Folder Include="Areas\Search\Views\Shared\" />
     <Folder Include="Areas\Setup\Views\Shared\" />
+    <Folder Include="Pushpay\Enums\" />
+    <Folder Include="Pushpay\Exceptions\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
