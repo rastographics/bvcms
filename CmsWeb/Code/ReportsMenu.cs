@@ -100,10 +100,15 @@ namespace CmsWeb.Code
             {
                 var link = e.Attribute("link")?.Value;
                 var roles = new List<string>();
+                var excludedRoles = new List<string>();
 
                 var aroles = e.Attribute("roles")?.Value;
                 if (aroles != null && aroles.HasValue())
                     roles.AddRange(aroles.Split(','));
+
+                var eroles = e.Attribute("excludedRoles")?.Value;
+                if (eroles != null && eroles.HasValue())
+                    excludedRoles.AddRange(eroles.Split(','));
 
                 var rroles = listroles.FirstOrDefault(vv => vv.Link == link)?.Role;
                 if (rroles != null && rroles.HasValue())
@@ -111,6 +116,10 @@ namespace CmsWeb.Code
 
                 if(roles.Count > 0)
                     if (!roles.Any(rr => userroles.Contains(rr)))
+                        continue;
+
+                if (excludedRoles.Count > 0)
+                    if (excludedRoles.Any(rr => userroles.Contains(rr)))
                         continue;
 
                 var tb = new TagBuilder("li");
