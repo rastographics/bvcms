@@ -164,6 +164,7 @@ namespace CmsWeb.Models
             {
                 Count = q.Sum(t => t.Count),
                 Total = q.Sum(t => t.Total),
+
                 model = this
             };
             return q;
@@ -187,7 +188,7 @@ namespace CmsWeb.Models
                 fundIds = authorizedFundIds.JoinInts(",");
             }
 
-            var list = (from r in DbUtil.Db.GetTotalContributionsRange(Dt1, Dt2, CampusId, NonTaxDeductible ? (bool?)null : false, IncUnclosedBundles, fundIds)
+            var list = (from r in DbUtil.Db.GetTotalContributionsRange(Dt1, Dt2, CampusId, NonTaxDeductible ? (bool?)true : false, IncUnclosedBundles, fundIds)
                         orderby r.Range
                         select r).ToList();
 

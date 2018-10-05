@@ -1281,6 +1281,7 @@
     <Content Include="Migrations\20180806_update_purge_person_sproc.sql" />
     <Content Include="Migrations\20180817_update_enrollment_history_func.sql" />
     <Content Include="Migrations\20180827_sms-number-group-system-flag.sql" />
+    <Content Include="Migrations\20181004_update_NonTaxDed_include_both_contributions.sql" />
     <Content Include="Migrations\20180919_add-sms-groups-deleted-flag.sql" />
     <Content Include="Migrations\20180831_add_fundmanager_role.sql" />
     <Content Include="Migrations\20180831_add-description-to-contribution-functions.sql" />
