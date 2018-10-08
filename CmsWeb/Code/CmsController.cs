@@ -100,12 +100,18 @@ namespace CmsWeb
                           (filterContext.RouteData.Values["Controller"].ToString() == "OrgMemberDialog" && filterContext.RouteData.Values["Action"].ToString() == "Drop"
                             && DbUtil.Db.Setting("UX-AllowMyDataUserLeaveOrg") && Util.UserPeopleId.ToString() == filterContext.RequestContext?.HttpContext?.Request?.Params["PeopleId"]);
 
+            var contr = filterContext.RouteData.Values["Controller"].ToString();
+            var act = filterContext.RouteData.Values["Action"].ToString();
+
             if (!User.Identity.IsAuthenticated)
             {
-                var s = "/Logon?ReturnUrl=" + HttpUtility.UrlEncode(Request.RawUrl);
-                if (Request.QueryString.Count > 0)
-                    s += "&" + Request.QueryString.ToString();
-                filterContext.Result = Redirect(s);
+                if (!(contr.ToUpper() == "PUSHPAY" && act.ToUpper() == "COMPLETE"))
+                { 
+                    var s = "/Logon?ReturnUrl=" + HttpUtility.UrlEncode(Request.RawUrl);
+                    if (Request.QueryString.Count > 0)
+                        s += "&" + Request.QueryString.ToString();
+                    filterContext.Result = Redirect(s);
+                }
             }
             else if (!NoCheckRole)
             {
@@ -117,8 +123,7 @@ namespace CmsWeb
             var disableHomePageForOrgLeaders = DbUtil.Db.Setting("UX-DisableHomePageForOrgLeaders");
             if(!disableHomePageForOrgLeaders)
                 disableHomePageForOrgLeaders = RoleChecker.HasSetting(SettingName.DisableHomePage, false);
-            var contr = filterContext.RouteData.Values["Controller"].ToString();
-            var act = filterContext.RouteData.Values["Action"].ToString();
+            
             var orgleaderonly = User.IsInRole("OrgLeadersOnly");
             if (contr == "Home" && act == "Index" &&
                 disableHomePageForOrgLeaders && orgleaderonly)
