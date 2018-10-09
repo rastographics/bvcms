@@ -10,6 +10,7 @@ using System.Net.Http.Headers;
 using CmsWeb.Pushpay.Entities;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
@@ -51,13 +52,18 @@ namespace CmsWeb.Areas.Setup.Controllers
                 redirectUrl = "https://" + DbUtil.Db.Host + "." + Configuration.Current.OrgBaseDomain + "/Pushpay/Save";
             }
             else {
-                redirectUrl = "https://" + Configuration.Current.TenantHostDev + "/Pushpay/Save";
+                redirectUrl = "http://" + Configuration.Current.TenantHostDev + "/Pushpay/Save";
             }
 
-            //Get code returned from Pushpay
-            AccessToken at = await AuthorizationCodeCallback();
-            
-            return Redirect(redirectUrl+"?_at=" + at.access_token + "&_rt=" + at.refresh_token );
+            //Received authorization code from authorization server
+            var authorizationCode = Request["code"];
+            if (authorizationCode != null)
+            {
+                //Get code returned from Pushpay
+                var at = await AuthorizationCodeCallback(authorizationCode);
+                return Redirect(redirectUrl + "?_at=" + at.access_token + "&_rt=" + at.refresh_token);
+            }
+            return Redirect("~/Home/Index");
         }
 
         [Route("~/Pushpay/Save")]
@@ -71,19 +77,31 @@ namespace CmsWeb.Areas.Setup.Controllers
 
             if (!dbContext.Settings.Any(s => s.Id == idAccessToken))
             {
-                var s = new Setting { Id = idAccessToken, SettingX = _at};
+                //Create access token
+                var s = new Setting { Id = idAccessToken, SettingX = _at };
                 dbContext.Settings.InsertOnSubmit(s);
                 dbContext.SubmitChanges();
                 dbContext.SetSetting(idAccessToken, _at);
             }
+            else { // Update access token
+                DbUtil.Db.SetSetting(idAccessToken, _at);
+                DbUtil.Db.SubmitChanges();
+                DbUtil.LogActivity($"Edit Setting {idAccessToken} to {_at}", userId: Util.UserId);
+            }
             if (!dbContext.Settings.Any(s => s.Id == idRefreshToken))
-            {
+            { //Create refresh token
                 var s = new Setting { Id = idRefreshToken, SettingX = _rt };
                 dbContext.Settings.InsertOnSubmit(s);
                 dbContext.SubmitChanges();
                 dbContext.SetSetting(idRefreshToken, _rt);
             }
-            
+            else
+            { // Update refresh token
+                DbUtil.Db.SetSetting(idRefreshToken, _rt);
+                DbUtil.Db.SubmitChanges();
+                DbUtil.LogActivity($"Edit Setting {idRefreshToken} to {_rt}", userId: Util.UserId);
+            }
+
             return RedirectToAction("Finish");
         }
 
@@ -91,10 +109,9 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult Finish()
         { return View();  }
 
-        public async Task<AccessToken> AuthorizationCodeCallback()
+        public async Task<AccessToken> AuthorizationCodeCallback(string _authCode)
         {            
-            // received authorization code from authorization server
-            var authorizationCode = Request["code"];
+            
                        
             // exchange authorization code at authorization server for an access and refresh token
             Dictionary<string, string> post = null;
@@ -103,7 +120,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                 { "client_id", Configuration.Current.PushpayClientID}
                 ,{"client_secret", Configuration.Current.PushpayClientSecret}
                 ,{"grant_type", "authorization_code"}
-                ,{"code", authorizationCode}
+                ,{"code", _authCode}
                 ,{"redirect_uri", Configuration.Current.TouchpointAuthServer}
             };
 
