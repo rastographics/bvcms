@@ -57,7 +57,7 @@ namespace CmsWeb.Areas.Setup.Controllers
 
             //Received authorization code from authorization server
             var authorizationCode = Request["code"];
-            if (authorizationCode != null)
+            if (authorizationCode != null && authorizationCode != "")
             {
                 //Get code returned from Pushpay
                 var at = await AuthorizationCodeCallback(authorizationCode);
