@@ -18,6 +18,12 @@
                   @Html.TextBox("name", Model.Name, new { @class = "form-control" })
                 </div>
               </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label for="ContentKeyWords" class="control-label">Content KeyWords</label>
+                @Html.TextBox("ContentKeyWords", ViewBag.ContentKeyWords as string, new { @class = "form-control" })
+              </div>
+            </div>
             </div>
           <div class="form-group">
             <nav class="navbar navbar-inverse" style="margin-bottom: 0;">
@@ -39,7 +45,8 @@
             }
             @Html.HiddenFor(m => m.Body)
           </div>
-          <a href="/Manage/Display/#tab_pythonScripts" class="btn btn-default">Cancel</a> <a href="/Display/ContentDelete/@Model.Id" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a>
+            <a href="/Manage/Display/#tab_pythonScripts" class="btn btn-default">Back to List</a>
+            <a href="/Display/ContentDelete/@Model.Id" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a>
           @if (User.IsInRole("Admin"))
           {
             <a href="#" class="btn btn-primary save">Save Python Script</a>

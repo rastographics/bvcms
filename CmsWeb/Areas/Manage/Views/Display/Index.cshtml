@@ -1,10 +1,12 @@
 ﻿@using CmsWeb.Models
 @using UtilityExtensions
 @model ContentModel
+
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Special Content";
     ViewBag.PageHeader = "Special Content";
+    var ContentKeywordFilter = Session["ContentKeywordFilter"] as string;
 
     var roleList = ContentModel.fetchRoles();
 }
@@ -16,19 +18,18 @@
         <ul class="nav nav-tabs" id="special-content-tabs">
             <li class="active"><a href="#htmlContent" aria-controls="htmlContent" data-toggle="tab"><i class="fa fa-file-code-o"></i>&nbsp;&nbsp;Html Content</a></li>
             <li><a href="#textContent" aria-controls="textContent" data-toggle="tab"><i class="fa fa-file-text"></i>&nbsp;&nbsp;Text Content</a></li>
+            @if (!ContentKeywordFilter.HasValue())
+            {
             <li><a href="#emailTemplates" aria-controls="emailTemplates" data-toggle="tab"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email Templates</a></li>
             <li><a href="#savedDrafts" aria-controls="savedDrafts" data-toggle="tab"><i class="fa fa-clipboard"></i>&nbsp;&nbsp;Saved Drafts</a></li>
+            }
             <li><a href="#sqlScripts" aria-controls="sqlScripts" data-toggle="tab"><i class="fa fa-database"></i>&nbsp;&nbsp;Sql Scripts</a></li>
             <li><a href="#pythonScripts" aria-controls="pythonScripts" data-toggle="tab"><i class="fa fa-code"></i>&nbsp;&nbsp;Python Scripts</a></li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane fade in active" id="htmlContent">
                 <div class="row hidden-xs">
-                    <div class="col-sm-12">
-                        <div class="pull-right">
-                            <a href="#" newtype="0" newmessage="Create New Html File" class="btn btn-success"><i class="fa fa-plus-circle"></i> New Html File</a>
-                        </div>
-                    </div>
+                    @SetHeaderRow("htmlContent")
                 </div>
                 <div class="row">
                     <div class="col-sm-12">
@@ -52,17 +53,15 @@
                                 </tbody>
                             </table>
                         </div>
-                        <a href="#" newtype="0" newmessage="Create New Html File" class="btn btn-success btn-block visible-xs-block"><i class="fa fa-plus-circle"></i> New Html File</a>
                     </div>
+                </div>
+                <div class="row visible-xs">
+                    @SetHeaderRow("htmlContent")
                 </div>
             </div>
             <div class="tab-pane fade" id="textContent">
                 <div class="row hidden-xs">
-                    <div class="col-sm-12">
-                        <div class="pull-right">
-                            <a href="#" newtype="1" newmessage="Create New Text File" class="btn btn-success"><i class="fa fa-plus-circle"></i> New Text File</a>
-                        </div>
-                    </div>
+                    @SetHeaderRow("textContent")
                 </div>
                 <div class="row">
                     <div class="col-sm-12">
@@ -86,134 +85,133 @@
                                 </tbody>
                             </table>
                         </div>
-                        <a href="#" newtype="1" newmessage="Create New Text File" class="btn btn-success visible-xs-block btn-block"><i class="fa fa-plus-circle"></i> New Text File</a>
                     </div>
+                </div>
+                <div class="row visible-xs">
+                    @SetHeaderRow("textContent")
                 </div>
             </div>
-            <div class="tab-pane fade" id="emailTemplates">
-                <div class="row hidden-xs">
-                    <div class="col-sm-12">
-                        <div class="pull-right">
-                            <a href="#" newtypewithrole="2" newmessage="Create New Email Template" class="btn btn-success"><i class="fa fa-plus-circle"></i> New Email Template</a>
+            @if (!ContentKeywordFilter.HasValue())
+            {
+                <div class="tab-pane fade" id="emailTemplates">
+                    <div class="row hidden-xs">
+                        <div class="col-sm-12">
+                            <div class="pull-right">
+                                <a href="#" newtypewithrole="2" newmessage="Create New Email Template" class="btn btn-success"><i class="fa fa-plus-circle"></i> New Email Template</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <br />
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="row">
-                            @foreach (var t in Model.fetchEmailTemplates())
-                            {
-                                var ro = roleList.FirstOrDefault(r => r.RoleId == t.RoleID);
-                                <div class="col-sm-6 col-md-4 col-lg-3" style="margin-top: 5px; margin-bottom: 5px;">
-                                    <div class="row">
-                                        <div class="col-xs-4">
-                                            <a href="/Display/ContentEdit/@t.Id">
-                                                <img src="/Image/@t.ThumbID" class="img-responsive img-thumbnail" />
-                                            </a>
-                                        </div>
-                                        <div class="col-xs-8">
-                                            <a href="/Display/ContentEdit/@t.Id"><strong>@t.Name</strong></a><br />
-                                            Limited to Role: @(ro != null ? ro.RoleName : "missing role!")
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                            <a href="#" newtypewithrole="2" newmessage="Create New Email Template" class="btn btn-success visible-xs-block btn-block"><i class="fa fa-plus-circle"></i> New Email Template</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="savedDrafts">
-                <div class="row hidden-xs">
-                    <div class="col-sm-12">
-                        <div class="pull-right">
-                            <button type="button" class="btn btn-danger draftDelete"><i class="fa fa-trash"></i> Delete Selected</button>
-                        </div>
-                    </div>
-                </div>
-                <form id="savedDraftsForm" action="/Display/ContentDeleteDrafts">
+                    <br/>
                     <div class="row">
                         <div class="col-sm-12">
-                            <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <thead>
+                            <div class="row">
+                                @foreach (var t in Model.fetchEmailTemplates())
+                                {
+                                    var ro = roleList.FirstOrDefault(r => r.RoleId == t.RoleID);
+                                    <div class="col-sm-6 col-md-4 col-lg-3" style="margin-top: 5px; margin-bottom: 5px;">
+                                        <div class="row">
+                                            <div class="col-xs-4">
+                                                <a href="/Display/ContentEdit/@t.Id">
+                                                    <img src="/Image/@t.ThumbID" class="img-responsive img-thumbnail"/>
+                                                </a>
+                                            </div>
+                                            <div class="col-xs-8">
+                                                <a href="/Display/ContentEdit/@t.Id"><strong>@t.Name</strong></a><br/>
+                                                Limited to Role: @(ro != null ? ro.RoleName : "missing role!")
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                <a href="#" newtypewithrole="2" newmessage="Create New Email Template" class="btn btn-success visible-xs-block btn-block"><i class="fa fa-plus-circle"></i> New Email Template</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="savedDrafts">
+                    <div class="row hidden-xs">
+                        <div class="col-sm-12">
+                            <div class="pull-right">
+                                <button type="button" class="btn btn-danger draftDelete"><i class="fa fa-trash"></i> Delete Selected</button>
+                            </div>
+                        </div>
+                    </div>
+                    <form id="savedDraftsForm" action="/Display/ContentDeleteDrafts">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
                                         <tr>
-                                            <th style="width: 5px;"><input type="checkbox" id="draftAll" value="all" /></th>
+                                            <th style="width: 5px;"><input type="checkbox" id="draftAll" value="all"/></th>
                                             <th>Name</th>
                                             <th>Owner</th>
                                             <th>Role</th>
                                             <th>Created Date</th>
                                         </tr>
-                                    </thead>
-                                    @foreach (var item in Model.fetchSavedDrafts())
-                                    {
-                                        <tr>
-                                            <td style="width: 5px;">
-                                                <input draft="yes" type="checkbox" name="draftID" value="@item.id" />
-                                            </td>
-                                            <td>
-                                                @Helper.AnchorLink(item.name.HasValue() ? item.name : "notnamed", "/Display/ContentEdit/" + item.id)
-                                            </td>
-                                            <td>
-                                                @item.owner
-                                            </td>
-                                            <td>
-                                                @(item.roleID == 0 ? "Everyone" : item.role)
-                                            </td>
-                                            <td>
-                                                @item.created.FormatDate()
-                                            </td>
-                                        </tr>
-                                    }
-                                </table>
+                                        </thead>
+                                        @foreach (var item in Model.fetchSavedDrafts())
+                                        {
+                                            <tr>
+                                                <td style="width: 5px;">
+                                                    <input draft="yes" type="checkbox" name="draftID" value="@item.id"/>
+                                                </td>
+                                                <td>
+                                                    @Helper.AnchorLink(item.name.HasValue() ? item.name : "notnamed", "/Display/ContentEdit/" + item.id)
+                                                </td>
+                                                <td>
+                                                    @item.owner
+                                                </td>
+                                                <td>
+                                                    @(item.roleID == 0 ? "Everyone" : item.role)
+                                                </td>
+                                                <td>
+                                                    @item.created.FormatDate()
+                                                </td>
+                                            </tr>
+                                        }
+                                    </table>
+                                </div>
+                                <button type="button" class="btn btn-danger visible-xs-block btn-block draftDelete"><i class="fa fa-trash"></i> Delete Selected</button>
                             </div>
-                            <button type="button" class="btn btn-danger visible-xs-block btn-block draftDelete"><i class="fa fa-trash"></i> Delete Selected</button>
                         </div>
-                    </div>
-                </form>
-            </div>
+                    </form>
+                </div>
+            }
             <div class="tab-pane fade" id="sqlScripts">
                 <div class="row hidden-xs">
-                    <div class="col-sm-12">
-                        <div class="pull-right">
-                            <a href="#" newtype="4" newmessage="Create New Sql Script File" class="btn btn-success"><i class="fa fa-plus-circle"></i> New Sql Script File</a>
-                        </div>
-                    </div>
+                        @SetHeaderRow("sqlScripts")
                 </div>
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="table-responsive">
                             <table class="table table-striped">
                                 <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                    </tr>
+                                <tr>
+                                    <th>Name</th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var item in Model.fetchSqlScriptFiles())
+                                @foreach (var item in Model.fetchSqlScriptFiles())
+                                {
+                                    if (!string.IsNullOrWhiteSpace(item.Name))
                                     {
-                                        if (!string.IsNullOrWhiteSpace(item.Name))
-                                        {
-                                            <tr>
-                                                <td>@Helper.AnchorLink(item.Name, "/Display/ContentEdit/" + item.Id)</td>
-                                            </tr>
-                                        }
+                                        <tr>
+                                            <td>@Helper.AnchorLink(item.Name, "/Display/ContentEdit/" + item.Id)</td>
+                                        </tr>
                                     }
+                                }
                                 </tbody>
                             </table>
                         </div>
-                        <a href="#" newtype="4" newmessage="Create New Sql Script File" class="btn btn-success visible-xs-block btn-block"><i class="fa fa-plus-circle"></i> New Sql Script File</a>
                     </div>
+                </div>
+                <div class="row visible-xs">
+                    @SetHeaderRow("sqlScripts")
                 </div>
             </div>
             <div class="tab-pane fade" id="pythonScripts">
                 <div class="row hidden-xs">
-                    <div class="col-sm-12">
-                        <div class="pull-right">
-                            <a href="#" newtype="5" newmessage="Create New Python Script File" class="btn btn-success"><i class="fa fa-plus-circle"></i> New Python Script File</a>
-                        </div>
-                    </div>
+                    @SetHeaderRow("pythonScripts")
                 </div>
                 <div class="row">
                     <div class="col-sm-12">
@@ -237,8 +235,10 @@
                                 </tbody>
                             </table>
                         </div>
-                        <a href="#" newtype="5" newmessage="Create New Python Script File" class="btn btn-success visible-xs-block btn-block"><i class="fa fa-plus-circle"></i> New Python Script File</a>
                     </div>
+                </div>
+                <div class="row visible-xs">
+                    @SetHeaderRow("pythonScripts")
                 </div>
             </div>
         </div>
@@ -302,6 +302,44 @@
         </div>
     </div>
 </div>
+@helper SetHeaderRow(string tab)
+{
+    var text = "";
+    var type = 0;
+    switch (tab)
+    {
+        case "htmlContent":
+            text = "Html";
+            type = 0;
+            break;
+        case "textContent":
+            text = "Text";
+            type = 1;
+            break;
+        case "sqlScripts":
+            text = "SQL Script";
+            type = 4;
+            break;
+        case "pythonScripts":
+            text = "Python Script";
+            type = 5;
+            break;
+    }
+    var keywords = Model.KeywordFilters();
+    <div class="col-sm-12">
+        @if (keywords.Count > 1)
+        {
+        <form method="post" action="/Display/SetContentKeywordFilter" style="margin-right: 2em; display: inline">
+            @Html.Hidden("tab", tab)
+            Keyword Filter: @Html.DropDownList("keywordfilter", keywords)
+            <button type="submit">Set</button>
+        </form>
+        }
+        <div class="pull-right" style="display: inline-block">
+            <span class="pull-right"><a href="#" newtype="@type" newmessage="Create New @text File" class="btn btn-success"><i class="fa fa-plus-circle"></i> New @text File</a></span>
+        </div>
+    </div>
+}
 @section scripts
 {
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
@@ -382,10 +420,10 @@
                     confirmButtonText: "Yes, delete draft(s)!",
                     closeOnConfirm: true
                 },
-                function () {
-                    $.block();
-                    $("#savedDraftsForm").submit();
-                });
+                    function () {
+                        $.block();
+                        $("#savedDraftsForm").submit();
+                    });
             });
 
             $("#draftAll").change(function () {
