@@ -15,7 +15,7 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.Setup.Controllers
 {
     [RouteArea("Setup", AreaPrefix = "Pushpay")]
-    public class PushpayController : CmsStaffController
+    public class PushpayController : Controller
     {        
         
         /// <summary>
@@ -73,7 +73,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             var dbContext = DbUtil.Db;
             var m = dbContext.Settings.AsQueryable();
             if (!Regex.IsMatch(idAccessToken, @"\A[A-z0-9-]*\z"))
-                return Message("Invalid characters in setting id");
+                return View("Invalid characters in setting id");
 
             if (!dbContext.Settings.Any(s => s.Id == idAccessToken))
             {
