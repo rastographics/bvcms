@@ -189,6 +189,8 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet]
         public ActionResult Decisions(int? campus, string dt1, string dt2)
         {
+            if (Util2.OrgLeadersOnly)
+                return Redirect("/Home");
             DateTime today = Util.Now.Date;
             var d1 = dt1.ToDate();
             var d2 = dt2.ToDate();
@@ -203,6 +205,8 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet, Route("DecisionsToQuery/{command}/{key}")]
         public ActionResult DecisionsToQuery(string command, string key, int? campus, string dt1, string dt2)
         {
+            if (Util2.OrgLeadersOnly)
+                return Redirect("/Home");
             var d1 = dt1.ToDate();
             var d2 = dt2.ToDate();
             var r = new DecisionSummaryModel(d1, d2) { Campus = campus }.ConvertToSearch(command, key);
@@ -593,9 +597,12 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new VisitsAbsentsResult2(id.Value, prefix);
         }
 
-        [HttpGet]
+        [HttpGet]       
         public ActionResult VitalStats()
         {
+            if (Util2.OrgLeadersOnly)
+                return Redirect("/Home");
+      
             var script = DbUtil.Db.ContentOfTypePythonScript("VitalStats");
             if (!script.HasValue())
                 script = System.IO.File.ReadAllText(Server.MapPath("/Content/VitalStats.py"));
@@ -657,6 +664,8 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet]
         public ActionResult WeeklyDecisions(int? campus, string sunday)
         {
+            if (Util2.OrgLeadersOnly)
+                return Redirect("/Home");
             var sun = sunday.ToDate();
             var m = new WeeklyDecisionsModel(sun) { Campus = campus };
             return View(m);

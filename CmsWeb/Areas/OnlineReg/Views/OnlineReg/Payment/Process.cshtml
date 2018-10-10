@@ -102,9 +102,11 @@
       @if (Model.NoCreditCardsAllowed == false)
       {
           <div class="Card">
-            @Html.EditorFor(m => m.CreditCard, new { autocomplete = Model.AutocompleteOnOff, Label = debitcredit })
-            @Html.EditorFor(m => m.Expires, new { classes = "narrow" })
-            @Html.EditorFor(m => m.CVV, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
+              @Html.EditorFor(m => m.CreditCard, new { autocomplete = Model.AutocompleteOnOff, Label = debitcredit })
+              @Html.EditorFor(m => m.Expires, new { classes = "narrow" })
+              @Html.EditorFor(m => m.CVV, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
+              <input type="hidden" id="hdnCreditCardOnFile" data-value="@Model.CreditCard" />
+              <input type="hidden" id="hdnExpiresOnFile" data-value="@Model.Expires" />
           </div>
       }
       @if (Model.NoEChecksAllowed == false)
@@ -120,7 +122,7 @@
         <div>
           @if (Model.IsLoggedIn == true && !VaultDisabled)
           {
-              <span style="margin-right: 2em;">@Html.CheckBoxFor(m => m.SavePayInfo) Save Payment Information</span>
+              <span id="savePayArea" style="margin-right: 2em;">@Html.CheckBoxFor(m => m.SavePayInfo) Save Payment Information</span>
           }
           @Helper.OnlineRegSubmitButton("Make Payment", onlyoneallowed: true, style: "btn-primary min-width15em")
         </div>
