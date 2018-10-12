@@ -1285,6 +1285,7 @@
     <Content Include="Migrations\20180919_add-sms-groups-deleted-flag.sql" />
     <Content Include="Migrations\20180831_add_fundmanager_role.sql" />
     <Content Include="Migrations\20180831_add-description-to-contribution-functions.sql" />
+    <Content Include="Migrations\20181011_update_spouseId_function.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
