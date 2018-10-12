@@ -42,9 +42,9 @@ namespace CmsWeb.Common
             get { return GetString("OAuth2AuthorizeEndpoint"); }
         }
 
-        public string CMSBaseRedirect
+        public string TouchpointAuthServer
         {
-            get { return GetString("CMSBaseRedirect"); }
+            get { return GetString("TouchpointAuthServer"); }
         }
 
         public string OrgBaseDomain
@@ -52,9 +52,14 @@ namespace CmsWeb.Common
             get { return GetString("OrgBaseDomain"); }
         }
 
-        public string OrgBaseRedirect
+        public string TenantHostDev
         {
-            get { return GetString("OrgBaseRedirect"); }
+            get { return GetString("TenantHostDev"); }
+        }
+
+        public string PushpayScope
+        {
+            get { return GetString("PushpayScope"); }
         }
 
         /// <summary>
