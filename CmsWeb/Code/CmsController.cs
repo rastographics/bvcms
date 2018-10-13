@@ -115,7 +115,7 @@ namespace CmsWeb
             }
 
             var disableHomePageForOrgLeaders = DbUtil.Db.Setting("UX-DisableHomePageForOrgLeaders");
-            if(!disableHomePageForOrgLeaders)
+            if (!disableHomePageForOrgLeaders)
                 disableHomePageForOrgLeaders = RoleChecker.HasSetting(SettingName.DisableHomePage, false);
             var contr = filterContext.RouteData.Values["Controller"].ToString();
             var act = filterContext.RouteData.Values["Action"].ToString();

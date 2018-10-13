@@ -23,6 +23,7 @@
   </style>
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
   @ViewExtensions2.jQuery()
+  @Fingerprint.Script("/Content/touchpoint/js/polyfills.urlSearchParams.js");
   @Fingerprint.Script("/Content/touchpoint/js/sgmap.js")
   @Html.Raw(Html.Json("markers", Model.Locations()))
 </head>
