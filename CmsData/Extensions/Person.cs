@@ -1504,10 +1504,10 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 field = "blank";
             }
 
-field = field.Trim();
+            field = field.Trim();
 
-var ev =
-                PeopleExtras.AsEnumerable().FirstOrDefault(ee => ee.Field == field);
+            var ev = PeopleExtras.AsEnumerable().FirstOrDefault(ee => ee.Field == field);
+            
             if (ev == null)
             {
                 ev = new PeopleExtra
@@ -2283,6 +2283,21 @@ var ev =
             var oldf = this.FamilyId;
             f.People.Add(this);
             db.Families.InsertOnSubmit(f);
+            db.SubmitChanges();
+        }
+
+        public void PromoteToHeadOfHousehold(CMSDataContext db)
+        {
+            var churchHasEnabledFeature = DbUtil.Db.GetSetting("CanOverrideHeadOfHousehold", "false");
+
+            if (!string.Equals(churchHasEnabledFeature, "true", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            Family.HeadOfHousehold = this;
+            Family.HeadOfHouseholdSpouse = db.LoadPersonById(SpouseId ?? 0);
+
             db.SubmitChanges();
         }
 
