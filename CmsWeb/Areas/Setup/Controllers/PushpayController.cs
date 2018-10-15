@@ -48,8 +48,10 @@ namespace CmsWeb.Areas.Setup.Controllers
         public async Task<ActionResult> Complete()
         {
             string redirectUrl;
-            if (!Configuration.Current.IsDeveloperMode) {
-                redirectUrl = "https://" + DbUtil.Db.Host + "." + Configuration.Current.OrgBaseDomain + "/Pushpay/Save";
+            var tenantHost = Request["state"];
+            if (!Configuration.Current.IsDeveloperMode)
+            {
+                redirectUrl = "https://" + tenantHost + "." + Configuration.Current.OrgBaseDomain + "/Pushpay/Save";
             }
             else {
                 redirectUrl = "http://" + Configuration.Current.TenantHostDev + "/Pushpay/Save";
