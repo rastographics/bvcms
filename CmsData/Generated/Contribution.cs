@@ -56,7 +56,7 @@ namespace CmsData
 		
 		private int? _TranId;
 		
-		private int? _Source;
+		private int? _Origin;
 		
 		private int? _CampusId;
 		
@@ -64,19 +64,21 @@ namespace CmsData
 		
 		private string _MetaInfo;
 		
+		private int _Source;
+		
    		
-   		private EntitySet< BundleDetail> _BundleDetails;
+   		private EntitySet<BundleDetail> _BundleDetails;
 		
     	
-		private EntityRef< ContributionFund> _ContributionFund;
+		private EntityRef<ContributionFund> _ContributionFund;
 		
-		private EntityRef< ContributionStatus> _ContributionStatus;
+		private EntityRef<ContributionStatus> _ContributionStatus;
 		
-		private EntityRef< ContributionType> _ContributionType;
+		private EntityRef<ContributionType> _ContributionType;
 		
-		private EntityRef< ExtraDatum> _ExtraDatum;
+		private EntityRef<ExtraDatum> _ExtraDatum;
 		
-		private EntityRef< Person> _Person;
+		private EntityRef<Person> _Person;
 		
 	#endregion
 	
@@ -142,8 +144,8 @@ namespace CmsData
 		partial void OnTranIdChanging(int? value);
 		partial void OnTranIdChanged();
 		
-		partial void OnSourceChanging(int? value);
-		partial void OnSourceChanged();
+		partial void OnOriginChanging(int? value);
+		partial void OnOriginChanged();
 		
 		partial void OnCampusIdChanging(int? value);
 		partial void OnCampusIdChanged();
@@ -154,22 +156,25 @@ namespace CmsData
 		partial void OnMetaInfoChanging(string value);
 		partial void OnMetaInfoChanged();
 		
+		partial void OnSourceChanging(int value);
+		partial void OnSourceChanged();
+		
     #endregion
 		public Contribution()
 		{
 			
-			this._BundleDetails = new EntitySet< BundleDetail>(new Action< BundleDetail>(this.attach_BundleDetails), new Action< BundleDetail>(this.detach_BundleDetails)); 
+			this._BundleDetails = new EntitySet<BundleDetail>(new Action< BundleDetail>(this.attach_BundleDetails), new Action< BundleDetail>(this.detach_BundleDetails)); 
 			
 			
-			this._ContributionFund = default(EntityRef< ContributionFund>); 
+			this._ContributionFund = default(EntityRef<ContributionFund>); 
 			
-			this._ContributionStatus = default(EntityRef< ContributionStatus>); 
+			this._ContributionStatus = default(EntityRef<ContributionStatus>); 
 			
-			this._ContributionType = default(EntityRef< ContributionType>); 
+			this._ContributionType = default(EntityRef<ContributionType>); 
 			
-			this._ExtraDatum = default(EntityRef< ExtraDatum>); 
+			this._ExtraDatum = default(EntityRef<ExtraDatum>); 
 			
-			this._Person = default(EntityRef< Person>); 
+			this._Person = default(EntityRef<Person>); 
 			
 			OnCreated();
 		}
@@ -615,21 +620,21 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="Source", UpdateCheck=UpdateCheck.Never, Storage="_Source", DbType="int")]
-		public int? Source
+		[Column(Name="Origin", UpdateCheck=UpdateCheck.Never, Storage="_Origin", DbType="int")]
+		public int? Origin
 		{
-			get { return this._Source; }
+			get { return this._Origin; }
 
 			set
 			{
-				if (this._Source != value)
+				if (this._Origin != value)
 				{
 				
-                    this.OnSourceChanging(value);
+                    this.OnOriginChanging(value);
 					this.SendPropertyChanging();
-					this._Source = value;
-					this.SendPropertyChanged("Source");
-					this.OnSourceChanged();
+					this._Origin = value;
+					this.SendPropertyChanged("Origin");
+					this.OnOriginChanged();
 				}
 
 			}
@@ -703,12 +708,34 @@ namespace CmsData
 		}
 
 		
+		[Column(Name="Source", UpdateCheck=UpdateCheck.Never, Storage="_Source", DbType="int NOT NULL")]
+		public int Source
+		{
+			get { return this._Source; }
+
+			set
+			{
+				if (this._Source != value)
+				{
+				
+                    this.OnSourceChanging(value);
+					this.SendPropertyChanging();
+					this._Source = value;
+					this.SendPropertyChanged("Source");
+					this.OnSourceChanged();
+				}
+
+			}
+
+		}
+
+		
     #endregion
         
     #region Foreign Key Tables
    		
    		[Association(Name="BUNDLE_DETAIL_CONTR_FK", Storage="_BundleDetails", OtherKey="ContributionId")]
-   		public EntitySet< BundleDetail> BundleDetails
+   		public EntitySet<BundleDetail> BundleDetails
    		{
    		    get { return this._BundleDetails; }
 
