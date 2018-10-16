@@ -264,10 +264,6 @@ namespace CmsData.Codes
     }
     public class ContributionOriginCode
     {
-        public const int Mobile = 1;
-    }
-    public class ContributionSourceCode
-    {
         public const int Default = 0;
         public const int PushPay = 1;
     }
