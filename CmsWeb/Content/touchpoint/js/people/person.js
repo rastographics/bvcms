@@ -64,6 +64,18 @@
         });
     });
 
+    $('body').on('click', '#promoteToHeadOfHousehold', function (ev) {
+        ev.preventDefault();
+        var href = $(this).attr("href");
+        bootbox.confirm("Are you sure you want to make this person the head of the household?", function (result) {
+            if (result === true) {
+                $.post(href, {}, function (ret) {
+                    window.location = ret;
+                });
+            }
+        });
+    });
+
     $('body').on('click', '#deletePerson', function (ev) {
         ev.preventDefault();
         var href = $(this).attr("href");

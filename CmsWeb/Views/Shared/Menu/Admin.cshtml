@@ -47,7 +47,7 @@
                         <li class="dropdown-header dropdown-sub-header">Reports</li>
                         <li>
                             <a href='/FinanceReports/DonorTotalSummary' class="dialog-options" data-target="/FinanceReports/DonorTotalSummaryOptions">Donor Total Summary Export</a>
-                            <a href='/FinanceReports/ChaiDonorsReportDownload' class="dialog-options" data-target="/FinanceReports/ChaiDonorsReport">CHAI Donor Summary Export</a>                              
+                            <a href='/FinanceReports/ChaiDonorsReportDownload' class="dialog-options" data-target="/FinanceReports/ChaiDonorsReport">CHAI Donor Summary Export</a>
                         </li>
                         @Helper.LiAnchorLink("Pledge Report", "/FinanceReports/PledgeReport/")
                         <li class="dropdown-header dropdown-sub-header">Range Reports</li>
@@ -150,79 +150,81 @@
     </li>
 }
 @helper AdminList1(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer)
+{
+    if (admin)
     {
-        if (admin)
+        <li class="dropdown-header dropdown-sub-header">Batch Actions</li>
+        @Helper.LiAnchorLink("Find Duplicates", "/Duplicates/Find")
+        @Helper.LiAnchorLink("Tag People Ids", "/Batch/TagPeopleIds")
+        @Helper.LiAnchorLink("Update Fields from a Tag/Query", "/Batch/UpdateFields")
+        @Helper.LiAnchorLink("Update Organizations", "/Batch/UpdateOrg")
+        @Helper.LiAnchorLink("Update Status Flags", "/Batch/UpdateStatusFlags")
+        if (User.IsInRole("developer"))
         {
-            <li class="dropdown-header dropdown-sub-header">Batch Actions</li>
-            @Helper.LiAnchorLink("Find Duplicates", "/Duplicates/Find")
-            @Helper.LiAnchorLink("Tag People Ids", "/Batch/TagPeopleIds")
-            @Helper.LiAnchorLink("Update Fields from a Tag/Query", "/Batch/UpdateFields")
-            @Helper.LiAnchorLink("Update Organizations", "/Batch/UpdateOrg")
-            @Helper.LiAnchorLink("Update Status Flags", "/Batch/UpdateStatusFlags")
             @Helper.LiAnchorLink("Upload Addresses", "/Batch/UploadAddresses")
-            if (User.IsInRole("developer"))
-            {
-                <li>
-                    <a href="/ValidateAddress" class="longrunop">Validate Address for a Tag/Query</a>
-                </li>
-                <li>
-                    <a href="/Batch/OtherDeveloperActions">Other Developer Actions</a>
-                </li>
-            }
+            <li>
+                <a href="/ValidateAddress" class="longrunop">Validate Address for a Tag/Query</a>
+            </li>
+            <li>
+                <a href="/Batch/OtherDeveloperActions">Other Developer Actions</a>
+            </li>
         }
-        if (admin || finance || design)
-        {
-            <li class="dropdown-header dropdown-sub-header">Setup</li>
-        }
-        @Helper.LiAnchorLink("Lookup Codes", "/Lookups/", admin || finance)
-        @Helper.LiAnchorLink("Promotion", "/PromotionSetup/", admin)
-        @Helper.LiAnchorLink("Settings", "/Settings/", admin)
-        @Helper.LiAnchorLink("Special Content", "/Display/", admin || design)
-        @Helper.LiAnchorLink("Twilio", "/Twilio/", admin)
-        @Helper.LiAnchorLink("Zip Codes", "/MetroZips/", admin)
-        if (admin)
-        {
-            <li class="dropdown-header dropdown-sub-header">Reports</li>
-        }
-        @Helper.LiAnchorLink("Duplicates Find Result", "/Duplicates", admin)
-        @Helper.LiAnchorLink("Registration History", "/RegistrationSearch", admin)
-        @Helper.LiAnchorLink("Registration Summary", "/Reports/RegistrationSummary?days=90", admin)
+    }
+    if (admin || finance || design)
+    {
+        <li class="dropdown-header dropdown-sub-header">Setup</li>
+    }
+    @Helper.LiAnchorLink("Lookup Codes", "/Lookups/", admin || finance)
+    @Helper.LiAnchorLink("Promotion", "/PromotionSetup/", admin)
+    @Helper.LiAnchorLink("Pushpay", "/Pushpay/", admin)
+    @Helper.LiAnchorLink("Settings", "/Settings/", admin)
+    @Helper.LiAnchorLink("Special Content", "/Display/", admin || design)
+    @Helper.LiAnchorLink("Twilio", "/Twilio/", admin)
+    @Helper.LiAnchorLink("Zip Codes", "/MetroZips/", admin)
+
+    if (admin)
+    {
+        <li class="dropdown-header dropdown-sub-header">Reports</li>
+    }
+    @Helper.LiAnchorLink("Duplicates Find Result", "/Duplicates", admin)
+    @Helper.LiAnchorLink("Registration History", "/RegistrationSearch", admin)
+    @Helper.LiAnchorLink("Registration Summary", "/Reports/RegistrationSummary?days=90", admin)
 }
 
 @helper AdminList2(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer, bool manageResources, bool sendsms, bool financedataentry)
+{
+    if (admin)
     {
-        if (admin)
-        {
-            <li class="dropdown-header dropdown-sub-header">Organizations</li>
-            @Helper.LiAnchorLink("Divisions", "/Divisions/")
-            @Helper.LiAnchorLink("Programs", "/Programs/")
-            @Helper.LiAnchorLink("Promotion", "/Promotion/")
-        }
-        if (admin || manageemails || managetrans || finance || sendsms)
-        {
-            <li class="dropdown-header dropdown-sub-header">Communication</li>
-            @Helper.LiAnchorLink("Emails", "/Emails/", admin || manageemails || finance)
-            @Helper.LiAnchorLink("SMS Messages", "/SMS/List/", admin || sendsms)
-            @Helper.LiAnchorLink("Transactions", "/Transactions/", admin || managetrans || finance)
-            @Helper.LiAnchorLink("User Email Delegation", "/UsersCanEmailFor/", admin || manageemails)
-        }
-        if (manageResources && DbUtil.Db.Setting("Resources-Enabled"))
-        {
-            <li class="dropdown-header dropdown-sub-header">Resources</li>
-            @Helper.LiAnchorLink("Resource Types", "/ResourceTypes/")
-            @Helper.LiAnchorLink("Resource Categories", "/ResourceCategories/")
-            @Helper.LiAnchorLink("Resources", "/Resources/")
-        }
-        if (admin || edit)
-        {
-            <li class="dropdown-header dropdown-sub-header">Misc</li>
-            @Helper.LiAnchorLink("Activity Log", "/LastActivity/", admin)
-            @Helper.LiAnchorLink("Checkin Activity", "/CheckinTimes/")
-            @Helper.LiAnchorLink("Checkin Labels", "/CheckinLabels", admin)
-            @Helper.LiAnchorLink("Users", "/Users/", admin)
-        }
-        if (financedataentry)
-        {
-            @Helper.LiAnchorLink("Bundles", "/Bundles/")
-        }
+        <li class="dropdown-header dropdown-sub-header">Organizations</li>
+        @Helper.LiAnchorLink("Divisions", "/Divisions/")
+        @Helper.LiAnchorLink("Programs", "/Programs/")
+        @Helper.LiAnchorLink("Promotion", "/Promotion/")
+    }
+    if (admin || manageemails || managetrans || finance || sendsms)
+    {
+        <li class="dropdown-header dropdown-sub-header">Communication</li>
+        @Helper.LiAnchorLink("Emails", "/Emails/", admin || manageemails || finance)
+        @Helper.LiAnchorLink("SMS Messages", "/SMS/List/", admin || sendsms)
+        @Helper.LiAnchorLink("Transactions", "/Transactions/", admin || managetrans || finance)
+        @Helper.LiAnchorLink("User Email Delegation", "/UsersCanEmailFor/", admin || manageemails)
+    }
+    if (manageResources && DbUtil.Db.Setting("Resources-Enabled"))
+    {
+        <li class="dropdown-header dropdown-sub-header">Resources</li>
+        @Helper.LiAnchorLink("Resource Types", "/ResourceTypes/")
+        @Helper.LiAnchorLink("Resource Categories", "/ResourceCategories/")
+        @Helper.LiAnchorLink("Resources", "/Resources/")
+    }
+    if (admin || edit)
+    {
+        <li class="dropdown-header dropdown-sub-header">Misc</li>
+        @Helper.LiAnchorLink("Activity Log", "/LastActivity/", admin)
+        @Helper.LiAnchorLink("Checkin Activity", "/CheckinTimes/")
+        @Helper.LiAnchorLink("Checkin Labels", "/CheckinLabels", admin)
+        @Helper.LiAnchorLink("Users", "/Users/", admin)
+    }
+    if (financedataentry)
+    {
+        @Helper.LiAnchorLink("Bundles", "/Bundles/")
+    }
 }

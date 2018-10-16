@@ -1272,6 +1272,7 @@
       <SubType>Designer</SubType>
     </Resource>
     <Content Include="App_Readme\Elmah.txt" />
+    <Content Include="Migrations\20180924_Remove_Custom_Task_Role.sql" />
     <Content Include="Migrations\20180719_send-attendance-link.sql" />
     <Content Include="Migrations\20180720_StoredProcedure_CHAIDonationsReport2.sql" />
     <Content Include="Migrations\20180720_StoredProcedure_GetDepositDateTotalsUsingAuthorizedFunds.sql" />
@@ -1281,9 +1282,11 @@
     <Content Include="Migrations\20180817_update_enrollment_history_func.sql" />
     <Content Include="Migrations\20180827_sms-number-group-system-flag.sql" />
     <Content Include="Migrations\20181011_add_contribution_origin_column.sql" />
+    <Content Include="Migrations\20181004_update_NonTaxDed_include_both_contributions.sql" />
     <Content Include="Migrations\20180919_add-sms-groups-deleted-flag.sql" />
     <Content Include="Migrations\20180831_add_fundmanager_role.sql" />
     <Content Include="Migrations\20180831_add-description-to-contribution-functions.sql" />
+    <Content Include="Migrations\20181011_update_spouseId_function.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

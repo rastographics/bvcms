@@ -1,17 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Web.Mvc;
 using CmsData;
 using CmsData.API;
 using CmsData.Codes;
 using CmsData.View;
 using CmsWeb.Code;
-using UtilityExtensions;
-using System.Text;
 using Dapper;
 using MoreLinq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Web.Mvc;
+using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
@@ -37,7 +36,10 @@ namespace CmsWeb.Models
             var today = Util.Now.Date;
             var first = new DateTime(today.Year, today.Month, 1);
             if (today.Day < 8)
+            {
                 first = first.AddMonths(-1);
+            }
+
             Dt1 = first;
             Dt2 = first.AddMonths(1).AddDays(-1);
             Online = 2;
@@ -45,7 +47,7 @@ namespace CmsWeb.Models
 
         public FundTotalInfo FundTotal;
 
-        class ContributionIdItem
+        private class ContributionIdItem
         {
             public int ContributionId { get; set; }
         }
@@ -68,17 +70,27 @@ namespace CmsWeb.Models
             };
 
             var x = api.FetchContributions();
-            var list = x.Select(xx => new ContributionIdItem{ContributionId = xx.ContributionId}).ToList();
+            var list = x.Select(xx => new ContributionIdItem { ContributionId = xx.ContributionId }).ToList();
             var dt = ExcelExportModel.ToDataTable(list);
             dt.SaveAs("D:\\cids.xlsx");
         }
 
         public IEnumerable<string> CustomReports()
         {
+            // if a user is a member of the fundmanager role, we do not want to enable custom reports as this could bypass the fund restrictions at present
+            var fundmanagerRoleName = "FundManager";
+            var currentUserIsFundManager = DbUtil.Db.CurrentUser.Roles.Contains(fundmanagerRoleName, StringComparer.OrdinalIgnoreCase);
+
+            if (currentUserIsFundManager)
+            {
+                return new string[] { };
+            }
+
             var q = from c in DbUtil.Db.Contents
-                where c.TypeID == ContentTypeCode.TypeSqlScript
-                where c.Body.Contains("--class=TotalsByFund")
-                select c.Name;
+                    where c.TypeID == ContentTypeCode.TypeSqlScript
+                    where c.Body.Contains("--class=TotalsByFund")
+                    select c.Name;
+
             return q;
         }
 
@@ -110,13 +122,14 @@ namespace CmsWeb.Models
                foreach (var s in v)
                   tw.WriteLine(s);
 #endif
-            
+
 
             if (IncludeBundleType)
+            {
                 q = (from c in api.FetchContributions()
                      let BundleType = c.BundleDetails.First().BundleHeader.BundleHeaderType.Description
                      let BundleTypeId = c.BundleDetails.First().BundleHeader.BundleHeaderTypeId
-                     group c by new {c.FundId, BundleTypeId, BundleType}
+                     group c by new { c.FundId, BundleTypeId, BundleType }
                      into g
                      orderby g.Key.FundId, g.Key.BundleTypeId
                      select new FundTotalInfo
@@ -130,7 +143,9 @@ namespace CmsWeb.Models
                          Count = g.Count(),
                          model = this
                      }).ToList();
+            }
             else
+            {
                 q = (from c in api.FetchContributions()
                      group c by c.FundId into g
                      orderby g.Key
@@ -143,11 +158,13 @@ namespace CmsWeb.Models
                          Count = g.Count(),
                          model = this
                      }).ToList();
+            }
 
             FundTotal = new FundTotalInfo
             {
                 Count = q.Sum(t => t.Count),
                 Total = q.Sum(t => t.Total),
+
                 model = this
             };
             return q;
@@ -162,7 +179,7 @@ namespace CmsWeb.Models
 
             string fundIds = string.Empty;
 
-            if(customFundIds?.Count > 0)
+            if (customFundIds?.Count > 0)
             {
                 fundIds = authorizedFundIds.Where(f => customFundIds.Contains(f)).JoinInts(",");
             }
@@ -171,7 +188,7 @@ namespace CmsWeb.Models
                 fundIds = authorizedFundIds.JoinInts(",");
             }
 
-            var list = (from r in DbUtil.Db.GetTotalContributionsRange(Dt1, Dt2, CampusId, NonTaxDeductible ? (bool?)null : false, IncUnclosedBundles, fundIds)
+            var list = (from r in DbUtil.Db.GetTotalContributionsRange(Dt1, Dt2, CampusId, NonTaxDeductible ? (bool?)true : false, IncUnclosedBundles, fundIds)
                         orderby r.Range
                         select r).ToList();
 
@@ -244,22 +261,44 @@ namespace CmsWeb.Models
             var sb = new StringBuilder(baseurl);
 
             if (fundid.HasValue)
+            {
                 Append(sb, "fundid=" + fundid);
+            }
+
             if (bundletypeid.HasValue)
+            {
                 Append(sb, "bundletype=" + bundletypeid);
+            }
 
             if (Dt1.HasValue)
+            {
                 Append(sb, "dt1=" + Dt1.ToSortableDate());
+            }
+
             if (Dt2.HasValue)
+            {
                 Append(sb, "dt2=" + Dt2.ToSortableDate());
+            }
+
             if (!IncUnclosedBundles)
+            {
                 Append(sb, "includeunclosedbundles=false");
+            }
+
             if (TaxDedNonTax != "TaxDed")
+            {
                 Append(sb, "taxnontax=" + TaxDedNonTax);
+            }
+
             if (CampusId > 0)
+            {
                 Append(sb, "campus=" + CampusId);
+            }
+
             if (Online < 2)
+            {
                 Append(sb, "online=" + Online);
+            }
 
             return sb.ToString();
         }
@@ -289,7 +328,10 @@ namespace CmsWeb.Models
                 p.Add("@ActiveTagFilter", tagid);
             }
             else
+            {
                 p.Add("@ActiveTagFilter");
+            }
+
             return p;
         }
     }
