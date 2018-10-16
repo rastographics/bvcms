@@ -249,11 +249,11 @@ GO
             }
         }
 
-        private static void RunScripts(SqlConnection cn, string script)
+        public static void RunScripts(SqlConnection cn, string script)
         {
             using (var cmd = new SqlCommand { Connection = cn, CommandTimeout = 0 })
             {
-                var scripts = Regex.Split(script, "^GO.*$", RegexOptions.Multiline);
+                var scripts = Regex.Split(script, "^GO.*$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
                 foreach (var s in scripts)
                 {
                     if (s.HasValue())

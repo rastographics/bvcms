@@ -1,71 +1,71 @@
 ﻿@using CmsWeb.Code
 @{
-  var c1 = ReportsMenuModel.CustomItems1;
-  var c2 = ReportsMenuModel.CustomItems2;
-  var c3 = ReportsMenuModel.Items;
-  var ncols = 1
-              + (c1.HasValue() ? 1 : 0)
-              + (c2.HasValue() ? 1 : 0);
+    var c1 = ReportsMenuModel.CustomItems1;
+    var c2 = ReportsMenuModel.CustomItems2;
+    var c3 = ReportsMenuModel.Items;
+    var ncols = 1
+      + (c1.HasValue() ? 1 : 0)
+      + (c2.HasValue() ? 1 : 0);
 }
 @switch (ncols)
 {
-  case 1:
-    <li class="dropdown dropdown-large menu-1col">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="visible-xs-inline"><i class="fa fa-bar-chart"></i>&nbsp;&nbsp;</span>Reports <span class="caret"></span></a>
-      <ul class="dropdown-menu dropdown-menu-large menu-1col row">
-        <li class="col-sm-12">
-          <ul>
-            @Column(c3)
-          </ul>
+    case 1:
+        <li class="dropdown dropdown-large menu-1col">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="visible-xs-inline"><i class="fa fa-bar-chart"></i>&nbsp;&nbsp;</span>Reports <span class="caret"></span></a>
+            <ul class="dropdown-menu dropdown-menu-large menu-1col row">
+                <li class="col-sm-12">
+                    <ul>
+                        @Column(c3)
+                    </ul>
+                </li>
+            </ul>
         </li>
-      </ul>
-    </li>
-    break;
-  case 2:
-    <li class="dropdown dropdown-large">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="visible-xs-inline"><i class="fa fa-bar-chart"></i>&nbsp;&nbsp;</span>Reports <span class="caret"></span></a>
-      <ul class="dropdown-menu dropdown-menu-large row">
-        <li class="col-sm-6">
-          <ul>
-            @Column(c1)
-            @Column(c2)
-          </ul>
+        break;
+    case 2:
+        <li class="dropdown dropdown-large">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="visible-xs-inline"><i class="fa fa-bar-chart"></i>&nbsp;&nbsp;</span>Reports <span class="caret"></span></a>
+            <ul class="dropdown-menu dropdown-menu-large row">
+                <li class="col-sm-6">
+                    <ul>
+                        @Column(c1)
+                        @Column(c2)
+                    </ul>
+                </li>
+                <li class="col-sm-6">
+                    <ul>
+                        @Column(c3)
+                    </ul>
+                </li>
+            </ul>
         </li>
-        <li class="col-sm-6">
-          <ul>
-            @Column(c3)
-          </ul>
+        break;
+    case 3:
+        <li class="dropdown dropdown-large">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="visible-xs-inline"><i class="fa fa-bar-chart"></i>&nbsp;&nbsp;</span>Reports <span class="caret"></span></a>
+            <ul class="dropdown-menu dropdown-menu-large row">
+                <li class="col-sm-4">
+                    <ul>
+                        @Column(c1)
+                    </ul>
+                </li>
+                <li class="col-sm-4">
+                    <ul>
+                        @Column(c2)
+                    </ul>
+                </li>
+                <li class="col-sm-4">
+                    <ul>
+                        @Column(c3)
+                    </ul>
+                </li>
+            </ul>
         </li>
-      </ul>
-    </li>
-    break;
-  case 3:
-    <li class="dropdown dropdown-large">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="visible-xs-inline"><i class="fa fa-bar-chart"></i>&nbsp;&nbsp;</span>Reports <span class="caret"></span></a>
-      <ul class="dropdown-menu dropdown-menu-large row">
-        <li class="col-sm-4">
-          <ul>
-            @Column(c1)
-          </ul>
-        </li>
-        <li class="col-sm-4">
-          <ul>
-            @Column(c2)
-          </ul>
-        </li>
-        <li class="col-sm-4">
-          <ul>
-            @Column(c3)
-          </ul>
-        </li>
-      </ul>
-    </li>
-    break;
+        break;
 }
 @helper Column(string c)
 {
-  if (c.HasValue())
-  {
-    @Html.Raw(c)
-  }
+    if (c.HasValue())
+    {
+        @Html.Raw(c)
+    }
 }

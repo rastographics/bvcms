@@ -1,0 +1,25 @@
+﻿@using UtilityExtensions
+@{
+    ViewBag.Title = "Finish";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if ((bool?)ViewBag.hasshell == true)
+{
+    <div class="no-header"></div>
+}
+else
+{
+    <h1 class="form-header">@ViewExtensions2.DbSetting("NameOfChurch", "Pushpay authorized for : " + Util.Host)</h1>
+}
+<div class="row">
+    <div class="col-lg-9">
+        <div class="box box-responsive">
+
+            <div class="box-content">
+                Thank you, your account has been setup successfully.
+            </div>
+        </div>
+    </div>
+</div>
+

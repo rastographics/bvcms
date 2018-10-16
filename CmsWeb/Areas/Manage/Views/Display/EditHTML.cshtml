@@ -19,6 +19,12 @@
                 @Html.TextBox("title", Model.Title, new { @class = "form-control" })
               </div>
             </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label for="ContentKeyWords" class="control-label">Content KeyWords</label>
+                @Html.TextBox("ContentKeyWords", ViewBag.ContentKeyWords as string, new { @class = "form-control" })
+              </div>
+            </div>
           </div>
           <div class="form-group">
             <div class="checkbox">
@@ -30,7 +36,7 @@
           <div class="form-group">
             @Html.TextArea("body", new { @class = "form-control", rows = "26" })
           </div>
-          <a href="/Display/#tab_htmlContent" class="btn btn-default">Cancel</a>
+          <a href="/Display/#tab_htmlContent" class="btn btn-default">Back to List</a>
           <a href="/Display/ContentDelete/@Model.Id" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a>
           <input type="submit" class="btn btn-primary" value="Save Content"/>
         </div>
@@ -42,16 +48,47 @@
 }
 @section scripts
 {
-  @ViewExtensions2.CkEditor()
-  @Fingerprint.Script("/Content/touchpoint/js/admin/EditHtml.js")
-  <script type="text/javascript">
+    @ViewExtensions2.CkEditor()
+    @Fingerprint.Script("/Content/touchpoint/js/admin/EditHtml.js")
+    <script type="text/javascript">
 
-    function getParameterByName(name) {
-      name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-      var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-          results = regex.exec(location.search);
-      return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-    }
+        function getParameterByName(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+            return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
 
-  </script>
+        $(function() {
+            $("a.delete").click(function(ev) {
+                ev.preventDefault();
+                swal({
+                        title: "Are you sure?",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonClass: "btn-danger",
+                        confirmButtonText: "Yes, delete it!",
+                        closeOnConfirm: false
+                    },
+                    function() {
+                        $.post("/Display/ContentDelete",
+                            { id: "@Model.Id" },
+                            function(ret) {
+                                if (ret && ret.error)
+                                    swal("Error!", ret.error, "error");
+                                else {
+                                    swal({
+                                            title: "Deleted!",
+                                            type: "success"
+                                        },
+                                        function() {
+                                            window.location = "/Manage/Display/#tab_textContent";
+                                        });
+                                }
+                            });
+                    });
+            });
+        });
+
+    </script>
 }

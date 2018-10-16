@@ -262,6 +262,15 @@ namespace CmsData.Codes
         public const int Reversed = 1;
         public const int Returned = 2;
     }
+    public class ContributionOriginCode
+    {
+        public const int Mobile = 1;
+    }
+    public class ContributionSourceCode
+    {
+        public const int Default = 0;
+        public const int PushPay = 1;
+    }
     public class FundStatusCode 
     {
         public const int Open = 1;

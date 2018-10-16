@@ -169,7 +169,7 @@ namespace CmsData.API
                                 select c;
             if (model.Mobile)
                 contributions = from c in contributions
-                                where c.Source > 0
+                                where c.Origin == ContributionOriginCode.Mobile
                                 select c;
 
             switch (model.TaxNonTax)

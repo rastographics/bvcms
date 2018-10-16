@@ -56,13 +56,15 @@ namespace CmsData
 		
 		private int? _TranId;
 		
-		private int? _Source;
+		private int? _Origin;
 		
 		private int? _CampusId;
 		
 		private int _ImageID;
 		
 		private string _MetaInfo;
+		
+		private int _Source;
 		
    		
    		private EntitySet<BundleDetail> _BundleDetails;
@@ -142,8 +144,8 @@ namespace CmsData
 		partial void OnTranIdChanging(int? value);
 		partial void OnTranIdChanged();
 		
-		partial void OnSourceChanging(int? value);
-		partial void OnSourceChanged();
+		partial void OnOriginChanging(int? value);
+		partial void OnOriginChanged();
 		
 		partial void OnCampusIdChanging(int? value);
 		partial void OnCampusIdChanged();
@@ -153,6 +155,9 @@ namespace CmsData
 		
 		partial void OnMetaInfoChanging(string value);
 		partial void OnMetaInfoChanged();
+		
+		partial void OnSourceChanging(int value);
+		partial void OnSourceChanged();
 		
     #endregion
 		public Contribution()
@@ -615,21 +620,21 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="Source", UpdateCheck=UpdateCheck.Never, Storage="_Source", DbType="int")]
-		public int? Source
+		[Column(Name="Origin", UpdateCheck=UpdateCheck.Never, Storage="_Origin", DbType="int")]
+		public int? Origin
 		{
-			get { return this._Source; }
+			get { return this._Origin; }
 
 			set
 			{
-				if (this._Source != value)
+				if (this._Origin != value)
 				{
 				
-                    this.OnSourceChanging(value);
+                    this.OnOriginChanging(value);
 					this.SendPropertyChanging();
-					this._Source = value;
-					this.SendPropertyChanged("Source");
-					this.OnSourceChanged();
+					this._Origin = value;
+					this.SendPropertyChanged("Origin");
+					this.OnOriginChanged();
 				}
 
 			}
@@ -696,6 +701,28 @@ namespace CmsData
 					this._MetaInfo = value;
 					this.SendPropertyChanged("MetaInfo");
 					this.OnMetaInfoChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Source", UpdateCheck=UpdateCheck.Never, Storage="_Source", DbType="int NOT NULL")]
+		public int Source
+		{
+			get { return this._Source; }
+
+			set
+			{
+				if (this._Source != value)
+				{
+				
+                    this.OnSourceChanging(value);
+					this.SendPropertyChanging();
+					this._Source = value;
+					this.SendPropertyChanged("Source");
+					this.OnSourceChanged();
 				}
 
 			}

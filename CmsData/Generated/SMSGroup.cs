@@ -23,11 +23,13 @@ namespace CmsData
 		private string _Name;
 		
 		private string _Description;
-
-    private bool _SystemFlag;
-
-      private EntitySet< SMSGroupMember> _SMSGroupMembers;
-        
+		
+		private bool _SystemFlag;
+		
+		private bool _IsDeleted;
+		
+   		private EntitySet<SMSGroupMember> _SMSGroupMembers;
+		
    		private EntitySet<SMSList> _SMSLists;
 		
     	
@@ -46,12 +48,15 @@ namespace CmsData
 		
 		partial void OnDescriptionChanging(string value);
 		partial void OnDescriptionChanged();
-
-        partial void OnSystemFlagChanging(bool value);
-        partial void OnSystemFlagChanged();
-
-        #endregion
-        public SMSGroup()
+		
+		partial void OnSystemFlagChanging(bool value);
+		partial void OnSystemFlagChanged();
+		
+		partial void OnIsDeletedChanging(bool value);
+		partial void OnIsDeletedChanged();
+		
+    #endregion
+		public SMSGroup()
 		{
 			
 			this._SMSGroupMembers = new EntitySet<SMSGroupMember>(new Action< SMSGroupMember>(this.attach_SMSGroupMembers), new Action< SMSGroupMember>(this.detach_SMSGroupMembers)); 
@@ -128,36 +133,58 @@ namespace CmsData
 
 			}
 
-        }
+		}
+		
+		[Column(Name="SystemFlag", UpdateCheck=UpdateCheck.Never, Storage="_SystemFlag", DbType="bit NOT NULL")]
+		public bool SystemFlag
+		{
+			get { return this._SystemFlag; }
 
-        [Column(Name = "SystemFlag", UpdateCheck = UpdateCheck.Never, Storage = "_SystemFlag", DbType = "bit")]
-        public bool SystemFlag
-        {
-            get { return this._SystemFlag; }
-
-            set
-            {
-                if (this._SystemFlag != value)
-                {
-
+			set
+			{
+				if (this._SystemFlag != value)
+				{
+				
                     this.OnSystemFlagChanging(value);
-                    this.SendPropertyChanging();
-                    this._SystemFlag = value;
-                    this.SendPropertyChanged("SystemFlag");
-                    this.OnSystemFlagChanged();
-                }
+					this.SendPropertyChanging();
+					this._SystemFlag = value;
+					this.SendPropertyChanged("SystemFlag");
+					this.OnSystemFlagChanged();
+				}
 
-            }
+			}
 
-        }
+		}
 
+		
+		[Column(Name="IsDeleted", UpdateCheck=UpdateCheck.Never, Storage="_IsDeleted", DbType="bit NOT NULL")]
+		public bool IsDeleted
+		{
+			get { return this._IsDeleted; }
 
-        #endregion
+			set
+			{
+				if (this._IsDeleted != value)
+				{
+				
+                    this.OnIsDeletedChanging(value);
+					this.SendPropertyChanging();
+					this._IsDeleted = value;
+					this.SendPropertyChanged("IsDeleted");
+					this.OnIsDeletedChanged();
+				}
 
-        #region Foreign Key Tables
+			}
 
-        [Association(Name="FK_SMSGroupMembers_SMSGroups", Storage="_SMSGroupMembers", OtherKey="GroupID")]
-   		public EntitySet< SMSGroupMember> SMSGroupMembers
+		}
+
+		
+    #endregion
+        
+    #region Foreign Key Tables
+   		
+   		[Association(Name="FK_SMSGroupMembers_SMSGroups", Storage="_SMSGroupMembers", OtherKey="GroupID")]
+   		public EntitySet<SMSGroupMember> SMSGroupMembers
    		{
    		    get { return this._SMSGroupMembers; }
 

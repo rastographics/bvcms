@@ -319,8 +319,10 @@ AND a.PeopleId = {2}
                     if (m != null)
                     {
                         m.Pending = pending;
-                        // don't overwrite the member type unless it is already just a lowly member
-                        m.MemberTypeId = (m.MemberTypeId == 0 || m.MemberTypeId == MemberTypeCode.Member) ? memberTypeId : m.MemberTypeId;
+                        if (m.MemberTypeId == MemberTypeCode.Member || m.MemberTypeId == 0)
+                        {
+                            m.MemberTypeId = memberTypeId;
+                        }
                         db.SubmitChanges();
                         return m;
                     }
