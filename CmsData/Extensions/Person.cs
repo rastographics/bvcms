@@ -1967,7 +1967,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 ContributionTypeId = typid,
                 ContributionDesc = description,
                 TranId = tranid,
-                Origin = Util2.FromMobile.HasValue() ? ContributionOriginCode.Mobile : (int?)null,
+                Source = Util2.FromMobile.HasValue() ? 1 : (int?)null,
                 MetaInfo = meta,
                 //CampusId is set with an update Trigger when peopleid is changed or when a new contribution is created that has a peopleId
             };

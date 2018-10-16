@@ -56,7 +56,7 @@ namespace CmsData
 		
 		private int? _TranId;
 		
-		private int? _Origin;
+		private int? _Source;
 		
 		private int? _CampusId;
 		
@@ -64,7 +64,7 @@ namespace CmsData
 		
 		private string _MetaInfo;
 		
-		private int _Source;
+		private int _Origin;
 		
    		
    		private EntitySet<BundleDetail> _BundleDetails;
@@ -144,8 +144,8 @@ namespace CmsData
 		partial void OnTranIdChanging(int? value);
 		partial void OnTranIdChanged();
 		
-		partial void OnOriginChanging(int? value);
-		partial void OnOriginChanged();
+		partial void OnSourceChanging(int? value);
+		partial void OnSourceChanged();
 		
 		partial void OnCampusIdChanging(int? value);
 		partial void OnCampusIdChanged();
@@ -156,8 +156,8 @@ namespace CmsData
 		partial void OnMetaInfoChanging(string value);
 		partial void OnMetaInfoChanged();
 		
-		partial void OnSourceChanging(int value);
-		partial void OnSourceChanged();
+		partial void OnOriginChanging(int value);
+		partial void OnOriginChanged();
 		
     #endregion
 		public Contribution()
@@ -620,21 +620,21 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="Origin", UpdateCheck=UpdateCheck.Never, Storage="_Origin", DbType="int")]
-		public int? Origin
+		[Column(Name="Source", UpdateCheck=UpdateCheck.Never, Storage="_Source", DbType="int")]
+		public int? Source
 		{
-			get { return this._Origin; }
+			get { return this._Source; }
 
 			set
 			{
-				if (this._Origin != value)
+				if (this._Source != value)
 				{
 				
-                    this.OnOriginChanging(value);
+                    this.OnSourceChanging(value);
 					this.SendPropertyChanging();
-					this._Origin = value;
-					this.SendPropertyChanged("Origin");
-					this.OnOriginChanged();
+					this._Source = value;
+					this.SendPropertyChanged("Source");
+					this.OnSourceChanged();
 				}
 
 			}
@@ -708,21 +708,21 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="Source", UpdateCheck=UpdateCheck.Never, Storage="_Source", DbType="int NOT NULL")]
-		public int Source
+		[Column(Name="Origin", UpdateCheck=UpdateCheck.Never, Storage="_Origin", DbType="int NOT NULL")]
+		public int Origin
 		{
-			get { return this._Source; }
+			get { return this._Origin; }
 
 			set
 			{
-				if (this._Source != value)
+				if (this._Origin != value)
 				{
 				
-                    this.OnSourceChanging(value);
+                    this.OnOriginChanging(value);
 					this.SendPropertyChanging();
-					this._Source = value;
-					this.SendPropertyChanged("Source");
-					this.OnSourceChanged();
+					this._Origin = value;
+					this.SendPropertyChanged("Origin");
+					this.OnOriginChanged();
 				}
 
 			}
