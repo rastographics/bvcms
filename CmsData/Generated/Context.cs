@@ -553,7 +553,11 @@ namespace CmsData
         partial void InsertPromotion(Promotion instance);
         partial void UpdatePromotion(Promotion instance);
         partial void DeletePromotion(Promotion instance);
-        
+
+        partial void InsertPushPayLog(PushPayLog instance);
+        partial void UpdatePushPayLog(PushPayLog instance);
+        partial void DeletePushPayLog(PushPayLog instance);
+
         partial void InsertQBConnection(QBConnection instance);
         partial void UpdateQBConnection(QBConnection instance);
         partial void DeleteQBConnection(QBConnection instance);
@@ -1596,7 +1600,13 @@ namespace CmsData
 
 		}
 
-		public Table< QBConnection> QBConnections
+        public Table< PushPayLog> PushPayLogs
+        {
+            get { return this.GetTable< PushPayLog>(); }
+
+        }
+
+        public Table< QBConnection> QBConnections
 		{
 			get	{ return this.GetTable< QBConnection>(); }
 
