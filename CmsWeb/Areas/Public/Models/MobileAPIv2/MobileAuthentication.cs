@@ -112,10 +112,18 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			}
 
 			foreach( var foundUser in userQuery.ToList() ) {
-				if( !Membership.Provider.ValidateUser( username, password ) ) continue;
+				if( !impersonating && !Membership.Provider.ValidateUser( username, password ) ) continue;
 
 				DbUtil.Db.Refresh( RefreshMode.OverwriteCurrentValues, foundUser );
 				user = foundUser;
+
+				// TODO: Remove the connection to Util and Util2 in the future
+				Util.UserPeopleId = user.PeopleId;
+
+				if( CMSRoleProvider.provider.IsUserInRole( user.Username, "OrgLeadersOnly" ) ) {
+					Util2.OrgLeadersOnly = true;
+					DbUtil.Db.SetOrgLeadersOnly();
+				}
 
 				break;
 			}
@@ -172,6 +180,14 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			user = device.User;
 			instance = device.InstanceID;
 
+			// TODO: Remove the connection to Util and Util2 in the future
+			Util.UserPeopleId = user.PeopleId;
+
+			if( CMSRoleProvider.provider.IsUserInRole( user.Username, "OrgLeadersOnly" ) ) {
+				Util2.OrgLeadersOnly = true;
+				DbUtil.Db.SetOrgLeadersOnly();
+			}
+
 			return checkUser( true, false );
 		}
 
@@ -204,6 +220,14 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 				}
 
 				username = user.Username;
+
+				// TODO: Remove the connection to Util and Util2 in the future
+				Util.UserPeopleId = user.PeopleId;
+
+				if( CMSRoleProvider.provider.IsUserInRole( user.Username, "OrgLeadersOnly" ) ) {
+					Util2.OrgLeadersOnly = true;
+					DbUtil.Db.SetOrgLeadersOnly();
+				}
 			}
 
 			return Error.AUTHENTICATED;

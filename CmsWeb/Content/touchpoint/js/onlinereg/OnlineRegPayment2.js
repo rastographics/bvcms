@@ -12,6 +12,7 @@ $(function () {
         return false;
     });
     $("#formerror").hide();
+    $("#savePayArea").hide();
     $("a.submitbutton, a.submitlink").click(function (ev) {
         ev.preventDefault();
         if (!agreeterms) {
@@ -137,11 +138,54 @@ $(function () {
     $.ShowPaymentInfo = function (v) {
         $(".Card").hide();
         $(".Bank").hide();
-        if (v === 'C')
+        if (v === 'C') {
             $(".Card").show();
+            if ($('#CreditCard').val().startsWith('X')) {
+                $("#savePayArea").hide();
+                $('#SavePayInfo').prop('checked', true);
+            }
+            else {
+                $('#savePayArea').show();
+                $('#SavePayInfo').prop('checked', false);
+            }
+            CancelCreditCardInfoUpdate();
+        }
         else if (v === 'B') {
             $(".Bank").show();
+            if ($('#Routing').val().startsWith('X') && $('#Account').val().startsWith('X')) {
+                $("#savePayArea").hide();
+                $('#SavePayInfo').prop('checked', true);
+            }
+            else {
+                showSavePayUncheckedBox();
+            }
             CancelCreditCardInfoUpdate();
+        }
+    };
+    $.ShowPaymentInfo2 = function (v) {
+        $(".Card").hide();
+        $(".Bank").hide();
+        if (v === 'C') {
+            $(".Card").show();
+            if ($('#CreditCard').val().startsWith('X')) {
+                $("#savePayArea").hide();
+                $('#SavePayInfo').prop('checked', true);
+            }
+            else {
+                $('#savePayArea').show();
+                $('#SavePayInfo').prop('checked', false);
+            }
+        }
+        else if (v === 'B') {
+            $(".Bank").show();
+            if ($('#Account').val().startsWith('X')) {
+                $("#savePayArea").hide();
+                $('#SavePayInfo').prop('checked', true);
+            }
+            else {
+                $('#savePayArea').show();
+                $('#SavePayInfo').prop('checked', false);
+            }
         }
     };
     $.SetRepeatPatternText = function(v) {
@@ -200,20 +244,41 @@ $(function () {
         $('#CreditCard').change(function () {
             $('#CVV').parents('.form-group').show();
             if ($('#CreditCard').val().startsWith('X')) {
-                $('#CreditCard').val($('#CreditCard').val().replace('X', 'Y'));
+                $('#CreditCard').val($('#CreditCard').val().replace('X', 'Y'));                
             }
-            $('#CancelUpdateText').parents('.form-group').show();
+            showSavePayUncheckedBox();
         });
         $('#Expires').change(function () {
             if ($('#CreditCard').val().startsWith('X')) {
-                $('#CreditCard').val($('#CreditCard').val().replace('X', 'Y'));
+                $('#CreditCard').val($('#CreditCard').val().replace('X', 'Y'));                              
             }
             $('#CVV').parents('.form-group').show();
-            $('#CancelUpdateText').parents('.form-group').show();
+            showSavePayUncheckedBox();
         });
         $('#CancelUpdateText').click(function () {
             CancelCreditCardInfoUpdate();
         });
+    }
+
+    if ($('#Routing').length) {
+        $('#Routing').change(function () {
+            if ($('#Routing').val().startsWith('X')) {
+                $('#Routing').val($('#Routing').val().replace('X', 'Y'));
+            }
+            showSavePayUncheckedBox();
+        });
+        $('#Account').change(function () {
+            if ($('#Routing').val().startsWith('X')) {
+                $('#Routing').val($('#Routing').val().replace('X', 'Y'));
+            }
+            showSavePayUncheckedBox();
+        });
+    }
+
+    function showSavePayUncheckedBox() {
+        $('#CancelUpdateText').parents('.form-group').show();
+        $('#savePayArea').show();
+        $('#SavePayInfo').prop('checked', false);
     }
 
     function CancelCreditCardInfoUpdate() {
@@ -241,7 +306,7 @@ $(function () {
     }
     
     if ($("#allowcc").val()) {
-        $.ShowPaymentInfo($("input[name=Type]:checked").val());
+        $.ShowPaymentInfo2($("input[name=Type]:checked").val());
     }
     var repeatPattern = $("select[name=RepeatPattern]").val();
     $.SetSemiEvery(repeatPattern);

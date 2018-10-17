@@ -5,6 +5,7 @@
     Layout = ViewExtensions2.TouchPointLayout();
     
     var gl = from e in DbUtil.Db.SMSGroups
+             where e.IsDeleted == false
              select e;
 }
 <div class="row">
@@ -65,6 +66,11 @@
                                         </td>
                                     </tr>
                                 </table>
+                                <div class="text-right">
+                                    <a href="#" class="btn btn-sm btn-danger" style="margin:10px;" dialogurl="/Twilio/Dialog/@(item.Id)?viewname=DeleteGroupDialog">
+                                        <i class="fa fa-trash-o"></i> Delete
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     }

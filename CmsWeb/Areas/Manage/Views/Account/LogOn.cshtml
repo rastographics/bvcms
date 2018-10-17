@@ -22,7 +22,7 @@ else {
 }
 @if (DbUtil.LoginNotice().HasValue())
 {
-    <div class="col-sm-12">
+    <div>
         <div class="alert alert-danger">@Html.Raw(DbUtil.LoginNotice())</div>
     </div>
 }
