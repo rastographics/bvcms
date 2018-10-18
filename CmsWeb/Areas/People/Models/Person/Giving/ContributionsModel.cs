@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Web.Security;
 
 namespace CmsWeb.Areas.People.Models
 {
@@ -44,12 +45,12 @@ namespace CmsWeb.Areas.People.Models
             IQueryable<Contribution> contributionRecords;
 
             var currentUser = DbUtil.Db.CurrentUserPerson;
-
+            var isFinanceUser = Roles.GetRolesForUser().Contains("Finance");
             var isCurrentUser = currentUser.PeopleId == Person.PeopleId;
             var isSpouse = currentUser.PeopleId == Person.SpouseId;
             var isFamilyMember = currentUser.FamilyId == Person.FamilyId;
 
-            if (isCurrentUser || (isSpouse && (Person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint) || isFamilyMember)
+            if (isCurrentUser || (isSpouse && (Person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint) || isFamilyMember || isFinanceUser)
             {
                 contributionRecords = from c in DbUtil.Db.Contributions
                                       where (c.PeopleId == Person.PeopleId || (c.PeopleId == Person.SpouseId && (Person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint))
