@@ -16,7 +16,10 @@ namespace CmsData.Classes.RoleChecker
                 {
                     var doc = HttpContext.Current.Items[CustomAccessRolesKey] as XDocument;
                     if (doc != null)
+                    {
                         return doc;
+                    }
+
                     var s = DbUtil.Content(CustomAccessRolesKey, "");
                     doc = s.HasValue()
                         ? XDocument.Load(new StringReader(DbUtil.Content(CustomAccessRolesKey, "")))
@@ -48,7 +51,10 @@ namespace CmsData.Classes.RoleChecker
                 foreach (var r in roles.Elements("role"))
                 {
                     var roleName = r.Attribute("name");
-                    if (!HttpContext.Current.User.IsInRole(roleName?.Value)) continue;
+                    if (!HttpContext.Current.User.IsInRole(roleName?.Value))
+                    {
+                        continue;
+                    }
 
                     foreach (var s in Settings(r).Elements())
                     {
@@ -57,7 +63,10 @@ namespace CmsData.Classes.RoleChecker
                         if (nameAttribute?.Value == SettingNameAsString(setting))
                         {
                             bool value;
-                            if (bool.TryParse(valueAttribute?.Value, out value)) return value;
+                            if (bool.TryParse(valueAttribute?.Value, out value))
+                            {
+                                return value;
+                            }
                         }
                     }
                 }
@@ -117,6 +126,7 @@ namespace CmsData.Classes.RoleChecker
         HideEmailDetails,
         HideExtraValueEdit,
         HideGuestsOrgMembers,
+        HidePreviousOrgMembers,
         HideInactiveOrgMembers,
         HideMinistryTab,
         HideNavTabs,

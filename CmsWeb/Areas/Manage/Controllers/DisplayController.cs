@@ -5,6 +5,7 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Text;
@@ -24,6 +25,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI.WebControls;
 using CmsWeb.Code;
+using Dapper;
 using Elmah;
 using Content = CmsData.Content;
 using Encoder = System.Drawing.Imaging.Encoder;
@@ -43,21 +45,36 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View(new ContentModel());
         }
 
+        [HttpPost]
+        public ActionResult SetContentKeywordFilter(string keywordfilter, string tab)
+        {
+            if(keywordfilter.HasValue())
+                Session["ContentKeywordFilter"] = keywordfilter.trim();
+            else
+                Session.Remove("ContentKeywordFilter");
+            return Redirect($"/Display#tab_{tab}");
+        }
+
+
         public ActionResult ContentEdit(int? id, bool? snippet)
         {
             if (!id.HasValue)
                 throw new HttpException(404, "No ID found.");
 
-            var content = DbUtil.ContentFromID(id.Value);
-            if (content == null)
+            var q = from c in DbUtil.Db.Contents
+                    where c.Id == id.Value
+                    select new {content = c, keywords = string.Join(",", c.ContentKeyWords.Select(vv => vv.Word))};
+            var i = q.SingleOrDefault();
+            if(i == null)
                 throw new HttpException(404, "No ID found.");
 
             if (snippet == true)
             {
-                content.Snippet = true;
+                i.content.Snippet = true;
                 DbUtil.Db.SubmitChanges();
             }
-            return RedirectEdit(content);
+            ViewBag.ContentKeywords = i.keywords;
+            return RedirectEdit(i.content);
         }
         public ActionResult Content(int? id)
         {
@@ -80,15 +97,19 @@ namespace CmsWeb.Areas.Manage.Controllers
             content.Title = newName;
             content.Body = "";
             content.DateCreated = DateTime.Now;
+            var ContentKeywordFilter = Session["ContentKeywordFilter"] as string;
+            if(ContentKeywordFilter.HasValue())
+                content.SetKeyWords(DbUtil.Db, new []{ContentKeywordFilter});
 
             DbUtil.Db.Contents.InsertOnSubmit(content);
             DbUtil.Db.SubmitChanges();
+            ViewBag.ContentKeywords = ContentKeywordFilter ?? "";
 
             return RedirectEdit(content);
         }
 
         [HttpPost]
-        public ActionResult ContentUpdate(int id, string name, string title, string body, bool? snippet, int? roleid, string stayaftersave = null)
+        public ActionResult ContentUpdate(int id, string name, string title, string body, bool? snippet, int? roleid, string contentKeyWords, string stayaftersave = null)
         {
             var content = DbUtil.ContentFromID(id);
             content.Name = name;
@@ -97,6 +118,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             content.RemoveGrammarly();
             content.RoleID = roleid ?? 0;
             content.Snippet = snippet;
+            content.SetKeyWords(DbUtil.Db, contentKeyWords.SplitStr(",").Select(vv => vv.trim()).ToArray());
 
             if (content.TypeID == ContentTypeCode.TypeEmailTemplate)
             {
@@ -163,8 +185,8 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult ContentDelete(int id)
         {
             var content = DbUtil.ContentFromID(id);
-            DbUtil.Db.Contents.DeleteOnSubmit(content);
-            DbUtil.Db.SubmitChanges();
+            DbUtil.Db.ExecuteCommand("DELETE FROM dbo.ContentKeywords WHERE Id = {0}", id);
+            DbUtil.Db.ExecuteCommand("DELETE FROM dbo.Content WHERE Id = {0}", id);
             var url = GetIndexTabUrl(content);
             return Redirect(url);
         }
@@ -224,7 +246,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         //            return new GridResult(rd);
         //        }
         [HttpPost]
-        public ActionResult SavePythonScript(string name, string body)
+        public ActionResult SavePythonScript(string name, string body, string contentKeyWords)
         {
             var content = DbUtil.Db.Content(name, "", ContentTypeCode.TypePythonScript);
             content.Body = body;

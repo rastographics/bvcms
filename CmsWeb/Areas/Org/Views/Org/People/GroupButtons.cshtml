@@ -4,7 +4,10 @@
   <a class="btn btn-default" tabindex="0" href="#" data-toggle="popover" data-container="body" data-placement="bottom" data-trigger="focus" data-title="Group Buttons" data-content="@Model.GroupHelp"><i class="fa fa-info-circle"></i></a>
   @GroupButton(GroupSelectCode.Member, "Members")
 </div>
-@GroupButton(GroupSelectCode.Previous, "Previous")
+@if (!Model.HidePreviousButton)
+{
+    @GroupButton(GroupSelectCode.Previous, "Previous")
+}
 @if (!Model.HideInactiveButton)
 {
     @GroupButton(GroupSelectCode.Inactive, Model.Org.IsMissionTrip == true ? "Senders" : "Inactive")
