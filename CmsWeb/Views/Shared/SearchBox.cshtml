@@ -129,6 +129,11 @@
         }
 
         function chooseSearchResult() {
+            // if a user hasn't selected anything at this point, select the first item in the list
+            if (selectedIndex === -1) {
+                selectedIndex = 0;
+            }
+
             var href = $('.dropdown-search-result:nth(' + selectedIndex + ') a').attr('href');
             window.location = href;
         }
@@ -158,11 +163,6 @@
             });
 
             Mousetrap.bind('enter', function () {
-                // if a user hasn't selected anything at this point, select the first item in the list
-                if (selectedIndex === -1) {
-                    selectedIndex = 0;
-                }
-
                 chooseSearchResult();
                 return false;
             });
