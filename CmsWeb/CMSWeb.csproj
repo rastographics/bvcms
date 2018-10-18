@@ -1682,7 +1682,9 @@
     <Content Include="Content\VitalStats.py" />
     <Content Include="Lib\ensurepip\_bundled\setuptools-20.10.1-py2.py3-none-any.whl" />
     <Content Include="Lib\ensurepip\_bundled\pip-8.1.1-py2.py3-none-any.whl" />
-    <Content Include="Areas\Figures\Views\web.config" />
+    <Content Include="Areas\Figures\Views\web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Areas\Dialog\Views\GetCheckImage\GetCheckImage.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\CustomStatments.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\PythonCode.cshtml" />
@@ -1707,6 +1709,7 @@
     <Content Include="Areas\Setup\Views\Pushpay\Finish.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\DeleteGroupDialog.cshtml" />
     <Content Include="Content\touchpoint\js\polyfills.urlSearchParams.js" />
+    <Content Include="Areas\Figures\Views\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\staging.pubxml" />
     <None Include="Properties\PublishProfiles\TeamCity.pubxml" />
