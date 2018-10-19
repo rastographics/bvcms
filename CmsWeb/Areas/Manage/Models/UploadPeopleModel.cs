@@ -562,26 +562,20 @@ namespace CmsWeb.Models
         }
         internal int Marital(object o)
         {
-            var s = o as string;
+            return getMaritalId(o);
+        }
+        internal int getMaritalId(object o)
+        {
+            string s = o as string;
             s = s.trim()?.ToLower();
-            switch (s)
+            int? a = (from m in DbUtil.Db.MaritalStatuses
+                     where m.Description == s
+                     select m.Id).SingleOrDefault();
+            if (a == null)
             {
-                case "married":
-                case "m":
-                    return 20;
-                case "single":
-                case "s":
-                    return 10;
-                case "widowed":
-                case "w":
-                    return 50;
-                case "divorced":
-                case "d":
-                    return 40;
-                case "separated":
-                    return 30;
+                return 0;
             }
-            return 0;
+            return a.Value;
         }
         internal string Title(object o)
         {
