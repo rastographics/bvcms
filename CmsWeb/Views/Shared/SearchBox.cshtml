@@ -82,6 +82,7 @@
         }
 
         var selectedIndex = -1;
+
         function keyboardSelectSearchResult(direction) {
             var searchResultCount = $('.search-results:visible .dropdown-search-result').length;
             var $lastSelected = $('.dropdown-search-result:nth(' + selectedIndex + ')');
@@ -128,6 +129,11 @@
         }
 
         function chooseSearchResult() {
+            // if a user hasn't selected anything at this point, select the first item in the list
+            if (selectedIndex === -1) {
+                selectedIndex = 0;
+            }
+
             var href = $('.dropdown-search-result:nth(' + selectedIndex + ') a').attr('href');
             window.location = href;
         }
