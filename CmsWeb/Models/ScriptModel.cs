@@ -76,7 +76,9 @@ namespace CmsWeb.Models
                 p.Add("@EndDt", DateTime.Today);
             if (body.Contains("@userid", ignoreCase: true))
                 p.Add("@userid", Util.UserId);
-            p.Add("@p1", parameter ?? "");
+
+            body = QueryFunctions.AddP1Parameter(body, parameter, p);
+
             return body;
         }
 

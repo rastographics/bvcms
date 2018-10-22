@@ -152,13 +152,28 @@ namespace CmsData
         {
             var cn = GetReadonlyConnection();
             var parameters = new DynamicParameters();
-            if(p1 != null)
-                parameters.Add("@p1", p1 ?? "");
+            if (p1 != null)
+                sql = AddP1Parameter(sql, p1, parameters);
             if (declarations != null)
                 AddParameters(declarations, parameters);
             ApplyStandardParameters(sql, parameters);
 
             return cn.Query(sql, parameters, commandTimeout: 300);
+        }
+
+        /// <summary>
+        /// This function looks for 'declare @p1 ...' and comments it out since the @p1 parameter is added through the Dynamic parameters.
+        /// This allows the sql to be run in SSMS for testing 
+        /// and also allows it to run via Touchpoint scripts using the q.QuerySql functions without having to edit it.
+        /// </summary>
+        public static string AddP1Parameter(string sql, object p1, DynamicParameters parameters)
+        {
+            const string pattern = "(?m:^)declare @p1 .*$";
+            var regexOptions = RegexOptions.IgnoreCase | RegexOptions.Multiline;
+            if (Regex.IsMatch(sql, pattern, regexOptions))
+                sql = Regex.Replace(sql, pattern, "--$&", regexOptions);
+            parameters.Add("@p1", p1 ?? "");
+            return sql;
         }
 
         private static void AddParameters(object declarations, DynamicParameters parameters)

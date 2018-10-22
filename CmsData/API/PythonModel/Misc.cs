@@ -361,6 +361,21 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
             c.Body = sql;
             db.SubmitChanges();
         }
+        public void WriteContentText(string name, string text)
+        {
+            var c = db.Content(name, ContentTypeCode.TypeText);
+            if (c == null)
+            {
+                c = new Content()
+                {
+                    Name = name,
+                    TypeID = ContentTypeCode.TypeText
+                };
+                db.Contents.InsertOnSubmit(c);
+            }
+            c.Body = text;
+            db.SubmitChanges();
+        }
         public int TagLastQuery(string defaultcode)
         {
             Tag tag = null;
@@ -403,6 +418,15 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
         {
             var dd =  JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
             return new DynamicData(dd);
+        }
+
+        /// <summary>
+        /// This returns a csv string of the fundids when a church is using Custom Statements and FundSets for different statements
+        /// The csv string can be used in SQL using dbo.SplitInts in a query to match a set of fundids.
+        /// </summary>
+        public string CustomStatementsFundIdList(string name)
+        {
+            return string.Join(",", APIContributionSearchModel.GetCustomStatementsList(db, name));
         }
     }
 }

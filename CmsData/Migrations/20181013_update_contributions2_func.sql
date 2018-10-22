@@ -20,14 +20,14 @@ SELECT
     c.ContributionDate AS Date,
     
     CASE WHEN fa.HeadOfHouseholdId = sp.PeopleId
-			AND ISNULL(sp.ContributionOptionsId, CASE WHEN sp.MaritalStatusId = 20 THEN 2 ELSE 1 END) = 2
-			AND ISNULL(p.ContributionOptionsId, CASE WHEN p.MaritalStatusId = 20 THEN 2 ELSE 1 END) = 2
+			AND ISNULL(sp.ContributionOptionsId, CASE WHEN mssp.Married = 1 THEN 2 ELSE 1 END) = 2
+			AND ISNULL(p.ContributionOptionsId, CASE WHEN msp.Married = 1 THEN 2 ELSE 1 END) = 2
 		THEN sp.PeopleId 
 		ELSE c.PeopleId 
 	END AS CreditGiverId,
 
-    CASE WHEN ISNULL(sp.ContributionOptionsId, CASE WHEN sp.MaritalStatusId = 20 THEN 2 ELSE 1 END) = 1
-			OR ISNULL(p.ContributionOptionsId, CASE WHEN p.MaritalStatusId = 20 THEN 2 ELSE 1 END) = 1
+    CASE WHEN ISNULL(sp.ContributionOptionsId, CASE WHEN mssp.Married = 1 THEN 2 ELSE 1 END) = 1
+			OR ISNULL(p.ContributionOptionsId, CASE WHEN msp.Married = 1 THEN 2 ELSE 1 END) = 1
 		THEN NULL
 		WHEN fa.HeadOfHouseholdId = sp.PeopleId
 		THEN c.PeopleId
@@ -83,6 +83,8 @@ FROM dbo.Contribution c
 	JOIN dbo.People p ON c.PeopleId = p.PeopleId
 	JOIN dbo.Families fa ON p.FamilyId = fa.FamilyId
 	LEFT JOIN dbo.People sp ON sp.PeopleId = p.SpouseId
+	LEFT JOIN lookup.MaritalStatus mssp ON mssp.Id = sp.MaritalStatusId
+	LEFT JOIN lookup.MaritalStatus ms ON ms.Id = p.MaritalStatusId
 WHERE 1 = 1
 	AND c.ContributionTypeId NOT IN (6,7) -- no reversed or returned
 	AND ((CASE WHEN c.ContributionTypeId = 9 THEN 1 ELSE ISNULL(f.NonTaxDeductible, 0) END) = @nontaxded OR @nontaxded IS NULL)
