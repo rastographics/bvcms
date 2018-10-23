@@ -84,7 +84,7 @@ FROM dbo.Contribution c
 	JOIN dbo.Families fa ON p.FamilyId = fa.FamilyId
 	LEFT JOIN dbo.People sp ON sp.PeopleId = p.SpouseId
 	LEFT JOIN lookup.MaritalStatus mssp ON mssp.Id = sp.MaritalStatusId
-	LEFT JOIN lookup.MaritalStatus ms ON ms.Id = p.MaritalStatusId
+	LEFT JOIN lookup.MaritalStatus msp ON msp.Id = p.MaritalStatusId
 WHERE 1 = 1
 	AND c.ContributionTypeId NOT IN (6,7) -- no reversed or returned
 	AND ((CASE WHEN c.ContributionTypeId = 9 THEN 1 ELSE ISNULL(f.NonTaxDeductible, 0) END) = @nontaxded OR @nontaxded IS NULL)
