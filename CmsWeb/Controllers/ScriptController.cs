@@ -184,14 +184,14 @@ namespace CmsWeb.Controllers
                 foreach (var key in Request.QueryString.AllKeys)
                     pe.DictionaryAdd(key, Request.QueryString[key]);
 
-                pe.Output = ScriptModel.Run(name, pe);
-                if (pe.Output.StartsWith("REDIRECT="))
-                {
-                    var a = pe.Output.SplitStr("=", 2);
-                    return Redirect(a[1].TrimEnd());
-                }
+            pe.Output = ScriptModel.Run(name, pe);
+            if (pe.Output.StartsWith("REDIRECT="))
+            {
+                var a = pe.Output.SplitStr("=", 2);
+                return Redirect(a[1].TrimEnd());
+            }
 
-                return View(pe);
+            return View(pe);
 #if DEBUG
 #else
         }
