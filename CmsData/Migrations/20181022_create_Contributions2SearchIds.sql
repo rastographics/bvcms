@@ -12,6 +12,7 @@ begin
 	declare @Description varchar(max) = (select json_value(@json, '$.Description'))
 	declare @TransactionDesc varchar(max) = (select json_value(@json, '$.TransactionDesc'))
 	declare @Source int = (select json_value(@json, '$.Source'))
+    declare @ContributionTags varchar(max) = (select json_value(@json, '$.ContributionTags'))
 
 	declare @notfunds bit = 0
 	if @FundIds like '<>%'
@@ -36,6 +37,15 @@ begin
 		set @notdesc = 1
 		set @TransactionDesc = substring(@TransactionDesc, 3, 100)
 	end
+
+	if @ContributionTags like '<>%'
+	begin
+		set @nottags = 1
+		set @ContributionTags = substring(@ContributionTags, 3, 3000)
+	end
+	declare @tags table (TagName varchar(50))
+	insert @tags ( TagName )
+	select value from dbo.Split(@ContributionTags, ',')
 
 	declare @btypes table (btype varchar(50))
 	insert @btypes ( btype )
@@ -63,6 +73,10 @@ begin
 			 else iif(c.TransactionDesc = @TransactionDesc, 1, 0)
 			 end = 1
 	and (@Source is null or isnull(c.Source, 0) = @Source) /* 0 = not mobile, 1 = mobile */
+	and case when @ContributionTags is null then 1
+			 when @nottags = 1 then iif(not exists(select null from dbo.ContributionTag ct join @tags tt on tt.TagName = ct.TagName and ct.ContributionId = c.ContributionId), 1, 0)
+			 else iif(exists(select null from dbo.ContributionTag ct join @tags tt on tt.TagName = ct.TagName and ct.ContributionId = c.ContributionId), 1, 0)
+			 end = 1
 	return
 end
 
