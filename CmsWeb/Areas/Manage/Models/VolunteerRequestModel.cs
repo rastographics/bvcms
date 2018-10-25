@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Hosting;
-using System.Web.Mvc;
-using CmsData;
+﻿using CmsData;
 using CmsData.Codes;
 using CmsData.Registration;
 using CmsData.View;
 using CmsWeb.Areas.Main.Models;
 using Elmah;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Hosting;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -42,19 +42,37 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             var error = "";
             if (!guid.HasValue())
+            {
                 error = "bad link";
+            }
+
             var g = guid.ToGuid();
             if (g == null)
+            {
                 error = "invalid link";
+            }
+
             var ot = Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == g.Value);
             if (ot == null)
+            {
                 error = "invalid link";
+            }
+
             if (ot.Used)
+            {
                 error = "link used";
+            }
+
             if (ot.Expires.HasValue && ot.Expires < DateTime.Now)
+            {
                 error = "link expired";
+            }
+
             if (error.HasValue())
+            {
                 throw new Exception(error);
+            }
+
             ot.Used = true;
             Db.SubmitChanges();
             var a = ot.Querystring.Split(',');
@@ -174,8 +192,8 @@ Sorry, I cannot be there.</a>";
                         where t.OrgId == org.OrganizationId
                         where t.Name.StartsWith("SG:")
                         orderby t.Name
-                        select new SelectListItem {Text = t.Name.Substring(3), Value = ".sg-" + t.Id}).ToList();
-            list.Insert(0, new SelectListItem {Text = "(no filter)", Value = "0"});
+                        select new SelectListItem { Text = t.Name.Substring(3), Value = ".sg-" + t.Id }).ToList();
+            list.Insert(0, new SelectListItem { Text = "(no filter)", Value = "0" });
             return list;
         }
 
@@ -302,7 +320,7 @@ Sorry, I cannot be there.</a>";
 <p>You are now assigned to volunteer on {meeting.MeetingDate:MMM d, yyyy} at {meeting.MeetingDate:t}.
 in {org.OrganizationName}<br />
 <p><a href=""http://registerlink"" lang=""{org.OrganizationId}"">Click here</a> to manage your commitments.</p>
-< p>See you there!</p>";
+<p>See you there!</p>";
             Db.Email(person.FromEmail, i.volunteer, "Thank you for responding and serving", body);
 
             // on screen message
