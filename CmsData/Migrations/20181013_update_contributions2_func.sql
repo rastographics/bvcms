@@ -21,13 +21,13 @@ SELECT
     
     CASE WHEN fa.HeadOfHouseholdId = sp.PeopleId
 			AND ISNULL(sp.ContributionOptionsId, CASE WHEN mssp.Married = 1 THEN 2 ELSE 1 END) = 2
-			AND ISNULL(p.ContributionOptionsId, CASE WHEN msp.Married = 1 THEN 2 ELSE 1 END) = 2
+			AND ISNULL(p.ContributionOptionsId, CASE WHEN ms.Married = 1 THEN 2 ELSE 1 END) = 2
 		THEN sp.PeopleId 
 		ELSE c.PeopleId 
 	END AS CreditGiverId,
 
     CASE WHEN ISNULL(sp.ContributionOptionsId, CASE WHEN mssp.Married = 1 THEN 2 ELSE 1 END) = 1
-			OR ISNULL(p.ContributionOptionsId, CASE WHEN msp.Married = 1 THEN 2 ELSE 1 END) = 1
+			OR ISNULL(p.ContributionOptionsId, CASE WHEN ms.Married = 1 THEN 2 ELSE 1 END) = 1
 		THEN NULL
 		WHEN fa.HeadOfHouseholdId = sp.PeopleId
 		THEN c.PeopleId

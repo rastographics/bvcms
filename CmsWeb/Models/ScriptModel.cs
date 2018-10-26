@@ -146,6 +146,12 @@ namespace CmsWeb.Models
         public static string Run(string name, PythonModel pe)
         {
             var script = DbUtil.Db.ContentOfTypePythonScript(name);
+            if (pe.Dictionary("p1") != null)
+            {
+                script = script.Replace("@P1", pe.Dictionary("p1") ?? "NULL");
+            }
+
+            
             string runfromPath = null;
 #if DEBUG
             var runfromRe = new Regex(@"#runfrom=(?<path>.*)\r");
