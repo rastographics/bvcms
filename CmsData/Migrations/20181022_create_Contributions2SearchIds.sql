@@ -34,7 +34,7 @@ begin
 	declare @nottrandesc bit = 0
 	if @TransactionDesc like '<>%'
 	begin
-		set @notdesc = 1
+		set @nottrandesc = 1
 		set @TransactionDesc = substring(@TransactionDesc, 3, 100)
 	end
 
