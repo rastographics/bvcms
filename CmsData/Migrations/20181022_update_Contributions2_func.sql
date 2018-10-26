@@ -71,7 +71,9 @@ select
 	c.ContributionId,
 	c.[Source],
 	c.MetaInfo,
-	t.[Description] TransactionDesc
+	t.[Description] TransactionDesc,
+	c.ContributionTypeId,
+	ca.[Description] Campus
 from dbo.Contribution c
 	join dbo.ContributionFund f on c.FundId = f.FundId
 	join dbo.BundleDetail d on c.ContributionId = d.ContributionId
@@ -84,8 +86,8 @@ from dbo.Contribution c
 	join lookup.MaritalStatus mssp on mssp.Id = sp.MaritalStatusId
 	join lookup.MaritalStatus msp on msp.Id = p.MaritalStatusId
 	left outer join dbo.[Transaction] t on t.Id = c.TranId
-where 1 = 1
-	and c.ContributionTypeId not in (6,7) -- no reversed or returned
+	left outer join lookup.Campus ca on ca.Id = c.CampusId
+where c.ContributionTypeId not in (6,7) -- no reversed or returned
 	and ((case when c.ContributionTypeId = 9 then 1 else isnull(f.NonTaxDeductible, 0) end) = @nontaxded or @nontaxded is null)
     and c.ContributionStatusId = 0 -- recorded
 	and (c.ContributionTypeId <> 8 or isnull(@pledges, 1) = 1)
