@@ -38,6 +38,7 @@ begin
 		set @TransactionDesc = substring(@TransactionDesc, 3, 100)
 	end
 
+	declare @nottags bit = 0
 	if @ContributionTags like '<>%'
 	begin
 		set @nottags = 1
