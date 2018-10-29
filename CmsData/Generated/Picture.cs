@@ -37,9 +37,9 @@ namespace CmsData
 		private int? _Y;
 		
    		
-   		private EntitySet< Family> _Families;
+   		private EntitySet<Family> _Families;
 		
-   		private EntitySet< Person> _People;
+   		private EntitySet<Person> _People;
 		
     	
 	#endregion
@@ -80,9 +80,9 @@ namespace CmsData
 		public Picture()
 		{
 			
-			this._Families = new EntitySet< Family>(new Action< Family>(this.attach_Families), new Action< Family>(this.detach_Families)); 
+			this._Families = new EntitySet<Family>(new Action< Family>(this.attach_Families), new Action< Family>(this.detach_Families)); 
 			
-			this._People = new EntitySet< Person>(new Action< Person>(this.attach_People), new Action< Person>(this.detach_People)); 
+			this._People = new EntitySet<Person>(new Action< Person>(this.attach_People), new Action< Person>(this.detach_People)); 
 			
 			
 			OnCreated();
@@ -294,7 +294,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_Families_Picture", Storage="_Families", OtherKey="PictureId")]
-   		public EntitySet< Family> Families
+   		public EntitySet<Family> Families
    		{
    		    get { return this._Families; }
 
@@ -304,7 +304,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_PEOPLE_TBL_Picture", Storage="_People", OtherKey="PictureId")]
-   		public EntitySet< Person> People
+   		public EntitySet<Person> People
    		{
    		    get { return this._People; }
 

@@ -34,9 +34,9 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< Family> _RelatedFamily1;
+		private EntityRef<Family> _RelatedFamily1;
 		
-		private EntityRef< Family> _RelatedFamily2;
+		private EntityRef<Family> _RelatedFamily2;
 		
 	#endregion
 	
@@ -71,9 +71,9 @@ namespace CmsData
 		{
 			
 			
-			this._RelatedFamily1 = default(EntityRef< Family>); 
+			this._RelatedFamily1 = default(EntityRef<Family>); 
 			
-			this._RelatedFamily2 = default(EntityRef< Family>); 
+			this._RelatedFamily2 = default(EntityRef<Family>); 
 			
 			OnCreated();
 		}

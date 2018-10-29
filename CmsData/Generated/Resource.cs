@@ -49,24 +49,24 @@ namespace CmsData
 		private string _StatusFlagIds;
 		
    		
-   		private EntitySet< ResourceAttachment> _ResourceAttachments;
+   		private EntitySet<ResourceAttachment> _ResourceAttachments;
 		
-   		private EntitySet< ResourceOrganization> _ResourceOrganizations;
+   		private EntitySet<ResourceOrganization> _ResourceOrganizations;
 		
-   		private EntitySet< ResourceOrganizationType> _ResourceOrganizationTypes;
+   		private EntitySet<ResourceOrganizationType> _ResourceOrganizationTypes;
 		
     	
-		private EntityRef< Campu> _Campu;
+		private EntityRef<Campu> _Campu;
 		
-		private EntityRef< Division> _Division;
+		private EntityRef<Division> _Division;
 		
-		private EntityRef< Organization> _Organization;
+		private EntityRef<Organization> _Organization;
 		
-		private EntityRef< OrganizationType> _OrganizationType;
+		private EntityRef<OrganizationType> _OrganizationType;
 		
-		private EntityRef< ResourceCategory> _ResourceCategory;
+		private EntityRef<ResourceCategory> _ResourceCategory;
 		
-		private EntityRef< ResourceType> _ResourceType;
+		private EntityRef<ResourceType> _ResourceType;
 		
 	#endregion
 	
@@ -124,24 +124,24 @@ namespace CmsData
 		public Resource()
 		{
 			
-			this._ResourceAttachments = new EntitySet< ResourceAttachment>(new Action< ResourceAttachment>(this.attach_ResourceAttachments), new Action< ResourceAttachment>(this.detach_ResourceAttachments)); 
+			this._ResourceAttachments = new EntitySet<ResourceAttachment>(new Action< ResourceAttachment>(this.attach_ResourceAttachments), new Action< ResourceAttachment>(this.detach_ResourceAttachments)); 
 			
-			this._ResourceOrganizations = new EntitySet< ResourceOrganization>(new Action< ResourceOrganization>(this.attach_ResourceOrganizations), new Action< ResourceOrganization>(this.detach_ResourceOrganizations)); 
+			this._ResourceOrganizations = new EntitySet<ResourceOrganization>(new Action< ResourceOrganization>(this.attach_ResourceOrganizations), new Action< ResourceOrganization>(this.detach_ResourceOrganizations)); 
 			
-			this._ResourceOrganizationTypes = new EntitySet< ResourceOrganizationType>(new Action< ResourceOrganizationType>(this.attach_ResourceOrganizationTypes), new Action< ResourceOrganizationType>(this.detach_ResourceOrganizationTypes)); 
+			this._ResourceOrganizationTypes = new EntitySet<ResourceOrganizationType>(new Action< ResourceOrganizationType>(this.attach_ResourceOrganizationTypes), new Action< ResourceOrganizationType>(this.detach_ResourceOrganizationTypes)); 
 			
 			
-			this._Campu = default(EntityRef< Campu>); 
+			this._Campu = default(EntityRef<Campu>); 
 			
-			this._Division = default(EntityRef< Division>); 
+			this._Division = default(EntityRef<Division>); 
 			
-			this._Organization = default(EntityRef< Organization>); 
+			this._Organization = default(EntityRef<Organization>); 
 			
-			this._OrganizationType = default(EntityRef< OrganizationType>); 
+			this._OrganizationType = default(EntityRef<OrganizationType>); 
 			
-			this._ResourceCategory = default(EntityRef< ResourceCategory>); 
+			this._ResourceCategory = default(EntityRef<ResourceCategory>); 
 			
-			this._ResourceType = default(EntityRef< ResourceType>); 
+			this._ResourceType = default(EntityRef<ResourceType>); 
 			
 			OnCreated();
 		}
@@ -508,7 +508,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_ResourceAttachment_Resource", Storage="_ResourceAttachments", OtherKey="ResourceId")]
-   		public EntitySet< ResourceAttachment> ResourceAttachments
+   		public EntitySet<ResourceAttachment> ResourceAttachments
    		{
    		    get { return this._ResourceAttachments; }
 
@@ -518,7 +518,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_ResourceOrganization_Resource", Storage="_ResourceOrganizations", OtherKey="ResourceId")]
-   		public EntitySet< ResourceOrganization> ResourceOrganizations
+   		public EntitySet<ResourceOrganization> ResourceOrganizations
    		{
    		    get { return this._ResourceOrganizations; }
 
@@ -528,7 +528,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_ResourceOrganizationType_Resource", Storage="_ResourceOrganizationTypes", OtherKey="ResourceId")]
-   		public EntitySet< ResourceOrganizationType> ResourceOrganizationTypes
+   		public EntitySet<ResourceOrganizationType> ResourceOrganizationTypes
    		{
    		    get { return this._ResourceOrganizationTypes; }
 

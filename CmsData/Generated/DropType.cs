@@ -27,7 +27,7 @@ namespace CmsData
 		private bool? _Hardwired;
 		
    		
-   		private EntitySet< Person> _People;
+   		private EntitySet<Person> _People;
 		
     	
 	#endregion
@@ -53,7 +53,7 @@ namespace CmsData
 		public DropType()
 		{
 			
-			this._People = new EntitySet< Person>(new Action< Person>(this.attach_People), new Action< Person>(this.detach_People)); 
+			this._People = new EntitySet<Person>(new Action< Person>(this.attach_People), new Action< Person>(this.detach_People)); 
 			
 			
 			OnCreated();
@@ -155,7 +155,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_People_DropType", Storage="_People", OtherKey="DropCodeId")]
-   		public EntitySet< Person> People
+   		public EntitySet<Person> People
    		{
    		    get { return this._People; }
 

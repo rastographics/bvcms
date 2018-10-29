@@ -5,7 +5,7 @@
     <div class="col-sm-6 col-md-4">
         <div class="well">
             @Html.Raw(ci.hiddenindex)
-            @Html.HiddenFor(m => m.Id, new { @class = "renumberMe" })
+            @Html.HiddenFor(m => m.Id)
             <dl>
                 <dt>Schedule Number</dt>
                 <dd>@Model.Id</dd>

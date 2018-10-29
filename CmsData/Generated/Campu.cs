@@ -27,11 +27,11 @@ namespace CmsData
 		private bool? _Hardwired;
 		
    		
-   		private EntitySet< Organization> _Organizations;
+   		private EntitySet<Organization> _Organizations;
 		
-   		private EntitySet< Person> _People;
+   		private EntitySet<Person> _People;
 		
-   		private EntitySet< Resource> _Resources;
+   		private EntitySet<Resource> _Resources;
 		
     	
 	#endregion
@@ -57,11 +57,11 @@ namespace CmsData
 		public Campu()
 		{
 			
-			this._Organizations = new EntitySet< Organization>(new Action< Organization>(this.attach_Organizations), new Action< Organization>(this.detach_Organizations)); 
+			this._Organizations = new EntitySet<Organization>(new Action< Organization>(this.attach_Organizations), new Action< Organization>(this.detach_Organizations)); 
 			
-			this._People = new EntitySet< Person>(new Action< Person>(this.attach_People), new Action< Person>(this.detach_People)); 
+			this._People = new EntitySet<Person>(new Action< Person>(this.attach_People), new Action< Person>(this.detach_People)); 
 			
-			this._Resources = new EntitySet< Resource>(new Action< Resource>(this.attach_Resources), new Action< Resource>(this.detach_Resources)); 
+			this._Resources = new EntitySet<Resource>(new Action< Resource>(this.attach_Resources), new Action< Resource>(this.detach_Resources)); 
 			
 			
 			OnCreated();
@@ -163,7 +163,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_Organizations_Campus", Storage="_Organizations", OtherKey="CampusId")]
-   		public EntitySet< Organization> Organizations
+   		public EntitySet<Organization> Organizations
    		{
    		    get { return this._Organizations; }
 
@@ -173,7 +173,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_People_Campus", Storage="_People", OtherKey="CampusId")]
-   		public EntitySet< Person> People
+   		public EntitySet<Person> People
    		{
    		    get { return this._People; }
 
@@ -183,7 +183,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_Resource_Campus", Storage="_Resources", OtherKey="CampusId")]
-   		public EntitySet< Resource> Resources
+   		public EntitySet<Resource> Resources
    		{
    		    get { return this._Resources; }
 

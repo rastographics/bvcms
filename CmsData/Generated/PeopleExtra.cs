@@ -20,13 +20,13 @@ namespace CmsData
 		
 		private int _PeopleId;
 		
+		private DateTime _TransactionTime;
+		
 		private string _Field;
 		
 		private string _StrValue;
 		
 		private DateTime? _DateValue;
-		
-		private DateTime _TransactionTime;
 		
 		private string _Data;
 		
@@ -50,7 +50,7 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< Person> _Person;
+		private EntityRef<Person> _Person;
 		
 	#endregion
 	
@@ -62,6 +62,9 @@ namespace CmsData
 		partial void OnPeopleIdChanging(int value);
 		partial void OnPeopleIdChanged();
 		
+		partial void OnTransactionTimeChanging(DateTime value);
+		partial void OnTransactionTimeChanged();
+		
 		partial void OnFieldChanging(string value);
 		partial void OnFieldChanged();
 		
@@ -70,9 +73,6 @@ namespace CmsData
 		
 		partial void OnDateValueChanging(DateTime? value);
 		partial void OnDateValueChanged();
-		
-		partial void OnTransactionTimeChanging(DateTime value);
-		partial void OnTransactionTimeChanged();
 		
 		partial void OnDataChanging(string value);
 		partial void OnDataChanged();
@@ -109,7 +109,7 @@ namespace CmsData
 		{
 			
 			
-			this._Person = default(EntityRef< Person>); 
+			this._Person = default(EntityRef<Person>); 
 			
 			OnCreated();
 		}
@@ -136,6 +136,28 @@ namespace CmsData
 					this._PeopleId = value;
 					this.SendPropertyChanged("PeopleId");
 					this.OnPeopleIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="TransactionTime", UpdateCheck=UpdateCheck.Never, Storage="_TransactionTime", DbType="datetime NOT NULL")]
+		public DateTime TransactionTime
+		{
+			get { return this._TransactionTime; }
+
+			set
+			{
+				if (this._TransactionTime != value)
+				{
+				
+                    this.OnTransactionTimeChanging(value);
+					this.SendPropertyChanging();
+					this._TransactionTime = value;
+					this.SendPropertyChanged("TransactionTime");
+					this.OnTransactionTimeChanged();
 				}
 
 			}
@@ -202,28 +224,6 @@ namespace CmsData
 					this._DateValue = value;
 					this.SendPropertyChanged("DateValue");
 					this.OnDateValueChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="TransactionTime", UpdateCheck=UpdateCheck.Never, Storage="_TransactionTime", DbType="datetime NOT NULL")]
-		public DateTime TransactionTime
-		{
-			get { return this._TransactionTime; }
-
-			set
-			{
-				if (this._TransactionTime != value)
-				{
-				
-                    this.OnTransactionTimeChanging(value);
-					this.SendPropertyChanging();
-					this._TransactionTime = value;
-					this.SendPropertyChanged("TransactionTime");
-					this.OnTransactionTimeChanged();
 				}
 
 			}

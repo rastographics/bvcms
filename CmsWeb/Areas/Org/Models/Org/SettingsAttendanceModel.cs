@@ -34,6 +34,10 @@ namespace CmsWeb.Areas.Org.Models
         }
         public void Update()
         {
+            if (!HasSchedules())
+            {
+                schedules = new List<ScheduleInfo>();
+            }
             this.CopyPropertiesTo(Org);
             DbUtil.Db.SubmitChanges();
         }
@@ -73,19 +77,49 @@ namespace CmsWeb.Areas.Org.Models
         }
         public void UpdateSchedules()
         {
-            DbUtil.Db.OrgSchedules.DeleteAllOnSubmit(Org.OrgSchedules);
-            Org.OrgSchedules.Clear();
-            DbUtil.Db.SubmitChanges();
-            foreach (var s in Schedules.OrderBy(ss => ss.Id))
-                Org.OrgSchedules.Add(new OrgSchedule
+            var db = DbUtil.Db;
+            var orgSchedules = Org.OrgSchedules.ToList();
+            for(int i = orgSchedules.Count - 1; i>=0; i--)
+            {
+                var s = orgSchedules[i];
+                if (!schedules.Any(ss => ss.Id == s.Id))
                 {
-                    OrganizationId = Id,
-                    Id = s.Id,
-                    SchedDay = s.SchedDay.Value.ToInt(),
-                    SchedTime = s.Time.ToDate(),
-                    AttendCreditId = s.AttendCredit.Value.ToInt()
-                });
-            DbUtil.Db.SubmitChanges();
+                    foreach (var memtag in Org.MemberTags.Where(m => m.ScheduleId == s.Id))
+                    {
+                        memtag.ScheduleId = null;
+                        db.SubmitChanges();
+                    }
+                    db.OrgSchedules.DeleteOnSubmit(s);
+                    orgSchedules.Remove(s);
+                }
+            }
+            db.SubmitChanges();
+            foreach (var s in schedules.OrderBy(ss => ss.Id))
+            {
+                if (s.Id == 0)
+                {
+                    s.Id = (orgSchedules.Count > 0) ? orgSchedules.Max(ss => ss.Id) + 1 : 1;
+                }
+                var schedule = orgSchedules.FirstOrDefault(ss => ss.Id == s.Id);
+                if (schedule == null)
+                {
+                    schedule = new OrgSchedule
+                    {
+                        OrganizationId = Id,
+                        Id = s.Id,
+                        SchedDay = s.SchedDay.Value.ToInt(),
+                        SchedTime = s.Time.ToDate(),
+                        AttendCreditId = s.AttendCredit.Value.ToInt()
+                    };
+                    Org.OrgSchedules.Add(schedule);
+                    orgSchedules.Add(schedule);
+                }
+                else
+                {
+                    schedule.Update(s.ToOrgSchedule());
+                }
+            }
+            db.SubmitChanges();
         }
         public SelectList SchedulesPrev()
         {
@@ -121,9 +155,17 @@ Schedules can be 'Every Meeting' for 100% credit or they can be 'One a Week' for
                     throw new Exception("missing schedules");
                 return schedules;
             }
+            set
+            {
+                schedules = value ?? new List<ScheduleInfo>();
+            }
         }
         private List<ScheduleInfo> schedules;
 
+        public bool HasSchedules()
+        {
+            return schedules != null;
+        }
 
         [Display(Name="Does NOT meet weekly", 
             Description = @"

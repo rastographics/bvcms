@@ -26,9 +26,9 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< ContributionFund> _ContributionFund;
+		private EntityRef<ContributionFund> _ContributionFund;
 		
-		private EntityRef< Person> _Person;
+		private EntityRef<Person> _Person;
 		
 	#endregion
 	
@@ -51,9 +51,9 @@ namespace CmsData
 		{
 			
 			
-			this._ContributionFund = default(EntityRef< ContributionFund>); 
+			this._ContributionFund = default(EntityRef<ContributionFund>); 
 			
-			this._Person = default(EntityRef< Person>); 
+			this._Person = default(EntityRef<Person>); 
 			
 			OnCreated();
 		}

@@ -24,6 +24,8 @@ namespace CmsData
 		
 		private string _Settings;
 		
+		private int _Version;
+		
    		
     	
 	#endregion
@@ -41,6 +43,9 @@ namespace CmsData
 		
 		partial void OnSettingsChanging(string value);
 		partial void OnSettingsChanged();
+		
+		partial void OnVersionChanging(int value);
+		partial void OnVersionChanged();
 		
     #endregion
 		public CheckInSetting()
@@ -112,6 +117,28 @@ namespace CmsData
 					this._Settings = value;
 					this.SendPropertyChanged("Settings");
 					this.OnSettingsChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="version", UpdateCheck=UpdateCheck.Never, Storage="_Version", DbType="int NOT NULL")]
+		public int Version
+		{
+			get { return this._Version; }
+
+			set
+			{
+				if (this._Version != value)
+				{
+				
+                    this.OnVersionChanging(value);
+					this.SendPropertyChanging();
+					this._Version = value;
+					this.SendPropertyChanged("Version");
+					this.OnVersionChanged();
 				}
 
 			}

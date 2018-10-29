@@ -27,7 +27,7 @@ namespace CmsData
 		private bool? _Hardwired;
 		
    		
-   		private EntitySet< Task> _Tasks;
+   		private EntitySet<Task> _Tasks;
 		
     	
 	#endregion
@@ -53,7 +53,7 @@ namespace CmsData
 		public TaskStatus()
 		{
 			
-			this._Tasks = new EntitySet< Task>(new Action< Task>(this.attach_Tasks), new Action< Task>(this.detach_Tasks)); 
+			this._Tasks = new EntitySet<Task>(new Action< Task>(this.attach_Tasks), new Action< Task>(this.detach_Tasks)); 
 			
 			
 			OnCreated();
@@ -155,7 +155,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_Task_TaskStatus", Storage="_Tasks", OtherKey="StatusId")]
-   		public EntitySet< Task> Tasks
+   		public EntitySet<Task> Tasks
    		{
    		    get { return this._Tasks; }
 

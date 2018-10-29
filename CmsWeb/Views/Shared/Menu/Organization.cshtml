@@ -17,6 +17,10 @@
         {
           <li>@Helper.JQueryIdLink("Add New Organization", "addorg")</li>
         }
+        @if (User.IsInRole("Checkin"))
+        {
+            <li>@Helper.LiAnchorLink("Check-In Coordinator", "/CheckInCoordinator")</li>
+        }
         @Helper.LiAnchorLink("Coupons", "/Coupon/List", User.IsInRole("Coupon"))
         @Helper.LiAnchorLink("Org Members", "/OrgMembers/", display: User.IsInRole("ManageOrgMembers"))
         @Helper.LiAnchorLink("Promotion", "/Promotion/", User.IsInRole("ManageOrgMembers"))

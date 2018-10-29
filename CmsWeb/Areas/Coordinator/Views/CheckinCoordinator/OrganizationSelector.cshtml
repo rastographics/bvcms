@@ -1,0 +1,92 @@
+﻿@model IEnumerable<CmsWeb.Areas.Coordinator.Models.CheckinScheduleDto>
+
+<div class="list-group">
+    @{
+        var printedHeaders = new List<DateTime>();
+
+        foreach (var item in Model.OrderBy(s => s.NextMeetingDate).ThenBy(s => s.OrganizationName).ThenBy(s => s.SubgroupName))
+        {
+            if (!printedHeaders.Contains(item.NextMeetingDate.Value))
+            {
+                <div class="list-group-item-heading">
+                    <p><i class="fa fa-calendar"></i> @item.NextMeetingDate.Value.ToString("g")</p>
+                </div>
+
+                printedHeaders.Add(item.NextMeetingDate.Value);
+            }
+
+            <div class="list-group-item">
+                <a class="navbar-link" organizationId="@item.OrganizationId" subgroupId="@item.SubgroupId" subgroupName="@item.SubgroupName" selectedTimeslot="@item.NextMeetingDate.Value.ToString("s")">
+                    @item.OrganizationName - @item.SubgroupName
+                </a>
+                <div class="row">
+                    <div class="col-xs-4"><i class="fa fa-user"></i> @item.AttendeeMemberCount</div>
+                    <div class="col-xs-4"><i class="fa fa-support"></i> @item.AttendeeWorkerCount</div>
+                    <div class="col-xs-4"><i class="fa fa-group"></i> @item.CheckInCapacity</div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('.navbar-link').on('click', function (e) {
+            e.preventDefault();
+            $("#OrganizationContainer .list-group-item").removeClass("highlighted");
+            $(this).parent().addClass("highlighted");
+
+            var selectedTimeslot = $('#checkin-timeslot option:selected').val();
+            var selectedProgram = $('#checkin-program option:selected').val();
+            var selectedDivision = $('#checkin-division option:selected').val();
+            var selectedOrganization = $(this).attr('organizationId');
+            var selectedSubgroupId = $(this).attr('subgroupId');
+            var selectedSubgroupName = $(this).attr('subgroupName');
+            selectedTimeslot = $(this).attr('selectedTimeslot') || selectedTimeslot;
+
+            var query = '?' + $.param({
+                organizationId: selectedOrganization,
+                subgroupId: selectedSubgroupId,
+                subgroupName: selectedSubgroupName,
+                selectedTimeslot: selectedTimeslot
+            });
+            $("#DetailsContainer").load('@Url.Action("Details")' + query);
+        });
+
+        function setDisplay($this, show) {
+            $this && $this.css({ display: show ? 'block' : 'none' });
+        }
+
+        var findgroupTimeout;
+        var $find_group = $('#find_group').val('').keyup(function () {
+            clearTimeout(findgroupTimeout);
+            findgroupTimeout = setTimeout(function () {
+                var value = $find_group.val().trim();
+                var search = value ? RegExp(value, 'i') : null;
+                var $heading;
+                var showHeading;
+                $('#OrganizationContainer > .list-group > *').each(function () {
+                    var $this = $(this);
+                    if ($this.is('.list-group-item-heading')) {
+                        setDisplay($heading, showHeading);
+                        $heading = $this;
+                        showHeading = false;
+                    }
+                    var text = $this.find('a.navbar-link').text();
+                    var match = !search || text.match(search);
+                    showHeading = match || showHeading;
+                    setDisplay($this, match);
+                    if (!match && $this.is('.highlighted')) {
+                        $("#DetailsContainer").empty();
+                        $this.removeClass('highlighted');
+                    }
+                });
+                setDisplay($heading, showHeading);
+            }, 333);
+        });
+        $('#find_group_clear').click(function (event) {
+            event.preventDefault();
+            $find_group.val('').trigger('keyup').focus();
+        });
+    });
+</script>

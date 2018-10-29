@@ -24,11 +24,11 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< Person> _Person;
+		private EntityRef<Person> _Person;
 		
-		private EntityRef< Volunteer> _Volunteer;
+		private EntityRef<Volunteer> _Volunteer;
 		
-		private EntityRef< VolunteerCode> _VolunteerCode;
+		private EntityRef<VolunteerCode> _VolunteerCode;
 		
 	#endregion
 	
@@ -48,11 +48,11 @@ namespace CmsData
 		{
 			
 			
-			this._Person = default(EntityRef< Person>); 
+			this._Person = default(EntityRef<Person>); 
 			
-			this._Volunteer = default(EntityRef< Volunteer>); 
+			this._Volunteer = default(EntityRef<Volunteer>); 
 			
-			this._VolunteerCode = default(EntityRef< VolunteerCode>); 
+			this._VolunteerCode = default(EntityRef<VolunteerCode>); 
 			
 			OnCreated();
 		}

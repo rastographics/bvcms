@@ -87,5 +87,15 @@ namespace CmsWeb.Areas.Org.Models
         }
 
         public DateTime NextMeetingTime => PrevMeetingTime.AddDays(7);
+
+        public OrgSchedule ToOrgSchedule()
+        {
+            return new OrgSchedule {
+                Id = Id,
+                AttendCreditId = AttendCredit.Value.ToInt(),
+                SchedDay = SchedDay.Value.ToInt(),
+                SchedTime = Time.ToDate()
+            };
+        }
     }
 }

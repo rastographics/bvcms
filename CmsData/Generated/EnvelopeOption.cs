@@ -27,9 +27,9 @@ namespace CmsData
 		private bool? _Hardwired;
 		
    		
-   		private EntitySet< Person> _EnvPeople;
+   		private EntitySet<Person> _EnvPeople;
 		
-   		private EntitySet< Person> _StmtPeople;
+   		private EntitySet<Person> _StmtPeople;
 		
     	
 	#endregion
@@ -55,9 +55,9 @@ namespace CmsData
 		public EnvelopeOption()
 		{
 			
-			this._EnvPeople = new EntitySet< Person>(new Action< Person>(this.attach_EnvPeople), new Action< Person>(this.detach_EnvPeople)); 
+			this._EnvPeople = new EntitySet<Person>(new Action< Person>(this.attach_EnvPeople), new Action< Person>(this.detach_EnvPeople)); 
 			
-			this._StmtPeople = new EntitySet< Person>(new Action< Person>(this.attach_StmtPeople), new Action< Person>(this.detach_StmtPeople)); 
+			this._StmtPeople = new EntitySet<Person>(new Action< Person>(this.attach_StmtPeople), new Action< Person>(this.detach_StmtPeople)); 
 			
 			
 			OnCreated();
@@ -159,7 +159,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="EnvPeople__EnvelopeOption", Storage="_EnvPeople", OtherKey="EnvelopeOptionsId")]
-   		public EntitySet< Person> EnvPeople
+   		public EntitySet<Person> EnvPeople
    		{
    		    get { return this._EnvPeople; }
 
@@ -169,7 +169,7 @@ namespace CmsData
 
 		
    		[Association(Name="StmtPeople__ContributionStatementOption", Storage="_StmtPeople", OtherKey="ContributionOptionsId")]
-   		public EntitySet< Person> StmtPeople
+   		public EntitySet<Person> StmtPeople
    		{
    		    get { return this._StmtPeople; }
 

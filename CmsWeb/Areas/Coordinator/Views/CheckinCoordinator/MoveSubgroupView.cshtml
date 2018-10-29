@@ -1,0 +1,224 @@
+﻿@model CmsWeb.Areas.Coordinator.Models.SubgroupModel
+@using CmsData
+@using UtilityExtensions
+@{
+    Layout = "~/Views/Shared/_LayoutCheckIn.cshtml";
+    ViewBag.Title = "Check-In Coordinator";
+    ViewBag.PageHeader = "Check-In Coordinator";
+}
+@ViewExtensions2.jQuery()
+@ViewExtensions2.jQueryUI()
+@{
+    var selectedCount = Model.SelectedOrgMembers(Model.SelectedPeopleIds).Count();
+    var opengroupCount = Model.GetAllGroupDetails().Count(k => k.CheckInOpen && k.GroupId != Model.groupid);
+    var closedGroupcount = Model.GetAllGroupDetails().Count(k => k.CheckInOpen == false && k.GroupId != Model.groupid);
+}
+<style>
+    .localheader {
+        width: 100%;
+        height: 25px;
+        background: gainsboro;
+        color: black;
+        font-weight: bolder;
+        text-align: center;
+        line-height: 3;
+        border: 0;        
+    }
+
+    .labelhighlighted {
+        min-height: 40px;
+        min-width: 95%;
+        background: lightsteelblue;
+        border-style: outset;
+        border: 2px;
+        vertical-align: middle;
+        line-height: 3;
+        padding: 5px;
+    }
+
+    .labelnothighlighted {
+        min-height: 40px;
+        min-width: 95%;
+        background: lightgrey;
+        border-style: outset;
+        border: 2px;
+        vertical-align: middle;
+        line-height: 3;
+        padding: 5px;
+    }
+
+
+    .radiohighlighted {
+        min-height: 40px;
+        min-width: 95%;
+        background: lightsteelblue;
+        border-style: outset;
+        border: 2px;
+        vertical-align: middle;
+        line-height: 3;
+        padding: 5px;
+    }
+
+    .radionothighlighted {
+        min-height: 40px;
+        min-width: 95%;
+        background: lightgrey;
+        border-style: outset;
+        border: 2px;
+        vertical-align: middle;
+        line-height: 3;
+        padding: 5px;
+    }
+
+</style>
+@Html.Hidden("OrgId", Model.orgid)
+@Html.Hidden("GroupId", Model.groupid)
+<div class="row">
+    <div class="col-lg-12" style="padding: 5px !important;">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <div class="form-group" style="width: 90%; margin-left: 40px; margin-right: 40px">
+                    <div class="form-group">
+                        <div class="table-responsive">
+                            <input class="localheader" type="text" value="Selected People">                            
+                            <table id="selectedPeople" class="table">
+                                <tbody>
+                                @{
+                                    int i = 1;
+                                }
+                                @foreach (var om in Model.SelectedOrgMembers(Model.SelectedPeopleIds))
+                                {
+                                    if ((i % 5) == 0 || i == 1)
+                                    {
+                                        @:<tr>
+                                    }
+                                    <td style="border: 0 !important;min-width: 225px">
+                                        <label class="labelhighlighted"><input style="width: 20px; height: 15px" type="checkbox" checked class="checkSingleConflicts" value="@om.PeopleId">&nbsp;&nbsp;@om.Name</label>
+                                    </td>
+                                    if ((i % 4) == 0 || selectedCount == i)
+                                    {
+                                        if ((i % 4) != 0 && selectedCount == i)
+                                        {
+                                            for (int x = i; x % 4 != 0; x++)
+                                            {
+                                                <td style="border: 0 !important; min-width: 225px">
+                                                </td>
+                                            }
+                                        }
+                                        @:</tr>
+                                    }
+                                    i++;
+                                }
+                                </tbody>
+                            </table>
+                            <input class="localheader" type="text" value="Open Sub-groups">
+                            <table id="openSubgroups" class="table">
+                                <tbody>
+                                @{
+                                    i = 1;
+                                }
+                                @foreach (var om in Model.GetAllGroupDetails().Where(k => k.CheckInOpen))
+                                {
+                                    if (om.GroupId != Model.groupid)
+                                    {
+                                        if ((i % 5) == 0 || i == 1)
+                                        {
+                                            @:<tr>
+                                        }
+                                        <td style="border: 0 !important;min-width: 225px">
+                                            <label class="labelnothighlighted"><input class="checkRadio" style="width: 20px; height: 15px" type="radio" name="group" value="@om.GroupId">@om.Name</label>
+                                        </td>
+                                        if ((i % 4) == 0 || opengroupCount == i)
+                                        {
+                                            if ((i % 4) != 0 && opengroupCount ==i)
+                                            {
+                                                for (int x = i; x % 4 != 0; x++)
+                                                {
+                                                    <td style="border: 0 !important; min-width: 225px">
+                                                    </td>
+                                                }
+                                            }
+                                            @:</tr>
+                                        }
+                                        i++;
+                                    }
+                                }
+                                </tbody>
+                            </table>
+                            <input class="localheader" type="text" value="Closed Sub-groups">
+                            <table id="closedSubgroups" class="table">
+                                <tbody>
+                                @{
+                                    i = 1;
+                                }
+                                @foreach (var om in Model.GetAllGroupDetails())
+                                {
+                                    if (!om.CheckInOpen && om.GroupId != Model.groupid)
+                                    {
+                                        if ((i % 5) == 0 || i == 1)
+                                        {
+                                            @:<tr>
+                                        }
+                                        <td style="border: 0 !important;min-width: 225px">
+                                            <label class="labelnothighlighted"><input class="checkRadio" style="width: 20px; height: 15px" type="radio" name="group" value="@om.GroupId">@om.Name</label>
+                                        </td>
+                                        if ((i % 4) == 0 || closedGroupcount == i)
+                                        {
+                                            if ((i % 4) != 0 && closedGroupcount == i)
+                                            {
+                                                for (int x = i; x % 4 != 0; x++)
+                                                {
+                                                    <td style="border: 0 !important; min-width: 225px">
+                                                    </td>
+                                                }
+                                            }
+                                            @:</tr>
+                                        }
+                                        i++;
+                                    }
+                                }
+                                </tbody>
+                            </table>
+                            <input style="width: 100%; height: 50px; background: #003f72; color: white; font-weight: bolder; text-align: center; line-height: 3" type="button" id="movebtn" class="btn btn-primary" value="MOVE">
+                        </div>  
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $('.checkSingleConflicts').on('click', function () {
+        if ($(this).is(':checked')) {
+            $(this).parent().removeClass('labelnothighlighted');
+            $(this).parent().addClass('labelhighlighted');
+        } else {
+            $(this).parent().removeClass('labelhighlighted');
+            $(this).parent().addClass('labelnothighlighted');            
+        }
+    });
+    $('.checkRadio').on('click', function () {    
+        $('.radiohighlighted').removeClass('radiohighlighted');
+            $(this).parent().addClass('radiohighlighted');
+    });
+    $('#movebtn').on('click',
+        function () {
+            var list = [];
+            $('input[type="checkbox"]:checked').each(function () {
+                if (typeof $(this).val() != 'undefined') {
+                    list.push($(this).val());
+                }
+            });
+            if (list.length === 0)
+                return;
+
+            var temp = list.toString();
+            var url = '@Html.Raw(Url.Action("UpdateSmallGroup", "Coordinator", new {id="-1", curgrpid = "-2", targrpid = "-3", list="-4" }))';
+            url = url.replace("-1", $('#OrgId').val());
+            url = url.replace("-2", $('#GroupId').val());
+            url = url.replace("-3", $('input[type="radio"][name="group"]:checked').val());
+            url = url.replace("-4", temp);
+            window.location.replace(url);
+
+        });
+</script>

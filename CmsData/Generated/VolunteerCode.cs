@@ -27,7 +27,7 @@ namespace CmsData
 		private bool? _Hardwired;
 		
    		
-   		private EntitySet< VoluteerApprovalId> _VoluteerApprovalIds;
+   		private EntitySet<VoluteerApprovalId> _VoluteerApprovalIds;
 		
     	
 	#endregion
@@ -53,7 +53,7 @@ namespace CmsData
 		public VolunteerCode()
 		{
 			
-			this._VoluteerApprovalIds = new EntitySet< VoluteerApprovalId>(new Action< VoluteerApprovalId>(this.attach_VoluteerApprovalIds), new Action< VoluteerApprovalId>(this.detach_VoluteerApprovalIds)); 
+			this._VoluteerApprovalIds = new EntitySet<VoluteerApprovalId>(new Action< VoluteerApprovalId>(this.attach_VoluteerApprovalIds), new Action< VoluteerApprovalId>(this.detach_VoluteerApprovalIds)); 
 			
 			
 			OnCreated();
@@ -155,7 +155,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_VoluteerApprovalIds_VolunteerCodes", Storage="_VoluteerApprovalIds", OtherKey="ApprovalId")]
-   		public EntitySet< VoluteerApprovalId> VoluteerApprovalIds
+   		public EntitySet<VoluteerApprovalId> VoluteerApprovalIds
    		{
    		    get { return this._VoluteerApprovalIds; }
 
