@@ -336,7 +336,7 @@ in {org.OrganizationName}<br />
             var list = Db.PeopleFromPidString(org.NotifyIds).ToList();
             list.Insert(0, person);
             Db.Email(i.volunteer.FromEmail, list,
-                "Volunteer Committment for " + org.OrganizationName,
+                "Volunteer Commitment for " + org.OrganizationName,
                 $@"
 <p>The following email was sent to {i.volunteer.Name}.</p>
 <blockquote>

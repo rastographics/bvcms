@@ -1,16 +1,16 @@
-﻿using System;
+﻿using CmsData;
+using CmsData.Codes;
+using CmsData.Registration;
+using CmsData.View;
+using CmsWeb.Areas.Main.Models;
+using Elmah;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using CmsData;
-using CmsData.Registration;
-using UtilityExtensions;
-using CmsWeb.Areas.Main.Models;
 using System.Web.Hosting;
 using System.Web.Mvc;
-using CmsData.Codes;
-using CmsData.View;
-using Elmah;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -65,17 +65,32 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             var error = "";
             if (!guid.HasValue())
+            {
                 error = "bad link";
+            }
+
             var g = guid.ToGuid();
             if (g == null)
+            {
                 error = "invalid link";
+            }
+
             var ot = Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == g.Value);
             if (ot == null)
+            {
                 error = "invalid link";
+            }
+
             if (ot.Expires.HasValue && ot.Expires < DateTime.Now)
+            {
                 error = "link expired";
+            }
+
             if (error.HasValue())
+            {
                 throw new Exception(error);
+            }
+
             ot.Used = true;
             Db.SubmitChanges();
             var a = ot.Querystring.Split(',');
@@ -247,17 +262,32 @@ Sorry, I cannot sub for you.</a>";
         {
             var error = "";
             if (!guid.HasValue())
+            {
                 error = "bad link";
+            }
+
             var g = guid.ToGuid();
             if (g == null)
+            {
                 error = "invalid link";
+            }
+
             var ot = Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == g.Value);
             if (ot == null)
+            {
                 error = "invalid link";
+            }
+
             if (ot.Expires.HasValue && ot.Expires < DateTime.Now)
+            {
                 error = "link expired";
+            }
+
             if (error.HasValue())
+            {
                 throw new Exception(error);
+            }
+
             var a = ot.Querystring.Split(',');
             FetchEntities(a[0].ToInt(), a[1].ToInt());
             ticks = a[2].ToLong();
@@ -316,13 +346,13 @@ Sorry, I cannot sub for you.</a>";
 
             // email confirmation
             Db.Email(i.Requestor.FromEmail, i.Substitute,
-                "Volunteer Substitute Committment for " + org.OrganizationName, body);
+                "Volunteer Substitute Commitment for " + org.OrganizationName, body);
 
             // notify requestor and org notifyids
             var list = Db.PeopleFromPidString(org.NotifyIds).ToList();
             list.Insert(0, i.Requestor);
             Db.Email(i.Substitute.FromEmail, list,
-                "Volunteer Substitute Committment for " + org.OrganizationName,
+                "Volunteer Substitute Commitment for " + org.OrganizationName,
                 $@"
 <p>The following email was sent to {i.Substitute.Name}.</p>
 <blockquote>
