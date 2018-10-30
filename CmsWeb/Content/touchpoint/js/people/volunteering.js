@@ -1,6 +1,6 @@
 ﻿$(function () {
 
-    var getSubmitDialog = function() {
+    var getSubmitDialog = function () {
         return $('#dialogHolder');
     };
 
@@ -50,21 +50,38 @@
             confirmButtonText: 'Yes, delete it!',
             closeOnConfirm: false
         },
-        function() {
-            $.post('/Volunteering/DeleteCheck/' + id, null, function(ret) {
-                if (ret && ret.error)
-                    swal('Error!', ret.error, 'error');
-                else {
-                    swal({
-                        title: 'Deleted!',
-                        type: 'success'
-                    },
-                    function () {
-                        document.location.reload();
-                    });
-                }
+            function () {
+                $.post('/Volunteering/DeleteCheck/' + id, null, function (ret) {
+                    if (ret && ret.error)
+                        swal('Error!', ret.error, 'error');
+                    else {
+                        swal({
+                            title: 'Deleted!',
+                            type: 'success'
+                        },
+                            function () {
+                                document.location.reload();
+                            });
+                    }
+                });
             });
-        });
+    });
+
+    $('.deleteVolDocument').click(function (e) {
+        e.preventDefault();        
+        var form = $(this).parents('form');        
+        swal({
+            title: 'Are you sure?',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonClass: 'btn-danger',
+            confirmButtonText: 'Yes, delete it!',
+            closeOnConfirm: false
+        },
+            function () {                
+                form.submit();
+            }
+        );        
     });
 
     $('#documents a.editable').editable({
@@ -80,3 +97,8 @@
     $.InitFunctions.Editable();
     $.InitFunctions.ExtraEditable();
 });
+
+function confirmDelete(ev) {
+    ev.preventDefault();
+    
+}
