@@ -66,7 +66,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                     prevbatch = batch;
                 }
 
-                var amount = csv[Columns.NetAmount.ToInt()];
+                var amount = csv[Columns.GrossAmount.ToInt()];
 
                 var bd = new BundleDetail
                 {
