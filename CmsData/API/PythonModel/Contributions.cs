@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Data;
 using System.Linq;
 using System.Text;
+using CmsData.API;
 using CmsData.Codes;
+using Dapper;
 using UtilityExtensions;
 
 namespace CmsData
@@ -83,6 +86,31 @@ namespace CmsData
             db.FetchOrCreateFund(toid, name ?? oldfund.FundDescription);
             var sql = $"update dbo.contribution set fundid = {toid} where fundid = {fromid}";
             db.ExecuteCommand(sql);
+        }
+        /// <summary>
+        /// ContributionTags table is used to cache sets of contributions so that dashboard reports can run very quickly.
+        /// This function will create a tag of the contributions matching the json critera.
+        /// See the SQL function Contributions2SearchIds for what values can be used in the JSON
+        /// 
+        /// This will first delete the ContributionTags of given name so that it is replaced with new ids
+        /// you can add "AddToTag": 1 to the json if you want to preserve existing Tags of this name.
+        /// </summary>
+        public string CreateContributionTag(string name, DynamicData dd)
+        {
+            var p = new DynamicParameters();
+            p.Add("@tagname", name);
+            var json = JsonSerialize(dd);
+            p.Add("@json", json);
+            db.Connection.Execute("dbo.TagContributions", p, commandType: CommandType.StoredProcedure);
+            return $@"{name} = {FormatJson(dd)}";
+        }
+        /// <summary>
+        /// It is good practice to give a set of tags for a particular report a common prefix like a namespace.
+        /// This way you can remove old tags in the Python script before createing new ones.
+        /// </summary>
+        public void DeleteContributionTags(string namelike)
+        {
+            db.Connection.Execute("DELETE dbo.ContributionTag WHERE TagName LIKE @namelike", new {namelike});
         }
     }
 }
