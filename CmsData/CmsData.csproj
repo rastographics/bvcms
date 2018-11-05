@@ -1292,6 +1292,7 @@
     <Content Include="Migrations\20180919_add-sms-groups-deleted-flag.sql" />
     <Content Include="Migrations\20180831_add_fundmanager_role.sql" />
     <Content Include="Migrations\20180831_add-description-to-contribution-functions.sql" />
+    <Content Include="Migrations\20181105_fix_contributions2_func_for_individuals.sql" />
     <Content Include="Migrations\20181031_split_first_lastname_add_Email_GetTotalContributionsDonor.sql" />
     <Content Include="Migrations\20181019_add_pushpay_pk.sql" />
     <Content Include="Migrations\20181015_add_pushpay_schema.sql" />
