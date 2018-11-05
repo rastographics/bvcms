@@ -1,4 +1,4 @@
-﻿ALTER function [dbo].[Contributions2]
+ALTER function [dbo].[Contributions2]
 (
 	@fd datetime, 
 	@td datetime,
@@ -82,9 +82,9 @@ from dbo.Contribution c
 	join lookup.BundleStatusTypes bst on h.BundleStatusId = bst.Id
 	join dbo.People p on c.PeopleId = p.PeopleId
 	join dbo.Families fa on p.FamilyId = fa.FamilyId
-	join dbo.People sp on sp.PeopleId = p.SpouseId
-	join lookup.MaritalStatus mssp on mssp.Id = sp.MaritalStatusId
-	join lookup.MaritalStatus msp on msp.Id = p.MaritalStatusId
+	left join dbo.People sp on sp.PeopleId = p.SpouseId
+	left join lookup.MaritalStatus mssp on mssp.Id = sp.MaritalStatusId
+	left join lookup.MaritalStatus msp on msp.Id = p.MaritalStatusId
 	left outer join dbo.[Transaction] t on t.Id = c.TranId
 	left outer join lookup.Campus ca on ca.Id = c.CampusId
 where c.ContributionTypeId not in (6,7) -- no reversed or returned
@@ -95,3 +95,6 @@ where c.ContributionTypeId not in (6,7) -- no reversed or returned
 	and (isnull(h.BundleStatusId, 0) = 0 or @includeUnclosed = 1)
     and (@campusid = 0 or c.CampusId = @campusid) -- campusid = 0 = all
 )
+GO
+
+
