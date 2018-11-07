@@ -58,7 +58,7 @@ namespace CmsData.Classes.Twilio
 
                 if (!string.IsNullOrEmpty(i.CellPhone))
                 {
-                    item.Number = i.CellPhone;
+                    item.Number = string.Format("+{0}",i.CellPhone);
                 }
                 else
                 {
