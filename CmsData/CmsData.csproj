@@ -1283,15 +1283,15 @@
     <Content Include="Migrations\20180806_update_purge_person_sproc.sql" />
     <Content Include="Migrations\20180817_update_enrollment_history_func.sql" />
     <Content Include="Migrations\20180827_sms-number-group-system-flag.sql" />
-    <Content Include="Migrations\20181022-1_update_Contributions2_func.sql" />
     <Content Include="Migrations\20181022-4_create_TagContributions_func.sql" />
     <Content Include="Migrations\20181022-2_create_ContributionsTag_table.sql" />
-    <Content Include="Migrations\20181013_update_contributions2_func.sql" />
     <Content Include="Migrations\20181011_add_contribution_origin_column.sql" />
     <Content Include="Migrations\20181004_update_NonTaxDed_include_both_contributions.sql" />
     <Content Include="Migrations\20180919_add-sms-groups-deleted-flag.sql" />
     <Content Include="Migrations\20180831_add_fundmanager_role.sql" />
     <Content Include="Migrations\20180831_add-description-to-contribution-functions.sql" />
+    <Content Include="Migrations\20181105_fix_contributions2_func_for_individuals.sql" />
+    <Content Include="Migrations\20181031_split_first_lastname_add_Email_GetTotalContributionsDonor.sql" />
     <Content Include="Migrations\20181019_add_pushpay_pk.sql" />
     <Content Include="Migrations\20181015_add_pushpay_schema.sql" />
     <Content Include="Migrations\20181011_update_spouseId_function.sql" />
