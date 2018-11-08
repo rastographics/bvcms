@@ -96,7 +96,10 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             if (!PeopleId.HasValue || !OrgId.HasValue)
                 return "not moved";
-            OrganizationMember.MoveToOrg(DbUtil.Db, PeopleId.Value, OrgId.Value, toid, MoveRegistrationData);           
+            OrganizationMember.MoveToOrg(DbUtil.Db, PeopleId.Value, OrgId.Value, toid, MoveRegistrationData);
+            //Once member has been inserted into the new Organization then update member in Organizations as enrolled / not enrolled accordingly
+            DbUtil.Db.RepairTransactions(OrgId.Value);
+            DbUtil.Db.RepairTransactions(toid);
             DbUtil.LogActivity("OrgMem Move to " + toid, OrgId, PeopleId);
             return "moved";
         }
