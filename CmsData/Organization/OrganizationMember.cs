@@ -784,6 +784,10 @@ AND a.PeopleId = {2}
             if (om.OrganizationId != tom.OrganizationId)
                 tom.Moved = true;
             om.Drop(db, skipTriggerProcessing: true);
+
+            //Once member has been inserted into the new Organization then update member in Organizations as enrolled / not enrolled accordingly
+            db.RepairTransactions(fromOrg);
+            db.RepairTransactions(toOrg);
             db.SubmitChanges();
         }
     }

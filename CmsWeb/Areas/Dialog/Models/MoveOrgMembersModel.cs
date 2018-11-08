@@ -76,8 +76,6 @@ namespace CmsWeb.Areas.Dialog.Models
                 if (oid == model.TargetId)
                     continue;
                 OrganizationMember.MoveToOrg(db, pid, oid, model.TargetId, model.MoveRegistrationData, model.ChangeMemberType == true ? model.MoveToMemberTypeId : -1);
-                //Once member has been inserted into the new Organization then update member  in Previous Organization as not enrolled.
-                db.RepairTransactions(oid);
                 lop = FetchLongRunningOperation(db, Op, model.QueryId);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;

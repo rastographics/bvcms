@@ -96,8 +96,7 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             if (!PeopleId.HasValue || !OrgId.HasValue)
                 return "not moved";
-            OrganizationMember.MoveToOrg(DbUtil.Db, PeopleId.Value, OrgId.Value, toid, MoveRegistrationData);
-            DbUtil.Db.RepairTransactions(OrgId.Value);
+            OrganizationMember.MoveToOrg(DbUtil.Db, PeopleId.Value, OrgId.Value, toid, MoveRegistrationData);           
             DbUtil.LogActivity("OrgMem Move to " + toid, OrgId, PeopleId);
             return "moved";
         }
