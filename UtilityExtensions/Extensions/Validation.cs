@@ -34,6 +34,11 @@ namespace UtilityExtensions
             return i;
         }
 
+        public static string ToNull(this string value)
+        {
+            return value.HasValue() ? value : null;
+        }
+
         public static bool Has(this object obj, string propertyName)
         {
             var dynamic = obj as DynamicObject;

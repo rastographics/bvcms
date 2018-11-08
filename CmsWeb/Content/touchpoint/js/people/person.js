@@ -640,6 +640,14 @@
         } else {
             $('#myDataUserRole').prop('checked', true);
         }
+        var viewVolApp = $('#role-list input[value="ViewVolunteerApplication"]');
+        var appRev = $('#role-list input[value="ApplicationReview"]');
+        if ($(this).attr('value') == appRev.attr('value')) {    
+            viewVolApp.prop('checked', false);
+        }
+        if ($(this).attr('value') == viewVolApp.attr('value')) {
+            appRev.prop('checked', false);
+        }
     });
 
     $('body').on('click', '#myDataUserRole', function (ev) {
