@@ -1,4 +1,4 @@
-﻿CREATE function [dbo].[Contributions2SearchIds] ( @json varchar(max) )
+﻿CREATE OR ALTER function [dbo].[Contributions2SearchIds] ( @json varchar(max) )
 RETURNS 
 @t table ( ContributionId int )
 AS
