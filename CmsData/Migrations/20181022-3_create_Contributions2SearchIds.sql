@@ -1,4 +1,8 @@
-﻿CREATE OR ALTER function [dbo].[Contributions2SearchIds] ( @json varchar(max) )
+﻿IF OBJECT_ID('dbo.Contributions2SearchIds') IS NOT NULL
+	DROP FUNCTION dbo.Contributions2SearchIds
+GO
+
+CREATE FUNCTION [dbo].[Contributions2SearchIds] ( @json varchar(max) )
 RETURNS 
 @t table ( ContributionId int )
 AS
@@ -12,7 +16,7 @@ begin
 	declare @Description varchar(max) = (select json_value(@json, '$.Description'))
 	declare @TransactionDesc varchar(max) = (select json_value(@json, '$.TransactionDesc'))
 	declare @Source int = (select json_value(@json, '$.Source'))
-    declare @ContributionTags varchar(max) = (select json_value(@json, '$.ContributionTags'))
+	declare @ContributionTags varchar(max) = (select json_value(@json, '$.ContributionTags'))
 
 	declare @notfunds bit = 0
 	if @FundIds like '<>%'
@@ -62,24 +66,21 @@ begin
 	) c
 	where (@BundleTypes is null or exists(select null from @btypes where btype = c.BundleType))
 	and case when @FundIds is null then 1
-			 when @notfunds = 1 then iif(not exists(select null from @funds where fundid = c.FundId), 1, 0)
-			 else iif(exists(select null from @funds where fundid = c.FundId), 1, 0)
-			 end = 1
+			when @notfunds = 1 then iif(not exists(select null from @funds where fundid = c.FundId), 1, 0)
+			else iif(exists(select null from @funds where fundid = c.FundId), 1, 0)
+			end = 1
 	and case when @Description is null then 1
-			 when @notdesc = 1 then iif(c.ContributionDesc <> @Description, 1, 0)
-			 else iif(c.ContributionDesc = @Description, 1, 0)
-			 end = 1
+			when @notdesc = 1 then iif(c.ContributionDesc <> @Description, 1, 0)
+			else iif(c.ContributionDesc = @Description, 1, 0)
+			end = 1
 	and case when @TransactionDesc is null then 1
-			 when @nottrandesc = 1 then iif(c.TransactionDesc <> @TransactionDesc, 1, 0)
-			 else iif(c.TransactionDesc = @TransactionDesc, 1, 0)
-			 end = 1
+			when @nottrandesc = 1 then iif(c.TransactionDesc <> @TransactionDesc, 1, 0)
+			else iif(c.TransactionDesc = @TransactionDesc, 1, 0)
+			end = 1
 	and (@Source is null or isnull(c.Source, 0) = @Source) /* 0 = not mobile, 1 = mobile */
 	and case when @ContributionTags is null then 1
-			 when @nottags = 1 then iif(not exists(select null from dbo.ContributionTag ct join @tags tt on tt.TagName = ct.TagName and ct.ContributionId = c.ContributionId), 1, 0)
-			 else iif(exists(select null from dbo.ContributionTag ct join @tags tt on tt.TagName = ct.TagName and ct.ContributionId = c.ContributionId), 1, 0)
-			 end = 1
+			when @nottags = 1 then iif(not exists(select null from dbo.ContributionTag ct join @tags tt on tt.TagName = ct.TagName and ct.ContributionId = c.ContributionId), 1, 0)
+			else iif(exists(select null from dbo.ContributionTag ct join @tags tt on tt.TagName = ct.TagName and ct.ContributionId = c.ContributionId), 1, 0)
+			end = 1
 	return
 end
-
-
-
