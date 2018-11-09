@@ -3,12 +3,28 @@
 <div class="form-group">
     <div id="SubgroupDataContainer">
         <div class="box box-primary">
-            <div class="box-title">
+            <div class="box-title" style="padding: 0; height: auto;">
                 <div class="col-xs-9">
-                    <p class="title">@Model.NextMeetingDate.Value.ToString("g") | @Model.OrganizationName - @Model.SubgroupName</p>
+                    <h3 class="title">@Model.OrganizationName - @Model.NextMeetingDate.Value.ToString("g") - @Model.SubgroupName</h3>
                 </div>
-                <div class="col-xs-3 text-right">
-                    <a href="#" id="setdefaults" class="btn btn-default btn-sm">Set Defaults</a>
+                <div class="col-xs-3" style="display: flex;align-items: center;justify-content: flex-end;height: 56px;">
+
+                    @if (@Model.CheckInOpen)
+                    {
+                    <div class="metric-value">
+                        <span class="h4" style="margin-right: 14px;font-weight:600;">Open</span>
+                        <i class="fa fa-toggle-on fa-2x active" id="on"></i>
+                        <i class="fa fa-toggle-on fa-2x fa-rotate-180 inactive" id="off" style="display: none;"></i>
+                    </div>
+                    }
+                    else
+                    {
+                        <div class="metric-value">
+                            <span class="h4" style="margin-right: 14px;font-weight:600;">Closed</span>
+                            <i class="fa fa-toggle-on fa-2x active" id="on" style="display: none;"></i>
+                            <i class="fa fa-toggle-on fa-2x fa-rotate-180 inactive" id="off"></i>
+                        </div>
+                    }
                 </div>
             </div>
             <div class="box-content">
@@ -21,80 +37,76 @@
 
                 <div style="display: grid; justify-items: center; align-items: center; grid-template-columns: 25% 25% 25% 25%;">
                     <div class="metric">
-                        <h3 class="metric-title"><i class="fa fa-user"></i> Members</h3>
                         <div class="metric-value circle">@Model.AttendeeMemberCount</div>
+                        <h4 class="metric-title">Participants</h4>
                     </div>
                     <div class="metric">
-                        <h3 class="metric-title"><i class="fa fa-support"></i> Volunteers</h3>
-                        <div class="metric-value circle">@Model.AttendeeWorkerCount</div>
-                    </div>
-                    <div class="metric">
-                        <div class="metric-value">
-                            <h3 class="metric-title"><i class="fa fa-group"></i> Capacity</h3>
-                            <div class="circle">@Model.CheckInCapacity</div>
-
-                            <div>
-                                <a id="remove" class="btn" href=""><i class="fa fa-minus-circle fa-2x"></i></a>
-                                <a id="add" class="btn" href="#"><i class="fa fa-plus-circle fa-2x"></i></a>
+                        <div style="display: grid; justify-items: center; align-items: center; grid-template-columns: 25% 50% 25%;">
+                            <a id="remove" class="btn" href=""><i class="fa fa-minus-circle fa-2x"></i></a>
+                            <div class="metric-value">
+                                <div class="circle">@Model.CheckInCapacity</div>
                             </div>
+                            <a id="add" class="btn" href="#"><i class="fa fa-plus-circle fa-2x"></i></a>
                         </div>
+                        <h4 class="metric-title">Capacity</h4>
                     </div>
                     <div class="metric">
-                        <h3 class="metric-title">Open</h3>
-                        <div class="metric-value">
-                            @if (@Model.CheckInOpen)
-                            {
-                                <i class="fa fa-toggle-on fa-3x active" id="on"></i>
-                                <i class="fa fa-toggle-on fa-3x fa-rotate-180 inactive" id="off" style="display: none;"></i>
-                            }
-                            else
-                            {
-                                <i class="fa fa-toggle-on fa-3x active" id="on" style="display: none;"></i>
-                                <i class="fa fa-toggle-on fa-3x fa-rotate-180 inactive" id="off"></i>
-                            }
+                        <div class="metric-value circle">@Model.AttendeeWorkerCount</div>
+                        <h4 class="metric-title">Volunteers</h4>
+                    </div>
+                    <div class="metric" style="width: 100%; text-align: right;">
+                        <a href="#" id="setdefaults" class="btn btn-default btn-sm">Set Defaults</a><br/>
+                        <a href="#" id="setalldefaults" class="btn btn-default btn-sm" style="margin-top: 10px;">Set All Defaults</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="table-responsive">
+                            <table id="members" class="table">
+                                <thead>
+                                    <tr style="background: gainsboro;">
+                                        <th style="text-align: center">Participants</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var attendee in Model.Attendees.Where(a => !a.IsWorker))
+                                    {
+                                        <tr>
+                                            <td style="padding: 0 !important;border: 0 !important; min-width: 225px; line-height: 5">
+                                                <label class="labelnothighlighted"><input style="width: 20px; height: 15px" class="checkSingle" type="checkbox" value="@attendee.PeopleId">@attendee.Name</label>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="table-responsive">
+                            <table id="volunteers" class="table">
+                                <thead>
+                                    <tr style="background: gainsboro;">
+                                        <th style="text-align: center">Volunteers</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var attendee in Model.Attendees.Where(a => a.IsWorker))
+                                    {
+                                        <tr>
+                                            <td style="padding: 0 !important;border: 0 !important; min-width: 225px; line-height: 5">
+                                                <label class="labelnothighlighted"><input style="width: 20px; height: 15px" class="checkSingle" type="checkbox" value="@attendee.PeopleId">@attendee.Name</label>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
-                <div class="table-responsive">
-                    <table id="volunteers" class="table">
-                        <thead>
-                            <tr style="background: gainsboro;">
-                                <th style="text-align: center">Volunteers</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var attendee in Model.Attendees.Where(a => a.IsWorker))
-                            {
-                                <tr>
-                                    <td style="padding: 0 !important;border: 0 !important; min-width: 225px; line-height: 5">
-                                        <label class="labelnothighlighted"><input style="width: 20px; height: 15px" class="checkSingle" type="checkbox" value="@attendee.PeopleId">@attendee.Name</label>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                    <table id="members" class="table">
-                        <thead>
-                            <tr style="background: gainsboro;">
-                                <th style="text-align: center">Attendees</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var attendee in Model.Attendees.Where(a => !a.IsWorker))
-                            {
-                                <tr>
-                                    <td style="padding: 0 !important;border: 0 !important; min-width: 225px; line-height: 5">
-                                        <label class="labelnothighlighted"><input style="width: 20px; height: 15px" class="checkSingle" type="checkbox" value="@attendee.PeopleId">@attendee.Name</label>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                    <div class="form-group">
-                        <input style="width: 100%; height: 50px; background: #003f72; color: white; font-weight: bolder; text-align: center; line-height: 3" type="button" id="movebtn" class="btn btn-primary" value="NEXT">
-                    </div>
-                    <input type="hidden" id="hiddenlist" />
+                <div class="form-group">
+                    <input style="width: 100%; height: 50px; background: #003f72; color: white; font-weight: bolder; text-align: center; line-height: 3" type="button" id="movebtn" class="btn btn-primary" value="NEXT">
                 </div>
+                <input type="hidden" id="hiddenlist" />
             </div>
         </div>
     </div>

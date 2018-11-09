@@ -12,7 +12,6 @@
 </div>
 
 <script type="text/javascript">
-    $(function () {
         $('#checkin-timeslot').change(function () {
             var selectedTimeslot = this.value;
             $("#ProgramContainer").load('@Url.Action("ProgramSelector")?selectedTimeslot=' + selectedTimeslot)
@@ -20,5 +19,4 @@
             $('#OrganizationContainer').load('@Url.Action("OrganizationSelector")?selectedTimeslot=' + selectedTimeslot);
             $("#DetailsContainer").empty();
         });
-    });
 </script>

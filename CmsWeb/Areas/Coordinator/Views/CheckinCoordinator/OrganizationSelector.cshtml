@@ -16,13 +16,30 @@
             }
 
             <div class="list-group-item">
-                <a class="navbar-link" organizationId="@item.OrganizationId" subgroupId="@item.SubgroupId" subgroupName="@item.SubgroupName" selectedTimeslot="@item.NextMeetingDate.Value.ToString("s")">
-                    @item.OrganizationName - @item.SubgroupName
-                </a>
                 <div class="row">
-                    <div class="col-xs-4"><i class="fa fa-user"></i> @item.AttendeeMemberCount</div>
-                    <div class="col-xs-4"><i class="fa fa-support"></i> @item.AttendeeWorkerCount</div>
-                    <div class="col-xs-4"><i class="fa fa-group"></i> @item.CheckInCapacity</div>
+                    <div class="col-sm-7 centered-item">
+                        <a class="navbar-link" organizationId="@item.OrganizationId" subgroupId="@item.SubgroupId" subgroupName="@item.SubgroupName" selectedTimeslot="@item.NextMeetingDate.Value.ToString("s")">
+                            <strong style="font-weight: 600;">@item.OrganizationName</strong> - @item.SubgroupName
+                        </a>
+                    </div>
+                    <div class="col-sm-5 centered-item text-right">
+                        @{
+                            if (!item.CheckInOpen)
+                            {
+                                <div class="circle-sm circle-closed">@item.AttendeeMemberCount</div>
+                            }
+                            else if (item.AttendeeMemberCount >= item.CheckInCapacity)
+                            {
+                                <div class="circle-sm circle-full">@item.AttendeeMemberCount</div>
+                            }
+                            else
+                            {
+                                <div class="circle-sm circle-open">@item.AttendeeMemberCount</div>
+                            }
+                        }
+                        <div class="circle-sm">@item.CheckInCapacity</div>
+                        <div class="circle-sm">@item.AttendeeWorkerCount</div>
+                    </div>
                 </div>
             </div>
         }
@@ -30,7 +47,6 @@
 </div>
 
 <script type="text/javascript">
-    $(function () {
         $('.navbar-link').on('click', function (e) {
             e.preventDefault();
             $("#OrganizationContainer .list-group-item").removeClass("highlighted");
@@ -88,5 +104,4 @@
             event.preventDefault();
             $find_group.val('').trigger('keyup').focus();
         });
-    });
 </script>

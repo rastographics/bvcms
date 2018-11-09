@@ -1,12 +1,23 @@
-﻿@{
+﻿@using CmsWeb.Code
+@{
     Layout = "~/Views/Shared/_LayoutCheckIn.cshtml";
-    ViewBag.Title = "Check-In Coordinator";
-    ViewBag.PageHeader = "Check-In Coordinator";
+    ViewBag.Title = @ViewExtensions2.DbSetting("nameofchurch", "TouchPoint") + " Check In";
+    ViewBag.PageHeader = "Check In";
+    var customSmallHeaderImage = CustomHeader.SmallHeaderImage("~/Content/touchpoint/img/logo_sm.png");
 }
 
 @ViewExtensions2.jQuery()
 
 <style>
+    .logo-md {
+        width: 70px;
+        height: 50px;
+        background-size: auto @customSmallHeaderImage.Height;
+        background-repeat: no-repeat;
+        background-position: left;
+        background-image: url(@Url.Content(customSmallHeaderImage.Url));
+        display: inline-block;
+    }
     .block {
         border: 1px solid lightskyblue;
         text-align: center;
@@ -41,9 +52,30 @@
             vertical-align: middle;
             display: table-cell;
         }
-
+    .circle-sm {
+        background-color: #003f72;
+        border-radius: 25px;
+        color: white;
+        width: 26px;
+        height: 26px;
+        text-align: center;
+        display: inline-block;
+        overflow: hidden;
+        margin-right: 14px;
+        font-weight: 600;
+        padding-top: 3px;
+    }
+    .circle-closed {
+        background-color: darkred;
+    }
+    .circle-full {
+        background-color: darkgray;
+    }
+    .circle-open {
+        background-color: green;
+    }
     .highlighted {
-        background: lightgrey;
+        background: rgba(0,25,150,0.1);
     }
 
     .middle {
@@ -76,6 +108,27 @@
         margin: 0;
     }
 
+    .centered-header {
+        height: 50px;
+        display: flex;
+        align-items: center;
+    }
+    .centered-header.text-right {
+        justify-content: flex-end;
+    }
+    .centered-item {
+        height: 30px;
+        display: flex;
+        align-items: center;
+    }
+
+    .centered-item.text-right {
+        justify-content: flex-end;
+    }
+    .centered-header .form-group {
+        margin: 0;
+    }
+
     .active {
         color: green;
     }
@@ -85,29 +138,32 @@
     }
 
     .metric {
-        height: 220px;
+        text-align: center;
+        height: 185px;
     }
 
-    .list-group {
+    .metric-title {
+        margin-bottom: 14px;
     }
 
     .list-group-item-heading {
         font-size: 1.2em;
         line-height: 1.8em;
+        padding-left: 10px;
     }
 
     .list-group-item {
         border: 0;
+        border-bottom: 1px solid #ddd;
+        margin-top: 5px;
+        margin-bottom: 5px;
     }
 
         .list-group-item:hover {
             cursor: pointer;
         }
 
-    #setdefaults {
-        position: relative;
-        top: -8px;
-    }
+
     @@media (min-width: 1432px) {
         #main.container {
             width: 1400px !important;
@@ -118,22 +174,6 @@
 <div class="row">
     <div class="col-lg-4">
         <div class="box box-responsive">
-            <div class="box-content">
-                <h5>Timeslot</h5>
-                <div id="TimeslotContainer">
-                    @Html.Action("TimeslotSelector")
-                </div>
-                <h5>Program</h5>
-                <div id="ProgramContainer">
-                    @Html.Action("ProgramSelector")
-                </div>
-                <h5>Division</h5>
-                <div id="DivisionContainer">
-                    @Html.Action("DivisionSelector")
-                </div>
-            </div>
-        </div>
-        <div class="box box-responsive">
             <div class="box-title">
                 <p style="margin-bottom: 0;line-height: 23px;">
                     Matching Schedules
@@ -143,7 +183,7 @@
                     </span>
                 </p>
             </div>
-            <div class="box-content">
+            <div class="box-content" style="padding-left: 0; padding-right: 0;">
                 <div id="OrganizationContainer">
                     @Html.Action("OrganizationSelector")
                 </div>
@@ -158,7 +198,7 @@
 </div>
 @section scripts
 {
-<script>
+    <script>
     $('#setalldefaults').on('click', function (e) {
         e.preventDefault();
         bootbox.confirm('Are you sure you want to reset all defaults?', function (result) {
@@ -177,5 +217,5 @@
             });
         });
     });
-</script>
+    </script>
 }

@@ -22,24 +22,61 @@
     @RenderSection("head", false)
 </head>
 <body style="padding-top: 0 !important">
-@if (!string.IsNullOrWhiteSpace(ViewBag.PageHeader))
-{
-    <div id="page-header" class="text-center" style="padding-bottom: 0 !important;margin-bottom: 5px !important">
-        <div class="container-fluid" style="padding-bottom: 0 !important">
-            <h2>
-                <a href="#" id="setalldefaults" class="btn btn-default" style="position: absolute;left: 176px;">Set All Defaults</a>
-                @ViewBag.PageHeader
-            </h2>
-            @if (!string.IsNullOrWhiteSpace(ViewBag.PageSubHeader))
-            {
-                <h4>@Html.Raw(ViewBag.PageSubHeader)</h4>
-            }
+    <div id="page-header" style="padding: 0;">
+        <div class="container-fluid" style="padding: 5px 15px;">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="logo-md"></div>
+                        </div>
+                        <div class="col-sm-9 centered-header">
+                            <span class="h3" style="margin:0;">@ViewBag.PageHeader</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="row">
+                        <div class="col-lg-4 text-right centered-header">
+                            <h5>Timeslot</h5>
+                        </div>
+                        <div class="col-lg-8 centered-header">
+                            <div id="TimeslotContainer">
+                                @Html.Action("TimeslotSelector")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="row">
+                        <div class="col-lg-4 text-right centered-header">
+                            <h5>Program</h5>
+                        </div>
+                        <div class="col-lg-8 centered-header">
+                            <div id="ProgramContainer">
+                                @Html.Action("ProgramSelector")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="row">
+                        <div class="col-lg-4 text-right centered-header">
+                            <h5>Division</h5>
+                        </div>
+                        <div class="col-lg-8 centered-header">
+                            <div id="DivisionContainer">
+                                @Html.Action("DivisionSelector")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-}
-<div class="container" id="main">
-    @RenderBody()
-</div>
+    <div class="container-fluid" id="main">
+        @RenderBody()
+    </div>
 @Html.Partial("PageFooter")
 <div class="device-lg visible-lg-block"></div>
 <div class="device-md visible-md-block"></div>
