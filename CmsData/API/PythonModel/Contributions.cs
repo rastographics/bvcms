@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
@@ -105,6 +106,29 @@ namespace CmsData
             return $@"{name} = {FormatJson(dd)}";
         }
         /// <summary>
+        /// This works for the same purpose as CretaeContributionTag above
+        /// but uses SQL to generate a list of ids instead of Contributions2SearchIds.
+        /// They both use the json derived from DynamicData dd
+        /// 
+        /// This way a contributor developer can modify the search algorithm 
+        /// without needing to modify the Contribution2SearchIds function 
+        /// not having direct write access to the database.
+        /// </summary>
+        public string CreateContributionTagFromSql(string name, DynamicData dd, string sql)
+        {
+            var args = new DynamicParameters();
+            var json = JsonSerialize(dd);
+            args.Add("@json", json);
+
+            var list = QueryContributionIds(sql, args);
+            var csv = string.Join(",", list);
+            args.Add("@ids", csv);
+            args.Add("@tagname", name);
+
+            db.Connection.Execute("dbo.TagContributionsFromIds", args, commandType: CommandType.StoredProcedure);
+            return $@"{name} = {FormatJson(dd)}";
+        }
+        /// <summary>
         /// It is good practice to give a set of tags for a particular report a common prefix like a namespace.
         /// This way you can remove old tags in the Python script before createing new ones.
         /// </summary>
@@ -112,5 +136,14 @@ namespace CmsData
         {
             db.Connection.Execute("DELETE dbo.ContributionTag WHERE TagName LIKE @namelike", new {namelike});
         }
+        public IEnumerable<int> QueryContributionIds(string sql, object declarations)
+        {
+            var cn = db.ReadonlyConnection();
+            var parameters = new DynamicParameters();
+            if (declarations != null)
+                parameters.AddDynamicParams(declarations);
+            return cn.Query<int>(sql, parameters, commandTimeout: 600);
+        }
+
     }
 }
