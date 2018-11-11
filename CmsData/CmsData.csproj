@@ -1283,6 +1283,8 @@
     <Content Include="Migrations\20180806_update_purge_person_sproc.sql" />
     <Content Include="Migrations\20180817_update_enrollment_history_func.sql" />
     <Content Include="Migrations\20180827_sms-number-group-system-flag.sql" />
+    <Content Include="Migrations\20181111_alter_Contributions2SearchIds_func.sql" />
+    <Content Include="Migrations\20181111_create_TagContributionsFromIds_proc.sql" />
     <Content Include="Migrations\20181022-4_create_TagContributions_func.sql" />
     <Content Include="Migrations\20181022-2_create_ContributionsTag_table.sql" />
     <Content Include="Migrations\20181011_add_contribution_origin_column.sql" />
