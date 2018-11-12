@@ -18,9 +18,9 @@ namespace CmsData
             {
                 throw new Exception($"The title length was {sTitle.Length} but cannot be over 150.");
             }
-            if (sMessage.Length > 160)
+            if (sMessage.Length > 1600)
             {
-                throw new Exception($"The message length was {sMessage.Length} but cannot be over 160.");
+                throw new Exception($"The message length was {sMessage.Length} but cannot be over 1600.");
             }
             TwilioHelper.QueueSms(query, iSendGroup, sTitle, sMessage);
         }

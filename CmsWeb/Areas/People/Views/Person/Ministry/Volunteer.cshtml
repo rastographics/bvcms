@@ -31,7 +31,7 @@
     </table>
 </div>
 @FormAction(true)
-<br/>
+<br />
 @helper FormAction(bool xs = false)
 {
     if (User.IsInRole("ApplicationReview"))
@@ -46,6 +46,21 @@
         {
             <div class="pull-right hidden-xs">
                 <a href="/Volunteering/@Model.Volunteer.PeopleId" class="btn btn-default">Manage</a>
+            </div>
+        }
+    }
+    if (User.IsInRole("ViewVolunteerApplication"))
+    {
+        if (xs)
+        {
+            <div class="visible-xs-block">
+                <a href="/Volunteering/@Model.Volunteer.PeopleId" class="btn btn-default btn-block">View Application</a>
+            </div>
+        }
+        else
+        {
+            <div class="pull-right hidden-xs">
+                <a href="/Volunteering/@Model.Volunteer.PeopleId" class="btn btn-default">View Application</a>
             </div>
         }
     }

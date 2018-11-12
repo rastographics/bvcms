@@ -1,5 +1,8 @@
-﻿CREATE proc [dbo].[TagContributions] (@tagname varchar(50), @json varchar(max))
-as
+﻿DROP PROCEDURE IF EXISTS [dbo].[TagContributions]
+GO
+
+CREATE PROCEDURE [dbo].[TagContributions] (@tagname varchar(50), @json varchar(max))
+AS
 begin
 	declare @AddToTag int = (select json_value(@json, '$.AddToTag'))
 	declare @Priority int = (select json_value(@json, '$.Priority'))

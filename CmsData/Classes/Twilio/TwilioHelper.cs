@@ -257,6 +257,10 @@ namespace CmsData.Classes.Twilio
 
             TwilioClient.Init(sSID, sToken);
             Uri callbackUri = callbackUrl.HasValue() ? new Uri(callbackUrl) : null;
+
+            //For testing numbers outside of U.S.
+            //sTo = string.Format("+{0}", sTo);
+
             MessageResource response = MessageResource.Create(new PhoneNumber(sTo), from: new PhoneNumber(sFrom), body: sBody, statusCallback: callbackUri);
 
             if (IsSmsSent(response))
