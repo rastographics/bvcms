@@ -5,11 +5,16 @@ using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Reports.Models;
 using CmsWeb.Areas.Reports.ViewModels;
+using CmsWeb.Lifecycle;
 
 namespace CmsWeb.Areas.Reports.Controllers
 {
     public partial class ReportsController
     {
+        public ReportsController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet]
         [Route("Custom/{report}/{id?}")]
         public ActionResult CustomReport(Guid id, string report)

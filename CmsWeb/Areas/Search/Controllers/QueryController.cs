@@ -5,18 +5,19 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
+using CmsData;
+using CmsWeb.Areas.Search.Models;
+using CmsWeb.Code;
+using CmsWeb.Lifecycle;
+using Dapper;
+using Elmah;
 using System;
 using System.Configuration;
-using System.Net;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Web.Mvc;
-using CmsWeb.Areas.Search.Models;
-using Elmah;
 using UtilityExtensions;
-using CmsData;
-using CmsWeb.Code;
-using Dapper;
 
 namespace CmsWeb.Areas.Search.Controllers
 {
@@ -24,6 +25,10 @@ namespace CmsWeb.Areas.Search.Controllers
     [SessionExpire]
     public class QueryController : CmsStaffController
     {
+        public QueryController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet, Route("~/Query/{id:guid?}")]
         public ActionResult Index(Guid? id)
         {
@@ -74,7 +79,9 @@ namespace CmsWeb.Areas.Search.Controllers
             {
                 sb.AppendLine(c.Key.ToString());
                 if (c.Value.FieldInfo == null)
+                {
                     return NewQuery();
+                }
             }
             ViewBag.ConditionList = sb.ToString();
             return View("Index", m);
@@ -184,9 +191,15 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult SaveCondition(QueryModel m)
         {
             if (m.Validate(ModelState))
+            {
                 m.UpdateCondition();
+            }
+
             if (ModelState.IsValid)
+            {
                 return View("Conditions", m);
+            }
+
             return View("EditCondition", m);
         }
 
@@ -235,8 +248,11 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult SaveAs(Guid id, string nametosaveas)
         {
             if (nametosaveas.Equals(Util.ScratchPad2))
+            {
                 nametosaveas = "copy of scratchpad";
-            var m2 = new SavedQueryInfo(id) {Name = nametosaveas};
+            }
+
+            var m2 = new SavedQueryInfo(id) { Name = nametosaveas };
             return View(m2);
         }
 
@@ -245,17 +261,20 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             var query = DbUtil.Db.LoadQueryById2(m.QueryId);
             var previous = (from p in DbUtil.Db.Queries
-                where p.Owner == m.Owner
-                where p.Name == name
-                orderby p.LastRun
-                select p).FirstOrDefault();
+                            where p.Owner == m.Owner
+                            where p.Name == name
+                            orderby p.LastRun
+                            select p).FirstOrDefault();
             if (previous != null)
             {
                 // copying over a previous query with same name and owner
                 m.CopyPropertiesTo(previous);
                 previous.Text = query.Text;
                 if (previous.Name.Equal(Util.ScratchPad2))
+                {
                     previous.Ispublic = false;
+                }
+
                 DbUtil.Db.SubmitChanges();
                 return Redirect("/Query/" + previous.QueryId);
 
@@ -270,7 +289,10 @@ namespace CmsWeb.Areas.Search.Controllers
             // saving to a new query
             m.CopyPropertiesTo(query);
             if (query.Name.Equal(Util.ScratchPad2))
+            {
                 query.Ispublic = false;
+            }
+
             DbUtil.Db.SubmitChanges();
             return Redirect("/Query/" + m.QueryId);
         }
@@ -311,11 +333,11 @@ namespace CmsWeb.Areas.Search.Controllers
             {
                 var r = Person.ToggleTag(id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
                 DbUtil.Db.SubmitChanges();
-                return Json(new {HasTag = r});
+                return Json(new { HasTag = r });
             }
             catch (Exception ex)
             {
-                return Json(new {error = ex.Message + $". Please report this to {ConfigurationManager.AppSettings["supportemail"]}"});
+                return Json(new { error = ex.Message + $". Please report this to {ConfigurationManager.AppSettings["supportemail"]}" });
             }
         }
 
@@ -330,7 +352,10 @@ namespace CmsWeb.Areas.Search.Controllers
         public ContentResult TagAll(string tagname, bool? cleartagfirst, QueryModel m)
         {
             if (!tagname.HasValue())
+            {
                 return Content("error: no tag name");
+            }
+
             if (Util2.CurrentTagName == tagname && !(cleartagfirst ?? false))
             {
                 m.TagAll();
@@ -338,7 +363,10 @@ namespace CmsWeb.Areas.Search.Controllers
             }
             var tag = DbUtil.Db.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
             if (cleartagfirst ?? false)
+            {
                 DbUtil.Db.ClearTag(tag);
+            }
+
             m.TagAll(tag);
             Util2.CurrentTag = tagname;
             DbUtil.Db.TagCurrent();
@@ -432,7 +460,7 @@ set seconds = @seconds,
     Message = @Error, 
     OriginalCount = @cnt1, 
     ParsedCount=@cnt2 
-where Id = @id", new {id, seconds, Error = error, cnt1, cnt2});
+where Id = @id", new { id, seconds, Error = error, cnt1, cnt2 });
 
             return Content($"original={cnt1:N0} parsed={cnt2:N0}");
         }

@@ -1,17 +1,25 @@
-using System.Web.Mvc;
 using CmsData;
 using CmsData.API;
+using CmsWeb.Lifecycle;
+using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
     public class APIContributionController : CmsController
     {
+        public APIContributionController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpPost]
         public ActionResult PostContribution(int PeopleId, decimal Amount, string desc, int FundId, string date, int? contributiontype, string checkno)
         {
             var ret = AuthenticateDeveloper(addrole: "Finance");
             if (ret.StartsWith("!"))
+            {
                 return Content(@"<PostContribution status=""error"">" + ret.Substring(1) + "</PostContribution>");
+            }
+
             DbUtil.LogActivity("APIContribution PostContribution");
             return Content(new APIContribution(DbUtil.Db).PostContribution(PeopleId, Amount, FundId, desc, date, contributiontype, checkno), "text/xml");
         }
@@ -21,7 +29,10 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper(addrole: "Finance");
             if (ret.StartsWith("!"))
+            {
                 return Content(@"<Contributions status=""error"">" + ret.Substring(1) + "</Contributions>");
+            }
+
             DbUtil.LogActivity($"APIContribution Contributions for ({id})");
             return Content(new APIContribution(DbUtil.Db).Contributions(id, Year), "text/xml");
         }
@@ -31,9 +42,12 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper(addrole: "Finance");
             if (ret.StartsWith("!"))
+            {
                 return Content(@"<Contributions status=""error"">" + ret.Substring(1) + "</Contributions>");
+            }
+
             DbUtil.LogActivity("APIContribution ContributionSearch");
-            return Content(new APIContributionSearchModel(DbUtil.Db, m).ContributionsXML(((page ?? 1) - 1)*100, 100), "text/xml");
+            return Content(new APIContributionSearchModel(DbUtil.Db, m).ContributionsXML(((page ?? 1) - 1) * 100, 100), "text/xml");
         }
     }
 }

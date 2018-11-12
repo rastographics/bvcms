@@ -1,12 +1,17 @@
-using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Org.Models;
+using CmsWeb.Lifecycle;
+using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
-    [RouteArea("Org", AreaPrefix="OrgChildren"), Route("{action}")]
+    [RouteArea("Org", AreaPrefix = "OrgChildren"), Route("{action}")]
     public class OrgChildrenController : CmsStaffController
     {
+        public OrgChildrenController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/OrgChildren/{id:int}")]
         public ActionResult Index(int id)
         {
@@ -23,9 +28,14 @@ namespace CmsWeb.Areas.Org.Controllers
         {
             var o = DbUtil.Db.LoadOrganizationById(ChildOrg);
             if (Checked)
+            {
                 o.ParentOrgId = ParentOrg;
+            }
             else
+            {
                 o.ParentOrgId = null;
+            }
+
             DbUtil.Db.SubmitChanges();
             return Content("ok");
         }

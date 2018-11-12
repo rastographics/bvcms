@@ -1,10 +1,11 @@
+using CmsData;
+using CmsWeb.Areas.People.Models.Task;
+using CmsWeb.Lifecycle;
+using CmsWeb.Models;
+using MoreLinq;
 using System;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Areas.People.Models.Task;
-using CmsWeb.Models;
-using MoreLinq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
@@ -12,6 +13,10 @@ namespace CmsWeb.Areas.People.Controllers
     [RouteArea("People", AreaPrefix = "Task"), Route("{action}/{id:int}")]
     public class TaskController : CmsStaffController
     {
+        public TaskController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet, Route("~/Task/{id}")]
         public ActionResult Index(int id)
         {
@@ -30,9 +35,12 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult Update(TaskModel t)
         {
             if (!ModelState.IsValid)
+            {
                 return View("Edit", t);
+            }
+
             t.UpdateTask();
-            return RedirectToAction("Index", new {id = t.Id});
+            return RedirectToAction("Index", new { id = t.Id });
         }
 
         [HttpPost]
@@ -67,14 +75,14 @@ namespace CmsWeb.Areas.People.Controllers
         public JsonResult CompleteWithContact(int id)
         {
             var contactid = TaskModel.AddCompletedContact(id);
-            return Json(new {ContactId = contactid});
+            return Json(new { ContactId = contactid });
         }
 
         [HttpPost]
         public ActionResult Decline(int id, string reason)
         {
             TaskModel.DeclineTask(id, reason);
-            return RedirectToAction("Index", new {id});
+            return RedirectToAction("Index", new { id });
         }
 
         [HttpPost]
@@ -88,17 +96,20 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult NotesExcel2(Guid? id)
         {
             if (!id.HasValue)
+            {
                 return Content("no query");
+            }
+
             var q = DbUtil.Db.PeopleQuery(id.Value);
             var q2 = from p in q
-                let t = p.TasksAboutPerson.OrderByDescending(t => t.CreatedOn).FirstOrDefault(t => t.Notes != null)
-                where t != null
-                select new
-                {
-                    p.Name,
-                    t.Notes,
-                    t.CreatedOn
-                };
+                     let t = p.TasksAboutPerson.OrderByDescending(t => t.CreatedOn).FirstOrDefault(t => t.Notes != null)
+                     where t != null
+                     select new
+                     {
+                         p.Name,
+                         t.Notes,
+                         t.CreatedOn
+                     };
             return q2.ToDataTable().ToExcel("TaskNotes.xlsx");
         }
 

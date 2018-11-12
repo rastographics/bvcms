@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Manage.Models;
 using CmsWeb.Areas.Manage.Models.BatchModel;
+using CmsWeb.Lifecycle;
 using CmsWeb.Models;
 using LumenWorks.Framework.IO.Csv;
 using UtilityExtensions;
@@ -17,6 +18,10 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage", AreaPrefix = "Batch"), Route("{action}/{id?}")]
     public partial class BatchController : CmsStaffController
     {
+        public BatchController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         public ActionResult Grade(string text)
         {
             if (Request.HttpMethod.ToUpper() == "GET")

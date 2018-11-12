@@ -1,13 +1,17 @@
-﻿using System.Linq;
-using System.Web.Mvc;
-using CmsData;
+﻿using CmsData;
 using CmsWeb.Areas.Dialog.Models;
+using CmsWeb.Lifecycle;
+using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
-    [RouteArea("Dialog", AreaPrefix="MoveOrgMembers"), Route("{action}/{id?}")]
+    [RouteArea("Dialog", AreaPrefix = "MoveOrgMembers"), Route("{action}/{id?}")]
     public class MoveOrgMembersController : CmsStaffController
     {
+        public MoveOrgMembersController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpPost, Route("~/MoveOrgMembers")]
         public ActionResult Index(MoveOrgMembersModel model)
         {
@@ -20,13 +24,16 @@ namespace CmsWeb.Areas.Dialog.Controllers
             model.UpdateLongRunningOp(DbUtil.Db, MoveOrgMembersModel.Op);
 
             if (!model.Started.HasValue)
-            { 
+            {
                 if (model.TargetId == 0)
+                {
                     return Content("!Target required");
+                }
+
                 DbUtil.LogActivity("Move Org Members");
                 model.ProcessMove(DbUtil.Db);
             }
-			return View(model);
-		}
+            return View(model);
+        }
     }
 }

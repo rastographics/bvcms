@@ -1,12 +1,17 @@
-using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Dialog.Models;
+using CmsWeb.Lifecycle;
+using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
-    [RouteArea("Dialog", AreaPrefix= "SearchDivisions"), Route("{action}/{id?}")]
+    [RouteArea("Dialog", AreaPrefix = "SearchDivisions"), Route("{action}/{id?}")]
     public class SearchDivisionsController : CmsStaffController
     {
+        public SearchDivisionsController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpPost, Route("~/SearchDivisions/{id:int}")]
         public ActionResult Index(int id)
         {

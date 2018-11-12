@@ -1,7 +1,8 @@
+using CmsData;
+using CmsWeb.Lifecycle;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
-using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
@@ -11,12 +12,18 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup", AreaPrefix = "Setting"), Route("{action}/{id?}")]
     public class SettingController : CmsStaffController
     {
+        public SettingController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/Settings")]
         public ActionResult Index()
         {
             var m = DbUtil.Db.Settings.AsQueryable();
             if (!User.IsInRole("Developer"))
+            {
                 m = m.Where(vv => (vv.System ?? false) == false);
+            }
 
             return View(m);
         }
@@ -25,11 +32,13 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult Create(string id)
         {
             if (!Regex.IsMatch(id, @"\A[A-z0-9-]*\z"))
+            {
                 return Message("Invalid characters in setting id");
+            }
 
             if (!DbUtil.Db.Settings.Any(s => s.Id == id))
             {
-                var m = new Setting {Id = id};
+                var m = new Setting { Id = id };
                 DbUtil.Db.Settings.InsertOnSubmit(m);
                 DbUtil.Db.SubmitChanges();
                 DbUtil.Db.SetSetting(id, null);
@@ -54,7 +63,10 @@ namespace CmsWeb.Areas.Setup.Controllers
             id = id.Substring(1);
             var set = DbUtil.Db.Settings.SingleOrDefault(m => m.Id == id);
             if (set == null)
+            {
                 return new EmptyResult();
+            }
+
             DbUtil.LogActivity($"Delete Setting {id}", userId: Util.UserId);
             DbUtil.Db.Settings.DeleteOnSubmit(set);
             DbUtil.Db.SubmitChanges();
@@ -74,16 +86,18 @@ namespace CmsWeb.Areas.Setup.Controllers
             var batch = from s in text.Split('\n')
                         where s.HasValue()
                         let a = s.SplitStr(":", 2)
-                        select new {name = a[0], value = a[1].Trim()};
+                        select new { name = a[0], value = a[1].Trim() };
 
             var settings = DbUtil.Db.Settings.ToList();
 
             var upds = from s in settings
                        join b in batch on s.Id equals b.name
-                       select new {s, b.value};
+                       select new { s, b.value };
 
             foreach (var pair in upds)
+            {
                 pair.s.SettingX = pair.value;
+            }
 
             var adds = from b in batch
                        join s in settings on b.name equals s.Id into g
@@ -92,7 +106,9 @@ namespace CmsWeb.Areas.Setup.Controllers
                        select b;
 
             foreach (var b in adds)
-                DbUtil.Db.Settings.InsertOnSubmit(new Setting {Id = b.name, SettingX = b.value});
+            {
+                DbUtil.Db.Settings.InsertOnSubmit(new Setting { Id = b.name, SettingX = b.value });
+            }
 
             var dels = from s in settings
                        where !batch.Any(b => b.name == s.Id)
@@ -116,7 +132,10 @@ namespace CmsWeb.Areas.Setup.Controllers
             var iid = id.Substring(1).ToInt();
             var img = ImageData.DbUtil.Db.Images.SingleOrDefault(m => m.Id == iid);
             if (img == null)
+            {
                 return Content("#r0");
+            }
+
             ImageData.DbUtil.Db.Images.DeleteOnSubmit(img);
             ImageData.DbUtil.Db.SubmitChanges();
             return Content("#r" + iid);

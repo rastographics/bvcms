@@ -1,6 +1,7 @@
 using CmsData;
 using CmsWeb.Areas.Reports.Models;
 using CmsWeb.Areas.Search.Models;
+using CmsWeb.Lifecycle;
 using CmsWeb.Models;
 using Dapper;
 using MoreLinq;
@@ -18,6 +19,10 @@ namespace CmsWeb.Areas.Reports.Controllers
     [RouteArea("Reports", AreaPrefix = "Export2"), Route("{action}/{id?}")]
     public class ExportController : CmsStaffController
     {
+        public ExportController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet]
         public ActionResult StatusFlags(Guid id, string flags = "")
         { // ?flags=F35,F03,F01,F04
@@ -65,13 +70,19 @@ namespace CmsWeb.Areas.Reports.Controllers
             var ws = ep.Workbook.Worksheets.Add("Sheet1");
             int row = 1;
             for (var i = 0; i < cols.Count; i++)
+            {
                 ws.Cells[row, i + 1].Value = cols[i];
+            }
+
             row++;
             foreach (var r in q)
             {
                 var rr = (IDictionary<string, object>)r;
                 for (var i = 0; i < cols.Count; i++)
+                {
                     ws.Cells[row, i + 1].Value = rr[cols[i]];
+                }
+
                 row++;
             }
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
@@ -82,9 +93,15 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             var dt = ChurchAttendanceModel.MostRecentAttendedSunday();
             if (!dt1.HasValue)
+            {
                 dt1 = new DateTime(dt.Year, 1, 1);
+            }
+
             if (!dt2.HasValue)
+            {
                 dt2 = dt;
+            }
+
             var m2 = new AttendanceDetailModel(dt1.Value, dt2, m);
             return m2.FetchMeetings().ToDataTable().ToExcel("MeetingsExport.xlsx");
         }
@@ -92,7 +109,10 @@ namespace CmsWeb.Areas.Reports.Controllers
         public ActionResult OrgDayStats(DateTime? dt, OrgSearchModel m)
         {
             if (!dt.HasValue)
+            {
                 dt = ChurchAttendanceModel.MostRecentAttendedSunday();
+            }
+
             var orgs = string.Join(",", m.FetchOrgs().Select(oo => oo.OrganizationId));
             var q = DbUtil.Db.OrgDayStats(orgs, dt);
             return q.ToDataTable().ToExcel("OrgDatStats.xlsx");
@@ -158,7 +178,9 @@ namespace CmsWeb.Areas.Reports.Controllers
 
             var sort = "Name";
             if (sortzip ?? false)
+            {
                 sort = "Zip";
+            }
 
             switch (format)
             {

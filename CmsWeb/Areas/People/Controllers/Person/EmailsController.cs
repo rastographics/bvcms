@@ -1,12 +1,9 @@
-using System;
-using System.Configuration;
-using System.Linq;
-using System.Net;
-using System.Text.RegularExpressions;
-using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.People.Models;
-using RestSharp;
+using System;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
@@ -41,7 +38,7 @@ namespace CmsWeb.Areas.People.Controllers
             var oo = DbUtil.Db.EmailOptOuts.SingleOrDefault(o => o.FromEmail == emailaddress && o.ToPeopleId == id);
             if (oo == null)
             {
-                DbUtil.Db.EmailOptOuts.InsertOnSubmit(new EmailOptOut {FromEmail = emailaddress, ToPeopleId = id, DateX = DateTime.Now});
+                DbUtil.Db.EmailOptOuts.InsertOnSubmit(new EmailOptOut { FromEmail = emailaddress, ToPeopleId = id, DateX = DateTime.Now });
                 DbUtil.Db.SubmitChanges();
             }
             var p = DbUtil.Db.LoadPersonById(id);
@@ -83,10 +80,16 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var email = DbUtil.Db.EmailQueues.SingleOrDefault(ee => ee.Id == emailid);
             if (email == null)
+            {
                 return Content("no email found");
+            }
+
             var curruser = DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0);
             if (curruser == null)
+            {
                 return Content("no user");
+            }
+
             if (User.IsInRole("Admin")
                 || User.IsInRole("ManageEmails")
                 || email.FromAddr == curruser.EmailAddress

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.OnlineReg.Models;
+using CmsWeb.Lifecycle;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
@@ -11,6 +12,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
     public partial class OnlineRegController
     {
         const string Fromcalendar = "fromcalendar";
+
+        public OnlineRegController(RequestManager requestManager) : base(requestManager)
+        {
+        }
 
         [HttpGet]
         [Route("VolRequestReport/{mid:int}/{pid:int}/{ticks:long}")]

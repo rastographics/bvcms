@@ -5,12 +5,13 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
-using System;
-using System.Linq;
-using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Manage.Models;
 using CmsWeb.Areas.OnlineReg.Models;
+using CmsWeb.Lifecycle;
+using System;
+using System.Linq;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Controllers
@@ -18,6 +19,10 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage", AreaPrefix = "Volunteers"), Route("{action}/{id?}")]
     public class VolunteersController : CmsStaffController
     {
+        public VolunteersController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [AcceptVerbs(HttpVerbs.Post)]
         public JsonResult Codes(string id)
         {
@@ -26,7 +31,8 @@ namespace CmsWeb.Areas.Manage.Controllers
                     select new
                     {
                         Key = p.VolInterestCode.Org + p.VolInterestCode.Code,
-                        PeopleId = "p" + p.PeopleId, p.Person.Name
+                        PeopleId = "p" + p.PeopleId,
+                        p.Person.Name
                     };
             return Json(q);
         }
@@ -80,7 +86,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             if (m.CurYear.IsNull() && curYear.IsNull())
             {
                 m.CurYear = m.Sunday.Year;
-            }            
+            }
 
             return View(m);
         }
@@ -93,7 +99,10 @@ namespace CmsWeb.Areas.Manage.Controllers
             m.SmallGroup2 = i.sg2;
             m.SortByWeek = i.SortByWeek;
             foreach (var s in i.list)
-                m.ApplyDragDrop(i.target, i.week, i.time, s);            
+            {
+                m.ApplyDragDrop(i.target, i.week, i.time, s);
+            }
+
             return View(m);
         }
 
@@ -105,7 +114,10 @@ namespace CmsWeb.Areas.Manage.Controllers
             m.SmallGroup2 = i.sg2;
             m.SortByWeek = i.SortByWeek;
             foreach (var s in i.list)
+            {
                 m.ApplyDragDrop(i.target, i.week, i.time, s);
+            }
+
             return View(m);
         }
 
@@ -154,7 +166,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpGet, Route("Request/{mid:int}/{limit:int}")]
         public new ActionResult Request(int mid, int limit)
         {
-            var vs = new VolunteerRequestModel(mid, Util.UserPeopleId.Value) {limit = limit};
+            var vs = new VolunteerRequestModel(mid, Util.UserPeopleId.Value) { limit = limit };
             vs.ComposeMessage();
             return View(vs);
         }
@@ -164,7 +176,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             var time = new DateTime(ticks); // ticks here is meeting time
             var mid = DbUtil.Db.CreateMeeting(oid, time);
-            var vs = new VolunteerRequestModel(mid, Util.UserPeopleId.Value) {limit = limit};
+            var vs = new VolunteerRequestModel(mid, Util.UserPeopleId.Value) { limit = limit };
             vs.ComposeMessage();
             return View("Request", vs);
         }
@@ -174,7 +186,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         public new ActionResult Request(long ticks, int mid, int limit, int[] pids, string subject, string message, int? additional)
         {
             var m = new VolunteerRequestModel(mid, Util.UserPeopleId.Value, ticks)
-            {subject = subject, message = message, pids = pids, limit = limit};
+            { subject = subject, message = message, pids = pids, limit = limit };
 
             if (pids == null || pids.Length == 0)
             {

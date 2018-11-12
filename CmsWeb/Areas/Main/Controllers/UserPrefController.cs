@@ -1,12 +1,17 @@
+using CmsData;
+using CmsWeb.Lifecycle;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
-    [RouteArea("Main", AreaPrefix="UserPref"), Route("{action}/{id?}")]
+    [RouteArea("Main", AreaPrefix = "UserPref"), Route("{action}/{id?}")]
     public class UserPrefController : CmsStaffController
     {
+        public UserPrefController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/UserPref")]
         public ActionResult Index()
         {
@@ -25,7 +30,10 @@ namespace CmsWeb.Areas.Main.Controllers
                 DbUtil.Db.Preferences.SingleOrDefault(
                     pp => pp.UserId == DbUtil.Db.CurrentUser.UserId && pp.PreferenceX == id);
             if (p == null)
+            {
                 return Message(id + " not found");
+            }
+
             DbUtil.Db.Preferences.DeleteOnSubmit(p);
             DbUtil.Db.SubmitChanges();
             return Message("unset " + id);

@@ -1,9 +1,7 @@
-using System;
-using System.Globalization;
-using System.Threading;
-using System.Web.Mvc;
 using CmsData;
-using UtilityExtensions;
+using CmsWeb.Lifecycle;
+using System;
+using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
@@ -11,6 +9,10 @@ namespace CmsWeb.Areas.Org.Controllers
     [RouteArea("Org", AreaPrefix = "RegSettings"), Route("{action=index}/{id?}")]
     public class RegSettingController : CmsStaffController
     {
+        public RegSettingController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet, Route("~/RegSettings/{id:int}")]
         public ActionResult Index(int id)
         {
@@ -20,7 +22,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var regsetting = org.RegSettingXml;
             var os = DbUtil.Db.CreateRegistrationSettings(regsetting, id);
             regsetting = os.ToString();
-                ViewData["text"] = regsetting;
+            ViewData["text"] = regsetting;
             return View();
         }
 

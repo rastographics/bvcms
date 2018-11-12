@@ -4,6 +4,7 @@ using CmsWeb.Areas.Finance.Models.Report;
 using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Areas.OnlineReg.Models;
 using CmsWeb.Code;
+using CmsWeb.Lifecycle;
 using CmsWeb.Models;
 using Dapper;
 using OfficeOpenXml;
@@ -22,6 +23,10 @@ namespace CmsWeb.Areas.Finance.Controllers
     [RouteArea("Finance", AreaPrefix = "FinanceReports"), Route("{action}/{id?}")]
     public class FinanceReportsController : CmsStaffController
     {
+        public FinanceReportsController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         public ActionResult ContributionStatement(int id, DateTime fromDate, DateTime toDate, int typ)
         {
             DbUtil.LogActivity($"Contribution Statement for ({id})");

@@ -1,4 +1,5 @@
 using CmsData;
+using CmsWeb.Lifecycle;
 using System.Linq;
 using System.Web.Mvc;
 using UtilityExtensions;
@@ -9,6 +10,10 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup", AreaPrefix = "MetroZips"), Route("{action=index}/{id?}")]
     public class MetroZipController : CmsStaffController
     {
+        public MetroZipController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         public ActionResult Index(string msg)
         {
             var m = DbUtil.Db.Zips.AsEnumerable();
@@ -47,7 +52,10 @@ namespace CmsWeb.Areas.Setup.Controllers
             id = id.Substring(1);
             var zip = DbUtil.Db.Zips.SingleOrDefault(m => m.ZipCode == id);
             if (zip == null)
+            {
                 return new EmptyResult();
+            }
+
             DbUtil.Db.Zips.DeleteOnSubmit(zip);
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();
@@ -69,7 +77,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                         text = c.Description,
                     };
 
-           return Json(q.ToList(), JsonRequestBehavior.AllowGet);
+            return Json(q.ToList(), JsonRequestBehavior.AllowGet);
         }
     }
 }

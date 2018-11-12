@@ -1,8 +1,9 @@
+using CmsData;
+using CmsWeb.Lifecycle;
+using Dapper;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
-using CmsData;
-using Dapper;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
@@ -11,6 +12,10 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup", AreaPrefix = "MemberType"), Route("{action=index}/{id?}")]
     public class MemberTypeController : CmsStaffController
     {
+        public MemberTypeController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         public ActionResult Index()
         {
             var q = from mt in DbUtil.Db.MemberTypes
@@ -30,11 +35,13 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult Create(int? id)
         {
             if (!id.HasValue)
+            {
                 return Content("need an integer id");
+            }
 
             if (!DbUtil.Db.MemberTypes.Any(mt => mt.Id == id))
             {
-                var m = new MemberType {Id = id.Value};
+                var m = new MemberType { Id = id.Value };
                 DbUtil.Db.MemberTypes.InsertOnSubmit(m);
                 DbUtil.Db.SubmitChanges();
             }
@@ -59,9 +66,14 @@ namespace CmsWeb.Areas.Setup.Controllers
             var iid = id.Substring(1).ToInt();
             var mt = DbUtil.Db.MemberTypes.SingleOrDefault(m => m.Id == iid);
             if (id.StartsWith("v"))
+            {
                 mt.Description = value;
+            }
             else if (id.StartsWith("c"))
+            {
                 mt.Code = value;
+            }
+
             DbUtil.Db.SubmitChanges();
             var c = new ContentResult();
             c.Content = value;
@@ -84,7 +96,10 @@ namespace CmsWeb.Areas.Setup.Controllers
             var iid = id.Substring(1).ToInt();
             var mt = DbUtil.Db.MemberTypes.SingleOrDefault(m => m.Id == iid);
             if (mt == null)
+            {
                 return new EmptyResult();
+            }
+
             var IsUsed = (from m in DbUtil.Db.MemberTypes
                           where m.Id == mt.Id
                           let mta = m.Attends.Any()
@@ -92,7 +107,10 @@ namespace CmsWeb.Areas.Setup.Controllers
                           let mte = m.EnrollmentTransactions.Any()
                           select (mta || mto || mte)).SingleOrDefault();
             if (IsUsed)
+            {
                 return Content("used");
+            }
+
             DbUtil.Db.MemberTypes.DeleteOnSubmit(mt);
             DbUtil.Db.SubmitChanges();
             return Content("done");
@@ -126,7 +144,10 @@ namespace CmsWeb.Areas.Setup.Controllers
             var q = DbUtil.Db.Connection.Query(sql);
             var sb = new StringBuilder();
             foreach (var r in q)
+            {
                 sb.AppendLine($"{r.Id}[{r.Description}],");
+            }
+
             return Content(sb.ToString(), "text/plain");
         }
     }

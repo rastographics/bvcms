@@ -1,23 +1,29 @@
-﻿using System;
+﻿using CmsData;
+using CmsWeb.Lifecycle;
+using System;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
     [RouteArea("Setup", AreaPrefix = "Twilio"), Route("{action}/{id?}")]
     public class TwilioController : CmsStaffController
     {
+        public TwilioController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/Twilio")]
-        public ActionResult Index( int activeTab = 0 )
+        public ActionResult Index(int activeTab = 0)
         {
             ViewBag.Tab = activeTab;
             return View();
         }
 
-        public ActionResult GroupCreate( string name, string description, bool systemFlag )
+        public ActionResult GroupCreate(string name, string description, bool systemFlag)
         {
-            var group = new SMSGroup {
+            var group = new SMSGroup
+            {
                 Name = name,
                 Description = description,
                 SystemFlag = systemFlag,
@@ -27,10 +33,10 @@ namespace CmsWeb.Areas.Setup.Controllers
             DbUtil.Db.SMSGroups.InsertOnSubmit(group);
             DbUtil.Db.SubmitChanges();
 
-            return RedirectToAction( "Index" );
+            return RedirectToAction("Index");
         }
 
-        public ActionResult GroupUpdate( int id, string name, string description, bool systemFlag)
+        public ActionResult GroupUpdate(int id, string name, string description, bool systemFlag)
         {
             var g = (from e in DbUtil.Db.SMSGroups
                      where e.Id == id
@@ -48,8 +54,8 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult GroupHide(int groupId)
         {
             var group = (from e in DbUtil.Db.SMSGroups
-                     where e.Id == groupId
-                     select e).Single();
+                         where e.Id == groupId
+                         select e).Single();
             group.IsDeleted = true;
             group.SystemFlag = false;
             DbUtil.Db.SubmitChanges();

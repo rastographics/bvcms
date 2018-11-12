@@ -1,16 +1,21 @@
+using CmsData;
+using CmsWeb.Lifecycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Controllers
 {
     [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
-    [RouteArea("Finance", AreaPrefix= "Fund"), Route("{action}/{id?}")]
+    [RouteArea("Finance", AreaPrefix = "Fund"), Route("{action}/{id?}")]
     public class FundController : CmsStaffController
     {
+        public FundController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/Funds")]
         public ActionResult Index(string sort, int? status)
         {
@@ -64,16 +69,22 @@ namespace CmsWeb.Areas.Finance.Controllers
         {
             var id = fundid.ToInt();
             if (id == 0)
+            {
                 return Json(new { error = "expected an integer (account number)" });
+            }
+
             var f = DbUtil.Db.ContributionFunds.SingleOrDefault(ff => ff.FundId == id);
             if (f != null)
+            {
                 return Json(new { error = $"fund already exists: {f.FundName} ({fundid})" });
+            }
+
             try
             {
                 f = new ContributionFund
                 {
                     FundName = "new fund",
-                    FundId=id,
+                    FundId = id,
                     CreatedBy = Util.UserId1,
                     CreatedDate = Util.Now,
                     FundStatusId = 1,
@@ -83,11 +94,11 @@ namespace CmsWeb.Areas.Finance.Controllers
                 };
                 DbUtil.Db.ContributionFunds.InsertOnSubmit(f);
                 DbUtil.Db.SubmitChanges();
-                return Json(new {edit = "/Fund/Edit/" + id});
+                return Json(new { edit = "/Fund/Edit/" + id });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return Json(new {error = ex.Message});
+                return Json(new { error = ex.Message });
             }
         }
 
@@ -95,7 +106,10 @@ namespace CmsWeb.Areas.Finance.Controllers
         {
             var fund = DbUtil.Db.ContributionFunds.SingleOrDefault(f => f.FundId == id);
             if (fund == null)
+            {
                 RedirectToAction("Index");
+            }
+
             return View(fund);
         }
 
@@ -103,7 +117,10 @@ namespace CmsWeb.Areas.Finance.Controllers
         {
             var f = DbUtil.Db.ContributionFunds.SingleOrDefault(fu => fu.FundId == id);
             if (f != null)
+            {
                 DbUtil.Db.ContributionFunds.DeleteOnSubmit(f);
+            }
+
             DbUtil.Db.SubmitChanges();
             return RedirectToAction("Index");
         }
@@ -113,7 +130,10 @@ namespace CmsWeb.Areas.Finance.Controllers
         {
             var fund = DbUtil.Db.ContributionFunds.SingleOrDefault(f => f.FundId == fundId);
             if (fund != null)
+            {
                 UpdateModel(fund);
+            }
+
             if (ModelState.IsValid)
             {
                 DbUtil.Db.SubmitChanges();

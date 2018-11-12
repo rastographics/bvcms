@@ -1,9 +1,10 @@
+using CmsData;
+using CmsData.Finance;
+using CmsWeb.Lifecycle;
+using CmsWeb.Models;
 using System;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.Finance;
-using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Controllers
@@ -12,12 +13,16 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage", AreaPrefix = "Transactions"), Route("{action}/{id?}")]
     public class TransactionsController : CmsStaffController
     {
+        public TransactionsController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet]
         [Route("~/Transactions")]
         [Route("~/Transactions/{id:int}")]
         public ActionResult Index(int? id, int? goerid = null, int? senderid = null, string reference = "", string desc = "")
         {
-            var m = new TransactionsModel(id, reference, desc) {GoerId = goerid, SenderId = senderid};
+            var m = new TransactionsModel(id, reference, desc) { GoerId = goerid, SenderId = senderid };
             return View(m);
         }
 
@@ -66,7 +71,10 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             var t = DbUtil.Db.Transactions.SingleOrDefault(tt => tt.Id == id);
             if (t == null)
+            {
                 return Content("notran");
+            }
+
             t.OriginalId = parid;
             DbUtil.Db.SubmitChanges();
             return View("List", m);
@@ -78,23 +86,30 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             var t = DbUtil.Db.Transactions.SingleOrDefault(tt => tt.Id == id);
             if (t == null)
+            {
                 return Content("notran");
+            }
 
             var qq = from tt in DbUtil.Db.Transactions
-                where tt.OriginalId == id || tt.Id == id
-                orderby tt.Id descending
-                select tt;
+                     where tt.OriginalId == id || tt.Id == id
+                     orderby tt.Id descending
+                     select tt;
             var t0 = qq.First();
             var gw = DbUtil.Db.Gateway(t.Testing ?? false);
             TransactionResponse resp = null;
             var re = t.TransactionId;
             if (re.Contains("(testing"))
+            {
                 re = re.Substring(0, re.IndexOf("(testing)"));
+            }
+
             if (type == "Void")
             {
                 resp = gw.VoidCreditCardTransaction(re);
                 if (!resp.Approved)
+                {
                     resp = gw.VoidCheckTransaction(re);
+                }
 
                 t.Voided = resp.Approved;
                 amt = t.Amt;
@@ -102,15 +117,21 @@ namespace CmsWeb.Areas.Manage.Controllers
             else
             {
                 if (t.PaymentType == PaymentType.Ach)
+                {
                     resp = gw.RefundCheck(re, amt ?? 0);
+                }
                 else if (t.PaymentType == PaymentType.CreditCard)
+                {
                     resp = gw.RefundCreditCard(re, amt ?? 0, t.LastFourCC);
+                }
 
                 t.Credited = resp.Approved;
             }
 
             if (!resp.Approved)
+            {
                 return Content("error: " + resp.Message);
+            }
 
             var transaction = new Transaction
             {
@@ -185,7 +206,10 @@ DELETE dbo.[Transaction] WHERE Id = {0}
         public ActionResult AssignGoer(int id, int? gid, TransactionsModel m)
         {
             if (gid == 0)
+            {
                 gid = null;
+            }
+
             var gsa = DbUtil.Db.GoerSenderAmounts.Single(tt => tt.Id == id);
             gsa.GoerId = gid;
             DbUtil.Db.SubmitChanges();
@@ -196,13 +220,15 @@ DELETE dbo.[Transaction] WHERE Id = {0}
         public ActionResult Adjust(int id, decimal amt, string desc, TransactionsModel m)
         {
             var qq = from tt in DbUtil.Db.Transactions
-                where tt.OriginalId == id || tt.Id == id
-                orderby tt.Id descending
-                select tt;
+                     where tt.OriginalId == id || tt.Id == id
+                     orderby tt.Id descending
+                     select tt;
             var t = qq.FirstOrDefault();
 
             if (t == null)
+            {
                 return Content("notran");
+            }
 
             var t2 = new Transaction
             {

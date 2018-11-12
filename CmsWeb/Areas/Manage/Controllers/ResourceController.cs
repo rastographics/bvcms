@@ -1,15 +1,16 @@
+using CmsData;
+using CmsWeb.Areas.Dialog.Models;
+using CmsWeb.Areas.Manage.Models;
+using CmsWeb.Lifecycle;
+using CmsWeb.Models;
+using net.openstack.Core.Domain;
+using net.openstack.Providers.Rackspace;
 using System;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Areas.Dialog.Models;
-using CmsWeb.Areas.Manage.Models;
-using CmsWeb.Models;
-using net.openstack.Core.Domain;
-using net.openstack.Providers.Rackspace;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Controllers
@@ -19,6 +20,10 @@ namespace CmsWeb.Areas.Manage.Controllers
     [Authorize(Roles = "ManageResources")]
     public class ResourceController : CmsStaffController
     {
+        public ResourceController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet]
         [Route("~/Resources")]
         public ActionResult Index()
@@ -52,9 +57,14 @@ namespace CmsWeb.Areas.Manage.Controllers
             var resource = DbUtil.Db.Resources.FirstOrDefault(x => x.ResourceId == id);
 
             if (model.DivisionId.HasValue && model.DivisionId < 1)
+            {
                 model.DivisionId = null;
+            }
+
             if (model.CampusId.HasValue && model.CampusId < 1)
+            {
                 model.CampusId = null;
+            }
 
             resource.Name = model.Name;
             resource.DisplayOrder = model.DisplayOrder;

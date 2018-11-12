@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using System.Web.Security;
 using CmsData;
 using CmsWeb.Areas.People.Models;
+using CmsWeb.Lifecycle;
 using CmsWeb.Models;
 using UtilityExtensions;
 
@@ -11,6 +12,10 @@ namespace CmsWeb.Areas.People.Controllers
 {
     public partial class PersonController
     {
+        public PersonController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpPost]
         public ActionResult Users(int id)
         {

@@ -5,12 +5,17 @@ using CmsData;
 using CmsData.API;
 using CmsData.Codes;
 using CmsWeb.Areas.Org.Models;
+using CmsWeb.Lifecycle;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
     public partial class OrgController
     {
+        public OrgController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpPost]
         public ActionResult Messages(int id)
         {

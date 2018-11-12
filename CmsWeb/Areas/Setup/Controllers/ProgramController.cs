@@ -1,6 +1,7 @@
+using CmsData;
+using CmsWeb.Lifecycle;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
@@ -9,6 +10,10 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup", AreaPrefix = "Program"), Route("{action}/{id?}")]
     public class ProgramController : CmsStaffController
     {
+        public ProgramController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/Programs")]
         public ActionResult Index()
         {
@@ -35,7 +40,10 @@ namespace CmsWeb.Areas.Setup.Controllers
             c.Content = value;
             var p = DbUtil.Db.Programs.SingleOrDefault(m => m.Id == a[1].ToInt());
             if (p == null)
+            {
                 return c;
+            }
+
             switch (a[0])
             {
                 case "ProgramName":
@@ -61,10 +69,15 @@ namespace CmsWeb.Areas.Setup.Controllers
             id = id.Substring(1);
             var p = DbUtil.Db.Programs.SingleOrDefault(m => m.Id == id.ToInt());
             if (p == null)
+            {
                 return new EmptyResult();
+            }
 
             foreach (var d in p.Divisions)
+            {
                 d.ProgId = null;
+            }
+
             DbUtil.Db.ProgDivs.DeleteAllOnSubmit(p.ProgDivs);
             DbUtil.Db.Programs.DeleteOnSubmit(p);
             DbUtil.Db.SubmitChanges();

@@ -1,13 +1,18 @@
-﻿using System.Web.Mvc;
-using CmsData;
+﻿using CmsData;
 using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Areas.Search.Models;
+using CmsWeb.Lifecycle;
+using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
-    [RouteArea("Dialog", AreaPrefix="OrgSearchDrop"), Route("{action}/{id?}")]
+    [RouteArea("Dialog", AreaPrefix = "OrgSearchDrop"), Route("{action}/{id?}")]
     public class OrgSearchDropController : CmsStaffController
     {
+        public OrgSearchDropController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpPost, Route("~/OrgSearchDrop")]
         public ActionResult Index(OrgSearchModel m)
         {

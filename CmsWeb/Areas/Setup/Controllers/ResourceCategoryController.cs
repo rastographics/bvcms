@@ -1,6 +1,7 @@
-﻿using System.Linq;
+﻿using CmsData;
+using CmsWeb.Lifecycle;
+using System.Linq;
 using System.Web.Mvc;
-using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
@@ -9,6 +10,10 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup", AreaPrefix = "ResourceCategory"), Route("{action}/{id?}")]
     public class ResourceCategoryController : CmsStaffController
     {
+        public ResourceCategoryController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/ResourceCategories")]
         public ActionResult Index()
         {
@@ -21,10 +26,14 @@ namespace CmsWeb.Areas.Setup.Controllers
         {
             ResourceType resourceType = null;
             if (resourceTypeId.HasValue)
+            {
                 resourceType = DbUtil.Db.ResourceTypes.FirstOrDefault(x => x.ResourceTypeId == resourceTypeId);
+            }
 
             if (resourceType == null)
+            {
                 resourceType = DbUtil.Db.ResourceTypes.FirstOrDefault();
+            }
 
             if (resourceType == null)
             {
@@ -46,7 +55,10 @@ namespace CmsWeb.Areas.Setup.Controllers
             c.Content = value;
             var resourceCategory = DbUtil.Db.ResourceCategories.SingleOrDefault(m => m.ResourceCategoryId == a[1].ToInt());
             if (resourceCategory == null)
+            {
                 return c;
+            }
+
             switch (a[0])
             {
                 case "Name":
@@ -78,10 +90,14 @@ namespace CmsWeb.Areas.Setup.Controllers
             id = id.Substring(1);
             var category = DbUtil.Db.ResourceCategories.SingleOrDefault(m => m.ResourceCategoryId == id.ToInt());
             if (category == null)
+            {
                 return new EmptyResult();
+            }
 
             if (category.Resources.Any())
+            {
                 return Json(new { error = "Resources have that category, not deleted" });
+            }
 
             DbUtil.Db.ResourceCategories.DeleteOnSubmit(category);
             DbUtil.Db.SubmitChanges();

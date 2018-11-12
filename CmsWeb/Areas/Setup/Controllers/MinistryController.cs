@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
 using CmsData;
+using CmsWeb.Lifecycle;
+using System.Linq;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
@@ -13,6 +10,10 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup", AreaPrefix = "Ministry"), Route("{action=index}/{id?}")]
     public class MinistryController : CmsStaffController
     {
+        public MinistryController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         public ActionResult Index()
         {
             var m = DbUtil.Db.Ministries.AsEnumerable();
@@ -36,7 +37,10 @@ namespace CmsWeb.Areas.Setup.Controllers
             c.Content = value;
             var min = DbUtil.Db.Ministries.SingleOrDefault(m => m.MinistryId == a[1].ToInt());
             if (min == null)
+            {
                 return c;
+            }
+
             switch (a[0])
             {
                 case "MinistryName":
@@ -53,7 +57,10 @@ namespace CmsWeb.Areas.Setup.Controllers
             id = id.Substring(1);
             var min = DbUtil.Db.Ministries.SingleOrDefault(m => m.MinistryId == id.ToInt());
             if (min == null)
+            {
                 return new EmptyResult();
+            }
+
             DbUtil.Db.Ministries.DeleteOnSubmit(min);
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();

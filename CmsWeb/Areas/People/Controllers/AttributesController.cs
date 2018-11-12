@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CmsData;
+using CmsWeb.Lifecycle;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using CmsData;
-using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
 {
     [RouteArea("People", AreaPrefix = "Attributes"), Route("{action}/{cid:int}")]
     public class AttributesController : CmsController
     {
+        public AttributesController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet, Route("~/Person/Attributes/{field}/{pid:int}")]
         public ActionResult Index(int pid, string field)
         {
@@ -29,7 +30,7 @@ namespace CmsWeb.Areas.People.Controllers
             var m = DbUtil.Db.PeopleExtras.Single(vv => vv.Field == ev.Field && vv.PeopleId == ev.PeopleId);
             m.Data = ev.Data;
             DbUtil.Db.SubmitChanges();
-            DbUtil.LogActivity("Updated Attributes", peopleid:m.PeopleId);
+            DbUtil.LogActivity("Updated Attributes", peopleid: m.PeopleId);
             return Redirect($"/Person/Attributes/{ev.Field}/{ev.PeopleId}");
         }
     }

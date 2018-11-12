@@ -1,6 +1,7 @@
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.Finance.Models.BatchImport;
+using CmsWeb.Lifecycle;
 using CmsWeb.Models;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -17,6 +18,10 @@ namespace CmsWeb.Areas.Finance.Controllers
     [RouteArea("Finance", AreaPrefix = "PostBundle"), Route("{action}/{id?}")]
     public class PostBundleController : CmsStaffController
     {
+        public PostBundleController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/PostBundle/{id:int}")]
         public ActionResult Index(int id)
         {

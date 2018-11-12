@@ -1,16 +1,21 @@
+using CmsData;
+using CmsWeb.Areas.Dialog.Models;
+using CmsWeb.Lifecycle;
 using System;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Areas.Dialog.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
     // todo: use bootstrap
-    [RouteArea("Dialog", AreaPrefix= "TransactionHistory"), Route("{action}/{id?}")]
+    [RouteArea("Dialog", AreaPrefix = "TransactionHistory"), Route("{action}/{id?}")]
     public class TransactionHistoryController : CmsStaffController
     {
+        public TransactionHistoryController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/TransactionHistory/{id:int}/{oid:int}")]
         public ActionResult Index(int id, int oid)
         {

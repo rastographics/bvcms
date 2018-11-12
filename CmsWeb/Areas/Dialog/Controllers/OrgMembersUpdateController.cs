@@ -1,7 +1,7 @@
+using CmsWeb.Areas.Dialog.Models;
+using CmsWeb.Lifecycle;
 using System;
 using System.Web.Mvc;
-using CmsWeb.Areas.Dialog.Models;
-using CmsData;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
@@ -9,6 +9,10 @@ namespace CmsWeb.Areas.Dialog.Controllers
     [RouteArea("Dialog", AreaPrefix = "OrgMembersUpdate"), Route("{action}")]
     public class OrgMembersUpdateController : CmsStaffController
     {
+        public OrgMembersUpdateController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/OrgMembersUpdate/{qid:guid}")]
         public ActionResult Index(Guid qid)
         {
@@ -60,7 +64,10 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult PostTransactions(OrgMembersUpdate m)
         {
             if (!ModelState.IsValid)
+            {
                 return View("AddTransaction", m);
+            }
+
             m.PostTransactions();
             return View("AddTransactionDone", m);
         }
@@ -68,7 +75,10 @@ namespace CmsWeb.Areas.Dialog.Controllers
         protected override void OnException(ExceptionContext filterContext)
         {
             if (filterContext.ExceptionHandled)
+            {
                 return;
+            }
+
             filterContext.Result = Message2(filterContext.Exception.Message);
             filterContext.ExceptionHandled = true;
         }

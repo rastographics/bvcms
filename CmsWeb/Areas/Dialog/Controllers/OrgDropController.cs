@@ -1,13 +1,18 @@
-﻿using System;
-using System.Web.Mvc;
-using CmsData;
+﻿using CmsData;
 using CmsWeb.Areas.Dialog.Models;
+using CmsWeb.Lifecycle;
+using System;
+using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
-    [RouteArea("Dialog", AreaPrefix="OrgDrop"), Route("{action}/{id?}")]
+    [RouteArea("Dialog", AreaPrefix = "OrgDrop"), Route("{action}/{id?}")]
     public class OrgDropController : CmsStaffController
     {
+        public OrgDropController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpPost, Route("~/OrgDrop/{qid:guid}")]
         public ActionResult Index(Guid qid)
         {
@@ -21,7 +26,10 @@ namespace CmsWeb.Areas.Dialog.Controllers
         {
             model.UpdateLongRunningOp(DbUtil.Db, OrgDrop.Op);
             if (!model.Started.HasValue)
+            {
                 model.Process(DbUtil.Db);
+            }
+
             return View(model);
         }
 

@@ -1,6 +1,7 @@
+using CmsData;
+using CmsWeb.Lifecycle;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
@@ -9,6 +10,10 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup", AreaPrefix = "PromotionSetup"), Route("{action=index}/{id?}")]
     public class PromotionController : CmsStaffController
     {
+        public PromotionController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         public ActionResult Index()
         {
             var m = new Models.PromotionModel();
@@ -32,7 +37,10 @@ namespace CmsWeb.Areas.Setup.Controllers
             c.Content = value;
             var pro = DbUtil.Db.Promotions.SingleOrDefault(p => p.Id == iid);
             if (pro == null)
+            {
                 return c;
+            }
+
             switch (id.Substring(0, 1))
             {
                 case "d":
@@ -64,9 +72,14 @@ namespace CmsWeb.Areas.Setup.Controllers
             DbUtil.Db.SubmitChanges();
             var c = new ContentResult();
             if (fts == "f")
+            {
                 c.Content = pro.FromDivision.Name;
+            }
             else if (fts == "t")
+            {
                 c.Content = pro.ToDivision.Name;
+            }
+
             return c;
         }
 
@@ -76,7 +89,10 @@ namespace CmsWeb.Areas.Setup.Controllers
             var iid = id.Substring(1).ToInt();
             var pro = DbUtil.Db.Promotions.SingleOrDefault(m => m.Id == iid);
             if (pro == null)
+            {
                 return new EmptyResult();
+            }
+
             DbUtil.Db.Promotions.DeleteOnSubmit(pro);
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();

@@ -1,28 +1,38 @@
-using System;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Web.Mvc;
 using CmsData;
-using UtilityExtensions;
+using CmsWeb.Lifecycle;
 using CmsWeb.Models;
 using MoreLinq;
+using System;
+using System.Web.Mvc;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Public
 {
     [RouteArea("Public", AreaPrefix = "OrgContent"), Route("{action}/{id?}")]
     public class OrgContentController : CmsController
     {
+        public OrgContentController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/OrgContent/{id:int}/{pid:int?}")]
         public ActionResult Index(int id, int? pid)
         {
             var o = OrgContentInfo.Get(id);
             if (o == null)
+            {
                 return Content("<h2>Not an Organization</h2>");
-            if (!Util.UserPeopleId.HasValue)
-                return Redirect("/OrgContent/Login/" + id);
+            }
 
-            if(o.TryRunPython(pid ?? Util.UserPeopleId.Value))
+            if (!Util.UserPeopleId.HasValue)
+            {
+                return Redirect("/OrgContent/Login/" + id);
+            }
+
+            if (o.TryRunPython(pid ?? Util.UserPeopleId.Value))
+            {
                 return View("ScriptResults", o);
+            }
 
             var org = DbUtil.Db.LoadOrganizationById(o.OrgId);
 
@@ -31,7 +41,9 @@ namespace CmsWeb.Areas.Public
 
             // Try to fall back on a standard template
             if (template == null)
+            {
                 template = DbUtil.Db.ContentHtml("OrgContent", null);
+            }
 
             if (template != null)
             {
@@ -51,7 +63,9 @@ namespace CmsWeb.Areas.Public
                         });
 
                 if (template.Contains("{directory}"))
+                {
                     ViewBag.qid = DbUtil.Db.NewOrgFilter(id).QueryId;
+                }
 
                 ViewBag.template = template;
                 return View(o);
@@ -64,7 +78,10 @@ namespace CmsWeb.Areas.Public
         {
             var o = OrgContentInfo.Get(id);
             if (o == null || o.Inactive || !Util.UserPeopleId.HasValue || !o.CanEdit)
+            {
                 return Redirect("/OrgContent/" + id);
+            }
+
             return View(o);
         }
 
@@ -76,7 +93,7 @@ namespace CmsWeb.Areas.Public
             var bits = new byte[file.ContentLength];
             file.InputStream.Read(bits, 0, bits.Length);
             var mimetype = file.ContentType.ToLower();
-            var oc = new OrgContent {OrgId = id};
+            var oc = new OrgContent { OrgId = id };
             switch (mimetype)
             {
                 case "image/jpeg":

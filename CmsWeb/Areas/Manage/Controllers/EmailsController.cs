@@ -1,26 +1,30 @@
+using CmsData;
+using CmsWeb.Lifecycle;
+using CmsWeb.Models;
+using Dapper;
+using Elmah;
+using RestSharp;
 using System;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
 using System.Net;
-using System.Threading;
-using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Models;
-using Dapper;
-using Elmah;
-using UtilityExtensions;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Web.Hosting;
-using System.Text;
-using RestSharp;
+using System.Web.Mvc;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
     [RouteArea("Manage"), Route("~/Manage/Emails/{action}/{id?}")]
     public class EmailsController : CmsController
     {
+        public EmailsController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/Emails")]
         public ActionResult Index()
         {
@@ -46,17 +50,26 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             var m = new EmailModel(id);
             if (m.queue == null)
+            {
                 return Content("no email found");
+            }
+
             var curruser = DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0);
             if (curruser == null)
+            {
                 return Content("no user");
+            }
+
             if (User.IsInRole("Admin")
                 || User.IsInRole("ManageEmails")
                 || User.IsInRole("Finance")
                 || m.queue.FromAddr == curruser.EmailAddress
                 || m.queue.QueuedBy == curruser.PeopleId
                 || m.queue.EmailQueueTos.Any(et => et.PeopleId == curruser.PeopleId))
+            {
                 return View(m);
+            }
+
             return Content("not authorized");
         }
 
@@ -64,17 +77,26 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             var m = new EmailModel(id);
             if (m.queue == null)
+            {
                 return Content("no email found");
+            }
+
             var curruser = DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0);
             if (curruser == null)
+            {
                 return Content("no user");
+            }
+
             if (User.IsInRole("Admin")
                 || User.IsInRole("ManageEmails")
                 || User.IsInRole("Finance")
                 || m.queue.FromAddr == curruser.EmailAddress
                 || m.queue.QueuedBy == curruser.PeopleId
                 || m.queue.EmailQueueTos.Any(et => et.PeopleId == curruser.PeopleId))
+            {
                 return View(m);
+            }
+
             return Content("not authorized");
         }
 
@@ -82,17 +104,26 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             var m = new EmailModel(id);
             if (m.queue == null)
+            {
                 return Content("no email found");
+            }
+
             var curruser = DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0);
             if (curruser == null)
+            {
                 return Content("no user");
+            }
+
             if (User.IsInRole("Admin")
                 || User.IsInRole("ManageEmails")
                 || User.IsInRole("Finance")
                 || m.queue.FromAddr == curruser.EmailAddress
                 || m.queue.QueuedBy == curruser.PeopleId
                 || m.queue.EmailQueueTos.Any(et => et.PeopleId == curruser.PeopleId))
+            {
                 return Content(m.queue.Body);
+            }
+
             return Content("not authorized");
         }
 
@@ -151,9 +182,15 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             var m = new EmailModel(id);
             if (m.queue == null)
+            {
                 return Redirect("/Emails");
+            }
+
             if (m.queue.Sent.HasValue || !m.queue.SendWhen.HasValue || !m.CanDelete())
+            {
                 return Redirect("/");
+            }
+
             DeleteEmail(id);
             return Redirect("/Emails");
         }
@@ -175,7 +212,10 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             var m = new EmailModel(id);
             if (!m.CanDelete())
+            {
                 return Redirect("/");
+            }
+
             DeleteEmail(id);
             return Redirect("/Emails");
         }
@@ -189,9 +229,13 @@ namespace CmsWeb.Areas.Manage.Controllers
             var p = DbUtil.Db.LoadPersonById(et.PeopleId);
 
             if (email.FinanceOnly == true)
+            {
                 DbUtil.Db.EmailFinanceInformation(email.FromAddr, p, email.Subject, email.Body);
+            }
             else
+            {
                 DbUtil.Db.Email(email.FromAddr, p, email.Subject, email.Body);
+            }
 
             TempData["message"] = "Mail Resent";
             return RedirectToAction("Details", new { id });
@@ -203,7 +247,10 @@ namespace CmsWeb.Areas.Manage.Controllers
                          where e.Id == id
                          select e).Single();
             if (!User.IsInRole("Admin") && email.QueuedBy != Util.UserPeopleId)
+            {
                 return Redirect("/Emails/Details/" + id);
+            }
+
             email.PublicX = true;
             DbUtil.Db.SubmitChanges();
             return Redirect("/EmailView/" + id);
@@ -214,7 +261,10 @@ namespace CmsWeb.Areas.Manage.Controllers
                          where e.Id == id
                          select e).Single();
             if (!User.IsInRole("Admin") && email.QueuedBy != Util.UserPeopleId)
+            {
                 return Redirect("/Emails/Details/" + id);
+            }
+
             email.PublicX = false;
             DbUtil.Db.SubmitChanges();
             return Redirect("/Emails/Details/" + id);
@@ -278,7 +328,10 @@ namespace CmsWeb.Areas.Manage.Controllers
             request.AddParameter("undefined", "null", ParameterType.RequestBody);
             var response = client.Execute(request);
             if (response.StatusCode == HttpStatusCode.NoContent)
+            {
                 response.StatusDescription = "Email Unblocked!";
+            }
+
             return Content(response.StatusDescription);
         }
 
@@ -294,9 +347,15 @@ namespace CmsWeb.Areas.Manage.Controllers
             var response = client.Execute(request);
             var okcodes = new[] { HttpStatusCode.OK, HttpStatusCode.NotFound, HttpStatusCode.NoContent, };
             if (okcodes.Contains(response.StatusCode))
+            {
                 DbUtil.Db.SpamReporterRemove(email);
+            }
+
             if (response.StatusCode == HttpStatusCode.NoContent)
+            {
                 response.StatusDescription = "Email Unspammed!";
+            }
+
             return Content(response.StatusDescription);
         }
 
@@ -319,11 +378,20 @@ namespace CmsWeb.Areas.Manage.Controllers
                 get
                 {
                     if (!admin || !email.HasValue())
+                    {
                         return false;
+                    }
+
                     if ((eventx != "bounce" || type != "blocked") && eventx != "dropped")
+                    {
                         return false;
+                    }
+
                     if (eventx == "dropped" && reason.Contains("spam", ignoreCase: true))
+                    {
                         return false;
+                    }
+
                     return hasapikey;
                 }
             }
@@ -332,11 +400,20 @@ namespace CmsWeb.Areas.Manage.Controllers
                 get
                 {
                     if (!devel || !email.HasValue())
+                    {
                         return false;
+                    }
+
                     if ((eventx != "bounce" || type != "blocked") && eventx != "dropped")
+                    {
                         return false;
+                    }
+
                     if (eventx == "dropped" && !reason.Contains("spam", ignoreCase: true))
+                    {
                         return false;
+                    }
+
                     return hasapikey;
                 }
             }
@@ -346,6 +423,10 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage")]
     public class EmailViewController : CmsControllerNoHttps
     {
+        public EmailViewController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/EmailView/{id}")]
         [Route("~/Emails/View/{id}")]
         public new ActionResult View(string id)
@@ -353,9 +434,15 @@ namespace CmsWeb.Areas.Manage.Controllers
             var iid = id.ToInt();
             var email = DbUtil.Db.EmailQueues.SingleOrDefault(ee => ee.Id == iid);
             if (email == null)
+            {
                 return Content("email document not found");
+            }
+
             if ((email.PublicX ?? false) == false)
+            {
                 return Content("no email available");
+            }
+
             var em = new EmailQueue
             {
                 Subject = email.Subject,

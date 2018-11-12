@@ -1,16 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
 using CmsData;
+using CmsWeb.Lifecycle;
+using System;
+using System.Linq;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
-    [RouteArea("Manage", AreaPrefix= "Manage/ExtraValues"), Route("{action}/{id?}")]
+    [RouteArea("Manage", AreaPrefix = "Manage/ExtraValues"), Route("{action}/{id?}")]
     public class ExtraValuesController : CmsStaffController
     {
+        public ExtraValuesController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpPost, Route("Add2/{id:guid}")]
         public ActionResult Add2(Guid id, string field, string value)
         {
@@ -31,7 +34,10 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 var ev = Person.GetExtraValue(DbUtil.Db, pid, field, value);
                 if (ev == null)
+                {
                     continue;
+                }
+
                 DbUtil.Db.PeopleExtras.DeleteOnSubmit(ev);
                 DbUtil.Db.SubmitChanges();
                 DbUtil.DbDispose();
@@ -44,7 +50,10 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             var ev = DbUtil.Db.PeopleExtras.Where(ee => ee.Field == field).FirstOrDefault();
             if (ev == null)
+            {
                 return Content("error: no field");
+            }
+
             switch (type.ToLower())
             {
                 case "code":

@@ -1,18 +1,23 @@
-using System;
-using System.Linq;
-using System.Data.Linq;
-using System.Text;
-using System.Web.Mvc;
 using CmsData;
-using UtilityExtensions;
+using CmsWeb.Lifecycle;
 using CmsWeb.Models;
 using Dapper;
+using System;
+using System.Data.Linq;
+using System.Linq;
+using System.Text;
+using System.Web.Mvc;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
     [RouteArea("Setup", AreaPrefix = "Division"), Route("{action}/{id?}")]
     public class DivisionController : CmsStaffController
     {
+        public DivisionController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Authorize(Roles = "Admin")]
         [Route("~/Divisions")]
         public ActionResult Index()
@@ -35,17 +40,21 @@ namespace CmsWeb.Areas.Setup.Controllers
             DbUtil.Db.SubmitChanges();
             DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, d);
             var di = m.DivisionItem(d.Id).Single();
-            return View("Row", di); 
+            return View("Row", di);
         }
 
- 
+
         public ActionResult Edit(string id, string value)
         {
             if (!id.HasValue())
+            {
                 return new EmptyResult();
+            }
+
             var iid = id.Substring(1).ToInt();
             var div = DbUtil.Db.Divisions.SingleOrDefault(p => p.Id == iid);
             if (div != null)
+            {
                 switch (id.Substring(0, 1))
                 {
                     case "n":
@@ -65,6 +74,8 @@ namespace CmsWeb.Areas.Setup.Controllers
                         DbUtil.Db.SubmitChanges();
                         return Content(value);
                 }
+            }
+
             return new EmptyResult();
         }
         [HttpPost]
@@ -72,13 +83,19 @@ namespace CmsWeb.Areas.Setup.Controllers
         {
             var div = DbUtil.Db.Divisions.SingleOrDefault(m => m.Id == id);
             if (div == null)
+            {
                 return new EmptyResult();
+            }
+
             DbUtil.Db.ProgDivs.DeleteAllOnSubmit(
                 DbUtil.Db.ProgDivs.Where(di => di.DivId == id));
             DbUtil.Db.DivOrgs.DeleteAllOnSubmit(
                 DbUtil.Db.DivOrgs.Where(di => di.DivId == id));
             foreach (var o in div.Organizations)
+            {
                 o.DivisionId = null;
+            }
+
             DbUtil.Db.Divisions.DeleteOnSubmit(div);
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();

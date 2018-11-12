@@ -1,8 +1,9 @@
+using CmsData;
+using CmsWeb.Lifecycle;
+using CmsWeb.Models;
 using System;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Main.Controllers
@@ -10,12 +11,19 @@ namespace CmsWeb.Areas.Main.Controllers
     [RouteArea("Main", AreaPrefix = "Tags"), Route("{action}/{id?}")]
     public class TagsController : CmsStaffController
     {
+        public TagsController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/Tags")]
         public ActionResult Index(string tag)
         {
             var m = new TagsModel();
             if (tag.HasValue())
+            {
                 m.tag = tag;
+            }
+
             m.SetCurrentTag();
             InitExportToolbar();
             return View(m);
@@ -41,7 +49,9 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             var t = DbUtil.Db.TagCurrent();
             if (t.TagShares.Count() > 0 || t.PeopleId != Util.UserPeopleId)
+            {
                 return Content("error");
+            }
 
             t.DeleteTag(DbUtil.Db);
             DbUtil.Db.SubmitChanges();
@@ -54,7 +64,10 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult RenameTag(TagsModel m, string renamedTag = null)
         {
             if (renamedTag == null || !renamedTag.HasValue())
+            {
                 return View("Tags", m);
+            }
+
             m.tagname = renamedTag.Replace("!", "_");
             var t = DbUtil.Db.TagCurrent();
             t.Name = m.tagname;
@@ -93,7 +106,10 @@ namespace CmsWeb.Areas.Main.Controllers
         public ContentResult TagAll(Guid id, string tagname, bool? cleartagfirst)
         {
             if (!tagname.HasValue())
+            {
                 return Content("error: no tag name");
+            }
+
             DbUtil.Db.SetNoLock();
             var q = DbUtil.Db.PeopleQuery(id);
             if (Util2.CurrentTagName == tagname && !(cleartagfirst ?? false))
@@ -103,7 +119,10 @@ namespace CmsWeb.Areas.Main.Controllers
             }
             var tag = DbUtil.Db.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
             if (cleartagfirst ?? false)
+            {
                 DbUtil.Db.ClearTag(tag);
+            }
+
             DbUtil.Db.TagAll(q, tag);
             Util2.CurrentTag = tagname;
             DbUtil.Db.TagCurrent();
@@ -146,7 +165,10 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.Db.SubmitChanges();
             var tag = DbUtil.Db.TagCurrent();
             foreach (var ts in tag.TagShares)
-                t.PersonTags.Add(new TagPerson {PeopleId = ts.PeopleId});
+            {
+                t.PersonTags.Add(new TagPerson { PeopleId = ts.PeopleId });
+            }
+
             DbUtil.Db.SubmitChanges();
             return Redirect("/SearchUsers");
         }
@@ -168,7 +190,10 @@ namespace CmsWeb.Areas.Main.Controllers
                            where p == -1
                            select pid;
             foreach (var pid in userAdds)
-                tag.TagShares.Add(new TagShare {PeopleId = pid});
+            {
+                tag.TagShares.Add(new TagShare { PeopleId = pid });
+            }
+
             DbUtil.Db.TagPeople.DeleteAllOnSubmit(t.PersonTags);
             DbUtil.Db.Tags.DeleteOnSubmit(t);
             DbUtil.Db.SubmitChanges();
@@ -180,9 +205,12 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             if (Request.HttpMethod.ToUpper() == "GET")
             {
-                var success = (string) TempData["success"];
+                var success = (string)TempData["success"];
                 if (success.HasValue())
+                {
                     ViewData["success"] = success;
+                }
+
                 ViewData["tag"] = tag;
                 ViewData["field"] = tag;
                 ViewData["value"] = "true";

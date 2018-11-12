@@ -1,22 +1,27 @@
+using CmsData;
+using CmsWeb.Lifecycle;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Web.Mvc;
 using System.Web.Hosting;
+using System.Web.Mvc;
 using UtilityExtensions;
-using CmsData;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
-    [Authorize(Roles="Admin, Manager2")]
-    [RouteArea("Manage", AreaPrefix= "Duplicates"), Route("{action}")]
+    [Authorize(Roles = "Admin, Manager2")]
+    [RouteArea("Manage", AreaPrefix = "Duplicates"), Route("{action}")]
     public class DuplicatesController : CmsStaffController
     {
+        public DuplicatesController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         public class DuplicateInfo
         {
-            public Duplicate d {get; set;}
-            public string name {get; set;}
+            public Duplicate d { get; set; }
+            public string name { get; set; }
             public bool samefamily { get; set; }
             public bool notdup { get; set; }
         }
@@ -36,66 +41,74 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View(q);
         }
 
-		[HttpGet]
-		public ActionResult Find()
-		{
-			return View();
-		}
+        [HttpGet]
+        public ActionResult Find()
+        {
+            return View();
+        }
         [HttpPost]
-		public ActionResult Find(string fromDate, string toDate)
+        public ActionResult Find(string fromDate, string toDate)
         {
             var fdt = fromDate.ToDate();
             var tdt = toDate.ToDate();
-			string host = Util.Host; 
-			var runningtotals = new DuplicatesRun
-			{
-				Started = DateTime.Now,
-				Count = 0,
-				Processed = 0,
-				Found = 0
-			};
-			DbUtil.Db.DuplicatesRuns.InsertOnSubmit(runningtotals);
-			DbUtil.Db.SubmitChanges();
+            string host = Util.Host;
+            var runningtotals = new DuplicatesRun
+            {
+                Started = DateTime.Now,
+                Count = 0,
+                Processed = 0,
+                Found = 0
+            };
+            DbUtil.Db.DuplicatesRuns.InsertOnSubmit(runningtotals);
+            DbUtil.Db.SubmitChanges();
 
-            HostingEnvironment.QueueBackgroundWorkItem(ct => 
+            HostingEnvironment.QueueBackgroundWorkItem(ct =>
             {
                 var db = DbUtil.Create(host);
-				var rt = db.DuplicatesRuns.OrderByDescending(mm => mm.Id).First();
+                var rt = db.DuplicatesRuns.OrderByDescending(mm => mm.Id).First();
                 db.ExecuteCommand("delete duplicate");
-				var q = from p in db.People
-						where p.CreatedDate > fdt
-						where p.CreatedDate < tdt.Value.AddDays(1)
-						select p.PeopleId;
-				rt.Count = q.Count();
-				db.SubmitChanges();
-                foreach(var p in q)
+                var q = from p in db.People
+                        where p.CreatedDate > fdt
+                        where p.CreatedDate < tdt.Value.AddDays(1)
+                        select p.PeopleId;
+                rt.Count = q.Count();
+                db.SubmitChanges();
+                foreach (var p in q)
                 {
                     var pids = db.FindPerson4(p);
-					rt.Processed++;
-					db.SubmitChanges();
+                    rt.Processed++;
+                    db.SubmitChanges();
                     if (!pids.Any())
+                    {
                         continue;
-                    foreach(var pid in pids)
+                    }
+
+                    foreach (var pid in pids)
+                    {
                         if (pid.PeopleId != null)
+                        {
                             db.InsertDuplicate(p, pid.PeopleId.Value);
+                        }
+                    }
+
                     rt.Found++;
                 }
-				rt.Completed = DateTime.Now;
-				db.SubmitChanges();
+                rt.Completed = DateTime.Now;
+                db.SubmitChanges();
             });
             return Redirect("/Duplicates/Progress");
         }
         [HttpGet]
         public ActionResult Progress()
         {
-			var rt = DbUtil.Db.DuplicatesRuns.OrderByDescending(mm => mm.Id).First();
+            var rt = DbUtil.Db.DuplicatesRuns.OrderByDescending(mm => mm.Id).First();
             return View(rt);
         }
-		[HttpPost]
-		public JsonResult Progress2()
-		{
-			var r = DbUtil.Db.DuplicatesRuns.OrderByDescending(mm => mm.Id).First();
-			return Json(new { r.Count, r.Error, r.Processed, r.Found, Completed = r.Completed.ToString(), r.Running } );
-		}
+        [HttpPost]
+        public JsonResult Progress2()
+        {
+            var r = DbUtil.Db.DuplicatesRuns.OrderByDescending(mm => mm.Id).First();
+            return Json(new { r.Count, r.Error, r.Processed, r.Found, Completed = r.Completed.ToString(), r.Running });
+        }
     }
 }

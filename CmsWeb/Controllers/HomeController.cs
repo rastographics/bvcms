@@ -1,25 +1,24 @@
+using CmsData;
+using CmsWeb.Areas.People.Models;
+using CmsWeb.Lifecycle;
+using CmsWeb.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.Hosting;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Areas.People.Models;
-using CmsWeb.Areas.Reports.Models;
-using CmsWeb.MobileAPI;
-using Dapper;
-using Newtonsoft.Json;
 using UtilityExtensions;
-using CmsWeb.Models;
 
 namespace CmsWeb.Controllers
 {
     public class HomeController : CmsStaffController
     {
+        public HomeController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         public ActionResult Index()
         {
             if (!Util2.OrgLeadersOnly && User.IsInRole("OrgLeadersOnly"))
@@ -52,7 +51,9 @@ namespace CmsWeb.Controllers
             var name = "VisitNumber-" + id;
             var q = DbUtil.Db.Queries.FirstOrDefault(qq => qq.Owner == "System" && qq.Name == name);
             if (q != null)
+            {
                 return Redirect("/Query/" + q.QueryId);
+            }
 
             const CompareType comp = CompareType.Equal;
             var cc = DbUtil.Db.ScratchPadCondition();
@@ -109,7 +110,10 @@ namespace CmsWeb.Controllers
             DbUtil.Db.SetUserPreference("TargetLinkPeople", id ? "false" : "true");
             DbUtil.Db.SubmitChanges();
             if (Request.UrlReferrer != null)
+            {
                 return Redirect(Request.UrlReferrer.OriginalString);
+            }
+
             return Redirect("/");
         }
         public ActionResult TargetOrg(bool id)
@@ -117,7 +121,10 @@ namespace CmsWeb.Controllers
             DbUtil.Db.SetUserPreference("TargetLinkOrg", id ? "false" : "true");
             DbUtil.Db.SubmitChanges();
             if (Request.UrlReferrer != null)
+            {
                 return Redirect(Request.UrlReferrer.OriginalString);
+            }
+
             return Redirect("/");
         }
         public ActionResult OnlineRegTypeSearchAdd(bool id)
@@ -125,7 +132,10 @@ namespace CmsWeb.Controllers
             Util2.SetSessionObj("OnlineRegTypeSearchAdd", id ? "false" : "true");
             DbUtil.Db.SubmitChanges();
             if (Request.UrlReferrer != null)
+            {
                 return Redirect(Request.UrlReferrer.OriginalString);
+            }
+
             return Redirect("/");
         }
         public ActionResult UseNewFeature(bool id)
@@ -133,7 +143,10 @@ namespace CmsWeb.Controllers
             Util2.UseNewFeature = !id;
             DbUtil.Db.SubmitChanges();
             if (Request.UrlReferrer != null)
+            {
                 return Redirect(Request.UrlReferrer.OriginalString);
+            }
+
             return Redirect("/");
         }
         public ActionResult Names(string term)
@@ -162,7 +175,10 @@ namespace CmsWeb.Controllers
             var m = new TagsModel { tag = tag };
             m.SetCurrentTag();
             if (Request.UrlReferrer != null)
+            {
                 return Redirect(Request.UrlReferrer.ToString());
+            }
+
             return Redirect("/");
         }
 
@@ -176,13 +192,20 @@ namespace CmsWeb.Controllers
         public ActionResult Support2(string helplink)
         {
             if (helplink.HasValue())
+            {
                 TempData["HelpLink"] = HttpUtility.UrlDecode(helplink);
+            }
+
             return View();
         }
     }
 
     public class Home2Controller : CmsController
     {
+        public Home2Controller(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet, Route("~/Home/MyDataSupport")]
         public ActionResult MyDataSupport()
         {
@@ -204,10 +227,15 @@ namespace CmsWeb.Controllers
             var d = Session["preferences"] as Dictionary<string, string>;
             var keys = d.Keys.Where(kk => kk.StartsWith("hide-tip-")).ToList();
             foreach (var k in keys)
+            {
                 d.Remove(k);
+            }
 
             if (Request.UrlReferrer != null)
+            {
                 return Redirect(Request.UrlReferrer.ToString());
+            }
+
             return Redirect("/");
         }
 

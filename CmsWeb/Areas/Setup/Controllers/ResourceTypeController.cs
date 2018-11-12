@@ -1,6 +1,7 @@
-﻿using System.Linq;
+﻿using CmsData;
+using CmsWeb.Lifecycle;
+using System.Linq;
 using System.Web.Mvc;
-using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
@@ -9,6 +10,10 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup", AreaPrefix = "ResourceType"), Route("{action}/{id?}")]
     public class ResourceTypeController : CmsStaffController
     {
+        public ResourceTypeController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/ResourceTypes")]
         public ActionResult Index()
         {
@@ -47,7 +52,10 @@ namespace CmsWeb.Areas.Setup.Controllers
             c.Content = value;
             var resourceType = DbUtil.Db.ResourceTypes.SingleOrDefault(m => m.ResourceTypeId == a[1].ToInt());
             if (resourceType == null)
+            {
                 return c;
+            }
+
             switch (a[0])
             {
                 case "Name":
@@ -69,10 +77,14 @@ namespace CmsWeb.Areas.Setup.Controllers
             id = id.Substring(1);
             var catType = DbUtil.Db.ResourceTypes.SingleOrDefault(m => m.ResourceTypeId == id.ToInt());
             if (catType == null)
+            {
                 return new EmptyResult();
+            }
 
             if (catType.Resources.Any())
-                return Json(new { error = "Resources have that type, not deleted" });            
+            {
+                return Json(new { error = "Resources have that type, not deleted" });
+            }
 
             DbUtil.Db.ResourceTypes.DeleteOnSubmit(catType);
             DbUtil.Db.SubmitChanges();

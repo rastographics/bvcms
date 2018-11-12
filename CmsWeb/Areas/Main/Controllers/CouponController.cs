@@ -1,8 +1,9 @@
+using CmsData;
+using CmsWeb.Lifecycle;
+using CmsWeb.Models;
 using System;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Main.Controllers
@@ -11,6 +12,10 @@ namespace CmsWeb.Areas.Main.Controllers
     [RouteArea("Main", AreaPrefix = "Coupon"), Route("{action}/{id?}")]
     public class CouponController : CmsStaffController
     {
+        public CouponController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/Coupons")]
         public ActionResult Index()
         {
@@ -24,8 +29,13 @@ namespace CmsWeb.Areas.Main.Controllers
             m.name = m.name.trim();
             m.couponcode = m.couponcode.trim();
             if (m.couponcode.HasValue())
+            {
                 if (CouponModel.IsExisting(m.couponcode))
+                {
                     return Content("code already exists");
+                }
+            }
+
             m.CreateCoupon();
             return View(m);
         }
@@ -52,7 +62,10 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult List(string submit, CouponModel m)
         {
             if (submit == "Excel")
+            {
                 return m.CouponsAsDataTable().ToExcel("Coupons.xlsx");
+            }
+
             return View(m);
         }
     }

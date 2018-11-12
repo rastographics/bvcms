@@ -1,13 +1,18 @@
-﻿using System.Web.Mvc;
+﻿using CmsData;
 using CmsWeb.Areas.Dialog.Models;
-using CmsData;
+using CmsWeb.Lifecycle;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
-    [RouteArea("Dialog", AreaPrefix="DeleteMeeting"), Route("{action}/{id?}")]
+    [RouteArea("Dialog", AreaPrefix = "DeleteMeeting"), Route("{action}/{id?}")]
     public class DeleteMeetingController : CmsStaffController
     {
+        public DeleteMeetingController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpPost, Route("~/DeleteMeeting/{id:int}")]
         public ActionResult Index(int id)
         {

@@ -1,25 +1,36 @@
-﻿using System.Linq;
-using System.Web.Mvc;
-using CmsData;
+﻿using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.Finance.Models;
+using CmsWeb.Lifecycle;
+using System.Linq;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 
 namespace CmsWeb.Areas.Finance.Controllers
 {
     [Authorize(Roles = "Finance,FinanceDataEntry")]
-    [RouteArea("Finance", AreaPrefix= "Bundle"), Route("{action}/{id?}")]
+    [RouteArea("Finance", AreaPrefix = "Bundle"), Route("{action}/{id?}")]
     public class BundleController : CmsStaffController
     {
+        public BundleController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/Bundle/{id:int}")]
         public ActionResult Index(int id, bool? create)
         {
             var m = new BundleModel(id);
             if (User.IsInRole("FinanceDataEntry") && m.BundleStatusId != BundleStatusCode.OpenForDataEntry)
+            {
                 return Redirect("/Bundles");
+            }
+
             if (m.Bundle == null)
+            {
                 return Content("no bundle");
+            }
+
             return View(m);
         }
 
@@ -32,7 +43,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         public ActionResult Edit(int id)
         {
             TempData["editbundle"] = true;
-            return RedirectToAction("Index", new {id = id});
+            return RedirectToAction("Index", new { id = id });
         }
 
         [HttpPost]
@@ -55,23 +66,32 @@ namespace CmsWeb.Areas.Finance.Controllers
             if (m.Bundle.ContributionDateChanged && q.All(cc => cc.ContributionDate == dt))
             {
                 foreach (var c in q)
+                {
                     c.ContributionDate = m.Bundle.ContributionDate;
+                }
             }
             var fid = q.Select(cc => cc.FundId).FirstOrDefault();
             if (m.Bundle.FundIdChanged && q.All(cc => cc.FundId == fid))
             {
                 foreach (var c in q)
+                {
                     c.FundId = m.Bundle.FundId ?? 1;
+                }
             }
             var postingdt = Util.Now;
             if (m.Bundle.BundleStatusIdChanged && m.Bundle.BundleStatusId == BundleStatusCode.Closed)
             {
                 foreach (var d in m.Bundle.BundleDetails)
+                {
                     d.Contribution.PostingDate = postingdt;
+                }
             }
             DbUtil.Db.SubmitChanges();
-            if(User.IsInRole("FinanceDataEntry"))
+            if (User.IsInRole("FinanceDataEntry"))
+            {
                 return Redirect("/Bundles");
+            }
+
             m.BundleId = id; // refresh values
             return View("Display", m);
         }

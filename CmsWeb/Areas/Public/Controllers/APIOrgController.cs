@@ -1,19 +1,26 @@
-using System.Net;
-using System.Web.Mvc;
 using CmsData;
 using CmsData.API;
+using CmsWeb.Lifecycle;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
     public class APIOrgController : CmsController
     {
+        public APIOrgController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet]
         public ActionResult OrganizationsForDiv(int id)
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content($"<Organizations error=\"{ret.Substring(1)}\" />");
+            }
+
             var api = new APIOrganization(DbUtil.Db);
             DbUtil.LogActivity("APIOrg Organizations for Div " + id);
             return Content(api.OrganizationsForDiv(id), "text/xml");
@@ -24,10 +31,13 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content($"<OrgMembers error=\"{ret.Substring(1)}\" />");
+            }
+
             var api = new APIOrganization(DbUtil.Db);
             DbUtil.LogActivity("APIOrg OrgMembers2 " + id);
-//            return Content(api.OrgMembersPython(id), "text/xml");
+            //            return Content(api.OrgMembersPython(id), "text/xml");
             return Content(api.OrgMembers2(id, null), "text/xml");
         }
 
@@ -36,7 +46,10 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content($"<OrgMembers error=\"{ret.Substring(1)}\" />");
+            }
+
             var api = new APIOrganization(DbUtil.Db);
             DbUtil.LogActivity("APIOrg OrgMembers " + id);
             return Content(api.OrgMembers(id, search), "text/xml");
@@ -47,7 +60,10 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content($"<ExtraValues error=\"{ret.Substring(1)}\" />");
+            }
+
             DbUtil.LogActivity($"APIOrg ExtraValues {id}, {fields}");
             return Content(new APIOrganization(DbUtil.Db)
                 .ExtraValues(id, fields), "text/xml");
@@ -58,7 +74,10 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content(ret.Substring(1));
+            }
+
             DbUtil.LogActivity($"APIOrg AddEditExtraValue {orgid}, {field}, {value}");
             return Content(new APIOrganization(DbUtil.Db)
                 .AddEditExtraValue(orgid, field, value));
@@ -69,7 +88,10 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content(ret.Substring(1));
+            }
+
             DbUtil.LogActivity($"APIOrg DeleteExtraValue {orgid}, {field}");
             return Content(new APIOrganization(DbUtil.Db)
                 .DeleteExtraValue(orgid, field));
@@ -80,7 +102,10 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content(ret.Substring(1));
+            }
+
             new APIOrganization(DbUtil.Db)
                 .UpdateOrgMember(OrgId, PeopleId, type, enrolled.ToDate(), inactive, pending);
             DbUtil.LogActivity($"APIOrg UpdateOrgMember {OrgId}, {PeopleId}");
@@ -92,7 +117,10 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content($@"<NewOrganization status=""error"">{ret.Substring(1)}</NewOrganization>");
+            }
+
             DbUtil.LogActivity("APIOrganization NewOrganization");
             return Content(new APIOrganization(DbUtil.Db).NewOrganization(divId, name, location, parentOrgId, campusId, orgtype, leadertype, securitytype, securityrole), "text/xml");
         }
@@ -102,7 +130,10 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content(ret.Substring(1));
+            }
+
             new APIOrganization(DbUtil.Db)
                 .UpdateOrganization(orgId, name, campusid, active, location, description, orgtype, leadertype, securitytype, securityrole, parentorg);
             DbUtil.LogActivity($"APIOrg UpdateOrganization {orgId}");
@@ -114,7 +145,10 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content($@"<AddDivToOrg status=""error"">{ret.Substring(1)}</AddDivToOrg>");
+            }
+
             DbUtil.LogActivity("APIOrganization AddDivToOrg");
             return Content(new APIOrganization(DbUtil.Db).AddDivToOrg(orgId, divid));
         }
@@ -124,7 +158,10 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content($@"<RemoveDivFromOrg status=""error"">{ret.Substring(1)}</RemoveDivFromOrg>");
+            }
+
             DbUtil.LogActivity("APIOrganization RemoveDivFromOrg");
             return Content(new APIOrganization(DbUtil.Db).RemoveDivFromOrg(orgId, divid));
         }
@@ -134,7 +171,10 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content($@"<AddOrgMember status=""error"">{ret.Substring(1)}</AddOrgMember>");
+            }
+
             DbUtil.LogActivity("APIOrganization AddOrgMember");
             return Content(new APIOrganization(DbUtil.Db).AddOrgMember(OrgId, PeopleId, MemberType, pending), "text/xml");
         }
@@ -144,7 +184,10 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content($@"<DropOrgMember status=""error"">{ret.Substring(1)}</DropOrgMember>");
+            }
+
             DbUtil.LogActivity("APIOrganization DropOrgMember");
             return Content(new APIOrganization(DbUtil.Db).DropOrgMember(OrgId, PeopleId), "text/xml");
         }
@@ -154,7 +197,10 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content($@"<CreateProgramDivision status=""error"">{ret.Substring(1)}</CreateProgramDivision>");
+            }
+
             DbUtil.LogActivity("APIOrganization CreateProgramDivision");
             return Content(new APIOrganization(DbUtil.Db).CreateProgramDivision(program, division), "text/xml");
         }
@@ -163,7 +209,10 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content($@"<ParentOrgs status=""error"">{ret.Substring(1)}</ParentOrgs>");
+            }
+
             DbUtil.LogActivity("APIOrganization ParentOrgs");
             return Content(new APIOrganization(DbUtil.Db).ParentOrgs(id, extravalue1, extravalue2), "text/xml");
         }
@@ -172,7 +221,10 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content($@"<ChildOrgs status=""error"">{ret.Substring(1)}</ChildOrgs>");
+            }
+
             DbUtil.LogActivity("APIOrganization ChildOrgs");
             return Content(new APIOrganization(DbUtil.Db).ChildOrgs(id, extravalue1, extravalue2), "text/xml");
         }

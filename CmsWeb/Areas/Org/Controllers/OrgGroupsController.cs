@@ -1,20 +1,25 @@
+using CmsData;
+using CmsWeb.Areas.Org.Models;
+using CmsWeb.Lifecycle;
+using LumenWorks.Framework.IO.Csv;
+using System.IO;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
 using UtilityExtensions;
-using System.IO;
-using CmsWeb.Areas.Org.Models;
-using LumenWorks.Framework.IO.Csv;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
-    [RouteArea("Org", AreaPrefix="OrgGroups"), Route("{action}/{id?}")]
+    [RouteArea("Org", AreaPrefix = "OrgGroups"), Route("{action}/{id?}")]
     public class OrgGroupsController : CmsStaffController
     {
+        public OrgGroupsController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/OrgGroups/{id:int}")]
         public ActionResult Index(int id)
         {
-            var m = new OrgGroupsModel( id );
+            var m = new OrgGroupsModel(id);
             return View(m);
         }
         [HttpPost]
@@ -32,7 +37,10 @@ namespace CmsWeb.Areas.Org.Controllers
                      where a.Contains(om.PeopleId)
                      select om;
             foreach (var om in q2)
+            {
                 om.AddToGroup(DbUtil.Db, sgname);
+            }
+
             DbUtil.Db.SubmitChanges();
             return View("Rows", m);
         }
@@ -92,7 +100,10 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult MakeNewGroup(OrgGroupsModel m)
         {
             if (!m.GroupName.HasValue())
+            {
                 return Content("error: no group name");
+            }
+
             var Db = DbUtil.Db;
             var group = Db.MemberTags.SingleOrDefault(g =>
                 g.Name == m.GroupName && g.OrgId == m.orgid);
@@ -114,10 +125,16 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult RenameGroup(OrgGroupsModel m)
         {
             if (!m.GroupName.HasValue() || m.groupid == 0)
+            {
                 return Content("error: no group name");
+            }
+
             var group = DbUtil.Db.MemberTags.SingleOrDefault(d => d.Id == m.groupid);
-            if (group != null) 
+            if (group != null)
+            {
                 group.Name = m.GroupName;
+            }
+
             DbUtil.Db.SubmitChanges();
             m.GroupName = null;
             return Redirect("/OrgGroups/Management/" + m.orgid);
@@ -138,11 +155,11 @@ namespace CmsWeb.Areas.Org.Controllers
             }
             return Redirect("/OrgGroups/Management/" + m.orgid);
         }
-        
+
         [HttpPost]
         public ActionResult DeleteGroups(int id, int[] groups)
         {
-            var groupList = DbUtil.Db.MemberTags.Where(t => groups.Contains( t.Id ));
+            var groupList = DbUtil.Db.MemberTags.Where(t => groups.Contains(t.Id));
 
             foreach (var group in groupList)
             {
@@ -166,8 +183,11 @@ namespace CmsWeb.Areas.Org.Controllers
                           where e.PeopleId == peopleID
                           select e).SingleOrDefault();
 
-            if (member != null) 
+            if (member != null)
+            {
                 member.Score = value;
+            }
+
             DbUtil.Db.SubmitChanges();
 
             return Content(value.ToString());
@@ -187,8 +207,11 @@ namespace CmsWeb.Areas.Org.Controllers
                               where e.PeopleId == peopleID
                               select e).SingleOrDefault();
 
-                if (player != null) 
+                if (player != null)
+                {
                     player.Score = score[1].ToInt();
+                }
+
                 DbUtil.Db.SubmitChanges();
             }
 
@@ -206,9 +229,9 @@ namespace CmsWeb.Areas.Org.Controllers
             int peopleIDTwo = splitTwo[1].ToInt();
 
             var playerOne = (from e in DbUtil.Db.OrganizationMembers
-                          where e.OrganizationId == orgIDOne
-                          where e.PeopleId == peopleIDOne
-                          select e).SingleOrDefault();
+                             where e.OrganizationId == orgIDOne
+                             where e.PeopleId == peopleIDOne
+                             select e).SingleOrDefault();
 
             var playerTwo = (from e in DbUtil.Db.OrganizationMembers
                              where e.OrganizationId == orgIDTwo
@@ -255,7 +278,7 @@ namespace CmsWeb.Areas.Org.Controllers
             return Content("Complete");
         }
 
-        public ActionResult Management( int id )
+        public ActionResult Management(int id)
         {
             var m = new OrgGroupsModel(id);
             return View(m);

@@ -1,9 +1,10 @@
+using CmsData;
+using CmsWeb.Lifecycle;
+using Dapper;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
 using UtilityExtensions;
-using Dapper;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
@@ -11,6 +12,10 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup")]
     public class UsersCanEmailForController : CmsStaffController
     {
+        public UsersCanEmailForController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/UsersCanEmailFor")]
         public ActionResult Index()
         {
@@ -32,9 +37,15 @@ namespace CmsWeb.Areas.Setup.Controllers
                          where cf.CanEmail == id
                          select cf.OnBehalfOf).ToList();
                 if (!q.Contains(id))
+                {
                     t.PersonTags.Add(new TagPerson { PeopleId = id });
+                }
+
                 foreach (var pid in q)
+                {
                     t.PersonTags.Add(new TagPerson { PeopleId = pid });
+                }
+
                 DbUtil.Db.SubmitChanges();
                 return Redirect("/SearchUsers?ordered=true&topid=" + id);
             }
@@ -59,7 +70,10 @@ namespace CmsWeb.Areas.Setup.Controllers
                 cn.Execute("delete PeopleCanEmailFor where CanEmail = @id", new { id });
             }
             foreach (var pid in selected_pids)
+            {
                 DbUtil.Db.PeopleCanEmailFors.InsertOnSubmit(new PeopleCanEmailFor { CanEmail = id, OnBehalfOf = pid });
+            }
+
             DbUtil.Db.SubmitChanges();
             return Content("ok");
         }

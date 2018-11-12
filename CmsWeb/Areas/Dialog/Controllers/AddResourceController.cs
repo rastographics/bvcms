@@ -1,3 +1,9 @@
+using CmsData;
+using CmsWeb.Areas.Dialog.Models;
+using CmsWeb.Lifecycle;
+using CmsWeb.Models;
+using net.openstack.Core.Domain;
+using net.openstack.Providers.Rackspace;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -5,23 +11,22 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Areas.Dialog.Models;
-using CmsWeb.Models;
-using net.openstack.Core.Domain;
-using net.openstack.Providers.Rackspace;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
-    [Authorize(Roles="Edit")]
+    [Authorize(Roles = "Edit")]
     [RouteArea("Dialog", AreaPrefix = "AddResource")]
     public class AddResourceController : CmsStaffController
     {
+        public AddResourceController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/AddResource")]
         public ActionResult Index(int resourceTypeId)
         {
-            return View(new NewResourceModel() { ResourceTypeId = resourceTypeId} );
+            return View(new NewResourceModel() { ResourceTypeId = resourceTypeId });
         }
 
         [HttpPost, Route("Submit/{id:int}"), ValidateInput(false)]
@@ -59,8 +64,15 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 });
             }
 
-            if (resource.CampusId.HasValue && resource.CampusId < 1) resource.CampusId = null;
-            if (resource.DivisionId.HasValue && resource.DivisionId < 1) resource.DivisionId = null;
+            if (resource.CampusId.HasValue && resource.CampusId < 1)
+            {
+                resource.CampusId = null;
+            }
+
+            if (resource.DivisionId.HasValue && resource.DivisionId < 1)
+            {
+                resource.DivisionId = null;
+            }
 
             DbUtil.Db.Resources.InsertOnSubmit(resource);
             DbUtil.Db.SubmitChanges();
@@ -69,7 +81,10 @@ namespace CmsWeb.Areas.Dialog.Controllers
             {
                 foreach (var file in files)
                 {
-                    if (file == null) continue;
+                    if (file == null)
+                    {
+                        continue;
+                    }
 
                     var attachment = new ResourceAttachment
                     {

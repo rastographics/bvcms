@@ -1,12 +1,17 @@
-﻿using System.Web.Mvc;
+﻿using CmsData;
 using CmsWeb.Areas.Dialog.Models;
-using CmsData;
+using CmsWeb.Lifecycle;
+using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
-    [RouteArea("Dialog", AreaPrefix="RepairTransactions"), Route("{action}/{id?}")]
+    [RouteArea("Dialog", AreaPrefix = "RepairTransactions"), Route("{action}/{id?}")]
     public class RepairTransactionsController : CmsStaffController
     {
+        public RepairTransactionsController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpPost, Route("~/RepairTransactions/{id:int}")]
         public ActionResult Index(int id)
         {

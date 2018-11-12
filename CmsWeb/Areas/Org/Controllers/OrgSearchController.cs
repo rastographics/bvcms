@@ -1,15 +1,14 @@
+using CmsData;
+using CmsData.Codes;
+using CmsData.Registration;
+using CmsWeb.Areas.Search.Models;
+using CmsWeb.Code;
+using CmsWeb.Lifecycle;
+using Dapper;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
-using System.Xml;
-using CmsData;
-using CmsData.Codes;
-using CmsData.Registration;
-using CmsWeb.Areas.Reports.Controllers;
-using CmsWeb.Areas.Search.Models;
-using CmsWeb.Code;
-using Dapper;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Controllers
@@ -19,6 +18,10 @@ namespace CmsWeb.Areas.Search.Controllers
     public class OrgSearchController : CmsStaffController
     {
         private const string STR_OrgSearch = "OrgSearch";
+
+        public OrgSearchController(RequestManager requestManager) : base(requestManager)
+        {
+        }
 
         [Route("~/OrgSearch/{progid:int?}/{div:int?}")]
         public ActionResult Index(int? div, int? progid, int? onlinereg, string name)
@@ -33,15 +36,22 @@ namespace CmsWeb.Areas.Search.Controllers
                 m.StatusId = null;
             }
             if (onlinereg.HasValue)
+            {
                 m.OnlineReg = onlinereg;
+            }
 
             if (div.HasValue)
             {
                 m.DivisionId = div;
                 if (progid.HasValue)
+                {
                     m.ProgramId = progid;
+                }
                 else
+                {
                     m.ProgramId = m.Division().ProgId;
+                }
+
                 m.TagProgramId = m.ProgramId;
                 m.TagDiv = div;
             }
@@ -68,7 +78,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult DivisionIds(int id)
         {
-            var m = new OrgSearchModel {ProgramId = id};
+            var m = new OrgSearchModel { ProgramId = id };
             return View(m);
             //return Json(OrgSearchModel.DivisionIds(id));
         }
@@ -76,16 +86,19 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult TagDivIds(int id)
         {
-            var m = new OrgSearchModel {ProgramId = id};
+            var m = new OrgSearchModel { ProgramId = id };
             return View("DivisionIds", m);
         }
 
         [HttpPost]
         public ActionResult ApplyType(int id, OrgSearchModel m)
         {
-            var t = (id == -1 ? (int?) null : id);
+            var t = (id == -1 ? (int?)null : id);
             if (t == 0)
+            {
                 return Content("");
+            }
+
             var ot = DbUtil.Db.OrganizationTypes.SingleOrDefault(tt => tt.Id == id);
             if (t.HasValue || ot != null)
             {
@@ -93,10 +106,15 @@ namespace CmsWeb.Areas.Search.Controllers
                         join os in m.FetchOrgs() on o.OrganizationId equals os.OrganizationId
                         select o;
                 foreach (var o in q)
+                {
                     o.OrganizationTypeId = t;
+                }
             }
             else
+            {
                 return Content("error: missing type");
+            }
+
             DbUtil.Db.SubmitChanges();
             return Content("ok");
         }
@@ -104,9 +122,12 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult MakeChildrenOf(int id, OrgSearchModel m)
         {
-            var t = (id == -1 ? (int?) null : id);
+            var t = (id == -1 ? (int?)null : id);
             if (t == 0)
+            {
                 return Content("");
+            }
+
             var org = DbUtil.Db.LoadOrganizationById(id);
             if (t.HasValue || org != null)
             {
@@ -115,10 +136,15 @@ namespace CmsWeb.Areas.Search.Controllers
                         where o.OrganizationId != id
                         select o;
                 foreach (var o in q)
+                {
                     o.ParentOrgId = t;
+                }
             }
             else
+            {
                 return Content("error: missing type");
+            }
+
             DbUtil.Db.SubmitChanges();
             return Content("ok");
         }
@@ -129,18 +155,18 @@ namespace CmsWeb.Areas.Search.Controllers
             var d = DbUtil.Db.Divisions.Single(dd => dd.Id == divid);
             d.Name = name;
             DbUtil.Db.SubmitChanges();
-            var m = new OrgSearchModel {ProgramId = id};
+            var m = new OrgSearchModel { ProgramId = id };
             return View("DivisionIds", m);
         }
 
         [HttpPost]
         public ActionResult MakeNewDiv(int id, string name)
         {
-            var d = new Division {Name = name, ProgId = id};
-            d.ProgDivs.Add(new ProgDiv {ProgId = id});
+            var d = new Division { Name = name, ProgId = id };
+            d.ProgDivs.Add(new ProgDiv { ProgId = id });
             DbUtil.Db.Divisions.InsertOnSubmit(d);
             DbUtil.Db.SubmitChanges();
-            var m = new OrgSearchModel {ProgramId = id, TagDiv = d.Id};
+            var m = new OrgSearchModel { ProgramId = id, TagDiv = d.Id };
             return View("DivisionIds", m);
         }
 
@@ -148,7 +174,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult DefaultMeetingDate(int id)
         {
             var dt = OrgSearchModel.DefaultMeetingDate(id);
-            return Json(new {date = dt.Date.ToShortDateString(), time = dt.ToShortTimeString()});
+            return Json(new { date = dt.Date.ToShortDateString(), time = dt.ToShortTimeString() });
         }
         [HttpPost]
         public ActionResult ExportExcel(OrgSearchModel m)
@@ -198,7 +224,10 @@ namespace CmsWeb.Areas.Search.Controllers
             c.Content = value;
             var org = DbUtil.Db.LoadOrganizationById(a[1].ToInt());
             if (org == null)
+            {
                 return c;
+            }
+
             switch (a[0])
             {
                 case "bs":
@@ -225,7 +254,10 @@ namespace CmsWeb.Areas.Search.Controllers
                     break;
                 case "ac":
                     if (value == "Other")
+                    {
                         value = null;
+                    }
+
                     org.AppCategory = value.HasValue() ? value : null;
                     break;
             }
@@ -291,13 +323,19 @@ namespace CmsWeb.Areas.Search.Controllers
             var Db = DbUtil.Db;
             var organization = Db.LoadOrganizationById(id);
             if (tagdiv == 0)
-                return Json(new {error = "bad tagdiv"});
+            {
+                return Json(new { error = "bad tagdiv" });
+            }
+
             var t = organization.ToggleTag(DbUtil.Db, tagdiv);
             Db.SubmitChanges();
-            var m = new OrgSearchModel {StatusId = 0, TagDiv = tagdiv, Name = id.ToString()};
+            var m = new OrgSearchModel { StatusId = 0, TagDiv = tagdiv, Name = id.ToString() };
             var o = m.OrganizationList().SingleOrDefault();
             if (o == null)
+            {
                 return Content("error");
+            }
+
             return View("Row", o);
         }
 
@@ -306,10 +344,13 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             var Db = DbUtil.Db;
             Db.SetMainDivision(id, tagdiv);
-            var m = new OrgSearchModel {TagDiv = tagdiv, Name = id.ToString()};
+            var m = new OrgSearchModel { TagDiv = tagdiv, Name = id.ToString() };
             var o = m.OrganizationList().SingleOrDefault();
             if (o == null)
+            {
                 return Content("error");
+            }
+
             return View("Row", o);
         }
 
@@ -328,12 +369,15 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult PasteSettings(OrgSearchModel m)
         {
-            var frorg = (int) Session["OrgCopySettings"];
+            var frorg = (int)Session["OrgCopySettings"];
             var orgs = from os in m.FetchOrgs()
                        join o in DbUtil.Db.Organizations on os.OrganizationId equals o.OrganizationId
                        select o;
             foreach (var o in orgs)
+            {
                 o.CopySettings(DbUtil.Db, frorg);
+            }
+
             return new EmptyResult();
         }
 
@@ -341,7 +385,10 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult RepairTransactions(OrgSearchModel m)
         {
             foreach (var oid in m.FetchOrgs().Select(oo => oo.OrganizationId))
+            {
                 DbUtil.Db.PopulateComputedEnrollmentTransactions(oid);
+            }
+
             return new EmptyResult();
         }
 
@@ -350,16 +397,24 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             var n = id.ToCharArray().Count(c => c == 'M');
             if (n > 1)
+            {
                 return RedirectShowError($"More than one barcode string found({id})");
+            }
+
             var a = id.SplitStr(".");
             var orgid = a[1].ToInt();
             var organization = DbUtil.Db.LoadOrganizationById(orgid);
             if (organization == null)
+            {
                 return RedirectShowError($"Cannot interpret barcode orgid({id})");
+            }
 
             var re = new Regex(@"\A(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])([0-9]{2})([012][0-9])([0-5][0-9])\Z");
             if (!re.IsMatch(a[2]))
+            {
                 return RedirectShowError($"Cannot interpret barcode datetime({id})");
+            }
+
             var g = re.Match(a[2]);
             var dt = new DateTime(
                 g.Groups[3].Value.ToInt() + 2000,
@@ -372,13 +427,15 @@ namespace CmsWeb.Areas.Search.Controllers
             if (newMtg == null)
             {
                 var attsch = (from s in DbUtil.Db.OrgSchedules
-                             where s.OrganizationId == organization.OrganizationId
-                             where s.MeetingTime.Value.TimeOfDay == dt.TimeOfDay
-                             where s.MeetingTime.Value.DayOfWeek == dt.DayOfWeek
-                             select s).SingleOrDefault();
+                              where s.OrganizationId == organization.OrganizationId
+                              where s.MeetingTime.Value.TimeOfDay == dt.TimeOfDay
+                              where s.MeetingTime.Value.DayOfWeek == dt.DayOfWeek
+                              select s).SingleOrDefault();
                 int? attcred = null;
                 if (attsch != null)
+                {
                     attcred = attsch.AttendCreditId;
+                }
 
                 newMtg = new Meeting
                 {
