@@ -42,7 +42,7 @@
                     </div>
                     <div class="metric">
                         <div style="display: grid; justify-items: center; align-items: center; grid-template-columns: 25% 50% 25%;">
-                            <a id="remove" class="btn" href=""><i class="fa fa-minus-circle fa-2x"></i></a>
+                            <a id="remove" class="btn" href="#"><i class="fa fa-minus-circle fa-2x"></i></a>
                             <div class="metric-value">
                                 <div class="circle">@Model.CheckInCapacity</div>
                             </div>
@@ -56,7 +56,6 @@
                     </div>
                     <div class="metric" style="width: 100%; text-align: right;">
                         <a href="#" id="setdefaults" class="btn btn-default btn-sm">Set Defaults</a><br/>
-                        <a href="#" id="setalldefaults" class="btn btn-default btn-sm" style="margin-top: 10px;">Set All Defaults</a>
                     </div>
                 </div>
                 <div class="row">
@@ -120,6 +119,7 @@
             data: JSON.stringify(params),
             success: function (ret) {
                 $('#SubgroupDataContainer').html(ret);
+                refreshOrgList();
             },
             error: function (ret) {
                 swal('Error!', ret, 'error');
@@ -138,6 +138,13 @@
             selectedTimeslot: $("#NextMeetingDate").val(),
             service: action
         };
+    }
+
+    function refreshOrgList() {
+        var selectedTimeslot = $('#checkin-timeslot option:selected').val();
+        var selectedProgram = $('#checkin-program option:selected').val();
+        var highlighted = $('#SubgroupId').val();
+        $('#OrganizationContainer').load('@Url.Action("OrganizationSelector")?selectedTimeslot=' + selectedTimeslot + '&programId=' + selectedProgram + '&highlightedOrg=' + highlighted);
     }
 
     $('.middle').click(function() {

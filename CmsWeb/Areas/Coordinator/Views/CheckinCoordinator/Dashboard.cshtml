@@ -154,9 +154,8 @@
 
     .list-group-item {
         border: 0;
+        margin: 0;
         border-bottom: 1px solid #ddd;
-        margin-top: 5px;
-        margin-bottom: 5px;
     }
 
         .list-group-item:hover {
@@ -207,6 +206,7 @@
                 data: JSON.stringify({ service: 'SetAllDefaults' }),
                 success: function (ret) {
                     $('#setdefaults').click();
+                    refreshOrgList();
                 },
                 error: function (ret) {
                     swal('Error!', ret, 'error');

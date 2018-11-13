@@ -9,6 +9,7 @@
     <title>@ViewBag.Title</title>
     @ViewExtensions2.GoogleFonts()
     @ViewExtensions2.FontAwesome()
+    @ViewExtensions2.jQuery()
     @Fingerprint.Css("/Content/touchpoint/lib/jquery-ui-custom/css/jquery-ui.min.css")
     @Fingerprint.Css("/Content/touchpoint/css/app.css")
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-multiselect/css/bootstrap-multiselect.css")
@@ -25,7 +26,7 @@
     <div id="page-header" style="padding: 0;">
         <div class="container-fluid" style="padding: 5px 15px;">
             <div class="row">
-                <div class="col-sm-3">
+                <div class="col-sm-2">
                     <div class="row">
                         <div class="col-sm-3">
                             <div class="logo-md"></div>
@@ -71,6 +72,9 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-sm-1">
+                    <a href="#" id="setalldefaults" class="btn btn-default btn-sm" style="margin-top: 10px;">Set All Defaults</a>
+                </div>
             </div>
         </div>
     </div>
@@ -85,7 +89,6 @@
 <div class="device-2xs"></div>
 <div class="modal fade" id="empty-dialog" data-keyboard="false" data-backdrop="static"></div>
 @ViewExtensions2.GoogleAnalytics()
-@ViewExtensions2.jQuery()
 @ViewExtensions2.LoDash()
 @ViewExtensions2.Bootstrap3()
 @Fingerprint.Script("/Content/touchpoint/lib/jquery-ui-custom/js/jquery-ui.min.js")

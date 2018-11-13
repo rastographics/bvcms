@@ -120,8 +120,11 @@ namespace CmsWeb.Areas.Coordinator.Services
 
         public void DecrementCapacity(CheckinScheduleDto checkinScheduleDto)
         {
-            checkinScheduleDto.CheckInCapacity -= 1;
-            CommitChanges(checkinScheduleDto);
+            if (checkinScheduleDto.CheckInCapacity > 0)
+            {
+                checkinScheduleDto.CheckInCapacity -= 1;
+                CommitChanges(checkinScheduleDto);
+            }
         }
 
         public void ToggleCheckinOpen(CheckinScheduleDto checkinScheduleDto)

@@ -15,10 +15,10 @@
                 printedHeaders.Add(item.NextMeetingDate.Value);
             }
 
-            <div class="list-group-item">
-                <div class="row">
+            <div class="list-group-item @(ViewBag.HighlightedOrg == item.SubgroupId ? "highlighted":"")">
+                <div class="row navbar-link" organizationId="@item.OrganizationId" subgroupId="@item.SubgroupId" subgroupName="@item.SubgroupName" selectedTimeslot="@item.NextMeetingDate.Value.ToString("s")">
                     <div class="col-sm-7 centered-item">
-                        <a class="navbar-link" organizationId="@item.OrganizationId" subgroupId="@item.SubgroupId" subgroupName="@item.SubgroupName" selectedTimeslot="@item.NextMeetingDate.Value.ToString("s")">
+                        <a>
                             <strong style="font-weight: 600;">@item.OrganizationName</strong> - @item.SubgroupName
                         </a>
                     </div>

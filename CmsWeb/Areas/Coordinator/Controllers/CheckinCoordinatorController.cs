@@ -105,9 +105,10 @@ ORDER BY t0.NextMeetingDate, OrganizationName, SubgroupName", DateTime.Now.Date,
             return PartialView(model);
         }
 
-        public ActionResult OrganizationSelector(string selectedTimeslot = "", int programId = 0, int divisionId = 0)
+        public ActionResult OrganizationSelector(string selectedTimeslot = "", int programId = 0, int divisionId = 0, int highlightedOrg = 0)
         {
             var model = CheckinCoordinator.GetFilteredSchedules(selectedTimeslot, programId, divisionId);
+            ViewBag.HighlightedOrg = highlightedOrg;
             return PartialView(model);
         }
 
