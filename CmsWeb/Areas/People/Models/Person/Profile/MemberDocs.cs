@@ -1,7 +1,7 @@
+using CmsData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CmsData;
 
 namespace CmsWeb.Areas.People.Models
 {
@@ -22,7 +22,10 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (IsDocument == true)
+                {
                     return "/Image/" + Docid;
+                }
+
                 return "/Image/" + LargeId;
             }
         }
@@ -32,16 +35,19 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (IsDocument == true)
+                {
                     return "/Content/images/adobe.png";
+                }
+
                 return "/Image/" + ThumbId;
             }
         }
 
         public static IEnumerable<MemberDocModel> DocForms(int id)
         {
-            return from f in CurrentDatabase.MemberDocForms
+            return from f in DbUtil.Db.MemberDocForms
                    where f.PeopleId == id
-                   let uploader = CurrentDatabase.People.SingleOrDefault(uu => uu.PeopleId == f.UploaderId)
+                   let uploader = DbUtil.Db.People.SingleOrDefault(uu => uu.PeopleId == f.UploaderId)
                    orderby f.DocDate
                    select new MemberDocModel
                    {
@@ -58,19 +64,19 @@ namespace CmsWeb.Areas.People.Models
         }
         public static void DeleteDocument(int id, int docid)
         {
-            var m = CurrentDatabase.MemberDocForms.SingleOrDefault(mm => mm.Id == docid && mm.PeopleId == id);
+            var m = DbUtil.Db.MemberDocForms.SingleOrDefault(mm => mm.Id == docid && mm.PeopleId == id);
             ImageData.Image.DeleteOnSubmit(m.SmallId);
             ImageData.Image.DeleteOnSubmit(m.MediumId);
             ImageData.Image.DeleteOnSubmit(m.LargeId);
-            CurrentDatabase.MemberDocForms.DeleteOnSubmit(m);
-            CurrentDatabase.SubmitChanges();
+            DbUtil.Db.MemberDocForms.DeleteOnSubmit(m);
+            DbUtil.Db.SubmitChanges();
         }
 
         internal static void UpdateName(int pk, string value)
         {
-            var m = CurrentDatabase.MemberDocForms.Single(mm => mm.Id == pk);
+            var m = DbUtil.Db.MemberDocForms.Single(mm => mm.Id == pk);
             m.Name = value;
-            CurrentDatabase.SubmitChanges();
+            DbUtil.Db.SubmitChanges();
         }
     }
 }

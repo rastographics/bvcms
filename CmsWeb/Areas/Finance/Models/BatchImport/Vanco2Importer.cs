@@ -23,7 +23,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
         private static int? BatchProcessVanco2(CsvReader csv, DateTime date, int? fundid)
         {
-            var fundList = (from f in CurrentDatabase.ContributionFunds
+            var fundList = (from f in DbUtil.Db.ContributionFunds
                             orderby f.FundId
                             select f.FundId).ToList();
 
@@ -43,7 +43,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 if (bh == null)
                     bh = BatchImportContributions.GetBundleHeader(date, DateTime.Now);
 
-                var f = CurrentDatabase.FetchOrCreateFund(fundText);
+                var f = DbUtil.Db.FetchOrCreateFund(fundText);
                 var bd = BatchImportContributions.AddContributionDetail(date, f.FundId, amount, checkno, routing, account);
 
                 bh.BundleDetails.Add(bd);

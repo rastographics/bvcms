@@ -5,12 +5,12 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 
-using System.Collections.Generic;
-using System.Linq;
 using CmsData;
 using CmsWeb.Areas.Search.Models;
 using CmsWeb.Code;
 using Dapper;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -27,12 +27,12 @@ namespace CmsWeb.Areas.Reports.Models
         public static IEnumerable<MemberInfo> List(OrgSearchModel model, string na = "", bool usecurrenttag = false)
         {
             var orgs = model.FetchOrgs();
-            var q = from m in CurrentDatabase.OrganizationMembers
+            var q = from m in DbUtil.Db.OrganizationMembers
                     join o in orgs on m.OrganizationId equals o.OrganizationId
                     select m;
             if (usecurrenttag)
             {
-                var tagid = CurrentDatabase.TagCurrent().Id;
+                var tagid = DbUtil.Db.TagCurrent().Id;
                 q = from m in q
                     where m.Person.Tags.Any(tt => tt.Id == tagid)
                     select m;
@@ -53,7 +53,7 @@ namespace CmsWeb.Areas.Reports.Models
 
         public static List<string> LastNameStarts(OrgSearchModel m)
         {
-            var cn = CurrentDatabase.Connection;
+            var cn = DbUtil.Db.Connection;
             var q2 = cn.Query<string>(@"
 SELECT na FROM (
 	SELECT SUBSTRING(LastName, 1, 2) na FROM dbo.People p

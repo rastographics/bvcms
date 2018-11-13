@@ -23,7 +23,7 @@ namespace CmsWeb.Areas.Reports.Models
             {
                 _orgId = value;
                 var dt = UtilityExtensions.Util.Now;
-                var q = from o in CurrentDatabase.Organizations
+                var q = from o in DbUtil.Db.Organizations
                         where o.OrganizationId == _orgId
                         select new
                         {
@@ -53,7 +53,7 @@ namespace CmsWeb.Areas.Reports.Models
 
         public IEnumerable<AttendInfo> Attendances()
         {
-            var q = from om in CurrentDatabase.OrganizationMembers
+            var q = from om in DbUtil.Db.OrganizationMembers
                     where om.OrganizationId == OrgId
                     where om.MemberTypeId != 230
                     where om.MemberTypeId != 311
@@ -106,7 +106,7 @@ namespace CmsWeb.Areas.Reports.Models
 
         private string GetAttendStr(int pid, int orgid)
         {
-            var q = from a in CurrentDatabase.Attends
+            var q = from a in DbUtil.Db.Attends
                     where a.OrganizationId == orgid
                     where a.PeopleId == pid
                     where a.MeetingDate >= start && a.MeetingDate <= end

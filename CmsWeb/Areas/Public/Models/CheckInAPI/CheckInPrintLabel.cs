@@ -20,17 +20,17 @@ namespace CmsWeb.CheckInAPI
 
             DateTime dob;
 
-            Person person = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == peopleID);
-            Organization org = CurrentDatabase.Organizations.SingleOrDefault(o => o.OrganizationId == orgID);
+            Person person = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == peopleID);
+            Organization org = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == orgID);
 
-            OrganizationMember orgMember = CurrentDatabase.OrganizationMembers.SingleOrDefault(om => om.PeopleId == person.PeopleId && om.OrganizationId == org.OrganizationId);
+            OrganizationMember orgMember = DbUtil.Db.OrganizationMembers.SingleOrDefault(om => om.PeopleId == person.PeopleId && om.OrganizationId == org.OrganizationId);
 
             if (orgMember != null)
             {
                 // Members
                 member = orgMember.MemberTypeId != 310 && orgMember.MemberTypeId != 311;
 
-                if ((orgMember.MemberTypeId == 220 || orgMember.MemberTypeId == 230) && !(org.NoSecurityLabel ?? false) )
+                if ((orgMember.MemberTypeId == 220 || orgMember.MemberTypeId == 230) && !(org.NoSecurityLabel ?? false))
                 {
                     if (person?.Age != null)
                     {
@@ -67,7 +67,7 @@ namespace CmsWeb.CheckInAPI
             }
             else
             {
-                Attend attend = CurrentDatabase.Attends.SingleOrDefault(om => om.PeopleId == person.PeopleId && om.OrganizationId == org.OrganizationId && om.MeetingDate == hour);
+                Attend attend = DbUtil.Db.Attends.SingleOrDefault(om => om.PeopleId == person.PeopleId && om.OrganizationId == org.OrganizationId && om.MeetingDate == hour);
 
                 if (attend != null)
                 {

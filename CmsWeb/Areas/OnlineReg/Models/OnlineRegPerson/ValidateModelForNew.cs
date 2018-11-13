@@ -132,7 +132,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 IsValidForNew = false;
             }
 
-            var minage = CurrentDatabase.Setting("MinimumUserAge", "16").ToInt();
+            var minage = DbUtil.Db.Setting("MinimumUserAge", "16").ToInt();
             if (orgid == Util.CreateAccountCode && age < minage)
             {
                 modelState.AddModelError(dobname, $"must be {minage} to create account");

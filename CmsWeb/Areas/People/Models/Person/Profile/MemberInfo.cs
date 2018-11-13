@@ -1,20 +1,20 @@
+using CmsData;
+using CmsData.View;
+using CmsWeb.Code;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Data.Linq;
 using System.Linq;
 using System.Web;
-using CmsData;
-using System.Data.Linq;
-using CmsData.View;
-using CmsWeb.Code;
 
 namespace CmsWeb.Areas.People.Models
 {
     public class MemberInfo
     {
         public Person person;
-        private readonly CMSDataContext Db;
+        //private readonly CMSDataContext Db;
 
         [NoUpdate]
         public int PeopleId { get; set; }
@@ -109,20 +109,23 @@ namespace CmsWeb.Areas.People.Models
 
         public MemberInfo()
         {
-            Db = Db;
+            //Db = Db;
         }
         public MemberInfo(int id)
             : this()
         {
-            person = CurrentDatabase.LoadPersonById(id);
+            person = DbUtil.Db.LoadPersonById(id);
             if (person == null)
+            {
                 return;
+            }
+
             this.CopyPropertiesFrom(person);
         }
 
         public string UpdateMember()
         {
-            var i = (from p in CurrentDatabase.People
+            var i = (from p in DbUtil.Db.People
                      where p.PeopleId == PeopleId
                      select new
                      {
@@ -132,16 +135,16 @@ namespace CmsWeb.Areas.People.Models
 
             var changes = this.CopyPropertiesTo(i.p, excludefields: "HomePhone,ElectronicStatement");
 
-            i.p.LogChanges(CurrentDatabase. changes);
+            i.p.LogChanges(DbUtil.Db, changes);
 
 
-            var ret = i.p.MemberProfileAutomation(CurrentDatabase);
+            var ret = i.p.MemberProfileAutomation(DbUtil.Db);
             if (ret == "ok")
             {
-                CurrentDatabase.SubmitChanges();
+                DbUtil.Db.SubmitChanges();
                 person = i.p;
-                CurrentDatabase.SubmitChanges();
-                CurrentDatabase.Refresh(RefreshMode.OverwriteCurrentValues, person);
+                DbUtil.Db.SubmitChanges();
+                DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, person);
                 this.CopyPropertiesFrom(person);
             }
             else
@@ -154,7 +157,7 @@ namespace CmsWeb.Areas.People.Models
 
         public List<AllStatusFlag> StatusFlags()
         {
-            return (from s in CurrentDatabase.ViewAllStatusFlags.ToList()
+            return (from s in DbUtil.Db.ViewAllStatusFlags.ToList()
                     where s.Role == null || HttpContext.Current.User.IsInRole(s.Role)
                     where s.PeopleId == PeopleId
                     orderby s.Flag

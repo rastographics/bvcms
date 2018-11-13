@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using System.Xml.Linq;
-using CmsData;
+﻿using CmsData;
 using CmsData.Registration;
 using CmsWeb.Code;
+using System.Linq;
+using System.Xml.Linq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Models.BatchModel
@@ -18,13 +18,15 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
         {
             var xdoc = XDocument.Parse(text.TrimStart());
             if (xdoc.Root == null)
+            {
                 throw new UserInputException("could not parse xml document");
+            }
 
             foreach (var x in xdoc.Root.Elements("Messages"))
             {
                 var oid = x.Attribute("id").Value.ToInt();
-                os = CurrentDatabase.CreateRegistrationSettings(oid);
-                var o = CurrentDatabase.LoadOrganizationById(oid);
+                os = DbUtil.Db.CreateRegistrationSettings(oid);
+                var o = DbUtil.Db.LoadOrganizationById(oid);
                 foreach (var e in x.Elements())
                 {
                     var name = e.Name.ToString();
@@ -48,7 +50,7 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                     }
                 }
                 o.UpdateRegSetting(os);
-                CurrentDatabase.SubmitChanges();
+                DbUtil.Db.SubmitChanges();
             }
         }
 
@@ -83,8 +85,11 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                         os.Terms = ee.Value;
                         break;
                     default:
-                        if(instrutions.Contains(nname))
+                        if (instrutions.Contains(nname))
+                        {
                             Util.SetProperty(os, "Instruction" + nname, ee.Value);
+                        }
+
                         break;
                 }
             }

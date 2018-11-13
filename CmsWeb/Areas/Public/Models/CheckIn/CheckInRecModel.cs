@@ -1,8 +1,8 @@
+using CmsData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -11,11 +11,11 @@ namespace CmsWeb.Models
     {
         public CheckInRecModel(int orgId, int? pid)
         {
-            var q = from o in CurrentDatabase.Organizations
+            var q = from o in DbUtil.Db.Organizations
                     where o.OrganizationId == orgId
                     select o.OrganizationName;
             OrgName = q.SingleOrDefault();
-            var q2 = from p in CurrentDatabase.People
+            var q2 = from p in DbUtil.Db.People
                      where p.PeopleId == pid
                      select new PersonInfo
                      {
@@ -36,14 +36,16 @@ namespace CmsWeb.Models
                      };
             person = q2.SingleOrDefault();
             if (person == null)
+            {
                 person = new PersonInfo
                 {
                     PeopleId = 0,
                     Name = "not found"
                 };
+            }
             else
             {
-                var guid = (Guid?) (HttpContext.Current.Session["checkinguid"]);
+                var guid = (Guid?)(HttpContext.Current.Session["checkinguid"]);
                 if (!guid.HasValue)
                 {
                     //var tt = new TemporaryToken
@@ -52,8 +54,8 @@ namespace CmsWeb.Models
                     //    CreatedBy = Util.UserId1,
                     //    CreatedOn = Util.Now,
                     //};
-                    //CurrentDatabase.TemporaryTokens.InsertOnSubmit(tt);
-                    //CurrentDatabase.SubmitChanges();
+                    //DbUtil.Db.TemporaryTokens.InsertOnSubmit(tt);
+                    //DbUtil.Db.SubmitChanges();
                     //guid = tt.Id;
                     HttpContext.Current.Session["checkinguid"] = guid;
                 }
@@ -66,18 +68,21 @@ namespace CmsWeb.Models
         public string OrgName { get; set; }
         public PersonInfo person { get; set; }
         public string guid { get; set; }
-        public string host => CurrentDatabase.CmsHost;
+        public string host => DbUtil.Db.CmsHost;
 
         public string WithBreak(string s)
         {
             if (s.HasValue())
+            {
                 return s + "<br />";
+            }
+
             return string.Empty;
         }
 
         public IEnumerable<FamilyMemberInfo> GetFamilyMembers()
         {
-            var q = from p in CurrentDatabase.People
+            var q = from p in DbUtil.Db.People
                     where p.FamilyId == person.FamilyId
                     where p.PeopleId != person.PeopleId
                     select new FamilyMemberInfo
@@ -114,7 +119,10 @@ namespace CmsWeb.Models
                 get
                 {
                     if (!_School.HasValue())
+                    {
                         return "click to add";
+                    }
+
                     return _School;
                 }
                 set { _School = value; }

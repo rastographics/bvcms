@@ -5,6 +5,12 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
+using CmsData;
+using CmsData.Codes;
+using CmsWeb.Areas.Dialog.Models;
+using CmsWeb.Areas.Public.Models;
+using CmsWeb.Areas.Search.Models;
+using OpenXmlPowerTools;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,15 +20,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.Codes;
-using CmsWeb.Areas.Dialog.Models;
-using CmsWeb.Areas.Public.Models;
-using CmsWeb.Areas.Search.Models;
-using OpenXmlPowerTools;
 using UtilityExtensions;
 using Xceed.Words.NET;
-using Table = OpenXmlPowerTools.Table;
 using Util = UtilityExtensions.Util;
 
 namespace CmsWeb.Areas.Reports.Models
@@ -37,7 +36,7 @@ namespace CmsWeb.Areas.Reports.Models
         private DocX docx;
         private DocX curr;
         private Meeting meeting;
-        private OrgFilter Filter => QueryId.HasValue ? CurrentDatabase.OrgFilters.Single(vv => vv.QueryId == QueryId) : null;
+        private OrgFilter Filter => QueryId.HasValue ? DbUtil.Db.OrgFilters.Single(vv => vv.QueryId == QueryId) : null;
 
         public class RollsheetPersonInfo
         {
@@ -53,7 +52,7 @@ namespace CmsWeb.Areas.Reports.Models
 
             if (Meetingid.HasValue)
             {
-                meeting = CurrentDatabase.Meetings.Single(mt => mt.MeetingId == Meetingid);
+                meeting = DbUtil.Db.Meetings.Single(mt => mt.MeetingId == Meetingid);
                 Debug.Assert(meeting.MeetingDate != null, "meeting.MeetingDate != null");
                 NewMeetingInfo = new NewMeetingInfo { MeetingDate = meeting.MeetingDate.Value };
             }
@@ -68,7 +67,7 @@ namespace CmsWeb.Areas.Reports.Models
             var bytes = RollsheetTemplate() ?? Resource1.DocxRollsheet;
             var ms = new MemoryStream(bytes);
             docx = DocX.Load(ms);
-            replacements = new EmailReplacements(CurrentDatabase. docx);
+            replacements = new EmailReplacements(DbUtil.Db, docx);
             var sources = new List<Source>();
 
             foreach (var o in list1)
@@ -76,9 +75,14 @@ namespace CmsWeb.Areas.Reports.Models
                 curr = docx.Copy();
 
                 foreach (var p in curr.Headers.Odd.Paragraphs)
+                {
                     DoHeaderFooterParagraphReplacments(p, o);
+                }
+
                 foreach (var p in curr.Footers.Odd.Paragraphs)
+                {
                     DoHeaderFooterParagraphReplacments(p, o);
+                }
 
                 var tbl = curr.Tables[0];
                 var emptyrow = tbl.InsertRow();
@@ -96,13 +100,15 @@ namespace CmsWeb.Areas.Reports.Models
                                 MemberTypeCode = at.MemberType.Code,
                             };
                     foreach (var m in q)
+                    {
                         AddRowWithReplacements(tbl, m, meeting.OrganizationId);
+                    }
                 }
                 else if (OrgSearchModel != null)
                 {
-                    var q = from om in CurrentDatabase.OrganizationMembers
+                    var q = from om in DbUtil.Db.OrganizationMembers
                             where om.OrganizationId == o.OrgId
-                            join m in CurrentDatabase.OrgPeople(o.OrgId, o.Groups) on om.PeopleId equals m.PeopleId
+                            join m in DbUtil.Db.OrgPeople(o.OrgId, o.Groups) on om.PeopleId equals m.PeopleId
                             where om.EnrollmentDate <= Util.Now
                             orderby om.Person.LastName, om.Person.FamilyId, om.Person.Name2
                             let p = om.Person
@@ -117,13 +123,15 @@ namespace CmsWeb.Areas.Reports.Models
                                         : ""
                             };
                     foreach (var m in q)
+                    {
                         AddRowWithReplacements(tbl, m, o.OrgId);
+                    }
                 }
                 else if (Filter?.GroupSelect == GroupSelectCode.Member)
                 {
-                    var q = from om in CurrentDatabase.OrganizationMembers
+                    var q = from om in DbUtil.Db.OrganizationMembers
                             where om.OrganizationId == Filter.Id
-                            join m in CurrentDatabase.OrgFilterPeople(QueryId, null)
+                            join m in DbUtil.Db.OrgFilterPeople(QueryId, null)
                                 on om.PeopleId equals m.PeopleId
                             where om.EnrollmentDate <= Util.Now
                             where NewMeetingInfo.ByGroup == false || m.Groups.Contains((char)10 + o.Groups + (char)10)
@@ -141,13 +149,15 @@ namespace CmsWeb.Areas.Reports.Models
                                         : ""
                             };
                     foreach (var m in q)
+                    {
                         AddRowWithReplacements(tbl, m, o.OrgId);
+                    }
                 }
                 else
                 {
-                    var q = from m in CurrentDatabase.OrgFilterPeople(QueryId, null)
+                    var q = from m in DbUtil.Db.OrgFilterPeople(QueryId, null)
                             orderby m.Name2
-                            let p = CurrentDatabase.People.Single(pp => pp.PeopleId == m.PeopleId)
+                            let p = DbUtil.Db.People.Single(pp => pp.PeopleId == m.PeopleId)
                             let om = p.OrganizationMembers.SingleOrDefault(mm => mm.OrganizationId == Filter.Id)
                             let useAltName = NewMeetingInfo.UseAltNames && p.AltName != null && p.AltName.Length > 0
                             select new RollsheetPersonInfo
@@ -161,7 +171,9 @@ namespace CmsWeb.Areas.Reports.Models
                             };
 
                     foreach (var m in q)
+                    {
                         AddRowWithReplacements(tbl, m, o.OrgId);
+                    }
                 }
                 if ((OrgSearchModel != null && NewMeetingInfo.ByGroup == false)
                     || (Filter != null
@@ -173,12 +185,14 @@ namespace CmsWeb.Areas.Reports.Models
                         && !Filter.FilterTag == true
                         && NewMeetingInfo.ByGroup == false))
                 {
-                    var q = from vp in CurrentDatabase.OrgVisitorsAsOfDate(o.OrgId, NewMeetingInfo.MeetingDate, NoCurrentMembers: true)
-                            let p = CurrentDatabase.People.Single(pp => pp.PeopleId == vp.PeopleId)
+                    var q = from vp in DbUtil.Db.OrgVisitorsAsOfDate(o.OrgId, NewMeetingInfo.MeetingDate, NoCurrentMembers: true)
+                            let p = DbUtil.Db.People.Single(pp => pp.PeopleId == vp.PeopleId)
                             orderby p.LastName, p.FamilyId, p.PreferredName
                             select new RollsheetPersonInfo { Person = p, MemberTypeCode = vp.VisitorType };
                     foreach (var m in q)
+                    {
                         AddRowWithReplacements(tbl, m, o.OrgId);
+                    }
                 }
                 curr.Tables[0].RemoveRow(0);
                 {
@@ -205,9 +219,13 @@ namespace CmsWeb.Areas.Reports.Models
             tbl.Rows.Add(row);
             var dict = replacements.DocXReplacementsDictionary(m.Person, orgId);
             foreach (var p in row.Paragraphs.Where(vv => vv.Text.HasValue()))
+            {
                 if (dict.Keys.Any(vv => p.Text.Contains(vv)))
+                {
                     foreach (var d in dict)
+                    {
                         if (p.Text.Contains(d.Key))
+                        {
                             if (d.Key == "{barcodepeopleid}")
                             {
                                 var s = BarCodeStream(m.Person.PeopleId.ToString(), 40, showtext: false);
@@ -216,22 +234,40 @@ namespace CmsWeb.Areas.Reports.Models
                                 p.ReplaceText(d.Key, "");
                             }
                             else if (d.Key.Equal("{MLG}"))
+                            {
                                 p.ReplaceText(d.Key, m.MemberTypeCode);
+                            }
                             else if (d.Key.Equal("{highlight}"))
+                            {
                                 if (m.Highlight.HasValue())
+                                {
                                     p.ReplaceText(d.Key, m.Highlight);
+                                }
                                 else
+                                {
                                     p.Remove(false);
+                                }
+                            }
                             else if (d.Key.Equal("{altname}"))
+                            {
                                 p.ReplaceText(d.Key, m.UseAltName ? m.Person.AltName : "");
+                            }
                             else if (d.Key.Equal("{name}"))
                             {
                                 p.ReplaceText(d.Key, m.Person.Name2);
                                 if (m.MemberTypeCode == "VS")
-                                    row.Cells.Last().Shading = Color.FromArgb(226,239,217); // light green
+                                {
+                                    row.Cells.Last().Shading = Color.FromArgb(226, 239, 217); // light green
+                                }
                             }
                             else
+                            {
                                 p.ReplaceText(d.Key, d.Value);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private void DoHeaderFooterParagraphReplacments(Paragraph p, OrgInfo o)
@@ -240,16 +276,24 @@ namespace CmsWeb.Areas.Reports.Models
             foreach (var code in list)
             {
                 if (code.StartsWith("{datemeeting"))
+                {
                     p.ReplaceText(code,
                         Util.PickFirst(EmailReplacements
                                 .DateFormattedReplacement(NewMeetingInfo.MeetingDate, code)
                             , "____"));
+                }
                 else if (code == "{orgname}")
+                {
                     p.ReplaceText(code, o.Name);
+                }
                 else if (code == "{today}")
+                {
                     p.ReplaceText(code, DateTime.Today.ToShortDateString());
+                }
                 else if (code == "{orgid}")
+                {
                     p.ReplaceText(code, o.OrgId.ToString());
+                }
                 else if (code == "{barcodemeeting}")
                 {
                     var text = $"M.{o.OrgId}.{NewMeetingInfo.MeetingDate:MMddyyHHmm}";
@@ -306,7 +350,7 @@ namespace CmsWeb.Areas.Reports.Models
                 ? OrgSearchModel.FetchOrgs(Filter?.Id ?? 0)
                 : OrgSearchModel.FetchOrgs();
             var q = from o in orgs
-                    from sg in CurrentDatabase.MemberTags
+                    from sg in DbUtil.Db.MemberTags
                     where sg.OrgId == o.OrganizationId
                     where (NewMeetingInfo.GroupFilterPrefix ?? "") == "" || sg.Name.StartsWith(NewMeetingInfo.GroupFilterPrefix)
                     orderby sg.Name
@@ -358,7 +402,7 @@ namespace CmsWeb.Areas.Reports.Models
 
         private static byte[] RollsheetTemplate()
         {
-            var loc = CurrentDatabase.Setting("RollsheetTemplate", "");
+            var loc = DbUtil.Db.Setting("RollsheetTemplate", "");
             if (loc.HasValue())
             {
                 var wc = new WebClient();

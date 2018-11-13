@@ -141,7 +141,7 @@ namespace CmsWeb.Models.ExtraValues
                              where Codes.Select(x => x.Text).Contains(e.Field)
                              select NoPrefix(e.Field)).ToList();
 
-                    if (CurrentDatabase.Setting("UX-RenderCheckboxBullets"))
+                    if (DbUtil.Db.Setting("UX-RenderCheckboxBullets"))
                     {
                         if (q.ToList().Count == 0) return string.Empty;
 

@@ -1,7 +1,7 @@
 ﻿using CmsData;
 using CmsWeb.Code;
-using System.Linq;
 using Newtonsoft.Json;
+using System.Linq;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.ExtraValues
@@ -14,9 +14,9 @@ namespace CmsWeb.Models.ExtraValues
 
         public EntryModel(int id)
         {
-            var q = from p in CurrentDatabase.People
-                where p.PeopleId == id
-                select new { p.EntryPointId, p.OriginId, p.InterestPointId };
+            var q = from p in DbUtil.Db.People
+                    where p.PeopleId == id
+                    select new { p.EntryPointId, p.OriginId, p.InterestPointId };
             var i = q.Single();
             Origin = new CodeInfo(i.OriginId, "Origin");
             EntryPoint = new CodeInfo(i.EntryPointId, "EntryPoint");
@@ -25,14 +25,21 @@ namespace CmsWeb.Models.ExtraValues
 
         public static void EditValue(int id, string name, string value)
         {
-            var p = CurrentDatabase.LoadPersonById(id);
+            var p = DbUtil.Db.LoadPersonById(id);
             if (name == "Origin")
+            {
                 p.OriginId = value.ToInt();
-            else if (name == "EntryPoint") 
+            }
+            else if (name == "EntryPoint")
+            {
                 p.EntryPointId = value.ToInt();
-            else if (name == "InterestPoint") 
+            }
+            else if (name == "InterestPoint")
+            {
                 p.InterestPointId = value.ToInt();
-            CurrentDatabase.SubmitChanges();
+            }
+
+            DbUtil.Db.SubmitChanges();
         }
 
         public static string OriginList()

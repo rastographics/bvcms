@@ -14,8 +14,8 @@ namespace CmsWeb.Models
     {
         public static EpplusResult FetchExcelLibraryList(Guid queryid)
         {
-            var Db = Db;
-            var query = CurrentDatabase.PeopleQuery(queryid);
+            //var Db = Db;
+            var query = DbUtil.Db.PeopleQuery(queryid);
             var q = from p in query
                     let om = p.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == p.BibleFellowshipClassId)
                     select new
@@ -40,8 +40,8 @@ namespace CmsWeb.Models
         }
         public static DataTable FetchExcelList(Guid queryid, int maximumRows, bool useMailFlags)
         {
-            var Db = Db;
-            var query = CurrentDatabase.PeopleQuery(queryid);
+            //var Db = Db;
+            var query = DbUtil.Db.PeopleQuery(queryid);
             if (useMailFlags)
             {
                 query = MailingController.FilterMailFlags(query);
@@ -92,15 +92,15 @@ namespace CmsWeb.Models
         public static DataTable DonorDetails(DateTime startdt, DateTime enddt,
             int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
         {
-            var UseTitles = !CurrentDatabase.Setting("NoTitlesOnStatements");
+            var UseTitles = !DbUtil.Db.Setting("NoTitlesOnStatements");
 
-            if (CurrentDatabase.Setting("UseLabelNameForDonorDetails"))
+            if (DbUtil.Db.Setting("UseLabelNameForDonorDetails"))
             {
-                var q = from c in CurrentDatabase.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
-                        join p in CurrentDatabase.People on c.CreditGiverId equals p.PeopleId
-                        let mainFellowship = CurrentDatabase.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
-                        let head1 = CurrentDatabase.People.Single(hh => hh.PeopleId == p.Family.HeadOfHouseholdId)
-                        let head2 = CurrentDatabase.People.SingleOrDefault(sp => sp.PeopleId == p.Family.HeadOfHouseholdSpouseId)
+                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
+                        join p in DbUtil.Db.People on c.CreditGiverId equals p.PeopleId
+                        let mainFellowship = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
+                        let head1 = DbUtil.Db.People.Single(hh => hh.PeopleId == p.Family.HeadOfHouseholdId)
+                        let head2 = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == p.Family.HeadOfHouseholdSpouseId)
                         let altcouple = p.Family.FamilyExtras.SingleOrDefault(ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data
                         select new
                         {
@@ -144,10 +144,10 @@ namespace CmsWeb.Models
             }
             else
             {
-                var q = from c in CurrentDatabase.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
-                        join p in CurrentDatabase.People on c.CreditGiverId equals p.PeopleId
-                        let mainFellowship = CurrentDatabase.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
-                        let spouse = CurrentDatabase.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
+                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
+                        join p in DbUtil.Db.People on c.CreditGiverId equals p.PeopleId
+                        let mainFellowship = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
+                        let spouse = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
                         let altcouple = p.Family.FamilyExtras.SingleOrDefault(ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data
                         select new
                         {
@@ -180,7 +180,7 @@ namespace CmsWeb.Models
         {
 #if DEBUG2
             // for reconciliation by developer
-            var v = from c in CurrentDatabase.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
+            var v = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
                 orderby c.ContributionId
                 select c.ContributionId;
             using(var tw = new StreamWriter("D:\\exportdonors.txt"))
@@ -189,7 +189,7 @@ namespace CmsWeb.Models
 #endif
 
 
-            var q2 = from r in CurrentDatabase.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid, fundids)
+            var q2 = from r in DbUtil.Db.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid, fundids)
                      select new
                      {
                          GiverId = r.CreditGiverId,
@@ -214,7 +214,7 @@ namespace CmsWeb.Models
         public static DataTable ExcelDonorFundTotals(DateTime startdt, DateTime enddt,
             int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
         {
-            var q2 = from r in CurrentDatabase.GetTotalContributionsDonorFund(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid, fundids)
+            var q2 = from r in DbUtil.Db.GetTotalContributionsDonorFund(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid, fundids)
                      select new
                      {
                          GiverId = r.CreditGiverId,
@@ -234,7 +234,7 @@ namespace CmsWeb.Models
 
         public static EpplusResult FetchExcelListFamilyMembers(Guid qid)
         {
-            var q = CurrentDatabase.PeopleQuery(qid);
+            var q = DbUtil.Db.PeopleQuery(qid);
             var q2 = from pp in q
                      group pp by pp.FamilyId into g
                      from p in g.First().Family.People
@@ -279,13 +279,13 @@ namespace CmsWeb.Models
         }
         public static EpplusResult FetchExcelListFamily(Guid queryid)
         {
-            var Db = Db;
-            var query = CurrentDatabase.PeopleQuery(queryid);
+            //var Db = Db;
+            var query = DbUtil.Db.PeopleQuery(queryid);
 
-            var q = from f in CurrentDatabase.Families
+            var q = from f in DbUtil.Db.Families
                     where query.Any(ff => ff.FamilyId == f.FamilyId)
-                    let p = CurrentDatabase.People.Single(pp => pp.PeopleId == f.HeadOfHouseholdId)
-                    let spouse = CurrentDatabase.People.SingleOrDefault(sp => sp.PeopleId == f.HeadOfHouseholdSpouseId)
+                    let p = DbUtil.Db.People.Single(pp => pp.PeopleId == f.HeadOfHouseholdId)
+                    let spouse = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == f.HeadOfHouseholdSpouseId)
                     let children = from pp in f.People
                                    where pp.PeopleId != f.HeadOfHouseholdId
                                    where pp.DeceasedDate == null
@@ -315,10 +315,10 @@ namespace CmsWeb.Models
         }
         public static EpplusResult FetchExcelListFamily2(Guid queryid)
         {
-            var Db = Db;
-            var query = CurrentDatabase.PeopleQuery(queryid);
+            //var Db = Db;
+            var query = DbUtil.Db.PeopleQuery(queryid);
 
-            var q = from p in CurrentDatabase.People
+            var q = from p in DbUtil.Db.People
                     where query.Any(ff => ff.FamilyId == p.FamilyId)
                     orderby p.LastName, p.FamilyId, p.FirstName
                     where p.DeceasedDate == null
@@ -357,11 +357,11 @@ namespace CmsWeb.Models
 
         public static IEnumerable<ExcelPic> FetchExcelListPics(Guid queryid, int maximumRows)
         {
-            var Db = Db;
-            var query = CurrentDatabase.PeopleQuery(queryid);
+            //var Db = Db;
+            var query = DbUtil.Db.PeopleQuery(queryid);
             var q = from p in query
                     let om = p.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == p.BibleFellowshipClassId)
-                    let spouse = CurrentDatabase.People.Where(pp => pp.PeopleId == p.SpouseId).Select(pp => pp.PreferredName).SingleOrDefault()
+                    let spouse = DbUtil.Db.People.Where(pp => pp.PeopleId == p.SpouseId).Select(pp => pp.PreferredName).SingleOrDefault()
                     select new ExcelPic
                     {
                         PeopleId = p.PeopleId,
@@ -399,14 +399,14 @@ namespace CmsWeb.Models
         public static EpplusResult ExportExtraValues(Guid qid)
         {
             var roles = CMSRoleProvider.provider.GetRolesForUser(Util.UserName);
-            var xml = XDocument.Parse(CurrentDatabase.Content("StandardExtraValues2", "<Fields/>"));
+            var xml = XDocument.Parse(DbUtil.Db.Content("StandardExtraValues2", "<Fields/>"));
             var fields = (from ff in xml.Root.Descendants("Value")
                           let vroles = ff.Attribute("VisibilityRoles")
                           where vroles != null && (vroles.Value.Split(',').All(rr => !roles.Contains(rr)))
                           select ff.Attribute("Name").Value);
             var nodisplaycols = string.Join("|", fields);
 
-            var tag = CurrentDatabase.PopulateSpecialTag(qid, DbUtil.TagTypeId_ExtraValues);
+            var tag = DbUtil.Db.PopulateSpecialTag(qid, DbUtil.TagTypeId_ExtraValues);
 
             var cmd = new SqlCommand("dbo.ExtraValues @p1, @p2, @p3");
             cmd.Parameters.AddWithValue("@p1", tag.Id);

@@ -1,9 +1,9 @@
+using CmsData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CmsData;
-using UtilityExtensions;
 using System.Text.RegularExpressions;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -32,7 +32,8 @@ namespace CmsWeb.Areas.Reports.Models
             public string Name { get; set; }
             public IEnumerable<DivInfo> Divs { get; set; }
             public string RptGroup { get; set; }
-            List<ColInfo> _cols;
+
+            private List<ColInfo> _cols;
             public List<ColInfo> Cols
             {
                 get
@@ -42,9 +43,14 @@ namespace CmsWeb.Areas.Reports.Models
                         _cols = new List<ColInfo>();
                         Regex re = null;
                         if (RptGroup.TrimEnd().EndsWith(")"))
+                        {
                             re = new Regex(@"(?<re>\d+:\d+ [AP]M)");
+                        }
                         else
+                        {
                             re = new Regex(@"\((?<re>[^)]*)\)=(?<na>[^,)]*)|(?<re>\d+:\d+ [AP]M)");
+                        }
+
                         var m = re.Match(RptGroup);
                         while (m.Success)
                         {
@@ -52,9 +58,14 @@ namespace CmsWeb.Areas.Reports.Models
                             _cols.Add(ci);
                             var a = m.Groups["re"].Value.Split('|');
                             if (m.Groups["na"].Value.HasValue())
+                            {
                                 ci.Heading = m.Groups["na"].Value;
+                            }
                             else
+                            {
                                 ci.Heading = m.Groups[1].Value;
+                            }
+
                             foreach (var s in a)
                             {
                                 var dt = DateTime.Parse(s);
@@ -66,13 +77,17 @@ namespace CmsWeb.Areas.Reports.Models
                     return _cols;
                 }
             }
-            int? _line;
+
+            private int? _line;
             public int Line
             {
                 get
                 {
                     if (!_line.HasValue)
+                    {
                         _line = Regex.Match(RptGroup, @"\A\d+").Value.ToInt();
+                    }
+
                     return _line.Value;
                 }
             }
@@ -97,7 +112,7 @@ namespace CmsWeb.Areas.Reports.Models
         }
         public IEnumerable<ProgInfo> FetchInfo()
         {
-            var q = from p in CurrentDatabase.Programs
+            var q = from p in DbUtil.Db.Programs
                     where p.RptGroup != null && p.RptGroup.Length > 0
                     from pd in p.ProgDivs
                     where pd.Division.ReportLine > 0
@@ -138,7 +153,7 @@ namespace CmsWeb.Areas.Reports.Models
         }
         public static DateTime MostRecentAttendedSunday()
         {
-            var q = from m in CurrentDatabase.Meetings
+            var q = from m in DbUtil.Db.Meetings
                     where m.MeetingDate.Value.Date.DayOfWeek == 0
                     where m.MaxCount > 0
                     where m.MeetingDate < Util.Now
@@ -146,7 +161,10 @@ namespace CmsWeb.Areas.Reports.Models
                     select m.MeetingDate.Value.Date;
             var dt = q.FirstOrDefault();
             if (dt == DateTime.MinValue) //Sunday Date equal/before today
+            {
                 dt = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
+            }
+
             return dt;
         }
     }

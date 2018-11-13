@@ -1,10 +1,10 @@
+using CmsData;
+using CmsData.View;
+using CmsWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using CmsData;
-using CmsData.View;
-using CmsWeb.Models;
 
 namespace CmsWeb.Areas.Manage.Models
 {
@@ -51,8 +51,11 @@ namespace CmsWeb.Areas.Manage.Models
         private List<ActivityLogSearch> GetList()
         {
             if (rows != null)
+            {
                 return rows;
-            rows = (from a in CurrentDatabase.ActivityLogSearch(null, Activity, UserId, OrgId, PeopleId, EndDate, Lookback, PageSize, Page)
+            }
+
+            rows = (from a in DbUtil.Db.ActivityLogSearch(null, Activity, UserId, OrgId, PeopleId, EndDate, Lookback, PageSize, Page)
                     select a).ToList();
             count = rows.Count == 0 ? 0 : rows[0].MaxRows;
             return rows;

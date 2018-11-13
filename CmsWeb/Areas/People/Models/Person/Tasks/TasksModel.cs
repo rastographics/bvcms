@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CmsData;
+using CmsWeb.Models;
 using System.Linq;
 using System.Web;
-using CmsData;
-using CmsWeb.Models;
 
 namespace CmsWeb.Areas.People.Models
 {
@@ -13,21 +11,21 @@ namespace CmsWeb.Areas.People.Models
         public int? PeopleId
         {
             get { return Person?.PeopleId; }
-            set { Person = CurrentDatabase.LoadPersonById(value ?? 0); }
+            set { Person = DbUtil.Db.LoadPersonById(value ?? 0); }
         }
 
         public abstract string AddTask { get; }
 
         protected TasksModel()
             : base("Completed", "desc", true)
-        {}
+        { }
 
         public IQueryable<CmsData.Task> FilteredModelList()
         {
-            var u = CurrentDatabase.CurrentUser;
+            var u = DbUtil.Db.CurrentUser;
             var roles = u.UserRoles.Select(uu => uu.Role.RoleName.ToLower()).ToArray();
             var managePrivateContacts = HttpContext.Current.User.IsInRole("ManagePrivateContacts");
-            return from t in CurrentDatabase.Tasks
+            return from t in DbUtil.Db.Tasks
                    where (t.LimitToRole ?? "") == "" || roles.Contains(t.LimitToRole) || managePrivateContacts
                    select t;
         }

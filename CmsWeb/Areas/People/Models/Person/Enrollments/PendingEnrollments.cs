@@ -1,9 +1,9 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.WebPages;
 using CmsData;
 using CmsData.View;
 using CmsWeb.Models;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.WebPages;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
@@ -16,7 +16,10 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (_person == null && PeopleId.HasValue)
-                    _person = CurrentDatabase.LoadPersonById(PeopleId.Value);
+                {
+                    _person = DbUtil.Db.LoadPersonById(PeopleId.Value);
+                }
+
                 return _person;
             }
         }
@@ -33,9 +36,13 @@ namespace CmsWeb.Areas.People.Models
                     string defaultFilter = null;
 
                     if (isInAccess && !isInOrgLeadersOnly)
-                        defaultFilter = CurrentDatabase.Setting("UX-DefaultAccessInvolvementOrgTypeFilter", "");
+                    {
+                        defaultFilter = DbUtil.Db.Setting("UX-DefaultAccessInvolvementOrgTypeFilter", "");
+                    }
                     else
-                        defaultFilter = CurrentDatabase.Setting("UX-DefaultInvolvementOrgTypeFilter", "");
+                    {
+                        defaultFilter = DbUtil.Db.Setting("UX-DefaultInvolvementOrgTypeFilter", "");
+                    }
 
                     _orgTypesFilter = string.IsNullOrEmpty(defaultFilter) ?
                         new List<string>() : defaultFilter.Split(',').Select(x => x.Trim()).ToList();
@@ -45,9 +52,13 @@ namespace CmsWeb.Areas.People.Models
             set
             {
                 if (value.Any() && !string.IsNullOrWhiteSpace(value[0]))
+                {
                     _orgTypesFilter = value[0].Split(',').Select(x => x.Trim()).ToList();
+                }
                 else
+                {
                     _orgTypesFilter = new List<string>();
+                }
             }
         }
         private List<string> _orgTypesFilter;
@@ -57,31 +68,31 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 var excludedTypes =
-                    CurrentDatabase.Setting("UX-ExcludeFromInvolvementOrgTypeFilter", "").Split(',').Select(x => x.Trim());
+                    DbUtil.Db.Setting("UX-ExcludeFromInvolvementOrgTypeFilter", "").Split(',').Select(x => x.Trim());
                 return DefineModelList(false).Select(x => x.OrgType).Distinct().Where(x => !excludedTypes.Contains(x));
             }
         }
 
         public PendingEnrollments()
-            : base ("", "", true)
-        {}
+            : base("", "", true)
+        { }
 
         public IQueryable<InvolvementCurrent> DefineModelList(bool useOrgFilter)
         {
-            var roles = CurrentDatabase.CurrentRoles();
-            return from om in CurrentDatabase.InvolvementCurrent(PeopleId, Util.UserId)
+            var roles = DbUtil.Db.CurrentRoles();
+            return from om in DbUtil.Db.InvolvementCurrent(PeopleId, Util.UserId)
                    where om.Pending.Value
                    where om.LimitToRole == null || roles.Contains(om.LimitToRole)
                    where (!useOrgFilter || !OrgTypesFilter.Any() || OrgTypesFilter.Contains(om.OrgType))
                    select om;
         }
 
-        override public IQueryable<InvolvementCurrent> DefineModelList()
+        public override IQueryable<InvolvementCurrent> DefineModelList()
         {
             return DefineModelList(true);
         }
 
-        override public IQueryable<InvolvementCurrent> DefineModelSort(IQueryable<InvolvementCurrent> q)
+        public override IQueryable<InvolvementCurrent> DefineModelSort(IQueryable<InvolvementCurrent> q)
         {
             return q.OrderBy(m => m.OrgTypeSort).ThenBy(m => m.Name);
         }

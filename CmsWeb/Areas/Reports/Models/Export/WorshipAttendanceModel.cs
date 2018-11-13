@@ -1,12 +1,12 @@
+using CmsData;
+using Dapper;
+using OfficeOpenXml;
+using OfficeOpenXml.Table;
 using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
-using CmsData;
-using Dapper;
-using OfficeOpenXml;
-using OfficeOpenXml.Table;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -31,7 +31,7 @@ namespace CmsWeb.Models
 
         public static EpplusResult Attendance(Guid queryid)
         {
-            var t = CurrentDatabase.PopulateSpecialTag(queryid, DbUtil.TagTypeId_Query);
+            var t = DbUtil.Db.PopulateSpecialTag(queryid, DbUtil.TagTypeId_Query);
             var cn = new SqlConnection(Util.ConnectionString);
             cn.Open();
             var q = cn.Query<WorshipAttendInfo>("WorshipAttendance", new { tagid = t.Id }, commandType: CommandType.StoredProcedure, commandTimeout: 600);
@@ -50,8 +50,11 @@ namespace CmsWeb.Models
                 var name = cols[i].Name;
                 table.Columns[i].Name = name;
                 var colrange = ws.Cells[1, col, count + 2, col];
-                if(name.EndsWith("04") || name.EndsWith("12") || name.EndsWith("26") || name.EndsWith("52"))
+                if (name.EndsWith("04") || name.EndsWith("12") || name.EndsWith("26") || name.EndsWith("52"))
+                {
                     colrange.Style.Numberformat.Format = "0.0";
+                }
+
                 if (name.StartsWith("Worship"))
                 {
                     var cr = ws.Cells[2, col, count + 2, col];

@@ -28,8 +28,8 @@ namespace CmsWeb.Areas.Search.Models
 
         private void UpdateConditions(Guid id)
         {
-            var query = CurrentDatabase.LoadQueryById2(id);
-            userpeopleid = (from u in CurrentDatabase.Users
+            var query = DbUtil.Db.LoadQueryById2(id);
+            userpeopleid = (from u in DbUtil.Db.Users
                             where u.Username == query.Owner
                             select u.PeopleId).SingleOrDefault();
             var c = Condition.Import(query.Text, query.Name, newGuids: false, topguid: id);
@@ -43,7 +43,7 @@ namespace CmsWeb.Areas.Search.Models
             using (var w = XmlWriter.Create(sb, settings))
                 UpdateCondition(w, id);
             query.Text = sb.ToString();
-            CurrentDatabase.SubmitChanges();
+            DbUtil.Db.SubmitChanges();
         }
         private void UpdateCondition(XmlWriter w, Guid id)
         {

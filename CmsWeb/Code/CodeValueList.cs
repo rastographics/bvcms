@@ -5,11 +5,11 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
+using CmsData;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Code
@@ -18,7 +18,7 @@ namespace CmsWeb.Code
     {
         public IEnumerable<CodeValueItem> EnvelopeOptionList()
         {
-            return from ms in CurrentDatabase.EnvelopeOptions
+            return from ms in DbUtil.Db.EnvelopeOptions
                    orderby ms.Description
                    select new CodeValueItem
                    {
@@ -40,7 +40,7 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> JoinTypeList()
         {
-            return from ms in CurrentDatabase.JoinTypes
+            return from ms in DbUtil.Db.JoinTypes
                    orderby ms.Description
                    select new CodeValueItem
                    {
@@ -52,7 +52,7 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> DropTypeList()
         {
-            return from ms in CurrentDatabase.DropTypes
+            return from ms in DbUtil.Db.DropTypes
                    orderby ms.Description
                    select new CodeValueItem
                    {
@@ -64,7 +64,7 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> NewMemberClassStatusList()
         {
-            return from c in CurrentDatabase.NewMemberClassStatuses
+            return from c in DbUtil.Db.NewMemberClassStatuses
                    select new CodeValueItem
                    {
                        Id = c.Id,
@@ -75,7 +75,7 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> BaptismTypeList()
         {
-            return from ms in CurrentDatabase.BaptismTypes
+            return from ms in DbUtil.Db.BaptismTypes
                    select new CodeValueItem
                    {
                        Id = ms.Id,
@@ -86,7 +86,7 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> BaptismStatusList()
         {
-            return from ms in CurrentDatabase.BaptismStatuses
+            return from ms in DbUtil.Db.BaptismStatuses
                    select new CodeValueItem
                    {
                        Id = ms.Id,
@@ -97,7 +97,7 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> DecisionTypeList()
         {
-            return from ms in CurrentDatabase.DecisionTypes
+            return from ms in DbUtil.Db.DecisionTypes
                    select new CodeValueItem
                    {
                        Id = ms.Id,
@@ -207,7 +207,7 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> LeaderMemberTypeList()
         {
-            return MemberTypeCodes0().Select(c => new CodeValueItem {Code = c.Code, Id = c.Id, Value = c.Value});
+            return MemberTypeCodes0().Select(c => new CodeValueItem { Code = c.Code, Id = c.Id, Value = c.Value });
         }
 
         public IEnumerable<CodeValueItem> AttendCreditList()
@@ -279,8 +279,11 @@ namespace CmsWeb.Code
         {
             var tg = UserTags(Util.UserPeopleId).ToList();
             if (HttpContext.Current.User.IsInRole("Edit"))
-                tg.Insert(0, new CodeValueItem {Id = -1, Value = "(last query)"});
-            tg.Insert(0, new CodeValueItem {Id = 0, Value = "(not specified)"});
+            {
+                tg.Insert(0, new CodeValueItem { Id = -1, Value = "(last query)" });
+            }
+
+            tg.Insert(0, new CodeValueItem { Id = 0, Value = "(not specified)" });
             return tg.ToSelect();
         }
 
@@ -295,38 +298,41 @@ namespace CmsWeb.Code
         }
         public SelectList TaskSearchStatusList()
         {
-            var list = (from vc in CurrentDatabase.TaskStatuses
-                orderby vc.Description
-                select new CodeValueItem
-                {
-                    Id = vc.Id,
-                    Code = vc.Code,
-                    Value = vc.Description
-                }).ToList();
-            list.Insert(0, new CodeValueItem {Id = 99, Value = "Active + Pending"});
+            var list = (from vc in DbUtil.Db.TaskStatuses
+                        orderby vc.Description
+                        select new CodeValueItem
+                        {
+                            Id = vc.Id,
+                            Code = vc.Code,
+                            Value = vc.Description
+                        }).ToList();
+            list.Insert(0, new CodeValueItem { Id = 99, Value = "Active + Pending" });
             return list.AddNotSpecified().ToSelect();
         }
         public static SelectList TaskStatusList()
         {
-            var list = CurrentDatabase.TaskStatuses.ToList();
+            var list = DbUtil.Db.TaskStatuses.ToList();
             return new SelectList(list, "Id", "Description");
         }
         public SelectList TaskLimitToRoleList()
         {
-            var roles = CurrentDatabase.Setting("LimitToRolesForTasks", 
-                    CurrentDatabase.Setting("LimitToRolesForContacts", ""))
+            var roles = DbUtil.Db.Setting("LimitToRolesForTasks",
+                    DbUtil.Db.Setting("LimitToRolesForContacts", ""))
                 .SplitStr(",").Where(rr => rr.HasValue()).ToArray();
-            
+
             if (roles.Length == 0)
-                roles = CurrentDatabase.Roles.OrderBy(r => r.RoleName).Select(r => r.RoleName).ToArray();
-            var list = roles.Select(rolename => new 
+            {
+                roles = DbUtil.Db.Roles.OrderBy(r => r.RoleName).Select(r => r.RoleName).ToArray();
+            }
+
+            var list = roles.Select(rolename => new
             {
                 Value = rolename,
                 Text = rolename,
                 //Selected = !string.IsNullOrWhiteSpace(TaskLimitToRole.Value) && TaskLimitToRole.Value == rolename
             }).ToList();
 
-            list.Insert(0, new { Value = "0", Text = @"(not specified)"});
+            list.Insert(0, new { Value = "0", Text = @"(not specified)" });
             return new SelectList(list, "Value", "Text");
         }
     }

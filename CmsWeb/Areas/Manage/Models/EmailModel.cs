@@ -1,10 +1,9 @@
+using CmsData;
+using Dapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using CmsData;
-using CmsWeb.Code;
-using Dapper;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -18,7 +17,10 @@ namespace CmsWeb.Models
             get
             {
                 if (_Queue == null)
-                    _Queue = CurrentDatabase.EmailQueues.SingleOrDefault(ee => ee.Id == Id);
+                {
+                    _Queue = DbUtil.Db.EmailQueues.SingleOrDefault(ee => ee.Id == Id);
+                }
+
                 return _Queue;
             }
         }
@@ -49,7 +51,7 @@ namespace CmsWeb.Models
             }
         }
 
-//        public string FormattedHtmlBody => TidyLib.FormatHtml(queue.Body);
+        //        public string FormattedHtmlBody => TidyLib.FormatHtml(queue.Body);
 
 
         public FilterType FilterType { get; private set; }
@@ -66,7 +68,7 @@ namespace CmsWeb.Models
 
         public PagerModel2 Pager { get; set; }
 
-        int _count;
+        private int _count;
         public int Count()
         {
             return _count;
@@ -88,7 +90,7 @@ namespace CmsWeb.Models
 
         private void LoadRecipients(int? page = null, int? pageSize = null)
         {
-            var cn = CurrentDatabase.Connection;
+            var cn = DbUtil.Db.Connection;
             dynamic counts = cn.Query(@"
 SELECT
 	COUNT(*) AS Total
@@ -131,7 +133,10 @@ WHERE eqt.Id = @emailQueueId
         {
             Pager = new PagerModel2(Count);
             if (pageSize.HasValue)
+            {
                 Pager.PageSize = pageSize.Value;
+            }
+
             Pager.Page = page;
         }
 
@@ -211,7 +216,7 @@ WHERE
 ORDER BY Name2
 OFFSET (@currentPage-1)*@pageSize ROWS FETCH NEXT @pageSize ROWS ONLY
 ";
-            var roles = CurrentDatabase.CurrentRoles();
+            var roles = DbUtil.Db.CurrentRoles();
             var isAdmin = roles.Contains("Admin") || roles.Contains("ManageEmails") || roles.Contains("Finance");
             string filter;
 
@@ -241,16 +246,22 @@ OFFSET (@currentPage-1)*@pageSize ROWS FETCH NEXT @pageSize ROWS ONLY
                 filter
             };
 
-            return CurrentDatabase.Connection.Query<RecipientInfo>(sql, args);
+            return DbUtil.Db.Connection.Query<RecipientInfo>(sql, args);
         }
 
         public bool CanDelete()
         {
             if (HttpContext.Current.User.IsInRole("Admin"))
+            {
                 return true;
+            }
+
             if (queue.QueuedBy == Util.UserPeopleId)
+            {
                 return true;
-            var u = CurrentDatabase.LoadPersonById(Util.UserPeopleId ?? 0);
+            }
+
+            var u = DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0);
             return queue.FromAddr == u.EmailAddress;
         }
 
@@ -263,7 +274,7 @@ OFFSET (@currentPage-1)*@pageSize ROWS FETCH NEXT @pageSize ROWS ONLY
                 var sendFromOrg = queue.SendFromOrgId.HasValue && !Recipients.Any();
                 if (sendFromOrg)
                 {
-                    var i = from o in CurrentDatabase.Organizations
+                    var i = from o in DbUtil.Db.Organizations
                             where o.OrganizationId == queue.SendFromOrgId
                             select o.OrganizationName;
                     SendFromOrgName = i.Single();
@@ -274,7 +285,7 @@ OFFSET (@currentPage-1)*@pageSize ROWS FETCH NEXT @pageSize ROWS ONLY
 
         public Guid CurrentPersonQueryId
         {
-            get { return CurrentDatabase.QueryIsCurrentPerson().QueryId; }
+            get { return DbUtil.Db.QueryIsCurrentPerson().QueryId; }
         }
 
         private int? _emptyTemplateId;
@@ -284,7 +295,7 @@ OFFSET (@currentPage-1)*@pageSize ROWS FETCH NEXT @pageSize ROWS ONLY
             {
                 if (!_emptyTemplateId.HasValue)
                 {
-                    var emptyTemplate = (from content in CurrentDatabase.Contents
+                    var emptyTemplate = (from content in DbUtil.Db.Contents
                                          where content.Name == "Empty Template"
                                          select content).SingleOrDefault();
 

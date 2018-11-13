@@ -20,8 +20,8 @@ namespace CmsWeb.Areas.People.Models
         override public IQueryable<Attend> DefineModelList()
         {
             var midnight = Util.Now.Date.AddDays(1);
-            var roles = CurrentDatabase.CurrentRoles();
-            var q = from a in CurrentDatabase.Attends
+            var roles = DbUtil.Db.CurrentRoles();
+            var q = from a in DbUtil.Db.Attends
                       let org = a.Meeting.Organization
                       where a.PeopleId == PeopleId
                       where !(org.SecurityTypeId == 3 && Util2.OrgLeadersOnly)
@@ -38,7 +38,7 @@ namespace CmsWeb.Areas.People.Models
         override public IEnumerable<AttendInfo> DefineViewList(IQueryable<Attend> q)
         {
             return from a in q
-                   let conflict = CurrentDatabase.ViewMeetingConflicts.Any(mm => 
+                   let conflict = DbUtil.Db.ViewMeetingConflicts.Any(mm => 
                        a.PeopleId == mm.PeopleId 
                        && a.MeetingDate == mm.MeetingDate 
                        && (mm.OrgId1 == a.OrganizationId || mm.OrgId2 == a.OrganizationId ) )
