@@ -31,7 +31,7 @@ namespace CmsWeb.Models
 
                 string first;
                 string last;
-                var q = DbUtil.Db.People.Select(p => p);
+                var q = CurrentDatabase.People.Select(p => p);
                 Util.NameSplit(name, out first, out last);
                 if (first.HasValue())
                     q = from p in q

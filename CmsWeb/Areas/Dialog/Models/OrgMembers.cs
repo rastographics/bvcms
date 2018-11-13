@@ -42,7 +42,7 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             if (mtypes == null)
             {
-                var q = from mt in DbUtil.Db.MemberTypes
+                var q = from mt in CurrentDatabase.MemberTypes
                         where mt.Id != MemberTypeCode.Visitor
                         where mt.Id != MemberTypeCode.VisitingMember
                         orderby mt.Description

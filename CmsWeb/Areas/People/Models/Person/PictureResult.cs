@@ -82,7 +82,7 @@ namespace CmsWeb.Areas.People.Models
 #endif
                 try
                 {
-                    i = ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == id);
+                    i = ImageData.CurrentDatabase.Images.SingleOrDefault(ii => ii.Id == id);
                 }
                 // ReSharper disable once EmptyGeneralCatchClause
                 catch (Exception)

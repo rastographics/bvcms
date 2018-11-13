@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 @{
-                    var list = DbUtil.Db.MemberTags.Where(mm => mm.OrgId == Model.OrgId).OrderBy(t => t.Name).ToList();
+                    var list = CurrentDatabase.MemberTags.Where(mm => mm.OrgId == Model.OrgId).OrderBy(t => t.Name).ToList();
                 }
                 <div class="row">
                     <div class="col-sm-6">

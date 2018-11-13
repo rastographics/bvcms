@@ -61,7 +61,7 @@ namespace CmsWeb.Models
 
 		public IEnumerable<SelectListItem> Roles()
 		{
-			var q = from r in DbUtil.Db.Roles
+			var q = from r in CurrentDatabase.Roles
 			        orderby r.RoleName
 			        select new SelectListItem
 			        {
@@ -79,7 +79,7 @@ namespace CmsWeb.Models
 		{
 			if (_users != null)
 				return _users;
-			_users = from u in DbUtil.Db.Users select u;
+			_users = from u in CurrentDatabase.Users select u;
 		    if (name.AllDigits())
 		        _users = from u in _users
 		            where u.UserId == name.ToInt()

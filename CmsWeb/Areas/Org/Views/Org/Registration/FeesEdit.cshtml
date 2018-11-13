@@ -1,7 +1,7 @@
 ﻿@using CmsData
 @model CmsWeb.Areas.Org.Models.SettingsFeesModel
 @{
-    ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowFeesHelp");
+    ViewBag.ShowHelp = CurrentDatabase.UserPreference("ShowFeesHelp");
 }
 <form class="ajax">
     @if (!Html.ViewData.ModelState.IsValid)

@@ -99,10 +99,10 @@ namespace CmsWeb.Areas.Search.Controllers
                 return Content("");
             }
 
-            var ot = DbUtil.Db.OrganizationTypes.SingleOrDefault(tt => tt.Id == id);
+            var ot = CurrentDatabase.OrganizationTypes.SingleOrDefault(tt => tt.Id == id);
             if (t.HasValue || ot != null)
             {
-                var q = from o in DbUtil.Db.Organizations
+                var q = from o in CurrentDatabase.Organizations
                         join os in m.FetchOrgs() on o.OrganizationId equals os.OrganizationId
                         select o;
                 foreach (var o in q)
@@ -115,7 +115,7 @@ namespace CmsWeb.Areas.Search.Controllers
                 return Content("error: missing type");
             }
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return Content("ok");
         }
 
@@ -128,10 +128,10 @@ namespace CmsWeb.Areas.Search.Controllers
                 return Content("");
             }
 
-            var org = DbUtil.Db.LoadOrganizationById(id);
+            var org = CurrentDatabase.LoadOrganizationById(id);
             if (t.HasValue || org != null)
             {
-                var q = from o in DbUtil.Db.Organizations
+                var q = from o in CurrentDatabase.Organizations
                         join os in m.FetchOrgs() on o.OrganizationId equals os.OrganizationId
                         where o.OrganizationId != id
                         select o;
@@ -145,16 +145,16 @@ namespace CmsWeb.Areas.Search.Controllers
                 return Content("error: missing type");
             }
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return Content("ok");
         }
 
         [HttpPost]
         public ActionResult RenameDiv(int id, int divid, string name)
         {
-            var d = DbUtil.Db.Divisions.Single(dd => dd.Id == divid);
+            var d = CurrentDatabase.Divisions.Single(dd => dd.Id == divid);
             d.Name = name;
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             var m = new OrgSearchModel { ProgramId = id };
             return View("DivisionIds", m);
         }
@@ -164,8 +164,8 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             var d = new Division { Name = name, ProgId = id };
             d.ProgDivs.Add(new ProgDiv { ProgId = id });
-            DbUtil.Db.Divisions.InsertOnSubmit(d);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.Divisions.InsertOnSubmit(d);
+            CurrentDatabase.SubmitChanges();
             var m = new OrgSearchModel { ProgramId = id, TagDiv = d.Id };
             return View("DivisionIds", m);
         }
@@ -222,7 +222,7 @@ namespace CmsWeb.Areas.Search.Controllers
             var a = id.Split('-');
             var c = new ContentResult();
             c.Content = value;
-            var org = DbUtil.Db.LoadOrganizationById(a[1].ToInt());
+            var org = CurrentDatabase.LoadOrganizationById(a[1].ToInt());
             if (org == null)
             {
                 return c;
@@ -261,7 +261,7 @@ namespace CmsWeb.Areas.Search.Controllers
                     org.AppCategory = value.HasValue() ? value : null;
                     break;
             }
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return c;
         }
 
@@ -269,9 +269,9 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult SetDescription(string id, string description)
         {
             var a = id.Split('-');
-            var org = DbUtil.Db.LoadOrganizationById(a[1].ToInt());
+            var org = CurrentDatabase.LoadOrganizationById(a[1].ToInt());
             org.Description = description;
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return Content("ok");
         }
 
@@ -288,11 +288,11 @@ namespace CmsWeb.Areas.Search.Controllers
                 ViewBag.OrgIds = oids;
                 ViewBag.dt1 = dt1;
                 ViewBag.dt2 = dt2;
-                var content = DbUtil.Db.ContentOfTypeSql(report);
+                var content = CurrentDatabase.ContentOfTypeSql(report);
                 if (content.Contains("pagebreak", ignoreCase: true))
                 {
                     var p = m.GetSqlParameters(oids, dt1, dt2, content);
-                    ViewBag.Results = PythonModel.PageBreakTables(DbUtil.Db, content, p);
+                    ViewBag.Results = PythonModel.PageBreakTables(CurrentDatabase. content, p);
                     return View();
                 }
                 ViewBag.Results = m.SqlTable(report, oids, dt1, dt2);
@@ -320,15 +320,15 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult ToggleTag(int id, int tagdiv)
         {
-            var Db = DbUtil.Db;
-            var organization = Db.LoadOrganizationById(id);
+            var Db = Db;
+            var organization = CurrentDatabase.LoadOrganizationById(id);
             if (tagdiv == 0)
             {
                 return Json(new { error = "bad tagdiv" });
             }
 
-            var t = organization.ToggleTag(DbUtil.Db, tagdiv);
-            Db.SubmitChanges();
+            var t = organization.ToggleTag(CurrentDatabase. tagdiv);
+            CurrentDatabase.SubmitChanges();
             var m = new OrgSearchModel { StatusId = 0, TagDiv = tagdiv, Name = id.ToString() };
             var o = m.OrganizationList().SingleOrDefault();
             if (o == null)
@@ -342,8 +342,8 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult MainDiv(int id, int tagdiv)
         {
-            var Db = DbUtil.Db;
-            Db.SetMainDivision(id, tagdiv);
+            var Db = Db;
+            CurrentDatabase.SetMainDivision(id, tagdiv);
             var m = new OrgSearchModel { TagDiv = tagdiv, Name = id.ToString() };
             var o = m.OrganizationList().SingleOrDefault();
             if (o == null)
@@ -371,11 +371,11 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             var frorg = (int)Session["OrgCopySettings"];
             var orgs = from os in m.FetchOrgs()
-                       join o in DbUtil.Db.Organizations on os.OrganizationId equals o.OrganizationId
+                       join o in CurrentDatabase.Organizations on os.OrganizationId equals o.OrganizationId
                        select o;
             foreach (var o in orgs)
             {
-                o.CopySettings(DbUtil.Db, frorg);
+                o.CopySettings(CurrentDatabase. frorg);
             }
 
             return new EmptyResult();
@@ -386,7 +386,7 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             foreach (var oid in m.FetchOrgs().Select(oo => oo.OrganizationId))
             {
-                DbUtil.Db.PopulateComputedEnrollmentTransactions(oid);
+                CurrentDatabase.PopulateComputedEnrollmentTransactions(oid);
             }
 
             return new EmptyResult();
@@ -403,7 +403,7 @@ namespace CmsWeb.Areas.Search.Controllers
 
             var a = id.SplitStr(".");
             var orgid = a[1].ToInt();
-            var organization = DbUtil.Db.LoadOrganizationById(orgid);
+            var organization = CurrentDatabase.LoadOrganizationById(orgid);
             if (organization == null)
             {
                 return RedirectShowError($"Cannot interpret barcode orgid({id})");
@@ -423,10 +423,10 @@ namespace CmsWeb.Areas.Search.Controllers
                 g.Groups[4].Value.ToInt(),
                 g.Groups[5].Value.ToInt(),
                 0);
-            var newMtg = DbUtil.Db.Meetings.SingleOrDefault(m => m.OrganizationId == orgid && m.MeetingDate == dt);
+            var newMtg = CurrentDatabase.Meetings.SingleOrDefault(m => m.OrganizationId == orgid && m.MeetingDate == dt);
             if (newMtg == null)
             {
-                var attsch = (from s in DbUtil.Db.OrgSchedules
+                var attsch = (from s in CurrentDatabase.OrgSchedules
                               where s.OrganizationId == organization.OrganizationId
                               where s.MeetingTime.Value.TimeOfDay == dt.TimeOfDay
                               where s.MeetingTime.Value.DayOfWeek == dt.DayOfWeek
@@ -447,8 +447,8 @@ namespace CmsWeb.Areas.Search.Controllers
                     MeetingDate = dt,
                     AttendCreditId = attcred
                 };
-                DbUtil.Db.Meetings.InsertOnSubmit(newMtg);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.Meetings.InsertOnSubmit(newMtg);
+                CurrentDatabase.SubmitChanges();
                 DbUtil.LogActivity($"Creating new meeting for {dt}");
             }
             return Redirect($"/Meeting/{newMtg.MeetingId}?showall=true");
@@ -461,8 +461,8 @@ namespace CmsWeb.Areas.Search.Controllers
             foreach (var oid in orgIds)
             {
                 var db = DbUtil.Create(Util.Host);
-                Meeting.FetchOrCreateMeeting(db, oid, dt, noautoabsents);
-                db.Dispose();
+                Meeting.FetchOrCreateMeeting(CurrentDatabase. oid, dt, noautoabsents);
+                CurrentDatabase.Dispose();
             }
             DbUtil.LogActivity("Creating new meetings from OrgSearch");
             return Content("done");
@@ -471,7 +471,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult MovePendingToMember(OrgSearchModel m)
         {
             var orgids = string.Join(",", m.FetchOrgs().Select(mm => mm.OrganizationId));
-            var i = DbUtil.Db.Connection.ExecuteScalar($@"
+            var i = CurrentDatabase.Connection.ExecuteScalar($@"
 	UPDATE dbo.OrganizationMembers
 	SET Pending = NULL
 	FROM dbo.OrganizationMembers om
@@ -502,7 +502,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult OrganizationStructure(bool? active, OrgSearchModel m)
         {
             var orgs = m.FetchOrgs();
-            var q = from os in DbUtil.Db.ViewOrganizationStructures
+            var q = from os in CurrentDatabase.ViewOrganizationStructures
                     join o in orgs on os.OrgId equals o.OrganizationId
                     select os;
             return View(q.OrderBy(oo => oo.Program).ThenBy(oo => oo.Division).ThenBy(oo => oo.Organization));

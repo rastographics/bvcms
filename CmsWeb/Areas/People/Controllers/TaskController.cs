@@ -100,7 +100,7 @@ namespace CmsWeb.Areas.People.Controllers
                 return Content("no query");
             }
 
-            var q = DbUtil.Db.PeopleQuery(id.Value);
+            var q = CurrentDatabase.PeopleQuery(id.Value);
             var q2 = from p in q
                      let t = p.TasksAboutPerson.OrderByDescending(t => t.CreatedOn).FirstOrDefault(t => t.Notes != null)
                      where t != null

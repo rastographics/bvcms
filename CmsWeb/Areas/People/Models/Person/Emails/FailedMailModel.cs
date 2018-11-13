@@ -15,8 +15,8 @@ namespace CmsWeb.Areas.People.Models
             set
             {
                 peopleid = value;
-                Person = DbUtil.Db.LoadPersonById(peopleid);
-                var i = (from p in DbUtil.Db.People
+                Person = CurrentDatabase.LoadPersonById(peopleid);
+                var i = (from p in CurrentDatabase.People
                          where p.PeopleId == peopleid
                          select new { p.EmailAddress, p.EmailAddress2 }).Single();
                 email = i.EmailAddress;
@@ -35,7 +35,7 @@ namespace CmsWeb.Areas.People.Models
 
         public override IQueryable<EmailQueueToFail> DefineModelList()
         {
-            return from e in DbUtil.Db.EmailQueueToFails
+            return from e in CurrentDatabase.EmailQueueToFails
                    where PeopleId == e.PeopleId
                    select e;
         }
@@ -45,8 +45,8 @@ namespace CmsWeb.Areas.People.Models
             var isadmin = HttpContext.Current.User.IsInRole("Admin");
             var isdevel = HttpContext.Current.User.IsInRole("Developer");
             return from e in q
-                   let et = DbUtil.Db.EmailQueueTos.SingleOrDefault(ef => ef.Id == e.Id && ef.PeopleId == e.PeopleId)
-                   let eq = DbUtil.Db.EmailQueues.SingleOrDefault(ew => ew.Id == et.Id)
+                   let et = CurrentDatabase.EmailQueueTos.SingleOrDefault(ef => ef.Id == e.Id && ef.PeopleId == e.PeopleId)
+                   let eq = CurrentDatabase.EmailQueues.SingleOrDefault(ew => ew.Id == et.Id)
                    orderby e.Time descending
                    select new FailedMailInfo
                           {

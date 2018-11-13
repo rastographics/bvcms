@@ -49,7 +49,7 @@ namespace CmsWeb.Areas.Public.Controllers
             ViewData["fromemail"] = a[1];
             if (Request.HttpMethod.ToUpper() == "GET")
             {
-                var p = DbUtil.Db.LoadPersonById(a[0].ToInt());
+                var p = CurrentDatabase.LoadPersonById(a[0].ToInt());
                 if (p == null)
                 {
                     return Content("Person not found in database");
@@ -60,7 +60,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
             if (optout.HasValue() && optout.StartsWith("Yes"))
             {
-                var oo = DbUtil.Db.EmailOptOuts.SingleOrDefault(eo => eo.FromEmail == a[1] && eo.ToPeopleId == a[0].ToInt());
+                var oo = CurrentDatabase.EmailOptOuts.SingleOrDefault(eo => eo.FromEmail == a[1] && eo.ToPeopleId == a[0].ToInt());
                 if (oo == null)
                 {
                     oo = new CmsData.EmailOptOut
@@ -69,8 +69,8 @@ namespace CmsWeb.Areas.Public.Controllers
                         FromEmail = a[1],
                         DateX = DateTime.Now
                     };
-                    DbUtil.Db.EmailOptOuts.InsertOnSubmit(oo);
-                    DbUtil.Db.SubmitChanges();
+                    CurrentDatabase.EmailOptOuts.InsertOnSubmit(oo);
+                    CurrentDatabase.SubmitChanges();
                 }
                 return View("Confirm");
             }

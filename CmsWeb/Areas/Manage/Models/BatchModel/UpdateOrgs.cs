@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
             while (csv.Read())
             {
                 var oid = csv.GetField<int>(0);
-                var o = DbUtil.Db.LoadOrganizationById(oid);
+                var o = CurrentDatabase.LoadOrganizationById(oid);
                 for (var c = 1; c < csv.Context.HeaderRecord.Length; c++)
                 {
                     var val = csv.GetField<string>(c);
@@ -57,7 +57,7 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                                     o.OrgSchedules.Add(scin);
                             }
                             if (val.Equal("None"))
-                                DbUtil.Db.OrgSchedules.DeleteAllOnSubmit(o.OrgSchedules);
+                                CurrentDatabase.OrgSchedules.DeleteAllOnSubmit(o.OrgSchedules);
                             break;
                         case "BirthDayStart":
                             o.BirthDayStart = val.ToDate();
@@ -149,7 +149,7 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                             break;
                         case "SubGroups":
                             if(val == "(clear)")
-                                DbUtil.Db.MemberTags.DeleteAllOnSubmit(o.MemberTags);
+                                CurrentDatabase.MemberTags.DeleteAllOnSubmit(o.MemberTags);
                             else
                                 foreach (var sg in val.Split(','))
                                     o.AddMemberTag(sg);
@@ -164,7 +164,7 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                                 }
                             break;
                     }
-                    DbUtil.Db.SubmitChanges();
+                    CurrentDatabase.SubmitChanges();
                 }
             }
         }

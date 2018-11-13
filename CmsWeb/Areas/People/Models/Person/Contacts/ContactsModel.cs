@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.People.Models
         public int? PeopleId
         {
             get { return Person == null ? (int?)null : Person.PeopleId; }
-            set { Person = DbUtil.Db.LoadPersonById(value ?? 0); }
+            set { Person = CurrentDatabase.LoadPersonById(value ?? 0); }
         }
 
         protected ContactsModel()
@@ -24,10 +24,10 @@ namespace CmsWeb.Areas.People.Models
 
         public IQueryable<Contact> FilteredModelList()
         {
-            var u = DbUtil.Db.CurrentUser;
+            var u = CurrentDatabase.CurrentUser;
             var roles = u.UserRoles.Select(uu => uu.Role.RoleName.ToLower()).ToArray();
             var ManagePrivateContacts = HttpContext.Current.User.IsInRole("ManagePrivateContacts");
-            return from c in DbUtil.Db.Contacts
+            return from c in CurrentDatabase.Contacts
                    where (c.LimitToRole ?? "") == "" || roles.Contains(c.LimitToRole) || ManagePrivateContacts
                    select c;
         }

@@ -35,7 +35,7 @@ namespace CmsWeb.Models
 
         public static EpplusResult MembershipInfoList(Guid queryid)
         {
-            var q = from p in DbUtil.Db.PeopleQuery(queryid)
+            var q = from p in CurrentDatabase.PeopleQuery(queryid)
                     select new MembershipInfo()
                     {
                         PeopleId = p.PeopleId,

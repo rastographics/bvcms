@@ -20,7 +20,7 @@
 
 
         @Html.DisplayFor(m => m.basic.PositionInFamily, "InlineCode")
-        @if (User.IsInRole("Access") || !DbUtil.Db.Setting("HideMyDataMemberBadge"))
+        @if (User.IsInRole("Access") || !CurrentDatabase.Setting("HideMyDataMemberBadge"))
         {
             @Badge(true, @Model.MemberStatus, "label-success")
         }

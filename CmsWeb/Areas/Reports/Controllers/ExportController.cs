@@ -114,7 +114,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             }
 
             var orgs = string.Join(",", m.FetchOrgs().Select(oo => oo.OrganizationId));
-            var q = DbUtil.Db.OrgDayStats(orgs, dt);
+            var q = CurrentDatabase.OrgDayStats(orgs, dt);
             return q.ToDataTable().ToExcel("OrgDatStats.xlsx");
         }
 
@@ -204,7 +204,7 @@ namespace CmsWeb.Areas.Reports.Controllers
 
         private static int maxExcelRows
         {
-            get { return DbUtil.Db.Setting("MaxExcelRows", "10000").ToInt(); }
+            get { return CurrentDatabase.Setting("MaxExcelRows", "10000").ToInt(); }
         }
 
         [HttpGet]

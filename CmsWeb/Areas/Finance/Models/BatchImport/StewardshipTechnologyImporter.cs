@@ -32,7 +32,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
         private static int? BatchProcessStewardshipTechnology(CsvReader csv, DateTime date, int? fundid)
         {
-            var fundList = (from f in DbUtil.Db.ContributionFunds
+            var fundList = (from f in CurrentDatabase.ContributionFunds
                             select new
                             {
                                 f.FundId,

@@ -24,17 +24,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (!pf.Coupon.HasValue())
                 return Json(new {error = "empty coupon"});
             var coupon = pf.Coupon.ToUpper().Replace(" ", "");
-            var admincoupon = DbUtil.Db.Setting("AdminCoupon", "ifj4ijweoij").ToUpper().Replace(" ", "");
+            var admincoupon = CurrentDatabase.Setting("AdminCoupon", "ifj4ijweoij").ToUpper().Replace(" ", "");
             if (coupon == admincoupon)
                 if (pf.PayBalance)
                 {
-                    var tic = pf.CreateTransaction(DbUtil.Db, pf.AmtToPay);
+                    var tic = pf.CreateTransaction(CurrentDatabase. pf.AmtToPay);
                     return Json(new {confirm = $"/onlinereg/ConfirmDuePaid/{tic.Id}?TransactionID=AdminCoupon&Amount={tic.Amt}"});
                 }
                 else
                     return Json(new {confirm = $"/OnlineReg/Confirm/{pf.DatumId}?TransactionId=AdminCoupon"});
 
-            var c = DbUtil.Db.Coupons.SingleOrDefault(cp => cp.Id == coupon);
+            var c = CurrentDatabase.Coupons.SingleOrDefault(cp => cp.Id == coupon);
             if (c == null)
                 return Json(new {error = "coupon not found"});
 
@@ -51,7 +51,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (c.Canceled.HasValue)
                 return Json(new {error = "coupon canceled"});
 
-            var ti = pf.CreateTransaction(DbUtil.Db, Math.Min(c.Amount ?? 0m, pf.AmtToPay ?? 0m));
+            var ti = pf.CreateTransaction(CurrentDatabase. Math.Min(c.Amount ?? 0m, pf.AmtToPay ?? 0m));
             if (m != null) // Start this transaction in the chain
             {
                 m.HistoryAdd("ApplyCoupon");
@@ -71,7 +71,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 m.UseCoupon(ti.TransactionId, ti.Amt ?? 0);
             else
                 c.UseCoupon(ti.FirstTransactionPeopleId(), ti.Amt ?? 0);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
             if (pf.PayBalance)
                 return Json(new {confirm = $"/onlinereg/ConfirmDuePaid/{ti.Id}?TransactionID=Coupon({Util.fmtcoupon(coupon)})&Amount={ti.Amt}"});
@@ -89,10 +89,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var m = OnlineRegModel.GetRegistrationFromDatum(id);
             m.ParseSettings();
             var coupon = Coupon.ToUpper().Replace(" ", "");
-            var admincoupon = DbUtil.Db.Setting("AdminCoupon", "ifj4ijweoij").ToUpper().Replace(" ", "");
+            var admincoupon = CurrentDatabase.Setting("AdminCoupon", "ifj4ijweoij").ToUpper().Replace(" ", "");
             if (coupon == admincoupon)
                 return Json(new {confirm = $"/onlinereg/Confirm/{id}?TransactionID=Coupon(Admin)"});
-            var c = DbUtil.Db.Coupons.SingleOrDefault(cp => cp.Id == coupon);
+            var c = CurrentDatabase.Coupons.SingleOrDefault(cp => cp.Id == coupon);
             if (c == null)
                 return Json(new {error = "coupon not found"});
             if (m.Orgid != c.OrgId)
@@ -114,12 +114,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             if (!Coupon.HasValue())
                 return Json(new {error = "empty coupon"});
-            var ti = DbUtil.Db.Transactions.SingleOrDefault(tt => tt.Id == id);
+            var ti = CurrentDatabase.Transactions.SingleOrDefault(tt => tt.Id == id);
             var coupon = Coupon.ToUpper().Replace(" ", "");
-            var admincoupon = DbUtil.Db.Setting("AdminCoupon", "ifj4ijweoij").ToUpper().Replace(" ", "");
+            var admincoupon = CurrentDatabase.Setting("AdminCoupon", "ifj4ijweoij").ToUpper().Replace(" ", "");
             if (coupon == admincoupon)
                 return Json(new {confirm = $"/onlinereg/ConfirmDuePaid/{id}?TransactionID=Coupon(Admin)&Amount={Amount}"});
-            var c = DbUtil.Db.Coupons.SingleOrDefault(cp => cp.Id == coupon);
+            var c = CurrentDatabase.Coupons.SingleOrDefault(cp => cp.Id == coupon);
             if (c == null)
                 return Json(new {error = "coupon not found"});
             if (ti.OrgId != c.OrgId)
@@ -145,13 +145,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             if (!Coupon.HasValue())
                 return Json(new {error = "empty coupon"});
-            var ed = DbUtil.Db.ExtraDatas.SingleOrDefault(e => e.Id == id);
+            var ed = CurrentDatabase.ExtraDatas.SingleOrDefault(e => e.Id == id);
             var ti = Util.DeSerialize<TransactionInfo>(ed.Data.Replace("CMSWeb.Models", "CmsWeb.Models"));
             var coupon = Coupon.ToUpper().Replace(" ", "");
-            var admincoupon = DbUtil.Db.Setting("AdminCoupon", "ifj4ijweoij").ToUpper().Replace(" ", "");
+            var admincoupon = CurrentDatabase.Setting("AdminCoupon", "ifj4ijweoij").ToUpper().Replace(" ", "");
             if (coupon == admincoupon)
                 return Json(new {confirm = $"/onlinereg/Confirm2/{id}?TransactionID=Coupon(Admin)&Amount={Amount}"});
-            var c = DbUtil.Db.Coupons.SingleOrDefault(cp => cp.Id == coupon);
+            var c = CurrentDatabase.Coupons.SingleOrDefault(cp => cp.Id == coupon);
             if (c == null)
                 return Json(new {error = "coupon not found"});
             if (ti.orgid != c.OrgId)

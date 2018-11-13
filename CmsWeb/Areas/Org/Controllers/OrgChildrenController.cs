@@ -26,7 +26,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult UpdateOrg(int ParentOrg, int ChildOrg, bool Checked)
         {
-            var o = DbUtil.Db.LoadOrganizationById(ChildOrg);
+            var o = CurrentDatabase.LoadOrganizationById(ChildOrg);
             if (Checked)
             {
                 o.ParentOrgId = ParentOrg;
@@ -36,7 +36,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 o.ParentOrgId = null;
             }
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return Content("ok");
         }
     }

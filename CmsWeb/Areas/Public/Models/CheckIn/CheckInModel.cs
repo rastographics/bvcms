@@ -377,7 +377,7 @@ namespace CmsWeb.Models
         {
             var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == PeopleId && m.OrganizationId == OrgId);
             if (om == null && Member)
-                om = OrganizationMember.InsertOrgMembers(DbUtil.Db,
+                om = OrganizationMember.InsertOrgMembers(DbUtil.Db.
                     OrgId, PeopleId, MemberTypeCode.Member, DateTime.Now, null, false);
             else if (om != null && !Member)
                 om.Drop(DbUtil.Db);
@@ -388,7 +388,7 @@ namespace CmsWeb.Models
             {
                 var p = DbUtil.Db.LoadPersonById(PeopleId);
                 var what = Member ? "joined" : "dropped";
-//                DbUtil.Db.Email(DbUtil.AdminMail,
+//                DbUtil.Db.Email(DbUtil.Db.Util.AdminMail,
 //                    DbUtil.Db.PeopleFromPidString(org.NotifyIds),
 //                    $"cms check-in, {what} class on " + DbUtil.Db.CmsHost,
 //                    $"<a href='{Util.ServerLink("/Person2/" + PeopleId)}/Person2/{PeopleId}'>{p.Name}</a> {what} {org.OrganizationName}");

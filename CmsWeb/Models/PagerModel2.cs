@@ -74,13 +74,13 @@ namespace CmsWeb.Models
             {
                 if (pagesize.HasValue)
                     return pagesize.Value;
-                pagesize = DbUtil.Db.UserPreference("PageSize", "10").ToInt();
+                pagesize = CurrentDatabase.UserPreference("PageSize", "10").ToInt();
                 return pagesize.Value;
             }
             set
             {
                 if (pagesizes.Contains(value))
-                    DbUtil.Db.SetUserPreference("PageSize", value);
+                    CurrentDatabase.SetUserPreference("PageSize", value);
                 pagesize = value;
             }
         }

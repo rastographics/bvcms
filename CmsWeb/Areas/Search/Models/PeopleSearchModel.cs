@@ -55,7 +55,7 @@ or just Last or *First*`space` for first name match only.
 
         public PeopleSearchModel()
         {
-            Db = DbUtil.Db;
+            Db = Db;
             Direction = "asc";
             Sort = "Name";
             TagTypeId = DbUtil.TagTypeId_Personal;
@@ -80,11 +80,11 @@ or just Last or *First*`space` for first name match only.
             if (people != null)
                 return people;
 
-            DbUtil.Db.SetNoLock();
+            CurrentDatabase.SetNoLock();
 
             people = Util2.OrgLeadersOnly && !MobileAddGuest
-                ? DbUtil.Db.OrgLeadersOnlyTag2().People(DbUtil.Db)
-                : DbUtil.Db.People.AsQueryable();
+                ? CurrentDatabase.OrgLeadersOnlyTag2().People(CurrentDatabase)
+                : CurrentDatabase.People.AsQueryable();
 
             if (usersonly)
                 people = people.Where(p => p.Users.Any());
@@ -118,7 +118,7 @@ or just Last or *First*`space` for first name match only.
                         people = from p in people
                                  where p.PeopleId == last.ToInt()
                                  select p;
-                    else if (DbUtil.Db.Setting("UseAltnameContains"))
+                    else if (CurrentDatabase.Setting("UseAltnameContains"))
                         people = from p in people
                                  where p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) || p.AltName.Contains(last)
                                  select p;
@@ -345,8 +345,8 @@ or just Last or *First*`space` for first name match only.
 
         public IEnumerable<SelectListItem> Campuses()
         {
-            var qc = DbUtil.Db.Campus.AsQueryable();
-            qc = DbUtil.Db.Setting("SortCampusByCode")
+            var qc = CurrentDatabase.Campus.AsQueryable();
+            qc = CurrentDatabase.Setting("SortCampusByCode")
                 ? qc.OrderBy(cc => cc.Code)
                 : qc.OrderBy(cc => cc.Description);
             var list = (from c in qc
@@ -393,7 +393,7 @@ or just Last or *First*`space` for first name match only.
 
         public string ConvertToSearch()
         {
-            var cc = DbUtil.Db.ScratchPadCondition();
+            var cc = CurrentDatabase.ScratchPadCondition();
             cc.Reset();
 
             if (m.memberstatus > 0)
@@ -424,7 +424,7 @@ or just Last or *First*`space` for first name match only.
                     {
                         var g = cc.AddNewGroupClause();
                         g.SetComparisonType(CompareType.AnyTrue);
-                        var compareTypeAltname = DbUtil.Db.Setting("UseAltnameContains") 
+                        var compareTypeAltname = CurrentDatabase.Setting("UseAltnameContains") 
                             ? CompareType.Contains : CompareType.StartsWith;
                         g.AddNewClause(QueryType.AltName, compareTypeAltname, m.name);
                         g.AddNewClause(QueryType.LastName, CompareType.StartsWith, m.name);
@@ -499,7 +499,7 @@ or just Last or *First*`space` for first name match only.
                     cc.AddNewClause(QueryType.StatusFlag, CompareType.Equal, f);
             cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,True");
 
-            cc.Save(DbUtil.Db);
+            cc.Save(CurrentDatabase);
             return "/Query/" + cc.Id;
         }
 
@@ -562,7 +562,7 @@ or just Last or *First*`space` for first name match only.
         {
             var pid = q.Select(p => p.PeopleId).SingleOrDefault();
             ctx.Dispose();
-            return DbUtil.Db.LoadPersonById(pid);
+            return CurrentDatabase.LoadPersonById(pid);
         }
     }
 }

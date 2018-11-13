@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.Main.Models.Avery
 	    private bool addEmployer;
 		public EmployerAddress(Guid qid, bool addEmployer)
 		{
-            q =  from p in DbUtil.Db.PeopleQuery(qid)
+            q =  from p in CurrentDatabase.PeopleQuery(qid)
 				 orderby p.Name2
 				 select p;
 		    this.addEmployer = addEmployer;

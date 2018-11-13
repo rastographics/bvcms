@@ -39,7 +39,7 @@ namespace CmsWeb.Areas.Org.Models
 
         public MeetingModel(int id)
         {
-            var i = (from m in DbUtil.Db.Meetings
+            var i = (from m in CurrentDatabase.Meetings
                      where m.MeetingId == id
                      select new
                                 {
@@ -54,7 +54,7 @@ namespace CmsWeb.Areas.Org.Models
 
         public string RegularMeetingHeadCountSetting()
         {
-            return DbUtil.Db.Setting("RegularMeetingHeadCount", "enable");
+            return CurrentDatabase.Setting("RegularMeetingHeadCount", "enable");
         }
 
         public List<RollsheetModel.AttendInfo> Attends(bool sorted = false, string highlight = null)
@@ -97,9 +97,9 @@ namespace CmsWeb.Areas.Org.Models
         public static IEnumerable<NamesInfo> Names(string text, int limit)
         {
             string First, Last;
-            var qp = DbUtil.Db.People.AsQueryable();
+            var qp = CurrentDatabase.People.AsQueryable();
 			if (Util2.OrgLeadersOnly)
-				qp = DbUtil.Db.OrgLeadersOnlyTag2().People(DbUtil.Db);
+				qp = CurrentDatabase.OrgLeadersOnlyTag2().People(CurrentDatabase);
             qp = from p in qp
                  where p.DeceasedDate == null
                  select p;

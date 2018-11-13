@@ -43,7 +43,7 @@ namespace CmsWeb.Areas.Public.Controllers
             sReportLink = xd.Root.Element("Order").Element("ReportLink").Value;
             sOrderID = xd.Root.Element("Order").Element("OrderDetail").Attribute("OrderId").Value;
 
-            var check = (from e in DbUtil.Db.BackgroundChecks
+            var check = (from e in CurrentDatabase.BackgroundChecks
                          where e.Id == iBillingReference
                          select e).Single();
 
@@ -55,9 +55,9 @@ namespace CmsWeb.Areas.Public.Controllers
                 check.StatusID = 3;
                 if (bHasAlerts) check.IssueCount = 1;
 
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
 
-                DbUtil.Db.Email(DbUtil.AdminMail, check.User, "TouchPoint Notification: Background Check Complete", "A scheduled background check has been completed for " + check.Person.Name);
+                CurrentDatabase.Email(CurrentDatabase.Util.AdminMail, check.User, "TouchPoint Notification: Background Check Complete", "A scheduled background check has been completed for " + check.Person.Name);
             }
 
             //System.IO.File.WriteAllText(@"C:\" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".txt", req);
@@ -69,7 +69,7 @@ namespace CmsWeb.Areas.Public.Controllers
         public ActionResult ct(string l) // Click Tracking
         {
             string link = null;
-            DbUtil.Db.TrackClick(l, ref link);
+            CurrentDatabase.TrackClick(l, ref link);
             if(link.HasValue())
                 return Redirect( Server.HtmlDecode(link) );
             return Redirect("/");
@@ -178,7 +178,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             //Check Api Key setting exists 
-            var getApiUserInfoKey = DbUtil.Db.Setting("ApiUserInfoKey", "");
+            var getApiUserInfoKey = CurrentDatabase.Setting("ApiUserInfoKey", "");
             if (getApiUserInfoKey == "")
             {
                 return Json(new
@@ -192,7 +192,7 @@ namespace CmsWeb.Areas.Public.Controllers
             if (getApiUserInfoKey.trim() == apiKey)
             {
                 //Check Ip setting is valid
-                var getIpWhiteList = DbUtil.Db.Setting("ApiUserInfoIPList", "");
+                var getIpWhiteList = CurrentDatabase.Setting("ApiUserInfoIPList", "");
                 if (getIpWhiteList == "")
                 {
                     return Json(new

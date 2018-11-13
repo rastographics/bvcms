@@ -65,7 +65,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (p.org != null && p.Found == true)
             {
                 if (!SupportMissionTrip)
-                    p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
+                    p.IsFilled = p.org.RegLimitCount(CurrentDatabase) >= p.org.Limit;
                 if (p.IsFilled)
                     modelState.AddModelError(this.GetNameFor(mm => mm.List[List.IndexOf(p)].Found), 
                         "Sorry, but registration is filled.");

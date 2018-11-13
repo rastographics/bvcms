@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.People.Models
         public CmsData.Person Person;
         public FamilyModel(int id)
         {
-            Person = DbUtil.Db.LoadPersonById(id);
+            Person = CurrentDatabase.LoadPersonById(id);
             pagesize = 100;
         }
         private Family family;
@@ -22,12 +22,12 @@ namespace CmsWeb.Areas.People.Models
             {
                 if (family != null)
                     return family;
-                return family = DbUtil.Db.Families.SingleOrDefault(ff => ff.FamilyId == Person.FamilyId);
+                return family = CurrentDatabase.Families.SingleOrDefault(ff => ff.FamilyId == Person.FamilyId);
             }
         }
         override public IQueryable<FamilyMember> DefineModelList()
         {
-            return from m in DbUtil.Db.FamilyMembers(Person.PeopleId)
+            return from m in CurrentDatabase.FamilyMembers(Person.PeopleId)
                 select m;
         }
 

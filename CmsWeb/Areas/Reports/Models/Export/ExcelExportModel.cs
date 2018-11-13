@@ -89,11 +89,11 @@ namespace CmsWeb.Models
 
         public static List<ExcelPic> List(Guid queryid)
         {
-            var Db = DbUtil.Db;
-            var query = Db.PeopleQuery(queryid);
+            var Db = Db;
+            var query = CurrentDatabase.PeopleQuery(queryid);
             var q = from p in query
                     let om = p.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == p.BibleFellowshipClassId)
-                    let spouse = Db.People.Where(pp => pp.PeopleId == p.SpouseId).Select(pp => pp.PreferredName).SingleOrDefault()
+                    let spouse = CurrentDatabase.People.Where(pp => pp.PeopleId == p.SpouseId).Select(pp => pp.PreferredName).SingleOrDefault()
                     let familyname = p.Family.People
                                 .Where(pp => pp.PeopleId == pp.Family.HeadOfHouseholdId)
                                 .Select(pp => pp.LastName).SingleOrDefault()
@@ -144,10 +144,10 @@ namespace CmsWeb.Models
         }
         public static List<DirectoryInfo> DirectoryList(Guid queryid)
         {
-            var db = DbUtil.Db;
-            var query = db.PeopleQuery(queryid);
+            var db = Db;
+            var query = CurrentDatabase.PeopleQuery(queryid);
             var q = from p in query
-                    let spouse = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == p.SpouseId)
+                    let spouse = CurrentDatabase.People.SingleOrDefault(pp => pp.PeopleId == p.SpouseId)
                     let familytitle =
                         p.Family.FamilyExtras.Where(mm => mm.Field == "FamilyName" && mm.Data != null)
                             .Select(mm => mm.Data)
@@ -155,7 +155,7 @@ namespace CmsWeb.Models
                     let familyname = familytitle ?? p.Family.People
                         .Where(pp => pp.PeopleId == pp.Family.HeadOfHouseholdId)
                         .Select(pp => pp.LastName).SingleOrDefault()
-                    let couplename = DbUtil.Db.FamilyExtras.SingleOrDefault(ff => ff.FamilyId == p.FamilyId && ff.Field == "CoupleName").Data
+                    let couplename = CurrentDatabase.FamilyExtras.SingleOrDefault(ff => ff.FamilyId == p.FamilyId && ff.Field == "CoupleName").Data
                     orderby familyname, p.FamilyId, p.Name2
                     select new DirectoryInfo()
                     {

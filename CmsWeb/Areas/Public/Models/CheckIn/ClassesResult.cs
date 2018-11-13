@@ -25,7 +25,7 @@ namespace CmsWeb.Models
             this.thisday = thisday;
             this.campusid = campusid;
             this.kioskmode = kioskmode;
-            var i = (from p in DbUtil.Db.People
+            var i = (from p in CurrentDatabase.People
                      where p.PeopleId == id
                      select new
                      {
@@ -61,11 +61,11 @@ namespace CmsWeb.Models
                 IEnumerable<OrgHourInfo> q;
                 if (kioskmode)
                 {
-                    q = from o in DbUtil.Db.Organizations //todo: change this to work with multiple schedules
+                    q = from o in CurrentDatabase.Organizations //todo: change this to work with multiple schedules
                         let bdaystart = o.BirthDayStart ?? DateTime.MaxValue
                         let sc = o.OrgSchedules.FirstOrDefault() // SCHED
                         let tm = sc != null ? (sc.SchedTime ?? DateTime.Today) : DateTime.Today
-                        //let meetingHours = DbUtil.Db.GetTodaysMeetingHours(o.OrganizationId, (int)DateTime.Now.DayOfWeek)
+                        //let meetingHours = CurrentDatabase.GetTodaysMeetingHours(o.OrganizationId, (int)DateTime.Now.DayOfWeek)
                         where bd == null || bd <= o.BirthDayEnd || o.BirthDayEnd == null || noagecheck
                         where bd == null || bd >= o.BirthDayStart || o.BirthDayStart == null || noagecheck
                         where o.AllowKioskRegister == true
@@ -83,9 +83,9 @@ namespace CmsWeb.Models
                 }
                 else
                 {
-                    q = from o in DbUtil.Db.Organizations
+                    q = from o in CurrentDatabase.Organizations
                         let sc = o.OrgSchedules.FirstOrDefault() // SCHED
-                        let meetingHours = DbUtil.Db.GetTodaysMeetingHours(o.OrganizationId, thisday)
+                        let meetingHours = CurrentDatabase.GetTodaysMeetingHours(o.OrganizationId, thisday)
                         let bdaystart = o.BirthDayStart ?? DateTime.MaxValue
                         where (o.SuspendCheckin ?? false) == false || noagecheck
                         where bd == null || bd <= o.BirthDayEnd || o.BirthDayEnd == null || noagecheck
@@ -124,7 +124,7 @@ namespace CmsWeb.Models
 
                     if (o.Hour.HasValue)
                     {
-                        var theirTime = DateTime.Now.AddHours(DbUtil.Db.Setting("TZOffset", "0").ToInt());
+                        var theirTime = DateTime.Now.AddHours(CurrentDatabase.Setting("TZOffset", "0").ToInt());
 
                         if (DateTime.Now.DayOfWeek.ToInt() != thisday)
                         {
@@ -141,7 +141,7 @@ namespace CmsWeb.Models
                         //var midnight = o.Hour.Value.Date;
                         //var now = midnight.Add(Util.Now.TimeOfDay);
                         //leadtime = o.Hour.Value.Subtract(now).TotalHours;
-                        //leadtime -= DbUtil.Db.Setting("TZOffset", "0").ToInt(); // positive to the east, negative to the west
+                        //leadtime -= CurrentDatabase.Setting("TZOffset", "0").ToInt(); // positive to the east, negative to the west
                     }
 
                     w.WriteStartElement("class");

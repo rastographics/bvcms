@@ -29,7 +29,7 @@ namespace CmsWeb.Models
 
         public IQueryable<SMSList> GetList()
         {
-            var l = from e in DbUtil.Db.SMSLists
+            var l = from e in CurrentDatabase.SMSLists
                     select e;
 
             if (start != null)

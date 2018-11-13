@@ -42,9 +42,9 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult List(OrgMembersModel m)
         {
             m.ValidateIds();
-            DbUtil.Db.SetUserPreference("OrgMembersModelIds", $"{m.ProgId}.{m.SourceDivId}.{m.SourceId}");
-            DbUtil.DbDispose();
-            DbUtil.Db.SetNoLock();
+            CurrentDatabase.SetUserPreference("OrgMembersModelIds", $"{m.ProgId}.{m.SourceDivId}.{m.SourceId}");
+            DbDispose();
+            CurrentDatabase.SetNoLock();
             return View(m);
         }
         [HttpPost]

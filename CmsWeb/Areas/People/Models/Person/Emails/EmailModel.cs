@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (_person == null && PeopleId.HasValue)
-                    _person = DbUtil.Db.LoadPersonById(PeopleId.Value);
+                    _person = CurrentDatabase.LoadPersonById(PeopleId.Value);
                 return _person;
             }
         }
@@ -39,11 +39,11 @@ namespace CmsWeb.Areas.People.Models
         {
             var roles = new [] { "Admin", "ManageEmails", "Finance" };
             var admin = HttpContext.Current.User.IsInRole("Admin");
-            if (DbUtil.Db.CurrentUser.Roles.Any(uu => roles.Contains(uu)))
+            if (CurrentDatabase.CurrentUser.Roles.Any(uu => roles.Contains(uu)))
                 return FilterOutFinanceOnly(q);
 
             q = from e in q
-                let p = DbUtil.Db.People.Single(pp => pp.PeopleId == Util.UserPeopleId)
+                let p = CurrentDatabase.People.Single(pp => pp.PeopleId == Util.UserPeopleId)
                 let isSender = e.QueuedBy == Util.UserPeopleId
                                || (e.FromAddr == p.EmailAddress && p.EmailAddress.Length > 0)
                                || (e.FromAddr == p.EmailAddress2 && p.EmailAddress2.Length > 0)

@@ -11,7 +11,7 @@ namespace CmsWeb.Areas.Public.Controllers
     {
         public ActionResult Index(string id, bool useShell = true)
         {
-            var check = (from e in DbUtil.Db.Contents
+            var check = (from e in CurrentDatabase.Contents
                          where e.Name == "SGF-" + id + ".xml"
                          select e).SingleOrDefault();
 
@@ -30,9 +30,9 @@ namespace CmsWeb.Areas.Public.Controllers
                 return View("MapShell", sgfm);
             }
 
-            if (DbUtil.Db.Setting("SGF-UseEmbeddedMap"))
+            if (CurrentDatabase.Setting("SGF-UseEmbeddedMap"))
             {
-                var template = DbUtil.Db.ContentHtml("ShellDefaultSGF", "<!-- CONTAINER -->");
+                var template = CurrentDatabase.ContentHtml("ShellDefaultSGF", "<!-- CONTAINER -->");
                 ViewBag.Shell = template;
                 return View("MapShell", sgfm);
             }
@@ -55,7 +55,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             var search = new Dictionary<string, SearchItem>();
 
-            var loadAllValues = DbUtil.Db.Setting("SGF-LoadAllExtraValues");
+            var loadAllValues = CurrentDatabase.Setting("SGF-LoadAllExtraValues");
 
             if (Request.Form.Count != 0)
             {

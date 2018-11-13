@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.Org.Models
             : this()
         {
             OrgId = oid;
-            var q = from o in DbUtil.Db.Organizations
+            var q = from o in CurrentDatabase.Organizations
                     where o.OrganizationId == OrgId
                     select new
                     {
@@ -56,7 +56,7 @@ namespace CmsWeb.Areas.Org.Models
 
             if (Sort == "Birthday")
                 q1 = from p in q1
-                     orderby DbUtil.Db.NextBirthday(p.PeopleId)
+                     orderby CurrentDatabase.NextBirthday(p.PeopleId)
                      select p;
             else
             {
@@ -116,13 +116,13 @@ namespace CmsWeb.Areas.Org.Models
             if (members != null)
                 return members;
 
-            var q = from o in DbUtil.Db.Organizations
+            var q = from o in CurrentDatabase.Organizations
                     where o.OrganizationId == OrgId
                     select o.PublishDirectory;
             FamilyOption = q.Single() == 2;
 
             if (FamilyOption)
-                members = from p in DbUtil.Db.People
+                members = from p in CurrentDatabase.People
                           where p.Family.People.Any(pp =>
                               pp.OrganizationMembers.Any(mm =>
                                   mm.OrganizationId == OrgId
@@ -132,7 +132,7 @@ namespace CmsWeb.Areas.Org.Models
                           where p.DeceasedDate == null
                           select p;
             else
-                members = from p in DbUtil.Db.People
+                members = from p in CurrentDatabase.People
                           where p.OrganizationMembers.Any(mm =>
                               mm.OrganizationId == OrgId
                               && (mm.Pending ?? false) == false

@@ -16,7 +16,7 @@ namespace CmsWeb.Controllers.Api
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<CmsData.View.PeopleBasicModifed, ApiPerson>();
             });
-            return Ok(DbUtil.Db.ViewPeopleBasicModifeds.ProjectTo<ApiPerson>(config));
+            return Ok(CurrentDatabase.ViewPeopleBasicModifeds.ProjectTo<ApiPerson>(config));
         }
     }
 }

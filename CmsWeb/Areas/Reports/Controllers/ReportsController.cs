@@ -34,16 +34,16 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
 #if DEBUG2
             var c = System.IO.File.ReadAllText(Server.MapPath("/Application.html"));
-            var replacements = new EmailReplacements(DbUtil.Db, c, null);
+            var replacements = new EmailReplacements(CurrentDatabase. c, null);
 #else
-            var c = DbUtil.Db.Content(content);
+            var c = CurrentDatabase.Content(content);
             if (c == null)
                 return Message("no content at " + content);
-            var replacements = new EmailReplacements(DbUtil.Db, c.Body, null);
+            var replacements = new EmailReplacements(CurrentDatabase. c.Body, null);
 #endif
-            var p = DbUtil.Db.LoadPersonById(peopleid);
-            DbUtil.Db.SetCurrentOrgId(orgid);
-            ViewBag.html = replacements.DoReplacements(DbUtil.Db, p);
+            var p = CurrentDatabase.LoadPersonById(peopleid);
+            CurrentDatabase.SetCurrentOrgId(orgid);
+            ViewBag.html = replacements.DoReplacements(CurrentDatabase. p);
             return View();
         }
 
@@ -308,7 +308,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             ViewBag.Month = d1.Value.ToString("MMMM yyyy");
             d1 = new DateTime(d1.Value.Year, d1.Value.Month, 1);
             var dt2 = d1.Value.AddMonths(1).AddDays(-1);
-            var hasmeetings = DbUtil.Db.MeetingsDataForDateRange(orgs, d1, dt2).AsEnumerable().Any();
+            var hasmeetings = CurrentDatabase.MeetingsDataForDateRange(orgs, d1, dt2).AsEnumerable().Any();
             if (!hasmeetings)
                 return RedirectShowError("No meetings to show");
 
@@ -420,7 +420,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet, Route("RecentAbsents1/{oid}/{qid}/{otherorgidfilter?}")]
         public ActionResult RecentAbsents1(int oid, Guid qid, int? otherorgidfilter)
         {
-            var filter = DbUtil.Db.OrgFilters.SingleOrDefault(vv => vv.QueryId == qid);
+            var filter = CurrentDatabase.OrgFilters.SingleOrDefault(vv => vv.QueryId == qid);
             if(filter == null)
                 return Message("Expired OrgFilter");
             var m = new RecentAbsentsViewModel(oid, qid, otherorgidfilter);
@@ -429,7 +429,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet, Route("RecentAbsentsSg/{oid}/{otherorgidfilter?}/{smallgroup?}")]
         public ActionResult RecentAbsentsSg(int oid, int? otherorgidfilter, string smallgroup)
         {
-            var filter = DbUtil.Db.NewOrgFilter(oid);
+            var filter = CurrentDatabase.NewOrgFilter(oid);
             filter.GroupSelect = Util.PickFirst(smallgroup, "NONE");
             ViewBag.SmallGroup = filter.GroupSelect;
             var m = new RecentAbsentsViewModel(oid, filter.QueryId, otherorgidfilter);
@@ -461,7 +461,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet]
         public ActionResult RegistrationSummary(int? days, string sort)
         {
-            var q = DbUtil.Db.RecentRegistrations(days ?? 90);
+            var q = CurrentDatabase.RecentRegistrations(days ?? 90);
             q = sort == "Organization"
                 ? q.OrderBy(rr => rr.OrganizationName).ThenByDescending(rr => rr.Completed)
                 : q.OrderByDescending(rr => rr.Dt2);
@@ -568,7 +568,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         public ActionResult ShirtSizes(OrgSearchModel m)
         {
             var orgs = m.FetchOrgs();
-            var q = from om in DbUtil.Db.OrganizationMembers
+            var q = from om in CurrentDatabase.OrganizationMembers
                     join o in orgs on om.OrganizationId equals o.OrganizationId
                     group 1 by om.ShirtSize
                     into g
@@ -603,13 +603,13 @@ namespace CmsWeb.Areas.Reports.Controllers
             if (Util2.OrgLeadersOnly)
                 return Redirect("/Home");
       
-            var script = DbUtil.Db.ContentOfTypePythonScript("VitalStats");
+            var script = CurrentDatabase.ContentOfTypePythonScript("VitalStats");
             if (!script.HasValue())
                 script = System.IO.File.ReadAllText(Server.MapPath("/Content/VitalStats.py"));
 
             ViewBag.table = script.Contains("class VitalStats")
-                ? QueryFunctions.OldVitalStats(DbUtil.Db, script)
-                : PythonModel.RunScript(DbUtil.Db.Host, script);
+                ? QueryFunctions.OldVitalStats(CurrentDatabase. script)
+                : PythonModel.RunScript(CurrentDatabase.Host, script);
 
             return View();
         }
@@ -686,7 +686,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet]
         public ActionResult EmailImages()
         {
-            var q = from e in DbUtil.Db.EmailQueues
+            var q = from e in CurrentDatabase.EmailQueues
                     where e.Body.Contains("ssl.cf2.rackcdn.com")
                     select e;
             var images = new List<string>();

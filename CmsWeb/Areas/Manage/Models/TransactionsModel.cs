@@ -380,7 +380,7 @@ namespace CmsWeb.Models
                        GoerId = g.Key.GoerId ?? 0,
                        OrgId = g.Key.OrgId,
                        TripName = g.Key.OrganizationName,
-                       Balance = OrganizationMember.AmountDue(DbUtil.Db, g.Key.OrgId, g.Key.GoerId ?? 0)
+                       Balance = OrganizationMember.AmountDue(DbUtil.Db. g.Key.OrgId, g.Key.GoerId ?? 0)
                    };
             return q.ToList().Where(vv => vv.Balance > 0).ToList();
         }

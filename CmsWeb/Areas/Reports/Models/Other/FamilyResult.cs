@@ -64,7 +64,7 @@ namespace CmsWeb.Areas.Reports.Models
             t.DefaultCell.BorderColorTop = BaseColor.BLACK;
             t.DefaultCell.BorderWidthTop = 2.0f;
 
-            var q = DbUtil.Db.PeopleQuery(qid);
+            var q = CurrentDatabase.PeopleQuery(qid);
             var q2 = from p in q
                      let person = p
                      group p by p.FamilyId

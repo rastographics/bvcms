@@ -34,15 +34,15 @@ namespace CmsWeb.Areas.Public
                 return View("ScriptResults", o);
             }
 
-            var org = DbUtil.Db.LoadOrganizationById(o.OrgId);
+            var org = CurrentDatabase.LoadOrganizationById(o.OrgId);
 
             // Try to load a template specific to this org type
-            var template = DbUtil.Db.ContentHtml($"OrgContent-{org.OrganizationType?.Description}", null);
+            var template = CurrentDatabase.ContentHtml($"OrgContent-{org.OrganizationType?.Description}", null);
 
             // Try to fall back on a standard template
             if (template == null)
             {
-                template = DbUtil.Db.ContentHtml("OrgContent", null);
+                template = CurrentDatabase.ContentHtml("OrgContent", null);
             }
 
             if (template != null)
@@ -64,7 +64,7 @@ namespace CmsWeb.Areas.Public
 
                 if (template.Contains("{directory}"))
                 {
-                    ViewBag.qid = DbUtil.Db.NewOrgFilter(id).QueryId;
+                    ViewBag.qid = CurrentDatabase.NewOrgFilter(id).QueryId;
                 }
 
                 ViewBag.template = template;
@@ -107,8 +107,8 @@ namespace CmsWeb.Areas.Public
                     try
                     {
                         oc.ImageId = ImageData.Image.NewImageFromBits(bits, mimetype).Id;
-                        DbUtil.Db.OrgContents.InsertOnSubmit(oc);
-                        DbUtil.Db.SubmitChanges();
+                        CurrentDatabase.OrgContents.InsertOnSubmit(oc);
+                        CurrentDatabase.SubmitChanges();
                     }
                     catch (Exception ex)
                     {
@@ -137,7 +137,7 @@ namespace CmsWeb.Areas.Public
         {
             var o = OrgContentInfo.Get(id);
             o.Html = Html;
-            ImageData.DbUtil.Db.SubmitChanges();
+            ImageData.CurrentDatabase.SubmitChanges();
             return Redirect("/OrgContent/" + id);
         }
     }

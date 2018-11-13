@@ -74,8 +74,8 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 resource.DivisionId = null;
             }
 
-            DbUtil.Db.Resources.InsertOnSubmit(resource);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.Resources.InsertOnSubmit(resource);
+            CurrentDatabase.SubmitChanges();
 
             if (files != null && files.Any())
             {
@@ -94,8 +94,8 @@ namespace CmsWeb.Areas.Dialog.Controllers
                         CreationDate = Util.Now
                     };
 
-                    DbUtil.Db.ResourceAttachments.InsertOnSubmit(attachment);
-                    DbUtil.Db.SubmitChanges();
+                    CurrentDatabase.ResourceAttachments.InsertOnSubmit(attachment);
+                    CurrentDatabase.SubmitChanges();
                 }
             }
 
@@ -107,7 +107,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             var m = new AccountModel();
             string baseurl = null;
 
-            var fn = $"{DbUtil.Db.Host}.{DateTime.Now:yyMMddHHmm}.{m.CleanFileName(Path.GetFileName(file.FileName))}";
+            var fn = $"{CurrentDatabase.Host}.{DateTime.Now:yyMMddHHmm}.{m.CleanFileName(Path.GetFileName(file.FileName))}";
             var error = string.Empty;
             var rackspacecdn = ConfigurationManager.AppSettings["RackspaceUrlCDN"];
 

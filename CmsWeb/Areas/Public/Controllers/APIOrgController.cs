@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content($"<Organizations error=\"{ret.Substring(1)}\" />");
             }
 
-            var api = new APIOrganization(DbUtil.Db);
+            var api = new APIOrganization(CurrentDatabase);
             DbUtil.LogActivity("APIOrg Organizations for Div " + id);
             return Content(api.OrganizationsForDiv(id), "text/xml");
         }
@@ -35,7 +35,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content($"<OrgMembers error=\"{ret.Substring(1)}\" />");
             }
 
-            var api = new APIOrganization(DbUtil.Db);
+            var api = new APIOrganization(CurrentDatabase);
             DbUtil.LogActivity("APIOrg OrgMembers2 " + id);
             //            return Content(api.OrgMembersPython(id), "text/xml");
             return Content(api.OrgMembers2(id, null), "text/xml");
@@ -50,7 +50,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content($"<OrgMembers error=\"{ret.Substring(1)}\" />");
             }
 
-            var api = new APIOrganization(DbUtil.Db);
+            var api = new APIOrganization(CurrentDatabase);
             DbUtil.LogActivity("APIOrg OrgMembers " + id);
             return Content(api.OrgMembers(id, search), "text/xml");
         }
@@ -65,7 +65,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity($"APIOrg ExtraValues {id}, {fields}");
-            return Content(new APIOrganization(DbUtil.Db)
+            return Content(new APIOrganization(CurrentDatabase)
                 .ExtraValues(id, fields), "text/xml");
         }
 
@@ -79,7 +79,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity($"APIOrg AddEditExtraValue {orgid}, {field}, {value}");
-            return Content(new APIOrganization(DbUtil.Db)
+            return Content(new APIOrganization(CurrentDatabase)
                 .AddEditExtraValue(orgid, field, value));
         }
 
@@ -93,7 +93,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity($"APIOrg DeleteExtraValue {orgid}, {field}");
-            return Content(new APIOrganization(DbUtil.Db)
+            return Content(new APIOrganization(CurrentDatabase)
                 .DeleteExtraValue(orgid, field));
         }
 
@@ -106,7 +106,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content(ret.Substring(1));
             }
 
-            new APIOrganization(DbUtil.Db)
+            new APIOrganization(CurrentDatabase)
                 .UpdateOrgMember(OrgId, PeopleId, type, enrolled.ToDate(), inactive, pending);
             DbUtil.LogActivity($"APIOrg UpdateOrgMember {OrgId}, {PeopleId}");
             return Content("ok");
@@ -122,7 +122,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity("APIOrganization NewOrganization");
-            return Content(new APIOrganization(DbUtil.Db).NewOrganization(divId, name, location, parentOrgId, campusId, orgtype, leadertype, securitytype, securityrole), "text/xml");
+            return Content(new APIOrganization(CurrentDatabase).NewOrganization(divId, name, location, parentOrgId, campusId, orgtype, leadertype, securitytype, securityrole), "text/xml");
         }
 
         [HttpPost]
@@ -134,7 +134,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content(ret.Substring(1));
             }
 
-            new APIOrganization(DbUtil.Db)
+            new APIOrganization(CurrentDatabase)
                 .UpdateOrganization(orgId, name, campusid, active, location, description, orgtype, leadertype, securitytype, securityrole, parentorg);
             DbUtil.LogActivity($"APIOrg UpdateOrganization {orgId}");
             return Content("ok");
@@ -150,7 +150,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity("APIOrganization AddDivToOrg");
-            return Content(new APIOrganization(DbUtil.Db).AddDivToOrg(orgId, divid));
+            return Content(new APIOrganization(CurrentDatabase).AddDivToOrg(orgId, divid));
         }
 
         [HttpPost]
@@ -163,7 +163,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity("APIOrganization RemoveDivFromOrg");
-            return Content(new APIOrganization(DbUtil.Db).RemoveDivFromOrg(orgId, divid));
+            return Content(new APIOrganization(CurrentDatabase).RemoveDivFromOrg(orgId, divid));
         }
 
         [HttpPost]
@@ -176,7 +176,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity("APIOrganization AddOrgMember");
-            return Content(new APIOrganization(DbUtil.Db).AddOrgMember(OrgId, PeopleId, MemberType, pending), "text/xml");
+            return Content(new APIOrganization(CurrentDatabase).AddOrgMember(OrgId, PeopleId, MemberType, pending), "text/xml");
         }
 
         [HttpPost]
@@ -189,7 +189,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity("APIOrganization DropOrgMember");
-            return Content(new APIOrganization(DbUtil.Db).DropOrgMember(OrgId, PeopleId), "text/xml");
+            return Content(new APIOrganization(CurrentDatabase).DropOrgMember(OrgId, PeopleId), "text/xml");
         }
 
         [HttpPost]
@@ -202,7 +202,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity("APIOrganization CreateProgramDivision");
-            return Content(new APIOrganization(DbUtil.Db).CreateProgramDivision(program, division), "text/xml");
+            return Content(new APIOrganization(CurrentDatabase).CreateProgramDivision(program, division), "text/xml");
         }
 
         public ActionResult ParentOrgs(int id, string extravalue1, string extravalue2)
@@ -214,7 +214,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity("APIOrganization ParentOrgs");
-            return Content(new APIOrganization(DbUtil.Db).ParentOrgs(id, extravalue1, extravalue2), "text/xml");
+            return Content(new APIOrganization(CurrentDatabase).ParentOrgs(id, extravalue1, extravalue2), "text/xml");
         }
 
         public ActionResult ChildOrgs(int id, string extravalue1, string extravalue2)
@@ -226,7 +226,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity("APIOrganization ChildOrgs");
-            return Content(new APIOrganization(DbUtil.Db).ChildOrgs(id, extravalue1, extravalue2), "text/xml");
+            return Content(new APIOrganization(CurrentDatabase).ChildOrgs(id, extravalue1, extravalue2), "text/xml");
         }
 
         public ActionResult EmailReminders(int id)

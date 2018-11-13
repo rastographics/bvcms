@@ -33,7 +33,7 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (person == null && PeopleId.HasValue)
-                    person = DbUtil.Db.LoadPersonById(PeopleId.Value);
+                    person = CurrentDatabase.LoadPersonById(PeopleId.Value);
                 return person;
             }
         }
@@ -91,7 +91,7 @@ namespace CmsWeb.Areas.People.Models
             Person.CustodyIssue = CustodyIssue;
             Person.OkTransport = OkTransport;
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             DbUtil.LogActivity($"Updated RecReg: {Person.Name}");
         }
 
@@ -101,7 +101,7 @@ namespace CmsWeb.Areas.People.Models
                     where m.Organization.IsMissionTrip == true
                     where m.Organization.OrganizationStatusId == OrgStatusCode.Active
                     where m.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Goer")
-                    let ts = DbUtil.Db.ViewMissionTripTotals.SingleOrDefault(tt => tt.OrganizationId == m.OrganizationId && tt.PeopleId == m.PeopleId)
+                    let ts = CurrentDatabase.ViewMissionTripTotals.SingleOrDefault(tt => tt.OrganizationId == m.OrganizationId && tt.PeopleId == m.PeopleId)
                     select new GoerItem
                     {
                         Id = m.OrganizationId,

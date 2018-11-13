@@ -1,7 +1,7 @@
 ﻿@using CmsData
 @model CmsData.Registration.Settings
 @{
-    ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowQuestionsHelp");
+    ViewBag.ShowHelp = CurrentDatabase.UserPreference("ShowQuestionsHelp");
 }
 <form class="ajax" data-init="movequestions,updateQuestionList,showHideRegTypes,timepicker">
   @Html.Raw(ViewBag.Duplicates)

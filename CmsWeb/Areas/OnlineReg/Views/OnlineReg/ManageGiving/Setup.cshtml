@@ -10,7 +10,7 @@
   decimal? tot = 0;
   var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FundList();
   var specialFunds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.SpecialFundList();
-  var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
+  var debitcredit = CurrentDatabase.Setting("DebitCreditLabel", "Debit/Credit Card");
 }
 @section head
 {

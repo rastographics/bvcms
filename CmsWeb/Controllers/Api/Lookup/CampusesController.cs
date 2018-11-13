@@ -15,7 +15,7 @@ namespace CmsWeb.Controllers.Api.Lookup
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<Campu, ApiLookup>();
             });
-            return Ok(DbUtil.Db.Campus.ProjectTo<ApiLookup>(config));
+            return Ok(CurrentDatabase.Campus.ProjectTo<ApiLookup>(config));
         }
     }
 }

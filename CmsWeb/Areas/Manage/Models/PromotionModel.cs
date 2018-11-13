@@ -1,10 +1,10 @@
+using CmsData;
+using CmsData.Codes;
+using MoreLinq;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.Codes;
-using MoreLinq;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -33,7 +33,10 @@ namespace CmsWeb.Models
             get
             {
                 if (_promotionId != null)
+                {
                     return _promotionId;
+                }
+
                 _promotionId = DbUtil.Db.UserPreference("PromotionId", "0").ToInt2();
                 return _promotionId;
             }
@@ -52,7 +55,9 @@ namespace CmsWeb.Models
                 {
                     _promotion = DbUtil.Db.Promotions.SingleOrDefault(p => p.Id == PromotionId);
                     if (_promotion == null)
-                        return new Promotion {FromDivId = 0};
+                    {
+                        return new Promotion { FromDivId = 0 };
+                    }
                 }
                 return _promotion;
             }
@@ -63,7 +68,10 @@ namespace CmsWeb.Models
             get
             {
                 if (_scheduleId != null)
+                {
                     return _scheduleId;
+                }
+
                 _scheduleId = DbUtil.Db.UserPreference("ScheduleId", "0").ToInt2();
                 return _scheduleId;
             }
@@ -81,7 +89,10 @@ namespace CmsWeb.Models
             get
             {
                 if (_filterUnassigned != null)
+                {
                     return _filterUnassigned.Value;
+                }
+
                 _filterUnassigned = DbUtil.Db.UserPreference("FilterUnassigned", "false").ToBool();
                 return _filterUnassigned.Value;
             }
@@ -97,7 +108,10 @@ namespace CmsWeb.Models
             get
             {
                 if (_normalMembersOnly != null)
+                {
                     return _normalMembersOnly.Value;
+                }
+
                 _normalMembersOnly = DbUtil.Db.UserPreference("NormalMembersOnly", "false").ToBool();
                 return _normalMembersOnly.Value;
             }
@@ -113,7 +127,10 @@ namespace CmsWeb.Models
             get
             {
                 if (_selected == null)
+                {
                     _selected = new string[0];
+                }
+
                 return _selected;
             }
             set { _selected = value; }
@@ -158,7 +175,7 @@ namespace CmsWeb.Models
                         CurrLoc = om.Organization.Location,
                         CurrSchedule = sc.MeetingTime.ToString2("t"),
                         Gender = om.Person.GenderId == 1 ? "M" : "F",
-                        PendingClassId = pc == null ? (int?) null : pc.OrganizationId,
+                        PendingClassId = pc == null ? (int?)null : pc.OrganizationId,
                         PendingOrgName = pc == null ? "" : pc.Organization.OrganizationName,
                         PendingLeader = pc == null ? "" : (pt != null ? pt.Person.Name : pc.Organization.LeaderName),
                         PendingLoc = pc == null ? "" : pc.Organization.Location,
@@ -166,6 +183,7 @@ namespace CmsWeb.Models
                         Hash = om.Person.HashNum.Value
                     };
             if (Dir == "asc")
+            {
                 switch (Sort)
                 {
                     case "Mixed":
@@ -192,7 +210,9 @@ namespace CmsWeb.Models
                             select i;
                         break;
                 }
+            }
             else
+            {
                 switch (Sort)
                 {
                     case "Mixed":
@@ -219,6 +239,7 @@ namespace CmsWeb.Models
                             select i;
                         break;
                 }
+            }
 
             return q;
         }
@@ -232,7 +253,9 @@ namespace CmsWeb.Models
             }
             var t = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == TargetClassId);
             if (t == null)
+            {
                 return;
+            }
 
             foreach (var i in selected)
             {
@@ -344,7 +367,7 @@ namespace CmsWeb.Models
                         Value = p.Id.ToString()
                     };
             var list = q.ToList();
-            list.Insert(0, new SelectListItem {Text = "(Select Promotion)", Value = "0", Selected = true});
+            list.Insert(0, new SelectListItem { Text = "(Select Promotion)", Value = "0", Selected = true });
             return list;
         }
 
@@ -353,7 +376,7 @@ namespace CmsWeb.Models
             var q = from o in DbUtil.Db.Organizations
                     let sc = o.OrgSchedules.FirstOrDefault() // SCHED
                     where o.DivOrgs.Any(dd => dd.DivId == Promotion.FromDivId)
-                    group o by new {sc.ScheduleId, sc.MeetingTime}
+                    group o by new { sc.ScheduleId, sc.MeetingTime }
                     into g
                     orderby g.Key.ScheduleId
                     select new SelectListItem
@@ -364,9 +387,14 @@ namespace CmsWeb.Models
 
             var list = q.ToList();
             if (list.Count == 0)
-                list.Insert(0, new SelectListItem {Text = "(Select Promotion First)", Value = "0", Selected = true});
+            {
+                list.Insert(0, new SelectListItem { Text = "(Select Promotion First)", Value = "0", Selected = true });
+            }
             else
-                list.Insert(0, new SelectListItem {Text = "(Select Schedule)", Value = "0", Selected = true});
+            {
+                list.Insert(0, new SelectListItem { Text = "(Select Schedule)", Value = "0", Selected = true });
+            }
+
             return list;
         }
 
@@ -397,7 +425,7 @@ namespace CmsWeb.Models
                             Text = i.Text + $", {i.Time.Value:t}",
                             Value = i.Value
                         }).ToList();
-            list.Add(new SelectListItem() {Text = "(Remove Assignment)", Value = "0"});
+            list.Add(new SelectListItem() { Text = "(Remove Assignment)", Value = "0" });
             return list;
         }
     }

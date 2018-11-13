@@ -10,8 +10,8 @@
     source = "/Person2/InlineCodes/"
   };
   var evmodel = new ExtraValueModel(Model.PeopleId, "People", "Membership");
-  var newMemberClassLabel = DbUtil.Db.Setting("NewMemberClassLabel", "New Member Class");
-  ViewBag.EvLocationLabel = DbUtil.Db.Setting("ExtraMembershipDataLabel", "Extra Membership Data");
+  var newMemberClassLabel = CurrentDatabase.Setting("NewMemberClassLabel", "New Member Class");
+  ViewBag.EvLocationLabel = CurrentDatabase.Setting("ExtraMembershipDataLabel", "Extra Membership Data");
 }
 <form class="ajax" method="post" data-init="Editable" data-init2="ExtraEditable">
   <h3>Member Profile</h3>

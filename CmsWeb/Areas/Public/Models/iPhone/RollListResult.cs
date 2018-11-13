@@ -22,7 +22,7 @@ namespace CmsWeb.Models.iPhone
         }
         public RollListResult(int orgid, DateTime dt)
         {
-            MeetingId = DbUtil.Db.CreateMeeting(orgid, dt);
+            MeetingId = CurrentDatabase.CreateMeeting(orgid, dt);
             people = RollsheetModel.RollList(MeetingId, orgid, dt);
         }
         public override void ExecuteResult(ControllerContext context)

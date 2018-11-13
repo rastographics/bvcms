@@ -4,7 +4,7 @@
 @using CmsWeb.Areas.Dialog.Models
 @using UtilityExtensions
 @{
-  var goer = DbUtil.Db.LoadPersonById(Model.Parent.GoerId ?? 0);
+  var goer = CurrentDatabase.LoadPersonById(Model.Parent.GoerId ?? 0);
   var name = goer != null ? goer.Name : "selected participant";
   var paylink = Model.Parent.MissionTripSelfSupportPaylink;
 }

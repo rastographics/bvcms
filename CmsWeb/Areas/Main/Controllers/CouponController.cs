@@ -42,11 +42,11 @@ namespace CmsWeb.Areas.Main.Controllers
 
         public ActionResult Cancel(string id)
         {
-            var c = DbUtil.Db.Coupons.SingleOrDefault(cp => cp.Id == id);
+            var c = CurrentDatabase.Coupons.SingleOrDefault(cp => cp.Id == id);
             if (!c.Canceled.HasValue)
             {
                 c.Canceled = DateTime.Now;
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
             }
             var m = new CouponModel();
             return View("List", m);

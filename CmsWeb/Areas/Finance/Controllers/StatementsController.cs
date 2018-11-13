@@ -26,7 +26,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         [Route("~/Statements")]
         public ActionResult Index()
         {
-            var r = DbUtil.Db.ContributionsRuns.OrderByDescending(mm => mm.Id).FirstOrDefault();
+            var r = CurrentDatabase.ContributionsRuns.OrderByDescending(mm => mm.Id).FirstOrDefault();
             if (r != null && r.Running == 1 && DateTime.Now.Subtract(r.Started ?? DateTime.MinValue).TotalMinutes < 1)
             {
                 return Redirect("/Statements/Progress");
@@ -50,8 +50,8 @@ namespace CmsWeb.Areas.Finance.Controllers
                 Count = 0,
                 Processed = 0
             };
-            var db = DbUtil.Db;
-            var cs = Models.Report.ContributionStatements.GetStatementSpecification(db, customstatement);
+            var db = Db;
+            var cs = Models.Report.ContributionStatements.GetStatementSpecification(CurrentDatabase. customstatement);
 
             if (!startswith.HasValue())
             {
@@ -60,19 +60,19 @@ namespace CmsWeb.Areas.Finance.Controllers
 
             if (exportcontributors)
             {
-                var noaddressok = !db.Setting("RequireAddressOnStatement", true);
+                var noaddressok = !CurrentDatabase.Setting("RequireAddressOnStatement", true);
                 const bool useMinAmt = true;
                 if (tagid == 0)
                 {
                     tagid = null;
                 }
 
-                var qc = APIContribution.Contributors(db, fromDate.Value, endDate.Value, 0, 0, 0, cs.Funds, noaddressok, useMinAmt, startswith, sort, tagid: tagid, excludeelectronic: excludeelectronic);
+                var qc = APIContribution.Contributors(CurrentDatabase. fromDate.Value, endDate.Value, 0, 0, 0, cs.Funds, noaddressok, useMinAmt, startswith, sort, tagid: tagid, excludeelectronic: excludeelectronic);
                 return ExcelExportModel.ToDataTable(qc.ToList()).ToExcel("Contributors.xlsx");
             }
-            DbUtil.Db.ContributionsRuns.InsertOnSubmit(runningtotals);
-            DbUtil.Db.SubmitChanges();
-            var cul = DbUtil.Db.Setting("Culture", "en-US");
+            CurrentDatabase.ContributionsRuns.InsertOnSubmit(runningtotals);
+            CurrentDatabase.SubmitChanges();
+            var cul = CurrentDatabase.Setting("Culture", "en-US");
             var host = Util.Host;
 
             var output = Output();
@@ -115,7 +115,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         [HttpGet]
         public ActionResult Progress()
         {
-            var r = DbUtil.Db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
+            var r = CurrentDatabase.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
             var html = new StringBuilder();
             if (r.CurrSet > 0)
             {

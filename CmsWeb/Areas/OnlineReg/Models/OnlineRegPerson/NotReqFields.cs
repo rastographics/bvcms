@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                        ? setting.NotReqCampus == false 
                        : settings == null || !settings.Values.Any(o => o.NotReqCampus);
     	}
-    	public bool ShowCampusOnRegistration => DbUtil.Db.Setting("ShowCampusOnRegistration", "false").ToBool();
+    	public bool ShowCampusOnRegistration => CurrentDatabase.Setting("ShowCampusOnRegistration", "false").ToBool();
 
         public bool StillNeedBirthday()
         {

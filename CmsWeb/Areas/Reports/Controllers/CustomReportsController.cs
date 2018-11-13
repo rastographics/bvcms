@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [Route("Custom/{report}/{id?}")]
         public ActionResult CustomReport(Guid id, string report)
         {
-            var m = new CustomReportsModel(DbUtil.Db, report, id);
+            var m = new CustomReportsModel(CurrentDatabase. report, id);
             return View(m);
         }
 
@@ -27,7 +27,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [Route("CustomExcel/{report}/{id?}")]
         public ActionResult CustomReportExcel(Guid id, string report)
         {
-            var m = new CustomReportsModel(DbUtil.Db, report, id);
+            var m = new CustomReportsModel(CurrentDatabase. report, id);
             return m.Result();
         }
 
@@ -37,7 +37,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             try
             {
-                var m = new CustomReportsModel(DbUtil.Db, report);
+                var m = new CustomReportsModel(CurrentDatabase. report);
                 return Content($"<pre style='font-family:monospace'>{m.Sql()}\n</pre>");
             }
             catch (Exception ex)
@@ -95,7 +95,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [Authorize(Roles = "Admin, Design")]
         public ActionResult AddReport(string report, string url, string type)
         {
-            var m = new CustomReportsModel(DbUtil.Db);
+            var m = new CustomReportsModel(CurrentDatabase);
             try
             {
                 var dest = m.AddReport(report, url, type);
@@ -116,7 +116,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             var modelstate = TempDataModelState;
             if (modelstate != null)
                 ModelState.Merge(modelstate);
-            var m = new CustomReportsModel(DbUtil.Db, report, queryId, orgId);
+            var m = new CustomReportsModel(CurrentDatabase. report, queryId, orgId);
             var vm = m.EditCustomReport(TempDataCustomReport, TempDataSaved);
             return View(vm);
         }
@@ -132,7 +132,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                 vm.ReportName = SecurityElement.Escape(vm.ReportName.Trim());
                 try
                 {
-                    var m = new CustomReportsModel(DbUtil.Db, vm.OrgId);
+                    var m = new CustomReportsModel(CurrentDatabase. vm.OrgId);
                     m.SaveReport(vm.OriginalReportName, vm.ReportName,
                         vm.Columns.Where(c => c.IsSelected), vm.RestrictToThisOrg);
                     TempDataSaved = true;
@@ -156,7 +156,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             if (string.IsNullOrEmpty(report))
                 return new JsonResult {Data = "Report name is required."};
 
-            var m = new CustomReportsModel(DbUtil.Db);
+            var m = new CustomReportsModel(CurrentDatabase);
             m.DeleteReport(report);
 
             return new JsonResult {Data = "success"};

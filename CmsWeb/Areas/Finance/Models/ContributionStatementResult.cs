@@ -4,17 +4,11 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+using CmsData;
+using CmsData.API;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Linq;
-using System.Web;
-using CmsData.API;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
-using System.IO;
-using System.Collections;
-using CmsData;
 using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Finance.Models.Report
@@ -25,8 +19,8 @@ namespace CmsWeb.Areas.Finance.Models.Report
         public int PeopleId { get; set; }
         public int? SpouseId { get; set; }
         public int typ { get; set; }
-		public bool useMinAmt { get; set; }
-		public bool noaddressok { get; set; }
+        public bool useMinAmt { get; set; }
+        public bool noaddressok { get; set; }
         public bool showCheckNo { get; set; }
         public bool showNotes { get; set; }
         public bool singleStatement { get; set; }
@@ -34,14 +28,14 @@ namespace CmsWeb.Areas.Finance.Models.Report
         public DateTime ToDate { get; set; }
         public string statementType { get; set; }
 
-		public ContributionStatementResult()
-		{
-			useMinAmt = true;
-		    noaddressok = !DbUtil.Db.Setting("RequireAddressOnStatement", true);
+        public ContributionStatementResult()
+        {
+            useMinAmt = true;
+            noaddressok = !DbUtil.Db.Setting("RequireAddressOnStatement", true);
 
-		    showCheckNo = DbUtil.Db.Setting("RequireCheckNoOnStatement");
-		    showNotes = DbUtil.Db.Setting("RequireNotesOnStatement");
-		}
+            showCheckNo = DbUtil.Db.Setting("RequireCheckNoOnStatement");
+            showNotes = DbUtil.Db.Setting("RequireNotesOnStatement");
+        }
 
         public override void ExecuteResult(ControllerContext context)
         {
@@ -78,7 +72,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
                         q = APIContribution.Contributors(DbUtil.Db, FromDate, ToDate, 0, 0, 0, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
                         break;
                 }
-                c.Run(response.OutputStream, DbUtil.Db, q, cs);
+                c.Run(response.OutputStream, Db, q, cs);
             }
             else
             {
@@ -106,7 +100,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
                         q = APIContribution.Contributors(DbUtil.Db, FromDate, ToDate, 0, 0, 0, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
                         break;
                 }
-                c.Run(response.OutputStream, DbUtil.Db, q, cs);
+                c.Run(response.OutputStream, Db, q, cs);
             }
         }
     }

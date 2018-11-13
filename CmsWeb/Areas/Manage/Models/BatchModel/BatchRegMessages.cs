@@ -23,8 +23,8 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
             foreach (var x in xdoc.Root.Elements("Messages"))
             {
                 var oid = x.Attribute("id").Value.ToInt();
-                os = DbUtil.Db.CreateRegistrationSettings(oid);
-                var o = DbUtil.Db.LoadOrganizationById(oid);
+                os = CurrentDatabase.CreateRegistrationSettings(oid);
+                var o = CurrentDatabase.LoadOrganizationById(oid);
                 foreach (var e in x.Elements())
                 {
                     var name = e.Name.ToString();
@@ -48,7 +48,7 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                     }
                 }
                 o.UpdateRegSetting(os);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
             }
         }
 

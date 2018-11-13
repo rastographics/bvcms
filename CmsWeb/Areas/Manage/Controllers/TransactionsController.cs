@@ -61,7 +61,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Authorize(Roles = "Finance")]
         public ActionResult RunRecurringGiving()
         {
-            var count = ManagedGiving.DoAllGiving(DbUtil.Db);
+            var count = ManagedGiving.DoAllGiving(CurrentDatabase);
             return Content(count.ToString());
         }
 
@@ -69,14 +69,14 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Authorize(Roles = "Developer")]
         public ActionResult SetParent(int id, int parid, TransactionsModel m)
         {
-            var t = DbUtil.Db.Transactions.SingleOrDefault(tt => tt.Id == id);
+            var t = CurrentDatabase.Transactions.SingleOrDefault(tt => tt.Id == id);
             if (t == null)
             {
                 return Content("notran");
             }
 
             t.OriginalId = parid;
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return View("List", m);
         }
 
@@ -84,18 +84,18 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Authorize(Roles = "ManageTransactions,Finance")]
         public ActionResult CreditVoid(int id, string type, decimal? amt, TransactionsModel m)
         {
-            var t = DbUtil.Db.Transactions.SingleOrDefault(tt => tt.Id == id);
+            var t = CurrentDatabase.Transactions.SingleOrDefault(tt => tt.Id == id);
             if (t == null)
             {
                 return Content("notran");
             }
 
-            var qq = from tt in DbUtil.Db.Transactions
+            var qq = from tt in CurrentDatabase.Transactions
                      where tt.OriginalId == id || tt.Id == id
                      orderby tt.Id descending
                      select tt;
             var t0 = qq.First();
-            var gw = DbUtil.Db.Gateway(t.Testing ?? false);
+            var gw = CurrentDatabase.Gateway(t.Testing ?? false);
             TransactionResponse resp = null;
             var re = t.TransactionId;
             if (re.Contains("(testing"))
@@ -160,9 +160,9 @@ namespace CmsWeb.Areas.Manage.Controllers
                 LastFourACH = t.LastFourACH
             };
 
-            DbUtil.Db.Transactions.InsertOnSubmit(transaction);
-            DbUtil.Db.SubmitChanges();
-            DbUtil.Db.SendEmail(Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(transaction.OrgId ?? 0)),
+            CurrentDatabase.Transactions.InsertOnSubmit(transaction);
+            CurrentDatabase.SubmitChanges();
+            CurrentDatabase.SendEmail(Util.TryGetMailAddress(CurrentDatabase.StaffEmailForOrg(transaction.OrgId ?? 0)),
                 "Void/Credit Transaction Type: " + type,
                 $@"<table>
 <tr><td>Name</td><td>{Transaction.FullName(t)}</td></tr>
@@ -175,7 +175,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 <tr><td>Date</td><td>{t.TransactionDate.FormatDateTm()}</td></tr>
 <tr><td>TranIds</td><td>Org: {t.Id} {t.TransactionId}, Curr: {transaction.Id} {transaction.TransactionId}</td></tr>
 <tr><td>User</td><td>{Util.UserFullName}</td></tr>
-</table>", Util.EmailAddressListFromString(DbUtil.Db.StaffEmailForOrg(transaction.OrgId ?? 0)));
+</table>", Util.EmailAddressListFromString(CurrentDatabase.StaffEmailForOrg(transaction.OrgId ?? 0)));
             DbUtil.LogActivity("CreditVoid for " + t.TransactionId);
 
             return View("List", m);
@@ -185,7 +185,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Authorize(Roles = "ManageTransactions,Finance")]
         public ActionResult DeleteManual(int id, TransactionsModel m)
         {
-            DbUtil.Db.ExecuteCommand(@"
+            CurrentDatabase.ExecuteCommand(@"
 UPDATE dbo.OrganizationMembers SET TranId = NULL WHERE TranId = {0}
 DELETE dbo.TransactionPeople WHERE Id = {0}
 DELETE dbo.[Transaction] WHERE Id = {0}
@@ -196,9 +196,9 @@ DELETE dbo.[Transaction] WHERE Id = {0}
         [Authorize(Roles = "ManageTransactions,Finance")]
         public ActionResult DeleteGoerSenderAmount(int id, TransactionsModel m)
         {
-            var gsa = DbUtil.Db.GoerSenderAmounts.Single(tt => tt.Id == id);
-            DbUtil.Db.GoerSenderAmounts.DeleteOnSubmit(gsa);
-            DbUtil.Db.SubmitChanges();
+            var gsa = CurrentDatabase.GoerSenderAmounts.Single(tt => tt.Id == id);
+            CurrentDatabase.GoerSenderAmounts.DeleteOnSubmit(gsa);
+            CurrentDatabase.SubmitChanges();
             return View("GoerSupporters", m);
         }
         [Authorize(Roles = "ManageTransactions,Finance,Developer")]
@@ -210,16 +210,16 @@ DELETE dbo.[Transaction] WHERE Id = {0}
                 gid = null;
             }
 
-            var gsa = DbUtil.Db.GoerSenderAmounts.Single(tt => tt.Id == id);
+            var gsa = CurrentDatabase.GoerSenderAmounts.Single(tt => tt.Id == id);
             gsa.GoerId = gid;
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return View("GoerSupporters", m);
         }
         [HttpPost]
         [Authorize(Roles = "ManageTransactions,Finance")]
         public ActionResult Adjust(int id, decimal amt, string desc, TransactionsModel m)
         {
-            var qq = from tt in DbUtil.Db.Transactions
+            var qq = from tt in CurrentDatabase.Transactions
                      where tt.OriginalId == id || tt.Id == id
                      orderby tt.Id descending
                      select tt;
@@ -258,9 +258,9 @@ DELETE dbo.[Transaction] WHERE Id = {0}
                 LastFourACH = t.LastFourACH
             };
 
-            DbUtil.Db.Transactions.InsertOnSubmit(t2);
-            DbUtil.Db.SubmitChanges();
-            DbUtil.Db.SendEmail(Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(t2.OrgId ?? 0)),
+            CurrentDatabase.Transactions.InsertOnSubmit(t2);
+            CurrentDatabase.SubmitChanges();
+            CurrentDatabase.SendEmail(Util.TryGetMailAddress(CurrentDatabase.StaffEmailForOrg(t2.OrgId ?? 0)),
                 "Adjustment Transaction",
                 $@"<table>
 <tr><td>Name</td><td>{Transaction.FullName(t)}</td></tr>
@@ -272,7 +272,7 @@ DELETE dbo.[Transaction] WHERE Id = {0}
 <tr><td>Amount</td><td>{t.Amt:N2}</td></tr>
 <tr><td>Date</td><td>{t.TransactionDate.FormatDateTm()}</td></tr>
 <tr><td>TranIds</td><td>Org: {t.Id} {t.TransactionId}, Curr: {t2.Id} {t2.TransactionId}</td></tr>
-</table>", Util.EmailAddressListFromString(DbUtil.Db.StaffEmailForOrg(t2.OrgId ?? 0)));
+</table>", Util.EmailAddressListFromString(CurrentDatabase.StaffEmailForOrg(t2.OrgId ?? 0)));
             DbUtil.LogActivity("Adjust for " + t.TransactionId);
             return View("List", m);
         }

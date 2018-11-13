@@ -1,10 +1,10 @@
-﻿using System;
+﻿using CmsData;
+using CmsData.Codes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.Codes;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -88,7 +88,10 @@ namespace CmsWeb.Models
         public List<SelectListItem> KeywordFilters()
         {
             if (keywords != null)
+            {
                 return keywords;
+            }
+
             var list = (from kw in DbUtil.Db.ContentKeyWords
                         orderby kw.Word
                         select kw.Word).Distinct().ToList();

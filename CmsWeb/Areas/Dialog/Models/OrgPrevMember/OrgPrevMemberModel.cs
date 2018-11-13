@@ -1,14 +1,12 @@
+using CmsData;
+using CmsData.Registration;
+using CmsData.View;
+using CmsWeb.Code;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using CmsData;
-using CmsData.Codes;
-using CmsData.OnlineRegSummaryText;
-using CmsData.Registration;
-using CmsData.View;
-using CmsWeb.Code;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
@@ -40,26 +38,31 @@ namespace CmsWeb.Areas.Dialog.Models
             {
                 dopopulate = false;
                 if (!OrgId.HasValue || !PeopleId.HasValue)
+                {
                     return;
+                }
             }
             var i = (from et in DbUtil.Db.EnrollmentTransactions
-                where et.OrganizationId == OrgId && et.PeopleId == PeopleId
-                where et.TransactionTypeId == 5
-                orderby et.TransactionDate descending
-                select new
-                {
-                    et,
-                    et.Person.Name,
-                    et.Organization.OrganizationName,
-                    et.Organization,
-                    et.SmallGroups,
-                    ts = DbUtil.Db.ViewTransactionSummaries.SingleOrDefault(
-                        ts => ts.RegId == et.TranId && ts.PeopleId == PeopleId && ts.OrganizationId == OrgId)
-                }
+                     where et.OrganizationId == OrgId && et.PeopleId == PeopleId
+                     where et.TransactionTypeId == 5
+                     orderby et.TransactionDate descending
+                     select new
+                     {
+                         et,
+                         et.Person.Name,
+                         et.Organization.OrganizationName,
+                         et.Organization,
+                         et.SmallGroups,
+                         ts = DbUtil.Db.ViewTransactionSummaries.SingleOrDefault(
+                             ts => ts.RegId == et.TranId && ts.PeopleId == PeopleId && ts.OrganizationId == OrgId)
+                     }
             ).FirstOrDefault();
 
             if (i == null)
+            {
                 throw new Exception($"missing PrevOrgMember at oid={OrgId}, pid={PeopleId}");
+            }
+
             PrevMember = i.et;
             TransactionSummary = i.ts;
             this.CopyPropertiesFrom(PrevMember);
@@ -83,7 +86,10 @@ namespace CmsWeb.Areas.Dialog.Models
             set
             {
                 if (orgId != value)
+                {
                     dopopulate = true;
+                }
+
                 orgId = value;
                 Populate();
             }
@@ -96,7 +102,10 @@ namespace CmsWeb.Areas.Dialog.Models
             set
             {
                 if (peopleId != value)
+                {
                     dopopulate = true;
+                }
+
                 peopleId = value;
                 Populate();
             }
@@ -149,8 +158,8 @@ namespace CmsWeb.Areas.Dialog.Models
         public DateTime? DropDate { get; set; }
 
 
-//        [DisplayName("Total Amount")]
-//        public decimal? Amount { get; set; }
+        //        [DisplayName("Total Amount")]
+        //        public decimal? Amount { get; set; }
 
         [DisplayName("Fee")]
         public decimal? AmtFee { get; set; }
@@ -174,10 +183,14 @@ namespace CmsWeb.Areas.Dialog.Models
             get
             {
                 if (transactionsLink.HasValue())
+                {
                     return transactionsLink;
+                }
 
                 if (PrevMember == null)
+                {
                     return "";
+                }
 
                 return transactionsLink = PrevMember.TranId.HasValue ? $"/Transactions/{PrevMember.TranId}" : null;
             }
@@ -186,8 +199,8 @@ namespace CmsWeb.Areas.Dialog.Models
         public IEnumerable<PrevOrgMemberExtra> ExtraValues()
         {
             var q = from ev in DbUtil.Db.PrevOrgMemberExtras
-                where ev.EnrollmentTranId == PrevMember.TransactionId
-                select ev;
+                    where ev.EnrollmentTranId == PrevMember.TransactionId
+                    select ev;
             return q;
         }
         public IEnumerable<OrgMemberQuestion> RegQuestions()

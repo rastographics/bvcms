@@ -15,7 +15,7 @@ namespace CmsWeb.Controllers.Api.Lookup
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<FamilyPosition, ApiLookup>();
             });
-            return Ok(DbUtil.Db.FamilyPositions.ProjectTo<ApiLookup>(config));
+            return Ok(CurrentDatabase.FamilyPositions.ProjectTo<ApiLookup>(config));
         }
     }
 }

@@ -68,7 +68,7 @@ namespace CmsWeb.Areas.Reports.Models
                 var color = BaseColor.BLACK;
                 var o = ReportList().First();
                 var t = StartPageSet(o);
-                var q = DbUtil.Db.PeopleQuery(qid.Value);
+                var q = CurrentDatabase.PeopleQuery(qid.Value);
                 var q2 = from p in q
                          let rr = p.RecRegs.FirstOrDefault()
                          join m in RollsheetModel.FetchOrgMembers(o.OrgId, null) on p.PeopleId equals m.PeopleId into j
@@ -89,7 +89,7 @@ namespace CmsWeb.Areas.Reports.Models
                              Name = p.Name,
                              Medical = rr.MedicalDescription,
                              PeopleId = p.PeopleId,
-                             Parents = DbUtil.Db.ParentNamesAndCells(p.PeopleId),
+                             Parents = CurrentDatabase.ParentNamesAndCells(p.PeopleId),
                              Age = p.Age
                          };
                 foreach (var m in q2)
@@ -112,7 +112,7 @@ namespace CmsWeb.Areas.Reports.Models
 
                     var color = BaseColor.BLACK;
 
-                    var q = from om in DbUtil.Db.OrganizationMembers
+                    var q = from om in CurrentDatabase.OrganizationMembers
                             where om.OrganizationId == o.OrgId
                             where (om.Pending ?? false) == false
                             where om.MemberTypeId != MemberTypeCode.InActive
@@ -133,7 +133,7 @@ namespace CmsWeb.Areas.Reports.Models
                                 Name = om.Person.Name,
                                 Medical = rr.MedicalDescription,
                                 PeopleId = om.PeopleId,
-                                Parents = DbUtil.Db.ParentNamesAndCells(om.PeopleId),
+                                Parents = CurrentDatabase.ParentNamesAndCells(om.PeopleId),
                                 Age = om.Person.Age
                             };
 

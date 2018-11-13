@@ -17,7 +17,7 @@ namespace CmsWeb.Controllers.Api
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<ChAiGiftDatum, ApiChAiGift>();
             });
-            return Ok(DbUtil.Db.ViewChAiGiftDatas.ProjectTo<ApiChAiGift>(config));
+            return Ok(CurrentDatabase.ViewChAiGiftDatas.ProjectTo<ApiChAiGift>(config));
         }
     }
 }

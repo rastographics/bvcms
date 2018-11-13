@@ -41,7 +41,7 @@ namespace CmsWeb
         {
             base.OnActionExecuting(filterContext);
             Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
-            DbUtil.Db.UpdateLastActivity(Util.UserId);
+            CurrentDatabase.UpdateLastActivity(Util.UserId);
             if (AccountController.TryImpersonate())
             {
                 var returnUrl = Request.QueryString["returnUrl"];
@@ -112,9 +112,9 @@ namespace CmsWeb
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             NoCheckRole = NoCheckRole ||
-                          (filterContext.RouteData.Values["Controller"].ToString() == "Email" && DbUtil.Db.Setting("UX-AllowMyDataUserEmails")) ||
+                          (filterContext.RouteData.Values["Controller"].ToString() == "Email" && CurrentDatabase.Setting("UX-AllowMyDataUserEmails")) ||
                           (filterContext.RouteData.Values["Controller"].ToString() == "OrgMemberDialog" && filterContext.RouteData.Values["Action"].ToString() == "Drop"
-                            && DbUtil.Db.Setting("UX-AllowMyDataUserLeaveOrg") && Util.UserPeopleId.ToString() == filterContext.RequestContext?.HttpContext?.Request?.Params["PeopleId"]);
+                            && CurrentDatabase.Setting("UX-AllowMyDataUserLeaveOrg") && Util.UserPeopleId.ToString() == filterContext.RequestContext?.HttpContext?.Request?.Params["PeopleId"]);
 
             if (!User.Identity.IsAuthenticated)
             {
@@ -135,7 +135,7 @@ namespace CmsWeb
                 }
             }
 
-            var disableHomePageForOrgLeaders = DbUtil.Db.Setting("UX-DisableHomePageForOrgLeaders");
+            var disableHomePageForOrgLeaders = CurrentDatabase.Setting("UX-DisableHomePageForOrgLeaders");
             if (!disableHomePageForOrgLeaders)
             {
                 disableHomePageForOrgLeaders = RoleChecker.HasSetting(SettingName.DisableHomePage, false);
@@ -148,19 +148,19 @@ namespace CmsWeb
                 disableHomePageForOrgLeaders && orgleaderonly)
             {
                 Util2.OrgLeadersOnly = true;
-                DbUtil.Db.SetOrgLeadersOnly();
+                CurrentDatabase.SetOrgLeadersOnly();
 
                 filterContext.Result = Redirect($"/Person2/{Util.UserPeopleId}");
             }
             else if (orgleaderonly && Util2.OrgLeadersOnly == false)
             {
                 Util2.OrgLeadersOnly = true;
-                DbUtil.Db.SetOrgLeadersOnly();
+                CurrentDatabase.SetOrgLeadersOnly();
             }
 
             base.OnActionExecuting(filterContext);
             Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
-            DbUtil.Db.UpdateLastActivity(Util.UserId);
+            CurrentDatabase.UpdateLastActivity(Util.UserId);
             HttpContext.Response.Headers.Add("X-Robots-Tag", "noindex");
             HttpContext.Response.Headers.Add("X-Robots-Tag", "unavailable after: 1 Jan 2017 01:00:00 CST");
         }
@@ -248,7 +248,7 @@ namespace CmsWeb
             }
             base.OnActionExecuting(filterContext);
             Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
-            DbUtil.Db.UpdateLastActivity(Util.UserId);
+            CurrentDatabase.UpdateLastActivity(Util.UserId);
         }
         public ViewResult Message(string text)
         {
@@ -265,7 +265,7 @@ namespace CmsWeb
             {
                 var res = filterContext.HttpContext.Response;
                 res.StatusCode = 401;
-                res.AddHeader("WWW-Authenticate", $"Basic realm=\"{DbUtil.Db.Host}\"");
+                res.AddHeader("WWW-Authenticate", $"Basic realm=\"{CurrentDatabase.Host}\"");
                 res.End();
             }
         }

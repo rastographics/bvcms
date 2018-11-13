@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content("Lookups error=\"not found\">");
             }
 
-            var q = DbUtil.Db.ExecuteQuery<LookupController.Row>("select * from lookup." + id);
+            var q = CurrentDatabase.ExecuteQuery<LookupController.Row>("select * from lookup." + id);
             var w = new APIWriter();
             w.Start("Lookups");
             w.Attr("name", id);
@@ -114,7 +114,7 @@ namespace CmsWeb.Areas.Public.Controllers
         [Route("~/APIMeta/SqlScriptXml/{id}")]
         public ActionResult SqlScriptXml(string id, string p1 = null)
         {
-            var f = new APIFunctions(DbUtil.Db);
+            var f = new APIFunctions(CurrentDatabase);
             var e = $"<SqlScriptXml id={id}><Error>{{0}}</Error></SqlScriptXml>";
             return Content(SqlScript(id, p1, f.SqlScriptXml, e), "application/xml");
         }
@@ -122,7 +122,7 @@ namespace CmsWeb.Areas.Public.Controllers
         [Route("~/APIMeta/SqlScriptJson/{id}")]
         public ActionResult SqlScriptJson(string id, string p1 = null)
         {
-            var f = new APIFunctions(DbUtil.Db);
+            var f = new APIFunctions(CurrentDatabase);
             var e = $@"{{ ""id"": ""{id}"", ""Error"": ""{{0}}"" }}";
             return Content(SqlScript(id, p1, f.SqlScriptJson, e), "application/json");
         }

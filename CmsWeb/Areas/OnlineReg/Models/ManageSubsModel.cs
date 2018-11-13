@@ -23,7 +23,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public ManageSubsModel(int pid, int id)
         {
             this.pid = pid;
-            var org = DbUtil.Db.LoadOrganizationById(id);
+            var org = CurrentDatabase.LoadOrganizationById(id);
             if (org.RegistrationTypeId != RegistrationTypeCode.ManageSubscriptions)
                 throw new Exception("must be a ManageSubscriptions RegistrationType");
             masterorgid = id;
@@ -38,7 +38,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             get
             {
                 if (_Person == null)
-                    _Person = DbUtil.Db.LoadPersonById(pid);
+                    _Person = CurrentDatabase.LoadPersonById(pid);
                 return _Person;
             }
         }
@@ -49,7 +49,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 if (_masterorg != null)
                     return _masterorg;
-                _masterorg = DbUtil.Db.LoadOrganizationById(masterorgid);
+                _masterorg = CurrentDatabase.LoadOrganizationById(masterorgid);
                 return _masterorg;
             }
         }
@@ -76,7 +76,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
         }
 
-        public Settings Setting => setting ?? (setting = DbUtil.Db.CreateRegistrationSettings(masterorg.OrganizationId));
+        public Settings Setting => setting ?? (setting = CurrentDatabase.CreateRegistrationSettings(masterorg.OrganizationId));
         public string Instructions => $@"
 <div class=""instructions login"">{Setting.InstructionLogin}</div>
 <div class=""instructions select"">{Setting.InstructionSelect}</div>
@@ -147,15 +147,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             foreach (var om in drops)
             {
-                om.Drop(DbUtil.Db);
-                DbUtil.Db.SubmitChanges();
+                om.Drop(CurrentDatabase);
+                CurrentDatabase.SubmitChanges();
             }
             foreach (var id in joins)
             {
-                OrganizationMember.InsertOrgMembers(DbUtil.Db,
+                OrganizationMember.InsertOrgMembers(CurrentDatabase.
                     id, pid, MemberTypeCode.Member, DateTime.Now, null, false);
-                DbUtil.Db.SubmitChanges();
-                //DbUtil.Db.UpdateMainFellowship(id);
+                CurrentDatabase.SubmitChanges();
+                //CurrentDatabase.UpdateMainFellowship(id);
             }
         }
 

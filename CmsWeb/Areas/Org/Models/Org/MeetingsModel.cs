@@ -20,9 +20,9 @@ namespace CmsWeb.Areas.Org.Models
             
         public override IQueryable<Meeting> DefineModelList()
         {
-            var tzoffset = DbUtil.Db.Setting("TZOffset", "0").ToInt(); // positive to the east, negative to the west
+            var tzoffset = CurrentDatabase.Setting("TZOffset", "0").ToInt(); // positive to the east, negative to the west
             var midnight = Util.Now.Date.AddDays(1).AddHours(tzoffset);
-            var meetings = from m in DbUtil.Db.Meetings
+            var meetings = from m in CurrentDatabase.Meetings
                            where m.OrganizationId == Id
                            select m;
             if (Future)
@@ -80,7 +80,7 @@ namespace CmsWeb.Areas.Org.Models
         {
             var q2 = from m in q
                      let o = m.Organization
-                     let mc = Future && DbUtil.Db.ViewMeetingConflicts.Any(mm => 
+                     let mc = Future && CurrentDatabase.ViewMeetingConflicts.Any(mm => 
                          mm.MeetingDate == m.MeetingDate 
                          && (mm.OrgId1 == m.OrganizationId || mm.OrgId2 == m.OrganizationId))
                      select new MeetingInfo

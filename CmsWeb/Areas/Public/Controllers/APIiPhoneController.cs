@@ -28,7 +28,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             Response.NoCache();
-            var person = DbUtil.Db.People.Single(pp => pp.PeopleId == id);
+            var person = CurrentDatabase.People.Single(pp => pp.PeopleId == id);
             if (person.PictureId != null)
             {
                 return new ImageResult(person.Picture.MediumId ?? 0);
@@ -112,11 +112,11 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content("not authorized");
             }
 
-            var u = DbUtil.Db.Users.Single(uu => uu.Username == AccountModel.UserName2);
+            var u = CurrentDatabase.Users.Single(uu => uu.Username == AccountModel.UserName2);
             DbUtil.LogActivity($"iphone RollList {id} {datetime:g}");
 
-            var mid = DbUtil.Db.CreateMeeting(id, datetime);
-            var meeting = DbUtil.Db.LoadMeetingById(mid);
+            var mid = CurrentDatabase.CreateMeeting(id, datetime);
+            var meeting = CurrentDatabase.LoadMeetingById(mid);
             return new RollListResult(meeting);
         }
 
@@ -130,7 +130,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             DbUtil.LogActivity($"iphone attend(mt:{id} person:{peopleId} {present})");
             Attend.RecordAttendance(peopleId, id, present);
-            DbUtil.Db.UpdateMeetingCounters(id);
+            CurrentDatabase.UpdateMeetingCounters(id);
             return new EmptyResult();
         }
 
@@ -143,8 +143,8 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             Attend.RecordAttendance(peopleId, id, true);
-            DbUtil.Db.UpdateMeetingCounters(id);
-            var meeting = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == id);
+            CurrentDatabase.UpdateMeetingCounters(id);
+            var meeting = CurrentDatabase.Meetings.Single(mm => mm.MeetingId == id);
             return new RollListResult(meeting);
         }
 
@@ -157,7 +157,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             var f = m.addtofamilyid > 0
-                ? DbUtil.Db.Families.First(fam => fam.People.Any(pp => pp.PeopleId == m.addtofamilyid))
+                ? CurrentDatabase.Families.First(fam => fam.People.Any(pp => pp.PeopleId == m.addtofamilyid))
                 : new Family();
 
             if (m.goesby == "(Null)")
@@ -165,7 +165,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 m.goesby = null;
             }
 
-            var position = DbUtil.Db.ComputePositionInFamily(m.dob.Age0(), m.marital == 20, f.FamilyId) ?? 10;
+            var position = CurrentDatabase.ComputePositionInFamily(m.dob.Age0(), m.marital == 20, f.FamilyId) ?? 10;
 
             var p = Person.Add(f, position,
                 null, Trim(m.first), Trim(m.goesby), Trim(m.last), m.dob, false, m.gender,
@@ -173,9 +173,9 @@ namespace CmsWeb.Areas.Public.Controllers
 
             DbUtil.LogActivity($"iPhone AddPerson {p.PeopleId}");
             UpdatePerson(p, m);
-            var meeting = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == id);
+            var meeting = CurrentDatabase.Meetings.Single(mm => mm.MeetingId == id);
             Attend.RecordAttendance(p.PeopleId, id, true);
-            DbUtil.Db.UpdateMeetingCounters(id);
+            CurrentDatabase.UpdateMeetingCounters(id);
             return new RollListResult(meeting, p.PeopleId);
         }
 
@@ -183,7 +183,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var psb = new List<ChangeDetail>();
             var fsb = new List<ChangeDetail>();
-            var z = DbUtil.Db.ZipCodes.SingleOrDefault(zc => zc.Zip == m.zip.Zip5());
+            var z = CurrentDatabase.ZipCodes.SingleOrDefault(zc => zc.Zip == m.zip.Zip5());
 
             if (!m.home.HasValue() && m.cell.HasValue())
             {
@@ -205,7 +205,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 p.Family.UpdateValue(fsb, "CityName", z != null ? z.City : null);
                 p.Family.UpdateValue(fsb, "StateCode", z != null ? z.State : null);
                 p.Family.UpdateValue(fsb, "ZipCode", m.zip);
-                var rc = DbUtil.Db.FindResCode(m.zip, null);
+                var rc = CurrentDatabase.FindResCode(m.zip, null);
                 p.Family.UpdateValue(fsb, "ResCodeId", rc.ToString());
             }
 
@@ -221,10 +221,10 @@ namespace CmsWeb.Areas.Public.Controllers
 
             p.UpdateValue(psb, "MaritalStatusId", m.marital);
 
-            p.LogChanges(DbUtil.Db, psb);
-            p.Family.LogChanges(DbUtil.Db, fsb, p.PeopleId, Util.UserPeopleId ?? 0);
-            DbUtil.Db.SubmitChanges();
-            if (!DbUtil.Db.Setting("NotifyCheckinChanges", "true").ToBool() || (psb.Count <= 0 && fsb.Count <= 0))
+            p.LogChanges(CurrentDatabase. psb);
+            p.Family.LogChanges(CurrentDatabase. fsb, p.PeopleId, Util.UserPeopleId ?? 0);
+            CurrentDatabase.SubmitChanges();
+            if (!CurrentDatabase.Setting("NotifyCheckinChanges", "true").ToBool() || (psb.Count <= 0 && fsb.Count <= 0))
             {
                 return;
             }
@@ -240,12 +240,12 @@ namespace CmsWeb.Areas.Public.Controllers
                 sb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", c.Field, c.Before, c.After);
             }
 
-            var np = DbUtil.Db.GetNewPeopleManagers();
+            var np = CurrentDatabase.GetNewPeopleManagers();
             if (np != null)
             {
-                DbUtil.Db.EmailRedacted(p.FromEmail, np,
+                CurrentDatabase.EmailRedacted(p.FromEmail, np,
                     "Basic Person Info Changed during checkin on " + Util.Host,
-                    $"{Util.UserName} changed the following information for <a href='{DbUtil.Db.ServerLink($"/Person2/{p.PeopleId}")}'>{p.PreferredName} {p.LastName}</a>:<br />\n<table>{sb}</table>");
+                    $"{Util.UserName} changed the following information for <a href='{CurrentDatabase.ServerLink($"/Person2/{p.PeopleId}")}'>{p.PreferredName} {p.LastName}</a>:<br />\n<table>{sb}</table>");
             }
         }
 
@@ -257,19 +257,19 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content("not authorized");
             }
 
-            var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == peopleId && m.OrganizationId == orgId);
+            var om = CurrentDatabase.OrganizationMembers.SingleOrDefault(m => m.PeopleId == peopleId && m.OrganizationId == orgId);
             if (om == null && member)
             {
-                om = OrganizationMember.InsertOrgMembers(DbUtil.Db,
+                om = OrganizationMember.InsertOrgMembers(CurrentDatabase.
                     orgId, peopleId, MemberTypeCode.Member, DateTime.Now, null, false);
                 DbUtil.LogActivity($"iphone join(org:{orgId} person:{peopleId})");
             }
             else if (om != null && !member)
             {
-                om.Drop(DbUtil.Db);
+                om.Drop(CurrentDatabase);
                 DbUtil.LogActivity($"iphone drop(org:{orgId} person:{peopleId})");
             }
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return Content("OK");
         }
 
@@ -299,7 +299,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content("not authorized");
             }
 
-            var u = DbUtil.Db.Users.Single(uu => uu.Username == AccountModel.UserName2);
+            var u = CurrentDatabase.Users.Single(uu => uu.Username == AccountModel.UserName2);
             RecordAttend2Extracted(id, peopleId, present, datetime, u);
             return new EmptyResult();
         }
@@ -313,18 +313,18 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content("not authorized");
             }
 
-            var u = DbUtil.Db.Users.Single(uu => uu.Username == AccountModel.UserName2);
+            var u = CurrentDatabase.Users.Single(uu => uu.Username == AccountModel.UserName2);
 
             var mid = RecordAttend2Extracted(id, peopleId, true, datetime, u);
-            var meeting = DbUtil.Db.LoadMeetingById(mid);
+            var meeting = CurrentDatabase.LoadMeetingById(mid);
             return new RollListResult(meeting, peopleId);
         }
 
         private static int RecordAttend2Extracted(int id, int peopleId, bool present, DateTime dt, User u)
         {
-            var meetingId = DbUtil.Db.CreateMeeting(id, dt);
+            var meetingId = CurrentDatabase.CreateMeeting(id, dt);
             Attend.RecordAttendance(peopleId, meetingId, present);
-            DbUtil.Db.UpdateMeetingCounters(id);
+            CurrentDatabase.UpdateMeetingCounters(id);
             DbUtil.LogActivity($"Mobile RecAtt o:{id} p:{peopleId} u:{Util.UserPeopleId} a:{present}");
             return meetingId;
         }

@@ -1,14 +1,10 @@
+using CmsData;
+using CmsData.API;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.API;
-using CmsData.Codes;
-using CmsData.View;
-using CmsWeb.Code;
 using UtilityExtensions;
-using System.Text;
 
 namespace CmsWeb.Models
 {
@@ -26,7 +22,10 @@ namespace CmsWeb.Models
             var today = Util.Now.Date;
             var first = new DateTime(today.Year, today.Month, 1);
             if (today.Day < 8)
+            {
                 first = first.AddMonths(-1);
+            }
+
             Dt1 = first;
             Dt2 = first.AddMonths(1).AddDays(-1);
         }
@@ -56,18 +55,18 @@ namespace CmsWeb.Models
         public IEnumerable<SelectListItem> Campuses()
         {
             var qc = DbUtil.Db.Campus.AsQueryable();
-            qc = DbUtil.Db.Setting("SortCampusByCode") 
-                ? qc.OrderBy(cc => cc.Code) 
+            qc = DbUtil.Db.Setting("SortCampusByCode")
+                ? qc.OrderBy(cc => cc.Code)
                 : qc.OrderBy(cc => cc.Description);
             var list = (from c in qc
                         select new SelectListItem()
-                                   {
-                                       Value = c.Id.ToString(),
-                                       Text = c.Description,
-                                   }).ToList();
+                        {
+                            Value = c.Id.ToString(),
+                            Text = c.Description,
+                        }).ToList();
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
-        
+
     }
 }

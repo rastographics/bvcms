@@ -6,8 +6,8 @@
 @{
     ViewBag.Title = "Online Registration";
     Layout = "~/Views/Shared/onlinereg2.cshtml";
-    var VaultDisabled = DbUtil.Db.Setting("VaultDisabled");
-    var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
+    var VaultDisabled = CurrentDatabase.Setting("VaultDisabled");
+    var debitcredit = CurrentDatabase.Setting("DebitCreditLabel", "Debit/Credit Card");
 }
 @section scripts
 {

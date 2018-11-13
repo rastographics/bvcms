@@ -39,9 +39,9 @@ namespace CmsWeb.Areas.People.Models
 
         public static IEnumerable<MemberDocModel> DocForms(int id)
         {
-            return from f in DbUtil.Db.MemberDocForms
+            return from f in CurrentDatabase.MemberDocForms
                    where f.PeopleId == id
-                   let uploader = DbUtil.Db.People.SingleOrDefault(uu => uu.PeopleId == f.UploaderId)
+                   let uploader = CurrentDatabase.People.SingleOrDefault(uu => uu.PeopleId == f.UploaderId)
                    orderby f.DocDate
                    select new MemberDocModel
                    {
@@ -58,19 +58,19 @@ namespace CmsWeb.Areas.People.Models
         }
         public static void DeleteDocument(int id, int docid)
         {
-            var m = DbUtil.Db.MemberDocForms.SingleOrDefault(mm => mm.Id == docid && mm.PeopleId == id);
+            var m = CurrentDatabase.MemberDocForms.SingleOrDefault(mm => mm.Id == docid && mm.PeopleId == id);
             ImageData.Image.DeleteOnSubmit(m.SmallId);
             ImageData.Image.DeleteOnSubmit(m.MediumId);
             ImageData.Image.DeleteOnSubmit(m.LargeId);
-            DbUtil.Db.MemberDocForms.DeleteOnSubmit(m);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.MemberDocForms.DeleteOnSubmit(m);
+            CurrentDatabase.SubmitChanges();
         }
 
         internal static void UpdateName(int pk, string value)
         {
-            var m = DbUtil.Db.MemberDocForms.Single(mm => mm.Id == pk);
+            var m = CurrentDatabase.MemberDocForms.Single(mm => mm.Id == pk);
             m.Name = value;
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
         }
     }
 }

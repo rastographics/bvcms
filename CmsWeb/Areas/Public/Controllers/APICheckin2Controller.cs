@@ -38,10 +38,10 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             Response.NoCache();
-            DbUtil.Db.SetNoLock();
+            CurrentDatabase.SetNoLock();
             DbUtil.LogActivity("checkin " + id);
 
-            var matches = DbUtil.Db.CheckinMatch(id).ToList();
+            var matches = CurrentDatabase.CheckinMatch(id).ToList();
 
             if (!matches.Any())
             {
@@ -64,7 +64,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             Response.NoCache();
-            DbUtil.Db.SetNoLock();
+            CurrentDatabase.SetNoLock();
             DbUtil.LogActivity("CheckinFind " + building + " " + id);
 
             var m = new CheckInModel();
@@ -91,7 +91,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             Response.NoCache();
-            DbUtil.Db.SetNoLock();
+            CurrentDatabase.SetNoLock();
             DbUtil.LogActivity("checkin fam " + id);
             return new FamilyResult(id, campus, thisday, 0, false);
         }
@@ -104,7 +104,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             Response.NoCache();
-            DbUtil.Db.SetNoLock();
+            CurrentDatabase.SetNoLock();
             DbUtil.LogActivity("checkin fam " + building + " " + id);
             return new FindResult(id, building, querybit);
         }
@@ -117,7 +117,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             Response.NoCache();
-            DbUtil.Db.SetNoLock();
+            CurrentDatabase.SetNoLock();
             DbUtil.LogActivity("checkin class " + id);
             return new ClassResult(id, thisday);
         }
@@ -130,7 +130,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             Response.NoCache();
-            DbUtil.Db.SetNoLock();
+            CurrentDatabase.SetNoLock();
             DbUtil.LogActivity("checkin classes " + id);
             return new ClassesResult(id, thisday, campus, noagecheck ?? false, kioskmode ?? false);
         }
@@ -143,7 +143,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             Response.NoCache();
-            DbUtil.Db.SetNoLock();
+            CurrentDatabase.SetNoLock();
             DbUtil.LogActivity("checkin namesearch " + id);
             return new NameSearchResult2(id, page ?? 1);
         }
@@ -159,10 +159,10 @@ namespace CmsWeb.Areas.Public.Controllers
             DbUtil.LogActivity($"checkin AddPerson {m.first} {m.last} ({m.dob})");
 
             var f = id > 0
-                ? DbUtil.Db.Families.Single(fam => fam.FamilyId == id)
+                ? CurrentDatabase.Families.Single(fam => fam.FamilyId == id)
                 : new Family();
 
-            var position = DbUtil.Db.ComputePositionInFamily(m.Birthdate.Age0(), m.marital == 20, id) ?? 10;
+            var position = CurrentDatabase.ComputePositionInFamily(m.Birthdate.Age0(), m.marital == 20, id) ?? 10;
             var p = Person.Add(f, position,
                 null, m.first, m.goesby, m.last, m.Birthdate.ToString2("d"), false, m.gender,
                 OriginCode.Visit, null);
@@ -180,7 +180,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity($"checkin EditPerson {m.first} {m.last} ({m.dob})");
-            var p = DbUtil.Db.LoadPersonById(id);
+            var p = CurrentDatabase.LoadPersonById(id);
             UpdatePerson(p, m, false);
             return Content(p.FamilyId.ToString());
         }
@@ -216,7 +216,7 @@ namespace CmsWeb.Areas.Public.Controllers
                     UpdateField(fsb, p.Family, "CityName", result.City);
                     UpdateField(fsb, p.Family, "StateCode", result.State);
                     UpdateField(fsb, p.Family, "ZipCode", result.Zip.GetDigits().Truncate(10));
-                    var rc = DbUtil.Db.FindResCode(result.Zip, null);
+                    var rc = CurrentDatabase.FindResCode(result.Zip, null);
                     UpdateField(fsb, p.Family, "ResCodeId", rc.ToString());
                 }
                 else
@@ -354,10 +354,10 @@ namespace CmsWeb.Areas.Public.Controllers
                 }
             }
 
-            p.LogChanges(DbUtil.Db, psb);
-            p.Family.LogChanges(DbUtil.Db, fsb, p.PeopleId, Util.UserPeopleId ?? 0);
-            DbUtil.Db.SubmitChanges();
-            if (DbUtil.Db.Setting("NotifyCheckinChanges", "true").ToBool() && (psb.Count > 0 || fsb.Count > 0))
+            p.LogChanges(CurrentDatabase. psb);
+            p.Family.LogChanges(CurrentDatabase. fsb, p.PeopleId, Util.UserPeopleId ?? 0);
+            CurrentDatabase.SubmitChanges();
+            if (CurrentDatabase.Setting("NotifyCheckinChanges", "true").ToBool() && (psb.Count > 0 || fsb.Count > 0))
             {
                 var sb = new StringBuilder();
                 foreach (var c in psb)
@@ -370,12 +370,12 @@ namespace CmsWeb.Areas.Public.Controllers
                     sb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", c.Field, c.Before, c.After);
                 }
 
-                var np = DbUtil.Db.GetNewPeopleManagers();
+                var np = CurrentDatabase.GetNewPeopleManagers();
                 if (np != null)
                 {
-                    DbUtil.Db.EmailRedacted(p.FromEmail, np,
+                    CurrentDatabase.EmailRedacted(p.FromEmail, np,
                         "Basic Person Info Changed during checkin on " + Util.Host, $@"
-<p><a href=""{DbUtil.Db.ServerLink("/Person2/" + p.PeopleId)}"">{Util.UserName} ({p.PeopleId})</a> changed the following information for {p.PreferredName} ({p.LastName}):</p>
+<p><a href=""{CurrentDatabase.ServerLink("/Person2/" + p.PeopleId)}"">{Util.UserName} ({p.PeopleId})</a> changed the following information for {p.PreferredName} ({p.LastName}):</p>
 <table>{sb}</table>");
                 }
             }
@@ -408,13 +408,13 @@ namespace CmsWeb.Areas.Public.Controllers
 #endif
             DbUtil.LogActivity($"checkin {AccountModel.UserName2} authenticated");
 
-            var list = (from c in DbUtil.Db.Campus
+            var list = (from c in CurrentDatabase.Campus
                         where c.Organizations.Any(o => o.CanSelfCheckin == true)
                         orderby c.Id
                         select new CampusItem
                         {
                             Campus = c,
-                            password = DbUtil.Db.Setting("kioskpassword" + c.Id, "kio.")
+                            password = CurrentDatabase.Setting("kioskpassword" + c.Id, "kio.")
                         }).ToList();
 
             if (list.Count > 0)
@@ -422,7 +422,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 list.Insert(0, new CampusItem
                 {
                     Campus = new Campu { Id = 0, Description = "All Campuses" },
-                    password = DbUtil.Db.Setting("kioskpassword" + 0, "kio.")
+                    password = CurrentDatabase.Setting("kioskpassword" + 0, "kio.")
                 });
             }
 
@@ -469,7 +469,7 @@ namespace CmsWeb.Areas.Public.Controllers
                     return Content("date not parsed");
                 }
             }
-            Attend.RecordAttend(DbUtil.Db, PeopleId, OrgId, Present, dt);
+            Attend.RecordAttend(CurrentDatabase. PeopleId, OrgId, Present, dt);
             var r = new ContentResult();
             r.Content = "success";
             return r;
@@ -504,7 +504,7 @@ namespace CmsWeb.Areas.Public.Controllers
         public JsonResult PostCheckIn(int id, string KeyCode)
         {
             Session["CheckInOrgId"] = id;
-            var q = from kc in DbUtil.Db.CardIdentifiers
+            var q = from kc in CurrentDatabase.CardIdentifiers
                     where KeyCode == kc.Id
                     select kc.PeopleId;
             var pid = q.SingleOrDefault();
@@ -517,8 +517,8 @@ namespace CmsWeb.Areas.Public.Controllers
                     PeopleId = pid
                     //KeyCode = KeyCode
                 };
-                DbUtil.Db.CheckInTimes.InsertOnSubmit(ck);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.CheckInTimes.InsertOnSubmit(ck);
+                CurrentDatabase.SubmitChanges();
             }
             return Json(new { pid });
         }
@@ -531,23 +531,23 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content("not authorized");
             }
 
-            var p = DbUtil.Db.LoadPersonById(pid);
+            var p = CurrentDatabase.LoadPersonById(pid);
             if (p == null)
             {
                 return Content("No person to associate card with");
             }
 
-            var q = from kc in DbUtil.Db.CardIdentifiers
+            var q = from kc in CurrentDatabase.CardIdentifiers
                     where KeyCode == kc.Id
                     select kc;
             var card = q.SingleOrDefault();
             if (card == null)
             {
                 card = new CardIdentifier { Id = KeyCode };
-                DbUtil.Db.CardIdentifiers.InsertOnSubmit(card);
+                CurrentDatabase.CardIdentifiers.InsertOnSubmit(card);
             }
             card.PeopleId = pid;
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return Content("Card Associated");
         }
 
@@ -563,7 +563,7 @@ namespace CmsWeb.Areas.Public.Controllers
             var c = new ContentResult();
             c.Content = value;
             var pid = a[1].ToInt();
-            var p = DbUtil.Db.People.Single(pp => pp.PeopleId == pid);
+            var p = CurrentDatabase.People.Single(pp => pp.PeopleId == pid);
             switch (a[0][0])
             {
                 case 's':
@@ -576,7 +576,7 @@ namespace CmsWeb.Areas.Public.Controllers
                     p.CheckInNotes = value;
                     break;
             }
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return c;
         }
 
@@ -591,7 +591,7 @@ namespace CmsWeb.Areas.Public.Controllers
             //				return Content("not authorized");
 
             DbUtil.LogActivity("checkin uploadpic " + id);
-            var person = DbUtil.Db.People.Single(pp => pp.PeopleId == id);
+            var person = CurrentDatabase.People.Single(pp => pp.PeopleId == id);
             if (person.Picture == null)
             {
                 person.Picture = new Picture();
@@ -607,8 +607,8 @@ namespace CmsWeb.Areas.Public.Controllers
             p.SmallId = Image.NewImageFromBits(bits, 120, 120).Id;
             p.MediumId = Image.NewImageFromBits(bits, 320, 400).Id;
             p.LargeId = Image.NewImageFromBits(bits).Id;
-            person.LogPictureUpload(DbUtil.Db, Util.UserPeopleId ?? 1);
-            DbUtil.Db.SubmitChanges();
+            person.LogPictureUpload(CurrentDatabase. Util.UserPeopleId ?? 1);
+            CurrentDatabase.SubmitChanges();
             return Content("done");
         }
 
@@ -619,7 +619,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content("not authorized");
             }
 
-            var person = DbUtil.Db.People.Single(pp => pp.PeopleId == id);
+            var person = CurrentDatabase.People.Single(pp => pp.PeopleId == id);
             if (person.PictureId != null)
             {
                 DbUtil.LogActivity("checkin picture " + id);
@@ -630,7 +630,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
         public ActionResult CheckInList()
         {
-            var m = from t in DbUtil.Db.CheckInTimes
+            var m = from t in CurrentDatabase.CheckInTimes
                     orderby t.CheckInTimeX descending
                     select t;
             return View(m.Take(200));
@@ -644,11 +644,11 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content("not authorized");
             }
 
-            var lockf = DbUtil.Db.FamilyCheckinLocks.SingleOrDefault(f => f.FamilyId == fid);
+            var lockf = CurrentDatabase.FamilyCheckinLocks.SingleOrDefault(f => f.FamilyId == fid);
             if (lockf != null)
             {
                 lockf.Locked = false;
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
             }
             return new EmptyResult();
         }
@@ -667,14 +667,14 @@ namespace CmsWeb.Areas.Public.Controllers
                 setting += campusid;
             }
 
-            var address = DbUtil.Db.Setting(setting, null);
+            var address = CurrentDatabase.Setting(setting, null);
             if (address.HasValue())
             {
                 try
                 {
 
                     var msg = kiosk + " at " + DateTime.Now.ToShortTimeString();
-                    DbUtil.Db.SendEmail(Util.TryGetMailAddress(DbUtil.AdminMail),
+                    CurrentDatabase.SendEmail(Util.TryGetMailAddress(CurrentDatabase.Util.AdminMail),
                         "Printer Problem", msg, Util.ToMailAddressList(address));
                 }
                 catch (Exception)
@@ -721,7 +721,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             var m = new CheckInModel();
-            return Content(DbUtil.Db.Content($"BuildingCheckin-{id}.xml",
+            return Content(CurrentDatabase.Content($"BuildingCheckin-{id}.xml",
                 "<BuildingActivity/>"), "text/xml");
         }
 
@@ -732,7 +732,7 @@ namespace CmsWeb.Areas.Public.Controllers
             var dtStart = dt.Date;
             var dtEnd = dt.Date.AddHours(24);
 
-            var count = (from e in DbUtil.Db.CheckInTimes
+            var count = (from e in CurrentDatabase.CheckInTimes
                          where e.CheckInTimeX >= dtStart
                          where e.CheckInTimeX < dtEnd
                          where e.GuestOfPersonID == id.ToInt()
@@ -747,7 +747,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var error = ADD_ERROR_NONE;
 
-            var card = (from e in DbUtil.Db.CardIdentifiers
+            var card = (from e in CurrentDatabase.CardIdentifiers
                         where e.Id == cardid
                         select e).FirstOrDefault();
 
@@ -757,13 +757,13 @@ namespace CmsWeb.Areas.Public.Controllers
                 ci.Id = cardid;
                 ci.PeopleId = personid;
 
-                DbUtil.Db.CardIdentifiers.InsertOnSubmit(ci);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.CardIdentifiers.InsertOnSubmit(ci);
+                CurrentDatabase.SubmitChanges();
             }
             else if (overwrite)
             {
                 card.PeopleId = personid;
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
             }
             else
             {
@@ -784,7 +784,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             // Size -30 and +30 is because some labels are a few tenths of inches different in the driver
-            var label = (from e in DbUtil.Db.LabelFormats
+            var label = (from e in CurrentDatabase.LabelFormats
                          where e.Name == sName
                          where e.Size >= (iSize - 49) && e.Size <= (iSize + 50)
                          select e).FirstOrDefault();
@@ -805,7 +805,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content("2");
             }
 
-            var label = (from e in DbUtil.Db.LabelFormats
+            var label = (from e in CurrentDatabase.LabelFormats
                          where e.Name == sName
                          where e.Size == iSize
                          select e).FirstOrDefault();
@@ -816,13 +816,13 @@ namespace CmsWeb.Areas.Public.Controllers
                 lfNew.Name = sName;
                 lfNew.Size = iSize;
                 lfNew.Format = sFormat;
-                DbUtil.Db.LabelFormats.InsertOnSubmit(lfNew);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.LabelFormats.InsertOnSubmit(lfNew);
+                CurrentDatabase.SubmitChanges();
             }
             else
             {
                 label.Format = sFormat;
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
             }
 
             return Content("0");
@@ -837,7 +837,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             Response.NoCache();
 
-            var list = from e in DbUtil.Db.LabelFormats
+            var list = from e in CurrentDatabase.LabelFormats
                        orderby e.Size, e.Name
                        select string.Concat(e.Name, "~", e.Size);
 
@@ -862,7 +862,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             if (guestof != null)
             {
-                g = (from e in DbUtil.Db.CheckInTimes
+                g = (from e in CurrentDatabase.CheckInTimes
                      where e.Id == guestof
                      select e).FirstOrDefault();
             }
@@ -878,7 +878,7 @@ namespace CmsWeb.Areas.Public.Controllers
             var xs = new XmlSerializer(typeof(List<Activity>), new XmlRootAttribute("Activities"));
             var activities = xs.Deserialize(new StringReader(s)) as List<Activity>;
 
-            var last = from e in DbUtil.Db.CheckInTimes
+            var last = from e in CurrentDatabase.CheckInTimes
                        where e.PeopleId == id
                        where e.CheckInTimeX <= DateTime.Now
                        where e.CheckInTimeX >= DateTime.Now.AddHours(-1.5)
@@ -905,10 +905,10 @@ namespace CmsWeb.Areas.Public.Controllers
 
                 foreach (var e in ac.CheckInActivities)
                 {
-                    DbUtil.Db.CheckInActivities.DeleteOnSubmit(e);
+                    CurrentDatabase.CheckInActivities.DeleteOnSubmit(e);
                 }
 
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
 
                 foreach (var a in activities)
                 {
@@ -934,17 +934,17 @@ namespace CmsWeb.Areas.Public.Controllers
                     ac.CheckInActivities.Add(new CheckInActivity { Activity = a.Name });
                 }
 
-                DbUtil.Db.CheckInTimes.InsertOnSubmit(ac);
+                CurrentDatabase.CheckInTimes.InsertOnSubmit(ac);
             }
 
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
             foreach (var a in activities)
             {
                 if (a.org > 0)
                 {
-                    Attend.RecordAttend(DbUtil.Db, id, a.org, true, DateTime.Today);
+                    Attend.RecordAttend(CurrentDatabase. id, a.org, true, DateTime.Today);
                 }
             }
 
@@ -960,10 +960,10 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content("not authorized");
             }
 
-            var ct = DbUtil.Db.CheckInTimes.SingleOrDefault(cc => cc.Id == id);
-            DbUtil.Db.CheckInActivities.DeleteAllOnSubmit(ct.CheckInActivities);
-            DbUtil.Db.CheckInTimes.DeleteOnSubmit(ct);
-            DbUtil.Db.SubmitChanges();
+            var ct = CurrentDatabase.CheckInTimes.SingleOrDefault(cc => cc.Id == id);
+            CurrentDatabase.CheckInActivities.DeleteAllOnSubmit(ct.CheckInActivities);
+            CurrentDatabase.CheckInTimes.DeleteOnSubmit(ct);
+            CurrentDatabase.SubmitChanges();
 
             return Content("done");
         }

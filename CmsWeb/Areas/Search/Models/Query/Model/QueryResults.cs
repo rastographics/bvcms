@@ -22,9 +22,9 @@ namespace CmsWeb.Areas.Search.Models
                 if(topclause != null) 
                     return topclause;
                 if(QueryId == null)
-                    topclause =  Db.FetchLastQuery();
+                    topclause =  CurrentDatabase.FetchLastQuery();
                 else
-                    topclause = Db.LoadCopyOfExistingQuery(QueryId.Value);
+                    topclause = CurrentDatabase.LoadCopyOfExistingQuery(QueryId.Value);
                 return topclause;
             }
             set
@@ -37,21 +37,21 @@ namespace CmsWeb.Areas.Search.Models
         public QueryResults()
             : base("na", "asc")
         {
-            Db = DbUtil.Db;
+            Db = Db;
         }
 
         public override IQueryable<Person> DefineModelList()
         {
-            Db.SetNoLock();
-            var q = Db.People.Where(TopClause.Predicate(Db));
+            CurrentDatabase.SetNoLock();
+            var q = CurrentDatabase.People.Where(TopClause.Predicate(CurrentDatabase));
 
             if (TopClause.PlusParentsOf)
-                q = Db.PersonQueryPlusParents(q);
+                q = CurrentDatabase.PersonQueryPlusParents(q);
             else if (TopClause.ParentsOf)
-                q = Db.PersonQueryParents(q);
+                q = CurrentDatabase.PersonQueryParents(q);
             if (TopClause.FirstPersonSameEmail)
-                q = Db.PersonQueryFirstPersonSameEmail(q);
-            //var t = Db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
+                q = CurrentDatabase.PersonQueryFirstPersonSameEmail(q);
+            //var t = CurrentDatabase.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
             return q;
         }
 

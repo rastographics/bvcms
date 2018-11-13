@@ -1,7 +1,7 @@
 ﻿@{
     var tutorialFile = Server.MapPath(".") + "/Content/Tutorials/" + Util.Helpfile + ".cshtml";
 }
-@if (DbUtil.Db.Setting("ShowTutorialFileNames"))
+@if (CurrentDatabase.Setting("ShowTutorialFileNames"))
 {
     <br />
     <b>Menus:</b>

@@ -15,10 +15,10 @@ namespace CmsWeb.Models
         private Meeting meeting;
         public ClassResult(int OrgId, int thisday)
         {
-            var mid = DbUtil.Db.GetTodaysMeetingId(OrgId, thisday);
+            var mid = CurrentDatabase.GetTodaysMeetingId(OrgId, thisday);
             if (mid != null)
             {
-                meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.MeetingId == mid);
+                meeting = CurrentDatabase.Meetings.SingleOrDefault(m => m.MeetingId == mid);
                 if (meeting != null)
                 {
                     var q = from a in meeting.Attends

@@ -39,7 +39,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
                 ContributionFund f = null;
                 if(fundText.HasValue())
-                    f = DbUtil.Db.FetchOrCreateFund(fundText);
+                    f = CurrentDatabase.FetchOrCreateFund(fundText);
 
                 if (bundleHeader == null)
                     bundleHeader = BatchImportContributions.GetBundleHeader(batchDate ?? DateTime.Today, DateTime.Now);

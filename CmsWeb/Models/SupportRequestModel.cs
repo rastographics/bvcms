@@ -1,3 +1,6 @@
+using CmsData;
+using Dapper;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -6,9 +9,6 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Web;
-using CmsData;
-using Dapper;
-using RestSharp;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -20,7 +20,7 @@ namespace CmsWeb.Models
         private readonly string supportInsert = ConfigurationManager.AppSettings["SupportInsert"];
         private readonly string supportUpdate = ConfigurationManager.AppSettings["SupportUpdate"];
         private readonly bool useZenDeskApi = ConfigurationManager.AppSettings["UseZenDeskApi"] == "true";
-        private string mydataRequest = "MyData Request";
+        private readonly string mydataRequest = "MyData Request";
         private const string SupportEmail = "support@touchpointsoftware.zendesk.com";
 
         public string Urgency { get; set; }
@@ -80,14 +80,14 @@ namespace CmsWeb.Models
                 cn.Execute(supportUpdate, new { subject, id });
                 cn.Close();
             }
-            const string fromsupport = "Touchpoint Support <mailer@tpsdb.com>";
+            const string fromsupport = "Touchpoint Support <mailer@tpsDbUtil.Db.com>";
 
             var sb = new StringBuilder();
             sb.Append(
 $@"<b>Request ID: {id}</b><br>
 <b>Request By:</b> {Util.UserFullName} ({Util.UserEmail})<br>
 <b>Priority: {Priority}</b><br>
-<b>Host:</b> https://{Util.Host}.tpsdb.com<br>");
+<b>Host:</b> https://{Util.Host}.tpsDbUtil.Db.com<br>");
 
             if (Subj != mydataRequest)
             {
@@ -109,11 +109,16 @@ $@"<b>Request ID: {id}</b><br>
                 {
                     var email = addcc.trim();
                     if (Util.ValidEmail(email))
+                    {
                         msg.CC.Add(email);
+                    }
                 }
             }
             if (DbUtil.AdminMail.Length > 0)
+            {
                 msg.CC.Add(DbUtil.AdminMail);
+            }
+
             msg.IsBodyHtml = true;
             msg.Headers.Add("X-BVCMS-SUPPORT", "request");
 
@@ -146,7 +151,7 @@ $@"<b>Request ID: {id}</b><br>
             var reqbody = new StringBuilder();
             reqbody.AppendFormat(@"<b>Request ID: {0}</b><br>
                             <b>Request By:</b> {1} ({2})<br>
-                            <b>Host:</b> https://{3}.tpsdb.com<br>
+                            <b>Host:</b> https://{3}.tpsDbUtil.Db.com<br>
                             ", id, Util.UserFullName, Util.UserEmail, Util.Host);
 
             if (Subj != mydataRequest)
@@ -176,14 +181,18 @@ $@"<b>Request ID: {id}</b><br>
                     try
                     {
                         if (Util.ValidEmail(addcc))
+                        {
                             ccAddrs.Add($"\"{addcc.trim()}\"");
+                        }
                     }
                     catch (FormatException)
                     {
                     }
                 }
                 if (ccAddrs.Count > 0)
+                {
                     collaborators = $"\n\t\t\"collaborators\": [ {string.Join(",", ccAddrs)} ],";
+                }
             }
             var escapedbody = HttpUtility.JavaScriptStringEncode(reqbody.ToString());
 

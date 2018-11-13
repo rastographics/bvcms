@@ -31,7 +31,7 @@ namespace CmsWeb.Models
 
         public static EpplusResult Attendance(Guid queryid)
         {
-            var t = DbUtil.Db.PopulateSpecialTag(queryid, DbUtil.TagTypeId_Query);
+            var t = CurrentDatabase.PopulateSpecialTag(queryid, DbUtil.TagTypeId_Query);
             var cn = new SqlConnection(Util.ConnectionString);
             cn.Open();
             var q = cn.Query<WorshipAttendInfo>("WorshipAttendance", new { tagid = t.Id }, commandType: CommandType.StoredProcedure, commandTimeout: 600);

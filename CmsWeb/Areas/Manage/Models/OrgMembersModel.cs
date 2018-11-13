@@ -507,7 +507,7 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
         {
             var Db = DbUtil.Db;
 
-            var q = from om in Db.OrganizationMembers
+            var q = from om in DbUtil.Db.OrganizationMembers
                     where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                     where om.Moved == true || EmailAllNotices
                     select new
@@ -560,7 +560,7 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
                 {
                     if (i.RegisterEmail.HasValue())
                     {
-                        Db.Email(Db.CurrentUser.Person.FromEmail,
+                        DbUtil.Db.Email(DbUtil.Db.CurrentUser.Person.FromEmail,
                             i.om.Person, Util.ToMailAddressList(i.RegisterEmail),
                             subj, msg, false);
                         sb.Append($"\"{i.Name}\" [{i.FromEmail}]R ({i.PeopleId}): {i.Location}\r\n");
@@ -572,7 +572,7 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
                                  where fm.EmailAddress != i.RegisterEmail
                                  where fm.PositionInFamilyId == PositionInFamily.PrimaryAdult
                                  select fm).ToList();
-                    Db.Email(Db.CurrentUser.Person.FromEmail, flist, subj, msg);
+                    DbUtil.Db.Email(DbUtil.Db.CurrentUser.Person.FromEmail, flist, subj, msg);
                     foreach (var m in flist)
                     {
                         sb.Append($"{m}P ({i.PeopleId}): {i.Location}\r\n");
@@ -582,7 +582,7 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
             }
             sb.Append("</pre>\n");
 
-            var q0 = from o in Db.Organizations
+            var q0 = from o in DbUtil.Db.Organizations
                      where o.DivOrgs.Any(di => di.DivId == SourceDivId)
                      where o.NotifyIds.Length > 0
                      where o.RegistrationTypeId > 0
@@ -591,18 +591,18 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
 
             if (onlineorg == null)
             {
-                Db.Email(Db.CurrentUser.Person.FromEmail,
-                    Db.CurrentUserPerson,
+                DbUtil.Db.Email(DbUtil.Db.CurrentUser.Person.FromEmail,
+                    DbUtil.Db.CurrentUserPerson,
                     "Org Assignment notices sent to:", sb.ToString());
             }
             else
             {
-                Db.Email(Db.CurrentUser.Person.FromEmail,
-                    Db.PeopleFromPidString(onlineorg.NotifyIds),
+                DbUtil.Db.Email(DbUtil.Db.CurrentUser.Person.FromEmail,
+                    DbUtil.Db.PeopleFromPidString(onlineorg.NotifyIds),
                     "Org Assignment notices sent to:", sb.ToString());
             }
 
-            Db.SubmitChanges();
+            DbUtil.Db.SubmitChanges();
         }
 
         public EpplusResult ToExcel(int oid)

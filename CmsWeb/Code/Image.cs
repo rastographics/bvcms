@@ -16,7 +16,7 @@ namespace CmsWeb.Code
 	{
 		public static byte[] FetchBytes(CMSDataContext Db, int? iid, int w, int h)
 		{
-			var image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == iid);
+			var image = ImageData.CurrentDatabase.Images.SingleOrDefault(i => i.Id == iid);
 			if (image == null)
 				return null;
 			var istream = new MemoryStream(image.Bits);
@@ -35,7 +35,7 @@ namespace CmsWeb.Code
 		}
 		public static byte[] FetchBytes(CMSDataContext Db, int? iid)
 		{
-			var image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == iid);
+			var image = ImageData.CurrentDatabase.Images.SingleOrDefault(i => i.Id == iid);
 			if (image == null)
 				return null;
 			return image.Bits;

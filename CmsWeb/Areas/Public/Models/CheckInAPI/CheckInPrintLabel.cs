@@ -20,10 +20,10 @@ namespace CmsWeb.CheckInAPI
 
             DateTime dob;
 
-            Person person = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == peopleID);
-            Organization org = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == orgID);
+            Person person = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == peopleID);
+            Organization org = CurrentDatabase.Organizations.SingleOrDefault(o => o.OrganizationId == orgID);
 
-            OrganizationMember orgMember = DbUtil.Db.OrganizationMembers.SingleOrDefault(om => om.PeopleId == person.PeopleId && om.OrganizationId == org.OrganizationId);
+            OrganizationMember orgMember = CurrentDatabase.OrganizationMembers.SingleOrDefault(om => om.PeopleId == person.PeopleId && om.OrganizationId == org.OrganizationId);
 
             if (orgMember != null)
             {
@@ -67,7 +67,7 @@ namespace CmsWeb.CheckInAPI
             }
             else
             {
-                Attend attend = DbUtil.Db.Attends.SingleOrDefault(om => om.PeopleId == person.PeopleId && om.OrganizationId == org.OrganizationId && om.MeetingDate == hour);
+                Attend attend = CurrentDatabase.Attends.SingleOrDefault(om => om.PeopleId == person.PeopleId && om.OrganizationId == org.OrganizationId && om.MeetingDate == hour);
 
                 if (attend != null)
                 {

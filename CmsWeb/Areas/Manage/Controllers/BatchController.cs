@@ -35,10 +35,10 @@ namespace CmsWeb.Areas.Manage.Controllers
                         select new { pid = a[0].ToInt(), oid = a[1].ToInt(), grade = a[2].ToInt() };
             foreach (var i in batch)
             {
-                var m = DbUtil.Db.OrganizationMembers.Single(om => om.OrganizationId == i.oid && om.PeopleId == i.pid);
+                var m = CurrentDatabase.OrganizationMembers.Single(om => om.OrganizationId == i.oid && om.PeopleId == i.pid);
                 m.Grade = i.grade;
             }
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
             return Content("done");
         }
@@ -192,7 +192,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost]
         public ActionResult UpdateStatusFlags(FormCollection formCollection)
         {
-            DbUtil.Db.UpdateStatusFlags();
+            CurrentDatabase.UpdateStatusFlags();
             return Content("Status flags were successfully updated.");
         }
 
@@ -229,12 +229,12 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return Content("no tag");
 
             var a = emails.SplitLines();
-            var q = from p in DbUtil.Db.People
+            var q = from p in CurrentDatabase.People
                     where a.Contains(p.EmailAddress) || a.Contains(p.EmailAddress2)
                     select p.PeopleId;
             foreach (var pid in q.Distinct())
-                Person.Tag(DbUtil.Db, pid, tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
-            DbUtil.Db.SubmitChanges();
+                Person.Tag(CurrentDatabase. pid, tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+            CurrentDatabase.SubmitChanges();
             return Redirect("/Tags?tag=" + tagname);
         }
 
@@ -251,14 +251,14 @@ namespace CmsWeb.Areas.Manage.Controllers
                     select line.GetCsvToken(1, sep: "\t").ToInt();
             if (newtag)
             {
-                var tag = DbUtil.Db.FetchTag(name, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+                var tag = CurrentDatabase.FetchTag(name, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
                 if (tag != null)
-                    DbUtil.Db.ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
+                    CurrentDatabase.ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
             }
             foreach (var pid in q)
             {
-                Person.Tag(DbUtil.Db, pid, name, DbUtil.Db.CurrentUser.PeopleId, DbUtil.TagTypeId_Personal);
-                DbUtil.Db.SubmitChanges();
+                Person.Tag(CurrentDatabase. pid, name, CurrentDatabase.CurrentUser.PeopleId, DbUtil.TagTypeId_Personal);
+                CurrentDatabase.SubmitChanges();
             }
             return Redirect("/Tags?tag=" + name);
         }
@@ -276,9 +276,9 @@ namespace CmsWeb.Areas.Manage.Controllers
             var csv = new CsvReader(new StringReader(text), false, '\t').ToList();
             foreach (var a in csv)
             {
-                var p = DbUtil.Db.LoadPersonById(a[0].ToInt());
+                var p = CurrentDatabase.LoadPersonById(a[0].ToInt());
                 p.AddEditExtraCode(field, a[1]);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
             }
             return Redirect("/ExtraValue/Summary/People");
         }
@@ -288,17 +288,17 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Authorize(Roles = "Finance")]
         public ActionResult DoGiving()
         {
-            ManagedGiving.DoAllGiving(DbUtil.Db);
+            ManagedGiving.DoAllGiving(CurrentDatabase);
             return Content("done");
         }
         [HttpGet]
         [Authorize(Roles = "Developer")]
         public ActionResult DoGiving1(int id)
         {
-            var rg = (from r in DbUtil.Db.ManagedGivings
+            var rg = (from r in CurrentDatabase.ManagedGivings
                 where r.PeopleId == id
                 select r).Single();
-            rg.DoGiving(DbUtil.Db);
+            rg.DoGiving(CurrentDatabase);
             return Content($"done with {id}");
         }
 
@@ -333,7 +333,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             try
             {
-                var script = DbUtil.Db.Content(id);
+                var script = CurrentDatabase.Content(id);
                 PythonModel.RunScript(Util.Host, script.Body);
             }
             catch (Exception e)

@@ -1,4 +1,9 @@
-﻿using System;
+﻿using CmsData;
+using CmsData.ExtraValue;
+using CmsWeb.Code;
+using Dapper;
+using MoreLinq;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -6,11 +11,6 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.ExtraValue;
-using CmsWeb.Code;
-using Dapper;
-using MoreLinq;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.ExtraValues
@@ -60,8 +60,8 @@ namespace CmsWeb.Models.ExtraValues
         public object Hidden(string type)
         {
             return type == AdhocExtraValueType.Value
-                ? new {hide = ""}
-                : new {hide = "hide"};
+                ? new { hide = "" }
+                : new { hide = "hide" };
         }
 
         public bool RemoveAnyValue { get; set; }
@@ -71,7 +71,10 @@ namespace CmsWeb.Models.ExtraValues
             get
             {
                 if (ExtraValueBitPrefix.HasValue())
+                {
                     return ExtraValueBitPrefix + ":";
+                }
+
                 return "";
             }
         }
@@ -141,12 +144,12 @@ namespace CmsWeb.Models.ExtraValues
             get
             {
                 var q = from r in DbUtil.Db.Roles
-                    orderby r.RoleName
-                    select new SelectListItem
-                    {
-                        Value = r.RoleName,
-                        Text = r.RoleName
-                    };
+                        orderby r.RoleName
+                        select new SelectListItem
+                        {
+                            Value = r.RoleName,
+                            Text = r.RoleName
+                        };
                 return q.ToList();
             }
         }
@@ -228,76 +231,124 @@ namespace CmsWeb.Models.ExtraValues
         private void TryCheckIntegrity()
         {
             if (ClearOldValuesFirst)
+            {
                 return;
+            }
+
             const string nameAlreadyExistsAsADifferentType = "{0} already exists as a different type";
             string type = ExtraValueLocation == "Adhoc" ? AdhocExtraValueType.Value : ExtraValueType.Value;
             if (type == "Text2")
+            {
                 type = "Text";
+            }
+
             switch (ExtraValueTable)
             {
                 case "People":
                     if (type == "Bits")
+                    {
                         foreach (var b in ConvertToCodes().Where(b => DbUtil.Db.PeopleExtras.Any(ee => ee.Field == b.Text && ee.Type != "Bit")))
+                        {
                             throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, b));
+                        }
+                    }
                     else
                     {
                         if (DbUtil.Db.PeopleExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != type))
+                        {
                             throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, ExtraValueName));
+                        }
+
                         CheckDifferentCase();
                     }
                     break;
                 case "Family":
                     if (type == "Bits")
+                    {
                         foreach (var b in ConvertToCodes().Where(b => DbUtil.Db.FamilyExtras.Any(ee => ee.Field == b.Text && ee.Type != "Bit")))
+                        {
                             throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, b));
+                        }
+                    }
                     else
                     {
                         if (DbUtil.Db.FamilyExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != type))
+                        {
                             throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, ExtraValueName));
+                        }
+
                         CheckDifferentCase();
                     }
                     break;
                 case "Organization":
                     if (type == "Bits")
+                    {
                         foreach (var b in ConvertToCodes().Where(b => DbUtil.Db.OrganizationExtras.Any(ee => ee.Field == b.Text && ee.Type != "Bit")))
+                        {
                             throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, b));
+                        }
+                    }
                     else
                     {
                         if (DbUtil.Db.OrganizationExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != type))
+                        {
                             throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, ExtraValueName));
+                        }
+
                         CheckDifferentCase();
                     }
                     break;
                 case "Meeting":
                     if (type == "Bits")
+                    {
                         foreach (var b in ConvertToCodes().Where(b => DbUtil.Db.MeetingExtras.Any(ee => ee.Field == b.Text && ee.Type != "Bit")))
+                        {
                             throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, b));
+                        }
+                    }
                     else
                     {
                         if (DbUtil.Db.MeetingExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != type))
+                        {
                             throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, ExtraValueName));
+                        }
+
                         CheckDifferentCase();
                     }
                     break;
                 case "OrgMember":
                     if (type == "Bits")
+                    {
                         foreach (var b in ConvertToCodes().Where(b => DbUtil.Db.OrgMemberExtras.Any(ee => ee.Field == b.Text && ee.Type != "Bit")))
+                        {
                             throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, b));
+                        }
+                    }
                     else
                     {
                         if (DbUtil.Db.OrgMemberExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != type))
+                        {
                             throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, ExtraValueName));
+                        }
+
                         CheckDifferentCase();
                     }
                     break;
                 case "Contact":
                     if (type == "Bits")
+                    {
                         foreach (var b in ConvertToCodes().Where(b => DbUtil.Db.ContactExtras.Any(ee => ee.Field == b.Text && ee.Type != "Bit")))
+                        {
                             throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, b));
+                        }
+                    }
                     else
                     {
                         if (DbUtil.Db.ContactExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != type))
+                        {
                             throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, ExtraValueName));
+                        }
+
                         CheckDifferentCase();
                     }
                     break;
@@ -309,7 +360,9 @@ namespace CmsWeb.Models.ExtraValues
             var fields = Views.GetStandardExtraValues(DbUtil.Db, ExtraValueTable);
             var existing = fields.SingleOrDefault(ff => ff.Name.Equal(ExtraValueName));
             if (existing != null && existing.Name != ExtraValueName)
+            {
                 throw new Exception($"{existing.Name} <> {ExtraValueName}");
+            }
         }
 
         public List<CmsData.Classes.ExtraValues.Code> ConvertToCodes()
@@ -329,11 +382,16 @@ Option 2
         public string AddAsNewStandard()
         {
             if (ExtraValueType.Value != "HTML")
+            {
                 ExtraValueName = ExtraValueName.Replace('/', '-');
+            }
+
             var fields = Views.GetStandardExtraValues(DbUtil.Db, ExtraValueTable, false, ExtraValueLocation);
             var existing = fields.SingleOrDefault(ff => ff.Name == ExtraValueName);
             if (existing != null)
+            {
                 throw new Exception($"{ExtraValueName} already exists");
+            }
 
             TryCheckIntegrity();
 
@@ -356,7 +414,10 @@ Option 2
         {
             TryCheckIntegrity();
             if (Id > 0)
+            {
                 return AddNewExtraValueToRecord();
+            }
+
             return AddNewExtraValueToSelectionFromQuery();
         }
 
@@ -393,17 +454,22 @@ Option 2
         {
             var list = DbUtil.Db.PeopleQuery(QueryId).Select(pp => pp.PeopleId).ToList();
             if (ClearOldValuesFirst)
+            {
                 using (var db = DbUtil.Create(DbUtil.Db.Host))
                 {
-                    var q = db.PeopleQuery(QueryId).Select(pp => pp.PeopleId);
-                    var tag = db.PopulateTemporaryTag(q);
+                    var q = DbUtil.Db.PeopleQuery(QueryId).Select(pp => pp.PeopleId);
+                    var tag = DbUtil.Db.PopulateTemporaryTag(q);
                     var cmd = AddToFamilyRecordInsteadOfPerson
                         ? "dbo.ClearFamilyExtraValuesForTag"
                         : "dbo.ClearExtraValuesForTag";
-                    db.ExecuteCommand(cmd + " {0}, {1}", ExtraValueName, tag.Id);
+                    DbUtil.Db.ExecuteCommand(cmd + " {0}, {1}", ExtraValueName, tag.Id);
                 }
+            }
+
             if (AddToFamilyRecordInsteadOfPerson)
+            {
                 ExtraValueTable = "Family";
+            }
 
             switch (AdhocExtraValueType.Value)
             {
@@ -428,11 +494,16 @@ Option 2
             foreach (var pid in list)
             {
                 if (AddToFamilyRecordInsteadOfPerson)
+                {
                     Family.AddEditExtraValue(DbUtil.Db, pid, ExtraValueName, ExtraValueTextBox);
+                }
                 else
+                {
                     Person.AddEditExtraValue(DbUtil.Db, pid, ExtraValueName, ExtraValueTextBox);
+                }
+
                 DbUtil.Db.SubmitChanges();
-                DbUtil.DbDispose();
+                DbDispose();
             }
             return null;
         }
@@ -442,11 +513,16 @@ Option 2
             foreach (var pid in list)
             {
                 if (AddToFamilyRecordInsteadOfPerson)
+                {
                     Family.AddEditExtraData(DbUtil.Db, pid, ExtraValueName, ExtraValueTextArea);
+                }
                 else
+                {
                     Person.AddEditExtraData(DbUtil.Db, pid, ExtraValueName, ExtraValueTextArea);
+                }
+
                 DbUtil.Db.SubmitChanges();
-                DbUtil.DbDispose();
+                DbDispose();
             }
             return null;
         }
@@ -456,11 +532,16 @@ Option 2
             foreach (var pid in list)
             {
                 if (AddToFamilyRecordInsteadOfPerson)
+                {
                     Family.AddEditExtraDate(DbUtil.Db, pid, ExtraValueName, ExtraValueDate);
+                }
                 else
+                {
                     Person.AddEditExtraDate(DbUtil.Db, pid, ExtraValueName, ExtraValueDate);
+                }
+
                 DbUtil.Db.SubmitChanges();
-                DbUtil.DbDispose();
+                DbDispose();
             }
             return null;
         }
@@ -470,11 +551,16 @@ Option 2
             foreach (var pid in list)
             {
                 if (AddToFamilyRecordInsteadOfPerson)
+                {
                     Family.AddEditExtraInt(DbUtil.Db, pid, ExtraValueName, ExtraValueInteger);
+                }
                 else
+                {
                     Person.AddEditExtraInt(DbUtil.Db, pid, ExtraValueName, ExtraValueInteger);
+                }
+
                 DbUtil.Db.SubmitChanges();
-                DbUtil.DbDispose();
+                DbDispose();
             }
             return null;
         }
@@ -484,11 +570,16 @@ Option 2
             foreach (var pid in list)
             {
                 if (AddToFamilyRecordInsteadOfPerson)
+                {
                     Family.AddEditExtraBool(DbUtil.Db, pid, ExtraValueName, ExtraValueCheckbox);
+                }
                 else
+                {
                     Person.AddEditExtraBool(DbUtil.Db, pid, ExtraValueName, ExtraValueCheckbox);
+                }
+
                 DbUtil.Db.SubmitChanges();
-                DbUtil.DbDispose();
+                DbDispose();
             }
             return null;
         }
@@ -518,7 +609,7 @@ and PeopleId in (select PeopleId from TagPerson where Id = @id)
 
             if (RemoveAnyValue)
             {
-                cn.Execute(sql, new {name = ExtraValueName, id = tag.Id});
+                cn.Execute(sql, new { name = ExtraValueName, id = tag.Id });
                 DbUtil.LogActivity($"EV DeleteFromQuery {ExtraValueName}");
                 return;
             }
@@ -526,24 +617,24 @@ and PeopleId in (select PeopleId from TagPerson where Id = @id)
             {
                 case "Bit":
                     cn.Execute(sql + "and BitValue = @value",
-                        new {name = ExtraValueName, value = ExtraValueCheckbox, id = tag.Id});
+                        new { name = ExtraValueName, value = ExtraValueCheckbox, id = tag.Id });
                     break;
                 case "Code":
                     cn.Execute(sql + "and StrValue = @value",
-                        new {name = ExtraValueName, value = ExtraValueCheckbox, id = tag.Id});
+                        new { name = ExtraValueName, value = ExtraValueCheckbox, id = tag.Id });
                     break;
                 case "Text2":
                 case "Text":
                     cn.Execute(sql + "and Data = @value",
-                        new {name = ExtraValueName, value = ExtraValueTextArea, id = tag.Id});
+                        new { name = ExtraValueName, value = ExtraValueTextArea, id = tag.Id });
                     break;
                 case "Date":
                     cn.Execute(sql + "and Date = @value",
-                        new {name = ExtraValueName, value = ExtraValueDate, id = tag.Id});
+                        new { name = ExtraValueName, value = ExtraValueDate, id = tag.Id });
                     break;
                 case "Int":
                     cn.Execute(sql + "and IntValue = @value",
-                        new {name = ExtraValueName, value = ExtraValueInteger, id = tag.Id});
+                        new { name = ExtraValueName, value = ExtraValueInteger, id = tag.Id });
                     break;
             }
             DbUtil.LogActivity($"EV DeleteFromQuery {ExtraValueName} {AdhocExtraValueType.Value}");
@@ -555,7 +646,7 @@ and PeopleId in (select PeopleId from TagPerson where Id = @id)
             var oldfields = Views.GetStandardExtraValues(DbUtil.Db, "People");
             ExtraValue ev = null;
             List<string> codes = null;
-            var v = new CmsData.ExtraValue.Value {Name = name};
+            var v = new CmsData.ExtraValue.Value { Name = name };
             switch (ExtraValueTable)
             {
                 case "People":
@@ -564,7 +655,9 @@ and PeopleId in (select PeopleId from TagPerson where Id = @id)
                           select new ExtraValue(vv, null)).First();
 
                     if (CreateExtraValueBits(name, ev, v))
+                    {
                         return;
+                    }
 
                     //StandardExtraValues.Field bits = null;
                     var bits = oldfields.SingleOrDefault(ff => ff.Codes.Select(x => x.Text).Contains(name));
@@ -597,45 +690,60 @@ and PeopleId in (select PeopleId from TagPerson where Id = @id)
                           where vv.Field == name
                           select new ExtraValue(vv, null)).First();
                     if (ev.Type == "Code")
+                    {
                         codes = (from vv in DbUtil.Db.OrganizationExtras
                                  where vv.Field == name
                                  select vv.StrValue).Distinct().ToList();
+                    }
+
                     break;
                 case "Family":
                     ev = (from vv in DbUtil.Db.FamilyExtras
                           where vv.Field == name
                           select new ExtraValue(vv, null)).First();
                     if (ev.Type == "Code")
+                    {
                         codes = (from vv in DbUtil.Db.FamilyExtras
                                  where vv.Field == name
                                  select vv.StrValue).Distinct().ToList();
+                    }
+
                     break;
                 case "Meeting":
                     ev = (from vv in DbUtil.Db.MeetingExtras
                           where vv.Field == name
                           select new ExtraValue(vv, null)).First();
                     if (ev.Type == "Code")
+                    {
                         codes = (from vv in DbUtil.Db.MeetingExtras
                                  where vv.Field == name
                                  select vv.StrValue).Distinct().ToList();
+                    }
+
                     break;
                 case "OrgMember":
                     ev = (from vv in DbUtil.Db.OrgMemberExtras
                           where vv.Field == name
                           select new ExtraValue(vv, null)).First();
                     if (ev.Type == "Code")
+                    {
                         codes = (from vv in DbUtil.Db.OrgMemberExtras
                                  where vv.Field == name
                                  select vv.StrValue).Distinct().ToList();
+                    }
+
                     break;
                 case "Contact":
                     ev = (from vv in DbUtil.Db.ContactExtras
-                        where vv.Field == name
-                        select new ExtraValue(vv, null)).First();
+                          where vv.Field == name
+                          select new ExtraValue(vv, null)).First();
                     if (ev.Type == "Code")
+                    {
                         codes = (from vv in DbUtil.Db.ContactExtras
-                            where vv.Field == name
-                            select vv.StrValue).Distinct().ToList();
+                                 where vv.Field == name
+                                 select vv.StrValue).Distinct().ToList();
+                    }
+
                     break;
                 default:
                     return;
@@ -651,14 +759,20 @@ and PeopleId in (select PeopleId from TagPerson where Id = @id)
         private bool CreateExtraValueBits(string name, ExtraValue ev, CmsData.ExtraValue.Value v)
         {
             if (!name.Contains(":"))
+            {
                 return false;
+            }
+
             var prefix = name.GetCsvToken(1, 2, ":");
             var allbits = (from vv in DbUtil.Db.PeopleExtras
                            where vv.Field.StartsWith($"{prefix}:")
                            orderby vv.Field
                            select vv.Field).Distinct().ToList();
             if (allbits.Count <= 1)
+            {
                 return false;
+            }
+
             v.Name = prefix;
             v.Type = "Bits";
             v.Codes = allbits.Select(x => new CmsData.Classes.ExtraValues.Code { Text = x }).ToList();

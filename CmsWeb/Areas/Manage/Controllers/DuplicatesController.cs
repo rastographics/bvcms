@@ -28,13 +28,13 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Route("~/Duplicates")]
         public ActionResult Index()
         {
-            var q = from d in DbUtil.Db.Duplicates
-                    where DbUtil.Db.People.Any(pp => pp.PeopleId == d.Id1)
-                    where DbUtil.Db.People.Any(pp => pp.PeopleId == d.Id2)
-                    let name = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == d.Id1).Name
-                    let notdup = DbUtil.Db.PeopleExtras.Any(ee => ee.Field == "notdup" && ee.PeopleId == d.Id1 && ee.IntValue == d.Id2)
-                    let f1 = DbUtil.Db.People.Single(pp => pp.PeopleId == d.Id1)
-                    let f2 = DbUtil.Db.People.Single(pp => pp.PeopleId == d.Id2)
+            var q = from d in CurrentDatabase.Duplicates
+                    where CurrentDatabase.People.Any(pp => pp.PeopleId == d.Id1)
+                    where CurrentDatabase.People.Any(pp => pp.PeopleId == d.Id2)
+                    let name = CurrentDatabase.People.SingleOrDefault(pp => pp.PeopleId == d.Id1).Name
+                    let notdup = CurrentDatabase.PeopleExtras.Any(ee => ee.Field == "notdup" && ee.PeopleId == d.Id1 && ee.IntValue == d.Id2)
+                    let f1 = CurrentDatabase.People.Single(pp => pp.PeopleId == d.Id1)
+                    let f2 = CurrentDatabase.People.Single(pp => pp.PeopleId == d.Id2)
                     let samefamily = f1.FamilyId == f2.FamilyId
                     orderby d.Id1
                     select new DuplicateInfo { d = d, name = name, samefamily = samefamily, notdup = notdup };
@@ -59,25 +59,25 @@ namespace CmsWeb.Areas.Manage.Controllers
                 Processed = 0,
                 Found = 0
             };
-            DbUtil.Db.DuplicatesRuns.InsertOnSubmit(runningtotals);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.DuplicatesRuns.InsertOnSubmit(runningtotals);
+            CurrentDatabase.SubmitChanges();
 
             HostingEnvironment.QueueBackgroundWorkItem(ct =>
             {
                 var db = DbUtil.Create(host);
-                var rt = db.DuplicatesRuns.OrderByDescending(mm => mm.Id).First();
-                db.ExecuteCommand("delete duplicate");
-                var q = from p in db.People
+                var rt = CurrentDatabase.DuplicatesRuns.OrderByDescending(mm => mm.Id).First();
+                CurrentDatabase.ExecuteCommand("delete duplicate");
+                var q = from p in CurrentDatabase.People
                         where p.CreatedDate > fdt
                         where p.CreatedDate < tdt.Value.AddDays(1)
                         select p.PeopleId;
                 rt.Count = q.Count();
-                db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
                 foreach (var p in q)
                 {
-                    var pids = db.FindPerson4(p);
+                    var pids = CurrentDatabase.FindPerson4(p);
                     rt.Processed++;
-                    db.SubmitChanges();
+                    CurrentDatabase.SubmitChanges();
                     if (!pids.Any())
                     {
                         continue;
@@ -87,27 +87,27 @@ namespace CmsWeb.Areas.Manage.Controllers
                     {
                         if (pid.PeopleId != null)
                         {
-                            db.InsertDuplicate(p, pid.PeopleId.Value);
+                            CurrentDatabase.InsertDuplicate(p, pid.PeopleId.Value);
                         }
                     }
 
                     rt.Found++;
                 }
                 rt.Completed = DateTime.Now;
-                db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
             });
             return Redirect("/Duplicates/Progress");
         }
         [HttpGet]
         public ActionResult Progress()
         {
-            var rt = DbUtil.Db.DuplicatesRuns.OrderByDescending(mm => mm.Id).First();
+            var rt = CurrentDatabase.DuplicatesRuns.OrderByDescending(mm => mm.Id).First();
             return View(rt);
         }
         [HttpPost]
         public JsonResult Progress2()
         {
-            var r = DbUtil.Db.DuplicatesRuns.OrderByDescending(mm => mm.Id).First();
+            var r = CurrentDatabase.DuplicatesRuns.OrderByDescending(mm => mm.Id).First();
             return Json(new { r.Count, r.Error, r.Processed, r.Found, Completed = r.Completed.ToString(), r.Running });
         }
     }

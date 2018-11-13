@@ -28,7 +28,7 @@ namespace CmsWeb.Areas.Reports.Models
         public override void ExecuteResult(ControllerContext context)
         {
             var Response = context.HttpContext.Response;
-            var q = DbUtil.Db.PeopleQuery(id);
+            var q = CurrentDatabase.PeopleQuery(id);
             var q2 = from p in q
                      orderby p.Name2
                      select new

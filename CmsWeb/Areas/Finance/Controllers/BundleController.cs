@@ -59,7 +59,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             var m = new BundleModel(id);
             UpdateModel<BundleModel>(m);
             UpdateModel<BundleHeader>(m.Bundle, "Bundle");
-            var q = from d in DbUtil.Db.BundleDetails
+            var q = from d in CurrentDatabase.BundleDetails
                     where d.BundleHeaderId == m.Bundle.BundleHeaderId
                     select d.Contribution;
             var dt = q.Select(cc => cc.ContributionDate).FirstOrDefault();
@@ -86,7 +86,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                     d.Contribution.PostingDate = postingdt;
                 }
             }
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             if (User.IsInRole("FinanceDataEntry"))
             {
                 return Redirect("/Bundles");
@@ -109,10 +109,10 @@ namespace CmsWeb.Areas.Finance.Controllers
             var m = new BundleModel(id);
             var q = from d in m.Bundle.BundleDetails
                     select d.Contribution;
-            DbUtil.Db.Contributions.DeleteAllOnSubmit(q);
-            DbUtil.Db.BundleDetails.DeleteAllOnSubmit(m.Bundle.BundleDetails);
-            DbUtil.Db.BundleHeaders.DeleteOnSubmit(m.Bundle);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.Contributions.DeleteAllOnSubmit(q);
+            CurrentDatabase.BundleDetails.DeleteAllOnSubmit(m.Bundle.BundleDetails);
+            CurrentDatabase.BundleHeaders.DeleteOnSubmit(m.Bundle);
+            CurrentDatabase.SubmitChanges();
             return Content("/Bundles");
         }
     }

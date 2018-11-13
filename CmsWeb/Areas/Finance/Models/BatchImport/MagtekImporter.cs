@@ -31,9 +31,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 ContributionDate = date,
                 CreatedBy = Util.UserId,
                 CreatedDate = now,
-                FundId = DbUtil.Db.Setting("DefaultFundId", "1").ToInt()
+                FundId = CurrentDatabase.Setting("DefaultFundId", "1").ToInt()
             };
-            DbUtil.Db.BundleHeaders.InsertOnSubmit(bh);
+            CurrentDatabase.BundleHeaders.InsertOnSubmit(bh);
 
             var re = new Regex(
 @"(T(?<rt>[\d?]+)T(?<ac>[\d ?]*)U\s*(?<ck>[\d?]+))|
@@ -51,7 +51,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                     CreatedDate = now,
                 };
                 bh.BundleDetails.Add(bd);
-                var qf = from f in DbUtil.Db.ContributionFunds
+                var qf = from f in CurrentDatabase.ContributionFunds
                          where f.FundStatusId == 1
                          orderby f.FundId
                          select f.FundId;
@@ -67,7 +67,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 };
                 bd.Contribution.ContributionDesc = ck;
                 var eac = Util.Encrypt(rt + "," + ac);
-                var q = from kc in DbUtil.Db.CardIdentifiers
+                var q = from kc in CurrentDatabase.CardIdentifiers
                         where kc.Id == eac
                         select kc.PeopleId;
                 var pid = q.SingleOrDefault();
@@ -81,7 +81,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             bh.TotalChecks = 0;
             bh.TotalCash = 0;
             bh.TotalEnvelopes = 0;
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return bh.BundleHeaderId;
         }
     }

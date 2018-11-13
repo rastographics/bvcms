@@ -64,9 +64,9 @@ namespace CmsWeb.Areas.Reports.Models
             if (qid != null) // print using a query
             {
                 pageEvents.StartPageSet($"Registration Report: {dt:d}");
-                var q2 = DbUtil.Db.PeopleQuery(qid.Value);
+                var q2 = CurrentDatabase.PeopleQuery(qid.Value);
                 if (!oid.HasValue)
-                    oid = DbUtil.Db.CurrentSessionOrgId;
+                    oid = CurrentDatabase.CurrentSessionOrgId;
                 var q = from p in q2
                         orderby p.Name2
                         select new
@@ -84,7 +84,7 @@ namespace CmsWeb.Areas.Reports.Models
                     {
                         Settings setting = null;
                         if (i.o != null)
-                            setting = DbUtil.Db.CreateRegistrationSettings(i.o.OrganizationId);
+                            setting = CurrentDatabase.CreateRegistrationSettings(i.o.OrganizationId);
                         var t1 = new PdfPTable(1);
                         SetDefaults(t1);
                         t1.AddCell(i.p.Name);
@@ -197,7 +197,7 @@ namespace CmsWeb.Areas.Reports.Models
                         }
                         if (i.m?.OnlineRegData != null)
                         {
-                            var qlist = from qu in DbUtil.Db.ViewOnlineRegQAs
+                            var qlist = from qu in CurrentDatabase.ViewOnlineRegQAs
                                         where qu.OrganizationId == i.m.OrganizationId
                                         where qu.Type == "question" || qu.Type == "text"
                                         where qu.PeopleId == i.m.PeopleId
@@ -335,7 +335,7 @@ namespace CmsWeb.Areas.Reports.Models
         {
             if (queryid == null)
                 return null;
-            var peopleQuery = DbUtil.Db.PeopleQuery(queryid.Value);
+            var peopleQuery = CurrentDatabase.PeopleQuery(queryid.Value);
             var results = (from p in peopleQuery
                 let rr = p.RecRegs.SingleOrDefault() ?? new RecReg()
                 let headOfHousehold = p.Family.HeadOfHousehold
@@ -360,7 +360,7 @@ namespace CmsWeb.Areas.Reports.Models
             {
                 Settings setting = null;
                 if (x.Organization != null)
-                    setting = DbUtil.Db.CreateRegistrationSettings(x.Organization.OrganizationId);
+                    setting = CurrentDatabase.CreateRegistrationSettings(x.Organization.OrganizationId);
 
                 var row = table.NewRow();
 
@@ -434,7 +434,7 @@ namespace CmsWeb.Areas.Reports.Models
 
                 if (x.OrgMembers?.OnlineRegData != null)
                 {
-                    var qlist = from qu in DbUtil.Db.ViewOnlineRegQAs
+                    var qlist = from qu in CurrentDatabase.ViewOnlineRegQAs
                         where qu.OrganizationId == x.OrgMembers.OrganizationId
                         where qu.Type == "question" || qu.Type == "text"
                         where qu.PeopleId == x.OrgMembers.PeopleId

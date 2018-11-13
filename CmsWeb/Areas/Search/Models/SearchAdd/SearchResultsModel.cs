@@ -60,16 +60,16 @@ namespace CmsWeb.Areas.Search.Models
             if (ShowLimitedSearch)
                 return RunLimitedSearch();
 
-            var db = DbUtil.Db;
+            var db = Db;
             var q = Util2.OrgLeadersOnly
-                ? db.OrgLeadersOnlyTag2().People(db)
-                : db.People.AsQueryable();
+                ? DbUtil.Db.OrgLeadersOnlyTag2().People(DbUtil.Db)
+                : DbUtil.Db.People.AsQueryable();
 
             if (UsersOnly)
                 q = q.Where(p => p.Users.Any(uu => uu.UserRoles.Any(ur => ur.Role.RoleName == "Access")));
 
             if (OnlineRegTypeSearch)
-                return from pid in db.FindPerson(FirstName, LastName, dob.ToDate(), Email, Phone)
+                return from pid in DbUtil.Db.FindPerson(FirstName, LastName, dob.ToDate(), Email, Phone)
                     join p in q on pid.PeopleId equals p.PeopleId
                     select p;
 

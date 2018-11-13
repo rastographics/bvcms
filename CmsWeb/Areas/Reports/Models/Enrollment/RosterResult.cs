@@ -49,7 +49,7 @@ namespace CmsWeb.Areas.Reports.Models
             {
                 var o = ReportList().First();
                 StartPageSet(o);
-                var q = DbUtil.Db.PeopleQuery(qid.Value);
+                var q = CurrentDatabase.PeopleQuery(qid.Value);
                 var q2 = from p in q
                          let rr = p.GetRecReg()
                          join m in RollsheetModel.FetchOrgMembers(o.OrgId, null) on p.PeopleId equals m.PeopleId into j

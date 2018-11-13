@@ -37,7 +37,7 @@ namespace CmsWeb.Areas.Reports.Models
         private DocX docx;
         private DocX curr;
         private Meeting meeting;
-        private OrgFilter Filter => QueryId.HasValue ? DbUtil.Db.OrgFilters.Single(vv => vv.QueryId == QueryId) : null;
+        private OrgFilter Filter => QueryId.HasValue ? CurrentDatabase.OrgFilters.Single(vv => vv.QueryId == QueryId) : null;
 
         public class RollsheetPersonInfo
         {
@@ -53,7 +53,7 @@ namespace CmsWeb.Areas.Reports.Models
 
             if (Meetingid.HasValue)
             {
-                meeting = DbUtil.Db.Meetings.Single(mt => mt.MeetingId == Meetingid);
+                meeting = CurrentDatabase.Meetings.Single(mt => mt.MeetingId == Meetingid);
                 Debug.Assert(meeting.MeetingDate != null, "meeting.MeetingDate != null");
                 NewMeetingInfo = new NewMeetingInfo { MeetingDate = meeting.MeetingDate.Value };
             }
@@ -68,7 +68,7 @@ namespace CmsWeb.Areas.Reports.Models
             var bytes = RollsheetTemplate() ?? Resource1.DocxRollsheet;
             var ms = new MemoryStream(bytes);
             docx = DocX.Load(ms);
-            replacements = new EmailReplacements(DbUtil.Db, docx);
+            replacements = new EmailReplacements(CurrentDatabase. docx);
             var sources = new List<Source>();
 
             foreach (var o in list1)
@@ -100,9 +100,9 @@ namespace CmsWeb.Areas.Reports.Models
                 }
                 else if (OrgSearchModel != null)
                 {
-                    var q = from om in DbUtil.Db.OrganizationMembers
+                    var q = from om in CurrentDatabase.OrganizationMembers
                             where om.OrganizationId == o.OrgId
-                            join m in DbUtil.Db.OrgPeople(o.OrgId, o.Groups) on om.PeopleId equals m.PeopleId
+                            join m in CurrentDatabase.OrgPeople(o.OrgId, o.Groups) on om.PeopleId equals m.PeopleId
                             where om.EnrollmentDate <= Util.Now
                             orderby om.Person.LastName, om.Person.FamilyId, om.Person.Name2
                             let p = om.Person
@@ -121,9 +121,9 @@ namespace CmsWeb.Areas.Reports.Models
                 }
                 else if (Filter?.GroupSelect == GroupSelectCode.Member)
                 {
-                    var q = from om in DbUtil.Db.OrganizationMembers
+                    var q = from om in CurrentDatabase.OrganizationMembers
                             where om.OrganizationId == Filter.Id
-                            join m in DbUtil.Db.OrgFilterPeople(QueryId, null)
+                            join m in CurrentDatabase.OrgFilterPeople(QueryId, null)
                                 on om.PeopleId equals m.PeopleId
                             where om.EnrollmentDate <= Util.Now
                             where NewMeetingInfo.ByGroup == false || m.Groups.Contains((char)10 + o.Groups + (char)10)
@@ -145,9 +145,9 @@ namespace CmsWeb.Areas.Reports.Models
                 }
                 else
                 {
-                    var q = from m in DbUtil.Db.OrgFilterPeople(QueryId, null)
+                    var q = from m in CurrentDatabase.OrgFilterPeople(QueryId, null)
                             orderby m.Name2
-                            let p = DbUtil.Db.People.Single(pp => pp.PeopleId == m.PeopleId)
+                            let p = CurrentDatabase.People.Single(pp => pp.PeopleId == m.PeopleId)
                             let om = p.OrganizationMembers.SingleOrDefault(mm => mm.OrganizationId == Filter.Id)
                             let useAltName = NewMeetingInfo.UseAltNames && p.AltName != null && p.AltName.Length > 0
                             select new RollsheetPersonInfo
@@ -173,8 +173,8 @@ namespace CmsWeb.Areas.Reports.Models
                         && !Filter.FilterTag == true
                         && NewMeetingInfo.ByGroup == false))
                 {
-                    var q = from vp in DbUtil.Db.OrgVisitorsAsOfDate(o.OrgId, NewMeetingInfo.MeetingDate, NoCurrentMembers: true)
-                            let p = DbUtil.Db.People.Single(pp => pp.PeopleId == vp.PeopleId)
+                    var q = from vp in CurrentDatabase.OrgVisitorsAsOfDate(o.OrgId, NewMeetingInfo.MeetingDate, NoCurrentMembers: true)
+                            let p = CurrentDatabase.People.Single(pp => pp.PeopleId == vp.PeopleId)
                             orderby p.LastName, p.FamilyId, p.PreferredName
                             select new RollsheetPersonInfo { Person = p, MemberTypeCode = vp.VisitorType };
                     foreach (var m in q)
@@ -306,7 +306,7 @@ namespace CmsWeb.Areas.Reports.Models
                 ? OrgSearchModel.FetchOrgs(Filter?.Id ?? 0)
                 : OrgSearchModel.FetchOrgs();
             var q = from o in orgs
-                    from sg in DbUtil.Db.MemberTags
+                    from sg in CurrentDatabase.MemberTags
                     where sg.OrgId == o.OrganizationId
                     where (NewMeetingInfo.GroupFilterPrefix ?? "") == "" || sg.Name.StartsWith(NewMeetingInfo.GroupFilterPrefix)
                     orderby sg.Name
@@ -358,7 +358,7 @@ namespace CmsWeb.Areas.Reports.Models
 
         private static byte[] RollsheetTemplate()
         {
-            var loc = DbUtil.Db.Setting("RollsheetTemplate", "");
+            var loc = CurrentDatabase.Setting("RollsheetTemplate", "");
             if (loc.HasValue())
             {
                 var wc = new WebClient();

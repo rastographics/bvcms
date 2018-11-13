@@ -3,9 +3,9 @@
 @using CmsWeb
 @using UtilityExtensions
 @{
-    var useemployer = DbUtil.Db.Setting("UseEmployerNotTeacher");
+    var useemployer = CurrentDatabase.Setting("UseEmployerNotTeacher");
     var target = Util2.TargetLinkPeople ? "target='people'" : "";
-    var showAltName = DbUtil.Db.Setting("ShowAltNameOnSearchResults");
+    var showAltName = CurrentDatabase.Setting("ShowAltNameOnSearchResults");
 }
 <!--@Html.Raw(ViewBag.xml)-->
 <div class="box box-responsive">

@@ -18,7 +18,7 @@ namespace CmsWeb.Models
             get
             {
                 if (_Queue == null)
-                    _Queue = DbUtil.Db.EmailQueues.SingleOrDefault(ee => ee.Id == Id);
+                    _Queue = CurrentDatabase.EmailQueues.SingleOrDefault(ee => ee.Id == Id);
                 return _Queue;
             }
         }
@@ -88,7 +88,7 @@ namespace CmsWeb.Models
 
         private void LoadRecipients(int? page = null, int? pageSize = null)
         {
-            var cn = DbUtil.Db.Connection;
+            var cn = CurrentDatabase.Connection;
             dynamic counts = cn.Query(@"
 SELECT
 	COUNT(*) AS Total
@@ -211,7 +211,7 @@ WHERE
 ORDER BY Name2
 OFFSET (@currentPage-1)*@pageSize ROWS FETCH NEXT @pageSize ROWS ONLY
 ";
-            var roles = DbUtil.Db.CurrentRoles();
+            var roles = CurrentDatabase.CurrentRoles();
             var isAdmin = roles.Contains("Admin") || roles.Contains("ManageEmails") || roles.Contains("Finance");
             string filter;
 
@@ -241,7 +241,7 @@ OFFSET (@currentPage-1)*@pageSize ROWS FETCH NEXT @pageSize ROWS ONLY
                 filter
             };
 
-            return DbUtil.Db.Connection.Query<RecipientInfo>(sql, args);
+            return CurrentDatabase.Connection.Query<RecipientInfo>(sql, args);
         }
 
         public bool CanDelete()
@@ -250,7 +250,7 @@ OFFSET (@currentPage-1)*@pageSize ROWS FETCH NEXT @pageSize ROWS ONLY
                 return true;
             if (queue.QueuedBy == Util.UserPeopleId)
                 return true;
-            var u = DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0);
+            var u = CurrentDatabase.LoadPersonById(Util.UserPeopleId ?? 0);
             return queue.FromAddr == u.EmailAddress;
         }
 
@@ -263,7 +263,7 @@ OFFSET (@currentPage-1)*@pageSize ROWS FETCH NEXT @pageSize ROWS ONLY
                 var sendFromOrg = queue.SendFromOrgId.HasValue && !Recipients.Any();
                 if (sendFromOrg)
                 {
-                    var i = from o in DbUtil.Db.Organizations
+                    var i = from o in CurrentDatabase.Organizations
                             where o.OrganizationId == queue.SendFromOrgId
                             select o.OrganizationName;
                     SendFromOrgName = i.Single();
@@ -274,7 +274,7 @@ OFFSET (@currentPage-1)*@pageSize ROWS FETCH NEXT @pageSize ROWS ONLY
 
         public Guid CurrentPersonQueryId
         {
-            get { return DbUtil.Db.QueryIsCurrentPerson().QueryId; }
+            get { return CurrentDatabase.QueryIsCurrentPerson().QueryId; }
         }
 
         private int? _emptyTemplateId;
@@ -284,7 +284,7 @@ OFFSET (@currentPage-1)*@pageSize ROWS FETCH NEXT @pageSize ROWS ONLY
             {
                 if (!_emptyTemplateId.HasValue)
                 {
-                    var emptyTemplate = (from content in DbUtil.Db.Contents
+                    var emptyTemplate = (from content in CurrentDatabase.Contents
                                          where content.Name == "Empty Template"
                                          select content).SingleOrDefault();
 

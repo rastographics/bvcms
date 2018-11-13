@@ -21,14 +21,14 @@ namespace CmsWeb.Areas.Manage.Controllers
             if( id == 0 || labelFormat.Length == 0 )
                 return new RedirectResult("/CheckinLabels");
 
-            var label = (from e in DbUtil.Db.LabelFormats
+            var label = (from e in CurrentDatabase.LabelFormats
                          where e.Id == id
                          select e).FirstOrDefault();
 
             if (label != null)
             {
                 label.Format = labelFormat.Replace("\n", "").Replace("\r", "");
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
             }
 
             return new RedirectResult("/CheckinLabels/" + id);

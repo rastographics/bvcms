@@ -32,7 +32,7 @@ namespace CmsWeb.Models
 			{
 				w.WriteStartElement("Family");
 
-				var people = from p in DbUtil.Db.People
+				var people = from p in CurrentDatabase.People
 								 where p.FamilyId == fid
 								 where p.DeceasedDate == null
 								 orderby p.PositionInFamilyId, p.PositionInFamilyId == 10 ? p.Gender.Code : "U", p.Age
@@ -89,7 +89,7 @@ namespace CmsWeb.Models
 					w.WriteAttributeString("memberstatusid", c.MemberStatus.Id.ToString());
 					w.WriteAttributeString("access", allowAccess);
 
-					int visits = (from e in DbUtil.Db.CheckInTimes
+					int visits = (from e in CurrentDatabase.CheckInTimes
 									  where e.PeopleId == c.PeopleId
 									  where e.Location == building
 									  where e.AccessTypeID == 2

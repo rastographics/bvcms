@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost, Route("~/AddToOrgFromTag/{qid:guid}")]
         public ActionResult Index(Guid qid)
         {
-            LongRunningOperation.RemoveExisting(DbUtil.Db, qid);
+            LongRunningOperation.RemoveExisting(CurrentDatabase. qid);
             var model = new AddToOrgFromTag(qid);
             return View(model);
         }
@@ -31,8 +31,8 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 return View("Index", model);
             }
 
-            model.UpdateLongRunningOp(DbUtil.Db, AddToOrgFromTag.Op);
-            if (model.ShowCount(DbUtil.Db))
+            model.UpdateLongRunningOp(CurrentDatabase. AddToOrgFromTag.Op);
+            if (model.ShowCount(CurrentDatabase))
             {
                 return View("Index", model); // let them confirm by seeing the count and the tagname
             }
@@ -40,7 +40,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             if (!model.Started.HasValue)
             {
                 DbUtil.LogActivity($"Add to org from tag for {Session["ActiveOrganization"]}");
-                model.Process(DbUtil.Db);
+                model.Process(CurrentDatabase);
             }
 
             return View(model);

@@ -18,7 +18,7 @@ namespace CmsWeb.Code
     {
         public IEnumerable<CodeValueItem> EnvelopeOptionList()
         {
-            return from ms in DbUtil.Db.EnvelopeOptions
+            return from ms in CurrentDatabase.EnvelopeOptions
                    orderby ms.Description
                    select new CodeValueItem
                    {
@@ -40,7 +40,7 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> JoinTypeList()
         {
-            return from ms in DbUtil.Db.JoinTypes
+            return from ms in CurrentDatabase.JoinTypes
                    orderby ms.Description
                    select new CodeValueItem
                    {
@@ -52,7 +52,7 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> DropTypeList()
         {
-            return from ms in DbUtil.Db.DropTypes
+            return from ms in CurrentDatabase.DropTypes
                    orderby ms.Description
                    select new CodeValueItem
                    {
@@ -64,7 +64,7 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> NewMemberClassStatusList()
         {
-            return from c in DbUtil.Db.NewMemberClassStatuses
+            return from c in CurrentDatabase.NewMemberClassStatuses
                    select new CodeValueItem
                    {
                        Id = c.Id,
@@ -75,7 +75,7 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> BaptismTypeList()
         {
-            return from ms in DbUtil.Db.BaptismTypes
+            return from ms in CurrentDatabase.BaptismTypes
                    select new CodeValueItem
                    {
                        Id = ms.Id,
@@ -86,7 +86,7 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> BaptismStatusList()
         {
-            return from ms in DbUtil.Db.BaptismStatuses
+            return from ms in CurrentDatabase.BaptismStatuses
                    select new CodeValueItem
                    {
                        Id = ms.Id,
@@ -97,7 +97,7 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> DecisionTypeList()
         {
-            return from ms in DbUtil.Db.DecisionTypes
+            return from ms in CurrentDatabase.DecisionTypes
                    select new CodeValueItem
                    {
                        Id = ms.Id,
@@ -295,7 +295,7 @@ namespace CmsWeb.Code
         }
         public SelectList TaskSearchStatusList()
         {
-            var list = (from vc in DbUtil.Db.TaskStatuses
+            var list = (from vc in CurrentDatabase.TaskStatuses
                 orderby vc.Description
                 select new CodeValueItem
                 {
@@ -308,17 +308,17 @@ namespace CmsWeb.Code
         }
         public static SelectList TaskStatusList()
         {
-            var list = DbUtil.Db.TaskStatuses.ToList();
+            var list = CurrentDatabase.TaskStatuses.ToList();
             return new SelectList(list, "Id", "Description");
         }
         public SelectList TaskLimitToRoleList()
         {
-            var roles = DbUtil.Db.Setting("LimitToRolesForTasks", 
-                    DbUtil.Db.Setting("LimitToRolesForContacts", ""))
+            var roles = CurrentDatabase.Setting("LimitToRolesForTasks", 
+                    CurrentDatabase.Setting("LimitToRolesForContacts", ""))
                 .SplitStr(",").Where(rr => rr.HasValue()).ToArray();
             
             if (roles.Length == 0)
-                roles = DbUtil.Db.Roles.OrderBy(r => r.RoleName).Select(r => r.RoleName).ToArray();
+                roles = CurrentDatabase.Roles.OrderBy(r => r.RoleName).Select(r => r.RoleName).ToArray();
             var list = roles.Select(rolename => new 
             {
                 Value = rolename,

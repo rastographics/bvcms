@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult Users(int id)
         {
-            var q = from u in DbUtil.Db.Users
+            var q = from u in CurrentDatabase.Users
                     where u.PeopleId == id
                     select u;
             return View("System/Users", q);
@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.People.Controllers
         {
             User u = null;
             if (id.HasValue)
-                u = DbUtil.Db.Users.Single(us => us.UserId == id);
+                u = CurrentDatabase.Users.Single(us => us.UserId == id);
             else
             {
                 u = AccountModel.AddUser(Util2.CurrentPeopleId);
@@ -45,10 +45,10 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost, Authorize(Roles = "Admin")]
         public ActionResult UserUpdate(int id, string u, string p, bool sendwelcome, string[] role)
         {
-            var user = DbUtil.Db.Users.Single(us => us.UserId == id);
+            var user = CurrentDatabase.Users.Single(us => us.UserId == id);
             if (u.HasValue() && user.Username != u)
             {
-                var uu = DbUtil.Db.Users.SingleOrDefault(us => us.Username == u);
+                var uu = CurrentDatabase.Users.SingleOrDefault(us => us.Username == u);
                 if (uu != null)
                 {
                     ViewBag.ErrorMsg = $"username '{u}' already exists";
@@ -56,13 +56,13 @@ namespace CmsWeb.Areas.People.Controllers
                 }
                 user.Username = u;
             }
-            user.SetRoles(DbUtil.Db, role);
+            user.SetRoles(CurrentDatabase. role);
             if (p.HasValue())
                 user.ChangePassword(p);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             if (!user.PeopleId.HasValue)
                 throw new Exception("missing peopleid in UserUpdate");
-            var pp = DbUtil.Db.LoadPersonById(user.PeopleId.Value);
+            var pp = CurrentDatabase.LoadPersonById(user.PeopleId.Value);
             if (sendwelcome)
                 AccountModel.SendNewUserEmail(u);
             var name = Session["ActivePerson"] as string;
@@ -74,9 +74,9 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost, Authorize(Roles = "Admin")]
         public ActionResult UserDelete(int id)
         {
-            var u = DbUtil.Db.Users.Single(us => us.UserId == id);
-            var p = DbUtil.Db.LoadPersonById(u.PeopleId.Value);
-            DbUtil.Db.PurgeUser(id);
+            var u = CurrentDatabase.Users.Single(us => us.UserId == id);
+            var p = CurrentDatabase.LoadPersonById(u.PeopleId.Value);
+            CurrentDatabase.PurgeUser(id);
             InitExportToolbar(p.PeopleId);
             return View("System/Users", p.Users.AsEnumerable());
         }
@@ -84,7 +84,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpGet, Authorize(Roles = "Admin")]
         public ActionResult Impersonate(int id)
         {
-            var user = DbUtil.Db.Users.SingleOrDefault(uu => uu.UserId == id);
+            var user = CurrentDatabase.Users.SingleOrDefault(uu => uu.UserId == id);
             if (user == null)
                 return Content("no user");
             if (user.Roles.Contains("Finance") && !User.IsInRole("Finance"))
@@ -123,7 +123,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult MergeHistory(int id)
         {
-            var q = DbUtil.Db.MergeHistories.Where(ii => ii.ToId == id).OrderBy(ii => ii.Dt);
+            var q = CurrentDatabase.MergeHistories.Where(ii => ii.ToId == id).OrderBy(ii => ii.Dt);
             return View("System/MergeHistory", q);
         }
     }

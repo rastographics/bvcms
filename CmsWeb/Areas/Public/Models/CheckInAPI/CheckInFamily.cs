@@ -28,11 +28,11 @@ namespace CmsWeb.CheckInAPI
             this.name = name;
             this.locked = locked;
 
-            Family family = DbUtil.Db.Families.SingleOrDefault( f => f.FamilyId == id );
+            Family family = CurrentDatabase.Families.SingleOrDefault( f => f.FamilyId == id );
 
             if( family == null || family.Picture == null ) return;
 
-            Image image = ImageData.DbUtil.Db.Images.SingleOrDefault( i => i.Id == family.Picture.SmallId );
+            Image image = ImageData.CurrentDatabase.Images.SingleOrDefault( i => i.Id == family.Picture.SmallId );
 
             if( image != null ) {
                 picture = Convert.ToBase64String( image.Bits );

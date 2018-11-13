@@ -71,7 +71,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 throw new HttpException(404, "No ID found.");
             }
 
-            var q = from c in DbUtil.Db.Contents
+            var q = from c in CurrentDatabase.Contents
                     where c.Id == id.Value
                     select new { content = c, keywords = string.Join(",", c.ContentKeyWords.Select(vv => vv.Word)) };
             var i = q.SingleOrDefault();
@@ -83,7 +83,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             if (snippet == true)
             {
                 i.content.Snippet = true;
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
             }
             ViewBag.ContentKeywords = i.keywords;
             return RedirectEdit(i.content);
@@ -117,11 +117,11 @@ namespace CmsWeb.Areas.Manage.Controllers
             var ContentKeywordFilter = Session["ContentKeywordFilter"] as string;
             if (ContentKeywordFilter.HasValue())
             {
-                content.SetKeyWords(DbUtil.Db, new[] { ContentKeywordFilter });
+                content.SetKeyWords(CurrentDatabase, new[] { ContentKeywordFilter });
             }
 
-            DbUtil.Db.Contents.InsertOnSubmit(content);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.Contents.InsertOnSubmit(content);
+            CurrentDatabase.SubmitChanges();
             ViewBag.ContentKeywords = ContentKeywordFilter ?? "";
 
             return RedirectEdit(content);
@@ -137,7 +137,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             content.RemoveGrammarly();
             content.RoleID = roleid ?? 0;
             content.Snippet = snippet;
-            content.SetKeyWords(DbUtil.Db, contentKeyWords.SplitStr(",").Select(vv => vv.trim()).ToArray());
+            content.SetKeyWords(CurrentDatabase, contentKeyWords.SplitStr(",").Select(vv => vv.trim()).ToArray());
 
             if (content.TypeID == ContentTypeCode.TypeEmailTemplate)
             {
@@ -158,7 +158,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     errorLog.Log(new Error(ex));
                 }
             }
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
             if (string.Compare(content.Name, "CustomReportsMenu", StringComparison.OrdinalIgnoreCase) == 0)
             {
@@ -178,7 +178,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 try
                 {
-                    var list = DbUtil.Db.ViewCustomScriptRoles.ToList();
+                    var list = CurrentDatabase.ViewCustomScriptRoles.ToList();
                 }
                 catch (Exception ex)
                 {
@@ -192,7 +192,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 try
                 {
-                    CmsData.ExtraValue.Views.GetStandardExtraValues(DbUtil.Db, "People");
+                    CmsData.ExtraValue.Views.GetStandardExtraValues(CurrentDatabase, "People");
                 }
                 catch (InvalidOperationException ex)
                 {
@@ -215,8 +215,8 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult ContentDelete(int id)
         {
             var content = DbUtil.ContentFromID(id);
-            DbUtil.Db.ExecuteCommand("DELETE FROM dbo.ContentKeywords WHERE Id = {0}", id);
-            DbUtil.Db.ExecuteCommand("DELETE FROM dbo.Content WHERE Id = {0}", id);
+            CurrentDatabase.ExecuteCommand("DELETE FROM dbo.ContentKeywords WHERE Id = {0}", id);
+            CurrentDatabase.ExecuteCommand("DELETE FROM dbo.Content WHERE Id = {0}", id);
             var url = GetIndexTabUrl(content);
             return Redirect(url);
         }
@@ -224,7 +224,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult ContentDeleteDrafts(string[] draftID)
         {
             string deleteList = String.Join(",", draftID);
-            DbUtil.Db.ExecuteCommand("DELETE FROM dbo.Content WHERE Id IN(" + deleteList + ")", "");
+            CurrentDatabase.ExecuteCommand("DELETE FROM dbo.Content WHERE Id IN(" + deleteList + ")", "");
             return Redirect("/Display#tab_savedDrafts");
         }
 
@@ -243,7 +243,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     return View("EditSqlScript", cContent);
 
                 case ContentTypeCode.TypePythonScript:
-                    ViewBag.SimpleTextarea = DbUtil.Db.UserPreference("SimpleTextarea", "false");
+                    ViewBag.SimpleTextarea = CurrentDatabase.UserPreference("SimpleTextarea", "false");
                     return View("EditPythonScript", cContent);
 
                 case ContentTypeCode.TypeEmailTemplate:
@@ -278,9 +278,9 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost]
         public ActionResult SavePythonScript(string name, string body, string contentKeyWords)
         {
-            var content = DbUtil.Db.Content(name, "", ContentTypeCode.TypePythonScript);
+            var content = CurrentDatabase.Content(name, "", ContentTypeCode.TypePythonScript);
             content.Body = body;
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return new EmptyResult();
         }
 

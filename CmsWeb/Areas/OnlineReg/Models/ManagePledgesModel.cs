@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             get
             {
                 if (_Person == null)
-                    _Person = DbUtil.Db.LoadPersonById(pid);
+                    _Person = CurrentDatabase.LoadPersonById(pid);
                 return _Person;
             }
         }
@@ -28,7 +28,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             get
             {
                 if (_organization == null)
-                    _organization = DbUtil.Db.Organizations.Single(d => d.OrganizationId == orgid);
+                    _organization = CurrentDatabase.Organizations.Single(d => d.OrganizationId == orgid);
                 return _organization;
             }
         }
@@ -45,12 +45,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
 
         private Settings setting;
-        public Settings Setting => setting ?? (setting = DbUtil.Db.CreateRegistrationSettings(orgid));
+        public Settings Setting => setting ?? (setting = CurrentDatabase.CreateRegistrationSettings(orgid));
 
         public PledgeInfo GetPledgeInfo()
         {
             var RRTypes = new int[] { 6, 7 };
-            var q = from c in DbUtil.Db.Contributions
+            var q = from c in CurrentDatabase.Contributions
                     where c.FundId == Setting.DonationFundId
                     where c.PeopleId == pid
                     where !RRTypes.Contains(c.ContributionTypeId)
@@ -69,11 +69,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
         public void Confirm()
         {
-            var staff = DbUtil.Db.StaffPeopleForOrg(orgid);
+            var staff = CurrentDatabase.StaffPeopleForOrg(orgid);
 
             var desc = $"{person.Name}; {person.PrimaryAddress}; {person.PrimaryCity}, {person.PrimaryState} {person.PrimaryZip}";
 
-            person.PostUnattendedContribution(DbUtil.Db,
+            person.PostUnattendedContribution(CurrentDatabase.
                 pledge ?? 0,
                 Setting.DonationFundId,
                 desc, pledge: true);
@@ -83,9 +83,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
             body = body.Replace("{amt}", pi.Pledged.ToString("N2"), ignoreCase: true)
                 .Replace("{org}", Organization.OrganizationName, ignoreCase: true)
                 .Replace("{first}", person.PreferredName, ignoreCase: true);
-            DbUtil.Db.EmailRedacted(staff[0].FromEmail, person, Setting.Subject, body);
+            CurrentDatabase.EmailRedacted(staff[0].FromEmail, person, Setting.Subject, body);
 
-            DbUtil.Db.Email(person.FromEmail, staff, "Online Pledge",
+            CurrentDatabase.Email(person.FromEmail, staff, "Online Pledge",
                 $@"{person.Name} made a pledge to {Organization.OrganizationName}");
 
             ThankYouMessage = GetThankYouMessage(@"

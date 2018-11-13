@@ -14,7 +14,7 @@ namespace CmsWeb.Controllers.Api
         [HttpGet, Route("~/CustomAPI/{name}")]
         public IEnumerable<dynamic> Get(string name)
         {
-            var content = DbUtil.Db.ContentOfTypeSql(name);
+            var content = CurrentDatabase.ContentOfTypeSql(name);
             if (content == null)
                 throw new Exception("no content");
             if (!CanRunScript(content))

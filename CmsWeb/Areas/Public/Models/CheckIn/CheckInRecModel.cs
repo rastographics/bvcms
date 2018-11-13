@@ -11,11 +11,11 @@ namespace CmsWeb.Models
     {
         public CheckInRecModel(int orgId, int? pid)
         {
-            var q = from o in DbUtil.Db.Organizations
+            var q = from o in CurrentDatabase.Organizations
                     where o.OrganizationId == orgId
                     select o.OrganizationName;
             OrgName = q.SingleOrDefault();
-            var q2 = from p in DbUtil.Db.People
+            var q2 = from p in CurrentDatabase.People
                      where p.PeopleId == pid
                      select new PersonInfo
                      {
@@ -52,8 +52,8 @@ namespace CmsWeb.Models
                     //    CreatedBy = Util.UserId1,
                     //    CreatedOn = Util.Now,
                     //};
-                    //DbUtil.Db.TemporaryTokens.InsertOnSubmit(tt);
-                    //DbUtil.Db.SubmitChanges();
+                    //CurrentDatabase.TemporaryTokens.InsertOnSubmit(tt);
+                    //CurrentDatabase.SubmitChanges();
                     //guid = tt.Id;
                     HttpContext.Current.Session["checkinguid"] = guid;
                 }
@@ -66,7 +66,7 @@ namespace CmsWeb.Models
         public string OrgName { get; set; }
         public PersonInfo person { get; set; }
         public string guid { get; set; }
-        public string host => DbUtil.Db.CmsHost;
+        public string host => CurrentDatabase.CmsHost;
 
         public string WithBreak(string s)
         {
@@ -77,7 +77,7 @@ namespace CmsWeb.Models
 
         public IEnumerable<FamilyMemberInfo> GetFamilyMembers()
         {
-            var q = from p in DbUtil.Db.People
+            var q = from p in CurrentDatabase.People
                     where p.FamilyId == person.FamilyId
                     where p.PeopleId != person.PeopleId
                     select new FamilyMemberInfo

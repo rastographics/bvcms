@@ -19,15 +19,15 @@ namespace CmsWeb.Code
             get
             {
 
-                var db = DbUtil.Db;
+                var db = Db;
 #if DEBUG2
                 var s = Resource1.ReportsMenuCustom;
 #else
-                var s = HttpRuntime.Cache[DbUtil.Db.Host + "CustomReportsMenu"] as string;
+                var s = HttpRuntime.Cache[CurrentDatabase.Host + "CustomReportsMenu"] as string;
                 if (s == null)
                 {
-                    s = db.ContentText("CustomReportsMenu", defaultValue:"<ReportsMenu><Column1/><Column2/></ReportsMenu>");
-                    HttpRuntime.Cache.Insert(db.Host + "CustomReportsMenu", s, null,
+                    s = CurrentDatabase.ContentText("CustomReportsMenu", defaultValue:"<ReportsMenu><Column1/><Column2/></ReportsMenu>");
+                    HttpRuntime.Cache.Insert(CurrentDatabase.Host + "CustomReportsMenu", s, null,
                         DateTime.Now.AddMinutes(Util.IsDebug() ? 0 : 1), Cache.NoSlidingExpiration);
                 }
                 if (!s.HasValue())
@@ -42,12 +42,12 @@ namespace CmsWeb.Code
             get
             {
 
-                var db = DbUtil.Db;
-                var s = HttpRuntime.Cache[DbUtil.Db.Host + "CustomMenuRoles"] as List<CmsData.View.CustomMenuRole>;
+                var db = Db;
+                var s = HttpRuntime.Cache[CurrentDatabase.Host + "CustomMenuRoles"] as List<CmsData.View.CustomMenuRole>;
                 if (s == null)
                 {
-                    s = db.ViewCustomMenuRoles.ToList();
-                    HttpRuntime.Cache.Insert(db.Host + "CustomReportsMenu", s, null,
+                    s = CurrentDatabase.ViewCustomMenuRoles.ToList();
+                    HttpRuntime.Cache.Insert(CurrentDatabase.Host + "CustomReportsMenu", s, null,
                         DateTime.Now.AddMinutes(Util.IsDebug() ? 0 : 1), Cache.NoSlidingExpiration);
                 }
                 return s;
@@ -94,7 +94,7 @@ namespace CmsWeb.Code
         private static string ReportItems(XDocument xdoc, string path)
         {
             var listroles = CustomMenuRoles;
-            var userroles = DbUtil.Db.CurrentUser.Roles;
+            var userroles = CurrentDatabase.CurrentUser.Roles;
             var sb = new StringBuilder();
             foreach (var e in xdoc.XPathSelectElements(path).Elements())
             {

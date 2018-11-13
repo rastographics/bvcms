@@ -57,7 +57,7 @@ namespace CmsWeb.Areas.Reports.Models
             StartPageSet();
             if (qid != null) // print using a query
             {
-                var q = from p in DbUtil.Db.PeopleQuery(qid)
+                var q = from p in CurrentDatabase.PeopleQuery(qid)
                         orderby p.Name2
                         select p;
                 foreach (var p in q)

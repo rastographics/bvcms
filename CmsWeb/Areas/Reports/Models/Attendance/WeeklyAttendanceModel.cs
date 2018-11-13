@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.Reports.Models
             var dt = Util.Now;
             var yearago = dt.AddYears(-1);
             var orgs = string.Join(",", Orgs.Select(oo => oo.OrganizationId));
-            var people = (from p in DbUtil.Db.MembersWhoAttendedOrgs(orgs, yearago)
+            var people = (from p in CurrentDatabase.MembersWhoAttendedOrgs(orgs, yearago)
                 select new
                 {
                     p.PeopleId,
@@ -33,7 +33,7 @@ namespace CmsWeb.Areas.Reports.Models
                     p.LeaderName
                 }).ToDictionary(pp => pp.PeopleId, pp => pp);
 
-            return from w in DbUtil.Db.WeeklyAttendsForOrgs(orgs, yearago).ToList()
+            return from w in CurrentDatabase.WeeklyAttendsForOrgs(orgs, yearago).ToList()
                 group w by w.PeopleId into g
                 where g.Count(aa => aa.Attended) > 0
                 let p = people[g.Key]

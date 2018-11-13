@@ -103,8 +103,8 @@ namespace CmsWeb
 #endif
             try
             {
-                Util.AdminMail = DbUtil.Db.Setting("AdminMail", "");
-                Util.DateSimulation = DbUtil.Db.Setting("UseDateSimulation");
+                Util.AdminMail = CurrentDatabase.Setting("AdminMail", "");
+                Util.DateSimulation = CurrentDatabase.Setting("UseDateSimulation");
             }
             catch (SqlException)
             {
@@ -112,14 +112,14 @@ namespace CmsWeb
                 //Response.Redirect($"/Errors/DatabaseNotInitialized.aspx?dbname={Util.Host}");
             }
 
-            var cul = DbUtil.Db.Setting("Culture", "en-US");
+            var cul = CurrentDatabase.Setting("Culture", "en-US");
             Util.Culture = cul;
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
 
             var checkip = ConfigurationManager.AppSettings["CheckIp"];
             if(Util.IsHosted && checkip.HasValue())
-                if (1 == DbUtil.Db.Connection.ExecuteScalar<int>(checkip, new {ip = Request.UserHostAddress}))
+                if (1 == CurrentDatabase.Connection.ExecuteScalar<int>(checkip, new {ip = Request.UserHostAddress}))
                     Response.Redirect("/Errors/AccessDenied.htm");
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
         }
@@ -130,7 +130,7 @@ namespace CmsWeb
             if (ShouldBypassProcessing()) return;
 
             if (HttpContext.Current != null)
-                DbUtil.DbDispose();
+                DbDispose();
             if (Response.Status.StartsWith("401")
                     && Request.Url.AbsolutePath.EndsWith(".aspx"))
             {
@@ -249,7 +249,7 @@ namespace CmsWeb
 //            if (ctx?.User == null)
 //                return false;
 //
-//            return ctx.User.IsInRole("Developer") && DbUtil.Db.Setting("MiniProfileEnabled");
+//            return ctx.User.IsInRole("Developer") && CurrentDatabase.Setting("MiniProfileEnabled");
 //        }
 
         private bool ShouldBypassProcessing()

@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Org.Models
             set
             {
                 if (Org == null)
-                    Org = DbUtil.Db.LoadOrganizationById(value);
+                    Org = CurrentDatabase.LoadOrganizationById(value);
             }
         }
 
@@ -63,7 +63,7 @@ namespace CmsWeb.Areas.Org.Models
             {
                 if (_schedule.HasValue())
                     return _schedule;
-                var sch = (from sc in DbUtil.Db.OrgSchedules
+                var sch = (from sc in CurrentDatabase.OrgSchedules
                     where sc.OrganizationId == Id
                     orderby sc.Id
                     select sc).FirstOrDefault();
@@ -74,7 +74,7 @@ namespace CmsWeb.Areas.Org.Models
         public void Update()
         {
             this.CopyPropertiesTo(Org);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
         }
     }
 }

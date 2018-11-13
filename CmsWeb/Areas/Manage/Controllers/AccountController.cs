@@ -39,7 +39,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             var m = new AccountModel();
             string baseurl = null;
 
-            var fn = $"{DbUtil.Db.Host}.{DateTime.Now:yyMMddHHmm}.{m.CleanFileName(Path.GetFileName(file.FileName))}";
+            var fn = $"{CurrentDatabase.Host}.{DateTime.Now:yyMMddHHmm}.{m.CleanFileName(Path.GetFileName(file.FileName))}";
             var error = string.Empty;
             var rackspacecdn = ConfigurationManager.AppSettings["RackspaceUrlCDN"];
 
@@ -83,7 +83,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
 
             var file = Request.Files[0];
-            var fn = $"{DbUtil.Db.Host}.{DateTime.Now:yyMMddHHmm}.{m.CleanFileName(Path.GetFileName(file.FileName))}";
+            var fn = $"{CurrentDatabase.Host}.{DateTime.Now:yyMMddHHmm}.{m.CleanFileName(Path.GetFileName(file.FileName))}";
             var error = string.Empty;
             var rackspacecdn = ConfigurationManager.AppSettings["RackspaceUrlCDN"];
 
@@ -145,8 +145,11 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult LogOn(string returnUrl)
         {
             TryLoadAlternateShell();
-            var r = DbUtil.CheckDatabaseExists(Util.CmsHost);
-            var redirect = ViewExtensions2.DatabaseErrorUrl(r);
+
+
+            var dbExists = DbUtil.CheckDatabaseExists(RequestManager.CurrentHost);
+            var redirect = ViewExtensions2.DatabaseErrorUrl(dbExists);
+
             if (redirect != null)
             {
                 return Redirect(redirect);
@@ -208,7 +211,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost, MyRequireHttps]
         public ActionResult LogOn(AccountInfo m)
         {
-            var db = DbUtil.Db;
+            var db = CurrentDatabase;
             Session.Remove("IsNonFinanceImpersonator");
             TryLoadAlternateShell();
             if (m.ReturnUrl.HasValue())
@@ -238,7 +241,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return Redirect("/Account/ChangePassword");
             }
 
-            var access = db.Setting("LimitAccess", "");
+            var access = CurrentDatabase.Setting("LimitAccess", "");
             if (access.HasValue())
             {
                 if (!user.InRole("Developer"))
@@ -247,16 +250,16 @@ namespace CmsWeb.Areas.Manage.Controllers
                 }
             }
 
-            var newleadertag = db.FetchTag("NewOrgLeadersOnly", user.PeopleId, DbUtil.TagTypeId_System);
+            var newleadertag = CurrentDatabase.FetchTag("NewOrgLeadersOnly", user.PeopleId, DbUtil.TagTypeId_System);
             if (newleadertag != null)
             {
                 if (!user.InRole("Access")) // if they already have Access role, then don't limit them with OrgLeadersOnly
                 {
-                    user.AddRoles(db, "Access,OrgLeadersOnly".Split(','));
+                    user.AddRoles(CurrentDatabase, "Access,OrgLeadersOnly".Split(','));
                 }
 
-                db.Tags.DeleteOnSubmit(newleadertag);
-                db.SubmitChanges();
+                CurrentDatabase.Tags.DeleteOnSubmit(newleadertag);
+                CurrentDatabase.SubmitChanges();
             }
 
             if (!m.ReturnUrl.HasValue())
@@ -278,7 +281,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [MyRequireHttps]
         public ActionResult LogOff()
         {
-            DbUtil.Db.DeleteSpecialTags(Util.UserPeopleId);
+            CurrentDatabase.DeleteSpecialTags(Util.UserPeopleId);
             FormsAuthentication.SignOut();
             Session.Abandon();
             return Redirect("/");
@@ -304,24 +307,24 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
 
             email = email?.Trim();
-            var q = from u in DbUtil.Db.Users
+            var q = from u in CurrentDatabase.Users
                     where u.Person.EmailAddress == email || u.Person.EmailAddress2 == email
                     where email != "" && email != null
                     select u;
             foreach (var user in q)
             {
-                var message = DbUtil.Db.ContentHtml("ForgotUsername", Resource1.AccountController_ForgotUsername);
+                var message = CurrentDatabase.ContentHtml("ForgotUsername", Resource1.AccountController_ForgotUsername);
                 message = message.Replace("{name}", user.Name);
                 message = message.Replace("{username}", user.Username);
-                DbUtil.Db.EmailRedacted(DbUtil.AdminMail, user.Person, "touchpoint forgot username", message);
-                DbUtil.Db.SubmitChanges();
-                DbUtil.Db.EmailRedacted(DbUtil.AdminMail,
+                CurrentDatabase.EmailRedacted(DbUtil.AdminMail, user.Person, "touchpoint forgot username", message);
+                CurrentDatabase.SubmitChanges();
+                CurrentDatabase.EmailRedacted(DbUtil.AdminMail,
                     CMSRoleProvider.provider.GetAdmins(),
                     $"touchpoint user: {user.Name} forgot username", "no content");
             }
             if (!q.Any())
             {
-                DbUtil.Db.EmailRedacted(DbUtil.AdminMail,
+                CurrentDatabase.EmailRedacted(DbUtil.AdminMail,
                     CMSRoleProvider.provider.GetAdmins(),
                     $"touchpoint unknown email: {email} forgot username", "no content");
             }
@@ -361,38 +364,38 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
 
             var pid = AccountModel.GetValidToken(id).ToInt();
-            var p = DbUtil.Db.LoadPersonById(pid);
+            var p = CurrentDatabase.LoadPersonById(pid);
             if (p == null)
             {
                 return View("LinkUsed");
             }
 
-            var minage = DbUtil.Db.Setting("MinimumUserAge", "16").ToInt();
+            var minage = CurrentDatabase.Setting("MinimumUserAge", "16").ToInt();
             if ((p.Age ?? 16) < minage)
             {
                 return Content($"must be Adult ({minage} or older)");
             }
 
-            var user = MembershipService.CreateUser(DbUtil.Db, pid);
-            var newleadertag = DbUtil.Db.FetchTag("NewOrgLeadersOnly", p.PeopleId, DbUtil.TagTypeId_System);
+            var user = MembershipService.CreateUser(CurrentDatabase, pid);
+            var newleadertag = CurrentDatabase.FetchTag("NewOrgLeadersOnly", p.PeopleId, DbUtil.TagTypeId_System);
             if (newleadertag != null)
             {
                 if (!user.InRole("Access")) // if they already have Access role, then don't limit them with OrgLeadersOnly
                 {
-                    user.AddRoles(DbUtil.Db, "Access,OrgLeadersOnly".Split(','));
+                    user.AddRoles(CurrentDatabase, "Access,OrgLeadersOnly".Split(','));
                 }
 
-                DbUtil.Db.Tags.DeleteOnSubmit(newleadertag);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.Tags.DeleteOnSubmit(newleadertag);
+                CurrentDatabase.SubmitChanges();
             }
             else // todo: remove this when things have settled
             {
                 var roles = p.GetExtra("Roles");
                 if (roles.HasValue())
                 {
-                    user.AddRoles(DbUtil.Db, roles.Split(','));
-                    p.RemoveExtraValue(DbUtil.Db, "Roles");
-                    DbUtil.Db.SubmitChanges();
+                    user.AddRoles(CurrentDatabase, roles.Split(','));
+                    p.RemoveExtraValue(CurrentDatabase, "Roles");
+                    CurrentDatabase.SubmitChanges();
                 }
             }
             FormsAuthentication.SetAuthCookie(user.Username, false);
@@ -452,7 +455,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return Content("invalid URL");
             }
 
-            var user = DbUtil.Db.Users.SingleOrDefault(u => u.ResetPasswordCode == id);
+            var user = CurrentDatabase.Users.SingleOrDefault(u => u.ResetPasswordCode == id);
             if (user == null || (user.ResetPasswordExpires.HasValue && user.ResetPasswordExpires < DateTime.Now))
             {
                 return View("LinkUsed");
@@ -461,7 +464,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             user.ResetPasswordCode = null;
             user.IsLockedOut = false;
             user.FailedPasswordAttemptCount = 0;
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             FormsAuthentication.SetAuthCookie(user.Username, false);
             AccountModel.SetUserInfo(user.Username, Session);
             ViewBag.user = user.Username;
@@ -545,7 +548,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult ChangePasswordSuccess()
         {
             TryLoadAlternateShell();
-            var rd = DbUtil.Db.Setting("RedirectAfterPasswordChange", "");
+            var rd = CurrentDatabase.Setting("RedirectAfterPasswordChange", "");
             if (rd.HasValue())
             {
                 return Redirect(rd);
@@ -564,10 +567,10 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 logonPageShellSettingKey += "-" + queryString.ToUpper();
             }
-            var alternateShellSetting = DbUtil.DbReadOnly.Settings.SingleOrDefault(x => x.Id == logonPageShellSettingKey);
+            var alternateShellSetting = CurrentDatabase.Settings.SingleOrDefault(x => x.Id == logonPageShellSettingKey);
             if (alternateShellSetting != null)
             {
-                var alternateShell = DbUtil.DbReadOnly.Contents.SingleOrDefault(x => x.Name == alternateShellSetting.SettingX);
+                var alternateShell = CurrentDatabase.Contents.SingleOrDefault(x => x.Name == alternateShellSetting.SettingX);
                 if (alternateShell != null)
                 {
                     shell = alternateShell.Body;

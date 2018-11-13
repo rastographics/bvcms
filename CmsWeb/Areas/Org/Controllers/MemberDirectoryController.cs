@@ -17,8 +17,8 @@ namespace CmsWeb.Areas.Org.Controllers
         [Route("~/MemberDirectory/Index/{id:int}")]
         public ActionResult Index(int id)
         {
-            if (DbUtil.Db.Organizations.Any(oo => oo.OrganizationId == id && oo.PublishDirectory > 0)
-                && (User.IsInRole("Admin") || DbUtil.Db.OrganizationMembers.Any(
+            if (CurrentDatabase.Organizations.Any(oo => oo.OrganizationId == id && oo.PublishDirectory > 0)
+                && (User.IsInRole("Admin") || CurrentDatabase.OrganizationMembers.Any(
                     mm => mm.OrganizationId == id && mm.PeopleId == UtilityExtensions.Util.UserPeopleId)))
             {
                 return View(new MemberDirectoryModel(id));
@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult Results(MemberDirectoryModel m)
         {
             if (User.IsInRole("Admin") ||
-                DbUtil.Db.OrganizationMembers.Any(
+                CurrentDatabase.OrganizationMembers.Any(
                     mm => mm.OrganizationId == m.OrgId && mm.PeopleId == UtilityExtensions.Util.UserPeopleId))
             {
                 return View(m);

@@ -33,16 +33,16 @@ namespace CmsWeb.Models
             if (Util.UserPeopleId == null)
                 return new List<BirthdayInfo>();
 
-            var qB = DbUtil.Db.Queries.FirstOrDefault(cc => cc.Name == "TrackBirthdays" && cc.Owner == Util.UserName);
-            var tagq = DbUtil.Db.FetchTag("FromTrackBirthdaysQuery", Util.UserPeopleId, DbUtil.TagTypeId_System);
+            var qB = CurrentDatabase.Queries.FirstOrDefault(cc => cc.Name == "TrackBirthdays" && cc.Owner == Util.UserName);
+            var tagq = CurrentDatabase.FetchTag("FromTrackBirthdaysQuery", Util.UserPeopleId, DbUtil.TagTypeId_System);
             if (qB != null)
             {
                 if (tagq?.Created == null || tagq.Created < DateTime.Today)
-                    DbUtil.Db.PopulateSpecialTag(DbUtil.Db.PeopleQuery(qB.QueryId), "FromTrackBirthdaysQuery", DbUtil.TagTypeId_System);
-                tagq = DbUtil.Db.FetchTag("FromTrackBirthdaysQuery", Util.UserPeopleId, DbUtil.TagTypeId_System);
+                    CurrentDatabase.PopulateSpecialTag(CurrentDatabase.PeopleQuery(qB.QueryId), "FromTrackBirthdaysQuery", DbUtil.TagTypeId_System);
+                tagq = CurrentDatabase.FetchTag("FromTrackBirthdaysQuery", Util.UserPeopleId, DbUtil.TagTypeId_System);
                 if (tagq != null)
                 {
-                    var q0 = from p in tagq.People(DbUtil.Db)
+                    var q0 = from p in tagq.People(CurrentDatabase)
                              let bd = p.BirthDay
                              let bm = p.BirthMonth
                              where bd != null && bm != null
@@ -59,16 +59,16 @@ namespace CmsWeb.Models
                     return q0.Take(100);
                 }
             }
-            tagq?.DeleteTag(DbUtil.Db);
-            var tag = DbUtil.Db.FetchOrCreateTag("TrackBirthdays", Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+            tagq?.DeleteTag(CurrentDatabase);
+            var tag = CurrentDatabase.FetchOrCreateTag("TrackBirthdays", Util.UserPeopleId, DbUtil.TagTypeId_Personal);
             var q = qB != null
-                ? DbUtil.Db.PeopleQuery(qB.QueryId)
-                : tag.People(DbUtil.Db);
+                ? CurrentDatabase.PeopleQuery(qB.QueryId)
+                : tag.People(CurrentDatabase);
 
 
             if (!q.Any())
-                q = from p in DbUtil.Db.People
-                    let up = DbUtil.Db.People.Single(pp => pp.PeopleId == Util.UserPeopleId)
+                q = from p in CurrentDatabase.People
+                    let up = CurrentDatabase.People.Single(pp => pp.PeopleId == Util.UserPeopleId)
                     where p.OrganizationMembers.Any(om => om.OrganizationId == up.BibleFellowshipClassId)
                     select p;
 
@@ -99,7 +99,7 @@ namespace CmsWeb.Models
         }
         public IEnumerable<MyInvolvementInfo> MyInvolvements()
         {
-            var u = DbUtil.Db.CurrentUser;
+            var u = CurrentDatabase.CurrentUser;
             if (u == null)
                 return new List<MyInvolvementInfo>();
 
@@ -108,10 +108,10 @@ namespace CmsWeb.Models
             var limitvisibility = Util2.OrgLeadersOnly;
             var oids = new int[0];
             if (Util2.OrgLeadersOnly)
-                oids = DbUtil.Db.GetLeaderOrgIds(pid);
+                oids = CurrentDatabase.GetLeaderOrgIds(pid);
 
-            var roles = DbUtil.Db.CurrentUser.UserRoles.Select(uu => uu.Role.RoleName).ToArray();
-            var orgmembers = from om in DbUtil.Db.OrganizationMembers
+            var roles = CurrentDatabase.CurrentUser.UserRoles.Select(uu => uu.Role.RoleName).ToArray();
+            var orgmembers = from om in CurrentDatabase.OrganizationMembers
                              where om.Organization.LimitToRole == null || roles.Contains(om.Organization.LimitToRole)
                              select om;
 
@@ -143,8 +143,8 @@ namespace CmsWeb.Models
 
         public IEnumerable<NewsInfo> ChurchNews()
         {
-            var feedurl = DbUtil.Db.Setting("ChurchFeedUrl", "");
-            return CachedNewsInfo(DbUtil.Db.Host + "ChurchFeed", feedurl, 120);
+            var feedurl = CurrentDatabase.Setting("ChurchFeedUrl", "");
+            return CachedNewsInfo(CurrentDatabase.Host + "ChurchFeed", feedurl, 120);
         }
 
         public class MySavedQueryInfo
@@ -157,7 +157,7 @@ namespace CmsWeb.Models
             if (Util.UserPeopleId == null)
                 return new List<MySavedQueryInfo>();
 
-            return from c in DbUtil.Db.Queries
+            return from c in CurrentDatabase.Queries
                    where c.Owner == Util.UserName
                    where c.Name != Util.ScratchPad2
                    orderby c.Name
@@ -180,8 +180,8 @@ namespace CmsWeb.Models
             if (Util.UserPeopleId == null)
                 return new List<TaskInfo>();
             var completedcode = TaskStatusCode.Complete;
-            var pid = DbUtil.Db.CurrentUser.PeopleId;
-            var q = from t in DbUtil.Db.Tasks
+            var pid = CurrentDatabase.CurrentUser.PeopleId;
+            var q = from t in CurrentDatabase.Tasks
                     where t.Archive == false // not archived
                     where t.OwnerId == pid || t.CoOwnerId == pid
                     where t.WhoId != null && t.StatusId != completedcode
@@ -214,12 +214,12 @@ namespace CmsWeb.Models
         public static IEnumerable<SearchInfo> Names(string text)
         {
             string First, Last;
-            var qp = DbUtil.Db.People.AsQueryable();
-            var qo = from o in DbUtil.Db.Organizations
+            var qp = CurrentDatabase.People.AsQueryable();
+            var qo = from o in CurrentDatabase.Organizations
                      where o.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
                      select o;
             if (Util2.OrgLeadersOnly)
-                qp = DbUtil.Db.OrgLeadersOnlyTag2().People(DbUtil.Db);
+                qp = CurrentDatabase.OrgLeadersOnlyTag2().People(CurrentDatabase);
 
             qp = from p in qp
                  where p.DeceasedDate == null
@@ -317,7 +317,7 @@ namespace CmsWeb.Models
         {
             public SearchInfo22()
             {
-              showaltname = DbUtil.Db.Setting("ShowAltNameOnSearchResults");
+              showaltname = CurrentDatabase.Setting("ShowAltNameOnSearchResults");
             }
 
             public string line1 => nonPersonName.HasValue()
@@ -340,7 +340,7 @@ namespace CmsWeb.Models
 
         public static IEnumerable<SearchInfo22> PrefetchSearch()
         {
-            var list = (from c in DbUtil.Db.Queries
+            var list = (from c in CurrentDatabase.Queries
                         where c.Name != Util.ScratchPad2
                         where c.Owner == Util.UserName
                         orderby c.LastRun descending
@@ -363,12 +363,12 @@ namespace CmsWeb.Models
         public static IEnumerable<SearchInfo22> FastSearch(string text)
         {
             string first, last;
-            var qp = DbUtil.Db.People.AsQueryable();
-            var qo = from o in DbUtil.Db.Organizations
+            var qp = CurrentDatabase.People.AsQueryable();
+            var qo = from o in CurrentDatabase.Organizations
                      where o.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
                      select o;
             if (Util2.OrgLeadersOnly)
-                qp = DbUtil.Db.OrgLeadersOnlyTag2().People(DbUtil.Db);
+                qp = CurrentDatabase.OrgLeadersOnlyTag2().People(CurrentDatabase);
 
             qp = from p in qp
                  where p.DeceasedDate == null
@@ -445,7 +445,7 @@ namespace CmsWeb.Models
                 }
                 else
                 {
-                    var qp2 = DbUtil.Db.Setting("UseAltnameContains")
+                    var qp2 = CurrentDatabase.Setting("UseAltnameContains")
                         ? from p in qp
                           where p.LastName.StartsWith(text) || p.MaidenName.StartsWith(text) || p.AltName.Contains(text)
                           select p
@@ -515,13 +515,13 @@ namespace CmsWeb.Models
             return list;
         }
 
-        public string ChurchBlogUrl => DbUtil.Db.Setting("ChurchBlogUrl", "#");
-        public bool ShowTip => !DbUtil.Db.UserPreference("hide-tip-home", "false").ToBool();
-        public string BlogAppUrl => DbUtil.Db.Setting("BlogAppUrl", "#");
+        public string ChurchBlogUrl => CurrentDatabase.Setting("ChurchBlogUrl", "#");
+        public bool ShowTip => !CurrentDatabase.UserPreference("hide-tip-home", "false").ToBool();
+        public string BlogAppUrl => CurrentDatabase.Setting("BlogAppUrl", "#");
 
         private static IEnumerable<NewsInfo> GetNewsInfo(string feedurl)
         {
-            var feed = DbUtil.Db.RssFeeds.FirstOrDefault(r => r.Url == feedurl);
+            var feed = CurrentDatabase.RssFeeds.FirstOrDefault(r => r.Url == feedurl);
             if (!feedurl.HasValue())
                 return new List<NewsInfo>();
 
@@ -534,7 +534,7 @@ namespace CmsWeb.Models
             else
             {
                 feed = new RssFeed();
-                DbUtil.Db.RssFeeds.InsertOnSubmit(feed);
+                CurrentDatabase.RssFeeds.InsertOnSubmit(feed);
                 feed.Url = feedurl;
             }
 
@@ -555,7 +555,7 @@ namespace CmsWeb.Models
                     var sr = new StreamReader(rs);
                     feed.Data = sr.ReadToEnd();
                     sr.Close();
-                    DbUtil.Db.SubmitChanges();
+                    CurrentDatabase.SubmitChanges();
                 }
             }
             catch

@@ -20,7 +20,7 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult ToggleTag(int id)
         {
             var t = Person.ToggleTag(id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return Content(t ? "Remove" : "Add");
         }
         [HttpPost]
@@ -28,27 +28,27 @@ namespace CmsWeb.Areas.Org.Controllers
         {
             if (!tagname.HasValue())
                 return Content("no tag name");
-            DbUtil.Db.SetNoLock();
-            var q = DbUtil.Db.PeopleQuery(id);
+            CurrentDatabase.SetNoLock();
+            var q = CurrentDatabase.PeopleQuery(id);
             if (Util2.CurrentTagName == tagname && !(cleartagfirst ?? false))
             {
-                DbUtil.Db.TagAll(q);
+                CurrentDatabase.TagAll(q);
                 return Content("Remove");
             }
-            var tag = DbUtil.Db.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+            var tag = CurrentDatabase.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
             if (cleartagfirst ?? false)
-                DbUtil.Db.ClearTag(tag);
-            DbUtil.Db.TagAll(q, tag);
+                CurrentDatabase.ClearTag(tag);
+            CurrentDatabase.TagAll(q, tag);
             Util2.CurrentTag = tagname;
-            DbUtil.Db.TagCurrent();
+            CurrentDatabase.TagCurrent();
             return Content("Manage");
         }
         [HttpPost]
         public ContentResult UnTagAll(Guid id)
         {
-            DbUtil.Db.SetNoLock();
-            var q = DbUtil.Db.PeopleQuery(id);
-            DbUtil.Db.UnTagAll(q);
+            CurrentDatabase.SetNoLock();
+            var q = CurrentDatabase.PeopleQuery(id);
+            CurrentDatabase.UnTagAll(q);
             return Content("Add");
         }
         [HttpPost]
@@ -61,7 +61,7 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult AddTasks(Guid id)
         {
             var c = new ContentResult();
-            c.Content = Task.AddTasks(DbUtil.Db, id).ToString();
+            c.Content = Task.AddTasks(CurrentDatabase. id).ToString();
             return c;
         }
     }

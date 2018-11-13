@@ -20,7 +20,7 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             var m = new SavedQueryModel
             {
-                OnlyMine = DbUtil.Db.UserPreference("SavedQueryOnlyMine", "false").ToBool()
+                OnlyMine = CurrentDatabase.UserPreference("SavedQueryOnlyMine", "false").ToBool()
             };
             return View(m);
         }
@@ -55,9 +55,9 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult Delete(Guid id)
         {
-            var q = DbUtil.Db.LoadQueryById2(id);
-            DbUtil.Db.Queries.DeleteOnSubmit(q);
-            DbUtil.Db.SubmitChanges();
+            var q = CurrentDatabase.LoadQueryById2(id);
+            CurrentDatabase.Queries.DeleteOnSubmit(q);
+            CurrentDatabase.SubmitChanges();
             return Content("ok");
         }
 

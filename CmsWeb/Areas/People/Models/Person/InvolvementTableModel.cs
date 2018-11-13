@@ -78,13 +78,13 @@ namespace CmsWeb.Areas.People.Models
                     break;
             }
 
-            var db = DbUtil.Db;
+            var db = Db;
 
-            var s = HttpRuntime.Cache[DbUtil.Db.Host + customTextName] as string;
+            var s = HttpRuntime.Cache[CurrentDatabase.Host + customTextName] as string;
             if (s == null)
             {
-                s = db.ContentText(customTextName, defaultXml);
-                HttpRuntime.Cache.Insert(db.Host + customTextName, s, null,
+                s = CurrentDatabase.ContentText(customTextName, defaultXml);
+                HttpRuntime.Cache.Insert(CurrentDatabase.Host + customTextName, s, null,
                     DateTime.Now.AddMinutes(Util.IsDebug() ? 0 : 1), Cache.NoSlidingExpiration);
             }
             if (!s.HasValue())

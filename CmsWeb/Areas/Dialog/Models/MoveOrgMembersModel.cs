@@ -1,11 +1,11 @@
-﻿using System;
+﻿using CmsData;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
 using System.Web.Hosting;
-using CmsData;
-using Newtonsoft.Json;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
@@ -52,15 +52,15 @@ namespace CmsWeb.Areas.Dialog.Models
                 QueryId = QueryId,
                 Operation = Op,
             };
-            db.LongRunningOperations.InsertOnSubmit(lop);
-            db.SubmitChanges();
+            DbUtil.Db.LongRunningOperations.InsertOnSubmit(lop);
+            DbUtil.Db.SubmitChanges();
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoMoveWork(this));
-		}
+        }
         public static void DoMoveWork(MoveOrgMembersModel model)
         {
-			var db = DbUtil.Create(model.Host);
-            db.CommandTimeout = 2200;
-		    var cul = db.Setting("Culture", "en-US");
+            var db = DbUtil.Create(model.Host);
+            DbUtil.Db.CommandTimeout = 2200;
+            var cul = DbUtil.Db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
             LongRunningOperation lop = null;
@@ -69,27 +69,33 @@ namespace CmsWeb.Areas.Dialog.Models
             {
                 var a = i.Split('.');
                 if (a.Length != 2)
+                {
                     continue;
+                }
+
                 var pid = a[0].ToInt();
                 var oid = a[1].ToInt();
 
                 if (oid == model.TargetId)
+                {
                     continue;
-                OrganizationMember.MoveToOrg(db, pid, oid, model.TargetId, model.MoveRegistrationData, model.ChangeMemberType == true ? model.MoveToMemberTypeId : -1);
+                }
+
+                OrganizationMember.MoveToOrg(DbUtil.Db, pid, oid, model.TargetId, model.MoveRegistrationData, model.ChangeMemberType == true ? model.MoveToMemberTypeId : -1);
                 //Once member has been inserted into the new Organization then update member in Organizations as enrolled / not enrolled accordingly
-                db.RepairTransactions(oid);
-                db.RepairTransactions(model.TargetId);
-                lop = FetchLongRunningOperation(db, Op, model.QueryId);
+                DbUtil.Db.RepairTransactions(oid);
+                DbUtil.Db.RepairTransactions(model.TargetId);
+                lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
                 lop.CustomMessage = $"Working from {pid},{oid} to {model.TargetId}";
-                db.SubmitChanges();
+                DbUtil.Db.SubmitChanges();
             }
             // finished
-            lop = FetchLongRunningOperation(db, Op, model.QueryId);
+            lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
             lop.Completed = DateTime.Now;
-            db.SubmitChanges();
-            db.UpdateMainFellowship(model.TargetId);
-		}
+            DbUtil.Db.SubmitChanges();
+            DbUtil.Db.UpdateMainFellowship(model.TargetId);
+        }
     }
 }

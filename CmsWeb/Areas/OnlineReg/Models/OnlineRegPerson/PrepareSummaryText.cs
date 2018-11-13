@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             try
             {
-                return SummaryInfo.GetResults(db, om.PeopleId, om.OrganizationId);
+                return SummaryInfo.GetResults(CurrentDatabase. om.PeopleId, om.OrganizationId);
             }
             catch (Exception ex)
             {

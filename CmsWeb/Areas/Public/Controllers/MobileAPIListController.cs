@@ -39,7 +39,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 		private List<MobileCountry> getCountries()
 		{
-			return (from e in DbUtil.Db.Countries
+			return (from e in CurrentDatabase.Countries
 						orderby e.Id
 						select new MobileCountry
 						{
@@ -63,7 +63,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 		private List<MobileState> getStates()
 		{
-			return (from e in DbUtil.Db.StateLookups
+			return (from e in CurrentDatabase.StateLookups
 						orderby e.StateCode
 						select new MobileState
 						{
@@ -86,7 +86,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 		private List<MobileMaritalStatus> getMaritalStatuses()
 		{
-			return (from e in DbUtil.Db.MaritalStatuses
+			return (from e in CurrentDatabase.MaritalStatuses
 						orderby e.Id
 						select new MobileMaritalStatus
 						{
@@ -100,9 +100,9 @@ namespace CmsWeb.Areas.Public.Controllers
 		{
 			BaseMessage dataIn = BaseMessage.createFromString( data );
 
-			var actions = from p in DbUtil.Db.MobileAppActions
-								join i in DbUtil.Db.MobileAppIcons on p.Id equals i.ActionID
-								join s in DbUtil.Db.MobileAppIconSets on i.SetID equals s.Id
+			var actions = from p in CurrentDatabase.MobileAppActions
+								join i in CurrentDatabase.MobileAppIcons on p.Id equals i.ActionID
+								join s in CurrentDatabase.MobileAppIconSets on i.SetID equals s.Id
 								where p.Enabled == true
 								where s.Active == true
 								where p.Api <= dataIn.version
@@ -130,7 +130,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 		public ActionResult MapInfo( string data )
 		{
-			var campuses = from p in DbUtil.Db.MobileAppBuildings
+			var campuses = from p in CurrentDatabase.MobileAppBuildings
 								where p.Enabled
 								orderby p.Order
 								select new MobileCampus
@@ -142,7 +142,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			var campusList = campuses.ToList();
 
 			foreach( MobileCampus campus in campusList ) {
-				var floors = from p in DbUtil.Db.MobileAppFloors
+				var floors = from p in CurrentDatabase.MobileAppFloors
 								where p.Enabled
 								where p.Campus == campus.id
 								orderby p.Order
@@ -156,7 +156,7 @@ namespace CmsWeb.Areas.Public.Controllers
 				var floorList = floors.ToList();
 
 				foreach( MobileFloor floor in floorList ) {
-					var rooms = from p in DbUtil.Db.MobileAppRooms
+					var rooms = from p in CurrentDatabase.MobileAppRooms
 									where p.Enabled
 									where p.Floor == floor.id
 									orderby p.Room

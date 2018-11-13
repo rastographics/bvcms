@@ -21,10 +21,10 @@ namespace CmsWeb.Areas.People.Models
 
         public PersonModel(int id)
         {
-            var flags = DbUtil.Db.Setting("StatusFlags", "F04,F01,F02,F03");
+            var flags = DbUtil.CurrentDatabase.Setting("StatusFlags", "F04,F01,F02,F03");
             var isvalid = Regex.IsMatch(flags, @"\A(F\d\d,{0,1})(,F\d\d,{0,1})*\z", RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
 
-            var i = (from pp in DbUtil.Db.People
+            var i = (from pp in DbUtil.CurrentDatabase.People
                      let spouse = (from sp in pp.Family.People where sp.PeopleId == pp.SpouseId select sp.Name).SingleOrDefault()
                      where pp.PeopleId == id
                      select new
@@ -43,7 +43,7 @@ namespace CmsWeb.Areas.People.Models
             string statusflags;
             if (isvalid)
             {
-                statusflags = string.Join(",", from s in DbUtil.Db.StatusFlagsPerson(id).ToList()
+                statusflags = string.Join(",", from s in DbUtil.CurrentDatabase.StatusFlagsPerson(id).ToList()
                                                where s.RoleName == null || HttpContext.Current.User.IsInRole(s.RoleName)
                                                orderby s.TokenID
                                                select s.Name);
@@ -230,8 +230,8 @@ namespace CmsWeb.Areas.People.Models
 
             if (Util2.OrgLeadersOnly)
             {
-                var olotag = DbUtil.Db.OrgLeadersOnlyTag2();
-                if (!DbUtil.Db.TagPeople.Any(pt => pt.PeopleId == PeopleId && pt.Id == olotag.Id))
+                var olotag = DbUtil.CurrentDatabase.OrgLeadersOnlyTag2();
+                if (!DbUtil.CurrentDatabase.TagPeople.Any(pt => pt.PeopleId == PeopleId && pt.Id == olotag.Id))
                 {
                     DbUtil.LogActivity($"Trying to view person: {Person.Name}");
                     return $"<h3 style='color:red'>{"You must be a leader of one of this person's organizations to have access to this page"}</h3>\n<a href='{"javascript: history.go(-1)"}'>{"Go Back"}</a>";
@@ -252,7 +252,7 @@ namespace CmsWeb.Areas.People.Models
 
                 _resourceTypes = new List<ResourceTypeModel>();
 
-                var memberOrgs = DbUtil.Db.OrganizationMembers.Where(x => x.PeopleId == PeopleId).ToList();
+                var memberOrgs = DbUtil.CurrentDatabase.OrganizationMembers.Where(x => x.PeopleId == PeopleId).ToList();
 
                 var orgLevels = memberOrgs.ToDictionary(x => x.OrganizationId, x => x.MemberType.Id);
 
@@ -269,10 +269,10 @@ namespace CmsWeb.Areas.People.Models
                     orgIds.AddRange(org.ChildOrgs.Select(o => o.OrganizationId));
                 }
 
-                var divisionIds = DbUtil.Db.OrganizationMembers.Where(x => x.PeopleId == PeopleId)
+                var divisionIds = DbUtil.CurrentDatabase.OrganizationMembers.Where(x => x.PeopleId == PeopleId)
                     .Select(x => x.Organization.DivisionId).Distinct().ToList();
 
-                var orgTypeIds = DbUtil.Db.Organizations
+                var orgTypeIds = DbUtil.CurrentDatabase.Organizations
                     .Where(x => orgIds.Contains(x.OrganizationId) && x.OrganizationType != null)
                     .Select(x => x.OrganizationType.Id)
                     .Distinct()
@@ -281,7 +281,7 @@ namespace CmsWeb.Areas.People.Models
                 // Filter out any resources that have a division the user isn't in
                 // same for campus
                 var resources =
-                    DbUtil.Db.Resources
+                    DbUtil.CurrentDatabase.Resources
                         .Where(x => !x.DivisionId.HasValue || divisionIds.Contains(x.DivisionId))
                         .Where(x => !x.CampusId.HasValue || Person.CampusId == x.CampusId.Value);
 
@@ -409,7 +409,7 @@ namespace CmsWeb.Areas.People.Models
         private bool ShouldShowResource(Resource resource)
         {
             var resourceStatusFlags = resource.StatusFlagIds?.Split(',') ?? new string[] { };
-            var personStatusFlags = DbUtil.Db.ViewAllStatusFlags.Where(sf => sf.PeopleId == PeopleId).Select(x => x.Flag).ToList();
+            var personStatusFlags = DbUtil.CurrentDatabase.ViewAllStatusFlags.Where(sf => sf.PeopleId == PeopleId).Select(x => x.Flag).ToList();
 
             var shouldShow = true;
             foreach (var flag in resourceStatusFlags.Where(x => !string.IsNullOrWhiteSpace(x)))

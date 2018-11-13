@@ -9,7 +9,7 @@
 
     if (groupId > 0)
     {
-        var group = (from e in DbUtil.Db.SMSGroups
+        var group = (from e in CurrentDatabase.SMSGroups
                      where e.Id == groupId
                      select e).Single();
         action = "GroupUpdate";

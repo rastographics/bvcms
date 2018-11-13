@@ -14,7 +14,7 @@ namespace CmsWeb.Code
     {
         public static CustomHeaderImage SmallHeaderImage(string fallbackImageUrl)
         {
-            var setting = DbUtil.Db.Setting("UX-SmallHeaderLogo", "");
+            var setting = CurrentDatabase.Setting("UX-SmallHeaderLogo", "");
 
             return string.IsNullOrWhiteSpace(setting)
                 ? new CustomHeaderImage(fallbackImageUrl, "50px")
@@ -25,13 +25,13 @@ namespace CmsWeb.Code
         {
             var fallbackImage = new CustomHeaderImage(fallbackImageUrl, "50px");
 
-            var headerLogoSetting = DbUtil.Db.Setting("UX-HeaderLogo", "");
+            var headerLogoSetting = CurrentDatabase.Setting("UX-HeaderLogo", "");
             if (!string.IsNullOrWhiteSpace(headerLogoSetting))
             {
                 return new CustomHeaderImage(headerLogoSetting, "45px");
             }
 
-            var customHeaderContent = DbUtil.Db.Content("CustomHeader", "");
+            var customHeaderContent = CurrentDatabase.Content("CustomHeader", "");
             if (!string.IsNullOrWhiteSpace(customHeaderContent))
             {
                 var match = Regex.Match(customHeaderContent, @"background-image:(\s+)?url\((?<backgroundImage>.+?)\)");

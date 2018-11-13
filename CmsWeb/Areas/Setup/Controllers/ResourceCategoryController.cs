@@ -17,7 +17,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         [Route("~/ResourceCategories")]
         public ActionResult Index()
         {
-            var m = DbUtil.Db.ResourceCategories.OrderBy(rt => rt.ResourceType.DisplayOrder).ThenBy(rt => rt.DisplayOrder);
+            var m = CurrentDatabase.ResourceCategories.OrderBy(rt => rt.ResourceType.DisplayOrder).ThenBy(rt => rt.DisplayOrder);
             return View(m);
         }
 
@@ -27,12 +27,12 @@ namespace CmsWeb.Areas.Setup.Controllers
             ResourceType resourceType = null;
             if (resourceTypeId.HasValue)
             {
-                resourceType = DbUtil.Db.ResourceTypes.FirstOrDefault(x => x.ResourceTypeId == resourceTypeId);
+                resourceType = CurrentDatabase.ResourceTypes.FirstOrDefault(x => x.ResourceTypeId == resourceTypeId);
             }
 
             if (resourceType == null)
             {
-                resourceType = DbUtil.Db.ResourceTypes.FirstOrDefault();
+                resourceType = CurrentDatabase.ResourceTypes.FirstOrDefault();
             }
 
             if (resourceType == null)
@@ -42,8 +42,8 @@ namespace CmsWeb.Areas.Setup.Controllers
             }
 
             var ResourceCategory = new ResourceCategory { Name = "new resource category", ResourceTypeId = resourceType.ResourceTypeId };
-            DbUtil.Db.ResourceCategories.InsertOnSubmit(ResourceCategory);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.ResourceCategories.InsertOnSubmit(ResourceCategory);
+            CurrentDatabase.SubmitChanges();
             return Redirect($"/ResourceCategories/#{ResourceCategory.ResourceCategoryId}");
         }
 
@@ -53,7 +53,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             var a = id.Split('.');
             var c = new ContentResult();
             c.Content = value;
-            var resourceCategory = DbUtil.Db.ResourceCategories.SingleOrDefault(m => m.ResourceCategoryId == a[1].ToInt());
+            var resourceCategory = CurrentDatabase.ResourceCategories.SingleOrDefault(m => m.ResourceCategoryId == a[1].ToInt());
             if (resourceCategory == null)
             {
                 return c;
@@ -70,7 +70,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                     resourceCategory.DisplayOrder = displayOrder;
                     break;
             }
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return c;
         }
 
@@ -78,9 +78,9 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ContentResult EditResourceType(string id, string value)
         {
             var iid = id.Substring(1).ToInt();
-            var mt = DbUtil.Db.ResourceCategories.SingleOrDefault(m => m.ResourceCategoryId == iid);
+            var mt = CurrentDatabase.ResourceCategories.SingleOrDefault(m => m.ResourceCategoryId == iid);
             mt.ResourceTypeId = value.ToInt();
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return Content(mt.ResourceType.Name);
         }
 
@@ -88,7 +88,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult Delete(string id)
         {
             id = id.Substring(1);
-            var category = DbUtil.Db.ResourceCategories.SingleOrDefault(m => m.ResourceCategoryId == id.ToInt());
+            var category = CurrentDatabase.ResourceCategories.SingleOrDefault(m => m.ResourceCategoryId == id.ToInt());
             if (category == null)
             {
                 return new EmptyResult();
@@ -99,8 +99,8 @@ namespace CmsWeb.Areas.Setup.Controllers
                 return Json(new { error = "Resources have that category, not deleted" });
             }
 
-            DbUtil.Db.ResourceCategories.DeleteOnSubmit(category);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.ResourceCategories.DeleteOnSubmit(category);
+            CurrentDatabase.SubmitChanges();
             return new EmptyResult();
         }
     }

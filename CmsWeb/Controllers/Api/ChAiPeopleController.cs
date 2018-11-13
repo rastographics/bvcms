@@ -17,7 +17,7 @@ namespace CmsWeb.Controllers.Api
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<CmsData.View.ChAiIndividualDatum, ApiChAiPerson>();
             });
-            return Ok(DbUtil.Db.ViewChAiIndividualDatas.ProjectTo<ApiChAiPerson>(config));
+            return Ok(CurrentDatabase.ViewChAiIndividualDatas.ProjectTo<ApiChAiPerson>(config));
         }
     }
 }

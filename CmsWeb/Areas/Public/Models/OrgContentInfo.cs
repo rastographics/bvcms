@@ -42,14 +42,14 @@ namespace CmsWeb.Models
                 if (oc == null)
                 {
                     oc = new OrgContent { OrgId = OrgId, Landing = true };
-                    DbUtil.Db.OrgContents.InsertOnSubmit(oc);
+                    CurrentDatabase.OrgContents.InsertOnSubmit(oc);
                 }
-                var i = ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == oc.ImageId);
+                var i = ImageData.CurrentDatabase.Images.SingleOrDefault(ii => ii.Id == oc.ImageId);
                 if (i != null)
                     i.SetText(value);
                 else
                     oc.ImageId = Image.NewTextFromString(value).Id;
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
             }
         }
 
@@ -72,7 +72,7 @@ namespace CmsWeb.Models
                     i.Bits = ms.ToArray();
                     return i;
                 }
-                return ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == oc.ImageId);
+                return ImageData.CurrentDatabase.Images.SingleOrDefault(ii => ii.Id == oc.ImageId);
             }
         }
 
@@ -80,10 +80,10 @@ namespace CmsWeb.Models
 
         public static OrgContentInfo Get(int id)
         {
-            var q = from oo in DbUtil.Db.Organizations
+            var q = from oo in CurrentDatabase.Organizations
                     where oo.OrganizationId == id
                     let om = oo.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == Util.UserPeopleId)
-                    let oc = DbUtil.Db.OrgContents.SingleOrDefault(cc => cc.OrgId == id && cc.Landing == true)
+                    let oc = CurrentDatabase.OrgContents.SingleOrDefault(cc => cc.OrgId == id && cc.Landing == true)
                     let memberLeaderType = om.MemberType.AttendanceTypeId
                     select new OrgContentInfo
                     {
@@ -98,7 +98,7 @@ namespace CmsWeb.Models
             var o = q.SingleOrDefault();
             if (o != null && !o.IsMember)
             {
-                var oids = DbUtil.Db.GetLeaderOrgIds(Util.UserPeopleId);
+                var oids = CurrentDatabase.GetLeaderOrgIds(Util.UserPeopleId);
                 if (!oids.Contains(o.OrgId))
                     return o;
                 o.NotAuthenticated = false;
@@ -110,8 +110,8 @@ namespace CmsWeb.Models
 
         public static OrgContentInfo GetOc(int id)
         {
-            var q = from oo in DbUtil.Db.Organizations
-                    let oc = DbUtil.Db.OrgContents.SingleOrDefault(cc => cc.Id == id)
+            var q = from oo in CurrentDatabase.Organizations
+                    let oc = CurrentDatabase.OrgContents.SingleOrDefault(cc => cc.Id == id)
                     where oo.OrganizationId == oc.OrgId
                     let om = oo.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == Util.UserPeopleId)
                     let memberLeaderType = om.MemberType.AttendanceTypeId
@@ -128,7 +128,7 @@ namespace CmsWeb.Models
             var o = q.SingleOrDefault();
             if (o != null && !o.IsMember)
             {
-                var oids = DbUtil.Db.GetLeaderOrgIds(Util.UserPeopleId);
+                var oids = CurrentDatabase.GetLeaderOrgIds(Util.UserPeopleId);
                 if (!oids.Contains(o.OrgId))
                     return o;
                 o.NotAuthenticated = false;
@@ -140,7 +140,7 @@ namespace CmsWeb.Models
 
         public IEnumerable<MemberInfo> GetMemberList()
         {
-            return (from om in DbUtil.Db.OrganizationMembers
+            return (from om in CurrentDatabase.OrganizationMembers
                     where om.OrganizationId == OrgId
                     where
                         om.MemberTypeId != MemberTypeCode.Prospect &&
@@ -164,10 +164,10 @@ namespace CmsWeb.Models
 
         public bool TryRunPython(int pid)
         {
-            var ev = Organization.GetExtra(DbUtil.Db, OrgId, "OrgMembersPageScript");
+            var ev = Organization.GetExtra(CurrentDatabase. OrgId, "OrgMembersPageScript");
             if (!ev.HasValue())
                 return false;
-            var script = DbUtil.Db.ContentOfTypePythonScript(ev);
+            var script = CurrentDatabase.ContentOfTypePythonScript(ev);
             if (!script.HasValue())
                 return false;
             var pe = new PythonModel(Util.Host);

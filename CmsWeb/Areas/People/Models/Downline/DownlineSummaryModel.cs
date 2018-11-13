@@ -24,7 +24,7 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (!category.HasValue() && CategoryId.HasValue)
-                    category = DbUtil.Db.DownlineCategories(CategoryId).Single().Name;
+                    category = CurrentDatabase.DownlineCategories(CategoryId).Single().Name;
                 return category;
             }
         }
@@ -35,7 +35,7 @@ namespace CmsWeb.Areas.People.Models
         {
             if (rows != null)
                 return rows;
-            rows = (from a in DbUtil.Db.DownlineSummary(CategoryId, Page, PageSize)
+            rows = (from a in CurrentDatabase.DownlineSummary(CategoryId, Page, PageSize)
                     select a).ToList();
             count = rows.Count == 0 ? 0 : rows[0].MaxRows;
             return rows;

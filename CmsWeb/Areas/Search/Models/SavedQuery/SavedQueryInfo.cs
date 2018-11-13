@@ -30,16 +30,16 @@ namespace CmsWeb.Areas.Search.Models
 
         public SavedQueryInfo(Guid id)
         {
-            query = DbUtil.Db.LoadQueryById2(id);
+            query = CurrentDatabase.LoadQueryById2(id);
             this.CopyPropertiesFrom(query);
         }
 
         public void UpdateModel()
         {
             if (query == null)
-                query = DbUtil.Db.LoadQueryById2(QueryId);
+                query = CurrentDatabase.LoadQueryById2(QueryId);
             this.CopyPropertiesTo(query);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
         }
     }
 }

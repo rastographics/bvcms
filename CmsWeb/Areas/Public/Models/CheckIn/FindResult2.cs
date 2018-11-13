@@ -33,7 +33,7 @@ namespace CmsWeb.Models
 			{
 				w.WriteStartElement("Family");
 				var q =
-					from p in DbUtil.Db.People
+					from p in CurrentDatabase.People
 					let notes = p.PeopleExtras.SingleOrDefault(ee => ee.Field == building + "-notes").Data
                     let accessflag = p.PeopleExtras.SingleOrDefault(ea => ea.Field == building + "-access").StrValue
 					where p.FamilyId == fid
@@ -90,7 +90,7 @@ namespace CmsWeb.Models
 					w.WriteAttributeString("memberstatusid", c.MemberStatusId);
                     w.WriteAttributeString("access", c.access);
 
-                    int visits = (from e in DbUtil.Db.CheckInTimes
+                    int visits = (from e in CurrentDatabase.CheckInTimes
                                   where e.PeopleId == c.Id
                                   where e.Location == building
                                   where e.AccessTypeID == 2

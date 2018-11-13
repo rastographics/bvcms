@@ -20,34 +20,34 @@ namespace CmsWeb.Models
                 return "Not Authorized to run this script";
             if (body.Contains("@qtagid", ignoreCase: true))
             {
-                var id = DbUtil.Db.FetchLastQuery().Id;
-                var tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
+                var id = CurrentDatabase.FetchLastQuery().Id;
+                var tag = CurrentDatabase.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
                 int? qtagid = tag.Id;
                 p.Add("@qtagid", qtagid);
                 ViewBag.Type = "SqlReport";
             }
             if (body.Contains("@BlueToolbarTagId", ignoreCase: true))
             {
-                var id = DbUtil.Db.FetchLastQuery().Id;
-                var tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
+                var id = CurrentDatabase.FetchLastQuery().Id;
+                var tag = CurrentDatabase.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
                 int? qtagid = tag.Id;
                 p.Add("@BlueToolbarTagId", qtagid);
                 ViewBag.Type = "SqlReport";
             }
             else if (body.Contains("@CurrentOrgId", ignoreCase: true))
             {
-                var oid = DbUtil.Db.CurrentSessionOrgId;
+                var oid = CurrentDatabase.CurrentSessionOrgId;
                 p.Add("@CurrentOrgId", oid);
                 if (oid > 0)
                 {
-                    var name = DbUtil.Db.LoadOrganizationById(oid).FullName2;
+                    var name = CurrentDatabase.LoadOrganizationById(oid).FullName2;
                     ViewBag.Name2 = name;
                     ViewBag.Type = "SqlReport";
                 }
             }
             else if (body.Contains("@OrgIds", ignoreCase: true))
             {
-                var oid = DbUtil.Db.CurrentSessionOrgId;
+                var oid = CurrentDatabase.CurrentSessionOrgId;
                 p.Add("@OrgIds", oid.ToString());
                 ViewBag.Type = "OrgSearchSqlReport";
                 if (body.Contains("--class=StartEndReport"))
@@ -96,7 +96,7 @@ namespace CmsWeb.Models
 
         public static Dictionary<string, string> CustomDepositImportMenuItems()
         {
-            var q = from c in DbUtil.Db.Contents
+            var q = from c in CurrentDatabase.Contents
                     where c.TypeID == ContentTypeCode.TypePythonScript
                     where c.Body.Contains("#class=UploadContributionsMenu")
                     select c;
@@ -145,7 +145,7 @@ namespace CmsWeb.Models
         }
         public static string Run(string name, PythonModel pe)
         {
-            var script = DbUtil.Db.ContentOfTypePythonScript(name);
+            var script = CurrentDatabase.ContentOfTypePythonScript(name);
             if (pe.Dictionary("p1") != null)
             {
                 script = script.Replace("@P1", pe.Dictionary("p1") ?? "NULL");
@@ -189,9 +189,9 @@ namespace CmsWeb.Models
 
         private static void SaveAsContent(string saveas, string script)
         {
-            var c = DbUtil.Db.Content(saveas, script, ContentTypeCode.TypePythonScript);
+            var c = CurrentDatabase.Content(saveas, script, ContentTypeCode.TypePythonScript);
             c.Body = script;
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
         }
     }
 

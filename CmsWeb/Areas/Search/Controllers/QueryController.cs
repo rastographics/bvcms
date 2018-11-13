@@ -45,13 +45,13 @@ namespace CmsWeb.Areas.Search.Controllers
             ViewBag.Title = "QueryBuilder";
             if (name == "-All-")
             {
-                var cc = DbUtil.Db.ScratchPadCondition();
+                var cc = CurrentDatabase.ScratchPadCondition();
                 cc.Reset();
-                cc.Save(DbUtil.Db);
+                cc.Save(CurrentDatabase);
                 TempData["autorun"] = true;
                 return Redirect("/Query");
             }
-            var id = DbUtil.Db.QueryIdByName(name);
+            var id = CurrentDatabase.QueryIdByName(name);
             var m = new QueryModel(id);
             return ViewQuery(m);
         }
@@ -59,10 +59,10 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult QueryCode(string code)
         {
             ViewBag.Title = "QueryBuilder";
-            var qb = DbUtil.Db.ScratchPadCondition();
+            var qb = CurrentDatabase.ScratchPadCondition();
             qb.Reset();
             var c = Condition.Parse(code, qb.Id);
-            c.Save(DbUtil.Db);
+            c.Save(CurrentDatabase);
             var m = new QueryModel(c.Id);
             return ViewQuery(m);
         }
@@ -71,7 +71,7 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             InitToolbar(m);
             m.TopClause.IncrementLastRun();
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             m.QueryId = m.TopClause.Id;
             ViewBag.xml = m.TopClause.ToXml();
             var sb = new StringBuilder();
@@ -183,7 +183,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult ChangeGroup(string comparison, QueryModel m)
         {
             m.Selected.Comparison = comparison;
-            m.TopClause.Save(DbUtil.Db);
+            m.TopClause.Save(CurrentDatabase);
             return Content("ok");
         }
 
@@ -259,8 +259,8 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult Save(string name, string value, SavedQueryInfo m)
         {
-            var query = DbUtil.Db.LoadQueryById2(m.QueryId);
-            var previous = (from p in DbUtil.Db.Queries
+            var query = CurrentDatabase.LoadQueryById2(m.QueryId);
+            var previous = (from p in CurrentDatabase.Queries
                             where p.Owner == m.Owner
                             where p.Name == name
                             orderby p.LastRun
@@ -275,15 +275,15 @@ namespace CmsWeb.Areas.Search.Controllers
                     previous.Ispublic = false;
                 }
 
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
                 return Redirect("/Query/" + previous.QueryId);
 
                 //                m.CopyPropertiesTo(previous);
                 //                var pc = previous.ToClause();
-                //                pc.Reset(DbUtil.Db);
+                //                pc.Reset(CurrentDatabase);
                 //                pc = Condition.Import(query.Text, name, newGuids: true, topguid: previous.QueryId);
                 //                previous.Text = pc.ToXml();
-                //                DbUtil.Db.SubmitChanges();
+                //                CurrentDatabase.SubmitChanges();
                 //                return Redirect("/Query/" + previous.QueryId);
             }
             // saving to a new query
@@ -293,7 +293,7 @@ namespace CmsWeb.Areas.Search.Controllers
                 query.Ispublic = false;
             }
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return Redirect("/Query/" + m.QueryId);
         }
 
@@ -310,11 +310,11 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpGet, Route("~/NewQuery")]
         public ActionResult NewQuery()
         {
-            var qb = DbUtil.Db.ScratchPadCondition();
+            var qb = CurrentDatabase.ScratchPadCondition();
             qb.Reset();
             qb.AddNewClause();
             qb.Description = Util.ScratchPad2;
-            qb.Save(DbUtil.Db, increment: true);
+            qb.Save(CurrentDatabase, increment: true);
             return Redirect("/Query");
         }
 
@@ -332,7 +332,7 @@ namespace CmsWeb.Areas.Search.Controllers
             try
             {
                 var r = Person.ToggleTag(id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
                 return Json(new { HasTag = r });
             }
             catch (Exception ex)
@@ -344,7 +344,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult SetAutoRun(bool setting)
         {
-            DbUtil.Db.SetUserPreference("QueryAutoRun", setting ? "true" : "false");
+            CurrentDatabase.SetUserPreference("QueryAutoRun", setting ? "true" : "false");
             return Content(setting.ToString().ToLower());
         }
 
@@ -361,15 +361,15 @@ namespace CmsWeb.Areas.Search.Controllers
                 m.TagAll();
                 return Content("Remove");
             }
-            var tag = DbUtil.Db.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+            var tag = CurrentDatabase.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
             if (cleartagfirst ?? false)
             {
-                DbUtil.Db.ClearTag(tag);
+                CurrentDatabase.ClearTag(tag);
             }
 
             m.TagAll(tag);
             Util2.CurrentTag = tagname;
-            DbUtil.Db.TagCurrent();
+            CurrentDatabase.TagCurrent();
             return Content("Manage");
         }
 
@@ -390,7 +390,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult AddTasks(QueryModel m)
         {
-            return Content(Task.AddTasks(DbUtil.Db, m.TopClause.Id).ToString());
+            return Content(Task.AddTasks(CurrentDatabase, m.TopClause.Id).ToString());
         }
 
         [HttpGet]
@@ -408,8 +408,8 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult ExportSql(Guid? id)
         {
             var m = new QueryModel(id);
-            var q = DbUtil.Db.PeopleQueryCondition(m.TopClause);
-            return Content(DbUtil.Db.GetWhereClause(q), "text/plain");
+            var q = CurrentDatabase.PeopleQueryCondition(m.TopClause);
+            return Content(CurrentDatabase.GetWhereClause(q), "text/plain");
         }
 
         [HttpGet, Route("~/Query/Import")]
@@ -423,7 +423,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Import(string text, string name)
         {
             var ret = Condition.Import(text, name, newGuids: true);
-            ret.Save(DbUtil.Db);
+            ret.Save(CurrentDatabase);
             return Redirect("/Query/" + ret.Id);
         }
 
@@ -435,8 +435,8 @@ namespace CmsWeb.Areas.Search.Controllers
             var m = new QueryModel(id);
             var s = m.TopClause.ToCode();
 
-            var q2 = DbUtil.Db.PeopleQueryCode(s);
-            var q1 = DbUtil.Db.PeopleQueryCondition(m.TopClause);
+            var q2 = CurrentDatabase.PeopleQueryCode(s);
+            var q1 = CurrentDatabase.PeopleQueryCondition(m.TopClause);
 
             int cnt1 = 0, cnt2 = 0;
             int seconds = 0;
@@ -454,7 +454,7 @@ namespace CmsWeb.Areas.Search.Controllers
                 error = ex.Message;
             }
 
-            DbUtil.Db.Connection.Execute(@"
+            CurrentDatabase.Connection.Execute(@"
 UPDATE QueryAnalysis 
 set seconds = @seconds, 
     Message = @Error, 

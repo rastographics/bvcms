@@ -39,9 +39,9 @@ namespace CmsWeb.Models
             }
 
             var tagid = FilterByActiveTag ? DbUtil.Db.TagCurrent()?.Id : (int?)null;
-            //var fundids = APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db, FundSet);
+            //var fundids = APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db. FundSet);
 
-            var customFundIds = APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db, FundSet);
+            var customFundIds = APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db. FundSet);
             var authorizedFundIds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership().Select(f => f.FundId).ToList();
 
             string fundIds = string.Empty;

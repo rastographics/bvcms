@@ -42,7 +42,7 @@ namespace CmsWeb.CheckInAPI
             checkedIn = familyMember.CheckedIn.Value;
             //labels = familyMember.NumLabels.Value;
 
-            Organization orgInfo = DbUtil.Db.Organizations.SingleOrDefault(a => a.OrganizationId == familyMember.OrgId);
+            Organization orgInfo = CurrentDatabase.Organizations.SingleOrDefault(a => a.OrganizationId == familyMember.OrgId);
 
             if (orgInfo != null)
             {

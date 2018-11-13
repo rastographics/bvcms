@@ -125,7 +125,7 @@ namespace CmsWeb.Areas.People.Models
                     }
                 default:
                     if(_extraFields == null)
-                        _extraFields = DbUtil.Db.LoadOrganizationById(OrgId)?.GetOrganizationExtras();
+                        _extraFields = CurrentDatabase.LoadOrganizationById(OrgId)?.GetOrganizationExtras();
                     return _extraFields?.SingleOrDefault(x => x.Field.ToLower() == field)?.Data;
             }
         }

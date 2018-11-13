@@ -105,8 +105,8 @@ namespace CmsWeb.Models
 
         public MergeModel(int pid1, int pid2)
         {
-            var db = DbUtil.Db;
-            var q = from p in db.People
+            var db = Db;
+            var q = from p in DbUtil.Db.People
                     where p.PeopleId == pid1 || p.PeopleId == pid2
                     orderby p.PeopleId == pid1 ? 1 : 2
                     let notdup = p.PeopleExtras.Any(ee => ee.Field == "notdup" && (ee.IntValue == pid1 || ee.IntValue == pid2))
@@ -146,7 +146,7 @@ namespace CmsWeb.Models
                         hasotherfamily = ofamily > 1,
                         hasrelations = orelations > 0,
                         MemberStatus = p.MemberStatus.Description,
-                        hasinprogressreg = db.ViewInProgressRegistrations.Any(vv => vv.PeopleId == p.PeopleId)
+                        hasinprogressreg = DbUtil.Db.ViewInProgressRegistrations.Any(vv => vv.PeopleId == p.PeopleId)
                     };
             pi = q.ToList();
             pi.Add(new BasicInfo());
@@ -220,14 +220,14 @@ namespace CmsWeb.Models
             target.Family.UpdateValue(fsb, "ZipCode", pi[UseZipCode].ZipCode);
             target.Family.UpdateValue(fsb, "CountryName", pi[UseCountry].Country);
 
-            target.LogChanges(DbUtil.Db, psb);
-            target.Family.LogChanges(DbUtil.Db, fsb, target.PeopleId, Util.UserPeopleId.Value);
+            target.LogChanges(DbUtil.Db. psb);
+            target.Family.LogChanges(DbUtil.Db. fsb, target.PeopleId, Util.UserPeopleId.Value);
             DbUtil.Db.SubmitChanges();
         }
         public void Move()
         {
             var from = DbUtil.Db.LoadPersonById(pi[0].PeopleId);
-            from.MovePersonStuff(DbUtil.Db, pi[1].PeopleId);
+            from.MovePersonStuff(DbUtil.Db. pi[1].PeopleId);
             if (DeleteDuplicate == true)
                 Delete();
         }

@@ -9,7 +9,7 @@
             {
                 <input type="checkbox" oid="@o.Id" checked="checked" class="orgcheck" />
             }
-            else if (o.isOther && DbUtil.Db.Setting("UX-ManageShowAllChildOrgs", true))
+            else if (o.isOther && CurrentDatabase.Setting("UX-ManageShowAllChildOrgs", true))
             {
                 <input type="checkbox" oid="@o.Id" class="orgcheck" />
             }

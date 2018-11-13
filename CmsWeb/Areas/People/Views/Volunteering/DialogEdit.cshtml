@@ -3,7 +3,7 @@
 @{
     // type must be either ProtectMyMinistryHelper.TYPE_BACKGROUND or ProtectMyMinistryHelper.TYPE_CREDIT
     int type = ViewBag.dialogType;
-    var labels = from e in DbUtil.Db.BackgroundCheckLabels
+    var labels = from e in CurrentDatabase.BackgroundCheckLabels
                  orderby e.Description
                  select e;
 }

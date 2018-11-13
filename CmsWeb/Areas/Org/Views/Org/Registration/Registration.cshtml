@@ -3,7 +3,7 @@
 @model CmsWeb.Areas.Org.Models.SettingsRegistrationModel
 @{
     var NotJoinOrg = Model.Org.RegistrationTypeId != CmsData.Codes.RegistrationTypeCode.JoinOrganization;
-    ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowRegistrationHelp");
+    ViewBag.ShowHelp = CurrentDatabase.UserPreference("ShowRegistrationHelp");
     ViewBag.FalseValue = "";
 }
 <form class="ajax">
@@ -135,7 +135,7 @@
       <div class="col-sm-3 col-md-3">
         @Html.DisplayFor(m => m.NotReqMarital, new {FalseValue = "n/a"})
       </div>
-      @if (DbUtil.Db.Setting("ShowCampusOnRegistration", "false").Equal("true"))
+      @if (CurrentDatabase.Setting("ShowCampusOnRegistration", "false").Equal("true"))
       {
         <div class="col-sm-3 col-md-3">
           @Html.DisplayFor(m => m.NotReqCampus, new {label = $"Not Req {Util2.CampusLabel}", FalseValue = "n/a"})

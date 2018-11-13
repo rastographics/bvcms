@@ -24,9 +24,9 @@ namespace CmsWeb.Areas.Main.Models.Directories
 		IEnumerable<CompactFamilyInfo> q;
 		public CompactDir(Guid qid)
 		{
-			var q0 = DbUtil.Db.PeopleQuery(qid);
-		    var tag = DbUtil.Db.PopulateTemporaryTag(q0.Select(vv => vv.PeopleId));
-			q = from p in tag.People(DbUtil.Db)
+			var q0 = CurrentDatabase.PeopleQuery(qid);
+		    var tag = CurrentDatabase.PopulateTemporaryTag(q0.Select(vv => vv.PeopleId));
+			q = from p in tag.People(CurrentDatabase)
 				let person = p
 				group p by p.FamilyId into g
 				let family = g.First().Family

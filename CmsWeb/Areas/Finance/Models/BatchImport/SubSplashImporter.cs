@@ -33,7 +33,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                     continue;
 
                 var fund = csv["fund"];
-                var ffid = DbUtil.Db.ContributionFunds.FirstOrDefault(f => f.FundName == fund && f.FundStatusId == 1)?.FundId ?? fid;
+                var ffid = CurrentDatabase.ContributionFunds.FirstOrDefault(f => f.FundName == fund && f.FundStatusId == 1)?.FundId ?? fid;
                 var desc = $"{csv["first_name"]} {csv["last_name"]};{csv["email"]}";
 
                 if (bundleHeader == null)

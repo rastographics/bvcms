@@ -89,12 +89,12 @@ namespace CmsWeb.Areas.Main.Controllers
             {
                 me.AdditionalRecipients = new List<int> { personid.Value };
 
-                var person = DbUtil.Db.LoadPersonById(personid.Value);
+                var person = CurrentDatabase.LoadPersonById(personid.Value);
                 ViewBag.ToName = person?.Name;
             }
             else if (orgid.HasValue)
             {
-                var org = DbUtil.Db.LoadOrganizationById(orgid.Value);
+                var org = CurrentDatabase.LoadOrganizationById(orgid.Value);
                 GetRecipientsFromOrg(me, orgid.Value, onlyProspects, membersAndProspects);
                 me.Count = me.Recipients.Count();
                 ViewBag.ToName = org?.OrganizationName;
@@ -124,8 +124,8 @@ namespace CmsWeb.Areas.Main.Controllers
 
         private static void GetRecipientsFromOrg(MassEmailer me, int orgId, bool? onlyProspects, bool? membersAndProspects)
         {
-            var members = DbUtil.Db.OrgPeopleCurrent(orgId).Select(x => DbUtil.Db.LoadPersonById(x.PeopleId));
-            var prospects = DbUtil.Db.OrgPeopleProspects(orgId, false).Select(x => DbUtil.Db.LoadPersonById(x.PeopleId));
+            var members = CurrentDatabase.OrgPeopleCurrent(orgId).Select(x => CurrentDatabase.LoadPersonById(x.PeopleId));
+            var prospects = CurrentDatabase.OrgPeopleProspects(orgId, false).Select(x => CurrentDatabase.LoadPersonById(x.PeopleId));
 
             me.Recipients = new List<string>();
             me.RecipientIds = new List<int>();
@@ -198,7 +198,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
             if (content != null)
             {
-                DbUtil.Db.ArchiveContent(draftId);
+                CurrentDatabase.ArchiveContent(draftId);
             }
             else
             {
@@ -222,10 +222,10 @@ namespace CmsWeb.Areas.Main.Controllers
 
             if (!draftId.HasValue || draftId == 0)
             {
-                DbUtil.Db.Contents.InsertOnSubmit(content);
+                CurrentDatabase.Contents.InsertOnSubmit(content);
             }
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
             return content.Id;
         }
@@ -317,7 +317,7 @@ namespace CmsWeb.Areas.Main.Controllers
                     foreach (var pid in m.AdditionalRecipients)
                     {
                         // Protect against duplicate PeopleIDs ending up in the queue
-                        var q3 = from eqt in DbUtil.Db.EmailQueueTos
+                        var q3 = from eqt in CurrentDatabase.EmailQueueTos
                                  where eqt.Id == eq.Id
                                  where eqt.PeopleId == pid
                                  select eqt;
@@ -332,7 +332,7 @@ namespace CmsWeb.Areas.Main.Controllers
                             Guid = Guid.NewGuid(),
                         });
                     }
-                    DbUtil.Db.SubmitChanges();
+                    CurrentDatabase.SubmitChanges();
                 }
 
                 if (m.RecipientIds != null)
@@ -340,7 +340,7 @@ namespace CmsWeb.Areas.Main.Controllers
                     foreach (var pid in m.RecipientIds)
                     {
                         // Protect against duplicate PeopleIDs ending up in the queue
-                        var q3 = from eqt in DbUtil.Db.EmailQueueTos
+                        var q3 = from eqt in CurrentDatabase.EmailQueueTos
                                  where eqt.Id == eq.Id
                                  where eqt.PeopleId == pid
                                  select eqt;
@@ -355,7 +355,7 @@ namespace CmsWeb.Areas.Main.Controllers
                             Guid = Guid.NewGuid(),
                         });
                     }
-                    DbUtil.Db.SubmitChanges();
+                    CurrentDatabase.SubmitChanges();
                 }
 
                 if (eq.SendWhen.HasValue)
@@ -370,7 +370,7 @@ namespace CmsWeb.Areas.Main.Controllers
             }
 
             var host = Util.Host;
-            var currorgid = DbUtil.Db.CurrentSessionOrgId;
+            var currorgid = CurrentDatabase.CurrentSessionOrgId;
             // save these from HttpContext to set again inside thread local storage
             var userEmail = Util.UserEmail;
             var isInRoleEmailTest = User.IsInRole("EmailTest");
@@ -378,7 +378,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
             try
             {
-                ValidateEmailReplacementCodes(DbUtil.Db, m.Body, new MailAddress(m.FromAddress));
+                ValidateEmailReplacementCodes(CurrentDatabase. m.Body, new MailAddress(m.FromAddress));
             }
             catch (Exception ex)
             {
@@ -392,15 +392,15 @@ namespace CmsWeb.Areas.Main.Controllers
                 try
                 {
                     var db = DbUtil.Create(host);
-                    var cul = db.Setting("Culture", "en-US");
+                    var cul = CurrentDatabase.Setting("Culture", "en-US");
                     Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
                     Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
                     // set these again inside thread local storage
-                    db.SetCurrentOrgId(currorgid);
+                    CurrentDatabase.SetCurrentOrgId(currorgid);
                     Util.UserEmail = userEmail;
                     Util.IsInRoleEmailTest = isInRoleEmailTest;
                     Util.IsMyDataUser = isMyDataUser;
-                    db.SendPeopleEmail(id, onlyProspects);
+                    CurrentDatabase.SendPeopleEmail(id, onlyProspects);
                 }
                 catch (Exception ex)
                 {
@@ -410,9 +410,9 @@ namespace CmsWeb.Areas.Main.Controllers
                     errorLog.Log(new Error(ex2));
 
                     var db = DbUtil.Create(host);
-                    var equeue = db.EmailQueues.Single(ee => ee.Id == id);
+                    var equeue = CurrentDatabase.EmailQueues.Single(ee => ee.Id == id);
                     equeue.Error = ex.Message.Truncate(200);
-                    db.SubmitChanges();
+                    CurrentDatabase.SubmitChanges();
                 }
             });
             return Json(new { id = id });
@@ -462,14 +462,14 @@ namespace CmsWeb.Areas.Main.Controllers
 
             m.FromName = m.EmailFroms().First(ef => ef.Value == m.FromAddress).Text;
             var from = Util.FirstAddress(m.FromAddress, m.FromName);
-            var p = DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0);
+            var p = CurrentDatabase.LoadPersonById(Util.UserPeopleId ?? 0);
 
             try
             {
-                ValidateEmailReplacementCodes(DbUtil.Db, m.Body, from);
+                ValidateEmailReplacementCodes(CurrentDatabase. m.Body, from);
 
-                DbUtil.Db.CopySession();
-                DbUtil.Db.Email(from, p, null, m.Subject, m.Body, false);
+                CurrentDatabase.CopySession();
+                CurrentDatabase.Email(from, p, null, m.Subject, m.Body, false);
             }
             catch (Exception ex)
             {
@@ -523,14 +523,14 @@ namespace CmsWeb.Areas.Main.Controllers
 
         public ActionResult CheckQueued()
         {
-            var q = from e in DbUtil.Db.EmailQueues
+            var q = from e in CurrentDatabase.EmailQueues
                     where e.SendWhen < DateTime.Now
                     where e.Sent == null
                     select e;
 
             foreach (var emailqueue in q)
             {
-                DbUtil.Db.SendPeopleEmail(emailqueue.Id);
+                CurrentDatabase.SendPeopleEmail(emailqueue.Id);
             }
 
             return Content("done");
@@ -538,10 +538,10 @@ namespace CmsWeb.Areas.Main.Controllers
 
         private EmailQueue SetProgressInfo(int id)
         {
-            var emailqueue = DbUtil.Db.EmailQueues.SingleOrDefault(e => e.Id == id);
+            var emailqueue = CurrentDatabase.EmailQueues.SingleOrDefault(e => e.Id == id);
             if (emailqueue != null)
             {
-                var q = from et in DbUtil.Db.EmailQueueTos
+                var q = from et in CurrentDatabase.EmailQueueTos
                         where et.Id == id
                         select et;
                 ViewData["queued"] = emailqueue.Queued.ToString("g");
@@ -584,8 +584,8 @@ namespace CmsWeb.Areas.Main.Controllers
 
         private static void ValidateEmailReplacementCodes(CMSDataContext db, string emailText, MailAddress fromAddress)
         {
-            var er = new EmailReplacements(db, emailText, fromAddress);
-            er.DoReplacements(db, DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0));
+            var er = new EmailReplacements(CurrentDatabase. emailText, fromAddress);
+            er.DoReplacements(CurrentDatabase. CurrentDatabase.LoadPersonById(Util.UserPeopleId ?? 0));
         }
     }
 }

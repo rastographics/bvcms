@@ -1,3 +1,4 @@
+using CmsData;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -5,7 +6,6 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Web.Hosting;
-using CmsData;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
@@ -29,7 +29,7 @@ namespace CmsWeb.Areas.Dialog.Models
 
         public void Process(CMSDataContext db)
         {
-            var q = from a in db.Attends
+            var q = from a in DbUtil.Db.Attends
                     where a.MeetingId == MeetingId
                     where a.AttendanceFlag || a.EffAttendFlag == true
                     select a.PeopleId;
@@ -42,46 +42,46 @@ namespace CmsWeb.Areas.Dialog.Models
                 QueryId = QueryId,
                 Operation = Op,
             };
-            db.LongRunningOperations.InsertOnSubmit(lop);
-            db.SubmitChanges();
+            DbUtil.Db.LongRunningOperations.InsertOnSubmit(lop);
+            DbUtil.Db.SubmitChanges();
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
         }
 
         private static void DoWork(DeleteMeeting model)
         {
             var db = DbUtil.Create(model.Host);
-            var cul = db.Setting("Culture", "en-US");
+            var cul = DbUtil.Db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
 
             LongRunningOperation lop = null;
             foreach (var pid in model.pids)
             {
-                db.Dispose();
+                DbUtil.Db.Dispose();
                 db = DbUtil.Create(model.Host);
-                Attend.RecordAttendance(db, pid, model.MeetingId, false);
-                lop = FetchLongRunningOperation(db, Op, model.QueryId);
+                Attend.RecordAttendance(DbUtil.Db, pid, model.MeetingId, false);
+                lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
-                db.SubmitChanges();
+                DbUtil.Db.SubmitChanges();
             }
-            db.ExecuteCommand(@"
+            DbUtil.Db.ExecuteCommand(@"
 DELETE dbo.SubRequest 
 FROM dbo.SubRequest sr
 JOIN dbo.Attend a ON a.AttendId = sr.AttendId
 WHERE a.MeetingId = {0}
 ", model.MeetingId);
-            db.ExecuteCommand("DELETE dbo.VolRequest WHERE MeetingId = {0}", model.MeetingId);
-            db.ExecuteCommand("DELETE dbo.attend WHERE MeetingId = {0}", model.MeetingId);
-            db.ExecuteCommand("DELETE dbo.MeetingExtra WHERE MeetingId = {0}", model.MeetingId);
-            db.ExecuteCommand("DELETE dbo.meetings WHERE MeetingId = {0}", model.MeetingId);
+            DbUtil.Db.ExecuteCommand("DELETE dbo.VolRequest WHERE MeetingId = {0}", model.MeetingId);
+            DbUtil.Db.ExecuteCommand("DELETE dbo.attend WHERE MeetingId = {0}", model.MeetingId);
+            DbUtil.Db.ExecuteCommand("DELETE dbo.MeetingExtra WHERE MeetingId = {0}", model.MeetingId);
+            DbUtil.Db.ExecuteCommand("DELETE dbo.meetings WHERE MeetingId = {0}", model.MeetingId);
 
-            db.SubmitChanges();
+            DbUtil.Db.SubmitChanges();
 
             // finished
-            lop = FetchLongRunningOperation(db, Op, model.QueryId);
+            lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
             lop.Completed = DateTime.Now;
-            db.SubmitChanges();
+            DbUtil.Db.SubmitChanges();
         }
     }
 }

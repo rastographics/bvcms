@@ -29,7 +29,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 #endif
 
             OnlineRegModel m = null;
-            var ed = DbUtil.Db.RegistrationDatas.SingleOrDefault(e => e.Id == pf.DatumId);
+            var ed = CurrentDatabase.RegistrationDatas.SingleOrDefault(e => e.Id == pf.DatumId);
             if (ed != null)
                 m = Util.DeSerialize<OnlineRegModel>(ed.Data);
 
@@ -60,7 +60,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     ViewBag.amtdue = ret.AmtDue;
                     return View(ret.View, ret.Transaction);
                 case RouteType.Error:
-                    DbUtil.Db.LogActivity("OnlineReg Error " + ret.Message, pf.OrgId, did: datumid);
+                    CurrentDatabase.LogActivity("OnlineReg Error " + ret.Message, pf.OrgId, did: datumid);
                     return Message(ret.Message);
                 case RouteType.ValidationError:
                     return View(ret.View, pf);
@@ -68,7 +68,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     if (ModelState.IsValid)
                     {
                         ErrorSignal.FromCurrentContext().Raise(new Exception("OnlineReg Unexpected route datum= " + datumid));
-                        DbUtil.Db.LogActivity("OnlineReg Unexpected Route " + ret.Message, oid: pf.OrgId, did: datumid);
+                        CurrentDatabase.LogActivity("OnlineReg Unexpected Route " + ret.Message, oid: pf.OrgId, did: datumid);
                         ModelState.AddModelError("form", "unexpected error in payment processing");
                     }
                     return View(ret.View ?? "Payment/Process", pf);
@@ -80,12 +80,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (!Util.IsHosted || !pf.CreditCard.HasValue())
                 return false;
             var hash = Pbkdf2Hasher.HashString(pf.CreditCard);
-            DbUtil.Db.InsertIpLog(Request.UserHostAddress, hash);
+            CurrentDatabase.InsertIpLog(Request.UserHostAddress, hash);
 
             if (pf.IsProblemUser())
                 return LogRogueUser("Problem User", from);
             var iscardtester = ConfigurationManager.AppSettings["IsCardTester"];
-            var result = DbUtil.Db.Connection.ExecuteScalar<string>(iscardtester, new { ip = Request.UserHostAddress });
+            var result = CurrentDatabase.Connection.ExecuteScalar<string>(iscardtester, new { ip = Request.UserHostAddress });
             if (result.Equal("OK"))
                 return false;
             return LogRogueUser(result, from);
@@ -96,10 +96,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var request = System.Web.HttpContext.Current.Request;
             var insertRogueIp = ConfigurationManager.AppSettings["InsertRogueIp"];
             if (insertRogueIp.HasValue())
-                DbUtil.Db.Connection.Execute(insertRogueIp, new { ip = request.UserHostAddress, db = Util.Host });
+                CurrentDatabase.Connection.Execute(insertRogueIp, new { ip = request.UserHostAddress, db = Util.Host });
             var form = Encoding.Default.GetString(request.BinaryRead(request.TotalBytes));
             var sendto = Util.PickFirst(ConfigurationManager.AppSettings["CardTesterEmail"], Util.AdminMail);
-            DbUtil.Db.SendEmail(Util.FirstAddress(sendto),
+            CurrentDatabase.SendEmail(Util.FirstAddress(sendto),
                 $"CardTester on {Util.Host}", $"why={why} from={from} ip={request.UserHostAddress}<br>{form.HtmlEncode()}",
                 Util.EmailAddressListFromString(sendto));
             return true;
@@ -162,7 +162,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (!Util.HasValue(q))
                 return Message("unknown");
             var id = Util.Decrypt(q).ToInt2();
-            var qq = from t in DbUtil.Db.Transactions
+            var qq = from t in CurrentDatabase.Transactions
                      where t.OriginalId == id || t.Id == id
                      orderby t.Id descending
                      select new { t, email = t.TransactionPeople.FirstOrDefault().Person.EmailAddress };
@@ -172,7 +172,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             var ti = i.t;
             var email = i.email;
-            var amtdue = PaymentForm.AmountDueTrans(DbUtil.Db, ti);
+            var amtdue = PaymentForm.AmountDueTrans(CurrentDatabase. ti);
             if (amtdue == 0)
                 return Message("no outstanding transaction");
 
@@ -204,7 +204,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 DbUtil.LogActivity("OnlineReg PayDueNoTransactionId");
                 return Message("error no transactionid");
             }
-            var ti = DbUtil.Db.Transactions.SingleOrDefault(tt => tt.Id == id);
+            var ti = CurrentDatabase.Transactions.SingleOrDefault(tt => tt.Id == id);
             if (ti == null)
             {
                 DbUtil.LogActivity("OnlineReg PayDueNoPendingTrans");
@@ -214,7 +214,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             ti.Testing = true;
 #endif
             OnlineRegModel.ConfirmDuePaidTransaction(ti, transactionId, sendmail: true);
-            ViewBag.amtdue = PaymentForm.AmountDueTrans(DbUtil.Db, ti).ToString("C");
+            ViewBag.amtdue = PaymentForm.AmountDueTrans(CurrentDatabase. ti).ToString("C");
             SetHeaders(ti.OrgId ?? 0);
             DbUtil.LogActivity("OnlineReg PayDueConfirm", ti.OrgId, ti.LoginPeopleId ?? ti.FirstTransactionPeopleId());
             return View("PayAmtDue/Confirm", ti);
@@ -226,7 +226,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (!Util.HasValue(q))
                 return Message("unknown");
             var id = Util.Decrypt(q);
-            var ed = DbUtil.Db.ExtraDatas.SingleOrDefault(e => e.Id == id.ToInt());
+            var ed = CurrentDatabase.ExtraDatas.SingleOrDefault(e => e.Id == id.ToInt());
             if (ed == null)
                 return Message("no outstanding transaction");
             return Content(ed.Data);

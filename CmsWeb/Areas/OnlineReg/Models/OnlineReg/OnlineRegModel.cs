@@ -61,7 +61,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public Person GetGoer()
         {
-            return DbUtil.Db.LoadPersonById(GoerId ?? 0);
+            return CurrentDatabase.LoadPersonById(GoerId ?? 0);
         }
 
 
@@ -71,7 +71,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             get
             {
                 if (_transaction == null && TranId.HasValue)
-                    _transaction = DbUtil.Db.Transactions.SingleOrDefault(tt => tt.Id == TranId);
+                    _transaction = CurrentDatabase.Transactions.SingleOrDefault(tt => tt.Id == TranId);
                 return _transaction;
             }
         }
@@ -82,7 +82,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             get
             {
                 if (_user == null && UserPeopleId.HasValue)
-                    _user = DbUtil.Db.LoadPersonById(UserPeopleId.Value);
+                    _user = CurrentDatabase.LoadPersonById(UserPeopleId.Value);
                 return _user;
             }
         }
@@ -92,7 +92,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             if (_meeting == null)
             {
-                var q = from m in DbUtil.Db.Meetings
+                var q = from m in CurrentDatabase.Meetings
                         where m.Organization.OrganizationId == Orgid
                         where m.MeetingDate > Util.Now.AddHours(-12)
                         orderby m.MeetingDate

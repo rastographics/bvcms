@@ -68,7 +68,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 if (ac.ToInt() == 0)
                     ac = email;
                 var eac = Util.Encrypt(ac);
-                var q = from kc in DbUtil.Db.CardIdentifiers
+                var q = from kc in CurrentDatabase.CardIdentifiers
                         where kc.Id == eac
                         select kc.PeopleId;
                 var pid = q.SingleOrDefault();
@@ -85,7 +85,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                     ed = new ExtraDatum {Data = person, Stamp = Util.Now};
                 }
                 BundleDetail bd = null;
-                var defaultfundid = DbUtil.Db.Setting("DefaultFundId", "1").ToInt();
+                var defaultfundid = CurrentDatabase.Setting("DefaultFundId", "1").ToInt();
                 for (var c = 0; c < csv.FieldCount; c++)
                 {
                     var col = cols[c].Trim();
@@ -116,12 +116,12 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             bh.TotalChecks = bh.BundleDetails.Sum(d => d.Contribution.ContributionAmount);
             bh.TotalCash = 0;
             bh.TotalEnvelopes = 0;
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
         }
 
         private static int? FindFund(string s)
         {
-            var qf = from f in DbUtil.Db.ContributionFunds
+            var qf = from f in CurrentDatabase.ContributionFunds
                      where f.FundName == s
                      select f;
             var fund = qf.FirstOrDefault();

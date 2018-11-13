@@ -2,14 +2,14 @@
 {
   <div style="background-color: yellow;font-size: 2em;text-align: center;">@Util.UrgentMessage</div>
 }
-@if (DbUtil.TopNotice().HasValue())
+@if (CurrentDatabase.Util.TopNotice().HasValue())
 {
-    <div id='TopNotice'>@Html.Raw(DbUtil.TopNotice())</div>
+    <div id='TopNotice'>@Html.Raw(CurrentDatabase.Util.TopNotice())</div>
 }
 @if (User.IsInRole("Admin") && DbUtil.NoticeToAdmins().HasValue())
 {
     <div class="col-sm-12">
-        <div class="alert alert-danger">@Html.Raw(DbUtil.NoticeToAdmins())</div>
+        <div class="alert alert-danger">@Html.Raw(CurrentDatabase.Util.NoticeToAdmins())</div>
     </div>
 }
 @if (User.IsInRole("Admin") && Util.AdminMessage.HasValue())

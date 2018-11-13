@@ -26,7 +26,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public JsonResult Codes(string id)
         {
-            var q = from p in DbUtil.Db.VolInterestInterestCodes
+            var q = from p in CurrentDatabase.VolInterestInterestCodes
                     where p.VolInterestCode.Org == id
                     select new
                     {
@@ -144,14 +144,14 @@ namespace CmsWeb.Areas.Manage.Controllers
 
         public ActionResult EmailReminders(int id)
         {
-            var qb = DbUtil.Db.ScratchPadCondition();
+            var qb = CurrentDatabase.ScratchPadCondition();
             qb.Reset();
             qb.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.Equal, id.ToString());
-            qb.Save(DbUtil.Db);
+            qb.Save(CurrentDatabase);
 
-            var meeting = DbUtil.Db.Meetings.Single(m => m.MeetingId == id);
+            var meeting = CurrentDatabase.Meetings.Single(m => m.MeetingId == id);
 
-            DbUtil.Db.SetCurrentOrgId(meeting.OrganizationId);
+            CurrentDatabase.SetCurrentOrgId(meeting.OrganizationId);
             var subject = $"{meeting.Organization.OrganizationName} Reminder";
             var body =
                 $@"<blockquote><table>
@@ -175,7 +175,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult Request0(long ticks, int oid, int limit)
         {
             var time = new DateTime(ticks); // ticks here is meeting time
-            var mid = DbUtil.Db.CreateMeeting(oid, time);
+            var mid = CurrentDatabase.CreateMeeting(oid, time);
             var vs = new VolunteerRequestModel(mid, Util.UserPeopleId.Value) { limit = limit };
             vs.ComposeMessage();
             return View("Request", vs);
@@ -200,22 +200,22 @@ namespace CmsWeb.Areas.Manage.Controllers
 
         public ActionResult EmailSlot(int id)
         {
-            var m = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == id);
-            var qb = DbUtil.Db.ScratchPadCondition();
+            var m = CurrentDatabase.Meetings.Single(mm => mm.MeetingId == id);
+            var qb = CurrentDatabase.ScratchPadCondition();
             qb.Reset();
             qb.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.Equal, m.MeetingId);
-            qb.Save(DbUtil.Db);
+            qb.Save(CurrentDatabase);
             return Redirect($"/Email/{qb.Id}?TemplateId=0&body={m.Organization.OrganizationName} {m.MeetingDate.FormatDateTm()}&subj={m.Organization.OrganizationName} {m.MeetingDate.FormatDateTm()}");
         }
 
         [Route("EmailPersonInSlot/{meetingId:int}/{pId:int}")]
         public ActionResult EmailPersonInSlot(int meetingId, int pId)
         {
-            var m = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == meetingId);
-            var qb = DbUtil.Db.ScratchPadCondition();
+            var m = CurrentDatabase.Meetings.Single(mm => mm.MeetingId == meetingId);
+            var qb = CurrentDatabase.ScratchPadCondition();
             qb.Reset();
             qb.AddNewClause(QueryType.PeopleId, CompareType.Equal, pId);
-            qb.Save(DbUtil.Db);
+            qb.Save(CurrentDatabase);
             return Redirect($"/Email/{qb.Id}?TemplateId=0&body={m.Organization.OrganizationName} {m.MeetingDate.FormatDateTm()}&subj={m.Organization.OrganizationName} {m.MeetingDate.FormatDateTm()}");
         }
 

@@ -1,4 +1,5 @@
 ﻿using CmsData;
+using ImageData;
 using System;
 using System.Web;
 using System.Web.Mvc;
@@ -6,13 +7,38 @@ using UtilityExtensions;
 
 namespace CmsWeb.Lifecycle
 {
+    public class CMSBaseService
+    {
+        protected RequestManager RequestManager { get; }
+        protected HttpContext CurrentHttpContext => RequestManager.CurrentHttpContext;
+        protected CMSDataContext CurrentDatabase => RequestManager.CurrentDatabase;
+        protected CMSImageDataContext CurrentImageDatabase => RequestManager.CurrentImageDatabase;
+
+        public CMSBaseService(RequestManager requestManager)
+        {
+            RequestManager = requestManager;
+        }
+    }
+
     public class CMSBaseController : Controller
     {
         protected RequestManager RequestManager { get; }
-        protected CMSDataContext Db => RequestManager.Database;
-        protected Guid CurrentRequestId => RequestManager.RequestId;
+        protected HttpContext CurrentHttpContext => RequestManager.CurrentHttpContext;
+        protected CMSDataContext CurrentDatabase => RequestManager.CurrentDatabase;
+        protected CMSImageDataContext CurrentImageDatabase => RequestManager.CurrentImageDatabase;
 
         public CMSBaseController(RequestManager requestManager)
+        {
+            RequestManager = requestManager;
+        }
+    }
+
+    [Obsolete("Models extending this class should be refactored to avoid containing business logic in the future")]
+    public class CMSBaseModelWithDataAccess
+    {
+        protected RequestManager RequestManager { get; }
+
+        public CMSBaseModelWithDataAccess(RequestManager requestManager)
         {
             RequestManager = requestManager;
         }
@@ -35,46 +61,47 @@ namespace CmsWeb.Lifecycle
 
     public class RequestManager
     {
-        private readonly HttpContext _httpContext;
         private readonly CMSConfigurationManager _cmsConfigurationManager;
 
         public Guid RequestId { get; }
-        public HttpContext CurrentHttpContext => _httpContext;
-        public string Host { get; private set; }
-        public string ConnectionString { get; private set; }
-        public CMSDataContext Database { get; private set; }
+        public HttpContext CurrentHttpContext { get; }
+        public string CurrentHost { get; private set; }
+        public string CurrentConnectionString { get; private set; }
+        public CMSDataContext CurrentDatabase { get; private set; }
+        public CMSImageDataContext CurrentImageDatabase { get; private set; }
 
         public RequestManager(HttpContext httpContext, CMSConfigurationManager configurationManager)
         {
-            _httpContext = httpContext;
+            CurrentHttpContext = httpContext;
             _cmsConfigurationManager = configurationManager;
 
-            Host = GetHost(_httpContext);
-            ConnectionString = GetConnectionString(_httpContext);
+            CurrentHost = GetHost(CurrentHttpContext);
+            CurrentConnectionString = GetConnectionString(CurrentHttpContext);
             RequestId = Guid.NewGuid();
 
-            Database = DbUtil.Create(ConnectionString, Host);
+            CurrentDatabase = CmsData.DbUtil.Create(CurrentConnectionString, CurrentHost);
+            CurrentImageDatabase = ImageData.DbUtil.Db;
         }
 
         private string GetHost(HttpContext context)
         {
             if (_cmsConfigurationManager.HasConfiguredValue(CMSConfigurationManager.HostSetting))
             {
-                Host = _cmsConfigurationManager.GetConfiguredValue(CMSConfigurationManager.HostSetting);
+                CurrentHost = _cmsConfigurationManager.GetConfiguredValue(CMSConfigurationManager.HostSetting);
             }
             else
             {
                 try
                 {
-                    Host = context.Request.Url.Authority.SplitStr(".:")[0];
+                    CurrentHost = context.Request.Url.Authority.SplitStr(".:")[0];
                 }
                 catch (Exception)
                 {
-                    Host = string.Empty;
+                    CurrentHost = string.Empty;
                 }
             }
 
-            return Host;
+            return CurrentHost;
         }
 
         private string GetConnectionString(HttpContext context)

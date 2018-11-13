@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             if (gsid.HasValue) // this means that the person is a suppoter who got a support email
             {
-                var goerSupporter = DbUtil.Db.GoerSupporters.SingleOrDefault(gg => gg.Id == gsid); // used for mission trips
+                var goerSupporter = CurrentDatabase.GoerSupporters.SingleOrDefault(gg => gg.Id == gsid); // used for mission trips
                 if (goerSupporter != null)
                 {
                     GoerId = goerSupporter.GoerId; // suppoert this particular goer
@@ -35,7 +35,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 var guid = regtag.ToGuid();
                 if (guid == null)
                     throw new Exception("invalid link");
-                var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
+                var ot = CurrentDatabase.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
                 if (ot == null)
                     throw new Exception("invalid link");
 #if DEBUG

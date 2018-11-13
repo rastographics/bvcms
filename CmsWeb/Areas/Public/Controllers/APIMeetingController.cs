@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity($"APIMeeting ExtraValues {id}, {fields}");
-            return Content(new APIMeeting(DbUtil.Db)
+            return Content(new APIMeeting(CurrentDatabase)
                 .ExtraValues(id, fields), "text/xml");
         }
 
@@ -35,7 +35,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity($"APIMeeting AddEditExtraValue {meetingid}, {field}");
-            return Content(new APIMeeting(DbUtil.Db)
+            return Content(new APIMeeting(CurrentDatabase)
                 .AddEditExtraValue(meetingid, field, value));
         }
 
@@ -49,7 +49,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity($"APIMeeting DeleteExtraValue {meetingid}, {field}");
-            return Content(new APIMeeting(DbUtil.Db)
+            return Content(new APIMeeting(CurrentDatabase)
                 .DeleteExtraValue(meetingid, field));
         }
 
@@ -63,7 +63,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity($"APIMeeting MarkRegistered {meetingid}, {peopleid}");
-            Attend.MarkRegistered(DbUtil.Db, peopleid, meetingid, CommitId);
+            Attend.MarkRegistered(CurrentDatabase. peopleid, meetingid, CommitId);
             return Content("ok");
         }
     }

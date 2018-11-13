@@ -2,10 +2,10 @@
 @using CmsData
 @using UtilityExtensions
 @{
-    var giving = Util.UserPeopleId == Util2.CurrentPeopleId && ViewExtensions2.DbSetting("TransactionGateway", "").HasValue() && DbUtil.Db.Setting("OnlineGiving", true);
-    var vaultDisabled = DbUtil.Db.Setting("VaultDisabled");
+    var giving = Util.UserPeopleId == Util2.CurrentPeopleId && ViewExtensions2.DbSetting("TransactionGateway", "").HasValue() && CurrentDatabase.Setting("OnlineGiving", true);
+    var vaultDisabled = CurrentDatabase.Setting("VaultDisabled");
     var checkImageUserView = true;
-    if (DbUtil.Db.Setting("CheckImagesDisabledForUser"))
+    if (CurrentDatabase.Setting("CheckImagesDisabledForUser"))
     {
         checkImageUserView = User.IsInRole("Finance");
     }

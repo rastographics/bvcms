@@ -37,7 +37,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public bool AutoRun
         {
-            get { return DbUtil.Db.UserPreference("QueryAutoRun", "false").ToBool(); }
+            get { return CurrentDatabase.UserPreference("QueryAutoRun", "false").ToBool(); }
 
         }
 

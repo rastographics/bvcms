@@ -23,12 +23,12 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost]
         public ActionResult Process(RepairTransactionsOrgs model)
         {
-            model.UpdateLongRunningOp(DbUtil.Db, RepairTransactionsOrgs.Op);
+            model.UpdateLongRunningOp(CurrentDatabase. RepairTransactionsOrgs.Op);
 
             if (!model.Started.HasValue)
             {
                 DbUtil.LogActivity("Repair Transactions for Orgs");
-                model.Process(DbUtil.Db);
+                model.Process(CurrentDatabase);
             }
             return View(model);
         }

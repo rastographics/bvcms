@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Org.Models
             set
             {
                 if (Org == null)
-                    Org = DbUtil.Db.LoadOrganizationById(value);
+                    Org = CurrentDatabase.LoadOrganizationById(value);
             }
         }
 
@@ -35,7 +35,7 @@ namespace CmsWeb.Areas.Org.Models
         public void Update()
         {
             this.CopyPropertiesTo(Org);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
         }
 
         public SelectList AttendCreditList()
@@ -73,9 +73,9 @@ namespace CmsWeb.Areas.Org.Models
         }
         public void UpdateSchedules()
         {
-            DbUtil.Db.OrgSchedules.DeleteAllOnSubmit(Org.OrgSchedules);
+            CurrentDatabase.OrgSchedules.DeleteAllOnSubmit(Org.OrgSchedules);
             Org.OrgSchedules.Clear();
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             foreach (var s in Schedules.OrderBy(ss => ss.Id))
                 Org.OrgSchedules.Add(new OrgSchedule
                 {
@@ -85,7 +85,7 @@ namespace CmsWeb.Areas.Org.Models
                     SchedTime = s.Time.ToDate(),
                     AttendCreditId = s.AttendCredit.Value.ToInt()
                 });
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
         }
         public SelectList SchedulesPrev()
         {
@@ -109,7 +109,7 @@ Schedules can be 'Every Meeting' for 100% credit or they can be 'One a Week' for
             {
                 if (schedules == null && Id != 0)
                 {
-                    var q = from sc in DbUtil.Db.OrgSchedules
+                    var q = from sc in CurrentDatabase.OrgSchedules
                         where sc.OrganizationId == Id
                         select sc;
                     var u = from s in q

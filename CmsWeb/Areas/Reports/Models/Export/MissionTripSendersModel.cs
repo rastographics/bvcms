@@ -36,7 +36,7 @@ namespace CmsWeb.Models
 
         public static IEnumerable<SenderGift> SenderGifts(string orgids)
         {
-            var q = from sg in DbUtil.Db.SenderGifts(orgids)
+            var q = from sg in CurrentDatabase.SenderGifts(orgids)
                 select sg;
             return q;
         }

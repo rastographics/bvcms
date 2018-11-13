@@ -59,7 +59,7 @@ namespace CmsWeb.Areas.Public.Controllers
 				return CheckScanMessage.createErrorReturn( "Finance role is required for check scanning" );
 			}
 
-			var funds = (from f in DbUtil.Db.ContributionFunds
+			var funds = (from f in CurrentDatabase.ContributionFunds
 							where f.FundStatusId == 1
 							orderby f.FundName
 							select new
@@ -91,7 +91,7 @@ namespace CmsWeb.Areas.Public.Controllers
 				return CheckScanMessage.createErrorReturn( "Finance role is required for check scanning" );
 			}
 
-			var bundles = (from b in DbUtil.Db.BundleHeaders
+			var bundles = (from b in CurrentDatabase.BundleHeaders
 								where b.BundleStatusId == 1
 								orderby b.BundleHeaderId descending
 								select new
@@ -136,7 +136,7 @@ namespace CmsWeb.Areas.Public.Controllers
 					CreatedBy = user.UserId,
 					ContributionDate = DateTime.Now,
 					CreatedDate = DateTime.Now,
-					FundId = DbUtil.Db.Setting( "DefaultFundId", "1" ).ToInt(),
+					FundId = CurrentDatabase.Setting( "DefaultFundId", "1" ).ToInt(),
 					RecordStatus = false,
 					TotalCash = 0,
 					TotalChecks = 0,
@@ -144,10 +144,10 @@ namespace CmsWeb.Areas.Public.Controllers
 					BundleTotal = 0
 				};
 
-				DbUtil.Db.BundleHeaders.InsertOnSubmit( header );
-				DbUtil.Db.SubmitChanges();
+				CurrentDatabase.BundleHeaders.InsertOnSubmit( header );
+				CurrentDatabase.SubmitChanges();
 			} else {
-				header = (from h in DbUtil.Db.BundleHeaders
+				header = (from h in CurrentDatabase.BundleHeaders
 							where h.BundleHeaderId == message.id
 							select h).FirstOrDefault();
 			}
@@ -168,8 +168,8 @@ namespace CmsWeb.Areas.Public.Controllers
 						other.Second = Convert.FromBase64String( entry.back );
 					}
 
-					ImageData.DbUtil.Db.Others.InsertOnSubmit( other );
-					ImageData.DbUtil.Db.SubmitChanges();
+					ImageData.CurrentDatabase.Others.InsertOnSubmit( other );
+					ImageData.CurrentDatabase.SubmitChanges();
 
 					var detail = new BundleDetail
 					{
@@ -198,7 +198,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 					header.BundleDetails.Add( detail );
 
-					DbUtil.Db.SubmitChanges();
+					CurrentDatabase.SubmitChanges();
 				}
 
 				response.setSuccess();
@@ -212,7 +212,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 		private static int? FindPerson( string routing, string account )
 		{
-			return (from kc in DbUtil.Db.CardIdentifiers
+			return (from kc in CurrentDatabase.CardIdentifiers
 						where kc.Id == Util.Encrypt( routing + "|" + account )
 						select kc.PeopleId).SingleOrDefault();
 		}

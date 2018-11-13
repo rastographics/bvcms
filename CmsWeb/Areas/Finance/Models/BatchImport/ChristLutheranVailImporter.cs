@@ -46,7 +46,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
                 if (bh == null)
                     bh = BatchImportContributions.GetBundleHeader(date, now);
-                var f = DbUtil.Db.FetchOrCreateFund(rec.Fund);
+                var f = CurrentDatabase.FetchOrCreateFund(rec.Fund);
                 var bd = BatchImportContributions.AddContributionDetail(rec.Dt.Value, f.FundId, rec.Amount, rec.CheckNo, "", rec.Identifer);
                 bd.Contribution.PostingDate = now;
                 bh.BundleDetails.Add(bd);

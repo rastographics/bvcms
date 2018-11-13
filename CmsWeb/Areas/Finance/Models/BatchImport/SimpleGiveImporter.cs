@@ -36,7 +36,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                     continue;
 
                 var fund = csv[4];
-                int ffid = !fund.HasValue() ? fid : DbUtil.Db.FetchOrCreateFund(fund).FundId;
+                int ffid = !fund.HasValue() ? fid : CurrentDatabase.FetchOrCreateFund(fund).FundId;
 
                 var name = csv[5];
                 var address = csv[12];

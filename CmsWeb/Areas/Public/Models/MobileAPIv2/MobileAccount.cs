@@ -75,9 +75,9 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 				return;
 			}
 
-			int[] foundpeopleids = db.FindPerson( first, last, birthdate, email, phone ).Select( vv => vv.PeopleId.Value ).ToArray();
+			int[] foundpeopleids = CurrentDatabase.FindPerson( first, last, birthdate, email, phone ).Select( vv => vv.PeopleId.Value ).ToArray();
 
-			List<Person> foundpeople = (from pp in db.People
+			List<Person> foundpeople = (from pp in CurrentDatabase.People
 												where foundpeopleids.Contains( pp.PeopleId )
 												select pp).ToList();
 
@@ -127,9 +127,9 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 
 		public void sendDeepLink()
 		{
-			if( db.People.Any( p => p.EmailAddress == email || p.EmailAddress2 == email ) ) {
+			if( CurrentDatabase.People.Any( p => p.EmailAddress == email || p.EmailAddress2 == email ) ) {
 				string code = createQuickSignInCode( device, instance, key, email );
-				string deepLink = db.Setting( "MobileDeepLinkURL", "" );
+				string deepLink = CurrentDatabase.Setting( "MobileDeepLinkURL", "" );
 
 				if( string.IsNullOrEmpty( code ) ) {
 					results = Results.CommonCodeCreationFailed;
@@ -149,10 +149,10 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 				string link = $"{deepLink}/signin/quick/{code}";
 				string message = $"<a href='{link}'>Click here to sign in</a>";
 
-				string body = db.ContentHtml( "NewMobileUserDeepLink", message );
+				string body = CurrentDatabase.ContentHtml( "NewMobileUserDeepLink", message );
 				body = body.Replace( "{link}", link );
 
-				db.SendEmail( new MailAddress( DbUtil.AdminMail, DbUtil.AdminMailName ), db.Setting( "MobileQuickSignInSubject", "Quick Sign In Link" ), body, mailAddresses );
+				CurrentDatabase.SendEmail( new MailAddress( DbUtil.AdminMail, DbUtil.AdminMailName ), CurrentDatabase.Setting( "MobileQuickSignInSubject", "Quick Sign In Link" ), body, mailAddresses );
 
 				results = Results.CommonEmailSent;
 			} else {
@@ -294,13 +294,13 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			person.EmailAddress = email;
 			person.HomePhone = phone;
 			
-			EntryPoint appEntryPoint = db.EntryPoints.FirstOrDefault( ep => ep.Code == "APP" );
+			EntryPoint appEntryPoint = CurrentDatabase.EntryPoints.FirstOrDefault( ep => ep.Code == "APP" );
 
 			if( appEntryPoint != null ) {
 				person.EntryPointId = appEntryPoint.Id;
 			}
 
-			db.SubmitChanges();
+			CurrentDatabase.SubmitChanges();
 
 			createUser();
 		}
@@ -309,7 +309,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 		{
 			user = MembershipService.CreateUser( db, person.PeopleId );
 
-			db.SubmitChanges();
+			CurrentDatabase.SubmitChanges();
 		}
 
 		private void notifyNewUser()
@@ -332,11 +332,11 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			}
 
 			string code = createQuickSignInCode( device, instance, key, email );
-			string deepLink = db.Setting( "MobileDeepLinkURL", "" );
-			string body = db.ContentHtml( "NewMobileUserWelcome", "" );
+			string deepLink = CurrentDatabase.Setting( "MobileDeepLinkURL", "" );
+			string body = CurrentDatabase.ContentHtml( "NewMobileUserWelcome", "" );
 
 			if( body.Length == 0 ) {
-				body = db.ContentHtml( "NewUserWelcome", Resource1.AccountModel_NewUserWelcome );
+				body = CurrentDatabase.ContentHtml( "NewUserWelcome", Resource1.AccountModel_NewUserWelcome );
 			}
 
 			if( code.Length == 0 ) {
@@ -353,29 +353,29 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 
 			body = body.Replace( "{first}", user.Person.PreferredName );
 			body = body.Replace( "{name}", user.Person.Name );
-			body = body.Replace( "{cmshost}", db.Setting( "DefaultHost", db.Host ) );
+			body = body.Replace( "{cmshost}", CurrentDatabase.Setting( "DefaultHost", CurrentDatabase.Host ) );
 			body = body.Replace( "{username}", user.Username );
 			body = body.Replace( "{link}", $"{deepLink}/signin/quick/{code}" );
 
-			db.Email( new MailAddress( DbUtil.AdminMail, DbUtil.AdminMailName ), user.Person, null, "New Mobile User Welcome", body );
+			CurrentDatabase.Email( new MailAddress( DbUtil.AdminMail, DbUtil.AdminMailName ), user.Person, null, "New Mobile User Welcome", body );
 
 			results = Results.CommonEmailSent;
 		}
 
 		private void notifyAboutExisting()
 		{
-			string message = db.ContentHtml( "ExistingUserConfirmation", Resource1.CreateAccount_ExistingUser );
-			message = message.Replace( "{name}", person.Name ).Replace( "{host}", db.CmsHost );
+			string message = CurrentDatabase.ContentHtml( "ExistingUserConfirmation", Resource1.CreateAccount_ExistingUser );
+			message = message.Replace( "{name}", person.Name ).Replace( "{host}", CurrentDatabase.CmsHost );
 
-			db.Email( new MailAddress( DbUtil.AdminMail, DbUtil.AdminMailName ), person, null, "Account Information for " + db.Host, message );
+			CurrentDatabase.Email( new MailAddress( DbUtil.AdminMail, DbUtil.AdminMailName ), person, null, "Account Information for " + CurrentDatabase.Host, message );
 		}
 
 		private void notifyAboutDuplicate()
 		{
-			string message = db.ContentHtml( "NotifyDuplicateUserOnMobile", Resource1.NotifyDuplicateUserOnMobile );
+			string message = CurrentDatabase.ContentHtml( "NotifyDuplicateUserOnMobile", Resource1.NotifyDuplicateUserOnMobile );
 			message = message.Replace( "{otheremail}", email );
 
-			db.Email( new MailAddress( DbUtil.AdminMail, DbUtil.AdminMailName ), person, null, "New User Account on " + db.Host, message );
+			CurrentDatabase.Email( new MailAddress( DbUtil.AdminMail, DbUtil.AdminMailName ), person, null, "New User Account on " + CurrentDatabase.Host, message );
 		}
 
 		private string createQuickSignInCode( int device, string instanceID, string key, string email )
@@ -395,8 +395,8 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 				CodeEmail = email
 			};
 
-			db.MobileAppDevices.InsertOnSubmit( appDevice );
-			db.SubmitChanges();
+			CurrentDatabase.MobileAppDevices.InsertOnSubmit( appDevice );
+			CurrentDatabase.SubmitChanges();
 
 			return appDevice.Id > 0 ? hash : "";
 		}

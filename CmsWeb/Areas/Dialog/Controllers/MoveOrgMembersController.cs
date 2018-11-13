@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost]
         public ActionResult Process(MoveOrgMembersModel model)
         {
-            model.UpdateLongRunningOp(DbUtil.Db, MoveOrgMembersModel.Op);
+            model.UpdateLongRunningOp(CurrentDatabase. MoveOrgMembersModel.Op);
 
             if (!model.Started.HasValue)
             {
@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 }
 
                 DbUtil.LogActivity("Move Org Members");
-                model.ProcessMove(DbUtil.Db);
+                model.ProcessMove(CurrentDatabase);
             }
             return View(model);
         }

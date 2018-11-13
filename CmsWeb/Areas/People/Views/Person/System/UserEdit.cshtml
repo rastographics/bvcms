@@ -82,7 +82,7 @@
                 }
                 @if (roles.SpecialPurpose.Contains("OrgLeadersOnly"))
                 {
-                    if (!Model.CanAssign(DbUtil.Db, "OrgLeadersOnly"))
+                    if (!Model.CanAssign(CurrentDatabase. "OrgLeadersOnly"))
                     {
                         if (Model.Roles.Contains("OrgLeadersOnly"))
                         {
@@ -123,7 +123,7 @@
         <strong>Custom</strong>
         <div class="row">
             <div class="col-sm-12">
-                @foreach (var role in roles.CustomRoles(DbUtil.Db))
+                @foreach (var role in roles.CustomRoles(CurrentDatabase))
                 {
                     @Role(role)
                 }
@@ -139,7 +139,7 @@
 </form>
 @helper Role(string role)
 {
-  if (!Model.CanAssign(DbUtil.Db, role))
+  if (!Model.CanAssign(CurrentDatabase. role))
   {
     if (Model.Roles.Contains(@role))
     {

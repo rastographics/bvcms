@@ -31,17 +31,17 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult AssignSelectedToTargetGroup(OrgGroupsModel m)
         {
             var a = m.List.ToArray();
-            var sgname = DbUtil.Db.MemberTags.Single(mt => mt.Id == m.groupid).Name;
+            var sgname = CurrentDatabase.MemberTags.Single(mt => mt.Id == m.groupid).Name;
             var q2 = from om in m.OrgMembers()
                      where om.OrgMemMemTags.All(mt => mt.MemberTag.Name != sgname)
                      where a.Contains(om.PeopleId)
                      select om;
             foreach (var om in q2)
             {
-                om.AddToGroup(DbUtil.Db, sgname);
+                om.AddToGroup(CurrentDatabase. sgname);
             }
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return View("Rows", m);
         }
 
@@ -56,11 +56,11 @@ namespace CmsWeb.Areas.Org.Controllers
             {
                 foreach (var om in q2)
                 {
-                    om.MakeLeaderOfGroup(DbUtil.Db, m.groupid.GetValueOrDefault());
+                    om.MakeLeaderOfGroup(CurrentDatabase. m.groupid.GetValueOrDefault());
                 }
             }
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return View("Rows", m);
         }
 
@@ -75,10 +75,10 @@ namespace CmsWeb.Areas.Org.Controllers
             {
                 foreach (var om in q2)
                 {
-                    om.RemoveAsLeaderOfGroup(DbUtil.Db, m.groupid.GetValueOrDefault());
+                    om.RemoveAsLeaderOfGroup(CurrentDatabase. m.groupid.GetValueOrDefault());
                 }
             }
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return View("Rows", m);
         }
 
@@ -86,14 +86,14 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult RemoveSelectedFromTargetGroup(OrgGroupsModel m)
         {
             var a = m.List.ToArray();
-            var sgname = DbUtil.Db.MemberTags.Single(mt => mt.Id == m.groupid).Name;
-            var q1 = from omt in DbUtil.Db.OrgMemMemTags
+            var sgname = CurrentDatabase.MemberTags.Single(mt => mt.Id == m.groupid).Name;
+            var q1 = from omt in CurrentDatabase.OrgMemMemTags
                      where omt.OrgId == m.orgid
                      where omt.MemberTag.Name == sgname
                      where a.Contains(omt.PeopleId)
                      select omt;
-            DbUtil.Db.OrgMemMemTags.DeleteAllOnSubmit(q1);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.OrgMemMemTags.DeleteAllOnSubmit(q1);
+            CurrentDatabase.SubmitChanges();
             return View("Rows", m);
         }
         [HttpPost]
@@ -104,8 +104,8 @@ namespace CmsWeb.Areas.Org.Controllers
                 return Content("error: no group name");
             }
 
-            var Db = DbUtil.Db;
-            var group = Db.MemberTags.SingleOrDefault(g =>
+            var Db = Db;
+            var group = CurrentDatabase.MemberTags.SingleOrDefault(g =>
                 g.Name == m.GroupName && g.OrgId == m.orgid);
             if (group == null)
             {
@@ -114,8 +114,8 @@ namespace CmsWeb.Areas.Org.Controllers
                     Name = m.GroupName,
                     OrgId = m.orgid
                 };
-                Db.MemberTags.InsertOnSubmit(group);
-                Db.SubmitChanges();
+                CurrentDatabase.MemberTags.InsertOnSubmit(group);
+                CurrentDatabase.SubmitChanges();
             }
             m.groupid = group.Id;
             ViewData["newgid"] = group.Id;
@@ -129,25 +129,25 @@ namespace CmsWeb.Areas.Org.Controllers
                 return Content("error: no group name");
             }
 
-            var group = DbUtil.Db.MemberTags.SingleOrDefault(d => d.Id == m.groupid);
+            var group = CurrentDatabase.MemberTags.SingleOrDefault(d => d.Id == m.groupid);
             if (group != null)
             {
                 group.Name = m.GroupName;
             }
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             m.GroupName = null;
             return Redirect("/OrgGroups/Management/" + m.orgid);
         }
         [HttpPost]
         public ActionResult DeleteGroup(OrgGroupsModel m)
         {
-            var group = DbUtil.Db.MemberTags.SingleOrDefault(g => g.Id == m.groupid);
+            var group = CurrentDatabase.MemberTags.SingleOrDefault(g => g.Id == m.groupid);
             if (group != null)
             {
-                DbUtil.Db.OrgMemMemTags.DeleteAllOnSubmit(group.OrgMemMemTags);
-                DbUtil.Db.MemberTags.DeleteOnSubmit(group);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.OrgMemMemTags.DeleteAllOnSubmit(group.OrgMemMemTags);
+                CurrentDatabase.MemberTags.DeleteOnSubmit(group);
+                CurrentDatabase.SubmitChanges();
                 m.groupid = (from v in m.Groups()
                              where v.Value != "0"
                              select v.Value).FirstOrDefault().ToInt();
@@ -159,15 +159,15 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult DeleteGroups(int id, int[] groups)
         {
-            var groupList = DbUtil.Db.MemberTags.Where(t => groups.Contains(t.Id));
+            var groupList = CurrentDatabase.MemberTags.Where(t => groups.Contains(t.Id));
 
             foreach (var group in groupList)
             {
-                DbUtil.Db.OrgMemMemTags.DeleteAllOnSubmit(group.OrgMemMemTags);
-                DbUtil.Db.MemberTags.DeleteOnSubmit(group);
+                CurrentDatabase.OrgMemMemTags.DeleteAllOnSubmit(group.OrgMemMemTags);
+                CurrentDatabase.MemberTags.DeleteOnSubmit(group);
             }
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
             return Redirect("/OrgGroups/Management/" + id);
         }
@@ -178,7 +178,7 @@ namespace CmsWeb.Areas.Org.Controllers
             int orgID = split[0].ToInt();
             int peopleID = split[1].ToInt();
 
-            var member = (from e in DbUtil.Db.OrganizationMembers
+            var member = (from e in CurrentDatabase.OrganizationMembers
                           where e.OrganizationId == orgID
                           where e.PeopleId == peopleID
                           select e).SingleOrDefault();
@@ -188,7 +188,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 member.Score = value;
             }
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
             return Content(value.ToString());
         }
@@ -202,7 +202,7 @@ namespace CmsWeb.Areas.Org.Controllers
             {
                 var peopleID = score[0].ToInt();
 
-                var player = (from e in DbUtil.Db.OrganizationMembers
+                var player = (from e in CurrentDatabase.OrganizationMembers
                               where e.OrganizationId == orgID
                               where e.PeopleId == peopleID
                               select e).SingleOrDefault();
@@ -212,7 +212,7 @@ namespace CmsWeb.Areas.Org.Controllers
                     player.Score = score[1].ToInt();
                 }
 
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
             }
 
             return Content("OK");
@@ -228,12 +228,12 @@ namespace CmsWeb.Areas.Org.Controllers
             int orgIDTwo = splitTwo[0].ToInt();
             int peopleIDTwo = splitTwo[1].ToInt();
 
-            var playerOne = (from e in DbUtil.Db.OrganizationMembers
+            var playerOne = (from e in CurrentDatabase.OrganizationMembers
                              where e.OrganizationId == orgIDOne
                              where e.PeopleId == peopleIDOne
                              select e).SingleOrDefault();
 
-            var playerTwo = (from e in DbUtil.Db.OrganizationMembers
+            var playerTwo = (from e in CurrentDatabase.OrganizationMembers
                              where e.OrganizationId == orgIDTwo
                              where e.PeopleId == peopleIDTwo
                              select e).SingleOrDefault();
@@ -255,8 +255,8 @@ namespace CmsWeb.Areas.Org.Controllers
                             MemberTagId = pTwoTag.MemberTagId
                         };
 
-                        DbUtil.Db.OrgMemMemTags.DeleteOnSubmit(pTwoTag);
-                        DbUtil.Db.OrgMemMemTags.InsertOnSubmit(pOneNew);
+                        CurrentDatabase.OrgMemMemTags.DeleteOnSubmit(pTwoTag);
+                        CurrentDatabase.OrgMemMemTags.InsertOnSubmit(pOneNew);
                     }
                 }
 
@@ -269,12 +269,12 @@ namespace CmsWeb.Areas.Org.Controllers
                         MemberTagId = pOneTag.MemberTagId
                     };
 
-                    DbUtil.Db.OrgMemMemTags.DeleteOnSubmit(pOneTag);
-                    DbUtil.Db.OrgMemMemTags.InsertOnSubmit(pTwoNew);
+                    CurrentDatabase.OrgMemMemTags.DeleteOnSubmit(pOneTag);
+                    CurrentDatabase.OrgMemMemTags.InsertOnSubmit(pTwoNew);
                 }
             }
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return Content("Complete");
         }
 

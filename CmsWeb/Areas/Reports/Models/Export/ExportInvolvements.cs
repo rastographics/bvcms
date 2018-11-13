@@ -14,12 +14,12 @@ namespace CmsWeb.Models
     {
         public static EpplusResult InvolvementList(Guid queryid)
         {
-            var db = DbUtil.Db;
-            var nocheckrole = db.Setting("AllowLimitToRoleForInvolvementExport", "false").ToBool();
-            var q = db.PeopleQuery(queryid);
+            var db = Db;
+            var nocheckrole = CurrentDatabase.Setting("AllowLimitToRoleForInvolvementExport", "false").ToBool();
+            var q = CurrentDatabase.PeopleQuery(queryid);
             var q2 = from p in q
                      orderby p.LastName, p.FirstName
-                     let spouse = db.People.SingleOrDefault(w => p.SpouseId == w.PeopleId)
+                     let spouse = CurrentDatabase.People.SingleOrDefault(w => p.SpouseId == w.PeopleId)
                      let om = p.OrganizationMembers.SingleOrDefault(m => m.OrganizationId == p.BibleFellowshipClassId)
                      select new InvolvementInfo
                      {
@@ -55,7 +55,7 @@ namespace CmsWeb.Models
                          LastName = p.LastName,
                          FirstName = p.PreferredName,
                          Campus = p.Campu.Description,
-                         CampusDate = db.LastChanged(p.PeopleId, "CampusId").FormatDate()
+                         CampusDate = CurrentDatabase.LastChanged(p.PeopleId, "CampusId").FormatDate()
                      };
             var list = q2.ToList();
             return ExcelExportModel.ToDataTable(list).ToExcel("Involvements.xlsx");
@@ -63,7 +63,7 @@ namespace CmsWeb.Models
 
         public static EpplusResult ChildrenList(Guid queryid, int maximumRows)
         {
-            var q = DbUtil.Db.PeopleQuery(queryid);
+            var q = CurrentDatabase.PeopleQuery(queryid);
             var q2 = from p in q
                      let rr = p.RecRegs.FirstOrDefault()
                      select new
@@ -97,9 +97,9 @@ namespace CmsWeb.Models
 
         public static EpplusResult ChurchList(Guid queryid, int maximumRows)
         {
-            var q = DbUtil.Db.PeopleQuery(queryid);
+            var q = CurrentDatabase.PeopleQuery(queryid);
             var q2 = from p in q
-                     let rescode = DbUtil.Db.ResidentCodes.SingleOrDefault(r => r.Id == p.PrimaryResCode).Description
+                     let rescode = CurrentDatabase.ResidentCodes.SingleOrDefault(r => r.Id == p.PrimaryResCode).Description
                      select new
                      {
                          p.PeopleId,
@@ -133,9 +133,9 @@ namespace CmsWeb.Models
 
         public static EpplusResult AttendList(Guid queryid, int maximumRows)
         {
-            var q = DbUtil.Db.PeopleQuery(queryid);
+            var q = CurrentDatabase.PeopleQuery(queryid);
             var q2 = from p in q
-                     let bfm = DbUtil.Db.OrganizationMembers.FirstOrDefault(om =>
+                     let bfm = CurrentDatabase.OrganizationMembers.FirstOrDefault(om =>
                          om.Organization.IsBibleFellowshipOrg == true
                          && om.PeopleId == p.PeopleId
                          && om.AttendPct > 0)
@@ -170,7 +170,7 @@ namespace CmsWeb.Models
 
         public static EpplusResult OrgMemberListGroups(Guid queryid)
         {
-            var filter = DbUtil.Db.OrgFilter(queryid);
+            var filter = CurrentDatabase.OrgFilter(queryid);
             var cmd = new SqlCommand(
                 $"dbo.OrgMembers {filter.Id}, '{filter.SgFilter}'");
             cmd.Connection = new SqlConnection(Util.ConnectionString);
@@ -180,17 +180,17 @@ namespace CmsWeb.Models
 
         public static IEnumerable<CurrOrgMember> OrgMemberList(int orgid)
         {
-            var Db = DbUtil.Db;
-            return Db.CurrOrgMembers(orgid.ToString());
+            var Db = Db;
+            return CurrentDatabase.CurrOrgMembers(orgid.ToString());
         }
 
         public static EpplusResult PromoList(Guid queryid, int maximumRows)
         {
-            var db = DbUtil.Db;
-            var filter = DbUtil.Db.OrgFilter(queryid);
-            var q = db.PeopleQuery(queryid);
+            var db = Db;
+            var filter = CurrentDatabase.OrgFilter(queryid);
+            var q = CurrentDatabase.PeopleQuery(queryid);
             var q2 = from p in q
-                     let bfm = db.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == filter.Id && om.PeopleId == p.PeopleId)
+                     let bfm = CurrentDatabase.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == filter.Id && om.PeopleId == p.PeopleId)
                      let sc = bfm.Organization.OrgSchedules.FirstOrDefault() // SCHED
                      let tm = sc.SchedTime.Value
                      select new

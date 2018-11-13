@@ -25,7 +25,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost, Route("SearchAdd2/Results")]
         public ActionResult Results(SearchAddModel m)
         {
-            DbUtil.Db.SetNoLock();
+            CurrentDatabase.SetNoLock();
             ModelState.Clear();
             m.OnlineRegTypeSearch = Util2.OnlineRegTypeSearchAdd;
 
@@ -72,7 +72,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost, Route("SearchAdd2/ResultsFamily")]
         public ActionResult ResultsFamily(SearchAddModel m)
         {
-            DbUtil.Db.SetNoLock();
+            CurrentDatabase.SetNoLock();
             ModelState.Clear();
             return View(m);
         }
@@ -141,7 +141,7 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             if (familyid == 0 && string.Compare(m.AddContext, "family", StringComparison.OrdinalIgnoreCase) == 0)
             {
-                familyid = (from pp in DbUtil.Db.People
+                familyid = (from pp in CurrentDatabase.People
                             where pp.PeopleId == m.PrimaryKeyForContextType.ToInt()
                             select pp.FamilyId).Single();
             }
@@ -217,7 +217,7 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             ViewBag.ContactId = id;
 
-            DbUtil.Db.SetNoLock();
+            CurrentDatabase.SetNoLock();
             ModelState.Clear();
             return View("ResultsOrganization", m);
         }

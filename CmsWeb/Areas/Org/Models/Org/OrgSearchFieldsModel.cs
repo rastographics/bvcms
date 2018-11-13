@@ -85,14 +85,14 @@ namespace CmsWeb.Areas.Org.Models.Org
         public static List<OrgSearchField> GetFields(OrgSearchModel osm)
         {
             string customTextName = "OrgSearchFields";
-            var db = DbUtil.Db;
+            var db = Db;
             var list = new List<OrgSearchField>();
 
-            var s = HttpRuntime.Cache[DbUtil.Db.Host + customTextName] as string;
+            var s = HttpRuntime.Cache[CurrentDatabase.Host + customTextName] as string;
             if (s == null)
             {
-                s = db.ContentText(customTextName, Resource1.OrgSearchFields);
-                HttpRuntime.Cache.Insert(db.Host + customTextName, s, null,
+                s = CurrentDatabase.ContentText(customTextName, Resource1.OrgSearchFields);
+                HttpRuntime.Cache.Insert(CurrentDatabase.Host + customTextName, s, null,
                     DateTime.Now.AddMinutes(Util.IsDebug() ? 0 : 1), Cache.NoSlidingExpiration);
             }
             if (!s.HasValue())
@@ -149,7 +149,7 @@ namespace CmsWeb.Areas.Org.Models.Org
                         }
                         else
                         {
-                            values = DbUtil.Db.OrganizationExtras.Where(x => x.Field == field.Field)
+                            values = CurrentDatabase.OrganizationExtras.Where(x => x.Field == field.Field)
                                 .Select(x => x.Data ?? x.StrValue).Distinct().OrderBy(x => x).ToList()
                                 .Where(x => !string.IsNullOrEmpty(x));
                                 // IsNullOrEmpty() doesn't work in LINQ-to-SQL, so this comes after materializing query

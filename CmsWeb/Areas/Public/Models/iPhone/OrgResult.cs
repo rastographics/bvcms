@@ -18,20 +18,20 @@ namespace CmsWeb.Models.iPhone
         }
         private IEnumerable<OrgInfo> OrgList()
         {
-            var oids = DbUtil.Db.GetLeaderOrgIds(pid);
+            var oids = CurrentDatabase.GetLeaderOrgIds(pid);
 			var dt = DateTime.Parse("8:00 AM");
 
-        	var roles = DbUtil.Db.CurrentRoles();
+        	var roles = CurrentDatabase.CurrentRoles();
             IQueryable<Organization> q = null;
             if (Util2.OrgLeadersOnly)
-                q = from o in DbUtil.Db.Organizations
+                q = from o in CurrentDatabase.Organizations
                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                     where oids.Contains(o.OrganizationId)
                     where o.SecurityTypeId != 3
                     where o.OrganizationStatusId == OrgStatusCode.Active
                     select o;
             else
-                q = from o in DbUtil.Db.Organizations
+                q = from o in CurrentDatabase.Organizations
                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                     where o.OrganizationStatusId == OrgStatusCode.Active
                     let sc = o.OrgSchedules.FirstOrDefault() // SCHED

@@ -28,8 +28,8 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 return View("Index", model);
             }
 
-            model.UpdateLongRunningOp(DbUtil.Db, AddAttendeesFromTag.Op);
-            if (model.ShowCount(DbUtil.Db))
+            model.UpdateLongRunningOp(CurrentDatabase. AddAttendeesFromTag.Op);
+            if (model.ShowCount(CurrentDatabase))
             {
                 return View("Index", model); // let them confirm by seeing the count and the tagname
             }
@@ -37,7 +37,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             if (!model.Started.HasValue)
             {
                 DbUtil.LogActivity($"Add attendees from tag for {Session["ActiveOrganization"]}");
-                model.Process(DbUtil.Db);
+                model.Process(CurrentDatabase);
             }
 
             return View(model);

@@ -60,8 +60,8 @@ namespace CmsWeb.Areas.Reports.Models
             doc = new Document(PageSize.LETTER.Rotate(), 36, 36, 64, 64);
             var w = PdfWriter.GetInstance(doc, Response.OutputStream);
 
-            var roles = DbUtil.Db.CurrentRoles();
-            var i = (from o in DbUtil.Db.Organizations
+            var roles = CurrentDatabase.CurrentRoles();
+            var i = (from o in CurrentDatabase.Organizations
                      where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                      where o.OrganizationId == orgid
                      select new
@@ -153,8 +153,8 @@ namespace CmsWeb.Areas.Reports.Models
         }
         public static IEnumerable<AttendInfo> Attendees(int orgid)
         {
-            var q = from ra in DbUtil.Db.RecentAttendance(orgid)
-                    let p = DbUtil.Db.People.Single(pp => pp.PeopleId == ra.PeopleId)
+            var q = from ra in CurrentDatabase.RecentAttendance(orgid)
+                    let p = CurrentDatabase.People.Single(pp => pp.PeopleId == ra.PeopleId)
                     orderby ra.Visitor descending, ra.Lastattend descending, p.Name2
                     select new AttendInfo
                     {

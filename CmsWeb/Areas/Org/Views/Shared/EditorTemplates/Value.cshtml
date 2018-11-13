@@ -1,7 +1,7 @@
 ﻿@using CmsData
 @using UtilityExtensions
 @model CmsWeb.Models.ExtraValues.Value
-@if (Model.UserCanView(DbUtil.Db))
+@if (Model.UserCanView(CurrentDatabase))
 {
     if (Model.Type == "Header")
     {

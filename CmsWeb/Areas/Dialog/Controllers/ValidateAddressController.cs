@@ -28,8 +28,8 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 return View("Index", model);
             }
 
-            model.UpdateLongRunningOp(DbUtil.Db, ValidateAddress.Op);
-            if (model.ShowCount(DbUtil.Db))
+            model.UpdateLongRunningOp(CurrentDatabase. ValidateAddress.Op);
+            if (model.ShowCount(CurrentDatabase))
             {
                 return View("Index", model); // let them confirm by seeing the count and the tagname
             }
@@ -37,7 +37,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             if (!model.Started.HasValue)
             {
                 DbUtil.LogActivity("Validate Address");
-                model.Process(DbUtil.Db);
+                model.Process(CurrentDatabase);
             }
 
             return View(model);

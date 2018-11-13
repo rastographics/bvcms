@@ -13,7 +13,7 @@ namespace CmsWeb.Areas.People.Models
         public int? PeopleId
         {
             get { return Person?.PeopleId; }
-            set { Person = DbUtil.Db.LoadPersonById(value ?? 0); }
+            set { Person = CurrentDatabase.LoadPersonById(value ?? 0); }
         }
 
         public abstract string AddTask { get; }
@@ -24,10 +24,10 @@ namespace CmsWeb.Areas.People.Models
 
         public IQueryable<CmsData.Task> FilteredModelList()
         {
-            var u = DbUtil.Db.CurrentUser;
+            var u = CurrentDatabase.CurrentUser;
             var roles = u.UserRoles.Select(uu => uu.Role.RoleName.ToLower()).ToArray();
             var managePrivateContacts = HttpContext.Current.User.IsInRole("ManagePrivateContacts");
-            return from t in DbUtil.Db.Tasks
+            return from t in CurrentDatabase.Tasks
                    where (t.LimitToRole ?? "") == "" || roles.Contains(t.LimitToRole) || managePrivateContacts
                    select t;
         }

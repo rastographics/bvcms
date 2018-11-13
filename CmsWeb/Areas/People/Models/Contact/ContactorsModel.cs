@@ -13,14 +13,14 @@ namespace CmsWeb.Areas.People.Models
         public Contact Contact;
         public ContactorsModel(int id)
         {
-            Contact = DbUtil.Db.Contacts.SingleOrDefault(cc => cc.ContactId == id);
+            Contact = CurrentDatabase.Contacts.SingleOrDefault(cc => cc.ContactId == id);
         }
         public bool CanViewComments { get; set; }
         private IQueryable<Contactor> _contactors;
         private IQueryable<Contactor> FetchContactors()
         {
             if (_contactors == null)
-                _contactors = from c in DbUtil.Db.Contactors
+                _contactors = from c in CurrentDatabase.Contactors
                     where c.ContactId == Contact.ContactId
                     orderby c.person.Name2
                     select c;
@@ -55,10 +55,10 @@ namespace CmsWeb.Areas.People.Models
         }
         public Guid ConvertToQuery()
         {
-            var c = DbUtil.Db.ScratchPadCondition();
+            var c = CurrentDatabase.ScratchPadCondition();
             c.Reset();
             c.AddNewClause(QueryType.ContactMaker, CompareType.Equal, Contact.ContactId);
-            c.Save(DbUtil.Db);
+            c.Save(CurrentDatabase);
             return c.Id;
         }
 

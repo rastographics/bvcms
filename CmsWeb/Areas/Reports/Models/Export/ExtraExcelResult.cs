@@ -14,10 +14,10 @@ namespace CmsWeb.Models
     {
         public static EpplusResult ExtraValueExcel(Guid qid)
         {
-            var tag = DbUtil.Db.PopulateSpecialTag(qid, DbUtil.TagTypeId_ExtraValues);
+            var tag = CurrentDatabase.PopulateSpecialTag(qid, DbUtil.TagTypeId_ExtraValues);
 
             var roles = CMSRoleProvider.provider.GetRolesForUser(Util.UserName);
-            var xml = XDocument.Parse(DbUtil.Db.Content("StandardExtraValues2", "<Fields/>"));
+            var xml = XDocument.Parse(CurrentDatabase.Content("StandardExtraValues2", "<Fields/>"));
             var fields = (from ff in xml.Root.Descendants("Value")
                           let vroles = ff.Attribute("VisibilityRoles")
                           where vroles != null && vroles.Value.HasValue() && (vroles.Value.Split(',').All(rr => !roles.Contains(rr)))

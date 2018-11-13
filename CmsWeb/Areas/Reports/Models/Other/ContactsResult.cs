@@ -61,7 +61,7 @@ namespace CmsWeb.Areas.Reports.Models
             dc = w.DirectContent;
 
             StartPageSet();
-            var q = DbUtil.Db.PeopleQuery(qid);
+            var q = CurrentDatabase.PeopleQuery(qid);
 
             if (sortAddress)
                 q = from p in q
@@ -260,8 +260,8 @@ namespace CmsWeb.Areas.Reports.Models
             var ctl = new CodeValueModel();
             var cts = ctl.ContactTypeCodes();
 
-            var managecontacts = DbUtil.Db.CurrentUser.InRole("ManagePrivateContacts");
-            var cq = from ce in DbUtil.Db.Contactees
+            var managecontacts = CurrentDatabase.CurrentUser.InRole("ManagePrivateContacts");
+            var cq = from ce in CurrentDatabase.Contactees
                      where ce.PeopleId == p.PeopleId
                      where (ce.contact.LimitToRole ?? "") == "" || managecontacts
                      orderby ce.contact.ContactDate descending

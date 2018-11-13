@@ -27,9 +27,9 @@ namespace CmsWeb.Controllers
                 }
             }
 
-            var db = DbUtil.Db;
+            var db = Db;
 
-            var smsItem = db.SMSItems.FirstOrDefault(m => m.Id == Id);
+            var smsItem = CurrentDatabase.SMSItems.FirstOrDefault(m => m.Id == Id);
 
             if (smsItem != null)
             {
@@ -38,7 +38,7 @@ namespace CmsWeb.Controllers
                     smsItem.ErrorMessage = $"({errorCode}) {errorMessage}".MaxString(150);
                 }
                 smsItem.ResultStatus = SmsStatus;
-                db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
             }
 
             // No response needed

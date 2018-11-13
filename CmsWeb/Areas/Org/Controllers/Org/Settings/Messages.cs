@@ -26,7 +26,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult MessagesHelpToggle(int id)
         {
-            DbUtil.Db.ToggleUserPreference("ShowMessagesHelp");
+            CurrentDatabase.ToggleUserPreference("ShowMessagesHelp");
             var m = new SettingsMessagesModel(id);
             return PartialView("Registration/Messages", m);
         }
@@ -64,11 +64,11 @@ namespace CmsWeb.Areas.Org.Controllers
             if (Util.SessionTimedOut())
                 return Content("<script type='text/javascript'>window.onload = function() { parent.location = '/'; }</script>");
             Response.NoCache();
-            var t = DbUtil.Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);
-            DbUtil.Db.TagPeople.DeleteAllOnSubmit(t.PersonTags);
-            DbUtil.Db.SetCurrentOrgId(id);
-            DbUtil.Db.SubmitChanges();
-            var o = DbUtil.Db.LoadOrganizationById(id);
+            var t = CurrentDatabase.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);
+            CurrentDatabase.TagPeople.DeleteAllOnSubmit(t.PersonTags);
+            CurrentDatabase.SetCurrentOrgId(id);
+            CurrentDatabase.SubmitChanges();
+            var o = CurrentDatabase.LoadOrganizationById(id);
             string notifyids = null;
             switch (field.ToLower())
             {
@@ -79,21 +79,21 @@ namespace CmsWeb.Areas.Org.Controllers
                     notifyids = o.GiftNotifyIds;
                     break;
             }
-            var q = DbUtil.Db.PeopleFromPidString(notifyids).Select(p => p.PeopleId);
+            var q = CurrentDatabase.PeopleFromPidString(notifyids).Select(p => p.PeopleId);
             foreach (var pid in q)
                 t.PersonTags.Add(new TagPerson {PeopleId = pid});
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return Redirect("/SearchUsers?ordered=true&topid=" + q.FirstOrDefault());
         }
 
         [HttpPost]
         public ActionResult UpdateNotifyIds(int id, int topid, string field)
         {
-            var t = DbUtil.Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);
-            var selected_pids = (from p in t.People(DbUtil.Db)
+            var t = CurrentDatabase.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);
+            var selected_pids = (from p in t.People(CurrentDatabase)
                                  orderby p.PeopleId == topid ? "0" : "1"
                                  select p.PeopleId).ToArray();
-            var o = DbUtil.Db.LoadOrganizationById(id);
+            var o = CurrentDatabase.LoadOrganizationById(id);
             var notifyids = string.Join(",", selected_pids);
             switch (field.ToLower())
             {
@@ -104,9 +104,9 @@ namespace CmsWeb.Areas.Org.Controllers
                     o.GiftNotifyIds = notifyids;
                     break;
             }
-            DbUtil.Db.TagPeople.DeleteAllOnSubmit(t.PersonTags);
-            DbUtil.Db.Tags.DeleteOnSubmit(t);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.TagPeople.DeleteAllOnSubmit(t.PersonTags);
+            CurrentDatabase.Tags.DeleteOnSubmit(t);
+            CurrentDatabase.SubmitChanges();
             ViewBag.OrgId = id;
             ViewBag.field = field;
             var view = ViewExtensions2.RenderPartialViewToString2(this, "Registration/NotifyList", notifyids);
@@ -117,7 +117,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult EventReminders(Guid id)
         {
-            var m = new APIOrganization(DbUtil.Db);
+            var m = new APIOrganization(CurrentDatabase);
             try
             {
                 m.SendEventReminders(id);
@@ -131,10 +131,10 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult VolunteerReminders(int id, bool? emailall)
         {
-            var org = DbUtil.Db.LoadOrganizationById(id);
+            var org = CurrentDatabase.LoadOrganizationById(id);
             if(org == null)
                 throw new Exception("Org not found");
-            var m = new APIOrganization(DbUtil.Db);
+            var m = new APIOrganization(CurrentDatabase);
             try
             {
                 m.SendVolunteerReminders(id, emailall ?? false);

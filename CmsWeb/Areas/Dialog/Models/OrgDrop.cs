@@ -1,3 +1,5 @@
+using CmsData;
+using CmsData.Codes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -5,8 +7,6 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Web.Hosting;
-using CmsData;
-using CmsData.Codes;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
@@ -61,7 +61,7 @@ namespace CmsWeb.Areas.Dialog.Models
 
         private List<int> pids;
         private List<int> Pids => pids ?? (pids = (from p in DbUtil.Db.OrgFilterIds(QueryId)
-                                      select p.PeopleId.Value).ToList());
+                                                   select p.PeopleId.Value).ToList());
 
         public void Process(CMSDataContext db)
         {
@@ -75,42 +75,50 @@ namespace CmsWeb.Areas.Dialog.Models
                 Processed = 0,
                 Operation = Op,
             };
-            db.LogActivity($"OrgDrop {lop.Count} records", Filter.Id, uid: UserId);
-            db.LongRunningOperations.InsertOnSubmit(lop);
-            db.SubmitChanges();
+            DbUtil.Db.LogActivity($"OrgDrop {lop.Count} records", Filter.Id, uid: UserId);
+            DbUtil.Db.LongRunningOperations.InsertOnSubmit(lop);
+            DbUtil.Db.SubmitChanges();
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
         }
 
         private static void DoWork(OrgDrop model)
         {
             var db = DbUtil.Create(model.Host);
-            var cul = db.Setting("Culture", "en-US");
+            var cul = DbUtil.Db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
 
             LongRunningOperation lop = null;
             foreach (var pid in model.Pids)
             {
-                db.Dispose();
+                DbUtil.Db.Dispose();
                 db = DbUtil.Create(model.Host);
-                var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == model.filter.Id);
+                var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == model.filter.Id);
                 if (model.DropDate.HasValue)
-                    om.Drop(db, model.DropDate.Value);
+                {
+                    om.Drop(DbUtil.Db, model.DropDate.Value);
+                }
                 else
-                    om.Drop(db);
-                db.SubmitChanges();
+                {
+                    om.Drop(DbUtil.Db);
+                }
+
+                DbUtil.Db.SubmitChanges();
                 if (model.RemoveFromEnrollmentHistory)
-                    db.ExecuteCommand("DELETE dbo.EnrollmentTransaction WHERE PeopleId = {0} AND OrganizationId = {1}", pid, model.filter.Id);
-                lop = FetchLongRunningOperation(db, Op, model.QueryId);
+                {
+                    DbUtil.Db.ExecuteCommand("DELETE dbo.EnrollmentTransaction WHERE PeopleId = {0} AND OrganizationId = {1}", pid, model.filter.Id);
+                }
+
+                lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
-                db.SubmitChanges();
-                db.LogActivity($"Org{model.DisplayGroup} Drop{(model.RemoveFromEnrollmentHistory ? " w/history" : "")}", model.filter.Id, pid, uid: model.UserId);
+                DbUtil.Db.SubmitChanges();
+                DbUtil.Db.LogActivity($"Org{model.DisplayGroup} Drop{(model.RemoveFromEnrollmentHistory ? " w/history" : "")}", model.filter.Id, pid, uid: model.UserId);
             }
             // finished
-            lop = FetchLongRunningOperation(db, Op, model.QueryId);
+            lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
             lop.Completed = DateTime.Now;
-            db.SubmitChanges();
+            DbUtil.Db.SubmitChanges();
         }
 
         public void DropSingleMember(int orgId, int peopleId)

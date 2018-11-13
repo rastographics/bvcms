@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Reports.Models
         {
             Dt1 = dt1;
             Dt2 = dt2;
-            weeks = DbUtil.Db.SundayDates(Dt1, Dt2).Select(w => w.Dt.Value).ToList();
+            weeks = CurrentDatabase.SundayDates(Dt1, Dt2).Select(w => w.Dt.Value).ToList();
             if (!skipWeeks.HasValue())
                 return;
             foreach (var wk in skipWeeks.Split(','))
@@ -272,7 +272,7 @@ meetings AS (
 SELECT * FROM meetings
 ORDER BY RptGroup, ReportLine
 ";
-            var j = DbUtil.Db.Connection.Query<Data>(sql, new {Dt1, Dt2}).ToList();
+            var j = CurrentDatabase.Connection.Query<Data>(sql, new {Dt1, Dt2}).ToList();
             var q = from prog in j
                     group prog by prog.RptGroup
                     into g

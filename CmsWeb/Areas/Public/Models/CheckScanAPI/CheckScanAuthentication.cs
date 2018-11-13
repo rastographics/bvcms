@@ -75,9 +75,9 @@ namespace CmsWeb.Areas.Public.Models.CheckScanAPI
 			username = networkCredential.UserName;
 			password = networkCredential.Password;
 
-			bool impersonating = password == DbUtil.Db.Setting( "ImpersonatePassword", Guid.NewGuid().ToString() );
+			bool impersonating = password == CurrentDatabase.Setting( "ImpersonatePassword", Guid.NewGuid().ToString() );
 
-			IQueryable<User> userQuery = DbUtil.Db.Users.Where( uu => uu.Username == username || uu.Person.EmailAddress == username || uu.Person.EmailAddress2 == username );
+			IQueryable<User> userQuery = CurrentDatabase.Users.Where( uu => uu.Username == username || uu.Person.EmailAddress == username || uu.Person.EmailAddress2 == username );
 
 			try {
 				userFound = userQuery.Any();
@@ -92,7 +92,7 @@ namespace CmsWeb.Areas.Public.Models.CheckScanAPI
 			foreach( var foundUser in userQuery.ToList() ) {
 				if( !Membership.Provider.ValidateUser( username, password ) ) continue;
 
-				DbUtil.Db.Refresh( RefreshMode.OverwriteCurrentValues, foundUser );
+				CurrentDatabase.Refresh( RefreshMode.OverwriteCurrentValues, foundUser );
 				user = foundUser;
 
 				break;

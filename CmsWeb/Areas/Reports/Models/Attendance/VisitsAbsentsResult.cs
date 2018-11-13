@@ -44,7 +44,7 @@ namespace CmsWeb.Areas.Reports.Models
             doc = new Document(PageSize.LETTER.Rotate(), 36, 36, 64, 64);
             var w = PdfWriter.GetInstance(doc, Response.OutputStream);
 
-            var i = (from m in DbUtil.Db.Meetings
+            var i = (from m in CurrentDatabase.Meetings
                      where m.MeetingId == mtgid
                      select new
                      {
@@ -137,7 +137,7 @@ namespace CmsWeb.Areas.Reports.Models
 
         public IEnumerable<AttendInfo> VisitsAbsents(int mtgid)
         {
-            var q = from va in DbUtil.Db.VisitsAbsents(mtgid)
+            var q = from va in CurrentDatabase.VisitsAbsents(mtgid)
                     orderby va.AttendanceFlag descending, va.Name
                     select new AttendInfo
                     {

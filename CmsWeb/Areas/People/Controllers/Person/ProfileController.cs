@@ -30,9 +30,9 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult JustAddedNotMember(int id)
         {
-            var p = DbUtil.Db.LoadPersonById(id);
+            var p = CurrentDatabase.LoadPersonById(id);
             p.MemberStatusId = MemberStatusCode.NotMember;
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             var m = new MemberInfo(id);
             return View("Profile/Membership/Display", m);
         }
@@ -63,9 +63,9 @@ namespace CmsWeb.Areas.People.Controllers
         {
             if (doc == null)
                 return Redirect("/Person2/" + id);
-            var person = DbUtil.Db.People.Single(pp => pp.PeopleId == id);
+            var person = CurrentDatabase.People.Single(pp => pp.PeopleId == id);
             DbUtil.LogPersonActivity($"Uploading Document for {person.Name}", id, person.Name);
-            person.UploadDocument(DbUtil.Db, doc.InputStream, doc.FileName, doc.ContentType);
+            person.UploadDocument(CurrentDatabase. doc.InputStream, doc.FileName, doc.ContentType);
             return Redirect("/Person2/" + id);
         }
 

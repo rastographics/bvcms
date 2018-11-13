@@ -14,7 +14,7 @@ namespace CmsWeb.Models.ExtraValues
 
         public EntryModel(int id)
         {
-            var q = from p in DbUtil.Db.People
+            var q = from p in CurrentDatabase.People
                 where p.PeopleId == id
                 select new { p.EntryPointId, p.OriginId, p.InterestPointId };
             var i = q.Single();
@@ -25,14 +25,14 @@ namespace CmsWeb.Models.ExtraValues
 
         public static void EditValue(int id, string name, string value)
         {
-            var p = DbUtil.Db.LoadPersonById(id);
+            var p = CurrentDatabase.LoadPersonById(id);
             if (name == "Origin")
                 p.OriginId = value.ToInt();
             else if (name == "EntryPoint") 
                 p.EntryPointId = value.ToInt();
             else if (name == "InterestPoint") 
                 p.InterestPointId = value.ToInt();
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
         }
 
         public static string OriginList()

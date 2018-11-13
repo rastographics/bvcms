@@ -20,28 +20,28 @@
     IQueryable<BackgroundCheck> credit = null;
     IQueryable<BackgroundCheckLabel> labels = null;
 
-    var labelEnabled = DbUtil.Db.Setting("EnableBackgroundLabels");
-    var areBackgroundChecksEnabled = DbUtil.Db.Setting("EnableBackgroundChecks");
+    var labelEnabled = CurrentDatabase.Setting("EnableBackgroundLabels");
+    var areBackgroundChecksEnabled = CurrentDatabase.Setting("EnableBackgroundChecks");
 
-    var i = from e in DbUtil.Db.VolunteerForms
+    var i = from e in CurrentDatabase.VolunteerForms
             where e.PeopleId == Model.Volunteer.PeopleId
             select e;
 
     if (areBackgroundChecksEnabled)
     {
-        bg = from e in DbUtil.Db.BackgroundChecks
+        bg = from e in CurrentDatabase.BackgroundChecks
              where e.PeopleID == Model.Volunteer.PeopleId
              where e.ReportTypeID == ProtectMyMinistryHelper.TYPE_BACKGROUND
              select e;
 
-        credit = from e in DbUtil.Db.BackgroundChecks
+        credit = from e in CurrentDatabase.BackgroundChecks
                  where e.PeopleID == Model.Volunteer.PeopleId
                  where e.ReportTypeID == ProtectMyMinistryHelper.TYPE_CREDIT
                  select e;
 
         if (labelEnabled)
         {
-            labels = from e in DbUtil.Db.BackgroundCheckLabels
+            labels = from e in CurrentDatabase.BackgroundCheckLabels
                      select e;
         }
     }

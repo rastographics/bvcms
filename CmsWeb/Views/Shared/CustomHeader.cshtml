@@ -1,10 +1,10 @@
 ﻿@{
-    var db = DbUtil.Db;
-    var oldheader = db.Setting("UseOldHeader", "false").ToBool() ? db.Content("Header", "") : "";
-    var customheader = db.Content("CustomHeader", @"");
+    var db = Db;
+    var oldheader = CurrentDatabase.Setting("UseOldHeader", "false").ToBool() ? CurrentDatabase.Content("Header", "") : "";
+    var customheader = CurrentDatabase.Content("CustomHeader", @"");
 }
 <div id="clientheader">
     @Html.Raw(User.IsInRole("Access")
         ? Util.PickFirst(customheader, oldheader)
-        : Util.PickFirst(db.Content("MyDataHeader", ""), customheader, oldheader))
+        : Util.PickFirst(CurrentDatabase.Content("MyDataHeader", ""), customheader, oldheader))
 </div>

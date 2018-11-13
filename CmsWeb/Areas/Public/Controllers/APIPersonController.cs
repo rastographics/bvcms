@@ -33,7 +33,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content($"<Login error=\"{user ?? "(null)"} not valid\">{validationStatus.ErrorMessage}</Login>");
             }
 
-            var api = new APIFunctions(DbUtil.Db);
+            var api = new APIFunctions(CurrentDatabase);
             return Content(api.Login(validationStatus.User.Person), "text/xml");
         }
 
@@ -51,8 +51,8 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content("<LoginInfo error=\"Missing id\" />");
             }
 
-            var p = DbUtil.Db.People.Single(pp => pp.PeopleId == id);
-            var api = new APIFunctions(DbUtil.Db);
+            var p = CurrentDatabase.People.Single(pp => pp.PeopleId == id);
+            var api = new APIFunctions(CurrentDatabase);
             return Content(api.Login(p), "text/xml");
         }
 
@@ -77,10 +77,10 @@ namespace CmsWeb.Areas.Public.Controllers
                 Querystring = user,
                 Expires = DateTime.Now.AddHours(24)
             };
-            DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.OneTimeLinks.InsertOnSubmit(ot);
+            CurrentDatabase.SubmitChanges();
 
-            var b = DbUtil.Db.ServerLink();
+            var b = CurrentDatabase.ServerLink();
             if (url.StartsWith(b))
             {
                 url = url.Substring(b.Length - (b.EndsWith("/") ? 1 : 0));
@@ -104,8 +104,8 @@ namespace CmsWeb.Areas.Public.Controllers
                 Querystring = $"{OrgId},{PeopleId},0",
                 Expires = DateTime.Now.AddMinutes(10)
             };
-            DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.OneTimeLinks.InsertOnSubmit(ot);
+            CurrentDatabase.SubmitChanges();
             DbUtil.LogActivity($"APIPerson GetOneTimeRegisterLink {OrgId}, {PeopleId}");
             return Content(Util.CmsHost2 + "OnlineReg/RegisterLink/" + ot.Id.ToCode());
         }
@@ -125,7 +125,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity($"APIPerson ExtraValues {id}, {fields}");
-            return Content(new APIFunctions(DbUtil.Db).ExtraValues(id.Value, fields), "text/xml");
+            return Content(new APIFunctions(CurrentDatabase).ExtraValues(id.Value, fields), "text/xml");
         }
 
         [HttpPost]
@@ -138,7 +138,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity($"APIPerson AddExtraValue {peopleid}, {field}");
-            return Content(new APIFunctions(DbUtil.Db).AddEditExtraValue(peopleid, field, value, type));
+            return Content(new APIFunctions(CurrentDatabase).AddEditExtraValue(peopleid, field, value, type));
         }
 
         [HttpPost]
@@ -151,7 +151,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity($"APIPerson DeleteExtraValue {peopleid}, {field}");
-            new APIFunctions(DbUtil.Db).DeleteExtraValue(peopleid, field);
+            new APIFunctions(CurrentDatabase).DeleteExtraValue(peopleid, field);
             return Content("ok");
         }
 
@@ -223,7 +223,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity("APIPerson FamilyMembers " + id);
-            return Content(new APIFunctions(DbUtil.Db).FamilyMembers(id.Value), "text/xml");
+            return Content(new APIFunctions(CurrentDatabase).FamilyMembers(id.Value), "text/xml");
         }
 
         [HttpGet]
@@ -236,7 +236,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity("APIPerson AccessUsers");
-            return Content(new APIFunctions(DbUtil.Db).AccessUsersXml(), "text/xml");
+            return Content(new APIFunctions(CurrentDatabase).AccessUsersXml(), "text/xml");
         }
 
         [HttpGet]
@@ -249,7 +249,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity("APIPerson AccessUsers");
-            return Content(new APIFunctions(DbUtil.Db).AccessUsersXml(true), "text/xml");
+            return Content(new APIFunctions(CurrentDatabase).AccessUsersXml(true), "text/xml");
         }
 
         [HttpGet]
@@ -262,7 +262,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity("APIPerson GetPeople");
-            return Content(new APIPerson(DbUtil.Db).GetPeopleXml(peopleid, famid, first, last), "text/xml");
+            return Content(new APIPerson(CurrentDatabase).GetPeopleXml(peopleid, famid, first, last), "text/xml");
         }
 
         [HttpGet]
@@ -280,7 +280,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity("APIPerson GetPerson " + id);
-            return Content(new APIPerson(DbUtil.Db).GetPersonXml(id.Value), "text/xml");
+            return Content(new APIPerson(CurrentDatabase).GetPersonXml(id.Value), "text/xml");
         }
 
         [HttpPost]
@@ -295,7 +295,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity("APIPerson Update");
-            return Content(new APIPerson(DbUtil.Db).UpdatePersonXml(xml), "text/xml");
+            return Content(new APIPerson(CurrentDatabase).UpdatePersonXml(xml), "text/xml");
         }
 
         [HttpGet, Route("Portrait/{id:int?}/{w:int?}/{h:int?}")]

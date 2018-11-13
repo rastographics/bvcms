@@ -29,13 +29,13 @@ namespace CmsWeb.Models.ExtraValues
 
         public Guid CurrentPersonQueryId()
         {
-            var qb = DbUtil.Db.QueryIsCurrentPerson();
+            var qb = CurrentDatabase.QueryIsCurrentPerson();
             return qb.QueryId;
         }
 
         public int? CurrentPersonMainFellowshipId()
         {
-            var qb = (from p in DbUtil.Db.People
+            var qb = (from p in CurrentDatabase.People
                       where p.PeopleId == Id
                       select p.BibleFellowshipClassId).SingleOrDefault();
             return qb;
@@ -82,33 +82,33 @@ namespace CmsWeb.Models.ExtraValues
             switch (Table)
             {
                 case "People":
-                    q = from ee in DbUtil.Db.PeopleExtras
+                    q = from ee in CurrentDatabase.PeopleExtras
                         where ee.PeopleId == Id
                         select new ExtraValue(ee, this);
                     break;
                 case "Family":
-                    q = from ee in DbUtil.Db.FamilyExtras
+                    q = from ee in CurrentDatabase.FamilyExtras
                         where ee.FamilyId == Id
                         select new ExtraValue(ee, this);
                     break;
                 case "Organization":
-                    q = from ee in DbUtil.Db.OrganizationExtras
+                    q = from ee in CurrentDatabase.OrganizationExtras
                         where ee.OrganizationId == Id
                         select new ExtraValue(ee, this);
                     break;
                 case "Meeting":
-                    q = from ee in DbUtil.Db.MeetingExtras
+                    q = from ee in CurrentDatabase.MeetingExtras
                         where ee.MeetingId == Id
                         select new ExtraValue(ee, this);
                     break;
                 case "OrgMember":
-                    q = from ee in DbUtil.Db.OrgMemberExtras
+                    q = from ee in CurrentDatabase.OrgMemberExtras
                         where ee.OrganizationId == Id
                         where ee.PeopleId == Id2
                         select new ExtraValue(ee, this);
                     break;
                 case "Contact":
-                    q = from ee in DbUtil.Db.ContactExtras
+                    q = from ee in CurrentDatabase.ContactExtras
                         where ee.ContactId == Id
                         select new ExtraValue(ee, this);
                     break;
@@ -129,15 +129,15 @@ namespace CmsWeb.Models.ExtraValues
             switch (table)
             {
                 case "People":
-                    return DbUtil.Db.LoadPersonById(id);
+                    return CurrentDatabase.LoadPersonById(id);
                 case "Organization":
-                    return DbUtil.Db.LoadOrganizationById(id);
+                    return CurrentDatabase.LoadOrganizationById(id);
                 case "Family":
-                    return DbUtil.Db.Families.SingleOrDefault(f => f.FamilyId == id);
+                    return CurrentDatabase.Families.SingleOrDefault(f => f.FamilyId == id);
                 case "OrgMember":
-                    return DbUtil.Db.OrganizationMembers.SingleOrDefault(f => f.OrganizationId == id && f.PeopleId == id2);
+                    return CurrentDatabase.OrganizationMembers.SingleOrDefault(f => f.OrganizationId == id && f.PeopleId == id2);
                 case "Contact":
-                    return DbUtil.Db.LoadContactById(id);
+                    return CurrentDatabase.LoadContactById(id);
                 default:
                     return null;
             }
@@ -145,7 +145,7 @@ namespace CmsWeb.Models.ExtraValues
 
         public List<Value> GetStandardExtraValues(string table, string location = null)
         {
-            var q = from v in Views.GetStandardExtraValuesOrdered(DbUtil.Db, table, location)
+            var q = from v in Views.GetStandardExtraValuesOrdered(CurrentDatabase. table, location)
                     where v.Type != "Data"
                     select Value.FromValue(v);
             return q.ToList();
@@ -153,7 +153,7 @@ namespace CmsWeb.Models.ExtraValues
 
         public List<Value> GetStandardExtraValuesWithDataType(string table, string location = null)
         {
-            var q = from v in Views.GetStandardExtraValuesOrdered(DbUtil.Db, table, location)
+            var q = from v in Views.GetStandardExtraValuesOrdered(CurrentDatabase. table, location)
                     select Value.FromValue(v);
             return q.ToList();
         }
@@ -186,13 +186,13 @@ namespace CmsWeb.Models.ExtraValues
 
         public Dictionary<string, string> Codes(string name)
         {
-            var f = Views.GetStandardExtraValues(DbUtil.Db, Table, false, Location).Single(ee => ee.Name == name);
+            var f = Views.GetStandardExtraValues(CurrentDatabase. Table, false, Location).Single(ee => ee.Name == name);
             return f.Codes.ToDictionary(ee => ee.Text, ee => ee.Text);
         }
 
         public string CodesJson(string name)
         {
-            var f = Views.GetStandardExtraValues(DbUtil.Db, Table, false, Location).Single(ee => ee.Name == name);
+            var f = Views.GetStandardExtraValues(CurrentDatabase. Table, false, Location).Single(ee => ee.Name == name);
             var q = from c in f.Codes
                     select new {value = c.Text, text = c.Text};
             return JsonConvert.SerializeObject(q.ToArray());
@@ -206,7 +206,7 @@ namespace CmsWeb.Models.ExtraValues
 
         private IEnumerable<AllBitsCheckedOrNot> ExtraValueBits(string name)
         {
-            var f = Views.GetStandardExtraValues(DbUtil.Db, Table, false, Location).Single(ee => ee.Name == name);
+            var f = Views.GetStandardExtraValues(CurrentDatabase. Table, false, Location).Single(ee => ee.Name == name);
             var list = ListExtraValues().Where(pp => f.Codes.Select(x => x.Text).Contains(pp.Field)).ToList();
             var q = from c in f.Codes
                     join e in list on c.Text equals e.Field into j
@@ -221,7 +221,7 @@ namespace CmsWeb.Models.ExtraValues
 
         public string DropdownBitsJson(string name)
         {
-            var f = Views.GetStandardExtraValues(DbUtil.Db, Table, false, Location).Single(ee => ee.Name == name);
+            var f = Views.GetStandardExtraValues(CurrentDatabase. Table, false, Location).Single(ee => ee.Name == name);
             var list = ListExtraValues().Where(pp => f.Codes.Select(x => x.Text).Contains(pp.Field)).ToList();
             var q = from c in f.Codes
                     join e in list on c.Text equals e.Field into j
@@ -236,7 +236,7 @@ namespace CmsWeb.Models.ExtraValues
 
         public string ListBitsJson(string name)
         {
-            var f = Views.GetStandardExtraValues(DbUtil.Db, Table, false, Location).First(ee => ee.Name == name);
+            var f = Views.GetStandardExtraValues(CurrentDatabase. Table, false, Location).First(ee => ee.Name == name);
             var list = ListExtraValues().Where(pp => f.Codes.Select(x => x.Text).Contains(pp.Field)).ToList();
             var q = from c in f.Codes
                     join e in list on c.Text equals e.Field into j
@@ -258,7 +258,7 @@ namespace CmsWeb.Models.ExtraValues
 
         private void RemoveExtraValue(ITableWithExtraValues record, string name)
         {
-            record.RemoveExtraValue(DbUtil.Db, name);
+            record.RemoveExtraValue(CurrentDatabase. name);
             Log(record, "remove", name);
         }
 
@@ -298,7 +298,7 @@ namespace CmsWeb.Models.ExtraValues
                     if (value == "True")
                         record.AddEditExtraBool(name, true);
                     else
-                        record.RemoveExtraValue(DbUtil.Db, name);
+                        record.RemoveExtraValue(CurrentDatabase. name);
                     break;
                 case "Bits":
                 {
@@ -316,7 +316,7 @@ namespace CmsWeb.Models.ExtraValues
                     break;
                 }
             }
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             Log(record, "set", name);
         }
 
@@ -324,7 +324,7 @@ namespace CmsWeb.Models.ExtraValues
         {
             //field = field.Replace('/', '-');
             var v = new PeopleExtra {PeopleId = id, Field = field};
-            DbUtil.Db.PeopleExtras.InsertOnSubmit(v);
+            CurrentDatabase.PeopleExtras.InsertOnSubmit(v);
             switch (type)
             {
                 case "string":
@@ -342,18 +342,18 @@ namespace CmsWeb.Models.ExtraValues
                     v.IntValue = value.ToInt();
                     break;
             }
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
         }
 
         public void DeleteStandard(string name, bool removedata)
         {
-            var i = Views.GetViewsViewValue(DbUtil.Db, Table, name, Location);
+            var i = Views.GetViewsViewValue(CurrentDatabase. Table, name, Location);
             i.view.Values.Remove(i.value);
-            i.views.Save(DbUtil.Db);
+            i.views.Save(CurrentDatabase);
 
             if (!removedata)
                 return;
-            var cn = DbUtil.Db.Connection;
+            var cn = CurrentDatabase.Connection;
             cn.Open();
             if (i.value.Codes.Count == 0)
                 cn.Execute($"delete from dbo.{Table}Extra where Field = @name", new {name});
@@ -364,13 +364,13 @@ namespace CmsWeb.Models.ExtraValues
         public void Delete(string name)
         {
             var o = TableObject();
-            o.RemoveExtraValue(DbUtil.Db, name);
-            DbUtil.Db.SubmitChanges();
+            o.RemoveExtraValue(CurrentDatabase. name);
+            CurrentDatabase.SubmitChanges();
         }
 
         public void ApplyOrder(Dictionary<string, int> orders)
         {
-            var i = Views.GetViewsView(DbUtil.Db, Table, Location);
+            var i = Views.GetViewsView(CurrentDatabase. Table, Location);
             var q = from v in i.view.Values
                     join o in orders on v.Name equals o.Key
                     orderby o.Value
@@ -379,14 +379,14 @@ namespace CmsWeb.Models.ExtraValues
             int n = 1;
             foreach (var v in i.view.Values)
                 v.Order = n++;
-            i.views.Save(DbUtil.Db);
+            i.views.Save(CurrentDatabase);
         }
 
         public void SwitchMultiline(string name)
         {
-            var i = Views.GetViewsViewValue(DbUtil.Db, Table, name, Location);
+            var i = Views.GetViewsViewValue(CurrentDatabase. Table, name, Location);
             i.value.Type = i.value.Type == "Text" ? "Text2" : "Text";
-            i.views.Save(DbUtil.Db);
+            i.views.Save(CurrentDatabase);
         }
     }
 }

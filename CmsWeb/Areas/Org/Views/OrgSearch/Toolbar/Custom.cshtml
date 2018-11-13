@@ -1,7 +1,7 @@
 ﻿@using CmsData
 @using CmsWeb.Areas.Reports.Models
 @{
-  var m = new CustomReportsModel(DbUtil.Db);
+  var m = new CustomReportsModel(CurrentDatabase);
   var sql = m.OrgSearchSqlList();
 }
 <ul class="dropdown-menu dropdown-menu-large dropdown-menu-right container bluebar-menu-col-1">

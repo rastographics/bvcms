@@ -12,14 +12,14 @@ namespace CmsWeb.Code
         /// <returns>boolean: false if not enabled or the person is the current head of household, otherwise true</returns>
         public static bool CanBePromotedToHeadOfHousehold(int peopleId)
         {
-            var churchHasEnabledFeature = DbUtil.Db.GetSetting("CanOverrideHeadOfHousehold", "false") == "true";
+            var churchHasEnabledFeature = CurrentDatabase.GetSetting("CanOverrideHeadOfHousehold", "false") == "true";
 
             if (!churchHasEnabledFeature)
             {
                 return false;
             }
 
-            var family = DbUtil.Db.LoadFamilyByPersonId(peopleId);
+            var family = CurrentDatabase.LoadFamilyByPersonId(peopleId);
 
             return family.HeadOfHouseholdId != peopleId;
         }

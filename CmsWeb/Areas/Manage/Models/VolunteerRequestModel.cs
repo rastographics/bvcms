@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public VolunteerRequestModel()
         {
-            Db = DbUtil.Db;
+            Db = Db;
         }
 
         public VolunteerRequestModel(int mid, int pid, long ticks)
@@ -52,7 +52,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 error = "invalid link";
             }
 
-            var ot = Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == g.Value);
+            var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == g.Value);
             if (ot == null)
             {
                 error = "invalid link";
@@ -74,7 +74,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
 
             ot.Used = true;
-            Db.SubmitChanges();
+            DbUtil.Db.SubmitChanges();
             var a = ot.Querystring.Split(',');
             FetchEntities(a[0].ToInt(), a[1].ToInt());
             ticks = a[2].ToLong();
@@ -97,10 +97,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void FetchEntities(int mid, int pid)
         {
-            var q = from m in Db.Meetings
+            var q = from m in DbUtil.Db.Meetings
                     where m.MeetingId == mid
                     let c = m.Attends.Count(aa => AttendCommitmentCode.committed.Contains(aa.Commitment ?? 0))
-                    let p = Db.People.Single(pp => pp.PeopleId == pid)
+                    let p = DbUtil.Db.People.Single(pp => pp.PeopleId == pid)
                     select new
                     {
                         m,
@@ -136,12 +136,12 @@ Sorry, I cannot be there.</a>";
 
         public List<VolInfo> FetchPotentialVolunteers()
         {
-            var q = from om in Db.OrganizationMembers
+            var q = from om in DbUtil.Db.OrganizationMembers
                     where om.OrganizationId == org.OrganizationId
                     where om.MemberTypeId != MemberTypeCode.InActive
                     where om.Pending == false
                     where om.PeopleId != person.PeopleId
-                    where !Db.Attends.Any(aa => aa.MeetingId == meeting.MeetingId
+                    where !DbUtil.Db.Attends.Any(aa => aa.MeetingId == meeting.MeetingId
                                                 && aa.Commitment != null && aa.PeopleId == om.PeopleId)
                     orderby om.Person.Name2
                     select new VolInfo
@@ -156,7 +156,7 @@ Sorry, I cannot be there.</a>";
         private List<PotentialSubstitute> PotentialSubs()
         {
             return potentialSubs ??
-                   (potentialSubs = (from ps in Db.PotentialSubstitutes(org.OrganizationId, meeting.MeetingId)
+                   (potentialSubs = (from ps in DbUtil.Db.PotentialSubstitutes(org.OrganizationId, meeting.MeetingId)
                                      select ps).ToList());
         }
 
@@ -188,7 +188,7 @@ Sorry, I cannot be there.</a>";
 
         public IEnumerable<SelectListItem> SmallGroups()
         {
-            var list = (from t in Db.MemberTags
+            var list = (from t in DbUtil.Db.MemberTags
                         where t.OrgId == org.OrganizationId
                         where t.Name.StartsWith("SG:")
                         orderby t.Name
@@ -199,9 +199,9 @@ Sorry, I cannot be there.</a>";
 
         public void SendEmails(int? additional)
         {
-            var tag = Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, Db.NextTagId);
-            Db.ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
-            Db.TagAll(pids, tag);
+            var tag = DbUtil.Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.Db.NextTagId);
+            DbUtil.Db.ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
+            DbUtil.Db.TagAll(pids, tag);
             var dt = new DateTime(ticks);
 
             foreach (var id in pids)
@@ -216,17 +216,17 @@ Sorry, I cannot be there.</a>";
                 meeting.VolRequests.Add(vr);
             }
 
-            var qb = Db.ScratchPadCondition();
+            var qb = DbUtil.Db.ScratchPadCondition();
             qb.Reset();
             qb.AddNewClause(QueryType.HasMyTag, CompareType.Equal, $"{tag.Id},temp");
-            meeting.AddEditExtra(Db, "TotalVolunteersNeeded", ((additional ?? 0) + limit).ToString());
+            meeting.AddEditExtra(DbUtil.Db, "TotalVolunteersNeeded", ((additional ?? 0) + limit).ToString());
             qb.Save(DbUtil.Db);
 
             var rurl = DbUtil.Db.ServerLink($"/OnlineReg/VolRequestReport/{meeting.MeetingId}/{person.PeopleId}/{dt.Ticks}");
             var reportlink = $@"<a href=""{rurl}"">Volunteer Request Status Report</a>";
-            var list = Db.PeopleFromPidString(org.NotifyIds).ToList();
+            var list = DbUtil.Db.PeopleFromPidString(org.NotifyIds).ToList();
             //list.Insert(0, person);
-            Db.Email(person.FromEmail, list,
+            DbUtil.Db.Email(person.FromEmail, list,
                 "Volunteer Commitment for " + org.OrganizationName,
                 $@"
 <p>{person.Name} has requested volunteers on {meeting.MeetingDate:MMM d} for {meeting.MeetingDate:h:mm tt}.</p>
@@ -257,7 +257,7 @@ Sorry, I cannot be there.</a>";
                     // set these again inside thread local storage
                     Util.UserEmail = useremail;
                     Util.IsInRoleEmailTest = isinroleemailtest;
-                    db.SendPeopleEmail(eqid);
+                    DbUtil.Db.SendPeopleEmail(eqid);
                 }
                 catch (Exception ex)
                 {
@@ -269,9 +269,9 @@ Sorry, I cannot be there.</a>";
                     // set these again inside thread local storage
                     Util.UserEmail = useremail;
                     Util.IsInRoleEmailTest = isinroleemailtest;
-                    var equeue = db.EmailQueues.Single(ee => ee.Id == eqid);
+                    var equeue = DbUtil.Db.EmailQueues.Single(ee => ee.Id == eqid);
                     equeue.Error = ex.Message.Truncate(200);
-                    db.SubmitChanges();
+                    DbUtil.Db.SubmitChanges();
                 }
             });
         }
@@ -280,7 +280,7 @@ Sorry, I cannot be there.</a>";
         {
             var dt = new DateTime(ticks);
 
-            var i = (from rr in Db.VolRequests
+            var i = (from rr in DbUtil.Db.VolRequests
                      where rr.MeetingId == meeting.MeetingId
                      where rr.RequestorId == person.PeopleId
                      where rr.Requested == dt
@@ -308,12 +308,12 @@ Sorry, I cannot be there.</a>";
             {
                 DisplayMessage = "Thank you for responding";
                 i.r.CanVol = false;
-                Db.SubmitChanges();
+                DbUtil.Db.SubmitChanges();
                 return;
             }
             i.r.CanVol = true;
-            Attend.MarkRegistered(Db, i.r.VolunteerId, meeting.MeetingId, AttendCommitmentCode.Attending);
-            Db.SubmitChanges();
+            Attend.MarkRegistered(DbUtil.Db, i.r.VolunteerId, meeting.MeetingId, AttendCommitmentCode.Attending);
+            DbUtil.Db.SubmitChanges();
             var body = $@"
 <p>{i.volunteer.Name},</p>
 <p>Thank you so much.</p>
@@ -321,7 +321,7 @@ Sorry, I cannot be there.</a>";
 in {org.OrganizationName}<br />
 <p><a href=""http://registerlink"" lang=""{org.OrganizationId}"">Click here</a> to manage your commitments.</p>
 <p>See you there!</p>";
-            Db.Email(person.FromEmail, i.volunteer, "Thank you for responding and serving", body);
+            DbUtil.Db.Email(person.FromEmail, i.volunteer, "Thank you for responding and serving", body);
 
             // on screen message
             DisplayMessage = $@"<p>You have been sent the following email at {Util.ObscureEmail(i.volunteer.EmailAddress)}.</p>
@@ -333,9 +333,9 @@ in {org.OrganizationName}<br />
 <p>You will be able to manage your commitments with a link in the email you were just sent.</p>";
 
             // notify requestor and org notifyids
-            var list = Db.PeopleFromPidString(org.NotifyIds).ToList();
+            var list = DbUtil.Db.PeopleFromPidString(org.NotifyIds).ToList();
             list.Insert(0, person);
-            Db.Email(i.volunteer.FromEmail, list,
+            DbUtil.Db.Email(i.volunteer.FromEmail, list,
                 "Volunteer Commitment for " + org.OrganizationName,
                 $@"
 <p>The following email was sent to {i.volunteer.Name}.</p>
@@ -347,7 +347,7 @@ in {org.OrganizationName}<br />
         public IEnumerable<VolStatusInfo> VolRequests()
         {
             var dt = new DateTime(ticks);
-            var q = from r in Db.VolRequests
+            var q = from r in DbUtil.Db.VolRequests
                     where r.MeetingId == meeting.MeetingId
                     where r.RequestorId == person.PeopleId
                     where r.Requested == dt

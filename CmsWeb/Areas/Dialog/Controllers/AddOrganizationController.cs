@@ -17,7 +17,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [Route("~/AddOrganization")]
         public ActionResult Index(bool displayCopySettings = false)
         {
-            var m = new NewOrganizationModel(DbUtil.Db.CurrentSessionOrgId, displayCopySettings);
+            var m = new NewOrganizationModel(CurrentDatabase.CurrentSessionOrgId, displayCopySettings);
             m.org.OrganizationName = "";
             m.org.Location = "";
             return View(m);
@@ -26,7 +26,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost, Route("Submit/{id:int}")]
         public ActionResult Submit(int id, NewOrganizationModel m)
         {
-            var org = DbUtil.Db.LoadOrganizationById(id);
+            var org = CurrentDatabase.LoadOrganizationById(id);
             m.org.CreatedDate = Util.Now;
             m.org.CreatedBy = Util.UserId1;
             m.org.EntryPointId = org.EntryPointId;
@@ -44,8 +44,8 @@ namespace CmsWeb.Areas.Dialog.Controllers
             m.org.OrganizationStatusId = 30;
             m.org.DivisionId = org.DivisionId;
 
-            DbUtil.Db.Organizations.InsertOnSubmit(m.org);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.Organizations.InsertOnSubmit(m.org);
+            CurrentDatabase.SubmitChanges();
             foreach (var div in org.DivOrgs)
             {
                 m.org.DivOrgs.Add(new DivOrg { Organization = m.org, DivId = div.DivId });
@@ -65,9 +65,9 @@ namespace CmsWeb.Areas.Dialog.Controllers
                     });
                 }
 
-                m.org.CopySettings(DbUtil.Db, id);
+                m.org.CopySettings(CurrentDatabase. id);
             }
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             DbUtil.LogActivity($"Add new org {m.org.OrganizationName}");
             return Redirect($"/Org/{m.org.OrganizationId}");
         }

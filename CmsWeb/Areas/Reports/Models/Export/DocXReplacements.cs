@@ -36,10 +36,10 @@ namespace CmsWeb.Models
             var bytes = wc.DownloadData(template);
             var ms = new MemoryStream(bytes);
             var doctemplate = DocX.Load(ms);
-            var replacements = new EmailReplacements(DbUtil.Db, doctemplate);
+            var replacements = new EmailReplacements(CurrentDatabase. doctemplate);
             var q = peopleId.HasValue
-                ? DbUtil.Db.PeopleQuery2(peopleId)
-                : DbUtil.Db.PeopleQuery(guid);
+                ? CurrentDatabase.PeopleQuery2(peopleId)
+                : CurrentDatabase.PeopleQuery(guid);
             if (!q.Any())
                 throw new Exception("no people in query");
             var finaldoc = replacements.DocXReplacements(q.First());

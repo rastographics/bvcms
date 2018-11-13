@@ -92,7 +92,7 @@
             <div class="col-sm-10">
               @if (Model.OrgId.HasValue)
               {
-                var org = DbUtil.Db.LoadOrganizationById(Model.OrgId);
+                var org = CurrentDatabase.LoadOrganizationById(Model.OrgId);
 
                 <div class="row">
                   <div class="col-sm-10">

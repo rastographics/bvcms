@@ -1,7 +1,7 @@
-﻿using System;
-using System.Linq;
-using CmsData;
+﻿using CmsData;
 using CmsData.Codes;
+using System;
+using System.Linq;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.Api
@@ -23,19 +23,28 @@ namespace CmsWeb.Models.Api
         public Result Add(CMSDataContext db)
         {
             if (!Util.ValidEmail(Email))
+            {
                 throw new Exception("Need a valid email address");
+            }
+
             if (Amount <= 0)
+            {
                 throw new Exception("Amount must be > 0");
+            }
 
             Person person = null;
-            var list = db.FindPerson(First, Last, null, Email, Phone.GetDigits()).ToList();
+            var list = DbUtil.Db.FindPerson(First, Last, null, Email, Phone.GetDigits()).ToList();
             var count = list.Count;
             if (count > 0)
-                person = db.LoadPersonById(list[0].PeopleId ?? 0);
+            {
+                person = DbUtil.Db.LoadPersonById(list[0].PeopleId ?? 0);
+            }
 
             var result = new Result();
             if (count > 1)
+            {
                 result.MultipleMatches = true;
+            }
 
             if (person == null)
             {
@@ -56,19 +65,21 @@ namespace CmsWeb.Models.Api
                 DbUtil.Db.SubmitChanges();
 
                 var position = 10;
-                person = Person.Add(db, true, f, position, null, First.Trim(), null, Last.Trim(), "", 0, 0,
+                person = Person.Add(DbUtil.Db, true, f, position, null, First.Trim(), null, Last.Trim(), "", 0, 0,
                     OriginCode.Contribution, null);
                 person.EmailAddress = Email.Trim();
                 person.SendEmailAddress1 = true;
 
                 if (count == 0)
+                {
                     person.Comments = "Added during api postcontribution because record was not found";
+                }
             }
 
-            var c = person.PostUnattendedContribution(db, Amount, Fundid, Notes);
+            var c = person.PostUnattendedContribution(DbUtil.Db, Amount, Fundid, Notes);
             c.ContributionDate = Date ?? DateTime.Now;
             c.MetaInfo = Source;
-            db.SubmitChanges();
+            DbUtil.Db.SubmitChanges();
             result.PeopleId = person.PeopleId;
             result.ContributionId = c.ContributionId;
             result.Source = Source;

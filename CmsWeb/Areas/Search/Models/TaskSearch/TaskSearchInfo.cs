@@ -39,20 +39,20 @@ namespace CmsWeb.Areas.Search.Models
         internal void GetPreference()
         {
             var os = JsonConvert.DeserializeObject<TaskSearchInfo>(
-                DbUtil.Db.UserPreference(StrTaskSearch, NewTaskSearchString));
+                CurrentDatabase.UserPreference(StrTaskSearch, NewTaskSearchString));
             if (os != null)
                 this.CopyPropertiesFrom(os);
         }
 
         internal void SavePreference()
         {
-            DbUtil.Db.SetUserPreference(StrTaskSearch,
+            CurrentDatabase.SetUserPreference(StrTaskSearch,
                 JsonConvert.SerializeObject(this));
         }
 
         internal void ClearPreference()
         {
-            DbUtil.Db.SetUserPreference(StrTaskSearch, NewTaskSearchString);
+            CurrentDatabase.SetUserPreference(StrTaskSearch, NewTaskSearchString);
         }
 
         // ReSharper disable once ClassNeverInstantiated.Local

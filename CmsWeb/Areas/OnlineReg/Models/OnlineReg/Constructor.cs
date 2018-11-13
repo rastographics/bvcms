@@ -28,7 +28,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (req?.Url != null)
                 URL = req.Url.OriginalString;
 
-            if (DbUtil.Db.Roles.Any(rr => rr.RoleName == "disabled"))
+            if (CurrentDatabase.Roles.Any(rr => rr.RoleName == "disabled"))
                 throw new Exception("Site is disabled for maintenance, check back later");
 
             if (!id.HasValue)
@@ -49,7 +49,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 if ((org.RegistrationTypeId ?? 0) == RegistrationTypeCode.None)
                     throw new BadRegistrationException("no registration allowed on this org");
             }
-            this.testing = testing == true || DbUtil.Db.Setting("OnlineRegTesting", Util.IsDebug() ? "true" : "false").ToBool();
+            this.testing = testing == true || CurrentDatabase.Setting("OnlineRegTesting", Util.IsDebug() ? "true" : "false").ToBool();
 
             // the email passed in is valid or they did not specify login
             if (AllowAnonymous && (Util.ValidEmail(email) || login != true)) 

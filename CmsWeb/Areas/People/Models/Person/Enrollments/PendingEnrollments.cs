@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (_person == null && PeopleId.HasValue)
-                    _person = DbUtil.Db.LoadPersonById(PeopleId.Value);
+                    _person = CurrentDatabase.LoadPersonById(PeopleId.Value);
                 return _person;
             }
         }
@@ -33,9 +33,9 @@ namespace CmsWeb.Areas.People.Models
                     string defaultFilter = null;
 
                     if (isInAccess && !isInOrgLeadersOnly)
-                        defaultFilter = DbUtil.Db.Setting("UX-DefaultAccessInvolvementOrgTypeFilter", "");
+                        defaultFilter = CurrentDatabase.Setting("UX-DefaultAccessInvolvementOrgTypeFilter", "");
                     else
-                        defaultFilter = DbUtil.Db.Setting("UX-DefaultInvolvementOrgTypeFilter", "");
+                        defaultFilter = CurrentDatabase.Setting("UX-DefaultInvolvementOrgTypeFilter", "");
 
                     _orgTypesFilter = string.IsNullOrEmpty(defaultFilter) ?
                         new List<string>() : defaultFilter.Split(',').Select(x => x.Trim()).ToList();
@@ -57,7 +57,7 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 var excludedTypes =
-                    DbUtil.Db.Setting("UX-ExcludeFromInvolvementOrgTypeFilter", "").Split(',').Select(x => x.Trim());
+                    CurrentDatabase.Setting("UX-ExcludeFromInvolvementOrgTypeFilter", "").Split(',').Select(x => x.Trim());
                 return DefineModelList(false).Select(x => x.OrgType).Distinct().Where(x => !excludedTypes.Contains(x));
             }
         }
@@ -68,8 +68,8 @@ namespace CmsWeb.Areas.People.Models
 
         public IQueryable<InvolvementCurrent> DefineModelList(bool useOrgFilter)
         {
-            var roles = DbUtil.Db.CurrentRoles();
-            return from om in DbUtil.Db.InvolvementCurrent(PeopleId, Util.UserId)
+            var roles = CurrentDatabase.CurrentRoles();
+            return from om in CurrentDatabase.InvolvementCurrent(PeopleId, Util.UserId)
                    where om.Pending.Value
                    where om.LimitToRole == null || roles.Contains(om.LimitToRole)
                    where (!useOrgFilter || !OrgTypesFilter.Any() || OrgTypesFilter.Contains(om.OrgType))

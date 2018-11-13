@@ -2,7 +2,7 @@
 @using CmsData.Classes.Twilio
 @{
     var twilio = TwilioHelper.userSendSMS(Util.UserId);
-    var qb = DbUtil.Db.QueryIsCurrentUser();
+    var qb = CurrentDatabase.QueryIsCurrentUser();
     var showAdvanced = !RoleChecker.HasSetting(SettingName.LimitToolbar, false);
 }
 <ul class="dropdown-menu dropdown-menu-large dropdown-menu-right container bluebar-menu-col-1">

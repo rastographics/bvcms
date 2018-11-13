@@ -63,7 +63,7 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                     }
                 };
 
-                var pids = DbUtil.Db.FindPerson3(row.First, row.Last, row.Birthday, row.Email, 
+                var pids = CurrentDatabase.FindPerson3(row.First, row.Last, row.Birthday, row.Email, 
                     row.Phone, row.Phone2, row.Phone3).ToList();
                 row.Found = pids.Count;
                 if(pids.Count == 1)
@@ -74,8 +74,8 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                 where pi.PeopleId.HasValue
                 select pi.PeopleId;
             foreach (var pid in q.Distinct())
-                Person.Tag(DbUtil.Db, pid ?? 0, tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
-            DbUtil.Db.SubmitChanges();
+                Person.Tag(CurrentDatabase. pid ?? 0, tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+            CurrentDatabase.SubmitChanges();
             return list;
         }
         public class FindInfo

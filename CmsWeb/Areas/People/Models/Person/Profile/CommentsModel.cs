@@ -8,7 +8,7 @@ namespace CmsWeb.Areas.People.Models
     {
         public CommentsModel(int id)
         {
-            Comments = (from p in DbUtil.Db.People
+            Comments = (from p in CurrentDatabase.People
                         where p.PeopleId == id
                         select p.Comments).Single();
             PeopleId = id;
@@ -25,9 +25,9 @@ namespace CmsWeb.Areas.People.Models
 
         public void UpdateComments()
         {
-            var p = DbUtil.Db.LoadPersonById(PeopleId);
+            var p = CurrentDatabase.LoadPersonById(PeopleId);
             p.Comments = Comments;
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             DbUtil.LogActivity($"Updated Comments: {p.Name}");
         }
     }

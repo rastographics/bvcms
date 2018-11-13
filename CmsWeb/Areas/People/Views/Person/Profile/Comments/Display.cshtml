@@ -2,10 +2,10 @@
 @using CmsData.ExtraValue
 @model CmsWeb.Areas.People.Models.CommentsModel
 @{
-  var data = DbUtil.Db.PeopleExtras
+  var data = CurrentDatabase.PeopleExtras
          .Where(vv => vv.Type == "Data" && vv.PeopleId == Model.PeopleId)
          .OrderBy(vv => vv.Field).ThenByDescending(vv => vv.DateValue);
-  var sevs = Views.GetViewableDataTypes(DbUtil.Db, true);
+  var sevs = Views.GetViewableDataTypes(CurrentDatabase. true);
 }
 <form class="ajax" method="post">
   @FormAction()

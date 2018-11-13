@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 				var guid = id.ToGuid();
 				if (guid == null)
 					return Content("invalid link");
-				var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
+				var ot = CurrentDatabase.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
 				if (ot == null)
 					return Content("invalid link");
 				if (ot.Used)
@@ -32,7 +32,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 				var a = ot.Querystring.Split(',');
 				m = new ManagePledgesModel(a[1].ToInt(), a[0].ToInt());
 				ot.Used = true;
-				DbUtil.Db.SubmitChanges();
+				CurrentDatabase.SubmitChanges();
 			}
 			SetHeaders(m.orgid);
 		    m.Log("Start");
@@ -57,7 +57,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 				var guid = id.ToGuid();
 				if (guid == null)
 					return Content("invalid link");
-				var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
+				var ot = CurrentDatabase.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
 				if (ot == null)
 					return Content("invalid link");
 #if DEBUG2
@@ -72,7 +72,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			    if (m.person == null)
 			        return Message("person not found");
 				ot.Used = true;
-				DbUtil.Db.SubmitChanges();
+				CurrentDatabase.SubmitChanges();
 			}
             Session["CreditCardOnFile"] = m.CreditCard;
             Session["ExpiresOnFile"] = m.Expires;

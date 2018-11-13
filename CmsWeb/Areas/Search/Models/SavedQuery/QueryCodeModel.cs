@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public QueryCodeModel(string queries, List<Guid> guids = null)
         {
-            var all = DbUtil.Db.Connection.Query(queries).ToList();
+            var all = CurrentDatabase.Connection.Query(queries).ToList();
             List = guids == null ? all : all.Where(vv => guids.Contains((Guid) vv.QueryId)).ToList();
             Count = List.Count;
             Debug.WriteLine($"{Util.Host} Count: {Count}");
@@ -41,7 +41,7 @@ namespace CmsWeb.Areas.Search.Models
             Error = null;
             if (Existing == null)
                 return;
-            var c = DbUtil.Db.LoadExistingQuery(Existing.Value);
+            var c = CurrentDatabase.LoadExistingQuery(Existing.Value);
             Code = c.ToCode();
             Sql = c.ToSql();
         }
@@ -51,7 +51,7 @@ namespace CmsWeb.Areas.Search.Models
             Existing = q.QueryId as Guid?;
             if (Existing == null)
                 return string.Empty;
-            var c = DbUtil.Db.LoadExistingQuery(Existing.Value);
+            var c = CurrentDatabase.LoadExistingQuery(Existing.Value);
             var s = c.ToCode();
             var lines = s.SplitLines();
             string ret = null;

@@ -29,7 +29,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
         private static int? BatchProcessVanco(CsvReader csv, DateTime date, int? fundid)
         {
-            var fundList = (from f in DbUtil.Db.ContributionFunds
+            var fundList = (from f in CurrentDatabase.ContributionFunds
                             orderby f.FundId
                             select f.FundId).ToList();
 

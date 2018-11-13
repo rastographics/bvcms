@@ -25,7 +25,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 id = 0;                
             }
 
-            int imgId = (from c in DbUtil.Db.Contributions
+            int imgId = (from c in CurrentDatabase.Contributions
                 where c.ContributionId == id
                 select c.ImageID).FirstOrDefault();
             CheckImageModel chkImageModel = new CheckImageModel();
@@ -39,7 +39,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 
         public static CheckImageModel GetImageForContribution(int imgId)
         {
-            System.Data.Linq.Binary iBinary = (from i in ImageData.DbUtil.Db.Others
+            System.Data.Linq.Binary iBinary = (from i in ImageData.CurrentDatabase.Others
                                                where i.Id == imgId
                                                select i.First).FirstOrDefault();
 

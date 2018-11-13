@@ -13,10 +13,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public static IQueryable<Organization> UserSelectClasses(Organization masterorg)
         {
             if (!masterorg.OrgPickList.HasValue())
-                return DbUtil.Db.Organizations.Where(oo => false);
+                return CurrentDatabase.Organizations.Where(oo => false);
             var cklist = masterorg.OrgPickList.Split(',').Select(oo => oo.ToInt()).ToList();
 
-            var q = from o in DbUtil.Db.Organizations
+            var q = from o in CurrentDatabase.Organizations
                     where cklist.Contains(o.OrganizationId)
                     select o;
             return q;
@@ -49,7 +49,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             var q = from o in OrderedClasses(masterorg)
                     let hasroom = (o.ClassFilled ?? false) == false 
-                        && ((o.Limit ?? 0) == 0 || o.Limit > o.RegLimitCount(DbUtil.Db)) 
+                        && ((o.Limit ?? 0) == 0 || o.Limit > o.RegLimitCount(CurrentDatabase)) 
                         && (o.RegistrationClosed ?? false) == false 
                         && (o.RegEnd ?? DateTime.MaxValue) > Util.Now
                         && (o.RegStart ?? DateTime.MinValue) <= Util.Now

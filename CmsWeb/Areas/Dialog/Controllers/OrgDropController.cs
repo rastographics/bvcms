@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost, Route("~/OrgDrop/{qid:guid}")]
         public ActionResult Index(Guid qid)
         {
-            LongRunningOperation.RemoveExisting(DbUtil.Db, qid);
+            LongRunningOperation.RemoveExisting(CurrentDatabase. qid);
             var model = new OrgDrop(qid);
             return View(model);
         }
@@ -24,10 +24,10 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost]
         public ActionResult Process(OrgDrop model)
         {
-            model.UpdateLongRunningOp(DbUtil.Db, OrgDrop.Op);
+            model.UpdateLongRunningOp(CurrentDatabase. OrgDrop.Op);
             if (!model.Started.HasValue)
             {
-                model.Process(DbUtil.Db);
+                model.Process(CurrentDatabase);
             }
 
             return View(model);

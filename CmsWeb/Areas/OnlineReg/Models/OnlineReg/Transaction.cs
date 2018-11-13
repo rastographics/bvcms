@@ -8,7 +8,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
     {
         public static string GetTransactionGateway()
         {
-            return DbUtil.Db.Setting("TransactionGateway", "notSupported").ToLower();
+            return CurrentDatabase.Setting("TransactionGateway", "notSupported").ToLower();
         }
 
         private decimal? payAmt;

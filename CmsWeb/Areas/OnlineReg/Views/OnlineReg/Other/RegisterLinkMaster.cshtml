@@ -6,7 +6,7 @@
 @{
     Layout = "~/Views/Shared/onlinereg2.cshtml";
     ViewBag.Title = "Online Registration";
-    var q = from o in DbUtil.Db.RegisterLinksFromMaster(Model.Orgid)
+    var q = from o in CurrentDatabase.RegisterLinksFromMaster(Model.Orgid)
             orderby o.AppCategory, o.PublicSortOrder
             select o;
     var token = ViewBag.Token as string;

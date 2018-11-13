@@ -28,9 +28,9 @@ namespace CmsWeb.Areas.Search.Models
 
         public override IQueryable<RegistrationList> DefineModelList()
         {
-            var db = DbUtil.Db;
+            var db = Db;
 
-            var q = from r in db.ViewRegistrationLists
+            var q = from r in CurrentDatabase.ViewRegistrationLists
                     where r.Cnt > 0
                     where r.First.Length > 0 && r.Last.Length > 0
                     select r;
@@ -88,7 +88,7 @@ namespace CmsWeb.Areas.Search.Models
                     break;
                 case "InProgress":
                     q = from r in q
-                        let o = DbUtil.Db.Organizations.Single(oo => oo.OrganizationId == r.OrganizationId)
+                        let o = CurrentDatabase.Organizations.Single(oo => oo.OrganizationId == r.OrganizationId)
                         where (r.Completed ?? false)
                         select r;
                     break;

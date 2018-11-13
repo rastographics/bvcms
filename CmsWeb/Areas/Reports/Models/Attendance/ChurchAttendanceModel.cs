@@ -97,7 +97,7 @@ namespace CmsWeb.Areas.Reports.Models
         }
         public IEnumerable<ProgInfo> FetchInfo()
         {
-            var q = from p in DbUtil.Db.Programs
+            var q = from p in CurrentDatabase.Programs
                     where p.RptGroup != null && p.RptGroup.Length > 0
                     from pd in p.ProgDivs
                     where pd.Division.ReportLine > 0
@@ -138,7 +138,7 @@ namespace CmsWeb.Areas.Reports.Models
         }
         public static DateTime MostRecentAttendedSunday()
         {
-            var q = from m in DbUtil.Db.Meetings
+            var q = from m in CurrentDatabase.Meetings
                     where m.MeetingDate.Value.Date.DayOfWeek == 0
                     where m.MaxCount > 0
                     where m.MeetingDate < Util.Now

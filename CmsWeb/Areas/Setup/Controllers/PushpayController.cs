@@ -39,7 +39,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                 + "&response_type=code"
                 + "&redirect_uri=" + Configuration.Current.TouchpointAuthServer
                 + "&scope=" + Configuration.Current.PushpayScope
-                + "&state=" + DbUtil.Db.Host; //Get  xsrf_token:tenantID
+                + "&state=" + CurrentDatabase.Host; //Get  xsrf_token:tenantID
 
             return Redirect(redirectUrl);
         }
@@ -72,7 +72,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult Save(string _at, string _rt)
         {
             string idAccessToken = "PushpayAccessToken", idRefreshToken= "PushpayRefreshToken";
-            var dbContext = DbUtil.Db;
+            var dbContext = Db;
             var m = dbContext.Settings.AsQueryable();
             if (!Regex.IsMatch(idAccessToken, @"\A[A-z0-9-]*\z"))
                 return View("Invalid characters in setting id");
@@ -86,8 +86,8 @@ namespace CmsWeb.Areas.Setup.Controllers
                 dbContext.SetSetting(idAccessToken, _at);
             }
             else { // Update access token
-                DbUtil.Db.SetSetting(idAccessToken, _at);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SetSetting(idAccessToken, _at);
+                CurrentDatabase.SubmitChanges();
                 DbUtil.LogActivity($"Edit Setting {idAccessToken} to {_at}", userId: Util.UserId);
             }
             if (!dbContext.Settings.Any(s => s.Id == idRefreshToken))
@@ -99,8 +99,8 @@ namespace CmsWeb.Areas.Setup.Controllers
             }
             else
             { // Update refresh token
-                DbUtil.Db.SetSetting(idRefreshToken, _rt);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SetSetting(idRefreshToken, _rt);
+                CurrentDatabase.SubmitChanges();
                 DbUtil.LogActivity($"Edit Setting {idRefreshToken} to {_rt}", userId: Util.UserId);
             }
 

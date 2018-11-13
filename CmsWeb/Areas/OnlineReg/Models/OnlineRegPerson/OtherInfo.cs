@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             get
             {
                 if (groupTags == null)
-                    groupTags = (from mt in DbUtil.Db.OrgMemMemTags
+                    groupTags = (from mt in CurrentDatabase.OrgMemMemTags
                                   where mt.OrgId == org.OrganizationId
                                   select mt.MemberTag.Name).ToList();
                 var gtdd = (from pp in Parent.List
@@ -127,7 +127,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public static IEnumerable<SelectListItem> ShirtSizes(CMSDataContext Db, Organization org)
         {
-            var setting = Db.CreateRegistrationSettings(org.OrganizationId);
+            var setting = CurrentDatabase.CreateRegistrationSettings(org.OrganizationId);
             return ShirtSizes(setting);
         }
 
@@ -148,7 +148,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             if (askSize?.AllowLastYear ?? false)
             {
-                var text = Util.PickFirst(Organization.GetExtra(DbUtil.Db, setting.OrgId, "AllowLastYearShirtText"),
+                var text = Util.PickFirst(Organization.GetExtra(CurrentDatabase. setting.OrgId, "AllowLastYearShirtText"),
                     "Use shirt from last year");
                 list.Add(new SelectListItem {Value = "lastyear", Text = text});
             }
@@ -163,7 +163,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public List<SelectListItem> MissionTripGoers()
         {
             var pid = person?.PeopleId;
-            var q = from g in DbUtil.Db.OrganizationMembers
+            var q = from g in CurrentDatabase.OrganizationMembers
                     where g.OrganizationId == orgid
                     where g.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Goer")
                     where g.PeopleId != (Parent.UserPeopleId ?? pid ?? 0)
@@ -180,7 +180,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool IsGoer()
         {
             var pid = person?.PeopleId ?? 0;
-            return DbUtil.Db.OrganizationMembers.Any(mm => mm.OrganizationId == orgid && mm.PeopleId == pid);
+            return CurrentDatabase.OrganizationMembers.Any(mm => mm.OrganizationId == orgid && mm.PeopleId == pid);
         }
 
         public void FillPriorInfo()
@@ -190,7 +190,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (IsNew || !LoggedIn)
                 return;
 
-            var rr = DbUtil.Db.RecRegs.SingleOrDefault(r => r.PeopleId == PeopleId);
+            var rr = CurrentDatabase.RecRegs.SingleOrDefault(r => r.PeopleId == PeopleId);
             if (rr != null)
             {
                 if (setting.AskVisible("AskRequest"))

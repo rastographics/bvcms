@@ -109,12 +109,12 @@ namespace CmsWeb.Areas.People.Models
 
         public MemberInfo()
         {
-            Db = DbUtil.Db;
+            Db = Db;
         }
         public MemberInfo(int id)
             : this()
         {
-            person = Db.LoadPersonById(id);
+            person = CurrentDatabase.LoadPersonById(id);
             if (person == null)
                 return;
             this.CopyPropertiesFrom(person);
@@ -122,7 +122,7 @@ namespace CmsWeb.Areas.People.Models
 
         public string UpdateMember()
         {
-            var i = (from p in DbUtil.Db.People
+            var i = (from p in CurrentDatabase.People
                      where p.PeopleId == PeopleId
                      select new
                      {
@@ -132,16 +132,16 @@ namespace CmsWeb.Areas.People.Models
 
             var changes = this.CopyPropertiesTo(i.p, excludefields: "HomePhone,ElectronicStatement");
 
-            i.p.LogChanges(DbUtil.Db, changes);
+            i.p.LogChanges(CurrentDatabase. changes);
 
 
-            var ret = i.p.MemberProfileAutomation(DbUtil.Db);
+            var ret = i.p.MemberProfileAutomation(CurrentDatabase);
             if (ret == "ok")
             {
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
                 person = i.p;
-                DbUtil.Db.SubmitChanges();
-                DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, person);
+                CurrentDatabase.SubmitChanges();
+                CurrentDatabase.Refresh(RefreshMode.OverwriteCurrentValues, person);
                 this.CopyPropertiesFrom(person);
             }
             else
@@ -154,7 +154,7 @@ namespace CmsWeb.Areas.People.Models
 
         public List<AllStatusFlag> StatusFlags()
         {
-            return (from s in DbUtil.Db.ViewAllStatusFlags.ToList()
+            return (from s in CurrentDatabase.ViewAllStatusFlags.ToList()
                     where s.Role == null || HttpContext.Current.User.IsInRole(s.Role)
                     where s.PeopleId == PeopleId
                     orderby s.Flag

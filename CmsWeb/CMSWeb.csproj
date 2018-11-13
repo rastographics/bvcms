@@ -837,6 +837,7 @@
     <Compile Include="Controllers\ScriptController.cs" />
     <Compile Include="Controllers\MobileAppMenuController.cs" />
     <Compile Include="Controllers\WebHookController.cs" />
+    <Compile Include="Lifecycle\DependencyInjectionAdapter.cs" />
     <Compile Include="Lifecycle\RequestManager.cs" />
     <Compile Include="Models\Api\ApiChAiGift.cs" />
     <Compile Include="Models\Api\ApiOrganization.cs" />
@@ -1038,6 +1039,10 @@
     <Compile Include="Code\PaymentValidator.cs" />
     <Compile Include="Code\SmartBinder.cs" />
     <Compile Include="Code\Image.cs" />
+    <Compile Include="Services\Family\FamilyService.cs" />
+    <Compile Include="Services\Family\IFamilyService.cs" />
+    <Compile Include="Services\People\IPeopleService.cs" />
+    <Compile Include="Services\People\PeopleService.cs" />
     <Content Include="Areas\Dialog\Views\AddToOrgFromTag\Index.cshtml" />
     <Content Include="Areas\Main\Views\Email\SelectTemplate.cshtml" />
     <Content Include="Areas\Main\Views\Email\Compose.cshtml" />

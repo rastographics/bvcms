@@ -42,10 +42,10 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                     r.AddError("Missing Fund");
                 if (r.PeopleId == 0)
                     r.AddError("Missing PeopleId");
-                if (0 == DbUtil.Db.Connection.ExecuteScalar<int>(
+                if (0 == CurrentDatabase.Connection.ExecuteScalar<int>(
                         "SELECT IIF(EXISTS(SELECT NULL FROM dbo.People WHERE PeopleId = @pid), 1, 0)", new {pid = r.PeopleId}))
                     r.AddError("Cannot Find Person");
-                if (0 == DbUtil.Db.Connection.ExecuteScalar<int>(
+                if (0 == CurrentDatabase.Connection.ExecuteScalar<int>(
                         "SELECT IIF(EXISTS(SELECT NULL FROM dbo.ContributionFund WHERE FundId = @fid), 1, 0)", new { fid = r.FundId}))
                     r.AddError("Cannot Find Fund");
 

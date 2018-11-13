@@ -26,7 +26,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public override IQueryable<Query> DefineModelList()
         {
-            var q = from c in DbUtil.Db.Queries
+            var q = from c in CurrentDatabase.Queries
                     where !PublicOnly || c.Ispublic
                     where c.Name.Contains(SearchQuery) || c.Owner == SearchQuery || !SearchQuery.HasValue()
                     where c.Name != "OrgFilter"
@@ -43,7 +43,7 @@ namespace CmsWeb.Areas.Search.Models
                 q = from c in q
                     where StatusFlagsOnly == false || SqlMethods.Like(c.Name, "F[0-9][0-9]%")
                     select c;
-            DbUtil.Db.SetUserPreference("SavedQueryOnlyMine", OnlyMine);
+            CurrentDatabase.SetUserPreference("SavedQueryOnlyMine", OnlyMine);
             if (OnlyMine)
                 q = from c in q
                     where c.Owner == Util.UserName

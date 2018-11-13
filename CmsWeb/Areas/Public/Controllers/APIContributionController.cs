@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity("APIContribution PostContribution");
-            return Content(new APIContribution(DbUtil.Db).PostContribution(PeopleId, Amount, FundId, desc, date, contributiontype, checkno), "text/xml");
+            return Content(new APIContribution(CurrentDatabase).PostContribution(PeopleId, Amount, FundId, desc, date, contributiontype, checkno), "text/xml");
         }
 
         [HttpGet]
@@ -34,7 +34,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity($"APIContribution Contributions for ({id})");
-            return Content(new APIContribution(DbUtil.Db).Contributions(id, Year), "text/xml");
+            return Content(new APIContribution(CurrentDatabase).Contributions(id, Year), "text/xml");
         }
 
         [HttpPost]
@@ -47,7 +47,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity("APIContribution ContributionSearch");
-            return Content(new APIContributionSearchModel(DbUtil.Db, m).ContributionsXML(((page ?? 1) - 1) * 100, 100), "text/xml");
+            return Content(new APIContributionSearchModel(CurrentDatabase. m).ContributionsXML(((page ?? 1) - 1) * 100, 100), "text/xml");
         }
     }
 }

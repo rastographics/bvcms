@@ -1,3 +1,6 @@
+using CmsData;
+using CmsWeb.Areas.Search.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -5,9 +8,6 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Web.Hosting;
-using CmsData;
-using Newtonsoft.Json;
-using CmsWeb.Areas.Search.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
@@ -56,50 +56,55 @@ namespace CmsWeb.Areas.Dialog.Models
                 QueryId = QueryId,
                 Operation = Op,
             };
-            db.LongRunningOperations.InsertOnSubmit(lop);
-            db.SubmitChanges();
+            DbUtil.Db.LongRunningOperations.InsertOnSubmit(lop);
+            DbUtil.Db.SubmitChanges();
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
         }
 
         private void DoWork(OrgSearchDrop model)
         {
             var db = DbUtil.Create(model.Host);
-            var cul = db.Setting("Culture", "en-US");
+            var cul = DbUtil.Db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
 
             LongRunningOperation lop = null;
             foreach (var orginfo in model.orginfos)
             {
-                var pids = (from m in db.OrganizationMembers
-                    where m.OrganizationId == orginfo.Id
-                    select m.PeopleId
+                var pids = (from m in DbUtil.Db.OrganizationMembers
+                            where m.OrganizationId == orginfo.Id
+                            select m.PeopleId
                     ).ToList();
                 var n = 0;
                 foreach (var pid in pids)
                 {
                     n++;
-                    db.Dispose();
+                    DbUtil.Db.Dispose();
                     db = DbUtil.Create(model.Host);
-                    var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == orginfo.Id);
+                    var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == orginfo.Id);
                     if (DropDate.HasValue)
-                        om.Drop(db, DropDate.Value);
+                    {
+                        om.Drop(DbUtil.Db, DropDate.Value);
+                    }
                     else
-                        om.Drop(db);
-                    lop = FetchLongRunningOperation(db, Op, model.QueryId);
+                    {
+                        om.Drop(DbUtil.Db);
+                    }
+
+                    lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
                     Debug.Assert(lop != null, "r != null");
                     lop.Processed++;
                     lop.CustomMessage = $"Working on {orginfo.Name.Truncate(170)}, {n}/{pids.Count}";
-                    db.SubmitChanges();
+                    DbUtil.Db.SubmitChanges();
                 }
-                var o = db.LoadOrganizationById(orginfo.Id);
+                var o = DbUtil.Db.LoadOrganizationById(orginfo.Id);
                 o.OrganizationStatusId = CmsData.Codes.OrgStatusCode.Inactive;
-                db.SubmitChanges();
+                DbUtil.Db.SubmitChanges();
             }
             // finished
-            lop = FetchLongRunningOperation(db, Op, model.QueryId);
+            lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
             lop.Completed = DateTime.Now;
-            db.SubmitChanges();
+            DbUtil.Db.SubmitChanges();
         }
     }
 }

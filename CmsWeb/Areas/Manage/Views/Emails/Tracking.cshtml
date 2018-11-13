@@ -5,7 +5,7 @@
     ViewBag.PageHeader = "Tracked Links";
     Layout = ViewExtensions2.TouchPointLayout();
     int emailID = ViewBag.emailID;
-    var links = from e in DbUtil.Db.EmailLinks
+    var links = from e in CurrentDatabase.EmailLinks
                 where e.EmailID == emailID
                 select e;
 }

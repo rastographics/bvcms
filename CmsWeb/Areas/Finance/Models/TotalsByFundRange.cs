@@ -1,15 +1,10 @@
+using CmsData;
+using CmsData.API;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.API;
-using CmsData.Codes;
-using CmsData.View;
-using CmsWeb.Code;
 using UtilityExtensions;
-using System.Text;
-using System.Web.Security;
 
 namespace CmsWeb.Models
 {
@@ -29,14 +24,17 @@ namespace CmsWeb.Models
             var today = Util.Now.Date;
             var first = new DateTime(today.Year, today.Month, 1);
             if (today.Day < 8)
+            {
                 first = first.AddMonths(-1);
+            }
+
             Dt1 = first;
             Dt2 = first.AddMonths(1).AddDays(-1);
         }
 
         public IEnumerable<RangeInfo> GetTotalsByFundRange()
         {
-            var customFundIds = APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db, FundSet);
+            var customFundIds = APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db.FundSet);
             var authorizedFundIds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership().Select(f => f.FundId).ToList();
 
             string fundIds = string.Empty;

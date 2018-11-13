@@ -41,7 +41,7 @@ namespace CmsWeb.Controllers
             return Content(v);
         }
 
-
+        //todo: use injection
 #if DEBUG
         [HttpGet, Route("~/TestScript")]
         [Authorize(Roles = "Developer")]

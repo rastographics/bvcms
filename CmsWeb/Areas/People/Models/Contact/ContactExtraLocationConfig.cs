@@ -17,7 +17,7 @@ namespace CmsWeb.Areas.People.Models
         {
             _xmlContent = configContent;
             if (string.IsNullOrWhiteSpace(configContent))
-                _xmlContent = DbUtil.Db.ContentOfTypeText("ContactExtraLocationConfig.xml");
+                _xmlContent = CurrentDatabase.ContentOfTypeText("ContactExtraLocationConfig.xml");
         }
 
         public IEnumerable<ContactExtraLocation> Locations

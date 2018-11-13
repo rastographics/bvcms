@@ -55,7 +55,7 @@ namespace CmsWeb.Areas.Search.Models
         {
             if (list != null)
                 return list;
-            var q = DbUtil.Db.RecentIncompleteRegistrations2(oids, days);
+            var q = CurrentDatabase.RecentIncompleteRegistrations2(oids, days);
             switch (SortExpression)
             {
                 case "Date":

@@ -17,13 +17,13 @@ namespace CmsWeb.Models
     {
         public static EpplusResult Export(Guid queryid)
         {
-            var filter = DbUtil.Db.OrgFilter(queryid);
+            var filter = CurrentDatabase.OrgFilter(queryid);
             if (filter.GroupSelect != GroupSelectCode.Member)
                 return new EpplusResult("EmptyResult.xlsx");
 
-            var peeps = DbUtil.Db.OrgFilterPeople(queryid, null)
+            var peeps = CurrentDatabase.OrgFilterPeople(queryid, null)
                 .Select(pp => pp.PeopleId).ToList();
-            var list = DbUtil.Db.CurrOrgMembers2(filter.Id.ToString(), string.Join(",", peeps));
+            var list = CurrentDatabase.CurrOrgMembers2(filter.Id.ToString(), string.Join(",", peeps));
 
             var count = list.Count();
             if(count == 0)

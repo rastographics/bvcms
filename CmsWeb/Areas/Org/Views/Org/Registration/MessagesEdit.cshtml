@@ -1,7 +1,7 @@
 ﻿@using CmsData
 @model CmsWeb.Areas.Org.Models.SettingsMessagesModel
 @{
-    ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowMessagesHelp");
+    ViewBag.ShowHelp = CurrentDatabase.UserPreference("ShowMessagesHelp");
 }
 <form class="ajax">
     @if (!Html.ViewData.ModelState.IsValid)

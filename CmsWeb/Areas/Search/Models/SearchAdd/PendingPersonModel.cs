@@ -90,7 +90,7 @@ namespace CmsWeb.Areas.Search.Models
             get
             {
                 if (_family == null && FamilyId > 0)
-                    _family = DbUtil.Db.Families.Single(f => f.FamilyId == FamilyId);
+                    _family = CurrentDatabase.Families.Single(f => f.FamilyId == FamilyId);
                 return _family;
             }
         }
@@ -103,7 +103,7 @@ namespace CmsWeb.Areas.Search.Models
             get
             {
                 if (person == null && PeopleId.HasValue)
-                    person = DbUtil.Db.LoadPersonById(PeopleId.Value);
+                    person = CurrentDatabase.LoadPersonById(PeopleId.Value);
                 return person;
             }
         }
@@ -114,8 +114,8 @@ namespace CmsWeb.Areas.Search.Models
 
         internal void CheckDuplicate()
         {
-            var pids = DbUtil.Db.FindPerson(FirstName, LastName, Birthday, null, CellPhone.GetDigits()).Select(pp => pp.PeopleId).ToList();
-            var q = from p in DbUtil.Db.People
+            var pids = CurrentDatabase.FindPerson(FirstName, LastName, Birthday, null, CellPhone.GetDigits()).Select(pp => pp.PeopleId).ToList();
+            var q = from p in CurrentDatabase.People
                     where pids.Contains(p.PeopleId)
                     select new { p.PeopleId, p.Name, p.PrimaryAddress, p.Age, };
             var sb = new StringBuilder();
@@ -145,7 +145,7 @@ namespace CmsWeb.Areas.Search.Models
             }
             NickName = NickName?.Trim();
 
-            var position = DbUtil.Db.ComputePositionInFamily(Age ?? -1, MaritalStatus.Value == "20", FamilyId) ?? 10;
+            var position = CurrentDatabase.ComputePositionInFamily(Age ?? -1, MaritalStatus.Value == "20", FamilyId) ?? 10;
 
             FirstName = FirstName.Trim();
             if (FirstName == "na")
@@ -159,13 +159,13 @@ namespace CmsWeb.Areas.Search.Models
 
             if (campusid == 0)
                 campusid = null;
-            Person.CampusId = Util.PickFirst(campusid.ToString(), DbUtil.Db.Setting("DefaultCampusId", "")).ToInt2();
+            Person.CampusId = Util.PickFirst(campusid.ToString(), CurrentDatabase.Setting("DefaultCampusId", "")).ToInt2();
             if (Person.CampusId == 0)
                 Person.CampusId = null;
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             DbUtil.LogActivity($"AddPerson {person.PeopleId}");
-            DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, Person);
+            CurrentDatabase.Refresh(RefreshMode.OverwriteCurrentValues, Person);
             PeopleId = Person.PeopleId;
         }
 

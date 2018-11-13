@@ -48,9 +48,9 @@ namespace CmsWeb.Areas.People.Models
 
         public IEnumerable<SelectListItem> Roles()
         {
-            var roles = DbUtil.Db.Setting("LimitToRolesForContacts", "").SplitStr(",").Where(rr => rr.HasValue()).ToArray();
+            var roles = CurrentDatabase.Setting("LimitToRolesForContacts", "").SplitStr(",").Where(rr => rr.HasValue()).ToArray();
             if (roles.Length == 0)
-                roles = DbUtil.Db.Roles.OrderBy(r => r.RoleName).Select(r => r.RoleName).ToArray();
+                roles = CurrentDatabase.Roles.OrderBy(r => r.RoleName).Select(r => r.RoleName).ToArray();
             var list = roles.Select(rolename => new SelectListItem
             {
                 Value = rolename,
@@ -68,16 +68,16 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (!OrganizationId.HasValue) return "";
-                var name = DbUtil.Db.LoadOrganizationById(OrganizationId);
+                var name = CurrentDatabase.LoadOrganizationById(OrganizationId);
                 return name != null ? name.OrganizationName : "";
             }
         }
 
         public IEnumerable<SelectListItem> Organizations()
         {
-            var orgType = DbUtil.Db.Setting("UX-ContactedOrgType", null);
+            var orgType = CurrentDatabase.Setting("UX-ContactedOrgType", null);
 
-            var list = DbUtil.Db.Organizations
+            var list = CurrentDatabase.Organizations
                 .Where(x => string.IsNullOrEmpty(orgType) || orgType == x.OrganizationType.Description)
                 .OrderBy(r => r.OrganizationName).ToList().Select(x => new SelectListItem
                 {
@@ -98,10 +98,10 @@ namespace CmsWeb.Areas.People.Models
         internal Contact contact;
         private void LoadContact(int id)
         {
-            var u = DbUtil.Db.CurrentUser;
+            var u = CurrentDatabase.CurrentUser;
             var roles = u.UserRoles.Select(uu => uu.Role.RoleName.ToLower()).ToArray();
             var ManagePrivateContacts = HttpContext.Current.User.IsInRole("ManagePrivateContacts");
-            var q = from c in DbUtil.Db.Contacts
+            var q = from c in CurrentDatabase.Contacts
                     where (c.LimitToRole ?? "") == "" || roles.Contains(c.LimitToRole) || ManagePrivateContacts
                     where c.ContactId == id
                     select c;
@@ -145,7 +145,7 @@ namespace CmsWeb.Areas.People.Models
             LoadContact(ContactId);
             this.CopyPropertiesTo(contact);
             SetLocationOnContact();
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
         }
         public static void DeleteContact(int cid)
         {
@@ -172,13 +172,13 @@ namespace CmsWeb.Areas.People.Models
                 ContactTypeId = contact.ContactTypeId,
                 ContactReasonId = contact.ContactReasonId,
             };
-            var q = from cor in DbUtil.Db.Contactors
+            var q = from cor in CurrentDatabase.Contactors
                     where cor.ContactId == contact.ContactId
                     select cor;
             foreach (var p in q)
                 c.contactsMakers.Add(new Contactor { PeopleId = p.PeopleId });
-            DbUtil.Db.Contacts.InsertOnSubmit(c);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.Contacts.InsertOnSubmit(c);
+            CurrentDatabase.SubmitChanges();
             return c.ContactId;
         }
 
@@ -195,16 +195,16 @@ namespace CmsWeb.Areas.People.Models
                     return true;
                 }
 
-                var q = from c in DbUtil.Db.Contactees
+                var q = from c in CurrentDatabase.Contactees
                         where c.ContactId == ContactId
                         select c.PeopleId;
-                var q2 = from c in DbUtil.Db.Contactors
+                var q2 = from c in CurrentDatabase.Contactors
                          where c.ContactId == ContactId
                          select c.PeopleId;
                 var a = q.Union(q2).ToArray();
 
-                Tag tag = DbUtil.Db.OrgLeadersOnlyTag2();
-                canViewComments = tag.People(DbUtil.Db).Any(p => a.Contains(p.PeopleId));
+                Tag tag = CurrentDatabase.OrgLeadersOnlyTag2();
+                canViewComments = tag.People(CurrentDatabase).Any(p => a.Contains(p.PeopleId));
                 return canViewComments.Value;
             }
         }
@@ -213,7 +213,7 @@ namespace CmsWeb.Areas.People.Models
         {
             var results = new List<ValidationResult>();
 
-            if (DbUtil.Db.Ministries.Any() && Ministry.Value == "0")
+            if (CurrentDatabase.Ministries.Any() && Ministry.Value == "0")
                 results.Add(ModelError("Ministry is required", "MinistryId"));
 
             if (ContactType.Value == "0")
@@ -252,9 +252,9 @@ namespace CmsWeb.Areas.People.Models
             }
         }
 
-        public bool ShowDefaultCheckboxes => !DbUtil.Db.Setting("UX-HideContactCheckboxes");
+        public bool ShowDefaultCheckboxes => !CurrentDatabase.Setting("UX-HideContactCheckboxes");
 
-        public bool ShowContactExtraFeature => DbUtil.Db.Setting("Feature-ContactExtra");
+        public bool ShowContactExtraFeature => CurrentDatabase.Setting("Feature-ContactExtra");
 
         private ContactExtraLocationConfig ContactExtraConfig => new ContactExtraLocationConfig();
 

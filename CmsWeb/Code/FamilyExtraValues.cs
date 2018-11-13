@@ -88,7 +88,7 @@ namespace CmsWeb.Code
 						return extravalue.BitValue.ToString();
 					case "Bits":
 					{
-						var q = from e in DbUtil.Db.FamilyExtras
+						var q = from e in CurrentDatabase.FamilyExtras
 								where e.BitValue == true
 								where e.FamilyId == familyid
 								where Codes.Contains(e.Field)
@@ -121,7 +121,7 @@ namespace CmsWeb.Code
 				if (f.location == null)
 					f.location = "default";
 			}
-			var exvalues = DbUtil.Db.FamilyExtras.Where(ee => ee.FamilyId == FamilyId).ToList();
+			var exvalues = CurrentDatabase.FamilyExtras.Where(ee => ee.FamilyId == FamilyId).ToList();
 			var qfields = from f in fields
 						  join v in exvalues on f.name equals v.Field into j
 						  from v in j.DefaultIfEmpty()
@@ -143,7 +143,7 @@ namespace CmsWeb.Code
 		}
 		public static List<SelectListItem> ExtraValueCodes()
 		{
-			var q = from e in DbUtil.Db.FamilyExtras
+			var q = from e in CurrentDatabase.FamilyExtras
 					where e.StrValue != null || e.BitValue != null
 			        group e by new {e.Field, val = e.StrValue ?? (e.BitValue == true ? "1" : "0")}
 			        into g
@@ -171,7 +171,7 @@ namespace CmsWeb.Code
 		public static Dictionary<string, bool> ExtraValueBits(string name, int FamilyId)
 		{
 			var f = GetExtraValues().Single(ee => ee.name == name);
-			var list = DbUtil.Db.FamilyExtras.Where(pp => pp.FamilyId == FamilyId && f.Codes.Contains(pp.Field)).ToList();
+			var list = CurrentDatabase.FamilyExtras.Where(pp => pp.FamilyId == FamilyId && f.Codes.Contains(pp.Field)).ToList();
 			var q = from c in f.Codes
 					join e in list on c equals e.Field into j
 					from e in j.DefaultIfEmpty()

@@ -35,7 +35,7 @@ namespace CmsWeb.MobileAPI
 
 			if (person.Picture != null)
 			{
-				var image = DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId);
+				var image = CurrentDatabase.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId);
 
 				if (image != null)
 				{

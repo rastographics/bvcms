@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.People.Models
             set
             {
                 peopleid = value;
-                Person = DbUtil.Db.LoadPersonById(peopleid);
+                Person = CurrentDatabase.LoadPersonById(peopleid);
                 ContributionOptions = new CodeInfo(Person.ContributionOptionsId, "ContributionOptions");
                 EnvelopeOptions = new CodeInfo(Person.EnvelopeOptionsId, "EnvelopeOptions");
                 ElectronicStatement = Person.ElectronicStatement ?? false;
@@ -44,7 +44,7 @@ namespace CmsWeb.Areas.People.Models
         {
             IQueryable<Contribution> contributionRecords;
 
-            var currentUser = DbUtil.Db.CurrentUserPerson;
+            var currentUser = CurrentDatabase.CurrentUserPerson;
             var isFinanceUser = Roles.GetRolesForUser().Contains("Finance");
             var isCurrentUser = currentUser.PeopleId == Person.PeopleId;
             var isSpouse = currentUser.PeopleId == Person.SpouseId;
@@ -52,7 +52,7 @@ namespace CmsWeb.Areas.People.Models
 
             if (isCurrentUser || (isSpouse && (Person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint) || isFamilyMember || isFinanceUser)
             {
-                contributionRecords = from c in DbUtil.Db.Contributions
+                contributionRecords = from c in CurrentDatabase.Contributions
                                       where (c.PeopleId == Person.PeopleId || (c.PeopleId == Person.SpouseId && (Person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint))
                                       && c.ContributionStatusId == ContributionStatusCode.Recorded
                                       && !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
@@ -60,8 +60,8 @@ namespace CmsWeb.Areas.People.Models
             }
             else
             {
-                contributionRecords = from c in DbUtil.Db.Contributions
-                                      join f in DbUtil.Db.ContributionFunds.ScopedByRoleMembership() on c.FundId equals f.FundId
+                contributionRecords = from c in CurrentDatabase.Contributions
+                                      join f in CurrentDatabase.ContributionFunds.ScopedByRoleMembership() on c.FundId equals f.FundId
                                       where c.PeopleId == Person.PeopleId
                                       && c.ContributionStatusId == ContributionStatusCode.Recorded
                                       && !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
@@ -161,18 +161,18 @@ namespace CmsWeb.Areas.People.Models
                 throw new ArgumentException("Missing id");
             }
 
-            var person = DbUtil.Db.LoadPersonById(id.Value);
+            var person = CurrentDatabase.LoadPersonById(id.Value);
 
 
-            var contributions = (from c in DbUtil.Db.Contributions2(new DateTime(1900, 1, 1), new DateTime(3000, 12, 31), 0, false, null, true)
+            var contributions = (from c in CurrentDatabase.Contributions2(new DateTime(1900, 1, 1), new DateTime(3000, 12, 31), 0, false, null, true)
                                 where (c.PeopleId == person.PeopleId || (c.PeopleId == person.SpouseId && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint))
                                 select c).ToList();
 
-            var currentUser = DbUtil.Db.CurrentUserPerson;
+            var currentUser = CurrentDatabase.CurrentUserPerson;
 
             if (currentUser.PeopleId != person.PeopleId)
             {
-                var authorizedFunds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership();
+                var authorizedFunds = CurrentDatabase.ContributionFunds.ScopedByRoleMembership();
                 var authorizedContributions = from c in contributions
                                               join f in authorizedFunds on c.FundId equals f.FundId
                                               select c;

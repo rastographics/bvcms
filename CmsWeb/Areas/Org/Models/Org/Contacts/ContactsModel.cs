@@ -13,7 +13,7 @@ namespace CmsWeb.Areas.Org.Models
         public int? OrganizationId
         {
             get { return Organization == null ? (int?)null : Organization.OrganizationId; }
-            set { Organization = DbUtil.Db.LoadOrganizationById(value ?? 0); }
+            set { Organization = CurrentDatabase.LoadOrganizationById(value ?? 0); }
         }
 
         protected ContactsModel()
@@ -25,10 +25,10 @@ namespace CmsWeb.Areas.Org.Models
 
         public IQueryable<Contact> FilteredModelList()
         {
-            var u = DbUtil.Db.CurrentUser;
+            var u = CurrentDatabase.CurrentUser;
             var roles = u.UserRoles.Select(uu => uu.Role.RoleName.ToLower()).ToArray();
             var ManagePrivateContacts = HttpContext.Current.User.IsInRole("ManagePrivateContacts");
-            return from c in DbUtil.Db.Contacts
+            return from c in CurrentDatabase.Contacts
                    where (c.LimitToRole ?? "") == "" || roles.Contains(c.LimitToRole) || ManagePrivateContacts
                    select c;
         }

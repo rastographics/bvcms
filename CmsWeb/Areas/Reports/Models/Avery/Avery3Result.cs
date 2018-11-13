@@ -44,7 +44,7 @@ namespace CmsWeb.Areas.Reports.Models
             t.LockedWidth = true;
             t.DefaultCell.Border = PdfPCell.NO_BORDER;
 
-            var q = DbUtil.Db.PeopleQuery(id);
+            var q = CurrentDatabase.PeopleQuery(id);
             var q2 = from p in q
                     orderby p.Name2
                     select new

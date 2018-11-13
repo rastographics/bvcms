@@ -17,7 +17,7 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (_person == null && PeopleId.HasValue)
-                    _person = DbUtil.Db.LoadPersonById(PeopleId.Value);
+                    _person = CurrentDatabase.LoadPersonById(PeopleId.Value);
                 return _person;
             }
         }
@@ -34,9 +34,9 @@ namespace CmsWeb.Areas.People.Models
                 {
                     string defaultFilter;
                     if (IsInAccess && !IsInOrgLeadersOnly)
-                        defaultFilter = DbUtil.Db.Setting("UX-DefaultAccessInvolvementOrgTypeFilter", "");
+                        defaultFilter = CurrentDatabase.Setting("UX-DefaultAccessInvolvementOrgTypeFilter", "");
                     else
-                        defaultFilter = DbUtil.Db.Setting("UX-DefaultInvolvementOrgTypeFilter", "");
+                        defaultFilter = CurrentDatabase.Setting("UX-DefaultInvolvementOrgTypeFilter", "");
 
                     _orgTypesFilter = string.IsNullOrEmpty(defaultFilter) ?
                         new List<string>() : defaultFilter.Split(',').Select(x => x.Trim()).ToList();
@@ -58,7 +58,7 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 var excludedTypes =
-                    DbUtil.Db.Setting("UX-ExcludeFromInvolvementOrgTypeFilter", "").Split(',').Select(x => x.Trim());
+                    CurrentDatabase.Setting("UX-ExcludeFromInvolvementOrgTypeFilter", "").Split(',').Select(x => x.Trim());
                 return DefineModelList(false).Select(x => x.OrgType).Distinct().Where(x => !excludedTypes.Contains(x));
             }
         }
@@ -72,10 +72,10 @@ namespace CmsWeb.Areas.People.Models
             var limitvisibility = Util2.OrgLeadersOnly || !HttpContext.Current.User.IsInRole("Access");
             var oids = new int[0];
             if (Util2.OrgLeadersOnly)
-                oids = DbUtil.Db.GetLeaderOrgIds(Util.UserPeopleId);
-            var roles = DbUtil.Db.CurrentRoles();
+                oids = CurrentDatabase.GetLeaderOrgIds(Util.UserPeopleId);
+            var roles = CurrentDatabase.CurrentRoles();
 
-            return from om in DbUtil.Db.InvolvementCurrent(PeopleId, Util.UserId)
+            return from om in CurrentDatabase.InvolvementCurrent(PeopleId, Util.UserId)
                             where (om.Pending ?? false) == false
                             where oids.Contains(om.OrganizationId) || !(limitvisibility && om.SecurityTypeId == 3)
                             where om.LimitToRole == null || roles.Contains(om.LimitToRole)
@@ -143,12 +143,12 @@ namespace CmsWeb.Areas.People.Models
                        IsMissionTripOrg = om.IsMissionTripOrg ?? false 
                    };
 
-            if (DbUtil.Db.Setting("UX-ShowChildOrgsOnInvolvementTabs"))
+            if (CurrentDatabase.Setting("UX-ShowChildOrgsOnInvolvementTabs"))
             {
                 var viewListAsList = viewList.ToList();
                 var parentIds = viewListAsList.Select(x => x.OrgId).ToList();
 
-                var childGroups = from org in DbUtil.Db.Organizations
+                var childGroups = from org in CurrentDatabase.Organizations
                                    where org.ParentOrgId.HasValue && parentIds.Contains(org.ParentOrgId.Value)
                                    group new OrgMemberInfo
                                    {

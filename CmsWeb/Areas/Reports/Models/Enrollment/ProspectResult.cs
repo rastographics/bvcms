@@ -327,14 +327,14 @@ namespace CmsWeb.Areas.Reports.Models
 
         private IQueryable<ProspectInfo> GetProspectInfo(bool Alpha = false)
         {
-            var Db = DbUtil.Db;
-            var q = Db.PeopleQuery(qid);
+            var Db = Db;
+            var q = CurrentDatabase.PeopleQuery(qid);
             if (Alpha)
                 q = q.OrderBy(pp => pp.Name2);
             else
                 q = q.OrderBy(pp => pp.PrimaryZip).ThenBy(pp => pp.Name2);
 
-            var EvCommentFields = Db.Setting("EvCommentFields", "").Split(',');
+            var EvCommentFields = CurrentDatabase.Setting("EvCommentFields", "").Split(',');
             var q2 = from p in q
                         select new ProspectInfo
                         {
@@ -379,7 +379,7 @@ namespace CmsWeb.Areas.Reports.Models
                                               where dt > om.EnrollmentDate
                                               let o = om.Organization
                                               let sc = o.OrgSchedules.FirstOrDefault() // SCHED
-                                              let l = Db.People.SingleOrDefault(l => l.PeopleId == o.LeaderId)
+                                              let l = CurrentDatabase.People.SingleOrDefault(l => l.PeopleId == o.LeaderId)
                                               orderby om.Organization.OrganizationName
                                               select new OrganizationView
                                               {
@@ -452,9 +452,9 @@ namespace CmsWeb.Areas.Reports.Models
              * However, because the results are hardcoded, there will be no translation between the results on this form and the results on the Contact page itself.
              * We will implement extra values for this table to accomodate this at some point.
              * */
-            var Db = DbUtil.Db;
+            var Db = Db;
             List<string> ContactResult =
-                Db.Setting(
+                CurrentDatabase.Setting(
                 "ContactFormResults",
                 "Not at Home;Left Door Hanger;Left Message;Contact Made;Gospel Shared;Profession of Faith;Prayer Request Rec'd;Prayed for Person;Already Saved"
                 ).Split(';').ToList();
@@ -472,8 +472,8 @@ namespace CmsWeb.Areas.Reports.Models
 
             doc.Add(t);
 
-            var ContactReason = Db.ContactReasons.Select(rr => rr.Description).Take(10).ToList();
-            var ContactType = Db.ContactTypes.Select(rr => rr.Description).Take(10).ToList();
+            var ContactReason = CurrentDatabase.ContactReasons.Select(rr => rr.Description).Take(10).ToList();
+            var ContactType = CurrentDatabase.ContactTypes.Select(rr => rr.Description).Take(10).ToList();
 
             DisplayTable("Contact Reason", 5.7f, 1.2f, 24.2f, ContactReason);
             DisplayTable("Type of Contact", 5.7f, 8f, 24.2f, ContactType);

@@ -40,15 +40,15 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost]
         public ActionResult TagUntag(int id, bool ischecked, bool isordered)
         {
-            var t = DbUtil.Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);
+            var t = CurrentDatabase.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);
             var count = t.PersonTags.Count();
             var topid = "";
-            var tp = DbUtil.Db.TagPeople.SingleOrDefault(tt => tt.PeopleId == id && tt.Id == t.Id);
+            var tp = CurrentDatabase.TagPeople.SingleOrDefault(tt => tt.PeopleId == id && tt.Id == t.Id);
             if (ischecked)
             {
                 if (tp != null)
                 {
-                    DbUtil.Db.TagPeople.DeleteOnSubmit(tp);
+                    CurrentDatabase.TagPeople.DeleteOnSubmit(tp);
                 }
             }
             else if (tp == null)
@@ -59,9 +59,9 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 }
 
                 tp = new TagPerson() { Id = t.Id, PeopleId = id };
-                DbUtil.Db.TagPeople.InsertOnSubmit(tp);
+                CurrentDatabase.TagPeople.InsertOnSubmit(tp);
             }
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return Content(topid);
         }
     }

@@ -26,7 +26,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost]
         public ActionResult MoveToTop(SearchDivisionsModel m)
         {
-            DbUtil.Db.SetMainDivision(m.Id, m.TargetDivision);
+            CurrentDatabase.SetMainDivision(m.Id, m.TargetDivision);
             return View("ModalDialog", m);
         }
         [HttpPost]

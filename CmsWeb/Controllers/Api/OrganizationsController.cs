@@ -16,7 +16,7 @@ namespace CmsWeb.Controllers.Api
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<Organization, ApiOrganization>();
             });
-            return Ok(DbUtil.Db.Organizations.ProjectTo<ApiOrganization>(config));
+            return Ok(CurrentDatabase.Organizations.ProjectTo<ApiOrganization>(config));
         }
     }
 }

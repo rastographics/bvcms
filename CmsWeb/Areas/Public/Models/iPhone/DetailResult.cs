@@ -25,7 +25,7 @@ namespace CmsWeb.Models.iPhone
 
             using (var w = XmlWriter.Create(context.HttpContext.Response.OutputStream, settings))
             {
-                var p = DbUtil.Db.LoadPersonById(PeopleId);
+                var p = CurrentDatabase.LoadPersonById(PeopleId);
                 w.WriteStartElement("Person");
                 w.WriteAttributeString("peopleid", p.PeopleId.ToString());
                 w.WriteAttributeString("first", p.PreferredName);
@@ -52,7 +52,7 @@ namespace CmsWeb.Models.iPhone
                     w.WriteAttributeString("age", Person.AgeDisplay(m.Age, m.PeopleId).ToString());
                     w.WriteEndElement();
                 }
-                var q = from re in DbUtil.Db.RelatedFamilies
+                var q = from re in CurrentDatabase.RelatedFamilies
                         where re.FamilyId == p.FamilyId || re.RelatedFamilyId == p.FamilyId
                         let rf = re.RelatedFamilyId == p.FamilyId ? re.RelatedFamily1 : re.RelatedFamily2
                         select new { hohid = rf.HeadOfHouseholdId, description = re.FamilyRelationshipDesc };

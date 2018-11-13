@@ -54,7 +54,7 @@ namespace CmsWeb.Areas.Reports.Models
             var ms = new MemoryStream(bytes);
             docx = DocX.Load(ms);
 
-            replacements = new EmailReplacements(DbUtil.Db, docx);
+            replacements = new EmailReplacements(CurrentDatabase. docx);
             emptyReplacementsDictionary = replacements.DocXReplacementsDictionary(null);
 
             if (emptyReplacementsDictionary.ContainsKey("{lastnamestartswith}"))

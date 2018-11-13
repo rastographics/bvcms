@@ -28,7 +28,7 @@ namespace CmsWeb.Areas.Reports.Models
         public List<MeetingRow> FetchMeetings()
         {
             var orgs = Model.FetchOrgs();
-            var q = from m in DbUtil.Db.Meetings
+            var q = from m in CurrentDatabase.Meetings
                     join o in orgs on m.OrganizationId equals o.OrganizationId
                     where m.MeetingDate >= dt1
                     where m.MeetingDate <= dt2

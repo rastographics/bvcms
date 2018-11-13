@@ -16,7 +16,7 @@ namespace CmsWeb.Controllers.Api
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<ContributionFund, ApiContributionFund>();
             });
-            return Ok(DbUtil.Db.ContributionFunds.ProjectTo<ApiContributionFund>(config));
+            return Ok(CurrentDatabase.ContributionFunds.ProjectTo<ApiContributionFund>(config));
         }
     }
 }

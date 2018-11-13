@@ -1,5 +1,5 @@
 ﻿@{
-  var menuaddpeople = DbUtil.Db.Setting("MenuAddPeople", true) || Util.IsDebug();
+  var menuaddpeople = CurrentDatabase.Setting("MenuAddPeople", true) || Util.IsDebug();
 }
 <li class="dropdown dropdown-large">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="visible-xs-inline"><i class="fa fa-bar-chart"></i>&nbsp;&nbsp;</span>People <span class="caret"></span></a>

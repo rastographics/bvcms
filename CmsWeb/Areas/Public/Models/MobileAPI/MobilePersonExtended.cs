@@ -200,7 +200,7 @@ namespace CmsWeb.MobileAPI
 			pictureData = "";
 
 			if( p.Picture != null ) {
-				Image image = ImageData.DbUtil.Db.Images.SingleOrDefault( i => i.Id == p.Picture.SmallId );
+				Image image = ImageData.CurrentDatabase.Images.SingleOrDefault( i => i.Id == p.Picture.SmallId );
 
 				if( image != null ) {
 					pictureData = Convert.ToBase64String( image.Bits );

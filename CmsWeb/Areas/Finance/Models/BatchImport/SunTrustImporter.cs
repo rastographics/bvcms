@@ -41,7 +41,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                     CreatedBy = Util.UserId,
                     CreatedDate = DateTime.Now,
                 };
-                var qf = from f in DbUtil.Db.ContributionFunds
+                var qf = from f in CurrentDatabase.ContributionFunds
                          where f.FundStatusId == 1
                          orderby f.FundId
                          select f.FundId;
@@ -104,7 +104,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                     }
                 bd.Contribution.ContributionDesc = string.Join(" ", sn, ck);
                 var eac = Util.Encrypt(rt + "|" + ac);
-                var q = from kc in DbUtil.Db.CardIdentifiers
+                var q = from kc in CurrentDatabase.CardIdentifiers
                         where kc.Id == eac
                         select kc.PeopleId;
                 var pid = q.SingleOrDefault();

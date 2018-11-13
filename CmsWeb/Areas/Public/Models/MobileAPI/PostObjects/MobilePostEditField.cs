@@ -325,7 +325,7 @@ namespace CmsWeb.MobileAPI
 					updateBoolean( person, personChangeList, "ElectronicStatement" );
 
 					if( person.SpouseId.HasValue ) {
-						Person spouse = DbUtil.Db.People.FirstOrDefault( p => p.PeopleId == person.SpouseId );
+						Person spouse = CurrentDatabase.People.FirstOrDefault( p => p.PeopleId == person.SpouseId );
 						updateInteger( spouse, personChangeList, "ElectronicStatement" );
 					}
 
@@ -336,7 +336,7 @@ namespace CmsWeb.MobileAPI
 					updateInteger( person, personChangeList, "ContributionOptionsId" );
 
 					if( person.SpouseId.HasValue ) {
-						Person spouse = DbUtil.Db.People.FirstOrDefault( p => p.PeopleId == person.SpouseId );
+						Person spouse = CurrentDatabase.People.FirstOrDefault( p => p.PeopleId == person.SpouseId );
 						updateInteger( spouse, personChangeList, "ContributionOptionsId" );
 					}
 
@@ -347,7 +347,7 @@ namespace CmsWeb.MobileAPI
 					updateInteger( person, personChangeList, "EnvelopeOptionsId" );
 
 					if( person.SpouseId.HasValue ) {
-						Person spouse = DbUtil.Db.People.FirstOrDefault( p => p.PeopleId == person.SpouseId );
+						Person spouse = CurrentDatabase.People.FirstOrDefault( p => p.PeopleId == person.SpouseId );
 						updateInteger( spouse, personChangeList, "EnvelopeOptionsId" );
 					}
 

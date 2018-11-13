@@ -29,16 +29,16 @@ namespace CmsWeb.Models
 			if (fid > 0)
 			{
 				var db = DbUtil.Create(Util.Host);
-				var lockf = db.FamilyCheckinLocks.SingleOrDefault(f => f.FamilyId == fid);
+				var lockf = CurrentDatabase.FamilyCheckinLocks.SingleOrDefault(f => f.FamilyId == fid);
 				if (lockf == null)
 				{
 					lockf = new FamilyCheckinLock { FamilyId = fid, Created = DateTime.Now };
-					db.FamilyCheckinLocks.InsertOnSubmit(lockf);
+					CurrentDatabase.FamilyCheckinLocks.InsertOnSubmit(lockf);
 				}
 				lockf.Locked = true;
 				if (!waslocked)
 					lockf.Created = DateTime.Now;
-				db.SubmitChanges();
+				CurrentDatabase.SubmitChanges();
 			}
 		}
 
@@ -78,13 +78,13 @@ namespace CmsWeb.Models
 						x.Attr("prev", "");
 					q = q.Skip(startrow).Take(INT_PageSize).ToList();
 				}
-				x.Attr("maxlabels", DbUtil.Db.Setting("MaxLabels", "6"));
+				x.Attr("maxlabels", CurrentDatabase.Setting("MaxLabels", "6"));
 
 				// TODO: Consider the option to numbers only. Per Braden Kok @ Granite Springs
-				var code = DbUtil.Db.NextSecurityCode().Select(c => c.Code).Single();
+				var code = CurrentDatabase.NextSecurityCode().Select(c => c.Code).Single();
 				x.Attr("securitycode", code);
 
-				var accommodateCheckInBug = DbUtil.Db.Setting("AccommodateCheckinBug", "false").ToBool();
+				var accommodateCheckInBug = CurrentDatabase.Setting("AccommodateCheckinBug", "false").ToBool();
 
 				foreach (var c in q)
 				{
@@ -92,7 +92,7 @@ namespace CmsWeb.Models
 
 					if (c.Position == 30)
 					{
-						var child = (from e in DbUtil.Db.People
+						var child = (from e in CurrentDatabase.People
 										 where e.PeopleId == c.Id
 										 select e).SingleOrDefault();
 
@@ -120,7 +120,7 @@ namespace CmsWeb.Models
 						// TZOffset will be positive to the east, negative to the west
 						// but we are trying to get to central time so we subtract
 						// if tzoffset is +1 then we need to -1 to go to CentralTime.
-						hoursBeforeClassStarts -= DbUtil.Db.Setting("TZOffset", "0").ToInt();
+						hoursBeforeClassStarts -= CurrentDatabase.Setting("TZOffset", "0").ToInt();
 						// now we need to make sure we are within 24 hours (ignore the date change)
 						hoursBeforeClassStarts %= 24;
 					}

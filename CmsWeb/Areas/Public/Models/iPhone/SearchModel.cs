@@ -60,14 +60,14 @@ namespace CmsWeb.Models.iPhone
         {
             if (query.IsNotNull())
                 return query;
-            var db = DbUtil.Db;
-            var ignoreOrgleadersonly = DbUtil.Db.Setting("RelaxAppAddGuest", "false").ToBool() && fromAddGuest;
+            var db = Db;
+            var ignoreOrgleadersonly = CurrentDatabase.Setting("RelaxAppAddGuest", "false").ToBool() && fromAddGuest;
             if(ignoreOrgleadersonly)
-                query = db.People.Select(p => p);
+                query = CurrentDatabase.People.Select(p => p);
             else
                 query = Util2.OrgLeadersOnly
-                    ? db.OrgLeadersOnlyTag2().People(db) 
-                    : db.People.Select(p => p);
+                    ? CurrentDatabase.OrgLeadersOnlyTag2().People(CurrentDatabase) 
+                    : CurrentDatabase.People.Select(p => p);
 
             //query = query.Where(pp => pp.DeceasedDate == null);
 

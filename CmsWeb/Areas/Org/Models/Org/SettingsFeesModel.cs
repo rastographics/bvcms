@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Org.Models
             set
             {
                 if (Org == null)
-                    Org = DbUtil.Db.LoadOrganizationById(value);
+                    Org = CurrentDatabase.LoadOrganizationById(value);
             }
         }
 
@@ -40,12 +40,12 @@ namespace CmsWeb.Areas.Org.Models
             this.CopyPropertiesTo(Org, typeof(OrgAttribute));
             RegSettings.OrgFees.Clear();
             this.CopyPropertiesTo(RegSettings, typeof(RegAttribute));
-            var os = DbUtil.Db.CreateRegistrationSettings(RegSettings.ToString(), Id);
+            var os = CurrentDatabase.CreateRegistrationSettings(RegSettings.ToString(), Id);
             Org.UpdateRegSetting(os);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
         }
 
-        private Settings RegSettings => regsettings ?? (regsettings = DbUtil.Db.CreateRegistrationSettings(Id));
+        private Settings RegSettings => regsettings ?? (regsettings = CurrentDatabase.CreateRegistrationSettings(Id));
         private Settings regsettings;
 
         [Reg, Display(Description = FeeDescription)]

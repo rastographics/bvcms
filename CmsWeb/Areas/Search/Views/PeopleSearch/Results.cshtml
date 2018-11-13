@@ -5,7 +5,7 @@
 @model PeopleSearchModel
 @{
     var target = Util2.TargetLinkPeople ? "target='people'" : "";
-  var showAltName = DbUtil.Db.Setting("ShowAltNameOnSearchResults");
+  var showAltName = CurrentDatabase.Setting("ShowAltNameOnSearchResults");
 }
 <div id="results">
     @Html.Partial("PagerTop", Model)

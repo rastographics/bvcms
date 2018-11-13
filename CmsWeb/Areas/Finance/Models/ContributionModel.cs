@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
 
 		public ContributionModel(int pid)
 		{
-			person = DbUtil.Db.LoadPersonById(pid);
+			person = CurrentDatabase.LoadPersonById(pid);
 			var intQtr = (Util.Now.Date.Month)/3 + 1;
 
 			if (intQtr == 1)
@@ -33,7 +33,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
 
 		public IEnumerable<YearInfo> FetchYears()
 		{
-			var q = from c in DbUtil.Db.Contributions
+			var q = from c in CurrentDatabase.Contributions
 			        where person.PeopleId == c.PeopleId || person == null
 			        where c.ContributionTypeId != ContributionTypeCode.Pledge
 			        where c.ContributionStatusId == ContributionStatusCode.Recorded

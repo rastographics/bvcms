@@ -52,7 +52,7 @@ namespace CmsWeb.Areas.Manage.Models
         {
             if (rows != null)
                 return rows;
-            rows = (from a in DbUtil.Db.ActivityLogSearch(null, Activity, UserId, OrgId, PeopleId, EndDate, Lookback, PageSize, Page)
+            rows = (from a in CurrentDatabase.ActivityLogSearch(null, Activity, UserId, OrgId, PeopleId, EndDate, Lookback, PageSize, Page)
                     select a).ToList();
             count = rows.Count == 0 ? 0 : rows[0].MaxRows;
             return rows;

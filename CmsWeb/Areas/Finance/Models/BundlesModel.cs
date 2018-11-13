@@ -28,7 +28,7 @@ namespace CmsWeb.Areas.Finance.Models
         private IQueryable<CmsData.View.BundleList> FetchBundles()
         {
             if (bundles == null)
-                bundles = from b in DbUtil.Db.ViewBundleLists select b;
+                bundles = from b in CurrentDatabase.ViewBundleLists select b;
             if(HttpContext.Current.User.IsInRole("FinanceDataEntry"))
                 return bundles.Where(vv => vv.BundleStatusId == BundleStatusCode.OpenForDataEntry);
             return bundles;

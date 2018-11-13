@@ -5,11 +5,11 @@
     // type must be either ProtectMyMinistryHelper.TYPE_BACKGROUND or ProtectMyMinistryHelper.TYPE_CREDIT
     int type = ViewBag.dialogType;
 
-    var labels = from e in DbUtil.Db.BackgroundCheckLabels
+    var labels = from e in CurrentDatabase.BackgroundCheckLabels
                  orderby e.Description
                  select e;
 
-  var labelEnabled = DbUtil.Db.Setting("EnableBackgroundLabels");
+  var labelEnabled = CurrentDatabase.Setting("EnableBackgroundLabels");
 }
 <form action="/Volunteering/CreateCheck/@Model.PeopleId" method="post">
     <input type="hidden" name="type" value="@type" />

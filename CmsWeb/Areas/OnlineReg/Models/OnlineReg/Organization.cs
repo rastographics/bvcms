@@ -41,7 +41,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 if (_masterOrg != null)
                     return _masterOrg;
                 if (masterorgid.HasValue)
-                    _masterOrg = DbUtil.Db.LoadOrganizationById(masterorgid.Value);
+                    _masterOrg = CurrentDatabase.LoadOrganizationById(masterorgid.Value);
                 return _masterOrg;
             }
         }
@@ -69,8 +69,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 {
 //                    _org = Orgid == Util.CreateAccountCode
 //                        ? CreateAccountOrg()
-//                        : DbUtil.Db.LoadOrganizationById(Orgid.Value);
-                    _org = DbUtil.Db.LoadOrganizationById(Orgid.Value);
+//                        : CurrentDatabase.LoadOrganizationById(Orgid.Value);
+                    _org = CurrentDatabase.LoadOrganizationById(Orgid.Value);
                 }
                 return _org;
             }

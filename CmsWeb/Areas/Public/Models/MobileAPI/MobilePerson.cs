@@ -112,7 +112,7 @@ namespace CmsWeb.MobileAPI
 				family.Add( m.PeopleId.ToString(), familyMember );
 			}
 
-			var q = from re in DbUtil.Db.RelatedFamilies
+			var q = from re in CurrentDatabase.RelatedFamilies
 						where re.FamilyId == p.FamilyId || re.RelatedFamilyId == p.FamilyId
 						let rf = re.RelatedFamilyId == p.FamilyId ? re.RelatedFamily1 : re.RelatedFamily2
 						select new {hohid = rf.HeadOfHouseholdId, description = re.FamilyRelationshipDesc};
@@ -125,7 +125,7 @@ namespace CmsWeb.MobileAPI
 			picture = "";
 
 			if( p.Picture != null ) {
-				var image = ImageData.DbUtil.Db.Images.SingleOrDefault( i => i.Id == p.Picture.SmallId );
+				var image = ImageData.CurrentDatabase.Images.SingleOrDefault( i => i.Id == p.Picture.SmallId );
 
 				if( image != null ) {
 					picture = Convert.ToBase64String( image.Bits );

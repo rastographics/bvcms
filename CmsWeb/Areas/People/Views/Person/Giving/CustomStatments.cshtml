@@ -13,7 +13,7 @@
                 <input type="hidden" id="" />
                 <div>
                     <ul>
-                        @foreach (var cs in ContributionStatements.CustomStatementsList(DbUtil.Db))
+                        @foreach (var cs in ContributionStatements.CustomStatementsList(CurrentDatabase))
                         {
                             <li><a href="url?custom=@cs" data-customstatement="@cs">@cs</a></li>
                         }

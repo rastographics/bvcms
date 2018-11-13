@@ -22,7 +22,7 @@ namespace CmsWeb.Models
         public override void ExecuteResult(ControllerContext context)
         {
             context.HttpContext.Response.Clear();
-            var image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == Id);
+            var image = ImageData.CurrentDatabase.Images.SingleOrDefault(i => i.Id == Id);
             if (image == null)
                 NoPic(context.HttpContext);
             else

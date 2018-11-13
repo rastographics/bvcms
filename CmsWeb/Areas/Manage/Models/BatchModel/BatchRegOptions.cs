@@ -25,8 +25,8 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
             while (csv.ReadNextRecord())
             {
                 var oid = csv["OrganizationId"].ToInt();
-                var o = DbUtil.Db.LoadOrganizationById(oid);
-                rs = DbUtil.Db.CreateRegistrationSettings(oid);
+                var o = CurrentDatabase.LoadOrganizationById(oid);
+                rs = CurrentDatabase.CreateRegistrationSettings(oid);
 
                 string name;
                 if(FindColumnString("OrganizationName", out name))
@@ -183,7 +183,7 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                     rs.DonationFundId = s.ToInt();
 
                 o.UpdateRegSetting(rs);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
             }
         }
 

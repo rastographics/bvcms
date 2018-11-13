@@ -39,7 +39,7 @@ namespace CmsWeb.Areas.Setup.Controllers
 
             ViewData["type"] = id;
             ViewData["description"] = Regex.Replace(id, "([a-z](?=[A-Z])|[A-Z](?=[A-Z][a-z]))", "$1 ");
-            var q = DbUtil.Db.ExecuteQuery<Row>("select * from lookup." + id);
+            var q = CurrentDatabase.ExecuteQuery<Row>("select * from lookup." + id);
 
             // hide the add button on appropriate views.
             switch (id)
@@ -52,7 +52,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                     ViewData["HideAdd"] = true;
                     break;
                 case "Gender":
-                    if (!DbUtil.Db.Setting("AllowNewGenders"))
+                    if (!CurrentDatabase.Setting("AllowNewGenders"))
                     {
                         ViewData["HideAdd"] = true;
                     }
@@ -73,10 +73,10 @@ namespace CmsWeb.Areas.Setup.Controllers
             }
             else
             {
-                var q = DbUtil.Db.ExecuteQuery<Row>("select * from lookup." + type + " where id = {0}", id);
+                var q = CurrentDatabase.ExecuteQuery<Row>("select * from lookup." + type + " where id = {0}", id);
                 if (!q.Any())
                 {
-                    DbUtil.Db.ExecuteCommand("insert lookup." + type + " (id, code, description) values ({0}, '', '')", id);
+                    CurrentDatabase.ExecuteCommand("insert lookup." + type + " (id, code, description) values ({0}, '', '')", id);
                 }
             }
 
@@ -90,13 +90,13 @@ namespace CmsWeb.Areas.Setup.Controllers
             var iid = a[0].Substring(1).ToInt();
             if (id.StartsWith("t"))
             {
-                DbUtil.Db.ExecuteCommand(
+                CurrentDatabase.ExecuteCommand(
                     "update lookup." + a[1] + " set Description = {0} where id = {1}",
                     value, iid);
             }
             else if (id.StartsWith("c"))
             {
-                DbUtil.Db.ExecuteCommand(
+                CurrentDatabase.ExecuteCommand(
                     "update lookup." + a[1] + " set Code = {0} where id = {1}",
                     value, iid);
             }
@@ -110,7 +110,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             try
             {
                 var iid = id.Substring(1).ToInt();
-                DbUtil.Db.ExecuteCommand("delete lookup." + type + " where id = {0}", iid);
+                CurrentDatabase.ExecuteCommand("delete lookup." + type + " where id = {0}", iid);
                 return new EmptyResult();
             }
             catch (SqlException)

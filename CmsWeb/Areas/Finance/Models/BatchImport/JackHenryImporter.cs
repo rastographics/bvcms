@@ -40,7 +40,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                     Amount = csv[9],
                     CheckNo = csv[10],
                     Row = r++,
-                    Valid = DbUtil.Db.People.Any(pp => pp.PeopleId == peopleid),
+                    Valid = CurrentDatabase.People.Any(pp => pp.PeopleId == peopleid),
                 });
             }
             if (list.Any(vv => vv.Valid == false))
