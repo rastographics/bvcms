@@ -1,6 +1,6 @@
+using CmsData;
 using System;
 using System.Linq;
-using CmsData;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -15,18 +15,31 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public decimal PayAmount()
         {
             if (payAmt.HasValue)
+            {
                 return payAmt.Value;
+            }
+
             decimal max = 0;
             decimal amt = List.Sum(p => p.AmountToPay());
-            if (List.Count > 0) 
+            if (List.Count > 0)
+            {
                 max = List.Max(p => p.org != null ? p.setting.MaximumFee ?? 0 : 0);
+            }
+
             if (max == 0)
+            {
                 return CachePayAmount(amt);
+            }
+
             var totalother = List.Sum(p => p.TotalOther());
             if (List.Any(p => p.setting.ApplyMaxToOtherFees) && amt > max)
+            {
                 amt = max;
+            }
             else if ((amt - totalother) > max)
+            {
                 amt = max + totalother;
+            }
 
             return CachePayAmount(amt);
         }
@@ -52,16 +65,27 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public decimal TotalAmount()
         {
             if (totAmt.HasValue)
+            {
                 return totAmt.Value;
+            }
+
             var amt = List.Sum(p => p.TotalAmount());
             var max = List.Max(p => p.org != null ? p.setting.MaximumFee ?? 0 : 0);
             if (max == 0)
+            {
                 return CacheTotalAmount(amt);
+            }
+
             var totalother = List.Sum(p => p.TotalOther());
             if (List.Any(p => p.setting.ApplyMaxToOtherFees) && amt > max)
+            {
                 amt = max;
+            }
             else if ((amt - totalother) > max)
+            {
                 amt = max + totalother;
+            }
+
             return CacheTotalAmount(amt);
         }
         private decimal CacheTotalAmount(decimal amt)

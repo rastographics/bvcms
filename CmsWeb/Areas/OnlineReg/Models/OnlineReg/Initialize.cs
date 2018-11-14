@@ -1,7 +1,7 @@
+using CmsData;
 using System;
 using System.Linq;
 using System.Web;
-using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -19,7 +19,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     GoerSupporterId = gsid;
                 }
                 else
+                {
                     GoerId = 0; // allow this supporter to still select a goer
+                }
             }
             else if (goerid.HasValue)
             {
@@ -34,10 +36,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 var guid = regtag.ToGuid();
                 if (guid == null)
+                {
                     throw new Exception("invalid link");
+                }
+
                 var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
                 if (ot == null)
+                {
                     throw new Exception("invalid link");
+                }
 #if DEBUG
 #else
                 if (ot.Used)
@@ -48,22 +55,29 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
                 registertag = regtag;
                 if (registertag.HasValue() && !registerLinkType.HasValue())
+                {
                     registerLinkType = "registerlink";
+                }
 
                 var a = ot.Querystring.Split(',');
-                if(a.Length >= 4)
+                if (a.Length >= 4)
+                {
                     registerLinkType = a[3];
+                }
+
                 pid = a[1].ToInt();
             }
 
             // handle if they are already logged in
             else if (HttpContext.Current.User.Identity.IsAuthenticated)
+            {
                 pid = Util.UserPeopleId ?? 0;
+            }
 
             if (pid > 0)
             {
                 UserPeopleId = pid;
-//                Util.UserPeopleId = pid;
+                //                Util.UserPeopleId = pid;
             }
             return pid;
         }

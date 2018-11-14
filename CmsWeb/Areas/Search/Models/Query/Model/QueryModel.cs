@@ -1,10 +1,9 @@
+using CmsData;
+using CmsWeb.Code;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Areas.Public.Controllers;
-using CmsWeb.Code;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
@@ -31,7 +30,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public QueryModel()
         {
-            Db.SetUserPreference("NewCategories", "true");
+            DbUtil.Db.SetUserPreference("NewCategories", "true");
             ConditionName = "Group";
         }
 
@@ -56,7 +55,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public string Campus { get; set; }
         private int CampusInt => Campus.GetCsvToken().ToInt();
-        
+
         public string OrgType { get; set; }
         private int OrgTypeInt => OrgType.GetCsvToken().ToInt();
 
@@ -151,38 +150,54 @@ namespace CmsWeb.Areas.Search.Models
         public Tag TagAllIds()
         {
             var q = DefineModelList();
-            var tag = Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_Query);
-            Db.TagAll(q, tag);
+            var tag = DbUtil.Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_Query);
+            DbUtil.Db.TagAll(q, tag);
             return tag;
         }
 
         public void TagAll(Tag tag = null)
         {
-            Db.SetNoLock();
-            var q = Db.People.Where(TopClause.Predicate(Db));
+            DbUtil.Db.SetNoLock();
+            var q = DbUtil.Db.People.Where(TopClause.Predicate(DbUtil.Db));
             if (TopClause.PlusParentsOf)
-                q = Db.PersonQueryPlusParents(q);
+            {
+                q = DbUtil.Db.PersonQueryPlusParents(q);
+            }
             else if (TopClause.ParentsOf)
-                q = Db.PersonQueryParents(q);
-            if(TopClause.FirstPersonSameEmail)
-                q = Db.PersonQueryFirstPersonSameEmail(q);
+            {
+                q = DbUtil.Db.PersonQueryParents(q);
+            }
+
+            if (TopClause.FirstPersonSameEmail)
+            {
+                q = DbUtil.Db.PersonQueryFirstPersonSameEmail(q);
+            }
+
             if (tag != null)
-                Db.TagAll(q, tag);
+            {
+                DbUtil.Db.TagAll(q, tag);
+            }
             else
-                Db.TagAll(q);
+            {
+                DbUtil.Db.TagAll(q);
+            }
         }
 
         public void UnTagAll()
         {
-            Db.SetNoLock();
-            var q = Db.People.Where(TopClause.Predicate(Db));
+            DbUtil.Db.SetNoLock();
+            var q = DbUtil.Db.People.Where(TopClause.Predicate(DbUtil.Db));
 
             if (TopClause.PlusParentsOf)
-                q = Db.PersonQueryPlusParents(q);
+            {
+                q = DbUtil.Db.PersonQueryPlusParents(q);
+            }
             else if (TopClause.ParentsOf)
-                q = Db.PersonQueryParents(q);
+            {
+                q = DbUtil.Db.PersonQueryParents(q);
+            }
 
-            Db.UnTagAll(q);
+            DbUtil.Db.UnTagAll(q);
         }
 
         public bool Validate(ModelStateDictionary m)
@@ -191,22 +206,35 @@ namespace CmsWeb.Areas.Search.Models
             int i = 0;
             if (DaysVisible && !int.TryParse(Days, out i))
             {
-                if(new [] { "IsFamilyGiver", "IsFamilyPledger" }.Contains(ConditionName) == false)
+                if (new[] { "IsFamilyGiver", "IsFamilyPledger" }.Contains(ConditionName) == false)
+                {
                     m.AddModelError("Days", "must be integer");
+                }
             }
             if (i > 10000)
+            {
                 m.AddModelError("Days", "days > 10000");
+            }
+
             if (TagsVisible && string.Join(",", Tags).Length > 500)
+            {
                 m.AddModelError("tagvalues", "too many tags selected");
+            }
+
             if (Comparison == "Contains")
+            {
                 if (!TextValue.HasValue())
+                {
                     m.AddModelError("TextValue", "cannot be empty");
+                }
+            }
+
             return m.IsValid;
         }
         public void UpdateCondition()
         {
             this.CopyPropertiesTo(Selected);
-            TopClause.Save(Db, increment: true);
+            TopClause.Save(DbUtil.Db, increment: true);
         }
         public void EditCondition()
         {

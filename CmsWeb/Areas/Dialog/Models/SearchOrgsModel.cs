@@ -4,18 +4,11 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
-using System;
+using CmsData;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Linq;
-using System.Web;
-using System.Web.Mvc;
-using CmsData;
-using UtilityExtensions;
-using System.Data.Linq.SqlClient;
 using System.Web.UI.WebControls;
-using System.Text.RegularExpressions;
-using CmsData.View;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
@@ -38,25 +31,31 @@ namespace CmsWeb.Areas.Dialog.Models
         public IQueryable<Organization> FetchOrgs()
         {
             if (orgs != null)
+            {
                 return orgs;
+            }
 
             orgs = from o in DbUtil.Db.Organizations
                    let org = DbUtil.Db.Organizations.Single(oo => oo.OrganizationId == id)
                    //where o.DivOrgs.Any(dd => org.DivOrgs.Any(oo => oo.DivId == dd.DivId))
-				   where o.OrganizationId != id
+                   where o.OrganizationId != id
                    where o.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
                    select o;
             if (name.HasValue())
             {
                 if (name.AllDigits())
+                {
                     orgs = from o in orgs
                            where o.OrganizationId == name.ToInt()
                            select o;
+                }
                 else
+                {
                     orgs = from o in orgs
                            where o.OrganizationName.Contains(name)
                            || o.DivOrgs.Any(dd => dd.Division.Name.Contains(name))
                            select o;
+                }
             }
             return orgs;
         }
@@ -75,7 +74,10 @@ namespace CmsWeb.Areas.Dialog.Models
                 var d = new Dictionary<int, int>();
                 var n = 0;
                 foreach (var i in cklist)
+                {
                     d.Add(n++, i);
+                }
+
                 list = (from op in list
                         join i in d on op.OrgId equals i.Value into j
                         from i in j

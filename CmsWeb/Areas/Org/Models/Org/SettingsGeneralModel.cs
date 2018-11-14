@@ -1,10 +1,9 @@
+using CmsData;
+using CmsWeb.Code;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Code;
 
 namespace CmsWeb.Areas.Org.Models
 {
@@ -18,7 +17,9 @@ namespace CmsWeb.Areas.Org.Models
             set
             {
                 if (Org == null)
+                {
                     Org = DbUtil.Db.LoadOrganizationById(value);
+                }
             }
         }
         public void Update(bool userIsAdmin)
@@ -66,7 +67,7 @@ namespace CmsWeb.Areas.Org.Models
             }).ToList();
 
             var seldefault = !list.Any(vv => vv.Selected);
-            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)", Selected = seldefault});
+            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)", Selected = seldefault });
             return list;
         }
 

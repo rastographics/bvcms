@@ -4,22 +4,17 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
-using System;
-using System.Collections.Generic;
-using System.Data.SqlTypes;
-using System.Linq;
-using System.Text;
 using CmsData;
 using CmsData.API;
 using CmsData.Codes;
-using System.Data.Linq;
-using System.ComponentModel;
 using CmsWeb.Code;
-using DocumentFormat.OpenXml.Drawing.Charts;
-using UtilityExtensions;
-using System.Web;
+using System;
 using System.Collections;
-using System.Diagnostics;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data.SqlTypes;
+using System.Linq;
+using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
@@ -58,9 +53,9 @@ namespace CmsWeb.Models
     }
     public class RangeInfo
     {
-        string[] RangeLabels = new string[] 
-        { 
-            "0 - 100", 
+        private readonly string[] RangeLabels = new string[]
+        {
+            "0 - 100",
             "101 - 250",
             "251 - 500",
             "501 - 750",
@@ -168,7 +163,8 @@ namespace CmsWeb.Models
             q2 = ApplySort(q2, sortExpression);
             return q2.Skip(startRowIndex).Take(maximumRows);
         }
-        int _count;
+
+        private int _count;
         public int Count(int startRowIndex, int maximumRows, string sortExpression)
         {
             return _count;
@@ -300,15 +296,30 @@ namespace CmsWeb.Models
         private IQueryable<Contribution> ApplyWhere(IQueryable<Contribution> q, int peopleId, int year, int statusid, int typeid, int fundid)
         {
             if (peopleId != 0)
+            {
                 q = q.Where(c => c.PeopleId == peopleId);
+            }
+
             if (year != 0)
+            {
                 q = q.Where(c => c.ContributionDate.Value.Year == year);
+            }
+
             if (statusid != 99)
+            {
                 q = q.Where(c => c.ContributionStatusId == statusid);
+            }
+
             if (typeid != 0)
+            {
                 q = q.Where(c => c.ContributionTypeId == typeid);
+            }
+
             if (fundid != 0)
+            {
                 q = q.Where(c => c.FundId == fundid);
+            }
+
             return q;
         }
         public decimal Total(int peopleId, int year, int statusid, int typeid, int fundid)
@@ -321,7 +332,10 @@ namespace CmsWeb.Models
             q = ApplyWhere(q, peopleId, year, statusid, typeid, fundid);
             decimal? t = q.Sum(c => (decimal?)c.ContributionAmount);
             if (t.HasValue)
+            {
                 return t.Value;
+            }
+
             return 0;
         }
         public decimal TotalItems(int BundleId)
@@ -333,7 +347,10 @@ namespace CmsWeb.Models
                     select d.Contribution;
             decimal? t = q.Sum(c => (decimal?)c.ContributionAmount);
             if (t.HasValue)
+            {
                 return t.Value;
+            }
+
             return 0;
         }
         public decimal TotalHeader(int BundleId)
@@ -612,29 +629,29 @@ namespace CmsWeb.Models
                      where CampusId == 0 || c.CampusId == CampusId
                      select c;
 
-//            switch (Pledges)
-//            {
-//                case "true":
-//                    q0 = from c in q0
-//                         where c.ContributionTypeId == ContributionTypeCode.Pledge
-//                         select c;
-//                    break;
-//                case "false":
-//                    q0 = from c in q0
-//                         where c.ContributionStatusId == ContributionStatusCode.Recorded
-//                         where c.ContributionTypeId != ContributionTypeCode.Pledge
-//                         //where c.PostingDate != null
-//                         select c;
-//                    break;
-//                case "both":
-//                    q0 = from c in q0
-//                         where (c.ContributionTypeId != ContributionTypeCode.Pledge && c.ContributionStatusId == ContributionStatusCode.Recorded)
-//                                || c.ContributionTypeId == ContributionTypeCode.Pledge
-//                         where (c.ContributionTypeId != ContributionTypeCode.Pledge && c.PostingDate != null)
-//                                || c.ContributionTypeId == ContributionTypeCode.Pledge
-//                         select c;
-//                    break;
-//            }
+            //            switch (Pledges)
+            //            {
+            //                case "true":
+            //                    q0 = from c in q0
+            //                         where c.ContributionTypeId == ContributionTypeCode.Pledge
+            //                         select c;
+            //                    break;
+            //                case "false":
+            //                    q0 = from c in q0
+            //                         where c.ContributionStatusId == ContributionStatusCode.Recorded
+            //                         where c.ContributionTypeId != ContributionTypeCode.Pledge
+            //                         //where c.PostingDate != null
+            //                         select c;
+            //                    break;
+            //                case "both":
+            //                    q0 = from c in q0
+            //                         where (c.ContributionTypeId != ContributionTypeCode.Pledge && c.ContributionStatusId == ContributionStatusCode.Recorded)
+            //                                || c.ContributionTypeId == ContributionTypeCode.Pledge
+            //                         where (c.ContributionTypeId != ContributionTypeCode.Pledge && c.PostingDate != null)
+            //                                || c.ContributionTypeId == ContributionTypeCode.Pledge
+            //                         select c;
+            //                    break;
+            //            }
 
             if (q0.Any())
             {
@@ -682,11 +699,11 @@ namespace CmsWeb.Models
                              DonorCount = r.DonorCount ?? 0,
                          }).ToList();
             RangeTotal = new RangeInfo
-                             {
-                                 Count = list1.Sum(t => t.Count),
-                                 Total = list1.Sum(t => t.Total),
-                                 DonorCount = list1.Sum(t => t.DonorCount)
-                             };
+            {
+                Count = list1.Sum(t => t.Count),
+                Total = list1.Sum(t => t.Total),
+                DonorCount = list1.Sum(t => t.DonorCount)
+            };
             var list = (from r in list1
                         select new AgeRangeInfo()
                         {

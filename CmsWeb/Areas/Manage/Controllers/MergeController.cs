@@ -1,9 +1,6 @@
-using System;
-using System.Linq;
-using System.Web.Mvc;
-using CmsData;
+using CmsWeb.Lifecycle;
 using CmsWeb.Models;
-using UtilityExtensions;
+using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
@@ -11,18 +8,33 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage", AreaPrefix = "Merge"), Route("{action}")]
     public class MergeController : CmsStaffController
     {
+        public MergeController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/Merge/{peopleid1:int}/{peopleid2:int}")]
         public ActionResult Index(int peopleId1, int peopleId2)
         {
             var m = new MergeModel(peopleId1, peopleId2) { DeleteDuplicate = true };
             if (m.pi.Count != 3)
+            {
                 if (m.pi.Count == 2)
+                {
                     if (m.pi[0].PeopleId != peopleId1)
+                    {
                         return Content($"peopleid {peopleId1} not found");
+                    }
                     else
+                    {
                         return Content($"peopleid {peopleId2} not found");
+                    }
+                }
                 else if (m.pi.Count == 1)
+                {
                     return Content("neither peopleid found");
+                }
+            }
+
             return View(m);
         }
 

@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using CmsData;
+﻿using CmsData;
 using CmsData.Classes.ProtectMyMinistry;
 using CmsWeb.Areas.People.Models;
 using CmsWeb.Models.ExtraValues;
+using System;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
@@ -14,6 +13,7 @@ namespace CmsWeb.Areas.People.Controllers
     [RouteArea("People", AreaPrefix = "Volunteering"), Route("{action}/{id?}")]
     public class VolunteeringController : Controller
     {
+        //todo: add di
         [Route("~/Volunteering/{id:int}")]
         public ActionResult Index(int id)
         {
@@ -46,7 +46,9 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult Upload(int id, HttpPostedFileBase file)
         {
             if (file == null)
+            {
                 return Content("no file");
+            }
 
             var vol = new VolunteerModel(id);
             var name = System.IO.Path.GetFileName(file.FileName);
@@ -70,34 +72,34 @@ namespace CmsWeb.Areas.People.Controllers
                 case "image/pjpeg":
                 case "image/gif":
                 case "image/png":
-                {
-                    f.IsDocument = false;
-
-                    try
                     {
-                        f.SmallId = ImageData.Image.NewImageFromBits(bits, 165, 220).Id;
-                        f.MediumId = ImageData.Image.NewImageFromBits(bits, 675, 900).Id;
-                        f.LargeId = ImageData.Image.NewImageFromBits(bits).Id;
-                    }
-                    catch
-                    {
-                        return View("Index", vol);
-                    }
+                        f.IsDocument = false;
 
-                    break;
-                }
+                        try
+                        {
+                            f.SmallId = ImageData.Image.NewImageFromBits(bits, 165, 220).Id;
+                            f.MediumId = ImageData.Image.NewImageFromBits(bits, 675, 900).Id;
+                            f.LargeId = ImageData.Image.NewImageFromBits(bits).Id;
+                        }
+                        catch
+                        {
+                            return View("Index", vol);
+                        }
+
+                        break;
+                    }
 
                 case "text/plain":
                 case "application/pdf":
                 case "application/msword":
                 case "application/vnd.ms-excel":
-                {
-                    f.MediumId = ImageData.Image.NewImageFromBits(bits, mimetype).Id;
-                    f.SmallId = f.MediumId;
-                    f.LargeId = f.MediumId;
-                    f.IsDocument = true;
-                    break;
-                }
+                    {
+                        f.MediumId = ImageData.Image.NewImageFromBits(bits, mimetype).Id;
+                        f.SmallId = f.MediumId;
+                        f.LargeId = f.MediumId;
+                        f.IsDocument = true;
+                        break;
+                    }
 
                 default: return View("Index", vol);
             }

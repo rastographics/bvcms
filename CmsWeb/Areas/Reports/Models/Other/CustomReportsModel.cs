@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Web;
-using System.Xml.Linq;
-using CmsData;
+﻿using CmsData;
 using CmsData.API;
 using CmsData.Codes;
 using CmsData.ExtraValue;
@@ -15,6 +7,14 @@ using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Areas.Reports.ViewModels;
 using CmsWeb.Models;
 using Dapper;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Web;
+using System.Xml.Linq;
 using UtilityExtensions;
 using UtilityExtensions.Extensions;
 
@@ -36,13 +36,18 @@ namespace CmsWeb.Areas.Reports.Models
         }
 
         public CustomReportsModel(CMSDataContext db, string report, Guid? id = null, int? orgId = null)
-            : this(db, orgId)
+            : this(DbUtil.Db, orgId)
         {
             Report = report;
             if (id != null)
+            {
                 queryid = id.Value;
-            if(orgid == null)
-                orgid = db.CurrentSessionOrgId;
+            }
+
+            if (orgid == null)
+            {
+                orgid = DbUtil.Db.CurrentSessionOrgId;
+            }
         }
 
         public class ReportItem
@@ -68,7 +73,7 @@ namespace CmsWeb.Areas.Reports.Models
             public string Display => Report.SpaceCamelCase();
         }
 
-        public Organization Org => db.LoadOrganizationById(orgid);
+        public Organization Org => DbUtil.Db.LoadOrganizationById(orgid);
         public string ExcelUrl => $"/Reports/CustomExcel/{Report}/{queryid}";
         public string EditUrl => GetEditUrl(Report, queryid, orgid);
         public string NewUrl(int? oid, Guid qid) => $"/Reports/EditCustomReport/{qid}{(oid > 0 ? $"?orgid={oid}" : "")}";
@@ -84,9 +89,12 @@ namespace CmsWeb.Areas.Reports.Models
             get
             {
                 if (isorg.HasValue)
+                {
                     return isorg.Value;
+                }
+
                 Sql(); // side effect of setting isorg
-                return (bool) (isorg = isorg ?? false);
+                return (bool)(isorg = isorg ?? false);
             }
         }
 
@@ -98,7 +106,10 @@ namespace CmsWeb.Areas.Reports.Models
         private List<ReportItem> ReportList()
         {
             if (list != null)
+            {
                 return list;
+            }
+
             var currentUserRoles = DbUtil.Db.CurrentUser.Roles;
             var li = DbUtil.Db.ViewCustomScriptRoles.ToList();
             var q = from e in li
@@ -109,7 +120,10 @@ namespace CmsWeb.Areas.Reports.Models
                     select new ReportItem(e.Name, e.Type, e.ClassX, e.Url);
             list = new List<ReportItem>();
             foreach (var r in q.Where(r => !list.Contains(r)))
+            {
                 list.Add(r);
+            }
+
             return list;
         }
 
@@ -138,40 +152,49 @@ namespace CmsWeb.Areas.Reports.Models
 
         public string Table()
         {
-            var cs = db.CurrentUser.InRole("Finance")
+            var cs = DbUtil.Db.CurrentUser.InRole("Finance")
                 ? Util.ConnectionStringReadOnlyFinance
                 : Util.ConnectionStringReadOnly;
             var cn = new SqlConnection(cs);
             var p = Parameters();
             var sql = Sql();
-            if(sql.Contains("@userid"))
+            if (sql.Contains("@userid"))
+            {
                 p.Add("@userid", Util.UserId);
+            }
+
             if (sql.Contains("pagebreak"))
-                 return PythonModel.PageBreakTables(DbUtil.Db, sql, p);
+            {
+                return PythonModel.PageBreakTables(DbUtil.Db, sql, p);
+            }
+
             var rd = cn.ExecuteReader(sql, p);
             return GridResult.Table(rd, Name2, 2000);
         }
 
         public EpplusResult Result()
         {
-            var cs = db.CurrentUser.InRole("Finance")
+            var cs = DbUtil.Db.CurrentUser.InRole("Finance")
                 ? Util.ConnectionStringReadOnlyFinance
                 : Util.ConnectionStringReadOnly;
             var cn = new SqlConnection(cs);
             var p = Parameters();
             var sql = Sql();
-            if(sql.Contains("@userid"))
+            if (sql.Contains("@userid"))
+            {
                 p.Add("@userid", Util.UserId);
+            }
+
             return cn.ExecuteReader(sql, p).ToExcel(Report + ".xlsx");
         }
-        
+
         public int? Qtagid { get; set; }
         private DynamicParameters Parameters(string query = null)
         {
             var q = query != null
-                ? db.PeopleQuery2(query)
-                : db.PeopleQuery(queryid);
-            var tag = db.PopulateSpecialTag(q, DbUtil.TagTypeId_Query);
+                ? DbUtil.Db.PeopleQuery2(query)
+                : DbUtil.Db.PeopleQuery(queryid);
+            var tag = DbUtil.Db.PopulateSpecialTag(q, DbUtil.TagTypeId_Query);
             Qtagid = tag.Id;
             var p = new DynamicParameters();
             p.Add("@qtagid", Qtagid);
@@ -180,14 +203,17 @@ namespace CmsWeb.Areas.Reports.Models
 
         public EpplusResult Result(string savedQuery)
         {
-            var cs = db.CurrentUser.InRole("Finance")
+            var cs = DbUtil.Db.CurrentUser.InRole("Finance")
                 ? Util.ConnectionStringReadOnlyFinance
                 : Util.ConnectionStringReadOnly;
             var cn = new SqlConnection(cs);
             var p = Parameters(savedQuery);
             var sql = Sql();
-            if(sql.Contains("@userid"))
+            if (sql.Contains("@userid"))
+            {
                 p.Add("@userid", Util.UserId);
+            }
+
             return cn.ExecuteReader(sql, p).ToExcel(Report + ".xlsx");
         }
 
@@ -202,18 +228,25 @@ namespace CmsWeb.Areas.Reports.Models
             {
                 var body = GetCustomReportsContent();
                 if (string.IsNullOrEmpty(body))
+                {
                     throw new Exception("missing CustomReports");
+                }
+
                 xdoc = XDocument.Parse(body);
             }
 
             if (xdoc.Root == null)
+            {
                 throw new Exception("missing xml root");
+            }
 
             var r = (from e in xdoc.Root.Elements("Report")
-                     where (string) e.Attribute("name") == Report || Report == "AllColumns"
+                     where (string)e.Attribute("name") == Report || Report == "AllColumns"
                      select e).SingleOrDefault();
             if (r == null)
+            {
                 throw new Exception("no report");
+            }
 
             var sb = new StringBuilder($"SELECT\n");
 
@@ -222,46 +255,70 @@ namespace CmsWeb.Areas.Reports.Models
             var joins = new List<string>();
             foreach (var e in r.Elements("Column"))
             {
-                if ((string) e.Attribute("disabled") == "true")
+                if ((string)e.Attribute("disabled") == "true")
+                {
                     continue;
+                }
+
                 var name = e.Attribute("name").Value;
                 if (name == "StatusFlag")
                 {
                     var cc = mc.SpecialColumns[name];
                     if (flags == null)
-                        flags = db.ViewStatusFlagLists.Where(ff => ff.RoleName == null).ToDictionary(ff => ff.Flag, ff => ff);
-                    var flag = (string) e.Attribute("flag");
+                    {
+                        flags = DbUtil.Db.ViewStatusFlagLists.Where(ff => ff.RoleName == null).ToDictionary(ff => ff.Flag, ff => ff);
+                    }
+
+                    var flag = (string)e.Attribute("flag");
                     if (!flag.HasValue())
+                    {
                         throw new Exception("missing flag on column " + cc.Column);
+                    }
+
                     if (!flags.ContainsKey(flag))
+                    {
                         throw new Exception($"missing flag '{flag}' on column {cc.Column}");
+                    }
+
                     var sel = cc.Select.Replace("{flag}", flag);
-                    var desc = (string) e.Attribute("description");
+                    var desc = (string)e.Attribute("description");
                     if (!desc.HasValue())
+                    {
                         desc = flags[flag].Name;
+                    }
+
                     sel = sel.Replace("{desc}", desc);
                     sb.AppendFormat("\t{0}{1} AS [{2}]\n", comma, sel, DblQuotes(desc));
                 }
                 else if (name == "SmallGroup")
                 {
                     var cc = mc.SpecialColumns[name];
-                    var oid = (string) e.Attribute("orgid");
+                    var oid = (string)e.Attribute("orgid");
                     if (!oid.HasValue())
+                    {
                         throw new Exception("missing orgid on column " + cc.Column);
+                    }
+
                     isorg = true;
                     var sel = cc.Select.Replace("{orgid}", oid);
-                    var smallgroup = (string) e.Attribute("smallgroup");
+                    var smallgroup = (string)e.Attribute("smallgroup");
                     if (!smallgroup.HasValue())
+                    {
                         continue;
+                    }
+
                     sel = sel.Replace("{smallgroup}", DblQuotes(smallgroup));
                     sb.AppendFormat("\t{0}{1} AS [{2}]\n", comma, sel, DblQuotes(smallgroup));
                 }
                 else if (name.StartsWith("OrgMember"))
                 {
                     var cc = mc.SpecialColumns[name];
-                    var oid = (string) e.Attribute("orgid");
+                    var oid = (string)e.Attribute("orgid");
                     if (!oid.HasValue())
+                    {
                         throw new Exception("missing orgid on column " + cc.Column);
+                    }
+
                     isorg = true;
                     if (!joins.Contains(cc.Join))
                     {
@@ -273,9 +330,12 @@ namespace CmsWeb.Areas.Reports.Models
                 else if (name.StartsWith("Amount") && Regex.IsMatch(name, @"\AAmount(Tot|Paid|Due)\z"))
                 {
                     var cc = mc.SpecialColumns[name];
-                    var oid = (string) e.Attribute("orgid");
+                    var oid = (string)e.Attribute("orgid");
                     if (!oid.HasValue())
+                    {
                         throw new Exception("missing orgid on column " + cc.Column);
+                    }
+
                     isorg = true;
 
                     if (!joins.Contains(cc.Join))
@@ -288,21 +348,31 @@ namespace CmsWeb.Areas.Reports.Models
                 else if (name.StartsWith("ExtraValue") && Regex.IsMatch(name, @"\AExtraValue(Code|Date|Text|Int|Bit)\z"))
                 {
                     var cc = mc.SpecialColumns[name];
-                    var field = (string) e.Attribute("field");
+                    var field = (string)e.Attribute("field");
                     if (!field.HasValue())
+                    {
                         throw new Exception("missing field on column " + cc.Column);
+                    }
+
                     var sel = cc.Select.Replace("{field}", DblQuotes(field));
                     sb.AppendFormat("\t{0}{1} AS [{2}]\n", comma, sel, DblQuotes(field));
                 }
                 else
                 {
                     if (!mc.Columns.ContainsKey(name))
+                    {
                         throw new Exception($"missing column named '{name}'");
+                    }
+
                     var cc = mc.Columns[name];
                     sb.AppendFormat("\t{0}{1} AS [{2}]\n", comma, cc.Select, DblQuotes(cc.Column));
                     if (cc.Join.HasValue())
+                    {
                         if (!joins.Contains(cc.Join))
+                        {
                             joins.Add(cc.Join);
+                        }
+                    }
                 }
                 comma = ",";
             }
@@ -312,7 +382,10 @@ namespace CmsWeb.Areas.Reports.Models
             {
                 var join = mc.Joins[j].trim();
                 if (join.Contains("{orgid}"))
+                {
                     isorg = true;
+                }
+
                 sb.AppendLine(join.Replace("{orgid}", coid.ToString()));
             }
             sb.AppendLine("JOIN dbo.TagPerson tp ON tp.PeopleId = p.PeopleId AND tp.Id = @qtagid");
@@ -326,24 +399,32 @@ namespace CmsWeb.Areas.Reports.Models
             {
                 var w = new APIWriter(writer);
                 if (includeRoot)
+                {
                     w.Start("CustomReports");
+                }
+
                 w.Start("Report").Attr("name", "YourReportNameGoesHere");
                 if (orgid.HasValue)
+                {
                     w.Attr("showOnOrgId", orgid);
-                foreach (var c in mc.Columns.Values)
-                    w.Start("Column").Attr("name", c.Column).End();
+                }
 
-                var protectedevs = from value in Views.GetStandardExtraValues(db, "People")
+                foreach (var c in mc.Columns.Values)
+                {
+                    w.Start("Column").Attr("name", c.Column).End();
+                }
+
+                var protectedevs = from value in Views.GetStandardExtraValues(DbUtil.Db, "People")
                                    where value.VisibilityRoles.HasValue()
                                    select value.Name;
 
-                var standards = (from value in Views.GetStandardExtraValues(db, "People")
+                var standards = (from value in Views.GetStandardExtraValues(DbUtil.Db, "People")
                                  select value.Name).ToList();
 
-                var extravalues = from ev in db.PeopleExtras
+                var extravalues = from ev in DbUtil.Db.PeopleExtras
                                   where !protectedevs.Contains(ev.Field)
-								  where (ev.UseAllValues ?? false) == false
-                                  group ev by new {ev.Field, ev.Type}
+                                  where (ev.UseAllValues ?? false) == false
+                                  group ev by new { ev.Field, ev.Type }
                                   into g
                                   orderby g.Key.Field
                                   select g.Key;
@@ -351,14 +432,20 @@ namespace CmsWeb.Areas.Reports.Models
                 foreach (var ev in extravalues)
                 {
                     if (!Regex.IsMatch(ev.Type, @"Code|Date|Text|Int|Bit"))
+                    {
                         continue;
+                    }
+
                     w.Start("Column");
                     w.Attr("field", ev.Field).Attr("name", "ExtraValue" + ev.Type);
                     if (!standards.Contains(ev.Field))
+                    {
                         w.Attr("disabled", "true");
+                    }
+
                     w.End();
                 }
-                var statusflags = from f in db.ViewStatusFlagLists
+                var statusflags = from f in DbUtil.Db.ViewStatusFlagLists
                                   where f.RoleName == null
                                   orderby f.Name
                                   select f;
@@ -377,12 +464,14 @@ namespace CmsWeb.Areas.Reports.Models
                                       where c.Column != "SmallGroup"
                                       select c;
                     foreach (var c in specialcols)
+                    {
                         w.Start("Column")
                          .Attr("name", c.Column)
                          .Attr("orgid", orgid)
                          .End();
+                    }
 
-                    var smallgroups = from sg in db.MemberTags
+                    var smallgroups = from sg in DbUtil.Db.MemberTags
                                       where sg.OrgId == orgid
                                       orderby sg.Name
                                       select sg;
@@ -397,7 +486,9 @@ namespace CmsWeb.Areas.Reports.Models
                 }
                 w.End();
                 if (includeRoot)
+                {
                     w.End();
+                }
             }
             return doc;
         }
@@ -408,7 +499,9 @@ namespace CmsWeb.Areas.Reports.Models
 
             var nodeToDelete = FindReportOnDocument(xdoc, reportName);
             if (nodeToDelete != null)
+            {
                 nodeToDelete.Remove();
+            }
 
             SetCustomReportsContent(xdoc.ToString());
         }
@@ -426,8 +519,10 @@ namespace CmsWeb.Areas.Reports.Models
             var newColumns = from column in selectedColumns
                              select new XElement("Column", MapCustomReportToAttributes(column));
 
-            if(restrictToThisOrg && !orgid.HasValue)
+            if (restrictToThisOrg && !orgid.HasValue)
+            {
                 throw new Exception("Missing OrgId");
+            }
 
             if (originalReportName.HasValue())
             {
@@ -441,17 +536,24 @@ namespace CmsWeb.Areas.Reports.Models
                     nodeToChange.Add(new XAttribute("name", newReportName));
 
                     if (restrictToThisOrg)
+                    {
                         nodeToChange.Add(new XAttribute("showOnOrgId", orgid.Value));
+                    }
                 }
             }
             else
             {
                 if (FindReportOnDocument(xdoc, newReportName) != null)
+                {
                     throw new Exception("Report already exists");
+                }
 
                 var reportElement = new XElement("Report", newColumns, new XAttribute("name", newReportName));
                 if (restrictToThisOrg)
+                {
                     reportElement.Add(new XAttribute("showOnOrgId", orgid.Value));
+                }
+
                 xdoc.Root?.Add(reportElement);
             }
             SetCustomReportsContent(xdoc.ToString());
@@ -460,7 +562,9 @@ namespace CmsWeb.Areas.Reports.Models
         public string AddReport(string report, string url, string type)
         {
             if (!report.HasValue())
+            {
                 throw new ArgumentException("missing report name");
+            }
 
             int typeid;
             string[] lookfor;
@@ -468,40 +572,45 @@ namespace CmsWeb.Areas.Reports.Models
             {
                 case "PyScript":
                     typeid = ContentTypeCode.TypePythonScript;
-                    lookfor = new[] {"BlueToolbarReport", "@BlueToolbarTagId"};
+                    lookfor = new[] { "BlueToolbarReport", "@BlueToolbarTagId" };
                     break;
                 case "SqlReport":
                     typeid = ContentTypeCode.TypeSqlScript;
-                    lookfor = new[] {"@qtagid", "@bluetoolbartagid"};
+                    lookfor = new[] { "@qtagid", "@bluetoolbartagid" };
                     break;
                 case "OrgSearchSqlReport":
                     typeid = ContentTypeCode.TypeSqlScript;
-                    lookfor = new[] {"@OrgIds"};
+                    lookfor = new[] { "@OrgIds" };
                     break;
                 case "Menu":
                     typeid = ContentTypeCode.TypeSqlScript;
-                    lookfor = new[]{"menu"};
+                    lookfor = new[] { "menu" };
                     break;
                 default:
                     throw new ArgumentException($"unknown typeid: {type}");
             }
-            var content = db.Content(report, typeid);
+            var content = DbUtil.Db.Content(report, typeid);
             if (lookfor.Any(vv => content.Body.Contains(vv, ignoreCase: true)))
             {
                 var xdoc = GetCustomReportXml();
                 if (FindReportOnDocument(xdoc, report) != null)
+                {
                     throw new ArgumentException("report already exists");
+                }
 
                 var reportElement = new XElement("Report", new XAttribute("name", report), new XAttribute("type", type));
                 xdoc.Root?.Add(reportElement);
                 SetCustomReportsContent(xdoc.ToString());
                 return "BlueToolbar";
             }
-            content = db.Content("CustomReportsMenu", "<ReportsMenu/>", ContentTypeCode.TypeText);
+            content = DbUtil.Db.Content("CustomReportsMenu", "<ReportsMenu/>", ContentTypeCode.TypeText);
             var xd = XDocument.Parse(content.Body);
             var e = xd.Descendants("Report").SingleOrDefault(r => r.Attribute("link").Value == url);
             if (e != null)
+            {
                 throw new ArgumentException("report already exists");
+            }
+
             e = new XElement("Report", new XAttribute("link", url), report.SpaceCamelCase());
             var col2 = xd.Descendants("Column2").SingleOrDefault();
             if (col2 == null)
@@ -512,7 +621,7 @@ namespace CmsWeb.Areas.Reports.Models
             col2.Add(e);
             content.Body = xd.ToString();
             HttpRuntime.Cache.Remove(DbUtil.Db.Host + "CustomReportsMenu");
-            db.SubmitChanges();
+            DbUtil.Db.SubmitChanges();
             return "Reports Menu";
         }
         public bool Contains(string text, List<string> values)
@@ -524,7 +633,9 @@ namespace CmsWeb.Areas.Reports.Models
         {
             var body = GetCustomReportsContent();
             if (string.IsNullOrEmpty(body))
+            {
                 body = "<CustomReports>\n</CustomReports>";
+            }
 
             return XDocument.Parse(body);
         }
@@ -536,18 +647,20 @@ namespace CmsWeb.Areas.Reports.Models
 
         private string GetCustomReportsContent()
         {
-            return db.ContentText("CustomReports", "");
+            return DbUtil.Db.ContentText("CustomReports", "");
         }
 
         private void SetCustomReportsContent(string customReportsXml)
         {
-            var content = db.Content("CustomReports");
+            var content = DbUtil.Db.Content("CustomReports");
             if (content == null)
+            {
                 return;
+            }
 
             content.Body = customReportsXml;
 
-            db.SubmitChanges();
+            DbUtil.Db.SubmitChanges();
         }
 
         private static IEnumerable<XAttribute> MapCustomReportToAttributes(CustomReportColumn column)
@@ -572,7 +685,9 @@ namespace CmsWeb.Areas.Reports.Models
             yield return new XAttribute("name", column.Name);
 
             if (!string.IsNullOrEmpty(column.OrgId))
+            {
                 yield return new XAttribute("orgid", column.OrgId);
+            }
         }
 
         private static XElement FindReportOnDocument(XContainer xdoc, string reportName)
@@ -592,26 +707,35 @@ namespace CmsWeb.Areas.Reports.Models
                 : null;
 
             if (!Report.HasValue())
+            {
                 return new CustomReportViewModel(orgid, queryid, orgName, GetAllStandardColumns());
+            }
 
             var vm = new CustomReportViewModel(orgid, queryid, orgName, GetAllStandardColumns(), Report);
 
             var reportXml = GetReportByName();
             if (reportXml == null)
+            {
                 throw new Exception("Report not found.");
+            }
 
             var columns = MapXmlToCustomReportColumn(reportXml);
 
             var showOnOrgIdValue = reportXml.AttributeOrNull("showOnOrgId");
             int showOnOrgId;
             if (!string.IsNullOrEmpty(showOnOrgIdValue) && int.TryParse(showOnOrgIdValue, out showOnOrgId))
+            {
                 vm.RestrictToThisOrg = showOnOrgId == orgid;
+            }
 
             vm.SetSelectedColumns(columns);
             vm.Columns = vm.Columns.OrderBy(cc => cc.Order).ToList();
 
             if (originalReportViewModel != null)
+            {
                 vm.ReportName = originalReportViewModel.ReportName;
+            }
+
             vm.CustomReportSuccessfullySaved = alreadySaved.GetValueOrDefault();
             return vm;
         }

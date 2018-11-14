@@ -1,3 +1,6 @@
+using CmsData;
+using CmsData.Codes;
+using CmsWeb.Code;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,9 +10,6 @@ using System.Linq;
 using System.Threading;
 using System.Web.Hosting;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.Codes;
-using CmsWeb.Code;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
@@ -35,7 +35,7 @@ namespace CmsWeb.Areas.Dialog.Models
                      where m.MeetingId == id
                      select new
                      {
-                         m.Organization.OrganizationName, 
+                         m.Organization.OrganizationName,
                          m.OrganizationId,
                          m.MeetingDate
                      }).Single();
@@ -54,7 +54,7 @@ namespace CmsWeb.Areas.Dialog.Models
         public void Process(CMSDataContext db)
         {
             // running has not started yet, start it on a separate thread
-            pids = FetchPeopleIds(db, Tag.Value.ToInt()).ToList();
+            pids = FetchPeopleIds(DbUtil.Db, Tag.Value.ToInt()).ToList();
             var lop = new LongRunningOperation()
             {
                 Started = DateTime.Now,
@@ -63,51 +63,56 @@ namespace CmsWeb.Areas.Dialog.Models
                 QueryId = QueryId,
                 Operation = Op,
             };
-            db.LongRunningOperations.InsertOnSubmit(lop);
-            db.SubmitChanges();
+            DbUtil.Db.LongRunningOperations.InsertOnSubmit(lop);
+            DbUtil.Db.SubmitChanges();
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
         }
 
         private static void DoWork(AddAttendeesFromTag model)
         {
             var db = DbUtil.Create(model.Host);
-            var cul = db.Setting("Culture", "en-US");
+            var cul = DbUtil.Db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
 
             LongRunningOperation lop = null;
             foreach (var pid in model.pids)
             {
-                db.Dispose();
+                DbUtil.Db.Dispose();
                 db = DbUtil.Create(model.Host);
-				if (model.AddAsMembers)
-					OrganizationMember.InsertOrgMembers(db, model.OrgId, pid, 
+                if (model.AddAsMembers)
+                {
+                    OrganizationMember.InsertOrgMembers(DbUtil.Db, model.OrgId, pid,
                         MemberTypeCode.Member, model.JoinDate, null, false);
-				db.RecordAttendance(model.MeetingId, pid, true);
-                lop = FetchLongRunningOperation(db, Op, model.QueryId);
+                }
+
+                DbUtil.Db.RecordAttendance(model.MeetingId, pid, true);
+                lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
-                db.SubmitChanges();
+                DbUtil.Db.SubmitChanges();
             }
             // finished
-            lop = FetchLongRunningOperation(db, Op, model.QueryId);
+            lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
             lop.Completed = DateTime.Now;
-            db.SubmitChanges();
+            DbUtil.Db.SubmitChanges();
         }
 
         public void Validate(ModelStateDictionary modelState)
         {
             if (Tag != null && Tag.Value == "0") // They did not choose a tag
+            {
                 modelState.AddModelError("Tag", "Must choose a tag");
+            }
         }
 
         public bool ShowCount(CMSDataContext db)
         {
             if (Count == null && Tag != null)
             {
-                var q = FetchPeopleIds(db, Tag.Value.ToInt());
+                var q = FetchPeopleIds(DbUtil.Db, Tag.Value.ToInt());
                 Count = q.Count();
-                db.SubmitChanges();
+                DbUtil.Db.SubmitChanges();
                 return true;
             }
             return false;
@@ -116,8 +121,8 @@ namespace CmsWeb.Areas.Dialog.Models
         public static IQueryable<int> FetchPeopleIds(CMSDataContext db, int tagid)
         {
             return tagid == -1
-                ? db.PeopleQueryLast().Select(pp => pp.PeopleId)
-                : from t in db.TagPeople
+                ? DbUtil.Db.PeopleQueryLast().Select(pp => pp.PeopleId)
+                : from t in DbUtil.Db.TagPeople
                   where t.Id == tagid
                   select t.PeopleId;
         }

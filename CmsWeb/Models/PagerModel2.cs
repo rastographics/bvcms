@@ -5,12 +5,12 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
+using CmsData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -19,7 +19,7 @@ namespace CmsWeb.Models
     {
         public delegate int CountDelegate();
 
-        private readonly int[] pagesizes = {10, 25, 50, 100, 200};
+        private readonly int[] pagesizes = { 10, 25, 50, 100, 200 };
         private int? _count;
         private int? _Page;
         public int DisplayCount = 0;
@@ -46,7 +46,10 @@ namespace CmsWeb.Models
             get
             {
                 if (Direction == "asc")
+                {
                     return Sort;
+                }
+
                 return Sort + " " + Direction;
             }
         }
@@ -59,7 +62,9 @@ namespace CmsWeb.Models
                 {
                     _count = GetCount();
                     if (StartRow >= _count)
+                    {
                         _Page = null;
+                    }
                 }
                 return _count.Value;
             }
@@ -73,14 +78,20 @@ namespace CmsWeb.Models
             get
             {
                 if (pagesize.HasValue)
+                {
                     return pagesize.Value;
+                }
+
                 pagesize = DbUtil.Db.UserPreference("PageSize", "10").ToInt();
                 return pagesize.Value;
             }
             set
             {
                 if (pagesizes.Contains(value))
+                {
                     DbUtil.Db.SetUserPreference("PageSize", value);
+                }
+
                 pagesize = value;
             }
         }
@@ -91,7 +102,7 @@ namespace CmsWeb.Models
             set { _Page = value; }
         }
 
-        public int StartRow => (Page.Value - 1)*PageSize;
+        public int StartRow => (Page.Value - 1) * PageSize;
 
         public void setCountDelegate(CountDelegate count)
         {
@@ -100,12 +111,12 @@ namespace CmsWeb.Models
 
         public int LastPage()
         {
-            return (int) Math.Ceiling(count/(double) PageSize);
+            return (int)Math.Ceiling(count / (double)PageSize);
         }
 
         public IEnumerable<SelectListItem> PageSizeList()
         {
-            return pagesizes.Select(i => new SelectListItem {Text = i.ToString(), Selected = PageSize == i});
+            return pagesizes.Select(i => new SelectListItem { Text = i.ToString(), Selected = PageSize == i });
         }
 
         public IEnumerable<int> PageList()
@@ -123,7 +134,9 @@ namespace CmsWeb.Models
                     yield return 0;
                 }
                 else
+                {
                     yield return i;
+                }
             }
         }
 
@@ -138,7 +151,10 @@ namespace CmsWeb.Models
             {
                 active = " active";
                 if (Direction == "asc")
+                {
                     asc = "";
+                }
+
                 dir = Direction == "asc" ? "desc" : "asc";
             }
             return new HtmlString($"<a href='#' data-sortby='{fieldName}' data-dir='{dir}' class='ajax{active}{asc}'>{sortLabel}</a>");
@@ -153,7 +169,10 @@ namespace CmsWeb.Models
             {
                 active = " active";
                 if (Direction == "asc")
+                {
                     asc = "";
+                }
+
                 dir = Direction == "asc" ? "desc" : "asc";
             }
             return new HtmlString($"<a href='#' data-sortby='{label}' data-dir='{dir}' class='ajax{active}{asc}'>{html}</a>");
@@ -168,7 +187,10 @@ namespace CmsWeb.Models
         {
             var disabled = "";
             if (disable == true)
+            {
                 disabled = " class='disabled'";
+            }
+
             return new HtmlString($"<li{disabled}><a href='#' data-size='{size ?? PageSize}' class='ajax'>{label}</a></li>");
         }
 
@@ -177,9 +199,15 @@ namespace CmsWeb.Models
             var n = GetCount();
             var cnt = n;
             if (n > PageSize)
+            {
                 cnt = n - StartRow;
+            }
+
             if (cnt > PageSize)
+            {
                 cnt = PageSize;
+            }
+
             return $"Showing {cnt} of {n.ToString("N0")} records";
         }
     }

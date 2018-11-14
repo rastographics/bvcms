@@ -5,15 +5,15 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
+using CmsData;
+using CmsWeb.Code;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Code;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Reports.Models
@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.Reports.Models
     {
         private readonly Font boldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10);
         private readonly Font font = FontFactory.GetFont(FontFactory.HELVETICA, 10);
-        private readonly float[] HeaderWids = {55, 40, 95};
+        private readonly float[] HeaderWids = { 55, 40, 95 };
         private readonly Font monofont = FontFactory.GetFont(FontFactory.COURIER, 8);
         private readonly PageEvent pageEvents = new PageEvent();
         private readonly Guid qid;
@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.Reports.Models
         private Document doc;
         private DateTime dt;
         private PdfPTable t;
-        private Font xsmallfont = FontFactory.GetFont(FontFactory.HELVETICA, 7, new GrayColor(50));
+        private readonly Font xsmallfont = FontFactory.GetFont(FontFactory.HELVETICA, 7, new GrayColor(50));
 
         public FamilyResult(Guid id)
         {
@@ -77,7 +77,7 @@ namespace CmsWeb.Areas.Reports.Models
                                    where !m.DeceasedDate.HasValue
                                    select new
                                    {
-                                       order = m.PositionInFamilyId*1000 + (m.PositionInFamilyId == 10 ? m.GenderId : 1000 - (m.Age ?? 0)),
+                                       order = m.PositionInFamilyId * 1000 + (m.PositionInFamilyId == 10 ? m.GenderId : 1000 - (m.Age ?? 0)),
                                        //                                           order = g.Any(p => p.PeopleId == m.PeopleId) ? 1 :
                                        //                                                 m.PositionInFamilyId,
                                        person = m
@@ -94,9 +94,14 @@ namespace CmsWeb.Areas.Reports.Models
                 foreach (var p in f.members.OrderBy(m => m.order))
                 {
                     if (color == BaseColor.WHITE)
+                    {
                         color = new GrayColor(240);
+                    }
                     else
+                    {
                         color = BaseColor.WHITE;
+                    }
+
                     Debug.WriteLine("{0:##}: {1}", p.order, p.person.Name);
                     AddRow(ft, p.person, fn, color);
                     fn++;
@@ -104,9 +109,14 @@ namespace CmsWeb.Areas.Reports.Models
                 t.AddCell(ft);
             }
             if (t.Rows.Count > 1)
+            {
                 doc.Add(t);
+            }
             else
+            {
                 doc.Add(new Phrase("no data"));
+            }
+
             pageEvents.EndPageSet();
             doc.Close();
         }
@@ -160,7 +170,9 @@ namespace CmsWeb.Areas.Reports.Models
             {
                 c3.Add(new Chunk(p.BFClass.OrganizationName, font));
                 if (p.BFClass.LeaderName.HasValue())
+                {
                     c3.Add(new Chunk($" ({p.BFClass.LeaderName})", smallfont));
+                }
             }
             t.AddCell(c3);
         }
@@ -175,10 +187,15 @@ namespace CmsWeb.Areas.Reports.Models
             if (value.HasValue())
             {
                 if (sb.Length > 0)
+                {
                     sb.Append("\n");
+                }
+
                 sb.Append(value);
                 if (postfix.HasValue())
+                {
                     sb.Append(postfix);
+                }
             }
         }
 
@@ -188,7 +205,10 @@ namespace CmsWeb.Areas.Reports.Models
             {
                 value = value.FmtFone(prefix);
                 if (sb.Length > 0)
+                {
                     sb.Append("\n");
+                }
+
                 sb.Append(value);
             }
         }
@@ -213,7 +233,10 @@ namespace CmsWeb.Areas.Reports.Models
                 foreach (var d in list)
                 {
                     if (d < dt2)
+                    {
                         break;
+                    }
+
                     if (d <= dt)
                     {
                         indicator = "P";
@@ -228,13 +251,18 @@ namespace CmsWeb.Areas.Reports.Models
 
             attstr = new StringBuilder();
             foreach (var d in list.Take(8))
+            {
                 attstr.Insert(0, $"{d:d}  ");
+            }
+
             if (list.Count > 8)
             {
                 attstr.Insert(0, "...  ");
                 var q2 = q.OrderBy(d => d).Take(Math.Min(list.Count - 8, 3));
                 foreach (var d in q2.OrderByDescending(d => d))
+                {
                     attstr.Insert(0, $"{d:d}  ");
+                }
             }
             ph.Add(new Chunk(attstr.ToString(), smallfont));
             return ph;
@@ -261,7 +289,10 @@ namespace CmsWeb.Areas.Reports.Models
             public void EndPageSet()
             {
                 if (npages == null)
+                {
                     return;
+                }
+
                 npages.BeginText();
                 npages.SetFontAndSize(font, 8);
                 npages.ShowText((writer.PageNumber + 1).ToString());
@@ -314,7 +345,7 @@ namespace CmsWeb.Areas.Reports.Models
                 len = font.GetWidthPoint(text, 8);
                 dc.BeginText();
                 dc.SetFontAndSize(font, 8);
-                dc.SetTextMatrix(document.PageSize.Width/2 - len/2, 30);
+                dc.SetTextMatrix(document.PageSize.Width / 2 - len / 2, 30);
                 dc.ShowText(text);
                 dc.EndText();
 

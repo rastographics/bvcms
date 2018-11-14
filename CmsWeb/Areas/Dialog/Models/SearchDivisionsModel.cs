@@ -4,11 +4,11 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
-using System.Collections.Generic;
-using System.Linq;
 using CmsData;
 using CmsData.View;
 using CmsWeb.Models;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
@@ -28,7 +28,7 @@ namespace CmsWeb.Areas.Dialog.Models
             ShowPageSize = false;
         }
         public SearchDivisionsModel(int id)
-            :this()
+            : this()
         {
             Id = id;
         }
@@ -38,7 +38,7 @@ namespace CmsWeb.Areas.Dialog.Models
             var d = DbUtil.Db.DivOrgs.SingleOrDefault(dd => dd.DivId == TargetDivision && dd.OrgId == Id);
             if (Adding && d == null && TargetDivision.HasValue)
             {
-                d = new DivOrg {OrgId = Id, DivId = TargetDivision.Value};
+                d = new DivOrg { OrgId = Id, DivId = TargetDivision.Value };
                 DbUtil.Db.DivOrgs.InsertOnSubmit(d);
                 DbUtil.Db.SubmitChanges();
             }

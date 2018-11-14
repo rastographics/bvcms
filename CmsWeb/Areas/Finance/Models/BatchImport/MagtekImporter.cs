@@ -5,11 +5,11 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 
+using CmsData;
+using CmsData.Codes;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
-using CmsData;
-using CmsData.Codes;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
@@ -72,7 +72,10 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                         select kc.PeopleId;
                 var pid = q.SingleOrDefault();
                 if (pid != null)
+                {
                     bd.Contribution.PeopleId = pid;
+                }
+
                 bd.Contribution.BankAccount = eac;
                 bd.Contribution.ContributionDesc = ck;
 

@@ -1,15 +1,20 @@
+using CmsData;
+using CmsWeb.Areas.Reports.Models;
+using CmsWeb.Areas.Reports.ViewModels;
+using CmsWeb.Lifecycle;
 using System;
 using System.Linq;
 using System.Security;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Areas.Reports.Models;
-using CmsWeb.Areas.Reports.ViewModels;
 
 namespace CmsWeb.Areas.Reports.Controllers
 {
     public partial class ReportsController
     {
+        public ReportsController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet]
         [Route("Custom/{report}/{id?}")]
         public ActionResult CustomReport(Guid id, string report)
@@ -110,7 +115,10 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             var modelstate = TempDataModelState;
             if (modelstate != null)
+            {
                 ModelState.Merge(modelstate);
+            }
+
             var m = new CustomReportsModel(DbUtil.Db, report, queryId, orgId);
             var vm = m.EditCustomReport(TempDataCustomReport, TempDataSaved);
             return View(vm);
@@ -121,7 +129,10 @@ namespace CmsWeb.Areas.Reports.Controllers
         public ActionResult EditCustomReport(CustomReportViewModel vm)
         {
             if (!vm.Columns.Any(c => c.IsSelected))
+            {
                 ModelState.AddModelError("Columns", "At least one column must be selected.");
+            }
+
             if (ModelState.IsValid)
             {
                 vm.ReportName = SecurityElement.Escape(vm.ReportName.Trim());
@@ -138,7 +149,10 @@ namespace CmsWeb.Areas.Reports.Controllers
                 }
             }
             if (ModelState.IsValid)
+            {
                 return Redirect(CustomReportsModel.GetEditUrl(vm.ReportName, vm.QueryId, vm.OrgId));
+            }
+
             TempDataModelState = ModelState;
             TempDataCustomReport = vm;
             return Redirect(CustomReportsModel.GetEditUrl(vm.OriginalReportName, vm.QueryId, vm.OrgId));
@@ -149,12 +163,14 @@ namespace CmsWeb.Areas.Reports.Controllers
         public JsonResult DeleteCustomReport(string report)
         {
             if (string.IsNullOrEmpty(report))
-                return new JsonResult {Data = "Report name is required."};
+            {
+                return new JsonResult { Data = "Report name is required." };
+            }
 
             var m = new CustomReportsModel(DbUtil.Db);
             m.DeleteReport(report);
 
-            return new JsonResult {Data = "success"};
+            return new JsonResult { Data = "success" };
         }
 
         private CustomReportViewModel TempDataCustomReport

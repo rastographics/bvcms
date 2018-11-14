@@ -30,7 +30,7 @@ namespace CmsWeb.CheckInAPI
                 // Members
                 member = orgMember.MemberTypeId != 310 && orgMember.MemberTypeId != 311;
 
-                if ((orgMember.MemberTypeId == 220 || orgMember.MemberTypeId == 230) && !(org.NoSecurityLabel ?? false) )
+                if ((orgMember.MemberTypeId == 220 || orgMember.MemberTypeId == 230) && !(org.NoSecurityLabel ?? false))
                 {
                     if (person?.Age != null)
                     {

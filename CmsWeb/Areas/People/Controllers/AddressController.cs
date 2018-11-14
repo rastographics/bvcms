@@ -1,7 +1,8 @@
-using System.Web.Mvc;
 using CmsWeb.Areas.People.Models;
-using UtilityExtensions;
+using CmsWeb.Lifecycle;
+using System.Web.Mvc;
 using System.Web.Routing;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
 {
@@ -10,6 +11,10 @@ namespace CmsWeb.Areas.People.Controllers
     [SessionExpire]
     public class AddressController : CmsStaffController
     {
+        public AddressController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         protected override void Initialize(RequestContext requestContext)
         {
             NoCheckRole = true;
@@ -33,9 +38,15 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult Update(AddressInfo m, string noCheck)
         {
             if (noCheck.HasValue() == false)
+            {
                 m.ValidateAddress(ModelState);
+            }
+
             if (!ModelState.IsValid)
+            {
                 return View("Edit", m);
+            }
+
             if (m.Error.HasValue())
             {
                 ModelState.Clear();

@@ -52,14 +52,14 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (m.UserPeopleId == null)
                 m.UserPeopleId = Util.UserPeopleId;
             m.UpdateDatum();
-            var p = m.UserPeopleId.HasValue ? DbUtil.Db.LoadPersonById(m.UserPeopleId.Value) : m.List[0].person;
+            var p = m.UserPeopleId.HasValue ? CurrentDatabase.LoadPersonById(m.UserPeopleId.Value) : m.List[0].person;
 
             if (p == null)
                 return Content("We have not found your record yet, cannot save progress, sorry");
             if (m.masterorgid == null && m.Orgid == null)
                 return Content("Registration is not far enough along to save, sorry.");
 
-            var msg = DbUtil.Db.ContentHtml("ContinueRegistrationLink", @"
+            var msg = CurrentDatabase.ContentHtml("ContinueRegistrationLink", @"
 <p>Hi {first},</p>
 <p>Here is the link to continue your registration:</p>
 Resume [registration for {orgname}]
@@ -68,8 +68,8 @@ Resume [registration for {orgname}]
             var registerlink = EmailReplacements.CreateRegisterLink(m.masterorgid ?? m.Orgid, linktext);
             msg = Regex.Replace(msg, @"(\[.*\])", registerlink, RegexOptions.Singleline);
 
-            var notifyids = DbUtil.Db.NotifyIds((m.masterorg ?? m.org).NotifyIds);
-            DbUtil.Db.Email(notifyids[0].FromEmail, p, $"Continue your registration for {m.Header}", msg);
+            var notifyids = CurrentDatabase.NotifyIds((m.masterorg ?? m.org).NotifyIds);
+            CurrentDatabase.Email(notifyids[0].FromEmail, p, $"Continue your registration for {m.Header}", msg);
 
             /* We use Content as an ActionResult instead of Message because we want plain text sent back
              * This is an HttpPost ajax call and will have a SiteLayout wrapping this.
@@ -100,7 +100,7 @@ We have saved your progress. An email with a link to finish this registration wi
         [HttpPost]
         public ActionResult SaveProgressPayment(int id)
         {
-            var ed = DbUtil.Db.RegistrationDatas.SingleOrDefault(e => e.Id == id);
+            var ed = CurrentDatabase.RegistrationDatas.SingleOrDefault(e => e.Id == id);
             if (ed != null)
             {
                 var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
@@ -116,7 +116,7 @@ We have saved your progress. An email with a link to finish this registration wi
         [HttpGet]
         public ActionResult FinishLater(int id)
         {
-            var ed = DbUtil.Db.RegistrationDatas.SingleOrDefault(e => e.Id == id);
+            var ed = CurrentDatabase.RegistrationDatas.SingleOrDefault(e => e.Id == id);
             if (ed == null)
                 return View("Other/Unknown");
             var m = Util.DeSerialize<OnlineRegModel>(ed.Data);

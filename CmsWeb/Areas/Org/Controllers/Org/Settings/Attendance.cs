@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult AttendanceHelpToggle(int id)
         {
-            DbUtil.Db.ToggleUserPreference("ShowAttendanceHelp");
+            CurrentDatabase.ToggleUserPreference("ShowAttendanceHelp");
             var m = new SettingsAttendanceModel(id);
             return PartialView("Settings/Attendance", m);
         }
@@ -35,7 +35,7 @@ namespace CmsWeb.Areas.Org.Controllers
         {
             m.Update();
             m.UpdateSchedules();
-            DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, m.Org.OrgSchedules);
+            CurrentDatabase.Refresh(RefreshMode.OverwriteCurrentValues, m.Org.OrgSchedules);
             DbUtil.LogActivity($"Update SettingsAttendance {m.Org.OrganizationName}");
             return PartialView("Settings/Attendance", m);
         }

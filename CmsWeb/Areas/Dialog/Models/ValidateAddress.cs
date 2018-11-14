@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CmsData;
+using CmsWeb.Code;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -7,8 +9,6 @@ using System.Linq;
 using System.Threading;
 using System.Web.Hosting;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Code;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
@@ -28,7 +28,7 @@ namespace CmsWeb.Areas.Dialog.Models
 
         public void Process(CMSDataContext db)
         {
-            pids = FetchPeopleIds(db, Tag.Value.ToInt()).ToList();
+            pids = FetchPeopleIds(DbUtil.Db, Tag.Value.ToInt()).ToList();
 
             var lop = new LongRunningOperation
             {
@@ -38,8 +38,8 @@ namespace CmsWeb.Areas.Dialog.Models
                 QueryId = QueryId,
                 Operation = Op,
             };
-            db.LongRunningOperations.InsertOnSubmit(lop);
-            db.SubmitChanges();
+            DbUtil.Db.LongRunningOperations.InsertOnSubmit(lop);
+            DbUtil.Db.SubmitChanges();
 
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
         }
@@ -54,17 +54,17 @@ namespace CmsWeb.Areas.Dialog.Models
         public static void DoWork(ValidateAddress model)
         {
             var db = DbUtil.Create(model.Host);
-            var cul = db.Setting("Culture", "en-US");
+            var cul = DbUtil.Db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
 
             LongRunningOperation lop = null;
             foreach (var pid in model.pids)
             {
-                db.Dispose();
+                DbUtil.Db.Dispose();
                 var fsb = new List<ChangeDetail>();
                 db = DbUtil.Create(model.Host);
-                var f = db.LoadFamilyByPersonId(pid); 
+                var f = DbUtil.Db.LoadFamilyByPersonId(pid);
                 var ret = AddressVerify.LookupAddress(f.AddressLineOne, f.AddressLineTwo, f.CityName, f.StateCode, f.ZipCode);
                 if (ret.found != false && !ret.error.HasValue() && ret.Line1 != "error")
                 {
@@ -73,7 +73,7 @@ namespace CmsWeb.Areas.Dialog.Models
                     f.UpdateValue(fsb, "CityName", ret.City);
                     f.UpdateValue(fsb, "StateCode", ret.State);
                     f.UpdateValue(fsb, "ZipCode", ret.Zip.GetDigits());
-                    var rc = db.FindResCode(ret.Zip, null);
+                    var rc = DbUtil.Db.FindResCode(ret.Zip, null);
                     f.UpdateValue(fsb, "ResCodeId", rc.ToString());
                 }
                 else
@@ -81,25 +81,25 @@ namespace CmsWeb.Areas.Dialog.Models
                     f.UpdateValue(fsb, "ZipCode", f.ZipCode.Zip5());
                 }
 
-                lop = FetchLongRunningOperation(db, Op, model.QueryId);
+                lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
-                f.LogChanges(db, fsb, pid, Util.UserPeopleId ?? 0);
-                db.SubmitChanges();
+                f.LogChanges(DbUtil.Db, fsb, pid, Util.UserPeopleId ?? 0);
+                DbUtil.Db.SubmitChanges();
                 //Thread.Sleep(1000);
             }
             // finished
-            lop = FetchLongRunningOperation(db, Op, model.QueryId);
+            lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
             lop.Completed = DateTime.Now;
-            db.SubmitChanges();
+            DbUtil.Db.SubmitChanges();
         }
         public static IQueryable<int> FetchPeopleIds(CMSDataContext db, int tagid)
         {
             return tagid == -1
-                ? (from p in db.PeopleQueryLast()
+                ? (from p in DbUtil.Db.PeopleQueryLast()
                    group p by p.FamilyId into ff
                    select ff.First().PeopleId)
-                : (from t in db.TagPeople
+                : (from t in DbUtil.Db.TagPeople
                    where t.Id == tagid
                    group t.Person by t.Person.FamilyId into ff
                    select ff.First().PeopleId);
@@ -107,16 +107,18 @@ namespace CmsWeb.Areas.Dialog.Models
         public void Validate(ModelStateDictionary modelState)
         {
             if (Tag != null && Tag.Value == "0") // They did not choose a tag
+            {
                 modelState.AddModelError("Tag", "Must choose a tag");
+            }
         }
 
         public bool ShowCount(CMSDataContext db)
         {
             if (Count == null && Tag != null)
             {
-                var q = FetchPeopleIds(db, Tag.Value.ToInt());
+                var q = FetchPeopleIds(DbUtil.Db, Tag.Value.ToInt());
                 Count = q.Count();
-                db.SubmitChanges();
+                DbUtil.Db.SubmitChanges();
                 return true;
             }
             return false;

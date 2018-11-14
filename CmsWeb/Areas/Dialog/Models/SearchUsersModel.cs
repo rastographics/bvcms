@@ -4,23 +4,17 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
-using System;
+using CmsData;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Linq;
-using System.Web;
-using System.Web.Mvc;
-using CmsData;
-using UtilityExtensions;
-using System.Data.Linq.SqlClient;
 using System.Web.UI.WebControls;
-using System.Text.RegularExpressions;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
     public class SearchUsersModel
     {
-        public string name {get; set;}
+        public string name { get; set; }
         public int maxitems { get; set; }
         public int count { get; set; }
         public int listcount { get; set; }
@@ -36,37 +30,50 @@ namespace CmsWeb.Areas.Dialog.Models
         public IQueryable<Person> FetchPeople()
         {
             if (people != null)
+            {
                 return people;
+            }
 
             if (Util2.OrgLeadersOnly)
+            {
                 people = DbUtil.Db.OrgLeadersOnlyTag2().People(DbUtil.Db);
+            }
             else
+            {
                 people = DbUtil.Db.People.AsQueryable();
+            }
+
             people = people.Where(p => p.Users.Any(uu => uu.UserRoles.Any(ur => ur.Role.RoleName == "Access")));
             if (name.HasValue())
             {
                 string First, Last;
                 Util.NameSplit(name, out First, out Last);
                 if (First.HasValue())
+                {
                     people = from p in people
-                            where (p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
-                                || p.LastName.StartsWith(name) || p.MaidenName.StartsWith(name))
-                            && (p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) || p.MiddleName.StartsWith(First))
-                            select p;
+                             where (p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
+                                 || p.LastName.StartsWith(name) || p.MaidenName.StartsWith(name))
+                             && (p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) || p.MiddleName.StartsWith(First))
+                             select p;
+                }
                 else
                     if (Last.AllDigits())
-                        people = from p in people
-                                where p.PeopleId == Last.ToInt()
-                                select p;
-                    else
-                        people = from p in people
-                                where p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
-                                    || p.LastName.StartsWith(name) || p.MaidenName.StartsWith(name)
-                                select p;
+                {
+                    people = from p in people
+                             where p.PeopleId == Last.ToInt()
+                             select p;
+                }
+                else
+                {
+                    people = from p in people
+                             where p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
+                                 || p.LastName.StartsWith(name) || p.MaidenName.StartsWith(name)
+                             select p;
+                }
             }
             return people;
         }
-        
+
         public List<UserInfo> PeopleList()
         {
             var people = FetchPeople();

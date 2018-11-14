@@ -165,8 +165,8 @@ namespace CmsWeb.Areas.People.Models
 
 
             var contributions = (from c in DbUtil.Db.Contributions2(new DateTime(1900, 1, 1), new DateTime(3000, 12, 31), 0, false, null, true)
-                                where (c.PeopleId == person.PeopleId || (c.PeopleId == person.SpouseId && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint))
-                                select c).ToList();
+                                 where (c.PeopleId == person.PeopleId || (c.PeopleId == person.SpouseId && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint))
+                                 select c).ToList();
 
             var currentUser = DbUtil.Db.CurrentUserPerson;
 
@@ -182,15 +182,15 @@ namespace CmsWeb.Areas.People.Models
 
 
             var result = from c in contributions
-                   group c by c.DateX.Value.Year into g
-                   orderby g.Key descending
-                   select new StatementInfo()
-                   {
-                       Count = g.Count(),
-                       Amount = g.Sum(cc => cc.Amount ?? 0),
-                       StartDate = new DateTime(g.Key, 1, 1),
-                       EndDate = new DateTime(g.Key, 12, 31)
-                   };
+                         group c by c.DateX.Value.Year into g
+                         orderby g.Key descending
+                         select new StatementInfo()
+                         {
+                             Count = g.Count(),
+                             Amount = g.Sum(cc => cc.Amount ?? 0),
+                             StartDate = new DateTime(g.Key, 1, 1),
+                             EndDate = new DateTime(g.Key, 12, 31)
+                         };
 
             return result;
         }

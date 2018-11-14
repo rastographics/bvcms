@@ -1,11 +1,12 @@
+using CmsData;
+using CmsWeb.Areas.People.Models;
+using CmsWeb.Lifecycle;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Areas.People.Models;
-using Newtonsoft.Json;
-using UtilityExtensions;
 using System.Web.Routing;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
 {
@@ -14,6 +15,10 @@ namespace CmsWeb.Areas.People.Controllers
     [SessionExpire]
     public partial class PersonController : CmsStaffController
     {
+        public PersonController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         protected override void Initialize(RequestContext requestContext)
         {
             NoCheckRole = true;
@@ -28,11 +33,15 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpGet, Route("User/{id:int}")]
         public ActionResult UserPerson(int? id)
         {
-            var pid = (from p in DbUtil.Db.People
-                where p.Users.Any(uu => uu.UserId == id)
-                select p.PeopleId).SingleOrDefault();
+            var pid = (from p in CurrentDatabase.People
+                       where p.Users.Any(uu => uu.UserId == id)
+                       select p.PeopleId).SingleOrDefault();
+
             if (pid == 0)
+            {
                 return Content("no person");
+            }
+
             return Redirect("/Person2/" + pid);
         }
         [HttpGet, Route("~/Person2/{id:int}")]
@@ -41,15 +50,21 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult Index(int? id)
         {
             if (!id.HasValue)
+            {
                 return Content("no id");
+            }
 
             if (id == 0 && Util.UserPeopleId.HasValue)
+            {
                 id = Util.UserPeopleId;
+            }
 
             var m = new PersonModel(id.Value);
             var noview = m.CheckView();
             if (noview.HasValue())
+            {
                 return Content(noview);
+            }
 
             ViewBag.Comments = Util.SafeFormat(m.Person.Comments);
             ViewBag.PeopleId = id.Value;
@@ -62,7 +77,7 @@ namespace CmsWeb.Areas.People.Controllers
 
         private void InitExportToolbar(int? id)
         {
-            var qb = DbUtil.Db.QueryIsCurrentPerson();
+            var qb = CurrentDatabase.QueryIsCurrentPerson();
             ViewBag.queryid = qb.QueryId;
             ViewBag.PeopleId = Util2.CurrentPeopleId;
             ViewBag.TagAction = "/Person2/Tag/" + id;
@@ -76,24 +91,27 @@ namespace CmsWeb.Areas.People.Controllers
         {
             if (Util2.CurrentTagName == tagname && !(cleartagfirst ?? false))
             {
-                Person.Tag(DbUtil.Db, id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
-                DbUtil.Db.SubmitChanges();
+                Person.Tag(CurrentDatabase, id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
+                CurrentDatabase.SubmitChanges();
                 return Content("OK");
             }
-            var tag = DbUtil.Db.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+            var tag = CurrentDatabase.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
             if (cleartagfirst ?? false)
-                DbUtil.Db.ClearTag(tag);
-            Person.Tag(DbUtil.Db, id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
-            DbUtil.Db.SubmitChanges();
+            {
+                CurrentDatabase.ClearTag(tag);
+            }
+
+            Person.Tag(CurrentDatabase, id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
+            CurrentDatabase.SubmitChanges();
             Util2.CurrentTag = tagname;
-            DbUtil.Db.TagCurrent();
+            CurrentDatabase.TagCurrent();
             return Content("OK");
         }
         [HttpPost]
         public ActionResult UnTag(int id)
         {
-            Person.UnTag(DbUtil.Db, id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
-            DbUtil.Db.SubmitChanges();
+            Person.UnTag(CurrentDatabase, id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
+            CurrentDatabase.SubmitChanges();
             return new EmptyResult();
         }
 
@@ -104,13 +122,13 @@ namespace CmsWeb.Areas.People.Controllers
             switch (name)
             {
                 case "ContributionOptions":
-                    m.Person.UpdateContributionOption(DbUtil.Db, value.ToInt());
+                    m.Person.UpdateContributionOption(CurrentDatabase, value.ToInt());
                     break;
                 case "EnvelopeOptions":
-                    m.Person.UpdateEnvelopeOption(DbUtil.Db, value.ToInt());
+                    m.Person.UpdateEnvelopeOption(CurrentDatabase, value.ToInt());
                     break;
                 case "ElectronicStatement":
-                    m.Person.UpdateElectronicStatement(DbUtil.Db, value.ToBool());
+                    m.Person.UpdateElectronicStatement(CurrentDatabase, value.ToBool());
                     break;
             }
             return new EmptyResult();
@@ -125,7 +143,7 @@ namespace CmsWeb.Areas.People.Controllers
             {
                 case "ContributionOptions":
                 case "EnvelopeOptions":
-                    q = from c in DbUtil.Db.EnvelopeOptions
+                    q = from c in CurrentDatabase.EnvelopeOptions
                         select new { value = c.Id.ToString(), text = c.Description };
                     break;
             }

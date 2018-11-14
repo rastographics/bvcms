@@ -1,9 +1,8 @@
-using System;
+using CmsData;
+using CmsWeb.Code;
 using System.Collections.Generic;
 using System.Linq;
-using CmsData;
 using System.Web.Mvc;
-using CmsWeb.Code;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
@@ -12,21 +11,27 @@ namespace CmsWeb.Areas.Dialog.Models
     {
         public Organization org { get; set; }
         public int? OrganizationId { get; set; }
-		public bool copysettings { get; set; }
-		public bool copyregistration { get; set; }
+        public bool copysettings { get; set; }
+        public bool copyregistration { get; set; }
         public bool DisplayCopySettings { get; set; }
         public NewOrganizationModel(int? id, bool displayCopySettings = false)
         {
             DisplayCopySettings = displayCopySettings;
-			if (!id.HasValue)
-		        id = DbUtil.Db.Setting("DefaultOrgId", "0").ToInt();
-	        org = DbUtil.Db.LoadOrganizationById(id);
-			if (org == null)
-				org = DbUtil.Db.Organizations.First();
-	        OrganizationId = org.OrganizationId;
+            if (!id.HasValue)
+            {
+                id = DbUtil.Db.Setting("DefaultOrgId", "0").ToInt();
+            }
+
+            org = DbUtil.Db.LoadOrganizationById(id);
+            if (org == null)
+            {
+                org = DbUtil.Db.Organizations.First();
+            }
+
+            OrganizationId = org.OrganizationId;
         }
 
-	    public NewOrganizationModel()
+        public NewOrganizationModel()
         {
         }
         private CodeValueModel cv = new CodeValueModel();

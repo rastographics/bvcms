@@ -1,12 +1,9 @@
+using CmsData;
 using System;
-using System.Web.Mvc;
+using System.Data.SqlClient;
+using System.Linq;
 using System.Xml.Linq;
 using UtilityExtensions;
-using System.Linq;
-using CmsData;
-using System.Web.UI.WebControls;
-using System.Web.UI;
-using System.Data.SqlClient;
 
 namespace CmsWeb.Models
 {
@@ -25,9 +22,9 @@ namespace CmsWeb.Models
             var nodisplaycols = string.Join("|", fields);
 
             var cmd = new SqlCommand("dbo.ExtraValues @p1, @p2, @p3");
-			cmd.Parameters.AddWithValue("@p1", tag.Id);
-			cmd.Parameters.AddWithValue("@p2", "");
-			cmd.Parameters.AddWithValue("@p3", nodisplaycols);
+            cmd.Parameters.AddWithValue("@p1", tag.Id);
+            cmd.Parameters.AddWithValue("@p2", "");
+            cmd.Parameters.AddWithValue("@p3", nodisplaycols);
             cmd.Connection = new SqlConnection(Util.ConnectionString);
             cmd.Connection.Open();
 

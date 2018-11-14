@@ -1,14 +1,18 @@
-﻿using System.Linq;
-using System.Web.Mvc;
-using CmsData;
+﻿using CmsData;
 using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Areas.Search.Models;
+using CmsWeb.Lifecycle;
+using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
-    [RouteArea("Dialog", AreaPrefix="RepairTransactionsOrgs"), Route("{action}/{id?}")]
+    [RouteArea("Dialog", AreaPrefix = "RepairTransactionsOrgs"), Route("{action}/{id?}")]
     public class RepairTransactionsOrgsController : CmsStaffController
     {
+        public RepairTransactionsOrgsController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpPost, Route("~/RepairTransactionsOrgs")]
         public ActionResult Index(OrgSearchModel osm)
         {
@@ -19,14 +23,14 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost]
         public ActionResult Process(RepairTransactionsOrgs model)
         {
-            model.UpdateLongRunningOp(DbUtil.Db, RepairTransactionsOrgs.Op);
+            model.UpdateLongRunningOp(CurrentDatabase, RepairTransactionsOrgs.Op);
 
             if (!model.Started.HasValue)
-            { 
+            {
                 DbUtil.LogActivity("Repair Transactions for Orgs");
-                model.Process(DbUtil.Db);
+                model.Process(CurrentDatabase);
             }
-			return View(model);
-		}
+            return View(model);
+        }
     }
 }

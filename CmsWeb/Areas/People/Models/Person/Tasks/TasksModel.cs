@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CmsData;
+using CmsWeb.Models;
 using System.Linq;
 using System.Web;
-using CmsData;
-using CmsWeb.Models;
 
 namespace CmsWeb.Areas.People.Models
 {
@@ -20,7 +18,7 @@ namespace CmsWeb.Areas.People.Models
 
         protected TasksModel()
             : base("Completed", "desc", true)
-        {}
+        { }
 
         public IQueryable<CmsData.Task> FilteredModelList()
         {

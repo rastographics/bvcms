@@ -1,7 +1,7 @@
-﻿using System;
+﻿using CmsData;
+using System;
 using System.Linq;
 using System.Web.Hosting;
-using CmsData;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
@@ -23,13 +23,13 @@ namespace CmsWeb.Areas.Dialog.Models
             var lop = new LongRunningOperation
             {
                 Started = DateTime.Now,
-                Count = db.OrganizationMembers.Count(m => m.OrganizationId == OrgId),
+                Count = DbUtil.Db.OrganizationMembers.Count(m => m.OrganizationId == OrgId),
                 Processed = 0,
                 QueryId = QueryId,
                 Operation = Op
             };
-            db.LongRunningOperations.InsertOnSubmit(lop);
-            db.SubmitChanges();
+            DbUtil.Db.LongRunningOperations.InsertOnSubmit(lop);
+            DbUtil.Db.SubmitChanges();
 
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
         }
@@ -37,11 +37,11 @@ namespace CmsWeb.Areas.Dialog.Models
         public static void DoWork(RepairTransactions model)
         {
             var db = DbUtil.Create(model.Host);
-            db.RepairTransactions(model.OrgId);
+            DbUtil.Db.RepairTransactions(model.OrgId);
             // finished
-            var lop = FetchLongRunningOperation(db, Op, model.QueryId);
+            var lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
             lop.Completed = DateTime.Now;
-            db.SubmitChanges();
-		}
+            DbUtil.Db.SubmitChanges();
+        }
     }
 }

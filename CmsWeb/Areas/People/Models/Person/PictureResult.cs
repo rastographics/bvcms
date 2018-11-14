@@ -1,10 +1,10 @@
+using CmsData;
 using System;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Mvc;
-using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
@@ -43,11 +43,11 @@ namespace CmsWeb.Areas.People.Models
                 context.HttpContext.Response.ContentType = "image/jpeg";
                 context.HttpContext.Response.BinaryWrite(NoPic1());
             }
-			else if (id == -3)
-			{
-				context.HttpContext.Response.ContentType = "image/jpeg";
-				context.HttpContext.Response.BinaryWrite(NoPic3());
-			}
+            else if (id == -3)
+            {
+                context.HttpContext.Response.ContentType = "image/jpeg";
+                context.HttpContext.Response.BinaryWrite(NoPic3());
+            }
             else if (id == -4)
             {
                 context.HttpContext.Response.ContentType = "image/jpeg";
@@ -78,28 +78,37 @@ namespace CmsWeb.Areas.People.Models
                 ImageData.Image i = null;
 #if DEBUG
                 var idb = DbUtil.CheckImageDatabaseExists(Util.CmsHost.Replace("CMS_", "CMSi_"));
-                if(idb == DbUtil.CheckDatabaseResult.DatabaseExists)
+                if (idb == DbUtil.CheckDatabaseResult.DatabaseExists)
+                {
 #endif
-                try
-                {
-                    i = ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == id);
+                    try
+                    {
+                        i = ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == id);
+                    }
+                    // ReSharper disable once EmptyGeneralCatchClause
+                    catch (Exception)
+                    {
+                    }
                 }
-                // ReSharper disable once EmptyGeneralCatchClause
-                catch (Exception)
-                {
-                }
+
                 if (i == null || i.Secure == true)
                 {
                     if (nodefault)
+                    {
                         return;
+                    }
+
                     if (portrait)
                     {
                         context.HttpContext.Response.ContentType = "image/jpeg";
                         context.HttpContext.Response.BinaryWrite(tiny ? NoPic1() : NoPic2());
                     }
                     else
+                    {
                         context.HttpContext.Response.ContentType = "image/png";
-                        context.HttpContext.Response.BinaryWrite(NoPic());
+                    }
+
+                    context.HttpContext.Response.BinaryWrite(NoPic());
                 }
                 else
                 {
@@ -196,16 +205,16 @@ namespace CmsWeb.Areas.People.Models
             return u;
         }
 
-		private static byte[] NoPic3()
-		{
-			var u = HttpRuntime.Cache["sgfimage"] as byte[];
-			if (u == null)
-			{
-				u = File.ReadAllBytes(HttpContext.Current.Server.MapPath("/Content/images/sgfunknown.jpg"));
-				HttpRuntime.Cache.Insert("sgfimage", u, null, DateTime.Now.AddMinutes(100), Cache.NoSlidingExpiration);
-			}
-			return u;
-		}
+        private static byte[] NoPic3()
+        {
+            var u = HttpRuntime.Cache["sgfimage"] as byte[];
+            if (u == null)
+            {
+                u = File.ReadAllBytes(HttpContext.Current.Server.MapPath("/Content/images/sgfunknown.jpg"));
+                HttpRuntime.Cache.Insert("sgfimage", u, null, DateTime.Now.AddMinutes(100), Cache.NoSlidingExpiration);
+            }
+            return u;
+        }
 
         private static byte[] NoPic()
         {
@@ -222,6 +231,6 @@ namespace CmsWeb.Areas.People.Models
         {
             return ImageData.Image.ResizeFromBits(img.Bits, w, h, mode);
         }
-        
+
     }
 }

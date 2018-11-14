@@ -5,12 +5,12 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 
-using System.Collections.Generic;
-using System.Linq;
 using CmsData;
 using CmsWeb.Areas.Search.Models;
 using CmsWeb.Code;
 using Dapper;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CmsWeb.Areas.Reports.Models
 {

@@ -1,10 +1,10 @@
-using System.Collections.Generic;
-using System.Linq;
 using CmsData;
 using CmsData.View;
 using CmsWeb.Areas.Search.Models;
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CmsWeb.Models
 {
@@ -31,10 +31,13 @@ namespace CmsWeb.Models
         public static decimal TotalDue(int? pid, int? oid)
         {
             var tt = (from t in DbUtil.Db.ViewMissionTripTotals
-                    where t.PeopleId == pid && t.OrganizationId == oid
-                    select t).SingleOrDefault();
+                      where t.PeopleId == pid && t.OrganizationId == oid
+                      select t).SingleOrDefault();
             if (tt == null)
+            {
                 return 0;
+            }
+
             return tt.Due ?? 0;
         }
         public static EpplusResult Result(OrgSearchModel m)

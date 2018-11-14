@@ -1,11 +1,10 @@
-using System;
-using System.Data.Linq;
-using System.Web.Mvc;
-using CmsWeb.Areas.Dialog.Models;
 using CmsData;
-using CmsWeb.Areas.OnlineReg.Models;
+using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Code;
+using CmsWeb.Lifecycle;
 using CmsWeb.Models.ExtraValues;
+using System;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
@@ -13,6 +12,10 @@ namespace CmsWeb.Areas.Dialog.Controllers
     [RouteArea("Dialog", AreaPrefix = "OrgMemberDialog"), Route("{action}")]
     public class OrgMemberDialogController : CmsStaffController
     {
+        public OrgMemberDialogController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpPost, Route("~/OrgMemberDialog/{group}/{oid}/{pid}")]
         public ActionResult Display(string group, int oid, int pid)
         {
@@ -144,7 +147,10 @@ namespace CmsWeb.Areas.Dialog.Controllers
         {
             m.PostTransaction(ModelState);
             if (!ModelState.IsValid)
+            {
                 return View("AddTransaction", m);
+            }
+
             return View("AddTransactionDone", m);
         }
 
@@ -203,6 +209,6 @@ namespace CmsWeb.Areas.Dialog.Controllers
             var m = new ExtraValueModel(oid, pid, "OrgMember", "Adhoc");
             m.Delete(name);
             return Content("deleted");
-		}
+        }
     }
 }
