@@ -24,7 +24,7 @@
             <tbody>
                 @foreach (var f in Model.GetExtraValues())
                 {
-                    if (f.UserCanView(CurrentDatabase) && f.Type != "Data")
+                    if (f.UserCanView(DbUtil.Db) && f.Type != "Data")
                     {
                         @(f.UserCanEdit()
                                   ? Html.EditorFor(m => f)

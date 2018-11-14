@@ -1,6 +1,5 @@
 using CmsData;
 using CmsWeb.Areas.People.Models;
-using CmsWeb.Lifecycle;
 using CmsWeb.Models;
 using System;
 using System.Linq;
@@ -12,10 +11,6 @@ namespace CmsWeb.Areas.People.Controllers
 {
     public partial class PersonController
     {
-        public PersonController(RequestManager requestManager) : base(requestManager)
-        {
-        }
-
         [HttpPost]
         public ActionResult Users(int id)
         {

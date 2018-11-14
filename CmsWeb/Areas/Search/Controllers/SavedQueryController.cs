@@ -11,7 +11,7 @@ namespace CmsWeb.Areas.Search.Controllers
     [RouteArea("Search", AreaPrefix = "SavedQuery"), Route("{action}/{id?}")]
     public class SavedQueryController : CmsStaffController
     {
-        public SavedQueryController(RequestManager requestManager) : base(requestManager)
+        public SavedQueryController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

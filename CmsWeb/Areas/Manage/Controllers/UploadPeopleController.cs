@@ -15,7 +15,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage", AreaPrefix = "UploadPeople"), Route("{action=index}")]
     public class UploadPeopleController : CmsStaffController
     {
-        public UploadPeopleController(RequestManager requestManager) : base(requestManager)
+        public UploadPeopleController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

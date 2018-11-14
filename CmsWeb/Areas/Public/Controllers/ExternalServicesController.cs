@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.Public.Controllers
 {
     public class ExternalServicesController : CMSBaseController
     {
-        public ExternalServicesController(RequestManager requestManager) : base(requestManager)
+        public ExternalServicesController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

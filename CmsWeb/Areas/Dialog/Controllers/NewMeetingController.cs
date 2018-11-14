@@ -13,7 +13,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 {
     public partial class DialogController
     {
-        public DialogController(RequestManager requestManager) : base(requestManager)
+        public DialogController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

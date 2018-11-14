@@ -37,7 +37,7 @@
                         @Html.EditorFor(m => m.SearchParameters.Ministry)
                     </div>
                     <div class="col-lg-4 col-md-5 col-sm-6">
-                        @if (!CurrentDatabase.Setting("UX-HideContactCheckboxes"))
+                        @if (!DbUtil.Db.Setting("UX-HideContactCheckboxes"))
                         {
                             @Html.EditorFor(m => m.SearchParameters.ContactResult)
                         }

@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup", AreaPrefix = "MemberType"), Route("{action=index}/{id?}")]
     public class MemberTypeController : CmsStaffController
     {
-        public MemberTypeController(RequestManager requestManager) : base(requestManager)
+        public MemberTypeController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

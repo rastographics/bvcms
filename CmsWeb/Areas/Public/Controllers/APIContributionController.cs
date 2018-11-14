@@ -7,7 +7,7 @@ namespace CmsWeb.Areas.Public.Controllers
 {
     public class APIContributionController : CmsController
     {
-        public APIContributionController(RequestManager requestManager) : base(requestManager)
+        public APIContributionController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

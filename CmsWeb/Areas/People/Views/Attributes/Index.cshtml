@@ -5,7 +5,7 @@
   ViewBag.Title = "Attributes";
   ViewBag.PageHeader = "Attributes";
 ViewBag.PageSubHeader = $"<a href=\"/Person2/{Model.PeopleId}\">{Model.Person.Name}</a>";
-  var m = CurrentDatabase.ViewAttributes.Where(vv => vv.Field == Model.Field && vv.PeopleId == Model.PeopleId);
+  var m = DbUtil.Db.ViewAttributes.Where(vv => vv.Field == Model.Field && vv.PeopleId == Model.PeopleId);
 }
 <div class="report box box-responsive">
   <div class="box-content">

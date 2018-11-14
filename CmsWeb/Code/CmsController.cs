@@ -19,14 +19,14 @@ namespace CmsWeb
     [MyRequireHttps]
     public class CmsController : CmsControllerNoHttps
     {
-        public CmsController(RequestManager requestManager) : base(requestManager)
+        public CmsController(IRequestManager requestManager) : base(requestManager)
         {
         }
     }
 
     public class CmsControllerNoHttps : CMSBaseController
     {
-        public CmsControllerNoHttps(RequestManager requestManager) : base(requestManager)
+        public CmsControllerNoHttps(IRequestManager requestManager) : base(requestManager)
         {
 
         }
@@ -97,7 +97,7 @@ namespace CmsWeb
     [MyRequireHttps]
     public class CmsStaffController : CMSBaseController
     {
-        public CmsStaffController(RequestManager requestManager) : base(requestManager)
+        public CmsStaffController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

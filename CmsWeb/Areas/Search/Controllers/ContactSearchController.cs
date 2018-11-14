@@ -8,7 +8,7 @@ namespace CmsWeb.Areas.Search.Controllers
     [RouteArea("Search", AreaPrefix = "ContactSearch2"), Route("{action}/{id?}")]
     public class ContactSearchController : CmsStaffController
     {
-        public ContactSearchController(RequestManager requestManager) : base(requestManager)
+        public ContactSearchController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

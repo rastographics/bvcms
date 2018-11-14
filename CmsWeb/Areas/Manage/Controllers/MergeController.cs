@@ -8,7 +8,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage", AreaPrefix = "Merge"), Route("{action}")]
     public class MergeController : CmsStaffController
     {
-        public MergeController(RequestManager requestManager) : base(requestManager)
+        public MergeController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

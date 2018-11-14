@@ -12,7 +12,7 @@
                     <th>Contactors</th>
                     <th>Contactees</th>
                     <th>Ministry</th>
-                    @if (!CurrentDatabase.Setting("UX-HideContactCheckboxes"))
+                    @if (!DbUtil.Db.Setting("UX-HideContactCheckboxes"))
                     {
                         <th>Results</th>
                     }
@@ -28,7 +28,7 @@
                         <td>@c.ContactorList</td>
                         <td>@c.ContacteeList</td>
                         <td>@c.Ministry</td>
-                        @if (!CurrentDatabase.Setting("UX-HideContactCheckboxes"))
+                        @if (!DbUtil.Db.Setting("UX-HideContactCheckboxes"))
                         {
                             <td>@c.Results</td>
                         }

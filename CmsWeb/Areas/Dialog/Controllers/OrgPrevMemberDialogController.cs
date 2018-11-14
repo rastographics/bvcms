@@ -7,7 +7,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
     [RouteArea("Dialog", AreaPrefix = "OrgPrevMemberDialog"), Route("{action}")]
     public class OrgPrevMemberDialogController : CmsStaffController
     {
-        public OrgPrevMemberDialogController(RequestManager requestManager) : base(requestManager)
+        public OrgPrevMemberDialogController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

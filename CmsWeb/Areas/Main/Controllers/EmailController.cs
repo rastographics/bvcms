@@ -427,7 +427,7 @@ namespace CmsWeb.Areas.Main.Controllers
         }
         private const string GrammarlyNotAllowed = "It appears that you are using Grammarly. Please see <b><a href='https://blog.touchpointsoftware.com/2016/06/29/warning-re-grammarly-and-ck-editor/' target='_blank'>this document</a></b> for important information about why we cannot allow Grammarly";
 
-        public EmailController(RequestManager requestManager) : base(requestManager)
+        public EmailController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

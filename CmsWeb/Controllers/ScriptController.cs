@@ -15,7 +15,7 @@ namespace CmsWeb.Controllers
 {
     public class ScriptController : CmsStaffController
     {
-        public ScriptController(RequestManager requestManager) : base(requestManager)
+        public ScriptController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

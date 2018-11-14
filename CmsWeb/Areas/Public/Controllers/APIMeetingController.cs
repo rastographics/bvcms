@@ -7,7 +7,7 @@ namespace CmsWeb.Areas.Public.Controllers
 {
     public class APIMeetingController : CmsController
     {
-        public APIMeetingController(RequestManager requestManager) : base(requestManager)
+        public APIMeetingController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

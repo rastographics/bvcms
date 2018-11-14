@@ -14,7 +14,7 @@ namespace CmsWeb.Areas.Public.Controllers
 {
     public class APIPersonController : CmsController
     {
-        public APIPersonController(RequestManager requestManager) : base(requestManager)
+        public APIPersonController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

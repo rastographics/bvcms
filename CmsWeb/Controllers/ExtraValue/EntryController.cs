@@ -8,7 +8,7 @@ namespace CmsWeb.Controllers
 {
     public partial class ExtraValueController : CmsStaffController
     {
-        public ExtraValueController(RequestManager requestManager) : base(requestManager)
+        public ExtraValueController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.Finance.Controllers
     [RouteArea("Finance", AreaPrefix = "PostBundle"), Route("{action}/{id?}")]
     public class PostBundleController : CmsStaffController
     {
-        public PostBundleController(RequestManager requestManager) : base(requestManager)
+        public PostBundleController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

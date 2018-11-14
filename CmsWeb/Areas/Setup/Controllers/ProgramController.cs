@@ -10,7 +10,7 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup", AreaPrefix = "Program"), Route("{action}/{id?}")]
     public class ProgramController : CmsStaffController
     {
-        public ProgramController(RequestManager requestManager) : base(requestManager)
+        public ProgramController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

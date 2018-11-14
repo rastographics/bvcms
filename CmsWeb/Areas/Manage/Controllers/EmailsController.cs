@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage"), Route("~/Manage/Emails/{action}/{id?}")]
     public class EmailsController : CmsController
     {
-        public EmailsController(RequestManager requestManager) : base(requestManager)
+        public EmailsController(IRequestManager requestManager) : base(requestManager)
         {
         }
 
@@ -423,7 +423,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage")]
     public class EmailViewController : CmsControllerNoHttps
     {
-        public EmailViewController(RequestManager requestManager) : base(requestManager)
+        public EmailViewController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

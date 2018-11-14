@@ -8,7 +8,7 @@ namespace CmsWeb.Areas.Public.Controllers
 {
     public class TrackController : CMSBaseController
     {
-        public TrackController(RequestManager requestManager) : base(requestManager)
+        public TrackController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

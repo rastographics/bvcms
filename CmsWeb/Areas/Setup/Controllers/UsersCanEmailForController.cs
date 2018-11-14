@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup")]
     public class UsersCanEmailForController : CmsStaffController
     {
-        public UsersCanEmailForController(RequestManager requestManager) : base(requestManager)
+        public UsersCanEmailForController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

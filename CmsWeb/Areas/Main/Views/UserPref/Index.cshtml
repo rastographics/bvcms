@@ -1,6 +1,6 @@
 ﻿@using CmsData
 @{
-    var q = CurrentDatabase.CurrentUser.Preferences;
+    var q = DbUtil.Db.CurrentUser.Preferences;
     ViewBag.Title = "UserPref";
     ViewBag.PageHeader = "UserPref";
     Layout = ViewExtensions2.TouchPointLayout();

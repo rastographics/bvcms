@@ -11,7 +11,7 @@ namespace CmsWeb.Areas.Public
     [RouteArea("Public", AreaPrefix = "OrgContent"), Route("{action}/{id?}")]
     public class OrgContentController : CmsController
     {
-        public OrgContentController(RequestManager requestManager) : base(requestManager)
+        public OrgContentController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

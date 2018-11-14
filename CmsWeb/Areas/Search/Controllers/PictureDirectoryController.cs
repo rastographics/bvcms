@@ -8,7 +8,7 @@ namespace CmsWeb.Areas.Search.Controllers
     [RouteArea("Search", AreaPrefix = "PictureDirectory"), Route("{action=index}")]
     public class PictureDirectoryController : CmsController
     {
-        public PictureDirectoryController(RequestManager requestManager) : base(requestManager)
+        public PictureDirectoryController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

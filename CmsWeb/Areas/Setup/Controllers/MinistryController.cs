@@ -10,7 +10,7 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup", AreaPrefix = "Ministry"), Route("{action=index}/{id?}")]
     public class MinistryController : CmsStaffController
     {
-        public MinistryController(RequestManager requestManager) : base(requestManager)
+        public MinistryController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

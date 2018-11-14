@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
     [RouteArea("Dialog", AreaPrefix = "AddResource")]
     public class AddResourceController : CmsStaffController
     {
-        public AddResourceController(RequestManager requestManager) : base(requestManager)
+        public AddResourceController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

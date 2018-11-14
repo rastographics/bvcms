@@ -11,7 +11,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
     [RouteArea("Dialog", AreaPrefix = "SearchOrgs"), Route("{action}/{id?}")]
     public class SearchOrgsController : CmsStaffController
     {
-        public SearchOrgsController(RequestManager requestManager) : base(requestManager)
+        public SearchOrgsController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

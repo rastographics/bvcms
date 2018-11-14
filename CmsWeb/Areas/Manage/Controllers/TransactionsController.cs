@@ -13,7 +13,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage", AreaPrefix = "Transactions"), Route("{action}/{id?}")]
     public class TransactionsController : CmsStaffController
     {
-        public TransactionsController(RequestManager requestManager) : base(requestManager)
+        public TransactionsController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

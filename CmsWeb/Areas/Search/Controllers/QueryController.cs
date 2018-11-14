@@ -25,7 +25,7 @@ namespace CmsWeb.Areas.Search.Controllers
     [SessionExpire]
     public class QueryController : CmsStaffController
     {
-        public QueryController(RequestManager requestManager) : base(requestManager)
+        public QueryController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

@@ -9,7 +9,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
     [RouteArea("Dialog", AreaPrefix = "AddToOrgFromTag"), Route("{action}/{id?}")]
     public class AddToOrgFromTagController : CmsStaffController
     {
-        public AddToOrgFromTagController(RequestManager requestManager) : base(requestManager)
+        public AddToOrgFromTagController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

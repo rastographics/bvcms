@@ -9,7 +9,7 @@ namespace CmsWeb.Areas.Org.Controllers
     [RouteArea("Org", AreaPrefix = "MemberDirectory"), Route("{action=index}")]
     public class MemberDirectoryController : CmsController
     {
-        public MemberDirectoryController(RequestManager requestManager) : base(requestManager)
+        public MemberDirectoryController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

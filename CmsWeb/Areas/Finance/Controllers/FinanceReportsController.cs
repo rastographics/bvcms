@@ -23,7 +23,7 @@ namespace CmsWeb.Areas.Finance.Controllers
     [RouteArea("Finance", AreaPrefix = "FinanceReports"), Route("{action}/{id?}")]
     public class FinanceReportsController : CmsStaffController
     {
-        public FinanceReportsController(RequestManager requestManager) : base(requestManager)
+        public FinanceReportsController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

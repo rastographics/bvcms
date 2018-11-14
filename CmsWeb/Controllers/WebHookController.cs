@@ -9,7 +9,7 @@ namespace CmsWeb.Controllers
 {
     public class WebHookController : CMSBaseController
     {
-        public WebHookController(RequestManager requestManager) : base(requestManager)
+        public WebHookController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

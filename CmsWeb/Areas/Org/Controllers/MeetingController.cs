@@ -15,7 +15,7 @@ namespace CmsWeb.Areas.Org.Controllers
     [RouteArea("Org", AreaPrefix = "Meeting"), Route("{action}/{id?}")]
     public class MeetingController : CmsStaffController
     {
-        public MeetingController(RequestManager requestManager) : base(requestManager)
+        public MeetingController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

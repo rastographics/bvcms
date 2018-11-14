@@ -8,7 +8,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
     [RouteArea("Dialog", AreaPrefix = "SearchDivisions"), Route("{action}/{id?}")]
     public class SearchDivisionsController : CmsStaffController
     {
-        public SearchDivisionsController(RequestManager requestManager) : base(requestManager)
+        public SearchDivisionsController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

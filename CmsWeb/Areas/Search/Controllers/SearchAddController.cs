@@ -11,7 +11,7 @@ namespace CmsWeb.Areas.Search.Controllers
     [RouteArea("Search", AreaPrefix = "")]
     public class SearchAddController : CmsStaffController
     {
-        public SearchAddController(RequestManager requestManager) : base(requestManager)
+        public SearchAddController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

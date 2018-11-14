@@ -8,7 +8,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
     [RouteArea("Dialog", AreaPrefix = "ValidateAddress"), Route("{action}/{id?}")]
     public class ValidateAddressController : CmsStaffController
     {
-        public ValidateAddressController(RequestManager requestManager) : base(requestManager)
+        public ValidateAddressController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

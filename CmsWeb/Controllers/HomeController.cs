@@ -15,7 +15,7 @@ namespace CmsWeb.Controllers
 {
     public class HomeController : CmsStaffController
     {
-        public HomeController(RequestManager requestManager) : base(requestManager)
+        public HomeController(IRequestManager requestManager) : base(requestManager)
         {
         }
 
@@ -202,7 +202,7 @@ namespace CmsWeb.Controllers
 
     public class Home2Controller : CmsController
     {
-        public Home2Controller(RequestManager requestManager) : base(requestManager)
+        public Home2Controller(IRequestManager requestManager) : base(requestManager)
         {
         }
 

@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup", AreaPrefix = "Setting"), Route("{action}/{id?}")]
     public class SettingController : CmsStaffController
     {
-        public SettingController(RequestManager requestManager) : base(requestManager)
+        public SettingController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

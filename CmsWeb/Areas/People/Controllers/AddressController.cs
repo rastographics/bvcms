@@ -11,7 +11,7 @@ namespace CmsWeb.Areas.People.Controllers
     [SessionExpire]
     public class AddressController : CmsStaffController
     {
-        public AddressController(RequestManager requestManager) : base(requestManager)
+        public AddressController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

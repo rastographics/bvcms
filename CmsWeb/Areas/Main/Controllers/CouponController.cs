@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.Main.Controllers
     [RouteArea("Main", AreaPrefix = "Coupon"), Route("{action}/{id?}")]
     public class CouponController : CmsStaffController
     {
-        public CouponController(RequestManager requestManager) : base(requestManager)
+        public CouponController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

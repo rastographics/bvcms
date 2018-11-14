@@ -13,7 +13,7 @@ namespace CmsWeb.Areas.Public.Controllers
 {
     public class APIMetaController : CmsController
     {
-        public APIMetaController(RequestManager requestManager) : base(requestManager)
+        public APIMetaController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

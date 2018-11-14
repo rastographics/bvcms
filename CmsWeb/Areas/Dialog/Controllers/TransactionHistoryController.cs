@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
     [RouteArea("Dialog", AreaPrefix = "TransactionHistory"), Route("{action}/{id?}")]
     public class TransactionHistoryController : CmsStaffController
     {
-        public TransactionHistoryController(RequestManager requestManager) : base(requestManager)
+        public TransactionHistoryController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

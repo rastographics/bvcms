@@ -13,7 +13,7 @@ namespace CmsWeb.Areas.People.Controllers
     [RouteArea("People", AreaPrefix = "Task"), Route("{action}/{id:int}")]
     public class TaskController : CmsStaffController
     {
-        public TaskController(RequestManager requestManager) : base(requestManager)
+        public TaskController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

@@ -8,7 +8,7 @@ namespace CmsWeb.Areas.Finance.Controllers
     [RouteArea("Finance", AreaPrefix = "Vault"), Route("{action}/{id?}")]
     public class VaultController : CmsController
     {
-        public VaultController(RequestManager requestManager) : base(requestManager)
+        public VaultController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

@@ -9,7 +9,7 @@ namespace CmsWeb.Areas.Public.Controllers
 {
     public class OptOutController : CmsController
     {
-        public OptOutController(RequestManager requestManager) : base(requestManager)
+        public OptOutController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

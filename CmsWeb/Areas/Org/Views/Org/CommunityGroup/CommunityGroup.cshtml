@@ -4,7 +4,7 @@
 @using CmsWeb.Models.ExtraValues
 @{
     var evmodel = new ExtraValueModel(Model.Org.OrganizationId, "Organization", "CommunityGroup");
-    var ExtraMembershipDataLabel = CurrentDatabase.Setting("ExtraCommunityGroupDataLabel", "Extra Community Group Data");
+    var ExtraMembershipDataLabel = DbUtil.Db.Setting("ExtraCommunityGroupDataLabel", "Extra Community Group Data");
     var firstTime = true;
     var list = evmodel.GetExtraValues().ToList();
 }

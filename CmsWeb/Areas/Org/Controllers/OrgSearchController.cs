@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Search.Controllers
     {
         private const string STR_OrgSearch = "OrgSearch";
 
-        public OrgSearchController(RequestManager requestManager) : base(requestManager)
+        public OrgSearchController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

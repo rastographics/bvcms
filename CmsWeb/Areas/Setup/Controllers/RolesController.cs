@@ -10,7 +10,7 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup", AreaPrefix = "Roles"), Route("{action=index}/{id?}")]
     public class RolesController : CmsStaffController
     {
-        public RolesController(RequestManager requestManager) : base(requestManager)
+        public RolesController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

@@ -8,7 +8,7 @@ namespace CmsWeb.Areas.People.Controllers
     [RouteArea("People", AreaPrefix = "Attributes"), Route("{action}/{cid:int}")]
     public class AttributesController : CmsController
     {
-        public AttributesController(RequestManager requestManager) : base(requestManager)
+        public AttributesController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

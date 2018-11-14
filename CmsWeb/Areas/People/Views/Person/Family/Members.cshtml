@@ -47,7 +47,7 @@
                             <span class="name">@m.Name @Html.Raw(m.SpouseIndicator)</span><br />
                             <span class="meta">
                                 <span class="age">@m.AgeDisplay</span>
-                                @if (User.IsInRole("Access") || !CurrentDatabase.Setting("HideMyDataMemberBadge"))
+                                @if (User.IsInRole("Access") || !DbUtil.Db.Setting("HideMyDataMemberBadge"))
                                 {
                                     <text>&bull; <span class="status">@m.MemberStatus</span></text>
                                 }

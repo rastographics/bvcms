@@ -8,7 +8,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage", AreaPrefix = "CheckinLabels"), Route("{action}/{id?}")]
     public class CheckinLabelsController : CMSBaseController
     {
-        public CheckinLabelsController(RequestManager requestManager) : base(requestManager)
+        public CheckinLabelsController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

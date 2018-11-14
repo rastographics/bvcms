@@ -2,7 +2,7 @@
 @using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.SettingsRegistrationModel
 @{
-  ViewBag.ShowHelp = CurrentDatabase.UserPreference("ShowRegistrationHelp");
+  ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowRegistrationHelp");
 }
 <form class="ajax">
   @if (!Html.ViewData.ModelState.IsValid)
@@ -122,7 +122,7 @@
 
   <h4>Relaxed Requirements</h4>
   <div class="well">
-    @if (!CurrentDatabase.Setting("RelaxedReqAdminOnly") || User.IsInRole("Admin"))
+    @if (!DbUtil.Db.Setting("RelaxedReqAdminOnly") || User.IsInRole("Admin"))
     {
       <div class="row">
         <div class="col-sm-12 col-md-12">
@@ -147,7 +147,7 @@
           <label class="checkbox-inline control-label">
             @Html.CheckBoxFor(m => m.NotReqMarital) Marital status not required
           </label>
-          @if (CurrentDatabase.Setting("ShowCampusOnRegistration", "false").Equal("true"))
+          @if (DbUtil.Db.Setting("ShowCampusOnRegistration", "false").Equal("true"))
           {
             <label class="checkbox-inline control-label">
               @Html.CheckBoxFor(m => m.NotReqCampus) Not Req @Util2.CampusLabel

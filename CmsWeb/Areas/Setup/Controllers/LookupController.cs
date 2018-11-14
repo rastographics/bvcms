@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup", AreaPrefix = "Lookup"), Route("{action}/{id?}")]
     public class LookupController : CmsStaffController
     {
-        public LookupController(RequestManager requestManager) : base(requestManager)
+        public LookupController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

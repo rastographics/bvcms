@@ -76,7 +76,7 @@
           }
           @if (Model.ShowContactsReceivedTab())
           {
-              <li><a href="#ContactsReceived-tab" aria-controls="ContactsReceived-tab" class="ajax" data-toggle="tab">@CurrentDatabase.Setting("UX-CGVisitsTabLabel", "Visits")</a></li>
+              <li><a href="#ContactsReceived-tab" aria-controls="ContactsReceived-tab" class="ajax" data-toggle="tab">@DbUtil.Db.Setting("UX-CGVisitsTabLabel", "Visits")</a></li>
           }
           @if (Model.ShowSettingsTab)
           {
@@ -88,7 +88,7 @@
           }
           @if (Model.ShowCommunityGroupTab())
           {
-              <li><a href="#CommunityGroup-tab" aria-controls="CommunityGroup-tab" class="ajax" data-toggle="tab">@CurrentDatabase.Setting("UX-CGInfoTabLabel", "CG Info")</a></li>
+              <li><a href="#CommunityGroup-tab" aria-controls="CommunityGroup-tab" class="ajax" data-toggle="tab">@DbUtil.Db.Setting("UX-CGInfoTabLabel", "CG Info")</a></li>
           }
         </ul>
         <div class="tab-content">

@@ -9,7 +9,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
     [RouteArea("Dialog", AreaPrefix = "OrgSearchDrop"), Route("{action}/{id?}")]
     public class OrgSearchDropController : CmsStaffController
     {
-        public OrgSearchDropController(RequestManager requestManager) : base(requestManager)
+        public OrgSearchDropController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

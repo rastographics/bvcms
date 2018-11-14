@@ -10,7 +10,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
     [RouteArea("Dialog", AreaPrefix = "AddOrganization")]
     public class AddOrganizationController : CmsStaffController
     {
-        public AddOrganizationController(RequestManager requestManager) : base(requestManager)
+        public AddOrganizationController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

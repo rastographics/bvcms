@@ -74,7 +74,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult FamilyPictureDialog(int id)
         {
-            var currentPerson = _peopleService.LoadPersonById(id);
+            var currentPerson = new PersonModel(id);
             return View("Family/PictureDialog", currentPerson);
         }
 

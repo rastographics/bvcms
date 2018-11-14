@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.Public.Controllers
     [ValidateInput(false)]
     public class APIiPhoneController : CmsController
     {
-        public APIiPhoneController(RequestManager requestManager) : base(requestManager)
+        public APIiPhoneController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

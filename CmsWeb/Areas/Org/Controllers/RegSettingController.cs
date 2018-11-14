@@ -9,7 +9,7 @@ namespace CmsWeb.Areas.Org.Controllers
     [RouteArea("Org", AreaPrefix = "RegSettings"), Route("{action=index}/{id?}")]
     public class RegSettingController : CmsStaffController
     {
-        public RegSettingController(RequestManager requestManager) : base(requestManager)
+        public RegSettingController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

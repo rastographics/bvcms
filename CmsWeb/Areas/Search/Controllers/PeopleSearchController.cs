@@ -8,7 +8,7 @@ namespace CmsWeb.Areas.Main.Controllers
     [RouteArea("Search", AreaPrefix = "PeopleSearch"), Route("{action}")]
     public class PeopleSearchController : CmsController
     {
-        public PeopleSearchController(RequestManager requestManager) : base(requestManager)
+        public PeopleSearchController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

@@ -136,7 +136,7 @@ def DropMembership(p, Db):
         p.DoNotVisitFlag = True
 
     if p.SpouseId != None:
-        spouse = CurrentDatabase.LoadPersonById(p.SpouseId)
+        spouse = DbUtil.Db.LoadPersonById(p.SpouseId)
 
         if p.Deceased:
             spouse.MaritalStatusId = MaritalStatusCode.Widowed
@@ -187,7 +187,7 @@ class MembershipAutomation:
             if p.DropCodesThatDrop.Contains(p.DropCodeId):
                 DropMembership(p, Db)
 
-        om2 = CurrentDatabase.LoadOrgMember(p.PeopleId, "Step 1", False)
+        om2 = DbUtil.Db.LoadOrgMember(p.PeopleId, "Step 1", False)
         if om2 != None:
             om2 = None
 
@@ -195,6 +195,6 @@ class MembershipAutomation:
         # this does new member class completed
         if (p.NewMemberClassStatusIdChanged
 		and p.NewMemberClassStatusId == NewMemberClassStatusCode.Attended):
-            om = CurrentDatabase.LoadOrgMember(p.PeopleId, "Step 1", False)
+            om = DbUtil.Db.LoadOrgMember(p.PeopleId, "Step 1", False)
             if om != None:
-                om.Drop(CurrentDatabase. True) # drops and records drop in history
+                om.Drop(DbUtil.Db, True) # drops and records drop in history

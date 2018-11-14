@@ -10,7 +10,7 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup", AreaPrefix = "MetroZips"), Route("{action=index}/{id?}")]
     public class MetroZipController : CmsStaffController
     {
-        public MetroZipController(RequestManager requestManager) : base(requestManager)
+        public MetroZipController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

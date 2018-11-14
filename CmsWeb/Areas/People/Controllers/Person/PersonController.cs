@@ -1,7 +1,6 @@
 using CmsData;
 using CmsWeb.Areas.People.Models;
 using CmsWeb.Lifecycle;
-using CmsWeb.Services.People;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,11 +15,8 @@ namespace CmsWeb.Areas.People.Controllers
     [SessionExpire]
     public partial class PersonController : CmsStaffController
     {
-        private readonly IPeopleService _peopleService;
-
-        public PersonController(IPeopleService peopleService, RequestManager requestManager) : base(requestManager)
+        public PersonController(IRequestManager requestManager) : base(requestManager)
         {
-            _peopleService = peopleService;
         }
 
         protected override void Initialize(RequestContext requestContext)
@@ -37,17 +33,16 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpGet, Route("User/{id:int}")]
         public ActionResult UserPerson(int? id)
         {
-            var personId = _peopleService.GetPeopleIdForUserId(id);
-            //var pid = (from p in CurrentDatabase.People
-            //           where p.Users.Any(uu => uu.UserId == id)
-            //           select p.PeopleId).SingleOrDefault();
+            var pid = (from p in CurrentDatabase.People
+                       where p.Users.Any(uu => uu.UserId == id)
+                       select p.PeopleId).SingleOrDefault();
 
-            if (personId == 0)
+            if (pid == 0)
             {
                 return Content("no person");
             }
 
-            return Redirect("/Person2/" + personId);
+            return Redirect("/Person2/" + pid);
         }
         [HttpGet, Route("~/Person2/{id:int}")]
         [Route("~/Person/Index/{id:int}")]

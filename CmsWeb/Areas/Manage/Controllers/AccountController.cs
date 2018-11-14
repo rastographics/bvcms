@@ -24,7 +24,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     {
         private const string LogonPageShellSettingKey = "UX-LoginPageShell";
 
-        public AccountController(RequestManager requestManager) : base(requestManager)
+        public AccountController(IRequestManager requestManager) : base(requestManager)
         {
         }
 
@@ -147,7 +147,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             TryLoadAlternateShell();
 
 
-            var dbExists = DbUtil.CheckDatabaseExists(RequestManager.CurrentHost);
+            var dbExists = DbUtil.CheckDatabaseExists(DbUtil.Db.Host);
             var redirect = ViewExtensions2.DatabaseErrorUrl(dbExists);
 
             if (redirect != null)

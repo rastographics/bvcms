@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.Finance.Controllers
     [RouteArea("Finance", AreaPrefix = "Contributions"), Route("{action}/{id?}")]
     public class ContributionsController : CmsStaffController
     {
-        public ContributionsController(RequestManager requestManager) : base(requestManager)
+        public ContributionsController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

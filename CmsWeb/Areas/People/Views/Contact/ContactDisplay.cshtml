@@ -33,12 +33,12 @@
                 <div class="col-sm-6">
                     @Html.DisplayFor(m => m.ContactType)
                     @Html.DisplayFor(m => m.ContactReason)
-                    @if (CurrentDatabase.Setting("UseContactVisitedOrgs") &&
-                 !CurrentDatabase.Setting("UX-ShowVisitedOrgInContactees") &&
+                    @if (DbUtil.Db.Setting("UseContactVisitedOrgs") &&
+                 !DbUtil.Db.Setting("UX-ShowVisitedOrgInContactees") &&
                  !string.IsNullOrWhiteSpace(Model.OrganizationName))
                     {
                         <dl>
-                            <dt>@CurrentDatabase.Setting("UX-VisitedOrgLabel", "Visited Organization")</dt>
+                            <dt>@DbUtil.Db.Setting("UX-VisitedOrgLabel", "Visited Organization")</dt>
                             <dd>@Model.OrganizationName</dd>
                         </dl>
                     }

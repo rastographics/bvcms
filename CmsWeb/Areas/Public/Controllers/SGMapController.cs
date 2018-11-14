@@ -6,7 +6,7 @@ namespace CmsWeb.Areas.Public.Controllers
 {
     public class SGMapController : CmsController
     {
-        public SGMapController(RequestManager requestManager) : base(requestManager)
+        public SGMapController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

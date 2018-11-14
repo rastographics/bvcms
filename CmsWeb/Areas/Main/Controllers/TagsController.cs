@@ -11,7 +11,7 @@ namespace CmsWeb.Areas.Main.Controllers
     [RouteArea("Main", AreaPrefix = "Tags"), Route("{action}/{id?}")]
     public class TagsController : CmsStaffController
     {
-        public TagsController(RequestManager requestManager) : base(requestManager)
+        public TagsController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

@@ -10,7 +10,7 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup", AreaPrefix = "PromotionSetup"), Route("{action=index}/{id?}")]
     public class PromotionController : CmsStaffController
     {
-        public PromotionController(RequestManager requestManager) : base(requestManager)
+        public PromotionController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

@@ -8,7 +8,7 @@ namespace CmsWeb.Areas.Public.Controllers
 {
     public class APIOrgController : CmsController
     {
-        public APIOrgController(RequestManager requestManager) : base(requestManager)
+        public APIOrgController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

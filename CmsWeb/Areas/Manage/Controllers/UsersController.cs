@@ -8,7 +8,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage", AreaPrefix = "Users"), Route("{action}")]
     public class UsersController : CmsController
     {
-        public UsersController(RequestManager requestManager) : base(requestManager)
+        public UsersController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

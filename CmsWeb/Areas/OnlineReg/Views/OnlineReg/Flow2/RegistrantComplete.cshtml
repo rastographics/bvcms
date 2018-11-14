@@ -14,7 +14,7 @@
     <span class="pull-right">
       @if (!Model.OnlyOneAllowed())
       {
-          var btntext = CurrentDatabase.Setting("RegisterSomeoneElseText", "Register Someone Else");
+          var btntext = DbUtil.Db.Setting("RegisterSomeoneElseText", "Register Someone Else");
         @Helper.OnlineRegAjaxButton("/OnlineReg/AddAnotherPerson/", btntext, style: "btn-primary min-width15em", id: "register-another")
       }
       @switch (specialcase)

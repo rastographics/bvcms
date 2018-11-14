@@ -9,7 +9,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
     [RouteArea("Dialog", AreaPrefix = "RepairTransactionsOrgs"), Route("{action}/{id?}")]
     public class RepairTransactionsOrgsController : CmsStaffController
     {
-        public RepairTransactionsOrgsController(RequestManager requestManager) : base(requestManager)
+        public RepairTransactionsOrgsController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

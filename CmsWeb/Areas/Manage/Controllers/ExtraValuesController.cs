@@ -10,7 +10,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage", AreaPrefix = "Manage/ExtraValues"), Route("{action}/{id?}")]
     public class ExtraValuesController : CmsStaffController
     {
-        public ExtraValuesController(RequestManager requestManager) : base(requestManager)
+        public ExtraValuesController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

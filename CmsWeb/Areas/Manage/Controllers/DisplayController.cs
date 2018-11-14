@@ -37,7 +37,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage", AreaPrefix = "Display"), Route("{action}/{id?}")]
     public class DisplayController : CmsStaffController
     {
-        public DisplayController(RequestManager requestManager) : base(requestManager)
+        public DisplayController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

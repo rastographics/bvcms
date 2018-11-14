@@ -2,7 +2,7 @@
 @using CmsData.View
 @model CmsWeb.Areas.People.Models.DuplicatesModel
 @{
-    var list = CurrentDatabase.PotentialDups(Model.person.PeopleId).ToList();
+    var list = DbUtil.Db.PotentialDups(Model.person.PeopleId).ToList();
 }
 @helper Section(List<PotentialDup> list, string description)
 {

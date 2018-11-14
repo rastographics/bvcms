@@ -4,7 +4,7 @@
     ViewBag.PageHeader = "Twilio Management";
     Layout = ViewExtensions2.TouchPointLayout();
     
-    var gl = from e in CurrentDatabase.SMSGroups
+    var gl = from e in DbUtil.Db.SMSGroups
              where e.IsDeleted == false
              select e;
 }
@@ -15,11 +15,11 @@
                 <div class="row">
                     @foreach (var item in gl)
                     {
-                        var numbers = from e in CurrentDatabase.SMSNumbers
+                        var numbers = from e in DbUtil.Db.SMSNumbers
                                       where e.GroupID == item.Id
                                       select e;
 
-                        var people = from e in CurrentDatabase.SMSGroupMembers
+                        var people = from e in DbUtil.Db.SMSGroupMembers
                                      where e.GroupID == item.Id
                                      select e;
 

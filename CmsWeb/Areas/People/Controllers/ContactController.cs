@@ -9,7 +9,7 @@ namespace CmsWeb.Areas.People.Controllers
     [RouteArea("People", AreaPrefix = "Contact2"), Route("{action}/{cid:int}")]
     public class ContactController : CmsStaffController
     {
-        public ContactController(RequestManager requestManager) : base(requestManager)
+        public ContactController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

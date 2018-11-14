@@ -7,7 +7,7 @@
         url = "/Person2/InlineEdit/" + Model.PeopleId,
         source = "/Person2/InlineCodes/"
     };
-    var NewMemberClassLabel = CurrentDatabase.Setting("NewMemberClassLabel", "New Member Class");
+    var NewMemberClassLabel = DbUtil.Db.Setting("NewMemberClassLabel", "New Member Class");
 }
 <form class="ajax validate" method="post" data-init="Editable">
     @Html.HiddenFor(m => m.PeopleId)

@@ -14,7 +14,7 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup", AreaPrefix = "Division"), Route("{action}/{id?}")]
     public class DivisionController : CmsStaffController
     {
-        public DivisionController(RequestManager requestManager) : base(requestManager)
+        public DivisionController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

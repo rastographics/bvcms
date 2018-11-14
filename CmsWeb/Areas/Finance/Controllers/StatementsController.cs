@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Finance.Controllers
     [RouteArea("Finance", AreaPrefix = "Statements"), Route("{action}")]
     public class StatementsController : CmsController
     {
-        public StatementsController(RequestManager requestManager) : base(requestManager)
+        public StatementsController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

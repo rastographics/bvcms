@@ -22,9 +22,9 @@
 {
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&key=AIzaSyAbzQ307GkTAzchqaHZVyT4X6nI40x3Ahg"></script>
 }
-else if (CurrentDatabase.GetSetting("GoogleMapsAPIKey","") != "")
+else if (DbUtil.Db.GetSetting("GoogleMapsAPIKey","") != "")
 {
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&key=@CurrentDatabase.GetSetting("GoogleMapsAPIKey","")"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&key=@DbUtil.Db.GetSetting("GoogleMapsAPIKey","")"></script>
 }
 else
 {

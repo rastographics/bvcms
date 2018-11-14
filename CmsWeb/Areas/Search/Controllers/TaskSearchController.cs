@@ -8,7 +8,7 @@ namespace CmsWeb.Areas.Search.Controllers
     [RouteArea("Search", AreaPrefix = "TaskSearch"), Route("{action}/{id?}")]
     public class TaskSearchController : CmsStaffController
     {
-        public TaskSearchController(RequestManager requestManager) : base(requestManager)
+        public TaskSearchController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

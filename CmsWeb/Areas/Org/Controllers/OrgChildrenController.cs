@@ -8,7 +8,7 @@ namespace CmsWeb.Areas.Org.Controllers
     [RouteArea("Org", AreaPrefix = "OrgChildren"), Route("{action}")]
     public class OrgChildrenController : CmsStaffController
     {
-        public OrgChildrenController(RequestManager requestManager) : base(requestManager)
+        public OrgChildrenController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

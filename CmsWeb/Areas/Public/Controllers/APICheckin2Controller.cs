@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Public.Controllers
         public const int ADD_ERROR_EXISTS = 1;
         public const int ADD_ERROR_OTHER = 2;
 
-        public APICheckin2Controller(RequestManager requestManager) : base(requestManager)
+        public APICheckin2Controller(IRequestManager requestManager) : base(requestManager)
         {
         }
 

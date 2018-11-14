@@ -8,7 +8,7 @@ namespace CmsWeb.Areas.Main.Controllers
     [RouteArea("Main", AreaPrefix = "UserPref"), Route("{action}/{id?}")]
     public class UserPrefController : CmsStaffController
     {
-        public UserPrefController(RequestManager requestManager) : base(requestManager)
+        public UserPrefController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

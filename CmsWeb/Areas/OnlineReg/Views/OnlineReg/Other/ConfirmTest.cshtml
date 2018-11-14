@@ -16,7 +16,7 @@
         <tr>
           <td>@i.ed.Id</td>
           <td>
-            <a href="@(CurrentDatabase.ServerLink("/OnlineReg/ConfirmTestXml"))/@i.ed.Id">@i.ed.Stamp.Value</a><br />
+            <a href="@(DbUtil.Db.ServerLink("/OnlineReg/ConfirmTestXml"))/@i.ed.Id">@i.ed.Stamp.Value</a><br />
             @(i.ed.Completed == true ? "completed" : "incomplete")
           </td>
           @if (i.m.Orgid > 0 && i.m.org != null)

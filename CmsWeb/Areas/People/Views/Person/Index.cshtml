@@ -11,8 +11,8 @@
     var portraitBgPos = Model.Picture.X.HasValue || Model.Picture.Y.HasValue ? $"{Model.Picture.X.GetValueOrDefault()}% {Model.Picture.Y.GetValueOrDefault()}%" : "top";
 
     var showResourcesTab = false;
-    var resourcesEnabled = CurrentDatabase.Setting("Resources-Enabled");
-    var canviewmemberstatus = User.IsInRole("Access") || !CurrentDatabase.Setting("HideMemberStatusFromMyData");
+    var resourcesEnabled = DbUtil.Db.Setting("Resources-Enabled");
+    var canviewmemberstatus = User.IsInRole("Access") || !DbUtil.Db.Setting("HideMemberStatusFromMyData");
     if (resourcesEnabled)
     {
         showResourcesTab = Model.PeopleId == Util.UserPeopleId || User.IsInRole("ViewResources");

@@ -7,7 +7,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage")]
     public class CheckinTimeController : CmsController
     {
-        public CheckinTimeController(RequestManager requestManager) : base(requestManager)
+        public CheckinTimeController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

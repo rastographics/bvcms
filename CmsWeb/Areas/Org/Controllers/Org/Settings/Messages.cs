@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.Org.Controllers
 {
     public partial class OrgController
     {
-        public OrgController(RequestManager requestManager) : base(requestManager)
+        public OrgController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

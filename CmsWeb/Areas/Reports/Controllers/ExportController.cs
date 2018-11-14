@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Reports.Controllers
     [RouteArea("Reports", AreaPrefix = "Export2"), Route("{action}/{id?}")]
     public class ExportController : CmsStaffController
     {
-        public ExportController(RequestManager requestManager) : base(requestManager)
+        public ExportController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

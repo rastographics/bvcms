@@ -9,7 +9,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
     [RouteArea("Dialog", AreaPrefix = "OrgMembersUpdate"), Route("{action}")]
     public class OrgMembersUpdateController : CmsStaffController
     {
-        public OrgMembersUpdateController(RequestManager requestManager) : base(requestManager)
+        public OrgMembersUpdateController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

@@ -9,7 +9,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
     [RouteArea("Dialog", AreaPrefix = "DeleteMeeting"), Route("{action}/{id?}")]
     public class DeleteMeetingController : CmsStaffController
     {
-        public DeleteMeetingController(RequestManager requestManager) : base(requestManager)
+        public DeleteMeetingController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

@@ -6,7 +6,7 @@ namespace CmsWeb.Controllers
 {
     public class SupportController : CmsController
     {
-        public SupportController(RequestManager requestManager) : base(requestManager)
+        public SupportController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

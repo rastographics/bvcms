@@ -7,7 +7,7 @@ namespace CmsWeb.Areas.People.Controllers
     [RouteArea("People", AreaPrefix = "DownlineDetail")]
     public class DownlineDetailController : CmsStaffController
     {
-        public DownlineDetailController(RequestManager requestManager) : base(requestManager)
+        public DownlineDetailController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

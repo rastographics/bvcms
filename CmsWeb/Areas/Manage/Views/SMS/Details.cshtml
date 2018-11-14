@@ -5,7 +5,7 @@
     Layout = ViewExtensions2.TouchPointLayout();
     int ListID = ViewBag.ListID;
     
-    var l = (from e in CurrentDatabase.SMSLists
+    var l = (from e in DbUtil.Db.SMSLists
              where e.Id == ListID
              select e).Single();
 }

@@ -11,7 +11,7 @@ namespace CmsWeb.Areas.Reports.Controllers
 {
     public partial class ReportsController
     {
-        public ReportsController(RequestManager requestManager) : base(requestManager)
+        public ReportsController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

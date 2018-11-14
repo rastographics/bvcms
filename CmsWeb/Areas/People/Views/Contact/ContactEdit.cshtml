@@ -27,10 +27,10 @@
                     @Html.EditorFor(m => m.ContactType)
                     @Html.EditorFor(m => m.ContactReason)
 
-                    @if (CurrentDatabase.Setting("UseContactVisitedOrgs") && CurrentDatabase.Setting("UX-ShowVisitedOrgEditDropdown"))
+                    @if (DbUtil.Db.Setting("UseContactVisitedOrgs") && DbUtil.Db.Setting("UX-ShowVisitedOrgEditDropdown"))
                     {
                         <div class="form-group">
-                            <label for="OrganizationId" class="control-label">@CurrentDatabase.Setting("UX-VisitedOrgLabel", "Visited Organization")</label>
+                            <label for="OrganizationId" class="control-label">@DbUtil.Db.Setting("UX-VisitedOrgLabel", "Visited Organization")</label>
                             <div class="controls">
                                 @Html.DropDownList("OrganizationId", new SelectList(Model.Organizations(), "Value", "Text"), new { @class = "form-control" })
                             </div>

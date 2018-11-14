@@ -13,7 +13,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage", AreaPrefix = "Duplicates"), Route("{action}")]
     public class DuplicatesController : CmsStaffController
     {
-        public DuplicatesController(RequestManager requestManager) : base(requestManager)
+        public DuplicatesController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

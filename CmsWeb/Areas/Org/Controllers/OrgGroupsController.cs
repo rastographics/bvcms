@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.Org.Controllers
     [RouteArea("Org", AreaPrefix = "OrgGroups"), Route("{action}/{id?}")]
     public class OrgGroupsController : CmsStaffController
     {
-        public OrgGroupsController(RequestManager requestManager) : base(requestManager)
+        public OrgGroupsController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

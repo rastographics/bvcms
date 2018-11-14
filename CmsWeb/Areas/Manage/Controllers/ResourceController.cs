@@ -20,7 +20,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     [Authorize(Roles = "ManageResources")]
     public class ResourceController : CmsStaffController
     {
-        public ResourceController(RequestManager requestManager) : base(requestManager)
+        public ResourceController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

@@ -9,7 +9,7 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup", AreaPrefix = "Twilio"), Route("{action}/{id?}")]
     public class TwilioController : CmsStaffController
     {
-        public TwilioController(RequestManager requestManager) : base(requestManager)
+        public TwilioController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

@@ -4,7 +4,7 @@
 @{
     // type must be either ProtectMyMinistryHelper.TYPE_BACKGROUND or ProtectMyMinistryHelper.TYPE_CREDIT
     int type = ViewBag.dialogType;
-    var s = from e in CurrentDatabase.BackgroundCheckMVRCodes
+    var s = from e in DbUtil.Db.BackgroundCheckMVRCodes
             orderby e.Description
             select e;
 }

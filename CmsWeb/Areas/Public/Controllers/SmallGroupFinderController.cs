@@ -9,7 +9,7 @@ namespace CmsWeb.Areas.Public.Controllers
 {
     public class SmallGroupFinderController : CMSBaseController
     {
-        public SmallGroupFinderController(RequestManager requestManager) : base(requestManager)
+        public SmallGroupFinderController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

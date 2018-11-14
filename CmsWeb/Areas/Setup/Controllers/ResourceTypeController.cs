@@ -10,7 +10,7 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup", AreaPrefix = "ResourceType"), Route("{action}/{id?}")]
     public class ResourceTypeController : CmsStaffController
     {
-        public ResourceTypeController(RequestManager requestManager) : base(requestManager)
+        public ResourceTypeController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

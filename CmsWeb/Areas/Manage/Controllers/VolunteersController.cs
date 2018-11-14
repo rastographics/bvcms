@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage", AreaPrefix = "Volunteers"), Route("{action}/{id?}")]
     public class VolunteersController : CmsStaffController
     {
-        public VolunteersController(RequestManager requestManager) : base(requestManager)
+        public VolunteersController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

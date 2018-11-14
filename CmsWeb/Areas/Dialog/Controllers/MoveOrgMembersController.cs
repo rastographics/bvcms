@@ -8,7 +8,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
     [RouteArea("Dialog", AreaPrefix = "MoveOrgMembers"), Route("{action}/{id?}")]
     public class MoveOrgMembersController : CmsStaffController
     {
-        public MoveOrgMembersController(RequestManager requestManager) : base(requestManager)
+        public MoveOrgMembersController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

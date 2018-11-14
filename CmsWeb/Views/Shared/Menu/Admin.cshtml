@@ -208,7 +208,7 @@
         @Helper.LiAnchorLink("Transactions", "/Transactions/", admin || managetrans || finance)
         @Helper.LiAnchorLink("User Email Delegation", "/UsersCanEmailFor/", admin || manageemails)
     }
-    if (manageResources && CurrentDatabase.Setting("Resources-Enabled"))
+    if (manageResources && DbUtil.Db.Setting("Resources-Enabled"))
     {
         <li class="dropdown-header dropdown-sub-header">Resources</li>
         @Helper.LiAnchorLink("Resource Types", "/ResourceTypes/")

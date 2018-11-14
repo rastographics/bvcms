@@ -5,7 +5,7 @@ namespace CmsWeb.Services.People
 {
     public class PeopleService : CMSBaseService, IPeopleService
     {
-        public PeopleService(RequestManager requestManager) : base(requestManager)
+        public PeopleService(IRequestManager requestManager) : base(requestManager)
         {
         }
 

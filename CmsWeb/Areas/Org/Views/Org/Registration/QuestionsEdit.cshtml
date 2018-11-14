@@ -1,7 +1,7 @@
 ﻿@using CmsData
 @model CmsData.Registration.Settings
 @{
-    ViewBag.ShowHelp = CurrentDatabase.UserPreference("ShowQuestionsHelp");
+    ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowQuestionsHelp");
 }
 <form class="ajax">
     @if (!Html.ViewData.ModelState.IsValid)

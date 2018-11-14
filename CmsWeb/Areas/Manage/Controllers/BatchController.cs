@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage", AreaPrefix = "Batch"), Route("{action}/{id?}")]
     public partial class BatchController : CmsStaffController
     {
-        public BatchController(RequestManager requestManager) : base(requestManager)
+        public BatchController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

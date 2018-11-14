@@ -11,7 +11,7 @@ namespace CmsWeb.Areas.Finance.Controllers
     [RouteArea("Finance", AreaPrefix = "Bundles"), Route("{action=index}")]
     public class BundlesController : CmsStaffController
     {
-        public BundlesController(RequestManager requestManager) : base(requestManager)
+        public BundlesController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

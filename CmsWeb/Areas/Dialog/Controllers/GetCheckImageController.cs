@@ -9,7 +9,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
     [RouteArea("Dialog", AreaPrefix = "GetCheckImage"), Route("{action}/{id?}")]
     public class GetCheckImageController : CMSBaseController
     {
-        public GetCheckImageController(RequestManager requestManager) : base(requestManager)
+        public GetCheckImageController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

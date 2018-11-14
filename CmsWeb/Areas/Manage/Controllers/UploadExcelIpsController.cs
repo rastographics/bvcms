@@ -15,7 +15,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage", AreaPrefix = "UploadExcelIps"), Route("{action=index}")]
     public class UploadExcelIpsController : CmsStaffController
     {
-        public UploadExcelIpsController(RequestManager requestManager) : base(requestManager)
+        public UploadExcelIpsController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

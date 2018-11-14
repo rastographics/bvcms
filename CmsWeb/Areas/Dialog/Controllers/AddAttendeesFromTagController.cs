@@ -8,7 +8,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
     [RouteArea("Dialog", AreaPrefix = "AddAttendeesFromTag"), Route("{action}/{id?}")]
     public class AddAttendeesFromTagController : CmsStaffController
     {
-        public AddAttendeesFromTagController(RequestManager requestManager) : base(requestManager)
+        public AddAttendeesFromTagController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

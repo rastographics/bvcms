@@ -4,7 +4,7 @@
 @model CmsWeb.Areas.Finance.Models.BundleModel
 @{
     var difference = Model.TotalHeader() - Model.TotalItems();
-  var customreport = CurrentDatabase.Setting("CustomBundleReport", "");
+  var customreport = DbUtil.Db.Setting("CustomBundleReport", "");
 }
 <div class="row">
     <div class="col-sm-12 col-md-12 col-lg-12">

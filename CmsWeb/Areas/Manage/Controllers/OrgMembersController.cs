@@ -8,7 +8,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage", AreaPrefix = "OrgMembers"), Route("{action=index}/{id?}")]
     public class OrgMembersController : CmsStaffController
     {
-        public OrgMembersController(RequestManager requestManager) : base(requestManager)
+        public OrgMembersController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

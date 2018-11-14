@@ -2,7 +2,7 @@
 @model CmsWeb.Areas.Org.Models.SettingsGeneralModel
 @{
     ViewBag.FalseValue = "";
-    var showhelp = CurrentDatabase.UserPreference("ShowGeneralHelp");
+    var showhelp = DbUtil.Db.UserPreference("ShowGeneralHelp");
     ViewBag.ShowHelp = showhelp;
     var mforg = Model.Org.IsBibleFellowshipOrg == true;
     var gradehelp = showhelp || mforg || Model.GradeAgeStart == null ? null : new { help = "See Show Help for how the Grade works only on Main Fellowship orgs" };

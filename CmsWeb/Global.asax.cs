@@ -32,10 +32,10 @@ namespace CmsWeb
             var container = new Container();
             container.Options.DefaultScopedLifestyle = new WebRequestLifestyle();
 
-            container.RegisterMvcControllers();
-            container.Verify();
-
             DependencyConfig.RegisterSimpleInjector(container);
+            container.RegisterMvcControllers();
+
+            //container.Verify();
 
             DependencyResolver.SetResolver(new SimpleInjectorDependencyResolver(container));
 

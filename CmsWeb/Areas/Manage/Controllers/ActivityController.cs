@@ -7,7 +7,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage", AreaPrefix = "Activity"), Route("{action}")]
     public class ActivityController : CmsStaffController
     {
-        public ActivityController(RequestManager requestManager) : base(requestManager)
+        public ActivityController(IRequestManager requestManager) : base(requestManager)
         {
         }
 

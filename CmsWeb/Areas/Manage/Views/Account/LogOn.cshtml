@@ -20,10 +20,10 @@
 else {
     <h1 class="form-header">@ViewExtensions2.DbSetting("NameOfChurch", "Name Of Church: " + Util.Host)</h1>
 }
-@if (CurrentDatabase.Util.LoginNotice().HasValue())
+@if (DbUtil.LoginNotice().HasValue())
 {
     <div>
-        <div class="alert alert-danger">@Html.Raw(CurrentDatabase.Util.LoginNotice())</div>
+        <div class="alert alert-danger">@Html.Raw(DbUtil.LoginNotice())</div>
     </div>
 }
 @if (ViewBag.error != null)

@@ -13,7 +13,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
     {
         private const string Fromcalendar = "fromcalendar";
 
-        public OnlineRegController(RequestManager requestManager) : base(requestManager)
+        public OnlineRegController(IRequestManager requestManager) : base(requestManager)
         {
         }
 
