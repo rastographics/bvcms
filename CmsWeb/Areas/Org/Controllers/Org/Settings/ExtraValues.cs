@@ -1,8 +1,7 @@
+using CmsWeb.Areas.Org.Models;
 using System;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Areas.Org.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Controllers
@@ -17,7 +16,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var m = new OrganizationModel();
             try
             {
-                m.Org.AddEditExtra(CurrentDatabase. field, value, multiline);
+                m.Org.AddEditExtra(CurrentDatabase, field, value, multiline);
                 CurrentDatabase.SubmitChanges();
             }
             catch (Exception ex)

@@ -65,7 +65,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
                     });
                 }
 
-                m.org.CopySettings(CurrentDatabase. id);
+                m.org.CopySettings(CurrentDatabase, id);
             }
             CurrentDatabase.SubmitChanges();
             DbUtil.LogActivity($"Add new org {m.org.OrganizationName}");

@@ -1,7 +1,7 @@
-using System.Linq;
-using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.People.Models;
+using System.Linq;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
@@ -40,7 +40,9 @@ namespace CmsWeb.Areas.People.Controllers
 
             var defaultRole = CurrentDatabase.Setting("Contacts-DefaultRole", null);
             if (!string.IsNullOrEmpty(defaultRole) && CurrentDatabase.Roles.Any(x => x.RoleName == defaultRole))
+            {
                 TempData["SetRole"] = defaultRole;
+            }
 
             TempData["ContactEdit"] = true;
             return Content("/Contact2/" + c.ContactId);
@@ -67,13 +69,15 @@ namespace CmsWeb.Areas.People.Controllers
             CurrentDatabase.Contacts.InsertOnSubmit(c);
             CurrentDatabase.SubmitChanges();
 
-            c.contactees.Add(new Contactee {PeopleId = p.PeopleId});
-            c.contactsMakers.Add(new Contactor {PeopleId = Util.UserPeopleId.Value});
+            c.contactees.Add(new Contactee { PeopleId = p.PeopleId });
+            c.contactsMakers.Add(new Contactor { PeopleId = Util.UserPeopleId.Value });
             CurrentDatabase.SubmitChanges();
 
             var defaultRole = CurrentDatabase.Setting("Contacts-DefaultRole", null);
             if (!string.IsNullOrEmpty(defaultRole) && CurrentDatabase.Roles.Any(x => x.RoleName == defaultRole))
+            {
                 TempData["SetRole"] = defaultRole;
+            }
 
             TempData["ContactEdit"] = true;
             return Content($"/Contact2/{c.ContactId}");
@@ -90,8 +94,11 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var p = CurrentDatabase.LoadPersonById(id);
             if (p == null || !Util.UserPeopleId.HasValue)
+            {
                 return Content("no id");
-            var t = p.AddTaskAbout(CurrentDatabase. Util.UserPeopleId.Value, "Please Contact");
+            }
+
+            var t = p.AddTaskAbout(CurrentDatabase, Util.UserPeopleId.Value, "Please Contact");
             CurrentDatabase.SubmitChanges();
             return Content($"/Task/{t.Id}");
         }

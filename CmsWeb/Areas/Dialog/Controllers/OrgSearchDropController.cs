@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost]
         public ActionResult Process(OrgSearchDrop model)
         {
-            model.UpdateLongRunningOp(CurrentDatabase. OrgSearchDrop.Op);
+            model.UpdateLongRunningOp(CurrentDatabase, OrgSearchDrop.Op);
             if (!model.Started.HasValue)
             {
                 DbUtil.LogActivity($"OrgSearchDrop {model.Count} Members from {model.OrgCount} Orgs");

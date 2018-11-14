@@ -1,13 +1,11 @@
-using System;
-using System.Reflection;
-using CmsData.View;
-using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.Wordprocessing;
-using OfficeOpenXml;
-using System.Linq;
 using CmsData;
 using CmsData.Codes;
+using CmsData.View;
+using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using System;
+using System.Linq;
+using System.Reflection;
 using UtilityExtensions;
 using TableStyles = OfficeOpenXml.Table.TableStyles;
 
@@ -17,17 +15,21 @@ namespace CmsWeb.Models
     {
         public static EpplusResult Export(Guid queryid)
         {
-            var filter = CurrentDatabase.OrgFilter(queryid);
+            var filter = DbUtil.Db.OrgFilter(queryid);
             if (filter.GroupSelect != GroupSelectCode.Member)
+            {
                 return new EpplusResult("EmptyResult.xlsx");
+            }
 
-            var peeps = CurrentDatabase.OrgFilterPeople(queryid, null)
+            var peeps = DbUtil.Db.OrgFilterPeople(queryid, null)
                 .Select(pp => pp.PeopleId).ToList();
-            var list = CurrentDatabase.CurrOrgMembers2(filter.Id.ToString(), string.Join(",", peeps));
+            var list = DbUtil.Db.CurrOrgMembers2(filter.Id.ToString(), string.Join(",", peeps));
 
             var count = list.Count();
-            if(count == 0)
+            if (count == 0)
+            {
                 return new EpplusResult("EmptyResult.xlsx");
+            }
 
             var cols = typeof(CurrOrgMembers2).GetProperties();
             var ep = new ExcelPackage();
@@ -75,12 +77,21 @@ namespace CmsWeb.Models
                 }
             }
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
-            if(userdatacol > 1)
+            if (userdatacol > 1)
+            {
                 ws.Column(userdatacol).Width = 40.0;
-            if(groupcol > 1)
+            }
+
+            if (groupcol > 1)
+            {
                 ws.Column(groupcol).Width = 60.0;
-            if(questionscol > 1)
+            }
+
+            if (questionscol > 1)
+            {
                 ws.Column(questionscol).Width = 40.0;
+            }
+
             return new EpplusResult(ep, "OrgMember.xlsx");
         }
     }

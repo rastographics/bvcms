@@ -1,13 +1,10 @@
-﻿using System;
+﻿using CmsData;
+using CmsData.Registration;
+using CmsWeb.Code;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using CmsData;
-using CmsData.Codes;
-using CmsData.Registration;
-using CmsWeb.Code;
-using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Models
 {
@@ -21,7 +18,9 @@ namespace CmsWeb.Areas.Org.Models
             set
             {
                 if (Org == null)
-                    Org = CurrentDatabase.LoadOrganizationById(value);
+                {
+                    Org = DbUtil.Db.LoadOrganizationById(value);
+                }
             }
         }
 
@@ -40,12 +39,12 @@ namespace CmsWeb.Areas.Org.Models
             this.CopyPropertiesTo(Org, typeof(OrgAttribute));
             RegSettings.OrgFees.Clear();
             this.CopyPropertiesTo(RegSettings, typeof(RegAttribute));
-            var os = CurrentDatabase.CreateRegistrationSettings(RegSettings.ToString(), Id);
+            var os = DbUtil.Db.CreateRegistrationSettings(RegSettings.ToString(), Id);
             Org.UpdateRegSetting(os);
-            CurrentDatabase.SubmitChanges();
+            DbUtil.Db.SubmitChanges();
         }
 
-        private Settings RegSettings => regsettings ?? (regsettings = CurrentDatabase.CreateRegistrationSettings(Id));
+        private Settings RegSettings => regsettings ?? (regsettings = DbUtil.Db.CreateRegistrationSettings(Id));
         private Settings regsettings;
 
         [Reg, Display(Description = FeeDescription)]

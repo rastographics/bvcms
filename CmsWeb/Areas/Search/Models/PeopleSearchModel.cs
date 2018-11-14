@@ -45,7 +45,7 @@ or just Last or *First*`space` for first name match only.
 
     public class PeopleSearchModel : PagerModel2
     {
-        private readonly CMSDataContext Db;
+        //private readonly CMSDataContext Db;
         private int TagTypeId { get; set; }
         private string TagName { get; set; }
         private int? TagOwner { get; set; }
@@ -55,7 +55,7 @@ or just Last or *First*`space` for first name match only.
 
         public PeopleSearchModel()
         {
-            Db = Db;
+            //Db = Db;
             Direction = "asc";
             Sort = "Name";
             TagTypeId = DbUtil.TagTypeId_Personal;

@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost]
         public ActionResult Process(RepairTransactions model)
         {
-            model.UpdateLongRunningOp(CurrentDatabase. RepairTransactions.Op);
+            model.UpdateLongRunningOp(CurrentDatabase, RepairTransactions.Op);
 
             if (!model.Started.HasValue)
             {

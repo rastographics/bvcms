@@ -63,7 +63,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity($"APIMeeting MarkRegistered {meetingid}, {peopleid}");
-            Attend.MarkRegistered(CurrentDatabase. peopleid, meetingid, CommitId);
+            Attend.MarkRegistered(CurrentDatabase, peopleid, meetingid, CommitId);
             return Content("ok");
         }
     }

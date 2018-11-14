@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Web.Http;
-using System.Web.OData;
-using AutoMapper;
+﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using CmsData;
 using CmsWeb.Models.Api;
+using System.Web.Http;
+using System.Web.OData;
 
 namespace CmsWeb.Controllers.Api
 {
@@ -14,10 +12,11 @@ namespace CmsWeb.Controllers.Api
         [EnableQuery(PageSize = ApiOptions.DefaultPageSize)]
         public IHttpActionResult Get()
         {
-            var config = new MapperConfiguration(cfg => {
+            var config = new MapperConfiguration(cfg =>
+            {
                 cfg.CreateMap<CmsData.View.ChAiIndividualDatum, ApiChAiPerson>();
             });
-            return Ok(CurrentDatabase.ViewChAiIndividualDatas.ProjectTo<ApiChAiPerson>(config));
+            return Ok(DbUtil.Db.ViewChAiIndividualDatas.ProjectTo<ApiChAiPerson>(config));
         }
     }
 }

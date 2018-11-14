@@ -1,11 +1,11 @@
-using System;
-using System.Linq;
-using System.Web.Mvc;
-using System.Web.Security;
 using CmsData;
 using CmsWeb.Areas.People.Models;
 using CmsWeb.Lifecycle;
 using CmsWeb.Models;
+using System;
+using System.Linq;
+using System.Web.Mvc;
+using System.Web.Security;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
@@ -30,7 +30,9 @@ namespace CmsWeb.Areas.People.Controllers
         {
             User u = null;
             if (id.HasValue)
+            {
                 u = CurrentDatabase.Users.Single(us => us.UserId == id);
+            }
             else
             {
                 u = AccountModel.AddUser(Util2.CurrentPeopleId);
@@ -56,15 +58,24 @@ namespace CmsWeb.Areas.People.Controllers
                 }
                 user.Username = u;
             }
-            user.SetRoles(CurrentDatabase. role);
+            user.SetRoles(CurrentDatabase, role);
             if (p.HasValue())
+            {
                 user.ChangePassword(p);
+            }
+
             CurrentDatabase.SubmitChanges();
             if (!user.PeopleId.HasValue)
+            {
                 throw new Exception("missing peopleid in UserUpdate");
+            }
+
             var pp = CurrentDatabase.LoadPersonById(user.PeopleId.Value);
             if (sendwelcome)
+            {
                 AccountModel.SendNewUserEmail(u);
+            }
+
             var name = Session["ActivePerson"] as string;
             DbUtil.LogPersonActivity($"Update User for: {name}", pp.PeopleId, name);
             InitExportToolbar(user.PeopleId);
@@ -86,13 +97,22 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var user = CurrentDatabase.Users.SingleOrDefault(uu => uu.UserId == id);
             if (user == null)
+            {
                 return Content("no user");
+            }
+
             if (user.Roles.Contains("Finance") && !User.IsInRole("Finance"))
+            {
                 return Content("cannot impersonate finance");
+            }
+
             Session.Remove("CurrentTag");
             Session.Remove("preferences");
             if (!User.IsInRole("Finance"))
+            {
                 Session["IsNonFinanceImpersonator"] = "true";
+            }
+
             FormsAuthentication.SetAuthCookie(user.Username, false);
             AccountModel.SetUserInfo(user.Username, Session);
             Util.UserPeopleId = user.PeopleId;

@@ -1,17 +1,17 @@
+using CmsData;
+using CmsWeb.Areas.OnlineReg.Models;
+using CmsWeb.Lifecycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Areas.OnlineReg.Models;
-using CmsWeb.Lifecycle;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
 {
     public partial class OnlineRegController
     {
-        const string Fromcalendar = "fromcalendar";
+        private const string Fromcalendar = "fromcalendar";
 
         public OnlineRegController(RequestManager requestManager) : base(requestManager)
         {
@@ -76,7 +76,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.subject = subject;
             m.message = message;
             if (pids == null)
+            {
                 return Content("no emails sent (no recipients were selected)");
+            }
+
             m.pids = pids;
             m.SendEmails();
             return Content("Emails are being sent, thank you.");
@@ -128,7 +131,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult ManageVolunteer(string id, int? pid)
         {
             if (!id.HasValue())
+            {
                 return Content("bad link");
+            }
+
             VolunteerModel m = null;
 
             var td = TempData["PeopleId"];
@@ -138,25 +144,37 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             else if (pid.HasValue)
             {
-                var leader = OrganizationMember.VolunteerLeaderInOrg(CurrentDatabase. id.ToInt2());
+                var leader = OrganizationMember.VolunteerLeaderInOrg(CurrentDatabase, id.ToInt2());
                 if (leader)
+                {
                     m = new VolunteerModel(id.ToInt(), pid.Value, true);
+                }
             }
             if (m == null)
             {
                 var guid = id.ToGuid();
                 if (guid == null)
+                {
                     return Content("invalid link");
+                }
+
                 var ot = CurrentDatabase.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
                 if (ot == null)
+                {
                     return Content("invalid link");
+                }
 #if DEBUG2
 #else
                 if (ot.Used)
+                {
                     return Content("link used");
+                }
 #endif
                 if (ot.Expires.HasValue && ot.Expires < DateTime.Now)
+                {
                     return Content("link expired");
+                }
+
                 var a = ot.Querystring.Split(',');
                 m = new VolunteerModel(a[0].ToInt(), a[1].ToInt());
                 id = a[0];

@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using CmsData;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using CmsData;
 
 namespace CmsWeb.Areas.Manage.Models
 {
@@ -14,15 +14,15 @@ namespace CmsWeb.Areas.Manage.Models
         public ResourceModel(int resourceId)
         {
             ResourceId = resourceId;
-            Resource = CurrentDatabase.Resources.First(x => x.ResourceId == resourceId);
-            Attachments = CurrentDatabase.ResourceAttachments.Where(x => x.ResourceId == resourceId).ToList();
+            Resource = DbUtil.Db.Resources.First(x => x.ResourceId == resourceId);
+            Attachments = DbUtil.Db.ResourceAttachments.Where(x => x.ResourceId == resourceId).ToList();
         }
 
         public ResourceModel(Resource resource)
         {
             Resource = resource;
             ResourceId = resource.ResourceId;
-            Attachments = CurrentDatabase.ResourceAttachments.Where(x => x.ResourceId == ResourceId).ToList();
+            Attachments = DbUtil.Db.ResourceAttachments.Where(x => x.ResourceId == ResourceId).ToList();
         }
 
         [DisplayName("Organizations")]
@@ -39,12 +39,15 @@ namespace CmsWeb.Areas.Manage.Models
         [DisplayName("Member Types")]
         public string MemberTypes
         {
-            get {
+            get
+            {
                 if (string.IsNullOrWhiteSpace(Resource.MemberTypeIds))
+                {
                     return string.Empty;
+                }
 
-                var memberTypeIds = Resource.MemberTypeIds.Split(',').Select(int.Parse) ;
-                return string.Join(", ", CurrentDatabase.MemberTypes.Where(x => memberTypeIds.Contains(x.Id)).Select(x => x.Description));
+                var memberTypeIds = Resource.MemberTypeIds.Split(',').Select(int.Parse);
+                return string.Join(", ", DbUtil.Db.MemberTypes.Where(x => memberTypeIds.Contains(x.Id)).Select(x => x.Description));
             }
         }
 
@@ -54,10 +57,12 @@ namespace CmsWeb.Areas.Manage.Models
             get
             {
                 if (string.IsNullOrWhiteSpace(Resource.StatusFlagIds))
+                {
                     return string.Empty;
+                }
 
                 var statusFlagIds = Resource.StatusFlagIds.Split(',');
-                return string.Join(", ", CurrentDatabase.ViewStatusFlagLists.Where(x => statusFlagIds.Contains(x.Flag)).Select(x => x.Name));
+                return string.Join(", ", DbUtil.Db.ViewStatusFlagLists.Where(x => statusFlagIds.Contains(x.Flag)).Select(x => x.Name));
             }
         }
 

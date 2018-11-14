@@ -1,6 +1,6 @@
-using System.Linq;
 using CmsData;
 using ImageData;
+using System.Linq;
 using DbUtil = ImageData.DbUtil;
 
 namespace CmsWeb.Models
@@ -45,7 +45,7 @@ namespace CmsWeb.Models
             Image i = null;
             try
             {
-                i = CurrentDatabase.Images.SingleOrDefault(ii => ii.Id == ImageId);
+                i = DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == ImageId);
             }
             catch
             {
@@ -56,7 +56,7 @@ namespace CmsWeb.Models
         public string ImageUrl()
         {
             return ImageId.HasValue
-                ? CmsData.CurrentDatabase.ServerLink($"/Portrait/{ImageId}/160/200")
+                ? CmsData.DbUtil.Db.ServerLink($"/Portrait/{ImageId}/160/200")
                 : "";
         }
     }

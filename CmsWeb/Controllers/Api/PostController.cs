@@ -1,12 +1,13 @@
-﻿using System;
+﻿using CmsData;
+using CmsData.Codes;
+using CmsWeb.Lifecycle;
+using CmsWeb.Models;
+using CmsWeb.Models.Api;
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using CmsData;
-using CmsData.Codes;
-using CmsWeb.Models;
-using CmsWeb.Models.Api;
 using UtilityExtensions;
 
 namespace CmsWeb.Controllers.Api
@@ -14,13 +15,24 @@ namespace CmsWeb.Controllers.Api
     [ApiWriteAuthorize]
     public class PostController : ApiController
     {
+        //todo: Inheritance chain
+        private readonly RequestManager RequestManager;
+        private CMSDataContext CurrentDatabase => RequestManager.CurrentDatabase;
+
+        public PostController(RequestManager requestManager)
+        {
+            RequestManager = requestManager;
+        }
         [HttpPost, Route("~/API/AddContribution/")]
         public HttpResponseMessage AddContribution([FromBody] AddContributionModel m)
         {
             try
             {
                 if (m == null)
+                {
                     throw new Exception("Missing data");
+                }
+
                 var result = m.Add(CurrentDatabase);
                 return Request.CreateResponse(HttpStatusCode.OK, result);
             }
@@ -36,9 +48,15 @@ namespace CmsWeb.Controllers.Api
             {
                 var c = CurrentDatabase.Contributions.SingleOrDefault(ic => ic.ContributionId == id);
                 if (c == null)
+                {
                     throw new Exception($"Contribution not found: {id}");
-                if(c.ContributionStatusId == ContributionStatusCode.Reversed)
+                }
+
+                if (c.ContributionStatusId == ContributionStatusCode.Reversed)
+                {
                     throw new Exception($"Contribution already reversed: {id}");
+                }
+
                 var r = ContributionSearchModel.CreateContributionRecord(c);
                 c.ContributionStatusId = ContributionStatusCode.Reversed;
                 r.ContributionTypeId = ContributionTypeCode.Reversed;
@@ -47,8 +65,11 @@ namespace CmsWeb.Controllers.Api
                 CurrentDatabase.SubmitChanges();
                 var result = new ReverseReturn();
                 result.ContributionId = r.ContributionId;
-                if(r.PeopleId.HasValue)
+                if (r.PeopleId.HasValue)
+                {
                     result.PeopleId = r.PeopleId.Value;
+                }
+
                 result.Source = $"API Reverse (source={source})";
 
                 var oid = CmsData.API.APIContribution.OneTimeGiftOrgId(CurrentDatabase);

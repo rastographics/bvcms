@@ -1,10 +1,9 @@
+using CmsData;
+using CmsWeb.Models;
 using System.Collections.Generic;
 using System.Data.Linq.SqlClient;
 using System.Linq;
-using System.Web;
 using System.Web.Security;
-using CmsData;
-using CmsWeb.Models;
 using UtilityExtensions;
 using Query = CmsData.Query;
 
@@ -26,32 +25,45 @@ namespace CmsWeb.Areas.Search.Models
 
         public override IQueryable<Query> DefineModelList()
         {
-            var q = from c in CurrentDatabase.Queries
+            var q = from c in DbUtil.Db.Queries
                     where !PublicOnly || c.Ispublic
                     where c.Name.Contains(SearchQuery) || c.Owner == SearchQuery || !SearchQuery.HasValue()
                     where c.Name != "OrgFilter"
                     select c;
             if (ScratchPadsOnly)
+            {
                 q = from c in q
                     where c.Name == Util.ScratchPad2
                     select c;
+            }
             else
+            {
                 q = from c in q
                     where c.Name != Util.ScratchPad2
                     select c;
+            }
+
             if (StatusFlagsOnly)
+            {
                 q = from c in q
                     where StatusFlagsOnly == false || SqlMethods.Like(c.Name, "F[0-9][0-9]%")
                     select c;
-            CurrentDatabase.SetUserPreference("SavedQueryOnlyMine", OnlyMine);
+            }
+
+            DbUtil.Db.SetUserPreference("SavedQueryOnlyMine", OnlyMine);
             if (OnlyMine)
+            {
                 q = from c in q
                     where c.Owner == Util.UserName
                     select c;
+            }
             else if (!admin)
+            {
                 q = from c in q
                     where c.Owner == Util.UserName || c.Ispublic
                     select c;
+            }
+
             return q;
         }
 

@@ -1,4 +1,3 @@
-using CmsData;
 using CmsWeb.Lifecycle;
 using CmsWeb.Models;
 using System.Web.Mvc;
@@ -43,7 +42,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             m.ValidateIds();
             CurrentDatabase.SetUserPreference("OrgMembersModelIds", $"{m.ProgId}.{m.SourceDivId}.{m.SourceId}");
-            DbDispose();
+            //DbDispose();
             CurrentDatabase.SetNoLock();
             return View(m);
         }

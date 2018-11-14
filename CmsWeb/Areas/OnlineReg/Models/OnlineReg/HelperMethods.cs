@@ -542,7 +542,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
 
         public static string YouMustAgreeStatement(int? orgid) => Util.PickFirst(
-            Organization.GetExtra(DbUtil.Db.orgid, "YouMustAgreeStatement"),
+            Organization.GetExtra(DbUtil.Db, orgid, "YouMustAgreeStatement"),
             "<p>You must agree to the terms above for you or your minor child before you can continue with confirmation.</p>");
 
         public string Terms
@@ -844,7 +844,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             //                    select om;
             foreach (var om in q)
             {
-                om.Drop(DbUtil.Db.DateTime.Now);
+                om.Drop(DbUtil.Db, DateTime.Now);
                 DbUtil.Db.ExecuteCommand("DELETE dbo.EnrollmentTransaction WHERE PeopleId = {0} AND OrganizationId = {1}", om.PeopleId, om.OrganizationId);
             }
             DbUtil.Db.SubmitChanges();

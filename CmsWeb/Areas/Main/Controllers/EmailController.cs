@@ -124,8 +124,9 @@ namespace CmsWeb.Areas.Main.Controllers
 
         private static void GetRecipientsFromOrg(MassEmailer me, int orgId, bool? onlyProspects, bool? membersAndProspects)
         {
-            var members = CurrentDatabase.OrgPeopleCurrent(orgId).Select(x => CurrentDatabase.LoadPersonById(x.PeopleId));
-            var prospects = CurrentDatabase.OrgPeopleProspects(orgId, false).Select(x => CurrentDatabase.LoadPersonById(x.PeopleId));
+            //todo: static ref, use injection
+            var members = DbUtil.Db.OrgPeopleCurrent(orgId).Select(x => DbUtil.Db.LoadPersonById(x.PeopleId));
+            var prospects = DbUtil.Db.OrgPeopleProspects(orgId, false).Select(x => DbUtil.Db.LoadPersonById(x.PeopleId));
 
             me.Recipients = new List<string>();
             me.RecipientIds = new List<int>();
@@ -189,6 +190,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
         private static int SaveDraft(int? draftId, string name, int roleId, string draftSubject, string draftBody)
         {
+            //todo: why static, use di?
             Content content = null;
 
             if (draftId.HasValue && draftId > 0)
@@ -198,7 +200,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
             if (content != null)
             {
-                CurrentDatabase.ArchiveContent(draftId);
+                DbUtil.Db.ArchiveContent(draftId);
             }
             else
             {
@@ -222,10 +224,10 @@ namespace CmsWeb.Areas.Main.Controllers
 
             if (!draftId.HasValue || draftId == 0)
             {
-                CurrentDatabase.Contents.InsertOnSubmit(content);
+                DbUtil.Db.Contents.InsertOnSubmit(content);
             }
 
-            CurrentDatabase.SubmitChanges();
+            DbUtil.Db.SubmitChanges();
 
             return content.Id;
         }
@@ -378,7 +380,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
             try
             {
-                ValidateEmailReplacementCodes(CurrentDatabase. m.Body, new MailAddress(m.FromAddress));
+                ValidateEmailReplacementCodes(CurrentDatabase, m.Body, new MailAddress(m.FromAddress));
             }
             catch (Exception ex)
             {
@@ -466,7 +468,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
             try
             {
-                ValidateEmailReplacementCodes(CurrentDatabase. m.Body, from);
+                ValidateEmailReplacementCodes(CurrentDatabase, m.Body, from);
 
                 CurrentDatabase.CopySession();
                 CurrentDatabase.Email(from, p, null, m.Subject, m.Body, false);
@@ -584,8 +586,8 @@ namespace CmsWeb.Areas.Main.Controllers
 
         private static void ValidateEmailReplacementCodes(CMSDataContext db, string emailText, MailAddress fromAddress)
         {
-            var er = new EmailReplacements(CurrentDatabase. emailText, fromAddress);
-            er.DoReplacements(CurrentDatabase. CurrentDatabase.LoadPersonById(Util.UserPeopleId ?? 0));
+            var er = new EmailReplacements(db, emailText, fromAddress);
+            er.DoReplacements(db, DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0));
         }
     }
 }

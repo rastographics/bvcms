@@ -5,12 +5,12 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
-using System;
-using System.IO;
-using System.Linq;
 using CmsData;
 using CmsData.Codes;
 using LumenWorks.Framework.IO.Csv;
+using System;
+using System.IO;
+using System.Linq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
@@ -20,7 +20,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
         public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
         {
             using (var csv = new CsvReader(new StringReader(text), true))
+            {
                 return Import(csv, date, fundid);
+            }
         }
 
         private static int? Import(CsvReader csv, DateTime date, int? fundid)
@@ -66,9 +68,12 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                     }
                 }
                 if (ac.ToInt() == 0)
+                {
                     ac = email;
+                }
+
                 var eac = Util.Encrypt(ac);
-                var q = from kc in CurrentDatabase.CardIdentifiers
+                var q = from kc in DbUtil.Db.CardIdentifiers
                         where kc.Id == eac
                         select kc.PeopleId;
                 var pid = q.SingleOrDefault();
@@ -79,13 +84,18 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                     bankac = eac;
                     string person;
                     if (last.HasValue())
+                    {
                         person = $"{last}, {first}; {addr}";
+                    }
                     else
+                    {
                         person = $"{name}; {addr}";
-                    ed = new ExtraDatum {Data = person, Stamp = Util.Now};
+                    }
+
+                    ed = new ExtraDatum { Data = person, Stamp = Util.Now };
                 }
                 BundleDetail bd = null;
-                var defaultfundid = CurrentDatabase.Setting("DefaultFundId", "1").ToInt();
+                var defaultfundid = DbUtil.Db.Setting("DefaultFundId", "1").ToInt();
                 for (var c = 0; c < csv.FieldCount; c++)
                 {
                     var col = cols[c].Trim();
@@ -95,15 +105,26 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                         bd = CreateContribution(date, fid ?? defaultfundid);
                         bd.Contribution.ContributionAmount = csv[c].GetAmount();
                         if (col == "Other")
+                        {
                             col = oth;
+                        }
+
                         if (!fundid.HasValue)
+                        {
                             bd.Contribution.ContributionDesc = col;
+                        }
+
                         if (ac.HasValue())
+                        {
                             bd.Contribution.BankAccount = bankac;
+                        }
+
                         bd.Contribution.PeopleId = pid;
                         bh.BundleDetails.Add(bd);
                         if (ed != null)
+                        {
                             bd.Contribution.ExtraDatum = ed;
+                        }
                     }
                 }
             }
@@ -116,12 +137,12 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             bh.TotalChecks = bh.BundleDetails.Sum(d => d.Contribution.ContributionAmount);
             bh.TotalCash = 0;
             bh.TotalEnvelopes = 0;
-            CurrentDatabase.SubmitChanges();
+            DbUtil.Db.SubmitChanges();
         }
 
         private static int? FindFund(string s)
         {
-            var qf = from f in CurrentDatabase.ContributionFunds
+            var qf = from f in DbUtil.Db.ContributionFunds
                      where f.FundName == s
                      select f;
             var fund = qf.FirstOrDefault();

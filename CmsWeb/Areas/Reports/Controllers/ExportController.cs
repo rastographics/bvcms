@@ -204,7 +204,7 @@ namespace CmsWeb.Areas.Reports.Controllers
 
         private static int maxExcelRows
         {
-            get { return CurrentDatabase.Setting("MaxExcelRows", "10000").ToInt(); }
+            get { return DbUtil.Db.Setting("MaxExcelRows", "10000").ToInt(); }
         }
 
         [HttpGet]

@@ -2,6 +2,7 @@
 @using UtilityExtensions
 @using roles = CmsData.User
 @model roles
+
 <form class="ajax" autocomplete="off">
     <div class="row">
         <div class="col-sm-7">
@@ -82,7 +83,7 @@
                 }
                 @if (roles.SpecialPurpose.Contains("OrgLeadersOnly"))
                 {
-                    if (!Model.CanAssign(CurrentDatabase. "OrgLeadersOnly"))
+                    if (!Model.CanAssign(DbUtil.Db, "OrgLeadersOnly"))
                     {
                         if (Model.Roles.Contains("OrgLeadersOnly"))
                         {
@@ -123,7 +124,7 @@
         <strong>Custom</strong>
         <div class="row">
             <div class="col-sm-12">
-                @foreach (var role in roles.CustomRoles(CurrentDatabase))
+                @foreach (var role in roles.CustomRoles(DbUtil.Db))
                 {
                     @Role(role)
                 }
@@ -139,7 +140,7 @@
 </form>
 @helper Role(string role)
 {
-  if (!Model.CanAssign(CurrentDatabase. role))
+  if (!Model.CanAssign(DbUtil.Db, role))
   {
     if (Model.Roles.Contains(@role))
     {

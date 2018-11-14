@@ -1,10 +1,9 @@
+using CmsData;
+using CmsData.Registration;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
-using CmsData;
 using UtilityExtensions;
-using CmsData.Registration;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -16,21 +15,33 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (masterorgid.HasValue)
             {
                 foreach (var o in UserSelectClasses(masterorg))
-                    list[o.OrganizationId] = CurrentDatabase.CreateRegistrationSettings(o.OrganizationId);
-                list[masterorg.OrganizationId] = CurrentDatabase.CreateRegistrationSettings(masterorg.OrganizationId);
+                {
+                    list[o.OrganizationId] = DbUtil.Db.CreateRegistrationSettings(o.OrganizationId);
+                }
+
+                list[masterorg.OrganizationId] = DbUtil.Db.CreateRegistrationSettings(masterorg.OrganizationId);
             }
             else if (_orgid == null)
+            {
                 return;
+            }
             else if (org != null)
-                list[_orgid.Value] = CurrentDatabase.CreateRegistrationSettings(_orgid.Value);
+            {
+                list[_orgid.Value] = DbUtil.Db.CreateRegistrationSettings(_orgid.Value);
+            }
+
             HttpContext.Current.Items["RegSettings"] = list;
 
-            if (org == null || !org.AddToSmallGroupScript.HasValue()) 
+            if (org == null || !org.AddToSmallGroupScript.HasValue())
+            {
                 return;
+            }
 
-            var script = CurrentDatabase.Content(org.AddToSmallGroupScript);
-            if (script == null || !script.Body.HasValue()) 
+            var script = DbUtil.Db.Content(org.AddToSmallGroupScript);
+            if (script == null || !script.Body.HasValue())
+            {
                 return;
+            }
 
             Log("Script:" + org.AddToSmallGroupScript);
             try

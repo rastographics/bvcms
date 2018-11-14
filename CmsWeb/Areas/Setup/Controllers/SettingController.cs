@@ -130,14 +130,14 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ContentResult DeleteImage(string id)
         {
             var iid = id.Substring(1).ToInt();
-            var img = ImageData.CurrentDatabase.Images.SingleOrDefault(m => m.Id == iid);
+            var img = ImageData.DbUtil.Db.Images.SingleOrDefault(m => m.Id == iid);
             if (img == null)
             {
                 return Content("#r0");
             }
 
-            ImageData.CurrentDatabase.Images.DeleteOnSubmit(img);
-            ImageData.CurrentDatabase.SubmitChanges();
+            ImageData.DbUtil.Db.Images.DeleteOnSubmit(img);
+            ImageData.DbUtil.Db.SubmitChanges();
             return Content("#r" + iid);
         }
     }

@@ -14,7 +14,7 @@ namespace CmsWeb.Models
 {
     public class TagsModel : PagerModel2
     {
-        private readonly CMSDataContext Db;
+        //private readonly CMSDataContext Db;
         private int TagTypeId { get; set; }
         private string TagName { get; set; }
         private int? TagOwner { get; set; }
@@ -24,7 +24,7 @@ namespace CmsWeb.Models
 
         public TagsModel()
         {
-            Db = Db;
+            //Db = Db;
             Direction = "asc";
             GetCount = Count;
             SetCurrentTag();

@@ -1,5 +1,4 @@
-﻿using CmsData;
-using System;
+﻿using CmsWeb.Lifecycle;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
@@ -8,8 +7,12 @@ using UtilityExtensions;
 
 namespace CmsWeb.Controllers
 {
-    public class WebHookController : Controller
+    public class WebHookController : CMSBaseController
     {
+        public WebHookController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [AllowAnonymous, HttpPost, Route("WebHook/Twilio/{Id}")]
         public ActionResult Twilio(int Id, string MessageSid, string SmsStatus)
         {
@@ -27,7 +30,7 @@ namespace CmsWeb.Controllers
                 }
             }
 
-            var db = Db;
+            //var db = Db;
 
             var smsItem = CurrentDatabase.SMSItems.FirstOrDefault(m => m.Id == Id);
 

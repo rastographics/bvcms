@@ -1,11 +1,11 @@
-using System;
-using System.Linq;
-using System.Web.Mvc;
 using CmsData;
 using CmsData.API;
 using CmsData.Codes;
 using CmsData.Registration;
 using CmsWeb.Areas.OnlineReg.Models;
+using System;
+using System.Linq;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
@@ -23,7 +23,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             var li = new LinkInfo(votelinkSTR, landingSTR, id);
             if (li.error.HasValue())
+            {
                 return Message(li.error);
+            }
 
             ViewBag.Id = id;
             ViewBag.Message = message;
@@ -39,31 +41,37 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             var li = new LinkInfo(votelinkSTR, confirmSTR, id);
             if (li.error.HasValue())
+            {
                 return Message(li.error);
+            }
 
             try
             {
                 var smallgroup = li.a[4];
 
                 if (!li.oid.HasValue)
+                {
                     throw new Exception("orgid missing");
+                }
 
                 if (!li.pid.HasValue)
+                {
                     throw new Exception("peopleid missing");
+                }
 
-                var q = (from pp in CurrentDatabase.People
+                var q = (from pp in DbUtil.Db.People
                          where pp.PeopleId == li.pid
-                         let org = CurrentDatabase.Organizations.SingleOrDefault(oo => oo.OrganizationId == li.oid)
-                         let om = CurrentDatabase.OrganizationMembers.SingleOrDefault(oo => oo.OrganizationId == li.oid && oo.PeopleId == li.pid)
+                         let org = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == li.oid)
+                         let om = DbUtil.Db.OrganizationMembers.SingleOrDefault(oo => oo.OrganizationId == li.oid && oo.PeopleId == li.pid)
                          select new { p = pp, org, om }).Single();
 
-                if (q.org == null && CurrentDatabase.Host == "trialdb")
+                if (q.org == null && DbUtil.Db.Host == "trialdb")
                 {
                     var oid = li.oid + Util.TrialDbOffset;
-                    q = (from pp in CurrentDatabase.People
+                    q = (from pp in DbUtil.Db.People
                          where pp.PeopleId == li.pid
-                         let org = CurrentDatabase.Organizations.SingleOrDefault(oo => oo.OrganizationId == oid)
-                         let om = CurrentDatabase.OrganizationMembers.SingleOrDefault(oo => oo.OrganizationId == oid && oo.PeopleId == li.pid)
+                         let org = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == oid)
+                         let om = DbUtil.Db.OrganizationMembers.SingleOrDefault(oo => oo.OrganizationId == oid && oo.PeopleId == li.pid)
                          select new { p = pp, org, om }).Single();
                 }
 
@@ -72,26 +80,34 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     throw new Exception("org missing, bad link");
                 }
                 if ((q.org.RegistrationTypeId ?? RegistrationTypeCode.None) == RegistrationTypeCode.None)
+                {
                     throw new Exception("votelink is no longer active");
+                }
 
-                if (q.om == null && q.org.Limit <= q.org.RegLimitCount(CurrentDatabase))
+                if (q.om == null && q.org.Limit <= q.org.RegLimitCount(DbUtil.Db))
+                {
                     throw new Exception("sorry, maximum limit has been reached");
+                }
 
                 if (q.om == null &&
                     (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive))
+                {
                     throw new Exception("sorry, registration has been closed");
+                }
 
-                var setting = CurrentDatabase.CreateRegistrationSettings(li.oid.Value);
+                var setting = DbUtil.Db.CreateRegistrationSettings(li.oid.Value);
                 if (IsSmallGroupFilled(setting, li.oid.Value, smallgroup))
+                {
                     throw new Exception("sorry, maximum limit has been reached for " + smallgroup);
+                }
 
-                var omb = OrganizationMember.Load(CurrentDatabase. li.pid.Value, li.oid.Value) ??
-                          OrganizationMember.InsertOrgMembers(CurrentDatabase.
+                var omb = OrganizationMember.Load(DbUtil.Db, li.pid.Value, li.oid.Value) ??
+                          OrganizationMember.InsertOrgMembers(DbUtil.Db,
                               li.oid.Value, li.pid.Value, MemberTypeCode.Member, Util.Now, null, false);
 
                 if (q.org.AddToSmallGroupScript.HasValue())
                 {
-                    var script = CurrentDatabase.Content(q.org.AddToSmallGroupScript);
+                    var script = DbUtil.Db.Content(q.org.AddToSmallGroupScript);
                     if (script != null && script.Body.HasValue())
                     {
                         try
@@ -104,9 +120,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                         }
                     }
                 }
-                omb.AddToGroup(CurrentDatabase. smallgroup);
+                omb.AddToGroup(DbUtil.Db, smallgroup);
                 li.ot.Used = true;
-                CurrentDatabase.SubmitChanges();
+                DbUtil.Db.SubmitChanges();
 
                 DbUtil.LogActivity($"{votelinkSTR}{confirmSTR}: {smallgroup}", li.oid, li.pid);
 
@@ -114,21 +130,21 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 {
                     var subject = Util.PickFirst(setting.Subject, "no subject");
                     var msg = Util.PickFirst(setting.Body, "no message");
-                    msg = APIOrganization.MessageReplacements(CurrentDatabase. q.p, q.org.DivisionName, q.org.OrganizationId, q.org.OrganizationName, q.org.Location, msg);
+                    msg = APIOrganization.MessageReplacements(DbUtil.Db, q.p, q.org.DivisionName, q.org.OrganizationId, q.org.OrganizationName, q.org.Location, msg);
                     msg = msg.Replace("{details}", smallgroup);
-                    var NotifyIds = CurrentDatabase.StaffPeopleForOrg(q.org.OrganizationId);
+                    var NotifyIds = DbUtil.Db.StaffPeopleForOrg(q.org.OrganizationId);
 
                     try
                     {
-                        CurrentDatabase.Email(NotifyIds[0].FromEmail, q.p, subject, msg); // send confirmation
+                        DbUtil.Db.Email(NotifyIds[0].FromEmail, q.p, subject, msg); // send confirmation
                     }
                     catch (Exception ex)
                     {
-                        CurrentDatabase.Email(q.p.FromEmail, NotifyIds,
+                        DbUtil.Db.Email(q.p.FromEmail, NotifyIds,
                             q.org.OrganizationName,
                             "There was a problem sending confirmation from org: " + ex.Message);
                     }
-                    CurrentDatabase.Email(q.p.FromEmail, NotifyIds,
+                    DbUtil.Db.Email(q.p.FromEmail, NotifyIds,
                         q.org.OrganizationName,
                         $"{q.p.Name} has registered for {q.org.OrganizationName}<br>{smallgroup}<br>(from votelink)");
                 }
@@ -146,7 +162,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             var li = new LinkInfo(rsvplinkSTR, landingSTR, id, false);
             if (li.error.HasValue())
+            {
                 return Message(li.error);
+            }
 
             ViewBag.Id = id;
             ViewBag.Message = message;
@@ -162,12 +180,16 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             var li = new LinkInfo(rsvplinkSTR, landingSTR, id, false);
             if (li.error.HasValue())
+            {
                 return Message(li.error);
+            }
 
             try
             {
                 if (!li.pid.HasValue)
+                {
                     throw new Exception("missing peopleid");
+                }
 
                 var meetingid = li.a[0].ToInt();
                 var emailid = li.a[2].ToInt();
@@ -175,51 +197,63 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (meetingid == 0 && li.a[0].EndsWith(".next"))
                 {
                     var orgid = li.a[0].Split('.')[0].ToInt();
-                    var nextmeet = (from mm in CurrentDatabase.Meetings
+                    var nextmeet = (from mm in DbUtil.Db.Meetings
                                     where mm.OrganizationId == orgid
                                     where mm.MeetingDate > DateTime.Now
                                     orderby mm.MeetingDate
                                     select mm).FirstOrDefault();
                     if (nextmeet == null)
+                    {
                         return Message("no meeting");
+                    }
+
                     meetingid = nextmeet.MeetingId;
                 }
-                var q = (from pp in CurrentDatabase.People
+                var q = (from pp in DbUtil.Db.People
                          where pp.PeopleId == li.pid
-                         let meeting = CurrentDatabase.Meetings.SingleOrDefault(mm => mm.MeetingId == meetingid)
+                         let meeting = DbUtil.Db.Meetings.SingleOrDefault(mm => mm.MeetingId == meetingid)
                          let org = meeting.Organization
                          select new { p = pp, org, meeting }).Single();
 
                 if (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive)
+                {
                     throw new Exception("sorry, registration has been closed");
+                }
 
                 if (q.org.RegistrationTypeId == RegistrationTypeCode.None)
+                {
                     throw new Exception("rsvp is no longer available");
+                }
 
                 if (q.org.Limit <= q.meeting.Attends.Count(aa => aa.Commitment == 1))
+                {
                     throw new Exception("sorry, maximum limit has been reached");
-                var omb = OrganizationMember.Load(CurrentDatabase. li.pid.Value, q.meeting.OrganizationId) ??
-                          OrganizationMember.InsertOrgMembers(CurrentDatabase.
+                }
+
+                var omb = OrganizationMember.Load(DbUtil.Db, li.pid.Value, q.meeting.OrganizationId) ??
+                          OrganizationMember.InsertOrgMembers(DbUtil.Db,
                               q.meeting.OrganizationId, li.pid.Value, MemberTypeCode.Member, DateTime.Now, null, false);
                 if (smallgroup.HasValue())
-                    omb.AddToGroup(CurrentDatabase. smallgroup);
+                {
+                    omb.AddToGroup(DbUtil.Db, smallgroup);
+                }
 
                 li.ot.Used = true;
-                CurrentDatabase.SubmitChanges();
-                Attend.MarkRegistered(CurrentDatabase. li.pid.Value, meetingid, regrets ? AttendCommitmentCode.Regrets : AttendCommitmentCode.Attending);
+                DbUtil.Db.SubmitChanges();
+                Attend.MarkRegistered(DbUtil.Db, li.pid.Value, meetingid, regrets ? AttendCommitmentCode.Regrets : AttendCommitmentCode.Attending);
                 DbUtil.LogActivity($"{rsvplinkSTR}{confirmSTR}: {regrets}", q.org.OrganizationId, li.pid);
-                var setting = CurrentDatabase.CreateRegistrationSettings(q.meeting.OrganizationId);
+                var setting = DbUtil.Db.CreateRegistrationSettings(q.meeting.OrganizationId);
 
                 if (confirm == true)
                 {
                     var subject = Util.PickFirst(setting.Subject, "no subject");
                     var msg = Util.PickFirst(setting.Body, "no message");
-                    msg = APIOrganization.MessageReplacements(CurrentDatabase. q.p, q.org.DivisionName, q.org.OrganizationId, q.org.OrganizationName, q.org.Location, msg);
+                    msg = APIOrganization.MessageReplacements(DbUtil.Db, q.p, q.org.DivisionName, q.org.OrganizationId, q.org.OrganizationName, q.org.Location, msg);
                     msg = msg.Replace("{details}", q.meeting.MeetingDate.ToString2("f"));
-                    var NotifyIds = CurrentDatabase.StaffPeopleForOrg(q.org.OrganizationId);
+                    var NotifyIds = DbUtil.Db.StaffPeopleForOrg(q.org.OrganizationId);
 
-                    CurrentDatabase.Email(NotifyIds[0].FromEmail, q.p, subject, msg); // send confirmation
-                    CurrentDatabase.Email(q.p.FromEmail, NotifyIds,
+                    DbUtil.Db.Email(NotifyIds[0].FromEmail, q.p, subject, msg); // send confirmation
+                    DbUtil.Db.Email(q.p.FromEmail, NotifyIds,
                         q.org.OrganizationName,
                         $"{q.p.Name} has registered for {q.org.OrganizationName}<br>{q.meeting.MeetingDate.ToString2("f")}");
                 }
@@ -238,45 +272,59 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             var li = new LinkInfo(registerlinkSTR, landingSTR, id);
             if (li.error.HasValue())
+            {
                 return Message(li.error);
+            }
 
             try
             {
                 if (!li.pid.HasValue)
+                {
                     throw new Exception("missing peopleid");
+                }
 
                 if (!li.oid.HasValue)
+                {
                     throw new Exception("missing orgid");
+                }
 
                 var linktype = li.a.Length > 3 ? li.a[3].Split(':') : "".Split(':');
                 int? gsid = null;
                 if (linktype[0].Equal("supportlink"))
+                {
                     gsid = linktype.Length > 1 ? linktype[1].ToInt() : 0;
+                }
 
-                var q = (from pp in CurrentDatabase.People
+                var q = (from pp in DbUtil.Db.People
                          where pp.PeopleId == li.pid
-                         let org = CurrentDatabase.Organizations.SingleOrDefault(oo => oo.OrganizationId == li.oid)
-                         let om = CurrentDatabase.OrganizationMembers.SingleOrDefault(oo => oo.OrganizationId == li.oid && oo.PeopleId == li.pid)
+                         let org = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == li.oid)
+                         let om = DbUtil.Db.OrganizationMembers.SingleOrDefault(oo => oo.OrganizationId == li.oid && oo.PeopleId == li.pid)
                          select new { p = pp, org, om }).Single();
 
-                if (q.org == null && CurrentDatabase.Host == "trialdb")
+                if (q.org == null && DbUtil.Db.Host == "trialdb")
                 {
                     var oid = li.oid + Util.TrialDbOffset;
-                    q = (from pp in CurrentDatabase.People
+                    q = (from pp in DbUtil.Db.People
                          where pp.PeopleId == li.pid
-                         let org = CurrentDatabase.Organizations.SingleOrDefault(oo => oo.OrganizationId == oid)
-                         let om = CurrentDatabase.OrganizationMembers.SingleOrDefault(oo => oo.OrganizationId == oid && oo.PeopleId == li.pid)
+                         let org = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == oid)
+                         let om = DbUtil.Db.OrganizationMembers.SingleOrDefault(oo => oo.OrganizationId == oid && oo.PeopleId == li.pid)
                          select new { p = pp, org, om }).Single();
                 }
 
                 if (q.org == null)
+                {
                     throw new Exception("org missing, bad link");
+                }
 
-                if (q.om == null && !gsid.HasValue && q.org.Limit <= q.org.RegLimitCount(CurrentDatabase))
+                if (q.om == null && !gsid.HasValue && q.org.Limit <= q.org.RegLimitCount(DbUtil.Db))
+                {
                     throw new Exception("sorry, maximum limit has been reached");
+                }
 
                 if (q.om == null && (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive))
+                {
                     throw new Exception("sorry, registration has been closed");
+                }
 
                 DbUtil.LogActivity($"{registerlinkSTR}{landingSTR}", li.oid, li.pid);
 
@@ -284,9 +332,15 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     ? $"/OnlineReg/{li.oid}?registertag={id}"
                     : $"/OnlineReg/{li.oid}?registertag={id}&source={source}";
                 if (gsid.HasValue)
+                {
                     url += "&gsid=" + gsid;
+                }
+
                 if (showfamily == true)
+                {
                     url += "&showfamily=true";
+                }
+
                 return Redirect(url);
             }
             catch (Exception ex)
@@ -301,7 +355,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             var li = new LinkInfo(sendlinkSTR, landingSTR, id);
             if (li.error.HasValue())
+            {
                 return Message(li.error);
+            }
 
             ViewBag.Id = id;
             DbUtil.LogActivity($"{sendlinkSTR}{landingSTR}", li.oid, li.pid);
@@ -314,41 +370,51 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             var li = new LinkInfo(sendlinkSTR, landingSTR, id);
             if (li.error.HasValue())
+            {
                 return Message(li.error);
+            }
 
             try
             {
                 if (!li.pid.HasValue)
+                {
                     throw new Exception("missing peopleid");
+                }
 
                 if (!li.oid.HasValue)
+                {
                     throw new Exception("missing orgid");
+                }
 
                 var queueid = li.a[2].ToInt();
                 var linktype = li.a[3]; // for supportlink, this will also have the goerid
-                var q = (from pp in CurrentDatabase.People
+                var q = (from pp in DbUtil.Db.People
                          where pp.PeopleId == li.pid
-                         let org = CurrentDatabase.LoadOrganizationById(li.oid)
+                         let org = DbUtil.Db.LoadOrganizationById(li.oid)
                          select new { p = pp, org }).Single();
 
-                if (q.org == null && CurrentDatabase.Host == "trialdb")
+                if (q.org == null && DbUtil.Db.Host == "trialdb")
                 {
                     var oid = li.oid + Util.TrialDbOffset;
-                    q = (from pp in CurrentDatabase.People
+                    q = (from pp in DbUtil.Db.People
                          where pp.PeopleId == li.pid
-                         let org = CurrentDatabase.LoadOrganizationById(oid)
+                         let org = DbUtil.Db.LoadOrganizationById(oid)
                          select new { p = pp, org }).Single();
                 }
 
                 if (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive)
+                {
                     throw new Exception("sorry, registration has been closed");
+                }
 
                 if (q.org.RegistrationTypeId == RegistrationTypeCode.None)
+                {
                     throw new Exception("sorry, registration is no longer available");
+                }
 
                 DbUtil.LogActivity($"{sendlinkSTR}{confirmSTR}", li.oid, li.pid);
 
-                var expires = DateTime.Now.AddMinutes(CurrentDatabase.Setting("SendlinkExpireMintues", "30").ToInt());
+                var expires = DateTime.Now.AddMinutes(DbUtil.Db.Setting("SendlinkExpireMintues", "30").ToInt());
                 var c = DbUtil.Content("SendLinkMessage");
                 if (c == null)
                 {
@@ -366,10 +432,10 @@ You may request another link by clicking the link in the original email you rece
 or contact the church if you need help.</p>
 "
                     };
-                    CurrentDatabase.Contents.InsertOnSubmit(c);
-                    CurrentDatabase.SubmitChanges();
+                    DbUtil.Db.Contents.InsertOnSubmit(c);
+                    DbUtil.Db.SubmitChanges();
                 }
-                var url = EmailReplacements.RegisterLinkUrl(CurrentDatabase.
+                var url = EmailReplacements.RegisterLinkUrl(DbUtil.Db,
                     li.oid.Value, li.pid.Value, queueid, linktype, expires);
                 var subject = c.Title.Replace("{org}", q.org.OrganizationName);
                 var msg = c.Body.Replace("{org}", q.org.OrganizationName)
@@ -377,8 +443,8 @@ or contact the church if you need help.</p>
                     .Replace("{url}", url)
                     .Replace("%7Burl%7D", url);
 
-                var NotifyIds = CurrentDatabase.StaffPeopleForOrg(q.org.OrganizationId);
-                CurrentDatabase.Email(NotifyIds[0].FromEmail, q.p, subject, msg); // send confirmation
+                var NotifyIds = DbUtil.Db.StaffPeopleForOrg(q.org.OrganizationId);
+                DbUtil.Db.Email(NotifyIds[0].FromEmail, q.p, subject, msg); // send confirmation
 
                 return Message($"Thank you, {q.p.PreferredName}, we just sent an email to {Util.ObscureEmail(q.p.EmailAddress)} with your link...");
             }
@@ -391,14 +457,14 @@ or contact the church if you need help.</p>
 
         private bool IsSmallGroupFilled(Settings setting, int orgid, string sg)
         {
-            var GroupTags = (from mt in CurrentDatabase.OrgMemMemTags
+            var GroupTags = (from mt in DbUtil.Db.OrgMemMemTags
                              where mt.OrgId == orgid
                              select mt.MemberTag.Name).ToList();
             return setting.AskItems.Where(aa => aa.Type == "AskDropdown").Any(aa => ((AskDropdown)aa).IsSmallGroupFilled(GroupTags, sg))
                    || setting.AskItems.Where(aa => aa.Type == "AskCheckboxes").Any(aa => ((AskCheckboxes)aa).IsSmallGroupFilled(GroupTags, sg));
         }
 
-        const string otherRegisterlinkmaster = "Other/RegisterLinkMaster";
+        private const string otherRegisterlinkmaster = "Other/RegisterLinkMaster";
         public ActionResult RegisterLinkMaster(int id)
         {
             var pid = TempData["PeopleId"] as int?;
@@ -406,10 +472,14 @@ or contact the church if you need help.</p>
 
             var m = new OnlineRegModel { Orgid = id };
             if (User.Identity.IsAuthenticated)
+            {
                 return View(otherRegisterlinkmaster, m);
+            }
 
             if (pid == null)
+            {
                 return Message("Must start with a registerlink");
+            }
 
             SetHeaders(id.ToInt());
             return View(otherRegisterlinkmaster, m);
@@ -432,17 +502,28 @@ or contact the church if you need help.</p>
                 try
                 {
                     if (!id.HasValue())
+                    {
                         throw LinkException("missing id");
+                    }
+
                     var guid = id.ToGuid();
                     if (guid == null)
+                    {
                         throw LinkException("invalid id");
-                    ot = CurrentDatabase.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
+                    }
+
+                    ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
                     if (ot == null)
+                    {
                         throw LinkException("missing link");
+                    }
 
                     a = ot.Querystring.SplitStr(",", 5);
                     if (hasorg)
+                    {
                         oid = a[0].ToInt();
+                    }
+
                     pid = a[1].ToInt();
 #if DEBUG
 #else
@@ -479,23 +560,31 @@ or contact the church if you need help.</p>
         {
             var li = new LinkInfo("dropfromorg", confirmSTR, id);
             if (li.error.HasValue())
+            {
                 return Message(li.error);
+            }
 
             if (!li.oid.HasValue)
+            {
                 throw new Exception("orgid missing");
+            }
 
             if (!li.pid.HasValue)
+            {
                 throw new Exception("peopleid missing");
+            }
 
-            var org = CurrentDatabase.LoadOrganizationById(li.oid);
-            if(org == null)
+            var org = DbUtil.Db.LoadOrganizationById(li.oid);
+            if (org == null)
+            {
                 throw new Exception("no such organization");
+            }
 
-            var om = CurrentDatabase.OrganizationMembers.SingleOrDefault(mm => mm.OrganizationId == li.oid && mm.PeopleId == li.pid);
+            var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(mm => mm.OrganizationId == li.oid && mm.PeopleId == li.pid);
 
-            om?.Drop(CurrentDatabase);
+            om?.Drop(DbUtil.Db);
             li.ot.Used = true;
-            CurrentDatabase.SubmitChanges();
+            DbUtil.Db.SubmitChanges();
 
             DbUtil.LogActivity($"dropfromorg confirm: {id}", li.oid, li.pid);
             return Message($"You have been successfully removed from {org.Title ?? org.OrganizationName}");

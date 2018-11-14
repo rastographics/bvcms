@@ -50,8 +50,8 @@ namespace CmsWeb.Areas.Finance.Controllers
                 Count = 0,
                 Processed = 0
             };
-            var db = Db;
-            var cs = Models.Report.ContributionStatements.GetStatementSpecification(CurrentDatabase. customstatement);
+            //var db = Db;
+            var cs = Models.Report.ContributionStatements.GetStatementSpecification(CurrentDatabase, customstatement);
 
             if (!startswith.HasValue())
             {
@@ -67,7 +67,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                     tagid = null;
                 }
 
-                var qc = APIContribution.Contributors(CurrentDatabase. fromDate.Value, endDate.Value, 0, 0, 0, cs.Funds, noaddressok, useMinAmt, startswith, sort, tagid: tagid, excludeelectronic: excludeelectronic);
+                var qc = APIContribution.Contributors(CurrentDatabase, fromDate.Value, endDate.Value, 0, 0, 0, cs.Funds, noaddressok, useMinAmt, startswith, sort, tagid: tagid, excludeelectronic: excludeelectronic);
                 return ExcelExportModel.ToDataTable(qc.ToList()).ToExcel("Contributors.xlsx");
             }
             CurrentDatabase.ContributionsRuns.InsertOnSubmit(runningtotals);

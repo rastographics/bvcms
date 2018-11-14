@@ -1,9 +1,9 @@
-﻿using System;
+﻿using CmsData;
+using CmsData.OnlineRegSummaryText;
+using System;
 using System.Linq;
 using System.Text;
 using UtilityExtensions;
-using CmsData;
-using CmsData.OnlineRegSummaryText;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -13,15 +13,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string PrepareSummaryText(CMSDataContext db)
         {
             if (RecordFamilyAttendance())
+            {
                 return SummarizeFamilyAttendance();
+            }
 
             var om = GetOrgMember();
             if (om == null)
+            {
                 return "";
+            }
 
             try
             {
-                return SummaryInfo.GetResults(CurrentDatabase. om.PeopleId, om.OrganizationId);
+                return SummaryInfo.GetResults(DbUtil.Db, om.PeopleId, om.OrganizationId);
             }
             catch (Exception ex)
             {
@@ -39,21 +43,38 @@ namespace CmsWeb.Areas.OnlineReg.Models
             sb1.AppendFormat("<tr><td>Last:</td><td>{0}</td></tr>\n", person.LastName);
             var sb = sb1;
             foreach (var m in FamilyAttend.Where(m => m.Attend))
+            {
                 if (m.PeopleId != null)
+                {
                     sb.Append($"<tr><td colspan=\"2\">{m.Name}{(m.Age.HasValue ? $" ({Person.AgeDisplay(m.Age, m.PeopleId)})" : "")}</td></tr>\n");
+                }
                 else
                 {
                     sb.Append($"<tr><td colspan=\"2\">{m.Name}{(m.Age.HasValue ? $" ({Person.AgeDisplay(m.Age, m.PeopleId)})" : "")}");
                     if (m.Email.HasValue())
+                    {
                         sb.Append($", {m.Email}");
+                    }
+
                     if (m.Birthday.HasValue())
+                    {
                         sb.Append($", {m.Birthday}");
+                    }
+
                     if (m.MaritalId.HasValue)
+                    {
                         sb.Append($", {m.Marital}");
+                    }
+
                     if (m.GenderId.HasValue)
+                    {
                         sb.Append($", {m.Gender}");
+                    }
+
                     sb.Append("</td></tr>\n");
                 }
+            }
+
             sb.AppendLine("</table>");
             return sb.ToString();
         }

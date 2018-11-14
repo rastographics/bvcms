@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using CmsData;
+﻿using CmsData;
+using System.Linq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -13,22 +13,32 @@ namespace CmsWeb.Areas.OnlineReg.Models
             get
             {
                 if (_person == null)
+                {
                     if (PeopleId.HasValue)
                     {
-                        _person = CurrentDatabase.LoadPersonById(PeopleId.Value);
+                        _person = DbUtil.Db.LoadPersonById(PeopleId.Value);
                         count = 1;
                     }
                     else
                     {
-                        var list = CurrentDatabase.FindPerson(FirstName, LastName, birthday, EmailAddress, Phone.GetDigits()).ToList();
+                        var list = DbUtil.Db.FindPerson(FirstName, LastName, birthday, EmailAddress, Phone.GetDigits()).ToList();
                         count = list.Count;
                         if (count == 1)
-                            _person = CurrentDatabase.LoadPersonById(list[0].PeopleId ?? 0);
+                        {
+                            _person = DbUtil.Db.LoadPersonById(list[0].PeopleId ?? 0);
+                        }
+
                         if (_person != null)
+                        {
                             PeopleId = _person.PeopleId;
+                        }
                         else
+                        {
                             Log("PersonNotFound");
+                        }
                     }
+                }
+
                 return _person;
             }
         }

@@ -1,8 +1,8 @@
+using CmsData;
+using CmsWeb.Areas.Search.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CmsData;
-using CmsWeb.Areas.Search.Models;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -32,7 +32,7 @@ namespace CmsWeb.Areas.Reports.Models
         {
             var q = FetchOrgs();
             var list = (from o in q
-                        join m in CurrentDatabase.Meetings on o.OrganizationId equals m.OrganizationId into mr
+                        join m in DbUtil.Db.Meetings on o.OrganizationId equals m.OrganizationId into mr
                         from m in mr.Where(m => m.MeetingDate >= Dt1 && m.MeetingDate <= Dt2).DefaultIfEmpty()
                         where (m != null && m.MaxCount > 0) || NoZero == false
                         select new MeetingInfo
@@ -54,7 +54,9 @@ namespace CmsWeb.Areas.Reports.Models
                             Inactive = o.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Inactive
                         }).ToList();
             if (NoZero == false)
+            {
                 list = list.Where(m => m.Inactive == false).ToList();
+            }
 
             MeetingsCount = list.Count(a => a.Attended > 0);
             TotalAttends = list.Sum(m => m.Attended ?? 0);
@@ -63,7 +65,7 @@ namespace CmsWeb.Areas.Reports.Models
             OtherAttends = list.Sum(m => m.OtherAttends ?? 0);
 
             var attends = from o in q
-                          join m in CurrentDatabase.Meetings on o.OrganizationId equals m.OrganizationId into mr
+                          join m in DbUtil.Db.Meetings on o.OrganizationId equals m.OrganizationId into mr
                           from m in mr.Where(m => m.MeetingDate >= Dt1 && m.MeetingDate <= Dt2)
                           let div = o.Division
                           from a in m.Attends
@@ -118,16 +120,22 @@ namespace CmsWeb.Areas.Reports.Models
 
         public string ConvertToSearch(string type)
         {
-            var cc = CurrentDatabase.ScratchPadCondition();
+            var cc = DbUtil.Db.ScratchPadCondition();
             cc.Reset();
             var c = cc.AddNewClause(type == "Guests" ? QueryType.GuestAsOf : QueryType.AttendedAsOf, CompareType.Equal, "1,True");
             if (ProgramId.HasValue && ProgramId > 0)
+            {
                 c.Program = ProgramId.Value.ToString();
+            }
+
             if (DivisionId.HasValue && DivisionId > 0)
+            {
                 c.Division = DivisionId.Value.ToString();
+            }
+
             c.StartDate = Dt1;
             c.EndDate = Dt2;
-            cc.Save(CurrentDatabase);
+            cc.Save(DbUtil.Db);
             return "/Query/" + cc.Id;
         }
     }

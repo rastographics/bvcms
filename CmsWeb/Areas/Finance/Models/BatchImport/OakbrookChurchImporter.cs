@@ -5,11 +5,11 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 
-using System;
-using System.Linq;
 using CmsData;
 using CmsData.Codes;
 using LumenWorks.Framework.IO.Csv;
+using System;
+using System.Linq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
@@ -27,7 +27,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
             BundleHeader bh = null;
 
-            var qf = from f in CurrentDatabase.ContributionFunds
+            var qf = from f in DbUtil.Db.ContributionFunds
                      where f.FundStatusId == 1
                      orderby f.FundId
                      select f.FundId;
@@ -37,12 +37,17 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 if (csv[16] == "Credit")
                 {
                     if (bh != null)
+                    {
                         BatchImportContributions.FinishBundle(bh);
+                    }
+
                     bh = BatchImportContributions.GetBundleHeader(date, DateTime.Now);
                     continue;
                 }
                 if (bh == null)
+                {
                     bh = BatchImportContributions.GetBundleHeader(date, DateTime.Now);
+                }
 
                 var bd = new BundleDetail
                 {
@@ -69,12 +74,15 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
                 bd.Contribution.CheckNo = ck;
                 var eac = Util.Encrypt(rt + "|" + ac);
-                var q = from kc in CurrentDatabase.CardIdentifiers
+                var q = from kc in DbUtil.Db.CardIdentifiers
                         where kc.Id == eac
                         select kc.PeopleId;
                 var pid = q.SingleOrDefault();
                 if (pid != null)
+                {
                     bd.Contribution.PeopleId = pid;
+                }
+
                 bd.Contribution.BankAccount = eac;
                 bh.BundleDetails.Add(bd);
             }

@@ -1,18 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Xml;
-using System.Web.Mvc;
-using System.Xml.Linq;
-using UtilityExtensions;
-using System.Linq;
 using CmsData;
+using System.Linq;
+using System.Web.Mvc;
+using System.Xml;
+using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
     public class NameSearchResult2 : ActionResult
     {
-        private string name;
-        private int page;
+        private readonly string name;
+        private readonly int page;
         public NameSearchResult2(string name, int page)
         {
             this.name = name;
@@ -31,17 +28,21 @@ namespace CmsWeb.Models
 
                 string first;
                 string last;
-                var q = CurrentDatabase.People.Select(p => p);
+                var q = DbUtil.Db.People.Select(p => p);
                 Util.NameSplit(name, out first, out last);
                 if (first.HasValue())
+                {
                     q = from p in q
                         where (p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last))
                             && (p.FirstName.StartsWith(first) || p.NickName.StartsWith(first) || p.MiddleName.StartsWith(first))
                         select p;
+                }
                 else
+                {
                     q = from p in q
                         where p.LastName.StartsWith(last) || p.FirstName.StartsWith(last) || p.NickName.StartsWith(last) || p.MiddleName.StartsWith(last)
                         select p;
+                }
 
                 var q2 = from p in q
                          let recreg = p.RecRegs.FirstOrDefault()
@@ -50,7 +51,7 @@ namespace CmsWeb.Models
                          select new SearchInfo2
                          {
                              cell = p.CellPhone,
-                             home= p.HomePhone,
+                             home = p.HomePhone,
                              addr = p.Family.AddressLineOne,
                              age = p.Age,
                              first = p.FirstName,
@@ -77,15 +78,27 @@ namespace CmsWeb.Models
                 const int INT_PageSize = 10;
                 var startrow = (page - 1) * INT_PageSize;
                 if (startrow < 0)
+                {
                     startrow = 0;
+                }
+
                 if (count > startrow + INT_PageSize)
+                {
                     w.WriteAttributeString("next", (page + 1).ToString());
+                }
                 else
+                {
                     w.WriteAttributeString("next", "");
+                }
+
                 if (page > 1)
+                {
                     w.WriteAttributeString("prev", (page - 1).ToString());
+                }
                 else
+                {
                     w.WriteAttributeString("prev", "");
+                }
 
                 foreach (var p in q2.Skip(startrow).Take(INT_PageSize))
                 {
@@ -113,7 +126,7 @@ namespace CmsWeb.Models
                     w.WriteAttributeString("emphone", p.emphone);
                     w.WriteAttributeString("activeother", p.activeother.ToString());
                     w.WriteAttributeString("church", p.church);
-                    
+
                     w.WriteEndElement();
                 }
                 w.WriteEndElement();

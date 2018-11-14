@@ -4,11 +4,11 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+using CmsData;
+using CmsWeb.Areas.Search.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CmsData;
-using CmsWeb.Areas.Search.Models;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -29,7 +29,7 @@ namespace CmsWeb.Areas.Reports.Models
         public IEnumerable<AttendInfo> list()
         {
             var orgs = FetchOrgs();
-            var q = from a in CurrentDatabase.Attends
+            var q = from a in DbUtil.Db.Attends
                     join o in orgs on a.Meeting.OrganizationId equals o.OrganizationId
                     where a.MeetingDate.Date == CheckinDate
                     where a.AttendanceFlag

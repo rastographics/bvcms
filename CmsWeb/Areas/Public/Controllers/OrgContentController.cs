@@ -137,7 +137,7 @@ namespace CmsWeb.Areas.Public
         {
             var o = OrgContentInfo.Get(id);
             o.Html = Html;
-            ImageData.CurrentDatabase.SubmitChanges();
+            ImageData.DbUtil.Db.SubmitChanges();
             return Redirect("/OrgContent/" + id);
         }
     }

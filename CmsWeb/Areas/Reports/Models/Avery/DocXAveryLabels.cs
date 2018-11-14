@@ -137,7 +137,7 @@ namespace CmsWeb.Models
 
         private static byte[] AveryLabelTemplate()
         {
-            var loc = CurrentDatabase.Setting("AveryLabelTemplate", "");
+            var loc = DbUtil.Db.Setting("AveryLabelTemplate", "");
             if (loc.HasValue())
             {
                 var wc = new WebClient();

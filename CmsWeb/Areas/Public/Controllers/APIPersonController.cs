@@ -71,16 +71,17 @@ namespace CmsWeb.Areas.Public.Controllers
 
         public static string GetOTLoginLink(string url, string user)
         {
+            //todo: static?
             var ot = new OneTimeLink
             {
                 Id = Guid.NewGuid(),
                 Querystring = user,
                 Expires = DateTime.Now.AddHours(24)
             };
-            CurrentDatabase.OneTimeLinks.InsertOnSubmit(ot);
-            CurrentDatabase.SubmitChanges();
+            DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
+            DbUtil.Db.SubmitChanges();
 
-            var b = CurrentDatabase.ServerLink();
+            var b = DbUtil.Db.ServerLink();
             if (url.StartsWith(b))
             {
                 url = url.Substring(b.Length - (b.EndsWith("/") ? 1 : 0));

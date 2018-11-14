@@ -292,7 +292,7 @@ namespace CmsWeb.Areas.Search.Controllers
                 if (content.Contains("pagebreak", ignoreCase: true))
                 {
                     var p = m.GetSqlParameters(oids, dt1, dt2, content);
-                    ViewBag.Results = PythonModel.PageBreakTables(CurrentDatabase. content, p);
+                    ViewBag.Results = PythonModel.PageBreakTables(CurrentDatabase, content, p);
                     return View();
                 }
                 ViewBag.Results = m.SqlTable(report, oids, dt1, dt2);
@@ -320,14 +320,14 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult ToggleTag(int id, int tagdiv)
         {
-            var Db = Db;
+            //var Db = Db;
             var organization = CurrentDatabase.LoadOrganizationById(id);
             if (tagdiv == 0)
             {
                 return Json(new { error = "bad tagdiv" });
             }
 
-            var t = organization.ToggleTag(CurrentDatabase. tagdiv);
+            var t = organization.ToggleTag(CurrentDatabase, tagdiv);
             CurrentDatabase.SubmitChanges();
             var m = new OrgSearchModel { StatusId = 0, TagDiv = tagdiv, Name = id.ToString() };
             var o = m.OrganizationList().SingleOrDefault();
@@ -342,7 +342,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult MainDiv(int id, int tagdiv)
         {
-            var Db = Db;
+            //var Db = Db;
             CurrentDatabase.SetMainDivision(id, tagdiv);
             var m = new OrgSearchModel { TagDiv = tagdiv, Name = id.ToString() };
             var o = m.OrganizationList().SingleOrDefault();
@@ -375,7 +375,7 @@ namespace CmsWeb.Areas.Search.Controllers
                        select o;
             foreach (var o in orgs)
             {
-                o.CopySettings(CurrentDatabase. frorg);
+                o.CopySettings(CurrentDatabase, frorg);
             }
 
             return new EmptyResult();
@@ -461,7 +461,7 @@ namespace CmsWeb.Areas.Search.Controllers
             foreach (var oid in orgIds)
             {
                 var db = DbUtil.Create(Util.Host);
-                Meeting.FetchOrCreateMeeting(CurrentDatabase. oid, dt, noautoabsents);
+                Meeting.FetchOrCreateMeeting(CurrentDatabase, oid, dt, noautoabsents);
                 CurrentDatabase.Dispose();
             }
             DbUtil.LogActivity("Creating new meetings from OrgSearch");

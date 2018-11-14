@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost]
         public ActionResult Process(MoveOrgMembersModel model)
         {
-            model.UpdateLongRunningOp(CurrentDatabase. MoveOrgMembersModel.Op);
+            model.UpdateLongRunningOp(CurrentDatabase, MoveOrgMembersModel.Op);
 
             if (!model.Started.HasValue)
             {

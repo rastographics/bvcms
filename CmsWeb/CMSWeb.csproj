@@ -398,6 +398,7 @@
   <ItemGroup>
     <Compile Include="App_Start\ApiMessageLoggingHandler.cs" />
     <Compile Include="App_Start\ApiAuthorizeAttribute.cs" />
+    <Compile Include="App_Start\DependencyConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddResourceController.cs" />
@@ -837,7 +838,6 @@
     <Compile Include="Controllers\ScriptController.cs" />
     <Compile Include="Controllers\MobileAppMenuController.cs" />
     <Compile Include="Controllers\WebHookController.cs" />
-    <Compile Include="Lifecycle\DependencyInjectionAdapter.cs" />
     <Compile Include="Lifecycle\RequestManager.cs" />
     <Compile Include="Models\Api\ApiChAiGift.cs" />
     <Compile Include="Models\Api\ApiOrganization.cs" />

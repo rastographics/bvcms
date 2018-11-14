@@ -1,11 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Xml;
-using System.Web.Mvc;
-using System.Xml.Linq;
-using UtilityExtensions;
-using System.Linq;
 using CmsData;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
+using System.Xml;
+using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
@@ -15,10 +13,10 @@ namespace CmsWeb.Models
         private Meeting meeting;
         public ClassResult(int OrgId, int thisday)
         {
-            var mid = CurrentDatabase.GetTodaysMeetingId(OrgId, thisday);
+            var mid = DbUtil.Db.GetTodaysMeetingId(OrgId, thisday);
             if (mid != null)
             {
-                meeting = CurrentDatabase.Meetings.SingleOrDefault(m => m.MeetingId == mid);
+                meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.MeetingId == mid);
                 if (meeting != null)
                 {
                     var q = from a in meeting.Attends
@@ -32,7 +30,10 @@ namespace CmsWeb.Models
         public override void ExecuteResult(ControllerContext context)
         {
             if (meeting == null)
+            {
                 return;
+            }
+
             context.HttpContext.Response.ContentType = "text/xml";
             var settings = new XmlWriterSettings();
             settings.Encoding = new System.Text.UTF8Encoding(false);
@@ -47,7 +48,9 @@ namespace CmsWeb.Models
                     w.WriteAttributeString("Time", meeting.MeetingDate.Value.ToString("t"));
                     w.WriteAttributeString("Count", meeting.MaxCount.ToString());
                     foreach (var f in items)
+                    {
                         w.WriteElementString("Name", f);
+                    }
                 }
                 w.WriteEndElement();
             }

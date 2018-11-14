@@ -1,10 +1,10 @@
-using System.Collections.Generic;
-using System.Linq;
 using CmsData;
 using CmsData.View;
 using CmsWeb.Areas.Search.Models;
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CmsWeb.Models
 {
@@ -12,7 +12,7 @@ namespace CmsWeb.Models
     {
         public static List<MissionTripTotal> List(int id)
         {
-            var q = from t in CurrentDatabase.ViewMissionTripTotals
+            var q = from t in DbUtil.Db.ViewMissionTripTotals
                     where t.OrganizationId == id
                     orderby t.OrganizationId, t.SortOrder
                     select t;
@@ -21,8 +21,8 @@ namespace CmsWeb.Models
         public static List<MissionTripTotal> List(OrgSearchModel m)
         {
             var orgids = string.Join(",", m.FetchOrgs().Select(mm => mm.OrganizationId));
-            var q = from t in CurrentDatabase.ViewMissionTripTotals
-                    join i in CurrentDatabase.SplitInts(orgids) on t.OrganizationId equals i.ValueX
+            var q = from t in DbUtil.Db.ViewMissionTripTotals
+                    join i in DbUtil.Db.SplitInts(orgids) on t.OrganizationId equals i.ValueX
                     orderby t.OrganizationId, t.SortOrder
                     select t;
             return q.ToList();
@@ -30,11 +30,14 @@ namespace CmsWeb.Models
 
         public static decimal TotalDue(int? pid, int? oid)
         {
-            var tt = (from t in CurrentDatabase.ViewMissionTripTotals
-                    where t.PeopleId == pid && t.OrganizationId == oid
-                    select t).SingleOrDefault();
+            var tt = (from t in DbUtil.Db.ViewMissionTripTotals
+                      where t.PeopleId == pid && t.OrganizationId == oid
+                      select t).SingleOrDefault();
             if (tt == null)
+            {
                 return 0;
+            }
+
             return tt.Due ?? 0;
         }
         public static EpplusResult Result(OrgSearchModel m)

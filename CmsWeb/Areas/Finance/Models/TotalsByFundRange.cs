@@ -34,7 +34,7 @@ namespace CmsWeb.Models
 
         public IEnumerable<RangeInfo> GetTotalsByFundRange()
         {
-            var customFundIds = APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db.FundSet);
+            var customFundIds = APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db, FundSet);
             var authorizedFundIds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership().Select(f => f.FundId).ToList();
 
             string fundIds = string.Empty;

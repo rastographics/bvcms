@@ -1,11 +1,8 @@
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 using CmsData;
 using CmsData.Classes.RoleChecker;
 using CmsWeb.Code;
-using CmsWeb.Models;
+using System.ComponentModel;
+using System.Linq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Models
@@ -19,7 +16,9 @@ namespace CmsWeb.Areas.Org.Models
             set
             {
                 if (Org == null)
-                    Org = CurrentDatabase.LoadOrganizationById(value);
+                {
+                    Org = DbUtil.Db.LoadOrganizationById(value);
+                }
             }
         }
 
@@ -62,11 +61,14 @@ namespace CmsWeb.Areas.Org.Models
             get
             {
                 if (_schedule.HasValue())
+                {
                     return _schedule;
-                var sch = (from sc in CurrentDatabase.OrgSchedules
-                    where sc.OrganizationId == Id
-                    orderby sc.Id
-                    select sc).FirstOrDefault();
+                }
+
+                var sch = (from sc in DbUtil.Db.OrgSchedules
+                           where sc.OrganizationId == Id
+                           orderby sc.Id
+                           select sc).FirstOrDefault();
                 return _schedule = sch == null ? "None" : (new ScheduleInfo(sch)).Display;
             }
         }
@@ -74,7 +76,7 @@ namespace CmsWeb.Areas.Org.Models
         public void Update()
         {
             this.CopyPropertiesTo(Org);
-            CurrentDatabase.SubmitChanges();
+            DbUtil.Db.SubmitChanges();
         }
     }
 }

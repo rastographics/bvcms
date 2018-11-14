@@ -28,7 +28,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 return View("Index", model);
             }
 
-            model.UpdateLongRunningOp(CurrentDatabase. ValidateAddress.Op);
+            model.UpdateLongRunningOp(CurrentDatabase, ValidateAddress.Op);
             if (model.ShowCount(CurrentDatabase))
             {
                 return View("Index", model); // let them confirm by seeing the count and the tagname

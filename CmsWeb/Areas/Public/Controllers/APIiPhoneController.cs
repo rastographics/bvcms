@@ -221,8 +221,8 @@ namespace CmsWeb.Areas.Public.Controllers
 
             p.UpdateValue(psb, "MaritalStatusId", m.marital);
 
-            p.LogChanges(CurrentDatabase. psb);
-            p.Family.LogChanges(CurrentDatabase. fsb, p.PeopleId, Util.UserPeopleId ?? 0);
+            p.LogChanges(CurrentDatabase, psb);
+            p.Family.LogChanges(CurrentDatabase, fsb, p.PeopleId, Util.UserPeopleId ?? 0);
             CurrentDatabase.SubmitChanges();
             if (!CurrentDatabase.Setting("NotifyCheckinChanges", "true").ToBool() || (psb.Count <= 0 && fsb.Count <= 0))
             {
@@ -260,7 +260,7 @@ namespace CmsWeb.Areas.Public.Controllers
             var om = CurrentDatabase.OrganizationMembers.SingleOrDefault(m => m.PeopleId == peopleId && m.OrganizationId == orgId);
             if (om == null && member)
             {
-                om = OrganizationMember.InsertOrgMembers(CurrentDatabase.
+                om = OrganizationMember.InsertOrgMembers(CurrentDatabase,
                     orgId, peopleId, MemberTypeCode.Member, DateTime.Now, null, false);
                 DbUtil.LogActivity($"iphone join(org:{orgId} person:{peopleId})");
             }
@@ -322,9 +322,10 @@ namespace CmsWeb.Areas.Public.Controllers
 
         private static int RecordAttend2Extracted(int id, int peopleId, bool present, DateTime dt, User u)
         {
-            var meetingId = CurrentDatabase.CreateMeeting(id, dt);
+            //todo: static
+            var meetingId = DbUtil.Db.CreateMeeting(id, dt);
             Attend.RecordAttendance(peopleId, meetingId, present);
-            CurrentDatabase.UpdateMeetingCounters(id);
+            DbUtil.Db.UpdateMeetingCounters(id);
             DbUtil.LogActivity($"Mobile RecAtt o:{id} p:{peopleId} u:{Util.UserPeopleId} a:{present}");
             return meetingId;
         }

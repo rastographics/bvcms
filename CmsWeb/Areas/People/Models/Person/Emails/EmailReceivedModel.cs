@@ -9,7 +9,7 @@ namespace CmsWeb.Areas.People.Models
 
         public override IQueryable<EmailQueue> DefineModelList()
         {
-            var q = from e in CurrentDatabase.EmailQueues
+            var q = from e in DbUtil.Db.EmailQueues
                     where e.Sent != null
                     where !(e.Transactional ?? false)
                     where e.EmailQueueTos.Any(ee => 

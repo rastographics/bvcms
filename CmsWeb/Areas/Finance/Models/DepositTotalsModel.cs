@@ -1,13 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
 using CmsData;
 using CmsData.View;
-using UtilityExtensions;
 using Dapper;
+using System;
+using System.Collections.Generic;
 using System.Data;
-using System.Web.Security;
+using System.Data.SqlClient;
+using System.Linq;
+using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
@@ -23,14 +22,17 @@ namespace CmsWeb.Models
             var today = Util.Now.Date;
             var first = new DateTime(today.Year, today.Month, 1);
             if (today.Day < 8)
+            {
                 first = first.AddMonths(-1);
+            }
+
             Dt1 = first;
             Dt2 = first.AddMonths(1).AddDays(-1);
         }
 
         public IEnumerable<DepositDateTotal> FetchData()
         {
-            var authorizedFunds = CurrentDatabase.ContributionFunds.ScopedByRoleMembership().Select(f => f.FundId).ToList();
+            var authorizedFunds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership().Select(f => f.FundId).ToList();
             var authorizedFundsCsv = string.Join(",", authorizedFunds);
 
             var connection = new SqlConnection(Util.ConnectionString);

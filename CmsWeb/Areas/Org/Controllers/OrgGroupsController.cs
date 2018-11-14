@@ -38,7 +38,7 @@ namespace CmsWeb.Areas.Org.Controllers
                      select om;
             foreach (var om in q2)
             {
-                om.AddToGroup(CurrentDatabase. sgname);
+                om.AddToGroup(CurrentDatabase, sgname);
             }
 
             CurrentDatabase.SubmitChanges();
@@ -56,7 +56,7 @@ namespace CmsWeb.Areas.Org.Controllers
             {
                 foreach (var om in q2)
                 {
-                    om.MakeLeaderOfGroup(CurrentDatabase. m.groupid.GetValueOrDefault());
+                    om.MakeLeaderOfGroup(CurrentDatabase, m.groupid.GetValueOrDefault());
                 }
             }
 
@@ -75,7 +75,7 @@ namespace CmsWeb.Areas.Org.Controllers
             {
                 foreach (var om in q2)
                 {
-                    om.RemoveAsLeaderOfGroup(CurrentDatabase. m.groupid.GetValueOrDefault());
+                    om.RemoveAsLeaderOfGroup(CurrentDatabase, m.groupid.GetValueOrDefault());
                 }
             }
             CurrentDatabase.SubmitChanges();
@@ -104,7 +104,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 return Content("error: no group name");
             }
 
-            var Db = Db;
+            //var Db = Db;
             var group = CurrentDatabase.MemberTags.SingleOrDefault(g =>
                 g.Name == m.GroupName && g.OrgId == m.orgid);
             if (group == null)

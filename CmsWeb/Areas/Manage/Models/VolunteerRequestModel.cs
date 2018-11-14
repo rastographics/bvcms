@@ -16,13 +16,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
 {
     public class VolunteerRequestModel
     {
-        private readonly CMSDataContext Db;
+        //private readonly CMSDataContext Db;
         private List<PotentialSubstitute> potentialSubs;
         private Settings setting;
 
         public VolunteerRequestModel()
         {
-            Db = Db;
+            //Db = Db;
         }
 
         public VolunteerRequestModel(int mid, int pid, long ticks)

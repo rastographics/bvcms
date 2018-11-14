@@ -503,7 +503,7 @@ Option 2
                 }
 
                 DbUtil.Db.SubmitChanges();
-                DbDispose();
+                //DbDispose();
             }
             return null;
         }
@@ -522,7 +522,7 @@ Option 2
                 }
 
                 DbUtil.Db.SubmitChanges();
-                DbDispose();
+                //DbDispose();
             }
             return null;
         }
@@ -541,7 +541,7 @@ Option 2
                 }
 
                 DbUtil.Db.SubmitChanges();
-                DbDispose();
+                //DbDispose();
             }
             return null;
         }
@@ -560,7 +560,7 @@ Option 2
                 }
 
                 DbUtil.Db.SubmitChanges();
-                DbDispose();
+                //DbDispose();
             }
             return null;
         }
@@ -579,7 +579,7 @@ Option 2
                 }
 
                 DbUtil.Db.SubmitChanges();
-                DbDispose();
+                //DbDispose();
             }
             return null;
         }

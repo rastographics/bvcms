@@ -1,5 +1,5 @@
-﻿using System;
-using CmsData;
+﻿using CmsData;
+using System;
 using System.Linq;
 using UtilityExtensions;
 
@@ -42,7 +42,7 @@ namespace CmsWeb.CheckInAPI
             checkedIn = familyMember.CheckedIn.Value;
             //labels = familyMember.NumLabels.Value;
 
-            Organization orgInfo = CurrentDatabase.Organizations.SingleOrDefault(a => a.OrganizationId == familyMember.OrgId);
+            Organization orgInfo = DbUtil.Db.Organizations.SingleOrDefault(a => a.OrganizationId == familyMember.OrgId);
 
             if (orgInfo != null)
             {
@@ -60,9 +60,13 @@ namespace CmsWeb.CheckInAPI
                     int dayDiff = day - DateTime.Now.DayOfWeek.ToInt();
 
                     if (dayDiff < 0)
+                    {
                         theirTime = theirTime.AddDays(7 + dayDiff);
+                    }
                     else
+                    {
                         theirTime = theirTime.AddDays(dayDiff);
+                    }
                 }
 
                 leadTime = (int)familyMember.Hour.Value.Subtract(theirTime).TotalMinutes;
@@ -80,9 +84,13 @@ namespace CmsWeb.CheckInAPI
                     int dayDiff = day - DateTime.Now.DayOfWeek.ToInt();
 
                     if (dayDiff < 0)
+                    {
                         theirTime = theirTime.AddDays(7 + dayDiff);
+                    }
                     else
+                    {
                         theirTime = theirTime.AddDays(dayDiff);
+                    }
                 }
 
                 leadTime = (int)hour.Value.Subtract(theirTime).TotalMinutes;

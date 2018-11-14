@@ -96,7 +96,7 @@ namespace CmsWeb.Areas.People.Controllers
         {
             if (Util2.CurrentTagName == tagname && !(cleartagfirst ?? false))
             {
-                Person.Tag(CurrentDatabase. id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
+                Person.Tag(CurrentDatabase, id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
                 CurrentDatabase.SubmitChanges();
                 return Content("OK");
             }
@@ -106,7 +106,7 @@ namespace CmsWeb.Areas.People.Controllers
                 CurrentDatabase.ClearTag(tag);
             }
 
-            Person.Tag(CurrentDatabase. id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
+            Person.Tag(CurrentDatabase, id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
             CurrentDatabase.SubmitChanges();
             Util2.CurrentTag = tagname;
             CurrentDatabase.TagCurrent();
@@ -115,7 +115,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult UnTag(int id)
         {
-            Person.UnTag(CurrentDatabase. id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
+            Person.UnTag(CurrentDatabase, id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
             CurrentDatabase.SubmitChanges();
             return new EmptyResult();
         }
@@ -127,13 +127,13 @@ namespace CmsWeb.Areas.People.Controllers
             switch (name)
             {
                 case "ContributionOptions":
-                    m.Person.UpdateContributionOption(CurrentDatabase. value.ToInt());
+                    m.Person.UpdateContributionOption(CurrentDatabase, value.ToInt());
                     break;
                 case "EnvelopeOptions":
-                    m.Person.UpdateEnvelopeOption(CurrentDatabase. value.ToInt());
+                    m.Person.UpdateEnvelopeOption(CurrentDatabase, value.ToInt());
                     break;
                 case "ElectronicStatement":
-                    m.Person.UpdateElectronicStatement(CurrentDatabase. value.ToBool());
+                    m.Person.UpdateElectronicStatement(CurrentDatabase, value.ToBool());
                     break;
             }
             return new EmptyResult();

@@ -5,11 +5,11 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 
+using CmsData;
+using CmsData.Codes;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
-using CmsData;
-using CmsData.Codes;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
@@ -31,9 +31,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 ContributionDate = date,
                 CreatedBy = Util.UserId,
                 CreatedDate = now,
-                FundId = CurrentDatabase.Setting("DefaultFundId", "1").ToInt()
+                FundId = DbUtil.Db.Setting("DefaultFundId", "1").ToInt()
             };
-            CurrentDatabase.BundleHeaders.InsertOnSubmit(bh);
+            DbUtil.Db.BundleHeaders.InsertOnSubmit(bh);
 
             var re = new Regex(
 @"(T(?<rt>[\d?]+)T(?<ac>[\d ?]*)U\s*(?<ck>[\d?]+))|
@@ -51,7 +51,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                     CreatedDate = now,
                 };
                 bh.BundleDetails.Add(bd);
-                var qf = from f in CurrentDatabase.ContributionFunds
+                var qf = from f in DbUtil.Db.ContributionFunds
                          where f.FundStatusId == 1
                          orderby f.FundId
                          select f.FundId;
@@ -67,12 +67,15 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 };
                 bd.Contribution.ContributionDesc = ck;
                 var eac = Util.Encrypt(rt + "," + ac);
-                var q = from kc in CurrentDatabase.CardIdentifiers
+                var q = from kc in DbUtil.Db.CardIdentifiers
                         where kc.Id == eac
                         select kc.PeopleId;
                 var pid = q.SingleOrDefault();
                 if (pid != null)
+                {
                     bd.Contribution.PeopleId = pid;
+                }
+
                 bd.Contribution.BankAccount = eac;
                 bd.Contribution.ContributionDesc = ck;
 
@@ -81,7 +84,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             bh.TotalChecks = 0;
             bh.TotalCash = 0;
             bh.TotalEnvelopes = 0;
-            CurrentDatabase.SubmitChanges();
+            DbUtil.Db.SubmitChanges();
             return bh.BundleHeaderId;
         }
     }

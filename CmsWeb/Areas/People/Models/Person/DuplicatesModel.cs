@@ -13,7 +13,7 @@ namespace CmsWeb.Areas.People.Models
         public List<PotentialDup> MatchThis { get; set; }
         public DuplicatesModel(int id)
         {
-            person = CurrentDatabase.LoadPersonById(id);
+            person = DbUtil.Db.LoadPersonById(id);
             MatchThis = new List<PotentialDup>
             {
                 new PotentialDup()

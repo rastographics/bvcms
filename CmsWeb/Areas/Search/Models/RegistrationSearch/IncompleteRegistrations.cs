@@ -1,10 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.PerformanceData;
-using System.Linq;
 using CmsData;
 using CmsData.View;
 using CmsWeb.Models;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CmsWeb.Areas.Search.Models
 {
@@ -47,15 +45,21 @@ namespace CmsWeb.Areas.Search.Models
         public override int Count()
         {
             if (count == null)
+            {
                 count = GetList().Count();
+            }
+
             return count.Value;
         }
 
         private IQueryable<RecentIncompleteRegistrations2> GetList()
         {
             if (list != null)
+            {
                 return list;
-            var q = CurrentDatabase.RecentIncompleteRegistrations2(oids, days);
+            }
+
+            var q = DbUtil.Db.RecentIncompleteRegistrations2(oids, days);
             switch (SortExpression)
             {
                 case "Date":

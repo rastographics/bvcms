@@ -72,7 +72,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
                         q = APIContribution.Contributors(DbUtil.Db, FromDate, ToDate, 0, 0, 0, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
                         break;
                 }
-                c.Run(response.OutputStream, Db, q, cs);
+                c.Run(response.OutputStream, DbUtil.Db, q, cs);
             }
             else
             {
@@ -100,7 +100,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
                         q = APIContribution.Contributors(DbUtil.Db, FromDate, ToDate, 0, 0, 0, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
                         break;
                 }
-                c.Run(response.OutputStream, Db, q, cs);
+                c.Run(response.OutputStream, DbUtil.Db, q, cs);
             }
         }
     }

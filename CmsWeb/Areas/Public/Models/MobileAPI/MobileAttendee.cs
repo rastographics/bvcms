@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using CmsData;
 using CmsWeb.Areas.Reports.Models;
-using CmsData;
+using System;
+using System.Linq;
 
 namespace CmsWeb.MobileAPI
 {
@@ -31,11 +29,11 @@ namespace CmsWeb.MobileAPI
             member = p.Member;
             attended = p.Attended;
 
-            Person person = CurrentDatabase.People.SingleOrDefault(e => e.PeopleId == id);
+            Person person = DbUtil.Db.People.SingleOrDefault(e => e.PeopleId == id);
 
             if (person.Picture != null)
             {
-                var image = ImageData.CurrentDatabase.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId);
+                var image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId);
 
                 if (image != null)
                 {

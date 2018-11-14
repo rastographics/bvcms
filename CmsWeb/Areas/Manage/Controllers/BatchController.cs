@@ -1,15 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Manage.Models;
 using CmsWeb.Areas.Manage.Models.BatchModel;
 using CmsWeb.Lifecycle;
 using CmsWeb.Models;
 using LumenWorks.Framework.IO.Csv;
+using System;
+using System.IO;
+using System.Linq;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Controllers
@@ -147,7 +145,10 @@ namespace CmsWeb.Areas.Manage.Controllers
             var m = new UpdateFieldsModel();
             var success = (string)TempData["success"];
             if (success.HasValue())
+            {
                 ViewData["success"] = success;
+            }
+
             ViewData["text"] = "";
             return View(m);
         }
@@ -169,7 +170,9 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             m.Run(ModelState);
             if (!ModelState.IsValid)
+            {
                 return View("UpdateFields", m);
+            }
 
             TempData["success"] = $"{m.Field} updated with the value '{m.NewValue}' for {m.Count} records ";
             return RedirectToAction("UpdateFields");
@@ -224,16 +227,24 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult FindTagEmail(string emails, string tagname)
         {
             if (Request.HttpMethod.ToUpper() == "GET")
+            {
                 return View();
+            }
+
             if (!tagname.HasValue())
+            {
                 return Content("no tag");
+            }
 
             var a = emails.SplitLines();
             var q = from p in CurrentDatabase.People
                     where a.Contains(p.EmailAddress) || a.Contains(p.EmailAddress2)
                     select p.PeopleId;
             foreach (var pid in q.Distinct())
-                Person.Tag(CurrentDatabase. pid, tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+            {
+                Person.Tag(CurrentDatabase, pid, tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+            }
+
             CurrentDatabase.SubmitChanges();
             return Redirect("/Tags?tag=" + tagname);
         }
@@ -253,11 +264,13 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 var tag = CurrentDatabase.FetchTag(name, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
                 if (tag != null)
+                {
                     CurrentDatabase.ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
+                }
             }
             foreach (var pid in q)
             {
-                Person.Tag(CurrentDatabase. pid, name, CurrentDatabase.CurrentUser.PeopleId, DbUtil.TagTypeId_Personal);
+                Person.Tag(CurrentDatabase, pid, name, CurrentDatabase.CurrentUser.PeopleId, DbUtil.TagTypeId_Personal);
                 CurrentDatabase.SubmitChanges();
             }
             return Redirect("/Tags?tag=" + name);
@@ -296,29 +309,29 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult DoGiving1(int id)
         {
             var rg = (from r in CurrentDatabase.ManagedGivings
-                where r.PeopleId == id
-                select r).Single();
+                      where r.PeopleId == id
+                      select r).Single();
             rg.DoGiving(CurrentDatabase);
             return Content($"done with {id}");
         }
 
-//        [HttpGet]
-//        [Authorize(Roles = "Admin")]
-//        public ActionResult SQLView(string id)
-//        {
-//            try
-//            {
-//                var cmd = new SqlCommand("select * from guest." + id.Replace(" ", ""));
-//                cmd.Connection = new SqlConnection(Util.ConnectionString);
-//                cmd.Connection.Open();
-//                var rdr = cmd.ExecuteReader();
-//                return View(rdr);
-//            }
-//            catch (Exception)
-//            {
-//                return Content("cannot find view guest." + id);
-//            }
-//        }
+        //        [HttpGet]
+        //        [Authorize(Roles = "Admin")]
+        //        public ActionResult SQLView(string id)
+        //        {
+        //            try
+        //            {
+        //                var cmd = new SqlCommand("select * from guest." + id.Replace(" ", ""));
+        //                cmd.Connection = new SqlConnection(Util.ConnectionString);
+        //                cmd.Connection.Open();
+        //                var rdr = cmd.ExecuteReader();
+        //                return View(rdr);
+        //            }
+        //            catch (Exception)
+        //            {
+        //                return Content("cannot find view guest." + id);
+        //            }
+        //        }
 
         [HttpGet]
         [Authorize(Roles = "Admin")]

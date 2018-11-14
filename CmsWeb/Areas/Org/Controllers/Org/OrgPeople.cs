@@ -1,12 +1,11 @@
+using CmsData;
+using CmsData.Codes;
+using CmsWeb.Areas.Org.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.Codes;
-using CmsWeb.Areas.Org.Models;
-using CmsWeb.Code;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Controllers
@@ -17,10 +16,17 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult People(OrgPeopleModel m)
         {
             if (m.FilterIndividuals)
+            {
                 if (m.NameFilter.HasValue())
+                {
                     m.FilterIndividuals = false;
+                }
                 else if (CurrentDatabase.OrgFilterCheckedCount(m.QueryId) == 0)
+                {
                     m.FilterIndividuals = false;
+                }
+            }
+
             ViewBag.OrgMemberContext = true;
             ViewBag.orgname = Session["ActiveOrganization"];
             return PartialView(m);
@@ -40,7 +46,11 @@ namespace CmsWeb.Areas.Org.Controllers
 
             foreach (var om in q)
             {
-                if (!om.TranId.HasValue) continue;
+                if (!om.TranId.HasValue)
+                {
+                    continue;
+                }
+
                 var estr = HttpUtility.UrlEncode(Util.Encrypt(om.TranId.ToString()));
                 var link = Util.ResolveUrl("/OnlineReg/PayAmtDue?q=" + estr);
                 om.PayLink = link;
@@ -53,7 +63,7 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult AddProspect(int oid, int pid)
         {
             var org = CurrentDatabase.LoadOrganizationById(oid);
-            OrganizationMember.InsertOrgMembers(CurrentDatabase.
+            OrganizationMember.InsertOrgMembers(CurrentDatabase,
                 oid, pid, MemberTypeCode.Prospect,
                 DateTime.Now, null, false);
             DbUtil.LogActivity($"Adding Prospect {org.OrganizationName}({pid})");
@@ -65,7 +75,10 @@ namespace CmsWeb.Areas.Org.Controllers
         {
             var om = CurrentDatabase.OrganizationMembers.SingleOrDefault(aa => aa.OrganizationId == oid && aa.PeopleId == pid);
             if (om == null)
+            {
                 return Content("member not found");
+            }
+
             om.Hidden = show.Equal("hide");
             CurrentDatabase.SubmitChanges();
             DbUtil.LogActivity($"ShowProspect {oid},{pid},{show}");
@@ -78,7 +91,10 @@ namespace CmsWeb.Areas.Org.Controllers
             var dt = new DateTime(ticks); // ticks here is meeting time
             var attend = CurrentDatabase.Attends.SingleOrDefault(aa => aa.PeopleId == pid && aa.OrganizationId == oid && aa.MeetingDate == dt);
             if (attend == null)
+            {
                 return Content("attendance not found");
+            }
+
             attend.NoShow = show.Equal("hide");
             CurrentDatabase.SubmitChanges();
             DbUtil.LogActivity($"ShowVisitor {oid},{pid},{attend.AttendId},{show}");
@@ -107,7 +123,7 @@ namespace CmsWeb.Areas.Org.Controllers
                     return Content($"Already a member of {om.OrganizationId} at this hour");
                 }
             }
-            OrganizationMember.InsertOrgMembers(CurrentDatabase.
+            OrganizationMember.InsertOrgMembers(CurrentDatabase,
                 oid, pid, MemberTypeCode.Member,
                 DateTime.Now, null, false);
             CurrentDatabase.UpdateMainFellowship(oid);
@@ -119,9 +135,14 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult ToggleCheckbox(Guid qid, int pid, bool chkd)
         {
             if (chkd)
-                Person.Tag(CurrentDatabase. pid, qid.ToString(), Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+            {
+                Person.Tag(DbUtil.Db, pid, qid.ToString(), Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+            }
             else
-                Person.UnTag(CurrentDatabase. pid, qid.ToString(), Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+            {
+                Person.UnTag(DbUtil.Db, pid, qid.ToString(), Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+            }
+
             CurrentDatabase.SubmitChanges();
             return new EmptyResult();
         }
@@ -130,10 +151,17 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult ToggleCheckboxes(Guid qid, IList<int> pids, bool chkd)
         {
             foreach (var pid in pids)
+            {
                 if (chkd)
-                    Person.Tag(CurrentDatabase. pid, qid.ToString(), Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+                {
+                    Person.Tag(DbUtil.Db, pid, qid.ToString(), Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+                }
                 else
-                    Person.UnTag(CurrentDatabase. pid, qid.ToString(), Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+                {
+                    Person.UnTag(DbUtil.Db, pid, qid.ToString(), Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+                }
+            }
+
             CurrentDatabase.SubmitChanges();
             return new EmptyResult();
         }

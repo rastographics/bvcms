@@ -1,8 +1,8 @@
+using CmsData;
+using CmsWeb.Code;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Code;
 
 namespace CmsWeb.Areas.People.Models
 {
@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.People.Models
 
         public static GrowthInfo GetGrowthInfo(int? id)
         {
-            var q = from p in CurrentDatabase.People
+            var q = from p in DbUtil.Db.People
                     where p.PeopleId == id
                     select new GrowthInfo
                     {
@@ -51,15 +51,23 @@ namespace CmsWeb.Areas.People.Models
 
         public void UpdateGrowth()
         {
-            var p = CurrentDatabase.LoadPersonById(PeopleId);
+            var p = DbUtil.Db.LoadPersonById(PeopleId);
 
 
             if (InterestPointId == 0)
+            {
                 InterestPointId = null;
+            }
+
             if (OriginId == 0)
+            {
                 OriginId = null;
+            }
+
             if (EntryPointId == 0)
+            {
                 EntryPointId = null;
+            }
 
             p.InterestPointId = InterestPointId;
             p.OriginId = OriginId;
@@ -71,7 +79,7 @@ namespace CmsWeb.Areas.People.Models
             p.PleaseVisit = PleaseVisit;
             p.InfoBecomeAChristian = SendInfo;
 
-            CurrentDatabase.SubmitChanges();
+            DbUtil.Db.SubmitChanges();
             DbUtil.LogActivity($"Updated Growth: {p.Name}");
         }
 

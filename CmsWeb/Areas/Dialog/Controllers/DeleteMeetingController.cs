@@ -23,7 +23,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost]
         public ActionResult Process(DeleteMeeting model)
         {
-            model.UpdateLongRunningOp(CurrentDatabase. DeleteMeeting.Op);
+            model.UpdateLongRunningOp(CurrentDatabase, DeleteMeeting.Op);
             if (!model.Started.HasValue)
             {
                 DbUtil.LogActivity($"Delete Meeting {model.MeetingId}", orgid: model.OrgId, userId: Util.UserPeopleId);

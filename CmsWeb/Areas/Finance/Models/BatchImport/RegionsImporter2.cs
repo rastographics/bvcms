@@ -1,11 +1,11 @@
+using CmsData;
+using CmsData.Codes;
+using LumenWorks.Framework.IO.Csv;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using CmsData;
-using CmsData.Codes;
-using LumenWorks.Framework.IO.Csv;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
@@ -15,7 +15,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
         public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
         {
             using (var csv = new CsvReader(new StringReader(text), true))
+            {
                 return BatchProcessRegions(csv, date, fundid);
+            }
         }
 
         private static int? BatchProcessRegions(CsvReader csv, DateTime date, int? fundid)
@@ -37,13 +39,16 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             {
 
                 if (!csv[12].Contains("Check"))
+                {
                     continue;
+                }
+
                 var bd = new BundleDetail
                 {
                     CreatedBy = Util.UserId,
                     CreatedDate = DateTime.Now,
                 };
-                var qf = from f in CurrentDatabase.ContributionFunds
+                var qf = from f in DbUtil.Db.ContributionFunds
                          where f.FundStatusId == 1
                          orderby f.FundId
                          select f.FundId;
@@ -118,12 +123,15 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 }
 
                 var eac = Util.Encrypt(routingNumber + "|" + accountNumber);
-                var q = from kc in CurrentDatabase.CardIdentifiers
+                var q = from kc in DbUtil.Db.CardIdentifiers
                         where kc.Id == eac
                         select kc.PeopleId;
                 var pid = q.SingleOrDefault();
                 if (pid != null)
+                {
                     bd.Contribution.PeopleId = pid;
+                }
+
                 bd.Contribution.BankAccount = eac;
                 bh.BundleDetails.Add(bd);
             }

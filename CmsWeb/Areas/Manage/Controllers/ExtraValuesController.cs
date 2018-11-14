@@ -20,9 +20,9 @@ namespace CmsWeb.Areas.Manage.Controllers
             var list = CurrentDatabase.PeopleQuery(id).Select(pp => pp.PeopleId).ToList();
             foreach (var pid in list)
             {
-                Person.AddEditExtraValue(CurrentDatabase. pid, field, value);
+                Person.AddEditExtraValue(CurrentDatabase, pid, field, value);
                 CurrentDatabase.SubmitChanges();
-                DbDispose();
+                //DbDispose();
             }
             return Content("done");
         }
@@ -32,7 +32,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             var list = CurrentDatabase.PeopleQuery(id).Select(pp => pp.PeopleId).ToList();
             foreach (var pid in list)
             {
-                var ev = Person.GetExtraValue(CurrentDatabase. pid, field, value);
+                var ev = Person.GetExtraValue(CurrentDatabase, pid, field, value);
                 if (ev == null)
                 {
                     continue;
@@ -40,7 +40,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
                 CurrentDatabase.PeopleExtras.DeleteOnSubmit(ev);
                 CurrentDatabase.SubmitChanges();
-                DbDispose();
+                //DbDispose();
             }
             return Content("done");
         }

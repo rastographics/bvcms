@@ -6,11 +6,11 @@
 @{
     Layout = "~/Views/Shared/onlinereg2.cshtml";
     ViewBag.Title = "OnePageGiving";
-    var debitcredit = CurrentDatabase.Setting("DebitCreditLabel", "Debit/Credit Card");
-    var vaultDisabled = CurrentDatabase.Setting("VaultDisabled");
+    var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
+    var vaultDisabled = DbUtil.Db.Setting("VaultDisabled");
     var processorerror = Html.ErrorMessage("TranId");
     var designatedFund = Model.OnlineRegPersonModel.DesignatedDonationFund().FirstOrDefault();
-    var disableAdditionalFunds = Model.OnlineRegPersonModel.org.GetExtra(CurrentDatabase. "DisableFundsDropdown")=="true";
+    var disableAdditionalFunds = Model.OnlineRegPersonModel.org.GetExtra(DbUtil.Db, "DisableFundsDropdown")=="true";
 }
 @section head{
     @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")

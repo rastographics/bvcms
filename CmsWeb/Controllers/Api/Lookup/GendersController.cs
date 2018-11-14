@@ -1,10 +1,9 @@
-﻿using System.Linq;
-using System.Web.Http;
-using System.Web.OData;
-using AutoMapper;
+﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using CmsData;
 using CmsWeb.Models.Api.Lookup;
+using System.Web.Http;
+using System.Web.OData;
 
 namespace CmsWeb.Controllers.Api.Lookup
 {
@@ -12,10 +11,11 @@ namespace CmsWeb.Controllers.Api.Lookup
     {
         public IHttpActionResult Get()
         {
-            var config = new MapperConfiguration(cfg => {
+            var config = new MapperConfiguration(cfg =>
+            {
                 cfg.CreateMap<Gender, ApiLookup>();
             });
-            return Ok(CurrentDatabase.Genders.ProjectTo<ApiLookup>(config));
+            return Ok(DbUtil.Db.Genders.ProjectTo<ApiLookup>(config));
         }
     }
 }

@@ -23,7 +23,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string subject { get; set; }
         public string message { get; set; }
 
-        private readonly CMSDataContext Db;
+        //private readonly CMSDataContext Db;
 
         public Attend attend { get; set; }
         public Person person { get; set; }
@@ -48,7 +48,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public VolSubModel()
         {
-            Db = Db;
+            //Db = Db;
         }
         public VolSubModel(int aid, int pid, long ticks)
             : this(aid, pid)
@@ -327,7 +327,7 @@ Sorry, I cannot sub for you.</a>";
                 return;
             }
             i.CanSub = true;
-            Attend.MarkRegistered(DbUtil.Db.i.Substitute.PeopleId, attend.MeetingId, AttendCommitmentCode.Substitute);
+            Attend.MarkRegistered(DbUtil.Db, i.Substitute.PeopleId, attend.MeetingId, AttendCommitmentCode.Substitute);
             attend.Commitment = AttendCommitmentCode.SubFound;
             Log("Claimed", i.Requested, i.SubstituteId);
             DbUtil.Db.SubmitChanges();

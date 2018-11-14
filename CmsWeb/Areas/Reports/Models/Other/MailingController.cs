@@ -4,15 +4,13 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+using CmsData;
+using MoreLinq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using CmsData;
-using CmsData.View;
-using MoreLinq;
 using UtilityExtensions;
-using System.Collections;
 
 namespace CmsWeb.Models
 {
@@ -23,12 +21,15 @@ namespace CmsWeb.Models
 
         public IEnumerable<MailingInfo> FetchIndividualList(string sortExpression, Guid queryId)
         {
-            var q = CurrentDatabase.PeopleQuery(queryId);
+            var q = DbUtil.Db.PeopleQuery(queryId);
             if (UseMailFlags)
+            {
                 q = FilterMailFlags(q);
+            }
+
             q = ApplySort(q, sortExpression);
             var q2 = from p in q
-                     let altaddr = p.AddressTypeId == 10 
+                     let altaddr = p.AddressTypeId == 10
                         ? p.PeopleExtras.SingleOrDefault(ee => ee.PeopleId == p.PeopleId && ee.Field == "MailingAddress").Data
                         : p.Family.FamilyExtras.SingleOrDefault(ee => ee.FamilyId == p.FamilyId && ee.Field == "MailingAddress").Data
                      where p.DeceasedDate == null
@@ -51,9 +52,12 @@ namespace CmsWeb.Models
         }
         public IEnumerable<MailingInfo> GroupByAddress(string sortExpression, Guid queryId)
         {
-            var q = CurrentDatabase.PeopleQuery(queryId);
+            var q = DbUtil.Db.PeopleQuery(queryId);
             if (UseMailFlags)
+            {
                 q = FilterMailFlags(q);
+            }
+
             var q2 = from p in q
                      where p.DeceasedDate == null
                      group p by p.FamilyId into g
@@ -81,15 +85,18 @@ namespace CmsWeb.Models
 
         public IEnumerable<MailingInfo> FetchFamilyList(int startRowIndex, int maximumRows, string sortExpression, Guid queryId)
         {
-            var q1 = CurrentDatabase.PeopleQuery(queryId);
-            var q = from f in CurrentDatabase.Families
+            var q1 = DbUtil.Db.PeopleQuery(queryId);
+            var q = from f in DbUtil.Db.Families
                     where q1.Any(p => p.FamilyId == f.FamilyId)
                     select f.People.Single(fm => fm.PeopleId == f.HeadOfHouseholdId);
 
             if (UseMailFlags)
+            {
                 q = FilterMailFlags(q);
+            }
+
             var q2 = from h in q
-                     let spouse = CurrentDatabase.People.SingleOrDefault(sp => sp.PeopleId == h.SpouseId)
+                     let spouse = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == h.SpouseId)
                      let altaddr = h.Family.FamilyExtras.SingleOrDefault(ee => ee.FamilyId == h.FamilyId && ee.Field == "MailingAddress").Data
                      where h.DeceasedDate == null
                      select new MailingInfo
@@ -115,12 +122,15 @@ namespace CmsWeb.Models
                      };
             q2 = ApplySort(q2, sortExpression);
             if (maximumRows == 0)
+            {
                 return q2;
+            }
+
             return q2.Skip(startRowIndex).Take(maximumRows);
         }
         public IEnumerable<MailingInfo> FetchFamilyMembers(string sortExpression, Guid queryId)
         {
-            var q = CurrentDatabase.PeopleQuery(queryId);
+            var q = DbUtil.Db.PeopleQuery(queryId);
             var q2 = from pp in q
                      group pp by pp.FamilyId into g
                      from p in g.First().Family.People
@@ -155,9 +165,12 @@ namespace CmsWeb.Models
 
         public IEnumerable<MailingInfo> FetchParentsOfList(string sortExpression, Guid queryId)
         {
-            var q = CurrentDatabase.PeopleQuery(queryId);
+            var q = DbUtil.Db.PeopleQuery(queryId);
             if (UseMailFlags)
+            {
                 q = FilterMailFlags(q);
+            }
+
             var q2 = from p in q
                      where p.DeceasedDate == null
                      let altaddr = p.Family.FamilyExtras.SingleOrDefault(ee => ee.FamilyId == p.FamilyId && ee.Field == "MailingAddress").Data
@@ -186,17 +199,22 @@ namespace CmsWeb.Models
         {
             IQueryable<Person> q1 = q;
             if (UseMailFlags)
+            {
                 q1 = from p in q
-                     // exclude wife who has a husband who is already in the list
+                         // exclude wife who has a husband who is already in the list
                      where !(p.GenderId == 2 && p.SpouseId != null && q.Any(pp => pp.PeopleId == p.SpouseId))
                      where (p.PrimaryBadAddrFlag ?? 0) == 0
                      where p.DoNotMailFlag == false
                      select p;
+            }
             else
+            {
                 q1 = from p in q
-                     // exclude wife who has a husband who is already in the list
+                         // exclude wife who has a husband who is already in the list
                      where !(p.GenderId == 2 && p.SpouseId != null && q.Any(pp => pp.PeopleId == p.SpouseId))
                      select p;
+            }
+
             return q1;
         }
         public static IQueryable<Person> FilterMailFlags(IQueryable<Person> q)
@@ -210,10 +228,10 @@ namespace CmsWeb.Models
 
         public IEnumerable<MailingInfo> FetchCouplesEitherList(string sortExpression, Guid queryId)
         {
-            var q = CurrentDatabase.PopulateSpecialTag(queryId, DbUtil.TagTypeId_CouplesHelper).People(CurrentDatabase);
+            var q = DbUtil.Db.PopulateSpecialTag(queryId, DbUtil.TagTypeId_CouplesHelper).People(DbUtil.Db);
             var q1 = EliminateCoupleDoublets(q);
             var q2 = from p in q1
-                     let spouse = CurrentDatabase.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
+                     let spouse = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
                      let altaddr = p.Family.FamilyExtras.SingleOrDefault(ee => ee.FamilyId == p.FamilyId && ee.Field == "MailingAddress").Data
                      let altcouple = p.Family.FamilyExtras.SingleOrDefault(ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data
                      select new MailingInfo
@@ -243,10 +261,10 @@ namespace CmsWeb.Models
 
         public IEnumerable<MailingInfo> FetchCouplesBothList(string sortExpression, Guid queryId)
         {
-            var q = CurrentDatabase.PopulateSpecialTag(queryId, DbUtil.TagTypeId_CouplesHelper).People(CurrentDatabase);
+            var q = DbUtil.Db.PopulateSpecialTag(queryId, DbUtil.TagTypeId_CouplesHelper).People(DbUtil.Db);
             var q1 = EliminateCoupleDoublets(q);
             var q2 = from p in q1
-                     // get spouse if in the query
+                         // get spouse if in the query
                      let altaddr = p.Family.FamilyExtras.SingleOrDefault(ee => ee.FamilyId == p.FamilyId && ee.Field == "MailingAddress").Data
                      let altcouple = p.Family.FamilyExtras.SingleOrDefault(ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data
                      let spouse = q.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
@@ -306,10 +324,10 @@ namespace CmsWeb.Models
 
         public EpplusResult FetchExcelCouplesBoth(Guid queryId, int maximumRows)
         {
-            var q = CurrentDatabase.PopulateSpecialTag(queryId, DbUtil.TagTypeId_CouplesHelper).People(CurrentDatabase);
+            var q = DbUtil.Db.PopulateSpecialTag(queryId, DbUtil.TagTypeId_CouplesHelper).People(DbUtil.Db);
             var q1 = EliminateCoupleDoublets(q);
             var q2 = from p in q1
-                     // get spouse if in the query
+                         // get spouse if in the query
                      let altaddr = p.Family.FamilyExtras.SingleOrDefault(ee => ee.FamilyId == p.FamilyId && ee.Field == "MailingAddress").Data
                      let altcouple = p.Family.FamilyExtras.FirstOrDefault(ee => ee.FamilyId == p.PeopleId && ee.Field == "CoupleName" && p.SpouseId != null).Data
                      let spouse = q.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
@@ -343,80 +361,82 @@ namespace CmsWeb.Models
 
         public EpplusResult FetchExcelCouplesEither(Guid queryId, int maximumRows)
         {
-            var q = CurrentDatabase.PopulateSpecialTag(queryId, DbUtil.TagTypeId_CouplesHelper).People(CurrentDatabase);
+            var q = DbUtil.Db.PopulateSpecialTag(queryId, DbUtil.TagTypeId_CouplesHelper).People(DbUtil.Db);
             var q1 = EliminateCoupleDoublets(q);
-            var q2 = CurrentDatabase.Setting("CouplesEitherHusbandFirst", "false").ToBool() 
+            var q2 = DbUtil.Db.Setting("CouplesEitherHusbandFirst", "false").ToBool()
                 ? from p in q1
-                     let spouse = CurrentDatabase.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
-                     let him = p.GenderId == 1 || spouse == null ? p : spouse
-                     let her = p.GenderId == 1 || spouse == null ? spouse : p
-                     select new
-                     {
-                         p.PeopleId,
-                         LabelName = (spouse == null ? (UseTitles ? (p.TitleCode != null ? p.TitleCode + " " + p.Name : p.Name) : p.Name) :
-                             (p.Family.HeadOfHouseholdId == p.PeopleId ?
-                                 (UseTitles ? (p.TitleCode != null ? p.TitleCode + " and Mrs. " + p.Name : "Mr. and Mrs. " + p.Name)
-                                             : (p.PreferredName + " and " + spouse.PreferredName + " " + p.LastName + (p.SuffixCode.Length > 0 ? ", " + p.SuffixCode : ""))) :
-                                 (UseTitles ? (spouse.TitleCode != null ? spouse.TitleCode + " and Mrs. " + spouse.Name : "Mr. and Mrs. " + spouse.Name)
-                                             : (spouse.PreferredName + " and " + p.PreferredName + " " + spouse.LastName + (spouse.SuffixCode.Length > 0 ? ", " + spouse.SuffixCode : ""))))),
-                         FirstName = him.PreferredName,
-                         FirstNameSpouse = her.PreferredName,
-                         p.LastName,
-                         Address = p.PrimaryAddress,
-                         Address2 = p.PrimaryAddress2,
-                         City = p.PrimaryCity,
-                         State = p.PrimaryState,
-                         Zip = p.PrimaryZip.FmtZip(),
-                         Email = p.EmailAddress,
-                         EmailSpouse = spouse.EmailAddress,
-                         MemberStatus = p.MemberStatus.Description,
-                         Employer = p.EmployerOther,
-                         HomePhone = p.HomePhone.FmtFone(),
-                         CellPhone = p.CellPhone.FmtFone(),
-                         WorkPhone = p.WorkPhone.FmtFone(),
-                     }
-                :  from p in q1
-                     let spouse = CurrentDatabase.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
-                     select new
-                     {
-                         p.PeopleId,
-                         LabelName = (spouse == null ? (UseTitles ? (p.TitleCode != null ? p.TitleCode + " " + p.Name : p.Name) : p.Name) :
-                             (p.Family.HeadOfHouseholdId == p.PeopleId ?
-                                 (UseTitles ? (p.TitleCode != null ? p.TitleCode + " and Mrs. " + p.Name : "Mr. and Mrs. " + p.Name)
-                                             : (p.PreferredName + " and " + spouse.PreferredName + " " + p.LastName + (p.SuffixCode.Length > 0 ? ", " + p.SuffixCode : ""))) :
-                                 (UseTitles ? (spouse.TitleCode != null ? spouse.TitleCode + " and Mrs. " + spouse.Name : "Mr. and Mrs. " + spouse.Name)
-                                             : (spouse.PreferredName + " and " + p.PreferredName + " " + spouse.LastName + (spouse.SuffixCode.Length > 0 ? ", " + spouse.SuffixCode : ""))))),
-                         FirstName = p.PreferredName,
-                         FirstNameSpouse = spouse.PreferredName,
-                         p.LastName,
-                         Address = p.PrimaryAddress,
-                         Address2 = p.PrimaryAddress2,
-                         City = p.PrimaryCity,
-                         State = p.PrimaryState,
-                         Zip = p.PrimaryZip.FmtZip(),
-                         Email = p.EmailAddress,
-                         EmailSpouse = spouse.EmailAddress,
-                         MemberStatus = p.MemberStatus.Description,
-                         Employer = p.EmployerOther,
-                         HomePhone = p.HomePhone.FmtFone(),
-                         CellPhone = p.CellPhone.FmtFone(),
-                         WorkPhone = p.WorkPhone.FmtFone(),
-                     };
+                  let spouse = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
+                  let him = p.GenderId == 1 || spouse == null ? p : spouse
+                  let her = p.GenderId == 1 || spouse == null ? spouse : p
+                  select new
+                  {
+                      p.PeopleId,
+                      LabelName = (spouse == null ? (UseTitles ? (p.TitleCode != null ? p.TitleCode + " " + p.Name : p.Name) : p.Name) :
+                          (p.Family.HeadOfHouseholdId == p.PeopleId ?
+                              (UseTitles ? (p.TitleCode != null ? p.TitleCode + " and Mrs. " + p.Name : "Mr. and Mrs. " + p.Name)
+                                          : (p.PreferredName + " and " + spouse.PreferredName + " " + p.LastName + (p.SuffixCode.Length > 0 ? ", " + p.SuffixCode : ""))) :
+                              (UseTitles ? (spouse.TitleCode != null ? spouse.TitleCode + " and Mrs. " + spouse.Name : "Mr. and Mrs. " + spouse.Name)
+                                          : (spouse.PreferredName + " and " + p.PreferredName + " " + spouse.LastName + (spouse.SuffixCode.Length > 0 ? ", " + spouse.SuffixCode : ""))))),
+                      FirstName = him.PreferredName,
+                      FirstNameSpouse = her.PreferredName,
+                      p.LastName,
+                      Address = p.PrimaryAddress,
+                      Address2 = p.PrimaryAddress2,
+                      City = p.PrimaryCity,
+                      State = p.PrimaryState,
+                      Zip = p.PrimaryZip.FmtZip(),
+                      Email = p.EmailAddress,
+                      EmailSpouse = spouse.EmailAddress,
+                      MemberStatus = p.MemberStatus.Description,
+                      Employer = p.EmployerOther,
+                      HomePhone = p.HomePhone.FmtFone(),
+                      CellPhone = p.CellPhone.FmtFone(),
+                      WorkPhone = p.WorkPhone.FmtFone(),
+                  }
+                : from p in q1
+                  let spouse = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
+                  select new
+                  {
+                      p.PeopleId,
+                      LabelName = (spouse == null ? (UseTitles ? (p.TitleCode != null ? p.TitleCode + " " + p.Name : p.Name) : p.Name) :
+                          (p.Family.HeadOfHouseholdId == p.PeopleId ?
+                              (UseTitles ? (p.TitleCode != null ? p.TitleCode + " and Mrs. " + p.Name : "Mr. and Mrs. " + p.Name)
+                                          : (p.PreferredName + " and " + spouse.PreferredName + " " + p.LastName + (p.SuffixCode.Length > 0 ? ", " + p.SuffixCode : ""))) :
+                              (UseTitles ? (spouse.TitleCode != null ? spouse.TitleCode + " and Mrs. " + spouse.Name : "Mr. and Mrs. " + spouse.Name)
+                                          : (spouse.PreferredName + " and " + p.PreferredName + " " + spouse.LastName + (spouse.SuffixCode.Length > 0 ? ", " + spouse.SuffixCode : ""))))),
+                      FirstName = p.PreferredName,
+                      FirstNameSpouse = spouse.PreferredName,
+                      p.LastName,
+                      Address = p.PrimaryAddress,
+                      Address2 = p.PrimaryAddress2,
+                      City = p.PrimaryCity,
+                      State = p.PrimaryState,
+                      Zip = p.PrimaryZip.FmtZip(),
+                      Email = p.EmailAddress,
+                      EmailSpouse = spouse.EmailAddress,
+                      MemberStatus = p.MemberStatus.Description,
+                      Employer = p.EmployerOther,
+                      HomePhone = p.HomePhone.FmtFone(),
+                      CellPhone = p.CellPhone.FmtFone(),
+                      WorkPhone = p.WorkPhone.FmtFone(),
+                  };
             return q2.Take(maximumRows).ToDataTable().ToExcel("CouplesEither.xlsx");
         }
 
         public EpplusResult FetchExcelFamily(Guid queryId, int maximumRows)
         {
-            var qp = CurrentDatabase.PeopleQuery(queryId);
+            var qp = DbUtil.Db.PeopleQuery(queryId);
 
-            var q = from f in CurrentDatabase.Families
+            var q = from f in DbUtil.Db.Families
                     where qp.Any(p => p.FamilyId == f.FamilyId)
                     select f.People.Single(fm => fm.PeopleId == f.HeadOfHouseholdId);
             if (UseMailFlags)
+            {
                 q = FilterMailFlags(q);
+            }
 
             return (from h in q
-                    let spouse = CurrentDatabase.People.SingleOrDefault(sp => sp.PeopleId == h.SpouseId)
+                    let spouse = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == h.SpouseId)
                     where h.DeceasedDate == null
                     let altaddr = h.Family.FamilyExtras.SingleOrDefault(ee => ee.FamilyId == h.FamilyId && ee.Field == "MailingAddress").Data
                     let altcouple = h.Family.FamilyExtras.SingleOrDefault(ee => (ee.FamilyId == h.FamilyId) && ee.Field == "CoupleName" && h.SpouseId != null).Data
@@ -448,9 +468,12 @@ namespace CmsWeb.Models
 
         public EpplusResult FetchExcelParents(Guid queryId, int maximumRows)
         {
-            var q = CurrentDatabase.PeopleQuery(queryId);
+            var q = DbUtil.Db.PeopleQuery(queryId);
             if (UseMailFlags)
+            {
                 q = FilterMailFlags(q);
+            }
+
             var q2 = from p in q
                      where p.DeceasedDate == null
                      let hohemail = p.Family.HeadOfHousehold.EmailAddress
@@ -478,7 +501,7 @@ namespace CmsWeb.Models
             public bool HasTag { get; set; }
         }
 
-        public class MailingInfo 
+        public class MailingInfo
         {
             public int PeopleId { get; set; }
             public string LabelName { get; set; }
@@ -492,7 +515,7 @@ namespace CmsWeb.Models
             public string Zip { get; set; }
             public string CSZ
             {
-                get { return Util.FormatCSZ4(City, State, Zip); } 
+                get { return Util.FormatCSZ4(City, State, Zip); }
             }
             public string CellPhone { get; set; }
             public string HomePhone { get; set; }
@@ -527,7 +550,10 @@ namespace CmsWeb.Models
                 if ((type == PhoneType.Home && _PhonePref == 10)
                     || (type == PhoneType.Cell && _PhonePref == 20)
                     || (type == PhoneType.Work && _PhonePref == 30))
+                {
                     return number.FmtFone("*" + prefix + " ");
+                }
+
                 return number.FmtFone(prefix + " ");
             }
             private List<string> _Phones = new List<string>();

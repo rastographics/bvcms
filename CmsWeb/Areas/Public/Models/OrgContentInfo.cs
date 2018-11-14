@@ -1,14 +1,14 @@
+using CmsData;
+using CmsData.Classes.RoleChecker;
+using CmsData.Codes;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using CmsData;
 using UtilityExtensions;
 using DbUtil = CmsData.DbUtil;
 using Image = ImageData.Image;
-using CmsData.Classes.RoleChecker;
-using CmsData.Codes;
 
 namespace CmsWeb.Models
 {
@@ -23,7 +23,7 @@ namespace CmsWeb.Models
         public bool NotAuthenticated { get; set; }
         public OrgContent oc { get; set; }
 
-        public bool CanEdit => ((Util.IsInRole("ContentEdit") || Util.IsInRole("Edit") || RoleChecker.HasSetting(SettingName.LeadersCanAlwaysEditOrgContent, false)) && IsLeader) ||  Util.IsInRole("Admin");
+        public bool CanEdit => ((Util.IsInRole("ContentEdit") || Util.IsInRole("Edit") || RoleChecker.HasSetting(SettingName.LeadersCanAlwaysEditOrgContent, false)) && IsLeader) || Util.IsInRole("Admin");
 
         private string html;
         public string Html
@@ -31,9 +31,15 @@ namespace CmsWeb.Models
             get
             {
                 if (html.HasValue())
+                {
                     return html;
+                }
+
                 if (oc == null)
+                {
                     return "<h2>" + OrgName + "</h2>";
+                }
+
                 var s = Image.Content(oc.ImageId ?? 0);
                 return html = s;
             }
@@ -42,14 +48,19 @@ namespace CmsWeb.Models
                 if (oc == null)
                 {
                     oc = new OrgContent { OrgId = OrgId, Landing = true };
-                    CurrentDatabase.OrgContents.InsertOnSubmit(oc);
+                    DbUtil.Db.OrgContents.InsertOnSubmit(oc);
                 }
-                var i = ImageData.CurrentDatabase.Images.SingleOrDefault(ii => ii.Id == oc.ImageId);
+                var i = ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == oc.ImageId);
                 if (i != null)
+                {
                     i.SetText(value);
+                }
                 else
+                {
                     oc.ImageId = Image.NewTextFromString(value).Id;
-                CurrentDatabase.SubmitChanges();
+                }
+
+                DbUtil.Db.SubmitChanges();
             }
         }
 
@@ -72,7 +83,7 @@ namespace CmsWeb.Models
                     i.Bits = ms.ToArray();
                     return i;
                 }
-                return ImageData.CurrentDatabase.Images.SingleOrDefault(ii => ii.Id == oc.ImageId);
+                return ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == oc.ImageId);
             }
         }
 
@@ -80,10 +91,10 @@ namespace CmsWeb.Models
 
         public static OrgContentInfo Get(int id)
         {
-            var q = from oo in CurrentDatabase.Organizations
+            var q = from oo in DbUtil.Db.Organizations
                     where oo.OrganizationId == id
                     let om = oo.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == Util.UserPeopleId)
-                    let oc = CurrentDatabase.OrgContents.SingleOrDefault(cc => cc.OrgId == id && cc.Landing == true)
+                    let oc = DbUtil.Db.OrgContents.SingleOrDefault(cc => cc.OrgId == id && cc.Landing == true)
                     let memberLeaderType = om.MemberType.AttendanceTypeId
                     select new OrgContentInfo
                     {
@@ -98,9 +109,12 @@ namespace CmsWeb.Models
             var o = q.SingleOrDefault();
             if (o != null && !o.IsMember)
             {
-                var oids = CurrentDatabase.GetLeaderOrgIds(Util.UserPeopleId);
+                var oids = DbUtil.Db.GetLeaderOrgIds(Util.UserPeopleId);
                 if (!oids.Contains(o.OrgId))
+                {
                     return o;
+                }
+
                 o.NotAuthenticated = false;
                 o.IsMember = true;
                 o.IsLeader = true;
@@ -110,8 +124,8 @@ namespace CmsWeb.Models
 
         public static OrgContentInfo GetOc(int id)
         {
-            var q = from oo in CurrentDatabase.Organizations
-                    let oc = CurrentDatabase.OrgContents.SingleOrDefault(cc => cc.Id == id)
+            var q = from oo in DbUtil.Db.Organizations
+                    let oc = DbUtil.Db.OrgContents.SingleOrDefault(cc => cc.Id == id)
                     where oo.OrganizationId == oc.OrgId
                     let om = oo.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == Util.UserPeopleId)
                     let memberLeaderType = om.MemberType.AttendanceTypeId
@@ -128,9 +142,12 @@ namespace CmsWeb.Models
             var o = q.SingleOrDefault();
             if (o != null && !o.IsMember)
             {
-                var oids = CurrentDatabase.GetLeaderOrgIds(Util.UserPeopleId);
+                var oids = DbUtil.Db.GetLeaderOrgIds(Util.UserPeopleId);
                 if (!oids.Contains(o.OrgId))
+                {
                     return o;
+                }
+
                 o.NotAuthenticated = false;
                 o.IsMember = true;
                 o.IsLeader = true;
@@ -140,7 +157,7 @@ namespace CmsWeb.Models
 
         public IEnumerable<MemberInfo> GetMemberList()
         {
-            return (from om in CurrentDatabase.OrganizationMembers
+            return (from om in DbUtil.Db.OrganizationMembers
                     where om.OrganizationId == OrgId
                     where
                         om.MemberTypeId != MemberTypeCode.Prospect &&
@@ -164,12 +181,18 @@ namespace CmsWeb.Models
 
         public bool TryRunPython(int pid)
         {
-            var ev = Organization.GetExtra(CurrentDatabase. OrgId, "OrgMembersPageScript");
+            var ev = Organization.GetExtra(DbUtil.Db, OrgId, "OrgMembersPageScript");
             if (!ev.HasValue())
+            {
                 return false;
-            var script = CurrentDatabase.ContentOfTypePythonScript(ev);
+            }
+
+            var script = DbUtil.Db.ContentOfTypePythonScript(ev);
             if (!script.HasValue())
+            {
                 return false;
+            }
+
             var pe = new PythonModel(Util.Host);
             pe.Data.OrgId = OrgId;
             pe.Data.PeopleId = pid;

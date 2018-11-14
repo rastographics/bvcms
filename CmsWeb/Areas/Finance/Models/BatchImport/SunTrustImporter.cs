@@ -5,13 +5,13 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 
+using CmsData;
+using CmsData.Codes;
+using LumenWorks.Framework.IO.Csv;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using CmsData;
-using CmsData.Codes;
-using LumenWorks.Framework.IO.Csv;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
@@ -21,7 +21,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
         public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
         {
             using (var csv = new CsvReader(new StringReader(text), true))
+            {
                 return BatchProcessSunTrust(csv, date, fundid);
+            }
         }
 
         private static int? BatchProcessSunTrust(CsvReader csv, DateTime date, int? fundid)
@@ -41,7 +43,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                     CreatedBy = Util.UserId,
                     CreatedDate = DateTime.Now,
                 };
-                var qf = from f in CurrentDatabase.ContributionFunds
+                var qf = from f in DbUtil.Db.ContributionFunds
                          where f.FundStatusId == 1
                          orderby f.FundId
                          select f.FundId;
@@ -96,20 +98,26 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                     }
                 }
                 if (!ck.HasValue())
+                {
                     if (ac.Contains(' '))
                     {
                         var a = ac.SplitStr(" ", 2);
                         ck = a[0];
                         ac = a[1];
                     }
+                }
+
                 bd.Contribution.ContributionDesc = string.Join(" ", sn, ck);
                 var eac = Util.Encrypt(rt + "|" + ac);
-                var q = from kc in CurrentDatabase.CardIdentifiers
+                var q = from kc in DbUtil.Db.CardIdentifiers
                         where kc.Id == eac
                         select kc.PeopleId;
                 var pid = q.SingleOrDefault();
                 if (pid != null)
+                {
                     bd.Contribution.PeopleId = pid;
+                }
+
                 bd.Contribution.BankAccount = eac;
                 bh.BundleDetails.Add(bd);
             }

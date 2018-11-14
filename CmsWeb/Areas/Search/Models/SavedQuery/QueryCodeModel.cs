@@ -1,13 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Web;
 using CmsData;
 using Dapper;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text.RegularExpressions;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
@@ -21,8 +18,8 @@ namespace CmsWeb.Areas.Search.Models
 
         public QueryCodeModel(string queries, List<Guid> guids = null)
         {
-            var all = CurrentDatabase.Connection.Query(queries).ToList();
-            List = guids == null ? all : all.Where(vv => guids.Contains((Guid) vv.QueryId)).ToList();
+            var all = DbUtil.Db.Connection.Query(queries).ToList();
+            List = guids == null ? all : all.Where(vv => guids.Contains((Guid)vv.QueryId)).ToList();
             Count = List.Count;
             Debug.WriteLine($"{Util.Host} Count: {Count}");
         }
@@ -40,8 +37,11 @@ namespace CmsWeb.Areas.Search.Models
             Parsed = null;
             Error = null;
             if (Existing == null)
+            {
                 return;
-            var c = CurrentDatabase.LoadExistingQuery(Existing.Value);
+            }
+
+            var c = DbUtil.Db.LoadExistingQuery(Existing.Value);
             Code = c.ToCode();
             Sql = c.ToSql();
         }
@@ -50,8 +50,11 @@ namespace CmsWeb.Areas.Search.Models
         {
             Existing = q.QueryId as Guid?;
             if (Existing == null)
+            {
                 return string.Empty;
-            var c = CurrentDatabase.LoadExistingQuery(Existing.Value);
+            }
+
+            var c = DbUtil.Db.LoadExistingQuery(Existing.Value);
             var s = c.ToCode();
             var lines = s.SplitLines();
             string ret = null;
@@ -66,7 +69,10 @@ namespace CmsWeb.Areas.Search.Models
         {
             Existing = q.QueryId as Guid?;
             if (Existing == null)
+            {
                 return string.Empty;
+            }
+
             string name = Regex.Replace(q.name, @"^F\d\d:", "", RegexOptions.IgnoreCase);
             string nameid = name.ToSuitableId();
             return $"\t\t,{nameid} = IIF(EXISTS(SELECT NULL FROM dbo.TagPerson tp JOIN dbo.Tag t ON t.Name = '{name}' AND t.TypeId = 99 AND t.Id = tp.Id WHERE tp.PeopleId = p.PeopleId), 1, 0)\n";

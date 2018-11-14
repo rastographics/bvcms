@@ -606,7 +606,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public Transaction ProcessPaymentTransaction(OnlineRegModel m)
         {
             var ti = (m?.Transaction != null)
-                ? CreateTransaction(DbUtil.Db.m.Transaction, AmtToPay)
+                ? CreateTransaction(DbUtil.Db, m.Transaction, AmtToPay)
                 : CreateTransaction(DbUtil.Db);
 
             int? pid = null;
@@ -741,7 +741,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
                 OnlineRegModel.ConfirmDuePaidTransaction(ti, ti.TransactionId, true);
 
-                return RouteModel.AmountDue(AmountDueTrans(DbUtil.Db.ti), ti);
+                return RouteModel.AmountDue(AmountDueTrans(DbUtil.Db, ti), ti);
             }
             catch (Exception ex)
             {

@@ -74,7 +74,7 @@ namespace CmsWeb.Areas.People.Controllers
             var p = CurrentDatabase.People.Single(pp => pp.PeopleId == id);
             try
             {
-                p.MovePersonStuff(CurrentDatabase. to);
+                p.MovePersonStuff(CurrentDatabase, to);
                 CurrentDatabase.SubmitChanges();
             }
             catch (Exception ex)

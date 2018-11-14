@@ -179,7 +179,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 c = null;
             }
 
-            Attend.MarkRegistered(CurrentDatabase. a[1], a[0], c);
+            Attend.MarkRegistered(CurrentDatabase, a[1], a[0], c);
             var desc = AttendCommitmentCode.Lookup(c ?? 99);
             DbUtil.LogActivity($"EditCommitment {desc} id={id}");
             return Content(desc);
@@ -192,7 +192,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var n = 0;
             foreach (var a in m.VisitAttends())
             {
-                OrganizationMember.InsertOrgMembers(CurrentDatabase.
+                OrganizationMember.InsertOrgMembers(CurrentDatabase,
                     m.meeting.OrganizationId, a.PeopleId, MemberTypeCode.Member,
                     DateTime.Today, null, false);
                 n++;
@@ -330,7 +330,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var ret = "";
             if (d.error == ScanTicketInfo.Error.none)
             {
-                ret = Attend.RecordAttendance(CurrentDatabase. pid, MeetingId, true);
+                ret = Attend.RecordAttendance(CurrentDatabase, pid, MeetingId, true);
                 if (ret.Contains("already"))
                 {
                     d.error = ScanTicketInfo.Error.alreadymarkedelsewhere;
@@ -350,7 +350,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult MarkAttendance(int PeopleId, int MeetingId, bool Present)
         {
-            var ret = Attend.RecordAttendance(CurrentDatabase. PeopleId, MeetingId, Present);
+            var ret = Attend.RecordAttendance(CurrentDatabase, PeopleId, MeetingId, Present);
             if (ret != "ok")
             {
                 return Json(new { error = ret });
@@ -377,7 +377,7 @@ namespace CmsWeb.Areas.Org.Controllers
         {
             try
             {
-                Attend.MarkRegistered(CurrentDatabase. PeopleId, MeetingId, CommitId);
+                Attend.MarkRegistered(CurrentDatabase, PeopleId, MeetingId, CommitId);
             }
             catch (Exception ex)
             {

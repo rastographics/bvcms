@@ -1,8 +1,8 @@
+using CmsData;
+using CmsWeb.Areas.People.Models;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Areas.People.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
@@ -51,10 +51,13 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult UploadPicture(int id, HttpPostedFileBase picture)
         {
             if (picture == null)
+            {
                 return Redirect("/Person2/" + id);
+            }
+
             var person = CurrentDatabase.LoadPersonById(id);
             DbUtil.LogPersonActivity($"Uploading Picture for {person.Name}", id, person.Name);
-            person.UploadPicture(CurrentDatabase. picture.InputStream);
+            person.UploadPicture(CurrentDatabase, picture.InputStream);
             return Redirect("/Person2/" + id);
         }
 
@@ -97,10 +100,10 @@ namespace CmsWeb.Areas.People.Controllers
             switch (name)
             {
                 case "position":
-                    p.UpdatePosition(CurrentDatabase. value.ToInt());
+                    p.UpdatePosition(CurrentDatabase, value.ToInt());
                     break;
                 case "campus":
-                    p.UpdateCampus(CurrentDatabase. value.ToInt());
+                    p.UpdateCampus(CurrentDatabase, value.ToInt());
                     break;
             }
             return new EmptyResult();

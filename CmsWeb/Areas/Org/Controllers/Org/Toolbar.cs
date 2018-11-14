@@ -1,6 +1,6 @@
+using CmsData;
 using System;
 using System.Web.Mvc;
-using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Controllers
@@ -11,7 +11,10 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult CopySettings(int id)
         {
             if (Util.SessionTimedOut())
+            {
                 return Redirect("/");
+            }
+
             Session["OrgCopySettings"] = id;
             return Redirect("/OrgSearch/");
         }
@@ -27,7 +30,10 @@ namespace CmsWeb.Areas.Org.Controllers
         public ContentResult TagAll(Guid id, string tagname, bool? cleartagfirst)
         {
             if (!tagname.HasValue())
+            {
                 return Content("no tag name");
+            }
+
             CurrentDatabase.SetNoLock();
             var q = CurrentDatabase.PeopleQuery(id);
             if (Util2.CurrentTagName == tagname && !(cleartagfirst ?? false))
@@ -37,7 +43,10 @@ namespace CmsWeb.Areas.Org.Controllers
             }
             var tag = CurrentDatabase.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
             if (cleartagfirst ?? false)
+            {
                 CurrentDatabase.ClearTag(tag);
+            }
+
             CurrentDatabase.TagAll(q, tag);
             Util2.CurrentTag = tagname;
             CurrentDatabase.TagCurrent();
@@ -61,7 +70,7 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult AddTasks(Guid id)
         {
             var c = new ContentResult();
-            c.Content = Task.AddTasks(CurrentDatabase. id).ToString();
+            c.Content = Task.AddTasks(CurrentDatabase, id).ToString();
             return c;
         }
     }

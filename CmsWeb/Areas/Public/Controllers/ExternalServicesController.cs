@@ -1,4 +1,5 @@
-﻿using CmsWeb.Lifecycle;
+﻿using CmsData;
+using CmsWeb.Lifecycle;
 using CmsWeb.Models;
 using System;
 using System.Linq;
@@ -63,7 +64,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
                 CurrentDatabase.SubmitChanges();
 
-                CurrentDatabase.Email(CurrentDatabase.Util.AdminMail, check.User, "TouchPoint Notification: Background Check Complete", "A scheduled background check has been completed for " + check.Person.Name);
+                CurrentDatabase.Email(DbUtil.AdminMail, check.User, "TouchPoint Notification: Background Check Complete", "A scheduled background check has been completed for " + check.Person.Name);
             }
 
             //System.IO.File.WriteAllText(@"C:\" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".txt", req);

@@ -1,5 +1,5 @@
-﻿using CmsData;
-using CmsWeb.Areas.Public.Models;
+﻿using CmsWeb.Areas.Public.Models;
+using CmsWeb.Lifecycle;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,8 +7,12 @@ using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
-    public class SmallGroupFinderController : Controller
+    public class SmallGroupFinderController : CMSBaseController
     {
+        public SmallGroupFinderController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         public ActionResult Index(string id, bool useShell = true)
         {
             var check = (from e in CurrentDatabase.Contents

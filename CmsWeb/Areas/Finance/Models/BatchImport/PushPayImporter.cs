@@ -1,10 +1,9 @@
+using CmsData;
+using CsvHelper;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using CmsData;
 using UtilityExtensions;
-using CsvHelper;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
 {
@@ -13,7 +12,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
         public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
         {
             using (var csv = new CsvReader(new StringReader(text)))
+            {
                 return Import(csv, date, fundid);
+            }
         }
 
         private static int? Import(CsvReader csv, DateTime date, int? fundid)
@@ -34,15 +35,21 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 var email = csv["Email address"];
                 var phone = csv["Mobile Number"];
                 var fundText = "";
-                if(csv.Context.HeaderRecord.Contains("Giving Type Label"))
+                if (csv.Context.HeaderRecord.Contains("Giving Type Label"))
+                {
                     fundText = csv["Giving Type Label"];
+                }
 
                 ContributionFund f = null;
-                if(fundText.HasValue())
-                    f = CurrentDatabase.FetchOrCreateFund(fundText);
+                if (fundText.HasValue())
+                {
+                    f = DbUtil.Db.FetchOrCreateFund(fundText);
+                }
 
                 if (bundleHeader == null)
+                {
                     bundleHeader = BatchImportContributions.GetBundleHeader(batchDate ?? DateTime.Today, DateTime.Now);
+                }
 
                 var bd = BatchImportContributions.AddContributionDetail(date, f?.FundId ?? fid, amount, method, null, $"{email}|{phone}");
                 bundleHeader.BundleDetails.Add(bd);

@@ -1,20 +1,23 @@
-﻿using System;
+﻿using CmsData;
+using CmsData.Codes;
+using CmsWeb.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using CmsData;
-using CmsWeb.Models;
-using CmsData.Codes;
 
 namespace CmsWeb.Areas.Finance.Models
 {
     public class BundlesModel : PagerModel2
     {
-        int? count;
+        private int? count;
         public int Count()
         {
             if (!count.HasValue)
+            {
                 count = FetchBundles().Count();
+            }
+
             return count.Value;
         }
 
@@ -28,9 +31,15 @@ namespace CmsWeb.Areas.Finance.Models
         private IQueryable<CmsData.View.BundleList> FetchBundles()
         {
             if (bundles == null)
-                bundles = from b in CurrentDatabase.ViewBundleLists select b;
-            if(HttpContext.Current.User.IsInRole("FinanceDataEntry"))
+            {
+                bundles = from b in DbUtil.Db.ViewBundleLists select b;
+            }
+
+            if (HttpContext.Current.User.IsInRole("FinanceDataEntry"))
+            {
                 return bundles.Where(vv => vv.BundleStatusId == BundleStatusCode.OpenForDataEntry);
+            }
+
             return bundles;
         }
 
@@ -40,25 +49,26 @@ namespace CmsWeb.Areas.Finance.Models
             var q2 = q.Skip(StartRow).Take(PageSize);
             var q3 = from b in q2
                      select new BundleInfo
-                                {
-                                    BundleId = b.BundleHeaderId,
-                                    HeaderType = b.HeaderType,
-                                    PostingDate = b.PostingDate,
-                                    DepositDate = b.DepositDate,
-                                    TotalBundle = b.TotalBundle,
-                                    TotalItems = b.TotalItems,
-                                    ItemCount = b.ItemCount ?? 0,
-                                    TotalNonTaxDed = b.TotalNonTaxDed,
-                                    FundId = b.FundId,
-                                    Fund = b.Fund,
-                                    Status = b.Status,
-                                };
+                     {
+                         BundleId = b.BundleHeaderId,
+                         HeaderType = b.HeaderType,
+                         PostingDate = b.PostingDate,
+                         DepositDate = b.DepositDate,
+                         TotalBundle = b.TotalBundle,
+                         TotalItems = b.TotalItems,
+                         ItemCount = b.ItemCount ?? 0,
+                         TotalNonTaxDed = b.TotalNonTaxDed,
+                         FundId = b.FundId,
+                         Fund = b.Fund,
+                         Status = b.Status,
+                     };
             return q3;
         }
         public IQueryable<CmsData.View.BundleList> ApplySort()
         {
             var q = FetchBundles();
             if (Direction == "asc")
+            {
                 switch (Sort)
                 {
                     case "Type":
@@ -94,50 +104,54 @@ namespace CmsWeb.Areas.Finance.Models
                     case "Id":
                     case "Status":
                         q = from b in q
-                            orderby b.Status descending, b.BundleHeaderId descending 
+                            orderby b.Status descending, b.BundleHeaderId descending
                             select b;
                         break;
                 }
+            }
             else
+            {
                 switch (Sort)
                 {
                     case "Type":
                         q = from b in q
-                            orderby b.HeaderType descending 
+                            orderby b.HeaderType descending
                             select b;
                         break;
                     case "Deposited":
                         q = from b in q
-                            orderby b.DepositDate descending 
+                            orderby b.DepositDate descending
                             select b;
                         break;
                     case "Total Bundle":
                         q = from b in q
-                            orderby b.TotalBundle descending 
+                            orderby b.TotalBundle descending
                             select b;
                         break;
                     case "Items":
                         q = from b in q
-                            orderby b.TotalItems descending 
+                            orderby b.TotalItems descending
                             select b;
                         break;
                     case "Count":
                         q = from b in q
-                            orderby b.ItemCount descending 
+                            orderby b.ItemCount descending
                             select b;
                         break;
                     case "Posted":
                         q = from b in q
-                            orderby b.PostingDate descending 
+                            orderby b.PostingDate descending
                             select b;
                         break;
                     case "Id":
                     case "Status":
                         q = from b in q
-                            orderby b.Status descending, b.BundleHeaderId descending 
+                            orderby b.Status descending, b.BundleHeaderId descending
                             select b;
                         break;
                 }
+            }
+
             return q;
         }
     }

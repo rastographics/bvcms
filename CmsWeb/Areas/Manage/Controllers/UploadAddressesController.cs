@@ -32,7 +32,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     CurrentDatabase.UploadPeopleRuns.InsertOnSubmit(runningtotals);
                     CurrentDatabase.SubmitChanges();
 
-                    var m = new UploadAddressesModel(CurrentDatabase. pid ?? 0);
+                    var m = new UploadAddressesModel(CurrentDatabase, pid ?? 0);
                     m.DoUpload(text);
                 }
                 catch (Exception ex)

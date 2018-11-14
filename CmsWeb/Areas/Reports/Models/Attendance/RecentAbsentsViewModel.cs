@@ -1,10 +1,10 @@
+using CmsData;
+using Dapper;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using CmsData;
-using Dapper;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Reports.Models
@@ -16,25 +16,25 @@ namespace CmsWeb.Areas.Reports.Models
             QueryId = queryid;
             OrgId = id;
             OtherOrgFilterId = otherorgfilterid;
-            DefaultWorshipId = CurrentDatabase.Setting("WorshipId", "0").ToInt();
-            var q = from o in CurrentDatabase.Organizations
-                where o.OrganizationId == OrgId
-                let fo = CurrentDatabase.Organizations.Single(oo => oo.OrganizationId == otherorgfilterid)
-                let wo = CurrentDatabase.Organizations.Single(oo => oo.OrganizationId == DefaultWorshipId)
-                select new
-                {
-                    o.OrganizationName,
-                    o.LeaderName,
-                    LastMeeting = (from m in CurrentDatabase.Meetings
-                        where m.OrganizationId == OrgId
-                        where m.Attends.Any(aa => aa.AttendanceFlag)
-                        orderby m.MeetingDate descending
-                        select m.MeetingDate).First(),
-                    ConsecutiveAbsentsThreshold = o.ConsecutiveAbsentsThreshold ?? 2,
-                    FilterName = fo != null ? fo.OrganizationName : "",
-                    FilterLeader = fo != null ? fo.LeaderName : "",
-                    WorshipName = wo != null ? wo.OrganizationName : "",
-                };
+            DefaultWorshipId = DbUtil.Db.Setting("WorshipId", "0").ToInt();
+            var q = from o in DbUtil.Db.Organizations
+                    where o.OrganizationId == OrgId
+                    let fo = DbUtil.Db.Organizations.Single(oo => oo.OrganizationId == otherorgfilterid)
+                    let wo = DbUtil.Db.Organizations.Single(oo => oo.OrganizationId == DefaultWorshipId)
+                    select new
+                    {
+                        o.OrganizationName,
+                        o.LeaderName,
+                        LastMeeting = (from m in DbUtil.Db.Meetings
+                                       where m.OrganizationId == OrgId
+                                       where m.Attends.Any(aa => aa.AttendanceFlag)
+                                       orderby m.MeetingDate descending
+                                       select m.MeetingDate).First(),
+                        ConsecutiveAbsentsThreshold = o.ConsecutiveAbsentsThreshold ?? 2,
+                        FilterName = fo != null ? fo.OrganizationName : "",
+                        FilterLeader = fo != null ? fo.LeaderName : "",
+                        WorshipName = wo != null ? wo.OrganizationName : "",
+                    };
             var i = q.Single();
             OrganizationName = i.OrganizationName;
             OrganizationLeader = i.LeaderName;

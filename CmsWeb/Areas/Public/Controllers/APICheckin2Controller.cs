@@ -354,8 +354,8 @@ namespace CmsWeb.Areas.Public.Controllers
                 }
             }
 
-            p.LogChanges(CurrentDatabase. psb);
-            p.Family.LogChanges(CurrentDatabase. fsb, p.PeopleId, Util.UserPeopleId ?? 0);
+            p.LogChanges(CurrentDatabase, psb);
+            p.Family.LogChanges(CurrentDatabase, fsb, p.PeopleId, Util.UserPeopleId ?? 0);
             CurrentDatabase.SubmitChanges();
             if (CurrentDatabase.Setting("NotifyCheckinChanges", "true").ToBool() && (psb.Count > 0 || fsb.Count > 0))
             {
@@ -469,7 +469,7 @@ namespace CmsWeb.Areas.Public.Controllers
                     return Content("date not parsed");
                 }
             }
-            Attend.RecordAttend(CurrentDatabase. PeopleId, OrgId, Present, dt);
+            Attend.RecordAttend(CurrentDatabase, PeopleId, OrgId, Present, dt);
             var r = new ContentResult();
             r.Content = "success";
             return r;
@@ -607,7 +607,7 @@ namespace CmsWeb.Areas.Public.Controllers
             p.SmallId = Image.NewImageFromBits(bits, 120, 120).Id;
             p.MediumId = Image.NewImageFromBits(bits, 320, 400).Id;
             p.LargeId = Image.NewImageFromBits(bits).Id;
-            person.LogPictureUpload(CurrentDatabase. Util.UserPeopleId ?? 1);
+            person.LogPictureUpload(CurrentDatabase, Util.UserPeopleId ?? 1);
             CurrentDatabase.SubmitChanges();
             return Content("done");
         }
@@ -674,7 +674,8 @@ namespace CmsWeb.Areas.Public.Controllers
                 {
 
                     var msg = kiosk + " at " + DateTime.Now.ToShortTimeString();
-                    CurrentDatabase.SendEmail(Util.TryGetMailAddress(CurrentDatabase.Util.AdminMail),
+                    //todo: check logic
+                    CurrentDatabase.SendEmail(Util.TryGetMailAddress(DbUtil.AdminMail),
                         "Printer Problem", msg, Util.ToMailAddressList(address));
                 }
                 catch (Exception)
@@ -944,7 +945,7 @@ namespace CmsWeb.Areas.Public.Controllers
             {
                 if (a.org > 0)
                 {
-                    Attend.RecordAttend(CurrentDatabase. id, a.org, true, DateTime.Today);
+                    Attend.RecordAttend(CurrentDatabase, id, a.org, true, DateTime.Today);
                 }
             }
 

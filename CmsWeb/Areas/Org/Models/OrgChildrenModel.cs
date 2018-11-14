@@ -1,8 +1,8 @@
+using CmsData;
+using CmsData.Codes;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using CmsData;
-using CmsData.Codes;
 
 namespace CmsWeb.Areas.Org.Models
 {
@@ -22,17 +22,17 @@ namespace CmsWeb.Areas.Org.Models
             get { return org?.OrganizationId; }
             set
             {
-                org = CurrentDatabase.LoadOrganizationById(value);
-                parentorg = CurrentDatabase.LoadOrganizationById(org.ParentOrgId);
+                org = DbUtil.Db.LoadOrganizationById(value);
+                parentorg = DbUtil.Db.LoadOrganizationById(org.ParentOrgId);
             }
         }
 
         public IEnumerable<OrgInfo> FetchOrgList()
         {
-            var showAllChildOrgs = CurrentDatabase.Setting("UX-ManageShowAllChildOrgs", true);
+            var showAllChildOrgs = DbUtil.Db.Setting("UX-ManageShowAllChildOrgs", true);
 
-            var q = from o in CurrentDatabase.Organizations
-                    let org = CurrentDatabase.Organizations.Single(oo => oo.OrganizationId == org.OrganizationId)
+            var q = from o in DbUtil.Db.Organizations
+                    let org = DbUtil.Db.Organizations.Single(oo => oo.OrganizationId == org.OrganizationId)
                     let ck = (o.ParentOrgId ?? 0) == org.OrganizationId
                     let ot = o.ParentOrgId != null && o.ParentOrgId != org.OrganizationId
                     let pa = o.ChildOrgs.Any()

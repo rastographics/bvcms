@@ -5,12 +5,12 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Models;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Models
@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.Org.Models
             : this()
         {
             OrgId = oid;
-            var q = from o in CurrentDatabase.Organizations
+            var q = from o in DbUtil.Db.Organizations
                     where o.OrganizationId == OrgId
                     select new
                     {
@@ -50,19 +50,23 @@ namespace CmsWeb.Areas.Org.Models
         {
             members = FetchMembers();
             if (!count.HasValue)
+            {
                 count = Count();
+            }
 
             var q1 = members.AsQueryable();
 
             if (Sort == "Birthday")
+            {
                 q1 = from p in q1
-                     orderby CurrentDatabase.NextBirthday(p.PeopleId)
+                     orderby DbUtil.Db.NextBirthday(p.PeopleId)
                      select p;
+            }
             else
             {
                 var qf = (from p in members
                           let famname = p.Family.People.Single(hh => hh.PeopleId == hh.Family.HeadOfHouseholdId).Name2
-                          group p by new {famname, p.FamilyId}
+                          group p by new { famname, p.FamilyId }
                           into g
                           orderby g.Key.famname, g.Key.FamilyId
                           select g.Max(pp => pp.FamilyId)).Skip(StartRow).Take(PageSize);
@@ -101,12 +105,16 @@ namespace CmsWeb.Areas.Org.Models
             if (!count.HasValue)
             {
                 if (Sort == "Family")
+                {
                     count = (from pp in FetchMembers()
                              group pp by pp.FamilyId
                              into g
                              select g.Key).Count();
+                }
                 else
+                {
                     count = FetchMembers().Count();
+                }
             }
             return count.Value;
         }
@@ -114,15 +122,18 @@ namespace CmsWeb.Areas.Org.Models
         private IQueryable<Person> FetchMembers()
         {
             if (members != null)
+            {
                 return members;
+            }
 
-            var q = from o in CurrentDatabase.Organizations
+            var q = from o in DbUtil.Db.Organizations
                     where o.OrganizationId == OrgId
                     select o.PublishDirectory;
             FamilyOption = q.Single() == 2;
 
             if (FamilyOption)
-                members = from p in CurrentDatabase.People
+            {
+                members = from p in DbUtil.Db.People
                           where p.Family.People.Any(pp =>
                               pp.OrganizationMembers.Any(mm =>
                                   mm.OrganizationId == OrgId
@@ -131,8 +142,10 @@ namespace CmsWeb.Areas.Org.Models
                                   && mm.MemberTypeId != MemberTypeCode.Prospect))
                           where p.DeceasedDate == null
                           select p;
+            }
             else
-                members = from p in CurrentDatabase.People
+            {
+                members = from p in DbUtil.Db.People
                           where p.OrganizationMembers.Any(mm =>
                               mm.OrganizationId == OrgId
                               && (mm.Pending ?? false) == false
@@ -140,25 +153,35 @@ namespace CmsWeb.Areas.Org.Models
                               && mm.MemberTypeId != MemberTypeCode.Prospect)
                           where p.DeceasedDate == null
                           select p;
+            }
 
             if (Name.HasValue())
+            {
                 members = from p in members
                           where p.Name.Contains(Name)
                           select p;
+            }
+
             return members;
         }
 
         public MvcHtmlString AddDiv(string s)
         {
             if (s.HasValue())
+            {
                 return new MvcHtmlString($"<div>{s}</div>\n");
+            }
+
             return null;
         }
 
         public MvcHtmlString AddEmailDiv(string s)
         {
             if (s.HasValue())
+            {
                 return new MvcHtmlString($"<div><a href='mailto:{s}'>{s}</a></div>\n");
+            }
+
             return null;
         }
 

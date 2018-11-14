@@ -47,7 +47,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity("APIContribution ContributionSearch");
-            return Content(new APIContributionSearchModel(CurrentDatabase. m).ContributionsXML(((page ?? 1) - 1) * 100, 100), "text/xml");
+            return Content(new APIContributionSearchModel(CurrentDatabase, m).ContributionsXML(((page ?? 1) - 1) * 100, 100), "text/xml");
         }
     }
 }

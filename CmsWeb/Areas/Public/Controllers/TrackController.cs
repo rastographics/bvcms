@@ -1,19 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
 using CmsWeb.Areas.Public.Models;
-using CmsWeb.Models;
+using CmsWeb.Lifecycle;
+using System;
+using System.Web.Mvc;
 using UtilityExtensions;
-using CmsData;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
-    public class TrackController : Controller
+    public class TrackController : CMSBaseController
     {
+        public TrackController(RequestManager requestManager) : base(requestManager)
+        {
+        }
+
         public ActionResult Index(string id)
         {
             return Key(id);
@@ -24,7 +22,9 @@ namespace CmsWeb.Areas.Public.Controllers
 
             var g = id.QuerystringToGuid();
             if (!g.HasValue)
+            {
                 return new FileContentResult(b, "image/gif");
+            }
 
             try { CurrentDatabase.TrackOpen(g.Value); }
             catch (Exception) { }

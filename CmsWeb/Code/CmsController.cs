@@ -248,7 +248,7 @@ namespace CmsWeb
             }
             base.OnActionExecuting(filterContext);
             Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
-            CurrentDatabase.UpdateLastActivity(Util.UserId);
+            DbUtil.Db.UpdateLastActivity(Util.UserId);
         }
         public ViewResult Message(string text)
         {
@@ -265,7 +265,7 @@ namespace CmsWeb
             {
                 var res = filterContext.HttpContext.Response;
                 res.StatusCode = 401;
-                res.AddHeader("WWW-Authenticate", $"Basic realm=\"{CurrentDatabase.Host}\"");
+                res.AddHeader("WWW-Authenticate", $"Basic realm=\"{DbUtil.Db.Host}\"");
                 res.End();
             }
         }

@@ -1,12 +1,9 @@
+using CmsData;
 using System;
-using System.Data;
-using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.ServiceModel.Channels;
 using System.Web.Mvc;
-using CmsData;
 using UtilityExtensions;
 using Xceed.Words.NET;
 
@@ -36,12 +33,15 @@ namespace CmsWeb.Models
             var bytes = wc.DownloadData(template);
             var ms = new MemoryStream(bytes);
             var doctemplate = DocX.Load(ms);
-            var replacements = new EmailReplacements(CurrentDatabase. doctemplate);
+            var replacements = new EmailReplacements(DbUtil.Db, doctemplate);
             var q = peopleId.HasValue
-                ? CurrentDatabase.PeopleQuery2(peopleId)
-                : CurrentDatabase.PeopleQuery(guid);
+                ? DbUtil.Db.PeopleQuery2(peopleId)
+                : DbUtil.Db.PeopleQuery(guid);
             if (!q.Any())
+            {
                 throw new Exception("no people in query");
+            }
+
             var finaldoc = replacements.DocXReplacements(q.First());
             foreach (var p in q.Skip(1))
             {

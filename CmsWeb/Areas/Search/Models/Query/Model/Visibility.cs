@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using CmsData;
+using System.Collections.Generic;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
@@ -37,18 +37,18 @@ namespace CmsWeb.Areas.Search.Models
 
         public bool AutoRun
         {
-            get { return CurrentDatabase.UserPreference("QueryAutoRun", "false").ToBool(); }
+            get { return DbUtil.Db.UserPreference("QueryAutoRun", "false").ToBool(); }
 
         }
 
-        private List<FieldType> texttypes = new List<FieldType>() 
-        { 
-            FieldType.String, 
-            FieldType.StringEqual, 
-            FieldType.StringEqualOrStartsWith 
+        private List<FieldType> texttypes = new List<FieldType>()
+        {
+            FieldType.String,
+            FieldType.StringEqual,
+            FieldType.StringEqualOrStartsWith
         };
-        private List<FieldType> codetypes = new List<FieldType>() 
-        { 
+        private List<FieldType> codetypes = new List<FieldType>()
+        {
             FieldType.Bit,
             FieldType.NullBit,
             FieldType.Code,
@@ -56,21 +56,21 @@ namespace CmsWeb.Areas.Search.Models
             FieldType.CodeStr,
             FieldType.DateField,
         };
-        private List<FieldType> integertypes = new List<FieldType>() 
-        { 
+        private List<FieldType> integertypes = new List<FieldType>()
+        {
             FieldType.Integer,
             FieldType.IntegerEqual,
             FieldType.IntegerSimple,
             FieldType.NullInteger,
         };
-        private List<FieldType> numbertypes = new List<FieldType>() 
-        { 
+        private List<FieldType> numbertypes = new List<FieldType>()
+        {
             FieldType.NullNumber,
             FieldType.Number,
             FieldType.NumberLG
         };
-        private List<FieldType> datetypes = new List<FieldType>() 
-        { 
+        private List<FieldType> datetypes = new List<FieldType>()
+        {
             FieldType.Date,
             FieldType.DateSimple,
         };

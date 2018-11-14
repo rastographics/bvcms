@@ -1,9 +1,8 @@
 ﻿using CmsData;
+using ImageData;
 using System;
 using System.Linq;
-using ImageData;
 using UtilityExtensions;
-using DbUtil = CmsData.DbUtil;
 
 // ReSharper disable MemberInitializerValueIgnored
 // ReSharper disable RedundantDefaultMemberInitializer
@@ -56,7 +55,7 @@ namespace CmsWeb.CheckInAPI
         public int pictureX = 0;
         public int pictureY = 0;
 
-        public CheckInPerson populate( Person p )
+        public CheckInPerson populate(Person p)
         {
             id = p.PeopleId;
             familyID = p.FamilyId;
@@ -101,13 +100,15 @@ namespace CmsWeb.CheckInAPI
 
         public void loadImage()
         {
-            Person p = CurrentDatabase.LoadPersonById( id );
+            Person p = CmsData.DbUtil.Db.LoadPersonById(id);
 
-            if( p.Picture != null ) {
-                Image image = ImageData.CurrentDatabase.Images.SingleOrDefault( i => i.Id == p.Picture.SmallId );
+            if (p.Picture != null)
+            {
+                Image image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == p.Picture.SmallId);
 
-                if( image != null ) {
-                    picture = Convert.ToBase64String( image.Bits );
+                if (image != null)
+                {
+                    picture = Convert.ToBase64String(image.Bits);
                     pictureX = p.Picture.X ?? 0;
                     pictureY = p.Picture.Y ?? 0;
                 }

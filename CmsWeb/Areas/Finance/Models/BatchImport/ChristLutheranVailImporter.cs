@@ -1,8 +1,8 @@
-﻿using System;
+﻿using CmsData;
+using CsvHelper;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using CmsData;
-using CsvHelper;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
@@ -12,7 +12,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
         public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
         {
             using (var csv = new CsvReader(new StringReader(text)))
+            {
                 return BatchProcess(csv, date, fundid);
+            }
         }
 
         private static int? BatchProcess(CsvReader csv, DateTime date, int? fundid)
@@ -27,7 +29,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             while (csv.Read())
             {
                 if (csv[0] != "Deposit") // Type
+                {
                     continue;
+                }
 
                 var rec = new Record
                 {
@@ -39,14 +43,19 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 };
                 list.Add(rec);
             }
-            foreach(var rec in list)
+            foreach (var rec in list)
             {
                 if (!rec.Dt.HasValue)
+                {
                     continue;
+                }
 
                 if (bh == null)
+                {
                     bh = BatchImportContributions.GetBundleHeader(date, now);
-                var f = CurrentDatabase.FetchOrCreateFund(rec.Fund);
+                }
+
+                var f = DbUtil.Db.FetchOrCreateFund(rec.Fund);
                 var bd = BatchImportContributions.AddContributionDetail(rec.Dt.Value, f.FundId, rec.Amount, rec.CheckNo, "", rec.Identifer);
                 bd.Contribution.PostingDate = now;
                 bh.BundleDetails.Add(bd);
@@ -57,7 +66,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             return bh?.BundleHeaderId ?? 0;
         }
 
-        class Record
+        private class Record
         {
             public DateTime? Dt { get; set; }
             public string Identifer { get; set; }

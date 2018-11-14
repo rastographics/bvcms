@@ -9,12 +9,12 @@ namespace CmsWeb.Lifecycle
 {
     public class CMSBaseService
     {
-        protected RequestManager RequestManager { get; }
+        protected IRequestManager RequestManager { get; }
         protected HttpContext CurrentHttpContext => RequestManager.CurrentHttpContext;
         protected CMSDataContext CurrentDatabase => RequestManager.CurrentDatabase;
         protected CMSImageDataContext CurrentImageDatabase => RequestManager.CurrentImageDatabase;
 
-        public CMSBaseService(RequestManager requestManager)
+        public CMSBaseService(IRequestManager requestManager)
         {
             RequestManager = requestManager;
         }
@@ -22,23 +22,12 @@ namespace CmsWeb.Lifecycle
 
     public class CMSBaseController : Controller
     {
-        protected RequestManager RequestManager { get; }
+        protected IRequestManager RequestManager { get; }
         protected HttpContext CurrentHttpContext => RequestManager.CurrentHttpContext;
         protected CMSDataContext CurrentDatabase => RequestManager.CurrentDatabase;
         protected CMSImageDataContext CurrentImageDatabase => RequestManager.CurrentImageDatabase;
 
-        public CMSBaseController(RequestManager requestManager)
-        {
-            RequestManager = requestManager;
-        }
-    }
-
-    [Obsolete("Models extending this class should be refactored to avoid containing business logic in the future")]
-    public class CMSBaseModelWithDataAccess
-    {
-        protected RequestManager RequestManager { get; }
-
-        public CMSBaseModelWithDataAccess(RequestManager requestManager)
+        public CMSBaseController(IRequestManager requestManager)
         {
             RequestManager = requestManager;
         }
@@ -59,7 +48,17 @@ namespace CmsWeb.Lifecycle
         }
     }
 
-    public class RequestManager
+    public interface IRequestManager
+    {
+        Guid RequestId { get; }
+        HttpContext CurrentHttpContext { get; }
+        string CurrentHost { get; }
+        string CurrentConnectionString { get; }
+        CMSDataContext CurrentDatabase { get; }
+        CMSImageDataContext CurrentImageDatabase { get; }
+    }
+
+    public class RequestManager : IRequestManager
     {
         private readonly CMSConfigurationManager _cmsConfigurationManager;
 

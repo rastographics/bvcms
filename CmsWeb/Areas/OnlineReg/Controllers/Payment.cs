@@ -1,15 +1,13 @@
-using System;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.UI.WebControls;
 using CmsData;
 using CmsData.Classes;
 using CmsWeb.Areas.OnlineReg.Models;
 using Dapper;
 using Elmah;
+using System;
+using System.Configuration;
+using System.Linq;
+using System.Text;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
@@ -31,7 +29,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             OnlineRegModel m = null;
             var ed = CurrentDatabase.RegistrationDatas.SingleOrDefault(e => e.Id == pf.DatumId);
             if (ed != null)
+            {
                 m = Util.DeSerialize<OnlineRegModel>(ed.Data);
+            }
 
 #if DEBUG
 #else
@@ -45,10 +45,14 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 datumid = m.DatumId;
                 var msg = m.CheckDuplicateGift(pf.AmtToPay);
                 if (Util.HasValue(msg))
+                {
                     return Message(msg);
+                }
             }
             if (IsCardTester(pf, "Payment Page"))
+            {
                 return Message("Found Card Tester");
+            }
 
             SetHeaders(pf.OrgId ?? 0);
             var ret = pf.ProcessPayment(ModelState, m);
@@ -78,28 +82,41 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         private bool IsCardTester(PaymentForm pf, string from)
         {
             if (!Util.IsHosted || !pf.CreditCard.HasValue())
+            {
                 return false;
+            }
+
             var hash = Pbkdf2Hasher.HashString(pf.CreditCard);
             CurrentDatabase.InsertIpLog(Request.UserHostAddress, hash);
 
             if (pf.IsProblemUser())
+            {
                 return LogRogueUser("Problem User", from);
+            }
+
             var iscardtester = ConfigurationManager.AppSettings["IsCardTester"];
             var result = CurrentDatabase.Connection.ExecuteScalar<string>(iscardtester, new { ip = Request.UserHostAddress });
             if (result.Equal("OK"))
+            {
                 return false;
+            }
+
             return LogRogueUser(result, from);
         }
 
         public static bool LogRogueUser(string why, string from)
         {
+            //todo: static?
             var request = System.Web.HttpContext.Current.Request;
             var insertRogueIp = ConfigurationManager.AppSettings["InsertRogueIp"];
             if (insertRogueIp.HasValue())
-                CurrentDatabase.Connection.Execute(insertRogueIp, new { ip = request.UserHostAddress, db = Util.Host });
+            {
+                DbUtil.Db.Connection.Execute(insertRogueIp, new { ip = request.UserHostAddress, db = Util.Host });
+            }
+
             var form = Encoding.Default.GetString(request.BinaryRead(request.TotalBytes));
             var sendto = Util.PickFirst(ConfigurationManager.AppSettings["CardTesterEmail"], Util.AdminMail);
-            CurrentDatabase.SendEmail(Util.FirstAddress(sendto),
+            DbUtil.Db.SendEmail(Util.FirstAddress(sendto),
                 $"CardTester on {Util.Host}", $"why={why} from={from} ip={request.UserHostAddress}<br>{form.HtmlEncode()}",
                 Util.EmailAddressListFromString(sendto));
             return true;
@@ -108,15 +125,22 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult Confirm(int? id, string transactionId, decimal? amount)
         {
             if (!id.HasValue)
+            {
                 return View("Other/Unknown");
+            }
 
             var m = OnlineRegModel.GetRegistrationFromDatum(id ?? 0);
             if (m == null || m.Completed)
             {
                 if (m == null)
+                {
                     DbUtil.LogActivity("OnlineReg NoPendingConfirmation");
+                }
                 else
+                {
                     m.Log("NoPendingConfirmation");
+                }
+
                 return Content("no pending confirmation found");
             }
             if (!Util.HasValue(transactionId))
@@ -160,7 +184,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             Response.NoCache();
 
             if (!Util.HasValue(q))
+            {
                 return Message("unknown");
+            }
+
             var id = Util.Decrypt(q).ToInt2();
             var qq = from t in CurrentDatabase.Transactions
                      where t.OriginalId == id || t.Id == id
@@ -168,13 +195,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                      select new { t, email = t.TransactionPeople.FirstOrDefault().Person.EmailAddress };
             var i = qq.FirstOrDefault();
             if (i == null)
+            {
                 return Message("no outstanding transaction");
+            }
 
             var ti = i.t;
             var email = i.email;
-            var amtdue = PaymentForm.AmountDueTrans(CurrentDatabase. ti);
+            var amtdue = PaymentForm.AmountDueTrans(CurrentDatabase, ti);
             if (amtdue == 0)
+            {
                 return Message("no outstanding transaction");
+            }
 
 #if DEBUG
             ti.Testing = true;
@@ -198,7 +229,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             Response.NoCache();
             if (!id.HasValue)
+            {
                 return View("Other/Unknown");
+            }
+
             if (!Util.HasValue(transactionId))
             {
                 DbUtil.LogActivity("OnlineReg PayDueNoTransactionId");
@@ -214,7 +248,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             ti.Testing = true;
 #endif
             OnlineRegModel.ConfirmDuePaidTransaction(ti, transactionId, sendmail: true);
-            ViewBag.amtdue = PaymentForm.AmountDueTrans(CurrentDatabase. ti).ToString("C");
+            ViewBag.amtdue = PaymentForm.AmountDueTrans(CurrentDatabase, ti).ToString("C");
             SetHeaders(ti.OrgId ?? 0);
             DbUtil.LogActivity("OnlineReg PayDueConfirm", ti.OrgId, ti.LoginPeopleId ?? ti.FirstTransactionPeopleId());
             return View("PayAmtDue/Confirm", ti);
@@ -224,11 +258,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult PayDueTest(string q)
         {
             if (!Util.HasValue(q))
+            {
                 return Message("unknown");
+            }
+
             var id = Util.Decrypt(q);
             var ed = CurrentDatabase.ExtraDatas.SingleOrDefault(e => e.Id == id.ToInt());
             if (ed == null)
+            {
                 return Message("no outstanding transaction");
+            }
+
             return Content(ed.Data);
         }
     }

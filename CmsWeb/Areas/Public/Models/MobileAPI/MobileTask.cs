@@ -1,7 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using CmsData;
 using CmsData.View;
-using CmsData;
+using System;
+using System.Linq;
 
 namespace CmsWeb.MobileAPI
 {
@@ -68,7 +68,7 @@ namespace CmsWeb.MobileAPI
 
             if (task.AboutPictureId != null)
             {
-                var image = ImageData.CurrentDatabase.Images.SingleOrDefault(i => i.Id == task.AboutPictureId);
+                var image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == task.AboutPictureId);
 
                 if (image != null)
                 {
@@ -121,7 +121,7 @@ namespace CmsWeb.MobileAPI
 
             if (task.AboutWho?.Picture != null)
             {
-                var image = ImageData.CurrentDatabase.Images.SingleOrDefault(i => i.Id == task.AboutWho.Picture.SmallId);
+                var image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == task.AboutWho.Picture.SmallId);
 
                 if (image != null)
                 {

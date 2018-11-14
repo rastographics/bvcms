@@ -1,17 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Xml;
-using System.Web.Mvc;
-using System.Xml.Linq;
-using UtilityExtensions;
-using System.Linq;
 using CmsData;
+using System.Linq;
+using System.Web.Mvc;
+using System.Xml;
+using UtilityExtensions;
 
 namespace CmsWeb.Models.iPhone
 {
     public class DetailResult : ActionResult
     {
-        private int PeopleId;
+        private readonly int PeopleId;
         public DetailResult(int PeopleId)
         {
             this.PeopleId = PeopleId;
@@ -25,7 +22,7 @@ namespace CmsWeb.Models.iPhone
 
             using (var w = XmlWriter.Create(context.HttpContext.Response.OutputStream, settings))
             {
-                var p = CurrentDatabase.LoadPersonById(PeopleId);
+                var p = DbUtil.Db.LoadPersonById(PeopleId);
                 w.WriteStartElement("Person");
                 w.WriteAttributeString("peopleid", p.PeopleId.ToString());
                 w.WriteAttributeString("first", p.PreferredName);
@@ -52,7 +49,7 @@ namespace CmsWeb.Models.iPhone
                     w.WriteAttributeString("age", Person.AgeDisplay(m.Age, m.PeopleId).ToString());
                     w.WriteEndElement();
                 }
-                var q = from re in CurrentDatabase.RelatedFamilies
+                var q = from re in DbUtil.Db.RelatedFamilies
                         where re.FamilyId == p.FamilyId || re.RelatedFamilyId == p.FamilyId
                         let rf = re.RelatedFamilyId == p.FamilyId ? re.RelatedFamily1 : re.RelatedFamily2
                         select new { hohid = rf.HeadOfHouseholdId, description = re.FamilyRelationshipDesc };
