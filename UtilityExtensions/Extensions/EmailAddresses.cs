@@ -26,7 +26,7 @@ namespace UtilityExtensions
         public static string FullEmail(string email, string name)
         {
             if (email.HasValue())
-                if (name.Contains("?"))
+                if (!name.HasValue() || name.Contains("?"))
                     return email;
                 else
                 {
