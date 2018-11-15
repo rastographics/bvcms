@@ -1,0 +1,22 @@
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.OnlineReg.Models.OnlineRegModel
+@{
+    Layout = "~/Views/Shared/onlinereg2.cshtml";
+    ViewBag.Title = Model.Header;
+}
+<noscript>
+    <style type="text/css">
+        .pagecontainer {
+            display: none;
+        }
+    </style>
+    <div class="noscriptmsg">
+        This registration site requires javascript to be enabled on your browser.
+    </div>
+</noscript>
+
+<div class="regform">
+    <h3>@Model.Header</h3>
+    <h4 id="sorry">Sorry, this page is not available at this time</h4>
+    @Html.Raw(Util.PickFirst(Model.Instructions, ""))
+</div>
