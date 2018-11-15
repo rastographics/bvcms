@@ -489,6 +489,7 @@
     <Compile Include="API\PythonModel\ExtraValuesOrg.cs" />
     <Compile Include="API\PythonModel\Forms.cs" />
     <Compile Include="API\PythonModel\JsonSerializer.cs" />
+    <Compile Include="API\PythonModel\ManagedGiving.cs" />
     <Compile Include="API\PythonModel\Sms.cs" />
     <Compile Include="API\PythonModel\SqlGrid.cs" />
     <Compile Include="API\PythonModel\Upload.cs" />
@@ -1296,6 +1297,7 @@
     <Content Include="Migrations\20181015_add_pushpay_schema.sql" />
     <Content Include="Migrations\20181011_update_spouseId_function.sql" />
     <Content Include="Migrations\20181031_add_viewvolunteerapplication_role.sql" />
+    <Content Include="Migrations\20181115_add_recurring_amounts_disabled_column.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

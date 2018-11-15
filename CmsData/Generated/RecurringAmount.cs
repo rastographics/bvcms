@@ -23,6 +23,8 @@ namespace CmsData
 		private int _FundId;
 		
 		private decimal? _Amt;
+
+        private bool _Disabled;
 		
    		
     	
@@ -45,9 +47,12 @@ namespace CmsData
 		
 		partial void OnAmtChanging(decimal? value);
 		partial void OnAmtChanged();
-		
-    #endregion
-		public RecurringAmount()
+
+        partial void OnDisabledChanging(bool value);
+        partial void OnDisabledChanged();
+
+        #endregion
+        public RecurringAmount()
 		{
 			
 			
@@ -134,16 +139,37 @@ namespace CmsData
 
 		}
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-		[Association(Name="FK_RecurringAmounts_ContributionFund", Storage="_ContributionFund", ThisKey="FundId", IsForeignKey=true)]
+        [Column(Name = "Disabled", UpdateCheck = UpdateCheck.Never, Storage = "_Disabled", DbType = "bit NOT NULL")]
+        public bool Disabled
+        {
+            get { return this._Disabled; }
+
+            set
+            {
+                if (this._Disabled != value)
+                {
+
+                    this.OnDisabledChanging(value);
+                    this.SendPropertyChanging();
+                    this._Disabled = value;
+                    this.SendPropertyChanged("Disabled");
+                    this.OnDisabledChanged();
+                }
+
+            }
+
+        }
+
+
+        #endregion
+
+        #region Foreign Key Tables
+
+        #endregion
+
+        #region Foreign Keys
+
+        [Association(Name="FK_RecurringAmounts_ContributionFund", Storage="_ContributionFund", ThisKey="FundId", IsForeignKey=true)]
 		public ContributionFund ContributionFund
 		{
 			get { return this._ContributionFund.Entity; }
