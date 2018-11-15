@@ -33,9 +33,9 @@ namespace CmsWeb.Areas.Dialog.Controllers
             return PartialView("~/Areas/Dialog/Views/GetCheckImage/GetCheckImage.cshtml", chkImageModel);
         }
 
-        public static CheckImageModel GetImageForContribution(int imgId)
+        public CheckImageModel GetImageForContribution(int imgId)
         {
-            System.Data.Linq.Binary iBinary = (from i in ImageData.DbUtil.Db.Others
+            System.Data.Linq.Binary iBinary = (from i in CurrentImageDatabase.Others
                                                where i.Id == imgId
                                                select i.First).FirstOrDefault();
 

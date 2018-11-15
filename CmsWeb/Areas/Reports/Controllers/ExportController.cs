@@ -1,4 +1,3 @@
-using CmsData;
 using CmsWeb.Areas.Reports.Models;
 using CmsWeb.Areas.Search.Models;
 using CmsWeb.Lifecycle;
@@ -202,9 +201,9 @@ namespace CmsWeb.Areas.Reports.Controllers
 
         }
 
-        private static int maxExcelRows
+        private int maxExcelRows
         {
-            get { return DbUtil.Db.Setting("MaxExcelRows", "10000").ToInt(); }
+            get { return CurrentDatabase.Setting("MaxExcelRows", "10000").ToInt(); }
         }
 
         [HttpGet]

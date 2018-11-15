@@ -35,9 +35,9 @@ namespace CmsWeb.Controllers
 
         public ActionResult RecordTest(int id, string v)
         {
-            var o = DbUtil.Db.LoadOrganizationById(id);
-            o.AddEditExtra(DbUtil.Db, "tested", v);
-            DbUtil.Db.SubmitChanges();
+            var o = CurrentDatabase.LoadOrganizationById(id);
+            o.AddEditExtra(CurrentDatabase, "tested", v);
+            CurrentDatabase.SubmitChanges();
             return Content(v);
         }
 
@@ -82,7 +82,7 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/RunScript/{name}/{parameter?}/{title?}")]
         public ActionResult RunScript(string name, string parameter = null, string title = null)
         {
-            var content = DbUtil.Db.ContentOfTypeSql(name);
+            var content = CurrentDatabase.ContentOfTypeSql(name);
             if (content == null)
             {
                 return Content("no content");
@@ -111,7 +111,7 @@ namespace CmsWeb.Controllers
             ViewBag.Name = title ?? $"{name.SpaceCamelCase()} {parameter}";
             if (script.Contains("pagebreak"))
             {
-                ViewBag.report = PythonModel.PageBreakTables(DbUtil.Db, script, p);
+                ViewBag.report = PythonModel.PageBreakTables(CurrentDatabase, script, p);
                 return View("RunScriptPageBreaks");
             }
             ViewBag.Url = Request.Url?.PathAndQuery;
@@ -123,7 +123,7 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/RunScriptExcel/{scriptname}/{parameter?}")]
         public ActionResult RunScriptExcel(string scriptname, string parameter = null)
         {
-            var content = DbUtil.Db.ContentOfTypeSql(scriptname);
+            var content = CurrentDatabase.ContentOfTypeSql(scriptname);
             if (content == null)
             {
                 return Message("no content");
@@ -157,7 +157,7 @@ namespace CmsWeb.Controllers
             try
             {
 #endif
-            var script = DbUtil.Db.ContentOfTypePythonScript(name);
+            var script = CurrentDatabase.ContentOfTypePythonScript(name);
             if (!script.HasValue())
             {
                 return Message("no script named " + name);
@@ -179,8 +179,8 @@ namespace CmsWeb.Controllers
                     .Replace("V2", v2 ?? "None");
             if (script.Contains("@qtagid"))
             {
-                var id = DbUtil.Db.FetchLastQuery().Id;
-                var tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
+                var id = CurrentDatabase.FetchLastQuery().Id;
+                var tag = CurrentDatabase.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
                 script = script.Replace("@qtagid", tag.Id.ToString());
             }
 
@@ -209,7 +209,7 @@ namespace CmsWeb.Controllers
             var pe = new PythonModel(Util.Host);
             if (script.Contains("@BlueToolbarTagId"))
             {
-                var id = DbUtil.Db.FetchLastQuery().Id;
+                var id = CurrentDatabase.FetchLastQuery().Id;
                 pe.DictionaryAdd("BlueToolbarGuid", id.ToCode());
             }
 
@@ -238,7 +238,7 @@ namespace CmsWeb.Controllers
         [HttpPost, Route("~/RunPythonScriptProgress2")]
         public ActionResult RunPythonScriptProgress2(string logfile)
         {
-            var txt = DbUtil.Db.ContentOfTypeText(logfile);
+            var txt = CurrentDatabase.ContentOfTypeText(logfile);
             return Content(txt);
         }
         [Route("~/PyScriptForm/{name}")]
@@ -310,7 +310,7 @@ namespace CmsWeb.Controllers
 
                 pe.HttpMethod = "post";
 
-                var script = DbUtil.Db.ContentOfTypePythonScript(pe.Data.pyscript);
+                var script = CurrentDatabase.ContentOfTypePythonScript(pe.Data.pyscript);
                 return Content(pe.RunScript(script));
             }
             catch (Exception ex)

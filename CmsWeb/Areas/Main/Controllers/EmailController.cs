@@ -122,11 +122,11 @@ namespace CmsWeb.Areas.Main.Controllers
             return View("Index", me);
         }
 
-        private static void GetRecipientsFromOrg(MassEmailer me, int orgId, bool? onlyProspects, bool? membersAndProspects)
+        private void GetRecipientsFromOrg(MassEmailer me, int orgId, bool? onlyProspects, bool? membersAndProspects)
         {
             //todo: static ref, use injection
-            var members = DbUtil.Db.OrgPeopleCurrent(orgId).Select(x => DbUtil.Db.LoadPersonById(x.PeopleId));
-            var prospects = DbUtil.Db.OrgPeopleProspects(orgId, false).Select(x => DbUtil.Db.LoadPersonById(x.PeopleId));
+            var members = CurrentDatabase.OrgPeopleCurrent(orgId).Select(x => CurrentDatabase.LoadPersonById(x.PeopleId));
+            var prospects = CurrentDatabase.OrgPeopleProspects(orgId, false).Select(x => CurrentDatabase.LoadPersonById(x.PeopleId));
 
             me.Recipients = new List<string>();
             me.RecipientIds = new List<int>();
@@ -188,9 +188,8 @@ namespace CmsWeb.Areas.Main.Controllers
             return View("Compose", m);
         }
 
-        private static int SaveDraft(int? draftId, string name, int roleId, string draftSubject, string draftBody)
+        private int SaveDraft(int? draftId, string name, int roleId, string draftSubject, string draftBody)
         {
-            //todo: why static, use di?
             Content content = null;
 
             if (draftId.HasValue && draftId > 0)
@@ -200,7 +199,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
             if (content != null)
             {
-                DbUtil.Db.ArchiveContent(draftId);
+                CurrentDatabase.ArchiveContent(draftId);
             }
             else
             {
@@ -224,15 +223,15 @@ namespace CmsWeb.Areas.Main.Controllers
 
             if (!draftId.HasValue || draftId == 0)
             {
-                DbUtil.Db.Contents.InsertOnSubmit(content);
+                CurrentDatabase.Contents.InsertOnSubmit(content);
             }
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
             return content.Id;
         }
 
-        private static string GetBody(string body)
+        private string GetBody(string body)
         {
             if (body == null)
             {
@@ -584,10 +583,10 @@ namespace CmsWeb.Areas.Main.Controllers
             return emailqueue;
         }
 
-        private static void ValidateEmailReplacementCodes(CMSDataContext db, string emailText, MailAddress fromAddress)
+        private void ValidateEmailReplacementCodes(CMSDataContext db, string emailText, MailAddress fromAddress)
         {
             var er = new EmailReplacements(db, emailText, fromAddress);
-            er.DoReplacements(db, DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0));
+            er.DoReplacements(db, db.LoadPersonById(Util.UserPeopleId ?? 0));
         }
     }
 }

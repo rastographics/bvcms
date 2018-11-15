@@ -1,14 +1,18 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using CmsData;
+using CmsWeb.Lifecycle;
 using CmsWeb.Models.Api;
 using System.Web.Http;
 using System.Web.OData;
 
 namespace CmsWeb.Controllers.Api
 {
-    public class ChAiPeopleController : ODataController
+    public class ChAiPeopleController : CMSBaseODataController
     {
+        public ChAiPeopleController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [EnableQuery(PageSize = ApiOptions.DefaultPageSize)]
         public IHttpActionResult Get()
         {
@@ -16,7 +20,7 @@ namespace CmsWeb.Controllers.Api
             {
                 cfg.CreateMap<CmsData.View.ChAiIndividualDatum, ApiChAiPerson>();
             });
-            return Ok(DbUtil.Db.ViewChAiIndividualDatas.ProjectTo<ApiChAiPerson>(config));
+            return Ok(CurrentDatabase.ViewChAiIndividualDatas.ProjectTo<ApiChAiPerson>(config));
         }
     }
 }

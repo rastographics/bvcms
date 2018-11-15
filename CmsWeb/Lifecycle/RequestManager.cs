@@ -3,6 +3,7 @@ using ImageData;
 using System;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.OData;
 
 namespace CmsWeb.Lifecycle
 {
@@ -18,6 +19,7 @@ namespace CmsWeb.Lifecycle
             RequestManager = requestManager;
         }
     }
+
     public class CMSBaseService
     {
         protected IRequestManager RequestManager { get; }
@@ -43,6 +45,20 @@ namespace CmsWeb.Lifecycle
             RequestManager = requestManager;
         }
     }
+
+    public class CMSBaseODataController : ODataController
+    {
+        protected IRequestManager RequestManager { get; }
+        protected HttpContext CurrentHttpContext => RequestManager.CurrentHttpContext;
+        protected CMSDataContext CurrentDatabase => RequestManager.CurrentDatabase;
+        protected CMSImageDataContext CurrentImageDatabase => RequestManager.CurrentImageDatabase;
+
+        public CMSBaseODataController(IRequestManager requestManager)
+        {
+            RequestManager = requestManager;
+        }
+    }
+
 
     public class CMSConfigurationManager
     {

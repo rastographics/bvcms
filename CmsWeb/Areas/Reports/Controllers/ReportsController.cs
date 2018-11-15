@@ -3,6 +3,7 @@ using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Areas.Main.Models.Avery;
 using CmsWeb.Areas.Reports.Models;
 using CmsWeb.Areas.Search.Models;
+using CmsWeb.Lifecycle;
 using CmsWeb.Models;
 using Dapper;
 using HtmlAgilityPack;
@@ -27,6 +28,10 @@ namespace CmsWeb.Areas.Reports.Controllers
     [RouteArea("Reports", AreaPrefix = "Reports"), Route("{action}/{id?}")]
     public partial class ReportsController : CmsStaffController
     {
+        public ReportsController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Authorize(Roles = "MembershipApp,Admin")]
         [HttpGet, Route("Application/{orgid:int}/{peopleid:int}/{content}")]
         public ActionResult Application(int orgid, int peopleid, string content)

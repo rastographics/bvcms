@@ -163,7 +163,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             return Content(value == 1 ? "Open" : "Closed");
         }
 
-        public static List<SelectListItem> GetFundStatusList()
+        public List<SelectListItem> GetFundStatusList()
         {
             var list = new List<SelectListItem>();
             list.Add(new SelectListItem { Text = "Open", Value = "1" });
@@ -171,7 +171,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             return list;
         }
 
-        public static List<SelectListItem> GetFundTypeList()
+        public List<SelectListItem> GetFundTypeList()
         {
             var list = new List<SelectListItem>();
             list.Add(new SelectListItem { Text = "1", Value = "1" });
@@ -180,10 +180,10 @@ namespace CmsWeb.Areas.Finance.Controllers
             return list;
         }
 
-        public static List<SelectListItem> GetRolesList()
+        public List<SelectListItem> GetRolesList()
         {
             //todo: static?
-            var roles = DbUtil.Db.Roles.OrderBy(r => r.RoleName).Select(r => new SelectListItem { Value = r.RoleId.ToString(), Text = r.RoleName }).ToList();
+            var roles = CurrentDatabase.Roles.OrderBy(r => r.RoleName).Select(r => new SelectListItem { Value = r.RoleId.ToString(), Text = r.RoleName }).ToList();
             roles.Insert(0, new SelectListItem { Value = "-1", Text = "(not assigned)" });
             roles.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)", Selected = true });
 

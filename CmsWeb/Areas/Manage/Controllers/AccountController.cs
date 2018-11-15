@@ -147,7 +147,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             TryLoadAlternateShell();
 
 
-            var dbExists = DbUtil.CheckDatabaseExists(DbUtil.Db.Host);
+            var dbExists = DbUtil.CheckDatabaseExists(CurrentDatabase.Host);
             var redirect = ViewExtensions2.DatabaseErrorUrl(dbExists);
 
             if (redirect != null)
