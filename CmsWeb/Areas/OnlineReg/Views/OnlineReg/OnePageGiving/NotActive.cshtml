@@ -3,35 +3,6 @@
 @{
     Layout = "~/Views/Shared/onlinereg2.cshtml";
     ViewBag.Title = Model.Header;
-    var filled = Model.Filled();
-    var complete = Model.AskDonation() ? "AskDonation" : "CompleteRegistration";
-    var action = $"/OnlineReg/{complete}/{Model.qtesting}";
-}
-@section head{
-    @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
-    @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2-bootstrap.css")
-}
-@section scripts
-{
-    <script type="text/javascript">
-        $.dateFormat = '@Util.jQueryDateFormat';
-        var specialGivingFundsPrefix = "List[0]";
-        $(function () {
-            $(document).idleTimer(@Model.TimeOut);
-            $(document).on("idle.idleTimer", function (event, elem, obj) {
-                window.location.href = '/OnlineReg/Timeout?ret=' + encodeURI('@Model.URL');
-            });
-        });
-    </script>
-    @Fingerprint.Script("/Content/touchpoint/js/onlinereg/OnlineReg2.js")
-    @if (Model.DisplaySpecialFunds)
-    {
-        @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
-    }
-    @if (Model.SaveProgressChecked())
-    {
-        @Fingerprint.Script("/Content/touchpoint/js/onlinereg/AutoSaveProgress.js")
-    }
 }
 <noscript>
     <style type="text/css">
@@ -46,6 +17,6 @@
 
 <div class="regform">
     <h3>@Model.Header</h3>
-    <h4 id="sorry">Sorry, One Page Giving is not available at this time</h4>
+    <h4 id="sorry">Sorry, this page is not available at this time</h4>
     @Html.Raw(Util.PickFirst(Model.Instructions, ""))
 </div>
