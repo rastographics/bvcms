@@ -28,6 +28,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 SetHeaders(m);
                 m.CheckRegisterLink(null);
 
+                if (m.NotActive())
+                {
+                    return View("OnePageGiving/NotActive", m);
+                }
+
                 var pf = PaymentForm.CreatePaymentForm(m);
                 pf.AmtToPay = null;
                 pf.Type = pf.NoCreditCardsAllowed ? "B" : "C";

@@ -160,6 +160,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
                    || (dt > (org.RegEnd ?? dt2) && !GoerSupporterId.HasValue);
         }
 
+        public bool NotActive()
+        {
+            return org.OrganizationStatusId == OrgStatusCode.Inactive;    
+        }
+
         public bool UserSelectsOrganization()
         {
             return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.UserSelects;
