@@ -14,8 +14,8 @@ namespace CmsWeb.Models
         private Dictionary<string, int> peopleidsa;
         internal bool AlphaNumericIds = false;
         internal bool IgnoreMissingGifts = false;
-        public UploadExcelIpsModel(string host, int peopleId, bool noupdate, bool ignoremissinggifts, bool testing = false)
-            : base(host, peopleId, noupdate, testing)
+        public UploadExcelIpsModel(CMSDataContext db, string host, int peopleId, bool noupdate, bool ignoremissinggifts, bool testing = false)
+            : base(db, host, peopleId, noupdate, testing)
         {
             PeopleSheetName = "Personal Data";
             IgnoreMissingGifts = ignoremissinggifts;
@@ -81,7 +81,7 @@ namespace CmsWeb.Models
 
         private void UploadPledges(UploadPeopleRun rt, ExcelPackage pkg)
         {
-            var db = DbUtil.Create(Host);
+            //var db = DbUtil.Create(Host);
             var data = FetchPledgeData(pkg.Workbook.Worksheets["Pledges"]).ToList();
             rt.Count = data.Count;
             rt.Description = $"Uploading Pledges {(Testing ? "in testing mode" : "for real")}";
@@ -92,17 +92,17 @@ namespace CmsWeb.Models
                          group g by g.Date.Sunday() into weeklypledges
                          select weeklypledges).ToList();
             BundleHeader bh = null;
-            var c = DbUtil.Db.Content("OrphanedPledges", "---", ContentTypeCode.TypeText);
+            var c = Db2.Content("OrphanedPledges", "---", ContentTypeCode.TypeText);
             c.Body = "";
-            DbUtil.Db.SubmitChanges();
+            Db2.SubmitChanges();
             foreach (var week in weeks)
             {
-                FinishBundle(DbUtil.Db, bh);
-                if (!Testing)
-                {
-                    DbUtil.Db.Dispose();
-                    db = DbUtil.Create(Host);
-                }
+                FinishBundle(Db2, bh);
+                //if (!Testing)
+                //{
+                //    Db2.Dispose();
+                //    db = DbUtil.Create(Host);
+                //}
                 bh = new BundleHeader
                 {
                     BundleHeaderTypeId = BundleTypeCode.Pledge,
@@ -121,9 +121,9 @@ namespace CmsWeb.Models
                         {
                             if (IgnoreMissingGifts)
                             {
-                                c = DbUtil.Db.Content("OrphanedPledges");
+                                c = Db2.Content("OrphanedPledges");
                                 c.Body += $"{pledge.IndividualId} {pledge.Date:d} {pledge.Amount:C}\n";
-                                DbUtil.Db.SubmitChanges();
+                                Db2.SubmitChanges();
                                 continue;
                             }
                             else
@@ -132,7 +132,7 @@ namespace CmsWeb.Models
                             }
                         }
 
-                        f = DbUtil.Db.FetchOrCreateFund(pledge.FundId, pledge.FundName ?? pledge.FundDescription);
+                        f = Db2.FetchOrCreateFund(pledge.FundId, pledge.FundName ?? pledge.FundDescription);
                         f.FundPledgeFlag = true;
                     }
                     var bd = new BundleDetail();
@@ -154,15 +154,15 @@ namespace CmsWeb.Models
                     Db2.SubmitChanges();
                 }
             }
-            FinishBundle(DbUtil.Db, bh);
-            if (!Testing)
-            {
-                DbUtil.Db.Dispose();
-            }
+            FinishBundle(Db2, bh);
+            //if (!Testing)
+            //{
+            //    DbUtil.Db.Dispose();
+            //}
         }
         private void UploadGifts(UploadPeopleRun rt, ExcelPackage pkg)
         {
-            var db = DbUtil.Create(Host);
+            //var db = DbUtil.Create(Host);
             var data = FetchContributionData(pkg.Workbook.Worksheets["Gift Data"]).ToList();
             rt.Count = data.Count;
             rt.Description = $"Uploading Gifts {(Testing ? "in testing mode" : "for real")}";
@@ -173,17 +173,17 @@ namespace CmsWeb.Models
                          group g by g.Date.Sunday() into weeklygifts
                          select weeklygifts).ToList();
             BundleHeader bh = null;
-            var c = DbUtil.Db.Content("OrphanedGifts", "---", ContentTypeCode.TypeText);
+            var c = Db2.Content("OrphanedGifts", "---", ContentTypeCode.TypeText);
             c.Body = "";
-            DbUtil.Db.SubmitChanges();
+            Db2.SubmitChanges();
             foreach (var week in weeks)
             {
-                FinishBundle(DbUtil.Db, bh);
-                if (!Testing)
-                {
-                    DbUtil.Db.Dispose();
-                    db = DbUtil.Create(Host);
-                }
+                FinishBundle(Db2, bh);
+                //if (!Testing)
+                //{
+                //    Db2.Dispose();
+                //    db = DbUtil.Create(Host);
+                //}
                 bh = new BundleHeader
                 {
                     BundleHeaderTypeId = BundleTypeCode.ChecksAndCash,
@@ -201,9 +201,9 @@ namespace CmsWeb.Models
                         {
                             if (IgnoreMissingGifts)
                             {
-                                c = DbUtil.Db.Content("OrphanedGifts");
+                                c = Db2.Content("OrphanedGifts");
                                 c.Body += $"{gift.IndividualId} {gift.Date:d} {gift.Amount:C}\n";
-                                DbUtil.Db.SubmitChanges();
+                                Db2.SubmitChanges();
                                 continue;
                             }
                             else
@@ -215,7 +215,7 @@ namespace CmsWeb.Models
 
                     if (!Testing)
                     {
-                        var f = DbUtil.Db.FetchOrCreateFund(gift.FundId, gift.FundName ?? gift.FundDescription);
+                        var f = Db2.FetchOrCreateFund(gift.FundId, gift.FundName ?? gift.FundDescription);
                         if (gift.FundId == 0)
                         {
                             gift.FundId = f.FundId;
@@ -241,11 +241,11 @@ namespace CmsWeb.Models
                     Db2.SubmitChanges();
                 }
             }
-            FinishBundle(DbUtil.Db, bh);
-            if (!Testing)
-            {
-                DbUtil.Db.Dispose();
-            }
+            FinishBundle(Db2, bh);
+            //if (!Testing)
+            //{
+            //    DbUtil.Db.Dispose();
+            //}
         }
         private void FinishBundle(CMSDataContext db, BundleHeader bh)
         {
@@ -256,8 +256,8 @@ namespace CmsWeb.Models
                     bh.TotalChecks = bh.BundleDetails.Sum(d => d.Contribution.ContributionAmount);
                     bh.TotalCash = 0;
                     bh.TotalEnvelopes = 0;
-                    DbUtil.Db.BundleHeaders.InsertOnSubmit(bh);
-                    DbUtil.Db.SubmitChanges();
+                    db.BundleHeaders.InsertOnSubmit(bh);
+                    db.SubmitChanges();
                 }
             }
         }
@@ -327,8 +327,8 @@ namespace CmsWeb.Models
                 return;
             }
 
-            var db = DbUtil.Create(Host);
-            if (!DbUtil.Db.Setting("UploadExcelIpsDeleteGifts"))
+            //var db = DbUtil.Create(Host);
+            if (!Db2.Setting("UploadExcelIpsDeleteGifts"))
             {
                 return;
             }
@@ -343,7 +343,7 @@ DBCC CHECKIDENT ('[Contribution]', RESEED, 0)
 DBCC CHECKIDENT ('[BundleHeader]', RESEED, 0)
 DBCC CHECKIDENT ('[BundleDetail]', RESEED, 0)
 ";
-            DbUtil.Db.ExecuteCommand(deletesql);
+            Db2.ExecuteCommand(deletesql);
         }
         internal override int? GetPeopleId(dynamic a)
         {

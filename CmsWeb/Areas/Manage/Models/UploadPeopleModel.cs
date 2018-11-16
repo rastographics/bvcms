@@ -38,6 +38,17 @@ namespace CmsWeb.Models
             Host = host;
             PeopleSheetName = "People";
         }
+
+        public UploadPeopleModel(CMSDataContext db, string host, int peopleId, bool noupdate, bool testing = false)
+        {
+            Db2 = db;
+
+            PeopleId = peopleId;
+            Noupdate = noupdate;
+            Testing = testing;
+            Host = host;
+            PeopleSheetName = "People";
+        }
         public virtual bool DoUpload(ExcelPackage pkg)
         {
             var rt = Db2.UploadPeopleRuns.OrderByDescending(mm => mm.Id).First();
@@ -52,7 +63,7 @@ namespace CmsWeb.Models
         }
         internal void UploadPeople(UploadPeopleRun rt, ExcelWorksheet ws)
         {
-            var db = DbUtil.Create(Host);
+            //var db = DbUtil.Create(Host);
 
             Extravaluenames = (from name in Names
                                where !Standardnames.Contains(name.Key, StringComparer.OrdinalIgnoreCase)
@@ -70,16 +81,16 @@ namespace CmsWeb.Models
                                   where campus.Key.HasValue()
                                   select campus.Key).ToList();
                 var dbc = from c in campuslist
-                          join cp in DbUtil.Db.Campus on c equals cp.Description into j
+                          join cp in Db2.Campus on c equals cp.Description into j
                           from cp in j.DefaultIfEmpty()
                           select new { cp, c };
                 var clist = dbc.ToList();
                 if (clist.Count > 0)
                 {
                     var maxcampusid = 0;
-                    if (DbUtil.Db.Campus.Any())
+                    if (Db2.Campus.Any())
                     {
-                        maxcampusid = DbUtil.Db.Campus.Max(c => c.Id);
+                        maxcampusid = Db2.Campus.Max(c => c.Id);
                     }
 
                     foreach (var i in clist)
@@ -89,7 +100,7 @@ namespace CmsWeb.Models
                             var cp = new Campu { Description = i.c, Id = ++maxcampusid };
                             if (!Testing)
                             {
-                                DbUtil.Db.Campus.InsertOnSubmit(cp);
+                                Db2.Campus.InsertOnSubmit(cp);
                             }
                         }
                     }
@@ -97,10 +108,10 @@ namespace CmsWeb.Models
             }
             if (!Testing)
             {
-                DbUtil.Db.SubmitChanges();
+                Db2.SubmitChanges();
             }
 
-            Campuses = DbUtil.Db.Campus.ToDictionary(cp => cp.Description, cp => cp.Id);
+            Campuses = Db2.Campus.ToDictionary(cp => cp.Description, cp => cp.Id);
 
             var q = (from li in Datalist
                      group li by li.FamilyId
@@ -118,22 +129,22 @@ namespace CmsWeb.Models
                 {
                     if (!Testing)
                     {
-                        DbUtil.Db.SubmitChanges();
-                        DbUtil.Db.Dispose();
-                        db = DbUtil.Create(Host);
+                        Db2.SubmitChanges();
+                        //DbUtil.Db.Dispose();
+                        //db = DbUtil.Create(Host);
                     }
 
                     Family f = null;
                     var potentialdup = false;
-                    int? pid = FindRecord(DbUtil.Db, a, ref potentialdup);
+                    int? pid = FindRecord(Db2, a, ref potentialdup);
                     if (pid == -1) // no data: no first or last name
                     {
                         continue;
                     }
 
                     var p = pid.HasValue
-                        ? UpdateRecord(DbUtil.Db, pid.Value, a)
-                        : NewRecord(DbUtil.Db, ref f, a, prevpid, potentialdup);
+                        ? UpdateRecord(Db2, pid.Value, a)
+                        : NewRecord(Db2, ref f, a, prevpid, potentialdup);
                     prevpid = p.PeopleId;
 
                     if (Recregnames.Any())
@@ -143,7 +154,7 @@ namespace CmsWeb.Models
 
                     if (Extravaluenames.Any())
                     {
-                        ProcessExtraValues(DbUtil.Db, p, a);
+                        ProcessExtraValues(Db2, p, a);
                     }
 
                     rt.Processed++;
@@ -151,13 +162,13 @@ namespace CmsWeb.Models
                 }
                 if (!Testing)
                 {
-                    DbUtil.Db.SubmitChanges();
+                    Db2.SubmitChanges();
                 }
             }
         }
         internal Person UpdateRecord(CMSDataContext db, int pid, dynamic a)
         {
-            var p = DbUtil.Db.LoadPersonById(pid);
+            var p = db.LoadPersonById(pid);
             Psb = new List<ChangeDetail>();
             Fsb = new List<ChangeDetail>();
 
@@ -191,13 +202,13 @@ namespace CmsWeb.Models
             UpdateField(p.Family, "StateCode", GetString(a.State));
             UpdateField(p.Family, "ZipCode", GetString(a.Zip));
 
-            UpdateMemberStatus(DbUtil.Db, p, a.MemberStatus);
+            UpdateMemberStatus(db, p, a.MemberStatus);
 
             if (!Testing)
             {
-                p.LogChanges(DbUtil.Db, Psb, PeopleId);
-                p.Family.LogChanges(DbUtil.Db, Fsb, p.PeopleId, PeopleId);
-                DbUtil.Db.SubmitChanges();
+                p.LogChanges(db, Psb, PeopleId);
+                p.Family.LogChanges(db, Fsb, p.PeopleId, PeopleId);
+                db.SubmitChanges();
                 p.AddEditExtraBool("InsertPeopleUpdated", true);
             }
             return p;
@@ -208,7 +219,7 @@ namespace CmsWeb.Models
             {
                 if (prevpid > 0)
                 {
-                    f = DbUtil.Db.LoadFamilyByPersonId(prevpid);
+                    f = db.LoadFamilyByPersonId(prevpid);
                 }
             }
 
@@ -223,17 +234,17 @@ namespace CmsWeb.Models
                     ZipCode = GetString(a.Zip),
                     HomePhone = GetDigits(a.HomePhone)
                 };
-                DbUtil.Db.Families.InsertOnSubmit(f);
+                db.Families.InsertOnSubmit(f);
                 if (!Testing)
                 {
-                    DbUtil.Db.SubmitChanges();
+                    db.SubmitChanges();
                 }
             }
 
             DateTime? dob = GetDate(a.Birthday);
             string dobstr = dob.FormatDate();
 
-            var p = Person.Add(DbUtil.Db, false, f, 10, null,
+            var p = Person.Add(db, false, f, 10, null,
                 (string)a.First,
                 (string)a.GoesBy,
                 (string)a.Last,
@@ -258,7 +269,7 @@ namespace CmsWeb.Models
             p.GenderId = Gender(a.Gender);
             p.MaritalStatusId = Marital(a.Marital);
             p.PositionInFamilyId = Position(a.Position);
-            SetMemberStatus(DbUtil.Db, p, a.MemberStatus);
+            SetMemberStatus(db, p, a.MemberStatus);
 
             p.WeddingDate = GetDate(a.WeddingDate);
             p.JoinDate = GetDate(a.JoinDate);
@@ -276,7 +287,7 @@ namespace CmsWeb.Models
                     p.AddEditExtraBool("FoundDup", true);
                 }
 
-                DbUtil.Db.SubmitChanges();
+                db.SubmitChanges();
             }
             return p;
         }
@@ -333,9 +344,9 @@ namespace CmsWeb.Models
                         }
                         else
                         {
-                            var prog = Organization.FetchOrCreateProgram(DbUtil.Db, "InsertPeople");
-                            var div = Organization.FetchOrCreateDivision(DbUtil.Db, prog, "InsertPeople");
-                            var org = Organization.FetchOrCreateOrganization(DbUtil.Db, div, name.SplitUpperCaseToString());
+                            var prog = Organization.FetchOrCreateProgram(db, "InsertPeople");
+                            var div = Organization.FetchOrCreateDivision(db, prog, "InsertPeople");
+                            var org = Organization.FetchOrCreateOrganization(db, div, name.SplitUpperCaseToString());
                             oid = org.OrganizationId;
                             Orgs.Add(name, oid);
                         }
@@ -346,11 +357,11 @@ namespace CmsWeb.Models
                         }
                         else
                         {
-                            var mt = Organization.FetchOrCreateMemberType(DbUtil.Db, d);
+                            var mt = Organization.FetchOrCreateMemberType(db, d);
                             mtid = mt.Id;
                             Membertypes.Add(d, mtid);
                         }
-                        OrganizationMember.InsertOrgMembers(DbUtil.Db, oid, p.PeopleId, mtid, DateTime.Today, null, false);
+                        OrganizationMember.InsertOrgMembers(db, oid, p.PeopleId, mtid, DateTime.Today, null, false);
                         break;
                     case "dt":
                         if (o is DateTime)
@@ -464,15 +475,15 @@ namespace CmsWeb.Models
                 return;
             }
 
-            var qms = from mm in DbUtil.Db.MemberStatuses
+            var qms = from mm in db.MemberStatuses
                       where mm.Description == s
                       select mm;
             var m = qms.SingleOrDefault();
             if (m == null)
             {
-                var nx = DbUtil.Db.MemberStatuses.Max(mm => mm.Id) + 1;
+                var nx = db.MemberStatuses.Max(mm => mm.Id) + 1;
                 m = new MemberStatus { Id = nx, Description = s, Code = nx.ToString() };
-                DbUtil.Db.MemberStatuses.InsertOnSubmit(m);
+                db.MemberStatuses.InsertOnSubmit(m);
             }
             p.MemberStatusId = m.Id;
         }
@@ -484,15 +495,15 @@ namespace CmsWeb.Models
                 return;
             }
 
-            var qms = from mm in DbUtil.Db.MemberStatuses
+            var qms = from mm in db.MemberStatuses
                       where mm.Description == ms
                       select mm;
             var m = qms.SingleOrDefault();
             if (m == null)
             {
-                var nx = DbUtil.Db.MemberStatuses.Max(mm => mm.Id) + 1;
+                var nx = db.MemberStatuses.Max(mm => mm.Id) + 1;
                 m = new MemberStatus { Id = nx, Description = ms, Code = nx.ToString() };
-                DbUtil.Db.MemberStatuses.InsertOnSubmit(m);
+                db.MemberStatuses.InsertOnSubmit(m);
             }
             p.UpdateValue("MemberStatusId", m.Id);
         }
@@ -581,13 +592,13 @@ namespace CmsWeb.Models
             string cell = GetDigits(a.CellPhone);
             string home = GetDigits(a.HomePhone);
 
-            var pid = DbUtil.Db.FindPerson3(first, last, dt, email, cell, home, null).FirstOrDefault();
+            var pid = db.FindPerson3(first, last, dt, email, cell, home, null).FirstOrDefault();
 
             if (Noupdate && pid?.PeopleId != null)
             {
                 if (!Testing)
                 {
-                    var pd = DbUtil.Db.LoadPersonById(pid.PeopleId.Value);
+                    var pd = db.LoadPersonById(pid.PeopleId.Value);
                     pd.AddEditExtraBool("FoundDup", true);
                 }
                 potentialdup = true;
@@ -668,7 +679,7 @@ namespace CmsWeb.Models
         {
             string s = o as string;
             s = s.trim()?.ToLower();
-            int? a = (from m in DbUtil.Db.MaritalStatuses
+            int? a = (from m in Db2.MaritalStatuses
                       where m.Description == s
                       select m.Id).SingleOrDefault();
             if (a == null)

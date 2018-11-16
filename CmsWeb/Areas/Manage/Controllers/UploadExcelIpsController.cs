@@ -30,45 +30,45 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult Index(HttpPostedFileBase file, bool noupdate, bool ignoremissinggifts)
         {
             string host = Util.Host;
-            var runningtotals = new UploadPeopleRun { Started = DateTime.Now, Count = 0, Processed = 0 };
-            CurrentDatabase.UploadPeopleRuns.InsertOnSubmit(runningtotals);
-            CurrentDatabase.SubmitChanges();
             var pid = Util.UserPeopleId;
 
             var package = new ExcelPackage(file.InputStream);
 
             HostingEnvironment.QueueBackgroundWorkItem(ct =>
             {
-                var db = DbUtil.Create(host);
                 try
                 {
-                    var m = new UploadExcelIpsModel(host, pid ?? 0, noupdate, ignoremissinggifts, testing: true);
-                    m.DoUpload(package);
-                    CurrentDatabase.Dispose();
-                    db = DbUtil.Create(host);
+                    var localDbInstance = DbUtil.Create(host);
 
-                    runningtotals = new UploadPeopleRun { Started = DateTime.Now, Count = 0, Processed = 0 };
-                    CurrentDatabase.UploadPeopleRuns.InsertOnSubmit(runningtotals);
-                    CurrentDatabase.SubmitChanges();
-
-                    m = new UploadExcelIpsModel(host, pid ?? 0, noupdate, ignoremissinggifts);
-                    m.DoUpload(package);
+                    UploadPeopleRun testrun = ProcessImport(localDbInstance, noupdate, ignoremissinggifts, host, pid, package, true);
+                    UploadPeopleRun realrun = ProcessImport(localDbInstance, noupdate, ignoremissinggifts, host, pid, package, false);
                 }
                 catch (Exception ex)
                 {
-                    CurrentDatabase.Dispose();
-                    db = DbUtil.Create(host);
+                    //CurrentDatabase.Dispose();
+                    //db = DbUtil.Create(host);
 
-                    var q = from r in CurrentDatabase.UploadPeopleRuns
-                            where r.Id == CurrentDatabase.UploadPeopleRuns.Max(rr => rr.Id)
-                            select r;
+                    //var q = from r in CurrentDatabase.UploadPeopleRuns
+                    //        where r.Id == CurrentDatabase.UploadPeopleRuns.Max(rr => rr.Id)
+                    //        select r;
                     Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-                    var rt = q.Single();
-                    rt.Error = ex.Message.Truncate(200);
-                    CurrentDatabase.SubmitChanges();
+                    //var rt = q.Single();
+                    //rt.Error = ex.Message.Truncate(200);
+                    //CurrentDatabase.SubmitChanges();
                 }
             });
             return Redirect("/UploadExcelIps/Progress");
+        }
+
+        private UploadPeopleRun ProcessImport(CMSDataContext db, bool noupdate, bool ignoremissinggifts, string host, int? pid, ExcelPackage package, bool testing)
+        {
+            var rt = new UploadPeopleRun { Started = DateTime.Now, Count = 0, Processed = 0 };
+            db.UploadPeopleRuns.InsertOnSubmit(rt);
+            db.SubmitChanges();
+
+            var upload = new UploadExcelIpsModel(db, host, pid ?? 0, noupdate, ignoremissinggifts, testing);
+            upload.DoUpload(package);
+            return rt;
         }
 
         [HttpGet]

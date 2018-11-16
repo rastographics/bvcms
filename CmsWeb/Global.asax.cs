@@ -162,7 +162,7 @@ namespace CmsWeb
 
             if (HttpContext.Current != null)
             {
-                DbUtil.DbDispose();
+                //DbUtil.DbDispose();
             }
 
             if (Response.Status.StartsWith("401")

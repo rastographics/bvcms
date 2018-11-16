@@ -1,9 +1,9 @@
-﻿using System;
+﻿using IronPython.Runtime;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
-using IronPython.Runtime;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
 
 namespace CmsData.API
 {
@@ -41,7 +41,9 @@ namespace CmsData.API
             // Is it a DynamicData object?
             var dynamicData = d as DynamicData;
             if (dynamicData != null)
+            {
                 return new Dictionary<string, object>(dynamicData.dict);
+            }
 
             // Is it a PythonDictionary object?
             var pythonDictionary = d as PythonDictionary;
@@ -49,7 +51,10 @@ namespace CmsData.API
             {
                 var dict = new Dictionary<string, object>();
                 foreach (var kv in pythonDictionary)
+                {
                     dict.Add("@" + kv.Key, kv.Value);
+                }
+
                 return dict;
             }
 
@@ -59,8 +64,17 @@ namespace CmsData.API
             {
                 var dict = new Dictionary<string, object>();
                 foreach (var kv in dictionaryss)
+                {
                     dict.Add("@" + kv.Key, kv.Value);
+                }
+
                 return dict;
+            }
+
+            var dictionaryso = d as Dictionary<string, object>;
+            if (dictionaryso != null)
+            {
+                return dictionaryso;
             }
             // Note the option to handle native Dictionary<string, object> is not needed
             // since it is handled by the second constructor.
@@ -75,7 +89,7 @@ namespace CmsData.API
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
-            result = dict.ContainsKey(binder.Name) 
+            result = dict.ContainsKey(binder.Name)
                 ? dict[binder.Name] : "";
             return true;
         }
@@ -84,15 +98,20 @@ namespace CmsData.API
 
         public object GetValue(string key)
         {
-            if(dict.ContainsKey(key))
+            if (dict.ContainsKey(key))
+            {
                 return dict[key];
+            }
+
             return null;
         }
 
         public void Remove(string name)
         {
-            if(dict.ContainsKey(name))
+            if (dict.ContainsKey(name))
+            {
                 dict.Remove(name);
+            }
         }
         public void AddValue(string name, object value)
         {
@@ -101,7 +120,9 @@ namespace CmsData.API
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             foreach (var kv in dict)
+            {
                 info.AddValue(kv.Key, kv.Value);
+            }
         }
 
         public override string ToString()
