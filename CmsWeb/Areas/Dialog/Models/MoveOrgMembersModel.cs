@@ -52,15 +52,15 @@ namespace CmsWeb.Areas.Dialog.Models
                 QueryId = QueryId,
                 Operation = Op,
             };
-            DbUtil.Db.LongRunningOperations.InsertOnSubmit(lop);
-            DbUtil.Db.SubmitChanges();
+            db.LongRunningOperations.InsertOnSubmit(lop);
+            db.SubmitChanges();
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoMoveWork(this));
         }
         public static void DoMoveWork(MoveOrgMembersModel model)
         {
             var db = DbUtil.Create(model.Host);
-            DbUtil.Db.CommandTimeout = 2200;
-            var cul = DbUtil.Db.Setting("Culture", "en-US");
+            db.CommandTimeout = 2200;
+            var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
             LongRunningOperation lop = null;
@@ -81,21 +81,21 @@ namespace CmsWeb.Areas.Dialog.Models
                     continue;
                 }
 
-                OrganizationMember.MoveToOrg(DbUtil.Db, pid, oid, model.TargetId, model.MoveRegistrationData, model.ChangeMemberType == true ? model.MoveToMemberTypeId : -1);
+                OrganizationMember.MoveToOrg(db, pid, oid, model.TargetId, model.MoveRegistrationData, model.ChangeMemberType == true ? model.MoveToMemberTypeId : -1);
                 //Once member has been inserted into the new Organization then update member in Organizations as enrolled / not enrolled accordingly
-                DbUtil.Db.RepairTransactions(oid);
-                DbUtil.Db.RepairTransactions(model.TargetId);
+                db.RepairTransactions(oid);
+                db.RepairTransactions(model.TargetId);
                 lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
                 lop.CustomMessage = $"Working from {pid},{oid} to {model.TargetId}";
-                DbUtil.Db.SubmitChanges();
+                db.SubmitChanges();
             }
             // finished
-            lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
+            lop = FetchLongRunningOperation(db, Op, model.QueryId);
             lop.Completed = DateTime.Now;
-            DbUtil.Db.SubmitChanges();
-            DbUtil.Db.UpdateMainFellowship(model.TargetId);
+            db.SubmitChanges();
+            db.UpdateMainFellowship(model.TargetId);
         }
     }
 }
