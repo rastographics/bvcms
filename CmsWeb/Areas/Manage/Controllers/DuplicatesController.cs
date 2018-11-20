@@ -75,7 +75,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 db.SubmitChanges();
                 foreach (var p in q)
                 {
-                    var pids = CurrentDatabase.FindPerson4(p);
+                    var pids = db.FindPerson4(p);
                     rt.Processed++;
                     db.SubmitChanges();
                     if (!pids.Any())
