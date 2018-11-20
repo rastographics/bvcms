@@ -33,7 +33,7 @@
                     <div class="form-group">
                         <label for="sMessage" class="control-label">Message</label>
                         <textarea id="sMessage" name="sMessage" id="sMessage" cols="40" rows="4" class="form-control">@ViewBag.Message</textarea><br />
-                        <div id="charCount">0/160</div>
+                        <div id="charCount">0/1600</div>
                     </div>
                     <input type="submit" value="Send SMS" class="btn btn-primary" />
                 </form>
@@ -46,7 +46,7 @@
 @section scripts
 {
     <script type="text/javascript">
-        var maxSMS = 160;
+        var maxSMS = 1600;
 
         $(document).ready(function () {
             $("#sMessage").on("keypress", checkSize).on("input", checkSize);

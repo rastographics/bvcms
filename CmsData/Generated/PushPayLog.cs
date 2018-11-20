@@ -73,7 +73,7 @@ namespace CmsData
 		
     #region Columns
 		
-		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="bigint NOT NULL IDENTITY", IsDbGenerated=true)]
+		[Column(Name="Id", IsPrimaryKey = true, UpdateCheck = UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="bigint NOT NULL IDENTITY", IsDbGenerated=true)]
 		public long Id
 		{
 			get { return this._Id; }

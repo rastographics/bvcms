@@ -121,7 +121,7 @@ namespace CmsWeb.Models
 
             var addlist = new List<GeoCode>();
 
-            foreach (var i in qlist.Where(ii => ii.gc == null))
+            foreach (var i in qlist)
             {
                 i.gc = addlist.SingleOrDefault(g => g.Address == i.addr)
                     ?? DbUtil.Db.GeoCodes.FirstOrDefault(g => g.Address == i.addr);
@@ -130,7 +130,13 @@ namespace CmsWeb.Models
                     i.gc = GetGeocode(i.addr);
                     addlist.Add(i.gc);
                 }
-            }
+                else if(i.gc.Latitude == 0)
+                {
+                    GeoCode gcMod = GetGeocode(i.addr);
+                    i.gc.Latitude = gcMod.Latitude;
+                    i.gc.Longitude = gcMod.Longitude;
+                }               
+            }            
             if (addlist.Count > 0)
                 DbUtil.Db.GeoCodes.InsertAllOnSubmit(addlist);
             DbUtil.Db.SubmitChanges();
