@@ -56,22 +56,22 @@ namespace CmsWeb.Areas.Dialog.Models
                 QueryId = QueryId,
                 Operation = Op,
             };
-            DbUtil.Db.LongRunningOperations.InsertOnSubmit(lop);
-            DbUtil.Db.SubmitChanges();
+            db.LongRunningOperations.InsertOnSubmit(lop);
+            db.SubmitChanges();
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
         }
 
         private void DoWork(OrgSearchDrop model)
         {
             var db = DbUtil.Create(model.Host);
-            var cul = DbUtil.Db.Setting("Culture", "en-US");
+            var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
 
             LongRunningOperation lop = null;
             foreach (var orginfo in model.orginfos)
             {
-                var pids = (from m in DbUtil.Db.OrganizationMembers
+                var pids = (from m in db.OrganizationMembers
                             where m.OrganizationId == orginfo.Id
                             select m.PeopleId
                     ).ToList();
@@ -79,32 +79,32 @@ namespace CmsWeb.Areas.Dialog.Models
                 foreach (var pid in pids)
                 {
                     n++;
-                    DbUtil.Db.Dispose();
-                    db = DbUtil.Create(model.Host);
-                    var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == orginfo.Id);
+                    //DbUtil.Db.Dispose();
+                    //db = DbUtil.Create(model.Host);
+                    var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == orginfo.Id);
                     if (DropDate.HasValue)
                     {
-                        om.Drop(DbUtil.Db, DropDate.Value);
+                        om.Drop(db, DropDate.Value);
                     }
                     else
                     {
-                        om.Drop(DbUtil.Db);
+                        om.Drop(db);
                     }
 
-                    lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
+                    lop = FetchLongRunningOperation(db, Op, model.QueryId);
                     Debug.Assert(lop != null, "r != null");
                     lop.Processed++;
                     lop.CustomMessage = $"Working on {orginfo.Name.Truncate(170)}, {n}/{pids.Count}";
-                    DbUtil.Db.SubmitChanges();
+                    db.SubmitChanges();
                 }
-                var o = DbUtil.Db.LoadOrganizationById(orginfo.Id);
+                var o = db.LoadOrganizationById(orginfo.Id);
                 o.OrganizationStatusId = CmsData.Codes.OrgStatusCode.Inactive;
-                DbUtil.Db.SubmitChanges();
+                db.SubmitChanges();
             }
             // finished
-            lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
+            lop = FetchLongRunningOperation(db, Op, model.QueryId);
             lop.Completed = DateTime.Now;
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
         }
     }
 }

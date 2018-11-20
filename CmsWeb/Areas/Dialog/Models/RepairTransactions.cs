@@ -23,13 +23,13 @@ namespace CmsWeb.Areas.Dialog.Models
             var lop = new LongRunningOperation
             {
                 Started = DateTime.Now,
-                Count = DbUtil.Db.OrganizationMembers.Count(m => m.OrganizationId == OrgId),
+                Count = db.OrganizationMembers.Count(m => m.OrganizationId == OrgId),
                 Processed = 0,
                 QueryId = QueryId,
                 Operation = Op
             };
-            DbUtil.Db.LongRunningOperations.InsertOnSubmit(lop);
-            DbUtil.Db.SubmitChanges();
+            db.LongRunningOperations.InsertOnSubmit(lop);
+            db.SubmitChanges();
 
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
         }
@@ -37,11 +37,11 @@ namespace CmsWeb.Areas.Dialog.Models
         public static void DoWork(RepairTransactions model)
         {
             var db = DbUtil.Create(model.Host);
-            DbUtil.Db.RepairTransactions(model.OrgId);
+            db.RepairTransactions(model.OrgId);
             // finished
-            var lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
+            var lop = FetchLongRunningOperation(db, Op, model.QueryId);
             lop.Completed = DateTime.Now;
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
         }
     }
 }

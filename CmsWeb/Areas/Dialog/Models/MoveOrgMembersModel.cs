@@ -85,7 +85,7 @@ namespace CmsWeb.Areas.Dialog.Models
                 //Once member has been inserted into the new Organization then update member in Organizations as enrolled / not enrolled accordingly
                 db.RepairTransactions(oid);
                 db.RepairTransactions(model.TargetId);
-                lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
+                lop = FetchLongRunningOperation(db, Op, model.QueryId);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
                 lop.CustomMessage = $"Working from {pid},{oid} to {model.TargetId}";

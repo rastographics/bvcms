@@ -54,7 +54,7 @@ namespace CmsWeb.Areas.Dialog.Models
         public void Process(CMSDataContext db)
         {
             // running has not started yet, start it on a separate thread
-            pids = FetchPeopleIds(DbUtil.Db, Tag.Value.ToInt()).ToList();
+            pids = FetchPeopleIds(db, Tag.Value.ToInt()).ToList();
             var lop = new LongRunningOperation()
             {
                 Started = DateTime.Now,
@@ -63,39 +63,39 @@ namespace CmsWeb.Areas.Dialog.Models
                 QueryId = QueryId,
                 Operation = Op,
             };
-            DbUtil.Db.LongRunningOperations.InsertOnSubmit(lop);
-            DbUtil.Db.SubmitChanges();
+            db.LongRunningOperations.InsertOnSubmit(lop);
+            db.SubmitChanges();
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
         }
 
         private static void DoWork(AddAttendeesFromTag model)
         {
             var db = DbUtil.Create(model.Host);
-            var cul = DbUtil.Db.Setting("Culture", "en-US");
+            var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
 
             LongRunningOperation lop = null;
             foreach (var pid in model.pids)
             {
-                DbUtil.Db.Dispose();
-                db = DbUtil.Create(model.Host);
+                //db.Dispose();
+                //db = db.Create(model.Host);
                 if (model.AddAsMembers)
                 {
-                    OrganizationMember.InsertOrgMembers(DbUtil.Db, model.OrgId, pid,
+                    OrganizationMember.InsertOrgMembers(db, model.OrgId, pid,
                         MemberTypeCode.Member, model.JoinDate, null, false);
                 }
 
-                DbUtil.Db.RecordAttendance(model.MeetingId, pid, true);
-                lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
+                db.RecordAttendance(model.MeetingId, pid, true);
+                lop = FetchLongRunningOperation(db, Op, model.QueryId);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
-                DbUtil.Db.SubmitChanges();
+                db.SubmitChanges();
             }
             // finished
-            lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
+            lop = FetchLongRunningOperation(db, Op, model.QueryId);
             lop.Completed = DateTime.Now;
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
         }
 
         public void Validate(ModelStateDictionary modelState)
@@ -110,9 +110,9 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             if (Count == null && Tag != null)
             {
-                var q = FetchPeopleIds(DbUtil.Db, Tag.Value.ToInt());
+                var q = FetchPeopleIds(db, Tag.Value.ToInt());
                 Count = q.Count();
-                DbUtil.Db.SubmitChanges();
+                db.SubmitChanges();
                 return true;
             }
             return false;
@@ -121,8 +121,8 @@ namespace CmsWeb.Areas.Dialog.Models
         public static IQueryable<int> FetchPeopleIds(CMSDataContext db, int tagid)
         {
             return tagid == -1
-                ? DbUtil.Db.PeopleQueryLast().Select(pp => pp.PeopleId)
-                : from t in DbUtil.Db.TagPeople
+                ? db.PeopleQueryLast().Select(pp => pp.PeopleId)
+                : from t in db.TagPeople
                   where t.Id == tagid
                   select t.PeopleId;
         }

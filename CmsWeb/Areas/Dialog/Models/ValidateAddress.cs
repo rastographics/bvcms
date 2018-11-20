@@ -28,7 +28,7 @@ namespace CmsWeb.Areas.Dialog.Models
 
         public void Process(CMSDataContext db)
         {
-            pids = FetchPeopleIds(DbUtil.Db, Tag.Value.ToInt()).ToList();
+            pids = FetchPeopleIds(db, Tag.Value.ToInt()).ToList();
 
             var lop = new LongRunningOperation
             {
@@ -38,8 +38,8 @@ namespace CmsWeb.Areas.Dialog.Models
                 QueryId = QueryId,
                 Operation = Op,
             };
-            DbUtil.Db.LongRunningOperations.InsertOnSubmit(lop);
-            DbUtil.Db.SubmitChanges();
+            db.LongRunningOperations.InsertOnSubmit(lop);
+            db.SubmitChanges();
 
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
         }
@@ -54,17 +54,17 @@ namespace CmsWeb.Areas.Dialog.Models
         public static void DoWork(ValidateAddress model)
         {
             var db = DbUtil.Create(model.Host);
-            var cul = DbUtil.Db.Setting("Culture", "en-US");
+            var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
 
             LongRunningOperation lop = null;
             foreach (var pid in model.pids)
             {
-                DbUtil.Db.Dispose();
+                //DbUtil.Db.Dispose();
                 var fsb = new List<ChangeDetail>();
-                db = DbUtil.Create(model.Host);
-                var f = DbUtil.Db.LoadFamilyByPersonId(pid);
+                //db = DbUtil.Create(model.Host);
+                var f = db.LoadFamilyByPersonId(pid);
                 var ret = AddressVerify.LookupAddress(f.AddressLineOne, f.AddressLineTwo, f.CityName, f.StateCode, f.ZipCode);
                 if (ret.found != false && !ret.error.HasValue() && ret.Line1 != "error")
                 {
@@ -73,7 +73,7 @@ namespace CmsWeb.Areas.Dialog.Models
                     f.UpdateValue(fsb, "CityName", ret.City);
                     f.UpdateValue(fsb, "StateCode", ret.State);
                     f.UpdateValue(fsb, "ZipCode", ret.Zip.GetDigits());
-                    var rc = DbUtil.Db.FindResCode(ret.Zip, null);
+                    var rc = db.FindResCode(ret.Zip, null);
                     f.UpdateValue(fsb, "ResCodeId", rc.ToString());
                 }
                 else
@@ -81,25 +81,25 @@ namespace CmsWeb.Areas.Dialog.Models
                     f.UpdateValue(fsb, "ZipCode", f.ZipCode.Zip5());
                 }
 
-                lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
+                lop = FetchLongRunningOperation(db, Op, model.QueryId);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
-                f.LogChanges(DbUtil.Db, fsb, pid, Util.UserPeopleId ?? 0);
-                DbUtil.Db.SubmitChanges();
+                f.LogChanges(db, fsb, pid, Util.UserPeopleId ?? 0);
+                db.SubmitChanges();
                 //Thread.Sleep(1000);
             }
             // finished
-            lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
+            lop = FetchLongRunningOperation(db, Op, model.QueryId);
             lop.Completed = DateTime.Now;
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
         }
         public static IQueryable<int> FetchPeopleIds(CMSDataContext db, int tagid)
         {
             return tagid == -1
-                ? (from p in DbUtil.Db.PeopleQueryLast()
+                ? (from p in db.PeopleQueryLast()
                    group p by p.FamilyId into ff
                    select ff.First().PeopleId)
-                : (from t in DbUtil.Db.TagPeople
+                : (from t in db.TagPeople
                    where t.Id == tagid
                    group t.Person by t.Person.FamilyId into ff
                    select ff.First().PeopleId);
@@ -116,9 +116,9 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             if (Count == null && Tag != null)
             {
-                var q = FetchPeopleIds(DbUtil.Db, Tag.Value.ToInt());
+                var q = FetchPeopleIds(db, Tag.Value.ToInt());
                 Count = q.Count();
-                DbUtil.Db.SubmitChanges();
+                db.SubmitChanges();
                 return true;
             }
             return false;

@@ -76,49 +76,49 @@ namespace CmsWeb.Areas.Dialog.Models
                 Operation = Op,
             };
             DbUtil.Db.LogActivity($"OrgDrop {lop.Count} records", Filter.Id, uid: UserId);
-            DbUtil.Db.LongRunningOperations.InsertOnSubmit(lop);
-            DbUtil.Db.SubmitChanges();
+            db.LongRunningOperations.InsertOnSubmit(lop);
+            db.SubmitChanges();
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
         }
 
         private static void DoWork(OrgDrop model)
         {
             var db = DbUtil.Create(model.Host);
-            var cul = DbUtil.Db.Setting("Culture", "en-US");
+            var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
 
             LongRunningOperation lop = null;
             foreach (var pid in model.Pids)
             {
-                DbUtil.Db.Dispose();
-                db = DbUtil.Create(model.Host);
-                var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == model.filter.Id);
+                //DbUtil.Db.Dispose();
+                //db = DbUtil.Create(model.Host);
+                var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == model.filter.Id);
                 if (model.DropDate.HasValue)
                 {
-                    om.Drop(DbUtil.Db, model.DropDate.Value);
+                    om.Drop(db, model.DropDate.Value);
                 }
                 else
                 {
-                    om.Drop(DbUtil.Db);
+                    om.Drop(db);
                 }
 
-                DbUtil.Db.SubmitChanges();
+                db.SubmitChanges();
                 if (model.RemoveFromEnrollmentHistory)
                 {
-                    DbUtil.Db.ExecuteCommand("DELETE dbo.EnrollmentTransaction WHERE PeopleId = {0} AND OrganizationId = {1}", pid, model.filter.Id);
+                    db.ExecuteCommand("DELETE dbo.EnrollmentTransaction WHERE PeopleId = {0} AND OrganizationId = {1}", pid, model.filter.Id);
                 }
 
-                lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
+                lop = FetchLongRunningOperation(db, Op, model.QueryId);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
-                DbUtil.Db.SubmitChanges();
-                DbUtil.Db.LogActivity($"Org{model.DisplayGroup} Drop{(model.RemoveFromEnrollmentHistory ? " w/history" : "")}", model.filter.Id, pid, uid: model.UserId);
+                db.SubmitChanges();
+                db.LogActivity($"Org{model.DisplayGroup} Drop{(model.RemoveFromEnrollmentHistory ? " w/history" : "")}", model.filter.Id, pid, uid: model.UserId);
             }
             // finished
-            lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
+            lop = FetchLongRunningOperation(db, Op, model.QueryId);
             lop.Completed = DateTime.Now;
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
         }
 
         public void DropSingleMember(int orgId, int peopleId)

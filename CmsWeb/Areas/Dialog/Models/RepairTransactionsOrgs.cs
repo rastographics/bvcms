@@ -51,31 +51,31 @@ namespace CmsWeb.Areas.Dialog.Models
                 QueryId = QueryId,
                 Operation = Op,
             };
-            DbUtil.Db.LongRunningOperations.InsertOnSubmit(lop);
-            DbUtil.Db.SubmitChanges();
+            db.LongRunningOperations.InsertOnSubmit(lop);
+            db.SubmitChanges();
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
         }
         public static void DoWork(RepairTransactionsOrgs model)
         {
             var db = DbUtil.Create(model.Host);
-            DbUtil.Db.CommandTimeout = 2200;
-            var cul = DbUtil.Db.Setting("Culture", "en-US");
+            db.CommandTimeout = 2200;
+            var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
             LongRunningOperation lop = null;
             foreach (var orginfo in model.orginfos)
             {
-                DbUtil.Db.RepairTransactionsOrgs(orginfo.Id);
-                lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
+                db.RepairTransactionsOrgs(orginfo.Id);
+                lop = FetchLongRunningOperation(db, Op, model.QueryId);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
                 lop.CustomMessage = $"Working on {orginfo.Name.Truncate(170)} ({orginfo.Id})";
-                DbUtil.Db.SubmitChanges();
+                db.SubmitChanges();
             }
             // finished
-            lop = FetchLongRunningOperation(DbUtil.Db, Op, model.QueryId);
+            lop = FetchLongRunningOperation(db, Op, model.QueryId);
             lop.Completed = DateTime.Now;
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
         }
     }
 }
