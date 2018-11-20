@@ -1297,6 +1297,7 @@
     <Content Include="Migrations\20181011_update_spouseId_function.sql" />
     <Content Include="Migrations\20181106_alter_SMSList_Message_column.sql" />
     <Content Include="Migrations\20181031_add_viewvolunteerapplication_role.sql" />
+    <Content Include="Migrations\20181120_Update_GetContributionDetails_func.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
