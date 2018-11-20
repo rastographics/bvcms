@@ -397,11 +397,11 @@ namespace CmsWeb.Areas.Main.Controllers
                     Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
                     Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
                     // set these again inside thread local storage
-                    CurrentDatabase.SetCurrentOrgId(currorgid);
+                    db.SetCurrentOrgId(currorgid);
                     Util.UserEmail = userEmail;
                     Util.IsInRoleEmailTest = isInRoleEmailTest;
                     Util.IsMyDataUser = isMyDataUser;
-                    CurrentDatabase.SendPeopleEmail(id, onlyProspects);
+                    db.SendPeopleEmail(id, onlyProspects);
                 }
                 catch (Exception ex)
                 {
@@ -411,11 +411,12 @@ namespace CmsWeb.Areas.Main.Controllers
                     errorLog.Log(new Error(ex2));
 
                     var db = DbUtil.Create(host);
-                    var equeue = CurrentDatabase.EmailQueues.Single(ee => ee.Id == id);
+                    var equeue = db.EmailQueues.Single(ee => ee.Id == id);
                     equeue.Error = ex.Message.Truncate(200);
-                    CurrentDatabase.SubmitChanges();
+                    db.SubmitChanges();
                 }
             });
+
             return Json(new { id = id });
         }
 

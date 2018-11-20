@@ -154,14 +154,14 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 try
                 {
-                    var Db = DbUtil.Create(host);
+                    var db = DbUtil.Create(host);
                     var cul = CurrentDatabase.Setting("Culture", "en-US");
                     Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
                     Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
                     // set these again inside thread local storage
                     Util.UserEmail = useremail;
                     Util.IsInRoleEmailTest = isinroleemailtest;
-                    CurrentDatabase.SendPeopleEmail(id);
+                    db.SendPeopleEmail(id);
                 }
                 catch (Exception ex)
                 {
@@ -169,10 +169,10 @@ namespace CmsWeb.Areas.Manage.Controllers
                     ErrorLog errorLog = ErrorLog.GetDefault(null);
                     errorLog.Log(new Error(ex2));
 
-                    var Db = DbUtil.Create(host);
-                    var equeue = CurrentDatabase.EmailQueues.Single(ee => ee.Id == id);
+                    var db = DbUtil.Create(host);
+                    var equeue = db.EmailQueues.Single(ee => ee.Id == id);
                     equeue.Error = ex.Message.Truncate(200);
-                    CurrentDatabase.SubmitChanges();
+                    db.SubmitChanges();
                 }
             });
             return Redirect("/Emails/Details/" + id);

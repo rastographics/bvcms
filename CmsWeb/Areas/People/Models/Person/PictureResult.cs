@@ -76,11 +76,10 @@ namespace CmsWeb.Areas.People.Models
             else
             {
                 ImageData.Image i = null;
-#if DEBUG
+
                 var idb = DbUtil.CheckImageDatabaseExists(Util.CmsHost.Replace("CMS_", "CMSi_"));
                 if (idb == DbUtil.CheckDatabaseResult.DatabaseExists)
                 {
-#endif
                     try
                     {
                         i = ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == id);
@@ -141,8 +140,7 @@ namespace CmsWeb.Areas.People.Models
 
         private static byte[] NoPic2()
         {
-            var u = HttpRuntime.Cache["unknownimage"] as byte[];
-            if (u == null)
+            if (!(HttpRuntime.Cache["unknownimage"] is byte[] u))
             {
                 u = File.ReadAllBytes(HttpContext.Current.Server.MapPath("/Content/touchpoint/img/unknown.png"));
                 HttpRuntime.Cache.Insert("unknownimage", u, null, DateTime.Now.AddMinutes(100), Cache.NoSlidingExpiration);
@@ -152,8 +150,7 @@ namespace CmsWeb.Areas.People.Models
 
         private static byte[] NoPic2Sm()
         {
-            var u = HttpRuntime.Cache["unknownimagesm"] as byte[];
-            if (u == null)
+            if (!(HttpRuntime.Cache["unknownimagesm"] is byte[] u))
             {
                 u = File.ReadAllBytes(HttpContext.Current.Server.MapPath("/Content/touchpoint/img/unknown_sm.png"));
                 HttpRuntime.Cache.Insert("unknownimagesm", u, null, DateTime.Now.AddMinutes(100), Cache.NoSlidingExpiration);
@@ -163,8 +160,7 @@ namespace CmsWeb.Areas.People.Models
 
         private static byte[] NoMalePic()
         {
-            var u = HttpRuntime.Cache["nomalepic"] as byte[];
-            if (u == null)
+            if (!(HttpRuntime.Cache["nomalepic"] is byte[] u))
             {
                 u = File.ReadAllBytes(HttpContext.Current.Server.MapPath("/Content/touchpoint/img/male.png"));
                 HttpRuntime.Cache.Insert("nomalepic", u, null, DateTime.Now.AddMinutes(100), Cache.NoSlidingExpiration);
@@ -174,8 +170,7 @@ namespace CmsWeb.Areas.People.Models
 
         private static byte[] NoMalePicSm()
         {
-            var u = HttpRuntime.Cache["nomalepicsm"] as byte[];
-            if (u == null)
+            if (!(HttpRuntime.Cache["nomalepicsm"] is byte[] u))
             {
                 u = File.ReadAllBytes(HttpContext.Current.Server.MapPath("/Content/touchpoint/img/male_sm.png"));
                 HttpRuntime.Cache.Insert("nomalepicsm", u, null, DateTime.Now.AddMinutes(100), Cache.NoSlidingExpiration);
@@ -185,8 +180,7 @@ namespace CmsWeb.Areas.People.Models
 
         private static byte[] NoFemalePic()
         {
-            var u = HttpRuntime.Cache["nofemalepic"] as byte[];
-            if (u == null)
+            if (!(HttpRuntime.Cache["nofemalepic"] is byte[] u))
             {
                 u = File.ReadAllBytes(HttpContext.Current.Server.MapPath("/Content/touchpoint/img/female.png"));
                 HttpRuntime.Cache.Insert("nofemalepic", u, null, DateTime.Now.AddMinutes(100), Cache.NoSlidingExpiration);
@@ -196,8 +190,7 @@ namespace CmsWeb.Areas.People.Models
 
         private static byte[] NoFemalePicSm()
         {
-            var u = HttpRuntime.Cache["nofemalepicsm"] as byte[];
-            if (u == null)
+            if (!(HttpRuntime.Cache["nofemalepicsm"] is byte[] u))
             {
                 u = File.ReadAllBytes(HttpContext.Current.Server.MapPath("/Content/touchpoint/img/female_sm.png"));
                 HttpRuntime.Cache.Insert("nofemalepicsm", u, null, DateTime.Now.AddMinutes(100), Cache.NoSlidingExpiration);
@@ -207,8 +200,7 @@ namespace CmsWeb.Areas.People.Models
 
         private static byte[] NoPic3()
         {
-            var u = HttpRuntime.Cache["sgfimage"] as byte[];
-            if (u == null)
+            if (!(HttpRuntime.Cache["sgfimage"] is byte[] u))
             {
                 u = File.ReadAllBytes(HttpContext.Current.Server.MapPath("/Content/images/sgfunknown.jpg"));
                 HttpRuntime.Cache.Insert("sgfimage", u, null, DateTime.Now.AddMinutes(100), Cache.NoSlidingExpiration);
@@ -218,8 +210,7 @@ namespace CmsWeb.Areas.People.Models
 
         private static byte[] NoPic()
         {
-            var u = HttpRuntime.Cache["imagenotfound"] as byte[];
-            if (u == null)
+            if (!(HttpRuntime.Cache["imagenotfound"] is byte[] u))
             {
                 u = File.ReadAllBytes(HttpContext.Current.Server.MapPath("/Content/touchpoint/img/image_not_found.png"));
                 HttpRuntime.Cache.Insert("imagenotfound", u, null, DateTime.Now.AddMinutes(100), Cache.NoSlidingExpiration);

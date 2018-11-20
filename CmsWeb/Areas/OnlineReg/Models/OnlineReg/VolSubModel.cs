@@ -231,7 +231,7 @@ Sorry, I cannot sub for you.</a>";
                     // set these again inside thread local storage
                     Util.UserEmail = useremail;
                     Util.IsInRoleEmailTest = isinroleemailtest;
-                    DbUtil.Db.SendPeopleEmail(eqid);
+                    db.SendPeopleEmail(eqid);
                 }
                 catch (Exception ex)
                 {
@@ -244,9 +244,9 @@ Sorry, I cannot sub for you.</a>";
                     // set these again inside thread local storage
                     Util.UserEmail = useremail;
                     Util.IsInRoleEmailTest = isinroleemailtest;
-                    var equeue = DbUtil.Db.EmailQueues.Single(ee => ee.Id == eqid);
+                    var equeue = db.EmailQueues.Single(ee => ee.Id == eqid);
                     equeue.Error = ex.Message.Truncate(200);
-                    DbUtil.Db.SubmitChanges();
+                    db.SubmitChanges();
                 }
             });
         }

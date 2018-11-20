@@ -65,19 +65,19 @@ namespace CmsWeb.Areas.Manage.Controllers
             HostingEnvironment.QueueBackgroundWorkItem(ct =>
             {
                 var db = DbUtil.Create(host);
-                var rt = CurrentDatabase.DuplicatesRuns.OrderByDescending(mm => mm.Id).First();
-                CurrentDatabase.ExecuteCommand("delete duplicate");
-                var q = from p in CurrentDatabase.People
+                var rt = db.DuplicatesRuns.OrderByDescending(mm => mm.Id).First();
+                db.ExecuteCommand("delete duplicate");
+                var q = from p in db.People
                         where p.CreatedDate > fdt
                         where p.CreatedDate < tdt.Value.AddDays(1)
                         select p.PeopleId;
                 rt.Count = q.Count();
-                CurrentDatabase.SubmitChanges();
+                db.SubmitChanges();
                 foreach (var p in q)
                 {
                     var pids = CurrentDatabase.FindPerson4(p);
                     rt.Processed++;
-                    CurrentDatabase.SubmitChanges();
+                    db.SubmitChanges();
                     if (!pids.Any())
                     {
                         continue;
@@ -87,14 +87,14 @@ namespace CmsWeb.Areas.Manage.Controllers
                     {
                         if (pid.PeopleId != null)
                         {
-                            CurrentDatabase.InsertDuplicate(p, pid.PeopleId.Value);
+                            db.InsertDuplicate(p, pid.PeopleId.Value);
                         }
                     }
 
                     rt.Found++;
                 }
                 rt.Completed = DateTime.Now;
-                CurrentDatabase.SubmitChanges();
+                db.SubmitChanges();
             });
             return Redirect("/Duplicates/Progress");
         }
