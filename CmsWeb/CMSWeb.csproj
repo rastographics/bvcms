@@ -1048,6 +1048,19 @@
     <Compile Include="Code\SmartBinder.cs" />
     <Compile Include="Code\Image.cs" />
     <Content Include="Areas\Dialog\Views\AddToOrgFromTag\Index.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\AttendanceChartDisplayView.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\ChartDisplayView.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\DivisionView.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\FundView.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\Index.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\OrganizationView.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\ProgramView.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\RefineAttendanceView.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\RefineFundView.cshtml" />
+    <Content Include="Areas\Figures\Views\Index.cshtml" />
+    <Content Include="Areas\Figures\Views\web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Areas\Main\Views\Email\SelectTemplate.cshtml" />
     <Content Include="Areas\Main\Views\Email\Compose.cshtml" />
     <Content Include="Areas\Manage\Views\Display\EditTemplate.cshtml" />
@@ -1693,9 +1706,6 @@
     <Content Include="Content\VitalStats.py" />
     <Content Include="Lib\ensurepip\_bundled\setuptools-20.10.1-py2.py3-none-any.whl" />
     <Content Include="Lib\ensurepip\_bundled\pip-8.1.1-py2.py3-none-any.whl" />
-    <Content Include="Areas\Figures\Views\web.config">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="Areas\Dialog\Views\GetCheckImage\GetCheckImage.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\CustomStatments.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\PythonCode.cshtml" />
@@ -1705,22 +1715,12 @@
     <Content Include="Areas\Dialog\Views\MoveOrgMembers\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\MoveOrgMembers\Process.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\ChaiDonorsReport.cshtml" />
-    <Content Include="Areas\Figures\Views\Figures\Index.cshtml" />
-    <Content Include="Areas\Figures\Views\Figures\ProgramView.cshtml" />
-    <Content Include="Areas\Figures\Views\Figures\DivisionView.cshtml" />
-    <Content Include="Areas\Figures\Views\Figures\OrganizationView.cshtml" />
-    <Content Include="Areas\Figures\Views\Figures\ChartDisplayView.cshtml" />
-    <Content Include="Areas\Figures\Views\Figures\AttendanceChartDisplayView.cshtml" />
-    <Content Include="Areas\Figures\Views\Figures\RefineAttendanceView.cshtml" />
-    <Content Include="Areas\Figures\Views\Figures\RefineFundView.cshtml" />
-    <Content Include="Areas\Figures\Views\Figures\FundView.cshtml" />
     <Content Include="Content\touchpoint\lib\jquery-multi-select\js\jquery.multi-select.js" />
     <Content Include="Content\touchpoint\lib\jquery-multi-select\css\multi-select.dev.css" />
     <Content Include="Content\touchpoint\lib\jquery-multi-select\css\multi-select.dist.css" />
     <Content Include="Areas\Setup\Views\Pushpay\Finish.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\DeleteGroupDialog.cshtml" />
     <Content Include="Content\touchpoint\js\polyfills.urlSearchParams.js" />
-    <Content Include="Areas\Figures\Views\Index.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\NotActive.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\staging.pubxml" />
