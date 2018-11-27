@@ -1,9 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using CmsData;
 using CmsData.View;
 using CmsWeb.Models;
+using System.Collections.Generic;
+using System.Linq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
@@ -24,7 +23,7 @@ namespace CmsWeb.Areas.People.Models
 
         public ChangesModel()
             : base("Time", "desc", true)
-        {}
+        { }
 
         public void Reverse(string field, string value, string pf)
         {
@@ -42,13 +41,13 @@ namespace CmsWeb.Areas.People.Models
             DbUtil.Db.SubmitChanges();
         }
 
-        override public IQueryable<ChangeLogDetail> DefineModelList()
+        public override IQueryable<ChangeLogDetail> DefineModelList()
         {
             return from c in DbUtil.Db.ViewChangeLogDetails
                    where c.PeopleId == PeopleId || c.FamilyId == Person.FamilyId
                    select c;
         }
-        override public IQueryable<ChangeLogDetail> DefineModelSort(IQueryable<ChangeLogDetail> q)
+        public override IQueryable<ChangeLogDetail> DefineModelSort(IQueryable<ChangeLogDetail> q)
         {
             switch (SortExpression)
             {
@@ -84,37 +83,67 @@ namespace CmsWeb.Areas.People.Models
         private bool FieldEqual(CmsData.Person p, string field, string value)
         {
             if (value is string)
+            {
                 value = ((string)value).TrimEnd();
+            }
+
             if (!Util.HasProperty(p, field))
+            {
                 return false;
+            }
+
             var o = Util.GetProperty(p, field);
             if (o is string)
+            {
                 o = ((string)o).TrimEnd();
+            }
+
             var p2 = new CmsData.Person();
             Util.SetPropertyFromText(p2, field, value);
             var o2 = Util.GetProperty(p2, field);
             if (o == o2)
+            {
                 return true;
+            }
+
             if (o.IsNull() && o2.IsNotNull())
+            {
                 return false;
+            }
+
             return o.Equals(o2);
         }
         private bool FieldEqual(Family f, string field, string value)
         {
             if (value is string)
+            {
                 value = ((string)value).TrimEnd();
+            }
+
             if (!Util.HasProperty(f, field))
+            {
                 return false;
+            }
+
             var o = Util.GetProperty(f, field);
             if (o is string)
+            {
                 o = ((string)o).TrimEnd();
+            }
+
             var f2 = new Family();
             Util.SetPropertyFromText(f2, field, value);
             var o2 = Util.GetProperty(f2, field);
             if (o == o2)
+            {
                 return true;
+            }
+
             if (o.IsNull() && o2.IsNotNull())
+            {
                 return false;
+            }
+
             return o.Equals(o2);
         }
         private bool FieldEqual(string pf, string field, string value)
@@ -123,7 +152,10 @@ namespace CmsWeb.Areas.People.Models
             {
                 case "p":
                     if (field == "Picture")
+                    {
                         return false;
+                    }
+
                     return FieldEqual(Person, field, value);
                 case "f":
                     return FieldEqual(Person.Family, field, value);

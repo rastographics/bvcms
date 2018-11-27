@@ -1,10 +1,10 @@
+using CmsData;
+using CmsData.Codes;
+using CmsData.Registration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.Codes;
-using CmsData.Registration;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -59,7 +59,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 {
                     var dt = Org.LastMeetingDate ?? DateTime.MinValue;
                     if (dt == DateTime.MinValue)
+                    {
                         dt = DateTime.Today.AddMonths(7);
+                    }
+
                     _endDt = dt;
                 }
                 return _endDt.Value;
@@ -74,7 +77,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 {
                     var dt = Org.FirstMeetingDate ?? DateTime.MinValue;
                     if (dt == DateTime.MinValue || dt < DateTime.Today)
+                    {
                         dt = DateTime.Today;
+                    }
+
                     _sunday = dt.AddDays(-(int)dt.DayOfWeek);
                 }
                 return _sunday.Value;
@@ -167,7 +173,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                                select m.MeetingDate).ToList();
 
             if (Commit == null)
+            {
                 Commit = new DateTime[] { };
+            }
 
             var decommits = from currcommit in commitments
                             join newcommit in Commit on currcommit equals newcommit into j
@@ -183,18 +191,26 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             int? mid = null;
             foreach (var currcommit in decommits)
+            {
                 mid = Attend.MarkRegistered(DbUtil.Db, OrgId, PeopleId, currcommit, AttendCommitmentCode.Regrets);
+            }
+
             foreach (var newcommit in commits)
+            {
                 mid = Attend.MarkRegistered(DbUtil.Db, OrgId, PeopleId, newcommit, AttendCommitmentCode.Attending);
+            }
+
             if (mid.HasValue)
             {
                 var slots = FetchSlots();
                 Meeting.AddEditExtraData(DbUtil.Db, mid.Value, "Description", slots.First().Description);
             }
             var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == PeopleId && mm.OrganizationId == OrgId);
-            if(om == null)
+            if (om == null)
+            {
                 OrganizationMember.InsertOrgMembers(DbUtil.Db,
                     OrgId, PeopleId, MemberTypeCode.Member, DateTime.Now, null, false);
+            }
         }
 
         public string Summary(CmsController controller)

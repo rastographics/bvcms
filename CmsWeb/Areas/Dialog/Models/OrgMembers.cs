@@ -1,11 +1,11 @@
+using CmsData;
+using CmsData.Codes;
+using CmsWeb.Code;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CmsData;
 using System.Web.Mvc;
-using CmsWeb.Code;
 using UtilityExtensions;
-using CmsData.Codes;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
@@ -72,17 +72,27 @@ namespace CmsWeb.Areas.Dialog.Models
         private string type()
         {
             if (pendings)
+            {
                 return "UpdatePending";
+            }
             else if (inactives)
+            {
                 return "UpdateInactive";
+            }
+
             return "UpdateMembers";
         }
         public string title()
         {
             if (pendings)
+            {
                 return "Update Pending Members";
+            }
             else if (inactives)
+            {
                 return "Update Inactive Members";
+            }
+
             return "Update Members";
         }
         public string HelpLink()

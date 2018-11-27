@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult GotoMeetingForDate(int oid, long ticks)
         {
             var dt = new DateTime(ticks); // ticks here is meeting time
-            var q = from m in DbUtil.Db.Meetings
+            var q = from m in CurrentDatabase.Meetings
                     where m.OrganizationId == oid
                     where m.MeetingDate == dt
                     select m;

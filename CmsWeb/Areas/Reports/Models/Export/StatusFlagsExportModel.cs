@@ -1,13 +1,13 @@
+using CmsData;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
+using OfficeOpenXml.Table;
 using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
-using OfficeOpenXml;
-using OfficeOpenXml.Style;
-using OfficeOpenXml.Table;
 using UtilityExtensions;
-using CmsData;
 
 namespace CmsWeb.Models
 {
@@ -22,13 +22,17 @@ namespace CmsWeb.Models
             string cols = null;
 
             if (flags.HasValue())
+            {
                 cols = string.Join(",\n", from f in flags.Split(',')
                                           join c in collist on f equals c.Flag
                                           select $"\tss.{c.Flag} as [{c.Flag}_{c.Name}]");
+            }
             else
+            {
                 cols = string.Join(",\n", from c in collist
                                           where c.Role == null || HttpContext.Current.User.IsInRole(c.Role)
                                           select $"\tss.{c.Flag} as [{c.Name}]");
+            }
 
             var tag = DbUtil.Db.PopulateSpecialTag(qid, DbUtil.TagTypeId_Query);
             var cn = new SqlConnection(Util.ConnectionString);

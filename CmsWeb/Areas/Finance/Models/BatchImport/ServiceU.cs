@@ -5,12 +5,12 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
-using System;
-using System.IO;
-using System.Linq;
 using CmsData;
 using CmsData.Codes;
 using LumenWorks.Framework.IO.Csv;
+using System;
+using System.IO;
+using System.Linq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
@@ -20,7 +20,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
         public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
         {
             using (var csv = new CsvReader(new StringReader(text), true))
+            {
                 return Import(csv, date, fundid);
+            }
         }
 
         private static int? Import(CsvReader csv, DateTime date, int? fundid)
@@ -66,7 +68,10 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                     }
                 }
                 if (ac.ToInt() == 0)
+                {
                     ac = email;
+                }
+
                 var eac = Util.Encrypt(ac);
                 var q = from kc in DbUtil.Db.CardIdentifiers
                         where kc.Id == eac
@@ -79,10 +84,15 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                     bankac = eac;
                     string person;
                     if (last.HasValue())
+                    {
                         person = $"{last}, {first}; {addr}";
+                    }
                     else
+                    {
                         person = $"{name}; {addr}";
-                    ed = new ExtraDatum {Data = person, Stamp = Util.Now};
+                    }
+
+                    ed = new ExtraDatum { Data = person, Stamp = Util.Now };
                 }
                 BundleDetail bd = null;
                 var defaultfundid = DbUtil.Db.Setting("DefaultFundId", "1").ToInt();
@@ -95,15 +105,26 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                         bd = CreateContribution(date, fid ?? defaultfundid);
                         bd.Contribution.ContributionAmount = csv[c].GetAmount();
                         if (col == "Other")
+                        {
                             col = oth;
+                        }
+
                         if (!fundid.HasValue)
+                        {
                             bd.Contribution.ContributionDesc = col;
+                        }
+
                         if (ac.HasValue())
+                        {
                             bd.Contribution.BankAccount = bankac;
+                        }
+
                         bd.Contribution.PeopleId = pid;
                         bh.BundleDetails.Add(bd);
                         if (ed != null)
+                        {
                             bd.Contribution.ExtraDatum = ed;
+                        }
                     }
                 }
             }

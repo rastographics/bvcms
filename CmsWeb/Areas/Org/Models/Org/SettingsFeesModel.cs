@@ -1,13 +1,10 @@
-﻿using System;
+﻿using CmsData;
+using CmsData.Registration;
+using CmsWeb.Code;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using CmsData;
-using CmsData.Codes;
-using CmsData.Registration;
-using CmsWeb.Code;
-using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Models
 {
@@ -21,7 +18,9 @@ namespace CmsWeb.Areas.Org.Models
             set
             {
                 if (Org == null)
+                {
                     Org = DbUtil.Db.LoadOrganizationById(value);
+                }
             }
         }
 

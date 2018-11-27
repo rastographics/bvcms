@@ -1,6 +1,7 @@
-using System.Web.Mvc;
 using CmsWeb.Areas.People.Models;
+using CmsWeb.Lifecycle;
 using CmsWeb.Models.ExtraValues;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
@@ -8,12 +9,18 @@ namespace CmsWeb.Areas.People.Controllers
     [RouteArea("People", AreaPrefix = "Contact2"), Route("{action}/{cid:int}")]
     public class ContactController : CmsStaffController
     {
+        public ContactController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet, Route("~/Contact2/{cid}")]
         public ActionResult Index(int cid, bool edit = false)
         {
             var m = new ContactModel(cid);
             if (m.contact == null)
+            {
                 return Content("contact is private or does not exist");
+            }
 
             if (edit)
             {
@@ -23,7 +30,9 @@ namespace CmsWeb.Areas.People.Controllers
             else
             {
                 if (TempData.ContainsKey("SetRole"))
+                {
                     m.LimitToRole = TempData["SetRole"].ToString();
+                }
 
                 var showEdit = (bool?)TempData["ContactEdit"] == true;
                 ViewBag.edit = showEdit;
@@ -45,7 +54,10 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var m = new ContactorsModel(cid);
             if (m.Contact != null)
+            {
                 m.RemoveContactor(pid);
+            }
+
             return Content("ok");
         }
 
@@ -66,7 +78,10 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var m = new ContactModel(cid);
             if (!m.CanViewComments)
+            {
                 return View("ContactDisplay", m);
+            }
+
             return View(m);
         }
         [HttpPost]
@@ -96,7 +111,10 @@ namespace CmsWeb.Areas.People.Controllers
         {
             c.SetLocationOnContact();
             if (!ModelState.IsValid)
+            {
                 return View("ContactEdit", c);
+            }
+
             c.UpdateContact();
             return View("ContactDisplay", c);
         }

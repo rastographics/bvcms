@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
 using CmsData;
+using CmsWeb.Lifecycle;
+using System.Linq;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
@@ -13,9 +10,13 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup", AreaPrefix = "Ministry"), Route("{action=index}/{id?}")]
     public class MinistryController : CmsStaffController
     {
+        public MinistryController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         public ActionResult Index()
         {
-            var m = DbUtil.Db.Ministries.AsEnumerable();
+            var m = CurrentDatabase.Ministries.AsEnumerable();
             return View(m);
         }
 
@@ -23,8 +24,8 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult Create()
         {
             var m = new Ministry { MinistryName = "NEW" };
-            DbUtil.Db.Ministries.InsertOnSubmit(m);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.Ministries.InsertOnSubmit(m);
+            CurrentDatabase.SubmitChanges();
             return Redirect($"/Ministry/#{m.MinistryId}");
         }
 
@@ -34,16 +35,19 @@ namespace CmsWeb.Areas.Setup.Controllers
             var a = id.Split('.');
             var c = new ContentResult();
             c.Content = value;
-            var min = DbUtil.Db.Ministries.SingleOrDefault(m => m.MinistryId == a[1].ToInt());
+            var min = CurrentDatabase.Ministries.SingleOrDefault(m => m.MinistryId == a[1].ToInt());
             if (min == null)
+            {
                 return c;
+            }
+
             switch (a[0])
             {
                 case "MinistryName":
                     min.MinistryName = value;
                     break;
             }
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return c;
         }
 
@@ -51,11 +55,14 @@ namespace CmsWeb.Areas.Setup.Controllers
         public EmptyResult Delete(string id)
         {
             id = id.Substring(1);
-            var min = DbUtil.Db.Ministries.SingleOrDefault(m => m.MinistryId == id.ToInt());
+            var min = CurrentDatabase.Ministries.SingleOrDefault(m => m.MinistryId == id.ToInt());
             if (min == null)
+            {
                 return new EmptyResult();
-            DbUtil.Db.Ministries.DeleteOnSubmit(min);
-            DbUtil.Db.SubmitChanges();
+            }
+
+            CurrentDatabase.Ministries.DeleteOnSubmit(min);
+            CurrentDatabase.SubmitChanges();
             return new EmptyResult();
         }
     }

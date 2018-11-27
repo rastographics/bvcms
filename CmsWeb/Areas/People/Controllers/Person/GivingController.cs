@@ -1,11 +1,10 @@
-using System;
-using System.Linq;
-using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.Finance.Models.Report;
 using CmsWeb.Areas.People.Models;
-using Dapper;
+using System;
+using System.Linq;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
@@ -21,23 +20,33 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult Statements(ContributionsModel m)
         {
-            if (!DbUtil.Db.CurrentUserPerson.CanViewStatementFor(DbUtil.Db, m.PeopleId))
+            if (!CurrentDatabase.CurrentUserPerson.CanViewStatementFor(CurrentDatabase, m.PeopleId))
+            {
                 return Content("No permission to view statement");
+            }
+
             return View("Giving/Statements", m);
         }
 
         public ActionResult Statement(int id, string fr, string to)
         {
-            if (!DbUtil.Db.CurrentUserPerson.CanViewStatementFor(DbUtil.Db, id))
+            if (!CurrentDatabase.CurrentUserPerson.CanViewStatementFor(CurrentDatabase, id))
+            {
                 return Content("No permission to view statement");
-            var p = DbUtil.Db.LoadPersonById(id);
+            }
+
+            var p = CurrentDatabase.LoadPersonById(id);
             if (p == null)
+            {
                 return Content("Invalid Id");
+            }
 
             var frdt = Util.ParseMMddyy(fr);
             var todt = Util.ParseMMddyy(to);
             if (!(frdt.HasValue && todt.HasValue))
+            {
                 return Content("date formats invalid");
+            }
 
             DbUtil.LogPersonActivity($"Contribution Statement for ({id})", id, p.Name);
 
@@ -57,18 +66,25 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpGet, Route("ContributionStatement/{id:int}/{fr:datetime}/{to:datetime}")]
         public ActionResult ContributionStatement(int id, DateTime fr, DateTime to, string custom = null)
         {
-            if (!DbUtil.Db.CurrentUserPerson.CanViewStatementFor(DbUtil.Db, id))
+            if (!CurrentDatabase.CurrentUserPerson.CanViewStatementFor(CurrentDatabase, id))
+            {
                 return Content("No permission to view statement");
-            var p = DbUtil.Db.LoadPersonById(id);
+            }
+
+            var p = CurrentDatabase.LoadPersonById(id);
             if (p == null)
+            {
                 return Content("Invalid Id");
+            }
 
             if (p.PeopleId == p.Family.HeadOfHouseholdSpouseId)
             {
-                var hh = DbUtil.Db.LoadPersonById(p.Family.HeadOfHouseholdId ?? 0);
+                var hh = CurrentDatabase.LoadPersonById(p.Family.HeadOfHouseholdId ?? 0);
                 if ((hh.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint
                     && (p.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint)
+                {
                     p = p.Family.HeadOfHousehold;
+                }
             }
 
             DbUtil.LogPersonActivity($"Contribution Statement for ({id})", id, p.Name);
@@ -93,20 +109,26 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpGet]
         public ActionResult ManageGiving()
         {
-            var org = (from o in DbUtil.Db.Organizations
+            var org = (from o in CurrentDatabase.Organizations
                        where o.RegistrationTypeId == RegistrationTypeCode.ManageGiving
                        select o.OrganizationId).FirstOrDefault();
             if (org > 0)
+            {
                 return Redirect("/OnlineReg/" + org);
+            }
+
             return new EmptyResult();
         }
 
         [HttpGet]
         public ActionResult OneTimeGift()
         {
-            var oid = CmsData.API.APIContribution.OneTimeGiftOrgId(DbUtil.Db);
+            var oid = CmsData.API.APIContribution.OneTimeGiftOrgId(CurrentDatabase);
             if (oid > 0)
+            {
                 return Redirect("/OnlineReg/" + oid);
+            }
+
             return new EmptyResult();
         }
 

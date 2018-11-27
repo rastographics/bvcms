@@ -5,6 +5,8 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
+using CmsData;
+using CmsWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,8 +15,6 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Models;
 using UtilityExtensions;
 using Xceed.Words.NET;
 
@@ -58,9 +58,13 @@ namespace CmsWeb.Areas.Reports.Models
             emptyReplacementsDictionary = replacements.DocXReplacementsDictionary(null);
 
             if (emptyReplacementsDictionary.ContainsKey("{lastnamestartswith}"))
+            {
                 BuildDocumentIndexStyle(list);
+            }
             else
+            {
                 BuildDocument(list);
+            }
 
             response.Clear();
             response.ContentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
@@ -95,10 +99,14 @@ namespace CmsWeb.Areas.Reports.Models
                 var cell = row.Cells[c];
                 DoCellReplacements(cell, m);
                 if (++c == ncols)
+                {
                     c = 0; // start a new row
+                }
             }
             while (c > 0 && c < ncols && row != null)
+            {
                 DoEmptyCell(row.Cells[c++]);
+            }
 
             tbl.RemoveRow(0); // the first row was used as a template
         }
@@ -114,11 +122,13 @@ namespace CmsWeb.Areas.Reports.Models
             Paragraph alphaParagraph = null;
 
             foreach (var pg in docx.Paragraphs)
+            {
                 if (pg.Text.Contains("{lastnamestartswith}"))
                 {
                     alphaParagraph = pg;
                     break;
                 }
+            }
 
             var alphaindex = "@";
             foreach (var m in list)
@@ -144,10 +154,14 @@ namespace CmsWeb.Areas.Reports.Models
                 var cell = row.Cells[c];
                 DoCellReplacements(cell, m);
                 if (++c == ncols)
+                {
                     c = 0; // start a new row
+                }
             }
             while (c > 0 && c < ncols && row != null)
+            {
                 DoEmptyCell(row.Cells[c++]);
+            }
 
             tbl?.RemoveRow(0); // remove first row from last table worked on
             docx.RemoveParagraph(alphaParagraph); // remove the alphaParagraph template
@@ -158,62 +172,118 @@ namespace CmsWeb.Areas.Reports.Models
         {
             var dict = replacements.DocXReplacementsDictionary(di.Person);
             foreach (var pg in cell.Paragraphs.Where(vv => vv.Text.HasValue()))
+            {
                 if (dict.Keys.Any(vv => pg.Text.Contains(vv)))
+                {
                     foreach (var d in dict)
+                    {
                         if (pg.Text.Contains(d.Key))
+                        {
                             if (!ReplaceCode(pg, d.Key, di))
+                            {
                                 pg.ReplaceText(d.Key, d.Value);
+                            }
+                        }
+                    }
+                }
+            }
         }
         private void DoEmptyCell(Container cell)
         {
             foreach (var pg in cell.Paragraphs.Where(vv => vv.Text.HasValue()))
+            {
                 if (emptyReplacementsDictionary.Keys.Any(vv => pg.Text.Contains(vv)))
+                {
                     foreach (var d in emptyReplacementsDictionary)
+                    {
                         if (pg.Text.Contains(d.Key))
+                        {
                             pg.ReplaceText(d.Key, "");
+                        }
+                    }
+                }
+            }
         }
 
         private bool ReplaceCode(Paragraph pg, string code, DirectoryInfo di)
         {
             if (code.Equal("{altname}"))
+            {
                 pg.ReplaceText(code, di.Person.AltName);
+            }
             else if (code.Equal("{name}"))
+            {
                 pg.ReplaceText(code, di.Person.Name);
+            }
             else if (code.Equal("{name2}"))
+            {
                 pg.ReplaceText(code, di.Person.Name2);
+            }
             else if (code.Equal("{familyname}"))
+            {
                 pg.ReplaceText(code, di.FamilyName);
+            }
             else if (code.Equal("{familytitle}"))
+            {
                 pg.ReplaceText(code, di.FamilyTitle);
+            }
             else if (code.Equal("{lastname}"))
+            {
                 pg.ReplaceText(code, di.Person.LastName);
+            }
             else if (code.Equal("{firstnames}"))
+            {
                 pg.ReplaceText(code, di.FirstNames);
+            }
             else if (code.Equal("{addr}"))
+            {
                 pg.ReplaceText(code, di.Address);
-
+            }
             else if (ReplaceBday(pg, code, di))
+            {
                 return true;
+            }
             else if (ReplaceAnniversary(pg, code, di))
+            {
                 return true;
+            }
             else if (ReplaceEmail(pg, code, di))
+            {
                 return true;
+            }
             else if (ReplaceSpEmail(pg, code, di))
+            {
                 return true;
+            }
             else if (ReplacePhone(pg, code, di))
+            {
                 return true;
+            }
             else if (ReplaceCell(pg, code, di))
+            {
                 return true;
+            }
             else if (ReplaceSpCell(pg, code, di))
+            {
                 return true;
+            }
             else if (ReplaceSpouse(pg, code, di))
+            {
                 return true;
+            }
             else if (ReplaceKids(pg, code, di))
+            {
                 return true;
+            }
             else if (ReplacePic(pg, code, di))
+            {
                 return true;
+            }
             else
+            {
                 return false;
+            }
+
             return true;
         }
 
@@ -222,7 +292,10 @@ namespace CmsWeb.Areas.Reports.Models
         private bool ReplaceKids(Paragraph pg, string code, DirectoryInfo di)
         {
             if (!kidsre.IsMatch(code))
+            {
                 return false;
+            }
+
             if (di.Children.HasValue())
             {
                 var m = kidsre.Match(code);
@@ -232,7 +305,10 @@ namespace CmsWeb.Areas.Reports.Models
                     : di.Children);
             }
             else
+            {
                 pg.ReplaceText(code, "");
+            }
+
             return true;
         }
 
@@ -240,7 +316,10 @@ namespace CmsWeb.Areas.Reports.Models
         private bool ReplaceSpouse(Paragraph pg, string code, DirectoryInfo di)
         {
             if (!spousere.IsMatch(code))
+            {
                 return false;
+            }
+
             if (di.SpouseName.HasValue())
             {
                 var m = spousere.Match(code);
@@ -250,7 +329,10 @@ namespace CmsWeb.Areas.Reports.Models
                     : di.SpouseName);
             }
             else
+            {
                 pg.ReplaceText(code, "");
+            }
+
             return true;
         }
 
@@ -258,13 +340,18 @@ namespace CmsWeb.Areas.Reports.Models
         private bool ReplaceSpCell(Paragraph pg, string code, DirectoryInfo di)
         {
             if (!spcellre.IsMatch(code))
+            {
                 return false;
+            }
+
             if (di.SpouseCell.HasValue())
             {
                 var m = spcellre.Match(code);
                 var txt = m.Groups["text"].Value;
                 if (!txt.HasValue())
+                {
                     pg.ReplaceText(code, di.SpouseCell);
+                }
                 else
                 {
                     txt = txt.Replace("_number_", di.SpouseCell)
@@ -273,7 +360,10 @@ namespace CmsWeb.Areas.Reports.Models
                 }
             }
             else
+            {
                 pg.ReplaceText(code, "");
+            }
+
             return true;
         }
 
@@ -281,13 +371,18 @@ namespace CmsWeb.Areas.Reports.Models
         private bool ReplaceCell(Paragraph pg, string code, DirectoryInfo di)
         {
             if (!cellre.IsMatch(code))
+            {
                 return false;
+            }
+
             if (di.CellPhone.HasValue())
             {
                 var m = cellre.Match(code);
                 var txt = m.Groups["text"].Value;
                 if (!txt.HasValue())
+                {
                     pg.ReplaceText(code, di.CellPhone);
+                }
                 else
                 {
                     txt = txt.Replace("_number_", di.CellPhone)
@@ -296,7 +391,10 @@ namespace CmsWeb.Areas.Reports.Models
                 }
             }
             else
+            {
                 pg.ReplaceText(code, "");
+            }
+
             return true;
         }
 
@@ -304,9 +402,14 @@ namespace CmsWeb.Areas.Reports.Models
         private bool ReplacePhone(Paragraph pg, string code, DirectoryInfo di)
         {
             if (!phonere.IsMatch(code))
+            {
                 return false;
+            }
+
             if (!di.HomePhone.HasValue() || di.SpouseDoNotPublishPhone == true)
+            {
                 pg.ReplaceText(code, "");
+            }
             else
             {
                 var m = phonere.Match(code);
@@ -322,13 +425,18 @@ namespace CmsWeb.Areas.Reports.Models
         private bool ReplaceSpEmail(Paragraph pg, string code, DirectoryInfo di)
         {
             if (!spemailre.IsMatch(code))
+            {
                 return false;
+            }
+
             if (di.SpouseEmail.HasValue())
             {
                 var m = spemailre.Match(code);
                 var txt = m.Groups["text"].Value;
                 if (!txt.HasValue())
+                {
                     pg.ReplaceText(code, di.SpouseEmail);
+                }
                 else
                 {
                     txt = txt.Replace("_addr_", di.SpouseEmail)
@@ -337,7 +445,10 @@ namespace CmsWeb.Areas.Reports.Models
                 }
             }
             else
+            {
                 pg.ReplaceText(code, "");
+            }
+
             return true;
         }
 
@@ -345,13 +456,18 @@ namespace CmsWeb.Areas.Reports.Models
         private bool ReplaceEmail(Paragraph pg, string code, DirectoryInfo di)
         {
             if (!emailre.IsMatch(code))
+            {
                 return false;
+            }
+
             if (di.Person.EmailAddress.HasValue())
             {
                 var m = emailre.Match(code);
                 var txt = m.Groups["text"].Value;
                 if (!txt.HasValue())
+                {
                     pg.ReplaceText(code, di.Person.EmailAddress);
+                }
                 else
                 {
                     txt = txt.Replace("_addr_", di.Person.EmailAddress)
@@ -360,7 +476,10 @@ namespace CmsWeb.Areas.Reports.Models
                 }
             }
             else
+            {
                 pg.ReplaceText(code, "");
+            }
+
             return true;
         }
 
@@ -369,14 +488,19 @@ namespace CmsWeb.Areas.Reports.Models
         private bool ReplaceBday(Paragraph pg, string code, DirectoryInfo di)
         {
             if (!bdayre.IsMatch(code))
+            {
                 return false;
+            }
+
             if (di.Person.BirthDate.HasValue)
             {
                 var m = bdayre.Match(code);
                 var txt = m.Groups["text"].Value;
 
                 if (!txt.HasValue())
+                {
                     pg.ReplaceText(code, di.Person.BirthDate.ToString2("MMM d"));
+                }
                 else
                 {
                     txt = txt.Replace("_first_", di.Person.PreferredName);
@@ -388,7 +512,10 @@ namespace CmsWeb.Areas.Reports.Models
                 }
             }
             else
+            {
                 pg.ReplaceText(code, "");
+            }
+
             return true;
         }
 
@@ -396,7 +523,10 @@ namespace CmsWeb.Areas.Reports.Models
         private bool ReplaceAnniversary(Paragraph pg, string code, DirectoryInfo di)
         {
             if (!anniversaryre.IsMatch(code))
+            {
                 return false;
+            }
+
             if (di.Person.WeddingDate.HasValue)
             {
                 var m = anniversaryre.Match(code);
@@ -409,7 +539,10 @@ namespace CmsWeb.Areas.Reports.Models
                     : di.Person.WeddingDate.ToString2("MMM d"));
             }
             else
+            {
                 pg.ReplaceText(code, "");
+            }
+
             return true;
         }
 
@@ -417,7 +550,10 @@ namespace CmsWeb.Areas.Reports.Models
         private bool ReplacePic(Paragraph pg, string code, DirectoryInfo di)
         {
             if (!picre.IsMatch(code))
+            {
                 return false;
+            }
+
             var m = picre.Match(code);
             var pic = m.Groups["pic"].Value;
             var height = m.Groups["height"].Value.ToDouble();
@@ -437,11 +573,13 @@ namespace CmsWeb.Areas.Reports.Models
 
             var img = ImageData.Image.ImageFromId(imageid);
             if (img != null)
+            {
                 using (var os = img.ResizeToStream(largewidth, largeheight, "pad"))
                 {
                     var pic = docx.AddImage(os).CreatePicture(heightpixels, widthpixels);
                     pg.AppendPicture(pic);
                 }
+            }
         }
     }
 }

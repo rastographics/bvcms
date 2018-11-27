@@ -1,10 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using CmsData;
 using CmsData.Classes.HealthChecker;
 using CmsData.Classes.RoleChecker;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
@@ -63,8 +62,8 @@ namespace CmsWeb.Areas.People.Models
                         return $"<a title=\"{DivisionName}\" href=\"/MemberDirectory/{OrgId}\">{Name}</a>";
                     }
 
-                    return IsProspect 
-                        ? Name 
+                    return IsProspect
+                        ? Name
                         : $"<a title=\"{DivisionName}\" href=\"/OrgContent/{OrgId}\">{Name}</a>";
                 case "enroll date":
                 case "enrolldate":
@@ -92,19 +91,33 @@ namespace CmsWeb.Areas.People.Models
                     return OrgType;
                 case "membertype":
                     if (MemberType.Equal("Inactive") && IsMissionTripOrg)
+                    {
                         MemberType = "Sender";
-                    if(column.Page == "Previous" && inAccessRole)
+                    }
+
+                    if (column.Page == "Previous" && inAccessRole)
+                    {
                         return $"<a class=\"membertype\" href=\"/OrgPrevMemberDialog/{OrgId}/{PeopleId}\">{MemberType}</a>";
-                    if(inAccessRole)
+                    }
+
+                    if (inAccessRole)
+                    {
                         return $"<a class=\"membertype\" href=\"/OrgMemberDialog/Member/{OrgId}/{PeopleId}\">{MemberType}</a>";
+                    }
+
                     return MemberType;
                 case "viewcalendar":
                     return $"<a href=\"/OnlineReg/{OrgId}\">{column.Label}</a>";
                 case "leave":
-                    if(column.Page == "Current")
+                    if (column.Page == "Current")
+                    {
                         return $"<button class=\"leave-org\" data-personid=\"{PeopleId}\" data-orgid=\"{OrgId}\">{column.Label}</button>";
+                    }
                     else
+                    {
                         return "";
+                    }
+
                 case "lastvisit":
                 case "last visit":
                     return HealthChecker.GetLastVisit(OrgId)?.ToShortDateString();
@@ -124,8 +137,11 @@ namespace CmsWeb.Areas.People.Models
                             return string.Empty;
                     }
                 default:
-                    if(_extraFields == null)
+                    if (_extraFields == null)
+                    {
                         _extraFields = DbUtil.Db.LoadOrganizationById(OrgId)?.GetOrganizationExtras();
+                    }
+
                     return _extraFields?.SingleOrDefault(x => x.Field.ToLower() == field)?.Data;
             }
         }

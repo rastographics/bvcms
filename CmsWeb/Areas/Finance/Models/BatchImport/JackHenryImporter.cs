@@ -5,12 +5,12 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 
+using CmsData;
+using LumenWorks.Framework.IO.Csv;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using CmsData;
-using LumenWorks.Framework.IO.Csv;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
@@ -20,7 +20,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
         public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
         {
             using (var csv = new CsvReader(new StringReader(text), true))
+            {
                 return BatchProcessJackHenry(csv, date, fundid);
+            }
         }
 
         private static int? BatchProcessJackHenry(CsvReader csv, DateTime date, int? fundid)
@@ -51,13 +53,18 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             foreach (var i in list)
             {
                 if (bh == null)
+                {
                     bh = BatchImportContributions.GetBundleHeader(date, DateTime.Now);
+                }
 
                 var bd = BatchImportContributions.AddContributionDetail(date, fund, i.Amount, i.CheckNo, i.Routing, i.PeopleId);
                 bh.BundleDetails.Add(bd);
             }
             if (bh == null)
+            {
                 return null;
+            }
+
             BatchImportContributions.FinishBundle(bh);
             return bh.BundleHeaderId;
         }

@@ -1,6 +1,8 @@
+using CmsData;
+using CmsData.API;
+using CmsWeb.Areas.Manage.Models;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data.Linq;
 using System.IO;
 using System.Linq;
@@ -10,9 +12,6 @@ using System.Text;
 using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
-using CmsData;
-using CmsData.API;
-using CmsWeb.Areas.Manage.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -51,17 +50,32 @@ namespace CmsWeb.Models
         public static string GetValidToken(string otltoken)
         {
             if (!otltoken.HasValue())
+            {
                 return null;
+            }
+
             var guid = otltoken.ToGuid();
             if (guid == null)
+            {
                 return null;
+            }
+
             var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
             if (ot == null)
+            {
                 return null;
+            }
+
             if (ot.Used)
+            {
                 return null;
+            }
+
             if (ot.Expires.HasValue && ot.Expires < DateTime.Now)
+            {
                 return null;
+            }
+
             ot.Used = true;
             DbUtil.Db.SubmitChanges();
             return ot.Querystring;
@@ -80,10 +94,14 @@ namespace CmsWeb.Models
             var userStatus = GetUserViaCredentials() ?? GetUserViaSessionToken(requirePin);
 
             if (userStatus == null)
+            {
                 return UserValidationResult.Invalid(UserValidationStatus.ImproperHeaderStructure, "Could not authenticate user, Authorization or SessionToken headers likely missing.", null);
+            }
 
             if (!userStatus.IsValid)
+            {
                 return userStatus;
+            }
 
             var user = userStatus.User;
 
@@ -92,7 +110,10 @@ namespace CmsWeb.Models
             if (requiredRole != null)
             {
                 if (!roleProvider.RoleExists("Checkin"))
+                {
                     requiredRole = "Access";
+                }
+
                 if (!roleProvider.IsUserInRole(user.Username, requiredRole))
                 {
                     userStatus.Status = UserValidationStatus.UserNotInRole;
@@ -111,7 +132,7 @@ namespace CmsWeb.Models
                 if (!Util2.OrgLeadersOnly && roleProvider.IsUserInRole(user.Username, "OrgLeadersOnly", db))
                 {
                     Util2.OrgLeadersOnly = true;
-                    db.SetOrgLeadersOnly();
+                    DbUtil.Db.SetOrgLeadersOnly();
                     DbUtil.LogActivity("SetOrgLeadersOnly");
                 }
                 Util2.OrgLeadersOnlyChecked = true;
@@ -134,7 +155,9 @@ namespace CmsWeb.Models
             }
 
             if (!userStatus.IsValid)
+            {
                 return userStatus;
+            }
 
             var user = userStatus.User;
 
@@ -150,7 +173,7 @@ namespace CmsWeb.Models
                 if (!Util2.OrgLeadersOnly && roleProvider.IsUserInRole(user.Username, "OrgLeadersOnly", db))
                 {
                     Util2.OrgLeadersOnly = true;
-                    db.SetOrgLeadersOnly();
+                    DbUtil.Db.SetOrgLeadersOnly();
                     DbUtil.LogActivity("SetOrgLeadersOnly");
                 }
                 Util2.OrgLeadersOnlyChecked = true;
@@ -165,7 +188,9 @@ namespace CmsWeb.Models
         public static UserValidationResult ResetSessionExpiration(string sessionToken)
         {
             if (string.IsNullOrEmpty(sessionToken))
+            {
                 return UserValidationResult.Invalid(UserValidationStatus.ImproperHeaderStructure, "Could not authenticate user, Authorization or SessionToken headers likely missing.", null);
+            }
             //throw new ArgumentNullException("sessionToken");
 
             var userStatus = AuthenticateMobile(requirePin: true);
@@ -176,7 +201,9 @@ namespace CmsWeb.Models
             {
                 var result = ApiSessionModel.ResetSessionExpiration(userStatus.User, HttpContext.Current.Request.Headers["PIN"].ToInt2());
                 if (!result)
+                {
                     return UserValidationResult.Invalid(UserValidationStatus.PinInvalid);
+                }
 
                 userStatus.Status = UserValidationStatus.Success;
             }
@@ -252,7 +279,7 @@ namespace CmsWeb.Models
         public static UserValidationResult AuthenticateLogon(string userName, string password, string url)
         {
             var db = DbUtil.Db;
-            var userQuery = db.Users.Where(uu =>
+            var userQuery = DbUtil.Db.Users.Where(uu =>
                 uu.Username == userName ||
                 uu.Person.EmailAddress == userName ||
                 uu.Person.EmailAddress2 == userName
@@ -291,12 +318,12 @@ namespace CmsWeb.Models
                         u.MustChangePassword = true;
                     }
                     u.IsLockedOut = false;
-                    db.SubmitChanges();
+                    DbUtil.Db.SubmitChanges();
                     user = u;
                     break;
                 }
 
-                if (password == db.Setting("ImpersonatePassword", Guid.NewGuid().ToString()))
+                if (password == DbUtil.Db.Setting("ImpersonatePassword", Guid.NewGuid().ToString()))
                 {
                     user = u;
                     impersonating = true;
@@ -306,7 +333,7 @@ namespace CmsWeb.Models
 
                 if (Membership.Provider.ValidateUser(u.Username, password))
                 {
-                    db.Refresh(RefreshMode.OverwriteCurrentValues, u);
+                    DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, u);
                     user = u;
                     break;
                 }
@@ -327,8 +354,10 @@ namespace CmsWeb.Models
                 DbUtil.LogActivity($"failed password #{failedPasswordCount} by {userName}");
 
                 if (failedPasswordCount == maxInvalidPasswordAttempts)
+                {
                     return UserValidationResult.Invalid(UserValidationStatus.TooManyFailedPasswordAttempts,
                         "Your account has been locked out for too many failed attempts, use the forgot password link, or notify an Admin");
+                }
 
                 return UserValidationResult.Invalid(UserValidationStatus.IncorrectPassword, DEFAULT_PROBLEM);
             }
@@ -403,9 +432,14 @@ namespace CmsWeb.Models
         {
             IEnumerable<Person> notify = null;
             if (Roles.GetAllRoles().Contains("NotifyLogin"))
+            {
                 notify = CMSRoleProvider.provider.GetRoleUsers("NotifyLogin").Select(u => u.Person).Distinct();
+            }
             else
+            {
                 notify = CMSRoleProvider.provider.GetRoleUsers("Admin").Select(u => u.Person).Distinct();
+            }
+
             DbUtil.Db.EmailRedacted(DbUtil.AdminMail, notify, subject, message);
         }
 
@@ -413,17 +447,25 @@ namespace CmsWeb.Models
         {
             var u = SetUserInfo(username);
             if (u == null)
+            {
                 return;
+            }
+
             Session["ActivePerson"] = u.Name;
             if (deleteSpecialTags)
+            {
                 DbUtil.Db.DeleteSpecialTags(Util.UserPeopleId);
+            }
         }
 
         public static User SetUserInfo(string username, HttpSessionStateBase Session)
         {
             var u = SetUserInfo(username);
             if (u == null)
+            {
                 return null;
+            }
+
             Session["ActivePerson"] = u.Name;
             return u;
         }
@@ -432,9 +474,11 @@ namespace CmsWeb.Models
         {
             var i = (from u in DbUtil.Db.Users
                      where u.Username == username
-                     select new {u, u.Person.PreferredName}).SingleOrDefault();
+                     select new { u, u.Person.PreferredName }).SingleOrDefault();
             if (i == null)
+            {
                 return null;
+            }
             //var u = DbUtil.Db.Users.SingleOrDefault(us => us.Username == username);
             if (i.u != null)
             {
@@ -465,10 +509,15 @@ namespace CmsWeb.Models
             if (!Roles.IsUserInRole(name, "Access") && !Roles.IsUserInRole(name, "OrgMembersOnly"))
             {
                 if (Util.UserPeopleId > 0)
+                {
                     return $"/Person2/{Util.UserPeopleId}";
+                }
 
                 if (name.HasValue())
+                {
                     DbUtil.LogActivity($"user {name} loggedin without a role ");
+                }
+
                 FormsAuthentication.SignOut();
                 return "/Errors/AccessDenied.htm";
             }

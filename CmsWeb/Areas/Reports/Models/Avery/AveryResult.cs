@@ -4,14 +4,13 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
-using System;
-using System.IO;
-using System.Linq;
+using CmsData;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
-using CmsData;
-using UtilityExtensions;
+using System;
+using System.Linq;
 using System.Web.Mvc;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -22,8 +21,8 @@ namespace CmsWeb.Areas.Reports.Models
         public bool namesonly;
 
         protected PdfContentByte dc;
-        private Font font = FontFactory.GetFont(FontFactory.HELVETICA, 20);
-        private Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 8);
+        private readonly Font font = FontFactory.GetFont(FontFactory.HELVETICA, 20);
+        private readonly Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 8);
 
         public override void ExecuteResult(ControllerContext context)
         {
@@ -58,10 +57,17 @@ namespace CmsWeb.Areas.Reports.Models
             t.DefaultCell.Border = PdfPCell.NO_BORDER;
 
             if (!q2.Any())
+            {
                 document.Add(new Phrase("no data"));
+            }
             else
+            {
                 foreach (var m in q2)
+                {
                     AddCell(t, m.First, m.Last, m.Phone, m.PeopleId, m.DoNotPublishPhones);
+                }
+            }
+
             t.CompleteRow();
             document.Add(t);
 

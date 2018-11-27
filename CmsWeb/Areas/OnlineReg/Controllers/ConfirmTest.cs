@@ -32,7 +32,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult ConfirmTest(int? start, int? count)
         {
             IEnumerable<RegistrationDatum> q;
-            q = from ed in DbUtil.Db.RegistrationDatas
+            q = from ed in CurrentDatabase.RegistrationDatas
                 orderby ed.Stamp descending
                 select ed;
             var list = q.Skip(start ?? 0).Take(count ?? 200).ToList();
@@ -58,7 +58,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult ConfirmTestXml(int id)
         {
-            var rd = (from i in DbUtil.Db.RegistrationDatas
+            var rd = (from i in CurrentDatabase.RegistrationDatas
                       where i.Id == id
                       select i).SingleOrDefault();
             if (rd == null)
@@ -68,7 +68,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [Authorize(Roles = "ManageTransactions,Finance,Admin")]
         public ActionResult RegPeople(int id)
         {
-            var q = from i in DbUtil.Db.RegistrationDatas
+            var q = from i in CurrentDatabase.RegistrationDatas
                     where i.Id == id
                     select i;
             if (!q.Any())
@@ -97,11 +97,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [Authorize(Roles = "ManageTransactions,Finance,Admin")]
         public ActionResult DeleteRegData(int id)
         {
-            var ed = (from i in DbUtil.Db.RegistrationDatas
+            var ed = (from i in CurrentDatabase.RegistrationDatas
                       where i.Id == id
                       select i).Single();
-            DbUtil.Db.RegistrationDatas.DeleteOnSubmit(ed);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.RegistrationDatas.DeleteOnSubmit(ed);
+            CurrentDatabase.SubmitChanges();
             return Content("ok");
         }
     }

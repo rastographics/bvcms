@@ -1,9 +1,7 @@
-using System;
-using System.Globalization;
-using System.Threading;
-using System.Web.Mvc;
 using CmsData;
-using UtilityExtensions;
+using CmsWeb.Lifecycle;
+using System;
+using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
@@ -11,16 +9,20 @@ namespace CmsWeb.Areas.Org.Controllers
     [RouteArea("Org", AreaPrefix = "RegSettings"), Route("{action=index}/{id?}")]
     public class RegSettingController : CmsStaffController
     {
+        public RegSettingController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet, Route("~/RegSettings/{id:int}")]
         public ActionResult Index(int id)
         {
-            var org = DbUtil.Db.LoadOrganizationById(id);
+            var org = CurrentDatabase.LoadOrganizationById(id);
             ViewData["OrganizationId"] = id;
             ViewData["orgname"] = org.OrganizationName;
             var regsetting = org.RegSettingXml;
-            var os = DbUtil.Db.CreateRegistrationSettings(regsetting, id);
+            var os = CurrentDatabase.CreateRegistrationSettings(regsetting, id);
             regsetting = os.ToString();
-                ViewData["text"] = regsetting;
+            ViewData["text"] = regsetting;
             return View();
         }
 
@@ -28,10 +30,10 @@ namespace CmsWeb.Areas.Org.Controllers
         [Authorize(Roles = "Edit")]
         public ActionResult Update(int id, string text)
         {
-            var org = DbUtil.Db.LoadOrganizationById(id);
+            var org = CurrentDatabase.LoadOrganizationById(id);
             try
             {
-                var os = DbUtil.Db.CreateRegistrationSettings(text, id);
+                var os = CurrentDatabase.CreateRegistrationSettings(text, id);
                 org.UpdateRegSetting(os);
             }
             catch (Exception ex)
@@ -40,7 +42,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 TempData["regsetting"] = text;
                 return Redirect("/RegSettings/" + id);
             }
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return Redirect("/RegSettings/" + id);
         }
     }

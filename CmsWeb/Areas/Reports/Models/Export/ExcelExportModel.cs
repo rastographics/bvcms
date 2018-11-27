@@ -1,13 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Dynamic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using CmsData;
 using CmsData.API;
 using OfficeOpenXml;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using UtilityExtensions;
 using DirectoryInfo = CmsWeb.Areas.Reports.Models.DirectoryInfo;
 
@@ -31,7 +30,9 @@ namespace CmsWeb.Models
         {
             DataTable dt;
             if (fromSql)
+            {
                 dt = rd.DataReaderToTable();
+            }
             else
             {
                 dt = new DataTable();
@@ -45,12 +46,18 @@ namespace CmsWeb.Models
             var dataTable = new DataTable(typeof(T).Name);
             var props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (var prop in props)
+            {
                 dataTable.Columns.Add(prop.Name);
+            }
+
             foreach (var item in items)
             {
                 var values = new object[props.Length];
                 for (var i = 0; i < props.Length; i++)
+                {
                     values[i] = props[i].GetValue(item, null);
+                }
+
                 dataTable.Rows.Add(values);
             }
             return dataTable;
@@ -68,7 +75,10 @@ namespace CmsWeb.Models
             {
                 var dict = new Dictionary<string, object>();
                 foreach (var kv in header)
+                {
                     dict[kv.Key] = ws.Cells[r, kv.Value].Value;
+                }
+
                 var record = new DynamicData(dict);
                 r++;
                 yield return record;
@@ -82,18 +92,20 @@ namespace CmsWeb.Models
             {
                 n++;
                 if (c.Text.HasValue())
+                {
                     names.Add(c.Text, n);
+                }
             }
             return names;
         }
 
         public static List<ExcelPic> List(Guid queryid)
         {
-            var Db = DbUtil.Db;
-            var query = Db.PeopleQuery(queryid);
+            //var Db = Db;
+            var query = DbUtil.Db.PeopleQuery(queryid);
             var q = from p in query
                     let om = p.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == p.BibleFellowshipClassId)
-                    let spouse = Db.People.Where(pp => pp.PeopleId == p.SpouseId).Select(pp => pp.PreferredName).SingleOrDefault()
+                    let spouse = DbUtil.Db.People.Where(pp => pp.PeopleId == p.SpouseId).Select(pp => pp.PreferredName).SingleOrDefault()
                     let familyname = p.Family.People
                                 .Where(pp => pp.PeopleId == pp.Family.HeadOfHouseholdId)
                                 .Select(pp => pp.LastName).SingleOrDefault()
@@ -144,8 +156,8 @@ namespace CmsWeb.Models
         }
         public static List<DirectoryInfo> DirectoryList(Guid queryid)
         {
-            var db = DbUtil.Db;
-            var query = db.PeopleQuery(queryid);
+            //var db = Db;
+            var query = DbUtil.Db.PeopleQuery(queryid);
             var q = from p in query
                     let spouse = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == p.SpouseId)
                     let familytitle =

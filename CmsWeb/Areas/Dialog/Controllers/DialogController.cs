@@ -1,15 +1,10 @@
-﻿using System;
-using System.ComponentModel;
-using System.Linq;
+﻿using CmsWeb.Lifecycle;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Code;
-using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
-    [RouteArea("Dialog", AreaPrefix="Dialog"), Route("{action}/{id?}")]
-    public partial class DialogController : Controller
+    [RouteArea("Dialog", AreaPrefix = "Dialog"), Route("{action}/{id?}")]
+    public partial class DialogController : CMSBaseController
     {
         public class Options
         {
@@ -18,7 +13,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 
         public ActionResult ChooseFormat(string id)
         {
-            var m = new Options() {useMailFlags = id == "useMailFlags"};
+            var m = new Options() { useMailFlags = id == "useMailFlags" };
             return View(m);
         }
         public ActionResult TagAll()

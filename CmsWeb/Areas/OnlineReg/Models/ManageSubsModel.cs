@@ -1,10 +1,10 @@
+using CmsData;
+using CmsData.Codes;
+using CmsData.Registration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using CmsData;
-using CmsData.Codes;
-using CmsData.Registration;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -25,7 +25,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             this.pid = pid;
             var org = DbUtil.Db.LoadOrganizationById(id);
             if (org.RegistrationTypeId != RegistrationTypeCode.ManageSubscriptions)
+            {
                 throw new Exception("must be a ManageSubscriptions RegistrationType");
+            }
+
             masterorgid = id;
             _masterorg = org;
         }
@@ -38,7 +41,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             get
             {
                 if (_Person == null)
+                {
                     _Person = DbUtil.Db.LoadPersonById(pid);
+                }
+
                 return _Person;
             }
         }
@@ -48,7 +54,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             get
             {
                 if (_masterorg != null)
+                {
                     return _masterorg;
+                }
+
                 _masterorg = DbUtil.Db.LoadOrganizationById(masterorgid);
                 return _masterorg;
             }
@@ -68,8 +77,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
                     var sb = new StringBuilder();
                     foreach (var s in OrderSubs(q))
+                    {
                         sb.AppendFormat("<p><b>{0}</b><br/>{1}</p>\n",
                             s.Name, s.Description);
+                    }
+
                     _summary = Util.PickFirst(sb.ToString(), "<p>no subscriptions</p>");
                 }
                 return _summary;
@@ -107,13 +119,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public IEnumerable<OrgSub> OrderSubs(IEnumerable<OrgSub> q)
         {
             if (masterorg == null)
+            {
                 return q;
+            }
+
             var cklist = masterorg.OrgPickList.Split(',').Select(oo => oo.ToInt()).ToList();
             var list = q.ToList();
             var d = new Dictionary<int, int>();
             var n = 0;
             foreach (var i in cklist)
+            {
                 d.Add(n++, i);
+            }
+
             var qq = from o in list
                      join i in d on o.OrgId equals i.Value into j
                      from i in j
@@ -131,7 +149,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var current = q.ToList();
 
             if (Subscribe == null)
-                Subscribe = new int[] {};
+            {
+                Subscribe = new int[] { };
+            }
 
             var drops = from om in current
                         join id in Subscribe on om.OrganizationId equals id into j

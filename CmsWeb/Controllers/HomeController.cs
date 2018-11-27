@@ -1,31 +1,30 @@
+using CmsData;
+using CmsWeb.Areas.People.Models;
+using CmsWeb.Lifecycle;
+using CmsWeb.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.Hosting;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Areas.People.Models;
-using CmsWeb.Areas.Reports.Models;
-using CmsWeb.MobileAPI;
-using Dapper;
-using Newtonsoft.Json;
 using UtilityExtensions;
-using CmsWeb.Models;
 
 namespace CmsWeb.Controllers
 {
     public class HomeController : CmsStaffController
     {
+        public HomeController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         public ActionResult Index()
         {
             if (!Util2.OrgLeadersOnly && User.IsInRole("OrgLeadersOnly"))
             {
                 Util2.OrgLeadersOnly = true;
-                DbUtil.Db.SetOrgLeadersOnly();
+                CurrentDatabase.SetOrgLeadersOnly();
             }
             var m = new HomeModel();
             return View(m);
@@ -41,21 +40,23 @@ namespace CmsWeb.Controllers
 
         public ActionResult NewQuery()
         {
-            var qb = DbUtil.Db.ScratchPadCondition();
+            var qb = CurrentDatabase.ScratchPadCondition();
             qb.Reset();
-            qb.Save(DbUtil.Db);
+            qb.Save(CurrentDatabase);
             return Redirect("/Query");
         }
 
         public ActionResult NthTimeAttenders(int id)
         {
             var name = "VisitNumber-" + id;
-            var q = DbUtil.Db.Queries.FirstOrDefault(qq => qq.Owner == "System" && qq.Name == name);
+            var q = CurrentDatabase.Queries.FirstOrDefault(qq => qq.Owner == "System" && qq.Name == name);
             if (q != null)
+            {
                 return Redirect("/Query/" + q.QueryId);
+            }
 
             const CompareType comp = CompareType.Equal;
-            var cc = DbUtil.Db.ScratchPadCondition();
+            var cc = CurrentDatabase.ScratchPadCondition();
             cc.Reset();
             Condition c;
             switch (id)
@@ -83,7 +84,7 @@ namespace CmsWeb.Controllers
                     break;
             }
             cc.Description = name;
-            cc.Save(DbUtil.Db, owner: "System");
+            cc.Save(CurrentDatabase, owner: "System");
             TempData["autorun"] = true;
             return Redirect("/Query/" + cc.Id);
         }
@@ -93,47 +94,59 @@ namespace CmsWeb.Controllers
         {
             if (dt.HasValue)
             {
-                TempData["ActiveRecords"] = DbUtil.Db.ActiveRecordsdt(dt.Value);
-                TempData["ActiveRecords2"] = DbUtil.Db.ActiveRecords2dt(dt.Value);
+                TempData["ActiveRecords"] = CurrentDatabase.ActiveRecordsdt(dt.Value);
+                TempData["ActiveRecords2"] = CurrentDatabase.ActiveRecords2dt(dt.Value);
             }
             else
             {
-                TempData["ActiveRecords"] = DbUtil.Db.ActiveRecords();
-                TempData["ActiveRecords2"] = DbUtil.Db.ActiveRecords2();
+                TempData["ActiveRecords"] = CurrentDatabase.ActiveRecords();
+                TempData["ActiveRecords2"] = CurrentDatabase.ActiveRecords2();
             }
             return View("Support2");
         }
 
         public ActionResult TargetPerson(bool id)
         {
-            DbUtil.Db.SetUserPreference("TargetLinkPeople", id ? "false" : "true");
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SetUserPreference("TargetLinkPeople", id ? "false" : "true");
+            CurrentDatabase.SubmitChanges();
             if (Request.UrlReferrer != null)
+            {
                 return Redirect(Request.UrlReferrer.OriginalString);
+            }
+
             return Redirect("/");
         }
         public ActionResult TargetOrg(bool id)
         {
-            DbUtil.Db.SetUserPreference("TargetLinkOrg", id ? "false" : "true");
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SetUserPreference("TargetLinkOrg", id ? "false" : "true");
+            CurrentDatabase.SubmitChanges();
             if (Request.UrlReferrer != null)
+            {
                 return Redirect(Request.UrlReferrer.OriginalString);
+            }
+
             return Redirect("/");
         }
         public ActionResult OnlineRegTypeSearchAdd(bool id)
         {
             Util2.SetSessionObj("OnlineRegTypeSearchAdd", id ? "false" : "true");
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             if (Request.UrlReferrer != null)
+            {
                 return Redirect(Request.UrlReferrer.OriginalString);
+            }
+
             return Redirect("/");
         }
         public ActionResult UseNewFeature(bool id)
         {
             Util2.UseNewFeature = !id;
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             if (Request.UrlReferrer != null)
+            {
                 return Redirect(Request.UrlReferrer.OriginalString);
+            }
+
             return Redirect("/");
         }
         public ActionResult Names(string term)
@@ -162,27 +175,37 @@ namespace CmsWeb.Controllers
             var m = new TagsModel { tag = tag };
             m.SetCurrentTag();
             if (Request.UrlReferrer != null)
+            {
                 return Redirect(Request.UrlReferrer.ToString());
+            }
+
             return Redirect("/");
         }
 
         [HttpGet, Route("~/Preferences")]
         public ActionResult UserPreferences()
         {
-            return View(DbUtil.Db.CurrentUser);
+            return View(CurrentDatabase.CurrentUser);
         }
 
         [HttpGet, Route("~/Home/Support2")]
         public ActionResult Support2(string helplink)
         {
             if (helplink.HasValue())
+            {
                 TempData["HelpLink"] = HttpUtility.UrlDecode(helplink);
+            }
+
             return View();
         }
     }
 
     public class Home2Controller : CmsController
     {
+        public Home2Controller(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet, Route("~/Home/MyDataSupport")]
         public ActionResult MyDataSupport()
         {
@@ -192,22 +215,27 @@ namespace CmsWeb.Controllers
         [HttpPost, Route("~/HideTip")]
         public ActionResult HideTip(string tip)
         {
-            DbUtil.Db.SetUserPreference("hide-tip-" + tip, "true");
+            CurrentDatabase.SetUserPreference("hide-tip-" + tip, "true");
             return new EmptyResult();
         }
 
         [HttpGet, Route("~/ResetTips")]
         public ActionResult ResetTips()
         {
-            DbUtil.Db.ExecuteCommand("DELETE dbo.Preferences WHERE Preference LIKE 'hide-tip-%' AND UserId = {0}",
+            CurrentDatabase.ExecuteCommand("DELETE dbo.Preferences WHERE Preference LIKE 'hide-tip-%' AND UserId = {0}",
                 Util.UserId);
             var d = Session["preferences"] as Dictionary<string, string>;
             var keys = d.Keys.Where(kk => kk.StartsWith("hide-tip-")).ToList();
             foreach (var k in keys)
+            {
                 d.Remove(k);
+            }
 
             if (Request.UrlReferrer != null)
+            {
                 return Redirect(Request.UrlReferrer.ToString());
+            }
+
             return Redirect("/");
         }
 
@@ -232,7 +260,7 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/ImageSized/{id:int}/{w:int}/{h:int}/{mode}")]
         public ActionResult ImageSized(int id, int w, int h, string mode)
         {
-            var p = DbUtil.Db.LoadPersonById(id);
+            var p = CurrentDatabase.LoadPersonById(id);
             return new PictureResult(p.Picture.LargeId ?? 0, w, h, portrait: true, mode: mode);
         }
         [Authorize(Roles = "Finance")]

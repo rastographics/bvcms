@@ -1,13 +1,11 @@
-﻿using System;
+﻿using CmsData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Web;
 using System.Web.Caching;
-using System.Web.Mvc;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
@@ -39,12 +37,15 @@ namespace CmsWeb.Areas.People.Models
 
         public List<InvolvementTableColumn> GetColumnsForOrgType(string orgtype, string sort)
         {
-            if (!OrgTypeColumns.ContainsKey(orgtype) || sort != "default") return DefaultColumns;
+            if (!OrgTypeColumns.ContainsKey(orgtype) || sort != "default")
+            {
+                return DefaultColumns;
+            }
 
             var columnsToRemove = (from column in OrgTypeColumns[orgtype]
                                    where column.Roles != null
-                                      from role in column.Roles
-                                      where !HttpContext.Current.User.IsInRole(role)
+                                   from role in column.Roles
+                                   where !HttpContext.Current.User.IsInRole(role)
                                    select column).ToList();
 
             return OrgTypeColumns[orgtype].Where(x => !columnsToRemove.Contains(x)).ToList();
@@ -78,17 +79,19 @@ namespace CmsWeb.Areas.People.Models
                     break;
             }
 
-            var db = DbUtil.Db;
+            //var db = Db;
 
             var s = HttpRuntime.Cache[DbUtil.Db.Host + customTextName] as string;
             if (s == null)
             {
-                s = db.ContentText(customTextName, defaultXml);
-                HttpRuntime.Cache.Insert(db.Host + customTextName, s, null,
+                s = DbUtil.Db.ContentText(customTextName, defaultXml);
+                HttpRuntime.Cache.Insert(DbUtil.Db.Host + customTextName, s, null,
                     DateTime.Now.AddMinutes(Util.IsDebug() ? 0 : 1), Cache.NoSlidingExpiration);
             }
             if (!s.HasValue())
+            {
                 return null;
+            }
 
             XDocument xdoc;
 
@@ -103,7 +106,9 @@ namespace CmsWeb.Areas.People.Models
             }
 
             if (xdoc?.Root == null)
+            {
                 return new InvolvementTableColumnSet();
+            }
 
             var set = new InvolvementTableColumnSet();
             foreach (var d in xdoc.XPathSelectElements("/InvolvementTable").Elements())
@@ -132,9 +137,13 @@ namespace CmsWeb.Areas.People.Models
 
                     var orgtype = d.Attribute("orgtype")?.Value;
                     if (orgtype != null)
+                    {
                         set.OrgTypeColumns.Add(orgtype, list);
+                    }
                     else
+                    {
                         set.DefaultColumns = list;
+                    }
                 }
             }
             return set;

@@ -4,6 +4,7 @@ using CmsWeb.Areas.Finance.Models.Report;
 using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Areas.OnlineReg.Models;
 using CmsWeb.Code;
+using CmsWeb.Lifecycle;
 using CmsWeb.Models;
 using Dapper;
 using OfficeOpenXml;
@@ -22,6 +23,10 @@ namespace CmsWeb.Areas.Finance.Controllers
     [RouteArea("Finance", AreaPrefix = "FinanceReports"), Route("{action}/{id?}")]
     public class FinanceReportsController : CmsStaffController
     {
+        public FinanceReportsController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         public ActionResult ContributionStatement(int id, DateTime fromDate, DateTime toDate, int typ)
         {
             DbUtil.LogActivity($"Contribution Statement for ({id})");
@@ -49,12 +54,12 @@ namespace CmsWeb.Areas.Finance.Controllers
 
             if (model?.FundSet != null) // TODO: seems like a redundant null check, if model was null, it would have errored well before this point
             {
-                var fundset = APIContributionSearchModel.GetCustomStatementsList(DbUtil.Db, model.FundSet.Value).JoinInts(",");
+                var fundset = APIContributionSearchModel.GetCustomStatementsList(CurrentDatabase, model.FundSet.Value).JoinInts(",");
                 queryParameters.Add("@fundids", fundset);
             }
             else
             {
-                var authorizedFunds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership().Select(f => f.FundId).ToList();
+                var authorizedFunds = CurrentDatabase.ContributionFunds.ScopedByRoleMembership().Select(f => f.FundId).ToList();
                 var authorizedFundsCsv = string.Join(",", authorizedFunds);
 
                 queryParameters.Add("@fundids", authorizedFundsCsv);
@@ -120,7 +125,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             var queryParameters = new DynamicParameters();
             queryParameters.Add("@fund", model.Fund.Value.ToInt());
 
-            var authorizedFunds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership().Select(f => f.FundId).ToList();
+            var authorizedFunds = CurrentDatabase.ContributionFunds.ScopedByRoleMembership().Select(f => f.FundId).ToList();
             var authorizedFundsCsv = string.Join(",", authorizedFunds);
             queryParameters.Add("@authorizedFundIds", authorizedFundsCsv);
 
@@ -159,8 +164,8 @@ namespace CmsWeb.Areas.Finance.Controllers
         {
             var fromDate = DateTime.Parse("1/1/1900");
             var toDate = DateTime.Parse("1/1/2099");
-            var queryResult = from pledgeReports in DbUtil.Db.PledgeReport(fromDate, toDate, 0)
-                              join allowedFunds in DbUtil.Db.ContributionFunds.ScopedByRoleMembership() on pledgeReports.FundId equals allowedFunds.FundId
+            var queryResult = from pledgeReports in CurrentDatabase.PledgeReport(fromDate, toDate, 0)
+                              join allowedFunds in CurrentDatabase.ContributionFunds.ScopedByRoleMembership() on pledgeReports.FundId equals allowedFunds.FundId
                               orderby pledgeReports.FundId descending
                               select pledgeReports;
 
@@ -216,7 +221,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         [HttpPost, Route("~/TotalsByFundCustomReport/{id}")]
         public ActionResult TotalsByFundCustomReport(string id, TotalsByFundModel model)
         {
-            var content = DbUtil.Db.ContentOfTypeSql(id);
+            var content = CurrentDatabase.ContentOfTypeSql(id);
             if (content == null)
             {
                 return SimpleContent("no content");
@@ -225,7 +230,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             var p = model.GetDynamicParameters();
             ViewBag.Name = id.SpaceCamelCase();
 
-            var linkUrl = DbUtil.Db.ServerLink($"/TotalsByFundCustomExport/{id}");
+            var linkUrl = CurrentDatabase.ServerLink($"/TotalsByFundCustomExport/{id}");
             var linkHtml = $"<a href='{linkUrl}' class='CustomExport btn btn-default' target='_blank'><i class='fa fa-file-excel-o'></i> Download as Excel</a>";
 
             var connection = new SqlConnection(Util.ConnectionStringReadOnlyFinance);
@@ -240,7 +245,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         [HttpPost, Route("~/TotalsByFundCustomExport/{id}")]
         public ActionResult TotalsByFundCustomExport(string id, TotalsByFundModel model)
         {
-            var content = DbUtil.Db.ContentOfTypeSql(id);
+            var content = CurrentDatabase.ContentOfTypeSql(id);
             if (content == null)
             {
                 return SimpleContent("no content");
@@ -257,7 +262,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         [HttpPost, Route("~/FundList")]
         public ActionResult FundList(TotalsByFundModel model)
         {
-            return SimpleContent($@"<pre>{string.Join(",", APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db, model.FundSet))}</pre>");
+            return SimpleContent($@"<pre>{string.Join(",", APIContributionSearchModel.GetCustomFundSetList(CurrentDatabase, model.FundSet))}</pre>");
         }
 
         [HttpPost]
@@ -319,7 +324,7 @@ namespace CmsWeb.Areas.Finance.Controllers
 
         public ActionResult ManagedGiving(string sortBy, string sortDir)
         {
-            var query = DbUtil.Db.ViewManagedGivingLists.AsQueryable();
+            var query = CurrentDatabase.ViewManagedGivingLists.AsQueryable();
 
             if (sortBy == "name")
             {
@@ -359,7 +364,7 @@ namespace CmsWeb.Areas.Finance.Controllers
 
         public ActionResult PledgeFulfillments(int id)
         {
-            var q = DbUtil.Db.PledgeFulfillment(id)
+            var q = CurrentDatabase.PledgeFulfillment(id)
                 .OrderByDescending(vv => vv.PledgeAmt)
                 .ThenByDescending(vv => vv.TotalGiven).ToList();
             var count = q.Count;
@@ -369,7 +374,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                 return Message("No Pledges to Report");
             }
 
-            var cols = DbUtil.Db.Mapping.MappingSource.GetModel(typeof(CMSDataContext))
+            var cols = CurrentDatabase.Mapping.MappingSource.GetModel(typeof(CMSDataContext))
                 .GetMetaType(typeof(CmsData.View.PledgeFulfillment)).DataMembers;
 
             var ep = new ExcelPackage();
