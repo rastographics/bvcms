@@ -503,6 +503,7 @@
     <Compile Include="API\QueryFunctions\Attendance.cs" />
     <Compile Include="API\QueryFunctions\Contributions.cs" />
     <Compile Include="API\QueryFunctions\Query.cs" />
+    <Compile Include="Charts\GoogleChartsData.cs" />
     <Compile Include="Classes\ExtraValues\Code.cs" />
     <Compile Include="Classes\ExtraValues\NewStandard.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMData.cs" />
