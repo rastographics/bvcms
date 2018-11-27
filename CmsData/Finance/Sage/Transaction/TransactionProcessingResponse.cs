@@ -20,19 +20,16 @@ namespace CmsData.Finance.Sage.Transaction
         public TransactionProcessingResponse(string xml)
             : base(xml)
         {
-            ApprovalIndicator = GetApprovalIndicator(Data.Element("APPROVAL_INDICATOR").Value.Trim());
-            Code = Data.Element("CODE").Value.Trim();
-            Reference = Data.Element("REFERENCE").Value.Trim();
-            OrderNumber = Data.Element("ORDER_NUMBER").Value.Trim();
-
-            // check for the existance of the avs and cvv indicators and set them.
-            var avsIndicator = Data.Element("AVS_INDICATOR");
-            if (avsIndicator != null) 
-                AvsIndicator = avsIndicator.Value.Trim();
-
-            var cvvIndicator = Data.Element("CVV_INDICATOR");
-            if (cvvIndicator != null) 
-                CvvIndicator = cvvIndicator.Value.Trim();
+            if (Data.HasElements)
+            {
+                ApprovalIndicator = GetApprovalIndicator(Data.Element("APPROVAL_INDICATOR")?.Value.Trim() ?? null);
+                Code = Data.Element("CODE")?.Value.Trim() ?? null;
+                Reference = Data.Element("REFERENCE").Value.Trim() ?? null;
+                OrderNumber = Data.Element("ORDER_NUMBER")?.Value ?? null;
+                // check for the existance of the avs and cvv indicators and set them.
+                AvsIndicator = Data.Element("AVS_INDICATOR")?.Value.Trim() ?? AvsIndicator;
+                CvvIndicator = Data.Element("CVV_INDICATOR")?.Value.Trim() ?? CvvIndicator;                
+            }
         }
 
         private ApprovalIndicator GetApprovalIndicator(string approvalIndicatorCode)
