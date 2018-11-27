@@ -1047,6 +1047,14 @@
     <Compile Include="Code\PaymentValidator.cs" />
     <Compile Include="Code\SmartBinder.cs" />
     <Compile Include="Code\Image.cs" />
+    <Compile Include="Services\CommunicationService.cs" />
+    <Compile Include="Services\ConfigurationProvider.cs" />
+    <Compile Include="Services\ICommunicationService.cs" />
+    <Compile Include="Services\IConfigurationProvider.cs" />
+    <Compile Include="Services\ILoggingService.cs" />
+    <Compile Include="Services\ITokenizationService.cs" />
+    <Compile Include="Services\LoggingService.cs" />
+    <Compile Include="Services\TokenizationService.cs" />
     <Content Include="Areas\Dialog\Views\AddToOrgFromTag\Index.cshtml" />
     <Content Include="Areas\Figures\Views\Figures\AttendanceChartDisplayView.cshtml" />
     <Content Include="Areas\Figures\Views\Figures\ChartDisplayView.cshtml" />
