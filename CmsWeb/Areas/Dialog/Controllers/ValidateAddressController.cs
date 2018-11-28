@@ -1,12 +1,17 @@
-﻿using System.Web.Mvc;
-using CmsData;
+﻿using CmsData;
 using CmsWeb.Areas.Dialog.Models;
+using CmsWeb.Lifecycle;
+using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
-    [RouteArea("Dialog", AreaPrefix="ValidateAddress"), Route("{action}/{id?}")]
+    [RouteArea("Dialog", AreaPrefix = "ValidateAddress"), Route("{action}/{id?}")]
     public class ValidateAddressController : CmsStaffController
     {
+        public ValidateAddressController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpPost, Route("~/ValidateAddress")]
         public ActionResult Index()
         {
@@ -18,20 +23,24 @@ namespace CmsWeb.Areas.Dialog.Controllers
         {
             model.Validate(ModelState);
 
-            if(!ModelState.IsValid) // show validation errors
+            if (!ModelState.IsValid) // show validation errors
+            {
                 return View("Index", model);
+            }
 
-            model.UpdateLongRunningOp(DbUtil.Db, ValidateAddress.Op);
-            if(model.ShowCount(DbUtil.Db))
+            model.UpdateLongRunningOp(CurrentDatabase, ValidateAddress.Op);
+            if (model.ShowCount(CurrentDatabase))
+            {
                 return View("Index", model); // let them confirm by seeing the count and the tagname
+            }
 
             if (!model.Started.HasValue)
             {
                 DbUtil.LogActivity("Validate Address");
-                model.Process(DbUtil.Db);
+                model.Process(CurrentDatabase);
             }
 
-			return View(model);
-		}
+            return View(model);
+        }
     }
 }

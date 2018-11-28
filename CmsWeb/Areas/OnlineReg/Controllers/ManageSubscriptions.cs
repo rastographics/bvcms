@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 var guid = id.ToGuid();
                 if (guid == null)
                     return Content("invalid link");
-                var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
+                var ot = CurrentDatabase.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
                 if (ot == null)
                     return Content("invalid link");
                 if (ot.Used)
@@ -33,7 +33,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 m = new ManageSubsModel(a[1].ToInt(), a[0].ToInt());
                 id = a[0];
                 ot.Used = true;
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
             }
             m.Log("Start");
             SetHeaders(id.ToInt());
@@ -46,14 +46,14 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             m.UpdateSubscriptions();
 
-            var Staff = DbUtil.Db.StaffPeopleForOrg(m.masterorgid);
+            var Staff = CurrentDatabase.StaffPeopleForOrg(m.masterorgid);
 
-            var msg = DbUtil.Db.ContentHtml("ConfirmSubscriptions", Resource1.ConfirmSubscriptions);
+            var msg = CurrentDatabase.ContentHtml("ConfirmSubscriptions", Resource1.ConfirmSubscriptions);
             var orgname = m.Description();
             msg = msg.Replace("{org}", orgname).Replace("{details}", m.Summary);
-            DbUtil.Db.Email(Staff.First().FromEmail, m.person, "Subscription Confirmation", msg);
+            CurrentDatabase.Email(Staff.First().FromEmail, m.person, "Subscription Confirmation", msg);
 
-            DbUtil.Db.Email(m.person.FromEmail, Staff, "Subscriptions managed",
+            CurrentDatabase.Email(m.person.FromEmail, Staff, "Subscriptions managed",
                 $@"{m.person.Name} managed subscriptions to {m.Description()}<br/>{m.Summary}");
 
             SetHeaders(m.masterorgid);

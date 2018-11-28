@@ -4,21 +4,13 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Data.Linq;
-using System.Web;
+using CmsData;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
-using System.IO;
-using System.Collections;
-using CmsData;
-using UtilityExtensions;
-using System.Text;
-using System.Text.RegularExpressions;
+using System;
+using System.Linq;
 using System.Web.Mvc;
-using System.Diagnostics;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -46,12 +38,21 @@ namespace CmsWeb.Areas.Reports.Models
             var twid = 0f;
             var t = new PdfPTable(cols.Length);
             for (var i = 0; i < cols.Length; i++)
+            {
                 if (i % 2 == 1)
+                {
                     cols[i] = GAP * 72f;
+                }
                 else
+                {
                     cols[i] = W * 72f;
+                }
+            }
+
             foreach (var wid in cols)
+            {
                 twid += wid;
+            }
 
             t.TotalWidth = twid;
             t.SetWidths(cols);
@@ -61,19 +62,26 @@ namespace CmsWeb.Areas.Reports.Models
 
             var q = DbUtil.Db.PeopleQuery(qid);
             var q2 = from p in q
-                    orderby p.Name2
-                    select new
-                    {
-                        First = p.PreferredName,
-                        Last = p.LastName,
-                        PeopleId = p.PeopleId,
-                        Phone = p.CellPhone ?? p.HomePhone
-                    };
+                     orderby p.Name2
+                     select new
+                     {
+                         First = p.PreferredName,
+                         Last = p.LastName,
+                         PeopleId = p.PeopleId,
+                         Phone = p.CellPhone ?? p.HomePhone
+                     };
             if (!q2.Any())
+            {
                 document.Add(new Phrase("no data"));
-			else
-				foreach (var m in q2)
-					AddRow(t, m.First, m.Last, m.Phone, m.PeopleId);
+            }
+            else
+            {
+                foreach (var m in q2)
+                {
+                    AddRow(t, m.First, m.Last, m.Phone, m.PeopleId);
+                }
+            }
+
             document.Add(t);
 
             document.Close();
@@ -83,8 +91,8 @@ namespace CmsWeb.Areas.Reports.Models
         protected float GAP = .125f;
 
         protected PdfContentByte dc;
-        private Font font = FontFactory.GetFont(FontFactory.HELVETICA, 20);
-        private Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 8);
+        private readonly Font font = FontFactory.GetFont(FontFactory.HELVETICA, 20);
+        private readonly Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 8);
 
         public void AddRow(PdfPTable t, string fname, string lname, string phone, int pid)
         {
@@ -140,7 +148,7 @@ namespace CmsWeb.Areas.Reports.Models
             t.AddCell(cell);
         }
 
-        class PageEvent : PdfPageEventHelper
+        private class PageEvent : PdfPageEventHelper
         {
             private PdfTemplate npages;
             private PdfWriter writer;
@@ -160,7 +168,10 @@ namespace CmsWeb.Areas.Reports.Models
             public void EndPageSet()
             {
                 if (npages == null)
+                {
                     return;
+                }
+
                 npages.BeginText();
                 npages.SetFontAndSize(font, 8);
                 npages.ShowText((writer.PageNumber + 1).ToString());

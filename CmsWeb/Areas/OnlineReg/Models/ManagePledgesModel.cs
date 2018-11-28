@@ -1,8 +1,8 @@
+using CmsData;
+using CmsData.Codes;
+using CmsData.Registration;
 using System;
 using System.Linq;
-using CmsData;
-using CmsData.Registration;
-using CmsData.Codes;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -18,7 +18,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             get
             {
                 if (_Person == null)
+                {
                     _Person = DbUtil.Db.LoadPersonById(pid);
+                }
+
                 return _Person;
             }
         }
@@ -28,7 +31,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             get
             {
                 if (_organization == null)
+                {
                     _organization = DbUtil.Db.Organizations.Single(d => d.OrganizationId == orgid);
+                }
+
                 return _organization;
             }
         }

@@ -1,19 +1,27 @@
-using System.Web.Mvc;
 using CmsData;
 using CmsData.API;
+using CmsWeb.Lifecycle;
+using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
     public class APIMeetingController : CmsController
     {
+        public APIMeetingController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet]
         public ActionResult ExtraValues(int id, string fields)
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content($"<ExtraValues error=\"{ret.Substring(1)}\" />");
+            }
+
             DbUtil.LogActivity($"APIMeeting ExtraValues {id}, {fields}");
-            return Content(new APIMeeting(DbUtil.Db)
+            return Content(new APIMeeting(CurrentDatabase)
                 .ExtraValues(id, fields), "text/xml");
         }
 
@@ -22,9 +30,12 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content(ret.Substring(1));
+            }
+
             DbUtil.LogActivity($"APIMeeting AddEditExtraValue {meetingid}, {field}");
-            return Content(new APIMeeting(DbUtil.Db)
+            return Content(new APIMeeting(CurrentDatabase)
                 .AddEditExtraValue(meetingid, field, value));
         }
 
@@ -33,9 +44,12 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content(ret.Substring(1));
+            }
+
             DbUtil.LogActivity($"APIMeeting DeleteExtraValue {meetingid}, {field}");
-            return Content(new APIMeeting(DbUtil.Db)
+            return Content(new APIMeeting(CurrentDatabase)
                 .DeleteExtraValue(meetingid, field));
         }
 
@@ -44,9 +58,12 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content(ret.Substring(1));
+            }
+
             DbUtil.LogActivity($"APIMeeting MarkRegistered {meetingid}, {peopleid}");
-            Attend.MarkRegistered(DbUtil.Db, peopleid, meetingid, CommitId);
+            Attend.MarkRegistered(CurrentDatabase, peopleid, meetingid, CommitId);
             return Content("ok");
         }
     }

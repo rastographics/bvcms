@@ -1,8 +1,8 @@
-using System.Collections.Generic;
-using System.Linq;
 using CmsData;
 using CmsData.View;
 using CmsWeb.Models;
+using System.Collections.Generic;
+using System.Linq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
@@ -23,7 +23,7 @@ namespace CmsWeb.Areas.People.Models
             UseDbPager = true;
         }
 
-        
+
         private string name;
         public string Name
         {
@@ -45,7 +45,10 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (!category.HasValue() && CategoryId.HasValue)
+                {
                     category = DbUtil.Db.DownlineCategories(CategoryId).Single().Name;
+                }
+
                 return category;
             }
         }
@@ -55,7 +58,10 @@ namespace CmsWeb.Areas.People.Models
         private List<DownlineDetail> GetList()
         {
             if (rows != null)
+            {
                 return rows;
+            }
+
             rows = (from a in DbUtil.Db.DownlineDetails(CategoryId, DownlineId, Level, Page, PageSize)
                     select a).ToList();
             count = rows.Count == 0 ? 0 : rows[0].MaxRows;

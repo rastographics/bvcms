@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using CmsData;
+﻿using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.OnlineReg.Models;
 using CmsWeb.Code;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
@@ -27,7 +27,10 @@ namespace CmsWeb.Areas.Dialog.Models
                 var filter = DbUtil.Db.OrgFilter(queryId);
                 OrgName = DbUtil.Db.Organizations.Where(vv => vv.OrganizationId == filter.Id).Select(vv => vv.OrganizationName).Single();
                 if (filter.GroupSelect == GroupSelectCode.Pending)
+                {
                     Pending = true;
+                }
+
                 showHidden = filter.ShowHidden;
                 OrgId = filter.Id;
                 Count = DbUtil.Db.OrgFilterIds(queryId).Count();
@@ -81,29 +84,38 @@ namespace CmsWeb.Areas.Dialog.Models
 
         private List<int> pids;
         private List<int> Pids => pids ?? (pids = (from p in DbUtil.Db.OrgFilterIds(QueryId)
-                                      select p.PeopleId.Value).ToList());
+                                                   select p.PeopleId.Value).ToList());
 
         public void Update()
         {
             foreach (var pid in Pids)
             {
-                DbUtil.DbDispose();
-                DbUtil.Db = DbUtil.Create(Util.Host);
+                //DbDispose();
+                //var Db = DbUtil.Create(Util.Host);
                 var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == OrgId);
 
                 var changes = new List<ChangeDetail>();
                 if (InactiveDate.HasValue)
+                {
                     om.UpdateValue(changes, "InactiveDate", InactiveDate);
+                }
+
                 if (RemoveInactiveDate)
+                {
                     om.UpdateValue(changes, "InactiveDate", null);
+                }
 
                 if (EnrollmentDate.HasValue)
+                {
                     om.UpdateValue(changes, "EnrollmentDate", EnrollmentDate);
+                }
 
                 om.Pending = Pending;
 
                 if (MemberType.Value != "0")
+                {
                     om.UpdateValue(changes, "MemberTypeId", MemberType.Value.ToInt());
+                }
 
                 if (MakeMemberTypeOriginal)
                 {
@@ -117,7 +129,9 @@ namespace CmsWeb.Areas.Dialog.Models
 
                 DbUtil.Db.SubmitChanges();
                 foreach (var g in changes)
+                {
                     DbUtil.LogActivity("OrgMem change " + g.Field, om.OrganizationId, om.PeopleId);
+                }
             }
         }
 
@@ -126,12 +140,14 @@ namespace CmsWeb.Areas.Dialog.Models
             var name = DbUtil.Db.MemberTags.Single(mm => mm.Id == sgtagid && mm.OrgId == OrgId).Name;
             foreach (var pid in Pids)
             {
-                DbUtil.DbDispose();
-                DbUtil.Db = DbUtil.Create(Util.Host);
+                //DbDispose();
+                //var Db = DbUtil.Create(Util.Host);
                 var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == OrgId);
                 var nn = om.AddToGroup(DbUtil.Db, sgtagid);
                 if (nn == 1)
+                {
                     DbUtil.LogActivity("OrgMem AddSubGroup " + name, om.OrganizationId, om.PeopleId);
+                }
             }
             return $"{Pids.Count} added to sub-group {name}";
         }
@@ -141,17 +157,22 @@ namespace CmsWeb.Areas.Dialog.Models
             var name = DbUtil.Db.MemberTags.Single(mm => mm.Id == sgtagid && mm.OrgId == OrgId).Name;
             foreach (var pid in Pids)
             {
-                DbUtil.DbDispose();
-                DbUtil.Db = DbUtil.Create(Util.Host);
+                //DbDispose();
+                //var Db = DbUtil.Create(Util.Host);
                 var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == OrgId);
                 var mt = om.OrgMemMemTags.SingleOrDefault(t => t.MemberTagId == sgtagid);
                 if (mt != null)
+                {
                     DbUtil.Db.OrgMemMemTags.DeleteOnSubmit(mt);
+                }
+
                 DbUtil.Db.SubmitChanges();
                 if (mt != null)
+                {
                     DbUtil.LogActivity("OrgMem RemoveSubGroup " + name, om.OrganizationId, om.PeopleId);
+                }
             }
-            DbUtil.Db = DbUtil.Create(Util.Host);
+            var Db = DbUtil.Create(Util.Host);
             DbUtil.Db.ExecuteCommand(@"
 DELETE dbo.MemberTags
 WHERE Id = {1} AND OrgId = {0}
@@ -167,13 +188,13 @@ AND NOT EXISTS(SELECT NULL FROM dbo.OrgMemMemTags WHERE OrgId = {0} AND MemberTa
             foreach (var pid in Pids)
             {
                 var db = DbUtil.Create(Util.Host);
-                var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == OrgId);
-                var ts = db.ViewTransactionSummaries.SingleOrDefault(
+                var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == OrgId);
+                var ts = DbUtil.Db.ViewTransactionSummaries.SingleOrDefault(
                         tt => tt.RegId == om.TranId && tt.PeopleId == om.PeopleId);
                 var reason = ts == null ? "Initial Tran" : "Adjustment";
                 var descriptionForPayment = OnlineRegModel.GetDescriptionForPayment(OrgId);
-                om.AddTransaction(db, reason, Payment ?? 0, Description, Amount, AdjustFee, descriptionForPayment);
-                db.SubmitChanges();
+                om.AddTransaction(DbUtil.Db, reason, Payment ?? 0, Description, Amount, AdjustFee, descriptionForPayment);
+                DbUtil.Db.SubmitChanges();
                 DbUtil.LogActivity("OrgMem " + reason, OrgId, pid);
             }
         }

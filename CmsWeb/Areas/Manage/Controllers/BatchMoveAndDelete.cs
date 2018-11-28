@@ -1,10 +1,10 @@
+using CmsData;
+using LumenWorks.Framework.IO.Csv;
 using System;
 using System.IO;
 using System.Text;
 using System.Threading;
 using System.Web.Mvc;
-using CmsData;
-using LumenWorks.Framework.IO.Csv;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Controllers
@@ -42,35 +42,35 @@ namespace CmsWeb.Areas.Manage.Controllers
                         var fromid = csv[0].ToInt();
                         var toid = csv[1].ToInt();
                         var Db = DbUtil.Create(host);
-                        var p = Db.LoadPersonById(fromid);
+                        var p = DbUtil.Db.LoadPersonById(fromid);
 
                         if (p == null)
                         {
                             sb.AppendFormat("fromid {0} not found<br/>\n", fromid);
-                            Db.Dispose();
+                            DbUtil.Db.Dispose();
                             continue;
                         }
-                        var tp = Db.LoadPersonById(toid);
+                        var tp = DbUtil.Db.LoadPersonById(toid);
                         if (tp == null)
                         {
                             sb.AppendFormat("toid {0} not found<br/>\n", toid);
-                            Db.Dispose();
+                            DbUtil.Db.Dispose();
                             continue;
                         }
                         try
                         {
-                            p.MovePersonStuff(Db, toid);
-                            Db.SubmitChanges();
+                            p.MovePersonStuff(DbUtil.Db, toid);
+                            DbUtil.Db.SubmitChanges();
                         }
                         catch (Exception ex)
                         {
                             sb.AppendFormat("error on move ({0}, {1}): {2}<br/>\n", fromid, toid, ex.Message);
-                            Db.Dispose();
+                            DbUtil.Db.Dispose();
                             continue;
                         }
                         try
                         {
-                            Db.PurgePerson(fromid);
+                            DbUtil.Db.PurgePerson(fromid);
                             sb.AppendFormat("moved ({0}, {1}) successful<br/>\n", fromid, toid);
                         }
                         catch (Exception ex)
@@ -79,7 +79,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                         }
                         finally
                         {
-                            Db.Dispose();
+                            DbUtil.Db.Dispose();
                         }
                     }
                 }

@@ -1,6 +1,6 @@
-using System;
 using CmsData;
 using CmsWeb.Code;
+using System;
 
 namespace CmsWeb.Areas.Search.Models
 {
@@ -37,7 +37,10 @@ namespace CmsWeb.Areas.Search.Models
         public void UpdateModel()
         {
             if (query == null)
+            {
                 query = DbUtil.Db.LoadQueryById2(QueryId);
+            }
+
             this.CopyPropertiesTo(query);
             DbUtil.Db.SubmitChanges();
         }

@@ -5,11 +5,11 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 
+using CmsData;
+using CmsData.Codes;
 using System;
 using System.IO;
 using System.Linq;
-using CmsData;
-using CmsData.Codes;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
@@ -31,17 +31,24 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             {
                 line = sr.ReadLine();
                 if (line == null)
+                {
                     return null;
+                }
             } while (!line.StartsWith("Batch ID"));
             var sep = ',';
             if (line.StartsWith("Batch ID\t"))
+            {
                 sep = '\t';
+            }
 
             for (; ; )
             {
                 line = sr.ReadLine();
                 if (line == null)
+                {
                     break;
+                }
+
                 var csv = line.Split(sep);
                 var bd = new BundleDetail
                 {
@@ -72,7 +79,10 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 if (dt != prevdt)
                 {
                     if (bh != null)
+                    {
                         BatchImportContributions.FinishBundle(bh);
+                    }
+
                     bh = BatchImportContributions.GetBundleHeader(dt, DateTime.Now);
                     prevdt = dt;
                 }
@@ -89,7 +99,10 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                         select kc.PeopleId;
                 var pid = q.SingleOrDefault();
                 if (pid != null)
+                {
                     bd.Contribution.PeopleId = pid;
+                }
+
                 bd.Contribution.BankAccount = eac;
                 bh.BundleDetails.Add(bd);
             }

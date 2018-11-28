@@ -12,27 +12,27 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult Questions(int id)
         {
-            return View("Registration/Questions", DbUtil.Db.CreateRegistrationSettings(id));
+            return View("Registration/Questions", CurrentDatabase.CreateRegistrationSettings(id));
         }
 
         [HttpPost]
         public ActionResult QuestionsHelpToggle(int id)
         {
-            DbUtil.Db.ToggleUserPreference("ShowQuestionsHelp");
-            return PartialView("Registration/Questions", DbUtil.Db.CreateRegistrationSettings(id));
+            CurrentDatabase.ToggleUserPreference("ShowQuestionsHelp");
+            return PartialView("Registration/Questions", CurrentDatabase.CreateRegistrationSettings(id));
         }
 
         [HttpPost]
         [Authorize(Roles = "Edit")]
         public ActionResult QuestionsEdit(int id)
         {
-            return PartialView("Registration/QuestionsEdit", DbUtil.Db.CreateRegistrationSettings(id));
+            return PartialView("Registration/QuestionsEdit", CurrentDatabase.CreateRegistrationSettings(id));
         }
 
         [HttpPost]
         public ActionResult QuestionsUpdate(int id)
         {
-            var m = DbUtil.Db.CreateRegistrationSettings(id);
+            var m = CurrentDatabase.CreateRegistrationSettings(id);
             DbUtil.LogActivity($"Update SettingsQuestions {m.org.OrganizationName}");
             m.AskItems.Clear();
             m.TimeSlots.list.Clear();
@@ -46,9 +46,9 @@ namespace CmsWeb.Areas.Org.Controllers
                     throw new Exception(q.First());
                 }
                 var s = m.ToString();
-                m = DbUtil.Db.CreateRegistrationSettings(s, id);
+                m = CurrentDatabase.CreateRegistrationSettings(s, id);
                 m.org.UpdateRegSetting(m);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
                 CheckDuplicates(id);
 
                 if (!m.org.NotifyIds.HasValue())
@@ -64,7 +64,7 @@ namespace CmsWeb.Areas.Org.Controllers
 
         private void CheckDuplicates(int id)
         {
-            var dups = (from sg in DbUtil.Db.RegistrationSmallGroups(id)
+            var dups = (from sg in CurrentDatabase.RegistrationSmallGroups(id)
                         where sg.Cnt > 1
                         select $"<li>{sg.SmallGroup} ({sg.Cnt})</li>").ToList();
             if (dups.Any())
@@ -76,7 +76,7 @@ This will prevent your registration from working properly.
 </ul>
 </div>
 ";
-            var dups2 = (from sg in DbUtil.Db.RegistrationGradeOptions(id)
+            var dups2 = (from sg in CurrentDatabase.RegistrationGradeOptions(id)
                         where sg.Cnt > 1
                         select $"<li>Code={sg.GradeCode}({sg.Cnt}): {sg.GradeOption} </li>").ToList();
             if (dups2.Any())
@@ -147,7 +147,7 @@ This will prevent your registration from working properly.
         [HttpPost]
         public ActionResult NewAsk(string id, string type)
         {
-            ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowQuestionsHelp");
+            ViewBag.ShowHelp = CurrentDatabase.UserPreference("ShowQuestionsHelp");
             var template = "EditorTemplates/" + type;
             switch (type)
             {

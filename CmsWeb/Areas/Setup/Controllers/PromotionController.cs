@@ -1,6 +1,7 @@
+using CmsData;
+using CmsWeb.Lifecycle;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
@@ -9,6 +10,10 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup", AreaPrefix = "PromotionSetup"), Route("{action=index}/{id?}")]
     public class PromotionController : CmsStaffController
     {
+        public PromotionController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         public ActionResult Index()
         {
             var m = new Models.PromotionModel();
@@ -19,8 +24,8 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult Create()
         {
             var m = new Promotion();
-            DbUtil.Db.Promotions.InsertOnSubmit(m);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.Promotions.InsertOnSubmit(m);
+            CurrentDatabase.SubmitChanges();
             return Redirect("/PromotionSetup/");
         }
 
@@ -30,9 +35,12 @@ namespace CmsWeb.Areas.Setup.Controllers
             var iid = id.Substring(1).ToInt();
             var c = new ContentResult();
             c.Content = value;
-            var pro = DbUtil.Db.Promotions.SingleOrDefault(p => p.Id == iid);
+            var pro = CurrentDatabase.Promotions.SingleOrDefault(p => p.Id == iid);
             if (pro == null)
+            {
                 return c;
+            }
+
             switch (id.Substring(0, 1))
             {
                 case "d":
@@ -42,7 +50,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                     pro.Sort = value;
                     break;
             }
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return c;
         }
 
@@ -50,7 +58,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ContentResult EditDiv(string id, string value)
         {
             var iid = id.Substring(1).ToInt();
-            var pro = DbUtil.Db.Promotions.SingleOrDefault(m => m.Id == iid);
+            var pro = CurrentDatabase.Promotions.SingleOrDefault(m => m.Id == iid);
             var fts = id.Substring(0, 1);
             switch (fts)
             {
@@ -61,12 +69,17 @@ namespace CmsWeb.Areas.Setup.Controllers
                     pro.ToDivId = value.ToInt();
                     break;
             }
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             var c = new ContentResult();
             if (fts == "f")
+            {
                 c.Content = pro.FromDivision.Name;
+            }
             else if (fts == "t")
+            {
                 c.Content = pro.ToDivision.Name;
+            }
+
             return c;
         }
 
@@ -74,17 +87,20 @@ namespace CmsWeb.Areas.Setup.Controllers
         public EmptyResult Delete(string id)
         {
             var iid = id.Substring(1).ToInt();
-            var pro = DbUtil.Db.Promotions.SingleOrDefault(m => m.Id == iid);
+            var pro = CurrentDatabase.Promotions.SingleOrDefault(m => m.Id == iid);
             if (pro == null)
+            {
                 return new EmptyResult();
-            DbUtil.Db.Promotions.DeleteOnSubmit(pro);
-            DbUtil.Db.SubmitChanges();
+            }
+
+            CurrentDatabase.Promotions.DeleteOnSubmit(pro);
+            CurrentDatabase.SubmitChanges();
             return new EmptyResult();
         }
 
         public JsonResult DivisionCodes(int id)
         {
-            var q = from c in DbUtil.Db.Divisions
+            var q = from c in CurrentDatabase.Divisions
                     orderby c.Name
                     where c.DivOrgs.Any(od => od.Organization.DivOrgs.Any(od2 => od2.Division.ProgId == id))
                     select new

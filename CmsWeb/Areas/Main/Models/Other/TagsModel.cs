@@ -4,24 +4,17 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Data.Linq;
-using System.Web;
-using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Code;
+using System.Collections.Generic;
+using System.Linq;
 using UtilityExtensions;
-using System.Data.Linq.SqlClient;
-using System.Web.UI.WebControls;
-using System.Text.RegularExpressions;
 
 namespace CmsWeb.Models
 {
     public class TagsModel : PagerModel2
     {
-        private CMSDataContext Db;
+        //private readonly CMSDataContext Db;
         private int TagTypeId { get; set; }
         private string TagName { get; set; }
         private int? TagOwner { get; set; }
@@ -31,7 +24,7 @@ namespace CmsWeb.Models
 
         public TagsModel()
         {
-            Db = DbUtil.Db;
+            //Db = Db;
             Direction = "asc";
             GetCount = Count;
             SetCurrentTag();
@@ -42,9 +35,13 @@ namespace CmsWeb.Models
             {
                 var a = tag.SplitStr(",", 2);
                 if (a.Length > 1)
+                {
                     Util2.CurrentTag = a[1];
+                }
                 else
+                {
                     Util2.CurrentTag = tag;
+                }
             }
             TagTypeId = DbUtil.TagTypeId_Personal;
             TagName = Util2.CurrentTagName;
@@ -58,16 +55,20 @@ namespace CmsWeb.Models
         private IQueryable<Person> FetchPeople()
         {
             if (people != null)
+            {
                 return people;
+            }
 
-            people = Util2.OrgLeadersOnly 
-                ? DbUtil.Db.OrgLeadersOnlyTag2().People(DbUtil.Db) 
+            people = Util2.OrgLeadersOnly
+                ? DbUtil.Db.OrgLeadersOnlyTag2().People(DbUtil.Db)
                 : DbUtil.Db.People.Select(p => p);
 
             if (usersonly)
+            {
                 people = people.Where(p => p.Users.Any());
+            }
 
-            var tagid = Db.TagCurrent().Id;
+            var tagid = DbUtil.Db.TagCurrent().Id;
             people = people.Where(p => p.Tags.Any(tp => tp.Id == tagid));
             return people;
         }
@@ -79,7 +80,10 @@ namespace CmsWeb.Models
         {
             var people = FetchPeople();
             if (!_count.HasValue)
+            {
                 _count = people.Count();
+            }
+
             people = ApplySort(people)
                 .Skip(StartRow).Take(PageSize);
             return PeopleList(people);
@@ -115,7 +119,10 @@ namespace CmsWeb.Models
         public IQueryable<Person> ApplySort(IQueryable<Person> query)
         {
             if (!Sort.HasValue())
+            {
                 Sort = "Name";
+            }
+
             switch (Direction)
             {
                 case "asc":
@@ -205,7 +212,8 @@ namespace CmsWeb.Models
             }
             return query;
         }
-        CodeValueModel cv = new CodeValueModel();
+
+        private CodeValueModel cv = new CodeValueModel();
         public List<CodeValueItem> Tags()
         {
             var t = DbUtil.Db.TagCurrent();
@@ -232,14 +240,20 @@ namespace CmsWeb.Models
                            where p == -1
                            select pid;
             foreach (var pid in userAdds)
+            {
                 tag.TagShares.Add(new TagShare { PeopleId = pid });
+            }
+
             DbUtil.Db.SubmitChanges();
         }
         private int? _count;
         public int Count()
         {
             if (!_count.HasValue)
+            {
                 _count = FetchPeople().Count();
+            }
+
             return _count.Value;
         }
 
@@ -249,7 +263,10 @@ namespace CmsWeb.Models
             get
             {
                 if (!currentTagId.HasValue)
+                {
                     currentTagId = DbUtil.Db.TagCurrent().Id;
+                }
+
                 return currentTagId ?? 0;
             }
         }

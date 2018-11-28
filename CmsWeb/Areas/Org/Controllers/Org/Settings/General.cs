@@ -17,7 +17,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult GeneralHelpToggle(int id)
         {
-            DbUtil.Db.ToggleUserPreference("ShowGeneralHelp");
+            CurrentDatabase.ToggleUserPreference("ShowGeneralHelp");
             var m = new SettingsGeneralModel(id);
             return PartialView("Settings/General", m);
         }

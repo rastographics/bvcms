@@ -1,20 +1,16 @@
 using System;
-using System.Collections.Generic;
-using System.Xml;
-using System.Web.Mvc;
-using System.Xml.Linq;
-using UtilityExtensions;
-using System.Linq;
-using CmsData;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
+using System.Web.Mvc;
+using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
     public class ImageResult : ActionResult
     {
-        int Id;
+        private readonly int Id;
         public ImageResult(int id)
         {
             Id = id;
@@ -24,14 +20,17 @@ namespace CmsWeb.Models
             context.HttpContext.Response.Clear();
             var image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == Id);
             if (image == null)
+            {
                 NoPic(context.HttpContext);
+            }
             else
             {
                 context.HttpContext.Response.ContentType = image.Mimetype;
                 context.HttpContext.Response.BinaryWrite(image.Bits);
             }
         }
-        void NoPic(System.Web.HttpContextBase context)
+
+        private void NoPic(System.Web.HttpContextBase context)
         {
             var portrait = context.Request.QueryString["portrait"].ToInt2();
             if (portrait == 1)

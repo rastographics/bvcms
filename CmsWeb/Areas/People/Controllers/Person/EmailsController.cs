@@ -1,12 +1,9 @@
-using System;
-using System.Configuration;
-using System.Linq;
-using System.Net;
-using System.Text.RegularExpressions;
-using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.People.Models;
-using RestSharp;
+using System;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
@@ -16,35 +13,35 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult Optouts(int id)
         {
-            var p = DbUtil.Db.LoadPersonById(id);
+            var p = CurrentDatabase.LoadPersonById(id);
             return View("Emails/Optouts", p);
         }
 
         [HttpPost]
         public ActionResult DeleteOptout(int id, string email)
         {
-            var p = DbUtil.Db.LoadPersonById(id);
-            var oo = DbUtil.Db.EmailOptOuts.SingleOrDefault(o => o.FromEmail == email && o.ToPeopleId == id);
+            var p = CurrentDatabase.LoadPersonById(id);
+            var oo = CurrentDatabase.EmailOptOuts.SingleOrDefault(o => o.FromEmail == email && o.ToPeopleId == id);
             if (oo == null)
             {
                 ViewBag.Error = $"Email not found ({email})";
                 return View("Emails/Optouts", p);
             }
-            DbUtil.Db.EmailOptOuts.DeleteOnSubmit(oo);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.EmailOptOuts.DeleteOnSubmit(oo);
+            CurrentDatabase.SubmitChanges();
             return View("Emails/Optouts", p);
         }
 
         [HttpPost]
         public ActionResult AddOptout(int id, string emailaddress)
         {
-            var oo = DbUtil.Db.EmailOptOuts.SingleOrDefault(o => o.FromEmail == emailaddress && o.ToPeopleId == id);
+            var oo = CurrentDatabase.EmailOptOuts.SingleOrDefault(o => o.FromEmail == emailaddress && o.ToPeopleId == id);
             if (oo == null)
             {
-                DbUtil.Db.EmailOptOuts.InsertOnSubmit(new EmailOptOut {FromEmail = emailaddress, ToPeopleId = id, DateX = DateTime.Now});
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.EmailOptOuts.InsertOnSubmit(new EmailOptOut { FromEmail = emailaddress, ToPeopleId = id, DateX = DateTime.Now });
+                CurrentDatabase.SubmitChanges();
             }
-            var p = DbUtil.Db.LoadPersonById(id);
+            var p = CurrentDatabase.LoadPersonById(id);
             return View("Emails/Optouts", p);
         }
 
@@ -81,12 +78,18 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpGet, Route("ViewEmail/{emailid:int}")]
         public ActionResult ViewEmail(int emailid)
         {
-            var email = DbUtil.Db.EmailQueues.SingleOrDefault(ee => ee.Id == emailid);
+            var email = CurrentDatabase.EmailQueues.SingleOrDefault(ee => ee.Id == emailid);
             if (email == null)
+            {
                 return Content("no email found");
-            var curruser = DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0);
+            }
+
+            var curruser = CurrentDatabase.LoadPersonById(Util.UserPeopleId ?? 0);
             if (curruser == null)
+            {
                 return Content("no user");
+            }
+
             if (User.IsInRole("Admin")
                 || User.IsInRole("ManageEmails")
                 || email.FromAddr == curruser.EmailAddress

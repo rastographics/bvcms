@@ -1,8 +1,8 @@
+using CmsData;
+using CmsData.Codes;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using CmsData;
-using CmsData.Codes;
 
 namespace CmsWeb.Areas.Org.Models
 {

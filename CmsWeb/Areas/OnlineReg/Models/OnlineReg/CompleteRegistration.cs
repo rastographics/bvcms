@@ -1,8 +1,7 @@
-using System;
-using System.Linq;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.OnlineReg.Controllers;
+using System.Linq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -15,14 +14,20 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             var ret = CheckSpecialJavascript();
             if (ret != null)
+            {
                 return ret;
+            }
 
             ret = CheckAskDonation(ctl);
             if (ret != null)
+            {
                 return ret;
+            }
 
             if (List.Count == 0)
+            {
                 return RouteModel.ErrorMessage("Can't find any registrants");
+            }
 
             RemoveLastRegistrantIfEmpty();
 
@@ -30,19 +35,27 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             ret = CheckNoFeesDue();
             if (ret != null)
+            {
                 return ret;
+            }
 
             var terms = Util.PickFirst(Terms, "");
             if (terms.HasValue())
+            {
                 ctl.ViewBag.Terms = terms;
+            }
 
             ret = CheckTermsNoFee(ctl);
             if (ret != null)
+            {
                 return ret;
+            }
 
             ret = CheckAlreadyRegistered();
             if (ret != null)
+            {
                 return ret;
+            }
 
             var pf = PaymentForm.CreatePaymentForm(this);
 
@@ -113,7 +126,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 var p = List[0];
                 if (p.IsNew)
+                {
                     p.AddPerson(null, p.org.EntryPointId ?? 0);
+                }
+
                 SpecialRegModel.SaveResults(Orgid ?? 0, List[0].PeopleId ?? 0, List[0].SpecialTest);
                 Log("SpecialJavascript");
                 return RouteModel.ViewAction("Other/SpecialRegistrationResults");

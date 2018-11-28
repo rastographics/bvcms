@@ -1,26 +1,37 @@
+using CmsData;
+using CmsData.API;
+using CmsWeb.Areas.Setup.Controllers;
+using CmsWeb.Lifecycle;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.API;
-using CmsWeb.Areas.Setup.Controllers;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
     public class APIMetaController : CmsController
     {
+        public APIMetaController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet]
         public ActionResult Lookups(string id)
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content($"<Lookups error=\"{ret.Substring(1)}\" />");
+            }
+
             if (!id.HasValue())
+            {
                 return Content("Lookups error=\"not found\">");
-            var q = DbUtil.Db.ExecuteQuery<LookupController.Row>("select * from lookup." + id);
+            }
+
+            var q = CurrentDatabase.ExecuteQuery<LookupController.Row>("select * from lookup." + id);
             var w = new APIWriter();
             w.Start("Lookups");
             w.Attr("name", id);
@@ -40,25 +51,34 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var s = Request.UserAgent;
             if (Request.Browser.Cookies)
+            {
                 return Content("supports cookies<br>" + s);
+            }
+
             return Content("does not support cookies<br>" + s);
         }
 
-//		public ActionResult TestCors()
-//		{
-//            var ret = AuthenticateDeveloper();
-////            if (ret.StartsWith("!"))
-////                return Content(ret.Substring(1));
-//			return Content("This is from a CORS request " + DateTime.Now);
-//		}
+        //		public ActionResult TestCors()
+        //		{
+        //            var ret = AuthenticateDeveloper();
+        ////            if (ret.StartsWith("!"))
+        ////                return Content(ret.Substring(1));
+        //			return Content("This is from a CORS request " + DateTime.Now);
+        //		}
         [HttpGet]
         public ActionResult SQLView(string id)
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content($"<SQLView error=\"{ret.Substring(1)}\" />");
+            }
+
             if (!id.HasValue())
+            {
                 return Content("<SQLView error\"no view name\" />");
+            }
+
             try
             {
                 var cmd = new SqlCommand("select * from guest." + id.Replace(" ", ""));
@@ -75,7 +95,10 @@ namespace CmsWeb.Areas.Public.Controllers
                 {
                     w.Start("row");
                     for (var i = 0; i < rdr.FieldCount; i++)
+                    {
                         w.Attr(rdr.GetName(i), rdr[i].ToString());
+                    }
+
                     w.End();
                     read = rdr.Read();
                 }
@@ -91,7 +114,7 @@ namespace CmsWeb.Areas.Public.Controllers
         [Route("~/APIMeta/SqlScriptXml/{id}")]
         public ActionResult SqlScriptXml(string id, string p1 = null)
         {
-            var f = new APIFunctions(DbUtil.Db);
+            var f = new APIFunctions(CurrentDatabase);
             var e = $"<SqlScriptXml id={id}><Error>{{0}}</Error></SqlScriptXml>";
             return Content(SqlScript(id, p1, f.SqlScriptXml, e), "application/xml");
         }
@@ -99,7 +122,7 @@ namespace CmsWeb.Areas.Public.Controllers
         [Route("~/APIMeta/SqlScriptJson/{id}")]
         public ActionResult SqlScriptJson(string id, string p1 = null)
         {
-            var f = new APIFunctions(DbUtil.Db);
+            var f = new APIFunctions(CurrentDatabase);
             var e = $@"{{ ""id"": ""{id}"", ""Error"": ""{{0}}"" }}";
             return Content(SqlScript(id, p1, f.SqlScriptJson, e), "application/json");
         }
@@ -107,9 +130,15 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return string.Format(e, ret.Substring(1));
+            }
+
             if (!id.HasValue())
+            {
                 return string.Format(e, $"no view named {id}");
+            }
+
             try
             {
                 var cs = User.IsInRole("Finance")

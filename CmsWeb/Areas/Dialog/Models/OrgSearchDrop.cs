@@ -1,3 +1,6 @@
+using CmsData;
+using CmsWeb.Areas.Search.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -5,9 +8,6 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Web.Hosting;
-using CmsData;
-using Newtonsoft.Json;
-using CmsWeb.Areas.Search.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
@@ -72,20 +72,25 @@ namespace CmsWeb.Areas.Dialog.Models
             foreach (var orginfo in model.orginfos)
             {
                 var pids = (from m in db.OrganizationMembers
-                    where m.OrganizationId == orginfo.Id
-                    select m.PeopleId
+                            where m.OrganizationId == orginfo.Id
+                            select m.PeopleId
                     ).ToList();
                 var n = 0;
                 foreach (var pid in pids)
                 {
                     n++;
-                    db.Dispose();
-                    db = DbUtil.Create(model.Host);
+                    //DbUtil.Db.Dispose();
+                    //db = DbUtil.Create(model.Host);
                     var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == orginfo.Id);
                     if (DropDate.HasValue)
+                    {
                         om.Drop(db, DropDate.Value);
+                    }
                     else
+                    {
                         om.Drop(db);
+                    }
+
                     lop = FetchLongRunningOperation(db, Op, model.QueryId);
                     Debug.Assert(lop != null, "r != null");
                     lop.Processed++;

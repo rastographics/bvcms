@@ -1,20 +1,23 @@
+using CmsData;
+using CmsWeb.Lifecycle;
+using CmsWeb.Models;
+using Dapper;
 using System;
 using System.Data.SqlClient;
-using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
-using CmsData;
-using Dapper;
 using UtilityExtensions;
-using CmsWeb.Models;
 
 namespace CmsWeb.Controllers
 {
     public class ScriptController : CmsStaffController
     {
+        public ScriptController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
 
 #if DEBUG
         [HttpGet, Route("~/Test/{id?}")]
@@ -32,13 +35,13 @@ namespace CmsWeb.Controllers
 
         public ActionResult RecordTest(int id, string v)
         {
-            var o = DbUtil.Db.LoadOrganizationById(id);
-            o.AddEditExtra(DbUtil.Db, "tested", v);
-            DbUtil.Db.SubmitChanges();
+            var o = CurrentDatabase.LoadOrganizationById(id);
+            o.AddEditExtra(CurrentDatabase, "tested", v);
+            CurrentDatabase.SubmitChanges();
             return Content(v);
         }
 
-
+        //todo: use injection
 #if DEBUG
         [HttpGet, Route("~/TestScript")]
         [Authorize(Roles = "Developer")]
@@ -79,9 +82,12 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/RunScript/{name}/{parameter?}/{title?}")]
         public ActionResult RunScript(string name, string parameter = null, string title = null)
         {
-            var content = DbUtil.Db.ContentOfTypeSql(name);
+            var content = CurrentDatabase.ContentOfTypeSql(name);
             if (content == null)
+            {
                 return Content("no content");
+            }
+
             var cs = User.IsInRole("Finance")
                 ? Util.ConnectionStringReadOnlyFinance
                 : Util.ConnectionStringReadOnly;
@@ -90,16 +96,22 @@ namespace CmsWeb.Controllers
             var d = Request.QueryString.AllKeys.ToDictionary(key => key, key => Request.QueryString[key]);
             var p = new DynamicParameters();
             foreach (var kv in d)
+            {
                 p.Add("@" + kv.Key, kv.Value);
+            }
+
             string script = ScriptModel.RunScriptSql(parameter, content, p, ViewBag);
 
             if (script.StartsWith("Not Authorized"))
+            {
                 return Message(script);
+            }
+
             ViewBag.Report = name;
             ViewBag.Name = title ?? $"{name.SpaceCamelCase()} {parameter}";
             if (script.Contains("pagebreak"))
             {
-                ViewBag.report = PythonModel.PageBreakTables(DbUtil.Db, script, p);
+                ViewBag.report = PythonModel.PageBreakTables(CurrentDatabase, script, p);
                 return View("RunScriptPageBreaks");
             }
             ViewBag.Url = Request.Url?.PathAndQuery;
@@ -111,9 +123,12 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/RunScriptExcel/{scriptname}/{parameter?}")]
         public ActionResult RunScriptExcel(string scriptname, string parameter = null)
         {
-            var content = DbUtil.Db.ContentOfTypeSql(scriptname);
+            var content = CurrentDatabase.ContentOfTypeSql(scriptname);
             if (content == null)
+            {
                 return Message("no content");
+            }
+
             var cs = User.IsInRole("Finance")
                 ? Util.ConnectionStringReadOnlyFinance
                 : Util.ConnectionStringReadOnly;
@@ -121,10 +136,16 @@ namespace CmsWeb.Controllers
             var d = Request.QueryString.AllKeys.ToDictionary(key => key, key => Request.QueryString[key]);
             var p = new DynamicParameters();
             foreach (var kv in d)
+            {
                 p.Add("@" + kv.Key, kv.Value);
+            }
+
             string script = ScriptModel.RunScriptSql(parameter, content, p, ViewBag);
             if (script.StartsWith("Not Authorized"))
+            {
                 return Message(script);
+            }
+
             return cn.ExecuteReader(script, p, commandTimeout: 1200).ToExcel("RunScript.xlsx", fromSql: true);
         }
 
@@ -136,53 +157,66 @@ namespace CmsWeb.Controllers
             try
             {
 #endif
-                var script = DbUtil.Db.ContentOfTypePythonScript(name);
-                if (!script.HasValue())
-                    return Message("no script named " + name);
+            var script = CurrentDatabase.ContentOfTypePythonScript(name);
+            if (!script.HasValue())
+            {
+                return Message("no script named " + name);
+            }
 
-                if (!ScriptModel.CanRunScript(script))
-                    return Message("Not Authorized to run this script");
-                if (Regex.IsMatch(script, @"model\.Form\b"))
-                    return Redirect("/PyScriptForm/" + name);
-                script = script.Replace("@P1", p1 ?? "NULL")
+            if (!ScriptModel.CanRunScript(script))
+            {
+                return Message("Not Authorized to run this script");
+            }
+
+            if (Regex.IsMatch(script, @"model\.Form\b"))
+            {
+                return Redirect("/PyScriptForm/" + name);
+            }
+
+            script = script.Replace("@P1", p1 ?? "NULL")
                     .Replace("@P2", p2 ?? "NULL")
                     .Replace("V1", v1 ?? "None")
                     .Replace("V2", v2 ?? "None");
-                if (script.Contains("@qtagid"))
-                {
-                    var id = DbUtil.Db.FetchLastQuery().Id;
-                    var tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
-                    script = script.Replace("@qtagid", tag.Id.ToString());
-                }
+            if (script.Contains("@qtagid"))
+            {
+                var id = CurrentDatabase.FetchLastQuery().Id;
+                var tag = CurrentDatabase.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
+                script = script.Replace("@qtagid", tag.Id.ToString());
+            }
 
-                ViewBag.report = name;
-                ViewBag.url = Request.Url?.PathAndQuery;
-                if (script.Contains("Background Process Completed"))
+            ViewBag.report = name;
+            ViewBag.url = Request.Url?.PathAndQuery;
+            if (script.Contains("Background Process Completed"))
+            {
+                var logFile = $"RunPythonScriptInBackground.{DateTime.Now:yyyyMMddHHmmss}";
+                ViewBag.LogFile = logFile;
+                var qs = Request.Url?.Query;
+                var host = Util.Host;
+                HostingEnvironment.QueueBackgroundWorkItem(ct =>
                 {
-                    var logFile = $"RunPythonScriptInBackground.{DateTime.Now:yyyyMMddHHmmss}";
-                    ViewBag.LogFile = logFile;
-                    var qs = Request.Url?.Query;
-                    var host = Util.Host;
-                    HostingEnvironment.QueueBackgroundWorkItem(ct =>
+                    var qsa = HttpUtility.ParseQueryString(qs ?? "");
+                    var pm = new PythonModel(host);
+                    pm.DictionaryAdd("LogFile", logFile);
+                    foreach (string key in qsa)
                     {
-                        var qsa = HttpUtility.ParseQueryString(qs ?? "");
-                        var pm = new PythonModel(host);
-                        pm.DictionaryAdd("LogFile", logFile);
-                        foreach (string key in qsa)
-                            pm.DictionaryAdd(key, qsa[key]);
-                        pm.RunScript(script);
-                    });
-                    return View("RunPythonScriptProgress");
-                }
-                var pe = new PythonModel(Util.Host);
-                if (script.Contains("@BlueToolbarTagId"))
-                {
-                    var id = DbUtil.Db.FetchLastQuery().Id;
-                    pe.DictionaryAdd("BlueToolbarGuid", id.ToCode());
-                }
+                        pm.DictionaryAdd(key, qsa[key]);
+                    }
 
-                foreach (var key in Request.QueryString.AllKeys)
-                    pe.DictionaryAdd(key, Request.QueryString[key]);
+                    pm.RunScript(script);
+                });
+                return View("RunPythonScriptProgress");
+            }
+            var pe = new PythonModel(Util.Host);
+            if (script.Contains("@BlueToolbarTagId"))
+            {
+                var id = CurrentDatabase.FetchLastQuery().Id;
+                pe.DictionaryAdd("BlueToolbarGuid", id.ToCode());
+            }
+
+            foreach (var key in Request.QueryString.AllKeys)
+            {
+                pe.DictionaryAdd(key, Request.QueryString[key]);
+            }
 
             pe.Output = ScriptModel.Run(name, pe);
             if (pe.Output.StartsWith("REDIRECT="))
@@ -204,7 +238,7 @@ namespace CmsWeb.Controllers
         [HttpPost, Route("~/RunPythonScriptProgress2")]
         public ActionResult RunPythonScriptProgress2(string logfile)
         {
-            var txt = DbUtil.Db.ContentOfTypeText(logfile);
+            var txt = CurrentDatabase.ContentOfTypeText(logfile);
             return Content(txt);
         }
         [Route("~/PyScriptForm/{name}")]
@@ -221,7 +255,10 @@ namespace CmsWeb.Controllers
             {
                 var pe = new PythonModel(Util.Host);
                 foreach (var key in Request.QueryString.AllKeys)
+                {
                     pe.DictionaryAdd(key, Request.QueryString[key]);
+                }
+
                 pe.Data.pyscript = name;
                 pe.HttpMethod = "get";
                 ScriptModel.Run(name, pe);
@@ -240,12 +277,18 @@ namespace CmsWeb.Controllers
                 var pe = new PythonModel(Util.Host);
                 ScriptModel.GetFilesContent(pe);
                 foreach (var key in Request.Form.AllKeys)
+                {
                     pe.DictionaryAdd(key, Request.Form[key]);
+                }
+
                 pe.HttpMethod = "post";
 
                 var ret = ScriptModel.Run(name, pe);
                 if (ret.StartsWith("REDIRECT="))
+                {
                     return Redirect(ret.Substring(9).trim());
+                }
+
                 return Content(ret);
             }
             catch (Exception ex)
@@ -261,10 +304,13 @@ namespace CmsWeb.Controllers
             {
                 var pe = new PythonModel(Util.Host);
                 foreach (var key in Request.Form.AllKeys)
+                {
                     pe.DictionaryAdd(key, Request.Form[key]);
+                }
+
                 pe.HttpMethod = "post";
 
-                var script = DbUtil.Db.ContentOfTypePythonScript(pe.Data.pyscript);
+                var script = CurrentDatabase.ContentOfTypePythonScript(pe.Data.pyscript);
                 return Content(pe.RunScript(script));
             }
             catch (Exception ex)

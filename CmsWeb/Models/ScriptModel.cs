@@ -1,13 +1,12 @@
-﻿using System;
+﻿using CmsData;
+using CmsData.Codes;
+using Dapper;
+using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
-using CmsData;
-using CmsData.Codes;
-using Dapper;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -17,7 +16,10 @@ namespace CmsWeb.Models
         internal static string RunScriptSql(string parameter, string body, DynamicParameters p, dynamic ViewBag)
         {
             if (!CanRunScript(body))
+            {
                 return "Not Authorized to run this script";
+            }
+
             if (body.Contains("@qtagid", ignoreCase: true))
             {
                 var id = DbUtil.Db.FetchLastQuery().Id;
@@ -69,13 +71,24 @@ namespace CmsWeb.Models
                 p.Add("@ActiveTagFilter", dbType: DbType.Int64);
             }
             else
+            {
                 ViewBag.Type = "SqlReport";
+            }
+
             if (body.Contains("@StartDt"))
+            {
                 p.Add("@StartDt", new DateTime(DateTime.Now.Year, 1, 1));
+            }
+
             if (body.Contains("@EndDt"))
+            {
                 p.Add("@EndDt", DateTime.Today);
+            }
+
             if (body.Contains("@userid", ignoreCase: true))
+            {
                 p.Add("@userid", Util.UserId);
+            }
 
             body = QueryFunctions.AddP1Parameter(body, parameter, p);
 
@@ -86,11 +99,17 @@ namespace CmsWeb.Models
         {
             if (!script.StartsWith("#Roles=", StringComparison.OrdinalIgnoreCase)
                     && !script.StartsWith("--Roles", StringComparison.OrdinalIgnoreCase))
+            {
                 return true;
+            }
+
             var re = new Regex("(--|#)Roles=(?<roles>.*)", RegexOptions.IgnoreCase);
             var roles = re.Match(script).Groups["roles"].Value.Split(',').Select(aa => aa.Trim()).ToArray();
             if (roles.Length > 0)
+            {
                 return roles.Any(rr => HttpContext.Current.User.IsInRole(rr));
+            }
+
             return true;
         }
 
@@ -151,7 +170,7 @@ namespace CmsWeb.Models
                 script = script.Replace("@P1", pe.Dictionary("p1") ?? "NULL");
             }
 
-            
+
             string runfromPath = null;
 #if DEBUG
             var runfromRe = new Regex(@"#runfrom=(?<path>.*)\r");
@@ -162,13 +181,18 @@ namespace CmsWeb.Models
                 var re1 = new Regex(@"#saveas=(?<saveas>.*)\r");
                 var saveas = re1.Match(script).Groups["saveas"]?.Value;
                 if (saveas.HasValue())
+                {
                     SaveAsContent(saveas, script);
+                }
             }
             else if (runfromRe.IsMatch(script))
             {
                 runfromPath = runfromRe.Match(script).Groups["path"]?.Value;
-                if(string.IsNullOrEmpty(runfromPath))
+                if (string.IsNullOrEmpty(runfromPath))
+                {
                     throw new Exception($"no match for path");
+                }
+
                 script = System.IO.File.ReadAllText(runfromPath);
                 SaveAsContent(name, script);
             }
@@ -176,13 +200,17 @@ namespace CmsWeb.Models
 #endif
 
             if (!script.HasValue())
+            {
                 throw new Exception("no script named " + name);
+            }
 
             pe.Data.Title = ContributionsMenuTitle(script);
 
 #if DEBUG
             if (runfromPath.HasValue())
+            {
                 return PythonModel.ExecutePython(runfromPath, pe, fromFile: true);
+            }
 #endif
             return pe.RunScript(script);
         }

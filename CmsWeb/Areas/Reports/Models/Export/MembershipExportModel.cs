@@ -1,9 +1,9 @@
-using System;
-using System.Linq;
 using CmsData;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using OfficeOpenXml.Table;
+using System;
+using System.Linq;
 
 namespace CmsWeb.Models
 {
@@ -46,7 +46,7 @@ namespace CmsWeb.Models
                         BaptismStatus = p.BaptismStatus.Description,
                         BaptismDate = p.BaptismDate,
                         BaptismSchedDate = p.BaptismSchedDate,
-                        NewMemberClassStatus =p.NewMemberClassStatus.Description,
+                        NewMemberClassStatus = p.NewMemberClassStatus.Description,
                         NewMemberClassDate = p.NewMemberClassDate,
                         MemberStatus = p.MemberStatus.Description,
                         JoinType = p.JoinType.Description,

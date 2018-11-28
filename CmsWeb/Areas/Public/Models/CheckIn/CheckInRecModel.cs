@@ -1,8 +1,8 @@
+using CmsData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -36,14 +36,16 @@ namespace CmsWeb.Models
                      };
             person = q2.SingleOrDefault();
             if (person == null)
+            {
                 person = new PersonInfo
                 {
                     PeopleId = 0,
                     Name = "not found"
                 };
+            }
             else
             {
-                var guid = (Guid?) (HttpContext.Current.Session["checkinguid"]);
+                var guid = (Guid?)(HttpContext.Current.Session["checkinguid"]);
                 if (!guid.HasValue)
                 {
                     //var tt = new TemporaryToken
@@ -71,7 +73,10 @@ namespace CmsWeb.Models
         public string WithBreak(string s)
         {
             if (s.HasValue())
+            {
                 return s + "<br />";
+            }
+
             return string.Empty;
         }
 
@@ -114,7 +119,10 @@ namespace CmsWeb.Models
                 get
                 {
                     if (!_School.HasValue())
+                    {
                         return "click to add";
+                    }
+
                     return _School;
                 }
                 set { _School = value; }

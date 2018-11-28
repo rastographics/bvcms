@@ -5,11 +5,11 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
+using CmsData;
+using LumenWorks.Framework.IO.Csv;
 using System;
 using System.IO;
 using System.Linq;
-using CmsData;
-using LumenWorks.Framework.IO.Csv;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
 {
@@ -20,11 +20,15 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             if (fromFile)
             {
                 using (var csv = new CsvReader(new StringReader(text), false))
+                {
                     return BatchProcessVanco(csv, date, fundid);
+                }
             }
 
             using (var csv = new CsvReader(new StringReader(text), false, '\t'))
+            {
                 return BatchProcessVanco(csv, date, fundid);
+            }
         }
 
         private static int? BatchProcessVanco(CsvReader csv, DateTime date, int? fundid)
@@ -50,12 +54,16 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 int.TryParse(fundText, out fundNum);
 
                 if (bh == null)
+                {
                     bh = BatchImportContributions.GetBundleHeader(date, DateTime.Now);
+                }
 
                 BundleDetail bd;
 
                 if (fundList.Contains(fundNum))
+                {
                     bd = BatchImportContributions.AddContributionDetail(date, fundNum, amount, checkno, routing, account);
+                }
                 else
                 {
                     bd = BatchImportContributions.AddContributionDetail(date, fund, amount, checkno, routing, account);

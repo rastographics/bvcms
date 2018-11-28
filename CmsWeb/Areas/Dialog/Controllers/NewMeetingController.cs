@@ -1,24 +1,32 @@
-﻿using System;
-using System.Linq;
-using System.Web.Mvc;
-using CmsData;
+﻿using CmsData;
 using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Areas.Org.Models;
 using CmsWeb.Areas.Search.Models;
 using CmsWeb.Code;
+using CmsWeb.Lifecycle;
+using System;
+using System.Linq;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
     public partial class DialogController
     {
+        public DialogController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet, Route("ForNewMeeting/{orgid:int}")]
         public ActionResult ForNewMeeting(int orgid)
         {
             var oi = new SettingsAttendanceModel() { Id = orgid };
             var defaultAttendCreditId = "0";
-            if(oi.Schedules.Count > 0)
+            if (oi.Schedules.Count > 0)
+            {
                 defaultAttendCreditId = oi.Schedules[0].AttendCredit.Value;
+            }
+
             var m = new NewMeetingInfo
             {
                 MeetingDate = oi.PrevMeetingDate,
@@ -35,11 +43,11 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpGet, Route("ForNewRollsheet/{id:guid}")]
         public ActionResult ForNewRollsheet(Guid id)
         {
-            var filter = DbUtil.Db.OrgFilter(id);
+            var filter = CurrentDatabase.OrgFilter(id);
             var oi = new SettingsAttendanceModel() { Id = filter.Id };
             var m = new NewMeetingInfo()
             {
-                MeetingDate =  oi.NextMeetingDate,
+                MeetingDate = oi.NextMeetingDate,
                 Schedule = new CodeInfo(0, oi.SchedulesNext()),
                 AttendCredit = new CodeInfo(0, oi.AttendCreditList()),
             };
@@ -52,11 +60,11 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpGet, Route("ForNewRallyRollsheet/{id:guid}")]
         public ActionResult ForNewRallyRollsheet(Guid id)
         {
-            var filter = DbUtil.Db.OrgFilter(id);
+            var filter = CurrentDatabase.OrgFilter(id);
             var oi = new SettingsAttendanceModel { Id = filter.Id };
             var m = new NewMeetingInfo()
             {
-                MeetingDate =  oi.NextMeetingDate,
+                MeetingDate = oi.NextMeetingDate,
                 Schedule = new CodeInfo(0, oi.SchedulesNext()),
                 AttendCredit = new CodeInfo(0, oi.AttendCreditList()),
                 OrganizationId = filter.Id
@@ -72,7 +80,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         {
             var m = new NewMeetingInfo()
             {
-                MeetingDate =  OrgSearchModel.DefaultMeetingDate(schedule),
+                MeetingDate = OrgSearchModel.DefaultMeetingDate(schedule),
                 Schedule = null,
                 AttendCredit = null
             };
@@ -85,7 +93,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         {
             var m = new NewMeetingInfo()
             {
-                MeetingDate =  OrgSearchModel.DefaultMeetingDate(schedule),
+                MeetingDate = OrgSearchModel.DefaultMeetingDate(schedule),
                 Schedule = null,
                 AttendCredit = null,
             };
@@ -101,14 +109,19 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 ViewBag.ForRollsheet = false;
                 return View("MeetingInfo", model);
             }
-            var organization = DbUtil.Db.LoadOrganizationById(model.OrganizationId);
+            var organization = CurrentDatabase.LoadOrganizationById(model.OrganizationId);
             if (organization == null)
+            {
                 return Content("error: no org");
-            var mt = DbUtil.Db.Meetings.SingleOrDefault(m => m.MeetingDate == model.MeetingDate
+            }
+
+            var mt = CurrentDatabase.Meetings.SingleOrDefault(m => m.MeetingDate == model.MeetingDate
                     && m.OrganizationId == organization.OrganizationId);
 
             if (mt != null)
+            {
                 return Redirect("/Meeting/" + mt.MeetingId);
+            }
 
             mt = new Meeting
             {
@@ -120,8 +133,8 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 MeetingDate = model.MeetingDate,
                 AttendCreditId = model.AttendCredit.Value.ToInt()
             };
-            DbUtil.Db.Meetings.InsertOnSubmit(mt);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.Meetings.InsertOnSubmit(mt);
+            CurrentDatabase.SubmitChanges();
             DbUtil.LogActivity($"Creating new meeting for {organization.OrganizationName}");
             return Redirect("/Meeting/" + mt.MeetingId);
         }

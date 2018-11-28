@@ -4,21 +4,21 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
+using CmsData;
+using CmsData.Codes;
+using CmsWeb.Areas.Search.Models;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
-using CmsData;
-using UtilityExtensions;
 using System.Text;
 using System.Web.Mvc;
-using CmsData.Codes;
-using CmsWeb.Areas.Search.Models;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Reports.Models
 {
-    class MemberInfo
+    internal class MemberInfo
     {
         public int PeopleId { get; set; }
         public string Name { get; set; }
@@ -95,17 +95,27 @@ namespace CmsWeb.Areas.Reports.Models
                 foreach (var m in q2)
                 {
                     if (color.Equals(BaseColor.WHITE))
+                    {
                         color = new GrayColor(240);
+                    }
                     else
+                    {
                         color = BaseColor.WHITE;
+                    }
+
                     AddRow(t, m, color);
                 }
                 if (t.Rows.Count > 1)
+                {
                     doc.Add(t);
+                }
                 else
+                {
                     doc.Add(new Phrase("no data"));
+                }
             }
             else
+            {
                 foreach (var o in ReportList())
                 {
                     var t = StartPageSet(o);
@@ -140,25 +150,31 @@ namespace CmsWeb.Areas.Reports.Models
                     foreach (var m in q)
                     {
                         if (color == BaseColor.WHITE)
+                        {
                             color = new GrayColor(240);
+                        }
                         else
+                        {
                             color = BaseColor.WHITE;
+                        }
+
                         AddRow(t, m, color);
                     }
                     doc.Add(t);
                 }
+            }
+
             pageEvents.EndPageSet();
             doc.Close();
         }
 
-        private Font boldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10);
-        private Font font = FontFactory.GetFont(FontFactory.HELVETICA, 9);
-        private Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 7);
+        private readonly Font boldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10);
+        private readonly Font font = FontFactory.GetFont(FontFactory.HELVETICA, 9);
+        private readonly Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 7);
         private PageEvent pageEvents = new PageEvent();
         private Document doc;
         private PdfContentByte dc;
-
-        float[] HeaderWids = { 35, 43, 53, 22, 30 };
+        private readonly float[] HeaderWids = { 35, 43, 53, 22, 30 };
 
         private PdfPTable StartPageSet(OrgInfo o)
         {
@@ -196,10 +212,14 @@ namespace CmsWeb.Areas.Reports.Models
             {
                 var a = p.Parents.Replace(", c ", "|c ").Split('|');
                 foreach (var li in a)
+                {
                     AddLine(sb, li);
+                }
             }
             else
+            {
                 AddPhone(sb, p.CellPhone, "c ");
+            }
 
             t.AddCell(new Phrase(sb.ToString(), font));
 
@@ -220,10 +240,15 @@ namespace CmsWeb.Areas.Reports.Models
             if (value.HasValue())
             {
                 if (sb.Length > 0)
+                {
                     sb.Append("\n");
+                }
+
                 sb.Append(value);
                 if (postfix.HasValue())
+                {
                     sb.Append(postfix);
+                }
             }
         }
         private void AddPhone(StringBuilder sb, string value, string prefix)
@@ -232,7 +257,10 @@ namespace CmsWeb.Areas.Reports.Models
             {
                 value = value.FmtFone(prefix);
                 if (sb.Length > 0)
+                {
                     sb.Append("\n");
+                }
+
                 sb.Append(value);
             }
         }
@@ -261,7 +289,8 @@ namespace CmsWeb.Areas.Reports.Models
                     };
             return q;
         }
-        class PageEvent : PdfPageEventHelper
+
+        private class PageEvent : PdfPageEventHelper
         {
             private PdfTemplate npages;
             private PdfWriter writer;
@@ -281,7 +310,10 @@ namespace CmsWeb.Areas.Reports.Models
             public void EndPageSet()
             {
                 if (npages == null)
+                {
                     return;
+                }
+
                 npages.BeginText();
                 npages.SetFontAndSize(font, 8);
                 npages.ShowText((writer.PageNumber + 1).ToString());

@@ -5,14 +5,13 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using UtilityExtensions;
 using CmsData;
 using CmsData.Codes;
-using CmsData.View;
+using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -65,7 +64,10 @@ namespace CmsWeb.Areas.Reports.Models
         public static IEnumerable<PersonMemberInfo> FetchOrgMembers(int orgid, int[] groups)
         {
             if (groups == null)
+            {
                 groups = new int[] { 0 };
+            }
+
             var tagownerid = Util2.CurrentTagOwnerId;
             var q = from om in DbUtil.Db.OrganizationMembers
                     where om.OrganizationId == orgid
@@ -117,6 +119,7 @@ namespace CmsWeb.Areas.Reports.Models
             var tagownerid = Util2.CurrentTagOwnerId;
             IEnumerable<PersonMemberInfo> q = null;
             if (CurrentMembers)
+            {
                 q = from m in DbUtil.Db.OrganizationMembers
                     where m.OrganizationId == OrganizationId
                     let p = m.Person
@@ -149,7 +152,9 @@ namespace CmsWeb.Areas.Reports.Models
                         MemberTypeId = m.MemberTypeId,
                         Joined = m.EnrollmentDate
                     };
+            }
             else
+            {
                 q = from m in DbUtil.Db.OrgMembersAsOfDate(OrganizationId, MeetingDate)
                     orderby m.LastName, m.FamilyId, m.PreferredName
                     select new PersonMemberInfo
@@ -175,10 +180,12 @@ namespace CmsWeb.Areas.Reports.Models
                         MemberTypeId = m.MemberTypeId,
                         Joined = m.Joined
                     };
+            }
+
             return q;
         }
 
-        private static int[] VisitAttendTypes = new int[]
+        private static readonly int[] VisitAttendTypes = new int[]
         {
             AttendTypeCode.VisitingMember,
             AttendTypeCode.RecentVisitor,
@@ -248,13 +255,17 @@ namespace CmsWeb.Areas.Reports.Models
             var q = DbUtil.Db.RollListFilteredBySubgroups(meetingId, meetingDate, orgId, currentMembers, fromMobile, subgroupIds, includeLeaderless);
 
             if (sortByName)
+            {
                 q = from p in q
                     orderby p.Name
                     select p;
+            }
             else
+            {
                 q = from p in q
                     orderby p.Section, p.Last, p.FamilyId, p.First
                     select p;
+            }
 
             var q2 = from p in q
                      select new AttendInfo()
@@ -283,17 +294,24 @@ namespace CmsWeb.Areas.Reports.Models
             var q = DbUtil.Db.RollList(meetingId, meetingDate, orgId, currentMembers, fromMobile);
 
             if (sortByName)
+            {
                 q = from p in q
                     orderby p.Name
                     select p;
+            }
             else
+            {
                 q = from p in q
                     orderby p.Section, p.Last, p.FamilyId, p.First
                     select p;
+            }
+
             if (registeredOnly)
+            {
                 q = from p in q
                     where AttendCommitmentCode.committed.Contains(p.CommitmentId ?? 0)
                     select p;
+            }
 
             var q2 = from p in q
                      select new AttendInfo()
@@ -323,18 +341,24 @@ namespace CmsWeb.Areas.Reports.Models
                     select p;
 
             if (sortByName)
+            {
                 q = from p in q
                     orderby p.Name
                     select p;
+            }
             else
+            {
                 q = from p in q
                     orderby p.Section, p.Last, p.FamilyId, p.First
                     select p;
+            }
 
             if (registeredOnly)
+            {
                 q = from p in q
                     where AttendCommitmentCode.committed.Contains(p.CommitmentId ?? 0)
                     select p;
+            }
 
             var q2 = from p in q
                      select new AttendInfo()

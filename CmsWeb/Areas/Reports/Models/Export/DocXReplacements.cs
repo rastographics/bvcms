@@ -1,12 +1,9 @@
+using CmsData;
 using System;
-using System.Data;
-using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.ServiceModel.Channels;
 using System.Web.Mvc;
-using CmsData;
 using UtilityExtensions;
 using Xceed.Words.NET;
 
@@ -41,7 +38,10 @@ namespace CmsWeb.Models
                 ? DbUtil.Db.PeopleQuery2(peopleId)
                 : DbUtil.Db.PeopleQuery(guid);
             if (!q.Any())
+            {
                 throw new Exception("no people in query");
+            }
+
             var finaldoc = replacements.DocXReplacements(q.First());
             foreach (var p in q.Skip(1))
             {

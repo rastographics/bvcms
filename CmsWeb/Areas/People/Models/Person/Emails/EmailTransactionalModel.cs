@@ -1,6 +1,5 @@
-﻿using System.Linq;
-using CmsData;
-using CmsWeb.Models;
+﻿using CmsData;
+using System.Linq;
 
 namespace CmsWeb.Areas.People.Models
 {

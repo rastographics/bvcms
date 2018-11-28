@@ -1,22 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Threading;
-using System.Web.Hosting;
-using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Areas.Dialog.Models;
+using CmsWeb.Lifecycle;
 using CmsWeb.Models;
-using Newtonsoft.Json;
-using UtilityExtensions;
+using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
-    [Authorize(Roles="ManageOrgMembers")]
-    [RouteArea("Manage", AreaPrefix= "OrgMembers"), Route("{action=index}/{id?}")]
+    [Authorize(Roles = "ManageOrgMembers")]
+    [RouteArea("Manage", AreaPrefix = "OrgMembers"), Route("{action=index}/{id?}")]
     public class OrgMembersController : CmsStaffController
     {
+        public OrgMembersController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet]
         public ActionResult Index()
         {
@@ -25,10 +20,10 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View(m);
         }
 
-//        [HttpPost]
-//        public ActionResult ProcessMove(OrgMembersModel model)
-//        {
-//		}
+        //        [HttpPost]
+        //        public ActionResult ProcessMove(OrgMembersModel model)
+        //        {
+        //		}
         [HttpPost]
         public ActionResult EmailNotices(OrgMembersModel m)
         {
@@ -46,9 +41,9 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult List(OrgMembersModel m)
         {
             m.ValidateIds();
-            DbUtil.Db.SetUserPreference("OrgMembersModelIds", $"{m.ProgId}.{m.SourceDivId}.{m.SourceId}");
-            DbUtil.DbDispose();
-            DbUtil.Db.SetNoLock();
+            CurrentDatabase.SetUserPreference("OrgMembersModelIds", $"{m.ProgId}.{m.SourceDivId}.{m.SourceId}");
+            //DbDispose();
+            CurrentDatabase.SetNoLock();
             return View(m);
         }
         [HttpPost]

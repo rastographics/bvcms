@@ -4,17 +4,17 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
+using CmsData;
+using CmsData.Codes;
+using CmsWeb.Areas.Dialog.Models;
+using CmsWeb.Areas.Search.Models;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
-using CmsData;
-using UtilityExtensions;
 using System.Web.Mvc;
-using CmsWeb.Areas.Dialog.Models;
-using CmsData.Codes;
-using CmsWeb.Areas.Search.Models;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -58,8 +58,11 @@ namespace CmsWeb.Areas.Reports.Models
                 }
             }
 
-            if(OrgSearchModel == null)
+            if (OrgSearchModel == null)
+            {
                 OrgSearchModel = new OrgSearchModel();
+            }
+
             var list1 = NewMeetingInfo.ByGroup == true ? ReportList2() : ReportList();
 
             if (!list1.Any())
@@ -105,19 +108,21 @@ namespace CmsWeb.Areas.Reports.Models
                              };
                     AddFirstRow(font);
                     foreach (var a in q2)
+                    {
                         AddRow(a.Name2, a.PeopleId, a.BibleFellowshipClassId, font);
+                    }
                 }
                 else
                 {
                     var Groups = NewMeetingInfo.ByGroup == true ? o.Groups : "";
                     var q = from om in DbUtil.Db.OrganizationMembers
-                        where om.OrganizationId == o.OrgId
-                        join m in DbUtil.Db.OrgPeople(o.OrgId, Groups) on om.PeopleId equals m.PeopleId
-                        where om.EnrollmentDate <= Util.Now
-                        orderby om.Person.LastName, om.Person.FamilyId, om.Person.Name2
-                        let p = om.Person
-                        let ch = NewMeetingInfo.UseAltNames && p.AltName != null && p.AltName.Length > 0
-                        select om.Person;
+                            where om.OrganizationId == o.OrgId
+                            join m in DbUtil.Db.OrgPeople(o.OrgId, Groups) on om.PeopleId equals m.PeopleId
+                            where om.EnrollmentDate <= Util.Now
+                            orderby om.Person.LastName, om.Person.FamilyId, om.Person.Name2
+                            let p = om.Person
+                            let ch = NewMeetingInfo.UseAltNames && p.AltName != null && p.AltName.Length > 0
+                            select om.Person;
 
                     q = from p in q
                         from fm in DbUtil.Db.People.Where(ff => ff.FamilyId == p.FamilyId)
@@ -135,7 +140,9 @@ namespace CmsWeb.Areas.Reports.Models
                              };
                     AddFirstRow(font);
                     foreach (var a in q2)
+                    {
                         AddRow(a.Name2, a.PeopleId, a.BibleFellowshipClassId, font);
+                    }
                 }
 
                 doc.Add(t);
@@ -144,7 +151,7 @@ namespace CmsWeb.Areas.Reports.Models
             Response.Flush();
             doc.Close();
         }
-        private static int[] VisitAttendTypes = new int[]
+        private static readonly int[] VisitAttendTypes = new int[]
         {
             AttendTypeCode.VisitingMember,
             AttendTypeCode.RecentVisitor,
@@ -161,10 +168,10 @@ namespace CmsWeb.Areas.Reports.Models
         }
 
         private PdfPCell box;
-        private Font boldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD);
-        private Font font = FontFactory.GetFont(FontFactory.HELVETICA);
-        private Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 7);
-        private Font medfont = FontFactory.GetFont(FontFactory.HELVETICA, 10);
+        private readonly Font boldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD);
+        private readonly Font font = FontFactory.GetFont(FontFactory.HELVETICA);
+        private readonly Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 7);
+        private readonly Font medfont = FontFactory.GetFont(FontFactory.HELVETICA, 10);
         private PageEvent pageEvents = new PageEvent();
         private PdfPTable t;
         private Document doc;
@@ -257,7 +264,8 @@ namespace CmsWeb.Areas.Reports.Models
                 ? OrgSearchModel.FetchOrgs(orgid.Value)
                 : OrgSearchModel.FetchOrgs();
             var q = from o in orgs
-                    from sg in DbUtil.Db.MemberTags where sg.OrgId == o.OrganizationId
+                    from sg in DbUtil.Db.MemberTags
+                    where sg.OrgId == o.OrganizationId
                     where (NewMeetingInfo.GroupFilterPrefix ?? "") == "" || sg.Name.StartsWith(NewMeetingInfo.GroupFilterPrefix)
                     select new OrgInfo
                     {
@@ -270,7 +278,8 @@ namespace CmsWeb.Areas.Reports.Models
                     };
             return q.ToList();
         }
-        class CellEvent : IPdfPCellEvent
+
+        private class CellEvent : IPdfPCellEvent
         {
             public void CellLayout(PdfPCell cell, Rectangle pos, PdfContentByte[] canvases)
             {
@@ -282,7 +291,8 @@ namespace CmsWeb.Areas.Reports.Models
                 cb.ResetRGBColorStroke();
             }
         }
-        class PageEvent : PdfPageEventHelper
+
+        private class PageEvent : PdfPageEventHelper
         {
             private PdfTemplate npages;
             private PdfWriter writer;
@@ -304,7 +314,10 @@ namespace CmsWeb.Areas.Reports.Models
             public void EndPageSet()
             {
                 if (npages == null)
+                {
                     return;
+                }
+
                 npages.BeginText();
                 npages.SetFontAndSize(font, 8);
                 npages.ShowText((writer.PageNumber + 1).ToString());

@@ -1,6 +1,7 @@
-﻿using System.Linq;
+﻿using CmsData;
+using CmsWeb.Lifecycle;
+using System.Linq;
 using System.Web.Mvc;
-using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
@@ -9,10 +10,14 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup", AreaPrefix = "ResourceType"), Route("{action}/{id?}")]
     public class ResourceTypeController : CmsStaffController
     {
+        public ResourceTypeController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/ResourceTypes")]
         public ActionResult Index()
         {
-            var m = from rt in DbUtil.Db.ResourceTypes
+            var m = from rt in CurrentDatabase.ResourceTypes
                     orderby rt.DisplayOrder
                     select rt;
             return View(m);
@@ -20,7 +25,7 @@ namespace CmsWeb.Areas.Setup.Controllers
 
         public JsonResult ResourceTypes()
         {
-            var q = from c in DbUtil.Db.ResourceTypes
+            var q = from c in CurrentDatabase.ResourceTypes
                     select new
                     {
                         value = c.ResourceTypeId.ToString(),
@@ -34,8 +39,8 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult Create()
         {
             var resourceType = new ResourceType { Name = "new resource type" };
-            DbUtil.Db.ResourceTypes.InsertOnSubmit(resourceType);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.ResourceTypes.InsertOnSubmit(resourceType);
+            CurrentDatabase.SubmitChanges();
             return Redirect($"/ResourceTypes/#{resourceType.ResourceTypeId}");
         }
 
@@ -45,9 +50,12 @@ namespace CmsWeb.Areas.Setup.Controllers
             var a = id.Split('.');
             var c = new ContentResult();
             c.Content = value;
-            var resourceType = DbUtil.Db.ResourceTypes.SingleOrDefault(m => m.ResourceTypeId == a[1].ToInt());
+            var resourceType = CurrentDatabase.ResourceTypes.SingleOrDefault(m => m.ResourceTypeId == a[1].ToInt());
             if (resourceType == null)
+            {
                 return c;
+            }
+
             switch (a[0])
             {
                 case "Name":
@@ -59,7 +67,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                     resourceType.DisplayOrder = displayOrder;
                     break;
             }
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return c;
         }
 
@@ -67,15 +75,19 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult Delete(string id)
         {
             id = id.Substring(1);
-            var catType = DbUtil.Db.ResourceTypes.SingleOrDefault(m => m.ResourceTypeId == id.ToInt());
+            var catType = CurrentDatabase.ResourceTypes.SingleOrDefault(m => m.ResourceTypeId == id.ToInt());
             if (catType == null)
+            {
                 return new EmptyResult();
+            }
 
             if (catType.Resources.Any())
-                return Json(new { error = "Resources have that type, not deleted" });            
+            {
+                return Json(new { error = "Resources have that type, not deleted" });
+            }
 
-            DbUtil.Db.ResourceTypes.DeleteOnSubmit(catType);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.ResourceTypes.DeleteOnSubmit(catType);
+            CurrentDatabase.SubmitChanges();
             return new EmptyResult();
         }
     }
