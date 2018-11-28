@@ -30,12 +30,7 @@ namespace UtilityExtensions
         {
             if (email.HasValue())
             {
-                if (!name.HasValue())
-                {
-                    return email;
-                }
-
-                if (name.Contains("?"))
+                if (!name.HasValue() || name.Contains("?"))
                 {
                     return email;
                 }
