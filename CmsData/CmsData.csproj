@@ -1284,6 +1284,8 @@
     <Content Include="Migrations\20180806_update_purge_person_sproc.sql" />
     <Content Include="Migrations\20180817_update_enrollment_history_func.sql" />
     <Content Include="Migrations\20180827_sms-number-group-system-flag.sql" />
+    <Content Include="Migrations\20181111_alter_Contributions2SearchIds_func.sql" />
+    <Content Include="Migrations\20181111_create_TagContributionsFromIds_proc.sql" />
     <Content Include="Migrations\20181022-4_create_TagContributions_func.sql" />
     <Content Include="Migrations\20181022-2_create_ContributionsTag_table.sql" />
     <Content Include="Migrations\20181011_add_contribution_origin_column.sql" />
@@ -1296,8 +1298,10 @@
     <Content Include="Migrations\20181019_add_pushpay_pk.sql" />
     <Content Include="Migrations\20181015_add_pushpay_schema.sql" />
     <Content Include="Migrations\20181011_update_spouseId_function.sql" />
+    <Content Include="Migrations\20181106_alter_SMSList_Message_column.sql" />
     <Content Include="Migrations\20181031_add_viewvolunteerapplication_role.sql" />
     <Content Include="Migrations\20181115_add_recurring_amounts_disabled_column.sql" />
+    <Content Include="Migrations\20181120_Update_GetContributionDetails_func.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
