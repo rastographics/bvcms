@@ -74,30 +74,10 @@
         }
 
         var findgroupTimeout;
-        var $find_group = $('#find_group').val('').keyup(function () {
+        var $find_group = $('#find_group').keyup(function () {
             clearTimeout(findgroupTimeout);
             findgroupTimeout = setTimeout(function () {
-                var value = $find_group.val().trim();
-                var search = value ? RegExp(value, 'i') : null;
-                var $heading;
-                var showHeading;
-                $('#OrganizationContainer > .list-group > *').each(function () {
-                    var $this = $(this);
-                    if ($this.is('.list-group-item-heading')) {
-                        setDisplay($heading, showHeading);
-                        $heading = $this;
-                        showHeading = false;
-                    }
-                    var text = $this.find('a.navbar-link').text();
-                    var match = !search || text.match(search);
-                    showHeading = match || showHeading;
-                    setDisplay($this, match);
-                    if (!match && $this.is('.highlighted')) {
-                        $("#DetailsContainer").empty();
-                        $this.removeClass('highlighted');
-                    }
-                });
-                setDisplay($heading, showHeading);
+                refreshOrgList();
             }, 333);
         });
         $('#find_group_clear').click(function (event) {

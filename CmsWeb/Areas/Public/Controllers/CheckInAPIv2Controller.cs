@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
 using CmsWeb.Areas.Org.Models;
 using CmsWeb.Areas.Public.Models.CheckInAPIv2;
 using CmsWeb.Areas.Public.Models.CheckInAPIv2.Results;
@@ -344,7 +345,7 @@ namespace CmsWeb.Areas.Public.Controllers
 				return Message.createErrorReturn( "Authentication failed, please try again", Message.API_ERROR_INVALID_CREDENTIALS );
 
 			Message message = Message.createFromString( data );
-			AttendanceBundle bundle = JsonConvert.DeserializeObject<AttendanceBundle>( message.data );
+            AttendanceBundle bundle = JsonConvert.DeserializeObject<AttendanceBundle>( message.data );
 
 			foreach( Attendance attendance in bundle.attendances ) {
 				foreach( AttendanceGroup group in attendance.groups ) {

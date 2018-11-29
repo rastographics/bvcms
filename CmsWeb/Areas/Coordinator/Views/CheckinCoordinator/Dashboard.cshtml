@@ -66,10 +66,10 @@
         padding-top: 3px;
     }
     .circle-closed {
-        background-color: darkred;
+        background-color: darkgray;
     }
     .circle-full {
-        background-color: darkgray;
+        background-color: darkred;
     }
     .circle-open {
         background-color: green;
@@ -169,7 +169,15 @@
         }
     }
 </style>
-
+<script type="text/javascript">
+    function refreshOrgList() {
+        var selectedTimeslot = $('#checkin-timeslot option:selected').val();
+        var selectedProgram = $('#checkin-program option:selected').val();
+        var highlighted = $('#SubgroupId').val();
+        var search = $('#find_group').val().trim();
+        $('#OrganizationContainer').load('@Url.Action("OrganizationSelector")?selectedTimeslot=' + selectedTimeslot + '&programId=' + selectedProgram + '&highlightedOrg=' + highlighted + '&searchQuery=' + search);
+    }
+</script>
 <div class="row">
     <div class="col-lg-4">
         <div class="box box-responsive">

@@ -64,14 +64,18 @@ namespace CmsWeb.Areas.Coordinator.Services
                 .ToList();
         }
 
-        public IEnumerable<CheckinScheduleDto> GetFilteredSchedules(string selectedTimeslot = "", int programId = 0, int divisionId = 0)
+        public IEnumerable<CheckinScheduleDto> GetFilteredSchedules(string selectedTimeslot = "", int programId = 0, int divisionId = 0, string searchQuery = null)
         {
             var emptyTime = string.IsNullOrWhiteSpace(selectedTimeslot);
             var date = ConvertToDate(selectedTimeslot);
 
-            return Schedules
-                .Where(s => (emptyTime || s.NextMeetingDate == date) && (programId == 0 || s.ProgramId == programId) && (divisionId == 0 || s.DivisionId == divisionId))
-                .ToList();
+            var schedules = Schedules
+                .Where(s => (emptyTime || s.NextMeetingDate == date) && (programId == 0 || s.ProgramId == programId) && (divisionId == 0 || s.DivisionId == divisionId));
+            if (!string.IsNullOrWhiteSpace(searchQuery))
+            {
+                schedules = schedules.Where(s => s.OrganizationName.ToLower().Contains(searchQuery.ToLower()) || s.SubgroupName.ToLower().Contains(searchQuery.ToLower()));
+            }
+            return schedules.ToList();
         }
 
         public CheckinScheduleDto GetScheduleDetail(string selectedTimeslot, int organizationId, int subgroupId, string subgroupName)

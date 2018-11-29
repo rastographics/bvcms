@@ -140,13 +140,6 @@
         };
     }
 
-    function refreshOrgList() {
-        var selectedTimeslot = $('#checkin-timeslot option:selected').val();
-        var selectedProgram = $('#checkin-program option:selected').val();
-        var highlighted = $('#SubgroupId').val();
-        $('#OrganizationContainer').load('@Url.Action("OrganizationSelector")?selectedTimeslot=' + selectedTimeslot + '&programId=' + selectedProgram + '&highlightedOrg=' + highlighted);
-    }
-
     $('.middle').click(function() {
         $('.inactive, .active').toggle();
     });
@@ -213,7 +206,7 @@
                 return;
 
             var temp = list.toString();
-            var url = '@Html.Raw(Url.Action("MoveSubgroupView", "Coordinator", new {id="-1", grpid ="-2", list="-3" }))';
+            var url = '@Html.Raw(Url.Action("MoveSubgroupView", "CheckinCoordinator", new {id="-1", grpid ="-2", list="-3" }))';
             url = url.replace("-1", $('#OrganizationId').val());
             url = url.replace("-2", $('#SubgroupId').val());
             url = url.replace("-3", temp);

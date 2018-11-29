@@ -105,9 +105,9 @@ ORDER BY t0.NextMeetingDate, OrganizationName, SubgroupName", DateTime.Now.Date,
             return PartialView(model);
         }
 
-        public ActionResult OrganizationSelector(string selectedTimeslot = "", int programId = 0, int divisionId = 0, int highlightedOrg = 0)
+        public ActionResult OrganizationSelector(string selectedTimeslot = "", int programId = 0, int divisionId = 0, int highlightedOrg = 0, string searchQuery = null)
         {
-            var model = CheckinCoordinator.GetFilteredSchedules(selectedTimeslot, programId, divisionId);
+            var model = CheckinCoordinator.GetFilteredSchedules(selectedTimeslot, programId, divisionId, searchQuery);
             ViewBag.HighlightedOrg = highlightedOrg;
             return PartialView(model);
         }
@@ -175,7 +175,7 @@ ORDER BY t0.NextMeetingDate, OrganizationName, SubgroupName", DateTime.Now.Date,
 
             m.groupid = targrpid;
             m.ingroup = m.GetGroupDetails(targrpid).Name;
-            return RedirectToAction("SubgroupView", m);
+            return RedirectToAction("MoveSubgroupView", m);
         }
 
         public ActionResult MoveSubgroupView(int id, int grpid, string list)

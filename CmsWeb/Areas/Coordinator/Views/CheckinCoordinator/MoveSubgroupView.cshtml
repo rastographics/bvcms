@@ -213,7 +213,7 @@
                 return;
 
             var temp = list.toString();
-            var url = '@Html.Raw(Url.Action("UpdateSmallGroup", "Coordinator", new {id="-1", curgrpid = "-2", targrpid = "-3", list="-4" }))';
+            var url = '@Html.Raw(Url.Action("UpdateSmallGroup", "CheckinCoordinator", new {id="-1", curgrpid = "-2", targrpid = "-3", list="-4" }))';
             url = url.replace("-1", $('#OrgId').val());
             url = url.replace("-2", $('#GroupId').val());
             url = url.replace("-3", $('input[type="radio"][name="group"]:checked').val());
