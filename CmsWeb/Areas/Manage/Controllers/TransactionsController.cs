@@ -130,6 +130,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             if (!resp.Approved)
             {
+                DbUtil.LogActivity("error: " + resp.Message);
                 return Content("error: " + resp.Message);
             }
 
@@ -162,6 +163,8 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             CurrentDatabase.Transactions.InsertOnSubmit(transaction);
             CurrentDatabase.SubmitChanges();
+            DbUtil.LogActivity("CreditVoid for " + t.TransactionId);
+
             CurrentDatabase.SendEmail(Util.TryGetMailAddress(CurrentDatabase.StaffEmailForOrg(transaction.OrgId ?? 0)),
                 "Void/Credit Transaction Type: " + type,
                 $@"<table>
@@ -175,8 +178,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 <tr><td>Date</td><td>{t.TransactionDate.FormatDateTm()}</td></tr>
 <tr><td>TranIds</td><td>Org: {t.Id} {t.TransactionId}, Curr: {transaction.Id} {transaction.TransactionId}</td></tr>
 <tr><td>User</td><td>{Util.UserFullName}</td></tr>
-</table>", Util.EmailAddressListFromString(CurrentDatabase.StaffEmailForOrg(transaction.OrgId ?? 0)));
-            DbUtil.LogActivity("CreditVoid for " + t.TransactionId);
+</table>", Util.EmailAddressListFromString(CurrentDatabase.StaffEmailForOrg(transaction.OrgId ?? 0)));            
 
             return View("List", m);
         }
