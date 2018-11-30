@@ -83,4 +83,5 @@ join dbo.Contribution c on c.ContributionId = cs.ContributionId
 	LEFT JOIN dbo.Families fa ON p.FamilyId = fa.FamilyId
 	LEFT JOIN dbo.People sp ON sp.PeopleId = p.SpouseId
 WHERE c.ContributionTypeId <> 8 -- NO PLEDGES
-) GO
+)
+GO
