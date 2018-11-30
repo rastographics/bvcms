@@ -27,12 +27,14 @@ namespace CmsWeb.Areas.Coordinator.Models
             orgid = id;
 
             var org = DbUtil.Db.LoadOrganizationById(orgid);
+            OrgName = org.OrganizationName;
             //isRecreationTeam = org.IsRecreationTeam;
         }
 
         public int orgid { get; set; }
         public int? groupid { get; set; }
         public string GroupName { get; set; }
+        public string OrgName { get; set; }
         public int[] SelectedPeopleIds { get; set; }
         public string ingroup { get; set; }
         public string notgroup { get; set; }
@@ -42,7 +44,6 @@ namespace CmsWeb.Areas.Coordinator.Models
         public int tagfilter { get; set; }
         public bool isRecreationTeam { get; set; }
      //   public bool isAttendanceBySubgroups => DbUtil.Db.LoadOrganizationById(orgid).AttendanceBySubGroups.GetValueOrDefault();
-     //   public string OrgName => DbUtil.Db.LoadOrganizationById(orgid).OrganizationName;
         public int memtype { get; set; }
         public IList<int> List { get; set; } = new List<int>();
 

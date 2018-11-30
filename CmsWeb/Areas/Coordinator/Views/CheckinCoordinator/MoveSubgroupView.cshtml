@@ -1,13 +1,4 @@
 ﻿@model CmsWeb.Areas.Coordinator.Models.SubgroupModel
-@using CmsData
-@using UtilityExtensions
-@{
-    Layout = "~/Views/Shared/_LayoutCheckIn.cshtml";
-    ViewBag.Title = "Check-In Coordinator";
-    ViewBag.PageHeader = "Check-In Coordinator";
-}
-@ViewExtensions2.jQuery()
-@ViewExtensions2.jQueryUI()
 @{
     var selectedCount = Model.SelectedOrgMembers(Model.SelectedPeopleIds).Count();
     var opengroupCount = Model.GetAllGroupDetails().Count(k => k.CheckInOpen && k.GroupId != Model.groupid);
@@ -15,173 +6,81 @@
 }
 <style>
     .localheader {
+        display: block;
         width: 100%;
         height: 25px;
         background: gainsboro;
         color: black;
         font-weight: bolder;
         text-align: center;
-        line-height: 3;
-        border: 0;        
+        border: 0;
+        line-height: 1.5;
+        margin-bottom: 20px;
     }
 
-    .labelhighlighted {
-        min-height: 40px;
-        min-width: 95%;
-        background: lightsteelblue;
-        border-style: outset;
-        border: 2px;
-        vertical-align: middle;
-        line-height: 3;
-        padding: 5px;
+    .highlighted {
+        background: rgba(0,25,150,0.2);
     }
-
-    .labelnothighlighted {
-        min-height: 40px;
-        min-width: 95%;
-        background: lightgrey;
-        border-style: outset;
-        border: 2px;
-        vertical-align: middle;
-        line-height: 3;
-        padding: 5px;
+    .move-subgroup .item {
+        display: flex;
+        align-content: center;
+        justify-content: flex-start;
+        height: 60px;
     }
-
-
-    .radiohighlighted {
-        min-height: 40px;
-        min-width: 95%;
-        background: lightsteelblue;
-        border-style: outset;
-        border: 2px;
-        vertical-align: middle;
-        line-height: 3;
-        padding: 5px;
+    .move-subgroup .item label {
+        width: 100%;
     }
-
-    .radionothighlighted {
-        min-height: 40px;
-        min-width: 95%;
-        background: lightgrey;
-        border-style: outset;
-        border: 2px;
-        vertical-align: middle;
-        line-height: 3;
-        padding: 5px;
-    }
-
 </style>
 @Html.Hidden("OrgId", Model.orgid)
 @Html.Hidden("GroupId", Model.groupid)
-<div class="row">
-    <div class="col-lg-12" style="padding: 5px !important;">
-        <div class="box box-responsive">
+<div class="move-subgroup">
+    <div id="SubgroupDataContainer">
+        <div class="box box-primary">
+            <div class="box-title" style="height: 50px; background: #f5f5f5;">
+                <h3 class="title" style="margin:0;">Move Rooms (@Model.OrgName - @Model.GroupName)</h3>
+            </div>
             <div class="box-content">
-                <div class="form-group" style="width: 90%; margin-left: 40px; margin-right: 40px">
-                    <div class="form-group">
-                        <div class="table-responsive">
-                            <input class="localheader" type="text" value="Selected People">                            
-                            <table id="selectedPeople" class="table">
-                                <tbody>
-                                @{
-                                    int i = 1;
-                                }
-                                @foreach (var om in Model.SelectedOrgMembers(Model.SelectedPeopleIds))
-                                {
-                                    if ((i % 5) == 0 || i == 1)
-                                    {
-                                        @:<tr>
-                                    }
-                                    <td style="border: 0 !important;min-width: 225px">
-                                        <label class="labelhighlighted"><input style="width: 20px; height: 15px" type="checkbox" checked class="checkSingleConflicts" value="@om.PeopleId">&nbsp;&nbsp;@om.Name</label>
-                                    </td>
-                                    if ((i % 4) == 0 || selectedCount == i)
-                                    {
-                                        if ((i % 4) != 0 && selectedCount == i)
-                                        {
-                                            for (int x = i; x % 4 != 0; x++)
-                                            {
-                                                <td style="border: 0 !important; min-width: 225px">
-                                                </td>
-                                            }
-                                        }
-                                        @:</tr>
-                                    }
-                                    i++;
-                                }
-                                </tbody>
-                            </table>
-                            <input class="localheader" type="text" value="Open Sub-groups">
-                            <table id="openSubgroups" class="table">
-                                <tbody>
-                                @{
-                                    i = 1;
-                                }
-                                @foreach (var om in Model.GetAllGroupDetails().Where(k => k.CheckInOpen))
-                                {
-                                    if (om.GroupId != Model.groupid)
-                                    {
-                                        if ((i % 5) == 0 || i == 1)
-                                        {
-                                            @:<tr>
-                                        }
-                                        <td style="border: 0 !important;min-width: 225px">
-                                            <label class="labelnothighlighted"><input class="checkRadio" style="width: 20px; height: 15px" type="radio" name="group" value="@om.GroupId">@om.Name</label>
-                                        </td>
-                                        if ((i % 4) == 0 || opengroupCount == i)
-                                        {
-                                            if ((i % 4) != 0 && opengroupCount ==i)
-                                            {
-                                                for (int x = i; x % 4 != 0; x++)
-                                                {
-                                                    <td style="border: 0 !important; min-width: 225px">
-                                                    </td>
-                                                }
-                                            }
-                                            @:</tr>
-                                        }
-                                        i++;
-                                    }
-                                }
-                                </tbody>
-                            </table>
-                            <input class="localheader" type="text" value="Closed Sub-groups">
-                            <table id="closedSubgroups" class="table">
-                                <tbody>
-                                @{
-                                    i = 1;
-                                }
-                                @foreach (var om in Model.GetAllGroupDetails())
-                                {
-                                    if (!om.CheckInOpen && om.GroupId != Model.groupid)
-                                    {
-                                        if ((i % 5) == 0 || i == 1)
-                                        {
-                                            @:<tr>
-                                        }
-                                        <td style="border: 0 !important;min-width: 225px">
-                                            <label class="labelnothighlighted"><input class="checkRadio" style="width: 20px; height: 15px" type="radio" name="group" value="@om.GroupId">@om.Name</label>
-                                        </td>
-                                        if ((i % 4) == 0 || closedGroupcount == i)
-                                        {
-                                            if ((i % 4) != 0 && closedGroupcount == i)
-                                            {
-                                                for (int x = i; x % 4 != 0; x++)
-                                                {
-                                                    <td style="border: 0 !important; min-width: 225px">
-                                                    </td>
-                                                }
-                                            }
-                                            @:</tr>
-                                        }
-                                        i++;
-                                    }
-                                }
-                                </tbody>
-                            </table>
-                            <input style="width: 100%; height: 50px; background: #003f72; color: white; font-weight: bolder; text-align: center; line-height: 3" type="button" id="movebtn" class="btn btn-primary" value="MOVE">
-                        </div>  
+                <div class="form-group">
+                    <span class="localheader">People to Move</span>
+                    <div id="selectedPeople" class="row">
+                        @foreach (var om in Model.SelectedOrgMembers(Model.SelectedPeopleIds))
+                        {
+                            <div class="item col-sm-3">
+                                <label class="highlighted"><input style="width: 20px; height: 15px" type="checkbox" checked class="checkSingleConflicts" value="@om.PeopleId">&nbsp;&nbsp;@om.Name</label>
+                            </div>
+                        }
                     </div>
+                    @if (opengroupCount > 0)
+                    {
+                        <span class="localheader">Open Rooms</span>
+                    }
+                    <div id="openSubgroups" class="row">
+                        @foreach (var om in Model.GetAllGroupDetails().Where(k => k.CheckInOpen))
+                        {
+                            if (om.GroupId != Model.groupid)
+                            {
+                                <div class="item col-sm-3">
+                                    <label><input class="checkRadio" style="width: 20px; height: 15px" type="radio" name="group" value="@om.GroupId">@om.Name</label>
+                                </div>
+                            }
+                        }
+                    </div>
+                    @if (closedGroupcount > 0)
+                    {
+                        <span class="localheader">Closed Rooms</span>
+                    }
+                    <div id="closedSubgroups" class="row">
+                        @foreach (var om in Model.GetAllGroupDetails())
+                        {
+                            if (!om.CheckInOpen && om.GroupId != Model.groupid)
+                            {
+                                <div class="item col-sm-3">
+                                    <label><input class="checkRadio" style="width: 20px; height: 15px" type="radio" name="group" value="@om.GroupId">@om.Name</label>
+                                </div>
+                            }
+                        }
+                    </div>
+                    <input style="width: 100%; height: 50px; background: #003f72; color: white; font-weight: bolder; text-align: center; line-height: 3" type="button" id="moveconfirmbtn" class="btn btn-primary" value="MOVE">
                 </div>
             </div>
         </div>
@@ -190,18 +89,16 @@
 <script type="text/javascript">
     $('.checkSingleConflicts').on('click', function () {
         if ($(this).is(':checked')) {
-            $(this).parent().removeClass('labelnothighlighted');
-            $(this).parent().addClass('labelhighlighted');
+            $(this).parent().addClass('highlighted');
         } else {
-            $(this).parent().removeClass('labelhighlighted');
-            $(this).parent().addClass('labelnothighlighted');            
+            $(this).parent().removeClass('highlighted');
         }
     });
-    $('.checkRadio').on('click', function () {    
-        $('.radiohighlighted').removeClass('radiohighlighted');
-            $(this).parent().addClass('radiohighlighted');
+    $('.checkRadio').on('click', function () {
+        $('.checkRadio').parent().removeClass('highlighted');
+        $(this).parent().addClass('highlighted');
     });
-    $('#movebtn').on('click',
+    $('#moveconfirmbtn').on('click',
         function () {
             var list = [];
             $('input[type="checkbox"]:checked').each(function () {
@@ -211,14 +108,25 @@
             });
             if (list.length === 0)
                 return;
-
-            var temp = list.toString();
-            var url = '@Html.Raw(Url.Action("UpdateSmallGroup", "CheckinCoordinator", new {id="-1", curgrpid = "-2", targrpid = "-3", list="-4" }))';
-            url = url.replace("-1", $('#OrgId').val());
-            url = url.replace("-2", $('#GroupId').val());
-            url = url.replace("-3", $('input[type="radio"][name="group"]:checked').val());
-            url = url.replace("-4", temp);
-            window.location.replace(url);
-
+                
+            $.ajax({
+                url: '@Url.Action("UpdateSmallGroup")',
+                data: JSON.stringify({
+                    id: $('#OrgId').val(),
+                    curgrpid: $('#GroupId').val(),
+                    targrpid: $('input[type="radio"][name="group"]:checked').val(),
+                    list: list.toString()
+                }),
+                success: function (ret) {
+                    console.log(ret);
+                    refreshOrgList();
+                },
+                error: function (ret) {
+                    alert('Error moving people!');
+                },
+                type: 'POST',
+                contentType: 'application/json, charset=utf-8',
+                dataType: 'html'
+            });
         });
 </script>

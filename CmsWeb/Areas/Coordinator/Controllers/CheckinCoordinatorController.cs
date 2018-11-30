@@ -152,6 +152,7 @@ ORDER BY t0.NextMeetingDate, OrganizationName, SubgroupName", DateTime.Now.Date,
             return Details(checkinActionDto.SelectedTimeslot, checkinActionDto.OrganizationId, checkinActionDto.SubgroupId, checkinActionDto.SubgroupName);
         }
 
+        [HttpPost]
         public ActionResult UpdateSmallGroup(int id, int curgrpid, int targrpid, string list)
         {
             string[] arr = list.Split(',');
@@ -175,17 +176,20 @@ ORDER BY t0.NextMeetingDate, OrganizationName, SubgroupName", DateTime.Now.Date,
 
             m.groupid = targrpid;
             m.ingroup = m.GetGroupDetails(targrpid).Name;
-            return RedirectToAction("MoveSubgroupView", m);
+
+            return Json(m);
         }
 
         public ActionResult MoveSubgroupView(int id, int grpid, string list)
         {
             var m = new SubgroupModel(id);
+            var details = m.GetGroupDetails(grpid);
             m.groupid = grpid;
+            m.GroupName = details.Name;
             string[] arr = list.Split(',');
             int[] selectedIds = Array.ConvertAll(arr, int.Parse);
             m.SelectedPeopleIds = selectedIds;
-            return View(m);
+            return PartialView(m);
         }
     }
 }
