@@ -6,7 +6,7 @@
     ViewBag.Title = "Contributions";
     ViewBag.PageHeader = "Contributions";
     Layout = ViewExtensions2.TouchPointLayout();
-    var customFundsList = ContributionStatements.CustomFundSetSelectList();
+    var customFundsList = ContributionStatements.CustomFundSetSelectList(DbUtil.Db); //hack: using static method to get db for now
 }
 <div class="box box-responsive">
     <div class="box-content">

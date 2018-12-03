@@ -5,7 +5,7 @@
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Totals By Age Range";
     ViewBag.ReportPageHeader = "Totals By Age Range";
-    var customFundsList = ContributionStatements.CustomFundSetSelectList();
+    var customFundsList = ContributionStatements.CustomFundSetSelectList(DbUtil.Db);
 }
 <div class="report box box-responsive">
     <div class="box-content">

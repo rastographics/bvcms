@@ -1507,7 +1507,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             field = field.Trim();
 
             var ev = PeopleExtras.AsEnumerable().FirstOrDefault(ee => ee.Field == field);
-            
+
             if (ev == null)
             {
                 ev = new PeopleExtra
@@ -2155,7 +2155,8 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             };
             TasksAboutPerson.Add(t);
 
-            GCMHelper.sendRefresh(assignTo, GCMHelper.ACTION_REFRESH);
+            var gcm = new GCMHelper(Util.Host, DbUtil.Db);
+            gcm.sendRefresh(assignTo, GCMHelper.ACTION_REFRESH);
 
             return t;
         }
