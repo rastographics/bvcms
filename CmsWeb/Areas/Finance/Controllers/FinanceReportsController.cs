@@ -109,7 +109,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                 Fund = CreateCodeInfoForField("Fund")
             };
 
-            var customFundsList = ContributionStatements.CustomFundSetSelectList();
+            var customFundsList = ContributionStatements.CustomFundSetSelectList(CurrentDatabase);
 
             if (customFundsList != null)
             {

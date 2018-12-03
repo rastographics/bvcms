@@ -15,12 +15,13 @@ namespace CmsWeb.Models
 {
     public class SupportRequestModel
     {
-        private readonly List<string> ccAddrs = new List<string>();
-        private readonly ConnectionStringSettings cs = ConfigurationManager.ConnectionStrings["CmsLogging"];
-        private readonly string supportInsert = ConfigurationManager.AppSettings["SupportInsert"];
-        private readonly string supportUpdate = ConfigurationManager.AppSettings["SupportUpdate"];
-        private readonly bool useZenDeskApi = ConfigurationManager.AppSettings["UseZenDeskApi"] == "true";
-        private readonly string mydataRequest = "MyData Request";
+        private readonly CMSDataContext _db;
+        private readonly List<string> _ccAddrs = new List<string>();
+        private readonly ConnectionStringSettings _cs = ConfigurationManager.ConnectionStrings["CmsLogging"];
+        private readonly string _supportInsert = ConfigurationManager.AppSettings["SupportInsert"];
+        private readonly string _supportUpdate = ConfigurationManager.AppSettings["SupportUpdate"];
+        private readonly bool _useZenDeskApi = ConfigurationManager.AppSettings["UseZenDeskApi"] == "true";
+        private readonly string _mydataRequest = "MyData Request";
         private const string SupportEmail = "support@touchpointsoftware.zendesk.com";
 
         public string Urgency { get; set; }
@@ -30,43 +31,49 @@ namespace CmsWeb.Models
         public string Cc { get; set; }
         public string Subj { get; set; }
 
+        public SupportRequestModel()
+        {
+            _db = DbUtil.Db;
+        }
+
         public static bool CanSupport => Util.IsHosted;
 
         public void SendSupportRequest()
         {
-            if (useZenDeskApi)
+            if (_useZenDeskApi)
             {
                 CreateZenDeskApiRequest();
                 return;
             }
             var msg = CreateRequest();
-            var smtp = DbUtil.Db.Smtp();
+            var smtp = _db.Smtp();
             smtp.Send(msg);
         }
 
         public void MyDataSendSupportRequest()
         {
-            Subj = mydataRequest;
-            if (useZenDeskApi)
+            Subj = _mydataRequest;
+            if (_useZenDeskApi)
             {
                 CreateZenDeskApiRequest();
                 return;
             }
             var msg = CreateRequest();
-            var smtp = DbUtil.Db.Smtp();
+            var smtp = _db.Smtp();
             smtp.Send(msg);
         }
+
         private MailMessage CreateRequest()
         {
             var who = Util.UserFullName + " <" + Util.UserEmail + ">";
             var id = 0;
-            var subject = $"{Urgency} {Subj}: {Util.UserFullName} @ {DbUtil.Db.Host}";
-            if (cs != null)
+            var subject = $"{Urgency} {Subj}: {Util.UserFullName} @ {_db.Host}";
+            if (_cs != null)
             {
-                var cn = new SqlConnection(cs.ConnectionString);
+                var cn = new SqlConnection(_cs.ConnectionString);
                 cn.Open();
 
-                id = cn.Query<int>(supportInsert, new
+                id = cn.Query<int>(_supportInsert, new
                 {
                     c = DateTime.Now,
                     w = who,
@@ -77,21 +84,21 @@ namespace CmsWeb.Models
                 }).Single();
                 subject += $" [{id}]";
 
-                cn.Execute(supportUpdate, new { subject, id });
+                cn.Execute(_supportUpdate, new { subject, id });
                 cn.Close();
             }
-            const string fromsupport = "Touchpoint Support <mailer@tpsDbUtil.Db.com>";
+            const string fromsupport = "Touchpoint Support <mailer@tpsdb.com>";
 
             var sb = new StringBuilder();
             sb.Append(
 $@"<b>Request ID: {id}</b><br>
 <b>Request By:</b> {Util.UserFullName} ({Util.UserEmail})<br>
 <b>Priority: {Priority}</b><br>
-<b>Host:</b> https://{Util.Host}.tpsDbUtil.Db.com<br>");
+<b>Host:</b> https://{Util.Host}.tpsdb.com<br>");
 
-            if (Subj != mydataRequest)
+            if (Subj != _mydataRequest)
             {
-                var roles = (from e in DbUtil.Db.Users
+                var roles = (from e in _db.Users
                              where e.UserId == Util.UserId
                              select string.Join(", ", e.Roles)).SingleOrDefault();
 
@@ -124,17 +131,18 @@ $@"<b>Request ID: {id}</b><br>
 
             return msg;
         }
+
         private void CreateZenDeskApiRequest()
         {
             var who = Util.UserFullName + " <" + Util.UserEmail + ">";
             var id = 0;
             var subject = $"{Subj}";
-            if (cs != null)
+            if (_cs != null)
             {
-                var cn = new SqlConnection(cs.ConnectionString);
+                var cn = new SqlConnection(_cs.ConnectionString);
                 cn.Open();
 
-                id = cn.Query<int>(supportInsert, new
+                id = cn.Query<int>(_supportInsert, new
                 {
                     c = DateTime.Now,
                     w = who,
@@ -145,18 +153,18 @@ $@"<b>Request ID: {id}</b><br>
                 }).Single();
                 subject += $" [{id}]";
 
-                cn.Execute(supportUpdate, new { subject, id });
+                cn.Execute(_supportUpdate, new { subject, id });
                 cn.Close();
             }
             var reqbody = new StringBuilder();
             reqbody.AppendFormat(@"<b>Request ID: {0}</b><br>
                             <b>Request By:</b> {1} ({2})<br>
-                            <b>Host:</b> https://{3}.tpsDbUtil.Db.com<br>
+                            <b>Host:</b> https://{3}.tpsdb.com<br>
                             ", id, Util.UserFullName, Util.UserEmail, Util.Host);
 
-            if (Subj != mydataRequest)
+            if (Subj != _mydataRequest)
             {
-                var p = (from e in DbUtil.Db.Users
+                var p = (from e in _db.Users
                          where e.UserId == Util.UserId
                          select new
                          {
@@ -182,16 +190,16 @@ $@"<b>Request ID: {id}</b><br>
                     {
                         if (Util.ValidEmail(addcc))
                         {
-                            ccAddrs.Add($"\"{addcc.trim()}\"");
+                            _ccAddrs.Add($"\"{addcc.trim()}\"");
                         }
                     }
                     catch (FormatException)
                     {
                     }
                 }
-                if (ccAddrs.Count > 0)
+                if (_ccAddrs.Count > 0)
                 {
-                    collaborators = $"\n\t\t\"collaborators\": [ {string.Join(",", ccAddrs)} ],";
+                    collaborators = $"\n\t\t\"collaborators\": [ {string.Join(",", _ccAddrs)} ],";
                 }
             }
             var escapedbody = HttpUtility.JavaScriptStringEncode(reqbody.ToString());
@@ -223,7 +231,7 @@ $@"{{
             request.AddHeader("cache-control", "no-cache");
             request.AddHeader("content-type", "application/json");
 
-            var response = client.Execute(request);
+            client.Execute(request);
         }
     }
 }

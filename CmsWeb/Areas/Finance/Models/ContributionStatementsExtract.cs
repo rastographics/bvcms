@@ -22,12 +22,12 @@ namespace CmsWeb.Areas.Finance.Models.Report
         public bool showCheckNo { get; set; }
         public bool showNotes { get; set; }
 
-        public ContributionStatementsExtract(string Host, DateTime fd, DateTime td, string OutputFile, string startswith, string sort, int? tagid, bool excludeelectronic)
+        public ContributionStatementsExtract(string host, DateTime fd, DateTime td, string outputFile, string startswith, string sort, int? tagid, bool excludeelectronic)
         {
             this.fd = fd;
             this.td = td;
-            this.Host = Host;
-            this.OutputFile = OutputFile;
+            this.Host = host;
+            this.OutputFile = outputFile;
             TagId = tagid;
             StartsWith = startswith;
             Sort = sort;
@@ -43,11 +43,12 @@ namespace CmsWeb.Areas.Finance.Models.Report
             var noaddressok = !Db.Setting("RequireAddressOnStatement", true);
             showCheckNo = Db.Setting("RequireCheckNoOnStatement");
             showNotes = Db.Setting("RequireNotesOnStatement");
-            const bool UseMinAmt = true;
+            const bool useMinAmt = true;
 
-            var qc = APIContribution.Contributors(Db, fd, td, 0, 0, 0, cs.Funds, noaddressok, UseMinAmt, StartsWith, Sort, tagid: TagId, excludeelectronic: ExcludeElectronic);
+            var qc = APIContribution.Contributors(Db, fd, td, 0, 0, 0, cs.Funds, noaddressok, useMinAmt, StartsWith, Sort, tagid: TagId, excludeelectronic: ExcludeElectronic);
             var runningtotals = Db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
-            runningtotals.Count = qc.Count();
+            var contributorInfos = qc.ToList();
+            runningtotals.Count = contributorInfos.Count();
             Db.SubmitChanges();
             if (showCheckNo || showNotes)
             {
@@ -61,7 +62,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
                 };
                 using (var stream = new FileStream(OutputFile, FileMode.Create))
                 {
-                    c.Run(stream, Db, qc, cs);
+                    c.Run(stream, Db, contributorInfos, cs);
                 }
 
                 LastSet = c.LastSet();
@@ -70,7 +71,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
                 {
                     using (var stream = new FileStream(Output(OutputFile, set), FileMode.Create))
                     {
-                        c.Run(stream, Db, qc, cs, set);
+                        c.Run(stream, Db, contributorInfos, cs, set);
                     }
                 }
 
@@ -90,7 +91,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
                 };
                 using (var stream = new FileStream(OutputFile, FileMode.Create))
                 {
-                    c.Run(stream, Db, qc, cs);
+                    c.Run(stream, Db, contributorInfos, cs);
                 }
 
                 LastSet = c.LastSet();
@@ -99,7 +100,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
                 {
                     using (var stream = new FileStream(Output(OutputFile, set), FileMode.Create))
                     {
-                        c.Run(stream, Db, qc, cs, set);
+                        c.Run(stream, Db, contributorInfos, cs, set);
                     }
                 }
 
