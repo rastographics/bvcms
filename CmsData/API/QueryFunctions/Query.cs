@@ -327,6 +327,39 @@ namespace CmsData
             return dd;
         }
 
+        /// <summary>
+        /// Creates a new DynamicData instance 
+        /// where each element is named as the value of the first column of the row 
+        /// and the value of that element is another DynamicData instance 
+        /// populated with name/value pairs corresponding to the columns of the row.
+        /// This is useful for summary data needed for a dashboard report.
+        /// Note that the first column data should be unique to avoid overwriting previous rows.
+        /// The number of rows is limited to 100 to avoid slurping into memory an entire table of People for example.
+        /// </summary>
+        public DynamicData SqlFirstColumnRowKey(string sql, object declarations)
+        {
+            var cn = GetReadonlyConnection();
+            var parameters = new DynamicParameters();
+            if (declarations != null)
+                AddParameters(declarations, parameters);
+            var ret = new DynamicData();
+            using (var rd = cn.ExecuteReader(sql, parameters))
+            {
+                var maxn = 100;
+                while (rd.Read())
+                {
+                    var dd = new DynamicData();
+                    for (var i = 0; i < rd.FieldCount; i++)
+                        dd.AddValue(rd.GetName(i), rd.GetValue(i));
+                    ret.AddValue(rd.GetString(0), dd);
+                    maxn--;
+                    if (maxn == 0)
+                        break;
+                }
+            }
+            return ret;
+        }
+
         public class NameValuePair
         {
             public string Name { get; set; }
