@@ -1,19 +1,47 @@
-﻿@using UtilityExtensions
+﻿@using CmsWeb.Code
 @model CmsWeb.Areas.Org.Models.MeetingModel
+@{
+    var customSmallHeaderImage = CustomHeader.SmallHeaderImage("~/Content/touchpoint/img/logo_sm.png");
+}
+
 <!DOCTYPE html>
-<html>
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name">
 <head>
-    <title>@Model.org.OrganizationName</title>
+    <link rel="shortcut icon" href="@Url.Content("~/favicon.ico?v=2")">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="robots" content="noindex" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    @ViewExtensions2.jQueryMobileCss()
+    <title>@Model.org.OrganizationName</title>
+    @ViewExtensions2.GoogleFonts()
+    @ViewExtensions2.FontAwesome()
+    @Fingerprint.Css("/Content/touchpoint/css/app.css")
+
+    <style>
+        .box-title {
+            padding-left: 10px;
+            padding-right: 10px;
+            height: auto!important;
+        }
+        .logo-md {
+            width: 60px;
+            height: 50px;
+            background-size: auto @customSmallHeaderImage.Height;
+            background-repeat: no-repeat;
+            background-position: left;
+            background-image: url(@Url.Content(customSmallHeaderImage.Url));
+            display: inline-block;
+            float:left;
+        }
+    </style>
 </head>
-<body>
+<body style="padding-top:0;margin-bottom:0;">
     @Html.Hidden("meetingid", Model.meeting.MeetingId)
-    <div data-role="page" id="head">
-        <div data-role="header" data-position="fixed" class="ui-bar ui-grid-b">
-            <div class="ui-bar" style="width: 90%; height: 40px">
-                @Model.org.OrganizationName - @Model.meeting.MeetingDate
-            </div>
+    <div id="head" class="box box-primary">
+        <div class="box-title" style="background:#fff!important;border: 1px solid #003f72 !important;border-width: 4px 0 0 0!important;">
+            <div class="logo-md"></div>
+            <h4 class="title" style="display:inline-block;color:#333!important;margin:0;">@Model.org.OrganizationName</h4>
+            <p style="color:#4a4a4a!important;">@Model.meeting.MeetingDate.Value.ToString("g")</p>
         </div>
         <div data-role="content">
             @{var inAttendanceRole = User.IsInRole("Attendance");}
@@ -21,7 +49,7 @@
             {
                 <div class="@(inAttendanceRole ? "ckline" : "na") @a.Name[0]">
                     <div class="ui-grid-a">
-                        <div>
+                        <div class="list-group-item">
                             <input type="checkbox" id="a.@a.PeopleId" @(a.Attended ? "checked=checked" : "") />
                             <label for="a.@a.PeopleId">
                                 @if (a.Highlight)
@@ -40,7 +68,6 @@
         </div>
     </div>
     @ViewExtensions2.jQuery()
-    @ViewExtensions2.jQueryMobile()
     <script type="text/javascript">
         $(function () {
             $("input[type='radio']").bind("change", function (event, ui) {
