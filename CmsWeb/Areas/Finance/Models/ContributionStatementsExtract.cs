@@ -38,17 +38,17 @@ namespace CmsWeb.Areas.Finance.Models.Report
         public void DoWork(ContributionStatements.StatementSpecification cs)
         {
             Db = DbUtil.Create(Host);
-            DbUtil.Db.CommandTimeout = 1200;
+            Db.CommandTimeout = 1200;
 
-            var noaddressok = !DbUtil.Db.Setting("RequireAddressOnStatement", true);
-            showCheckNo = DbUtil.Db.Setting("RequireCheckNoOnStatement");
-            showNotes = DbUtil.Db.Setting("RequireNotesOnStatement");
+            var noaddressok = !Db.Setting("RequireAddressOnStatement", true);
+            showCheckNo = Db.Setting("RequireCheckNoOnStatement");
+            showNotes = Db.Setting("RequireNotesOnStatement");
             const bool UseMinAmt = true;
 
-            var qc = APIContribution.Contributors(DbUtil.Db, fd, td, 0, 0, 0, cs.Funds, noaddressok, UseMinAmt, StartsWith, Sort, tagid: TagId, excludeelectronic: ExcludeElectronic);
-            var runningtotals = DbUtil.Db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
+            var qc = APIContribution.Contributors(Db, fd, td, 0, 0, 0, cs.Funds, noaddressok, UseMinAmt, StartsWith, Sort, tagid: TagId, excludeelectronic: ExcludeElectronic);
+            var runningtotals = Db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
             runningtotals.Count = qc.Count();
-            DbUtil.Db.SubmitChanges();
+            Db.SubmitChanges();
             if (showCheckNo || showNotes)
             {
                 var c = new ContributionStatementsExtra
@@ -74,11 +74,11 @@ namespace CmsWeb.Areas.Finance.Models.Report
                     }
                 }
 
-                runningtotals = DbUtil.Db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
+                runningtotals = Db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
                 runningtotals.LastSet = LastSet;
                 runningtotals.Sets = string.Join(",", sets);
                 runningtotals.Completed = DateTime.Now;
-                DbUtil.Db.SubmitChanges();
+                Db.SubmitChanges();
             }
             else
             {
@@ -103,11 +103,11 @@ namespace CmsWeb.Areas.Finance.Models.Report
                     }
                 }
 
-                runningtotals = DbUtil.Db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
+                runningtotals = Db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
                 runningtotals.LastSet = LastSet;
                 runningtotals.Sets = string.Join(",", sets);
                 runningtotals.Completed = DateTime.Now;
-                DbUtil.Db.SubmitChanges();
+                Db.SubmitChanges();
             }
         }
         public static string Output(string fn, int set)
