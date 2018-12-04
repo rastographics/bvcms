@@ -118,7 +118,13 @@
                     list: list.toString()
                 }),
                 success: function (ret) {
-                    console.log(ret);
+                    var query = '?' + $.param({
+                        organizationId: ret.orgid,
+                        subgroupId: ret.groupid,
+                        subgroupName: ret.ingroup,
+                        selectedTimeslot: '@Model.TimeSlot'
+                    });
+                    $("#DetailsContainer").load('@Url.Action("Details")' + query);
                     refreshOrgList();
                 },
                 error: function (ret) {
@@ -126,7 +132,7 @@
                 },
                 type: 'POST',
                 contentType: 'application/json, charset=utf-8',
-                dataType: 'html'
+                dataType: 'json'
             });
         });
 </script>

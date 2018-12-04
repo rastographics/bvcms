@@ -33,6 +33,7 @@ namespace CmsWeb.Areas.Coordinator.Models
 
         public int orgid { get; set; }
         public int? groupid { get; set; }
+        public string TimeSlot { get; set; }
         public string GroupName { get; set; }
         public string OrgName { get; set; }
         public int[] SelectedPeopleIds { get; set; }

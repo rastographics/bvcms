@@ -180,12 +180,14 @@ ORDER BY t0.NextMeetingDate, OrganizationName, SubgroupName", DateTime.Now.Date,
             return Json(m);
         }
 
-        public ActionResult MoveSubgroupView(int id, int grpid, string list)
+        public ActionResult MoveSubgroupView(int id, int grpid, string list, string selectedTimeslot)
         {
             var m = new SubgroupModel(id);
             var details = m.GetGroupDetails(grpid);
             m.groupid = grpid;
             m.GroupName = details.Name;
+            var date = DateTime.Parse(selectedTimeslot);
+            m.TimeSlot = date.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss");
             string[] arr = list.Split(',');
             int[] selectedIds = Array.ConvertAll(arr, int.Parse);
             m.SelectedPeopleIds = selectedIds;

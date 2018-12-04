@@ -54,8 +54,9 @@
                         <div class="metric-value circle">@Model.AttendeeWorkerCount</div>
                         <h4 class="metric-title">Volunteers</h4>
                     </div>
-                    <div class="metric" style="width: 100%; text-align: right;">
-                        <a href="#" id="setdefaults" class="btn btn-default btn-sm">Set Defaults</a><br/>
+                    <div class="metric" style="width: 100%; display: flex; align-items: flex-start; justify-content: flex-end;">
+                        <a href="#" id="setdefaults" class="btn btn-default btn-sm">Set Defaults</a><br />
+                        <a href="#" id="refresh" class="btn btn-default btn-sm" style="margin-left: 10px;">Refresh</a><br />
                     </div>
                 </div>
                 <div class="row">
@@ -71,7 +72,7 @@
                                     @foreach (var attendee in Model.Attendees.Where(a => !a.IsWorker))
                                     {
                                         <tr>
-                                            <td style="padding: 0 !important;border: 0 !important; min-width: 225px; line-height: 5">
+                                            <td style="padding: 0 !important;border: 0 !important;">
                                                 <label class="labelnothighlighted"><input style="width: 20px; height: 15px" class="checkSingle" type="checkbox" value="@attendee.PeopleId">@attendee.Name</label>
                                             </td>
                                         </tr>
@@ -92,7 +93,7 @@
                                     @foreach (var attendee in Model.Attendees.Where(a => a.IsWorker))
                                     {
                                         <tr>
-                                            <td style="padding: 0 !important;border: 0 !important; min-width: 225px; line-height: 5">
+                                            <td style="padding: 0 !important;border: 0 !important;">
                                                 <label class="labelnothighlighted"><input style="width: 20px; height: 15px" class="checkSingle" type="checkbox" value="@attendee.PeopleId">@attendee.Name</label>
                                             </td>
                                         </tr>
@@ -208,9 +209,24 @@
             var query = '?' + $.param({
                 id: $('#OrganizationId').val(),
                 grpid: $('#SubgroupId').val(),
+                selectedTimeslot: $("#NextMeetingDate").val(),
                 list: list.toString()
             });
             $("#DetailsContainer").load('@Url.Action("MoveSubgroupView")' + query);
+        });
+
+    $('#refresh').on('click',
+        function (e) {
+            e.preventDefault();
+            
+            var query = '?' + $.param({
+                organizationId: $("#OrganizationId").val(),
+                subgroupId: $("#SubgroupId").val(),
+                subgroupName: $("#SubgroupName").val(),
+                selectedTimeslot: $("#NextMeetingDate").val()
+            });
+            $("#DetailsContainer").load('@Url.Action("Details")' + query);
+            refreshOrgList();
         });
 </script>
 
