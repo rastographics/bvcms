@@ -24,7 +24,7 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< Content> _Content;
+		private EntityRef<Content> _Content;
 		
 	#endregion
 	
@@ -44,7 +44,7 @@ namespace CmsData
 		{
 			
 			
-			this._Content = default(EntityRef< Content>); 
+			this._Content = default(EntityRef<Content>); 
 			
 			OnCreated();
 		}

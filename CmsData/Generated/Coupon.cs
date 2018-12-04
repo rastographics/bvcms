@@ -48,13 +48,13 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< Division> _Division;
+		private EntityRef<Division> _Division;
 		
-		private EntityRef< Organization> _Organization;
+		private EntityRef<Organization> _Organization;
 		
-		private EntityRef< Person> _Person;
+		private EntityRef<Person> _Person;
 		
-		private EntityRef< User> _User;
+		private EntityRef<User> _User;
 		
 	#endregion
 	
@@ -110,13 +110,13 @@ namespace CmsData
 		{
 			
 			
-			this._Division = default(EntityRef< Division>); 
+			this._Division = default(EntityRef<Division>); 
 			
-			this._Organization = default(EntityRef< Organization>); 
+			this._Organization = default(EntityRef<Organization>); 
 			
-			this._Person = default(EntityRef< Person>); 
+			this._Person = default(EntityRef<Person>); 
 			
-			this._User = default(EntityRef< User>); 
+			this._User = default(EntityRef<User>); 
 			
 			OnCreated();
 		}

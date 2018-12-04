@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name">
+<head>
+    <link rel="shortcut icon" href="@Url.Content("~/favicon.ico?v=2")">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="robots" content="noindex" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @ViewExtensions2.GoogleFonts()
+    @ViewExtensions2.FontAwesome()
+    @ViewExtensions2.jQuery()
+    @Fingerprint.Css("/Content/touchpoint/lib/jquery-ui-custom/css/jquery-ui.min.css")
+    @Fingerprint.Css("/Content/touchpoint/css/app.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-multiselect/css/bootstrap-multiselect.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-sweetalert/css/sweetalert.css")
+    @Fingerprint.CssPrint("/Content/touchpoint/css/print.css")
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    @RenderSection("head", false)
+</head>
+<body style="padding-top: 0 !important">
+    <div id="page-header" style="padding: 0;">
+        <div class="container-fluid" style="padding: 5px 15px;">
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="logo-md"></div>
+                        </div>
+                        <div class="col-sm-9 centered-header">
+                            <span class="h3" style="margin:0;">@ViewBag.PageHeader</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="row">
+                        <div class="col-lg-4 text-right centered-header">
+                            <h5>Timeslot</h5>
+                        </div>
+                        <div class="col-lg-8 centered-header">
+                            <div id="TimeslotContainer">
+                                @Html.Action("TimeslotSelector")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="row">
+                        <div class="col-lg-4 text-right centered-header">
+                            <h5>Program</h5>
+                        </div>
+                        <div class="col-lg-8 centered-header">
+                            <div id="ProgramContainer">
+                                @Html.Action("ProgramSelector")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="row">
+                        <div class="col-lg-4 text-right centered-header">
+                            <h5>Division</h5>
+                        </div>
+                        <div class="col-lg-8 centered-header">
+                            <div id="DivisionContainer">
+                                @Html.Action("DivisionSelector")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-1">
+                    <a href="#" id="setalldefaults" class="btn btn-default btn-sm" style="margin-top: 10px;">Set All Defaults</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid" id="main">
+        @RenderBody()
+    </div>
+@Html.Partial("PageFooter")
+<div class="device-lg visible-lg-block"></div>
+<div class="device-md visible-md-block"></div>
+<div class="device-sm visible-sm-block"></div>
+<div class="device-xs visible-xs-block"></div>
+<div class="device-2xs"></div>
+<div class="modal fade" id="empty-dialog" data-keyboard="false" data-backdrop="static"></div>
+@ViewExtensions2.GoogleAnalytics()
+@ViewExtensions2.LoDash()
+@ViewExtensions2.Bootstrap3()
+@Fingerprint.Script("/Content/touchpoint/lib/jquery-ui-custom/js/jquery-ui.min.js")
+@ViewExtensions2.Velocity()
+@ViewExtensions2.Moment()
+@Fingerprint.Script("/Content/touchpoint/lib/jquery-globalize/js/globalize.js")
+<script src="@Url.Content(ViewExtensions2.jqueryGlobalizeCulture)" type="text/javascript"></script>
+@ViewExtensions2.jQueryValidation()
+@Html.Partial("DatePickerDefaults2")
+@Fingerprint.Script("/Content/touchpoint/js/app.min.js")
+@Fingerprint.Script("/Content/touchpoint/lib/bootstrap-multiselect/js/bootstrap-multiselect.js")
+@RenderSection("scripts", false)
+</body>
+</html>

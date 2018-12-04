@@ -28,7 +28,7 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< ChangeLog> _ChangeLog;
+		private EntityRef<ChangeLog> _ChangeLog;
 		
 	#endregion
 	
@@ -54,7 +54,7 @@ namespace CmsData
 		{
 			
 			
-			this._ChangeLog = default(EntityRef< ChangeLog>); 
+			this._ChangeLog = default(EntityRef<ChangeLog>); 
 			
 			OnCreated();
 		}

@@ -26,7 +26,7 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< Family> _Family;
+		private EntityRef<Family> _Family;
 		
 	#endregion
 	
@@ -49,7 +49,7 @@ namespace CmsData
 		{
 			
 			
-			this._Family = default(EntityRef< Family>); 
+			this._Family = default(EntityRef<Family>); 
 			
 			OnCreated();
 		}

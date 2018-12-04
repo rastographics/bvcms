@@ -28,9 +28,9 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< Contact> _contact;
+		private EntityRef<Contact> _contact;
 		
-		private EntityRef< Person> _person;
+		private EntityRef<Person> _person;
 		
 	#endregion
 	
@@ -56,9 +56,9 @@ namespace CmsData
 		{
 			
 			
-			this._contact = default(EntityRef< Contact>); 
+			this._contact = default(EntityRef<Contact>); 
 			
-			this._person = default(EntityRef< Person>); 
+			this._person = default(EntityRef<Person>); 
 			
 			OnCreated();
 		}

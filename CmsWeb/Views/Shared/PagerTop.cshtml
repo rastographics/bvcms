@@ -2,7 +2,7 @@
 @model CmsWeb.Models.PagerModel2
 @{
     var showOrgTypeFilter = Model.GetType() == typeof (CurrentEnrollments) || Model.GetType() == typeof (PreviousEnrollments) || Model.GetType() == typeof (PendingEnrollments);
-    var colClasses = showOrgTypeFilter ? "col-lg-12 col-md-12 col-sm-12" : "col-lg-4 col-md-4 col-sm-4";
+    var colClasses = showOrgTypeFilter ? "col-lg-12 col-md-12 col-sm-12" : "col-lg-4 col-md-8 col-sm-12";
 }
 <div class="row hidden-print">
     <div class="@colClasses form-inline">

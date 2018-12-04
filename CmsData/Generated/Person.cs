@@ -255,154 +255,154 @@ namespace CmsData
 		private bool? _ElectronicStatement;
 		
    		
-   		private EntitySet< Contactee> _contactsHad;
+   		private EntitySet<Contactee> _contactsHad;
 		
-   		private EntitySet< Contactor> _contactsMade;
+   		private EntitySet<Contactor> _contactsMade;
 		
-   		private EntitySet< EnrollmentTransaction> _EnrollmentTransactions;
+   		private EntitySet<EnrollmentTransaction> _EnrollmentTransactions;
 		
-   		private EntitySet< Family> _FamiliesHeaded;
+   		private EntitySet<Family> _FamiliesHeaded;
 		
-   		private EntitySet< Family> _FamiliesHeaded2;
+   		private EntitySet<Family> _FamiliesHeaded2;
 		
-   		private EntitySet< Attend> _Attends;
+   		private EntitySet<Attend> _Attends;
 		
-   		private EntitySet< BackgroundCheck> _BackgroundChecks;
+   		private EntitySet<BackgroundCheck> _BackgroundChecks;
 		
-   		private EntitySet< CardIdentifier> _CardIdentifiers;
+   		private EntitySet<CardIdentifier> _CardIdentifiers;
 		
-   		private EntitySet< CheckInTime> _CheckInTimes;
+   		private EntitySet<CheckInTime> _CheckInTimes;
 		
-   		private EntitySet< Contribution> _Contributions;
+   		private EntitySet<Contribution> _Contributions;
 		
-   		private EntitySet< Coupon> _Coupons;
+   		private EntitySet<Coupon> _Coupons;
 		
-   		private EntitySet< EmailOptOut> _EmailOptOuts;
+   		private EntitySet<EmailOptOut> _EmailOptOuts;
 		
-   		private EntitySet< EmailQueue> _EmailQueues;
+   		private EntitySet<EmailQueue> _EmailQueues;
 		
-   		private EntitySet< EmailQueueTo> _EmailQueueTos;
+   		private EntitySet<EmailQueueTo> _EmailQueueTos;
 		
-   		private EntitySet< EmailResponse> _EmailResponses;
+   		private EntitySet<EmailResponse> _EmailResponses;
 		
-   		private EntitySet< GoerSupporter> _FK_Goers;
+   		private EntitySet<GoerSupporter> _FK_Goers;
 		
-   		private EntitySet< ManagedGiving> _ManagedGivings;
+   		private EntitySet<ManagedGiving> _ManagedGivings;
 		
-   		private EntitySet< MemberDocForm> _MemberDocForms;
+   		private EntitySet<MemberDocForm> _MemberDocForms;
 		
-   		private EntitySet< MobileAppDevice> _MobileAppDevices;
+   		private EntitySet<MobileAppDevice> _MobileAppDevices;
 		
-   		private EntitySet< MobileAppPushRegistration> _MobileAppPushRegistrations;
+   		private EntitySet<MobileAppPushRegistration> _MobileAppPushRegistrations;
 		
-   		private EntitySet< OrgMemberExtra> _OrgMemberExtras;
+   		private EntitySet<OrgMemberExtra> _OrgMemberExtras;
 		
-   		private EntitySet< PaymentInfo> _PaymentInfos;
+   		private EntitySet<PaymentInfo> _PaymentInfos;
 		
-   		private EntitySet< PeopleExtra> _PeopleExtras;
+   		private EntitySet<PeopleExtra> _PeopleExtras;
 		
-   		private EntitySet< PrevOrgMemberExtra> _PrevOrgMemberExtras;
+   		private EntitySet<PrevOrgMemberExtra> _PrevOrgMemberExtras;
 		
-   		private EntitySet< RecReg> _RecRegs;
+   		private EntitySet<RecReg> _RecRegs;
 		
-   		private EntitySet< RecurringAmount> _RecurringAmounts;
+   		private EntitySet<RecurringAmount> _RecurringAmounts;
 		
-   		private EntitySet< SMSItem> _SMSItems;
+   		private EntitySet<SMSItem> _SMSItems;
 		
-   		private EntitySet< SMSList> _SMSLists;
+   		private EntitySet<SMSList> _SMSLists;
 		
-   		private EntitySet< GoerSupporter> _FK_Supporters;
+   		private EntitySet<GoerSupporter> _FK_Supporters;
 		
-   		private EntitySet< TagShare> _TagShares;
+   		private EntitySet<TagShare> _TagShares;
 		
-   		private EntitySet< TaskListOwner> _TaskListOwners;
+   		private EntitySet<TaskListOwner> _TaskListOwners;
 		
-   		private EntitySet< Transaction> _Transactions;
+   		private EntitySet<Transaction> _Transactions;
 		
-   		private EntitySet< TransactionPerson> _TransactionPeople;
+   		private EntitySet<TransactionPerson> _TransactionPeople;
 		
-   		private EntitySet< User> _Users;
+   		private EntitySet<User> _Users;
 		
-   		private EntitySet< VolInterestInterestCode> _VolInterestInterestCodes;
+   		private EntitySet<VolInterestInterestCode> _VolInterestInterestCodes;
 		
-   		private EntitySet< Volunteer> _Volunteers;
+   		private EntitySet<Volunteer> _Volunteers;
 		
-   		private EntitySet< VolunteerForm> _VolunteerForms;
+   		private EntitySet<VolunteerForm> _VolunteerForms;
 		
-   		private EntitySet< VoluteerApprovalId> _VoluteerApprovalIds;
+   		private EntitySet<VoluteerApprovalId> _VoluteerApprovalIds;
 		
-   		private EntitySet< GoerSenderAmount> _GoerAmounts;
+   		private EntitySet<GoerSenderAmount> _GoerAmounts;
 		
-   		private EntitySet< PeopleCanEmailFor> _OnBehalfOfPeople;
+   		private EntitySet<PeopleCanEmailFor> _OnBehalfOfPeople;
 		
-   		private EntitySet< OrganizationMember> _OrganizationMembers;
+   		private EntitySet<OrganizationMember> _OrganizationMembers;
 		
-   		private EntitySet< BackgroundCheck> _People;
+   		private EntitySet<BackgroundCheck> _People;
 		
-   		private EntitySet< PeopleCanEmailFor> _PersonsCanEmail;
+   		private EntitySet<PeopleCanEmailFor> _PersonsCanEmail;
 		
-   		private EntitySet< GoerSenderAmount> _SenderAmounts;
+   		private EntitySet<GoerSenderAmount> _SenderAmounts;
 		
-   		private EntitySet< SubRequest> _SubRequests;
+   		private EntitySet<SubRequest> _SubRequests;
 		
-   		private EntitySet< SubRequest> _SubResponses;
+   		private EntitySet<SubRequest> _SubResponses;
 		
-   		private EntitySet< TagPerson> _Tags;
+   		private EntitySet<TagPerson> _Tags;
 		
-   		private EntitySet< Tag> _TagsOwned;
+   		private EntitySet<Tag> _TagsOwned;
 		
-   		private EntitySet< Task> _Tasks;
+   		private EntitySet<Task> _Tasks;
 		
-   		private EntitySet< Task> _TasksAboutPerson;
+   		private EntitySet<Task> _TasksAboutPerson;
 		
-   		private EntitySet< Task> _TasksCoOwned;
+   		private EntitySet<Task> _TasksCoOwned;
 		
-   		private EntitySet< VolRequest> _VolRequests;
+   		private EntitySet<VolRequest> _VolRequests;
 		
-   		private EntitySet< VolRequest> _VolResponses;
+   		private EntitySet<VolRequest> _VolResponses;
 		
     	
-		private EntityRef< Organization> _BFClass;
+		private EntityRef<Organization> _BFClass;
 		
-		private EntityRef< EnvelopeOption> _EnvelopeOption;
+		private EntityRef<EnvelopeOption> _EnvelopeOption;
 		
-		private EntityRef< BaptismStatus> _BaptismStatus;
+		private EntityRef<BaptismStatus> _BaptismStatus;
 		
-		private EntityRef< BaptismType> _BaptismType;
+		private EntityRef<BaptismType> _BaptismType;
 		
-		private EntityRef< Campu> _Campu;
+		private EntityRef<Campu> _Campu;
 		
-		private EntityRef< DecisionType> _DecisionType;
+		private EntityRef<DecisionType> _DecisionType;
 		
-		private EntityRef< NewMemberClassStatus> _NewMemberClassStatus;
+		private EntityRef<NewMemberClassStatus> _NewMemberClassStatus;
 		
-		private EntityRef< DropType> _DropType;
+		private EntityRef<DropType> _DropType;
 		
-		private EntityRef< EntryPoint> _EntryPoint;
+		private EntityRef<EntryPoint> _EntryPoint;
 		
-		private EntityRef< Family> _Family;
+		private EntityRef<Family> _Family;
 		
-		private EntityRef< FamilyPosition> _FamilyPosition;
+		private EntityRef<FamilyPosition> _FamilyPosition;
 		
-		private EntityRef< Gender> _Gender;
+		private EntityRef<Gender> _Gender;
 		
-		private EntityRef< InterestPoint> _InterestPoint;
+		private EntityRef<InterestPoint> _InterestPoint;
 		
-		private EntityRef< JoinType> _JoinType;
+		private EntityRef<JoinType> _JoinType;
 		
-		private EntityRef< MaritalStatus> _MaritalStatus;
+		private EntityRef<MaritalStatus> _MaritalStatus;
 		
-		private EntityRef< MemberLetterStatus> _MemberLetterStatus;
+		private EntityRef<MemberLetterStatus> _MemberLetterStatus;
 		
-		private EntityRef< MemberStatus> _MemberStatus;
+		private EntityRef<MemberStatus> _MemberStatus;
 		
-		private EntityRef< Origin> _Origin;
+		private EntityRef<Origin> _Origin;
 		
-		private EntityRef< Picture> _Picture;
+		private EntityRef<Picture> _Picture;
 		
-		private EntityRef< ResidentCode> _ResidentCode;
+		private EntityRef<ResidentCode> _ResidentCode;
 		
-		private EntityRef< EnvelopeOption> _ContributionStatementOption;
+		private EntityRef<EnvelopeOption> _ContributionStatementOption;
 		
 	#endregion
 	
@@ -769,154 +769,154 @@ namespace CmsData
 		public Person()
 		{
 			
-			this._contactsHad = new EntitySet< Contactee>(new Action< Contactee>(this.attach_contactsHad), new Action< Contactee>(this.detach_contactsHad)); 
+			this._contactsHad = new EntitySet<Contactee>(new Action< Contactee>(this.attach_contactsHad), new Action< Contactee>(this.detach_contactsHad)); 
 			
-			this._contactsMade = new EntitySet< Contactor>(new Action< Contactor>(this.attach_contactsMade), new Action< Contactor>(this.detach_contactsMade)); 
+			this._contactsMade = new EntitySet<Contactor>(new Action< Contactor>(this.attach_contactsMade), new Action< Contactor>(this.detach_contactsMade)); 
 			
-			this._EnrollmentTransactions = new EntitySet< EnrollmentTransaction>(new Action< EnrollmentTransaction>(this.attach_EnrollmentTransactions), new Action< EnrollmentTransaction>(this.detach_EnrollmentTransactions)); 
+			this._EnrollmentTransactions = new EntitySet<EnrollmentTransaction>(new Action< EnrollmentTransaction>(this.attach_EnrollmentTransactions), new Action< EnrollmentTransaction>(this.detach_EnrollmentTransactions)); 
 			
-			this._FamiliesHeaded = new EntitySet< Family>(new Action< Family>(this.attach_FamiliesHeaded), new Action< Family>(this.detach_FamiliesHeaded)); 
+			this._FamiliesHeaded = new EntitySet<Family>(new Action< Family>(this.attach_FamiliesHeaded), new Action< Family>(this.detach_FamiliesHeaded)); 
 			
-			this._FamiliesHeaded2 = new EntitySet< Family>(new Action< Family>(this.attach_FamiliesHeaded2), new Action< Family>(this.detach_FamiliesHeaded2)); 
+			this._FamiliesHeaded2 = new EntitySet<Family>(new Action< Family>(this.attach_FamiliesHeaded2), new Action< Family>(this.detach_FamiliesHeaded2)); 
 			
-			this._Attends = new EntitySet< Attend>(new Action< Attend>(this.attach_Attends), new Action< Attend>(this.detach_Attends)); 
+			this._Attends = new EntitySet<Attend>(new Action< Attend>(this.attach_Attends), new Action< Attend>(this.detach_Attends)); 
 			
-			this._BackgroundChecks = new EntitySet< BackgroundCheck>(new Action< BackgroundCheck>(this.attach_BackgroundChecks), new Action< BackgroundCheck>(this.detach_BackgroundChecks)); 
+			this._BackgroundChecks = new EntitySet<BackgroundCheck>(new Action< BackgroundCheck>(this.attach_BackgroundChecks), new Action< BackgroundCheck>(this.detach_BackgroundChecks)); 
 			
-			this._CardIdentifiers = new EntitySet< CardIdentifier>(new Action< CardIdentifier>(this.attach_CardIdentifiers), new Action< CardIdentifier>(this.detach_CardIdentifiers)); 
+			this._CardIdentifiers = new EntitySet<CardIdentifier>(new Action< CardIdentifier>(this.attach_CardIdentifiers), new Action< CardIdentifier>(this.detach_CardIdentifiers)); 
 			
-			this._CheckInTimes = new EntitySet< CheckInTime>(new Action< CheckInTime>(this.attach_CheckInTimes), new Action< CheckInTime>(this.detach_CheckInTimes)); 
+			this._CheckInTimes = new EntitySet<CheckInTime>(new Action< CheckInTime>(this.attach_CheckInTimes), new Action< CheckInTime>(this.detach_CheckInTimes)); 
 			
-			this._Contributions = new EntitySet< Contribution>(new Action< Contribution>(this.attach_Contributions), new Action< Contribution>(this.detach_Contributions)); 
+			this._Contributions = new EntitySet<Contribution>(new Action< Contribution>(this.attach_Contributions), new Action< Contribution>(this.detach_Contributions)); 
 			
-			this._Coupons = new EntitySet< Coupon>(new Action< Coupon>(this.attach_Coupons), new Action< Coupon>(this.detach_Coupons)); 
+			this._Coupons = new EntitySet<Coupon>(new Action< Coupon>(this.attach_Coupons), new Action< Coupon>(this.detach_Coupons)); 
 			
-			this._EmailOptOuts = new EntitySet< EmailOptOut>(new Action< EmailOptOut>(this.attach_EmailOptOuts), new Action< EmailOptOut>(this.detach_EmailOptOuts)); 
+			this._EmailOptOuts = new EntitySet<EmailOptOut>(new Action< EmailOptOut>(this.attach_EmailOptOuts), new Action< EmailOptOut>(this.detach_EmailOptOuts)); 
 			
-			this._EmailQueues = new EntitySet< EmailQueue>(new Action< EmailQueue>(this.attach_EmailQueues), new Action< EmailQueue>(this.detach_EmailQueues)); 
+			this._EmailQueues = new EntitySet<EmailQueue>(new Action< EmailQueue>(this.attach_EmailQueues), new Action< EmailQueue>(this.detach_EmailQueues)); 
 			
-			this._EmailQueueTos = new EntitySet< EmailQueueTo>(new Action< EmailQueueTo>(this.attach_EmailQueueTos), new Action< EmailQueueTo>(this.detach_EmailQueueTos)); 
+			this._EmailQueueTos = new EntitySet<EmailQueueTo>(new Action< EmailQueueTo>(this.attach_EmailQueueTos), new Action< EmailQueueTo>(this.detach_EmailQueueTos)); 
 			
-			this._EmailResponses = new EntitySet< EmailResponse>(new Action< EmailResponse>(this.attach_EmailResponses), new Action< EmailResponse>(this.detach_EmailResponses)); 
+			this._EmailResponses = new EntitySet<EmailResponse>(new Action< EmailResponse>(this.attach_EmailResponses), new Action< EmailResponse>(this.detach_EmailResponses)); 
 			
-			this._FK_Goers = new EntitySet< GoerSupporter>(new Action< GoerSupporter>(this.attach_FK_Goers), new Action< GoerSupporter>(this.detach_FK_Goers)); 
+			this._FK_Goers = new EntitySet<GoerSupporter>(new Action< GoerSupporter>(this.attach_FK_Goers), new Action< GoerSupporter>(this.detach_FK_Goers)); 
 			
-			this._ManagedGivings = new EntitySet< ManagedGiving>(new Action< ManagedGiving>(this.attach_ManagedGivings), new Action< ManagedGiving>(this.detach_ManagedGivings)); 
+			this._ManagedGivings = new EntitySet<ManagedGiving>(new Action< ManagedGiving>(this.attach_ManagedGivings), new Action< ManagedGiving>(this.detach_ManagedGivings)); 
 			
-			this._MemberDocForms = new EntitySet< MemberDocForm>(new Action< MemberDocForm>(this.attach_MemberDocForms), new Action< MemberDocForm>(this.detach_MemberDocForms)); 
+			this._MemberDocForms = new EntitySet<MemberDocForm>(new Action< MemberDocForm>(this.attach_MemberDocForms), new Action< MemberDocForm>(this.detach_MemberDocForms)); 
 			
-			this._MobileAppDevices = new EntitySet< MobileAppDevice>(new Action< MobileAppDevice>(this.attach_MobileAppDevices), new Action< MobileAppDevice>(this.detach_MobileAppDevices)); 
+			this._MobileAppDevices = new EntitySet<MobileAppDevice>(new Action< MobileAppDevice>(this.attach_MobileAppDevices), new Action< MobileAppDevice>(this.detach_MobileAppDevices)); 
 			
-			this._MobileAppPushRegistrations = new EntitySet< MobileAppPushRegistration>(new Action< MobileAppPushRegistration>(this.attach_MobileAppPushRegistrations), new Action< MobileAppPushRegistration>(this.detach_MobileAppPushRegistrations)); 
+			this._MobileAppPushRegistrations = new EntitySet<MobileAppPushRegistration>(new Action< MobileAppPushRegistration>(this.attach_MobileAppPushRegistrations), new Action< MobileAppPushRegistration>(this.detach_MobileAppPushRegistrations)); 
 			
-			this._OrgMemberExtras = new EntitySet< OrgMemberExtra>(new Action< OrgMemberExtra>(this.attach_OrgMemberExtras), new Action< OrgMemberExtra>(this.detach_OrgMemberExtras)); 
+			this._OrgMemberExtras = new EntitySet<OrgMemberExtra>(new Action< OrgMemberExtra>(this.attach_OrgMemberExtras), new Action< OrgMemberExtra>(this.detach_OrgMemberExtras)); 
 			
-			this._PaymentInfos = new EntitySet< PaymentInfo>(new Action< PaymentInfo>(this.attach_PaymentInfos), new Action< PaymentInfo>(this.detach_PaymentInfos)); 
+			this._PaymentInfos = new EntitySet<PaymentInfo>(new Action< PaymentInfo>(this.attach_PaymentInfos), new Action< PaymentInfo>(this.detach_PaymentInfos)); 
 			
-			this._PeopleExtras = new EntitySet< PeopleExtra>(new Action< PeopleExtra>(this.attach_PeopleExtras), new Action< PeopleExtra>(this.detach_PeopleExtras)); 
+			this._PeopleExtras = new EntitySet<PeopleExtra>(new Action< PeopleExtra>(this.attach_PeopleExtras), new Action< PeopleExtra>(this.detach_PeopleExtras)); 
 			
-			this._PrevOrgMemberExtras = new EntitySet< PrevOrgMemberExtra>(new Action< PrevOrgMemberExtra>(this.attach_PrevOrgMemberExtras), new Action< PrevOrgMemberExtra>(this.detach_PrevOrgMemberExtras)); 
+			this._PrevOrgMemberExtras = new EntitySet<PrevOrgMemberExtra>(new Action< PrevOrgMemberExtra>(this.attach_PrevOrgMemberExtras), new Action< PrevOrgMemberExtra>(this.detach_PrevOrgMemberExtras)); 
 			
-			this._RecRegs = new EntitySet< RecReg>(new Action< RecReg>(this.attach_RecRegs), new Action< RecReg>(this.detach_RecRegs)); 
+			this._RecRegs = new EntitySet<RecReg>(new Action< RecReg>(this.attach_RecRegs), new Action< RecReg>(this.detach_RecRegs)); 
 			
-			this._RecurringAmounts = new EntitySet< RecurringAmount>(new Action< RecurringAmount>(this.attach_RecurringAmounts), new Action< RecurringAmount>(this.detach_RecurringAmounts)); 
+			this._RecurringAmounts = new EntitySet<RecurringAmount>(new Action< RecurringAmount>(this.attach_RecurringAmounts), new Action< RecurringAmount>(this.detach_RecurringAmounts)); 
 			
-			this._SMSItems = new EntitySet< SMSItem>(new Action< SMSItem>(this.attach_SMSItems), new Action< SMSItem>(this.detach_SMSItems)); 
+			this._SMSItems = new EntitySet<SMSItem>(new Action< SMSItem>(this.attach_SMSItems), new Action< SMSItem>(this.detach_SMSItems)); 
 			
-			this._SMSLists = new EntitySet< SMSList>(new Action< SMSList>(this.attach_SMSLists), new Action< SMSList>(this.detach_SMSLists)); 
+			this._SMSLists = new EntitySet<SMSList>(new Action< SMSList>(this.attach_SMSLists), new Action< SMSList>(this.detach_SMSLists)); 
 			
-			this._FK_Supporters = new EntitySet< GoerSupporter>(new Action< GoerSupporter>(this.attach_FK_Supporters), new Action< GoerSupporter>(this.detach_FK_Supporters)); 
+			this._FK_Supporters = new EntitySet<GoerSupporter>(new Action< GoerSupporter>(this.attach_FK_Supporters), new Action< GoerSupporter>(this.detach_FK_Supporters)); 
 			
-			this._TagShares = new EntitySet< TagShare>(new Action< TagShare>(this.attach_TagShares), new Action< TagShare>(this.detach_TagShares)); 
+			this._TagShares = new EntitySet<TagShare>(new Action< TagShare>(this.attach_TagShares), new Action< TagShare>(this.detach_TagShares)); 
 			
-			this._TaskListOwners = new EntitySet< TaskListOwner>(new Action< TaskListOwner>(this.attach_TaskListOwners), new Action< TaskListOwner>(this.detach_TaskListOwners)); 
+			this._TaskListOwners = new EntitySet<TaskListOwner>(new Action< TaskListOwner>(this.attach_TaskListOwners), new Action< TaskListOwner>(this.detach_TaskListOwners)); 
 			
-			this._Transactions = new EntitySet< Transaction>(new Action< Transaction>(this.attach_Transactions), new Action< Transaction>(this.detach_Transactions)); 
+			this._Transactions = new EntitySet<Transaction>(new Action< Transaction>(this.attach_Transactions), new Action< Transaction>(this.detach_Transactions)); 
 			
-			this._TransactionPeople = new EntitySet< TransactionPerson>(new Action< TransactionPerson>(this.attach_TransactionPeople), new Action< TransactionPerson>(this.detach_TransactionPeople)); 
+			this._TransactionPeople = new EntitySet<TransactionPerson>(new Action< TransactionPerson>(this.attach_TransactionPeople), new Action< TransactionPerson>(this.detach_TransactionPeople)); 
 			
-			this._Users = new EntitySet< User>(new Action< User>(this.attach_Users), new Action< User>(this.detach_Users)); 
+			this._Users = new EntitySet<User>(new Action< User>(this.attach_Users), new Action< User>(this.detach_Users)); 
 			
-			this._VolInterestInterestCodes = new EntitySet< VolInterestInterestCode>(new Action< VolInterestInterestCode>(this.attach_VolInterestInterestCodes), new Action< VolInterestInterestCode>(this.detach_VolInterestInterestCodes)); 
+			this._VolInterestInterestCodes = new EntitySet<VolInterestInterestCode>(new Action< VolInterestInterestCode>(this.attach_VolInterestInterestCodes), new Action< VolInterestInterestCode>(this.detach_VolInterestInterestCodes)); 
 			
-			this._Volunteers = new EntitySet< Volunteer>(new Action< Volunteer>(this.attach_Volunteers), new Action< Volunteer>(this.detach_Volunteers)); 
+			this._Volunteers = new EntitySet<Volunteer>(new Action< Volunteer>(this.attach_Volunteers), new Action< Volunteer>(this.detach_Volunteers)); 
 			
-			this._VolunteerForms = new EntitySet< VolunteerForm>(new Action< VolunteerForm>(this.attach_VolunteerForms), new Action< VolunteerForm>(this.detach_VolunteerForms)); 
+			this._VolunteerForms = new EntitySet<VolunteerForm>(new Action< VolunteerForm>(this.attach_VolunteerForms), new Action< VolunteerForm>(this.detach_VolunteerForms)); 
 			
-			this._VoluteerApprovalIds = new EntitySet< VoluteerApprovalId>(new Action< VoluteerApprovalId>(this.attach_VoluteerApprovalIds), new Action< VoluteerApprovalId>(this.detach_VoluteerApprovalIds)); 
+			this._VoluteerApprovalIds = new EntitySet<VoluteerApprovalId>(new Action< VoluteerApprovalId>(this.attach_VoluteerApprovalIds), new Action< VoluteerApprovalId>(this.detach_VoluteerApprovalIds)); 
 			
-			this._GoerAmounts = new EntitySet< GoerSenderAmount>(new Action< GoerSenderAmount>(this.attach_GoerAmounts), new Action< GoerSenderAmount>(this.detach_GoerAmounts)); 
+			this._GoerAmounts = new EntitySet<GoerSenderAmount>(new Action< GoerSenderAmount>(this.attach_GoerAmounts), new Action< GoerSenderAmount>(this.detach_GoerAmounts)); 
 			
-			this._OnBehalfOfPeople = new EntitySet< PeopleCanEmailFor>(new Action< PeopleCanEmailFor>(this.attach_OnBehalfOfPeople), new Action< PeopleCanEmailFor>(this.detach_OnBehalfOfPeople)); 
+			this._OnBehalfOfPeople = new EntitySet<PeopleCanEmailFor>(new Action< PeopleCanEmailFor>(this.attach_OnBehalfOfPeople), new Action< PeopleCanEmailFor>(this.detach_OnBehalfOfPeople)); 
 			
-			this._OrganizationMembers = new EntitySet< OrganizationMember>(new Action< OrganizationMember>(this.attach_OrganizationMembers), new Action< OrganizationMember>(this.detach_OrganizationMembers)); 
+			this._OrganizationMembers = new EntitySet<OrganizationMember>(new Action< OrganizationMember>(this.attach_OrganizationMembers), new Action< OrganizationMember>(this.detach_OrganizationMembers)); 
 			
-			this._People = new EntitySet< BackgroundCheck>(new Action< BackgroundCheck>(this.attach_People), new Action< BackgroundCheck>(this.detach_People)); 
+			this._People = new EntitySet<BackgroundCheck>(new Action< BackgroundCheck>(this.attach_People), new Action< BackgroundCheck>(this.detach_People)); 
 			
-			this._PersonsCanEmail = new EntitySet< PeopleCanEmailFor>(new Action< PeopleCanEmailFor>(this.attach_PersonsCanEmail), new Action< PeopleCanEmailFor>(this.detach_PersonsCanEmail)); 
+			this._PersonsCanEmail = new EntitySet<PeopleCanEmailFor>(new Action< PeopleCanEmailFor>(this.attach_PersonsCanEmail), new Action< PeopleCanEmailFor>(this.detach_PersonsCanEmail)); 
 			
-			this._SenderAmounts = new EntitySet< GoerSenderAmount>(new Action< GoerSenderAmount>(this.attach_SenderAmounts), new Action< GoerSenderAmount>(this.detach_SenderAmounts)); 
+			this._SenderAmounts = new EntitySet<GoerSenderAmount>(new Action< GoerSenderAmount>(this.attach_SenderAmounts), new Action< GoerSenderAmount>(this.detach_SenderAmounts)); 
 			
-			this._SubRequests = new EntitySet< SubRequest>(new Action< SubRequest>(this.attach_SubRequests), new Action< SubRequest>(this.detach_SubRequests)); 
+			this._SubRequests = new EntitySet<SubRequest>(new Action< SubRequest>(this.attach_SubRequests), new Action< SubRequest>(this.detach_SubRequests)); 
 			
-			this._SubResponses = new EntitySet< SubRequest>(new Action< SubRequest>(this.attach_SubResponses), new Action< SubRequest>(this.detach_SubResponses)); 
+			this._SubResponses = new EntitySet<SubRequest>(new Action< SubRequest>(this.attach_SubResponses), new Action< SubRequest>(this.detach_SubResponses)); 
 			
-			this._Tags = new EntitySet< TagPerson>(new Action< TagPerson>(this.attach_Tags), new Action< TagPerson>(this.detach_Tags)); 
+			this._Tags = new EntitySet<TagPerson>(new Action< TagPerson>(this.attach_Tags), new Action< TagPerson>(this.detach_Tags)); 
 			
-			this._TagsOwned = new EntitySet< Tag>(new Action< Tag>(this.attach_TagsOwned), new Action< Tag>(this.detach_TagsOwned)); 
+			this._TagsOwned = new EntitySet<Tag>(new Action< Tag>(this.attach_TagsOwned), new Action< Tag>(this.detach_TagsOwned)); 
 			
-			this._Tasks = new EntitySet< Task>(new Action< Task>(this.attach_Tasks), new Action< Task>(this.detach_Tasks)); 
+			this._Tasks = new EntitySet<Task>(new Action< Task>(this.attach_Tasks), new Action< Task>(this.detach_Tasks)); 
 			
-			this._TasksAboutPerson = new EntitySet< Task>(new Action< Task>(this.attach_TasksAboutPerson), new Action< Task>(this.detach_TasksAboutPerson)); 
+			this._TasksAboutPerson = new EntitySet<Task>(new Action< Task>(this.attach_TasksAboutPerson), new Action< Task>(this.detach_TasksAboutPerson)); 
 			
-			this._TasksCoOwned = new EntitySet< Task>(new Action< Task>(this.attach_TasksCoOwned), new Action< Task>(this.detach_TasksCoOwned)); 
+			this._TasksCoOwned = new EntitySet<Task>(new Action< Task>(this.attach_TasksCoOwned), new Action< Task>(this.detach_TasksCoOwned)); 
 			
-			this._VolRequests = new EntitySet< VolRequest>(new Action< VolRequest>(this.attach_VolRequests), new Action< VolRequest>(this.detach_VolRequests)); 
+			this._VolRequests = new EntitySet<VolRequest>(new Action< VolRequest>(this.attach_VolRequests), new Action< VolRequest>(this.detach_VolRequests)); 
 			
-			this._VolResponses = new EntitySet< VolRequest>(new Action< VolRequest>(this.attach_VolResponses), new Action< VolRequest>(this.detach_VolResponses)); 
+			this._VolResponses = new EntitySet<VolRequest>(new Action< VolRequest>(this.attach_VolResponses), new Action< VolRequest>(this.detach_VolResponses)); 
 			
 			
-			this._BFClass = default(EntityRef< Organization>); 
+			this._BFClass = default(EntityRef<Organization>); 
 			
-			this._EnvelopeOption = default(EntityRef< EnvelopeOption>); 
+			this._EnvelopeOption = default(EntityRef<EnvelopeOption>); 
 			
-			this._BaptismStatus = default(EntityRef< BaptismStatus>); 
+			this._BaptismStatus = default(EntityRef<BaptismStatus>); 
 			
-			this._BaptismType = default(EntityRef< BaptismType>); 
+			this._BaptismType = default(EntityRef<BaptismType>); 
 			
-			this._Campu = default(EntityRef< Campu>); 
+			this._Campu = default(EntityRef<Campu>); 
 			
-			this._DecisionType = default(EntityRef< DecisionType>); 
+			this._DecisionType = default(EntityRef<DecisionType>); 
 			
-			this._NewMemberClassStatus = default(EntityRef< NewMemberClassStatus>); 
+			this._NewMemberClassStatus = default(EntityRef<NewMemberClassStatus>); 
 			
-			this._DropType = default(EntityRef< DropType>); 
+			this._DropType = default(EntityRef<DropType>); 
 			
-			this._EntryPoint = default(EntityRef< EntryPoint>); 
+			this._EntryPoint = default(EntityRef<EntryPoint>); 
 			
-			this._Family = default(EntityRef< Family>); 
+			this._Family = default(EntityRef<Family>); 
 			
-			this._FamilyPosition = default(EntityRef< FamilyPosition>); 
+			this._FamilyPosition = default(EntityRef<FamilyPosition>); 
 			
-			this._Gender = default(EntityRef< Gender>); 
+			this._Gender = default(EntityRef<Gender>); 
 			
-			this._InterestPoint = default(EntityRef< InterestPoint>); 
+			this._InterestPoint = default(EntityRef<InterestPoint>); 
 			
-			this._JoinType = default(EntityRef< JoinType>); 
+			this._JoinType = default(EntityRef<JoinType>); 
 			
-			this._MaritalStatus = default(EntityRef< MaritalStatus>); 
+			this._MaritalStatus = default(EntityRef<MaritalStatus>); 
 			
-			this._MemberLetterStatus = default(EntityRef< MemberLetterStatus>); 
+			this._MemberLetterStatus = default(EntityRef<MemberLetterStatus>); 
 			
-			this._MemberStatus = default(EntityRef< MemberStatus>); 
+			this._MemberStatus = default(EntityRef<MemberStatus>); 
 			
-			this._Origin = default(EntityRef< Origin>); 
+			this._Origin = default(EntityRef<Origin>); 
 			
-			this._Picture = default(EntityRef< Picture>); 
+			this._Picture = default(EntityRef<Picture>); 
 			
-			this._ResidentCode = default(EntityRef< ResidentCode>); 
+			this._ResidentCode = default(EntityRef<ResidentCode>); 
 			
-			this._ContributionStatementOption = default(EntityRef< EnvelopeOption>); 
+			this._ContributionStatementOption = default(EntityRef<EnvelopeOption>); 
 			
 			OnCreated();
 		}
@@ -3609,7 +3609,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="contactsHad__person", Storage="_contactsHad", OtherKey="PeopleId")]
-   		public EntitySet< Contactee> contactsHad
+   		public EntitySet<Contactee> contactsHad
    		{
    		    get { return this._contactsHad; }
 
@@ -3619,7 +3619,7 @@ namespace CmsData
 
 		
    		[Association(Name="contactsMade__person", Storage="_contactsMade", OtherKey="PeopleId")]
-   		public EntitySet< Contactor> contactsMade
+   		public EntitySet<Contactor> contactsMade
    		{
    		    get { return this._contactsMade; }
 
@@ -3629,7 +3629,7 @@ namespace CmsData
 
 		
    		[Association(Name="ENROLLMENT_TRANSACTION_PPL_FK", Storage="_EnrollmentTransactions", OtherKey="PeopleId")]
-   		public EntitySet< EnrollmentTransaction> EnrollmentTransactions
+   		public EntitySet<EnrollmentTransaction> EnrollmentTransactions
    		{
    		    get { return this._EnrollmentTransactions; }
 
@@ -3639,7 +3639,7 @@ namespace CmsData
 
 		
    		[Association(Name="FamiliesHeaded__HeadOfHousehold", Storage="_FamiliesHeaded", OtherKey="HeadOfHouseholdId")]
-   		public EntitySet< Family> FamiliesHeaded
+   		public EntitySet<Family> FamiliesHeaded
    		{
    		    get { return this._FamiliesHeaded; }
 
@@ -3649,7 +3649,7 @@ namespace CmsData
 
 		
    		[Association(Name="FamiliesHeaded2__HeadOfHouseholdSpouse", Storage="_FamiliesHeaded2", OtherKey="HeadOfHouseholdSpouseId")]
-   		public EntitySet< Family> FamiliesHeaded2
+   		public EntitySet<Family> FamiliesHeaded2
    		{
    		    get { return this._FamiliesHeaded2; }
 
@@ -3659,7 +3659,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_AttendWithAbsents_TBL_PEOPLE_TBL", Storage="_Attends", OtherKey="PeopleId")]
-   		public EntitySet< Attend> Attends
+   		public EntitySet<Attend> Attends
    		{
    		    get { return this._Attends; }
 
@@ -3669,7 +3669,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_BackgroundChecks_People", Storage="_BackgroundChecks", OtherKey="PeopleID")]
-   		public EntitySet< BackgroundCheck> BackgroundChecks
+   		public EntitySet<BackgroundCheck> BackgroundChecks
    		{
    		    get { return this._BackgroundChecks; }
 
@@ -3679,7 +3679,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_CardIdentifiers_People", Storage="_CardIdentifiers", OtherKey="PeopleId")]
-   		public EntitySet< CardIdentifier> CardIdentifiers
+   		public EntitySet<CardIdentifier> CardIdentifiers
    		{
    		    get { return this._CardIdentifiers; }
 
@@ -3689,7 +3689,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_CheckInTimes_People", Storage="_CheckInTimes", OtherKey="PeopleId")]
-   		public EntitySet< CheckInTime> CheckInTimes
+   		public EntitySet<CheckInTime> CheckInTimes
    		{
    		    get { return this._CheckInTimes; }
 
@@ -3699,7 +3699,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_Contribution_People", Storage="_Contributions", OtherKey="PeopleId")]
-   		public EntitySet< Contribution> Contributions
+   		public EntitySet<Contribution> Contributions
    		{
    		    get { return this._Contributions; }
 
@@ -3709,7 +3709,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_Coupons_People", Storage="_Coupons", OtherKey="PeopleId")]
-   		public EntitySet< Coupon> Coupons
+   		public EntitySet<Coupon> Coupons
    		{
    		    get { return this._Coupons; }
 
@@ -3719,7 +3719,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_EmailOptOut_People", Storage="_EmailOptOuts", OtherKey="ToPeopleId")]
-   		public EntitySet< EmailOptOut> EmailOptOuts
+   		public EntitySet<EmailOptOut> EmailOptOuts
    		{
    		    get { return this._EmailOptOuts; }
 
@@ -3729,7 +3729,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_EmailQueue_People", Storage="_EmailQueues", OtherKey="QueuedBy")]
-   		public EntitySet< EmailQueue> EmailQueues
+   		public EntitySet<EmailQueue> EmailQueues
    		{
    		    get { return this._EmailQueues; }
 
@@ -3739,7 +3739,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_EmailQueueTo_People", Storage="_EmailQueueTos", OtherKey="PeopleId")]
-   		public EntitySet< EmailQueueTo> EmailQueueTos
+   		public EntitySet<EmailQueueTo> EmailQueueTos
    		{
    		    get { return this._EmailQueueTos; }
 
@@ -3749,7 +3749,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_EmailResponses_People", Storage="_EmailResponses", OtherKey="PeopleId")]
-   		public EntitySet< EmailResponse> EmailResponses
+   		public EntitySet<EmailResponse> EmailResponses
    		{
    		    get { return this._EmailResponses; }
 
@@ -3759,7 +3759,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_Goers__Supporter", Storage="_FK_Goers", OtherKey="SupporterId")]
-   		public EntitySet< GoerSupporter> FK_Goers
+   		public EntitySet<GoerSupporter> FK_Goers
    		{
    		    get { return this._FK_Goers; }
 
@@ -3769,7 +3769,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_ManagedGiving_People", Storage="_ManagedGivings", OtherKey="PeopleId")]
-   		public EntitySet< ManagedGiving> ManagedGivings
+   		public EntitySet<ManagedGiving> ManagedGivings
    		{
    		    get { return this._ManagedGivings; }
 
@@ -3779,7 +3779,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_MemberDocForm_PEOPLE_TBL", Storage="_MemberDocForms", OtherKey="PeopleId")]
-   		public EntitySet< MemberDocForm> MemberDocForms
+   		public EntitySet<MemberDocForm> MemberDocForms
    		{
    		    get { return this._MemberDocForms; }
 
@@ -3789,7 +3789,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_MobileAppDevices_People", Storage="_MobileAppDevices", OtherKey="PeopleID")]
-   		public EntitySet< MobileAppDevice> MobileAppDevices
+   		public EntitySet<MobileAppDevice> MobileAppDevices
    		{
    		    get { return this._MobileAppDevices; }
 
@@ -3799,7 +3799,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_MobileAppPushRegistrations_People", Storage="_MobileAppPushRegistrations", OtherKey="PeopleId")]
-   		public EntitySet< MobileAppPushRegistration> MobileAppPushRegistrations
+   		public EntitySet<MobileAppPushRegistration> MobileAppPushRegistrations
    		{
    		    get { return this._MobileAppPushRegistrations; }
 
@@ -3809,7 +3809,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_OrgMemberExtra_People", Storage="_OrgMemberExtras", OtherKey="PeopleId")]
-   		public EntitySet< OrgMemberExtra> OrgMemberExtras
+   		public EntitySet<OrgMemberExtra> OrgMemberExtras
    		{
    		    get { return this._OrgMemberExtras; }
 
@@ -3819,7 +3819,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_PaymentInfo_People", Storage="_PaymentInfos", OtherKey="PeopleId")]
-   		public EntitySet< PaymentInfo> PaymentInfos
+   		public EntitySet<PaymentInfo> PaymentInfos
    		{
    		    get { return this._PaymentInfos; }
 
@@ -3829,7 +3829,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_PeopleExtra_People", Storage="_PeopleExtras", OtherKey="PeopleId")]
-   		public EntitySet< PeopleExtra> PeopleExtras
+   		public EntitySet<PeopleExtra> PeopleExtras
    		{
    		    get { return this._PeopleExtras; }
 
@@ -3839,7 +3839,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_PrevOrgMemberExtra_People]", Storage="_PrevOrgMemberExtras", OtherKey="PeopleId")]
-   		public EntitySet< PrevOrgMemberExtra> PrevOrgMemberExtras
+   		public EntitySet<PrevOrgMemberExtra> PrevOrgMemberExtras
    		{
    		    get { return this._PrevOrgMemberExtras; }
 
@@ -3849,7 +3849,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_RecReg_People", Storage="_RecRegs", OtherKey="PeopleId")]
-   		public EntitySet< RecReg> RecRegs
+   		public EntitySet<RecReg> RecRegs
    		{
    		    get { return this._RecRegs; }
 
@@ -3859,7 +3859,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_RecurringAmounts_People", Storage="_RecurringAmounts", OtherKey="PeopleId")]
-   		public EntitySet< RecurringAmount> RecurringAmounts
+   		public EntitySet<RecurringAmount> RecurringAmounts
    		{
    		    get { return this._RecurringAmounts; }
 
@@ -3869,7 +3869,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_SMSItems_People", Storage="_SMSItems", OtherKey="PeopleID")]
-   		public EntitySet< SMSItem> SMSItems
+   		public EntitySet<SMSItem> SMSItems
    		{
    		    get { return this._SMSItems; }
 
@@ -3879,7 +3879,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_SMSList_People", Storage="_SMSLists", OtherKey="SenderID")]
-   		public EntitySet< SMSList> SMSLists
+   		public EntitySet<SMSList> SMSLists
    		{
    		    get { return this._SMSLists; }
 
@@ -3889,7 +3889,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_Supporters__Goer", Storage="_FK_Supporters", OtherKey="GoerId")]
-   		public EntitySet< GoerSupporter> FK_Supporters
+   		public EntitySet<GoerSupporter> FK_Supporters
    		{
    		    get { return this._FK_Supporters; }
 
@@ -3899,7 +3899,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_TagShare_People", Storage="_TagShares", OtherKey="PeopleId")]
-   		public EntitySet< TagShare> TagShares
+   		public EntitySet<TagShare> TagShares
    		{
    		    get { return this._TagShares; }
 
@@ -3909,7 +3909,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_TaskListOwners_PEOPLE_TBL", Storage="_TaskListOwners", OtherKey="PeopleId")]
-   		public EntitySet< TaskListOwner> TaskListOwners
+   		public EntitySet<TaskListOwner> TaskListOwners
    		{
    		    get { return this._TaskListOwners; }
 
@@ -3919,7 +3919,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_Transaction_People", Storage="_Transactions", OtherKey="LoginPeopleId")]
-   		public EntitySet< Transaction> Transactions
+   		public EntitySet<Transaction> Transactions
    		{
    		    get { return this._Transactions; }
 
@@ -3929,7 +3929,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_TransactionPeople_Person", Storage="_TransactionPeople", OtherKey="PeopleId")]
-   		public EntitySet< TransactionPerson> TransactionPeople
+   		public EntitySet<TransactionPerson> TransactionPeople
    		{
    		    get { return this._TransactionPeople; }
 
@@ -3939,7 +3939,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_Users_People", Storage="_Users", OtherKey="PeopleId")]
-   		public EntitySet< User> Users
+   		public EntitySet<User> Users
    		{
    		    get { return this._Users; }
 
@@ -3949,7 +3949,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_VolInterestInterestCodes_People", Storage="_VolInterestInterestCodes", OtherKey="PeopleId")]
-   		public EntitySet< VolInterestInterestCode> VolInterestInterestCodes
+   		public EntitySet<VolInterestInterestCode> VolInterestInterestCodes
    		{
    		    get { return this._VolInterestInterestCodes; }
 
@@ -3959,7 +3959,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_Volunteer_PEOPLE_TBL", Storage="_Volunteers", OtherKey="PeopleId")]
-   		public EntitySet< Volunteer> Volunteers
+   		public EntitySet<Volunteer> Volunteers
    		{
    		    get { return this._Volunteers; }
 
@@ -3969,7 +3969,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_VolunteerForm_PEOPLE_TBL", Storage="_VolunteerForms", OtherKey="PeopleId")]
-   		public EntitySet< VolunteerForm> VolunteerForms
+   		public EntitySet<VolunteerForm> VolunteerForms
    		{
    		    get { return this._VolunteerForms; }
 
@@ -3979,7 +3979,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_VoluteerApprovalIds_People", Storage="_VoluteerApprovalIds", OtherKey="PeopleId")]
-   		public EntitySet< VoluteerApprovalId> VoluteerApprovalIds
+   		public EntitySet<VoluteerApprovalId> VoluteerApprovalIds
    		{
    		    get { return this._VoluteerApprovalIds; }
 
@@ -3989,7 +3989,7 @@ namespace CmsData
 
 		
    		[Association(Name="GoerAmounts__Goer", Storage="_GoerAmounts", OtherKey="SupporterId")]
-   		public EntitySet< GoerSenderAmount> GoerAmounts
+   		public EntitySet<GoerSenderAmount> GoerAmounts
    		{
    		    get { return this._GoerAmounts; }
 
@@ -3999,7 +3999,7 @@ namespace CmsData
 
 		
    		[Association(Name="OnBehalfOfPeople__PersonCanEmail", Storage="_OnBehalfOfPeople", OtherKey="CanEmail")]
-   		public EntitySet< PeopleCanEmailFor> OnBehalfOfPeople
+   		public EntitySet<PeopleCanEmailFor> OnBehalfOfPeople
    		{
    		    get { return this._OnBehalfOfPeople; }
 
@@ -4009,7 +4009,7 @@ namespace CmsData
 
 		
    		[Association(Name="ORGANIZATION_MEMBERS_PPL_FK", Storage="_OrganizationMembers", OtherKey="PeopleId")]
-   		public EntitySet< OrganizationMember> OrganizationMembers
+   		public EntitySet<OrganizationMember> OrganizationMembers
    		{
    		    get { return this._OrganizationMembers; }
 
@@ -4019,7 +4019,7 @@ namespace CmsData
 
 		
    		[Association(Name="People__User", Storage="_People", OtherKey="UserID")]
-   		public EntitySet< BackgroundCheck> People
+   		public EntitySet<BackgroundCheck> People
    		{
    		    get { return this._People; }
 
@@ -4029,7 +4029,7 @@ namespace CmsData
 
 		
    		[Association(Name="PersonsCanEmail__OnBehalfOfPerson", Storage="_PersonsCanEmail", OtherKey="OnBehalfOf")]
-   		public EntitySet< PeopleCanEmailFor> PersonsCanEmail
+   		public EntitySet<PeopleCanEmailFor> PersonsCanEmail
    		{
    		    get { return this._PersonsCanEmail; }
 
@@ -4039,7 +4039,7 @@ namespace CmsData
 
 		
    		[Association(Name="SenderAmounts__Sender", Storage="_SenderAmounts", OtherKey="GoerId")]
-   		public EntitySet< GoerSenderAmount> SenderAmounts
+   		public EntitySet<GoerSenderAmount> SenderAmounts
    		{
    		    get { return this._SenderAmounts; }
 
@@ -4049,7 +4049,7 @@ namespace CmsData
 
 		
    		[Association(Name="SubRequests__Requestor", Storage="_SubRequests", OtherKey="RequestorId")]
-   		public EntitySet< SubRequest> SubRequests
+   		public EntitySet<SubRequest> SubRequests
    		{
    		    get { return this._SubRequests; }
 
@@ -4059,7 +4059,7 @@ namespace CmsData
 
 		
    		[Association(Name="SubResponses__Substitute", Storage="_SubResponses", OtherKey="SubstituteId")]
-   		public EntitySet< SubRequest> SubResponses
+   		public EntitySet<SubRequest> SubResponses
    		{
    		    get { return this._SubResponses; }
 
@@ -4069,7 +4069,7 @@ namespace CmsData
 
 		
    		[Association(Name="Tags__Person", Storage="_Tags", OtherKey="PeopleId")]
-   		public EntitySet< TagPerson> Tags
+   		public EntitySet<TagPerson> Tags
    		{
    		    get { return this._Tags; }
 
@@ -4079,7 +4079,7 @@ namespace CmsData
 
 		
    		[Association(Name="TagsOwned__PersonOwner", Storage="_TagsOwned", OtherKey="PeopleId")]
-   		public EntitySet< Tag> TagsOwned
+   		public EntitySet<Tag> TagsOwned
    		{
    		    get { return this._TagsOwned; }
 
@@ -4089,7 +4089,7 @@ namespace CmsData
 
 		
    		[Association(Name="Tasks__Owner", Storage="_Tasks", OtherKey="OwnerId")]
-   		public EntitySet< Task> Tasks
+   		public EntitySet<Task> Tasks
    		{
    		    get { return this._Tasks; }
 
@@ -4099,7 +4099,7 @@ namespace CmsData
 
 		
    		[Association(Name="TasksAboutPerson__AboutWho", Storage="_TasksAboutPerson", OtherKey="WhoId")]
-   		public EntitySet< Task> TasksAboutPerson
+   		public EntitySet<Task> TasksAboutPerson
    		{
    		    get { return this._TasksAboutPerson; }
 
@@ -4109,7 +4109,7 @@ namespace CmsData
 
 		
    		[Association(Name="TasksCoOwned__CoOwner", Storage="_TasksCoOwned", OtherKey="CoOwnerId")]
-   		public EntitySet< Task> TasksCoOwned
+   		public EntitySet<Task> TasksCoOwned
    		{
    		    get { return this._TasksCoOwned; }
 
@@ -4119,7 +4119,7 @@ namespace CmsData
 
 		
    		[Association(Name="VolRequests__Requestor", Storage="_VolRequests", OtherKey="RequestorId")]
-   		public EntitySet< VolRequest> VolRequests
+   		public EntitySet<VolRequest> VolRequests
    		{
    		    get { return this._VolRequests; }
 
@@ -4129,7 +4129,7 @@ namespace CmsData
 
 		
    		[Association(Name="VolResponses__Volunteer", Storage="_VolResponses", OtherKey="VolunteerId")]
-   		public EntitySet< VolRequest> VolResponses
+   		public EntitySet<VolRequest> VolResponses
    		{
    		    get { return this._VolResponses; }
 

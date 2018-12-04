@@ -320,8 +320,8 @@
     <Reference Include="HtmlAgilityPack, Version=1.7.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.7.0\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
-    <Reference Include="Ical.Net, Version=4.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ical.Net.4.0.6\lib\netstandard1.3\Ical.Net.dll</HintPath>
+    <Reference Include="Ical.Net, Version=4.1.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ical.Net.4.1.8\lib\net46\Ical.Net.dll</HintPath>
     </Reference>
     <Reference Include="IronPython, Version=2.7.8.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <HintPath>..\packages\IronPython.2.7.8\lib\net45\IronPython.dll</HintPath>
@@ -500,6 +500,7 @@
     <Compile Include="API\QueryFunctions\Attendance.cs" />
     <Compile Include="API\QueryFunctions\Contributions.cs" />
     <Compile Include="API\QueryFunctions\Query.cs" />
+    <Compile Include="Classes\DataMapper\DataMapper.cs" />
     <Compile Include="Charts\GoogleChartsData.cs" />
     <Compile Include="Classes\ExtraValues\Code.cs" />
     <Compile Include="Classes\ExtraValues\NewStandard.cs" />
@@ -654,6 +655,10 @@
     <Compile Include="Finance\TransNational\Vault\VaultResponse.cs" />
     <Compile Include="Generated\ApiSession.cs" />
     <Compile Include="Generated\ApiUserInfo.cs" />
+    <Compile Include="Generated\CheckInLabel.cs" />
+    <Compile Include="Generated\CheckInLabelEntry.cs" />
+    <Compile Include="Generated\CheckInLabelEntryAlignment.cs" />
+    <Compile Include="Generated\CheckInLabelType.cs" />
     <Compile Include="Generated\CheckInSetting.cs" />
     <Compile Include="Generated\ContactExtra.cs" />
     <Compile Include="Generated\CustomColumn.cs" />
@@ -912,6 +917,7 @@
     <Content Include="Migrations\20181022-3_create_Contributions2SearchIds.sql" />
     <Compile Include="Organization\OrgFilter.cs" />
     <Compile Include="Organization\OrgPerson.cs" />
+    <Compile Include="Organization\OrgSchedule.cs" />
     <Compile Include="QueryBuilder\QueryParser.cs" />
     <Compile Include="QueryBuilder\Query.cs" />
     <Compile Include="QueryBuilder\CategoryClass.cs" />
@@ -1274,10 +1280,10 @@
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Migrations\20180924_Remove_Custom_Task_Role.sql" />
     <Content Include="Migrations\20180719_send-attendance-link.sql" />
+    <Content Include="Migrations\20180801_CheckInUpdates.sql" />
     <Content Include="Migrations\20180720_StoredProcedure_CHAIDonationsReport2.sql" />
     <Content Include="Migrations\20180720_StoredProcedure_GetDepositDateTotalsUsingAuthorizedFunds.sql" />
     <Content Include="Migrations\20180720_Table_ContributionFunds.sql" />
-    <Content Include="Migrations\20180727_attendance-enhancements-to-lookups.sql" />
     <Content Include="Migrations\20180806_update_purge_person_sproc.sql" />
     <Content Include="Migrations\20180817_update_enrollment_history_func.sql" />
     <Content Include="Migrations\20180827_sms-number-group-system-flag.sql" />
@@ -1294,6 +1300,8 @@
     <Content Include="Migrations\20181031_split_first_lastname_add_Email_GetTotalContributionsDonor.sql" />
     <Content Include="Migrations\20181019_add_pushpay_pk.sql" />
     <Content Include="Migrations\20181015_add_pushpay_schema.sql" />
+    <Content Include="Migrations\20180919_add-performance-indexes.sql" />
+    <Content Include="Migrations\20180919_fix-duplicates-in-org-filter-current.sql" />
     <Content Include="Migrations\20181011_update_spouseId_function.sql" />
     <Content Include="Migrations\20181128_upd_enrolled_before_the_meetingdate.sql" />
     <Content Include="Migrations\20181106_alter_SMSList_Message_column.sql" />

@@ -42,7 +42,7 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< Meeting> _Meeting;
+		private EntityRef<Meeting> _Meeting;
 		
 	#endregion
 	
@@ -89,7 +89,7 @@ namespace CmsData
 		{
 			
 			
-			this._Meeting = default(EntityRef< Meeting>); 
+			this._Meeting = default(EntityRef<Meeting>); 
 			
 			OnCreated();
 		}

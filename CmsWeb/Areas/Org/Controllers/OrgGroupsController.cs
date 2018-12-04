@@ -2,6 +2,7 @@ using CmsData;
 using CmsWeb.Areas.Org.Models;
 using CmsWeb.Lifecycle;
 using LumenWorks.Framework.IO.Csv;
+using System;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
@@ -22,27 +23,56 @@ namespace CmsWeb.Areas.Org.Controllers
             var m = new OrgGroupsModel(id);
             return View(m);
         }
+
         [HttpPost]
         public ActionResult Filter(OrgGroupsModel m)
         {
             return View("Rows", m);
         }
+
         [HttpPost]
-        public ActionResult AssignSelectedToTargetGroup(OrgGroupsModel m)
+        public ActionResult AssignSelectedToTargetGroup(OrgGroupsModel model)
         {
-            var a = m.List.ToArray();
-            var sgname = CurrentDatabase.MemberTags.Single(mt => mt.Id == m.groupid).Name;
-            var q2 = from om in m.OrgMembers()
-                     where om.OrgMemMemTags.All(mt => mt.MemberTag.Name != sgname)
-                     where a.Contains(om.PeopleId)
-                     select om;
-            foreach (var om in q2)
+            var db = CurrentDatabase;
+            var people = model.List.ToArray();
+            var memberTag = db.MemberTags.Single(t => t.Id == model.groupid && t.OrgId == model.orgid);
+            var orgmembersToAdd = from om in model.OrgMembers()
+                                  where om.OrgMemMemTags.All(m => m.MemberTag.Id != model.groupid)
+                                  where people.Contains(om.PeopleId)
+                                  select om;
+            foreach (var orgmember in orgmembersToAdd)
             {
-                om.AddToGroup(CurrentDatabase, sgname);
+                memberTag.OrgMemMemTags.Add(new OrgMemMemTag
+                {
+                    PeopleId = orgmember.PeopleId,
+                    OrgId = orgmember.OrganizationId
+                });
+            }
+            db.SubmitChanges();
+            return View("Rows", model);
+        }
+
+        [HttpPost]
+        [Route("{orgId:int}/SubGroups/{groupId:int}/ToggleCheckin")]
+        public ActionResult ToggleCheckin(int orgId, int groupId)
+        {
+            if(orgId == 0 || groupId == 0)
+            {
+                return Content("error: no matching group found");
             }
 
-            CurrentDatabase.SubmitChanges();
-            return View("Rows", m);
+            try
+            {
+                var group = DbUtil.Db.MemberTags.SingleOrDefault(g => g.Id == groupId && g.OrgId == orgId);
+                group.CheckIn = !group.CheckIn;
+                DbUtil.Db.SubmitChanges();
+
+                return Redirect("/OrgGroups/Management/" + orgId);
+            }
+            catch(Exception ex)
+            {
+                return Content("error: no matching group found");
+            }
         }
 
         [HttpPost]
@@ -96,6 +126,7 @@ namespace CmsWeb.Areas.Org.Controllers
             CurrentDatabase.SubmitChanges();
             return View("Rows", m);
         }
+
         [HttpPost]
         public ActionResult MakeNewGroup(OrgGroupsModel m)
         {
@@ -103,24 +134,23 @@ namespace CmsWeb.Areas.Org.Controllers
             {
                 return Content("error: no group name");
             }
-
-            //var Db = Db;
-            var group = CurrentDatabase.MemberTags.SingleOrDefault(g =>
-                g.Name == m.GroupName && g.OrgId == m.orgid);
-            if (group == null)
-            {
-                group = new MemberTag
-                {
-                    Name = m.GroupName,
-                    OrgId = m.orgid
-                };
-                CurrentDatabase.MemberTags.InsertOnSubmit(group);
-                CurrentDatabase.SubmitChanges();
-            }
+            var Db = CurrentDatabase;
+            var group = new MemberTag {
+                Name = m.GroupName,
+                OrgId = m.orgid,
+                CheckIn = m.AllowCheckin.ToBool(),
+                ScheduleId = m.ScheduleId,
+                CheckInOpenDefault = m.CheckInOpenDefault,
+                CheckInCapacityDefault = m.CheckInCapacityDefault,
+            };
+            Db.MemberTags.InsertOnSubmit(group);
+            Db.SubmitChanges();
+            
             m.groupid = group.Id;
             ViewData["newgid"] = group.Id;
             return Redirect("/OrgGroups/Management/" + m.orgid);
         }
+
         [HttpPost]
         public ActionResult RenameGroup(OrgGroupsModel m)
         {
@@ -139,6 +169,25 @@ namespace CmsWeb.Areas.Org.Controllers
             m.GroupName = null;
             return Redirect("/OrgGroups/Management/" + m.orgid);
         }
+
+        [HttpPost]
+        public ActionResult EditGroup(OrgGroupsModel m)
+        {
+            if (!m.GroupName.HasValue() || m.groupid == 0)
+                return Content("error: no group name");
+            var group = DbUtil.Db.MemberTags.SingleOrDefault(d => d.Id == m.groupid);
+            if (group != null)
+            {
+                group.Name = m.GroupName;
+                group.CheckIn = m.AllowCheckin == "true";
+                group.CheckInCapacityDefault = m.CheckInCapacityDefault;
+                group.CheckInOpenDefault = m.CheckInOpenDefault;
+                group.ScheduleId = m.ScheduleId;
+            }
+            DbUtil.Db.SubmitChanges();
+            return Redirect("/OrgGroups/Management/" + m.orgid);
+        }
+
         [HttpPost]
         public ActionResult DeleteGroup(OrgGroupsModel m)
         {

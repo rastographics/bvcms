@@ -79,20 +79,20 @@ namespace CmsData
 		private string _OnlineRegData;
 		
    		
-   		private EntitySet< OrgMemberExtra> _OrgMemberExtras;
+   		private EntitySet<OrgMemberExtra> _OrgMemberExtras;
 		
-   		private EntitySet< OrgMemMemTag> _OrgMemMemTags;
+   		private EntitySet<OrgMemMemTag> _OrgMemMemTags;
 		
     	
-		private EntityRef< MemberType> _MemberType;
+		private EntityRef<MemberType> _MemberType;
 		
-		private EntityRef< RegistrationDatum> _RegistrationDatum;
+		private EntityRef<RegistrationDatum> _RegistrationDatum;
 		
-		private EntityRef< Transaction> _Transaction;
+		private EntityRef<Transaction> _Transaction;
 		
-		private EntityRef< Organization> _Organization;
+		private EntityRef<Organization> _Organization;
 		
-		private EntityRef< Person> _Person;
+		private EntityRef<Person> _Person;
 		
 	#endregion
 	
@@ -195,20 +195,20 @@ namespace CmsData
 		public OrganizationMember()
 		{
 			
-			this._OrgMemberExtras = new EntitySet< OrgMemberExtra>(new Action< OrgMemberExtra>(this.attach_OrgMemberExtras), new Action< OrgMemberExtra>(this.detach_OrgMemberExtras)); 
+			this._OrgMemberExtras = new EntitySet<OrgMemberExtra>(new Action< OrgMemberExtra>(this.attach_OrgMemberExtras), new Action< OrgMemberExtra>(this.detach_OrgMemberExtras)); 
 			
-			this._OrgMemMemTags = new EntitySet< OrgMemMemTag>(new Action< OrgMemMemTag>(this.attach_OrgMemMemTags), new Action< OrgMemMemTag>(this.detach_OrgMemMemTags)); 
+			this._OrgMemMemTags = new EntitySet<OrgMemMemTag>(new Action< OrgMemMemTag>(this.attach_OrgMemMemTags), new Action< OrgMemMemTag>(this.detach_OrgMemMemTags)); 
 			
 			
-			this._MemberType = default(EntityRef< MemberType>); 
+			this._MemberType = default(EntityRef<MemberType>); 
 			
-			this._RegistrationDatum = default(EntityRef< RegistrationDatum>); 
+			this._RegistrationDatum = default(EntityRef<RegistrationDatum>); 
 			
-			this._Transaction = default(EntityRef< Transaction>); 
+			this._Transaction = default(EntityRef<Transaction>); 
 			
-			this._Organization = default(EntityRef< Organization>); 
+			this._Organization = default(EntityRef<Organization>); 
 			
-			this._Person = default(EntityRef< Person>); 
+			this._Person = default(EntityRef<Person>); 
 			
 			OnCreated();
 		}
@@ -901,7 +901,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_OrgMemberExtra_OrganizationMembers", Storage="_OrgMemberExtras", OtherKey="OrganizationId,PeopleId")]
-   		public EntitySet< OrgMemberExtra> OrgMemberExtras
+   		public EntitySet<OrgMemberExtra> OrgMemberExtras
    		{
    		    get { return this._OrgMemberExtras; }
 
@@ -911,7 +911,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_OrgMemMemTags_OrganizationMembers", Storage="_OrgMemMemTags", OtherKey="OrgId,PeopleId")]
-   		public EntitySet< OrgMemMemTag> OrgMemMemTags
+   		public EntitySet<OrgMemMemTag> OrgMemMemTags
    		{
    		    get { return this._OrgMemMemTags; }
 

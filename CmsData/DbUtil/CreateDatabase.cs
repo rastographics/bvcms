@@ -242,7 +242,7 @@ GO
             }
         }
 
-        private static void RunScripts(string cs, string script)
+        public static void RunScripts(string cs, string script)
         {
             using (var cn = new SqlConnection(cs))
             {

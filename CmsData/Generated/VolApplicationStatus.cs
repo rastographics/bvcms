@@ -27,9 +27,9 @@ namespace CmsData
 		private bool? _Hardwired;
 		
    		
-   		private EntitySet< Volunteer> _Volunteers;
+   		private EntitySet<Volunteer> _Volunteers;
 		
-   		private EntitySet< Volunteer> _StatusMvrId;
+   		private EntitySet<Volunteer> _StatusMvrId;
 		
     	
 	#endregion
@@ -55,9 +55,9 @@ namespace CmsData
 		public VolApplicationStatus()
 		{
 			
-			this._Volunteers = new EntitySet< Volunteer>(new Action< Volunteer>(this.attach_Volunteers), new Action< Volunteer>(this.detach_Volunteers)); 
+			this._Volunteers = new EntitySet<Volunteer>(new Action< Volunteer>(this.attach_Volunteers), new Action< Volunteer>(this.detach_Volunteers)); 
 			
-			this._StatusMvrId = new EntitySet< Volunteer>(new Action< Volunteer>(this.attach_StatusMvrId), new Action< Volunteer>(this.detach_StatusMvrId)); 
+			this._StatusMvrId = new EntitySet<Volunteer>(new Action< Volunteer>(this.attach_StatusMvrId), new Action< Volunteer>(this.detach_StatusMvrId)); 
 			
 			
 			OnCreated();
@@ -159,7 +159,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_Volunteer_VolApplicationStatus", Storage="_Volunteers", OtherKey="StatusId")]
-   		public EntitySet< Volunteer> Volunteers
+   		public EntitySet<Volunteer> Volunteers
    		{
    		    get { return this._Volunteers; }
 
@@ -169,7 +169,7 @@ namespace CmsData
 
 		
    		[Association(Name="StatusMvrId__StatusMvr", Storage="_StatusMvrId", OtherKey="MVRStatusId")]
-   		public EntitySet< Volunteer> StatusMvrId
+   		public EntitySet<Volunteer> StatusMvrId
    		{
    		    get { return this._StatusMvrId; }
 

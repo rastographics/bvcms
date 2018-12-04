@@ -44,11 +44,11 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< OrganizationMember> _OrganizationMember;
+		private EntityRef<OrganizationMember> _OrganizationMember;
 		
-		private EntityRef< Organization> _Organization;
+		private EntityRef<Organization> _Organization;
 		
-		private EntityRef< Person> _Person;
+		private EntityRef<Person> _Person;
 		
 	#endregion
 	
@@ -98,11 +98,11 @@ namespace CmsData
 		{
 			
 			
-			this._OrganizationMember = default(EntityRef< OrganizationMember>); 
+			this._OrganizationMember = default(EntityRef<OrganizationMember>); 
 			
-			this._Organization = default(EntityRef< Organization>); 
+			this._Organization = default(EntityRef<Organization>); 
 			
-			this._Person = default(EntityRef< Person>); 
+			this._Person = default(EntityRef<Person>); 
 			
 			OnCreated();
 		}

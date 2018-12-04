@@ -29,6 +29,9 @@ namespace CmsWeb.Areas.Org.Models
 
         public int orgid { get; set; }
         public int? groupid { get; set; }
+        public int? ScheduleId { get; set; }
+        public bool CheckInOpenDefault { get; set; }
+        public int CheckInCapacityDefault { get; set; }
         public string GroupName { get; set; }
         public string ingroup { get; set; }
         public string notgroup { get; set; }
@@ -40,6 +43,7 @@ namespace CmsWeb.Areas.Org.Models
         public string OrgName => DbUtil.Db.LoadOrganizationById(orgid).OrganizationName;
         public int memtype { get; set; }
         public IList<int> List { get; set; } = new List<int>();
+        public string AllowCheckin { get; set; }
 
         public GroupDetails GetGroupDetails(int id)
         {
@@ -60,6 +64,16 @@ namespace CmsWeb.Areas.Org.Models
             return d.SingleOrDefault();
         }
 
+        private IEnumerable<OrgSchedule> _orgSchedules;
+        public IEnumerable<OrgSchedule> GetOrgSchedules()
+        {
+            return _orgSchedules ?? (_orgSchedules =
+                (from schedule in DbUtil.Db.OrgSchedules
+                   where schedule.OrganizationId == orgid
+                   orderby schedule.SchedDay, schedule.SchedTime
+                   select schedule).ToList());
+        }
+
         public IEnumerable<MemberTag> GroupsList()
         {
             return from g in DbUtil.Db.MemberTags
@@ -73,13 +87,14 @@ namespace CmsWeb.Areas.Org.Models
             var q = from g in DbUtil.Db.MemberTags
                     where g.OrgId == orgid
                     orderby g.Name
-                    select new
+                    select new GroupListItem
                     {
                         value = g.Id,
-                        text = g.Name
+                        name = g.Name,
+                        schedule = g.Schedule
                     };
             var list = q.ToList();
-            list.Insert(0, new { value = 0, text = "(not specified)" });
+            list.Insert(0, new GroupListItem {value = 0, name = "(not specified)"});
             return new SelectList(list, "value", "text", groupid.ToString());
         }
 

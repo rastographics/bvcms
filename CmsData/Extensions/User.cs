@@ -188,7 +188,8 @@ namespace CmsData
             "Membership",
             "MemberDocs",
             "MissionGiving",
-            "OrgLeadersOnly"
+            "OrgLeadersOnly",
+            "CheckinCoordinator"
         };
 
         public static string[] Financial =

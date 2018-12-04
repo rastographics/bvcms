@@ -36,9 +36,9 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< Person> _Supporter;
+		private EntityRef<Person> _Supporter;
 		
-		private EntityRef< Person> _Goer;
+		private EntityRef<Person> _Goer;
 		
 	#endregion
 	
@@ -76,9 +76,9 @@ namespace CmsData
 		{
 			
 			
-			this._Supporter = default(EntityRef< Person>); 
+			this._Supporter = default(EntityRef<Person>); 
 			
-			this._Goer = default(EntityRef< Person>); 
+			this._Goer = default(EntityRef<Person>); 
 			
 			OnCreated();
 		}

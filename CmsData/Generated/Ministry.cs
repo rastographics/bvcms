@@ -41,7 +41,7 @@ namespace CmsData
 		private int? _ChurchId;
 		
    		
-   		private EntitySet< Contact> _Contacts;
+   		private EntitySet<Contact> _Contacts;
 		
     	
 	#endregion
@@ -88,7 +88,7 @@ namespace CmsData
 		public Ministry()
 		{
 			
-			this._Contacts = new EntitySet< Contact>(new Action< Contact>(this.attach_Contacts), new Action< Contact>(this.detach_Contacts)); 
+			this._Contacts = new EntitySet<Contact>(new Action< Contact>(this.attach_Contacts), new Action< Contact>(this.detach_Contacts)); 
 			
 			
 			OnCreated();
@@ -344,7 +344,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_Contacts_Ministries", Storage="_Contacts", OtherKey="MinistryId")]
-   		public EntitySet< Contact> Contacts
+   		public EntitySet<Contact> Contacts
    		{
    		    get { return this._Contacts; }
 

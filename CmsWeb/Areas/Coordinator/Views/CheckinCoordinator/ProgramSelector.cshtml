@@ -1,0 +1,24 @@
+﻿@model IEnumerable<CmsWeb.Areas.Coordinator.Controllers.CheckinProgramDto>
+
+<div class="form-group">
+    <select class="form-control" id="checkin-program">
+        <option value="0" selected="selected">Show all programs</option>
+
+        @foreach (var item in Model)
+        {
+            <option value="@item.ProgramId">@item.ProgramName</option>
+        }
+    </select>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('#checkin-program').change(function () {
+            var selectedTimeslot = $('#checkin-timeslot option:selected').val();
+            var selectedProgram = this.value;
+            $('#DivisionContainer').load('@Url.Action("DivisionSelector")?selectedTimeslot=' + selectedTimeslot + '&programId=' + selectedProgram);
+            $('#OrganizationContainer').load('@Url.Action("OrganizationSelector")?selectedTimeslot=' + selectedTimeslot + '&programId=' + selectedProgram);
+            $("#DetailsContainer").empty();
+        });
+    });
+</script>
