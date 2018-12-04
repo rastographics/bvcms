@@ -1303,6 +1303,7 @@
     <Content Include="Migrations\20180919_add-performance-indexes.sql" />
     <Content Include="Migrations\20180919_fix-duplicates-in-org-filter-current.sql" />
     <Content Include="Migrations\20181011_update_spouseId_function.sql" />
+    <Content Include="Migrations\20181128_upd_enrolled_before_the_meetingdate.sql" />
     <Content Include="Migrations\20181106_alter_SMSList_Message_column.sql" />
     <Content Include="Migrations\20181031_add_viewvolunteerapplication_role.sql" />
     <Content Include="Migrations\20181115_add_recurring_amounts_disabled_column.sql" />
