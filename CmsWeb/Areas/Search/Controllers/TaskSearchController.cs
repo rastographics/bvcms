@@ -38,22 +38,26 @@ namespace CmsWeb.Areas.Search.Controllers
         }
         public ActionResult DelegateNames(string term, string options)
         {
-            var n = TaskSearchModel.FindNames("Delegate", term, 10, options);
+            var search = new TaskSearchModel();
+            var n = search.FindNames("Delegate", term, 10, options);
             return Json(n, JsonRequestBehavior.AllowGet);
         }
         public ActionResult OwnerNames(string term, string options)
         {
-            var n = TaskSearchModel.FindNames("Owner", term, 10, options);
+            var search = new TaskSearchModel();
+            var n = search.FindNames("Owner", term, 10, options);
             return Json(n, JsonRequestBehavior.AllowGet);
         }
         public ActionResult OriginatorNames(string term, string options)
         {
-            var n = TaskSearchModel.FindNames("Originator", term, 10, options);
+            var search = new TaskSearchModel();
+            var n = search.FindNames("Originator", term, 10, options);
             return Json(n, JsonRequestBehavior.AllowGet);
         }
         public ActionResult AboutNames(string term, string options)
         {
-            var n = TaskSearchModel.FindNames("About", term, 10, options);
+            var search = new TaskSearchModel();
+            var n = search.FindNames("About", term, 10, options);
             return Json(n, JsonRequestBehavior.AllowGet);
         }
 

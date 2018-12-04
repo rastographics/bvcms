@@ -6,6 +6,9 @@ namespace CmsData.Classes.GoogleCloudMessaging
 {
     public class GCMMessage
     {
+        private readonly string _host;
+        private readonly CMSDataContext _dataContext;
+
         public List<string> registration_ids = null;
         public GCMData data = null;
         public GCMPayload notification = null;
@@ -25,14 +28,20 @@ namespace CmsData.Classes.GoogleCloudMessaging
             this.data = data;
         }
 
-        public GCMMessage(List<int> peopleIDs, string exclude, GCMData data, GCMPayload notification)
+        public GCMMessage(List<int> peopleIDs, string exclude, GCMData data, GCMPayload notification, string host, CMSDataContext dataContext)
         {
-            if (!Util.Host.HasValue())
-                return ;
+            _host = host;
+            _dataContext = dataContext;
+
+            if (!_host.HasValue())
+            {
+                return;
+            }
+
             this.data = data;
             this.notification = notification;
 
-            this.registration_ids = (from r in DbUtil.Db.MobileAppPushRegistrations
+            this.registration_ids = (from r in _dataContext.MobileAppPushRegistrations
                                      where peopleIDs.Contains(r.PeopleId)
                                      select r.RegistrationId).ToList();
 
@@ -42,14 +51,20 @@ namespace CmsData.Classes.GoogleCloudMessaging
             }
         }
 
-        public GCMMessage(int peopleID, string exclude, GCMData data, GCMPayload notification)
+        public GCMMessage(int peopleID, string exclude, GCMData data, GCMPayload notification, string host, CMSDataContext dataContext)
         {
-            if (!Util.Host.HasValue())
-                return ;
+            _host = host;
+            _dataContext = dataContext;
+
+            if (!_host.HasValue())
+            {
+                return;
+            }
+
             this.data = data;
             this.notification = notification;
 
-            this.registration_ids = (from r in DbUtil.Db.MobileAppPushRegistrations
+            this.registration_ids = (from r in _dataContext.MobileAppPushRegistrations
                                      where r.PeopleId == peopleID
                                      select r.RegistrationId).ToList();
 

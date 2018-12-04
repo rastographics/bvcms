@@ -1,48 +1,56 @@
+using CmsData.Codes;
+using CmsData.View;
+using Dapper;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Linq.SqlClient;
-using System.Data.SqlTypes;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Web.Mvc;
-using System.Xml.Linq;
 using System.Xml.Serialization;
-using CmsData.Codes;
-using CmsData.View;
-using Dapper;
 using UtilityExtensions;
 
 namespace CmsData.API
 {
     public class APIContribution
     {
-        private CMSDataContext Db;
+        private readonly CMSDataContext _db;
 
-        public APIContribution(CMSDataContext Db)
+        public APIContribution(CMSDataContext db)
         {
-            this.Db = Db;
+            _db = db;
         }
 
         public string PostContribution(int PeopleId, decimal Amount, int FundId, string desc, string date, int? type, string checkno)
         {
             try
             {
-                var p = Db.LoadPersonById(PeopleId);
+                var p = _db.LoadPersonById(PeopleId);
                 if (p == null)
+                {
                     throw new Exception("no person");
-                var c = p.PostUnattendedContribution(Db, Amount, FundId, desc);
+                }
+
+                var c = p.PostUnattendedContribution(_db, Amount, FundId, desc);
                 DateTime dt;
                 if (date.DateTryParse(out dt))
+                {
                     c.ContributionDate = dt;
+                }
+
                 if (type.HasValue)
+                {
                     c.ContributionTypeId = type.Value;
+                }
+
                 if (checkno.HasValue())
+                {
                     c.CheckNo = (checkno ?? "").Trim().Truncate(20);
-                Db.SubmitChanges();
+                }
+
+                _db.SubmitChanges();
                 return $@"<PostContribution status=""ok"" id=""{c.ContributionId}"" />";
             }
             catch (Exception ex)
@@ -55,11 +63,17 @@ namespace CmsData.API
         {
             try
             {
-                var p = Db.LoadPersonById(PeopleId);
+                var p = _db.LoadPersonById(PeopleId);
                 if (p == null)
+                {
                     throw new Exception("no person");
+                }
+
                 if (p.PositionInFamilyId != PositionInFamily.PrimaryAdult)
+                {
                     throw new Exception("not a primary adult");
+                }
+
                 var frdt = new DateTime(Year, 1, 1);
                 var todt = new DateTime(Year, 12, 31);
                 var f = GetFamilyContributions(frdt, todt, p);
@@ -76,12 +90,12 @@ namespace CmsData.API
             var f = new FamilyContributions
             {
                 status = "ok",
-                Contributors = (from ci in Contributors(Db, frdt, todt, 0, 0, p.FamilyId, funds: null, noaddressok: true, useMinAmt: false)
+                Contributors = (from ci in Contributors(_db, frdt, todt, 0, 0, p.FamilyId, funds: null, noaddressok: true, useMinAmt: false)
                                 select new Contributor
                                 {
                                     Name = ci.Name,
                                     Type = ci.Joint ? "Joint" : "Individual",
-                                    Contributions = (from c in Contributions(Db, ci, frdt, todt, null)
+                                    Contributions = (from c in Contributions(_db, ci, frdt, todt, null)
                                                      select new Contribution
                                                      {
                                                          Amount = c.ContributionAmount ?? 0,
@@ -108,12 +122,14 @@ namespace CmsData.API
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         public static IEnumerable<ContributorInfo> Contributors(CMSDataContext db,
-            DateTime fromDate, DateTime toDate, int PeopleId, int? SpouseId, int FamilyId, List<int> funds, bool noaddressok, bool useMinAmt, 
+            DateTime fromDate, DateTime toDate, int PeopleId, int? SpouseId, int FamilyId, List<int> funds, bool noaddressok, bool useMinAmt,
             string startswith = null, string sort = null, bool singleStatement = false, int? tagid = null, bool excludeelectronic = false)
         {
             var MinAmt = db.Setting("MinContributionAmount", "5").ToDecimal();
             if (!useMinAmt)
+            {
                 MinAmt = 0;
+            }
 
             var endswith = "";
             if (startswith != null && startswith.Contains("-"))
@@ -126,33 +142,45 @@ namespace CmsData.API
                     select p;
 
             if (startswith.HasValue() && !endswith.HasValue())
+            {
                 q = from p in q
                     where p.LastName.StartsWith(startswith)
                     select p;
+            }
             else if (startswith.HasValue() && endswith.HasValue())
+            {
                 q = from p in q
-                    // ReSharper disable StringCompareToIsCultureSpecific
+                        // ReSharper disable StringCompareToIsCultureSpecific
                     where (p.LastName.CompareTo(startswith) >= 0 && p.LastName.CompareTo(endswith) < 0) || SqlMethods.Like(p.LastName, endswith + "%")
                     select p;
+            }
 
             if (sort == "zip")
+            {
                 q = from p in q
                     orderby p.PrimaryZip, p.FamilyId, p.PositionInFamilyId, p.HohFlag, p.Age
                     select p;
+            }
             else if (sort == "name")
+            {
                 q = from p in q
                     orderby p.LastName, p.FamilyId, p.PositionInFamilyId, p.HohFlag, p.Age
                     select p;
+            }
             else
+            {
                 q = from p in q
                     orderby p.FamilyId, p.PositionInFamilyId, p.HohFlag, p.Age
                     select p;
+            }
 
             if (singleStatement)
             {
                 var familylist = q.ToList();
                 if (familylist.Any(m => m.DeceasedDate != null && m.ContributionOptionsId == 2))
+                {
                     return GetInfo(familylist);
+                }
             }
 
             const int NOTSPEC = 0;
@@ -161,6 +189,7 @@ namespace CmsData.API
             const int INDIV = StatementOptionCode.Individual;
 
             if (MinAmt > 0)
+            {
                 q = from p in q
                     let option = (p.ContributionOptionsId ?? NOTSPEC) == NOTSPEC
                         ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? NOTSPEC) != INDIV ? JOINT : INDIV)
@@ -170,7 +199,9 @@ namespace CmsData.API
                           || (option == JOINT && p.HohFlag == 1 && ((p.Amount + p.SpouseAmount) >= MinAmt))
                     where p.ElectronicStatement == false || excludeelectronic == false
                     select p;
+            }
             else
+            {
                 q = from p in q
                     let option =
                         (p.ContributionOptionsId ?? NOTSPEC) == NOTSPEC
@@ -182,9 +213,11 @@ namespace CmsData.API
                         (option == INDIV && (p.Amount > 0 || p.GiftInKind == true)) // GiftInKind = NonTaxDeductible Fund or Pledge OR GiftInkind
                         || (option == JOINT && p.HohFlag == 1 && ((p.Amount + p.SpouseAmount) > 0 || p.GiftInKind == true))
                     select p;
+            }
 
-            IEnumerable<ContributorInfo> q2 = null;
+            IEnumerable<ContributorInfo> q2;
             if (db.Setting("NoTitlesOnStatements", "false").ToBool())
+            {
                 q2 = from p in q
                      let option = (p.ContributionOptionsId ?? 0) == 0
                          ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? 0) != 1 ? 2 : 1)
@@ -211,13 +244,16 @@ namespace CmsData.API
                          Joint = option == 2,
                          CampusId = p.CampusId,
                      };
+            }
             else
+            {
                 q2 = GetInfo(q);
+            }
 
             return q2;
         }
 
-        private static IEnumerable<ContributorInfo> GetInfo(IEnumerable<View.Donor> q)
+        private static IEnumerable<ContributorInfo> GetInfo(IEnumerable<Donor> q)
         {
             var q2 = from p in q
                      let option = (p.ContributionOptionsId ?? 0) == 0
@@ -253,14 +289,20 @@ namespace CmsData.API
             return q2;
         }
 
-        private static string MailingAddress(View.Donor c)
+        private static string MailingAddress(Donor c)
         {
             if (c.MailingAddress.HasValue())
+            {
                 return c.MailingAddress;
+            }
+
             var sb = new StringBuilder();
             sb.AppendLine(c.PrimaryAddress);
             if (c.PrimaryAddress2.HasValue())
+            {
                 sb.AppendLine(c.PrimaryAddress2);
+            }
+
             sb.AppendLine(Util.FormatCSZ4(c.PrimaryCity, c.PrimaryState, c.PrimaryZip));
             return sb.ToString();
         }
@@ -269,8 +311,8 @@ namespace CmsData.API
         {
             var q = from c in
                 db.NormalContributions(ci.PeopleId, ci.SpouseID, ci.Joint, fromDate, toDate, funds?.JoinInts(","))
-                orderby c.ContributionDate
-                select c;
+                    orderby c.ContributionDate
+                    select c;
             return q;
         }
 
@@ -278,17 +320,17 @@ namespace CmsData.API
         {
             var q = from c in
                 db.NonTaxContributions(ci.PeopleId, ci.SpouseID, ci.Joint, fromDate, toDate, funds.JoinInts(","))
-                orderby c.ContributionDate
-                select c;
+                    orderby c.ContributionDate
+                    select c;
             return q;
         }
 
-        public static IEnumerable<StockGift> StockGifts(CMSDataContext db, ContributorInfo ci, DateTime fromDate, DateTime toDate, List<int> funds )
+        public static IEnumerable<StockGift> StockGifts(CMSDataContext db, ContributorInfo ci, DateTime fromDate, DateTime toDate, List<int> funds)
         {
             var q = from c in
                 db.StockGifts(ci.PeopleId, ci.SpouseID, ci.Joint, fromDate, toDate, funds.JoinInts(","))
-                orderby c.ContributionDate
-                select c;
+                    orderby c.ContributionDate
+                    select c;
             return q;
         }
 
@@ -296,8 +338,8 @@ namespace CmsData.API
         {
             var q = from c in
                 db.UnitPledgeSummary(ci.PeopleId, ci.SpouseID, ci.Joint, toDate, funds.JoinInts(","))
-                orderby c.FundName
-                select c;
+                    orderby c.FundName
+                    select c;
             return q;
         }
 
@@ -305,8 +347,8 @@ namespace CmsData.API
         {
             var q = from c in
                 db.GiftSummary(ci.PeopleId, ci.SpouseID, ci.Joint, fromDate, toDate, funds.JoinInts(","))
-                orderby c.FundName
-                select c;
+                    orderby c.FundName
+                    select c;
             return q;
         }
 
@@ -314,8 +356,8 @@ namespace CmsData.API
         {
             var q = from c in
                 db.GiftsInKind(ci.PeopleId, ci.SpouseID, ci.Joint, fromDate, toDate, funds.JoinInts(","))
-                orderby c.ContributionDate
-                select c;
+                    orderby c.ContributionDate
+                    select c;
             return q;
         }
         public static int? OneTimeGiftOrgId(CMSDataContext db)
@@ -425,8 +467,11 @@ namespace CmsData.API
             get
             {
                 if (StatusId < 0)
+                {
                     return true;
-                return StatusId != (int) ContributionStatusCode.Recorded
+                }
+
+                return StatusId != ContributionStatusCode.Recorded
                        || ContributionTypeCode.ReturnedReversedTypes.Contains(ContributionTypeId);
             }
         }

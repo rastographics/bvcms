@@ -22,21 +22,26 @@ namespace CmsWeb.Areas.Search.Models
 {
     public class TaskSearchModel : PagedTableModel<TaskSearch, TaskSearch>
     {
-        public TaskSearchInfo Search { get; set; }
+        private readonly GCMHelper _gcm;
+        private readonly string _host;
+        private readonly CMSDataContext _dataContext;
 
-        public TaskSearchModel()
-            : base("Date", "desc", true)
-        {
-            Search = new TaskSearchInfo();
-        }
+        public TaskSearchInfo Search { get; set; }
 
         public int[] SelectedItem { get; set; }
 
+        public TaskSearchModel() : base("Date", "desc", true)
+        {
+            Search = new TaskSearchInfo();
+
+            _host = Util.Host;
+            _dataContext = DbUtil.Create(_host);
+            _gcm = new GCMHelper(_host, _dataContext);
+        }
+
         public override IQueryable<TaskSearch> DefineModelList()
         {
-            //var db = Db;
-
-            var q = GetBaseResults(DbUtil.Db, Search.GetOptions());
+            var q = GetBaseResults(_dataContext, Search.GetOptions());
 
             if (Search.About.HasValue())
             {
@@ -128,33 +133,33 @@ namespace CmsWeb.Areas.Search.Models
 
         internal void Archive()
         {
-            DbUtil.Db.Connection.Execute("UPDATE dbo.Task SET Archive = 1 WHERE Id IN @ids", new { ids = SelectedItem });
+            _dataContext.Connection.Execute("UPDATE dbo.Task SET Archive = 1 WHERE Id IN @ids", new { ids = SelectedItem });
         }
 
         internal void UnArchive()
         {
-            DbUtil.Db.Connection.Execute("UPDATE dbo.Task SET Archive = 0 WHERE Id IN @ids", new { ids = SelectedItem });
+            _dataContext.Connection.Execute("UPDATE dbo.Task SET Archive = 0 WHERE Id IN @ids", new { ids = SelectedItem });
         }
 
         internal void Delete()
         {
-            DbUtil.Db.Connection.Execute("DELETE dbo.Task WHERE Id IN @ids", new { ids = SelectedItem });
+            _dataContext.Connection.Execute("DELETE dbo.Task WHERE Id IN @ids", new { ids = SelectedItem });
         }
 
         internal void Delegate(int toPeopleId)
         {
-            var owners = (from o in DbUtil.Db.Tasks
+            var owners = (from o in _dataContext.Tasks
                           where SelectedItem.Contains(o.Id)
                           select o.OwnerId).Distinct().ToList();
 
-            var delegates = (from o in DbUtil.Db.Tasks
+            var delegates = (from o in _dataContext.Tasks
                              where SelectedItem.Contains(o.Id)
                              where o.CoOwnerId != null
                              select o.CoOwnerId ?? 0).Distinct().ToList();
 
             foreach (var tid in SelectedItem)
             {
-                TaskModel.Delegate(tid, toPeopleId, true, true);
+                TaskModel.Delegate(tid, toPeopleId, _host, _dataContext, true, true);
             }
 
             if (Util.UserPeopleId.HasValue)
@@ -167,28 +172,26 @@ namespace CmsWeb.Areas.Search.Models
 
             string taskString = SelectedItem.Count() > 1 ? "tasks" : "a task";
 
-            GCMHelper.sendNotification(owners, GCMHelper.TYPE_TASK, 0, "Tasks Redelegated",
-                $"{Util.UserFullName} has redelegated {taskString} you own");
-            GCMHelper.sendNotification(delegates, GCMHelper.TYPE_TASK, 0, "Tasks Redelegated",
-                $"{Util.UserFullName} has redelegated {taskString} to someone else");
-            GCMHelper.sendNotification(toPeopleId, GCMHelper.TYPE_TASK, 0, "Task Delegated",
-                $"{Util.UserFullName} delegated you {taskString}");
+            _gcm.sendNotification(owners, GCMHelper.TYPE_TASK, 0, "Tasks Redelegated", $"{Util.UserFullName} has redelegated {taskString} you own");
+            _gcm.sendNotification(delegates, GCMHelper.TYPE_TASK, 0, "Tasks Redelegated", $"{Util.UserFullName} has redelegated {taskString} to someone else");
+            _gcm.sendNotification(toPeopleId, GCMHelper.TYPE_TASK, 0, "Task Delegated", $"{Util.UserFullName} delegated you {taskString}");
+
             if (Util.UserPeopleId.HasValue)
             {
-                GCMHelper.sendRefresh(Util.UserPeopleId.Value, GCMHelper.ACTION_REFRESH);
+                _gcm.sendRefresh(Util.UserPeopleId.Value, GCMHelper.ACTION_REFRESH);
             }
 
-            DbUtil.Db.SubmitChanges();
+            _dataContext.SubmitChanges();
         }
 
-        private static IQueryable<TaskSearch> GetBaseResults(CMSDataContext db, TaskSearchInfo.OptionInfo opt)
+        private IQueryable<TaskSearch> GetBaseResults(CMSDataContext db, TaskSearchInfo.OptionInfo opt)
         {
-            var u = DbUtil.Db.CurrentUser;
+            var u = db.CurrentUser;
             var roles = u.UserRoles.Select(uu => uu.Role.RoleName.ToLower()).ToArray();
             var managePrivateContacts = HttpContext.Current.User.IsInRole("ManagePrivateContacts");
             var manageTasks = HttpContext.Current.User.IsInRole("ManageTasks") && !opt.MyTasksOnly;
             var uid = Util.UserPeopleId;
-            var q = from t in DbUtil.Db.ViewTaskSearches
+            var q = from t in db.ViewTaskSearches
                     where (t.LimitToRole ?? "") == "" || roles.Contains(t.LimitToRole) || managePrivateContacts
                     where manageTasks || t.OrginatorId == uid || t.OwnerId == uid || t.CoOwnerId == uid
                     where t.Archive == opt.Archived
@@ -279,10 +282,10 @@ namespace CmsWeb.Areas.Search.Models
             return q;
         }
 
-        public static string[] FindNames(string type, string term, int limit, string optionstring)
+        public string[] FindNames(string type, string term, int limit, string optionstring)
         {
             var options = TaskSearchInfo.GetOptions(optionstring);
-            var q = GetBaseResults(DbUtil.Db, options);
+            var q = GetBaseResults(_dataContext, options);
 
             switch (type)
             {
@@ -313,7 +316,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public void Complete()
         {
-            DbUtil.Db.Connection.Execute("UPDATE dbo.Task SET StatusId = 40, CompletedOn = GETDATE() WHERE Id IN @ids", new { ids = SelectedItem });
+            _dataContext.Connection.Execute("UPDATE dbo.Task SET StatusId = 40, CompletedOn = GETDATE() WHERE Id IN @ids", new { ids = SelectedItem });
         }
     }
 }

@@ -4,6 +4,7 @@ using CmsData.View;
 using CmsWeb.Areas.People.Models.Task;
 using CmsWeb.Areas.Public.Models.MobileAPIv2;
 using CmsWeb.Areas.Reports.Models;
+using CmsWeb.Lifecycle;
 using CmsWeb.MobileAPI;
 using CmsWeb.Models;
 using CmsWeb.Models.iPhone;
@@ -24,8 +25,12 @@ using MobileAccountV1 = CmsWeb.MobileAPI.MobileAccount;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
-    public class MobileAPIv2Controller : Controller
+    public class MobileAPIv2Controller : CMSBaseController
     {
+        public MobileAPIv2Controller(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         public ActionResult Exists()
         {
             return Content("1");
@@ -59,9 +64,9 @@ namespace CmsWeb.Areas.Public.Controllers
             }
             else
             {
-                bool useMobileMesages = DbUtil.Db.Setting("UseMobileMessages", "false") == "true";
+                bool useMobileMesages = CurrentDatabase.Setting("UseMobileMessages", "false") == "true";
 
-                MobileAccount account = new MobileAccount(DbUtil.Db);
+                MobileAccount account = new MobileAccount(CurrentDatabase);
                 account.setCreateFields(mpc.first, mpc.last, mpc.email, mpc.phone, mpc.dob, message.device, message.instance, message.key);
                 account.create();
 
@@ -84,7 +89,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             User user = authentication.getUser();
 
-            IQueryable<string> roles = from r in DbUtil.Db.UserRoles
+            IQueryable<string> roles = from r in CurrentDatabase.UserRoles
                                        where r.UserId == user.UserId
                                        orderby r.Role.RoleName
                                        select r.Role.RoleName;
@@ -123,9 +128,9 @@ namespace CmsWeb.Areas.Public.Controllers
                 return MobileMessage.createErrorReturn("Invalid email address", (int)MobileMessage.Error.INVALID_EMAIL);
             }
 
-            bool useMobileMesages = DbUtil.Db.Setting("UseMobileMessages", "false") == "true";
+            bool useMobileMesages = CurrentDatabase.Setting("UseMobileMessages", "false") == "true";
 
-            MobileAccount account = new MobileAccount(DbUtil.Db);
+            MobileAccount account = new MobileAccount(CurrentDatabase);
             account.setDeepLinkFields(message.device, message.instance, message.key, message.argString);
             account.sendDeepLink();
 
@@ -148,37 +153,41 @@ namespace CmsWeb.Areas.Public.Controllers
             MobileAppDevice device = authentication.getDevice();
             MobileMessage response = new MobileMessage();
 
-            if (device != null)
+            if (device == null)
             {
-                List<Person> people = (from p in DbUtil.Db.People
-                                       where p.EmailAddress == device.CodeEmail || p.EmailAddress2 == device.CodeEmail
-                                       orderby p.FirstName, p.LastName
-                                       select p).ToList();
+                return response;
+            }
 
-                if (people.Count > 0)
+            List<Person> people = (from p in CurrentDatabase.People
+                                   where p.EmailAddress == device.CodeEmail || p.EmailAddress2 == device.CodeEmail
+                                   orderby p.FirstName, p.LastName
+                                   select p).ToList();
+
+            if (people.Count <= 0)
+            {
+                return response;
+            }
+
+            List<MobileQuickSignInUser> users = new List<MobileQuickSignInUser>();
+
+            foreach (Person person in people)
+            {
+                if (person.Users.Count == 0)
                 {
-                    List<MobileQuickSignInUser> users = new List<MobileQuickSignInUser>();
-
-                    foreach (Person person in people)
+                    users.Add(new MobileQuickSignInUser(person, null));
+                }
+                else
+                {
+                    foreach (User user in person.Users)
                     {
-                        if (person.Users.Count == 0)
-                        {
-                            users.Add(new MobileQuickSignInUser(person, null));
-                        }
-                        else
-                        {
-                            foreach (User user in person.Users)
-                            {
-                                users.Add(new MobileQuickSignInUser(person, user));
-                            }
-                        }
+                        users.Add(new MobileQuickSignInUser(person, user));
                     }
-
-                    response.setNoError();
-                    response.count = users.Count;
-                    response.setData(SerializeJSON(users, message.version));
                 }
             }
+
+            response.setNoError();
+            response.count = users.Count;
+            response.setData(SerializeJSON(users, message.version));
 
             return response;
         }
@@ -199,14 +208,18 @@ namespace CmsWeb.Areas.Public.Controllers
             MobileMessage response = new MobileMessage();
             MobileAppDevice device = authentication.getDevice();
 
-            if (DbUtil.Db.People.Any(p => (p.EmailAddress == device.CodeEmail || p.EmailAddress2 == device.CodeEmail) && p.PeopleId == message.argInt))
+            if (!CurrentDatabase.People.Any(p =>
+                (p.EmailAddress == device.CodeEmail || p.EmailAddress2 == device.CodeEmail) &&
+                p.PeopleId == message.argInt))
             {
-                User user = AccountModel.AddUser(message.argInt);
-
-                response.id = user.UserId;
-                response.data = user.Username;
-                response.setNoError();
+                return response;
             }
+
+            User user = AccountModel.AddUser(message.argInt);
+
+            response.id = user.UserId;
+            response.data = user.Username;
+            response.setNoError();
 
             return response;
         }
@@ -246,7 +259,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             User user = authentication.getUser();
 
-            IQueryable<string> roles = from r in DbUtil.Db.UserRoles
+            IQueryable<string> roles = from r in CurrentDatabase.UserRoles
                                        where r.UserId == user.UserId
                                        orderby r.Role.RoleName
                                        select r.Role.RoleName;
@@ -292,12 +305,12 @@ namespace CmsWeb.Areas.Public.Controllers
                 Expires = DateTime.Now.AddMinutes(15)
             };
 
-            DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.OneTimeLinks.InsertOnSubmit(ot);
+            CurrentDatabase.SubmitChanges();
 
             MobileMessage response = new MobileMessage();
             response.setNoError();
-            response.data = $"{DbUtil.Db.ServerLink($"Logon?ReturnUrl={HttpUtility.UrlEncode($"{message.argString}?{message.getSourceQueryString()}")}&otltoken={ot.Id.ToCode()}")}";
+            response.data = $"{CurrentDatabase.ServerLink($"Logon?ReturnUrl={HttpUtility.UrlEncode($"{message.argString}?{message.getSourceQueryString()}")}&otltoken={ot.Id.ToCode()}")}";
 
             return response;
         }
@@ -309,11 +322,11 @@ namespace CmsWeb.Areas.Public.Controllers
 
             const string sql = @"SELECT OrganizationId FROM dbo.Organizations WHERE RegistrationTypeId = 8 AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
-            int? givingOrgId = DbUtil.Db.Connection.ExecuteScalar(sql) as int?;
+            int? givingOrgId = CurrentDatabase.Connection.ExecuteScalar(sql) as int?;
 
             MobileMessage response = new MobileMessage();
             response.setNoError();
-            response.data = DbUtil.Db.ServerLink($"OnlineReg/{givingOrgId}?{message.getSourceQueryString()}");
+            response.data = CurrentDatabase.ServerLink($"OnlineReg/{givingOrgId}?{message.getSourceQueryString()}");
 
             return response;
         }
@@ -338,7 +351,7 @@ namespace CmsWeb.Areas.Public.Controllers
             if (message.argBool)
             {
                 // Managed Giving
-                orgID = DbUtil.Db.Organizations
+                orgID = CurrentDatabase.Organizations
                                     .Where(o => o.RegistrationTypeId == RegistrationTypeCode.ManageGiving)
                                     .Select(x => x.OrganizationId).FirstOrDefault();
             }
@@ -347,17 +360,17 @@ namespace CmsWeb.Areas.Public.Controllers
                 // Normal Giving
                 const string sql = @"SELECT OrganizationId FROM dbo.Organizations WHERE RegistrationTypeId = 8 AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
-                orgID = DbUtil.Db.Connection.ExecuteScalar(sql) as int?;
+                orgID = CurrentDatabase.Connection.ExecuteScalar(sql) as int?;
             }
 
             OneTimeLink ot = GetOneTimeLink(orgID ?? 0, user.PeopleId ?? 0);
 
-            DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.OneTimeLinks.InsertOnSubmit(ot);
+            CurrentDatabase.SubmitChanges();
 
             MobileMessage response = new MobileMessage();
             response.setNoError();
-            response.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{message.getSourceQueryString()}");
+            response.data = CurrentDatabase.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{message.getSourceQueryString()}");
 
             return response;
         }
@@ -380,20 +393,13 @@ namespace CmsWeb.Areas.Public.Controllers
 
             OneTimeLink ot = GetOneTimeLink(orgId, user.PeopleId ?? 0);
 
-            DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.OneTimeLinks.InsertOnSubmit(ot);
+            CurrentDatabase.SubmitChanges();
 
             MobileMessage response = new MobileMessage();
             response.setNoError();
 
-            if (message.argBool)
-            {
-                response.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?showfamily=true&{message.getSourceQueryString()}");
-            }
-            else
-            {
-                response.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{message.getSourceQueryString()}");
-            }
+            response.data = CurrentDatabase.ServerLink(message.argBool ? $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?showfamily=true&{message.getSourceQueryString()}" : $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{message.getSourceQueryString()}");
 
             return response;
         }
@@ -461,7 +467,7 @@ namespace CmsWeb.Areas.Public.Controllers
             string val = null;
             if (a.Length > 0)
             {
-                Organization org = DbUtil.Db.LoadOrganizationById(a[1].ToInt());
+                Organization org = CurrentDatabase.LoadOrganizationById(a[1].ToInt());
                 if (org != null)
                 {
                     val = org.AppCategory ?? "Other";
@@ -469,7 +475,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             Dictionary<string, string> categories = new Dictionary<string, string>();
-            string lines = DbUtil.Db.Content("AppRegistrations", "Other\tRegistrations").TrimEnd();
+            string lines = CurrentDatabase.Content("AppRegistrations", "Other\tRegistrations").TrimEnd();
             Regex re = new Regex(@"^(\S*)\s+(.*)$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
             Match line = re.Match(lines);
             while (line.Success)
@@ -501,7 +507,7 @@ namespace CmsWeb.Areas.Public.Controllers
             DateTime dt = DateTime.Now;
             Regex re = new Regex(@"^(\S*)\s+(.*)$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
 
-            string lines = DbUtil.Db.Content("AppRegistrations", "Other\tRegistrations").TrimEnd();
+            string lines = CurrentDatabase.Content("AppRegistrations", "Other\tRegistrations").TrimEnd();
             Match line = re.Match(lines);
 
             while (line.Success)
@@ -515,7 +521,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 categories.Add("Other", "Registrations");
             }
 
-            List<MobileRegistration> registrations = (from o in DbUtil.Db.ViewAppRegistrations
+            List<MobileRegistration> registrations = (from o in CurrentDatabase.ViewAppRegistrations
                                                       let sort = o.PublicSortOrder == null || o.PublicSortOrder.Length == 0 ? "10" : o.PublicSortOrder
                                                       select new MobileRegistration
                                                       {
@@ -590,7 +596,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             MobileMessage response = new MobileMessage();
 
-            Person person = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == message.argInt);
+            Person person = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == message.argInt);
 
             if (person == null)
             {
@@ -630,7 +636,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             MobileMessage response = new MobileMessage();
 
-            Person person = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == message.argInt);
+            Person person = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == message.argInt);
 
             if (person == null)
             {
@@ -670,31 +676,26 @@ namespace CmsWeb.Areas.Public.Controllers
 
             User user = authentication.getUser();
 
-            Person userPerson = DbUtil.Db.People.FirstOrDefault(p => p.PeopleId == user.PeopleId.Value);
+            Person userPerson = CurrentDatabase.People.FirstOrDefault(p => p.PeopleId == user.PeopleId.Value);
 
             if (userPerson == null)
             {
                 return MobileMessage.createErrorReturn("User not found!");
             }
 
-            if (userPerson.PositionInFamilyId == PositionInFamily.Child)
+            switch (userPerson.PositionInFamilyId)
             {
-                return MobileMessage.createErrorReturn("Childern cannot edit records");
-            }
-
-            if (userPerson.PositionInFamilyId == PositionInFamily.SecondaryAdult && user.PeopleId != message.argInt)
-            {
-                return MobileMessage.createErrorReturn("Secondary adults can only modify themselves");
-            }
-
-            if (userPerson.PositionInFamilyId == PositionInFamily.PrimaryAdult && userPerson.Family.People.SingleOrDefault(fm => fm.PeopleId == message.argInt) == null)
-            {
-                return MobileMessage.createErrorReturn("Person must be in the same family");
+                case PositionInFamily.Child:
+                    return MobileMessage.createErrorReturn("Childern cannot edit records");
+                case PositionInFamily.SecondaryAdult when user.PeopleId != message.argInt:
+                    return MobileMessage.createErrorReturn("Secondary adults can only modify themselves");
+                case PositionInFamily.PrimaryAdult when userPerson.Family.People.SingleOrDefault(fm => fm.PeopleId == message.argInt) == null:
+                    return MobileMessage.createErrorReturn("Person must be in the same family");
             }
 
             MobileMessage response = new MobileMessage();
 
-            Person person = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == message.argInt);
+            Person person = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == message.argInt);
 
             if (person == null)
             {
@@ -715,15 +716,15 @@ namespace CmsWeb.Areas.Public.Controllers
 
             if (personChangeList.Count > 0)
             {
-                person.LogChanges(DbUtil.Db, personChangeList);
+                person.LogChanges(CurrentDatabase, personChangeList);
             }
 
             if (familyChangeList.Count > 0)
             {
-                person.Family.LogChanges(DbUtil.Db, familyChangeList, person.PeopleId);
+                person.Family.LogChanges(CurrentDatabase, familyChangeList, person.PeopleId);
             }
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
             response.setNoError();
             response.count = 1;
@@ -754,7 +755,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             BaseMessage response = new BaseMessage();
 
-            Person person = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == message.argInt);
+            Person person = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == message.argInt);
 
             if (person == null)
             {
@@ -766,7 +767,7 @@ namespace CmsWeb.Areas.Public.Controllers
             int thisYear = DateTime.Now.Year;
             int lastYear = DateTime.Now.Year - 1;
 
-            decimal lastYearTotal = (from c in DbUtil.Db.Contributions
+            decimal lastYearTotal = (from c in CurrentDatabase.Contributions
                                      where c.PeopleId == person.PeopleId
                                              || (c.PeopleId == person.SpouseId && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint)
                                      where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
@@ -775,7 +776,7 @@ namespace CmsWeb.Areas.Public.Controllers
                                      orderby c.ContributionDate descending
                                      select c).AsEnumerable().Sum(c => c.ContributionAmount ?? 0);
 
-            List<MobileGivingEntry> entries = (from c in DbUtil.Db.Contributions
+            List<MobileGivingEntry> entries = (from c in CurrentDatabase.Contributions
                                                let online = c.BundleDetails.Single().BundleHeader.BundleHeaderType.Description.Contains("Online")
                                                where c.PeopleId == person.PeopleId
                                                        || (c.PeopleId == person.SpouseId && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint)
@@ -838,10 +839,10 @@ namespace CmsWeb.Areas.Public.Controllers
 
             if (user.InRole("OrgLeadersOnly"))
             {
-                oids = DbUtil.Db.GetLeaderOrgIds(user.PeopleId);
+                oids = CurrentDatabase.GetLeaderOrgIds(user.PeopleId);
             }
 
-            List<MobileInvolvement> orgList = (from om in DbUtil.Db.OrganizationMembers
+            List<MobileInvolvement> orgList = (from om in CurrentDatabase.OrganizationMembers
                                                let org = om.Organization
                                                where om.PeopleId == user.PeopleId
                                                where (om.Pending ?? false) == false
@@ -891,9 +892,9 @@ namespace CmsWeb.Areas.Public.Controllers
 
             response.data = "The picture was not found.";
 
-            Person person = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == mpfi.id);
+            Person person = CurrentDatabase.People.SingleOrDefault(pp => pp.PeopleId == mpfi.id);
 
-            if (person == null || person.PictureId == null)
+            if (person?.PictureId == null)
             {
                 return response;
             }
@@ -903,19 +904,19 @@ namespace CmsWeb.Areas.Public.Controllers
             switch (mpfi.size)
             {
                 case 0: // 50 x 50
-                    image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId);
+                    image = CurrentImageDatabase.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId);
                     break;
 
                 case 1: // 120 x 120
-                    image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId);
+                    image = CurrentImageDatabase.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId);
                     break;
 
                 case 2: // 320 x 400
-                    image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.MediumId);
+                    image = CurrentImageDatabase.Images.SingleOrDefault(i => i.Id == person.Picture.MediumId);
                     break;
 
                 case 3: // 570 x 800
-                    image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.LargeId);
+                    image = CurrentImageDatabase.Images.SingleOrDefault(i => i.Id == person.Picture.LargeId);
                     break;
             }
 
@@ -950,40 +951,40 @@ namespace CmsWeb.Areas.Public.Controllers
 
             byte[] imageBytes = Convert.FromBase64String(message.argString);
 
-            Person person = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == message.argInt);
+            Person person = CurrentDatabase.People.SingleOrDefault(pp => pp.PeopleId == message.argInt);
 
-            if (person != null && person.Picture != null)
+            if (person?.Picture != null)
             {
                 // Thumb image
-                Image imageDataThumb = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId);
+                Image imageDataThumb = CurrentImageDatabase.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId);
 
                 if (imageDataThumb != null)
                 {
-                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(imageDataThumb);
+                    CurrentImageDatabase.Images.DeleteOnSubmit(imageDataThumb);
                 }
 
                 // Small image
-                Image imageDataSmall = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId);
+                Image imageDataSmall = CurrentImageDatabase.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId);
 
                 if (imageDataSmall != null)
                 {
-                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(imageDataSmall);
+                    CurrentImageDatabase.Images.DeleteOnSubmit(imageDataSmall);
                 }
 
                 // Medium image
-                Image imageDataMedium = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.MediumId);
+                Image imageDataMedium = CurrentImageDatabase.Images.SingleOrDefault(i => i.Id == person.Picture.MediumId);
 
                 if (imageDataMedium != null)
                 {
-                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(imageDataMedium);
+                    CurrentImageDatabase.Images.DeleteOnSubmit(imageDataMedium);
                 }
 
                 // Large image
-                Image imageDataLarge = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.LargeId);
+                Image imageDataLarge = CurrentImageDatabase.Images.SingleOrDefault(i => i.Id == person.Picture.LargeId);
 
                 if (imageDataLarge != null)
                 {
-                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(imageDataLarge);
+                    CurrentImageDatabase.Images.DeleteOnSubmit(imageDataLarge);
                 }
 
                 person.Picture.ThumbId = Image.NewImageFromBits(imageBytes, 50, 50).Id;
@@ -1007,9 +1008,9 @@ namespace CmsWeb.Areas.Public.Controllers
                 }
             }
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
-            person?.LogPictureUpload(DbUtil.Db, user.PeopleId ?? 1);
+            person?.LogPictureUpload(CurrentDatabase, user.PeopleId ?? 1);
 
             response.setNoError();
             response.data = "Image updated.";
@@ -1038,40 +1039,40 @@ namespace CmsWeb.Areas.Public.Controllers
 
             byte[] imageBytes = Convert.FromBase64String(mpsi.image);
 
-            Family family = DbUtil.Db.Families.SingleOrDefault(pp => pp.FamilyId == mpsi.id);
+            Family family = CurrentDatabase.Families.SingleOrDefault(pp => pp.FamilyId == mpsi.id);
 
-            if (family != null && family.Picture != null)
+            if (family?.Picture != null)
             {
                 // Thumb image
-                Image imageDataThumb = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.ThumbId);
+                Image imageDataThumb = CurrentImageDatabase.Images.SingleOrDefault(i => i.Id == family.Picture.ThumbId);
 
                 if (imageDataThumb != null)
                 {
-                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(imageDataThumb);
+                    CurrentImageDatabase.Images.DeleteOnSubmit(imageDataThumb);
                 }
 
                 // Small image
-                Image imageDataSmall = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.SmallId);
+                Image imageDataSmall = CurrentImageDatabase.Images.SingleOrDefault(i => i.Id == family.Picture.SmallId);
 
                 if (imageDataSmall != null)
                 {
-                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(imageDataSmall);
+                    CurrentImageDatabase.Images.DeleteOnSubmit(imageDataSmall);
                 }
 
                 // Medium image
-                Image imageDataMedium = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.MediumId);
+                Image imageDataMedium = CurrentImageDatabase.Images.SingleOrDefault(i => i.Id == family.Picture.MediumId);
 
                 if (imageDataMedium != null)
                 {
-                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(imageDataMedium);
+                    CurrentImageDatabase.Images.DeleteOnSubmit(imageDataMedium);
                 }
 
                 // Large image
-                Image imageDataLarge = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.LargeId);
+                Image imageDataLarge = CurrentImageDatabase.Images.SingleOrDefault(i => i.Id == family.Picture.LargeId);
 
                 if (imageDataLarge != null)
                 {
-                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(imageDataLarge);
+                    CurrentImageDatabase.Images.DeleteOnSubmit(imageDataLarge);
                 }
 
                 family.Picture.ThumbId = Image.NewImageFromBits(imageBytes, 50, 50).Id;
@@ -1095,7 +1096,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 }
             }
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
             response.setNoError();
             response.data = "Image updated.";
@@ -1120,12 +1121,12 @@ namespace CmsWeb.Areas.Public.Controllers
 
             User user = authentication.getUser();
 
-            IQueryable<IncompleteTask> tasks = from t in DbUtil.Db.ViewIncompleteTasks
+            IQueryable<IncompleteTask> tasks = from t in CurrentDatabase.ViewIncompleteTasks
                                                orderby t.CreatedOn, t.StatusId, t.OwnerId, t.CoOwnerId
                                                where t.OwnerId == user.PeopleId || t.CoOwnerId == user.PeopleId
                                                select t;
 
-            IQueryable<Task> complete = (from c in DbUtil.Db.Tasks
+            IQueryable<Task> complete = (from c in CurrentDatabase.Tasks
                                          where c.StatusId == TaskStatusCode.Complete
                                          where c.OwnerId == user.PeopleId || c.CoOwnerId == user.PeopleId
                                          orderby c.CreatedOn descending
@@ -1198,7 +1199,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             MobileMessage response = new MobileMessage();
 
-            if (TaskModel.AcceptTask(user, message.argInt))
+            if (TaskModel.AcceptTask(user, message.argInt, CurrentDatabase.Host, CurrentDatabase))
             {
                 response.setNoError();
             }
@@ -1229,7 +1230,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             MobileMessage response = new MobileMessage();
 
-            if (TaskModel.DeclineTask(user, message.argInt, message.argString))
+            if (TaskModel.DeclineTask(user, message.argInt, message.argString, CurrentDatabase.Host, CurrentDatabase))
             {
                 response.setNoError();
             }
@@ -1260,7 +1261,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             MobileMessage response = new MobileMessage();
 
-            if (TaskModel.CompleteTask(user, message.argInt))
+            if (TaskModel.CompleteTask(user, message.argInt, CurrentDatabase.Host, CurrentDatabase))
             {
                 response.setNoError();
             }
@@ -1289,7 +1290,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             User user = authentication.getUser();
 
-            int contactid = TaskModel.AddCompletedContact(message.argInt, user);
+            int contactid = TaskModel.AddCompletedContact(message.argInt, user, CurrentDatabase.Host, CurrentDatabase);
 
             MobileMessage response = new MobileMessage();
             response.setNoError();
@@ -1313,13 +1314,13 @@ namespace CmsWeb.Areas.Public.Controllers
 
             User user = authentication.getUser();
 
-            Task task = (from t in DbUtil.Db.Tasks
+            Task task = (from t in CurrentDatabase.Tasks
                          where t.Id == message.argInt
                          select t).SingleOrDefault();
 
             MobileMessage response = new MobileMessage();
 
-            if (task == null || task.CompletedContactId == null)
+            if (task?.CompletedContactId == null)
             {
                 return response;
             }
@@ -1352,13 +1353,13 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             int? pid = user.PeopleId;
-            int[] oids = DbUtil.Db.GetLeaderOrgIds(pid);
+            int[] oids = CurrentDatabase.GetLeaderOrgIds(pid);
 
             IQueryable<Organization> q;
 
             if (user.InRole("OrgLeadersOnly"))
             {
-                q = from o in DbUtil.Db.Organizations
+                q = from o in CurrentDatabase.Organizations
                     where o.LimitToRole == null || user.Roles.Contains(o.LimitToRole)
                     where oids.Contains(o.OrganizationId)
                     where o.OrganizationStatusId == OrgStatusCode.Active
@@ -1366,7 +1367,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
             else
             {
-                q = from o in DbUtil.Db.Organizations
+                q = from o in CurrentDatabase.Organizations
                     where o.LimitToRole == null || user.Roles.Contains(o.LimitToRole)
                     where (o.OrganizationMembers.Any(om => om.PeopleId == pid // either a leader, who is not pending / inactive
                                                                        && (om.Pending ?? false) == false
@@ -1380,9 +1381,9 @@ namespace CmsWeb.Areas.Public.Controllers
 
             var orgs = from o in q
                            //let sc = o.OrgSchedules.FirstOrDefault() // SCHED
-                           //join sch in DbUtil.Db.OrgSchedules on o.OrganizationId equals sch.OrganizationId
-                       from sch in DbUtil.Db.ViewOrgSchedules2s.Where(s => o.OrganizationId == s.OrganizationId).DefaultIfEmpty()
-                       from mtg in DbUtil.Db.Meetings.Where(m => o.OrganizationId == m.OrganizationId && m.MeetingDate < DateTime.Today.AddDays(1)).OrderByDescending(m => m.MeetingDate).Take(1).DefaultIfEmpty()
+                           //join sch in CurrentDatabase.OrgSchedules on o.OrganizationId equals sch.OrganizationId
+                       from sch in CurrentDatabase.ViewOrgSchedules2s.Where(s => o.OrganizationId == s.OrganizationId).DefaultIfEmpty()
+                       from mtg in CurrentDatabase.Meetings.Where(m => o.OrganizationId == m.OrganizationId && m.MeetingDate < DateTime.Today.AddDays(1)).OrderByDescending(m => m.MeetingDate).Take(1).DefaultIfEmpty()
                        orderby sch.SchedDay, sch.SchedTime
                        select new OrganizationInfo
                        {
@@ -1434,9 +1435,9 @@ namespace CmsWeb.Areas.Public.Controllers
 
             MobilePostRollList mprl = JsonConvert.DeserializeObject<MobilePostRollList>(message.data);
 
-            int meetingId = DbUtil.Db.CreateMeeting(mprl.id, mprl.datetime);
+            int meetingId = CurrentDatabase.CreateMeeting(mprl.id, mprl.datetime);
 
-            Meeting meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.MeetingId == meetingId);
+            Meeting meeting = CurrentDatabase.Meetings.SingleOrDefault(m => m.MeetingId == meetingId);
 
             bool attendanceBySubGroup = meeting != null && (meeting.Organization.AttendanceBySubGroups ?? false);
 
@@ -1448,7 +1449,7 @@ namespace CmsWeb.Areas.Public.Controllers
             {
                 attendees = new List<MobileAttendee>(),
                 meetingID = meetingId,
-                headcountEnabled = DbUtil.Db.Setting("RegularMeetingHeadCount", "true")
+                headcountEnabled = CurrentDatabase.Setting("RegularMeetingHeadCount", "true")
             };
 
             if (meeting != null)
@@ -1495,16 +1496,16 @@ namespace CmsWeb.Areas.Public.Controllers
 
             MobilePostAttend mpa = JsonConvert.DeserializeObject<MobilePostAttend>(dataIn.data);
 
-            Meeting meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.OrganizationId == mpa.orgID && m.MeetingDate == mpa.datetime);
+            Meeting meeting = CurrentDatabase.Meetings.SingleOrDefault(m => m.OrganizationId == mpa.orgID && m.MeetingDate == mpa.datetime);
 
             if (meeting == null)
             {
-                DbUtil.Db.CreateMeeting(mpa.orgID, mpa.datetime);
+                CurrentDatabase.CreateMeeting(mpa.orgID, mpa.datetime);
             }
 
-            Attend.RecordAttend(DbUtil.Db, mpa.peopleID, mpa.orgID, mpa.present, mpa.datetime);
+            Attend.RecordAttend(CurrentDatabase, mpa.peopleID, mpa.orgID, mpa.present, mpa.datetime);
 
-            DbUtil.Db.UpdateMeetingCounters(mpa.orgID);
+            CurrentDatabase.UpdateMeetingCounters(mpa.orgID);
             DbUtil.LogActivity($"Mobile RecAtt o:{mpa.orgID} p:{mpa.peopleID} u:{user.PeopleId} a:{mpa.present}");
 
             MobileMessage response = new MobileMessage();
@@ -1517,7 +1518,7 @@ namespace CmsWeb.Areas.Public.Controllers
         [HttpPost]
         public ActionResult RecordHeadcount(string data)
         {
-            if (DbUtil.Db.Setting("RegularMeetingHeadCount", "true") == "disabled")
+            if (CurrentDatabase.Setting("RegularMeetingHeadCount", "true") == "disabled")
             {
                 return MobileMessage.createErrorReturn("Headcounts for meetings are disabled");
             }
@@ -1544,7 +1545,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             MobileMessage response = new MobileMessage();
 
-            Meeting meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.OrganizationId == mph.orgID && m.MeetingDate == mph.datetime);
+            Meeting meeting = CurrentDatabase.Meetings.SingleOrDefault(m => m.OrganizationId == mph.orgID && m.MeetingDate == mph.datetime);
 
             if (meeting == null)
             {
@@ -1553,7 +1554,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             meeting.HeadCount = mph.headcount;
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             DbUtil.LogActivity($"Mobile Headcount o:{meeting.OrganizationId} m:{meeting.MeetingId} h:{mph.headcount}");
 
             response.setNoError();
@@ -1617,7 +1618,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             if (mpap.familyID > 0)
             {
-                f = DbUtil.Db.Families.First(fam => fam.FamilyId == mpap.familyID);
+                f = CurrentDatabase.Families.First(fam => fam.FamilyId == mpap.familyID);
             }
             else
             {
@@ -1658,12 +1659,12 @@ namespace CmsWeb.Areas.Public.Controllers
                     f.CountryName = mpap.country;
                 }
 
-                DbUtil.Db.Families.InsertOnSubmit(f);
+                CurrentDatabase.Families.InsertOnSubmit(f);
             }
 
             f.People.Add(p);
 
-            p.PositionInFamilyId = DbUtil.Db.ComputePositionInFamily(mpap.getAge(), mpap.maritalStatusID == MaritalStatusCode.Married, f.FamilyId) ?? PositionInFamily.PrimaryAdult;
+            p.PositionInFamilyId = CurrentDatabase.ComputePositionInFamily(mpap.getAge(), mpap.maritalStatusID == MaritalStatusCode.Married, f.FamilyId) ?? PositionInFamily.PrimaryAdult;
 
             p.OriginId = OriginCode.Visit;
             p.FixTitle();
@@ -1686,33 +1687,33 @@ namespace CmsWeb.Areas.Public.Controllers
             p.MaritalStatusId = mpap.maritalStatusID;
             p.GenderId = mpap.genderID;
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
             if (mpap.visitMeeting > 0)
             {
-                Meeting meeting = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == mpap.visitMeeting);
+                Meeting meeting = CurrentDatabase.Meetings.Single(mm => mm.MeetingId == mpap.visitMeeting);
 
                 Attend.RecordAttendance(p.PeopleId, mpap.visitMeeting, true);
 
-                DbUtil.Db.UpdateMeetingCounters(mpap.visitMeeting);
+                CurrentDatabase.UpdateMeetingCounters(mpap.visitMeeting);
 
                 p.CampusId = meeting.Organization.CampusId;
                 p.EntryPoint = meeting.Organization.EntryPoint;
 
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
             }
 
             if (!user.InRole("OrgLeadersOnly"))
             {
-                Task.AddNewPerson(DbUtil.Db, p.PeopleId);
+                Task.AddNewPerson(CurrentDatabase, p.PeopleId);
             }
             else
             {
-                IEnumerable<Person> np = DbUtil.Db.GetNewPeopleManagers();
+                IEnumerable<Person> np = CurrentDatabase.GetNewPeopleManagers();
 
                 if (np != null)
                 {
-                    DbUtil.Db.Email(DbUtil.Db.Setting("AdminMail", ""), np, $"Just Added Person on {DbUtil.Db.Host}", $"<a href='{DbUtil.Db.ServerLink("/Person2/" + p.PeopleId)}'>{p.Name}</a>");
+                    CurrentDatabase.Email(CurrentDatabase.Setting("AdminMail", ""), np, $"Just Added Person on {CurrentDatabase.Host}", $"<a href='{CurrentDatabase.ServerLink("/Person2/" + p.PeopleId)}'>{p.Name}</a>");
                 }
             }
 
@@ -1748,21 +1749,21 @@ namespace CmsWeb.Areas.Public.Controllers
             MobileMessage dataIn = MobileMessage.createFromString(data);
             MobilePostJoinOrg mpjo = JsonConvert.DeserializeObject<MobilePostJoinOrg>(dataIn.data);
 
-            OrganizationMember om = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == mpjo.peopleID && m.OrganizationId == mpjo.orgID);
+            OrganizationMember om = CurrentDatabase.OrganizationMembers.SingleOrDefault(m => m.PeopleId == mpjo.peopleID && m.OrganizationId == mpjo.orgID);
 
             if (om == null && mpjo.join)
             {
-                om = OrganizationMember.InsertOrgMembers(DbUtil.Db, mpjo.orgID, mpjo.peopleID, MemberTypeCode.Member, DateTime.Today);
+                om = OrganizationMember.InsertOrgMembers(CurrentDatabase, mpjo.orgID, mpjo.peopleID, MemberTypeCode.Member, DateTime.Today);
             }
 
             if (om != null && !mpjo.join)
             {
-                om.Drop(DbUtil.Db, DateTime.Now);
+                om.Drop(CurrentDatabase, DateTime.Now);
 
                 DbUtil.LogActivity($"Dropped {om.PeopleId} for {om.Organization.OrganizationId} via {dataIn.getSourceOS()} app", peopleid: om.PeopleId, orgid: om.OrganizationId);
             }
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
             MobileMessage response = new MobileMessage();
             response.setNoError();
@@ -1775,46 +1776,49 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobilePersonCreateLists allLists = new MobilePersonCreateLists();
+            MobilePersonCreateLists allLists = new MobilePersonCreateLists
+            {
+                campuses = (from e in CurrentDatabase.Campus
+                            orderby e.Description
+                            select new MobileCampus
+                            {
+                                id = e.Id,
+                                name = e.Description
+                            }).ToList(),
 
-            allLists.campuses = (from e in DbUtil.Db.Campus
-                                 orderby e.Description
-                                 select new MobileCampus
-                                 {
-                                     id = e.Id,
-                                     name = e.Description
-                                 }).ToList();
+                countries = (from e in CurrentDatabase.Countries
+                             orderby e.Id
+                             select new MobileCountry
+                             {
+                                 id = e.Id,
+                                 code = e.Code,
+                                 description = e.Description
+                             }).ToList(),
 
-            allLists.countries = (from e in DbUtil.Db.Countries
-                                  orderby e.Id
-                                  select new MobileCountry
-                                  {
-                                      id = e.Id,
-                                      code = e.Code,
-                                      description = e.Description
-                                  }).ToList();
+                states = (from e in CurrentDatabase.StateLookups
+                          orderby e.StateCode
+                          select new MobileState
+                          {
+                              code = e.StateCode,
+                              name = e.StateName
+                          }).ToList(),
 
-            allLists.states = (from e in DbUtil.Db.StateLookups
-                               orderby e.StateCode
-                               select new MobileState
-                               {
-                                   code = e.StateCode,
-                                   name = e.StateName
-                               }).ToList();
+                maritalStatuses = (from e in CurrentDatabase.MaritalStatuses
+                                   orderby e.Id
+                                   select new MobileMaritalStatus
+                                   {
+                                       id = e.Id,
+                                       code = e.Code,
+                                       description = e.Description
+                                   }).ToList()
+            };
 
-            allLists.maritalStatuses = (from e in DbUtil.Db.MaritalStatuses
-                                        orderby e.Id
-                                        select new MobileMaritalStatus
-                                        {
-                                            id = e.Id,
-                                            code = e.Code,
-                                            description = e.Description
-                                        }).ToList();
-
-            BaseMessage response = new BaseMessage();
-            response.error = 0;
-            response.count = 3;
-            response.data = JsonConvert.SerializeObject(allLists);
+            BaseMessage response = new BaseMessage
+            {
+                error = 0,
+                count = 3,
+                data = JsonConvert.SerializeObject(allLists)
+            };
 
             return response;
         }
@@ -1823,7 +1827,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            IQueryable<MobileCampus> campuses = from p in DbUtil.Db.MobileAppBuildings
+            IQueryable<MobileCampus> campuses = from p in CurrentDatabase.MobileAppBuildings
                                                 where p.Enabled
                                                 orderby p.Order
                                                 select new MobileCampus
@@ -1836,7 +1840,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             foreach (MobileCampus campus in campusList)
             {
-                IQueryable<MobileFloor> floors = from p in DbUtil.Db.MobileAppFloors
+                IQueryable<MobileFloor> floors = from p in CurrentDatabase.MobileAppFloors
                                                  where p.Enabled
                                                  where p.Campus == campus.id
                                                  orderby p.Order
@@ -1851,7 +1855,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
                 foreach (MobileFloor floor in floorList)
                 {
-                    IQueryable<MobileRoom> rooms = from p in DbUtil.Db.MobileAppRooms
+                    IQueryable<MobileRoom> rooms = from p in CurrentDatabase.MobileAppRooms
                                                    where p.Enabled
                                                    where p.Floor == floor.id
                                                    orderby p.Room
@@ -1877,7 +1881,7 @@ namespace CmsWeb.Areas.Public.Controllers
             return response;
         }
 
-        private static OneTimeLink GetOneTimeLink(int orgId, int peopleId)
+        private OneTimeLink GetOneTimeLink(int orgId, int peopleId)
         {
             return new OneTimeLink
             {
@@ -1887,7 +1891,7 @@ namespace CmsWeb.Areas.Public.Controllers
             };
         }
 
-        private static string GetOneTimeLoginLink(string url, string user)
+        private string GetOneTimeLoginLink(string url, string user)
         {
             OneTimeLink oneTimeLink = new OneTimeLink
             {
@@ -1896,14 +1900,14 @@ namespace CmsWeb.Areas.Public.Controllers
                 Expires = DateTime.Now.AddMinutes(15)
             };
 
-            DbUtil.Db.OneTimeLinks.InsertOnSubmit(oneTimeLink);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.OneTimeLinks.InsertOnSubmit(oneTimeLink);
+            CurrentDatabase.SubmitChanges();
 
-            return $"{DbUtil.Db.ServerLink($"Logon?ReturnUrl={HttpUtility.UrlEncode(url)}&otltoken={oneTimeLink.Id.ToCode()}")}";
+            return $"{CurrentDatabase.ServerLink($"Logon?ReturnUrl={HttpUtility.UrlEncode(url)}&otltoken={oneTimeLink.Id.ToCode()}")}";
         }
 
         // ReSharper disable once UnusedParameter.Local
-        private static string SerializeJSON(object item, int version)
+        private string SerializeJSON(object item, int version)
         {
             return JsonConvert.SerializeObject(item, new IsoDateTimeConverter() { DateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss" });
         }

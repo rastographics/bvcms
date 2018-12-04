@@ -3,6 +3,7 @@ using CmsData.Codes;
 using CmsWeb.Areas.Manage.Models;
 using CmsWeb.Areas.People.Models.Task;
 using CmsWeb.Areas.Reports.Models;
+using CmsWeb.Lifecycle;
 using CmsWeb.MobileAPI;
 using CmsWeb.Models;
 using Dapper;
@@ -21,8 +22,12 @@ using DbUtil = CmsData.DbUtil;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
-    public class MobileAPIController : Controller
+    public class MobileAPIController : CMSBaseController
     {
+        public MobileAPIController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         public ActionResult Exists()
         {
             return Content("1");
@@ -110,12 +115,12 @@ namespace CmsWeb.Areas.Public.Controllers
                 Expires = DateTime.Now.AddMinutes(15)
             };
 
-            DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.OneTimeLinks.InsertOnSubmit(ot);
+            CurrentDatabase.SubmitChanges();
 
             var br = new BaseMessage();
             br.setNoError();
-            br.data = $"{DbUtil.Db.ServerLink($"Logon?ReturnUrl={HttpUtility.UrlEncode(dataIn.argString)}&otltoken={ot.Id.ToCode()}")}";
+            br.data = $"{CurrentDatabase.ServerLink($"Logon?ReturnUrl={HttpUtility.UrlEncode(dataIn.argString)}&otltoken={ot.Id.ToCode()}")}";
 
             return br;
         }
@@ -204,17 +209,17 @@ namespace CmsWeb.Areas.Public.Controllers
             var dataIn = BaseMessage.createFromString(data);
 
             var sql = @"SELECT OrganizationId FROM dbo.Organizations WHERE RegistrationTypeId = 8 AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
-            var givingOrgId = DbUtil.Db.Connection.ExecuteScalar(sql) as int?;
+            var givingOrgId = CurrentDatabase.Connection.ExecuteScalar(sql) as int?;
 
             var br = new BaseMessage();
 
             if (dataIn.version >= BaseMessage.API_VERSION_3)
             {
-                br.data = DbUtil.Db.ServerLink($"OnlineReg/{givingOrgId}?{dataIn.getSourceQueryString()}");
+                br.data = CurrentDatabase.ServerLink($"OnlineReg/{givingOrgId}?{dataIn.getSourceQueryString()}");
             }
             else
             {
-                br.data = DbUtil.Db.ServerLink($"OnlineReg/{givingOrgId}");
+                br.data = CurrentDatabase.ServerLink($"OnlineReg/{givingOrgId}");
             }
 
             br.setNoError();
@@ -236,24 +241,18 @@ namespace CmsWeb.Areas.Public.Controllers
 SELECT OrganizationId FROM dbo.Organizations
 WHERE RegistrationTypeId = 8
 AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
-            var givingOrgId = DbUtil.Db.Connection.ExecuteScalar(sql) as int?;
+            var givingOrgId = CurrentDatabase.Connection.ExecuteScalar(sql) as int?;
 
             var ot = GetOneTimeLink(givingOrgId ?? 0, result.User.PeopleId.GetValueOrDefault());
 
-            DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.OneTimeLinks.InsertOnSubmit(ot);
+            CurrentDatabase.SubmitChanges();
             //          DbUtil.LogActivity($"APIPerson GetOneTimeRegisterLink {OrgId}, {PeopleId}");
 
-            var br = new BaseMessage();
-
-            if (dataIn.version >= BaseMessage.API_VERSION_3)
+            var br = new BaseMessage
             {
-                br.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{dataIn.getSourceQueryString()}");
-            }
-            else
-            {
-                br.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}");
-            }
+                data = CurrentDatabase.ServerLink(dataIn.version >= BaseMessage.API_VERSION_3 ? $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{dataIn.getSourceQueryString()}" : $"OnlineReg/RegisterLink/{ot.Id.ToCode()}")
+            };
 
             br.setNoError();
             return br;
@@ -270,25 +269,25 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             var dataIn = BaseMessage.createFromString(data);
 
-            var managedGivingOrgId = DbUtil.Db.Organizations
+            var managedGivingOrgId = CurrentDatabase.Organizations
                                                     .Where(o => o.RegistrationTypeId == RegistrationTypeCode.ManageGiving)
                                                     .Select(x => x.OrganizationId).FirstOrDefault();
 
             var ot = GetOneTimeLink(managedGivingOrgId, result.User.PeopleId.GetValueOrDefault());
 
-            DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.OneTimeLinks.InsertOnSubmit(ot);
+            CurrentDatabase.SubmitChanges();
             //			DbUtil.LogActivity($"APIPerson GetOneTimeRegisterLink {OrgId}, {PeopleId}");
 
             var br = new BaseMessage();
 
             if (dataIn.version >= BaseMessage.API_VERSION_3)
             {
-                br.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{dataIn.getSourceQueryString()}");
+                br.data = CurrentDatabase.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{dataIn.getSourceQueryString()}");
             }
             else
             {
-                br.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}");
+                br.data = CurrentDatabase.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}");
             }
 
             br.setNoError();
@@ -309,20 +308,13 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             var ot = GetOneTimeLink(orgId, result.User.PeopleId.GetValueOrDefault());
 
-            DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.OneTimeLinks.InsertOnSubmit(ot);
+            CurrentDatabase.SubmitChanges();
             //			DbUtil.LogActivity($"APIPerson GetOneTimeRegisterLink {OrgId}, {PeopleId}");
 
             var br = new BaseMessage();
 
-            if (dataIn.version >= BaseMessage.API_VERSION_3)
-            {
-                br.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{dataIn.getSourceQueryString()}");
-            }
-            else
-            {
-                br.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}");
-            }
+            br.data = CurrentDatabase.ServerLink(dataIn.version >= BaseMessage.API_VERSION_3 ? $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{dataIn.getSourceQueryString()}" : $"OnlineReg/RegisterLink/{ot.Id.ToCode()}");
 
             br.setNoError();
             return br;
@@ -342,19 +334,19 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             var ot = GetOneTimeLink(orgId, result.User.PeopleId.GetValueOrDefault());
 
-            DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.OneTimeLinks.InsertOnSubmit(ot);
+            CurrentDatabase.SubmitChanges();
             //			DbUtil.LogActivity($"APIPerson GetOneTimeRegisterLink2 {OrgId}, {PeopleId}");
 
             var br = new BaseMessage();
 
             if (dataIn.version >= BaseMessage.API_VERSION_3)
             {
-                br.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?showfamily=true&{dataIn.getSourceQueryString()}");
+                br.data = CurrentDatabase.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?showfamily=true&{dataIn.getSourceQueryString()}");
             }
             else
             {
-                br.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?showfamily=true");
+                br.data = CurrentDatabase.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?showfamily=true");
             }
 
             br.setNoError();
@@ -363,17 +355,18 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
         private MobileSettings getUserInfo()
         {
-            var roles = from r in DbUtil.Db.UserRoles
+            var roles = from r in CurrentDatabase.UserRoles
                         where r.UserId == Util.UserId
                         orderby r.Role.RoleName
                         select r.Role.RoleName;
 
-            MobileSettings ms = new MobileSettings();
-
-            ms.peopleID = Util.UserPeopleId ?? 0;
-            ms.userID = Util.UserId;
-            ms.userName = Util.UserFullName;
-            ms.roles = roles.ToList();
+            MobileSettings ms = new MobileSettings
+            {
+                peopleID = Util.UserPeopleId ?? 0,
+                userID = Util.UserId,
+                userName = Util.UserFullName,
+                roles = roles.ToList()
+            };
 
             return ms;
         }
@@ -385,38 +378,40 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                 return;
             }
 
-            var registration = (from e in DbUtil.Db.MobileAppPushRegistrations
+            var registration = (from e in CurrentDatabase.MobileAppPushRegistrations
                                 where e.RegistrationId == pushID
                                 select e).FirstOrDefault();
 
             if (registration == null)
             {
-                MobileAppPushRegistration register = new MobileAppPushRegistration();
-                register.Enabled = true;
-                register.PeopleId = peopleID;
-                register.Type = device;
-                register.RegistrationId = pushID;
+                MobileAppPushRegistration register = new MobileAppPushRegistration
+                {
+                    Enabled = true,
+                    PeopleId = peopleID,
+                    Type = device,
+                    RegistrationId = pushID
+                };
 
-                DbUtil.Db.MobileAppPushRegistrations.InsertOnSubmit(register);
+                CurrentDatabase.MobileAppPushRegistrations.InsertOnSubmit(register);
             }
             else
             {
                 registration.PeopleId = peopleID;
             }
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
         }
 
         private bool enablePushID(string pushID, bool enabled)
         {
-            var registration = (from e in DbUtil.Db.MobileAppPushRegistrations
+            var registration = (from e in CurrentDatabase.MobileAppPushRegistrations
                                 where e.RegistrationId == pushID
                                 select e).FirstOrDefault();
 
             if (registration != null)
             {
                 registration.Enabled = true;
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
 
                 return true;
             }
@@ -539,14 +534,14 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             string val = null;
             if (a.Length > 0)
             {
-                var org = DbUtil.Db.LoadOrganizationById(a[1].ToInt());
+                var org = CurrentDatabase.LoadOrganizationById(a[1].ToInt());
                 if (org != null)
                 {
                     val = org.AppCategory ?? "Other";
                 }
             }
             var categories = new Dictionary<string, string>();
-            var lines = DbUtil.Db.Content("AppRegistrations", "Other\tRegistrations").TrimEnd();
+            var lines = CurrentDatabase.Content("AppRegistrations", "Other\tRegistrations").TrimEnd();
             var re = new Regex(@"^(\S*)\s+(.*)$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
             var line = re.Match(lines);
             while (line.Success)
@@ -571,7 +566,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
         private List<MobileRegistrationCategory> GetRegistrations()
         {
-            var registrations = (from o in DbUtil.Db.ViewAppRegistrations
+            var registrations = (from o in CurrentDatabase.ViewAppRegistrations
                                  let sort = o.PublicSortOrder == null || o.PublicSortOrder.Length == 0 ? "10" : o.PublicSortOrder
                                  select new MobileRegistration
                                  {
@@ -586,7 +581,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                                  }).ToList();
 
             var categories = new Dictionary<string, string>();
-            var lines = DbUtil.Db.Content("AppRegistrations", "Other\tRegistrations").TrimEnd();
+            var lines = CurrentDatabase.Content("AppRegistrations", "Other\tRegistrations").TrimEnd();
             var re = new Regex(@"^(\S*)\s+(.*)$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
             var line = re.Match(lines);
             while (line.Success)
@@ -668,7 +663,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage br = new BaseMessage();
 
-            var person = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == mpfs.id);
+            var person = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == mpfs.id);
 
             if (person == null)
             {
@@ -686,8 +681,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             }
             else
             {
-                List<MobilePerson> mp = new List<MobilePerson>();
-                mp.Add(new MobilePerson().populate(person));
+                List<MobilePerson> mp = new List<MobilePerson> { new MobilePerson().populate(person) };
                 br.data = SerializeJSON(mp, dataIn.version);
             }
 
@@ -707,7 +701,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             BaseMessage dataIn = BaseMessage.createFromString(data);
             BaseMessage br = new BaseMessage();
 
-            Person person = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == dataIn.argInt);
+            Person person = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == dataIn.argInt);
 
             if (person == null)
             {
@@ -744,7 +738,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
 
-            Person user = DbUtil.Db.People.FirstOrDefault(p => p.PeopleId == Util.UserPeopleId);
+            Person user = CurrentDatabase.People.FirstOrDefault(p => p.PeopleId == Util.UserPeopleId);
 
             if (user == null)
             {
@@ -768,7 +762,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage br = new BaseMessage();
 
-            Person person = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == dataIn.argInt);
+            Person person = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == dataIn.argInt);
 
             if (person == null)
             {
@@ -789,15 +783,15 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             if (personChangeList.Count > 0)
             {
-                person.LogChanges(DbUtil.Db, personChangeList);
+                person.LogChanges(CurrentDatabase, personChangeList);
             }
 
             if (familyChangeList.Count > 0)
             {
-                person.Family.LogChanges(DbUtil.Db, familyChangeList, person.PeopleId);
+                person.Family.LogChanges(CurrentDatabase, familyChangeList, person.PeopleId);
             }
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
             br.setNoError();
             br.count = 1;
@@ -824,7 +818,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage br = new BaseMessage();
 
-            Person person = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == dataIn.argInt);
+            Person person = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == dataIn.argInt);
 
             if (person == null)
             {
@@ -836,7 +830,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             int lastYear = DateTime.Now.Year - 2;
             int thisYear = DateTime.Now.Year - 1;
 
-            decimal lastYearTotal = (from c in DbUtil.Db.Contributions
+            decimal lastYearTotal = (from c in CurrentDatabase.Contributions
                                      where c.PeopleId == person.PeopleId
                                              || (c.PeopleId == person.SpouseId && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint)
                                      where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
@@ -845,7 +839,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                                      orderby c.ContributionDate descending
                                      select c).AsEnumerable().Sum(c => c.ContributionAmount ?? 0);
 
-            List<MobileGivingEntry> entries = (from c in DbUtil.Db.Contributions
+            List<MobileGivingEntry> entries = (from c in CurrentDatabase.Contributions
                                                let online = c.BundleDetails.Single().BundleHeader.BundleHeaderType.Description.Contains("Online")
                                                where c.PeopleId == person.PeopleId
                                                        || (c.PeopleId == person.SpouseId && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint)
@@ -904,12 +898,12 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             if (Util2.OrgLeadersOnly)
             {
-                oids = DbUtil.Db.GetLeaderOrgIds(Util.UserPeopleId);
+                oids = CurrentDatabase.GetLeaderOrgIds(Util.UserPeopleId);
             }
 
-            string[] roles = DbUtil.Db.CurrentRoles();
+            string[] roles = CurrentDatabase.CurrentRoles();
 
-            List<MobileInvolvement> orgList = (from om in DbUtil.Db.OrganizationMembers
+            List<MobileInvolvement> orgList = (from om in CurrentDatabase.OrganizationMembers
                                                let org = om.Organization
                                                where om.PeopleId == Util.UserPeopleId
                                                where (om.Pending ?? false) == false
@@ -928,8 +922,10 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                                                    attendancePercent = (int)(om.AttendPct == null ? 0 : om.AttendPct * 100)
                                                }).ToList();
 
-            BaseMessage br = new BaseMessage();
-            br.data = SerializeJSON(orgList, dataIn.version);
+            BaseMessage br = new BaseMessage
+            {
+                data = SerializeJSON(orgList, dataIn.version)
+            };
             br.setNoError();
             br.count = 1;
 
@@ -957,37 +953,39 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             br.data = "The picture was not found.";
 
-            var person = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == mpfi.id);
+            var person = CurrentDatabase.People.SingleOrDefault(pp => pp.PeopleId == mpfi.id);
 
-            if (person != null && person.PictureId != null)
+            if (person?.PictureId == null)
             {
-                Image image = null;
+                return br;
+            }
 
-                switch (mpfi.size)
-                {
-                    case 0: // 50 x 50
-                        image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId);
-                        break;
+            Image image = null;
 
-                    case 1: // 120 x 120
-                        image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId);
-                        break;
+            switch (mpfi.size)
+            {
+                case 0: // 50 x 50
+                    image = CurrentImageDatabase.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId);
+                    break;
 
-                    case 2: // 320 x 400
-                        image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.MediumId);
-                        break;
+                case 1: // 120 x 120
+                    image = CurrentImageDatabase.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId);
+                    break;
 
-                    case 3: // 570 x 800
-                        image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.LargeId);
-                        break;
-                }
+                case 2: // 320 x 400
+                    image = CurrentImageDatabase.Images.SingleOrDefault(i => i.Id == person.Picture.MediumId);
+                    break;
 
-                if (image != null)
-                {
-                    br.data = Convert.ToBase64String(image.Bits);
-                    br.count = 1;
-                    br.setNoError();
-                }
+                case 3: // 570 x 800
+                    image = CurrentImageDatabase.Images.SingleOrDefault(i => i.Id == person.Picture.LargeId);
+                    break;
+            }
+
+            if (image != null)
+            {
+                br.data = Convert.ToBase64String(image.Bits);
+                br.count = 1;
+                br.setNoError();
             }
 
             return br;
@@ -1010,40 +1008,40 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             var imageBytes = Convert.FromBase64String(mpsi.image);
 
-            var person = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == mpsi.id);
+            var person = CurrentDatabase.People.SingleOrDefault(pp => pp.PeopleId == mpsi.id);
 
-            if (person != null && person.Picture != null)
+            if (person?.Picture != null)
             {
                 // Thumb image
-                Image imageDataThumb = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId);
+                Image imageDataThumb = CurrentImageDatabase.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId);
 
                 if (imageDataThumb != null)
                 {
-                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(imageDataThumb);
+                    CurrentImageDatabase.Images.DeleteOnSubmit(imageDataThumb);
                 }
 
                 // Small image
-                Image imageDataSmall = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId);
+                Image imageDataSmall = CurrentImageDatabase.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId);
 
                 if (imageDataSmall != null)
                 {
-                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(imageDataSmall);
+                    CurrentImageDatabase.Images.DeleteOnSubmit(imageDataSmall);
                 }
 
                 // Medium image
-                Image imageDataMedium = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.MediumId);
+                Image imageDataMedium = CurrentImageDatabase.Images.SingleOrDefault(i => i.Id == person.Picture.MediumId);
 
                 if (imageDataMedium != null)
                 {
-                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(imageDataMedium);
+                    CurrentImageDatabase.Images.DeleteOnSubmit(imageDataMedium);
                 }
 
                 // Large image
-                Image imageDataLarge = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.LargeId);
+                Image imageDataLarge = CurrentImageDatabase.Images.SingleOrDefault(i => i.Id == person.Picture.LargeId);
 
                 if (imageDataLarge != null)
                 {
-                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(imageDataLarge);
+                    CurrentImageDatabase.Images.DeleteOnSubmit(imageDataLarge);
                 }
 
                 person.Picture.ThumbId = Image.NewImageFromBits(imageBytes, 50, 50).Id;
@@ -1067,8 +1065,8 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                 }
             }
 
-            DbUtil.Db.SubmitChanges();
-            person.LogPictureUpload(DbUtil.Db, Util.UserPeopleId ?? 1);
+            CurrentDatabase.SubmitChanges();
+            person.LogPictureUpload(CurrentDatabase, Util.UserPeopleId ?? 1);
 
             br.setNoError();
             br.data = "Image updated.";
@@ -1095,40 +1093,40 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             var imageBytes = Convert.FromBase64String(mpsi.image);
 
-            var family = DbUtil.Db.Families.SingleOrDefault(pp => pp.FamilyId == mpsi.id);
+            var family = CurrentDatabase.Families.SingleOrDefault(pp => pp.FamilyId == mpsi.id);
 
-            if (family != null && family.Picture != null)
+            if (family?.Picture != null)
             {
                 // Thumb image
-                Image imageDataThumb = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.ThumbId);
+                Image imageDataThumb = CurrentImageDatabase.Images.SingleOrDefault(i => i.Id == family.Picture.ThumbId);
 
                 if (imageDataThumb != null)
                 {
-                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(imageDataThumb);
+                    CurrentImageDatabase.Images.DeleteOnSubmit(imageDataThumb);
                 }
 
                 // Small image
-                Image imageDataSmall = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.SmallId);
+                Image imageDataSmall = CurrentImageDatabase.Images.SingleOrDefault(i => i.Id == family.Picture.SmallId);
 
                 if (imageDataSmall != null)
                 {
-                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(imageDataSmall);
+                    CurrentImageDatabase.Images.DeleteOnSubmit(imageDataSmall);
                 }
 
                 // Medium image
-                Image imageDataMedium = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.MediumId);
+                Image imageDataMedium = CurrentImageDatabase.Images.SingleOrDefault(i => i.Id == family.Picture.MediumId);
 
                 if (imageDataMedium != null)
                 {
-                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(imageDataMedium);
+                    CurrentImageDatabase.Images.DeleteOnSubmit(imageDataMedium);
                 }
 
                 // Large image
-                Image imageDataLarge = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.LargeId);
+                Image imageDataLarge = CurrentImageDatabase.Images.SingleOrDefault(i => i.Id == family.Picture.LargeId);
 
                 if (imageDataLarge != null)
                 {
-                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(imageDataLarge);
+                    CurrentImageDatabase.Images.DeleteOnSubmit(imageDataLarge);
                 }
 
                 family.Picture.ThumbId = Image.NewImageFromBits(imageBytes, 50, 50).Id;
@@ -1152,7 +1150,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                 }
             }
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
             br.setNoError();
             br.data = "Image updated.";
@@ -1173,12 +1171,12 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
 
-            var tasks = from t in DbUtil.Db.ViewIncompleteTasks
+            var tasks = from t in CurrentDatabase.ViewIncompleteTasks
                         orderby t.CreatedOn, t.StatusId, t.OwnerId, t.CoOwnerId
                         where t.OwnerId == Util.UserPeopleId || t.CoOwnerId == Util.UserPeopleId
                         select t;
 
-            var complete = (from c in DbUtil.Db.Tasks
+            var complete = (from c in CurrentDatabase.Tasks
                             where c.StatusId == TaskStatusCode.Complete
                             where c.OwnerId == Util.UserPeopleId || c.CoOwnerId == Util.UserPeopleId
                             orderby c.CreatedOn descending
@@ -1245,10 +1243,12 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
 
-            TaskModel.AcceptTask(dataIn.argInt);
+            TaskModel.AcceptTask(dataIn.argInt, CurrentDatabase.Host, CurrentDatabase);
 
-            BaseMessage br = new BaseMessage();
-            br.count = 1;
+            BaseMessage br = new BaseMessage
+            {
+                count = 1
+            };
             br.setNoError();
 
             return br;
@@ -1265,10 +1265,12 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
 
-            TaskModel.DeclineTask(dataIn.argInt, dataIn.argString);
+            TaskModel.DeclineTask(dataIn.argInt, dataIn.argString, CurrentDatabase.Host, CurrentDatabase);
 
-            BaseMessage br = new BaseMessage();
-            br.count = 1;
+            BaseMessage br = new BaseMessage
+            {
+                count = 1
+            };
             br.setNoError();
 
             return br;
@@ -1285,10 +1287,12 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
 
-            TaskModel.CompleteTask(dataIn.argInt);
+            TaskModel.CompleteTask(dataIn.argInt, CurrentDatabase.Host, CurrentDatabase);
 
-            BaseMessage br = new BaseMessage();
-            br.count = 1;
+            BaseMessage br = new BaseMessage
+            {
+                count = 1
+            };
             br.setNoError();
 
             return br;
@@ -1305,11 +1309,13 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
 
-            var contactid = TaskModel.AddCompletedContact(dataIn.argInt);
+            var contactid = TaskModel.AddCompletedContact(dataIn.argInt, CurrentDatabase.Host, CurrentDatabase);
 
-            BaseMessage br = new BaseMessage();
-            br.data = GetOneTimeLoginLink($"/Contact2/{contactid}?edit=true&{dataIn.getSourceQueryString()}", Util.UserName);
-            br.count = 1;
+            BaseMessage br = new BaseMessage
+            {
+                data = GetOneTimeLoginLink($"/Contact2/{contactid}?edit=true&{dataIn.getSourceQueryString()}", Util.UserName),
+                count = 1
+            };
             br.setNoError();
             return br;
         }
@@ -1325,18 +1331,20 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
 
-            var task = (from t in DbUtil.Db.Tasks
+            var task = (from t in CurrentDatabase.Tasks
                         where t.Id == dataIn.argInt
                         select t).SingleOrDefault();
 
             BaseMessage br = new BaseMessage();
 
-            if (task != null && task.CompletedContactId != null)
+            if (task?.CompletedContactId == null)
             {
-                br.data = GetOneTimeLoginLink($"/Contact2/{task.CompletedContactId}?{dataIn.getSourceQueryString()}", Util.UserName);
-                br.count = 1;
-                br.setNoError();
+                return br;
             }
+
+            br.data = GetOneTimeLoginLink($"/Contact2/{task.CompletedContactId}?{dataIn.getSourceQueryString()}", Util.UserName);
+            br.count = 1;
+            br.setNoError();
 
             return br;
         }
@@ -1358,16 +1366,16 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             BaseMessage dataIn = BaseMessage.createFromString(data);
 
             var pid = Util.UserPeopleId;
-            var oids = DbUtil.Db.GetLeaderOrgIds(pid);
+            var oids = CurrentDatabase.GetLeaderOrgIds(pid);
             var dt = DateTime.Parse("8:00 AM");
 
-            var roles = DbUtil.Db.CurrentRoles();
+            var roles = CurrentDatabase.CurrentRoles();
 
             IQueryable<Organization> q = null;
 
             if (Util2.OrgLeadersOnly)
             {
-                q = from o in DbUtil.Db.Organizations
+                q = from o in CurrentDatabase.Organizations
                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                     where oids.Contains(o.OrganizationId)
                     where o.OrganizationStatusId == OrgStatusCode.Active
@@ -1375,7 +1383,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             }
             else
             {
-                q = from o in DbUtil.Db.Organizations
+                q = from o in CurrentDatabase.Organizations
                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                     //let sc = o.OrgSchedules.FirstOrDefault() // SCHED
                     where (o.OrganizationMembers.Any(om => om.PeopleId == pid // either a leader, who is not pending / inactive
@@ -1390,9 +1398,9 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             var orgs = from o in q
                            //let sc = o.OrgSchedules.FirstOrDefault() // SCHED
-                           //join sch in DbUtil.Db.OrgSchedules on o.OrganizationId equals sch.OrganizationId
-                       from sch in DbUtil.Db.ViewOrgSchedules2s.Where(s => o.OrganizationId == s.OrganizationId).DefaultIfEmpty()
-                       from mtg in DbUtil.Db.Meetings.Where(m => o.OrganizationId == m.OrganizationId && m.MeetingDate < DateTime.Today.AddDays(1)).OrderByDescending(m => m.MeetingDate).Take(1).DefaultIfEmpty()
+                           //join sch in CurrentDatabase.OrgSchedules on o.OrganizationId equals sch.OrganizationId
+                       from sch in CurrentDatabase.ViewOrgSchedules2s.Where(s => o.OrganizationId == s.OrganizationId).DefaultIfEmpty()
+                       from mtg in CurrentDatabase.Meetings.Where(m => o.OrganizationId == m.OrganizationId && m.MeetingDate < DateTime.Today.AddDays(1)).OrderByDescending(m => m.MeetingDate).Take(1).DefaultIfEmpty()
                        orderby sch.SchedDay, sch.SchedTime
                        select new OrganizationInfo
                        {
@@ -1410,7 +1418,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             br.count = orgs.Count();
 
             int tzOffset = 0;
-            int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
+            int.TryParse(CurrentDatabase.GetSetting("TZOffset", "0"), out tzOffset);
 
             foreach (var item in orgs)
             {
@@ -1462,7 +1470,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == BaseMessage.API_VERSION_2)
             {
                 int tzOffset = 0;
-                int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
+                int.TryParse(CurrentDatabase.GetSetting("TZOffset", "0"), out tzOffset);
 
                 if (tzOffset != 0)
                 {
@@ -1470,22 +1478,26 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                 }
             }
 
-            var meetingId = DbUtil.Db.CreateMeeting(mprl.id, mprl.datetime);
+            var meetingId = CurrentDatabase.CreateMeeting(mprl.id, mprl.datetime);
 
-            var meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.MeetingId == meetingId);
+            var meeting = CurrentDatabase.Meetings.SingleOrDefault(m => m.MeetingId == meetingId);
             var attendanceBySubGroup = meeting.Organization.AttendanceBySubGroups ?? false;
             var people = attendanceBySubGroup
                 ? RollsheetModel.RollListFilteredBySubgroup(meetingId, mprl.id, mprl.datetime, fromMobile: true)
                 : RollsheetModel.RollList(meetingId, mprl.id, mprl.datetime, fromMobile: true);
 
-            MobileRollList mrl = new MobileRollList();
-            mrl.attendees = new List<MobileAttendee>();
-            mrl.meetingID = meetingId;
-            mrl.headcountEnabled = DbUtil.Db.Setting("RegularMeetingHeadCount", "true");
-            mrl.headcount = meeting.HeadCount ?? 0;
+            MobileRollList mrl = new MobileRollList
+            {
+                attendees = new List<MobileAttendee>(),
+                meetingID = meetingId,
+                headcountEnabled = CurrentDatabase.Setting("RegularMeetingHeadCount", "true"),
+                headcount = meeting.HeadCount ?? 0
+            };
 
-            BaseMessage br = new BaseMessage();
-            br.id = meetingId;
+            BaseMessage br = new BaseMessage
+            {
+                id = meetingId
+            };
             br.setNoError();
             br.count = people.Count;
 
@@ -1530,7 +1542,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == BaseMessage.API_VERSION_2)
             {
                 int tzOffset = 0;
-                int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
+                int.TryParse(CurrentDatabase.GetSetting("TZOffset", "0"), out tzOffset);
 
                 if (tzOffset != 0)
                 {
@@ -1538,16 +1550,16 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                 }
             }
 
-            var meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.OrganizationId == mpa.orgID && m.MeetingDate == mpa.datetime);
+            var meeting = CurrentDatabase.Meetings.SingleOrDefault(m => m.OrganizationId == mpa.orgID && m.MeetingDate == mpa.datetime);
 
             if (meeting == null)
             {
-                DbUtil.Db.CreateMeeting(mpa.orgID, mpa.datetime);
+                CurrentDatabase.CreateMeeting(mpa.orgID, mpa.datetime);
             }
 
-            Attend.RecordAttend(DbUtil.Db, mpa.peopleID, mpa.orgID, mpa.present, mpa.datetime);
+            Attend.RecordAttend(CurrentDatabase, mpa.peopleID, mpa.orgID, mpa.present, mpa.datetime);
 
-            DbUtil.Db.UpdateMeetingCounters(mpa.orgID);
+            CurrentDatabase.UpdateMeetingCounters(mpa.orgID);
             DbUtil.LogActivity($"Mobile RecAtt o:{mpa.orgID} p:{mpa.peopleID} u:{Util.UserPeopleId} a:{mpa.present}");
 
             BaseMessage br = new BaseMessage();
@@ -1560,7 +1572,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
         [HttpPost]
         public ActionResult RecordHeadcount(string data)
         {
-            if (DbUtil.Db.Setting("RegularMeetingHeadCount", "true") == "disabled")
+            if (CurrentDatabase.Setting("RegularMeetingHeadCount", "true") == "disabled")
             {
                 return BaseMessage.createErrorReturn("Headcounts for meetings are disabled");
             }
@@ -1594,7 +1606,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == BaseMessage.API_VERSION_2)
             {
                 int tzOffset = 0;
-                int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
+                int.TryParse(CurrentDatabase.GetSetting("TZOffset", "0"), out tzOffset);
 
                 if (tzOffset != 0)
                 {
@@ -1602,10 +1614,10 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                 }
             }
 
-            var meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.OrganizationId == mph.orgID && m.MeetingDate == mph.datetime);
+            var meeting = CurrentDatabase.Meetings.SingleOrDefault(m => m.OrganizationId == mph.orgID && m.MeetingDate == mph.datetime);
             meeting.HeadCount = mph.headcount;
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
             DbUtil.LogActivity($"Mobile Headcount o:{meeting.OrganizationId} m:{meeting.MeetingId} h:{mph.headcount}");
 
@@ -1636,17 +1648,18 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             MobilePostAddPerson mpap = JsonConvert.DeserializeObject<MobilePostAddPerson>(dataIn.data);
             mpap.clean();
 
-            var p = new Person();
+            var p = new Person
+            {
+                CreatedDate = Util.Now,
+                CreatedBy = Util.UserId,
 
-            p.CreatedDate = Util.Now;
-            p.CreatedBy = Util.UserId;
+                MemberStatusId = MemberStatusCode.JustAdded,
+                AddressTypeId = 10,
 
-            p.MemberStatusId = MemberStatusCode.JustAdded;
-            p.AddressTypeId = 10;
-
-            p.FirstName = mpap.firstName;
-            p.LastName = mpap.lastName;
-            p.Name = "";
+                FirstName = mpap.firstName,
+                LastName = mpap.lastName,
+                Name = ""
+            };
 
             if (mpap.goesBy.Length > 0)
             {
@@ -1667,7 +1680,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             if (mpap.familyID > 0)
             {
-                f = DbUtil.Db.Families.First(fam => fam.FamilyId == mpap.familyID);
+                f = CurrentDatabase.Families.First(fam => fam.FamilyId == mpap.familyID);
             }
             else
             {
@@ -1708,12 +1721,12 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                     f.CountryName = mpap.country;
                 }
 
-                DbUtil.Db.Families.InsertOnSubmit(f);
+                CurrentDatabase.Families.InsertOnSubmit(f);
             }
 
             f.People.Add(p);
 
-            p.PositionInFamilyId = DbUtil.Db.ComputePositionInFamily(mpap.getAge(), mpap.maritalStatusID == MaritalStatusCode.Married, f.FamilyId) ?? PositionInFamily.PrimaryAdult;
+            p.PositionInFamilyId = CurrentDatabase.ComputePositionInFamily(mpap.getAge(), mpap.maritalStatusID == MaritalStatusCode.Married, f.FamilyId) ?? PositionInFamily.PrimaryAdult;
 
             p.OriginId = OriginCode.Visit;
             p.FixTitle();
@@ -1736,16 +1749,16 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             p.MaritalStatusId = mpap.maritalStatusID;
             p.GenderId = mpap.genderID;
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
             if (mpap.visitMeeting > 0)
             {
-                var meeting = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == mpap.visitMeeting);
+                var meeting = CurrentDatabase.Meetings.Single(mm => mm.MeetingId == mpap.visitMeeting);
                 Attend.RecordAttendance(p.PeopleId, mpap.visitMeeting, true);
-                DbUtil.Db.UpdateMeetingCounters(mpap.visitMeeting);
+                CurrentDatabase.UpdateMeetingCounters(mpap.visitMeeting);
                 p.CampusId = meeting.Organization.CampusId;
                 p.EntryPoint = meeting.Organization.EntryPoint;
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
             }
 
             BaseMessage br = new BaseMessage();
@@ -1775,21 +1788,21 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             BaseMessage dataIn = BaseMessage.createFromString(data);
             MobilePostJoinOrg mpjo = JsonConvert.DeserializeObject<MobilePostJoinOrg>(dataIn.data);
 
-            var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == mpjo.peopleID && m.OrganizationId == mpjo.orgID);
+            var om = CurrentDatabase.OrganizationMembers.SingleOrDefault(m => m.PeopleId == mpjo.peopleID && m.OrganizationId == mpjo.orgID);
 
             if (om == null && mpjo.join)
             {
-                om = OrganizationMember.InsertOrgMembers(DbUtil.Db, mpjo.orgID, mpjo.peopleID, MemberTypeCode.Member, DateTime.Today, null, false);
+                om = OrganizationMember.InsertOrgMembers(CurrentDatabase, mpjo.orgID, mpjo.peopleID, MemberTypeCode.Member, DateTime.Today, null, false);
             }
 
             if (om != null && !mpjo.join)
             {
-                om.Drop(DbUtil.Db, DateTime.Now);
+                om.Drop(CurrentDatabase, DateTime.Now);
 
                 DbUtil.LogActivity($"Dropped {om.PeopleId} for {om.Organization.OrganizationId} via {dataIn.getSourceOS()} app", peopleid: om.PeopleId, orgid: om.OrganizationId);
             }
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
             BaseMessage br = new BaseMessage();
             br.setNoError();
@@ -1830,7 +1843,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             };
         }
 
-        private static string GetOneTimeLoginLink(string url, string user)
+        private string GetOneTimeLoginLink(string url, string user)
         {
             var ot = new OneTimeLink
             {
@@ -1839,13 +1852,13 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                 Expires = DateTime.Now.AddMinutes(15)
             };
 
-            DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.OneTimeLinks.InsertOnSubmit(ot);
+            CurrentDatabase.SubmitChanges();
 
-            return $"{DbUtil.Db.ServerLink($"Logon?ReturnUrl={HttpUtility.UrlEncode(url)}&otltoken={ot.Id.ToCode()}")}";
+            return $"{CurrentDatabase.ServerLink($"Logon?ReturnUrl={HttpUtility.UrlEncode(url)}&otltoken={ot.Id.ToCode()}")}";
         }
 
-        private static string SerializeJSON(Object item, int version)
+        private string SerializeJSON(Object item, int version)
         {
             if (version == BaseMessage.API_VERSION_2)
             {

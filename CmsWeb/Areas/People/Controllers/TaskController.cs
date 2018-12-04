@@ -1,4 +1,3 @@
-using CmsData;
 using CmsWeb.Areas.People.Models.Task;
 using CmsWeb.Lifecycle;
 using CmsWeb.Models;
@@ -20,14 +19,14 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpGet, Route("~/Task/{id}")]
         public ActionResult Index(int id)
         {
-            var t = TaskModel.FetchModel(id);
+            var t = TaskModel.FetchModel(id, CurrentDatabase.Host, CurrentDatabase);
             return View(t);
         }
 
         [HttpGet]
         public ActionResult Edit(int id)
         {
-            var t = TaskModel.FetchModel(id);
+            var t = TaskModel.FetchModel(id, CurrentDatabase.Host, CurrentDatabase);
             return View(t);
         }
 
@@ -46,50 +45,50 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult Accept(int id)
         {
-            TaskModel.AcceptTask(id);
+            TaskModel.AcceptTask(id, CurrentDatabase.Host, CurrentDatabase);
             return Content("Done");
         }
 
         [HttpPost]
         public ActionResult AddTask(string description)
         {
-            var tid = TaskModel.AddTask(Util.UserPeopleId ?? 0, description);
+            var tid = TaskModel.AddTask(Util.UserPeopleId ?? 0, description, CurrentDatabase.Host, CurrentDatabase);
             return Content(tid.ToString());
         }
 
         [HttpPost]
         public ActionResult ChangeAbout(int id, int peopleid)
         {
-            TaskModel.SetWhoId(id, peopleid);
-            return View("Index", TaskModel.FetchModel(id));
+            TaskModel.SetWhoId(id, peopleid, CurrentDatabase.Host, CurrentDatabase);
+            return View("Index", TaskModel.FetchModel(id, CurrentDatabase.Host, CurrentDatabase));
         }
 
         [HttpPost]
         public ActionResult ChangeOwner(int id, int peopleid)
         {
-            TaskModel.ChangeOwner(id, peopleid);
-            return View("Index", TaskModel.FetchModel(id));
+            TaskModel.ChangeOwner(id, peopleid, CurrentDatabase.Host, CurrentDatabase);
+            return View("Index", TaskModel.FetchModel(id, CurrentDatabase.Host, CurrentDatabase));
         }
 
         [HttpPost]
         public JsonResult CompleteWithContact(int id)
         {
-            var contactid = TaskModel.AddCompletedContact(id);
-            return Json(new { ContactId = contactid });
+            var contactId = TaskModel.AddCompletedContact(id, CurrentDatabase.Host, CurrentDatabase);
+            return Json(new { ContactId = contactId });
         }
 
         [HttpPost]
         public ActionResult Decline(int id, string reason)
         {
-            TaskModel.DeclineTask(id, reason);
+            TaskModel.DeclineTask(id, reason, CurrentDatabase.Host, CurrentDatabase);
             return RedirectToAction("Index", new { id });
         }
 
         [HttpPost]
         public ActionResult Delegate(int id, int peopleid)
         {
-            TaskModel.Delegate(id, peopleid);
-            return View("Index", TaskModel.FetchModel(id));
+            TaskModel.Delegate(id, peopleid, CurrentDatabase.Host, CurrentDatabase);
+            return View("Index", TaskModel.FetchModel(id, CurrentDatabase.Host, CurrentDatabase));
         }
 
         [Route("~/Task/NotesExcel2/{id}")]
@@ -116,7 +115,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult SetComplete(int id)
         {
-            TaskModel.CompleteTask(id);
+            TaskModel.CompleteTask(id, CurrentDatabase.Host, CurrentDatabase);
             return Content("Done");
         }
 
